@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C42820176A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57537201768
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395375AbgFSQiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:38:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39968 "EHLO mail.kernel.org"
+        id S2389572AbgFSQiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:38:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388988AbgFSOrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:47:48 -0400
+        id S2387968AbgFSOru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:47:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 222FE2083B;
-        Fri, 19 Jun 2020 14:47:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 80FE0217D9;
+        Fri, 19 Jun 2020 14:47:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578067;
-        bh=VwSN0YU9Oj7OXqaDGPp3XR8cYu0IhWpaSJ1/3foAwJ4=;
+        s=default; t=1592578070;
+        bh=Uh/IZUM0L/bUkrura8PqNijQXkLZGvjhnGmgcpPSTQg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VT8ieQ3R+VfM+4b9P3xL42t7LQLtKK7BTmCBNi8kLV8J6DKvJXSCPQ3sQfpQ3B5l/
-         jaJtbwg4u93T24LhkUKdxjYw2UA1KN7uwpgFp2o2WYI1iwohQSIyuKXjLD0m4yYT2e
-         g8Jx8Xp0PxE4WH4gpLkid+77SEDmzYfauHGZen20=
+        b=DmvU7Zopv6bgWTC16nx5SYc/7IGB9bubfhvFkMr21YkWuXOS+CNPIrgyfThmOEGQ8
+         9rqHwce9RJTTzhPC4yEdPsXeZpQ7K6ErycPrvSVnNr128cDaLurgrCqbQkn7AxBhV4
+         1mzov6ThVfmVvq2RCw/GBdYT0OAZ3UtILw1wWzpM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Andi Shyti <andi.shyti@intel.com>
-Subject: [PATCH 4.14 070/190] agp/intel: Reinforce the barrier after GTT updates
-Date:   Fri, 19 Jun 2020 16:31:55 +0200
-Message-Id: <20200619141637.076619086@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.14 071/190] mmc: sdhci-msm: Clear tuning done flag while hs400 tuning
+Date:   Fri, 19 Jun 2020 16:31:56 +0200
+Message-Id: <20200619141637.136935827@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
 References: <20200619141633.446429600@linuxfoundation.org>
@@ -43,55 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
 
-commit f30d3ced9fafa03e4855508929b5b6334907f45e upstream.
+commit 9253d71011c349d5f5cc0cebdf68b4a80811b92d upstream.
 
-After changing the timing between GTT updates and execution on the GPU,
-we started seeing sporadic failures on Ironlake. These were narrowed
-down to being an insufficiently strong enough barrier/delay after
-updating the GTT and scheduling execution on the GPU. By forcing the
-uncached read, and adding the missing barrier for the singular
-insert_page (relocation paths), the sporadic failures go away.
+Clear tuning_done flag while executing tuning to ensure vendor
+specific HS400 settings are applied properly when the controller
+is re-initialized in HS400 mode.
 
-Fixes: 983d308cb8f6 ("agp/intel: Serialise after GTT updates")
-Fixes: 3497971a71d8 ("agp/intel: Flush chipset writes after updating a single PTE")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Acked-by: Andi Shyti <andi.shyti@intel.com>
-Cc: stable@vger.kernel.org # v4.0+
-Link: https://patchwork.freedesktop.org/patch/msgid/20200410083535.25464-1-chris@chris-wilson.co.uk
+Without this, re-initialization of the qcom SDHC in HS400 mode fails
+while resuming the driver from runtime-suspend or system-suspend.
+
+Fixes: ff06ce417828 ("mmc: sdhci-msm: Add HS400 platform support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+Link: https://lore.kernel.org/r/1590678838-18099-1-git-send-email-vbadigan@codeaurora.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/char/agp/intel-gtt.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mmc/host/sdhci-msm.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
---- a/drivers/char/agp/intel-gtt.c
-+++ b/drivers/char/agp/intel-gtt.c
-@@ -846,6 +846,7 @@ void intel_gtt_insert_page(dma_addr_t ad
- 			   unsigned int flags)
- {
- 	intel_private.driver->write_entry(addr, pg, flags);
-+	readl(intel_private.gtt + pg);
- 	if (intel_private.driver->chipset_flush)
- 		intel_private.driver->chipset_flush();
- }
-@@ -871,7 +872,7 @@ void intel_gtt_insert_sg_entries(struct
- 			j++;
- 		}
- 	}
--	wmb();
-+	readl(intel_private.gtt + j - 1);
- 	if (intel_private.driver->chipset_flush)
- 		intel_private.driver->chipset_flush();
- }
-@@ -1105,6 +1106,7 @@ static void i9xx_cleanup(void)
+--- a/drivers/mmc/host/sdhci-msm.c
++++ b/drivers/mmc/host/sdhci-msm.c
+@@ -861,6 +861,12 @@ static int sdhci_msm_execute_tuning(stru
+ 	msm_host->use_cdr = true;
  
- static void i9xx_chipset_flush(void)
- {
-+	wmb();
- 	if (intel_private.i9xx_flush_page)
- 		writel(1, intel_private.i9xx_flush_page);
- }
+ 	/*
++	 * Clear tuning_done flag before tuning to ensure proper
++	 * HS400 settings.
++	 */
++	msm_host->tuning_done = 0;
++
++	/*
+ 	 * For HS400 tuning in HS200 timing requires:
+ 	 * - select MCLK/2 in VENDOR_SPEC
+ 	 * - program MCLK to 400MHz (or nearest supported) in GCC
 
 
