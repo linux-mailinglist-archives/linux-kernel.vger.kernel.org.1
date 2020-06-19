@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 236F6201742
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:46:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB328201741
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:46:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389461AbgFSQgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:36:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41874 "EHLO mail.kernel.org"
+        id S2395264AbgFSQgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:36:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389184AbgFSOtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:49:19 -0400
+        id S1732785AbgFSOtW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:49:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DBBA2158C;
-        Fri, 19 Jun 2020 14:49:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6A9B217D8;
+        Fri, 19 Jun 2020 14:49:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578159;
-        bh=pYNQcSSA8JE5e7nUhFvhxl8tYDixqAuawiEefCQhtHk=;
+        s=default; t=1592578162;
+        bh=UsEG3iC+oiPsZweDeQ31oi9Cjb/xTjbfwlSd+iowqvs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q2LWXevVaPLWvn0Gnyp20dbgiURiwdV+Evp4UOlQT5hf9TPZnyWrLRnkK9TLaqHDT
-         5qU0TO8/iKzg3NZXRWutKp5nVww9ki29ai2GgHxuGsmOThOPsksIBoLjOvVTrU/0b0
-         gyYdBvoGz2Ck+9CMVa2/AMhlfoKiDuETIBzFwITs=
+        b=FTTCufT6IeWXWVDdOSthWOhXiVa0Cq4gYmttL28mQ9sipm46Y7RKMWkGk8VHLr0Dv
+         heSrWtZipwxgeNOqlr1Qxl9NP+5ar/Xilo27V4d/lVrKaQ8UupqXNVAfIzS48uxvPJ
+         vMXNZx+VNIf61Jlmn8OitOMRP/BOPs8ihMCyVzes=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Dmitry Golovin <dima@golovin.in>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 106/190] net: bcmgenet: set Rx mode before starting netif
-Date:   Fri, 19 Jun 2020 16:32:31 +0200
-Message-Id: <20200619141638.888122406@linuxfoundation.org>
+Subject: [PATCH 4.14 107/190] lib/mpi: Fix 64-bit MIPS build with Clang
+Date:   Fri, 19 Jun 2020 16:32:32 +0200
+Message-Id: <20200619141638.941623347@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
 References: <20200619141633.446429600@linuxfoundation.org>
@@ -45,49 +45,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Doug Berger <opendmb@gmail.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit 72f96347628e73dbb61b307f18dd19293cc6792a ]
+[ Upstream commit 18f1ca46858eac22437819937ae44aa9a8f9f2fa ]
 
-This commit explicitly calls the bcmgenet_set_rx_mode() function when
-the network interface is started. This function is normally called by
-ndo_set_rx_mode when the flags are changed, but apparently not when
-the driver is suspended and resumed.
+When building 64r6_defconfig with CONFIG_MIPS32_O32 disabled and
+CONFIG_CRYPTO_RSA enabled:
 
-This change ensures that address filtering or promiscuous mode are
-properly restored by the driver after the MAC may have been reset.
+lib/mpi/generic_mpih-mul1.c:37:24: error: invalid use of a cast in a
+inline asm context requiring an l-value: remove the cast
+or build with -fheinous-gnu-extensions
+                umul_ppmm(prod_high, prod_low, s1_ptr[j], s2_limb);
+                ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/mpi/longlong.h:664:22: note: expanded from macro 'umul_ppmm'
+                 : "=d" ((UDItype)(w0))
+                         ~~~~~~~~~~^~~
+lib/mpi/generic_mpih-mul1.c:37:13: error: invalid use of a cast in a
+inline asm context requiring an l-value: remove the cast
+or build with -fheinous-gnu-extensions
+                umul_ppmm(prod_high, prod_low, s1_ptr[j], s2_limb);
+                ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+lib/mpi/longlong.h:668:22: note: expanded from macro 'umul_ppmm'
+                 : "=d" ((UDItype)(w1))
+                         ~~~~~~~~~~^~~
+2 errors generated.
 
-Fixes: b6e978e50444 ("net: bcmgenet: add suspend/resume callbacks")
-Signed-off-by: Doug Berger <opendmb@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+This special case for umul_ppmm for MIPS64r6 was added in
+commit bbc25bee37d2b ("lib/mpi: Fix umul_ppmm() for MIPS64r6"), due to
+GCC being inefficient and emitting a __multi3 intrinsic.
+
+There is no such issue with clang; with this patch applied, I can build
+this configuration without any problems and there are no link errors
+like mentioned in the commit above (which I can still reproduce with
+GCC 9.3.0 when that commit is reverted). Only use this definition when
+GCC is being used.
+
+This really should have been caught by commit b0c091ae04f67 ("lib/mpi:
+Eliminate unused umul_ppmm definitions for MIPS") when I was messing
+around in this area but I was not testing 64-bit MIPS at the time.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/885
+Reported-by: Dmitry Golovin <dima@golovin.in>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/genet/bcmgenet.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ lib/mpi/longlong.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index 38391230ca86..7d3cbbd88a00 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -72,6 +72,9 @@
- #define GENET_RDMA_REG_OFF	(priv->hw_params->rdma_offset + \
- 				TOTAL_DESC * DMA_DESC_SIZE)
- 
-+/* Forward declarations */
-+static void bcmgenet_set_rx_mode(struct net_device *dev);
-+
- static inline void bcmgenet_writel(u32 value, void __iomem *offset)
- {
- 	/* MIPS chips strapped for BE will automagically configure the
-@@ -2858,6 +2861,7 @@ static void bcmgenet_netif_start(struct net_device *dev)
- 	struct bcmgenet_priv *priv = netdev_priv(dev);
- 
- 	/* Start the network engine */
-+	bcmgenet_set_rx_mode(dev);
- 	bcmgenet_enable_rx_napi(priv);
- 	bcmgenet_enable_tx_napi(priv);
- 
+diff --git a/lib/mpi/longlong.h b/lib/mpi/longlong.h
+index e01b705556aa..6c5229f98c9e 100644
+--- a/lib/mpi/longlong.h
++++ b/lib/mpi/longlong.h
+@@ -671,7 +671,7 @@ do {						\
+ 	**************  MIPS/64  **************
+ 	***************************************/
+ #if (defined(__mips) && __mips >= 3) && W_TYPE_SIZE == 64
+-#if defined(__mips_isa_rev) && __mips_isa_rev >= 6
++#if defined(__mips_isa_rev) && __mips_isa_rev >= 6 && defined(CONFIG_CC_IS_GCC)
+ /*
+  * GCC ends up emitting a __multi3 intrinsic call for MIPS64r6 with the plain C
+  * code below, so we special case MIPS64r6 until the compiler can do better.
 -- 
 2.25.1
 
