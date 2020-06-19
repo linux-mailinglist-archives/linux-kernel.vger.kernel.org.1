@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2686E201429
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:13:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8233F201507
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389372AbgFSPET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:04:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60980 "EHLO mail.kernel.org"
+        id S2393641AbgFSQRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:17:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59618 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390621AbgFSPEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:04:08 -0400
+        id S2390902AbgFSPCw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:02:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4373121D7D;
-        Fri, 19 Jun 2020 15:04:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DB2120776;
+        Fri, 19 Jun 2020 15:02:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579046;
-        bh=seEWA6TD6thz/bf8AymmfY2DgRiKDddkUcwLl6ycTeA=;
+        s=default; t=1592578972;
+        bh=dFj03ieTKPIxULsHQ9pqrB5XgXCDpm1ISDBdSJI9s9U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LIzintNEKSt0sq+v/WBbFM/+UTEJlXy9Cmz6oBsi8DvIzzfzTq8ZrFLb1yW2KpcHe
-         i897lWHzZLD3NJScqU/eCK5QxaqSnqv7Osp+BFQ1+peelQyY6gcdxJLjAsC8NMsFXY
-         0TI11hQ/nFh77b8cW/j1BlPO9BavOpLBFFgxqWKE=
+        b=R722oo/Y8mAvhHm0JYEgDwk1Ai3s7PgDii9qGgGbRD2jV/JbvdMpElrxTm4QYgzBs
+         4Ywakbe3q8uKxPmNyDiw9COYzopX1kw+iB9J2jCa5Sxdasp5EpwiY58jeu/4yewQdR
+         blTDXe5g+SyKvAG9lExBaRcNtTdmkVmGgqHOP42c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Omar Sandoval <osandov@fb.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 225/267] PCI: Make ACS quirk implementations more uniform
-Date:   Fri, 19 Jun 2020 16:33:30 +0200
-Message-Id: <20200619141659.498894885@linuxfoundation.org>
+Subject: [PATCH 4.19 228/267] btrfs: fix error handling when submitting direct I/O bio
+Date:   Fri, 19 Jun 2020 16:33:33 +0200
+Message-Id: <20200619141659.635299828@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
 References: <20200619141648.840376470@linuxfoundation.org>
@@ -45,122 +47,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+From: Omar Sandoval <osandov@fb.com>
 
-[ Upstream commit c8de8ed2dcaac82e5d76d467dc0b02e0ee79809b ]
+[ Upstream commit 6d3113a193e3385c72240096fe397618ecab6e43 ]
 
-The ACS quirks differ in needless ways, which makes them look more
-different than they really are.
+In btrfs_submit_direct_hook(), if a direct I/O write doesn't span a RAID
+stripe or chunk, we submit orig_bio without cloning it. In this case, we
+don't increment pending_bios. Then, if btrfs_submit_dio_bio() fails, we
+decrement pending_bios to -1, and we never complete orig_bio. Fix it by
+initializing pending_bios to 1 instead of incrementing later.
 
-Reorder the ACS flags in order of definitions in the spec:
+Fixing this exposes another bug: we put orig_bio prematurely and then
+put it again from end_io. Fix it by not putting orig_bio.
 
-  PCI_ACS_SV   Source Validation
-  PCI_ACS_TB   Translation Blocking
-  PCI_ACS_RR   P2P Request Redirect
-  PCI_ACS_CR   P2P Completion Redirect
-  PCI_ACS_UF   Upstream Forwarding
-  PCI_ACS_EC   P2P Egress Control
-  PCI_ACS_DT   Direct Translated P2P
+After this change, pending_bios is really more of a reference count, but
+I'll leave that cleanup separate to keep the fix small.
 
-(PCIe r5.0, sec 7.7.8.2) and use similar code structure in all.  No
-functional change intended.
-
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
+Fixes: e65e15355429 ("btrfs: fix panic caused by direct IO")
+CC: stable@vger.kernel.org # 4.4+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Omar Sandoval <osandov@fb.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c | 41 +++++++++++++++++++----------------------
- 1 file changed, 19 insertions(+), 22 deletions(-)
+ fs/btrfs/inode.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 502dca568d6c..ae62c0b058dd 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -4333,18 +4333,18 @@ static bool pci_quirk_cavium_acs_match(struct pci_dev *dev)
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index c69e5b255745..b4f295a058d8 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8399,7 +8399,6 @@ static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip)
  
- static int pci_quirk_cavium_acs(struct pci_dev *dev, u16 acs_flags)
- {
-+	if (!pci_quirk_cavium_acs_match(dev))
-+		return -ENOTTY;
-+
+ 	/* bio split */
+ 	ASSERT(map_length <= INT_MAX);
+-	atomic_inc(&dip->pending_bios);
+ 	do {
+ 		clone_len = min_t(int, submit_len, map_length);
+ 
+@@ -8450,7 +8449,8 @@ static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip)
+ 	if (!status)
+ 		return 0;
+ 
+-	bio_put(bio);
++	if (bio != orig_bio)
++		bio_put(bio);
+ out_err:
+ 	dip->errors = 1;
  	/*
--	 * Cavium root ports don't advertise an ACS capability.  However,
-+	 * Cavium Root Ports don't advertise an ACS capability.  However,
- 	 * the RTL internally implements similar protection as if ACS had
--	 * Request Redirection, Completion Redirection, Source Validation,
-+	 * Source Validation, Request Redirection, Completion Redirection,
- 	 * and Upstream Forwarding features enabled.  Assert that the
- 	 * hardware implements and enables equivalent ACS functionality for
- 	 * these flags.
- 	 */
--	acs_flags &= ~(PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_SV | PCI_ACS_UF);
--
--	if (!pci_quirk_cavium_acs_match(dev))
--		return -ENOTTY;
-+	acs_flags &= ~(PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
+@@ -8491,7 +8491,7 @@ static void btrfs_submit_direct(struct bio *dio_bio, struct inode *inode,
+ 	bio->bi_private = dip;
+ 	dip->orig_bio = bio;
+ 	dip->dio_bio = dio_bio;
+-	atomic_set(&dip->pending_bios, 0);
++	atomic_set(&dip->pending_bios, 1);
+ 	io_bio = btrfs_io_bio(bio);
+ 	io_bio->logical = file_offset;
  
- 	return acs_flags ? 0 : 1;
- }
-@@ -4362,7 +4362,7 @@ static int pci_quirk_xgene_acs(struct pci_dev *dev, u16 acs_flags)
- }
- 
- /*
-- * Many Intel PCH root ports do provide ACS-like features to disable peer
-+ * Many Intel PCH Root Ports do provide ACS-like features to disable peer
-  * transactions and validate bus numbers in requests, but do not provide an
-  * actual PCIe ACS capability.  This is the list of device IDs known to fall
-  * into that category as provided by Intel in Red Hat bugzilla 1037684.
-@@ -4410,37 +4410,34 @@ static bool pci_quirk_intel_pch_acs_match(struct pci_dev *dev)
- 	return false;
- }
- 
--#define INTEL_PCH_ACS_FLAGS (PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF | PCI_ACS_SV)
-+#define INTEL_PCH_ACS_FLAGS (PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF)
- 
- static int pci_quirk_intel_pch_acs(struct pci_dev *dev, u16 acs_flags)
- {
--	u16 flags = dev->dev_flags & PCI_DEV_FLAGS_ACS_ENABLED_QUIRK ?
--		    INTEL_PCH_ACS_FLAGS : 0;
--
- 	if (!pci_quirk_intel_pch_acs_match(dev))
- 		return -ENOTTY;
- 
--	return acs_flags & ~flags ? 0 : 1;
-+	if (dev->dev_flags & PCI_DEV_FLAGS_ACS_ENABLED_QUIRK)
-+		acs_flags &= ~(INTEL_PCH_ACS_FLAGS);
-+
-+	return acs_flags ? 0 : 1;
- }
- 
- /*
-- * These QCOM root ports do provide ACS-like features to disable peer
-+ * These QCOM Root Ports do provide ACS-like features to disable peer
-  * transactions and validate bus numbers in requests, but do not provide an
-  * actual PCIe ACS capability.  Hardware supports source validation but it
-  * will report the issue as Completer Abort instead of ACS Violation.
-- * Hardware doesn't support peer-to-peer and each root port is a root
-- * complex with unique segment numbers.  It is not possible for one root
-- * port to pass traffic to another root port.  All PCIe transactions are
-- * terminated inside the root port.
-+ * Hardware doesn't support peer-to-peer and each Root Port is a Root
-+ * Complex with unique segment numbers.  It is not possible for one Root
-+ * Port to pass traffic to another Root Port.  All PCIe transactions are
-+ * terminated inside the Root Port.
-  */
- static int pci_quirk_qcom_rp_acs(struct pci_dev *dev, u16 acs_flags)
- {
--	u16 flags = (PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF | PCI_ACS_SV);
--	int ret = acs_flags & ~flags ? 0 : 1;
--
--	pci_info(dev, "Using QCOM ACS Quirk (%d)\n", ret);
-+	acs_flags &= ~(PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
- 
--	return ret;
-+	return acs_flags ? 0 : 1;
- }
- 
- /*
 -- 
 2.25.1
 
