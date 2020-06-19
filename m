@@ -2,61 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B86F200FFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56F64201007
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393249AbgFSPYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:24:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51748 "EHLO mail.kernel.org"
+        id S2393282AbgFSPYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:24:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392714AbgFSPUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:20:35 -0400
+        id S2392824AbgFSPVP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:21:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2074E20B80;
-        Fri, 19 Jun 2020 15:20:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E3D520706;
+        Fri, 19 Jun 2020 15:21:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580034;
-        bh=LBMRf9JHo+eK6vmiBgsR6DL+jYRuMcEM+eXkqBtF1NY=;
+        s=default; t=1592580074;
+        bh=1nuTO3/C9PLdayS+YAYuAtfHYtA++BUHbRE+Z0bXpyw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oodt6X1dXL1bJqLFD6JAqzUOWyeTsSyy4EMzICHONIOixFudgYEsqo83IEPmPDdtg
-         AdKXEAyoL8pykwfTYo/U4msBsE6pOtGdNJKoda7k+KGZdGbKM2z2imbGyF53/U5nn8
-         DE4emR7T3wQ30uCirWZ2iAtjqVyyq3WuwRXefM9I=
+        b=VDu1eD76p4eOLVHwhhqR4Hn9407ceJKCVigrdcQzadJc5erVfQ7lTmCpbBhHTX96l
+         CINRZ1WnEuRmS+wbOnZB0rUdjKVd4M06AaSIDvBN72MBWp4Fr/jk4Ohqo1WcEaPcL2
+         /RrEPIScMchzrXBDelcKhkgM3WfRjYzX3ZsMZbEI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Kees Cook <keescook@chromium.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        David Airlie <airlied@linux.ie>, Gao Xiang <xiang@kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Laura Abbott <labbott@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Wei Liu <wei.liu@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Elena Petrova <lenaptr@google.com>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 080/376] x86: fix vmap arguments in map_irq_stack
-Date:   Fri, 19 Jun 2020 16:29:58 +0200
-Message-Id: <20200619141714.133229741@linuxfoundation.org>
+Subject: [PATCH 5.7 082/376] ubsan: entirely disable alignment checks under UBSAN_TRAP
+Date:   Fri, 19 Jun 2020 16:30:00 +0200
+Message-Id: <20200619141714.225619751@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -69,60 +49,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit 0348801151b5aefbcf9d6e9b9e30aceb3a2a7b13 ]
+[ Upstream commit 9380ce246a052a1e00121cd480028b6907aeae38 ]
 
-vmap does not take a gfp_t, the flags argument is for VM_* flags.
+Commit 8d58f222e85f ("ubsan: disable UBSAN_ALIGNMENT under
+COMPILE_TEST") tried to fix the pathological results of UBSAN_ALIGNMENT
+with UBSAN_TRAP (which objtool would rightly scream about), but it made
+an assumption about how COMPILE_TEST gets set (it is not set for
+randconfig).  As a result, we need a bigger hammer here: just don't
+allow the alignment checks with the trap mode.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Fixes: 8d58f222e85f ("ubsan: disable UBSAN_ALIGNMENT under COMPILE_TEST")
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Kees Cook <keescook@chromium.org>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: Christophe Leroy <christophe.leroy@c-s.fr>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: David Airlie <airlied@linux.ie>
-Cc: Gao Xiang <xiang@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: "K. Y. Srinivasan" <kys@microsoft.com>
-Cc: Laura Abbott <labbott@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Michael Kelley <mikelley@microsoft.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Nitin Gupta <ngupta@vflare.org>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Robin Murphy <robin.murphy@arm.com>
-Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: Stephen Hemminger <sthemmin@microsoft.com>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Wei Liu <wei.liu@kernel.org>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
-Cc: Paul Mackerras <paulus@ozlabs.org>
-Cc: Vasily Gorbik <gor@linux.ibm.com>
-Cc: Will Deacon <will@kernel.org>
-Link: http://lkml.kernel.org/r/20200414131348.444715-3-hch@lst.de
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Elena Petrova <lenaptr@google.com>
+Link: http://lkml.kernel.org/r/202005291236.000FCB6@keescook
+Link: https://lore.kernel.org/lkml/742521db-1e8c-0d7a-1ed4-a908894fb497@infradead.org/
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/irq_64.c | 2 +-
+ lib/Kconfig.ubsan | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/irq_64.c b/arch/x86/kernel/irq_64.c
-index 12df3a4abfdd..6b32ab009c19 100644
---- a/arch/x86/kernel/irq_64.c
-+++ b/arch/x86/kernel/irq_64.c
-@@ -43,7 +43,7 @@ static int map_irq_stack(unsigned int cpu)
- 		pages[i] = pfn_to_page(pa >> PAGE_SHIFT);
- 	}
- 
--	va = vmap(pages, IRQ_STACK_SIZE / PAGE_SIZE, GFP_KERNEL, PAGE_KERNEL);
-+	va = vmap(pages, IRQ_STACK_SIZE / PAGE_SIZE, VM_MAP, PAGE_KERNEL);
- 	if (!va)
- 		return -ENOMEM;
- 
+diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
+index 929211039bac..27bcc2568c95 100644
+--- a/lib/Kconfig.ubsan
++++ b/lib/Kconfig.ubsan
+@@ -63,7 +63,7 @@ config UBSAN_SANITIZE_ALL
+ config UBSAN_ALIGNMENT
+ 	bool "Enable checks for pointers alignment"
+ 	default !HAVE_EFFICIENT_UNALIGNED_ACCESS
+-	depends on !X86 || !COMPILE_TEST
++	depends on !UBSAN_TRAP
+ 	help
+ 	  This option enables the check of unaligned memory accesses.
+ 	  Enabling this option on architectures that support unaligned
 -- 
 2.25.1
 
