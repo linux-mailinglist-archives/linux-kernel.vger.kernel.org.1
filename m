@@ -2,207 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C46D42010DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9F112010D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405006AbgFSPfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:35:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:39542 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404886AbgFSPbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:31:51 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E1A12B;
-        Fri, 19 Jun 2020 08:31:50 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 095983F71F;
-        Fri, 19 Jun 2020 08:31:48 -0700 (PDT)
-Date:   Fri, 19 Jun 2020 16:31:46 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Quentin Perret <qperret@google.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        hsinyi@chromium.org, Joel Fernandes <joelaf@google.com>,
+        id S2391076AbgFSPeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:34:17 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50714 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404901AbgFSPeH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:34:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592580845;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1gjUns75l8t6S6FnUcYsN6ZlE6IET04KazBXsahJkg8=;
+        b=R89A4Vk1fiBeltHWigJoNwYNpFI/7x3JzBZIGYRejPjtRqZwhEvH/aye5EvgwfEDcWHCzr
+        w78g5PPSjhAkkUkWcP+2OavZGo7GhLyvVdloDeXAc2iMAorfPJSs5J6I8K/bBWj2WndLpn
+        apzsgtdEcqEnCJ+RHNJnxOnPu8I7vZA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187-NbuglgpSPkKbOHTyzRHHIQ-1; Fri, 19 Jun 2020 11:34:00 -0400
+X-MC-Unique: NbuglgpSPkKbOHTyzRHHIQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44B44801503;
+        Fri, 19 Jun 2020 15:33:59 +0000 (UTC)
+Received: from agerstmayr-thinkpad.redhat.com (unknown [10.40.196.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 915942CE8A;
+        Fri, 19 Jun 2020 15:33:51 +0000 (UTC)
+From:   Andreas Gerstmayr <agerstmayr@redhat.com>
+To:     linux-perf-users@vger.kernel.org
+Cc:     Michael Petlan <mpetlan@redhat.com>,
+        Andreas Gerstmayr <agerstmayr@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        ctheegal@codeaurora.org, Guenter Roeck <groeck@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cros_ec_spi: Even though we're RT priority, don't bump
- cpu freq
-Message-ID: <20200619153146.vaizbj7muy52zvbd@e107158-lin.cambridge.arm.com>
-References: <20200610151818.1.I666ecd9c6f3c6405bd75831a21001b8109b6438c@changeid>
- <20200611110301.GA132747@google.com>
- <CAD=FV=V2FvFcYrghxUSdHNxmcS3DKpnBbk2oL64w7hh=tV-DfQ@mail.gmail.com>
- <20200612092454.GA94228@google.com>
- <20200612123448.fcmzv3rdtsbawmpd@e107158-lin.cambridge.arm.com>
- <CAD=FV=UySLsTaUP3nOfQO98qPEUkY8tMhw25pJ4Yi7FVM5xU6g@mail.gmail.com>
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] perf flamegraph: explicitly set utf-8 encoding
+Date:   Fri, 19 Jun 2020 17:32:31 +0200
+Message-Id: <20200619153232.203537-1-agerstmayr@redhat.com>
+In-Reply-To: <20200619130745.153113-1-agerstmayr@redhat.com>
+References: <20200619130745.153113-1-agerstmayr@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=UySLsTaUP3nOfQO98qPEUkY8tMhw25pJ4Yi7FVM5xU6g@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+on some platforms the default encoding is not utf-8,
+which causes an UnicodeDecodeError when reading the flamegraph template
+and writing the flamegraph
 
-On 06/18/20 14:31, Doug Anderson wrote:
-> Hi,
-> 
-> On Fri, Jun 12, 2020 at 5:34 AM Qais Yousef <qais.yousef@arm.com> wrote:
-> >
-> > On 06/12/20 10:24, Quentin Perret wrote:
-> > > +CC Qais [FYI]
-> >
-> > Thanks for the CC.
-> >
-> > >
-> > > On Thursday 11 Jun 2020 at 10:48:40 (-0700), Doug Anderson wrote:
-> > > > Hrm.  I guess my first instinct is to say that we still want this
-> > > > patch even if we have something that is applied more globally.
-> > >
-> > > Fair enough.
-> > >
-> > > > Specifically it sounds as if the patch you point at is suggesting that
-> > > > we'd tweak the boost value to something other than max but we'd still
-> > > > have a boost value.  In the case of cros_ec_spi I don't believe we
-> > > > need any boost value at all, so my patch would still be useful.  The
-> > > > computational needs of cros_ec_spi are very modest and it can do its
-> > > > work at lower CPU frequencies just fine.  It just can't be interrupted
-> > > > for large swaths of time.
-> > > >
-> > > >
-> > > > > IOW, how do you feel about 20200511154053.7822-1-qais.yousef@arm.com ?
-> > > >
-> > > > I'm not totally a fan, but I'm definitely not an expert in this area
-> > > > (I've also only read the patch description and not the patch or the
-> > > > whole thread).  I really don't want yet another value that I need to
-> > > > tune from board to board.  Even worse, this tuning value isn't
-> > > > board-specific but a combination of board and software specific.  By
-> > > > this, I'd imagine a scenario where you're using a real-time task to
-> > > > get audio decoding done within a certain latency.  I guess you'd tune
-> > > > this value to make sure that you can get all your audio decoding done
-> > > > in time but also not burn extra power.  Now, imagine that the OS
-> > > > upgrades and the audio task suddenly has to decode more complex
-> > > > streams.  You've got to go across all of your boards and re-tune every
-> > > > one?  ...or, nobody thinks about it and older boards start getting
-> > > > stuttery audio?  Perhaps the opposite happens and someone comes up
-> > > > with a newer lower-cpu-intensive codec and you could save power.
-> > > > Sounds like a bit of a nightmare.
-> >
-> > Generally I would expect this global tunable to be part of a vendor's SoC BSP.
-> 
-> I think I'm coming at this from a very different world than the one
-> you're thinking of.  The concept of a BSP makes me think of a SoC
-> vendor providing a drop of Linux with all their own weird hacks in it
-> that only ever works on that one SoC and will never, ever, ever be
-> updated.  5 years down the road if a software update is needed
-> (security fix?) some poor soul will be in charge of tracking down the
-> exact ancient code base that was used to build the original kernel,
-> making the tweak, and building a new kernel.  ;-)
-> 
-> In the world of Chrome OS we try very very hard to build everything
-> from a clean code base and are trying hard to stay even closer to
-> upstream and away from per-device weirdness...
+Signed-off-by: Andreas Gerstmayr <agerstmayr@redhat.com>
+---
 
-Hmm I thought OEMs who ship stuff that are based on Chrome OS would have to do
-the final tuning here, which would be based on the recommendation of the SoC
-vendor. And I'm being overly generic here to think not only SoC from Intel
-which traditionally they have been treated in different ways.
+changelog v2: also write to stdout with utf-8 encoding
 
-I think you provide a generic stack for OEMs, no?
+ tools/perf/scripts/python/flamegraph.py | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-Generally for RT tasks, Linux always required an admin to do the tuning. And to
-provide an automatic solution that fits all is not easy to happen, because what
-ultimately is important for userspace, is only known by the userspace.
+diff --git a/tools/perf/scripts/python/flamegraph.py b/tools/perf/scripts/python/flamegraph.py
+index 61f3be9add6b..65780013f745 100755
+--- a/tools/perf/scripts/python/flamegraph.py
++++ b/tools/perf/scripts/python/flamegraph.py
+@@ -17,6 +17,7 @@
+ from __future__ import print_function
+ import sys
+ import os
++import io
+ import argparse
+ import json
+ 
+@@ -81,7 +82,7 @@ class FlameGraphCLI:
+ 
+         if self.args.format == "html":
+             try:
+-                with open(self.args.template) as f:
++                with io.open(self.args.template, encoding="utf-8") as f:
+                     output_str = f.read().replace("/** @flamegraph_json **/",
+                                                   json_str)
+             except IOError as e:
+@@ -93,11 +94,12 @@ class FlameGraphCLI:
+             output_fn = self.args.output or "stacks.json"
+ 
+         if output_fn == "-":
+-            sys.stdout.write(output_str)
++            with io.open(sys.stdout.fileno(), "w", encoding="utf-8", closefd=False) as out:
++                out.write(output_str)
+         else:
+             print("dumping data to {}".format(output_fn))
+             try:
+-                with open(output_fn, "w") as out:
++                with io.open(output_fn, "w", encoding="utf-8") as out:
+                     out.write(output_str)
+             except IOError as e:
+                 print("Error writing output file: {}".format(e), file=sys.stderr)
+-- 
+2.25.4
 
-This is an interesting problem for me personally that I have been trying to
-look at in my free time. On general purpose systems, it's hard to reason about
-what's important because, as you say, you distribute something that should
-target a wide range of platforms. And sometimes the end user (like a person
-installing Ubuntu Desktop on their laptop), have no clue what a driver is even
-to pick the right tuning for all RT tasks in their system.
-
-But this problem already exists and catching up with this will need more work
-from both distros and maybe kernel. I can't see a possible situation where the
-kernel can do all the tuning without userspace providing more info anyway.
-
-The per-device weirdness you're talking about is just how the way goes in
-a world where there are many SoCs that are created to target different budgets
-and use cases.
-
-So I don't see the 2 worlds (laptops/mobile) really different, they just
-traditionally started differently where such variations in SoC didn't exist
-that much. But there are more Arm based SoCs that are targetting laptop markets
-now.. So you never know when they will be dealing with the same variations the
-mobile world sees today.
-
-> 
-> 
-> > People tend to think of the flagship SoCs which are powerful, but if you
-> > consider the low and medium end devices there's a massive spectrum over there
-> > that this range is trying to cover.
-> 
-> Yeah, perhaps you're right.  When thinking about a laptop it's almost
-> always a fairly powerful device and things could certainly be
-> different for very low end chips trying to run Linux.
-
-I think there are low end laptops in the market that barely have enough grunt
-to do work. So not all laptops are fairly powerful.
-
-> 
-> 
-> > I would expect older boards init script to be separate for newer boards init
-> > script. The OS by default boosts all RT tasks unless a platform specific script
-> > overrides that. So I can't see how an OS upgrade would affect older boards.
-> 
-> In the Chrome OS world I'm part of, the people supporting the boards
-> are not always the people adding new whizbang features.  We get new
-> versions of the OS every 6 weeks and those new versions may change the
-> way things work pretty significantly.  We ship those new versions off
-> to all boards.  Certainly they undergo testing, but there are a lot of
-> boards and if something is not tuned as well as it was when the device
-> first shipped it's likely nobody will really notice.  This is my bias
-> against needing per-board tuning.
-
-Apologies for my lack knowledge about the exact process in Chrome OS. In my
-head, I think what you do is like what Android and other distros do. Provide
-a software stack that can be used on any platform. On Android OEMs do have to
-do the tuning (with a help from SoC vendor usually). Not many laptops ship with
-Linux as their default OS, but this is an increasing trend and LWN did write
-something recently about the demand is increasing for Linux based laptops.
-
-
-I thought Chrome OS is the same, where an OEM will take your deliverables and
-do the final integration.
-
-So I agree at your level it might be hard to reason about the full spectrum.
-But I thought the OEMs that wants to ship Chrome OS will need to look at init
-scripts, drivers etc to ensure their laptop is competitive.
-
-> 
-> 
-> > This knob still allows you to disable the max boosting and use the per-task
-> > uclamp interface to boost only those tasks you care about. AFAIK this is
-> > already done in a hacky way in android devices via special vendors provisions.
-> 
-> Yeah.  I don't think I have enough skin in the game to really say one
-> way or the other what the API should be so I'll probably stay off the
-> other, bigger thread and let others decide what the best API should
-> be.  For Chrome OS I'd probably advocate just disabling the default
-> boost but even there I'd be willing to defer to the folks doing the
-> actual work.
-
-Yes I appreciate the challenges you have. I think for most users disabling is
-good enough for them as RT tasks could end up causing a lot of power to be
-wasted unnecessarily. But if someone wants to take the extra mile and squeeze
-the best compromise, they can :)
-
-Thanks
-
---
-Qais Yousef
