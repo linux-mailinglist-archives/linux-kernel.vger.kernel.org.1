@@ -2,37 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF4D200FE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44321200FE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:23:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726667AbgFSPXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:23:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50440 "EHLO mail.kernel.org"
+        id S2393166AbgFSPXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:23:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392010AbgFSPTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:19:35 -0400
+        id S2404111AbgFSPTh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:19:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 964C721582;
-        Fri, 19 Jun 2020 15:19:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 25F1B206DB;
+        Fri, 19 Jun 2020 15:19:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579974;
-        bh=YTANZPruMdfvSrcCUEMGloogkU0s++47yJ9qS7/zSro=;
+        s=default; t=1592579976;
+        bh=KT/3CO6F1Y/I0XkJN8sD4P2ewKtBu/xnwku614W1EWE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xMDv7s4Bsg54NkkWQeDmx8Eoh9Yk76teKiVI/teoJ49+gaGTjl4YNixlGZmRZLMn3
-         dz2BHefqRDkvhb4/LbmAM1+atSFiF2htTjbuekB48UFBAwlKVIwYnV8UVNgHTPJKVF
-         bXYqX0QcknPa2fxFeDzUrTgSBPNzvibqBKpIU4Bk=
+        b=oidivbZeaxFrIE7XuBneUa9b61gJnAtsthE0u/jg4/S6tcBzneT68P/Y4513lbptw
+         XQfBt8fUHs1XdV/LEDjyMAvImlUf0vV+E3NU/bqlzv2c/WnicgXfhdLwWfgylPfr7m
+         M/N1FkO9AMqRgOR+lbIEpue9N/Rdsafa6Wbdx8Nw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zijun Hu <zijuhu@codeaurora.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
+        stable@vger.kernel.org,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
+        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>, Feng Tang <feng.tang@intel.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 074/376] Bluetooth: hci_qca: Fix suspend/resume functionality failure
-Date:   Fri, 19 Jun 2020 16:29:52 +0200
-Message-Id: <20200619141713.856607857@linuxfoundation.org>
+Subject: [PATCH 5.7 075/376] spi: dw: Fix Rx-only DMA transfers
+Date:   Fri, 19 Jun 2020 16:29:53 +0200
+Message-Id: <20200619141713.903566681@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -45,53 +52,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zijun Hu <zijuhu@codeaurora.org>
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-[ Upstream commit feac90d756c03b03b83fabe83571bd88ecc96b78 ]
+[ Upstream commit 46164fde6b7890e7a3982d54549947c8394c0192 ]
 
-@dev parameter of qca_suspend()/qca_resume() represents
-serdev_device, but it is mistook for hci_dev and causes
-succedent unexpected memory access.
+Tx-only DMA transfers are working perfectly fine since in this case
+the code just ignores the Rx FIFO overflow interrupts. But it turns
+out the SPI Rx-only transfers are broken since nothing pushing any
+data to the shift registers, so the Rx FIFO is left empty and the
+SPI core subsystems just returns a timeout error. Since DW DMAC
+driver doesn't support something like cyclic write operations of
+a single byte to a device register, the only way to support the
+Rx-only SPI transfers is to fake it by using a dummy Tx-buffer.
+This is what we intend to fix in this commit by setting the
+SPI_CONTROLLER_MUST_TX flag for DMA-capable platform.
 
-Fix by taking @dev as serdev_device.
-
-Fixes: 41d5b25fed0 ("Bluetooth: hci_qca: add PM support")
-Signed-off-by: Zijun Hu <zijuhu@codeaurora.org>
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
+Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
+Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Feng Tang <feng.tang@intel.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Link: https://lore.kernel.org/r/20200529131205.31838-9-Sergey.Semin@baikalelectronics.ru
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bluetooth/hci_qca.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ drivers/spi/spi-dw.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index 439392b1c043..0b1036e5e963 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -1953,8 +1953,9 @@ static void qca_serdev_remove(struct serdev_device *serdev)
+diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
+index dbf9b8d5cebe..5725c37544f2 100644
+--- a/drivers/spi/spi-dw.c
++++ b/drivers/spi/spi-dw.c
+@@ -531,6 +531,7 @@ int dw_spi_add_host(struct device *dev, struct dw_spi *dws)
+ 			dws->dma_inited = 0;
+ 		} else {
+ 			master->can_dma = dws->dma_ops->can_dma;
++			master->flags |= SPI_CONTROLLER_MUST_TX;
+ 		}
+ 	}
  
- static int __maybe_unused qca_suspend(struct device *dev)
- {
--	struct hci_dev *hdev = container_of(dev, struct hci_dev, dev);
--	struct hci_uart *hu = hci_get_drvdata(hdev);
-+	struct serdev_device *serdev = to_serdev_device(dev);
-+	struct qca_serdev *qcadev = serdev_device_get_drvdata(serdev);
-+	struct hci_uart *hu = &qcadev->serdev_hu;
- 	struct qca_data *qca = hu->priv;
- 	unsigned long flags;
- 	int ret = 0;
-@@ -2033,8 +2034,9 @@ error:
- 
- static int __maybe_unused qca_resume(struct device *dev)
- {
--	struct hci_dev *hdev = container_of(dev, struct hci_dev, dev);
--	struct hci_uart *hu = hci_get_drvdata(hdev);
-+	struct serdev_device *serdev = to_serdev_device(dev);
-+	struct qca_serdev *qcadev = serdev_device_get_drvdata(serdev);
-+	struct hci_uart *hu = &qcadev->serdev_hu;
- 	struct qca_data *qca = hu->priv;
- 
- 	clear_bit(QCA_SUSPENDING, &qca->flags);
 -- 
 2.25.1
 
