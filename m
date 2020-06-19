@@ -2,86 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB81620052D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 11:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8895920052A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 11:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732103AbgFSJc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 05:32:29 -0400
-Received: from smtp.asem.it ([151.1.184.197]:52619 "EHLO smtp.asem.it"
+        id S1732021AbgFSJcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 05:32:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60452 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731474AbgFSJbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 05:31:17 -0400
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000329281.MSG 
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 11:31:06 +0200S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 19
- Jun 2020 11:31:03 +0200
-Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Fri, 19 Jun 2020 11:31:03 +0200
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Aditya Pakki <pakki001@umn.edu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Gustavo A . R . Silva" <gustavo@embeddedor.com>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH 1/1] net: wireless: intersil: orinoco: fix spelling mistake
-Date:   Fri, 19 Jun 2020 11:31:02 +0200
-Message-ID: <20200619093102.29487-1-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.17.1
+        id S1731672AbgFSJbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 05:31:20 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id A7D51B020;
+        Fri, 19 Jun 2020 09:31:15 +0000 (UTC)
+Date:   Fri, 19 Jun 2020 11:31:14 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        linux-s390@vger.kernel.org
+Subject: Re: [v3 PATCH 2/2] printk: Make linux/printk.h self-contained
+Message-ID: <20200619093114.GJ3617@alley>
+References: <20200617071524.GA3055@gondor.apana.org.au>
+ <E1jlSK1-0003hL-J3@fornost.hmeau.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A090208.5EEC85D9.0007,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E1jlSK1-0003hL-J3@fornost.hmeau.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix typo: "EZUSB_REQUEST_TRIGER" --> "EZUSB_REQUEST_TRIGGER"
+On Wed 2020-06-17 17:17:21, Herbert Xu wrote:
+> As it stands if you include printk.h by itself it will fail to
+> compile because it requires definitions from ratelimit.h.  However,
+> simply including ratelimit.h from printk.h does not work due to
+> inclusion loops involving sched.h and kernel.h.
+> 
+> This patch solves this by moving bits from ratelimit.h into a new
+> header file which can then be included by printk.h without any
+> worries about header loops.
+> 
+> The build bot then revealed some intriguing failures arising out
+> of this patch.  On s390 there is an inclusion loop with asm/bug.h
+> and linux/kernel.h that triggers a compile failure, because kernel.h
+> will cause asm-generic/bug.h to be included before s390's own
+> asm/bug.h has finished processing.  This has been fixed by not
+> including kernel.h in arch/s390/include/asm/bug.h.
+> 
+> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+> Acked-by: Petr Mladek <pmladek@suse.com>
+> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
----
- drivers/net/wireless/intersil/orinoco/orinoco_usb.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+JFYI, the patch has been committed into printk/linux.git,
+branch for-5.9.
 
-diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_usb.c b/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
-index 651c676b5506..11fa38fedd87 100644
---- a/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
-+++ b/drivers/net/wireless/intersil/orinoco/orinoco_usb.c
-@@ -158,7 +158,7 @@ MODULE_FIRMWARE("orinoco_ezusb_fw");
- 
- 
- #define EZUSB_REQUEST_FW_TRANS		0xA0
--#define EZUSB_REQUEST_TRIGER		0xAA
-+#define EZUSB_REQUEST_TRIGGER		0xAA
- #define EZUSB_REQUEST_TRIG_AC		0xAC
- #define EZUSB_CPUCS_REG			0x7F92
- 
-@@ -1318,12 +1318,12 @@ static int ezusb_hard_reset(struct orinoco_private *priv)
- 	netdev_dbg(upriv->dev, "sending control message\n");
- 	retval = usb_control_msg(upriv->udev,
- 				 usb_sndctrlpipe(upriv->udev, 0),
--				 EZUSB_REQUEST_TRIGER,
-+				 EZUSB_REQUEST_TRIGGER,
- 				 USB_TYPE_VENDOR | USB_RECIP_DEVICE |
- 				 USB_DIR_OUT, 0x0, 0x0, NULL, 0,
- 				 DEF_TIMEOUT);
- 	if (retval < 0) {
--		err("EZUSB_REQUEST_TRIGER failed retval %d", retval);
-+		err("EZUSB_REQUEST_TRIGGER failed retval %d", retval);
- 		return retval;
- 	}
- #if 0
--- 
-2.17.1
-
+Best Regards,
+Petr
