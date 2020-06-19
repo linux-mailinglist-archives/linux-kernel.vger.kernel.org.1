@@ -2,101 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A162007C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 13:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E9F2007F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 13:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731480AbgFSL3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 07:29:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29626 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731147AbgFSL3o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 07:29:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592566183;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b3G5Sg9UDrE3ygdkaaLbR8lITkBl+GdILcq1UrtCIMM=;
-        b=VMWqPkzU4iEvuSBgyoVny3Ifr52RLGvEkYWKEbE1R+Xj0hxNCHCGUlbgFtTyOEV82jXV0g
-        RFJm0R2F4dYh0C04q8RzgAgrnmCC/hBOlzGNOeJvaa5q4dPS6BI4TZ82OX+Aw/lm1yK1mD
-        ow4fmqLp8rqKamLVj0+zgdJHfepyz+I=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-310-H-wP2kzFN4C7X9_nm-v1gg-1; Fri, 19 Jun 2020 07:29:41 -0400
-X-MC-Unique: H-wP2kzFN4C7X9_nm-v1gg-1
-Received: by mail-ej1-f72.google.com with SMTP id f27so3844998ejt.17
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 04:29:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=b3G5Sg9UDrE3ygdkaaLbR8lITkBl+GdILcq1UrtCIMM=;
-        b=MlHczVF1cYSKyWcOgam53RjZSeDR3vfFBWiuTNLilLAxTsvNnIHY3bJEV2byODSQSn
-         ORsS25xChBQIFwQg2Q8nU9jJsaDsNsP568AInx0CkZa+bVoFFLgV2rHsGehjSH7d8eMj
-         /rIH/dwAhteCa8hja5e2KNWY1j+ZdU09gUspq6/M5N5deeDFN9fAP2tQZPUUJtTqlo85
-         5cDuvYXvQZsNhFhkTjFGGss6ZyiXdJSMXG6zd7K69gd6TR20BO4acO5dG78MH12ir+ky
-         mFyKFmc3/o84EBB+cHkRLCs3WiR1pEzxr0R3w9Op5vjLPDtFXuTvSj73L5kQrDH5fP5X
-         LGBA==
-X-Gm-Message-State: AOAM531tdg6GNpDiJdir74wvr+Y7pwzO12sBqsckeMGaZXYUw4JM3WwO
-        fZ8yzTE/6N3oqq86zchJMY9YFSj8W1jrPPP8W8DtPWUO7zQjZazxTCcxMuuO71+acDHjjPUbQE/
-        dqjhYucSWEgqAnHA3AbabrMGJ
-X-Received: by 2002:a17:906:cc85:: with SMTP id oq5mr3120807ejb.142.1592566180117;
-        Fri, 19 Jun 2020 04:29:40 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzKOezBmCA21RB4bkpAUbx0Esf7jxxGwzvG3u6+Ourw/aIp/mFzQOIEXQr09AR9vOGl8T5Zqg==
-X-Received: by 2002:a17:906:cc85:: with SMTP id oq5mr3120784ejb.142.1592566179899;
-        Fri, 19 Jun 2020 04:29:39 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id q5sm4447074edr.21.2020.06.19.04.29.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 04:29:39 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     like.xu@intel.com, kvm@vger.kernel.org
-Cc:     Jim Mattson <jmattson@google.com>,
-        Maxime Coquelin <maxime.coquelin@redhat.com>,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH RFC] Revert "KVM: VMX: Micro-optimize vmexit time when not exposing PMU"
-In-Reply-To: <2c7d6849-7fac-b9f6-7bcb-5509863564f3@intel.com>
-References: <20200619094046.654019-1-vkuznets@redhat.com> <2c7d6849-7fac-b9f6-7bcb-5509863564f3@intel.com>
-Date:   Fri, 19 Jun 2020 13:29:38 +0200
-Message-ID: <87366rguot.fsf@vitty.brq.redhat.com>
+        id S1731438AbgFSLgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 07:36:38 -0400
+Received: from elvis.franken.de ([193.175.24.41]:37513 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727814AbgFSLfR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 07:35:17 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jmFIK-0007F9-00; Fri, 19 Jun 2020 13:34:52 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id E6491C06E7; Fri, 19 Jun 2020 13:05:24 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 13:05:24 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, robh+dt@kernel.org,
+        paul@crapouillou.net, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com
+Subject: Re: [PATCH v2 1/1] dt-bindings: MIPS: Document Ingenic SoCs binding.
+Message-ID: <20200619110524.GA9391@alpha.franken.de>
+References: <20200602183354.39707-1-zhouyanjie@wanyeetech.com>
+ <20200602183354.39707-2-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200602183354.39707-2-zhouyanjie@wanyeetech.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Xu, Like" <like.xu@intel.com> writes:
+On Wed, Jun 03, 2020 at 02:33:54AM +0800, 周琰杰 (Zhou Yanjie) wrote:
+> Document the available properties for the SoC root node and the
+> CPU nodes of the devicetree for the Ingenic XBurst SoCs.
+> 
+> Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
+> Tested-by: Paul Boddie <paul@boddie.org.uk>
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> ---
+> 
+> Notes:
+>     v1->v2:
+>     1.Remove unnecessary "items".
+>     2.Add "clocks" as suggested by Paul Cercueil.
+> 
+>  .../bindings/mips/ingenic/ingenic,cpu.yaml         | 67 ++++++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mips/ingenic/ingenic,cpu.yaml
 
-> On 2020/6/19 17:40, Vitaly Kuznetsov wrote:
->> Guest crashes are observed on a Cascade Lake system when 'perf top' is
->> launched on the host, e.g.
-> Interesting, is it specific to Cascade Lake?
->
+applied to mips-next.
 
-Actually no, just reproduced this on a Haswell system. If you run the
-guest with "-cpu host,-pmu" and do 'perf top' (on the host) the guest
-crashes immediately.
-
-> Would you mind sharing the output of
-> "cpuid -r -l 1 -1" and "cat /proc/cpuinfo| grep microcode | uniq" with us ?
-
-Sure (this is probably unrelated because the issue also reproduces on
-Haswell but still):
-
-# cpuid -r -l 1 -1
-
-CPU:
-   0x00000001 0x00: eax=0x00050657 ebx=0x03200800 ecx=0x7ffefbff edx=0xbfebfbff
-
-# cat /proc/cpuinfo| grep microcode | uniq
-microcode	: 0x500002c
-
-This is "Intel(R) Xeon(R) Gold 5218 CPU @ 2.30GHz"
+Thomas.
 
 -- 
-Vitaly
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
