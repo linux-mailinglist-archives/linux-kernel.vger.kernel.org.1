@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A02F200FE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABB0200FE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:23:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393119AbgFSPXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:23:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49462 "EHLO mail.kernel.org"
+        id S2393152AbgFSPXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:23:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389683AbgFSPTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:19:05 -0400
+        id S2392406AbgFSPTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:19:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C8BE218AC;
-        Fri, 19 Jun 2020 15:19:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DC7F206DB;
+        Fri, 19 Jun 2020 15:19:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579944;
-        bh=1S5Q9TpFA1WJBMNsZ9T26wr84UeMbZz/aKxvsdAw2F8=;
+        s=default; t=1592579971;
+        bh=PRuINvBRZW2mZwEv6yL9odErB1I7qLxkutEUY51xAFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gZDxD//+b+VQW/H2E5MQcf4g5IlK7sNA6JwuzyrC8tiN03A0UwEBDBMZui00ToiTz
-         9r5wLwrQY4J4jcHW5fE77hOLtJKIN9Wyanmv8KSB1S8OHBszXV9F/z04zR7VeDP+Kh
-         v2ijLQ09jsj4G0dUOfHTsuznj9XY+IrzZAG5Izoc=
+        b=BosjqeSf1QikeWpeKes9xGoD5Ws0c3krhw6JKdIU+9RYMi//ZKEqSm/J7p/rYIkHY
+         RXSu20iDzvVxB9/ckuQL1i7i9oSJ4jjUIeL5z+UVHpqiIUxv07Mimi12i7mJxYCIU5
+         Jb+PuUCj67n3yFcT1s7vMBS8KCGUJEAhmAcdBHTo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 064/376] spi: mux: repair mux usage
-Date:   Fri, 19 Jun 2020 16:29:42 +0200
-Message-Id: <20200619141713.384191146@linuxfoundation.org>
+Subject: [PATCH 5.7 073/376] Bluetooth: btmtkuart: Improve exception handling in btmtuart_probe()
+Date:   Fri, 19 Jun 2020 16:29:51 +0200
+Message-Id: <20200619141713.807949518@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -44,56 +44,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Rosin <peda@axentia.se>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit a2b02e4623fb127fa65a13e4ac5aa56e4ae16291 ]
+[ Upstream commit 4803c54ca24923a30664bea2a7772db6e7303c51 ]
 
-It is not valid to cache/short out selection of the mux.
+Calls of the functions clk_disable_unprepare() and hci_free_dev()
+were missing for the exception handling.
+Thus add the missed function calls together with corresponding
+jump targets.
 
-mux_control_select() only locks the mux until mux_control_deselect()
-is called. mux_control_deselect() may put the mux in some low power
-state or some other user of the mux might select it for other purposes.
-These things are probably not happening in the original setting where
-this driver was developed, but it is said to be a generic SPI mux.
-
-Also, the mux framework will short out the actual low level muxing
-operation when/if that is possible.
-
-Fixes: e9e40543ad5b ("spi: Add generic SPI multiplexer")
-Signed-off-by: Peter Rosin <peda@axentia.se>
-Link: https://lore.kernel.org/r/20200525104352.26807-1-peda@axentia.se
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 055825614c6b ("Bluetooth: btmtkuart: add an implementation for clock osc property")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-mux.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/bluetooth/btmtkuart.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/spi/spi-mux.c b/drivers/spi/spi-mux.c
-index 4f94c9127fc1..cc9ef371db14 100644
---- a/drivers/spi/spi-mux.c
-+++ b/drivers/spi/spi-mux.c
-@@ -51,6 +51,10 @@ static int spi_mux_select(struct spi_device *spi)
- 	struct spi_mux_priv *priv = spi_controller_get_devdata(spi->controller);
- 	int ret;
+diff --git a/drivers/bluetooth/btmtkuart.c b/drivers/bluetooth/btmtkuart.c
+index e11169ad8247..8a81fbca5c9d 100644
+--- a/drivers/bluetooth/btmtkuart.c
++++ b/drivers/bluetooth/btmtkuart.c
+@@ -1015,7 +1015,7 @@ static int btmtkuart_probe(struct serdev_device *serdev)
+ 	if (btmtkuart_is_standalone(bdev)) {
+ 		err = clk_prepare_enable(bdev->osc);
+ 		if (err < 0)
+-			return err;
++			goto err_hci_free_dev;
  
-+	ret = mux_control_select(priv->mux, spi->chip_select);
-+	if (ret)
-+		return ret;
-+
- 	if (priv->current_cs == spi->chip_select)
- 		return 0;
+ 		if (bdev->boot) {
+ 			gpiod_set_value_cansleep(bdev->boot, 1);
+@@ -1028,10 +1028,8 @@ static int btmtkuart_probe(struct serdev_device *serdev)
  
-@@ -62,10 +66,6 @@ static int spi_mux_select(struct spi_device *spi)
- 	priv->spi->mode = spi->mode;
- 	priv->spi->bits_per_word = spi->bits_per_word;
+ 		/* Power on */
+ 		err = regulator_enable(bdev->vcc);
+-		if (err < 0) {
+-			clk_disable_unprepare(bdev->osc);
+-			return err;
+-		}
++		if (err < 0)
++			goto err_clk_disable_unprepare;
  
--	ret = mux_control_select(priv->mux, spi->chip_select);
--	if (ret)
--		return ret;
--
- 	priv->current_cs = spi->chip_select;
+ 		/* Reset if the reset-gpios is available otherwise the board
+ 		 * -level design should be guaranteed.
+@@ -1063,7 +1061,6 @@ static int btmtkuart_probe(struct serdev_device *serdev)
+ 	err = hci_register_dev(hdev);
+ 	if (err < 0) {
+ 		dev_err(&serdev->dev, "Can't register HCI device\n");
+-		hci_free_dev(hdev);
+ 		goto err_regulator_disable;
+ 	}
  
- 	return 0;
+@@ -1072,6 +1069,11 @@ static int btmtkuart_probe(struct serdev_device *serdev)
+ err_regulator_disable:
+ 	if (btmtkuart_is_standalone(bdev))
+ 		regulator_disable(bdev->vcc);
++err_clk_disable_unprepare:
++	if (btmtkuart_is_standalone(bdev))
++		clk_disable_unprepare(bdev->osc);
++err_hci_free_dev:
++	hci_free_dev(hdev);
+ 
+ 	return err;
+ }
 -- 
 2.25.1
 
