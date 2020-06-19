@@ -2,64 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B38A20029B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 09:19:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 736522002BB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 09:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730300AbgFSHTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 03:19:00 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6289 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729080AbgFSHS7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 03:18:59 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 264ADA909F44418C47F9;
-        Fri, 19 Jun 2020 15:18:56 +0800 (CST)
-Received: from localhost (10.175.101.6) by DGGEMS410-HUB.china.huawei.com
- (10.3.19.210) with Microsoft SMTP Server id 14.3.487.0; Fri, 19 Jun 2020
- 15:18:47 +0800
-From:   Weilong Chen <chenweilong@huawei.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>,
-        <virtualization@lists.linux-foundation.org>, <lizefan@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH] virtio-mem: Fix build error due to improper use 'select'
-Date:   Fri, 19 Jun 2020 16:03:33 +0800
-Message-ID: <20200619080333.194753-1-chenweilong@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730701AbgFSHai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 03:30:38 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:7271 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729740AbgFSHah (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 03:30:37 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eec69380000>; Fri, 19 Jun 2020 00:28:56 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Fri, 19 Jun 2020 00:30:37 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Fri, 19 Jun 2020 00:30:37 -0700
+Received: from [10.2.62.75] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 19 Jun
+ 2020 07:30:37 +0000
+Subject: Re: [RFC PATCH] xen/privcmd: Convert get_user_pages*() to
+ pin_user_pages*()
+To:     Souptick Joarder <jrdr.linux@gmail.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>
+CC:     Juergen Gross <jgross@suse.com>, <sstabellini@kernel.org>,
+        <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>,
+        <paul@xen.org>
+References: <1592363698-4266-1-git-send-email-jrdr.linux@gmail.com>
+ <d9e8ad0f-f2aa-eea4-5bc7-a802c626ace6@oracle.com>
+ <CAFqt6zbJD+k9xkV9Se0nL2qKfnea3mRrWJ4gzPmPJBquYk4M+w@mail.gmail.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <fe2a1d23-7abd-86a9-4aec-2c14fb11cdea@nvidia.com>
+Date:   Fri, 19 Jun 2020 00:30:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.101.6]
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAFqt6zbJD+k9xkV9Se0nL2qKfnea3mRrWJ4gzPmPJBquYk4M+w@mail.gmail.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1592551736; bh=Fe6+LEcBGqkmcut7uJjH2j1++zsWFrmLLtaEG5FehVs=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=PO9cecDSmGNiqNB9v5SItJ0pP9uHG0j0hqx1mly0Bozfnb61r+QlkigFmHiTrjnVA
+         50uX8ugVzjFrQw9jzH7jZsAMEl15fvx3mdu/9Gcq7OD00kQJskp6KzIJUGz6hc8OL4
+         KMekN5uR3E7Z+Wc/XpK5k89x0TIpuvw7DQYHPhudM544WumvUaJGuay2QtZFqcmFd5
+         DsfAD52xAevCZE4moN72e/Vm5ogJR7OQldT//bYwFB+jBy/UHz24CJjD2BdN3Uj6/l
+         9Z/5BV/dhjoeF3QGmiYjbHENP6qry3q39uhEjU5fcIBe5nxaOlx4cz3UlErPqcrUsb
+         ZWF0KVgCIk6xg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As noted in:
-https://www.kernel.org/doc/Documentation/kbuild/kconfig-language.txt
-"select should be used with care. select will force a symbol to a
-value without visiting the dependencies."
-Config VIRTIO_MEM should not select CONTIG_ALLOC directly.
-Otherwise it will cause an error:
-https://bugzilla.kernel.org/show_bug.cgi?id=208245
+On 2020-06-18 20:12, Souptick Joarder wrote:
+> On Wed, Jun 17, 2020 at 11:29 PM Boris Ostrovsky
+> <boris.ostrovsky@oracle.com> wrote:
+>>
+>> On 6/16/20 11:14 PM, Souptick Joarder wrote:
+>>> In 2019, we introduced pin_user_pages*() and now we are converting
+>>> get_user_pages*() to the new API as appropriate. [1] & [2] could
+>>> be referred for more information.
 
-Signed-off-by: Weilong Chen <chenweilong@huawei.com>
----
- drivers/virtio/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/virtio/Kconfig b/drivers/virtio/Kconfig
-index 5809e5f5b157..5c92e4a50882 100644
---- a/drivers/virtio/Kconfig
-+++ b/drivers/virtio/Kconfig
-@@ -85,7 +85,7 @@ config VIRTIO_MEM
- 	depends on VIRTIO
- 	depends on MEMORY_HOTPLUG_SPARSE
- 	depends on MEMORY_HOTREMOVE
--	select CONTIG_ALLOC
-+	depends on CONTIG_ALLOC
- 	help
- 	 This driver provides access to virtio-mem paravirtualized memory
- 	 devices, allowing to hotplug and hotunplug memory.
+Ideally, the commit description should say which case, in
+pin_user_pages.rst, that this is.
+
+
+>>>
+>>> [1] Documentation/core-api/pin_user_pages.rst
+>>>
+>>> [2] "Explicit pinning of user-space pages":
+>>>          https://lwn.net/Articles/807108/
+>>>
+>>> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+>>> Cc: John Hubbard <jhubbard@nvidia.com>
+>>> ---
+>>> Hi,
+>>>
+>>> I have compile tested this patch but unable to run-time test,
+>>> so any testing help is much appriciated.
+>>>
+>>> Also have a question, why the existing code is not marking the
+>>> pages dirty (since it did FOLL_WRITE) ?
+>>
+>>
+>> Indeed, seems to me it should. Paul?
+
+Definitely good to get an answer from an expert in this code, but
+meanwhile, it's reasonable to just mark them dirty. Below...
+
+>>
+>>
+>>>
+>>>   drivers/xen/privcmd.c | 7 ++-----
+>>>   1 file changed, 2 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
+>>> index a250d11..543739e 100644
+>>> --- a/drivers/xen/privcmd.c
+>>> +++ b/drivers/xen/privcmd.c
+>>> @@ -594,7 +594,7 @@ static int lock_pages(
+>>>                if (requested > nr_pages)
+>>>                        return -ENOSPC;
+>>>
+>>> -             pinned = get_user_pages_fast(
+>>> +             pinned = pin_user_pages_fast(
+>>>                        (unsigned long) kbufs[i].uptr,
+>>>                        requested, FOLL_WRITE, pages);
+>>>                if (pinned < 0)
+>>> @@ -614,10 +614,7 @@ static void unlock_pages(struct page *pages[], unsigned int nr_pages)
+>>>        if (!pages)
+>>>                return;
+>>>
+>>> -     for (i = 0; i < nr_pages; i++) {
+>>> -             if (pages[i])
+>>> -                     put_page(pages[i]);
+>>> -     }
+>>> +     unpin_user_pages(pages, nr_pages);
+
+
+...so just use unpin_user_pages_dirty_lock() here, I think.
+
+
+>>
+>>
+>> Why are you no longer checking for valid pages?
+> 
+> My understanding is, in case of lock_pages() end up returning partial
+> mapped pages,
+> we should pass no. of partial mapped pages to unlock_pages(), not nr_pages.
+> This will avoid checking extra check to validate the pages[i].
+> 
+> and if lock_pages() returns 0 in success, anyway we have all the pages[i] valid.
+> I will try to correct it in v2.
+> 
+> But I agree, there is no harm to check for pages[i] and I believe,
+
+
+Generally, it *is* harmful to do unnecessary checks, in most code, but especially
+in most kernel code. If you can convince yourself that the check for null pages
+is redundant here, then please let's remove that check. The code becomes then
+becomes shorter, simpler, and faster.
+
+
+> unpin_user_pages()
+> is the right place to do so.
+> 
+> John any thought ?
+
+
+So far I haven't seen any cases to justify changing the implementation of
+unpin_user_pages().
+
+
+thanks,
 -- 
-2.17.1
-
+John Hubbard
+NVIDIA
