@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 462B1200DFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0381200FC5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:23:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391060AbgFSPDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:03:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60320 "EHLO mail.kernel.org"
+        id S2392916AbgFSPVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:21:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391015AbgFSPDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:03:32 -0400
+        id S2392215AbgFSPQL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:16:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0BEF21974;
-        Fri, 19 Jun 2020 15:03:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3F7B2080C;
+        Fri, 19 Jun 2020 15:16:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579012;
-        bh=4JFtDNHFFW5pg3sH6TQO9VaAPDJzQon9y+GOPrV4sBw=;
+        s=default; t=1592579770;
+        bh=jrnjozBuVnxgYvn8vVL4e2ymqxk65v2C3vsPq0/5cSE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BXVvwBm15v3VDqLgKG41HNVVTCDEPT2G+lrrmthtdT91gVs1Y43AF9/wXTXEVnta7
-         p1x87M3TOO1OZtndRvX/uuTGJ1r08aY7anlZ0uoW1jM9wbgZxqOp3jDuFayXrQPVyN
-         srVyn+FLV8q0fpLdhFpv/UzC5jZzlnszK66J3KSo=
+        b=0jY6yM97/q3+z9j/vUGCD7MuRDITudoLnDROgmPatAyYy/1uTMMA9F02nHrP0kPbq
+         IBlOJ3Vug1OCUJldV/LFsw3Hoh5GDs5EJ/A8ALl1dIwJTP7ePq0LqgME+SpYl7F+Qp
+         w7KyGqxOY8TCSN+PtKn3b11GMaGw5knKagfZs+0w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anders Roxell <anders.roxell@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 4.19 242/267] power: vexpress: add suppress_bind_attrs to true
-Date:   Fri, 19 Jun 2020 16:33:47 +0200
-Message-Id: <20200619141700.304836871@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>
+Subject: [PATCH 5.4 219/261] dm crypt: avoid truncating the logical block size
+Date:   Fri, 19 Jun 2020 16:33:50 +0200
+Message-Id: <20200619141700.370947849@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anders Roxell <anders.roxell@linaro.org>
+From: Eric Biggers <ebiggers@google.com>
 
-commit 73174acc9c75960af2daa7dcbdb9781fc0d135cb upstream.
+commit 64611a15ca9da91ff532982429c44686f4593b5f upstream.
 
-Make sure that the POWER_RESET_VEXPRESS driver won't have bind/unbind
-attributes available via the sysfs, so lets be explicit here and use
-".suppress_bind_attrs = true" to prevent userspace from doing something
-silly.
+queue_limits::logical_block_size got changed from unsigned short to
+unsigned int, but it was forgotten to update crypt_io_hints() to use the
+new type.  Fix it.
 
-Link: https://lore.kernel.org/r/20200527112608.3886105-2-anders.roxell@linaro.org
+Fixes: ad6bf88a6c19 ("block: fix an integer overflow in logical block size")
 Cc: stable@vger.kernel.org
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Reviewed-by: Mikulas Patocka <mpatocka@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/power/reset/vexpress-poweroff.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/md/dm-crypt.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/power/reset/vexpress-poweroff.c
-+++ b/drivers/power/reset/vexpress-poweroff.c
-@@ -150,6 +150,7 @@ static struct platform_driver vexpress_r
- 	.driver = {
- 		.name = "vexpress-reset",
- 		.of_match_table = vexpress_reset_of_match,
-+		.suppress_bind_attrs = true,
- 	},
- };
+--- a/drivers/md/dm-crypt.c
++++ b/drivers/md/dm-crypt.c
+@@ -2957,7 +2957,7 @@ static void crypt_io_hints(struct dm_tar
+ 	limits->max_segment_size = PAGE_SIZE;
  
+ 	limits->logical_block_size =
+-		max_t(unsigned short, limits->logical_block_size, cc->sector_size);
++		max_t(unsigned, limits->logical_block_size, cc->sector_size);
+ 	limits->physical_block_size =
+ 		max_t(unsigned, limits->physical_block_size, cc->sector_size);
+ 	limits->io_min = max_t(unsigned, limits->io_min, cc->sector_size);
 
 
