@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5926E200D9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794BD200EA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390504AbgFSO7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:59:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55276 "EHLO mail.kernel.org"
+        id S2391991AbgFSPJ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:09:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388538AbgFSO7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:59:12 -0400
+        id S2391973AbgFSPJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:09:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2739021941;
-        Fri, 19 Jun 2020 14:59:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEC8D21941;
+        Fri, 19 Jun 2020 15:09:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578751;
-        bh=pH+IlbLgRfyU1pQmglcHZtvpVaCSX5GzX1nt6hbOdp0=;
+        s=default; t=1592579390;
+        bh=8DZyfMBj+GQYqoHgKvdO7+JnquptPSQNnrzE88QIKoc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tccfUuxgsofiLmv2j3ZyD5bY5ejRmIwgBvQx0aenT3DbBXQHwxTzzh0UE4V3RRW/+
-         dGHMox7S500f3C/1zhNknUDLG75UIT200YB64iMtj64g5i808PmXvJ9Y6uba96UTQ3
-         11IPmEiJr5MEYiFbTusMWP0C5qjcrJ6AIvRoaEtM=
+        b=NibE0LNvBhdulqksjjuITGrNtcTiBgJ2jEPOP1+c6GYHyuc8FHxiX94sZh2dP8hTH
+         GA5mttl5ddSSvZj9I6hXWIh0Qzu0YefXmiG4nq/IGw8JIU0ePT71XM535SOavwc0eB
+         xi1sywGDUJ8dj+zz3XHfdwnWQM1kgsDcrweNtSlM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 142/267] xfs: clean up the error handling in xfs_swap_extents
-Date:   Fri, 19 Jun 2020 16:32:07 +0200
-Message-Id: <20200619141655.639066679@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 117/261] rtlwifi: Fix a double free in _rtl_usb_tx_urb_setup()
+Date:   Fri, 19 Jun 2020 16:32:08 +0200
+Message-Id: <20200619141655.480886333@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,34 +44,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 8bc3b5e4b70d28f8edcafc3c9e4de515998eea9e ]
+[ Upstream commit beb12813bc75d4a23de43b85ad1c7cb28d27631e ]
 
-Make sure we release resources properly if we cannot clean out the COW
-extents in preparation for an extent swap.
+Seven years ago we tried to fix a leak but actually introduced a double
+free instead.  It was an understandable mistake because the code was a
+bit confusing and the free was done in the wrong place.  The "skb"
+pointer is freed in both _rtl_usb_tx_urb_setup() and _rtl_usb_transmit().
+The free belongs _rtl_usb_transmit() instead of _rtl_usb_tx_urb_setup()
+and I've cleaned the code up a bit to hopefully make it more clear.
 
-Fixes: 96987eea537d6c ("xfs: cancel COW blocks before swapext")
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Fixes: 36ef0b473fbf ("rtlwifi: usb: add missing freeing of skbuff")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200513093951.GD347693@mwanda
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_bmap_util.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/realtek/rtlwifi/usb.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/fs/xfs/xfs_bmap_util.c b/fs/xfs/xfs_bmap_util.c
-index e638740f1681..3e1dd66bd676 100644
---- a/fs/xfs/xfs_bmap_util.c
-+++ b/fs/xfs/xfs_bmap_util.c
-@@ -1823,7 +1823,7 @@ xfs_swap_extents(
- 	if (xfs_inode_has_cow_data(tip)) {
- 		error = xfs_reflink_cancel_cow_range(tip, 0, NULLFILEOFF, true);
- 		if (error)
--			return error;
-+			goto out_unlock;
- 	}
+diff --git a/drivers/net/wireless/realtek/rtlwifi/usb.c b/drivers/net/wireless/realtek/rtlwifi/usb.c
+index 348b0072cdd6..c66c6dc00378 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/usb.c
++++ b/drivers/net/wireless/realtek/rtlwifi/usb.c
+@@ -881,10 +881,8 @@ static struct urb *_rtl_usb_tx_urb_setup(struct ieee80211_hw *hw,
  
- 	/*
+ 	WARN_ON(NULL == skb);
+ 	_urb = usb_alloc_urb(0, GFP_ATOMIC);
+-	if (!_urb) {
+-		kfree_skb(skb);
++	if (!_urb)
+ 		return NULL;
+-	}
+ 	_rtl_install_trx_info(rtlusb, skb, ep_num);
+ 	usb_fill_bulk_urb(_urb, rtlusb->udev, usb_sndbulkpipe(rtlusb->udev,
+ 			  ep_num), skb->data, skb->len, _rtl_tx_complete, skb);
+@@ -898,7 +896,6 @@ static void _rtl_usb_transmit(struct ieee80211_hw *hw, struct sk_buff *skb,
+ 	struct rtl_usb *rtlusb = rtl_usbdev(rtl_usbpriv(hw));
+ 	u32 ep_num;
+ 	struct urb *_urb = NULL;
+-	struct sk_buff *_skb = NULL;
+ 
+ 	WARN_ON(NULL == rtlusb->usb_tx_aggregate_hdl);
+ 	if (unlikely(IS_USB_STOP(rtlusb))) {
+@@ -907,8 +904,7 @@ static void _rtl_usb_transmit(struct ieee80211_hw *hw, struct sk_buff *skb,
+ 		return;
+ 	}
+ 	ep_num = rtlusb->ep_map.ep_mapping[qnum];
+-	_skb = skb;
+-	_urb = _rtl_usb_tx_urb_setup(hw, _skb, ep_num);
++	_urb = _rtl_usb_tx_urb_setup(hw, skb, ep_num);
+ 	if (unlikely(!_urb)) {
+ 		pr_err("Can't allocate urb. Drop skb!\n");
+ 		kfree_skb(skb);
 -- 
 2.25.1
 
