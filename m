@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01EC2018DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CB92018D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388468AbgFSQxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:53:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53834 "EHLO mail.kernel.org"
+        id S2387953AbgFSQx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:53:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387623AbgFSOhC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:37:02 -0400
+        id S2387697AbgFSOhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:37:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C32F021582;
-        Fri, 19 Jun 2020 14:37:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E344E20CC7;
+        Fri, 19 Jun 2020 14:37:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577422;
-        bh=IWwugB8J0T2HwlfDvqTqvYRdo+b31C/P+vvrxhblFWk=;
+        s=default; t=1592577440;
+        bh=m7itLL+suMvKrE4Ih6Lu806CDHzZ1b+4jWpo97SiUQc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fU4DzqB0vLuabe/Qz8mZb5nG3pfXSfkH7p1sT5QpB1mxBSfM8Dq+L7Rky5ZPprnmN
-         etQJ8ypvIkDg8ReVYRRtWsXZidCiSdStMMMHMnHc0x4AZUe5uZKgWkJMd37nPZSzF4
-         InnnjYVP5aQibMq91B4c3hGRNtyrAW+3CpsuJYr0=
+        b=bOvhpDt31vl6RUeC66FrKbdk04BAfR1vseeSBAnulzAdSa+QkEFBNKR/qMDCtwqZI
+         hF8BR/4Iv05gHsWe0M2+xzO5RUQQjKtAcqebc9AaZzylUy+mSsIvN6L2dBZveiRMo3
+         yB82StbhvYWzmzIGnj90Re+tUIXPqKi35GTE9K5g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Xiaolong Huang <butterflyhuangxx@gmail.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Ben Hutchings <ben@decadent.org.uk>
-Subject: [PATCH 4.4 045/101] can: kvaser_usb: kvaser_usb_leaf: Fix some info-leaks to USB devices
-Date:   Fri, 19 Jun 2020 16:32:34 +0200
-Message-Id: <20200619141616.459095266@linuxfoundation.org>
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 051/101] btrfs: do not ignore error from btrfs_next_leaf() when inserting checksums
+Date:   Fri, 19 Jun 2020 16:32:40 +0200
+Message-Id: <20200619141616.735284582@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
 References: <20200619141614.001544111@linuxfoundation.org>
@@ -45,54 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaolong Huang <butterflyhuangxx@gmail.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-commit da2311a6385c3b499da2ed5d9be59ce331fa93e9 upstream.
+[ Upstream commit 7e4a3f7ed5d54926ec671bbb13e171cfe179cc50 ]
 
-Uninitialized Kernel memory can leak to USB devices.
+We are currently treating any non-zero return value from btrfs_next_leaf()
+the same way, by going to the code that inserts a new checksum item in the
+tree. However if btrfs_next_leaf() returns an error (a value < 0), we
+should just stop and return the error, and not behave as if nothing has
+happened, since in that case we do not have a way to know if there is a
+next leaf or we are currently at the last leaf already.
 
-Fix this by using kzalloc() instead of kmalloc().
+So fix that by returning the error from btrfs_next_leaf().
 
-Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
-Fixes: 7259124eac7d ("can: kvaser_usb: Split driver into kvaser_usb_core.c and kvaser_usb_leaf.c")
-Cc: linux-stable <stable@vger.kernel.org> # >= v4.19
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-[bwh: Backported to 4.9: adjust filename, context]
-Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/usb/kvaser_usb.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/btrfs/file-item.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
---- a/drivers/net/can/usb/kvaser_usb.c
-+++ b/drivers/net/can/usb/kvaser_usb.c
-@@ -787,7 +787,7 @@ static int kvaser_usb_simple_msg_async(s
- 		return -ENOMEM;
- 	}
- 
--	buf = kmalloc(sizeof(struct kvaser_msg), GFP_ATOMIC);
-+	buf = kzalloc(sizeof(struct kvaser_msg), GFP_ATOMIC);
- 	if (!buf) {
- 		usb_free_urb(urb);
- 		return -ENOMEM;
-@@ -1457,7 +1457,7 @@ static int kvaser_usb_set_opt_mode(const
- 	struct kvaser_msg *msg;
- 	int rc;
- 
--	msg = kmalloc(sizeof(*msg), GFP_KERNEL);
-+	msg = kzalloc(sizeof(*msg), GFP_KERNEL);
- 	if (!msg)
- 		return -ENOMEM;
- 
-@@ -1590,7 +1590,7 @@ static int kvaser_usb_flush_queue(struct
- 	struct kvaser_msg *msg;
- 	int rc;
- 
--	msg = kmalloc(sizeof(*msg), GFP_KERNEL);
-+	msg = kzalloc(sizeof(*msg), GFP_KERNEL);
- 	if (!msg)
- 		return -ENOMEM;
- 
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 58ece6558430..fb5c97ea670f 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -742,10 +742,12 @@ again:
+ 		nritems = btrfs_header_nritems(path->nodes[0]);
+ 		if (!nritems || (path->slots[0] >= nritems - 1)) {
+ 			ret = btrfs_next_leaf(root, path);
+-			if (ret == 1)
++			if (ret < 0) {
++				goto out;
++			} else if (ret > 0) {
+ 				found_next = 1;
+-			if (ret != 0)
+ 				goto insert;
++			}
+ 			slot = path->slots[0];
+ 		}
+ 		btrfs_item_key_to_cpu(path->nodes[0], &found_key, slot);
+-- 
+2.25.1
+
 
 
