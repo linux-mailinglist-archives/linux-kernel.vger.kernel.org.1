@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A406D2010CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8AD201278
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393974AbgFSPd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:33:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37050 "EHLO mail.kernel.org"
+        id S2392850AbgFSPVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:21:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46988 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404895AbgFSPdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:33:03 -0400
+        id S2404074AbgFSPQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:16:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A984B2166E;
-        Fri, 19 Jun 2020 15:33:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D4BA2158C;
+        Fri, 19 Jun 2020 15:16:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580782;
-        bh=thQfZr/q8RAdyDUbyWCNv25/gg/BpfzE787BTka3u6c=;
+        s=default; t=1592579786;
+        bh=sFg5RpJdn4Zf+1Sc6Km2wWkYZjZb20V+2z6/fcV0ukY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=An3xlAUc7TfD/GJVt6wTHmoNH2wkRHeSgIKerGjpFXsS0TWMJlIbgtW4E9bJQ0hf9
-         YRfCChW2PEcQdSbn9e0pCG0rKskRPWx0EF+doKaFz39fwhJcMAuu5PaPS9eCCYq+04
-         oOO0n26YgoHFHh/vMtvibrN88GZDzFq1iRGzbCRo=
+        b=VRtcwsf7JB3YBEeatqCylBpp1amdLEqb4KPKYq+5vVxr8tdQ1uhJuY1KQrnGc0B3X
+         KqkFp1r1bM3Vjt7Ag7wz4XzDceedXbO0oRogas+odgLmiiF6M79hUZQq1xWp8J4td6
+         EY1GHmVlQv9gM6jPKlWcXUAAL4pJ39PHMdhe2VxY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: [PATCH 5.7 350/376] pwm: lpss: Fix get_state runtime-pm reference handling
-Date:   Fri, 19 Jun 2020 16:34:28 +0200
-Message-Id: <20200619141726.893185565@linuxfoundation.org>
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: [PATCH 5.4 258/261] perf probe: Fix to check blacklist address correctly
+Date:   Fri, 19 Jun 2020 16:34:29 +0200
+Message-Id: <20200619141702.241854622@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
-References: <20200619141710.350494719@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,101 +45,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-commit 01aa905d4791da7d3630f6030ff99d58105cca00 upstream.
+commit 80526491c2ca6abc028c0f0dbb0707a1f35fb18a upstream.
 
-Before commit cfc4c189bc70 ("pwm: Read initial hardware state at request
-time"), a driver's get_state callback would get called once per PWM from
-pwmchip_add().
+Fix to check kprobe blacklist address correctly with relocated address
+by adjusting debuginfo address.
 
-pwm-lpss' runtime-pm code was relying on this, getting a runtime-pm ref for
-PWMs which are enabled at probe time from within its get_state callback,
-before enabling runtime-pm.
+Since the address in the debuginfo is same as objdump, it is different
+from relocated kernel address with KASLR.  Thus, 'perf probe' always
+misses to catch the blacklisted addresses.
 
-The change to calling get_state at request time causes a number of
-problems:
+Without this patch, 'perf probe' can not detect the blacklist addresses
+on a KASLR enabled kernel.
 
-1. PWMs enabled at probe time may get runtime suspended before they are
-requested, causing e.g. a LCD backlight controlled by the PWM to turn off.
+  # perf probe kprobe_dispatcher
+  Failed to write event: Invalid argument
+    Error: Failed to add events.
+  #
 
-2. When the request happens when the PWM has been runtime suspended, the
-ctrl register will read all 1 / 0xffffffff, causing get_state to store
-bogus values in the pwm_state.
+With this patch, it correctly shows the error message.
 
-3. get_state was using an async pm_runtime_get() call, because it assumed
-that runtime-pm has not been enabled yet. If shortly after the request an
-apply call is made, then the pwm_lpss_is_updating() check may trigger
-because the resume triggered by the pm_runtime_get() call is not complete
-yet, so the ctrl register still reads all 1 / 0xffffffff.
+  # perf probe kprobe_dispatcher
+  kprobe_dispatcher is blacklisted function, skip it.
+  Probe point 'kprobe_dispatcher' not found.
+    Error: Failed to add events.
+  #
 
-This commit fixes these issues by moving the initial pm_runtime_get() call
-for PWMs which are enabled at probe time to the pwm_lpss_probe() function;
-and by making get_state take a runtime-pm ref before reading the ctrl reg.
-
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1828927
-Fixes: cfc4c189bc70 ("pwm: Read initial hardware state at request time")
+Fixes: 9aaf5a5f479b ("perf probe: Check kprobes blacklist when adding new events")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: stable@vger.kernel.org
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Link: http://lore.kernel.org/lkml/158763966411.30755.5882376357738273695.stgit@devnote2
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pwm/pwm-lpss.c |   15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ tools/perf/util/probe-event.c |   21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
---- a/drivers/pwm/pwm-lpss.c
-+++ b/drivers/pwm/pwm-lpss.c
-@@ -158,7 +158,6 @@ static int pwm_lpss_apply(struct pwm_chi
- 	return 0;
+--- a/tools/perf/util/probe-event.c
++++ b/tools/perf/util/probe-event.c
+@@ -102,7 +102,7 @@ void exit_probe_symbol_maps(void)
+ 	symbol__exit();
  }
  
--/* This function gets called once from pwmchip_add to get the initial state */
- static void pwm_lpss_get_state(struct pwm_chip *chip, struct pwm_device *pwm,
- 			       struct pwm_state *state)
+-static struct ref_reloc_sym *kernel_get_ref_reloc_sym(void)
++static struct ref_reloc_sym *kernel_get_ref_reloc_sym(struct map **pmap)
  {
-@@ -167,6 +166,8 @@ static void pwm_lpss_get_state(struct pw
- 	unsigned long long base_unit, freq, on_time_div;
- 	u32 ctrl;
- 
-+	pm_runtime_get_sync(chip->dev);
+ 	/* kmap->ref_reloc_sym should be set if host_machine is initialized */
+ 	struct kmap *kmap;
+@@ -114,6 +114,10 @@ static struct ref_reloc_sym *kernel_get_
+ 	kmap = map__kmap(map);
+ 	if (!kmap)
+ 		return NULL;
 +
- 	base_unit_range = BIT(lpwm->info->base_unit_bits);
- 
- 	ctrl = pwm_lpss_read(pwm);
-@@ -187,8 +188,7 @@ static void pwm_lpss_get_state(struct pw
- 	state->polarity = PWM_POLARITY_NORMAL;
- 	state->enabled = !!(ctrl & PWM_ENABLE);
- 
--	if (state->enabled)
--		pm_runtime_get(chip->dev);
-+	pm_runtime_put(chip->dev);
++	if (pmap)
++		*pmap = map;
++
+ 	return kmap->ref_reloc_sym;
  }
  
- static const struct pwm_ops pwm_lpss_ops = {
-@@ -202,7 +202,8 @@ struct pwm_lpss_chip *pwm_lpss_probe(str
+@@ -125,7 +129,7 @@ static int kernel_get_symbol_address_by_
+ 	struct map *map;
+ 
+ 	/* ref_reloc_sym is just a label. Need a special fix*/
+-	reloc_sym = kernel_get_ref_reloc_sym();
++	reloc_sym = kernel_get_ref_reloc_sym(NULL);
+ 	if (reloc_sym && strcmp(name, reloc_sym->name) == 0)
+ 		*addr = (reloc) ? reloc_sym->addr : reloc_sym->unrelocated_addr;
+ 	else {
+@@ -745,6 +749,7 @@ post_process_kernel_probe_trace_events(s
+ 				       int ntevs)
  {
- 	struct pwm_lpss_chip *lpwm;
- 	unsigned long c;
--	int ret;
-+	int i, ret;
-+	u32 ctrl;
+ 	struct ref_reloc_sym *reloc_sym;
++	struct map *map;
+ 	char *tmp;
+ 	int i, skipped = 0;
  
- 	if (WARN_ON(info->npwm > MAX_PWMS))
- 		return ERR_PTR(-ENODEV);
-@@ -232,6 +233,12 @@ struct pwm_lpss_chip *pwm_lpss_probe(str
- 		return ERR_PTR(ret);
- 	}
+@@ -753,7 +758,7 @@ post_process_kernel_probe_trace_events(s
+ 		return post_process_offline_probe_trace_events(tevs, ntevs,
+ 						symbol_conf.vmlinux_name);
  
-+	for (i = 0; i < lpwm->info->npwm; i++) {
-+		ctrl = pwm_lpss_read(&lpwm->chip.pwms[i]);
-+		if (ctrl & PWM_ENABLE)
-+			pm_runtime_get(dev);
-+	}
-+
- 	return lpwm;
- }
- EXPORT_SYMBOL_GPL(pwm_lpss_probe);
+-	reloc_sym = kernel_get_ref_reloc_sym();
++	reloc_sym = kernel_get_ref_reloc_sym(&map);
+ 	if (!reloc_sym) {
+ 		pr_warning("Relocated base symbol is not found!\n");
+ 		return -EINVAL;
+@@ -764,9 +769,13 @@ post_process_kernel_probe_trace_events(s
+ 			continue;
+ 		if (tevs[i].point.retprobe && !kretprobe_offset_is_supported())
+ 			continue;
+-		/* If we found a wrong one, mark it by NULL symbol */
++		/*
++		 * If we found a wrong one, mark it by NULL symbol.
++		 * Since addresses in debuginfo is same as objdump, we need
++		 * to convert it to addresses on memory.
++		 */
+ 		if (kprobe_warn_out_range(tevs[i].point.symbol,
+-					  tevs[i].point.address)) {
++			map__objdump_2mem(map, tevs[i].point.address))) {
+ 			tmp = NULL;
+ 			skipped++;
+ 		} else {
+@@ -2922,7 +2931,7 @@ static int find_probe_trace_events_from_
+ 	/* Note that the symbols in the kmodule are not relocated */
+ 	if (!pev->uprobes && !pev->target &&
+ 			(!pp->retprobe || kretprobe_offset_is_supported())) {
+-		reloc_sym = kernel_get_ref_reloc_sym();
++		reloc_sym = kernel_get_ref_reloc_sym(NULL);
+ 		if (!reloc_sym) {
+ 			pr_warning("Relocated base symbol is not found!\n");
+ 			ret = -EINVAL;
 
 
