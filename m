@@ -2,49 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7327E200ED9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A550A200DDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:05:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391863AbgFSPMO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:12:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42538 "EHLO mail.kernel.org"
+        id S2390827AbgFSPCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:02:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57982 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403871AbgFSPMJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:12:09 -0400
+        id S2390723AbgFSPBf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:01:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D42E02186A;
-        Fri, 19 Jun 2020 15:12:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4DC620734;
+        Fri, 19 Jun 2020 15:01:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579528;
-        bh=mvP8PbU7TdCifdkIMd1Es8azRYI9/CbpylWsdkoFvAo=;
+        s=default; t=1592578895;
+        bh=biZxo7xIfF834z9nqNS71nzofZ7r6Uqho9xZzSIhqPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bxiP2Ye6hbhAYNG6tzF54PBvCvjnemTRVkLeI4LaTLxYqWMdpZyNzoFSaNCiWgny0
-         Ah+7rhcbQSk18rG97mTYOM3MGEM5sdx3X+QlSLAjV768NvD2Psywao+dLEfP4Sxaxu
-         9gjkMTdAu4aN8CSGlSfThWklKOJf6Em75GrfkVU0=
+        b=UThApr5Mt3VOW+rLLBuOdZQb1v1gbBaVmG2ReKGlIIyImLUw1OKvIZcfoLFQC0zVu
+         6lmly5UfgqiWw9iUB0SxwJGV5a7iRoVjPeIo/jfVpO0hWjimroffbnptU602Zs7yph
+         JqzCvx8DEE6AMTcaK8JAAbrEbvQrSHWrS0caLfwc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        David Hildenbrand <david@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        James Morris <jmorris@namei.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Sasha Levin <sashal@kernel.org>, Yiqian Wei <yiwei@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.4 170/261] mm: initialize deferred pages with interrupts enabled
-Date:   Fri, 19 Jun 2020 16:33:01 +0200
-Message-Id: <20200619141658.052756597@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        Theodore Tso <tytso@mit.edu>
+Subject: [PATCH 4.19 198/267] ext4: fix race between ext4_sync_parent() and rename()
+Date:   Fri, 19 Jun 2020 16:33:03 +0200
+Message-Id: <20200619141658.249466430@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -54,109 +43,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Tatashin <pasha.tatashin@soleen.com>
+From: Eric Biggers <ebiggers@google.com>
 
-commit 3d060856adfc59afb9d029c233141334cfaba418 upstream.
+commit 08adf452e628b0e2ce9a01048cfbec52353703d7 upstream.
 
-Initializing struct pages is a long task and keeping interrupts disabled
-for the duration of this operation introduces a number of problems.
+'igrab(d_inode(dentry->d_parent))' without holding dentry->d_lock is
+broken because without d_lock, d_parent can be concurrently changed due
+to a rename().  Then if the old directory is immediately deleted, old
+d_parent->inode can be NULL.  That causes a NULL dereference in igrab().
 
-1. jiffies are not updated for long period of time, and thus incorrect time
-   is reported. See proposed solution and discussion here:
-   lkml/20200311123848.118638-1-shile.zhang@linux.alibaba.com
-2. It prevents farther improving deferred page initialization by allowing
-   intra-node multi-threading.
+To fix this, use dget_parent() to safely grab a reference to the parent
+dentry, which pins the inode.  This also eliminates the need to use
+d_find_any_alias() other than for the initial inode, as we no longer
+throw away the dentry at each step.
 
-We are keeping interrupts disabled to solve a rather theoretical problem
-that was never observed in real world (See 3a2d7fa8a3d5).
+This is an extremely hard race to hit, but it is possible.  Adding a
+udelay() in between the reads of ->d_parent and its ->d_inode makes it
+reproducible on a no-journal filesystem using the following program:
 
-Let's keep interrupts enabled. In case we ever encounter a scenario where
-an interrupt thread wants to allocate large amount of memory this early in
-boot we can deal with that by growing zone (see deferred_grow_zone()) by
-the needed amount before starting deferred_init_memmap() threads.
+    #include <fcntl.h>
+    #include <unistd.h>
 
-Before:
-[    1.232459] node 0 initialised, 12058412 pages in 1ms
+    int main()
+    {
+        if (fork()) {
+            for (;;) {
+                mkdir("dir1", 0700);
+                int fd = open("dir1/file", O_RDWR|O_CREAT|O_SYNC);
+                write(fd, "X", 1);
+                close(fd);
+            }
+        } else {
+            mkdir("dir2", 0700);
+            for (;;) {
+                rename("dir1/file", "dir2/file");
+                rmdir("dir1");
+            }
+        }
+    }
 
-After:
-[    1.632580] node 0 initialised, 12051227 pages in 436ms
-
-Fixes: 3a2d7fa8a3d5 ("mm: disable interrupts while initializing deferred pages")
-Reported-by: Shile Zhang <shile.zhang@linux.alibaba.com>
-Signed-off-by: Pavel Tatashin <pasha.tatashin@soleen.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Daniel Jordan <daniel.m.jordan@oracle.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: James Morris <jmorris@namei.org>
-Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc: Sasha Levin <sashal@kernel.org>
-Cc: Yiqian Wei <yiwei@redhat.com>
-Cc: <stable@vger.kernel.org>	[4.17+]
-Link: http://lkml.kernel.org/r/20200403140952.17177-3-pasha.tatashin@soleen.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: d59729f4e794 ("ext4: fix races in ext4_sync_parent()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Link: https://lore.kernel.org/r/20200506183140.541194-1-ebiggers@kernel.org
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/linux/mmzone.h |    2 ++
- mm/page_alloc.c        |   20 +++++++-------------
- 2 files changed, 9 insertions(+), 13 deletions(-)
+ fs/ext4/fsync.c |   28 +++++++++++++---------------
+ 1 file changed, 13 insertions(+), 15 deletions(-)
 
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -709,6 +709,8 @@ typedef struct pglist_data {
- 	/*
- 	 * Must be held any time you expect node_start_pfn,
- 	 * node_present_pages, node_spanned_pages or nr_zones to stay constant.
-+	 * Also synchronizes pgdat->first_deferred_pfn during deferred page
-+	 * init.
- 	 *
- 	 * pgdat_resize_lock() and pgdat_resize_unlock() are provided to
- 	 * manipulate node_size_lock without checking for CONFIG_MEMORY_HOTPLUG
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1793,6 +1793,13 @@ static int __init deferred_init_memmap(v
- 	BUG_ON(pgdat->first_deferred_pfn > pgdat_end_pfn(pgdat));
- 	pgdat->first_deferred_pfn = ULONG_MAX;
+--- a/fs/ext4/fsync.c
++++ b/fs/ext4/fsync.c
+@@ -44,30 +44,28 @@
+  */
+ static int ext4_sync_parent(struct inode *inode)
+ {
+-	struct dentry *dentry = NULL;
+-	struct inode *next;
++	struct dentry *dentry, *next;
+ 	int ret = 0;
  
-+	/*
-+	 * Once we unlock here, the zone cannot be grown anymore, thus if an
-+	 * interrupt thread must allocate this early in boot, zone must be
-+	 * pre-grown prior to start of deferred page initialization.
-+	 */
-+	pgdat_resize_unlock(pgdat, &flags);
+ 	if (!ext4_test_inode_state(inode, EXT4_STATE_NEWENTRY))
+ 		return 0;
+-	inode = igrab(inode);
++	dentry = d_find_any_alias(inode);
++	if (!dentry)
++		return 0;
+ 	while (ext4_test_inode_state(inode, EXT4_STATE_NEWENTRY)) {
+ 		ext4_clear_inode_state(inode, EXT4_STATE_NEWENTRY);
+-		dentry = d_find_any_alias(inode);
+-		if (!dentry)
+-			break;
+-		next = igrab(d_inode(dentry->d_parent));
 +
- 	/* Only the highest zone is deferred so find it */
- 	for (zid = 0; zid < MAX_NR_ZONES; zid++) {
- 		zone = pgdat->node_zones + zid;
-@@ -1813,8 +1820,6 @@ static int __init deferred_init_memmap(v
- 	while (spfn < epfn)
- 		nr_pages += deferred_init_maxorder(&i, zone, &spfn, &epfn);
- zone_empty:
--	pgdat_resize_unlock(pgdat, &flags);
--
- 	/* Sanity check that the next zone really is unpopulated */
- 	WARN_ON(++zid < MAX_NR_ZONES && populated_zone(++zone));
++		next = dget_parent(dentry);
+ 		dput(dentry);
+-		if (!next)
+-			break;
+-		iput(inode);
+-		inode = next;
++		dentry = next;
++		inode = dentry->d_inode;
++
+ 		/*
+ 		 * The directory inode may have gone through rmdir by now. But
+ 		 * the inode itself and its blocks are still allocated (we hold
+-		 * a reference to the inode so it didn't go through
+-		 * ext4_evict_inode()) and so we are safe to flush metadata
+-		 * blocks and the inode.
++		 * a reference to the inode via its dentry), so it didn't go
++		 * through ext4_evict_inode()) and so we are safe to flush
++		 * metadata blocks and the inode.
+ 		 */
+ 		ret = sync_mapping_buffers(inode->i_mapping);
+ 		if (ret)
+@@ -76,7 +74,7 @@ static int ext4_sync_parent(struct inode
+ 		if (ret)
+ 			break;
+ 	}
+-	iput(inode);
++	dput(dentry);
+ 	return ret;
+ }
  
-@@ -1857,17 +1862,6 @@ deferred_grow_zone(struct zone *zone, un
- 	pgdat_resize_lock(pgdat, &flags);
- 
- 	/*
--	 * If deferred pages have been initialized while we were waiting for
--	 * the lock, return true, as the zone was grown.  The caller will retry
--	 * this zone.  We won't return to this function since the caller also
--	 * has this static branch.
--	 */
--	if (!static_branch_unlikely(&deferred_pages)) {
--		pgdat_resize_unlock(pgdat, &flags);
--		return true;
--	}
--
--	/*
- 	 * If someone grew this zone while we were waiting for spinlock, return
- 	 * true, as there might be enough pages already.
- 	 */
 
 
