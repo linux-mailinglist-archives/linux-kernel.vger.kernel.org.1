@@ -2,40 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EFBA2018F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B93A2018F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:02:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387461AbgFSQzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:55:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52284 "EHLO mail.kernel.org"
+        id S2405945AbgFSQzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:55:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387427AbgFSOf6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:35:58 -0400
+        id S2387461AbgFSOgI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:36:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A4F6E2070A;
-        Fri, 19 Jun 2020 14:35:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A9F92070A;
+        Fri, 19 Jun 2020 14:36:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577357;
-        bh=GpaoxSM7OEtx+hmL3101sa/SZl5PTqmk3Qk78BmE58w=;
+        s=default; t=1592577367;
+        bh=5tm4Dg00/ubgsCOtNbBlHdNQPOrTqmqY8p/BQos8OGk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ak17SJAVkTAynxQd0VUeqaD/9KbaFIMuhm6JAisEShAcNBEJIRX3lxPYLwjxQOND/
-         5XW60GfBPpmv3fvuCTTDcFZHi1xq0Yta5wtfvsAdu3aDXfSuRdTBKT0l7RAZZGQjvv
-         cy8+Gd5rp1ecqo9dZC45VAIalKS9WtZL9lbFlQvQ=
+        b=XqKnitEM7O65hyxmQI3wzjAwen1yElQ9VVeANrZbKiFk1mWvDKjayHzOUO1XqOkCX
+         14uwxcQzn1i/yp8svXl2elaXp8GlKLBSBnSAZC9OmWNAYuXUXz4LzqCJ7p1vaue957
+         NXmMpshhJMNcvIsamiCLwW8VPSRMX61zXRSbU0Ts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Walton Hoops <me@waltonhoops.com>,
-        Tomas Hlavaty <tom@logand.com>,
-        ARAI Shun-ichi <hermes@ceres.dti.ne.jp>,
-        Hideki EIRAKU <hdk1983@gmail.com>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 019/101] nilfs2: fix null pointer dereference at nilfs_segctor_do_construct()
-Date:   Fri, 19 Jun 2020 16:32:08 +0200
-Message-Id: <20200619141615.089198176@linuxfoundation.org>
+        stable@vger.kernel.org, Waiman Long <longman@redhat.com>,
+        Borislav Petkov <bp@suse.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Kosina <jkosina@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        KarimAllah Ahmed <karahmed@amazon.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tim Chen <tim.c.chen@linux.intel.com>, x86-ml <x86@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 022/101] x86/speculation: Change misspelled STIPB to STIBP
+Date:   Fri, 19 Jun 2020 16:32:11 +0200
+Message-Id: <20200619141615.260874344@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
 References: <20200619141614.001544111@linuxfoundation.org>
@@ -48,67 +53,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+From: Waiman Long <longman@redhat.com>
 
-commit 8301c719a2bd131436438e49130ee381d30933f5 upstream.
+[ Upstream commit aa77bfb354c495fc4361199e63fc5765b9e1e783 ]
 
-After commit c3aab9a0bd91 ("mm/filemap.c: don't initiate writeback if
-mapping has no dirty pages"), the following null pointer dereference has
-been reported on nilfs2:
+STIBP stands for Single Thread Indirect Branch Predictors. The acronym,
+however, can be easily mis-spelled as STIPB. It is perhaps due to the
+presence of another related term - IBPB (Indirect Branch Predictor
+Barrier).
 
-  BUG: kernel NULL pointer dereference, address: 00000000000000a8
-  #PF: supervisor read access in kernel mode
-  #PF: error_code(0x0000) - not-present page
-  PGD 0 P4D 0
-  Oops: 0000 [#1] SMP PTI
-  ...
-  RIP: 0010:percpu_counter_add_batch+0xa/0x60
-  ...
-  Call Trace:
-    __test_set_page_writeback+0x2d3/0x330
-    nilfs_segctor_do_construct+0x10d3/0x2110 [nilfs2]
-    nilfs_segctor_construct+0x168/0x260 [nilfs2]
-    nilfs_segctor_thread+0x127/0x3b0 [nilfs2]
-    kthread+0xf8/0x130
-    ...
+Fix the mis-spelling in the code.
 
-This crash turned out to be caused by set_page_writeback() call for
-segment summary buffers at nilfs_segctor_prepare_write().
-
-set_page_writeback() can call inc_wb_stat(inode_to_wb(inode),
-WB_WRITEBACK) where inode_to_wb(inode) is NULL if the inode of
-underlying block device does not have an associated wb.
-
-This fixes the issue by calling inode_attach_wb() in advance to ensure
-to associate the bdev inode with its wb.
-
-Fixes: c3aab9a0bd91 ("mm/filemap.c: don't initiate writeback if mapping has no dirty pages")
-Reported-by: Walton Hoops <me@waltonhoops.com>
-Reported-by: Tomas Hlavaty <tom@logand.com>
-Reported-by: ARAI Shun-ichi <hermes@ceres.dti.ne.jp>
-Reported-by: Hideki EIRAKU <hdk1983@gmail.com>
-Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Tested-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Cc: <stable@vger.kernel.org>	[5.4+]
-Link: http://lkml.kernel.org/r/20200608.011819.1399059588922299158.konishi.ryusuke@gmail.com
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jiri Kosina <jkosina@suse.cz>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: KarimAllah Ahmed <karahmed@amazon.de>
+Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: x86-ml <x86@kernel.org>
+Link: https://lkml.kernel.org/r/1544039368-9009-1-git-send-email-longman@redhat.com
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nilfs2/segment.c |    2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kernel/cpu/bugs.c | 6 +++---
+ arch/x86/kernel/process.h  | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
---- a/fs/nilfs2/segment.c
-+++ b/fs/nilfs2/segment.c
-@@ -2781,6 +2781,8 @@ int nilfs_attach_log_writer(struct super
- 	if (!nilfs->ns_writer)
- 		return -ENOMEM;
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 1a0ab4af93b7..9fddbdcc1874 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -59,7 +59,7 @@ static u64 x86_spec_ctrl_mask = SPEC_CTRL_IBRS;
+ u64 x86_amd_ls_cfg_base;
+ u64 x86_amd_ls_cfg_ssbd_mask;
  
-+	inode_attach_wb(nilfs->ns_bdev->bd_inode, NULL);
-+
- 	err = nilfs_segctor_start_thread(nilfs->ns_writer);
- 	if (err) {
- 		kfree(nilfs->ns_writer);
+-/* Control conditional STIPB in switch_to() */
++/* Control conditional STIBP in switch_to() */
+ DEFINE_STATIC_KEY_FALSE(switch_to_cond_stibp);
+ /* Control conditional IBPB in switch_mm() */
+ DEFINE_STATIC_KEY_FALSE(switch_mm_cond_ibpb);
+@@ -725,12 +725,12 @@ spectre_v2_user_select_mitigation(enum spectre_v2_mitigation_cmd v2_cmd)
+ 			"always-on" : "conditional");
+ 	}
+ 
+-	/* If enhanced IBRS is enabled no STIPB required */
++	/* If enhanced IBRS is enabled no STIBP required */
+ 	if (spectre_v2_enabled == SPECTRE_V2_IBRS_ENHANCED)
+ 		return;
+ 
+ 	/*
+-	 * If SMT is not possible or STIBP is not available clear the STIPB
++	 * If SMT is not possible or STIBP is not available clear the STIBP
+ 	 * mode.
+ 	 */
+ 	if (!smt_possible || !boot_cpu_has(X86_FEATURE_STIBP))
+diff --git a/arch/x86/kernel/process.h b/arch/x86/kernel/process.h
+index 898e97cf6629..320ab978fb1f 100644
+--- a/arch/x86/kernel/process.h
++++ b/arch/x86/kernel/process.h
+@@ -19,7 +19,7 @@ static inline void switch_to_extra(struct task_struct *prev,
+ 	if (IS_ENABLED(CONFIG_SMP)) {
+ 		/*
+ 		 * Avoid __switch_to_xtra() invocation when conditional
+-		 * STIPB is disabled and the only different bit is
++		 * STIBP is disabled and the only different bit is
+ 		 * TIF_SPEC_IB. For CONFIG_SMP=n TIF_SPEC_IB is not
+ 		 * in the TIF_WORK_CTXSW masks.
+ 		 */
+-- 
+2.25.1
+
 
 
