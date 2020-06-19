@@ -2,125 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CCB201964
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:26:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FF2201944
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392240AbgFSRXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 13:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731175AbgFSRXL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 13:23:11 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6345EC06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 10:23:10 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id q8so9618382qkm.12
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 10:23:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rta7XgSy0ckbOhf+G5R08zHN2raoo0kZf2xw2Sh0l/k=;
-        b=jQ8P3pnIGa3vZkblMbXH41QZ61fe/Sb9vA5uPOR3SMNdZKsu0blkPtrxpS3aWVoNKr
-         DxLMI5S5juOldxRe7+RlT3GajySSEpNFCHak6ENUR11aQ3nJENjJ+AjGwVIg3GcU1gtL
-         AFg4tJnhN/LzdKUCOPE+zScs2pSCySWCm6gLf1r8dvVDgTF8uLAu4b0cSB8SVQcBr9IO
-         hvo365OipT4dztwxdexoBi2dZXF91j/xcy5DKKz/ErbusQM/iZVWPTDKzHQRUnZ5G+PQ
-         1Vw552gg3QCopo/fc6PBC9ArUokmC/IBfhMuddzwZFS3/FrWylp92kucX6mn/XCcEkQF
-         2/SQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rta7XgSy0ckbOhf+G5R08zHN2raoo0kZf2xw2Sh0l/k=;
-        b=H8H8IeVdwlRgMdI70ZjYLbuaW0eSIFd4E0Qg5gRfDO20G7XLRNykcWhZ9rzMXU6pVg
-         x5q+ZlMzKx093+jMuDosj3UISCVNT5o6woBKh6Vv7Ova0WCu50hHb9NjT1yN6oYdSyvl
-         vn0uXosJlrIMsXXoMRuqS3fISuVw1ah0UOKEIh3LfY+yuCpTkMUfcebloTQnjClrBlb4
-         Lke0D1BzKBmiZ54RqqrhYadCw37/BU/f6sF0/GEusdxtm6hVL+bP8algqN3lfBR6d7F9
-         /JHHVyBNUG+OmDcyJUm0xiN8D+v+qHfJZgtrkyVrUd2oZVhVD8HAR2sf6YDhxeWtcjoY
-         KHbg==
-X-Gm-Message-State: AOAM531PuA56kVxk+boNqAMR6R539Tho6ltY1+2tGTwt5j1gMbDyrqCG
-        OYdWmUQlZkC6WrL9H71Ohx1l5JG0M2jl5g==
-X-Google-Smtp-Source: ABdhPJzDMW9WT5FfWlenUCjhHpgpjiA2TJ2PiIGS5w9RkI8RANL7HnmArRn+HLKwhDBh+PaKr6DrLw==
-X-Received: by 2002:ae9:ed0d:: with SMTP id c13mr4076677qkg.181.1592587389664;
-        Fri, 19 Jun 2020 10:23:09 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id z77sm7263705qka.59.2020.06.19.10.23.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 10:23:08 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jmKjM-00ArZ4-2Z; Fri, 19 Jun 2020 14:23:08 -0300
-Date:   Fri, 19 Jun 2020 14:23:08 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
-        <thomas_os@shipmail.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
- annotations
-Message-ID: <20200619172308.GQ6578@ziepe.ca>
-References: <20200616120719.GL20149@phenom.ffwll.local>
- <CAKMK7uE7DKUo9Z+yCpY+mW5gmKet8ugbF3yZNyHGqsJ=e-g_hA@mail.gmail.com>
- <20200617152835.GF6578@ziepe.ca>
- <20200618150051.GS20149@phenom.ffwll.local>
- <20200618172338.GM6578@ziepe.ca>
- <CAKMK7uEbqTu4q-amkLXyd1i8KNtLaoO2ZFoGqYiG6D0m0FKpOg@mail.gmail.com>
- <20200619113934.GN6578@ziepe.ca>
- <CAKMK7uE-kWA==Cko5uenMrcnopEjq42HxoDTDywzBAbHqsN13g@mail.gmail.com>
- <20200619151551.GP6578@ziepe.ca>
- <CAKMK7uEvkshAM6KUYZu8_OCpF4+1Y_SM7cQ9nJWpagfke8s8LA@mail.gmail.com>
+        id S1732585AbgFSRTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 13:19:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725788AbgFSRTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 13:19:50 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C5A4214DB;
+        Fri, 19 Jun 2020 17:19:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592587190;
+        bh=UU6h0Ye5eIxC7LueL8AYqU7mot8kZdliXuGlk2DiP0M=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GQsI0Q9wfEmvoWW++btFeKUl2SOze4JhxLrZzB+AsI5xJbGQ1jIiIB9uz8bgTpIgX
+         3V323vrb5AYbd5Tck7ypW7k/c+jmZ+6NNbR7WfG4gqUWXlM2iHLPuOKRGTTrc9yjJm
+         w3lRufpR1bq40Hx3cVfje8OIkRoEJfCFN7sL9/cs=
+Date:   Fri, 19 Jun 2020 12:25:14 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jon Mason <jdmason@kudzu.us>, Dave Jiang <dave.jiang@intel.com>,
+        Allen Hubbe <allenbh@gmail.com>
+Cc:     linux-ntb@googlegroups.com, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] NTB: Use struct_size() helper in devm_kzalloc()
+Message-ID: <20200619172514.GA1074@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKMK7uEvkshAM6KUYZu8_OCpF4+1Y_SM7cQ9nJWpagfke8s8LA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 06:19:41PM +0200, Daniel Vetter wrote:
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes. Also, remove unnecessary
+variable _struct_size_.
 
-> The madness is only that device B's mmu notifier might need to wait
-> for fence_B so that the dma operation finishes. Which in turn has to
-> wait for device A to finish first.
+This code was detected with the help of Coccinelle and, audited and
+fixed manually.
 
-So, it sound, fundamentally you've got this graph of operations across
-an unknown set of drivers and the kernel cannot insert itself in
-dma_fence hand offs to re-validate any of the buffers involved?
-Buffers which by definition cannot be touched by the hardware yet.
+Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/ntb/test/ntb_msi_test.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-That really is a pretty horrible place to end up..
+diff --git a/drivers/ntb/test/ntb_msi_test.c b/drivers/ntb/test/ntb_msi_test.c
+index 99d826ed9c34..7095ecd6223a 100644
+--- a/drivers/ntb/test/ntb_msi_test.c
++++ b/drivers/ntb/test/ntb_msi_test.c
+@@ -319,7 +319,6 @@ static void ntb_msit_remove_dbgfs(struct ntb_msit_ctx *nm)
+ static int ntb_msit_probe(struct ntb_client *client, struct ntb_dev *ntb)
+ {
+ 	struct ntb_msit_ctx *nm;
+-	size_t struct_size;
+ 	int peers;
+ 	int ret;
+ 
+@@ -352,9 +351,7 @@ static int ntb_msit_probe(struct ntb_client *client, struct ntb_dev *ntb)
+ 		return ret;
+ 	}
+ 
+-	struct_size = sizeof(*nm) + sizeof(*nm->peers) * peers;
+-
+-	nm = devm_kzalloc(&ntb->dev, struct_size, GFP_KERNEL);
++	nm = devm_kzalloc(&ntb->dev, struct_size(nm, peers, peers), GFP_KERNEL);
+ 	if (!nm)
+ 		return -ENOMEM;
+ 
+-- 
+2.27.0
 
-Pinning really is right answer for this kind of work flow. I think
-converting pinning to notifers should not be done unless notifier
-invalidation is relatively bounded. 
-
-I know people like notifiers because they give a bit nicer performance
-in some happy cases, but this cripples all the bad cases..
-
-If pinning doesn't work for some reason maybe we should address that?
-
-> Full disclosure: We are aware that we've designed ourselves into an
-> impressive corner here, and there's lots of talks going on about
-> untangling the dma synchronization from the memory management
-> completely. But
-
-I think the documenting is really important: only GPU should be using
-this stuff and driving notifiers this way. Complete NO for any
-totally-not-a-GPU things in drivers/accel for sure.
-
-Jason
