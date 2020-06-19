@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A06B320170B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BBB201804
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389357AbgFSOuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:50:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43284 "EHLO mail.kernel.org"
+        id S2405101AbgFSQqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:46:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389301AbgFSOuX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:50:23 -0400
+        id S2387469AbgFSOlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:41:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27ACA20DD4;
-        Fri, 19 Jun 2020 14:50:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 415E821527;
+        Fri, 19 Jun 2020 14:41:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578222;
-        bh=REYmcY8cxaI9Sz3+PaxzgBVhHq/qpIHIa00Ix67ORNc=;
+        s=default; t=1592577700;
+        bh=WBZd16pwTulkHYMylZodT11SrG1VWJ124t45szSRlhI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oOVjpNgKKwxxarverJJXvTHgLgF7dOX/cdG7tr/E7lEi4pzmpKmtZ21cyW3YXEGZe
-         QKObfRkLNKcd80krbT9U245JpYv/feupIzCOt/rJTWqwuR66c6RtxpmsWlMc+dPtE9
-         t8HduK2ls/zF+0IZh96UHOFWm8wMoloUzD+Y08U0=
+        b=TOrtXKeT3VHRObuh9aQl9buAOb2VDx0WX2U3Ld2oxjD0Ehz+ao6mmNSZ/bcUK6byu
+         PoCn+BmugWXDqY0J/QrsNIGxtjXyeJzzU3cxDgdwCwHeiHIkYUa4lrU9ww7zuMApge
+         i87v1hqD+H3njlaEUW/Aghl5YMnTfJBi1sT15P8Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, teroincn@gmail.com,
-        Richard Guy Briggs <rgb@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 100/190] audit: fix a net reference leak in audit_send_reply()
-Date:   Fri, 19 Jun 2020 16:32:25 +0200
-Message-Id: <20200619141638.582021944@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Xiaolong Huang <butterflyhuangxx@gmail.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Ben Hutchings <ben@decadent.org.uk>
+Subject: [PATCH 4.9 052/128] can: kvaser_usb: kvaser_usb_leaf: Fix some info-leaks to USB devices
+Date:   Fri, 19 Jun 2020 16:32:26 +0200
+Message-Id: <20200619141622.946789972@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,114 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Moore <paul@paul-moore.com>
+From: Xiaolong Huang <butterflyhuangxx@gmail.com>
 
-[ Upstream commit a48b284b403a4a073d8beb72d2bb33e54df67fb6 ]
+commit da2311a6385c3b499da2ed5d9be59ce331fa93e9 upstream.
 
-If audit_send_reply() fails when trying to create a new thread to
-send the reply it also fails to cleanup properly, leaking a reference
-to a net structure.  This patch fixes the error path and makes a
-handful of other cleanups that came up while fixing the code.
+Uninitialized Kernel memory can leak to USB devices.
 
-Reported-by: teroincn@gmail.com
-Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix this by using kzalloc() instead of kmalloc().
+
+Signed-off-by: Xiaolong Huang <butterflyhuangxx@gmail.com>
+Fixes: 7259124eac7d ("can: kvaser_usb: Split driver into kvaser_usb_core.c and kvaser_usb_leaf.c")
+Cc: linux-stable <stable@vger.kernel.org> # >= v4.19
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+[bwh: Backported to 4.9: adjust filename, context]
+Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- kernel/audit.c | 50 +++++++++++++++++++++++++++++---------------------
- 1 file changed, 29 insertions(+), 21 deletions(-)
+ drivers/net/can/usb/kvaser_usb.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/audit.c b/kernel/audit.c
-index aa6d5e39526b..53224f399038 100644
---- a/kernel/audit.c
-+++ b/kernel/audit.c
-@@ -897,19 +897,30 @@ out_kfree_skb:
- 	return NULL;
- }
+--- a/drivers/net/can/usb/kvaser_usb.c
++++ b/drivers/net/can/usb/kvaser_usb.c
+@@ -791,7 +791,7 @@ static int kvaser_usb_simple_msg_async(s
+ 	if (!urb)
+ 		return -ENOMEM;
  
-+static void audit_free_reply(struct audit_reply *reply)
-+{
-+	if (!reply)
-+		return;
-+
-+	if (reply->skb)
-+		kfree_skb(reply->skb);
-+	if (reply->net)
-+		put_net(reply->net);
-+	kfree(reply);
-+}
-+
- static int audit_send_reply_thread(void *arg)
- {
- 	struct audit_reply *reply = (struct audit_reply *)arg;
--	struct sock *sk = audit_get_sk(reply->net);
+-	buf = kmalloc(sizeof(struct kvaser_msg), GFP_ATOMIC);
++	buf = kzalloc(sizeof(struct kvaser_msg), GFP_ATOMIC);
+ 	if (!buf) {
+ 		usb_free_urb(urb);
+ 		return -ENOMEM;
+@@ -1459,7 +1459,7 @@ static int kvaser_usb_set_opt_mode(const
+ 	struct kvaser_msg *msg;
+ 	int rc;
  
- 	mutex_lock(&audit_cmd_mutex);
- 	mutex_unlock(&audit_cmd_mutex);
+-	msg = kmalloc(sizeof(*msg), GFP_KERNEL);
++	msg = kzalloc(sizeof(*msg), GFP_KERNEL);
+ 	if (!msg)
+ 		return -ENOMEM;
  
- 	/* Ignore failure. It'll only happen if the sender goes away,
- 	   because our timeout is set to infinite. */
--	netlink_unicast(sk, reply->skb, reply->portid, 0);
--	put_net(reply->net);
--	kfree(reply);
-+	netlink_unicast(audit_get_sk(reply->net), reply->skb, reply->portid, 0);
-+	reply->skb = NULL;
-+	audit_free_reply(reply);
- 	return 0;
- }
+@@ -1592,7 +1592,7 @@ static int kvaser_usb_flush_queue(struct
+ 	struct kvaser_msg *msg;
+ 	int rc;
  
-@@ -923,35 +934,32 @@ static int audit_send_reply_thread(void *arg)
-  * @payload: payload data
-  * @size: payload size
-  *
-- * Allocates an skb, builds the netlink message, and sends it to the port id.
-- * No failure notifications.
-+ * Allocates a skb, builds the netlink message, and sends it to the port id.
-  */
- static void audit_send_reply(struct sk_buff *request_skb, int seq, int type, int done,
- 			     int multi, const void *payload, int size)
- {
--	struct net *net = sock_net(NETLINK_CB(request_skb).sk);
--	struct sk_buff *skb;
- 	struct task_struct *tsk;
--	struct audit_reply *reply = kmalloc(sizeof(struct audit_reply),
--					    GFP_KERNEL);
-+	struct audit_reply *reply;
+-	msg = kmalloc(sizeof(*msg), GFP_KERNEL);
++	msg = kzalloc(sizeof(*msg), GFP_KERNEL);
+ 	if (!msg)
+ 		return -ENOMEM;
  
-+	reply = kzalloc(sizeof(*reply), GFP_KERNEL);
- 	if (!reply)
- 		return;
- 
--	skb = audit_make_reply(seq, type, done, multi, payload, size);
--	if (!skb)
--		goto out;
--
--	reply->net = get_net(net);
-+	reply->skb = audit_make_reply(seq, type, done, multi, payload, size);
-+	if (!reply->skb)
-+		goto err;
-+	reply->net = get_net(sock_net(NETLINK_CB(request_skb).sk));
- 	reply->portid = NETLINK_CB(request_skb).portid;
--	reply->skb = skb;
- 
- 	tsk = kthread_run(audit_send_reply_thread, reply, "audit_send_reply");
--	if (!IS_ERR(tsk))
--		return;
--	kfree_skb(skb);
--out:
--	kfree(reply);
-+	if (IS_ERR(tsk))
-+		goto err;
-+
-+	return;
-+
-+err:
-+	audit_free_reply(reply);
- }
- 
- /*
--- 
-2.25.1
-
 
 
