@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ACCD200E73
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7707200D8A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:01:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390716AbgFSPHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:07:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36998 "EHLO mail.kernel.org"
+        id S2390407AbgFSO6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:58:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54096 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391599AbgFSPHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:07:36 -0400
+        id S2390375AbgFSO6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:58:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67BE921974;
-        Fri, 19 Jun 2020 15:07:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 481B121852;
+        Fri, 19 Jun 2020 14:58:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579255;
-        bh=QT6Y433QeSJTKcosfqaA/2Ec3fVXskYpE1FqGxWDsiE=;
+        s=default; t=1592578701;
+        bh=68jEasm7EoE4IDZuosu/vsoPdotMv2Vt4mpm1i3ukTA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mVoZZnnkd/5PsfQpw3WKWztQKkUXxeb/4xmoZbeI5Xu9JfEN7vTiy9AZN2i3dFHkT
-         V+YtiVK9i4T5Tao2lGYM/mmFkUxN0Yq6Ddq7mM/QGfxzWoCQ7fUKpRKUd1DVQqXLap
-         8nQkwuZ1Jw6ikIwU4F2M6ZXVuXXVa+tObHC9qZTk=
+        b=CnAQwSOakQxPSiBSGk38adBBjOyXhBuAK6MGw4NAf3BwgCGwqgK9azgcLWOVoLvcG
+         xtQk8LLdXclThkhCC6vLB3dklBPLFjMq9uf16XDE2rd4teBdSBHqABk3enNASJUqD4
+         Eoky1EVYAHATqycsqa1c6QfAPNWWSx9AVZmTX/es=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, teroincn@gmail.com,
-        Richard Guy Briggs <rgb@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 067/261] audit: fix a net reference leak in audit_send_reply()
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.19 093/267] ACPI: GED: use correct trigger type field in _Exx / _Lxx handling
 Date:   Fri, 19 Jun 2020 16:31:18 +0200
-Message-Id: <20200619141653.115006407@linuxfoundation.org>
+Message-Id: <20200619141653.330672568@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,114 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Moore <paul@paul-moore.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit a48b284b403a4a073d8beb72d2bb33e54df67fb6 ]
+commit e5c399b0bd6490c12c0af2a9eaa9d7cd805d52c9 upstream.
 
-If audit_send_reply() fails when trying to create a new thread to
-send the reply it also fails to cleanup properly, leaking a reference
-to a net structure.  This patch fixes the error path and makes a
-handful of other cleanups that came up while fixing the code.
+Commit ea6f3af4c5e63f69 ("ACPI: GED: add support for _Exx / _Lxx handler
+methods") added a reference to the 'triggering' field of either the
+normal or the extended ACPI IRQ resource struct, but inadvertently used
+the wrong pointer in the latter case. Note that both pointers refer to the
+same union, and the 'triggering' field appears at the same offset in both
+struct types, so it currently happens to work by accident. But let's fix
+it nonetheless
 
-Reported-by: teroincn@gmail.com
-Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: ea6f3af4c5e63f69 ("ACPI: GED: add support for _Exx / _Lxx handler methods")
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- kernel/audit.c | 50 +++++++++++++++++++++++++++++---------------------
- 1 file changed, 29 insertions(+), 21 deletions(-)
+ drivers/acpi/evged.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/audit.c b/kernel/audit.c
-index fcfbb3476ccd..a4eeece2eecd 100644
---- a/kernel/audit.c
-+++ b/kernel/audit.c
-@@ -923,19 +923,30 @@ out_kfree_skb:
- 	return NULL;
- }
+--- a/drivers/acpi/evged.c
++++ b/drivers/acpi/evged.c
+@@ -103,7 +103,7 @@ static acpi_status acpi_ged_request_inte
+ 		trigger = p->triggering;
+ 	} else {
+ 		gsi = pext->interrupts[0];
+-		trigger = p->triggering;
++		trigger = pext->triggering;
+ 	}
  
-+static void audit_free_reply(struct audit_reply *reply)
-+{
-+	if (!reply)
-+		return;
-+
-+	if (reply->skb)
-+		kfree_skb(reply->skb);
-+	if (reply->net)
-+		put_net(reply->net);
-+	kfree(reply);
-+}
-+
- static int audit_send_reply_thread(void *arg)
- {
- 	struct audit_reply *reply = (struct audit_reply *)arg;
--	struct sock *sk = audit_get_sk(reply->net);
- 
- 	audit_ctl_lock();
- 	audit_ctl_unlock();
- 
- 	/* Ignore failure. It'll only happen if the sender goes away,
- 	   because our timeout is set to infinite. */
--	netlink_unicast(sk, reply->skb, reply->portid, 0);
--	put_net(reply->net);
--	kfree(reply);
-+	netlink_unicast(audit_get_sk(reply->net), reply->skb, reply->portid, 0);
-+	reply->skb = NULL;
-+	audit_free_reply(reply);
- 	return 0;
- }
- 
-@@ -949,35 +960,32 @@ static int audit_send_reply_thread(void *arg)
-  * @payload: payload data
-  * @size: payload size
-  *
-- * Allocates an skb, builds the netlink message, and sends it to the port id.
-- * No failure notifications.
-+ * Allocates a skb, builds the netlink message, and sends it to the port id.
-  */
- static void audit_send_reply(struct sk_buff *request_skb, int seq, int type, int done,
- 			     int multi, const void *payload, int size)
- {
--	struct net *net = sock_net(NETLINK_CB(request_skb).sk);
--	struct sk_buff *skb;
- 	struct task_struct *tsk;
--	struct audit_reply *reply = kmalloc(sizeof(struct audit_reply),
--					    GFP_KERNEL);
-+	struct audit_reply *reply;
- 
-+	reply = kzalloc(sizeof(*reply), GFP_KERNEL);
- 	if (!reply)
- 		return;
- 
--	skb = audit_make_reply(seq, type, done, multi, payload, size);
--	if (!skb)
--		goto out;
--
--	reply->net = get_net(net);
-+	reply->skb = audit_make_reply(seq, type, done, multi, payload, size);
-+	if (!reply->skb)
-+		goto err;
-+	reply->net = get_net(sock_net(NETLINK_CB(request_skb).sk));
- 	reply->portid = NETLINK_CB(request_skb).portid;
--	reply->skb = skb;
- 
- 	tsk = kthread_run(audit_send_reply_thread, reply, "audit_send_reply");
--	if (!IS_ERR(tsk))
--		return;
--	kfree_skb(skb);
--out:
--	kfree(reply);
-+	if (IS_ERR(tsk))
-+		goto err;
-+
-+	return;
-+
-+err:
-+	audit_free_reply(reply);
- }
- 
- /*
--- 
-2.25.1
-
+ 	irq = r.start;
 
 
