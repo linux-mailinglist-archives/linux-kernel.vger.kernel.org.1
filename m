@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1F2220000D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 04:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51FEE200020
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 04:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729456AbgFSCHY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 22:07:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727826AbgFSCHV (ORCPT
+        id S1728975AbgFSCUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 22:20:04 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:59630 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726517AbgFSCUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 22:07:21 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E1F6C0613EE
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 19:07:20 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id v19so3680900qtq.10
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 19:07:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VSAwCY/ZmSm8oTcK0Zsy9KPDecHsitrkayxPpbpBu+E=;
-        b=ovUhanm83wVlXIJLufBdonsiTLRbkjAe/Gn9wbpkwh4BZMhG9AjWoGQbrLKJjAHrQ3
-         X7lzK2E/2iqnNSj0vw9sF0rk51AnHSQ/TKcMfdMYSNSE0zx7PMeXQ7ul0InzyBz9h4lG
-         30sXgMFW8BlBZ6U8BQq2lDehbt8EbkFTt4C4Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VSAwCY/ZmSm8oTcK0Zsy9KPDecHsitrkayxPpbpBu+E=;
-        b=cJVAE9M+c4txkG7FzNFK+TjoUHeVGxiMekQscJh6OC9zuppZPk/aeSVRYIcgUIFYK3
-         GabWN5teJW76GW7mcGxzRn3hLQDjQX+jvJwUGBALOx/TPyflaz8WmSmW/ZsFTmFGtf63
-         t5BnQ2ZecbHUcBqkikig15b9BXAumu7NYk0ERxPHx27WHIxpuuLwvCJiFV3IYC5JL5k0
-         GXZc1n/EvNk0JN+UkVjnRMbtQcbJ8eTQAL9K5ZTeaVK8/xmsBF7ldFrEm34rD1PPX+ff
-         7rLVcoR5SZ0BUa94NpkRy04/VUgD0jh5yNXaVk8RVbdd4Dhku1JLt5d7ezMERl+k4WG4
-         od7w==
-X-Gm-Message-State: AOAM532HH2R7fX6kMo/PHF6QrPf3vQciz0kwJacU2vjYcWL60seGncvL
-        qaUeiL/iPo4HmurIpqost6rzUWyGhKg=
-X-Google-Smtp-Source: ABdhPJy45jlIU4mw1Xr0HOiQZfCMLMbPSd/j3kDmzlb7hZxO/MqAQYzxZGLHEr1pYZ7UzOhQj5/pmg==
-X-Received: by 2002:ac8:7b5a:: with SMTP id m26mr1255149qtu.381.1592532439381;
-        Thu, 18 Jun 2020 19:07:19 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id e16sm5324679qtc.71.2020.06.18.19.07.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 19:07:18 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 22:07:18 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH 3/3] rcu/trace: Add name of the source for gp_seq to
- prevent confusion
-Message-ID: <20200619020718.GA74764@google.com>
-References: <20200619013641.63453-1-joel@joelfernandes.org>
- <20200619013641.63453-3-joel@joelfernandes.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200619013641.63453-3-joel@joelfernandes.org>
+        Thu, 18 Jun 2020 22:20:02 -0400
+X-Greylist: delayed 423 seconds by postgrey-1.27 at vger.kernel.org; Thu, 18 Jun 2020 22:20:01 EDT
+Received: from localhost (unknown [192.168.167.69])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 21911B01AE;
+        Fri, 19 Jun 2020 10:12:58 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P15428T140189174576896S1592532776016090_;
+        Fri, 19 Jun 2020 10:12:57 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <47f99c70dacf3540e239705ea51efd83>
+X-RL-SENDER: hjc@rock-chips.com
+X-SENDER: hjc@rock-chips.com
+X-LOGIN-NAME: hjc@rock-chips.com
+X-FST-TO: hjc@rock-chips.com
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-DNS-TYPE: 0
+X-System-Flag: 0
+From:   Sandy Huang <hjc@rock-chips.com>
+To:     Sandy Huang <hjc@rock-chips.com>,
+        =?UTF-8?q?Heiko=20St=C3=BCbner?= <heiko@sntech.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     andy.yan@rock-chips.com, huangtao@rock-chips.com,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/rockchip: vop: fix vop full rgb24 r/b color error
+Date:   Fri, 19 Jun 2020 10:12:51 +0800
+Message-Id: <20200619021251.22991-1-hjc@rock-chips.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 09:36:41PM -0400, Joel Fernandes (Google) wrote:
-[...]
-> @@ -2019,7 +2019,7 @@ static int __noreturn rcu_gp_kthread(void *unused)
->  			cond_resched_tasks_rcu_qs();
->  			WRITE_ONCE(rcu_state.gp_activity, jiffies);
->  			WARN_ON(signal_pending(current));
-> -			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
-> +			trace_rcu_grace_period(rcu_state.name, TPS("rsp"), rcu_state.gp_seq,
->  					       TPS("reqwaitsig"));
->  		}
->  
-> @@ -2263,7 +2263,7 @@ int rcutree_dying_cpu(unsigned int cpu)
->  		return 0;
->  
->  	blkd = !!(rnp->qsmask & rdp->grpmask);
-> -	trace_rcu_grace_period(rcu_state.name, READ_ONCE(rnp->gp_seq),
-> +	trace_rcu_grace_period(rcu_state.name, TPS("rsp"), READ_ONCE(rnp->gp_seq),
+RGB888 format msb is red component and the lsb is blue component,
+at vop full platform this is swapped, and this is different from vop
+lite and vop next, so add this patch to fix it.
 
-This should be: TPS("rnp")  :-(
+Signed-off-by: Sandy Huang <hjc@rock-chips.com>
+---
+ drivers/gpu/drm/rockchip/rockchip_drm_vop.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Happy to fix it up and resend if you'd like. Thanks!
+diff --git a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+index c80f7d9fd13f..1c17048ad737 100644
+--- a/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
++++ b/drivers/gpu/drm/rockchip/rockchip_drm_vop.c
+@@ -132,6 +132,7 @@ struct vop_win {
+ 
+ struct rockchip_rgb;
+ struct vop {
++	uint32_t version;
+ 	struct drm_crtc crtc;
+ 	struct device *dev;
+ 	struct drm_device *drm_dev;
+@@ -989,6 +990,12 @@ static void vop_plane_atomic_update(struct drm_plane *plane,
+ 	VOP_WIN_SET(vop, win, dsp_st, dsp_st);
+ 
+ 	rb_swap = has_rb_swapped(fb->format->format);
++	/*
++	 * VOP full need to do rb swap to show rgb888/bgr888 format color correctly
++	 */
++	if ((fb->format->format == DRM_FORMAT_RGB888 || fb->format->format == DRM_FORMAT_BGR888) &&
++	    VOP_MAJOR(vop->version) == 3)
++		rb_swap = !rb_swap;
+ 	VOP_WIN_SET(vop, win, rb_swap, rb_swap);
+ 
+ 	/*
+@@ -2091,6 +2098,7 @@ static int vop_bind(struct device *dev, struct device *master, void *data)
+ 	vop->dev = dev;
+ 	vop->data = vop_data;
+ 	vop->drm_dev = drm_dev;
++	vop->version = vop_data->version;
+ 	dev_set_drvdata(dev, vop);
+ 
+ 	vop_win_init(vop);
+-- 
+2.17.1
+
+
 
