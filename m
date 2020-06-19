@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88276200AF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 041A9200AF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgFSOII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:08:08 -0400
-Received: from mga06.intel.com ([134.134.136.31]:54739 "EHLO mga06.intel.com"
+        id S1733038AbgFSOIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:08:20 -0400
+Received: from mga06.intel.com ([134.134.136.31]:54754 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732664AbgFSOHy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:07:54 -0400
-IronPort-SDR: mnuigAQd5XBKWDgjHDFZFKAoKtggpqlh+akmK3UhwXwJIP2qsvNG2W33vHDuDsr/dhTFDaq7uW
- 5IRZ+FCWW6Eg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="204452843"
+        id S1732664AbgFSOIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:08:12 -0400
+IronPort-SDR: gqdNO5M3buUCSL4y89x9MD/ftDaIreOTe/md5Sy9BKVye/GbzMpyW1utIsFKls3W0rBlGeYI+y
+ JG+247KrTJdw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="204452847"
 X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="204452843"
+   d="scan'208";a="204452847"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2020 07:07:53 -0700
-IronPort-SDR: LqYann7WDlB2GvizOXdNPBviE3qSrsXJMkKOfberSurLeBf7OzGHTMhKWNKa/Kj79NCXJ2RA2e
- NQmMMsSDg50g==
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2020 07:07:54 -0700
+IronPort-SDR: PnVWfXuPALwh/PjQq0QuHrILt08Iqr8P3huu6m8a/XVGByeGDa/QpMC4uxKkpv35iTNq1oCstC
+ spGOcnpUrdVA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="383837455"
+   d="scan'208";a="383837462"
 Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Jun 2020 07:07:52 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 19 Jun 2020 07:07:54 -0700
 From:   kan.liang@linux.intel.com
 To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
         tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
@@ -37,9 +37,9 @@ Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         hpa@zytor.com, alexey.budankov@linux.intel.com, eranian@google.com,
         ak@linux.intel.com, like.xu@linux.intel.com,
         yao.jin@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH 09/21] perf/x86: Expose CPUID enumeration bits for arch LBR
-Date:   Fri, 19 Jun 2020 07:03:57 -0700
-Message-Id: <1592575449-64278-10-git-send-email-kan.liang@linux.intel.com>
+Subject: [PATCH 10/21] perf/x86/intel: Check Arch LBR MSRs
+Date:   Fri, 19 Jun 2020 07:03:58 -0700
+Message-Id: <1592575449-64278-11-git-send-email-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1592575449-64278-1-git-send-email-kan.liang@linux.intel.com>
 References: <1592575449-64278-1-git-send-email-kan.liang@linux.intel.com>
@@ -50,73 +50,89 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-The LBR capabilities of Architecture LBR are retrieved from the CPUID
-enumeration once at boot time. The capabilities have to be saved for
-future usage.
+The KVM may not support the MSRs of Architecture LBR. Accessing the
+MSRs may cause #GP and crash the guest.
 
-Several new fields in x86_pmu are added to indicate the capabilities.
-The fields will be used in the following patches.
+The MSRs have to be checked at guest boot time.
 
+Only using the max number of Architecture LBR depth to check the
+MSR_ARCH_LBR_DEPTH should be good enough. The max number can be
+calculated by 8 * the position of the last set bit of LBR_DEPTH value
+in CPUID enumeration.
+
+Co-developed-by: Like Xu <like.xu@linux.intel.com>
+Signed-off-by: Like Xu <like.xu@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/perf_event.h | 44 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 44 insertions(+)
+ arch/x86/events/intel/core.c | 24 ++++++++++++++++++++++--
+ arch/x86/events/perf_event.h |  5 +++++
+ 2 files changed, 27 insertions(+), 2 deletions(-)
 
+diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+index b236cff..c3372bd 100644
+--- a/arch/x86/events/intel/core.c
++++ b/arch/x86/events/intel/core.c
+@@ -4145,6 +4145,8 @@ static bool check_msr(unsigned long msr, u64 mask)
+ 
+ 	if (is_lbr_from(msr))
+ 		val_tmp = lbr_from_signext_quirk_wr(val_tmp);
++	else if (msr == MSR_ARCH_LBR_DEPTH)
++		val_tmp = x86_pmu_get_max_arch_lbr_nr();
+ 
+ 	if (wrmsrl_safe(msr, val_tmp) ||
+ 	    rdmsrl_safe(msr, &val_new))
+@@ -5188,8 +5190,23 @@ __init int intel_pmu_init(void)
+ 	 * Check all LBT MSR here.
+ 	 * Disable LBR access if any LBR MSRs can not be accessed.
+ 	 */
+-	if (x86_pmu.lbr_nr && !check_msr(x86_pmu.lbr_tos, 0x3UL))
+-		x86_pmu.lbr_nr = 0;
++	if (x86_pmu.lbr_nr) {
++		if (x86_pmu.arch_lbr) {
++			u64 mask = 1;
++
++			if (x86_pmu.arch_lbr_cpl)
++				mask |= ARCH_LBR_CTL_CPL;
++			if (x86_pmu.arch_lbr_filter)
++				mask |= ARCH_LBR_CTL_FILTER;
++			if (x86_pmu.arch_lbr_call_stack)
++				mask |= ARCH_LBR_CTL_STACK;
++			if (!check_msr(MSR_ARCH_LBR_CTL, mask))
++				x86_pmu.lbr_nr = 0;
++			if (!check_msr(MSR_ARCH_LBR_DEPTH, 0))
++				x86_pmu.lbr_nr = 0;
++		} else if (!check_msr(x86_pmu.lbr_tos, 0x3UL))
++			x86_pmu.lbr_nr = 0;
++	}
+ 	for (i = 0; i < x86_pmu.lbr_nr; i++) {
+ 		if (!(check_msr(x86_pmu.lbr_from + i, 0xffffUL) &&
+ 		      check_msr(x86_pmu.lbr_to + i, 0xffffUL)))
+@@ -5206,6 +5223,9 @@ __init int intel_pmu_init(void)
+ 	 */
+ 	if (x86_pmu.extra_regs) {
+ 		for (er = x86_pmu.extra_regs; er->msr; er++) {
++			/* Skip Arch LBR which is already verified */
++			if (x86_pmu.arch_lbr && (er->idx == EXTRA_REG_LBR))
++				continue;
+ 			er->extra_msr_access = check_msr(er->msr, 0x11UL);
+ 			/* Disable LBR select mapping */
+ 			if ((er->idx == EXTRA_REG_LBR) && !er->extra_msr_access)
 diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index e33d348..cbfc55b 100644
+index cbfc55b..7112c51 100644
 --- a/arch/x86/events/perf_event.h
 +++ b/arch/x86/events/perf_event.h
-@@ -689,6 +689,50 @@ struct x86_pmu {
- 	const int	*lbr_sel_map;		   /* lbr_select mappings */
- 	bool		lbr_double_abort;	   /* duplicated lbr aborts */
- 	bool		lbr_pt_coexist;		   /* (LBR|BTS) may coexist with PT */
-+	bool		arch_lbr;		   /* Arch LBR supported */
-+
-+	/* Arch LBR Capabilities */
-+	union {
-+		struct {
-+			/* Supported LBR depth values */
-+			unsigned int	arch_lbr_depth_mask:8;
-+
-+			unsigned int	reserved:22;
-+
-+			/* Deep C-state Reset */
-+			unsigned int	arch_lbr_deep_c_reset:1;
-+
-+			/* IP values contain LIP */
-+			unsigned int	arch_lbr_lip:1;
-+		};
-+		unsigned int		arch_lbr_eax;
-+	};
-+	union {
-+		struct {
-+			/* CPL Filtering Supported */
-+			unsigned int    arch_lbr_cpl:1;
-+
-+			/* Branch Filtering Supported */
-+			unsigned int    arch_lbr_filter:1;
-+
-+			/* Call-stack Mode Supported */
-+			unsigned int    arch_lbr_call_stack:1;
-+		};
-+		unsigned int            arch_lbr_ebx;
-+	};
-+	union {
-+		struct {
-+			/* Mispredict Bit Supported */
-+			unsigned int    arch_lbr_mispred:1;
-+
-+			/* Timed LBRs Supported */
-+			unsigned int    arch_lbr_timed_lbr:1;
-+
-+			/* Branch Type Field Supported */
-+			unsigned int    arch_lbr_br_type:1;
-+		};
-+		unsigned int            arch_lbr_ecx;
-+	};
+@@ -853,6 +853,11 @@ static inline bool x86_pmu_has_lbr_callstack(void)
+ 		x86_pmu.lbr_sel_map[PERF_SAMPLE_BRANCH_CALL_STACK_SHIFT] > 0;
+ }
  
- 	void		(*lbr_enable)(bool pmi);
- 	void		(*lbr_disable)(void);
++static inline int x86_pmu_get_max_arch_lbr_nr(void)
++{
++	return fls(x86_pmu.arch_lbr_depth_mask) * 8;
++}
++
+ DECLARE_PER_CPU(struct cpu_hw_events, cpu_hw_events);
+ 
+ int x86_perf_event_set_period(struct perf_event *event);
 -- 
 2.7.4
 
