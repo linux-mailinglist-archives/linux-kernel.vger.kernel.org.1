@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A5620102B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B2B200E98
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404383AbgFSP0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:26:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56840 "EHLO mail.kernel.org"
+        id S2391899AbgFSPJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:09:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393364AbgFSPZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:25:05 -0400
+        id S2391390AbgFSPJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:09:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4C4121582;
-        Fri, 19 Jun 2020 15:25:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCC2C21941;
+        Fri, 19 Jun 2020 15:09:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580303;
-        bh=11YNQfJ7vqagWuD8q52RubX+NJrVDLuos4X+rH7Zr/E=;
+        s=default; t=1592579356;
+        bh=yZGjxzEZ9qBbHaqVz0eyopaTek4cdv6zmmvWszXjIek=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yqvn8piGWlkU6IDDKAm+rpAHqLLv0/shEpdSp7uGBXE6W54mXLBopgU6h1UtQVUyn
-         wSTJOXRRHZiQuM+3XxrboBFsXxGBp6WZe8psBh738QYe5oG2TV61NHjY3NnLJK7tp/
-         rVaeMVm0fTsQeQxQaZSdeDOIuoMoGm4EsXfiv0Bw=
+        b=A7b4PSKrh+jQ9E3xbmrGkJBJ9qIwAKremhHPid8E1ow3KhDse593//CLZ0az//D9i
+         1p5c3rmb6xEDs0gFWeab4AcTBzKfrXFt3RZleWjIpxKkTLv68ww7j6iQi4qfMJETck
+         i7fmy06D8Cc/NM68rps4EpuXaL1SqRsDVBuf6wJo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
+        stable@vger.kernel.org,
+        Weiping Zhang <zhangweiping@didiglobal.com>,
+        Keith Busch <kbusch@kernel.org>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 198/376] kgdboc: Use a platform device to handle tty drivers showing up late
+Subject: [PATCH 5.4 105/261] nvme-pci: align io queue count with allocted nvme_queue in nvme_probe
 Date:   Fri, 19 Jun 2020 16:31:56 +0200
-Message-Id: <20200619141719.717936834@linuxfoundation.org>
+Message-Id: <20200619141654.904273166@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
-References: <20200619141710.350494719@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,275 +47,177 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Weiping Zhang <zhangweiping@didiglobal.com>
 
-[ Upstream commit 68e55f61c13842baf825958129698c5371db432c ]
+[ Upstream commit 2a5bcfdd41d68559567cec3c124a75e093506cc1 ]
 
-If you build CONFIG_KGDB_SERIAL_CONSOLE into the kernel then you
-should be able to have KGDB init itself at bootup by specifying the
-"kgdboc=..." kernel command line parameter.  This has worked OK for me
-for many years, but on a new device I switched to it stopped working.
+Since commit 147b27e4bd08 ("nvme-pci: allocate device queues storage
+space at probe"), nvme_alloc_queue does not alloc the nvme queues
+itself anymore.
 
-The problem is that on this new device the serial driver gets its
-probe deferred.  Now when kgdb initializes it can't find the tty
-driver and when it gives up it never tries again.
+If the write/poll_queues module parameters are changed at runtime to
+values larger than the number of allocated queues in nvme_probe,
+nvme_alloc_queue will access unallocated memory.
 
-We could try to find ways to move up the initialization of the serial
-driver and such a thing might be worthwhile, but it's nice to be
-robust against serial drivers that load late.  We could move kgdb to
-init itself later but that penalizes our ability to debug early boot
-code on systems where the driver inits early.  We could roll our own
-system of detecting when new tty drivers get loaded and then use that
-to figure out when kgdb can init, but that's ugly.
+Add a new nr_allocated_queues member to struct nvme_dev to record how
+many queues were alloctated in nvme_probe to avoid using more than the
+allocated queues after a reset following a change to the
+write/poll_queues module parameters.
 
-Instead, let's jump on the -EPROBE_DEFER bandwagon.  We'll create a
-singleton instance of a "kgdboc" platform device.  If we can't find
-our tty device when the singleton "kgdboc" probes we'll return
--EPROBE_DEFER which means that the system will call us back later to
-try again when the tty device might be there.
+Also add nr_write_queues and nr_poll_queues members to allow refreshing
+the number of write and poll queues based on a change to the module
+parameters when resetting the controller.
 
-We won't fully transition all of the kgdboc to a platform device
-because early kgdb initialization (via the "ekgdboc" kernel command
-line parameter) still runs before the platform device has been
-created.  The kgdb platform device is merely used as a convenient way
-to hook into the system's normal probe deferral mechanisms.
-
-As part of this, we'll ever-so-slightly change how the "kgdboc=..."
-kernel command line parameter works.  Previously if you booted up and
-kgdb couldn't find the tty driver then later reading
-'/sys/module/kgdboc/parameters/kgdboc' would return a blank string.
-Now kgdb will keep track of the string that came as part of the
-command line and give it back to you.  It's expected that this should
-be an OK change.
-
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Link: https://lore.kernel.org/r/20200507130644.v4.3.I4a493cfb0f9f740ce8fd2ab58e62dc92d18fed30@changeid
-[daniel.thompson@linaro.org: Make config_mutex static]
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+Fixes: 147b27e4bd08 ("nvme-pci: allocate device queues storage space at probe")
+Signed-off-by: Weiping Zhang <zhangweiping@didiglobal.com>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
+[hch: add nvme_max_io_queues, update the commit message]
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/kgdboc.c | 126 +++++++++++++++++++++++++++++-------
- 1 file changed, 101 insertions(+), 25 deletions(-)
+ drivers/nvme/host/pci.c | 57 ++++++++++++++++++++++++-----------------
+ 1 file changed, 33 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-index c9f94fa82be4..151256f70d37 100644
---- a/drivers/tty/serial/kgdboc.c
-+++ b/drivers/tty/serial/kgdboc.c
-@@ -20,6 +20,7 @@
- #include <linux/vt_kern.h>
- #include <linux/input.h>
- #include <linux/module.h>
-+#include <linux/platform_device.h>
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index cd64ddb129e5..1c2129493508 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -128,6 +128,9 @@ struct nvme_dev {
+ 	dma_addr_t host_mem_descs_dma;
+ 	struct nvme_host_mem_buf_desc *host_mem_descs;
+ 	void **host_mem_desc_bufs;
++	unsigned int nr_allocated_queues;
++	unsigned int nr_write_queues;
++	unsigned int nr_poll_queues;
+ };
  
- #define MAX_CONFIG_LEN		40
+ static int io_queue_depth_set(const char *val, const struct kernel_param *kp)
+@@ -210,25 +213,14 @@ struct nvme_iod {
+ 	struct scatterlist *sg;
+ };
  
-@@ -27,6 +28,7 @@ static struct kgdb_io		kgdboc_io_ops;
- 
- /* -1 = init not run yet, 0 = unconfigured, 1 = configured. */
- static int configured		= -1;
-+static DEFINE_MUTEX(config_mutex);
- 
- static char config[MAX_CONFIG_LEN];
- static struct kparam_string kps = {
-@@ -38,6 +40,8 @@ static int kgdboc_use_kms;  /* 1 if we use kernel mode switching */
- static struct tty_driver	*kgdb_tty_driver;
- static int			kgdb_tty_line;
- 
-+static struct platform_device *kgdboc_pdev;
-+
- #ifdef CONFIG_KDB_KEYBOARD
- static int kgdboc_reset_connect(struct input_handler *handler,
- 				struct input_dev *dev,
-@@ -133,11 +137,13 @@ static void kgdboc_unregister_kbd(void)
- 
- static void cleanup_kgdboc(void)
+-static unsigned int max_io_queues(void)
++static inline unsigned int nvme_dbbuf_size(struct nvme_dev *dev)
  {
-+	if (configured != 1)
-+		return;
-+
- 	if (kgdb_unregister_nmi_console())
- 		return;
- 	kgdboc_unregister_kbd();
--	if (configured == 1)
--		kgdb_unregister_io_module(&kgdboc_io_ops);
-+	kgdb_unregister_io_module(&kgdboc_io_ops);
+-	return num_possible_cpus() + write_queues + poll_queues;
+-}
+-
+-static unsigned int max_queue_count(void)
+-{
+-	/* IO queues + admin queue */
+-	return 1 + max_io_queues();
+-}
+-
+-static inline unsigned int nvme_dbbuf_size(u32 stride)
+-{
+-	return (max_queue_count() * 8 * stride);
++	return dev->nr_allocated_queues * 8 * dev->db_stride;
  }
  
- static int configure_kgdboc(void)
-@@ -198,20 +204,79 @@ nmi_con_failed:
- 	kgdb_unregister_io_module(&kgdboc_io_ops);
- noconfig:
- 	kgdboc_unregister_kbd();
--	config[0] = 0;
- 	configured = 0;
--	cleanup_kgdboc();
- 
- 	return err;
- }
- 
-+static int kgdboc_probe(struct platform_device *pdev)
-+{
-+	int ret = 0;
-+
-+	mutex_lock(&config_mutex);
-+	if (configured != 1) {
-+		ret = configure_kgdboc();
-+
-+		/* Convert "no device" to "defer" so we'll keep trying */
-+		if (ret == -ENODEV)
-+			ret = -EPROBE_DEFER;
-+	}
-+	mutex_unlock(&config_mutex);
-+
-+	return ret;
-+}
-+
-+static struct platform_driver kgdboc_platform_driver = {
-+	.probe = kgdboc_probe,
-+	.driver = {
-+		.name = "kgdboc",
-+		.suppress_bind_attrs = true,
-+	},
-+};
-+
- static int __init init_kgdboc(void)
+ static int nvme_dbbuf_dma_alloc(struct nvme_dev *dev)
  {
--	/* Already configured? */
--	if (configured == 1)
-+	int ret;
-+
-+	/*
-+	 * kgdboc is a little bit of an odd "platform_driver".  It can be
-+	 * up and running long before the platform_driver object is
-+	 * created and thus doesn't actually store anything in it.  There's
-+	 * only one instance of kgdb so anything is stored as global state.
-+	 * The platform_driver is only created so that we can leverage the
-+	 * kernel's mechanisms (like -EPROBE_DEFER) to call us when our
-+	 * underlying tty is ready.  Here we init our platform driver and
-+	 * then create the single kgdboc instance.
-+	 */
-+	ret = platform_driver_register(&kgdboc_platform_driver);
-+	if (ret)
-+		return ret;
-+
-+	kgdboc_pdev = platform_device_alloc("kgdboc", PLATFORM_DEVID_NONE);
-+	if (!kgdboc_pdev) {
-+		ret = -ENOMEM;
-+		goto err_did_register;
-+	}
-+
-+	ret = platform_device_add(kgdboc_pdev);
-+	if (!ret)
+-	unsigned int mem_size = nvme_dbbuf_size(dev->db_stride);
++	unsigned int mem_size = nvme_dbbuf_size(dev);
+ 
+ 	if (dev->dbbuf_dbs)
  		return 0;
+@@ -253,7 +245,7 @@ static int nvme_dbbuf_dma_alloc(struct nvme_dev *dev)
  
--	return configure_kgdboc();
-+	platform_device_put(kgdboc_pdev);
-+
-+err_did_register:
-+	platform_driver_unregister(&kgdboc_platform_driver);
-+	return ret;
+ static void nvme_dbbuf_dma_free(struct nvme_dev *dev)
+ {
+-	unsigned int mem_size = nvme_dbbuf_size(dev->db_stride);
++	unsigned int mem_size = nvme_dbbuf_size(dev);
+ 
+ 	if (dev->dbbuf_dbs) {
+ 		dma_free_coherent(dev->dev, mem_size,
+@@ -2030,7 +2022,7 @@ static int nvme_setup_host_mem(struct nvme_dev *dev)
+ static void nvme_calc_irq_sets(struct irq_affinity *affd, unsigned int nrirqs)
+ {
+ 	struct nvme_dev *dev = affd->priv;
+-	unsigned int nr_read_queues;
++	unsigned int nr_read_queues, nr_write_queues = dev->nr_write_queues;
+ 
+ 	/*
+ 	 * If there is no interupt available for queues, ensure that
+@@ -2046,12 +2038,12 @@ static void nvme_calc_irq_sets(struct irq_affinity *affd, unsigned int nrirqs)
+ 	if (!nrirqs) {
+ 		nrirqs = 1;
+ 		nr_read_queues = 0;
+-	} else if (nrirqs == 1 || !write_queues) {
++	} else if (nrirqs == 1 || !nr_write_queues) {
+ 		nr_read_queues = 0;
+-	} else if (write_queues >= nrirqs) {
++	} else if (nr_write_queues >= nrirqs) {
+ 		nr_read_queues = 1;
+ 	} else {
+-		nr_read_queues = nrirqs - write_queues;
++		nr_read_queues = nrirqs - nr_write_queues;
+ 	}
+ 
+ 	dev->io_queues[HCTX_TYPE_DEFAULT] = nrirqs - nr_read_queues;
+@@ -2075,7 +2067,7 @@ static int nvme_setup_irqs(struct nvme_dev *dev, unsigned int nr_io_queues)
+ 	 * Poll queues don't need interrupts, but we need at least one IO
+ 	 * queue left over for non-polled IO.
+ 	 */
+-	this_p_queues = poll_queues;
++	this_p_queues = dev->nr_poll_queues;
+ 	if (this_p_queues >= nr_io_queues) {
+ 		this_p_queues = nr_io_queues - 1;
+ 		irq_queues = 1;
+@@ -2105,14 +2097,25 @@ static void nvme_disable_io_queues(struct nvme_dev *dev)
+ 		__nvme_disable_io_queues(dev, nvme_admin_delete_cq);
+ }
+ 
++static unsigned int nvme_max_io_queues(struct nvme_dev *dev)
++{
++	return num_possible_cpus() + dev->nr_write_queues + dev->nr_poll_queues;
 +}
 +
-+static void exit_kgdboc(void)
-+{
-+	mutex_lock(&config_mutex);
-+	cleanup_kgdboc();
-+	mutex_unlock(&config_mutex);
-+
-+	platform_device_unregister(kgdboc_pdev);
-+	platform_driver_unregister(&kgdboc_platform_driver);
- }
- 
- static int kgdboc_get_char(void)
-@@ -234,24 +299,20 @@ static int param_set_kgdboc_var(const char *kmessage,
- 				const struct kernel_param *kp)
+ static int nvme_setup_io_queues(struct nvme_dev *dev)
  {
- 	size_t len = strlen(kmessage);
-+	int ret = 0;
+ 	struct nvme_queue *adminq = &dev->queues[0];
+ 	struct pci_dev *pdev = to_pci_dev(dev->dev);
+-	int result, nr_io_queues;
++	unsigned int nr_io_queues;
+ 	unsigned long size;
++	int result;
  
- 	if (len >= MAX_CONFIG_LEN) {
- 		pr_err("config string too long\n");
- 		return -ENOSPC;
- 	}
- 
--	/* Only copy in the string if the init function has not run yet */
--	if (configured < 0) {
--		strcpy(config, kmessage);
--		return 0;
--	}
--
- 	if (kgdb_connected) {
- 		pr_err("Cannot reconfigure while KGDB is connected.\n");
--
- 		return -EBUSY;
- 	}
- 
-+	mutex_lock(&config_mutex);
-+
- 	strcpy(config, kmessage);
- 	/* Chop out \n char as a result of echo */
- 	if (len && config[len - 1] == '\n')
-@@ -260,8 +321,30 @@ static int param_set_kgdboc_var(const char *kmessage,
- 	if (configured == 1)
- 		cleanup_kgdboc();
- 
--	/* Go and configure with the new params. */
--	return configure_kgdboc();
+-	nr_io_queues = max_io_queues();
 +	/*
-+	 * Configure with the new params as long as init already ran.
-+	 * Note that we can get called before init if someone loads us
-+	 * with "modprobe kgdboc kgdboc=..." or if they happen to use the
-+	 * the odd syntax of "kgdboc.kgdboc=..." on the kernel command.
++	 * Sample the module parameters once at reset time so that we have
++	 * stable values to work with.
 +	 */
-+	if (configured >= 0)
-+		ret = configure_kgdboc();
-+
-+	/*
-+	 * If we couldn't configure then clear out the config.  Note that
-+	 * specifying an invalid config on the kernel command line vs.
-+	 * through sysfs have slightly different behaviors.  If we fail
-+	 * to configure what was specified on the kernel command line
-+	 * we'll leave it in the 'config' and return -EPROBE_DEFER from
-+	 * our probe.  When specified through sysfs userspace is
-+	 * responsible for loading the tty driver before setting up.
-+	 */
-+	if (ret)
-+		config[0] = '\0';
-+
-+	mutex_unlock(&config_mutex);
-+
-+	return ret;
- }
++	dev->nr_write_queues = write_queues;
++	dev->nr_poll_queues = poll_queues;
  
- static int dbg_restore_graphics;
-@@ -324,15 +407,8 @@ __setup("kgdboc=", kgdboc_option_setup);
- /* This is only available if kgdboc is a built in for early debugging */
- static int __init kgdboc_early_init(char *opt)
- {
--	/* save the first character of the config string because the
--	 * init routine can destroy it.
--	 */
--	char save_ch;
--
- 	kgdboc_option_setup(opt);
--	save_ch = config[0];
--	init_kgdboc();
--	config[0] = save_ch;
-+	configure_kgdboc();
- 	return 0;
- }
+ 	/*
+ 	 * If tags are shared with admin queue (Apple bug), then
+@@ -2120,6 +2123,9 @@ static int nvme_setup_io_queues(struct nvme_dev *dev)
+ 	 */
+ 	if (dev->ctrl.quirks & NVME_QUIRK_SHARED_TAGS)
+ 		nr_io_queues = 1;
++	else
++		nr_io_queues = min(nvme_max_io_queues(dev),
++				   dev->nr_allocated_queues - 1);
  
-@@ -340,7 +416,7 @@ early_param("ekgdboc", kgdboc_early_init);
- #endif /* CONFIG_KGDB_SERIAL_CONSOLE */
+ 	result = nvme_set_queue_count(&dev->ctrl, &nr_io_queues);
+ 	if (result < 0)
+@@ -2794,8 +2800,11 @@ static int nvme_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	if (!dev)
+ 		return -ENOMEM;
  
- module_init(init_kgdboc);
--module_exit(cleanup_kgdboc);
-+module_exit(exit_kgdboc);
- module_param_call(kgdboc, param_set_kgdboc_var, param_get_string, &kps, 0644);
- MODULE_PARM_DESC(kgdboc, "<serial_device>[,baud]");
- MODULE_DESCRIPTION("KGDB Console TTY Driver");
+-	dev->queues = kcalloc_node(max_queue_count(), sizeof(struct nvme_queue),
+-					GFP_KERNEL, node);
++	dev->nr_write_queues = write_queues;
++	dev->nr_poll_queues = poll_queues;
++	dev->nr_allocated_queues = nvme_max_io_queues(dev) + 1;
++	dev->queues = kcalloc_node(dev->nr_allocated_queues,
++			sizeof(struct nvme_queue), GFP_KERNEL, node);
+ 	if (!dev->queues)
+ 		goto free;
+ 
 -- 
 2.25.1
 
