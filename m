@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DC0201575
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7132014C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394705AbgFSQWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:22:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56596 "EHLO mail.kernel.org"
+        id S2390333AbgFSPAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:00:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390625AbgFSPAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:00:13 -0400
+        id S2390622AbgFSPAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:00:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2738921974;
-        Fri, 19 Jun 2020 15:00:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D656A20734;
+        Fri, 19 Jun 2020 15:00:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578813;
-        bh=BrI+WuGkxm4WQ+ii/45L5i8ok4mIJVhc91mXai6/4ZQ=;
+        s=default; t=1592578816;
+        bh=JSyUSw4bTz9KQOzqWW/fuVJIcakQ6IBfFtwiMOHZIDU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s4CoXYU8RXLCuv33wyPjh9Py/aVHEbCCo0+vk4I64z6XKy02h3ZRRfLbKJKzcApyT
-         +OPAsYQe8qIo9V9luKEkbMMrSAKypX/iQR9YVggIRKYJinxnswn6Tx8det5Pc1G2Jv
-         WdJRa1Rt0v1a5qu8ZsitLWrCjDzSZorbsG3b0Vn4=
+        b=EWHh5L0TQCJM/etecr7WJNFhGXUOKpnTG3VVUtSTy/tGAvKd0ubSQ57dI5kbSIpkk
+         yfcImJaH0uT2wD51lVUNUmte0XKpgP4sIirWzyIoEDoCWnn4ttce3IlCx4IJ1lQjJA
+         zsfBTySZpT6CpX8zSz5FWG57s3Gt0L5dHVfMxaQk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,9 +30,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Nicolas Toromanoff <nicolas.toromanoff@st.com>,
         Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 167/267] crypto: stm32/crc32 - fix run-time self test issue.
-Date:   Fri, 19 Jun 2020 16:32:32 +0200
-Message-Id: <20200619141656.819659319@linuxfoundation.org>
+Subject: [PATCH 4.19 168/267] crypto: stm32/crc32 - fix multi-instance
+Date:   Fri, 19 Jun 2020 16:32:33 +0200
+Message-Id: <20200619141656.862914202@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
 References: <20200619141648.840376470@linuxfoundation.org>
@@ -47,13 +47,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Nicolas Toromanoff <nicolas.toromanoff@st.com>
 
-[ Upstream commit a8cc3128bf2c01c4d448fe17149e87132113b445 ]
+[ Upstream commit 10b89c43a64eb0d236903b79a3bc9d8f6cbfd9c7 ]
 
-Fix wrong crc32 initialisation value:
-"alg: shash: stm32_crc32 test failed (wrong result) on test vector 0,
-cfg="init+update+final aligned buffer"
-cra_name="crc32c" expects an init value of 0XFFFFFFFF,
-cra_name="crc32" expects an init value of 0.
+Ensure CRC algorithm is registered only once in crypto framework when
+there are several instances of CRC devices.
+
+Update the CRC device list management to avoid that only the first CRC
+instance is used.
 
 Fixes: b51dbe90912a ("crypto: stm32 - Support for STM32 CRC32 crypto module")
 
@@ -61,43 +61,104 @@ Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
 Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/stm32/stm32_crc32.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/crypto/stm32/stm32_crc32.c | 48 ++++++++++++++++++++++--------
+ 1 file changed, 36 insertions(+), 12 deletions(-)
 
 diff --git a/drivers/crypto/stm32/stm32_crc32.c b/drivers/crypto/stm32/stm32_crc32.c
-index 749b51762b18..c5ad83ad2f72 100644
+index c5ad83ad2f72..47d31335c2d4 100644
 --- a/drivers/crypto/stm32/stm32_crc32.c
 +++ b/drivers/crypto/stm32/stm32_crc32.c
-@@ -28,10 +28,10 @@
- 
- /* Registers values */
- #define CRC_CR_RESET            BIT(0)
--#define CRC_INIT_DEFAULT        0xFFFFFFFF
- #define CRC_CR_REV_IN_WORD      (BIT(6) | BIT(5))
- #define CRC_CR_REV_IN_BYTE      BIT(5)
- #define CRC_CR_REV_OUT          BIT(7)
-+#define CRC32C_INIT_DEFAULT     0xFFFFFFFF
- 
- #define CRC_AUTOSUSPEND_DELAY	50
- 
-@@ -65,7 +65,7 @@ static int stm32_crc32_cra_init(struct crypto_tfm *tfm)
- {
- 	struct stm32_crc_ctx *mctx = crypto_tfm_ctx(tfm);
- 
--	mctx->key = CRC_INIT_DEFAULT;
-+	mctx->key = 0;
- 	mctx->poly = CRC32_POLY_LE;
+@@ -93,16 +93,29 @@ static int stm32_crc_setkey(struct crypto_shash *tfm, const u8 *key,
  	return 0;
  }
-@@ -74,7 +74,7 @@ static int stm32_crc32c_cra_init(struct crypto_tfm *tfm)
- {
- 	struct stm32_crc_ctx *mctx = crypto_tfm_ctx(tfm);
  
--	mctx->key = CRC_INIT_DEFAULT;
-+	mctx->key = CRC32C_INIT_DEFAULT;
- 	mctx->poly = CRC32C_POLY_LE;
- 	return 0;
+-static int stm32_crc_init(struct shash_desc *desc)
++static struct stm32_crc *stm32_crc_get_next_crc(void)
+ {
+-	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
+-	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
+ 	struct stm32_crc *crc;
+ 
+ 	spin_lock_bh(&crc_list.lock);
+ 	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
++	if (crc)
++		list_move_tail(&crc->list, &crc_list.dev_list);
+ 	spin_unlock_bh(&crc_list.lock);
+ 
++	return crc;
++}
++
++static int stm32_crc_init(struct shash_desc *desc)
++{
++	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
++	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
++	struct stm32_crc *crc;
++
++	crc = stm32_crc_get_next_crc();
++	if (!crc)
++		return -ENODEV;
++
+ 	pm_runtime_get_sync(crc->dev);
+ 
+ 	/* Reset, set key, poly and configure in bit reverse mode */
+@@ -127,9 +140,9 @@ static int stm32_crc_update(struct shash_desc *desc, const u8 *d8,
+ 	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
+ 	struct stm32_crc *crc;
+ 
+-	spin_lock_bh(&crc_list.lock);
+-	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
+-	spin_unlock_bh(&crc_list.lock);
++	crc = stm32_crc_get_next_crc();
++	if (!crc)
++		return -ENODEV;
+ 
+ 	pm_runtime_get_sync(crc->dev);
+ 
+@@ -202,6 +215,8 @@ static int stm32_crc_digest(struct shash_desc *desc, const u8 *data,
+ 	return stm32_crc_init(desc) ?: stm32_crc_finup(desc, data, length, out);
  }
+ 
++static unsigned int refcnt;
++static DEFINE_MUTEX(refcnt_lock);
+ static struct shash_alg algs[] = {
+ 	/* CRC-32 */
+ 	{
+@@ -294,12 +309,18 @@ static int stm32_crc_probe(struct platform_device *pdev)
+ 	list_add(&crc->list, &crc_list.dev_list);
+ 	spin_unlock(&crc_list.lock);
+ 
+-	ret = crypto_register_shashes(algs, ARRAY_SIZE(algs));
+-	if (ret) {
+-		dev_err(dev, "Failed to register\n");
+-		clk_disable_unprepare(crc->clk);
+-		return ret;
++	mutex_lock(&refcnt_lock);
++	if (!refcnt) {
++		ret = crypto_register_shashes(algs, ARRAY_SIZE(algs));
++		if (ret) {
++			mutex_unlock(&refcnt_lock);
++			dev_err(dev, "Failed to register\n");
++			clk_disable_unprepare(crc->clk);
++			return ret;
++		}
+ 	}
++	refcnt++;
++	mutex_unlock(&refcnt_lock);
+ 
+ 	dev_info(dev, "Initialized\n");
+ 
+@@ -320,7 +341,10 @@ static int stm32_crc_remove(struct platform_device *pdev)
+ 	list_del(&crc->list);
+ 	spin_unlock(&crc_list.lock);
+ 
+-	crypto_unregister_shashes(algs, ARRAY_SIZE(algs));
++	mutex_lock(&refcnt_lock);
++	if (!--refcnt)
++		crypto_unregister_shashes(algs, ARRAY_SIZE(algs));
++	mutex_unlock(&refcnt_lock);
+ 
+ 	pm_runtime_disable(crc->dev);
+ 	pm_runtime_put_noidle(crc->dev);
 -- 
 2.25.1
 
