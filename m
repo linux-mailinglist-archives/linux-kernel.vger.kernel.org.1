@@ -2,54 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 198FB201DE5
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 00:13:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0AF201DCA
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 00:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729167AbgFSWNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 18:13:07 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:36055 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729170AbgFSWND (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 18:13:03 -0400
-Received: by mail-io1-f71.google.com with SMTP id d197so7863327iog.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 15:13:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to:cc;
-        bh=bDQBVe7l2yqt3mB06iVMiMUl/d4DebrpwMmTezaCnl8=;
-        b=Bp+OKSGIZ5EEW3nVLXIhKHcaqowKFOqubjrVd/EamMG6ZXimYlgkUnYUUikJ9ZRSUU
-         b2bxyY1hcq76Y4EWkvoPaa3aUzM8j+Ai6TXnpZY0orMIpky/Q5KvWw1o2Xa4uGGH1arO
-         7nYxK3F4pdSMYV40gKcXzoLa1Z4z/KlR0PA9iQt8fXJwqtBtthDfEi43kIFfvrE4nRLU
-         5jsDjTdh/vDlSJJQN6HN6meWHNIS4DplR6a6ysggNX7iNeO4OC42UJJpx18W94d03Eox
-         TgPTw7Yn1USonkkHZJ/ET0eOq439JIbqlcUhMjQ0SNRtgwmbYLGsr/ZEb/gjgnLTrxyH
-         p3pA==
-X-Gm-Message-State: AOAM531B05SG//1eTLuR3ZmiSEIBVYpPNpYzHcD5cXwbjS0CpMKkBJ1t
-        KsPJhs7iVHI4+Fy1zPbk15yzssVaEGnznCiKy9LtXdCvOuWb
-X-Google-Smtp-Source: ABdhPJzjaETVaBpX1f0tHVMK3hsmWaEb1GQ3x0ua3YT2kGO5COxXB6fKHj4VZholdD5EaJS9f8p85/bf/O/linaN08vWq58XmZ7B
+        id S1729002AbgFSWIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 18:08:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728906AbgFSWIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 18:08:40 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A222622254;
+        Fri, 19 Jun 2020 22:08:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592604520;
+        bh=FPujhuHy8XQ5w+xZmYoRx4eJBUret8iD8/H/jWW313U=;
+        h=Date:From:To:Cc:Subject:From;
+        b=0Ryv3eBhGBUzUiiK8HHrpWqnIbHamBIdJ9W8VYJABtLrT7GSebtO0uDCxWsLzEBrg
+         TOLyJHQt0PqnLJL2RcNY53JcAZ+ckZ7XHoxl0oX1ETb8fyHNwiGFh5iXMNzQO6C249
+         VNrs3JAzHYvSa8PFn/mq7Gr61vNdmpuh9cEUlEbE=
+Date:   Fri, 19 Jun 2020 17:14:03 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>
+Cc:     linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] leds: gpio: Use struct_size() in devm_kzalloc()
+Message-ID: <20200619221403.GA12097@embeddedor>
 MIME-Version: 1.0
-X-Received: by 2002:a02:cd89:: with SMTP id l9mr5712504jap.88.1592604782755;
- Fri, 19 Jun 2020 15:13:02 -0700 (PDT)
-Date:   Fri, 19 Jun 2020 15:13:02 -0700
-In-Reply-To: <2214469.1592604774@warthog.procyon.org.uk>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005805de05a87732bf@google.com>
-Subject: Re: Re: net-next test error: KASAN: use-after-free Write in afs_wake_up_async_call
-From:   syzbot <syzbot+d3eccef36ddbd02713e9@syzkaller.appspotmail.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     davem@davemloft.net, dhowells@redhat.com, kuba@kernel.org,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/dhowells/linux-fs.git 559f5964f95ce6096ae0aa858eaee202500ab9ca
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes. Also, remove unnecessary
+function sizeof_gpio_leds_priv().
 
-This crash does not have a reproducer. I cannot test it.
+This code was detected with the help of Coccinelle and, audited and
+fixed manually.
 
->
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/leds/leds-gpio.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/leds/leds-gpio.c b/drivers/leds/leds-gpio.c
+index 2bf74595610f..30ae453f32f7 100644
+--- a/drivers/leds/leds-gpio.c
++++ b/drivers/leds/leds-gpio.c
+@@ -125,12 +125,6 @@ struct gpio_leds_priv {
+ 	struct gpio_led_data leds[];
+ };
+ 
+-static inline int sizeof_gpio_leds_priv(int num_leds)
+-{
+-	return sizeof(struct gpio_leds_priv) +
+-		(sizeof(struct gpio_led_data) * num_leds);
+-}
+-
+ static struct gpio_leds_priv *gpio_leds_create(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -142,7 +136,7 @@ static struct gpio_leds_priv *gpio_leds_create(struct platform_device *pdev)
+ 	if (!count)
+ 		return ERR_PTR(-ENODEV);
+ 
+-	priv = devm_kzalloc(dev, sizeof_gpio_leds_priv(count), GFP_KERNEL);
++	priv = devm_kzalloc(dev, struct_size(priv, leds, count), GFP_KERNEL);
+ 	if (!priv)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -260,9 +254,8 @@ static int gpio_led_probe(struct platform_device *pdev)
+ 	int i, ret = 0;
+ 
+ 	if (pdata && pdata->num_leds) {
+-		priv = devm_kzalloc(&pdev->dev,
+-				sizeof_gpio_leds_priv(pdata->num_leds),
+-					GFP_KERNEL);
++		priv = devm_kzalloc(&pdev->dev, struct_size(priv, leds, pdata->num_leds),
++				    GFP_KERNEL);
+ 		if (!priv)
+ 			return -ENOMEM;
+ 
+-- 
+2.27.0
+
