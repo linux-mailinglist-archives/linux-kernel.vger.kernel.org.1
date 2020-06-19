@@ -2,157 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DADB200B8E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8239200BB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733252AbgFSOcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:32:35 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:58381 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733230AbgFSOca (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:32:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592577149;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=mZRjN4QhW5X6YfR7Z2yjjbULaODEXfUST0bMuVtU8r4=;
-        b=ZTIEmzsMICzOLsBifUmq+B47Og54x9mLUZO3yhtnR/hJC6CHqNsgjgupjQXOcGhndQvIJA
-        ehGgezAWrcnHs6sPs8uJ66Owl5BCk/WWZOiZcZZjumoK8aVjbzPEYDxctcZMZu6764Fchs
-        33S99oVFiGHjXUQJjeDFNfvrAqhRc9w=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-87YmsNg-PGaQebLN2eIXmw-1; Fri, 19 Jun 2020 10:32:16 -0400
-X-MC-Unique: 87YmsNg-PGaQebLN2eIXmw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2387567AbgFSOgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:36:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387548AbgFSOgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:36:33 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4076D18FF660;
-        Fri, 19 Jun 2020 14:32:14 +0000 (UTC)
-Received: from hp-dl360pgen8-07.khw2.lab.eng.bos.redhat.com (hp-dl360pgen8-07.khw2.lab.eng.bos.redhat.com [10.16.210.135])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B35AB7CABA;
-        Fri, 19 Jun 2020 14:32:12 +0000 (UTC)
-From:   Jarod Wilson <jarod@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D8F221548;
+        Fri, 19 Jun 2020 14:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592577393;
+        bh=0Kk4exPKBCvNorayPAfo/KDmWOa7KJcKQRFDySXXI7c=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=wseALY8QG/DgesL6p/I0PpUhrEf3lv9L56RGOxjj3PSMWWCfp3oU+8lu9ROPWXdjW
+         cH/yESqbTxUU2sWWp07bMiAZFNIz21099/RZzkOD8rtrKHfo2m0jpB0cmF6O2b9ksK
+         tC1O3YO0RejG+LEORAwUCa/YPVLmlaiDGvgPUHVI=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Jarod Wilson <jarod@redhat.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Zhao Qiang <qiang.zhao@nxp.com>,
         "David S. Miller" <davem@davemloft.net>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org
-Subject: [PATCH net-next v3 1/4] xfrm: bail early on slave pass over skb
-Date:   Fri, 19 Jun 2020 10:31:52 -0400
-Message-Id: <20200619143155.20726-2-jarod@redhat.com>
-In-Reply-To: <20200619143155.20726-1-jarod@redhat.com>
-References: <20200619143155.20726-1-jarod@redhat.com>
+        "Nobuhiro Iwamatsu (CIP)" <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH 4.4 004/101] net: phy: marvell: Limit 88m1101 autoneg errata to 88E1145 as well.
+Date:   Fri, 19 Jun 2020 16:31:53 +0200
+Message-Id: <20200619141614.239459471@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
+References: <20200619141614.001544111@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is prep work for initial support of bonding hardware encryption
-pass-through support. The bonding driver will fill in the slave_dev
-pointer, and we use that to know not to skb_push() again on a given
-skb that was already processed on the bond device.
+From: Zhao Qiang <qiang.zhao@nxp.com>
 
-CC: Jay Vosburgh <j.vosburgh@gmail.com>
-CC: Veaceslav Falico <vfalico@gmail.com>
-CC: Andy Gospodarek <andy@greyhouse.net>
-CC: "David S. Miller" <davem@davemloft.net>
-CC: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-CC: Jakub Kicinski <kuba@kernel.org>
-CC: Steffen Klassert <steffen.klassert@secunet.com>
-CC: Herbert Xu <herbert@gondor.apana.org.au>
-CC: netdev@vger.kernel.org
-CC: intel-wired-lan@lists.osuosl.org
-Signed-off-by: Jarod Wilson <jarod@redhat.com>
+commit c505873eaece2b4aefd07d339dc7e1400e0235ac upstream.
+
+88E1145 also need this autoneg errata.
+
+Fixes: f2899788353c ("net: phy: marvell: Limit errata to 88m1101")
+Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Nobuhiro Iwamatsu (CIP) <nobuhiro1.iwamatsu@toshiba.co.jp>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/net/xfrm.h     |  1 +
- net/xfrm/xfrm_device.c | 34 +++++++++++++++++-----------------
- 2 files changed, 18 insertions(+), 17 deletions(-)
+ drivers/net/phy/marvell.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/net/xfrm.h b/include/net/xfrm.h
-index 094fe682f5d7..e20b2b27ec48 100644
---- a/include/net/xfrm.h
-+++ b/include/net/xfrm.h
-@@ -127,6 +127,7 @@ struct xfrm_state_walk {
- 
- struct xfrm_state_offload {
- 	struct net_device	*dev;
-+	struct net_device	*slave_dev;
- 	unsigned long		offload_handle;
- 	unsigned int		num_exthdrs;
- 	u8			flags;
-diff --git a/net/xfrm/xfrm_device.c b/net/xfrm/xfrm_device.c
-index f50d1f97cf8e..b8918fc5248b 100644
---- a/net/xfrm/xfrm_device.c
-+++ b/net/xfrm/xfrm_device.c
-@@ -106,6 +106,7 @@ struct sk_buff *validate_xmit_xfrm(struct sk_buff *skb, netdev_features_t featur
- 	struct sk_buff *skb2, *nskb, *pskb = NULL;
- 	netdev_features_t esp_features = features;
- 	struct xfrm_offload *xo = xfrm_offload(skb);
-+	struct net_device *dev = skb->dev;
- 	struct sec_path *sp;
- 
- 	if (!xo)
-@@ -119,6 +120,10 @@ struct sk_buff *validate_xmit_xfrm(struct sk_buff *skb, netdev_features_t featur
- 	if (xo->flags & XFRM_GRO || x->xso.flags & XFRM_OFFLOAD_INBOUND)
- 		return skb;
- 
-+	/* This skb was already validated on the master dev */
-+	if ((x->xso.dev != dev) && (x->xso.slave_dev == dev))
-+		return skb;
-+
- 	local_irq_save(flags);
- 	sd = this_cpu_ptr(&softnet_data);
- 	err = !skb_queue_empty(&sd->xfrm_backlog);
-@@ -129,25 +134,20 @@ struct sk_buff *validate_xmit_xfrm(struct sk_buff *skb, netdev_features_t featur
- 		return skb;
- 	}
- 
--	if (skb_is_gso(skb)) {
--		struct net_device *dev = skb->dev;
--
--		if (unlikely(x->xso.dev != dev)) {
--			struct sk_buff *segs;
-+	if (skb_is_gso(skb) && unlikely(x->xso.dev != dev)) {
-+		struct sk_buff *segs;
- 
--			/* Packet got rerouted, fixup features and segment it. */
--			esp_features = esp_features & ~(NETIF_F_HW_ESP
--							| NETIF_F_GSO_ESP);
-+		/* Packet got rerouted, fixup features and segment it. */
-+		esp_features = esp_features & ~(NETIF_F_HW_ESP | NETIF_F_GSO_ESP);
- 
--			segs = skb_gso_segment(skb, esp_features);
--			if (IS_ERR(segs)) {
--				kfree_skb(skb);
--				atomic_long_inc(&dev->tx_dropped);
--				return NULL;
--			} else {
--				consume_skb(skb);
--				skb = segs;
--			}
-+		segs = skb_gso_segment(skb, esp_features);
-+		if (IS_ERR(segs)) {
-+			kfree_skb(skb);
-+			atomic_long_inc(&dev->tx_dropped);
-+			return NULL;
-+		} else {
-+			consume_skb(skb);
-+			skb = segs;
- 		}
- 	}
- 
--- 
-2.20.1
+--- a/drivers/net/phy/marvell.c
++++ b/drivers/net/phy/marvell.c
+@@ -1091,7 +1091,7 @@ static struct phy_driver marvell_drivers
+ 		.features = PHY_GBIT_FEATURES,
+ 		.flags = PHY_HAS_INTERRUPT,
+ 		.config_init = &m88e1145_config_init,
+-		.config_aneg = &marvell_config_aneg,
++		.config_aneg = &m88e1101_config_aneg,
+ 		.read_status = &genphy_read_status,
+ 		.ack_interrupt = &marvell_ack_interrupt,
+ 		.config_intr = &marvell_config_intr,
+
 
