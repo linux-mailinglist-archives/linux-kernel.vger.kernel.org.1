@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82A920154F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35956201389
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394655AbgFSQUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:20:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57604 "EHLO mail.kernel.org"
+        id S2392059AbgFSPKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:10:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390681AbgFSPBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:01:09 -0400
+        id S2392028AbgFSPKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:10:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6480F2186A;
-        Fri, 19 Jun 2020 15:01:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F1DF21852;
+        Fri, 19 Jun 2020 15:10:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578868;
-        bh=Laei5MgdJMhnBhAyWdB0SUAiyCNM0+QiHJdwGOrBel4=;
+        s=default; t=1592579430;
+        bh=J0wx930+IFDlxwhuiTVEVYIzw4NsTB697VAzJvLH0dY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YIboEkLz491U3yer5jwuwPfeN59ah4h+hHFUIMLr4WJ2pyZ6DpIrz+KeIryQaNw0M
-         hwTZ6xkJwSYp/Uos65KFQvbqZVresil3MAvRxQ1soYdMumteZKnSIlTjbWD/L9t/Ei
-         VoS39u0/bG/tF2Xi/jfdbxupFyCqG+m6Rv1lNeIs=
+        b=ITBEDxBUw5Ahh/faENiA9O9hKFn4YRyCKxPBekyvImUz4E7movTI7SDjTjmx7zy0r
+         7SUrN01tpv9fCRB7kUFar2eo71TPsem8kKkx0nCC5/bMACmuktvlbl6PMbUZP6DgnI
+         MOjWcAri5Ua/SfFwazx/1m9ZnWGfYkZtAdbDjqQw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Song Liu <songliubraving@fb.com>,
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 158/267] md: dont flush workqueue unconditionally in md_open
-Date:   Fri, 19 Jun 2020 16:32:23 +0200
-Message-Id: <20200619141656.390922579@linuxfoundation.org>
+Subject: [PATCH 5.4 133/261] btrfs: improve global reserve stealing logic
+Date:   Fri, 19 Jun 2020 16:32:24 +0200
+Message-Id: <20200619141656.234884067@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,161 +45,238 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit f6766ff6afff70e2aaf39e1511e16d471de7c3ae ]
+[ Upstream commit 7f9fe614407692f670601a634621138233ac00d7 ]
 
-We need to check mddev->del_work before flush workqueu since the purpose
-of flush is to ensure the previous md is disappeared. Otherwise the similar
-deadlock appeared if LOCKDEP is enabled, it is due to md_open holds the
-bdev->bd_mutex before flush workqueue.
+For unlink transactions and block group removal
+btrfs_start_transaction_fallback_global_rsv will first try to start an
+ordinary transaction and if it fails it will fall back to reserving the
+required amount by stealing from the global reserve. This is problematic
+because of all the same reasons we had with previous iterations of the
+ENOSPC handling, thundering herd.  We get a bunch of failures all at
+once, everybody tries to allocate from the global reserve, some win and
+some lose, we get an ENSOPC.
 
-kernel: [  154.522645] ======================================================
-kernel: [  154.522647] WARNING: possible circular locking dependency detected
-kernel: [  154.522650] 5.6.0-rc7-lp151.27-default #25 Tainted: G           O
-kernel: [  154.522651] ------------------------------------------------------
-kernel: [  154.522653] mdadm/2482 is trying to acquire lock:
-kernel: [  154.522655] ffff888078529128 ((wq_completion)md_misc){+.+.}, at: flush_workqueue+0x84/0x4b0
-kernel: [  154.522673]
-kernel: [  154.522673] but task is already holding lock:
-kernel: [  154.522675] ffff88804efa9338 (&bdev->bd_mutex){+.+.}, at: __blkdev_get+0x79/0x590
-kernel: [  154.522691]
-kernel: [  154.522691] which lock already depends on the new lock.
-kernel: [  154.522691]
-kernel: [  154.522694]
-kernel: [  154.522694] the existing dependency chain (in reverse order) is:
-kernel: [  154.522696]
-kernel: [  154.522696] -> #4 (&bdev->bd_mutex){+.+.}:
-kernel: [  154.522704]        __mutex_lock+0x87/0x950
-kernel: [  154.522706]        __blkdev_get+0x79/0x590
-kernel: [  154.522708]        blkdev_get+0x65/0x140
-kernel: [  154.522709]        blkdev_get_by_dev+0x2f/0x40
-kernel: [  154.522716]        lock_rdev+0x3d/0x90 [md_mod]
-kernel: [  154.522719]        md_import_device+0xd6/0x1b0 [md_mod]
-kernel: [  154.522723]        new_dev_store+0x15e/0x210 [md_mod]
-kernel: [  154.522728]        md_attr_store+0x7a/0xc0 [md_mod]
-kernel: [  154.522732]        kernfs_fop_write+0x117/0x1b0
-kernel: [  154.522735]        vfs_write+0xad/0x1a0
-kernel: [  154.522737]        ksys_write+0xa4/0xe0
-kernel: [  154.522745]        do_syscall_64+0x64/0x2b0
-kernel: [  154.522748]        entry_SYSCALL_64_after_hwframe+0x49/0xbe
-kernel: [  154.522749]
-kernel: [  154.522749] -> #3 (&mddev->reconfig_mutex){+.+.}:
-kernel: [  154.522752]        __mutex_lock+0x87/0x950
-kernel: [  154.522756]        new_dev_store+0xc9/0x210 [md_mod]
-kernel: [  154.522759]        md_attr_store+0x7a/0xc0 [md_mod]
-kernel: [  154.522761]        kernfs_fop_write+0x117/0x1b0
-kernel: [  154.522763]        vfs_write+0xad/0x1a0
-kernel: [  154.522765]        ksys_write+0xa4/0xe0
-kernel: [  154.522767]        do_syscall_64+0x64/0x2b0
-kernel: [  154.522769]        entry_SYSCALL_64_after_hwframe+0x49/0xbe
-kernel: [  154.522770]
-kernel: [  154.522770] -> #2 (kn->count#253){++++}:
-kernel: [  154.522775]        __kernfs_remove+0x253/0x2c0
-kernel: [  154.522778]        kernfs_remove+0x1f/0x30
-kernel: [  154.522780]        kobject_del+0x28/0x60
-kernel: [  154.522783]        mddev_delayed_delete+0x24/0x30 [md_mod]
-kernel: [  154.522786]        process_one_work+0x2a7/0x5f0
-kernel: [  154.522788]        worker_thread+0x2d/0x3d0
-kernel: [  154.522793]        kthread+0x117/0x130
-kernel: [  154.522795]        ret_from_fork+0x3a/0x50
-kernel: [  154.522796]
-kernel: [  154.522796] -> #1 ((work_completion)(&mddev->del_work)){+.+.}:
-kernel: [  154.522800]        process_one_work+0x27e/0x5f0
-kernel: [  154.522802]        worker_thread+0x2d/0x3d0
-kernel: [  154.522804]        kthread+0x117/0x130
-kernel: [  154.522806]        ret_from_fork+0x3a/0x50
-kernel: [  154.522807]
-kernel: [  154.522807] -> #0 ((wq_completion)md_misc){+.+.}:
-kernel: [  154.522813]        __lock_acquire+0x1392/0x1690
-kernel: [  154.522816]        lock_acquire+0xb4/0x1a0
-kernel: [  154.522818]        flush_workqueue+0xab/0x4b0
-kernel: [  154.522821]        md_open+0xb6/0xc0 [md_mod]
-kernel: [  154.522823]        __blkdev_get+0xea/0x590
-kernel: [  154.522825]        blkdev_get+0x65/0x140
-kernel: [  154.522828]        do_dentry_open+0x1d1/0x380
-kernel: [  154.522831]        path_openat+0x567/0xcc0
-kernel: [  154.522834]        do_filp_open+0x9b/0x110
-kernel: [  154.522836]        do_sys_openat2+0x201/0x2a0
-kernel: [  154.522838]        do_sys_open+0x57/0x80
-kernel: [  154.522840]        do_syscall_64+0x64/0x2b0
-kernel: [  154.522842]        entry_SYSCALL_64_after_hwframe+0x49/0xbe
-kernel: [  154.522844]
-kernel: [  154.522844] other info that might help us debug this:
-kernel: [  154.522844]
-kernel: [  154.522846] Chain exists of:
-kernel: [  154.522846]   (wq_completion)md_misc --> &mddev->reconfig_mutex --> &bdev->bd_mutex
-kernel: [  154.522846]
-kernel: [  154.522850]  Possible unsafe locking scenario:
-kernel: [  154.522850]
-kernel: [  154.522852]        CPU0                    CPU1
-kernel: [  154.522853]        ----                    ----
-kernel: [  154.522854]   lock(&bdev->bd_mutex);
-kernel: [  154.522856]                                lock(&mddev->reconfig_mutex);
-kernel: [  154.522858]                                lock(&bdev->bd_mutex);
-kernel: [  154.522860]   lock((wq_completion)md_misc);
-kernel: [  154.522861]
-kernel: [  154.522861]  *** DEADLOCK ***
-kernel: [  154.522861]
-kernel: [  154.522864] 1 lock held by mdadm/2482:
-kernel: [  154.522865]  #0: ffff88804efa9338 (&bdev->bd_mutex){+.+.}, at: __blkdev_get+0x79/0x590
-kernel: [  154.522868]
-kernel: [  154.522868] stack backtrace:
-kernel: [  154.522873] CPU: 1 PID: 2482 Comm: mdadm Tainted: G           O      5.6.0-rc7-lp151.27-default #25
-kernel: [  154.522875] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
-kernel: [  154.522878] Call Trace:
-kernel: [  154.522881]  dump_stack+0x8f/0xcb
-kernel: [  154.522884]  check_noncircular+0x194/0x1b0
-kernel: [  154.522888]  ? __lock_acquire+0x1392/0x1690
-kernel: [  154.522890]  __lock_acquire+0x1392/0x1690
-kernel: [  154.522893]  lock_acquire+0xb4/0x1a0
-kernel: [  154.522895]  ? flush_workqueue+0x84/0x4b0
-kernel: [  154.522898]  flush_workqueue+0xab/0x4b0
-kernel: [  154.522900]  ? flush_workqueue+0x84/0x4b0
-kernel: [  154.522905]  ? md_open+0xb6/0xc0 [md_mod]
-kernel: [  154.522908]  md_open+0xb6/0xc0 [md_mod]
-kernel: [  154.522910]  __blkdev_get+0xea/0x590
-kernel: [  154.522912]  ? bd_acquire+0xc0/0xc0
-kernel: [  154.522914]  blkdev_get+0x65/0x140
-kernel: [  154.522916]  ? bd_acquire+0xc0/0xc0
-kernel: [  154.522918]  do_dentry_open+0x1d1/0x380
-kernel: [  154.522921]  path_openat+0x567/0xcc0
-kernel: [  154.522923]  ? __lock_acquire+0x380/0x1690
-kernel: [  154.522926]  do_filp_open+0x9b/0x110
-kernel: [  154.522929]  ? __alloc_fd+0xe5/0x1f0
-kernel: [  154.522935]  ? kmem_cache_alloc+0x28c/0x630
-kernel: [  154.522939]  ? do_sys_openat2+0x201/0x2a0
-kernel: [  154.522941]  do_sys_openat2+0x201/0x2a0
-kernel: [  154.522944]  do_sys_open+0x57/0x80
-kernel: [  154.522946]  do_syscall_64+0x64/0x2b0
-kernel: [  154.522948]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-kernel: [  154.522951] RIP: 0033:0x7f98d279d9ae
+Fix this behavior by introducing BTRFS_RESERVE_FLUSH_ALL_STEAL. It's
+used to mark unlink reservation. To fix this we need to integrate this
+logic into the normal ENOSPC infrastructure.  We still go through all of
+the normal flushing work, and at the moment we begin to fail all the
+tickets we try to satisfy any tickets that are allowed to steal by
+stealing from the global reserve.  If this works we start the flushing
+system over again just like we would with a normal ticket satisfaction.
+This serializes our global reserve stealing, so we don't have the
+thundering herd problem.
 
-And md_alloc also flushed the same workqueue, but the thing is different
-here. Because all the paths call md_alloc don't hold bdev->bd_mutex, and
-the flush is necessary to avoid race condition, so leave it as it is.
-
-Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Tested-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/md.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/btrfs/block-group.c |  2 +-
+ fs/btrfs/ctree.h       |  1 +
+ fs/btrfs/inode.c       |  2 +-
+ fs/btrfs/space-info.c  | 37 ++++++++++++++++++++++++++++++++++++-
+ fs/btrfs/space-info.h  |  1 +
+ fs/btrfs/transaction.c | 42 +++++-------------------------------------
+ fs/btrfs/transaction.h |  3 +--
+ 7 files changed, 46 insertions(+), 42 deletions(-)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 9426976e0860..a6db4fd267aa 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -7438,7 +7438,8 @@ static int md_open(struct block_device *bdev, fmode_t mode)
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 2fead6c3c687..c2dd94e1b274 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -1167,7 +1167,7 @@ struct btrfs_trans_handle *btrfs_start_trans_remove_block_group(
+ 	free_extent_map(em);
+ 
+ 	return btrfs_start_transaction_fallback_global_rsv(fs_info->extent_root,
+-							   num_items, 1);
++							   num_items);
+ }
+ 
+ /*
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 169075550a5a..6d2c277c6e0a 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -2465,6 +2465,7 @@ enum btrfs_reserve_flush_enum {
+ 	BTRFS_RESERVE_FLUSH_LIMIT,
+ 	BTRFS_RESERVE_FLUSH_EVICT,
+ 	BTRFS_RESERVE_FLUSH_ALL,
++	BTRFS_RESERVE_FLUSH_ALL_STEAL,
+ };
+ 
+ enum btrfs_flush_state {
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 94b0df3fb3c8..d2e7ddb95f6c 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -4250,7 +4250,7 @@ static struct btrfs_trans_handle *__unlink_start_trans(struct inode *dir)
+ 	 * 1 for the inode ref
+ 	 * 1 for the inode
+ 	 */
+-	return btrfs_start_transaction_fallback_global_rsv(root, 5, 5);
++	return btrfs_start_transaction_fallback_global_rsv(root, 5);
+ }
+ 
+ static int btrfs_unlink(struct inode *dir, struct dentry *dentry)
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 5b47e3c44c8f..7889a59a57fa 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -689,6 +689,34 @@ static inline int need_do_async_reclaim(struct btrfs_fs_info *fs_info,
+ 		!test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state));
+ }
+ 
++static bool steal_from_global_rsv(struct btrfs_fs_info *fs_info,
++				  struct btrfs_space_info *space_info,
++				  struct reserve_ticket *ticket)
++{
++	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
++	u64 min_bytes;
++
++	if (global_rsv->space_info != space_info)
++		return false;
++
++	spin_lock(&global_rsv->lock);
++	min_bytes = div_factor(global_rsv->size, 5);
++	if (global_rsv->reserved < min_bytes + ticket->bytes) {
++		spin_unlock(&global_rsv->lock);
++		return false;
++	}
++	global_rsv->reserved -= ticket->bytes;
++	ticket->bytes = 0;
++	list_del_init(&ticket->list);
++	wake_up(&ticket->wait);
++	space_info->tickets_id++;
++	if (global_rsv->reserved < global_rsv->size)
++		global_rsv->full = 0;
++	spin_unlock(&global_rsv->lock);
++
++	return true;
++}
++
+ /*
+  * maybe_fail_all_tickets - we've exhausted our flushing, start failing tickets
+  * @fs_info - fs_info for this fs
+@@ -721,6 +749,10 @@ static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
+ 		ticket = list_first_entry(&space_info->tickets,
+ 					  struct reserve_ticket, list);
+ 
++		if (ticket->steal &&
++		    steal_from_global_rsv(fs_info, space_info, ticket))
++			return true;
++
+ 		/*
+ 		 * may_commit_transaction will avoid committing the transaction
+ 		 * if it doesn't feel like the space reclaimed by the commit
+@@ -940,6 +972,7 @@ static int handle_reserve_ticket(struct btrfs_fs_info *fs_info,
+ 
+ 	switch (flush) {
+ 	case BTRFS_RESERVE_FLUSH_ALL:
++	case BTRFS_RESERVE_FLUSH_ALL_STEAL:
+ 		wait_reserve_ticket(fs_info, space_info, ticket);
+ 		break;
+ 	case BTRFS_RESERVE_FLUSH_LIMIT:
+@@ -1039,7 +1072,9 @@ static int __reserve_metadata_bytes(struct btrfs_fs_info *fs_info,
+ 		ticket.bytes = orig_bytes;
+ 		ticket.error = 0;
+ 		init_waitqueue_head(&ticket.wait);
+-		if (flush == BTRFS_RESERVE_FLUSH_ALL) {
++		ticket.steal = (flush == BTRFS_RESERVE_FLUSH_ALL_STEAL);
++		if (flush == BTRFS_RESERVE_FLUSH_ALL ||
++		    flush == BTRFS_RESERVE_FLUSH_ALL_STEAL) {
+ 			list_add_tail(&ticket.list, &space_info->tickets);
+ 			if (!space_info->flush) {
+ 				space_info->flush = 1;
+diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+index 8867e84aa33d..8b9a1d8fefcb 100644
+--- a/fs/btrfs/space-info.h
++++ b/fs/btrfs/space-info.h
+@@ -72,6 +72,7 @@ struct btrfs_space_info {
+ struct reserve_ticket {
+ 	u64 bytes;
+ 	int error;
++	bool steal;
+ 	struct list_head list;
+ 	wait_queue_head_t wait;
+ };
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index cdca0f656594..a94270a95bbd 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -491,7 +491,8 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 		 * refill that amount for whatever is missing in the reserve.
  		 */
- 		mddev_put(mddev);
- 		/* Wait until bdev->bd_disk is definitely gone */
--		flush_workqueue(md_misc_wq);
-+		if (work_pending(&mddev->del_work))
-+			flush_workqueue(md_misc_wq);
- 		/* Then retry the open from the top */
- 		return -ERESTARTSYS;
- 	}
+ 		num_bytes = btrfs_calc_insert_metadata_size(fs_info, num_items);
+-		if (delayed_refs_rsv->full == 0) {
++		if (flush == BTRFS_RESERVE_FLUSH_ALL &&
++		    delayed_refs_rsv->full == 0) {
+ 			delayed_refs_bytes = num_bytes;
+ 			num_bytes <<= 1;
+ 		}
+@@ -627,43 +628,10 @@ struct btrfs_trans_handle *btrfs_start_transaction(struct btrfs_root *root,
+ 
+ struct btrfs_trans_handle *btrfs_start_transaction_fallback_global_rsv(
+ 					struct btrfs_root *root,
+-					unsigned int num_items,
+-					int min_factor)
++					unsigned int num_items)
+ {
+-	struct btrfs_fs_info *fs_info = root->fs_info;
+-	struct btrfs_trans_handle *trans;
+-	u64 num_bytes;
+-	int ret;
+-
+-	/*
+-	 * We have two callers: unlink and block group removal.  The
+-	 * former should succeed even if we will temporarily exceed
+-	 * quota and the latter operates on the extent root so
+-	 * qgroup enforcement is ignored anyway.
+-	 */
+-	trans = start_transaction(root, num_items, TRANS_START,
+-				  BTRFS_RESERVE_FLUSH_ALL, false);
+-	if (!IS_ERR(trans) || PTR_ERR(trans) != -ENOSPC)
+-		return trans;
+-
+-	trans = btrfs_start_transaction(root, 0);
+-	if (IS_ERR(trans))
+-		return trans;
+-
+-	num_bytes = btrfs_calc_insert_metadata_size(fs_info, num_items);
+-	ret = btrfs_cond_migrate_bytes(fs_info, &fs_info->trans_block_rsv,
+-				       num_bytes, min_factor);
+-	if (ret) {
+-		btrfs_end_transaction(trans);
+-		return ERR_PTR(ret);
+-	}
+-
+-	trans->block_rsv = &fs_info->trans_block_rsv;
+-	trans->bytes_reserved = num_bytes;
+-	trace_btrfs_space_reservation(fs_info, "transaction",
+-				      trans->transid, num_bytes, 1);
+-
+-	return trans;
++	return start_transaction(root, num_items, TRANS_START,
++				 BTRFS_RESERVE_FLUSH_ALL_STEAL, false);
+ }
+ 
+ struct btrfs_trans_handle *btrfs_join_transaction(struct btrfs_root *root)
+diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+index 2c5a6f6e5bb0..b15c31d23148 100644
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@ -181,8 +181,7 @@ struct btrfs_trans_handle *btrfs_start_transaction(struct btrfs_root *root,
+ 						   unsigned int num_items);
+ struct btrfs_trans_handle *btrfs_start_transaction_fallback_global_rsv(
+ 					struct btrfs_root *root,
+-					unsigned int num_items,
+-					int min_factor);
++					unsigned int num_items);
+ struct btrfs_trans_handle *btrfs_join_transaction(struct btrfs_root *root);
+ struct btrfs_trans_handle *btrfs_join_transaction_nolock(struct btrfs_root *root);
+ struct btrfs_trans_handle *btrfs_join_transaction_nostart(struct btrfs_root *root);
 -- 
 2.25.1
 
