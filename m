@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E739920154B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49459201387
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394649AbgFSQUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:20:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57662 "EHLO mail.kernel.org"
+        id S2392049AbgFSPKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:10:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390367AbgFSPBO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:01:14 -0400
+        id S2391566AbgFSPKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:10:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B450720734;
-        Fri, 19 Jun 2020 15:01:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E623E2186A;
+        Fri, 19 Jun 2020 15:10:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578874;
-        bh=Clu9I0nxQue/n9z2B1IGWLrkbDGV4nqggjM4TEgJBe4=;
+        s=default; t=1592579433;
+        bh=LlEmdwwdSR30dYv/6jAzupX03aWWG4GzpIKmnzZutfA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qD5lSH/x5y8eN7wzolYy2YW1imWwIr11UR3us+k07LDtT6yj+zNozmb8o7ExqJmJv
-         TjgceljGbjP7KUCrASHwpJibwftaO66pXtONlBAdyuEYx7kuLPY0ECrH0iMvBUb82s
-         0aZK39+FB4nuHCmOeObbcfujX/ZJXIOnD/0vcKyo=
+        b=O8fn4C7h0YZ1KNgbPqlACUn6Re05tFsIn7Dxu0crzKkCw8XRo+gsaLTDavhxuk5oS
+         tCkuVSMYH8SBjmrthqzLlIT9jtA3Vwzh9S3A+/pQpB3iTyBz/p4v5106QYBjfl6Pik
+         KrnttlB8EJfli9KtsZ70WQ4rW+3T2Z2MT1SvJh5s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Erez Shitrit <erezsh@mellanox.com>,
-        Alex Vesker <valex@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
+        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 160/267] net/mlx5e: IPoIB, Drop multicast packets that this interface sent
+Subject: [PATCH 5.4 134/261] btrfs: qgroup: mark qgroup inconsistent if were inherting snapshot to a new qgroup
 Date:   Fri, 19 Jun 2020 16:32:25 +0200
-Message-Id: <20200619141656.487379341@linuxfoundation.org>
+Message-Id: <20200619141656.276038496@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,70 +44,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Erez Shitrit <erezsh@mellanox.com>
+From: Qu Wenruo <wqu@suse.com>
 
-[ Upstream commit 8b46d424a743ddfef8056d5167f13ee7ebd1dcad ]
+[ Upstream commit cbab8ade585a18c4334b085564d9d046e01a3f70 ]
 
-After enabled loopback packets for IPoIB, we need to drop these packets
-that this HCA has replicated and came back to the same interface that
-sent them.
+[BUG]
+For the following operation, qgroup is guaranteed to be screwed up due
+to snapshot adding to a new qgroup:
 
-Fixes: 4c6c615e3f30 ("net/mlx5e: IPoIB, Add PKEY child interface nic profile")
-Signed-off-by: Erez Shitrit <erezsh@mellanox.com>
-Reviewed-by: Alex Vesker <valex@mellanox.com>
-Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
+  # mkfs.btrfs -f $dev
+  # mount $dev $mnt
+  # btrfs qgroup en $mnt
+  # btrfs subv create $mnt/src
+  # xfs_io -f -c "pwrite 0 1m" $mnt/src/file
+  # sync
+  # btrfs qgroup create 1/0 $mnt/src
+  # btrfs subv snapshot -i 1/0 $mnt/src $mnt/snapshot
+  # btrfs qgroup show -prce $mnt/src
+  qgroupid         rfer         excl     max_rfer     max_excl parent  child
+  --------         ----         ----     --------     -------- ------  -----
+  0/5          16.00KiB     16.00KiB         none         none ---     ---
+  0/257         1.02MiB     16.00KiB         none         none ---     ---
+  0/258         1.02MiB     16.00KiB         none         none 1/0     ---
+  1/0             0.00B        0.00B         none         none ---     0/258
+	        ^^^^^^^^^^^^^^^^^^^^
+
+[CAUSE]
+The problem is in btrfs_qgroup_inherit(), we don't have good enough
+check to determine if the new relation would break the existing
+accounting.
+
+Unlike btrfs_add_qgroup_relation(), which has proper check to determine
+if we can do quick update without a rescan, in btrfs_qgroup_inherit() we
+can even assign a snapshot to multiple qgroups.
+
+[FIX]
+Fix it by manually marking qgroup inconsistent for snapshot inheritance.
+
+For subvolume creation, since all its extents are exclusively owned, we
+don't need to rescan.
+
+In theory, we should call relation check like quick_update_accounting()
+when doing qgroup inheritance and inform user about qgroup accounting
+inconsistency.
+
+But we don't have good mechanism to relay that back to the user in the
+snapshot creation context, thus we can only silently mark the qgroup
+inconsistent.
+
+Anyway, user shouldn't use qgroup inheritance during snapshot creation,
+and should add qgroup relationship after snapshot creation by 'btrfs
+qgroup assign', which has a much better UI to inform user about qgroup
+inconsistent and kick in rescan automatically.
+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlx5/core/en_rx.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+ fs/btrfs/qgroup.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-index 044687a1f27c..9d86e49a7f44 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_rx.c
-@@ -1314,6 +1314,7 @@ out:
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 590defdf8860..b94f6f99e90d 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -2636,6 +2636,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 	struct btrfs_root *quota_root;
+ 	struct btrfs_qgroup *srcgroup;
+ 	struct btrfs_qgroup *dstgroup;
++	bool need_rescan = false;
+ 	u32 level_size = 0;
+ 	u64 nums;
  
- #ifdef CONFIG_MLX5_CORE_IPOIB
+@@ -2779,6 +2780,13 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+ 				goto unlock;
+ 		}
+ 		++i_qgroups;
++
++		/*
++		 * If we're doing a snapshot, and adding the snapshot to a new
++		 * qgroup, the numbers are guaranteed to be incorrect.
++		 */
++		if (srcid)
++			need_rescan = true;
+ 	}
  
-+#define MLX5_IB_GRH_SGID_OFFSET 8
- #define MLX5_IB_GRH_DGID_OFFSET 24
- #define MLX5_GID_SIZE           16
+ 	for (i = 0; i <  inherit->num_ref_copies; ++i, i_qgroups += 2) {
+@@ -2798,6 +2806,9 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
  
-@@ -1327,6 +1328,7 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
- 	struct net_device *netdev;
- 	struct mlx5e_priv *priv;
- 	char *pseudo_header;
-+	u32 flags_rqpn;
- 	u32 qpn;
- 	u8 *dgid;
- 	u8 g;
-@@ -1347,7 +1349,8 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
- 	priv = mlx5i_epriv(netdev);
- 	tstamp = &priv->tstamp;
+ 		dst->rfer = src->rfer - level_size;
+ 		dst->rfer_cmpr = src->rfer_cmpr - level_size;
++
++		/* Manually tweaking numbers certainly needs a rescan */
++		need_rescan = true;
+ 	}
+ 	for (i = 0; i <  inherit->num_excl_copies; ++i, i_qgroups += 2) {
+ 		struct btrfs_qgroup *src;
+@@ -2816,6 +2827,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
  
--	g = (be32_to_cpu(cqe->flags_rqpn) >> 28) & 3;
-+	flags_rqpn = be32_to_cpu(cqe->flags_rqpn);
-+	g = (flags_rqpn >> 28) & 3;
- 	dgid = skb->data + MLX5_IB_GRH_DGID_OFFSET;
- 	if ((!g) || dgid[0] != 0xff)
- 		skb->pkt_type = PACKET_HOST;
-@@ -1356,9 +1359,15 @@ static inline void mlx5i_complete_rx_cqe(struct mlx5e_rq *rq,
- 	else
- 		skb->pkt_type = PACKET_MULTICAST;
+ 		dst->excl = src->excl + level_size;
+ 		dst->excl_cmpr = src->excl_cmpr + level_size;
++		need_rescan = true;
+ 	}
  
--	/* TODO: IB/ipoib: Allow mcast packets from other VFs
--	 * 68996a6e760e5c74654723eeb57bf65628ae87f4
-+	/* Drop packets that this interface sent, ie multicast packets
-+	 * that the HCA has replicated.
- 	 */
-+	if (g && (qpn == (flags_rqpn & 0xffffff)) &&
-+	    (memcmp(netdev->dev_addr + 4, skb->data + MLX5_IB_GRH_SGID_OFFSET,
-+		    MLX5_GID_SIZE) == 0)) {
-+		skb->dev = NULL;
-+		return;
-+	}
- 
- 	skb_pull(skb, MLX5_IB_GRH_BYTES);
+ unlock:
+@@ -2823,6 +2835,8 @@ unlock:
+ out:
+ 	if (!committing)
+ 		mutex_unlock(&fs_info->qgroup_ioctl_lock);
++	if (need_rescan)
++		fs_info->qgroup_flags |= BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
+ 	return ret;
+ }
  
 -- 
 2.25.1
