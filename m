@@ -2,142 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 665562009BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4062B2009C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732295AbgFSNQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 09:16:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39564 "EHLO
+        id S1732455AbgFSNRR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 09:17:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728712AbgFSNQX (ORCPT
+        with ESMTP id S1725806AbgFSNRK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 09:16:23 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8758BC06174E;
-        Fri, 19 Jun 2020 06:16:23 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id b7so4486217pju.0;
-        Fri, 19 Jun 2020 06:16:23 -0700 (PDT)
+        Fri, 19 Jun 2020 09:17:10 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA56C0613EE
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 06:17:09 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id n24so10193253ejd.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 06:17:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JPC15dO42HGv7WM12X2Cfuf/clWH6yz5CPR2L0kBxNI=;
-        b=FQuy3yiqBSALwG5aRWafNv/afSmmnbVeMBOesNjfKdvZtGOJ0p0Bwr28H40RWVBd53
-         KLRuYf4kt4jMAgB9iwDc0YFFrQILmbC9I1rcDDCl7IxuaxP6FhH4k39xpBZUiWeAqV7v
-         FXJ/EQ5mutYos+mIzJBOP7FKXHI/EAdMrW0ZMmWU7x8VUgfX3gYcsSqq7X8t4+m7aXYT
-         6gsEVM4g5gLaGXgFVmN15ZuE0kgBa0DDB77b8emEgQtfBOT1+mIC+hr+Hnj8O4102zEo
-         Bh0fUkWTGhuRgLfIzkfNMKJeDXaXlQ3TnUOPkfIa1ziqmJQvA8jPuHxlQeNi/TkDMtX6
-         9Kug==
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5wOjmdghDgCr0CVW/w+ANaHsM9R02N+bI2f+Qakkg04=;
+        b=AdMIDDOm48JzlgAbMfmdT7CMIHIeIBvHJyz7mPGtN6zJk4LwqgxpN/hZGdVo0VASAt
+         Lyw5m3PubCEZ+10hrq5KRfJX+fVs3MMW8GT4hHjcTe00VvX7WXAvB/G5cJfB+LXHAIGd
+         3122mSxKPYSxh37gtVhMYpuVAfPn6lcGEM2sgOE9gdVa0zSKXwwbwypwKkFYGd38UjIL
+         fg4a0/oV1LuvsP4jJwib7V3BXTCwIsOP2GvedZQw10ii3DEtcC/andJeIqgYz9O+nbah
+         mqJ0BBHzsja5eM9n1nypxvL8hTTxM4/cJRLCCvUeVE8VfFnEJ5rnD/4xpsZXAptDK1aI
+         W0Jg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=JPC15dO42HGv7WM12X2Cfuf/clWH6yz5CPR2L0kBxNI=;
-        b=drK8PgRMsIATMhoP0a56FHgBpHtDaW1VgemI9w5yeZRzujYQO8aJhoWIC9fEGbFNIV
-         Na+Gv+vuskhoSuMNEj/67l81YV1+RFP/ETKWt3lDugMiG1NrejhAgw+NlUGVy8sJj06D
-         QOCinPUZFKYjRsPFkuZ+INohh4t8M+1FZvaJw5YpHI989p+GJgFqyIewqTXO3OzLB6/+
-         nKn/Pfk7SpwmHCS270J+CaRuiZunqyg6xVSHj44OLRPZjLb/1iYRGp39qa/5psuZYxda
-         gwg4sKGvI0aPXO+qgsqftjnNg5JxujZsSsBj6CdbtsE/Bq3RpvbYQXPXCvn17YGjX1nj
-         bSkw==
-X-Gm-Message-State: AOAM530+u97/ELqWYxB+F5+UaOSAutweZKLpccFD/DBg5zET/quPMlRk
-        a25xl7i5YcyGfBKoGWcxjYs7QVEA
-X-Google-Smtp-Source: ABdhPJzjDBW1laTUav9pLalk8JnGvk5uXF2lYz3404dMe84XPYKg+nJLGko6S8DXnPmXehxt0/ncBA==
-X-Received: by 2002:a17:90a:f993:: with SMTP id cq19mr3662565pjb.154.1592572582649;
-        Fri, 19 Jun 2020 06:16:22 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id x18sm5948843pfr.106.2020.06.19.06.16.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jun 2020 06:16:22 -0700 (PDT)
-Subject: Re: [PATCH] Revert "Makefile: install modules.builtin even if
- CONFIG_MODULES=n"
-To:     Christoph Hellwig <hch@infradead.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-References: <20200619044823.863461-1-masahiroy@kernel.org>
- <20200619074738.GB1427@infradead.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-Message-ID: <0a34e0d3-0035-7775-bd31-7dbdae9c968d@roeck-us.net>
-Date:   Fri, 19 Jun 2020 06:16:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5wOjmdghDgCr0CVW/w+ANaHsM9R02N+bI2f+Qakkg04=;
+        b=VN0AJtr14sJYfxtARxgkhpm8o4DTsVOr9gpmk5sFsj88ARQ3M+BbhQ9EWTiSRtwoY2
+         2QL4Vu3meunyp13Jvqm1SUlNRScyWq1l+Zfs6Y9q3T3FqCrHaWJgYdxcCrWZh+29vAIo
+         0tSzAeMKcHJb2NH3V1PwFoFj7f4kJ1pombIhfL3V/62+n3Pp3DbrZLqi5AC/y+yyRvF5
+         bG4/CWtps6DGBl0rO7ZuTVeuMRX4cpvau0GX1PC8d1/CzNhTNfnWrHFsyJ9dxwluatGQ
+         v+ynQ9p0tvmQr9Ajfry40m51wSa79pseMT10l1Q//jVwx0bdeafvsZdywT4lAznGBN+V
+         Z3/w==
+X-Gm-Message-State: AOAM532EnwlttH9dtvA9t4e5yfzpszgT5YuFcuCberoGNKLR22akb27l
+        u9KOwIF7s/bUqoxj/GJw4dqpKsTw8baAyC9U+kAr+A==
+X-Google-Smtp-Source: ABdhPJxcJ/168e4c4toRNAYbOlSZtqzl1xPYGZjvMPOjLLgjxFymZskBfiH8Awgduu4mn5iXcuuVMzfkSuTwlK9Vlgw=
+X-Received: by 2002:a17:906:fc13:: with SMTP id ov19mr3575299ejb.212.1592572627815;
+ Fri, 19 Jun 2020 06:17:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200619074738.GB1427@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200619131017.pr7eoca2bzdtlbk4@debian.debian-2>
+In-Reply-To: <20200619131017.pr7eoca2bzdtlbk4@debian.debian-2>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Fri, 19 Jun 2020 15:16:57 +0200
+Message-ID: <CAMGffEntL4XkF6bCuhUDP+AOBO4mpKK1pTe3NgPUW86ySyy7Wg@mail.gmail.com>
+Subject: Re: [PATCH -next] RDMA/rtrs: fix potential resources leaks
+To:     Bo YU <tsu.yubo@gmail.com>
+Cc:     Danil Kipnis <danil.kipnis@cloud.ionos.com>, ledford@redhat.com,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/19/20 12:47 AM, Christoph Hellwig wrote:
-> On Fri, Jun 19, 2020 at 01:48:23PM +0900, Masahiro Yamada wrote:
->> This reverts commit e0b250b57dcf403529081e5898a9de717f96b76b.
->>
->> Now that "make install" copies modules.builtin to $(INSTALL_MOD_PATH),
->> it breaks systems that do not set INSTALL_MOD_PATH for "make install".
->>
->> While modules.builtin is useful for CONFIG_MODULES=n, this way gives
->> unexpected impact to existing systems. Maybe "make modules_install"
->> can install modules.builtin irrespective of CONFIG_MODULES as Jonas
->> originally suggested. Anyway, this commit should be reverted ASAP.
-> 
-> What is the "unexpected impact?  This commit log needs to explain
-> that.
-> 
-
-$ make INSTALL_PATH=/tmp/destdir install
-mkdir: cannot create directory ‘/lib/modules/5.8.0-rc1+/’: Permission denied
-Makefile:1342: recipe for target '_builtin_inst_' failed
-make: *** [_builtin_inst_] Error 1
-
-Guenter
+Hi, Bo,
+On Fri, Jun 19, 2020 at 3:10 PM Bo YU <tsu.yubo@gmail.com> wrote:
+>
+> Dev is returned from allocation function kzalloc but it does not
+> free it in out_err path.
+If allocation failed, kzalloc return NULL, nothing to free.
+>
+> Detected by CoverityScan, CID# 1464569: (Resource leak)
+>
+> Fixes: c0894b3ea69d3("RDMA/rtrs: core: lib functions shared between client and server modules")
+> Signed-off-by: Bo YU <tsu.yubo@gmail.com>
+> ---
+>  drivers/infiniband/ulp/rtrs/rtrs.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/infiniband/ulp/rtrs/rtrs.c b/drivers/infiniband/ulp/rtrs/rtrs.c
+> index ff1093d6e4bc..03bdab92fa49 100644
+> --- a/drivers/infiniband/ulp/rtrs/rtrs.c
+> +++ b/drivers/infiniband/ulp/rtrs/rtrs.c
+> @@ -607,6 +607,7 @@ rtrs_ib_dev_find_or_add(struct ib_device *ib_dev,
+>         else
+>                 kfree(dev);
+>  out_err:
+> +       kfree(dev);
+>         return NULL;
+>  }
+>  EXPORT_SYMBOL(rtrs_ib_dev_find_or_add);
+> --
+> 2.11.0
+>
