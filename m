@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D9320057F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 11:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7BA820057B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 11:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732129AbgFSJkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 05:40:14 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:34124 "EHLO
+        id S1732068AbgFSJkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 05:40:00 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:47148 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732110AbgFSJkN (ORCPT
+        by vger.kernel.org with ESMTP id S1732009AbgFSJj5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 05:40:13 -0400
+        Fri, 19 Jun 2020 05:39:57 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592559612;
+        s=mimecast20190719; t=1592559595;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=owa0qFAPsKpu74jXgvEbAGd5tDvX5jYwWR6WKxTC83E=;
-        b=aS7TxzKo4XpvVqOKG4a75I+wltTFPbbauE3/p/pZFSlwr4z9UYsPpHwoXZszdNB3WQx1k4
-        cDySvsaJySj01o2enO+y69+V4rYdm+aawxImncoWpd1VJqwtftp8f30zOlSRzXuuzFVdSW
-        N/kCi+uhTD0RgUIt9QFLMG1wveox2ko=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=SldHT58QWZEaNH+GrGNea/awooFbiqL4jxPiQBrZZXc=;
+        b=UuPo38Sk3vwDRiM4FCbyC6fyUMhsQQ7xhoONZydpPLYhcIDjx3l1BYjHc0r/9ObpOLedWP
+        Jtve/fSouJ6soXtnikTE3TPdprwigMf8URdStqFhHr+ad62in/UlocL7XSmw6hxMEy92iT
+        4EWhXG81TrG9HTfHoZITPcxBzZLrVWQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-263-E2DQ6Q59N3WWMbSJVCOn4A-1; Fri, 19 Jun 2020 05:39:29 -0400
-X-MC-Unique: E2DQ6Q59N3WWMbSJVCOn4A-1
+ us-mta-366-SIB5PbDMObCm2YydCZpjNg-1; Fri, 19 Jun 2020 05:39:37 -0400
+X-MC-Unique: SIB5PbDMObCm2YydCZpjNg-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE7B8107B265;
-        Fri, 19 Jun 2020 09:39:26 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E25C218FF660;
+        Fri, 19 Jun 2020 09:39:34 +0000 (UTC)
 Received: from max.home.com (unknown [10.40.195.140])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4E9A15D9E8;
-        Fri, 19 Jun 2020 09:39:18 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 258625D9EF;
+        Fri, 19 Jun 2020 09:39:26 +0000 (UTC)
 From:   Andreas Gruenbacher <agruenba@redhat.com>
 To:     Matthew Wilcox <willy@infradead.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
@@ -49,9 +50,11 @@ Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
         linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-erofs@lists.ozlabs.org, Christoph Hellwig <hch@lst.de>,
         linux-btrfs@vger.kernel.org
-Subject: [RFC PATCH 0/2] gfs2 readahead regression in v5.8-rc1
-Date:   Fri, 19 Jun 2020 11:39:14 +0200
-Message-Id: <20200619093916.1081129-1-agruenba@redhat.com>
+Subject: [PATCH 1/2] fs: Add IOCB_CACHED flag for generic_file_read_iter
+Date:   Fri, 19 Jun 2020 11:39:15 +0200
+Message-Id: <20200619093916.1081129-2-agruenba@redhat.com>
+In-Reply-To: <20200619093916.1081129-1-agruenba@redhat.com>
+References: <20200619093916.1081129-1-agruenba@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
@@ -60,43 +63,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add an IOCB_CACHED flag which indicates to generic_file_read_iter that
+it should only regard the page cache, without triggering any filesystem
+I/O for the actual request or for readahead.  With this flag, -EAGAIN is
+returned when regular I/O would be triggered similar to the IOCB_NOWAIT
+flag, and -ECANCELED is returned when readahead would be triggered.
 
-can the two patches in this set still be considered for v5.8?
+This allows the caller to perform a tentative read out of the page
+cache, and to retry the read if the requested pages are not cached.
 
-Commit d4388340ae0b ("fs: convert mpage_readpages to mpage_readahead")
-which converts gfs2 and other filesystems to use the new ->readahead
-address space operation is leading to deadlocks between the inode glocks
-and page locks: ->readahead is called with the pages to readahead
-already locked.  When gfs2_readahead then tries to lock the associated
-inode glock, another process already holding the inode glock may be
-trying to lock the same pages.
+Please see the next commit for what this is used for.
 
-We could work around this in gfs by using a LM_FLAG_TRY lock in
-->readahead for now.  The real reason for this deadlock is that gfs2
-shouldn't be taking the inode glock in ->readahead in the first place
-though, so I'd prefer to fix this "properly" instead.  Unfortunately,
-this depends on a new IOCB_CACHED flag for generic_file_read_iter.
-
-A previous version was posted in November:
-
-https://lore.kernel.org/linux-fsdevel/20191122235324.17245-1-agruenba@redhat.com/
-
-Thanks,
-Andreas
-
-Andreas Gruenbacher (2):
-  fs: Add IOCB_CACHED flag for generic_file_read_iter
-  gfs2: Rework read and page fault locking
-
- fs/gfs2/aops.c     | 27 ++------------------
- fs/gfs2/file.c     | 61 ++++++++++++++++++++++++++++++++++++++++++++--
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+---
  include/linux/fs.h |  1 +
- mm/filemap.c       | 16 ++++++++++--
- 4 files changed, 76 insertions(+), 29 deletions(-)
+ mm/filemap.c       | 16 ++++++++++++++--
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
-
-base-commit: af42d3466bdc8f39806b26f593604fdc54140bcb
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 6c4ab4dc1cd7..74eade571b1c 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -315,6 +315,7 @@ enum rw_hint {
+ #define IOCB_SYNC		(1 << 5)
+ #define IOCB_WRITE		(1 << 6)
+ #define IOCB_NOWAIT		(1 << 7)
++#define IOCB_CACHED		(1 << 8)
+ 
+ struct kiocb {
+ 	struct file		*ki_filp;
+diff --git a/mm/filemap.c b/mm/filemap.c
+index f0ae9a6308cb..bd11f27bf6ae 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2028,7 +2028,7 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 
+ 		page = find_get_page(mapping, index);
+ 		if (!page) {
+-			if (iocb->ki_flags & IOCB_NOWAIT)
++			if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_CACHED))
+ 				goto would_block;
+ 			page_cache_sync_readahead(mapping,
+ 					ra, filp,
+@@ -2038,12 +2038,17 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 				goto no_cached_page;
+ 		}
+ 		if (PageReadahead(page)) {
++			if (iocb->ki_flags & IOCB_CACHED) {
++				put_page(page);
++				error = -ECANCELED;
++				goto out;
++			}
+ 			page_cache_async_readahead(mapping,
+ 					ra, filp, page,
+ 					index, last_index - index);
+ 		}
+ 		if (!PageUptodate(page)) {
+-			if (iocb->ki_flags & IOCB_NOWAIT) {
++			if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_CACHED)) {
+ 				put_page(page);
+ 				goto would_block;
+ 			}
+@@ -2249,6 +2254,13 @@ EXPORT_SYMBOL_GPL(generic_file_buffered_read);
+  *
+  * This is the "read_iter()" routine for all filesystems
+  * that can use the page cache directly.
++ *
++ * In the IOCB_NOWAIT flag in iocb->ki_flags indicates that -EAGAIN should be
++ * returned if completing the request would require I/O; this does not prevent
++ * readahead.  The IOCB_CACHED flag indicates that -EAGAIN should be returned
++ * as under the IOCB_NOWAIT flag, and that -ECANCELED should be returned when
++ * readhead would be triggered.
++ *
+  * Return:
+  * * number of bytes copied, even for partial reads
+  * * negative error code if nothing was read
 -- 
 2.26.2
 
