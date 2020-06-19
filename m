@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C923A2013B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680FB201509
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390188AbgFSQDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:03:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42372 "EHLO mail.kernel.org"
+        id S2390866AbgFSQRO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:17:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391293AbgFSPL4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:11:56 -0400
+        id S2390869AbgFSPCk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:02:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03259206FA;
-        Fri, 19 Jun 2020 15:11:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E4C5320776;
+        Fri, 19 Jun 2020 15:02:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579515;
-        bh=tpqTBR22NuBLOVppNdw3lVPmj8gh6mVdDPt1DD3rdc0=;
+        s=default; t=1592578960;
+        bh=E+hxlt/8bwCfl9Fxp6Mg/WFa2VcQaQImvBC/GbPUrOU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=un05N9AQ9qw5HEoMNvX088PROxrn2fsEbb+BAMARBIitTXdq6PRnZHqmISaZsTvQu
-         ZkN6Bihbh3NsnPeS03gkd+EvcQhn6Jp52+K87IvtHzUOVsUe6TKSt7MRYOcyOjgQ2J
-         p+gedQlmgKgaqZor5DDqT63tPeBHeDRqHy324Fdw=
+        b=0ZtIocqDJyZAm/ohjrpPVeZyNyoHMeY+1yoFPzFDfhoSyH8ICakcdblbEAOTpAy1V
+         hA/LJmVNWzSuT6eqbnBpCrH0efO+ymQKGziAR+KjGv8kgxa8AC98DjzH/1cU1PRi2D
+         inbcp7JEG9sgIow3e+kh331RztYA42a5L7Vkzffg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: [PATCH 5.4 165/261] btrfs: fix wrong file range cleanup after an error filling dealloc range
-Date:   Fri, 19 Jun 2020 16:32:56 +0200
-Message-Id: <20200619141657.809417840@linuxfoundation.org>
+        stable@vger.kernel.org, Lichao Liu <liulichao@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 4.19 192/267] MIPS: CPU_LOONGSON2EF need software to maintain cache consistency
+Date:   Fri, 19 Jun 2020 16:32:57 +0200
+Message-Id: <20200619141657.954170501@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,39 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Lichao Liu <liulichao@loongson.cn>
 
-commit e2c8e92d1140754073ad3799eb6620c76bab2078 upstream.
+commit a202bf71f08b3ef15356db30535e30b03cf23aec upstream.
 
-If an error happens while running dellaloc in COW mode for a range, we can
-end up calling extent_clear_unlock_delalloc() for a range that goes beyond
-our range's end offset by 1 byte, which affects 1 extra page. This results
-in clearing bits and doing page operations (such as a page unlock) outside
-our target range.
+CPU_LOONGSON2EF need software to maintain cache consistency,
+so modify the 'cpu_needs_post_dma_flush' function to return true
+when the cpu type is CPU_LOONGSON2EF.
 
-Fix that by calling extent_clear_unlock_delalloc() with an inclusive end
-offset, instead of an exclusive end offset, at cow_file_range().
-
-Fixes: a315e68f6e8b30 ("Btrfs: fix invalid attempt to free reserved space on failure to cow range")
-CC: stable@vger.kernel.org # 4.14+
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Lichao Liu <liulichao@loongson.cn>
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/btrfs/inode.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/mm/dma-noncoherent.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1132,7 +1132,7 @@ out_unlock:
- 	 */
- 	if (extent_reserved) {
- 		extent_clear_unlock_delalloc(inode, start,
--					     start + cur_alloc_size,
-+					     start + cur_alloc_size - 1,
- 					     locked_page,
- 					     clear_bits,
- 					     page_ops);
+--- a/arch/mips/mm/dma-noncoherent.c
++++ b/arch/mips/mm/dma-noncoherent.c
+@@ -56,6 +56,7 @@ static inline bool cpu_needs_post_dma_fl
+ 	case CPU_R10000:
+ 	case CPU_R12000:
+ 	case CPU_BMIPS5000:
++	case CPU_LOONGSON2EF:
+ 		return true;
+ 	default:
+ 		/*
 
 
