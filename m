@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A36201008
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53253200FEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:23:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393290AbgFSPYg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:24:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52682 "EHLO mail.kernel.org"
+        id S2393215AbgFSPXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:23:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51252 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392844AbgFSPVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:21:23 -0400
+        id S2392666AbgFSPUN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:20:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD55521548;
-        Fri, 19 Jun 2020 15:21:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0736206DB;
+        Fri, 19 Jun 2020 15:20:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580082;
-        bh=oka/rNmtiRJwDwVogsEa+EcBiai5h5lBqQBMHdewr8A=;
+        s=default; t=1592580013;
+        bh=VqEMx0byvSNeOcpxNMd9X78ltRGiK3pxZv0FHoexnf0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ECnz0empwOUoVz2Jvc/jRoz3S2tC/JzTuhWOIrPwkcOWRo3v4QcRTCIcV9oWdhQK8
-         WkKrL3JA5re3FmSuwXXdn3vbrYJwmNJ07c68SE1pB8APhy0rtf9Dsd2UUa29mtUGMi
-         LrYL+rDYngOODoQ6WxMwHLpg7bwYzDBd3pIN8nUY=
+        b=nq1rhen6Ztd5r/lMrU1QvuOOl2PCmWzHqlRKmRxIbNy6+k9DfcqAMgqDUmLzD1QkN
+         p9vcwJuJ61tDmaFt8Ten/tKvEEXlk36eWAENJ3HHy+umCCiBiAGBPBF02HtmIdSfaG
+         io27PIsECcLNe6lFctcK0LPn22D5LqdVDCGzbtLM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sriram R <srirrama@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 085/376] ath11k: Avoid mgmt tx count underflow
-Date:   Fri, 19 Jun 2020 16:30:03 +0200
-Message-Id: <20200619141714.368063613@linuxfoundation.org>
+Subject: [PATCH 5.7 090/376] spi: Respect DataBitLength field of SpiSerialBusV2() ACPI resource
+Date:   Fri, 19 Jun 2020 16:30:08 +0200
+Message-Id: <20200619141714.603607717@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -44,40 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sriram R <srirrama@codeaurora.org>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 800113ff4b1d277c2b66ffc04d4d38f202a0d187 ]
+[ Upstream commit 0dadde344d965566589cd82797893d5aa06557a3 ]
 
-The mgmt tx count reference is incremented/decremented on every mgmt tx and on
-tx completion event from firmware.
-In case of an unexpected mgmt tx completion event from firmware,
-the counter would underflow. Avoid this by decrementing
-only when the tx count is greater than 0.
+By unknown reason the commit 64bee4d28c9e
+  ("spi / ACPI: add ACPI enumeration support")
+missed the DataBitLength property to encounter when parse SPI slave
+device data from ACPI.
 
-Signed-off-by: Sriram R <srirrama@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1585567028-9242-1-git-send-email-srirrama@codeaurora.org
+Fill the gap here.
+
+Fixes: 64bee4d28c9e ("spi / ACPI: add ACPI enumeration support")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20200413180406.1826-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath11k/wmi.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/spi/spi.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/ath/ath11k/wmi.c b/drivers/net/wireless/ath/ath11k/wmi.c
-index 6fec62846279..73beca6d6b5f 100644
---- a/drivers/net/wireless/ath/ath11k/wmi.c
-+++ b/drivers/net/wireless/ath/ath11k/wmi.c
-@@ -3740,8 +3740,9 @@ static int wmi_process_mgmt_tx_comp(struct ath11k *ar, u32 desc_id,
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 7067e4c44400..299384c91917 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2111,6 +2111,7 @@ static int acpi_spi_add_resource(struct acpi_resource *ares, void *data)
+ 			}
  
- 	ieee80211_tx_status_irqsafe(ar->hw, msdu);
+ 			lookup->max_speed_hz = sb->connection_speed;
++			lookup->bits_per_word = sb->data_bit_length;
  
--	WARN_ON_ONCE(atomic_read(&ar->num_pending_mgmt_tx) == 0);
--	atomic_dec(&ar->num_pending_mgmt_tx);
-+	/* WARN when we received this event without doing any mgmt tx */
-+	if (atomic_dec_if_positive(&ar->num_pending_mgmt_tx) < 0)
-+		WARN_ON_ONCE(1);
- 
- 	return 0;
- }
+ 			if (sb->clock_phase == ACPI_SPI_SECOND_PHASE)
+ 				lookup->mode |= SPI_CPHA;
 -- 
 2.25.1
 
