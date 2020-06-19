@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8185A201548
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8573920139D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394637AbgFSQU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:20:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57944 "EHLO mail.kernel.org"
+        id S2403895AbgFSPM3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:12:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390717AbgFSPBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:01:33 -0400
+        id S2392159AbgFSPMW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:12:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 41E2321582;
-        Fri, 19 Jun 2020 15:01:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 02A6120776;
+        Fri, 19 Jun 2020 15:12:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578892;
-        bh=YizDRSUzjNO8ndVbmOGqc3pfS12tFWy066Lzh/CPDlk=;
+        s=default; t=1592579541;
+        bh=MDzcFnPU6/OGUZX8eSnSRt/nxMi9RAZ+guKmqLWOiNA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pF6sPMxrWNEL1vvuw58mBATPq2ze7SxuUVqquIBlxVQ2j1XBaZP0RpOKGDGq0HqbT
-         WaKvI7NUFyLcwJCNYmJKLcoshSO9W3hWkiUbYe1IxOYSDYi7TbRuA9KkA1MwDBJshh
-         1F59FjrYOaawANtYzZ+UunJS9P5nauAdKQE0gc1I=
+        b=pXnncCH0zYDrr+4HwBkKvZWE7XurVL9LqiviyE/byuO39COkmA/Zy2cBCFDxZUhyh
+         YkxJuSOOBpjI0sX8pfPW+TAq7sa7NaZmc8ypmLWIAoGEW9pjrL24zd9Ai3gDSnwWf6
+         bgg80Y8tmZohDroE1Kf7IeDdinbqaIVK7F5UQTiQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeffle Xu <jefflexu@linux.alibaba.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
-        stable@kernel.org
-Subject: [PATCH 4.19 197/267] ext4: fix error pointer dereference
-Date:   Fri, 19 Jun 2020 16:33:02 +0200
-Message-Id: <20200619141658.201246929@linuxfoundation.org>
+        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Krzysztof Struczynski <krzysztof.struczynski@huawei.com>,
+        David.Laight@aculab.com (big endian system concerns),
+        Mimi Zohar <zohar@linux.ibm.com>
+Subject: [PATCH 5.4 174/261] ima: Fix ima digest hash table key calculation
+Date:   Fri, 19 Jun 2020 16:33:05 +0200
+Message-Id: <20200619141658.259471735@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,65 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeffle Xu <jefflexu@linux.alibaba.com>
+From: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
 
-commit 8418897f1bf87da0cb6936489d57a4320c32c0af upstream.
+commit 1129d31b55d509f15e72dc68e4b5c3a4d7b4da8d upstream.
 
-Don't pass error pointers to brelse().
+Function hash_long() accepts unsigned long, while currently only one byte
+is passed from ima_hash_key(), which calculates a key for ima_htable.
 
-commit 7159a986b420 ("ext4: fix some error pointer dereferences") has fixed
-some cases, fix the remaining one case.
+Given that hashing the digest does not give clear benefits compared to
+using the digest itself, remove hash_long() and return the modulus
+calculated on the first two bytes of the digest with the number of slots.
+Also reduce the depth of the hash table by doubling the number of slots.
 
-Once ext4_xattr_block_find()->ext4_sb_bread() failed, error pointer is
-stored in @bs->bh, which will be passed to brelse() in the cleanup
-routine of ext4_xattr_set_handle(). This will then cause a NULL panic
-crash in __brelse().
-
-BUG: unable to handle kernel NULL pointer dereference at 000000000000005b
-RIP: 0010:__brelse+0x1b/0x50
-Call Trace:
- ext4_xattr_set_handle+0x163/0x5d0
- ext4_xattr_set+0x95/0x110
- __vfs_setxattr+0x6b/0x80
- __vfs_setxattr_noperm+0x68/0x1b0
- vfs_setxattr+0xa0/0xb0
- setxattr+0x12c/0x1a0
- path_setxattr+0x8d/0xc0
- __x64_sys_setxattr+0x27/0x30
- do_syscall_64+0x60/0x250
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-In this case, @bs->bh stores '-EIO' actually.
-
-Fixes: fb265c9cb49e ("ext4: add ext4_sb_bread() to disambiguate ENOMEM cases")
-Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
-Reviewed-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc: stable@kernel.org # 2.6.19
-Reviewed-by: Ritesh Harjani <riteshh@linux.ibm.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/1587628004-95123-1-git-send-email-jefflexu@linux.alibaba.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@vger.kernel.org
+Fixes: 3323eec921ef ("integrity: IMA as an integrity service provider")
+Co-developed-by: Roberto Sassu <roberto.sassu@huawei.com>
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Signed-off-by: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
+Acked-by: David.Laight@aculab.com (big endian system concerns)
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/xattr.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ security/integrity/ima/ima.h |    7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -1824,8 +1824,11 @@ ext4_xattr_block_find(struct inode *inod
- 	if (EXT4_I(inode)->i_file_acl) {
- 		/* The inode already has an extended attribute block. */
- 		bs->bh = ext4_sb_bread(sb, EXT4_I(inode)->i_file_acl, REQ_PRIO);
--		if (IS_ERR(bs->bh))
--			return PTR_ERR(bs->bh);
-+		if (IS_ERR(bs->bh)) {
-+			error = PTR_ERR(bs->bh);
-+			bs->bh = NULL;
-+			return error;
-+		}
- 		ea_bdebug(bs->bh, "b_count=%d, refcount=%d",
- 			atomic_read(&(bs->bh->b_count)),
- 			le32_to_cpu(BHDR(bs->bh)->h_refcount));
+--- a/security/integrity/ima/ima.h
++++ b/security/integrity/ima/ima.h
+@@ -36,7 +36,7 @@ enum tpm_pcrs { TPM_PCR0 = 0, TPM_PCR8 =
+ #define IMA_DIGEST_SIZE		SHA1_DIGEST_SIZE
+ #define IMA_EVENT_NAME_LEN_MAX	255
+ 
+-#define IMA_HASH_BITS 9
++#define IMA_HASH_BITS 10
+ #define IMA_MEASURE_HTABLE_SIZE (1 << IMA_HASH_BITS)
+ 
+ #define IMA_TEMPLATE_FIELD_ID_MAX_LEN	16
+@@ -175,9 +175,10 @@ struct ima_h_table {
+ };
+ extern struct ima_h_table ima_htable;
+ 
+-static inline unsigned long ima_hash_key(u8 *digest)
++static inline unsigned int ima_hash_key(u8 *digest)
+ {
+-	return hash_long(*digest, IMA_HASH_BITS);
++	/* there is no point in taking a hash of part of a digest */
++	return (digest[0] | digest[1] << 8) % IMA_MEASURE_HTABLE_SIZE;
+ }
+ 
+ #define __ima_hooks(hook)		\
 
 
