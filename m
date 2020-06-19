@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3B1200CC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7C1200BC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:38:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389240AbgFSOtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:49:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42234 "EHLO mail.kernel.org"
+        id S1733197AbgFSOh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:37:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389232AbgFSOti (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:49:38 -0400
+        id S2387638AbgFSOhK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:37:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3F4C42158C;
-        Fri, 19 Jun 2020 14:49:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BC13920CC7;
+        Fri, 19 Jun 2020 14:37:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578176;
-        bh=7XcN7bjQK5eSkSwS7XuWiPl/kmwVvmcBHaISVa22uGc=;
+        s=default; t=1592577430;
+        bh=/YRsKm+UuUQSjVNhO4o+amEOfE2Aw0EN2Skl2Q46c+Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qxjn0tJrUJEIV9g2s4S2ikINgidrPIMNg7dK/iws+O5x3YnQtoeuQNjk3QI+u18bn
-         s1PSxgEj7tjJzDZa0HMASkj9empis+L3DJBF5e0Q4yEMjb99rVmJ9EH1PvMkBEfh3L
-         Z1xVmXymX/IpWAnrdf14gZ+jmXkOkjXxIHltVAgg=
+        b=fTFsYguMeFmMkV9HPkqOa3mj2vCldpIqzfcoFWCCWDF8O5e+PH1TC2jMyz24lV5Ng
+         SD9d71GDjfdY2Xuw+YTj2LhLQyfxkcpFfU4ELr+NSEYv0lMvR1aGWs9his26tEr8KU
+         DjdAulv8CErDhopnaPPCoGZc/96WdUifSAeL+Lyg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeremy Kerr <jk@ozlabs.org>,
-        Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
+        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 112/190] powerpc/spufs: fix copy_to_user while atomic
+Subject: [PATCH 4.4 048/101] kgdb: Prevent infinite recursive entries to the debugger
 Date:   Fri, 19 Jun 2020 16:32:37 +0200
-Message-Id: <20200619141639.226634298@linuxfoundation.org>
+Message-Id: <20200619141616.595392541@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
+References: <20200619141614.001544111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,282 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeremy Kerr <jk@ozlabs.org>
+From: Douglas Anderson <dianders@chromium.org>
 
-[ Upstream commit 88413a6bfbbe2f648df399b62f85c934460b7a4d ]
+[ Upstream commit 3ca676e4ca60d1834bb77535dafe24169cadacef ]
 
-Currently, we may perform a copy_to_user (through
-simple_read_from_buffer()) while holding a context's register_lock,
-while accessing the context save area.
+If we detect that we recursively entered the debugger we should hack
+our I/O ops to NULL so that the panic() in the next line won't
+actually cause another recursion into the debugger.  The first line of
+kgdb_panic() will check this and return.
 
-This change uses a temporary buffer for the context save area data,
-which we then pass to simple_read_from_buffer.
-
-Includes changes from Christoph Hellwig <hch@lst.de>.
-
-Fixes: bf1ab978be23 ("[POWERPC] coredump: Add SPU elf notes to coredump.")
-Signed-off-by: Jeremy Kerr <jk@ozlabs.org>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-[hch: renamed to function to avoid ___-prefixes]
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+Link: https://lore.kernel.org/r/20200507130644.v4.6.I89de39f68736c9de610e6f241e68d8dbc44bc266@changeid
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/cell/spufs/file.c | 113 +++++++++++++++--------
- 1 file changed, 75 insertions(+), 38 deletions(-)
+ kernel/debug/debug_core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/platforms/cell/spufs/file.c b/arch/powerpc/platforms/cell/spufs/file.c
-index 5ffcdeb1eb17..9d9fffaedeef 100644
---- a/arch/powerpc/platforms/cell/spufs/file.c
-+++ b/arch/powerpc/platforms/cell/spufs/file.c
-@@ -1988,8 +1988,9 @@ static ssize_t __spufs_mbox_info_read(struct spu_context *ctx,
- static ssize_t spufs_mbox_info_read(struct file *file, char __user *buf,
- 				   size_t len, loff_t *pos)
- {
--	int ret;
- 	struct spu_context *ctx = file->private_data;
-+	u32 stat, data;
-+	int ret;
+diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
+index 79517e5549f1..9c939c6bf21c 100644
+--- a/kernel/debug/debug_core.c
++++ b/kernel/debug/debug_core.c
+@@ -443,6 +443,7 @@ static int kgdb_reenter_check(struct kgdb_state *ks)
  
- 	if (!access_ok(VERIFY_WRITE, buf, len))
- 		return -EFAULT;
-@@ -1998,11 +1999,16 @@ static ssize_t spufs_mbox_info_read(struct file *file, char __user *buf,
- 	if (ret)
- 		return ret;
- 	spin_lock(&ctx->csa.register_lock);
--	ret = __spufs_mbox_info_read(ctx, buf, len, pos);
-+	stat = ctx->csa.prob.mb_stat_R;
-+	data = ctx->csa.prob.pu_mb_R;
- 	spin_unlock(&ctx->csa.register_lock);
- 	spu_release_saved(ctx);
- 
--	return ret;
-+	/* EOF if there's no entry in the mbox */
-+	if (!(stat & 0x0000ff))
-+		return 0;
-+
-+	return simple_read_from_buffer(buf, len, pos, &data, sizeof(data));
- }
- 
- static const struct file_operations spufs_mbox_info_fops = {
-@@ -2029,6 +2035,7 @@ static ssize_t spufs_ibox_info_read(struct file *file, char __user *buf,
- 				   size_t len, loff_t *pos)
- {
- 	struct spu_context *ctx = file->private_data;
-+	u32 stat, data;
- 	int ret;
- 
- 	if (!access_ok(VERIFY_WRITE, buf, len))
-@@ -2038,11 +2045,16 @@ static ssize_t spufs_ibox_info_read(struct file *file, char __user *buf,
- 	if (ret)
- 		return ret;
- 	spin_lock(&ctx->csa.register_lock);
--	ret = __spufs_ibox_info_read(ctx, buf, len, pos);
-+	stat = ctx->csa.prob.mb_stat_R;
-+	data = ctx->csa.priv2.puint_mb_R;
- 	spin_unlock(&ctx->csa.register_lock);
- 	spu_release_saved(ctx);
- 
--	return ret;
-+	/* EOF if there's no entry in the ibox */
-+	if (!(stat & 0xff0000))
-+		return 0;
-+
-+	return simple_read_from_buffer(buf, len, pos, &data, sizeof(data));
- }
- 
- static const struct file_operations spufs_ibox_info_fops = {
-@@ -2051,6 +2063,11 @@ static const struct file_operations spufs_ibox_info_fops = {
- 	.llseek  = generic_file_llseek,
- };
- 
-+static size_t spufs_wbox_info_cnt(struct spu_context *ctx)
-+{
-+	return (4 - ((ctx->csa.prob.mb_stat_R & 0x00ff00) >> 8)) * sizeof(u32);
-+}
-+
- static ssize_t __spufs_wbox_info_read(struct spu_context *ctx,
- 			char __user *buf, size_t len, loff_t *pos)
- {
-@@ -2059,7 +2076,7 @@ static ssize_t __spufs_wbox_info_read(struct spu_context *ctx,
- 	u32 wbox_stat;
- 
- 	wbox_stat = ctx->csa.prob.mb_stat_R;
--	cnt = 4 - ((wbox_stat & 0x00ff00) >> 8);
-+	cnt = spufs_wbox_info_cnt(ctx);
- 	for (i = 0; i < cnt; i++) {
- 		data[i] = ctx->csa.spu_mailbox_data[i];
+ 	if (exception_level > 1) {
+ 		dump_stack();
++		kgdb_io_module_registered = false;
+ 		panic("Recursive entry to debugger");
  	}
-@@ -2072,7 +2089,8 @@ static ssize_t spufs_wbox_info_read(struct file *file, char __user *buf,
- 				   size_t len, loff_t *pos)
- {
- 	struct spu_context *ctx = file->private_data;
--	int ret;
-+	u32 data[ARRAY_SIZE(ctx->csa.spu_mailbox_data)];
-+	int ret, count;
  
- 	if (!access_ok(VERIFY_WRITE, buf, len))
- 		return -EFAULT;
-@@ -2081,11 +2099,13 @@ static ssize_t spufs_wbox_info_read(struct file *file, char __user *buf,
- 	if (ret)
- 		return ret;
- 	spin_lock(&ctx->csa.register_lock);
--	ret = __spufs_wbox_info_read(ctx, buf, len, pos);
-+	count = spufs_wbox_info_cnt(ctx);
-+	memcpy(&data, &ctx->csa.spu_mailbox_data, sizeof(data));
- 	spin_unlock(&ctx->csa.register_lock);
- 	spu_release_saved(ctx);
- 
--	return ret;
-+	return simple_read_from_buffer(buf, len, pos, &data,
-+				count * sizeof(u32));
- }
- 
- static const struct file_operations spufs_wbox_info_fops = {
-@@ -2094,27 +2114,33 @@ static const struct file_operations spufs_wbox_info_fops = {
- 	.llseek  = generic_file_llseek,
- };
- 
--static ssize_t __spufs_dma_info_read(struct spu_context *ctx,
--			char __user *buf, size_t len, loff_t *pos)
-+static void spufs_get_dma_info(struct spu_context *ctx,
-+		struct spu_dma_info *info)
- {
--	struct spu_dma_info info;
--	struct mfc_cq_sr *qp, *spuqp;
- 	int i;
- 
--	info.dma_info_type = ctx->csa.priv2.spu_tag_status_query_RW;
--	info.dma_info_mask = ctx->csa.lscsa->tag_mask.slot[0];
--	info.dma_info_status = ctx->csa.spu_chnldata_RW[24];
--	info.dma_info_stall_and_notify = ctx->csa.spu_chnldata_RW[25];
--	info.dma_info_atomic_command_status = ctx->csa.spu_chnldata_RW[27];
-+	info->dma_info_type = ctx->csa.priv2.spu_tag_status_query_RW;
-+	info->dma_info_mask = ctx->csa.lscsa->tag_mask.slot[0];
-+	info->dma_info_status = ctx->csa.spu_chnldata_RW[24];
-+	info->dma_info_stall_and_notify = ctx->csa.spu_chnldata_RW[25];
-+	info->dma_info_atomic_command_status = ctx->csa.spu_chnldata_RW[27];
- 	for (i = 0; i < 16; i++) {
--		qp = &info.dma_info_command_data[i];
--		spuqp = &ctx->csa.priv2.spuq[i];
-+		struct mfc_cq_sr *qp = &info->dma_info_command_data[i];
-+		struct mfc_cq_sr *spuqp = &ctx->csa.priv2.spuq[i];
- 
- 		qp->mfc_cq_data0_RW = spuqp->mfc_cq_data0_RW;
- 		qp->mfc_cq_data1_RW = spuqp->mfc_cq_data1_RW;
- 		qp->mfc_cq_data2_RW = spuqp->mfc_cq_data2_RW;
- 		qp->mfc_cq_data3_RW = spuqp->mfc_cq_data3_RW;
- 	}
-+}
-+
-+static ssize_t __spufs_dma_info_read(struct spu_context *ctx,
-+			char __user *buf, size_t len, loff_t *pos)
-+{
-+	struct spu_dma_info info;
-+
-+	spufs_get_dma_info(ctx, &info);
- 
- 	return simple_read_from_buffer(buf, len, pos, &info,
- 				sizeof info);
-@@ -2124,6 +2150,7 @@ static ssize_t spufs_dma_info_read(struct file *file, char __user *buf,
- 			      size_t len, loff_t *pos)
- {
- 	struct spu_context *ctx = file->private_data;
-+	struct spu_dma_info info;
- 	int ret;
- 
- 	if (!access_ok(VERIFY_WRITE, buf, len))
-@@ -2133,11 +2160,12 @@ static ssize_t spufs_dma_info_read(struct file *file, char __user *buf,
- 	if (ret)
- 		return ret;
- 	spin_lock(&ctx->csa.register_lock);
--	ret = __spufs_dma_info_read(ctx, buf, len, pos);
-+	spufs_get_dma_info(ctx, &info);
- 	spin_unlock(&ctx->csa.register_lock);
- 	spu_release_saved(ctx);
- 
--	return ret;
-+	return simple_read_from_buffer(buf, len, pos, &info,
-+				sizeof(info));
- }
- 
- static const struct file_operations spufs_dma_info_fops = {
-@@ -2146,13 +2174,31 @@ static const struct file_operations spufs_dma_info_fops = {
- 	.llseek = no_llseek,
- };
- 
-+static void spufs_get_proxydma_info(struct spu_context *ctx,
-+		struct spu_proxydma_info *info)
-+{
-+	int i;
-+
-+	info->proxydma_info_type = ctx->csa.prob.dma_querytype_RW;
-+	info->proxydma_info_mask = ctx->csa.prob.dma_querymask_RW;
-+	info->proxydma_info_status = ctx->csa.prob.dma_tagstatus_R;
-+
-+	for (i = 0; i < 8; i++) {
-+		struct mfc_cq_sr *qp = &info->proxydma_info_command_data[i];
-+		struct mfc_cq_sr *puqp = &ctx->csa.priv2.puq[i];
-+
-+		qp->mfc_cq_data0_RW = puqp->mfc_cq_data0_RW;
-+		qp->mfc_cq_data1_RW = puqp->mfc_cq_data1_RW;
-+		qp->mfc_cq_data2_RW = puqp->mfc_cq_data2_RW;
-+		qp->mfc_cq_data3_RW = puqp->mfc_cq_data3_RW;
-+	}
-+}
-+
- static ssize_t __spufs_proxydma_info_read(struct spu_context *ctx,
- 			char __user *buf, size_t len, loff_t *pos)
- {
- 	struct spu_proxydma_info info;
--	struct mfc_cq_sr *qp, *puqp;
- 	int ret = sizeof info;
--	int i;
- 
- 	if (len < ret)
- 		return -EINVAL;
-@@ -2160,18 +2206,7 @@ static ssize_t __spufs_proxydma_info_read(struct spu_context *ctx,
- 	if (!access_ok(VERIFY_WRITE, buf, len))
- 		return -EFAULT;
- 
--	info.proxydma_info_type = ctx->csa.prob.dma_querytype_RW;
--	info.proxydma_info_mask = ctx->csa.prob.dma_querymask_RW;
--	info.proxydma_info_status = ctx->csa.prob.dma_tagstatus_R;
--	for (i = 0; i < 8; i++) {
--		qp = &info.proxydma_info_command_data[i];
--		puqp = &ctx->csa.priv2.puq[i];
--
--		qp->mfc_cq_data0_RW = puqp->mfc_cq_data0_RW;
--		qp->mfc_cq_data1_RW = puqp->mfc_cq_data1_RW;
--		qp->mfc_cq_data2_RW = puqp->mfc_cq_data2_RW;
--		qp->mfc_cq_data3_RW = puqp->mfc_cq_data3_RW;
--	}
-+	spufs_get_proxydma_info(ctx, &info);
- 
- 	return simple_read_from_buffer(buf, len, pos, &info,
- 				sizeof info);
-@@ -2181,17 +2216,19 @@ static ssize_t spufs_proxydma_info_read(struct file *file, char __user *buf,
- 				   size_t len, loff_t *pos)
- {
- 	struct spu_context *ctx = file->private_data;
-+	struct spu_proxydma_info info;
- 	int ret;
- 
- 	ret = spu_acquire_saved(ctx);
- 	if (ret)
- 		return ret;
- 	spin_lock(&ctx->csa.register_lock);
--	ret = __spufs_proxydma_info_read(ctx, buf, len, pos);
-+	spufs_get_proxydma_info(ctx, &info);
- 	spin_unlock(&ctx->csa.register_lock);
- 	spu_release_saved(ctx);
- 
--	return ret;
-+	return simple_read_from_buffer(buf, len, pos, &info,
-+				sizeof(info));
- }
- 
- static const struct file_operations spufs_proxydma_info_fops = {
 -- 
 2.25.1
 
