@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70890200C54
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06C19200BF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388559AbgFSOoY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:44:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35272 "EHLO mail.kernel.org"
+        id S2388086AbgFSOjy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:39:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388531AbgFSOoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:44:00 -0400
+        id S2387594AbgFSOjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:39:46 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77F6F2168B;
-        Fri, 19 Jun 2020 14:43:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 384502070A;
+        Fri, 19 Jun 2020 14:39:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577840;
-        bh=tQhxigQbmQOKnMbx5j51NiN66GZ0gOKoylnatGUazao=;
+        s=default; t=1592577585;
+        bh=IjElmARq6eMzDOjlp6QPQm+41lcq/XlSv+UorJp2UCI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UNzGcQ2AP1NE7N7RyIog4lBTl3ylQBrK3TjOLanHgiwTT0GeZUK34GRBzOGfikn+7
-         lt/gxOdD19JvmeNWI6yR9kX4WXFveUhsgsY3sKo1kG3ZZHI5Fopc3O1hjaDbu4UaBU
-         KJtxuIei7zUXZGyP98q8CHiEFtlGlvGVpti9KPU8=
+        b=Co60UGoFejsgh/VDl5tLuiR+0HdZlRriP7Tm01MzHcFW7hwUpUrX4WwOOhrtwAXr7
+         Upd3oLEHwWqk+0eMzYnP3Ta5hlm5WLllMpukXZ3ePyv7xHzBSMXzb0FmBzetOFYj48
+         CV2gmCqY3Krs8cagVqUcZZZ7pom/PBK4TVbsUxls=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Larry Finger <Larry.Finger@lwfinger.net>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4.9 110/128] b43legacy: Fix case where channel status is corrupted
-Date:   Fri, 19 Jun 2020 16:33:24 +0200
-Message-Id: <20200619141625.965539385@linuxfoundation.org>
+        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 4.4 096/101] kbuild: force to build vmlinux if CONFIG_MODVERSION=y
+Date:   Fri, 19 Jun 2020 16:33:25 +0200
+Message-Id: <20200619141618.992572618@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
-References: <20200619141620.148019466@linuxfoundation.org>
+In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
+References: <20200619141614.001544111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Larry Finger <Larry.Finger@lwfinger.net>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-commit ec4d3e3a054578de34cd0b587ab8a1ac36f629d9 upstream.
+commit 4b50c8c4eaf06a825d1c005c0b1b4a8307087b83 upstream.
 
-This patch fixes commit 75388acd0cd8 ("add mac80211-based driver for
-legacy BCM43xx devices")
+This code does not work as stated in the comment.
 
-In https://bugzilla.kernel.org/show_bug.cgi?id=207093, a defect in
-b43legacy is reported. Upon testing, thus problem exists on PPC and
-X86 platforms, is present in the oldest kernel tested (3.2), and
-has been present in the driver since it was first added to the kernel.
+$(CONFIG_MODVERSIONS) is always empty because it is expanded before
+include/config/auto.conf is included. Hence, 'make modules' with
+CONFIG_MODVERSION=y cannot record the version CRCs.
 
-The problem is a corrupted channel status received from the device.
-Both the internal card in a PowerBook G4 and the PCMCIA version
-(Broadcom BCM4306 with PCI ID 14e4:4320) have the problem. Only Rev, 2
-(revision 4 of the 802.11 core) of the chip has been tested. No other
-devices using b43legacy are available for testing.
+This has been broken since 2003, commit ("kbuild: Enable modules to be
+build using the "make dir/" syntax"). [1]
 
-Various sources of the problem were considered. Buffer overrun and
-other sources of corruption within the driver were rejected because
-the faulty channel status is always the same, not a random value.
-It was concluded that the faulty data is coming from the device, probably
-due to a firmware bug. As that source is not available, the driver
-must take appropriate action to recover.
-
-At present, the driver reports the error, and them continues to process
-the bad packet. This is believed that to be a mistake, and the correct
-action is to drop the correpted packet.
-
-Fixes: 75388acd0cd8 ("add mac80211-based driver for legacy BCM43xx devices")
-Cc: Stable <stable@vger.kernel.org>
-Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
-Reported-and-tested by: F. Erhard <erhard_f@mailbox.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200407190043.1686-1-Larry.Finger@lwfinger.net
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/history/history.git/commit/?id=15c6240cdc44bbeef3c4797ec860f9765ef4f1a7
+Cc: linux-stable <stable@vger.kernel.org> # v2.5.71+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/wireless/broadcom/b43legacy/xmit.c |    1 +
- 1 file changed, 1 insertion(+)
+ Makefile |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- a/drivers/net/wireless/broadcom/b43legacy/xmit.c
-+++ b/drivers/net/wireless/broadcom/b43legacy/xmit.c
-@@ -571,6 +571,7 @@ void b43legacy_rx(struct b43legacy_wldev
- 	default:
- 		b43legacywarn(dev->wl, "Unexpected value for chanstat (0x%X)\n",
- 		       chanstat);
-+		goto drop;
- 	}
+--- a/Makefile
++++ b/Makefile
+@@ -313,12 +313,8 @@ KBUILD_MODULES :=
+ KBUILD_BUILTIN := 1
  
- 	memcpy(IEEE80211_SKB_RXCB(skb), &status, sizeof(status));
+ # If we have only "make modules", don't compile built-in objects.
+-# When we're building modules with modversions, we need to consider
+-# the built-in objects during the descend as well, in order to
+-# make sure the checksums are up to date before we record them.
+-
+ ifeq ($(MAKECMDGOALS),modules)
+-  KBUILD_BUILTIN := $(if $(CONFIG_MODVERSIONS),1)
++  KBUILD_BUILTIN :=
+ endif
+ 
+ # If we have "make <whatever> modules", compile modules
+@@ -1156,6 +1152,13 @@ ifdef CONFIG_MODULES
+ 
+ all: modules
+ 
++# When we're building modules with modversions, we need to consider
++# the built-in objects during the descend as well, in order to
++# make sure the checksums are up to date before we record them.
++ifdef CONFIG_MODVERSIONS
++  KBUILD_BUILTIN := 1
++endif
++
+ # Build modules
+ #
+ # A module can be listed more than once in obj-m resulting in
 
 
