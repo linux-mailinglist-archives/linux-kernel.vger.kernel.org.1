@@ -2,181 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB66201E5A
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 00:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D624201E71
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 00:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730109AbgFSW5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 18:57:32 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:50420 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730021AbgFSW5W (ORCPT
+        id S1730232AbgFSW6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 18:58:53 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55747 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730201AbgFSW6v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 18:57:22 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05JMsCir023116;
-        Fri, 19 Jun 2020 15:57:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=6hIjoTmd1LM1QJygvVjlWgxEyBWHDQEv/FmlOzrT8l0=;
- b=Q/vQ2c/RF6mP/yQHspRqKRE2mwkC5yoNwnUKnMkETDqXimHXup0ypT2DU9AP2jsCpPA/
- QHp4ColJXxhvOTKg2/r0v+KAeq5S8+bq3GQpXCSzCZfrH4Bth1T+xi8JJe5g7+ic9vmN
- Oa84CD16mp7aO33Wv/SMyweyAoSZW08LK1Q= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31rwgsbys8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 19 Jun 2020 15:57:09 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 19 Jun 2020 15:57:08 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gx7jioYzCOyblXSZzj2ngM3MCb2JlPK7BCKNSULM1276O3MRKQ29nSb9skR/5B2D0M2GHnWfRx7TJaBp5mG18fzog/04esm5gwqNddK8wp1zCGB/zIgT14H98xdVMeu9aQeimia9B3miLOV8lvAmtek0FoyNCu7OdULa4MAmtlCdH5feIrgNQhz/IsEkULPYmj6HfVqgJF30a33T5rbdl44JanTZI8lJ5f+VRkBMQdLWW+Ug7QVjsNa3rr1Gwig6kwdPZnMhTc+0KVnkwwVV0sCzPSORAccaSf5bbV+JdJ5vpouNufY8aTYmIz+eFwRx16UvnII7E8VliQCI4v8H2w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6hIjoTmd1LM1QJygvVjlWgxEyBWHDQEv/FmlOzrT8l0=;
- b=SGnCLgMbLLIBAFcjRfROTyVmQM2pXxoQxjW1S0EdnCrQFkBqpzW4/jBXv9el5GJvrVWG7+fSHXFYrkryTOa2Zys7dcFqA5cOWzgVNYkULoTS3/r8gpddY04b61rAp3kY5uLj4gH0pOFv+FeIOqQUg8ZxW2mt/tDrTgsc60VXxG/wJ4iUjx/L/KIM1bOklt9SfSdiiAvtcUMrBiaVJsIyzcb+u3dYeeXBpRTCGL6Ua9EXVaVdu8ldLvhElsNX9bvA+WM7ma/PIQPbgi8Hl5VqxUgkHhT3bat6gZJmkQ1f7YVRzcaHfKY5fRJHmM7XTymexQKz6a84uhyhw+ZsyZe7lg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6hIjoTmd1LM1QJygvVjlWgxEyBWHDQEv/FmlOzrT8l0=;
- b=Mf+hxfgVfve//bOFUBOeJJDmwE93fD6VkvMOzHgPgmDCQ70ygyXV11Yaz0yOqT+Z0v6VDvkL8warf79hF/vTdEyVlFdqcYsvvnmiryxg8ceP9X+Qc4wmshIlcyRJqx3gDX/bwrzXNnOl685ac8yHt7XkGedPv/NWSGIRN4zxOro=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3144.namprd15.prod.outlook.com (2603:10b6:a03:fe::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22; Fri, 19 Jun
- 2020 22:57:07 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::48e3:c159:703d:a2f1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::48e3:c159:703d:a2f1%5]) with mapi id 15.20.3109.021; Fri, 19 Jun 2020
- 22:57:07 +0000
-Date:   Fri, 19 Jun 2020 15:57:04 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     David Rientjes <rientjes@google.com>
-CC:     Andrea Arcangeli <aarcange@redhat.com>,
-        Yang Shi <shy828301@gmail.com>,
-        <iommu@lists.linux-foundation.org>, Joerg Roedel <joro@8bytes.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richardw.yang@linux.intel.com>
-Subject: Re: kernel BUG at mm/huge_memory.c:2613!
-Message-ID: <20200619225704.GC237539@carbon.dhcp.thefacebook.com>
-References: <20200619001938.GA135965@carbon.dhcp.thefacebook.com>
- <CAHbLzkrDcn-GQOrAM=m7+2g5_J6obsz4K50Oqb-1RD5p1iWTPQ@mail.gmail.com>
- <20200619011449.GC135965@carbon.dhcp.thefacebook.com>
- <20200619024026.GB21081@redhat.com>
- <20200619185540.GB217189@carbon.lan>
- <alpine.DEB.2.22.394.2006191354080.26224@chino.kir.corp.google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2006191354080.26224@chino.kir.corp.google.com>
-X-ClientProxiedBy: BY5PR03CA0025.namprd03.prod.outlook.com
- (2603:10b6:a03:1e0::35) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Fri, 19 Jun 2020 18:58:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592607530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=E2BNk2Ub7uBT0HBt8BMR2hg/5o8g14jlSam4dCx84bQ=;
+        b=cPKE3WWVwDbAMxYSBshkPK1kjbrkYoyf6FT0wbGYl7mmRFb5l9QOAkIukDSUGcy35rpPTw
+        nxHsrzqLRJ0a6DgWGj6VQy+ts4yreyQV70UF4fcXoZofoz723pfKUxEwKWTa+KaqZcASN5
+        2CGcLSmfb+NtCPYMQmgYfyIdqAKnXAw=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-259-3F4YsLcRO0KdIJkYrjFrFg-1; Fri, 19 Jun 2020 18:58:48 -0400
+X-MC-Unique: 3F4YsLcRO0KdIJkYrjFrFg-1
+Received: by mail-wm1-f69.google.com with SMTP id p24so4891983wmc.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 15:58:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=E2BNk2Ub7uBT0HBt8BMR2hg/5o8g14jlSam4dCx84bQ=;
+        b=qQGoPrproIGc4d33dxfnaGKTGyKOu4V9yZeqyYxF3vgfOcSw3RVz1wrOV9+2Ie01z1
+         5+CubXXxN01Oj2KyiH4f0ytk9DdlZYDhPMjglv6Eu9bKXzJiVHVZ9l1IymALEpA1vRCh
+         HQkghparLoiy1DvPdivuY53KAWE1IMc4w91tmWSYAVheqHRACXR+oOH34k5aVt5gK1mt
+         6J6DbOHcsNjE36pgVBXKe1nRVDTiGuDQEExGtgbbrxRXYJkjTYljoh/mP63iESgEz84c
+         1miUbYYO3ThL9mo2j9C7imdl8cWxlbByfRYe1XhzZTGOwjvbed3zBAsKCM7JnvKiTgjB
+         Wh8g==
+X-Gm-Message-State: AOAM5324e85tEFbN5Ufz7ZHDtTjw3qFHkXzsUmaSXsMFQhHAeP/AHbWo
+        PVOIpuqNJNEXBnLlxpco87Da1IGRg8JBQ87GAgNmlEOQOGCpmn+ngCaJMKSMuKm0lK2nVKbL0b8
+        jCAJOLsxoQrdj+6PXeFlxVo0A
+X-Received: by 2002:a7b:cc94:: with SMTP id p20mr5779789wma.148.1592607527323;
+        Fri, 19 Jun 2020 15:58:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzMKhY/RzPovyTwhCbOPKYFuzo5dk0SjaJP0wmIxsSDDxtGzS04gtLD/QEWjSSWySAcyxN+DQ==
+X-Received: by 2002:a7b:cc94:: with SMTP id p20mr5779776wma.148.1592607527023;
+        Fri, 19 Jun 2020 15:58:47 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:e1d2:138e:4eff:42cb? ([2001:b07:6468:f312:e1d2:138e:4eff:42cb])
+        by smtp.gmail.com with ESMTPSA id r12sm8693338wrc.22.2020.06.19.15.58.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jun 2020 15:58:46 -0700 (PDT)
+Subject: Re: RFC - kernel selftest result documentation (KTAP)
+To:     Frank Rowand <frowand.list@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Brendan Higgins <brendanhiggins@google.com>
+Cc:     "Bird, Tim" <Tim.Bird@sony.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        David Gow <davidgow@google.com>
+References: <CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com>
+ <202006141120.96FF8C5@keescook>
+ <CY4PR13MB11757D57CD441C5CAEC3F257FD9C0@CY4PR13MB1175.namprd13.prod.outlook.com>
+ <7161fadb-45ba-c4c0-8bbb-cb47d2dd0265@redhat.com>
+ <CY4PR13MB11755F5A6879CA3FFD005426FD9D0@CY4PR13MB1175.namprd13.prod.outlook.com>
+ <CAFd5g454n4ZPgCdWaAxezFueG47TztqBx4L7x4oYwgPAR3BZNA@mail.gmail.com>
+ <202006161653.15C278A5@keescook>
+ <398200b2-f8bc-894d-6d6f-366ff98a490e@gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c60c25ab-6737-1cc9-4370-dae4ebb4b823@redhat.com>
+Date:   Sat, 20 Jun 2020 00:58:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:a2a9) by BY5PR03CA0025.namprd03.prod.outlook.com (2603:10b6:a03:1e0::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.23 via Frontend Transport; Fri, 19 Jun 2020 22:57:06 +0000
-X-Originating-IP: [2620:10d:c090:400::5:a2a9]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: aae7227b-684a-40b9-9892-08d814a4175b
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3144:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3144A8139B66B907FE2D1FCBBE980@BYAPR15MB3144.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-Forefront-PRVS: 0439571D1D
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: R/G/8oEb7vQBmOB64xLWRxv50peqSOFGnv32FrbJ+Nnoh78GcFJclw5GkEZDLzeCagxIJgYEyZ9cuvOdgumft6u/wwd4EfdWj/0/VQwI5fPNF/5oe5n2r7oXsia+f4tqyzVD5xF+yk3MU4PLORZjbLvB2qXCk7QR54VDBrgKByXqD7yGu1Ka4YC/UkartCMtR/jayT9rLWWN1Mn23JrWRCceX29rS6dEZhiAw4pVjR/7fsfdIGDm5ljsHlSTTbJadTDK6uttEYvf2jMHqxyF86dUwdP1RlTMHootpk3qz7asfBqPXwNwEnrmfQcJQh0II6Xlyfr5IaPqBGROPUw2U8Ujm8iZxh+cHOBXDdIlq85Nt6ITKIcL/RYdsjdxguft
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(376002)(366004)(39860400002)(396003)(2906002)(86362001)(66946007)(1076003)(66476007)(66556008)(16526019)(478600001)(7416002)(186003)(54906003)(316002)(9686003)(8936002)(55016002)(7696005)(52116002)(8676002)(6916009)(33656002)(4326008)(5660300002)(83380400001)(6506007)(14583001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: WmoV5lzelW17iBZ0E+/nh17IGMz37BEc0pLNVC6roRFHK56mt3f6Ju8LGZWPuljrzuVaaDBpoIrUbeltKqJQEtrdMKYnClUisc3Sl0SMMuIsNg/xgwPGW9dvIg2u0eyLoa8jZZwCqJ15tuihzPB7dPdrq8SQckbcO+O2BA4cl2mxS464W0vfm8nzkAMRLYZLaIx8tQ856fXX9KaqUUyi4YC0zYxU0kAIbfB9UnU1koTnBDdw9i7YFbxG2uyFFkMvyeUQjrJlrB3RKN3akLs6vfT19bIjYS6kFRJMiZ3NICbv8zneZ/fyuCxvO3kCyzZ0qJlRzN8LmVvzlgeQAMH/Imjv0hgC3m62HfCGFsE0JK6ZXf3//Bk8YjDSCQLWDGVDT4I6JvA/5pmA73y3tz9LbZvVWsh0qnhLDZx8o680c76X/Phztpga4MCcOZz9oZwMsi8jqwAAxegn1K33i2HLxPrbE6TfzzG+PSsLqsAbfwxq31LWAN5KLke3WF9YxulNkRpRHZaEKxcgeDbQUJHh6w==
-X-MS-Exchange-CrossTenant-Network-Message-Id: aae7227b-684a-40b9-9892-08d814a4175b
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jun 2020 22:57:07.3128
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: F8C7lOXC5CwRSQfGMtw2CoZOy7+D/iSLpeWlT3eNLDrdmR1AYmZ7/usSg/PxOkXk
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3144
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-19_22:2020-06-19,2020-06-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- cotscore=-2147483648 spamscore=0 suspectscore=1 clxscore=1015 mlxscore=0
- lowpriorityscore=0 priorityscore=1501 impostorscore=0 malwarescore=0
- adultscore=0 mlxlogscore=999 bulkscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006190160
-X-FB-Internal: deliver
+In-Reply-To: <398200b2-f8bc-894d-6d6f-366ff98a490e@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 01:56:28PM -0700, David Rientjes wrote:
-> On Fri, 19 Jun 2020, Roman Gushchin wrote:
-> 
-> > [   40.287524] BUG: unable to handle page fault for address: ffffa77b833df000
-> > [   40.287529] #PF: supervisor write access in kernel mode
-> > [   40.287531] #PF: error_code(0x000b) - reserved bit violation
-> > [   40.287532] PGD 40d14e067 P4D 40d14e067 PUD 40d14f067 PMD 3ec54d067
-> > PTE 80001688033d9163
-> > [   40.287538] Oops: 000b [#2] SMP NOPTI
-> > [   40.287542] CPU: 9 PID: 1986 Comm: pulseaudio Tainted: G      D
-> >       5.8.0-rc1+ #697
-> > [   40.287544] Hardware name: Gigabyte Technology Co., Ltd.
-> > AB350-Gaming/AB350-Gaming-CF, BIOS F25 01/16/2019
-> > [   40.287550] RIP: 0010:__memset+0x24/0x30
-> > [   40.287553] Code: cc cc cc cc cc cc 0f 1f 44 00 00 49 89 f9 48 89
-> > d1 83 e2 07 48 c1 e9 03 40 0f b6 f6 48 b8 01 01 01 01 01 01 01 01 48
-> > 0f af c6 <f3> 48 ab 89 d1 f3 aa 4c 89 c8 c3 90 49 89 f9 40 88 f0 48 89
-> > d1 f3
-> > [   40.287556] RSP: 0018:ffffa77b827a7e08 EFLAGS: 00010216
-> > [   40.287558] RAX: 0000000000000000 RBX: ffff90f77dced800 RCX: 00000000000008a0
-> > [   40.287560] RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffffa77b833df000
-> > [   40.287561] RBP: ffff90f7898c7000 R08: ffff90f78c507768 R09: ffffa77b833df000
-> > [   40.287563] R10: ffffa77b833df000 R11: ffff90f7839f2d40 R12: 0000000000000000
-> > [   40.287564] R13: ffff90f76a802e00 R14: ffffffffc0cb8880 R15: ffff90f770f4e700
-> > [   40.287567] FS:  00007f3d8e8df880(0000) GS:ffff90f78ee40000(0000)
-> > knlGS:0000000000000000
-> > [   40.287569] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [   40.287570] CR2: ffffa77b833df000 CR3: 00000003fa556000 CR4: 00000000003406e0
-> > [   40.287572] Call Trace:
-> > [   40.287584]  snd_pcm_hw_params+0x3fd/0x490 [snd_pcm]
-> > [   40.287593]  snd_pcm_common_ioctl+0x1c5/0x1110 [snd_pcm]
-> > [   40.287601]  ? snd_pcm_info_user+0x64/0x80 [snd_pcm]
-> > [   40.287608]  snd_pcm_ioctl+0x23/0x30 [snd_pcm]
-> > [   40.287613]  ksys_ioctl+0x82/0xc0
-> > [   40.287617]  __x64_sys_ioctl+0x16/0x20
-> > [   40.287622]  do_syscall_64+0x4d/0x90
-> > [   40.287627]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> Hi Roman,
-> 
-> If you have CONFIG_AMD_MEM_ENCRYPT set, this should be resolved by
-> 
-> commit dbed452a078d56bc7f1abecc3edd6a75e8e4484e
-> Author: David Rientjes <rientjes@google.com>
-> Date:   Thu Jun 11 00:25:57 2020 -0700
-> 
->     dma-pool: decouple DMA_REMAP from DMA_COHERENT_POOL
-> 
-> Or you might want to wait for 5.8-rc2 instead which includes this fix.
-> 
+On 19/06/20 20:47, Frank Rowand wrote:
+> Or if the entire test depends on the missing config then Bail out might
+> be appropriate.
 
-Hello, David!
+No, in that case you want
 
-Thank you for pointing at it! Unfortunately, there must be something wrong
-with drivers, your patch didn't help much. I still see the same stacktrace.
+	1..0 # SKIP: unsupported configuration
 
-I'll try again after 5.8-rc2 will be out.
+The spec is not clear if "Bail out!" is an error condition or just a
+warning that only part of the test was run, but prove(1) and Automake
+both treat it as the former, for example.
 
-Thanks!
+For example, an ENOSPC error creating a temporary file could be turned
+into a bail-out, while an ENOSYS would be a skip.
+
+Paolo
+
