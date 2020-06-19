@@ -2,35 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F57D201634
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5742201621
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394750AbgFSQ1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:27:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50546 "EHLO mail.kernel.org"
+        id S2394588AbgFSQ1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:27:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51622 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389989AbgFSOzj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:55:39 -0400
+        id S2390094AbgFSO4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:56:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F0E62158C;
-        Fri, 19 Jun 2020 14:55:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E20B92158C;
+        Fri, 19 Jun 2020 14:56:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578539;
-        bh=We1j8t3ry/5aeI/mTNzvMj2rnXXr23+3mHuJif/Bsew=;
+        s=default; t=1592578596;
+        bh=MLF7YZWtnpDe0ee6OzSgyNixRgqBvxn+l1+6Xy2YPSY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U27KDNV+7peOZ98HU11ZDyrouwFEjGxvnDdZCGD3iTWheCxmBw3mVeOIXs4Hm5TUu
-         3VKQhQMcqVe1nO/CxmVBECEROy5ys7ugKrtN6+zPdp3s2+PCBDGZe9PG+yfEi2FExY
-         7Qo7OTH8sA0srfq4xn0u3oylnXtfBDlXapuLzIwY=
+        b=bRKdxVMA6Oa6+fjJkjd2k0szTHgx7DzRv8zVxBD18rYgRTFeGyU/CFFp2rlfrnzuv
+         NbpG3aeMitRLDAakY2k3cSaD/Id3OCl81Pj9fVgWLtkZASwS6cge3cDuC8sZYPQKZU
+         Kn2ausNEfxfgijzjj8/H9lRsKOJEOHJaMCqKt7P8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Jiri Kosina <jkosina@suse.cz>, Borislav Petkov <bp@alien8.de>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 053/267] KVM: x86: only do L1TF workaround on affected processors
-Date:   Fri, 19 Jun 2020 16:30:38 +0200
-Message-Id: <20200619141651.428799275@linuxfoundation.org>
+Subject: [PATCH 4.19 055/267] x86/speculation: Add support for STIBP always-on preferred mode
+Date:   Fri, 19 Jun 2020 16:30:40 +0200
+Message-Id: <20200619141651.515880186@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
 References: <20200619141648.840376470@linuxfoundation.org>
@@ -43,78 +49,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Thomas Lendacky <Thomas.Lendacky@amd.com>
 
-[ Upstream commit d43e2675e96fc6ae1a633b6a69d296394448cc32 ]
+[ Upstream commit 20c3a2c33e9fdc82e9e8e8d2a6445b3256d20191 ]
 
-KVM stores the gfn in MMIO SPTEs as a caching optimization.  These are split
-in two parts, as in "[high 11111 low]", to thwart any attempt to use these bits
-in an L1TF attack.  This works as long as there are 5 free bits between
-MAXPHYADDR and bit 50 (inclusive), leaving bit 51 free so that the MMIO
-access triggers a reserved-bit-set page fault.
+Different AMD processors may have different implementations of STIBP.
+When STIBP is conditionally enabled, some implementations would benefit
+from having STIBP always on instead of toggling the STIBP bit through MSR
+writes. This preference is advertised through a CPUID feature bit.
 
-The bit positions however were computed wrongly for AMD processors that have
-encryption support.  In this case, x86_phys_bits is reduced (for example
-from 48 to 43, to account for the C bit at position 47 and four bits used
-internally to store the SEV ASID and other stuff) while x86_cache_bits in
-would remain set to 48, and _all_ bits between the reduced MAXPHYADDR
-and bit 51 are set.  Then low_phys_bits would also cover some of the
-bits that are set in the shadow_mmio_value, terribly confusing the gfn
-caching mechanism.
+When conditional STIBP support is requested at boot and the CPU advertises
+STIBP always-on mode as preferred, switch to STIBP "on" support. To show
+that this transition has occurred, create a new spectre_v2_user_mitigation
+value and a new spectre_v2_user_strings message. The new mitigation value
+is used in spectre_v2_user_select_mitigation() to print the new mitigation
+message as well as to return a new string from stibp_state().
 
-To fix this, avoid splitting gfns as long as the processor does not have
-the L1TF bug (which includes all AMD processors).  When there is no
-splitting, low_phys_bits can be set to the reduced MAXPHYADDR removing
-the overlap.  This fixes "npt=0" operation on EPYC processors.
-
-Thanks to Maxim Levitsky for bisecting this bug.
-
-Cc: stable@vger.kernel.org
-Fixes: 52918ed5fcf0 ("KVM: SVM: Override default MMIO mask if memory encryption is enabled")
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: Jiri Kosina <jkosina@suse.cz>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Link: https://lkml.kernel.org/r/20181213230352.6937.74943.stgit@tlendack-t1.amdoffice.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/mmu.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ arch/x86/include/asm/cpufeatures.h   |  1 +
+ arch/x86/include/asm/nospec-branch.h |  1 +
+ arch/x86/kernel/cpu/bugs.c           | 28 ++++++++++++++++++++++------
+ 3 files changed, 24 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu.c b/arch/x86/kvm/mmu.c
-index ac0a794267d4..18632f15b29f 100644
---- a/arch/x86/kvm/mmu.c
-+++ b/arch/x86/kvm/mmu.c
-@@ -294,6 +294,8 @@ kvm_mmu_calc_root_page_role(struct kvm_vcpu *vcpu);
- void kvm_mmu_set_mmio_spte_mask(u64 mmio_mask, u64 mmio_value)
- {
- 	BUG_ON((mmio_mask & mmio_value) != mmio_value);
-+	WARN_ON(mmio_value & (shadow_nonpresent_or_rsvd_mask << shadow_nonpresent_or_rsvd_mask_len));
-+	WARN_ON(mmio_value & shadow_nonpresent_or_rsvd_lower_gfn_mask);
- 	shadow_mmio_value = mmio_value | SPTE_SPECIAL_MASK;
- 	shadow_mmio_mask = mmio_mask | SPTE_SPECIAL_MASK;
- }
-@@ -486,16 +488,15 @@ static void kvm_mmu_reset_all_pte_masks(void)
- 	 * the most significant bits of legal physical address space.
- 	 */
- 	shadow_nonpresent_or_rsvd_mask = 0;
--	low_phys_bits = boot_cpu_data.x86_cache_bits;
--	if (boot_cpu_data.x86_cache_bits <
--	    52 - shadow_nonpresent_or_rsvd_mask_len) {
-+	low_phys_bits = boot_cpu_data.x86_phys_bits;
-+	if (boot_cpu_has_bug(X86_BUG_L1TF) &&
-+	    !WARN_ON_ONCE(boot_cpu_data.x86_cache_bits >=
-+			  52 - shadow_nonpresent_or_rsvd_mask_len)) {
-+		low_phys_bits = boot_cpu_data.x86_cache_bits
-+			- shadow_nonpresent_or_rsvd_mask_len;
- 		shadow_nonpresent_or_rsvd_mask =
--			rsvd_bits(boot_cpu_data.x86_cache_bits -
--				  shadow_nonpresent_or_rsvd_mask_len,
--				  boot_cpu_data.x86_cache_bits - 1);
--		low_phys_bits -= shadow_nonpresent_or_rsvd_mask_len;
--	} else
--		WARN_ON_ONCE(boot_cpu_has_bug(X86_BUG_L1TF));
-+			rsvd_bits(low_phys_bits, boot_cpu_data.x86_cache_bits - 1);
-+	}
+diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
+index 9f03ac233566..f7f9604b10cc 100644
+--- a/arch/x86/include/asm/cpufeatures.h
++++ b/arch/x86/include/asm/cpufeatures.h
+@@ -291,6 +291,7 @@
+ #define X86_FEATURE_AMD_IBPB		(13*32+12) /* "" Indirect Branch Prediction Barrier */
+ #define X86_FEATURE_AMD_IBRS		(13*32+14) /* "" Indirect Branch Restricted Speculation */
+ #define X86_FEATURE_AMD_STIBP		(13*32+15) /* "" Single Thread Indirect Branch Predictors */
++#define X86_FEATURE_AMD_STIBP_ALWAYS_ON	(13*32+17) /* "" Single Thread Indirect Branch Predictors always-on preferred */
+ #define X86_FEATURE_AMD_SSBD		(13*32+24) /* "" Speculative Store Bypass Disable */
+ #define X86_FEATURE_VIRT_SSBD		(13*32+25) /* Virtualized Speculative Store Bypass Disable */
+ #define X86_FEATURE_AMD_SSB_NO		(13*32+26) /* "" Speculative Store Bypass is fixed in hardware. */
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index 09c7466c4880..e3f70c60e8cc 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -232,6 +232,7 @@ enum spectre_v2_mitigation {
+ enum spectre_v2_user_mitigation {
+ 	SPECTRE_V2_USER_NONE,
+ 	SPECTRE_V2_USER_STRICT,
++	SPECTRE_V2_USER_STRICT_PREFERRED,
+ 	SPECTRE_V2_USER_PRCTL,
+ 	SPECTRE_V2_USER_SECCOMP,
+ };
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 0ea87f9095f0..1f1f342574a2 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -633,10 +633,11 @@ enum spectre_v2_user_cmd {
+ };
  
- 	shadow_nonpresent_or_rsvd_lower_gfn_mask =
- 		GENMASK_ULL(low_phys_bits - 1, PAGE_SHIFT);
+ static const char * const spectre_v2_user_strings[] = {
+-	[SPECTRE_V2_USER_NONE]		= "User space: Vulnerable",
+-	[SPECTRE_V2_USER_STRICT]	= "User space: Mitigation: STIBP protection",
+-	[SPECTRE_V2_USER_PRCTL]		= "User space: Mitigation: STIBP via prctl",
+-	[SPECTRE_V2_USER_SECCOMP]	= "User space: Mitigation: STIBP via seccomp and prctl",
++	[SPECTRE_V2_USER_NONE]			= "User space: Vulnerable",
++	[SPECTRE_V2_USER_STRICT]		= "User space: Mitigation: STIBP protection",
++	[SPECTRE_V2_USER_STRICT_PREFERRED]	= "User space: Mitigation: STIBP always-on protection",
++	[SPECTRE_V2_USER_PRCTL]			= "User space: Mitigation: STIBP via prctl",
++	[SPECTRE_V2_USER_SECCOMP]		= "User space: Mitigation: STIBP via seccomp and prctl",
+ };
+ 
+ static const struct {
+@@ -726,6 +727,15 @@ spectre_v2_user_select_mitigation(enum spectre_v2_mitigation_cmd v2_cmd)
+ 		break;
+ 	}
+ 
++	/*
++	 * At this point, an STIBP mode other than "off" has been set.
++	 * If STIBP support is not being forced, check if STIBP always-on
++	 * is preferred.
++	 */
++	if (mode != SPECTRE_V2_USER_STRICT &&
++	    boot_cpu_has(X86_FEATURE_AMD_STIBP_ALWAYS_ON))
++		mode = SPECTRE_V2_USER_STRICT_PREFERRED;
++
+ 	/* Initialize Indirect Branch Prediction Barrier */
+ 	if (boot_cpu_has(X86_FEATURE_IBPB)) {
+ 		setup_force_cpu_cap(X86_FEATURE_USE_IBPB);
+@@ -999,6 +1009,7 @@ void arch_smt_update(void)
+ 	case SPECTRE_V2_USER_NONE:
+ 		break;
+ 	case SPECTRE_V2_USER_STRICT:
++	case SPECTRE_V2_USER_STRICT_PREFERRED:
+ 		update_stibp_strict();
+ 		break;
+ 	case SPECTRE_V2_USER_PRCTL:
+@@ -1233,7 +1244,8 @@ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
+ 		 * Indirect branch speculation is always disabled in strict
+ 		 * mode.
+ 		 */
+-		if (spectre_v2_user == SPECTRE_V2_USER_STRICT)
++		if (spectre_v2_user == SPECTRE_V2_USER_STRICT ||
++		    spectre_v2_user == SPECTRE_V2_USER_STRICT_PREFERRED)
+ 			return -EPERM;
+ 		task_clear_spec_ib_disable(task);
+ 		task_update_spec_tif(task);
+@@ -1246,7 +1258,8 @@ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
+ 		 */
+ 		if (spectre_v2_user == SPECTRE_V2_USER_NONE)
+ 			return -EPERM;
+-		if (spectre_v2_user == SPECTRE_V2_USER_STRICT)
++		if (spectre_v2_user == SPECTRE_V2_USER_STRICT ||
++		    spectre_v2_user == SPECTRE_V2_USER_STRICT_PREFERRED)
+ 			return 0;
+ 		task_set_spec_ib_disable(task);
+ 		if (ctrl == PR_SPEC_FORCE_DISABLE)
+@@ -1317,6 +1330,7 @@ static int ib_prctl_get(struct task_struct *task)
+ 			return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
+ 		return PR_SPEC_PRCTL | PR_SPEC_ENABLE;
+ 	case SPECTRE_V2_USER_STRICT:
++	case SPECTRE_V2_USER_STRICT_PREFERRED:
+ 		return PR_SPEC_DISABLE;
+ 	default:
+ 		return PR_SPEC_NOT_AFFECTED;
+@@ -1564,6 +1578,8 @@ static char *stibp_state(void)
+ 		return ", STIBP: disabled";
+ 	case SPECTRE_V2_USER_STRICT:
+ 		return ", STIBP: forced";
++	case SPECTRE_V2_USER_STRICT_PREFERRED:
++		return ", STIBP: always-on";
+ 	case SPECTRE_V2_USER_PRCTL:
+ 	case SPECTRE_V2_USER_SECCOMP:
+ 		if (static_key_enabled(&switch_to_cond_stibp))
 -- 
 2.25.1
 
