@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59112201A6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 20:37:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EA3A201A68
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 20:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388523AbgFSSes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 14:34:48 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:38886 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728430AbgFSSes (ORCPT
+        id S2387713AbgFSSbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 14:31:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728430AbgFSSbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 14:34:48 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jmLqg-000426-8F; Fri, 19 Jun 2020 12:34:46 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jmLqf-0001Rb-Kl; Fri, 19 Jun 2020 12:34:46 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     <linux-kernel@vger.kernel.org>
-cc:     <linux-fsdevel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Bernd Edlinger <bernd.edlinger@hotmail.de>
-Date:   Fri, 19 Jun 2020 13:30:27 -0500
-Message-ID: <87pn9u6h8c.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 19 Jun 2020 14:31:17 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A7CC06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 11:31:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=09WzDL/oWiVIJIl+efUQGeH1Ki+wJFUV+z7CY98tRKE=; b=NgBDnrwPbWzmpuVI9GvXmWBbr9
+        I/WLjk7R/U9HI7Z26TedeG0rTMmxPDUFVI3VCOV9MPM4vsCukNaDpeeJNX7ZyXctUNYgh/QEWDRHO
+        6rSrln2xQlJA6FtC9l7KwEAW087k88XeTYJ8bAn6T2Ll7wNmW09GAQEYnBfnZHC6XOsa2jMSg5/pl
+        zh4ofFilaLUXMR1DSaRxc49MdpATk5+RPSM1SYjSDo32fFlTP9Asxa4w6jA9VknBfe1drU2QD2Zia
+        +tvuAw3ZNuRLtga5zhuAVrM3BdZ7arazRBFAyYCyQ/7Lcdf7gIXQf1aUzogULYQqtagTBvOlrA2j5
+        5eIvQ14A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jmLn7-0001y5-QY; Fri, 19 Jun 2020 18:31:07 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C23DC3003E5;
+        Fri, 19 Jun 2020 20:31:02 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B205D2C28E83E; Fri, 19 Jun 2020 20:31:02 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 20:31:02 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@redhat.com, acme@kernel.org, tglx@linutronix.de,
+        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, dave.hansen@intel.com,
+        yu-cheng.yu@intel.com, bigeasy@linutronix.de, gorcunov@gmail.com,
+        hpa@zytor.com, alexey.budankov@linux.intel.com, eranian@google.com,
+        ak@linux.intel.com, like.xu@linux.intel.com,
+        yao.jin@linux.intel.com
+Subject: Re: [PATCH 09/21] perf/x86: Expose CPUID enumeration bits for arch
+ LBR
+Message-ID: <20200619183102.GE576888@hirez.programming.kicks-ass.net>
+References: <1592575449-64278-1-git-send-email-kan.liang@linux.intel.com>
+ <1592575449-64278-10-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jmLqf-0001Rb-Kl;;;mid=<87pn9u6h8c.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18qwTHJT1MKfbD5hUOoLqPHzZFLUB6QM18=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TooManySym_01,XMNoVowels,XMSubLong
-        autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4964]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa03 0; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: ; sa03 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;<linux-kernel@vger.kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 253 ms - load_scoreonly_sql: 0.03 (0.0%),
-        signal_user_changed: 3.5 (1.4%), b_tie_ro: 2.5 (1.0%), parse: 0.85
-        (0.3%), extract_message_metadata: 2.5 (1.0%), get_uri_detail_list:
-        0.62 (0.2%), tests_pri_-1000: 4.4 (1.7%), tests_pri_-950: 1.38 (0.5%),
-        tests_pri_-900: 1.12 (0.4%), tests_pri_-90: 80 (31.7%), check_bayes:
-        79 (31.1%), b_tokenize: 5 (2.1%), b_tok_get_all: 4.5 (1.8%),
-        b_comp_prob: 1.95 (0.8%), b_tok_touch_all: 64 (25.3%), b_finish: 0.79
-        (0.3%), tests_pri_0: 143 (56.7%), check_dkim_signature: 0.34 (0.1%),
-        check_dkim_adsp: 3.1 (1.2%), poll_dns_idle: 1.08 (0.4%), tests_pri_10:
-        1.66 (0.7%), tests_pri_500: 5 (2.1%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH 0/2] exec: s/group_exit_task/group_exec_task/ for clarity
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1592575449-64278-10-git-send-email-kan.liang@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 19, 2020 at 07:03:57AM -0700, kan.liang@linux.intel.com wrote:
 
-I am hoping to be able to stop all of the threads at the beginning of
-exec so we can write the exec code as if it is single threaded.   That
-is hard but cleanups to enable that change are easy.
+> +	union {
+> +		struct {
+> +			/* Supported LBR depth values */
+> +			unsigned int	arch_lbr_depth_mask:8;
+> +
+> +			unsigned int	reserved:22;
+> +
+> +			/* Deep C-state Reset */
+> +			unsigned int	arch_lbr_deep_c_reset:1;
+> +
+> +			/* IP values contain LIP */
+> +			unsigned int	arch_lbr_lip:1;
+> +		};
+> +		unsigned int		arch_lbr_eax;
+> +	};
+> +	union {
+> +		struct {
+> +			/* CPL Filtering Supported */
+> +			unsigned int    arch_lbr_cpl:1;
+> +
+> +			/* Branch Filtering Supported */
+> +			unsigned int    arch_lbr_filter:1;
+> +
+> +			/* Call-stack Mode Supported */
+> +			unsigned int    arch_lbr_call_stack:1;
+> +		};
+> +		unsigned int            arch_lbr_ebx;
+> +	};
+> +	union {
+> +		struct {
+> +			/* Mispredict Bit Supported */
+> +			unsigned int    arch_lbr_mispred:1;
+> +
+> +			/* Timed LBRs Supported */
+> +			unsigned int    arch_lbr_timed_lbr:1;
+> +
+> +			/* Branch Type Field Supported */
+> +			unsigned int    arch_lbr_br_type:1;
+> +		};
+> +		unsigned int            arch_lbr_ecx;
+> +	};
 
-There is a variable tsk->signal->group_exit_task that is only truly
-used in de_thread.  The changes clean up the coredump code and
-rename the variable to make it clear that exec is it's only user.
-
-Eric W. Biederman (2):
-      exec: Don't set group_exit_task during a coredump
-      exec: Rename group_exit_task group_exec_task and correct the Documentation
-
- fs/coredump.c                |  2 --
- fs/exec.c                    |  8 ++++----
- include/linux/sched/signal.h | 15 ++++++---------
- kernel/exit.c                |  4 ++--
- 4 files changed, 12 insertions(+), 17 deletions(-)
-
+Please, union cpuid28_e[abc]x in asm/perf_event.h right along with the
+existing cpuid10_e*x unions.
