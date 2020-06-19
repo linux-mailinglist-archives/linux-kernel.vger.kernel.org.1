@@ -2,152 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2976920174E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7BB20169B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389412AbgFSQgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:36:54 -0400
-Received: from mga12.intel.com ([192.55.52.136]:43707 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389154AbgFSOs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:48:59 -0400
-IronPort-SDR: bBxUbdwyVW6kWjdtq2MYHIV24VKQeddX7RODMW9hZdFqJZ0ZEk4bVIvJnQkOFt7swK6qibkUCS
- fHtdgd4+ySmw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="122702962"
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="122702962"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2020 07:48:59 -0700
-IronPort-SDR: wWwwSMERFTz9/ebtIv2uP4Ew5ChxpDuaT34KfgKOffFPzRqXckZ+FvQj2Nkpn1rBPjHPfAs8uO
- hp5+wXuKDp0w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="278018554"
-Received: from mcrum-mobl1.amr.corp.intel.com (HELO [10.255.0.127]) ([10.255.0.127])
-  by orsmga006.jf.intel.com with ESMTP; 19 Jun 2020 07:48:56 -0700
-Subject: Re: [PATCH] Ability to read the MKTME status from userspace
-To:     Richard Hughes <hughsient@gmail.com>
-Cc:     Daniel Gutson <daniel@eclypsium.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200618210215.23602-1-daniel.gutson@eclypsium.com>
- <589c89ae-620e-36f8-2be5-4afc727c2911@intel.com>
- <CAFmMkTHNxSN_uWtm63TdkGxj44NXQQKEOmATXhjA=4DSCS92kQ@mail.gmail.com>
- <23babf62-00cb-cb47-bb19-da9508325934@intel.com>
- <CAD2FfiFbGdf5uKmsc14F4ZuuCUQYFwfnirn=Y0fu2F0=njvWug@mail.gmail.com>
- <80578b72-cb6f-8da9-1043-b4055c75d7f6@intel.com>
- <CAD2FfiG1BgYvR6wkeXGro8v6FQtVjKemmAOOf2W14z5KUWLqhw@mail.gmail.com>
- <d55f94bc-3b26-a556-f7e6-43e9b1007e13@intel.com>
- <CAD2FfiHCi2MfShGWaYWk_GcXW4xVr6chsLPZs78OJE+2_GErVg@mail.gmail.com>
- <3d454068-fd4e-4399-4bf5-2d010bb2ba7d@intel.com>
- <CAD2FfiF8QEarhyFD1GkfnaR+spyH86sChgRZm37ab_gzS2m_wg@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <aef4ff03-3a98-4425-2b01-203a88401370@intel.com>
-Date:   Fri, 19 Jun 2020 07:48:55 -0700
+        id S2395115AbgFSQcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389512AbgFSOv6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:51:58 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C1CC0613EE
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:51:59 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id p3so1894735pgh.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:51:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=PFwcZNJJ7J9pO5V4LgviWHgUqQktGpHF/1kf5JMeuDo=;
+        b=VVwx3ZGlX2RwFbSkQjJpR+KnTKm2X8fVgt9HDsdg9laBMqpsD8A+rToclzEwT1eFa+
+         B7lNk6ClHheYaxl9v5HuDfNiTwE9uYijkbeYPKVCVcYgPnNfN7teMIUIEMeqmeebApau
+         Olk9P/8SEPfBkj4iGMXY4d5PYAWqHOuGFDWgIgmJatlXgD8WNQI8hH/GEBbcpYsODy1W
+         ac8WqvylSyLtm4RLxKHXFvN1gR3ZnTS3RHCG6u2KTPU8as2weM3XJjwlLNQde5A/Mqmw
+         7ZMv5iyYVtbhVEmFgoeTrxC1VG4TBB0PCUTuD+DGploEiDxeZSWD9JMe2BhyHINfK+6S
+         YHUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=PFwcZNJJ7J9pO5V4LgviWHgUqQktGpHF/1kf5JMeuDo=;
+        b=aVc+jI/il+ak+lj2AcVybdt2kyoKhR5Jft2uigpwspgdYjWgNAhe7298OBXIg+wqKH
+         0i20LeYs9LO1T5vCVH50mmwxe0UKUxxNFhsaRT2H7lS6R4DkLKAudo25VO9VtnMlOLqD
+         VUt+QPe3WLGKuMfNOSHcrjm7U1zAGawb7Yd9OTFWZznUcdl1IQpaPmqPzjSxfNvWbGWT
+         jS+8P3mWhLaopRUeDeuqet65RfyYw3ra8IFPhAgNyLyqbtCAVgpr+AzI5fjeY2e2BfmK
+         QiOFK4fqx60sndtPPmwN2yJVyGeUwB/8NdCzVIHeSVi83vjBLwz+HN7IiWZT3dlTVfv5
+         v9+A==
+X-Gm-Message-State: AOAM530Mocc6lBEDaJy1YSXlVReE6F7QVbSWyMFkan9ttQhXH4+ga1wo
+        hvGe3C/qweiTdqDqEwShiZmBX7WvAd6tGw==
+X-Google-Smtp-Source: ABdhPJxveQ/cPoUUnyZh3usSqy7LrbOlRjM8Jdwm6ASW0EJqk2pfxtjHXKRvby/5eylPBEfUnPIPqg==
+X-Received: by 2002:a05:6a00:2b0:: with SMTP id q16mr8456361pfs.104.1592578318472;
+        Fri, 19 Jun 2020 07:51:58 -0700 (PDT)
+Received: from [192.168.1.188] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id k126sm6297710pfd.129.2020.06.19.07.51.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jun 2020 07:51:57 -0700 (PDT)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     IDE/ATA development list <linux-ide@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Subject: [GIT PULL] libata fixes for 5.8-rc2
+Message-ID: <c7fcf452-15af-4085-528a-7bc52110e21c@kernel.dk>
+Date:   Fri, 19 Jun 2020 08:51:56 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAD2FfiF8QEarhyFD1GkfnaR+spyH86sChgRZm37ab_gzS2m_wg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/19/20 7:36 AM, Richard Hughes wrote:
-> On Fri, 19 Jun 2020 at 15:23, Dave Hansen <dave.hansen@intel.com> wrote:
->> Last night, I asked my kids if they brushed their teeth.  They said:
->> "Dad, my toothbrush was available."  They argued that mere availability
->> was a better situation than not *having* a toothbrush.  They were
->> logically right, of course, but they still got cavities.
-> 
-> I don't see how that's comparable, sorry. Surely Intel wants to sell
-> hardware advertising TME as a security feature?
+Hi Linus,
 
-Of course!  Just like AVX-512 or VNNI or whatever, Intel will totally
-tell you about the stuff baked into its silicon!  But, just like
-AVX-512, there's a lot of work to do on top of mere presence in the
-silicon to ensure it is providing benefit.
+A few minor changes that should go into this release. Please pull!
 
->>> So my take-away from that is that it's currently impossible to
->>> actually say if your system is *actually* using TME.
->> Not in a generic way, and it can't be derived from cpuid or MSRs alone.
-> 
-> Well, it seems not in any way at the moment.
-> 
->> I'm pretty sure I'm using TME, but I didn't become sure from
->> poking at sysfs.
-> 
-> How do you know that Lenovo didn't disable TME without looking at
-> dmesg? I don't think "pretty sure" is good enough when TME is
-> considered a security feature.
+The following changes since commit 6929f71e46bdddbf1c4d67c2728648176c67c555:
 
-You cut out the important part.  The "pretty sure" involves a bunch of
-preconditions and knowing what your hardware configuration is in the
-first place.
+  atomisp: avoid warning about unused function (2020-06-03 21:22:46 -0700)
 
-Let's take a step back.  We add read-only ABIs so that decisions can be
-made.  What decision will somebody make from the ABI being proposed here?
+are available in the Git repository at:
 
-Someone does 'cat /proc/mktme' (or whatever) and it says "1" or
-whatever, which means yay, encryption is on.  What do they do?
+  git://git.kernel.dk/linux-block.git tags/libata-5.8-2020-06-19
 
-What do they do differently when it says "0"?
+for you to fetch changes up to b5292111de9bb70cba3489075970889765302136:
+
+  libata: Use per port sync for detach (2020-06-18 09:21:40 -0600)
+
+----------------------------------------------------------------
+libata-5.8-2020-06-19
+
+----------------------------------------------------------------
+Kai-Heng Feng (1):
+      libata: Use per port sync for detach
+
+Navid Emamdoost (1):
+      sata_rcar: handle pm_runtime_get_sync failure cases
+
+Ye Bin (1):
+      ata/libata: Fix usage of page address by page_address in ata_scsi_mode_select_xlat function
+
+ drivers/ata/libata-core.c | 11 +++++------
+ drivers/ata/libata-scsi.c |  9 ++++++---
+ drivers/ata/sata_rcar.c   | 11 +++++++----
+ include/linux/libata.h    |  3 +++
+ 4 files changed, 21 insertions(+), 13 deletions(-)
+
+-- 
+Jens Axboe
+
