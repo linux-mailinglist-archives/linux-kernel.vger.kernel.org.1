@@ -2,92 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2886F201536
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EFE420152C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405645AbgFSQT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:19:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390746AbgFSQSY (ORCPT
+        id S2394600AbgFSQSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:18:50 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:49480 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405618AbgFSQSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 12:18:24 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80721C0613EE;
-        Fri, 19 Jun 2020 09:18:24 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id t21so8014919edr.12;
-        Fri, 19 Jun 2020 09:18:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=66DS8cscbOrDDtJFLg4/sv1VZqtWg1mGwXAH3gSwi2w=;
-        b=UbD+cIfdXzYr/rZ1ERd4wfsIKJNa31io9WaMhqcq486ayiJe6jrTzIOa8ZTqLBisSd
-         O71oFljVG3Eay64l/d/sIbanCPTJaFIoCrl1bq8dG5d+itJ+cuOHhYsaMs4o7iVTQes+
-         NoslFybuA1UG8oJHUI53ftDzGHYJfJyDVVuzLXwo08spKLkJEdy+BYNgEURXCUb9B9FU
-         AXzNZPtQcjh7CKn9HzBCqt7i4HZjV/eQ8uRdrZBy8cGCauzoYTrPeRrpGM927qkldbfe
-         gZBduiPXxgKCOY2exRYSsMYn4s4QgtyMmRpDU6jpk2zV7w606zrJbbIUVvwTn6psGmoH
-         +Jsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=66DS8cscbOrDDtJFLg4/sv1VZqtWg1mGwXAH3gSwi2w=;
-        b=bOC8jvOMtpz4hGKEoh80T3jylRBi5Q1OMfqPIme3tqcP5XNIZgrPWk/SSGIlhn0a1c
-         eeHFeFH4n0wSs/+jTMTnYB30yUM/kLnl+wSbKXeZz8Qrsi969WvK5ov1Y8FY0M7yo5GG
-         6c4zxgVpxvNn1AEXeBn0p7ez/omaOmSICpHQ5wqFTURoa4ztqtL1ustY8XB3hzCCtIEf
-         TIHdathNsfDGSbltl8LzW9QGkZD++mmxvMicX5Aj+fV34c1T4At1joGcO1zaBHW9C0e6
-         4lykitI1kHqYTG/rnNK5aRFrxqYG0WuPbY6O3lxyRwK4LBZRPUtHT3425DMPPPtghDZU
-         p14A==
-X-Gm-Message-State: AOAM530LxiVGzrBBNvzzYwaoWFSlSvLYYUrhsMt3N20BUuhgm+eizaqq
-        smACdVpsDiyjvHCAVj9xGm4=
-X-Google-Smtp-Source: ABdhPJw3hCgZvXVzgIXNddGxi5BWYv8GmLBWoEx0wtBhcQNXiKk07b1OLPTwdmsMcQdazl7s0yf5xA==
-X-Received: by 2002:a50:d55c:: with SMTP id f28mr3987366edj.87.1592583502476;
-        Fri, 19 Jun 2020 09:18:22 -0700 (PDT)
-Received: from andrea (ip-213-220-210-175.net.upcbroadband.cz. [213.220.210.175])
-        by smtp.gmail.com with ESMTPSA id jt16sm5059932ejb.57.2020.06.19.09.18.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 09:18:22 -0700 (PDT)
-Date:   Fri, 19 Jun 2020 18:18:13 +0200
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Wei Liu <wei.liu@kernel.org>
-Cc:     "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH 7/8] scsi: storvsc: Introduce the per-storvsc_device
- spinlock
-Message-ID: <20200619161813.GA1596681@andrea>
-References: <20200617164642.37393-1-parri.andrea@gmail.com>
- <20200617164642.37393-8-parri.andrea@gmail.com>
- <20200619160136.2r34bdu26hxixv7l@liuwe-devbox-debian-v2>
+        Fri, 19 Jun 2020 12:18:41 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05JGIaLR008227;
+        Fri, 19 Jun 2020 11:18:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1592583516;
+        bh=eStPcoULgEZG94PVJtakxpfbyK9RyeLhnZbJP2L7ZFo=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=AliZagCgf0d80XMVZYdSlLllnANBUYrsDVKXnYrCD4EeftsX9cWCkvpApN0XA7SBJ
+         qtwVzRq+/vt8Bv2cuGu1edyrfBg1NWMuAZJbNOA1prgdoK1HEkhL+4nSn0c0DA4KPm
+         67ighbOn55aEkFgi+h/OlNhZtetTFKzPBex/Hx4U=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05JGIaOc046633;
+        Fri, 19 Jun 2020 11:18:36 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 19
+ Jun 2020 11:18:36 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 19 Jun 2020 11:18:36 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05JGIae7091288;
+        Fri, 19 Jun 2020 11:18:36 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
+        <davem@davemloft.net>, <robh@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH net-next v9 5/5] net: phy: DP83822: Add setting the fixed internal delay
+Date:   Fri, 19 Jun 2020 11:18:13 -0500
+Message-ID: <20200619161813.2716-6-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200619161813.2716-1-dmurphy@ti.com>
+References: <20200619161813.2716-1-dmurphy@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200619160136.2r34bdu26hxixv7l@liuwe-devbox-debian-v2>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 04:01:36PM +0000, Wei Liu wrote:
-> Cc SCSI maintainers
-> 
-> This patch should go via the hyperv tree because a later patch is
-> dependent on it. It requires and ack from SCSI maintainers though.
+The DP83822 can be configured to use the RGMII interface. There are
+independent fixed 3.5ns clock shift (aka internal delay) for the TX and RX
+paths. This allow either one to be set if the MII interface is RGMII and
+the value is set in the firmware node.
 
-Right.  Sorry for the Cc: omission...  ;-/
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ drivers/net/phy/dp83822.c | 79 ++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 69 insertions(+), 10 deletions(-)
 
-SCSI maintainers, please let me know if you prefer me to send you a new
-series with this patch (7/8) and the later/dependent hyperv patch (8/8).
+diff --git a/drivers/net/phy/dp83822.c b/drivers/net/phy/dp83822.c
+index 1dd19d0cb269..37643c468e19 100644
+--- a/drivers/net/phy/dp83822.c
++++ b/drivers/net/phy/dp83822.c
+@@ -26,7 +26,9 @@
+ #define MII_DP83822_PHYSCR	0x11
+ #define MII_DP83822_MISR1	0x12
+ #define MII_DP83822_MISR2	0x13
++#define MII_DP83822_RCSR	0x17
+ #define MII_DP83822_RESET_CTRL	0x1f
++#define MII_DP83822_GENCFG	0x465
+ 
+ #define DP83822_HW_RESET	BIT(15)
+ #define DP83822_SW_RESET	BIT(14)
+@@ -77,6 +79,10 @@
+ #define DP83822_WOL_INDICATION_SEL BIT(8)
+ #define DP83822_WOL_CLR_INDICATION BIT(11)
+ 
++/* RSCR bits */
++#define DP83822_RX_CLK_SHIFT	BIT(12)
++#define DP83822_TX_CLK_SHIFT	BIT(11)
++
+ static int dp83822_ack_interrupt(struct phy_device *phydev)
+ {
+ 	int err;
+@@ -255,7 +261,7 @@ static int dp83822_config_intr(struct phy_device *phydev)
+ 	return phy_write(phydev, MII_DP83822_PHYSCR, physcr_status);
+ }
+ 
+-static int dp83822_config_init(struct phy_device *phydev)
++static int dp8382x_disable_wol(struct phy_device *phydev)
+ {
+ 	int value = DP83822_WOL_EN | DP83822_WOL_MAGIC_EN |
+ 		    DP83822_WOL_SECURE_ON;
+@@ -264,6 +270,46 @@ static int dp83822_config_init(struct phy_device *phydev)
+ 				  MII_DP83822_WOL_CFG, value);
+ }
+ 
++static int dp83822_config_init(struct phy_device *phydev)
++{
++	struct device *dev = &phydev->mdio.dev;
++	int rgmii_delay;
++	s32 rx_int_delay;
++	s32 tx_int_delay;
++	int err = 0;
++
++	if (phy_interface_is_rgmii(phydev)) {
++		rx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
++						      true);
++
++		if (rx_int_delay <= 0)
++			rgmii_delay = 0;
++		else
++			rgmii_delay = DP83822_RX_CLK_SHIFT;
++
++		tx_int_delay = phy_get_internal_delay(phydev, dev, NULL, 0,
++						      false);
++		if (tx_int_delay <= 0)
++			rgmii_delay &= ~DP83822_TX_CLK_SHIFT;
++		else
++			rgmii_delay |= DP83822_TX_CLK_SHIFT;
++
++		if (rgmii_delay) {
++			err = phy_set_bits_mmd(phydev, DP83822_DEVADDR,
++					       MII_DP83822_RCSR, rgmii_delay);
++			if (err)
++				return err;
++		}
++	}
++
++	return dp8382x_disable_wol(phydev);
++}
++
++static int dp8382x_config_init(struct phy_device *phydev)
++{
++	return dp8382x_disable_wol(phydev);
++}
++
+ static int dp83822_phy_reset(struct phy_device *phydev)
+ {
+ 	int err;
+@@ -272,9 +318,7 @@ static int dp83822_phy_reset(struct phy_device *phydev)
+ 	if (err < 0)
+ 		return err;
+ 
+-	dp83822_config_init(phydev);
+-
+-	return 0;
++	return phydev->drv->config_init(phydev);
+ }
+ 
+ static int dp83822_suspend(struct phy_device *phydev)
+@@ -318,14 +362,29 @@ static int dp83822_resume(struct phy_device *phydev)
+ 		.resume = dp83822_resume,			\
+ 	}
+ 
++#define DP8382X_PHY_DRIVER(_id, _name)				\
++	{							\
++		PHY_ID_MATCH_MODEL(_id),			\
++		.name		= (_name),			\
++		/* PHY_BASIC_FEATURES */			\
++		.soft_reset	= dp83822_phy_reset,		\
++		.config_init	= dp8382x_config_init,		\
++		.get_wol = dp83822_get_wol,			\
++		.set_wol = dp83822_set_wol,			\
++		.ack_interrupt = dp83822_ack_interrupt,		\
++		.config_intr = dp83822_config_intr,		\
++		.suspend = dp83822_suspend,			\
++		.resume = dp83822_resume,			\
++	}
++
+ static struct phy_driver dp83822_driver[] = {
+ 	DP83822_PHY_DRIVER(DP83822_PHY_ID, "TI DP83822"),
+-	DP83822_PHY_DRIVER(DP83825I_PHY_ID, "TI DP83825I"),
+-	DP83822_PHY_DRIVER(DP83826C_PHY_ID, "TI DP83826C"),
+-	DP83822_PHY_DRIVER(DP83826NC_PHY_ID, "TI DP83826NC"),
+-	DP83822_PHY_DRIVER(DP83825S_PHY_ID, "TI DP83825S"),
+-	DP83822_PHY_DRIVER(DP83825CM_PHY_ID, "TI DP83825M"),
+-	DP83822_PHY_DRIVER(DP83825CS_PHY_ID, "TI DP83825CS"),
++	DP8382X_PHY_DRIVER(DP83825I_PHY_ID, "TI DP83825I"),
++	DP8382X_PHY_DRIVER(DP83826C_PHY_ID, "TI DP83826C"),
++	DP8382X_PHY_DRIVER(DP83826NC_PHY_ID, "TI DP83826NC"),
++	DP8382X_PHY_DRIVER(DP83825S_PHY_ID, "TI DP83825S"),
++	DP8382X_PHY_DRIVER(DP83825CM_PHY_ID, "TI DP83825M"),
++	DP8382X_PHY_DRIVER(DP83825CS_PHY_ID, "TI DP83825CS"),
+ };
+ module_phy_driver(dp83822_driver);
+ 
+-- 
+2.26.2
 
-(1-6/8 of this series are hyperv-specific only and have been applied to
-the hyperv tree, so this would only 7-8/8 of this series out.)
-
-Thanks,
-
-  Andrea
