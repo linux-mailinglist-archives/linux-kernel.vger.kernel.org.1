@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 561002017C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827D12016CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:45:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395541AbgFSQnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:43:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34770 "EHLO mail.kernel.org"
+        id S2388532AbgFSOn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:43:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387924AbgFSOnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:43:37 -0400
+        id S2388497AbgFSOnn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:43:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB1082168B;
-        Fri, 19 Jun 2020 14:43:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3857D21556;
+        Fri, 19 Jun 2020 14:43:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577817;
-        bh=YgsRd3RmLnVM1wIbfeCexFiwLKDhAcn/ht2Pqp1VxRY=;
+        s=default; t=1592577822;
+        bh=4+YLrJjEjRgkQhhkBuQT0yHkcuSYyIbSyxuHpnzWm4A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ie1f9veYeQUGgL/ewulAhH8Cf5OJjXqdovrX116zlExP02Gug7zjJfhjN6F+RuYdv
-         ZEtSBo6RFccfDqZHxw5YNNoMSd/L9SqhUmOmvZt45XK1Q0wXx/+qe4Dn0PNSKy8fqg
-         ixXMLcUtE84f2bz8KZCC+x/FljoJNWvIpuf70u1k=
+        b=QOQY0U8wcmk0QJ8W3RmvLpm4r3EoClhC6Gc3k1DW5vCTA5VmMnU5KiT+22oHJBOsr
+         4hHdEafI00AzzAUAjZZRxZxHCUoC/xjXcm4am+5KsiKDz3p+hM/ggcZWRKI1vbNSFj
+         73i7ibiYq9qOsKj7sExXPVt42v2it6XxRe1d5ONM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Theodore Tso <tytso@mit.edu>, stable@kernel.org
-Subject: [PATCH 4.9 102/128] ext4: fix EXT_MAX_EXTENT/INDEX to check for zeroed eh_max
-Date:   Fri, 19 Jun 2020 16:33:16 +0200
-Message-Id: <20200619141625.517958714@linuxfoundation.org>
+        stable@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Omar Sandoval <osandov@fb.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 104/128] btrfs: fix error handling when submitting direct I/O bio
+Date:   Fri, 19 Jun 2020 16:33:18 +0200
+Message-Id: <20200619141625.620331889@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
 References: <20200619141620.148019466@linuxfoundation.org>
@@ -44,45 +47,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+From: Omar Sandoval <osandov@fb.com>
 
-commit c36a71b4e35ab35340facdd6964a00956b9fef0a upstream.
+[ Upstream commit 6d3113a193e3385c72240096fe397618ecab6e43 ]
 
-If eh->eh_max is 0, EXT_MAX_EXTENT/INDEX would evaluate to unsigned
-(-1) resulting in illegal memory accesses. Although there is no
-consistent repro, we see that generic/019 sometimes crashes because of
-this bug.
+In btrfs_submit_direct_hook(), if a direct I/O write doesn't span a RAID
+stripe or chunk, we submit orig_bio without cloning it. In this case, we
+don't increment pending_bios. Then, if btrfs_submit_dio_bio() fails, we
+decrement pending_bios to -1, and we never complete orig_bio. Fix it by
+initializing pending_bios to 1 instead of incrementing later.
 
-Ran gce-xfstests smoke and verified that there were no regressions.
+Fixing this exposes another bug: we put orig_bio prematurely and then
+put it again from end_io. Fix it by not putting orig_bio.
 
-Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Link: https://lore.kernel.org/r/20200421023959.20879-2-harshadshirwadkar@gmail.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+After this change, pending_bios is really more of a reference count, but
+I'll leave that cleanup separate to keep the fix small.
 
+Fixes: e65e15355429 ("btrfs: fix panic caused by direct IO")
+CC: stable@vger.kernel.org # 4.4+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Omar Sandoval <osandov@fb.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/ext4_extents.h |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ fs/btrfs/inode.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/fs/ext4/ext4_extents.h
-+++ b/fs/ext4/ext4_extents.h
-@@ -169,10 +169,13 @@ struct ext4_ext_path {
- 	(EXT_FIRST_EXTENT((__hdr__)) + le16_to_cpu((__hdr__)->eh_entries) - 1)
- #define EXT_LAST_INDEX(__hdr__) \
- 	(EXT_FIRST_INDEX((__hdr__)) + le16_to_cpu((__hdr__)->eh_entries) - 1)
--#define EXT_MAX_EXTENT(__hdr__) \
--	(EXT_FIRST_EXTENT((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)
-+#define EXT_MAX_EXTENT(__hdr__)	\
-+	((le16_to_cpu((__hdr__)->eh_max)) ? \
-+	((EXT_FIRST_EXTENT((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)) \
-+					: 0)
- #define EXT_MAX_INDEX(__hdr__) \
--	(EXT_FIRST_INDEX((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)
-+	((le16_to_cpu((__hdr__)->eh_max)) ? \
-+	((EXT_FIRST_INDEX((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)) : 0)
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 250c8403ec67..c425443c31fe 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8494,7 +8494,6 @@ static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip,
+ 	bio->bi_private = dip;
+ 	bio->bi_end_io = btrfs_end_dio_bio;
+ 	btrfs_io_bio(bio)->logical = file_offset;
+-	atomic_inc(&dip->pending_bios);
  
- static inline struct ext4_extent_header *ext_inode_hdr(struct inode *inode)
- {
+ 	while (bvec <= (orig_bio->bi_io_vec + orig_bio->bi_vcnt - 1)) {
+ 		nr_sectors = BTRFS_BYTES_TO_BLKS(root->fs_info, bvec->bv_len);
+@@ -8560,7 +8559,8 @@ static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip,
+ 	if (!ret)
+ 		return 0;
+ 
+-	bio_put(bio);
++	if (bio != orig_bio)
++		bio_put(bio);
+ out_err:
+ 	dip->errors = 1;
+ 	/*
+@@ -8607,7 +8607,7 @@ static void btrfs_submit_direct(struct bio *dio_bio, struct inode *inode,
+ 	io_bio->bi_private = dip;
+ 	dip->orig_bio = io_bio;
+ 	dip->dio_bio = dio_bio;
+-	atomic_set(&dip->pending_bios, 0);
++	atomic_set(&dip->pending_bios, 1);
+ 	btrfs_bio = btrfs_io_bio(io_bio);
+ 	btrfs_bio->logical = file_offset;
+ 
+-- 
+2.25.1
+
 
 
