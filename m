@@ -2,51 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C0E200145
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 06:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B1E20014F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 06:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729255AbgFSEeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 00:34:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44052 "EHLO
+        id S1730449AbgFSEex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 00:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725826AbgFSEeL (ORCPT
+        with ESMTP id S1728974AbgFSEeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Jun 2020 00:34:11 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A65C06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 21:34:09 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id f16so8832493ybp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 21:34:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A87FC0613EE
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 21:34:10 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id o84so8849266ybg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 21:34:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=e2t+AoMy42UgEac1mGamDid+gk4pQU3+zHHVv6633Lc=;
-        b=mMqhRWjqPFI2wvsFTWF2FBun6wzbMqZxKb8vJkrmTgmKcqdy2irWp7gIb/Fog506l/
-         pu9yC6LheRJr+eLBGptwB/KOI2Zo+DnDcqs0/636xvY0Vs/rocQU8i+nIuPBETEBfYuy
-         rBl3binV7ALiUJPyJJLM+Ekkj5UHe1Ziam1VY27XOg43qPVOSTorXUYQYbWm+CKp5PsO
-         anodD6Q4TtLN3b1pFxbrHpluaMSEglrIBuQRywQtIuWPc3hbS5HZ4YYcA9o34MkLyuhQ
-         djdy1MdGyXxQ7yAIfpMW8M7ufuRRGayz61yCH7xwj9LeeZ6ycmn2DCm5idCWBKj6YVVZ
-         CtFQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=vw05Hr6gQMHkdgIxFDB0bOiYw6mRSy0yRyh3Egshj0w=;
+        b=ZddSThi+qbrT7YkxNz4wUq09u5efYQVzacpmPUU5wXZvewpGwwvsBNBuCirRe91Pl/
+         GTwjZZeNjoD1R9JzSCf/zpC7nayfMgEoSYcRBm4g0sygDxq48AsqiLbTpsuw/ZuhxUJj
+         Agd3d730HeSJl6UpV/wiCV41SpWbUOGXFGnDWKvlKd2Owzv6NO3/TvEIw8PqTrViCfIE
+         tQTr+ZyoTPQVBtAFS+yUDOguNd5gcuoijiiduoT0efPC4exk3CYwVmJ+pqTC1Pa5F5Bh
+         zqWW3bXrFBXXLZIdw9c/AMwdrIrdsR3CrAlr8tDvBv6v/GhTPyp49cLcE4uyZUKolPf7
+         7x6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=e2t+AoMy42UgEac1mGamDid+gk4pQU3+zHHVv6633Lc=;
-        b=ugEl5ZW+bdXcwbbMKoyCQP4y4Efu3zw2gsjoxts9nysgMi+dwtHxL3nODkccZz5Bsp
-         31Cl2pjBO0660APoQ3+Ngip7n+2uv0JiRK4gH9P6x9vmHP6r7P1NYXQjQWQlEpcZiYYw
-         jGOgcE+e+Ew2rCcZFxMqAkLwkxtDd7pWBYFHQCjCC1mdAOsnmgEVlJYK5H8h1lycRzBU
-         XHKfbbefPMrdwOQrh+TdTwD0qsKLBIbtk4zmXfIOXoCPf2NSZdFqiHKR3603T4sewAcm
-         LNL/a0j7C1dYLlpnqDhgA6r9pS7tmRU55+xBeY4Irgzb13LJoGtKpnsWZ1g5AxZM5JeF
-         wAbw==
-X-Gm-Message-State: AOAM532DVqRPfBpdRkKiOZTi5vqgOrlRfS0vCwU5QDifBWJR5Flee1Zy
-        /fBloDAMiWdpCbBJTRQz9YRcuT4lAK9g
-X-Google-Smtp-Source: ABdhPJyZfhPdJxelWD1vqK/wZ+Y1PwZazxqMaGG/b7x3U3T6WDL0GDa8khkWXLlwMr499JHgC4evl01xOfbp
-X-Received: by 2002:a25:eb05:: with SMTP id d5mr3114666ybs.12.1592541247784;
- Thu, 18 Jun 2020 21:34:07 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 21:33:46 -0700
-Message-Id: <20200619043356.90024-1-irogers@google.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=vw05Hr6gQMHkdgIxFDB0bOiYw6mRSy0yRyh3Egshj0w=;
+        b=NWKUveCZZtlamB29WEKWEg+ZE3oNABvdTDxChK5yHw17FDdHidGjQaqrp4QNuiSIBf
+         JGzJKYNH+H8+fozxjfoyR9w4QueuLyElmldnlZo/EvosJpS0dPWxsNxsmCjfP0e8DWQw
+         es8VAoRBfQxZJZcp9/mBMd9WR+UBsEoHPEbKZRUfsx9HKitCoWuxe026rscx8VHOZdOu
+         6MppvCmKS3Wz/dWOh3b622jxil43d2heTIDPJo6NpdQM7GO9bEFY9EdXjEqJFvLiV2bT
+         7+2yOIOLrxcvo8j8AKegPZg1rucFKs4GsIQySXINZlcKG3MHHBLeB2jLPFhevn4QCbjj
+         iWyQ==
+X-Gm-Message-State: AOAM532yMDsyxgcEQdV4cyWcfuDlqc+B/Rokh93fBt9/krwPll2GbwUv
+        +90F0TgDkdgxpLxRmVkbXM6I+SGUuvxr
+X-Google-Smtp-Source: ABdhPJz2gzcoW6j04ojC5EmMo4415rURb8VGmSsabv1X5bkihuqmh+TIpgCID0kpVPAfOvnirS6HF9aL6lle
+X-Received: by 2002:a25:a0c7:: with SMTP id i7mr3267724ybm.420.1592541249751;
+ Thu, 18 Jun 2020 21:34:09 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 21:33:47 -0700
+In-Reply-To: <20200619043356.90024-1-irogers@google.com>
+Message-Id: <20200619043356.90024-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20200619043356.90024-1-irogers@google.com>
 X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
-Subject: [PATCH v2 00/10] perf parse-events: enable more flex/bison warnings
+Subject: [PATCH v2 01/10] perf parse-events: Use automatic variable for flex input
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -68,42 +72,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All C compiler warnings are disabled are disabled by -w. This change
-removes the -w from flex and bison targets. To avoid implicit
-declarations header files are declared as targets and included.
+This reduces the command line size slightly.
 
-Tested with GCC 9.3.0 and clang 9.0.1.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/util/Build | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-v2. predicates disabling the warnings on more recent bison and flex
-    versions (3.5.3 and 2.6.4 respectively). An alternative would be
-    to disabled a large number of warnings to cover the warnings
-    generated in older distributions:
-  flex_flags := -Wno-switch-enum -Wno-switch-default -Wno-unused-function \
-    -Wno-redundant-decls -Wno-sign-compare -Wno-unused-parameter \
-    -Wno-missing-prototypes -Wno-misleading-indentation
-  bison_flags := -DYYENABLE_NLS=0 -Wno-unused-parameter -Wno-nested-externs \
-    -Wno-implicit-function-declaration -Wno-switch-enum
-
-Previously posted as a single change:
-https://lore.kernel.org/lkml/20200609234344.3795-2-irogers@google.com/
-
-Ian Rogers (10):
-  perf parse-events: Use automatic variable for flex input
-  perf parse-events: Use automatic variable for yacc input
-  perf pmu: Add bison debug build flag
-  perf pmu: Add flex debug build flag
-  perf parse-events: Declare flex header file output
-  perf parse-events: Declare bison header file output
-  perf parse-events: Disable a subset of flex warnings
-  perf expr: Avoid implicit lex function declaration
-  perf parse-events: Avoid implicit lex function declaration
-  perf parse-events: Disable a subset of bison warnings
-
- tools/perf/util/Build          | 62 +++++++++++++++++++++++-----------
- tools/perf/util/expr.y         |  2 ++
- tools/perf/util/parse-events.y |  1 +
- 3 files changed, 46 insertions(+), 19 deletions(-)
-
+diff --git a/tools/perf/util/Build b/tools/perf/util/Build
+index 8d18380ecd10..66cf009f78d8 100644
+--- a/tools/perf/util/Build
++++ b/tools/perf/util/Build
+@@ -193,7 +193,7 @@ CFLAGS_genelf_debug.o  += -Wno-packed
+ 
+ $(OUTPUT)util/parse-events-flex.c: util/parse-events.l $(OUTPUT)util/parse-events-bison.c
+ 	$(call rule_mkdir)
+-	$(Q)$(call echo-cmd,flex)$(FLEX) -o $@ --header-file=$(OUTPUT)util/parse-events-flex.h $(PARSER_DEBUG_FLEX) util/parse-events.l
++	$(Q)$(call echo-cmd,flex)$(FLEX) -o $@ --header-file=$(OUTPUT)util/parse-events-flex.h $(PARSER_DEBUG_FLEX) $<
+ 
+ $(OUTPUT)util/parse-events-bison.c: util/parse-events.y
+ 	$(call rule_mkdir)
+@@ -201,7 +201,7 @@ $(OUTPUT)util/parse-events-bison.c: util/parse-events.y
+ 
+ $(OUTPUT)util/expr-flex.c: util/expr.l $(OUTPUT)util/expr-bison.c
+ 	$(call rule_mkdir)
+-	$(Q)$(call echo-cmd,flex)$(FLEX) -o $@ --header-file=$(OUTPUT)util/expr-flex.h $(PARSER_DEBUG_FLEX) util/expr.l
++	$(Q)$(call echo-cmd,flex)$(FLEX) -o $@ --header-file=$(OUTPUT)util/expr-flex.h $(PARSER_DEBUG_FLEX) $<
+ 
+ $(OUTPUT)util/expr-bison.c: util/expr.y
+ 	$(call rule_mkdir)
+@@ -209,7 +209,7 @@ $(OUTPUT)util/expr-bison.c: util/expr.y
+ 
+ $(OUTPUT)util/pmu-flex.c: util/pmu.l $(OUTPUT)util/pmu-bison.c
+ 	$(call rule_mkdir)
+-	$(Q)$(call echo-cmd,flex)$(FLEX) -o $@ --header-file=$(OUTPUT)util/pmu-flex.h util/pmu.l
++	$(Q)$(call echo-cmd,flex)$(FLEX) -o $@ --header-file=$(OUTPUT)util/pmu-flex.h $<
+ 
+ $(OUTPUT)util/pmu-bison.c: util/pmu.y
+ 	$(call rule_mkdir)
 -- 
 2.27.0.111.gc72c7da667-goog
 
