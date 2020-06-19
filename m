@@ -2,104 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 008751FFFD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 03:41:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C1F1FFFDC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 03:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730597AbgFSBkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 21:40:40 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:33537 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726478AbgFSBkj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 21:40:39 -0400
-Received: by mail-il1-f194.google.com with SMTP id z2so7871271ilq.0;
-        Thu, 18 Jun 2020 18:40:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mJoP7oVOvzpVuZPM3osFjxe5D6t5ctLfG4HCj8088To=;
-        b=QvepFfza0ezZ6GE9/Lk5XNGwVLRHCvoEV3lxSkvonpKyiO8IYyod7gBG2bLZbj7d25
-         Ie0iMzKwdW8laLSjaWVQQPPoGF5IZoYOKAkmgxlnXuBoVqK60dzOe+tNZ8cUsk1jGBhL
-         mVGl7+EtdTtt/HOc4hu5O208IcrsWSu4eehhQ6mdZiW4b80l0BBxBav6zZC6mh2L8YVl
-         GVLBajyycq4RL4u3Fe4IKKrSU5L3NY3mND+Gj2hRs2RAHEINNaNi9KVCrpqYQSZqtp9O
-         Mpc9eJJJteV923TlXA/jY2gsmeZqJJl+PTvrtzSvEpzIct9l3BHiQvBS5RTEAhSbetmm
-         WrEw==
-X-Gm-Message-State: AOAM53315IHhi6VSfe4xUHKfoFxRy0hRUBQomVfBAx6qOeo1CWdoOJiC
-        h2ho+tCbIZXvrGhf2Ryb+Yo=
-X-Google-Smtp-Source: ABdhPJyfe8V1yYPwY1ynMF8zhUqQIJoWWg7x/rgBPX8e9zy+pO7+hD6Bij8+mo58ek+D21nEI0JpmQ==
-X-Received: by 2002:a92:dc47:: with SMTP id x7mr1487780ilq.130.1592530838660;
-        Thu, 18 Jun 2020 18:40:38 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id u2sm2346059ilg.29.2020.06.18.18.40.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 18:40:37 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 18:40:36 -0700
-From:   Moritz Fischer <mdf@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH][next] fpga: dfl: Use struct_size() in kzalloc()
-Message-ID: <20200619014036.GF3685@epycbox.lan>
-References: <20200617221039.GA21877@embeddedor>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617221039.GA21877@embeddedor>
+        id S1730714AbgFSBr4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 21:47:56 -0400
+Received: from mga06.intel.com ([134.134.136.31]:64012 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727853AbgFSBrz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 21:47:55 -0400
+IronPort-SDR: IJ4pmpQVXRlaVc2gTk8cNknBiA+XDWvfgeSin93KfYccS4DQePtbkGN3nWe4xUUKNyqSjacbac
+ ESAT67G0E1ew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="204278275"
+X-IronPort-AV: E=Sophos;i="5.75,253,1589266800"; 
+   d="scan'208";a="204278275"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 18:47:54 -0700
+IronPort-SDR: EUqhV7ZkfPUwu4HtXvIy8HbnUxNQb5hyykNhnJ5hkW2AK/7g6uLik0QWqZ5Qiek3AU+pIUmVS1
+ F8KYPqDQSFwQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,253,1589266800"; 
+   d="scan'208";a="263746034"
+Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
+  by fmsmga008.fm.intel.com with ESMTP; 18 Jun 2020 18:47:52 -0700
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     broonie@kernel.org, linux-spi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
+        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com
+Subject: [RESEND PATCH v2 0/3] add regmap & indirect access support
+Date:   Fri, 19 Jun 2020 09:43:38 +0800
+Message-Id: <1592531021-11412-1-git-send-email-yilun.xu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 05:10:39PM -0500, Gustavo A. R. Silva wrote:
-> Make use of the struct_size() helper instead of an open-coded version
-> in order to avoid any potential type mistakes. Also, remove unnecessary
-> function dfl_feature_platform_data_size().
-> 
-> This code was detected with the help of Coccinelle and, audited and
-> fixed manually.
-> 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/fpga/dfl.c | 3 +--
->  drivers/fpga/dfl.h | 6 ------
->  2 files changed, 1 insertion(+), 8 deletions(-)
-> 
-> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
-> index 990994874bf1..2dd13e036d45 100644
-> --- a/drivers/fpga/dfl.c
-> +++ b/drivers/fpga/dfl.c
-> @@ -487,8 +487,7 @@ static int build_info_commit_dev(struct build_feature_devs_info *binfo)
->  	 * it will be automatically freed by device's release() callback,
->  	 * platform_device_release().
->  	 */
-> -	pdata = kzalloc(dfl_feature_platform_data_size(binfo->feature_num),
-> -			GFP_KERNEL);
-> +	pdata = kzalloc(struct_size(pdata, features, binfo->feature_num), GFP_KERNEL);
->  	if (!pdata)
->  		return -ENOMEM;
->  
-> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
-> index 2f5d3052e36e..044b0e88e5a8 100644
-> --- a/drivers/fpga/dfl.h
-> +++ b/drivers/fpga/dfl.h
-> @@ -299,12 +299,6 @@ struct dfl_feature_ops {
->  #define DFL_FPGA_FEATURE_DEV_FME		"dfl-fme"
->  #define DFL_FPGA_FEATURE_DEV_PORT		"dfl-port"
->  
-> -static inline int dfl_feature_platform_data_size(const int num)
-> -{
-> -	return sizeof(struct dfl_feature_platform_data) +
-> -		num * sizeof(struct dfl_feature);
-> -}
-> -
->  void dfl_fpga_dev_feature_uinit(struct platform_device *pdev);
->  int dfl_fpga_dev_feature_init(struct platform_device *pdev,
->  			      struct dfl_feature_driver *feature_drvs);
-> -- 
-> 2.27.0
-> 
-Applied to for-next,
+Updated the regmap & indirect access support for spi-altera.
 
-Thanks!
+Patch #1 is an 1:1 replacement of of readl/writel with regmap_read/write
+Patch #2 introduced a new platform_device_id to support indirect access as
+         a sub device.
+Patch #3 is a minor fix.
+
+Main changes from v1:
+ - Split the regmap supporting patch to 2 patches.
+ - Add a new platform_device_id to support indirect access.
+ - Removed the v1 patch "move driver name string to header file". Now we
+   use driver name string directly.
+ - Add Yilun's Signed-off-by for Patch #3.
+ - Add Tom's Reviewed-by.
+
+
+Matthew Gerlach (1):
+  spi: altera: fix size mismatch on 64 bit processors
+
+Xu Yilun (2):
+  spi: altera: use regmap-mmio instead of direct mmio register access
+  spi: altera: support indirect access to the registers
+
+ drivers/spi/Kconfig      |   1 +
+ drivers/spi/spi-altera.c | 127 +++++++++++++++++++++++++++++++++++++++--------
+ 2 files changed, 107 insertions(+), 21 deletions(-)
+
+-- 
+2.7.4
+
