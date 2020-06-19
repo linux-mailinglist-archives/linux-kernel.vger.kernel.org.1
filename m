@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0955200C55
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E93200D1B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388573AbgFSOo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:44:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35422 "EHLO mail.kernel.org"
+        id S2389725AbgFSOxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:53:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47418 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388537AbgFSOoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:44:10 -0400
+        id S2389294AbgFSOxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:53:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BDECD2168B;
-        Fri, 19 Jun 2020 14:44:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D215218AC;
+        Fri, 19 Jun 2020 14:53:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577850;
-        bh=4JFtDNHFFW5pg3sH6TQO9VaAPDJzQon9y+GOPrV4sBw=;
+        s=default; t=1592578389;
+        bh=YUAEiWEGe5jqokQOiKCUo81Y71KVNrYCtlGnZm3dUVA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gxFkBOlV18//lQoAgtHzg91rc7XBOyRwW6YFl+gPDBkQLRHN0JIsqpnJAWOdYKbs/
-         aScuqPK7Ol567+FsBoQaK7SOdBOr2g5AbJA8j8w3u374e/brDKnzdh6DluECfX8nVr
-         AeJXrAzPQ3Ub/dV0G3/AKUxeiZO/Q/f5x4gSte5s=
+        b=hMjeAzGDd3ye3bazGMpK5Qz/38xRAjHKBBX/319ORz0fgnmQuyIJGyV6EUvUTK5iU
+         iF17JRe34Py1bJmyaYA3Sl4QBreKxHsAE2a65lwyAGX8cANkpGeukw4NJqxyMF0uyu
+         /47g6C9IZUcjviQb8Z3EaJOu6oDgHJ9ukHGKUoGQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anders Roxell <anders.roxell@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 4.9 114/128] power: vexpress: add suppress_bind_attrs to true
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Subject: [PATCH 4.14 163/190] e1000e: Disable TSO for buffer overrun workaround
 Date:   Fri, 19 Jun 2020 16:33:28 +0200
-Message-Id: <20200619141626.163662700@linuxfoundation.org>
+Message-Id: <20200619141641.911923484@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
-References: <20200619141620.148019466@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,34 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anders Roxell <anders.roxell@linaro.org>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-commit 73174acc9c75960af2daa7dcbdb9781fc0d135cb upstream.
+commit f29801030ac67bf98b7a65d3aea67b30769d4f7c upstream.
 
-Make sure that the POWER_RESET_VEXPRESS driver won't have bind/unbind
-attributes available via the sysfs, so lets be explicit here and use
-".suppress_bind_attrs = true" to prevent userspace from doing something
-silly.
+Commit b10effb92e27 ("e1000e: fix buffer overrun while the I219 is
+processing DMA transactions") imposes roughly 30% performance penalty.
 
-Link: https://lore.kernel.org/r/20200527112608.3886105-2-anders.roxell@linaro.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+The commit log states that "Disabling TSO eliminates performance loss
+for TCP traffic without a noticeable impact on CPU performance", so
+let's disable TSO by default to regain the loss.
+
+CC: stable <stable@vger.kernel.org>
+Fixes: b10effb92e27 ("e1000e: fix buffer overrun while the I219 is processing DMA transactions")
+BugLink: https://bugs.launchpad.net/bugs/1802691
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/power/reset/vexpress-poweroff.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/intel/e1000e/netdev.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/drivers/power/reset/vexpress-poweroff.c
-+++ b/drivers/power/reset/vexpress-poweroff.c
-@@ -150,6 +150,7 @@ static struct platform_driver vexpress_r
- 	.driver = {
- 		.name = "vexpress-reset",
- 		.of_match_table = vexpress_reset_of_match,
-+		.suppress_bind_attrs = true,
- 	},
- };
+--- a/drivers/net/ethernet/intel/e1000e/netdev.c
++++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+@@ -5271,6 +5271,10 @@ static void e1000_watchdog_task(struct w
+ 					/* oops */
+ 					break;
+ 				}
++				if (hw->mac.type == e1000_pch_spt) {
++					netdev->features &= ~NETIF_F_TSO;
++					netdev->features &= ~NETIF_F_TSO6;
++				}
+ 			}
  
+ 			/* enable transmits in the hardware, need to do this
 
 
