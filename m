@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 286692018A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 434D6201864
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391125AbgFSQux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:50:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55676 "EHLO mail.kernel.org"
+        id S2387907AbgFSOiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:38:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387885AbgFSOid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:38:33 -0400
+        id S2387863AbgFSOig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:38:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D832D2070A;
-        Fri, 19 Jun 2020 14:38:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 476DA21548;
+        Fri, 19 Jun 2020 14:38:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577513;
-        bh=YOkpTZYrfnokcdFwYS0WPntzIjGXEEp96uDBgKME3hY=;
+        s=default; t=1592577515;
+        bh=3lcFa4uLTZNzdJvmNg7wDlQeoI4+vQ/1tHyvuhtQwD8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uUwoRSmgXzJ6E+AKBLuACjMANvuJUwXEps6x/pPLgzvAGF/a4AIbRRpq8uUKXcQg9
-         dtQuoZCKYbXUqa8Gdlw72e1Rl1nno32HKdWy3FeesvruV+Ofa4/X5XXlPVYNJskrTG
-         v9p+ozG2VHB8xUEkJ1ezRM4hB3tXhsTBnCc5XJq8=
+        b=Q1ubMcuLpdZo/9Cje2GFvAuQzlTWPhde6dXUUtToi08HufCe3Vp7Pfj9LI4bkgWGP
+         3cCD2m3UyjUP3HiTDjigzBnXto5Al1twrTNmDosxB9YNCzY+Hz/lO2EoWKZTUq3nKZ
+         ZjShlyOIjN4EiRXdlwKb3KKZgINbu4o1cLBeWlzs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 081/101] ima: Directly assign the ima_default_policy pointer to ima_rules
-Date:   Fri, 19 Jun 2020 16:33:10 +0200
-Message-Id: <20200619141618.229547024@linuxfoundation.org>
+        stable@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 4.4 082/101] PCI: Program MPS for RCiEP devices
+Date:   Fri, 19 Jun 2020 16:33:11 +0200
+Message-Id: <20200619141618.278975253@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
 References: <20200619141614.001544111@linuxfoundation.org>
@@ -45,66 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+From: Ashok Raj <ashok.raj@intel.com>
 
-[ Upstream commit 067a436b1b0aafa593344fddd711a755a58afb3b ]
+commit aa0ce96d72dd2e1b0dfd0fb868f82876e7790878 upstream.
 
-This patch prevents the following oops:
+Root Complex Integrated Endpoints (RCiEPs) do not have an upstream bridge,
+so pci_configure_mps() previously ignored them, which may result in reduced
+performance.
 
-[   10.771813] BUG: kernel NULL pointer dereference, address: 0000000000000
-[...]
-[   10.779790] RIP: 0010:ima_match_policy+0xf7/0xb80
-[...]
-[   10.798576] Call Trace:
-[   10.798993]  ? ima_lsm_policy_change+0x2b0/0x2b0
-[   10.799753]  ? inode_init_owner+0x1a0/0x1a0
-[   10.800484]  ? _raw_spin_lock+0x7a/0xd0
-[   10.801592]  ima_must_appraise.part.0+0xb6/0xf0
-[   10.802313]  ? ima_fix_xattr.isra.0+0xd0/0xd0
-[   10.803167]  ima_must_appraise+0x4f/0x70
-[   10.804004]  ima_post_path_mknod+0x2e/0x80
-[   10.804800]  do_mknodat+0x396/0x3c0
+Instead, program the Max_Payload_Size of RCiEPs to the maximum supported
+value (unless it is limited for the PCIE_BUS_PEER2PEER case).  This also
+affects the subsequent programming of Max_Read_Request_Size because Linux
+programs MRRS based on the MPS value.
 
-It occurs when there is a failure during IMA initialization, and
-ima_init_policy() is not called. IMA hooks still call ima_match_policy()
-but ima_rules is NULL. This patch prevents the crash by directly assigning
-the ima_default_policy pointer to ima_rules when ima_rules is defined. This
-wouldn't alter the existing behavior, as ima_rules is always set at the end
-of ima_init_policy().
+Fixes: 9dae3a97297f ("PCI: Move MPS configuration check to pci_configure_device()")
+Link: https://lore.kernel.org/r/1585343775-4019-1-git-send-email-ashok.raj@intel.com
+Tested-by: Dave Jiang <dave.jiang@intel.com>
+Signed-off-by: Ashok Raj <ashok.raj@intel.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Cc: stable@vger.kernel.org # 3.7.x
-Fixes: 07f6a79415d7d ("ima: add appraise action keywords and default rules")
-Reported-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/integrity/ima/ima_policy.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/pci/probe.c |   22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index 3997e206f82d..0ddc8cb6411b 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -135,7 +135,7 @@ static struct ima_rule_entry default_appraise_rules[] = {
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -1335,13 +1335,33 @@ static void pci_configure_mps(struct pci
+ 	struct pci_dev *bridge = pci_upstream_bridge(dev);
+ 	int mps, p_mps, rc;
  
- static LIST_HEAD(ima_default_rules);
- static LIST_HEAD(ima_policy_rules);
--static struct list_head *ima_rules;
-+static struct list_head *ima_rules = &ima_default_rules;
+-	if (!pci_is_pcie(dev) || !bridge || !pci_is_pcie(bridge))
++	if (!pci_is_pcie(dev))
+ 		return;
  
- static DEFINE_MUTEX(ima_rules_mutex);
+ 	/* MPS and MRRS fields are of type 'RsvdP' for VFs, short-circuit out */
+ 	if (dev->is_virtfn)
+ 		return;
  
-@@ -412,7 +412,6 @@ void __init ima_init_policy(void)
- 			      &ima_default_rules);
- 	}
++	/*
++	 * For Root Complex Integrated Endpoints, program the maximum
++	 * supported value unless limited by the PCIE_BUS_PEER2PEER case.
++	 */
++	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) {
++		if (pcie_bus_config == PCIE_BUS_PEER2PEER)
++			mps = 128;
++		else
++			mps = 128 << dev->pcie_mpss;
++		rc = pcie_set_mps(dev, mps);
++		if (rc) {
++			dev_warn(&dev->dev, "can't set Max Payload Size to %d; if necessary, use \"pci=pcie_bus_safe\" and report a bug\n",
++				 mps);
++		}
++		return;
++	}
++
++	if (!bridge || !pci_is_pcie(bridge))
++		return;
++
+ 	mps = pcie_get_mps(dev);
+ 	p_mps = pcie_get_mps(bridge);
  
--	ima_rules = &ima_default_rules;
- }
- 
- /**
--- 
-2.25.1
-
 
 
