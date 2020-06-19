@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB472014C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:21:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E169E2013C1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390686AbgFSPBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:01:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56842 "EHLO mail.kernel.org"
+        id S2392135AbgFSQDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:03:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390172AbgFSPAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:00:24 -0400
+        id S2392126AbgFSPLi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:11:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A135C206DB;
-        Fri, 19 Jun 2020 15:00:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9B9AD2158C;
+        Fri, 19 Jun 2020 15:11:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578824;
-        bh=49zfERSjk9j/+MtSTyS6zjJNybRRJ7SHS9cxP6Yyjng=;
+        s=default; t=1592579497;
+        bh=tL/acNf1vHtTAwCq0RaBlHXUprEJKc6+sPNDpB+oLs4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U05yg2AXaMo1kCC0aSU7LAZyybH2LjlQNsWj0xhW6iPHagIJcGuKrZcedNMCi9KFm
-         WECU/mv985pDKeYCBe2gRLSCEuRh1hJ6OEd8K1HgWPBpim59MunV+W6UQN3SV3bXGP
-         e/5skTtlapQOrpIRoaIIfkOpUcHmDYBgrNg+FA3M=
+        b=zz7XaRSHjMxiT7UL5ZPjZ5oXcjgIckyMFtQKS0TFPO7Zw4l/U5V/OS9NQbwsHdFZt
+         lxLQL+op3ptUK15W/Ki+CjwyDnbRM0by3AqJt1x+jpsBvNpmemnFgPM1CiO3FxsrDn
+         j9E1RAMFWGJJTd7vv6i/qSponX8PdzZTByOsl9HQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        Keith Busch <kbusch@kernel.org>,
-        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, chen gong <curry.gong@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 153/267] nvme: refine the Qemu Identify CNS quirk
+Subject: [PATCH 5.4 127/261] drm/amd/powerpay: Disable gfxoff when setting manual mode on picasso and raven
 Date:   Fri, 19 Jun 2020 16:32:18 +0200
-Message-Id: <20200619141656.169672077@linuxfoundation.org>
+Message-Id: <20200619141655.957372377@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,57 +44,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig <hch@lst.de>
+From: chen gong <curry.gong@amd.com>
 
-[ Upstream commit b9a5c3d4c34d8bd9fd75f7f28d18a57cb68da237 ]
+[ Upstream commit cbd2d08c7463e78d625a69e9db27ad3004cbbd99 ]
 
-Add a helper to check if we can use Identify CNS values > 1, and refine
-the Qemu quirk to not apply to reported versions larger than 1.1, as the
-Qemu implementation had been fixed by then.
+[Problem description]
+1. Boot up picasso platform, launches desktop, Don't do anything (APU enter into "gfxoff" state)
+2. Remote login to platform using SSH, then type the command line:
+	sudo su -c "echo manual > /sys/class/drm/card0/device/power_dpm_force_performance_level"
+	sudo su -c "echo 2 > /sys/class/drm/card0/device/pp_dpm_sclk" (fix SCLK to 1400MHz)
+3. Move the mouse around in Window
+4. Phenomenon :  The screen frozen
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Tester will switch sclk level during glmark2 run time.
+APU will enter "gfxoff" state intermittently during glmark2 run time.
+The system got hanged if fix GFXCLK to 1400MHz when APU is in "gfxoff"
+state.
+
+[Debug]
+1. Fix SCLK to X MHz
+	1400: screen frozen, screen black, then OS will reboot.
+	1300: screen frozen.
+	1200: screen frozen, screen black.
+	1100: screen frozen, screen black, then OS will reboot.
+	1000: screen frozen, screen black.
+	900:  screen frozen, screen black, then OS will reboot.
+	800:  Situation Nomal, issue disappear.
+	700:  Situation Nomal, issue disappear.
+2. SBIOS setting: AMD CBS --> SMU Debug Options -->SMU Debug --> "GFX DLDO Psm Margin Control":
+	50 : Situation Nomal, issue disappear.
+	45 : Situation Nomal, issue disappear.
+	40 : Situation Nomal, issue disappear.
+	35 : Situation Nomal, issue disappear.
+	30 : screen black.
+	25 : screen frozen, then blurred screen.
+	20 : screen frozen.
+	15 : screen black.
+	10 : screen frozen.
+	5  : screen frozen, then blurred screen.
+3. Disable GFXOFF feature
+	Situation Nomal, issue disappear.
+
+[Why]
+Through a period of time debugging with Sys Eng team and SMU team, Sys
+Eng team said this is voltage/frequency marginal issue not a F/W or H/W
+bug. This experiment proves that default targetPsm [for f=1400MHz] is
+not sufficient when GFXOFF is enabled on Picasso.
+
+SMU team think it is an odd test conditions to force sclk="1400MHz" when
+GPU is in "gfxoff" state，then wake up the GFX. SCLK should be in the
+"lowest frequency" when gfxoff.
+
+[How]
+Disable gfxoff when setting manual mode.
+Enable gfxoff when setting other mode(exiting manual mode) again.
+
+By the way, from the user point of view, now that user switch to manual
+mode and force SCLK Frequency, he don't want SCLK be controlled by
+workload.It becomes meaningless to "switch to manual mode" if APU enter "gfxoff"
+due to lack of workload at this point.
+
+Tips: Same issue observed on Raven.
+
+Signed-off-by: chen gong <curry.gong@amd.com>
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/core.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index d5359c7c811a..0d60f2f8f3ee 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -926,6 +926,19 @@ void nvme_stop_keep_alive(struct nvme_ctrl *ctrl)
- }
- EXPORT_SYMBOL_GPL(nvme_stop_keep_alive);
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+index c8008b956363..d1d2372ab7ca 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_pm.c
+@@ -370,6 +370,15 @@ static ssize_t amdgpu_set_dpm_forced_performance_level(struct device *dev,
+ 	if (current_level == level)
+ 		return count;
  
-+/*
-+ * In NVMe 1.0 the CNS field was just a binary controller or namespace
-+ * flag, thus sending any new CNS opcodes has a big chance of not working.
-+ * Qemu unfortunately had that bug after reporting a 1.1 version compliance
-+ * (but not for any later version).
-+ */
-+static bool nvme_ctrl_limited_cns(struct nvme_ctrl *ctrl)
-+{
-+	if (ctrl->quirks & NVME_QUIRK_IDENTIFY_CNS)
-+		return ctrl->vs < NVME_VS(1, 2, 0);
-+	return ctrl->vs < NVME_VS(1, 1, 0);
-+}
++	if (adev->asic_type == CHIP_RAVEN) {
++		if (adev->rev_id < 8) {
++			if (current_level != AMD_DPM_FORCED_LEVEL_MANUAL && level == AMD_DPM_FORCED_LEVEL_MANUAL)
++				amdgpu_gfx_off_ctrl(adev, false);
++			else if (current_level == AMD_DPM_FORCED_LEVEL_MANUAL && level != AMD_DPM_FORCED_LEVEL_MANUAL)
++				amdgpu_gfx_off_ctrl(adev, true);
++		}
++	}
 +
- static int nvme_identify_ctrl(struct nvme_ctrl *dev, struct nvme_id_ctrl **id)
- {
- 	struct nvme_command c = { };
-@@ -3368,8 +3381,7 @@ static void nvme_scan_work(struct work_struct *work)
- 
- 	mutex_lock(&ctrl->scan_lock);
- 	nn = le32_to_cpu(id->nn);
--	if (ctrl->vs >= NVME_VS(1, 1, 0) &&
--	    !(ctrl->quirks & NVME_QUIRK_IDENTIFY_CNS)) {
-+	if (!nvme_ctrl_limited_cns(ctrl)) {
- 		if (!nvme_scan_ns_list(ctrl, nn))
- 			goto out_free_id;
- 	}
+ 	/* profile_exit setting is valid only when current mode is in profile mode */
+ 	if (!(current_level & (AMD_DPM_FORCED_LEVEL_PROFILE_STANDARD |
+ 	    AMD_DPM_FORCED_LEVEL_PROFILE_MIN_SCLK |
 -- 
 2.25.1
 
