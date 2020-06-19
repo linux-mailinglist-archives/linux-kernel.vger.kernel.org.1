@@ -2,127 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8316201906
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9EF62018FD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390568AbgFSRD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 13:03:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40124 "EHLO mail.kernel.org"
+        id S2387437AbgFSQ7V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:59:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733192AbgFSRD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 13:03:26 -0400
-Received: from earth.universe (dyndsl-037-138-190-043.ewe-ip-backbone.de [37.138.190.43])
+        id S1733192AbgFSQ7V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 12:59:21 -0400
+Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A31C320734;
-        Fri, 19 Jun 2020 17:03:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C28420707;
+        Fri, 19 Jun 2020 16:59:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592586205;
-        bh=jm7iURKGIOvFqc9Z3q6moQdo07peRYBrkuujf/K565M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OnJMZa4IoQ/Ve4GwA5VIoBqRjavl5heZUQEgDvqOxJgv8j8wugoopuQbI9i7RIPr0
-         NgNMOZNiLUd1ykJjaVxmUMiB3E4QBmcAdx1wTPTtr8qUplZ701onbdmJbNWJKu8Kna
-         wHJu201KmnSv2cj3rfeRM4wdLGYYYuoxgM0h/jo8=
-Received: by earth.universe (Postfix, from userid 1000)
-        id 0F7CC3C08CD; Fri, 19 Jun 2020 19:03:24 +0200 (CEST)
-Date:   Fri, 19 Jun 2020 19:03:24 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>, Kangjie Lu <kjlu@umn.edu>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] [v2] power: supply: bq24190_charger: Fix runtime PM
- imbalance on error
-Message-ID: <20200619170324.2uh2uoqhzsrdwpmd@earth.universe>
-References: <20200525110540.6949-1-dinghao.liu@zju.edu.cn>
- <CAJZ5v0j7cy1qZ5q3jWjJ77zJrVp+Kt2-4sWN3KF0jBgV9FOQew@mail.gmail.com>
+        s=default; t=1592585960;
+        bh=CMw8A9DYhmJPy04eBNnq+q3NH05G8jtcTOXbCiZ1daU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=aZ4Gbm8onMoTwXIEA3XpWzxhRUjx3iGxNolRNmFriaN1OXeKRbeRreeU1ek6XYKq0
+         2Ake0Jjo2xOZlw4ysIYclVcDMMwPIg0SRlKIIdPIQJG/tgHZwmgW7Nve5+vPbkIOk8
+         4sRolR2jjYhR5m3k18K4SxnmD6jSAO26QYhSbEqA=
+Date:   Fri, 19 Jun 2020 12:04:45 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Matt Porter <mporter@kernel.crashing.org>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] rapidio: Use struct_size() helper
+Message-ID: <20200619170445.GA22641@embeddedor>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hfs6ocpfhxpyqlxm"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJZ5v0j7cy1qZ5q3jWjJ77zJrVp+Kt2-4sWN3KF0jBgV9FOQew@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes.
 
---hfs6ocpfhxpyqlxm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Also, while there, use the preferred form for passing a size of a struct.
+The alternative form where struct name is spelled out hurts readability
+and introduces an opportunity for a bug when the pointer variable type is
+changed but the corresponding sizeof that is passed as argument is not.
 
-Hi,
+This issue was found with the help of Coccinelle and, audited and fixed
+manually.
 
-On Mon, May 25, 2020 at 01:09:00PM +0200, Rafael J. Wysocki wrote:
-> On Mon, May 25, 2020 at 1:05 PM Dinghao Liu <dinghao.liu@zju.edu.cn> wrot=
-e:
-> >
-> > pm_runtime_get_sync() increments the runtime PM usage counter even
-> > it returns an error code. Thus a pairing decrement is needed on
-> > the error handling path to keep the counter balanced.
-> >
-> > Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
->=20
-> Better now:
->=20
-> Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/rapidio/rio-scan.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Thanks, queued.
+diff --git a/drivers/rapidio/rio-scan.c b/drivers/rapidio/rio-scan.c
+index eb8ed28533f8..19b0c33f4a62 100644
+--- a/drivers/rapidio/rio-scan.c
++++ b/drivers/rapidio/rio-scan.c
+@@ -330,7 +330,7 @@ static struct rio_dev *rio_setup_device(struct rio_net *net,
+ 	size_t size;
+ 	u32 swpinfo = 0;
+ 
+-	size = sizeof(struct rio_dev);
++	size = sizeof(*rdev);
+ 	if (rio_mport_read_config_32(port, destid, hopcount,
+ 				     RIO_PEF_CAR, &result))
+ 		return NULL;
+@@ -338,10 +338,8 @@ static struct rio_dev *rio_setup_device(struct rio_net *net,
+ 	if (result & (RIO_PEF_SWITCH | RIO_PEF_MULTIPORT)) {
+ 		rio_mport_read_config_32(port, destid, hopcount,
+ 					 RIO_SWP_INFO_CAR, &swpinfo);
+-		if (result & RIO_PEF_SWITCH) {
+-			size += (RIO_GET_TOTAL_PORTS(swpinfo) *
+-				sizeof(rswitch->nextdev[0])) + sizeof(*rswitch);
+-		}
++		if (result & RIO_PEF_SWITCH)
++			size += struct_size(rswitch, nextdev, RIO_GET_TOTAL_PORTS(swpinfo));
+ 	}
+ 
+ 	rdev = kzalloc(size, GFP_KERNEL);
+-- 
+2.27.0
 
--- Sebastian
-
-> > ---
-> >
-> > Changelog:
-> >
-> > v2: - Use pm_runtime_put_noidle() rather than
-> >       pm_runtime_put_autosuspend().
-> > ---
-> >  drivers/power/supply/bq24190_charger.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/power/supply/bq24190_charger.c b/drivers/power/sup=
-ply/bq24190_charger.c
-> > index 453d6332d43a..7b24c41a2137 100644
-> > --- a/drivers/power/supply/bq24190_charger.c
-> > +++ b/drivers/power/supply/bq24190_charger.c
-> > @@ -481,8 +481,10 @@ static ssize_t bq24190_sysfs_store(struct device *=
-dev,
-> >                 return ret;
-> >
-> >         ret =3D pm_runtime_get_sync(bdi->dev);
-> > -       if (ret < 0)
-> > +       if (ret < 0) {
-> > +               pm_runtime_put_noidle(bdi->dev);
-> >                 return ret;
-> > +       }
-> >
-> >         ret =3D bq24190_write_mask(bdi, info->reg, info->mask, info->sh=
-ift, v);
-> >         if (ret)
-> > --
-> > 2.17.1
-> >
-
---hfs6ocpfhxpyqlxm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7s79sACgkQ2O7X88g7
-+pq0+w/8C/4vBPrSRH0rWcIJdajqgkNmnPPK8jKZ/IqRvEi+xuN5o4udRKDddnV9
-hcJqXPiyfWmUvgceyI9qDRd8GRk5ezUXH7izk3FCao9V9KJzem/YpkmAn2NbXQ+j
-lhmw/sxVW12R7w0nlRCaQ7MxIdwfz6jt+L0ZPOCLZjSHZQk++46zF/zOlqUI0oKP
-GNB04HMbgKjZpFKCw0UQrtPbbOJuciFCYcAUkFfL0SpNcGVxzcxWkH3SYC8kag5m
-Dr5x+cex5tP5CxAPtvAqM2seMtba+tM3goOJH0ivmG6cP+3fu+4RuvPSQ6MIT0qy
-o8QYMScUVO30V3Qxs2jBO8ytSAhZ425J/s8mQxOL14EhTP4DN3+UndgSaDj4ZcrX
-TCfXtTQzwN6Z7Xln1GOp4Lpxdysp2MRVkDX0xffVc7kGR8EFl9EuFvf94IHuLE0y
-Bc7PUwxD08G83VjIiItpaBd1UDvkZAx01dDnIXwN/ihd4a2GeAEvx/zhn8sksFwG
-iEuEXLkgOmUiHa+hWgO80NCvaVDJ9rRs7amCgCfDNouonwe9DBC948WOxA+6ue8U
-2N4bD2Y/u53ItO3ROXXulMjGOpNOQ1xmVLM6jGDGsCMlV6z8N8BN1qpo+73VlzCF
-0KE0+HlED+ZfOYtoX3jEDb42OCVW7R4up9FDdGlsbeINiC7TOYc=
-=veqx
------END PGP SIGNATURE-----
-
---hfs6ocpfhxpyqlxm--
