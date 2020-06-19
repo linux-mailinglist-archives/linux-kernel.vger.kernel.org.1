@@ -2,78 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8205201D28
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 23:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACB95201D34
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 23:36:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727788AbgFSVeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 17:34:36 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:48326 "EHLO inva021.nxp.com"
+        id S1727863AbgFSVg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 17:36:27 -0400
+Received: from mga04.intel.com ([192.55.52.120]:42269 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727063AbgFSVeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 17:34:25 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 96A4A20120F;
-        Fri, 19 Jun 2020 23:34:23 +0200 (CEST)
-Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 88EB7201203;
-        Fri, 19 Jun 2020 23:34:23 +0200 (CEST)
-Received: from fsr-ub1864-014.ea.freescale.net (fsr-ub1864-014.ea.freescale.net [10.171.95.219])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id C9583204B6;
-        Fri, 19 Jun 2020 23:34:22 +0200 (CEST)
-From:   =?UTF-8?q?Horia=20Geant=C4=83?= <horia.geanta@nxp.com>
-To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Martin Kaiser <martin@kaiser.cx>,
-        Franck Lenormand <franck.lenormand@nxp.com>,
-        Iuliana Prodan <iuliana.prodan@nxp.com>,
-        Silvano Di Ninno <silvano.dininno@nxp.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] hwrng: imx-rngc: enable driver for i.MX6
-Date:   Sat, 20 Jun 2020 00:33:47 +0300
-Message-Id: <20200619213347.27826-5-horia.geanta@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200619213347.27826-1-horia.geanta@nxp.com>
-References: <20200619213347.27826-1-horia.geanta@nxp.com>
+        id S1726220AbgFSVg0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 17:36:26 -0400
+IronPort-SDR: OS2KFiwiQh6Hm40mwlWWJTx9T0mF6DuaZKpaN+DweYKGkrykGhpCNFJA3zPD3Pi6Yok2Boi/+o
+ IQhZpPl09Jrw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9657"; a="140621171"
+X-IronPort-AV: E=Sophos;i="5.75,256,1589266800"; 
+   d="scan'208";a="140621171"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2020 14:36:25 -0700
+IronPort-SDR: 4K/HxW4uIuQ0D6dlKG6XYG191cP3Z0mCRfpBOrnwzL11vK8zKp2IHOZo9/kIQcRPP7PbfzSJej
+ U0vAS1rcNaNw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,256,1589266800"; 
+   d="scan'208";a="477774556"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.147])
+  by fmsmga005.fm.intel.com with ESMTP; 19 Jun 2020 14:36:24 -0700
+Date:   Fri, 19 Jun 2020 14:36:24 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>, linux-nvdimm@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH][next] nvdimm/region: Use struct_size() in kzalloc()
+Message-ID: <20200619213624.GA3910394@iweiny-DESK2.sc.intel.com>
+References: <20200619172112.GA31702@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200619172112.GA31702@embeddedor>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i.MX6 SL, SLL, ULL, ULZ SoCs have an RNGB block.
+On Fri, Jun 19, 2020 at 12:21:12PM -0500, Gustavo A. R. Silva wrote:
+> Make use of the struct_size() helper instead of an open-coded version
+> in order to avoid any potential type mistakes.
+> 
+> This issue was found with the help of Coccinelle and, audited and fixed
+> manually.
+> 
+> Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 
-Since imx-rngc driver supports also rngb,
-let's enable it for these SoCs too.
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
-Signed-off-by: Horia Geantă <horia.geanta@nxp.com>
----
- drivers/char/hw_random/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/char/hw_random/Kconfig b/drivers/char/hw_random/Kconfig
-index 0ad17efc96df..53f6a7e4392f 100644
---- a/drivers/char/hw_random/Kconfig
-+++ b/drivers/char/hw_random/Kconfig
-@@ -245,7 +245,7 @@ config HW_RANDOM_MXC_RNGA
- config HW_RANDOM_IMX_RNGC
- 	tristate "Freescale i.MX RNGC Random Number Generator"
- 	depends on HAS_IOMEM && HAVE_CLK
--	depends on SOC_IMX25 || COMPILE_TEST
-+	depends on SOC_IMX25 || SOC_IMX6SL || SOC_IMX6SLL || SOC_IMX6UL || COMPILE_TEST
- 	default HW_RANDOM
- 	help
- 	  This driver provides kernel-side support for the Random Number
--- 
-2.17.1
-
+> ---
+>  drivers/nvdimm/region_devs.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/nvdimm/region_devs.c b/drivers/nvdimm/region_devs.c
+> index 4502f9c4708d..8365fb1a9114 100644
+> --- a/drivers/nvdimm/region_devs.c
+> +++ b/drivers/nvdimm/region_devs.c
+> @@ -1063,8 +1063,7 @@ static struct nd_region *nd_region_create(struct nvdimm_bus *nvdimm_bus,
+>  		struct nd_blk_region *ndbr;
+>  
+>  		ndbr_desc = to_blk_region_desc(ndr_desc);
+> -		ndbr = kzalloc(sizeof(*ndbr) + sizeof(struct nd_mapping)
+> -				* ndr_desc->num_mappings,
+> +		ndbr = kzalloc(struct_size(ndbr, nd_region.mapping, ndr_desc->num_mappings),
+>  				GFP_KERNEL);
+>  		if (ndbr) {
+>  			nd_region = &ndbr->nd_region;
+> -- 
+> 2.27.0
+> 
