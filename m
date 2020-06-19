@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A84D6200EFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98CB2200DF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392200AbgFSPNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:13:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44014 "EHLO mail.kernel.org"
+        id S2390976AbgFSPDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:03:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59468 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392253AbgFSPNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:13:30 -0400
+        id S2389299AbgFSPCs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:02:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF08421941;
-        Fri, 19 Jun 2020 15:13:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6906F21841;
+        Fri, 19 Jun 2020 15:02:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579609;
-        bh=z6rKd0CO6HmS92fnceC04UuK8Oj5dVZDmCIrmHaMjkA=;
+        s=default; t=1592578968;
+        bh=oB+AJf3d5fAPcGva4i/ZTOk916wtQtBgYYJ98zhh6Hw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fWNyiVZIGoUy3qI9zAvS/RPt/7UPeHaz0Ro+uS/VjBJXB5RZ7xxJ30SCKB5TjM7lu
-         Op75Tgwc55RZR+PvoZN+4uKPM/2EoHbOCwi8rAV3WSfWaJGLxzCuoMIbo6a4sZMijc
-         iC/hWnC4NdEfn+ikLUBKlDfatVRkTs+wOP2Q/ZSU=
+        b=lz2ULMNFBV2vbRX2DF13ODBjSHlo8qdyrG60Ds87lzZ97CJRXR23CMjibpFWVWxdo
+         WiwSDxLDiifqVNoqiQnVnStAvKOhr+5oqoyKwrbVINI8AeMcMIGtheaiAzc1dKDZfd
+         /fzcEDj1dLh1/VHz2admG9fAUxT9nxbHEi09ACuo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 5.4 200/261] media: cedrus: Program output format during each run
+        stable@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 226/267] PCI: Unify ACS quirk desired vs provided checking
 Date:   Fri, 19 Jun 2020 16:33:31 +0200
-Message-Id: <20200619141659.484135426@linuxfoundation.org>
+Message-Id: <20200619141659.538098036@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,70 +45,177 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Samuel Holland <samuel@sholland.org>
+From: Bjorn Helgaas <bhelgaas@google.com>
 
-commit a8876c22eab9a871834f85de83e98bbf7e6e264d upstream.
+[ Upstream commit 7cf2cba43f15c74bac46dc5f0326805d25ef514d ]
 
-Previously, the output format was programmed as part of the ioctl()
-handler. However, this has two problems:
+Most of the ACS quirks have a similar pattern of:
 
-  1) If there are multiple active streams with different output
-     formats, the hardware will use whichever format was set last
-     for both streams. Similarly, an ioctl() done in an inactive
-     context will wrongly affect other active contexts.
-  2) The registers are written while the device is not actively
-     streaming. To enable runtime PM tied to the streaming state,
-     all hardware access needs to be moved inside cedrus_device_run().
+  acs_flags &= ~( <controls provided by this device> );
+  return acs_flags ? 0 : 1;
 
-The call to cedrus_dst_format_set() is now placed just before the
-codec-specific callback that programs the hardware.
+Pull this out into a helper function to simplify the quirks slightly.  The
+helper function is also a convenient place for comments about what the list
+of ACS controls means.  No functional change intended.
 
-Cc: <stable@vger.kernel.org>
-Fixes: 50e761516f2b ("media: platform: Add Cedrus VPU decoder driver")
-Suggested-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Suggested-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Signed-off-by: Samuel Holland <samuel@sholland.org>
-Tested-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
+Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/sunxi/cedrus/cedrus_dec.c   |    2 ++
- drivers/staging/media/sunxi/cedrus/cedrus_video.c |    3 ---
- 2 files changed, 2 insertions(+), 3 deletions(-)
+ drivers/pci/quirks.c | 67 +++++++++++++++++++++++++++++---------------
+ 1 file changed, 45 insertions(+), 22 deletions(-)
 
---- a/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
-+++ b/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
-@@ -65,6 +65,8 @@ void cedrus_device_run(void *priv)
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index ae62c0b058dd..0704025a2160 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -4263,6 +4263,24 @@ static void quirk_chelsio_T5_disable_root_port_attributes(struct pci_dev *pdev)
+ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_CHELSIO, PCI_ANY_ID,
+ 			 quirk_chelsio_T5_disable_root_port_attributes);
  
- 	v4l2_m2m_buf_copy_metadata(run.src, run.dst, true);
- 
-+	cedrus_dst_format_set(dev, &ctx->dst_fmt);
++/*
++ * pci_acs_ctrl_enabled - compare desired ACS controls with those provided
++ *			  by a device
++ * @acs_ctrl_req: Bitmask of desired ACS controls
++ * @acs_ctrl_ena: Bitmask of ACS controls enabled or provided implicitly by
++ *		  the hardware design
++ *
++ * Return 1 if all ACS controls in the @acs_ctrl_req bitmask are included
++ * in @acs_ctrl_ena, i.e., the device provides all the access controls the
++ * caller desires.  Return 0 otherwise.
++ */
++static int pci_acs_ctrl_enabled(u16 acs_ctrl_req, u16 acs_ctrl_ena)
++{
++	if ((acs_ctrl_req & acs_ctrl_ena) == acs_ctrl_req)
++		return 1;
++	return 0;
++}
 +
- 	dev->dec_ops[ctx->current_codec]->setup(ctx, &run);
+ /*
+  * AMD has indicated that the devices below do not support peer-to-peer
+  * in any system where they are found in the southbridge with an AMD
+@@ -4306,7 +4324,7 @@ static int pci_quirk_amd_sb_acs(struct pci_dev *dev, u16 acs_flags)
+ 	/* Filter out flags not applicable to multifunction */
+ 	acs_flags &= (PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_EC | PCI_ACS_DT);
  
- 	/* Complete request(s) controls if needed. */
---- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-+++ b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
-@@ -286,7 +286,6 @@ static int cedrus_s_fmt_vid_cap(struct f
- 				struct v4l2_format *f)
- {
- 	struct cedrus_ctx *ctx = cedrus_file2ctx(file);
--	struct cedrus_dev *dev = ctx->dev;
- 	struct vb2_queue *vq;
- 	int ret;
- 
-@@ -300,8 +299,6 @@ static int cedrus_s_fmt_vid_cap(struct f
- 
- 	ctx->dst_fmt = f->fmt.pix;
- 
--	cedrus_dst_format_set(dev, &ctx->dst_fmt);
+-	return acs_flags & ~(PCI_ACS_RR | PCI_ACS_CR) ? 0 : 1;
++	return pci_acs_ctrl_enabled(acs_flags, PCI_ACS_RR | PCI_ACS_CR);
+ #else
+ 	return -ENODEV;
+ #endif
+@@ -4344,9 +4362,8 @@ static int pci_quirk_cavium_acs(struct pci_dev *dev, u16 acs_flags)
+ 	 * hardware implements and enables equivalent ACS functionality for
+ 	 * these flags.
+ 	 */
+-	acs_flags &= ~(PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
 -
- 	return 0;
+-	return acs_flags ? 0 : 1;
++	return pci_acs_ctrl_enabled(acs_flags,
++		PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
  }
  
+ static int pci_quirk_xgene_acs(struct pci_dev *dev, u16 acs_flags)
+@@ -4356,9 +4373,8 @@ static int pci_quirk_xgene_acs(struct pci_dev *dev, u16 acs_flags)
+ 	 * transactions with others, allowing masking out these bits as if they
+ 	 * were unimplemented in the ACS capability.
+ 	 */
+-	acs_flags &= ~(PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
+-
+-	return acs_flags ? 0 : 1;
++	return pci_acs_ctrl_enabled(acs_flags,
++		PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
+ }
+ 
+ /*
+@@ -4410,17 +4426,16 @@ static bool pci_quirk_intel_pch_acs_match(struct pci_dev *dev)
+ 	return false;
+ }
+ 
+-#define INTEL_PCH_ACS_FLAGS (PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF)
+-
+ static int pci_quirk_intel_pch_acs(struct pci_dev *dev, u16 acs_flags)
+ {
+ 	if (!pci_quirk_intel_pch_acs_match(dev))
+ 		return -ENOTTY;
+ 
+ 	if (dev->dev_flags & PCI_DEV_FLAGS_ACS_ENABLED_QUIRK)
+-		acs_flags &= ~(INTEL_PCH_ACS_FLAGS);
++		return pci_acs_ctrl_enabled(acs_flags,
++			PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
+ 
+-	return acs_flags ? 0 : 1;
++	return pci_acs_ctrl_enabled(acs_flags, 0);
+ }
+ 
+ /*
+@@ -4435,9 +4450,8 @@ static int pci_quirk_intel_pch_acs(struct pci_dev *dev, u16 acs_flags)
+  */
+ static int pci_quirk_qcom_rp_acs(struct pci_dev *dev, u16 acs_flags)
+ {
+-	acs_flags &= ~(PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
+-
+-	return acs_flags ? 0 : 1;
++	return pci_acs_ctrl_enabled(acs_flags,
++		PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
+ }
+ 
+ /*
+@@ -4520,7 +4534,7 @@ static int pci_quirk_intel_spt_pch_acs(struct pci_dev *dev, u16 acs_flags)
+ 
+ 	pci_read_config_dword(dev, pos + INTEL_SPT_ACS_CTRL, &ctrl);
+ 
+-	return acs_flags & ~ctrl ? 0 : 1;
++	return pci_acs_ctrl_enabled(acs_flags, ctrl);
+ }
+ 
+ static int pci_quirk_mf_endpoint_acs(struct pci_dev *dev, u16 acs_flags)
+@@ -4534,10 +4548,9 @@ static int pci_quirk_mf_endpoint_acs(struct pci_dev *dev, u16 acs_flags)
+ 	 * perform peer-to-peer with other functions, allowing us to mask out
+ 	 * these bits as if they were unimplemented in the ACS capability.
+ 	 */
+-	acs_flags &= ~(PCI_ACS_SV | PCI_ACS_TB | PCI_ACS_RR |
+-		       PCI_ACS_CR | PCI_ACS_UF | PCI_ACS_DT);
+-
+-	return acs_flags ? 0 : 1;
++	return pci_acs_ctrl_enabled(acs_flags,
++		PCI_ACS_SV | PCI_ACS_TB | PCI_ACS_RR |
++		PCI_ACS_CR | PCI_ACS_UF | PCI_ACS_DT);
+ }
+ 
+ static int pci_quirk_rciep_acs(struct pci_dev *dev, u16 acs_flags)
+@@ -4562,9 +4575,8 @@ static int pci_quirk_brcm_acs(struct pci_dev *dev, u16 acs_flags)
+ 	 * Allow each Root Port to be in a separate IOMMU group by masking
+ 	 * SV/RR/CR/UF bits.
+ 	 */
+-	acs_flags &= ~(PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
+-
+-	return acs_flags ? 0 : 1;
++	return pci_acs_ctrl_enabled(acs_flags,
++		PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
+ }
+ 
+ static const struct pci_dev_acs_enabled {
+@@ -4663,6 +4675,17 @@ static const struct pci_dev_acs_enabled {
+ 	{ 0 }
+ };
+ 
++/*
++ * pci_dev_specific_acs_enabled - check whether device provides ACS controls
++ * @dev:	PCI device
++ * @acs_flags:	Bitmask of desired ACS controls
++ *
++ * Returns:
++ *   -ENOTTY:	No quirk applies to this device; we can't tell whether the
++ *		device provides the desired controls
++ *   0:		Device does not provide all the desired controls
++ *   >0:	Device provides all the controls in @acs_flags
++ */
+ int pci_dev_specific_acs_enabled(struct pci_dev *dev, u16 acs_flags)
+ {
+ 	const struct pci_dev_acs_enabled *i;
+-- 
+2.25.1
+
 
 
