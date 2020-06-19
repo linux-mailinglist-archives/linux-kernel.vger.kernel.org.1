@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FB5201691
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 410752016D9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394790AbgFSQcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:32:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46298 "EHLO mail.kernel.org"
+        id S2388675AbgFSOpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:45:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389553AbgFSOwQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:52:16 -0400
+        id S2388618AbgFSOo4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:44:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0A3E21556;
-        Fri, 19 Jun 2020 14:52:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2811620A8B;
+        Fri, 19 Jun 2020 14:44:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578335;
-        bh=rzRl3+cl8C/VdtZkd+YwxCsHIRRU7G/M7AfwGReyWug=;
+        s=default; t=1592577896;
+        bh=AhNpQWhHCxYM7lPY3Jn9sD12L0YCRe8EumL/sQ5wjjA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Qh1rMIbpb1p5nimmi+6B1ITe8cnvB/fRjzOSzkK5YWzddOrtWwoQTgbj2q4EhwH4q
-         u+FkKhEQn1k2Li26Yq9DEKFD9b7cule9d33bbEIXeGyUAmqpuBWKAZOVNQc9czrVA+
-         RH6Abhfgj9wMyQ5NliCxk9aOYOxzViTqxb0fKcVg=
+        b=Ij0MyKYQFxDK5yL0ttiBO1zzB3r7LRwGzCBVBwUzx0AUHwmmGwnQLDDrWcMI7oaTv
+         8fmbp3Hl3FS7Xi290HCJ5pBSHDlD/XS0q4iInwJZtlMKU6wKbaM4Is3lBsKFFBInI1
+         AwodOYIqwJnm6TvJTxeQCxX8jv/1GC/dTXH73K2k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 4.14 174/190] sparc32: fix register window handling in genregs32_[gs]et()
-Date:   Fri, 19 Jun 2020 16:33:39 +0200
-Message-Id: <20200619141642.475672043@linuxfoundation.org>
+        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [PATCH 4.9 126/128] w1: omap-hdq: cleanup to add missing newline for some dev_dbg
+Date:   Fri, 19 Jun 2020 16:33:40 +0200
+Message-Id: <20200619141626.741118675@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,290 +43,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: H. Nikolaus Schaller <hns@goldelico.com>
 
-commit cf51e129b96847f969bfb8af1ee1516a01a70b39 upstream.
+commit 5e02f3b31704e24537697bce54f8156bdb72b7a6 upstream.
 
-It needs access_process_vm() if the traced process does not share
-mm with the caller.  Solution is similar to what sparc64 does.
-Note that genregs32_set() is only ever called with pos being 0
-or 32 * sizeof(u32) (the latter - as part of PTRACE_SETREGS
-handling).
+Otherwise it will corrupt the console log during debugging.
 
-Cc: stable@kernel.org
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Fixes: 7b5362a603a1 ("w1: omap_hdq: Fix some error/debug handling.")
+Cc: stable@vger.kernel.org
+Acked-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+Link: https://lore.kernel.org/r/cd0d55749a091214106575f6e1d363c6db56622f.1590255176.git.hns@goldelico.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/sparc/kernel/ptrace_32.c |  230 ++++++++++++++++++------------------------
- 1 file changed, 99 insertions(+), 131 deletions(-)
+ drivers/w1/masters/omap_hdq.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
---- a/arch/sparc/kernel/ptrace_32.c
-+++ b/arch/sparc/kernel/ptrace_32.c
-@@ -46,82 +46,79 @@ enum sparc_regset {
- 	REGSET_FP,
- };
- 
-+static int regwindow32_get(struct task_struct *target,
-+			   const struct pt_regs *regs,
-+			   u32 *uregs)
-+{
-+	unsigned long reg_window = regs->u_regs[UREG_I6];
-+	int size = 16 * sizeof(u32);
-+
-+	if (target == current) {
-+		if (copy_from_user(uregs, (void __user *)reg_window, size))
-+			return -EFAULT;
-+	} else {
-+		if (access_process_vm(target, reg_window, uregs, size,
-+				      FOLL_FORCE) != size)
-+			return -EFAULT;
-+	}
-+	return 0;
-+}
-+
-+static int regwindow32_set(struct task_struct *target,
-+			   const struct pt_regs *regs,
-+			   u32 *uregs)
-+{
-+	unsigned long reg_window = regs->u_regs[UREG_I6];
-+	int size = 16 * sizeof(u32);
-+
-+	if (target == current) {
-+		if (copy_to_user((void __user *)reg_window, uregs, size))
-+			return -EFAULT;
-+	} else {
-+		if (access_process_vm(target, reg_window, uregs, size,
-+				      FOLL_FORCE | FOLL_WRITE) != size)
-+			return -EFAULT;
-+	}
-+	return 0;
-+}
-+
- static int genregs32_get(struct task_struct *target,
- 			 const struct user_regset *regset,
- 			 unsigned int pos, unsigned int count,
- 			 void *kbuf, void __user *ubuf)
- {
- 	const struct pt_regs *regs = target->thread.kregs;
--	unsigned long __user *reg_window;
--	unsigned long *k = kbuf;
--	unsigned long __user *u = ubuf;
--	unsigned long reg;
-+	u32 uregs[16];
-+	int ret;
- 
- 	if (target == current)
- 		flush_user_windows();
- 
--	pos /= sizeof(reg);
--	count /= sizeof(reg);
-+	ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
-+				  regs->u_regs,
-+				  0, 16 * sizeof(u32));
-+	if (ret || !count)
-+		return ret;
- 
--	if (kbuf) {
--		for (; count > 0 && pos < 16; count--)
--			*k++ = regs->u_regs[pos++];
--
--		reg_window = (unsigned long __user *) regs->u_regs[UREG_I6];
--		reg_window -= 16;
--		for (; count > 0 && pos < 32; count--) {
--			if (get_user(*k++, &reg_window[pos++]))
--				return -EFAULT;
--		}
--	} else {
--		for (; count > 0 && pos < 16; count--) {
--			if (put_user(regs->u_regs[pos++], u++))
--				return -EFAULT;
--		}
--
--		reg_window = (unsigned long __user *) regs->u_regs[UREG_I6];
--		reg_window -= 16;
--		for (; count > 0 && pos < 32; count--) {
--			if (get_user(reg, &reg_window[pos++]) ||
--			    put_user(reg, u++))
--				return -EFAULT;
--		}
--	}
--	while (count > 0) {
--		switch (pos) {
--		case 32: /* PSR */
--			reg = regs->psr;
--			break;
--		case 33: /* PC */
--			reg = regs->pc;
--			break;
--		case 34: /* NPC */
--			reg = regs->npc;
--			break;
--		case 35: /* Y */
--			reg = regs->y;
--			break;
--		case 36: /* WIM */
--		case 37: /* TBR */
--			reg = 0;
--			break;
--		default:
--			goto finish;
--		}
--
--		if (kbuf)
--			*k++ = reg;
--		else if (put_user(reg, u++))
-+	if (pos < 32 * sizeof(u32)) {
-+		if (regwindow32_get(target, regs, uregs))
- 			return -EFAULT;
--		pos++;
--		count--;
-+		ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
-+					  uregs,
-+					  16 * sizeof(u32), 32 * sizeof(u32));
-+		if (ret || !count)
-+			return ret;
+--- a/drivers/w1/masters/omap_hdq.c
++++ b/drivers/w1/masters/omap_hdq.c
+@@ -204,7 +204,7 @@ static int hdq_write_byte(struct hdq_dat
+ 	/* check irqstatus */
+ 	if (!(*status & OMAP_HDQ_INT_STATUS_TXCOMPLETE)) {
+ 		dev_dbg(hdq_data->dev, "timeout waiting for"
+-			" TXCOMPLETE/RXCOMPLETE, %x", *status);
++			" TXCOMPLETE/RXCOMPLETE, %x\n", *status);
+ 		ret = -ETIMEDOUT;
+ 		goto out;
  	}
--finish:
--	pos *= sizeof(reg);
--	count *= sizeof(reg);
- 
--	return user_regset_copyout_zero(&pos, &count, &kbuf, &ubuf,
--					38 * sizeof(reg), -1);
-+	uregs[0] = regs->psr;
-+	uregs[1] = regs->pc;
-+	uregs[2] = regs->npc;
-+	uregs[3] = regs->y;
-+	uregs[4] = 0;	/* WIM */
-+	uregs[5] = 0;	/* TBR */
-+	return user_regset_copyout(&pos, &count, &kbuf, &ubuf,
-+				  uregs,
-+				  32 * sizeof(u32), 38 * sizeof(u32));
- }
- 
- static int genregs32_set(struct task_struct *target,
-@@ -130,82 +127,53 @@ static int genregs32_set(struct task_str
- 			 const void *kbuf, const void __user *ubuf)
- {
- 	struct pt_regs *regs = target->thread.kregs;
--	unsigned long __user *reg_window;
--	const unsigned long *k = kbuf;
--	const unsigned long __user *u = ubuf;
--	unsigned long reg;
-+	u32 uregs[16];
-+	u32 psr;
-+	int ret;
- 
- 	if (target == current)
- 		flush_user_windows();
- 
--	pos /= sizeof(reg);
--	count /= sizeof(reg);
--
--	if (kbuf) {
--		for (; count > 0 && pos < 16; count--)
--			regs->u_regs[pos++] = *k++;
--
--		reg_window = (unsigned long __user *) regs->u_regs[UREG_I6];
--		reg_window -= 16;
--		for (; count > 0 && pos < 32; count--) {
--			if (put_user(*k++, &reg_window[pos++]))
--				return -EFAULT;
--		}
--	} else {
--		for (; count > 0 && pos < 16; count--) {
--			if (get_user(reg, u++))
--				return -EFAULT;
--			regs->u_regs[pos++] = reg;
--		}
--
--		reg_window = (unsigned long __user *) regs->u_regs[UREG_I6];
--		reg_window -= 16;
--		for (; count > 0 && pos < 32; count--) {
--			if (get_user(reg, u++) ||
--			    put_user(reg, &reg_window[pos++]))
--				return -EFAULT;
--		}
--	}
--	while (count > 0) {
--		unsigned long psr;
--
--		if (kbuf)
--			reg = *k++;
--		else if (get_user(reg, u++))
--			return -EFAULT;
--
--		switch (pos) {
--		case 32: /* PSR */
--			psr = regs->psr;
--			psr &= ~(PSR_ICC | PSR_SYSCALL);
--			psr |= (reg & (PSR_ICC | PSR_SYSCALL));
--			regs->psr = psr;
--			break;
--		case 33: /* PC */
--			regs->pc = reg;
--			break;
--		case 34: /* NPC */
--			regs->npc = reg;
--			break;
--		case 35: /* Y */
--			regs->y = reg;
--			break;
--		case 36: /* WIM */
--		case 37: /* TBR */
--			break;
--		default:
--			goto finish;
--		}
-+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
-+				 regs->u_regs,
-+				 0, 16 * sizeof(u32));
-+	if (ret || !count)
-+		return ret;
- 
--		pos++;
--		count--;
-+	if (pos < 32 * sizeof(u32)) {
-+		if (regwindow32_get(target, regs, uregs))
-+			return -EFAULT;
-+		ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
-+					 uregs,
-+					 16 * sizeof(u32), 32 * sizeof(u32));
-+		if (ret)
-+			return ret;
-+		if (regwindow32_set(target, regs, uregs))
-+			return -EFAULT;
-+		if (!count)
-+			return 0;
+@@ -215,7 +215,7 @@ static int hdq_write_byte(struct hdq_dat
+ 			OMAP_HDQ_FLAG_CLEAR, &tmp_status);
+ 	if (ret) {
+ 		dev_dbg(hdq_data->dev, "timeout waiting GO bit"
+-			" return to zero, %x", tmp_status);
++			" return to zero, %x\n", tmp_status);
  	}
--finish:
--	pos *= sizeof(reg);
--	count *= sizeof(reg);
--
-+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
-+				 &psr,
-+				 32 * sizeof(u32), 33 * sizeof(u32));
-+	if (ret)
-+		return ret;
-+	regs->psr = (regs->psr & ~(PSR_ICC | PSR_SYSCALL)) |
-+		    (psr & (PSR_ICC | PSR_SYSCALL));
-+	if (!count)
-+		return 0;
-+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
-+				 &regs->pc,
-+				 33 * sizeof(u32), 34 * sizeof(u32));
-+	if (ret || !count)
-+		return ret;
-+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
-+				 &regs->y,
-+				 34 * sizeof(u32), 35 * sizeof(u32));
-+	if (ret || !count)
-+		return ret;
- 	return user_regset_copyin_ignore(&pos, &count, &kbuf, &ubuf,
--					 38 * sizeof(reg), -1);
-+					 35 * sizeof(u32), 38 * sizeof(u32));
- }
  
- static int fpregs32_get(struct task_struct *target,
+ out:
+@@ -231,7 +231,7 @@ static irqreturn_t hdq_isr(int irq, void
+ 	spin_lock_irqsave(&hdq_data->hdq_spinlock, irqflags);
+ 	hdq_data->hdq_irqstatus = hdq_reg_in(hdq_data, OMAP_HDQ_INT_STATUS);
+ 	spin_unlock_irqrestore(&hdq_data->hdq_spinlock, irqflags);
+-	dev_dbg(hdq_data->dev, "hdq_isr: %x", hdq_data->hdq_irqstatus);
++	dev_dbg(hdq_data->dev, "hdq_isr: %x\n", hdq_data->hdq_irqstatus);
+ 
+ 	if (hdq_data->hdq_irqstatus &
+ 		(OMAP_HDQ_INT_STATUS_TXCOMPLETE | OMAP_HDQ_INT_STATUS_RXCOMPLETE
+@@ -339,7 +339,7 @@ static int omap_hdq_break(struct hdq_dat
+ 	tmp_status = hdq_data->hdq_irqstatus;
+ 	/* check irqstatus */
+ 	if (!(tmp_status & OMAP_HDQ_INT_STATUS_TIMEOUT)) {
+-		dev_dbg(hdq_data->dev, "timeout waiting for TIMEOUT, %x",
++		dev_dbg(hdq_data->dev, "timeout waiting for TIMEOUT, %x\n",
+ 				tmp_status);
+ 		ret = -ETIMEDOUT;
+ 		goto out;
+@@ -366,7 +366,7 @@ static int omap_hdq_break(struct hdq_dat
+ 			&tmp_status);
+ 	if (ret)
+ 		dev_dbg(hdq_data->dev, "timeout waiting INIT&GO bits"
+-			" return to zero, %x", tmp_status);
++			" return to zero, %x\n", tmp_status);
+ 
+ out:
+ 	mutex_unlock(&hdq_data->hdq_mutex);
 
 
