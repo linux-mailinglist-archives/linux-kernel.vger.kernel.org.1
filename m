@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E13200E1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F73D200F4F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391226AbgFSPFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:05:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33632 "EHLO mail.kernel.org"
+        id S2392387AbgFSPPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:15:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45526 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391205AbgFSPEx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:04:53 -0400
+        id S2391800AbgFSPO7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:14:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D11221841;
-        Fri, 19 Jun 2020 15:04:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B7474206FA;
+        Fri, 19 Jun 2020 15:14:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579092;
-        bh=eDxLH4ouDqLNWQDr9hjpdo2YNXdlxYjycEeNZepbj/8=;
+        s=default; t=1592579698;
+        bh=BMwQ/I/EzCiYY1exzqKiW4buRsydzJwRZlgQRqiVsO8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sqTndp/I4WkocbDSzB+YrYCCOYARRN1mFDKk4/wJUWjSBxYAi2NV8uN3ACsRQm59k
-         rt+UwIg1Z1MNGJb8/U302F9WI1GU3EXmCS3C8uA0QV6DvfkucS4C8ZpPwwm47rOrC5
-         gIs84eYaTraiIVsNcvKBhXbE54h0C7j0+FIFH854=
+        b=Nxq+uOvePpH84vJHtg0gWI5OOxDH+6QUYKqoEgJcYiGProxQthOzP2OmCxyvgz1Ho
+         aDu/J6ppXo1+3aZyFijWPTmu/1esPl6Um5aDApzu62JSbWjDRf/c8OTV28RbQjuOii
+         GuJ9f6/0msELt7uxR1XdG5wh68uxRUab8Rt1jNe8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.19 256/267] powerpc/64s: Dont let DT CPU features set FSCR_DSCR
-Date:   Fri, 19 Jun 2020 16:34:01 +0200
-Message-Id: <20200619141700.942231187@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 233/261] powerpc/kasan: Fix shadow pages allocation failure
+Date:   Fri, 19 Jun 2020 16:34:04 +0200
+Message-Id: <20200619141701.046413635@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,54 +44,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-commit 993e3d96fd08c3ebf7566e43be9b8cd622063e6d upstream.
+commit d2a91cef9bbdeb87b7449fdab1a6be6000930210 upstream.
 
-The device tree CPU features binding includes FSCR bit numbers which
-Linux is instructed to set by firmware.
+Doing kasan pages allocation in MMU_init is too early, kernel doesn't
+have access yet to the entire memory space and memblock_alloc() fails
+when the kernel is a bit big.
 
-Whether that's a good idea or not, in the case of the DSCR the Linux
-implementation has a hard requirement that the FSCR_DSCR bit not be
-set by default. We use it to track when a process reads/writes to
-DSCR, so it must be clear to begin with.
+Do it from kasan_init() instead.
 
-So if firmware tells us to set FSCR_DSCR we must ignore it.
-
-Currently this does not cause a bug in our DSCR handling because the
-value of FSCR that the device tree CPU features code establishes is
-only used by swapper. All other tasks use the value hard coded in
-init_task.thread.fscr.
-
-However we'd like to fix that in a future commit, at which point this
-will become necessary.
-
-Fixes: 5a61ef74f269 ("powerpc/64s: Support new device tree binding for discovering CPU features")
-Cc: stable@vger.kernel.org # v4.12+
+Fixes: 2edb16efc899 ("powerpc/32: Add KASAN support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200527145843.2761782-2-mpe@ellerman.id.au
+Link: https://lore.kernel.org/r/c24163ee5d5f8cdf52fefa45055ceb35435b8f15.1589866984.git.christophe.leroy@csgroup.eu
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/kernel/dt_cpu_ftrs.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/powerpc/include/asm/kasan.h      |    2 --
+ arch/powerpc/mm/init_32.c             |    2 --
+ arch/powerpc/mm/kasan/kasan_init_32.c |    4 +++-
+ 3 files changed, 3 insertions(+), 5 deletions(-)
 
---- a/arch/powerpc/kernel/dt_cpu_ftrs.c
-+++ b/arch/powerpc/kernel/dt_cpu_ftrs.c
-@@ -346,6 +346,14 @@ static int __init feat_enable_dscr(struc
+--- a/arch/powerpc/include/asm/kasan.h
++++ b/arch/powerpc/include/asm/kasan.h
+@@ -27,11 +27,9 @@
+ 
+ #ifdef CONFIG_KASAN
+ void kasan_early_init(void);
+-void kasan_mmu_init(void);
+ void kasan_init(void);
+ #else
+ static inline void kasan_init(void) { }
+-static inline void kasan_mmu_init(void) { }
+ #endif
+ 
+ #endif /* __ASSEMBLY */
+--- a/arch/powerpc/mm/init_32.c
++++ b/arch/powerpc/mm/init_32.c
+@@ -175,8 +175,6 @@ void __init MMU_init(void)
+ 	btext_unmap();
+ #endif
+ 
+-	kasan_mmu_init();
+-
+ 	setup_kup();
+ 
+ 	/* Shortly after that, the entire linear mapping will be available */
+--- a/arch/powerpc/mm/kasan/kasan_init_32.c
++++ b/arch/powerpc/mm/kasan/kasan_init_32.c
+@@ -129,7 +129,7 @@ static void __init kasan_remap_early_sha
+ 	flush_tlb_kernel_range(KASAN_SHADOW_START, KASAN_SHADOW_END);
+ }
+ 
+-void __init kasan_mmu_init(void)
++static void __init kasan_mmu_init(void)
  {
- 	u64 lpcr;
+ 	int ret;
+ 	struct memblock_region *reg;
+@@ -156,6 +156,8 @@ void __init kasan_mmu_init(void)
  
-+	/*
-+	 * Linux relies on FSCR[DSCR] being clear, so that we can take the
-+	 * facility unavailable interrupt and track the task's usage of DSCR.
-+	 * See facility_unavailable_exception().
-+	 * Clear the bit here so that feat_enable() doesn't set it.
-+	 */
-+	f->fscr_bit_nr = -1;
+ void __init kasan_init(void)
+ {
++	kasan_mmu_init();
 +
- 	feat_enable(f);
+ 	kasan_remap_early_shadow_ro();
  
- 	lpcr = mfspr(SPRN_LPCR);
+ 	clear_page(kasan_early_shadow_page);
 
 
