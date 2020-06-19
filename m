@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4E1200A0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:28:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9415A200A17
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728068AbgFSN22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 09:28:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46346 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732737AbgFSN2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 09:28:11 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C552921582;
-        Fri, 19 Jun 2020 13:28:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592573291;
-        bh=woHoEU4qR1vtVDk6B4g7zX0biyS6r/lidqoPWMRgCmo=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=oWAUvvSiXpJTenQdhbrdO2GPm2gCTdYtqIZ+XfDE4nNQILPYHkEWQkHefSeZX5ej7
-         Q6ChI282ZFvsbrJk0hfvmXKhRFSnFuiVtPgIwkBv5hOFshKzeBjH3eoz9KV910p+m1
-         bcP8m0pxd0npcncMY85QRiKi5+PLtaWpE1V7VcYQ=
-Date:   Fri, 19 Jun 2020 14:28:09 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Douglas Anderson <dianders@chromium.org>
-Cc:     skakit@codeaurora.org, linux-spi@vger.kernel.org,
-        Girish Mahadevan <girishm@codeaurora.org>,
-        linux-kernel@vger.kernel.org, Dilip Kota <dkota@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, swboyd@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Alok Chauhan <alokc@codeaurora.org>
-In-Reply-To: <20200618150626.237027-1-dianders@chromium.org>
-References: <20200618150626.237027-1-dianders@chromium.org>
-Subject: Re: [PATCH v4 0/5] spi: spi-geni-qcom: Fixes / perf improvements
-Message-Id: <159257327821.5984.3382372060351730090.b4-ty@kernel.org>
+        id S1732862AbgFSN2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 09:28:42 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:42988 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732695AbgFSN2Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 09:28:25 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 863BA1C0BD2; Fri, 19 Jun 2020 15:28:10 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 15:28:10 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "Pavel Machek (CIP)" <pavel@denx.de>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org
+Subject: Re: [PATCH AUTOSEL 4.19 047/172] ASoC: meson: add missing free_irq()
+ in error path
+Message-ID: <20200619132810.GA1345@amd>
+References: <20200618012218.607130-1-sashal@kernel.org>
+ <20200618012218.607130-47-sashal@kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
+Content-Disposition: inline
+In-Reply-To: <20200618012218.607130-47-sashal@kernel.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Jun 2020 08:06:21 -0700, Douglas Anderson wrote:
-> This patch series is a new version of the previous patch posted:
->   [PATCH v2] spi: spi-geni-qcom: Speculative fix of "nobody cared" about interrupt
->   https://lore.kernel.org/r/20200317133653.v2.1.I752ebdcfd5e8bf0de06d66e767b8974932b3620e@changeid
-> 
-> At this point I've done enough tracing to know that there was a real
-> race in the old code (not just weakly ordered memory problems) and
-> that should be fixed with the locking patches.
-> 
-> [...]
 
-Applied to
+--wRRV7LY7NUeQGEoC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+Hi!
 
-Thanks!
+> From: "Pavel Machek (CIP)" <pavel@denx.de>
+>=20
+> [ Upstream commit 3b8a299a58b2afce464ae11324b59dcf0f1d10a7 ]
+>=20
+> free_irq() is missing in case of error, fix that.
+>=20
+> Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+> Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
+>=20
+> Link: https://lore.kernel.org/r/20200606153103.GA17905@amd
+> Signed-off-by: Mark Brown <broonie@kernel.org>
 
-[1/4] spi: spi-geni-qcom: Mo' betta locking
-      commit: 2ee471a1e28ec79fbfcdc8900ed0ed74132b0efe
-[2/4] spi: spi-geni-qcom: Check for error IRQs
-      commit: e191a082d764e80a36c198da61fbf2851ebf425a
-[3/4] spi: spi-geni-qcom: Actually use our FIFO
-      commit: 902481a78ee4173926dc59f060526dee21aeb7a8
-[4/4] spi: spi-geni-qcom: Don't keep a local state variable
-      commit: 7ba9bdcb91f694b0eaf486a825afd9c2d99532b7
+Notice that the bug this fixes is theoretical (found by code review)
+and the fix itself was not tested by me as I don't have the hardware.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+It may be good idea to for mainline to test the change a bit...
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Best regards,
+							Pavel
+						=09
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--wRRV7LY7NUeQGEoC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
 
-Thanks,
-Mark
+iEYEARECAAYFAl7svWoACgkQMOfwapXb+vKgPwCfatdZSXBo7eyLKEUcWoN1nKrh
+K8kAn2+x3sAUwlj/zrlpo9y3mh1nlBDY
+=nSQo
+-----END PGP SIGNATURE-----
+
+--wRRV7LY7NUeQGEoC--
