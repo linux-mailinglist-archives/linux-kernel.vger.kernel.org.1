@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 077692017AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DAE2017AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395492AbgFSQl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:41:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36084 "EHLO mail.kernel.org"
+        id S2388513AbgFSQlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:41:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388603AbgFSOot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:44:49 -0400
+        id S2388191AbgFSOoy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:44:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EBFA21582;
-        Fri, 19 Jun 2020 14:44:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 881282158C;
+        Fri, 19 Jun 2020 14:44:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577889;
-        bh=e6c4mSOCtbZ9MZWAyitP7K/9L6JBR2Qu1rZ1L0ZHIIU=;
+        s=default; t=1592577894;
+        bh=5nlkxOOSNdOFM4M7RKwmlArm1dES853HZvu6eVQMfAw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xCm3ufTKY3M1K6m46D9C5xMCWBySHTPsmaYj6TKXq0b9+QKUFLpNnbA05Ff6qIx/N
-         H+egSHVVkRIJZssG9+QQM+CPm4kPSrkCMwM295nBQo+b1edaL8+X0+g4q6FyoEAA+P
-         sbiPCXeaHGQ3f/1gL3DXLx2xoeLp1c7pfiP7ZfHQ=
+        b=WIgmfvj1k3UIXWj+75wGchWQOiEQiVi9fS6BRQysf0eOmfmlXaSeMg1B2FK64k1ya
+         eXvSVe2zioXPvQRMYEfGKRYMjJoCtruAofwIPlFir9OCwB+ZDgaIV8z+CyaJL/UBso
+         toIoa3M219AoorjFKLLo8JRZmOLXAgYd/T36mBD0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, NeilBrown <neilb@suse.de>,
-        "J. Bruce Fields" <bfields@redhat.com>
-Subject: [PATCH 4.9 123/128] sunrpc: clean up properly in gss_mech_unregister()
-Date:   Fri, 19 Jun 2020 16:33:37 +0200
-Message-Id: <20200619141626.593039183@linuxfoundation.org>
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 4.9 125/128] mtd: rawnand: pasemi: Fix the probe error path
+Date:   Fri, 19 Jun 2020 16:33:39 +0200
+Message-Id: <20200619141626.685840502@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
 References: <20200619141620.148019466@linuxfoundation.org>
@@ -43,121 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: NeilBrown <neilb@suse.de>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit 24c5efe41c29ee3e55bcf5a1c9f61ca8709622e8 upstream.
+commit f51466901c07e6930435d30b02a21f0841174f61 upstream.
 
-gss_mech_register() calls svcauth_gss_register_pseudoflavor() for each
-flavour, but gss_mech_unregister() does not call auth_domain_put().
-This is unbalanced and makes it impossible to reload the module.
+nand_cleanup() is supposed to be called on error after a successful
+call to nand_scan() to free all NAND resources.
 
-Change svcauth_gss_register_pseudoflavor() to return the registered
-auth_domain, and save it for later release.
+There is no real Fixes tag applying here as the use of nand_release()
+in this driver predates by far the introduction of nand_cleanup() in
+commit d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
+which makes this change possible, hence pointing it as the commit to
+fix for backporting purposes, even if this commit is not introducing
+any bug.
 
-Cc: stable@vger.kernel.org (v2.6.12+)
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206651
-Signed-off-by: NeilBrown <neilb@suse.de>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Fixes: d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-41-miquel.raynal@bootlin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- include/linux/sunrpc/gss_api.h        |    1 +
- include/linux/sunrpc/svcauth_gss.h    |    3 ++-
- net/sunrpc/auth_gss/gss_mech_switch.c |   12 +++++++++---
- net/sunrpc/auth_gss/svcauth_gss.c     |   12 ++++++------
- 4 files changed, 18 insertions(+), 10 deletions(-)
+ drivers/mtd/nand/pasemi_nand.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/include/linux/sunrpc/gss_api.h
-+++ b/include/linux/sunrpc/gss_api.h
-@@ -82,6 +82,7 @@ struct pf_desc {
- 	u32	service;
- 	char	*name;
- 	char	*auth_domain_name;
-+	struct auth_domain *domain;
- 	bool	datatouch;
- };
- 
---- a/include/linux/sunrpc/svcauth_gss.h
-+++ b/include/linux/sunrpc/svcauth_gss.h
-@@ -20,7 +20,8 @@ int gss_svc_init(void);
- void gss_svc_shutdown(void);
- int gss_svc_init_net(struct net *net);
- void gss_svc_shutdown_net(struct net *net);
--int svcauth_gss_register_pseudoflavor(u32 pseudoflavor, char * name);
-+struct auth_domain *svcauth_gss_register_pseudoflavor(u32 pseudoflavor,
-+						      char *name);
- u32 svcauth_gss_flavor(struct auth_domain *dom);
- 
- #endif /* __KERNEL__ */
---- a/net/sunrpc/auth_gss/gss_mech_switch.c
-+++ b/net/sunrpc/auth_gss/gss_mech_switch.c
-@@ -61,6 +61,8 @@ gss_mech_free(struct gss_api_mech *gm)
- 
- 	for (i = 0; i < gm->gm_pf_num; i++) {
- 		pf = &gm->gm_pfs[i];
-+		if (pf->domain)
-+			auth_domain_put(pf->domain);
- 		kfree(pf->auth_domain_name);
- 		pf->auth_domain_name = NULL;
+--- a/drivers/mtd/nand/pasemi_nand.c
++++ b/drivers/mtd/nand/pasemi_nand.c
+@@ -164,7 +164,7 @@ static int pasemi_nand_probe(struct plat
+ 	if (mtd_device_register(pasemi_nand_mtd, NULL, 0)) {
+ 		dev_err(dev, "Unable to register MTD device\n");
+ 		err = -ENODEV;
+-		goto out_lpc;
++		goto out_cleanup_nand;
  	}
-@@ -83,6 +85,7 @@ make_auth_domain_name(char *name)
- static int
- gss_mech_svc_setup(struct gss_api_mech *gm)
- {
-+	struct auth_domain *dom;
- 	struct pf_desc *pf;
- 	int i, status;
  
-@@ -92,10 +95,13 @@ gss_mech_svc_setup(struct gss_api_mech *
- 		status = -ENOMEM;
- 		if (pf->auth_domain_name == NULL)
- 			goto out;
--		status = svcauth_gss_register_pseudoflavor(pf->pseudoflavor,
--							pf->auth_domain_name);
--		if (status)
-+		dom = svcauth_gss_register_pseudoflavor(
-+			pf->pseudoflavor, pf->auth_domain_name);
-+		if (IS_ERR(dom)) {
-+			status = PTR_ERR(dom);
- 			goto out;
-+		}
-+		pf->domain = dom;
- 	}
+ 	dev_info(dev, "PA Semi NAND flash at %pR, control at I/O %x\n", &res,
+@@ -172,6 +172,8 @@ static int pasemi_nand_probe(struct plat
+ 
  	return 0;
- out:
---- a/net/sunrpc/auth_gss/svcauth_gss.c
-+++ b/net/sunrpc/auth_gss/svcauth_gss.c
-@@ -779,7 +779,7 @@ u32 svcauth_gss_flavor(struct auth_domai
  
- EXPORT_SYMBOL_GPL(svcauth_gss_flavor);
- 
--int
-+struct auth_domain *
- svcauth_gss_register_pseudoflavor(u32 pseudoflavor, char * name)
- {
- 	struct gss_domain	*new;
-@@ -802,17 +802,17 @@ svcauth_gss_register_pseudoflavor(u32 ps
- 			name);
- 		stat = -EADDRINUSE;
- 		auth_domain_put(test);
--		kfree(new->h.name);
--		goto out_free_dom;
-+		goto out_free_name;
- 	}
--	return 0;
-+	return test;
- 
-+out_free_name:
-+	kfree(new->h.name);
- out_free_dom:
- 	kfree(new);
- out:
--	return stat;
-+	return ERR_PTR(stat);
- }
--
- EXPORT_SYMBOL_GPL(svcauth_gss_register_pseudoflavor);
- 
- static inline int
++ out_cleanup_nand:
++	nand_cleanup(chip);
+  out_lpc:
+ 	release_region(lpcctl, 4);
+  out_ior:
 
 
