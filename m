@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8034B2018E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCD4E20184C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436568AbgFSQyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:54:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53388 "EHLO mail.kernel.org"
+        id S2387425AbgFSOf6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:35:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387576AbgFSOgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:36:46 -0400
+        id S1733303AbgFSOft (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:35:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0D8E321548;
-        Fri, 19 Jun 2020 14:36:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9F1172070A;
+        Fri, 19 Jun 2020 14:35:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577405;
-        bh=x3VIhFR9XLrzX8mIuUYpAdyJJhQHze81tFY+AcmDMk0=;
+        s=default; t=1592577347;
+        bh=c7SLgyVDoRo4h+rVjcS9GAUD3QtJz1n2CTV5nhc8540=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JM1w25jJXv81tqj8eoaIOk46p1h5+YQTjp8awjQ5EQ7YnnLZPi57bXcVqIBbnRI/k
-         pjIJ1QFl7yHIETdtKUk4U9NtU09nMV2UKvMxHeRpV151oau1qTqWDjauP/5+1lzk/m
-         fURNWIqAK4BrsUWXCnjvz3SiYZqk1WncS54vccR4=
+        b=upMfG9CxwI3au+Qzhuh8KCVRTIOnjgFlOovz2fg3If3hJWhvjMEYebg3qUs1hZjcO
+         INeBjWHYYMPxAPViULvEKQMwIg2QfSpygfKQaXararjmfwRAkkQ83ibCrxP4MKdzHm
+         03UIt4V7m/WhlKvliZc/+jDkCNmxLxwp4p7KhRiw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Denis <pro.denis@protonmail.com>,
-        Masashi Honma <masashi.honma@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 009/101] ath9k_htc: Silence undersized packet warnings
-Date:   Fri, 19 Jun 2020 16:31:58 +0200
-Message-Id: <20200619141614.491362701@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Macpaul Lin <macpaul.lin@mediatek.com>
+Subject: [PATCH 4.4 015/101] ALSA: usb-audio: Fix inconsistent card PM state after resume
+Date:   Fri, 19 Jun 2020 16:32:04 +0200
+Message-Id: <20200619141614.786080695@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
 References: <20200619141614.001544111@linuxfoundation.org>
@@ -45,49 +43,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masashi Honma <masashi.honma@gmail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit 450edd2805982d14ed79733a82927d2857b27cac ]
+commit 862b2509d157c629dd26d7ac6c6cdbf043d332eb upstream.
 
-Some devices like TP-Link TL-WN722N produces this kind of messages
-frequently.
+When a USB-audio interface gets runtime-suspended via auto-pm feature,
+the driver suspends all functionality and increment
+chip->num_suspended_intf.  Later on, when the system gets suspended to
+S3, the driver increments chip->num_suspended_intf again, skips the
+device changes, and sets the card power state to
+SNDRV_CTL_POWER_D3hot.  In return, when the system gets resumed from
+S3, the resume callback decrements chip->num_suspended_intf.  Since
+this refcount is still not zero (it's been runtime-suspended), the
+whole resume is skipped.  But there is a small pitfall here.
 
-kernel: ath: phy0: Short RX data len, dropping (dlen: 4)
+The problem is that the driver doesn't restore the card power state
+after this resume call, leaving it as SNDRV_CTL_POWER_D3hot.  So,
+even after the system resume finishes, the card instance still appears
+as if it were system-suspended, and this confuses many ioctl accesses
+that are blocked unexpectedly.
 
-This warning is useful for developers to recognize that the device
-(Wi-Fi dongle or USB hub etc) is noisy but not for general users. So
-this patch make this warning to debug message.
+In details, we have two issues behind the scene: one is that the card
+power state is changed only when the refcount becomes zero, and
+another is that the prior auto-suspend check is kept in a boolean
+flag.  Although the latter problem is almost negligible since the
+auto-pm feature is imposed only on the primary interface, but this can
+be a potential problem on the devices with multiple interfaces.
 
-Reported-By: Denis <pro.denis@protonmail.com>
-Ref: https://bugzilla.kernel.org/show_bug.cgi?id=207539
-Fixes: cd486e627e67 ("ath9k_htc: Discard undersized packets")
-Signed-off-by: Masashi Honma <masashi.honma@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200504214443.4485-1-masashi.honma@gmail.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This patch addresses those issues by the following:
+
+- Replace chip->autosuspended boolean flag with chip->system_suspend
+  counter
+
+- At the first system-suspend, chip->num_suspended_intf is recorded to
+  chip->system_suspend
+
+- At system-resume, the card power state is restored when the
+  chip->num_suspended_intf refcount reaches to chip->system_suspend,
+  i.e. the state returns to the auto-suspended
+
+Also, the patch fixes yet another hidden problem by the code
+refactoring along with the fixes above: namely, when some resume
+procedure failed, the driver left chip->num_suspended_intf that was
+already decreased, and it might lead to the refcount unbalance.
+In the new code, the refcount decrement is done after the whole resume
+procedure, and the problem is avoided as well.
+
+Fixes: 0662292aec05 ("ALSA: usb-audio: Handle normal and auto-suspend equally")
+Reported-and-tested-by: Macpaul Lin <macpaul.lin@mediatek.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200603153709.6293-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/net/wireless/ath/ath9k/htc_drv_txrx.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/usb/card.c     |   20 +++++++++++++-------
+ sound/usb/usbaudio.h |    2 +-
+ 2 files changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c b/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
-index 0d757ced49ba..91d199481a37 100644
---- a/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
-+++ b/drivers/net/wireless/ath/ath9k/htc_drv_txrx.c
-@@ -998,9 +998,9 @@ static bool ath9k_rx_prepare(struct ath9k_htc_priv *priv,
- 	 * which are not PHY_ERROR (short radar pulses have a length of 3)
- 	 */
- 	if (unlikely(!rs_datalen || (rs_datalen < 10 && !is_phyerr))) {
--		ath_warn(common,
--			 "Short RX data len, dropping (dlen: %d)\n",
--			 rs_datalen);
-+		ath_dbg(common, ANY,
-+			"Short RX data len, dropping (dlen: %d)\n",
-+			rs_datalen);
- 		goto rx_next;
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -713,9 +713,6 @@ static int usb_audio_suspend(struct usb_
+ 	if (chip == (void *)-1L)
+ 		return 0;
+ 
+-	chip->autosuspended = !!PMSG_IS_AUTO(message);
+-	if (!chip->autosuspended)
+-		snd_power_change_state(chip->card, SNDRV_CTL_POWER_D3hot);
+ 	if (!chip->num_suspended_intf++) {
+ 		list_for_each_entry(as, &chip->pcm_list, list) {
+ 			snd_pcm_suspend_all(as->pcm);
+@@ -728,6 +725,11 @@ static int usb_audio_suspend(struct usb_
+ 			snd_usb_mixer_suspend(mixer);
  	}
  
--- 
-2.25.1
-
++	if (!PMSG_IS_AUTO(message) && !chip->system_suspend) {
++		snd_power_change_state(chip->card, SNDRV_CTL_POWER_D3hot);
++		chip->system_suspend = chip->num_suspended_intf;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -740,10 +742,11 @@ static int __usb_audio_resume(struct usb
+ 
+ 	if (chip == (void *)-1L)
+ 		return 0;
+-	if (--chip->num_suspended_intf)
+-		return 0;
+ 
+ 	atomic_inc(&chip->active); /* avoid autopm */
++	if (chip->num_suspended_intf > 1)
++		goto out;
++
+ 	/*
+ 	 * ALSA leaves material resumption to user space
+ 	 * we just notify and restart the mixers
+@@ -758,9 +761,12 @@ static int __usb_audio_resume(struct usb
+ 		snd_usbmidi_resume(p);
+ 	}
+ 
+-	if (!chip->autosuspended)
++ out:
++	if (chip->num_suspended_intf == chip->system_suspend) {
+ 		snd_power_change_state(chip->card, SNDRV_CTL_POWER_D0);
+-	chip->autosuspended = 0;
++		chip->system_suspend = 0;
++	}
++	chip->num_suspended_intf--;
+ 
+ err_out:
+ 	atomic_dec(&chip->active); /* allow autopm after this point */
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -37,7 +37,7 @@ struct snd_usb_audio {
+ 	struct usb_interface *pm_intf;
+ 	u32 usb_id;
+ 	struct mutex mutex;
+-	unsigned int autosuspended:1;	
++	unsigned int system_suspend;
+ 	atomic_t active;
+ 	atomic_t shutdown;
+ 	atomic_t usage_count;
 
 
