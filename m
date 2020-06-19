@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 883C1201272
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E7A32012CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392814AbgFSPVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:21:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47652 "EHLO mail.kernel.org"
+        id S2392764AbgFSPUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:20:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48908 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390307AbgFSPRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:17:01 -0400
+        id S2392587AbgFSPS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:18:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7F0521582;
-        Fri, 19 Jun 2020 15:16:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D8FC2080C;
+        Fri, 19 Jun 2020 15:18:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579820;
-        bh=Mo/LmzV2QH5IQjVnMsc7iY/hSjl6NooGCziyrango3A=;
+        s=default; t=1592579905;
+        bh=URSM4OVSd3VdBQHRpH5PXvzyY3qrWEOKrHQAtea9Itk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q15uN4xiWiBkdwHl85IwDnJRH/PBoGGwZeI4vjJS+V6rNXYO6u8Vyn2S4OGfCUDk9
-         p5miB5aBMrS6iNAWQhhPfKqU7EpYcUXWyB3wOc8QzAu7uii2uTw977d/EPgXTM7dmV
-         W4AOvvMDAijghTGMllgj8RKDUeL1xs2WCtfVkpXg=
+        b=omDlNQiBcmpbgyqfbduXfWFTyiFwLbUcIT+Bo+siAJk0YPjX3OAJbGZS2FVBPv9WW
+         2WtSxL7rqIrbo8FEjiEf06PsZ/QTE2orlg1CSRMyVOawaEOzsLV+2+BRTGqYIP2U6+
+         5ICjceHfDK6j5xG5ouVAPNVh0bJIXEbpT+MmdfTQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 006/376] media: imx: imx7-mipi-csis: Cleanup and fix subdev pad format handling
-Date:   Fri, 19 Jun 2020 16:28:44 +0200
-Message-Id: <20200619141710.662991482@linuxfoundation.org>
+Subject: [PATCH 5.7 018/376] drm/bridge: panel: Return always an error pointer in drm_panel_bridge_add()
+Date:   Fri, 19 Jun 2020 16:28:56 +0200
+Message-Id: <20200619141711.233125652@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -47,162 +46,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-[ Upstream commit d321dd233b9f2bb407b8e6b4759408f09ec207c3 ]
+[ Upstream commit 30be3031087139061de4421bf52015931eaab569 ]
 
-The subdev set pad format operation currently misbehaves in multiple ways:
+Since commit 89958b7cd955 ("drm/bridge: panel: Infer connector type from
+panel by default"), drm_panel_bridge_add() and their variants can return
+NULL and an error pointer. This is fine but none of the actual users of
+the API are checking for the NULL value. Instead of change all the
+users, seems reasonable to return an error pointer instead. So change
+the returned value for those functions when the connector type is unknown.
 
-- mipi_csis_try_format() unconditionally stores the format in the device
-  state, even for V4L2_SUBDEV_FORMAT_TRY.
-
-- The format is never stored in the pad cfg, but the pad cfg format
-  always overwrites the format requested by the user.
-
-- The sink format is not propagated to the source.
-
-Fix all this by reworking the set format operation as follows:
-
-1. For the source pad, turn set() into get() as the source format is not
-   modifiable.
-2. Validate the requested format and updated the stored format
-   accordingly.
-3. Return the format actually set.
-4. Propagate the format from sink to source.
-
-Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Acked-by: Rui Miguel Silva <rmfrfs@gmail.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200416210654.2468805-1-enric.balletbo@collabora.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/media/imx/imx7-mipi-csis.c | 82 ++++++++++------------
- 1 file changed, 37 insertions(+), 45 deletions(-)
+ drivers/gpu/drm/bridge/panel.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/media/imx/imx7-mipi-csis.c b/drivers/staging/media/imx/imx7-mipi-csis.c
-index fbc1a924652a..6318f0aebb4b 100644
---- a/drivers/staging/media/imx/imx7-mipi-csis.c
-+++ b/drivers/staging/media/imx/imx7-mipi-csis.c
-@@ -669,28 +669,6 @@ static int mipi_csis_init_cfg(struct v4l2_subdev *mipi_sd,
- 	return 0;
- }
- 
--static struct csis_pix_format const *
--mipi_csis_try_format(struct v4l2_subdev *mipi_sd, struct v4l2_mbus_framefmt *mf)
--{
--	struct csi_state *state = mipi_sd_to_csis_state(mipi_sd);
--	struct csis_pix_format const *csis_fmt;
--
--	csis_fmt = find_csis_format(mf->code);
--	if (!csis_fmt)
--		csis_fmt = &mipi_csis_formats[0];
--
--	v4l_bound_align_image(&mf->width, 1, CSIS_MAX_PIX_WIDTH,
--			      csis_fmt->pix_width_alignment,
--			      &mf->height, 1, CSIS_MAX_PIX_HEIGHT, 1,
--			      0);
--
--	state->format_mbus.code = csis_fmt->code;
--	state->format_mbus.width = mf->width;
--	state->format_mbus.height = mf->height;
--
--	return csis_fmt;
--}
--
- static struct v4l2_mbus_framefmt *
- mipi_csis_get_format(struct csi_state *state,
- 		     struct v4l2_subdev_pad_config *cfg,
-@@ -703,53 +681,67 @@ mipi_csis_get_format(struct csi_state *state,
- 	return &state->format_mbus;
- }
- 
--static int mipi_csis_set_fmt(struct v4l2_subdev *mipi_sd,
-+static int mipi_csis_get_fmt(struct v4l2_subdev *mipi_sd,
- 			     struct v4l2_subdev_pad_config *cfg,
- 			     struct v4l2_subdev_format *sdformat)
+diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/panel.c
+index 8461ee8304ba..7a3df0f319f3 100644
+--- a/drivers/gpu/drm/bridge/panel.c
++++ b/drivers/gpu/drm/bridge/panel.c
+@@ -166,7 +166,7 @@ static const struct drm_bridge_funcs panel_bridge_bridge_funcs = {
+  *
+  * The connector type is set to @panel->connector_type, which must be set to a
+  * known type. Calling this function with a panel whose connector type is
+- * DRM_MODE_CONNECTOR_Unknown will return NULL.
++ * DRM_MODE_CONNECTOR_Unknown will return ERR_PTR(-EINVAL).
+  *
+  * See devm_drm_panel_bridge_add() for an automatically managed version of this
+  * function.
+@@ -174,7 +174,7 @@ static const struct drm_bridge_funcs panel_bridge_bridge_funcs = {
+ struct drm_bridge *drm_panel_bridge_add(struct drm_panel *panel)
  {
- 	struct csi_state *state = mipi_sd_to_csis_state(mipi_sd);
--	struct csis_pix_format const *csis_fmt;
- 	struct v4l2_mbus_framefmt *fmt;
+ 	if (WARN_ON(panel->connector_type == DRM_MODE_CONNECTOR_Unknown))
+-		return NULL;
++		return ERR_PTR(-EINVAL);
  
--	if (sdformat->pad >= CSIS_PADS_NUM)
--		return -EINVAL;
--
--	fmt = mipi_csis_get_format(state, cfg, sdformat->which, sdformat->pad);
--
- 	mutex_lock(&state->lock);
--	if (sdformat->pad == CSIS_PAD_SOURCE) {
--		sdformat->format = *fmt;
--		goto unlock;
--	}
--
--	csis_fmt = mipi_csis_try_format(mipi_sd, &sdformat->format);
--
-+	fmt = mipi_csis_get_format(state, cfg, sdformat->which, sdformat->pad);
- 	sdformat->format = *fmt;
--
--	if (csis_fmt && sdformat->which == V4L2_SUBDEV_FORMAT_ACTIVE)
--		state->csis_fmt = csis_fmt;
--	else
--		cfg->try_fmt = sdformat->format;
--
--unlock:
- 	mutex_unlock(&state->lock);
- 
- 	return 0;
+ 	return drm_panel_bridge_add_typed(panel, panel->connector_type);
  }
- 
--static int mipi_csis_get_fmt(struct v4l2_subdev *mipi_sd,
-+static int mipi_csis_set_fmt(struct v4l2_subdev *mipi_sd,
- 			     struct v4l2_subdev_pad_config *cfg,
- 			     struct v4l2_subdev_format *sdformat)
+@@ -265,7 +265,7 @@ struct drm_bridge *devm_drm_panel_bridge_add(struct device *dev,
+ 					     struct drm_panel *panel)
  {
- 	struct csi_state *state = mipi_sd_to_csis_state(mipi_sd);
-+	struct csis_pix_format const *csis_fmt;
- 	struct v4l2_mbus_framefmt *fmt;
+ 	if (WARN_ON(panel->connector_type == DRM_MODE_CONNECTOR_Unknown))
+-		return NULL;
++		return ERR_PTR(-EINVAL);
  
--	mutex_lock(&state->lock);
-+	/*
-+	 * The CSIS can't transcode in any way, the source format can't be
-+	 * modified.
-+	 */
-+	if (sdformat->pad == CSIS_PAD_SOURCE)
-+		return mipi_csis_get_fmt(mipi_sd, cfg, sdformat);
-+
-+	if (sdformat->pad != CSIS_PAD_SINK)
-+		return -EINVAL;
- 
- 	fmt = mipi_csis_get_format(state, cfg, sdformat->which, sdformat->pad);
- 
-+	mutex_lock(&state->lock);
-+
-+	/* Validate the media bus code and clamp the size. */
-+	csis_fmt = find_csis_format(sdformat->format.code);
-+	if (!csis_fmt)
-+		csis_fmt = &mipi_csis_formats[0];
-+
-+	fmt->code = csis_fmt->code;
-+	fmt->width = sdformat->format.width;
-+	fmt->height = sdformat->format.height;
-+
-+	v4l_bound_align_image(&fmt->width, 1, CSIS_MAX_PIX_WIDTH,
-+			      csis_fmt->pix_width_alignment,
-+			      &fmt->height, 1, CSIS_MAX_PIX_HEIGHT, 1, 0);
-+
- 	sdformat->format = *fmt;
- 
-+	/* Propagate the format from sink to source. */
-+	fmt = mipi_csis_get_format(state, cfg, sdformat->which,
-+				   CSIS_PAD_SOURCE);
-+	*fmt = sdformat->format;
-+
-+	/* Store the CSIS format descriptor for active formats. */
-+	if (sdformat->which == V4L2_SUBDEV_FORMAT_ACTIVE)
-+		state->csis_fmt = csis_fmt;
-+
- 	mutex_unlock(&state->lock);
- 
- 	return 0;
+ 	return devm_drm_panel_bridge_add_typed(dev, panel,
+ 					       panel->connector_type);
 -- 
 2.25.1
 
