@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C29C200D67
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63099200C6E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390220AbgFSO5S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:57:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52160 "EHLO mail.kernel.org"
+        id S2388737AbgFSOpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:45:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37230 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390167AbgFSO47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:56:59 -0400
+        id S2388718AbgFSOpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:45:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29401218AC;
-        Fri, 19 Jun 2020 14:56:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D9E221556;
+        Fri, 19 Jun 2020 14:45:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578619;
-        bh=zl0ACyDj7vFcEaBdi95zIaIux1rc3z6IveIFcj/66R8=;
+        s=default; t=1592577935;
+        bh=ka3kEogHU5cgZlRJIabM2svKkN7TSm39TvN+wuVhi5Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GmNNTnKOfbRpwdqi4i7A9dHHGUGrbIivUSl3LaW92dbZHlpJk2h0S6vBaiXDu+dxk
-         PE67Htdua00T0h0cPFsEJMomyvErGgWnbi+ni+rGTv9EQCT1apfRZSvj5qpFpsok8R
-         J9jgt6d9+SmXboD/iz+sUWQRZLlyUN46h6HrmmlM=
+        b=hFOx/UXYNs24U8nf5EEZj8170pca/SIt7Z//QUFq3RiWFH5OeHZ5QzfEauE9R+cSs
+         2W0mgL+OCXJeWg6TztdgMfvC31iXf6Lo06qkXuRVJkB+nOcxHneos4KkfxatI0wSut
+         nkw7yLLdPe1AOhWvBbg2yn2VWwqdX+PO8pwa93Mw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 061/267] spi: bcm2835: Fix controller unregister order
-Date:   Fri, 19 Jun 2020 16:30:46 +0200
-Message-Id: <20200619141651.799401937@linuxfoundation.org>
+        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
+        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 002/190] vxlan: Avoid infinite loop when suppressing NS messages with invalid options
+Date:   Fri, 19 Jun 2020 16:30:47 +0200
+Message-Id: <20200619141633.580477005@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,66 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Ido Schimmel <idosch@mellanox.com>
 
-[ Upstream commit 9dd277ff92d06f6aa95b39936ad83981d781f49b ]
+[ Upstream commit 8066e6b449e050675df48e7c4b16c29f00507ff0 ]
 
-The BCM2835 SPI driver uses devm_spi_register_controller() on bind.
-As a consequence, on unbind, __device_release_driver() first invokes
-bcm2835_spi_remove() before unregistering the SPI controller via
-devres_release_all().
+When proxy mode is enabled the vxlan device might reply to Neighbor
+Solicitation (NS) messages on behalf of remote hosts.
 
-This order is incorrect:  bcm2835_spi_remove() tears down the DMA
-channels and turns off the SPI controller, including its interrupts
-and clock.  The SPI controller is thus no longer usable.
+In case the NS message includes the "Source link-layer address" option
+[1], the vxlan device will use the specified address as the link-layer
+destination address in its reply.
 
-When the SPI controller is subsequently unregistered, it unbinds all
-its slave devices.  If their drivers need to access the SPI bus,
-e.g. to quiesce their interrupts, unbinding will fail.
+To avoid an infinite loop, break out of the options parsing loop when
+encountering an option with length zero and disregard the NS message.
 
-As a rule, devm_spi_register_controller() must not be used if the
-->remove() hook performs teardown steps which shall be performed
-after unbinding of slaves.
+This is consistent with the IPv6 ndisc code and RFC 4886 which states
+that "Nodes MUST silently discard an ND packet that contains an option
+with length zero" [2].
 
-Fix by using the non-devm variant spi_register_controller().  Note that
-the struct spi_controller as well as the driver-private data are not
-freed until after bcm2835_spi_remove() has finished, so accessing them
-is safe.
+[1] https://tools.ietf.org/html/rfc4861#section-4.3
+[2] https://tools.ietf.org/html/rfc4861#section-4.6
 
-Fixes: 247263dba208 ("spi: bcm2835: use devm_spi_register_master()")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: stable@vger.kernel.org # v3.13+
-Link: https://lore.kernel.org/r/2397dd70cdbe95e0bc4da2b9fca0f31cb94e5aed.1589557526.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 4b29dba9c085 ("vxlan: fix nonfunctional neigh_reduce()")
+Signed-off-by: Ido Schimmel <idosch@mellanox.com>
+Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-bcm2835.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/vxlan.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
-index eab27d41ba83..df6abc75bc16 100644
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -793,7 +793,7 @@ static int bcm2835_spi_probe(struct platform_device *pdev)
- 		goto out_clk_disable;
- 	}
- 
--	err = devm_spi_register_master(&pdev->dev, master);
-+	err = spi_register_master(master);
- 	if (err) {
- 		dev_err(&pdev->dev, "could not register SPI master: %d\n", err);
- 		goto out_clk_disable;
-@@ -813,6 +813,8 @@ static int bcm2835_spi_remove(struct platform_device *pdev)
- 	struct spi_master *master = platform_get_drvdata(pdev);
- 	struct bcm2835_spi *bs = spi_master_get_devdata(master);
- 
-+	spi_unregister_master(master);
-+
- 	/* Clear FIFOs, and disable the HW block */
- 	bcm2835_wr(bs, BCM2835_SPI_CS,
- 		   BCM2835_SPI_CS_CLEAR_RX | BCM2835_SPI_CS_CLEAR_TX);
--- 
-2.25.1
-
+--- a/drivers/net/vxlan.c
++++ b/drivers/net/vxlan.c
+@@ -1610,6 +1610,10 @@ static struct sk_buff *vxlan_na_create(s
+ 	ns_olen = request->len - skb_network_offset(request) -
+ 		sizeof(struct ipv6hdr) - sizeof(*ns);
+ 	for (i = 0; i < ns_olen-1; i += (ns->opt[i+1]<<3)) {
++		if (!ns->opt[i + 1]) {
++			kfree_skb(reply);
++			return NULL;
++		}
+ 		if (ns->opt[i] == ND_OPT_SOURCE_LL_ADDR) {
+ 			daddr = ns->opt + i + sizeof(struct nd_opt_hdr);
+ 			break;
 
 
