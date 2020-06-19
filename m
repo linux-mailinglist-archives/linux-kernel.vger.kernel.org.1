@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C00201063
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2C8201066
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404748AbgFSP36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:29:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33424 "EHLO mail.kernel.org"
+        id S2404768AbgFSPaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:30:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390143AbgFSP3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:29:48 -0400
+        id S2404408AbgFSP37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:29:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB4CF21919;
-        Fri, 19 Jun 2020 15:29:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B5B6E20734;
+        Fri, 19 Jun 2020 15:29:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580587;
-        bh=WHgTvjH7AEpgelzZyZAMrgUwBlctbZebQ7G3v7LkfUk=;
+        s=default; t=1592580598;
+        bh=RTFHDTDn9cZ+Wm9DgGSO8r9TEyLNqlMrJWr1Kv2pi7E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KI1nYC0zvyQNd/vZTJ9a3uzinLG48KDrFrxCgCJAmWy+XDSM6TMBWnRScox37emkr
-         IEV8KdHoEf5YaEpNKO9W4XrJIRxZq9I1AdRvUCE18R41ZR0ciwcUxviY5MHjWK/ceE
-         MLGLGgiLP0Ren9IR00Xvj9UybHTYL8DcvPXW1W4c=
+        b=WWQMgn9vXqLSRofVLqcqXRcQDUCoaKE+C3kBiXcn8K69s14idXtcFhcbIeSwet8cC
+         I7Kc5bDaaegUaFXlwjZ9DZP8+A0VeakfWItvyuFscLc/i9Pqe+5I1KZ8Vz1XopytjB
+         bt2ITkjgoklYPc9HYiXTLhVvj7dpvNeLrR4EeS48=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Subject: [PATCH 5.7 279/376] evm: Fix possible memory leak in evm_calc_hmac_or_hash()
-Date:   Fri, 19 Jun 2020 16:33:17 +0200
-Message-Id: <20200619141723.542913035@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Theodore Tso <tytso@mit.edu>, stable@kernel.org
+Subject: [PATCH 5.7 280/376] ext4: fix EXT_MAX_EXTENT/INDEX to check for zeroed eh_max
+Date:   Fri, 19 Jun 2020 16:33:18 +0200
+Message-Id: <20200619141723.591697131@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -43,34 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-commit 0c4395fb2aa77341269ea619c5419ea48171883f upstream.
+commit c36a71b4e35ab35340facdd6964a00956b9fef0a upstream.
 
-Don't immediately return if the signature is portable and security.ima is
-not present. Just set error so that memory allocated is freed before
-returning from evm_calc_hmac_or_hash().
+If eh->eh_max is 0, EXT_MAX_EXTENT/INDEX would evaluate to unsigned
+(-1) resulting in illegal memory accesses. Although there is no
+consistent repro, we see that generic/019 sometimes crashes because of
+this bug.
 
-Fixes: 50b977481fce9 ("EVM: Add support for portable signature format")
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Ran gce-xfstests smoke and verified that there were no regressions.
+
+Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Link: https://lore.kernel.org/r/20200421023959.20879-2-harshadshirwadkar@gmail.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- security/integrity/evm/evm_crypto.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/ext4_extents.h |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/security/integrity/evm/evm_crypto.c
-+++ b/security/integrity/evm/evm_crypto.c
-@@ -241,7 +241,7 @@ static int evm_calc_hmac_or_hash(struct
+--- a/fs/ext4/ext4_extents.h
++++ b/fs/ext4/ext4_extents.h
+@@ -170,10 +170,13 @@ struct partial_cluster {
+ 	(EXT_FIRST_EXTENT((__hdr__)) + le16_to_cpu((__hdr__)->eh_entries) - 1)
+ #define EXT_LAST_INDEX(__hdr__) \
+ 	(EXT_FIRST_INDEX((__hdr__)) + le16_to_cpu((__hdr__)->eh_entries) - 1)
+-#define EXT_MAX_EXTENT(__hdr__) \
+-	(EXT_FIRST_EXTENT((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)
++#define EXT_MAX_EXTENT(__hdr__)	\
++	((le16_to_cpu((__hdr__)->eh_max)) ? \
++	((EXT_FIRST_EXTENT((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)) \
++					: 0)
+ #define EXT_MAX_INDEX(__hdr__) \
+-	(EXT_FIRST_INDEX((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)
++	((le16_to_cpu((__hdr__)->eh_max)) ? \
++	((EXT_FIRST_INDEX((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)) : 0)
  
- 	/* Portable EVM signatures must include an IMA hash */
- 	if (type == EVM_XATTR_PORTABLE_DIGSIG && !ima_present)
--		return -EPERM;
-+		error = -EPERM;
- out:
- 	kfree(xattr_value);
- 	kfree(desc);
+ static inline struct ext4_extent_header *ext_inode_hdr(struct inode *inode)
+ {
 
 
