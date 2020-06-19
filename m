@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E65E9200D77
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82FF5200E81
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390315AbgFSO55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:57:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53076 "EHLO mail.kernel.org"
+        id S2391727AbgFSPIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:08:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389252AbgFSO5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:57:38 -0400
+        id S2389665AbgFSPIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:08:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF227218AC;
-        Fri, 19 Jun 2020 14:57:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1401621852;
+        Fri, 19 Jun 2020 15:08:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578658;
-        bh=1NwQk1K6lLsrqLB6IY13pY0x8Cx6AXaH8S5+lSyieKA=;
+        s=default; t=1592579298;
+        bh=ce0isAu4Cmsi2XbgqA4dLuWU6vjSgdACuLihU0af/wQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N46WbNDjvpVRXsvisO6cJjigdE5zkmmfkQ/euBZ/G3bXsnG9iTPfM0h2zk9qNvAM4
-         tKHfmiKGWc7ri/MbzZzl6E/PVFeHKN5B9v3HyMgEQ6T1GCWIRASNN8Ij+z3wF29dU9
-         qq0zSvB2xNHCHtXXGQqFTZOp2nW+hb0oiErWS/p4=
+        b=lURm89EKhW3S55x3vE7s26H/RMgwEfCyzkArD+FV9rbe25VTBnCOzIPS0LXKTsmCT
+         I+R1WrDAF1mXjBJCrVWZS4SHzeccaseqsAa/OaD/ERXV/zoSUnl4hBJ4337OhY2JCZ
+         6uI756Tmiig76VRj0xQvOU4xwfaEVGfIPqr2xdJs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 106/267] MIPS: Loongson: Build ATI Radeon GPU driver as module
-Date:   Fri, 19 Jun 2020 16:31:31 +0200
-Message-Id: <20200619141653.945068264@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Qian Cai <cai@lca.pw>, Sasha Levin <sashal@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.4 082/261] sched/core: Fix illegal RCU from offline CPUs
+Date:   Fri, 19 Jun 2020 16:31:33 +0200
+Message-Id: <20200619141653.823567855@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +45,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tiezhu Yang <yangtiezhu@loongson.cn>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit a44de7497f91834df0b8b6d459e259788ba66794 ]
+[ Upstream commit bf2c59fce4074e55d622089b34be3a6bc95484fb ]
 
-When ATI Radeon GPU driver has been compiled directly into the kernel
-instead of as a module, we should make sure the firmware for the model
-(check available ones in /lib/firmware/radeon) is built-in to the kernel
-as well, otherwise there exists the following fatal error during GPU init,
-change CONFIG_DRM_RADEON=y to CONFIG_DRM_RADEON=m to fix it.
+In the CPU-offline process, it calls mmdrop() after idle entry and the
+subsequent call to cpuhp_report_idle_dead(). Once execution passes the
+call to rcu_report_dead(), RCU is ignoring the CPU, which results in
+lockdep complaining when mmdrop() uses RCU from either memcg or
+debugobjects below.
 
-[    1.900997] [drm] Loading RS780 Microcode
-[    1.905077] radeon 0000:01:05.0: Direct firmware load for radeon/RS780_pfp.bin failed with error -2
-[    1.914140] r600_cp: Failed to load firmware "radeon/RS780_pfp.bin"
-[    1.920405] [drm:r600_init] *ERROR* Failed to load firmware!
-[    1.926069] radeon 0000:01:05.0: Fatal error during GPU init
-[    1.931729] [drm] radeon: finishing device.
+Fix it by cleaning up the active_mm state from BP instead. Every arch
+which has CONFIG_HOTPLUG_CPU should have already called idle_task_exit()
+from AP. The only exception is parisc because it switches them to
+&init_mm unconditionally (see smp_boot_one_cpu() and smp_cpu_init()),
+but the patch will still work there because it calls mmgrab(&init_mm) in
+smp_cpu_init() and then should call mmdrop(&init_mm) in finish_cpu().
 
-Fixes: 024e6a8b5bb1 ("MIPS: Loongson: Add a Loongson-3 default config file")
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+  WARNING: suspicious RCU usage
+  -----------------------------
+  kernel/workqueue.c:710 RCU or wq_pool_mutex should be held!
+
+  other info that might help us debug this:
+
+  RCU used illegally from offline CPU!
+  Call Trace:
+   dump_stack+0xf4/0x164 (unreliable)
+   lockdep_rcu_suspicious+0x140/0x164
+   get_work_pool+0x110/0x150
+   __queue_work+0x1bc/0xca0
+   queue_work_on+0x114/0x120
+   css_release+0x9c/0xc0
+   percpu_ref_put_many+0x204/0x230
+   free_pcp_prepare+0x264/0x570
+   free_unref_page+0x38/0xf0
+   __mmdrop+0x21c/0x2c0
+   idle_task_exit+0x170/0x1b0
+   pnv_smp_cpu_kill_self+0x38/0x2e0
+   cpu_die+0x48/0x64
+   arch_cpu_idle_dead+0x30/0x50
+   do_idle+0x2f4/0x470
+   cpu_startup_entry+0x38/0x40
+   start_secondary+0x7a8/0xa80
+   start_secondary_resume+0x10/0x14
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Qian Cai <cai@lca.pw>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
+Link: https://lkml.kernel.org/r/20200401214033.8448-1-cai@lca.pw
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/configs/loongson3_defconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/platforms/powernv/smp.c |  1 -
+ include/linux/sched/mm.h             |  2 ++
+ kernel/cpu.c                         | 18 +++++++++++++++++-
+ kernel/sched/core.c                  |  5 +++--
+ 4 files changed, 22 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
-index 324dfee23dfb..c871e40b8878 100644
---- a/arch/mips/configs/loongson3_defconfig
-+++ b/arch/mips/configs/loongson3_defconfig
-@@ -250,7 +250,7 @@ CONFIG_MEDIA_CAMERA_SUPPORT=y
- CONFIG_MEDIA_USB_SUPPORT=y
- CONFIG_USB_VIDEO_CLASS=m
- CONFIG_DRM=y
--CONFIG_DRM_RADEON=y
-+CONFIG_DRM_RADEON=m
- CONFIG_FB_RADEON=y
- CONFIG_LCD_CLASS_DEVICE=y
- CONFIG_LCD_PLATFORM=m
+diff --git a/arch/powerpc/platforms/powernv/smp.c b/arch/powerpc/platforms/powernv/smp.c
+index 13e251699346..b2ba3e95bda7 100644
+--- a/arch/powerpc/platforms/powernv/smp.c
++++ b/arch/powerpc/platforms/powernv/smp.c
+@@ -167,7 +167,6 @@ static void pnv_smp_cpu_kill_self(void)
+ 	/* Standard hot unplug procedure */
+ 
+ 	idle_task_exit();
+-	current->active_mm = NULL; /* for sanity */
+ 	cpu = smp_processor_id();
+ 	DBG("CPU%d offline\n", cpu);
+ 	generic_set_cpu_dead(cpu);
+diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
+index c49257a3b510..a132d875d351 100644
+--- a/include/linux/sched/mm.h
++++ b/include/linux/sched/mm.h
+@@ -49,6 +49,8 @@ static inline void mmdrop(struct mm_struct *mm)
+ 		__mmdrop(mm);
+ }
+ 
++void mmdrop(struct mm_struct *mm);
++
+ /*
+  * This has to be called after a get_task_mm()/mmget_not_zero()
+  * followed by taking the mmap_sem for writing before modifying the
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index d7890c1285bf..7527825ac7da 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -3,6 +3,7 @@
+  *
+  * This code is licenced under the GPL.
+  */
++#include <linux/sched/mm.h>
+ #include <linux/proc_fs.h>
+ #include <linux/smp.h>
+ #include <linux/init.h>
+@@ -564,6 +565,21 @@ static int bringup_cpu(unsigned int cpu)
+ 	return bringup_wait_for_ap(cpu);
+ }
+ 
++static int finish_cpu(unsigned int cpu)
++{
++	struct task_struct *idle = idle_thread_get(cpu);
++	struct mm_struct *mm = idle->active_mm;
++
++	/*
++	 * idle_task_exit() will have switched to &init_mm, now
++	 * clean up any remaining active_mm state.
++	 */
++	if (mm != &init_mm)
++		idle->active_mm = &init_mm;
++	mmdrop(mm);
++	return 0;
++}
++
+ /*
+  * Hotplug state machine related functions
+  */
+@@ -1434,7 +1450,7 @@ static struct cpuhp_step cpuhp_hp_states[] = {
+ 	[CPUHP_BRINGUP_CPU] = {
+ 		.name			= "cpu:bringup",
+ 		.startup.single		= bringup_cpu,
+-		.teardown.single	= NULL,
++		.teardown.single	= finish_cpu,
+ 		.cant_stop		= true,
+ 	},
+ 	/* Final state before CPU kills itself */
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index e99d326fa569..4874e1468279 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6177,13 +6177,14 @@ void idle_task_exit(void)
+ 	struct mm_struct *mm = current->active_mm;
+ 
+ 	BUG_ON(cpu_online(smp_processor_id()));
++	BUG_ON(current != this_rq()->idle);
+ 
+ 	if (mm != &init_mm) {
+ 		switch_mm(mm, &init_mm, current);
+-		current->active_mm = &init_mm;
+ 		finish_arch_post_lock_switch();
+ 	}
+-	mmdrop(mm);
++
++	/* finish_cpu(), as ran on the BP, will clean up the active_mm state */
+ }
+ 
+ /*
 -- 
 2.25.1
 
