@@ -2,123 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F01D201224
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D31201242
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393585AbgFSPtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:49:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34988 "EHLO
+        id S2394141AbgFSPuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:50:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403965AbgFSPsz (ORCPT
+        with ESMTP id S2394132AbgFSPuk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:48:55 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A4CCC06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:48:55 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id u128so4638022pgu.13
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:48:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=eBb01/oa00VG0erYeXmliEIHJeFuIvvncAOcSZC6NxQ=;
-        b=zHgEAmDlEjP1n/9MOShLFNzFY6jEjXCJiiFIuiWGH2jn4+2ViFpkI1O2upKYtOZwKT
-         GwMu+QmD0MjUefE7OPwQV1b6Ws2DfgcL7OEXNd48zPs/VidjZMEJ9+M5CkfdS7q5JrR2
-         ShyOAuPmkmhnJE7+stDV9l42QgBk8bn+HXUfYHGDblpYk30bN4GvWo1U0OJaBs0vSjaV
-         fBIbfzmKF5MZl+zQkpqdIHTl2ggTCO2H47eK+wlrTrQBRBjxGoesJEqa5/0tndR52UIY
-         8TMNdMHDtuwwRCtvkg4d5YyrvGSOhH0yy+obwcMvD8blCCoVaGi78XpKHlHKdnrM7XzG
-         L0DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=eBb01/oa00VG0erYeXmliEIHJeFuIvvncAOcSZC6NxQ=;
-        b=a7FYRdwqkY08ZPSRFIdhZXi3GQCs1Jsi4s/dXaj/J+N+8FessTxqajOAIDpsXxn6kD
-         yr78bHl8MzP2lNYQerNy0ZQCkziqG2AqbiG++pnOUM0hQL/uzYJQSF7GUsneIfzMDvaP
-         QjwMXY65SAOcAlTm+WLde4bu6Hxo/C7UYcRSoGmvOKVZzkMJNOicp5ajEIjGfVqMDhBm
-         Zao2Uhn+RQbvWQCUNwnTyoiNmhxKPy5qwDYtYA9yAMdoGQah5DZW2VhFQyXAvoSeLgHy
-         4JCGCw23gGy/tL8+tbA0axxdRvv+O1tus8CX+53fR5tuGTAKfBnYkXyWy9LlYpAGBg4S
-         tikg==
-X-Gm-Message-State: AOAM531WAYYnm3FKFW5iyxWsDROarZjzPZzVugWACH6wgQBZptWEtI+y
-        Ae6ULao9XaOYzv0uovwg/uiitw==
-X-Google-Smtp-Source: ABdhPJwQ5xsKxVcbRCZcGn871eZd8n1wg3c6EV81saKWgLpKaFeve8n0hnn6P084hyKPwEAcNb3jXQ==
-X-Received: by 2002:a63:931b:: with SMTP id b27mr3478183pge.135.1592581734094;
-        Fri, 19 Jun 2020 08:48:54 -0700 (PDT)
-Received: from ?IPv6:2601:646:c200:1ef2:ac67:5f51:c66e:4fa6? ([2601:646:c200:1ef2:ac67:5f51:c66e:4fa6])
-        by smtp.gmail.com with ESMTPSA id t126sm6466988pfb.54.2020.06.19.08.48.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jun 2020 08:48:53 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From:   Andy Lutomirski <luto@amacapital.net>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH] Ability to read the MKTME status from userspace
-Date:   Fri, 19 Jun 2020 08:48:47 -0700
-Message-Id: <0DD7FAE4-3976-4835-8090-80B84B737F3E@amacapital.net>
-References: <CAD2FfiFRqwYGB50KK=aA0sU6uCALYneoyD=V4EfOsk-Ex=C+xg@mail.gmail.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Daniel Gutson <daniel@eclypsium.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-In-Reply-To: <CAD2FfiFRqwYGB50KK=aA0sU6uCALYneoyD=V4EfOsk-Ex=C+xg@mail.gmail.com>
-To:     Richard Hughes <hughsient@gmail.com>
-X-Mailer: iPhone Mail (17F80)
+        Fri, 19 Jun 2020 11:50:40 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F93C06174E;
+        Fri, 19 Jun 2020 08:50:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Content-Type:MIME-Version:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=gqRrOSjrTbnmLixbeSJjNyufrKjbx8bQ0hoWXFgHbbA=; b=FUNxybH2BQdZYCAyU9DCQsfcFT
+        milNvBpSYbFN9uggxqVw0KSSDEG8nnbG+ql3mVjPp7AGcKj7l66qo7y2pl6Hsv7KKr6kCa51ScPTA
+        EWwUCzuL0G+vNeMOviK7AWZvLfdFPi8VUhljOifHnmuFJUfXW3CJKbQ1H2c5PTeuGieu8SbXAa1Dp
+        YrWnLx/3z4T6G+ocOe4jNVdXNTaCsztfIZqLGclRIelAdmBMlLEo5XKpVhrctiNhazPND5Tcu3MFM
+        mJb5LKpxVvyhwWPmmJKuO6DX/PwVz4UKmTlTElCrFBDQmypl5AUn9Db+94F3puc3J3a2YbmpFPz9Q
+        NxC1wcFg==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jmJHo-0005rh-J2; Fri, 19 Jun 2020 15:50:36 +0000
+Date:   Fri, 19 Jun 2020 08:50:36 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        agruenba@redhat.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [RFC] Bypass filesystems for reading cached pages
+Message-ID: <20200619155036.GZ8681@bombadil.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-> On Jun 19, 2020, at 6:50 AM, Richard Hughes <hughsient@gmail.com> wrote:
->=20
-> =EF=BB=BFOn Fri, 19 Jun 2020 at 14:44, Borislav Petkov <bp@alien8.de> wrot=
-e:
->> Yes, this is what I'm proposing with clearing the flag in /proc/cpuinfo.
->> The needed information is there:
->> 1. TME in CPUID
->> 2. TME *not* in /proc/cpuinfo
->=20
-> No, it's not a boolean at all. If the platform disable is a BIOS
-> configuration we don't know if TME isn't available because the CPU
-> doesn't support it or because the firmware has disabled it. In the
-> latter case, a firmware update or firmware configuration change might
-> actually enable it. If the user installs a CPU with TME support and
-> then we tell the user "your system doesn't support TME" then we're
-> going to have some very confused users unless we can differentiate the
-> two cases.
->=20
->> Along with proper ABI definition, design,
->> documentation and all that belongs to a proper interface with userspace.
->=20
-> I don't think Daniels patch was a "final version" and I'm sure
-> follow-ups can add this kind of thing. At the moment it's just people
-> telling him "you don't need this" when as a potential consumer I'm
-> saying we really do.
+This patch lifts the IOCB_CACHED idea expressed by Andreas to the VFS.
+The advantage of this patch is that we can avoid taking any filesystem
+lock, as long as the pages being accessed are in the cache (and we don't
+need to readahead any pages into the cache).  We also avoid an indirect
+function call in these cases.
 
-I think it=E2=80=99s reasonable for the kernel to ask why.
+I'm sure reusing the name call_read_iter() is the wrong way to go about
+this, but renaming all the callers would make this a larger patch.
+I'm happy to do it if something like this stands a chance of being
+accepted.
 
-Is the idea that some GUI would show a big warning like =E2=80=9Cyour silly B=
-IOS has TME disabled=E2=80=9D?
+Compared to Andreas' patch, I removed the -ECANCELED return value.
+We can happily return 0 from generic_file_buffered_read() and it's less
+code to handle that.  I bypass the attempt to read from the page cache
+for O_DIRECT reads, and for inodes which have no cached pages.  Hopefully
+this will avoid calling generic_file_buffered_read() for drivers which
+implement read_iter() (although I haven't audited them all to check that
 
-Boris, it wouldn=E2=80=99t be totally crazy for cpuinfo to learn to distingu=
-ish between =E2=80=9Cyour platform has this feature but Linux isn=E2=80=99t u=
-sing it=E2=80=9D and =E2=80=9Cyour platform doesn=E2=80=99t have this featur=
-e in the first place=E2=80=9D. And I suppose there=E2=80=99s this extra sill=
-y state =E2=80=9Cyour platform has this feature, but your firmware didn=E2=80=
-=99t enable it=E2=80=9D.  This would be a big job.
+This could go horribly wrong if filesystems rely on doing work in their
+->read_iter implementation (eg checking i_size after acquiring their
+lock) instead of keeping the page cache uptodate.  On the other hand,
+the ->map_pages() method is already called without locks, so filesystems
+should already be prepared for this.
 
-Regardless, knowing what the actual point of this patch is would be nice.
+Arguably we could do something similar for writes.  I'm a little more
+scared of that patch since filesystems are more likely to want to do
+things to keep their fies in sync for writes.
 
->=20
-> Richard.
+diff --git a/fs/read_write.c b/fs/read_write.c
+index bbfa9b12b15e..7b899538d3c0 100644
+--- a/fs/read_write.c
++++ b/fs/read_write.c
+@@ -401,6 +401,41 @@ int rw_verify_area(int read_write, struct file *file, const loff_t *ppos, size_t
+ 				read_write == READ ? MAY_READ : MAY_WRITE);
+ }
+ 
++ssize_t call_read_iter(struct file *file, struct kiocb *iocb,
++				     struct iov_iter *iter)
++{
++	ssize_t written, ret = 0;
++
++	if (iocb->ki_flags & IOCB_DIRECT)
++		goto uncached;
++	if (!file->f_mapping->nrpages)
++		goto uncached;
++
++	iocb->ki_flags |= IOCB_CACHED;
++	ret = generic_file_buffered_read(iocb, iter, 0);
++	iocb->ki_flags &= ~IOCB_CACHED;
++
++	if (likely(!iov_iter_count(iter)))
++		return ret;
++
++	if (ret == -EAGAIN) {
++		if (iocb->ki_flags & IOCB_NOWAIT)
++			return ret;
++		ret = 0;
++	} else if (ret < 0) {
++		return ret;
++	}
++
++uncached:
++	written = ret;
++
++	ret = file->f_op->read_iter(iocb, iter);
++	if (ret > 0)
++		written += ret;
++
++	return written ? written : ret;
++}
++
+ static ssize_t new_sync_read(struct file *filp, char __user *buf, size_t len, loff_t *ppos)
+ {
+ 	struct iovec iov = { .iov_base = buf, .iov_len = len };
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 6c4ab4dc1cd7..0985773feffd 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -315,6 +315,7 @@ enum rw_hint {
+ #define IOCB_SYNC		(1 << 5)
+ #define IOCB_WRITE		(1 << 6)
+ #define IOCB_NOWAIT		(1 << 7)
++#define IOCB_CACHED		(1 << 8)
+ 
+ struct kiocb {
+ 	struct file		*ki_filp;
+@@ -1895,11 +1896,7 @@ struct inode_operations {
+ 	int (*set_acl)(struct inode *, struct posix_acl *, int);
+ } ____cacheline_aligned;
+ 
+-static inline ssize_t call_read_iter(struct file *file, struct kiocb *kio,
+-				     struct iov_iter *iter)
+-{
+-	return file->f_op->read_iter(kio, iter);
+-}
++ssize_t call_read_iter(struct file *, struct kiocb *, struct iov_iter *);
+ 
+ static inline ssize_t call_write_iter(struct file *file, struct kiocb *kio,
+ 				      struct iov_iter *iter)
+diff --git a/mm/filemap.c b/mm/filemap.c
+index f0ae9a6308cb..4ee97941a1f2 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2028,7 +2028,7 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 
+ 		page = find_get_page(mapping, index);
+ 		if (!page) {
+-			if (iocb->ki_flags & IOCB_NOWAIT)
++			if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_CACHED))
+ 				goto would_block;
+ 			page_cache_sync_readahead(mapping,
+ 					ra, filp,
+@@ -2038,12 +2038,16 @@ ssize_t generic_file_buffered_read(struct kiocb *iocb,
+ 				goto no_cached_page;
+ 		}
+ 		if (PageReadahead(page)) {
++			if (iocb->ki_flags & IOCB_CACHED) {
++				put_page(page);
++				goto out;
++			}
+ 			page_cache_async_readahead(mapping,
+ 					ra, filp, page,
+ 					index, last_index - index);
+ 		}
+ 		if (!PageUptodate(page)) {
+-			if (iocb->ki_flags & IOCB_NOWAIT) {
++			if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_CACHED)) {
+ 				put_page(page);
+ 				goto would_block;
+ 			}
+
