@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE77200D92
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C426200E9B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390015AbgFSO6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:58:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54590 "EHLO mail.kernel.org"
+        id S2391915AbgFSPJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:09:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390003AbgFSO6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:58:42 -0400
+        id S2391892AbgFSPJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:09:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B86621919;
-        Fri, 19 Jun 2020 14:58:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5135721D7B;
+        Fri, 19 Jun 2020 15:09:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578722;
-        bh=uZ84vTGYlo4IboKjY879TBGBz6Hhr7Vq0yu0/6vxmZ8=;
+        s=default; t=1592579358;
+        bh=Ny6OLHVagwxrZCDCRrhIeIZMK/BoUcOcooQhmFSmkh0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AoBrptv1aLqfFRCusBhKIO+8MPYuihKpIK7nwwAhzLp1wfXx3eME6V36k36ijblyL
-         BW+b542Xl4AtcxCnJNrg76L2EmIgoXNS5xDl5a8udPDWcxsr72GZK+L1faasj289t5
-         aVhUTfWvZrWEWsGLn4jypxtR9sYNkJhl1Pm1kMxo=
+        b=0pwW4juvpNLTpKzn1yFIX4uIP1pXPxT/Ym41ai4Fr6BTzQxqNUOk9UFOwxzF3g0PW
+         yIIClFxSLP2FCrdlAB1pqUUlByvUVkfbKhiPx7/vm/r7ycACAh9VBgVjdWUc/aKEz3
+         tyRJCg2Sb2PnriTGhK+8RkrwurXOH58vzNlW/ObE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
+        stable@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 132/267] selftests/bpf: Fix memory leak in extract_build_id()
+Subject: [PATCH 5.4 106/261] nvme-tcp: use bh_lock in data_ready
 Date:   Fri, 19 Jun 2020 16:31:57 +0200
-Message-Id: <20200619141655.160330334@linuxfoundation.org>
+Message-Id: <20200619141654.943851986@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,34 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andriin@fb.com>
+From: Sagi Grimberg <sagi@grimberg.me>
 
-[ Upstream commit 9f56bb531a809ecaa7f0ddca61d2cf3adc1cb81a ]
+[ Upstream commit 386e5e6e1aa90b479fcf0467935922df8524393d ]
 
-getline() allocates string, which has to be freed.
+data_ready may be invoked from send context or from
+softirq, so need bh locking for that.
 
-Fixes: 81f77fd0deeb ("bpf: add selftest for stackmap with BPF_F_STACK_BUILD_ID")
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Cc: Song Liu <songliubraving@fb.com>
-Link: https://lore.kernel.org/bpf/20200429012111.277390-7-andriin@fb.com
+Fixes: 3f2304f8c6d6 ("nvme-tcp: add NVMe over TCP host driver")
+Signed-off-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/testing/selftests/bpf/test_progs.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/nvme/host/tcp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
-index 89f8b0dae7ef..bad3505d66e0 100644
---- a/tools/testing/selftests/bpf/test_progs.c
-+++ b/tools/testing/selftests/bpf/test_progs.c
-@@ -1118,6 +1118,7 @@ static int extract_build_id(char *build_id, size_t size)
- 		len = size;
- 	memcpy(build_id, line, len);
- 	build_id[len] = '\0';
-+	free(line);
- 	return 0;
- err:
- 	fclose(fp);
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index 11e84ed4de36..7900814355c2 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -784,11 +784,11 @@ static void nvme_tcp_data_ready(struct sock *sk)
+ {
+ 	struct nvme_tcp_queue *queue;
+ 
+-	read_lock(&sk->sk_callback_lock);
++	read_lock_bh(&sk->sk_callback_lock);
+ 	queue = sk->sk_user_data;
+ 	if (likely(queue && queue->rd_enabled))
+ 		queue_work_on(queue->io_cpu, nvme_tcp_wq, &queue->io_work);
+-	read_unlock(&sk->sk_callback_lock);
++	read_unlock_bh(&sk->sk_callback_lock);
+ }
+ 
+ static void nvme_tcp_write_space(struct sock *sk)
 -- 
 2.25.1
 
