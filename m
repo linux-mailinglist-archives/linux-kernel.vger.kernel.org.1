@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8796D200D50
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89AE1200C77
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390016AbgFSOz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:55:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50644 "EHLO mail.kernel.org"
+        id S2388797AbgFSOqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:46:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37624 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390000AbgFSOzo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:55:44 -0400
+        id S2388778AbgFSOp5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:45:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8B8E2158C;
-        Fri, 19 Jun 2020 14:55:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4091620A8B;
+        Fri, 19 Jun 2020 14:45:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578544;
-        bh=QEa7XrlnLLr3eBhKtiELVI4afInNDVlo/26zr5Hf8z4=;
+        s=default; t=1592577956;
+        bh=+QMo37ufAabq0igFYA6n7M8KW0mBfbxQ1kaR5smOkdg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1dcXWTrC+tgHGnXkcTiMu9BYM+AsGPjlrzRc3/rtEg0dmXpU8O4IWRjMGERfOzRY3
-         /cNxktcwTvIMgxIv6OTwa/J8u1CEAlCf3DIwTbGvv9tnlEi53vunXsiXWKoB0ZXWTX
-         HXCzQjftVbOd3h9Mv2TGoaaixKTX8xHEdhNTQ+9I=
+        b=bEoiC21D+uQvWmGLF8ATsJ0lvA8t/MccDukiz4RKdk+9JtHfE8Ckh/N+yiFMeVAyH
+         +n8Nojgry4b44VdKwmdx+IJ+oIPII02vwUgfpSEaOWRYIhIpRijkDAqq6/CpsDI/2R
+         u1FQ5O9jtydnXIWuwoZzLYXulnhMxt1NtpcEOs00=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 063/267] spi: pxa2xx: Fix runtime PM ref imbalance on probe error
-Date:   Fri, 19 Jun 2020 16:30:48 +0200
-Message-Id: <20200619141651.902045265@linuxfoundation.org>
+        stable@vger.kernel.org, Matt Turner <mattst88@gmail.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miles Chen <miles.chen@mediatek.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.14 004/190] Fix acccess_ok() on alpha and SH
+Date:   Fri, 19 Jun 2020 16:30:49 +0200
+Message-Id: <20200619141633.684100017@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,45 +46,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Linus Torvalds <torvalds@linux-foundation.org>
 
-[ Upstream commit 65e318e17358a3fd4fcb5a69d89b14016dee2f06 ]
+commit 94bd8a05cd4de344a9a57e52ef7d99550251984f upstream.
 
-The PXA2xx SPI driver releases a runtime PM ref in the probe error path
-even though it hasn't acquired a ref earlier.
+Commit 594cc251fdd0 ("make 'user_access_begin()' do 'access_ok()'")
+broke both alpha and SH booting in qemu, as noticed by Guenter Roeck.
 
-Apparently commit e2b714afee32 ("spi: pxa2xx: Disable runtime PM if
-controller registration fails") sought to copy-paste the invocation of
-pm_runtime_disable() from pxa2xx_spi_remove(), but erroneously copied
-the call to pm_runtime_put_noidle() as well.  Drop it.
+It turns out that the bug wasn't actually in that commit itself (which
+would have been surprising: it was mostly a no-op), but in how the
+addition of access_ok() to the strncpy_from_user() and strnlen_user()
+functions now triggered the case where those functions would test the
+access of the very last byte of the user address space.
 
-Fixes: e2b714afee32 ("spi: pxa2xx: Disable runtime PM if controller registration fails")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Reviewed-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: stable@vger.kernel.org # v4.17+
-Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Link: https://lore.kernel.org/r/58b2ac6942ca1f91aaeeafe512144bc5343e1d84.1590408496.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The string functions actually did that user range test before too, but
+they did it manually by just comparing against user_addr_max().  But
+with user_access_begin() doing the check (using "access_ok()"), it now
+exposed problems in the architecture implementations of that function.
+
+For example, on alpha, the access_ok() helper macro looked like this:
+
+  #define __access_ok(addr, size) \
+        ((get_fs().seg & (addr | size | (addr+size))) == 0)
+
+and what it basically tests is of any of the high bits get set (the
+USER_DS masking value is 0xfffffc0000000000).
+
+And that's completely wrong for the "addr+size" check.  Because it's
+off-by-one for the case where we check to the very end of the user
+address space, which is exactly what the strn*_user() functions do.
+
+Why? Because "addr+size" will be exactly the size of the address space,
+so trying to access the last byte of the user address space will fail
+the __access_ok() check, even though it shouldn't.  As a result, the
+user string accessor functions failed consistently - because they
+literally don't know how long the string is going to be, and the max
+access is going to be that last byte of the user address space.
+
+Side note: that alpha macro is buggy for another reason too - it re-uses
+the arguments twice.
+
+And SH has another version of almost the exact same bug:
+
+  #define __addr_ok(addr) \
+        ((unsigned long __force)(addr) < current_thread_info()->addr_limit.seg)
+
+so far so good: yes, a user address must be below the limit.  But then:
+
+  #define __access_ok(addr, size)         \
+        (__addr_ok((addr) + (size)))
+
+is wrong with the exact same off-by-one case: the case when "addr+size"
+is exactly _equal_ to the limit is actually perfectly fine (think "one
+byte access at the last address of the user address space")
+
+The SH version is actually seriously buggy in another way: it doesn't
+actually check for overflow, even though it did copy the _comment_ that
+talks about overflow.
+
+So it turns out that both SH and alpha actually have completely buggy
+implementations of access_ok(), but they happened to work in practice
+(although the SH overflow one is a serious serious security bug, not
+that anybody likely cares about SH security).
+
+This fixes the problems by using a similar macro on both alpha and SH.
+It isn't trying to be clever, the end address is based on this logic:
+
+        unsigned long __ao_end = __ao_a + __ao_b - !!__ao_b;
+
+which basically says "add start and length, and then subtract one unless
+the length was zero".  We can't subtract one for a zero length, or we'd
+just hit an underflow instead.
+
+For a lot of access_ok() users the length is a constant, so this isn't
+actually as expensive as it initially looks.
+
+Reported-and-tested-by: Guenter Roeck <linux@roeck-us.net>
+Cc: Matt Turner <mattst88@gmail.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/spi/spi-pxa2xx.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/alpha/include/asm/uaccess.h |    8 +++++---
+ arch/sh/include/asm/uaccess.h    |    7 +++++--
+ 2 files changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
-index 6551188fea23..2525fd9c8aa4 100644
---- a/drivers/spi/spi-pxa2xx.c
-+++ b/drivers/spi/spi-pxa2xx.c
-@@ -1748,7 +1748,6 @@ static int pxa2xx_spi_probe(struct platform_device *pdev)
- 	return status;
+--- a/arch/alpha/include/asm/uaccess.h
++++ b/arch/alpha/include/asm/uaccess.h
+@@ -30,11 +30,13 @@
+  * Address valid if:
+  *  - "addr" doesn't have any high-bits set
+  *  - AND "size" doesn't have any high-bits set
+- *  - AND "addr+size" doesn't have any high-bits set
++ *  - AND "addr+size-(size != 0)" doesn't have any high-bits set
+  *  - OR we are in kernel mode.
+  */
+-#define __access_ok(addr, size) \
+-	((get_fs().seg & (addr | size | (addr+size))) == 0)
++#define __access_ok(addr, size) ({				\
++	unsigned long __ao_a = (addr), __ao_b = (size);		\
++	unsigned long __ao_end = __ao_a + __ao_b - !!__ao_b;	\
++	(get_fs().seg & (__ao_a | __ao_b | __ao_end)) == 0; })
  
- out_error_pm_runtime_enabled:
--	pm_runtime_put_noidle(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
- out_error_clock_enabled:
--- 
-2.25.1
-
+ #define access_ok(type, addr, size)			\
+ ({							\
+--- a/arch/sh/include/asm/uaccess.h
++++ b/arch/sh/include/asm/uaccess.h
+@@ -16,8 +16,11 @@
+  * sum := addr + size;  carry? --> flag = true;
+  * if (sum >= addr_limit) flag = true;
+  */
+-#define __access_ok(addr, size)		\
+-	(__addr_ok((addr) + (size)))
++#define __access_ok(addr, size)	({				\
++	unsigned long __ao_a = (addr), __ao_b = (size);		\
++	unsigned long __ao_end = __ao_a + __ao_b - !!__ao_b;	\
++	__ao_end >= __ao_a && __addr_ok(__ao_end); })
++
+ #define access_ok(type, addr, size)	\
+ 	(__chk_user_ptr(addr),		\
+ 	 __access_ok((unsigned long __force)(addr), (size)))
 
 
