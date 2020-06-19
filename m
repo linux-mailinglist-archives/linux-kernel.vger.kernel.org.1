@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49459201387
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D05102013D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392049AbgFSPKr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:10:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40588 "EHLO mail.kernel.org"
+        id S2392787AbgFSQEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:04:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391566AbgFSPKe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:10:34 -0400
+        id S2392039AbgFSPKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:10:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E623E2186A;
-        Fri, 19 Jun 2020 15:10:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3438206FA;
+        Fri, 19 Jun 2020 15:10:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579433;
-        bh=LlEmdwwdSR30dYv/6jAzupX03aWWG4GzpIKmnzZutfA=;
+        s=default; t=1592579441;
+        bh=W9NDGKPF9pC8bklJ+MLGv1XFofDCYAUQi70eNJtJEgc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O8fn4C7h0YZ1KNgbPqlACUn6Re05tFsIn7Dxu0crzKkCw8XRo+gsaLTDavhxuk5oS
-         tCkuVSMYH8SBjmrthqzLlIT9jtA3Vwzh9S3A+/pQpB3iTyBz/p4v5106QYBjfl6Pik
-         KrnttlB8EJfli9KtsZ70WQ4rW+3T2Z2MT1SvJh5s=
+        b=LjUMSslsYEPUNs4oeojWMY6I0iTW40jtRR4qndSAr8nu3OPOfEMpTq5YHHKIcXw1l
+         5uRQ+we2xtd/E5c/fybHIZhA6+aaXsIw5znCKFtWBNYpiPD+wKY1ttNMQcv1nmQTRJ
+         26J3VGMuL23a2O5c971wf4mdnbouP2kWZpZJjD6o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
-        Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 134/261] btrfs: qgroup: mark qgroup inconsistent if were inherting snapshot to a new qgroup
-Date:   Fri, 19 Jun 2020 16:32:25 +0200
-Message-Id: <20200619141656.276038496@linuxfoundation.org>
+Subject: [PATCH 5.4 137/261] PCI: Dont disable decoding when mmio_always_on is set
+Date:   Fri, 19 Jun 2020 16:32:28 +0200
+Message-Id: <20200619141656.423071816@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
 References: <20200619141649.878808811@linuxfoundation.org>
@@ -44,121 +45,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qu Wenruo <wqu@suse.com>
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-[ Upstream commit cbab8ade585a18c4334b085564d9d046e01a3f70 ]
+[ Upstream commit b6caa1d8c80cb71b6162cb1f1ec13aa655026c9f ]
 
-[BUG]
-For the following operation, qgroup is guaranteed to be screwed up due
-to snapshot adding to a new qgroup:
+Don't disable MEM/IO decoding when a device have both non_compliant_bars
+and mmio_always_on.
 
-  # mkfs.btrfs -f $dev
-  # mount $dev $mnt
-  # btrfs qgroup en $mnt
-  # btrfs subv create $mnt/src
-  # xfs_io -f -c "pwrite 0 1m" $mnt/src/file
-  # sync
-  # btrfs qgroup create 1/0 $mnt/src
-  # btrfs subv snapshot -i 1/0 $mnt/src $mnt/snapshot
-  # btrfs qgroup show -prce $mnt/src
-  qgroupid         rfer         excl     max_rfer     max_excl parent  child
-  --------         ----         ----     --------     -------- ------  -----
-  0/5          16.00KiB     16.00KiB         none         none ---     ---
-  0/257         1.02MiB     16.00KiB         none         none ---     ---
-  0/258         1.02MiB     16.00KiB         none         none 1/0     ---
-  1/0             0.00B        0.00B         none         none ---     0/258
-	        ^^^^^^^^^^^^^^^^^^^^
+That would allow us quirk devices with junk in BARs but can't disable
+their decoding.
 
-[CAUSE]
-The problem is in btrfs_qgroup_inherit(), we don't have good enough
-check to determine if the new relation would break the existing
-accounting.
-
-Unlike btrfs_add_qgroup_relation(), which has proper check to determine
-if we can do quick update without a rescan, in btrfs_qgroup_inherit() we
-can even assign a snapshot to multiple qgroups.
-
-[FIX]
-Fix it by manually marking qgroup inconsistent for snapshot inheritance.
-
-For subvolume creation, since all its extents are exclusively owned, we
-don't need to rescan.
-
-In theory, we should call relation check like quick_update_accounting()
-when doing qgroup inheritance and inform user about qgroup accounting
-inconsistency.
-
-But we don't have good mechanism to relay that back to the user in the
-snapshot creation context, thus we can only silently mark the qgroup
-inconsistent.
-
-Anyway, user shouldn't use qgroup inheritance during snapshot creation,
-and should add qgroup relationship after snapshot creation by 'btrfs
-qgroup assign', which has a much better UI to inform user about qgroup
-inconsistent and kick in rescan automatically.
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Acked-by: Bjorn Helgaas <helgaas@kernel.org>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/qgroup.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/pci/probe.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 590defdf8860..b94f6f99e90d 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -2636,6 +2636,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 	struct btrfs_root *quota_root;
- 	struct btrfs_qgroup *srcgroup;
- 	struct btrfs_qgroup *dstgroup;
-+	bool need_rescan = false;
- 	u32 level_size = 0;
- 	u64 nums;
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index d3033873395d..48209d915de3 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -1777,7 +1777,7 @@ int pci_setup_device(struct pci_dev *dev)
+ 	/* Device class may be changed after fixup */
+ 	class = dev->class >> 8;
  
-@@ -2779,6 +2780,13 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 				goto unlock;
- 		}
- 		++i_qgroups;
-+
-+		/*
-+		 * If we're doing a snapshot, and adding the snapshot to a new
-+		 * qgroup, the numbers are guaranteed to be incorrect.
-+		 */
-+		if (srcid)
-+			need_rescan = true;
- 	}
- 
- 	for (i = 0; i <  inherit->num_ref_copies; ++i, i_qgroups += 2) {
-@@ -2798,6 +2806,9 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 
- 		dst->rfer = src->rfer - level_size;
- 		dst->rfer_cmpr = src->rfer_cmpr - level_size;
-+
-+		/* Manually tweaking numbers certainly needs a rescan */
-+		need_rescan = true;
- 	}
- 	for (i = 0; i <  inherit->num_excl_copies; ++i, i_qgroups += 2) {
- 		struct btrfs_qgroup *src;
-@@ -2816,6 +2827,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 
- 		dst->excl = src->excl + level_size;
- 		dst->excl_cmpr = src->excl_cmpr + level_size;
-+		need_rescan = true;
- 	}
- 
- unlock:
-@@ -2823,6 +2835,8 @@ unlock:
- out:
- 	if (!committing)
- 		mutex_unlock(&fs_info->qgroup_ioctl_lock);
-+	if (need_rescan)
-+		fs_info->qgroup_flags |= BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT;
- 	return ret;
- }
- 
+-	if (dev->non_compliant_bars) {
++	if (dev->non_compliant_bars && !dev->mmio_always_on) {
+ 		pci_read_config_word(dev, PCI_COMMAND, &cmd);
+ 		if (cmd & (PCI_COMMAND_IO | PCI_COMMAND_MEMORY)) {
+ 			pci_info(dev, "device has non-compliant BARs; disabling IO/MEM decoding\n");
 -- 
 2.25.1
 
