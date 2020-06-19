@@ -2,73 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DA62019EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 20:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6FA201A0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 20:12:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392071AbgFSSEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 14:04:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389671AbgFSSEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 14:04:44 -0400
-Received: from embeddedor (unknown [189.207.59.248])
+        id S1731995AbgFSSLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 14:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725826AbgFSSLt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 14:11:49 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44C6C06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 11:11:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RlTbO/ySGCld/EqXTk8DFn5MI7q+hzjQi9/I5bKcuZo=; b=Zp7wbghX5O/7gHboFZepzQFW5O
+        91zOt7qScEz0lnbQrUMZRgUF/4V0Iebpu+CjpNpygCYADLRXY2z0NRZziA9wiaUKB+OtOUSnwd1b2
+        xwG3CMQwzu5jqzldOm6oWmbYU5yV2/hiloF7ekth82/Gf0b6WlmpvsUZTZT2E4BQF3BWI2Jj3QXu2
+        lkYhaBW3oj4zYKBpve/ftsbXj5kcGhQZx1gluH3kfD0sBhxrSJxbnF+69hgRsMCKN6/Fn+WUCM+dz
+        9PTFgmRP14MnF+ghf0J9tQTFPyOzeUITxGRwUng3AjPoxNfotDq1nxzMkHE54YgsgZG6uvd0uoRd0
+        JGYlmxvA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jmLUB-0005wd-5N; Fri, 19 Jun 2020 18:11:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B073420DD4;
-        Fri, 19 Jun 2020 18:04:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592589883;
-        bh=4BtD3MYD+VZOU9pnwXf8Ajs1DRRHrNXmV37Wuhj/+Gc=;
-        h=Date:From:To:Cc:Subject:From;
-        b=UZfGmO8K/btUZpFfszkFst5DdKQp3Z5but4edsWZRZEa649haUjZIo/YfTaIihf9J
-         MHr9+242B2LfW5ZQt0C4GlvHuYwNDDu7tyNRlhvSOcIUkM0svtcIKnULrfGL0b200u
-         ZoFkVbUk1/ukdB7mdywIyqBa/v5CzlQwfKGRCUVM=
-Date:   Fri, 19 Jun 2020 13:10:07 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] net: dsa: sja1105: Use struct_size() in kzalloc()
-Message-ID: <20200619181007.GA32353@embeddedor>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0F62030018A;
+        Fri, 19 Jun 2020 20:11:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CE80B2C36DD93; Fri, 19 Jun 2020 20:11:28 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 20:11:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, frederic@kernel.org,
+        Will Deacon <will@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        npiggin@gmail.com
+Subject: Re: [PATCH 0/6] sched: TTWU, IPI, and assorted stuff
+Message-ID: <20200619181128.GC576888@hirez.programming.kicks-ass.net>
+References: <20200615125654.678940605@infradead.org>
+ <20200615162330.GF2723@paulmck-ThinkPad-P72>
+ <20200615164048.GC2531@hirez.programming.kicks-ass.net>
+ <20200615172149.GJ2723@paulmck-ThinkPad-P72>
+ <20200615191158.GK2531@hirez.programming.kicks-ass.net>
+ <20200616170410.GL2554@hirez.programming.kicks-ass.net>
+ <20200616171721.GM2554@hirez.programming.kicks-ass.net>
+ <20200619134423.GB577403@hirez.programming.kicks-ass.net>
+ <20200619172047.GK2723@paulmck-ThinkPad-P72>
+ <20200619174802.GA10403@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200619174802.GA10403@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the struct_size() helper instead of an open-coded version
-in order to avoid any potential type mistakes.
+On Fri, Jun 19, 2020 at 10:48:02AM -0700, Paul E. McKenney wrote:
+> On Fri, Jun 19, 2020 at 10:20:47AM -0700, Paul E. McKenney wrote:
 
-This code was detected with the help of Coccinelle and, audited and
-fixed manually.
+> > > @@ -2615,7 +2617,8 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+> > >  	 * let the waker make forward progress. This is safe because IRQs are
+> > >  	 * disabled and the IPI will deliver after on_cpu is cleared.
+> > >  	 */
+> > > -	if (READ_ONCE(p->on_cpu) && ttwu_queue_wakelist(p, cpu, wake_flags | WF_ON_RQ))
+> > > +	if (smp_load_acquire(&p->on_cpu) &&
+> 
+> Given the x86 memory model, this only protects against the compiler
+> reordering accesses in ttwu_queue_wakelist() against the fetch of
+> p->on_cpu, correct?
 
-Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/dsa/sja1105/sja1105_tas.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Yes.
 
-diff --git a/drivers/net/dsa/sja1105/sja1105_tas.c b/drivers/net/dsa/sja1105/sja1105_tas.c
-index 3aa1a8b5f766..31d8acff1f01 100644
---- a/drivers/net/dsa/sja1105/sja1105_tas.c
-+++ b/drivers/net/dsa/sja1105/sja1105_tas.c
-@@ -475,8 +475,7 @@ bool sja1105_gating_check_conflicts(struct sja1105_private *priv, int port,
- 	if (list_empty(&gating_cfg->entries))
- 		return false;
- 
--	dummy = kzalloc(sizeof(struct tc_taprio_sched_entry) * num_entries +
--			sizeof(struct tc_taprio_qopt_offload), GFP_KERNEL);
-+	dummy = kzalloc(struct_size(dummy, entries, num_entries), GFP_KERNEL);
- 	if (!dummy) {
- 		NL_SET_ERR_MSG_MOD(extack, "Failed to allocate memory");
- 		return true;
--- 
-2.27.0
+> Don't get me wrong, I do see some potential compiler misorderings,
+> including with cpu_rq(cpu)->nr_running.  Just curious.
+
+Given this is arch independent code, I'd better write generic code, and
+there I really think this wants to be acquire. I'll also try and write a
+comment for next time.
 
