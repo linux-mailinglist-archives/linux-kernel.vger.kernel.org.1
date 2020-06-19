@@ -2,144 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6F0620151B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4729420150D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394538AbgFSQSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:18:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38320 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390777AbgFSPCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:02:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 773BEADC1;
-        Fri, 19 Jun 2020 15:02:02 +0000 (UTC)
-To:     Joe Perches <joe@perches.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-References: <20200617222733.GA24156@embeddedor>
- <1c6adee3-bbad-dc88-3dd2-af823f279271@suse.de>
- <48589b2a3ec33a6504d23d166a32e7820d2e0b70.camel@perches.com>
-From:   Coly Li <colyli@suse.de>
-Autocrypt: addr=colyli@suse.de; keydata=
- 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
-Subject: Re: [PATCH][next] bcache: Use struct_size() in kzalloc()
-Message-ID: <dc039b66-5967-381b-ea84-b411b74578a4@suse.de>
-Date:   Fri, 19 Jun 2020 23:01:58 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        id S2394512AbgFSQRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390753AbgFSPCb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:02:31 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3CDC06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:02:31 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id y123so5760683vsb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:02:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KA1YYiLoYecDSXE7VUrhPC0pwfaz8HP7Uv5Pt43IOGY=;
+        b=s+Q5WK32U7x677VRiwsxq5vLGWbQmVm3qU5gzbBqxiAwaSVsdmV07dmcuRGlhrvRgG
+         gN3uVtClNBaOwGDGW+v0DnBXSP4Zm9FtdpKu5SXMFi4L23Y8wXEH0zoKon8G5VxoicCO
+         OzqH3UQ+Z2/HQSudWwlKu8rM/8m4nffPcAsiaxJmupRD9QjVSJZyQ5THFvZ2ZPnFT4Bf
+         wh4G66yucWvORbH60yEO2YLbaesEfRiyQPh8KrTmU8Ml/nuiYAFjgzhvlR4HXx3tmo61
+         i9w/weX5MHfrvqUltQMp55oet6EA22B754bpfiWu6Wdg0ExgKWQBRiYLmJ9AfH8Ys6ZT
+         tD+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KA1YYiLoYecDSXE7VUrhPC0pwfaz8HP7Uv5Pt43IOGY=;
+        b=Azo0GXGrXyCtlDa7kYLXUY/QA4fdPzWmX9PNS1JolYkkHl8P0kloTULyry08/E3QKc
+         LTuc6PWgxrJNc6Oe4iV/dufs44XNm6+YJVxw6T7F1HjLyK2BUnb48I/iFh4LGrD/bUAr
+         6fcfkwO/g0p17b31iwJtUWJBHYjFlht1Etjw/11GaF+rBweA6d/2u5fnpE/qlb7zzroy
+         Ep3CSLnKkwIOFgkKALItiz7RuBwwjoIR2FopFZs1Fwm0A3rUjczj+C7azf2wbQPv7O38
+         3ZIdizdceR0ZlgqzKBb+6Qx12xhsu8CH3dDCNGybjfsrNRhClvhdFaS280oqcXHF9CsY
+         53gg==
+X-Gm-Message-State: AOAM532Q88GAUPrlcaa6HujkUxU58lfLjRO4azQ2NxPpNOjNNPr/oEMS
+        UiMG8eM29wOgaYeSRPsBaIBau05msCwsD9ClY98=
+X-Google-Smtp-Source: ABdhPJz0U06vlRhoVb1EWe/pOvxcbD9a9RtgKCo3ANqJYbtqd6LdQTJsOKMaiouqkGcQgFgC7XuHVltyeyzAvVYDw70=
+X-Received: by 2002:a67:684f:: with SMTP id d76mr7813592vsc.66.1592578950686;
+ Fri, 19 Jun 2020 08:02:30 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <48589b2a3ec33a6504d23d166a32e7820d2e0b70.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200618210215.23602-1-daniel.gutson@eclypsium.com>
+ <589c89ae-620e-36f8-2be5-4afc727c2911@intel.com> <CAFmMkTHNxSN_uWtm63TdkGxj44NXQQKEOmATXhjA=4DSCS92kQ@mail.gmail.com>
+ <23babf62-00cb-cb47-bb19-da9508325934@intel.com> <CAD2FfiFbGdf5uKmsc14F4ZuuCUQYFwfnirn=Y0fu2F0=njvWug@mail.gmail.com>
+ <80578b72-cb6f-8da9-1043-b4055c75d7f6@intel.com> <CAD2FfiG1BgYvR6wkeXGro8v6FQtVjKemmAOOf2W14z5KUWLqhw@mail.gmail.com>
+ <d55f94bc-3b26-a556-f7e6-43e9b1007e13@intel.com> <CAD2FfiHCi2MfShGWaYWk_GcXW4xVr6chsLPZs78OJE+2_GErVg@mail.gmail.com>
+ <3d454068-fd4e-4399-4bf5-2d010bb2ba7d@intel.com> <CAD2FfiF8QEarhyFD1GkfnaR+spyH86sChgRZm37ab_gzS2m_wg@mail.gmail.com>
+ <aef4ff03-3a98-4425-2b01-203a88401370@intel.com>
+In-Reply-To: <aef4ff03-3a98-4425-2b01-203a88401370@intel.com>
+From:   Richard Hughes <hughsient@gmail.com>
+Date:   Fri, 19 Jun 2020 16:02:19 +0100
+Message-ID: <CAD2FfiEit9HR_ikc3WQXg9c_hyNHtk6b0rVnYJd-R8gJ7tbQOw@mail.gmail.com>
+Subject: Re: [PATCH] Ability to read the MKTME status from userspace
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Daniel Gutson <daniel@eclypsium.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020/6/18 13:42, Joe Perches wrote:
-> On Thu, 2020-06-18 at 13:38 +0800, Coly Li wrote:
->> On 2020/6/18 06:27, Gustavo A. R. Silva wrote:
->>> Make use of the struct_size() helper instead of an open-coded version
->>> in order to avoid any potential type mistakes.
-> []
->>> diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
-> []
->>> -			io = kzalloc(sizeof(struct dirty_io) +
->>> -				     sizeof(struct bio_vec) *
->>> -				     DIV_ROUND_UP(KEY_SIZE(&w->key),
->>> -						  PAGE_SECTORS),
->>> +			io = kzalloc(struct_size(io, bio.bi_inline_vecs,
->>                                                      ^^^^^^^^^^^^^^^^^^
->>                                                      I like this :-)
->>
->>> +						DIV_ROUND_UP(KEY_SIZE(&w->key), PAGE_SECTORS)),
->>
->> The above line seems too long for 80 characters limitation. Does
->> checkpatch.pl complain for this ?
-> 
-> No.  checkpatch has changed:
+On Fri, 19 Jun 2020 at 15:48, Dave Hansen <dave.hansen@intel.com> wrote:
+> You cut out the important part.  The "pretty sure" involves a bunch of
+> preconditions and knowing what your hardware configuration is in the
+> first place.
 
-OK, then this patch is good for me.
+Totally agree.
 
-> 
-> From bdc48fa11e46f867ea4d75fa59ee87a7f48be144 Mon Sep 17 00:00:00 2001
-> From: Joe Perches <joe@perches.com>
-> Date: Fri, 29 May 2020 16:12:21 -0700
-> Subject: [PATCH] checkpatch/coding-style: deprecate 80-column warning
-> 
-> Yes, staying withing 80 columns is certainly still _preferred_.  But
-> it's not the hard limit that the checkpatch warnings imply, and other
-> concerns can most certainly dominate.
-> 
-> Increase the default limit to 100 characters.  Not because 100
-> characters is some hard limit either, but that's certainly a "what are
-> you doing" kind of value and less likely to be about the occasional
-> slightly longer lines.
-> 
-> Miscellanea:
-> 
->  - to avoid unnecessary whitespace changes in files, checkpatch will no
->    longer emit a warning about line length when scanning files unless
->    --strict is also used
-> 
->  - Add a bit to coding-style about alignment to open parenthesis
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
-> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Let's take a step back.  We add read-only ABIs so that decisions can be
+> made.  What decision will somebody make from the ABI being proposed here?
 
-I see. My current monitor may display 4 terminal window with 85
-characters width, expending the limit to 100 characters means I probably
-have to change my current monitor with a good cause.
+The question of "is my memory encrypted" is what I'm trying to decide.
+To the end user (or the person marking a compliance ticksheet for a
+government contract) all they want to know is the end result. At the
+moment for AMD SME this seems much simpler as there are less
+"preconditions".
 
-Thank you, for such good change.
+> Someone does 'cat /proc/mktme' (or whatever) and it says "1" or
+> whatever, which means yay, encryption is on.  What do they do?
 
-Coly Li
+I think "is my memory encrypted" for Intel has to be a superset of:
 
+1. TME in CPU info
+2. not disabled by the platform
+3. not using unencrypted swap
+4. not using a memory accelerator
+5. entire DRAM area is marked with EFI_MEMORY_CPU_CRYPTO
 
+It seems the only way to answer the questions and make it easy for the
+consumer to know the answer is to ask the kernel for each of the 5
+different questions. At the moment we can only get 1, 3, maybe 4, soon
+to be 5, but not 2.
 
+Richard.
