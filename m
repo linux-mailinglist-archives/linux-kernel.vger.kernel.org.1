@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0909200D79
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC957200E84
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390335AbgFSO6A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:58:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53198 "EHLO mail.kernel.org"
+        id S2391736AbgFSPI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:08:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390290AbgFSO5r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:57:47 -0400
+        id S2391731AbgFSPIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:08:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D879821919;
-        Fri, 19 Jun 2020 14:57:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6657821852;
+        Fri, 19 Jun 2020 15:08:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578666;
-        bh=b6KQFxhpqokwjIfbaMiTMCL6QZY5s08BueXsXwADbsQ=;
+        s=default; t=1592579304;
+        bh=W2i2BRZmni5PV4/rL1upFoQqytctqsQ9UEQOK5v5ZHM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ceqC3NRFxcOTqzf4Ao2uVyGzp+Wpy5o/m3MWkUnciXpHLuhSB9JzA2k+MnbKJ7n1q
-         wn3mElRrP8xTi2xzlovJz/sV3gB0LFjMZODB5kUtuF1tp9T1Bbcx29CCflaieVsJdk
-         kgmPnEeTDXn24xb332VRHbQg+WcLaxd07JF355c0=
+        b=dlZq32jld0ZmZBiP9zkH7fQrcy+hhlEmJYabPR9JccijReOQDksRaa+TifoUlRXzP
+         AnvCn6xofxY2JVuW4gsWu4OWrjvlKrN4oUvBuc4TcjA66dOT2qVit6Y7kbBljJPWeA
+         RbC5L5sAbjp+i1P0M0omEtqb61aZ+82dNsz/wnIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Douglas Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 109/267] kgdb: Prevent infinite recursive entries to the debugger
-Date:   Fri, 19 Jun 2020 16:31:34 +0200
-Message-Id: <20200619141654.086488923@linuxfoundation.org>
+        stable@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 084/261] iocost_monitor: drop string wrap around numbers when outputting json
+Date:   Fri, 19 Jun 2020 16:31:35 +0200
+Message-Id: <20200619141653.919464743@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +43,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+From: Tejun Heo <tj@kernel.org>
 
-[ Upstream commit 3ca676e4ca60d1834bb77535dafe24169cadacef ]
+[ Upstream commit 21f3cfeab304fc07b90d93d98d4d2f62110fe6b2 ]
 
-If we detect that we recursively entered the debugger we should hack
-our I/O ops to NULL so that the panic() in the next line won't
-actually cause another recursion into the debugger.  The first line of
-kgdb_panic() will check this and return.
+Wrapping numbers in strings is used by some to work around bit-width issues in
+some enviroments. The problem isn't innate to json and the workaround seems to
+cause more integration problems than help. Let's drop the string wrapping.
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
-Link: https://lore.kernel.org/r/20200507130644.v4.6.I89de39f68736c9de610e6f241e68d8dbc44bc266@changeid
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/debug/debug_core.c | 1 +
- 1 file changed, 1 insertion(+)
+ tools/cgroup/iocost_monitor.py | 42 +++++++++++++++++-----------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
 
-diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-index d2799767aab8..6a1dc2613bb9 100644
---- a/kernel/debug/debug_core.c
-+++ b/kernel/debug/debug_core.c
-@@ -444,6 +444,7 @@ static int kgdb_reenter_check(struct kgdb_state *ks)
+diff --git a/tools/cgroup/iocost_monitor.py b/tools/cgroup/iocost_monitor.py
+index 7e344a78a627..b8c082c9fd7d 100644
+--- a/tools/cgroup/iocost_monitor.py
++++ b/tools/cgroup/iocost_monitor.py
+@@ -112,14 +112,14 @@ class IocStat:
  
- 	if (exception_level > 1) {
- 		dump_stack();
-+		kgdb_io_module_registered = false;
- 		panic("Recursive entry to debugger");
- 	}
+     def dict(self, now):
+         return { 'device'               : devname,
+-                 'timestamp'            : str(now),
+-                 'enabled'              : str(int(self.enabled)),
+-                 'running'              : str(int(self.running)),
+-                 'period_ms'            : str(self.period_ms),
+-                 'period_at'            : str(self.period_at),
+-                 'period_vtime_at'      : str(self.vperiod_at),
+-                 'busy_level'           : str(self.busy_level),
+-                 'vrate_pct'            : str(self.vrate_pct), }
++                 'timestamp'            : now,
++                 'enabled'              : self.enabled,
++                 'running'              : self.running,
++                 'period_ms'            : self.period_ms,
++                 'period_at'            : self.period_at,
++                 'period_vtime_at'      : self.vperiod_at,
++                 'busy_level'           : self.busy_level,
++                 'vrate_pct'            : self.vrate_pct, }
  
+     def table_preamble_str(self):
+         state = ('RUN' if self.running else 'IDLE') if self.enabled else 'OFF'
+@@ -179,19 +179,19 @@ class IocgStat:
+ 
+     def dict(self, now, path):
+         out = { 'cgroup'                : path,
+-                'timestamp'             : str(now),
+-                'is_active'             : str(int(self.is_active)),
+-                'weight'                : str(self.weight),
+-                'weight_active'         : str(self.active),
+-                'weight_inuse'          : str(self.inuse),
+-                'hweight_active_pct'    : str(self.hwa_pct),
+-                'hweight_inuse_pct'     : str(self.hwi_pct),
+-                'inflight_pct'          : str(self.inflight_pct),
+-                'debt_ms'               : str(self.debt_ms),
+-                'use_delay'             : str(self.use_delay),
+-                'delay_ms'              : str(self.delay_ms),
+-                'usage_pct'             : str(self.usage),
+-                'address'               : str(hex(self.address)) }
++                'timestamp'             : now,
++                'is_active'             : self.is_active,
++                'weight'                : self.weight,
++                'weight_active'         : self.active,
++                'weight_inuse'          : self.inuse,
++                'hweight_active_pct'    : self.hwa_pct,
++                'hweight_inuse_pct'     : self.hwi_pct,
++                'inflight_pct'          : self.inflight_pct,
++                'debt_ms'               : self.debt_ms,
++                'use_delay'             : self.use_delay,
++                'delay_ms'              : self.delay_ms,
++                'usage_pct'             : self.usage,
++                'address'               : self.address }
+         for i in range(len(self.usages)):
+             out[f'usage_pct_{i}'] = str(self.usages[i])
+         return out
 -- 
 2.25.1
 
