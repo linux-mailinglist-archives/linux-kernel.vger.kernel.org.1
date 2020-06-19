@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB01200DFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DF6200EF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:16:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391071AbgFSPD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:03:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60496 "EHLO mail.kernel.org"
+        id S2392244AbgFSPNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:13:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391041AbgFSPDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:03:42 -0400
+        id S2392202AbgFSPNT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:13:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97AC42193E;
-        Fri, 19 Jun 2020 15:03:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E96EA21919;
+        Fri, 19 Jun 2020 15:13:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579023;
-        bh=jL57LjiGswb6H7HnMJrD39KF0xhoV9ZcfKG7asJMdfA=;
+        s=default; t=1592579598;
+        bh=XtuQA8KOA/OYaIpFxAD4P9Jj8QgKracaOa8PA2ALPqs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oIkND0hlnMsfjm7kPth2Z8U5reIbREm0hNZC/REDQQ/5KiwGPxwArl71ubCV+72RM
-         d5cZHRkYsQVTTwf6CnvZNMRClpklIqBD4fvqhQDqZKYPtfm8kSDBLtkpmVZhT9W+3+
-         LctTHdK2dwgY/RC7yFalTBUj862TY5FzTdtjnEpI=
+        b=o9wrmacqFr9MjH3eKz0UnXesSEAkqfnHwhgIn6l5LTdBzTw9oWJbPeNVv9uNV6exT
+         Yx+wwZFO5gTv//RqgARklJHIFTrrDFfgJcIxZn1Brbo9KT6gne4uRoRc0M8B+ibwrw
+         qEifUWed9Wn06z/3Fmkn2NHyf4E7E3XNC+oiuDlg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        Michael K Johnson <johnsonm@danlj.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 219/267] PCI: Add Genesys Logic, Inc. Vendor ID
-Date:   Fri, 19 Jun 2020 16:33:24 +0200
-Message-Id: <20200619141659.226560568@linuxfoundation.org>
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Subject: [PATCH 5.4 196/261] e1000e: Disable TSO for buffer overrun workaround
+Date:   Fri, 19 Jun 2020 16:33:27 +0200
+Message-Id: <20200619141659.288557733@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,37 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit 4460d68f0b2f9092273531fbc65613e1855c2e07 ]
+commit f29801030ac67bf98b7a65d3aea67b30769d4f7c upstream.
 
-Add the Genesys Logic, Inc. vendor ID to pci_ids.h.
+Commit b10effb92e27 ("e1000e: fix buffer overrun while the I219 is
+processing DMA transactions") imposes roughly 30% performance penalty.
 
-Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-Co-developed-by: Michael K Johnson <johnsonm@danlj.org>
-Signed-off-by: Michael K Johnson <johnsonm@danlj.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The commit log states that "Disabling TSO eliminates performance loss
+for TCP traffic without a noticeable impact on CPU performance", so
+let's disable TSO by default to regain the loss.
+
+CC: stable <stable@vger.kernel.org>
+Fixes: b10effb92e27 ("e1000e: fix buffer overrun while the I219 is processing DMA transactions")
+BugLink: https://bugs.launchpad.net/bugs/1802691
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- include/linux/pci_ids.h | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/net/ethernet/intel/e1000e/netdev.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index bd682fcb9768..3329387261df 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -2409,6 +2409,8 @@
- #define PCI_DEVICE_ID_RDC_R6061		0x6061
- #define PCI_DEVICE_ID_RDC_D1010		0x1010
+--- a/drivers/net/ethernet/intel/e1000e/netdev.c
++++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+@@ -5289,6 +5289,10 @@ static void e1000_watchdog_task(struct w
+ 					/* oops */
+ 					break;
+ 				}
++				if (hw->mac.type == e1000_pch_spt) {
++					netdev->features &= ~NETIF_F_TSO;
++					netdev->features &= ~NETIF_F_TSO6;
++				}
+ 			}
  
-+#define PCI_VENDOR_ID_GLI		0x17a0
-+
- #define PCI_VENDOR_ID_LENOVO		0x17aa
- 
- #define PCI_VENDOR_ID_QCOM		0x17cb
--- 
-2.25.1
-
+ 			/* enable transmits in the hardware, need to do this
 
 
