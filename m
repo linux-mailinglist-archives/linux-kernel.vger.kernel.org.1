@@ -2,123 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D483201895
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 855AC2018E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405701AbgFSQt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:49:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387986AbgFSOjJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:39:09 -0400
-Received: from earth.universe (dyndsl-037-138-190-043.ewe-ip-backbone.de [37.138.190.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 673B320DD4;
-        Fri, 19 Jun 2020 14:39:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577548;
-        bh=GhmndpCx0NtSvR5PEsSvK9su8y7F9B9W/85J59fhrTc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=b6Q4n+E5Dk+L+BUYxW++OziNU6+ncxzIZSDlPwNkoW0CxkAggKh8nfcXgFXLzxuDx
-         EJ/7nNdgDgcw81Mjo+PHn4VfVxOsxOopZmTnRo56r2nc44BOoraHqojrIopiFOUiUt
-         vAjcvxaaljitJIN4Mfu9h37y+E93LduiyX1ThH3Q=
-Received: by earth.universe (Postfix, from userid 1000)
-        id C348B3C08CD; Fri, 19 Jun 2020 16:39:06 +0200 (CEST)
-Date:   Fri, 19 Jun 2020 16:39:06 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Laurentiu Palcu <laurentiu.palcu@intel.com>,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: power: supply: bq25890: Document
- required interrupt
-Message-ID: <20200619143906.33twapu6mgyay4yr@earth.universe>
-References: <20200617102305.14241-1-krzk@kernel.org>
- <20200617102305.14241-2-krzk@kernel.org>
+        id S2436552AbgFSQxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:53:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2436535AbgFSQxq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 12:53:46 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CAEFC06174E;
+        Fri, 19 Jun 2020 09:53:46 -0700 (PDT)
+Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
+        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
+        (Exim 4.80)
+        (envelope-from <tip-bot2@linutronix.de>)
+        id 1jmKGs-0004iL-I4; Fri, 19 Jun 2020 18:53:42 +0200
+Received: from [127.0.1.1] (localhost [IPv6:::1])
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id B181F1C0478;
+        Fri, 19 Jun 2020 18:46:00 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 16:46:00 -0000
+From:   "tip-bot2 for Tony Luck" <tip-bot2@linutronix.de>
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: efi/urgent] efivarfs: Don't return -EINTR when rate-limiting reads
+Cc:     Lennart Poettering <mzxreary@0pointer.de>,
+        Tony Luck <tony.luck@intel.com>,
+        Ard Biesheuvel <ardb@kernel.org>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200528194905.690-3-tony.luck@intel.com>
+References: <20200528194905.690-3-tony.luck@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="gyqjsa47ulgkpkl2"
-Content-Disposition: inline
-In-Reply-To: <20200617102305.14241-2-krzk@kernel.org>
+Message-ID: <159258516047.16989.672955452800449351.tip-bot2@tip-bot2>
+X-Mailer: tip-git-log-daemon
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the efi/urgent branch of tip:
 
---gyqjsa47ulgkpkl2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     4353f03317fd3eb0bd803b61bdb287b68736a728
+Gitweb:        https://git.kernel.org/tip/4353f03317fd3eb0bd803b61bdb287b68736a728
+Author:        Tony Luck <tony.luck@intel.com>
+AuthorDate:    Thu, 28 May 2020 12:49:05 -07:00
+Committer:     Ard Biesheuvel <ardb@kernel.org>
+CommitterDate: Mon, 15 Jun 2020 14:38:56 +02:00
 
-Hi,
+efivarfs: Don't return -EINTR when rate-limiting reads
 
-On Wed, Jun 17, 2020 at 12:23:05PM +0200, Krzysztof Kozlowski wrote:
-> The driver requires interrupts (fails probe if it is not provided) so
-> document this requirement in bindings.
->=20
-> Fixes: 4aeae9cb0dad ("power_supply: Add support for TI BQ25890 charger ch=
-ip")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
+Applications that read EFI variables may see a return
+value of -EINTR if they exceed the rate limit and a
+signal delivery is attempted while the process is sleeping.
 
-Thanks, queued.
+This is quite surprising to the application, which probably
+doesn't have code to handle it.
 
--- Sebastian
+Change the interruptible sleep to a non-interruptible one.
 
->  Documentation/devicetree/bindings/power/supply/bq25890.txt | 4 ++++
->  1 file changed, 4 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/power/supply/bq25890.txt b=
-/Documentation/devicetree/bindings/power/supply/bq25890.txt
-> index 51ecc756521f..3b4c69a7fa70 100644
-> --- a/Documentation/devicetree/bindings/power/supply/bq25890.txt
-> +++ b/Documentation/devicetree/bindings/power/supply/bq25890.txt
-> @@ -10,6 +10,7 @@ Required properties:
->      * "ti,bq25895"
->      * "ti,bq25896"
->  - reg: integer, i2c address of the device.
-> +- interrupts: interrupt line;
->  - ti,battery-regulation-voltage: integer, maximum charging voltage (in u=
-V);
->  - ti,charge-current: integer, maximum charging current (in uA);
->  - ti,termination-current: integer, charge will be terminated when curren=
-t in
-> @@ -39,6 +40,9 @@ bq25890 {
->  	compatible =3D "ti,bq25890";
->  	reg =3D <0x6a>;
-> =20
-> +	interrupt-parent =3D <&gpio1>;
-> +	interrupts =3D <16 IRQ_TYPE_EDGE_FALLING>;
-> +
->  	ti,battery-regulation-voltage =3D <4200000>;
->  	ti,charge-current =3D <1000000>;
->  	ti,termination-current =3D <50000>;
-> --=20
-> 2.17.1
->=20
+Reported-by: Lennart Poettering <mzxreary@0pointer.de>
+Signed-off-by: Tony Luck <tony.luck@intel.com>
+Link: https://lore.kernel.org/r/20200528194905.690-3-tony.luck@intel.com
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ fs/efivarfs/file.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
---gyqjsa47ulgkpkl2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7szgoACgkQ2O7X88g7
-+pobjw/8Cpw1OzyHiGjyxlvzVKNvp4LndLYSD4J8cdqGPeSNEAHae4sCqmae3G89
-ZCd2Zohd2LwXXire9sQtIXJb96o+1ocWQIzR3wMIypCO8dy83IZqqy+SfZW4ivGW
-K2KmQChB/8os3O74Jw9DSPc4UfK0ISy+7HR4Ot8kyfhg1Dvm9z4NVnId2dHohXoL
-EOn4KYAvjSrevUfXSRwIadCxLxLW7dA1IV1+AS13p0XHdjq4OGQ5dsxNoqYd/X1Q
-MyF3f01Dfic0PDQE3StBTYKW8sYaXI73IftAxZ3gPTcPjS7AzFj+3wpXVEKjfxqR
-e7G40IJYwKtXiyIBg0aQhXOvC3/32LQV4c7suPNmNez4tSn6BkrnFvBOPiVeNZRq
-PLrFNdtatoX3otvbuJEoULD7jLIgSg3Oi8Fkbxu3zmpeCO8yNDPGTmZdhHyxfk7s
-xxUTNlOr7f5rbxYGVe2q0Vz7o5H6s5ukgjSsiqCSMZrNkJd2DYfnvPsSL6Ymd+jP
-SCdfiauLIwrXOzoX/lJXHj/fGzmJGUnU7ogW7OWqclWIGoTxAjIuen+lEWXNIjOH
-L/sAxLp/Sp1gS4rTRFJSite5x8A6h4QGxmsCN1mxuiKgeu9Lyrw4JmKEo40hYa8S
-Ayr385VFbX//luhm435eFe27tMPikUC1GdQwu/tFJk+mkoq5XVs=
-=XIWY
------END PGP SIGNATURE-----
-
---gyqjsa47ulgkpkl2--
+diff --git a/fs/efivarfs/file.c b/fs/efivarfs/file.c
+index 4b8bc45..feaa5e1 100644
+--- a/fs/efivarfs/file.c
++++ b/fs/efivarfs/file.c
+@@ -73,10 +73,8 @@ static ssize_t efivarfs_file_read(struct file *file, char __user *userbuf,
+ 	ssize_t size = 0;
+ 	int err;
+ 
+-	while (!__ratelimit(&file->f_cred->user->ratelimit)) {
+-		if (!msleep_interruptible(50))
+-			return -EINTR;
+-	}
++	while (!__ratelimit(&file->f_cred->user->ratelimit))
++		msleep(50);
+ 
+ 	err = efivar_entry_size(var, &datasize);
+ 
