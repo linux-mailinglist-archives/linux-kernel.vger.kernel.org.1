@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B19200BFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A8BB200C8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388136AbgFSOkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:40:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58070 "EHLO mail.kernel.org"
+        id S2388932AbgFSOrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:47:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388121AbgFSOkP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:40:15 -0400
+        id S2388915AbgFSOrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:47:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E37982070A;
-        Fri, 19 Jun 2020 14:40:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C7439217BA;
+        Fri, 19 Jun 2020 14:47:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577615;
-        bh=7MF0b77oC01ynraHWDZg4g8n84cneXiha1iL8XpCBbA=;
+        s=default; t=1592578024;
+        bh=3Gy/92jLZF+v7FYdCtBsRReY/y1P8gmS+TEu783FoGw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OqUU8A7zaclLnvhMJHZKI+69X0pW3sV973p2ar598b2CQ9oob9yhP6VuPBbJdr4Sw
-         I1qkPQkG51IMwsIdMnzcNII894Xz0f+35H3XjIni8qYUMN3KumirkVId+gC53TOMTx
-         CjXiO6xdy+tIbs29pvUwK6MB6Dt64burerkesnr8=
+        b=t9tos96goJJO3JMzKyIbDbM8BeHKpmw9riWQuKzB93CO3RGda0eh7sHzpQB24jL85
+         gdYZieNq7Kb4bAEBswqP1KF2/4ZVmC4zO9nRyNPiDLgsL/GiBSk14ntQq/HWLS+JOP
+         FxWSdKqwijqZfV6pmJQgHEuClO76V4OKkoKm1qhs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
-        Nikolay Aleksandrov <nikolay@cumulusnetworks.com>,
+        stable@vger.kernel.org, Tanner Love <tannerlove@google.com>,
+        Willem de Bruijn <willemb@google.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 002/128] vxlan: Avoid infinite loop when suppressing NS messages with invalid options
-Date:   Fri, 19 Jun 2020 16:31:36 +0200
-Message-Id: <20200619141620.272273240@linuxfoundation.org>
+Subject: [PATCH 4.14 052/190] selftests/net: in rxtimestamp getopt_long needs terminating null entry
+Date:   Fri, 19 Jun 2020 16:31:37 +0200
+Message-Id: <20200619141636.187659962@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
-References: <20200619141620.148019466@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +44,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@mellanox.com>
+From: tannerlove <tannerlove@google.com>
 
-[ Upstream commit 8066e6b449e050675df48e7c4b16c29f00507ff0 ]
+[ Upstream commit 865a6cbb2288f8af7f9dc3b153c61b7014fdcf1e ]
 
-When proxy mode is enabled the vxlan device might reply to Neighbor
-Solicitation (NS) messages on behalf of remote hosts.
+getopt_long requires the last element to be filled with zeros.
+Otherwise, passing an unrecognized option can cause a segfault.
 
-In case the NS message includes the "Source link-layer address" option
-[1], the vxlan device will use the specified address as the link-layer
-destination address in its reply.
-
-To avoid an infinite loop, break out of the options parsing loop when
-encountering an option with length zero and disregard the NS message.
-
-This is consistent with the IPv6 ndisc code and RFC 4886 which states
-that "Nodes MUST silently discard an ND packet that contains an option
-with length zero" [2].
-
-[1] https://tools.ietf.org/html/rfc4861#section-4.3
-[2] https://tools.ietf.org/html/rfc4861#section-4.6
-
-Fixes: 4b29dba9c085 ("vxlan: fix nonfunctional neigh_reduce()")
-Signed-off-by: Ido Schimmel <idosch@mellanox.com>
-Acked-by: Nikolay Aleksandrov <nikolay@cumulusnetworks.com>
+Fixes: 16e781224198 ("selftests/net: Add a test to validate behavior of rx timestamps")
+Signed-off-by: Tanner Love <tannerlove@google.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/vxlan.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ tools/testing/selftests/networking/timestamping/rxtimestamp.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/net/vxlan.c
-+++ b/drivers/net/vxlan.c
-@@ -1521,6 +1521,10 @@ static struct sk_buff *vxlan_na_create(s
- 	daddr = eth_hdr(request)->h_source;
- 	ns_olen = request->len - skb_transport_offset(request) - sizeof(*ns);
- 	for (i = 0; i < ns_olen-1; i += (ns->opt[i+1]<<3)) {
-+		if (!ns->opt[i + 1]) {
-+			kfree_skb(reply);
-+			return NULL;
-+		}
- 		if (ns->opt[i] == ND_OPT_SOURCE_LL_ADDR) {
- 			daddr = ns->opt + i + sizeof(struct nd_opt_hdr);
- 			break;
+--- a/tools/testing/selftests/networking/timestamping/rxtimestamp.c
++++ b/tools/testing/selftests/networking/timestamping/rxtimestamp.c
+@@ -114,6 +114,7 @@ static struct option long_options[] = {
+ 	{ "tcp", no_argument, 0, 't' },
+ 	{ "udp", no_argument, 0, 'u' },
+ 	{ "ip", no_argument, 0, 'i' },
++	{ NULL, 0, NULL, 0 },
+ };
+ 
+ static int next_port = 19999;
 
 
