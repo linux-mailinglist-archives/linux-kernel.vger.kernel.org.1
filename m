@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4E7200147
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 06:34:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32BF5200149
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 06:34:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729655AbgFSEeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 00:34:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44068 "EHLO
+        id S1729509AbgFSEea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 00:34:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725826AbgFSEeP (ORCPT
+        with ESMTP id S1728973AbgFSEeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 00:34:15 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57EFAC06174E
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 21:34:14 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id s9so541532ybj.18
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 21:34:14 -0700 (PDT)
+        Fri, 19 Jun 2020 00:34:16 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B43AC0613EE
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 21:34:16 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id g72so6186670qke.18
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 21:34:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=5BR32hfEpZdXnyFi+8Yks8BmSgyepFsygk5jmvxNC0A=;
-        b=H6nAd81hdPg1adE+qaXQPU6G8MbSR0G+bIKfARALyp+TvVj/4VRs1xewIWl4ws0vbS
-         RnrIT7Mu3kabr0RUCZWppay4xp59/95bXACIe+J0glVRpPo9woYVKYRIkg973bo6zJoJ
-         i3ItfHkzWFFtA/bW1aKzWj0f0mBWStHUH70ubeI6KwsJEb7icxYhiZClNAka1oziG1wQ
-         FEDbX9T1CL+1rnTJ/t4wEQDbNWJqGqtgWAUdSL/9NnDNpfTZcj2kWz/9VpNMPofeWWsd
-         /VSPG6VMxyIZlVXj29bm3LoFjxNbuOi0Zk4ClT1QejBF3P7I7uCqA6LvvZF7j1JGYCw9
-         Oweg==
+        bh=nxrqOXZ+VMn+w6eU8G8WeFCP1whWHo8wMYd7Py2GNyI=;
+        b=IdcZwvKQaEdYfIitVD31eU/XI8+TENoIL0zpQuIlUTO8mbf0ms9m1AWXibz5GXKmtB
+         dAQ+XROQ+OHfagItMbuqD/2GQp9dNY5gNMZmSADGSEEISPTZUXtoOcE8eBTyyLzaOhml
+         NXoYD3SgzmDwOMZroisYqGXVaxGt2qk7Lfsjljw1kAqLUGTtT6PUrK7/vLKkC/Ec+QDQ
+         mEou/l4WsfV0ayCSuLywwQtvASN+4+1CdEhPSkJvItEdpI0qN4EKWvZBakXpOdry/Osp
+         ts6sL8zqO52L4cVrbpGsusOPfUMFEYofO2FF2HAvhxu3i7p6BUuIrqu99wPM8SsPeeYp
+         tnIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=5BR32hfEpZdXnyFi+8Yks8BmSgyepFsygk5jmvxNC0A=;
-        b=a03glunb9b+50Y7eos+vXZsDhZ9uJtIt/CqSbT4a/42D4auhdrnVmety7NxwcNhYst
-         cw/dIkSKJxdnl8o4il4sD4cM3UVbyHTJYM+OkVThEe9tzN+W4GS/WljfonONhhOLEM4a
-         flvadB2ONO7j05sTpWMeaJUZOpDunDmydoaHPk6ttaDhVnaqlx5vlepgJNUMJ6Viys4D
-         3J3Mt3Bl8UPrpsyIpfDriMQYFRbh6iEM+I8Gt2f0iVXDDhmafSfcVVS2sthUB3d+Doa3
-         HeOLF63XuZ+yMVUi/Zx3O0vFakj7Kk0rdH9/W1l6yiS9fjOf5cbzhvjQ/4gO9+RAfC03
-         p8mQ==
-X-Gm-Message-State: AOAM532h+Ltj/5+FpZlTBhkMYaFRTvqOdSa55wDdNga+SLCGUFRFk+7Q
-        VLPeKeZyUWoWaVzNR/3hrbr8VXw2hNqx
-X-Google-Smtp-Source: ABdhPJy2wUSFrl1jLfBADDXNBeerkNO6btd9PnNzmLNaobasJ6kGrNKssxd8s0ZO0kj36gqvRHqtMOjbjgz5
-X-Received: by 2002:a25:428c:: with SMTP id p134mr3307798yba.467.1592541253580;
- Thu, 18 Jun 2020 21:34:13 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 21:33:49 -0700
+        bh=nxrqOXZ+VMn+w6eU8G8WeFCP1whWHo8wMYd7Py2GNyI=;
+        b=GqZeteP0AmRU7E5M4AqvfG4tYTM4WoxRwR9e+w2QmqlT0hq+3CXi13MoTRVRwHowvT
+         L0LF3c3QCCw85mVjZuUcBjwkPMR3jM1h4IzH7mnFaFy053ufqyhL+eSHCpEXNPINd9te
+         725+Ixj8pM+NCRqlc+XRfX+NLr+UYmMkazrG1SukcHQZ65zIHqgoI1RZNyJhK4fwBhMf
+         SyVWYGbrOT2HGF6JrZoLfQm41iCunN3fqHgV5LkrVDz0+4J0WIcfkliNNkuZBDhIlQpH
+         823rfa4i3X5IaKCXtuAsL1CNU0yDZhCOdcx1jkMgvJPs0iiKJBxtAwrJbFYq35PbS+EP
+         5Zcg==
+X-Gm-Message-State: AOAM532KD4/itUHhd4x+9x+PkvhZmOeam6VZBLjrwiPli1xYt0YarNdZ
+        K8yjeqdy7C79i+MkvLuw4+ejlkSeOfNa
+X-Google-Smtp-Source: ABdhPJzv5r4jdAlXVMm5OExuwtfRcpOw80DxILzIYyCgI++juXu2bg+BxnIi00Q8fYnEY6Iijxu30R+zY80i
+X-Received: by 2002:a0c:ec4b:: with SMTP id n11mr7069851qvq.103.1592541255460;
+ Thu, 18 Jun 2020 21:34:15 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 21:33:50 -0700
 In-Reply-To: <20200619043356.90024-1-irogers@google.com>
-Message-Id: <20200619043356.90024-4-irogers@google.com>
+Message-Id: <20200619043356.90024-5-irogers@google.com>
 Mime-Version: 1.0
 References: <20200619043356.90024-1-irogers@google.com>
 X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
-Subject: [PATCH v2 03/10] perf pmu: Add bison debug build flag
+Subject: [PATCH v2 04/10] perf pmu: Add flex debug build flag
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -72,8 +72,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow pmu parser to be debugged as the parse-events and expr currently are.
-Enabling this requires the C code to set perf_pmu_debug.
+Allow pmu parser's flex to be debugged as the parse-events and
+expr currently are. Enabling this requires the C code to call
+perf_pmu__flex_debug.
 
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
@@ -81,18 +82,18 @@ Signed-off-by: Ian Rogers <irogers@google.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index 4e1aa52d75a8..3ae4adc8e966 100644
+index 3ae4adc8e966..e63bfc46d50f 100644
 --- a/tools/perf/util/Build
 +++ b/tools/perf/util/Build
-@@ -213,7 +213,7 @@ $(OUTPUT)util/pmu-flex.c: util/pmu.l $(OUTPUT)util/pmu-bison.c
+@@ -209,7 +209,7 @@ $(OUTPUT)util/expr-bison.c: util/expr.y
+ 
+ $(OUTPUT)util/pmu-flex.c: util/pmu.l $(OUTPUT)util/pmu-bison.c
+ 	$(call rule_mkdir)
+-	$(Q)$(call echo-cmd,flex)$(FLEX) -o $@ --header-file=$(OUTPUT)util/pmu-flex.h $<
++	$(Q)$(call echo-cmd,flex)$(FLEX) -o $@ --header-file=$(OUTPUT)util/pmu-flex.h $(PARSER_DEBUG_FLEX) $<
  
  $(OUTPUT)util/pmu-bison.c: util/pmu.y
  	$(call rule_mkdir)
--	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d -o $@ -p perf_pmu_
-+	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) -o $@ -p perf_pmu_
- 
- CFLAGS_parse-events-flex.o  += -w
- CFLAGS_pmu-flex.o           += -w
 -- 
 2.27.0.111.gc72c7da667-goog
 
