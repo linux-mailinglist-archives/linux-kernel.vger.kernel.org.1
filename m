@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F149200C20
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2624D200CAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388318AbgFSOmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:42:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60656 "EHLO mail.kernel.org"
+        id S2389085AbgFSOsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:48:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387511AbgFSOly (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:41:54 -0400
+        id S2389058AbgFSOsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:48:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF9AB21548;
-        Fri, 19 Jun 2020 14:41:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 048D02083B;
+        Fri, 19 Jun 2020 14:48:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577714;
-        bh=2UXKeaoTY9tEemee8pXYlcGGA6ln79psZMK4HAdfhLg=;
+        s=default; t=1592578088;
+        bh=2Q9Yr7e7ItrZAW0q4ARj2n/qHLvZhPdCDaCzDRgnIQQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C99W6Q9a0q3DkmtZZ1euNwM0Ry1PhTPg0viSBWQnfZeQh53BLgvXheEuqFYgtUG1h
-         fX2aE5jZupcBAf0One28hgiqGfpWGhGbLAPPt6cB/cMPkw7OVho3UvTfZyakvEF1Wz
-         QnEOSsNyP1KXfKvy3Y5V4DnjKGkfmKh1xHKcupoY=
+        b=MF1KGPc08ag4+VlATIxf4OdWep0RyyrXes5r5Go2WKgeWgK0ql1jLnWR4L/Hr+/dk
+         Lj+KOGvsL2Xxaf7B3g0qWC2fU0YzUh15wRh3+vj88tMS+Xnlrqg7LcGHwNPC0QKw2G
+         s58yCnoJsQk/enCs3Yu2Puxvp0JmTWtjSs16uvZ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Brad Love <brad@nextdimension.cc>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 029/128] spi: dw: fix possible race condition
+Subject: [PATCH 4.14 078/190] media: si2157: Better check for running tuner in init
 Date:   Fri, 19 Jun 2020 16:32:03 +0200
-Message-Id: <20200619141621.706156204@linuxfoundation.org>
+Message-Id: <20200619141637.487063922@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
-References: <20200619141620.148019466@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,53 +45,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Upstream commit 66b19d762378785d1568b5650935205edfeb0503 ]
+From: Brad Love <brad@nextdimension.cc>
 
-It is possible to get an interrupt as soon as it is requested.  dw_spi_irq
-does spi_controller_get_devdata(master) and expects it to be different than
-NULL. However, spi_controller_set_devdata() is called after request_irq(),
-resulting in the following crash:
+[ Upstream commit e955f959ac52e145f27ff2be9078b646d0352af0 ]
 
-CPU 0 Unable to handle kernel paging request at virtual address 00000030, epc == 8058e09c, ra == 8018ff90
-[...]
-Call Trace:
-[<8058e09c>] dw_spi_irq+0x8/0x64
-[<8018ff90>] __handle_irq_event_percpu+0x70/0x1d4
-[<80190128>] handle_irq_event_percpu+0x34/0x8c
-[<801901c4>] handle_irq_event+0x44/0x80
-[<801951a8>] handle_level_irq+0xdc/0x194
-[<8018f580>] generic_handle_irq+0x38/0x50
-[<804c6924>] ocelot_irq_handler+0x104/0x1c0
+Getting the Xtal trim property to check if running is less error prone.
+Reset if_frequency if state is unknown.
 
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Replaces the previous "garbage check".
+
+Signed-off-by: Brad Love <brad@nextdimension.cc>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-dw.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/media/tuners/si2157.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
-index babf0a337e96..be3ab4006313 100644
---- a/drivers/spi/spi-dw.c
-+++ b/drivers/spi/spi-dw.c
-@@ -500,6 +500,8 @@ int dw_spi_add_host(struct device *dev, struct dw_spi *dws)
- 	snprintf(dws->name, sizeof(dws->name), "dw_spi%d", dws->bus_num);
- 	spin_lock_init(&dws->buf_lock);
+diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
+index e35b1faf0ddc..c826997f5433 100644
+--- a/drivers/media/tuners/si2157.c
++++ b/drivers/media/tuners/si2157.c
+@@ -84,24 +84,23 @@ static int si2157_init(struct dvb_frontend *fe)
+ 	struct si2157_cmd cmd;
+ 	const struct firmware *fw;
+ 	const char *fw_name;
+-	unsigned int uitmp, chip_id;
++	unsigned int chip_id, xtal_trim;
  
-+	spi_master_set_devdata(master, dws);
+ 	dev_dbg(&client->dev, "\n");
+ 
+-	/* Returned IF frequency is garbage when firmware is not running */
+-	memcpy(cmd.args, "\x15\x00\x06\x07", 4);
++	/* Try to get Xtal trim property, to verify tuner still running */
++	memcpy(cmd.args, "\x15\x00\x04\x02", 4);
+ 	cmd.wlen = 4;
+ 	cmd.rlen = 4;
+ 	ret = si2157_cmd_execute(client, &cmd);
+-	if (ret)
+-		goto err;
+ 
+-	uitmp = cmd.args[2] << 0 | cmd.args[3] << 8;
+-	dev_dbg(&client->dev, "if_frequency kHz=%u\n", uitmp);
++	xtal_trim = cmd.args[2] | (cmd.args[3] << 8);
+ 
+-	if (uitmp == dev->if_frequency / 1000)
++	if (ret == 0 && xtal_trim < 16)
+ 		goto warm;
+ 
++	dev->if_frequency = 0; /* we no longer know current tuner state */
 +
- 	ret = request_irq(dws->irq, dw_spi_irq, IRQF_SHARED, dws->name, master);
- 	if (ret < 0) {
- 		dev_err(dev, "can not get IRQ\n");
-@@ -531,7 +533,6 @@ int dw_spi_add_host(struct device *dev, struct dw_spi *dws)
- 		}
- 	}
- 
--	spi_master_set_devdata(master, dws);
- 	ret = devm_spi_register_master(dev, master);
- 	if (ret) {
- 		dev_err(&master->dev, "problem registering spi master\n");
+ 	/* power up */
+ 	if (dev->chiptype == SI2157_CHIPTYPE_SI2146) {
+ 		memcpy(cmd.args, "\xc0\x05\x01\x00\x00\x0b\x00\x00\x01", 9);
 -- 
 2.25.1
 
