@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37F28200C97
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:48:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9EC200BF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388993AbgFSOrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:47:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39876 "EHLO mail.kernel.org"
+        id S2388098AbgFSOkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:40:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388981AbgFSOrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:47:42 -0400
+        id S2387586AbgFSOjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:39:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 707C520DD4;
-        Fri, 19 Jun 2020 14:47:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F019208B8;
+        Fri, 19 Jun 2020 14:39:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578062;
-        bh=NBVUODQbI1T1MtGAlUTn/rshWC+w1j++5qEaRVUjYSg=;
+        s=default; t=1592577595;
+        bh=yXPXmqd0skqNRuHYxSY4peEgUT8O2Dy/r0sZbu6ByaI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AM+WxzNlTO0DPjtzEwmzRWnQUF1VXGluxZMmu6WLc1dDrCRv74Wx7YzJIsLBg68xb
-         K3wfKKS8fhZs+xHCmIeatD/yWnNwvir5XfSGPzEuNIzhdtSz3If4He//aLJgCgz+Af
-         w3GoV6riZMecCTmIktbZPjudzBatxKCs0SKJhjeY=
+        b=NSuSOstKwQb3CufkHrhKsbwGASBTdK/fDBDKNu3PGep0AtNE4Vq9+Ke8Y7zjGLmFz
+         l7CTfALBj9QhYhMl1yCmca/cU47w+QAxqJ7PQAPOsz4VvsUrgaaBm5d+UWbrBNIu2T
+         MlPhSTfAIOWV8XM3NawesSvtdiongaMq/zw9gGmc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Xing Li <lixing@loongson.cn>, Huacai Chen <chenhc@lemote.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: [PATCH 4.14 060/190] KVM: MIPS: Fix VPN2_MASK definition for variable cpu_vmbits
-Date:   Fri, 19 Jun 2020 16:31:45 +0200
-Message-Id: <20200619141636.580530063@linuxfoundation.org>
+        stable@vger.kernel.org, Hill Ma <maahiuzeon@gmail.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 4.9 012/128] x86/reboot/quirks: Add MacBook6,1 reboot quirk
+Date:   Fri, 19 Jun 2020 16:31:46 +0200
+Message-Id: <20200619141620.793530387@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,43 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xing Li <lixing@loongson.cn>
+From: Hill Ma <maahiuzeon@gmail.com>
 
-commit 5816c76dea116a458f1932eefe064e35403248eb upstream.
+commit 140fd4ac78d385e6c8e6a5757585f6c707085f87 upstream.
 
-If a CPU support more than 32bit vmbits (which is true for 64bit CPUs),
-VPN2_MASK set to fixed 0xffffe000 will lead to a wrong EntryHi in some
-functions such as _kvm_mips_host_tlb_inv().
+On MacBook6,1 reboot would hang unless parameter reboot=pci is added.
+Make it automatic.
 
-The cpu_vmbits definition of 32bit CPU in cpu-features.h is 31, so we
-still use the old definition.
-
-Cc: Stable <stable@vger.kernel.org>
-Reviewed-by: Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
-Signed-off-by: Xing Li <lixing@loongson.cn>
-[Huacai: Improve commit messages]
-Signed-off-by: Huacai Chen <chenhc@lemote.com>
-Message-Id: <1590220602-3547-3-git-send-email-chenhc@lemote.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Hill Ma <maahiuzeon@gmail.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/20200425200641.GA1554@cslab.localdomain
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/mips/include/asm/kvm_host.h |    4 ++++
- 1 file changed, 4 insertions(+)
+ arch/x86/kernel/reboot.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/arch/mips/include/asm/kvm_host.h
-+++ b/arch/mips/include/asm/kvm_host.h
-@@ -274,7 +274,11 @@ enum emulation_result {
- #define MIPS3_PG_SHIFT		6
- #define MIPS3_PG_FRAME		0x3fffffc0
- 
-+#if defined(CONFIG_64BIT)
-+#define VPN2_MASK		GENMASK(cpu_vmbits - 1, 13)
-+#else
- #define VPN2_MASK		0xffffe000
-+#endif
- #define KVM_ENTRYHI_ASID	cpu_asid_mask(&boot_cpu_data)
- #define TLB_IS_GLOBAL(x)	((x).tlb_lo[0] & (x).tlb_lo[1] & ENTRYLO_G)
- #define TLB_VPN2(x)		((x).tlb_hi & VPN2_MASK)
+--- a/arch/x86/kernel/reboot.c
++++ b/arch/x86/kernel/reboot.c
+@@ -198,6 +198,14 @@ static struct dmi_system_id __initdata r
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "MacBook5"),
+ 		},
+ 	},
++	{	/* Handle problems with rebooting on Apple MacBook6,1 */
++		.callback = set_pci_reboot,
++		.ident = "Apple MacBook6,1",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Apple Inc."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "MacBook6,1"),
++		},
++	},
+ 	{	/* Handle problems with rebooting on Apple MacBookPro5 */
+ 		.callback = set_pci_reboot,
+ 		.ident = "Apple MacBookPro5",
 
 
