@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E26C200C72
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852A9200D63
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388759AbgFSOpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:45:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37430 "EHLO mail.kernel.org"
+        id S2390173AbgFSO5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:57:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388745AbgFSOpq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:45:46 -0400
+        id S2389007AbgFSO4m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:56:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 740DC20A8B;
-        Fri, 19 Jun 2020 14:45:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B60F21852;
+        Fri, 19 Jun 2020 14:56:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577945;
-        bh=wDH/5okJyIGslq/z6aOXJ/16hU1tvR3xkoeeS4hjMNs=;
+        s=default; t=1592578601;
+        bh=mu5fTIwh+EPGYXBTWyeYNta8JxEp6zEgHBE6L3qXk+8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SDCiFdhh2sUd9Iyfbo7/73jYtK9E2RjplEmjIQrNzgID1N9alumb5qHz1N4NqWJY3
-         QDLkU3mYeucbbm+xq431cS5fxtlUrxsKUtsruGU+sRtDgWd2M6NeaH5YueD+VQrElV
-         KFlukRS8oVB9fy9L4NZA6PQIqWWjlGkrr2iO0UII=
+        b=wOoRaDL0kb1yrfugSUD5tjXmYsmsAJu3t+UBeeYX8zxJpNymEQd+p5FshiU0vYU6n
+         JHwQUFBF//SgMKFS3X4PODeXead4HYfL7qn2nxl8dJdlpnF95HhoKACIa9MLfnEDSO
+         oP5FKmcYEHR1abo7xOyag/90fw2uI8wu6gtavqvI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 023/190] ALSA: es1688: Add the missed snd_card_free()
+        stable@vger.kernel.org, Ezequiel Garcia <ezequiel@collabora.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+        syzbot+e3372a2afe1e7ef04bc7@syzkaller.appspotmail.com
+Subject: [PATCH 4.19 083/267] drm/vkms: Hold gem object while still in-use
 Date:   Fri, 19 Jun 2020 16:31:08 +0200
-Message-Id: <20200619141634.646112314@linuxfoundation.org>
+Message-Id: <20200619141652.873581570@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +45,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuhong Yuan <hslester96@gmail.com>
+From: Ezequiel Garcia <ezequiel@collabora.com>
 
-commit d9b8fbf15d05350b36081eddafcf7b15aa1add50 upstream.
+commit 0ea2ea42b31abc1141f2fd3911f952a97d401fcb upstream.
 
-snd_es968_pnp_detect() misses a snd_card_free() in a failed path.
-Add the missed function call to fix it.
+We need to keep the reference to the drm_gem_object
+until the last access by vkms_dumb_create.
 
-Fixes: a20971b201ac ("ALSA: Merge es1688 and es968 drivers")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200603092459.1424093-1-hslester96@gmail.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Therefore, the put the object after it is used.
+
+This fixes a use-after-free issue reported by syzbot.
+
+While here, change vkms_gem_create() symbol to static.
+
+Reported-and-tested-by: syzbot+e3372a2afe1e7ef04bc7@syzkaller.appspotmail.com
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+Reviewed-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Signed-off-by: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200427214405.13069-1-ezequiel@collabora.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- sound/isa/es1688/es1688.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/vkms/vkms_drv.h |    5 -----
+ drivers/gpu/drm/vkms/vkms_gem.c |   11 ++++++-----
+ 2 files changed, 6 insertions(+), 10 deletions(-)
 
---- a/sound/isa/es1688/es1688.c
-+++ b/sound/isa/es1688/es1688.c
-@@ -284,8 +284,10 @@ static int snd_es968_pnp_detect(struct p
- 		return error;
- 	}
- 	error = snd_es1688_probe(card, dev);
--	if (error < 0)
-+	if (error < 0) {
-+		snd_card_free(card);
- 		return error;
-+	}
- 	pnp_set_card_drvdata(pcard, card);
- 	snd_es968_pnp_is_probed = 1;
+--- a/drivers/gpu/drm/vkms/vkms_drv.h
++++ b/drivers/gpu/drm/vkms/vkms_drv.h
+@@ -62,11 +62,6 @@ int vkms_output_init(struct vkms_device
+ struct drm_plane *vkms_plane_init(struct vkms_device *vkmsdev);
+ 
+ /* Gem stuff */
+-struct drm_gem_object *vkms_gem_create(struct drm_device *dev,
+-				       struct drm_file *file,
+-				       u32 *handle,
+-				       u64 size);
+-
+ int vkms_gem_fault(struct vm_fault *vmf);
+ 
+ int vkms_dumb_create(struct drm_file *file, struct drm_device *dev,
+--- a/drivers/gpu/drm/vkms/vkms_gem.c
++++ b/drivers/gpu/drm/vkms/vkms_gem.c
+@@ -93,10 +93,10 @@ int vkms_gem_fault(struct vm_fault *vmf)
+ 	return ret;
+ }
+ 
+-struct drm_gem_object *vkms_gem_create(struct drm_device *dev,
+-				       struct drm_file *file,
+-				       u32 *handle,
+-				       u64 size)
++static struct drm_gem_object *vkms_gem_create(struct drm_device *dev,
++					      struct drm_file *file,
++					      u32 *handle,
++					      u64 size)
+ {
+ 	struct vkms_gem_object *obj;
+ 	int ret;
+@@ -109,7 +109,6 @@ struct drm_gem_object *vkms_gem_create(s
+ 		return ERR_CAST(obj);
+ 
+ 	ret = drm_gem_handle_create(file, &obj->gem, handle);
+-	drm_gem_object_put_unlocked(&obj->gem);
+ 	if (ret)
+ 		return ERR_PTR(ret);
+ 
+@@ -138,6 +137,8 @@ int vkms_dumb_create(struct drm_file *fi
+ 	args->size = gem_obj->size;
+ 	args->pitch = pitch;
+ 
++	drm_gem_object_put_unlocked(gem_obj);
++
+ 	DRM_DEBUG_DRIVER("Created object of size %lld\n", size);
+ 
  	return 0;
 
 
