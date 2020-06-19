@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70562017C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3126201676
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388847AbgFSQm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:42:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35302 "EHLO mail.kernel.org"
+        id S2389669AbgFSQbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:31:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388125AbgFSOoC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:44:02 -0400
+        id S2389666AbgFSOxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:53:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E7BAA21556;
-        Fri, 19 Jun 2020 14:44:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0DCF4217D8;
+        Fri, 19 Jun 2020 14:53:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577842;
-        bh=/9nBmvLwtWmlQVQtLPJkWEypThtx126eI/Y7IuF+/M0=;
+        s=default; t=1592578384;
+        bh=krZvaaKbZupcbCVuMdkXCRkKX12CC/ankJb4E+BbGlU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KZVf+bBlGZZ0/VCpgTy+feixkRUIzZvm/RUPmHboaNME8FoGiG8KMbkCNy4Yl/Vid
-         hXALxtbu5cOt9HXx+OyDKRP8/oT/FT82nN4P9nuR7lFYEqKKuES4M2oC6XfmWfKU95
-         P1aNTQaI9NFxLErWLseKqFWyDvcGjwy5ldCdnLyU=
+        b=HrSTWEmf1Ke8kGY2HGhFONcH1K879xvT/RPoBgKRobR10+rDKjm7HvkikVhxB3g5f
+         gTV6uzu2l1o/0m/+mLaNCuXEOxWH7A/DWsVbBXKuiX/FA6eacezDW3JAsxwKl1gz3r
+         6eVfamk2r8rZT1E2FUd2OwUcbb/6DT2iUj/ry+gE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Larry Finger <Larry.Finger@lwfinger.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Rui Salvaterra <rsalvaterra@gmail.com>
-Subject: [PATCH 4.9 111/128] b43: Fix connection problem with WPA3
-Date:   Fri, 19 Jun 2020 16:33:25 +0200
-Message-Id: <20200619141626.006783310@linuxfoundation.org>
+        stable@vger.kernel.org, Giuliano Procida <gprocida@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 161/190] blk-mq: move _blk_mq_update_nr_hw_queues synchronize_rcu call
+Date:   Fri, 19 Jun 2020 16:33:26 +0200
+Message-Id: <20200619141641.804697508@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
-References: <20200619141620.148019466@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +43,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Larry Finger <Larry.Finger@lwfinger.net>
+From: Giuliano Procida <gprocida@google.com>
 
-commit 75d057bda1fbca6ade21378aa45db712e5f7d962 upstream.
+This fixes the
+4.14 backport commit 574eb136ec7f315c3ef2ca68fa9b3e16c56baa24
+which was
+upstream commit f5bbbbe4d63577026f908a809f22f5fd5a90ea1f.
 
-Since the driver was first introduced into the kernel, it has only
-handled the ciphers associated with WEP, WPA, and WPA2. It fails with
-WPA3 even though mac80211 can handle those additional ciphers in software,
-b43 did not report that it could handle them. By setting MFP_CAPABLE using
-ieee80211_set_hw(), the problem is fixed.
+The upstream commit added a call to synchronize_rcu to
+_blk_mq_update_nr_hw_queues, just after freezing queues.
 
-With this change, b43 will handle the ciphers it knows in hardware,
-and let mac80211 handle the others in software. It is not necessary to
-use the module parameter NOHWCRYPT to turn hardware encryption off.
-Although this change essentially eliminates that module parameter,
-I am choosing to keep it for cases where the hardware is broken,
-and software encryption is required for all ciphers.
+In the backport this landed just after unfreezeing queues.
 
-Reported-and-tested-by: Rui Salvaterra <rsalvaterra@gmail.com>
-Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
-Cc: Stable <stable@vger.kernel.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200526155909.5807-2-Larry.Finger@lwfinger.net
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This commit moves the call to its intended place.
 
+Fixes: 574eb136ec7f ("blk-mq: sync the update nr_hw_queues with blk_mq_queue_tag_busy_iter")
+Signed-off-by: Giuliano Procida <gprocida@google.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/b43/main.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/blk-mq.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/net/wireless/broadcom/b43/main.c
-+++ b/drivers/net/wireless/broadcom/b43/main.c
-@@ -5596,7 +5596,7 @@ static struct b43_wl *b43_wireless_init(
- 	/* fill hw info */
- 	ieee80211_hw_set(hw, RX_INCLUDES_FCS);
- 	ieee80211_hw_set(hw, SIGNAL_DBM);
--
-+	ieee80211_hw_set(hw, MFP_CAPABLE);
- 	hw->wiphy->interface_modes =
- 		BIT(NL80211_IFTYPE_AP) |
- 		BIT(NL80211_IFTYPE_MESH_POINT) |
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 9d53f476c517..cf56bdad2e06 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -2738,6 +2738,10 @@ static void __blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set,
+ 
+ 	list_for_each_entry(q, &set->tag_list, tag_set_list)
+ 		blk_mq_freeze_queue(q);
++	/*
++	 * Sync with blk_mq_queue_tag_busy_iter.
++	 */
++	synchronize_rcu();
+ 
+ 	set->nr_hw_queues = nr_hw_queues;
+ 	blk_mq_update_queue_map(set);
+@@ -2748,10 +2752,6 @@ static void __blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set,
+ 
+ 	list_for_each_entry(q, &set->tag_list, tag_set_list)
+ 		blk_mq_unfreeze_queue(q);
+-	/*
+-	 * Sync with blk_mq_queue_tag_busy_iter.
+-	 */
+-	synchronize_rcu();
+ }
+ 
+ void blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set, int nr_hw_queues)
+-- 
+2.25.1
+
 
 
