@@ -2,71 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6265F200ECF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA97200F25
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:17:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403852AbgFSPLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:11:48 -0400
-Received: from smtp.asem.it ([151.1.184.197]:51896 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392137AbgFSPLl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:11:41 -0400
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000330192.MSG 
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 17:11:36 +0200S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 19
- Jun 2020 17:11:35 +0200
-Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Fri, 19 Jun 2020 17:11:35 +0200
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Tom Joseph <tjoseph@cadence.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>
-CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH 1/1] pci: controller: cadence: fix wrong path in comment
-Date:   Fri, 19 Jun 2020 17:11:34 +0200
-Message-ID: <20200619151134.29893-1-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.17.1
+        id S2391088AbgFSPPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:15:47 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2274 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2392419AbgFSPPb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:15:31 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05JF3QjF114727;
+        Fri, 19 Jun 2020 11:14:26 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31rkgjw7b2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Jun 2020 11:14:26 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05JF9wSk027687;
+        Fri, 19 Jun 2020 15:14:25 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma03wdc.us.ibm.com with ESMTP id 31q8km3xuq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Jun 2020 15:14:25 +0000
+Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05JFEM0r10420970
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 19 Jun 2020 15:14:22 GMT
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 37C3613604F;
+        Fri, 19 Jun 2020 15:14:24 +0000 (GMT)
+Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4C39D136059;
+        Fri, 19 Jun 2020 15:14:21 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 19 Jun 2020 15:14:20 +0000 (GMT)
+Subject: Re: [PATCH v3] acpi: Extend TPM2 ACPI table with missing log fields
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Stefan Berger <stefanb@linux.vnet.ibm.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-integrity@vger.kernel.org,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module@vger.kernel.org
+References: <20200331214949.883781-1-stefanb@linux.vnet.ibm.com>
+ <20200401083729.GD17325@linux.intel.com>
+ <CAJZ5v0gQ04h1+zN4wHj1vkwPvqu3RPfsY60VJ+GOtgUrvWuxLQ@mail.gmail.com>
+ <20200402192145.GB10314@linux.intel.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <dfd2d622-90cb-9621-7b7d-5282f5ee7359@linux.ibm.com>
+Date:   Fri, 19 Jun 2020 11:14:20 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A090215.5EECD5A8.0047,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+In-Reply-To: <20200402192145.GB10314@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-19_16:2020-06-19,2020-06-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ clxscore=1011 priorityscore=1501 bulkscore=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 phishscore=0 cotscore=-2147483648 lowpriorityscore=0
+ spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006190107
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All native pci drivers are in drivers/pci/controller,
-but this comment still refers to the old pathname,
-when all pci drivers were located directly under the
-drivers/pci directory.
+On 4/2/20 3:21 PM, Jarkko Sakkinen wrote:
+> On Wed, Apr 01, 2020 at 11:05:36AM +0200, Rafael J. Wysocki wrote:
+>> On Wed, Apr 1, 2020 at 10:37 AM Jarkko Sakkinen
+>> <jarkko.sakkinen@linux.intel.com> wrote:
+>>> On Tue, Mar 31, 2020 at 05:49:49PM -0400, Stefan Berger wrote:
+>>>> From: Stefan Berger <stefanb@linux.ibm.com>
+>>>>
+>>>> Recent extensions of the TPM2 ACPI table added 3 more fields
+>>>> including 12 bytes of start method specific parameters and Log Area
+>>>> Minimum Length (u32) and Log Area Start Address (u64). So, we extend
+>>>> the existing structure with these fields to allow non-UEFI systems
+>>>> to access the TPM2's log.
+>>>>
+>>>> The specification that has the new fields is the following:
+>>>>    TCG ACPI Specification
+>>>>    Family "1.2" and "2.0"
+>>>>    Version 1.2, Revision 8
+>>>>
+>>>> Adapt all existing table size calculations to use
+>>>> offsetof(struct acpi_table_tpm2, start_method_specific)
+>>>> [where start_method_specific is a newly added field]
+>>>> rather than sizeof(struct acpi_table_tpm2) so that the addition
+>>>> of the new fields does not affect current systems that may not
+>>>> have them.
+>>>>
+>>>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>>>> Cc: linux-acpi@vger.kernel.org
+>>> I think I'm cool with this but needs an ack from ACPI maintainer.
+>>>
+>>> Rafael, given that this not an intrusive change in any possible means,
+>>> can I pick this patch and put it to my next pull request?
+>> Yes, please.
+>>
+>> Thanks!
+> Great, thanks Rafael.
+>
+> Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+>
+> Do you mind if I add your ack to the commit?
 
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
----
- drivers/pci/controller/cadence/pcie-cadence-ep.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-index 1c15c8352125..2a48b34ff249 100644
---- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
-+++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-@@ -276,7 +276,7 @@ static int cdns_pcie_ep_send_legacy_irq(struct cdns_pcie_ep *ep, u8 fn, u8 intx)
- 	cdns_pcie_ep_assert_intx(ep, fn, intx, true);
- 	/*
- 	 * The mdelay() value was taken from dra7xx_pcie_raise_legacy_irq()
--	 * from drivers/pci/dwc/pci-dra7xx.c
-+	 * from drivers/pci/controller/dwc/pci-dra7xx.c
- 	 */
- 	mdelay(1);
- 	cdns_pcie_ep_assert_intx(ep, fn, intx, false);
--- 
-2.17.1
+Any chance to get v4 applied?
+
+
+>
+> /Jarkko
+
 
