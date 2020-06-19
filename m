@@ -2,110 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFE37200D0D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EE40200BB6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389680AbgFSOxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:53:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389632AbgFSOwy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:52:54 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B659217D8;
-        Fri, 19 Jun 2020 14:52:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578374;
-        bh=2HALglx0FG3o8HOaRDw3kpLZKN5CEh0HYtvhNQ4yCBU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k5jPfHaSTR3sII61vuXq2/AWA9z9OrGav5Zg6aMiKqU4io7B7g4tpfjb9IIJyytdU
-         oXLPvAQrT/0CVKpvpJfim0+ZtxGE6GhZwEYOvJoAC1b62xDTNlugN44X1UcfFgeYUm
-         gf+R01MYujs6W5cmR2whM7fbNQj6tX13k5Ru0Dro=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tony Lindgren <tony@atomide.com>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>
-Subject: [PATCH 4.14 187/190] w1: omap-hdq: cleanup to add missing newline for some dev_dbg
-Date:   Fri, 19 Jun 2020 16:33:52 +0200
-Message-Id: <20200619141643.202024661@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2387624AbgFSOgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:36:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387568AbgFSOgl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:36:41 -0400
+Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4DBC06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:36:41 -0700 (PDT)
+Received: by mail-vs1-xe41.google.com with SMTP id q2so5724245vsr.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:36:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=p64fS/M7iBclbiXTSpgx3EjtiGyRATOfe8ygdOBbL8k=;
+        b=Ic8WHFaX1OgEjYWYHCaiPKgCONLHc18JvsQw7PDHNkGvuc4vqW3jWk5o/ob138BjEQ
+         Zd229mEfPxOZ6iEbirc+I2meMJZTOwHcmZX/z0AfYOP8sFKP3qvqOMSVdoKmXKGjc5bZ
+         MU/NuLF+0kRrF1hZUakchQh8oM3d9zkPkoBLEtS846kWCFIHrOs82affjmruJmcXLSmv
+         tRc646pgixkWl7ooq5shgp9bqq4wjX15wOyWepOeZMrMSNXfSr3edJt7NlVEpwhn9B+H
+         yY9hvHl6EwXt7zqiUlZlijpnOrTK7Py93/GxGHtgmaXVkJbkGzJT4YIBwmQnoupCpq9q
+         59Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=p64fS/M7iBclbiXTSpgx3EjtiGyRATOfe8ygdOBbL8k=;
+        b=fZARC2zLkGpOo47k6fA6zjafiswL1eagzrFtAY42/BwgI1602p4JbxjaYmKkS7M1w2
+         pbt/cShHlQAqHc2zkxIYFDZb6yzkkC9smMYRgdIabHxgyV06wcCZNYZFxj1JbUSMDB3d
+         vDkRB97h+UsrkuUuF08H8RVXhiPm2LKHZ7XkFucPXWswxGKtuxIqgCV3ifJB9zSjPQH9
+         UD0Ei5cGeHVqmzcUEYMwNq4e+zYInXpxutc77VDeWUs/Oe7+qMha53eKHp5rYNhzECze
+         2Rz7LVttdr8pUEfDlLstNsiCPfZReT2e2MS7WQH2MJJlPo1mMEjIx15nNmGvpGNeVQal
+         5a5A==
+X-Gm-Message-State: AOAM531BkHfmFto10f2QnqTaZA9JMP+y47+N86i20PWuItg547V9x2Kd
+        iLwQk9A5YZ5zY2sz95+85VrMc+d4plHKAu2iHeI=
+X-Google-Smtp-Source: ABdhPJyo4v3gLO2yZSZ2qxIhlB2KbZ+4o+ZP77/7ro9oJa7nh1bjHaeq6ChnElhdq4f5/zHWAX+1/ai1AwE3lrPAeCQ=
+X-Received: by 2002:a67:f595:: with SMTP id i21mr7915748vso.3.1592577400075;
+ Fri, 19 Jun 2020 07:36:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200618210215.23602-1-daniel.gutson@eclypsium.com>
+ <589c89ae-620e-36f8-2be5-4afc727c2911@intel.com> <CAFmMkTHNxSN_uWtm63TdkGxj44NXQQKEOmATXhjA=4DSCS92kQ@mail.gmail.com>
+ <23babf62-00cb-cb47-bb19-da9508325934@intel.com> <CAD2FfiFbGdf5uKmsc14F4ZuuCUQYFwfnirn=Y0fu2F0=njvWug@mail.gmail.com>
+ <80578b72-cb6f-8da9-1043-b4055c75d7f6@intel.com> <CAD2FfiG1BgYvR6wkeXGro8v6FQtVjKemmAOOf2W14z5KUWLqhw@mail.gmail.com>
+ <d55f94bc-3b26-a556-f7e6-43e9b1007e13@intel.com> <CAD2FfiHCi2MfShGWaYWk_GcXW4xVr6chsLPZs78OJE+2_GErVg@mail.gmail.com>
+ <3d454068-fd4e-4399-4bf5-2d010bb2ba7d@intel.com>
+In-Reply-To: <3d454068-fd4e-4399-4bf5-2d010bb2ba7d@intel.com>
+From:   Richard Hughes <hughsient@gmail.com>
+Date:   Fri, 19 Jun 2020 15:36:28 +0100
+Message-ID: <CAD2FfiF8QEarhyFD1GkfnaR+spyH86sChgRZm37ab_gzS2m_wg@mail.gmail.com>
+Subject: Re: [PATCH] Ability to read the MKTME status from userspace
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Daniel Gutson <daniel@eclypsium.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: H. Nikolaus Schaller <hns@goldelico.com>
+On Fri, 19 Jun 2020 at 15:23, Dave Hansen <dave.hansen@intel.com> wrote:
+> Last night, I asked my kids if they brushed their teeth.  They said:
+> "Dad, my toothbrush was available."  They argued that mere availability
+> was a better situation than not *having* a toothbrush.  They were
+> logically right, of course, but they still got cavities.
 
-commit 5e02f3b31704e24537697bce54f8156bdb72b7a6 upstream.
+I don't see how that's comparable, sorry. Surely Intel wants to sell
+hardware advertising TME as a security feature?
 
-Otherwise it will corrupt the console log during debugging.
+> > So my take-away from that is that it's currently impossible to
+> > actually say if your system is *actually* using TME.
+> Not in a generic way, and it can't be derived from cpuid or MSRs alone.
 
-Fixes: 7b5362a603a1 ("w1: omap_hdq: Fix some error/debug handling.")
-Cc: stable@vger.kernel.org
-Acked-by: Tony Lindgren <tony@atomide.com>
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-Link: https://lore.kernel.org/r/cd0d55749a091214106575f6e1d363c6db56622f.1590255176.git.hns@goldelico.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Well, it seems not in any way at the moment.
 
----
- drivers/w1/masters/omap_hdq.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+> I'm pretty sure I'm using TME, but I didn't become sure from
+> poking at sysfs.
 
---- a/drivers/w1/masters/omap_hdq.c
-+++ b/drivers/w1/masters/omap_hdq.c
-@@ -176,7 +176,7 @@ static int hdq_write_byte(struct hdq_dat
- 	/* check irqstatus */
- 	if (!(*status & OMAP_HDQ_INT_STATUS_TXCOMPLETE)) {
- 		dev_dbg(hdq_data->dev, "timeout waiting for"
--			" TXCOMPLETE/RXCOMPLETE, %x", *status);
-+			" TXCOMPLETE/RXCOMPLETE, %x\n", *status);
- 		ret = -ETIMEDOUT;
- 		goto out;
- 	}
-@@ -187,7 +187,7 @@ static int hdq_write_byte(struct hdq_dat
- 			OMAP_HDQ_FLAG_CLEAR, &tmp_status);
- 	if (ret) {
- 		dev_dbg(hdq_data->dev, "timeout waiting GO bit"
--			" return to zero, %x", tmp_status);
-+			" return to zero, %x\n", tmp_status);
- 	}
- 
- out:
-@@ -203,7 +203,7 @@ static irqreturn_t hdq_isr(int irq, void
- 	spin_lock_irqsave(&hdq_data->hdq_spinlock, irqflags);
- 	hdq_data->hdq_irqstatus = hdq_reg_in(hdq_data, OMAP_HDQ_INT_STATUS);
- 	spin_unlock_irqrestore(&hdq_data->hdq_spinlock, irqflags);
--	dev_dbg(hdq_data->dev, "hdq_isr: %x", hdq_data->hdq_irqstatus);
-+	dev_dbg(hdq_data->dev, "hdq_isr: %x\n", hdq_data->hdq_irqstatus);
- 
- 	if (hdq_data->hdq_irqstatus &
- 		(OMAP_HDQ_INT_STATUS_TXCOMPLETE | OMAP_HDQ_INT_STATUS_RXCOMPLETE
-@@ -311,7 +311,7 @@ static int omap_hdq_break(struct hdq_dat
- 	tmp_status = hdq_data->hdq_irqstatus;
- 	/* check irqstatus */
- 	if (!(tmp_status & OMAP_HDQ_INT_STATUS_TIMEOUT)) {
--		dev_dbg(hdq_data->dev, "timeout waiting for TIMEOUT, %x",
-+		dev_dbg(hdq_data->dev, "timeout waiting for TIMEOUT, %x\n",
- 				tmp_status);
- 		ret = -ETIMEDOUT;
- 		goto out;
-@@ -338,7 +338,7 @@ static int omap_hdq_break(struct hdq_dat
- 			&tmp_status);
- 	if (ret)
- 		dev_dbg(hdq_data->dev, "timeout waiting INIT&GO bits"
--			" return to zero, %x", tmp_status);
-+			" return to zero, %x\n", tmp_status);
- 
- out:
- 	mutex_unlock(&hdq_data->hdq_mutex);
+How do you know that Lenovo didn't disable TME without looking at
+dmesg? I don't think "pretty sure" is good enough when TME is
+considered a security feature.
 
-
+Richard
