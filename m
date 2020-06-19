@@ -2,78 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FB02201E18
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 00:38:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740BF201E2F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 00:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729441AbgFSWiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 18:38:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47528 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729229AbgFSWiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 18:38:10 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E760222C3;
-        Fri, 19 Jun 2020 22:38:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592606289;
-        bh=IkGutlDUa54YbopeCAD6V4k6oQhpD4RBxx/u05QcjNs=;
-        h=Date:From:To:Cc:Subject:From;
-        b=g1mg1DLVt/kWT2gcRdaKB47pDvSsGdbZQXP5K5sN01qOgiAV2O41ZIrOtcAzGdZfx
-         cmLZvfJQx3pFUBPR/fq19gy/yrpO1Mv2mAVEfg2x7lOvr9v9SlX9142RRpf1i08M8O
-         KP/JHTd3SGDLd5y7If4z9dBmaJqbWJU7DiSpsfNI=
-Date:   Fri, 19 Jun 2020 17:43:34 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>
-Cc:     dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] dmaengine: ti: k3-udma: Use struct_size() in kzalloc()
-Message-ID: <20200619224334.GA7857@embeddedor>
+        id S1729572AbgFSWqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 18:46:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726900AbgFSWqF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 18:46:05 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A75EC06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 15:46:05 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id t85so1446423ili.5
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 15:46:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jH/dA5uUVqsNDjbuGLof+U+Gygv8PhIcTewwE4gKMYE=;
+        b=h+W2MNijvEM9ot6E9WHNBXmS1ToD1hq5GjBBRg9FiDIAhdrq/U8LAdUUL2CrlbgzeI
+         vbc+QmN6dbp+0pyOM1WCOwkQyX7M+yn+liam5gAXjt4KkD8xx/dY9tkHw3TvGNUQhnTW
+         sPGQg7XfaqxRqI9oDp2tjWf77JjQ4+JybbF0TDWqI5V6oYr1gk5kD9XQnzwYxw9mwr5+
+         dmSwxwZ/EaNn/QTZMHGYJjfnfJ6eLH9hnc1BOP31FwaxUS2kii1TGA6XoOpyqHDdo6sH
+         6A09eecpEIY2xd4GHT0fxS6fPtrTNXxcg8jwf3br4icbG4TS1U2Sc8UDM5//s0htPwO/
+         hQtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jH/dA5uUVqsNDjbuGLof+U+Gygv8PhIcTewwE4gKMYE=;
+        b=eevbCV5utxEmyC0dkvMXBjYnmpbgZzTMMP5KRlm5lFZz7AFkZ71Z3hceBSHL9tXRGA
+         20tvyNADSyd/bstN9oWT/EC8hEll+Th8fbc7n1zIqTHz0lOGAbmAz3lBQURDEx0Wz/Ey
+         9i2RJa9o4SQTpnyG2Ew1UErETWWmxgenGIEpLGdLoNAy7Prf3PjuenVHpLw+4rzdaVio
+         L4ga0K22hOArHPTA4sw4l72LMsNwjUWyoE1EdHfvKrYyBpE0Jhkmb9ZEEmhTj55m/2QI
+         wFWdQV2SZ2VagGRMGW4rUBEKvRBOOvhJZESARf9oWkgrFNrJ5kF54fYEK/WP/TCMUjwN
+         jVlw==
+X-Gm-Message-State: AOAM533ENFHnP3p9csvMrZIJ9Iaj7QBDvEFhphqdR34Eo40Ni10fQ1an
+        EwimJacrcZQUTIcdmF/2eF/wAq8aG3brIzU6cm8lkKcr
+X-Google-Smtp-Source: ABdhPJxhACCnJ0xgIquosf8TXeeHudyVXlyxNNnw7oBChStulF96+S1xMUy85W5DNj7bpuInqTGdOwVHXFJpU40VcBc=
+X-Received: by 2002:a05:6e02:11a5:: with SMTP id 5mr5978727ilj.108.1592606764363;
+ Fri, 19 Jun 2020 15:46:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200619153925.79106-1-mgamal@redhat.com> <20200619153925.79106-7-mgamal@redhat.com>
+In-Reply-To: <20200619153925.79106-7-mgamal@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 19 Jun 2020 15:45:52 -0700
+Message-ID: <CALMp9eQYRoB5vmxL0U7Mn0rWqotxLpUAJD15YX0DDYop1ZmuEg@mail.gmail.com>
+Subject: Re: [PATCH v2 06/11] KVM: VMX: introduce vmx_need_pf_intercept
+To:     Mohammed Gamal <mgamal@redhat.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Moger, Babu" <babu.moger@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the struct_size() helper instead of an open-coded version
-in order to avoid any potential type mistakes.
+On Fri, Jun 19, 2020 at 8:40 AM Mohammed Gamal <mgamal@redhat.com> wrote:
+>
+> From: Paolo Bonzini <pbonzini@redhat.com>
+>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 28 +++++++++++++++++-----------
+>  arch/x86/kvm/vmx/vmx.c    |  2 +-
+>  arch/x86/kvm/vmx/vmx.h    |  5 +++++
+>  3 files changed, 23 insertions(+), 12 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index d1af20b050a8..328411919518 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -2433,22 +2433,28 @@ static void prepare_vmcs02_rare(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
+>
+>         /*
+>          * Whether page-faults are trapped is determined by a combination of
+> -        * 3 settings: PFEC_MASK, PFEC_MATCH and EXCEPTION_BITMAP.PF.
+> -        * If enable_ept, L0 doesn't care about page faults and we should
+> -        * set all of these to L1's desires. However, if !enable_ept, L0 does
+> -        * care about (at least some) page faults, and because it is not easy
+> -        * (if at all possible?) to merge L0 and L1's desires, we simply ask
+> -        * to exit on each and every L2 page fault. This is done by setting
+> -        * MASK=MATCH=0 and (see below) EB.PF=1.
+> +        * 3 settings: PFEC_MASK, PFEC_MATCH and EXCEPTION_BITMAP.PF.  If L0
+> +        * doesn't care about page faults then we should set all of these to
+> +        * L1's desires. However, if L0 does care about (some) page faults, it
+> +        * is not easy (if at all possible?) to merge L0 and L1's desires, we
+> +        * simply ask to exit on each and every L2 page fault. This is done by
+> +        * setting MASK=MATCH=0 and (see below) EB.PF=1.
+>          * Note that below we don't need special code to set EB.PF beyond the
+>          * "or"ing of the EB of vmcs01 and vmcs12, because when enable_ept,
+>          * vmcs01's EB.PF is 0 so the "or" will take vmcs12's value, and when
+>          * !enable_ept, EB.PF is 1, so the "or" will always be 1.
+>          */
+> -       vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK,
+> -               enable_ept ? vmcs12->page_fault_error_code_mask : 0);
+> -       vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH,
+> -               enable_ept ? vmcs12->page_fault_error_code_match : 0);
+> +       if (vmx_need_pf_intercept(&vmx->vcpu)) {
+> +               /*
+> +                * TODO: if both L0 and L1 need the same MASK and MATCH,
+> +                * go ahead and use it?
+> +                */
 
-This code was detected with the help of Coccinelle and, audited and
-fixed manually.
+I'm not sure there's much "TODO", since L0's MASK and MATCH are both
+0. So, if L1's MASK and MATCH are also both 0, we would go ahead and
+use 0's, which it seems we already do here:
 
-Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/dma/ti/k3-udma.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/dma/ti/k3-udma.c b/drivers/dma/ti/k3-udma.c
-index 0d5fb154b8e2..411c54b86ba8 100644
---- a/drivers/dma/ti/k3-udma.c
-+++ b/drivers/dma/ti/k3-udma.c
-@@ -2209,7 +2209,7 @@ udma_prep_slave_sg_pkt(struct udma_chan *uc, struct scatterlist *sgl,
- 	u32 ring_id;
- 	unsigned int i;
- 
--	d = kzalloc(sizeof(*d) + sglen * sizeof(d->hwdesc[0]), GFP_NOWAIT);
-+	d = kzalloc(struct_size(d, hwdesc, sglen), GFP_NOWAIT);
- 	if (!d)
- 		return NULL;
- 
-@@ -2525,7 +2525,7 @@ udma_prep_dma_cyclic_pkt(struct udma_chan *uc, dma_addr_t buf_addr,
- 	if (period_len >= SZ_4M)
- 		return NULL;
- 
--	d = kzalloc(sizeof(*d) + periods * sizeof(d->hwdesc[0]), GFP_NOWAIT);
-+	d = kzalloc(struct_size(d, hwdesc, periods), GFP_NOWAIT);
- 	if (!d)
- 		return NULL;
- 
--- 
-2.27.0
-
+> +               vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, 0);
+> +               vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, 0);
+> +       } else {
+> +               vmcs_write32(PAGE_FAULT_ERROR_CODE_MASK, vmcs12->page_fault_error_code_mask);
+> +               vmcs_write32(PAGE_FAULT_ERROR_CODE_MATCH, vmcs12->page_fault_error_code_match);
+> +       }
+>
+>         if (cpu_has_vmx_apicv()) {
+>                 vmcs_write64(EOI_EXIT_BITMAP0, vmcs12->eoi_exit_bitmap0);
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index f82c42ac87f9..46d522ee5cb1 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -783,7 +783,7 @@ void update_exception_bitmap(struct kvm_vcpu *vcpu)
+>                 eb |= 1u << BP_VECTOR;
+>         if (to_vmx(vcpu)->rmode.vm86_active)
+>                 eb = ~0;
+> -       if (enable_ept)
+> +       if (!vmx_need_pf_intercept(vcpu))
+>                 eb &= ~(1u << PF_VECTOR);
+>
+>         /* When we are running a nested L2 guest and L1 specified for it a
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index 8a83b5edc820..5e2da15fe94f 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -552,6 +552,11 @@ static inline bool vmx_has_waitpkg(struct vcpu_vmx *vmx)
+>                 SECONDARY_EXEC_ENABLE_USR_WAIT_PAUSE;
+>  }
+>
+> +static inline bool vmx_need_pf_intercept(struct kvm_vcpu *vcpu)
+> +{
+> +       return !enable_ept;
+> +}
+> +
+>  void dump_vmcs(void);
+>
+>  #endif /* __KVM_X86_VMX_H */
+> --
+> 2.26.2
+>
+Reviewed-by: Jim Mattson <jmattson@google.com>
