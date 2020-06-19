@@ -2,141 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D151E201646
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD6D201644
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389551AbgFSQ2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:28:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41050 "EHLO
+        id S2394933AbgFSQ2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:28:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394953AbgFSQ2a (ORCPT
+        with ESMTP id S2394951AbgFSQ2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 12:28:30 -0400
+        Fri, 19 Jun 2020 12:28:25 -0400
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB33C06174E;
-        Fri, 19 Jun 2020 09:28:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E64C06174E;
+        Fri, 19 Jun 2020 09:28:25 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: andrzej.p)
-        with ESMTPSA id 15E0B2A54CC
-From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-To:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jiri Slaby <jslaby@suse.com>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        kernel@collabora.com
-Subject: [PATCH] tty/sysrq: Add alternative SysRq key
-Date:   Fri, 19 Jun 2020 18:28:19 +0200
-Message-Id: <20200619162819.715-1-andrzej.p@collabora.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200511180145.GU89269@dtor-ws>
-References: <20200511180145.GU89269@dtor-ws>
+        (Authenticated sender: sre)
+        with ESMTPSA id 542132A54CA
+Received: by earth.universe (Postfix, from userid 1000)
+        id CAF173C08CD; Fri, 19 Jun 2020 18:28:20 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 18:28:20 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Emil Velikov <emil.velikov@collabora.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2 3/6] power: supply: gpio-charger: add
+ charge-current-limit feature
+Message-ID: <20200619162820.hhv5rftp4xkhwtix@earth.universe>
+References: <20200605224403.181015-1-sebastian.reichel@collabora.com>
+ <20200605224403.181015-4-sebastian.reichel@collabora.com>
+ <20200615175844.GA2032047@bogus>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yyzsddwp6z7jengx"
+Content-Disposition: inline
+In-Reply-To: <20200615175844.GA2032047@bogus>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There exist machines which don't have SysRq key at all, e.g. chromebooks.
 
-This patch allows configuring an alternative key to act as SysRq. Devices
-which declare KEY_SYSRQ in their 'keybit' bitmap continue using KEY_SYSRQ,
-but other devices use the alternative SysRq key instead, by default F10.
-Which key is actually used can be modified with sysrq's module parameter.
+--yyzsddwp6z7jengx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
----
- drivers/tty/sysrq.c | 28 +++++++++++++++++++++++++---
- 1 file changed, 25 insertions(+), 3 deletions(-)
+Hi,
 
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index 0dc3878794fd..e1d271c84746 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -604,6 +604,7 @@ EXPORT_SYMBOL(handle_sysrq);
- 
- #ifdef CONFIG_INPUT
- static int sysrq_reset_downtime_ms;
-+static unsigned short alternative_sysrq_key = KEY_F10;
- 
- /* Simple translation table for the SysRq keys */
- static const unsigned char sysrq_xlate[KEY_CNT] =
-@@ -621,6 +622,7 @@ struct sysrq_state {
- 	unsigned long key_down[BITS_TO_LONGS(KEY_CNT)];
- 	unsigned int alt;
- 	unsigned int alt_use;
-+	unsigned short sysrq_key;
- 	bool active;
- 	bool need_reinject;
- 	bool reinjecting;
-@@ -770,10 +772,10 @@ static void sysrq_reinject_alt_sysrq(struct work_struct *work)
- 
- 		/* Simulate press and release of Alt + SysRq */
- 		input_inject_event(handle, EV_KEY, alt_code, 1);
--		input_inject_event(handle, EV_KEY, KEY_SYSRQ, 1);
-+		input_inject_event(handle, EV_KEY, sysrq->sysrq_key, 1);
- 		input_inject_event(handle, EV_SYN, SYN_REPORT, 1);
- 
--		input_inject_event(handle, EV_KEY, KEY_SYSRQ, 0);
-+		input_inject_event(handle, EV_KEY, sysrq->sysrq_key, 0);
- 		input_inject_event(handle, EV_KEY, alt_code, 0);
- 		input_inject_event(handle, EV_SYN, SYN_REPORT, 1);
- 
-@@ -805,6 +807,7 @@ static bool sysrq_handle_keypress(struct sysrq_state *sysrq,
- 		}
- 		break;
- 
-+key_sysrq:
- 	case KEY_SYSRQ:
- 		if (value == 1 && sysrq->alt != KEY_RESERVED) {
- 			sysrq->active = true;
-@@ -825,11 +828,15 @@ static bool sysrq_handle_keypress(struct sysrq_state *sysrq,
- 		 * triggering print screen function.
- 		 */
- 		if (sysrq->active)
--			clear_bit(KEY_SYSRQ, sysrq->handle.dev->key);
-+			clear_bit(sysrq->sysrq_key, sysrq->handle.dev->key);
- 
- 		break;
- 
- 	default:
-+		/* handle non-default sysrq key */
-+		if (code == sysrq->sysrq_key)
-+			goto key_sysrq;
-+
- 		if (sysrq->active && value && value != 2) {
- 			sysrq->need_reinject = false;
- 			__handle_sysrq(sysrq_xlate[code], true);
-@@ -924,6 +931,14 @@ static int sysrq_connect(struct input_handler *handler,
- 	sysrq->handle.private = sysrq;
- 	timer_setup(&sysrq->keyreset_timer, sysrq_do_reset, 0);
- 
-+	if (test_bit(KEY_SYSRQ, dev->keybit)) {
-+		sysrq->sysrq_key = KEY_SYSRQ;
-+		pr_info("%s: using default sysrq key [%x]\n", dev->name, KEY_SYSRQ);
-+	} else {
-+		sysrq->sysrq_key = alternative_sysrq_key;
-+		pr_info("%s: Using alternative sysrq key: [%x]\n", dev->name, sysrq->sysrq_key);
-+	}
-+
- 	error = input_register_handle(&sysrq->handle);
- 	if (error) {
- 		pr_err("Failed to register input sysrq handler, error %d\n",
-@@ -1032,6 +1047,13 @@ module_param_array_named(reset_seq, sysrq_reset_seq, sysrq_reset_seq,
- 
- module_param_named(sysrq_downtime_ms, sysrq_reset_downtime_ms, int, 0644);
- 
-+module_param(alternative_sysrq_key, ushort, 0644);
-+MODULE_PARM_DESC(alternative_sysrq_key,
-+	"Alternative SysRq key for input devices that don't have SysRq key. F10 by default.\n"
-+	"Example\n"
-+	"Using F9 as SysRq:\n"
-+	"sysrq.alternative_sysrq_key=0x43\n");
-+
- #else
- 
- static inline void sysrq_register_handler(void)
+On Mon, Jun 15, 2020 at 11:58:44AM -0600, Rob Herring wrote:
+> On Sat, Jun 06, 2020 at 12:44:00AM +0200, Sebastian Reichel wrote:
+> > Add new charge-current-limit feature to gpio-charger.
+> >=20
+> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> > ---
+> >  .../bindings/power/supply/gpio-charger.yaml   |  31 ++++
+> >  drivers/power/supply/gpio-charger.c           | 140 ++++++++++++++++++
+> >  2 files changed, 171 insertions(+)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/power/supply/gpio-charge=
+r.yaml b/Documentation/devicetree/bindings/power/supply/gpio-charger.yaml
+> > index 30eabbb14ef3..e11cfdc68a51 100644
+> > --- a/Documentation/devicetree/bindings/power/supply/gpio-charger.yaml
+> > +++ b/Documentation/devicetree/bindings/power/supply/gpio-charger.yaml
+> > @@ -39,6 +39,25 @@ properties:
+> >      maxItems: 1
+> >      description: GPIO indicating the charging status
+> > =20
+> > +  charge-current-limit-gpios:
+> > +    minItems: 1
+> > +    maxItems: 32
+> > +    description: GPIOs used for current limiting
+> > +
+> > +  charge-current-limit-mapping:
+> > +    description: List of touples with current in uA and a GPIO bitmap =
+(in
+>=20
+> s/touples/tuples/
+>=20
+> > +      this order). The touples must be provided in descending order of=
+ the
+>=20
+> and here.
 
-base-commit: 3d77e6a8804abcc0504c904bd6e5cdf3a5cf8162
--- 
-2.17.1
+Ack.
 
+> > +      current limit.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> > +    items:
+> > +      items:
+> > +        - description:
+> > +            Current limit in uA
+> > +        - description:
+> > +            Encoded GPIO setting. Bit 0 represents last GPIO from the
+> > +            charge-current-limit-gpios property. Bit 1 second to last
+> > +            GPIO and so on.
+>=20
+> Seems a bit odd that bit N doesn't represent index N of the gpios.
+
+I was looking at it from a graphical POV (i.e. "last" bit represents
+last element):
+
+list =3D <element3, element2, element1, element0>;
+bits =3D 0b1011; // element3, 1 and 0
+
+Basically when writing it the order is the same at the cost of list
+index being reverse of bit index. But I do not really mind the order.
+If people think its better the other way around I can swap it.
+
+-- Sebastian
+
+> > +
+> >  required:
+> >    - compatible
+> > =20
+> > @@ -47,6 +66,12 @@ anyOf:
+> >      - gpios
+> >    - required:
+> >      - charge-status-gpios
+> > +  - required:
+> > +    - charge-current-limit-gpios
+> > +
+> > +dependencies:
+> > +  charge-current-limit-gpios: [ charge-current-limit-mapping ]
+> > +  charge-current-limit-mapping: [ charge-current-limit-gpios ]
+> > =20
+> >  additionalProperties: false
+> > =20
+> > @@ -60,4 +85,10 @@ examples:
+> > =20
+> >        gpios =3D <&gpd 28 GPIO_ACTIVE_LOW>;
+> >        charge-status-gpios =3D <&gpc 27 GPIO_ACTIVE_LOW>;
+> > +
+> > +      charge-current-limit-gpios =3D <&gpioA 11 GPIO_ACTIVE_HIGH>,
+> > +                                   <&gpioA 12 GPIO_ACTIVE_HIGH>;
+> > +      charge-current-limit-mapping =3D <2500000 0x00>, // 2.5 A =3D> b=
+oth GPIOs low
+> > +                                     <700000 0x01>, // 700 mA =3D> GPI=
+O A.12 high
+> > +                                     <0 0x02>; // 0 mA =3D> GPIO A.11 =
+high
+> >      };
+
+--yyzsddwp6z7jengx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7s55sACgkQ2O7X88g7
++posXxAAimYGCMZqPCMGM572BWT84enhMCGLDZmbHF2T+nErP9bjg6Kl/7chCfr6
+YtyFPcX5kAhq4yCwymzAEWjsnmo4Vn01XcXCvXZkUy9TZYyxTpqLN5IQupFoe1h6
+QbP54+FosPdTsf2Yvm7QVyDxlbYMpuPPpU95jZRBtl4zsP5VGeZMwe0Ohf5x//aT
+qBL/nY/l06OVq/pKV1OjfvAu6P4G1OkKnNw+AJ+itTZWZi+0I5xfsWZJ6Q9qHCXq
+Gew48sWBTKQS4jLECNZuA7GcdYxNdjh8yl8t2jNCAw4WL7uSHL1wBBkzUmYjGB2h
+qF5Q8w48iI3Dl2VwEvUp52Ca/AGu98e5gJp0QBqYUUxojZ15m4jbYk4elu05vb+v
+kVdFvtpVWAhRChbiw7+PmOR+4WBC8d3CxpTgbGcFgort3mNPer8b1eS5YmA1eko9
+d5Lb4xsw72+PrdSOdVFOqLW0jduAhlJuZfpnaStzfBO+YZWPJrkkmr78GZ/oIRrg
+Tv78EKJ0ppyDv7wSev+4FbhsrneE16fJ6EoXrMwHzQt310wXam/bZu9ffzALPCsw
+eNZFiCNV+0AXyziGJ9OLJQCVchgt5KgwkwDv0eVhDPZ6qUl7aG7lmCcVuFZrvFnB
+v5BSRmZ3xE10iEmifEEhYlA4LYc/zFjdtWexbmc6Fj230KbY3zQ=
+=3lsp
+-----END PGP SIGNATURE-----
+
+--yyzsddwp6z7jengx--
