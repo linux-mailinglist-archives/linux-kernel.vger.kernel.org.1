@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61936200D8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:01:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 591A520101D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389987AbgFSO6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:58:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54172 "EHLO mail.kernel.org"
+        id S2404234AbgFSP0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:26:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54916 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390384AbgFSO6Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:58:24 -0400
+        id S2393163AbgFSPXW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:23:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA24221852;
-        Fri, 19 Jun 2020 14:58:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 161DB217A0;
+        Fri, 19 Jun 2020 15:23:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578704;
-        bh=Rf+/owul+CG1XcnLh7G/H67RI/5knus/0Lkvl89ilTE=;
+        s=default; t=1592580201;
+        bh=EPvLA69U/3lpdJqAkicuhqkJDkhVEvtI1+W5+HOOb80=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cISw6pGZP+OHlRAnUNS+gT/vCjY0KTtMwfXmy61k4qBFcVn82AHpr62ciAGtIUmJG
-         J1n4JChA+nkFEOMUtVI1MQR5Nl+wSc2H38wRbO+BylPhY9MgXLYWfmY+EE4mGFf7hX
-         5jSyfC5wJHoxD9o6aXxVqbCc9g5DFRJKU5QE1UN0=
+        b=OcFaY9ywzfg8N+JpxOu3Lybz/FZ+Lvd2yeeq4pl5A0m8kPfv2q6Axnl7oIWARLYwL
+         g/fikAGm7YgPCPPsTTJ4Rbe3iEi2mT7oKIpk6SDwVaHg/Dv8fAFKQD+yJvw5Cy2p9R
+         kzwBpXkvv4KVotauDeeRyVKLr6CMFNLIYcoh23o0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Bogdan Togorean <bogdan.togorean@analog.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
+        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 094/267] drm: bridge: adv7511: Extend list of audio sample rates
+Subject: [PATCH 5.7 161/376] kgdb: Fix spurious true from in_dbg_master()
 Date:   Fri, 19 Jun 2020 16:31:19 +0200
-Message-Id: <20200619141653.377605203@linuxfoundation.org>
+Message-Id: <20200619141717.943538361@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
+References: <20200619141710.350494719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,48 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bogdan Togorean <bogdan.togorean@analog.com>
+From: Daniel Thompson <daniel.thompson@linaro.org>
 
-[ Upstream commit b97b6a1f6e14a25d1e1ca2a46c5fa3e2ca374e22 ]
+[ Upstream commit 3fec4aecb311995189217e64d725cfe84a568de3 ]
 
-ADV7511 support sample rates up to 192kHz. CTS and N parameters should
-be computed accordingly so this commit extend the list up to maximum
-supported sample rate.
+Currently there is a small window where a badly timed migration could
+cause in_dbg_master() to spuriously return true. Specifically if we
+migrate to a new core after reading the processor id and the previous
+core takes a breakpoint then we will evaluate true if we read
+kgdb_active before we get the IPI to bring us to halt.
 
-Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
-Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
-Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200413113513.86091-2-bogdan.togorean@analog.com
+Fix this by checking irqs_disabled() first. Interrupts are always
+disabled when we are executing the kgdb trap so this is an acceptable
+prerequisite. This also allows us to replace raw_smp_processor_id()
+with smp_processor_id() since the short circuit logic will prevent
+warnings from PREEMPT_DEBUG.
+
+Fixes: dcc7871128e9 ("kgdb: core changes to support kdb")
+Suggested-by: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20200506164223.2875760-1-daniel.thompson@linaro.org
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/adv7511/adv7511_audio.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ include/linux/kgdb.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-index 1b4783d45c53..3a218b56a008 100644
---- a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-+++ b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-@@ -20,13 +20,15 @@ static void adv7511_calc_cts_n(unsigned int f_tmds, unsigned int fs,
- {
- 	switch (fs) {
- 	case 32000:
--		*n = 4096;
-+	case 48000:
-+	case 96000:
-+	case 192000:
-+		*n = fs * 128 / 1000;
- 		break;
- 	case 44100:
--		*n = 6272;
--		break;
--	case 48000:
--		*n = 6144;
-+	case 88200:
-+	case 176400:
-+		*n = fs * 128 / 900;
- 		break;
- 	}
- 
+diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
+index b072aeb1fd78..4d6fe87fd38f 100644
+--- a/include/linux/kgdb.h
++++ b/include/linux/kgdb.h
+@@ -323,7 +323,7 @@ extern void gdbstub_exit(int status);
+ extern int			kgdb_single_step;
+ extern atomic_t			kgdb_active;
+ #define in_dbg_master() \
+-	(raw_smp_processor_id() == atomic_read(&kgdb_active))
++	(irqs_disabled() && (smp_processor_id() == atomic_read(&kgdb_active)))
+ extern bool dbg_is_early;
+ extern void __init dbg_late_init(void);
+ extern void kgdb_panic(const char *msg);
 -- 
 2.25.1
 
