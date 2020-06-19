@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2B37200DD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07F7C200ED8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390786AbgFSPCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:02:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57736 "EHLO mail.kernel.org"
+        id S2403883AbgFSPMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:12:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42512 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390695AbgFSPBW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:01:22 -0400
+        id S2403859AbgFSPMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:12:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6F15C206DB;
-        Fri, 19 Jun 2020 15:01:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7CF5F2158C;
+        Fri, 19 Jun 2020 15:12:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578881;
-        bh=JXuoj9sxYYFO416/MYtJroWgmmnPEsuxu8akdcuilVI=;
+        s=default; t=1592579526;
+        bh=9H/ayrhInPhbiryYv+WI4UkOCHnSdm8qAYqXHb8mIZ4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kYjbmwtLfWG+WrxUHrLuQG7nB0jCvRIsqRZnP+TCQV0fcF4ck6JL0YMNysHvfWRn1
-         xVz2D+xxoGoJpw8DV8Z+2L8dcY1Ed8qejj7zcTc4gwmm7GC1WLlxG7h9j6gjzNMVGx
-         Yb2Dyo/1DZ7JroVvINCpgy5PEhcTAU5R21OIEEI0=
+        b=uLaMoPhfD8jVNRLy+Gqu6slARhxN3QklxtBTFyKdwurQJtG2CDUq4igC2VWop+TPj
+         jOWGf7csSd3wzdE35OWDdYIjiQhGODEo/wOjf91gO+jbp+w1vwActGlLkjRb/K5vFo
+         1TVi5ssLZR+6ODpXkVwfAElX6uzxD+r5rKdqat0c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Krzysztof Struczynski <krzysztof.struczynski@huawei.com>,
-        David.Laight@aculab.com (big endian system concerns),
-        Mimi Zohar <zohar@linux.ibm.com>
-Subject: [PATCH 4.19 193/267] ima: Fix ima digest hash table key calculation
-Date:   Fri, 19 Jun 2020 16:32:58 +0200
-Message-Id: <20200619141658.008047403@linuxfoundation.org>
+        stable@vger.kernel.org, Andrea Arcangeli <aarcange@redhat.com>,
+        Jann Horn <jannh@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 5.4 169/261] mm: thp: make the THP mapcount atomic against __split_huge_pmd_locked()
+Date:   Fri, 19 Jun 2020 16:33:00 +0200
+Message-Id: <20200619141658.011212429@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,54 +45,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
+From: Andrea Arcangeli <aarcange@redhat.com>
 
-commit 1129d31b55d509f15e72dc68e4b5c3a4d7b4da8d upstream.
+commit c444eb564fb16645c172d550359cb3d75fe8a040 upstream.
 
-Function hash_long() accepts unsigned long, while currently only one byte
-is passed from ima_hash_key(), which calculates a key for ima_htable.
+Write protect anon page faults require an accurate mapcount to decide
+if to break the COW or not. This is implemented in the THP path with
+reuse_swap_page() ->
+page_trans_huge_map_swapcount()/page_trans_huge_mapcount().
 
-Given that hashing the digest does not give clear benefits compared to
-using the digest itself, remove hash_long() and return the modulus
-calculated on the first two bytes of the digest with the number of slots.
-Also reduce the depth of the hash table by doubling the number of slots.
+If the COW triggers while the other processes sharing the page are
+under a huge pmd split, to do an accurate reading, we must ensure the
+mapcount isn't computed while it's being transferred from the head
+page to the tail pages.
 
+reuse_swap_cache() already runs serialized by the page lock, so it's
+enough to add the page lock around __split_huge_pmd_locked too, in
+order to add the missing serialization.
+
+Note: the commit in "Fixes" is just to facilitate the backporting,
+because the code before such commit didn't try to do an accurate THP
+mapcount calculation and it instead used the page_count() to decide if
+to COW or not. Both the page_count and the pin_count are THP-wide
+refcounts, so they're inaccurate if used in
+reuse_swap_page(). Reverting such commit (besides the unrelated fix to
+the local anon_vma assignment) would have also opened the window for
+memory corruption side effects to certain workloads as documented in
+such commit header.
+
+Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
+Suggested-by: Jann Horn <jannh@google.com>
+Reported-by: Jann Horn <jannh@google.com>
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Fixes: 6d0a07edd17c ("mm: thp: calculate the mapcount correctly for THP pages during WP faults")
 Cc: stable@vger.kernel.org
-Fixes: 3323eec921ef ("integrity: IMA as an integrity service provider")
-Co-developed-by: Roberto Sassu <roberto.sassu@huawei.com>
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Signed-off-by: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
-Acked-by: David.Laight@aculab.com (big endian system concerns)
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- security/integrity/ima/ima.h |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ mm/huge_memory.c |   31 ++++++++++++++++++++++++++++---
+ 1 file changed, 28 insertions(+), 3 deletions(-)
 
---- a/security/integrity/ima/ima.h
-+++ b/security/integrity/ima/ima.h
-@@ -40,7 +40,7 @@ enum tpm_pcrs { TPM_PCR0 = 0, TPM_PCR8 =
- #define IMA_DIGEST_SIZE		SHA1_DIGEST_SIZE
- #define IMA_EVENT_NAME_LEN_MAX	255
- 
--#define IMA_HASH_BITS 9
-+#define IMA_HASH_BITS 10
- #define IMA_MEASURE_HTABLE_SIZE (1 << IMA_HASH_BITS)
- 
- #define IMA_TEMPLATE_FIELD_ID_MAX_LEN	16
-@@ -166,9 +166,10 @@ struct ima_h_table {
- };
- extern struct ima_h_table ima_htable;
- 
--static inline unsigned long ima_hash_key(u8 *digest)
-+static inline unsigned int ima_hash_key(u8 *digest)
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2301,6 +2301,8 @@ void __split_huge_pmd(struct vm_area_str
  {
--	return hash_long(*digest, IMA_HASH_BITS);
-+	/* there is no point in taking a hash of part of a digest */
-+	return (digest[0] | digest[1] << 8) % IMA_MEASURE_HTABLE_SIZE;
- }
+ 	spinlock_t *ptl;
+ 	struct mmu_notifier_range range;
++	bool was_locked = false;
++	pmd_t _pmd;
  
- #define __ima_hooks(hook)		\
+ 	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, vma, vma->vm_mm,
+ 				address & HPAGE_PMD_MASK,
+@@ -2313,11 +2315,32 @@ void __split_huge_pmd(struct vm_area_str
+ 	 * pmd against. Otherwise we can end up replacing wrong page.
+ 	 */
+ 	VM_BUG_ON(freeze && !page);
+-	if (page && page != pmd_page(*pmd))
+-	        goto out;
++	if (page) {
++		VM_WARN_ON_ONCE(!PageLocked(page));
++		was_locked = true;
++		if (page != pmd_page(*pmd))
++			goto out;
++	}
+ 
++repeat:
+ 	if (pmd_trans_huge(*pmd)) {
+-		page = pmd_page(*pmd);
++		if (!page) {
++			page = pmd_page(*pmd);
++			if (unlikely(!trylock_page(page))) {
++				get_page(page);
++				_pmd = *pmd;
++				spin_unlock(ptl);
++				lock_page(page);
++				spin_lock(ptl);
++				if (unlikely(!pmd_same(*pmd, _pmd))) {
++					unlock_page(page);
++					put_page(page);
++					page = NULL;
++					goto repeat;
++				}
++				put_page(page);
++			}
++		}
+ 		if (PageMlocked(page))
+ 			clear_page_mlock(page);
+ 	} else if (!(pmd_devmap(*pmd) || is_pmd_migration_entry(*pmd)))
+@@ -2325,6 +2348,8 @@ void __split_huge_pmd(struct vm_area_str
+ 	__split_huge_pmd_locked(vma, pmd, range.start, freeze);
+ out:
+ 	spin_unlock(ptl);
++	if (!was_locked && page)
++		unlock_page(page);
+ 	/*
+ 	 * No need to double call mmu_notifier->invalidate_range() callback.
+ 	 * They are 3 cases to consider inside __split_huge_pmd_locked():
 
 
