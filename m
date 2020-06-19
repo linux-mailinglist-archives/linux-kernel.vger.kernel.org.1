@@ -2,426 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40C5820153F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6F0620151B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394627AbgFSQT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:19:59 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:25897 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2390734AbgFSPBo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:01:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592578901;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7/EPBnydBuCis0CoW/wn/i8O4pMUlbe/kp5ynPbnTTM=;
-        b=Bz3bmSi/5mVukI9OQkXScyx1PLUYnRbHYVNKm2ajuOemHa4kSpql1EmYwBmOJJNgWKSJTV
-        esYQi2mz/bqSIXVp08pXEMakDxTu/i3jL786fBuzyHCUuirz4FqGQDVv3VzQ1Hzg5gI6O3
-        j7OZ2nuBOtpZPXHZ/Lp9401S1sN7/qk=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-251-AQ434tSrNAiTWth0he7xXw-1; Fri, 19 Jun 2020 11:01:35 -0400
-X-MC-Unique: AQ434tSrNAiTWth0he7xXw-1
-Received: by mail-ej1-f69.google.com with SMTP id d14so4111957ejt.14
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:01:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=7/EPBnydBuCis0CoW/wn/i8O4pMUlbe/kp5ynPbnTTM=;
-        b=dUHZPzHKKE2WwfaW0V9ayAqx70tE44zks8XPpiDPvmdNlqUfhl6a6kP1jtjWq6sMGR
-         WI1v//ug6AMH67x+a6tpuLKVL3wghi6q7Qps0+CkUwwOZOTr9ZFsNZwPq4HryLA8VBbb
-         2ol726FYSImW5p8e+JmhaUEnqC273d9qZXlmp0PdvwRtMsKrbwoatdSy/3oicjdfXCyp
-         lpArgcwp48ngVp9dOv7YhUar71fRPX8V+sg0+ItikGMW05RNNwvHDbfBY2norWtxyIhQ
-         rHdPPQQOHpIMIFSQq5NSODyqVpoYSD/BNARGgLPHuFd/VF2O/VF9NGyZdhgXKVO9qeaH
-         OnqA==
-X-Gm-Message-State: AOAM533YXK+iR3JOB5CLKfWRLFMnSTT3H6RG+bJaXjFC8z9bJFxw5nLY
-        jgLia422Tjr2p1coOugyILpvtZAnXF7IW2zEzIJSQ+lBHsuolKyFjP2dftC8KZSdRe1dE2mMIDu
-        RB6ejcxYTWTbYUfhufY81XVQh
-X-Received: by 2002:a17:906:97cb:: with SMTP id ef11mr4081922ejb.69.1592578893505;
-        Fri, 19 Jun 2020 08:01:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwf2EV3YhbWO+Jg8qABhve3GhwhKAoQI8LV+pNjmhXy9bJMZMB6M7zkRxW5FFIl30kXz3hG7A==
-X-Received: by 2002:a17:906:97cb:: with SMTP id ef11mr4081860ejb.69.1592578892967;
-        Fri, 19 Jun 2020 08:01:32 -0700 (PDT)
-Received: from localhost ([2001:470:5b39:29:79fc:ff4e:48ab:b845])
-        by smtp.gmail.com with ESMTPSA id bs1sm4788251edb.43.2020.06.19.08.01.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 08:01:32 -0700 (PDT)
-Date:   Fri, 19 Jun 2020 17:01:32 +0200
-From:   Oleksandr Natalenko <oleksandr@redhat.com>
-To:     Lorenzo Bianconi <lorenzo@kernel.org>
-Cc:     Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
-        Felix Fietkau <nbd@nbd.name>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: mt7612 suspend/resume issue
-Message-ID: <20200619150132.2zrc3ojqhtbn432u@butterfly.localdomain>
-References: <20200618090556.pepjdbnba2gqzcbe@butterfly.localdomain>
- <20200618111859.GC698688@lore-desk.lan>
+        id S2394538AbgFSQSL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:18:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38320 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390777AbgFSPCE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:02:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 773BEADC1;
+        Fri, 19 Jun 2020 15:02:02 +0000 (UTC)
+To:     Joe Perches <joe@perches.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+References: <20200617222733.GA24156@embeddedor>
+ <1c6adee3-bbad-dc88-3dd2-af823f279271@suse.de>
+ <48589b2a3ec33a6504d23d166a32e7820d2e0b70.camel@perches.com>
+From:   Coly Li <colyli@suse.de>
+Autocrypt: addr=colyli@suse.de; keydata=
+ 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
+Subject: Re: [PATCH][next] bcache: Use struct_size() in kzalloc()
+Message-ID: <dc039b66-5967-381b-ea84-b411b74578a4@suse.de>
+Date:   Fri, 19 Jun 2020 23:01:58 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <48589b2a3ec33a6504d23d166a32e7820d2e0b70.camel@perches.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200618111859.GC698688@lore-desk.lan>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Lorenzo.
+On 2020/6/18 13:42, Joe Perches wrote:
+> On Thu, 2020-06-18 at 13:38 +0800, Coly Li wrote:
+>> On 2020/6/18 06:27, Gustavo A. R. Silva wrote:
+>>> Make use of the struct_size() helper instead of an open-coded version
+>>> in order to avoid any potential type mistakes.
+> []
+>>> diff --git a/drivers/md/bcache/writeback.c b/drivers/md/bcache/writeback.c
+> []
+>>> -			io = kzalloc(sizeof(struct dirty_io) +
+>>> -				     sizeof(struct bio_vec) *
+>>> -				     DIV_ROUND_UP(KEY_SIZE(&w->key),
+>>> -						  PAGE_SECTORS),
+>>> +			io = kzalloc(struct_size(io, bio.bi_inline_vecs,
+>>                                                      ^^^^^^^^^^^^^^^^^^
+>>                                                      I like this :-)
+>>
+>>> +						DIV_ROUND_UP(KEY_SIZE(&w->key), PAGE_SECTORS)),
+>>
+>> The above line seems too long for 80 characters limitation. Does
+>> checkpatch.pl complain for this ?
+> 
+> No.  checkpatch has changed:
 
-Thanks for the quick reply. Please see my observation below.
+OK, then this patch is good for me.
 
-On Thu, Jun 18, 2020 at 01:18:59PM +0200, Lorenzo Bianconi wrote:
-> I have not reproduced the issue myself yet, but I guess we can try:
-> 1- update to latest Felix's tree [1]
-> 2- could you please try to apply the patch below? (compile-test only)
+> 
+> From bdc48fa11e46f867ea4d75fa59ee87a7f48be144 Mon Sep 17 00:00:00 2001
+> From: Joe Perches <joe@perches.com>
+> Date: Fri, 29 May 2020 16:12:21 -0700
+> Subject: [PATCH] checkpatch/coding-style: deprecate 80-column warning
+> 
+> Yes, staying withing 80 columns is certainly still _preferred_.  But
+> it's not the hard limit that the checkpatch warnings imply, and other
+> concerns can most certainly dominate.
+> 
+> Increase the default limit to 100 characters.  Not because 100
+> characters is some hard limit either, but that's certainly a "what are
+> you doing" kind of value and less likely to be about the occasional
+> slightly longer lines.
+> 
+> Miscellanea:
+> 
+>  - to avoid unnecessary whitespace changes in files, checkpatch will no
+>    longer emit a warning about line length when scanning files unless
+>    --strict is also used
+> 
+>  - Add a bit to coding-style about alignment to open parenthesis
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 
-I've started with trying your patch first (apllied to v5.7.4). Please
-see my comments on it inline.
+I see. My current monitor may display 4 terminal window with 85
+characters width, expending the limit to 100 characters means I probably
+have to change my current monitor with a good cause.
 
-> [1] https://github.com/nbd168/wireless
->=20
-> From 400268a0ee5843cf736308504dfbd2f20a291eaf Mon Sep 17 00:00:00 2001
-> Message-Id: <400268a0ee5843cf736308504dfbd2f20a291eaf.1592478809.git.lore=
-nzo@kernel.org>
-> From: Lorenzo Bianconi <lorenzo@kernel.org>
-> Date: Thu, 18 Jun 2020 13:10:11 +0200
-> Subject: [PATCH] mt76: mt76x2: fix pci suspend
->=20
-> Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-> ---
->  .../net/wireless/mediatek/mt76/mt76x02_dma.h  |  1 +
->  .../net/wireless/mediatek/mt76/mt76x02_mmio.c | 15 +++++
->  .../net/wireless/mediatek/mt76/mt76x2/pci.c   | 58 +++++++++++++++++++
->  3 files changed, 74 insertions(+)
->=20
-> diff --git a/drivers/net/wireless/mediatek/mt76/mt76x02_dma.h b/drivers/n=
-et/wireless/mediatek/mt76/mt76x02_dma.h
-> index 4aff4f8e87b6..6262f2ecded5 100644
-> --- a/drivers/net/wireless/mediatek/mt76/mt76x02_dma.h
-> +++ b/drivers/net/wireless/mediatek/mt76/mt76x02_dma.h
-> @@ -62,5 +62,6 @@ mt76x02_wait_for_wpdma(struct mt76_dev *dev, int timeou=
-t)
->  int mt76x02_dma_init(struct mt76x02_dev *dev);
->  void mt76x02_dma_disable(struct mt76x02_dev *dev);
->  void mt76x02_dma_cleanup(struct mt76x02_dev *dev);
-> +void mt76x02_dma_reset(struct mt76x02_dev *dev);
-> =20
->  #endif /* __MT76x02_DMA_H */
-> diff --git a/drivers/net/wireless/mediatek/mt76/mt76x02_mmio.c b/drivers/=
-net/wireless/mediatek/mt76/mt76x02_mmio.c
-> index cbbe986655fe..e2631c964331 100644
-> --- a/drivers/net/wireless/mediatek/mt76/mt76x02_mmio.c
-> +++ b/drivers/net/wireless/mediatek/mt76/mt76x02_mmio.c
-> @@ -348,6 +348,21 @@ void mt76x02_dma_disable(struct mt76x02_dev *dev)
->  }
->  EXPORT_SYMBOL_GPL(mt76x02_dma_disable);
-> =20
-> +void mt76x02_dma_reset(struct mt76x02_dev *dev)
-> +{
-> +	int i;
-> +
-> +	mt76x02_dma_disable(dev);
-> +	usleep_range(1000, 2000);
-> +
-> +	for (i =3D 0; i < __MT_TXQ_MAX; i++)
-> +		mt76_queue_tx_cleanup(dev, i, true);
-> +	mt76_for_each_q_rx(&dev->mt76, i)
+Thank you, for such good change.
 
-Since v5.7.4 doesn't have this macro, I've pulled it manually.
+Coly Li
 
-> +		mt76_queue_rx_reset(dev, i);
-> +
-> +	mt76x02_dma_enable(dev);
-> +}
 
-I had to add EXPORT_SYMBOL_GPL(mt76x02_dma_reset) in order to get the
-kernel linked successfully.
-
-> +
->  void mt76x02_mac_start(struct mt76x02_dev *dev)
->  {
->  	mt76x02_mac_reset_counters(dev);
-> diff --git a/drivers/net/wireless/mediatek/mt76/mt76x2/pci.c b/drivers/ne=
-t/wireless/mediatek/mt76/mt76x2/pci.c
-> index 53ca0cedf026..5543e242fb9b 100644
-> --- a/drivers/net/wireless/mediatek/mt76/mt76x2/pci.c
-> +++ b/drivers/net/wireless/mediatek/mt76/mt76x2/pci.c
-> @@ -103,6 +103,60 @@ mt76pci_remove(struct pci_dev *pdev)
->  	mt76_free_device(mdev);
->  }
-> =20
-> +static int __maybe_unused
-> +mt76x2e_suspend(struct pci_dev *pdev, pm_message_t state)
-> +{
-> +	struct mt76_dev *mdev =3D pci_get_drvdata(pdev);
-> +	struct mt76x02_dev *dev =3D container_of(mdev, struct mt76x02_dev, mt76=
-);
-> +	int i, err;
-> +
-> +	napi_disable(&mdev->tx_napi);
-> +	tasklet_kill(&mdev->pre_tbtt_tasklet);
-> +	tasklet_kill(&mdev->tx_tasklet);
-> +
-> +	mt76_for_each_q_rx(mdev, i)
-> +		napi_disable(&mdev->napi[i]);
-> +
-> +	mt76x02_dma_reset(dev);
-> +
-> +	pci_enable_wake(pdev, pci_choose_state(pdev, state), true);
-> +	pci_save_state(pdev);
-> +	err =3D pci_set_power_state(pdev, pci_choose_state(pdev, state));
-> +	if (err)
-> +		goto restore;
-> +
-> +	return 0;
-> +
-> +restore:
-> +	mt76_for_each_q_rx(mdev, i)
-> +		napi_enable(&mdev->napi[i]);
-> +	napi_enable(&mdev->tx_napi);
-> +
-> +	return err;
-> +}
-> +
-> +static int __maybe_unused
-> +mt76x2e_resume(struct pci_dev *pdev)
-> +{
-> +	struct mt76_dev *mdev =3D pci_get_drvdata(pdev);
-> +	int i, err;
-> +
-> +	err =3D pci_set_power_state(pdev, PCI_D0);
-> +	if (err)
-> +		return err;
-> +
-> +	pci_restore_state(pdev);
-> +
-> +	mt76_for_each_q_rx(mdev, i) {
-> +		napi_enable(&mdev->napi[i]);
-> +		napi_schedule(&mdev->napi[i]);
-> +	}
-> +	napi_enable(&mdev->tx_napi);
-> +	napi_schedule(&mdev->tx_napi);
-> +
-> +	return 0;
-> +}
-> +
->  MODULE_DEVICE_TABLE(pci, mt76pci_device_table);
->  MODULE_FIRMWARE(MT7662_FIRMWARE);
->  MODULE_FIRMWARE(MT7662_ROM_PATCH);
-> @@ -113,6 +167,10 @@ static struct pci_driver mt76pci_driver =3D {
->  	.id_table	=3D mt76pci_device_table,
->  	.probe		=3D mt76pci_probe,
->  	.remove		=3D mt76pci_remove,
-> +#ifdef CONFIG_PM
-> +	.suspend	=3D mt76x2e_suspend,
-> +	.resume		=3D mt76x2e_resume,
-> +#endif /* CONFIG_PM */
->  };
-> =20
->  module_pci_driver(mt76pci_driver);
-> --=20
-> 2.26.2
-
-Unfortunately, it seems it did little change to my setup. The resume
-time shrunk it seems (but is still noticeable), and the system survived
-2 suspend/resume cycles, but after the third resume the following
-happened:
-
-=3D=3D=3D
-=C4=8Den 18 23:11:58 spock kernel: mt76x2e 0000:01:00.0: MCU message 2 (seq=
- 11) timed out
-=C4=8Den 18 23:11:58 spock kernel: mt76x2e 0000:01:00.0: MCU message 30 (se=
-q 12) timed out
-=C4=8Den 18 23:11:58 spock kernel: mt76x2e 0000:01:00.0: MCU message 30 (se=
-q 13) timed out
-=C4=8Den 18 23:11:58 spock kernel: mt76x2e 0000:01:00.0: Firmware Version: =
-0.0.00
-=C4=8Den 18 23:11:58 spock kernel: mt76x2e 0000:01:00.0: Build: 1
-=C4=8Den 18 23:11:58 spock kernel: mt76x2e 0000:01:00.0: Build Time: 201507=
-311614____
-=C4=8Den 18 23:11:58 spock kernel: mt76x2e 0000:01:00.0: Firmware running!
-=C4=8Den 18 23:11:58 spock kernel: ieee80211 phy0: Hardware restart was req=
-uested
-=C4=8Den 18 23:11:59 spock kernel: mt76x2e 0000:01:00.0: MCU message 2 (seq=
- 1) timed out
-=C4=8Den 18 23:11:59 spock kernel: mt76x2e 0000:01:00.0: Firmware Version: =
-0.0.00
-=C4=8Den 18 23:11:59 spock kernel: mt76x2e 0000:01:00.0: Build: 1
-=C4=8Den 18 23:11:59 spock kernel: mt76x2e 0000:01:00.0: Build Time: 201507=
-311614____
-=C4=8Den 18 23:11:59 spock kernel: mt76x2e 0000:01:00.0: Firmware running!
-=C4=8Den 18 23:11:59 spock kernel: ieee80211 phy0: Hardware restart was req=
-uested
-=C4=8Den 18 23:12:00 spock kernel: mt76x2e 0000:01:00.0: MCU message 30 (se=
-q 3) timed out
-=C4=8Den 18 23:12:01 spock kernel: mt76x2e 0000:01:00.0: MCU message 30 (se=
-q 4) timed out
-=C4=8Den 18 23:12:01 spock kernel: mt76x2e 0000:01:00.0: Firmware Version: =
-0.0.00
-=C4=8Den 18 23:12:01 spock kernel: mt76x2e 0000:01:00.0: Build: 1
-=C4=8Den 18 23:12:01 spock kernel: mt76x2e 0000:01:00.0: Build Time: 201507=
-311614____
-=C4=8Den 18 23:12:01 spock kernel: mt76x2e 0000:01:00.0: Firmware running!
-=C4=8Den 18 23:12:01 spock kernel: ieee80211 phy0: Hardware restart was req=
-uested
-=C4=8Den 18 23:12:02 spock kernel: ------------[ cut here ]------------
-=C4=8Den 18 23:12:02 spock kernel: WARNING: CPU: 3 PID: 171 at net/mac80211=
-/util.c:2270 ieee80211_reconfig+0x234/0x1700 [mac80211]
-=C4=8Den 18 23:12:02 spock kernel: Modules linked in: cmac ccm bridge stp l=
-lc nft_ct nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables msr tun nfne=
-tlink nls_iso8859_1 nls_cp437 vfat fat mt76x2e mt76x2_common mt76x02_lib mt=
-76 mac80211 intel_rapl_msr snd_hda_codec_hdmi snd_hda_codec_cirrus mei_hdcp=
- snd_hda_codec_generic cfg80211 intel_rapl_common x86_pkg_temp_thermal inte=
-l_powerclamp coretemp dell_laptop iTCO_wdt snd_hda_intel kvm_intel iTCO_ven=
-dor_support dell_wmi snd_intel_dspcfg sparse_keymap snd_hda_codec ledtrig_a=
-udio wmi_bmof dell_smbios snd_hda_core kvm rtsx_usb_ms dell_wmi_descriptor =
-memstick dcdbas snd_hwdep dell_smm_hwmon irqbypass psmouse intel_cstate snd=
-_pcm intel_uncore joydev intel_rapl_perf mousedev mei_me alx rfkill input_l=
-eds snd_timer i2c_i801 snd mei lpc_ich libarc4 mdio soundcore battery wmi e=
-vdev dell_smo8800 mac_hid ac tcp_bbr crypto_user ip_tables x_tables xfs dm_=
-thin_pool dm_persistent_data dm_bio_prison dm_bufio libcrc32c crc32c_generi=
-c dm_crypt hid_logitech_hidpp hid_logitech_dj
-=C4=8Den 18 23:12:02 spock kernel:  hid_generic usbhid hid rtsx_usb_sdmmc m=
-mc_core rtsx_usb dm_mod raid10 serio_raw atkbd libps2 md_mod crct10dif_pclm=
-ul crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd cr=
-yptd glue_helper xhci_pci xhci_hcd ehci_pci ehci_hcd i8042 serio i915 intel=
-_gtt i2c_algo_bit drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_f=
-ops cec rc_core drm agpgart
-=C4=8Den 18 23:12:02 spock kernel: CPU: 3 PID: 171 Comm: kworker/3:3 Not ta=
-inted 5.7.0-pf3 #1
-=C4=8Den 18 23:12:02 spock kernel: Hardware name: Dell Inc.          Vostro=
- 3360/0F5DWF, BIOS A18 09/25/2013
-=C4=8Den 18 23:12:02 spock kernel: Workqueue: events_freezable ieee80211_re=
-start_work [mac80211]
-=C4=8Den 18 23:12:02 spock kernel: RIP: 0010:ieee80211_reconfig+0x234/0x170=
-0 [mac80211]
-=C4=8Den 18 23:12:02 spock kernel: Code: 83 b8 0b 00 00 83 e0 fd 83 f8 04 7=
-4 e6 48 8b 83 90 04 00 00 a8 01 74 db 48 89 de 48 89 ef e8 03 dc fb ff 41 8=
-9 c7 85 c0 74 c9 <0f> 0b 48 8b 5b 08 4c 8b 24 24 48 3b 1c 24 75 12 e9 51 fe=
- ff ff 48
-=C4=8Den 18 23:12:02 spock kernel: RSP: 0018:ffffa87c40403df0 EFLAGS: 00010=
-286
-=C4=8Den 18 23:12:02 spock kernel: RAX: 00000000fffffff0 RBX: ffff9fe028f6e=
-900 RCX: 0000000000000008
-=C4=8Den 18 23:12:02 spock kernel: RDX: 0000000000000000 RSI: 0000000000000=
-100 RDI: 0000000000000100
-=C4=8Den 18 23:12:02 spock kernel: RBP: ffff9fe0283787e0 R08: 0000000000000=
-000 R09: 0000000000000001
-=C4=8Den 18 23:12:02 spock kernel: R10: 0000000000000001 R11: 0000000000000=
-000 R12: ffff9fe0283798d0
-=C4=8Den 18 23:12:02 spock kernel: R13: 00000000ffffffff R14: 0000000000000=
-000 R15: 00000000fffffff0
-=C4=8Den 18 23:12:02 spock kernel: FS:  0000000000000000(0000) GS:ffff9fe02=
-f2c0000(0000) knlGS:0000000000000000
-=C4=8Den 18 23:12:02 spock kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000=
-080050033
-=C4=8Den 18 23:12:02 spock kernel: CR2: 00007f313b33a940 CR3: 000000012ea0a=
-002 CR4: 00000000001706e0
-=C4=8Den 18 23:12:02 spock kernel: Call Trace:
-=C4=8Den 18 23:12:02 spock kernel:  ieee80211_restart_work+0xb7/0xe0 [mac80=
-211]
-=C4=8Den 18 23:12:02 spock kernel:  process_one_work+0x1d4/0x3c0
-=C4=8Den 18 23:12:02 spock kernel:  worker_thread+0x228/0x470
-=C4=8Den 18 23:12:02 spock kernel:  ? process_one_work+0x3c0/0x3c0
-=C4=8Den 18 23:12:02 spock kernel:  kthread+0x19c/0x1c0
-=C4=8Den 18 23:12:02 spock kernel:  ? __kthread_init_worker+0x30/0x30
-=C4=8Den 18 23:12:02 spock kernel:  ret_from_fork+0x35/0x40
-=C4=8Den 18 23:12:02 spock kernel: ---[ end trace e017bc3573bd9bf2 ]---
-=C4=8Den 18 23:12:02 spock kernel: ------------[ cut here ]------------
-=C4=8Den 18 23:12:02 spock kernel: wlp1s0:  Failed check-sdata-in-driver ch=
-eck, flags: 0x0
-=C4=8Den 18 23:12:02 spock kernel: WARNING: CPU: 3 PID: 171 at net/mac80211=
-/driver-ops.h:17 drv_remove_interface+0x11f/0x130 [mac80211]
-=C4=8Den 18 23:12:02 spock kernel: Modules linked in: cmac ccm bridge stp l=
-lc nft_ct nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables msr tun nfne=
-tlink nls_iso8859_1 nls_cp437 vfat fat mt76x2e mt76x2_common mt76x02_lib mt=
-76 mac80211 intel_rapl_msr snd_hda_codec_hdmi snd_hda_codec_cirrus mei_hdcp=
- snd_hda_codec_generic cfg80211 intel_rapl_common x86_pkg_temp_thermal inte=
-l_powerclamp coretemp dell_laptop iTCO_wdt snd_hda_intel kvm_intel iTCO_ven=
-dor_support dell_wmi snd_intel_dspcfg sparse_keymap snd_hda_codec ledtrig_a=
-udio wmi_bmof dell_smbios snd_hda_core kvm rtsx_usb_ms dell_wmi_descriptor =
-memstick dcdbas snd_hwdep dell_smm_hwmon irqbypass psmouse intel_cstate snd=
-_pcm intel_uncore joydev intel_rapl_perf mousedev mei_me alx rfkill input_l=
-eds snd_timer i2c_i801 snd mei lpc_ich libarc4 mdio soundcore battery wmi e=
-vdev dell_smo8800 mac_hid ac tcp_bbr crypto_user ip_tables x_tables xfs dm_=
-thin_pool dm_persistent_data dm_bio_prison dm_bufio libcrc32c crc32c_generi=
-c dm_crypt hid_logitech_hidpp hid_logitech_dj
-=C4=8Den 18 23:12:02 spock kernel:  hid_generic usbhid hid rtsx_usb_sdmmc m=
-mc_core rtsx_usb dm_mod raid10 serio_raw atkbd libps2 md_mod crct10dif_pclm=
-ul crc32_pclmul crc32c_intel ghash_clmulni_intel aesni_intel crypto_simd cr=
-yptd glue_helper xhci_pci xhci_hcd ehci_pci ehci_hcd i8042 serio i915 intel=
-_gtt i2c_algo_bit drm_kms_helper syscopyarea sysfillrect sysimgblt fb_sys_f=
-ops cec rc_core drm agpgart
-=C4=8Den 18 23:12:02 spock kernel: CPU: 3 PID: 171 Comm: kworker/3:3 Tainte=
-d: G        W         5.7.0-pf3 #1
-=C4=8Den 18 23:12:02 spock kernel: Hardware name: Dell Inc.          Vostro=
- 3360/0F5DWF, BIOS A18 09/25/2013
-=C4=8Den 18 23:12:02 spock kernel: Workqueue: events_freezable ieee80211_re=
-start_work [mac80211]
-=C4=8Den 18 23:12:02 spock kernel: RIP: 0010:drv_remove_interface+0x11f/0x1=
-30 [mac80211]
-=C4=8Den 18 23:12:02 spock kernel: Code: a0 57 f0 c2 e9 4b ff ff ff 48 8b 8=
-6 78 04 00 00 48 8d b6 98 04 00 00 48 c7 c7 e8 ef f8 c0 48 85 c0 48 0f 45 f=
-0 e8 99 2e fa c2 <0f> 0b 5b 5d 41 5c c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f=
- 44 00 00
-=C4=8Den 18 23:12:02 spock kernel: RSP: 0018:ffffa87c40403c80 EFLAGS: 00010=
-282
-=C4=8Den 18 23:12:02 spock kernel: RAX: 0000000000000000 RBX: ffff9fe028f6e=
-900 RCX: 0000000000000000
-=C4=8Den 18 23:12:02 spock kernel: RDX: 0000000000000001 RSI: 0000000000000=
-082 RDI: 00000000ffffffff
-=C4=8Den 18 23:12:02 spock kernel: RBP: ffff9fe028379930 R08: 0000000000000=
-4c9 R09: 0000000000000001
-=C4=8Den 18 23:12:02 spock kernel: R10: 0000000000000001 R11: 0000000000006=
-fc0 R12: ffff9fe028379000
-=C4=8Den 18 23:12:02 spock kernel: R13: ffff9fe028f6f4b8 R14: ffff9fe028378=
-ca0 R15: ffff9fe0283787e0
-=C4=8Den 18 23:12:02 spock kernel: FS:  0000000000000000(0000) GS:ffff9fe02=
-f2c0000(0000) knlGS:0000000000000000
-=C4=8Den 18 23:12:02 spock kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000=
-080050033
-=C4=8Den 18 23:12:02 spock kernel: CR2: 00007f313b33a940 CR3: 000000012ea0a=
-002 CR4: 00000000001706e0
-=C4=8Den 18 23:12:02 spock kernel: Call Trace:
-=C4=8Den 18 23:12:02 spock kernel:  ieee80211_do_stop+0x5af/0x8c0 [mac80211]
-=C4=8Den 18 23:12:02 spock kernel:  ieee80211_stop+0x16/0x20 [mac80211]
-=C4=8Den 18 23:12:02 spock kernel:  __dev_close_many+0xaa/0x120
-=C4=8Den 18 23:12:02 spock kernel:  dev_close_many+0xa1/0x2b0
-=C4=8Den 18 23:12:02 spock kernel:  dev_close+0x6d/0x90
-=C4=8Den 18 23:12:02 spock kernel:  cfg80211_shutdown_all_interfaces+0x71/0=
-xd0 [cfg80211]
-=C4=8Den 18 23:12:02 spock kernel:  ieee80211_reconfig+0xa2/0x1700 [mac8021=
-1]
-=C4=8Den 18 23:12:02 spock kernel:  ieee80211_restart_work+0xb7/0xe0 [mac80=
-211]
-=C4=8Den 18 23:12:02 spock kernel:  process_one_work+0x1d4/0x3c0
-=C4=8Den 18 23:12:02 spock kernel:  worker_thread+0x228/0x470
-=C4=8Den 18 23:12:02 spock kernel:  ? process_one_work+0x3c0/0x3c0
-=C4=8Den 18 23:12:02 spock kernel:  kthread+0x19c/0x1c0
-=C4=8Den 18 23:12:02 spock kernel:  ? __kthread_init_worker+0x30/0x30
-=C4=8Den 18 23:12:02 spock kernel:  ret_from_fork+0x35/0x40
-=C4=8Den 18 23:12:02 spock kernel: ---[ end trace e017bc3573bd9bf3 ]---
-=3D=3D=3D
-
-Do you still want me to try Felix's tree, or there's something else I
-can try?
-
-Thank you.
-
---=20
-  Best regards,
-    Oleksandr Natalenko (post-factum)
-    Principal Software Maintenance Engineer
 
