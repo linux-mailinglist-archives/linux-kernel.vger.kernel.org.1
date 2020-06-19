@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A00200EA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77FE520102D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391960AbgFSPJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:09:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39434 "EHLO mail.kernel.org"
+        id S2393525AbgFSP1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:27:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391450AbgFSPJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:09:41 -0400
+        id S2393411AbgFSPZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:25:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64AA020776;
-        Fri, 19 Jun 2020 15:09:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8FE2B2080C;
+        Fri, 19 Jun 2020 15:25:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579380;
-        bh=IlCy+/PA9cG/OOuLd1GmNkRJfPDP1bUeB3weSGCHfdo=;
+        s=default; t=1592580325;
+        bh=YnT7AuoKvhjR1CyujW91C6E7uatjm8YJ/uf+9+UXUxA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kTj47ZsQaaf8I8V0PTDu0uDIQESs9l6jFXHAOfD5ph+Qco6NjDuCKefPYCvk1Itsb
-         Ji07DM6gJdVKBL88mlmQX/zKyOQMgo6MWS5GIuZlRLYWZxIW0dZhjDPBXaXMmsXeFv
-         /TQIFCRIXiWGjbX8A/ilBKI1h9CJAZwwWGCpjsE0=
+        b=jI90ZqWEJ6BCzE4fKHk6LzU8BUSnMva3U+grXIRfdPlUvNI86Vayn33TJuTioWhBx
+         g88EHiliHTwJI85/AF+9c/7TiIb2sjbLqGclX6K3xV4gxFortqkmFHVs3VCmWziE7+
+         HUYtrJOqZsLsZhn9XtqWtjmJ3LOcsjMHHH+nvJX0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-        Coly Li <colyli@suse.de>, Song Liu <songliubraving@fb.com>,
+        stable@vger.kernel.org,
+        Nicolas Toromanoff <nicolas.toromanoff@st.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 113/261] raid5: remove gfp flags from scribble_alloc()
+Subject: [PATCH 5.7 206/376] crypto: stm32/crc32 - fix ext4 chksum BUG_ON()
 Date:   Fri, 19 Jun 2020 16:32:04 +0200
-Message-Id: <20200619141655.282920713@linuxfoundation.org>
+Message-Id: <20200619141720.090392606@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
+References: <20200619141710.350494719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,79 +45,181 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Coly Li <colyli@suse.de>
+From: Nicolas Toromanoff <nicolas.toromanoff@st.com>
 
-[ Upstream commit ba54d4d4d2844c234f1b4692bd8c9e0f833c8a54 ]
+[ Upstream commit 49c2c082e00e0bc4f5cbb7c21c7f0f873b35ab09 ]
 
-Using GFP_NOIO flag to call scribble_alloc() from resize_chunk() does
-not have the expected behavior. kvmalloc_array() inside scribble_alloc()
-which receives the GFP_NOIO flag will eventually call kmalloc_node() to
-allocate physically continuous pages.
+Allow use of crc_update without prior call to crc_init.
+And change (and fix) driver to use CRC device even on unaligned buffers.
 
-Now we have memalloc scope APIs in mddev_suspend()/mddev_resume() to
-prevent memory reclaim I/Os during raid array suspend context, calling
-to kvmalloc_array() with GFP_KERNEL flag may avoid deadlock of recursive
-I/O as expected.
+Fixes: b51dbe90912a ("crypto: stm32 - Support for STM32 CRC32 crypto module")
 
-This patch removes the useless gfp flags from parameters list of
-scribble_alloc(), and call kvmalloc_array() with GFP_KERNEL flag. The
-incorrect GFP_NOIO flag does not exist anymore.
-
-Fixes: b330e6a49dc3 ("md: convert to kvmalloc")
-Suggested-by: Michal Hocko <mhocko@suse.com>
-Signed-off-by: Coly Li <colyli@suse.de>
-Signed-off-by: Song Liu <songliubraving@fb.com>
+Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/raid5.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ drivers/crypto/stm32/stm32-crc32.c | 98 +++++++++++++++---------------
+ 1 file changed, 48 insertions(+), 50 deletions(-)
 
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index 36cd7c2fbf40..a3cbc9f4fec1 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -2228,14 +2228,19 @@ static int grow_stripes(struct r5conf *conf, int num)
-  * of the P and Q blocks.
-  */
- static int scribble_alloc(struct raid5_percpu *percpu,
--			  int num, int cnt, gfp_t flags)
-+			  int num, int cnt)
+diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
+index 8e92e4ac79f1..c6156bf6c603 100644
+--- a/drivers/crypto/stm32/stm32-crc32.c
++++ b/drivers/crypto/stm32/stm32-crc32.c
+@@ -28,8 +28,10 @@
+ 
+ /* Registers values */
+ #define CRC_CR_RESET            BIT(0)
+-#define CRC_CR_REVERSE          (BIT(7) | BIT(6) | BIT(5))
+ #define CRC_INIT_DEFAULT        0xFFFFFFFF
++#define CRC_CR_REV_IN_WORD      (BIT(6) | BIT(5))
++#define CRC_CR_REV_IN_BYTE      BIT(5)
++#define CRC_CR_REV_OUT          BIT(7)
+ 
+ #define CRC_AUTOSUSPEND_DELAY	50
+ 
+@@ -38,8 +40,6 @@ struct stm32_crc {
+ 	struct device    *dev;
+ 	void __iomem     *regs;
+ 	struct clk       *clk;
+-	u8               pending_data[sizeof(u32)];
+-	size_t           nb_pending_bytes;
+ };
+ 
+ struct stm32_crc_list {
+@@ -59,7 +59,6 @@ struct stm32_crc_ctx {
+ 
+ struct stm32_crc_desc_ctx {
+ 	u32    partial; /* crc32c: partial in first 4 bytes of that struct */
+-	struct stm32_crc *crc;
+ };
+ 
+ static int stm32_crc32_cra_init(struct crypto_tfm *tfm)
+@@ -99,25 +98,22 @@ static int stm32_crc_init(struct shash_desc *desc)
+ 	struct stm32_crc *crc;
+ 
+ 	spin_lock_bh(&crc_list.lock);
+-	list_for_each_entry(crc, &crc_list.dev_list, list) {
+-		ctx->crc = crc;
+-		break;
+-	}
++	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
+ 	spin_unlock_bh(&crc_list.lock);
+ 
+-	pm_runtime_get_sync(ctx->crc->dev);
++	pm_runtime_get_sync(crc->dev);
+ 
+ 	/* Reset, set key, poly and configure in bit reverse mode */
+-	writel_relaxed(bitrev32(mctx->key), ctx->crc->regs + CRC_INIT);
+-	writel_relaxed(bitrev32(mctx->poly), ctx->crc->regs + CRC_POL);
+-	writel_relaxed(CRC_CR_RESET | CRC_CR_REVERSE, ctx->crc->regs + CRC_CR);
++	writel_relaxed(bitrev32(mctx->key), crc->regs + CRC_INIT);
++	writel_relaxed(bitrev32(mctx->poly), crc->regs + CRC_POL);
++	writel_relaxed(CRC_CR_RESET | CRC_CR_REV_IN_WORD | CRC_CR_REV_OUT,
++		       crc->regs + CRC_CR);
+ 
+ 	/* Store partial result */
+-	ctx->partial = readl_relaxed(ctx->crc->regs + CRC_DR);
+-	ctx->crc->nb_pending_bytes = 0;
++	ctx->partial = readl_relaxed(crc->regs + CRC_DR);
+ 
+-	pm_runtime_mark_last_busy(ctx->crc->dev);
+-	pm_runtime_put_autosuspend(ctx->crc->dev);
++	pm_runtime_mark_last_busy(crc->dev);
++	pm_runtime_put_autosuspend(crc->dev);
+ 
+ 	return 0;
+ }
+@@ -126,31 +122,49 @@ static int stm32_crc_update(struct shash_desc *desc, const u8 *d8,
+ 			    unsigned int length)
  {
- 	size_t obj_size =
- 		sizeof(struct page *) * (num+2) +
- 		sizeof(addr_conv_t) * (num+2);
- 	void *scribble;
+ 	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
+-	struct stm32_crc *crc = ctx->crc;
+-	u32 *d32;
+-	unsigned int i;
++	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
++	struct stm32_crc *crc;
++
++	spin_lock_bh(&crc_list.lock);
++	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
++	spin_unlock_bh(&crc_list.lock);
  
--	scribble = kvmalloc_array(cnt, obj_size, flags);
+ 	pm_runtime_get_sync(crc->dev);
+ 
+-	if (unlikely(crc->nb_pending_bytes)) {
+-		while (crc->nb_pending_bytes != sizeof(u32) && length) {
+-			/* Fill in pending data */
+-			crc->pending_data[crc->nb_pending_bytes++] = *(d8++);
 +	/*
-+	 * If here is in raid array suspend context, it is in memalloc noio
-+	 * context as well, there is no potential recursive memory reclaim
-+	 * I/Os with the GFP_KERNEL flag.
++	 * Restore previously calculated CRC for this context as init value
++	 * Restore polynomial configuration
++	 * Configure in register for word input data,
++	 * Configure out register in reversed bit mode data.
 +	 */
-+	scribble = kvmalloc_array(cnt, obj_size, GFP_KERNEL);
- 	if (!scribble)
- 		return -ENOMEM;
- 
-@@ -2267,8 +2272,7 @@ static int resize_chunks(struct r5conf *conf, int new_disks, int new_sectors)
- 
- 		percpu = per_cpu_ptr(conf->percpu, cpu);
- 		err = scribble_alloc(percpu, new_disks,
--				     new_sectors / STRIPE_SECTORS,
--				     GFP_NOIO);
-+				     new_sectors / STRIPE_SECTORS);
- 		if (err)
- 			break;
++	writel_relaxed(bitrev32(ctx->partial), crc->regs + CRC_INIT);
++	writel_relaxed(bitrev32(mctx->poly), crc->regs + CRC_POL);
++	writel_relaxed(CRC_CR_RESET | CRC_CR_REV_IN_WORD | CRC_CR_REV_OUT,
++		       crc->regs + CRC_CR);
++
++	if (d8 != PTR_ALIGN(d8, sizeof(u32))) {
++		/* Configure for byte data */
++		writel_relaxed(CRC_CR_REV_IN_BYTE | CRC_CR_REV_OUT,
++			       crc->regs + CRC_CR);
++		while (d8 != PTR_ALIGN(d8, sizeof(u32)) && length) {
++			writeb_relaxed(*d8++, crc->regs + CRC_DR);
+ 			length--;
+ 		}
+-
+-		if (crc->nb_pending_bytes == sizeof(u32)) {
+-			/* Process completed pending data */
+-			writel_relaxed(*(u32 *)crc->pending_data,
+-				       crc->regs + CRC_DR);
+-			crc->nb_pending_bytes = 0;
+-		}
++		/* Configure for word data */
++		writel_relaxed(CRC_CR_REV_IN_WORD | CRC_CR_REV_OUT,
++			       crc->regs + CRC_CR);
  	}
-@@ -6765,8 +6769,7 @@ static int alloc_scratch_buffer(struct r5conf *conf, struct raid5_percpu *percpu
- 			       conf->previous_raid_disks),
- 			   max(conf->chunk_sectors,
- 			       conf->prev_chunk_sectors)
--			   / STRIPE_SECTORS,
--			   GFP_KERNEL)) {
-+			   / STRIPE_SECTORS)) {
- 		free_scratch_buffer(conf, percpu);
- 		return -ENOMEM;
- 	}
+ 
+-	d32 = (u32 *)d8;
+-	for (i = 0; i < length >> 2; i++)
+-		/* Process 32 bits data */
+-		writel_relaxed(*(d32++), crc->regs + CRC_DR);
++	for (; length >= sizeof(u32); d8 += sizeof(u32), length -= sizeof(u32))
++		writel_relaxed(*((u32 *)d8), crc->regs + CRC_DR);
++
++	if (length) {
++		/* Configure for byte data */
++		writel_relaxed(CRC_CR_REV_IN_BYTE | CRC_CR_REV_OUT,
++			       crc->regs + CRC_CR);
++		while (length--)
++			writeb_relaxed(*d8++, crc->regs + CRC_DR);
++	}
+ 
+ 	/* Store partial result */
+ 	ctx->partial = readl_relaxed(crc->regs + CRC_DR);
+@@ -158,22 +172,6 @@ static int stm32_crc_update(struct shash_desc *desc, const u8 *d8,
+ 	pm_runtime_mark_last_busy(crc->dev);
+ 	pm_runtime_put_autosuspend(crc->dev);
+ 
+-	/* Check for pending data (non 32 bits) */
+-	length &= 3;
+-	if (likely(!length))
+-		return 0;
+-
+-	if ((crc->nb_pending_bytes + length) >= sizeof(u32)) {
+-		/* Shall not happen */
+-		dev_err(crc->dev, "Pending data overflow\n");
+-		return -EINVAL;
+-	}
+-
+-	d8 = (const u8 *)d32;
+-	for (i = 0; i < length; i++)
+-		/* Store pending data */
+-		crc->pending_data[crc->nb_pending_bytes++] = *(d8++);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.25.1
 
