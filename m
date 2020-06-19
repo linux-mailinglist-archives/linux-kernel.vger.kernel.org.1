@@ -2,77 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C55BC20008A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 05:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B81FF200090
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 05:13:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730191AbgFSDLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 23:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59610 "EHLO
+        id S1730317AbgFSDM4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 23:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728607AbgFSDLc (ORCPT
+        with ESMTP id S1729509AbgFSDMx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 23:11:32 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8215BC06174E;
-        Thu, 18 Jun 2020 20:11:32 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id E741C120ED49A;
-        Thu, 18 Jun 2020 20:11:30 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 20:11:30 -0700 (PDT)
-Message-Id: <20200618.201130.941014011043746603.davem@davemloft.net>
-To:     olteanv@gmail.com
-Cc:     netdev@vger.kernel.org, andrew@lunn.ch, vivien.didelot@gmail.com,
-        f.fainelli@gmail.com, joakim.tjernlund@infinera.com,
-        madalin.bucur@oss.nxp.com, fido_max@inbox.ru,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 net 0/2] Reapply DSA fix for dpaa-eth with proper
- Fixes: tag
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200616151910.3908882-1-olteanv@gmail.com>
-References: <20200616151910.3908882-1-olteanv@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 18 Jun 2020 20:11:31 -0700 (PDT)
+        Thu, 18 Jun 2020 23:12:53 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1955CC06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 20:12:53 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id c21so4706698lfb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 20:12:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ux+RlrRIaul1vx3+RsucEfoBIW1+wn2hepN2AwYL3gA=;
+        b=Bt+wAPHbtIEVMjqIuaGC/1uyx9g+h0JmstAgvL3YJl4+t451+WyOTbJOfEvXeXX9eD
+         1Ltc346gaSEn7p3ivSehx5IBh4xH6ymqh+Cq5lYwtfijHLGYMnDbhhfUEQEC6v7QTi9t
+         Gvpm/+doEjzk2t50RGWoXl/eMh2lar/D82DnoQZeJv6XzRq+Fc5AvAcG2D+/Hskhaijt
+         5qOCFYr9fyIP7Xa+r/t0Lv45+tYjKdVg59nS+ejWw+WcV4bkYdYXGAGgDgDTeKjRc7CK
+         GEn4QL8/i4qrDlg0rT9E35HKdjJaOz/dsHKWRrtezLn9lpB9h6gMQoE0SemWFonpZquG
+         NmHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ux+RlrRIaul1vx3+RsucEfoBIW1+wn2hepN2AwYL3gA=;
+        b=thahU3ZsmCJ3g5d+Se9Zcg+BQ1lkINFOxlOWbIyh/JxmOjPhGP3gdgmakcQ6hMuF31
+         V+M9iD04Lt8NjtX/05fAkx98Ma1ZyczUV6odFMGHKRXTxayVTYu5qAZOofI6o8J2K+Qo
+         HHMg3POrLiK16QEcdw4uN/i4h2Fq8jp8zaIrjD9tw3PbP/MxRpuiydTPYC8Ayf2+yOKy
+         vRZebsNqiIuzfBay9AtO12v4sW+pQjvVozXsy9cVfivN+8xRHaB3+GBaEWA1OryVKInw
+         UVBhg2xaUjD+FT4+0fc+GIPNMUeDvF8BVKswqYKja7SsTlwIAnn5pY8isWvZYUrzI7fN
+         yvVQ==
+X-Gm-Message-State: AOAM533xGEJTVtrLk8pGcgQm0P5h3bAmOBqARAgvf4DLChtX4OUHYU+k
+        UmQmZsMDBtgH33JC/qr/Jby+WXvCKKD3Hf4o+ud8fAqI
+X-Google-Smtp-Source: ABdhPJwoJSHfdvQytNKngbcarE9utMq6l97RiL9akPNyVTfXUc439uP32EBiYbbxCOoeDZvLjAyRLu9iHNLCGLt7VZU=
+X-Received: by 2002:a19:b07:: with SMTP id 7mr509645lfl.38.1592536371497; Thu,
+ 18 Jun 2020 20:12:51 -0700 (PDT)
+MIME-Version: 1.0
+References: <1592363698-4266-1-git-send-email-jrdr.linux@gmail.com> <d9e8ad0f-f2aa-eea4-5bc7-a802c626ace6@oracle.com>
+In-Reply-To: <d9e8ad0f-f2aa-eea4-5bc7-a802c626ace6@oracle.com>
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+Date:   Fri, 19 Jun 2020 08:42:39 +0530
+Message-ID: <CAFqt6zbJD+k9xkV9Se0nL2qKfnea3mRrWJ4gzPmPJBquYk4M+w@mail.gmail.com>
+Subject: Re: [RFC PATCH] xen/privcmd: Convert get_user_pages*() to pin_user_pages*()
+To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc:     Juergen Gross <jgross@suse.com>, sstabellini@kernel.org,
+        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        John Hubbard <jhubbard@nvidia.com>, paul@xen.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <olteanv@gmail.com>
-Date: Tue, 16 Jun 2020 18:19:08 +0300
+On Wed, Jun 17, 2020 at 11:29 PM Boris Ostrovsky
+<boris.ostrovsky@oracle.com> wrote:
+>
+> On 6/16/20 11:14 PM, Souptick Joarder wrote:
+> > In 2019, we introduced pin_user_pages*() and now we are converting
+> > get_user_pages*() to the new API as appropriate. [1] & [2] could
+> > be referred for more information.
+> >
+> > [1] Documentation/core-api/pin_user_pages.rst
+> >
+> > [2] "Explicit pinning of user-space pages":
+> >         https://lwn.net/Articles/807108/
+> >
+> > Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+> > Cc: John Hubbard <jhubbard@nvidia.com>
+> > ---
+> > Hi,
+> >
+> > I have compile tested this patch but unable to run-time test,
+> > so any testing help is much appriciated.
+> >
+> > Also have a question, why the existing code is not marking the
+> > pages dirty (since it did FOLL_WRITE) ?
+>
+>
+> Indeed, seems to me it should. Paul?
+>
+>
+> >
+> >  drivers/xen/privcmd.c | 7 ++-----
+> >  1 file changed, 2 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
+> > index a250d11..543739e 100644
+> > --- a/drivers/xen/privcmd.c
+> > +++ b/drivers/xen/privcmd.c
+> > @@ -594,7 +594,7 @@ static int lock_pages(
+> >               if (requested > nr_pages)
+> >                       return -ENOSPC;
+> >
+> > -             pinned = get_user_pages_fast(
+> > +             pinned = pin_user_pages_fast(
+> >                       (unsigned long) kbufs[i].uptr,
+> >                       requested, FOLL_WRITE, pages);
+> >               if (pinned < 0)
+> > @@ -614,10 +614,7 @@ static void unlock_pages(struct page *pages[], unsigned int nr_pages)
+> >       if (!pages)
+> >               return;
+> >
+> > -     for (i = 0; i < nr_pages; i++) {
+> > -             if (pages[i])
+> > -                     put_page(pages[i]);
+> > -     }
+> > +     unpin_user_pages(pages, nr_pages);
+>
+>
+> Why are you no longer checking for valid pages?
 
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
-> 
-> Joakim notified me that this fix breaks stable trees.
-> It turns out that my assessment about who-broke-who was wrong.
-> The real Fixes: tag should have been:
-> 
-> Fixes: 060ad66f9795 ("dpaa_eth: change DMA device")
-> 
-> which changes the device on which SET_NETDEV_DEV is made.
-> 
-> git describe --tags 060ad66f97954
-> v5.4-rc3-783-g060ad66f9795
-> 
-> Which means that it shouldn't have been backported to 4.19 and below.
-> This series reverts the commit with the misleading commit message, and
-> reapplies it with a corrected one. The resulting code is exactly the
-> same, but now, the revert should make it to the stable trees (along with
-> the bad fix), and the new fix should only make it down to v5.4.y.
-> 
-> Changes in v2:
-> Corrected the reversed sysfs paths in the new commit description.
+My understanding is, in case of lock_pages() end up returning partial
+mapped pages,
+we should pass no. of partial mapped pages to unlock_pages(), not nr_pages.
+This will avoid checking extra check to validate the pages[i].
 
-This is so messy.
+and if lock_pages() returns 0 in success, anyway we have all the pages[i] valid.
+I will try to correct it in v2.
 
-What's done is done, just submit the necessary revert to -stable
-if necessary and let's not just change things back and forth
-because then we'll have two commits which make identical changes
-and each having a different Fixes: tag which is confusing.
+But I agree, there is no harm to check for pages[i] and I believe,
+unpin_user_pages()
+is the right place to do so.
 
-Thanks.
+John any thought ?
