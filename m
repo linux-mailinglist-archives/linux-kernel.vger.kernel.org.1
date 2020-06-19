@@ -2,147 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92B222013A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 836812013F7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404248AbgFSQBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:01:47 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:33714 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392228AbgFSQBl (ORCPT
+        id S2392438AbgFSQGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405547AbgFSQF5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 12:01:41 -0400
-Received: by mail-wr1-f66.google.com with SMTP id l11so10219054wru.0;
-        Fri, 19 Jun 2020 09:01:39 -0700 (PDT)
+        Fri, 19 Jun 2020 12:05:57 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96ECCC06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 09:05:57 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id m21so7980738eds.13
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 09:05:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=osi+7kegHQUhLjJCtI4D4dYsD7Tnr4PgL85qHMsaxOY=;
+        b=HP2EZNf4A1EVG7NLnAfafrXxKY2QlHTRc7+0DkPnBlREWkBZ+JUC/6X5c8vzCTzEcN
+         jtqdKfzTls4uekWytl18VNuEsonzP4ji9CDcmzKVRiLp8DFA8Z8VLjWhdH8GSXEbWXkz
+         fCwYdPNXierqrjWx97YmEuA4pbWoPIjlLJ33Lfq+nuQGa8AHwh19CjK63qVqSS0pXLSl
+         LCqTfjYU6meqY2yaFll0okiIzJYR1hTT6x6NxHaTyHTm0Ngp3i7h34KfURb8QyjiRd4e
+         AASuDrBWHIaU7gtEKHS5fedKx+LEZm3MFYXSG417OtSl+56Qa3AyGqMjsy9z5aaZkwIh
+         I3hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=igRhbYLV+7PJ6N9DkBcYUmMXd50ZJc1tlq0/bt0/vSM=;
-        b=nXEjci27uYDnoG14W1QNAqoNXY4/B4lcikwcOWWT8xah2FV7c6zCaXca63OkQw2tYL
-         QHJOKqIcZh0PLCBc/TPsLlAaCN0tkc42l0fWMspGcYHZ9vt6Kn3z3Fnz9NTmQvWRDFLg
-         vXGTGsNZK4z6HvJV2eKYEcsLzk1w6AES21hjTMNlm4g1jNKCRZJ11cZr9Vff2SHiW8dX
-         urYMeLd9cbKN0aELd52Hu2CpdO9ZLJkh4UZttb33hQJ1xMz/XcNnqBoh5N9cYtwQinGx
-         EjFhjHS9fBf8bdakfVeeQWHblC31lZStkgRXuJxi8a6LKAFLzuqVSSbi3hhcSbpd4pEd
-         lczg==
-X-Gm-Message-State: AOAM5316dh20f99sfSFm7Sv9rRgAsKZmaBp/yA7Ype66BVwYclQFJsce
-        +AUN5rBcAvEoYfI01ZEsHR0=
-X-Google-Smtp-Source: ABdhPJy0TMbHM+GevwodxJNTOFiPbd2ph++ENu2/j8I0jK2Jsh2xokMWVgPO3ifJPex7Syt3C5rCQQ==
-X-Received: by 2002:a5d:5605:: with SMTP id l5mr4704895wrv.318.1592582498803;
-        Fri, 19 Jun 2020 09:01:38 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id o82sm7393169wmo.40.2020.06.19.09.01.37
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=osi+7kegHQUhLjJCtI4D4dYsD7Tnr4PgL85qHMsaxOY=;
+        b=bAjll0uZBOROeTaDVuuToxcwcpgtaWXag/q6i6y0iu4ytImn63edDm4zQI/mAPgOuN
+         Q1zcv28QCdDVqGfqrethKOsMHBEIWOUAhhOBRVwu0Se6x3OtWGz33eSfkI26Rwq0/pr/
+         lbKp3/KfU3zh3EmM1nHd5U/JAJD+laahcGc9BQV82hdlzybhirNt6+UjCPB9lTXRrWJV
+         MAtExdP4sNKuDQ8Cnq/jh5b7U9cJQB1MuPUxQOi3Wz+gu154rbyhiiXUDVElXoF0JNPc
+         hJf2lUw6YrboMCf1kvvVV5Fkw8J0hfoq0VnIfzuj72wmqjsd0QbBPyww0iAPH2Noj/fl
+         oG1w==
+X-Gm-Message-State: AOAM5330PJyDdppCx9iuY6IwvjeS5WLGpaZAafs2ImKrmQW0rFdTci6c
+        3Uq2IaDLSdrD3Qw5ChEG5JU=
+X-Google-Smtp-Source: ABdhPJwUJgBnLelDqqBVTLpTKWXVb6j1Ab5QhWAYa9AwdkoiMBzgtNrWAvKq/HY4LJGAZ3TxgRZ4xw==
+X-Received: by 2002:a50:f983:: with SMTP id q3mr4227018edn.259.1592582756391;
+        Fri, 19 Jun 2020 09:05:56 -0700 (PDT)
+Received: from localhost.localdomain (dslb-178-006-252-242.178.006.pools.vodafone-ip.de. [178.6.252.242])
+        by smtp.gmail.com with ESMTPSA id dj26sm4931780edb.4.2020.06.19.09.05.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 09:01:37 -0700 (PDT)
-Date:   Fri, 19 Jun 2020 16:01:36 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org
-Subject: Re: [PATCH 7/8] scsi: storvsc: Introduce the per-storvsc_device
- spinlock
-Message-ID: <20200619160136.2r34bdu26hxixv7l@liuwe-devbox-debian-v2>
-References: <20200617164642.37393-1-parri.andrea@gmail.com>
- <20200617164642.37393-8-parri.andrea@gmail.com>
+        Fri, 19 Jun 2020 09:05:55 -0700 (PDT)
+From:   Michael Straube <straube.linux@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     Larry.Finger@lwfinger.net, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org,
+        Michael Straube <straube.linux@gmail.com>
+Subject: [PATCH] staging: rtl8188eu: use common packet header constants
+Date:   Fri, 19 Jun 2020 18:03:28 +0200
+Message-Id: <20200619160328.22776-1-straube.linux@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617164642.37393-8-parri.andrea@gmail.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc SCSI maintainers
+The driver replicates the definitions of rfc1042_header and
+bridge_tunnel_header available from cfg80211.h. Use the common
+ones from cfg80211.h.
 
-This patch should go via the hyperv tree because a later patch is
-dependent on it. It requires and ack from SCSI maintainers though.
+Signed-off-by: Michael Straube <straube.linux@gmail.com>
+---
+ drivers/staging/rtl8188eu/core/rtw_recv.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
 
-Thanks,
-Wei.
+diff --git a/drivers/staging/rtl8188eu/core/rtw_recv.c b/drivers/staging/rtl8188eu/core/rtw_recv.c
+index a036ef104198..0257e56b551a 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_recv.c
++++ b/drivers/staging/rtl8188eu/core/rtw_recv.c
+@@ -15,6 +15,7 @@
+ #include <mon.h>
+ #include <wifi.h>
+ #include <linux/vmalloc.h>
++#include <net/cfg80211.h>
+ 
+ #define ETHERNET_HEADER_SIZE	14	/*  Ethernet Header Length */
+ #define LLC_HEADER_SIZE			6	/*  LLC Header Length */
+@@ -22,15 +23,6 @@
+ static u8 SNAP_ETH_TYPE_IPX[2] = {0x81, 0x37};
+ static u8 SNAP_ETH_TYPE_APPLETALK_AARP[2] = {0x80, 0xf3};
+ 
+-/* Bridge-Tunnel header (for EtherTypes ETH_P_AARP and ETH_P_IPX) */
+-static u8 rtw_bridge_tunnel_header[] = {
+-	0xaa, 0xaa, 0x03, 0x00, 0x00, 0xf8
+-};
+-
+-static u8 rtw_rfc1042_header[] = {
+-	0xaa, 0xaa, 0x03, 0x00, 0x00, 0x00
+-};
+-
+ static void rtw_signal_stat_timer_hdl(struct timer_list *t);
+ 
+ void _rtw_init_sta_recv_priv(struct sta_recv_priv *psta_recvpriv)
+@@ -1277,10 +1269,10 @@ static int wlanhdr_to_ethhdr(struct recv_frame *precvframe)
+ 	psnap = (struct ieee80211_snap_hdr *)(ptr+pattrib->hdrlen + pattrib->iv_len);
+ 	psnap_type = ptr+pattrib->hdrlen + pattrib->iv_len+SNAP_SIZE;
+ 	/* convert hdr + possible LLC headers into Ethernet header */
+-	if ((!memcmp(psnap, rtw_rfc1042_header, SNAP_SIZE) &&
++	if ((!memcmp(psnap, rfc1042_header, SNAP_SIZE) &&
+ 	     memcmp(psnap_type, SNAP_ETH_TYPE_IPX, 2) &&
+ 	     memcmp(psnap_type, SNAP_ETH_TYPE_APPLETALK_AARP, 2)) ||
+-	     !memcmp(psnap, rtw_bridge_tunnel_header, SNAP_SIZE)) {
++	     !memcmp(psnap, bridge_tunnel_header, SNAP_SIZE)) {
+ 		/* remove RFC1042 or Bridge-Tunnel encapsulation and replace EtherType */
+ 		bsnaphdr = true;
+ 	} else {
+@@ -1560,9 +1552,9 @@ static int amsdu_to_msdu(struct adapter *padapter, struct recv_frame *prframe)
+ 		/* convert hdr + possible LLC headers into Ethernet header */
+ 		eth_type = get_unaligned_be16(&sub_skb->data[6]);
+ 		if (sub_skb->len >= 8 &&
+-		    ((!memcmp(sub_skb->data, rtw_rfc1042_header, SNAP_SIZE) &&
++		    ((!memcmp(sub_skb->data, rfc1042_header, SNAP_SIZE) &&
+ 			  eth_type != ETH_P_AARP && eth_type != ETH_P_IPX) ||
+-			 !memcmp(sub_skb->data, rtw_bridge_tunnel_header, SNAP_SIZE))) {
++			 !memcmp(sub_skb->data, bridge_tunnel_header, SNAP_SIZE))) {
+ 			/* remove RFC1042 or Bridge-Tunnel encapsulation and replace EtherType */
+ 			skb_pull(sub_skb, SNAP_SIZE);
+ 			memcpy(skb_push(sub_skb, ETH_ALEN), pattrib->src, ETH_ALEN);
+-- 
+2.27.0
 
-On Wed, Jun 17, 2020 at 06:46:41PM +0200, Andrea Parri (Microsoft) wrote:
-> storvsc uses the spinlock of the hv_device's primary channel to
-> serialize modifications of stor_chns[] performed by storvsc_do_io()
-> and storvsc_change_target_cpu(), when it could/should use a (per-)
-> storvsc_device spinlock: this change untangles the synchronization
-> mechanism for the (storvsc-specific) stor_chns[] array from the
-> "generic" VMBus code and data structures, clarifying the scope of
-> this synchronization mechanism.
-> 
-> Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-> ---
->  drivers/scsi/storvsc_drv.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/scsi/storvsc_drv.c b/drivers/scsi/storvsc_drv.c
-> index 072ed87286578..8ff21e69a8be8 100644
-> --- a/drivers/scsi/storvsc_drv.c
-> +++ b/drivers/scsi/storvsc_drv.c
-> @@ -462,6 +462,11 @@ struct storvsc_device {
->  	 * Mask of CPUs bound to subchannels.
->  	 */
->  	struct cpumask alloced_cpus;
-> +	/*
-> +	 * Serializes modifications of stor_chns[] from storvsc_do_io()
-> +	 * and storvsc_change_target_cpu().
-> +	 */
-> +	spinlock_t lock;
->  	/* Used for vsc/vsp channel reset process */
->  	struct storvsc_cmd_request init_request;
->  	struct storvsc_cmd_request reset_request;
-> @@ -639,7 +644,7 @@ static void storvsc_change_target_cpu(struct vmbus_channel *channel, u32 old,
->  		return;
->  
->  	/* See storvsc_do_io() -> get_og_chn(). */
-> -	spin_lock_irqsave(&device->channel->lock, flags);
-> +	spin_lock_irqsave(&stor_device->lock, flags);
->  
->  	/*
->  	 * Determines if the storvsc device has other channels assigned to
-> @@ -676,7 +681,7 @@ static void storvsc_change_target_cpu(struct vmbus_channel *channel, u32 old,
->  	WRITE_ONCE(stor_device->stor_chns[new], channel);
->  	cpumask_set_cpu(new, &stor_device->alloced_cpus);
->  
-> -	spin_unlock_irqrestore(&device->channel->lock, flags);
-> +	spin_unlock_irqrestore(&stor_device->lock, flags);
->  }
->  
->  static void handle_sc_creation(struct vmbus_channel *new_sc)
-> @@ -1433,14 +1438,14 @@ static int storvsc_do_io(struct hv_device *device,
->  			}
->  		}
->  	} else {
-> -		spin_lock_irqsave(&device->channel->lock, flags);
-> +		spin_lock_irqsave(&stor_device->lock, flags);
->  		outgoing_channel = stor_device->stor_chns[q_num];
->  		if (outgoing_channel != NULL) {
-> -			spin_unlock_irqrestore(&device->channel->lock, flags);
-> +			spin_unlock_irqrestore(&stor_device->lock, flags);
->  			goto found_channel;
->  		}
->  		outgoing_channel = get_og_chn(stor_device, q_num);
-> -		spin_unlock_irqrestore(&device->channel->lock, flags);
-> +		spin_unlock_irqrestore(&stor_device->lock, flags);
->  	}
->  
->  found_channel:
-> @@ -1881,6 +1886,7 @@ static int storvsc_probe(struct hv_device *device,
->  	init_waitqueue_head(&stor_device->waiting_to_drain);
->  	stor_device->device = device;
->  	stor_device->host = host;
-> +	spin_lock_init(&stor_device->lock);
->  	hv_set_drvdata(device, stor_device);
->  
->  	stor_device->port_number = host->host_no;
-> -- 
-> 2.25.1
-> 
