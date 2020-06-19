@@ -2,95 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7F1D2010F8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E216201136
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:42:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391718AbgFSPgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:36:33 -0400
-Received: from mail-pj1-f67.google.com ([209.85.216.67]:56178 "EHLO
-        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391695AbgFSPgY (ORCPT
+        id S2404882AbgFSPiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:38:22 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39940 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389044AbgFSPiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:36:24 -0400
-Received: by mail-pj1-f67.google.com with SMTP id ne5so4198232pjb.5;
-        Fri, 19 Jun 2020 08:36:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LjzrirVb+ZQBftcrRnoHLV9aRjuJIVfcPAYJhueLEQk=;
-        b=j5o5tO1tyDDGisXMWl6kWkDjdFhK2FjznjMc5EuwqXD/hVXUn54Cd94YxgQvB2eKm5
-         B3jQgLkjJ2auPVeSKVfjQjzc0alqO1f5jAraGYVl2fe3PDCKTSfwszZONn0pQX8QsP+X
-         pF2piML2/z4jHogDjdDkJzV3RHPbYiKytxjF8KSOfODkMaeuGn50tI1E5Q1eQhu9OzjV
-         BCq41297JQ1QAL/uxF9WRufJY4CeNYNhRLhVOr9mb1GY0S0nyMmR0GfMnf/vsH5llkdS
-         +Hag2VWUTm7flab+tFX4zfhVskY/PjsOBLq+nCKjDgRiMuc884h+CeWsI+IlpJgbZ8YU
-         bN1Q==
-X-Gm-Message-State: AOAM530ZiggpUZSitQ2Wb9nvdQwVhV0pv5Wny6SJA8ksO2SGdygu3nMn
-        Fdomf+a3jIMvmvnEPbRCM5s=
-X-Google-Smtp-Source: ABdhPJzViKsR3tVw6K/ch+JBLdo17uGcti8CT335conquQT26tgspJ89pJQG6ng0CCGMq0+rPtsHZQ==
-X-Received: by 2002:a17:902:b906:: with SMTP id bf6mr8845200plb.129.1592580983204;
-        Fri, 19 Jun 2020 08:36:23 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id p16sm5382348pgj.53.2020.06.19.08.36.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 08:36:21 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id CD1B84063E; Fri, 19 Jun 2020 15:36:20 +0000 (UTC)
-Date:   Fri, 19 Jun 2020 15:36:20 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Bart Van Assche <bvanassche@acm.org>
-Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk,
-        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
-        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
-        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
-        martin.petersen@oracle.com, jejb@linux.ibm.com,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Omar Sandoval <osandov@fb.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
-Subject: Re: [PATCH v6 6/6] blktrace: fix debugfs use after free
-Message-ID: <20200619153620.GI11244@42.do-not-panic.com>
-References: <20200608170127.20419-1-mcgrof@kernel.org>
- <20200608170127.20419-7-mcgrof@kernel.org>
- <ec643803-2339-fe8d-7f58-b37871c83386@acm.org>
+        Fri, 19 Jun 2020 11:38:20 -0400
+Received: from ip-109-41-0-196.web.vodafone.de ([109.41.0.196] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jmJ5r-0000km-CT; Fri, 19 Jun 2020 15:38:15 +0000
+Date:   Fri, 19 Jun 2020 17:38:12 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Andrei Vagin <avagin@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Safonov <dima@arista.com>
+Subject: Re: [PATCH 2/6] arm64/vdso: Zap vvar pages when switching to a time
+ namespace
+Message-ID: <20200619153812.2d6anaynb4p37qv2@wittgenstein>
+References: <20200616075545.312684-1-avagin@gmail.com>
+ <20200616075545.312684-3-avagin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ec643803-2339-fe8d-7f58-b37871c83386@acm.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200616075545.312684-3-avagin@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 07:42:12PM -0700, Bart Van Assche wrote:
-> On 2020-06-08 10:01, Luis Chamberlain wrote:
-> > +	/*
-> > +	 * Blktrace needs a debugfs name even for queues that don't register
-> > +	 * a gendisk, so it lazily registers the debugfs directory.  But that
-> > +	 * can get us into a situation where a SCSI device is found, with no
-> > +	 * driver for it (yet).  Then blktrace is used on the device, creating
-> > +	 * the debugfs directory, and only after that a driver is loaded. In
-> > +	 * that case we might already have a debugfs directory registered here.
-> > +	 * Even worse we could be racing with blktrace to register it.
-> > +	 */
+On Tue, Jun 16, 2020 at 12:55:41AM -0700, Andrei Vagin wrote:
+> The VVAR page layout depends on whether a task belongs to the root or
+> non-root time namespace. Whenever a task changes its namespace, the VVAR
+> page tables are cleared and then they will be re-faulted with a
+> corresponding layout.
 > 
-> There are LLD and ULD drivers in the SCSI subsystem. Please mention the
-> driver type explicitly. I assume that you are referring to SCSI ULDs
-> since only SCSI ULD drivers call device_add_disk()?
-
-I've simplified this and so this is no longer a valid comment.
-
-> >  	case BLKTRACESETUP:
-> > +		if (!sdp->device->request_queue->sg_debugfs_dir)
-> > +			blk_sg_debugfs_init(sdp->device->request_queue,
-> > +					    sdp->disk->disk_name);
+> Reviewed-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
+> Reviewed-by: Dmitry Safonov <dima@arista.com>
+> Signed-off-by: Andrei Vagin <avagin@gmail.com>
+> ---
+>  arch/arm64/kernel/vdso.c | 32 ++++++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
 > 
-> How about moving the sg_debugfs_dir check into blk_sg_debugfs_init()?
+> diff --git a/arch/arm64/kernel/vdso.c b/arch/arm64/kernel/vdso.c
+> index b0aec4e8c9b4..df4bb736d28a 100644
+> --- a/arch/arm64/kernel/vdso.c
+> +++ b/arch/arm64/kernel/vdso.c
+> @@ -125,6 +125,38 @@ static int __vdso_init(enum vdso_abi abi)
+>  	return 0;
+>  }
+>  
+> +#ifdef CONFIG_TIME_NS
+> +/*
+> + * The vvar page layout depends on whether a task belongs to the root or
+> + * non-root time namespace. Whenever a task changes its namespace, the VVAR
+> + * page tables are cleared and then they will re-faulted with a
+> + * corresponding layout.
+> + * See also the comment near timens_setup_vdso_data() for details.
+> + */
+> +int vdso_join_timens(struct task_struct *task, struct time_namespace *ns)
+> +{
+> +	struct mm_struct *mm = task->mm;
+> +	struct vm_area_struct *vma;
+> +
+> +	if (mmap_write_lock_killable(mm))
+> +		return -EINTR;
 
-I found a way to not have to do any of this, the fix will be short and
-sweet now.
+Hey,
 
-  Luis
+Just a heads-up I'm about to plumb CLONE_NEWTIME support into setns()
+which would mean that vdso_join_timens() ould not be allowed to fail
+anymore to make it easy to switch to multiple namespaces atomically. So
+this would probably need to be changed to mmap_write_lock() which I've
+already brought up upstream:
+https://lore.kernel.org/lkml/20200611110221.pgd3r5qkjrjmfqa2@wittgenstein/
+(Assuming that people agree. I just sent the series and most people here
+are Cced.)
+
+Thanks!
+Christian
