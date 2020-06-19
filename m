@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5B22014D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CB472014C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390768AbgFSPCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:02:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57682 "EHLO mail.kernel.org"
+        id S2390686AbgFSPBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:01:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390086AbgFSPBR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:01:17 -0400
+        id S2390172AbgFSPAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:00:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 61607206DB;
-        Fri, 19 Jun 2020 15:01:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A135C206DB;
+        Fri, 19 Jun 2020 15:00:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578877;
-        bh=K/Y9MOZo1zW0260Jzvddh9m/bX+vj95KjBI/STUnN+s=;
+        s=default; t=1592578824;
+        bh=49zfERSjk9j/+MtSTyS6zjJNybRRJ7SHS9cxP6Yyjng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SAMyRluyse7jnnjxwko0OUUyF8fzUAx1/rSok7dVawjBoE7egJtXE874RudR1X9Nr
-         qZzEajDyA1H7I6QfIh3WTkp2vEnb4x+F7j768VYOpXwmKMPS/BnWA/tzGftnRPzs1K
-         AG0tJ3O41z9LF+S7o1pr0HcI8r0njhGyzYdcBdXM=
+        b=U05yg2AXaMo1kCC0aSU7LAZyybH2LjlQNsWj0xhW6iPHagIJcGuKrZcedNMCi9KFm
+         WECU/mv985pDKeYCBe2gRLSCEuRh1hJ6OEd8K1HgWPBpim59MunV+W6UQN3SV3bXGP
+         e/5skTtlapQOrpIRoaIIfkOpUcHmDYBgrNg+FA3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Keith Busch <kbusch@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 151/267] platform/x86: intel-vbtn: Do not advertise switches to userspace if they are not there
-Date:   Fri, 19 Jun 2020 16:32:16 +0200
-Message-Id: <20200619141656.073015330@linuxfoundation.org>
+Subject: [PATCH 4.19 153/267] nvme: refine the Qemu Identify CNS quirk
+Date:   Fri, 19 Jun 2020 16:32:18 +0200
+Message-Id: <20200619141656.169672077@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
 References: <20200619141648.840376470@linuxfoundation.org>
@@ -44,105 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 990fbb48067bf8cfa34b7d1e6e1674eaaef2f450 ]
+[ Upstream commit b9a5c3d4c34d8bd9fd75f7f28d18a57cb68da237 ]
 
-Commit de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode
-switch on 2-in-1's") added a DMI chassis-type check to avoid accidentally
-reporting SW_TABLET_MODE = 1 to userspace on laptops (specifically on the
-Dell XPS 9360), to avoid e.g. userspace ignoring touchpad events because
-userspace thought the device was in tablet-mode.
+Add a helper to check if we can use Identify CNS values > 1, and refine
+the Qemu quirk to not apply to reported versions larger than 1.1, as the
+Qemu implementation had been fixed by then.
 
-But if we are not getting the initial status of the switch because the
-device does not have a tablet mode, then we really should not advertise
-the presence of a tablet-mode switch to userspace at all, as userspace may
-use the mere presence of this switch for certain heuristics.
-
-Fixes: de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode switch on 2-in-1's")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Keith Busch <kbusch@kernel.org>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel-vbtn.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ drivers/nvme/host/core.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
-index e42203776727..23cda7aa96cd 100644
---- a/drivers/platform/x86/intel-vbtn.c
-+++ b/drivers/platform/x86/intel-vbtn.c
-@@ -54,6 +54,7 @@ static const struct key_entry intel_vbtn_switchmap[] = {
- struct intel_vbtn_priv {
- 	struct key_entry keymap[KEYMAP_LEN];
- 	struct input_dev *input_dev;
-+	bool has_switches;
- 	bool wakeup_mode;
- };
- 
-@@ -69,7 +70,7 @@ static int intel_vbtn_input_setup(struct platform_device *device)
- 		keymap_len += ARRAY_SIZE(intel_vbtn_keymap);
- 	}
- 
--	if (true) {
-+	if (priv->has_switches) {
- 		memcpy(&priv->keymap[keymap_len], intel_vbtn_switchmap,
- 		       ARRAY_SIZE(intel_vbtn_switchmap) *
- 		       sizeof(struct key_entry));
-@@ -137,16 +138,12 @@ out_unknown:
- 
- static void detect_tablet_mode(struct platform_device *device)
- {
--	const char *chassis_type = dmi_get_system_info(DMI_CHASSIS_TYPE);
- 	struct intel_vbtn_priv *priv = dev_get_drvdata(&device->dev);
- 	acpi_handle handle = ACPI_HANDLE(&device->dev);
- 	unsigned long long vgbs;
- 	acpi_status status;
- 	int m;
- 
--	if (!(chassis_type && strcmp(chassis_type, "31") == 0))
--		return;
--
- 	status = acpi_evaluate_integer(handle, "VGBS", NULL, &vgbs);
- 	if (ACPI_FAILURE(status))
- 		return;
-@@ -157,6 +154,19 @@ static void detect_tablet_mode(struct platform_device *device)
- 	input_report_switch(priv->input_dev, SW_DOCK, m);
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index d5359c7c811a..0d60f2f8f3ee 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -926,6 +926,19 @@ void nvme_stop_keep_alive(struct nvme_ctrl *ctrl)
  }
+ EXPORT_SYMBOL_GPL(nvme_stop_keep_alive);
  
-+static bool intel_vbtn_has_switches(acpi_handle handle)
++/*
++ * In NVMe 1.0 the CNS field was just a binary controller or namespace
++ * flag, thus sending any new CNS opcodes has a big chance of not working.
++ * Qemu unfortunately had that bug after reporting a 1.1 version compliance
++ * (but not for any later version).
++ */
++static bool nvme_ctrl_limited_cns(struct nvme_ctrl *ctrl)
 +{
-+	const char *chassis_type = dmi_get_system_info(DMI_CHASSIS_TYPE);
-+	unsigned long long vgbs;
-+	acpi_status status;
-+
-+	if (!(chassis_type && strcmp(chassis_type, "31") == 0))
-+		return false;
-+
-+	status = acpi_evaluate_integer(handle, "VGBS", NULL, &vgbs);
-+	return ACPI_SUCCESS(status);
++	if (ctrl->quirks & NVME_QUIRK_IDENTIFY_CNS)
++		return ctrl->vs < NVME_VS(1, 2, 0);
++	return ctrl->vs < NVME_VS(1, 1, 0);
 +}
 +
- static int intel_vbtn_probe(struct platform_device *device)
+ static int nvme_identify_ctrl(struct nvme_ctrl *dev, struct nvme_id_ctrl **id)
  {
- 	acpi_handle handle = ACPI_HANDLE(&device->dev);
-@@ -175,13 +185,16 @@ static int intel_vbtn_probe(struct platform_device *device)
- 		return -ENOMEM;
- 	dev_set_drvdata(&device->dev, priv);
+ 	struct nvme_command c = { };
+@@ -3368,8 +3381,7 @@ static void nvme_scan_work(struct work_struct *work)
  
-+	priv->has_switches = intel_vbtn_has_switches(handle);
-+
- 	err = intel_vbtn_input_setup(device);
- 	if (err) {
- 		pr_err("Failed to setup Intel Virtual Button\n");
- 		return err;
+ 	mutex_lock(&ctrl->scan_lock);
+ 	nn = le32_to_cpu(id->nn);
+-	if (ctrl->vs >= NVME_VS(1, 1, 0) &&
+-	    !(ctrl->quirks & NVME_QUIRK_IDENTIFY_CNS)) {
++	if (!nvme_ctrl_limited_cns(ctrl)) {
+ 		if (!nvme_scan_ns_list(ctrl, nn))
+ 			goto out_free_id;
  	}
- 
--	detect_tablet_mode(device);
-+	if (priv->has_switches)
-+		detect_tablet_mode(device);
- 
- 	status = acpi_install_notify_handler(handle,
- 					     ACPI_DEVICE_NOTIFY,
 -- 
 2.25.1
 
