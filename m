@@ -2,188 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EA82007DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 13:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD4C2007F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 13:36:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732756AbgFSLcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 07:32:02 -0400
-Received: from esa4.microchip.iphmx.com ([68.232.154.123]:55746 "EHLO
-        esa4.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728430AbgFSLbt (ORCPT
+        id S1731731AbgFSLgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 07:36:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730919AbgFSLgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 07:31:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1592566308; x=1624102308;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=6bWMVQyiZhkbxaK4Gike1YVVJfzi1Pv5G9DM+U2OgNg=;
-  b=BM47cSba9DcegoB46YVykkmTRiYxQalXEtb/MUyVX6Q5BLxa1icsUPYX
-   zmEGo+6rla2kWQlCC223R8vzZxzxnBS4KZsEFgK4kxbRD2ZQoF352+tb3
-   Wqp0fjxzPkuONcZVeX8wDVp5OLS3enduaR/D1vL4GXPJPTk9mn6HGuu8i
-   ENHSyWlg2luLq3uey+3ZTH1yxvTS5qgThLpB59FsYzC4HX0du5rOn0vxW
-   SreoGuZmjyX8eaIxAILFJvS9Y2nKaDKY3L8vw7BbKZeOVdF57ejv/3rQE
-   y0DQxFXH5S4TS0Voxo1eKAl2E0X5zRcQ+jerf5BRU3sVSwtVu64c3rqU6
-   g==;
-IronPort-SDR: B6Q/1J4o6f/kMH+pKLOZp3P7PIczT9Q7OpYp8zBmP02/QvdiRcPB1Ll7xGkPBIZ4fOLRzdk6jQ
- lbKfDyopOht4pH855xIAlsM6bGS7IgL+q+NzkN5ZBIDucqFz99WMaSLJoR6A7wOJBoBISEbJiR
- P7+Cfk8Gb5hlq7xgyjS1vRwMJXUXpinjAG++UWVT4P1LhoVmB+25MaguGRI6nkVrVXNW4coZcc
- 92Zm4Wb6212yCHbs0HVbybmmQRKHvi3yBU0Nxn5VbB05X7mOH20WwjatUfDbY0xUOu7IYpXKkr
- OjE=
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="77162032"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 19 Jun 2020 04:31:47 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 19 Jun 2020 04:31:40 -0700
-Received: from soft-dev15.microsemi.net (10.10.115.15) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Fri, 19 Jun 2020 04:31:38 -0700
-From:   Lars Povlsen <lars.povlsen@microchip.com>
-To:     Mark Brown <broonie@kernel.org>, SoC Team <soc@kernel.org>
-CC:     Lars Povlsen <lars.povlsen@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        <linux-spi@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Subject: [PATCH v2 6/6] arm64: dts: sparx5: Add spi-nand devices
-Date:   Fri, 19 Jun 2020 13:31:21 +0200
-Message-ID: <20200619113121.9984-7-lars.povlsen@microchip.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619113121.9984-1-lars.povlsen@microchip.com>
-References: <20200619113121.9984-1-lars.povlsen@microchip.com>
+        Fri, 19 Jun 2020 07:36:16 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE6DC0613EE;
+        Fri, 19 Jun 2020 04:36:11 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 00A712A05B8
+Received: by earth.universe (Postfix, from userid 1000)
+        id B218D3C08CD; Fri, 19 Jun 2020 13:36:07 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 13:36:07 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tony Lindgren <tony@atomide.com>, Pavel Machek <pavel@ucw.cz>
+Subject: Re: ARM: dts: motorola-mapphone-common: remove unneeded
+ "simple-graph-card"
+Message-ID: <20200619113607.6h5qnq26nhxijjhp@earth.universe>
+References: <87r1ub39hq.wl-kuninori.morimoto.gx@renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wshmrvne2pjx6m4t"
+Content-Disposition: inline
+In-Reply-To: <87r1ub39hq.wl-kuninori.morimoto.gx@renesas.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch add spi-nand DT nodes to the applicable Sparx5 boards.
 
-Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
----
- arch/arm64/boot/dts/microchip/sparx5.dtsi     | 20 ++++++++++++++++
- .../boot/dts/microchip/sparx5_pcb125.dts      |  7 ++++++
- .../boot/dts/microchip/sparx5_pcb134.dts      | 22 ++++++++++++++++++
- .../boot/dts/microchip/sparx5_pcb135.dts      | 23 +++++++++++++++++++
- 4 files changed, 72 insertions(+)
+--wshmrvne2pjx6m4t
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/arm64/boot/dts/microchip/sparx5.dtsi b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-index 2404bcc08b89d..dd666d185e466 100644
---- a/arch/arm64/boot/dts/microchip/sparx5.dtsi
-+++ b/arch/arm64/boot/dts/microchip/sparx5.dtsi
-@@ -201,6 +201,26 @@ gpio: pinctrl@6110101e0 {
- 			interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
- 			#interrupt-cells = <2>;
- 
-+			cs1_pins: cs1-pins {
-+				pins = "GPIO_16";
-+				function = "si";
-+			};
-+
-+			cs2_pins: cs2-pins {
-+				pins = "GPIO_17";
-+				function = "si";
-+			};
-+
-+			cs3_pins: cs3-pins {
-+				pins = "GPIO_18";
-+				function = "si";
-+			};
-+
-+			si2_pins: si2-pins {
-+				pins = "GPIO_39", "GPIO_40", "GPIO_41";
-+				function = "si2";
-+			};
-+
- 			uart_pins: uart-pins {
- 				pins = "GPIO_10", "GPIO_11";
- 				function = "uart";
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-index d8b5d23abfab0..94c4c3fd5a786 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb125.dts
-@@ -46,6 +46,13 @@ spi-flash@0 {
- 		spi-max-frequency = <8000000>; /* input clock */
- 		reg = <0>; /* CS0 */
- 	};
-+	spi-flash@1 {
-+		compatible = "spi-nand";
-+		pinctrl-0 = <&cs1_pins>;
-+		pinctrl-names = "default";
-+		spi-max-frequency = <8000000>;
-+		reg = <1>; /* CS1 */
-+	};
- };
- 
- &i2c1 {
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb134.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb134.dts
-index feee4e99ff57c..7aee0548e44cb 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb134.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb134.dts
-@@ -15,3 +15,25 @@ memory@0 {
- 		reg = <0x00000000 0x00000000 0x10000000>;
- 	};
- };
-+
-+&gpio {
-+	cs14_pins: cs14-pins {
-+		pins = "GPIO_44";
-+		function = "si";
-+	};
-+};
-+
-+&spi0 {
-+	pinctrl-0 = <&si2_pins>;
-+	pinctrl-names = "default";
-+	/* Dedicated SPI2 interface */
-+	spi-flash@e {
-+		compatible = "spi-nand";
-+		pinctrl-0 = <&cs14_pins>;
-+		pinctrl-names = "default";
-+		spi-max-frequency = <42000000>;
-+		reg = <14>;
-+		microchip,spi-interface2;	/* SPI2 */
-+		snps,rx-sample-delay-ns = <7>;  /* Tune for speed */
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb135.dts b/arch/arm64/boot/dts/microchip/sparx5_pcb135.dts
-index 20e409a9be196..8f2329ce02030 100644
---- a/arch/arm64/boot/dts/microchip/sparx5_pcb135.dts
-+++ b/arch/arm64/boot/dts/microchip/sparx5_pcb135.dts
-@@ -15,3 +15,26 @@ memory@0 {
- 		reg = <0x00000000 0x00000000 0x10000000>;
- 	};
- };
-+
-+&gpio {
-+	cs14_pins: cs14-pins {
-+		pins = "GPIO_44";
-+		function = "si";
-+	};
-+};
-+
-+&spi0 {
-+	status = "okay";
-+	pinctrl-0 = <&si2_pins>;
-+	pinctrl-names = "default";
-+	/* Dedicated SPI2 interface */
-+	spi-flash@e {
-+		compatible = "spi-nand";
-+		pinctrl-0 = <&cs14_pins>;
-+		pinctrl-names = "default";
-+		spi-max-frequency = <42000000>;
-+		reg = <14>;
-+		microchip,spi-interface2;	/* SPI2 */
-+		snps,rx-sample-delay-ns = <7>;  /* Tune for speed */
-+	};
-+};
--- 
-2.27.0
+Hi,
 
+On Fri, Jun 19, 2020 at 02:33:36PM +0900, Kuninori Morimoto wrote:
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> Audio Graph Card is using "audio-graph-card" prefix instead of
+> "simple-graph-card", and moreover "widgets / routing" doesn't need it.
+> This patch removes unsupported "simple-graph-card" prefix from
+> motorola-mapphone-common.dtsi and vendor-prefixes.yaml.
+>=20
+> Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+> ---
+
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+
+-- Sebastian
+
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 +-
+>  arch/arm/boot/dts/motorola-mapphone-common.dtsi        | 4 ++--
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Doc=
+umentation/devicetree/bindings/vendor-prefixes.yaml
+> index 9aeab66be85f..147afcfe81fe 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -20,7 +20,7 @@ patternProperties:
+>    "^(keypad|m25p|max8952|max8997|max8998|mpmc),.*": true
+>    "^(pinctrl-single|#pinctrl-single|PowerPC),.*": true
+>    "^(pl022|pxa-mmc|rcar_sound|rotary-encoder|s5m8767|sdhci),.*": true
+> -  "^(simple-audio-card|simple-graph-card|st-plgpio|st-spics|ts),.*": true
+> +  "^(simple-audio-card|st-plgpio|st-spics|ts),.*": true
+> =20
+>    # Keep list in alphabetical order.
+>    "^abilis,.*":
+> diff --git a/arch/arm/boot/dts/motorola-mapphone-common.dtsi b/arch/arm/b=
+oot/dts/motorola-mapphone-common.dtsi
+> index 06fbffa81636..1990239cc6af 100644
+> --- a/arch/arm/boot/dts/motorola-mapphone-common.dtsi
+> +++ b/arch/arm/boot/dts/motorola-mapphone-common.dtsi
+> @@ -140,13 +140,13 @@ soundcard {
+>  		compatible =3D "audio-graph-card";
+>  		label =3D "Droid 4 Audio";
+> =20
+> -		simple-graph-card,widgets =3D
+> +		widgets =3D
+>  			"Speaker", "Earpiece",
+>  			"Speaker", "Loudspeaker",
+>  			"Headphone", "Headphone Jack",
+>  			"Microphone", "Internal Mic";
+> =20
+> -		simple-graph-card,routing =3D
+> +		routing =3D
+>  			"Earpiece", "EP",
+>  			"Loudspeaker", "SPKR",
+>  			"Headphone Jack", "HSL",
+> --=20
+> 2.25.1
+>=20
+
+--wshmrvne2pjx6m4t
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7soxUACgkQ2O7X88g7
++poB+w/5AW6f7+XYnn/UX9USobOZ5FfkThmQCtKUg1OcqPJa1Ff8+N/sSm30UP9n
+gPc8xMwxkQ2YYUJprc01xgTzyk8kdyU9bOU5ZjCXTAfXfsCqtge3SmqInM45f+Qv
+PkTx4MdRQTvZkzQQvC4dLaEcJVbk3wGAoEpNev8WDjqXRJkyfDax6NUIhJ5lQsSG
+sfZv0Ly3wwaNwkWLHLjMAGoTlem9VjcwJeaJdjHNeX1xY3CMEHxHAINHLhADnVjc
+TTmmaFVXIMwl47b63nGLeGEnAjPSfJIwbokF3MtstcXACUufBuHq38Tvspk9QM9o
+A4anzJ/v6tQqUaTyGBfpZeJUPA4K4wWcxri4Ugn3uKsnFhJeYWBfk6Yxb+A86Bm0
+9s5hcTVoiPSCe3Pob+HgHo66rf3+Lv+33a+z++n+4Htfrsr4rjvJNv6xS+xJpFa9
+7FVO+2cFJNOb+3DIvAr8WVAirkplkJ0EozhhXorA8MHUglEOeQD562GQPCm87CL0
+MrgwW+HhevbfIHyXyXFOcgXFxpatNeLOvrTbT++v+VwujjAAUAb56l0zS3GrosaB
+GdB6wS+ktMpQ+50JXl/IBqSuBW4C9oU6TCL8Szh9VVoyG36SklGs2MI2vcMCJ5JI
+DUuf9rci+KW5g/DK5nTvcpTiI0W+NJ4noCAvW8yAucKSAXZlBqw=
+=gyZw
+-----END PGP SIGNATURE-----
+
+--wshmrvne2pjx6m4t--
