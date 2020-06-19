@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C1DD201643
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773DC201641
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394928AbgFSQ2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:28:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49660 "EHLO mail.kernel.org"
+        id S2390266AbgFSQ2b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:28:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389896AbgFSOyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:54:54 -0400
+        id S2389914AbgFSOzA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:55:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 98300217D8;
-        Fri, 19 Jun 2020 14:54:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED29021556;
+        Fri, 19 Jun 2020 14:54:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578494;
-        bh=BHAzJPK3Q3Kd77zzxl86Y03CTOml047K0CEml83WVO0=;
+        s=default; t=1592578499;
+        bh=fuyKSyBHG60r/Gua4nx3314Yf7DDC7u+SL1aJLP5Sec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VBi9YVmirwpGIfBk6hALAMY7oY/deAjlLCVXTR7Dj3mBKzOiEvHSPaC7rNATyrCop
-         2x/UrfwSixLjCv5ZhiTVgitwSEDJmg+DXl+z38tX0v2qOPuJ06rniNDOd2L8Vrk81i
-         bPVuSuG2P4JvCh/1bRfgdBULY/cZyluXCqHxZa0o=
+        b=OVUe8v5NSJZMxvs6ghbZN6C3MQi2Avsl281M/hwJaAoZksECxNonqT0y73hCMEX0m
+         83ofC8EL88eLfspLYEj1RbyLvcM1oxVsj7eBvVh0J6QAhtextAJbGx6T8Y/WgZOkmi
+         q12lG168n6fcgYUGUGw0c8JMmVO62uxf6LNjZaNY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Baruch Siach <baruch@tkos.co.il>,
+        stable@vger.kernel.org, Justin Chen <justinpopo6@gmail.com>,
+        Kamal Dasu <kdasu.kdev@gmail.com>,
         Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.19 043/267] spi: dw: Fix controller unregister order
-Date:   Fri, 19 Jun 2020 16:30:28 +0200
-Message-Id: <20200619141650.949886846@linuxfoundation.org>
+Subject: [PATCH 4.19 045/267] spi: bcm-qspi: when tx/rx buffer is NULL set to 0
+Date:   Fri, 19 Jun 2020 16:30:30 +0200
+Message-Id: <20200619141651.057496542@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
 References: <20200619141648.840376470@linuxfoundation.org>
@@ -45,65 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Justin Chen <justinpopo6@gmail.com>
 
-commit ca8b19d61e3fce5d2d7790cde27a0b57bcb3f341 upstream.
+commit 4df3bea7f9d2ddd9ac2c29ba945c7c4db2def29c upstream.
 
-The Designware SPI driver uses devm_spi_register_controller() on bind.
-As a consequence, on unbind, __device_release_driver() first invokes
-dw_spi_remove_host() before unregistering the SPI controller via
-devres_release_all().
+Currently we set the tx/rx buffer to 0xff when NULL. This causes
+problems with some spi slaves where 0xff is a valid command. Looking
+at other drivers, the tx/rx buffer is usually set to 0x00 when NULL.
+Following this convention solves the issue.
 
-This order is incorrect:  dw_spi_remove_host() shuts down the chip,
-rendering the SPI bus inaccessible even though the SPI controller is
-still registered.  When the SPI controller is subsequently unregistered,
-it unbinds all its slave devices.  Because their drivers cannot access
-the SPI bus, e.g. to quiesce interrupts, the slave devices may be left
-in an improper state.
-
-As a rule, devm_spi_register_controller() must not be used if the
-->remove() hook performs teardown steps which shall be performed after
-unregistering the controller and specifically after unbinding of slaves.
-
-Fix by reverting to the non-devm variant of spi_register_controller().
-
-An alternative approach would be to use device-managed functions for all
-steps in dw_spi_remove_host(), e.g. by calling devm_add_action_or_reset()
-on probe.  However that approach would add more LoC to the driver and
-it wouldn't lend itself as well to backporting to stable.
-
-Fixes: 04f421e7b0b1 ("spi: dw: use managed resources")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: stable@vger.kernel.org # v3.14+
-Cc: Baruch Siach <baruch@tkos.co.il>
-Link: https://lore.kernel.org/r/3fff8cb8ae44a9893840d0688be15bb88c090a14.1590408496.git.lukas@wunner.de
+Fixes: fa236a7ef240 ("spi: bcm-qspi: Add Broadcom MSPI driver")
+Signed-off-by: Justin Chen <justinpopo6@gmail.com>
+Signed-off-by: Kamal Dasu <kdasu.kdev@gmail.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/20200420190853.45614-6-kdasu.kdev@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/spi/spi-dw.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/spi/spi-bcm-qspi.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/spi/spi-dw.c
-+++ b/drivers/spi/spi-dw.c
-@@ -536,7 +536,7 @@ int dw_spi_add_host(struct device *dev,
+--- a/drivers/spi/spi-bcm-qspi.c
++++ b/drivers/spi/spi-bcm-qspi.c
+@@ -681,7 +681,7 @@ static void read_from_hw(struct bcm_qspi
+ 			if (buf)
+ 				buf[tp.byte] = read_rxram_slot_u8(qspi, slot);
+ 			dev_dbg(&qspi->pdev->dev, "RD %02x\n",
+-				buf ? buf[tp.byte] : 0xff);
++				buf ? buf[tp.byte] : 0x0);
+ 		} else {
+ 			u16 *buf = tp.trans->rx_buf;
+ 
+@@ -689,7 +689,7 @@ static void read_from_hw(struct bcm_qspi
+ 				buf[tp.byte / 2] = read_rxram_slot_u16(qspi,
+ 								      slot);
+ 			dev_dbg(&qspi->pdev->dev, "RD %04x\n",
+-				buf ? buf[tp.byte] : 0xffff);
++				buf ? buf[tp.byte / 2] : 0x0);
  		}
- 	}
  
--	ret = devm_spi_register_controller(dev, master);
-+	ret = spi_register_controller(master);
- 	if (ret) {
- 		dev_err(&master->dev, "problem registering spi master\n");
- 		goto err_dma_exit;
-@@ -560,6 +560,8 @@ void dw_spi_remove_host(struct dw_spi *d
- {
- 	dw_spi_debugfs_remove(dws);
+ 		update_qspi_trans_byte_count(qspi, &tp,
+@@ -744,13 +744,13 @@ static int write_to_hw(struct bcm_qspi *
+ 	while (!tstatus && slot < MSPI_NUM_CDRAM) {
+ 		if (tp.trans->bits_per_word <= 8) {
+ 			const u8 *buf = tp.trans->tx_buf;
+-			u8 val = buf ? buf[tp.byte] : 0xff;
++			u8 val = buf ? buf[tp.byte] : 0x00;
  
-+	spi_unregister_controller(dws->master);
-+
- 	if (dws->dma_ops && dws->dma_ops->dma_exit)
- 		dws->dma_ops->dma_exit(dws);
+ 			write_txram_slot_u8(qspi, slot, val);
+ 			dev_dbg(&qspi->pdev->dev, "WR %02x\n", val);
+ 		} else {
+ 			const u16 *buf = tp.trans->tx_buf;
+-			u16 val = buf ? buf[tp.byte / 2] : 0xffff;
++			u16 val = buf ? buf[tp.byte / 2] : 0x0000;
  
+ 			write_txram_slot_u16(qspi, slot, val);
+ 			dev_dbg(&qspi->pdev->dev, "WR %04x\n", val);
 
 
