@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA27200E38
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E70200E20
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391396AbgFSPGJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:06:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35000 "EHLO mail.kernel.org"
+        id S2390529AbgFSPFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:05:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33928 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391366AbgFSPF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:05:59 -0400
+        id S2391243AbgFSPFG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:05:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3309A21835;
-        Fri, 19 Jun 2020 15:05:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A63A21852;
+        Fri, 19 Jun 2020 15:05:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579158;
-        bh=AbrDoYb1mtOPgL9voySeDvbnxUxAfco9Fnjx+ijRfyE=;
+        s=default; t=1592579105;
+        bh=APWOxe5i+4mN0d7ABUNLsvxwK/Ip4U9lQs6A6LrDs1E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=m/LjLE/zrpb1/x6lbzHXpe1tislqNGIC6YA+z9mYm/giqKVLURw0kTbbkh8Mi92Vk
-         ahL28b8bZqJc82VKyuevKBfcdtf3w3Cc09RHYR8q8pcyR5NiJhD6v8c6+nABaJ3Dof
-         hhE/+/H7rn7Jxzew7t47cRh5nQUlLvCVUUX8Ahu8=
+        b=Ae+sefvZgiD/9CmoWjzT7Kh7k+ir1xPVfthbHequo3h66+Qc5zZSqaZNljOK7/3aX
+         1uYwl/OK5Iqg1i+F3MneWPAdx1ulhrneQ35o1dyO3WCl6tn0CRl7ntd19HXMedX+Kw
+         Z3T//XbM2jgxbJSo4Xo70K9FWG8/VKyHcSLWif4g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brad Love <brad@nextdimension.cc>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 009/261] media: si2157: Better check for running tuner in init
-Date:   Fri, 19 Jun 2020 16:30:20 +0200
-Message-Id: <20200619141650.333115403@linuxfoundation.org>
+        stable@vger.kernel.org, Julien Thierry <jthierry@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 010/261] objtool: Ignore empty alternatives
+Date:   Fri, 19 Jun 2020 16:30:21 +0200
+Message-Id: <20200619141650.372901698@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
 References: <20200619141649.878808811@linuxfoundation.org>
@@ -45,59 +46,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brad Love <brad@nextdimension.cc>
+From: Julien Thierry <jthierry@redhat.com>
 
-[ Upstream commit e955f959ac52e145f27ff2be9078b646d0352af0 ]
+[ Upstream commit 7170cf47d16f1ba29eca07fd818870b7af0a93a5 ]
 
-Getting the Xtal trim property to check if running is less error prone.
-Reset if_frequency if state is unknown.
+The .alternatives section can contain entries with no original
+instructions. Objtool will currently crash when handling such an entry.
 
-Replaces the previous "garbage check".
+Just skip that entry, but still give a warning to discourage useless
+entries.
 
-Signed-off-by: Brad Love <brad@nextdimension.cc>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Julien Thierry <jthierry@redhat.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/tuners/si2157.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ tools/objtool/check.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/media/tuners/si2157.c b/drivers/media/tuners/si2157.c
-index e87040d6eca7..a39e1966816b 100644
---- a/drivers/media/tuners/si2157.c
-+++ b/drivers/media/tuners/si2157.c
-@@ -75,24 +75,23 @@ static int si2157_init(struct dvb_frontend *fe)
- 	struct si2157_cmd cmd;
- 	const struct firmware *fw;
- 	const char *fw_name;
--	unsigned int uitmp, chip_id;
-+	unsigned int chip_id, xtal_trim;
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index fcc6cd404f56..48b234d8f251 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -865,6 +865,12 @@ static int add_special_section_alts(struct objtool_file *file)
+ 		}
  
- 	dev_dbg(&client->dev, "\n");
- 
--	/* Returned IF frequency is garbage when firmware is not running */
--	memcpy(cmd.args, "\x15\x00\x06\x07", 4);
-+	/* Try to get Xtal trim property, to verify tuner still running */
-+	memcpy(cmd.args, "\x15\x00\x04\x02", 4);
- 	cmd.wlen = 4;
- 	cmd.rlen = 4;
- 	ret = si2157_cmd_execute(client, &cmd);
--	if (ret)
--		goto err;
- 
--	uitmp = cmd.args[2] << 0 | cmd.args[3] << 8;
--	dev_dbg(&client->dev, "if_frequency kHz=%u\n", uitmp);
-+	xtal_trim = cmd.args[2] | (cmd.args[3] << 8);
- 
--	if (uitmp == dev->if_frequency / 1000)
-+	if (ret == 0 && xtal_trim < 16)
- 		goto warm;
- 
-+	dev->if_frequency = 0; /* we no longer know current tuner state */
+ 		if (special_alt->group) {
++			if (!special_alt->orig_len) {
++				WARN_FUNC("empty alternative entry",
++					  orig_insn->sec, orig_insn->offset);
++				continue;
++			}
 +
- 	/* power up */
- 	if (dev->chiptype == SI2157_CHIPTYPE_SI2146) {
- 		memcpy(cmd.args, "\xc0\x05\x01\x00\x00\x0b\x00\x00\x01", 9);
+ 			ret = handle_group_alt(file, special_alt, orig_insn,
+ 					       &new_insn);
+ 			if (ret)
 -- 
 2.25.1
 
