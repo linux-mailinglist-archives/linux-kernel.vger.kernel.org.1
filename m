@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8F3C201934
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B02D7201948
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732124AbgFSRRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 13:17:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49958 "EHLO mail.kernel.org"
+        id S2390120AbgFSRUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 13:20:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:49110 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729842AbgFSRRC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 13:17:02 -0400
-Received: from [192.168.1.74] (75-58-59-55.lightspeed.rlghnc.sbcglobal.net [75.58.59.55])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5ED0120DD4;
-        Fri, 19 Jun 2020 17:17:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592587022;
-        bh=ZXqvXAmVATfcOFfYDgssdi24IIgo7rfGyS4R1yKWIB0=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=d78wgNJsoEVyI8veX7Z8JHTuu5+qT47of6JK7UQwqdGNtgoorNO6t9sgsZ45aMfcW
-         cLArwSQOeEaOU4+uXfwiliUP97QcEIZ90wvmEEJGAZ9bRSDY1+ixU48ZkayuafuX04
-         5vQyqOmXeLNuNALDkTVsl1UeclqvlEaztkvdql7k=
-Subject: Re: [PATCH] pci: pcie: AER: Fix logging of Correctable errors
-To:     Matt Jolly <Kangie@footclan.ninja>,
-        Russell Currey <ruscur@russell.cc>,
-        Sam Bobroff <sbobroff@linux.ibm.com>,
-        Oliver O'Halloran <oohall@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linuxppc-dev@lists.ozlabs.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200618155511.16009-1-Kangie@footclan.ninja>
-From:   Sinan Kaya <okaya@kernel.org>
-Autocrypt: addr=okaya@kernel.org; keydata=
- mQENBFrnOrUBCADGOL0kF21B6ogpOkuYvz6bUjO7NU99PKhXx1MfK/AzK+SFgxJF7dMluoF6
- uT47bU7zb7HqACH6itTgSSiJeSoq86jYoq5s4JOyaj0/18Hf3/YBah7AOuwk6LtV3EftQIhw
- 9vXqCnBwP/nID6PQ685zl3vH68yzF6FVNwbDagxUz/gMiQh7scHvVCjiqkJ+qu/36JgtTYYw
- 8lGWRcto6gr0eTF8Wd8f81wspmUHGsFdN/xPsZPKMw6/on9oOj3AidcR3P9EdLY4qQyjvcNC
- V9cL9b5I/Ud9ghPwW4QkM7uhYqQDyh3SwgEFudc+/RsDuxjVlg9CFnGhS0nPXR89SaQZABEB
- AAG0HVNpbmFuIEtheWEgPG9rYXlhQGtlcm5lbC5vcmc+iQFOBBMBCAA4FiEEYdOlMSE+a7/c
- ckrQvGF4I+4LAFcFAlztcAoCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQvGF4I+4L
- AFfidAf/VKHInxep0Z96iYkIq42432HTZUrxNzG9IWk4HN7c3vTJKv2W+b9pgvBF1SmkyQSy
- 8SJ3Zd98CO6FOHA1FigFyZahVsme+T0GsS3/OF1kjrtMktoREr8t0rK0yKpCTYVdlkHadxmR
- Qs5xLzW1RqKlrNigKHI2yhgpMwrpzS+67F1biT41227sqFzW9urEl/jqGJXaB6GV+SRKSHN+
- ubWXgE1NkmfAMeyJPKojNT7ReL6eh3BNB/Xh1vQJew+AE50EP7o36UXghoUktnx6cTkge0ZS
- qgxuhN33cCOU36pWQhPqVSlLTZQJVxuCmlaHbYWvye7bBOhmiuNKhOzb3FcgT7kBDQRa5zq1
- AQgAyRq/7JZKOyB8wRx6fHE0nb31P75kCnL3oE+smKW/sOcIQDV3C7mZKLf472MWB1xdr4Tm
- eXeL/wT0QHapLn5M5wWghC80YvjjdolHnlq9QlYVtvl1ocAC28y43tKJfklhHiwMNDJfdZbw
- 9lQ2h+7nccFWASNUu9cqZOABLvJcgLnfdDpnSzOye09VVlKr3NHgRyRZa7me/oFJCxrJlKAl
- 2hllRLt0yV08o7i14+qmvxI2EKLX9zJfJ2rGWLTVe3EJBnCsQPDzAUVYSnTtqELu2AGzvDiM
- gatRaosnzhvvEK+kCuXuCuZlRWP7pWSHqFFuYq596RRG5hNGLbmVFZrCxQARAQABiQEfBBgB
- CAAJBQJa5zq1AhsMAAoJELxheCPuCwBX2UYH/2kkMC4mImvoClrmcMsNGijcZHdDlz8NFfCI
- gSb3NHkarnA7uAg8KJuaHUwBMk3kBhv2BGPLcmAknzBIehbZ284W7u3DT9o1Y5g+LDyx8RIi
- e7pnMcC+bE2IJExCVf2p3PB1tDBBdLEYJoyFz/XpdDjZ8aVls/pIyrq+mqo5LuuhWfZzPPec
- 9EiM2eXpJw+Rz+vKjSt1YIhg46YbdZrDM2FGrt9ve3YaM5H0lzJgq/JQPKFdbd5MB0X37Qc+
- 2m/A9u9SFnOovA42DgXUyC2cSbIJdPWOK9PnzfXqF3sX9Aol2eLUmQuLpThJtq5EHu6FzJ7Y
- L+s0nPaNMKwv/Xhhm6Y=
-Message-ID: <d611dabd-b943-8492-a29e-0b7fb1980de8@kernel.org>
-Date:   Fri, 19 Jun 2020 13:17:00 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200618155511.16009-1-Kangie@footclan.ninja>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1725788AbgFSRUh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 13:20:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC0B22B;
+        Fri, 19 Jun 2020 10:20:36 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 39B193F71F;
+        Fri, 19 Jun 2020 10:20:35 -0700 (PDT)
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Qais Yousef <qais.yousef@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Chris Redpath <chris.redpath@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] sched: Optionally skip uclamp logic in fast path
+Date:   Fri, 19 Jun 2020 18:20:09 +0100
+Message-Id: <20200619172011.5810-1-qais.yousef@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/18/2020 11:55 AM, Matt Jolly wrote:
+This series attempts to address the report that uclamp logic could be expensive
+sometimes and shows a regression in netperf UDP_STREAM under certain
+conditions.
 
-> +		pci_warn(dev, "  device [%04x:%04x] error status/mask=%08x/%08x\n",
-> +			dev->vendor, dev->device,
-> +			info->status, info->mask);
-> +	} else {
+The first patch is a fix for how struct uclamp_rq is initialized which is
+required by the 2nd patch which contains the real 'fix'.
 
-<snip>
+Worth noting that the root cause of the overhead is believed to be system
+specific or related to potential certain code/data layout issues, leading to
+worse I/D $ performance.
 
-> +		pci_err(dev, "  device [%04x:%04x] error status/mask=%08x/%08x\n",
-> +			dev->vendor, dev->device,
-> +			info->status, info->mask);
+Different systems exhibited different behaviors and the regression did
+disappear in certain kernel version while attempting to reporoduce.
 
+More info can be found here:
 
-Function pointers for pci_warn vs. pci_err ?
+https://lore.kernel.org/lkml/20200616110824.dgkkbyapn3io6wik@e107158-lin/
 
-This looks like a lot of copy/paste.
+Having the static key seemed the best thing to do to ensure the effect of
+uclamp is minimized for kernels that compile it in but don't have a userspace
+that uses it, which will allow distros to distribute uclamp capable kernels by
+default without having to compromise on performance for some systems that could
+be affected.
+
+Changes in v2:
+	* Add more info in the commit message about the result of perf diff to
+	  demonstrate that the activate/deactivate_task pressure is reduced in
+	  the fast path.
+
+	* Fix sparse warning reported by the test robot.
+
+	* Add an extra commit about using static_branch_likely() instead of
+	  static_branc_unlikely().
+
+Thanks
+
+--
+Qais Yousef
+
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Mel Gorman <mgorman@suse.de>
+CC: Patrick Bellasi <patrick.bellasi@matbug.net>
+Cc: Chris Redpath <chris.redpath@arm.com>
+Cc: Lukasz Luba <lukasz.luba@arm.com>
+Cc: linux-kernel@vger.kernel.org
+
+Qais Yousef (2):
+  sched/uclamp: Fix initialization of strut uclamp_rq
+  sched/uclamp: Protect uclamp fast path code with static key
+
+ kernel/sched/core.c | 81 ++++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 72 insertions(+), 9 deletions(-)
+
+-- 
+2.17.1
+
