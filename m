@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4930200D44
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C33FA200D4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389300AbgFSOzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:55:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49964 "EHLO mail.kernel.org"
+        id S2389991AbgFSOzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:55:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50180 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389924AbgFSOzK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:55:10 -0400
+        id S2388909AbgFSOzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:55:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C42A521556;
-        Fri, 19 Jun 2020 14:55:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 708262168B;
+        Fri, 19 Jun 2020 14:55:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578510;
-        bh=1CjNh4IAkmtHBplhmUA60VGWBjx2+lXxBppXNT/XFZg=;
+        s=default; t=1592578521;
+        bh=BS4vnzAaUT4xzsYKuDAQsvC3CguCsCQrniL6bIM7OmA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ah4FVX37OscSHzUCOFW9IE1qmD8tgRUFksWEAcojAbFE5b/f8ELXddzODotCiAAmW
-         bZSGFeVeS07/dDHqH6Wk3JCWkaNYrfNInzChurVib7q/8vL3y2jELvJdXy1ES1zsdU
-         jbdC1lnF8iRqpev/y8zQnZ3IjAzzOQvFOgG2/ZEk=
+        b=YtQrh2UPzvZYZAjEFlWMjMtDVZvy0ZC3krOitVd8uTBW7VTUvB+VKRnT8JZJImmq1
+         p/Jb+Dfqiezm1GnNYRdCC8SDqtK17d3sP/OrM5nhJXtgsCHnUekoKLadCtWT0nmSiq
+         xTCoHsy42OFeJWy9/8cpBeAQbA4++49O9I12OX7I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 022/267] RDMA/uverbs: Make the event_queue fds return POLLERR when disassociated
-Date:   Fri, 19 Jun 2020 16:30:07 +0200
-Message-Id: <20200619141649.940260451@linuxfoundation.org>
+        stable@vger.kernel.org, Andrew Cooper <andrew.cooper3@citrix.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 023/267] x86/cpu/amd: Make erratum #1054 a legacy erratum
+Date:   Fri, 19 Jun 2020 16:30:08 +0200
+Message-Id: <20200619141649.984307863@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
 References: <20200619141648.840376470@linuxfoundation.org>
@@ -44,38 +44,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@mellanox.com>
+From: Kim Phillips <kim.phillips@amd.com>
 
-[ Upstream commit eb356e6dc15a30af604f052cd0e170450193c254 ]
+[ Upstream commit e2abfc0448a46d8a137505aa180caf14070ec535 ]
 
-If is_closed is set, and the event list is empty, then read() will return
--EIO without blocking. After setting is_closed in
-ib_uverbs_free_event_queue(), we do trigger a wake_up on the poll_wait,
-but the fops->poll() function does not check it, so poll will continue to
-sleep on an empty list.
+Commit
 
-Fixes: 14e23bd6d221 ("RDMA/core: Fix locking in ib_uverbs_event_read")
-Link: https://lore.kernel.org/r/0-v1-ace813388969+48859-uverbs_poll_fix%25jgg@mellanox.com
-Reviewed-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+  21b5ee59ef18 ("x86/cpu/amd: Enable the fixed Instructions Retired
+		 counter IRPERF")
+
+mistakenly added erratum #1054 as an OS Visible Workaround (OSVW) ID 0.
+Erratum #1054 is not OSVW ID 0 [1], so make it a legacy erratum.
+
+There would never have been a false positive on older hardware that
+has OSVW bit 0 set, since the IRPERF feature was not available.
+
+However, save a couple of RDMSR executions per thread, on modern
+system configurations that correctly set non-zero values in their
+OSVW_ID_Length MSRs.
+
+[1] Revision Guide for AMD Family 17h Models 00h-0Fh Processors. The
+revision guide is available from the bugzilla link below.
+
+Fixes: 21b5ee59ef18 ("x86/cpu/amd: Enable the fixed Instructions Retired counter IRPERF")
+Reported-by: Andrew Cooper <andrew.cooper3@citrix.com>
+Signed-off-by: Kim Phillips <kim.phillips@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200417143356.26054-1-kim.phillips@amd.com
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206537
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/core/uverbs_main.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kernel/cpu/amd.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-index 5404717998b0..fc4b46258c75 100644
---- a/drivers/infiniband/core/uverbs_main.c
-+++ b/drivers/infiniband/core/uverbs_main.c
-@@ -360,6 +360,8 @@ static __poll_t ib_uverbs_event_poll(struct ib_uverbs_event_queue *ev_queue,
- 	spin_lock_irq(&ev_queue->lock);
- 	if (!list_empty(&ev_queue->event_list))
- 		pollflags = EPOLLIN | EPOLLRDNORM;
-+	else if (ev_queue->is_closed)
-+		pollflags = EPOLLERR;
- 	spin_unlock_irq(&ev_queue->lock);
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 120769955687..de69090ca142 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -1122,8 +1122,7 @@ static const int amd_erratum_383[] =
  
- 	return pollflags;
+ /* #1054: Instructions Retired Performance Counter May Be Inaccurate */
+ static const int amd_erratum_1054[] =
+-	AMD_OSVW_ERRATUM(0, AMD_MODEL_RANGE(0x17, 0, 0, 0x2f, 0xf));
+-
++	AMD_LEGACY_ERRATUM(AMD_MODEL_RANGE(0x17, 0, 0, 0x2f, 0xf));
+ 
+ static bool cpu_has_amd_erratum(struct cpuinfo_x86 *cpu, const int *erratum)
+ {
 -- 
 2.25.1
 
