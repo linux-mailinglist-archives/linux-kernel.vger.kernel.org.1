@@ -2,168 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A07E20113F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E4F8201148
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405033AbgFSPjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:39:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:40230 "EHLO foss.arm.com"
+        id S2391933AbgFSPjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:39:31 -0400
+Received: from nbd.name ([46.4.11.11]:41566 "EHLO nbd.name"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391845AbgFSPi4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:38:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8184B101E;
-        Fri, 19 Jun 2020 08:38:55 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F0CC63F71F;
-        Fri, 19 Jun 2020 08:38:53 -0700 (PDT)
-Date:   Fri, 19 Jun 2020 16:38:51 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        hsinyi@chromium.org, Joel Fernandes <joelaf@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Quentin Perret <qperret@google.com>, ctheegal@codeaurora.org,
-        Guenter Roeck <groeck@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cros_ec_spi: Even though we're RT priority, don't bump
- cpu freq
-Message-ID: <20200619153851.vigshoae3ahiy63x@e107158-lin.cambridge.arm.com>
-References: <20200610151818.1.I666ecd9c6f3c6405bd75831a21001b8109b6438c@changeid>
- <20200612125250.7bwjfnxhurdf5bwj@e107158-lin.cambridge.arm.com>
- <CAD=FV=WuYZRO=sv4ODr0SFk0gTtvCW0dNQXbFGrBDqRgjYv-jA@mail.gmail.com>
+        id S2405058AbgFSPj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:39:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
+         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
+        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ZLaASyG1bJEXgQgjxKPmX/Bt2Syq4o0+QkutZUnfNQ4=; b=PKLNQl+9eYGgvffWNp/AB2jlaX
+        wR4IUVBVcaHgntEvbpPPyg/VAhM+3074Krp6clo7Bmw3oR1qZ9eaAyzpf75NXRki7ARvgVN8/iWr2
+        SOrBloi3i9vXo8SKEs6ko6RAeWN7BJzQ18OzkDbDYdOblX6mNTE4VepGMNm0QoQZfvxo=;
+Received: from p54ae948c.dip0.t-ipconnect.de ([84.174.148.140] helo=nf.local)
+        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <nbd@nbd.name>)
+        id 1jmJ6o-0000TV-Al; Fri, 19 Jun 2020 17:39:14 +0200
+Subject: Re: [PATCH 4.19 157/267] mt76: avoid rx reorder buffer overflow
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Chih-Min Chen <chih-min.chen@mediatek.com>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Sasha Levin <sashal@kernel.org>
+References: <20200619141648.840376470@linuxfoundation.org>
+ <20200619141656.344416983@linuxfoundation.org>
+From:   Felix Fietkau <nbd@nbd.name>
+Autocrypt: addr=nbd@nbd.name; prefer-encrypt=mutual; keydata=
+ xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
+ ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
+ Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
+ AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
+ vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
+ wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
+ TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
+ l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
+ dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
+ HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
+ VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
+ CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
+ VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
+ Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
+ DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
+ wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
+ f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
+ aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
+ FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
+ TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
+ GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCfTKx80VvCR/PvsUlrvdOLsIgeRGAAn1ee
+ RjMaxwtSdaCKMw3j33ZbsWS4
+Message-ID: <f5d39fea-7691-c961-48c8-52f98b0033db@nbd.name>
+Date:   Fri, 19 Jun 2020 17:39:13 +0200
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <20200619141656.344416983@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=WuYZRO=sv4ODr0SFk0gTtvCW0dNQXbFGrBDqRgjYv-jA@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/18/20 14:18, Doug Anderson wrote:
-> Hi,
+On 2020-06-19 16:32, Greg Kroah-Hartman wrote:
+> From: Ryder Lee <ryder.lee@mediatek.com>
 > 
-> On Fri, Jun 12, 2020 at 5:52 AM Qais Yousef <qais.yousef@arm.com> wrote:
-> >
-> > On 06/10/20 15:18, Douglas Anderson wrote:
-> > > The cros_ec_spi driver is realtime priority so that it doesn't get
-> > > preempted by other taks while it's talking to the EC but overall it
-> > > really doesn't need lots of compute power.  Unfortunately, by default,
-> > > the kernel assumes that all realtime tasks should cause the cpufreq to
-> > > jump to max and burn through power to get things done as quickly as
-> > > possible.  That's just not the correct behavior for cros_ec_spi.
-> > >
-> > > Switch to manually overriding the default.
-> > >
-> > > This won't help us if our work moves over to the SPI pump thread but
-> > > that's not the common code path.
-> > >
-> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > ---
-> > > NOTE: This would cause a conflict if the patch
-> > > https://lore.kernel.org/r/20200422112831.870192415@infradead.org lands
-> > > first
-> > >
-> > >  drivers/platform/chrome/cros_ec_spi.c | 10 ++++++----
-> > >  1 file changed, 6 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/platform/chrome/cros_ec_spi.c b/drivers/platform/chrome/cros_ec_spi.c
-> > > index debea5c4c829..76d59d5e7efd 100644
-> > > --- a/drivers/platform/chrome/cros_ec_spi.c
-> > > +++ b/drivers/platform/chrome/cros_ec_spi.c
-> > > @@ -709,8 +709,11 @@ static void cros_ec_spi_high_pri_release(void *worker)
-> > >  static int cros_ec_spi_devm_high_pri_alloc(struct device *dev,
-> > >                                          struct cros_ec_spi *ec_spi)
-> > >  {
-> > > -     struct sched_param sched_priority = {
-> > > -             .sched_priority = MAX_RT_PRIO / 2,
-> > > +     struct sched_attr sched_attr = {
-> > > +             .sched_policy   = SCHED_FIFO,
-> > > +             .sched_priority = MAX_RT_PRIO / 2,
-> > > +             .sched_flags    = SCHED_FLAG_UTIL_CLAMP_MIN,
-> > > +             .sched_util_min = 0,
-> >
-> > Hmm I thought Peter already removed all users that change RT priority directly.
-> >
-> > https://lore.kernel.org/lkml/20200422112719.826676174@infradead.org/
+> [ Upstream commit 7c4f744d6703757be959f521a7a441bf34745d99 ]
 > 
-> Yeah, I mentioned that patch series "after the cut" in my patch and
-> also made sure to CC Peter on my patch.  I'm not sure what happened to
-> that series since I don't see it in linuxnext...
+> Enlarge slot to support 11ax 256 BA (256 MPDUs in an AMPDU)
+> 
+> Signed-off-by: Chih-Min Chen <chih-min.chen@mediatek.com>
+> Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
+> Signed-off-by: Felix Fietkau <nbd@nbd.name>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+It does not make sense to backport this commit. It doesn't fix anything,
+it's just preparation work for the mt7915 driver.
 
-Apologies I missed that.
-
-> 
-> 
-> > >       };
-> > >       int err;
-> > >
-> > > @@ -728,8 +731,7 @@ static int cros_ec_spi_devm_high_pri_alloc(struct device *dev,
-> > >       if (err)
-> > >               return err;
-> > >
-> > > -     err = sched_setscheduler_nocheck(ec_spi->high_pri_worker->task,
-> > > -                                      SCHED_FIFO, &sched_priority);
-> > > +     err = sched_setattr_nocheck(ec_spi->high_pri_worker->task, &sched_attr);
-> > >       if (err)
-> > >               dev_err(dev, "Can't set cros_ec high pri priority: %d\n", err);
-> > >       return err;
-> >
-> > If I read the code correctly, if you fail here cros_ec_spi_probe() will fail
-> > too and the whole thing will not be loaded. If you compile without uclamp then
-> > sched_setattr_nocheck() will always fail with -EOPNOTSUPP.
-> 
-> Oops, definitely need to send out a v2 for that if nothing else.  Is
-> there any good way for me to code this up or do I need a big #ifdef
-> somewhere in my code?
-
-A big #ifdef. But this kind of use I don't think was anticipated. And generally
-if we want to allow that, it has to be done via a proper API. Drivers picking
-random uclamp values is as bad as them picking random RT priority.
-
-> 
-> 
-> > Why can't you manage the priority and boost value of such tasks via your init
-> > scripts instead?
-> 
-> I guess I feel like it's weird in this case.  Userspace isn't creating
-> this task and isn't the one marking it as realtime.  ...and, if we
-> ever manage to upgrade the protocol which we use to talk to the EC we
-> might fully get rid of this task the need to have something boosted up
-> to realtime.
-> 
-> Said another way: the fact that we even have this task at all and the
-> fact that it's realtime is an implementation detail of the kernel.  It
-> seems really weird to add initscripts for it.
-
-Yes this is the problem of RT for a general purpose systems. It's hard to
-reason about their priorities/importance since it's not a special purpose
-system with well defined spec of what hardware/software will be running on it
-and their precise requirements is not known before hand.
-
-> 
-> 
-> > I have to admit I need to think about whether it makes sense to have a generic
-> > API that allows drivers to opt-out of the default boosting behavior for their
-> > RT tasks.
-> 
-> Seems like it would be useful.
-
-If you propose something that will help the discussion. I think based on the
-same approach Peter has taken to prevent random RT priorities. In uclamp case
-I think we just want to allow driver to opt RT tasks out of the default
-boosting behavior.
-
-I'm a bit wary that this extra layer of tuning might create a confusion, but
-I can't reason about why is it bad for a driver to say I don't want my RT task
-to be boosted too.
-
-Thanks
-
---
-Qais Yousef
+- Felix
