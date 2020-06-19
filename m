@@ -2,242 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDD8200A62
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC288200A68
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732957AbgFSNjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 09:39:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:59490 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732728AbgFSNjI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 09:39:08 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 73FC01477;
-        Fri, 19 Jun 2020 06:39:05 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6AA9B3F6CF;
-        Fri, 19 Jun 2020 06:39:04 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        cristian.marussi@arm.com
-Subject: [PATCH v10 9/9] firmware: arm_scmi: Add Base notifications support
-Date:   Fri, 19 Jun 2020 14:38:34 +0100
-Message-Id: <20200619133834.18497-10-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200619133834.18497-1-cristian.marussi@arm.com>
-References: <20200619133834.18497-1-cristian.marussi@arm.com>
+        id S1733007AbgFSNjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 09:39:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732993AbgFSNjg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 09:39:36 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69BBC0613EE
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 06:39:35 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id n9so3951833plk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 06:39:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P6z1WoXbyKErhNE6Tp2clfySWFQeOwZaqr/w/IRKxzM=;
+        b=uxKooY1m8zt26BaQ7pp0BwB2Hz8VGn5h0VDQskeON/SVJ3b/vj65AH8w4JJnbSqKDw
+         3C5T8V6siQbA7SJrJ9hIu69tGYyrqON/s6pjqxnQ+tvtCR5loWcyJH6oRd4JTz9fNA9s
+         Ea0PggrWpvphGkuwtNOy7Kw6EUvQmvsg8pzsn80vYluJ8of0jju3p6g2Nflb+ADcghwN
+         c7Q6VxhSZA5w9TsDtykvRmQ7cavkVl8KFYDBmodM6G3SFSUJ45t2ypfmQ/s/ZOQcIv62
+         0x8NH92CaNQYgtAJNIRMqmeBs/clWKC6fyqB7wDFfIej5nrVnxUPU9fqpHaUb6DbOzjB
+         KyPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P6z1WoXbyKErhNE6Tp2clfySWFQeOwZaqr/w/IRKxzM=;
+        b=Lgo2i9MqizqEq5MSFNYCsBAkW5Ps79iJpiAkS3yN9ByUeeIEQ0wjjAKet0AJ1p8kLy
+         mbdtLdbyywaWMTTUTFEwSHWTZTsDzzCuymaVKKp0YA6WGA3++/GlxtVTgUSG6XyMTxGP
+         aV4ESVNymHvypfImTQxpmj9BU0+g7e0cEwGLiV8ZOHPhhZPJ6FEKUIlgUc8VlppLKsZV
+         +WEAdCNrIcDofxmDbUMZywzvSa7PcnGb1F2ez7LWMBC0g51p2TqErlQi7xFkwK4jfEto
+         t08/XJ4JDIA70BatbMa4jupQhoeXSI+COh4bRKwUL+X2swL6eAr95or6OuxYBUYCIfFX
+         NqaQ==
+X-Gm-Message-State: AOAM531LdgX6Cf6QAc3dpLh2xJk61KCvbqy0oDgJ5+0i3qVwcPU2Ee+X
+        YTZFMVB9jtPjTbacaK9aX2FOHKVcLjtpxHxUs28xZw==
+X-Google-Smtp-Source: ABdhPJyYWnwH0B9PgJ5hdzT8BtVrPZSQhiOIC4nhIghUPVzQ68/9f359Mu/AzkXqQ5E6pt9pMSqp438masJ3Mmhat2I=
+X-Received: by 2002:a17:90b:1244:: with SMTP id gx4mr3558685pjb.136.1592573975033;
+ Fri, 19 Jun 2020 06:39:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <00000000000004a76305a8624d22@google.com> <20200619095342.GT576905@hirez.programming.kicks-ass.net>
+ <CACT4Y+aWkGTGXB+h1Hp1yxmrTBRDn1r4YHSQ6-SUK4SHn9serQ@mail.gmail.com>
+In-Reply-To: <CACT4Y+aWkGTGXB+h1Hp1yxmrTBRDn1r4YHSQ6-SUK4SHn9serQ@mail.gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Fri, 19 Jun 2020 15:39:23 +0200
+Message-ID: <CAAeHK+xiQWyUzOMw8xWkCyshMmWHpEfZqhAkvYmwcsGcoSOpLg@mail.gmail.com>
+Subject: Re: INFO: trying to register non-static key in is_dynamic_key
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        syzbot <syzbot+42bc0d31b9a21faebdf8@syzkaller.appspotmail.com>,
+        Borislav Petkov <bp@alien8.de>, devel@etsukata.com,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "the arch/x86 maintainers" <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make SCMI Base protocol register with the notification core.
+On Fri, Jun 19, 2020 at 12:03 PM Dmitry Vyukov <dvyukov@google.com> wrote:
+>
+> On Fri, Jun 19, 2020 at 11:53 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Thu, Jun 18, 2020 at 02:17:15PM -0700, syzbot wrote:
+> >
+> > > INFO: trying to register non-static key.
+> > > the code is fine but needs lockdep annotation.
+> > > turning off the locking correctness validator.
+> > > CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.7.0-syzkaller #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> > > Call Trace:
+> > >  <IRQ>
+> > >  __dump_stack lib/dump_stack.c:77 [inline]
+> > >  dump_stack+0xf6/0x16e lib/dump_stack.c:118
+> > >  assign_lock_key kernel/locking/lockdep.c:894 [inline]
+> > >  register_lock_class+0x1442/0x17e0 kernel/locking/lockdep.c:1206
+> > >  arch_stack_walk+0x81/0xf0 arch/x86/kernel/stacktrace.c:25
+> > >  lock_downgrade+0x720/0x720 kernel/locking/lockdep.c:4624
+> > >  is_dynamic_key+0x1b0/0x1b0 kernel/locking/lockdep.c:1176
+> > >  trace_hardirqs_off+0x50/0x1f0 kernel/trace/trace_preemptirq.c:83
+> > >  __lock_acquire+0x101/0x6270 kernel/locking/lockdep.c:4259
+> > >  save_stack+0x32/0x40 mm/kasan/common.c:50
+> >
+> > So I'm thinking this is in fact:
+> >
+> >         spin_lock_irqsave(&depot_lock, flags);
+> >
+> > from lib/stackdepot.c:stack_depot_save(), which has gone missing from
+> > the stack due to tail-call optimizations.
+> >
+> > Now depot_lock is declared thusly:
+> >
+> >   static DEFINE_SPINLOCK(depot_lock);
+> >
+> > and I'm trying to figure out how lockdep manages to conclude that isn't
+> > static storage.... most odd.
+>
+> Note there also was something wrong with the unwinder:
+> https://syzkaller.appspot.com/x/log.txt?x=13f305a9100000
+> (or with something else in the kernel), so potentially it did not
+> happen save_stack.
+>
+> In fact, Andrey just reverted this parsing of questionable frames in syzkaller:
+> https://github.com/google/syzkaller/commit/4d2d1ebee3b65c404576d1c8573a0ec48b03b883
+> (was done because of what turned out to be ORC unwinder bug, which was fixed).
+>
+> So potentially we just need to close this is invalid now.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
----
-V8 --> V9
-- moved pr_info to pr_debug
-- removed switch()
-- use SCMI_PROTO_QUEUE_SZ
-V6 --> V7
-- fixed report.timestamp type
-- fix max_payld_sz initialization
-- fix report layout and initialization
-- expose SCMI_EVENT_ in linux/scmi_protocol.h
-V5 --> V6
-- added handle argument to fill_custom_report()
-V4 --> V5
-- fixed unsual return construct
-V3 --> V4
-- scmi_event field renamed
-V2 --> V3
-- added handle awareness
-V1 --> V2
-- simplified .set_notify_enabled() implementation moving the ALL_SRCIDs
-  logic out of protocol. ALL_SRCIDs logic is now in charge of the
-  notification core, together with proper reference counting of enables
-- switched to devres protocol-registration
----
- drivers/firmware/arm_scmi/base.c | 109 +++++++++++++++++++++++++++++--
- include/linux/scmi_protocol.h    |   9 +++
- 2 files changed, 114 insertions(+), 4 deletions(-)
+Rerunning the repro shows a different stack:
 
-diff --git a/drivers/firmware/arm_scmi/base.c b/drivers/firmware/arm_scmi/base.c
-index ce7d9203e41b..d5a7878d3fbd 100644
---- a/drivers/firmware/arm_scmi/base.c
-+++ b/drivers/firmware/arm_scmi/base.c
-@@ -5,7 +5,15 @@
-  * Copyright (C) 2018 ARM Ltd.
-  */
- 
-+#define pr_fmt(fmt) "SCMI Notifications BASE - " fmt
-+
-+#include <linux/scmi_protocol.h>
-+
- #include "common.h"
-+#include "notify.h"
-+
-+#define SCMI_BASE_NUM_SOURCES		1
-+#define SCMI_BASE_MAX_CMD_ERR_COUNT	1024
- 
- enum scmi_base_protocol_cmd {
- 	BASE_DISCOVER_VENDOR = 0x3,
-@@ -19,16 +27,25 @@ enum scmi_base_protocol_cmd {
- 	BASE_RESET_AGENT_CONFIGURATION = 0xb,
- };
- 
--enum scmi_base_protocol_notify {
--	BASE_ERROR_EVENT = 0x0,
--};
--
- struct scmi_msg_resp_base_attributes {
- 	u8 num_protocols;
- 	u8 num_agents;
- 	__le16 reserved;
- };
- 
-+struct scmi_msg_base_error_notify {
-+	__le32 event_control;
-+#define BASE_TP_NOTIFY_ALL	BIT(0)
-+};
-+
-+struct scmi_base_error_notify_payld {
-+	__le32 agent_id;
-+	__le32 error_status;
-+#define IS_FATAL_ERROR(x)	((x) & BIT(31))
-+#define ERROR_CMD_COUNT(x)	FIELD_GET(GENMASK(9, 0), (x))
-+	__le64 msg_reports[SCMI_BASE_MAX_CMD_ERR_COUNT];
-+};
-+
- /**
-  * scmi_base_attributes_get() - gets the implementation details
-  *	that are associated with the base protocol.
-@@ -222,6 +239,84 @@ static int scmi_base_discover_agent_get(const struct scmi_handle *handle,
- 	return ret;
- }
- 
-+static int scmi_base_error_notify(const struct scmi_handle *handle, bool enable)
-+{
-+	int ret;
-+	u32 evt_cntl = enable ? BASE_TP_NOTIFY_ALL : 0;
-+	struct scmi_xfer *t;
-+	struct scmi_msg_base_error_notify *cfg;
-+
-+	ret = scmi_xfer_get_init(handle, BASE_NOTIFY_ERRORS,
-+				 SCMI_PROTOCOL_BASE, sizeof(*cfg), 0, &t);
-+	if (ret)
-+		return ret;
-+
-+	cfg = t->tx.buf;
-+	cfg->event_control = cpu_to_le32(evt_cntl);
-+
-+	ret = scmi_do_xfer(handle, t);
-+
-+	scmi_xfer_put(handle, t);
-+	return ret;
-+}
-+
-+static bool scmi_base_set_notify_enabled(const struct scmi_handle *handle,
-+					 u8 evt_id, u32 src_id, bool enable)
-+{
-+	int ret;
-+
-+	ret = scmi_base_error_notify(handle, enable);
-+	if (ret)
-+		pr_debug("FAIL_ENABLED - evt[%X] ret:%d\n", evt_id, ret);
-+
-+	return !ret;
-+}
-+
-+static void *scmi_base_fill_custom_report(const struct scmi_handle *handle,
-+					  u8 evt_id, u64 timestamp,
-+					  const void *payld, size_t payld_sz,
-+					  void *report, u32 *src_id)
-+{
-+	int i;
-+	const struct scmi_base_error_notify_payld *p = payld;
-+	struct scmi_base_error_report *r = report;
-+
-+
-+	/*
-+	 * BaseError notification payload is variable in size but
-+	 * up to a maximum length determined by the struct ponted by p.
-+	 * Instead payld_sz is the effective length of this notification
-+	 * payload so cannot be greater of the maximum allowed size as
-+	 * pointed by p.
-+	 */
-+	if (evt_id != SCMI_EVENT_BASE_ERROR_EVENT || sizeof(*p) < payld_sz)
-+		return NULL;
-+
-+	r->timestamp = timestamp;
-+	r->agent_id = le32_to_cpu(p->agent_id);
-+	r->fatal = IS_FATAL_ERROR(le32_to_cpu(p->error_status));
-+	r->cmd_count = ERROR_CMD_COUNT(le32_to_cpu(p->error_status));
-+	for (i = 0; i < r->cmd_count; i++)
-+		r->reports[i] = le64_to_cpu(p->msg_reports[i]);
-+	*src_id = 0;
-+
-+	return r;
-+}
-+
-+static const struct scmi_event base_events[] = {
-+	{
-+		.id = SCMI_EVENT_BASE_ERROR_EVENT,
-+		.max_payld_sz = sizeof(struct scmi_base_error_notify_payld),
-+		.max_report_sz = sizeof(struct scmi_base_error_report) +
-+				  SCMI_BASE_MAX_CMD_ERR_COUNT * sizeof(u64),
-+	},
-+};
-+
-+static const struct scmi_event_ops base_event_ops = {
-+	.set_notify_enabled = scmi_base_set_notify_enabled,
-+	.fill_custom_report = scmi_base_fill_custom_report,
-+};
-+
- int scmi_base_protocol_init(struct scmi_handle *h)
- {
- 	int id, ret;
-@@ -256,6 +351,12 @@ int scmi_base_protocol_init(struct scmi_handle *h)
- 	dev_dbg(dev, "Found %d protocol(s) %d agent(s)\n", rev->num_protocols,
- 		rev->num_agents);
- 
-+	scmi_register_protocol_events(handle, SCMI_PROTOCOL_BASE,
-+				      (4 * SCMI_PROTO_QUEUE_SZ),
-+				      &base_event_ops, base_events,
-+				      ARRAY_SIZE(base_events),
-+				      SCMI_BASE_NUM_SOURCES);
-+
- 	for (id = 0; id < rev->num_agents; id++) {
- 		scmi_base_discover_agent_get(handle, id, name);
- 		dev_dbg(dev, "Agent %d: %s\n", id, name);
-diff --git a/include/linux/scmi_protocol.h b/include/linux/scmi_protocol.h
-index d04d66be596d..46d98be92466 100644
---- a/include/linux/scmi_protocol.h
-+++ b/include/linux/scmi_protocol.h
-@@ -377,6 +377,7 @@ enum scmi_notification_events {
- 	SCMI_EVENT_PERFORMANCE_LEVEL_CHANGED = 0x1,
- 	SCMI_EVENT_SENSOR_TRIP_POINT_EVENT = 0x0,
- 	SCMI_EVENT_RESET_ISSUED = 0x0,
-+	SCMI_EVENT_BASE_ERROR_EVENT = 0x0,
- };
- 
- struct scmi_power_state_changed_report {
-@@ -415,4 +416,12 @@ struct scmi_reset_issued_report {
- 	u32 reset_state;
- };
- 
-+struct scmi_base_error_report {
-+	u64 timestamp;
-+	u32 agent_id;
-+	bool fatal;
-+	u16 cmd_count;
-+	u64 reports[0];
-+};
-+
- #endif /* _LINUX_SCMI_PROTOCOL_H */
--- 
-2.17.1
+INFO: trying to register non-static key.
+the code is fine but needs lockdep annotation.
+turning off the locking correctness validator.
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.8.0-rc1+ #2
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:77
+ dump_stack+0xf6/0x16e lib/dump_stack.c:118
+ assign_lock_key kernel/locking/lockdep.c:894
+ register_lock_class+0x1228/0x16d0 kernel/locking/lockdep.c:1206
+ __lock_acquire+0x100/0x6950 kernel/locking/lockdep.c:4259
+ lock_acquire+0x18b/0x7c0 kernel/locking/lockdep.c:4959
+ __raw_spin_lock_irqsave ./include/linux/spinlock_api_smp.h:110
+ _raw_spin_lock_irqsave+0x32/0x50 kernel/locking/spinlock.c:159
+ ath9k_htc_rxep+0x31/0x210 drivers/net/wireless/ath/ath9k/htc_drv_txrx.c:1128
+ ath9k_htc_rx_msg+0x2d9/0xb10 drivers/net/wireless/ath/ath9k/htc_hst.c:459
+ ath9k_hif_usb_rx_stream drivers/net/wireless/ath/ath9k/hif_usb.c:638
+ ath9k_hif_usb_rx_cb+0xc76/0x1050 drivers/net/wireless/ath/ath9k/hif_usb.c:671
+ __usb_hcd_giveback_urb+0x29a/0x550 drivers/usb/core/hcd.c:1650
+ usb_hcd_giveback_urb+0x367/0x410 drivers/usb/core/hcd.c:1716
+ dummy_timer+0x125d/0x333b drivers/usb/gadget/udc/dummy_hcd.c:1967
+ call_timer_fn+0x1ac/0x6e0 kernel/time/timer.c:1404
+ expire_timers kernel/time/timer.c:1449
+ __run_timers kernel/time/timer.c:1773
+ __run_timers kernel/time/timer.c:1740
+ run_timer_softirq+0x5e5/0x14c0 kernel/time/timer.c:1786
+ __do_softirq+0x21e/0x98b kernel/softirq.c:292
+ asm_call_on_stack+0xf/0x20 arch/x86/entry/entry_64.S:711
+ </IRQ>
+ __run_on_irqstack ./arch/x86/include/asm/irq_stack.h:22
+ run_on_irqstack_cond ./arch/x86/include/asm/irq_stack.h:48
+ do_softirq_own_stack+0x109/0x140 arch/x86/kernel/irq_64.c:77
+ invoke_softirq kernel/softirq.c:387
+ __irq_exit_rcu kernel/softirq.c:417
+ irq_exit_rcu+0x16f/0x1a0 kernel/softirq.c:429
+ sysvec_apic_timer_interrupt+0xd3/0x1b0 arch/x86/kernel/apic/apic.c:1091
+ asm_sysvec_apic_timer_interrupt+0x12/0x20 ./arch/x86/include/asm/idtentry.h:596
+RIP: 0010:native_safe_halt ./arch/x86/include/asm/irqflags.h:60
+RIP: 0010:arch_safe_halt ./arch/x86/include/asm/irqflags.h:103
+RIP: 0010:default_idle+0x28/0x2f0 arch/x86/kernel/process.c:700
+Code: cc cc 41 56 41 55 65 44 8b 2d 44 77 66 7a 41 54 55 53 0f 1f 44
+00 00 e8 f6 d7 a9 fb e9 07 00 00 00 0f 00 2d 2a 34 47 00 fb f4 <65> 44
+8b 2d 20 77 66 7a 0f 1f 44 00 00 5b 5d 41 3
+RSP: 0018:ffffffff87007da0 EFLAGS: 00000246
+RAX: 0000000000000000 RBX: ffffffff8702f840 RCX: 1ffffffff0fd45ea
+RDX: 1ffffffff0e0600f RSI: 0000000000000000 RDI: ffffffff87030078
+RBP: fffffbfff0e05f08 R08: 0000000000000000 R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: ffffffff87ea1fc8 R15: 0000000000000000
+ cpuidle_idle_call kernel/sched/idle.c:154
+ do_idle+0x3ec/0x510 kernel/sched/idle.c:269
+ cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:365
+ start_kernel+0x9fc/0xa39 init/main.c:1043
+ secondary_startup_64+0xb6/0xc0 arch/x86/kernel/head_64.S:243
 
+So this is a dup of:
+
+#syz dup: INFO: trying to register non-static key in ath9k_htc_rxep
+
+Not sure why lockdep triggered on save_stack() in this run.
