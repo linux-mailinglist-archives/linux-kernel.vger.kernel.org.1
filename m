@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91239201400
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E11201582
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:23:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391844AbgFSQHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:07:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38580 "EHLO mail.kernel.org"
+        id S2394752AbgFSQW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:22:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391831AbgFSPI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:08:58 -0400
+        id S2389239AbgFSO7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:59:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6362520776;
-        Fri, 19 Jun 2020 15:08:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0105F218AC;
+        Fri, 19 Jun 2020 14:59:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579338;
-        bh=FnRMOEIPw0Jmq2vCdbN2xV/1mRpWx72lg9XT0VL3xVM=;
+        s=default; t=1592578787;
+        bh=ECcn17W33XXpxx4IFxtIAWTOwXr2/kUWxEFrI6i1i6s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lPStGUyAiPkN11UrSzWvUAnzTTRTROTrRuVRcPakjw8ZRkWsfLzRPhsU8M4tC0aXd
-         obHCHR89wD6enCq4dxWFfUrkehHw/4lpWn003L0UT4V+5zY42bTvrGIlcfYhSwFz/6
-         trP+gZFQ8mdRPBVakR48lkZwpjzRSZ9+TK0N/bwc=
+        b=pF92/oknCFrBHZQDraSXpfcqIkUKcTaT8pe0YRAHJMWpUDgPkGA14G+xT5C47MvMV
+         1vK1BtarN8wFD5PvNxNeQX2swTz662mbY2ObGgl1+659lu8k88+0DcciHnIKqAwoGU
+         r60hGWHK5PVlHitZEQpykCCC2WVP2M3Ex36pRcZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Allison Collins <allison.henderson@oracle.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Sean Young <sean@mess.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 098/261] xfs: fix duplicate verification from xfs_qm_dqflush()
-Date:   Fri, 19 Jun 2020 16:31:49 +0200
-Message-Id: <20200619141654.567282822@linuxfoundation.org>
+Subject: [PATCH 4.19 126/267] media: dvb: return -EREMOTEIO on i2c transfer failure.
+Date:   Fri, 19 Jun 2020 16:31:51 +0200
+Message-Id: <20200619141654.875850969@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,48 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brian Foster <bfoster@redhat.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 629dcb38dc351947ed6a26a997d4b587f3bd5c7e ]
+[ Upstream commit 96f3a9392799dd0f6472648a7366622ffd0989f3 ]
 
-The pre-flush dquot verification in xfs_qm_dqflush() duplicates the
-read verifier by checking the dquot in the on-disk buffer. Instead,
-verify the in-core variant before it is flushed to the buffer.
+Currently when i2c transfers fail the error return -EREMOTEIO
+is assigned to err but then later overwritten when the tuner
+attach call is made.  Fix this by returning early with the
+error return code -EREMOTEIO on i2c transfer failure errors.
 
-Fixes: 7224fa482a6d ("xfs: add full xfs_dqblk verifier")
-Signed-off-by: Brian Foster <bfoster@redhat.com>
-Reviewed-by: Dave Chinner <dchinner@redhat.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Allison Collins <allison.henderson@oracle.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+If the transfer fails, an uninitialized value will be read from b2.
+
+Addresses-Coverity: ("Unused value")
+
+Fixes: fbfee8684ff2 ("V4L/DVB (5651): Dibusb-mb: convert pll handling to properly use dvb-pll")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Sean Young <sean@mess.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_dquot.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ drivers/media/usb/dvb-usb/dibusb-mb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/xfs/xfs_dquot.c b/fs/xfs/xfs_dquot.c
-index aeb95e7391c1..3cbf248af51f 100644
---- a/fs/xfs/xfs_dquot.c
-+++ b/fs/xfs/xfs_dquot.c
-@@ -1116,13 +1116,12 @@ xfs_qm_dqflush(
- 	dqb = bp->b_addr + dqp->q_bufoffset;
- 	ddqp = &dqb->dd_diskdq;
+diff --git a/drivers/media/usb/dvb-usb/dibusb-mb.c b/drivers/media/usb/dvb-usb/dibusb-mb.c
+index 408920577716..94f59c7765dc 100644
+--- a/drivers/media/usb/dvb-usb/dibusb-mb.c
++++ b/drivers/media/usb/dvb-usb/dibusb-mb.c
+@@ -84,7 +84,7 @@ static int dibusb_tuner_probe_and_attach(struct dvb_usb_adapter *adap)
  
--	/*
--	 * A simple sanity check in case we got a corrupted dquot.
--	 */
--	fa = xfs_dqblk_verify(mp, dqb, be32_to_cpu(ddqp->d_id), 0);
-+	/* sanity check the in-core structure before we flush */
-+	fa = xfs_dquot_verify(mp, &dqp->q_core, be32_to_cpu(dqp->q_core.d_id),
-+			      0);
- 	if (fa) {
- 		xfs_alert(mp, "corrupt dquot ID 0x%x in memory at %pS",
--				be32_to_cpu(ddqp->d_id), fa);
-+				be32_to_cpu(dqp->q_core.d_id), fa);
- 		xfs_buf_relse(bp);
- 		xfs_dqfunlock(dqp);
- 		xfs_force_shutdown(mp, SHUTDOWN_CORRUPT_INCORE);
+ 	if (i2c_transfer(&adap->dev->i2c_adap, msg, 2) != 2) {
+ 		err("tuner i2c write failed.");
+-		ret = -EREMOTEIO;
++		return -EREMOTEIO;
+ 	}
+ 
+ 	if (adap->fe_adap[0].fe->ops.i2c_gate_ctrl)
 -- 
 2.25.1
 
