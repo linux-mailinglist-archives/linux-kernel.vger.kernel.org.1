@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DF072013E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3529B2013DF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405519AbgFSQFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:05:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39700 "EHLO mail.kernel.org"
+        id S2405517AbgFSQFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:05:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391455AbgFSPJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:09:53 -0400
+        id S2391516AbgFSPKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:10:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA7D120776;
-        Fri, 19 Jun 2020 15:09:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7FE8F21941;
+        Fri, 19 Jun 2020 15:10:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579393;
-        bh=YP48rbtDsCt7cPYauRcjGLjAc3a4MGalUtGGAlwwvpg=;
+        s=default; t=1592579401;
+        bh=lEeeKBxplz5FgSvU1ng/boqItzocpThyosLQT7sUdYk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QMUkfy2Yt5rblpUWmY5+WUKI+m/5GkYNfXeSU6BvfQ57kGLAz3pDrNdme7U2bnnBv
-         tb+2dRlWIN9fjVx7WvGIvnlrBVJuwqgW8yJ2oQsQ070Oi+0aKG9qn6tYrt6OxuogaV
-         +ocApjDTjnXWOww76mt5Q/dVXWTPgrF4fX6/Ow94=
+        b=GlJtrSdyEk+ZnmquKf6EghQgffh1k19EYSpesM+10lgYRjdoxNxVqEPy7exyvk+go
+         ja19XiOKXb8V2KpDqIig7qKURjb6FtzC1AzWjR5wOLmmCx83jvcZCZvRKYrK4r4amy
+         jgDRrNSuSj1qCrhWQS+dfZSKIgp7dRn2JKA6P83I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 091/261] libertas_tf: avoid a null dereference in pointer priv
-Date:   Fri, 19 Jun 2020 16:31:42 +0200
-Message-Id: <20200619141654.243850050@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 092/261] xfs: clean up the error handling in xfs_swap_extents
+Date:   Fri, 19 Jun 2020 16:31:43 +0200
+Message-Id: <20200619141654.289574697@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
 References: <20200619141649.878808811@linuxfoundation.org>
@@ -44,47 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Darrick J. Wong <darrick.wong@oracle.com>
 
-[ Upstream commit 049ceac308b0d57c4f06b9fb957cdf95d315cf0b ]
+[ Upstream commit 8bc3b5e4b70d28f8edcafc3c9e4de515998eea9e ]
 
-Currently there is a check if priv is null when calling lbtf_remove_card
-but not in a previous call to if_usb_reset_dev that can also dereference
-priv.  Fix this by also only calling lbtf_remove_card if priv is null.
+Make sure we release resources properly if we cannot clean out the COW
+extents in preparation for an extent swap.
 
-It is noteable that there don't seem to be any bugs reported that the
-null pointer dereference has ever occurred, so I'm not sure if the null
-check is required, but since we're doing a null check anyway it should
-be done for both function calls.
-
-Addresses-Coverity: ("Dereference before null check")
-Fixes: baa0280f08c7 ("libertas_tf: don't defer firmware loading until start()")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200501173900.296658-1-colin.king@canonical.com
+Fixes: 96987eea537d6c ("xfs: cancel COW blocks before swapext")
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/marvell/libertas_tf/if_usb.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ fs/xfs/xfs_bmap_util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/marvell/libertas_tf/if_usb.c b/drivers/net/wireless/marvell/libertas_tf/if_usb.c
-index 25ac9db35dbf..bedc09215088 100644
---- a/drivers/net/wireless/marvell/libertas_tf/if_usb.c
-+++ b/drivers/net/wireless/marvell/libertas_tf/if_usb.c
-@@ -247,10 +247,10 @@ static void if_usb_disconnect(struct usb_interface *intf)
+diff --git a/fs/xfs/xfs_bmap_util.c b/fs/xfs/xfs_bmap_util.c
+index 4f443703065e..0c71acc1b831 100644
+--- a/fs/xfs/xfs_bmap_util.c
++++ b/fs/xfs/xfs_bmap_util.c
+@@ -1760,7 +1760,7 @@ xfs_swap_extents(
+ 	if (xfs_inode_has_cow_data(tip)) {
+ 		error = xfs_reflink_cancel_cow_range(tip, 0, NULLFILEOFF, true);
+ 		if (error)
+-			return error;
++			goto out_unlock;
+ 	}
  
- 	lbtf_deb_enter(LBTF_DEB_MAIN);
- 
--	if_usb_reset_device(priv);
--
--	if (priv)
-+	if (priv) {
-+		if_usb_reset_device(priv);
- 		lbtf_remove_card(priv);
-+	}
- 
- 	/* Unlink and free urb */
- 	if_usb_free(cardp);
+ 	/*
 -- 
 2.25.1
 
