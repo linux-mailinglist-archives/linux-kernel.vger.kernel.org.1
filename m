@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D4C20009A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 05:16:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 384682000A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 05:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730435AbgFSDQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 23:16:49 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:50932 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726878AbgFSDQr (ORCPT
+        id S1730512AbgFSDRy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 23:17:54 -0400
+Received: from kernel.crashing.org ([76.164.61.194]:50180 "EHLO
+        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726878AbgFSDRy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 23:16:47 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1592536607; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: To:
- Subject: Sender; bh=q2tuf/Vk4dsmpg1GKBEIvHV/O+3tneizdL+4RR6BTFI=; b=o9mNFXZ7u+CaLaeDC9ahK8c6TuCk/waG72bN0rYPngvljgW3wF3HpJWZnPO3gQIADu05pu4x
- Jk2QgWTwRBQMW1pI1rWaQhrbmwTfVrNkO9lDrb1cPrs/G3WDX2x6jGICLC30RIsCHuWqlRmU
- 9o1dN2zZNxia4HX8Adpzo4BxXYc=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5eec2e1b6bebe35deb142c85 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Jun 2020 03:16:43
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2EE19C433CA; Fri, 19 Jun 2020 03:16:43 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.1.6] (unknown [171.78.159.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sricharan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0EDF1C433C9;
-        Fri, 19 Jun 2020 03:16:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0EDF1C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=sricharan@codeaurora.org
-Subject: Re: [PATCH V3 0/5] Enable USB support in IPQ8074
-To:     Sivaprakash Murugesan <sivaprak@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, kishon@ti.com, vkoul@kernel.org,
-        robh+dt@kernel.org, mgautam@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <1591625479-4483-1-git-send-email-sivaprak@codeaurora.org>
-From:   Sricharan Ramabadhran <sricharan@codeaurora.org>
-Message-ID: <66cea2c1-5638-78c1-991e-89983883214a@codeaurora.org>
-Date:   Fri, 19 Jun 2020 08:46:35 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <1591625479-4483-1-git-send-email-sivaprak@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        Thu, 18 Jun 2020 23:17:54 -0400
+Received: from localhost (gate.crashing.org [63.228.1.57])
+        (authenticated bits=0)
+        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 05J3H8O5032301
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 18 Jun 2020 22:17:12 -0500
+Message-ID: <412032fa04259cbb7f4d286b8346c551e370214a.camel@kernel.crashing.org>
+Subject: Re: [PATCH v1 5/6] console: Propagate error code from console
+ ->setup()
+From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, linux-serial@vger.kernel.org
+Date:   Fri, 19 Jun 2020 13:17:07 +1000
+In-Reply-To: <20200618164751.56828-6-andriy.shevchenko@linux.intel.com>
+References: <20200618164751.56828-1-andriy.shevchenko@linux.intel.com>
+         <20200618164751.56828-6-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Siva,
+On Thu, 2020-06-18 at 19:47 +0300, Andy Shevchenko wrote:
+> Since console ->setup() hook returns meaningful error codes,
+> propagate it to the caller of try_enable_new_console().
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
 
-On 6/8/2020 7:41 PM, Sivaprakash Murugesan wrote:
-> IPQ8074 has two super speed USB ports, with QMP and QUSB2 PHYs.
-> This patch set enables the USB PHYs and USB dwc3 in IPQ8074.
->
-> [V3]
->   * Rebased patch 3 on 5.7 and linux-next tag next-20200608
-> [V2]
->   * Added new device compatible qcom,ipq8074-qusb2-phy for qusb2
->   * Addressed Bjorn's review comments on dts and binding
->
-> Sivaprakash Murugesan (5):
->    dt-bindings: phy: qcom,qmp: Add ipq8074 usb dt bindings
->    dt-bindings: phy: qcom,qusb2: Add ipq8074 device compatible
->    phy: qcom-qmp: Add USB QMP PHY support for IPQ8074
->    phy: qcom-qusb2: Add ipq8074 device compatible
->    arm64: dts: ipq8074: enable USB support
->
->   .../devicetree/bindings/phy/qcom,qmp-phy.yaml      |   2 +
->   .../devicetree/bindings/phy/qcom,qusb2-phy.yaml    |   1 +
->   arch/arm64/boot/dts/qcom/ipq8074-hk01.dts          |  24 +++
->   arch/arm64/boot/dts/qcom/ipq8074.dtsi              | 167 +++++++++++++++++++++
->   drivers/phy/qualcomm/phy-qcom-qmp.c                | 102 +++++++++++++
->   drivers/phy/qualcomm/phy-qcom-qusb2.c              |   3 +
->   6 files changed, 299 insertions(+)
+Acked-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
 
-  Tested this series on hk01.c1 for USB mass storage.
-
-  Tested-by: Sricharan R <sricharan@codeaurora.org>
-
-Regards,
-
-  Sricharan
-
-
+> ---A
+>  kernel/printk/printk.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 8c14835be46c..aaea3ad182e1 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -2668,7 +2668,7 @@ early_param("keep_bootcon", keep_bootcon_setup);
+>  static int try_enable_new_console(struct console *newcon, bool user_specified)
+>  {
+>  	struct console_cmdline *c;
+> -	int i;
+> +	int i, err;
+>  
+>  	for (i = 0, c = console_cmdline;
+>  	     i < MAX_CMDLINECONSOLES && c->name[0];
+> @@ -2691,8 +2691,8 @@ static int try_enable_new_console(struct console *newcon, bool user_specified)
+>  				return 0;
+>  
+>  			if (newcon->setup &&
+> -			    newcon->setup(newcon, c->options) != 0)
+> -				return -EIO;
+> +			    (err = newcon->setup(newcon, c->options)) != 0)
+> +				return err;
+>  		}
+>  		newcon->flags |= CON_ENABLED;
+>  		if (i == preferred_console) {
 
