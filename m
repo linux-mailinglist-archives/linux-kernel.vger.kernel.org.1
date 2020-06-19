@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F22420162B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3920C2016E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394886AbgFSQ1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:27:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50814 "EHLO mail.kernel.org"
+        id S2388809AbgFSOqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:46:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390010AbgFSOzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:55:51 -0400
+        id S2388787AbgFSOqC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:46:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37893206F7;
-        Fri, 19 Jun 2020 14:55:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 924F92083B;
+        Fri, 19 Jun 2020 14:46:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578551;
-        bh=5O60frDLooh+Wxctq/Vho1DS6s2cYV6GIPhqgLOjqWA=;
+        s=default; t=1592577962;
+        bh=97KhVImh3fMbPEhCdHz6ESrRxmRllU7uaOXxayOKOV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YrfLjJ+qQ8JA3OJHJTYPTQviGYkr13G8fYeVZqVerypoSJOCixt6ecZGnvSFgsDVW
-         yoDnmtyDZEpdbdvPOv87HqsSKvJnqC2F6mMW53bBY5l+BmaxxSPHhc1v1nC4fD8G7Z
-         j1fN+y6tkFpXJGX8xWSIWv9PI9b/bIqkxYzKJ7c4=
+        b=lzp+XAKHH39Jp+HmviDVl8J2GtQEmQDk1bkQsmrcnkPc7hPTdP+VlZECbEaFF/49C
+         lCPWtvMSiM27Ap+CRziGUJyFxBe9NmrwMFYyejw7tDj11lJtEbtc70yOv3ymMSsobr
+         DXeaA5pw8Ralx3CWdkbnU6KTn48dPFF/TUYqVkOI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gonglei <arei.gonglei@huawei.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        virtualization@lists.linux-foundation.org,
-        "Longpeng(Mike)" <longpeng2@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 066/267] crypto: virtio: Fix dest length calculation in __virtio_crypto_skcipher_do_req()
+        stable@vger.kernel.org, Julien Thierry <julien.thierry@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miles Chen <miles.chen@mediatek.com>
+Subject: [PATCH 4.14 006/190] x86: uaccess: Inhibit speculation past access_ok() in user_access_begin()
 Date:   Fri, 19 Jun 2020 16:30:51 +0200
-Message-Id: <20200619141652.052136865@linuxfoundation.org>
+Message-Id: <20200619141633.788051361@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,55 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Longpeng(Mike) <longpeng2@huawei.com>
+From: Will Deacon <will.deacon@arm.com>
 
-[ Upstream commit d90ca42012db2863a9a30b564a2ace6016594bda ]
+commit 6e693b3ffecb0b478c7050b44a4842854154f715 upstream.
 
-The src/dst length is not aligned with AES_BLOCK_SIZE(which is 16) in some
-testcases in tcrypto.ko.
+Commit 594cc251fdd0 ("make 'user_access_begin()' do 'access_ok()'")
+makes the access_ok() check part of the user_access_begin() preceding a
+series of 'unsafe' accesses.  This has the desirable effect of ensuring
+that all 'unsafe' accesses have been range-checked, without having to
+pick through all of the callsites to verify whether the appropriate
+checking has been made.
 
-For example, the src/dst length of one of cts(cbc(aes))'s testcase is 17, the
-crypto_virtio driver will set @src_data_len=16 but @dst_data_len=17 in this
-case and get a wrong at then end.
+However, the consolidated range check does not inhibit speculation, so
+it is still up to the caller to ensure that they are not susceptible to
+any speculative side-channel attacks for user addresses that ultimately
+fail the access_ok() check.
 
-  SRC: pp pp pp pp pp pp pp pp pp pp pp pp pp pp pp pp pp (17 bytes)
-  EXP: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc pp (17 bytes)
-  DST: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 00 (pollute the last bytes)
-  (pp: plaintext  cc:ciphertext)
+This is an oversight, so use __uaccess_begin_nospec() to ensure that
+speculation is inhibited until the access_ok() check has passed.
 
-Fix this issue by limit the length of dest buffer.
+Reported-by: Julien Thierry <julien.thierry@arm.com>
+Signed-off-by: Will Deacon <will.deacon@arm.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Miles Chen <miles.chen@mediatek.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: dbaf0624ffa5 ("crypto: add virtio-crypto driver")
-Cc: Gonglei <arei.gonglei@huawei.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: virtualization@lists.linux-foundation.org
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
-Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
-Link: https://lore.kernel.org/r/20200602070501.2023-4-longpeng2@huawei.com
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/virtio/virtio_crypto_algs.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/x86/include/asm/uaccess.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/virtio/virtio_crypto_algs.c b/drivers/crypto/virtio/virtio_crypto_algs.c
-index e9a8485c4929..ab4700e4b409 100644
---- a/drivers/crypto/virtio/virtio_crypto_algs.c
-+++ b/drivers/crypto/virtio/virtio_crypto_algs.c
-@@ -424,6 +424,7 @@ __virtio_crypto_ablkcipher_do_req(struct virtio_crypto_sym_request *vc_sym_req,
- 		goto free;
- 	}
+--- a/arch/x86/include/asm/uaccess.h
++++ b/arch/x86/include/asm/uaccess.h
+@@ -717,7 +717,7 @@ static __must_check inline bool user_acc
+ {
+ 	if (unlikely(!access_ok(type, ptr, len)))
+ 		return 0;
+-	__uaccess_begin();
++	__uaccess_begin_nospec();
+ 	return 1;
+ }
  
-+	dst_len = min_t(unsigned int, req->nbytes, dst_len);
- 	pr_debug("virtio_crypto: src_len: %u, dst_len: %llu\n",
- 			req->nbytes, dst_len);
- 
--- 
-2.25.1
-
 
 
