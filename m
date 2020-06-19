@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FBF200D53
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E4A200C78
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390030AbgFSO4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:56:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50880 "EHLO mail.kernel.org"
+        id S2387519AbgFSOqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:46:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388945AbgFSOz5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:55:57 -0400
+        id S2388412AbgFSOqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:46:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A65A2217D8;
-        Fri, 19 Jun 2020 14:55:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B601F2168B;
+        Fri, 19 Jun 2020 14:46:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578557;
-        bh=waDnIzkFy2yPMYa8d+xDQU4UEevm4QyBOITEaJdX0T8=;
+        s=default; t=1592577970;
+        bh=9m+nedHFamROTEbfxZl0O8S6WBufhsoEggKhtJGuz4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S3Zw2torBlN1ZNy4Yy17hS5GNdWylaNqAAdhrpiHYvmNyx6RrrhQNjXGgwkQH/ZUO
-         RcJLSrN0if4dv2hmmzly8m8R3WEmKOckVGhYKw9aeYUXjI1Jy/kR6l2q/isjkonjJa
-         h5OwTkczooDO3iW2dbg3H/ywpipt356lvfztmbxw=
+        b=2O9pLpRPSzADPYAn47DKJBHv9L/bhbL0D1B/s1Jmmoc+lKdUA3vlcRwHWknTyYJsg
+         glDG/R2onXOvZ9Gyan43iEkRBxX/Z3g4ysJd29MYdtsl2Cr5S4SxHqPBfolckNkYzN
+         l7THI61JMtqXSd4oOvXnnym2hgmiBZn06BuZqePw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yuxuan Shui <yshuiv7@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Miklos Szeredi <mszeredi@redhat.com>
-Subject: [PATCH 4.19 068/267] ovl: initialize error in ovl_copy_xattr
-Date:   Fri, 19 Jun 2020 16:30:53 +0200
-Message-Id: <20200619141652.149764885@linuxfoundation.org>
+        stable@vger.kernel.org, Su Kang Yin <cantona@cantona.net>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH 4.14 009/190] crypto: talitos - fix ECB and CBC algs ivsize
+Date:   Fri, 19 Jun 2020 16:30:54 +0200
+Message-Id: <20200619141633.935484791@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yuxuan Shui <yshuiv7@gmail.com>
+From: Su Kang Yin <cantona@cantona.net>
 
-commit 520da69d265a91c6536c63851cbb8a53946974f0 upstream.
+commit e1de42fdfc6a ("crypto: talitos - fix ECB algs ivsize")
+wrongly modified CBC algs ivsize instead of ECB aggs ivsize.
 
-In ovl_copy_xattr, if all the xattrs to be copied are overlayfs private
-xattrs, the copy loop will terminate without assigning anything to the
-error variable, thus returning an uninitialized value.
+This restore the CBC algs original ivsize of removes ECB's ones.
 
-If ovl_copy_xattr is called from ovl_clear_empty, this uninitialized error
-value is put into a pointer by ERR_PTR(), causing potential invalid memory
-accesses down the line.
-
-This commit initialize error with 0. This is the correct value because when
-there's no xattr to copy, because all xattrs are private, ovl_copy_xattr
-should succeed.
-
-This bug is discovered with the help of INIT_STACK_ALL and clang.
-
-Signed-off-by: Yuxuan Shui <yshuiv7@gmail.com>
-Link: https://bugs.chromium.org/p/chromium/issues/detail?id=1050405
-Fixes: 0956254a2d5b ("ovl: don't copy up opaqueness")
-Cc: stable@vger.kernel.org # v4.8
-Signed-off-by: Alexander Potapenko <glider@google.com>
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Fixes: e1de42fdfc6a ("crypto: talitos - fix ECB algs ivsize")
+Signed-off-by: Su Kang Yin <cantona@cantona.net>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/overlayfs/copy_up.c |    2 +-
+ drivers/crypto/talitos.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/overlayfs/copy_up.c
-+++ b/fs/overlayfs/copy_up.c
-@@ -43,7 +43,7 @@ int ovl_copy_xattr(struct dentry *old, s
- {
- 	ssize_t list_size, size, value_size = 0;
- 	char *buf, *name, *value = NULL;
--	int uninitialized_var(error);
-+	int error = 0;
- 	size_t slen;
- 
- 	if (!(old->d_inode->i_opflags & IOP_XATTR) ||
+--- a/drivers/crypto/talitos.c
++++ b/drivers/crypto/talitos.c
+@@ -2636,7 +2636,6 @@ static struct talitos_alg_template drive
+ 			.cra_ablkcipher = {
+ 				.min_keysize = AES_MIN_KEY_SIZE,
+ 				.max_keysize = AES_MAX_KEY_SIZE,
+-				.ivsize = AES_BLOCK_SIZE,
+ 			}
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_COMMON_NONSNOOP_NO_AFEU |
+@@ -2670,6 +2669,7 @@ static struct talitos_alg_template drive
+ 			.cra_ablkcipher = {
+ 				.min_keysize = AES_MIN_KEY_SIZE,
+ 				.max_keysize = AES_MAX_KEY_SIZE,
++				.ivsize = AES_BLOCK_SIZE,
+ 				.setkey = ablkcipher_aes_setkey,
+ 			}
+ 		},
 
 
