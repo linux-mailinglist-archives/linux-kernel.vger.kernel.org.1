@@ -2,139 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 643932013F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5267920146F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394112AbgFSQGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:06:24 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34599 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2394156AbgFSQGJ (ORCPT
+        id S2404126AbgFSQKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38254 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392921AbgFSQKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 12:06:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592582767;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JN+es+8H1l3agmqz1OlDugYxis3rubXdkuh1XRgK5Rw=;
-        b=UJ5DK1Iv8v7Fz5GkYCuFpQYCsvqo6aL/Cn8Lq1jGTv70BqD6Xr8RGF57ayoUaZOTNZ2gN6
-        Rm6WqxMRpDQupABLnyngpoGGDuvx0vC5dvu4k9VSA2Ceuw2BZ3ALpi6HW8lZ2ojiG1wSLr
-        lyPcYmvftE/QQzGl5VHNA0f375DuUsA=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-360-rvWOMuuCNf-6Vr3FZusMNw-1; Fri, 19 Jun 2020 12:06:06 -0400
-X-MC-Unique: rvWOMuuCNf-6Vr3FZusMNw-1
-Received: by mail-qk1-f197.google.com with SMTP id n185so5527418qkc.21
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 09:06:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JN+es+8H1l3agmqz1OlDugYxis3rubXdkuh1XRgK5Rw=;
-        b=TXOtkV2H3abf92B4WSBAkQQEovjHbkG9aC/BUPdKTcSyb0YJ9k274/MqkupzdRIx1U
-         hf6NM1mDI6twCW7no24ZJR2ruzAgqzw8CHDkUUnBS70iy02IK/kmqvgC1nAqpTg9muoV
-         3HXgkFYdJ8FWHtyPS5IW205ZXjxaO0ovPq8MgVUNGiHjfZGVS9NduO3a/SAaGLZSqYHm
-         DzxuzcZYxImAllvWl/01hZuZNSGEMGJqYHMzE1VQLEXccGJYK0kwyj4R3DVi6xbo4Ym3
-         amc3R3QqJXVHp6uAi+pk1MXt4FLxadkAR6r/938cJfhFQxzfNZpRURQm+ATcpchC02rA
-         J6mQ==
-X-Gm-Message-State: AOAM53185gZzAwUs/71PFANL0nZDUoNAi3b6TaiAkFPnAzsL8ib4hdSL
-        dY+MES93eRKdL/3Q9N0s3OWr5yRRyME0RAfV3qwlMkun1tKL2rMLTDyCdkt5dOiRuXLvS1C9Le8
-        Jbe7K42M7VVHohnKQYT8nfS1s
-X-Received: by 2002:a05:620a:810:: with SMTP id s16mr4133124qks.360.1592582763542;
-        Fri, 19 Jun 2020 09:06:03 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJykH0gVLj5//M8Cz8/QdCcP1QeRwcUw6yJV2iyuWBKSIFyWPnkNb4597nojKp96iqgMHS74AQ==
-X-Received: by 2002:a05:620a:810:: with SMTP id s16mr4133016qks.360.1592582762503;
-        Fri, 19 Jun 2020 09:06:02 -0700 (PDT)
-Received: from xz-x1.redhat.com ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id g11sm6412604qkk.123.2020.06.19.09.06.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 09:06:01 -0700 (PDT)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     Gerald Schaefer <gerald.schaefer@de.ibm.com>, peterx@redhat.com,
+        Fri, 19 Jun 2020 12:10:17 -0400
+Received: from mx0b-00190b01.pphosted.com (mx0b-00190b01.pphosted.com [IPv6:2620:100:9005:57f::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AF1EC06174E;
+        Fri, 19 Jun 2020 09:10:17 -0700 (PDT)
+Received: from pps.filterd (m0122330.ppops.net [127.0.0.1])
+        by mx0b-00190b01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05JG2QZa021248;
+        Fri, 19 Jun 2020 17:07:55 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=7CxRloMUzMzHtMYCAIVGIDg2K8kW9NS7Ez3DjXqAktk=;
+ b=ErWRNWuZtlY60K2Le5us949BReegtvr7yjcy84NTOJPVRJ/s0ap065bNIvCItRkefDNG
+ F4RVJ/PR/ZGPa06n/h+eeIzg9MVN3Bd8rZdhA3TEe2QqE+MAf4hJmYTevF0dcQpljAUt
+ diHMpTzK/GzZlA7EclyixCNnPJ89oEQ+C6rBgystmYM2exlZFlA+G3o6fLnhNxs+RzUC
+ 0Ulhuwch+yr1M2Q5dlWpsYCTJfSfKDv91f+LSVJxmZVQeFZFu6rh8IfU9biM9Rkiagxj
+ Sn7gYn1j3wzhyzP7El+TgZowv9WXe2BLfLad9ldYTFcB4V2Mxh0O/cCM72tGdRx2zU3d BA== 
+Received: from prod-mail-ppoint1 (prod-mail-ppoint1.akamai.com [184.51.33.18] (may be forged))
+        by mx0b-00190b01.pphosted.com with ESMTP id 31qrebsgw5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 19 Jun 2020 17:07:54 +0100
+Received: from pps.filterd (prod-mail-ppoint1.akamai.com [127.0.0.1])
+        by prod-mail-ppoint1.akamai.com (8.16.0.42/8.16.0.42) with SMTP id 05JG5VvO011524;
+        Fri, 19 Jun 2020 12:07:54 -0400
+Received: from prod-mail-relay10.akamai.com ([172.27.118.251])
+        by prod-mail-ppoint1.akamai.com with ESMTP id 31qjmbvqx3-1;
+        Fri, 19 Jun 2020 12:07:54 -0400
+Received: from [0.0.0.0] (prod-ssh-gw01.bos01.corp.akamai.com [172.27.119.138])
+        by prod-mail-relay10.akamai.com (Postfix) with ESMTP id AE3853A60B;
+        Fri, 19 Jun 2020 16:07:53 +0000 (GMT)
+Subject: Re: [PATCH v3 20/21] dyndbg: add user-flag, negating-flags, and
+ filtering on flags
+To:     jim.cromie@gmail.com,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, akpm@linuxfoundation.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
         Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>
-Subject: [PATCH 12/26] mm/nds32: Use general page fault accounting
-Date:   Fri, 19 Jun 2020 12:05:24 -0400
-Message-Id: <20200619160538.8641-13-peterx@redhat.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200619160538.8641-1-peterx@redhat.com>
-References: <20200619160538.8641-1-peterx@redhat.com>
+        Orson Zhai <orson.zhai@unisoc.com>,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Joe Perches <joe@perches.com>
+References: <20200617162536.611386-1-jim.cromie@gmail.com>
+ <20200617162536.611386-23-jim.cromie@gmail.com> <20200618161912.GD3617@alley>
+ <20200618174058.GE3617@alley>
+ <746984fb-00ee-9079-efac-50167f3c3e40@akamai.com>
+ <CAJfuBxwLKDSx6RA_ZOk=eEHw0P3FeAcT=PCr-aHjUFKDS2p8cQ@mail.gmail.com>
+ <172c0580-279f-aa3e-817a-4216067bea10@akamai.com>
+ <23396523-28c3-74e6-3e62-be68e5a5465a@linaro.org>
+ <CAJfuBxx2KDBLX9H6N-79VPOXBwbdzSQse41azTCk0SZs7PtQuA@mail.gmail.com>
+From:   Jason Baron <jbaron@akamai.com>
+Message-ID: <f61b184b-054e-4dd1-04e0-9d045265d9e0@akamai.com>
+Date:   Fri, 19 Jun 2020 12:07:53 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJfuBxx2KDBLX9H6N-79VPOXBwbdzSQse41azTCk0SZs7PtQuA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-19_16:2020-06-19,2020-06-19 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 bulkscore=0
+ adultscore=0 mlxlogscore=999 mlxscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006190118
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-19_16:2020-06-19,2020-06-19 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=0 adultscore=0
+ spamscore=0 cotscore=-2147483648 malwarescore=0 phishscore=0
+ mlxlogscore=999 bulkscore=0 lowpriorityscore=0 priorityscore=1501
+ impostorscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006190117
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the general page fault accounting by passing regs into handle_mm_fault().
-It naturally solve the issue of multiple page fault accounting when page fault
-retry happened.
 
-Fix PERF_COUNT_SW_PAGE_FAULTS perf event manually for page fault retries, by
-moving it before taking mmap_sem.
 
-CC: Nick Hu <nickhu@andestech.com>
-CC: Greentime Hu <green.hu@gmail.com>
-CC: Vincent Chen <deanbo422@gmail.com>
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- arch/nds32/mm/fault.c | 19 +++----------------
- 1 file changed, 3 insertions(+), 16 deletions(-)
+On 6/18/20 6:48 PM, jim.cromie@gmail.com wrote:
+> On Thu, Jun 18, 2020 at 4:34 PM Stanimir Varbanov
+> <stanimir.varbanov@linaro.org> wrote:
+>>
+>> Hi Jason, Jim,
+>>
+> 
+> 
+> 
+>>> I would be curious to see what Stanimir thinks of this proposal
+>>> and whether it would work for his venus driver, which is what
+>>> prompted this module group discussion.
+>>
+>> Hmm, we spin in a circle :)
+>>
+>> Infact this was my first way of implementing the groups in Venus driver,
+>> you can see it at [1].
+>>
+>>  +#define VDBGL(fmt, args...)   pr_debug("VENUSL: " fmt, ##args)
+>>  +#define VDBGM(fmt, args...)   pr_debug("VENUSM: " fmt, ##args)
+>>  +#define VDBGH(fmt, args...)   pr_debug("VENUSH: " fmt, ##args)
+>>  +#define VDBGFW(fmt, args...)  pr_debug("VENUSFW: " fmt, ##args)
+>>
+> 
+> I recall :-)
+> 
+> I think Greg K-Hs   distaste for those defines was for using them,
+> as it tosses the utility of grep pr_debug
+> 
+> pr_debug("VENUSM:"
+> is barely longer than
+> VDBGM
+> 
+> with ddebug_exec_queries, you can leverage the existing format.
+> 
+>>
 
-diff --git a/arch/nds32/mm/fault.c b/arch/nds32/mm/fault.c
-index 22527129025c..e7344440623c 100644
---- a/arch/nds32/mm/fault.c
-+++ b/arch/nds32/mm/fault.c
-@@ -122,6 +122,8 @@ void do_page_fault(unsigned long entry, unsigned long addr,
- 	if (unlikely(faulthandler_disabled() || !mm))
- 		goto no_context;
- 
-+	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
-+
- 	/*
- 	 * As per x86, we may deadlock here. However, since the kernel only
- 	 * validly references user space from well defined areas of the code,
-@@ -207,7 +209,7 @@ void do_page_fault(unsigned long entry, unsigned long addr,
- 	 * the fault.
- 	 */
- 
--	fault = handle_mm_fault(vma, addr, flags, NULL);
-+	fault = handle_mm_fault(vma, addr, flags, regs);
- 
- 	/*
- 	 * If we need to retry but a fatal signal is pending, handle the
-@@ -229,22 +231,7 @@ void do_page_fault(unsigned long entry, unsigned long addr,
- 			goto bad_area;
- 	}
- 
--	/*
--	 * Major/minor page fault accounting is only done on the initial
--	 * attempt. If we go through a retry, it is extremely likely that the
--	 * page will be found in page cache at that point.
--	 */
--	perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS, 1, regs, addr);
- 	if (flags & FAULT_FLAG_ALLOW_RETRY) {
--		if (fault & VM_FAULT_MAJOR) {
--			tsk->maj_flt++;
--			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MAJ,
--				      1, regs, addr);
--		} else {
--			tsk->min_flt++;
--			perf_sw_event(PERF_COUNT_SW_PAGE_FAULTS_MIN,
--				      1, regs, addr);
--		}
- 		if (fault & VM_FAULT_RETRY) {
- 			flags |= FAULT_FLAG_TRIED;
- 
--- 
-2.26.2
+Ok, yes, I like this approach because its simple (just exports
+ddebug_exec_queries()), and it seems to be quite flexible. Module
+authors can 'tag' their queries any way they want.
 
+We could provide some structure, if desired, something like:
+
+#define DYNAMIC_DEBUG_LOW "-V "
+#define DYNAMIC_DEBUG_MED "-VV "
+#define DYNAMIC_DEBUG_HIGH "-VVV "
+#define DYNAMIC_DEBUG_REALLY_HIGH "-VVVV "
+
+And then these could be added to the pr_debug() so:
+
+#define VDBGL(fmt, args...)   pr_debug("VENUSL: "  DYNAMIC_DEBUG_LOW fmt, ##args)
+or
+#define VDBGL(fmt, args...)   pr_debug(DYNAMIC_DEBUG_LOW fmt, ##args)
+or just:
+pr_debug(DYNAMIC_DEBUG_LOW "ERROR HERE: %d", err)
+
+Thanks,
+
+-Jason
+
+
+>> [1] https://urldefense.proofpoint.com/v2/url?u=https-3A__lkml.org_lkml_2020_5_21_668&d=DwIBaQ&c=96ZbZZcaMF4w0F4jpN6LZg&r=1fLh1mlLqbfetnnGsbwXfpwmGlG4m83mXgtV4vZ1B1A&m=29UzIGELhVL1znJsgyjGDKGIEdSkSlCsmAh0jpbWHVQ&s=_szr6DQOsbdQ-oYCR9-fs4b-XG_fotTiObUfG3z6UtY&e= 
+>>
+>> --
+>> regards,
+>> Stan
+> 
+> thanks
+> Jim
+> 
