@@ -2,98 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 959DF2003FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 10:34:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F487200430
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 10:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731532AbgFSIeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 04:34:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54946 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731168AbgFSIeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 04:34:13 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1EFF920776;
-        Fri, 19 Jun 2020 08:34:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592555652;
-        bh=wKBHEpDsQikjcIxt+ZRpjMu/NuHWUnr40ZxYE8BFme4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AjKKSvrZpIamBHuZPYXFmDeeJ46yte1TAe/soLGpP+Ae7Bi1P9t9T4iWYJA01AUNy
-         9/HeueXK+xwWsT2iGjEWyHVW6CwWxAJKlxTADoTd5x2yudjNGEg+m5O8OjiUVChmbn
-         x7le3EJgMe6bM4iKvkf9GfyxnZ6E8BUOFnw/wKgI=
-Date:   Fri, 19 Jun 2020 10:34:09 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     jim.cromie@gmail.com, Jason Baron <jbaron@akamai.com>,
-        LKML <linux-kernel@vger.kernel.org>, akpm@linuxfoundation.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Orson Zhai <orson.zhai@unisoc.com>,
-        Linux Documentation List <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v3 20/21] dyndbg: add user-flag, negating-flags, and
- filtering on flags
-Message-ID: <20200619083409.GB473790@kroah.com>
-References: <20200617162536.611386-1-jim.cromie@gmail.com>
- <20200617162536.611386-23-jim.cromie@gmail.com>
- <20200618161912.GD3617@alley>
- <20200618174058.GE3617@alley>
- <746984fb-00ee-9079-efac-50167f3c3e40@akamai.com>
- <CAJfuBxwLKDSx6RA_ZOk=eEHw0P3FeAcT=PCr-aHjUFKDS2p8cQ@mail.gmail.com>
- <20200619074555.GF3617@alley>
- <20200619081024.GG3617@alley>
+        id S1731369AbgFSIjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 04:39:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730983AbgFSIjE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 04:39:04 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77946C06174E;
+        Fri, 19 Jun 2020 01:39:03 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id u128so4197556pgu.13;
+        Fri, 19 Jun 2020 01:39:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+uPgnf+wW5u/QVoRDiXSyxSE34HMaGyVu1r9BybJSWM=;
+        b=WD8Wfa/tV35Oo05bw3vytpEFgdHXmeW+Thl+2NEMIERdfjMGD2VqggqFX2raY2QiWN
+         i8Ju2B88b7i/EiJDSvSLkmt7rXCIw9Pld+An57ups1CAKpKwMgGcBKv4157K60+ilTcr
+         /WunHGRfxNsBfo2i/H2nBwMOps+/cbl3WOWnMut1aGKKL+4Z1N3DpInjAwFuNUFMhWq/
+         6q0DohAoxCCjP/uAXaQM1G/zAlNrmzhWf5AnCwq2rij8aKuvEVgYSiTjB/k8b2NdAWnw
+         /sGhCiAxDvP7o5QDxFKCydsLH5Fe7+T79EUhPARszg7yUyUPTmHCTJHJvwNdZ587g3QB
+         IBCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+uPgnf+wW5u/QVoRDiXSyxSE34HMaGyVu1r9BybJSWM=;
+        b=gW2PkL2MMg8vNfNim8n3H1UCRUiJgI4vI8izMG2w1S9bKcrAJfEcPLIKJ5d5mmAuX9
+         TgpwhGH0YFPoyWUPgBlHp7zgxF22YBmHsea0bX6v9IOotucKVpq6ZjeXNVbHzeRe+JHN
+         MkZNRB7H+Wa60k4Un6Bf3k6CsG7ZPpy2KD/0z2XIl/MlcRdbF/MpehaWYpZRmnwYGEOp
+         j1dAGnAHc8Un0CDgivGbLNIA/RVZ7Xf3U1f59dY3FEt/oOH+Q5WqFsC+3WEajGoj5/90
+         bnJBaqSoIB7vzn36im1uLpLdQ8D5gOkudN2K42GaRz/U7pk+Qeg58lT1ydEZQJo+HDtB
+         PQZA==
+X-Gm-Message-State: AOAM533JOGYVun3gsLc0VMwokv1W2B7hr0ec7ZPRv+2/4yUiyyJ34cXw
+        mq7idbCiZoOF8zD92DZIVaY=
+X-Google-Smtp-Source: ABdhPJw656x3Mb0pQiRBNA1Vp5rBDHmdfd3Xpff8peVjGOFinVY+rdOVyVeLWKwfJIIPWmcyZpDKzg==
+X-Received: by 2002:a63:2043:: with SMTP id r3mr2018078pgm.299.1592555942574;
+        Fri, 19 Jun 2020 01:39:02 -0700 (PDT)
+Received: from dc803.localdomain (FL1-125-199-162-203.hyg.mesh.ad.jp. [125.199.162.203])
+        by smtp.gmail.com with ESMTPSA id u24sm4437183pga.47.2020.06.19.01.38.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 01:39:01 -0700 (PDT)
+From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
+To:     kohada.t2@gmail.com
+Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
+        mori.takahiro@ab.mitsubishielectric.co.jp,
+        motai.hirotaka@aj.mitsubishielectric.co.jp,
+        Christoph Hellwig <hch@infradead.org>,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2 v4] exfat: write multiple sectors at once
+Date:   Fri, 19 Jun 2020 17:38:54 +0900
+Message-Id: <20200619083855.15789-1-kohada.t2@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200619081024.GG3617@alley>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 10:10:24AM +0200, Petr Mladek wrote:
-> On Fri 2020-06-19 09:45:55, Petr Mladek wrote:
-> > On Thu 2020-06-18 13:11:05, jim.cromie@gmail.com wrote:
-> > > On Thu, Jun 18, 2020 at 12:17 PM Jason Baron <jbaron@akamai.com> wrote:
-> > > > Yes, I'm wondering as well if people are really going to use the
-> > > > new flags and filter flags - I mentioned that here:
-> > > > https://lkml.org/lkml/2020/6/12/732
-> > > 
-> > > yes, I saw, and replied there.
-> > 
-> > No, the repply only explains how the interface might be used. There is
-> > no prove that people would actually use it.
-> > 
-> > > but since that was v1, and we're on v3, we should refresh.
-> > > 
-> > > the central use-case is above, 1-liner version summarized here:
-> > > 
-> > > 1- enable sites as you chase a problem with +up
-> > > 2- examine them with grep =pu
-> > > 3- change the set to suit, either by adding or subtracting callsites.
-> > > 4- continue debugging, and changing callsites to suit
-> > > 5- grep =pu control > ~/debugging-session-task1-callsites
-> > > 6- echo up-p >control   # disable for now, leave u-set for later
-> > > 7- do other stuff
-> > > 8 echo uP+p >control # reactivate useful debug-state and resume
-> > 
-> > In short, this feature allows repeatedly enable/disable some
-> > slowly growing maze of debug messages. Who need this, please? !!!
-> > 
-> > If I am debugging then I add/remove debug messages. But I never
-> > enable/disable all of them repeatedly.
-> 
-> Not to say that I usually need to reboot when I reproduce the problem
-> and before I could try it again. So all dyndbg flags gets lost
-> between two tests anyway.
+Write multiple sectors at once when updating dir-entries.
+Add exfat_update_bhs() for that. It wait for write completion once
+instead of sector by sector.
+It's only effective if sync enabled.
 
-I agree, this feels way too complex for no good reason.  Users only need
-a specific set of "run this command to enable messages and send us the
-logs" instructions.  Nothing complex like this at all.
+Reviewed-by: Christoph Hellwig <hch@infradead.org>
+Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
+---
+Changes in v2:
+ - Split into 'write multiple sectors at once'
+   and 'add error check when updating dir-entries'
+Changes in v3
+ - Rebase to latest exfat-dev
+Changes in v4
+ - Use if/else instead of conditional operator
 
-thanks,
+ fs/exfat/dir.c      | 15 +++++++++------
+ fs/exfat/exfat_fs.h |  1 +
+ fs/exfat/misc.c     | 19 +++++++++++++++++++
+ 3 files changed, 29 insertions(+), 6 deletions(-)
 
-greg k-h
+diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c
+index 02acbb6ddf02..7c2e29632634 100644
+--- a/fs/exfat/dir.c
++++ b/fs/exfat/dir.c
+@@ -606,13 +606,16 @@ void exfat_update_dir_chksum_with_entry_set(struct exfat_entry_set_cache *es)
+ 
+ void exfat_free_dentry_set(struct exfat_entry_set_cache *es, int sync)
+ {
+-	int i;
++	int i, err = 0;
+ 
+-	for (i = 0; i < es->num_bh; i++) {
+-		if (es->modified)
+-			exfat_update_bh(es->bh[i], sync);
+-		brelse(es->bh[i]);
+-	}
++	if (es->modified)
++		err = exfat_update_bhs(es->bh, es->num_bh, sync);
++
++	for (i = 0; i < es->num_bh; i++)
++		if (err)
++			bforget(es->bh[i]);
++		else
++			brelse(es->bh[i]);
+ 	kfree(es);
+ }
+ 
+diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
+index 84664024e51e..cbb00ee97183 100644
+--- a/fs/exfat/exfat_fs.h
++++ b/fs/exfat/exfat_fs.h
+@@ -512,6 +512,7 @@ void exfat_set_entry_time(struct exfat_sb_info *sbi, struct timespec64 *ts,
+ u16 exfat_calc_chksum16(void *data, int len, u16 chksum, int type);
+ u32 exfat_calc_chksum32(void *data, int len, u32 chksum, int type);
+ void exfat_update_bh(struct buffer_head *bh, int sync);
++int exfat_update_bhs(struct buffer_head **bhs, int nr_bhs, int sync);
+ void exfat_chain_set(struct exfat_chain *ec, unsigned int dir,
+ 		unsigned int size, unsigned char flags);
+ void exfat_chain_dup(struct exfat_chain *dup, struct exfat_chain *ec);
+diff --git a/fs/exfat/misc.c b/fs/exfat/misc.c
+index 8a3dde59052b..564718747fb2 100644
+--- a/fs/exfat/misc.c
++++ b/fs/exfat/misc.c
+@@ -172,6 +172,25 @@ void exfat_update_bh(struct buffer_head *bh, int sync)
+ 		sync_dirty_buffer(bh);
+ }
+ 
++int exfat_update_bhs(struct buffer_head **bhs, int nr_bhs, int sync)
++{
++	int i, err = 0;
++
++	for (i = 0; i < nr_bhs; i++) {
++		set_buffer_uptodate(bhs[i]);
++		mark_buffer_dirty(bhs[i]);
++		if (sync)
++			write_dirty_buffer(bhs[i], 0);
++	}
++
++	for (i = 0; i < nr_bhs && sync; i++) {
++		wait_on_buffer(bhs[i]);
++		if (!buffer_uptodate(bhs[i]))
++			err = -EIO;
++	}
++	return err;
++}
++
+ void exfat_chain_set(struct exfat_chain *ec, unsigned int dir,
+ 		unsigned int size, unsigned char flags)
+ {
+-- 
+2.25.1
+
