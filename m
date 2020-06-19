@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0F5200EED
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:16:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E35200F4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392218AbgFSPNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:13:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43350 "EHLO mail.kernel.org"
+        id S2392210AbgFSPPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:15:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392175AbgFSPMx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:12:53 -0400
+        id S2403994AbgFSPOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:14:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B027321582;
-        Fri, 19 Jun 2020 15:12:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95D812158C;
+        Fri, 19 Jun 2020 15:14:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579571;
-        bh=dPcaarCTYjvPeBVoPTkeNd1BKWObyV8DX2VYAcMUTc8=;
+        s=default; t=1592579682;
+        bh=p2jw80gpeprbwb+sbNCz+wHG6cb6m77m/gxL8Y2sdS4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e15ggPfCRIWn+W9nZXFjkX740g6zVatd3FAibq74sV5liK0lOFG70hFouV4g7q3kA
-         FUuy0vDOv3bAFktXEnXIvRfX9rtF1KnX/vF41B31O5EapPSqDPqIsCUzklotngr6k9
-         Go8L8cQxlGvM/vOWz0t4VzydYFWf2lPbOjgcSO5M=
+        b=A4MEAgVAN9CMZQT4Q9g9OBRiAaSvs5bxP6C50Mztlu8E9cFAUArNTu6dKrQB9xUAt
+         uFKyVlg2jTMs0Q93fmdyOx7pW620Uk2mo7Nqy689YGRExyttycaYEXdynh63Wf3SO4
+         UnYEaW77Au6fzYD+ddfo7T3HRdb3OfSvy4NjTmJI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        stable@vger.kernel.org, Kevin Buettner <kevinb@redhat.com>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 184/261] PCI: Avoid Pericom USB controller OHCI/EHCI PME# defect
-Date:   Fri, 19 Jun 2020 16:33:15 +0200
-Message-Id: <20200619141658.733979161@linuxfoundation.org>
+Subject: [PATCH 5.4 186/261] PCI: Avoid FLR for AMD Starship USB 3.0
+Date:   Fri, 19 Jun 2020 16:33:17 +0200
+Message-Id: <20200619141658.828145534@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
 References: <20200619141649.878808811@linuxfoundation.org>
@@ -45,62 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Kevin Buettner <kevinb@redhat.com>
 
-[ Upstream commit 68f5fc4ea9ddf9f77720d568144219c4e6452cde ]
+[ Upstream commit 5727043c73fdfe04597971b5f3f4850d879c1f4f ]
 
-Both Pericom OHCI and EHCI devices advertise PME# support from all power
-states:
+The AMD Starship USB 3.0 host controller advertises Function Level Reset
+support, but it apparently doesn't work.  Add a quirk to prevent use of FLR
+on this device.
 
-  06:00.0 USB controller [0c03]: Pericom Semiconductor PI7C9X442SL USB OHCI Controller [12d8:400e] (rev 01) (prog-if 10 [OHCI])
-    Subsystem: Pericom Semiconductor PI7C9X442SL USB OHCI Controller [12d8:400e]
-    Capabilities: [80] Power Management version 3
-      Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=375mA PME(D0+,D1+,D2+,D3hot+,D3cold+)
+Without this quirk, when attempting to assign (pass through) an AMD
+Starship USB 3.0 host controller to a guest OS, the system becomes
+increasingly unresponsive over the course of several minutes, eventually
+requiring a hard reset.  Shortly after attempting to start the guest, I see
+these messages:
 
-  06:00.2 USB controller [0c03]: Pericom Semiconductor PI7C9X442SL USB EHCI Controller [12d8:400f] (rev 01) (prog-if 20 [EHCI])
-    Subsystem: Pericom Semiconductor PI7C9X442SL USB EHCI Controller [12d8:400f]
-    Capabilities: [80] Power Management version 3
-      Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=375mA PME(D0+,D1+,D2+,D3hot+,D3cold+)
+  vfio-pci 0000:05:00.3: not ready 1023ms after FLR; waiting
+  vfio-pci 0000:05:00.3: not ready 2047ms after FLR; waiting
+  vfio-pci 0000:05:00.3: not ready 4095ms after FLR; waiting
+  vfio-pci 0000:05:00.3: not ready 8191ms after FLR; waiting
 
-But testing shows that it's unreliable: there is a 20% chance PME# won't be
-asserted when a USB device is plugged.
+And then eventually:
 
-Remove PME support for both devices to make USB plugging work reliably.
+  vfio-pci 0000:05:00.3: not ready 65535ms after FLR; giving up
+  INFO: NMI handler (perf_event_nmi_handler) took too long to run: 0.000 msecs
+  perf: interrupt took too long (642744 > 2500), lowering kernel.perf_event_max_sample_rate to 1000
+  INFO: NMI handler (perf_event_nmi_handler) took too long to run: 82.270 msecs
+  INFO: NMI handler (perf_event_nmi_handler) took too long to run: 680.608 msecs
+  INFO: NMI handler (perf_event_nmi_handler) took too long to run: 100.952 msecs
+  ...
+  watchdog: BUG: soft lockup - CPU#3 stuck for 22s! [qemu-system-x86:7487]
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=205981
-Link: https://lore.kernel.org/r/20200508065343.32751-2-kai.heng.feng@canonical.com
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Tested on a Micro-Star International Co., Ltd. MS-7C59/Creator TRX40
+motherboard with an AMD Ryzen Threadripper 3970X.
+
+Link: https://lore.kernel.org/r/20200524003529.598434ff@f31-4.lan
+Signed-off-by: Kevin Buettner <kevinb@redhat.com>
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/pci/quirks.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 798e52051ecc..2e50eec41dc4 100644
+index ba3b114dcfa9..d59a735927f7 100644
 --- a/drivers/pci/quirks.c
 +++ b/drivers/pci/quirks.c
-@@ -5551,6 +5551,19 @@ static void pci_fixup_no_d0_pme(struct pci_dev *dev)
+@@ -5134,6 +5134,7 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x443, quirk_intel_qat_vf_cap);
+  * FLR may cause the following to devices to hang:
+  *
+  * AMD Starship/Matisse HD Audio Controller 0x1487
++ * AMD Starship USB 3.0 Host Controller 0x148c
+  * AMD Matisse USB 3.0 Host Controller 0x149c
+  * Intel 82579LM Gigabit Ethernet Controller 0x1502
+  * Intel 82579V Gigabit Ethernet Controller 0x1503
+@@ -5144,6 +5145,7 @@ static void quirk_no_flr(struct pci_dev *dev)
+ 	dev->dev_flags |= PCI_DEV_FLAGS_NO_FLR_RESET;
  }
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ASMEDIA, 0x2142, pci_fixup_no_d0_pme);
- 
-+/*
-+ * Device [12d8:0x400e] and [12d8:0x400f]
-+ * These devices advertise PME# support in all power states but don't
-+ * reliably assert it.
-+ */
-+static void pci_fixup_no_pme(struct pci_dev *dev)
-+{
-+	pci_info(dev, "PME# is unreliable, disabling it\n");
-+	dev->pme_support = 0;
-+}
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_PERICOM, 0x400e, pci_fixup_no_pme);
-+DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_PERICOM, 0x400f, pci_fixup_no_pme);
-+
- static void apex_pci_fixup_class(struct pci_dev *pdev)
- {
- 	pdev->class = (PCI_CLASS_SYSTEM_OTHER << 8) | pdev->class;
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_AMD, 0x1487, quirk_no_flr);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_AMD, 0x148c, quirk_no_flr);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_AMD, 0x149c, quirk_no_flr);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x1502, quirk_no_flr);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x1503, quirk_no_flr);
 -- 
 2.25.1
 
