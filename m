@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AC6720157E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:23:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B4420137C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390597AbgFSO76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:59:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56118 "EHLO mail.kernel.org"
+        id S2391880AbgFSPJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:09:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390568AbgFSO7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:59:50 -0400
+        id S2391868AbgFSPJM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:09:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7AD5321973;
-        Fri, 19 Jun 2020 14:59:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0EDF21941;
+        Fri, 19 Jun 2020 15:09:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578790;
-        bh=FmZBpMkmKEa+BWw2RykpSg1I5MeKBmsg8bPHuXEZEK8=;
+        s=default; t=1592579351;
+        bh=caU9kQfvMODb0OJ2Hu0o+ztCJtskyU9GmhAPkivUg70=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Rblfrh5fxY6dMjjQ335dTTeutn74mUMH86p0c0/369EF/2eUyGY4OLqVWNdOj+eL6
-         VVIXfc51GdakcOFyF1/b6xaWottdgJsIDsQMcHLsnOcDyITpcvPEz+jUqGubpDslR0
-         L16JJfwo2gUw5pIPgX6T4kPK/Tdx1u8vfCbRXs+w=
+        b=oY4k3KH//SqUkJBDulYjQ4bsWyjyYQO5U1Vna9BPin2Bhzkxuiehc80w7kxEs0WOr
+         SAdqxnzzFZex69d+wgrSWOBmXiMRW+VNpuUtYBnV3EBCqy4dtc+N9WhiJmNUf74u52
+         ObiGY1hUWGOd5IiIoWEm5nkMEsho1QKKWOnYwtZU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 127/267] media: platform: fcp: Set appropriate DMA parameters
-Date:   Fri, 19 Jun 2020 16:31:52 +0200
-Message-Id: <20200619141654.922135292@linuxfoundation.org>
+Subject: [PATCH 5.4 103/261] iwlwifi: avoid debug max amsdu config overwriting itself
+Date:   Fri, 19 Jun 2020 16:31:54 +0200
+Message-Id: <20200619141654.795489900@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,69 +45,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+From: Mordechay Goodstein <mordechay.goodstein@intel.com>
 
-[ Upstream commit dd844fb8e50b12e65bbdc5746c9876c6735500df ]
+[ Upstream commit a65a5824298b06049dbaceb8a9bd19709dc9507c ]
 
-Enabling CONFIG_DMA_API_DEBUG=y and CONFIG_DMA_API_DEBUG_SG=y will
-enable extra validation on DMA operations ensuring that the size
-restraints are met.
+If we set amsdu_len one after another the second one overwrites
+the orig_amsdu_len so allow only moving from debug to non debug state.
 
-When using the FCP in conjunction with the VSP1/DU, and display frames,
-the size of the DMA operations is larger than the default maximum
-segment size reported by the DMA core (64K). With the DMA debug enabled,
-this produces a warning such as the following:
+Also the TLC update check was wrong: it was checking that also the orig
+is smaller then the new updated size, which is not the case in debug
+amsdu mode.
 
-"DMA-API: rcar-fcp fea27000.fcp: mapping sg segment longer than device
-claims to support [len=3145728] [max=65536]"
-
-We have no specific limitation on the segment size which isn't already
-handled by the VSP1/DU which actually handles the DMA allcoations and
-buffer management, so define a maximum segment size of up to 4GB (a 32
-bit mask).
-
-Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Fixes: 7b49235e83b2 ("[media] v4l: Add Renesas R-Car FCP driver")
-Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
+Fixes: af2984e9e625 ("iwlwifi: mvm: add a debugfs entry to set a fixed size AMSDU for all TX packets")
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20200424182644.e565446a4fce.I9729d8c520d8b8bb4de9a5cdc62e01eb85168aac@changeid
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/rcar-fcp.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c | 11 +++++++----
+ drivers/net/wireless/intel/iwlwifi/mvm/rs-fw.c   | 15 ++++++++-------
+ 2 files changed, 15 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/media/platform/rcar-fcp.c b/drivers/media/platform/rcar-fcp.c
-index 43c78620c9d8..5c6b00737fe7 100644
---- a/drivers/media/platform/rcar-fcp.c
-+++ b/drivers/media/platform/rcar-fcp.c
-@@ -8,6 +8,7 @@
-  */
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c b/drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c
+index ad18c2f1a806..524f9dd2323d 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c
+@@ -5,10 +5,9 @@
+  *
+  * GPL LICENSE SUMMARY
+  *
+- * Copyright(c) 2012 - 2014 Intel Corporation. All rights reserved.
+  * Copyright(c) 2013 - 2015 Intel Mobile Communications GmbH
+  * Copyright(c) 2016 - 2017 Intel Deutschland GmbH
+- * Copyright(c) 2018 - 2019 Intel Corporation
++ * Copyright(c) 2012 - 2014, 2018 - 2020 Intel Corporation
+  *
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of version 2 of the GNU General Public License as
+@@ -28,10 +27,9 @@
+  *
+  * BSD LICENSE
+  *
+- * Copyright(c) 2012 - 2014 Intel Corporation. All rights reserved.
+  * Copyright(c) 2013 - 2015 Intel Mobile Communications GmbH
+  * Copyright(c) 2016 - 2017 Intel Deutschland GmbH
+- * Copyright(c) 2018 - 2019 Intel Corporation
++ * Copyright(c) 2012 - 2014, 2018 - 2020 Intel Corporation
+  * All rights reserved.
+  *
+  * Redistribution and use in source and binary forms, with or without
+@@ -478,6 +476,11 @@ static ssize_t iwl_dbgfs_amsdu_len_write(struct ieee80211_sta *sta,
+ 	if (kstrtou16(buf, 0, &amsdu_len))
+ 		return -EINVAL;
  
- #include <linux/device.h>
-+#include <linux/dma-mapping.h>
- #include <linux/list.h>
- #include <linux/module.h>
- #include <linux/mod_devicetable.h>
-@@ -21,6 +22,7 @@
- struct rcar_fcp_device {
- 	struct list_head list;
- 	struct device *dev;
-+	struct device_dma_parameters dma_parms;
- };
- 
- static LIST_HEAD(fcp_devices);
-@@ -136,6 +138,9 @@ static int rcar_fcp_probe(struct platform_device *pdev)
- 
- 	fcp->dev = &pdev->dev;
- 
-+	fcp->dev->dma_parms = &fcp->dma_parms;
-+	dma_set_max_seg_size(fcp->dev, DMA_BIT_MASK(32));
++	/* only change from debug set <-> debug unset */
++	if ((amsdu_len && mvmsta->orig_amsdu_len) ||
++	    (!!amsdu_len && mvmsta->orig_amsdu_len))
++		return -EBUSY;
 +
- 	pm_runtime_enable(&pdev->dev);
+ 	if (amsdu_len) {
+ 		mvmsta->orig_amsdu_len = sta->max_amsdu_len;
+ 		sta->max_amsdu_len = amsdu_len;
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rs-fw.c b/drivers/net/wireless/intel/iwlwifi/mvm/rs-fw.c
+index 5b2bd603febf..be8bc0601d7b 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/rs-fw.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/rs-fw.c
+@@ -367,14 +367,15 @@ void iwl_mvm_tlc_update_notif(struct iwl_mvm *mvm,
+ 		u16 size = le32_to_cpu(notif->amsdu_size);
+ 		int i;
  
- 	mutex_lock(&fcp_lock);
+-		/*
+-		 * In debug sta->max_amsdu_len < size
+-		 * so also check with orig_amsdu_len which holds the original
+-		 * data before debugfs changed the value
+-		 */
+-		if (WARN_ON(sta->max_amsdu_len < size &&
+-			    mvmsta->orig_amsdu_len < size))
++		if (sta->max_amsdu_len < size) {
++			/*
++			 * In debug sta->max_amsdu_len < size
++			 * so also check with orig_amsdu_len which holds the
++			 * original data before debugfs changed the value
++			 */
++			WARN_ON(mvmsta->orig_amsdu_len < size);
+ 			goto out;
++		}
+ 
+ 		mvmsta->amsdu_enabled = le32_to_cpu(notif->amsdu_enabled);
+ 		mvmsta->max_amsdu_len = size;
 -- 
 2.25.1
 
