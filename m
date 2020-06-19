@@ -2,338 +2,568 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B83B72001CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 07:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5C2C2001D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 08:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729187AbgFSF6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 01:58:23 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:10122 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727113AbgFSF6W (ORCPT
+        id S1728948AbgFSGCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 02:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727060AbgFSGCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 01:58:22 -0400
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200619055818epoutp01accee034e6a23489d3c15054c65a8c61~Z3Guop_AD1830218302epoutp01c
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 05:58:18 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200619055818epoutp01accee034e6a23489d3c15054c65a8c61~Z3Guop_AD1830218302epoutp01c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1592546298;
-        bh=f71h74yDF3J5MqL4uTjEcsga7v/FrHV2M1Yy30XJsA8=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=lR6VrrL91QoI2tQ1WputiqPOQ3Gd/5ac5dcB0yk4e23HroFcD4B/OhQkUdPDYjimy
-         dUplePWJPAE0QMTkagd4t9VDjiP0YHaTYzB6uXuQQbELfxqY/A4oX6RZc4dn5Jm1XO
-         RYGCOzm/zo1o3hOAQaFjTHVTBrkIzqdGpcXn5QXk=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20200619055817epcas1p27f868bcfb768206fd09bf7fc1002275b~Z3GuKJa5N1346013460epcas1p2C;
-        Fri, 19 Jun 2020 05:58:17 +0000 (GMT)
-Received: from epsmges1p2.samsung.com (unknown [182.195.40.162]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 49p7QJ59q5zMqYkc; Fri, 19 Jun
-        2020 05:58:16 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        43.6A.19033.8F35CEE5; Fri, 19 Jun 2020 14:58:16 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20200619055816epcas1p184da90b01aff559fe3cd690ebcd921ca~Z3Gslvfwy0878408784epcas1p1x;
-        Fri, 19 Jun 2020 05:58:16 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200619055815epsmtrp120a8326010403e62b6dc2e36cd9a3977~Z3Gskxoqn1421614216epsmtrp1u;
-        Fri, 19 Jun 2020 05:58:15 +0000 (GMT)
-X-AuditID: b6c32a36-159ff70000004a59-36-5eec53f8522f
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A9.B9.08382.7F35CEE5; Fri, 19 Jun 2020 14:58:15 +0900 (KST)
-Received: from jaewon-linux.10.32.193.11 (unknown [10.253.104.229]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200619055815epsmtip151c4e28f3e3e46d5cb2dac6afa9e9825~Z3GsV5QKK2293722937epsmtip1R;
-        Fri, 19 Jun 2020 05:58:15 +0000 (GMT)
-From:   Jaewon Kim <jaewon31.kim@samsung.com>
-To:     vbabka@suse.cz, bhe@redhat.com, mgorman@techsingularity.net,
-        minchan@kernel.org, mgorman@suse.de, hannes@cmpxchg.org,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        jaewon31.kim@gmail.com, ytk.lee@samsung.com,
-        cmlaika.kim@samsung.com, Jaewon Kim <jaewon31.kim@samsung.com>
-Subject: [PATCH v4] page_alloc: consider highatomic reserve in watermark
- fast
-Date:   Sat, 20 Jun 2020 08:59:58 +0900
-Message-Id: <20200619235958.11283-1-jaewon31.kim@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnk+LIzCtJLcpLzFFi42LZdlhTT/dH8Js4g92/VC3mrF/DZnH+wS82
-        i5XzzrFZrN7ka9G9eSajRe/7V0wWl3fNYbO4t+Y/q8Xkd88YLXYs3cdksezre3aL2Y19jBaP
-        13M78HocfvOe2WPnrLvsHptWdbJ5bPo0id3jxIzfLB7v911l8+jbsorR48yCI+wem09Xe2z9
-        ZefxeZNcAHdUjk1GamJKapFCal5yfkpmXrqtkndwvHO8qZmBoa6hpYW5kkJeYm6qrZKLT4Cu
-        W2YO0PlKCmWJOaVAoYDE4mIlfTubovzSklSFjPziElul1IKUnAJDgwK94sTc4tK8dL3k/Fwr
-        QwMDI1OgyoScjIkv1AumxFRsnrSXqYHxlV8XIyeHhICJxMZde9m7GLk4hAR2MEr8/DiLDcL5
-        xCgxb9dyFgjnG6PEksMT2WBanrasgKrayygx+/FkZgjnB6PEzZ2LWUGq2AS0Jd4vmMQKkhAR
-        mM4osefeEkYQh1lgKaPE5Vs3gFZycAgL+Ev8XOEI0sAioCpx7dpNZhCbV8BW4uTb1ewQ6+Ql
-        Vm84wAxhd3JInGtMgrBdJN6smc0KYQtLvDq+BapeSuJlfxuUXS+xZ/9fqN4GRon/HwUgbGOJ
-        +S0LmUFOYBbQlFi/Sx8irCix8/dcRhCbWYBP4t3XHlaQEgkBXomONiGIEjWJlmdfobbKSPz9
-        9wyqxENifYM6SFhIIFbi25rZzBMYZWchzF/AyLiKUSy1oDg3PbXYsMAIOY42MYJTpJbZDsZJ
-        bz/oHWJk4mA8xCjBwawkwuv8+0WcEG9KYmVValF+fFFpTmrxIUZTYGhNZJYSTc4HJum8knhD
-        UyNjY2MLEzNzM1NjJXFeNZkLcUIC6YklqdmpqQWpRTB9TBycUg1MShLH93yrrwzU1FB9dq7/
-        4KMNGdf3qedeahLWvGn8ialj9Ubm93+465pntPpYzf5kNf2Hvae08sXVThIdHWfFcmMXMobe
-        PjRxQUqAxbaHulYb5Q5N3/be2F7xcdxG2YLOgN2vzhrpP4/bx7/D+EBwevXuB6rbxMPmil+u
-        Fz91ZJX6r5WiPFw8b4XX+Vuxmq3NCzHzXr1Eo1GE54BMqO5VzYIGruzJHxZWL18UcdjC2vxt
-        wtls/eNHC5NMP8+ZlT7V5+AjP68HuRM/i973Pbfoze21P5V1Go66+ppMZ/KZa7zjia1s1bkv
-        Uof/6rCwOxXnca/Z7uomP8+yWbH8alj8d/Xwj+rNWXUzHoT3OMxWYinOSDTUYi4qTgQAtSK8
-        uhoEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrOLMWRmVeSWpSXmKPExsWy7bCSnO734DdxBkvOmVjMWb+GzeL8g19s
-        FivnnWOzWL3J16J780xGi973r5gsLu+aw2Zxb81/VovJ754xWuxYuo/JYtnX9+wWsxv7GC0e
-        r+d24PU4/OY9s8fOWXfZPTat6mTz2PRpErvHiRm/WTze77vK5tG3ZRWjx5kFR9g9Np+u9tj6
-        y87j8ya5AO4oLpuU1JzMstQifbsEroyJL9QLpsRUbJ60l6mB8ZVfFyMnh4SAicTTlhVsXYxc
-        HEICuxklDp5eww6RkJF4c/4pSxcjB5AtLHH4cDFEzTdGiWXX9zOB1LAJaEu8XzCJFSQhIjCf
-        UWLPulNgk5gFVjNKPPxwmBmkSljAV+Jmx05WEJtFQFXi2rWbYHFeAVuJk29XQ22Tl1i94QDz
-        BEaeBYwMqxglUwuKc9Nziw0LDPNSy/WKE3OLS/PS9ZLzczcxgsNWS3MH4/ZVH/QOMTJxMB5i
-        lOBgVhLhdf79Ik6INyWxsiq1KD++qDQntfgQozQHi5I4743ChXFCAumJJanZqakFqUUwWSYO
-        TqkGpsUmIjEHsvYoddZpTPrwnYWRq9it67PCkZOszW+eOK5+GZ7hZPI1gunBDD6htvmPcsQ1
-        /shaBa/8GmS1xOvP0rwtR38E16/Z+n+NYuwUJq8w49uRzGUbuTyPGclzdelN838dyf/5yPuH
-        SZeUvC9leu1/+8xj2vu1WieV1igz+56ayh8jHxZQn/HqydubdRPWPshgaNX9ufTSwj/PfUxt
-        zeYcX/R33YEKI/GGxQ9Xum0RuNgZdrIvzk1IZPfy5qMyW2bobpurlLAq2+qH1dFDgbdf8L97
-        q+mXaVWt+Kes2E/q1s32fZfVtlx53TLj+k+R+1eyqvUVps8++c741GuTK/6HEic5KhTd0VHl
-        2lg5XVmJpTgj0VCLuag4EQAAGLSCygIAAA==
-X-CMS-MailID: 20200619055816epcas1p184da90b01aff559fe3cd690ebcd921ca
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200619055816epcas1p184da90b01aff559fe3cd690ebcd921ca
-References: <CGME20200619055816epcas1p184da90b01aff559fe3cd690ebcd921ca@epcas1p1.samsung.com>
+        Fri, 19 Jun 2020 02:02:23 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3777C0613EE
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 23:02:22 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jmA6R-0000Bj-C4; Fri, 19 Jun 2020 08:02:15 +0200
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1jmA6P-0003Sq-S7; Fri, 19 Jun 2020 08:02:13 +0200
+Date:   Fri, 19 Jun 2020 08:02:13 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Rahul Tanwar <rahul.tanwar@linux.intel.com>
+Cc:     linux-pwm@vger.kernel.org, thierry.reding@gmail.com,
+        p.zabel@pengutronix.de, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        andriy.shevchenko@intel.com, songjun.Wu@intel.com,
+        cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
+        rahul.tanwar.linux@gmail.com
+Subject: Re: [PATCH v2 2/2] Add PWM fan controller driver for LGM SoC
+Message-ID: <20200619060213.ldvun5y4tgnz55hh@taurus.defre.kleine-koenig.org>
+References: <cover.1592474693.git.rahul.tanwar@linux.intel.com>
+ <79fefda4aad5ebeb368129375bf128b74ed12224.1592474693.git.rahul.tanwar@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="s4q67lgek7jj2cgj"
+Content-Disposition: inline
+In-Reply-To: <79fefda4aad5ebeb368129375bf128b74ed12224.1592474693.git.rahul.tanwar@linux.intel.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-zone_watermark_fast was introduced by commit 48ee5f3696f6 ("mm,
-page_alloc: shortcut watermark checks for order-0 pages"). The commit
-simply checks if free pages is bigger than watermark without additional
-calculation such like reducing watermark.
 
-It considered free cma pages but it did not consider highatomic
-reserved. This may incur exhaustion of free pages except high order
-atomic free pages.
+--s4q67lgek7jj2cgj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Assume that reserved_highatomic pageblock is bigger than watermark min,
-and there are only few free pages except high order atomic free. Because
-zone_watermark_fast passes the allocation without considering high order
-atomic free, normal reclaimable allocation like GFP_HIGHUSER will
-consume all the free pages. Then finally order-0 atomic allocation may
-fail on allocation.
+Hello Rahul,
 
-This means watermark min is not protected against non-atomic allocation.
-The order-0 atomic allocation with ALLOC_HARDER unwantedly can be
-failed. Additionally the __GFP_MEMALLOC allocation with
-ALLOC_NO_WATERMARKS also can be failed.
+On Thu, Jun 18, 2020 at 08:05:13PM +0800, Rahul Tanwar wrote:
+> Intel Lightning Mountain(LGM) SoC contains a PWM fan controller.
+> This PWM controller does not have any other consumer, it is a
+> dedicated PWM controller for fan attached to the system. Add
+> driver for this PWM fan controller.
+>=20
+> Signed-off-by: Rahul Tanwar <rahul.tanwar@linux.intel.com>
+> ---
+>  drivers/pwm/Kconfig         |   9 +
+>  drivers/pwm/Makefile        |   1 +
+>  drivers/pwm/pwm-intel-lgm.c | 400 ++++++++++++++++++++++++++++++++++++++=
+++++++
+>  3 files changed, 410 insertions(+)
+>  create mode 100644 drivers/pwm/pwm-intel-lgm.c
+>=20
+> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> index cb8d739067d2..a3303e22d5fa 100644
+> --- a/drivers/pwm/Kconfig
+> +++ b/drivers/pwm/Kconfig
+> @@ -232,6 +232,15 @@ config PWM_IMX_TPM
+>  	  To compile this driver as a module, choose M here: the module
+>  	  will be called pwm-imx-tpm.
+> =20
+> +config PWM_INTEL_LGM
+> +	tristate "Intel LGM PWM support"
+> +	depends on X86 || COMPILE_TEST
+> +	help
+> +	  Generic PWM fan controller driver for LGM SoC.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called pwm-intel-lgm.
+> +
+>  config PWM_IQS620A
+>  	tristate "Azoteq IQS620A PWM support"
+>  	depends on MFD_IQS62X || COMPILE_TEST
+> diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
+> index a59c710e98c7..db154a6b4f51 100644
+> --- a/drivers/pwm/Makefile
+> +++ b/drivers/pwm/Makefile
+> @@ -20,6 +20,7 @@ obj-$(CONFIG_PWM_IMG)		+=3D pwm-img.o
+>  obj-$(CONFIG_PWM_IMX1)		+=3D pwm-imx1.o
+>  obj-$(CONFIG_PWM_IMX27)		+=3D pwm-imx27.o
+>  obj-$(CONFIG_PWM_IMX_TPM)	+=3D pwm-imx-tpm.o
+> +obj-$(CONFIG_PWM_INTEL_LGM)	+=3D pwm-intel-lgm.o
+>  obj-$(CONFIG_PWM_IQS620A)	+=3D pwm-iqs620a.o
+>  obj-$(CONFIG_PWM_JZ4740)	+=3D pwm-jz4740.o
+>  obj-$(CONFIG_PWM_LP3943)	+=3D pwm-lp3943.o
+> diff --git a/drivers/pwm/pwm-intel-lgm.c b/drivers/pwm/pwm-intel-lgm.c
+> new file mode 100644
+> index 000000000000..3c7077acb161
+> --- /dev/null
+> +++ b/drivers/pwm/pwm-intel-lgm.c
+> @@ -0,0 +1,400 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020 Intel Corporation.
+> + *
+> + * Notes & Limitations:
+> + * - The hardware supports fixed period which is dependent on 2/3 or 4
+> + *   wire fan mode.
+> + * - Supports normal polarity. Does not support changing polarity.
+> + * - When PWM is disabled, output of PWM will become 0(inactive). It doe=
+sn't
+> + *   keep track of running period.
+> + * - When duty cycle is changed, PWM output may be a mix of previous set=
+ting
+> + *   and new setting for the first period. From second period, the outpu=
+t is
+> + *   based on new setting.
+> + * - Supports 100% duty cycle.
+> + * - It is a dedicated PWM fan controller. There are no other consumers =
+for
+> + *   this PWM controller.
+> + */
+> +#include <linux/bitfield.h>
+> +#include <linux/clk.h>
+> +#include <linux/module.h>
+> +#include <linux/of_device.h>
+> +#include <linux/pwm.h>
+> +#include <linux/regmap.h>
+> +#include <linux/reset.h>
+> +
+> +#define PWM_FAN_CON0		0x0
+> +#define PWM_FAN_EN_EN		BIT(0)
+> +#define PWM_FAN_EN_DIS		0x0
+> +#define PWM_FAN_EN_MSK		BIT(0)
+> +#define PWM_FAN_MODE_2WIRE	0x0
+> +#define PWM_FAN_MODE_4WIRE	0x1
+> +#define PWM_FAN_MODE_MSK	BIT(1)
+> +#define PWM_FAN_PWM_DIS_DIS	0x0
+> +#define PWM_FAN_PWM_DIS_MSK	BIT(2)
+> +#define PWM_TACH_EN_EN		0x1
+> +#define PWM_TACH_EN_MSK		BIT(4)
+> +#define PWM_TACH_PLUS_2		0x0
+> +#define PWM_TACH_PLUS_4		0x1
+> +#define PWM_TACH_PLUS_MSK	BIT(5)
+> +#define PWM_FAN_DC_MSK		GENMASK(23, 16)
+> +
+> +#define PWM_FAN_CON1		0x4
+> +#define PWM_FAN_MAX_RPM_MSK	GENMASK(15, 0)
+> +
+> +#define PWM_FAN_STAT		0x10
+> +#define PWM_FAN_TACH_MASK	GENMASK(15, 0)
+> +
+> +#define MAX_RPM			(BIT(16) - 1)
+> +#define DFAULT_RPM		4000
+> +#define MAX_DUTY_CYCLE		(BIT(8) - 1)
+> +
+> +#define FRAC_BITS		10
+> +#define DC_BITS			8
+> +#define TWO_TENTH		204
+> +
+> +#define PERIOD_2WIRE_NSECS	40000000
+> +#define PERIOD_4WIRE_NSECS	40000
+> +
+> +#define TWO_SECONDS		2000
+> +#define IGNORE_FIRST_ERR	1
+> +#define THIRTY_SECS_WINDOW	15
+> +#define ERR_CNT_THRESHOLD	6
+> +
+> +struct lgm_pwm_chip {
+> +	struct pwm_chip chip;
+> +	struct regmap *regmap;
+> +	struct clk *clk;
+> +	struct reset_control *rst;
+> +	u32 tach_en;
+> +	u32 max_rpm;
+> +	u32 set_rpm;
+> +	u32 set_dc;
+> +	u32 period;
+> +	struct delayed_work work;
+> +};
+> +
+> +static inline struct lgm_pwm_chip *to_lgm_pwm_chip(struct pwm_chip *chip)
+> +{
+> +	return container_of(chip, struct lgm_pwm_chip, chip);
+> +}
+> +
+> +static int lgm_pwm_update_dc(struct lgm_pwm_chip *pc, u32 val)
+> +{
+> +	return regmap_update_bits(pc->regmap, PWM_FAN_CON0, PWM_FAN_DC_MSK,
+> +				  FIELD_PREP(PWM_FAN_DC_MSK, val));
+> +}
+> +
+> +static int lgm_pwm_enable(struct pwm_chip *chip, bool enable)
+> +{
+> +	struct lgm_pwm_chip *pc =3D to_lgm_pwm_chip(chip);
+> +	struct regmap *regmap =3D pc->regmap;
+> +
+> +	if (enable) {
+> +		regmap_update_bits(regmap, PWM_FAN_CON0,
+> +				   PWM_FAN_EN_MSK, PWM_FAN_EN_EN);
+> +		if (pc->tach_en)
+> +			schedule_delayed_work(&pc->work, msecs_to_jiffies(10000));
+> +	} else {
+> +		if (pc->tach_en)
+> +			cancel_delayed_work_sync(&pc->work);
+> +		regmap_update_bits(regmap, PWM_FAN_CON0,
+> +			   	   PWM_FAN_EN_MSK, PWM_FAN_EN_DIS);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int lgm_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+> +			 const struct pwm_state *state)
+> +{
+> +	struct lgm_pwm_chip *pc =3D to_lgm_pwm_chip(chip);
+> +	struct pwm_state cur_state;
+> +	u32 duty_cycle, duty, val;
+> +	int ret =3D 0;
+> +
+> +	if (state->polarity !=3D PWM_POLARITY_NORMAL ||
+> +	    state->period !=3D pc->period)
 
-To avoid the problem, zone_watermark_fast should consider highatomic
-reserve. If the actual size of high atomic free is counted accurately
-like cma free, we may use it. On this patch just use
-nr_reserved_highatomic. Additionally introduce
-__zone_watermark_unusable_free to factor out common parts between
-zone_watermark_fast and __zone_watermark_ok.
+The period-check is too strict, please accept periods bigger than the
+resulting value. This case however isn't handled correctly yet in the
+following code and needs:
 
-This is an example of ALLOC_HARDER allocation failure using v4.19 based
-kernel.
+	period =3D min(state->period, pc->period);
 
- Binder:9343_3: page allocation failure: order:0, mode:0x480020(GFP_ATOMIC), nodemask=(null)
- Call trace:
- [<ffffff8008f40f8c>] dump_stack+0xb8/0xf0
- [<ffffff8008223320>] warn_alloc+0xd8/0x12c
- [<ffffff80082245e4>] __alloc_pages_nodemask+0x120c/0x1250
- [<ffffff800827f6e8>] new_slab+0x128/0x604
- [<ffffff800827b0cc>] ___slab_alloc+0x508/0x670
- [<ffffff800827ba00>] __kmalloc+0x2f8/0x310
- [<ffffff80084ac3e0>] context_struct_to_string+0x104/0x1cc
- [<ffffff80084ad8fc>] security_sid_to_context_core+0x74/0x144
- [<ffffff80084ad880>] security_sid_to_context+0x10/0x18
- [<ffffff800849bd80>] selinux_secid_to_secctx+0x20/0x28
- [<ffffff800849109c>] security_secid_to_secctx+0x3c/0x70
- [<ffffff8008bfe118>] binder_transaction+0xe68/0x454c
- Mem-Info:
- active_anon:102061 inactive_anon:81551 isolated_anon:0
-  active_file:59102 inactive_file:68924 isolated_file:64
-  unevictable:611 dirty:63 writeback:0 unstable:0
-  slab_reclaimable:13324 slab_unreclaimable:44354
-  mapped:83015 shmem:4858 pagetables:26316 bounce:0
-  free:2727 free_pcp:1035 free_cma:178
- Node 0 active_anon:408244kB inactive_anon:326204kB active_file:236408kB inactive_file:275696kB unevictable:2444kB isolated(anon):0kB isolated(file):256kB mapped:332060kB dirty:252kB writeback:0kB shmem:19432kB writeback_tmp:0kB unstable:0kB all_unreclaimable? no
- Normal free:10908kB min:6192kB low:44388kB high:47060kB active_anon:409160kB inactive_anon:325924kB active_file:235820kB inactive_file:276628kB unevictable:2444kB writepending:252kB present:3076096kB managed:2673676kB mlocked:2444kB kernel_stack:62512kB pagetables:105264kB bounce:0kB free_pcp:4140kB local_pcp:40kB free_cma:712kB
- lowmem_reserve[]: 0 0
- Normal: 505*4kB (H) 357*8kB (H) 201*16kB (H) 65*32kB (H) 1*64kB (H) 0*128kB 0*256kB 0*512kB 0*1024kB 0*2048kB 0*4096kB = 10236kB
- 138826 total pagecache pages
- 5460 pages in swap cache
- Swap cache stats: add 8273090, delete 8267506, find 1004381/4060142
+	if (state->polarity !=3D PWM_POLARITY_NORMAL ||
+	    period < pc->period)
+	    	return -EINVAL;
 
-This is an example of ALLOC_NO_WATERMARKS allocation failure using v4.14
-based kernel.
+(and then use period instead of state->period in the following)
 
- kswapd0: page allocation failure: order:0, mode:0x140000a(GFP_NOIO|__GFP_HIGHMEM|__GFP_MOVABLE), nodemask=(null)
- kswapd0 cpuset=/ mems_allowed=0
- CPU: 4 PID: 1221 Comm: kswapd0 Not tainted 4.14.113-18770262-userdebug #1
- Call trace:
- [<0000000000000000>] dump_backtrace+0x0/0x248
- [<0000000000000000>] show_stack+0x18/0x20
- [<0000000000000000>] __dump_stack+0x20/0x28
- [<0000000000000000>] dump_stack+0x68/0x90
- [<0000000000000000>] warn_alloc+0x104/0x198
- [<0000000000000000>] __alloc_pages_nodemask+0xdc0/0xdf0
- [<0000000000000000>] zs_malloc+0x148/0x3d0
- [<0000000000000000>] zram_bvec_rw+0x410/0x798
- [<0000000000000000>] zram_rw_page+0x88/0xdc
- [<0000000000000000>] bdev_write_page+0x70/0xbc
- [<0000000000000000>] __swap_writepage+0x58/0x37c
- [<0000000000000000>] swap_writepage+0x40/0x4c
- [<0000000000000000>] shrink_page_list+0xc30/0xf48
- [<0000000000000000>] shrink_inactive_list+0x2b0/0x61c
- [<0000000000000000>] shrink_node_memcg+0x23c/0x618
- [<0000000000000000>] shrink_node+0x1c8/0x304
- [<0000000000000000>] kswapd+0x680/0x7c4
- [<0000000000000000>] kthread+0x110/0x120
- [<0000000000000000>] ret_from_fork+0x10/0x18
- Mem-Info:
- active_anon:111826 inactive_anon:65557 isolated_anon:0\x0a active_file:44260 inactive_file:83422 isolated_file:0\x0a unevictable:4158 dirty:117 writeback:0 unstable:0\x0a            slab_reclaimable:13943 slab_unreclaimable:43315\x0a mapped:102511 shmem:3299 pagetables:19566 bounce:0\x0a free:3510 free_pcp:553 free_cma:0
- Node 0 active_anon:447304kB inactive_anon:262228kB active_file:177040kB inactive_file:333688kB unevictable:16632kB isolated(anon):0kB isolated(file):0kB mapped:410044kB d irty:468kB writeback:0kB shmem:13196kB writeback_tmp:0kB unstable:0kB all_unreclaimable? no
- Normal free:14040kB min:7440kB low:94500kB high:98136kB reserved_highatomic:32768KB active_anon:447336kB inactive_anon:261668kB active_file:177572kB inactive_file:333768k           B unevictable:16632kB writepending:480kB present:4081664kB managed:3637088kB mlocked:16632kB kernel_stack:47072kB pagetables:78264kB bounce:0kB free_pcp:2280kB local_pcp:720kB free_cma:0kB        [ 4738.329607] lowmem_reserve[]: 0 0
- Normal: 860*4kB (H) 453*8kB (H) 180*16kB (H) 26*32kB (H) 34*64kB (H) 6*128kB (H) 2*256kB (H) 0*512kB 0*1024kB 0*2048kB 0*4096kB = 14232kB
+> +		return -EINVAL;
+> +
+> +	cur_state =3D pwm->state;
+> +	duty_cycle =3D state->duty_cycle;
 
-This is trace log which shows GFP_HIGHUSER consumes free pages right
-before ALLOC_NO_WATERMARKS.
+This would then be:
 
-  <...>-22275 [006] ....   889.213383: mm_page_alloc: page=00000000d2be5665 pfn=970744 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
-  <...>-22275 [006] ....   889.213385: mm_page_alloc: page=000000004b2335c2 pfn=970745 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
-  <...>-22275 [006] ....   889.213387: mm_page_alloc: page=00000000017272e1 pfn=970278 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
-  <...>-22275 [006] ....   889.213389: mm_page_alloc: page=00000000c4be79fb pfn=970279 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
-  <...>-22275 [006] ....   889.213391: mm_page_alloc: page=00000000f8a51d4f pfn=970260 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
-  <...>-22275 [006] ....   889.213393: mm_page_alloc: page=000000006ba8f5ac pfn=970261 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
-  <...>-22275 [006] ....   889.213395: mm_page_alloc: page=00000000819f1cd3 pfn=970196 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
-  <...>-22275 [006] ....   889.213396: mm_page_alloc: page=00000000f6b72a64 pfn=970197 order=0 migratetype=0 nr_free=3650 gfp_flags=GFP_HIGHUSER|__GFP_ZERO
-kswapd0-1207  [005] ...1   889.213398: mm_page_alloc: page= (null) pfn=0 order=0 migratetype=1 nr_free=3650 gfp_flags=GFP_NOWAIT|__GFP_HIGHMEM|__GFP_NOWARN|__GFP_MOVABLE
+	duty_cycle =3D min(state->duty_cycle, period);
 
-Reported-by: Yong-Taek Lee <ytk.lee@samsung.com>
-Suggested-by: Minchan Kim <minchan@kernel.org>
-Signed-off-by: Jaewon Kim <jaewon31.kim@samsung.com>
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
----
-v4: change description only; typo and log
-v3: change log in description to one having reserved_highatomic
-    change comment in code
-v2: factor out common part
-v1: consider highatomic reserve
----
- mm/page_alloc.c | 66 +++++++++++++++++++++++++++----------------------
- 1 file changed, 36 insertions(+), 30 deletions(-)
+> +	if (!state->enabled)
+> +		duty_cycle =3D 0;
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 48eb0f1410d4..fe83f88ce188 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3487,6 +3487,29 @@ static noinline bool should_fail_alloc_page(gfp_t gfp_mask, unsigned int order)
- }
- ALLOW_ERROR_INJECTION(should_fail_alloc_page, TRUE);
- 
-+static inline long __zone_watermark_unusable_free(struct zone *z,
-+				unsigned int order, unsigned int alloc_flags)
-+{
-+	const bool alloc_harder = (alloc_flags & (ALLOC_HARDER|ALLOC_OOM));
-+	long unusable_free = (1 << order) - 1;
-+
-+	/*
-+	 * If the caller does not have rights to ALLOC_HARDER then subtract
-+	 * the high-atomic reserves. This will over-estimate the size of the
-+	 * atomic reserve but it avoids a search.
-+	 */
-+	if (likely(!alloc_harder))
-+		unusable_free += z->nr_reserved_highatomic;
-+
-+#ifdef CONFIG_CMA
-+	/* If allocation can't use CMA areas don't use free CMA pages */
-+	if (!(alloc_flags & ALLOC_CMA))
-+		unusable_free += zone_page_state(z, NR_FREE_CMA_PAGES);
-+#endif
-+
-+	return unusable_free;
-+}
-+
- /*
-  * Return true if free base pages are above 'mark'. For high-order checks it
-  * will return true of the order-0 watermark is reached and there is at least
-@@ -3502,19 +3525,12 @@ bool __zone_watermark_ok(struct zone *z, unsigned int order, unsigned long mark,
- 	const bool alloc_harder = (alloc_flags & (ALLOC_HARDER|ALLOC_OOM));
- 
- 	/* free_pages may go negative - that's OK */
--	free_pages -= (1 << order) - 1;
-+	free_pages -= __zone_watermark_unusable_free(z, order, alloc_flags);
- 
- 	if (alloc_flags & ALLOC_HIGH)
- 		min -= min / 2;
- 
--	/*
--	 * If the caller does not have rights to ALLOC_HARDER then subtract
--	 * the high-atomic reserves. This will over-estimate the size of the
--	 * atomic reserve but it avoids a search.
--	 */
--	if (likely(!alloc_harder)) {
--		free_pages -= z->nr_reserved_highatomic;
--	} else {
-+	if (unlikely(alloc_harder)) {
- 		/*
- 		 * OOM victims can try even harder than normal ALLOC_HARDER
- 		 * users on the grounds that it's definitely going to be in
-@@ -3527,13 +3543,6 @@ bool __zone_watermark_ok(struct zone *z, unsigned int order, unsigned long mark,
- 			min -= min / 4;
- 	}
- 
--
--#ifdef CONFIG_CMA
--	/* If allocation can't use CMA areas don't use free CMA pages */
--	if (!(alloc_flags & ALLOC_CMA))
--		free_pages -= zone_page_state(z, NR_FREE_CMA_PAGES);
--#endif
--
- 	/*
- 	 * Check watermarks for an order-0 allocation request. If these
- 	 * are not met, then a high-order request also cannot go ahead
-@@ -3582,25 +3591,22 @@ static inline bool zone_watermark_fast(struct zone *z, unsigned int order,
- 				unsigned long mark, int highest_zoneidx,
- 				unsigned int alloc_flags)
- {
--	long free_pages = zone_page_state(z, NR_FREE_PAGES);
--	long cma_pages = 0;
-+	long free_pages;
-+	long unusable_free;
- 
--#ifdef CONFIG_CMA
--	/* If allocation can't use CMA areas don't use free CMA pages */
--	if (!(alloc_flags & ALLOC_CMA))
--		cma_pages = zone_page_state(z, NR_FREE_CMA_PAGES);
--#endif
-+	free_pages = zone_page_state(z, NR_FREE_PAGES);
-+	unusable_free = __zone_watermark_unusable_free(z, order, alloc_flags);
- 
- 	/*
- 	 * Fast check for order-0 only. If this fails then the reserves
--	 * need to be calculated. There is a corner case where the check
--	 * passes but only the high-order atomic reserve are free. If
--	 * the caller is !atomic then it'll uselessly search the free
--	 * list. That corner case is then slower but it is harmless.
-+	 * need to be calculated.
- 	 */
--	if (!order && (free_pages - cma_pages) >
--				mark + z->lowmem_reserve[highest_zoneidx])
--		return true;
-+	if (!order) {
-+		long fast_free = free_pages - unusable_free;
-+
-+		if (fast_free > mark + z->lowmem_reserve[highest_zoneidx])
-+			return true;
-+	}
- 
- 	return __zone_watermark_ok(z, order, mark, highest_zoneidx, alloc_flags,
- 					free_pages);
--- 
-2.17.1
+What happens if you don't set duty_cycle to 0? Is it just to prevent a
+spike in lgm_pwm_update_dc before calling lgm_pwm_enable(.., false)? If
+so, what about skipping writing (and calculating) the duty register
+value at all?
 
+> +	duty =3D duty_cycle * (1U << DC_BITS);
+> +	val =3D DIV_ROUND_CLOSEST(duty, state->period);
+
+This is equivalent to:
+
+	val =3D DIV_ROUND_CLOSEST(duty_cycle << DC_BITS, state->period);
+
+which doesn't need two variables with similar name but different
+scaling. Having said that using closest rounding is wrong here, please
+round down.
+
+> +	val =3D min_t(u32, val, MAX_DUTY_CYCLE);
+
+Hmm, this looks suspicious. Does the hardware really produce 100% when
+val =3D MAX_DUTY_CYCLE? Either it doesn't or there is a rounding error in
+your algorithm. Does the PWM support 0%? It would help to mention the
+formula from the reference manual to verify and understand your
+algorithm. Please add a comment for that.
+
+> +	if (pc->tach_en) {
+> +		pc->set_dc =3D val;
+> +		pc->set_rpm =3D val * pc->max_rpm / MAX_DUTY_CYCLE;
+> +	}
+> +
+> +	ret =3D lgm_pwm_update_dc(pc, val);
+> +
+> +	if (state->enabled !=3D cur_state.enabled)
+> +		lgm_pwm_enable(chip, state->enabled);
+
+I would prefer if you would make this call conditional on the (cached)
+state of the PWM_FAN_EN_MSK bit instead of pwm->state. This way the
+driver is more independent from pwm API internals.
+
+> +	return ret;
+> +}
+> +
+> +static void lgm_pwm_get_state(struct pwm_chip *chip, struct pwm_device *=
+pwm,
+> +			      struct pwm_state *state)
+> +{
+> +	struct lgm_pwm_chip *pc =3D to_lgm_pwm_chip(chip);
+> +	u32 duty, val;
+> +
+> +	state->enabled =3D regmap_test_bits(pc->regmap, PWM_FAN_CON0,
+> +					  PWM_FAN_EN_EN);
+> +	state->polarity =3D PWM_POLARITY_NORMAL;
+> +	state->period =3D pc->period; /* fixed period */
+> +
+> +	regmap_read(pc->regmap, PWM_FAN_CON0, &val);
+> +	duty =3D FIELD_GET(PWM_FAN_DC_MSK, val);
+> +	state->duty_cycle =3D duty * pc->period >> DC_BITS;
+
+The rounding here must use the inverse rounding of .apply(). So please
+round up here.
+
+> +}
+> +
+> +static const struct pwm_ops lgm_pwm_ops =3D {
+> +	.get_state =3D lgm_pwm_get_state,
+> +	.apply =3D lgm_pwm_apply,
+> +	.owner =3D THIS_MODULE,
+> +};
+> +
+> +static void lgm_pwm_tach_work(struct work_struct *work)
+> +{
+> +	struct lgm_pwm_chip *pc =3D container_of(work, struct lgm_pwm_chip,
+> +						 work.work);
+> +	struct regmap *regmap =3D pc->regmap;
+> +	u32 fan_tach, fan_dc, val;
+> +	s32 diff;
+> +	static u32 fanspeed_err_cnt, time_window, delta_dc;
+> +
+> +	/*
+> +	 * Fan speed is tracked by reading the active duty cycle of PWM output
+> +	 * from the active duty cycle register. Some variance in the duty cycle
+> +	 * register value is expected. So we set a time window of 30 seconds and
+> +	 * if we detect inaccurate fan speed 6 times within 30 seconds then we
+> +	 * mark it as fan speed problem and fix it by readjusting the duty cycl=
+e.
+> +	 */
+> +
+> +	if (fanspeed_err_cnt > IGNORE_FIRST_ERR)
+> +		/*
+> +		 * Ignore first time we detect inaccurate fan speed
+> +		 * because it is expected during bootup.
+> +		 */
+> +		time_window++;
+> +
+> +	if (time_window =3D=3D THIRTY_SECS_WINDOW) {
+> +		/*
+> +		 * This work is scheduled every 2 seconds i.e. each time_window
+> +		 * counter step roughly mean 2 seconds. When the time window
+> +		 * reaches 30 seconds, reset all the counters/logic.
+> +		 */
+> +		fanspeed_err_cnt =3D 0;
+> +		delta_dc =3D 0;
+> +		time_window =3D 0;
+> +	}
+> +
+> +	regmap_read(regmap, PWM_FAN_STAT, &fan_tach);
+> +	fan_tach &=3D PWM_FAN_TACH_MASK;
+> +	if (!fan_tach)
+> +		goto restart_work;
+> +
+> +	val =3D DIV_ROUND_CLOSEST(pc->set_rpm << FRAC_BITS, fan_tach);
+> +	diff =3D val - BIT(FRAC_BITS);
+> +
+> +	if (abs(diff) > TWO_TENTH) {
+> +		/* if duty cycle diff is more than two tenth, detect it as error */
+> +		if (fanspeed_err_cnt > IGNORE_FIRST_ERR)
+> +			delta_dc +=3D val;
+> +		fanspeed_err_cnt++;
+> +	}
+> +
+> +	if (fanspeed_err_cnt =3D=3D ERR_CNT_THRESHOLD) {
+> +		/*
+> +		 * We detected fan speed errors 6 times with 30 seconds.
+> +		 * Fix the error by readjusting duty cycle and reset
+> +		 * our counters/logic.
+> +		 */
+> +		fan_dc =3D pc->set_dc * delta_dc >> (FRAC_BITS + 2);
+> +		fan_dc =3D min_t(u32, fan_dc, MAX_DUTY_CYCLE);
+> +		lgm_pwm_update_dc(pc, fan_dc);
+> +		fanspeed_err_cnt =3D 0;
+> +		delta_dc =3D 0;
+> +		time_window =3D 0;
+> +	}
+> +
+> +restart_work:
+> +	/*
+> +	 * Fan speed doesn't need continous tracking. Schedule this work
+> +	 * every two seconds so it doesn't steal too much cpu cycles.
+> +	 */
+> +	schedule_delayed_work(&pc->work, msecs_to_jiffies(TWO_SECONDS));
+
+You had concerns about my review feedback that I don't like the fan
+stuff in the PWM driver. I still think that the fan part doesn't belong
+here.
+
+> +}
+> +
+> +static void lgm_pwm_init(struct lgm_pwm_chip *pc)
+> +{
+> +	struct device *dev =3D pc->chip.dev;
+> +	struct regmap *regmap =3D pc->regmap;
+> +	u32 max_rpm, fan_wire, tach_plus, con0_val, con0_mask;
+> +
+> +	if (device_property_read_u32(dev, "intel,fan-wire", &fan_wire))
+> +		fan_wire =3D 2; /* default is 2 wire mode */
+> +
+> +	con0_val =3D FIELD_PREP(PWM_FAN_PWM_DIS_MSK, PWM_FAN_PWM_DIS_DIS);
+> +	con0_mask =3D PWM_FAN_PWM_DIS_MSK | PWM_FAN_MODE_MSK;
+
+Please don't disable the PWM in .probe()
+
+> +
+> +	switch (fan_wire) {
+> +	case 4:
+> +		con0_val |=3D FIELD_PREP(PWM_FAN_MODE_MSK, PWM_FAN_MODE_4WIRE) |
+> +			    FIELD_PREP(PWM_TACH_EN_MSK, PWM_TACH_EN_EN);
+> +		con0_mask |=3D PWM_TACH_EN_MSK | PWM_TACH_PLUS_MSK;
+> +		pc->tach_en =3D 1;
+> +		pc->period =3D PERIOD_4WIRE_NSECS;
+> +		break;
+> +	default:
+> +		/* default is 2wire mode */
+> +		con0_val |=3D FIELD_PREP(PWM_FAN_MODE_MSK, PWM_FAN_MODE_2WIRE);
+> +		pc->period =3D PERIOD_2WIRE_NSECS;
+> +		break;
+> +	}
+> +
+> +	if (pc->tach_en) {
+> +		if (device_property_read_u32(dev, "intel,tach-plus",
+> +					     &tach_plus))
+> +			tach_plus =3D 2;
+> +
+> +		switch (tach_plus) {
+> +		case 4:
+> +			con0_val |=3D FIELD_PREP(PWM_TACH_PLUS_MSK,
+> +					       PWM_TACH_PLUS_4);
+> +			break;
+> +		default:
+> +			con0_val |=3D FIELD_PREP(PWM_TACH_PLUS_MSK,
+> +					       PWM_TACH_PLUS_2);
+> +			break;
+> +		}
+> +
+> +		if (device_property_read_u32(dev, "intel,max-rpm", &max_rpm))
+> +			max_rpm =3D DFAULT_RPM;
+> +
+> +		max_rpm =3D min_t(u32, max_rpm, MAX_RPM);
+> +		if (max_rpm =3D=3D 0)
+> +			max_rpm =3D DFAULT_RPM;
+> +
+> +		pc->max_rpm =3D max_rpm;
+> +		INIT_DEFERRABLE_WORK(&pc->work, lgm_pwm_tach_work);
+> +		regmap_update_bits(regmap, PWM_FAN_CON1,
+> +				   PWM_FAN_MAX_RPM_MSK, max_rpm);
+> +	}
+> +
+> +	regmap_update_bits(regmap, PWM_FAN_CON0, con0_mask, con0_val);
+> +}
+> +
+> +static const struct regmap_config pwm_regmap_config =3D {
+
+Here you missed to add the lgm_ prefix.
+
+> +	.reg_bits =3D 32,
+> +	.reg_stride =3D 4,
+> +	.val_bits =3D 32,
+> +};
+> +
+> +static int lgm_pwm_probe(struct platform_device *pdev)
+> +{
+> +	struct lgm_pwm_chip *pc;
+> +	struct device *dev =3D &pdev->dev;
+> +	void __iomem *io_base;
+> +	int ret;
+> +
+> +	pc =3D devm_kzalloc(dev, sizeof(*pc), GFP_KERNEL);
+> +	if (!pc)
+> +		return -ENOMEM;
+> +
+> +	io_base =3D devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(io_base))
+> +		return PTR_ERR(io_base);
+> +
+> +	pc->regmap =3D devm_regmap_init_mmio(dev, io_base, &pwm_regmap_config);
+> +	if (IS_ERR(pc->regmap)) {
+> +		ret =3D PTR_ERR(pc->regmap);
+> +		dev_err(dev, "failed to init register map: %pe\n", pc->regmap);
+> +		return ret;
+> +	}
+> +
+> +	pc->clk =3D devm_clk_get(dev, NULL);
+> +	if (IS_ERR(pc->clk)) {
+> +		ret =3D PTR_ERR(pc->clk);
+> +		dev_err(dev, "failed to get clock: %pe\n", pc->clk);
+> +		return ret;
+> +	}
+> +
+> +	pc->rst =3D devm_reset_control_get(dev, NULL);
+> +	if (IS_ERR(pc->rst)) {
+> +		ret =3D PTR_ERR(pc->rst);
+> +		dev_err(dev, "failed to get reset control: %pe\n", pc->rst);
+> +		return ret;
+> +	}
+> +
+> +	ret =3D reset_control_deassert(pc->rst);
+> +	if (ret) {
+> +		dev_err(dev, "cannot deassert reset control: %pe\n",
+> +			ERR_PTR(ret));
+> +		return ret;
+> +	}
+> +
+> +	ret =3D clk_prepare_enable(pc->clk);
+> +	if (ret) {
+> +		dev_err(dev, "failed to enable clock\n");
+> +		return ret;
+> +	}
+> +
+> +	pc->chip.dev =3D dev;
+> +	pc->chip.ops =3D &lgm_pwm_ops;
+> +	pc->chip.npwm =3D 1;
+> +
+> +	lgm_pwm_init(pc);
+> +
+> +	ret =3D pwmchip_add(&pc->chip);
+> +	if (ret < 0) {
+> +		dev_err(dev, "failed to add PWM chip: %d\n", ret);
+
+%pe please.
+
+> +		clk_disable_unprepare(pc->clk);
+> +		reset_control_assert(pc->rst);
+> +		return ret;
+> +	}
+> +
+> +	platform_set_drvdata(pdev, pc);
+> +	return 0;
+> +}
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--s4q67lgek7jj2cgj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl7sVOIACgkQwfwUeK3K
+7AnLbQf9E9/hFQg2xtnaMPMkPFQIgjq3vs8CnQd6qCqz/MgRjuPMqarqd4jty/gL
+F/+VdviP+GgaBcRKVaHO6xC/jZpySZLS1y3tl2QsraGQVZ+lpYh3ES637XIcCbjQ
+HH+BLGDV1TQ7zA5XnZE14pfKx7tzfMeX+1C8Bn8lHHwWGz/S6522/cdOZJ1WYjwh
+hbi1RLBTXGjYIkdeWyQeWeMgvWnN2gN9uLcp05ZI4YCyLo6WxSfF4SZga6kIEapc
+XNp/+eZLRqqUdzciALZcsdPOtkE/t3SqUpPxAEIPWQpKtBQYCIhYslJ6TXEG/Stl
+nD0Tw5xIt4v7nImULwuPLlEVg/aoug==
+=90Xl
+-----END PGP SIGNATURE-----
+
+--s4q67lgek7jj2cgj--
