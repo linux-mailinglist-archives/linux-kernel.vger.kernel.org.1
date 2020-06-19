@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D340B200BC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:38:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A06C200C26
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387805AbgFSOh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:37:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54510 "EHLO mail.kernel.org"
+        id S2388017AbgFSOm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:42:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387750AbgFSOhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:37:35 -0400
+        id S2388360AbgFSOmX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:42:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2A2621582;
-        Fri, 19 Jun 2020 14:37:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0725220A8B;
+        Fri, 19 Jun 2020 14:42:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577455;
-        bh=vupYtHh+zi9vBtEtZ9bTOPCO4HoBCBq9wOTHXWHbTOA=;
+        s=default; t=1592577743;
+        bh=pxgSyVKkpou3NKy03mk+bnttCALOfZDsUasjBAUo34Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P4EK3fjEbhkHF10achEA0+ITPr4AoNWOSJTJs+5MP/0S8viKSMLLvWTP3IhlPKULS
-         0jV2S2uuMoOxf/drNTZQYPv4sGj4v7aH0M/YHDU7JEQusKlyGaW5SwphLJg56YYdJp
-         qP4xFH5Wo0Zj+qX1zbUaG/AZLpbx9y6XcoKebuVM=
+        b=GOikWrOlQk65Ef/eju+ucVYeBFgSg0XaoyRbHbhO9w2owNL8L5WYCzOmm/rfa1xyG
+         6gXR7OzRlzoBpYBPApXRZX1YmFW8J70WaNXAuZKfrdumGNht2CADkHbI8m1Dr/KCgc
+         BsfUJvrfi1ycOv8ZUEzpRbT9jghxbhDDtLTst8ZU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Tiezhu Yang <yangtiezhu@loongson.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 057/101] MIPS: Make sparse_init() using top-down allocation
+Subject: [PATCH 4.9 072/128] MIPS: Make sparse_init() using top-down allocation
 Date:   Fri, 19 Jun 2020 16:32:46 +0200
-Message-Id: <20200619141617.029873739@linuxfoundation.org>
+Message-Id: <20200619141624.000569956@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
-References: <20200619141614.001544111@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -114,10 +114,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 10 insertions(+)
 
 diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 8fa30516f39d..33f5aeaf0024 100644
+index 7cc1d29334ee..2c3b89a65317 100644
 --- a/arch/mips/kernel/setup.c
 +++ b/arch/mips/kernel/setup.c
-@@ -769,7 +769,17 @@ static void __init arch_mem_init(char **cmdline_p)
+@@ -847,7 +847,17 @@ static void __init arch_mem_init(char **cmdline_p)
  				BOOTMEM_DEFAULT);
  #endif
  	device_tree_init();
@@ -133,8 +133,8 @@ index 8fa30516f39d..33f5aeaf0024 100644
 +	memblock_set_bottom_up(true);
 +
  	plat_swiotlb_setup();
- 	paging_init();
  
+ 	dma_contiguous_reserve(PFN_PHYS(max_low_pfn));
 -- 
 2.25.1
 
