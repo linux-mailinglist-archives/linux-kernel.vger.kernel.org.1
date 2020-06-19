@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECA9D2019C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:51:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ABAA2019C8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392315AbgFSRtJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 13:49:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729676AbgFSRtH (ORCPT
+        id S2393306AbgFSRwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 13:52:11 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:26179 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725880AbgFSRwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 13:49:07 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9572C06174E;
-        Fri, 19 Jun 2020 10:49:06 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jmL8R-0006PS-A6; Fri, 19 Jun 2020 19:49:03 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id CF5441C0085;
-        Fri, 19 Jun 2020 19:49:02 +0200 (CEST)
-Date:   Fri, 19 Jun 2020 17:49:02 -0000
-From:   "tip-bot2 for Tom Rini" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] initrd: Remove erroneous comment
-Cc:     Tom Rini <trini@konsulko.com>, Borislav Petkov <bp@suse.de>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200619143056.24538-1-trini@konsulko.com>
-References: <20200619143056.24538-1-trini@konsulko.com>
+        Fri, 19 Jun 2020 13:52:10 -0400
+X-UUID: 1c2ed6c6bdd54063b7e71a69ee6f7b0d-20200620
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=3xq/EA3dMYuLkP6tJy8QiqzcaouWnuGLQAnhnlu8VYw=;
+        b=WwLT4Y/8Q4nbDJJLE50vLvGMX9k62J11bDO7T5fr9tvJ5KlqhYhhWZw0XwAwGdEnPjB96Eu12TEY32ccUe4s7PDcN305+2+v1XgFwwPNlhOLzOnsdFuIV+NZ0k/Ap35gzu43cUZurwWrF+fd9ZNnRIWQRfXib5ma6UkQc6vGilc=;
+X-UUID: 1c2ed6c6bdd54063b7e71a69ee6f7b0d-20200620
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <sean.wang@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 835340811; Sat, 20 Jun 2020 01:52:08 +0800
+Received: from mtkcas08.mediatek.inc (172.21.101.126) by
+ mtkmbs08n2.mediatek.inc (172.21.101.56) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 20 Jun 2020 01:52:00 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 20 Jun 2020 01:52:01 +0800
+From:   <sean.wang@mediatek.com>
+To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>
+CC:     <linux-bluetooth@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Sean Wang <sean.wang@mediatek.com>,
+        Mark Chen <Mark-YW.Chen@mediatek.com>
+Subject: [PATCH v2 1/2] Bluetooth: btusb: fix up firmware download sequence
+Date:   Sat, 20 Jun 2020 01:52:01 +0800
+Message-ID: <7d835850c16e07d1346c763900cc8c880182f497.1592588740.git.sean.wang@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-Message-ID: <159258894258.16989.15930098471806969630.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Content-Type: text/plain
+X-TM-SNTS-SMTP: 2821007EF3AFA80A7E8D45E7FC13707227D66AE0967B67343F6BEA83B2DC8ED92000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+RnJvbTogU2VhbiBXYW5nIDxzZWFuLndhbmdAbWVkaWF0ZWsuY29tPg0KDQpEYXRhIFJBTSBvbiB0
+aGUgZGV2aWNlIGhhdmUgdG8gYmUgcG93ZXJlZCBvbiBiZWZvcmUgc3RhcnRpbmcgdG8gZG93bmxv
+YWQNCnRoZSBmaXJtd2FyZS4NCg0KdjEtPnYyOg0KCXJlYmFzZWQgdG8gYmx1ZXRvb3RoLW5leHQN
+Cg0KRml4ZXM6IGExYzQ5YzQzNGUxNSAoIkJsdWV0b290aDogYnR1c2I6IEFkZCBwcm90b2NvbCBz
+dXBwb3J0IGZvciBNZWRpYVRlayBNVDc2NjhVIFVTQiBkZXZpY2VzIikNCkNvLWRldmVsb3BlZC1i
+eTogTWFyayBDaGVuIDxNYXJrLVlXLkNoZW5AbWVkaWF0ZWsuY29tPg0KU2lnbmVkLW9mZi1ieTog
+TWFyayBDaGVuIDxNYXJrLVlXLkNoZW5AbWVkaWF0ZWsuY29tPg0KU2lnbmVkLW9mZi1ieTogU2Vh
+biBXYW5nIDxzZWFuLndhbmdAbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy9ibHVldG9vdGgv
+YnR1c2IuYyB8IDE2ICsrKysrKysrKysrKysrKy0NCiAxIGZpbGUgY2hhbmdlZCwgMTUgaW5zZXJ0
+aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ibHVldG9vdGgv
+YnR1c2IuYyBiL2RyaXZlcnMvYmx1ZXRvb3RoL2J0dXNiLmMNCmluZGV4IGM3Y2M4ZTU5NDE2Ni4u
+ZTQyZmRkNjI1ZWIwIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9ibHVldG9vdGgvYnR1c2IuYw0KKysr
+IGIvZHJpdmVycy9ibHVldG9vdGgvYnR1c2IuYw0KQEAgLTI5MzQsNyArMjkzNCw3IEBAIHN0YXRp
+YyBpbnQgYnR1c2JfbXRrX3NldHVwX2Zpcm13YXJlKHN0cnVjdCBoY2lfZGV2ICpoZGV2LCBjb25z
+dCBjaGFyICpmd25hbWUpDQogCWNvbnN0IHU4ICpmd19wdHI7DQogCXNpemVfdCBmd19zaXplOw0K
+IAlpbnQgZXJyLCBkbGVuOw0KLQl1OCBmbGFnOw0KKwl1OCBmbGFnLCBwYXJhbTsNCiANCiAJZXJy
+ID0gcmVxdWVzdF9maXJtd2FyZSgmZncsIGZ3bmFtZSwgJmhkZXYtPmRldik7DQogCWlmIChlcnIg
+PCAwKSB7DQpAQCAtMjk0Miw2ICsyOTQyLDIwIEBAIHN0YXRpYyBpbnQgYnR1c2JfbXRrX3NldHVw
+X2Zpcm13YXJlKHN0cnVjdCBoY2lfZGV2ICpoZGV2LCBjb25zdCBjaGFyICpmd25hbWUpDQogCQly
+ZXR1cm4gZXJyOw0KIAl9DQogDQorCS8qIFBvd2VyIG9uIGRhdGEgUkFNIHRoZSBmaXJtd2FyZSBy
+ZWxpZXMgb24uICovDQorCXBhcmFtID0gMTsNCisJd210X3BhcmFtcy5vcCA9IEJUTVRLX1dNVF9G
+VU5DX0NUUkw7DQorCXdtdF9wYXJhbXMuZmxhZyA9IDM7DQorCXdtdF9wYXJhbXMuZGxlbiA9IHNp
+emVvZihwYXJhbSk7DQorCXdtdF9wYXJhbXMuZGF0YSA9ICZwYXJhbTsNCisJd210X3BhcmFtcy5z
+dGF0dXMgPSBOVUxMOw0KKw0KKwllcnIgPSBidHVzYl9tdGtfaGNpX3dtdF9zeW5jKGhkZXYsICZ3
+bXRfcGFyYW1zKTsNCisJaWYgKGVyciA8IDApIHsNCisJCWJ0X2Rldl9lcnIoaGRldiwgIkZhaWxl
+ZCB0byBwb3dlciBvbiBkYXRhIFJBTSAoJWQpIiwgZXJyKTsNCisJCXJldHVybiBlcnI7DQorCX0N
+CisNCiAJZndfcHRyID0gZnctPmRhdGE7DQogCWZ3X3NpemUgPSBmdy0+c2l6ZTsNCiANCi0tIA0K
+Mi4yNS4xDQo=
 
-Commit-ID:     eacb0c101a0bdf14de77cc9d107493e2d8d6389c
-Gitweb:        https://git.kernel.org/tip/eacb0c101a0bdf14de77cc9d107493e2d8d6389c
-Author:        Tom Rini <trini@konsulko.com>
-AuthorDate:    Fri, 19 Jun 2020 10:30:56 -04:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 19 Jun 2020 19:23:54 +02:00
-
-initrd: Remove erroneous comment
-
-Most architectures have been passing the location of an initrd via the
-initrd= option since their inception.  Remove the comment as it's both
-wrong and unrelated to the commit that introduced it.
-
-For a bit more context, I assume there's been some confusion between
-"initrd" being a keyword in things like extlinux.conf and also that for
-quite a long time now initrd information is passed via device tree and
-not the command line on relevant architectures. But it's still true that
-it's been a valid command line option to the kernel since the 90s. It's
-just the case that in 2018 the code was consolidated from under arch/
-and in to this file.
-
- [ bp: Move the context clarification up into the commit message proper. ]
-
-Fixes: 694cfd87b0c8 ("x86/setup: Add an initrdmem= option to specify initrd physical address")
-Signed-off-by: Tom Rini <trini@konsulko.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200619143056.24538-1-trini@konsulko.com
----
- init/do_mounts_initrd.c | 5 -----
- 1 file changed, 5 deletions(-)
-
-diff --git a/init/do_mounts_initrd.c b/init/do_mounts_initrd.c
-index d72beda..53314d7 100644
---- a/init/do_mounts_initrd.c
-+++ b/init/do_mounts_initrd.c
-@@ -45,11 +45,6 @@ static int __init early_initrdmem(char *p)
- }
- early_param("initrdmem", early_initrdmem);
- 
--/*
-- * This is here as the initrd keyword has been in use since 11/2018
-- * on ARM, PowerPC, and MIPS.
-- * It should not be; it is reserved for bootloaders.
-- */
- static int __init early_initrd(char *p)
- {
- 	return early_initrdmem(p);
