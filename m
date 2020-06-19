@@ -2,63 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E162320036E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 10:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81D49200386
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 10:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731180AbgFSITy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 04:19:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730828AbgFSISM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 04:18:12 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 983E9207FC;
-        Fri, 19 Jun 2020 08:17:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592554658;
-        bh=HA7ailzZtLyGM7+dSmDkKq58t5uhEiFR442OtgMD67A=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=Ra9354xvWkO2Dai0qmF2ZONN5WpMV3njHsp6+IXb73/Nr57X2Rn9FHLEXyyAG1bfV
-         VqoFAUrjsqiwX45sD6tRwf/ymM0j4XUVar4W6MSUCXw+EEKSxT+c2tJyTspJSca3hY
-         PVbhVwh+9NtcG5ZANMfTHj45MelhZioUy3ElHoGA=
+        id S1731259AbgFSIVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 04:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730849AbgFSIUX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 04:20:23 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A8F8C06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 01:20:23 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id jz3so3803081pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 01:20:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=3/EAr2y0sc9d0konJThPJ+OgywU1nfaO8eAafmovNU0=;
+        b=jjyeZkkQunEwop9f0LcDn+xOYox58f+EyJWfWwuKPsT2m3jeeEXzsNwKB8Y2i9wcl9
+         vo65pKBvtPpVUYXK51tqsLJ5wDkY59dFhtjw/6t1w+SMfcdH0GrEThb79HPhXJ+amXFR
+         ldpGJoI0uNoaCKlCymivglXrHLHKLZn7CAa1U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=3/EAr2y0sc9d0konJThPJ+OgywU1nfaO8eAafmovNU0=;
+        b=PeY5nWQo7X1/C3ZyG7vSmh+ddLysXjiCrc4cNZg94mtp/hkAcCQq237hsNxDkdS6xh
+         hyJQGrhH2IxKQuXITp5uIhALtzV6WQpLYJhnAPg+WDfVHZn5GY7W9dCsY7dt0eBXjrvC
+         17riOfc8KCgLIobVLvbMFoCJoFiIwt3mjF/2gNS2mTDsWccPqYT2M/O8p8H3ZgGJ+D3I
+         F4OEVRF0XG49XDFnF1Cf3jx6B6g4Yfu+dA+548x09/UDAy+AE8RzQmN6Wx6/HZIv3lOy
+         V2jOR0oICzNxee6HHsPQuKTgAtQRYzTpEEkXSJPXp3W/t6YJXmUT4OMNqdYEM1PaHADF
+         uf1A==
+X-Gm-Message-State: AOAM530zX1S4VQPT2RICjAsLLh2Ku9QUceQIm18towxJyPgOQF8yqp1A
+        x+XGxMAyfO/HO0QQzR351vbH/w==
+X-Google-Smtp-Source: ABdhPJwDYhRixLXDiLuE5z9EfNBJNzp4oZwlJ5YgbWv4V4xHUKOmq4b2mrDu7UpTh4t5Iyj085GNfQ==
+X-Received: by 2002:a17:902:8544:: with SMTP id d4mr7371334plo.234.1592554822936;
+        Fri, 19 Jun 2020 01:20:22 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id j10sm116707pgh.28.2020.06.19.01.20.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 01:20:22 -0700 (PDT)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200618073331.GA9403@localhost.localdomain>
-References: <20200618073331.GA9403@localhost.localdomain>
-Subject: Re: [PATCH v2] MAINTAINERS: Add entry for ROHM power management ICs
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-power@fi.rohmeurope.com, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-rtc@vger.kernel.org
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Date:   Fri, 19 Jun 2020 01:17:37 -0700
-Message-ID: <159255465783.62212.9583042633101060784@swboyd.mtv.corp.google.com>
+In-Reply-To: <1592485553-29163-1-git-send-email-mkshah@codeaurora.org>
+References: <1592485553-29163-1-git-send-email-mkshah@codeaurora.org>
+Subject: Re: [PATCH] soc: qcom: rpmh: Update rpmh_invalidate function to return void
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, dianders@chromium.org,
+        rnayak@codeaurora.org, ilina@codeaurora.org, lsrao@codeaurora.org,
+        Maulik Shah <mkshah@codeaurora.org>
+To:     Maulik Shah <mkshah@codeaurora.org>, agross@kernel.org,
+        bjorn.andersson@linaro.org, georgi.djakov@linaro.org
+Date:   Fri, 19 Jun 2020 01:20:21 -0700
+Message-ID: <159255482149.62212.13349249528460316271@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Matti Vaittinen (2020-06-18 00:33:31)
-> Add entry for maintaining power management IC drivers for ROHM
-> BD71837, BD71847, BD71850, BD71828, BD71878, BD70528 and BD99954.
+Quoting Maulik Shah (2020-06-18 06:05:53)
+> Currently rpmh_invalidate() always returns success. Update its
+> return type to void.
 >=20
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-> Acked-by: Sebastian Reichel <sre@kernel.org>
+> Suggested-by: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
 > ---
 
-Acked-by: Stephen Boyd <sboyd@kernel.org>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
