@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5C82012B9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B0A2012C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405222AbgFSPzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:55:35 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:37479 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392508AbgFSPzc (ORCPT
+        id S2393495AbgFSP4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:56:20 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:37471 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393170AbgFSP4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:55:32 -0400
-Received: by mail-ot1-f65.google.com with SMTP id v13so7646330otp.4;
-        Fri, 19 Jun 2020 08:55:31 -0700 (PDT)
+        Fri, 19 Jun 2020 11:56:17 -0400
+Received: by mail-wr1-f65.google.com with SMTP id a6so8219811wrm.4;
+        Fri, 19 Jun 2020 08:56:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sKylRjNEpAqnQ+WaZirKknI5bexwPLrj3iuq9vdD0CA=;
-        b=X/TKFmBJ0UPo7r4Ys16Gep89hMzFRiip4ieBT+C7dIZtCM16II3nJagzP6F5FL05Gb
-         yJhTWgEKqoQHICjp2DA92Svl7pVT4L5ZhHdDVQ80H9ZkWJHCMTqPKTw4V3hbGDmZWrU6
-         8SVUSuGyDexnwTyrSBKcscCrHlPGcYxjxq+S42RO6vxN90+dYWVd+mwuoc7zhAPJ4RYZ
-         uU8Perr8d6ecpqhQa7q9WxCKsrA4sTMPIlbQcA3GTOJJNKvKBh8u0zBcvoLJWwXe6DNN
-         MmZwXFOSVT74aY1584rV93g29RnpapT1pmsfWfxiRJCeDoTIgxHLBEnlq/5EGAne4Zrh
-         HrkQ==
-X-Gm-Message-State: AOAM530AH5zlRgi+iGSZzUVyBrMfcQh30YH2iN/MzW086JPeMW2foesn
-        dZMJc5YDV4PaaJ0CB7d8N0MJQUqkULtKaEiKFA8KeQ==
-X-Google-Smtp-Source: ABdhPJyhSqxeDfqtJxbOwrEXIFkN5IH/piua+hwM2UpE8o4bHRdGgkaqYQt5l8gSyJB6dHPW44SLsjC9Q+fprChYt5U=
-X-Received: by 2002:a9d:7d15:: with SMTP id v21mr3480467otn.118.1592582131467;
- Fri, 19 Jun 2020 08:55:31 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3W6SSoO6CKPlvUrfyexRSlKrk88KG98RtQu5JyQ+q7k=;
+        b=FansKkmMPFIVnZ+n/6Q8vlIsBQ425pvmqFTx4lVigyvW6L/vROkf/f4d5Vvg08iULb
+         M3cZk9xWQjUjbtIX05pSLaWMZtpVY94imESlhqaCUqXseVhykYxjZSlZhyvhoLxDkY0I
+         qIxMBjYy1Jpa/UtD4yS8Y64OnUEoB/c+9Zz3DtFZIOMPUhJ2zZmpOUxurjvO4S2iF8IM
+         eGEcZOBYWJHwNuoFcilo+8rikNyBFCgrUvgth9Mj3mQShnVnzZ2jIJkWAa1br7L9wi3P
+         ebBuDzLKu19GtW73Z0cDaSpdVfBoFBoq8sL6yAIJdK1sFsElel4lS340wZfBGN6pzd8O
+         Bgfw==
+X-Gm-Message-State: AOAM533k1tE2Nx2AmA/ZhjVvkddCaczI2ivGA5/XKOcPYOsyzZ+A4Od9
+        vNKSeM6iAdlJpWyfYNpAtG8=
+X-Google-Smtp-Source: ABdhPJyKa1QAQUtezUx4NgBSLsHGgQjuO/3Ts4BdtwxR81UHwDzngfylOa0kmRJi+WGJroPasFWZPw==
+X-Received: by 2002:adf:8b0c:: with SMTP id n12mr5194071wra.340.1592582175691;
+        Fri, 19 Jun 2020 08:56:15 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id c143sm13202495wmd.1.2020.06.19.08.56.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 08:56:15 -0700 (PDT)
+Date:   Fri, 19 Jun 2020 15:56:14 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+Cc:     "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        linux-hyperv@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/8] Drivers: hv: vmbus: Miscellaneous cleanups
+Message-ID: <20200619155613.uc3lvcpfz3lb5lzf@liuwe-devbox-debian-v2>
+References: <20200617164642.37393-1-parri.andrea@gmail.com>
+ <20200619153954.qlrsgtreboqkn7xg@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-References: <20200331214949.883781-1-stefanb@linux.vnet.ibm.com>
- <20200401083729.GD17325@linux.intel.com> <CAJZ5v0gQ04h1+zN4wHj1vkwPvqu3RPfsY60VJ+GOtgUrvWuxLQ@mail.gmail.com>
- <20200402192145.GB10314@linux.intel.com> <dfd2d622-90cb-9621-7b7d-5282f5ee7359@linux.ibm.com>
-In-Reply-To: <dfd2d622-90cb-9621-7b7d-5282f5ee7359@linux.ibm.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 19 Jun 2020 17:55:19 +0200
-Message-ID: <CAJZ5v0isZCK8o6hopUV3SP25P5+BwZGSSRFtGQrunQ0n45t68g@mail.gmail.com>
-Subject: Re: [PATCH v3] acpi: Extend TPM2 ACPI table with missing log fields
-To:     Stefan Berger <stefanb@linux.ibm.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Stefan Berger <stefanb@linux.vnet.ibm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-integrity@vger.kernel.org,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200619153954.qlrsgtreboqkn7xg@liuwe-devbox-debian-v2>
+User-Agent: NeoMutt/20180716
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 5:14 PM Stefan Berger <stefanb@linux.ibm.com> wrote:
->
-> On 4/2/20 3:21 PM, Jarkko Sakkinen wrote:
-> > On Wed, Apr 01, 2020 at 11:05:36AM +0200, Rafael J. Wysocki wrote:
-> >> On Wed, Apr 1, 2020 at 10:37 AM Jarkko Sakkinen
-> >> <jarkko.sakkinen@linux.intel.com> wrote:
-> >>> On Tue, Mar 31, 2020 at 05:49:49PM -0400, Stefan Berger wrote:
-> >>>> From: Stefan Berger <stefanb@linux.ibm.com>
-> >>>>
-> >>>> Recent extensions of the TPM2 ACPI table added 3 more fields
-> >>>> including 12 bytes of start method specific parameters and Log Area
-> >>>> Minimum Length (u32) and Log Area Start Address (u64). So, we extend
-> >>>> the existing structure with these fields to allow non-UEFI systems
-> >>>> to access the TPM2's log.
-> >>>>
-> >>>> The specification that has the new fields is the following:
-> >>>>    TCG ACPI Specification
-> >>>>    Family "1.2" and "2.0"
-> >>>>    Version 1.2, Revision 8
-> >>>>
-> >>>> Adapt all existing table size calculations to use
-> >>>> offsetof(struct acpi_table_tpm2, start_method_specific)
-> >>>> [where start_method_specific is a newly added field]
-> >>>> rather than sizeof(struct acpi_table_tpm2) so that the addition
-> >>>> of the new fields does not affect current systems that may not
-> >>>> have them.
-> >>>>
-> >>>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> >>>> Cc: linux-acpi@vger.kernel.org
-> >>> I think I'm cool with this but needs an ack from ACPI maintainer.
-> >>>
-> >>> Rafael, given that this not an intrusive change in any possible means,
-> >>> can I pick this patch and put it to my next pull request?
-> >> Yes, please.
-> >>
-> >> Thanks!
-> > Great, thanks Rafael.
-> >
-> > Reviewed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-> >
-> > Do you mind if I add your ack to the commit?
->
+On Fri, Jun 19, 2020 at 03:39:54PM +0000, Wei Liu wrote:
+> On Wed, Jun 17, 2020 at 06:46:34PM +0200, Andrea Parri (Microsoft) wrote:
+> > Hi all,
+> > 
+> > I went back to my "cleanup list" recently and I wrote these patches:
+> > here you can find, among other things,
+> > 
+> >   1) the removal of the fields 'target_vp' and 'numa_node' from the
+> >      channel data structure, as suggested by Michael back in May;
+> > 
+> >   2) various cleanups for channel->lock, which is actually *removed
+> >      by the end of this series!  ;-)
+> > 
+> > I'm sure there is room for further "cleanups",  ;-) but let me check
+> > if these (relatively small) changes make sense first...
+> > 
+> > Thanks,
+> >   Andrea
+> > 
+> > Andrea Parri (Microsoft) (8):
+> >   Drivers: hv: vmbus: Remove the target_vp field from the vmbus_channel
+> >     struct
+> >   Drivers: hv: vmbus: Remove the numa_node field from the vmbus_channel
+> >     struct
+> >   Drivers: hv: vmbus: Replace cpumask_test_cpu(, cpu_online_mask) with
+> >     cpu_online()
+> >   Drivers: hv: vmbus: Remove unnecessary channel->lock critical sections
+> >     (sc_list readers)
+> >   Drivers: hv: vmbus: Use channel_mutex in channel_vp_mapping_show()
+> >   Drivers: hv: vmbus: Remove unnecessary channel->lock critical sections
+> >     (sc_list updaters)
+> >   scsi: storvsc: Introduce the per-storvsc_device spinlock
+> >   Drivers: hv: vmbus: Remove the lock field from the vmbus_channel
+> >     struct
+> 
+> I've queued these up to hyperv-next except for the scsi patch.
+> 
 
-It looks like I missed the previous message from Jarkko.
+Andrea just pointed out that the last patch can't build without the scsi
+patch, so I've only applied only the first 6 patches for now.
 
-Yes, please, feel free to add my ACK to the patch, thanks!
+Wei.
+
+> Thanks,
+> Wei.
