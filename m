@@ -2,80 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93A6201055
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B533201089
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404607AbgFSP3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:29:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393643AbgFSP2l (ORCPT
+        id S2393810AbgFSPbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:31:19 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:60204 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393777AbgFSPbI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:28:41 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF097C06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:28:39 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id g28so9329011qkl.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:28:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=1tYdgkr+QbXeZJgYmA+qUUKcjy0mjD+aYjAj0bUZgzU=;
-        b=czsFOP4SiSa6/GVmE4hR8B2myfB0sjNwA2pGvwup1AfhMR8LG3vu1t6hAc73oWsoI0
-         6i+VQsvSEaKUFX66Ep9h++sGryzoFCV8FkHJXF62JgVUNNXqUAfZQiuLDRJ2T8jaotAc
-         aDCXh2O6hgR0Nrf2nd4Y7r44+v65J8uLJ+sinOq8cHyGNKDTnIWAxddkWo8hQBYfnJK/
-         oz20jJUOrJfmx5mXWH512qJFhVCuwsTc2qAPIaoGc+Rod9/M64MXuPNNTmwGUbltqt3v
-         hP7d0scJgbG81h8otXZBu/o0rHY+07lZyVNJwAjVjeSnpiFhOKHKTOcpx+CsHkRCkipd
-         UfiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=1tYdgkr+QbXeZJgYmA+qUUKcjy0mjD+aYjAj0bUZgzU=;
-        b=T5b2Lzhb3TKD6TDtksbwPNwgAoWmYrRya+gt9PfvDwLbHjcAGkbTHhwtZNO9oAeMaQ
-         qfgl2zX09cSIc5+nIhLZLG17oshzuX/Q1CAZWDqajQUR/mJBnB6sWChWeZQe+9gOqaoP
-         xJ07gPd650548wZD/CvpRiq4wJndmkrjQupeZ45icz5MdtNXFcnBIqnnMJuFvoiw2Pkd
-         KjEYirMZmXFRqTIv25/M2Oe9Y7pQdCfiqZZbgS0Uq+gfootmwOnVVg3HJsJUnDqRpARm
-         2Zv0VTRhZyPNnWLltHzl/K3qmMbgz+RtX5E2FTkjYk9tX+VAs+ucz1mACzPNNbCI/CR9
-         pNfw==
-X-Gm-Message-State: AOAM5303D0+inroauz5GhT6WSgPANzOXdIW0+zOnmDif986L0s1sJL91
-        a/tCMbX0pVJWm7pJNU7xnPYMkr7S9skeafY9TTo=
-X-Google-Smtp-Source: ABdhPJwWxr1tcHe64ZAnKHxtW5/kzeY4Ynei0J8Lr4eSGKQTGV+COB9tw9BXQkQX+pjoRG6VUmfuI+JsV/fl0xbEX98=
-X-Received: by 2002:ae9:e895:: with SMTP id a143mr4081454qkg.359.1592580519112;
- Fri, 19 Jun 2020 08:28:39 -0700 (PDT)
+        Fri, 19 Jun 2020 11:31:08 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id DE1C12A54AD
+Received: by earth.universe (Postfix, from userid 1000)
+        id 651323C08CD; Fri, 19 Jun 2020 17:31:03 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 17:31:03 +0200
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Mario.Limonciello@dell.com, y.linux@paritcher.com,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-pm@vger.kernel.org, mjg59@srcf.ucam.org
+Subject: Re: [PATCH 2/3] platform/x86: dell-wmi: add new keymap type 0x0012
+Message-ID: <20200619153103.k4ewdaljqubcrvvc@earth.universe>
+References: <cover.1591584631.git.y.linux@paritcher.com>
+ <0dc191a3d16f0e114f6a8976433e248018e10c43.1591584631.git.y.linux@paritcher.com>
+ <83fe431cacbc4708962767668ac8f06f@AUSX13MPC105.AMER.DELL.COM>
+ <79bd59ee-dd37-bdc5-f6b4-00f2c33fdcff@paritcher.com>
+ <7f9f0410696141cfabb0237d33b7b529@AUSX13MPC105.AMER.DELL.COM>
+ <20200609154938.udo7mn7ka7z7pr6c@pali>
+ <20200609164533.qtup47io2aoc5hgl@earth.universe>
+ <136a06e3-0f00-d252-ebdd-a76c8a575db8@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:aed:2d06:0:0:0:0:0 with HTTP; Fri, 19 Jun 2020 08:28:38
- -0700 (PDT)
-From:   "Mrs. Aisha Gaddafi" <ga648766@gmail.com>
-Date:   Fri, 19 Jun 2020 16:28:38 +0100
-X-Google-Sender-Auth: ASOplWPEtMjMnc8pdlMbe12ImUA
-Message-ID: <CAA-xDnM5LSEP8DAdoRkV=-aa_0z4yCm3ktJGbYhs98ayWSamdw@mail.gmail.com>
-Subject: It Is My Great Pleasure To Contact You
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="asks2luctm5jqxfa"
+Content-Disposition: inline
+In-Reply-To: <136a06e3-0f00-d252-ebdd-a76c8a575db8@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend,
-Greetings and Nice Day.
-Assalamu Alaikum
-May i  use this medium to open a mutual communication with you seeking
-your acceptance towards investing in your country under your
-management as my partner, My name is Aisha  Gaddafi and presently
-living in Oman, i am a Widow and single Mother with three Children,
-the only biological Daughter of late Libyan President (Late Colonel
-Muammar Gaddafi) and presently i am under political asylum protection
-by the Omani Government.
 
-I have funds worth"Twenty Seven Million Five Hundred Thousand United
-State Dollars" $27.500.000.00 US Dollar which i want to entrust on
-you for
-investment project in your country.If you are willing to handle this
-project on my behalf, kindly reply urgent to enable me provide you
-more details to start the transfer process.
-I shall appreciate your urgent response through my email address.
+--asks2luctm5jqxfa
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best Regards
-Mrs Aisha Gaddaf
+Hi,
+
+On Tue, Jun 09, 2020 at 06:59:13PM +0200, Hans de Goede wrote:
+> Hi Sebastian,
+>=20
+> On 6/9/20 6:45 PM, Sebastian Reichel wrote:
+> > Hi,
+> >=20
+> > On Tue, Jun 09, 2020 at 05:49:38PM +0200, Pali Roh=E1r wrote:
+> > > On Monday 08 June 2020 20:36:58 Mario.Limonciello@dell.com wrote:
+> > > > Can you please comment here how you would like to see events like t=
+his should come
+> > > > through to userspace?
+> > > >=20
+> > > > * Wrong power adapter (you have X and should have Y)
+> > > > * You have plugged a dock into the wrong port
+> > > > * Fn-lock mode
+> > >=20
+> > > In my opinion, Fn-lock mode is related to input subsystem and should =
+be
+> > > probably reported via input device. For a user, fn-lock is similar li=
+ke
+> > > caps-lock, scroll-lock or num-lock. Also fn-lock is provided by other
+> > > laptops and therefore I would expect that kernel provide fn-lock state
+> > > for all laptops (thinkpad / latitude / ...) via same interface. And n=
+ot
+> > > via dell-specific interface or general-vendor-message interface.
+> > >=20
+> > > Wrong power adapter sounds like something related to power subsystem.
+> > > Adding Sebastian to the loop, maybe he can provide some useful ideas
+> > > about it.
+> >=20
+> > I'm missing a bit of context. I suppose this is about connecting a
+> > non-genuine power adapter rejected by the embedded controller?
+> > Support for that should be hooked into 'drivers/acpi/ac.c' (note:
+> > so far there is no standard power-supply class property for this).
+> > Also printing a warning to dmesg seems sensible.
+>=20
+> This is not so much about non-genuine as about the adapter having
+> the wrong wattage. E.g. plugging a 65W adapter in a laptop which
+> has a 45W CPU + a 35W discrete GPU will not allow the laptop to
+> really charge while it is in use.
+
+Ok. So how much information is available over WMI? Exposing the
+max. input power via the power-supply API makes sense in any case.
+
+> One issue I see with doing this in the power_supply class is that
+> the charger is represented by the standard ACPI AC adapter stuff,
+> which does not have this info. This sort of extra info comes from
+> WMI. Now we could have the WMI driver register a second power_supply
+> device, but that means having 2 power_supply devices representing
+> the 1 AC adapter which does not feel right.
+
+I agree. WMI and ACPI information need to be merged and exposed
+as one device to userspace. It's not the first time we have this
+kind of requirement, but so far it was about merging battery info
+=66rom two places. Unfortunately no code has been written so far to
+support this.
+
+> I was myself actually thinking more along the lines of adding a
+> new mechanism to the kernel where the kernel can send messages
+> to userspace (either with some special tag inside dmesg, or through
+> a new mechanism) indication that the message should be shown
+> as a notification (dialog/bubble/whatever) inside the UI.
+>
+> This could be useful for this adapter case, but e.g. also for
+> pluging a thunderbolt device into a non thunderbolt capable
+> Type-C port, a superspeed USB device into a USB-2 only USB
+> port and probably other cases.
+>=20
+> Rather then inventing separate userspace APIs for all these
+> cases having a general notification mechanism might be
+> quite useful for this (as long as the kernel does not
+> over use it).
+
+I don't think this is a good idea. It brings all kind of
+localization problems. Also the information is not machine
+parsable. It looks more like a hack to get things working
+quickly by avoiding using/designing proper APIs.
+
+-- Sebastian
+
+--asks2luctm5jqxfa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7s2ikACgkQ2O7X88g7
++pphDQ//U3O3wYfKysir/AJz9pc7ViJ82wmiKbe8bdYV8V4sQPlUQ4YCzUil/++R
+BiwlvG1tcn90CEffDWsffJ5qe5FKsLisYSZamWPwvV7hbu+wzyjx1tvLR6LC3v/2
+cbSzYJmhwzecEPoX3mnuODDk0sZXGijWghl1mwIlc+Z9JF83m1GoVsE14pJa3bF/
+hf9Bb5P7ozdTaa+cS8m08duJkmKP1y2KDcbWkrilo8lXYcU3DMi5iv+SU/j3o3AN
+jC405SUpNV8dzL0y3Bo1qa/BK3JPmPQaL2YbOlnw12AoQU8+wPStwaqd6S4jLFyh
+jL3VD4trgKVD+f6lz7ivjfwo3/lo3TvE9dLCMx+7N3EcDQbEjNhWr45ns/EY10Sj
+PVN9kIhmxVIjfuFfnXq9HXtIQ0I4fi7wA8YJewX2xI5UY+c5Mp2bq3C1hyMnFV1+
+YMIkyK8WsrVgEq7yo+qVazhh7lZLoz7SlFNPVZkXi8Bo5fWDBKPgIwbms4XeZeLd
+Br7qJXE8tuev1HCATpQszwYcHQqG96un6Zyq3mESJoOVi6+XdvdholMQxNj1bCwi
+6OvuVrsGbh02Hpbo9YwP+D+SQAdNaf8FCFzhzs4jd43tkysNWVhr69yKDC1/HFOQ
+KiBgpkmp51m/DCn7K9JYQQxOkEbMRGqYui+DS65JuRVNrzEWWLc=
+=3JZ5
+-----END PGP SIGNATURE-----
+
+--asks2luctm5jqxfa--
