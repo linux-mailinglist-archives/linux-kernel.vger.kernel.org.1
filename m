@@ -2,92 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A26200291
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 09:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF966200260
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 09:01:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730300AbgFSHOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 03:14:38 -0400
-Received: from l2mail1.panix.com ([166.84.1.75]:56829 "EHLO l2mail1.panix.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729859AbgFSHOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 03:14:37 -0400
-X-Greylist: delayed 1026 seconds by postgrey-1.27 at vger.kernel.org; Fri, 19 Jun 2020 03:14:36 EDT
-Received: from mailbackend.panix.com (mailbackend.panix.com [166.84.1.89])
-        by l2mail1.panix.com (Postfix) with ESMTPS id 49p8kf2y85zDSs
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 02:57:30 -0400 (EDT)
-Received: from xps-7390 (cpe-23-242-39-94.socal.res.rr.com [23.242.39.94])
-        by mailbackend.panix.com (Postfix) with ESMTPSA id 49p8kc55jszTg9;
-        Fri, 19 Jun 2020 02:57:28 -0400 (EDT)
-Date:   Thu, 18 Jun 2020 23:57:27 -0700 (PDT)
-From:   "Kenneth R. Crudup" <kenny@panix.com>
-Reply-To: "Kenneth R. Crudup" <kenny@panix.com>
-To:     Christoph Hellwig <hch@lst.de>
-cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: Commit 25f12ae45fc1 ("maccess: rename probe_kernel_address to
- get_kernel_nofault") causing several OOPSes
-In-Reply-To: <20200619065007.GA3041@lst.de>
-Message-ID: <alpine.DEB.2.22.394.2006182351090.9276@xps-7390>
-References: <alpine.DEB.2.22.394.2006181751270.9276@xps-7390> <20200619065007.GA3041@lst.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S1729779AbgFSHBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 03:01:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38258 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728109AbgFSHAt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 03:00:49 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E27C06174E;
+        Fri, 19 Jun 2020 00:00:48 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id g3so8285296ilq.10;
+        Fri, 19 Jun 2020 00:00:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QMbAt1k2a7uyQKReEMHBWVP+e2hPp2/KEXSt2hE1Dgs=;
+        b=EnS0KyEyEIhjKeIuzeRJah7X1i1UxSV1Rc5cg+gRQzYq1q+L5/rIHmPaol264xjvv/
+         ks5u6LizmnNhGeOrdThBcxEi4lbW0gqmxdWnnXhUuae2Rndf3306vsbIaQ63dbMQHwVj
+         PIO7rL9Vuccj87q+5SInY3YfNmAQ/z7GqQ5GvXQcpTZyxTj9YAiuXDcrDxPBfjbyakre
+         umL5Z0trF2e6Cmx4ps5DBd/MDfNFe/XbV0qq2virnNtr+AwDoXIb2ZluQvKMGG9EKoA/
+         hquSIKw1J2zOjAslzI+MQ4aUxDJXd6kwq9gsYPKXY3SWWewO+m9DXb0jqYm60TaSn/c/
+         dLIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QMbAt1k2a7uyQKReEMHBWVP+e2hPp2/KEXSt2hE1Dgs=;
+        b=ko4iyFcsMiIug46MysXAr5gc6GvpAxstkMiIgvO0tAD38fuvIwPxTphFYXhoxSjYu+
+         QIkAmNqhxYWMlwEgJVVigi8xxgCrcGVCh2PnRRFVwfGmP9+8ugAUkSdIJ7FyOXgIgDQu
+         YDhRiNqWduVqT8krCa1vB6tWh3HlYrOd2WPyIi5Z4ddKwPjVEGbKxUnMT0LIKMFfB+TE
+         LQUr30Fy4BiYSJvuwxBdeWkKbAXhMUMqceikPOCgH1oi4UsRAEHtOEXSdHsO04yeH9xM
+         64S0uismSbKwSdrMbAUla2PuTBB0z4VZyqvFBe/MjYW3yvvQO33jIYlO3TudWgLGFbBj
+         Zi7Q==
+X-Gm-Message-State: AOAM532MCJp/GeUGsFQc8omO2QaV8wnYc7nlHu7toc/zZKKUlicX6j0p
+        S37NXXIiuVH0aXthuIP0rebpwLgAIwWCeZs5Ge4=
+X-Google-Smtp-Source: ABdhPJwmpb/UzzdKSIlxsufaFoBTyO0NylKvjrCptfFcs41NjlXUvcCtPjMUjTr5Ee8orMJapfBSGtIuuZAWG73cUHM=
+X-Received: by 2002:a92:2410:: with SMTP id k16mr2334391ilk.40.1592550046708;
+ Fri, 19 Jun 2020 00:00:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <46c05c5deeada60a13ee0de83c68583d578f42fd.1592224129.git.syednwaris@gmail.com>
+ <202006160420.iatdr9ab%lkp@intel.com>
+In-Reply-To: <202006160420.iatdr9ab%lkp@intel.com>
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+Date:   Fri, 19 Jun 2020 12:30:35 +0530
+Message-ID: <CACG_h5qUZsR7Zd9a+BQJqyuJZBrv-en+gC-sgcV+xV+A5ZOBhA@mail.gmail.com>
+Subject: Re: [PATCH v8 4/4] gpio: xilinx: Utilize for_each_set_clump macro
+To:     kernel test robot <lkp@intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kbuild-all@lists.01.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+>
+> Hi Syed,
+>
+> Thank you for the patch! Perhaps something to improve:
+>
+> [auto build test WARNING on 444fc5cde64330661bf59944c43844e7d4c2ccd8]
+>
+> url:    https://github.com/0day-ci/linux/commits/Syed-Nayyar-Waris/Introduce-the-for_each_set_clump-macro/20200615-205729
+> base:    444fc5cde64330661bf59944c43844e7d4c2ccd8
+> config: sparc64-randconfig-s032-20200615 (attached as .config)
+> compiler: sparc64-linux-gcc (GCC) 9.3.0
+> reproduce:
+>         # apt-get install sparse
+>         # sparse version: v0.6.2-rc1-3-g55607964-dirty
+>         # save the attached .config to linux build tree
+>         make W=1 C=1 ARCH=sparc64 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__'
+>
 
-On Fri, 19 Jun 2020, Christoph Hellwig wrote:
+>
+>
+> sparse warnings: (new ones prefixed by >>)
+>
+> >> include/linux/bitmap.h:639:45: sparse: sparse: shift too big (64) for type unsigned long
+> >> include/linux/bitmap.h:639:45: sparse: sparse: shift too big (64) for type unsigned long
+>    include/linux/bitmap.h:594:63: sparse: sparse: shift too big (64) for type unsigned long
+> >> include/linux/bitmap.h:639:45: sparse: sparse: shift too big (64) for type unsigned long
+> >> include/linux/bitmap.h:638:17: sparse: sparse: invalid access past the end of 'old' (8 8)
+>
 
-> That is indeed really strange, as that commit is just a rename.
-> Well, Linus also added swapping of the argument order, but again it
-> shouldn't change much.
+Hi All,
 
-Thing is, there's other examples of the previous version in the kernel tree- any
-chance there's a usage conflict (Thunderbolt has a ROM in it, maybe something in
-"probe_roms.c"? (Just guessing, no idea):
+It seems to me that to reproduce this warning, I have to use the
+sparc64 compiler. I have installed 'sparc64-linux-gnu-gcc' on my
+computer.
+I have to specify that this compiler needs to be used for build
+process. How/ Where do I specify this?
 
-----
-afind probe_kernel_address
-./lib/test_lockup.c:        probe_kernel_address(ptr, buf) ||
-./lib/test_lockup.c:        probe_kernel_address(ptr + size - 1, buf)) {
-./lib/test_lockup.c:    if (probe_kernel_address(ptr, magic) || magic != expected) {
-./arch/arm64/kernel/traps.c:            if (probe_kernel_address((__force __le32 *)pc, instr_le))
-./arch/sh/kernel/traps.c:       if (probe_kernel_address((insn_size_t *)addr, opcode))
-./arch/x86/kernel/traps.c:      if (probe_kernel_address((unsigned short *)addr, ud))
-./arch/x86/kernel/probe_roms.c:         if (probe_kernel_address(rom_list, device) != 0)
-./arch/x86/kernel/probe_roms.c:         if (probe_kernel_address(rom + 0x18, offset) != 0)
-./arch/x86/kernel/probe_roms.c:         if (probe_kernel_address(rom + offset + 0x4, vendor) != 0)
-./arch/x86/kernel/probe_roms.c:         if (probe_kernel_address(rom + offset + 0x6, device) != 0)
-./arch/x86/kernel/probe_roms.c:         if (probe_kernel_address(rom + offset + 0x8, list) == 0 &&
-./arch/x86/kernel/probe_roms.c:             probe_kernel_address(rom + offset + 0xc, rev) == 0 &&
-./arch/x86/kernel/probe_roms.c: return probe_kernel_address(ptr, sig) == 0 && sig == ROMSIGNATURE;
-./arch/x86/kernel/probe_roms.c: for (sum = 0; length && probe_kernel_address(rom++, c) == 0; length--)
-./arch/x86/kernel/probe_roms.c:         if (probe_kernel_address(rom + 2, c) != 0)
-./arch/x86/kernel/probe_roms.c:         if (probe_kernel_address(rom + 2, c) != 0)
-./arch/x86/mm/fault.c:          if (probe_kernel_address(instr, opcode))
-./arch/x86/mm/fault.c:          if (probe_kernel_address(instr, opcode))
-./arch/x86/mm/fault.c:  return probe_kernel_address((unsigned long *)p, dummy);
-./arch/x86/pci/pcbios.c:                if (probe_kernel_address(&check->fields.signature, sig))
-./arch/arm/mm/alignment.c:              fault = probe_kernel_address(ip, instr);
-./arch/arm/mm/alignment.c:              fault = probe_kernel_address(ip, instr);
-./arch/s390/mm/fault.c: return probe_kernel_address((unsigned long *)p, dummy);
-./arch/powerpc/kernel/process.c:                    probe_kernel_address((const void *)pc, instr)) {
-./arch/powerpc/kernel/kprobes.c:                if (probe_kernel_address(addr, instr))
-./arch/powerpc/sysdev/fsl_pci.c:                        ret = probe_kernel_address((void *)regs->nip, inst);
-./arch/riscv/kernel/kgdb.c:     if (probe_kernel_address((void *)pc, op_code))
-./arch/riscv/kernel/kgdb.c:     error = probe_kernel_address((void *)addr, stepped_opcode);
-./arch/riscv/kernel/traps.c:    if (probe_kernel_address((bug_insn_t *)pc, insn))
-./arch/riscv/kernel/traps.c:    if (probe_kernel_address((bug_insn_t *)pc, insn))
-----
+I have downloaded the config.gz (has config file) and placed it at the
+root of the linux kernel project tree. But the Makefile STILL has
+'gcc' as the compiler. When I build, it is the 'gcc' compiler being
+used and not 'sparc64-linux-gnu-gcc'. I know I can manually change the
+Makefile to use sparc64 compiler, but I think there must be some more
+elegant way to do this, perhaps using make menuconfig?
 
-> Do you see any compiler warnings or something
-> odd in the kernel log before the actual crash?
+Kindly illuminate as to how shall I reproduce the compiler warning.
 
-Not that I could see, but I'll try building again later on.
+Regards
+Syed Nayyar Waris
 
-	-Kenny
-
--- 
-Kenneth R. Crudup  Sr. SW Engineer, Scott County Consulting, Silicon Valley
+> vim +639 include/linux/bitmap.h
+>
+> 169c474fb22d8a William Breathitt Gray 2019-12-04  613
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  614  /**
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  615   * bitmap_set_value - set n-bit value within a memory region
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  616   * @map: address to the bitmap memory region
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  617   * @value: value of nbits
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  618   * @start: bit offset of the n-bit value
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  619   * @nbits: size of value in bits
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  620   */
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  621  static inline void bitmap_set_value(unsigned long *map,
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  622                               unsigned long value,
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  623                               unsigned long start, unsigned long nbits)
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  624  {
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  625   const size_t index = BIT_WORD(start);
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  626   const unsigned long offset = start % BITS_PER_LONG;
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  627   const unsigned long ceiling = roundup(start + 1, BITS_PER_LONG);
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  628   const unsigned long space = ceiling - start;
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  629
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  630   value &= GENMASK(nbits - 1, 0);
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  631
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  632   if (space >= nbits) {
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  633           map[index] &= ~(GENMASK(nbits + offset - 1, offset));
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  634           map[index] |= value << offset;
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  635   } else {
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  636           map[index] &= ~BITMAP_FIRST_WORD_MASK(start);
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  637           map[index] |= value << offset;
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15 @638           map[index + 1] &= ~BITMAP_LAST_WORD_MASK(start + nbits);
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15 @639           map[index + 1] |= (value >> space);
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  640   }
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  641  }
+> 803024b6c8a375 Syed Nayyar Waris      2020-06-15  642
+>
+> :::::: The code at line 639 was first introduced by commit
+> :::::: 803024b6c8a375ba9e9e9467595d7d52d4f6a38e bitops: Introduce the for_each_set_clump macro
+>
+> :::::: TO: Syed Nayyar Waris <syednwaris@gmail.com>
