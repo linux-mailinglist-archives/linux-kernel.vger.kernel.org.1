@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62C5200DC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0CA2200EF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390725AbgFSPBh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:01:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57250 "EHLO mail.kernel.org"
+        id S2392216AbgFSPNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:13:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390660AbgFSPAp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:00:45 -0400
+        id S2392200AbgFSPNN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:13:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 01B082186A;
-        Fri, 19 Jun 2020 15:00:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D1E221582;
+        Fri, 19 Jun 2020 15:13:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578845;
-        bh=CKS5+HdSoST1TSqe2wRB6hzz6m7D616MmSXTHXlLY/U=;
+        s=default; t=1592579592;
+        bh=fkfXndqxh4AQ+gd8Jrw7nvbRge50YW+KBgsDLiMt3sE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kf3qJcXgdDvUIr+ovviaHJzeE0lyLTrbqV+/3RRGdnTj19PFGPVIBmMh+sTmiXCNt
-         YtJ8ATJQAX3DGqgEvFVoWpxL098tZ9J0yD08yEwsYZVbS+EyoTrCHWtLXr+muu230l
-         uNc2dY7BKEzDYEJGkZPmR8IcR9FuJiLNZfzYDXGY=
+        b=npPu5ZzkcCCPJIguNqBFR+AqzAURbzzQO9OmBhfE+2L255SYo+vIvMmmNDBznuzv7
+         AQFcnqazjNNR/ax+R5X+y1FirALZw1HFvozVE/hHYTJK6+W8kvJgc5E8YQfNlfqTzj
+         vjN31yjUvuEcOEUfZ8uLNhqC515a+6sEmfzafzxU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Rui Miguel Silva <rmfrfs@gmail.com>,
-        Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
-        greybus-dev@lists.linaro.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Eelco Chaudron <echaudro@redhat.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 178/267] staging: greybus: sdio: Respect the cmd->busy_timeout from the mmc core
-Date:   Fri, 19 Jun 2020 16:32:43 +0200
-Message-Id: <20200619141657.320999023@linuxfoundation.org>
+Subject: [PATCH 5.4 153/261] libbpf: Fix perf_buffer__free() API for sparse allocs
+Date:   Fri, 19 Jun 2020 16:32:44 +0200
+Message-Id: <20200619141657.207952322@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,64 +46,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ulf Hansson <ulf.hansson@linaro.org>
+From: Eelco Chaudron <echaudro@redhat.com>
 
-[ Upstream commit a389087ee9f195fcf2f31cd771e9ec5f02c16650 ]
+[ Upstream commit 601b05ca6edb0422bf6ce313fbfd55ec7bbbc0fd ]
 
-Using a fixed 1s timeout for all commands is a bit problematic.
+In case the cpu_bufs are sparsely allocated they are not all
+free'ed. These changes will fix this.
 
-For some commands it means waiting longer than needed for the timeout to
-expire, which may not a big issue, but still. For other commands, like for
-an erase (CMD38) that uses a R1B response, may require longer timeouts than
-1s. In these cases, we may end up treating the command as it failed, while
-it just needed some more time to complete successfully.
-
-Fix the problem by respecting the cmd->busy_timeout, which is provided by
-the mmc core.
-
-Cc: Rui Miguel Silva <rmfrfs@gmail.com>
-Cc: Johan Hovold <johan@kernel.org>
-Cc: Alex Elder <elder@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: greybus-dev@lists.linaro.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Acked-by: Rui Miguel Silva <rmfrfs@gmail.com>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Link: https://lore.kernel.org/r/20200414161413.3036-20-ulf.hansson@linaro.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: fb84b8224655 ("libbpf: add perf buffer API")
+Signed-off-by: Eelco Chaudron <echaudro@redhat.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Link: https://lore.kernel.org/bpf/159056888305.330763.9684536967379110349.stgit@ebuild
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/greybus/sdio.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ tools/lib/bpf/libbpf.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/greybus/sdio.c b/drivers/staging/greybus/sdio.c
-index 38e85033fc4b..afb2e5e5111a 100644
---- a/drivers/staging/greybus/sdio.c
-+++ b/drivers/staging/greybus/sdio.c
-@@ -411,6 +411,7 @@ static int gb_sdio_command(struct gb_sdio_host *host, struct mmc_command *cmd)
- 	struct gb_sdio_command_request request = {0};
- 	struct gb_sdio_command_response response;
- 	struct mmc_data *data = host->mrq->data;
-+	unsigned int timeout_ms;
- 	u8 cmd_flags;
- 	u8 cmd_type;
- 	int i;
-@@ -469,9 +470,12 @@ static int gb_sdio_command(struct gb_sdio_host *host, struct mmc_command *cmd)
- 		request.data_blksz = cpu_to_le16(data->blksz);
- 	}
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 281cc65276e0..2a1dbf52fc9a 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -5358,9 +5358,12 @@ void perf_buffer__free(struct perf_buffer *pb)
+ 	if (!pb)
+ 		return;
+ 	if (pb->cpu_bufs) {
+-		for (i = 0; i < pb->cpu_cnt && pb->cpu_bufs[i]; i++) {
++		for (i = 0; i < pb->cpu_cnt; i++) {
+ 			struct perf_cpu_buf *cpu_buf = pb->cpu_bufs[i];
  
--	ret = gb_operation_sync(host->connection, GB_SDIO_TYPE_COMMAND,
--				&request, sizeof(request), &response,
--				sizeof(response));
-+	timeout_ms = cmd->busy_timeout ? cmd->busy_timeout :
-+		GB_OPERATION_TIMEOUT_DEFAULT;
++			if (!cpu_buf)
++				continue;
 +
-+	ret = gb_operation_sync_timeout(host->connection, GB_SDIO_TYPE_COMMAND,
-+					&request, sizeof(request), &response,
-+					sizeof(response), timeout_ms);
- 	if (ret < 0)
- 		goto out;
- 
+ 			bpf_map_delete_elem(pb->map_fd, &cpu_buf->map_key);
+ 			perf_buffer__free_cpu_buf(pb, cpu_buf);
+ 		}
 -- 
 2.25.1
 
