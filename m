@@ -2,63 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613F8201B40
+	by mail.lfdr.de (Postfix) with ESMTP id D74E8201B41
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 21:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388680AbgFSTa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 15:30:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43766 "EHLO mail.kernel.org"
+        id S2388741AbgFSTa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 15:30:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387867AbgFSTaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2388580AbgFSTaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 19 Jun 2020 15:30:23 -0400
-Subject: Re: [GIT PULL] perf tooling fixes for v5.8
+Subject: Re: [GIT PULL] overflow helper addition for v5.8-rc2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592595022;
-        bh=x6QnEUI9EDQlZ40p1wD135xUtfgRj9k+Enu9q9Z/N90=;
+        s=default; t=1592595023;
+        bh=XreBJ9QwN4ELpOzgYdDthlvw1lAm1Q3T8fnwzsH49G8=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=yOO3mxp9C88EFxj4YJfP6l377JbD40eJfopT4AnaB/LoqFkBOg+l3gvKLYHWGQ2AQ
-         OYfU3Hk40P/CgnZkGp7WuoKwX5rSr3Xs7JQY+AxEdLR+4G2kn0dAbSY9TRhzvgSqT1
-         60LZC1oI8fM12PPQDo99UnzBqk7caPZgphOjKMa4=
+        b=iaRlLAKByU2ImuRwHSF21cu6Vy/nmHzp+wXYKZnRvVCCGooY9A9yAr9K6hbNPkHDg
+         6CtpcW9L6bgcre5fnXxWszS8dCZpvq1aLFBSNM0Ov0Meqx+YaFOyLu53oX9GwKtWoL
+         i9Zq5IlGLbcUKAL2ZpjUoFCCmqcnb7EJJMgJx5aY=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200618192840.4519-1-acme@kernel.org>
-References: <20200618192840.4519-1-acme@kernel.org>
+In-Reply-To: <202006181937.CA6017A@keescook>
+References: <202006181937.CA6017A@keescook>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200618192840.4519-1-acme@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git
- tags/perf-tools-fixes-2020-06-02
-X-PR-Tracked-Commit-Id: 6a1515c962b17e2596ae7b9f074fc5685d6b435b
+X-PR-Tracked-Message-Id: <202006181937.CA6017A@keescook>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git
+ tags/overflow-v5.8-rc2
+X-PR-Tracked-Commit-Id: b19d57d0f3cc6f1022edf94daf1d70506a09e3c2
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 98d7e741a0a37fff24f99e4b6c5a1bd1e50cd47a
-Message-Id: <159259502282.2705.16542690620448124686.pr-tracker-bot@kernel.org>
-Date:   Fri, 19 Jun 2020 19:30:22 +0000
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+X-PR-Merge-Commit-Id: 98b769942c698e43117334332ebfed852dfa6ff9
+Message-Id: <159259502311.2705.2557183636948415164.pr-tracker-bot@kernel.org>
+Date:   Fri, 19 Jun 2020 19:30:23 +0000
+To:     Kees Cook <keescook@chromium.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Gaurav Singh <gaurav1086@gmail.com>,
-        Hongbo Yao <yaohongbo@huawei.com>,
-        Ian Rogers <irogers@google.com>,
-        Milian Wolff <milian.wolff@kdab.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
+        linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 18 Jun 2020 16:28:40 -0300:
+The pull request you sent on Thu, 18 Jun 2020 19:42:12 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/acme/linux.git tags/perf-tools-fixes-2020-06-02
+> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/overflow-v5.8-rc2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/98d7e741a0a37fff24f99e4b6c5a1bd1e50cd47a
+https://git.kernel.org/torvalds/c/98b769942c698e43117334332ebfed852dfa6ff9
 
 Thank you!
 
