@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666DC20168F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A590F2017B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389546AbgFSOwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:52:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45712 "EHLO mail.kernel.org"
+        id S2395511AbgFSQmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:42:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35612 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389152AbgFSOv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:51:56 -0400
+        id S1733212AbgFSOoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:44:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F64621852;
-        Fri, 19 Jun 2020 14:51:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9544120A8B;
+        Fri, 19 Jun 2020 14:44:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578316;
-        bh=tQhxigQbmQOKnMbx5j51NiN66GZ0gOKoylnatGUazao=;
+        s=default; t=1592577862;
+        bh=/yiwJt2Ym0/+aaH/zOczKqsSnUNtR8CrvV3jupuKf0M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hVs6o9wPAcFH1EaxOYuS/cEc99+wWuzbo+B9KgzaEz4dRVIBh43IUu4I3DY/AI25J
-         Z1I1RWb5W55OM/BQ22kEsVwHaHHJmQD5jMbd2bvau7rki/M8dHUe2WPHdIiilLdM7A
-         KnMO5GFAZR+6MwTH4psUjM/LgMpdqxFMcA5l3c/I=
+        b=U1695W3wWcYP6vRJzQ5gVwjSwHg0NDLTe6Ime42o1mDCHbNJ65Szzima0rCwGoz0P
+         xfda4pFJTnX9Y6p6bGRVsV0DZ6i0t1XH8IadyXnG597GExAHEl9WrxcmSWwUxQoiu1
+         KFe3UWZBMV0asynegMa4y06QPYydgeLi6X0idkL0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Larry Finger <Larry.Finger@lwfinger.net>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4.14 167/190] b43legacy: Fix case where channel status is corrupted
+        stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: [PATCH 4.9 118/128] kernel/cpu_pm: Fix uninitted local in cpu_pm
 Date:   Fri, 19 Jun 2020 16:33:32 +0200
-Message-Id: <20200619141642.121194934@linuxfoundation.org>
+Message-Id: <20200619141626.365372981@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,56 +46,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Larry Finger <Larry.Finger@lwfinger.net>
+From: Douglas Anderson <dianders@chromium.org>
 
-commit ec4d3e3a054578de34cd0b587ab8a1ac36f629d9 upstream.
+commit b5945214b76a1f22929481724ffd448000ede914 upstream.
 
-This patch fixes commit 75388acd0cd8 ("add mac80211-based driver for
-legacy BCM43xx devices")
+cpu_pm_notify() is basically a wrapper of notifier_call_chain().
+notifier_call_chain() doesn't initialize *nr_calls to 0 before it
+starts incrementing it--presumably it's up to the callers to do this.
 
-In https://bugzilla.kernel.org/show_bug.cgi?id=207093, a defect in
-b43legacy is reported. Upon testing, thus problem exists on PPC and
-X86 platforms, is present in the oldest kernel tested (3.2), and
-has been present in the driver since it was first added to the kernel.
+Unfortunately the callers of cpu_pm_notify() don't init *nr_calls.
+This potentially means you could get too many or two few calls to
+CPU_PM_ENTER_FAILED or CPU_CLUSTER_PM_ENTER_FAILED depending on the
+luck of the stack.
 
-The problem is a corrupted channel status received from the device.
-Both the internal card in a PowerBook G4 and the PCMCIA version
-(Broadcom BCM4306 with PCI ID 14e4:4320) have the problem. Only Rev, 2
-(revision 4 of the 802.11 core) of the chip has been tested. No other
-devices using b43legacy are available for testing.
+Let's fix this.
 
-Various sources of the problem were considered. Buffer overrun and
-other sources of corruption within the driver were rejected because
-the faulty channel status is always the same, not a random value.
-It was concluded that the faulty data is coming from the device, probably
-due to a firmware bug. As that source is not available, the driver
-must take appropriate action to recover.
-
-At present, the driver reports the error, and them continues to process
-the bad packet. This is believed that to be a mistake, and the correct
-action is to drop the correpted packet.
-
-Fixes: 75388acd0cd8 ("add mac80211-based driver for legacy BCM43xx devices")
-Cc: Stable <stable@vger.kernel.org>
-Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
-Reported-and-tested by: F. Erhard <erhard_f@mailbox.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200407190043.1686-1-Larry.Finger@lwfinger.net
+Fixes: ab10023e0088 ("cpu_pm: Add cpu power management notifiers")
+Cc: stable@vger.kernel.org
+Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Link: https://lore.kernel.org/r/20200504104917.v6.3.I2d44fc0053d019f239527a4e5829416714b7e299@changeid
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/wireless/broadcom/b43legacy/xmit.c |    1 +
- 1 file changed, 1 insertion(+)
+ kernel/cpu_pm.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/net/wireless/broadcom/b43legacy/xmit.c
-+++ b/drivers/net/wireless/broadcom/b43legacy/xmit.c
-@@ -571,6 +571,7 @@ void b43legacy_rx(struct b43legacy_wldev
- 	default:
- 		b43legacywarn(dev->wl, "Unexpected value for chanstat (0x%X)\n",
- 		       chanstat);
-+		goto drop;
- 	}
+--- a/kernel/cpu_pm.c
++++ b/kernel/cpu_pm.c
+@@ -97,7 +97,7 @@ EXPORT_SYMBOL_GPL(cpu_pm_unregister_noti
+  */
+ int cpu_pm_enter(void)
+ {
+-	int nr_calls;
++	int nr_calls = 0;
+ 	int ret = 0;
  
- 	memcpy(IEEE80211_SKB_RXCB(skb), &status, sizeof(status));
+ 	read_lock(&cpu_pm_notifier_lock);
+@@ -156,7 +156,7 @@ EXPORT_SYMBOL_GPL(cpu_pm_exit);
+  */
+ int cpu_cluster_pm_enter(void)
+ {
+-	int nr_calls;
++	int nr_calls = 0;
+ 	int ret = 0;
+ 
+ 	read_lock(&cpu_pm_notifier_lock);
 
 
