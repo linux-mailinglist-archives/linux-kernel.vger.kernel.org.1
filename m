@@ -2,67 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2263820033F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 10:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD753200347
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 10:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731195AbgFSIG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 04:06:27 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:56863 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731182AbgFSIGK (ORCPT
+        id S1731161AbgFSIH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 04:07:57 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:37232 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731048AbgFSIHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 04:06:10 -0400
-X-UUID: 0ab067a9cefc4a51ace661c1274da56a-20200619
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=W1LOndusl+hI8qr6PnjPnMVG0Xt0LgOh2kjlUuxSIlM=;
-        b=VMtoT5tr4JljExfIqY2eJH5+25Btl9MG9FUYvhtEhuBgPZ8oKVoN8pR1qzbQRvwK9MxB4I1pkv6433pUgRsVpZdqWcKLSvgRWWVPuUiyM5EC9hmVEyy1oVTGcuAoMwZ8PbUYu6rV7CeNi1QI8oTSD/7a61AZLo7m0kdVysoZBDA=;
-X-UUID: 0ab067a9cefc4a51ace661c1274da56a-20200619
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <eastl.lee@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 477579277; Fri, 19 Jun 2020 16:06:06 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 19 Jun 2020 16:05:08 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 19 Jun 2020 16:05:09 +0800
-From:   EastL <EastL.Lee@mediatek.com>
-To:     Sean Wang <sean.wang@mediatek.com>
-CC:     <vkoul@kernel.org>, <robh+dt@kernel.org>, <mark.rutland@arm.com>,
-        <matthias.bgg@gmail.com>, <dmaengine@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>, EastL <EastL.Lee@mediatek.com>
-Subject: [PATCH v5 4/4] dmaengine: mediatek-cqdma: fix compatible
-Date:   Fri, 19 Jun 2020 16:05:02 +0800
-Message-ID: <1592553902-30592-5-git-send-email-EastL.Lee@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1592553902-30592-1-git-send-email-EastL.Lee@mediatek.com>
-References: <1592553902-30592-1-git-send-email-EastL.Lee@mediatek.com>
+        Fri, 19 Jun 2020 04:07:46 -0400
+Received: by mail-oi1-f195.google.com with SMTP id a3so7741090oid.4
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 01:07:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A9QLwr/gThP6fd0GJQ39gaT5PlOnHllX1baIFXtwLyU=;
+        b=ARwyL1u8b2INHIDkSNiyNO7IL7f668sXq1o1B8yL/9hVYPTljgkE9/Mc3btaOqD2VY
+         zLSCrfXcxNWuUEnaUMWFkRmqmAplsGr1Twq1pMlvTeGh5o9NyzrbKYU048Jx/IiBeBv4
+         hi76s81dJkTT/2GsyP7zK5Pu3vvZ/NWm+eypdwUu344C66eyEtcY8/KVZo/2m/MmkhZ6
+         ruwBm2/fF7QY8taUHSuxmWwfxdOgaAoEUjGQLbFAXuYRSrYlfaI9kDA74QIS5Y36dT7P
+         iHGz9zAtEvGQkKzAbOZLaQ1IUa+W7+gGJaJcoVRzw/5cvvP93DNH2K582ElR3EBo3fT1
+         oHJQ==
+X-Gm-Message-State: AOAM532EUbUnYhY8inZCNFwE5pWWOF8ig4wdSqcP0iuSIvLu88SDm5r1
+        T4G6HiAZAbIeUfbZJfqSgJsQAHqHuB5xe6oWDE0=
+X-Google-Smtp-Source: ABdhPJzaFc9C3fifQNKploQvy0a6vVQ8Cye3kfwreRTY9aJnXhpvwaZOcSzS1B5qS9ZnLZSGGASKTTFMUnJieriQexQ=
+X-Received: by 2002:a54:4006:: with SMTP id x6mr2087593oie.148.1592554065970;
+ Fri, 19 Jun 2020 01:07:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-SNTS-SMTP: 58ED8B8D4A56CF4C1ECAA6613447FE08CC9F96345E443B1B0F182794823BBC192000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <20200617220226.88948-1-luc.vanoostenryck@gmail.com>
+ <CANiq72nNQ+11ch7sRjLLc33s_OkftuOqgGkCDggq88tbJtdPNQ@mail.gmail.com> <20200618050249.lqwznznltm3lcykr@ltop.local>
+In-Reply-To: <20200618050249.lqwznznltm3lcykr@ltop.local>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 19 Jun 2020 10:07:34 +0200
+Message-ID: <CAMuHMdWQsirja-h3wBcZezk+H2Q_HShhAks8Hc8ps5fTAp=ObQ@mail.gmail.com>
+Subject: Re: [PATCH] sparse: use identifiers to define address spaces
+To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhpcyBwYXRjaCBhZGRzIGNvbW1vbiBjb21wYXRpYmxlICYgcGxhdGZvcm0gY29tcGF0aWFibGUu
-DQoNClNpZ25lZC1vZmYtYnk6IEVhc3RMIDxFYXN0TC5MZWVAbWVkaWF0ZWsuY29tPg0KLS0tDQog
-ZHJpdmVycy9kbWEvbWVkaWF0ZWsvbXRrLWNxZG1hLmMgfCAyICsrDQogMSBmaWxlIGNoYW5nZWQs
-IDIgaW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9kbWEvbWVkaWF0ZWsvbXRr
-LWNxZG1hLmMgYi9kcml2ZXJzL2RtYS9tZWRpYXRlay9tdGstY3FkbWEuYw0KaW5kZXggZWQzM2M2
-NC4uZDcwMWViZiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvZG1hL21lZGlhdGVrL210ay1jcWRtYS5j
-DQorKysgYi9kcml2ZXJzL2RtYS9tZWRpYXRlay9tdGstY3FkbWEuYw0KQEAgLTU0Niw3ICs1NDYs
-OSBAQCBzdGF0aWMgdm9pZCBtdGtfY3FkbWFfaHdfZGVpbml0KHN0cnVjdCBtdGtfY3FkbWFfZGV2
-aWNlICpjcWRtYSkNCiB9DQogDQogc3RhdGljIGNvbnN0IHN0cnVjdCBvZl9kZXZpY2VfaWQgbXRr
-X2NxZG1hX21hdGNoW10gPSB7DQorCXsgLmNvbXBhdGlibGUgPSAibWVkaWF0ZWssY29tbW9uLWNx
-ZG1hIiB9LA0KIAl7IC5jb21wYXRpYmxlID0gIm1lZGlhdGVrLG10Njc2NS1jcWRtYSIgfSwNCisJ
-eyAuY29tcGF0aWJsZSA9ICJtZWRpYXRlayxtdDY3NzktY3FkbWEiIH0sDQogCXsgLyogc2VudGlu
-ZWwgKi8gfQ0KIH07DQogTU9EVUxFX0RFVklDRV9UQUJMRShvZiwgbXRrX2NxZG1hX21hdGNoKTsN
-Ci0tIA0KMS45LjENCg==
+Hi Luc,
 
+On Thu, Jun 18, 2020 at 7:05 AM Luc Van Oostenryck
+<luc.vanoostenryck@gmail.com> wrote:
+> On Thu, Jun 18, 2020 at 03:22:15AM +0200, Miguel Ojeda wrote:
+> > On Thu, Jun 18, 2020 at 12:02 AM Luc Van Oostenryck
+> > <luc.vanoostenryck@gmail.com> wrote:
+> > >
+> > > diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
+> > > index 21aed0981edf..e368384445b6 100644
+> > > --- a/include/linux/compiler_types.h
+> > > +++ b/include/linux/compiler_types.h
+> > > @@ -5,20 +5,20 @@
+> > >  #ifndef __ASSEMBLY__
+> > >
+> > >  #ifdef __CHECKER__
+> > > -# define __user                __attribute__((noderef, address_space(1)))
+> > >  # define __kernel      __attribute__((address_space(0)))
+> > > +# define __user                __attribute__((noderef, address_space(__user)))
+> >
+> > I guess `__kernel` moves to the first place since it uses the first
+> > address space?
+>
+> No, there is no really an order between address spaces. Even before
+> this patch, the number were only used as an ID to distinguish them
+> from each other.
+>
+> I just moved __kernel above because it is quite different from
+> the others because it's the default one, and so:
+> * it's never displayed
+> * it's normally not needed, nor in type annotations, nor in cast
+>   between address spaces. The only time it's needed is when it's
+>   combined with a typeof to express "the same type as this one but
+>   without the address space"
+> * it can't be defined with a name, '0' must be used.
+>
+> So, it seemed strange to me to have it in the middle of the other ones.
+
+Indeed. It looks like this whole list is completely unsorted, and was created
+by appending new definitions at the bottom.
+So perhaps all the address_space ones should be grouped together?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
