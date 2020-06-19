@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59E32017D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6EE201718
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:46:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389341AbgFSQnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:43:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34376 "EHLO mail.kernel.org"
+        id S2393839AbgFSQeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:34:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388476AbgFSOn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:43:27 -0400
+        id S2389418AbgFSOvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:51:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9AD022168B;
-        Fri, 19 Jun 2020 14:43:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64AC521548;
+        Fri, 19 Jun 2020 14:51:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577807;
-        bh=uFwyZt1jxmvhD48DavXd5qLHB47tEeS/Z/5wVKXfbQk=;
+        s=default; t=1592578269;
+        bh=ed5UvQWkwOySrDiddzC7rusa9jUpPSdfPpjp03LaDyM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LE6O7PhZfTgJYu1q0yHPED01VVMfSRneKL7D7e9cK1gI0UUFyWDK3MjTfAMqMmyu6
-         aBWDbo46N9XztKVs9eq7rxFCX0ZNIjmzeYVKZsBSuX6vB1A+1NVr6OHxr3ggMoA5so
-         ZMJQk13UKxav6+zMJ2AtgUwuhAw9/ZBkngYRsJXU=
+        b=qOTqPGWoxbxuFitDULY3YrBu96WbYjBQ6vKg1Xbq5vQd59Ly7dWkREALcXQglXymr
+         B5+v5Zt8+M8YYiCl7JJtgy1qCT2MLPmKRDwPWn/TZ3twH/FLZ2X5yqgURrL6mUR6DS
+         LEDDxEz73Vgpx7v3nJpiTJpsWAvve75OIQpCRLMU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrea Arcangeli <aarcange@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 098/128] mm: thp: make the THP mapcount atomic against __split_huge_pmd_locked()
-Date:   Fri, 19 Jun 2020 16:33:12 +0200
-Message-Id: <20200619141625.314982137@linuxfoundation.org>
+        stable@vger.kernel.org, Hou Zhiqiang <Zhiqiang.Hou@nxp.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Minghuan Lian <minghuan.Lian@nxp.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 148/190] PCI: Disable MSI for Freescale Layerscape PCIe RC mode
+Date:   Fri, 19 Jun 2020 16:33:13 +0200
+Message-Id: <20200619141641.120639909@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
-References: <20200619141620.148019466@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,102 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrea Arcangeli <aarcange@redhat.com>
+From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 
-commit c444eb564fb16645c172d550359cb3d75fe8a040 upstream.
+[ Upstream commit 06dc4ee54e306eff61cbdac3593b42b09f618103 ]
 
-Write protect anon page faults require an accurate mapcount to decide
-if to break the COW or not. This is implemented in the THP path with
-reuse_swap_page() ->
-page_trans_huge_map_swapcount()/page_trans_huge_mapcount().
+The Freescale PCIe controller advertises the MSI/MSI-X capability in both
+RC and Endpoint mode, but in RC mode it doesn't support MSI/MSI-X by
+itself; it can only transfer MSI/MSI-X from downstream devices.
 
-If the COW triggers while the other processes sharing the page are
-under a huge pmd split, to do an accurate reading, we must ensure the
-mapcount isn't computed while it's being transferred from the head
-page to the tail pages.
+Add a quirk to prevent use of MSI/MSI-X in RC mode.
 
-reuse_swap_cache() already runs serialized by the page lock, so it's
-enough to add the page lock around __split_huge_pmd_locked too, in
-order to add the missing serialization.
-
-Note: the commit in "Fixes" is just to facilitate the backporting,
-because the code before such commit didn't try to do an accurate THP
-mapcount calculation and it instead used the page_count() to decide if
-to COW or not. Both the page_count and the pin_count are THP-wide
-refcounts, so they're inaccurate if used in
-reuse_swap_page(). Reverting such commit (besides the unrelated fix to
-the local anon_vma assignment) would have also opened the window for
-memory corruption side effects to certain workloads as documented in
-such commit header.
-
-Signed-off-by: Andrea Arcangeli <aarcange@redhat.com>
-Suggested-by: Jann Horn <jannh@google.com>
-Reported-by: Jann Horn <jannh@google.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Fixes: 6d0a07edd17c ("mm: thp: calculate the mapcount correctly for THP pages during WP faults")
-Cc: stable@vger.kernel.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Acked-by: Minghuan Lian <minghuan.Lian@nxp.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/huge_memory.c |   31 ++++++++++++++++++++++++++++---
- 1 file changed, 28 insertions(+), 3 deletions(-)
+ drivers/pci/quirks.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1755,6 +1755,8 @@ void __split_huge_pmd(struct vm_area_str
- 	spinlock_t *ptl;
- 	struct mm_struct *mm = vma->vm_mm;
- 	unsigned long haddr = address & HPAGE_PMD_MASK;
-+	bool was_locked = false;
-+	pmd_t _pmd;
- 
- 	mmu_notifier_invalidate_range_start(mm, haddr, haddr + HPAGE_PMD_SIZE);
- 	ptl = pmd_lock(mm, pmd);
-@@ -1764,11 +1766,32 @@ void __split_huge_pmd(struct vm_area_str
- 	 * pmd against. Otherwise we can end up replacing wrong page.
- 	 */
- 	VM_BUG_ON(freeze && !page);
--	if (page && page != pmd_page(*pmd))
--	        goto out;
-+	if (page) {
-+		VM_WARN_ON_ONCE(!PageLocked(page));
-+		was_locked = true;
-+		if (page != pmd_page(*pmd))
-+			goto out;
-+	}
- 
-+repeat:
- 	if (pmd_trans_huge(*pmd)) {
--		page = pmd_page(*pmd);
-+		if (!page) {
-+			page = pmd_page(*pmd);
-+			if (unlikely(!trylock_page(page))) {
-+				get_page(page);
-+				_pmd = *pmd;
-+				spin_unlock(ptl);
-+				lock_page(page);
-+				spin_lock(ptl);
-+				if (unlikely(!pmd_same(*pmd, _pmd))) {
-+					unlock_page(page);
-+					put_page(page);
-+					page = NULL;
-+					goto repeat;
-+				}
-+				put_page(page);
-+			}
-+		}
- 		if (PageMlocked(page))
- 			clear_page_mlock(page);
- 	} else if (!pmd_devmap(*pmd))
-@@ -1776,6 +1799,8 @@ void __split_huge_pmd(struct vm_area_str
- 	__split_huge_pmd_locked(vma, pmd, haddr, freeze);
- out:
- 	spin_unlock(ptl);
-+	if (!was_locked && page)
-+		unlock_page(page);
- 	mmu_notifier_invalidate_range_end(mm, haddr, haddr + HPAGE_PMD_SIZE);
- }
- 
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index e7ed051ec125..c751f2f81142 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -4912,3 +4912,11 @@ static void quirk_no_ats(struct pci_dev *pdev)
+ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x98e4, quirk_no_ats);
+ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_ATI, 0x6900, quirk_no_ats);
+ #endif /* CONFIG_PCI_ATS */
++
++/* Freescale PCIe doesn't support MSI in RC mode */
++static void quirk_fsl_no_msi(struct pci_dev *pdev)
++{
++	if (pci_pcie_type(pdev) == PCI_EXP_TYPE_ROOT_PORT)
++		pdev->no_msi = 1;
++}
++DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_FREESCALE, PCI_ANY_ID, quirk_fsl_no_msi);
+-- 
+2.25.1
+
 
 
