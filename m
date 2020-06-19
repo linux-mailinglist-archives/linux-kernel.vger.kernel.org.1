@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7291200BA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:38:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26253200CAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:52:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387436AbgFSOgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:36:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51776 "EHLO mail.kernel.org"
+        id S2388597AbgFSOsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:48:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40308 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733281AbgFSOfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:35:43 -0400
+        id S2389050AbgFSOsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:48:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 23EFC20CC7;
-        Fri, 19 Jun 2020 14:35:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 522CF20DD4;
+        Fri, 19 Jun 2020 14:48:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577342;
-        bh=nA+tw0V4TWF0+wj9sSPi7MxhSTizICQy93g26Qer/uU=;
+        s=default; t=1592578085;
+        bh=0FHpN1EHSVTg7MDnWTWFsKSpU17oCBDRoxafwMs6u4Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uKCGgsMQ3UhHZ/pq/y6rQkzgYMzsg2q9rnGE+Ml3Sl8lqQZZ2Wplb9XXri7nkAzsP
-         17e/HaFjUHyr3dNb2LASTEGkAPWUQ8h2vysFmkU6PzDsjtoJm3CrBpeiCeSHDBofWW
-         kPBxtWqhXwaPXkrrTh55EY9YqVvTQenbSn/ZCz/s=
+        b=pF+sUIL/xIs3R0k5va+4n6T36ScagAeBYGQEWb7KfXX4Alij3Hx9uH0lX67ZwxXA6
+         GKb/XfD4MvM0Jww4JjeOdE64t20u864W81xs+RS5xTif4BYeKI4L9NmV2qPs9arH3s
+         VtlfpRlyYWyDFHuAegLHDYioh4UucmhY5JiGGDFY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?=E4=BA=BF=E4=B8=80?= <teroincn@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Subject: [PATCH 4.4 013/101] efi/efivars: Add missing kobject_put() in sysfs entry creation error path
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 077/190] crypto: ccp -- dont "select" CONFIG_DMADEVICES
 Date:   Fri, 19 Jun 2020 16:32:02 +0200
-Message-Id: <20200619141614.696225908@linuxfoundation.org>
+Message-Id: <20200619141637.435306275@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
-References: <20200619141614.001544111@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +45,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit d8bd8c6e2cfab8b78b537715255be8d7557791c0 upstream.
+[ Upstream commit eebac678556d6927f09a992872f4464cf3aecc76 ]
 
-The documentation provided by kobject_init_and_add() clearly spells out
-the need to call kobject_put() on the kobject if an error is returned.
-Add this missing call to the error path.
+DMADEVICES is the top-level option for the slave DMA
+subsystem, and should not be selected by device drivers,
+as this can cause circular dependencies such as:
 
-Cc: <stable@vger.kernel.org>
-Reported-by: 亿一 <teroincn@gmail.com>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+drivers/net/ethernet/freescale/Kconfig:6:error: recursive dependency detected!
+drivers/net/ethernet/freescale/Kconfig:6:	symbol NET_VENDOR_FREESCALE depends on PPC_BESTCOMM
+drivers/dma/bestcomm/Kconfig:6:	symbol PPC_BESTCOMM depends on DMADEVICES
+drivers/dma/Kconfig:6:	symbol DMADEVICES is selected by CRYPTO_DEV_SP_CCP
+drivers/crypto/ccp/Kconfig:10:	symbol CRYPTO_DEV_SP_CCP depends on CRYPTO
+crypto/Kconfig:16:	symbol CRYPTO is selected by LIBCRC32C
+lib/Kconfig:222:	symbol LIBCRC32C is selected by LIQUIDIO
+drivers/net/ethernet/cavium/Kconfig:65:	symbol LIQUIDIO depends on PTP_1588_CLOCK
+drivers/ptp/Kconfig:8:	symbol PTP_1588_CLOCK is implied by FEC
+drivers/net/ethernet/freescale/Kconfig:23:	symbol FEC depends on NET_VENDOR_FREESCALE
 
+The LIQUIDIO driver causing this problem is addressed in a
+separate patch, but this change is needed to prevent it from
+happening again.
+
+Using "depends on DMADEVICES" is what we do for all other
+implementations of slave DMA controllers as well.
+
+Fixes: b3c2fee5d66b ("crypto: ccp - Ensure all dependencies are specified")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/efi/efivars.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/crypto/ccp/Kconfig | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/firmware/efi/efivars.c
-+++ b/drivers/firmware/efi/efivars.c
-@@ -585,8 +585,10 @@ efivar_create_sysfs_entry(struct efivar_
- 	ret = kobject_init_and_add(&new_var->kobj, &efivar_ktype,
- 				   NULL, "%s", short_name);
- 	kfree(short_name);
--	if (ret)
-+	if (ret) {
-+		kobject_put(&new_var->kobj);
- 		return ret;
-+	}
- 
- 	kobject_uevent(&new_var->kobj, KOBJ_ADD);
- 	efivar_entry_add(new_var, &efivar_sysfs_list);
+diff --git a/drivers/crypto/ccp/Kconfig b/drivers/crypto/ccp/Kconfig
+index 6d626606b9c5..898dcf3200c3 100644
+--- a/drivers/crypto/ccp/Kconfig
++++ b/drivers/crypto/ccp/Kconfig
+@@ -8,10 +8,9 @@ config CRYPTO_DEV_CCP_DD
+ config CRYPTO_DEV_SP_CCP
+ 	bool "Cryptographic Coprocessor device"
+ 	default y
+-	depends on CRYPTO_DEV_CCP_DD
++	depends on CRYPTO_DEV_CCP_DD && DMADEVICES
+ 	select HW_RANDOM
+ 	select DMA_ENGINE
+-	select DMADEVICES
+ 	select CRYPTO_SHA1
+ 	select CRYPTO_SHA256
+ 	help
+-- 
+2.25.1
+
 
 
