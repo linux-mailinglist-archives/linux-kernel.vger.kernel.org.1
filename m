@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7132014C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA612013D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390333AbgFSPAy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:00:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56672 "EHLO mail.kernel.org"
+        id S2405492AbgFSQEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:04:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41176 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390622AbgFSPAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:00:16 -0400
+        id S2403808AbgFSPK6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:10:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D656A20734;
-        Fri, 19 Jun 2020 15:00:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01BE5206FA;
+        Fri, 19 Jun 2020 15:10:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578816;
-        bh=JSyUSw4bTz9KQOzqWW/fuVJIcakQ6IBfFtwiMOHZIDU=;
+        s=default; t=1592579457;
+        bh=M+tyrRCR/fbrbhIGQkHftEMicDK86NTkiH6WntT4Quk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EWHh5L0TQCJM/etecr7WJNFhGXUOKpnTG3VVUtSTy/tGAvKd0ubSQ57dI5kbSIpkk
-         yfcImJaH0uT2wD51lVUNUmte0XKpgP4sIirWzyIoEDoCWnn4ttce3IlCx4IJ1lQjJA
-         zsfBTySZpT6CpX8zSz5FWG57s3Gt0L5dHVfMxaQk=
+        b=mR1c0oArYppZZFbqDYoqaSebCokTfNb4wtogwf2Lg6pTRPyfAl94xW1927eta0OLx
+         s8nNQMu7ptqhliRGjLL+M9CxDsZBFQ3TPyBaQaAEzUHQg2/P/4drQhE+PzFb9njvXT
+         R3aCyW/cNgqRQjixD5kyEoi95ggg05Vu5MO1S8hU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicolas Toromanoff <nicolas.toromanoff@st.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Bruce Chang <brucechang@via.com.tw>,
+        Harald Welte <HaraldWelte@viatech.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 168/267] crypto: stm32/crc32 - fix multi-instance
+Subject: [PATCH 5.4 142/261] mmc: via-sdmmc: Respect the cmd->busy_timeout from the mmc core
 Date:   Fri, 19 Jun 2020 16:32:33 +0200
-Message-Id: <20200619141656.862914202@linuxfoundation.org>
+Message-Id: <20200619141656.674488729@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,120 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Toromanoff <nicolas.toromanoff@st.com>
+From: Ulf Hansson <ulf.hansson@linaro.org>
 
-[ Upstream commit 10b89c43a64eb0d236903b79a3bc9d8f6cbfd9c7 ]
+[ Upstream commit 966244ccd2919e28f25555a77f204cd1c109cad8 ]
 
-Ensure CRC algorithm is registered only once in crypto framework when
-there are several instances of CRC devices.
+Using a fixed 1s timeout for all commands (and data transfers) is a bit
+problematic.
 
-Update the CRC device list management to avoid that only the first CRC
-instance is used.
+For some commands it means waiting longer than needed for the timer to
+expire, which may not a big issue, but still. For other commands, like for
+an erase (CMD38) that uses a R1B response, may require longer timeouts than
+1s. In these cases, we may end up treating the command as it failed, while
+it just needed some more time to complete successfully.
 
-Fixes: b51dbe90912a ("crypto: stm32 - Support for STM32 CRC32 crypto module")
+Fix the problem by respecting the cmd->busy_timeout, which is provided by
+the mmc core.
 
-Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Bruce Chang <brucechang@via.com.tw>
+Cc: Harald Welte <HaraldWelte@viatech.com>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Link: https://lore.kernel.org/r/20200414161413.3036-17-ulf.hansson@linaro.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/stm32/stm32_crc32.c | 48 ++++++++++++++++++++++--------
- 1 file changed, 36 insertions(+), 12 deletions(-)
+ drivers/mmc/host/via-sdmmc.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/stm32/stm32_crc32.c b/drivers/crypto/stm32/stm32_crc32.c
-index c5ad83ad2f72..47d31335c2d4 100644
---- a/drivers/crypto/stm32/stm32_crc32.c
-+++ b/drivers/crypto/stm32/stm32_crc32.c
-@@ -93,16 +93,29 @@ static int stm32_crc_setkey(struct crypto_shash *tfm, const u8 *key,
- 	return 0;
- }
+diff --git a/drivers/mmc/host/via-sdmmc.c b/drivers/mmc/host/via-sdmmc.c
+index f4ac064ff471..8d96ecba1b55 100644
+--- a/drivers/mmc/host/via-sdmmc.c
++++ b/drivers/mmc/host/via-sdmmc.c
+@@ -319,6 +319,8 @@ struct via_crdr_mmc_host {
+ /* some devices need a very long delay for power to stabilize */
+ #define VIA_CRDR_QUIRK_300MS_PWRDELAY	0x0001
  
--static int stm32_crc_init(struct shash_desc *desc)
-+static struct stm32_crc *stm32_crc_get_next_crc(void)
++#define VIA_CMD_TIMEOUT_MS		1000
++
+ static const struct pci_device_id via_ids[] = {
+ 	{PCI_VENDOR_ID_VIA, PCI_DEVICE_ID_VIA_9530,
+ 	  PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0,},
+@@ -551,14 +553,17 @@ static void via_sdc_send_command(struct via_crdr_mmc_host *host,
  {
--	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
--	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
- 	struct stm32_crc *crc;
+ 	void __iomem *addrbase;
+ 	struct mmc_data *data;
++	unsigned int timeout_ms;
+ 	u32 cmdctrl = 0;
  
- 	spin_lock_bh(&crc_list.lock);
- 	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
-+	if (crc)
-+		list_move_tail(&crc->list, &crc_list.dev_list);
- 	spin_unlock_bh(&crc_list.lock);
+ 	WARN_ON(host->cmd);
  
-+	return crc;
-+}
+ 	data = cmd->data;
+-	mod_timer(&host->timer, jiffies + HZ);
+ 	host->cmd = cmd;
+ 
++	timeout_ms = cmd->busy_timeout ? cmd->busy_timeout : VIA_CMD_TIMEOUT_MS;
++	mod_timer(&host->timer, jiffies + msecs_to_jiffies(timeout_ms));
 +
-+static int stm32_crc_init(struct shash_desc *desc)
-+{
-+	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
-+	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
-+	struct stm32_crc *crc;
-+
-+	crc = stm32_crc_get_next_crc();
-+	if (!crc)
-+		return -ENODEV;
-+
- 	pm_runtime_get_sync(crc->dev);
+ 	/*Command index*/
+ 	cmdctrl = cmd->opcode << 8;
  
- 	/* Reset, set key, poly and configure in bit reverse mode */
-@@ -127,9 +140,9 @@ static int stm32_crc_update(struct shash_desc *desc, const u8 *d8,
- 	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
- 	struct stm32_crc *crc;
- 
--	spin_lock_bh(&crc_list.lock);
--	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
--	spin_unlock_bh(&crc_list.lock);
-+	crc = stm32_crc_get_next_crc();
-+	if (!crc)
-+		return -ENODEV;
- 
- 	pm_runtime_get_sync(crc->dev);
- 
-@@ -202,6 +215,8 @@ static int stm32_crc_digest(struct shash_desc *desc, const u8 *data,
- 	return stm32_crc_init(desc) ?: stm32_crc_finup(desc, data, length, out);
- }
- 
-+static unsigned int refcnt;
-+static DEFINE_MUTEX(refcnt_lock);
- static struct shash_alg algs[] = {
- 	/* CRC-32 */
- 	{
-@@ -294,12 +309,18 @@ static int stm32_crc_probe(struct platform_device *pdev)
- 	list_add(&crc->list, &crc_list.dev_list);
- 	spin_unlock(&crc_list.lock);
- 
--	ret = crypto_register_shashes(algs, ARRAY_SIZE(algs));
--	if (ret) {
--		dev_err(dev, "Failed to register\n");
--		clk_disable_unprepare(crc->clk);
--		return ret;
-+	mutex_lock(&refcnt_lock);
-+	if (!refcnt) {
-+		ret = crypto_register_shashes(algs, ARRAY_SIZE(algs));
-+		if (ret) {
-+			mutex_unlock(&refcnt_lock);
-+			dev_err(dev, "Failed to register\n");
-+			clk_disable_unprepare(crc->clk);
-+			return ret;
-+		}
- 	}
-+	refcnt++;
-+	mutex_unlock(&refcnt_lock);
- 
- 	dev_info(dev, "Initialized\n");
- 
-@@ -320,7 +341,10 @@ static int stm32_crc_remove(struct platform_device *pdev)
- 	list_del(&crc->list);
- 	spin_unlock(&crc_list.lock);
- 
--	crypto_unregister_shashes(algs, ARRAY_SIZE(algs));
-+	mutex_lock(&refcnt_lock);
-+	if (!--refcnt)
-+		crypto_unregister_shashes(algs, ARRAY_SIZE(algs));
-+	mutex_unlock(&refcnt_lock);
- 
- 	pm_runtime_disable(crc->dev);
- 	pm_runtime_put_noidle(crc->dev);
 -- 
 2.25.1
 
