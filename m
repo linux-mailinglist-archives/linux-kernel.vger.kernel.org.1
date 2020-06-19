@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91941200ECC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F839200DB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403839AbgFSPLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:11:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41978 "EHLO mail.kernel.org"
+        id S2390618AbgFSPAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:00:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391244AbgFSPLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:11:35 -0400
+        id S2389916AbgFSO7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:59:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D4C79206FA;
-        Fri, 19 Jun 2020 15:11:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B29B0218AC;
+        Fri, 19 Jun 2020 14:59:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579494;
-        bh=HYSVE/1juFSqORM3IGHffuIE4Q+k2VgOnbKSYKG6VWg=;
+        s=default; t=1592578795;
+        bh=18KOcZajMmpY2rbqPpuMqji5HUMM1Fd6BXCK/THQZIg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yLd9oNtZoh9D/KICR3L9H4fr6nW3j3DY9S6JGLhk5P7kHam3T9ETe6GqjSB8hFGVy
-         DzZzpMsZj8Urkr2LWNzCDMBXl8/2kez2fsolFCFL2wJ6/4HAbUc1tozqsfnPYRGCf8
-         XF7x/KykAKQBsYvVGhUPSlqElNvqlOHLSFG1NzSM=
+        b=Nfnx7BBcnQmVBE6i1l0pNDSXawj3w1wB6RsyDaQxBdLVA++s6DuaLKqJ+SL76biyS
+         iopllzBs8ZLh0w1L46bjjwpJ/cm+8n/pEvzdf7Dqo759mAu2M+HZnfntZnrgc49rUw
+         Cub7Lci58kcbXLizvFp0h1WfzchosWguSAnWQe+E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicolas Toromanoff <nicolas.toromanoff@st.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Mario Limonciello <Mario.limonciello@dell.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 126/261] crypto: stm32/crc32 - fix multi-instance
+Subject: [PATCH 4.19 152/267] platform/x86: intel-vbtn: Also handle tablet-mode switch on "Detachable" and "Portable" chassis-types
 Date:   Fri, 19 Jun 2020 16:32:17 +0200
-Message-Id: <20200619141655.900667131@linuxfoundation.org>
+Message-Id: <20200619141656.121339159@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,120 +45,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Toromanoff <nicolas.toromanoff@st.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 10b89c43a64eb0d236903b79a3bc9d8f6cbfd9c7 ]
+[ Upstream commit 1fac39fd0316b19c3e57a182524332332d1643ce ]
 
-Ensure CRC algorithm is registered only once in crypto framework when
-there are several instances of CRC devices.
+Commit de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode
+switch on 2-in-1's") added a DMI chassis-type check to avoid accidentally
+reporting SW_TABLET_MODE = 1 to userspace on laptops.
 
-Update the CRC device list management to avoid that only the first CRC
-instance is used.
+Some devices with a detachable keyboard and using the intel-vbnt (INT33D6)
+interface to report if they are in tablet mode (keyboard detached) or not,
+report 32 / "Detachable" as chassis-type, e.g. the HP Pavilion X2 series.
 
-Fixes: b51dbe90912a ("crypto: stm32 - Support for STM32 CRC32 crypto module")
+Other devices with a detachable keyboard and using the intel-vbnt (INT33D6)
+interface to report SW_TABLET_MODE, report 8 / "Portable" as chassis-type.
+The Dell Venue 11 Pro 7130 is an example of this.
 
-Signed-off-by: Nicolas Toromanoff <nicolas.toromanoff@st.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Extend the DMI chassis-type check to also accept Portables and Detachables
+so that the intel-vbtn driver will report SW_TABLET_MODE on these devices.
+
+Note the chassis-type check was originally added to avoid a false-positive
+tablet-mode report on the Dell XPS 9360 laptop. To the best of my knowledge
+that laptop is using a chassis-type of 9 / "Laptop", so after this commit
+we still ignore the tablet-switch for that chassis-type.
+
+Fixes: de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode switch on 2-in-1's")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Reviewed-by: Mario Limonciello <Mario.limonciello@dell.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/stm32/stm32-crc32.c | 48 ++++++++++++++++++++++--------
- 1 file changed, 36 insertions(+), 12 deletions(-)
+ drivers/platform/x86/intel-vbtn.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/stm32/stm32-crc32.c b/drivers/crypto/stm32/stm32-crc32.c
-index 93969d23a4a8..e68b856d03b6 100644
---- a/drivers/crypto/stm32/stm32-crc32.c
-+++ b/drivers/crypto/stm32/stm32-crc32.c
-@@ -93,16 +93,29 @@ static int stm32_crc_setkey(struct crypto_shash *tfm, const u8 *key,
- 	return 0;
- }
- 
--static int stm32_crc_init(struct shash_desc *desc)
-+static struct stm32_crc *stm32_crc_get_next_crc(void)
+diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
+index 23cda7aa96cd..5f8120d12859 100644
+--- a/drivers/platform/x86/intel-vbtn.c
++++ b/drivers/platform/x86/intel-vbtn.c
+@@ -157,12 +157,22 @@ static void detect_tablet_mode(struct platform_device *device)
+ static bool intel_vbtn_has_switches(acpi_handle handle)
  {
--	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
--	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
- 	struct stm32_crc *crc;
+ 	const char *chassis_type = dmi_get_system_info(DMI_CHASSIS_TYPE);
++	unsigned long chassis_type_int;
+ 	unsigned long long vgbs;
+ 	acpi_status status;
  
- 	spin_lock_bh(&crc_list.lock);
- 	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
-+	if (crc)
-+		list_move_tail(&crc->list, &crc_list.dev_list);
- 	spin_unlock_bh(&crc_list.lock);
+-	if (!(chassis_type && strcmp(chassis_type, "31") == 0))
++	if (kstrtoul(chassis_type, 10, &chassis_type_int))
+ 		return false;
  
-+	return crc;
-+}
++	switch (chassis_type_int) {
++	case  8: /* Portable */
++	case 31: /* Convertible */
++	case 32: /* Detachable */
++		break;
++	default:
++		return false;
++	}
 +
-+static int stm32_crc_init(struct shash_desc *desc)
-+{
-+	struct stm32_crc_desc_ctx *ctx = shash_desc_ctx(desc);
-+	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
-+	struct stm32_crc *crc;
-+
-+	crc = stm32_crc_get_next_crc();
-+	if (!crc)
-+		return -ENODEV;
-+
- 	pm_runtime_get_sync(crc->dev);
- 
- 	/* Reset, set key, poly and configure in bit reverse mode */
-@@ -127,9 +140,9 @@ static int stm32_crc_update(struct shash_desc *desc, const u8 *d8,
- 	struct stm32_crc_ctx *mctx = crypto_shash_ctx(desc->tfm);
- 	struct stm32_crc *crc;
- 
--	spin_lock_bh(&crc_list.lock);
--	crc = list_first_entry(&crc_list.dev_list, struct stm32_crc, list);
--	spin_unlock_bh(&crc_list.lock);
-+	crc = stm32_crc_get_next_crc();
-+	if (!crc)
-+		return -ENODEV;
- 
- 	pm_runtime_get_sync(crc->dev);
- 
-@@ -202,6 +215,8 @@ static int stm32_crc_digest(struct shash_desc *desc, const u8 *data,
- 	return stm32_crc_init(desc) ?: stm32_crc_finup(desc, data, length, out);
+ 	status = acpi_evaluate_integer(handle, "VGBS", NULL, &vgbs);
+ 	return ACPI_SUCCESS(status);
  }
- 
-+static unsigned int refcnt;
-+static DEFINE_MUTEX(refcnt_lock);
- static struct shash_alg algs[] = {
- 	/* CRC-32 */
- 	{
-@@ -292,12 +307,18 @@ static int stm32_crc_probe(struct platform_device *pdev)
- 	list_add(&crc->list, &crc_list.dev_list);
- 	spin_unlock(&crc_list.lock);
- 
--	ret = crypto_register_shashes(algs, ARRAY_SIZE(algs));
--	if (ret) {
--		dev_err(dev, "Failed to register\n");
--		clk_disable_unprepare(crc->clk);
--		return ret;
-+	mutex_lock(&refcnt_lock);
-+	if (!refcnt) {
-+		ret = crypto_register_shashes(algs, ARRAY_SIZE(algs));
-+		if (ret) {
-+			mutex_unlock(&refcnt_lock);
-+			dev_err(dev, "Failed to register\n");
-+			clk_disable_unprepare(crc->clk);
-+			return ret;
-+		}
- 	}
-+	refcnt++;
-+	mutex_unlock(&refcnt_lock);
- 
- 	dev_info(dev, "Initialized\n");
- 
-@@ -318,7 +339,10 @@ static int stm32_crc_remove(struct platform_device *pdev)
- 	list_del(&crc->list);
- 	spin_unlock(&crc_list.lock);
- 
--	crypto_unregister_shashes(algs, ARRAY_SIZE(algs));
-+	mutex_lock(&refcnt_lock);
-+	if (!--refcnt)
-+		crypto_unregister_shashes(algs, ARRAY_SIZE(algs));
-+	mutex_unlock(&refcnt_lock);
- 
- 	pm_runtime_disable(crc->dev);
- 	pm_runtime_put_noidle(crc->dev);
 -- 
 2.25.1
 
