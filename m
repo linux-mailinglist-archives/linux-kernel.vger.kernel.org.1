@@ -2,227 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF258200B02
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5983200B06
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733170AbgFSOIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:08:51 -0400
-Received: from mga06.intel.com ([134.134.136.31]:54759 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733096AbgFSOIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:08:22 -0400
-IronPort-SDR: EZ3jy048xGEXKI6AAnRgmIIKSIUHfwgzO7L3ud8KDc7J4VLDmCnRFK9IgsLcAxCiR3FcS4mNDn
- 3qDK761S+dOA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="204452887"
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="204452887"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2020 07:08:09 -0700
-IronPort-SDR: /bdzs3HYzShnCnYC/GlSHli+rnhpjOCEhFmwyZlQrp+Xt9L0upwQxYYwZE6N2x82qk7E69l9AW
- 3fwqo5Kqo00g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="383837539"
-Received: from otc-lr-04.jf.intel.com ([10.54.39.143])
-  by fmsmga001.fm.intel.com with ESMTP; 19 Jun 2020 07:08:08 -0700
-From:   kan.liang@linux.intel.com
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        tglx@linutronix.de, bp@alien8.de, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, dave.hansen@intel.com,
-        yu-cheng.yu@intel.com, bigeasy@linutronix.de, gorcunov@gmail.com,
-        hpa@zytor.com, alexey.budankov@linux.intel.com, eranian@google.com,
-        ak@linux.intel.com, like.xu@linux.intel.com,
-        yao.jin@linux.intel.com, Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH 21/21] perf/x86/intel/lbr: Support XSAVES for arch LBR read
-Date:   Fri, 19 Jun 2020 07:04:09 -0700
-Message-Id: <1592575449-64278-22-git-send-email-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1592575449-64278-1-git-send-email-kan.liang@linux.intel.com>
-References: <1592575449-64278-1-git-send-email-kan.liang@linux.intel.com>
+        id S1733200AbgFSOJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725974AbgFSOJX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:09:23 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C31DC06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:09:23 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id q2so5672996vsr.1
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WSN+a2RVNGMBSxMoxwqKpJqZZbVxq/HTpK1YQsoLOvQ=;
+        b=khk/dVYTi6EwwazULEZ22xn6wr4m9EWCJc0ruPwHDfNSiO2Ghl8ifOFklLvezpLcLj
+         HLL91p161trSUnoVwYgLI5bdzH7DDL2CV9BHH7W1sPkkOfYES78xqlXzDQ0yLSr9oFX3
+         0tqtaO8x+IJnZFtS7DD1JQHcCegeTaJVZf1odfIhadequ2cjDsyNXEYSB8nXyWDjCyi7
+         GUgFP1QIqXLuPjIg6b8mMDNwksmfJUx49MWjS6lhD7vJnhY0Rc3QOe9RUUGDoPHg0Ykt
+         gQci6L6xS840ab1z2MW5iBFt9vmZvor/RxNyTScU3A+dmyFC9uAI5aA6CRtQNd9LtYjd
+         A4rw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WSN+a2RVNGMBSxMoxwqKpJqZZbVxq/HTpK1YQsoLOvQ=;
+        b=tI9HgjWPffiNyiNS8De5LM9X4JjHR2THuOZ57aRN1CGt/FMx8RQjSMQoe7fT1AjIp0
+         MxR2jVlh7Og/rlaUIHfknDI6r/3URU2GM0ayCxJdP/SALR1QVXHVlZGuUc4d7m81Oy95
+         hdwkbhSmSZebD1rlT4q1AWqdc+dG+nvlfggR6973AMZtT9t6gPh7TLiRzUuAOhnV6oHJ
+         FyJ9VW0VgopbE41yK8m/dO9yl2/0ygaGyH1okwhCs2BEqveZpeVUlWjNCt9CWfDK6SzT
+         DFqItNfDeIhL1X8Y3gmHS5BI8Sja3w+tNPlwHDMTkObU6SFnkiBGLxC9FlMdJ6rrdmLW
+         ETNA==
+X-Gm-Message-State: AOAM531XOXvtxqveK2ueQtl/wo4sAYOfHMGVifobeiLiYTNyeUsByRE0
+        O3f9BkrbjHWLzX9KYDmPGJ8czeVJ45MdkwNrqx8=
+X-Google-Smtp-Source: ABdhPJwaU8EKkHibn0F4QFCG8an0FYGeNjzihahv6zqla/Y73Ma4JM6yScH+GXFH+vMBDQsiN+yKoefvaa9GtQbEi60=
+X-Received: by 2002:a67:d597:: with SMTP id m23mr7913365vsj.209.1592575762106;
+ Fri, 19 Jun 2020 07:09:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200618210215.23602-1-daniel.gutson@eclypsium.com>
+ <589c89ae-620e-36f8-2be5-4afc727c2911@intel.com> <CAFmMkTHNxSN_uWtm63TdkGxj44NXQQKEOmATXhjA=4DSCS92kQ@mail.gmail.com>
+ <23babf62-00cb-cb47-bb19-da9508325934@intel.com> <CAD2FfiFbGdf5uKmsc14F4ZuuCUQYFwfnirn=Y0fu2F0=njvWug@mail.gmail.com>
+ <80578b72-cb6f-8da9-1043-b4055c75d7f6@intel.com> <CAD2FfiG1BgYvR6wkeXGro8v6FQtVjKemmAOOf2W14z5KUWLqhw@mail.gmail.com>
+ <d55f94bc-3b26-a556-f7e6-43e9b1007e13@intel.com>
+In-Reply-To: <d55f94bc-3b26-a556-f7e6-43e9b1007e13@intel.com>
+From:   Richard Hughes <hughsient@gmail.com>
+Date:   Fri, 19 Jun 2020 15:09:09 +0100
+Message-ID: <CAD2FfiHCi2MfShGWaYWk_GcXW4xVr6chsLPZs78OJE+2_GErVg@mail.gmail.com>
+Subject: Re: [PATCH] Ability to read the MKTME status from userspace
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Daniel Gutson <daniel@eclypsium.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kan Liang <kan.liang@linux.intel.com>
+On Fri, 19 Jun 2020 at 14:58, Dave Hansen <dave.hansen@intel.com> wrote:
+> > Right, but for the most part you'd agree that a machine with
+> > functioning TME and encrypted swap partition is more secure than a
+> > machine without TME?
+>
+> Nope.  There might be zero memory connected to the memory controller
+> that supports TME.
 
-Reading LBR registers in a perf NMI handler for a non-PEBS event
-causes a high overhead because the number of LBR registers is huge.
-To reduce the overhead, the XSAVES instruction should be used to replace
-the LBR registers' reading method.
+So you're saying that a machine with TME available and enabled is not
+considered more secure than a machine without TME?
 
-The XSAVES buffer used for LBR read has to be per-CPU because the NMI
-handler invoked the lbr_read(). The existing task_ctx_data buffer
-cannot be used which is per-task and only be allocated for the LBR call
-stack mode. A new lbr_xsave pointer is introduced in the cpu_hw_events
-as an XSAVES buffer for LBR read.
+What I want to do is have a sliding scale of TME not available < TME
+available but disabled < TME available and enabled < TME available,
+enabled and being used. The extra nugget of data gets me from state 2
+to state 3.
 
-The XSAVES buffer should be allocated only when LBR is used by a
-non-PEBS event on the CPU because the total size of the lbr_xsave is
-not small (~1.4KB).
+> > Can I use TME if the CPU supports it, but the platform has disabled
+> > it? How do I know that my system is actually *using* the benefits the
+> > TME feature provides?
+>
+> You must have a system with UEFI 2.8, ensure TME is enabled, then make
+> sure the OS parses EFI_MEMORY_CPU_CRYPTO, then ensure you request that
+> you data be placed in a region marked with EFI_MEMORY_CPU_CRYPTO, and
+> that it be *kept* there (hint: NUMA APIs don't do this).
 
-The XSAVES buffer is allocated when a non-PEBS event is added, but it
-is lazily released in x86_release_hardware() when perf releases the
-entire PMU hardware resource, because perf may frequently schedule the
-event, e.g. high context switch. The lazy release method reduces the
-overhead of frequently allocate/free the buffer.
+So my take-away from that is that it's currently impossible to
+actually say if your system is *actually* using TME.
 
-If the lbr_xsave fails to be allocated, roll back to normal Arch LBR
-lbr_read().
-
-Reviewed-by: Dave Hansen <dave.hansen@intel.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
----
- arch/x86/events/core.c       |  1 +
- arch/x86/events/intel/lbr.c  | 58 +++++++++++++++++++++++++++++++++++++++++++-
- arch/x86/events/perf_event.h |  7 ++++++
- 3 files changed, 65 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index aeb6e6d..3339347 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -359,6 +359,7 @@ void x86_release_hardware(void)
- 	if (atomic_dec_and_mutex_lock(&pmc_refcount, &pmc_reserve_mutex)) {
- 		release_pmc_hardware();
- 		release_ds_buffers();
-+		release_lbr_buffers();
- 		mutex_unlock(&pmc_reserve_mutex);
- 	}
- }
-diff --git a/arch/x86/events/intel/lbr.c b/arch/x86/events/intel/lbr.c
-index dc40a76..4b0042f 100644
---- a/arch/x86/events/intel/lbr.c
-+++ b/arch/x86/events/intel/lbr.c
-@@ -624,6 +624,7 @@ static inline bool branch_user_callstack(unsigned br_sel)
- 
- void intel_pmu_lbr_add(struct perf_event *event)
- {
-+	struct kmem_cache *kmem_cache = event->pmu->task_ctx_cache;
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
- 
- 	if (!x86_pmu.lbr_nr)
-@@ -658,6 +659,28 @@ void intel_pmu_lbr_add(struct perf_event *event)
- 	perf_sched_cb_inc(event->ctx->pmu);
- 	if (!cpuc->lbr_users++ && !event->total_time_running)
- 		intel_pmu_lbr_reset();
-+
-+	if (x86_pmu.arch_lbr && kmem_cache && !cpuc->lbr_xsave &&
-+	    (cpuc->lbr_users != cpuc->lbr_pebs_users))
-+		cpuc->lbr_xsave = kmem_cache_alloc(kmem_cache, GFP_KERNEL);
-+}
-+
-+void release_lbr_buffers(void)
-+{
-+	struct kmem_cache *kmem_cache = x86_get_pmu()->task_ctx_cache;
-+	struct cpu_hw_events *cpuc;
-+	int cpu;
-+
-+	if (!x86_pmu.arch_lbr)
-+		return;
-+
-+	for_each_possible_cpu(cpu) {
-+		cpuc = per_cpu_ptr(&cpu_hw_events, cpu);
-+		if (kmem_cache && cpuc->lbr_xsave) {
-+			kmem_cache_free(kmem_cache, cpuc->lbr_xsave);
-+			cpuc->lbr_xsave = NULL;
-+		}
-+	}
- }
- 
- void intel_pmu_lbr_del(struct perf_event *event)
-@@ -909,6 +932,38 @@ static void intel_pmu_arch_lbr_read(struct cpu_hw_events *cpuc)
- 	cpuc->lbr_stack.nr = i;
- }
- 
-+static void intel_pmu_arch_lbr_read_xsave(struct cpu_hw_events *cpuc)
-+{
-+	struct x86_perf_task_context_arch_lbr_xsave *xsave = cpuc->lbr_xsave;
-+	struct arch_lbr_entry *lbr;
-+	int i;
-+
-+	if (!xsave)
-+		goto rollback;
-+
-+	copy_dynamic_supervisor_to_kernel(&xsave->xsave, XFEATURE_MASK_LBR);
-+
-+	for (i = 0; i < x86_pmu.lbr_nr; i++) {
-+		lbr = &xsave->lbr.entries[i];
-+
-+		/*
-+		 * Read LBR entries until invalid entry (0s) is detected.
-+		 */
-+		if (!lbr->lbr_from)
-+			break;
-+
-+		__intel_pmu_arch_lbr_read(cpuc, i, lbr->lbr_from,
-+					  lbr->lbr_to, lbr->lbr_info);
-+	}
-+
-+	cpuc->lbr_stack.nr = i;
-+
-+	return;
-+
-+rollback:
-+	intel_pmu_arch_lbr_read(cpuc);
-+}
-+
- void intel_pmu_lbr_read(void)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-@@ -1757,14 +1812,15 @@ void __init intel_pmu_arch_lbr_init(void)
- 	x86_pmu.lbr_enable = intel_pmu_arch_lbr_enable;
- 	x86_pmu.lbr_disable = intel_pmu_arch_lbr_disable;
- 	x86_pmu.lbr_reset = intel_pmu_arch_lbr_reset;
--	x86_pmu.lbr_read = intel_pmu_arch_lbr_read;
- 	if (arch_lbr_xsave) {
- 		x86_pmu.lbr_save = intel_pmu_arch_lbr_xsaves;
- 		x86_pmu.lbr_restore = intel_pmu_arch_lbr_xrstors;
-+		x86_pmu.lbr_read = intel_pmu_arch_lbr_read_xsave;
- 		pr_cont("XSAVE ");
- 	} else {
- 		x86_pmu.lbr_save = intel_pmu_arch_lbr_save;
- 		x86_pmu.lbr_restore = intel_pmu_arch_lbr_restore;
-+		x86_pmu.lbr_read = intel_pmu_arch_lbr_read;
- 	}
- 
- 	x86_pmu.arch_lbr = true;
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 812980e..b9dfc55 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -251,6 +251,7 @@ struct cpu_hw_events {
- 	u64				br_sel;
- 	void				*last_task_ctx;
- 	int				last_log_id;
-+	void				*lbr_xsave;
- 
- 	/*
- 	 * Intel host/guest exclude bits
-@@ -1106,6 +1107,8 @@ void release_ds_buffers(void);
- 
- void reserve_ds_buffers(void);
- 
-+void release_lbr_buffers(void);
-+
- extern struct event_constraint bts_constraint;
- 
- void intel_pmu_enable_bts(u64 config);
-@@ -1250,6 +1253,10 @@ static inline void release_ds_buffers(void)
- {
- }
- 
-+static inline void release_lbr_buffers(void)
-+{
-+}
-+
- static inline int intel_pmu_init(void)
- {
- 	return 0;
--- 
-2.7.4
-
+Richard.
