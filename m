@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1981200BEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D347C200C46
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388051AbgFSOjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:39:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56754 "EHLO mail.kernel.org"
+        id S2388485AbgFSOng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:43:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33938 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387554AbgFSOjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:39:24 -0400
+        id S2388426AbgFSOnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:43:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FE4A2166E;
-        Fri, 19 Jun 2020 14:39:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD26520A8B;
+        Fri, 19 Jun 2020 14:43:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577561;
-        bh=79748xi6A0dufc+IBvJCYaYUwhLn7bNEoXTQLa3KQPw=;
+        s=default; t=1592577781;
+        bh=1xAaCVxK8UayJNyozzHJ59syAeYGo1c7dgfEqh4ALZE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GjJVtk2wPHPs1nPuEyR4fZo4Ws+3Ec88ygMqKnXX9VOP/EjL7AEw0fG4+6skclqim
-         /dVz9O61cJO6joRDt+y7QUaFjYcWZNv3DoDhJDcKJMXvs/54tzMCe3Lu5m6wIe4/Kw
-         AL/yL4re6wQCWQUkaAswrmLqBMB6NbVvgdddCB+E=
+        b=q7OFPws6+niE4MxtO2y615X043EJAamrxgHS8U9Mmb+gInF8i9ZrCBEqRn14yKG22
+         TYK8XKObNkFTIrKx19jIZT1PvolFfXc1imZwjWKf7B5zS9ZQs+xjaGcio2O+t4PPV0
+         CYUmu+lr12Lhwp1z87JTQv2vgFs7TXluy/qXxfcY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Finn Thain <fthain@telegraphics.com.au>,
-        Joshua Thompson <funaho@jurai.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Sasha Levin <sashal@kernel.org>,
-        Stan Johnson <userm57@yahoo.com>
-Subject: [PATCH 4.4 069/101] m68k: mac: Dont call via_flush_cache() on Mac IIfx
-Date:   Fri, 19 Jun 2020 16:32:58 +0200
-Message-Id: <20200619141617.659290738@linuxfoundation.org>
+        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 085/128] x86/boot: Correct relocation destination on old linkers
+Date:   Fri, 19 Jun 2020 16:32:59 +0200
+Message-Id: <20200619141624.641677744@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
-References: <20200619141614.001544111@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,169 +43,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Finn Thain <fthain@telegraphics.com.au>
+From: Arvind Sankar <nivedita@alum.mit.edu>
 
-[ Upstream commit bcc44f6b74106b31f0b0408b70305a40360d63b7 ]
+[ Upstream commit 5214028dd89e49ba27007c3ee475279e584261f0 ]
 
-There is no VIA2 chip on the Mac IIfx, so don't call via_flush_cache().
-This avoids a boot crash which appeared in v5.4.
+For the 32-bit kernel, as described in
 
-printk: console [ttyS0] enabled
-printk: bootconsole [debug0] disabled
-printk: bootconsole [debug0] disabled
-Calibrating delay loop... 9.61 BogoMIPS (lpj=48064)
-pid_max: default: 32768 minimum: 301
-Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
-Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
-devtmpfs: initialized
-random: get_random_u32 called from bucket_table_alloc.isra.27+0x68/0x194 with crng_init=0
-clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
-futex hash table entries: 256 (order: -1, 3072 bytes, linear)
-NET: Registered protocol family 16
-Data read fault at 0x00000000 in Super Data (pc=0x8a6a)
-BAD KERNEL BUSERR
-Oops: 00000000
-Modules linked in:
-PC: [<00008a6a>] via_flush_cache+0x12/0x2c
-SR: 2700  SP: 01c1fe3c  a2: 01c24000
-d0: 00001119    d1: 0000000c    d2: 00012000    d3: 0000000f
-d4: 01c06840    d5: 00033b92    a0: 00000000    a1: 00000000
-Process swapper (pid: 1, task=01c24000)
-Frame format=B ssw=0755 isc=0200 isb=fff7 daddr=00000000 dobuf=01c1fed0
-baddr=00008a6e dibuf=0000004e ver=f
-Stack from 01c1fec4:
-        01c1fed0 00007d7e 00010080 01c1fedc 0000792e 00000001 01c1fef4 00006b40
-        01c80000 00040000 00000006 00000003 01c1ff1c 004a545e 004ff200 00040000
-        00000000 00000003 01c06840 00033b92 004a5410 004b6c88 01c1ff84 000021e2
-        00000073 00000003 01c06840 00033b92 0038507a 004bb094 004b6ca8 004b6c88
-        004b6ca4 004b6c88 000021ae 00020002 00000000 01c0685d 00000000 01c1ffb4
-        0049f938 00409c85 01c06840 0045bd40 00000073 00000002 00000002 00000000
-Call Trace: [<00007d7e>] mac_cache_card_flush+0x12/0x1c
- [<00010080>] fix_dnrm+0x2/0x18
- [<0000792e>] cache_push+0x46/0x5a
- [<00006b40>] arch_dma_prep_coherent+0x60/0x6e
- [<00040000>] switched_to_dl+0x76/0xd0
- [<004a545e>] dma_atomic_pool_init+0x4e/0x188
- [<00040000>] switched_to_dl+0x76/0xd0
- [<00033b92>] parse_args+0x0/0x370
- [<004a5410>] dma_atomic_pool_init+0x0/0x188
- [<000021e2>] do_one_initcall+0x34/0x1be
- [<00033b92>] parse_args+0x0/0x370
- [<0038507a>] strcpy+0x0/0x1e
- [<000021ae>] do_one_initcall+0x0/0x1be
- [<00020002>] do_proc_dointvec_conv+0x54/0x74
- [<0049f938>] kernel_init_freeable+0x126/0x190
- [<0049f94c>] kernel_init_freeable+0x13a/0x190
- [<004a5410>] dma_atomic_pool_init+0x0/0x188
- [<00041798>] complete+0x0/0x3c
- [<000b9b0c>] kfree+0x0/0x20a
- [<0038df98>] schedule+0x0/0xd0
- [<0038d604>] kernel_init+0x0/0xda
- [<0038d610>] kernel_init+0xc/0xda
- [<0038d604>] kernel_init+0x0/0xda
- [<00002d38>] ret_from_kernel_thread+0xc/0x14
-Code: 0000 2079 0048 10da 2279 0048 10c8 d3c8 <1011> 0200 fff7 1280 d1f9 0048 10c8 1010 0000 0008 1080 4e5e 4e75 4e56 0000 2039
-Disabling lock debugging due to kernel taint
-Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+  6d92bc9d483a ("x86/build: Build compressed x86 kernels as PIE"),
 
-Thanks to Stan Johnson for capturing the console log and running git
-bisect.
+pre-2.26 binutils generates R_386_32 relocations in PIE mode. Since the
+startup code does not perform relocation, any reloc entry with R_386_32
+will remain as 0 in the executing code.
 
-Git bisect said commit 8e3a68fb55e0 ("dma-mapping: make
-dma_atomic_pool_init self-contained") is the first "bad" commit. I don't
-know why. Perhaps mach_l2_flush first became reachable with that commit.
+Commit
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Reported-and-tested-by: Stan Johnson <userm57@yahoo.com>
-Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
-Cc: Joshua Thompson <funaho@jurai.org>
-Link: https://lore.kernel.org/r/b8bbeef197d6b3898e82ed0d231ad08f575a4b34.1589949122.git.fthain@telegraphics.com.au
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+  974f221c84b0 ("x86/boot: Move compressed kernel to the end of the
+                 decompression buffer")
+
+added a new symbol _end but did not mark it hidden, which doesn't give
+the correct offset on older linkers. This causes the compressed kernel
+to be copied beyond the end of the decompression buffer, rather than
+flush against it. This region of memory may be reserved or already
+allocated for other purposes by the bootloader.
+
+Mark _end as hidden to fix. This changes the relocation from R_386_32 to
+R_386_RELATIVE even on the pre-2.26 binutils.
+
+For 64-bit, this is not strictly necessary, as the 64-bit kernel is only
+built as PIE if the linker supports -z noreloc-overflow, which implies
+binutils-2.27+, but for consistency, mark _end as hidden here too.
+
+The below illustrates the before/after impact of the patch using
+binutils-2.25 and gcc-4.6.4 (locally compiled from source) and QEMU.
+
+  Disassembly before patch:
+    48:   8b 86 60 02 00 00       mov    0x260(%esi),%eax
+    4e:   2d 00 00 00 00          sub    $0x0,%eax
+                          4f: R_386_32    _end
+  Disassembly after patch:
+    48:   8b 86 60 02 00 00       mov    0x260(%esi),%eax
+    4e:   2d 00 f0 76 00          sub    $0x76f000,%eax
+                          4f: R_386_RELATIVE      *ABS*
+
+Dump from extract_kernel before patch:
+	early console in extract_kernel
+	input_data: 0x0207c098 <--- this is at output + init_size
+	input_len: 0x0074fef1
+	output: 0x01000000
+	output_len: 0x00fa63d0
+	kernel_total_size: 0x0107c000
+	needed_size: 0x0107c000
+
+Dump from extract_kernel after patch:
+	early console in extract_kernel
+	input_data: 0x0190d098 <--- this is at output + init_size - _end
+	input_len: 0x0074fef1
+	output: 0x01000000
+	output_len: 0x00fa63d0
+	kernel_total_size: 0x0107c000
+	needed_size: 0x0107c000
+
+Fixes: 974f221c84b0 ("x86/boot: Move compressed kernel to the end of the decompression buffer")
+Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200207214926.3564079-1-nivedita@alum.mit.edu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/include/asm/mac_via.h |  1 +
- arch/m68k/mac/config.c          | 21 ++-------------------
- arch/m68k/mac/via.c             |  6 +++++-
- 3 files changed, 8 insertions(+), 20 deletions(-)
+ arch/x86/boot/compressed/head_32.S | 5 +++--
+ arch/x86/boot/compressed/head_64.S | 1 +
+ 2 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/m68k/include/asm/mac_via.h b/arch/m68k/include/asm/mac_via.h
-index 53c632c85b03..dff6db19ae4d 100644
---- a/arch/m68k/include/asm/mac_via.h
-+++ b/arch/m68k/include/asm/mac_via.h
-@@ -256,6 +256,7 @@ extern int rbv_present,via_alt_mapping;
- 
- struct irq_desc;
- 
-+extern void via_l2_flush(int writeback);
- extern void via_register_interrupts(void);
- extern void via_irq_enable(int);
- extern void via_irq_disable(int);
-diff --git a/arch/m68k/mac/config.c b/arch/m68k/mac/config.c
-index 689b47d292ac..c4be82cc07df 100644
---- a/arch/m68k/mac/config.c
-+++ b/arch/m68k/mac/config.c
-@@ -60,7 +60,6 @@ extern void iop_preinit(void);
- extern void iop_init(void);
- extern void via_init(void);
- extern void via_init_clock(irq_handler_t func);
--extern void via_flush_cache(void);
- extern void oss_init(void);
- extern void psc_init(void);
- extern void baboon_init(void);
-@@ -131,21 +130,6 @@ int __init mac_parse_bootinfo(const struct bi_record *record)
- 	return unknown;
- }
- 
--/*
-- * Flip into 24bit mode for an instant - flushes the L2 cache card. We
-- * have to disable interrupts for this. Our IRQ handlers will crap
-- * themselves if they take an IRQ in 24bit mode!
-- */
--
--static void mac_cache_card_flush(int writeback)
--{
--	unsigned long flags;
--
--	local_irq_save(flags);
--	via_flush_cache();
--	local_irq_restore(flags);
--}
--
- void __init config_mac(void)
- {
- 	if (!MACH_IS_MAC)
-@@ -178,9 +162,8 @@ void __init config_mac(void)
- 	 * not.
- 	 */
- 
--	if (macintosh_config->ident == MAC_MODEL_IICI
--	    || macintosh_config->ident == MAC_MODEL_IIFX)
--		mach_l2_flush = mac_cache_card_flush;
-+	if (macintosh_config->ident == MAC_MODEL_IICI)
-+		mach_l2_flush = via_l2_flush;
- }
- 
- 
-diff --git a/arch/m68k/mac/via.c b/arch/m68k/mac/via.c
-index 49f9fa4529a8..b4c40ed2099a 100644
---- a/arch/m68k/mac/via.c
-+++ b/arch/m68k/mac/via.c
-@@ -299,10 +299,14 @@ void via_debug_dump(void)
-  * the system into 24-bit mode for an instant.
+diff --git a/arch/x86/boot/compressed/head_32.S b/arch/x86/boot/compressed/head_32.S
+index 7532f6f53677..93f41b4f05ce 100644
+--- a/arch/x86/boot/compressed/head_32.S
++++ b/arch/x86/boot/compressed/head_32.S
+@@ -48,16 +48,17 @@
+  * Position Independent Executable (PIE) so that linker won't optimize
+  * R_386_GOT32X relocation to its fixed symbol address.  Older
+  * linkers generate R_386_32 relocations against locally defined symbols,
+- * _bss, _ebss, _got and _egot, in PIE.  It isn't wrong, just less
++ * _bss, _ebss, _got, _egot and _end, in PIE.  It isn't wrong, just less
+  * optimal than R_386_RELATIVE.  But the x86 kernel fails to properly handle
+  * R_386_32 relocations when relocating the kernel.  To generate
+- * R_386_RELATIVE relocations, we mark _bss, _ebss, _got and _egot as
++ * R_386_RELATIVE relocations, we mark _bss, _ebss, _got, _egot and _end as
+  * hidden:
   */
+ 	.hidden _bss
+ 	.hidden _ebss
+ 	.hidden _got
+ 	.hidden _egot
++	.hidden _end
  
--void via_flush_cache(void)
-+void via_l2_flush(int writeback)
- {
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
- 	via2[gBufB] &= ~VIA2B_vMode32;
- 	via2[gBufB] |= VIA2B_vMode32;
-+	local_irq_restore(flags);
- }
+ 	__HEAD
+ ENTRY(startup_32)
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index 3fac2d133e4e..d096bcfcb3f6 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -40,6 +40,7 @@
+ 	.hidden _ebss
+ 	.hidden _got
+ 	.hidden _egot
++	.hidden _end
  
- /*
+ 	__HEAD
+ 	.code32
 -- 
 2.25.1
 
