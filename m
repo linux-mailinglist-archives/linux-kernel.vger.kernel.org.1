@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0037F201329
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 742F7201343
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392628AbgFSP5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:57:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50996 "EHLO mail.kernel.org"
+        id S2390447AbgFSP7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:59:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49774 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392630AbgFSPT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:19:58 -0400
+        id S2390420AbgFSPTJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:19:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 66015217A0;
-        Fri, 19 Jun 2020 15:19:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2A0A2184D;
+        Fri, 19 Jun 2020 15:19:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579997;
-        bh=Nzj33yMcNsTqDcHz96UKV5DTW8bq53Qh/4LF7am2yZs=;
+        s=default; t=1592579947;
+        bh=asa8ONHvLvSLrkUv5RGqx9vJCcv05F7tTMtmQgGoEZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s+HJQnPYVk/3ycXUahn2dH7yrid1GlF27G0nfcwkegCNo064ZNBz1rD6/vNoGEWCK
-         KzqwjOH9DTp7bww+1xPBJWun+XyIV/xVAOa2Brd3/MvIeinrO+FDNTbSDSOHIQg9WK
-         QHAOqjOtbyR2DGp7r2m3RPQ5gIloiBadiaMKHJds=
+        b=td7Jr9+sxMVEAx+qz7lHYq+bde7pTrGeYQy9XWisn/at3cta0Ekb96CarJZw+uAw+
+         P0DSPAjXuHOEbC9mxsXhoISLJnK6GTkofib1KVdm+LSRA1VF6oPeaUb5O4qTidxi3U
+         /c5XVvTcmLFazgkUpXidpbLvYNz9ol+gmihRPWV4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 054/376] ath11k: Fix some resource leaks in error path in ath11k_thermal_register()
-Date:   Fri, 19 Jun 2020 16:29:32 +0200
-Message-Id: <20200619141712.909592912@linuxfoundation.org>
+Subject: [PATCH 5.7 065/376] ARM: 8978/1: mm: make act_mm() respect THREAD_SIZE
+Date:   Fri, 19 Jun 2020 16:29:43 +0200
+Message-Id: <20200619141713.430930456@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -45,55 +46,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit 25ca180ad380a0c7286442a922e7fbcc6a9f6083 ]
+[ Upstream commit e1de94380af588bdf6ad6f0cc1f75004c35bc096 ]
 
-If 'thermal_cooling_device_register()' fails, we must undo what has been
-allocated so far. So we must go to 'err_thermal_destroy' instead of
-returning directly
+Recent work with KASan exposed the folling hard-coded bitmask
+in arch/arm/mm/proc-macros.S:
 
-In case of error in 'ath11k_thermal_register()', the previous
-'thermal_cooling_device_register()' call must also be undone. Move the
-'ar->thermal.cdev = cdev' a few lines above in order for this to be done
-in 'ath11k_thermal_unregister()' which is called in the error handling
-path.
+  bic     rd, sp, #8128
+  bic     rd, rd, #63
 
-Fixes: 2a63bbca06b2 ("ath11k: add thermal cooling device support")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200513201454.258111-1-christophe.jaillet@wanadoo.fr
+This forms the bitmask 0x1FFF that is coinciding with
+(PAGE_SIZE << THREAD_SIZE_ORDER) - 1, this code was assuming
+that THREAD_SIZE is always 8K (8192).
+
+As KASan was increasing THREAD_SIZE_ORDER to 2, I ran into
+this bug.
+
+Fix it by this little oneline suggested by Ard:
+
+  bic     rd, sp, #(THREAD_SIZE - 1) & ~63
+
+Where THREAD_SIZE is defined using THREAD_SIZE_ORDER.
+
+We have to also include <linux/const.h> since the THREAD_SIZE
+expands to use the _AC() macro.
+
+Cc: Ard Biesheuvel <ardb@kernel.org>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Suggested-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath11k/thermal.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ arch/arm/mm/proc-macros.S | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/thermal.c b/drivers/net/wireless/ath/ath11k/thermal.c
-index 259dddbda2c7..5a7e150c621b 100644
---- a/drivers/net/wireless/ath/ath11k/thermal.c
-+++ b/drivers/net/wireless/ath/ath11k/thermal.c
-@@ -174,9 +174,12 @@ int ath11k_thermal_register(struct ath11k_base *sc)
- 		if (IS_ERR(cdev)) {
- 			ath11k_err(sc, "failed to setup thermal device result: %ld\n",
- 				   PTR_ERR(cdev));
--			return -EINVAL;
-+			ret = -EINVAL;
-+			goto err_thermal_destroy;
- 		}
+diff --git a/arch/arm/mm/proc-macros.S b/arch/arm/mm/proc-macros.S
+index 5461d589a1e2..60ac7c5999a9 100644
+--- a/arch/arm/mm/proc-macros.S
++++ b/arch/arm/mm/proc-macros.S
+@@ -5,6 +5,7 @@
+  *  VMA_VM_FLAGS
+  *  VM_EXEC
+  */
++#include <linux/const.h>
+ #include <asm/asm-offsets.h>
+ #include <asm/thread_info.h>
  
-+		ar->thermal.cdev = cdev;
-+
- 		ret = sysfs_create_link(&ar->hw->wiphy->dev.kobj, &cdev->device.kobj,
- 					"cooling_device");
- 		if (ret) {
-@@ -184,7 +187,6 @@ int ath11k_thermal_register(struct ath11k_base *sc)
- 			goto err_thermal_destroy;
- 		}
- 
--		ar->thermal.cdev = cdev;
- 		if (!IS_REACHABLE(CONFIG_HWMON))
- 			return 0;
- 
+@@ -30,7 +31,7 @@
+  * act_mm - get current->active_mm
+  */
+ 	.macro	act_mm, rd
+-	bic	\rd, sp, #8128
++	bic	\rd, sp, #(THREAD_SIZE - 1) & ~63
+ 	bic	\rd, \rd, #63
+ 	ldr	\rd, [\rd, #TI_TASK]
+ 	.if (TSK_ACTIVE_MM > IMM12_MASK)
 -- 
 2.25.1
 
