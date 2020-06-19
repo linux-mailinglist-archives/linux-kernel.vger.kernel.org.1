@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9EC200BF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8092D200BF9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388098AbgFSOkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:40:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57620 "EHLO mail.kernel.org"
+        id S2387823AbgFSOkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:40:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57692 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387586AbgFSOjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:39:55 -0400
+        id S2388090AbgFSOj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:39:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F019208B8;
-        Fri, 19 Jun 2020 14:39:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A2D86208B8;
+        Fri, 19 Jun 2020 14:39:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577595;
-        bh=yXPXmqd0skqNRuHYxSY4peEgUT8O2Dy/r0sZbu6ByaI=;
+        s=default; t=1592577598;
+        bh=NWMLcpyikfEyP3vhtWUk2KoId6XXFoE9zxGdE35jo0U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NSuSOstKwQb3CufkHrhKsbwGASBTdK/fDBDKNu3PGep0AtNE4Vq9+Ke8Y7zjGLmFz
-         l7CTfALBj9QhYhMl1yCmca/cU47w+QAxqJ7PQAPOsz4VvsUrgaaBm5d+UWbrBNIu2T
-         MlPhSTfAIOWV8XM3NawesSvtdiongaMq/zw9gGmc=
+        b=lcui03UiAYGa5n3Q9CaA8kGDI1kipWj2rMOZfRRPxRsPPvgfZ0MUT5tivfBdD7cbB
+         oDVyVS2VL7I97OyaA/npXENwPiwLqPD6dKjWZj09R5SvRXu3bkOPQvwFf5bHupvVTB
+         pm29EK3v1G5Et2n6XeIZ5IPMq1gdOMWuza1krXWA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hill Ma <maahiuzeon@gmail.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: [PATCH 4.9 012/128] x86/reboot/quirks: Add MacBook6,1 reboot quirk
-Date:   Fri, 19 Jun 2020 16:31:46 +0200
-Message-Id: <20200619141620.793530387@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?=E4=BA=BF=E4=B8=80?= <teroincn@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 4.9 013/128] efi/efivars: Add missing kobject_put() in sysfs entry creation error path
+Date:   Fri, 19 Jun 2020 16:31:47 +0200
+Message-Id: <20200619141620.841961202@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
 References: <20200619141620.148019466@linuxfoundation.org>
@@ -43,39 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hill Ma <maahiuzeon@gmail.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 140fd4ac78d385e6c8e6a5757585f6c707085f87 upstream.
+commit d8bd8c6e2cfab8b78b537715255be8d7557791c0 upstream.
 
-On MacBook6,1 reboot would hang unless parameter reboot=pci is added.
-Make it automatic.
+The documentation provided by kobject_init_and_add() clearly spells out
+the need to call kobject_put() on the kobject if an error is returned.
+Add this missing call to the error path.
 
-Signed-off-by: Hill Ma <maahiuzeon@gmail.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/20200425200641.GA1554@cslab.localdomain
+Cc: <stable@vger.kernel.org>
+Reported-by: 亿一 <teroincn@gmail.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/x86/kernel/reboot.c |    8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/firmware/efi/efivars.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -198,6 +198,14 @@ static struct dmi_system_id __initdata r
- 			DMI_MATCH(DMI_PRODUCT_NAME, "MacBook5"),
- 		},
- 	},
-+	{	/* Handle problems with rebooting on Apple MacBook6,1 */
-+		.callback = set_pci_reboot,
-+		.ident = "Apple MacBook6,1",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Apple Inc."),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "MacBook6,1"),
-+		},
-+	},
- 	{	/* Handle problems with rebooting on Apple MacBookPro5 */
- 		.callback = set_pci_reboot,
- 		.ident = "Apple MacBookPro5",
+--- a/drivers/firmware/efi/efivars.c
++++ b/drivers/firmware/efi/efivars.c
+@@ -586,8 +586,10 @@ efivar_create_sysfs_entry(struct efivar_
+ 	ret = kobject_init_and_add(&new_var->kobj, &efivar_ktype,
+ 				   NULL, "%s", short_name);
+ 	kfree(short_name);
+-	if (ret)
++	if (ret) {
++		kobject_put(&new_var->kobj);
+ 		return ret;
++	}
+ 
+ 	kobject_uevent(&new_var->kobj, KOBJ_ADD);
+ 	if (efivar_entry_add(new_var, &efivar_sysfs_list)) {
 
 
