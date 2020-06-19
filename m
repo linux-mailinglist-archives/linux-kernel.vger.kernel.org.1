@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D57EA2012A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C34CC201210
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389891AbgFSPyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:54:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53346 "EHLO mail.kernel.org"
+        id S2393342AbgFSPYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:24:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388811AbgFSPWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:22:00 -0400
+        id S2392947AbgFSPWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:22:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 27D0D21927;
-        Fri, 19 Jun 2020 15:21:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8798921548;
+        Fri, 19 Jun 2020 15:22:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580119;
-        bh=9Xe4Sx5w74/rmD8c1252EWSqEacJPDGX8bb4wGGi3ZQ=;
+        s=default; t=1592580125;
+        bh=sI8qGZ67vRCEu32jaQy/usE2cJJy7oZBz5RPrSs/cAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nKe2TS/1r45fjiyASEUfCNBXMtcDxGpLvxQBflgzXyx/H5CEJxESWm9AiLuXAT6GG
-         iXnnvSM2mJwPEETwE7szEDaXLN+qToCtFBb4VFDyMWHpe8jk7VaHnAc5h1rHL5z9Rw
-         IdXHlqddSldpZztq0ZWjnOx0bR28jnXvmqgeSbAE=
+        b=j5mOI2nw4gACG4Gzp3Ps6D0LwCd5N0zy5fDUPrEgmdAizFbhUNAYQodKPF0WXUXrx
+         FMK7009xFoaVJY8Jy+zewhNY/Zr6ZWguWwza6OsUaCgW/WALA5MaE+7Pv+DCGfWYHu
+         8IRGEGAhoEo1zTwedYsuW9FQ+W51Sbux7OKYkIWg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
+        stable@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 130/376] drm/bridge: fix stack usage warning on old gcc
-Date:   Fri, 19 Jun 2020 16:30:48 +0200
-Message-Id: <20200619141716.488320804@linuxfoundation.org>
+Subject: [PATCH 5.7 131/376] net: bcmgenet: set Rx mode before starting netif
+Date:   Fri, 19 Jun 2020 16:30:49 +0200
+Message-Id: <20200619141716.535789404@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -45,52 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Doug Berger <opendmb@gmail.com>
 
-[ Upstream commit 78b0d99a68ecdc84728c99f4fef71942e9ecf35a ]
+[ Upstream commit 72f96347628e73dbb61b307f18dd19293cc6792a ]
 
-Some older versions of gcc badly optimize code that passes
-an inline function argument into another function by reference,
-causing huge stack usage:
+This commit explicitly calls the bcmgenet_set_rx_mode() function when
+the network interface is started. This function is normally called by
+ndo_set_rx_mode when the flags are changed, but apparently not when
+the driver is suspended and resumed.
 
-drivers/gpu/drm/bridge/tc358768.c: In function 'tc358768_bridge_pre_enable':
-drivers/gpu/drm/bridge/tc358768.c:840:1: error: the frame size of 2256 bytes is larger than 2048 bytes [-Werror=frame-larger-than=]
+This change ensures that address filtering or promiscuous mode are
+properly restored by the driver after the MAC may have been reset.
 
-Use a temporary variable as a workaround and add a comment pointing
-to the gcc bug.
-
-Fixes: ff1ca6397b1d ("drm/bridge: Add tc358768 driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200428215408.4111675-1-arnd@arndb.de
+Fixes: b6e978e50444 ("net: bcmgenet: add suspend/resume callbacks")
+Signed-off-by: Doug Berger <opendmb@gmail.com>
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/bridge/tc358768.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/broadcom/genet/bcmgenet.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
-index 1b39e8d37834..6650fe4cfc20 100644
---- a/drivers/gpu/drm/bridge/tc358768.c
-+++ b/drivers/gpu/drm/bridge/tc358768.c
-@@ -178,6 +178,8 @@ static int tc358768_clear_error(struct tc358768_priv *priv)
+diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+index 79636c78127c..38bdfd4b46f0 100644
+--- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
++++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
+@@ -70,6 +70,9 @@
+ #define GENET_RDMA_REG_OFF	(priv->hw_params->rdma_offset + \
+ 				TOTAL_DESC * DMA_DESC_SIZE)
  
- static void tc358768_write(struct tc358768_priv *priv, u32 reg, u32 val)
++/* Forward declarations */
++static void bcmgenet_set_rx_mode(struct net_device *dev);
++
+ static inline void bcmgenet_writel(u32 value, void __iomem *offset)
  {
-+	/* work around https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81715 */
-+	int tmpval = val;
- 	size_t count = 2;
+ 	/* MIPS chips strapped for BE will automagically configure the
+@@ -2803,6 +2806,7 @@ static void bcmgenet_netif_start(struct net_device *dev)
+ 	struct bcmgenet_priv *priv = netdev_priv(dev);
  
- 	if (priv->error)
-@@ -187,7 +189,7 @@ static void tc358768_write(struct tc358768_priv *priv, u32 reg, u32 val)
- 	if (reg < 0x100 || reg >= 0x600)
- 		count = 1;
+ 	/* Start the network engine */
++	bcmgenet_set_rx_mode(dev);
+ 	bcmgenet_enable_rx_napi(priv);
  
--	priv->error = regmap_bulk_write(priv->regmap, reg, &val, count);
-+	priv->error = regmap_bulk_write(priv->regmap, reg, &tmpval, count);
- }
- 
- static void tc358768_read(struct tc358768_priv *priv, u32 reg, u32 *val)
+ 	umac_enable_set(priv, CMD_TX_EN | CMD_RX_EN, true);
 -- 
 2.25.1
 
