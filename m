@@ -2,126 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 126962019B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BFA52019BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390940AbgFSRrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 13:47:14 -0400
-Received: from mail.baikalelectronics.com ([87.245.175.226]:37678 "EHLO
-        mail.baikalelectronics.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731681AbgFSRrN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 13:47:13 -0400
-Received: from localhost (unknown [127.0.0.1])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 5CD1F8030866;
-        Fri, 19 Jun 2020 17:47:10 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at baikalelectronics.ru
-Received: from mail.baikalelectronics.ru ([127.0.0.1])
-        by localhost (mail.baikalelectronics.ru [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ok4AU7qgxyVE; Fri, 19 Jun 2020 20:47:09 +0300 (MSK)
-Date:   Fri, 19 Jun 2020 20:47:08 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-CC:     Serge Semin <fancer.lancer@gmail.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Maxime Ripard <mripard@kernel.org>,
+        id S2391524AbgFSRsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 13:48:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726906AbgFSRsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 13:48:03 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 07FB620786;
+        Fri, 19 Jun 2020 17:48:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592588883;
+        bh=N4RWgoN16EE1BZsFdbQEMpRXO0It9G1CC6hfBn+wOUI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=PX+5u82USt671V6ybsFCsBoqsdOzVrG6mQ34A/fY/I6+EfFuA3ASyLSSNDOkKXGAq
+         O3AfUE7Wh4OQ4g+PuFOv7JMYeb/vhrL7h6i8sJJwrUYa2hz65xY1ZWthF1AQ+kVpc5
+         4e+cy9YHjAJsb6UN9Mgp3bMXqchKOB1yGY2+0UAQ=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id DD9683522B50; Fri, 19 Jun 2020 10:48:02 -0700 (PDT)
+Date:   Fri, 19 Jun 2020 10:48:02 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, frederic@kernel.org,
         Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        <linux-mips@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 3/3] serial: 8250_dw: Fix common clocks usage race
- condition
-Message-ID: <20200619174708.qcke3w7ltiv7rp7y@mobilestation>
-References: <20200617224813.23853-1-Sergey.Semin@baikalelectronics.ru>
- <20200617224813.23853-4-Sergey.Semin@baikalelectronics.ru>
- <CAHp75VcoV+aC9H5TYAxQX2O9HLz==xnts9bcKKQBcdtvohpi6g@mail.gmail.com>
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        npiggin@gmail.com
+Subject: Re: [PATCH 0/6] sched: TTWU, IPI, and assorted stuff
+Message-ID: <20200619174802.GA10403@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200615125654.678940605@infradead.org>
+ <20200615162330.GF2723@paulmck-ThinkPad-P72>
+ <20200615164048.GC2531@hirez.programming.kicks-ass.net>
+ <20200615172149.GJ2723@paulmck-ThinkPad-P72>
+ <20200615191158.GK2531@hirez.programming.kicks-ass.net>
+ <20200616170410.GL2554@hirez.programming.kicks-ass.net>
+ <20200616171721.GM2554@hirez.programming.kicks-ass.net>
+ <20200619134423.GB577403@hirez.programming.kicks-ass.net>
+ <20200619172047.GK2723@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75VcoV+aC9H5TYAxQX2O9HLz==xnts9bcKKQBcdtvohpi6g@mail.gmail.com>
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+In-Reply-To: <20200619172047.GK2723@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 11:29:36AM +0300, Andy Shevchenko wrote:
-> On Thu, Jun 18, 2020 at 1:50 AM Serge Semin
-> <Sergey.Semin@baikalelectronics.ru> wrote:
-> >
-> > The race condition may happen if the UART reference clock is shared with
-> > some other device (on Baikal-T1 SoC it's another DW UART port). In this
-> > case if that device changes the clock rate while serial console is using
-> > it the DW 8250 UART port might not only end up with an invalid uartclk
-> > value saved, but may also experience a distorted output data since
-> > baud-clock could have been changed. In order to fix this lets at least
-> > try to adjust the 8250 port setting like UART clock rate in case if the
-> > reference clock rate change is discovered. The driver will call the new
-> > method to update 8250 UART port clock rate settings. It's done by means of
-> > the clock event notifier registered at the port startup and unregistered
-> > in the shutdown callback method.
-> >
-> > Note 1. In order to avoid deadlocks we had to execute the UART port update
-> > method in a dedicated deferred work. This is due to (in my opinion
-> > redundant) the clock update implemented in the dw8250_set_termios()
-> > method.
-> > Note 2. Before the ref clock is manually changed by the custom
-> > set_termios() function we swap the port uartclk value with new rate
-> > adjusted to be suitable for the requested baud. It is necessary in
-> > order to effectively disable a functionality of the ref clock events
-> > handler for the current UART port, since uartclk update will be done
-> > a bit further in the generic serial8250_do_set_termios() function.
+On Fri, Jun 19, 2020 at 10:20:47AM -0700, Paul E. McKenney wrote:
+> On Fri, Jun 19, 2020 at 03:44:23PM +0200, Peter Zijlstra wrote:
+> > On Tue, Jun 16, 2020 at 07:17:21PM +0200, Peter Zijlstra wrote:
+
+[ . . . ]
+
+> > If not, I'm, once again, defeated by this...
 > 
-> So, regarding runtime PM...
+> Here is hoping that this patch cures things!
 > 
-> > +static void dw8250_clk_work_cb(struct work_struct *work)
-> > +{
-> > +       struct dw8250_data *d = work_to_dw8250_data(work);
-> > +       struct uart_8250_port *up;
-> > +       unsigned long rate;
+> 							Thanx, Paul
+> 
+> > ---
+> >  kernel/sched/core.c | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 8298b2c240ce..5534eb1ab79a 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -2378,6 +2378,9 @@ static inline bool ttwu_queue_cond(int cpu, int wake_flags)
+> >  static bool ttwu_queue_wakelist(struct task_struct *p, int cpu, int wake_flags)
+> >  {
+> >  	if (sched_feat(TTWU_QUEUE) && ttwu_queue_cond(cpu, wake_flags)) {
+> > +		if (WARN_ON(cpu == smp_processor_id()))
+> > +			return false;
 > > +
-> > +       rate = clk_get_rate(d->clk);
-> > +       if (rate <= 0)
-> > +               return;
-> > +
-> 
-> > +       up = serial8250_get_port(d->data.line);
-> 
+> >  		sched_clock_cpu(cpu); /* Sync clocks across CPUs */
+> >  		__ttwu_queue_wakelist(p, cpu, wake_flags);
+> >  		return true;
+> > @@ -2550,7 +2553,6 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+> >  
+> >  	/* We're going to change ->state: */
+> >  	success = 1;
+> > -	cpu = task_cpu(p);
+> >  
+> >  	/*
+> >  	 * Ensure we load p->on_rq _after_ p->state, otherwise it would
+> > @@ -2615,7 +2617,8 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+> >  	 * let the waker make forward progress. This is safe because IRQs are
+> >  	 * disabled and the IPI will deliver after on_cpu is cleared.
+> >  	 */
+> > -	if (READ_ONCE(p->on_cpu) && ttwu_queue_wakelist(p, cpu, wake_flags | WF_ON_RQ))
+> > +	if (smp_load_acquire(&p->on_cpu) &&
 
-> (Btw, this can be done directly in the definition block above.)
+Given the x86 memory model, this only protects against the compiler
+reordering accesses in ttwu_queue_wakelist() against the fetch of
+p->on_cpu, correct?
 
-I would have done like you said if serial8250_get_port() was an inline or
-macro. But since it's a normal exported function I'd leave the invocation
-here, since calling it takes though small but still some time.
+Don't get me wrong, I do see some potential compiler misorderings,
+including with cpu_rq(cpu)->nr_running.  Just curious.
 
-> 
-> > +       serial8250_update_uartclk(&up->port, rate);
-> 
-> This I think should require a device to be powered on. What in your
-> opinion is a better place to have it done?
+						Thanx, Paul
 
-> To me it looks like serial8250_update_uartclk() misses it.
-
-Right. the PM thing should be there similarly to the rest of the serial8250
-methods. I'll add the serial8250_rpm_get(up) and serial8250_rpm_put(up)
-functions invocation around the divisor update clause, like it's done in the
-serial8250_do_set_termios() method.
-
-Thanks for noticing this.
-
--Sergey
-
-> 
-> > +}
-> 
-> --
-> With Best Regards,
-> Andy Shevchenko
+> > +	    ttwu_queue_wakelist(p, task_cpu(p), wake_flags | WF_ON_RQ))
+> >  		goto unlock;
+> >  
+> >  	/*
+> > @@ -2635,6 +2638,8 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+> >  		psi_ttwu_dequeue(p);
+> >  		set_task_cpu(p, cpu);
+> >  	}
+> > +#else
+> > +	cpu = task_cpu(p);
+> >  #endif /* CONFIG_SMP */
+> >  
+> >  	ttwu_queue(p, cpu, wake_flags);
+> > 
