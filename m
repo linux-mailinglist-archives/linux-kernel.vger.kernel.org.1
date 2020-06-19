@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD474201410
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3176D201408
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393209AbgFSQHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:07:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37990 "EHLO mail.kernel.org"
+        id S2391771AbgFSPIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:08:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391729AbgFSPI1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:08:27 -0400
+        id S2391741AbgFSPIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:08:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 227B821974;
-        Fri, 19 Jun 2020 15:08:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9463820776;
+        Fri, 19 Jun 2020 15:08:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579306;
-        bh=0KypZuRVLh5CnTf3n9XrxwjSNFz7AtA/kwAvZBhncx4=;
+        s=default; t=1592579312;
+        bh=6pPFugxbQhag+Gcg3s4zYYrpngAtaHNVwPKm2oVb/40=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oL++wpe3OU7BZjZ9zxjLptnViY5rsuboNXPhXx3Mv78tNeco6JBawCd2YQ1WCQ81C
-         Vb5ShevGL/7VPgnB5VA9PbOcXFcjJKL+2ToVTzR6jPMwIt31F9PxlnvIHWZFQVr1do
-         5TDt0yrcZ7LND2PaHJDTowcuAVMkYZ8ISyt45ft8=
+        b=DSUfyt27TJCgRzGmZbszrbUIa8cbm6w2KrOu0FX4wgqEa60MoPJMxtPz+X1JO2lJt
+         0/mRcxzpFWeBL46IKTTgfX7NPKL9SPPxZSBnkanJ8wXJXpevTHLrFB/AAKaUVQw8MZ
+         XSYZDCwtSwv3TEKBmMhOGpawrLqKep5W7bcBHifg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        Paul Moore <paul@paul-moore.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 085/261] net: lpc-enet: fix error return code in lpc_mii_init()
-Date:   Fri, 19 Jun 2020 16:31:36 +0200
-Message-Id: <20200619141653.966893355@linuxfoundation.org>
+Subject: [PATCH 5.4 086/261] selinux: fix error return code in policydb_read()
+Date:   Fri, 19 Jun 2020 16:31:37 +0200
+Message-Id: <20200619141654.009625482@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
 References: <20200619141649.878808811@linuxfoundation.org>
@@ -47,34 +46,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Wei Yongjun <weiyongjun1@huawei.com>
 
-[ Upstream commit 88ec7cb22ddde725ed4ce15991f0bd9dd817fd85 ]
+[ Upstream commit 4c09f8b6913a779ca0c70ea8058bf21537eebb3b ]
 
-Fix to return a negative error code from the error handling
-case instead of 0, as done elsewhere in this function.
+Fix to return negative error code -ENOMEM from the kvcalloc() error
+handling case instead of 0, as done elsewhere in this function.
 
-Fixes: b7370112f519 ("lpc32xx: Added ethernet driver")
+Fixes: acdf52d97f82 ("selinux: convert to kvmalloc")
 Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/nxp/lpc_eth.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ security/selinux/ss/policydb.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/nxp/lpc_eth.c b/drivers/net/ethernet/nxp/lpc_eth.c
-index 544012a67221..1d59ef367a85 100644
---- a/drivers/net/ethernet/nxp/lpc_eth.c
-+++ b/drivers/net/ethernet/nxp/lpc_eth.c
-@@ -815,7 +815,8 @@ static int lpc_mii_init(struct netdata_local *pldat)
- 	if (mdiobus_register(pldat->mii_bus))
- 		goto err_out_unregister_bus;
+diff --git a/security/selinux/ss/policydb.c b/security/selinux/ss/policydb.c
+index 1260f5fb766e..dd7aabd94a92 100644
+--- a/security/selinux/ss/policydb.c
++++ b/security/selinux/ss/policydb.c
+@@ -2496,6 +2496,7 @@ int policydb_read(struct policydb *p, void *fp)
+ 	if (rc)
+ 		goto bad;
  
--	if (lpc_mii_probe(pldat->ndev) != 0)
-+	err = lpc_mii_probe(pldat->ndev);
-+	if (err)
- 		goto err_out_unregister_bus;
- 
- 	return 0;
++	rc = -ENOMEM;
+ 	p->type_attr_map_array = kvcalloc(p->p_types.nprim,
+ 					  sizeof(*p->type_attr_map_array),
+ 					  GFP_KERNEL);
 -- 
 2.25.1
 
