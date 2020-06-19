@@ -2,86 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F911FFF2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 02:12:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68C61FFF30
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 02:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728386AbgFSAMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 20:12:10 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:45857 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726478AbgFSAMJ (ORCPT
+        id S1728554AbgFSATF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 20:19:05 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:51033 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728104AbgFSASF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 20:12:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592525528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4IvmOEXU995/nnkIHpkUNgSHVYZli54q5t/36kQjlWA=;
-        b=Lfo+hRz8/YccCFrWEmw79/zFStvb5R7ACfUUpSk1QHwA54rlD1bI/XHzjkd6rs+Y6CIHil
-        IzoMvb6IRNyfbumN63of9Q7FaL//CePbCvTt4YlPK3R2HLzPlAvaTj7sSQ2fDQ2utQGQkL
-        Pb4FdkXSlsNVBgkxINTjBttRQ0AEMec=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-S4XqYz-sNRC1UOpFdYNmUQ-1; Thu, 18 Jun 2020 20:12:07 -0400
-X-MC-Unique: S4XqYz-sNRC1UOpFdYNmUQ-1
-Received: by mail-qt1-f197.google.com with SMTP id u26so5739958qtj.21
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 17:12:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4IvmOEXU995/nnkIHpkUNgSHVYZli54q5t/36kQjlWA=;
-        b=aRrReSnh3Drim4yTDt+tDqJFk6qBbpk9+1c8YvvcBWKYDAbvinqtfm1vlu6t1JhYdK
-         gx6uSNBOREoZjr9pgXJ0mPOvs7Z0S//cmORMtz4l9FiQVNxeBMfq8OciwQr51Sm5zUe8
-         BvDpn69THnT3l2rj8f+g/iBfbyj4yKFauJRdw76zIEleClCoPgbpRuO/+Xnm3iZoPdft
-         l+hyrKbt1Vx3apWNNUDDzBQxQtFSO8MtCtLOvp2KWMP49wSjaBCte5e1X51+NeHy/s/g
-         oT+kuHQwA3ThXm1+az6tQY8ASkToOnyJT29B0irBZvL9xjf6UXct0l0BfJP8DutWN1mS
-         kQtg==
-X-Gm-Message-State: AOAM5328H0ilzeIXQHkZLxdG/gk5FHwMItpzQS5Og8BzxIztdRNZXAnN
-        A7QXxUsFgU4AvhlRX4bh50LUk4o5SShsxXxRh2RsDuB/IaXYZa/WQxNpltlcZLSFkT9iH7fzdPO
-        l5kMEnfJHtUreEBfkp3oQRZWc
-X-Received: by 2002:ac8:4d0f:: with SMTP id w15mr958024qtv.120.1592525526276;
-        Thu, 18 Jun 2020 17:12:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwsaEDMK957KqZXyUDwEjV/HolMB1Vybv4Ttl9SBvvS0zGdpaROCsM+8lk2j72BNvujeZyNRA==
-X-Received: by 2002:ac8:4d0f:: with SMTP id w15mr958004qtv.120.1592525526038;
-        Thu, 18 Jun 2020 17:12:06 -0700 (PDT)
-Received: from xz-x1 ([2607:9880:19c0:32::2])
-        by smtp.gmail.com with ESMTPSA id 59sm3278161qtf.41.2020.06.18.17.12.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 17:12:05 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 20:12:03 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     linux-kernel@vger.kernel.org, gerald.schaefer@de.ibm.com,
-        akpm@linux-foundation.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        aarcange@redhat.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH 18/25] mm/riscv: Use mm_fault_accounting()
-Message-ID: <20200619001203.GA172559@xz-x1>
-References: <20200615221607.7764-19-peterx@redhat.com>
- <mhng-261b69ba-d08f-4560-9c69-f4ece64a7729@palmerdabbelt-glaptop1>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <mhng-261b69ba-d08f-4560-9c69-f4ece64a7729@palmerdabbelt-glaptop1>
+        Thu, 18 Jun 2020 20:18:05 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200619001802epoutp010f2f759711b043fc60b955b5d9910787~ZydotO0M01214812148epoutp01B
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 00:18:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200619001802epoutp010f2f759711b043fc60b955b5d9910787~ZydotO0M01214812148epoutp01B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1592525882;
+        bh=NOzT7vcRqkUZDzcSZQg51RrlT8m1JaJOcP0aBnou8x0=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=WcoHXo64NSq1YW4xtb0aUyA9BJuG3natt6KmHANxxr5X5LRPphn0hJLCnvXqgyI5H
+         DnDXQItbQVL8AMQijk2NO0tig42PMZ5zgddegilSbQ5ixAW8yB3dYbNQa5bk6tfKp4
+         ykz2dKDi0jZY8DWccDu5D3Auy8vMv516Eb04cKU8=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p2.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200619001801epcas1p25d0372cb0e391f0113c090f5210ea760~ZydoOis2a1582515825epcas1p2C;
+        Fri, 19 Jun 2020 00:18:01 +0000 (GMT)
+Mime-Version: 1.0
+Subject: RE: [RFC PATCH v2 4/5] scsi: ufs: L2P map management for HPB read
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "beanhuo@micron.com" <beanhuo@micron.com>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <SN6PR04MB4640B1D4FBDF68A59D993F21FC9B0@SN6PR04MB4640.namprd04.prod.outlook.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01592525881606.JavaMail.epsvc@epcpadp2>
+Date:   Fri, 19 Jun 2020 09:12:20 +0900
+X-CMS-MailID: 20200619001220epcms2p8ab5f114df7a40f2694b8e87468582921
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210
+References: <SN6PR04MB4640B1D4FBDF68A59D993F21FC9B0@SN6PR04MB4640.namprd04.prod.outlook.com>
+        <231786897.01592213402355.JavaMail.epsvc@epcpadp1>
+        <231786897.01592212081335.JavaMail.epsvc@epcpadp2>
+        <336371513.41592205783606.JavaMail.epsvc@epcpadp2>
+        <231786897.01592205482200.JavaMail.epsvc@epcpadp2>
+        <231786897.01592214002170.JavaMail.epsvc@epcpadp1>
+        <CGME20200615062708epcms2p19a7fbc051bcd5e843c29dcd58fff4210@epcms2p8>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 04:49:23PM -0700, Palmer Dabbelt wrote:
-> AFAICT this changes the behavior of the perf event: it used to count any fault,
-> whereas now it only counts those that succeed successfully.  If everyone else
-> is doing it that way then I'm happy to change us over, but this definately
-> isn't just avoiding retries.
+> +static void ufshpb_run_active_subregion_list(struct ufshpb_lu *hpb)
+> > +{
+> > +       struct ufshpb_region *rgn;
+> > +       struct ufshpb_subregion *srgn;
+> > +       struct ufshpb_map_ctx *mctx;
+> mctx  doesn't really do anything here
 
-Right, I'm preparing v2 to keep the old behavior of PERF_COUNT_SW_PAGE_FAULTS,
-while with a nicer approach.
+OK, I will delete it.
 
-Thanks for looking!
-
--- 
-Peter Xu
-
+> > +       unsigned long flags;
+> > +       int ret = 0;
+> > +
+> > +       spin_lock_irqsave(&hpb->rsp_list_lock, flags);
+> > +       while ((srgn = list_first_entry_or_null(&hpb->lh_act_srgn,
+> > +                                               struct ufshpb_subregion,
+> > +                                               list_act_srgn))) {
+> > +               list_del_init(&srgn->list_act_srgn);
+> > +               spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
+> > +
+> > +               rgn = hpb->rgn_tbl + srgn->rgn_idx;
+> > +               mctx = NULL;
+> > +               ret = ufshpb_add_region(hpb, rgn);
+> > +               if (ret)
+> > +                       break;
+> > +
+> > +               ret = ufshpb_issue_map_req(hpb, rgn, srgn);
+> > +               if (ret) {
+> > +                       dev_notice(&hpb->hpb_lu_dev,
+> > +                           "issue map_req failed. ret %d, region %d - %d\n",
+> > +                           ret, rgn->rgn_idx, srgn->srgn_idx);
+> > +                       break;
+> > +               }
+> > +               spin_lock_irqsave(&hpb->rsp_list_lock, flags);
+> > +       }
+> > +
+> > +       if (ret) {
+> > +               dev_notice(&hpb->hpb_lu_dev, "region %d - %d, will retry\n",
+> > +                          rgn->rgn_idx, srgn->srgn_idx);
+> > +               spin_lock_irqsave(&hpb->rsp_list_lock, flags);
+> > +               ufshpb_add_active_list(hpb, rgn, srgn);
+> > +       }
+> > +       spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
+> > +}
+> 
+> 
