@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE4B2015EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 572B2201789
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404864AbgFSQYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:24:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54252 "EHLO mail.kernel.org"
+        id S2395290AbgFSQjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:39:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390389AbgFSO60 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:58:26 -0400
+        id S2388820AbgFSOqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:46:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 242BC21919;
-        Fri, 19 Jun 2020 14:58:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2A15C20A8B;
+        Fri, 19 Jun 2020 14:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578706;
-        bh=SrQIZo4/w6tvt/sn10MdGljp2fb7x+ziSKjuxf924D4=;
+        s=default; t=1592577975;
+        bh=0OKIr2uFeL+aPj9HYYJ5A7Jy8u310+7d7c2yOooviI0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XMSh2ajAIng1b2yRRwkEI0uiqWiaYbTUqgSo2ywAw8Y4mvJjAJAXcL/nZW+347e7z
-         7Qy1MlsYRHFKWZ7e0tK9qNJ9eqgG4WyBGGK8YE5PFh9mkeqtLnPc+iIu5I3oJ/YnVi
-         pRyp1wEUI4K6Fu4j37lXdSWUIeVjXhoJWPTL9j3w=
+        b=nhFkWvMuRfolml6aARdQWCDXVJIhHio+BAsbv1YVRj9QpLkj4jQW7kQdOrD6VOzvN
+         48hHZXK+zenthOPORC/iTiwBBBQf8DvVLKkVvwUjKc7N2l2ZS2mPR0D3VcQ8gPDK1/
+         Cokx4P2r6J8cupaXe2jHnwwCJ+w6Ew2OC5qCpe0I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com,
-        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.19 085/267] fat: dont allow to mount if the FAT length == 0
-Date:   Fri, 19 Jun 2020 16:31:10 +0200
-Message-Id: <20200619141652.962191910@linuxfoundation.org>
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Subject: [PATCH 4.14 027/190] ACPI: CPPC: Fix reference count leak in acpi_cppc_processor_probe()
+Date:   Fri, 19 Jun 2020 16:31:12 +0200
+Message-Id: <20200619141634.882070177@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,42 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+From: Qiushi Wu <wu000273@umn.edu>
 
-commit b1b65750b8db67834482f758fc385bfa7560d228 upstream.
+commit 4d8be4bc94f74bb7d096e1c2e44457b530d5a170 upstream.
 
-If FAT length == 0, the image doesn't have any data. And it can be the
-cause of overlapping the root dir and FAT entries.
+kobject_init_and_add() takes reference even when it fails.
+If this function returns an error, kobject_put() must be called to
+properly clean up the memory associated with the object. Previous
+commit "b8eb718348b8" fixed a similar problem.
 
-Also Windows treats it as invalid format.
-
-Reported-by: syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com
-Signed-off-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Cc: Marco Elver <elver@google.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Link: http://lkml.kernel.org/r/87r1wz8mrd.fsf@mail.parknet.co.jp
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 158c998ea44b ("ACPI / CPPC: add sysfs support to compute delivered performance")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Cc: 4.10+ <stable@vger.kernel.org> # 4.10+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/fat/inode.c |    6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/acpi/cppc_acpi.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/fat/inode.c
-+++ b/fs/fat/inode.c
-@@ -1519,6 +1519,12 @@ static int fat_read_bpb(struct super_blo
- 		goto out;
+--- a/drivers/acpi/cppc_acpi.c
++++ b/drivers/acpi/cppc_acpi.c
+@@ -800,6 +800,7 @@ int acpi_cppc_processor_probe(struct acp
+ 			"acpi_cppc");
+ 	if (ret) {
+ 		per_cpu(cpc_desc_ptr, pr->id) = NULL;
++		kobject_put(&cpc_ptr->kobj);
+ 		goto out_free;
  	}
  
-+	if (bpb->fat_fat_length == 0 && bpb->fat32_length == 0) {
-+		if (!silent)
-+			fat_msg(sb, KERN_ERR, "bogus number of FAT sectors");
-+		goto out;
-+	}
-+
- 	error = 0;
- 
- out:
 
 
