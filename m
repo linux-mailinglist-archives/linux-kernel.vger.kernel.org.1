@@ -2,141 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA7D2201684
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97DAA201681
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395069AbgFSQby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:31:54 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2346 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2395042AbgFSQbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 12:31:51 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
-        by Forcepoint Email with ESMTP id 8C2554A4460EE215B62C;
-        Fri, 19 Jun 2020 17:31:50 +0100 (IST)
-Received: from localhost (10.52.127.178) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 19 Jun
- 2020 17:31:50 +0100
-Date:   Fri, 19 Jun 2020 17:31:01 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Sasha Levin <sashal@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        "Alexandru Ardelean" <alexandru.ardelean@analog.com>,
-        <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH AUTOSEL 4.4 03/60] iio: light: isl29125: fix
- iio_triggered_buffer_{predisable,postenable} positions
-Message-ID: <20200619173101.000045a2@Huawei.com>
-In-Reply-To: <20200618013004.610532-3-sashal@kernel.org>
-References: <20200618013004.610532-1-sashal@kernel.org>
-        <20200618013004.610532-3-sashal@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+        id S2393728AbgFSQbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:31:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395042AbgFSQbk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 12:31:40 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7090C06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 09:31:39 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id s192so2431210vkh.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 09:31:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dEf83idZXvrPsVKGcPR3p3YRd+fKXVKhp9TXt5Kn60U=;
+        b=DGBlgQlCnRLuOM3zrU/WFVPlQWoH3/GzaxHTx7AqPPQ5bnm1kf7M3WdU0IEjH0YpoD
+         /SfedgbVSc+qL4Xnuqg2YoRwDs5k0GM8lEgD5rLnYyomCnpJss/+90Qf0kIGFDNbvcHQ
+         0T+jhrh9b8lGPjrLghzK2xc4+MG8m7I3gPuS5rQOySza9Ewp8TBsL60R6i6day2Qb7GT
+         eYXBgGK0X67NR4eIkTC1DOgtIYA88hk70LNH036MzfrQyrdF0BatJS+sML7zIo4Q2Vjw
+         XRq9r7E/lh+kolFEz65lAECGDlKwZcXCBXvaUHKV9G2scpUFYMSuT/Kg+LOHFv+besKq
+         8c1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dEf83idZXvrPsVKGcPR3p3YRd+fKXVKhp9TXt5Kn60U=;
+        b=pjc5ZYPdhmoaeFd7aevUHVhZKxiWvX46ZZz6dO2WlWrQ4I4kTQLtLOgv61kW9hkunE
+         cDJh3DQ4sUAvFHKoHIM39eK05gNfh5Y9gxLa0bRieqHk/9sImrx62soh44587Tao8EK9
+         Wzqx2p5UItzDnEecpabYNTmQ0SMkGbDskD7E6cZF4ZMnvtdwki6NBsQlLmAk0W3gHLo3
+         R/iMyGoiUXAJirFz2eY6Yzgf+g1NH9xZORS7RvMmWgioc4vr5VuegPPYJYopJz1+i/qL
+         hNpgoR7scXZdtxuFbfpAW3CWHW+ekrOcf65nAIEYhhyUZXsV2BZKeKdxYwmnjkErsuwN
+         A6qQ==
+X-Gm-Message-State: AOAM530dafxv0qNYboDqDS6CfXkNtSaxAge7KdH8K92HGdqxv5OFy4u8
+        f/E9b7DlpvnPRIiuvzVRPT/biMKcDDpjT7LWkkk=
+X-Google-Smtp-Source: ABdhPJwWPW63BfO1YDNPwCOSif9q+11rpQa+AaCJvnFL8cqqzFrXlVBHqmDD9oS9TmjW1375YHGcBAWEmte6ApUzeo8=
+X-Received: by 2002:a1f:4303:: with SMTP id q3mr8159836vka.65.1592584298930;
+ Fri, 19 Jun 2020 09:31:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.127.178]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <CAD2FfiFRqwYGB50KK=aA0sU6uCALYneoyD=V4EfOsk-Ex=C+xg@mail.gmail.com>
+ <0DD7FAE4-3976-4835-8090-80B84B737F3E@amacapital.net> <20200619161752.GG32683@zn.tnic>
+In-Reply-To: <20200619161752.GG32683@zn.tnic>
+From:   Richard Hughes <hughsient@gmail.com>
+Date:   Fri, 19 Jun 2020 17:31:27 +0100
+Message-ID: <CAD2FfiFt0zm1uk6Z8RF_EUFeEd8ZT61B9+jtdAHrF5hOrcTk_w@mail.gmail.com>
+Subject: Re: [PATCH] Ability to read the MKTME status from userspace
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Daniel Gutson <daniel@eclypsium.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Jun 2020 21:29:07 -0400
-Sasha Levin <sashal@kernel.org> wrote:
+On Fri, 19 Jun 2020 at 17:17, Borislav Petkov <bp@alien8.de> wrote:
+> Well, I believe all the kernel can do is supply bits of information -
+> just like MSRs - and depending on the settings of those bits, userspace
+> can decide what the situation is. For example:
+> bit 0 - CPUID support
+> bit 1 - BIOS enabled
 
-> From: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> 
-> [ Upstream commit 9b7a12c3e090cf3fba6f66f1f23abbc6e0e86021 ]
-> 
-> The iio_triggered_buffer_{predisable,postenable} functions attach/detach
-> the poll functions.
-> 
-> For the predisable hook, the disable code should occur before detaching
-> the poll func, and for the postenable hook, the poll func should be
-> attached before the enable code.
-> 
-> This change reworks the predisable/postenable hooks so that the pollfunc is
-> attached/detached in the correct position.
-> It also balances the calls a bit, by grouping the preenable and the
-> iio_triggered_buffer_postenable() into a single
-> isl29125_buffer_postenable() function.
-> 
+Yes, something like this would be entirely fine for my purpose -- I
+don't mind where or how I get the data out of the kernel, but parsing
+the entire systemd journal for a magic string is something I really
+want to avoid.
 
-This is really part of some rework.  It doesn't 'fix' a bug
-as such (I think), but rather a bit of logical inconsistency.
-
-Shouldn't do any harm though beyond adding noise to stable.
-I added notes to some of these to mark them as not stable material,
-but clearly missed this one. Sorry about that.
-
-Jonathan
-
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/iio/light/isl29125.c | 28 +++++++++++++++++++---------
->  1 file changed, 19 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/iio/light/isl29125.c b/drivers/iio/light/isl29125.c
-> index e2945a20e5f6..60388a41ec8c 100644
-> --- a/drivers/iio/light/isl29125.c
-> +++ b/drivers/iio/light/isl29125.c
-> @@ -215,13 +215,24 @@ static const struct iio_info isl29125_info = {
->  	.driver_module = THIS_MODULE,
->  };
->  
-> -static int isl29125_buffer_preenable(struct iio_dev *indio_dev)
-> +static int isl29125_buffer_postenable(struct iio_dev *indio_dev)
->  {
->  	struct isl29125_data *data = iio_priv(indio_dev);
-> +	int err;
-> +
-> +	err = iio_triggered_buffer_postenable(indio_dev);
-> +	if (err)
-> +		return err;
->  
->  	data->conf1 |= ISL29125_MODE_RGB;
-> -	return i2c_smbus_write_byte_data(data->client, ISL29125_CONF1,
-> +	err = i2c_smbus_write_byte_data(data->client, ISL29125_CONF1,
->  		data->conf1);
-> +	if (err) {
-> +		iio_triggered_buffer_predisable(indio_dev);
-> +		return err;
-> +	}
-> +
-> +	return 0;
->  }
->  
->  static int isl29125_buffer_predisable(struct iio_dev *indio_dev)
-> @@ -229,19 +240,18 @@ static int isl29125_buffer_predisable(struct iio_dev *indio_dev)
->  	struct isl29125_data *data = iio_priv(indio_dev);
->  	int ret;
->  
-> -	ret = iio_triggered_buffer_predisable(indio_dev);
-> -	if (ret < 0)
-> -		return ret;
-> -
->  	data->conf1 &= ~ISL29125_MODE_MASK;
->  	data->conf1 |= ISL29125_MODE_PD;
-> -	return i2c_smbus_write_byte_data(data->client, ISL29125_CONF1,
-> +	ret = i2c_smbus_write_byte_data(data->client, ISL29125_CONF1,
->  		data->conf1);
-> +
-> +	iio_triggered_buffer_predisable(indio_dev);
-> +
-> +	return ret;
->  }
->  
->  static const struct iio_buffer_setup_ops isl29125_buffer_setup_ops = {
-> -	.preenable = isl29125_buffer_preenable,
-> -	.postenable = &iio_triggered_buffer_postenable,
-> +	.postenable = isl29125_buffer_postenable,
->  	.predisable = isl29125_buffer_predisable,
->  };
->  
-
-
+Richard.
