@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFC9200E05
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A84D6200EFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391109AbgFSPEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:04:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60924 "EHLO mail.kernel.org"
+        id S2392200AbgFSPNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:13:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44014 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391075AbgFSPEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:04:04 -0400
+        id S2392253AbgFSPNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:13:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AFD5621BE5;
-        Fri, 19 Jun 2020 15:04:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF08421941;
+        Fri, 19 Jun 2020 15:13:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579044;
-        bh=cZPf0UtNWH0uESVxUsiQsfii7dgWe+ZEcCUAOQqq2TY=;
+        s=default; t=1592579609;
+        bh=z6rKd0CO6HmS92fnceC04UuK8Oj5dVZDmCIrmHaMjkA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nWODFXpKDCi9roM4K9PX6ibb/jxNzIfPYbbcVvpMNFGBqcv1HWewCU2Z0IGYy+3Hb
-         WhDvzv8cOPudB+peY/bU6oSLkyZldlG1ieSCJPR3gBeE4wOmU/egE/9wGGBCVdvchN
-         O78o5ZQ6ay8ri9bukqgUSMIerA0bXWvaz3UMDw7Y=
+        b=fWNyiVZIGoUy3qI9zAvS/RPt/7UPeHaz0Ro+uS/VjBJXB5RZ7xxJ30SCKB5TjM7lu
+         Op75Tgwc55RZR+PvoZN+4uKPM/2EoHbOCwi8rAV3WSfWaJGLxzCuoMIbo6a4sZMijc
+         iC/hWnC4NdEfn+ikLUBKlDfatVRkTs+wOP2Q/ZSU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 224/267] serial: 8250_pci: Move Pericom IDs to pci_ids.h
-Date:   Fri, 19 Jun 2020 16:33:29 +0200
-Message-Id: <20200619141659.452856976@linuxfoundation.org>
+        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 5.4 200/261] media: cedrus: Program output format during each run
+Date:   Fri, 19 Jun 2020 16:33:31 +0200
+Message-Id: <20200619141659.484135426@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +47,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+From: Samuel Holland <samuel@sholland.org>
 
-[ Upstream commit 62a7f3009a460001eb46984395280dd900bc4ef4 ]
+commit a8876c22eab9a871834f85de83e98bbf7e6e264d upstream.
 
-Move the IDs to pci_ids.h so it can be used by next patch.
+Previously, the output format was programmed as part of the ioctl()
+handler. However, this has two problems:
 
-Link: https://lore.kernel.org/r/20200508065343.32751-1-kai.heng.feng@canonical.com
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+  1) If there are multiple active streams with different output
+     formats, the hardware will use whichever format was set last
+     for both streams. Similarly, an ioctl() done in an inactive
+     context will wrongly affect other active contexts.
+  2) The registers are written while the device is not actively
+     streaming. To enable runtime PM tied to the streaming state,
+     all hardware access needs to be moved inside cedrus_device_run().
+
+The call to cedrus_dst_format_set() is now placed just before the
+codec-specific callback that programs the hardware.
+
+Cc: <stable@vger.kernel.org>
+Fixes: 50e761516f2b ("media: platform: Add Cedrus VPU decoder driver")
+Suggested-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Suggested-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Signed-off-by: Samuel Holland <samuel@sholland.org>
+Tested-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Reviewed-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/tty/serial/8250/8250_pci.c | 6 ------
- include/linux/pci_ids.h            | 6 ++++++
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/staging/media/sunxi/cedrus/cedrus_dec.c   |    2 ++
+ drivers/staging/media/sunxi/cedrus/cedrus_video.c |    3 ---
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-index bbe5cba21522..02091782bc1e 100644
---- a/drivers/tty/serial/8250/8250_pci.c
-+++ b/drivers/tty/serial/8250/8250_pci.c
-@@ -1690,12 +1690,6 @@ pci_wch_ch38x_setup(struct serial_private *priv,
- #define PCIE_DEVICE_ID_WCH_CH384_4S	0x3470
- #define PCIE_DEVICE_ID_WCH_CH382_2S	0x3253
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_dec.c
+@@ -65,6 +65,8 @@ void cedrus_device_run(void *priv)
  
--#define PCI_VENDOR_ID_PERICOM			0x12D8
--#define PCI_DEVICE_ID_PERICOM_PI7C9X7951	0x7951
--#define PCI_DEVICE_ID_PERICOM_PI7C9X7952	0x7952
--#define PCI_DEVICE_ID_PERICOM_PI7C9X7954	0x7954
--#define PCI_DEVICE_ID_PERICOM_PI7C9X7958	0x7958
--
- #define PCI_VENDOR_ID_ACCESIO			0x494f
- #define PCI_DEVICE_ID_ACCESIO_PCIE_COM_2SDB	0x1051
- #define PCI_DEVICE_ID_ACCESIO_MPCIE_COM_2S	0x1053
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 14baae112a54..c0dd2f749d3f 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -1833,6 +1833,12 @@
- #define PCI_VENDOR_ID_NVIDIA_SGS	0x12d2
- #define PCI_DEVICE_ID_NVIDIA_SGS_RIVA128 0x0018
+ 	v4l2_m2m_buf_copy_metadata(run.src, run.dst, true);
  
-+#define PCI_VENDOR_ID_PERICOM			0x12D8
-+#define PCI_DEVICE_ID_PERICOM_PI7C9X7951	0x7951
-+#define PCI_DEVICE_ID_PERICOM_PI7C9X7952	0x7952
-+#define PCI_DEVICE_ID_PERICOM_PI7C9X7954	0x7954
-+#define PCI_DEVICE_ID_PERICOM_PI7C9X7958	0x7958
++	cedrus_dst_format_set(dev, &ctx->dst_fmt);
 +
- #define PCI_SUBVENDOR_ID_CHASE_PCIFAST		0x12E0
- #define PCI_SUBDEVICE_ID_CHASE_PCIFAST4		0x0031
- #define PCI_SUBDEVICE_ID_CHASE_PCIFAST8		0x0021
--- 
-2.25.1
-
+ 	dev->dec_ops[ctx->current_codec]->setup(ctx, &run);
+ 
+ 	/* Complete request(s) controls if needed. */
+--- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
++++ b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
+@@ -286,7 +286,6 @@ static int cedrus_s_fmt_vid_cap(struct f
+ 				struct v4l2_format *f)
+ {
+ 	struct cedrus_ctx *ctx = cedrus_file2ctx(file);
+-	struct cedrus_dev *dev = ctx->dev;
+ 	struct vb2_queue *vq;
+ 	int ret;
+ 
+@@ -300,8 +299,6 @@ static int cedrus_s_fmt_vid_cap(struct f
+ 
+ 	ctx->dst_fmt = f->fmt.pix;
+ 
+-	cedrus_dst_format_set(dev, &ctx->dst_fmt);
+-
+ 	return 0;
+ }
+ 
 
 
