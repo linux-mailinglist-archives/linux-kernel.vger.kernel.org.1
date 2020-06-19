@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 240072016AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063D12017C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394703AbgFSQdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:33:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45196 "EHLO mail.kernel.org"
+        id S2395562AbgFSQnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:43:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389464AbgFSOve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:51:34 -0400
+        id S2388515AbgFSOnz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:43:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95BCC21556;
-        Fri, 19 Jun 2020 14:51:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 65E3E21582;
+        Fri, 19 Jun 2020 14:43:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578293;
-        bh=inlU8lQh3M2VyGDzvoEfmJckWzXO3dz9Z7MvHujGYN0=;
+        s=default; t=1592577834;
+        bh=se+Q4k5Btw+HJigqqx9lLs6qFSbEWJIzh+4yhN0UvOc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XA/jwhHuKlEYGBYGIwYvYQTxKTW/yQLqGsb1FUXV2AHdAo/+73kPEelSOqZRQJyf9
-         xyvx8dHF06vZf1N9fzkOGrG7B+90lAG449yB2zARbL9gQUq31mlXmKPLKbU4OWht9s
-         RIFH4dOdlo+D3TsBzIyOBIBSkmuvw6kCtqHSFbwA=
+        b=WyJgo7Ch+HrDti2xvkLzuArqtIhNpoRUPuQPEyisGIMgBPf0A+WrLLnJ1x9tjTFS4
+         t6utcySG9ssaqY2CSN6NALubA8iQsxcGzTX8JG93Ztx//BZVIzmJe3wrgtLgWZwt12
+         uH3wdj/k7w9t9D0C/4b4TbpPaCMP6BxYeELsWcb4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Abhishek Sahu <abhsahu@nvidia.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 156/190] PCI: Generalize multi-function power dependency device links
-Date:   Fri, 19 Jun 2020 16:33:21 +0200
-Message-Id: <20200619141641.534071455@linuxfoundation.org>
+        stable@vger.kernel.org,
+        =?UTF-8?q?Frank=20Sch=C3=A4fer?= <fschaefer.oss@googlemail.com>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.9 108/128] carl9170: remove P2P_GO support
+Date:   Fri, 19 Jun 2020 16:33:22 +0200
+Message-Id: <20200619141625.856965303@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,109 +45,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Abhishek Sahu <abhsahu@nvidia.com>
+From: Christian Lamparter <chunkeey@gmail.com>
 
-[ Upstream commit a17beb1a0882a544523dcb5d0da4801272dfd43a ]
+commit b14fba7ebd04082f7767a11daea7f12f3593de22 upstream.
 
-Although not allowed by the PCI specs, some multi-function devices have
-power dependencies between the functions.  For example, function 1 may not
-work unless function 0 is in the D0 power state.
+This patch follows up on a bug-report by Frank Schäfer that
+discovered P2P GO wasn't working with wpa_supplicant.
+This patch removes part of the broken P2P GO support but
+keeps the vif switchover code in place.
 
-The existing quirk_gpu_hda() adds a device link to express this dependency
-for GPU and HDA devices, but it really is not specific to those device
-types.
+Cc: <stable@vger.kernel.org>
+Link: <https://lkml.kernel.org/r/3a9d86b6-744f-e670-8792-9167257edef8@googlemail.com>
+Reported-by: Frank Schäfer <fschaefer.oss@googlemail.com>
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200425092811.9494-1-chunkeey@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Generalize it and rename it to pci_create_device_link() so we can create
-dependencies between any "consumer" and "producer" functions of a
-multi-function device, where the consumer is only functional if the
-producer is in D0.  This reorganization should not affect any
-functionality.
-
-Link: https://lore.kernel.org/lkml/20190606092225.17960-2-abhsahu@nvidia.com
-Signed-off-by: Abhishek Sahu <abhsahu@nvidia.com>
-[bhelgaas: commit log, reword diagnostic]
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c | 54 ++++++++++++++++++++++++++++----------------
- 1 file changed, 34 insertions(+), 20 deletions(-)
+ drivers/net/wireless/ath/carl9170/fw.c   |    4 +---
+ drivers/net/wireless/ath/carl9170/main.c |   21 ++++-----------------
+ 2 files changed, 5 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 6af7fc0be21d..3e1a0a207734 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -4955,35 +4955,49 @@ static void quirk_fsl_no_msi(struct pci_dev *pdev)
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_FREESCALE, PCI_ANY_ID, quirk_fsl_no_msi);
+--- a/drivers/net/wireless/ath/carl9170/fw.c
++++ b/drivers/net/wireless/ath/carl9170/fw.c
+@@ -351,9 +351,7 @@ static int carl9170_fw(struct ar9170 *ar
+ 		ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC);
  
- /*
-- * GPUs with integrated HDA controller for streaming audio to attached displays
-- * need a device link from the HDA controller (consumer) to the GPU (supplier)
-- * so that the GPU is powered up whenever the HDA controller is accessed.
-- * The GPU and HDA controller are functions 0 and 1 of the same PCI device.
-- * The device link stays in place until shutdown (or removal of the PCI device
-- * if it's hotplugged).  Runtime PM is allowed by default on the HDA controller
-- * to prevent it from permanently keeping the GPU awake.
-+ * Although not allowed by the spec, some multi-function devices have
-+ * dependencies of one function (consumer) on another (supplier).  For the
-+ * consumer to work in D0, the supplier must also be in D0.  Create a
-+ * device link from the consumer to the supplier to enforce this
-+ * dependency.  Runtime PM is allowed by default on the consumer to prevent
-+ * it from permanently keeping the supplier awake.
-  */
--static void quirk_gpu_hda(struct pci_dev *hda)
-+static void pci_create_device_link(struct pci_dev *pdev, unsigned int consumer,
-+				   unsigned int supplier, unsigned int class,
-+				   unsigned int class_shift)
- {
--	struct pci_dev *gpu;
-+	struct pci_dev *supplier_pdev;
+ 		if (SUPP(CARL9170FW_WLANTX_CAB)) {
+-			if_comb_types |=
+-				BIT(NL80211_IFTYPE_AP) |
+-				BIT(NL80211_IFTYPE_P2P_GO);
++			if_comb_types |= BIT(NL80211_IFTYPE_AP);
  
--	if (PCI_FUNC(hda->devfn) != 1)
-+	if (PCI_FUNC(pdev->devfn) != consumer)
- 		return;
+ #ifdef CONFIG_MAC80211_MESH
+ 			if_comb_types |=
+--- a/drivers/net/wireless/ath/carl9170/main.c
++++ b/drivers/net/wireless/ath/carl9170/main.c
+@@ -582,11 +582,10 @@ static int carl9170_init_interface(struc
+ 	ar->disable_offload |= ((vif->type != NL80211_IFTYPE_STATION) &&
+ 	    (vif->type != NL80211_IFTYPE_AP));
  
--	gpu = pci_get_domain_bus_and_slot(pci_domain_nr(hda->bus),
--					  hda->bus->number,
--					  PCI_DEVFN(PCI_SLOT(hda->devfn), 0));
--	if (!gpu || (gpu->class >> 16) != PCI_BASE_CLASS_DISPLAY) {
--		pci_dev_put(gpu);
-+	supplier_pdev = pci_get_domain_bus_and_slot(pci_domain_nr(pdev->bus),
-+				pdev->bus->number,
-+				PCI_DEVFN(PCI_SLOT(pdev->devfn), supplier));
-+	if (!supplier_pdev || (supplier_pdev->class >> class_shift) != class) {
-+		pci_dev_put(supplier_pdev);
- 		return;
- 	}
+-	/* While the driver supports HW offload in a single
+-	 * P2P client configuration, it doesn't support HW
+-	 * offload in the favourit, concurrent P2P GO+CLIENT
+-	 * configuration. Hence, HW offload will always be
+-	 * disabled for P2P.
++	/* The driver used to have P2P GO+CLIENT support,
++	 * but since this was dropped and we don't know if
++	 * there are any gremlins lurking in the shadows,
++	 * so best we keep HW offload disabled for P2P.
+ 	 */
+ 	ar->disable_offload |= vif->p2p;
  
--	if (!device_link_add(&hda->dev, &gpu->dev,
--			     DL_FLAG_STATELESS | DL_FLAG_PM_RUNTIME))
--		pci_err(hda, "cannot link HDA to GPU %s\n", pci_name(gpu));
-+	if (device_link_add(&pdev->dev, &supplier_pdev->dev,
-+			    DL_FLAG_STATELESS | DL_FLAG_PM_RUNTIME))
-+		pci_info(pdev, "D0 power state depends on %s\n",
-+			 pci_name(supplier_pdev));
-+	else
-+		pci_err(pdev, "Cannot enforce power dependency on %s\n",
-+			pci_name(supplier_pdev));
-+
-+	pm_runtime_allow(&pdev->dev);
-+	pci_dev_put(supplier_pdev);
-+}
+@@ -639,18 +638,6 @@ static int carl9170_op_add_interface(str
+ 			if (vif->type == NL80211_IFTYPE_STATION)
+ 				break;
  
--	pm_runtime_allow(&hda->dev);
--	pci_dev_put(gpu);
-+/*
-+ * Create device link for GPUs with integrated HDA controller for streaming
-+ * audio to attached displays.
-+ */
-+static void quirk_gpu_hda(struct pci_dev *hda)
-+{
-+	pci_create_device_link(hda, 1, 0, PCI_BASE_CLASS_DISPLAY, 16);
- }
- DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_ATI, PCI_ANY_ID,
- 			      PCI_CLASS_MULTIMEDIA_HD_AUDIO, 8, quirk_gpu_hda);
--- 
-2.25.1
-
+-			/* P2P GO [master] use-case
+-			 * Because the P2P GO station is selected dynamically
+-			 * by all participating peers of a WIFI Direct network,
+-			 * the driver has be able to change the main interface
+-			 * operating mode on the fly.
+-			 */
+-			if (main_vif->p2p && vif->p2p &&
+-			    vif->type == NL80211_IFTYPE_AP) {
+-				old_main = main_vif;
+-				break;
+-			}
+-
+ 			err = -EBUSY;
+ 			rcu_read_unlock();
+ 
 
 
