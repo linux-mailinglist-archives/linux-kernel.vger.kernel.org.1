@@ -2,154 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B533201089
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C46D42010DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393810AbgFSPbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:31:19 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:60204 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393777AbgFSPbI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:31:08 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id DE1C12A54AD
-Received: by earth.universe (Postfix, from userid 1000)
-        id 651323C08CD; Fri, 19 Jun 2020 17:31:03 +0200 (CEST)
-Date:   Fri, 19 Jun 2020 17:31:03 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
-        Mario.Limonciello@dell.com, y.linux@paritcher.com,
-        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-pm@vger.kernel.org, mjg59@srcf.ucam.org
-Subject: Re: [PATCH 2/3] platform/x86: dell-wmi: add new keymap type 0x0012
-Message-ID: <20200619153103.k4ewdaljqubcrvvc@earth.universe>
-References: <cover.1591584631.git.y.linux@paritcher.com>
- <0dc191a3d16f0e114f6a8976433e248018e10c43.1591584631.git.y.linux@paritcher.com>
- <83fe431cacbc4708962767668ac8f06f@AUSX13MPC105.AMER.DELL.COM>
- <79bd59ee-dd37-bdc5-f6b4-00f2c33fdcff@paritcher.com>
- <7f9f0410696141cfabb0237d33b7b529@AUSX13MPC105.AMER.DELL.COM>
- <20200609154938.udo7mn7ka7z7pr6c@pali>
- <20200609164533.qtup47io2aoc5hgl@earth.universe>
- <136a06e3-0f00-d252-ebdd-a76c8a575db8@redhat.com>
+        id S2405006AbgFSPfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:35:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:39542 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404886AbgFSPbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:31:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E1A12B;
+        Fri, 19 Jun 2020 08:31:50 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 095983F71F;
+        Fri, 19 Jun 2020 08:31:48 -0700 (PDT)
+Date:   Fri, 19 Jun 2020 16:31:46 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Quentin Perret <qperret@google.com>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        hsinyi@chromium.org, Joel Fernandes <joelaf@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        ctheegal@codeaurora.org, Guenter Roeck <groeck@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cros_ec_spi: Even though we're RT priority, don't bump
+ cpu freq
+Message-ID: <20200619153146.vaizbj7muy52zvbd@e107158-lin.cambridge.arm.com>
+References: <20200610151818.1.I666ecd9c6f3c6405bd75831a21001b8109b6438c@changeid>
+ <20200611110301.GA132747@google.com>
+ <CAD=FV=V2FvFcYrghxUSdHNxmcS3DKpnBbk2oL64w7hh=tV-DfQ@mail.gmail.com>
+ <20200612092454.GA94228@google.com>
+ <20200612123448.fcmzv3rdtsbawmpd@e107158-lin.cambridge.arm.com>
+ <CAD=FV=UySLsTaUP3nOfQO98qPEUkY8tMhw25pJ4Yi7FVM5xU6g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="asks2luctm5jqxfa"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <136a06e3-0f00-d252-ebdd-a76c8a575db8@redhat.com>
+In-Reply-To: <CAD=FV=UySLsTaUP3nOfQO98qPEUkY8tMhw25pJ4Yi7FVM5xU6g@mail.gmail.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Doug,
 
---asks2luctm5jqxfa
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 06/18/20 14:31, Doug Anderson wrote:
+> Hi,
+> 
+> On Fri, Jun 12, 2020 at 5:34 AM Qais Yousef <qais.yousef@arm.com> wrote:
+> >
+> > On 06/12/20 10:24, Quentin Perret wrote:
+> > > +CC Qais [FYI]
+> >
+> > Thanks for the CC.
+> >
+> > >
+> > > On Thursday 11 Jun 2020 at 10:48:40 (-0700), Doug Anderson wrote:
+> > > > Hrm.  I guess my first instinct is to say that we still want this
+> > > > patch even if we have something that is applied more globally.
+> > >
+> > > Fair enough.
+> > >
+> > > > Specifically it sounds as if the patch you point at is suggesting that
+> > > > we'd tweak the boost value to something other than max but we'd still
+> > > > have a boost value.  In the case of cros_ec_spi I don't believe we
+> > > > need any boost value at all, so my patch would still be useful.  The
+> > > > computational needs of cros_ec_spi are very modest and it can do its
+> > > > work at lower CPU frequencies just fine.  It just can't be interrupted
+> > > > for large swaths of time.
+> > > >
+> > > >
+> > > > > IOW, how do you feel about 20200511154053.7822-1-qais.yousef@arm.com ?
+> > > >
+> > > > I'm not totally a fan, but I'm definitely not an expert in this area
+> > > > (I've also only read the patch description and not the patch or the
+> > > > whole thread).  I really don't want yet another value that I need to
+> > > > tune from board to board.  Even worse, this tuning value isn't
+> > > > board-specific but a combination of board and software specific.  By
+> > > > this, I'd imagine a scenario where you're using a real-time task to
+> > > > get audio decoding done within a certain latency.  I guess you'd tune
+> > > > this value to make sure that you can get all your audio decoding done
+> > > > in time but also not burn extra power.  Now, imagine that the OS
+> > > > upgrades and the audio task suddenly has to decode more complex
+> > > > streams.  You've got to go across all of your boards and re-tune every
+> > > > one?  ...or, nobody thinks about it and older boards start getting
+> > > > stuttery audio?  Perhaps the opposite happens and someone comes up
+> > > > with a newer lower-cpu-intensive codec and you could save power.
+> > > > Sounds like a bit of a nightmare.
+> >
+> > Generally I would expect this global tunable to be part of a vendor's SoC BSP.
+> 
+> I think I'm coming at this from a very different world than the one
+> you're thinking of.  The concept of a BSP makes me think of a SoC
+> vendor providing a drop of Linux with all their own weird hacks in it
+> that only ever works on that one SoC and will never, ever, ever be
+> updated.  5 years down the road if a software update is needed
+> (security fix?) some poor soul will be in charge of tracking down the
+> exact ancient code base that was used to build the original kernel,
+> making the tweak, and building a new kernel.  ;-)
+> 
+> In the world of Chrome OS we try very very hard to build everything
+> from a clean code base and are trying hard to stay even closer to
+> upstream and away from per-device weirdness...
 
-Hi,
+Hmm I thought OEMs who ship stuff that are based on Chrome OS would have to do
+the final tuning here, which would be based on the recommendation of the SoC
+vendor. And I'm being overly generic here to think not only SoC from Intel
+which traditionally they have been treated in different ways.
 
-On Tue, Jun 09, 2020 at 06:59:13PM +0200, Hans de Goede wrote:
-> Hi Sebastian,
->=20
-> On 6/9/20 6:45 PM, Sebastian Reichel wrote:
-> > Hi,
-> >=20
-> > On Tue, Jun 09, 2020 at 05:49:38PM +0200, Pali Roh=E1r wrote:
-> > > On Monday 08 June 2020 20:36:58 Mario.Limonciello@dell.com wrote:
-> > > > Can you please comment here how you would like to see events like t=
-his should come
-> > > > through to userspace?
-> > > >=20
-> > > > * Wrong power adapter (you have X and should have Y)
-> > > > * You have plugged a dock into the wrong port
-> > > > * Fn-lock mode
-> > >=20
-> > > In my opinion, Fn-lock mode is related to input subsystem and should =
-be
-> > > probably reported via input device. For a user, fn-lock is similar li=
-ke
-> > > caps-lock, scroll-lock or num-lock. Also fn-lock is provided by other
-> > > laptops and therefore I would expect that kernel provide fn-lock state
-> > > for all laptops (thinkpad / latitude / ...) via same interface. And n=
-ot
-> > > via dell-specific interface or general-vendor-message interface.
-> > >=20
-> > > Wrong power adapter sounds like something related to power subsystem.
-> > > Adding Sebastian to the loop, maybe he can provide some useful ideas
-> > > about it.
-> >=20
-> > I'm missing a bit of context. I suppose this is about connecting a
-> > non-genuine power adapter rejected by the embedded controller?
-> > Support for that should be hooked into 'drivers/acpi/ac.c' (note:
-> > so far there is no standard power-supply class property for this).
-> > Also printing a warning to dmesg seems sensible.
->=20
-> This is not so much about non-genuine as about the adapter having
-> the wrong wattage. E.g. plugging a 65W adapter in a laptop which
-> has a 45W CPU + a 35W discrete GPU will not allow the laptop to
-> really charge while it is in use.
+I think you provide a generic stack for OEMs, no?
 
-Ok. So how much information is available over WMI? Exposing the
-max. input power via the power-supply API makes sense in any case.
+Generally for RT tasks, Linux always required an admin to do the tuning. And to
+provide an automatic solution that fits all is not easy to happen, because what
+ultimately is important for userspace, is only known by the userspace.
 
-> One issue I see with doing this in the power_supply class is that
-> the charger is represented by the standard ACPI AC adapter stuff,
-> which does not have this info. This sort of extra info comes from
-> WMI. Now we could have the WMI driver register a second power_supply
-> device, but that means having 2 power_supply devices representing
-> the 1 AC adapter which does not feel right.
+This is an interesting problem for me personally that I have been trying to
+look at in my free time. On general purpose systems, it's hard to reason about
+what's important because, as you say, you distribute something that should
+target a wide range of platforms. And sometimes the end user (like a person
+installing Ubuntu Desktop on their laptop), have no clue what a driver is even
+to pick the right tuning for all RT tasks in their system.
 
-I agree. WMI and ACPI information need to be merged and exposed
-as one device to userspace. It's not the first time we have this
-kind of requirement, but so far it was about merging battery info
-=66rom two places. Unfortunately no code has been written so far to
-support this.
+But this problem already exists and catching up with this will need more work
+from both distros and maybe kernel. I can't see a possible situation where the
+kernel can do all the tuning without userspace providing more info anyway.
 
-> I was myself actually thinking more along the lines of adding a
-> new mechanism to the kernel where the kernel can send messages
-> to userspace (either with some special tag inside dmesg, or through
-> a new mechanism) indication that the message should be shown
-> as a notification (dialog/bubble/whatever) inside the UI.
->
-> This could be useful for this adapter case, but e.g. also for
-> pluging a thunderbolt device into a non thunderbolt capable
-> Type-C port, a superspeed USB device into a USB-2 only USB
-> port and probably other cases.
->=20
-> Rather then inventing separate userspace APIs for all these
-> cases having a general notification mechanism might be
-> quite useful for this (as long as the kernel does not
-> over use it).
+The per-device weirdness you're talking about is just how the way goes in
+a world where there are many SoCs that are created to target different budgets
+and use cases.
 
-I don't think this is a good idea. It brings all kind of
-localization problems. Also the information is not machine
-parsable. It looks more like a hack to get things working
-quickly by avoiding using/designing proper APIs.
+So I don't see the 2 worlds (laptops/mobile) really different, they just
+traditionally started differently where such variations in SoC didn't exist
+that much. But there are more Arm based SoCs that are targetting laptop markets
+now.. So you never know when they will be dealing with the same variations the
+mobile world sees today.
 
--- Sebastian
+> 
+> 
+> > People tend to think of the flagship SoCs which are powerful, but if you
+> > consider the low and medium end devices there's a massive spectrum over there
+> > that this range is trying to cover.
+> 
+> Yeah, perhaps you're right.  When thinking about a laptop it's almost
+> always a fairly powerful device and things could certainly be
+> different for very low end chips trying to run Linux.
 
---asks2luctm5jqxfa
-Content-Type: application/pgp-signature; name="signature.asc"
+I think there are low end laptops in the market that barely have enough grunt
+to do work. So not all laptops are fairly powerful.
 
------BEGIN PGP SIGNATURE-----
+> 
+> 
+> > I would expect older boards init script to be separate for newer boards init
+> > script. The OS by default boosts all RT tasks unless a platform specific script
+> > overrides that. So I can't see how an OS upgrade would affect older boards.
+> 
+> In the Chrome OS world I'm part of, the people supporting the boards
+> are not always the people adding new whizbang features.  We get new
+> versions of the OS every 6 weeks and those new versions may change the
+> way things work pretty significantly.  We ship those new versions off
+> to all boards.  Certainly they undergo testing, but there are a lot of
+> boards and if something is not tuned as well as it was when the device
+> first shipped it's likely nobody will really notice.  This is my bias
+> against needing per-board tuning.
 
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7s2ikACgkQ2O7X88g7
-+pphDQ//U3O3wYfKysir/AJz9pc7ViJ82wmiKbe8bdYV8V4sQPlUQ4YCzUil/++R
-BiwlvG1tcn90CEffDWsffJ5qe5FKsLisYSZamWPwvV7hbu+wzyjx1tvLR6LC3v/2
-cbSzYJmhwzecEPoX3mnuODDk0sZXGijWghl1mwIlc+Z9JF83m1GoVsE14pJa3bF/
-hf9Bb5P7ozdTaa+cS8m08duJkmKP1y2KDcbWkrilo8lXYcU3DMi5iv+SU/j3o3AN
-jC405SUpNV8dzL0y3Bo1qa/BK3JPmPQaL2YbOlnw12AoQU8+wPStwaqd6S4jLFyh
-jL3VD4trgKVD+f6lz7ivjfwo3/lo3TvE9dLCMx+7N3EcDQbEjNhWr45ns/EY10Sj
-PVN9kIhmxVIjfuFfnXq9HXtIQ0I4fi7wA8YJewX2xI5UY+c5Mp2bq3C1hyMnFV1+
-YMIkyK8WsrVgEq7yo+qVazhh7lZLoz7SlFNPVZkXi8Bo5fWDBKPgIwbms4XeZeLd
-Br7qJXE8tuev1HCATpQszwYcHQqG96un6Zyq3mESJoOVi6+XdvdholMQxNj1bCwi
-6OvuVrsGbh02Hpbo9YwP+D+SQAdNaf8FCFzhzs4jd43tkysNWVhr69yKDC1/HFOQ
-KiBgpkmp51m/DCn7K9JYQQxOkEbMRGqYui+DS65JuRVNrzEWWLc=
-=3JZ5
------END PGP SIGNATURE-----
+Apologies for my lack knowledge about the exact process in Chrome OS. In my
+head, I think what you do is like what Android and other distros do. Provide
+a software stack that can be used on any platform. On Android OEMs do have to
+do the tuning (with a help from SoC vendor usually). Not many laptops ship with
+Linux as their default OS, but this is an increasing trend and LWN did write
+something recently about the demand is increasing for Linux based laptops.
 
---asks2luctm5jqxfa--
+
+I thought Chrome OS is the same, where an OEM will take your deliverables and
+do the final integration.
+
+So I agree at your level it might be hard to reason about the full spectrum.
+But I thought the OEMs that wants to ship Chrome OS will need to look at init
+scripts, drivers etc to ensure their laptop is competitive.
+
+> 
+> 
+> > This knob still allows you to disable the max boosting and use the per-task
+> > uclamp interface to boost only those tasks you care about. AFAIK this is
+> > already done in a hacky way in android devices via special vendors provisions.
+> 
+> Yeah.  I don't think I have enough skin in the game to really say one
+> way or the other what the API should be so I'll probably stay off the
+> other, bigger thread and let others decide what the best API should
+> be.  For Chrome OS I'd probably advocate just disabling the default
+> boost but even there I'd be willing to defer to the folks doing the
+> actual work.
+
+Yes I appreciate the challenges you have. I think for most users disabling is
+good enough for them as RT tasks could end up causing a lot of power to be
+wasted unnecessarily. But if someone wants to take the extra mile and squeeze
+the best compromise, they can :)
+
+Thanks
+
+--
+Qais Yousef
