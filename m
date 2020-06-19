@@ -2,72 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDB1200A00
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C6EB200A1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:29:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732831AbgFSN1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 09:27:07 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:48868 "EHLO vps0.lunn.ch"
+        id S1732922AbgFSN2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 09:28:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726124AbgFSN1E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 09:27:04 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1jmH2p-001HFC-AH; Fri, 19 Jun 2020 15:26:59 +0200
-Date:   Fri, 19 Jun 2020 15:26:59 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     netdev@vger.kernel.org, Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Dajun Jin <adajunjin@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH net 2/2] net: phy: Check harder for errors in get_phy_id()
-Message-ID: <20200619132659.GB304147@lunn.ch>
-References: <20200619044759.11387-1-f.fainelli@gmail.com>
- <20200619044759.11387-3-f.fainelli@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200619044759.11387-3-f.fainelli@gmail.com>
+        id S1731398AbgFSN1i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 09:27:38 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 11E0C20771;
+        Fri, 19 Jun 2020 13:27:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592573257;
+        bh=LesmmGjwNyruZz2lXKjFL5SydTkXOhMREE472owY8hw=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=cE5Y6mgFKG9RWrq/3D58egK36HL8+Y2NKAaAwB0w3Q1SX+jbwm+U4wWqVDOwWGfMe
+         wHJenbY0Intxm+EYD6ydqu5QPxjiAh1nHlCCojps/BhKVr6CkOA33m6YnjFZ/HzMiG
+         LcEtR4fd61D1SOP5b+kZZH97duXCK/H9NTjsrMZM=
+Date:   Fri, 19 Jun 2020 14:27:35 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     John Stultz <john.stultz@linaro.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Cc:     Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Banajit Goswami <bgoswami@codeaurora.org>
+In-Reply-To: <20200619031407.116140-1-john.stultz@linaro.org>
+References: <20200619031407.116140-1-john.stultz@linaro.org>
+Subject: Re: [PATCH v3] ASoC: qcom: Kconfig: Tweak dependencies on SND_SOC_SDM845
+Message-Id: <159257325526.5735.5370337418723229662.b4-ty@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 09:47:59PM -0700, Florian Fainelli wrote:
-> Commit 02a6efcab675 ("net: phy: allow scanning busses with missing
-> phys") added a special condition to return -ENODEV in case -ENODEV or
-> -EIO was returned from the first read of the MII_PHYSID1 register.
+On Fri, 19 Jun 2020 03:14:07 +0000, John Stultz wrote:
+> CROS_EC isn't strictly required for audio to work
+> on other SDM845 platforms (like the Dragonboard 845c).
 > 
-> In case the MDIO bus data line pull-up is not strong enough, the MDIO
-> bus controller will not flag this as a read error. This can happen when
-> a pluggable daughter card is not connected and weak internal pull-ups
-> are used (since that is the only option, otherwise the pins are
-> floating).
-> 
-> The second read of MII_PHYSID2 will be correctly flagged an error
-> though, but now we will return -EIO which will be treated as a hard
-> error, thus preventing MDIO bus scanning loops to continue succesfully.
-> 
-> Apply the same logic to both register reads, thus allowing the scanning
-> logic to proceed.
+> So lets remove the dependency and select the related
+> CROS_EC options via imply.
 
-Hi Florian
+Applied to
 
-Maybe extend the kerneldoc for this function to document the return
-values and there special meanings?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Thanks!
 
-BTW: Did you look at get_phy_c45_ids()? Is it using the correct return
-value? Given the current work being done to extend scanning to C45,
-maybe it needs reviewing for issues like this.
+[1/1] ASoC: qcom: Kconfig: Tweak dependencies on SND_SOC_SDM845
+      commit: 3bd057c8219d4006f2b436cea2ae5ac723067a51
 
-    Andrew
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
