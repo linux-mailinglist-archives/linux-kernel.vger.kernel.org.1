@@ -2,56 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80BB4201B85
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 21:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C4E201B8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 21:45:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390051AbgFSTmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 15:42:42 -0400
-Received: from ms.lwn.net ([45.79.88.28]:55412 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389884AbgFSTmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 15:42:42 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 8289723B;
-        Fri, 19 Jun 2020 19:42:41 +0000 (UTC)
-Date:   Fri, 19 Jun 2020 13:42:40 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     jens.wiklander@linaro.org, maxim.uvarov@linaro.org,
-        jarkko.sakkinen@linux.intel.com, tee-dev@lists.linaro.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        op-tee@lists.trustedfirmware.org
-Subject: Re: [PATCH v2] Documentation: tee: Document TEE kernel interface
-Message-ID: <20200619134240.6c5b93d4@lwn.net>
-In-Reply-To: <1591253979-29067-1-git-send-email-sumit.garg@linaro.org>
-References: <1591253979-29067-1-git-send-email-sumit.garg@linaro.org>
-Organization: LWN.net
+        id S2390124AbgFSTpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 15:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389877AbgFSTpF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 15:45:05 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2957EC0613EF
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 12:45:05 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id j4so4318333plk.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 12:45:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SyUec5c/aPhd3mmtCmh5hrx61kd4SJGtSz9m/M2vfvI=;
+        b=Pxk8qBM3nqlmYBsvNWyuxnrkwidpDk51MG0QHv1fDMadcchDdktxN2ajrtxP2kRY+s
+         vdv1crfC4/aQvV6BqHquqhEXMbcX+OqxAQwVtPneHkb88iyndTvF/oOV2NsGDkKcHKJH
+         Okesr4PPTvLm+SNbEn8hPUEkYPkeJFqkvX56tTR9ucbHTSMme5UfkkTRL8k4bgnZtY+g
+         W7GmF4yvBj/CCWWmLaksBe34TH32e69AyjqQ/FFPZSYOSWW+rZ+qPYhmdgFPU660MiXL
+         +5LbrCslKYMiwoopNhmPMPu53hrE68R4nubtTfhdpHjXsvM4NhqU+eGfs+FlpCF55Xua
+         +UBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SyUec5c/aPhd3mmtCmh5hrx61kd4SJGtSz9m/M2vfvI=;
+        b=aHoBg27l31534xUpi6k8Pao0DaJEaIslaHO10W7AaWulgI7NkiOKgnkxYf5UsYvNv9
+         ClVR6/lhq4+I9G87xfwwiD9j+2gJh65BgVb5sSGNAdjHQFX2n2nrX6Z8jmJpL52WgnYc
+         ulh5er49tTmU2SHTOTDol68fUX+pDWTcQp3igOoFGbbRr+L1dx9VC6j7eSaN4yj3qj1B
+         MGSqN9iV6kivneR5iHz11b9k/vsAMLgWa+emfD/PBbx+EdWf7wgLrgV8Ucdy3EybD+PK
+         tRD5ULjQjLRQBIFkF7JmklVVjTHPyWBx/60LPDKcXVwrMVp5OUDA1/ULt++YvM9RID/t
+         lBfA==
+X-Gm-Message-State: AOAM532nfy6QuDoaveSyZBjGpq3t59gy4fLZ4iYQnqv2v3sHnkGCWIN/
+        Pnha5znzdHLkjzIf5/6uLLtvHV4y2loROBzGZ4ObFg==
+X-Google-Smtp-Source: ABdhPJzhbsfHrGCSGojM0v1tn0+N4CJkIltgdEdcqzVmVU0MNVY+4qCAxZ+oryv1VrB7drj0mvJbr8s/SBRWlzq2rs0=
+X-Received: by 2002:a17:90a:3321:: with SMTP id m30mr5095177pjb.20.1592595904407;
+ Fri, 19 Jun 2020 12:45:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+References: <CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com>
+ <20200616204817.GA212825@google.com> <CY4PR13MB1175A71AE3937C0786721ABFFD9D0@CY4PR13MB1175.namprd13.prod.outlook.com>
+ <202006161703.B2E51605@keescook> <CY4PR13MB1175DCC4066FC0839A6B2E84FD9A0@CY4PR13MB1175.namprd13.prod.outlook.com>
+ <202006162032.9BF6F8F4E@keescook> <CABVgOSn48gw3pMSCccmF8FK=3UPF+Spe47AiDQcMiXkk3k4yqQ@mail.gmail.com>
+In-Reply-To: <CABVgOSn48gw3pMSCccmF8FK=3UPF+Spe47AiDQcMiXkk3k4yqQ@mail.gmail.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Fri, 19 Jun 2020 12:44:53 -0700
+Message-ID: <CAFd5g4610GBAcyY9DDoQjoCVC0AG-=5FYJAZnS_5+L-aU7e4XA@mail.gmail.com>
+Subject: Re: RFC - kernel selftest result documentation (KTAP)
+To:     David Gow <davidgow@google.com>
+Cc:     Kees Cook <keescook@chromium.org>, "Bird, Tim" <Tim.Bird@sony.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  4 Jun 2020 12:29:39 +0530
-Sumit Garg <sumit.garg@linaro.org> wrote:
+On Tue, Jun 16, 2020 at 9:06 PM David Gow <davidgow@google.com> wrote:
+>
+> On Wed, Jun 17, 2020 at 11:36 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Wed, Jun 17, 2020 at 02:30:45AM +0000, Bird, Tim wrote:
+> > > Agreed.  You only need machine-parsable data if you expect the CI
+> > > system to do something more with the data than just present it.
+> > > What that would be, that would be common for all tests (or at least
+> > > many test), is unclear.  Maybe there are patterns in the diagnostic
+> > > data that could lead to higher-level analysis, or even automated
+> > > fixes, that don't become apparent if the data is unstructured.  But
+> > > it's hard to know until you have lots of data.  I think just getting
+> > > the other things consistent is a good priority right now.
+> >
+> > Yeah. I think the main place for this is performance analysis, but I
+> > think that's a separate system entirely. TAP is really strictly yes/no,
+> > where as performance analysis a whole other thing. The only other thing
+> > I can think of is some kind of feature analysis, but that would be built
+> > out of the standard yes/no output. i.e. if I create a test that checks
+> > for specific security mitigation features (*cough*LKDTM*cough*), having
+> > a dashboard that shows features down one axis and architectures and/or
+> > kernel versions on other axes, then I get a pretty picture. But it's
+> > still being built out of the yes/no info.
+> >
+> > *shrug*
+> >
+> > I think diagnostic should be expressly non-machine-oriented.
+>
+> So from the KUnit side, we sort-of have three kinds of diagnostic lines:
+> - Lines printed directly from tests (typically using kunit_info() or
+> similar functions): as I understand it, these are basically the
+> equivalent of what kselftest typically uses diagnostics for --
+> test-specific, human-readable messages. I don't think we need/want to
+> parse these much.
+> - Kernel messages during test execution. If we get the results from
+> scraping the kernel log (which is still the default for KUnit, though
+> there is also a debugfs info), other kernel logs can be interleaved
+> with the results. Sometimes these are irrelevant things happening on
+> another thread, sometimes they're something directly related to the
+> test which we'd like to capture (KASAN errors, for instance). I don't
+> think we want these to be machine oriented, but we may want to be able
+> to filter them out.
+> - Expectation failures: as Brendan mentioned, KUnit will print some
+> diagnostic messages for individual assertion/expectation failures,
+> including the expected and actual values. We'd ideally like to be able
+> to identify and parse these, but keeping them human-readable is
+> definitely also a goal.
 
-> Update documentation with TEE bus infrastructure which provides an
-> interface for kernel client drivers to communicate with corresponding
-> Trusted Application.
-> 
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
-> 
-> Changes in v2:
-> - Add TEE client driver example snippet.
-> 
->  Documentation/tee.txt | 68 +++++++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 68 insertions(+)
+Seems like a fair characterization to me.
 
-Applied, thanks.
+> Now, to be honest, I doubt that the distinction here would be of much
+> use to kselftest, but it could be nice to not go out of our way to
+> make parsing some diagnostic lines possible. That being said,
+> personally I'm all for avoiding the yaml for diagnostic messages stuff
+> and sticking to something simple and line-based, possibly
+> standardising a the format of a few common diagnostic measurements
+> (e.g., assertions/expected values/etc) in a way that's both
+> human-readable and parsable if possible.
 
-jon
+Agreed.
+
+> I agree that there's a lot of analysis that is possible with just the
+> yes/no data. There's probably some fancy correlation one could do even
+> with unstructured diagnostic logs, so I don't think overstructuring
+> things is a necessity by any means. Where we have different tests
+> doing similar sorts of things, though, consistency in message
+> formatting could help even if things are not explicitly parsed.
+> Ensuring that helper functions that log and the like are spitting
+> things out in the same format is probably a good starting step down
+> that path.
+
+Super agreed. I am sure that there are people who can do some very
+clever things with what is being described here, but I would prefer
+not to overcomplicate the spec right out of the gate. It feels like we
+only have two TAP versions to reconcile here, and we are mostly in
+agreement on how to do that.
