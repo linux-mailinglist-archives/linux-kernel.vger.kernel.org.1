@@ -2,39 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B217200DA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:02:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBCE200EC8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390554AbgFSO7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:59:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55716 "EHLO mail.kernel.org"
+        id S2403833AbgFSPLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:11:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41596 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390523AbgFSO7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:59:33 -0400
+        id S2391716AbgFSPLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:11:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DDE32218AC;
-        Fri, 19 Jun 2020 14:59:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31F7B206FA;
+        Fri, 19 Jun 2020 15:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578772;
-        bh=twAD9/480OimOKhD5kT8bjO05961osbe1gNSuQvw97U=;
+        s=default; t=1592579478;
+        bh=eVw2k462iJ2Do0ojBFL2gwa0NOUuOVkmrSLmnwCge2o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vsxv2C1bnWYOhhY9pb6ewu3wWOqcnNoa/ZaSsKsGuKpMwiFBzcCifYrBW+QUqcy81
-         lrw/NsIUCjbZHuoESllCPn/QxZdHD4MGx98wFcIlzHR+3HLrzrxYNJLvAP5z7nokf5
-         A3buzAbsCIJklZ3Tfx1dR7Z+KQ9GBaPxGtqbrJz8=
+        b=eNKAYO/bW37tqvB8Jdl+11cDEE+xD0yv7G7zrCwnmzGFulX8T6wC4C0W0h7X9e99r
+         psDdqNRsnSYIV4JO6eJpIhPupta+pi2U9XASoMwCTZlbu+oYaJltGQ6pT8ceimZoII
+         WpobNu/j4kFpY3hRFR200wm+NxTtCvF8jcCYzd1Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 149/267] platform/x86: intel-vbtn: Use acpi_evaluate_integer()
+Subject: [PATCH 5.4 123/261] mips: Add udelay lpj numbers adjustment
 Date:   Fri, 19 Jun 2020 16:32:14 +0200
-Message-Id: <20200619141655.979203028@linuxfoundation.org>
+Message-Id: <20200619141655.757757511@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +51,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
 
-[ Upstream commit 18937875a231d831c309716d6d8fc358f8381881 ]
+[ Upstream commit ed26aacfb5f71eecb20a51c4467da440cb719d66 ]
 
-Use acpi_evaluate_integer() instead of open-coding it.
+Loops-per-jiffies is a special number which represents a number of
+noop-loop cycles per CPU-scheduler quantum - jiffies. As you
+understand aside from CPU-specific implementation it depends on
+the CPU frequency. So when a platform has the CPU frequency fixed,
+we have no problem and the current udelay interface will work
+just fine. But as soon as CPU-freq driver is enabled and the cores
+frequency changes, we'll end up with distorted udelay's. In order
+to fix this we have to accordinly adjust the per-CPU udelay_val
+(the same as the global loops_per_jiffy) number. This can be done
+in the CPU-freq transition event handler. We subscribe to that event
+in the MIPS arch time-inititalization method.
 
-This is a preparation patch for adding a intel_vbtn_has_switches()
-helper function.
-
-Fixes: de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode switch on 2-in-1's")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel-vbtn.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ arch/mips/kernel/time.c | 70 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
 
-diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
-index a0d0cecff55f..0bcfa20dd614 100644
---- a/drivers/platform/x86/intel-vbtn.c
-+++ b/drivers/platform/x86/intel-vbtn.c
-@@ -118,28 +118,21 @@ static void detect_tablet_mode(struct platform_device *device)
- 	const char *chassis_type = dmi_get_system_info(DMI_CHASSIS_TYPE);
- 	struct intel_vbtn_priv *priv = dev_get_drvdata(&device->dev);
- 	acpi_handle handle = ACPI_HANDLE(&device->dev);
--	struct acpi_buffer vgbs_output = { ACPI_ALLOCATE_BUFFER, NULL };
--	union acpi_object *obj;
-+	unsigned long long vgbs;
- 	acpi_status status;
- 	int m;
+diff --git a/arch/mips/kernel/time.c b/arch/mips/kernel/time.c
+index 37e9413a393d..caa01457dce6 100644
+--- a/arch/mips/kernel/time.c
++++ b/arch/mips/kernel/time.c
+@@ -18,12 +18,82 @@
+ #include <linux/smp.h>
+ #include <linux/spinlock.h>
+ #include <linux/export.h>
++#include <linux/cpufreq.h>
++#include <linux/delay.h>
  
- 	if (!(chassis_type && strcmp(chassis_type, "31") == 0))
--		goto out;
-+		return;
+ #include <asm/cpu-features.h>
+ #include <asm/cpu-type.h>
+ #include <asm/div64.h>
+ #include <asm/time.h>
  
--	status = acpi_evaluate_object(handle, "VGBS", NULL, &vgbs_output);
-+	status = acpi_evaluate_integer(handle, "VGBS", NULL, &vgbs);
- 	if (ACPI_FAILURE(status))
--		goto out;
--
--	obj = vgbs_output.pointer;
--	if (!(obj && obj->type == ACPI_TYPE_INTEGER))
--		goto out;
-+		return;
- 
--	m = !(obj->integer.value & TABLET_MODE_FLAG);
-+	m = !(vgbs & TABLET_MODE_FLAG);
- 	input_report_switch(priv->input_dev, SW_TABLET_MODE, m);
--	m = (obj->integer.value & DOCK_MODE_FLAG) ? 1 : 0;
-+	m = (vgbs & DOCK_MODE_FLAG) ? 1 : 0;
- 	input_report_switch(priv->input_dev, SW_DOCK, m);
--out:
--	kfree(vgbs_output.pointer);
- }
- 
- static int intel_vbtn_probe(struct platform_device *device)
++#ifdef CONFIG_CPU_FREQ
++
++static DEFINE_PER_CPU(unsigned long, pcp_lpj_ref);
++static DEFINE_PER_CPU(unsigned long, pcp_lpj_ref_freq);
++static unsigned long glb_lpj_ref;
++static unsigned long glb_lpj_ref_freq;
++
++static int cpufreq_callback(struct notifier_block *nb,
++			    unsigned long val, void *data)
++{
++	struct cpufreq_freqs *freq = data;
++	struct cpumask *cpus = freq->policy->cpus;
++	unsigned long lpj;
++	int cpu;
++
++	/*
++	 * Skip lpj numbers adjustment if the CPU-freq transition is safe for
++	 * the loops delay. (Is this possible?)
++	 */
++	if (freq->flags & CPUFREQ_CONST_LOOPS)
++		return NOTIFY_OK;
++
++	/* Save the initial values of the lpjes for future scaling. */
++	if (!glb_lpj_ref) {
++		glb_lpj_ref = boot_cpu_data.udelay_val;
++		glb_lpj_ref_freq = freq->old;
++
++		for_each_online_cpu(cpu) {
++			per_cpu(pcp_lpj_ref, cpu) =
++				cpu_data[cpu].udelay_val;
++			per_cpu(pcp_lpj_ref_freq, cpu) = freq->old;
++		}
++	}
++
++	/*
++	 * Adjust global lpj variable and per-CPU udelay_val number in
++	 * accordance with the new CPU frequency.
++	 */
++	if ((val == CPUFREQ_PRECHANGE  && freq->old < freq->new) ||
++	    (val == CPUFREQ_POSTCHANGE && freq->old > freq->new)) {
++		loops_per_jiffy = cpufreq_scale(glb_lpj_ref,
++						glb_lpj_ref_freq,
++						freq->new);
++
++		for_each_cpu(cpu, cpus) {
++			lpj = cpufreq_scale(per_cpu(pcp_lpj_ref, cpu),
++					    per_cpu(pcp_lpj_ref_freq, cpu),
++					    freq->new);
++			cpu_data[cpu].udelay_val = (unsigned int)lpj;
++		}
++	}
++
++	return NOTIFY_OK;
++}
++
++static struct notifier_block cpufreq_notifier = {
++	.notifier_call  = cpufreq_callback,
++};
++
++static int __init register_cpufreq_notifier(void)
++{
++	return cpufreq_register_notifier(&cpufreq_notifier,
++					 CPUFREQ_TRANSITION_NOTIFIER);
++}
++core_initcall(register_cpufreq_notifier);
++
++#endif /* CONFIG_CPU_FREQ */
++
+ /*
+  * forward reference
+  */
 -- 
 2.25.1
 
