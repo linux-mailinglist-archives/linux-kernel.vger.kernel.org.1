@@ -2,195 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D432017A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F4A20178A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395449AbgFSQlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:41:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53272 "EHLO
+        id S2395414AbgFSQjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:39:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388648AbgFSOpF (ORCPT
+        with ESMTP id S2388044AbgFSOqN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:45:05 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E319FC06174E;
-        Fri, 19 Jun 2020 07:45:05 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id x93so7786901ede.9;
-        Fri, 19 Jun 2020 07:45:05 -0700 (PDT)
+        Fri, 19 Jun 2020 10:46:13 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9087C06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:46:13 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id x207so4524351pfc.5
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:46:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n3TBE7tx6S7GnpZVCrwlr/3N+oOzUPGbvusmUOmG/T0=;
-        b=AxLuXevQ37Qe6irR4ELS8KP+FbtI7KzXJI7NPPBrQFIdiz2bPyjW2dwsDyUEuAZ6Gj
-         obAXbSqGvGp46HL1svoQ4ohhMLjIhlffXnHZ/rd6JE333aLAHAfe6p6IEAkDpMyo0pXz
-         3gqCLLWBaQXFA+AKx51giDtpvGcOTXpNZQBkXRmjuL5/eK+mv5WjFpQ7EHYykN0iQqJQ
-         5tiAnbC+hsmw05IcJKVRoieT8Q91BROe1dS0b8nEaqn6ub+ly4za5VRH9v4PT/EhZQS7
-         GynsqTBgTG8dn/wZF0n7EHmYWJlx404GKADvC7euqmHvIFUdOyYzOlOpc7sXgaE5Mzfs
-         JnlA==
+        d=linaro.org; s=google;
+        h=date:user-agent:in-reply-to:references:mime-version
+         :content-transfer-encoding:subject:to:cc:from:message-id;
+        bh=A0SEVOpcHsuNLyVpfZPRTNP6bN8WLwpJrFGg1Si+7zc=;
+        b=hDYBK+hJsTswP+AygfR6OvIsJOwgnE+LcdcWgjBF9CzDe3hFVVAtCDCkErHcOiADYL
+         AHu0OWSQR8kChAvNiBY0zFmcKPIDpNw4bn8z4xV9Fja3qdadw3vXaDE4k+fFTfPuwIDL
+         dc9/jnOjBWaO1NYjOVvnGoiFtsBBYd5PDo4iHwPOiq5+w2LaFwN9J9JY2m4EbAY27dxa
+         DpJq0oSQ9WmOuoRbUYUEg13RJQpt0EspYcWir8FdwXaa9gcMZqa953V81eaYSt8QBijH
+         48ezNOcuapVYBaz5Bm/dAlEFskuIL51gNsqEcurnIag8R+ICKObpVkV/atNqiGY/+BP8
+         DxGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n3TBE7tx6S7GnpZVCrwlr/3N+oOzUPGbvusmUOmG/T0=;
-        b=lAFkGAcwsAPeoerzFEX75MQHoTrelQmVfx9UR3BgD+iIAey2JSOW9eLd+yn46Lf0lk
-         RRs9LKu2fFCs8yp77CHpTMiKod2o7EehHPhZTxJRxL07bkG7aM/ZjYz6yk+0UyRMZx72
-         G8DdJpbWJh0pskhANartUxuelfMObK65nLfalbDbalFxn7JhmA1VjnkN5dGl027TKTjH
-         Q2PknDu1HNZuLGLia24T8XNxsGPOnZ7LuRMa/th55O1Te4/kCB4d3DFFg2p77i68RrHU
-         Urfig79I1ilbLuBJ4uDCKsxkTroY7BVYptRrFnn9CTRzMU7o88tjFkyKRkcK8U7o4GwG
-         u9LA==
-X-Gm-Message-State: AOAM532qkrO/gX7uaPBoqYYYHQFxsOqvzhIe0Iblw2sr92xeMPFfH5Tc
-        ldirfodSGA9qvc8FfeQ4wgCxcoIRY2ocjGXQsBU=
-X-Google-Smtp-Source: ABdhPJyrHWOsI7xCVBWiV5yZaFNfurId9widfkp7/AgosrKLWEbgVSdn17jhr9iXO5CndhUq8INILlVyez+GNc7k8GQ=
-X-Received: by 2002:aa7:da14:: with SMTP id r20mr3712651eds.7.1592577904398;
- Fri, 19 Jun 2020 07:45:04 -0700 (PDT)
+        h=x-gm-message-state:date:user-agent:in-reply-to:references
+         :mime-version:content-transfer-encoding:subject:to:cc:from
+         :message-id;
+        bh=A0SEVOpcHsuNLyVpfZPRTNP6bN8WLwpJrFGg1Si+7zc=;
+        b=bB2qdUskQQ6sjlEOeG83NJu4+wJVI5omU7XqmYR8d0uupAyK9uo7z14BRFcBWR3Fsj
+         Qa3VrRJODhhSa3AUIYFsHBxnSWPgl/KuxgZevbP5+9R29GSmpQGy1eWQExYMV4P9ibVD
+         zxquIgmTnIzRrmstgeb3DUKlSTxMIukTcZycapFQs9GqtOI4LAltj8LkZTYePbtFWHuN
+         chWDXODQpxs37RdapxuOi7a1oLB/XLI7JDl7HoGsq/TzpqIa+/1tRd9iQSdlecj0ODei
+         fmZuFgV5UTO8hYmQDBF6MDzI72JsWlRRCKpp1CGBybfJYGe/GUoJOGcSkSsE1Q8dkcB0
+         R9tQ==
+X-Gm-Message-State: AOAM5331+//SQlvudUiJqokpVFKAb3UCQzDSp3MtFua3OBYxSD9fpu7y
+        v5ghg7nUqFUohJpiWE/4V/qw
+X-Google-Smtp-Source: ABdhPJzVlezxuG+CQ9cITtvILzSkjISRO1w39LFc9MyW0u6lJuN2Z7NwBMQ3JY/UrrlMKImkm/3V2w==
+X-Received: by 2002:a62:1c5:: with SMTP id 188mr8395366pfb.213.1592577973213;
+        Fri, 19 Jun 2020 07:46:13 -0700 (PDT)
+Received: from ?IPv6:2409:4072:6e9c:5ed9:4574:ef47:f924:dba6? ([2409:4072:6e9c:5ed9:4574:ef47:f924:dba6])
+        by smtp.gmail.com with ESMTPSA id w17sm6742233pff.27.2020.06.19.07.46.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 19 Jun 2020 07:46:12 -0700 (PDT)
+Date:   Fri, 19 Jun 2020 20:16:03 +0530
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20200616184805.k7eowfhdevasqite@e107158-lin.cambridge.arm.com>
+References: <20200213091427.13435-1-manivannan.sadhasivam@linaro.org> <20200213091427.13435-2-manivannan.sadhasivam@linaro.org> <20200616184805.k7eowfhdevasqite@e107158-lin.cambridge.arm.com>
 MIME-Version: 1.0
-References: <CGME20200619103702eucas1p1c57147013bbac3968f6ba073caec68b5@eucas1p1.samsung.com>
- <20200619103636.11974-1-m.szyprowski@samsung.com> <20200619103636.11974-14-m.szyprowski@samsung.com>
-In-Reply-To: <20200619103636.11974-14-m.szyprowski@samsung.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Fri, 19 Jun 2020 07:45:32 -0700
-Message-ID: <CAF6AEGv9We+wD72_px3mucsXQuTFZ3ZX_CAA1LTysMBdiDcEFw@mail.gmail.com>
-Subject: Re: [PATCH v7 13/36] drm: msm: fix common struct sg_table related issues
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        linaro-mm-sig@lists.linaro.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 1/2] net: qrtr: Migrate nameservice to kernel from userspace
+To:     Qais Yousef <qais.yousef@arm.com>
+CC:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Message-ID: <9184F012-1FDC-4F6B-8B3E-5D2B87F5DACA@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 3:37 AM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
->
-> The Documentation/DMA-API-HOWTO.txt states that the dma_map_sg() function
-> returns the number of the created entries in the DMA address space.
-> However the subsequent calls to the dma_sync_sg_for_{device,cpu}() and
-> dma_unmap_sg must be called with the original number of the entries
-> passed to the dma_map_sg().
->
-> struct sg_table is a common structure used for describing a non-contiguous
-> memory buffer, used commonly in the DRM and graphics subsystems. It
-> consists of a scatterlist with memory pages and DMA addresses (sgl entry),
-> as well as the number of scatterlist entries: CPU pages (orig_nents entry)
-> and DMA mapped pages (nents entry).
->
-> It turned out that it was a common mistake to misuse nents and orig_nents
-> entries, calling DMA-mapping functions with a wrong number of entries or
-> ignoring the number of mapped entries returned by the dma_map_sg()
-> function.
->
-> To avoid such issues, lets use a common dma-mapping wrappers operating
-> directly on the struct sg_table objects and use scatterlist page
-> iterators where possible. This, almost always, hides references to the
-> nents and orig_nents entries, making the code robust, easier to follow
-> and copy/paste safe.
->
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Hi,=20
 
-Acked-by: Rob Clark <robdclark@gmail.com>
+On 17 June 2020 12:18:06 AM IST, Qais Yousef <qais=2Eyousef@arm=2Ecom> wro=
+te:
+>Hi Manivannan, David
+>
+>On 02/13/20 14:44, Manivannan Sadhasivam wrote:
+>
+>[=2E=2E=2E]
+>
+>> +	trace_printk("advertising new server [%d:%x]@[%d:%d]\n",
+>> +		     srv->service, srv->instance, srv->node, srv->port);
+>
+>I can't tell exactly from the discussion whether this is the version
+>that got
+>merged into 5=2E7 or not, but it does match the commit message=2E
+>
 
-(let me know if you want me to take this one in via msm-next or if the
-plan is to take the series via drm-misc)
+This got merged and there was a follow up patch to replace trace_printk() =
+with tracepoints got merged as well=2E=20
 
+Thanks,=20
+Mani
 
-> ---
->  drivers/gpu/drm/msm/msm_gem.c    | 13 +++++--------
->  drivers/gpu/drm/msm/msm_gpummu.c | 14 ++++++--------
->  drivers/gpu/drm/msm/msm_iommu.c  |  2 +-
->  3 files changed, 12 insertions(+), 17 deletions(-)
+>This patch introduces several trace_printk() which AFAIK is intended
+>for
+>debugging only and shouldn't make it into mainline kernels=2E
 >
-> diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
-> index 38b0c0e1f83e..e0d5fd36ea8f 100644
-> --- a/drivers/gpu/drm/msm/msm_gem.c
-> +++ b/drivers/gpu/drm/msm/msm_gem.c
-> @@ -53,11 +53,10 @@ static void sync_for_device(struct msm_gem_object *msm_obj)
->         struct device *dev = msm_obj->base.dev->dev;
+>It causes this big message to be printed to the log too
 >
->         if (get_dma_ops(dev) && IS_ENABLED(CONFIG_ARM64)) {
-> -               dma_sync_sg_for_device(dev, msm_obj->sgt->sgl,
-> -                       msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
-> +               dma_sync_sgtable_for_device(dev, msm_obj->sgt,
-> +                                           DMA_BIDIRECTIONAL);
->         } else {
-> -               dma_map_sg(dev, msm_obj->sgt->sgl,
-> -                       msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
-> +               dma_map_sgtable(dev, msm_obj->sgt, DMA_BIDIRECTIONAL, 0);
->         }
->  }
+>[    0=2E000000]
+>**********************************************************
+>[    0=2E000000] **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE =
+=20
+>**
+>[    0=2E000000] **                                                    =
+=20
+>**
+>[    0=2E000000] ** trace_printk() being used=2E Allocating extra memory=
+=2E=20
+>**
+>[    0=2E000000] **                                                    =
+=20
+>**
+>[    0=2E000000] ** This means that this is a DEBUG kernel and it is   =
+=20
+>**
+>[    0=2E000000] ** unsafe for production use=2E                         =
+=20
+>**
+>[    0=2E000000] **                                                    =
+=20
+>**
+>[    0=2E000000] ** If you see this message and you are not debugging  =
+=20
+>**
+>[    0=2E000000] ** the kernel, report this immediately to your vendor!=
+=20
+>**
+>[    0=2E000000] **                                                    =
+=20
+>**
+>[    0=2E000000] **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE =
+=20
+>**
+>[    0=2E000000]
+>**********************************************************
 >
-> @@ -66,11 +65,9 @@ static void sync_for_cpu(struct msm_gem_object *msm_obj)
->         struct device *dev = msm_obj->base.dev->dev;
+>Shouldn't this be replaced with one of pr_*() variants instead?
 >
->         if (get_dma_ops(dev) && IS_ENABLED(CONFIG_ARM64)) {
-> -               dma_sync_sg_for_cpu(dev, msm_obj->sgt->sgl,
-> -                       msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
-> +               dma_sync_sgtable_for_cpu(dev, msm_obj->sgt, DMA_BIDIRECTIONAL);
->         } else {
-> -               dma_unmap_sg(dev, msm_obj->sgt->sgl,
-> -                       msm_obj->sgt->nents, DMA_BIDIRECTIONAL);
-> +               dma_unmap_sgtable(dev, msm_obj->sgt, DMA_BIDIRECTIONAL, 0);
->         }
->  }
+>Thanks
 >
-> diff --git a/drivers/gpu/drm/msm/msm_gpummu.c b/drivers/gpu/drm/msm/msm_gpummu.c
-> index 310a31b05faa..319f06c28235 100644
-> --- a/drivers/gpu/drm/msm/msm_gpummu.c
-> +++ b/drivers/gpu/drm/msm/msm_gpummu.c
-> @@ -30,21 +30,19 @@ static int msm_gpummu_map(struct msm_mmu *mmu, uint64_t iova,
->  {
->         struct msm_gpummu *gpummu = to_msm_gpummu(mmu);
->         unsigned idx = (iova - GPUMMU_VA_START) / GPUMMU_PAGE_SIZE;
-> -       struct scatterlist *sg;
-> +       struct sg_dma_page_iter dma_iter;
->         unsigned prot_bits = 0;
-> -       unsigned i, j;
->
->         if (prot & IOMMU_WRITE)
->                 prot_bits |= 1;
->         if (prot & IOMMU_READ)
->                 prot_bits |= 2;
->
-> -       for_each_sg(sgt->sgl, sg, sgt->nents, i) {
-> -               dma_addr_t addr = sg->dma_address;
-> -               for (j = 0; j < sg->length / GPUMMU_PAGE_SIZE; j++, idx++) {
-> -                       gpummu->table[idx] = addr | prot_bits;
-> -                       addr += GPUMMU_PAGE_SIZE;
-> -               }
-> +       for_each_sgtable_dma_page(sgt, &dma_iter, 0) {
-> +               dma_addr_t addr = sg_page_iter_dma_address(&dma_iter);
-> +
-> +               BUILD_BUG_ON(GPUMMU_PAGE_SIZE != PAGE_SIZE);
-> +               gpummu->table[idx++] = addr | prot_bits;
->         }
->
->         /* we can improve by deferring flush for multiple map() */
-> diff --git a/drivers/gpu/drm/msm/msm_iommu.c b/drivers/gpu/drm/msm/msm_iommu.c
-> index 3a381a9674c9..6c31e65834c6 100644
-> --- a/drivers/gpu/drm/msm/msm_iommu.c
-> +++ b/drivers/gpu/drm/msm/msm_iommu.c
-> @@ -36,7 +36,7 @@ static int msm_iommu_map(struct msm_mmu *mmu, uint64_t iova,
->         struct msm_iommu *iommu = to_msm_iommu(mmu);
->         size_t ret;
->
-> -       ret = iommu_map_sg(iommu->domain, iova, sgt->sgl, sgt->nents, prot);
-> +       ret = iommu_map_sgtable(iommu->domain, iova, sgt, prot);
->         WARN_ON(!ret);
->
->         return (ret == len) ? 0 : -EINVAL;
-> --
-> 2.17.1
->
+>--
+>Qais Yousef
+
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
