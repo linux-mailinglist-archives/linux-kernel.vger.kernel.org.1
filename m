@@ -2,70 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8895920052A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 11:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8D6200548
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 11:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732021AbgFSJcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 05:32:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60452 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731672AbgFSJbU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 05:31:20 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id A7D51B020;
-        Fri, 19 Jun 2020 09:31:15 +0000 (UTC)
-Date:   Fri, 19 Jun 2020 11:31:14 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org
-Subject: Re: [v3 PATCH 2/2] printk: Make linux/printk.h self-contained
-Message-ID: <20200619093114.GJ3617@alley>
-References: <20200617071524.GA3055@gondor.apana.org.au>
- <E1jlSK1-0003hL-J3@fornost.hmeau.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <E1jlSK1-0003hL-J3@fornost.hmeau.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1731770AbgFSJeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 05:34:24 -0400
+Received: from mx.wingtech.com ([180.166.216.14]:59047 "EHLO mail.wingtech.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732059AbgFSJdz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 05:33:55 -0400
+Received: from mx.wingtech.com ([192.168.2.43])
+        by mail.wingtech.com  with SMTP id 05J9Xi4q022465-05J9Xi4r022465
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 17:33:44 +0800
+Received: from 192.168.51.143 (HELO ZHAOWUYUN.WINGTECH.COM); Fri, 19 Jun 2020 17:33:41 +0800
+From:   zhaowuyun@wingtech.com
+To:     yuchao0@huawei.com, jaegeuk@kernel.org
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, zhaowuyun@wingtech.com
+Subject: [PATCH v4] f2fs-tools: introduce set_node_footer to initialize node footer
+Date:   Fri, 19 Jun 2020 17:33:30 +0800
+Message-Id: <1592559210-2379-1-git-send-email-zhaowuyun@wingtech.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2020-06-17 17:17:21, Herbert Xu wrote:
-> As it stands if you include printk.h by itself it will fail to
-> compile because it requires definitions from ratelimit.h.  However,
-> simply including ratelimit.h from printk.h does not work due to
-> inclusion loops involving sched.h and kernel.h.
-> 
-> This patch solves this by moving bits from ratelimit.h into a new
-> header file which can then be included by printk.h without any
-> worries about header loops.
-> 
-> The build bot then revealed some intriguing failures arising out
-> of this patch.  On s390 there is an inclusion loop with asm/bug.h
-> and linux/kernel.h that triggers a compile failure, because kernel.h
-> will cause asm-generic/bug.h to be included before s390's own
-> asm/bug.h has finished processing.  This has been fixed by not
-> including kernel.h in arch/s390/include/asm/bug.h.
-> 
-> Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-> Acked-by: Petr Mladek <pmladek@suse.com>
-> Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+From: Wuyun Zhao <zhaowuyun@wingtech.com>
 
-JFYI, the patch has been committed into printk/linux.git,
-branch for-5.9.
+the filesystem will use the cold flag, so deal with it to avoid
+potential issue of inconsistency
 
-Best Regards,
-Petr
+Signed-off-by: Wuyun Zhao <zhaowuyun@wingtech.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+---
+ fsck/dir.c         |  7 ++-----
+ fsck/node.c        | 12 +++++-------
+ include/f2fs_fs.h  | 23 +++++++++++++++++++++++
+ mkfs/f2fs_format.c | 34 +++++++++++++---------------------
+ 4 files changed, 43 insertions(+), 33 deletions(-)
+
+diff --git a/fsck/dir.c b/fsck/dir.c
+index 5f4f75e..b067aec 100644
+--- a/fsck/dir.c
++++ b/fsck/dir.c
+@@ -517,11 +517,8 @@ static void init_inode_block(struct f2fs_sb_info *sbi,
+ 	}
+ 
+ 	set_file_temperature(sbi, node_blk, de->name);
+-
+-	node_blk->footer.ino = cpu_to_le32(de->ino);
+-	node_blk->footer.nid = cpu_to_le32(de->ino);
+-	node_blk->footer.flag = 0;
+-	node_blk->footer.cp_ver = ckpt->checkpoint_ver;
++	set_node_footer(node_blk, de->ino, de->ino, 0,
++			le64_to_cpu(ckpt->checkpoint_ver), 0, S_ISDIR(mode));
+ 
+ 	if (S_ISDIR(mode)) {
+ 		make_empty_dir(sbi, node_blk);
+diff --git a/fsck/node.c b/fsck/node.c
+index 229a99c..ef7ed0b 100644
+--- a/fsck/node.c
++++ b/fsck/node.c
+@@ -61,7 +61,7 @@ void set_data_blkaddr(struct dnode_of_data *dn)
+ block_t new_node_block(struct f2fs_sb_info *sbi,
+ 				struct dnode_of_data *dn, unsigned int ofs)
+ {
+-	struct f2fs_node *f2fs_inode;
++	struct f2fs_node *f2fs_inode = dn->inode_blk;
+ 	struct f2fs_node *node_blk;
+ 	struct f2fs_checkpoint *ckpt = F2FS_CKPT(sbi);
+ 	struct f2fs_summary sum;
+@@ -69,16 +69,14 @@ block_t new_node_block(struct f2fs_sb_info *sbi,
+ 	block_t blkaddr = NULL_ADDR;
+ 	int type;
+ 	int ret;
+-
+-	f2fs_inode = dn->inode_blk;
++	nid_t ino = le32_to_cpu(f2fs_inode->footer.ino);
++	u64 cp_ver = le64_to_cpu(ckpt->checkpoint_ver);
+ 
+ 	node_blk = calloc(BLOCK_SZ, 1);
+ 	ASSERT(node_blk);
+ 
+-	node_blk->footer.nid = cpu_to_le32(dn->nid);
+-	node_blk->footer.ino = f2fs_inode->footer.ino;
+-	node_blk->footer.flag = cpu_to_le32(ofs << OFFSET_BIT_SHIFT);
+-	node_blk->footer.cp_ver = ckpt->checkpoint_ver;
++	set_node_footer(node_blk, dn->nid, ino, ofs, cp_ver, 0,
++			S_ISDIR(le16_to_cpu(f2fs_inode->i.i_mode)));
+ 
+ 	type = CURSEG_COLD_NODE;
+ 	if (IS_DNODE(node_blk)) {
+diff --git a/include/f2fs_fs.h b/include/f2fs_fs.h
+index 709bfd8..ab19eb7 100644
+--- a/include/f2fs_fs.h
++++ b/include/f2fs_fs.h
+@@ -923,6 +923,29 @@ struct f2fs_node {
+ 	struct node_footer footer;
+ } __attribute__((packed));
+ 
++static inline void set_cold_node(struct f2fs_node *rn, bool is_dir)
++{
++	unsigned int flag = le32_to_cpu(rn->footer.flag);
++
++	if (is_dir)
++		flag &= ~(0x1 << COLD_BIT_SHIFT);
++	else
++		flag |= (0x1 << COLD_BIT_SHIFT);
++	rn->footer.flag = cpu_to_le32(flag);
++}
++
++static inline void set_node_footer(struct f2fs_node *rn, nid_t nid, nid_t ino,
++					u32 ofs, u64 ver, block_t blkaddr,
++					bool is_dir)
++{
++	rn->footer.nid = cpu_to_le32(nid);
++	rn->footer.ino = cpu_to_le32(ino);
++	rn->footer.flag = cpu_to_le32(ofs << OFFSET_BIT_SHIFT);
++	rn->footer.cp_ver = cpu_to_le64(ver);
++	rn->footer.next_blkaddr = cpu_to_le32(blkaddr);
++	set_cold_node(rn, is_dir);
++}
++
+ /*
+  * For NAT entries
+  */
+diff --git a/mkfs/f2fs_format.c b/mkfs/f2fs_format.c
+index 44575e0..656023a 100644
+--- a/mkfs/f2fs_format.c
++++ b/mkfs/f2fs_format.c
+@@ -1094,6 +1094,9 @@ static int f2fs_write_root_inode(void)
+ 	struct f2fs_node *raw_node = NULL;
+ 	u_int64_t blk_size_bytes, data_blk_nor;
+ 	u_int64_t main_area_node_seg_blk_offset = 0;
++	nid_t nid = le32_to_cpu(sb->root_ino);
++	block_t blkaddr = get_sb(main_blkaddr) +
++				c.cur_seg[CURSEG_HOT_NODE] * c.blks_per_seg + 1;
+ 
+ 	raw_node = calloc(F2FS_BLKSIZE, 1);
+ 	if (raw_node == NULL) {
+@@ -1101,13 +1104,7 @@ static int f2fs_write_root_inode(void)
+ 		return -1;
+ 	}
+ 
+-	raw_node->footer.nid = sb->root_ino;
+-	raw_node->footer.ino = sb->root_ino;
+-	raw_node->footer.cp_ver = cpu_to_le64(1);
+-	raw_node->footer.next_blkaddr = cpu_to_le32(
+-			get_sb(main_blkaddr) +
+-			c.cur_seg[CURSEG_HOT_NODE] *
+-			c.blks_per_seg + 1);
++	set_node_footer(raw_node, nid, nid, 0, 1, blkaddr, 1);
+ 
+ 	raw_node->i.i_mode = cpu_to_le16(0x41ed);
+ 	if (c.lpf_ino)
+@@ -1256,6 +1253,10 @@ static int f2fs_write_qf_inode(int qtype)
+ 	u_int64_t main_area_node_seg_blk_offset = 0;
+ 	__le32 raw_id;
+ 	int i;
++	nid_t qf_ino = le32_to_cpu(sb->qf_ino[qtype]);
++	block_t blkaddr = get_sb(main_blkaddr) +
++					c.cur_seg[CURSEG_HOT_NODE] *
++					c.blks_per_seg + 1 + qtype + 1;
+ 
+ 	raw_node = calloc(F2FS_BLKSIZE, 1);
+ 	if (raw_node == NULL) {
+@@ -1263,13 +1264,7 @@ static int f2fs_write_qf_inode(int qtype)
+ 		return -1;
+ 	}
+ 
+-	raw_node->footer.nid = sb->qf_ino[qtype];
+-	raw_node->footer.ino = sb->qf_ino[qtype];
+-	raw_node->footer.cp_ver = cpu_to_le64(1);
+-	raw_node->footer.next_blkaddr = cpu_to_le32(
+-			get_sb(main_blkaddr) +
+-			c.cur_seg[CURSEG_HOT_NODE] *
+-			c.blks_per_seg + 1 + qtype + 1);
++	set_node_footer(raw_node, qf_ino, qf_ino, 0, 1, blkaddr, 0);
+ 
+ 	raw_node->i.i_mode = cpu_to_le16(0x8180);
+ 	raw_node->i.i_links = cpu_to_le32(1);
+@@ -1447,6 +1442,9 @@ static int f2fs_write_lpf_inode(void)
+ 	struct f2fs_node *raw_node;
+ 	u_int64_t blk_size_bytes, main_area_node_seg_blk_offset;
+ 	block_t data_blk_nor;
++	block_t blkaddr = get_sb(main_blkaddr) +
++				c.cur_seg[CURSEG_HOT_NODE] * c.blks_per_seg +
++				1 + c.quota_inum + 1;
+ 	int err = 0;
+ 
+ 	ASSERT(c.lpf_ino);
+@@ -1457,13 +1455,7 @@ static int f2fs_write_lpf_inode(void)
+ 		return -1;
+ 	}
+ 
+-	raw_node->footer.nid = cpu_to_le32(c.lpf_ino);
+-	raw_node->footer.ino = raw_node->footer.nid;
+-	raw_node->footer.cp_ver = cpu_to_le64(1);
+-	raw_node->footer.next_blkaddr = cpu_to_le32(
+-			get_sb(main_blkaddr) +
+-			c.cur_seg[CURSEG_HOT_NODE] * c.blks_per_seg +
+-			1 + c.quota_inum + 1);
++	set_node_footer(raw_node, c.lpf_ino, c.lpf_ino, 0, 1, blkaddr, 1);
+ 
+ 	raw_node->i.i_mode = cpu_to_le16(0x41c0); /* 0700 */
+ 	raw_node->i.i_links = cpu_to_le32(2);
+-- 
+2.7.4
+
