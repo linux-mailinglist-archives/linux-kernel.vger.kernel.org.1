@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF86201855
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E8202018E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387587AbgFSOgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:36:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52988 "EHLO mail.kernel.org"
+        id S2405998AbgFSQyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:54:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387544AbgFSOgc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:36:32 -0400
+        id S2387602AbgFSOgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:36:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3325420CC7;
-        Fri, 19 Jun 2020 14:36:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C9653208B8;
+        Fri, 19 Jun 2020 14:36:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577390;
-        bh=jAOr7i8JMKY3fCRc2fj1AtXf+MDqw6dZKe43MFntWFk=;
+        s=default; t=1592577410;
+        bh=mFDygWyTjzd5mxMmaUuuxRiBlOKztTOSGWDFkI3zD2s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JUIYBAjocKxcmOMG7WbH6+M+huja77jmKpJIU/lHP/OvnT+VWrY8oAv9dLbrDqG9D
-         uyGD58zJXU1VGhQD64tqtvOhbKJ6Eh2y4EXYhb1/z6HbP2NYLm4kTlHW96t3HbLQpT
-         1xscHARas5ITJzr1qVbl44JbVKMqXPPbjp7Mj7Lc=
+        b=fmP/sLoBpMnhH8VQ/0HpOeFXdDD93p2CO19O3YN+GlLDvqzym8Go5SVF9k5dbvF9+
+         ZQIfiPpqureuOA2r3tV3kUzQ+pic0NUrI1cM9P62Ia9h6DMC/FLRFy+8/q+Onph+ch
+         rLNO0kK8xscafxAVQn/JEfU69m3N0wWQmBdHrxO0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 030/101] spi: pxa2xx: Fix controller unregister order
-Date:   Fri, 19 Jun 2020 16:32:19 +0200
-Message-Id: <20200619141615.675453619@linuxfoundation.org>
+        stable@vger.kernel.org, Yuxuan Shui <yshuiv7@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 4.4 032/101] ovl: initialize error in ovl_copy_xattr
+Date:   Fri, 19 Jun 2020 16:32:21 +0200
+Message-Id: <20200619141615.780992360@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
 References: <20200619141614.001544111@linuxfoundation.org>
@@ -46,76 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Yuxuan Shui <yshuiv7@gmail.com>
 
-[ Upstream commit 32e5b57232c0411e7dea96625c415510430ac079 ]
+commit 520da69d265a91c6536c63851cbb8a53946974f0 upstream.
 
-The PXA2xx SPI driver uses devm_spi_register_controller() on bind.
-As a consequence, on unbind, __device_release_driver() first invokes
-pxa2xx_spi_remove() before unregistering the SPI controller via
-devres_release_all().
+In ovl_copy_xattr, if all the xattrs to be copied are overlayfs private
+xattrs, the copy loop will terminate without assigning anything to the
+error variable, thus returning an uninitialized value.
 
-This order is incorrect:  pxa2xx_spi_remove() disables the chip,
-rendering the SPI bus inaccessible even though the SPI controller is
-still registered.  When the SPI controller is subsequently unregistered,
-it unbinds all its slave devices.  Because their drivers cannot access
-the SPI bus, e.g. to quiesce interrupts, the slave devices may be left
-in an improper state.
+If ovl_copy_xattr is called from ovl_clear_empty, this uninitialized error
+value is put into a pointer by ERR_PTR(), causing potential invalid memory
+accesses down the line.
 
-As a rule, devm_spi_register_controller() must not be used if the
-->remove() hook performs teardown steps which shall be performed after
-unregistering the controller and specifically after unbinding of slaves.
+This commit initialize error with 0. This is the correct value because when
+there's no xattr to copy, because all xattrs are private, ovl_copy_xattr
+should succeed.
 
-Fix by reverting to the non-devm variant of spi_register_controller().
+This bug is discovered with the help of INIT_STACK_ALL and clang.
 
-An alternative approach would be to use device-managed functions for all
-steps in pxa2xx_spi_remove(), e.g. by calling devm_add_action_or_reset()
-on probe.  However that approach would add more LoC to the driver and
-it wouldn't lend itself as well to backporting to stable.
+Signed-off-by: Yuxuan Shui <yshuiv7@gmail.com>
+Link: https://bugs.chromium.org/p/chromium/issues/detail?id=1050405
+Fixes: 0956254a2d5b ("ovl: don't copy up opaqueness")
+Cc: stable@vger.kernel.org # v4.8
+Signed-off-by: Alexander Potapenko <glider@google.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The improper use of devm_spi_register_controller() was introduced in 2013
-by commit a807fcd090d6 ("spi: pxa2xx: use devm_spi_register_master()"),
-but all earlier versions of the driver going back to 2006 were likewise
-broken because they invoked spi_unregister_master() at the end of
-pxa2xx_spi_remove(), rather than at the beginning.
-
-Fixes: e0c9905e87ac ("[PATCH] SPI: add PXA2xx SSP SPI Driver")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: stable@vger.kernel.org # v2.6.17+
-Cc: Tsuchiya Yuto <kitakar@gmail.com>
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206403#c1
-Link: https://lore.kernel.org/r/834c446b1cf3284d2660f1bee1ebe3e737cd02a9.1590408496.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-pxa2xx.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ fs/overlayfs/copy_up.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
-index 96ed01cb6489..cfcc5a9a5cc9 100644
---- a/drivers/spi/spi-pxa2xx.c
-+++ b/drivers/spi/spi-pxa2xx.c
-@@ -1605,7 +1605,7 @@ static int pxa2xx_spi_probe(struct platform_device *pdev)
+--- a/fs/overlayfs/copy_up.c
++++ b/fs/overlayfs/copy_up.c
+@@ -24,7 +24,7 @@ int ovl_copy_xattr(struct dentry *old, s
+ {
+ 	ssize_t list_size, size, value_size = 0;
+ 	char *buf, *name, *value = NULL;
+-	int uninitialized_var(error);
++	int error = 0;
+ 	size_t slen;
  
- 	/* Register with the SPI framework */
- 	platform_set_drvdata(pdev, drv_data);
--	status = devm_spi_register_master(&pdev->dev, master);
-+	status = spi_register_master(master);
- 	if (status != 0) {
- 		dev_err(&pdev->dev, "problem registering spi master\n");
- 		goto out_error_clock_enabled;
-@@ -1635,6 +1635,8 @@ static int pxa2xx_spi_remove(struct platform_device *pdev)
- 
- 	pm_runtime_get_sync(&pdev->dev);
- 
-+	spi_unregister_master(drv_data->master);
-+
- 	/* Disable the SSP at the peripheral and SOC level */
- 	pxa2xx_spi_write(drv_data, SSCR0, 0);
- 	clk_disable_unprepare(ssp->clk);
--- 
-2.25.1
-
+ 	if (!old->d_inode->i_op->getxattr ||
 
 
