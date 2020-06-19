@@ -2,155 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C8B8201E22
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 00:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24166201E32
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 00:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729516AbgFSWlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 18:41:07 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:21841 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729499AbgFSWlG (ORCPT
+        id S1729600AbgFSWrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 18:47:11 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:34580 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729577AbgFSWrK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 18:41:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592606464;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UMsOgxP9lGGOhQCGlKHx/69wCyoXIvsdOFNr+Mexqs0=;
-        b=HCTC6C+0eLRT7w3E7L3PbwmtbPDv1REM8uAmQVfPfexpiKJh6M1UuSYBiDVsZhF28C5/Vl
-        nadOghy1USjlrAkZ4xgXT2VhXo2MOMMBAGacx0UB7/S+zCfsltVQvEAdBPjZ7Y3yn2msbN
-        GeDr6dgZ4Dzn2xc7rRZqLW+SyWzcT64=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-371-FATCeYgYPKi-9wPQ7Ay1mA-1; Fri, 19 Jun 2020 18:41:01 -0400
-X-MC-Unique: FATCeYgYPKi-9wPQ7Ay1mA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A86B0107ACCA;
-        Fri, 19 Jun 2020 22:40:57 +0000 (UTC)
-Received: from w520.home (ovpn-112-195.phx2.redhat.com [10.3.112.195])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C625A1001E91;
-        Fri, 19 Jun 2020 22:40:46 +0000 (UTC)
-Date:   Fri, 19 Jun 2020 16:40:46 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        "cjia@nvidia.com" <cjia@nvidia.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "libvir-list@redhat.com" <libvir-list@redhat.com>,
-        "Zhengxiao.zx@alibaba-inc.com" <Zhengxiao.zx@alibaba-inc.com>,
-        "shuangtai.tst@alibaba-inc.com" <shuangtai.tst@alibaba-inc.com>,
-        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "eauger@redhat.com" <eauger@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "Yang, Ziye" <ziye.yang@intel.com>,
-        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
-        "pasic@linux.ibm.com" <pasic@linux.ibm.com>,
-        "aik@ozlabs.ru" <aik@ozlabs.ru>,
-        "felipe@nutanix.com" <felipe@nutanix.com>,
-        "Ken.Xue@amd.com" <Ken.Xue@amd.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        "eskultet@redhat.com" <eskultet@redhat.com>,
-        "Zeng, Xin" <xin.zeng@intel.com>,
-        "zhenyuw@linux.intel.com" <zhenyuw@linux.intel.com>,
-        "dinechin@redhat.com" <dinechin@redhat.com>,
-        "intel-gvt-dev@lists.freedesktop.org" 
-        <intel-gvt-dev@lists.freedesktop.org>,
-        "Liu, Changpeng" <changpeng.liu@intel.com>,
-        "berrange@redhat.com" <berrange@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Wang, Zhi A" <zhi.a.wang@intel.com>,
-        "jonathan.davies@nutanix.com" <jonathan.davies@nutanix.com>,
-        "He, Shaopeng" <shaopeng.he@intel.com>
-Subject: Re: [PATCH v5 0/4] introduction of migration_version attribute for
- VFIO live migration
-Message-ID: <20200619164046.2bdc2f67@w520.home>
-In-Reply-To: <20200610003731.GA13961@joy-OptiPlex-7040>
-References: <20200429094844.GE2834@work-vm>
-        <20200430003949.GN12879@joy-OptiPlex-7040>
-        <20200602165527.34137955@x1.home>
-        <20200603031948.GB12300@joy-OptiPlex-7040>
-        <20200602215528.7a1008f0@x1.home>
-        <20200603052443.GC12300@joy-OptiPlex-7040>
-        <20200603102628.017e2896@x1.home>
-        <20200605102224.GB2936@work-vm>
-        <20200605083149.1809e783@x1.home>
-        <20200605143950.GG2897@work-vm>
-        <20200610003731.GA13961@joy-OptiPlex-7040>
+        Fri, 19 Jun 2020 18:47:10 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jmPmr-0003up-6O; Fri, 19 Jun 2020 16:47:05 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in02.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jmPmq-0003DD-3a; Fri, 19 Jun 2020 16:47:05 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Junxiao Bi <junxiao.bi@oracle.com>
+Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <matthew.wilcox@oracle.com>,
+        Srinivas Eeda <SRINIVAS.EEDA@oracle.com>,
+        "joe.jin\@oracle.com" <joe.jin@oracle.com>,
+        Wengang Wang <wen.gang.wang@oracle.com>
+References: <54091fc0-ca46-2186-97a8-d1f3c4f3877b@oracle.com>
+        <20200618233958.GV8681@bombadil.infradead.org>
+        <877dw3apn8.fsf@x220.int.ebiederm.org>
+        <2cf6af59-e86b-f6cc-06d3-84309425bd1d@oracle.com>
+        <87bllf87ve.fsf_-_@x220.int.ebiederm.org>
+        <caa9adf6-e1bb-167b-6f59-d17fd587d4fa@oracle.com>
+        <87k1036k9y.fsf@x220.int.ebiederm.org>
+        <68a1f51b-50bf-0770-2367-c3e1b38be535@oracle.com>
+Date:   Fri, 19 Jun 2020 17:42:45 -0500
+In-Reply-To: <68a1f51b-50bf-0770-2367-c3e1b38be535@oracle.com> (Junxiao Bi's
+        message of "Fri, 19 Jun 2020 14:56:58 -0700")
+Message-ID: <87blle4qze.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain
+X-XM-SPF: eid=1jmPmq-0003DD-3a;;;mid=<87blle4qze.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX1/f9FJF3b8ZpMntMwzOY/uCE50xMD8xT64=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=0.5 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,XMSubLong autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4135]
+        *  0.7 XMSubLong Long Subject
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa04 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa04 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Junxiao Bi <junxiao.bi@oracle.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 689 ms - load_scoreonly_sql: 0.07 (0.0%),
+        signal_user_changed: 12 (1.7%), b_tie_ro: 10 (1.5%), parse: 1.08
+        (0.2%), extract_message_metadata: 12 (1.8%), get_uri_detail_list: 1.54
+        (0.2%), tests_pri_-1000: 14 (2.1%), tests_pri_-950: 1.22 (0.2%),
+        tests_pri_-900: 0.99 (0.1%), tests_pri_-90: 129 (18.7%), check_bayes:
+        128 (18.5%), b_tokenize: 6 (0.9%), b_tok_get_all: 6 (0.9%),
+        b_comp_prob: 2.2 (0.3%), b_tok_touch_all: 109 (15.9%), b_finish: 0.82
+        (0.1%), tests_pri_0: 507 (73.6%), check_dkim_signature: 0.55 (0.1%),
+        check_dkim_adsp: 2.4 (0.4%), poll_dns_idle: 0.72 (0.1%), tests_pri_10:
+        1.79 (0.3%), tests_pri_500: 6 (0.8%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH] proc: Avoid a thundering herd of threads freeing proc dentries
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Jun 2020 20:37:31 -0400
-Yan Zhao <yan.y.zhao@intel.com> wrote:
+Junxiao Bi <junxiao.bi@oracle.com> writes:
 
-> On Fri, Jun 05, 2020 at 03:39:50PM +0100, Dr. David Alan Gilbert wrote:
-> > > > > I tried to simplify the problem a bit, but we keep going backwards.  If
-> > > > > the requirement is that potentially any source device can migrate to any
-> > > > > target device and we cannot provide any means other than writing an
-> > > > > opaque source string into a version attribute on the target and
-> > > > > evaluating the result to determine compatibility, then we're requiring
-> > > > > userspace to do an exhaustive search to find a potential match.  That
-> > > > > sucks.     
-> > > >  
-> hi Alex and Dave,
-> do you think it's good for us to put aside physical devices and mdev aggregation
-> for the moment, and use Alex's original idea that
-> 
-> +  Userspace should regard two mdev devices compatible when ALL of below
-> +  conditions are met:
-> +  (0) The mdev devices are of the same type
-> +  (1) success when reading from migration_version attribute of one mdev device.
-> +  (2) success when writing migration_version string of one mdev device to
-> +  migration_version attribute of the other mdev device.
+> On 6/19/20 10:24 AM, ebiederm@xmission.com wrote:
+>
+>> Junxiao Bi <junxiao.bi@oracle.com> writes:
+>>
+>>> Hi Eric,
+>>>
+>>> The patch didn't improve lock contention.
+>> Which raises the question where is the lock contention coming from.
+>>
+>> Especially with my first variant.  Only the last thread to be reaped
+>> would free up anything in the cache.
+>>
+>> Can you comment out the call to proc_flush_pid entirely?
+>
+> Still high lock contention. Collect the following hot path.
 
-I think Pandora's box is already opened, if we can't articulate how
-this solution would evolve to support features that we know are coming,
-why should we proceed with this approach?  We've already seen interest
-in breaking rule (0) in this thread, so we can't focus the solution on
-mdev devices.
+A different location this time.
 
-Maybe the best we can do is to compare one instance of a device to
-another instance of a device, without any capability to predict
-compatibility prior to creating devices, in the case on mdev.  The
-string would need to include not only the device and vendor driver
-compatibility, but also anything that has modified the state of the
-device, such as creation time or post-creation time configuration.  The
-user is left on their own for creating a compatible device, or
-filtering devices to determine which might be, or which might generate,
-compatible devices.  It's not much of a solution, I wonder if anyone
-would even use it.
+I know of at least exit_signal and exit_notify that take thread wide
+locks, and it looks like exit_mm is another.  Those don't use the same
+locks as flushing proc.
 
-> and what about adding another sysfs attribute for vendors to put
-> recommended migration compatible device type. e.g.
-> #cat /sys/bus/pci/devices/0000:00:02.0/mdev_supported_types/i915-GVTg_V5_8/migration_compatible_devices
-> parent id: 8086 591d
-> mdev_type: i915-GVTg_V5_8
-> 
-> vendors are free to define the format and conent of this migration_compatible_devices
-> and it's even not to be a full list.
-> 
-> before libvirt or user to do live migration, they have to read and test
-> migration_version attributes of src/target devices to check migration compatibility.
 
-AFAICT, free-form, vendor defined attributes are useless to libvirt.
-Vendors could already put this information in the description attribute
-and have it ignored by userspace tools due to the lack of defined
-format.  It's also not clear what value this provides when it's
-necessarily incomplete, a driver written today cannot know what future
-drivers might be compatible with its migration data.  Thanks,
+So I think you are simply seeing a result of the thundering herd of
+threads shutting down at once.  Given that thread shutdown is fundamentally
+a slow path there is only so much that can be done.
 
-Alex
+If you are up for a project to working through this thundering herd I
+expect I can help some.  It will be a long process of cleaning up
+the entire thread exit process with an eye to performance.
 
+To make incremental progress we are going to need a way to understand
+the impact of various changes.  Such as my change to reduce the dentry
+lock contention when a process is removed from proc.  I have the feeling
+that made a real world improvement on your test (as the lock no longer
+shows up in your profile). Unfortunately whatever that improvement was
+it was not relfected in now you read your numbers.
+
+Eric
