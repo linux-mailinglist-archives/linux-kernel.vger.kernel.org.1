@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671EA201319
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9CF20148C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405427AbgFSP45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:56:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51870 "EHLO mail.kernel.org"
+        id S2392783AbgFSQMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:12:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392729AbgFSPUl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:20:41 -0400
+        id S2391279AbgFSPFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:05:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE4AE2158C;
-        Fri, 19 Jun 2020 15:20:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67DFA2158C;
+        Fri, 19 Jun 2020 15:05:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580040;
-        bh=33ZDvHlQc00OB0CJgYlSRR916gOSJ6m8QEZNoV3TUug=;
+        s=default; t=1592579118;
+        bh=4pE8+PNcvK4GnzoSUksYHGxNU3R67AZ0H5Q/i/iqWuo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ef5X37e16f/avD5ryqCvY0r4unIitB17D/fKe0nJAhKT5J+A+W2rcfe7Vuq/W/Jlv
-         tourJ92kdm9o1tjtq3ean9ibXg9T5uH1wzZCREquBCx3Mj0WeztUxjwx8LDGnfcv/E
-         PsirQM887fK/WH8dBYelU/iuocOkbnN+GTDRidPQ=
+        b=Oz+i+z2oXmgWKjfOI94d7qic74H1eTdFTCYjSkhuePQDzL65y3EV65p+w3scmsqUo
+         ejCwh6T+LlyrPYnWxAyTbmgAyskbQI0cQhnq11+9oNcTNa80kr4X4MYzE+dg9nxhcE
+         Iz0J3mZerjbx6OQxlzuqCfx9BU7EjeT67cX1R1Js=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, teroincn@gmail.com,
-        Richard Guy Briggs <rgb@redhat.com>,
-        Paul Moore <paul@paul-moore.com>,
+        stable@vger.kernel.org, Evan Green <evgreen@chromium.org>,
+        Shobhit Srivastava <shobhit.srivastava@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 099/376] audit: fix a net reference leak in audit_send_reply()
-Date:   Fri, 19 Jun 2020 16:30:17 +0200
-Message-Id: <20200619141715.034279275@linuxfoundation.org>
+Subject: [PATCH 5.4 015/261] spi: pxa2xx: Apply CS clk quirk to BXT
+Date:   Fri, 19 Jun 2020 16:30:26 +0200
+Message-Id: <20200619141650.601878825@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
-References: <20200619141710.350494719@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,112 +46,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Moore <paul@paul-moore.com>
+From: Evan Green <evgreen@chromium.org>
 
-[ Upstream commit a48b284b403a4a073d8beb72d2bb33e54df67fb6 ]
+[ Upstream commit 6eefaee4f2d366a389da0eb95e524ba82bf358c4 ]
 
-If audit_send_reply() fails when trying to create a new thread to
-send the reply it also fails to cleanup properly, leaking a reference
-to a net structure.  This patch fixes the error path and makes a
-handful of other cleanups that came up while fixing the code.
+With a couple allies at Intel, and much badgering, I got confirmation
+from Intel that at least BXT suffers from the same SPI chip-select
+issue as Cannonlake (and beyond). The issue being that after going
+through runtime suspend/resume, toggling the chip-select line without
+also sending data does nothing.
 
-Reported-by: teroincn@gmail.com
-Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Add the quirk to BXT to briefly toggle dynamic clock gating off and
+on, forcing the fabric to wake up enough to notice the CS register
+change.
+
+Signed-off-by: Evan Green <evgreen@chromium.org>
+Cc: Shobhit Srivastava <shobhit.srivastava@intel.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20200427163238.1.Ib1faaabe236e37ea73be9b8dcc6aa034cb3c8804@changeid
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/audit.c | 50 +++++++++++++++++++++++++++++---------------------
- 1 file changed, 29 insertions(+), 21 deletions(-)
+ drivers/spi/spi-pxa2xx.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/kernel/audit.c b/kernel/audit.c
-index 87f31bf1f0a0..033b14712340 100644
---- a/kernel/audit.c
-+++ b/kernel/audit.c
-@@ -924,19 +924,30 @@ out_kfree_skb:
- 	return NULL;
- }
- 
-+static void audit_free_reply(struct audit_reply *reply)
-+{
-+	if (!reply)
-+		return;
-+
-+	if (reply->skb)
-+		kfree_skb(reply->skb);
-+	if (reply->net)
-+		put_net(reply->net);
-+	kfree(reply);
-+}
-+
- static int audit_send_reply_thread(void *arg)
- {
- 	struct audit_reply *reply = (struct audit_reply *)arg;
--	struct sock *sk = audit_get_sk(reply->net);
- 
- 	audit_ctl_lock();
- 	audit_ctl_unlock();
- 
- 	/* Ignore failure. It'll only happen if the sender goes away,
- 	   because our timeout is set to infinite. */
--	netlink_unicast(sk, reply->skb, reply->portid, 0);
--	put_net(reply->net);
--	kfree(reply);
-+	netlink_unicast(audit_get_sk(reply->net), reply->skb, reply->portid, 0);
-+	reply->skb = NULL;
-+	audit_free_reply(reply);
- 	return 0;
- }
- 
-@@ -950,35 +961,32 @@ static int audit_send_reply_thread(void *arg)
-  * @payload: payload data
-  * @size: payload size
-  *
-- * Allocates an skb, builds the netlink message, and sends it to the port id.
-- * No failure notifications.
-+ * Allocates a skb, builds the netlink message, and sends it to the port id.
-  */
- static void audit_send_reply(struct sk_buff *request_skb, int seq, int type, int done,
- 			     int multi, const void *payload, int size)
- {
--	struct net *net = sock_net(NETLINK_CB(request_skb).sk);
--	struct sk_buff *skb;
- 	struct task_struct *tsk;
--	struct audit_reply *reply = kmalloc(sizeof(struct audit_reply),
--					    GFP_KERNEL);
-+	struct audit_reply *reply;
- 
-+	reply = kzalloc(sizeof(*reply), GFP_KERNEL);
- 	if (!reply)
- 		return;
- 
--	skb = audit_make_reply(seq, type, done, multi, payload, size);
--	if (!skb)
--		goto out;
--
--	reply->net = get_net(net);
-+	reply->skb = audit_make_reply(seq, type, done, multi, payload, size);
-+	if (!reply->skb)
-+		goto err;
-+	reply->net = get_net(sock_net(NETLINK_CB(request_skb).sk));
- 	reply->portid = NETLINK_CB(request_skb).portid;
--	reply->skb = skb;
- 
- 	tsk = kthread_run(audit_send_reply_thread, reply, "audit_send_reply");
--	if (!IS_ERR(tsk))
--		return;
--	kfree_skb(skb);
--out:
--	kfree(reply);
-+	if (IS_ERR(tsk))
-+		goto err;
-+
-+	return;
-+
-+err:
-+	audit_free_reply(reply);
- }
- 
- /*
+diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
+index d0d6f1bda1b6..7f4285e2ae68 100644
+--- a/drivers/spi/spi-pxa2xx.c
++++ b/drivers/spi/spi-pxa2xx.c
+@@ -148,6 +148,7 @@ static const struct lpss_config lpss_platforms[] = {
+ 		.tx_threshold_hi = 48,
+ 		.cs_sel_shift = 8,
+ 		.cs_sel_mask = 3 << 8,
++		.cs_clk_stays_gated = true,
+ 	},
+ 	{	/* LPSS_CNL_SSP */
+ 		.offset = 0x200,
 -- 
 2.25.1
 
