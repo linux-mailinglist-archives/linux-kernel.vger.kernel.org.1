@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D347C200C46
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3C4200CE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388485AbgFSOng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:43:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33938 "EHLO mail.kernel.org"
+        id S2389370AbgFSOuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:50:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388426AbgFSOnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:43:01 -0400
+        id S2388565AbgFSOud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:50:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD26520A8B;
-        Fri, 19 Jun 2020 14:43:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DEC0E2166E;
+        Fri, 19 Jun 2020 14:50:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577781;
-        bh=1xAaCVxK8UayJNyozzHJ59syAeYGo1c7dgfEqh4ALZE=;
+        s=default; t=1592578233;
+        bh=Zl35wCPdR6TlYziZIdihY+3fGlog9FY38U1LOAbiZak=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q7OFPws6+niE4MxtO2y615X043EJAamrxgHS8U9Mmb+gInF8i9ZrCBEqRn14yKG22
-         TYK8XKObNkFTIrKx19jIZT1PvolFfXc1imZwjWKf7B5zS9ZQs+xjaGcio2O+t4PPV0
-         CYUmu+lr12Lhwp1z87JTQv2vgFs7TXluy/qXxfcY=
+        b=AYOmf4PFpQMuMs5zS8r3q91fC59urI7bGc2R+Td4B3sU/qh9heMhQJiLsYEImLw7n
+         8P3Kps9g0iX53r3zAFmhWUDNEZcBeUESvyWiCohpaB99yLi8yRp8SRjJMzG6PRryAS
+         8yd01lYSgglr3U6WjOOgFU+Cbykqm7rWOjbkGjR4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 085/128] x86/boot: Correct relocation destination on old linkers
-Date:   Fri, 19 Jun 2020 16:32:59 +0200
-Message-Id: <20200619141624.641677744@linuxfoundation.org>
+        stable@vger.kernel.org, Haibo Chen <haibo.chen@nxp.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 135/190] mmc: sdhci-esdhc-imx: fix the mask for tuning start point
+Date:   Fri, 19 Jun 2020 16:33:00 +0200
+Message-Id: <20200619141640.377207625@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
-References: <20200619141620.148019466@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,112 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arvind Sankar <nivedita@alum.mit.edu>
+From: Haibo Chen <haibo.chen@nxp.com>
 
-[ Upstream commit 5214028dd89e49ba27007c3ee475279e584261f0 ]
+[ Upstream commit 1194be8c949b8190b2882ad8335a5d98aa50c735 ]
 
-For the 32-bit kernel, as described in
+According the RM, the bit[6~0] of register ESDHC_TUNING_CTRL is
+TUNING_START_TAP, bit[7] of this register is to disable the command
+CRC check for standard tuning. So fix it here.
 
-  6d92bc9d483a ("x86/build: Build compressed x86 kernels as PIE"),
-
-pre-2.26 binutils generates R_386_32 relocations in PIE mode. Since the
-startup code does not perform relocation, any reloc entry with R_386_32
-will remain as 0 in the executing code.
-
-Commit
-
-  974f221c84b0 ("x86/boot: Move compressed kernel to the end of the
-                 decompression buffer")
-
-added a new symbol _end but did not mark it hidden, which doesn't give
-the correct offset on older linkers. This causes the compressed kernel
-to be copied beyond the end of the decompression buffer, rather than
-flush against it. This region of memory may be reserved or already
-allocated for other purposes by the bootloader.
-
-Mark _end as hidden to fix. This changes the relocation from R_386_32 to
-R_386_RELATIVE even on the pre-2.26 binutils.
-
-For 64-bit, this is not strictly necessary, as the 64-bit kernel is only
-built as PIE if the linker supports -z noreloc-overflow, which implies
-binutils-2.27+, but for consistency, mark _end as hidden here too.
-
-The below illustrates the before/after impact of the patch using
-binutils-2.25 and gcc-4.6.4 (locally compiled from source) and QEMU.
-
-  Disassembly before patch:
-    48:   8b 86 60 02 00 00       mov    0x260(%esi),%eax
-    4e:   2d 00 00 00 00          sub    $0x0,%eax
-                          4f: R_386_32    _end
-  Disassembly after patch:
-    48:   8b 86 60 02 00 00       mov    0x260(%esi),%eax
-    4e:   2d 00 f0 76 00          sub    $0x76f000,%eax
-                          4f: R_386_RELATIVE      *ABS*
-
-Dump from extract_kernel before patch:
-	early console in extract_kernel
-	input_data: 0x0207c098 <--- this is at output + init_size
-	input_len: 0x0074fef1
-	output: 0x01000000
-	output_len: 0x00fa63d0
-	kernel_total_size: 0x0107c000
-	needed_size: 0x0107c000
-
-Dump from extract_kernel after patch:
-	early console in extract_kernel
-	input_data: 0x0190d098 <--- this is at output + init_size - _end
-	input_len: 0x0074fef1
-	output: 0x01000000
-	output_len: 0x00fa63d0
-	kernel_total_size: 0x0107c000
-	needed_size: 0x0107c000
-
-Fixes: 974f221c84b0 ("x86/boot: Move compressed kernel to the end of the decompression buffer")
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200207214926.3564079-1-nivedita@alum.mit.edu
+Fixes: d87fc9663688 ("mmc: sdhci-esdhc-imx: support setting tuning start point")
+Signed-off-by: Haibo Chen <haibo.chen@nxp.com>
+Link: https://lore.kernel.org/r/1590488522-9292-1-git-send-email-haibo.chen@nxp.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/boot/compressed/head_32.S | 5 +++--
- arch/x86/boot/compressed/head_64.S | 1 +
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ drivers/mmc/host/sdhci-esdhc-imx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/boot/compressed/head_32.S b/arch/x86/boot/compressed/head_32.S
-index 7532f6f53677..93f41b4f05ce 100644
---- a/arch/x86/boot/compressed/head_32.S
-+++ b/arch/x86/boot/compressed/head_32.S
-@@ -48,16 +48,17 @@
-  * Position Independent Executable (PIE) so that linker won't optimize
-  * R_386_GOT32X relocation to its fixed symbol address.  Older
-  * linkers generate R_386_32 relocations against locally defined symbols,
-- * _bss, _ebss, _got and _egot, in PIE.  It isn't wrong, just less
-+ * _bss, _ebss, _got, _egot and _end, in PIE.  It isn't wrong, just less
-  * optimal than R_386_RELATIVE.  But the x86 kernel fails to properly handle
-  * R_386_32 relocations when relocating the kernel.  To generate
-- * R_386_RELATIVE relocations, we mark _bss, _ebss, _got and _egot as
-+ * R_386_RELATIVE relocations, we mark _bss, _ebss, _got, _egot and _end as
-  * hidden:
-  */
- 	.hidden _bss
- 	.hidden _ebss
- 	.hidden _got
- 	.hidden _egot
-+	.hidden _end
+diff --git a/drivers/mmc/host/sdhci-esdhc-imx.c b/drivers/mmc/host/sdhci-esdhc-imx.c
+index 8c0b80a54e4d..6d1ac9443eb2 100644
+--- a/drivers/mmc/host/sdhci-esdhc-imx.c
++++ b/drivers/mmc/host/sdhci-esdhc-imx.c
+@@ -79,7 +79,7 @@
+ #define ESDHC_STD_TUNING_EN		(1 << 24)
+ /* NOTE: the minimum valid tuning start tap for mx6sl is 1 */
+ #define ESDHC_TUNING_START_TAP_DEFAULT	0x1
+-#define ESDHC_TUNING_START_TAP_MASK	0xff
++#define ESDHC_TUNING_START_TAP_MASK	0x7f
+ #define ESDHC_TUNING_STEP_MASK		0x00070000
+ #define ESDHC_TUNING_STEP_SHIFT		16
  
- 	__HEAD
- ENTRY(startup_32)
-diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
-index 3fac2d133e4e..d096bcfcb3f6 100644
---- a/arch/x86/boot/compressed/head_64.S
-+++ b/arch/x86/boot/compressed/head_64.S
-@@ -40,6 +40,7 @@
- 	.hidden _ebss
- 	.hidden _got
- 	.hidden _egot
-+	.hidden _end
- 
- 	__HEAD
- 	.code32
 -- 
 2.25.1
 
