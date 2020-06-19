@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB3452013B6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D46A2014D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:21:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394204AbgFSQC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:02:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42492 "EHLO mail.kernel.org"
+        id S2390808AbgFSPCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:02:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389334AbgFSPMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:12:03 -0400
+        id S2390715AbgFSPBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:01:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D03E721582;
-        Fri, 19 Jun 2020 15:12:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FBB620734;
+        Fri, 19 Jun 2020 15:01:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579523;
-        bh=sQCGaHUVaHf+GWzff8ZEtx+CvwPUXeVR5flvh2xAops=;
+        s=default; t=1592578890;
+        bh=gIfZMGZem2W05Cjy5nXcdrpBntSc1KU60HG6biDtdV8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g/c7kwkJayWRIGdzT8enA6inGT7iD/ca6ZceUB23vqRa+dgjwZ0VcrsY4E7m4v23k
-         Hiyvt1zIIMO2+2DTcE8WXrx5ZdT/2vmr2W/5i/VNKRrryzkigC9+txw9ZJXpMw2G7b
-         pMXy77/WwwbHEYbBMV62RkPA7JeH1zQVCUAqOJm0=
+        b=q6/esZGrkf94+7OSnV2dLoQVtxFGoW3JKhwNoa5vZKqv52sA+gfaAXs31k9Ehpj7k
+         Mf0kKc0AUL72vnT92+XocMpKhA+cKjSwXE1nkeUlHizPfRoXZVl5mBVL+6OWSWf24a
+         POvIOSOLysLHpJR3GPk10N+gGKiLhpkwt668bmZ8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 168/261] powerpc/mm: Fix conditions to perform MMU specific management by blocks on PPC32.
-Date:   Fri, 19 Jun 2020 16:32:59 +0200
-Message-Id: <20200619141657.960878504@linuxfoundation.org>
+        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+        Theodore Tso <tytso@mit.edu>, stable@kernel.org
+Subject: [PATCH 4.19 196/267] ext4: fix EXT_MAX_EXTENT/INDEX to check for zeroed eh_max
+Date:   Fri, 19 Jun 2020 16:33:01 +0200
+Message-Id: <20200619141658.156666851@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +44,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-commit 4e3319c23a66dabfd6c35f4d2633d64d99b68096 upstream.
+commit c36a71b4e35ab35340facdd6964a00956b9fef0a upstream.
 
-Setting init mem to NX shall depend on sinittext being mapped by
-block, not on stext being mapped by block.
+If eh->eh_max is 0, EXT_MAX_EXTENT/INDEX would evaluate to unsigned
+(-1) resulting in illegal memory accesses. Although there is no
+consistent repro, we see that generic/019 sometimes crashes because of
+this bug.
 
-Setting text and rodata to RO shall depend on stext being mapped by
-block, not on sinittext being mapped by block.
+Ran gce-xfstests smoke and verified that there were no regressions.
 
-Fixes: 63b2bc619565 ("powerpc/mm/32s: Use BATs for STRICT_KERNEL_RWX")
-Cc: stable@vger.kernel.org
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/7d565fb8f51b18a3d98445a830b2f6548cb2da2a.1589866984.git.christophe.leroy@csgroup.eu
+Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Link: https://lore.kernel.org/r/20200421023959.20879-2-harshadshirwadkar@gmail.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/mm/pgtable_32.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/ext4/ext4_extents.h |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
---- a/arch/powerpc/mm/pgtable_32.c
-+++ b/arch/powerpc/mm/pgtable_32.c
-@@ -207,7 +207,7 @@ void mark_initmem_nx(void)
- 	unsigned long numpages = PFN_UP((unsigned long)_einittext) -
- 				 PFN_DOWN((unsigned long)_sinittext);
+--- a/fs/ext4/ext4_extents.h
++++ b/fs/ext4/ext4_extents.h
+@@ -157,10 +157,13 @@ struct ext4_ext_path {
+ 	(EXT_FIRST_EXTENT((__hdr__)) + le16_to_cpu((__hdr__)->eh_entries) - 1)
+ #define EXT_LAST_INDEX(__hdr__) \
+ 	(EXT_FIRST_INDEX((__hdr__)) + le16_to_cpu((__hdr__)->eh_entries) - 1)
+-#define EXT_MAX_EXTENT(__hdr__) \
+-	(EXT_FIRST_EXTENT((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)
++#define EXT_MAX_EXTENT(__hdr__)	\
++	((le16_to_cpu((__hdr__)->eh_max)) ? \
++	((EXT_FIRST_EXTENT((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)) \
++					: 0)
+ #define EXT_MAX_INDEX(__hdr__) \
+-	(EXT_FIRST_INDEX((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)
++	((le16_to_cpu((__hdr__)->eh_max)) ? \
++	((EXT_FIRST_INDEX((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)) : 0)
  
--	if (v_block_mapped((unsigned long)_stext + 1))
-+	if (v_block_mapped((unsigned long)_sinittext))
- 		mmu_mark_initmem_nx();
- 	else
- 		change_page_attr(page, numpages, PAGE_KERNEL);
-@@ -219,7 +219,7 @@ void mark_rodata_ro(void)
- 	struct page *page;
- 	unsigned long numpages;
- 
--	if (v_block_mapped((unsigned long)_sinittext)) {
-+	if (v_block_mapped((unsigned long)_stext + 1)) {
- 		mmu_mark_rodata_ro();
- 		ptdump_check_wx();
- 		return;
+ static inline struct ext4_extent_header *ext_inode_hdr(struct inode *inode)
+ {
 
 
