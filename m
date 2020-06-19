@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F6120127F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 888102010E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392568AbgFSPWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:22:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46326 "EHLO mail.kernel.org"
+        id S2404790AbgFSPff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:35:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35754 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404046AbgFSPPq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:15:46 -0400
+        id S2404596AbgFSPbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:31:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A45CD2080C;
-        Fri, 19 Jun 2020 15:15:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF3D120734;
+        Fri, 19 Jun 2020 15:31:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579746;
-        bh=dCNKZt2vzXQyX7n5Z8K3XEJ/qwtJSmWy73gkWpZ/lnA=;
+        s=default; t=1592580703;
+        bh=tJeVrSk1Su6rLW8kR1sodkhPQpUas+QA2YDQF5pVEBQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MdqCAf2RdzrcVynMY2ZGp8ESyGJJYgiXP8vQjv611k98m2o4513PTAVOyF07J3tk8
-         UVNVZHcQ+rb0S2rqXG/3m8mxAkqphBOR2S8LrfYBbrv2Tg8xWmm+AkcCmItRNAZdOJ
-         QpA1QULaLOwRqJwyp9P23pTwHfdnFmELLZqw3Qs4=
+        b=FshqMaFVm1APfeajB11oOcaBXEzQxxkHAMxqkCqUitktBy1Bdy3UHI+e/fHv6WLq1
+         x6NNcylJu5GvWEQ3oH6KCwL9ZSVyS5X/xDyOuquUo5eIGyrAuAnV596QfGKPNafgxT
+         nClmxH70YOsQAQipZ3BkGCUCjtNPkkISi4b1IhPM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.4 249/261] mtd: rawnand: oxnas: Fix the probe error path
-Date:   Fri, 19 Jun 2020 16:34:20 +0200
-Message-Id: <20200619141701.822430425@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.7 343/376] powerpc/64s: Save FSCR to init_task.thread.fscr after feature init
+Date:   Fri, 19 Jun 2020 16:34:21 +0200
+Message-Id: <20200619141726.569869659@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
+References: <20200619141710.350494719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,49 +42,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-commit 154298e2a3f6c9ce1d76cdb48d89fd5b107ea1a3 upstream.
+commit 912c0a7f2b5daa3cbb2bc10f303981e493de73bd upstream.
 
-nand_release() is supposed be called after MTD device registration.
-Here, only nand_scan() happened, so use nand_cleanup() instead.
+At boot the FSCR is initialised via one of two paths. On most systems
+it's set to a hard coded value in __init_FSCR().
 
-While at it, be consistent and move the function call in the error
-path thanks to a goto statement.
+On newer skiboot systems we use the device tree CPU features binding,
+where firmware can tell Linux what bits to set in FSCR (and HFSCR).
 
-Fixes: 668592492409 ("mtd: nand: Add OX820 NAND Support")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-37-miquel.raynal@bootlin.com
+In both cases the value that's configured at boot is not propagated
+into the init_task.thread.fscr value prior to the initial fork of init
+(pid 1), which means the value is not used by any processes other than
+swapper (the idle task).
+
+For the __init_FSCR() case this is OK, because the value in
+init_task.thread.fscr is initialised to something sensible. However it
+does mean that the value set in __init_FSCR() is not used other than
+for swapper, which is odd and confusing.
+
+The bigger problem is for the device tree CPU features case it
+prevents firmware from setting (or clearing) FSCR bits for use by user
+space. This means all existing kernels can not have features
+enabled/disabled by firmware if those features require
+setting/clearing FSCR bits.
+
+We can handle both cases by saving the FSCR value into
+init_task.thread.fscr after we have initialised it at boot. This fixes
+the bug for device tree CPU features, and will allow us to simplify
+the initialisation for the __init_FSCR() case in a future patch.
+
+Fixes: 5a61ef74f269 ("powerpc/64s: Support new device tree binding for discovering CPU features")
+Cc: stable@vger.kernel.org # v4.12+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200527145843.2761782-3-mpe@ellerman.id.au
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/raw/oxnas_nand.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/powerpc/kernel/prom.c |   19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
---- a/drivers/mtd/nand/raw/oxnas_nand.c
-+++ b/drivers/mtd/nand/raw/oxnas_nand.c
-@@ -140,10 +140,8 @@ static int oxnas_nand_probe(struct platf
- 			goto err_release_child;
+--- a/arch/powerpc/kernel/prom.c
++++ b/arch/powerpc/kernel/prom.c
+@@ -685,6 +685,23 @@ static void __init tm_init(void)
+ static void tm_init(void) { }
+ #endif /* CONFIG_PPC_TRANSACTIONAL_MEM */
  
- 		err = mtd_device_register(mtd, NULL, 0);
--		if (err) {
--			nand_release(chip);
--			goto err_release_child;
--		}
-+		if (err)
-+			goto err_cleanup_nand;
++#ifdef CONFIG_PPC64
++static void __init save_fscr_to_task(void)
++{
++	/*
++	 * Ensure the init_task (pid 0, aka swapper) uses the value of FSCR we
++	 * have configured via the device tree features or via __init_FSCR().
++	 * That value will then be propagated to pid 1 (init) and all future
++	 * processes.
++	 */
++	if (early_cpu_has_feature(CPU_FTR_ARCH_207S))
++		init_task.thread.fscr = mfspr(SPRN_FSCR);
++}
++#else
++static inline void save_fscr_to_task(void) {};
++#endif
++
++
+ void __init early_init_devtree(void *params)
+ {
+ 	phys_addr_t limit;
+@@ -773,6 +790,8 @@ void __init early_init_devtree(void *par
+ 		BUG();
+ 	}
  
- 		oxnas->chips[nchips] = chip;
- 		++nchips;
-@@ -159,6 +157,8 @@ static int oxnas_nand_probe(struct platf
- 
- 	return 0;
- 
-+err_cleanup_nand:
-+	nand_cleanup(chip);
- err_release_child:
- 	of_node_put(nand_np);
- err_clk_unprepare:
++	save_fscr_to_task();
++
+ #if defined(CONFIG_SMP) && defined(CONFIG_PPC64)
+ 	/* We'll later wait for secondaries to check in; there are
+ 	 * NCPUS-1 non-boot CPUs  :-)
 
 
