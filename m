@@ -2,75 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6DC01FFFE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 03:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE5C1FFFD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 03:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730802AbgFSBsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 21:48:16 -0400
-Received: from mga06.intel.com ([134.134.136.31]:64031 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730721AbgFSBsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 21:48:10 -0400
-IronPort-SDR: +vDIEhDAY+/5FQ0zpCSS3R6wydWp6mKp4DkBZoOxawngmkRxMfO4WAZHLOW579rXklZo9jQwZW
- tyzLIMcLxe/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="204278285"
-X-IronPort-AV: E=Sophos;i="5.75,253,1589266800"; 
-   d="scan'208";a="204278285"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Jun 2020 18:48:08 -0700
-IronPort-SDR: NSGholFvFMBmxixUb0YMHh6vRYAvcj7n7nvTlfvsWuaIUWJQ0N7eEVbDP9oO0rcrR0fLWkqv80
- 5MrEQcqqDRbw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,253,1589266800"; 
-   d="scan'208";a="263746077"
-Received: from yilunxu-optiplex-7050.sh.intel.com ([10.239.159.141])
-  by fmsmga008.fm.intel.com with ESMTP; 18 Jun 2020 18:48:04 -0700
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     broonie@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, yilun.xu@intel.com, hao.wu@intel.com,
-        matthew.gerlach@linux.intel.com, russell.h.weight@intel.com
-Subject: [RESEND PATCH v2 3/3] spi: altera: fix size mismatch on 64 bit processors
-Date:   Fri, 19 Jun 2020 09:43:41 +0800
-Message-Id: <1592531021-11412-4-git-send-email-yilun.xu@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1592531021-11412-1-git-send-email-yilun.xu@intel.com>
-References: <1592531021-11412-1-git-send-email-yilun.xu@intel.com>
+        id S1730656AbgFSBo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 21:44:56 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:46132 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728765AbgFSBoz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 18 Jun 2020 21:44:55 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 8EC574B4AE2FF67EA064;
+        Fri, 19 Jun 2020 09:44:53 +0800 (CST)
+Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
+ (10.3.19.212) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 19 Jun
+ 2020 09:44:50 +0800
+Subject: Re: [PATCH 1/5] f2fs: fix to wait page writeback before update
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20200618063625.110273-1-yuchao0@huawei.com>
+ <20200618235932.GA227771@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <f5bbb14b-52a0-9697-a8fe-c3e39f78b0a5@huawei.com>
+Date:   Fri, 19 Jun 2020 09:44:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <20200618235932.GA227771@google.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.134.22.195]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matthew Gerlach <matthew.gerlach@linux.intel.com>
+Hi Jaegeuk,
 
-The spi-altera driver was originally written with a 32
-bit processor, where sizeof(unsigned long) is 4.  On a
-64 bit processor sizeof(unsigned long) is 8.  Change the structure
-member to u32 to match the actual size of the control
-register.
+On 2020/6/19 7:59, Jaegeuk Kim wrote:
+> Hi Chao,
+> 
+> On 06/18, Chao Yu wrote:
+>> to make page content stable for special device like raid.
+> 
+> Could you elaborate the problem a bit?
 
-Signed-off-by: Matthew Gerlach <matthew.gerlach@linux.intel.com>
-Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-Reviewed-by : Tom Rix <trix@redhat.com>
----
- drivers/spi/spi-altera.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Some devices like raid5 wants page content to be stable, because
+it will calculate parity info based page content, if page is not
+stable, parity info could be corrupted, result in data inconsistency
+in stripe.
 
-diff --git a/drivers/spi/spi-altera.c b/drivers/spi/spi-altera.c
-index 4f7717f..d91c093 100644
---- a/drivers/spi/spi-altera.c
-+++ b/drivers/spi/spi-altera.c
-@@ -53,7 +53,7 @@ struct altera_spi {
- 	int len;
- 	int count;
- 	int bytes_per_word;
--	unsigned long imr;
-+	u32 imr;
- 
- 	/* data buffers */
- 	const unsigned char *tx;
--- 
-2.7.4
+Thanks,
 
+> 
+>>
+>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>> ---
+>>  fs/f2fs/dir.c          |  2 ++
+>>  fs/f2fs/extent_cache.c | 18 +++++++++---------
+>>  fs/f2fs/f2fs.h         |  2 +-
+>>  fs/f2fs/file.c         |  1 +
+>>  fs/f2fs/inline.c       |  2 ++
+>>  fs/f2fs/inode.c        |  3 +--
+>>  6 files changed, 16 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+>> index d35976785e8c..91e86747a604 100644
+>> --- a/fs/f2fs/dir.c
+>> +++ b/fs/f2fs/dir.c
+>> @@ -495,6 +495,8 @@ static int make_empty_dir(struct inode *inode,
+>>  	if (IS_ERR(dentry_page))
+>>  		return PTR_ERR(dentry_page);
+>>  
+>> +	f2fs_bug_on(F2FS_I_SB(inode), PageWriteback(dentry_page));
+>> +
+>>  	dentry_blk = page_address(dentry_page);
+>>  
+>>  	make_dentry_ptr_block(NULL, &d, dentry_blk);
+>> diff --git a/fs/f2fs/extent_cache.c b/fs/f2fs/extent_cache.c
+>> index e60078460ad1..686c68b98610 100644
+>> --- a/fs/f2fs/extent_cache.c
+>> +++ b/fs/f2fs/extent_cache.c
+>> @@ -325,9 +325,10 @@ static void __drop_largest_extent(struct extent_tree *et,
+>>  }
+>>  
+>>  /* return true, if inode page is changed */
+>> -static bool __f2fs_init_extent_tree(struct inode *inode, struct f2fs_extent *i_ext)
+>> +static void __f2fs_init_extent_tree(struct inode *inode, struct page *ipage)
+>>  {
+>>  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>> +	struct f2fs_extent *i_ext = ipage ? &F2FS_INODE(ipage)->i_ext : NULL;
+>>  	struct extent_tree *et;
+>>  	struct extent_node *en;
+>>  	struct extent_info ei;
+>> @@ -335,16 +336,18 @@ static bool __f2fs_init_extent_tree(struct inode *inode, struct f2fs_extent *i_e
+>>  	if (!f2fs_may_extent_tree(inode)) {
+>>  		/* drop largest extent */
+>>  		if (i_ext && i_ext->len) {
+>> +			f2fs_wait_on_page_writeback(ipage, NODE, true, true);
+>>  			i_ext->len = 0;
+>> -			return true;
+>> +			set_page_dirty(ipage);
+>> +			return;
+>>  		}
+>> -		return false;
+>> +		return;
+>>  	}
+>>  
+>>  	et = __grab_extent_tree(inode);
+>>  
+>>  	if (!i_ext || !i_ext->len)
+>> -		return false;
+>> +		return;
+>>  
+>>  	get_extent_info(&ei, i_ext);
+>>  
+>> @@ -360,17 +363,14 @@ static bool __f2fs_init_extent_tree(struct inode *inode, struct f2fs_extent *i_e
+>>  	}
+>>  out:
+>>  	write_unlock(&et->lock);
+>> -	return false;
+>>  }
+>>  
+>> -bool f2fs_init_extent_tree(struct inode *inode, struct f2fs_extent *i_ext)
+>> +void f2fs_init_extent_tree(struct inode *inode, struct page *ipage)
+>>  {
+>> -	bool ret =  __f2fs_init_extent_tree(inode, i_ext);
+>> +	__f2fs_init_extent_tree(inode, ipage);
+>>  
+>>  	if (!F2FS_I(inode)->extent_tree)
+>>  		set_inode_flag(inode, FI_NO_EXTENT);
+>> -
+>> -	return ret;
+>>  }
+>>  
+>>  static bool f2fs_lookup_extent_tree(struct inode *inode, pgoff_t pgofs,
+>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>> index b35a50f4953c..326c12fa0da5 100644
+>> --- a/fs/f2fs/f2fs.h
+>> +++ b/fs/f2fs/f2fs.h
+>> @@ -3795,7 +3795,7 @@ struct rb_entry *f2fs_lookup_rb_tree_ret(struct rb_root_cached *root,
+>>  bool f2fs_check_rb_tree_consistence(struct f2fs_sb_info *sbi,
+>>  						struct rb_root_cached *root);
+>>  unsigned int f2fs_shrink_extent_tree(struct f2fs_sb_info *sbi, int nr_shrink);
+>> -bool f2fs_init_extent_tree(struct inode *inode, struct f2fs_extent *i_ext);
+>> +void f2fs_init_extent_tree(struct inode *inode, struct page *ipage);
+>>  void f2fs_drop_extent_tree(struct inode *inode);
+>>  unsigned int f2fs_destroy_extent_node(struct inode *inode);
+>>  void f2fs_destroy_extent_tree(struct inode *inode);
+>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>> index 3268f8dd59bb..1862073b96d2 100644
+>> --- a/fs/f2fs/file.c
+>> +++ b/fs/f2fs/file.c
+>> @@ -1250,6 +1250,7 @@ static int __clone_blkaddrs(struct inode *src_inode, struct inode *dst_inode,
+>>  				f2fs_put_page(psrc, 1);
+>>  				return PTR_ERR(pdst);
+>>  			}
+>> +			f2fs_wait_on_page_writeback(pdst, DATA, true, true);
+>>  			f2fs_copy_page(psrc, pdst);
+>>  			set_page_dirty(pdst);
+>>  			f2fs_put_page(pdst, 1);
+>> diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
+>> index dbade310dc79..4bcbc486c9e2 100644
+>> --- a/fs/f2fs/inline.c
+>> +++ b/fs/f2fs/inline.c
+>> @@ -340,6 +340,8 @@ int f2fs_make_empty_inline_dir(struct inode *inode, struct inode *parent,
+>>  	struct f2fs_dentry_ptr d;
+>>  	void *inline_dentry;
+>>  
+>> +	f2fs_wait_on_page_writeback(ipage, NODE, true, true);
+>> +
+>>  	inline_dentry = inline_data_addr(inode, ipage);
+>>  
+>>  	make_dentry_ptr_inline(inode, &d, inline_dentry);
+>> diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
+>> index 44582a4db513..7c156eb26dd7 100644
+>> --- a/fs/f2fs/inode.c
+>> +++ b/fs/f2fs/inode.c
+>> @@ -367,8 +367,7 @@ static int do_read_inode(struct inode *inode)
+>>  	fi->i_pino = le32_to_cpu(ri->i_pino);
+>>  	fi->i_dir_level = ri->i_dir_level;
+>>  
+>> -	if (f2fs_init_extent_tree(inode, &ri->i_ext))
+>> -		set_page_dirty(node_page);
+>> +	f2fs_init_extent_tree(inode, node_page);
+>>  
+>>  	get_inline_info(inode, ri);
+>>  
+>> -- 
+>> 2.18.0.rc1
+> .
+> 
