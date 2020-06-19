@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6E35200F4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED86F200EF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392210AbgFSPPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:15:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45310 "EHLO mail.kernel.org"
+        id S2392236AbgFSPNU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:13:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43756 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403994AbgFSPOn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:14:43 -0400
+        id S2392228AbgFSPNR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:13:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95D812158C;
-        Fri, 19 Jun 2020 15:14:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BA7F2186A;
+        Fri, 19 Jun 2020 15:13:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579682;
-        bh=p2jw80gpeprbwb+sbNCz+wHG6cb6m77m/gxL8Y2sdS4=;
+        s=default; t=1592579595;
+        bh=Tvwl5KMWf58W27xLm36nCuNflFaquZ3v5+Y2lG6so7Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A4MEAgVAN9CMZQT4Q9g9OBRiAaSvs5bxP6C50Mztlu8E9cFAUArNTu6dKrQB9xUAt
-         uFKyVlg2jTMs0Q93fmdyOx7pW620Uk2mo7Nqy689YGRExyttycaYEXdynh63Wf3SO4
-         UnYEaW77Au6fzYD+ddfo7T3HRdb3OfSvy4NjTmJI=
+        b=hxGsvrElLt4vPhiqa12+gy+Et2UaEQMtoeVMeRuwRw5vUp9quJIWxEm3Ih4MLqLfy
+         cszCQjkVRU6it9nzBoS0P/jh5fMfaGInXas1xAa8XF9aGOY3Zw3YiyU36p1AckvY4W
+         66Wpxuc7dUjzAZes1UFt7SmtxUrLXOz4vKKT/vNY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kevin Buettner <kevinb@redhat.com>,
+        stable@vger.kernel.org, Darrel Goeddel <dgoeddel@forcepoint.com>,
+        Ashok Raj <ashok.raj@intel.com>,
         Bjorn Helgaas <bhelgaas@google.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 186/261] PCI: Avoid FLR for AMD Starship USB 3.0
-Date:   Fri, 19 Jun 2020 16:33:17 +0200
-Message-Id: <20200619141658.828145534@linuxfoundation.org>
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Romil Sharma <rsharma@forcepoint.com>,
+        Sasha Levin <sashal@kernel.org>,
+        Mark Scott <mscott@forcepoint.com>
+Subject: [PATCH 5.4 187/261] PCI: Add ACS quirk for Intel Root Complex Integrated Endpoints
+Date:   Fri, 19 Jun 2020 16:33:18 +0200
+Message-Id: <20200619141658.871667220@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
 References: <20200619141649.878808811@linuxfoundation.org>
@@ -44,67 +49,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kevin Buettner <kevinb@redhat.com>
+From: Ashok Raj <ashok.raj@intel.com>
 
-[ Upstream commit 5727043c73fdfe04597971b5f3f4850d879c1f4f ]
+[ Upstream commit 3247bd10a4502a3075ce8e1c3c7d31ef76f193ce ]
 
-The AMD Starship USB 3.0 host controller advertises Function Level Reset
-support, but it apparently doesn't work.  Add a quirk to prevent use of FLR
-on this device.
+All Intel platforms guarantee that all root complex implementations must
+send transactions up to IOMMU for address translations. Hence for Intel
+RCiEP devices, we can assume some ACS-type isolation even without an ACS
+capability.
 
-Without this quirk, when attempting to assign (pass through) an AMD
-Starship USB 3.0 host controller to a guest OS, the system becomes
-increasingly unresponsive over the course of several minutes, eventually
-requiring a hard reset.  Shortly after attempting to start the guest, I see
-these messages:
+>From the Intel VT-d spec, r3.1, sec 3.16 ("Root-Complex Peer to Peer
+Considerations"):
 
-  vfio-pci 0000:05:00.3: not ready 1023ms after FLR; waiting
-  vfio-pci 0000:05:00.3: not ready 2047ms after FLR; waiting
-  vfio-pci 0000:05:00.3: not ready 4095ms after FLR; waiting
-  vfio-pci 0000:05:00.3: not ready 8191ms after FLR; waiting
+  When DMA remapping is enabled, peer-to-peer requests through the
+  Root-Complex must be handled as follows:
 
-And then eventually:
+  - The input address in the request is translated (through first-level,
+    second-level or nested translation) to a host physical address (HPA).
+    The address decoding for peer addresses must be done only on the
+    translated HPA. Hardware implementations are free to further limit
+    peer-to-peer accesses to specific host physical address regions (or
+    to completely disallow peer-forwarding of translated requests).
 
-  vfio-pci 0000:05:00.3: not ready 65535ms after FLR; giving up
-  INFO: NMI handler (perf_event_nmi_handler) took too long to run: 0.000 msecs
-  perf: interrupt took too long (642744 > 2500), lowering kernel.perf_event_max_sample_rate to 1000
-  INFO: NMI handler (perf_event_nmi_handler) took too long to run: 82.270 msecs
-  INFO: NMI handler (perf_event_nmi_handler) took too long to run: 680.608 msecs
-  INFO: NMI handler (perf_event_nmi_handler) took too long to run: 100.952 msecs
-  ...
-  watchdog: BUG: soft lockup - CPU#3 stuck for 22s! [qemu-system-x86:7487]
+  - Since address translation changes the contents (address field) of
+    the PCI Express Transaction Layer Packet (TLP), for PCI Express
+    peer-to-peer requests with ECRC, the Root-Complex hardware must use
+    the new ECRC (re-computed with the translated address) if it
+    decides to forward the TLP as a peer request.
 
-Tested on a Micro-Star International Co., Ltd. MS-7C59/Creator TRX40
-motherboard with an AMD Ryzen Threadripper 3970X.
+  - Root-ports, and multi-function root-complex integrated endpoints, may
+    support additional peer-to-peer control features by supporting PCI
+    Express Access Control Services (ACS) capability. Refer to ACS
+    capability in PCI Express specifications for details.
 
-Link: https://lore.kernel.org/r/20200524003529.598434ff@f31-4.lan
-Signed-off-by: Kevin Buettner <kevinb@redhat.com>
+Since Linux didn't give special treatment to allow this exception, certain
+RCiEP MFD devices were grouped in a single IOMMU group. This doesn't permit
+a single device to be assigned to a guest for instance.
+
+In one vendor system: Device 14.x were grouped in a single IOMMU group.
+
+  /sys/kernel/iommu_groups/5/devices/0000:00:14.0
+  /sys/kernel/iommu_groups/5/devices/0000:00:14.2
+  /sys/kernel/iommu_groups/5/devices/0000:00:14.3
+
+After this patch:
+
+  /sys/kernel/iommu_groups/5/devices/0000:00:14.0
+  /sys/kernel/iommu_groups/5/devices/0000:00:14.2
+  /sys/kernel/iommu_groups/6/devices/0000:00:14.3 <<< new group
+
+14.0 and 14.2 are integrated devices, but legacy end points, whereas 14.3
+was a PCIe-compliant RCiEP.
+
+  00:14.3 Network controller: Intel Corporation Device 9df0 (rev 30)
+    Capabilities: [40] Express (v2) Root Complex Integrated Endpoint, MSI 00
+
+This permits assigning this device to a guest VM.
+
+[bhelgaas: drop "Fixes" tag since this doesn't fix a bug in that commit]
+Link: https://lore.kernel.org/r/1590699462-7131-1-git-send-email-ashok.raj@intel.com
+Tested-by: Darrel Goeddel <dgoeddel@forcepoint.com>
+Signed-off-by: Ashok Raj <ashok.raj@intel.com>
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
+Cc: stable@vger.kernel.org
+Cc: Lu Baolu <baolu.lu@linux.intel.com>
+Cc: Mark Scott <mscott@forcepoint.com>,
+Cc: Romil Sharma <rsharma@forcepoint.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/pci/quirks.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index ba3b114dcfa9..d59a735927f7 100644
+index d59a735927f7..a1ec8a1977d3 100644
 --- a/drivers/pci/quirks.c
 +++ b/drivers/pci/quirks.c
-@@ -5134,6 +5134,7 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x443, quirk_intel_qat_vf_cap);
-  * FLR may cause the following to devices to hang:
-  *
-  * AMD Starship/Matisse HD Audio Controller 0x1487
-+ * AMD Starship USB 3.0 Host Controller 0x148c
-  * AMD Matisse USB 3.0 Host Controller 0x149c
-  * Intel 82579LM Gigabit Ethernet Controller 0x1502
-  * Intel 82579V Gigabit Ethernet Controller 0x1503
-@@ -5144,6 +5145,7 @@ static void quirk_no_flr(struct pci_dev *dev)
- 	dev->dev_flags |= PCI_DEV_FLAGS_NO_FLR_RESET;
+@@ -4683,6 +4683,20 @@ static int pci_quirk_mf_endpoint_acs(struct pci_dev *dev, u16 acs_flags)
+ 		PCI_ACS_CR | PCI_ACS_UF | PCI_ACS_DT);
  }
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_AMD, 0x1487, quirk_no_flr);
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_AMD, 0x148c, quirk_no_flr);
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_AMD, 0x149c, quirk_no_flr);
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x1502, quirk_no_flr);
- DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x1503, quirk_no_flr);
+ 
++static int pci_quirk_rciep_acs(struct pci_dev *dev, u16 acs_flags)
++{
++	/*
++	 * Intel RCiEP's are required to allow p2p only on translated
++	 * addresses.  Refer to Intel VT-d specification, r3.1, sec 3.16,
++	 * "Root-Complex Peer to Peer Considerations".
++	 */
++	if (pci_pcie_type(dev) != PCI_EXP_TYPE_RC_END)
++		return -ENOTTY;
++
++	return pci_acs_ctrl_enabled(acs_flags,
++		PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
++}
++
+ static int pci_quirk_brcm_acs(struct pci_dev *dev, u16 acs_flags)
+ {
+ 	/*
+@@ -4765,6 +4779,7 @@ static const struct pci_dev_acs_enabled {
+ 	/* I219 */
+ 	{ PCI_VENDOR_ID_INTEL, 0x15b7, pci_quirk_mf_endpoint_acs },
+ 	{ PCI_VENDOR_ID_INTEL, 0x15b8, pci_quirk_mf_endpoint_acs },
++	{ PCI_VENDOR_ID_INTEL, PCI_ANY_ID, pci_quirk_rciep_acs },
+ 	/* QCOM QDF2xxx root ports */
+ 	{ PCI_VENDOR_ID_QCOM, 0x0400, pci_quirk_qcom_rp_acs },
+ 	{ PCI_VENDOR_ID_QCOM, 0x0401, pci_quirk_qcom_rp_acs },
 -- 
 2.25.1
 
