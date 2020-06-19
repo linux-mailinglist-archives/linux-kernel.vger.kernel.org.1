@@ -2,151 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9457B1FFF24
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 02:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C19291FFF22
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 02:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728186AbgFSAHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 20:07:19 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:57062 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726001AbgFSAHS (ORCPT
+        id S1728053AbgFSAEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 20:04:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726001AbgFSAEo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 20:07:18 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.90_1)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jm4Yr-0005eM-GX; Thu, 18 Jun 2020 18:07:13 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1jm4Ym-0006Uh-Qy; Thu, 18 Jun 2020 18:07:13 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Junxiao Bi <junxiao.bi@oracle.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <matthew.wilcox@oracle.com>,
-        Srinivas Eeda <SRINIVAS.EEDA@oracle.com>,
-        "joe.jin\@oracle.com" <joe.jin@oracle.com>
-References: <54091fc0-ca46-2186-97a8-d1f3c4f3877b@oracle.com>
-        <20200618233958.GV8681@bombadil.infradead.org>
-Date:   Thu, 18 Jun 2020 19:02:51 -0500
-In-Reply-To: <20200618233958.GV8681@bombadil.infradead.org> (Matthew Wilcox's
-        message of "Thu, 18 Jun 2020 16:39:58 -0700")
-Message-ID: <877dw3apn8.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 18 Jun 2020 20:04:44 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01E48C06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 17:04:43 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id z2so3900820qts.5
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 17:04:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ToOKmDB0PPlZ1lu0LM+fM2rdv8qIzF7rQ+sQoWFmjGI=;
+        b=sQvQZoEkT662SPlpHgB3FFL4yhbCTg5Y+NSGXlU7FgJJpjM25AHSYRrVRyH/iAmbbp
+         d9qHKQ5lpxE71wiwHBCW0IhDp6nz2SwmSdXLcDBlKmhEPLdUZ6zU9uzJHhmse2UgoTpy
+         RpdluSqxUFPKNPQgAI8xZRd3GQlkq2EYjYcq0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ToOKmDB0PPlZ1lu0LM+fM2rdv8qIzF7rQ+sQoWFmjGI=;
+        b=V/CFH4av1u3pSPWbfqcH8Exdfurn4r1Fjwa/K+T/Gfsybe7Ntyjhy7W4Ejf8VwuB+o
+         sOgaQUoEP/t3Ee+Mp/cfl9BEuh6UQEbu3D3tWD1hD4DiEraKqw6ueHi7MhXUJjxQo44U
+         ST/aOsNWuop8A5s4sTg0cKDqdAZrdyB9QXTmvS5v12T9w7VtBo41Q76VIOkWFSD7mzBS
+         VED0yzRd1wkuhbQznmY2RsduvP7IbFUmdnv7zue+a0N2QJ6LBqohNXpY/rcKat7+Wkvj
+         a05cHPPO2AuPFv6aDfGQOunEQ+zBrRzSHsUDc1KZ71F6IDMkwbrPYK3ZiV+GOLq2GJ//
+         fBWg==
+X-Gm-Message-State: AOAM530gVfHah+2Wo0O7UWKiLii9zHuLmzNy0ue53WnXF0YO87cmD3Vu
+        jeXDP42xjVIeRdj2wXIIuoiUxw==
+X-Google-Smtp-Source: ABdhPJxkk3n6HaOUEBrNDyh45U7Jx5SnXX3VnaWxE9yIszQJWi2vaqY5WD2xk/axxaYBiQ51wrtskg==
+X-Received: by 2002:ac8:7383:: with SMTP id t3mr897637qtp.221.1592525082724;
+        Thu, 18 Jun 2020 17:04:42 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id g132sm4317806qkb.78.2020.06.18.17.04.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jun 2020 17:04:42 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 20:04:41 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, urezki@gmail.com,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH 1/7] rcu/segcblist: Prevent useless GP start if no CBs to
+ accelerate
+Message-ID: <20200619000441.GE40119@google.com>
+References: <20200618202955.4024-1-joel@joelfernandes.org>
+ <20200618221119.GX2723@paulmck-ThinkPad-P72>
+ <20200618230934.GA31937@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1jm4Ym-0006Uh-Qy;;;mid=<877dw3apn8.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19NVkE1QwlpS7bOnHbUSF8lVHt7TQQejhQ=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4693]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Matthew Wilcox <willy@infradead.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 4221 ms - load_scoreonly_sql: 0.06 (0.0%),
-        signal_user_changed: 11 (0.3%), b_tie_ro: 10 (0.2%), parse: 1.05
-        (0.0%), extract_message_metadata: 25 (0.6%), get_uri_detail_list: 8
-        (0.2%), tests_pri_-1000: 6 (0.2%), tests_pri_-950: 1.59 (0.0%),
-        tests_pri_-900: 1.18 (0.0%), tests_pri_-90: 196 (4.6%), check_bayes:
-        194 (4.6%), b_tokenize: 12 (0.3%), b_tok_get_all: 23 (0.5%),
-        b_comp_prob: 3.7 (0.1%), b_tok_touch_all: 150 (3.6%), b_finish: 1.26
-        (0.0%), tests_pri_0: 264 (6.3%), check_dkim_signature: 0.66 (0.0%),
-        check_dkim_adsp: 2.6 (0.1%), poll_dns_idle: 3682 (87.3%),
-        tests_pri_10: 2.4 (0.1%), tests_pri_500: 3707 (87.8%), rewrite_mail:
-        0.00 (0.0%)
-Subject: Re: severe proc dentry lock contention
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200618230934.GA31937@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Matthew Wilcox <willy@infradead.org> writes:
+On Thu, Jun 18, 2020 at 04:09:34PM -0700, Paul E. McKenney wrote:
+> On Thu, Jun 18, 2020 at 03:11:19PM -0700, Paul E. McKenney wrote:
+> > On Thu, Jun 18, 2020 at 04:29:49PM -0400, Joel Fernandes (Google) wrote:
+> > 
+> > First, this looks like a very nice optimization, thank you!
 
-> On Thu, Jun 18, 2020 at 03:17:33PM -0700, Junxiao Bi wrote:
->> When debugging some performance issue, i found that thousands of threads
->> exit around same time could cause a severe spin lock contention on proc
->> dentry "/proc/$parent_process_pid/task/", that's because threads needs to
->> clean up their pid file from that dir when exit. Check the following
->> standalone test case that simulated the case and perf top result on v5.7
->> kernel. Any idea on how to fix this?
+Thanks!
 
->
-> Thanks, Junxiao.
->
-> We've looked at a few different ways of fixing this problem.
->
-> Even though the contention is within the dcache, it seems like a usecase
-> that the dcache shouldn't be optimised for -- generally we do not have
-> hundreds of CPUs removing dentries from a single directory in parallel.
->
-> We could fix this within procfs.  We don't have a great patch yet, but
-> the current approach we're looking at allows only one thread at a time
-> to call dput() on any /proc/*/task directory.
->
-> We could also look at fixing this within the scheduler.  Only allowing
-> one CPU to run the threads of an exiting process would fix this particular
-> problem, but might have other consequences.
->
-> I was hoping that 7bc3e6e55acf would fix this, but that patch is in 5.7,
-> so that hope is ruled out.
+> > > Cc: urezki@gmail.com
+> > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> 
+> As discussed over IRC, I updated the patch as shown below.  Does that
+> work for you?
 
-Does anyone know if problem new in v5.7?  I am wondering if I introduced
-this problem when I refactored the code or if I simply churned the code
-but the issue remains effectively the same.
+Yes, that works for me. Thanks!
 
-Can you try only flushing entries when the last thread of the process is
-reaped?  I think in practice we would want to be a little more
-sophisticated but it is a good test case to see if it solves the issue.
+ - Joel
 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index cebae77a9664..d56e4eb60bdd 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -152,7 +152,7 @@ void put_task_struct_rcu_user(struct task_struct *task)
- void release_task(struct task_struct *p)
- {
- 	struct task_struct *leader;
--	struct pid *thread_pid;
-+	struct pid *thread_pid = NULL;
- 	int zap_leader;
- repeat:
- 	/* don't need to get the RCU readlock here - the process is dead and
-@@ -165,7 +165,8 @@ void release_task(struct task_struct *p)
- 
- 	write_lock_irq(&tasklist_lock);
- 	ptrace_release_task(p);
--	thread_pid = get_pid(p->thread_pid);
-+	if (p == p->group_leader)
-+		thread_pid = get_pid(p->thread_pid);
- 	__exit_signal(p);
- 
- 	/*
-@@ -188,8 +189,10 @@ void release_task(struct task_struct *p)
- 	}
- 
- 	write_unlock_irq(&tasklist_lock);
--	proc_flush_pid(thread_pid);
--	put_pid(thread_pid);
-+	if (thread_pid) {
-+		proc_flush_pid(thread_pid);
-+		put_pid(thread_pid);
-+	}
- 	release_thread(p);
- 	put_task_struct_rcu_user(p);
- 
+
+> 							Thanx, Paul
+> 
+> ------------------------------------------------------------------------
+> 
+> commit ec037e1f438074eb16fd68a63d699fc419c9ba0c
+> Author: Joel Fernandes (Google) <joel@joelfernandes.org>
+> Date:   Thu Jun 18 16:29:49 2020 -0400
+> 
+>     rcu/segcblist: Prevent useless GP start if no CBs to accelerate
+>     
+>     The rcu_segcblist_accelerate() function returns true iff it is necessary
+>     to request another grace period.  A tracing session showed that this
+>     function unnecessarily requests grace periods.
+>     
+>     For exmaple, consider the following sequence of events:
+>     1. Callbacks are queued only on the NEXT segment of CPU A's callback list.
+>     2. CPU A runs RCU_SOFTIRQ, accelerating these callbacks from NEXT to WAIT.
+>     3. Thus rcu_segcblist_accelerate() returns true, requesting grace period N.
+>     4. RCU's grace-period kthread wakes up on CPU B and starts grace period N.
+>     4. CPU A notices the new grace period and invokes RCU_SOFTIRQ.
+>     5. CPU A's RCU_SOFTIRQ again invokes rcu_segcblist_accelerate(), but
+>        there are no new callbacks.  However, rcu_segcblist_accelerate()
+>        nevertheless (uselessly) requests a new grace period N+1.
+>     
+>     This extra grace period results in additional lock contention and also
+>     additional wakeups, all for no good reason.
+>     
+>     This commit therefore adds a check to rcu_segcblist_accelerate() that
+>     prevents the return of true when there are no new callbacks.
+>     
+>     This change reduces the number of grace periods (GPs) and wakeups in each
+>     of eleven five-second rcutorture runs as follows:
+>     
+>     +----+-------------------+-------------------+
+>     | #  | Number of GPs     | Number of Wakeups |
+>     +====+=========+=========+=========+=========+
+>     | 1  | With    | Without | With    | Without |
+>     +----+---------+---------+---------+---------+
+>     | 2  |      75 |      89 |     113 |     119 |
+>     +----+---------+---------+---------+---------+
+>     | 3  |      62 |      91 |     105 |     123 |
+>     +----+---------+---------+---------+---------+
+>     | 4  |      60 |      79 |      98 |     110 |
+>     +----+---------+---------+---------+---------+
+>     | 5  |      63 |      79 |      99 |     112 |
+>     +----+---------+---------+---------+---------+
+>     | 6  |      57 |      89 |      96 |     123 |
+>     +----+---------+---------+---------+---------+
+>     | 7  |      64 |      85 |      97 |     118 |
+>     +----+---------+---------+---------+---------+
+>     | 8  |      58 |      83 |      98 |     113 |
+>     +----+---------+---------+---------+---------+
+>     | 9  |      57 |      77 |      89 |     104 |
+>     +----+---------+---------+---------+---------+
+>     | 10 |      66 |      82 |      98 |     119 |
+>     +----+---------+---------+---------+---------+
+>     | 11 |      52 |      82 |      83 |     117 |
+>     +----+---------+---------+---------+---------+
+>     
+>     The reduction in the number of wakeups ranges from 5% to 40%.
+>     
+>     Cc: urezki@gmail.com
+>     [ paulmck: Rework commit log and comment. ]
+>     Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> index 9a0f661..2d2a6b6b9 100644
+> --- a/kernel/rcu/rcu_segcblist.c
+> +++ b/kernel/rcu/rcu_segcblist.c
+> @@ -475,8 +475,16 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
+>  	 * Also advance to the oldest segment of callbacks whose
+>  	 * ->gp_seq[] completion is at or after that passed in via "seq",
+>  	 * skipping any empty segments.
+> +	 *
+> +	 * Note that segment "i" (and any lower-numbered segments
+> +	 * containing older callbacks) will be unaffected, and their
+> +	 * grace-period numbers remain unchanged.  For example, if i ==
+> +	 * WAIT_TAIL, then neither WAIT_TAIL nor DONE_TAIL will be touched.
+> +	 * Instead, the CBs in NEXT_TAIL will be merged with those in
+> +	 * NEXT_READY_TAIL and the grace-period number of NEXT_READY_TAIL
+> +	 * would be updated.  NEXT_TAIL would then be empty.
+>  	 */
+> -	if (++i >= RCU_NEXT_TAIL)
+> +	if (rcu_segcblist_restempty(rsclp, i) || ++i >= RCU_NEXT_TAIL)
+>  		return false;
+>  
+>  	/*
