@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D46A2014D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 026A42013B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390808AbgFSPCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:02:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57924 "EHLO mail.kernel.org"
+        id S2404252AbgFSQCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:02:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42576 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390715AbgFSPBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:01:30 -0400
+        id S2389919AbgFSPML (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:12:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9FBB620734;
-        Fri, 19 Jun 2020 15:01:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A0CE21582;
+        Fri, 19 Jun 2020 15:12:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578890;
-        bh=gIfZMGZem2W05Cjy5nXcdrpBntSc1KU60HG6biDtdV8=;
+        s=default; t=1592579531;
+        bh=BCMxLLUVL/GAQayZQJbT4GVwOVpnytU/QSFr1+km1qY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=q6/esZGrkf94+7OSnV2dLoQVtxFGoW3JKhwNoa5vZKqv52sA+gfaAXs31k9Ehpj7k
-         Mf0kKc0AUL72vnT92+XocMpKhA+cKjSwXE1nkeUlHizPfRoXZVl5mBVL+6OWSWf24a
-         POvIOSOLysLHpJR3GPk10N+gGKiLhpkwt668bmZ8=
+        b=O6qtEL5iSWelMfVg+Q5Yzt2s7qG64Xru2txE2hFVo8gapFNKySnlQ2Krf2SXPpSU6
+         EUCeUoKQ3HcqWquw4+DVL+4UZ3Lc0/JXwRRDZtRHCSfW60xwDmAaTywV+43E02+Gg1
+         ajIQVZTHV636yE44m6YdvzhhKhvjj8hJC2fCx/M0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        Theodore Tso <tytso@mit.edu>, stable@kernel.org
-Subject: [PATCH 4.19 196/267] ext4: fix EXT_MAX_EXTENT/INDEX to check for zeroed eh_max
-Date:   Fri, 19 Jun 2020 16:33:01 +0200
-Message-Id: <20200619141658.156666851@linuxfoundation.org>
+        stable@vger.kernel.org, Lichao Liu <liulichao@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 5.4 171/261] MIPS: CPU_LOONGSON2EF need software to maintain cache consistency
+Date:   Fri, 19 Jun 2020 16:33:02 +0200
+Message-Id: <20200619141658.101258010@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,45 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+From: Lichao Liu <liulichao@loongson.cn>
 
-commit c36a71b4e35ab35340facdd6964a00956b9fef0a upstream.
+commit a202bf71f08b3ef15356db30535e30b03cf23aec upstream.
 
-If eh->eh_max is 0, EXT_MAX_EXTENT/INDEX would evaluate to unsigned
-(-1) resulting in illegal memory accesses. Although there is no
-consistent repro, we see that generic/019 sometimes crashes because of
-this bug.
+CPU_LOONGSON2EF need software to maintain cache consistency,
+so modify the 'cpu_needs_post_dma_flush' function to return true
+when the cpu type is CPU_LOONGSON2EF.
 
-Ran gce-xfstests smoke and verified that there were no regressions.
-
-Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Link: https://lore.kernel.org/r/20200421023959.20879-2-harshadshirwadkar@gmail.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Lichao Liu <liulichao@loongson.cn>
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- fs/ext4/ext4_extents.h |    9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ arch/mips/mm/dma-noncoherent.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/ext4/ext4_extents.h
-+++ b/fs/ext4/ext4_extents.h
-@@ -157,10 +157,13 @@ struct ext4_ext_path {
- 	(EXT_FIRST_EXTENT((__hdr__)) + le16_to_cpu((__hdr__)->eh_entries) - 1)
- #define EXT_LAST_INDEX(__hdr__) \
- 	(EXT_FIRST_INDEX((__hdr__)) + le16_to_cpu((__hdr__)->eh_entries) - 1)
--#define EXT_MAX_EXTENT(__hdr__) \
--	(EXT_FIRST_EXTENT((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)
-+#define EXT_MAX_EXTENT(__hdr__)	\
-+	((le16_to_cpu((__hdr__)->eh_max)) ? \
-+	((EXT_FIRST_EXTENT((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)) \
-+					: 0)
- #define EXT_MAX_INDEX(__hdr__) \
--	(EXT_FIRST_INDEX((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)
-+	((le16_to_cpu((__hdr__)->eh_max)) ? \
-+	((EXT_FIRST_INDEX((__hdr__)) + le16_to_cpu((__hdr__)->eh_max) - 1)) : 0)
- 
- static inline struct ext4_extent_header *ext_inode_hdr(struct inode *inode)
- {
+--- a/arch/mips/mm/dma-noncoherent.c
++++ b/arch/mips/mm/dma-noncoherent.c
+@@ -33,6 +33,7 @@ static inline bool cpu_needs_post_dma_fl
+ 	case CPU_R10000:
+ 	case CPU_R12000:
+ 	case CPU_BMIPS5000:
++	case CPU_LOONGSON2EF:
+ 		return true;
+ 	default:
+ 		/*
 
 
