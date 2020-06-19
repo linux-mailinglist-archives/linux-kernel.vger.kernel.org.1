@@ -2,106 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A67D2014B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DA6201465
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394444AbgFSQOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:14:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390422AbgFSPDy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:03:54 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90BD2C06174E;
-        Fri, 19 Jun 2020 08:03:54 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id o26so7901835edq.0;
-        Fri, 19 Jun 2020 08:03:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5ADrT7jFFeW309LoBL3RGIrTXmJjwCmJqXAIhYbchGM=;
-        b=MnrHb+bhJPIiNHeaCS8a/fPwOI6wld7b4KlPZ/oOMUF1zVfizNxUckSlCB9snRURSK
-         XzbrQM04uoK4hVMgFJuCq6xAqaGH9he+9+BmJvbRtPy7JD90CBG0/Ut8Kgszpie4M5fT
-         RZJDv+1XgM+fTfk67GkWVuvYpc84l7+E2xupZasgfuHwokTqnMpTmdNGDIMaxaiOhzRq
-         xwhEGmNzE8AMGlUD/gDuw8YkDsoFXC8nBY4G62nHezapFTsIECYROvYVuQW2yXWcNpgt
-         vsDouCqgOkmOLyP21fqBslVrlg9EJyrRAH9gUt9EXeo13gSdim3xku8UW9kfb4qMPyxH
-         8azg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5ADrT7jFFeW309LoBL3RGIrTXmJjwCmJqXAIhYbchGM=;
-        b=BVJfp3D5J9H/q5IGUPrkbKsWNtN0qV72NjrqHOYjN6BqgSu/dZ+uz+AxPGoc0W64/n
-         DOQtvziWBmopQroSxXa1XnhMZ087tiKtt5qlAIAWs1Y3G5wy/YOErFH2M8NDvli4mxBg
-         8vSWJ+SZKMZ0p5f+7THyDA/MFJrYrRjP0+xWtv0VZfGUiHTzLip+sZZftf7VtZUQz0wb
-         SPfcG1mTVEUVNTAD5VSrlzvDWtqbgOWFhNeoFs3eLmJvIZ4mhYUQIILsVZRkyQJ3Fxzq
-         GlQT2ss9gLPtDcIFVDkbhgJ74GNiX3Y5sJAcWSik+upbeP9Bp87TfQ1l2aTp17ttcy3J
-         Gprg==
-X-Gm-Message-State: AOAM531H25o0KRHyUuvavk2zjtjL4j96F1rHkeRJkrVML2p31gzEfIKL
-        h0Ls5T7ESKtmpYdfAm+sPeg=
-X-Google-Smtp-Source: ABdhPJz9sH1kJUPVEXJrf2QSDqlJenKhQdl0OzUME2Zssy3LTJ1qNCFvxtzlOKQSUuWKycy8K6RLMg==
-X-Received: by 2002:a50:f289:: with SMTP id f9mr3714154edm.188.1592579033304;
-        Fri, 19 Jun 2020 08:03:53 -0700 (PDT)
-Received: from ubuntu-laptop ([2a01:598:9900:aeb5:e489:2676:2097:fdba])
-        by smtp.googlemail.com with ESMTPSA id h9sm4929016ejc.96.2020.06.19.08.03.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 19 Jun 2020 08:03:52 -0700 (PDT)
-Message-ID: <dc0c3bcf8b77b838316a0c4a53fdddaa476dd0dc.camel@gmail.com>
-Subject: Re: [RFC PATCH ] scsi: remove scsi_sdb_cache
-From:   Bean Huo <huobean@gmail.com>
-To:     Bart Van Assche <bvanassche@acm.org>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     beanhuo@micron.com
-Date:   Fri, 19 Jun 2020 17:03:47 +0200
-In-Reply-To: <acdceada-b183-e41a-8645-aa3716b55236@acm.org>
-References: <20200619131042.10759-1-huobean@gmail.com>
-         <acdceada-b183-e41a-8645-aa3716b55236@acm.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S2394294AbgFSQJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:09:49 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:40200 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391500AbgFSPG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:06:57 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49pMbJ5SR2z9v09n;
+        Fri, 19 Jun 2020 17:06:52 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id HWsNtuMNdH_C; Fri, 19 Jun 2020 17:06:52 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49pMbJ4gGDz9v09j;
+        Fri, 19 Jun 2020 17:06:52 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A1ECC8B87B;
+        Fri, 19 Jun 2020 17:06:54 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 9KI_eDtvs7VY; Fri, 19 Jun 2020 17:06:54 +0200 (CEST)
+Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5E0178B879;
+        Fri, 19 Jun 2020 17:06:54 +0200 (CEST)
+Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 2FD8265AF4; Fri, 19 Jun 2020 15:06:54 +0000 (UTC)
+Message-Id: <c634cadd3ef2c9667838c4fe2bd425a72c8fcbd5.1592578278.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1592578278.git.christophe.leroy@csgroup.eu>
+References: <cover.1592578278.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v1 3/8] powerpc: Set user/kernel boundary at TASK_SIZE instead
+ of PAGE_OFFSET
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri, 19 Jun 2020 15:06:54 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bart
+User space stops at TASK_SIZE. At the moment, kernel space starts
+at PAGE_OFFSET.
 
-Thanks.
+In order to use space between TASK_SIZE and PAGE_OFFSET for modules,
+make TASK_SIZE the limit between user and kernel space.
 
-On Fri, 2020-06-19 at 07:31 -0700, Bart Van Assche wrote:
-> On 2020-06-19 06:10, Bean Huo wrote:
-> > @@ -2039,7 +2024,6 @@ scsi_mode_select(struct scsi_device *sdev,
-> > int pf, int sp, int modepage,
-> >  		real_buffer[1] = data->medium_type;
-> >  		real_buffer[2] = data->device_specific;
-> >  		real_buffer[3] = data->block_descriptor_length;
-> > -	
-Here delete a blank line since there are multiple blank lines.
-> > 	
-> >  
-> >  		cmd[0] = MODE_SELECT;
-> >  		cmd[4] = len;
-> > @@ -2227,7 +2211,7 @@ scsi_device_set_state(struct scsi_device
-> > *sdev, enum scsi_device_state state)
-> >  			goto illegal;
-> >  		}
-> >  		break;
-> > -			
-> > +
+Note that fault.c already considers TASK_SIZE as the boundary between
+user and kernel space.
 
-Here has trailing whitespace, delete it.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/page.h | 2 +-
+ arch/powerpc/mm/ptdump/ptdump.c | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-> >  	case SDEV_RUNNING:
-> >  		switch (oldstate) {
-> >  		case SDEV_CREATED:
-> 
-> If these whitespace changes are left out, feel free to add:
-> 
-> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-
-Bean
+diff --git a/arch/powerpc/include/asm/page.h b/arch/powerpc/include/asm/page.h
+index a63fe6f3a0ff..352a2b80d505 100644
+--- a/arch/powerpc/include/asm/page.h
++++ b/arch/powerpc/include/asm/page.h
+@@ -256,7 +256,7 @@ static inline bool pfn_valid(unsigned long pfn)
+ #ifdef CONFIG_PPC_BOOK3E_64
+ #define is_kernel_addr(x)	((x) >= 0x8000000000000000ul)
+ #else
+-#define is_kernel_addr(x)	((x) >= PAGE_OFFSET)
++#define is_kernel_addr(x)	((x) >= TASK_SIZE)
+ #endif
+ 
+ #ifndef CONFIG_PPC_BOOK3S_64
+diff --git a/arch/powerpc/mm/ptdump/ptdump.c b/arch/powerpc/mm/ptdump/ptdump.c
+index b71cc628facd..e995f2e9e9f7 100644
+--- a/arch/powerpc/mm/ptdump/ptdump.c
++++ b/arch/powerpc/mm/ptdump/ptdump.c
+@@ -351,7 +351,7 @@ static void populate_markers(void)
+ {
+ 	int i = 0;
+ 
+-	address_markers[i++].start_address = PAGE_OFFSET;
++	address_markers[i++].start_address = TASK_SIZE;
+ 	address_markers[i++].start_address = VMALLOC_START;
+ 	address_markers[i++].start_address = VMALLOC_END;
+ #ifdef CONFIG_PPC64
+@@ -388,7 +388,7 @@ static int ptdump_show(struct seq_file *m, void *v)
+ 	struct pg_state st = {
+ 		.seq = m,
+ 		.marker = address_markers,
+-		.start_address = PAGE_OFFSET,
++		.start_address = TASK_SIZE,
+ 	};
+ 
+ #ifdef CONFIG_PPC64
+@@ -432,7 +432,7 @@ void ptdump_check_wx(void)
+ 		.seq = NULL,
+ 		.marker = address_markers,
+ 		.check_wx = true,
+-		.start_address = PAGE_OFFSET,
++		.start_address = TASK_SIZE,
+ 	};
+ 
+ #ifdef CONFIG_PPC64
+-- 
+2.25.0
 
