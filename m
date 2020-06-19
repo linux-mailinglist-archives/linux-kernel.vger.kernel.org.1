@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A3C201560
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B15BD2013C5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405656AbgFSQVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:21:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57224 "EHLO mail.kernel.org"
+        id S2393591AbgFSQDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:03:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389916AbgFSPAm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:00:42 -0400
+        id S2403826AbgFSPL1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:11:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7843F20776;
-        Fri, 19 Jun 2020 15:00:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1591720776;
+        Fri, 19 Jun 2020 15:11:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578843;
-        bh=Sm4YAHp4XHC6EZVqJn8u3pcBxKj++XEdR2o40i8kAAo=;
+        s=default; t=1592579486;
+        bh=56jubeqSvCe5abxjdH8iGRYSrHs+X6XVvwqLUlx67Zo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rGbEibRfXroAXQho9l/quOtYpLHPcKNefQjxXtoRmYodwB7OjzWZG+1RD/mPXYs07
-         CP64nhNw1WicXyCNe4l0kvI+Gqscf77RUQ8Cg8+j/NEfv4ZKuh0FSr2lHgZp4PvLf7
-         +P+9jtTmyGZLorEmFZNPk9J9ImVzGhJKXDJzWkBM=
+        b=NkxCDdfAHs1XAu+5yW84g3L0k7MljfwEKkjztRhtal3Vx3H+vvekViF8YWGc12OWo
+         Z0vw9M5Gby9w+ZNXGM5QnTpV67jQW9GI0v6os/9OicuiKwWv7GuBrpzAI9/gV8pZFM
+         8Yasf+4v6V2GOOVLt1IX5PXE2JVMpgup4sdf9kYY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
+        stable@vger.kernel.org, Chris Chiu <chiu@endlessm.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 177/267] mmc: sdhci-msm: Set SDHCI_QUIRK_MULTIBLOCK_READ_ACMD12 quirk
-Date:   Fri, 19 Jun 2020 16:32:42 +0200
-Message-Id: <20200619141657.281096252@linuxfoundation.org>
+Subject: [PATCH 5.4 152/261] platform/x86: asus_wmi: Reserve more space for struct bias_args
+Date:   Fri, 19 Jun 2020 16:32:43 +0200
+Message-Id: <20200619141657.166997708@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,37 +45,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
+From: Chris Chiu <chiu@endlessm.com>
 
-[ Upstream commit d863cb03fb2aac07f017b2a1d923cdbc35021280 ]
+[ Upstream commit 7b91f1565fbfbe5a162d91f8a1f6c5580c2fc1d0 ]
 
-sdhci-msm can support auto cmd12.
-So enable SDHCI_QUIRK_MULTIBLOCK_READ_ACMD12 quirk.
+On the ASUS laptop UX325JA/UX425JA, most of the media keys are not
+working due to the ASUS WMI driver fails to be loaded. The ACPI error
+as follows leads to the failure of asus_wmi_evaluate_method.
+  ACPI BIOS Error (bug): AE_AML_BUFFER_LIMIT, Field [IIA3] at bit offset/length 96/32 exceeds size of target Buffer (96 bits) (20200326/dsopcode-203)
+  No Local Variables are initialized for Method [WMNB]
+  ACPI Error: Aborting method \_SB.ATKD.WMNB due to previous error (AE_AML_BUFFER_LIMIT) (20200326/psparse-531)
 
-Signed-off-by: Veerabhadrarao Badiganti <vbadigan@codeaurora.org>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-Link: https://lore.kernel.org/r/1587363626-20413-3-git-send-email-vbadigan@codeaurora.org
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+The DSDT for the WMNB part shows that 5 DWORD required for local
+variables and the 3rd variable IIA3 hit the buffer limit.
+
+Method (WMNB, 3, Serialized)
+{ ..
+    CreateDWordField (Arg2, Zero, IIA0)
+    CreateDWordField (Arg2, 0x04, IIA1)
+    CreateDWordField (Arg2, 0x08, IIA2)
+    CreateDWordField (Arg2, 0x0C, IIA3)
+    CreateDWordField (Arg2, 0x10, IIA4)
+    Local0 = (Arg1 & 0xFFFFFFFF)
+    If ((Local0 == 0x54494E49))
+  ..
+}
+
+The limitation is determined by the input acpi_buffer size passed
+to the wmi_evaluate_method. Since the struct bios_args is the data
+structure used as input buffer by default for all ASUS WMI calls,
+the size needs to be expanded to fix the problem.
+
+Signed-off-by: Chris Chiu <chiu@endlessm.com>
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mmc/host/sdhci-msm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/platform/x86/asus-wmi.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/mmc/host/sdhci-msm.c b/drivers/mmc/host/sdhci-msm.c
-index 4cff758767cb..643fd1a1b88b 100644
---- a/drivers/mmc/host/sdhci-msm.c
-+++ b/drivers/mmc/host/sdhci-msm.c
-@@ -1706,7 +1706,9 @@ static const struct sdhci_ops sdhci_msm_ops = {
- static const struct sdhci_pltfm_data sdhci_msm_pdata = {
- 	.quirks = SDHCI_QUIRK_BROKEN_CARD_DETECTION |
- 		  SDHCI_QUIRK_SINGLE_POWER_WRITE |
--		  SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN,
-+		  SDHCI_QUIRK_CAP_CLOCK_BASE_BROKEN |
-+		  SDHCI_QUIRK_MULTIBLOCK_READ_ACMD12,
-+
- 	.quirks2 = SDHCI_QUIRK2_PRESET_VALUE_BROKEN,
- 	.ops = &sdhci_msm_ops,
- };
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 41e28552b2ce..b1f4a31ba1ee 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -111,6 +111,8 @@ struct bios_args {
+ 	u32 arg0;
+ 	u32 arg1;
+ 	u32 arg2; /* At least TUF Gaming series uses 3 dword input buffer. */
++	u32 arg4;
++	u32 arg5;
+ } __packed;
+ 
+ /*
 -- 
 2.25.1
 
