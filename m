@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3765201006
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD64200E28
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393274AbgFSPYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:24:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52498 "EHLO mail.kernel.org"
+        id S2391316AbgFSPFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:05:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392146AbgFSPVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:21:13 -0400
+        id S2391293AbgFSPFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:05:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63F3B20B80;
-        Fri, 19 Jun 2020 15:21:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B462D21D95;
+        Fri, 19 Jun 2020 15:05:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580072;
-        bh=5UofqsgxoEMN1zBe4Q2/qq579pJeQq8hoQxiRbnfagU=;
+        s=default; t=1592579124;
+        bh=ersofygXme+/BkgbL4dcJ8IHAm2yRV7XhuVsKmB8d5E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UVSlubyFlso0oEcdOE61LIAO1Av/nPsgOnCOl62ytJS0JZsi3ccjc+e7dyfYFRuwm
-         zMov9FMrau/YHCcgtQMO00aDvV5D72GyjsI0RYuf7NjXqwq8ToOt0mgSMYsis5KuCk
-         Isk8vr8aXx9cZ568Et1ZZIU8bukks3/8qEVmkjnk=
+        b=LeeXfhJ5e+yrc1hGtpQIeBMCOHRQM+Xg9Hkfv6vxiehyzDPitz/a/ppnG3JF8Qnrt
+         omAwzNvxEtHopj2+g2O2yn7RetOWIqx3yoRdkU5j6sameTKlQ21QgCqbvv2TmNl264
+         jSKJT1JMP9Fk/IrBlgW1FyzvmqlmJEk6+C06GDqE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
-        "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 110/376] Drivers: hv: vmbus: Always handle the VMBus messages on CPU0
+        stable@vger.kernel.org,
+        Huaixin Chang <changhuaixin@linux.alibaba.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ben Segall <bsegall@google.com>, Phil Auld <pauld@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 017/261] sched/fair: Refill bandwidth before scaling
 Date:   Fri, 19 Jun 2020 16:30:28 +0200
-Message-Id: <20200619141715.555923610@linuxfoundation.org>
+Message-Id: <20200619141650.693573754@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
-References: <20200619141710.350494719@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,164 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
+From: Huaixin Chang <changhuaixin@linux.alibaba.com>
 
-[ Upstream commit 8a857c55420f29da4fc131adc22b12d474c48f4c ]
+[ Upstream commit 5a6d6a6ccb5f48ca8cf7c6d64ff83fd9c7999390 ]
 
-A Linux guest have to pick a "connect CPU" to communicate with the
-Hyper-V host.  This CPU can not be taken offline because Hyper-V does
-not provide a way to change that CPU assignment.
+In order to prevent possible hardlockup of sched_cfs_period_timer()
+loop, loop count is introduced to denote whether to scale quota and
+period or not. However, scale is done between forwarding period timer
+and refilling cfs bandwidth runtime, which means that period timer is
+forwarded with old "period" while runtime is refilled with scaled
+"quota".
 
-Current code sets the connect CPU to whatever CPU ends up running the
-function vmbus_negotiate_version(), and this will generate problems if
-that CPU is taken offine.
+Move do_sched_cfs_period_timer() before scaling to solve this.
 
-Establish CPU0 as the connect CPU, and add logics to prevents the
-connect CPU from being taken offline.   We could pick some other CPU,
-and we could pick that "other CPU" dynamically if there was a reason to
-do so at some point in the future.  But for now, #defining the connect
-CPU to 0 is the most straightforward and least complex solution.
-
-While on this, add inline comments explaining "why" offer and rescind
-messages should not be handled by a same serialized work queue.
-
-Suggested-by: Dexuan Cui <decui@microsoft.com>
-Signed-off-by: Andrea Parri (Microsoft) <parri.andrea@gmail.com>
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Link: https://lore.kernel.org/r/20200406001514.19876-2-parri.andrea@gmail.com
-Reviewed-by: Michael Kelley <mikelley@microsoft.com>
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+Fixes: 2e8e19226398 ("sched/fair: Limit sched_cfs_period_timer() loop to avoid hard lockup")
+Signed-off-by: Huaixin Chang <changhuaixin@linux.alibaba.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Ben Segall <bsegall@google.com>
+Reviewed-by: Phil Auld <pauld@redhat.com>
+Link: https://lkml.kernel.org/r/20200420024421.22442-3-changhuaixin@linux.alibaba.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hv/connection.c   | 20 +-------------------
- drivers/hv/hv.c           |  7 +++++++
- drivers/hv/hyperv_vmbus.h | 11 ++++++-----
- drivers/hv/vmbus_drv.c    | 20 +++++++++++++++++---
- 4 files changed, 31 insertions(+), 27 deletions(-)
+ kernel/sched/fair.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/hv/connection.c b/drivers/hv/connection.c
-index 74e77de89b4f..f4bd306d2cef 100644
---- a/drivers/hv/connection.c
-+++ b/drivers/hv/connection.c
-@@ -69,7 +69,6 @@ MODULE_PARM_DESC(max_version,
- int vmbus_negotiate_version(struct vmbus_channel_msginfo *msginfo, u32 version)
- {
- 	int ret = 0;
--	unsigned int cur_cpu;
- 	struct vmbus_channel_initiate_contact *msg;
- 	unsigned long flags;
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 8a0e6bdba50d..2f81e4ae844e 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -4942,6 +4942,8 @@ static enum hrtimer_restart sched_cfs_period_timer(struct hrtimer *timer)
+ 		if (!overrun)
+ 			break;
  
-@@ -102,24 +101,7 @@ int vmbus_negotiate_version(struct vmbus_channel_msginfo *msginfo, u32 version)
- 
- 	msg->monitor_page1 = virt_to_phys(vmbus_connection.monitor_pages[0]);
- 	msg->monitor_page2 = virt_to_phys(vmbus_connection.monitor_pages[1]);
--	/*
--	 * We want all channel messages to be delivered on CPU 0.
--	 * This has been the behavior pre-win8. This is not
--	 * perf issue and having all channel messages delivered on CPU 0
--	 * would be ok.
--	 * For post win8 hosts, we support receiving channel messagges on
--	 * all the CPUs. This is needed for kexec to work correctly where
--	 * the CPU attempting to connect may not be CPU 0.
--	 */
--	if (version >= VERSION_WIN8_1) {
--		cur_cpu = get_cpu();
--		msg->target_vcpu = hv_cpu_number_to_vp_number(cur_cpu);
--		vmbus_connection.connect_cpu = cur_cpu;
--		put_cpu();
--	} else {
--		msg->target_vcpu = 0;
--		vmbus_connection.connect_cpu = 0;
--	}
-+	msg->target_vcpu = hv_cpu_number_to_vp_number(VMBUS_CONNECT_CPU);
- 
- 	/*
- 	 * Add to list before we send the request since we may
-diff --git a/drivers/hv/hv.c b/drivers/hv/hv.c
-index 533c8b82b344..3a5648aa5599 100644
---- a/drivers/hv/hv.c
-+++ b/drivers/hv/hv.c
-@@ -245,6 +245,13 @@ int hv_synic_cleanup(unsigned int cpu)
- 	bool channel_found = false;
- 	unsigned long flags;
- 
-+	/*
-+	 * Hyper-V does not provide a way to change the connect CPU once
-+	 * it is set; we must prevent the connect CPU from going offline.
-+	 */
-+	if (cpu == VMBUS_CONNECT_CPU)
-+		return -EBUSY;
++		idle = do_sched_cfs_period_timer(cfs_b, overrun, flags);
 +
- 	/*
- 	 * Search for channels which are bound to the CPU we're about to
- 	 * cleanup. In case we find one and vmbus is still connected we need to
-diff --git a/drivers/hv/hyperv_vmbus.h b/drivers/hv/hyperv_vmbus.h
-index 70b30e223a57..67fb1edcbf52 100644
---- a/drivers/hv/hyperv_vmbus.h
-+++ b/drivers/hv/hyperv_vmbus.h
-@@ -212,12 +212,13 @@ enum vmbus_connect_state {
+ 		if (++count > 3) {
+ 			u64 new, old = ktime_to_ns(cfs_b->period);
  
- #define MAX_SIZE_CHANNEL_MESSAGE	HV_MESSAGE_PAYLOAD_BYTE_COUNT
- 
--struct vmbus_connection {
--	/*
--	 * CPU on which the initial host contact was made.
--	 */
--	int connect_cpu;
-+/*
-+ * The CPU that Hyper-V will interrupt for VMBUS messages, such as
-+ * CHANNELMSG_OFFERCHANNEL and CHANNELMSG_RESCIND_CHANNELOFFER.
-+ */
-+#define VMBUS_CONNECT_CPU	0
- 
-+struct vmbus_connection {
- 	u32 msg_conn_id;
- 
- 	atomic_t offer_in_progress;
-diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
-index e06c6b9555cf..ec173da45b42 100644
---- a/drivers/hv/vmbus_drv.c
-+++ b/drivers/hv/vmbus_drv.c
-@@ -1098,14 +1098,28 @@ void vmbus_on_msg_dpc(unsigned long data)
- 			/*
- 			 * If we are handling the rescind message;
- 			 * schedule the work on the global work queue.
-+			 *
-+			 * The OFFER message and the RESCIND message should
-+			 * not be handled by the same serialized work queue,
-+			 * because the OFFER handler may call vmbus_open(),
-+			 * which tries to open the channel by sending an
-+			 * OPEN_CHANNEL message to the host and waits for
-+			 * the host's response; however, if the host has
-+			 * rescinded the channel before it receives the
-+			 * OPEN_CHANNEL message, the host just silently
-+			 * ignores the OPEN_CHANNEL message; as a result,
-+			 * the guest's OFFER handler hangs for ever, if we
-+			 * handle the RESCIND message in the same serialized
-+			 * work queue: the RESCIND handler can not start to
-+			 * run before the OFFER handler finishes.
- 			 */
--			schedule_work_on(vmbus_connection.connect_cpu,
-+			schedule_work_on(VMBUS_CONNECT_CPU,
- 					 &ctx->work);
- 			break;
- 
- 		case CHANNELMSG_OFFERCHANNEL:
- 			atomic_inc(&vmbus_connection.offer_in_progress);
--			queue_work_on(vmbus_connection.connect_cpu,
-+			queue_work_on(VMBUS_CONNECT_CPU,
- 				      vmbus_connection.work_queue,
- 				      &ctx->work);
- 			break;
-@@ -1152,7 +1166,7 @@ static void vmbus_force_channel_rescinded(struct vmbus_channel *channel)
- 
- 	INIT_WORK(&ctx->work, vmbus_onmessage_work);
- 
--	queue_work_on(vmbus_connection.connect_cpu,
-+	queue_work_on(VMBUS_CONNECT_CPU,
- 		      vmbus_connection.work_queue,
- 		      &ctx->work);
- }
+@@ -4971,8 +4973,6 @@ static enum hrtimer_restart sched_cfs_period_timer(struct hrtimer *timer)
+ 			/* reset count so we don't come right back in here */
+ 			count = 0;
+ 		}
+-
+-		idle = do_sched_cfs_period_timer(cfs_b, overrun, flags);
+ 	}
+ 	if (idle)
+ 		cfs_b->period_active = 0;
 -- 
 2.25.1
 
