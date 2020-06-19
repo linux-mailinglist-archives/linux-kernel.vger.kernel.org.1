@@ -2,61 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7DA201569
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B1220166F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405617AbgFSQV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:21:58 -0400
-Received: from winnie.ispras.ru ([83.149.199.91]:27582 "EHLO smtp.ispras.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2394520AbgFSQV4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 12:21:56 -0400
-Received: from home.intra.ispras.ru (unknown [10.10.165.12])
-        by smtp.ispras.ru (Postfix) with ESMTP id 16300203C1;
-        Fri, 19 Jun 2020 19:21:53 +0300 (MSK)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     Antonino Daplas <adaplas@gmail.com>
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: [PATCH] video: fbdev: savage: fix memory leak on error handling path in probe
-Date:   Fri, 19 Jun 2020 19:21:36 +0300
-Message-Id: <20200619162136.9010-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.16.4
+        id S2395026AbgFSQar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:30:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389689AbgFSOxW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:53:22 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BA00218AC;
+        Fri, 19 Jun 2020 14:53:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592578402;
+        bh=8K0DiG5m3/Kac9wy/hVtWgjJWdFjzTJoSPEQSyGP45k=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WmDS5LBFjA0KlJuuKzj2kx/s01dV8yg5p8aMWsSitg1TZw5zn1c+EXawlG3OfQjVQ
+         qhC6AJ5vq2p/2nQ/Ce3l4s/4R3donM9O+wax1wc3a7GV/n303KoO6Yw8ilDfK5/g32
+         8p22gUwo6YUL9mIboi2J2dCFSQnWjhMNMJxqDZ4A=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 001/267] ipv6: fix IPV6_ADDRFORM operation logic
+Date:   Fri, 19 Jun 2020 16:29:46 +0200
+Message-Id: <20200619141648.919524762@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-savagefb_probe() calls savage_init_fb_info() that can successfully
-allocate memory for info->pixmap.addr but then fail when
-fb_alloc_cmap() fails. savagefb_probe() goes to label failed_init and
-does not free allocated memory. It is not valid to go to label
-failed_mmio since savage_init_fb_info() can fail during memory
-allocation as well. So, the patch free allocated memory on the error
-handling path in savage_init_fb_info() itself.
+From: Hangbin Liu <liuhangbin@gmail.com>
 
-Found by Linux Driver Verification project (linuxtesting.org).
+[ Upstream commit 79a1f0ccdbb4ad700590f61b00525b390cb53905 ]
 
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+Socket option IPV6_ADDRFORM supports UDP/UDPLITE and TCP at present.
+Previously the checking logic looks like:
+if (sk->sk_protocol == IPPROTO_UDP || sk->sk_protocol == IPPROTO_UDPLITE)
+	do_some_check;
+else if (sk->sk_protocol != IPPROTO_TCP)
+	break;
+
+After commit b6f6118901d1 ("ipv6: restrict IPV6_ADDRFORM operation"), TCP
+was blocked as the logic changed to:
+if (sk->sk_protocol == IPPROTO_UDP || sk->sk_protocol == IPPROTO_UDPLITE)
+	do_some_check;
+else if (sk->sk_protocol == IPPROTO_TCP)
+	do_some_check;
+	break;
+else
+	break;
+
+Then after commit 82c9ae440857 ("ipv6: fix restrict IPV6_ADDRFORM operation")
+UDP/UDPLITE were blocked as the logic changed to:
+if (sk->sk_protocol == IPPROTO_UDP || sk->sk_protocol == IPPROTO_UDPLITE)
+	do_some_check;
+if (sk->sk_protocol == IPPROTO_TCP)
+	do_some_check;
+
+if (sk->sk_protocol != IPPROTO_TCP)
+	break;
+
+Fix it by using Eric's code and simply remove the break in TCP check, which
+looks like:
+if (sk->sk_protocol == IPPROTO_UDP || sk->sk_protocol == IPPROTO_UDPLITE)
+	do_some_check;
+else if (sk->sk_protocol == IPPROTO_TCP)
+	do_some_check;
+else
+	break;
+
+Fixes: 82c9ae440857 ("ipv6: fix restrict IPV6_ADDRFORM operation")
+Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/video/fbdev/savage/savagefb_driver.c | 2 ++
- 1 file changed, 2 insertions(+)
+ net/ipv6/ipv6_sockglue.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/video/fbdev/savage/savagefb_driver.c b/drivers/video/fbdev/savage/savagefb_driver.c
-index 3c8ae87f0ea7..3fd87aeb6c79 100644
---- a/drivers/video/fbdev/savage/savagefb_driver.c
-+++ b/drivers/video/fbdev/savage/savagefb_driver.c
-@@ -2157,6 +2157,8 @@ static int savage_init_fb_info(struct fb_info *info, struct pci_dev *dev,
- 			info->flags |= FBINFO_HWACCEL_COPYAREA |
- 				       FBINFO_HWACCEL_FILLRECT |
- 				       FBINFO_HWACCEL_IMAGEBLIT;
-+		else
-+			kfree(info->pixmap.addr);
- 	}
- #endif
- 	return err;
--- 
-2.16.4
+--- a/net/ipv6/ipv6_sockglue.c
++++ b/net/ipv6/ipv6_sockglue.c
+@@ -185,14 +185,15 @@ static int do_ipv6_setsockopt(struct soc
+ 					retv = -EBUSY;
+ 					break;
+ 				}
+-			}
+-			if (sk->sk_protocol == IPPROTO_TCP &&
+-			    sk->sk_prot != &tcpv6_prot) {
+-				retv = -EBUSY;
++			} else if (sk->sk_protocol == IPPROTO_TCP) {
++				if (sk->sk_prot != &tcpv6_prot) {
++					retv = -EBUSY;
++					break;
++				}
++			} else {
+ 				break;
+ 			}
+-			if (sk->sk_protocol != IPPROTO_TCP)
+-				break;
++
+ 			if (sk->sk_state != TCP_ESTABLISHED) {
+ 				retv = -ENOTCONN;
+ 				break;
+
 
