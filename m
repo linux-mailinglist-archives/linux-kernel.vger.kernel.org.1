@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6012D201276
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C31201271
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392843AbgFSPVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:21:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47268 "EHLO mail.kernel.org"
+        id S2392808AbgFSPVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:21:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392485AbgFSPQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:16:40 -0400
+        id S2404125AbgFSPQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:16:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBD072080C;
-        Fri, 19 Jun 2020 15:16:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BC802080C;
+        Fri, 19 Jun 2020 15:16:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579799;
-        bh=DLm3HKqtq7WOPN88gpHMGYl78gKgJxuxjEldkXM1B6I=;
+        s=default; t=1592579817;
+        bh=EKcNGXPVsXSo798RYkf9ibs72j1OBs1xifDbNicZdtQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UNBV8Wwh8UXhiQLfhz9YUHfFDrW4xmhJZPBumzuh7usLzy1ySl6UEHpGBFLk+255J
-         lnzavpORwhZmKq+AJB6mX1FQkqm8KzJWmS1AqWTlt5jN3pjbZFarCkiUlLBsaJs9/T
-         L5eg7kruANGh9cbwJx+YQi0WZS1uHqT3GpkOsQc8=
+        b=daQX8+KFTrG2+FvhYAdOq+GOL4cHv0+a3RLvb9ilyUD1izoMVRh/dzRj56to38kr4
+         1npuQnjvtyDC28Byx5NfmS4AIt+EraSvoQEbTiZ6FkEHPqzTesCh1uGyoF41rEuG4Z
+         UlNUzheYmBFGOSGV5AUyW9Fs86Yypqtm0EI711d0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 5.7 001/376] ACPI: GED: use correct trigger type field in _Exx / _Lxx handling
-Date:   Fri, 19 Jun 2020 16:28:39 +0200
-Message-Id: <20200619141710.427881447@linuxfoundation.org>
+        stable@vger.kernel.org, Bingbu Cao <bingbu.cao@intel.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 005/376] media: staging: imgu: do not hold spinlock during freeing mmu page table
+Date:   Fri, 19 Jun 2020 16:28:43 +0200
+Message-Id: <20200619141710.613792826@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,37 +46,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Bingbu Cao <bingbu.cao@intel.com>
 
-commit e5c399b0bd6490c12c0af2a9eaa9d7cd805d52c9 upstream.
+[ Upstream commit e1ebe9f9c88e5a78fcc4670a9063c9b3cd87dda4 ]
 
-Commit ea6f3af4c5e63f69 ("ACPI: GED: add support for _Exx / _Lxx handler
-methods") added a reference to the 'triggering' field of either the
-normal or the extended ACPI IRQ resource struct, but inadvertently used
-the wrong pointer in the latter case. Note that both pointers refer to the
-same union, and the 'triggering' field appears at the same offset in both
-struct types, so it currently happens to work by accident. But let's fix
-it nonetheless
+ImgU need set the mmu page table in memory as uncached, and set back
+to write-back when free the page table by set_memory_wb(),
+set_memory_wb() can not do flushing without interrupt, so the spinlock
+should not be hold during ImgU page alloc and free, the interrupt
+should be enabled during memory cache flush.
 
-Fixes: ea6f3af4c5e63f69 ("ACPI: GED: add support for _Exx / _Lxx handler methods")
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch release spinlock before freeing pages table.
 
+Signed-off-by: Bingbu Cao <bingbu.cao@intel.com>
+Reviewed-by: Tomasz Figa <tfiga@chromium.org>
+Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/acpi/evged.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/media/ipu3/ipu3-mmu.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
---- a/drivers/acpi/evged.c
-+++ b/drivers/acpi/evged.c
-@@ -94,7 +94,7 @@ static acpi_status acpi_ged_request_inte
- 		trigger = p->triggering;
- 	} else {
- 		gsi = pext->interrupts[0];
--		trigger = p->triggering;
-+		trigger = pext->triggering;
+diff --git a/drivers/staging/media/ipu3/ipu3-mmu.c b/drivers/staging/media/ipu3/ipu3-mmu.c
+index 5f3ff964f3e7..cb9bf5fb29a5 100644
+--- a/drivers/staging/media/ipu3/ipu3-mmu.c
++++ b/drivers/staging/media/ipu3/ipu3-mmu.c
+@@ -174,8 +174,10 @@ static u32 *imgu_mmu_get_l2pt(struct imgu_mmu *mmu, u32 l1pt_idx)
+ 	spin_lock_irqsave(&mmu->lock, flags);
+ 
+ 	l2pt = mmu->l2pts[l1pt_idx];
+-	if (l2pt)
+-		goto done;
++	if (l2pt) {
++		spin_unlock_irqrestore(&mmu->lock, flags);
++		return l2pt;
++	}
+ 
+ 	spin_unlock_irqrestore(&mmu->lock, flags);
+ 
+@@ -190,8 +192,9 @@ static u32 *imgu_mmu_get_l2pt(struct imgu_mmu *mmu, u32 l1pt_idx)
+ 
+ 	l2pt = mmu->l2pts[l1pt_idx];
+ 	if (l2pt) {
++		spin_unlock_irqrestore(&mmu->lock, flags);
+ 		imgu_mmu_free_page_table(new_l2pt);
+-		goto done;
++		return l2pt;
  	}
  
- 	irq = r.start;
+ 	l2pt = new_l2pt;
+@@ -200,7 +203,6 @@ static u32 *imgu_mmu_get_l2pt(struct imgu_mmu *mmu, u32 l1pt_idx)
+ 	pteval = IPU3_ADDR2PTE(virt_to_phys(new_l2pt));
+ 	mmu->l1pt[l1pt_idx] = pteval;
+ 
+-done:
+ 	spin_unlock_irqrestore(&mmu->lock, flags);
+ 	return l2pt;
+ }
+-- 
+2.25.1
+
 
 
