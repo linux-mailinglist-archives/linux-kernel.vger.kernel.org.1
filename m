@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5148020189A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C069201869
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387909AbgFSQuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:50:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55984 "EHLO mail.kernel.org"
+        id S2387957AbgFSOjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:39:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387919AbgFSOis (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:38:48 -0400
+        id S2387656AbgFSOiz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:38:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F19532070A;
-        Fri, 19 Jun 2020 14:38:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E8B21208B8;
+        Fri, 19 Jun 2020 14:38:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577528;
-        bh=+W1jrT/+Z2zpxvxJ+jMzyzpwN5SztOa/5v2X7AV1g9I=;
+        s=default; t=1592577535;
+        bh=7+X0hyeQZi+E5L9CQEftM+9/uRKUx6Trp8ntOOrkFOc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tQiy9B9YB1HfYqF4iRQIyWpjELx9Ue7BdwcJM5cksktvfm6NsaIn9Rk32lkV/vtZC
-         7fsKH/v6+THJq+i/GO3pudcn743lGq2bZkcET44X1K/IvUC+xd0cIZjJeIBfWSK89v
-         Z5pzcZf26heJqwFMQ5kVglkGt3v0R9I3P1EDMzMg=
+        b=2fZkzakCs6iorbDy+AyXiz+znZ6TKE+qv1/xz406od25rofIHWcILcOCjYEK9JK3o
+         k6K69nYF5+KaOZw5W0eHuf9tNN3V63IL5rbejwJj6/ahQxOwYqB4qiBm2TOqoLqsUX
+         kP6kwhnBqJNNiiP54EcyNsQriuzE/koKoKcoUIXY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Larry Finger <Larry.Finger@lwfinger.net>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: [PATCH 4.4 086/101] b43legacy: Fix case where channel status is corrupted
-Date:   Fri, 19 Jun 2020 16:33:15 +0200
-Message-Id: <20200619141618.471765760@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Subject: [PATCH 4.4 089/101] igb: Report speed and duplex as unknown when device is runtime suspended
+Date:   Fri, 19 Jun 2020 16:33:18 +0200
+Message-Id: <20200619141618.628608721@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
 References: <20200619141614.001544111@linuxfoundation.org>
@@ -43,56 +46,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Larry Finger <Larry.Finger@lwfinger.net>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-commit ec4d3e3a054578de34cd0b587ab8a1ac36f629d9 upstream.
+commit 165ae7a8feb53dc47fb041357e4b253bfc927cf9 upstream.
 
-This patch fixes commit 75388acd0cd8 ("add mac80211-based driver for
-legacy BCM43xx devices")
+igb device gets runtime suspended when there's no link partner. We can't
+get correct speed under that state:
+$ cat /sys/class/net/enp3s0/speed
+1000
 
-In https://bugzilla.kernel.org/show_bug.cgi?id=207093, a defect in
-b43legacy is reported. Upon testing, thus problem exists on PPC and
-X86 platforms, is present in the oldest kernel tested (3.2), and
-has been present in the driver since it was first added to the kernel.
+In addition to that, an error can also be spotted in dmesg:
+[  385.991957] igb 0000:03:00.0 enp3s0: PCIe link lost
 
-The problem is a corrupted channel status received from the device.
-Both the internal card in a PowerBook G4 and the PCMCIA version
-(Broadcom BCM4306 with PCI ID 14e4:4320) have the problem. Only Rev, 2
-(revision 4 of the 802.11 core) of the chip has been tested. No other
-devices using b43legacy are available for testing.
+Since device can only be runtime suspended when there's no link partner,
+we can skip reading register and let the following logic set speed and
+duplex with correct status.
 
-Various sources of the problem were considered. Buffer overrun and
-other sources of corruption within the driver were rejected because
-the faulty channel status is always the same, not a random value.
-It was concluded that the faulty data is coming from the device, probably
-due to a firmware bug. As that source is not available, the driver
-must take appropriate action to recover.
+The more generic approach will be wrap get_link_ksettings() with begin()
+and complete() callbacks. However, for this particular issue, begin()
+calls igb_runtime_resume() , which tries to rtnl_lock() while the lock
+is already hold by upper ethtool layer.
 
-At present, the driver reports the error, and them continues to process
-the bad packet. This is believed that to be a mistake, and the correct
-action is to drop the correpted packet.
+So let's take this approach until the igb_runtime_resume() no longer
+needs to hold rtnl_lock.
 
-Fixes: 75388acd0cd8 ("add mac80211-based driver for legacy BCM43xx devices")
-Cc: Stable <stable@vger.kernel.org>
-Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
-Reported-and-tested by: F. Erhard <erhard_f@mailbox.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200407190043.1686-1-Larry.Finger@lwfinger.net
+CC: stable <stable@vger.kernel.org>
+Suggested-by: Alexander Duyck <alexander.duyck@gmail.com>
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/wireless/b43legacy/xmit.c |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/ethernet/intel/igb/igb_ethtool.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
---- a/drivers/net/wireless/b43legacy/xmit.c
-+++ b/drivers/net/wireless/b43legacy/xmit.c
-@@ -571,6 +571,7 @@ void b43legacy_rx(struct b43legacy_wldev
- 	default:
- 		b43legacywarn(dev->wl, "Unexpected value for chanstat (0x%X)\n",
- 		       chanstat);
-+		goto drop;
- 	}
+--- a/drivers/net/ethernet/intel/igb/igb_ethtool.c
++++ b/drivers/net/ethernet/intel/igb/igb_ethtool.c
+@@ -143,7 +143,8 @@ static int igb_get_settings(struct net_d
+ 	u32 status;
+ 	u32 speed;
  
- 	memcpy(IEEE80211_SKB_RXCB(skb), &status, sizeof(status));
+-	status = rd32(E1000_STATUS);
++	status = pm_runtime_suspended(&adapter->pdev->dev) ?
++		 0 : rd32(E1000_STATUS);
+ 	if (hw->phy.media_type == e1000_media_type_copper) {
+ 
+ 		ecmd->supported = (SUPPORTED_10baseT_Half |
 
 
