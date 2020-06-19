@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A126201609
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8304F201607
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394832AbgFSQZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:25:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53014 "EHLO mail.kernel.org"
+        id S2394618AbgFSQZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:25:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390271AbgFSO5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:57:36 -0400
+        id S2388611AbgFSO5l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:57:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1687217D8;
-        Fri, 19 Jun 2020 14:57:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8380C217D8;
+        Fri, 19 Jun 2020 14:57:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578656;
-        bh=N751oS8NC36Y0dt+fAPASAJvAAoD3/nSM5jly+El1lA=;
+        s=default; t=1592578661;
+        bh=PTNJSFiuLP09hxP415aSDF4UBv9j2fM6vwrHY8m2+tU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zbanjMaqEC8AZcyOLfzmeWF1D0IOXb5mP482Eizy/YDxDqiIBA9lLOBtPd9eN5id+
-         P3WqyZ68ui8kKpZrrsPoxyTN4m4e/NfKvoj0aOaVd1ID7rUvm2dkGqH5r9iAa3h86g
-         nD10A4FW1HVyimy995lZsAW/ixHW78M6uGfImSsk=
+        b=WPID2ncUaMbhK51bvtfwjexexHeN8vU3VDbuVLWV3VusK2/MPRyYcXnVy+/QaXHOU
+         lklvlInQ8ew2X5aUIBOESC1RXlJ2D1+Ibx+HgelXfqQ7g6IAo4uRCdDfJvCJsdES09
+         H8BNTcoxRt1aLg9vrutGShUxyH5harjXwrDlSjbA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jesper Dangaard Brouer <brouer@redhat.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
+        stable@vger.kernel.org, Hsin-Yu Chao <hychao@chromium.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 105/267] ixgbe: Fix XDP redirect on archs with PAGE_SIZE above 4K
-Date:   Fri, 19 Jun 2020 16:31:30 +0200
-Message-Id: <20200619141653.896871181@linuxfoundation.org>
+Subject: [PATCH 4.19 107/267] Bluetooth: Add SCO fallback for invalid LMP parameters error
+Date:   Fri, 19 Jun 2020 16:31:32 +0200
+Message-Id: <20200619141653.994217490@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
 References: <20200619141648.840376470@linuxfoundation.org>
@@ -45,46 +44,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jesper Dangaard Brouer <brouer@redhat.com>
+From: Hsin-Yu Chao <hychao@chromium.org>
 
-[ Upstream commit 88eb0ee17b2ece64fcf6689a4557a5c2e7a89c4b ]
+[ Upstream commit 56b5453a86203a44726f523b4133c1feca49ce7c ]
 
-The ixgbe driver have another memory model when compiled on archs with
-PAGE_SIZE above 4096 bytes. In this mode it doesn't split the page in
-two halves, but instead increment rx_buffer->page_offset by truesize of
-packet (which include headroom and tailroom for skb_shared_info).
+Bluetooth PTS test case HFP/AG/ACC/BI-12-I accepts SCO connection
+with invalid parameter at the first SCO request expecting AG to
+attempt another SCO request with the use of "safe settings" for
+given codec, base on section 5.7.1.2 of HFP 1.7 specification.
 
-This is done correctly in ixgbe_build_skb(), but in ixgbe_rx_buffer_flip
-which is currently only called on XDP_TX and XDP_REDIRECT, it forgets
-to add the tailroom for skb_shared_info. This breaks XDP_REDIRECT, for
-veth and cpumap.  Fix by adding size of skb_shared_info tailroom.
+This patch addresses it by adding "Invalid LMP Parameters" (0x1e)
+to the SCO fallback case. Verified with below log:
 
-Maintainers notice: This fix have been queued to Jeff.
+< HCI Command: Setup Synchronous Connection (0x01|0x0028) plen 17
+        Handle: 256
+        Transmit bandwidth: 8000
+        Receive bandwidth: 8000
+        Max latency: 13
+        Setting: 0x0003
+          Input Coding: Linear
+          Input Data Format: 1's complement
+          Input Sample Size: 8-bit
+          # of bits padding at MSB: 0
+          Air Coding Format: Transparent Data
+        Retransmission effort: Optimize for link quality (0x02)
+        Packet type: 0x0380
+          3-EV3 may not be used
+          2-EV5 may not be used
+          3-EV5 may not be used
+> HCI Event: Command Status (0x0f) plen 4
+      Setup Synchronous Connection (0x01|0x0028) ncmd 1
+        Status: Success (0x00)
+> HCI Event: Number of Completed Packets (0x13) plen 5
+        Num handles: 1
+        Handle: 256
+        Count: 1
+> HCI Event: Max Slots Change (0x1b) plen 3
+        Handle: 256
+        Max slots: 1
+> HCI Event: Synchronous Connect Complete (0x2c) plen 17
+        Status: Invalid LMP Parameters / Invalid LL Parameters (0x1e)
+        Handle: 0
+        Address: 00:1B:DC:F2:21:59 (OUI 00-1B-DC)
+        Link type: eSCO (0x02)
+        Transmission interval: 0x00
+        Retransmission window: 0x02
+        RX packet length: 0
+        TX packet length: 0
+        Air mode: Transparent (0x03)
+< HCI Command: Setup Synchronous Connection (0x01|0x0028) plen 17
+        Handle: 256
+        Transmit bandwidth: 8000
+        Receive bandwidth: 8000
+        Max latency: 8
+        Setting: 0x0003
+          Input Coding: Linear
+          Input Data Format: 1's complement
+          Input Sample Size: 8-bit
+          # of bits padding at MSB: 0
+          Air Coding Format: Transparent Data
+        Retransmission effort: Optimize for link quality (0x02)
+        Packet type: 0x03c8
+          EV3 may be used
+          2-EV3 may not be used
+          3-EV3 may not be used
+          2-EV5 may not be used
+          3-EV5 may not be used
+> HCI Event: Command Status (0x0f) plen 4
+      Setup Synchronous Connection (0x01|0x0028) ncmd 1
+        Status: Success (0x00)
+> HCI Event: Max Slots Change (0x1b) plen 3
+        Handle: 256
+        Max slots: 5
+> HCI Event: Max Slots Change (0x1b) plen 3
+        Handle: 256
+        Max slots: 1
+> HCI Event: Synchronous Connect Complete (0x2c) plen 17
+        Status: Success (0x00)
+        Handle: 257
+        Address: 00:1B:DC:F2:21:59 (OUI 00-1B-DC)
+        Link type: eSCO (0x02)
+        Transmission interval: 0x06
+        Retransmission window: 0x04
+        RX packet length: 30
+        TX packet length: 30
+        Air mode: Transparent (0x03)
 
-Fixes: 6453073987ba ("ixgbe: add initial support for xdp redirect")
-Signed-off-by: Jesper Dangaard Brouer <brouer@redhat.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Cc: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Link: https://lore.kernel.org/bpf/158945344946.97035.17031588499266605743.stgit@firesoul
+Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/ixgbe/ixgbe_main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/bluetooth/hci_event.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-index 8177276500f5..7d723b70fcf6 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_main.c
-@@ -2258,7 +2258,8 @@ static void ixgbe_rx_buffer_flip(struct ixgbe_ring *rx_ring,
- 	rx_buffer->page_offset ^= truesize;
- #else
- 	unsigned int truesize = ring_uses_build_skb(rx_ring) ?
--				SKB_DATA_ALIGN(IXGBE_SKB_PAD + size) :
-+				SKB_DATA_ALIGN(IXGBE_SKB_PAD + size) +
-+				SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) :
- 				SKB_DATA_ALIGN(size);
- 
- 	rx_buffer->page_offset += truesize;
+diff --git a/net/bluetooth/hci_event.c b/net/bluetooth/hci_event.c
+index 3e7badb3ac2d..a044e6bb12b8 100644
+--- a/net/bluetooth/hci_event.c
++++ b/net/bluetooth/hci_event.c
+@@ -4097,6 +4097,7 @@ static void hci_sync_conn_complete_evt(struct hci_dev *hdev,
+ 	case 0x11:	/* Unsupported Feature or Parameter Value */
+ 	case 0x1c:	/* SCO interval rejected */
+ 	case 0x1a:	/* Unsupported Remote Feature */
++	case 0x1e:	/* Invalid LMP Parameters */
+ 	case 0x1f:	/* Unspecified error */
+ 	case 0x20:	/* Unsupported LMP Parameter value */
+ 		if (conn->out) {
 -- 
 2.25.1
 
