@@ -2,170 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9ACE2018EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7497B2018A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392408AbgFSQy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:54:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51982 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387573AbgFSOgn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:36:43 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B21C06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:36:43 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id j1so4516433pfe.4
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:36:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pZm6yfNYNBuxBStKZC0kZanPMnKOlf2CgfGPgI4tuHQ=;
-        b=uqgJVkp2ta13UJdmiW7Lw1bFtHRXApq/tVCDyt3pdUyhLeTsrd5cL3WhGO3XyEGEUj
-         lnDHihZwWdimLe6RISBNN32+ELxaLgJ8/y4dcXDHN/GHrdU63EgDC4BsgFD/CQ6bxmSX
-         BjsUEvg1+/6CaqfL4ZohtQouempwFJyB34irxdn3pQwDv4FXJtpk8F1knNvZbWe6dk/G
-         tiUPF0iInhm/PXgGCIKHtskVRZq78Pb81cuOlKAUYpeAp39mlQEZWasHKf/6KecRgIqq
-         2Qyeok7cXRpAZFm11moXK535vCVJ5QuNGI/Ob/P1YI1oIVBOQIh+UXokJpmC3VimY6mL
-         0IpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pZm6yfNYNBuxBStKZC0kZanPMnKOlf2CgfGPgI4tuHQ=;
-        b=GGofKQoyTIaBPV3DOkyjlXQFrIYE28g4hBi6HKWJcRfxR32MuFiafm9aN6AKgYtdex
-         86htM1n/zysIkfEsapdG6W72rCY6Kl4vyeLQOpAjyMze3NojF3f3HukLruUz0T3Mei4I
-         ajk2LA4uf2rIIR1c1cpIHwT2RfcZ3ifuInlzjZm30V33eGpFQLO9jM916H+qZxqJ89WW
-         Q3gyybp4CEh8HVrHlzOu8+4MIa0SaR9MVgmS37XY1wfNjwLl5IewC0x8spYUsk6iZ330
-         uODK97gXJxhA2UdDCLWLs+btQpnbZrii3v0sL162VAi1zP4a6EKYBkGF7YL3etWw64Vc
-         Cupg==
-X-Gm-Message-State: AOAM531LFkJQmO8wPXJ52HwR8G7SK7nS5X+Mv8qIaiDQkncI7b8j56JU
-        eJMtOh/Hqnn+zyJzCe1swtE26w==
-X-Google-Smtp-Source: ABdhPJwLZap2gCbNRLjuZq9p47CcZnx/KyR0tvZKTiGdcuRCXJAnOlkelvd5T5h1TxDPz4q9D8EYAA==
-X-Received: by 2002:a62:640b:: with SMTP id y11mr8309607pfb.195.1592577403047;
-        Fri, 19 Jun 2020 07:36:43 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id b191sm5484675pga.13.2020.06.19.07.36.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jun 2020 07:36:42 -0700 (PDT)
-Subject: Re: [PATCH 04/15] io_uring: re-issue block requests that failed
- because of resources
-To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org
-References: <20200618144355.17324-1-axboe@kernel.dk>
- <20200618144355.17324-5-axboe@kernel.dk>
- <cdd4bf56-5a08-5d28-969f-81b70cc3c473@gmail.com>
- <da21ba82-c027-0c15-93e3-a372283d7030@kernel.dk>
- <105a78f0-407f-09e3-5951-7f76756762b2@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <e7f492a3-e180-ccf6-fcf2-2cd7f318f152@kernel.dk>
-Date:   Fri, 19 Jun 2020 08:36:41 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2405845AbgFSQug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:50:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55778 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387450AbgFSOih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:38:37 -0400
+Received: from earth.universe (dyndsl-037-138-190-043.ewe-ip-backbone.de [37.138.190.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82E74208B8;
+        Fri, 19 Jun 2020 14:38:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592577517;
+        bh=BfKddbrXxUWPan5CD6khEfR4aoXC3Z+AH6odX3gV2yQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dENCaHB2ir0r1qUT2gfmdStMdCGpVBzh0+V6hmTvu6hIDzPhfGxyVY7gh10CfWCob
+         TT04HPLPl8gY6XAtWE2K6WgxofvEsOHwpH4FErCb4lJJwtn+x6ZtmadPUPWiqW/ULL
+         he6J7FOqbt52zRTb2Nm2pEqXgxs/hGQPqEn17UUo=
+Received: by earth.universe (Postfix, from userid 1000)
+        id DE1073C08CD; Fri, 19 Jun 2020 16:38:35 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 16:38:35 +0200
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Laurentiu Palcu <laurentiu.palcu@intel.com>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: power: supply: bq25890: Indent example
+ with tabs
+Message-ID: <20200619143835.unnla3s6zywxcnfj@earth.universe>
+References: <20200617102305.14241-1-krzk@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <105a78f0-407f-09e3-5951-7f76756762b2@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gwlix4ac63ohaldv"
+Content-Disposition: inline
+In-Reply-To: <20200617102305.14241-1-krzk@kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/19/20 8:30 AM, Pavel Begunkov wrote:
-> On 19/06/2020 17:22, Jens Axboe wrote:
->> On 6/19/20 8:12 AM, Pavel Begunkov wrote:
->>> On 18/06/2020 17:43, Jens Axboe wrote:
->>>> Mark the plug with nowait == true, which will cause requests to avoid
->>>> blocking on request allocation. If they do, we catch them and reissue
->>>> them from a task_work based handler.
->>>>
->>>> Normally we can catch -EAGAIN directly, but the hard case is for split
->>>> requests. As an example, the application issues a 512KB request. The
->>>> block core will split this into 128KB if that's the max size for the
->>>> device. The first request issues just fine, but we run into -EAGAIN for
->>>> some latter splits for the same request. As the bio is split, we don't
->>>> get to see the -EAGAIN until one of the actual reads complete, and hence
->>>> we cannot handle it inline as part of submission.
->>>>
->>>> This does potentially cause re-reads of parts of the range, as the whole
->>>> request is reissued. There's currently no better way to handle this.
->>>>
->>>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->>>> ---
->>>>  fs/io_uring.c | 148 ++++++++++++++++++++++++++++++++++++++++++--------
->>>>  1 file changed, 124 insertions(+), 24 deletions(-)
->>>>
->>>> diff --git a/fs/io_uring.c b/fs/io_uring.c
->>>> index 2e257c5a1866..40413fb9d07b 100644
->>>> --- a/fs/io_uring.c
->>>> +++ b/fs/io_uring.c
->>>> @@ -900,6 +900,13 @@ static int io_file_get(struct io_submit_state *state, struct io_kiocb *req,
->>>>  static void __io_queue_sqe(struct io_kiocb *req,
->>>>  			   const struct io_uring_sqe *sqe);
->>>>  
->>> ...> +
->>>> +static void io_rw_resubmit(struct callback_head *cb)
->>>> +{
->>>> +	struct io_kiocb *req = container_of(cb, struct io_kiocb, task_work);
->>>> +	struct io_ring_ctx *ctx = req->ctx;
->>>> +	int err;
->>>> +
->>>> +	__set_current_state(TASK_RUNNING);
->>>> +
->>>> +	err = io_sq_thread_acquire_mm(ctx, req);
->>>> +
->>>> +	if (io_resubmit_prep(req, err)) {
->>>> +		refcount_inc(&req->refs);
->>>> +		io_queue_async_work(req);
->>>> +	}
->>>
->>> Hmm, I have similar stuff but for iopoll. On top removing grab_env* for
->>> linked reqs and some extra. I think I'll rebase on top of this.
->>
->> Yes, there's certainly overlap there. I consider this series basically
->> wrapped up, so feel free to just base on top of it.
->>
->>>> +static bool io_rw_reissue(struct io_kiocb *req, long res)
->>>> +{
->>>> +#ifdef CONFIG_BLOCK
->>>> +	struct task_struct *tsk;
->>>> +	int ret;
->>>> +
->>>> +	if ((res != -EAGAIN && res != -EOPNOTSUPP) || io_wq_current_is_worker())
->>>> +		return false;
->>>> +
->>>> +	tsk = req->task;
->>>> +	init_task_work(&req->task_work, io_rw_resubmit);
->>>> +	ret = task_work_add(tsk, &req->task_work, true);
->>>
->>> I don't like that the request becomes un-discoverable for cancellation
->>> awhile sitting in the task_work list. Poll stuff at least have hash_node
->>> for that.
->>
->> Async buffered IO was never cancelable, so it doesn't really matter.
->> It's tied to the task, so we know it'll get executed - either run, or
->> canceled if the task is going away. This is really not that different
->> from having the work discoverable through io-wq queueing before, since
->> the latter could never be canceled anyway as it sits there
->> uninterruptibly waiting for IO completion.
-> 
-> Makes sense. I was thinking about using this task-requeue for all kinds
-> of requests. Though, instead of speculating it'd be better for me to embody
-> ideas into patches and see.
 
-And that's fine, for requests where it matters, on-the-side
-discoverability can still be a thing. If we're in the task itself where
-it is queued, that provides us safey from the work going way from under
-us. Then we just have to mark it appropriately, if it needs to get
-canceled instead of run to completion.
+--gwlix4ac63ohaldv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Some care needed, of course, but there's nothing that would prevent this
-from working. Ideally we'd be able to peal off a task_work entry, but
-that's kind of difficult with the singly linked non-locked list.
+Hi,
 
--- 
-Jens Axboe
+On Wed, Jun 17, 2020 at 12:23:04PM +0200, Krzysztof Kozlowski wrote:
+> Fix example indentation to tabs to follow generic Linux coding style.
+> This avoids copying the space indentation to DTS when re-using the
+> example.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
 
+Thanks, queued.
+
+-- Sebastian
+
+>  .../bindings/power/supply/bq25890.txt         | 22 +++++++++----------
+>  1 file changed, 11 insertions(+), 11 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/power/supply/bq25890.txt b=
+/Documentation/devicetree/bindings/power/supply/bq25890.txt
+> index dc9c8f76e06c..51ecc756521f 100644
+> --- a/Documentation/devicetree/bindings/power/supply/bq25890.txt
+> +++ b/Documentation/devicetree/bindings/power/supply/bq25890.txt
+> @@ -36,17 +36,17 @@ Optional properties:
+>  Example:
+> =20
+>  bq25890 {
+> -        compatible =3D "ti,bq25890";
+> -        reg =3D <0x6a>;
+> +	compatible =3D "ti,bq25890";
+> +	reg =3D <0x6a>;
+> =20
+> -        ti,battery-regulation-voltage =3D <4200000>;
+> -        ti,charge-current =3D <1000000>;
+> -        ti,termination-current =3D <50000>;
+> -        ti,precharge-current =3D <128000>;
+> -        ti,minimum-sys-voltage =3D <3600000>;
+> -        ti,boost-voltage =3D <5000000>;
+> -        ti,boost-max-current =3D <1000000>;
+> +	ti,battery-regulation-voltage =3D <4200000>;
+> +	ti,charge-current =3D <1000000>;
+> +	ti,termination-current =3D <50000>;
+> +	ti,precharge-current =3D <128000>;
+> +	ti,minimum-sys-voltage =3D <3600000>;
+> +	ti,boost-voltage =3D <5000000>;
+> +	ti,boost-max-current =3D <1000000>;
+> =20
+> -        ti,use-ilim-pin;
+> -        ti,thermal-regulation-threshold =3D <120>;
+> +	ti,use-ilim-pin;
+> +	ti,thermal-regulation-threshold =3D <120>;
+>  };
+> --=20
+> 2.17.1
+>=20
+
+--gwlix4ac63ohaldv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7szd0ACgkQ2O7X88g7
++prY8A/+NKGwIlBdgJoLJVwpEpRL4Fm1ZhekGETuQf7w5rSZsxwpmabU4ZJBVrOy
+AoqQwFOsnSkw0TbXBC4s4NEHXp8fb3T6H6XWC7eoLrKCd1NpxBNj9/ieqZepENow
+xOxguyiSiTTpMlYmsdh5fatB6npUzH0U+74nkvtjhYPdceqksKWN2M/6kXChpAXv
+SSOvEOgi+uK+w19pZSj4K8vPs0Sb/AelXBWMvnuo8pIx47P/O6B8m1ArNffi6NuL
+1T1HOVj7s5vNu9EYFDmy6RlHN+5YcD27fFBVXPlMP4OLmudobty53Ln3laGw/8E4
++ZkWlqwUvTGGLsdM6qr1MlRTW7SQxBSu6HfTgn2QjcApMeJqFy8ZExeZ+QP8rnGe
+MhuX+MRjJ4u74Ir0cIzGeYLvyPlpGUqeXxFEhPXNwS2V/5OXltdnU4AUOsb0RvYZ
+xQ0tiG+BpDI3meY+oFyMOXepZjQteLEs8LTtJPSK0G0KhxVGjAlj6keQS7FR5wMR
+zY9oa4oSlQu5ZEsq4Kce/A+RAEqy0IqhvlNLnemy57Gpsjw+qjOSgav0zyozxnDB
+iknGGpw8Ih2gNg7dC8rMaXFf4l20l6MSRw2CLJ1VAi7/yyAHiWAuNTEvax8XafJp
+1lIRaEUONMk8uFzvgigI3ifz/RwHM12x1usDvehKrUdkplrsC0c=
+=IEDH
+-----END PGP SIGNATURE-----
+
+--gwlix4ac63ohaldv--
