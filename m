@@ -2,40 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AFDD201790
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F22420162B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395428AbgFSQkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:40:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37660 "EHLO mail.kernel.org"
+        id S2394886AbgFSQ1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:27:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50814 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388782AbgFSOp7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:45:59 -0400
+        id S2390010AbgFSOzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:55:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F293C21556;
-        Fri, 19 Jun 2020 14:45:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37893206F7;
+        Fri, 19 Jun 2020 14:55:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577959;
-        bh=uCNmxVWLAvd2UD6qMLaucpPVHNdoLiyvb7ceBA1576o=;
+        s=default; t=1592578551;
+        bh=5O60frDLooh+Wxctq/Vho1DS6s2cYV6GIPhqgLOjqWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QZh5ByAimwXqH4aH1NHl5btRS9h7I5xli4OEOjmv7oGVqGg5Jbkr+E0z1AaggCpJy
-         uZUFte7DNS5g7LyFRmqs7OR59cO3/cExCSIse1b1eZfQshz4vXMVKQh/vG5v/mFPIF
-         5tY+qv2ws/osMATkx7uNmC+b5bU14l4jVafp3Shg=
+        b=YrfLjJ+qQ8JA3OJHJTYPTQviGYkr13G8fYeVZqVerypoSJOCixt6ecZGnvSFgsDVW
+         yoDnmtyDZEpdbdvPOv87HqsSKvJnqC2F6mMW53bBY5l+BmaxxSPHhc1v1nC4fD8G7Z
+         j1fN+y6tkFpXJGX8xWSIWv9PI9b/bIqkxYzKJ7c4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Miles Chen <miles.chen@mediatek.com>
-Subject: [PATCH 4.14 005/190] arch/openrisc: Fix issues with access_ok()
-Date:   Fri, 19 Jun 2020 16:30:50 +0200
-Message-Id: <20200619141633.736868337@linuxfoundation.org>
+        stable@vger.kernel.org, Gonglei <arei.gonglei@huawei.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        virtualization@lists.linux-foundation.org,
+        "Longpeng(Mike)" <longpeng2@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 066/267] crypto: virtio: Fix dest length calculation in __virtio_crypto_skcipher_do_req()
+Date:   Fri, 19 Jun 2020 16:30:51 +0200
+Message-Id: <20200619141652.052136865@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,46 +49,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stafford Horne <shorne@gmail.com>
+From: Longpeng(Mike) <longpeng2@huawei.com>
 
-commit 9cb2feb4d21d97386eb25c7b67e2793efcc1e70a upstream.
+[ Upstream commit d90ca42012db2863a9a30b564a2ace6016594bda ]
 
-The commit 594cc251fdd0 ("make 'user_access_begin()' do 'access_ok()'")
-exposed incorrect implementations of access_ok() macro in several
-architectures.  This change fixes 2 issues found in OpenRISC.
+The src/dst length is not aligned with AES_BLOCK_SIZE(which is 16) in some
+testcases in tcrypto.ko.
 
-OpenRISC was not properly using parenthesis for arguments and also using
-arguments twice.  This patch fixes those 2 issues.
+For example, the src/dst length of one of cts(cbc(aes))'s testcase is 17, the
+crypto_virtio driver will set @src_data_len=16 but @dst_data_len=17 in this
+case and get a wrong at then end.
 
-I test booted this patch with v5.0-rc1 on qemu and it's working fine.
+  SRC: pp pp pp pp pp pp pp pp pp pp pp pp pp pp pp pp pp (17 bytes)
+  EXP: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc pp (17 bytes)
+  DST: cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc cc 00 (pollute the last bytes)
+  (pp: plaintext  cc:ciphertext)
 
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Stafford Horne <shorne@gmail.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Miles Chen <miles.chen@mediatek.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this issue by limit the length of dest buffer.
+
+Fixes: dbaf0624ffa5 ("crypto: add virtio-crypto driver")
+Cc: Gonglei <arei.gonglei@huawei.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: virtualization@lists.linux-foundation.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+Signed-off-by: Longpeng(Mike) <longpeng2@huawei.com>
+Link: https://lore.kernel.org/r/20200602070501.2023-4-longpeng2@huawei.com
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/openrisc/include/asm/uaccess.h |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/crypto/virtio/virtio_crypto_algs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/openrisc/include/asm/uaccess.h
-+++ b/arch/openrisc/include/asm/uaccess.h
-@@ -58,8 +58,12 @@
- /* Ensure that addr is below task's addr_limit */
- #define __addr_ok(addr) ((unsigned long) addr < get_fs())
+diff --git a/drivers/crypto/virtio/virtio_crypto_algs.c b/drivers/crypto/virtio/virtio_crypto_algs.c
+index e9a8485c4929..ab4700e4b409 100644
+--- a/drivers/crypto/virtio/virtio_crypto_algs.c
++++ b/drivers/crypto/virtio/virtio_crypto_algs.c
+@@ -424,6 +424,7 @@ __virtio_crypto_ablkcipher_do_req(struct virtio_crypto_sym_request *vc_sym_req,
+ 		goto free;
+ 	}
  
--#define access_ok(type, addr, size) \
--	__range_ok((unsigned long)addr, (unsigned long)size)
-+#define access_ok(type, addr, size)						\
-+({ 									\
-+	unsigned long __ao_addr = (unsigned long)(addr);		\
-+	unsigned long __ao_size = (unsigned long)(size);		\
-+	__range_ok(__ao_addr, __ao_size);				\
-+})
++	dst_len = min_t(unsigned int, req->nbytes, dst_len);
+ 	pr_debug("virtio_crypto: src_len: %u, dst_len: %llu\n",
+ 			req->nbytes, dst_len);
  
- /*
-  * These are the main single-value transfer routines.  They automatically
+-- 
+2.25.1
+
 
 
