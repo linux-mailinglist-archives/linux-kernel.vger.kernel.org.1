@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26253200CAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1626200B9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388597AbgFSOsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:48:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40308 "EHLO mail.kernel.org"
+        id S1733304AbgFSOfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:35:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389050AbgFSOsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:48:06 -0400
+        id S1733289AbgFSOfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:35:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 522CF20DD4;
-        Fri, 19 Jun 2020 14:48:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6922D20DD4;
+        Fri, 19 Jun 2020 14:35:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578085;
-        bh=0FHpN1EHSVTg7MDnWTWFsKSpU17oCBDRoxafwMs6u4Q=;
+        s=default; t=1592577344;
+        bh=wDH/5okJyIGslq/z6aOXJ/16hU1tvR3xkoeeS4hjMNs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pF+sUIL/xIs3R0k5va+4n6T36ScagAeBYGQEWb7KfXX4Alij3Hx9uH0lX67ZwxXA6
-         GKb/XfD4MvM0Jww4JjeOdE64t20u864W81xs+RS5xTif4BYeKI4L9NmV2qPs9arH3s
-         VtlfpRlyYWyDFHuAegLHDYioh4UucmhY5JiGGDFY=
+        b=cZy8cBw/W2/+gs5MeoVxg6dbS8d1i4YvJW5YgCz1MUZRr4fUdjjq3itDutwc//u4j
+         OD6oYfoLvF0oVh6iu7aJJ+EWmumwzqdv13MWkhNgi15j4HJWcAcYjK3Ku1abP6snKU
+         nD2CypXsqkV57B4BAr545tdJyVEVEo57ZLCs+3kU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 077/190] crypto: ccp -- dont "select" CONFIG_DMADEVICES
-Date:   Fri, 19 Jun 2020 16:32:02 +0200
-Message-Id: <20200619141637.435306275@linuxfoundation.org>
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.4 014/101] ALSA: es1688: Add the missed snd_card_free()
+Date:   Fri, 19 Jun 2020 16:32:03 +0200
+Message-Id: <20200619141614.742554459@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
+References: <20200619141614.001544111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit eebac678556d6927f09a992872f4464cf3aecc76 ]
+commit d9b8fbf15d05350b36081eddafcf7b15aa1add50 upstream.
 
-DMADEVICES is the top-level option for the slave DMA
-subsystem, and should not be selected by device drivers,
-as this can cause circular dependencies such as:
+snd_es968_pnp_detect() misses a snd_card_free() in a failed path.
+Add the missed function call to fix it.
 
-drivers/net/ethernet/freescale/Kconfig:6:error: recursive dependency detected!
-drivers/net/ethernet/freescale/Kconfig:6:	symbol NET_VENDOR_FREESCALE depends on PPC_BESTCOMM
-drivers/dma/bestcomm/Kconfig:6:	symbol PPC_BESTCOMM depends on DMADEVICES
-drivers/dma/Kconfig:6:	symbol DMADEVICES is selected by CRYPTO_DEV_SP_CCP
-drivers/crypto/ccp/Kconfig:10:	symbol CRYPTO_DEV_SP_CCP depends on CRYPTO
-crypto/Kconfig:16:	symbol CRYPTO is selected by LIBCRC32C
-lib/Kconfig:222:	symbol LIBCRC32C is selected by LIQUIDIO
-drivers/net/ethernet/cavium/Kconfig:65:	symbol LIQUIDIO depends on PTP_1588_CLOCK
-drivers/ptp/Kconfig:8:	symbol PTP_1588_CLOCK is implied by FEC
-drivers/net/ethernet/freescale/Kconfig:23:	symbol FEC depends on NET_VENDOR_FREESCALE
+Fixes: a20971b201ac ("ALSA: Merge es1688 and es968 drivers")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20200603092459.1424093-1-hslester96@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The LIQUIDIO driver causing this problem is addressed in a
-separate patch, but this change is needed to prevent it from
-happening again.
-
-Using "depends on DMADEVICES" is what we do for all other
-implementations of slave DMA controllers as well.
-
-Fixes: b3c2fee5d66b ("crypto: ccp - Ensure all dependencies are specified")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/ccp/Kconfig | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/isa/es1688/es1688.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/crypto/ccp/Kconfig b/drivers/crypto/ccp/Kconfig
-index 6d626606b9c5..898dcf3200c3 100644
---- a/drivers/crypto/ccp/Kconfig
-+++ b/drivers/crypto/ccp/Kconfig
-@@ -8,10 +8,9 @@ config CRYPTO_DEV_CCP_DD
- config CRYPTO_DEV_SP_CCP
- 	bool "Cryptographic Coprocessor device"
- 	default y
--	depends on CRYPTO_DEV_CCP_DD
-+	depends on CRYPTO_DEV_CCP_DD && DMADEVICES
- 	select HW_RANDOM
- 	select DMA_ENGINE
--	select DMADEVICES
- 	select CRYPTO_SHA1
- 	select CRYPTO_SHA256
- 	help
--- 
-2.25.1
-
+--- a/sound/isa/es1688/es1688.c
++++ b/sound/isa/es1688/es1688.c
+@@ -284,8 +284,10 @@ static int snd_es968_pnp_detect(struct p
+ 		return error;
+ 	}
+ 	error = snd_es1688_probe(card, dev);
+-	if (error < 0)
++	if (error < 0) {
++		snd_card_free(card);
+ 		return error;
++	}
+ 	pnp_set_card_drvdata(pcard, card);
+ 	snd_es968_pnp_is_probed = 1;
+ 	return 0;
 
 
