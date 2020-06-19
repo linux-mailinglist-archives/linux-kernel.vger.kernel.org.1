@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28BD6200CAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7291200BA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:38:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389073AbgFSOsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:48:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
+        id S2387436AbgFSOgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:36:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389040AbgFSOsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:48:03 -0400
+        id S1733281AbgFSOfn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:35:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A9C2C2083B;
-        Fri, 19 Jun 2020 14:48:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23EFC20CC7;
+        Fri, 19 Jun 2020 14:35:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578083;
-        bh=jB0JHajaiSD8nMrmh1e+MEqgjkNC208Fvh9HNwxgcUw=;
+        s=default; t=1592577342;
+        bh=nA+tw0V4TWF0+wj9sSPi7MxhSTizICQy93g26Qer/uU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LbmrbKZy2kEEd8Mea6C1PRxgMkbCfVHgjc8ZtbE3GCNKUOqyQ51JWUS6WRRORlVvK
-         PaX3vqUgFkmzxVc24fVX/fOYCYtxGZUNeQLpxJNdKHaaJ6IjFck6XbaruCSWZeHJJ/
-         j7T1KZ+VWZBlr5OF7OI5AfQ3bktqnvuwPB3yE8MQ=
+        b=uKCGgsMQ3UhHZ/pq/y6rQkzgYMzsg2q9rnGE+Ml3Sl8lqQZZ2Wplb9XXri7nkAzsP
+         17e/HaFjUHyr3dNb2LASTEGkAPWUQ8h2vysFmkU6PzDsjtoJm3CrBpeiCeSHDBofWW
+         kPBxtWqhXwaPXkrrTh55EY9YqVvTQenbSn/ZCz/s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Bogdan Togorean <bogdan.togorean@analog.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 076/190] drm: bridge: adv7511: Extend list of audio sample rates
-Date:   Fri, 19 Jun 2020 16:32:01 +0200
-Message-Id: <20200619141637.375833152@linuxfoundation.org>
+        =?UTF-8?q?=E4=BA=BF=E4=B8=80?= <teroincn@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH 4.4 013/101] efi/efivars: Add missing kobject_put() in sysfs entry creation error path
+Date:   Fri, 19 Jun 2020 16:32:02 +0200
+Message-Id: <20200619141614.696225908@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
+References: <20200619141614.001544111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,50 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bogdan Togorean <bogdan.togorean@analog.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit b97b6a1f6e14a25d1e1ca2a46c5fa3e2ca374e22 ]
+commit d8bd8c6e2cfab8b78b537715255be8d7557791c0 upstream.
 
-ADV7511 support sample rates up to 192kHz. CTS and N parameters should
-be computed accordingly so this commit extend the list up to maximum
-supported sample rate.
+The documentation provided by kobject_init_and_add() clearly spells out
+the need to call kobject_put() on the kobject if an error is returned.
+Add this missing call to the error path.
 
-Signed-off-by: Bogdan Togorean <bogdan.togorean@analog.com>
-Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
-Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200413113513.86091-2-bogdan.togorean@analog.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Reported-by: 亿一 <teroincn@gmail.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/bridge/adv7511/adv7511_audio.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/firmware/efi/efivars.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-index 67469c26bae8..45a027d7a1e4 100644
---- a/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-+++ b/drivers/gpu/drm/bridge/adv7511/adv7511_audio.c
-@@ -20,13 +20,15 @@ static void adv7511_calc_cts_n(unsigned int f_tmds, unsigned int fs,
- {
- 	switch (fs) {
- 	case 32000:
--		*n = 4096;
-+	case 48000:
-+	case 96000:
-+	case 192000:
-+		*n = fs * 128 / 1000;
- 		break;
- 	case 44100:
--		*n = 6272;
--		break;
--	case 48000:
--		*n = 6144;
-+	case 88200:
-+	case 176400:
-+		*n = fs * 128 / 900;
- 		break;
- 	}
+--- a/drivers/firmware/efi/efivars.c
++++ b/drivers/firmware/efi/efivars.c
+@@ -585,8 +585,10 @@ efivar_create_sysfs_entry(struct efivar_
+ 	ret = kobject_init_and_add(&new_var->kobj, &efivar_ktype,
+ 				   NULL, "%s", short_name);
+ 	kfree(short_name);
+-	if (ret)
++	if (ret) {
++		kobject_put(&new_var->kobj);
+ 		return ret;
++	}
  
--- 
-2.25.1
-
+ 	kobject_uevent(&new_var->kobj, KOBJ_ADD);
+ 	efivar_entry_add(new_var, &efivar_sysfs_list);
 
 
