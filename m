@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 162E5200D86
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ACCD200E73
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390382AbgFSO6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:58:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54040 "EHLO mail.kernel.org"
+        id S2390716AbgFSPHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:07:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390361AbgFSO6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:58:19 -0400
+        id S2391599AbgFSPHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:07:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C87421941;
-        Fri, 19 Jun 2020 14:58:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67BE921974;
+        Fri, 19 Jun 2020 15:07:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578699;
-        bh=/4wWnXrjm8IYha4Hfia24J8Mlvmq2Vgs0g5tlJeHsdU=;
+        s=default; t=1592579255;
+        bh=QT6Y433QeSJTKcosfqaA/2Ec3fVXskYpE1FqGxWDsiE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pCBdUXRzD86dUEXtEPsVx50E1uhi/0PrKMmnhJlklkayh1g47Yv51uBlX7k9wnI27
-         pVe0YDajH7msomc1sMiACV5FtLYqa3uXuBIRQq0CDRWDmVT39KjJHdToSsFGaTmWP2
-         arx2/s+Lgn8fOG3JkFV1mfIQeOjtRiu0X2eC4E6Q=
+        b=mVoZZnnkd/5PsfQpw3WKWztQKkUXxeb/4xmoZbeI5Xu9JfEN7vTiy9AZN2i3dFHkT
+         V+YtiVK9i4T5Tao2lGYM/mmFkUxN0Yq6Ddq7mM/QGfxzWoCQ7fUKpRKUd1DVQqXLap
+         8nQkwuZ1Jw6ikIwU4F2M6ZXVuXXVa+tObHC9qZTk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
-        Marc Zyngier <maz@kernel.org>
-Subject: [PATCH 4.19 092/267] KVM: arm64: Synchronize sysreg state on injecting an AArch32 exception
-Date:   Fri, 19 Jun 2020 16:31:17 +0200
-Message-Id: <20200619141653.275298996@linuxfoundation.org>
+        stable@vger.kernel.org, teroincn@gmail.com,
+        Richard Guy Briggs <rgb@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 067/261] audit: fix a net reference leak in audit_send_reply()
+Date:   Fri, 19 Jun 2020 16:31:18 +0200
+Message-Id: <20200619141653.115006407@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,112 +45,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Paul Moore <paul@paul-moore.com>
 
-commit 0370964dd3ff7d3d406f292cb443a927952cbd05 upstream.
+[ Upstream commit a48b284b403a4a073d8beb72d2bb33e54df67fb6 ]
 
-On a VHE system, the EL1 state is left in the CPU most of the time,
-and only syncronized back to memory when vcpu_put() is called (most
-of the time on preemption).
+If audit_send_reply() fails when trying to create a new thread to
+send the reply it also fails to cleanup properly, leaking a reference
+to a net structure.  This patch fixes the error path and makes a
+handful of other cleanups that came up while fixing the code.
 
-Which means that when injecting an exception, we'd better have a way
-to either:
-(1) write directly to the EL1 sysregs
-(2) synchronize the state back to memory, and do the changes there
-
-For an AArch64, we already do (1), so we are safe. Unfortunately,
-doing the same thing for AArch32 would be pretty invasive. Instead,
-we can easily implement (2) by calling the put/load architectural
-backends, and keep preemption disabled. We can then reload the
-state back into EL1.
-
-Cc: stable@vger.kernel.org
-Reported-by: James Morse <james.morse@arm.com>
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: teroincn@gmail.com
+Reviewed-by: Richard Guy Briggs <rgb@redhat.com>
+Signed-off-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/include/asm/kvm_host.h   |    2 ++
- arch/arm64/include/asm/kvm_host.h |    2 ++
- virt/kvm/arm/aarch32.c            |   28 ++++++++++++++++++++++++++++
- 3 files changed, 32 insertions(+)
+ kernel/audit.c | 50 +++++++++++++++++++++++++++++---------------------
+ 1 file changed, 29 insertions(+), 21 deletions(-)
 
---- a/arch/arm/include/asm/kvm_host.h
-+++ b/arch/arm/include/asm/kvm_host.h
-@@ -364,4 +364,6 @@ static inline void kvm_vcpu_put_sysregs(
- struct kvm *kvm_arch_alloc_vm(void);
- void kvm_arch_free_vm(struct kvm *kvm);
+diff --git a/kernel/audit.c b/kernel/audit.c
+index fcfbb3476ccd..a4eeece2eecd 100644
+--- a/kernel/audit.c
++++ b/kernel/audit.c
+@@ -923,19 +923,30 @@ out_kfree_skb:
+ 	return NULL;
+ }
  
-+#define kvm_arm_vcpu_loaded(vcpu)	(false)
-+
- #endif /* __ARM_KVM_HOST_H__ */
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -537,4 +537,6 @@ void kvm_vcpu_put_sysregs(struct kvm_vcp
- struct kvm *kvm_arch_alloc_vm(void);
- void kvm_arch_free_vm(struct kvm *kvm);
- 
-+#define kvm_arm_vcpu_loaded(vcpu)	((vcpu)->arch.sysregs_loaded_on_cpu)
-+
- #endif /* __ARM64_KVM_HOST_H__ */
---- a/virt/kvm/arm/aarch32.c
-+++ b/virt/kvm/arm/aarch32.c
-@@ -44,6 +44,26 @@ static const u8 return_offsets[8][2] = {
- 	[7] = { 4, 4 },		/* FIQ, unused */
- };
- 
-+static bool pre_fault_synchronize(struct kvm_vcpu *vcpu)
++static void audit_free_reply(struct audit_reply *reply)
 +{
-+	preempt_disable();
-+	if (kvm_arm_vcpu_loaded(vcpu)) {
-+		kvm_arch_vcpu_put(vcpu);
-+		return true;
-+	}
++	if (!reply)
++		return;
 +
-+	preempt_enable();
-+	return false;
++	if (reply->skb)
++		kfree_skb(reply->skb);
++	if (reply->net)
++		put_net(reply->net);
++	kfree(reply);
 +}
 +
-+static void post_fault_synchronize(struct kvm_vcpu *vcpu, bool loaded)
-+{
-+	if (loaded) {
-+		kvm_arch_vcpu_load(vcpu, smp_processor_id());
-+		preempt_enable();
-+	}
-+}
-+
- /*
-  * When an exception is taken, most CPSR fields are left unchanged in the
-  * handler. However, some are explicitly overridden (e.g. M[4:0]).
-@@ -166,7 +186,10 @@ static void prepare_fault32(struct kvm_v
- 
- void kvm_inject_undef32(struct kvm_vcpu *vcpu)
+ static int audit_send_reply_thread(void *arg)
  {
-+	bool loaded = pre_fault_synchronize(vcpu);
+ 	struct audit_reply *reply = (struct audit_reply *)arg;
+-	struct sock *sk = audit_get_sk(reply->net);
+ 
+ 	audit_ctl_lock();
+ 	audit_ctl_unlock();
+ 
+ 	/* Ignore failure. It'll only happen if the sender goes away,
+ 	   because our timeout is set to infinite. */
+-	netlink_unicast(sk, reply->skb, reply->portid, 0);
+-	put_net(reply->net);
+-	kfree(reply);
++	netlink_unicast(audit_get_sk(reply->net), reply->skb, reply->portid, 0);
++	reply->skb = NULL;
++	audit_free_reply(reply);
+ 	return 0;
+ }
+ 
+@@ -949,35 +960,32 @@ static int audit_send_reply_thread(void *arg)
+  * @payload: payload data
+  * @size: payload size
+  *
+- * Allocates an skb, builds the netlink message, and sends it to the port id.
+- * No failure notifications.
++ * Allocates a skb, builds the netlink message, and sends it to the port id.
+  */
+ static void audit_send_reply(struct sk_buff *request_skb, int seq, int type, int done,
+ 			     int multi, const void *payload, int size)
+ {
+-	struct net *net = sock_net(NETLINK_CB(request_skb).sk);
+-	struct sk_buff *skb;
+ 	struct task_struct *tsk;
+-	struct audit_reply *reply = kmalloc(sizeof(struct audit_reply),
+-					    GFP_KERNEL);
++	struct audit_reply *reply;
+ 
++	reply = kzalloc(sizeof(*reply), GFP_KERNEL);
+ 	if (!reply)
+ 		return;
+ 
+-	skb = audit_make_reply(seq, type, done, multi, payload, size);
+-	if (!skb)
+-		goto out;
+-
+-	reply->net = get_net(net);
++	reply->skb = audit_make_reply(seq, type, done, multi, payload, size);
++	if (!reply->skb)
++		goto err;
++	reply->net = get_net(sock_net(NETLINK_CB(request_skb).sk));
+ 	reply->portid = NETLINK_CB(request_skb).portid;
+-	reply->skb = skb;
+ 
+ 	tsk = kthread_run(audit_send_reply_thread, reply, "audit_send_reply");
+-	if (!IS_ERR(tsk))
+-		return;
+-	kfree_skb(skb);
+-out:
+-	kfree(reply);
++	if (IS_ERR(tsk))
++		goto err;
 +
- 	prepare_fault32(vcpu, PSR_AA32_MODE_UND, 4);
-+	post_fault_synchronize(vcpu, loaded);
++	return;
++
++err:
++	audit_free_reply(reply);
  }
  
  /*
-@@ -179,6 +202,9 @@ static void inject_abt32(struct kvm_vcpu
- 	u32 vect_offset;
- 	u32 *far, *fsr;
- 	bool is_lpae;
-+	bool loaded;
-+
-+	loaded = pre_fault_synchronize(vcpu);
- 
- 	if (is_pabt) {
- 		vect_offset = 12;
-@@ -202,6 +228,8 @@ static void inject_abt32(struct kvm_vcpu
- 		/* no need to shuffle FS[4] into DFSR[10] as its 0 */
- 		*fsr = DFSR_FSC_EXTABT_nLPAE;
- 	}
-+
-+	post_fault_synchronize(vcpu, loaded);
- }
- 
- void kvm_inject_dabt32(struct kvm_vcpu *vcpu, unsigned long addr)
+-- 
+2.25.1
+
 
 
