@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C46DF20132F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0037F201329
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405473AbgFSP6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:58:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50626 "EHLO mail.kernel.org"
+        id S2392628AbgFSP5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:57:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404209AbgFSPTk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:19:40 -0400
+        id S2392630AbgFSPT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:19:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8D9E206DB;
-        Fri, 19 Jun 2020 15:19:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66015217A0;
+        Fri, 19 Jun 2020 15:19:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579979;
-        bh=3YAXEK4s/GPg8WqzWmTln3TcNkCmuYxwrw8nQ+1yss8=;
+        s=default; t=1592579997;
+        bh=Nzj33yMcNsTqDcHz96UKV5DTW8bq53Qh/4LF7am2yZs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2FCsCzLyLQOVZRe0Pl0ic9nc3oaAtsl770fvdBVBTRa9X0J1NOBrUckLVjIYJuR60
-         n/tD1CH1ZCm9j3Pb+KBJVontlRz8kro/x1zHXJ3Aylikh8hCaBpDMQcv8UKGYvRDqN
-         pcOpUdz8ySNszKDhHS53wqNWg3lmcEylwX06j0T8=
+        b=s+HJQnPYVk/3ycXUahn2dH7yrid1GlF27G0nfcwkegCNo064ZNBz1rD6/vNoGEWCK
+         KzqwjOH9DTp7bww+1xPBJWun+XyIV/xVAOa2Brd3/MvIeinrO+FDNTbSDSOHIQg9WK
+         QHAOqjOtbyR2DGp7r2m3RPQ5gIloiBadiaMKHJds=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Helen Koike <helen.koike@collabora.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 049/376] media: i2c: imx219: Fix a bug in imx219_enum_frame_size
-Date:   Fri, 19 Jun 2020 16:29:27 +0200
-Message-Id: <20200619141712.675319974@linuxfoundation.org>
+Subject: [PATCH 5.7 054/376] ath11k: Fix some resource leaks in error path in ath11k_thermal_register()
+Date:   Fri, 19 Jun 2020 16:29:32 +0200
+Message-Id: <20200619141712.909592912@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -49,40 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit b2bbf1aac61186ef904fd28079e847d3feadb89e ]
+[ Upstream commit 25ca180ad380a0c7286442a922e7fbcc6a9f6083 ]
 
-When enumerating the frame sizes, the value sent to
-imx219_get_format_code should be fse->code
-(the code from the ioctl) and not imx219->fmt.code
-which is the code set currently in the driver.
+If 'thermal_cooling_device_register()' fails, we must undo what has been
+allocated so far. So we must go to 'err_thermal_destroy' instead of
+returning directly
 
-Fixes: 22da1d56e982 ("media: i2c: imx219: Add support for RAW8 bit bayer format")
-Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
-Reviewed-by: Helen Koike <helen.koike@collabora.com>
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+In case of error in 'ath11k_thermal_register()', the previous
+'thermal_cooling_device_register()' call must also be undone. Move the
+'ar->thermal.cdev = cdev' a few lines above in order for this to be done
+in 'ath11k_thermal_unregister()' which is called in the error handling
+path.
+
+Fixes: 2a63bbca06b2 ("ath11k: add thermal cooling device support")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200513201454.258111-1-christophe.jaillet@wanadoo.fr
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/i2c/imx219.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/ath/ath11k/thermal.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/i2c/imx219.c b/drivers/media/i2c/imx219.c
-index cb03bdec1f9c..86e0564bfb4f 100644
---- a/drivers/media/i2c/imx219.c
-+++ b/drivers/media/i2c/imx219.c
-@@ -781,7 +781,7 @@ static int imx219_enum_frame_size(struct v4l2_subdev *sd,
- 	if (fse->index >= ARRAY_SIZE(supported_modes))
- 		return -EINVAL;
+diff --git a/drivers/net/wireless/ath/ath11k/thermal.c b/drivers/net/wireless/ath/ath11k/thermal.c
+index 259dddbda2c7..5a7e150c621b 100644
+--- a/drivers/net/wireless/ath/ath11k/thermal.c
++++ b/drivers/net/wireless/ath/ath11k/thermal.c
+@@ -174,9 +174,12 @@ int ath11k_thermal_register(struct ath11k_base *sc)
+ 		if (IS_ERR(cdev)) {
+ 			ath11k_err(sc, "failed to setup thermal device result: %ld\n",
+ 				   PTR_ERR(cdev));
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto err_thermal_destroy;
+ 		}
  
--	if (fse->code != imx219_get_format_code(imx219, imx219->fmt.code))
-+	if (fse->code != imx219_get_format_code(imx219, fse->code))
- 		return -EINVAL;
++		ar->thermal.cdev = cdev;
++
+ 		ret = sysfs_create_link(&ar->hw->wiphy->dev.kobj, &cdev->device.kobj,
+ 					"cooling_device");
+ 		if (ret) {
+@@ -184,7 +187,6 @@ int ath11k_thermal_register(struct ath11k_base *sc)
+ 			goto err_thermal_destroy;
+ 		}
  
- 	fse->min_width = supported_modes[fse->index].width;
+-		ar->thermal.cdev = cdev;
+ 		if (!IS_REACHABLE(CONFIG_HWMON))
+ 			return 0;
+ 
 -- 
 2.25.1
 
