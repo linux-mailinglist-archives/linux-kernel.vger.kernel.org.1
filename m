@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D9F0200E0E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52187200F1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:16:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391158AbgFSPEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:04:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33152 "EHLO mail.kernel.org"
+        id S2404024AbgFSPP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:15:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391151AbgFSPE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:04:29 -0400
+        id S2392392AbgFSPPR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:15:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1623F206DB;
-        Fri, 19 Jun 2020 15:04:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 39115206DB;
+        Fri, 19 Jun 2020 15:15:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579068;
-        bh=wums38tIbdlDkChcSKWLY242cq4emMf/+d/eJEQRV78=;
+        s=default; t=1592579716;
+        bh=h9AjYWLpPnVQ3hx1NqBpTvvDPiSZ8rjO6cwPYuw0aBk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=na9Apqz4PxHTDUHw2FWy7ICzl7jeb1R3Yygo1bb8+FmMuiVG4O1iIDYiT1FO+Sc81
-         ADtibyQLGdEpBYAjcHOuO41VhTjBt6eI8AzB4swrvaE3hORiU5agb/To/nkHrQsZIJ
-         AKRMwiTY4Xm1JMcBpKD5PVOzE56iRkP3PxVWejek=
+        b=dDs7cInESYNRnyx+5d/KK3b7xO2A+6sQIpPONUyKAOQ9tbPzY786ATtB4z9zEXKGo
+         S+e9xi7aOSWEdd3eEgqyepo7abzaVpBJnDqjzORZHhaDqFlmOFlNP7Nx1vVlxxpHuP
+         k7s3xHe0iyUZQnWmZd0dhDlUP5YBIm10JrJJuuUg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [PATCH 4.19 264/267] perf probe: Do not show the skipped events
-Date:   Fri, 19 Jun 2020 16:34:09 +0200
-Message-Id: <20200619141701.342034355@linuxfoundation.org>
+        stable@vger.kernel.org, NeilBrown <neilb@suse.de>,
+        "J. Bruce Fields" <bfields@redhat.com>
+Subject: [PATCH 5.4 239/261] sunrpc: clean up properly in gss_mech_unregister()
+Date:   Fri, 19 Jun 2020 16:34:10 +0200
+Message-Id: <20200619141701.345250460@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,67 +43,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: NeilBrown <neilb@suse.de>
 
-commit f41ebe9defacddeae96a872a33f0f22ced0bfcef upstream.
+commit 24c5efe41c29ee3e55bcf5a1c9f61ca8709622e8 upstream.
 
-When a probe point is expanded to several places (like inlined) and if
-some of them are skipped because of blacklisted or __init function,
-those trace_events has no event name. It must be skipped while showing
-results.
+gss_mech_register() calls svcauth_gss_register_pseudoflavor() for each
+flavour, but gss_mech_unregister() does not call auth_domain_put().
+This is unbalanced and makes it impossible to reload the module.
 
-Without this fix, you can see "(null):(null)" on the list,
+Change svcauth_gss_register_pseudoflavor() to return the registered
+auth_domain, and save it for later release.
 
-  # ./perf probe request_resource
-  reserve_setup is out of .text, skip it.
-  Added new events:
-    (null):(null)        (on request_resource)
-    probe:request_resource (on request_resource)
-
-  You can now use it in all perf tools, such as:
-
-  	perf record -e probe:request_resource -aR sleep 1
-
-  #
-
-With this fix, it is ignored:
-
-  # ./perf probe request_resource
-  reserve_setup is out of .text, skip it.
-  Added new events:
-    probe:request_resource (on request_resource)
-
-  You can now use it in all perf tools, such as:
-
-  	perf record -e probe:request_resource -aR sleep 1
-
-  #
-
-Fixes: 5a51fcd1f30c ("perf probe: Skip kernel symbols which is out of .text")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: stable@vger.kernel.org
-Link: http://lore.kernel.org/lkml/158763968263.30755.12800484151476026340.stgit@devnote2
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: stable@vger.kernel.org (v2.6.12+)
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206651
+Signed-off-by: NeilBrown <neilb@suse.de>
+Signed-off-by: J. Bruce Fields <bfields@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/perf/builtin-probe.c |    3 +++
- 1 file changed, 3 insertions(+)
+ include/linux/sunrpc/gss_api.h        |    1 +
+ include/linux/sunrpc/svcauth_gss.h    |    3 ++-
+ net/sunrpc/auth_gss/gss_mech_switch.c |   12 +++++++++---
+ net/sunrpc/auth_gss/svcauth_gss.c     |   12 ++++++------
+ 4 files changed, 18 insertions(+), 10 deletions(-)
 
---- a/tools/perf/builtin-probe.c
-+++ b/tools/perf/builtin-probe.c
-@@ -376,6 +376,9 @@ static int perf_add_probe_events(struct
+--- a/include/linux/sunrpc/gss_api.h
++++ b/include/linux/sunrpc/gss_api.h
+@@ -85,6 +85,7 @@ struct pf_desc {
+ 	u32	service;
+ 	char	*name;
+ 	char	*auth_domain_name;
++	struct auth_domain *domain;
+ 	bool	datatouch;
+ };
  
- 		for (k = 0; k < pev->ntevs; k++) {
- 			struct probe_trace_event *tev = &pev->tevs[k];
-+			/* Skipped events have no event name */
-+			if (!tev->event)
-+				continue;
+--- a/include/linux/sunrpc/svcauth_gss.h
++++ b/include/linux/sunrpc/svcauth_gss.h
+@@ -21,7 +21,8 @@ int gss_svc_init(void);
+ void gss_svc_shutdown(void);
+ int gss_svc_init_net(struct net *net);
+ void gss_svc_shutdown_net(struct net *net);
+-int svcauth_gss_register_pseudoflavor(u32 pseudoflavor, char * name);
++struct auth_domain *svcauth_gss_register_pseudoflavor(u32 pseudoflavor,
++						      char *name);
+ u32 svcauth_gss_flavor(struct auth_domain *dom);
  
- 			/* We use tev's name for showing new events */
- 			show_perf_probe_event(tev->group, tev->event, pev,
+ #endif /* __KERNEL__ */
+--- a/net/sunrpc/auth_gss/gss_mech_switch.c
++++ b/net/sunrpc/auth_gss/gss_mech_switch.c
+@@ -36,6 +36,8 @@ gss_mech_free(struct gss_api_mech *gm)
+ 
+ 	for (i = 0; i < gm->gm_pf_num; i++) {
+ 		pf = &gm->gm_pfs[i];
++		if (pf->domain)
++			auth_domain_put(pf->domain);
+ 		kfree(pf->auth_domain_name);
+ 		pf->auth_domain_name = NULL;
+ 	}
+@@ -58,6 +60,7 @@ make_auth_domain_name(char *name)
+ static int
+ gss_mech_svc_setup(struct gss_api_mech *gm)
+ {
++	struct auth_domain *dom;
+ 	struct pf_desc *pf;
+ 	int i, status;
+ 
+@@ -67,10 +70,13 @@ gss_mech_svc_setup(struct gss_api_mech *
+ 		status = -ENOMEM;
+ 		if (pf->auth_domain_name == NULL)
+ 			goto out;
+-		status = svcauth_gss_register_pseudoflavor(pf->pseudoflavor,
+-							pf->auth_domain_name);
+-		if (status)
++		dom = svcauth_gss_register_pseudoflavor(
++			pf->pseudoflavor, pf->auth_domain_name);
++		if (IS_ERR(dom)) {
++			status = PTR_ERR(dom);
+ 			goto out;
++		}
++		pf->domain = dom;
+ 	}
+ 	return 0;
+ out:
+--- a/net/sunrpc/auth_gss/svcauth_gss.c
++++ b/net/sunrpc/auth_gss/svcauth_gss.c
+@@ -800,7 +800,7 @@ u32 svcauth_gss_flavor(struct auth_domai
+ 
+ EXPORT_SYMBOL_GPL(svcauth_gss_flavor);
+ 
+-int
++struct auth_domain *
+ svcauth_gss_register_pseudoflavor(u32 pseudoflavor, char * name)
+ {
+ 	struct gss_domain	*new;
+@@ -823,17 +823,17 @@ svcauth_gss_register_pseudoflavor(u32 ps
+ 			name);
+ 		stat = -EADDRINUSE;
+ 		auth_domain_put(test);
+-		kfree(new->h.name);
+-		goto out_free_dom;
++		goto out_free_name;
+ 	}
+-	return 0;
++	return test;
+ 
++out_free_name:
++	kfree(new->h.name);
+ out_free_dom:
+ 	kfree(new);
+ out:
+-	return stat;
++	return ERR_PTR(stat);
+ }
+-
+ EXPORT_SYMBOL_GPL(svcauth_gss_register_pseudoflavor);
+ 
+ static inline int
 
 
