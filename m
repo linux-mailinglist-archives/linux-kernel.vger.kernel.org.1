@@ -2,178 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BA5201CCE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 22:59:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16464201CE7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 23:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391588AbgFSU7X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 16:59:23 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:40203 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391431AbgFSU7W (ORCPT
+        id S2392000AbgFSVMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 17:12:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389497AbgFSVMB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 16:59:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592600359;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3zQCeY2hg03c0w2Pqa3443YwJLYT6nkTcSltvd+Vi4A=;
-        b=FomYuQC8Z4enCrXK/a53oyu4J6nPXwJeZ27S7SeaGt74Ov0JJ+/p+mP+9Z8eLSb+q019Uz
-        zSyOUNw+l1SfN5pq6xWDuQrS4GT1FjKObtJ5y+V+QH6Dzxj/q3q8VZWE0Y+hT1IHbTDnFZ
-        5EBkjB+Wwo+yhY5JSwo+dd6UuFpyDUQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-354-rrXxSD6nM6-QXDL_hIU0dg-1; Fri, 19 Jun 2020 16:59:17 -0400
-X-MC-Unique: rrXxSD6nM6-QXDL_hIU0dg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D0E84193F560;
-        Fri, 19 Jun 2020 20:59:14 +0000 (UTC)
-Received: from redhat.com (ovpn-112-200.rdu2.redhat.com [10.10.112.200])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A800B7C1E3;
-        Fri, 19 Jun 2020 20:59:12 +0000 (UTC)
-Date:   Fri, 19 Jun 2020 16:59:10 -0400
-From:   Jerome Glisse <jglisse@redhat.com>
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>,
-        Thomas =?iso-8859-1?Q?Hellstr=F6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
- annotations
-Message-ID: <20200619205910.GA14480@redhat.com>
-References: <CAKMK7uEbqTu4q-amkLXyd1i8KNtLaoO2ZFoGqYiG6D0m0FKpOg@mail.gmail.com>
- <20200619113934.GN6578@ziepe.ca>
- <CAKMK7uE-kWA==Cko5uenMrcnopEjq42HxoDTDywzBAbHqsN13g@mail.gmail.com>
- <20200619151551.GP6578@ziepe.ca>
- <CAKMK7uEvkshAM6KUYZu8_OCpF4+1Y_SM7cQ9nJWpagfke8s8LA@mail.gmail.com>
- <20200619172308.GQ6578@ziepe.ca>
- <20200619180935.GA10009@redhat.com>
- <20200619181849.GR6578@ziepe.ca>
- <20200619201011.GB13117@redhat.com>
- <CAKMK7uFZgQH3bP4iC9MPArpngeSHESK62KFEeJvYyV9NSJ_GRw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKMK7uFZgQH3bP4iC9MPArpngeSHESK62KFEeJvYyV9NSJ_GRw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Fri, 19 Jun 2020 17:12:01 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABFAAC06174E;
+        Fri, 19 Jun 2020 14:12:01 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id o15so11591706ejm.12;
+        Fri, 19 Jun 2020 14:12:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=KIfMPBwAbPyXpMZbtJoCaGsnNqfMLuSMLpP/STnWlzg=;
+        b=LtyiMQyp/FFZubW5+D7Foysbwwy85DTvqClszgRgNmhLcYvR65lWt8fkqGyfDY8Tqa
+         VDBkQZ3ADigK7DYgxlj93aUYWUVZnlPrlhP9Lt4lv3AK3SZ+9zoQxf7zu3pUUQMak3Ro
+         fUf9nmwlXLRmY3tb4ZXnV03Vh0/JmlzfjyPJcmWGFOEhijyPYte7h0AjlrUXJmgeF0Oo
+         rWWi3GdVA8skQgoKRyX3oCVYLxRuI5klFVgEuVJFlc6KRgG5vJNHL0Vs1StzSGYnzHK3
+         JvhhEfNVbUnysBFzTnLzB024bU2F55p6VO8WWnpHAsZV8YIIQPvfThIjqt2vFuklQzqj
+         0PSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=KIfMPBwAbPyXpMZbtJoCaGsnNqfMLuSMLpP/STnWlzg=;
+        b=mURiSVGBGeBADQkpicpibHef9x6hj/EwgSgbD4ecZ4JFNi/bV2bWo5sFJFy62MhQC3
+         C9aW3BFilo1B66bVSvm2hTC9jnOJPnj4PvLP7pAvfUGlkttA402CBJCR/DrULgoN3iLJ
+         zWu0ZaKghTeTmb5tYqve8E5ddrKtFYhNhM6y3qVAVFgmoEiOfCcMFgCNTp3rjpW37wQf
+         75/6uIjLiJOwRmMW2adO4QbwTCeYYMjNuD6dflUuUwO3zA8dyFccfRhqHGnsSeBe1+3a
+         FGgPV03kS9hUqnWWXZw0FC8jnt8GCOX9XEDGrT1DiBeBJw2CGoCgkosH4U9U0zYCtpC6
+         nQSQ==
+X-Gm-Message-State: AOAM530TrtBu02B1rLrM4wCeU90ELdr7mVK5cCSNpCKzptPDaKSiOom9
+        qVfufyLozfNlKzhhlUmIW8DZAMZ1tDU=
+X-Google-Smtp-Source: ABdhPJz6Lh9pbDU8TDSe05ow1YOmWrdksOecxfmIJQTZzGP5k+kRD6mBrTHQAq1DsYbFiHN/vcBdEQ==
+X-Received: by 2002:a17:906:adc7:: with SMTP id lb7mr324566ejb.302.1592601120219;
+        Fri, 19 Jun 2020 14:12:00 -0700 (PDT)
+Received: from net.saheed (54001B7F.dsl.pool.telekom.hu. [84.0.27.127])
+        by smtp.gmail.com with ESMTPSA id kt10sm5485833ejb.54.2020.06.19.14.11.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 14:11:58 -0700 (PDT)
+From:   refactormyself@gmail.com
+To:     helgaas@kernel.org
+Cc:     Bolarinwa Olayemi Saheed <refactormyself@gmail.com>,
+        bjorn@helgaas.com, linux-pci@vger.kernel.org,
+        skhan@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Fix wrong failure check on pcie_capability_read_*()
+Date:   Fri, 19 Jun 2020 22:12:17 +0200
+Message-Id: <20200619201219.32126-1-refactormyself@gmail.com>
+X-Mailer: git-send-email 2.18.2
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 10:43:20PM +0200, Daniel Vetter wrote:
-> On Fri, Jun 19, 2020 at 10:10 PM Jerome Glisse <jglisse@redhat.com> wrote:
-> >
-> > On Fri, Jun 19, 2020 at 03:18:49PM -0300, Jason Gunthorpe wrote:
-> > > On Fri, Jun 19, 2020 at 02:09:35PM -0400, Jerome Glisse wrote:
-> > > > On Fri, Jun 19, 2020 at 02:23:08PM -0300, Jason Gunthorpe wrote:
-> > > > > On Fri, Jun 19, 2020 at 06:19:41PM +0200, Daniel Vetter wrote:
-> > > > >
-> > > > > > The madness is only that device B's mmu notifier might need to wait
-> > > > > > for fence_B so that the dma operation finishes. Which in turn has to
-> > > > > > wait for device A to finish first.
-> > > > >
-> > > > > So, it sound, fundamentally you've got this graph of operations across
-> > > > > an unknown set of drivers and the kernel cannot insert itself in
-> > > > > dma_fence hand offs to re-validate any of the buffers involved?
-> > > > > Buffers which by definition cannot be touched by the hardware yet.
-> > > > >
-> > > > > That really is a pretty horrible place to end up..
-> > > > >
-> > > > > Pinning really is right answer for this kind of work flow. I think
-> > > > > converting pinning to notifers should not be done unless notifier
-> > > > > invalidation is relatively bounded.
-> > > > >
-> > > > > I know people like notifiers because they give a bit nicer performance
-> > > > > in some happy cases, but this cripples all the bad cases..
-> > > > >
-> > > > > If pinning doesn't work for some reason maybe we should address that?
-> > > >
-> > > > Note that the dma fence is only true for user ptr buffer which predate
-> > > > any HMM work and thus were using mmu notifier already. You need the
-> > > > mmu notifier there because of fork and other corner cases.
-> > >
-> > > I wonder if we should try to fix the fork case more directly - RDMA
-> > > has this same problem and added MADV_DONTFORK a long time ago as a
-> > > hacky way to deal with it.
-> > >
-> > > Some crazy page pin that resolved COW in a way that always kept the
-> > > physical memory with the mm that initiated the pin?
-> >
-> > Just no way to deal with it easily, i thought about forcing the
-> > anon_vma (page->mapping for anonymous page) to the anon_vma that
-> > belongs to the vma against which the GUP was done but it would
-> > break things if page is already in other branch of a fork tree.
-> > Also this forbid fast GUP.
-> >
-> > Quite frankly the fork was not the main motivating factor. GPU
-> > can pin potentialy GBytes of memory thus we wanted to be able
-> > to release it but since Michal changes to reclaim code this is
-> > no longer effective.
-> 
-> What where how? My patch to annote reclaim paths with mmu notifier
-> possibility just landed in -mm, so if direct reclaim can't reclaim mmu
-> notifier'ed stuff anymore we need to know.
-> 
-> Also this would resolve the entire pain we're discussing in this
-> thread about dma_fence_wait deadlocking against anything that's not
-> GFP_ATOMIC ...
+From: Bolarinwa Olayemi Saheed <refactormyself@gmail.com>
 
-Sorry my bad, reclaim still works, only oom skip. It was couple
-years ago and i thought that some of the things discuss while
-back did make it upstream.
-
-It is probably a good time to also point out that what i wanted
-to do is have all the mmu notifier callback provide some kind
-of fence (not dma fence) so that we can split the notification
-into step:
-    A- schedule notification on all devices/system get fences
-       this step should minimize lock dependency and should
-       not have to wait for anything also best if you can avoid
-       memory allocation for instance by pre-allocating what
-       you need for notification.
-    B- mm can do things like unmap but can not map new page
-       so write special swap pte to cpu page table
-    C- wait on each fences from A
-    ... resume old code ie replace pte or finish unmap ...
-
-The idea here is that at step C the core mm can decide to back
-off if any fence returned from A have to wait. This means that
-every device is invalidating for nothing but if we get there
-then it might still be a good thing as next time around maybe
-the kernel would be successfull without a wait.
-
-This would allow things like reclaim to make forward progress
-and skip over or limit wait time to given timeout.
-
-Also I thought to extend this even to multi-cpu tlb flush so
-that device and CPUs follow same pattern and we can make //
-progress on each.
+On failure, pcie_capabiility_read_*() will set the status value,
+its last parameter to 0 and not ~0.
+This bug fix checks for the proper value.
 
 
-Getting to such scheme is a lot of work. My plan was to first
-get the fence as part of the notifier user API and hide it from
-mm inside notifier common code. Then update each core mm path to
-new model and see if there is any benefit from it. Reclaim would
-be first candidate.
+Bolarinwa Olayemi Saheed (2):
+  PCI/PME: Fix wrong failure check on pcie_capability_read_*()
+  PCI: pciehp: Fix wrong failure check on pcie_capability_read_*()
 
-Cheers,
-Jérôme
+ drivers/pci/hotplug/pciehp_hpc.c | 10 +++++-----
+ drivers/pci/pcie/pme.c           |  4 ++--
+ 2 files changed, 7 insertions(+), 7 deletions(-)
+
+-- 
+2.18.2
 
