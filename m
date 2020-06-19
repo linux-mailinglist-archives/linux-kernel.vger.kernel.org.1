@@ -2,78 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D82102019CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F4322019CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393536AbgFSRwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 13:52:12 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:30411 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731445AbgFSRwL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 13:52:11 -0400
-X-UUID: 4478a7f4d29c44a0baeac7527268ac55-20200620
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=sIDH8EdAE4qcmj93nhKlzx7c6UAV1dzXbtm0oufG89w=;
-        b=P3vPznNbBFt87BddjbeK4q1uarTDy5M62LRiA60qFwjamgD6+S/0/pXdGMxxKeHEZuKtFb8AAqQ2+jC7qp6Y1sWZdOePsSSRpV3ueXiW0dPCVpDqYopHUHo5lPTbuLmWXcjd0NYTQgmEbaRgfKZY/hmtFuGp/5lKZF8Ja/Y+nqA=;
-X-UUID: 4478a7f4d29c44a0baeac7527268ac55-20200620
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw01.mediatek.com
-        (envelope-from <sean.wang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1320373898; Sat, 20 Jun 2020 01:52:05 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs08n1.mediatek.inc (172.21.101.55) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Sat, 20 Jun 2020 01:52:02 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sat, 20 Jun 2020 01:52:01 +0800
-From:   <sean.wang@mediatek.com>
-To:     <marcel@holtmann.org>, <johan.hedberg@gmail.com>
-CC:     <linux-bluetooth@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Sean Wang <sean.wang@mediatek.com>,
-        Mark Chen <Mark-YW.Chen@mediatek.com>
-Subject: [PATCH v2 2/2] Bluetooth: btmtksdio: fix up firmware download sequence
-Date:   Sat, 20 Jun 2020 01:52:02 +0800
-Message-ID: <8ed6746c7d2ce6a38eb88c78c81593c0cbd4451f.1592588740.git.sean.wang@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <7d835850c16e07d1346c763900cc8c880182f497.1592588740.git.sean.wang@mediatek.com>
-References: <7d835850c16e07d1346c763900cc8c880182f497.1592588740.git.sean.wang@mediatek.com>
+        id S2393652AbgFSRxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 13:53:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:51680 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731445AbgFSRxF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 13:53:05 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C02972B;
+        Fri, 19 Jun 2020 10:53:04 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3A8623F73C;
+        Fri, 19 Jun 2020 10:53:03 -0700 (PDT)
+Date:   Fri, 19 Jun 2020 18:53:00 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Chris Redpath <chrid.redpath@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] sched/uclamp: Protect uclamp fast path code with
+ static key
+Message-ID: <20200619175300.sqqdeu6qug3ilnfd@e107158-lin.cambridge.arm.com>
+References: <20200618195525.7889-1-qais.yousef@arm.com>
+ <20200618195525.7889-3-qais.yousef@arm.com>
+ <20200619174510.GB576888@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200619174510.GB576888@hirez.programming.kicks-ass.net>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogU2VhbiBXYW5nIDxzZWFuLndhbmdAbWVkaWF0ZWsuY29tPg0KDQpEYXRhIFJBTSBvbiB0
-aGUgZGV2aWNlIGhhdmUgdG8gYmUgcG93ZXJlZCBvbiBiZWZvcmUgc3RhcnRpbmcgdG8gZG93bmxv
-YWQNCnRoZSBmaXJtd2FyZS4NCg0KdjEtPnYyOg0KCXJlYmFzZWQgdG8gYmx1ZXRvb3RoLW5leHQN
-Cg0KRml4ZXM6IDlhZWJmZDRhMjIwMCAoIkJsdWV0b290aDogbWVkaWF0ZWs6IGFkZCBzdXBwb3J0
-IGZvciBNZWRpYVRlayBNVDc2NjNTIGFuZCBNVDc2NjhTIFNESU8gZGV2aWNlcyIpDQpDby1kZXZl
-bG9wZWQtYnk6IE1hcmsgQ2hlbiA8TWFyay1ZVy5DaGVuQG1lZGlhdGVrLmNvbT4NClNpZ25lZC1v
-ZmYtYnk6IE1hcmsgQ2hlbiA8TWFyay1ZVy5DaGVuQG1lZGlhdGVrLmNvbT4NClNpZ25lZC1vZmYt
-Ynk6IFNlYW4gV2FuZyA8c2Vhbi53YW5nQG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGRyaXZlcnMvYmx1
-ZXRvb3RoL2J0bXRrc2Rpby5jIHwgMTYgKysrKysrKysrKysrKysrLQ0KIDEgZmlsZSBjaGFuZ2Vk
-LCAxNSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJz
-L2JsdWV0b290aC9idG10a3NkaW8uYyBiL2RyaXZlcnMvYmx1ZXRvb3RoL2J0bXRrc2Rpby5jDQpp
-bmRleCA1MTk3ODhjNDQyY2EuLjExNDk0Y2QyYTk4MiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvYmx1
-ZXRvb3RoL2J0bXRrc2Rpby5jDQorKysgYi9kcml2ZXJzL2JsdWV0b290aC9idG10a3NkaW8uYw0K
-QEAgLTY4NSw3ICs2ODUsNyBAQCBzdGF0aWMgaW50IG10a19zZXR1cF9maXJtd2FyZShzdHJ1Y3Qg
-aGNpX2RldiAqaGRldiwgY29uc3QgY2hhciAqZnduYW1lKQ0KIAljb25zdCB1OCAqZndfcHRyOw0K
-IAlzaXplX3QgZndfc2l6ZTsNCiAJaW50IGVyciwgZGxlbjsNCi0JdTggZmxhZzsNCisJdTggZmxh
-ZywgcGFyYW07DQogDQogCWVyciA9IHJlcXVlc3RfZmlybXdhcmUoJmZ3LCBmd25hbWUsICZoZGV2
-LT5kZXYpOw0KIAlpZiAoZXJyIDwgMCkgew0KQEAgLTY5Myw2ICs2OTMsMjAgQEAgc3RhdGljIGlu
-dCBtdGtfc2V0dXBfZmlybXdhcmUoc3RydWN0IGhjaV9kZXYgKmhkZXYsIGNvbnN0IGNoYXIgKmZ3
-bmFtZSkNCiAJCXJldHVybiBlcnI7DQogCX0NCiANCisJLyogUG93ZXIgb24gZGF0YSBSQU0gdGhl
-IGZpcm13YXJlIHJlbGllcyBvbi4gKi8NCisJcGFyYW0gPSAxOw0KKwl3bXRfcGFyYW1zLm9wID0g
-TVRLX1dNVF9GVU5DX0NUUkw7DQorCXdtdF9wYXJhbXMuZmxhZyA9IDM7DQorCXdtdF9wYXJhbXMu
-ZGxlbiA9IHNpemVvZihwYXJhbSk7DQorCXdtdF9wYXJhbXMuZGF0YSA9ICZwYXJhbTsNCisJd210
-X3BhcmFtcy5zdGF0dXMgPSBOVUxMOw0KKw0KKwllcnIgPSBtdGtfaGNpX3dtdF9zeW5jKGhkZXYs
-ICZ3bXRfcGFyYW1zKTsNCisJaWYgKGVyciA8IDApIHsNCisJCWJ0X2Rldl9lcnIoaGRldiwgIkZh
-aWxlZCB0byBwb3dlciBvbiBkYXRhIFJBTSAoJWQpIiwgZXJyKTsNCisJCXJldHVybiBlcnI7DQor
-CX0NCisNCiAJZndfcHRyID0gZnctPmRhdGE7DQogCWZ3X3NpemUgPSBmdy0+c2l6ZTsNCiANCi0t
-IA0KMi4yNS4xDQo=
+On 06/19/20 19:45, Peter Zijlstra wrote:
+> On Thu, Jun 18, 2020 at 08:55:25PM +0100, Qais Yousef wrote:
+> 
+> > +/*
+> > + * This static key is used to reduce the uclamp overhead in the fast path. It
+> > + * only disables the call to uclamp_rq_{inc, dec}() in enqueue/dequeue_task().
+> > + *
+> > + * This allows users to continue to enable uclamp in their kernel config with
+> > + * minimum uclamp overhead in the fast path.
+> > + *
+> > + * As soon as userspace modifies any of the uclamp knobs, the static key is
+> > + * disabled, since we have an actual users that make use of uclamp
+> > + * functionality.
+> > + *
+> > + * The knobs that would disable this static key are:
+> > + *
+> > + *   * A task modifying its uclamp value with sched_setattr().
+> > + *   * An admin modifying the sysctl_sched_uclamp_{min, max} via procfs.
+> > + *   * An admin modifying the cgroup cpu.uclamp.{min, max}
+> > + */
+> > +DEFINE_STATIC_KEY_TRUE(sched_uclamp_unused);
+> 
+> Maybe call the thing: 'sched_uclamp_users', instead?
+> 
+> 
+> > +		if (static_branch_unlikely(&sched_uclamp_unused))
+> > +			static_branch_disable(&sched_uclamp_unused);
+> 
+> 
+> > +	if (static_branch_unlikely(&sched_uclamp_unused))
+> > +		static_branch_disable(&sched_uclamp_unused);
+> 
+> 
+> > +	if (static_branch_unlikely(&sched_uclamp_unused))
+> > +		static_branch_disable(&sched_uclamp_unused);
+> 
+> That's an anti-pattern... just static_branch_disable(), or _enable()
+> with a 'better' name is sufficient.
 
+I misread the code. I saw there's a WAN_ON_ONCE() but that only triggers if the
+atomic variable has a value that is ! in (0, 1) range.
+
+So yes we can call it unconditionally.
+
+Thanks
+
+--
+Qais Yousef
