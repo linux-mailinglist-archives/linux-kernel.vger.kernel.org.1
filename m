@@ -2,46 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59DE6200BEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A51D6200C30
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388038AbgFSOjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:39:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56660 "EHLO mail.kernel.org"
+        id S2388081AbgFSOm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:42:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33730 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388011AbgFSOjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:39:17 -0400
+        id S2387795AbgFSOmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:42:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD99020CC7;
-        Fri, 19 Jun 2020 14:39:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1574521556;
+        Fri, 19 Jun 2020 14:42:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577556;
-        bh=K/Qd2BVjoGnjBRAXKcRbdqs6eY78ZjkmNsEPRpMD6Og=;
+        s=default; t=1592577771;
+        bh=mbz0aRqUQQ5eO9gld4fUJS7d1Lxr2GIYjbbd/6rEfT8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rcRk6DWImowc6uUn85HCUTlIlOPEepd8KkcApatzBajB+hDXZ+JIYVEeWDBIgqbLf
-         0SIZSqfnHKg26ukFRd32X3Pnu3SeN/QK+7YcukToHeNXbks6FsO2UWthUcDEuqvRhL
-         DOngQTMWBYKozrG3b2Cj2Mjc3edesuxZUaJAtNLg=
+        b=Le/sR5MVQu75CKSboBsk2POQJ8REtMujfBLZNdVezjbHkLQI1kTqtUJp30aCIPz+e
+         ua7NBF7/Gj7CRj1SBzLo0O2ysfpJZwnFAgmwplgk5fyHzUZcmbEp2JBifGyMFPPGAQ
+         Rs6K+e8FwlBNPSj9VaPwjL6i2TGPyIO8bOs8yJYk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Song Liu <songliubraving@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 067/101] mips: Add udelay lpj numbers adjustment
+Subject: [PATCH 4.9 082/128] md: dont flush workqueue unconditionally in md_open
 Date:   Fri, 19 Jun 2020 16:32:56 +0200
-Message-Id: <20200619141617.561080912@linuxfoundation.org>
+Message-Id: <20200619141624.498793893@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
-References: <20200619141614.001544111@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,125 +45,161 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 
-[ Upstream commit ed26aacfb5f71eecb20a51c4467da440cb719d66 ]
+[ Upstream commit f6766ff6afff70e2aaf39e1511e16d471de7c3ae ]
 
-Loops-per-jiffies is a special number which represents a number of
-noop-loop cycles per CPU-scheduler quantum - jiffies. As you
-understand aside from CPU-specific implementation it depends on
-the CPU frequency. So when a platform has the CPU frequency fixed,
-we have no problem and the current udelay interface will work
-just fine. But as soon as CPU-freq driver is enabled and the cores
-frequency changes, we'll end up with distorted udelay's. In order
-to fix this we have to accordinly adjust the per-CPU udelay_val
-(the same as the global loops_per_jiffy) number. This can be done
-in the CPU-freq transition event handler. We subscribe to that event
-in the MIPS arch time-inititalization method.
+We need to check mddev->del_work before flush workqueu since the purpose
+of flush is to ensure the previous md is disappeared. Otherwise the similar
+deadlock appeared if LOCKDEP is enabled, it is due to md_open holds the
+bdev->bd_mutex before flush workqueue.
 
-Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+kernel: [  154.522645] ======================================================
+kernel: [  154.522647] WARNING: possible circular locking dependency detected
+kernel: [  154.522650] 5.6.0-rc7-lp151.27-default #25 Tainted: G           O
+kernel: [  154.522651] ------------------------------------------------------
+kernel: [  154.522653] mdadm/2482 is trying to acquire lock:
+kernel: [  154.522655] ffff888078529128 ((wq_completion)md_misc){+.+.}, at: flush_workqueue+0x84/0x4b0
+kernel: [  154.522673]
+kernel: [  154.522673] but task is already holding lock:
+kernel: [  154.522675] ffff88804efa9338 (&bdev->bd_mutex){+.+.}, at: __blkdev_get+0x79/0x590
+kernel: [  154.522691]
+kernel: [  154.522691] which lock already depends on the new lock.
+kernel: [  154.522691]
+kernel: [  154.522694]
+kernel: [  154.522694] the existing dependency chain (in reverse order) is:
+kernel: [  154.522696]
+kernel: [  154.522696] -> #4 (&bdev->bd_mutex){+.+.}:
+kernel: [  154.522704]        __mutex_lock+0x87/0x950
+kernel: [  154.522706]        __blkdev_get+0x79/0x590
+kernel: [  154.522708]        blkdev_get+0x65/0x140
+kernel: [  154.522709]        blkdev_get_by_dev+0x2f/0x40
+kernel: [  154.522716]        lock_rdev+0x3d/0x90 [md_mod]
+kernel: [  154.522719]        md_import_device+0xd6/0x1b0 [md_mod]
+kernel: [  154.522723]        new_dev_store+0x15e/0x210 [md_mod]
+kernel: [  154.522728]        md_attr_store+0x7a/0xc0 [md_mod]
+kernel: [  154.522732]        kernfs_fop_write+0x117/0x1b0
+kernel: [  154.522735]        vfs_write+0xad/0x1a0
+kernel: [  154.522737]        ksys_write+0xa4/0xe0
+kernel: [  154.522745]        do_syscall_64+0x64/0x2b0
+kernel: [  154.522748]        entry_SYSCALL_64_after_hwframe+0x49/0xbe
+kernel: [  154.522749]
+kernel: [  154.522749] -> #3 (&mddev->reconfig_mutex){+.+.}:
+kernel: [  154.522752]        __mutex_lock+0x87/0x950
+kernel: [  154.522756]        new_dev_store+0xc9/0x210 [md_mod]
+kernel: [  154.522759]        md_attr_store+0x7a/0xc0 [md_mod]
+kernel: [  154.522761]        kernfs_fop_write+0x117/0x1b0
+kernel: [  154.522763]        vfs_write+0xad/0x1a0
+kernel: [  154.522765]        ksys_write+0xa4/0xe0
+kernel: [  154.522767]        do_syscall_64+0x64/0x2b0
+kernel: [  154.522769]        entry_SYSCALL_64_after_hwframe+0x49/0xbe
+kernel: [  154.522770]
+kernel: [  154.522770] -> #2 (kn->count#253){++++}:
+kernel: [  154.522775]        __kernfs_remove+0x253/0x2c0
+kernel: [  154.522778]        kernfs_remove+0x1f/0x30
+kernel: [  154.522780]        kobject_del+0x28/0x60
+kernel: [  154.522783]        mddev_delayed_delete+0x24/0x30 [md_mod]
+kernel: [  154.522786]        process_one_work+0x2a7/0x5f0
+kernel: [  154.522788]        worker_thread+0x2d/0x3d0
+kernel: [  154.522793]        kthread+0x117/0x130
+kernel: [  154.522795]        ret_from_fork+0x3a/0x50
+kernel: [  154.522796]
+kernel: [  154.522796] -> #1 ((work_completion)(&mddev->del_work)){+.+.}:
+kernel: [  154.522800]        process_one_work+0x27e/0x5f0
+kernel: [  154.522802]        worker_thread+0x2d/0x3d0
+kernel: [  154.522804]        kthread+0x117/0x130
+kernel: [  154.522806]        ret_from_fork+0x3a/0x50
+kernel: [  154.522807]
+kernel: [  154.522807] -> #0 ((wq_completion)md_misc){+.+.}:
+kernel: [  154.522813]        __lock_acquire+0x1392/0x1690
+kernel: [  154.522816]        lock_acquire+0xb4/0x1a0
+kernel: [  154.522818]        flush_workqueue+0xab/0x4b0
+kernel: [  154.522821]        md_open+0xb6/0xc0 [md_mod]
+kernel: [  154.522823]        __blkdev_get+0xea/0x590
+kernel: [  154.522825]        blkdev_get+0x65/0x140
+kernel: [  154.522828]        do_dentry_open+0x1d1/0x380
+kernel: [  154.522831]        path_openat+0x567/0xcc0
+kernel: [  154.522834]        do_filp_open+0x9b/0x110
+kernel: [  154.522836]        do_sys_openat2+0x201/0x2a0
+kernel: [  154.522838]        do_sys_open+0x57/0x80
+kernel: [  154.522840]        do_syscall_64+0x64/0x2b0
+kernel: [  154.522842]        entry_SYSCALL_64_after_hwframe+0x49/0xbe
+kernel: [  154.522844]
+kernel: [  154.522844] other info that might help us debug this:
+kernel: [  154.522844]
+kernel: [  154.522846] Chain exists of:
+kernel: [  154.522846]   (wq_completion)md_misc --> &mddev->reconfig_mutex --> &bdev->bd_mutex
+kernel: [  154.522846]
+kernel: [  154.522850]  Possible unsafe locking scenario:
+kernel: [  154.522850]
+kernel: [  154.522852]        CPU0                    CPU1
+kernel: [  154.522853]        ----                    ----
+kernel: [  154.522854]   lock(&bdev->bd_mutex);
+kernel: [  154.522856]                                lock(&mddev->reconfig_mutex);
+kernel: [  154.522858]                                lock(&bdev->bd_mutex);
+kernel: [  154.522860]   lock((wq_completion)md_misc);
+kernel: [  154.522861]
+kernel: [  154.522861]  *** DEADLOCK ***
+kernel: [  154.522861]
+kernel: [  154.522864] 1 lock held by mdadm/2482:
+kernel: [  154.522865]  #0: ffff88804efa9338 (&bdev->bd_mutex){+.+.}, at: __blkdev_get+0x79/0x590
+kernel: [  154.522868]
+kernel: [  154.522868] stack backtrace:
+kernel: [  154.522873] CPU: 1 PID: 2482 Comm: mdadm Tainted: G           O      5.6.0-rc7-lp151.27-default #25
+kernel: [  154.522875] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+kernel: [  154.522878] Call Trace:
+kernel: [  154.522881]  dump_stack+0x8f/0xcb
+kernel: [  154.522884]  check_noncircular+0x194/0x1b0
+kernel: [  154.522888]  ? __lock_acquire+0x1392/0x1690
+kernel: [  154.522890]  __lock_acquire+0x1392/0x1690
+kernel: [  154.522893]  lock_acquire+0xb4/0x1a0
+kernel: [  154.522895]  ? flush_workqueue+0x84/0x4b0
+kernel: [  154.522898]  flush_workqueue+0xab/0x4b0
+kernel: [  154.522900]  ? flush_workqueue+0x84/0x4b0
+kernel: [  154.522905]  ? md_open+0xb6/0xc0 [md_mod]
+kernel: [  154.522908]  md_open+0xb6/0xc0 [md_mod]
+kernel: [  154.522910]  __blkdev_get+0xea/0x590
+kernel: [  154.522912]  ? bd_acquire+0xc0/0xc0
+kernel: [  154.522914]  blkdev_get+0x65/0x140
+kernel: [  154.522916]  ? bd_acquire+0xc0/0xc0
+kernel: [  154.522918]  do_dentry_open+0x1d1/0x380
+kernel: [  154.522921]  path_openat+0x567/0xcc0
+kernel: [  154.522923]  ? __lock_acquire+0x380/0x1690
+kernel: [  154.522926]  do_filp_open+0x9b/0x110
+kernel: [  154.522929]  ? __alloc_fd+0xe5/0x1f0
+kernel: [  154.522935]  ? kmem_cache_alloc+0x28c/0x630
+kernel: [  154.522939]  ? do_sys_openat2+0x201/0x2a0
+kernel: [  154.522941]  do_sys_openat2+0x201/0x2a0
+kernel: [  154.522944]  do_sys_open+0x57/0x80
+kernel: [  154.522946]  do_syscall_64+0x64/0x2b0
+kernel: [  154.522948]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+kernel: [  154.522951] RIP: 0033:0x7f98d279d9ae
+
+And md_alloc also flushed the same workqueue, but the thing is different
+here. Because all the paths call md_alloc don't hold bdev->bd_mutex, and
+the flush is necessary to avoid race condition, so leave it as it is.
+
+Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/time.c | 70 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
+ drivers/md/md.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/time.c b/arch/mips/kernel/time.c
-index 8d0170969e22..345978cc105b 100644
---- a/arch/mips/kernel/time.c
-+++ b/arch/mips/kernel/time.c
-@@ -22,12 +22,82 @@
- #include <linux/smp.h>
- #include <linux/spinlock.h>
- #include <linux/export.h>
-+#include <linux/cpufreq.h>
-+#include <linux/delay.h>
- 
- #include <asm/cpu-features.h>
- #include <asm/cpu-type.h>
- #include <asm/div64.h>
- #include <asm/time.h>
- 
-+#ifdef CONFIG_CPU_FREQ
-+
-+static DEFINE_PER_CPU(unsigned long, pcp_lpj_ref);
-+static DEFINE_PER_CPU(unsigned long, pcp_lpj_ref_freq);
-+static unsigned long glb_lpj_ref;
-+static unsigned long glb_lpj_ref_freq;
-+
-+static int cpufreq_callback(struct notifier_block *nb,
-+			    unsigned long val, void *data)
-+{
-+	struct cpufreq_freqs *freq = data;
-+	struct cpumask *cpus = freq->policy->cpus;
-+	unsigned long lpj;
-+	int cpu;
-+
-+	/*
-+	 * Skip lpj numbers adjustment if the CPU-freq transition is safe for
-+	 * the loops delay. (Is this possible?)
-+	 */
-+	if (freq->flags & CPUFREQ_CONST_LOOPS)
-+		return NOTIFY_OK;
-+
-+	/* Save the initial values of the lpjes for future scaling. */
-+	if (!glb_lpj_ref) {
-+		glb_lpj_ref = boot_cpu_data.udelay_val;
-+		glb_lpj_ref_freq = freq->old;
-+
-+		for_each_online_cpu(cpu) {
-+			per_cpu(pcp_lpj_ref, cpu) =
-+				cpu_data[cpu].udelay_val;
-+			per_cpu(pcp_lpj_ref_freq, cpu) = freq->old;
-+		}
-+	}
-+
-+	/*
-+	 * Adjust global lpj variable and per-CPU udelay_val number in
-+	 * accordance with the new CPU frequency.
-+	 */
-+	if ((val == CPUFREQ_PRECHANGE  && freq->old < freq->new) ||
-+	    (val == CPUFREQ_POSTCHANGE && freq->old > freq->new)) {
-+		loops_per_jiffy = cpufreq_scale(glb_lpj_ref,
-+						glb_lpj_ref_freq,
-+						freq->new);
-+
-+		for_each_cpu(cpu, cpus) {
-+			lpj = cpufreq_scale(per_cpu(pcp_lpj_ref, cpu),
-+					    per_cpu(pcp_lpj_ref_freq, cpu),
-+					    freq->new);
-+			cpu_data[cpu].udelay_val = (unsigned int)lpj;
-+		}
-+	}
-+
-+	return NOTIFY_OK;
-+}
-+
-+static struct notifier_block cpufreq_notifier = {
-+	.notifier_call  = cpufreq_callback,
-+};
-+
-+static int __init register_cpufreq_notifier(void)
-+{
-+	return cpufreq_register_notifier(&cpufreq_notifier,
-+					 CPUFREQ_TRANSITION_NOTIFIER);
-+}
-+core_initcall(register_cpufreq_notifier);
-+
-+#endif /* CONFIG_CPU_FREQ */
-+
- /*
-  * forward reference
-  */
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index da8708b65356..3485d2a79600 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -7101,7 +7101,8 @@ static int md_open(struct block_device *bdev, fmode_t mode)
+ 		 */
+ 		mddev_put(mddev);
+ 		/* Wait until bdev->bd_disk is definitely gone */
+-		flush_workqueue(md_misc_wq);
++		if (work_pending(&mddev->del_work))
++			flush_workqueue(md_misc_wq);
+ 		/* Then retry the open from the top */
+ 		return -ERESTARTSYS;
+ 	}
 -- 
 2.25.1
 
