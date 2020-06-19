@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2371120123E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EF8A201189
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394114AbgFSPu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:50:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56370 "EHLO mail.kernel.org"
+        id S2404354AbgFSP0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:26:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390835AbgFSPYi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:24:38 -0400
+        id S2393304AbgFSPYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:24:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E5A721548;
-        Fri, 19 Jun 2020 15:24:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D0F721548;
+        Fri, 19 Jun 2020 15:24:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580277;
-        bh=9EqlyXrb0fCdUy1tdVyJjkzG9fI7Ep6+jbw1tv+gUtg=;
+        s=default; t=1592580283;
+        bh=73KsjooSBJpJiiH+QOeAQXNpAvN1RJ9iKUFTKw70dcU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qqTwiw5Gm/fNdbfuweIpvAbbYUQs3dHKxXdBBhaiVwvj3KUSvjnGa4FlxcpDjpS0P
-         eEDgY9aCOjarwVKIZxcDzVdn+vpbL71ra2gG//I7Q/yTNE6QauN778YFE3Rlb0LLZN
-         5qf0ntzmKNCnbUrVLrGgpQv33Y6N6NpIseI7p3p4=
+        b=P1sxoM4xZesr1QPSS14fgEbG7C0oRzjSeRl8WaxqA8k/pL7oIKRn6kzI7CojaroAj
+         W1yDdG0fINZZ+OZRgGzJPPL01wBSqzCfIjwS6/JFX0fzhj4S5a423VbWf8Mcf0uiT5
+         v/miqoeM5g1A7+Odxs8kSvTRrFxbEWJZiNWffReA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Andy Newell <newella@fb.com>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 189/376] iocost: dont let vrate run wild while theres no saturation signal
-Date:   Fri, 19 Jun 2020 16:31:47 +0200
-Message-Id: <20200619141719.296173569@linuxfoundation.org>
+Subject: [PATCH 5.7 191/376] crypto: blake2b - Fix clang optimization for ARMv7-M
+Date:   Fri, 19 Jun 2020 16:31:49 +0200
+Message-Id: <20200619141719.393689693@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -44,101 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tejun Heo <tj@kernel.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 81ca627a933063fa63a6d4c66425de822a2ab7f5 ]
+[ Upstream commit 0c0408e86dbe8f44d4b27bf42130e8ac905361d6 ]
 
-When the QoS targets are met and nothing is being throttled, there's
-no way to tell how saturated the underlying device is - it could be
-almost entirely idle, at the cusp of saturation or anywhere inbetween.
-Given that there's no information, it's best to keep vrate as-is in
-this state.  Before 7cd806a9a953 ("iocost: improve nr_lagging
-handling"), this was the case - if the device isn't missing QoS
-targets and nothing is being throttled, busy_level was reset to zero.
+When building for ARMv7-M, clang-9 or higher tries to unroll some loops,
+which ends up confusing the register allocator to the point of generating
+rather bad code and using more than the warning limit for stack frames:
 
-While fixing nr_lagging handling, 7cd806a9a953 ("iocost: improve
-nr_lagging handling") broke this.  Now, while the device is hitting
-QoS targets and nothing is being throttled, vrate keeps getting
-adjusted according to the existing busy_level.
+warning: stack frame size of 1200 bytes in function 'blake2b_compress' [-Wframe-larger-than=]
 
-This led to vrate keeping climing till it hits max when there's an IO
-issuer with limited request concurrency if the vrate started low.
-vrate starts getting adjusted upwards until the issuer can issue IOs
-w/o being throttled.  From then on, QoS targets keeps getting met and
-nothing on the system needs throttling and vrate keeps getting
-increased due to the existing busy_level.
+Forcing it to not unroll the final loop avoids this problem.
 
-This patch makes the following changes to the busy_level logic.
-
-* Reset busy_level if nr_shortages is zero to avoid the above
-  scenario.
-
-* Make non-zero nr_lagging block lowering nr_level but still clear
-  positive busy_level if there's clear non-saturation signal - QoS
-  targets are met and nr_shortages is non-zero.  nr_lagging's role is
-  preventing adjusting vrate upwards while there are long-running
-  commands and it shouldn't keep busy_level positive while there's
-  clear non-saturation signal.
-
-* Restructure code for clarity and add comments.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Reported-by: Andy Newell <newella@fb.com>
-Fixes: 7cd806a9a953 ("iocost: improve nr_lagging handling")
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 91d689337fe8 ("crypto: blake2b - add blake2b generic implementation")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- block/blk-iocost.c | 28 ++++++++++++++++++++++++----
- 1 file changed, 24 insertions(+), 4 deletions(-)
+ crypto/blake2b_generic.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 7c1fe605d0d6..ef193389fffe 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -1543,19 +1543,39 @@ skip_surplus_transfers:
- 	if (rq_wait_pct > RQ_WAIT_BUSY_PCT ||
- 	    missed_ppm[READ] > ppm_rthr ||
- 	    missed_ppm[WRITE] > ppm_wthr) {
-+		/* clearly missing QoS targets, slow down vrate */
- 		ioc->busy_level = max(ioc->busy_level, 0);
- 		ioc->busy_level++;
- 	} else if (rq_wait_pct <= RQ_WAIT_BUSY_PCT * UNBUSY_THR_PCT / 100 &&
- 		   missed_ppm[READ] <= ppm_rthr * UNBUSY_THR_PCT / 100 &&
- 		   missed_ppm[WRITE] <= ppm_wthr * UNBUSY_THR_PCT / 100) {
--		/* take action iff there is contention */
--		if (nr_shortages && !nr_lagging) {
-+		/* QoS targets are being met with >25% margin */
-+		if (nr_shortages) {
-+			/*
-+			 * We're throttling while the device has spare
-+			 * capacity.  If vrate was being slowed down, stop.
-+			 */
- 			ioc->busy_level = min(ioc->busy_level, 0);
--			/* redistribute surpluses first */
--			if (!nr_surpluses)
-+
-+			/*
-+			 * If there are IOs spanning multiple periods, wait
-+			 * them out before pushing the device harder.  If
-+			 * there are surpluses, let redistribution work it
-+			 * out first.
-+			 */
-+			if (!nr_lagging && !nr_surpluses)
- 				ioc->busy_level--;
-+		} else {
-+			/*
-+			 * Nobody is being throttled and the users aren't
-+			 * issuing enough IOs to saturate the device.  We
-+			 * simply don't know how close the device is to
-+			 * saturation.  Coast.
-+			 */
-+			ioc->busy_level = 0;
- 		}
- 	} else {
-+		/* inside the hysterisis margin, we're good */
- 		ioc->busy_level = 0;
- 	}
- 
+diff --git a/crypto/blake2b_generic.c b/crypto/blake2b_generic.c
+index 1d262374fa4e..0ffd8d92e308 100644
+--- a/crypto/blake2b_generic.c
++++ b/crypto/blake2b_generic.c
+@@ -129,7 +129,9 @@ static void blake2b_compress(struct blake2b_state *S,
+ 	ROUND(9);
+ 	ROUND(10);
+ 	ROUND(11);
+-
++#ifdef CONFIG_CC_IS_CLANG
++#pragma nounroll /* https://bugs.llvm.org/show_bug.cgi?id=45803 */
++#endif
+ 	for (i = 0; i < 8; ++i)
+ 		S->h[i] = S->h[i] ^ v[i] ^ v[i + 8];
+ }
 -- 
 2.25.1
 
