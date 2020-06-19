@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B1E200BB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:38:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F12200C22
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387599AbgFSOgt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:36:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53150 "EHLO mail.kernel.org"
+        id S2388339AbgFSOmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:42:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387552AbgFSOgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:36:37 -0400
+        id S2388315AbgFSOmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:42:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3209F2158C;
-        Fri, 19 Jun 2020 14:36:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DED3220A8B;
+        Fri, 19 Jun 2020 14:42:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577397;
-        bh=StM8Mz4zDrwZucJ3FbQLllhtm41L09CDt96wvqoY6KU=;
+        s=default; t=1592577721;
+        bh=4GDj40YMC236QJ/h4DC1Ce/InFlHhNvYDg8ll0+BQsg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zF9CftVlLVOdafO3/It4tqYoSRhAjaN/nX/F3T8Kd/s85chn72JiPL6fliIxjXFnr
-         rywyECMdovSGcJJ7pS4V3P/4+R2kONW5tP9uZFKkDmXfPhsR+uwhJRg43XpSZgND1y
-         Uv0GLq9YXD3Q601ZqQ+xJLzJK0Yb6KxOpUxMHup8=
+        b=E/pJjACZzjtE2pue+j0aMOz4oC2wu1EzwOD1a34OlApGPHzC6nPj5tX5WeidJnJNb
+         LwszwCWn0yIixpxGGk2CDmkqC8MKCodBWhvBrFUTa/RRHdFyt2TRhV/t9mWo0Sh4H9
+         KXxUuH7+pXfFc0ZcKCmDTe2SHhlq50FamotqzC6c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jarod Wilson <jarod@redhat.com>,
-        Alexander Duyck <aduyck@mirantis.com>,
-        Aaron Brown <aaron.f.brown@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jeff Chase <jnchase@google.com>
-Subject: [PATCH 4.4 006/101] igb: improve handling of disconnected adapters
-Date:   Fri, 19 Jun 2020 16:31:55 +0200
-Message-Id: <20200619141614.342127109@linuxfoundation.org>
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
+        Martin Sperl <kernel@martin.sperl.org>,
+        Mark Brown <broonie@kernel.org>
+Subject: [PATCH 4.9 022/128] spi: bcm2835aux: Fix controller unregister order
+Date:   Fri, 19 Jun 2020 16:31:56 +0200
+Message-Id: <20200619141621.339552116@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
-References: <20200619141614.001544111@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,66 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jarod Wilson <jarod@redhat.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-commit 7b06a6909555ffb0140733cc4420222604140b27 upstream.
+commit b9dd3f6d417258ad0beeb292a1bc74200149f15d upstream.
 
-Clean up array_rd32 so that it uses igb_rd32 the same as rd32, per the
-suggestion of Alexander Duyck, and use io_addr in more places, so that
-we don't have the need to call E1000_REMOVED (which simply looks for a
-null hw_addr) nearly as much.
+The BCM2835aux SPI driver uses devm_spi_register_master() on bind.
+As a consequence, on unbind, __device_release_driver() first invokes
+bcm2835aux_spi_remove() before unregistering the SPI controller via
+devres_release_all().
 
-Signed-off-by: Jarod Wilson <jarod@redhat.com>
-Acked-by: Alexander Duyck <aduyck@mirantis.com>
-Tested-by: Aaron Brown <aaron.f.brown@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Cc: Jeff Chase <jnchase@google.com>
+This order is incorrect:  bcm2835aux_spi_remove() turns off the SPI
+controller, including its interrupts and clock.  The SPI controller
+is thus no longer usable.
+
+When the SPI controller is subsequently unregistered, it unbinds all
+its slave devices.  If their drivers need to access the SPI bus,
+e.g. to quiesce their interrupts, unbinding will fail.
+
+As a rule, devm_spi_register_master() must not be used if the
+->remove() hook performs teardown steps which shall be performed
+after unbinding of slaves.
+
+Fix by using the non-devm variant spi_register_master().  Note that the
+struct spi_master as well as the driver-private data are not freed until
+after bcm2835aux_spi_remove() has finished, so accessing them is safe.
+
+Fixes: 1ea29b39f4c8 ("spi: bcm2835aux: add bcm2835 auxiliary spi device driver")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Cc: stable@vger.kernel.org # v4.4+
+Cc: Martin Sperl <kernel@martin.sperl.org>
+Link: https://lore.kernel.org/r/32f27f4d8242e4d75f9a53f7e8f1f77483b08669.1589557526.git.lukas@wunner.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/net/ethernet/intel/igb/e1000_regs.h |    3 +--
- drivers/net/ethernet/intel/igb/igb_main.c   |    5 ++---
- 2 files changed, 3 insertions(+), 5 deletions(-)
+ drivers/spi/spi-bcm2835aux.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/intel/igb/e1000_regs.h
-+++ b/drivers/net/ethernet/intel/igb/e1000_regs.h
-@@ -386,8 +386,7 @@ do { \
- #define array_wr32(reg, offset, value) \
- 	wr32((reg) + ((offset) << 2), (value))
+--- a/drivers/spi/spi-bcm2835aux.c
++++ b/drivers/spi/spi-bcm2835aux.c
+@@ -485,7 +485,7 @@ static int bcm2835aux_spi_probe(struct p
+ 		goto out_clk_disable;
+ 	}
  
--#define array_rd32(reg, offset) \
--	(readl(hw->hw_addr + reg + ((offset) << 2)))
-+#define array_rd32(reg, offset) (igb_rd32(hw, reg + ((offset) << 2)))
+-	err = devm_spi_register_master(&pdev->dev, master);
++	err = spi_register_master(master);
+ 	if (err) {
+ 		dev_err(&pdev->dev, "could not register SPI master: %d\n", err);
+ 		goto out_clk_disable;
+@@ -505,6 +505,8 @@ static int bcm2835aux_spi_remove(struct
+ 	struct spi_master *master = platform_get_drvdata(pdev);
+ 	struct bcm2835aux_spi *bs = spi_master_get_devdata(master);
  
- /* DMA Coalescing registers */
- #define E1000_PCIEMISC	0x05BB8 /* PCIE misc config register */
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -946,7 +946,6 @@ static void igb_configure_msix(struct ig
- static int igb_request_msix(struct igb_adapter *adapter)
- {
- 	struct net_device *netdev = adapter->netdev;
--	struct e1000_hw *hw = &adapter->hw;
- 	int i, err = 0, vector = 0, free_vector = 0;
++	spi_unregister_master(master);
++
+ 	bcm2835aux_spi_reset_hw(bs);
  
- 	err = request_irq(adapter->msix_entries[vector].vector,
-@@ -959,7 +958,7 @@ static int igb_request_msix(struct igb_a
- 
- 		vector++;
- 
--		q_vector->itr_register = hw->hw_addr + E1000_EITR(vector);
-+		q_vector->itr_register = adapter->io_addr + E1000_EITR(vector);
- 
- 		if (q_vector->rx.ring && q_vector->tx.ring)
- 			sprintf(q_vector->name, "%s-TxRx-%u", netdev->name,
-@@ -1230,7 +1229,7 @@ static int igb_alloc_q_vector(struct igb
- 	q_vector->tx.work_limit = adapter->tx_work_limit;
- 
- 	/* initialize ITR configuration */
--	q_vector->itr_register = adapter->hw.hw_addr + E1000_EITR(0);
-+	q_vector->itr_register = adapter->io_addr + E1000_EITR(0);
- 	q_vector->itr_val = IGB_START_ITR;
- 
- 	/* initialize pointer to rings */
+ 	/* disable the HW block by releasing the clock */
 
 
