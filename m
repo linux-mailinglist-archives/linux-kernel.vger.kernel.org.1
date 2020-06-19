@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44414201005
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A381200E27
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392007AbgFSPY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:24:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52470 "EHLO mail.kernel.org"
+        id S2391306AbgFSPF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:05:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392816AbgFSPVK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:21:10 -0400
+        id S2391287AbgFSPFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:05:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E98820706;
-        Fri, 19 Jun 2020 15:21:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2821521974;
+        Fri, 19 Jun 2020 15:05:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580069;
-        bh=TT+8tMvqgygFxoAAc7BZuKJHREEz6edhkE6V6E4qA9c=;
+        s=default; t=1592579121;
+        bh=wYOBonMFOcw+NCR1S5pFDveiILnmyP7Jt2GUW7nzcvs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hsB71NIVvx+wj1pPqoH7LL79corNFDEtzkBP/1ZZnnew6OMidOHECrheD0Fr7stpH
-         Fo1OigMBVi15ZCErYzcLMKSPwHYyDyX8f/n44qegoV8pHBg5TE9cHAdXS1v4zYf3lm
-         35sRg+Kog1IEBBjz9YbcOny2h9jwAEaehfThi0lc=
+        b=CM51Vx6h/eaYH11Y6s2J/t0xhi237qrPElF8pc+YyuigLYJabN2nI6uFaYbcMd4Jf
+         vnDAMXTlVm/0WbVoyaF6A8aogc2Xtei/CIeBQGFQfwVN31ZM3pjP0Fk68M3phE+9G4
+         Up77uYUX69gbPSPLnf0b14MmacO/z1x7YA349p5w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paul Hsieh <paul.hsieh@amd.com>,
-        Eric Yang <eric.yang2@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Miroslav Benes <mbenes@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 109/376] drm/amd/display: dmcu wait loop calculation is incorrect in RV
+Subject: [PATCH 5.4 016/261] x86,smap: Fix smap_{save,restore}() alternatives
 Date:   Fri, 19 Jun 2020 16:30:27 +0200
-Message-Id: <20200619141715.506669577@linuxfoundation.org>
+Message-Id: <20200619141650.638210102@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
-References: <20200619141710.350494719@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,40 +46,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paul Hsieh <paul.hsieh@amd.com>
+From: Peter Zijlstra <peterz@infradead.org>
 
-[ Upstream commit 7fc5c319efceaed1a23b7ef35c333553ce39fecf ]
+[ Upstream commit 1ff865e343c2b59469d7e41d370a980a3f972c71 ]
 
-[Why]
-Driver already get display clock from SMU base on MHz, but driver read
-again and mutiple 1000 cause wait loop value is overflow.
+As reported by objtool:
 
-[How]
-remove coding error
+  lib/ubsan.o: warning: objtool: .altinstr_replacement+0x0: alternative modifies stack
+  lib/ubsan.o: warning: objtool: .altinstr_replacement+0x7: alternative modifies stack
 
-Signed-off-by: Paul Hsieh <paul.hsieh@amd.com>
-Reviewed-by: Eric Yang <eric.yang2@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+the smap_{save,restore}() alternatives violate (the newly enforced)
+rule on stack invariance. That is, due to there only being a single
+ORC table it must be valid to any alternative. These alternatives
+violate this with the direct result that unwinds will not be correct
+when it hits between the PUSH and POP instructions.
+
+Rewrite the functions to only have a conditional jump.
+
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Miroslav Benes <mbenes@suse.cz>
+Acked-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Link: https://lkml.kernel.org/r/20200429101802.GI13592@hirez.programming.kicks-ass.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c   | 3 ---
- 1 file changed, 3 deletions(-)
+ arch/x86/include/asm/smap.h | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c
-index 97b7f32294fd..c320b7af7d34 100644
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn10/rv1_clk_mgr_vbios_smu.c
-@@ -97,9 +97,6 @@ int rv1_vbios_smu_set_dispclk(struct clk_mgr_internal *clk_mgr, int requested_di
- 			VBIOSSMC_MSG_SetDispclkFreq,
- 			requested_dispclk_khz / 1000);
+diff --git a/arch/x86/include/asm/smap.h b/arch/x86/include/asm/smap.h
+index 27c47d183f4b..8b58d6975d5d 100644
+--- a/arch/x86/include/asm/smap.h
++++ b/arch/x86/include/asm/smap.h
+@@ -57,8 +57,10 @@ static __always_inline unsigned long smap_save(void)
+ {
+ 	unsigned long flags;
  
--	/* Actual dispclk set is returned in the parameter register */
--	actual_dispclk_set_mhz = REG_READ(MP1_SMN_C2PMSG_83) * 1000;
--
- 	if (!IS_FPGA_MAXIMUS_DC(dc->ctx->dce_environment)) {
- 		if (dmcu && dmcu->funcs->is_dmcu_initialized(dmcu)) {
- 			if (clk_mgr->dfs_bypass_disp_clk != actual_dispclk_set_mhz)
+-	asm volatile (ALTERNATIVE("", "pushf; pop %0; " __ASM_CLAC,
+-				  X86_FEATURE_SMAP)
++	asm volatile ("# smap_save\n\t"
++		      ALTERNATIVE("jmp 1f", "", X86_FEATURE_SMAP)
++		      "pushf; pop %0; " __ASM_CLAC "\n\t"
++		      "1:"
+ 		      : "=rm" (flags) : : "memory", "cc");
+ 
+ 	return flags;
+@@ -66,7 +68,10 @@ static __always_inline unsigned long smap_save(void)
+ 
+ static __always_inline void smap_restore(unsigned long flags)
+ {
+-	asm volatile (ALTERNATIVE("", "push %0; popf", X86_FEATURE_SMAP)
++	asm volatile ("# smap_restore\n\t"
++		      ALTERNATIVE("jmp 1f", "", X86_FEATURE_SMAP)
++		      "push %0; popf\n\t"
++		      "1:"
+ 		      : : "g" (flags) : "memory", "cc");
+ }
+ 
 -- 
 2.25.1
 
