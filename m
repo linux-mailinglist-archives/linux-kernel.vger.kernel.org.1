@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28871201525
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 770D42012FC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405610AbgFSQSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:18:39 -0400
-Received: from mga11.intel.com ([192.55.52.93]:53537 "EHLO mga11.intel.com"
+        id S2404228AbgFSPTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:19:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48776 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394578AbgFSQSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 12:18:32 -0400
-IronPort-SDR: Yj30y8Hd6IKKG+fHb0jExhhhDmxuMjvFpUH9ZOd/BnFnzRUURVgjRu2ymtd+tgi2CjZc0JXN05
- ycSgxJ4jRUWg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9657"; a="141277888"
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="141277888"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2020 09:18:32 -0700
-IronPort-SDR: /DmFc+3cPqdIRaz3sIKgfeJEkOARq2UBRc1SRgPSYVfFs06DmDEwDZlGOBMJJY15Bto79enO74
- 0qF3y6avS/cA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="318155789"
-Received: from lewest-mobl1.amr.corp.intel.com (HELO [10.255.230.148]) ([10.255.230.148])
-  by FMSMGA003.fm.intel.com with ESMTP; 19 Jun 2020 09:18:31 -0700
-Subject: Re: [PATCH 2/3] ALSA: compress: document the compress gapless audio
- state machine
-To:     Vinod Koul <vkoul@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Jaroslav Kysela <perex@perex.cz>
-Cc:     Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-References: <20200619045449.3966868-1-vkoul@kernel.org>
- <20200619045449.3966868-3-vkoul@kernel.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <5c878ccf-43dd-4e13-aa6b-a6cb1e82af72@linux.intel.com>
-Date:   Fri, 19 Jun 2020 09:27:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2392582AbgFSPSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:18:13 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABB5F21835;
+        Fri, 19 Jun 2020 15:18:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592579892;
+        bh=zJyy96p/S5Lp67gqr1bh7mhGEJc1LIXF5relYqsc5RM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=dVXw0n/4+Z9CxRRNt315OR0fnKNpZU2ZZrtwdwfuLS+130+0FsOfQFn/4BBh0yANq
+         oFkS6FwyxKuVd0qT1OrSXCmbhJfi1YTzHb4+YNCJ25AOi6VWCJVRvJOkd+HvVpuuqK
+         R+fhjIsuSMfVYQF3kXLX8i1QpWM7nGURd3chltZA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 016/376] spi: spi-mem: Fix Dual/Quad modes on Octal-capable devices
+Date:   Fri, 19 Jun 2020 16:28:54 +0200
+Message-Id: <20200619141711.137253615@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
+References: <20200619141710.350494719@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-In-Reply-To: <20200619045449.3966868-3-vkoul@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-> +For Gapless, we move from running state to partial drain and back, along
-> +with setting of meta_data and signalling for next track ::
-> +
-> +
-> +                                        +----------+
-> +                compr_drain_notify()    |          |
-> +              +------------------------>|  RUNNING |
-> +              |                         |          |
-> +              |                         +----------+
-> +              |                              |
-> +              |                              |
-> +              |                              | compr_next_track()
-> +              |                              |
-> +              |                              V
-> +              |                         +----------+
-> +              |                         |          |
-> +              |                         |NEXT_TRACK|
-> +              |                         |          |
-> +              |                         +----------+
-> +              |                              |
-> +              |                              |
-> +              |                              | compr_partial_drain()
-> +              |                              |
-> +              |                              V
-> +              |                         +----------+
-> +              |                         |          |
-> +              +------------------------ | PARTIAL_ |
-> +                                        |  DRAIN   |
-> +                                        +----------+
+[ Upstream commit 80300a7d5f2d7178335652f41d2e55ba898b4ec1 ]
 
-May I suggest having a single state machine, not a big one and an 
-additional partial one. It would help explain why in one case 
-compr_drain_notify() triggers a transition to RUNNING while in the other 
-one it goes to SETUP.
+Currently buswidths 2 and 4 are rejected for a device that advertises
+Octal capabilities.  Allow these buswidths, just like is done for
+buswidth 2 and Quad-capable devices.
 
-I realize it's more complicated to edit but it'd be easier on 
-reviewers/users.
+Fixes: b12a084c8729ef42 ("spi: spi-mem: add support for octal mode I/O data transfer")
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Link: https://lore.kernel.org/r/20200416101418.14379-1-geert+renesas@glider.be
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/spi/spi-mem.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index adaa0c49f966..9a86cc27fcc0 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -108,15 +108,17 @@ static int spi_check_buswidth_req(struct spi_mem *mem, u8 buswidth, bool tx)
+ 		return 0;
+ 
+ 	case 2:
+-		if ((tx && (mode & (SPI_TX_DUAL | SPI_TX_QUAD))) ||
+-		    (!tx && (mode & (SPI_RX_DUAL | SPI_RX_QUAD))))
++		if ((tx &&
++		     (mode & (SPI_TX_DUAL | SPI_TX_QUAD | SPI_TX_OCTAL))) ||
++		    (!tx &&
++		     (mode & (SPI_RX_DUAL | SPI_RX_QUAD | SPI_RX_OCTAL))))
+ 			return 0;
+ 
+ 		break;
+ 
+ 	case 4:
+-		if ((tx && (mode & SPI_TX_QUAD)) ||
+-		    (!tx && (mode & SPI_RX_QUAD)))
++		if ((tx && (mode & (SPI_TX_QUAD | SPI_TX_OCTAL))) ||
++		    (!tx && (mode & (SPI_RX_QUAD | SPI_RX_OCTAL))))
+ 			return 0;
+ 
+ 		break;
+-- 
+2.25.1
+
+
+
