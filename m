@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D83201727
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B35A201820
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:48:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395194AbgFSQe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:34:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43368 "EHLO mail.kernel.org"
+        id S2388228AbgFSOlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:41:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59616 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389303AbgFSOuZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:50:25 -0400
+        id S1726667AbgFSOlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:41:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D54DC20776;
-        Fri, 19 Jun 2020 14:50:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4BD121527;
+        Fri, 19 Jun 2020 14:41:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578225;
-        bh=asa8ONHvLvSLrkUv5RGqx9vJCcv05F7tTMtmQgGoEZs=;
+        s=default; t=1592577674;
+        bh=esNBolbgB0ugwipiM6dL76rs6BAcVuftApbVE65C3aA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VhzMK27gjld7/GhmVRtR1dy21/5qrhbgUf/kqEGVJ2RaE9KUBOqK2sBCJ99yGxaRz
-         V+mLNkkSlje2rlJ1vKLDzFdnr0Txc0vJktZJasCEmLWBuonn0DOYw5hgyD1+qWlStD
-         qwLjh9IR4T0kPFxrRF+tOPuZEQ+X5xvxYnnaQfqg=
+        b=N2dSuKql/DXuGXWy7MvXdpbPMV4gNx5FWl3G4mMaIrSJ75IGoa/C4/WkECyWuRIBm
+         64fSgqXBNbLmbDbdcXhnOblSG6AeUxSDDqAdH8stT4YDDLTp4sxeJIv09WSvpeRHG1
+         a2+ksWPzk2lWUdtkOSfJYBH8QBoUkVQuxvKm6gV8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 091/190] ARM: 8978/1: mm: make act_mm() respect THREAD_SIZE
+        stable@vger.kernel.org, James Morse <james.morse@arm.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: [PATCH 4.9 042/128] KVM: arm64: Make vcpu_cp1x() work on Big Endian hosts
 Date:   Fri, 19 Jun 2020 16:32:16 +0200
-Message-Id: <20200619141638.139733524@linuxfoundation.org>
+Message-Id: <20200619141622.443266315@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,65 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit e1de94380af588bdf6ad6f0cc1f75004c35bc096 ]
+commit 3204be4109ad681523e3461ce64454c79278450a upstream.
 
-Recent work with KASan exposed the folling hard-coded bitmask
-in arch/arm/mm/proc-macros.S:
+AArch32 CP1x registers are overlayed on their AArch64 counterparts
+in the vcpu struct. This leads to an interesting problem as they
+are stored in their CPU-local format, and thus a CP1x register
+doesn't "hit" the lower 32bit portion of the AArch64 register on
+a BE host.
 
-  bic     rd, sp, #8128
-  bic     rd, rd, #63
+To workaround this unfortunate situation, introduce a bias trick
+in the vcpu_cp1x() accessors which picks the correct half of the
+64bit register.
 
-This forms the bitmask 0x1FFF that is coinciding with
-(PAGE_SIZE << THREAD_SIZE_ORDER) - 1, this code was assuming
-that THREAD_SIZE is always 8K (8192).
+Cc: stable@vger.kernel.org
+Reported-by: James Morse <james.morse@arm.com>
+Tested-by: James Morse <james.morse@arm.com>
+Acked-by: James Morse <james.morse@arm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-As KASan was increasing THREAD_SIZE_ORDER to 2, I ran into
-this bug.
-
-Fix it by this little oneline suggested by Ard:
-
-  bic     rd, sp, #(THREAD_SIZE - 1) & ~63
-
-Where THREAD_SIZE is defined using THREAD_SIZE_ORDER.
-
-We have to also include <linux/const.h> since the THREAD_SIZE
-expands to use the _AC() macro.
-
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mm/proc-macros.S | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/arm64/include/asm/kvm_host.h |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/mm/proc-macros.S b/arch/arm/mm/proc-macros.S
-index 5461d589a1e2..60ac7c5999a9 100644
---- a/arch/arm/mm/proc-macros.S
-+++ b/arch/arm/mm/proc-macros.S
-@@ -5,6 +5,7 @@
-  *  VMA_VM_FLAGS
-  *  VM_EXEC
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -290,8 +290,10 @@ struct kvm_vcpu_arch {
+  * CP14 and CP15 live in the same array, as they are backed by the
+  * same system registers.
   */
-+#include <linux/const.h>
- #include <asm/asm-offsets.h>
- #include <asm/thread_info.h>
+-#define vcpu_cp14(v,r)		((v)->arch.ctxt.copro[(r)])
+-#define vcpu_cp15(v,r)		((v)->arch.ctxt.copro[(r)])
++#define CPx_BIAS		IS_ENABLED(CONFIG_CPU_BIG_ENDIAN)
++
++#define vcpu_cp14(v,r)		((v)->arch.ctxt.copro[(r) ^ CPx_BIAS])
++#define vcpu_cp15(v,r)		((v)->arch.ctxt.copro[(r) ^ CPx_BIAS])
  
-@@ -30,7 +31,7 @@
-  * act_mm - get current->active_mm
-  */
- 	.macro	act_mm, rd
--	bic	\rd, sp, #8128
-+	bic	\rd, sp, #(THREAD_SIZE - 1) & ~63
- 	bic	\rd, \rd, #63
- 	ldr	\rd, [\rd, #TI_TASK]
- 	.if (TSK_ACTIVE_MM > IMM12_MASK)
--- 
-2.25.1
-
+ #ifdef CONFIG_CPU_BIG_ENDIAN
+ #define vcpu_cp15_64_high(v,r)	vcpu_cp15((v),(r))
 
 
