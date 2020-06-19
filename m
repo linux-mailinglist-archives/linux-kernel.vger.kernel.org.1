@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBF4200D35
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20B79200D21
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389850AbgFSOy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:54:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48708 "EHLO mail.kernel.org"
+        id S2389734AbgFSOxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:53:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389820AbgFSOyI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:54:08 -0400
+        id S2389730AbgFSOx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:53:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D13721556;
-        Fri, 19 Jun 2020 14:54:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E2902184D;
+        Fri, 19 Jun 2020 14:53:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578448;
-        bh=uCNmxVWLAvd2UD6qMLaucpPVHNdoLiyvb7ceBA1576o=;
+        s=default; t=1592578408;
+        bh=AfBtStXJXaYPmnT+dTRLZ/pe4//6x1OcubtVyz9z2Gg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lKY5Hb/+KQ1Nl6wpiR7XZrx7ymy1EUd5K6Uy6vxk+UzuV2TiHV7sP3M28le+lv6OR
-         mUlLWaJTyvCa9EGOGyZKg1zpckfUyoSyMmCs8CRKVaLQ+/jSw0ApPA8BavEYM3QVvJ
-         2zJ8jIbPD0zyZqYmrd282g6rFQveKEU2vn8UTqOo=
+        b=uzhrAP52BZT0dxWbaPREWEo1AFhE09erOEOHCwpPpocvh+OG9xKMkgxxnEz3tvzdC
+         XO9iLSfbnfRO+PkWG7SGUQKcqXcpURDQVV3hZwiuap42qwXUguGnCNkGV+YsV5WAIP
+         tpMPEIW3giLkcVGGZjKePktzbe9gJEAI2e+RBZ0g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>,
+        stable@vger.kernel.org, Christophe Leroy <christophe.leroy@c-s.fr>,
         Linus Torvalds <torvalds@linux-foundation.org>,
-        Stafford Horne <shorne@gmail.com>,
         Miles Chen <miles.chen@mediatek.com>
-Subject: [PATCH 4.19 009/267] arch/openrisc: Fix issues with access_ok()
-Date:   Fri, 19 Jun 2020 16:29:54 +0200
-Message-Id: <20200619141649.312635166@linuxfoundation.org>
+Subject: [PATCH 4.19 011/267] lib: Reduce user_access_begin() boundaries in strncpy_from_user() and strnlen_user()
+Date:   Fri, 19 Jun 2020 16:29:56 +0200
+Message-Id: <20200619141649.402695278@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
 References: <20200619141648.840376470@linuxfoundation.org>
@@ -45,46 +44,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stafford Horne <shorne@gmail.com>
+From: Christophe Leroy <christophe.leroy@c-s.fr>
 
-commit 9cb2feb4d21d97386eb25c7b67e2793efcc1e70a upstream.
+commit ab10ae1c3bef56c29bac61e1201c752221b87b41 upstream.
 
-The commit 594cc251fdd0 ("make 'user_access_begin()' do 'access_ok()'")
-exposed incorrect implementations of access_ok() macro in several
-architectures.  This change fixes 2 issues found in OpenRISC.
+The range passed to user_access_begin() by strncpy_from_user() and
+strnlen_user() starts at 'src' and goes up to the limit of userspace
+although reads will be limited by the 'count' param.
 
-OpenRISC was not properly using parenthesis for arguments and also using
-arguments twice.  This patch fixes those 2 issues.
+On 32 bits powerpc (book3s/32) access has to be granted for each
+256Mbytes segment and the cost increases with the number of segments to
+unlock.
 
-I test booted this patch with v5.0-rc1 on qemu and it's working fine.
+Limit the range with 'count' param.
 
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Stafford Horne <shorne@gmail.com>
+Fixes: 594cc251fdd0 ("make 'user_access_begin()' do 'access_ok()'")
+Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Miles Chen <miles.chen@mediatek.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/openrisc/include/asm/uaccess.h |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ lib/strncpy_from_user.c |   14 +++++++-------
+ lib/strnlen_user.c      |   14 +++++++-------
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
---- a/arch/openrisc/include/asm/uaccess.h
-+++ b/arch/openrisc/include/asm/uaccess.h
-@@ -58,8 +58,12 @@
- /* Ensure that addr is below task's addr_limit */
- #define __addr_ok(addr) ((unsigned long) addr < get_fs())
+--- a/lib/strncpy_from_user.c
++++ b/lib/strncpy_from_user.c
+@@ -29,13 +29,6 @@ static inline long do_strncpy_from_user(
+ 	const struct word_at_a_time constants = WORD_AT_A_TIME_CONSTANTS;
+ 	unsigned long res = 0;
  
--#define access_ok(type, addr, size) \
--	__range_ok((unsigned long)addr, (unsigned long)size)
-+#define access_ok(type, addr, size)						\
-+({ 									\
-+	unsigned long __ao_addr = (unsigned long)(addr);		\
-+	unsigned long __ao_size = (unsigned long)(size);		\
-+	__range_ok(__ao_addr, __ao_size);				\
-+})
+-	/*
+-	 * Truncate 'max' to the user-specified limit, so that
+-	 * we only have one limit we need to check in the loop
+-	 */
+-	if (max > count)
+-		max = count;
+-
+ 	if (IS_UNALIGNED(src, dst))
+ 		goto byte_at_a_time;
  
- /*
-  * These are the main single-value transfer routines.  They automatically
+@@ -113,6 +106,13 @@ long strncpy_from_user(char *dst, const
+ 		unsigned long max = max_addr - src_addr;
+ 		long retval;
+ 
++		/*
++		 * Truncate 'max' to the user-specified limit, so that
++		 * we only have one limit we need to check in the loop
++		 */
++		if (max > count)
++			max = count;
++
+ 		kasan_check_write(dst, count);
+ 		check_object_size(dst, count, false);
+ 		if (user_access_begin(VERIFY_READ, src, max)) {
+--- a/lib/strnlen_user.c
++++ b/lib/strnlen_user.c
+@@ -32,13 +32,6 @@ static inline long do_strnlen_user(const
+ 	unsigned long c;
+ 
+ 	/*
+-	 * Truncate 'max' to the user-specified limit, so that
+-	 * we only have one limit we need to check in the loop
+-	 */
+-	if (max > count)
+-		max = count;
+-
+-	/*
+ 	 * Do everything aligned. But that means that we
+ 	 * need to also expand the maximum..
+ 	 */
+@@ -114,6 +107,13 @@ long strnlen_user(const char __user *str
+ 		unsigned long max = max_addr - src_addr;
+ 		long retval;
+ 
++		/*
++		 * Truncate 'max' to the user-specified limit, so that
++		 * we only have one limit we need to check in the loop
++		 */
++		if (max > count)
++			max = count;
++
+ 		if (user_access_begin(VERIFY_READ, str, max)) {
+ 			retval = do_strnlen_user(str, count, max);
+ 			user_access_end();
 
 
