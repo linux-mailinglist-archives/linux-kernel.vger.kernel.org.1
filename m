@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E85320134C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:01:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D654720142F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392885AbgFSP76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:59:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45438 "EHLO mail.kernel.org"
+        id S2391220AbgFSPE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:04:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392334AbgFSPOx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:14:53 -0400
+        id S2389407AbgFSPE4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:04:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4E77B206FA;
-        Fri, 19 Jun 2020 15:14:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AEA7E2193E;
+        Fri, 19 Jun 2020 15:04:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579692;
-        bh=fesb+m6/8ZgvadMLW5u59Am+eMgAkVHAPFHdsmUzjg8=;
+        s=default; t=1592579095;
+        bh=jUNuI7oofciDkljzmgWPdaKM/dhmw9LNWH+gdQ6fsyY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0Txbr1TYF30ie2oL5Ugyd5AMqcVMUYZZKr3nQdaCiBuec4UJzD7iSAM/S/8qsDBHf
-         GWiInXibNF6MNeD6QssetYFtU35+bMaLBQ1rxGXKwIzH7AoubShOr7rm4hs43NpjNK
-         AYDtsACSAlUvyuHyv6q3IJwYAZb1asLf5pL2XzUA=
+        b=hpDOn22Vjx5UuAk/vkpSccJRZoGOMVbCM+34NyVyo2u2hj9RRNjk/9tcDO8SaEVY6
+         gsRs7DHidLCrlstd7zwk+YyAZuVVpi5VZdI26cD40bROhS6e9fpNoR4HiKJ4EUoUN0
+         ZdlV3oIKcAQZTvdBQN6lIULAvLVDpLDKttBM9NIc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.4 231/261] powerpc/32s: Fix another build failure with CONFIG_PPC_KUAP_DEBUG
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.19 257/267] powerpc/64s: Save FSCR to init_task.thread.fscr after feature init
 Date:   Fri, 19 Jun 2020 16:34:02 +0200
-Message-Id: <20200619141700.946086466@linuxfoundation.org>
+Message-Id: <20200619141700.993357582@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +42,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-commit 74016701fe5f873ae23bf02835407227138d874d upstream.
+commit 912c0a7f2b5daa3cbb2bc10f303981e493de73bd upstream.
 
-'thread' doesn't exist in kuap_check() macro.
+At boot the FSCR is initialised via one of two paths. On most systems
+it's set to a hard coded value in __init_FSCR().
 
-Use 'current' instead.
+On newer skiboot systems we use the device tree CPU features binding,
+where firmware can tell Linux what bits to set in FSCR (and HFSCR).
 
-Fixes: a68c31fc01ef ("powerpc/32s: Implement Kernel Userspace Access Protection")
-Cc: stable@vger.kernel.org
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+In both cases the value that's configured at boot is not propagated
+into the init_task.thread.fscr value prior to the initial fork of init
+(pid 1), which means the value is not used by any processes other than
+swapper (the idle task).
+
+For the __init_FSCR() case this is OK, because the value in
+init_task.thread.fscr is initialised to something sensible. However it
+does mean that the value set in __init_FSCR() is not used other than
+for swapper, which is odd and confusing.
+
+The bigger problem is for the device tree CPU features case it
+prevents firmware from setting (or clearing) FSCR bits for use by user
+space. This means all existing kernels can not have features
+enabled/disabled by firmware if those features require
+setting/clearing FSCR bits.
+
+We can handle both cases by saving the FSCR value into
+init_task.thread.fscr after we have initialised it at boot. This fixes
+the bug for device tree CPU features, and will allow us to simplify
+the initialisation for the __init_FSCR() case in a future patch.
+
+Fixes: 5a61ef74f269 ("powerpc/64s: Support new device tree binding for discovering CPU features")
+Cc: stable@vger.kernel.org # v4.12+
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/b459e1600b969047a74e34251a84a3d6fdf1f312.1590858925.git.christophe.leroy@csgroup.eu
+Link: https://lore.kernel.org/r/20200527145843.2761782-3-mpe@ellerman.id.au
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/include/asm/book3s/32/kup.h |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/kernel/prom.c |   19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
---- a/arch/powerpc/include/asm/book3s/32/kup.h
-+++ b/arch/powerpc/include/asm/book3s/32/kup.h
-@@ -2,6 +2,7 @@
- #ifndef _ASM_POWERPC_BOOK3S_32_KUP_H
- #define _ASM_POWERPC_BOOK3S_32_KUP_H
+--- a/arch/powerpc/kernel/prom.c
++++ b/arch/powerpc/kernel/prom.c
+@@ -685,6 +685,23 @@ static void __init tm_init(void)
+ static void tm_init(void) { }
+ #endif /* CONFIG_PPC_TRANSACTIONAL_MEM */
  
-+#include <asm/bug.h>
- #include <asm/book3s/32/mmu-hash.h>
++#ifdef CONFIG_PPC64
++static void __init save_fscr_to_task(void)
++{
++	/*
++	 * Ensure the init_task (pid 0, aka swapper) uses the value of FSCR we
++	 * have configured via the device tree features or via __init_FSCR().
++	 * That value will then be propagated to pid 1 (init) and all future
++	 * processes.
++	 */
++	if (early_cpu_has_feature(CPU_FTR_ARCH_207S))
++		init_task.thread.fscr = mfspr(SPRN_FSCR);
++}
++#else
++static inline void save_fscr_to_task(void) {};
++#endif
++
++
+ void __init early_init_devtree(void *params)
+ {
+ 	phys_addr_t limit;
+@@ -770,6 +787,8 @@ void __init early_init_devtree(void *par
+ 		BUG();
+ 	}
  
- #ifdef __ASSEMBLY__
-@@ -75,7 +76,7 @@
- 
- .macro kuap_check	current, gpr
- #ifdef CONFIG_PPC_KUAP_DEBUG
--	lwz	\gpr, KUAP(thread)
-+	lwz	\gpr, THREAD + KUAP(\current)
- 999:	twnei	\gpr, 0
- 	EMIT_BUG_ENTRY 999b, __FILE__, __LINE__, (BUGFLAG_WARNING | BUGFLAG_ONCE)
- #endif
++	save_fscr_to_task();
++
+ #if defined(CONFIG_SMP) && defined(CONFIG_PPC64)
+ 	/* We'll later wait for secondaries to check in; there are
+ 	 * NCPUS-1 non-boot CPUs  :-)
 
 
