@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF1D2004AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 11:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 334632004A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 11:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731994AbgFSJHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 05:07:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731827AbgFSJG4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 05:06:56 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4721AC06179B
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 02:06:55 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id s28so6970877edw.11
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 02:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=+0u89dpmgvQy4plYwwslEmSBiru+bR25mmVExT9ZnYw=;
-        b=UB/REUZqGhSab2IhwMetGxClUkd/oH91Eb1YMtnqkqAxIYIsM5YWJ4a17MUa8/08et
-         0KoPGo9oOwe1emR2wQSQNrT5mDdb5rPGbQPYSjM7oAM0AmVr3nITPyO5xBU0y99uSaYS
-         GceF0JPmFhlA4OqkmdjhyRfE1guxkExlPCp0DWWvNnsOZnKJIUT+xfTjyP1zTVLFmjP2
-         dMylqWecptZAOuQnxr4pfUQnYY3XKand3fm9DpP1DYG41QiDNvEzeMJVk82vaFfE2K9D
-         qtb13ihfkOU5g1JKWZXaspFlc8GMvyr56s1ipcyGwqqbQPiOZwcx/nYfvYwyMjpAPLcZ
-         I8Jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+0u89dpmgvQy4plYwwslEmSBiru+bR25mmVExT9ZnYw=;
-        b=hf0IcauxBuPAAQTHbdTrz/TwpZEXDPR+G0tT0LzWIHwZBIuDjNK13gaTF3TPF5CR8s
-         swyRh70n+KtSCcxp0lldBeOqYKS29qs9HpJOztEW2ZymBNcmWnN5MavBfKDHwlXdKO06
-         sL3zaTXubUSP26fIwbksxLz0fKEAINFwV5LkuLRkFybfOBXwYpAvhxe0H+9jFB4qsvnf
-         Op7Rnsbn407xuXYwsTb7hRJbG/aoUxhG0WtfcNGBzbct6eVPrIN7xFmhgHPnRFXYDpPi
-         0Z2fz4/iBwlkOXmvDI114+8nIF08E9D2X6jFcD6fp2qC7UfMhcptMtgHzSd2vGMBnTSx
-         00Eg==
-X-Gm-Message-State: AOAM531KgkIkoEX10/OYYtOQBTlWGcuf5OSc+OOks9cZ/MbV3hrJHn/g
-        mcp0OrEReC+auaPynnxx9bblzQ==
-X-Google-Smtp-Source: ABdhPJy/3Bg56TEDS6v87nEXxy3icDzdDUs8cujpuQA8aXHR5JzzlkpBgh63TY4ie6qdHZydvU1qVg==
-X-Received: by 2002:aa7:d7ca:: with SMTP id e10mr2271039eds.45.1592557613971;
-        Fri, 19 Jun 2020 02:06:53 -0700 (PDT)
-Received: from localhost.localdomain ([2001:16b8:5c68:7901:5c06:6064:338b:4004])
-        by smtp.gmail.com with ESMTPSA id dm1sm4653650ejc.99.2020.06.19.02.06.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 02:06:53 -0700 (PDT)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        devicetree@vger.kernel.org,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>
-Cc:     Drew Fustini <drew@beagleboard.org>
-Subject: [PATCH v2 3/3] pinctrl: single: parse #pinctrl-cells = 2
-Date:   Fri, 19 Jun 2020 11:06:08 +0200
-Message-Id: <20200619090608.94948-4-drew@beagleboard.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200619090608.94948-1-drew@beagleboard.org>
-References: <20200619090608.94948-1-drew@beagleboard.org>
+        id S1731917AbgFSJHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 05:07:09 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:57942 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731775AbgFSJGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 05:06:53 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id DC06B6324870621A196D;
+        Fri, 19 Jun 2020 17:06:48 +0800 (CST)
+Received: from DESKTOP-FKFNUOQ.china.huawei.com (10.67.101.2) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 19 Jun 2020 17:06:39 +0800
+From:   Zhe Li <lizhe67@huawei.com>
+To:     <dwmw2@infradead.org>, <richard@nod.at>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+CC:     <lizhe67@huawei.com>, <wangfangpeng1@huawei.com>,
+        <qiuxi1@huawei.com>, <zhongjubin@huawei.com>, <chenjie6@huawei.com>
+Subject: [PATCH] jffs2: fix UAF problem
+Date:   Fri, 19 Jun 2020 17:06:35 +0800
+Message-ID: <20200619090635.58548-1-lizhe67@huawei.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.101.2]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If "pinctrl-single,pins" has 3 arguments (offset, conf, mux) then
-pcs_parse_one_pinctrl_entry() does an OR operation on to get the
-value to store in the register.
+The log of UAF problem is listed below.
+BUG: KASAN: use-after-free in jffs2_rmdir+0xa4/0x1cc [jffs2] at addr c1f165fc
+Read of size 4 by task rm/8283
+=============================================================================
+BUG kmalloc-32 (Tainted: P    B      O   ): kasan: bad access detected
+-----------------------------------------------------------------------------
 
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
+INFO: Allocated in 0xbbbbbbbb age=3054364 cpu=0 pid=0
+        0xb0bba6ef
+        jffs2_write_dirent+0x11c/0x9c8 [jffs2]
+        __slab_alloc.isra.21.constprop.25+0x2c/0x44
+        __kmalloc+0x1dc/0x370
+        jffs2_write_dirent+0x11c/0x9c8 [jffs2]
+        jffs2_do_unlink+0x328/0x5fc [jffs2]
+        jffs2_rmdir+0x110/0x1cc [jffs2]
+        vfs_rmdir+0x180/0x268
+        do_rmdir+0x2cc/0x300
+        ret_from_syscall+0x0/0x3c
+INFO: Freed in 0x205b age=3054364 cpu=0 pid=0
+        0x2e9173
+        jffs2_add_fd_to_list+0x138/0x1dc [jffs2]
+        jffs2_add_fd_to_list+0x138/0x1dc [jffs2]
+        jffs2_garbage_collect_dirent.isra.3+0x21c/0x288 [jffs2]
+        jffs2_garbage_collect_live+0x16bc/0x1800 [jffs2]
+        jffs2_garbage_collect_pass+0x678/0x11d4 [jffs2]
+        jffs2_garbage_collect_thread+0x1e8/0x3b0 [jffs2]
+        kthread+0x1a8/0x1b0
+        ret_from_kernel_thread+0x5c/0x64
+Call Trace:
+[c17ddd20] [c02452d4] kasan_report.part.0+0x298/0x72c (unreliable)
+[c17ddda0] [d2509680] jffs2_rmdir+0xa4/0x1cc [jffs2]
+[c17dddd0] [c026da04] vfs_rmdir+0x180/0x268
+[c17dde00] [c026f4e4] do_rmdir+0x2cc/0x300
+[c17ddf40] [c001a658] ret_from_syscall+0x0/0x3c
+
+The root cause is that we don't get "jffs2_inode_info.sem" before
+we scan list "jffs2_inode_info.dents" in function jffs2_rmdir.
+This patch add codes to get "jffs2_inode_info.sem" before we scan
+"jffs2_inode_info.dents" to slove the UAF problem.
+
+Signed-off-by: Zhe Li <lizhe67@huawei.com>
 ---
- drivers/pinctrl/pinctrl-single.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ fs/jffs2/dir.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index 02f677eb1d53..e6d1cf25782c 100644
---- a/drivers/pinctrl/pinctrl-single.c
-+++ b/drivers/pinctrl/pinctrl-single.c
-@@ -1017,10 +1017,17 @@ static int pcs_parse_one_pinctrl_entry(struct pcs_device *pcs,
- 			break;
- 		}
+diff --git a/fs/jffs2/dir.c b/fs/jffs2/dir.c
+index f20cff1..7764937 100644
+--- a/fs/jffs2/dir.c
++++ b/fs/jffs2/dir.c
+@@ -590,10 +590,14 @@ static int jffs2_rmdir (struct inode *dir_i, struct dentry *dentry)
+ 	int ret;
+ 	uint32_t now = JFFS2_NOW();
  
--		/* Index plus one value cell */
- 		offset = pinctrl_spec.args[0];
- 		vals[found].reg = pcs->base + offset;
--		vals[found].val = pinctrl_spec.args[1];
-+
-+		switch (pinctrl_spec.args_count) {
-+		case 2:
-+			vals[found].val = pinctrl_spec.args[1];
-+			break;
-+		case 3:
-+			vals[found].val = (pinctrl_spec.args[1] | pinctrl_spec.args[2]);
-+			break;
++	mutex_lock(&f->sem);
+ 	for (fd = f->dents ; fd; fd = fd->next) {
+-		if (fd->ino)
++		if (fd->ino) {
++			mutex_unlock(&f->sem);
+ 			return -ENOTEMPTY;
 +		}
+ 	}
++	mutex_unlock(&f->sem);
  
- 		dev_dbg(pcs->dev, "%pOFn index: 0x%x value: 0x%x\n",
- 			pinctrl_spec.np, offset, pinctrl_spec.args[1]);
+ 	ret = jffs2_do_unlink(c, dir_f, dentry->d_name.name,
+ 			      dentry->d_name.len, f, now);
 -- 
-2.25.1
+2.7.4
+
 
