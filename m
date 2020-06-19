@@ -2,83 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26559200B3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A3F8200B57
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733140AbgFSOUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:20:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
+        id S1733074AbgFSOWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:22:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732461AbgFSOUZ (ORCPT
+        with ESMTP id S1727081AbgFSOWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:20:25 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AECA8C06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:20:24 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id g1so7748389edv.6
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:20:24 -0700 (PDT)
+        Fri, 19 Jun 2020 10:22:25 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE012C0613EE
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:22:24 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id l24so4560685pgb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:22:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a8ouono3/9wkmoHXFRDJLystsfW27Vj/z6In1ogYbNs=;
-        b=G7Oh89HCJu6Kc2Am/wkdOFGgT9s4pF/E52Va+mrxV1I65mvhK8euaOFBgk0WufM5+f
-         rrE0Tk0ZJYxv/Ld9EvyLxdqqTZLvUYskhLbQV+sjPnsEesmKUK9+ar/txOM9d6tBTYho
-         /x9rjV9WvUohqpqFyrrVmClgXxnjc08t7zuYsw9h93vNwzSfoyFNxFQhnyzDMw9dZWvp
-         ZKxiy981Ki8/KwhQQPUnrISCcbRtLEMXV0VVmgWQV1vg3AyBDzKHQyy80a2f43OHGeLb
-         KFscw2zeP6EoARCNYEmPmtdl6IWS2WZyCD8eB8Obg0FGE5FtFWtceeU3dosNvLSxOcp7
-         0RFA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=vxtHFfxRa6J52mPRG6jvgbvliKZllqWnNgXrzGwwQhE=;
+        b=FHU640PiXW0xLyp6AL1PCI7tRK5wZ06ZcDtLoY1aP2MLtQLYA/U8l9u+b9wpPYqO6A
+         rKlg/ouC1alQwarF28E0DQZ1SJXWsrDrDUYLSjHv95gzOTS88oBzZ0IP7kYuLRe4dEpU
+         K51/lr0hGhn6/egk9YmTp7T1VdLVAlWt3OFSjyKaAMn7Ld7iL3gdHOiFXMm/AJFzUHfu
+         wfMLS9RtdrGdqp76or0DL9iuXL2SBwqm/1H76EveVh8A5a/g6wllP0xfgCSEi5teRCjP
+         SPRU9LwxkuNVMzFCC3C33qwzViJCT+14F747rhVJ9n+i2CVu4EK2i39GuuwIMefZN7za
+         ESGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a8ouono3/9wkmoHXFRDJLystsfW27Vj/z6In1ogYbNs=;
-        b=Z8uCP8TOAP/UTj3v/dxzCwmlgM+vxLn761t9hkx6a3i/FObvi54h4fMxzafFlIhKGQ
-         M9+5vtpfY0vqI1SCIvrb/JjOh/Dhu85jmwF883frYaN/XoZYgy3Jv48nq8b/pdKDcL3G
-         v2JSNS8/h5mmQjqTy8JrCc7VJ9rKMg1umgC9qa5F/Ingm3PDLu4Ilucbi2+VnZ83VkUY
-         v1sGNOZOPel3aoG+SE625FaXjwDo4ScKSCc+E70cX8S+OvCdaZ4cyNpcUtKYZVlX24H5
-         G0pCy5N3YELy1FPdPjRdnnhrQvgEbdRN2VPvQJjAllVx5LCMGUOoean1OorFCkuVieim
-         qV7A==
-X-Gm-Message-State: AOAM532q6u5XP4fw92xdxA2OIvybAbmcVv9y62hSbRqb02c9vG62EMI3
-        2cM1oIIvz/ZJUfjemF95FdzUozCK
-X-Google-Smtp-Source: ABdhPJzjcApG6GRvuJP0gB/OVsBNly4jMwJiRltqZIVwfUONnANMSOcVRDlPUkYTHFVl92fqnLUMnw==
-X-Received: by 2002:a05:6402:128f:: with SMTP id w15mr3700308edv.240.1592576423454;
-        Fri, 19 Jun 2020 07:20:23 -0700 (PDT)
-Received: from ltop.local ([2a02:a03f:b7f9:7600:904f:be8d:1d92:9974])
-        by smtp.gmail.com with ESMTPSA id ox27sm4871450ejb.101.2020.06.19.07.20.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 07:20:22 -0700 (PDT)
-Date:   Fri, 19 Jun 2020 16:20:22 +0200
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] sparse: use identifiers to define address spaces
-Message-ID: <20200619142022.rvv7lbuboeehdxqi@ltop.local>
-References: <20200617220226.88948-1-luc.vanoostenryck@gmail.com>
- <CANiq72nNQ+11ch7sRjLLc33s_OkftuOqgGkCDggq88tbJtdPNQ@mail.gmail.com>
- <20200618050249.lqwznznltm3lcykr@ltop.local>
- <CAMuHMdWQsirja-h3wBcZezk+H2Q_HShhAks8Hc8ps5fTAp=ObQ@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=vxtHFfxRa6J52mPRG6jvgbvliKZllqWnNgXrzGwwQhE=;
+        b=EN0ULgPD9bTaXl78R/ztFjMs9OS9DrtJTOS+PsPoLQ7UaqowT38lu69Q2OCtIG+W1x
+         Xq7nSuI9EcEo4f1pQLFsNwgge99gYZ555OIwzs1Ts3GAWU2xachCLhD7L/Y6u626ioB0
+         FIs3H1YK69v//BWrFP5NsrsabtUuxCMF1ayG8xTmEUt7XNezEz6Vdx0oIpr0aS3dxfgA
+         wsEnukIDlSXssLllKsxZcem4dMEjN08KQaj9vBj4GL01yk6pWLIaGvohaP3+gR1TpEU5
+         wL6Yd//cV7u3/POJSyjhfSoq77ocBirRv4dp5815LmkNJ/N4gJO3aZ46P1g7+EGVEemj
+         XrZw==
+X-Gm-Message-State: AOAM530q+EqxTs+0VCGYQ2zUQgdDcgGYWhCTAbBV65h/PlMSSQ2aSrXx
+        BXLnRo6zSQAFn1O/iQGdMdYvcA==
+X-Google-Smtp-Source: ABdhPJxRONpeZFjGL6amyDVA55vSKIbY4ULoW+nnBgRLPw2fISt14O88Or5B2Im6nt4e2+NiD0KsNQ==
+X-Received: by 2002:a65:43cb:: with SMTP id n11mr3240011pgp.160.1592576544118;
+        Fri, 19 Jun 2020 07:22:24 -0700 (PDT)
+Received: from [192.168.1.188] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id p11sm6265486pfq.10.2020.06.19.07.22.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jun 2020 07:22:23 -0700 (PDT)
+Subject: Re: [PATCH 04/15] io_uring: re-issue block requests that failed
+ because of resources
+To:     Pavel Begunkov <asml.silence@gmail.com>, io-uring@vger.kernel.org
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org
+References: <20200618144355.17324-1-axboe@kernel.dk>
+ <20200618144355.17324-5-axboe@kernel.dk>
+ <cdd4bf56-5a08-5d28-969f-81b70cc3c473@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <da21ba82-c027-0c15-93e3-a372283d7030@kernel.dk>
+Date:   Fri, 19 Jun 2020 08:22:22 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWQsirja-h3wBcZezk+H2Q_HShhAks8Hc8ps5fTAp=ObQ@mail.gmail.com>
+In-Reply-To: <cdd4bf56-5a08-5d28-969f-81b70cc3c473@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 10:07:34AM +0200, Geert Uytterhoeven wrote:
+On 6/19/20 8:12 AM, Pavel Begunkov wrote:
+> On 18/06/2020 17:43, Jens Axboe wrote:
+>> Mark the plug with nowait == true, which will cause requests to avoid
+>> blocking on request allocation. If they do, we catch them and reissue
+>> them from a task_work based handler.
+>>
+>> Normally we can catch -EAGAIN directly, but the hard case is for split
+>> requests. As an example, the application issues a 512KB request. The
+>> block core will split this into 128KB if that's the max size for the
+>> device. The first request issues just fine, but we run into -EAGAIN for
+>> some latter splits for the same request. As the bio is split, we don't
+>> get to see the -EAGAIN until one of the actual reads complete, and hence
+>> we cannot handle it inline as part of submission.
+>>
+>> This does potentially cause re-reads of parts of the range, as the whole
+>> request is reissued. There's currently no better way to handle this.
+>>
+>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+>> ---
+>>  fs/io_uring.c | 148 ++++++++++++++++++++++++++++++++++++++++++--------
+>>  1 file changed, 124 insertions(+), 24 deletions(-)
+>>
+>> diff --git a/fs/io_uring.c b/fs/io_uring.c
+>> index 2e257c5a1866..40413fb9d07b 100644
+>> --- a/fs/io_uring.c
+>> +++ b/fs/io_uring.c
+>> @@ -900,6 +900,13 @@ static int io_file_get(struct io_submit_state *state, struct io_kiocb *req,
+>>  static void __io_queue_sqe(struct io_kiocb *req,
+>>  			   const struct io_uring_sqe *sqe);
+>>  
+> ...> +
+>> +static void io_rw_resubmit(struct callback_head *cb)
+>> +{
+>> +	struct io_kiocb *req = container_of(cb, struct io_kiocb, task_work);
+>> +	struct io_ring_ctx *ctx = req->ctx;
+>> +	int err;
+>> +
+>> +	__set_current_state(TASK_RUNNING);
+>> +
+>> +	err = io_sq_thread_acquire_mm(ctx, req);
+>> +
+>> +	if (io_resubmit_prep(req, err)) {
+>> +		refcount_inc(&req->refs);
+>> +		io_queue_async_work(req);
+>> +	}
 > 
-> Indeed. It looks like this whole list is completely unsorted, and was created
-> by appending new definitions at the bottom.
-> So perhaps all the address_space ones should be grouped together?
+> Hmm, I have similar stuff but for iopoll. On top removing grab_env* for
+> linked reqs and some extra. I think I'll rebase on top of this.
 
-Hi Geert & Miguel,
+Yes, there's certainly overlap there. I consider this series basically
+wrapped up, so feel free to just base on top of it.
 
-Yes, some cleanup is welcome, I think.
-I'll send this in a separate patch soon.
+>> +static bool io_rw_reissue(struct io_kiocb *req, long res)
+>> +{
+>> +#ifdef CONFIG_BLOCK
+>> +	struct task_struct *tsk;
+>> +	int ret;
+>> +
+>> +	if ((res != -EAGAIN && res != -EOPNOTSUPP) || io_wq_current_is_worker())
+>> +		return false;
+>> +
+>> +	tsk = req->task;
+>> +	init_task_work(&req->task_work, io_rw_resubmit);
+>> +	ret = task_work_add(tsk, &req->task_work, true);
+> 
+> I don't like that the request becomes un-discoverable for cancellation
+> awhile sitting in the task_work list. Poll stuff at least have hash_node
+> for that.
 
-Thanks for reporting,
--- Luc
+Async buffered IO was never cancelable, so it doesn't really matter.
+It's tied to the task, so we know it'll get executed - either run, or
+canceled if the task is going away. This is really not that different
+from having the work discoverable through io-wq queueing before, since
+the latter could never be canceled anyway as it sits there
+uninterruptibly waiting for IO completion.
+
+-- 
+Jens Axboe
+
