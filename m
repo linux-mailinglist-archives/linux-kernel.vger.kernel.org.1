@@ -2,196 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4676220116D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC5120116F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405163AbgFSPl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:41:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33838 "EHLO
+        id S2394028AbgFSPmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:42:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394020AbgFSPlh (ORCPT
+        with ESMTP id S2405074AbgFSPl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:41:37 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEB43C06174E;
-        Fri, 19 Jun 2020 08:41:36 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id dp18so10654524ejc.8;
-        Fri, 19 Jun 2020 08:41:36 -0700 (PDT)
+        Fri, 19 Jun 2020 11:41:56 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2311DC06174E;
+        Fri, 19 Jun 2020 08:41:56 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id b5so4575870pfp.9;
+        Fri, 19 Jun 2020 08:41:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=DponZSTc3PXadFZ/Va5z+HlpHIhGzNlZ4rlMGnjJEz8=;
-        b=QZyWYcffTCxTAou4/XDL0wFs/ac5lDwo/8AznACPc3AmiBImc+1vq2iwTECxAuhJex
-         ILxAYIS7Ex3EoQiZMwOB3xhsl8aswr8UHePRXi+Nl/oqfinyXTGKJtrS8TKVKwBgxoWl
-         jPWPS/8nw6i3tmrT2b5pJ5lcNKgUus2kUTV6ZZNzx3vMudu8g04fHJBBLuafGVuq3ZV9
-         VPLQlbfV7P1HxJiwfRIT6gZzsnO2t6M5XfElFaZ+PedcGHKmknXmXZdFae8ceJOZU8n5
-         4BofWIMkQsw8X44nTMSHEJhL3nW2HqE7taPGMVvXjEPxPryPqSBPGZ+XccR8/gEbZacw
-         tI1g==
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding:user-agent;
+        bh=i9+OLyp7V6sirl27V8Yotw04ozvFZItgstHfpcz6w7Y=;
+        b=H2sFIt0Eh4rCDqusFPy/L+SNl8YoznhQF4dnlWb+3YW11nC6kC/yPqeENNsyyLdgvo
+         ayPhr754O2L2ijskzp/+2V7DJbXYm7Yg7+B+TO59LWcFD0/Jrh8EV0k1sOsTXDbmGsCi
+         NEktBcOTiy752oElA8nOVyQykfdq1KhT3OriSQarW+hPMOXcsv6l97RsvLO38pOJXjRC
+         CbrSRgCpY+3X+9RiSiuSQa5f8XTccZMUGqWM5hDn9M/VUmFmd3S/nbIPX+jyfLeVE/mf
+         p95D+lz1YngCmHyWfRalBa5vwpbs9oCs7wHiq+Y/YCpo9qPpjDiL0pgbFibUcu+Gy5ON
+         8VCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=DponZSTc3PXadFZ/Va5z+HlpHIhGzNlZ4rlMGnjJEz8=;
-        b=B+4cZGJTpuGxlzS+htlFz/yA3x0+YYSMk5LMAHxpL4Yxzl+js1YNeNWJ/7hO0QoiBn
-         9yFTk6ifl4Ty0Gr8towPk0q6g7+ENiYt5CUCktSRc+wVtkBsCmJTyVOp0wHnGr+8y4W9
-         /SJgVlxJQPi3D/OLEBOJoPvPH1mSFddUnvnziDiI1pRlFHknC6d3nXVRuQGjKjlz/RJf
-         BT2syRBcIafT1moiESCrHUPpkiGEHiIHEVlm5gDdw+F1M7+gSevsbcDgOhM0OkYRnUIL
-         1EIl3zCZyQdFVjvuqJUGV5UiJ8y1+Xc8wmTqkfjMY8xHpO8HjEDIRSbFJQXjt5V9svWY
-         K1jQ==
-X-Gm-Message-State: AOAM530YIEz1lRzUgR1aXJBY3kDPqbbavwtpHjUQ3d55bnML8HzJyueo
-        kaZH8v0EP0u/+uyjnaxm0lA=
-X-Google-Smtp-Source: ABdhPJwc5KBg86fF95A4Q+GvR1ansr7SgCbM42vcDpjhFxtXdUQn7fnpXSNMr7CNxA3gP5x3Tao2WQ==
-X-Received: by 2002:a17:906:f49:: with SMTP id h9mr4397827ejj.155.1592581295536;
-        Fri, 19 Jun 2020 08:41:35 -0700 (PDT)
-Received: from ubuntu-laptop.micron.com ([165.225.203.62])
-        by smtp.gmail.com with ESMTPSA id ew9sm4986163ejb.121.2020.06.19.08.41.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 08:41:35 -0700 (PDT)
-From:   Bean Huo <huobean@gmail.com>
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bvanassche@acm.org
-Cc:     beanhuo@micron.com
-Subject: [PATCH v2 2/2] scsi: fix coding style errors in scsi_lib.c
-Date:   Fri, 19 Jun 2020 17:41:17 +0200
-Message-Id: <20200619154117.10262-3-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200619154117.10262-1-huobean@gmail.com>
-References: <20200619154117.10262-1-huobean@gmail.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:content-transfer-encoding
+         :user-agent;
+        bh=i9+OLyp7V6sirl27V8Yotw04ozvFZItgstHfpcz6w7Y=;
+        b=U+dHKwJxonI0tmd3ogDdiza6R3ccN43KQ9+PcfhosRAX/TFP+R1JhS/KgIYFW+YTyX
+         SfuGC/VeuwYUzaJP+9B9ttKKH6RY5WVCgZyMtAs8Xukcz24lOINqovKOHAct2W12r7lM
+         0MYH0Ky5Vr7lxTT+ykIjECKRvbmVU1Zs9xWJULf1rnCzH1xKXEEzwOMsTyP7rFOfcdd/
+         5MR5YcpZ1JdoePmNwWyA7Qz6j3c6+A9OKXsHFn/pdFZZ0mliQCAOmsGWWpv7oZPiogi3
+         4q15Q65mjXW8425LJGbAcCYr00liZrSrMjO+vx08iEF1oE63y61f4VYtlokB29YVS2Jt
+         uGlQ==
+X-Gm-Message-State: AOAM532THX5bjVGBDVsjf4D2DlRvEtUElu+/IbbBtP+Hg2zspI+gWtcC
+        4oQkyGC/X8eiaHAh6+2i3hI=
+X-Google-Smtp-Source: ABdhPJxLbHeV5yzEpvfP5mcS+4V81PlDu+BLk/SMYtqVENyR2U+MzuUqN3H2C2UnQLu696JQ/HMozA==
+X-Received: by 2002:a62:3183:: with SMTP id x125mr8776575pfx.3.1592581315702;
+        Fri, 19 Jun 2020 08:41:55 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j8sm5566631pjw.11.2020.06.19.08.41.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 19 Jun 2020 08:41:55 -0700 (PDT)
+Date:   Fri, 19 Jun 2020 08:41:54 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Douglas Anderson <dianders@chromium.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Revert "Makefile: install modules.builtin even if
+ CONFIG_MODULES=n"
+Message-ID: <20200619154154.GA210604@roeck-us.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Sat, Jun 20, 2020 at 12:09:55AM +0900, Masahiro Yamada wrote:
+> This reverts commit e0b250b57dcf403529081e5898a9de717f96b76b,
+> which broke build systems that need to install files to a certain
+> path, but do not set INSTALL_MOD_PATH when invoking 'make install'.
+> 
+>   $ make INSTALL_PATH=/tmp/destdir install
+>   mkdir: cannot create directory ‘/lib/modules/5.8.0-rc1+/’: Permission denied
+>   Makefile:1342: recipe for target '_builtin_inst_' failed
+>   make: *** [_builtin_inst_] Error 1
+> 
+> While modules.builtin is useful also for CONFIG_MODULES=n, this change
+> in the behavior is quite unexpected. Maybe "make modules_install"
+> can install modules.builtin irrespective of CONFIG_MODULES as Jonas
+> originally suggested.
+> 
+> Anyway, that commit should be reverted ASAP.
+> 
+> Reported-by: Douglas Anderson <dianders@chromium.org>
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> Cc: Jonas Karlman <jonas@kwiboo.se>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-Delete trailing whitespace, multiple blank lines, and make
-switch/case be at the same indent.
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
- drivers/scsi/scsi_lib.c | 43 ++++++++++++++++++++---------------------
- 1 file changed, 21 insertions(+), 22 deletions(-)
-
-diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
-index c47650f7f0d3..be8f5050f837 100644
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -389,7 +389,7 @@ static void scsi_single_lun_run(struct scsi_device *current_sdev)
- 		spin_unlock_irqrestore(shost->host_lock, flags);
- 		scsi_kick_queue(sdev->request_queue);
- 		spin_lock_irqsave(shost->host_lock, flags);
--	
-+
- 		scsi_device_put(sdev);
- 	}
-  out:
-@@ -1455,18 +1455,18 @@ static void scsi_softirq_done(struct request *rq)
- 	scsi_log_completion(cmd, disposition);
- 
- 	switch (disposition) {
--		case SUCCESS:
--			scsi_finish_command(cmd);
--			break;
--		case NEEDS_RETRY:
--			scsi_queue_insert(cmd, SCSI_MLQUEUE_EH_RETRY);
--			break;
--		case ADD_TO_MLQUEUE:
--			scsi_queue_insert(cmd, SCSI_MLQUEUE_DEVICE_BUSY);
--			break;
--		default:
--			scsi_eh_scmd_add(cmd);
--			break;
-+	case SUCCESS:
-+		scsi_finish_command(cmd);
-+		break;
-+	case NEEDS_RETRY:
-+		scsi_queue_insert(cmd, SCSI_MLQUEUE_EH_RETRY);
-+		break;
-+	case ADD_TO_MLQUEUE:
-+		scsi_queue_insert(cmd, SCSI_MLQUEUE_DEVICE_BUSY);
-+		break;
-+	default:
-+		scsi_eh_scmd_add(cmd);
-+		break;
- 	}
- }
- 
-@@ -2024,7 +2024,6 @@ scsi_mode_select(struct scsi_device *sdev, int pf, int sp, int modepage,
- 		real_buffer[1] = data->medium_type;
- 		real_buffer[2] = data->device_specific;
- 		real_buffer[3] = data->block_descriptor_length;
--		
- 
- 		cmd[0] = MODE_SELECT;
- 		cmd[4] = len;
-@@ -2110,7 +2109,7 @@ scsi_mode_sense(struct scsi_device *sdev, int dbd, int modepage,
- 		if (scsi_sense_valid(sshdr)) {
- 			if ((sshdr->sense_key == ILLEGAL_REQUEST) &&
- 			    (sshdr->asc == 0x20) && (sshdr->ascq == 0)) {
--				/* 
-+				/*
- 				 * Invalid command operation code
- 				 */
- 				sdev->use_10_for_ms = 0;
-@@ -2119,7 +2118,7 @@ scsi_mode_sense(struct scsi_device *sdev, int dbd, int modepage,
- 		}
- 	}
- 
--	if(scsi_status_is_good(result)) {
-+	if (scsi_status_is_good(result)) {
- 		if (unlikely(buffer[0] == 0x86 && buffer[1] == 0x0b &&
- 			     (modepage == 6 || modepage == 8))) {
- 			/* Initio breakage? */
-@@ -2129,7 +2128,7 @@ scsi_mode_sense(struct scsi_device *sdev, int dbd, int modepage,
- 			data->device_specific = 0;
- 			data->longlba = 0;
- 			data->block_descriptor_length = 0;
--		} else if(use_10_for_ms) {
-+		} else if (use_10_for_ms) {
- 			data->length = buffer[0]*256 + buffer[1] + 2;
- 			data->medium_type = buffer[2];
- 			data->device_specific = buffer[3];
-@@ -2212,7 +2211,7 @@ scsi_device_set_state(struct scsi_device *sdev, enum scsi_device_state state)
- 			goto illegal;
- 		}
- 		break;
--			
-+
- 	case SDEV_RUNNING:
- 		switch (oldstate) {
- 		case SDEV_CREATED:
-@@ -2497,7 +2496,7 @@ EXPORT_SYMBOL_GPL(sdev_evt_send_simple);
-  *	(which must be a legal transition).  When the device is in this
-  *	state, only special requests will be accepted, all others will
-  *	be deferred.  Since special requests may also be requeued requests,
-- *	a successful return doesn't guarantee the device will be 
-+ *	a successful return doesn't guarantee the device will be
-  *	totally quiescent.
-  *
-  *	Must be called with user context, may sleep.
-@@ -2623,10 +2622,10 @@ int scsi_internal_device_block_nowait(struct scsi_device *sdev)
- 			return err;
- 	}
- 
--	/* 
-+	/*
- 	 * The device has transitioned to SDEV_BLOCK.  Stop the
- 	 * block layer from calling the midlayer with this device's
--	 * request queue. 
-+	 * request queue.
- 	 */
- 	blk_mq_quiesce_queue_nowait(q);
- 	return 0;
-@@ -2661,7 +2660,7 @@ static int scsi_internal_device_block(struct scsi_device *sdev)
- 
- 	return err;
- }
-- 
-+
- void scsi_start_queue(struct scsi_device *sdev)
- {
- 	struct request_queue *q = sdev->request_queue;
--- 
-2.17.1
-
+> ---
+> 
+> Changes in v2:
+>   - add more commit description
+> 
+>  Makefile | 14 +++-----------
+>  1 file changed, 3 insertions(+), 11 deletions(-)
+> 
+> diff --git a/Makefile b/Makefile
+> index 29abe44ada91..9880e911afe3 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -1336,16 +1336,6 @@ dt_binding_check: scripts_dtc
+>  # ---------------------------------------------------------------------------
+>  # Modules
+>  
+> -# install modules.builtin regardless of CONFIG_MODULES
+> -PHONY += _builtin_inst_
+> -_builtin_inst_:
+> -	@mkdir -p $(MODLIB)/
+> -	@cp -f modules.builtin $(MODLIB)/
+> -	@cp -f $(objtree)/modules.builtin.modinfo $(MODLIB)/
+> -
+> -PHONY += install
+> -install: _builtin_inst_
+> -
+>  ifdef CONFIG_MODULES
+>  
+>  # By default, build modules as well
+> @@ -1389,7 +1379,7 @@ PHONY += modules_install
+>  modules_install: _modinst_ _modinst_post
+>  
+>  PHONY += _modinst_
+> -_modinst_: _builtin_inst_
+> +_modinst_:
+>  	@rm -rf $(MODLIB)/kernel
+>  	@rm -f $(MODLIB)/source
+>  	@mkdir -p $(MODLIB)/kernel
+> @@ -1399,6 +1389,8 @@ _modinst_: _builtin_inst_
+>  		ln -s $(CURDIR) $(MODLIB)/build ; \
+>  	fi
+>  	@sed 's:^:kernel/:' modules.order > $(MODLIB)/modules.order
+> +	@cp -f modules.builtin $(MODLIB)/
+> +	@cp -f $(objtree)/modules.builtin.modinfo $(MODLIB)/
+>  	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modinst
+>  
+>  # This depmod is only for convenience to give the initial
+> -- 
+> 2.25.1
+> 
