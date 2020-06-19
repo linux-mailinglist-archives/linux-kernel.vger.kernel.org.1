@@ -2,109 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEBB2008AB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 14:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3966200891
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 14:24:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733106AbgFSM1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 08:27:07 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:59931 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733036AbgFSMZY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 08:25:24 -0400
-Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
-        (Authenticated sender: antoine.tenart@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 3A7D024000F;
-        Fri, 19 Jun 2020 12:25:22 +0000 (UTC)
-From:   Antoine Tenart <antoine.tenart@bootlin.com>
-To:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
-        hkallweit1@gmail.com, richardcochran@gmail.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.petazzoni@bootlin.com, allan.nielsen@microchip.com,
-        foss@0leil.net, antoine.tenart@bootlin.com
-Subject: [PATCH net-next v3 8/8] MIPS: dts: ocelot: describe the load/save GPIO
-Date:   Fri, 19 Jun 2020 14:23:00 +0200
-Message-Id: <20200619122300.2510533-9-antoine.tenart@bootlin.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200619122300.2510533-1-antoine.tenart@bootlin.com>
-References: <20200619122300.2510533-1-antoine.tenart@bootlin.com>
+        id S1732976AbgFSMYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 08:24:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732956AbgFSMYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 08:24:33 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 263B221527;
+        Fri, 19 Jun 2020 12:24:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592569472;
+        bh=NgZT449b3Tjszh2iaHpBq2sm55Q1GXGCww56Rd+tq8Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=A2tLbrRnfrG2lBiMrFuGqr8q4JuYAt4dq3a0/8s3di6IUQUw89cE5f+TWcf05iinu
+         frmvCXo96EpsesXRBmrdyd4rYtifuXy559caYiI3jB1kXWuPVkVo9Qlk485n6uQj4V
+         FxI+ABSadn3Pq/zmThEJA71fMazuCuFk29hJyD9Q=
+Date:   Fri, 19 Jun 2020 14:24:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bastien Nocera <hadess@hadess.net>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Richard Dodd <richard.o.dodd@gmail.com>,
+        Jonathan Cox <jonathan@jdcox.net>,
+        =?iso-8859-1?Q?Thi=E9baud?= Weksteen <tweek@google.com>,
+        Nishad Kamdar <nishadkamdar@gmail.com>
+Subject: Re: [PATCH 1/8] USB: rename USB quirk to USB_QUIRK_ENDPOINT_IGNORE
+Message-ID: <20200619122429.GA1037991@kroah.com>
+References: <20200618094300.1887727-1-gregkh@linuxfoundation.org>
+ <20200618094300.1887727-2-gregkh@linuxfoundation.org>
+ <484c84b62140f6536f841e7027ddd9ddcf179a72.camel@hadess.net>
+ <62b8ddc4-8d26-1160-6934-fe6a68231938@redhat.com>
+ <f57cd2a9a27fb148f0bdfd0ad5e92b4d01ca77c6.camel@hadess.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f57cd2a9a27fb148f0bdfd0ad5e92b4d01ca77c6.camel@hadess.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quentin Schulz <quentin.schulz@bootlin.com>
+On Fri, Jun 19, 2020 at 01:08:53PM +0200, Bastien Nocera wrote:
+> On Fri, 2020-06-19 at 12:53 +0200, Hans de Goede wrote:
+> > A note for future reference, not sure what you mean with driver
+> > 
+> > API here. If you mean the in kernel API, the kernel rules are
+> > 
+> > that we are always free to change that (Linux does not have a
+> > 
+> > stable driver API).
+> > 
+> > 
+> > 
+> > So if a header does not sit under include/uapi (indicating that
+> > 
+> > it is an userspace API) then a change like this is fine.
+> 
+> I meant the internal driver API, which might break out-of-tree drivers.
 
-This patch adds a description of the load/save GPIN pin, used in the
-VSC8584 PHY for timestamping operations. The related pinctrl description
-is also added.
+There is no such thing.  Well, there might be, but we don't care and
+have to act as if there are no such thing otherwise we would never be
+able to change anything :)
 
-Signed-off-by: Quentin Schulz <quentin.schulz@bootlin.com>
-Signed-off-by: Antoine Tenart <antoine.tenart@bootlin.com>
----
- arch/mips/boot/dts/mscc/ocelot_pcb120.dts | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+> I know that this API is fluid, and that there are no stability
+> guarantees, but I'd still expect at least a note in the commit message
+> to that effect.
 
-diff --git a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-index 33991fd209f5..897de5025d7f 100644
---- a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-+++ b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-@@ -3,6 +3,7 @@
- 
- /dts-v1/;
- 
-+#include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/interrupt-controller/irq.h>
- #include <dt-bindings/phy/phy-ocelot-serdes.h>
- #include "ocelot.dtsi"
-@@ -25,6 +26,11 @@ phy_int_pins: phy_int_pins {
- 		pins = "GPIO_4";
- 		function = "gpio";
- 	};
-+
-+	phy_load_save_pins: phy_load_save_pins {
-+		pins = "GPIO_10";
-+		function = "ptp2";
-+	};
- };
- 
- &mdio0 {
-@@ -34,27 +40,31 @@ &mdio0 {
- &mdio1 {
- 	status = "okay";
- 	pinctrl-names = "default";
--	pinctrl-0 = <&miim1>, <&phy_int_pins>;
-+	pinctrl-0 = <&miim1>, <&phy_int_pins>, <&phy_load_save_pins>;
- 
- 	phy7: ethernet-phy@0 {
- 		reg = <0>;
- 		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-parent = <&gpio>;
-+		load-save-gpios = <&gpio 10 GPIO_ACTIVE_HIGH>;
- 	};
- 	phy6: ethernet-phy@1 {
- 		reg = <1>;
- 		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-parent = <&gpio>;
-+		load-save-gpios = <&gpio 10 GPIO_ACTIVE_HIGH>;
- 	};
- 	phy5: ethernet-phy@2 {
- 		reg = <2>;
- 		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-parent = <&gpio>;
-+		load-save-gpios = <&gpio 10 GPIO_ACTIVE_HIGH>;
- 	};
- 	phy4: ethernet-phy@3 {
- 		reg = <3>;
- 		interrupts = <4 IRQ_TYPE_LEVEL_HIGH>;
- 		interrupt-parent = <&gpio>;
-+		load-save-gpios = <&gpio 10 GPIO_ACTIVE_HIGH>;
- 	};
- };
- 
--- 
-2.26.2
+Why?  Who cares?  Anyone who lives outside of the kernel already knows
+they have to dig in the kernel if their code breaks, that's the cost of
+living outside of the kernel.
 
+thanks,
+
+greg k-h
