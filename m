@@ -2,118 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF482018BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F8C2018D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405952AbgFSQwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44710 "EHLO
+        id S2436493AbgFSQxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393343AbgFSQwD (ORCPT
+        with ESMTP id S2387992AbgFSQww (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 12:52:03 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D7CC06174E;
-        Fri, 19 Jun 2020 09:52:03 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id d66so4664905pfd.6;
-        Fri, 19 Jun 2020 09:52:03 -0700 (PDT)
+        Fri, 19 Jun 2020 12:52:52 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6C3C0613EE
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 09:52:51 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id i25so12062849iog.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 09:52:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=MojqGVMm/N36ukD1qQOzNiKEH9Yim97rUfkXtpM0HIo=;
-        b=lOWhq/zJNBjesFgxGkSn+BtJRwxdpQomhyNHZjlONsvkEN01tr66aBIeORJjSlwrzc
-         FU5LcMVd9PShZF8KF7qWB2r9nJTDNzbUQFTIbtZEygCCvfx2SoWdYi3G4ThYpquzn7du
-         VjTaDYtDXrCRuMgvTdYBl0LSsSxePM1iVhw0O+4kHjzM9oruFsWA+9t6pDoSSEeytMUq
-         ztebVmkrP6goQODaIFcGYuFPm9xXGNRapQ4dceWSPlj7VfBr3vZitoPI5lAVO03aVVvO
-         7w9bYuIMXzVmT0/+BmyJmMycx1Ctm9cPdZiWG8cDdpIyaj+6wWD9lfbEGHobj4s5ya5g
-         pTkA==
+        d=linuxfoundation.org; s=google;
+        h=from:to:cc:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=95l1MVTCi/7S8KtvFFky6uuPDaXVAxHS1QVJv025vvc=;
+        b=DN3+VWJt4kegNaGt6irZzdSQA1JID8n9/YfMrzHpEaYJtlCV4Fp6D96MdHmBNtKqgT
+         yrheJIYkbfaurKdxWS1DGN0cwpdrsRjnS11SiurTVITnjXhAZT6m9w7gbeiU54a4N8dW
+         T7bl2+G7y4MrfC7ufB4SAoj+BoO4ypwK5TdSY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=MojqGVMm/N36ukD1qQOzNiKEH9Yim97rUfkXtpM0HIo=;
-        b=I5y4PQgEslVtNK+tqqx6lsmdWsJBAfI7qA0B/xyekGA25h54hWNTBYr0za34Z83UVB
-         uHTQ9Lvdc6Q60pP1byG7WcoJ7R9PR4ogPGlkD+Xrf79yJIXDdbG7AglejkGJIH7+Kh1V
-         oio2GCkhxx+vcCMy+CWSisYjkVPATt3CTRmIgU/cBIhm+4MsMWLks0hZiN6FrvlyYP6s
-         KpNVsqWGKAl0Bph3V8KpSUkfeW6JG4zQst6cC5Swkpb3R/7wBU57XoC8fN6ug4xJdhP/
-         +pEJUNoATrX8+q+dDJ8J7XXGFWf8V1q+QFP9+3j39wis+ZbugW5Pq8cE7VQThRaa3pY3
-         vnVA==
-X-Gm-Message-State: AOAM530mZG5qYzzDwTouwFF1zvtIawDutB8ZV3zTOlScdZA/xSltP67m
-        i0WQ5UI46tlEM6R5iDrMTJnwKV2/psc=
-X-Google-Smtp-Source: ABdhPJxQLpIde5crNDljO1wbiI8PDd931pTpWT7w4Fpd3YuE5eJBQnt/XfFKVMlmlaSaxcOe7PD3Rg==
-X-Received: by 2002:a62:8095:: with SMTP id j143mr8678422pfd.62.1592585522685;
-        Fri, 19 Jun 2020 09:52:02 -0700 (PDT)
-Received: from cnn ([112.133.236.100])
-        by smtp.gmail.com with ESMTPSA id w18sm5580656pgj.31.2020.06.19.09.51.58
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 19 Jun 2020 09:52:02 -0700 (PDT)
-Date:   Fri, 19 Jun 2020 22:21:54 +0530
-From:   Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     saipsdasari@fb.com, patrickw3@fb.com, vijaykhemka@fb.com,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        manikandan.e@hcl.com
-Subject: [PATCH v4] hwmon:(adm1275) Enable adm1278 ADM1278_TEMP1_EN
-Message-ID: <20200619165154.GA20461@cnn>
+        h=x-gm-message-state:from:to:cc:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=95l1MVTCi/7S8KtvFFky6uuPDaXVAxHS1QVJv025vvc=;
+        b=dShM1X30sbeBxO2YlkrERGpP744ZRZ6AZNB/mWoe5viLJfDabbZX5TClWJ0gdisHmZ
+         1JqzExJXlEj7z1mXmeBTwFT59WaoYwtWVZIVOwzMWz85VyW4/Y7qihiziwtMDfsxULkk
+         QwS3mty8zmuCZbYSJW3Jdqk3yWLE4L9mst5UzSnAl9n9TdxF1/d+HDV4B+FffGhozBif
+         VL2Wcy69wZbvDy7vwJlaG3ZEZP8BfSfbMi3yKryjRKP4jyAegf9N2/O/XtssgK9ANar6
+         Dd5BoRL4M2lQk1vl6TVgxdk+kEOFbw8hk/jt31qpAfmn610thbDzvOQamsZAejNXZzhY
+         7qjQ==
+X-Gm-Message-State: AOAM530eNnJFIVozs2E69/IGt6I9IFxTTAUoWgP/2lH9COjVAMiaqGtf
+        5LMehWfmEIbAaGZ2zekxXxCIPw==
+X-Google-Smtp-Source: ABdhPJyppIllEsBxsT7BdLd87VJkDihdM58Pmb4lctzrvdR269bY5SB7ojGkVMVP1NDpbF3l60KVrw==
+X-Received: by 2002:a02:6641:: with SMTP id l1mr4701773jaf.23.1592585570511;
+        Fri, 19 Jun 2020 09:52:50 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id y19sm3685121iod.41.2020.06.19.09.52.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jun 2020 09:52:50 -0700 (PDT)
+From:   Shuah Khan <skhan@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        skhan@linuxfoundation.org
+Subject: [GIT PULL] Kselftest update for Linux 5.8-rc2
+Message-ID: <3d0e22cc-af15-c142-1ee9-6f3c18a10557@linuxfoundation.org>
+Date:   Fri, 19 Jun 2020 10:52:49 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The adm1278 temp attribute need it for openbmc platform .
-This feature not enabled by default, so PMON_CONFIG needs to enable it.
+Hi Linus,
 
-Signed-off-by: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
----
----    v4 -Reported-by: kernel test robot <lkp@intel.com>
----    v3 -fix invalid signed-off.
----       -removed checkpath warnings.
----       -write ADM1278_TEMP1_EN and ADM1278_VOUT_EN conf in single line operation.
----    v2 -add Signed-off-by.
----       -removed ADM1278_TEMP1_EN check.
----
----
- drivers/hwmon/pmbus/adm1275.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+Please pull the following Kselftest update for Linux 5.8-rc2.
 
-diff --git a/drivers/hwmon/pmbus/adm1275.c b/drivers/hwmon/pmbus/adm1275.c
-index 5caa37fb..d4e1925 100644
---- a/drivers/hwmon/pmbus/adm1275.c
-+++ b/drivers/hwmon/pmbus/adm1275.c
-@@ -666,11 +666,12 @@ static int adm1275_probe(struct i2c_client *client,
- 		tindex = 3;
- 
- 		info->func[0] |= PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT |
--			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT;
-+			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
-+			PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP;
- 
--		/* Enable VOUT if not enabled (it is disabled by default) */
--		if (!(config & ADM1278_VOUT_EN)) {
--			config |= ADM1278_VOUT_EN;
-+		/* Enable VOUT & TEMP1 if not enabled (disabled by default) */
-+		if ((config & (ADM1278_VOUT_EN | ADM1278_TEMP1_EN)) != (ADM1278_VOUT_EN | ADM1278_TEMP1_EN)) {
-+			config |= ADM1278_VOUT_EN | ADM1278_TEMP1_EN;
- 			ret = i2c_smbus_write_byte_data(client,
- 							ADM1275_PMON_CONFIG,
- 							config);
-@@ -681,9 +682,6 @@ static int adm1275_probe(struct i2c_client *client,
- 			}
- 		}
- 
--		if (config & ADM1278_TEMP1_EN)
--			info->func[0] |=
--				PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP;
- 		if (config & ADM1278_VIN_EN)
- 			info->func[0] |= PMBUS_HAVE_VIN;
- 		break;
--- 
-2.7.4
+This Kselftest update for Linux 5.8-rc2 consists of:
 
+- ftrace "requires:" list for simplifying and unifying requirement
+   checks for each test case, adding "requires:" line instead of
+   checking required ftrace interfaces in each test case.
+- a minor spelling correction patch
+
+thanks,
+-- Shuah
+
+----------------------------------------------------------------
+The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
+
+   Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest 
+tags/linux-kselftest-5.8-rc2
+
+for you to fetch changes up to 1b8eec510ba641418573eacc98a7e9c07726af30:
+
+   selftests/ftrace: Support ":README" suffix for requires (2020-06-16 
+10:42:47 -0600)
+
+----------------------------------------------------------------
+linux-kselftest-5.8-rc2
+
+This Kselftest update for Linux 5.8-rc2 consists of:
+
+- ftrace "requires:" list for simplifying and unifying requirement
+   checks for each test case, adding "requires:" line instead of
+   checking required ftrace interfaces in each test case.
+- a minor spelling correction patch
+
+----------------------------------------------------------------
+Flavio Suligoi (1):
+       tools: testing: ftrace: trigger: fix spelling mistake
+
+Masami Hiramatsu (7):
+       selftests/ftrace: Allow ":" in description
+       selftests/ftrace: Return unsupported for the unconfigured features
+       selftests/ftrace: Add "requires:" list support
+       selftests/ftrace: Convert required interface checks into requires 
+list
+       selftests/ftrace: Convert check_filter_file() with requires list
+       selftests/ftrace: Support ":tracer" suffix for requires
+       selftests/ftrace: Support ":README" suffix for requires
+
+  tools/testing/selftests/ftrace/ftracetest          | 11 ++++++--
+  .../selftests/ftrace/test.d/00basic/snapshot.tc    |  3 +--
+  .../selftests/ftrace/test.d/00basic/trace_pipe.tc  |  3 +--
+  .../ftrace/test.d/direct/kprobe-direct.tc          |  6 +----
+  .../ftrace/test.d/dynevent/add_remove_kprobe.tc    |  6 +----
+  .../ftrace/test.d/dynevent/add_remove_synth.tc     |  5 +---
+  .../ftrace/test.d/dynevent/clear_select_events.tc  | 11 +-------
+  .../ftrace/test.d/dynevent/generic_clear_event.tc  |  8 +-----
+  .../selftests/ftrace/test.d/event/event-enable.tc  |  6 +----
+  .../selftests/ftrace/test.d/event/event-no-pid.tc  | 11 +-------
+  .../selftests/ftrace/test.d/event/event-pid.tc     | 11 +-------
+  .../ftrace/test.d/event/subsystem-enable.tc        |  6 +----
+  .../ftrace/test.d/event/toplevel-enable.tc         |  6 +----
+  .../ftrace/test.d/ftrace/fgraph-filter-stack.tc    | 14 +---------
+  .../ftrace/test.d/ftrace/fgraph-filter.tc          |  8 +-----
+  .../ftrace/test.d/ftrace/func-filter-glob.tc       |  8 +-----
+  .../test.d/ftrace/func-filter-notrace-pid.tc       | 13 +--------
+  .../ftrace/test.d/ftrace/func-filter-pid.tc        | 13 +--------
+  .../ftrace/test.d/ftrace/func-filter-stacktrace.tc |  3 +--
+  .../selftests/ftrace/test.d/ftrace/func_cpumask.tc |  6 +----
+  .../ftrace/test.d/ftrace/func_event_triggers.tc    |  7 +++--
+  .../ftrace/test.d/ftrace/func_mod_trace.tc         |  3 +--
+  .../ftrace/test.d/ftrace/func_profile_stat.tc      |  3 +--
+  .../ftrace/test.d/ftrace/func_profiler.tc          | 12 +--------
+  .../ftrace/test.d/ftrace/func_set_ftrace_file.tc   |  6 ++---
+  .../ftrace/test.d/ftrace/func_stack_tracer.tc      |  8 +-----
+  .../test.d/ftrace/func_traceonoff_triggers.tc      |  6 ++---
+  .../ftrace/test.d/ftrace/tracing-error-log.tc      | 12 +++------
+  tools/testing/selftests/ftrace/test.d/functions    | 28 
+++++++++++++++-----
+  .../ftrace/test.d/instances/instance-event.tc      |  6 +----
+  .../selftests/ftrace/test.d/instances/instance.tc  |  6 +----
+  .../ftrace/test.d/kprobe/add_and_remove.tc         |  3 +--
+  .../selftests/ftrace/test.d/kprobe/busy_check.tc   |  3 +--
+  .../selftests/ftrace/test.d/kprobe/kprobe_args.tc  |  3 +--
+  .../ftrace/test.d/kprobe/kprobe_args_comm.tc       |  3 +--
+  .../ftrace/test.d/kprobe/kprobe_args_string.tc     |  3 +--
+  .../ftrace/test.d/kprobe/kprobe_args_symbol.tc     |  3 +--
+  .../ftrace/test.d/kprobe/kprobe_args_syntax.tc     |  5 +---
+  .../ftrace/test.d/kprobe/kprobe_args_type.tc       |  5 +---
+  .../ftrace/test.d/kprobe/kprobe_args_user.tc       |  4 +--
+  .../ftrace/test.d/kprobe/kprobe_eventname.tc       |  3 +--
+  .../ftrace/test.d/kprobe/kprobe_ftrace.tc          |  6 +----
+  .../ftrace/test.d/kprobe/kprobe_module.tc          |  3 +--
+  .../ftrace/test.d/kprobe/kprobe_multiprobe.tc      |  5 +---
+  .../ftrace/test.d/kprobe/kprobe_syntax_errors.tc   |  5 +---
+  .../ftrace/test.d/kprobe/kretprobe_args.tc         |  3 +--
+  .../ftrace/test.d/kprobe/kretprobe_maxactive.tc    |  4 +--
+  .../ftrace/test.d/kprobe/multiple_kprobes.tc       |  3 +--
+  .../selftests/ftrace/test.d/kprobe/probepoint.tc   |  3 +--
+  .../selftests/ftrace/test.d/kprobe/profile.tc      |  3 +--
+  .../ftrace/test.d/kprobe/uprobe_syntax_errors.tc   |  5 +---
+  .../ftrace/test.d/preemptirq/irqsoff_tracer.tc     |  4 +--
+  tools/testing/selftests/ftrace/test.d/template     |  4 +++
+  .../selftests/ftrace/test.d/tracer/wakeup.tc       |  6 +----
+  .../selftests/ftrace/test.d/tracer/wakeup_rt.tc    |  6 +----
+  .../inter-event/trigger-action-hist-xfail.tc       | 13 +--------
+  .../inter-event/trigger-field-variable-support.tc  | 16 +----------
+  .../trigger-inter-event-combined-hist.tc           | 16 +----------
+  .../inter-event/trigger-multi-actions-accept.tc    | 16 +----------
+  .../inter-event/trigger-onchange-action-hist.tc    |  8 +-----
+  .../inter-event/trigger-onmatch-action-hist.tc     | 16 +----------
+  .../trigger-onmatch-onmax-action-hist.tc           | 16 +----------
+  .../inter-event/trigger-onmax-action-hist.tc       | 16 +----------
+  .../inter-event/trigger-snapshot-action-hist.tc    | 20 +-------------
+  .../trigger-synthetic-event-createremove.tc        | 11 +-------
+  .../inter-event/trigger-synthetic-event-syntax.tc  | 11 +-------
+  .../inter-event/trigger-trace-action-hist.tc       | 18 +------------
+  .../ftrace/test.d/trigger/trigger-eventonoff.tc    | 11 +-------
+  .../ftrace/test.d/trigger/trigger-filter.tc        | 11 +-------
+  .../ftrace/test.d/trigger/trigger-hist-mod.tc      | 16 +----------
+  .../test.d/trigger/trigger-hist-syntax-errors.tc   | 18 +------------
+  .../ftrace/test.d/trigger/trigger-hist.tc          | 18 ++-----------
+  .../ftrace/test.d/trigger/trigger-multihist.tc     | 16 +----------
+  .../ftrace/test.d/trigger/trigger-snapshot.tc      | 16 +----------
+  .../ftrace/test.d/trigger/trigger-stacktrace.tc    | 13 ++-------
+  .../test.d/trigger/trigger-trace-marker-hist.tc    | 23 ++--------------
+  .../trigger/trigger-trace-marker-snapshot.tc       | 23 ++--------------
+  .../trigger-trace-marker-synthetic-kernel.tc       | 31 
++---------------------
+  .../trigger/trigger-trace-marker-synthetic.tc      | 26 +-----------------
+  .../ftrace/test.d/trigger/trigger-traceonoff.tc    | 11 +-------
+
+-- 80 files changed, 123 insertions(+), 637 deletions(-)
+--------------------------------------------------------------
