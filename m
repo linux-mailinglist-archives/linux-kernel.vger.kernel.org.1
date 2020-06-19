@@ -2,74 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6CD4201990
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D11C12019AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393001AbgFSRgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 13:36:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733014AbgFSRga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 13:36:30 -0400
-Received: from embeddedor (unknown [189.207.59.248])
+        id S2390764AbgFSRp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 13:45:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731681AbgFSRp2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 13:45:28 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB95EC06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 10:45:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=13ZJQzrfJj7+YLK0QljS5Z5b2OI+ht2N1tTNhzsfu/g=; b=oAa/oi+mt7/J7uNq9VlNs9miJG
+        Rz+2LCWRkHlWLwMABa/upa6/LXowJwXqTfxTUlkuSpubB7gPn5UWVAAjZ2rol7vk/Ioj9w29cBdZq
+        eeADyCdxRcjAk9Ya5jppcFeSPaAuhHUHxU5O3FhnWJK6Rqtd3ty+F447oTrXXiXE7A4VJ9MRihxgb
+        qPqMYNrv3yvPrjp9LC3bpiI0HZNA7COs8x7steq+w8QqOdgevYnUUqfZeYdO7IUnSdHL0vxfo3hsC
+        ZK5HTda6ViymwBaTrODD6l5M1+Yn80goPJPisNM+W+l2IuigvBdAHDIFeBqCBG1xwb+OUYJYy4swr
+        m1kANaDA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jmL4j-0006Q6-BZ; Fri, 19 Jun 2020 17:45:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B4AC207FC;
-        Fri, 19 Jun 2020 17:36:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592588190;
-        bh=L+tk6K8+KLeTw56G+NcQJe1v8l4u5Inpr28aIByN6bM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=pFszgEe7W52VYhYygyQ81y07znn+5vd4rlFJsiO3UMl1RN0TlJ8AbdjXbaWwCm/2B
-         YYKLYOweHPapKY1Aoxb065KEKNpUvox6CHx7LTeNP1Ja5k3+QQPDs3AgB4xxaArU8c
-         oHfLTfSYF3i9C1z65G43J+1DpgFZdHNXiyXJ2Jts=
-Date:   Fri, 19 Jun 2020 12:41:54 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] net: stmmac: selftests: Use struct_size() in kzalloc()
-Message-ID: <20200619174154.GA21660@embeddedor>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0DB1B307159;
+        Fri, 19 Jun 2020 19:45:11 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E23B421390E42; Fri, 19 Jun 2020 19:45:10 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 19:45:10 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Chris Redpath <chrid.redpath@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] sched/uclamp: Protect uclamp fast path code with
+ static key
+Message-ID: <20200619174510.GB576888@hirez.programming.kicks-ass.net>
+References: <20200618195525.7889-1-qais.yousef@arm.com>
+ <20200618195525.7889-3-qais.yousef@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200618195525.7889-3-qais.yousef@arm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the struct_size() helper instead of an open-coded version
-in order to avoid any potential type mistakes.
+On Thu, Jun 18, 2020 at 08:55:25PM +0100, Qais Yousef wrote:
 
-This code was detected with the help of Coccinelle and, audited and
-fixed manually.
+> +/*
+> + * This static key is used to reduce the uclamp overhead in the fast path. It
+> + * only disables the call to uclamp_rq_{inc, dec}() in enqueue/dequeue_task().
+> + *
+> + * This allows users to continue to enable uclamp in their kernel config with
+> + * minimum uclamp overhead in the fast path.
+> + *
+> + * As soon as userspace modifies any of the uclamp knobs, the static key is
+> + * disabled, since we have an actual users that make use of uclamp
+> + * functionality.
+> + *
+> + * The knobs that would disable this static key are:
+> + *
+> + *   * A task modifying its uclamp value with sched_setattr().
+> + *   * An admin modifying the sysctl_sched_uclamp_{min, max} via procfs.
+> + *   * An admin modifying the cgroup cpu.uclamp.{min, max}
+> + */
+> +DEFINE_STATIC_KEY_TRUE(sched_uclamp_unused);
 
-Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_selftests.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Maybe call the thing: 'sched_uclamp_users', instead?
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_selftests.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_selftests.c
-index e6696495f126..e113b1376fdd 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_selftests.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_selftests.c
-@@ -1094,7 +1094,7 @@ static int stmmac_test_rxp(struct stmmac_priv *priv)
- 	if (!priv->dma_cap.frpsel)
- 		return -EOPNOTSUPP;
- 
--	sel = kzalloc(sizeof(*sel) + nk * sizeof(struct tc_u32_key), GFP_KERNEL);
-+	sel = kzalloc(struct_size(sel, keys, nk), GFP_KERNEL);
- 	if (!sel)
- 		return -ENOMEM;
- 
--- 
-2.27.0
 
+> +		if (static_branch_unlikely(&sched_uclamp_unused))
+> +			static_branch_disable(&sched_uclamp_unused);
+
+
+> +	if (static_branch_unlikely(&sched_uclamp_unused))
+> +		static_branch_disable(&sched_uclamp_unused);
+
+
+> +	if (static_branch_unlikely(&sched_uclamp_unused))
+> +		static_branch_disable(&sched_uclamp_unused);
+
+That's an anti-pattern... just static_branch_disable(), or _enable()
+with a 'better' name is sufficient.
