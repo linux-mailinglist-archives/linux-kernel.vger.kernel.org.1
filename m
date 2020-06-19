@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0DE2015A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D0C201664
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389776AbgFSOxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:53:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48114 "EHLO mail.kernel.org"
+        id S2393860AbgFSQ36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:29:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389749AbgFSOxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:53:41 -0400
+        id S2388842AbgFSOyN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:54:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 11300217D8;
-        Fri, 19 Jun 2020 14:53:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4450521852;
+        Fri, 19 Jun 2020 14:54:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578421;
-        bh=At0/+C8mJmu58fFEoD3DVJfwfXlhXQeYSjcq2SXhuRE=;
+        s=default; t=1592578453;
+        bh=xE1FbHT2U1jiB8tncTe6OdJ5hY7F51zVSxoS6ThAvyA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T2woH0I68SNiVKrnI0ZQC/TrBHtab+mwqitwg8z0qUwyB1/EfOIe6ySD/PALjoeyy
-         xfc6cwXOXienkjY8Dhb47jhlyd36S5rSINkC/7eEUMNEeeplPDBLCGUd1GowBw1DN6
-         LH/WF/rUT9kVvTeKD6yDOMUPWIdTKMO+bKEDpKKU=
+        b=BBfgQ+ffdzt21f0t/U5DwhFSgsXfhRdEMXg1z66cXy/NZWUazf3RnHZcXALnwekp2
+         a8rfahZBxfJjKjDiyKXcm5MYF/558mtTfK0bCscJ8h7hrqZBaQwTVh6Dhdim4+M7Oy
+         uVtj4rDR/b+22Z4X6sC/f/1HnrplLiGU/CzxQ5p0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
-        Fredrik Strupe <fredrik@strupe.net>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 016/267] ARM: 8977/1: ptrace: Fix mask for thumb breakpoint hook
-Date:   Fri, 19 Jun 2020 16:30:01 +0200
-Message-Id: <20200619141649.648948277@linuxfoundation.org>
+Subject: [PATCH 4.19 020/267] powerpc/xive: Clear the page tables for the ESB IO mapping
+Date:   Fri, 19 Jun 2020 16:30:05 +0200
+Message-Id: <20200619141649.848315690@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
 References: <20200619141648.840376470@linuxfoundation.org>
@@ -45,51 +45,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fredrik Strupe <fredrik@strupe.net>
+From: Cédric Le Goater <clg@kaod.org>
 
-[ Upstream commit 3866f217aaa81bf7165c7f27362eee5d7919c496 ]
+[ Upstream commit a101950fcb78b0ba20cd487be6627dea58d55c2b ]
 
-call_undef_hook() in traps.c applies the same instr_mask for both 16-bit
-and 32-bit thumb instructions. If instr_mask then is only 16 bits wide
-(0xffff as opposed to 0xffffffff), the first half-word of 32-bit thumb
-instructions will be masked out. This makes the function match 32-bit
-thumb instructions where the second half-word is equal to instr_val,
-regardless of the first half-word.
+Commit 1ca3dec2b2df ("powerpc/xive: Prevent page fault issues in the
+machine crash handler") fixed an issue in the FW assisted dump of
+machines using hash MMU and the XIVE interrupt mode under the POWER
+hypervisor. It forced the mapping of the ESB page of interrupts being
+mapped in the Linux IRQ number space to make sure the 'crash kexec'
+sequence worked during such an event. But it didn't handle the
+un-mapping.
 
-The result in this case is that all undefined 32-bit thumb instructions
-with the second half-word equal to 0xde01 (udf #1) work as breakpoints
-and will raise a SIGTRAP instead of a SIGILL, instead of just the one
-intended 16-bit instruction. An example of such an instruction is
-0xeaa0de01, which is unallocated according to Arm ARM and should raise a
-SIGILL, but instead raises a SIGTRAP.
+This mapping is now blocking the removal of a passthrough IO adapter
+under the POWER hypervisor because it expects the guest OS to have
+cleared all page table entries related to the adapter. If some are
+still present, the RTAS call which isolates the PCI slot returns error
+9001 "valid outstanding translations".
 
-This patch fixes the issue by setting all the bits in instr_mask, which
-will still match the intended 16-bit thumb instruction (where the
-upper half is always 0), but not any 32-bit thumb instructions.
+Remove these mapping in the IRQ data cleanup routine.
 
-Cc: Oleg Nesterov <oleg@redhat.com>
-Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Under KVM, this cleanup is not required because the ESB pages for the
+adapter interrupts are un-mapped from the guest by the hypervisor in
+the KVM XIVE native device. This is now redundant but it's harmless.
+
+Fixes: 1ca3dec2b2df ("powerpc/xive: Prevent page fault issues in the machine crash handler")
+Cc: stable@vger.kernel.org # v5.5+
+Signed-off-by: Cédric Le Goater <clg@kaod.org>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200429075122.1216388-2-clg@kaod.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/ptrace.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/powerpc/sysdev/xive/common.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/arm/kernel/ptrace.c b/arch/arm/kernel/ptrace.c
-index 36718a424358..492ac74a63f4 100644
---- a/arch/arm/kernel/ptrace.c
-+++ b/arch/arm/kernel/ptrace.c
-@@ -229,8 +229,8 @@ static struct undef_hook arm_break_hook = {
- };
+diff --git a/arch/powerpc/sysdev/xive/common.c b/arch/powerpc/sysdev/xive/common.c
+index 1c31a08cdd54..2aa9f3de223c 100644
+--- a/arch/powerpc/sysdev/xive/common.c
++++ b/arch/powerpc/sysdev/xive/common.c
+@@ -23,6 +23,7 @@
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+ #include <linux/msi.h>
++#include <linux/vmalloc.h>
  
- static struct undef_hook thumb_break_hook = {
--	.instr_mask	= 0xffff,
--	.instr_val	= 0xde01,
-+	.instr_mask	= 0xffffffff,
-+	.instr_val	= 0x0000de01,
- 	.cpsr_mask	= PSR_T_BIT,
- 	.cpsr_val	= PSR_T_BIT,
- 	.fn		= break_trap,
+ #include <asm/prom.h>
+ #include <asm/io.h>
+@@ -933,12 +934,16 @@ EXPORT_SYMBOL_GPL(is_xive_irq);
+ void xive_cleanup_irq_data(struct xive_irq_data *xd)
+ {
+ 	if (xd->eoi_mmio) {
++		unmap_kernel_range((unsigned long)xd->eoi_mmio,
++				   1u << xd->esb_shift);
+ 		iounmap(xd->eoi_mmio);
+ 		if (xd->eoi_mmio == xd->trig_mmio)
+ 			xd->trig_mmio = NULL;
+ 		xd->eoi_mmio = NULL;
+ 	}
+ 	if (xd->trig_mmio) {
++		unmap_kernel_range((unsigned long)xd->trig_mmio,
++				   1u << xd->esb_shift);
+ 		iounmap(xd->trig_mmio);
+ 		xd->trig_mmio = NULL;
+ 	}
 -- 
 2.25.1
 
