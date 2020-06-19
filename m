@@ -2,105 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7BB20169B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B715A201612
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395115AbgFSQcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389512AbgFSOv6 (ORCPT
+        id S2394848AbgFSQZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:25:56 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:51842 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393938AbgFSQZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:51:58 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C1CC0613EE
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:51:59 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id p3so1894735pgh.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:51:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=PFwcZNJJ7J9pO5V4LgviWHgUqQktGpHF/1kf5JMeuDo=;
-        b=VVwx3ZGlX2RwFbSkQjJpR+KnTKm2X8fVgt9HDsdg9laBMqpsD8A+rToclzEwT1eFa+
-         B7lNk6ClHheYaxl9v5HuDfNiTwE9uYijkbeYPKVCVcYgPnNfN7teMIUIEMeqmeebApau
-         Olk9P/8SEPfBkj4iGMXY4d5PYAWqHOuGFDWgIgmJatlXgD8WNQI8hH/GEBbcpYsODy1W
-         ac8WqvylSyLtm4RLxKHXFvN1gR3ZnTS3RHCG6u2KTPU8as2weM3XJjwlLNQde5A/Mqmw
-         7ZMv5iyYVtbhVEmFgoeTrxC1VG4TBB0PCUTuD+DGploEiDxeZSWD9JMe2BhyHINfK+6S
-         YHUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=PFwcZNJJ7J9pO5V4LgviWHgUqQktGpHF/1kf5JMeuDo=;
-        b=aVc+jI/il+ak+lj2AcVybdt2kyoKhR5Jft2uigpwspgdYjWgNAhe7298OBXIg+wqKH
-         0i20LeYs9LO1T5vCVH50mmwxe0UKUxxNFhsaRT2H7lS6R4DkLKAudo25VO9VtnMlOLqD
-         VUt+QPe3WLGKuMfNOSHcrjm7U1zAGawb7Yd9OTFWZznUcdl1IQpaPmqPzjSxfNvWbGWT
-         jS+8P3mWhLaopRUeDeuqet65RfyYw3ra8IFPhAgNyLyqbtCAVgpr+AzI5fjeY2e2BfmK
-         QiOFK4fqx60sndtPPmwN2yJVyGeUwB/8NdCzVIHeSVi83vjBLwz+HN7IiWZT3dlTVfv5
-         v9+A==
-X-Gm-Message-State: AOAM530Mocc6lBEDaJy1YSXlVReE6F7QVbSWyMFkan9ttQhXH4+ga1wo
-        hvGe3C/qweiTdqDqEwShiZmBX7WvAd6tGw==
-X-Google-Smtp-Source: ABdhPJxveQ/cPoUUnyZh3usSqy7LrbOlRjM8Jdwm6ASW0EJqk2pfxtjHXKRvby/5eylPBEfUnPIPqg==
-X-Received: by 2002:a05:6a00:2b0:: with SMTP id q16mr8456361pfs.104.1592578318472;
-        Fri, 19 Jun 2020 07:51:58 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id k126sm6297710pfd.129.2020.06.19.07.51.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jun 2020 07:51:57 -0700 (PDT)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     IDE/ATA development list <linux-ide@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Subject: [GIT PULL] libata fixes for 5.8-rc2
-Message-ID: <c7fcf452-15af-4085-528a-7bc52110e21c@kernel.dk>
-Date:   Fri, 19 Jun 2020 08:51:56 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Fri, 19 Jun 2020 12:25:50 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05JGPgSs114399;
+        Fri, 19 Jun 2020 11:25:42 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1592583942;
+        bh=rdXTXheLXpVlv0n0chHBII5wZ22hLFGxnY/oJyMh91A=;
+        h=From:To:CC:Subject:Date;
+        b=NS3ndFjS3TmPbRQcBRY2wPk8DH5i0zP7recwWjRYFxCznkFkpLyY7NrsBF+t9KYfD
+         ZCZG5qcniRx6JR4ggyBDRNdHTzbFeS4eeHrjNYHAo2XrHVWhC5Wkux/e4wL6zAM9es
+         CXEsJiNUSaGmSNkWQYv6L2AUr9iEI3j4rFrm6tbI=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05JGPgqc057447;
+        Fri, 19 Jun 2020 11:25:42 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 19
+ Jun 2020 11:25:42 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 19 Jun 2020 11:25:42 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05JGPfoR005636;
+        Fri, 19 Jun 2020 11:25:42 -0500
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+To:     Tero Kristo <t-kristo@ti.com>, Nishanth Menon <nm@ti.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+CC:     Santosh Shilimkar <ssantosh@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>
+Subject: [PATCH] arm64: arch_k3: enable chipid driver
+Date:   Fri, 19 Jun 2020 19:25:27 +0300
+Message-ID: <20200619162527.1226-1-grygorii.strashko@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Select TI chip id driver for TI's SoCs based on K3 architecture to provide
+this information to user space and Kernel as it is required by other
+drivers to determine SoC revision to function properly.
 
-A few minor changes that should go into this release. Please pull!
+Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Reviewed-by: Lokesh Vutla <lokeshvutla@ti.com>
+---
+ arch/arm64/Kconfig.platforms | 1 +
+ 1 file changed, 1 insertion(+)
 
-The following changes since commit 6929f71e46bdddbf1c4d67c2728648176c67c555:
-
-  atomisp: avoid warning about unused function (2020-06-03 21:22:46 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.dk/linux-block.git tags/libata-5.8-2020-06-19
-
-for you to fetch changes up to b5292111de9bb70cba3489075970889765302136:
-
-  libata: Use per port sync for detach (2020-06-18 09:21:40 -0600)
-
-----------------------------------------------------------------
-libata-5.8-2020-06-19
-
-----------------------------------------------------------------
-Kai-Heng Feng (1):
-      libata: Use per port sync for detach
-
-Navid Emamdoost (1):
-      sata_rcar: handle pm_runtime_get_sync failure cases
-
-Ye Bin (1):
-      ata/libata: Fix usage of page address by page_address in ata_scsi_mode_select_xlat function
-
- drivers/ata/libata-core.c | 11 +++++------
- drivers/ata/libata-scsi.c |  9 ++++++---
- drivers/ata/sata_rcar.c   | 11 +++++++----
- include/linux/libata.h    |  3 +++
- 4 files changed, 21 insertions(+), 13 deletions(-)
-
+diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+index 8dd05b2a925c..1d3710e3626a 100644
+--- a/arch/arm64/Kconfig.platforms
++++ b/arch/arm64/Kconfig.platforms
+@@ -98,6 +98,7 @@ config ARCH_K3
+ 	select TI_SCI_PROTOCOL
+ 	select TI_SCI_INTR_IRQCHIP
+ 	select TI_SCI_INTA_IRQCHIP
++	select TI_K3_SOCINFO
+ 	help
+ 	  This enables support for Texas Instruments' K3 multicore SoC
+ 	  architecture.
 -- 
-Jens Axboe
+2.17.1
 
