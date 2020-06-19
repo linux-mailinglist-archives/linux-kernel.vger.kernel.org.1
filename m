@@ -2,141 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC712010F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7F1D2010F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405062AbgFSPgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:36:14 -0400
-Received: from mga18.intel.com ([134.134.136.126]:39068 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404879AbgFSPgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:36:10 -0400
-IronPort-SDR: QwQPpoLyNxgtlVzFOEoh1Phx8puz6cmzOwqmq1+IEr8Vm1St4SEMFPRX4d+q556N/kTBX11wz+
- izU7jeQCxL0A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9657"; a="130361472"
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="130361472"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2020 08:36:08 -0700
-IronPort-SDR: sczfJDThK4eqOMcm3blZ+1trsbumho2fGnYzYPbshZfWcwIpaGnNyLAcDPHVsjFBbj1x8H+BIK
- L1AhQu9sw/LQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="278035999"
-Received: from mcrum-mobl1.amr.corp.intel.com (HELO [10.255.0.127]) ([10.255.0.127])
-  by orsmga006.jf.intel.com with ESMTP; 19 Jun 2020 08:36:03 -0700
-Subject: Re: [PATCH] Ability to read the MKTME status from userspace
-To:     Richard Hughes <hughsient@gmail.com>
-Cc:     Daniel Gutson <daniel@eclypsium.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20200618210215.23602-1-daniel.gutson@eclypsium.com>
- <589c89ae-620e-36f8-2be5-4afc727c2911@intel.com>
- <CAFmMkTHNxSN_uWtm63TdkGxj44NXQQKEOmATXhjA=4DSCS92kQ@mail.gmail.com>
- <23babf62-00cb-cb47-bb19-da9508325934@intel.com>
- <CAD2FfiFbGdf5uKmsc14F4ZuuCUQYFwfnirn=Y0fu2F0=njvWug@mail.gmail.com>
- <80578b72-cb6f-8da9-1043-b4055c75d7f6@intel.com>
- <CAD2FfiG1BgYvR6wkeXGro8v6FQtVjKemmAOOf2W14z5KUWLqhw@mail.gmail.com>
- <d55f94bc-3b26-a556-f7e6-43e9b1007e13@intel.com>
- <CAD2FfiHCi2MfShGWaYWk_GcXW4xVr6chsLPZs78OJE+2_GErVg@mail.gmail.com>
- <3d454068-fd4e-4399-4bf5-2d010bb2ba7d@intel.com>
- <CAD2FfiF8QEarhyFD1GkfnaR+spyH86sChgRZm37ab_gzS2m_wg@mail.gmail.com>
- <aef4ff03-3a98-4425-2b01-203a88401370@intel.com>
- <CAD2FfiEit9HR_ikc3WQXg9c_hyNHtk6b0rVnYJd-R8gJ7tbQOw@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <5bc72926-2193-79af-0139-97bd63857129@intel.com>
-Date:   Fri, 19 Jun 2020 08:36:02 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2391718AbgFSPgd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:36:33 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:56178 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391695AbgFSPgY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:36:24 -0400
+Received: by mail-pj1-f67.google.com with SMTP id ne5so4198232pjb.5;
+        Fri, 19 Jun 2020 08:36:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LjzrirVb+ZQBftcrRnoHLV9aRjuJIVfcPAYJhueLEQk=;
+        b=j5o5tO1tyDDGisXMWl6kWkDjdFhK2FjznjMc5EuwqXD/hVXUn54Cd94YxgQvB2eKm5
+         B3jQgLkjJ2auPVeSKVfjQjzc0alqO1f5jAraGYVl2fe3PDCKTSfwszZONn0pQX8QsP+X
+         pF2piML2/z4jHogDjdDkJzV3RHPbYiKytxjF8KSOfODkMaeuGn50tI1E5Q1eQhu9OzjV
+         BCq41297JQ1QAL/uxF9WRufJY4CeNYNhRLhVOr9mb1GY0S0nyMmR0GfMnf/vsH5llkdS
+         +Hag2VWUTm7flab+tFX4zfhVskY/PjsOBLq+nCKjDgRiMuc884h+CeWsI+IlpJgbZ8YU
+         bN1Q==
+X-Gm-Message-State: AOAM530ZiggpUZSitQ2Wb9nvdQwVhV0pv5Wny6SJA8ksO2SGdygu3nMn
+        Fdomf+a3jIMvmvnEPbRCM5s=
+X-Google-Smtp-Source: ABdhPJzViKsR3tVw6K/ch+JBLdo17uGcti8CT335conquQT26tgspJ89pJQG6ng0CCGMq0+rPtsHZQ==
+X-Received: by 2002:a17:902:b906:: with SMTP id bf6mr8845200plb.129.1592580983204;
+        Fri, 19 Jun 2020 08:36:23 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id p16sm5382348pgj.53.2020.06.19.08.36.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 08:36:21 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id CD1B84063E; Fri, 19 Jun 2020 15:36:20 +0000 (UTC)
+Date:   Fri, 19 Jun 2020 15:36:20 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk,
+        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
+        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
+        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
+        martin.petersen@oracle.com, jejb@linux.ibm.com,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Omar Sandoval <osandov@fb.com>,
+        Hannes Reinecke <hare@suse.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
+Subject: Re: [PATCH v6 6/6] blktrace: fix debugfs use after free
+Message-ID: <20200619153620.GI11244@42.do-not-panic.com>
+References: <20200608170127.20419-1-mcgrof@kernel.org>
+ <20200608170127.20419-7-mcgrof@kernel.org>
+ <ec643803-2339-fe8d-7f58-b37871c83386@acm.org>
 MIME-Version: 1.0
-In-Reply-To: <CAD2FfiEit9HR_ikc3WQXg9c_hyNHtk6b0rVnYJd-R8gJ7tbQOw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ec643803-2339-fe8d-7f58-b37871c83386@acm.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/19/20 8:02 AM, Richard Hughes wrote:
->> Someone does 'cat /proc/mktme' (or whatever) and it says "1" or
->> whatever, which means yay, encryption is on.  What do they do?
-> I think "is my memory encrypted" for Intel has to be a superset of:
+On Fri, Jun 12, 2020 at 07:42:12PM -0700, Bart Van Assche wrote:
+> On 2020-06-08 10:01, Luis Chamberlain wrote:
+> > +	/*
+> > +	 * Blktrace needs a debugfs name even for queues that don't register
+> > +	 * a gendisk, so it lazily registers the debugfs directory.  But that
+> > +	 * can get us into a situation where a SCSI device is found, with no
+> > +	 * driver for it (yet).  Then blktrace is used on the device, creating
+> > +	 * the debugfs directory, and only after that a driver is loaded. In
+> > +	 * that case we might already have a debugfs directory registered here.
+> > +	 * Even worse we could be racing with blktrace to register it.
+> > +	 */
 > 
-> 1. TME in CPU info
-> 2. not disabled by the platform
-> 3. not using unencrypted swap
-> 4. not using a memory accelerator
-> 5. entire DRAM area is marked with EFI_MEMORY_CPU_CRYPTO
+> There are LLD and ULD drivers in the SCSI subsystem. Please mention the
+> driver type explicitly. I assume that you are referring to SCSI ULDs
+> since only SCSI ULD drivers call device_add_disk()?
 
-Also realize that this can all be true at one point in time, but can
-change if memory is added.
+I've simplified this and so this is no longer a valid comment.
 
-> It seems the only way to answer the questions and make it easy for the
-> consumer to know the answer is to ask the kernel for each of the 5
-> different questions. At the moment we can only get 1, 3, maybe 4, soon
-> to be 5, but not 2.
+> >  	case BLKTRACESETUP:
+> > +		if (!sdp->device->request_queue->sg_debugfs_dir)
+> > +			blk_sg_debugfs_init(sdp->device->request_queue,
+> > +					    sdp->disk->disk_name);
+> 
+> How about moving the sg_debugfs_dir check into blk_sg_debugfs_init()?
 
-Actually, the accelerators I had in mind would show up in the memory map
-and would have EFI_MEMORY_CPU_CRYPTO properly set by the firmware.
+I found a way to not have to do any of this, the fix will be short and
+sweet now.
 
-In any case, if we do something like this, I think it fundamentally
-needs to be more fine-grained than the whole system.  It probably needs
-to be on a per-NUMA-node basis.  That's really the only way for us to
-provide meaningful promises about encryption to end users.
+  Luis
