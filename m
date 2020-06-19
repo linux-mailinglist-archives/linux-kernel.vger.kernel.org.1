@@ -2,77 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81D49200386
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 10:21:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8551C2003B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 10:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731259AbgFSIVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 04:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730849AbgFSIUX (ORCPT
+        id S1731428AbgFSIXw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 19 Jun 2020 04:23:52 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:43333 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731290AbgFSIVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 04:20:23 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A8F8C06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 01:20:23 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id jz3so3803081pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 01:20:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=3/EAr2y0sc9d0konJThPJ+OgywU1nfaO8eAafmovNU0=;
-        b=jjyeZkkQunEwop9f0LcDn+xOYox58f+EyJWfWwuKPsT2m3jeeEXzsNwKB8Y2i9wcl9
-         vo65pKBvtPpVUYXK51tqsLJ5wDkY59dFhtjw/6t1w+SMfcdH0GrEThb79HPhXJ+amXFR
-         ldpGJoI0uNoaCKlCymivglXrHLHKLZn7CAa1U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=3/EAr2y0sc9d0konJThPJ+OgywU1nfaO8eAafmovNU0=;
-        b=PeY5nWQo7X1/C3ZyG7vSmh+ddLysXjiCrc4cNZg94mtp/hkAcCQq237hsNxDkdS6xh
-         hyJQGrhH2IxKQuXITp5uIhALtzV6WQpLYJhnAPg+WDfVHZn5GY7W9dCsY7dt0eBXjrvC
-         17riOfc8KCgLIobVLvbMFoCJoFiIwt3mjF/2gNS2mTDsWccPqYT2M/O8p8H3ZgGJ+D3I
-         F4OEVRF0XG49XDFnF1Cf3jx6B6g4Yfu+dA+548x09/UDAy+AE8RzQmN6Wx6/HZIv3lOy
-         V2jOR0oICzNxee6HHsPQuKTgAtQRYzTpEEkXSJPXp3W/t6YJXmUT4OMNqdYEM1PaHADF
-         uf1A==
-X-Gm-Message-State: AOAM530zX1S4VQPT2RICjAsLLh2Ku9QUceQIm18towxJyPgOQF8yqp1A
-        x+XGxMAyfO/HO0QQzR351vbH/w==
-X-Google-Smtp-Source: ABdhPJwDYhRixLXDiLuE5z9EfNBJNzp4oZwlJ5YgbWv4V4xHUKOmq4b2mrDu7UpTh4t5Iyj085GNfQ==
-X-Received: by 2002:a17:902:8544:: with SMTP id d4mr7371334plo.234.1592554822936;
-        Fri, 19 Jun 2020 01:20:22 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id j10sm116707pgh.28.2020.06.19.01.20.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 01:20:22 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        Fri, 19 Jun 2020 04:21:07 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-78-mkYMfPweOkGnJdWf_Vspzw-1; Fri, 19 Jun 2020 09:20:56 +0100
+X-MC-Unique: mkYMfPweOkGnJdWf_Vspzw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 19 Jun 2020 09:20:55 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 19 Jun 2020 09:20:55 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Kees Cook' <keescook@chromium.org>,
+        Sargun Dhillon <sargun@sargun.me>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Christian Brauner" <christian@brauner.io>,
+        Tycho Andersen <tycho@tycho.ws>,
+        "Christoph Hellwig" <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Matt Denton <mpdenton@google.com>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Robert Sesek <rsesek@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Will Drewry <wad@chromium.org>, Shuah Khan <shuah@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "containers@lists.linux-foundation.org" 
+        <containers@lists.linux-foundation.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Subject: RE: [PATCH v5 3/7] fs: Add fd_install_received() wrapper for
+ __fd_install_received()
+Thread-Topic: [PATCH v5 3/7] fs: Add fd_install_received() wrapper for
+ __fd_install_received()
+Thread-Index: AQHWRazi5O9oFyX6VkOfXGvu43vXPajfldBw
+Date:   Fri, 19 Jun 2020 08:20:55 +0000
+Message-ID: <c7d9f68d5dff4c54b4da0d96b03de2a0@AcuMS.aculab.com>
+References: <20200617220327.3731559-1-keescook@chromium.org>
+ <20200617220327.3731559-4-keescook@chromium.org>
+ <20200618054918.GB18669@ircssh-2.c.rugged-nimbus-611.internal>
+ <202006181305.01F1B08@keescook>
+In-Reply-To: <202006181305.01F1B08@keescook>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1592485553-29163-1-git-send-email-mkshah@codeaurora.org>
-References: <1592485553-29163-1-git-send-email-mkshah@codeaurora.org>
-Subject: Re: [PATCH] soc: qcom: rpmh: Update rpmh_invalidate function to return void
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, dianders@chromium.org,
-        rnayak@codeaurora.org, ilina@codeaurora.org, lsrao@codeaurora.org,
-        Maulik Shah <mkshah@codeaurora.org>
-To:     Maulik Shah <mkshah@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, georgi.djakov@linaro.org
-Date:   Fri, 19 Jun 2020 01:20:21 -0700
-Message-ID: <159255482149.62212.13349249528460316271@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Maulik Shah (2020-06-18 06:05:53)
-> Currently rpmh_invalidate() always returns success. Update its
-> return type to void.
->=20
-> Suggested-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> ---
+From: Kees Cook
+> Sent: 18 June 2020 21:13
+> On Thu, Jun 18, 2020 at 05:49:19AM +0000, Sargun Dhillon wrote:
+> > On Wed, Jun 17, 2020 at 03:03:23PM -0700, Kees Cook wrote:
+> > > [...]
+> > >  static inline int fd_install_received_user(struct file *file, int __user *ufd,
+> > >  					   unsigned int o_flags)
+> > >  {
+> > > +	if (ufd == NULL)
+> > > +		return -EFAULT;
+> > Isn't this *technically* a behvaiour change? Nonetheless, I think this is a much better
+> > approach than forcing everyone to do null checking, and avoids at least one error case
+> > where the kernel installs FDs for SCM_RIGHTS, and they're not actualy usable.
+> 
+> So, the only behavior change I see is that the order of sanity checks is
+> changed.
+> 
+> The loop in scm_detach_fds() is:
+> 
+> 
+>         for (i = 0; i < fdmax; i++) {
+>                 err = __scm_install_fd(scm->fp->fp[i], cmsg_data + i, o_flags);
+>                 if (err < 0)
+>                         break;
+>         }
+> 
+> Before, __scm_install_fd() does:
+> 
+>         error = security_file_receive(file);
+>         if (error)
+>                 return error;
+> 
+>         new_fd = get_unused_fd_flags(o_flags);
+>         if (new_fd < 0)
+>                 return new_fd;
+> 
+>         error = put_user(new_fd, ufd);
+>         if (error) {
+>                 put_unused_fd(new_fd);
+>                 return error;
+>         }
+> 	...
+> 
+> After, fd_install_received_user() and __fd_install_received() does:
+> 
+>         if (ufd == NULL)
+>                 return -EFAULT;
+> 	...
+>         error = security_file_receive(file);
+>         if (error)
+>                 return error;
+> 	...
+>                 new_fd = get_unused_fd_flags(o_flags);
+>                 if (new_fd < 0)
+>                         return new_fd;
+> 	...
+>                 error = put_user(new_fd, ufd);
+>                 if (error) {
+>                         put_unused_fd(new_fd);
+>                         return error;
+>                 }
+> 
+> i.e. if a caller attempts a receive that is rejected by LSM *and*
+> includes a NULL userpointer destination, they will get an EFAULT now
+> instead of an EPERM.
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+The 'user' pointer the fd is written to is in the middle of
+the 'cmsg' buffer.
+So to hit 'ufd == NULL' the program would have to pass a small
+negative integer!
+
+The error paths are strange if there are multiple fd in the message.
+A quick look at the old code seems to imply that if the user doesn't
+supply a big enough buffer then the extra 'file *' just get closed.
+OTOH if there is an error processing one of the files the request
+fails with the earlier file allocated fd numbers.
+
+In addition most of the userspace buffer is written after the
+loop - any errors there return -EFAULT (SIGSEGV) without
+even trying to tidy up the allocated fd.
+
+ISTM that the put_user(new_fd, ufd) could be done in __scm_install_fd()
+after __fd_install_received() returns.
+
+scm_detach_fds() could do the put_user(SOL_SOCKET,...) before actually
+processing the first file - so that the state can be left unchanged
+when a naff buffer is passed.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
