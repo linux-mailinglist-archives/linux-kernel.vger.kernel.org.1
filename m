@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BE3200FDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D9F0200E0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393126AbgFSPXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:23:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45756 "EHLO mail.kernel.org"
+        id S2391158AbgFSPEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:04:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392378AbgFSPPM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:15:12 -0400
+        id S2391151AbgFSPE3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:04:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA989206FA;
-        Fri, 19 Jun 2020 15:15:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1623F206DB;
+        Fri, 19 Jun 2020 15:04:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579711;
-        bh=8m7uA5YPCaCnVMHhdJVL5lGf4YCZd6FcZzwuYR1DEIQ=;
+        s=default; t=1592579068;
+        bh=wums38tIbdlDkChcSKWLY242cq4emMf/+d/eJEQRV78=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ft8ffhgwbot4O+Lfg5z9oYUWwCc+1IdeCvO0+zARQ8kH1QUmViQbDoKN7lhuknljO
-         4HdE+ah20G/lPmgMDjxogimUK+oFnjVTPTNEOHlLHb5wNLOJ4iKPNd9Rpg86obC5eb
-         iAYYKcHojnOJz50JXSxXbEdm61ddXi7gRVkas88s=
+        b=na9Apqz4PxHTDUHw2FWy7ICzl7jeb1R3Yygo1bb8+FmMuiVG4O1iIDYiT1FO+Sc81
+         ADtibyQLGdEpBYAjcHOuO41VhTjBt6eI8AzB4swrvaE3hORiU5agb/To/nkHrQsZIJ
+         AKRMwiTY4Xm1JMcBpKD5PVOzE56iRkP3PxVWejek=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, NeilBrown <neilb@suse.de>,
-        "J. Bruce Fields" <bfields@redhat.com>
-Subject: [PATCH 5.4 238/261] sunrpc: svcauth_gss_register_pseudoflavor must reject duplicate registrations.
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: [PATCH 4.19 264/267] perf probe: Do not show the skipped events
 Date:   Fri, 19 Jun 2020 16:34:09 +0200
-Message-Id: <20200619141701.295864089@linuxfoundation.org>
+Message-Id: <20200619141701.342034355@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +45,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: NeilBrown <neilb@suse.de>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-commit d47a5dc2888fd1b94adf1553068b8dad76cec96c upstream.
+commit f41ebe9defacddeae96a872a33f0f22ced0bfcef upstream.
 
-There is no valid case for supporting duplicate pseudoflavor
-registrations.
-Currently the silent acceptance of such registrations is hiding a bug.
-The rpcsec_gss_krb5 module registers 2 flavours but does not unregister
-them, so if you load, unload, reload the module, it will happily
-continue to use the old registration which now has pointers to the
-memory were the module was originally loaded.  This could lead to
-unexpected results.
+When a probe point is expanded to several places (like inlined) and if
+some of them are skipped because of blacklisted or __init function,
+those trace_events has no event name. It must be skipped while showing
+results.
 
-So disallow duplicate registrations.
+Without this fix, you can see "(null):(null)" on the list,
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=206651
-Cc: stable@vger.kernel.org (v2.6.12+)
-Signed-off-by: NeilBrown <neilb@suse.de>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+  # ./perf probe request_resource
+  reserve_setup is out of .text, skip it.
+  Added new events:
+    (null):(null)        (on request_resource)
+    probe:request_resource (on request_resource)
+
+  You can now use it in all perf tools, such as:
+
+  	perf record -e probe:request_resource -aR sleep 1
+
+  #
+
+With this fix, it is ignored:
+
+  # ./perf probe request_resource
+  reserve_setup is out of .text, skip it.
+  Added new events:
+    probe:request_resource (on request_resource)
+
+  You can now use it in all perf tools, such as:
+
+  	perf record -e probe:request_resource -aR sleep 1
+
+  #
+
+Fixes: 5a51fcd1f30c ("perf probe: Skip kernel symbols which is out of .text")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: stable@vger.kernel.org
+Link: http://lore.kernel.org/lkml/158763968263.30755.12800484151476026340.stgit@devnote2
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- net/sunrpc/auth_gss/svcauth_gss.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ tools/perf/builtin-probe.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/net/sunrpc/auth_gss/svcauth_gss.c
-+++ b/net/sunrpc/auth_gss/svcauth_gss.c
-@@ -817,9 +817,11 @@ svcauth_gss_register_pseudoflavor(u32 ps
- 	new->h.flavour = &svcauthops_gss;
- 	new->pseudoflavor = pseudoflavor;
+--- a/tools/perf/builtin-probe.c
++++ b/tools/perf/builtin-probe.c
+@@ -376,6 +376,9 @@ static int perf_add_probe_events(struct
  
--	stat = 0;
- 	test = auth_domain_lookup(name, &new->h);
--	if (test != &new->h) { /* Duplicate registration */
-+	if (test != &new->h) {
-+		pr_warn("svc: duplicate registration of gss pseudo flavour %s.\n",
-+			name);
-+		stat = -EADDRINUSE;
- 		auth_domain_put(test);
- 		kfree(new->h.name);
- 		goto out_free_dom;
+ 		for (k = 0; k < pev->ntevs; k++) {
+ 			struct probe_trace_event *tev = &pev->tevs[k];
++			/* Skipped events have no event name */
++			if (!tev->event)
++				continue;
+ 
+ 			/* We use tev's name for showing new events */
+ 			show_perf_probe_event(tev->group, tev->event, pev,
 
 
