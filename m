@@ -2,36 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 493A32011F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE402011F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404188AbgFSPZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:25:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54778 "EHLO mail.kernel.org"
+        id S2404198AbgFSPZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:25:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54800 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393151AbgFSPXP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:23:15 -0400
+        id S2393154AbgFSPXR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:23:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA05721548;
-        Fri, 19 Jun 2020 15:23:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 979D62158C;
+        Fri, 19 Jun 2020 15:23:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580193;
-        bh=jLox+8Gi6bC9/N3l0vacC+fK6yX3qEtgPqcMiIXdWZg=;
+        s=default; t=1592580196;
+        bh=OnMZ5vdf2YOk5hWtwLFzh1/pxKKBakX8EVWv9pl+oRw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e6CuFU5v15VcNJhc0V8PZ6RutrMtC4hXdLBVAp2hFvmJm6VJcqqqhJ6gy6LWkZOVq
-         yUPkK/9+R+rV4Wrqph9g5VLwR+jWopWBcXATtxCY+P4nV8nVJhV/jJni8NOs9B6jK7
-         0B3Rdbkyoi3NYoEzdzjSXPtMy+3SiFqN13ZRZmhI=
+        b=YhnUcrjfHpBDnN63yOzX2ew05qiJHS4lgbkLAHO9LA9EMco3rwqTjLDyufcaofz7N
+         M3/w1NkFc2AZq/VZrAcUt1xEygQC3HGbXytF3z5tlOC5NOxggvH3Wotndvh9GdtWJ6
+         TeAt9YsSw3tWCiK46OG+QQxPfy2xWFdvMEswTI68=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Fangrui Song <maskray@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        "Maciej W. Rozycki" <macro@linux-mips.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 158/376] dsa: sja1105: dynamically allocate stats structure
-Date:   Fri, 19 Jun 2020 16:31:16 +0200
-Message-Id: <20200619141717.801475448@linuxfoundation.org>
+Subject: [PATCH 5.7 159/376] MIPS: Truncate link address into 32bit for 32bit kernel
+Date:   Fri, 19 Jun 2020 16:31:17 +0200
+Message-Id: <20200619141717.847551466@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -44,196 +49,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-[ Upstream commit ae1804de93f6f1626906567ae7deec8e0111259d ]
+[ Upstream commit ff487d41036035376e47972c7c522490b839ab37 ]
 
-The addition of sja1105_port_status_ether structure into the
-statistics causes the frame size to go over the warning limit:
+LLD failed to link vmlinux with 64bit load address for 32bit ELF
+while bfd will strip 64bit address into 32bit silently.
+To fix LLD build, we should truncate load address provided by platform
+into 32bit for 32bit kernel.
 
-drivers/net/dsa/sja1105/sja1105_ethtool.c:421:6: error: stack frame size of 1104 bytes in function 'sja1105_get_ethtool_stats' [-Werror,-Wframe-larger-than=]
-
-Use dynamic allocation to avoid this.
-
-Fixes: 336aa67bd027 ("net: dsa: sja1105: show more ethtool statistics counters for P/Q/R/S")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/786
+Link: https://sourceware.org/bugzilla/show_bug.cgi?id=25784
+Reviewed-by: Fangrui Song <maskray@google.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+Cc: Maciej W. Rozycki <macro@linux-mips.org>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/sja1105/sja1105_ethtool.c | 144 +++++++++++-----------
- 1 file changed, 74 insertions(+), 70 deletions(-)
+ arch/mips/Makefile                 | 13 ++++++++++++-
+ arch/mips/boot/compressed/Makefile |  2 +-
+ arch/mips/kernel/vmlinux.lds.S     |  2 +-
+ 3 files changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/net/dsa/sja1105/sja1105_ethtool.c b/drivers/net/dsa/sja1105/sja1105_ethtool.c
-index d742ffcbfce9..709f035055c5 100644
---- a/drivers/net/dsa/sja1105/sja1105_ethtool.c
-+++ b/drivers/net/dsa/sja1105/sja1105_ethtool.c
-@@ -421,92 +421,96 @@ static char sja1105pqrs_extra_port_stats[][ETH_GSTRING_LEN] = {
- void sja1105_get_ethtool_stats(struct dsa_switch *ds, int port, u64 *data)
- {
- 	struct sja1105_private *priv = ds->priv;
--	struct sja1105_port_status status;
-+	struct sja1105_port_status *status;
- 	int rc, i, k = 0;
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index e1c44aed8156..b6ee29e4565a 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -288,12 +288,23 @@ ifdef CONFIG_64BIT
+   endif
+ endif
  
--	memset(&status, 0, sizeof(status));
-+	status = kzalloc(sizeof(*status), GFP_KERNEL);
-+	if (!status)
-+		goto out;
++# When linking a 32-bit executable the LLVM linker cannot cope with a
++# 32-bit load address that has been sign-extended to 64 bits.  Simply
++# remove the upper 32 bits then, as it is safe to do so with other
++# linkers.
++ifdef CONFIG_64BIT
++	load-ld			= $(load-y)
++else
++	load-ld			= $(subst 0xffffffff,0x,$(load-y))
++endif
++
+ KBUILD_AFLAGS	+= $(cflags-y)
+ KBUILD_CFLAGS	+= $(cflags-y)
+-KBUILD_CPPFLAGS += -DVMLINUX_LOAD_ADDRESS=$(load-y)
++KBUILD_CPPFLAGS += -DVMLINUX_LOAD_ADDRESS=$(load-y) -DLINKER_LOAD_ADDRESS=$(load-ld)
+ KBUILD_CPPFLAGS += -DDATAOFFSET=$(if $(dataoffset-y),$(dataoffset-y),0)
  
--	rc = sja1105_port_status_get(priv, &status, port);
-+	rc = sja1105_port_status_get(priv, status, port);
- 	if (rc < 0) {
- 		dev_err(ds->dev, "Failed to read port %d counters: %d\n",
- 			port, rc);
--		return;
-+		goto out;
- 	}
- 	memset(data, 0, ARRAY_SIZE(sja1105_port_stats) * sizeof(u64));
--	data[k++] = status.mac.n_runt;
--	data[k++] = status.mac.n_soferr;
--	data[k++] = status.mac.n_alignerr;
--	data[k++] = status.mac.n_miierr;
--	data[k++] = status.mac.typeerr;
--	data[k++] = status.mac.sizeerr;
--	data[k++] = status.mac.tctimeout;
--	data[k++] = status.mac.priorerr;
--	data[k++] = status.mac.nomaster;
--	data[k++] = status.mac.memov;
--	data[k++] = status.mac.memerr;
--	data[k++] = status.mac.invtyp;
--	data[k++] = status.mac.intcyov;
--	data[k++] = status.mac.domerr;
--	data[k++] = status.mac.pcfbagdrop;
--	data[k++] = status.mac.spcprior;
--	data[k++] = status.mac.ageprior;
--	data[k++] = status.mac.portdrop;
--	data[k++] = status.mac.lendrop;
--	data[k++] = status.mac.bagdrop;
--	data[k++] = status.mac.policeerr;
--	data[k++] = status.mac.drpnona664err;
--	data[k++] = status.mac.spcerr;
--	data[k++] = status.mac.agedrp;
--	data[k++] = status.hl1.n_n664err;
--	data[k++] = status.hl1.n_vlanerr;
--	data[k++] = status.hl1.n_unreleased;
--	data[k++] = status.hl1.n_sizeerr;
--	data[k++] = status.hl1.n_crcerr;
--	data[k++] = status.hl1.n_vlnotfound;
--	data[k++] = status.hl1.n_ctpolerr;
--	data[k++] = status.hl1.n_polerr;
--	data[k++] = status.hl1.n_rxfrm;
--	data[k++] = status.hl1.n_rxbyte;
--	data[k++] = status.hl1.n_txfrm;
--	data[k++] = status.hl1.n_txbyte;
--	data[k++] = status.hl2.n_qfull;
--	data[k++] = status.hl2.n_part_drop;
--	data[k++] = status.hl2.n_egr_disabled;
--	data[k++] = status.hl2.n_not_reach;
-+	data[k++] = status->mac.n_runt;
-+	data[k++] = status->mac.n_soferr;
-+	data[k++] = status->mac.n_alignerr;
-+	data[k++] = status->mac.n_miierr;
-+	data[k++] = status->mac.typeerr;
-+	data[k++] = status->mac.sizeerr;
-+	data[k++] = status->mac.tctimeout;
-+	data[k++] = status->mac.priorerr;
-+	data[k++] = status->mac.nomaster;
-+	data[k++] = status->mac.memov;
-+	data[k++] = status->mac.memerr;
-+	data[k++] = status->mac.invtyp;
-+	data[k++] = status->mac.intcyov;
-+	data[k++] = status->mac.domerr;
-+	data[k++] = status->mac.pcfbagdrop;
-+	data[k++] = status->mac.spcprior;
-+	data[k++] = status->mac.ageprior;
-+	data[k++] = status->mac.portdrop;
-+	data[k++] = status->mac.lendrop;
-+	data[k++] = status->mac.bagdrop;
-+	data[k++] = status->mac.policeerr;
-+	data[k++] = status->mac.drpnona664err;
-+	data[k++] = status->mac.spcerr;
-+	data[k++] = status->mac.agedrp;
-+	data[k++] = status->hl1.n_n664err;
-+	data[k++] = status->hl1.n_vlanerr;
-+	data[k++] = status->hl1.n_unreleased;
-+	data[k++] = status->hl1.n_sizeerr;
-+	data[k++] = status->hl1.n_crcerr;
-+	data[k++] = status->hl1.n_vlnotfound;
-+	data[k++] = status->hl1.n_ctpolerr;
-+	data[k++] = status->hl1.n_polerr;
-+	data[k++] = status->hl1.n_rxfrm;
-+	data[k++] = status->hl1.n_rxbyte;
-+	data[k++] = status->hl1.n_txfrm;
-+	data[k++] = status->hl1.n_txbyte;
-+	data[k++] = status->hl2.n_qfull;
-+	data[k++] = status->hl2.n_part_drop;
-+	data[k++] = status->hl2.n_egr_disabled;
-+	data[k++] = status->hl2.n_not_reach;
+ bootvars-y	= VMLINUX_LOAD_ADDRESS=$(load-y) \
++		  LINKER_LOAD_ADDRESS=$(load-ld) \
+ 		  VMLINUX_ENTRY_ADDRESS=$(entry-y) \
+ 		  PLATFORM="$(platform-y)" \
+ 		  ITS_INPUTS="$(its-y)"
+diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
+index 0df0ee8a298d..6e56caef69f0 100644
+--- a/arch/mips/boot/compressed/Makefile
++++ b/arch/mips/boot/compressed/Makefile
+@@ -90,7 +90,7 @@ ifneq ($(zload-y),)
+ VMLINUZ_LOAD_ADDRESS := $(zload-y)
+ else
+ VMLINUZ_LOAD_ADDRESS = $(shell $(obj)/calc_vmlinuz_load_addr \
+-		$(obj)/vmlinux.bin $(VMLINUX_LOAD_ADDRESS))
++		$(obj)/vmlinux.bin $(LINKER_LOAD_ADDRESS))
+ endif
+ UIMAGE_LOADADDR = $(VMLINUZ_LOAD_ADDRESS)
  
- 	if (priv->info->device_id == SJA1105E_DEVICE_ID ||
- 	    priv->info->device_id == SJA1105T_DEVICE_ID)
--		return;
-+		goto out;;
- 
- 	memset(data + k, 0, ARRAY_SIZE(sja1105pqrs_extra_port_stats) *
- 			sizeof(u64));
- 	for (i = 0; i < 8; i++) {
--		data[k++] = status.hl2.qlevel_hwm[i];
--		data[k++] = status.hl2.qlevel[i];
-+		data[k++] = status->hl2.qlevel_hwm[i];
-+		data[k++] = status->hl2.qlevel[i];
- 	}
--	data[k++] = status.ether.n_drops_nolearn;
--	data[k++] = status.ether.n_drops_noroute;
--	data[k++] = status.ether.n_drops_ill_dtag;
--	data[k++] = status.ether.n_drops_dtag;
--	data[k++] = status.ether.n_drops_sotag;
--	data[k++] = status.ether.n_drops_sitag;
--	data[k++] = status.ether.n_drops_utag;
--	data[k++] = status.ether.n_tx_bytes_1024_2047;
--	data[k++] = status.ether.n_tx_bytes_512_1023;
--	data[k++] = status.ether.n_tx_bytes_256_511;
--	data[k++] = status.ether.n_tx_bytes_128_255;
--	data[k++] = status.ether.n_tx_bytes_65_127;
--	data[k++] = status.ether.n_tx_bytes_64;
--	data[k++] = status.ether.n_tx_mcast;
--	data[k++] = status.ether.n_tx_bcast;
--	data[k++] = status.ether.n_rx_bytes_1024_2047;
--	data[k++] = status.ether.n_rx_bytes_512_1023;
--	data[k++] = status.ether.n_rx_bytes_256_511;
--	data[k++] = status.ether.n_rx_bytes_128_255;
--	data[k++] = status.ether.n_rx_bytes_65_127;
--	data[k++] = status.ether.n_rx_bytes_64;
--	data[k++] = status.ether.n_rx_mcast;
--	data[k++] = status.ether.n_rx_bcast;
-+	data[k++] = status->ether.n_drops_nolearn;
-+	data[k++] = status->ether.n_drops_noroute;
-+	data[k++] = status->ether.n_drops_ill_dtag;
-+	data[k++] = status->ether.n_drops_dtag;
-+	data[k++] = status->ether.n_drops_sotag;
-+	data[k++] = status->ether.n_drops_sitag;
-+	data[k++] = status->ether.n_drops_utag;
-+	data[k++] = status->ether.n_tx_bytes_1024_2047;
-+	data[k++] = status->ether.n_tx_bytes_512_1023;
-+	data[k++] = status->ether.n_tx_bytes_256_511;
-+	data[k++] = status->ether.n_tx_bytes_128_255;
-+	data[k++] = status->ether.n_tx_bytes_65_127;
-+	data[k++] = status->ether.n_tx_bytes_64;
-+	data[k++] = status->ether.n_tx_mcast;
-+	data[k++] = status->ether.n_tx_bcast;
-+	data[k++] = status->ether.n_rx_bytes_1024_2047;
-+	data[k++] = status->ether.n_rx_bytes_512_1023;
-+	data[k++] = status->ether.n_rx_bytes_256_511;
-+	data[k++] = status->ether.n_rx_bytes_128_255;
-+	data[k++] = status->ether.n_rx_bytes_65_127;
-+	data[k++] = status->ether.n_rx_bytes_64;
-+	data[k++] = status->ether.n_rx_mcast;
-+	data[k++] = status->ether.n_rx_bcast;
-+out:
-+	kfree(status);
- }
- 
- void sja1105_get_strings(struct dsa_switch *ds, int port,
+diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
+index a5f00ec73ea6..f185a85a27c1 100644
+--- a/arch/mips/kernel/vmlinux.lds.S
++++ b/arch/mips/kernel/vmlinux.lds.S
+@@ -55,7 +55,7 @@ SECTIONS
+ 	/* . = 0xa800000000300000; */
+ 	. = 0xffffffff80300000;
+ #endif
+-	. = VMLINUX_LOAD_ADDRESS;
++	. = LINKER_LOAD_ADDRESS;
+ 	/* read-only */
+ 	_text = .;	/* Text and read-only data */
+ 	.text : {
 -- 
 2.25.1
 
