@@ -2,203 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED3F2019D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AEB2019DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 20:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390421AbgFSRzZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 13:55:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731445AbgFSRzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 13:55:24 -0400
-Received: from earth.universe (dyndsl-037-138-190-043.ewe-ip-backbone.de [37.138.190.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DB782053B;
-        Fri, 19 Jun 2020 17:55:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592589323;
-        bh=IyFmyA/Yk2YkDZNGlb+HjNAe4pqU3k0vVzuoupw5GDo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o0plxateUPBswEeUrt8Rh8w0mJqodkcKNVTr2I8goEfkkqrZ5AIp2NhdtAKol+VcC
-         1fNEcbegvYafaWZFDlIXfEml1Ik2q9vrzCFV9qqeSgqe3g8xS293hzA0x9SMTZ5NTf
-         AkjmB8B7TVXHIyhSWASxniOtv/D4yTeHJmDclWB0=
-Received: by earth.universe (Postfix, from userid 1000)
-        id 9AAC93C08CD; Fri, 19 Jun 2020 19:55:21 +0200 (CEST)
-Date:   Fri, 19 Jun 2020 19:55:21 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-Cc:     "Andrew F. Davis" <afd@ti.com>,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Anton Vorontsov <cbouatmailru@gmail.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [RFC] power: supply: bq27xxx_battery: Fix polling interval after
- re-bind
-Message-ID: <20200619175521.xrcd7ahvjtc4zoqi@earth.universe>
-References: <20200525113220.369-1-krzk@kernel.org>
- <65ccf383-85a3-3ccd-f38c-e92ddae8fe1e@ti.com>
- <20200527074254.vhyfntpolphj3eeq@pali>
+        id S2436499AbgFSR5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 13:57:01 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:23650 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404675AbgFSR4p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 13:56:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592589403;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WcqrPcvDJb0ExZL7Rd/avo/FZMjKRYWp5ZMPjnD5nIw=;
+        b=dHok0T2BJBE6itHP/T5lIWFHKakOeDJOceKEMKKF1YXxffTR0j0i3oBTLbrbzwgbAiJCxt
+        Aj+M8V8Un/vBCtHZvdv7aLsIGgPAxf5bCT0VCqEJvR45L/5DeOd4M5XYKQSQp58u4EfpyE
+        3pl6OUpVJOOKKuhwGYJYi5quupz8dBI=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-448-p8JdQDTQOGuVwQhNsM36kQ-1; Fri, 19 Jun 2020 13:56:41 -0400
+X-MC-Unique: p8JdQDTQOGuVwQhNsM36kQ-1
+Received: by mail-qt1-f200.google.com with SMTP id y5so7755465qto.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 10:56:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WcqrPcvDJb0ExZL7Rd/avo/FZMjKRYWp5ZMPjnD5nIw=;
+        b=fFvnfxybgNXC5Qf9NyOSHvbug0/ke9YouJT7Vf/DeVC1CbSqv7iheW8ObwA67mpU24
+         kDlhjVDFX9Fobev0smlQyVHijKGWjd2GzkkSjucMkSBXv3og41YGaKBnqKE1Lem9FY3t
+         rihTfpAIO0qtiqt000lFuF7pnR4g+bGcK/3kXNUPtrp0O8eGp979PB5IGhfx1HqSNmdW
+         1yLT7cufS/St7O/gZ491M0+aKLTzjjC/yjA0DNNAq5ilJ932XjemCaZxbDAU4lWFVJNR
+         dCp05WrmFr+YYRlGes5h77RUdb5etgxY2UAvWh+QDiFcNbgVlD9ALROtButUJCHJnuYu
+         IwkQ==
+X-Gm-Message-State: AOAM532YyIMeOaSAl85+jUcSGfVb1XFx64AZ4824bqziSOdKAjiPnC6R
+        /U9ZS5UlUR9NY8tIv7egH+WUiLqSgLZIpCaH5/6adkGGL+yULbSFeL9gGvxtUhXfTLIY3lf0iLb
+        qDmJdYO1/eAAt4GlQigbbC7U1ZT6LU4yCl2Ch6R+V
+X-Received: by 2002:a37:64c6:: with SMTP id y189mr4793910qkb.353.1592589400890;
+        Fri, 19 Jun 2020 10:56:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxts4JUG/DUZlXwHieuKsAsn4bVIZKK4d+Lvr6aZFXHNaYrdVkmy8Kqr7GNRfSCb53+bLew1eRqhZdN3cQW/5s=
+X-Received: by 2002:a37:64c6:: with SMTP id y189mr4793881qkb.353.1592589400629;
+ Fri, 19 Jun 2020 10:56:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="bptvdc4ovioh7sxm"
-Content-Disposition: inline
-In-Reply-To: <20200527074254.vhyfntpolphj3eeq@pali>
+References: <20200611113404.17810-1-mst@redhat.com> <20200611113404.17810-3-mst@redhat.com>
+ <0332b0cf-cf00-9216-042c-e870efa33626@redhat.com>
+In-Reply-To: <0332b0cf-cf00-9216-042c-e870efa33626@redhat.com>
+From:   Eugenio Perez Martin <eperezma@redhat.com>
+Date:   Fri, 19 Jun 2020 19:56:04 +0200
+Message-ID: <CAJaqyWcDb5GefbiBkcaMADFzWup7yvmvOekRmRQ40pqxdgB0eg@mail.gmail.com>
+Subject: Re: [PATCH RFC v8 02/11] vhost: use batched get_vq_desc version
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 17, 2020 at 5:19 AM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> On 2020/6/11 =E4=B8=8B=E5=8D=887:34, Michael S. Tsirkin wrote:
+> >   static void vhost_vq_free_iovecs(struct vhost_virtqueue *vq)
+> >   {
+> >       kfree(vq->descs);
+> > @@ -394,6 +400,9 @@ static long vhost_dev_alloc_iovecs(struct vhost_dev=
+ *dev)
+> >       for (i =3D 0; i < dev->nvqs; ++i) {
+> >               vq =3D dev->vqs[i];
+> >               vq->max_descs =3D dev->iov_limit;
+> > +             if (vhost_vq_num_batch_descs(vq) < 0) {
+> > +                     return -EINVAL;
+> > +             }
+>
+>
+> This check breaks vdpa which set iov_limit to zero. Consider iov_limit
+> is meaningless to vDPA, I wonder we can skip the test when device
+> doesn't use worker.
 
---bptvdc4ovioh7sxm
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I tested as
 
-Hi,
+if (dev->use_worker && vhost_vq_num_batch_descs(vq) < 0)
 
-On Wed, May 27, 2020 at 09:42:54AM +0200, Pali Roh=E1r wrote:
-> On Tuesday 26 May 2020 21:16:28 Andrew F. Davis wrote:
-> > On 5/25/20 7:32 AM, Krzysztof Kozlowski wrote:
-> > > This reverts commit 8cfaaa811894a3ae2d7360a15a6cfccff3ebc7db.
-> > >=20
-> > > If device was unbound and bound, the polling interval would be set to=
- 0.
-> > > This is both unexpected and messes up with other bq27xxx devices (if
-> > > more than one battery device is used).
-> > >=20
-> > > This reset of polling interval was added in commit 8cfaaa811894
-> > > ("bq27x00_battery: Fix OOPS caused by unregistring bq27x00 driver")
-> > > stating that power_supply_unregister() calls get_property().  However=
- in
-> > > Linux kernel v3.1 and newer, such call trace does not exist.
-> > > Unregistering power supply does not call get_property() on unregister=
-ed
-> > > power supply.
-> > >=20
-> > > Fixes: 8cfaaa811894 ("bq27x00_battery: Fix OOPS caused by unregistrin=
-g bq27x00 driver")
-> > > Cc: <stable@vger.kernel.org>
-> > > Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-> > >=20
-> > > ---
-> > >=20
-> > > I really could not identify the issue being fixed in offending commit
-> > > 8cfaaa811894 ("bq27x00_battery: Fix OOPS caused by unregistring bq27x=
-00
-> > > driver"), therefore maybe I missed here something important.
-> > >=20
-> > > Please share your thoughts on this.
-> >=20
-> > I'm having a hard time finding the OOPS also. Maybe there is a window
-> > where the poll function is running or about to run where
-> > cancel_delayed_work_sync() is called and cancels the work, only to have
-> > an interrupt or late get_property call in to the poll function and
-> > re-schedule it.
-> >=20
-> > What we really need is to do is look at how we are handling the polling
-> > function. It gets called from the workqueue, from a threaded interrupt
-> > context, and from a power supply framework callback, possibly all at the
-> > same time. Sometimes its protected by a lock, sometimes not. Updating
-> > the device's cached data should always be locked.
-> >=20
-> > What's more is the poll function is self-arming, so if we call
-> > cancel_delayed_work_sync() (remove it from the work queue then then wait
-> > for it to finish if running), are we sure it wont have just re-arm itse=
-lf?
-> >=20
-> > We should make the only way we call the poll function be through the
-> > work queue, (plus make sure all accesses to the cache are locked).
-> >=20
-> > Andrew
->=20
-> I do not remember details too. It is long time ago.
->=20
-> CCing Ivaylo Dimitrov as he may remember something...
+In v9. Please let me know if that is ok for you.
 
-Applying this revert introduces at least a race condition when
-userspace reads sysfs files while kernel removes the driver.
+Thanks!
 
-So looking at the entrypoints for schedules:
+>
+> Thanks
+>
 
-bq27xxx_battery_i2c_probe:
-  Not relevant, probe is done when the battery is being removed.
-
-poll_interval_param_set:
-  Can be avoided by unregistering from the list earlier. This
-  is the right thing to do considering the battery is added to
-  the list as last step in the probe routine, it should be removed
-  first during teardown.
-
-bq27xxx_external_power_changed:
-  This can happen at any time while the power-supply device is
-  registered, because of the code in get_property.
-
-bq27xxx_battery_poll:
-  This can happen at any time while the power-supply device is
-  registered.
-
-As far as I can see the only thing in the delayed work needing
-the power-supply device is power_supply_changed(). If we add a
-check, that di->bat is not NULL, we should be able to reorder
-teardown like this:
-
-1. remove from list
-2. unregister power-supply device and set to di->bat to NULL
-3. cancel delayed work
-4. destroy mutex
-
-Also I agree with Andrew, that the locking looks fishy. I think
-the lock needs to be moved, so that the call to
-bq27xx_battery_update(di) in bq27xxx_battery_poll is protected.
-
--- Sebastian
-
-> > > ---
-> > >  drivers/power/supply/bq27xxx_battery.c | 8 --------
-> > >  1 file changed, 8 deletions(-)
-> > >=20
-> > > diff --git a/drivers/power/supply/bq27xxx_battery.c b/drivers/power/s=
-upply/bq27xxx_battery.c
-> > > index 942c92127b6d..4c94ee72de95 100644
-> > > --- a/drivers/power/supply/bq27xxx_battery.c
-> > > +++ b/drivers/power/supply/bq27xxx_battery.c
-> > > @@ -1905,14 +1905,6 @@ EXPORT_SYMBOL_GPL(bq27xxx_battery_setup);
-> > > =20
-> > >  void bq27xxx_battery_teardown(struct bq27xxx_device_info *di)
-> > >  {
-> > > -	/*
-> > > -	 * power_supply_unregister call bq27xxx_battery_get_property which
-> > > -	 * call bq27xxx_battery_poll.
-> > > -	 * Make sure that bq27xxx_battery_poll will not call
-> > > -	 * schedule_delayed_work again after unregister (which cause OOPS).
-> > > -	 */
-> > > -	poll_interval =3D 0;
-> > > -
-> > >  	cancel_delayed_work_sync(&di->work);
-> > > =20
-> > >  	power_supply_unregister(di->bat);
-> > >=20
-
---bptvdc4ovioh7sxm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7s+/0ACgkQ2O7X88g7
-+ppQzA//SWcqaQntFbKQv8z/4GHcuJ7qIX8cTG/v3v9yVDhtNkxg1404eAoDt9yh
-lWXfmm/1ANPfl6BaiFoaWqV5S7+ZbCYh8VXoAq3EFWBpiof7GpoQ5zJjKOR1f6Nj
-S2RcywA1tN9pofeWrkH7K+hy7NYcnpOuew5etZ2MqZ6cCvq79A6+iQP2Wu9hCKt8
-A4vEvIMi29Q9mmG3LOsImPjAWCWKyvrKI5WefnYMUcX8BHSuxiB5vk+jvbzHZarr
-ZsBMspMbcEUq2N8M80Idrltp0ugo3QsZNE9GKVQ0wJnIE3O1eI24w6RBKlJ0Nf+T
-D8vVdmFM8h/4CQeWPESxi1gNkRlAX3iYAEg9+nOhPR2DU6PeaQT0ZrVthlY1Z9qt
-XyYXVusja+pVkBCBrD43bIYgD5I0dUaY2ud0try+eGD5IlTr2SdKa5Hc0yEOFYCk
-yqBsKq1THlkhtfFP/PXz+9/dhLvd6QShca5WWB+kSWK/MX8dNhL+kcFhfcDjp5x0
-NpQ9fpYtZTTyxj0WuGbg9VVVysz7bYtvrXBOt1Ls4159UzBuRFQjfAJywaa78qd6
-GfzsG8s7mtbKgLpLNSk1qWWidMIUHTVipZffdDFpmAxsmX5MajHAaWpSqqMju8C0
-j//ACKzlaeUiWjHwLtD5xDJeasmC3Fjet3e09pc0x1geqLkUD1M=
-=aSj0
------END PGP SIGNATURE-----
-
---bptvdc4ovioh7sxm--
