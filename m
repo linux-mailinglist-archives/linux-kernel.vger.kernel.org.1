@@ -2,101 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33C9A201AEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 21:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7586201AF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 21:12:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732694AbgFSTLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 15:11:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38078 "EHLO
+        id S1732726AbgFSTM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 15:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727799AbgFSTLT (ORCPT
+        with ESMTP id S1727848AbgFSTM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 15:11:19 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFC87C0613EE
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 12:11:17 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id k1so4282598pls.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 12:11:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VScT64RtDzbmtFTIPPkA4G9jZecLisLc5YoK422OgPY=;
-        b=Q7SusNor1JfS/KxsOYlgqfU+dHe6cO5vzSZYYuf4g9fxPcu7RJC+J6bbzyZEKjfvoh
-         HgqGPKMMErEwR99taI9kg5v+zpP88fIYK8c8XyHCjBPOTgV1GGs1NRKusApUtSenOltS
-         8Q9aS8qZr4oVmmRHMB/fNc6dHY5KYijpLqjDo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VScT64RtDzbmtFTIPPkA4G9jZecLisLc5YoK422OgPY=;
-        b=gnCIh6UOo1mpbNhXel3W7KNegvFiZEQqfOEYQGc9fAPSok3Je02258b5dnYrzrddBg
-         ZYq+BIia1vouEMBZW51JaZS2nTGX+ieXMElbapgYRFrdA7GqiXxttOx8Lvo8KhE/jGAH
-         S8E2o9NBxXYjh+5aAYAMWFoShuL8q63XlTEgiqaL3vs2XfHmUfNfZWJyWpnQZ4raCoan
-         GVMGoeZ+eQ7mfc2cX0fBQgqgGOJRk62e/Ksh+MFmi2/Ak1m/qvQm0NPnhPDZZB28wU6p
-         wDIlK8j0uqfeV+7iZY0veeiLr5yuaU8IKhCfaxNsziX70LF1qJ8YDaaw52d1YilGP3RS
-         7Dow==
-X-Gm-Message-State: AOAM5310MobPow9AJSsbNzWijQC3LtGVLXRshvgBc23+gYIfEZPdgDVk
-        7HzbDnxwx/3xS/ahv/d8YlsqTQ==
-X-Google-Smtp-Source: ABdhPJx6PQHraOqgQ+KQVtVVOrs8OFQ3RHzYra6b4IA1L3O9ughAGqU2dHrt1zJCUXnaZwQrOdPRyQ==
-X-Received: by 2002:a17:90a:6808:: with SMTP id p8mr4378913pjj.81.1592593877289;
-        Fri, 19 Jun 2020 12:11:17 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v66sm6696796pfb.63.2020.06.19.12.11.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 12:11:16 -0700 (PDT)
-Date:   Fri, 19 Jun 2020 12:11:15 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        "Bird, Tim" <Tim.Bird@sony.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        David Gow <davidgow@google.com>
-Subject: Re: RFC - kernel selftest result documentation (KTAP)
-Message-ID: <202006191208.BF995C82F5@keescook>
-References: <CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com>
- <202006141120.96FF8C5@keescook>
- <CY4PR13MB11757D57CD441C5CAEC3F257FD9C0@CY4PR13MB1175.namprd13.prod.outlook.com>
- <7161fadb-45ba-c4c0-8bbb-cb47d2dd0265@redhat.com>
- <CY4PR13MB11755F5A6879CA3FFD005426FD9D0@CY4PR13MB1175.namprd13.prod.outlook.com>
- <CAFd5g454n4ZPgCdWaAxezFueG47TztqBx4L7x4oYwgPAR3BZNA@mail.gmail.com>
- <202006161653.15C278A5@keescook>
- <398200b2-f8bc-894d-6d6f-366ff98a490e@gmail.com>
+        Fri, 19 Jun 2020 15:12:26 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D05BCC06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 12:12:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=0SOhWW0ptYBXJaqZ7r6SRlKPoSW36fKX4F/Z1w9lS04=; b=LotKzde06lRQCfnSJV0/HomH9/
+        WZ3nXTWkj4DQcy707D1Gok3XqkZ07oyE6FYccQnzwEb7tk05RTXktw6FTwm/wawn1dMnx/ORuE0Y+
+        sxdki6wMyt0KTmng2K4GG+cyeHDl+54OtrYusmx2yGiN5egpSIu5SAT9+TfVTAM8+ZZ/8HscVzLSM
+        a2nHAztcZofFg2RS6I4/kMx9F27XxQ3CZxbRUK+pTvLg+F3i5AAqJxF/Crg+RFSysfyQSvfrjp4La
+        gBY9D+op921lOxejahX9eOcljN8ek49jQRfRtaSkdLLssm4ON5Vq0ro30yyvth1J7s5X0caB4lKoE
+        Yfq+/8RQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jmMQa-0005K0-8y; Fri, 19 Jun 2020 19:11:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8764E302753;
+        Fri, 19 Jun 2020 21:11:50 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 725AF2C28E842; Fri, 19 Jun 2020 21:11:50 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 21:11:50 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@redhat.com, acme@kernel.org, tglx@linutronix.de,
+        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, dave.hansen@intel.com,
+        yu-cheng.yu@intel.com, bigeasy@linutronix.de, gorcunov@gmail.com,
+        hpa@zytor.com, alexey.budankov@linux.intel.com, eranian@google.com,
+        ak@linux.intel.com, like.xu@linux.intel.com,
+        yao.jin@linux.intel.com
+Subject: Re: [PATCH 08/21] x86/msr-index: Add bunch of MSRs for Arch LBR
+Message-ID: <20200619191150.GH576888@hirez.programming.kicks-ass.net>
+References: <1592575449-64278-1-git-send-email-kan.liang@linux.intel.com>
+ <1592575449-64278-9-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <398200b2-f8bc-894d-6d6f-366ff98a490e@gmail.com>
+In-Reply-To: <1592575449-64278-9-git-send-email-kan.liang@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 01:47:29PM -0500, Frank Rowand wrote:
-> On 2020-06-16 18:58, Kees Cook wrote:
-> > I proposed fixing that recently[1]. seccomp uses XFAIL for "I have
-> > detected you lack the config to test this, so I can't say it's working
-> > or not, because it only looks like a failure without the config."
-> 
-> Based on that description, the case sounds like it should be a skip.
+On Fri, Jun 19, 2020 at 07:03:56AM -0700, kan.liang@linux.intel.com wrote:
 
-hrm hrm. Yeah. Thinking more about this, I agree. I think it came about
-this way because the kselftest_harness.h API (not TAP output) is different from the
-kselftest.h API (TAP output), and so the tests were written with what
-was available in kselftest_harness.h which has no "SKIP" idea.
+> +#define ARCH_LBR_INFO_MISPRED		BIT_ULL(63)
+> +#define ARCH_LBR_INFO_IN_TSX		BIT_ULL(62)
+> +#define ARCH_LBR_INFO_TSX_ABORT		BIT_ULL(61)
 
-The series linked was mostly built to bring kselftest_harness.h into the
-TAP output universe, so the XFAIL -> SKIP mapping needs to be included
-as well.
+That's identical to what we already have.
 
-> Or if the entire test depends on the missing config then Bail out might
-> be appropriate.
-> 
-> > [1] https://lore.kernel.org/lkml/20200611224028.3275174-7-keescook@chromium.org/
+> +#define ARCH_LBR_INFO_CYC_CNT_VALID	BIT_ULL(60)
 
-I will rework this series.
+If you call that LBR_INFO_CYC_VALID or something, then we good there.
 
--- 
-Kees Cook
+> +#define ARCH_LBR_INFO_BR_TYPE_OFFSET	56
+> +#define ARCH_LBR_INFO_BR_TYPE		(0xfull << ARCH_LBR_INFO_BR_TYPE_OFFSET)
+
+Same
+
+> +#define ARCH_LBR_INFO_CYC_CNT		0xffff
+
+And we already have that in LBR_INFO_CYCLES.
+
