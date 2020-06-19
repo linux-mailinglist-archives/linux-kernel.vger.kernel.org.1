@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B437D200C4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB4F200BE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:42:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388512AbgFSOnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:43:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34972 "EHLO mail.kernel.org"
+        id S2387527AbgFSOjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:39:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56282 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387946AbgFSOnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:43:47 -0400
+        id S2387951AbgFSOjB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:39:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A5B121556;
-        Fri, 19 Jun 2020 14:43:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F6142070A;
+        Fri, 19 Jun 2020 14:39:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577827;
-        bh=d9zKPQGRM6WNnUeRxiEl6bU9G95v89PXKZSFUxaLP+Y=;
+        s=default; t=1592577540;
+        bh=neF5ynw7oyTavB4BKWFTZ8DyOVDrsrw7CPwaIwvA9D0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QB/pSwMu7EdYXbFT1YyZlghY3hPhgy/7V1nI4zdFHdY9D0IGiCa2xu/PIim0RLYq+
-         rqAavo4MLwM6Tkky7XJGzROaLVlszAh0456eHmny28+NyRj/qAubHk4eMUQ7P8B+jr
-         Yv0ssa95JHtUWMZiwEqOwqqnwUTx6ww0bTT/w+EM=
+        b=ymBLFG9vpL/qxX7vaJKd24m36LbsvQv0lWmBO0gTju4rbWUKDFxOKcQGXm0/iAnwA
+         g9yEMtdfSWBfRHUmyH9no+65hclUB9rpxKBMFfxA3ge/FQjPI1z3pKC0IuWYXvwVnb
+         v5JibNEzGeKsdlIqKq10ZPvrtMN45cqrHBrN0GJY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Subject: [PATCH 4.9 106/128] PCI: Program MPS for RCiEP devices
+        stable@vger.kernel.org, Jonathan Bakker <xc-racer2@live.ca>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Subject: [PATCH 4.4 091/101] pinctrl: samsung: Save/restore eint_mask over suspend for EINT_TYPE GPIOs
 Date:   Fri, 19 Jun 2020 16:33:20 +0200
-Message-Id: <20200619141625.752300209@linuxfoundation.org>
+Message-Id: <20200619141618.733443261@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
-References: <20200619141620.148019466@linuxfoundation.org>
+In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
+References: <20200619141614.001544111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,67 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ashok Raj <ashok.raj@intel.com>
+From: Jonathan Bakker <xc-racer2@live.ca>
 
-commit aa0ce96d72dd2e1b0dfd0fb868f82876e7790878 upstream.
+commit f354157a7d184db430c1a564c506434e33b1bec5 upstream.
 
-Root Complex Integrated Endpoints (RCiEPs) do not have an upstream bridge,
-so pci_configure_mps() previously ignored them, which may result in reduced
-performance.
+Currently, for EINT_TYPE GPIOs, the CON and FLTCON registers
+are saved and restored over a suspend/resume cycle.  However, the
+EINT_MASK registers are not.
 
-Instead, program the Max_Payload_Size of RCiEPs to the maximum supported
-value (unless it is limited for the PCIE_BUS_PEER2PEER case).  This also
-affects the subsequent programming of Max_Read_Request_Size because Linux
-programs MRRS based on the MPS value.
+On S5PV210 at the very least, these registers are not retained over
+suspend, leading to the interrupts remaining masked upon resume and
+therefore no interrupts being triggered for the device.  There should
+be no effect on any SoCs that do retain these registers as theoretically
+we would just be re-writing what was already there.
 
-Fixes: 9dae3a97297f ("PCI: Move MPS configuration check to pci_configure_device()")
-Link: https://lore.kernel.org/r/1585343775-4019-1-git-send-email-ashok.raj@intel.com
-Tested-by: Dave Jiang <dave.jiang@intel.com>
-Signed-off-by: Ashok Raj <ashok.raj@intel.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: stable@vger.kernel.org
+Fixes: 7ccbc60cd9c2 ("pinctrl: exynos: Handle suspend/resume of GPIO EINT registers")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Jonathan Bakker <xc-racer2@live.ca>
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/pci/probe.c |   22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ drivers/pinctrl/samsung/pinctrl-exynos.c |    9 +++++++++
+ 1 file changed, 9 insertions(+)
 
---- a/drivers/pci/probe.c
-+++ b/drivers/pci/probe.c
-@@ -1360,13 +1360,33 @@ static void pci_configure_mps(struct pci
- 	struct pci_dev *bridge = pci_upstream_bridge(dev);
- 	int mps, p_mps, rc;
+--- a/drivers/pinctrl/samsung/pinctrl-exynos.c
++++ b/drivers/pinctrl/samsung/pinctrl-exynos.c
+@@ -288,6 +288,7 @@ struct exynos_eint_gpio_save {
+ 	u32 eint_con;
+ 	u32 eint_fltcon0;
+ 	u32 eint_fltcon1;
++	u32 eint_mask;
+ };
  
--	if (!pci_is_pcie(dev) || !bridge || !pci_is_pcie(bridge))
-+	if (!pci_is_pcie(dev))
- 		return;
+ /*
+@@ -588,10 +589,13 @@ static void exynos_pinctrl_suspend_bank(
+ 						+ 2 * bank->eint_offset);
+ 	save->eint_fltcon1 = readl(regs + EXYNOS_GPIO_EFLTCON_OFFSET
+ 						+ 2 * bank->eint_offset + 4);
++	save->eint_mask = readl(regs + bank->irq_chip->eint_mask
++						+ bank->eint_offset);
  
- 	/* MPS and MRRS fields are of type 'RsvdP' for VFs, short-circuit out */
- 	if (dev->is_virtfn)
- 		return;
+ 	pr_debug("%s: save     con %#010x\n", bank->name, save->eint_con);
+ 	pr_debug("%s: save fltcon0 %#010x\n", bank->name, save->eint_fltcon0);
+ 	pr_debug("%s: save fltcon1 %#010x\n", bank->name, save->eint_fltcon1);
++	pr_debug("%s: save    mask %#010x\n", bank->name, save->eint_mask);
+ }
  
-+	/*
-+	 * For Root Complex Integrated Endpoints, program the maximum
-+	 * supported value unless limited by the PCIE_BUS_PEER2PEER case.
-+	 */
-+	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) {
-+		if (pcie_bus_config == PCIE_BUS_PEER2PEER)
-+			mps = 128;
-+		else
-+			mps = 128 << dev->pcie_mpss;
-+		rc = pcie_set_mps(dev, mps);
-+		if (rc) {
-+			pci_warn(dev, "can't set Max Payload Size to %d; if necessary, use \"pci=pcie_bus_safe\" and report a bug\n",
-+				 mps);
-+		}
-+		return;
-+	}
-+
-+	if (!bridge || !pci_is_pcie(bridge))
-+		return;
-+
- 	mps = pcie_get_mps(dev);
- 	p_mps = pcie_get_mps(bridge);
+ static void exynos_pinctrl_suspend(struct samsung_pinctrl_drv_data *drvdata)
+@@ -620,6 +624,9 @@ static void exynos_pinctrl_resume_bank(
+ 	pr_debug("%s: fltcon1 %#010x => %#010x\n", bank->name,
+ 			readl(regs + EXYNOS_GPIO_EFLTCON_OFFSET
+ 			+ 2 * bank->eint_offset + 4), save->eint_fltcon1);
++	pr_debug("%s:    mask %#010x => %#010x\n", bank->name,
++			readl(regs + bank->irq_chip->eint_mask
++			+ bank->eint_offset), save->eint_mask);
  
+ 	writel(save->eint_con, regs + EXYNOS_GPIO_ECON_OFFSET
+ 						+ bank->eint_offset);
+@@ -627,6 +634,8 @@ static void exynos_pinctrl_resume_bank(
+ 						+ 2 * bank->eint_offset);
+ 	writel(save->eint_fltcon1, regs + EXYNOS_GPIO_EFLTCON_OFFSET
+ 						+ 2 * bank->eint_offset + 4);
++	writel(save->eint_mask, regs + bank->irq_chip->eint_mask
++						+ bank->eint_offset);
+ }
+ 
+ static void exynos_pinctrl_resume(struct samsung_pinctrl_drv_data *drvdata)
 
 
