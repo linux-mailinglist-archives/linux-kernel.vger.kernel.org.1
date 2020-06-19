@@ -2,34 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 531B620159F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC85920167B
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389664AbgFSOxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:53:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46952 "EHLO mail.kernel.org"
+        id S2395039AbgFSQbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:31:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47158 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389616AbgFSOws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:52:48 -0400
+        id S2389644AbgFSOw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:52:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1C91221556;
-        Fri, 19 Jun 2020 14:52:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4308D21852;
+        Fri, 19 Jun 2020 14:52:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578368;
-        bh=e3qeNO8EVoBm8gd2F3PpJi1vypzKZd7lY8KvJ41wVTA=;
+        s=default; t=1592578376;
+        bh=VWd75qwe8Tw9/e6o2TotNGK1ySb4QoeLd+Hl9mcG2XU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M4vqhjk89LMKMD95U06dXJMjwwlLxVU9YfqW3wavHnQtRUZrX9Iu4utw7WMZvH88b
-         0zA2Bai97UjS6g7UQpaqruqM0rR1qwuyyTHRpOpAVZVRJPCusvKDgl7qmzG8YnMv65
-         rEMqBWoXcowe6tU8wqRkQYJ8LyHzRx8yus7ANpCc=
+        b=ttUXntdEou9tAShuWaVZBILzqfJV2gg0clGASBFtx0jTrJmeCoXEv5mwsooOgA+lI
+         3cDXblgnKnahLLpStyAQS6NnWv9KUxcjxYhr1U3RYhjWNakq0xpwjJf8Z8kPKZ3/Yo
+         XBRg36+fJquToiGJ63kIPiLjeO5YnXwoMlubAJK4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4.14 186/190] mtd: rawnand: pasemi: Fix the probe error path
-Date:   Fri, 19 Jun 2020 16:33:51 +0200
-Message-Id: <20200619141643.150186475@linuxfoundation.org>
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>
+Subject: [PATCH 4.14 188/190] perf probe: Do not show the skipped events
+Date:   Fri, 19 Jun 2020 16:33:53 +0200
+Message-Id: <20200619141643.253762879@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
 References: <20200619141633.446429600@linuxfoundation.org>
@@ -42,49 +45,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-commit f51466901c07e6930435d30b02a21f0841174f61 upstream.
+commit f41ebe9defacddeae96a872a33f0f22ced0bfcef upstream.
 
-nand_cleanup() is supposed to be called on error after a successful
-call to nand_scan() to free all NAND resources.
+When a probe point is expanded to several places (like inlined) and if
+some of them are skipped because of blacklisted or __init function,
+those trace_events has no event name. It must be skipped while showing
+results.
 
-There is no real Fixes tag applying here as the use of nand_release()
-in this driver predates by far the introduction of nand_cleanup() in
-commit d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
-which makes this change possible, hence pointing it as the commit to
-fix for backporting purposes, even if this commit is not introducing
-any bug.
+Without this fix, you can see "(null):(null)" on the list,
 
-Fixes: d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+  # ./perf probe request_resource
+  reserve_setup is out of .text, skip it.
+  Added new events:
+    (null):(null)        (on request_resource)
+    probe:request_resource (on request_resource)
+
+  You can now use it in all perf tools, such as:
+
+  	perf record -e probe:request_resource -aR sleep 1
+
+  #
+
+With this fix, it is ignored:
+
+  # ./perf probe request_resource
+  reserve_setup is out of .text, skip it.
+  Added new events:
+    probe:request_resource (on request_resource)
+
+  You can now use it in all perf tools, such as:
+
+  	perf record -e probe:request_resource -aR sleep 1
+
+  #
+
+Fixes: 5a51fcd1f30c ("perf probe: Skip kernel symbols which is out of .text")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Cc: Jiri Olsa <jolsa@kernel.org>
+Cc: Namhyung Kim <namhyung@kernel.org>
 Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-41-miquel.raynal@bootlin.com
+Link: http://lore.kernel.org/lkml/158763968263.30755.12800484151476026340.stgit@devnote2
+Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/pasemi_nand.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ tools/perf/builtin-probe.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
---- a/drivers/mtd/nand/pasemi_nand.c
-+++ b/drivers/mtd/nand/pasemi_nand.c
-@@ -163,7 +163,7 @@ static int pasemi_nand_probe(struct plat
- 	if (mtd_device_register(pasemi_nand_mtd, NULL, 0)) {
- 		dev_err(dev, "Unable to register MTD device\n");
- 		err = -ENODEV;
--		goto out_lpc;
-+		goto out_cleanup_nand;
- 	}
+--- a/tools/perf/builtin-probe.c
++++ b/tools/perf/builtin-probe.c
+@@ -377,6 +377,9 @@ static int perf_add_probe_events(struct
  
- 	dev_info(dev, "PA Semi NAND flash at %pR, control at I/O %x\n", &res,
-@@ -171,6 +171,8 @@ static int pasemi_nand_probe(struct plat
+ 		for (k = 0; k < pev->ntevs; k++) {
+ 			struct probe_trace_event *tev = &pev->tevs[k];
++			/* Skipped events have no event name */
++			if (!tev->event)
++				continue;
  
- 	return 0;
- 
-+ out_cleanup_nand:
-+	nand_cleanup(chip);
-  out_lpc:
- 	release_region(lpcctl, 4);
-  out_ior:
+ 			/* We use tev's name for showing new events */
+ 			show_perf_probe_event(tev->group, tev->event, pev,
 
 
