@@ -2,106 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5300E200DC0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA611200E3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390691AbgFSPBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:01:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390636AbgFSPA3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:00:29 -0400
-Received: from earth.universe (dyndsl-037-138-190-043.ewe-ip-backbone.de [37.138.190.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D3F620776;
-        Fri, 19 Jun 2020 15:00:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578828;
-        bh=eh8/68kbF3bfkG8umypTlt9ETupXMn/3RL63q3FNss8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dRXJi17MqGUpyw2FwC0Ahwetkem/jHgi1LXdzhy2rnwFplN9inUbBfgRhar8+/v0m
-         zKDbAHU7QrKjEei5ZqgRNultCzOgxgUAoSZAMWKtivDL+3bm5TrOJVqcXtLlg75/gi
-         KFfRjwp4AhaykGagt7mqzL6VcKAmrprGWZUTn4RI=
-Received: by earth.universe (Postfix, from userid 1000)
-        id F1B623C08CD; Fri, 19 Jun 2020 17:00:26 +0200 (CEST)
-Date:   Fri, 19 Jun 2020 17:00:26 +0200
-From:   Sebastian Reichel <sre@kernel.org>
-To:     Keyur Patel <iamkeyur96@gmail.com>
-Cc:     Chen-Yu Tsai <wens@csie.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] power: supply: axp20x_usb_power: fix spelling mistake
-Message-ID: <20200619150026.gam2z5tslubk2xp7@earth.universe>
-References: <20200609224524.108092-1-iamkeyur96@gmail.com>
- <20200609225035.108435-1-iamkeyur96@gmail.com>
+        id S2391425AbgFSPGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:06:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391420AbgFSPGS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:06:18 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFF5C0613EE
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:06:17 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id j189so8688938oih.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:06:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=l5bPDp6tSQ6UB25Tmr+FxCYVIvJPeZJlOAF1u+aQ9Rs=;
+        b=V1jFXKxH9JLOzMoiPIzD5AaSDKHq7RFlO6xezDKhJyRYz93hCrYjWgdK7OEyodFwM2
+         kDzGATay8IHh8e80+mnVWhb8ejljyl7TC9nAm9rnfWCRB2CH7Y5/uH3a16+C1ds/YG6W
+         L2ObS2Ab5ArSWEXfmwsNABGkjrImJGIKuRrck=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=l5bPDp6tSQ6UB25Tmr+FxCYVIvJPeZJlOAF1u+aQ9Rs=;
+        b=dRPuXgYB8mI0Ar1uESYOSHf5xC1tdv2/DdEZM+5XZcAFenBcj3GbJrWv/BXgWGJNtZ
+         fXnpUBt/SC1ytfyPEcgAzOrqr2AmQjMhyszo/yAKf8KMTMlo8LISh1BvXSWoTJiqyAcm
+         JMHR/2BbS0SJJfvkP+dtIEP51dmZmRRshNNmBvpNEQNAJDE0BhAXyR3Zza0yH1mDorBT
+         ++yIAigaw9LjLj/Eqd4aE6snQSaE3nw4RSuTcYbvEmgt5D9bhY3syDfQaYXBkjO/83Qp
+         ja6rt4lGWTg7IEzPE/X2OTED13lZGhvdGnjjWOH84Sfy0Qpjqqpwhdg87wGMDWy/JG0a
+         arkg==
+X-Gm-Message-State: AOAM533FV5xUv82wRqx56EJj9i7ADnDcT080UrO41G2yQCxbkJYP2kFu
+        NTVNK0sKsNSAFJjctgaibQJFHhZw5MGw4XvfuOdLIA==
+X-Google-Smtp-Source: ABdhPJzkpCIjuIXUDXsaWuT9KnXo7xRSxKpK3kVIgCwYzrv9QHH1pbq5icbg335wwjGkDiUm4Nr1W4w/4YXBEbh0gJs=
+X-Received: by 2002:aca:aaca:: with SMTP id t193mr3427302oie.14.1592579176624;
+ Fri, 19 Jun 2020 08:06:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sskekeyxm6zhep2a"
-Content-Disposition: inline
-In-Reply-To: <20200609225035.108435-1-iamkeyur96@gmail.com>
+References: <20200604081224.863494-5-daniel.vetter@ffwll.ch>
+ <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org> <20200611083430.GD20149@phenom.ffwll.local>
+ <20200611141515.GW6578@ziepe.ca> <20200616120719.GL20149@phenom.ffwll.local>
+ <CAKMK7uE7DKUo9Z+yCpY+mW5gmKet8ugbF3yZNyHGqsJ=e-g_hA@mail.gmail.com>
+ <20200617152835.GF6578@ziepe.ca> <20200618150051.GS20149@phenom.ffwll.local>
+ <20200618172338.GM6578@ziepe.ca> <CAKMK7uEbqTu4q-amkLXyd1i8KNtLaoO2ZFoGqYiG6D0m0FKpOg@mail.gmail.com>
+ <20200619113934.GN6578@ziepe.ca>
+In-Reply-To: <20200619113934.GN6578@ziepe.ca>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Fri, 19 Jun 2020 17:06:04 +0200
+Message-ID: <CAKMK7uE-kWA==Cko5uenMrcnopEjq42HxoDTDywzBAbHqsN13g@mail.gmail.com>
+Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep annotations
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m_=28Intel=29?= 
+        <thomas_os@shipmail.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Jun 19, 2020 at 1:39 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> On Fri, Jun 19, 2020 at 09:22:09AM +0200, Daniel Vetter wrote:
+> > > As I've understood GPU that means you need to show that the commands
+> > > associated with the buffer have completed. This is all local stuff
+> > > within the driver, right? Why use fence (other than it already exists=
+)
+> >
+> > Because that's the end-of-dma thing. And it's cross-driver for the
+> > above reasons, e.g.
+> > - device A renders some stuff. Userspace gets dma_fence A out of that
+> > (well sync_file or one of the other uapi interfaces, but you get the
+> > idea)
+> > - userspace (across process or just different driver) issues more
+> > rendering for device B, which depends upon the rendering done on
+> > device A. So dma_fence A is an dependency and will block this dma
+> > operation. Userspace (and the kernel) gets dma_fence B out of this
+> > - because unfortunate reasons, the same rendering on device B also
+> > needs a userptr buffer, which means that dma_fence B is also the one
+> > that the mmu_range_notifier needs to wait on before it can tell core
+> > mm that it can go ahead and release those pages
+>
+> I was afraid you'd say this - this is complete madness for other DMA
+> devices to borrow the notifier hook of the first device!
 
---sskekeyxm6zhep2a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The first device might not even have a notifier. This is the 2nd
+device, waiting on a dma_fence of its own, but which happens to be
+queued up as a dma operation behind something else.
 
-Hi,
+> What if the first device is a page faulting device and doesn't call
+> dma_fence??
 
-On Tue, Jun 09, 2020 at 06:50:35PM -0400, Keyur Patel wrote:
-> Fix typo: "triger" --> "trigger"
->=20
-> Signed-off-by: Keyur Patel <iamkeyur96@gmail.com>
-> ---
+Not sure what you mean with this ... even if it does page-faulting for
+some other reasons, it'll emit a dma_fence which the 2nd device can
+consume as a dependency.
 
-Thanks, queued.
+> It you are going to treat things this way then the mmu notifier really
+> needs to be part of the some core DMA buf, and not randomly sprinkled
+> in drivers
 
--- Sebastian Reichel
+So maybe again unclear, we don't allow such userptr dma-buf to even be
+shared. They're just for slurping in stuff in the local device
+(general from file io or something the cpu has done or similar). There
+have been attempts to use it as the general backing storage, but that
+didn't go down too well because way too many complications.
 
->  drivers/power/supply/axp20x_usb_power.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/power/supply/axp20x_usb_power.c b/drivers/power/supp=
-ly/axp20x_usb_power.c
-> index 4fde24b5f35a..d01dc0332edc 100644
-> --- a/drivers/power/supply/axp20x_usb_power.c
-> +++ b/drivers/power/supply/axp20x_usb_power.c
-> @@ -78,7 +78,7 @@ static bool axp20x_usb_vbus_needs_polling(struct axp20x=
-_usb_power *power)
->  	/*
->  	 * Polling is only necessary while VBUS is offline. While online, a
->  	 * present->absent transition implies an online->offline transition
-> -	 * and will triger the VBUS_REMOVAL IRQ.
-> +	 * and will trigger the VBUS_REMOVAL IRQ.
->  	 */
->  	if (power->axp20x_id >=3D AXP221_ID && !power->online)
->  		return true;
-> --=20
-> 2.26.2
->=20
+Generally most memory the gpu operates on isn't stuff that's
+mmu_notifier'ed. And also, the device with userptr support only waits
+for its own dma_fence (because well you can't share this stuff, we
+disallow that).
 
---sskekeyxm6zhep2a
-Content-Type: application/pgp-signature; name="signature.asc"
+The problem is that there's piles of other dependencies for a dma job.
+GPU doesn't just consume a single buffer each time, it consumes entire
+lists of buffers and mixes them all up in funny ways. Some of these
+buffers are userptr, entirely local to the device. Other buffers are
+just normal device driver allocations (and managed with some shrinker
+to keep them in check). And then there's the actually shared dma-buf
+with other devices. The trouble is that they're all bundled up
+together.
 
------BEGIN PGP SIGNATURE-----
+Now we probably should have some helper code for userptr so that all
+drivers do this roughly the same, but that's just not there yet. But
+it can't be a dma-buf exporter behind the dma-buf interfaces, because
+even just pinned get_user_pages would be too different semantics
+compared to normal shared dma-buf objects, that's all very tightly
+tied into the specific driver.
 
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7s0woACgkQ2O7X88g7
-+pqAcw/+PjEYLRpQCa5y8T4Qp3wi2GQiVgmCWKbxFRJMjPVLo+XspUbHh5Jz1/ak
-88omrqUZf+0qlyZmcHSjyJ6HGexo90uP1frxr5zvXm6Gb4gwfFtf8HYzF0WLuaVj
-ttX4edkhEiw5lhDWUwkKj9YxCAA1Z/e7hFUdmIuKRFVos2eYNCJ48vG+lnJoFvZ8
-E7OT81amDtEzaPxLMyZUplDbxp5JvmH8FrOCwNg1R7Psx0/Oi2vqb2CZ3fB6Ad2H
-sxV+KSj5+u5j04r+TU5uQVLfBvINNk2FyZ/rr3jy/3VbMsQc0BS0W2ZusZqveHuN
-EBAWaiV2MUv6VJfW2W6m5aWvOP9xpRF3OxePCVb/EJsvs5rgQaLorEPsDfMK8FlG
-f5zxXxBDEJxaDOkkjXkUS/PEdT+Vfx2tXc52GuO+un85daWWtIzSFbmpHhkzRQeL
-XIPKb9PUhqjptelKvaCZ8D84LDHfvaP6i5Rs5p4Srw65s4RAR1sdyd1vCpA8Uziq
-AWB++zhmK+ylTz03bUrs4LCdNxHf5vL5RU6g9P0P+tsVnciczkalx0lcpqLkdNiT
-9REG+G/+d3i8gm+irC201CbrGCz4kME7/LgQF62U/hrdKNSB8ttnW1UjQJ9+0xpf
-JzuGthPgzTxvsvMcuZtpPFlJJR6jmZm9HuicaLtPUmHh7jqkqCI=
-=+QeJ
------END PGP SIGNATURE-----
+> But really this is what page pinning is supposed to be used for, the
+> MM behavior when it blocks on a pinned page is less invasive than if
+> it stalls inside a mmu notifier.
+>
+> You can mix it, use mmu notififers to keep track if the buffer is
+> still live, but when you want to trigger DMA then pin the pages and
+> keep them pinned until DMA is done. The pin protects things (well,
+> fork is still a problem)
 
---sskekeyxm6zhep2a--
+Hm I thought amdgpu had that (or drm/radeon as the previous
+incarnation of that stack), and was unhappy about the issues. Would
+need Christian K=C3=B6nig to chime in.
+
+> Do not need to wait on dma_fence in notifiers.
+
+Maybe :-) The goal of this series is more to document current rules
+and make them more consistent. Fixing them if we don't like them might
+be a follow-up task, but that would likely be a pile more work. First
+we need to know what the exact shape of the problem even is.
+-Daniel
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
