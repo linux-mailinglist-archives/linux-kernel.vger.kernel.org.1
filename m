@@ -2,68 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2D020157D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D40F20155F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394726AbgFSQWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:22:47 -0400
-Received: from mga12.intel.com ([192.55.52.136]:44716 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390605AbgFSO77 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:59:59 -0400
-IronPort-SDR: s9Ln8jwyzbYMCwryS+Kw6gomDxvowyIMB8rsXXgpD2c7CJDk/BInl/WbCPaKziBiNPPDo8xl8w
- H3OYTBH8QKUA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9656"; a="122705944"
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="122705944"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2020 07:59:59 -0700
-IronPort-SDR: /T6ngN+opaAFXMejP3TTq62vo8pm+WnfTUYczWbNBvC4xRqN1aZ7ku9HDnlgBbpoo7JBSjH8x7
- S2IChbxjWy/Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="352743642"
-Received: from orsmsx110.amr.corp.intel.com ([10.22.240.8])
-  by orsmga001.jf.intel.com with ESMTP; 19 Jun 2020 07:59:59 -0700
-Received: from orsmsx101.amr.corp.intel.com ([169.254.8.209]) by
- ORSMSX110.amr.corp.intel.com ([169.254.10.232]) with mapi id 14.03.0439.000;
- Fri, 19 Jun 2020 07:59:59 -0700
-From:   "Derrick, Jonathan" <jonathan.derrick@intel.com>
-To:     "willy@infradead.org" <willy@infradead.org>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "dhowells@redhat.com" <dhowells@redhat.com>
-Subject: Re: Parallel compilation performance regression
-Thread-Topic: Parallel compilation performance regression
-Thread-Index: AQHWRcuWKh0BKGrzv0a8mEFl49sTbajflSCAgADpOYA=
-Date:   Fri, 19 Jun 2020 14:59:58 +0000
-Message-ID: <bf968a2887536459293eaeb40d354fb365b1438d.camel@intel.com>
-References: <a1bafab884bb60250840a8721b78f4b5d3a6c2ed.camel@intel.com>
-         <20200619010513.GW8681@bombadil.infradead.org>
-In-Reply-To: <20200619010513.GW8681@bombadil.infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.209.131.127]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <5A74B23BC1E18E46A84DF283D16CBD32@intel.com>
-Content-Transfer-Encoding: base64
+        id S2394693AbgFSQVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:21:36 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:28824 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2390661AbgFSPAu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:00:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592578846;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZKQQ3TSN3kM3Cb8dTgCKmUaoa0Mo3XfrlHvCQ5ywFhw=;
+        b=f1BTs/NPzetpirbEi3J7FSXEXl0YMZQxalxi79y8DuBQA6iaQ6euChvam0dEHSj0Q5wJZG
+        Wt/dJqFNFsVL/iERWBIN8siBcNJpiWL+rRGbvVuJQxoqJe5Ii174ZWEVsZXNj31YDwrqVY
+        NoXXWKkEaiPCoK2Rxs6Iu9/wurtU9zY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-396-tYa_nW_TODO6rlo-ACXqqw-1; Fri, 19 Jun 2020 11:00:43 -0400
+X-MC-Unique: tYa_nW_TODO6rlo-ACXqqw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A757F107ACF4;
+        Fri, 19 Jun 2020 15:00:42 +0000 (UTC)
+Received: from gimli.home (ovpn-112-195.phx2.redhat.com [10.3.112.195])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 63A695C1D0;
+        Fri, 19 Jun 2020 15:00:39 +0000 (UTC)
+Subject: [PATCH v2] vfio: Cleanup allowed driver naming
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     alex.williamson@redhat.com
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        cohuck@redhat.com
+Date:   Fri, 19 Jun 2020 09:00:39 -0600
+Message-ID: <159257872055.20595.16949396190256140801.stgit@gimli.home>
+User-Agent: StGit/0.19-dirty
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIwLTA2LTE4IGF0IDE4OjA1IC0wNzAwLCBNYXR0aGV3IFdpbGNveCB3cm90ZToN
-Cj4gT24gVGh1LCBKdW4gMTgsIDIwMjAgYXQgMTE6NTI6NTVQTSArMDAwMCwgRGVycmljaywgSm9u
-YXRoYW4gd3JvdGU6DQo+ID4gSGkgRGF2aWQsDQo+ID4gDQo+ID4gSSd2ZSBiZWVuIGV4cGVyaWVu
-Y2luZyBhIHBlcmZvcm1hbmNlIHJlZ3Jlc3Npb24gd2hlbiBydW5uaW5nIGEgcGFyYWxsZWwNCj4g
-PiBjb21waWxhdGlvbiAoZWcsIG1ha2UgLWo3Mikgb24gcmVjZW50IGtlcm5lbHMuDQo+IA0KPiBJ
-IGJldCB5b3UncmUgdXNpbmcgYSB2ZXJzaW9uIG9mIG1ha2Ugd2hpY2ggcHJlZGF0ZXMgNC4zOg0K
-PiANCj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9y
-dmFsZHMvbGludXguZ2l0L2NvbW1pdC8/aWQ9MGRkYWQyMWQzZTk5Yzc0M2EzYWE0NzMxMjFkYzU1
-NjE2NzllMjZiYg0KPiANCg0KSSBhbSENCg0KIyBtYWtlIC0tdmVyc2lvbg0KR05VIE1ha2UgNC4y
-LjENCg0KDQpUaGFuayB5b3UgTWF0dGhldyENCg==
+No functional change, avoid non-inclusive naming schemes.
+
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+---
+
+v2: Wrap vfio_dev_driver_allowed to 80 column for consistency,
+    checkpatch no longer warns about this.
+
+ drivers/vfio/vfio.c |   13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+index 580099afeaff..262ab0efd06c 100644
+--- a/drivers/vfio/vfio.c
++++ b/drivers/vfio/vfio.c
+@@ -627,9 +627,10 @@ static struct vfio_device *vfio_group_get_device(struct vfio_group *group,
+  * that error notification via MSI can be affected for platforms that handle
+  * MSI within the same IOVA space as DMA.
+  */
+-static const char * const vfio_driver_whitelist[] = { "pci-stub" };
++static const char * const vfio_driver_allowed[] = { "pci-stub" };
+ 
+-static bool vfio_dev_whitelisted(struct device *dev, struct device_driver *drv)
++static bool vfio_dev_driver_allowed(struct device *dev,
++				    struct device_driver *drv)
+ {
+ 	if (dev_is_pci(dev)) {
+ 		struct pci_dev *pdev = to_pci_dev(dev);
+@@ -638,8 +639,8 @@ static bool vfio_dev_whitelisted(struct device *dev, struct device_driver *drv)
+ 			return true;
+ 	}
+ 
+-	return match_string(vfio_driver_whitelist,
+-			    ARRAY_SIZE(vfio_driver_whitelist),
++	return match_string(vfio_driver_allowed,
++			    ARRAY_SIZE(vfio_driver_allowed),
+ 			    drv->name) >= 0;
+ }
+ 
+@@ -648,7 +649,7 @@ static bool vfio_dev_whitelisted(struct device *dev, struct device_driver *drv)
+  * one of the following states:
+  *  - driver-less
+  *  - bound to a vfio driver
+- *  - bound to a whitelisted driver
++ *  - bound to an otherwise allowed driver
+  *  - a PCI interconnect device
+  *
+  * We use two methods to determine whether a device is bound to a vfio
+@@ -674,7 +675,7 @@ static int vfio_dev_viable(struct device *dev, void *data)
+ 	}
+ 	mutex_unlock(&group->unbound_lock);
+ 
+-	if (!ret || !drv || vfio_dev_whitelisted(dev, drv))
++	if (!ret || !drv || vfio_dev_driver_allowed(dev, drv))
+ 		return 0;
+ 
+ 	device = vfio_group_get_device(group, dev);
+
