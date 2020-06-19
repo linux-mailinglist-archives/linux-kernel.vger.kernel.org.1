@@ -2,142 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C34E20146D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:14:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1702B201475
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394254AbgFSQKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:10:12 -0400
-Received: from mga03.intel.com ([134.134.136.65]:61879 "EHLO mga03.intel.com"
+        id S2394327AbgFSQKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:10:40 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:49348 "EHLO mail.skyhub.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404125AbgFSQKK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 12:10:10 -0400
-IronPort-SDR: TKMhlxq6sLTSpi9FX4kfvgLNITpE5/PdVeD9BsRnIYz78t+yJaMW5/SewWfbt1RcU7qqSSLnYN
- W9GP4tfEVi8A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9657"; a="142922485"
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="142922485"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Jun 2020 09:10:09 -0700
-IronPort-SDR: 7RubQq9VxRUfRzuPMeOWSStaHKgmrTEFu3KNxl6djYfk5OGCi6GIlI27lydbeTOfyd4+aOyEOX
- VW8+JfhjviTw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,255,1589266800"; 
-   d="scan'208";a="274323199"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.25])
-  by orsmga003.jf.intel.com with ESMTP; 19 Jun 2020 09:10:09 -0700
-Date:   Fri, 19 Jun 2020 09:10:09 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-acpi@vger.kernel.org, lalithambika.krishnakumar@intel.com,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Prashant Malani <pmalani@google.com>,
-        Benson Leung <bleung@google.com>,
-        Todd Broch <tbroch@google.com>,
-        Alex Levin <levinale@google.com>,
-        Mattias Nissler <mnissler@google.com>,
-        Rajat Jain <rajatxjain@gmail.com>,
-        Bernie Keany <bernie.keany@intel.com>,
-        Aaron Durbin <adurbin@google.com>,
-        Diego Rivas <diegorivas@google.com>,
-        Duncan Laurie <dlaurie@google.com>,
-        Furquan Shaikh <furquan@google.com>,
-        Jesse Barnes <jsbarnes@google.com>,
-        Christian Kellner <christian@kellner.me>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        id S2391808AbgFSQKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 12:10:37 -0400
+Received: from zn.tnic (p200300ec2f0bac00b008f297983004b5.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ac00:b008:f297:9830:4b5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D29B71EC0405;
+        Fri, 19 Jun 2020 18:10:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1592583035;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=LOyocwucmjef57Km3oWDbSg9YpNpQlJio5fMhK7ei08=;
+        b=c4LgjOWkGKcIXpUvJgVkTlI0z53UiGT4J8eo+CcuPlnJ42TQkGIkiHtszUXWGbIYY01g6W
+        XZ1j/IRK4DEWcQv/2zonDNzqs5hpqH0Y+AtT9/RW8yLcGuC2XKhuGmGOYU3BXPyawc+QOm
+        Df9S1Pq4s5hw5bZVisGC3ag2b6sii8o=
+Date:   Fri, 19 Jun 2020 18:10:26 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Richard Hughes <hughsient@gmail.com>
+Cc:     Daniel Gutson <daniel@eclypsium.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        oohall@gmail.com, Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH 3/4] pci: acs: Enable PCI_ACS_TB for
- untrusted/external-facing devices
-Message-ID: <20200619161009.GH42799@otc-nc-03>
-References: <20200616011742.138975-1-rajatja@google.com>
- <20200616011742.138975-3-rajatja@google.com>
+        Peter Zijlstra <peterz@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Ability to read the MKTME status from userspace
+Message-ID: <20200619161026.GF32683@zn.tnic>
+References: <589c89ae-620e-36f8-2be5-4afc727c2911@intel.com>
+ <CAFmMkTHNxSN_uWtm63TdkGxj44NXQQKEOmATXhjA=4DSCS92kQ@mail.gmail.com>
+ <20200618220139.GH27951@zn.tnic>
+ <CAFmMkTGMAu-huTnP1aeMb_W4NddbTD_b2jhbDVKBDrkwgB97wg@mail.gmail.com>
+ <20200619074053.GA32683@zn.tnic>
+ <CAFmMkTGV0ZR6C=EBGQAiz1vw1vrUXSLTnH5ZbBUvfhPLg_tF6g@mail.gmail.com>
+ <20200619132243.GC32683@zn.tnic>
+ <CAD2FfiEr0kRWp2ut_PVqVDEVZqwESUxv=fxM9wUgi3n=ZCzPcQ@mail.gmail.com>
+ <20200619134432.GE32683@zn.tnic>
+ <CAD2FfiFRqwYGB50KK=aA0sU6uCALYneoyD=V4EfOsk-Ex=C+xg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200616011742.138975-3-rajatja@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAD2FfiFRqwYGB50KK=aA0sU6uCALYneoyD=V4EfOsk-Ex=C+xg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rajat
+On Fri, Jun 19, 2020 at 02:50:39PM +0100, Richard Hughes wrote:
+> No, it's not a boolean at all.
 
+So before you do any kernel modules, you have to sit down and precisely
+define what you want do to:
 
-On Mon, Jun 15, 2020 at 06:17:41PM -0700, Rajat Jain wrote:
-> When enabling ACS, currently the bit "translation blocking" was
-> not getting changed at all. Set it to disable translation blocking
+- do you want to initialize different stuff in your application based on
+platform support?
 
-Maybe you meant "enable translation blocking" ?
+- do you want to tell the user something so that the user can act
+accordingly?
 
-Keep the commit log simple:
+- do you just want to display feature support?
 
-When enabling ACS, enable translation blocking for external facing ports
-and untrusted devices.
+- ...
 
-> too for all external facing or untrusted devices. This is OK
-> because ATS is only allowed on internal devces.
-> 
-> Signed-off-by: Rajat Jain <rajatja@google.com>
-> ---
->  drivers/pci/pci.c    |  4 ++++
->  drivers/pci/quirks.c | 11 +++++++++++
->  2 files changed, 15 insertions(+)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index d2ff987585855..79853b52658a2 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -3330,6 +3330,10 @@ static void pci_std_enable_acs(struct pci_dev *dev)
->  	/* Upstream Forwarding */
->  	ctrl |= (cap & PCI_ACS_UF);
->  
-> +	if (dev->external_facing || dev->untrusted)
-> +		/* Translation Blocking */
-> +		ctrl |= (cap & PCI_ACS_TB);
-> +
->  	pci_write_config_word(dev, pos + PCI_ACS_CTRL, ctrl);
->  }
->  
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index b341628e47527..6294adeac4049 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -4934,6 +4934,13 @@ static void pci_quirk_enable_intel_rp_mpc_acs(struct pci_dev *dev)
->  	}
->  }
->  
-> +/*
-> + * Currently this quirk does the equivalent of
-> + * PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF | PCI_ACS_SV
-> + *
-> + * Currently missing, it also needs to do equivalent of PCI_ACS_TB,
-> + * if dev->external_facing || dev->untrusted
-> + */
->  static int pci_quirk_enable_intel_pch_acs(struct pci_dev *dev)
->  {
->  	if (!pci_quirk_intel_pch_acs_match(dev))
-> @@ -4973,6 +4980,10 @@ static int pci_quirk_enable_intel_spt_pch_acs(struct pci_dev *dev)
->  	ctrl |= (cap & PCI_ACS_CR);
->  	ctrl |= (cap & PCI_ACS_UF);
->  
-> +	if (dev->external_facing || dev->untrusted)
-> +		/* Translation Blocking */
-> +		ctrl |= (cap & PCI_ACS_TB);
-> +
->  	pci_write_config_dword(dev, pos + INTEL_SPT_ACS_CTRL, ctrl);
->  
->  	pci_info(dev, "Intel SPT PCH root port ACS workaround enabled\n");
-> -- 
-> 2.27.0.290.gba653c62da-goog
-> 
+All this needs to be properly written down and discussed first, and then
+we can think of the best way for the kernel to provide it, if there is
+even any kind of info the kernel can provide reliably.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
