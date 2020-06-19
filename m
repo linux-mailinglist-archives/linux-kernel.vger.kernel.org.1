@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A75F20091E
+	by mail.lfdr.de (Postfix) with ESMTP id F385920091F
 	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 14:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732636AbgFSM6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 08:58:33 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:55340 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728081AbgFSM63 (ORCPT
+        id S1732664AbgFSM6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 08:58:35 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:51676 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732495AbgFSM6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 08:58:29 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05JCwAWU058249;
-        Fri, 19 Jun 2020 07:58:10 -0500
+        Fri, 19 Jun 2020 08:58:30 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05JCwEZk082648;
+        Fri, 19 Jun 2020 07:58:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592571490;
-        bh=d4x8ogqFfDH2kB8gVKWGAaXg2kq+h2ME/W7y4f5BO40=;
+        s=ti-com-17Q1; t=1592571494;
+        bh=1yyZ02rdUuurElexq779NNOoFqWvEfOJ8Vx4K01CaMQ=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=PDUXpxrukOrtOJBTvzXesACfJgIGJOjQdYY8SY1CAYHpMc5/9W5OSq41IGJ3F8bDs
-         OSK25zdAkCupMQQ4zJQK4ON2mj5DqhJiVskH9f3DdDtcyU6Im+QSopHJucjDeaaS0e
-         ZLORPMgTMWNRy3PTw+3h6VVWtRaKOY9rxZ4Z8WC4=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05JCwAvC007140;
-        Fri, 19 Jun 2020 07:58:10 -0500
-Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+        b=zCPXUfb33ipipjCsbHs074rbzD6imzHxj+jvtm9s9hOx63ZR4eX80uUnwrq4GyTZR
+         pH9dUrN1fJQQyb56D98ERrxE7SSuS2CmZNp/qts1kgrrgigIoobK6je0BTNyifqaue
+         iJhXPf2aEGDpL2kxlZbHtQscelfeBM2pcFieRuns=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05JCwEYN105675
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 19 Jun 2020 07:58:14 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 19
- Jun 2020 07:58:10 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE106.ent.ti.com
- (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ Jun 2020 07:58:14 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 19 Jun 2020 07:58:10 -0500
+ Frontend Transport; Fri, 19 Jun 2020 07:58:14 -0500
 Received: from a0230074-Latitude-E7470.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05JCw2Hl015675;
-        Fri, 19 Jun 2020 07:58:07 -0500
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05JCw2Hm015675;
+        Fri, 19 Jun 2020 07:58:11 -0500
 From:   Faiz Abbas <faiz_abbas@ti.com>
 To:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
@@ -43,9 +44,9 @@ To:     <linux-arm-kernel@lists.infradead.org>,
         <will@kernel.org>, <catalin.marinas@arm.com>, <robh+dt@kernel.org>,
         <ulf.hansson@linaro.org>
 CC:     <faiz_abbas@ti.com>
-Subject: [PATCH 1/7] dt-bindings: mmc: sdhci-am654: Add ti,clkbuf-sel binding
-Date:   Fri, 19 Jun 2020 18:27:55 +0530
-Message-ID: <20200619125801.9530-2-faiz_abbas@ti.com>
+Subject: [PATCH 2/7] mmc: sdhci_am654: Add flag for PHY calibration
+Date:   Fri, 19 Jun 2020 18:27:56 +0530
+Message-ID: <20200619125801.9530-3-faiz_abbas@ti.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200619125801.9530-1-faiz_abbas@ti.com>
 References: <20200619125801.9530-1-faiz_abbas@ti.com>
@@ -57,26 +58,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add documentation for the clock buffer select phy property in the
-am654x and j721e 4 bit IP
+Not all controllers need calibration for the PHY DLL. Add a DLL_CALIB flag
+to indicate the same.
 
 Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
 ---
- Documentation/devicetree/bindings/mmc/sdhci-am654.txt | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/mmc/host/sdhci_am654.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/mmc/sdhci-am654.txt b/Documentation/devicetree/bindings/mmc/sdhci-am654.txt
-index c6ccecb9ae5a..6d202f4d9249 100644
---- a/Documentation/devicetree/bindings/mmc/sdhci-am654.txt
-+++ b/Documentation/devicetree/bindings/mmc/sdhci-am654.txt
-@@ -39,6 +39,7 @@ Optional Properties (Required for ti,am654-sdhci-5.1 and ti,j721e-sdhci-8bit):
- 				  Valid values are 33, 40, 50, 66 and 100 ohms.
- Optional Properties:
- 	- ti,strobe-sel: strobe select delay for HS400 speed mode. Default value: 0x0.
-+	- ti,clkbuf-sel: Clock Delay Buffer Select
+diff --git a/drivers/mmc/host/sdhci_am654.c b/drivers/mmc/host/sdhci_am654.c
+index 061b4398a4f1..85a05344f825 100644
+--- a/drivers/mmc/host/sdhci_am654.c
++++ b/drivers/mmc/host/sdhci_am654.c
+@@ -97,6 +97,7 @@ struct sdhci_am654_driver_data {
+ #define FREQSEL_2_BIT	(1 << 1)
+ #define STRBSEL_4_BIT	(1 << 2)
+ #define DLL_PRESENT	(1 << 3)
++#define DLL_CALIB	(1 << 4)
+ };
  
- Example:
+ struct timing_data {
+@@ -325,7 +326,8 @@ static const struct sdhci_pltfm_data sdhci_am654_pdata = {
  
+ static const struct sdhci_am654_driver_data sdhci_am654_drvdata = {
+ 	.pdata = &sdhci_am654_pdata,
+-	.flags = IOMUX_PRESENT | FREQSEL_2_BIT | STRBSEL_4_BIT | DLL_PRESENT,
++	.flags = IOMUX_PRESENT | FREQSEL_2_BIT | STRBSEL_4_BIT | DLL_PRESENT |
++		 DLL_CALIB,
+ };
+ 
+ static struct sdhci_ops sdhci_j721e_8bit_ops = {
+@@ -348,7 +350,7 @@ static const struct sdhci_pltfm_data sdhci_j721e_8bit_pdata = {
+ 
+ static const struct sdhci_am654_driver_data sdhci_j721e_8bit_drvdata = {
+ 	.pdata = &sdhci_j721e_8bit_pdata,
+-	.flags = DLL_PRESENT,
++	.flags = DLL_PRESENT | DLL_CALIB,
+ };
+ 
+ static struct sdhci_ops sdhci_j721e_4bit_ops = {
+@@ -469,7 +471,7 @@ static int sdhci_am654_init(struct sdhci_host *host)
+ 	mask = OTAPDLYENA_MASK | OTAPDLYSEL_MASK;
+ 	regmap_update_bits(sdhci_am654->base, PHY_CTRL4, mask, 0x0);
+ 
+-	if (sdhci_am654->flags & DLL_PRESENT) {
++	if (sdhci_am654->flags & DLL_CALIB) {
+ 		regmap_read(sdhci_am654->base, PHY_STAT1, &val);
+ 		if (~val & CALDONE_MASK) {
+ 			/* Calibrate IO lines */
 -- 
 2.17.1
 
