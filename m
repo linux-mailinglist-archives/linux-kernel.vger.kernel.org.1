@@ -2,45 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 867EA200EBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B217200DA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392067AbgFSPLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:11:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40952 "EHLO mail.kernel.org"
+        id S2390554AbgFSO7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:59:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55716 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392055AbgFSPKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:10:50 -0400
+        id S2390523AbgFSO7d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:59:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB8B620776;
-        Fri, 19 Jun 2020 15:10:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DDE32218AC;
+        Fri, 19 Jun 2020 14:59:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579449;
-        bh=HXy9QkS4DekEeRywjSWFzBjwCqscsZtP1slMzTKcyMU=;
+        s=default; t=1592578772;
+        bh=twAD9/480OimOKhD5kT8bjO05961osbe1gNSuQvw97U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CJH/HNXnTv0D68NSBzVZncT4x00gp2ZPN3IwpdRZMAR4e8d5IHLB3ZIWIOphn3Eo9
-         v2FjKbi+tMXjFzx+J+gcELfc1HpPa2yBRsNVZWyH7CUAnkRhDUSFZJqZudB74qgyrB
-         PekvRL0RXblXY2mUMFV67v3AQZsWGNeujfgSQ1ZE=
+        b=vsxv2C1bnWYOhhY9pb6ewu3wWOqcnNoa/ZaSsKsGuKpMwiFBzcCifYrBW+QUqcy81
+         lrw/NsIUCjbZHuoESllCPn/QxZdHD4MGx98wFcIlzHR+3HLrzrxYNJLvAP5z7nokf5
+         A3buzAbsCIJklZ3Tfx1dR7Z+KQ9GBaPxGtqbrJz8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 122/261] mips: MAAR: Use more precise address mask
-Date:   Fri, 19 Jun 2020 16:32:13 +0200
-Message-Id: <20200619141655.709261928@linuxfoundation.org>
+Subject: [PATCH 4.19 149/267] platform/x86: intel-vbtn: Use acpi_evaluate_integer()
+Date:   Fri, 19 Jun 2020 16:32:14 +0200
+Message-Id: <20200619141655.979203028@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,48 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit bbb5946eb545fab8ad8f46bce8a803e1c0c39d47 ]
+[ Upstream commit 18937875a231d831c309716d6d8fc358f8381881 ]
 
-Indeed according to the MIPS32 Privileged Resource Architecgture the MAAR
-pair register address field either takes [12:31] bits for non-XPA systems
-and [12:55] otherwise. In any case the current address mask is just
-wrong for 64-bit and 32-bits XPA chips. So lets extend it to 59-bits
-of physical address value. This shall cover the 64-bits architecture and
-systems with XPA enabled, and won't cause any problem for non-XPA 32-bit
-systems, since address values exceeding the architecture specific MAAR
-mask will be just truncated with setting zeros in the unsupported upper
-bits.
+Use acpi_evaluate_integer() instead of open-coding it.
 
-Co-developed-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Signed-off-by: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+This is a preparation patch for adding a intel_vbtn_has_switches()
+helper function.
+
+Fixes: de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode switch on 2-in-1's")
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/mipsregs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/platform/x86/intel-vbtn.c | 19 ++++++-------------
+ 1 file changed, 6 insertions(+), 13 deletions(-)
 
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index bdbdc19a2b8f..3afdb39d092a 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -750,7 +750,7 @@
+diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
+index a0d0cecff55f..0bcfa20dd614 100644
+--- a/drivers/platform/x86/intel-vbtn.c
++++ b/drivers/platform/x86/intel-vbtn.c
+@@ -118,28 +118,21 @@ static void detect_tablet_mode(struct platform_device *device)
+ 	const char *chassis_type = dmi_get_system_info(DMI_CHASSIS_TYPE);
+ 	struct intel_vbtn_priv *priv = dev_get_drvdata(&device->dev);
+ 	acpi_handle handle = ACPI_HANDLE(&device->dev);
+-	struct acpi_buffer vgbs_output = { ACPI_ALLOCATE_BUFFER, NULL };
+-	union acpi_object *obj;
++	unsigned long long vgbs;
+ 	acpi_status status;
+ 	int m;
  
- /* MAAR bit definitions */
- #define MIPS_MAAR_VH		(_U64CAST_(1) << 63)
--#define MIPS_MAAR_ADDR		((BIT_ULL(BITS_PER_LONG - 12) - 1) << 12)
-+#define MIPS_MAAR_ADDR		GENMASK_ULL(55, 12)
- #define MIPS_MAAR_ADDR_SHIFT	12
- #define MIPS_MAAR_S		(_ULCAST_(1) << 1)
- #define MIPS_MAAR_VL		(_ULCAST_(1) << 0)
+ 	if (!(chassis_type && strcmp(chassis_type, "31") == 0))
+-		goto out;
++		return;
+ 
+-	status = acpi_evaluate_object(handle, "VGBS", NULL, &vgbs_output);
++	status = acpi_evaluate_integer(handle, "VGBS", NULL, &vgbs);
+ 	if (ACPI_FAILURE(status))
+-		goto out;
+-
+-	obj = vgbs_output.pointer;
+-	if (!(obj && obj->type == ACPI_TYPE_INTEGER))
+-		goto out;
++		return;
+ 
+-	m = !(obj->integer.value & TABLET_MODE_FLAG);
++	m = !(vgbs & TABLET_MODE_FLAG);
+ 	input_report_switch(priv->input_dev, SW_TABLET_MODE, m);
+-	m = (obj->integer.value & DOCK_MODE_FLAG) ? 1 : 0;
++	m = (vgbs & DOCK_MODE_FLAG) ? 1 : 0;
+ 	input_report_switch(priv->input_dev, SW_DOCK, m);
+-out:
+-	kfree(vgbs_output.pointer);
+ }
+ 
+ static int intel_vbtn_probe(struct platform_device *device)
 -- 
 2.25.1
 
