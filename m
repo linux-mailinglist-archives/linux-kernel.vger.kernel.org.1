@@ -2,97 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 478F9200CF8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18A79200D6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389480AbgFSOvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:51:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:36082 "EHLO foss.arm.com"
+        id S2388614AbgFSO5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:57:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389446AbgFSOv1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:51:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3EE28101E;
-        Fri, 19 Jun 2020 07:51:27 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F9373F71F;
-        Fri, 19 Jun 2020 07:51:25 -0700 (PDT)
-Date:   Fri, 19 Jun 2020 15:51:23 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     Valentin Schneider <valentin.schneider@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Chris Redpath <chrid.redpath@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] sched/uclamp: Protect uclamp fast path code with
- static key
-Message-ID: <20200619145113.tgaxvzejmpstsnx7@e107158-lin.cambridge.arm.com>
-References: <20200618195525.7889-1-qais.yousef@arm.com>
- <20200618195525.7889-3-qais.yousef@arm.com>
- <jhjwo43cpfl.mognet@arm.com>
- <20200619115723.GF3129@suse.de>
+        id S2390224AbgFSO5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:57:20 -0400
+Received: from earth.universe (dyndsl-037-138-190-043.ewe-ip-backbone.de [37.138.190.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0836C2158C;
+        Fri, 19 Jun 2020 14:57:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592578640;
+        bh=CT9r71MK/Ydp6dwbrEa6O5/PjRwxLbVniRQATszwRQw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PiOsvkir4Os/TLSff6ns8HfTYTo0f/91c/A/OMpAc86PfpoZeZCUwDxBP0bLnO8rS
+         DBzOKGLvrTsWDiaWSnNTOSY7PDGCuNbIwJCr9lEG4Ljvha6FEZrWZP6I6aeZ3LxNsW
+         0nlV8/2Jm+cCcDHQPUI7/wOUnenYIe/kVduz3Ipo=
+Received: by earth.universe (Postfix, from userid 1000)
+        id 69E193C08CD; Fri, 19 Jun 2020 16:57:18 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 16:57:18 +0200
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers\power\supply: use kobj_to_dev
+Message-ID: <20200619145718.72ginjzx2inkzelv@earth.universe>
+References: <1591944954-14411-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="pmji5uxywuwhyrf6"
 Content-Disposition: inline
-In-Reply-To: <20200619115723.GF3129@suse.de>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <1591944954-14411-1-git-send-email-wangqing@vivo.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/19/20 12:57, Mel Gorman wrote:
-> On Fri, Jun 19, 2020 at 11:36:46AM +0100, Valentin Schneider wrote:
-> > >                                    nouclamp                 uclamp      uclamp-static-key
-> > > Hmean     send-64         162.43 (   0.00%)      157.84 *  -2.82%*      163.39 *   0.59%*
-> > > Hmean     send-128        324.71 (   0.00%)      314.78 *  -3.06%*      326.18 *   0.45%*
-> > > Hmean     send-256        641.55 (   0.00%)      628.67 *  -2.01%*      648.12 *   1.02%*
-> > > Hmean     send-1024      2525.28 (   0.00%)     2448.26 *  -3.05%*     2543.73 *   0.73%*
-> > > Hmean     send-2048      4836.14 (   0.00%)     4712.08 *  -2.57%*     4867.69 *   0.65%*
-> > > Hmean     send-3312      7540.83 (   0.00%)     7425.45 *  -1.53%*     7621.06 *   1.06%*
-> > > Hmean     send-4096      9124.53 (   0.00%)     8948.82 *  -1.93%*     9276.25 *   1.66%*
-> > > Hmean     send-8192     15589.67 (   0.00%)    15486.35 *  -0.66%*    15819.98 *   1.48%*
-> > > Hmean     send-16384    26386.47 (   0.00%)    25752.25 *  -2.40%*    26773.74 *   1.47%*
-> > >
-> > 
-> > Am I reading this correctly in that compiling in uclamp but having the
-> > static key enabled gives a slight improvement compared to not compiling in
-> > uclamp? I suppose the important bit is that we're not seeing regressions
-> > anymore, but still.
-> > 
-> 
-> I haven't reviewed the series in depth because from your review, another
-> version is likely in the works. However, it is not that unusual to
-> see small fluctuations like this that are counter-intuitive. The report
-> indicates the difference is likely outside of the noise with * around the
-> percentage difference instead of () but it could be small boot-to-boot
-> variance, differences in code layout, slight differences in slab usage
-> patterns etc. The definitive evidence that uclamp overhead is no there
-> is whether the uclamp functions show up in annotated profiles or not.
 
-The diff between nouclamp and uclamp-static-key (disabling uclamp in fast path)
+--pmji5uxywuwhyrf6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-     8.73%     -1.55%  [kernel.kallsyms]        [k] try_to_wake_up
-     0.07%     +0.04%  [kernel.kallsyms]        [k] deactivate_task
-     0.13%     -0.02%  [kernel.kallsyms]        [k] activate_task
+Hi,
 
-The diff between nouclamp and uclamp-static-key (uclamp actively used in the
-fast path)
+On Fri, Jun 12, 2020 at 02:55:54PM +0800, Wang Qing wrote:
+> Use kobj_to_dev() API instead of container_of().
+>=20
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
 
-     8.73%     -0.72%  [kernel.kallsyms]        [k] try_to_wake_up
-     0.13%     +0.39%  [kernel.kallsyms]        [k] activate_task
-     0.07%     +0.38%  [kernel.kallsyms]        [k] deactivate_task
+Thanks, queued.
 
-I will include these numbers in the commit message in v2.
+-- Sebastian
 
-Thanks
+>  drivers/power/supply/power_supply_sysfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>  mode change 100644 =3D> 100755 drivers/power/supply/power_supply_sysfs.c
+>=20
+> diff --git a/drivers/power/supply/power_supply_sysfs.c b/drivers/power/su=
+pply/power_supply_sysfs.c
+> index bc79560..af0cad2
+> --- a/drivers/power/supply/power_supply_sysfs.c
+> +++ b/drivers/power/supply/power_supply_sysfs.c
+> @@ -343,7 +343,7 @@ static umode_t power_supply_attr_is_visible(struct ko=
+bject *kobj,
+>  					   struct attribute *attr,
+>  					   int attrno)
+>  {
+> -	struct device *dev =3D container_of(kobj, struct device, kobj);
+> +	struct device *dev =3D kobj_to_dev(kobj);
+>  	struct power_supply *psy =3D dev_get_drvdata(dev);
+>  	umode_t mode =3D S_IRUSR | S_IRGRP | S_IROTH;
+>  	int i;
+> --=20
+> 2.7.4
+>=20
 
---
-Qais Yousef
+--pmji5uxywuwhyrf6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7s0k4ACgkQ2O7X88g7
++pouAxAAol0mBNNBXhOkXgK+gNZN2w/ZvBouoVzRqOXniMeAjKhDYUVNCxjN2RRf
++5qYt0cYGrSVR/FMmY40IGzGPKnO/0cAasVP5CVy8Rkf+Ji0Sy2P40LfFlJe/ZZO
+n/o1dD/m76uremaWPnFJ7St9v1HspoPBQxHC7QEvjvb5zNdvg/OuT9v1XmcwHn+F
+4ab4U9NnAAzDRZz+IzU+xBO6jRm3eVrjPv6f+YUGi4idKNqKZ03g/2u8MRGy5LUg
+fRaO3v/UCW+IQBbPOKbgta2ak9ZqeHTOlYCFivbgvQu/aYEuco4fA6o0cQynLZVV
+06mPloIA5xtPuvJlDBogWzkWjJ3lsXk7femaRnZ1Ra6+I13eMSPCS44diDiEjIUF
+obU9vJmcQmwtTHvHOdaiYjKUXq1pQyLJtEmKoLDvilR+XTw+L4EfnyjGdnMveQsM
+CsgxEFG5mBNh6Xra91D8tzT6lqJW4cL1Ae66DqNTmPUYRY4ex2A6OyLi/c5ivvED
+akGfVU3o2MHE9ZSKlE+b3TapTre1FoFw2M+ZpOIauv9WniVcVsKPmoLASYgL9Y9e
+NT05Zy1OVDZlUKI+6reMvsxzFu4UF9cTzB8vmGOrYfs2y51v70zKdNrBduP9obBt
+fWoCydVn9P3aK4LsUIVMd/DKHT06h5RXdkOQKZNMzavAn08Mkfg=
+=YjtU
+-----END PGP SIGNATURE-----
+
+--pmji5uxywuwhyrf6--
