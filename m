@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4AE2012DC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2589D2012DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:00:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392341AbgFSPO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:14:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45206 "EHLO mail.kernel.org"
+        id S2392356AbgFSPO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:14:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45248 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392319AbgFSPOh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:14:37 -0400
+        id S2392321AbgFSPOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:14:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D9C520776;
-        Fri, 19 Jun 2020 15:14:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0357C206FA;
+        Fri, 19 Jun 2020 15:14:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579676;
-        bh=GGGopzoYp1/UdNTECzraK80uWl1sSWl9CELLGoAzjqQ=;
+        s=default; t=1592579679;
+        bh=ByB9IenIoNleuTlJtrj9Ik5usSgTMC99u7MuaJbi6tM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JupD10T2dQ4lxqBXdw8tSgssugMQDq1hq8Yq8+YXqBchNJFa5kvXWOX03GPW8qy4d
-         ev9JyfKyLghXj+8J8+iOYYQ/4V6b+zwrNg2G1NzfkjL6VqTRw/tPc/0+tYLRywKkDo
-         zhX0HgdBdbeb7RRevBPzY9btNm2GRWSTpfSpxF3o=
+        b=eP20uz2WT0KUIE6BR+33Riw2uegWSi0hSm2mQCYOXFv9sUR5LaIjrxQlNKgLrSUel
+         VOtw2aanraU/+ID8OZzZJIhNZFKFOJCKJiHTCdKPLFRVAI7bfBHboycFkd3QeQXufn
+         0i+o9YSPBpxKdVMb0IzCjuZorwmK21RQVzdoakAs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Krzysztof Struczynski <krzysztof.struczynski@huawei.com>,
-        Mimi Zohar <zohar@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 194/261] ima: Set again build_ima_appraise variable
-Date:   Fri, 19 Jun 2020 16:33:25 +0200
-Message-Id: <20200619141659.192504590@linuxfoundation.org>
+        stable@vger.kernel.org, Dave Jiang <dave.jiang@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 5.4 195/261] PCI: Program MPS for RCiEP devices
+Date:   Fri, 19 Jun 2020 16:33:26 +0200
+Message-Id: <20200619141659.241068983@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
 References: <20200619141649.878808811@linuxfoundation.org>
@@ -45,54 +44,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
+From: Ashok Raj <ashok.raj@intel.com>
 
-[ Upstream commit b59fda449cf07f2db3be3a67142e6c000f5e8d79 ]
+commit aa0ce96d72dd2e1b0dfd0fb868f82876e7790878 upstream.
 
-After adding the new add_rule() function in commit c52657d93b05
-("ima: refactor ima_init_policy()"), all appraisal flags are added to the
-temp_ima_appraise variable. Revert to the previous behavior instead of
-removing build_ima_appraise, to benefit from the protection offered by
-__ro_after_init.
+Root Complex Integrated Endpoints (RCiEPs) do not have an upstream bridge,
+so pci_configure_mps() previously ignored them, which may result in reduced
+performance.
 
-The mentioned commit introduced a bug, as it makes all the flags
-modifiable, while build_ima_appraise flags can be protected with
-__ro_after_init.
+Instead, program the Max_Payload_Size of RCiEPs to the maximum supported
+value (unless it is limited for the PCIE_BUS_PEER2PEER case).  This also
+affects the subsequent programming of Max_Read_Request_Size because Linux
+programs MRRS based on the MPS value.
 
-Cc: stable@vger.kernel.org # 5.0.x
-Fixes: c52657d93b05 ("ima: refactor ima_init_policy()")
-Co-developed-by: Roberto Sassu <roberto.sassu@huawei.com>
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Signed-off-by: Krzysztof Struczynski <krzysztof.struczynski@huawei.com>
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 9dae3a97297f ("PCI: Move MPS configuration check to pci_configure_device()")
+Link: https://lore.kernel.org/r/1585343775-4019-1-git-send-email-ashok.raj@intel.com
+Tested-by: Dave Jiang <dave.jiang@intel.com>
+Signed-off-by: Ashok Raj <ashok.raj@intel.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- security/integrity/ima/ima_policy.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/pci/probe.c |   22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index 86624b1331ef..558a7607bf93 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -590,8 +590,14 @@ static void add_rules(struct ima_rule_entry *entries, int count,
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -1889,13 +1889,33 @@ static void pci_configure_mps(struct pci
+ 	struct pci_dev *bridge = pci_upstream_bridge(dev);
+ 	int mps, mpss, p_mps, rc;
  
- 			list_add_tail(&entry->list, &ima_policy_rules);
- 		}
--		if (entries[i].action == APPRAISE)
--			temp_ima_appraise |= ima_appraise_flag(entries[i].func);
-+		if (entries[i].action == APPRAISE) {
-+			if (entries != build_appraise_rules)
-+				temp_ima_appraise |=
-+					ima_appraise_flag(entries[i].func);
-+			else
-+				build_ima_appraise |=
-+					ima_appraise_flag(entries[i].func);
+-	if (!pci_is_pcie(dev) || !bridge || !pci_is_pcie(bridge))
++	if (!pci_is_pcie(dev))
+ 		return;
+ 
+ 	/* MPS and MRRS fields are of type 'RsvdP' for VFs, short-circuit out */
+ 	if (dev->is_virtfn)
+ 		return;
+ 
++	/*
++	 * For Root Complex Integrated Endpoints, program the maximum
++	 * supported value unless limited by the PCIE_BUS_PEER2PEER case.
++	 */
++	if (pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) {
++		if (pcie_bus_config == PCIE_BUS_PEER2PEER)
++			mps = 128;
++		else
++			mps = 128 << dev->pcie_mpss;
++		rc = pcie_set_mps(dev, mps);
++		if (rc) {
++			pci_warn(dev, "can't set Max Payload Size to %d; if necessary, use \"pci=pcie_bus_safe\" and report a bug\n",
++				 mps);
 +		}
- 	}
- }
++		return;
++	}
++
++	if (!bridge || !pci_is_pcie(bridge))
++		return;
++
+ 	mps = pcie_get_mps(dev);
+ 	p_mps = pcie_get_mps(bridge);
  
--- 
-2.25.1
-
 
 
