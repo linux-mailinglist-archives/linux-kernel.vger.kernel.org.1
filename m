@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11DAF2012B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739A2201207
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393195AbgFSPzT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:55:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52724 "EHLO mail.kernel.org"
+        id S2404031AbgFSPYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:24:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51688 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390633AbgFSPV2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:21:28 -0400
+        id S2392705AbgFSPUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:20:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8A91F20B80;
-        Fri, 19 Jun 2020 15:21:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D74AB20706;
+        Fri, 19 Jun 2020 15:20:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580088;
-        bh=h1T8WN4lKVZU17Fkg6U+9UkbB+FzXtXp0Ckcu6/lPss=;
+        s=default; t=1592580032;
+        bh=9bnpDbtIjXuK5hf81+Zi0XxGmFb2an6nsBRCwIBobCo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fzdc6GVr/+rR/3nVwnKWBZiM248AO/k3ZNZnkhsqB61i7duVhQzUBhVXO8Fz/6MZ/
-         ZkjjlE0+pkMDM6wCkVBsKdS9/rUOW4XmGsLD+/KPJ2vjBlRxxBOvcGFl8kxUmyjPll
-         k54zKHkwf2BNtUKOsFZKKlYuBs+xZrEQa8v4MzP0=
+        b=Nv0khmXpvNa5lz0VofQUqRpH2pPq6zXDQdbWvME482nCSjGYvvM95hBKwuV/6qltb
+         /xtokXDkeSR29bdEwrtTXGmYBXQ+NLoBNojn38mMjXecxN2kistXJ8YsCloqY37Rcm
+         mC7Km+kG1LteGeQe4C/xlB00198c3AyWh3pzqzQs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alvin Lee <alvin.lee2@amd.com>,
-        Yongqiang Sun <yongqiang.sun@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Jitao Shi <jitao.shi@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 087/376] drm/amd/display: Revert to old formula in set_vtg_params
-Date:   Fri, 19 Jun 2020 16:30:05 +0200
-Message-Id: <20200619141714.460253808@linuxfoundation.org>
+Subject: [PATCH 5.7 097/376] dt-bindings: display: mediatek: control dpi pins mode to avoid leakage
+Date:   Fri, 19 Jun 2020 16:30:15 +0200
+Message-Id: <20200619141714.940296667@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -46,50 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alvin Lee <alvin.lee2@amd.com>
+From: Jitao Shi <jitao.shi@mediatek.com>
 
-[ Upstream commit a1a0e61f3c43c610f0a3c109348c14ce930c1977 ]
+[ Upstream commit b0ff9b590733079f7f9453e5976a9dd2630949e3 ]
 
-[Why]
-New formula + cursor change causing underflow
-on certain configs
+Add property "pinctrl-names" to swap pin mode between gpio and dpi mode.
+Set the dpi pins to gpio mode and output-low to avoid leakage current
+when dpi disabled.
 
-[How]
-Rever to old formula
-
-Signed-off-by: Alvin Lee <alvin.lee2@amd.com>
-Reviewed-by: Yongqiang Sun <yongqiang.sun@amd.com>
-Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Jitao Shi <jitao.shi@mediatek.com>
+Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/dcn10/dcn10_optc.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/display/mediatek/mediatek,dpi.txt   | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_optc.c b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_optc.c
-index 17d96ec6acd8..ec0ab42becba 100644
---- a/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_optc.c
-+++ b/drivers/gpu/drm/amd/display/dc/dcn10/dcn10_optc.c
-@@ -299,6 +299,7 @@ void optc1_set_vtg_params(struct timing_generator *optc,
- 	uint32_t asic_blank_end;
- 	uint32_t v_init;
- 	uint32_t v_fp2 = 0;
-+	int32_t vertical_line_start;
+diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.txt
+index 58914cf681b8..77def4456706 100644
+--- a/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.txt
++++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,dpi.txt
+@@ -17,6 +17,9 @@ Required properties:
+   Documentation/devicetree/bindings/graph.txt. This port should be connected
+   to the input port of an attached HDMI or LVDS encoder chip.
  
- 	struct optc *optc1 = DCN10TG_FROM_TG(optc);
++Optional properties:
++- pinctrl-names: Contain "default" and "sleep".
++
+ Example:
  
-@@ -315,8 +316,9 @@ void optc1_set_vtg_params(struct timing_generator *optc,
- 			patched_crtc_timing.v_border_top;
+ dpi0: dpi@1401d000 {
+@@ -27,6 +30,9 @@ dpi0: dpi@1401d000 {
+ 		 <&mmsys CLK_MM_DPI_ENGINE>,
+ 		 <&apmixedsys CLK_APMIXED_TVDPLL>;
+ 	clock-names = "pixel", "engine", "pll";
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&dpi_pin_func>;
++	pinctrl-1 = <&dpi_pin_idle>;
  
- 	/* if VSTARTUP is before VSYNC, FP2 is the offset, otherwise 0 */
--	if (optc1->vstartup_start > asic_blank_end)
--		v_fp2 = optc1->vstartup_start - asic_blank_end;
-+	vertical_line_start = asic_blank_end - optc1->vstartup_start + 1;
-+	if (vertical_line_start < 0)
-+		v_fp2 = -vertical_line_start;
- 
- 	/* Interlace */
- 	if (REG(OTG_INTERLACE_CONTROL)) {
+ 	port {
+ 		dpi0_out: endpoint {
 -- 
 2.25.1
 
