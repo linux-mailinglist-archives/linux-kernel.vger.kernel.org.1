@@ -2,83 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8BB82003BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 10:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0C92003CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 10:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730983AbgFSIYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 04:24:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47194 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731409AbgFSIXr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 04:23:47 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1073420885;
-        Fri, 19 Jun 2020 08:23:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592555027;
-        bh=Xq8Ij+6u/8JcNOjy40zqn86PaaYBeksc+X+qt6XzZ20=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AfgV0lJ2fHFvPVxGGuZ+7j/177k2Mky+486OBxfmyr1AAGJ/PMXA5REDOX6ZK99HU
-         tKOmH3YvDyaHBCs08GCikPVixPptsSMtpYJDH1iUffNGKunsN0fi+9aACn4agfMGrG
-         c5HUWQGzE6tc0RGt5v1tNIETy5rEKIQEAcCf/lJE=
-Date:   Fri, 19 Jun 2020 09:23:43 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Marco Elver <elver@google.com>,
-        Borislav Petkov <bp@suse.de>
-Subject: Re: [PATCH] sparse: use the _Generic() version of
- __unqual_scalar_typeof()
-Message-ID: <20200619082342.GB6500@willie-the-truck>
-References: <20200618222620.5069-1-luc.vanoostenryck@gmail.com>
+        id S1731230AbgFSI0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 04:26:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51352 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730849AbgFSI0W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 04:26:22 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED11C06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 01:26:22 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id v11so4198711pgb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 01:26:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=WXQ7rs75ysSuFXnqcpZI4RQbdQAod6KuSMFSARqJDrQ=;
+        b=NiT/3X7FtCjDbvhves0ttBJCo44g1c7YJKgUI/62LwHAz5JWAnZ8cfG+J7idLiekNp
+         L9T9P46EfV7B9fRtZ3f9BomcD1exZhuQmng35FSpTmqK1cOg81XgaM+bkCz+BRoCA6FT
+         YEIfg8/09/MUz3Jo0uFYLoKnlx5vjx+Vrse58=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=WXQ7rs75ysSuFXnqcpZI4RQbdQAod6KuSMFSARqJDrQ=;
+        b=k2Z/6CrcWfxRhhvnkTkM4E12pIdnEDkCEzsVk5oEsRz1Lj1ak/0pr2lFYKLX+FFBnC
+         jMhj0TLdgBqnUr4Mxp8ro3gDDO1SyM+7rL99/E9tC24vxg6ZcV3nGLnAsnz0Tq/cyd1d
+         ny+oQ3qRWueatam4aVm12+BQr2dp3QzXKwdnMmyi6b+M0fvpuGnQqixrAA5Clo4F0wy0
+         u7MaZcufZJhawKtKSz2u8gNObjWVkVV9bq0dLBhwVJxjw6T3iXAAnyfmSyBSC2gPVXtc
+         yxRx2o75PLp7K8B99m3dAx8puzlyptf3K4M7k2Xw8012jHOaebKStJCriIKvPxNggrpJ
+         yATA==
+X-Gm-Message-State: AOAM532jQAWX8Zu4EfmJgVxaDM1JHTcNvLujW7bewo2UQvP5BLaPAgW5
+        eXTZSlMeoJyvaJRC4t3MUcn1ug==
+X-Google-Smtp-Source: ABdhPJzf9EWOeMIjHS06RooaLfY53xadIU9NuVnJQfCmehzesRrSQLbdUlX5VUm3pG0zXTw/ZgG90w==
+X-Received: by 2002:a63:e00b:: with SMTP id e11mr2108298pgh.75.1592555181824;
+        Fri, 19 Jun 2020 01:26:21 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
+        by smtp.gmail.com with ESMTPSA id g19sm5091669pfo.209.2020.06.19.01.26.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 01:26:21 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200618222620.5069-1-luc.vanoostenryck@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <bca9a873-3e69-f68d-2266-5f82704580d1@arm.com>
+References: <20200617113851.607706-1-alexandru.elisei@arm.com> <20200617113851.607706-3-alexandru.elisei@arm.com> <159242468708.62212.1739215996563155762@swboyd.mtv.corp.google.com> <bca9a873-3e69-f68d-2266-5f82704580d1@arm.com>
+Subject: Re: [PATCH v5 2/7] arm64: perf: Avoid PMXEV* indirection
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     mark.rutland@arm.com, Julien Thierry <julien.thierry@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>, maz@kernel.org,
+        Jiri Olsa <jolsa@redhat.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Ingo Molnar <mingo@redhat.com>, catalin.marinas@arm.com,
+        Namhyung Kim <namhyung@kernel.org>, will@kernel.org,
+        Julien Thierry <julien.thierry.kdev@gmail.com>
+To:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Date:   Fri, 19 Jun 2020 01:26:20 -0700
+Message-ID: <159255518036.62212.17118495764504925359@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 12:26:20AM +0200, Luc Van Oostenryck wrote:
-> If the file is being checked with sparse, use the version of
-> __unqual_scalar_typeof() using _Generic(), leaving the unoptimized
-> version only for the oldest versions of GCC.
-> 
-> This reverts commit
->   b398ace5d2ea ("compiler_types.h: Use unoptimized __unqual_scalar_typeof for sparse")
-> 
-> Note: a recent version of sparse will be needed (minimum v0.6.2-rc2
->        or later than 2020-05-28).
-> 
-> Cc: Marco Elver <elver@google.com>
-> Cc: Borislav Petkov <bp@suse.de>
-> Cc: Will Deacon <will@kernel.org>
-> Link: https://marc.info/?l=linux-sparse&m=159233481816454
-> Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-> ---
->  include/linux/compiler_types.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/compiler_types.h b/include/linux/compiler_types.h
-> index e368384445b6..e34a1080f36b 100644
-> --- a/include/linux/compiler_types.h
-> +++ b/include/linux/compiler_types.h
-> @@ -254,7 +254,7 @@ struct ftrace_likely_data {
->   * __unqual_scalar_typeof(x) - Declare an unqualified scalar type, leaving
->   *			       non-scalar types unchanged.
->   */
-> -#if (defined(CONFIG_CC_IS_GCC) && CONFIG_GCC_VERSION < 40900) || defined(__CHECKER__)
-> +#if defined(CONFIG_CC_IS_GCC) && CONFIG_GCC_VERSION < 40900
->  /*
->   * We build this out of a couple of helper macros in a vain attempt to
->   * help you keep your lunch down while reading it.
+Quoting Alexandru Elisei (2020-06-18 03:51:08)
+> On 6/17/20 9:11 PM, Stephen Boyd wrote:
+> > Quoting Alexandru Elisei (2020-06-17 04:38:46)
+> >> From: Mark Rutland <mark.rutland@arm.com>
+> >> @@ -433,8 +494,9 @@ static u64 armv8pmu_read_counter(struct perf_event=
+ *event)
+> >> =20
+> >>  static inline void armv8pmu_write_evcntr(int idx, u64 value)
+> >>  {
+> >> -       armv8pmu_select_counter(idx);
+> >> -       write_sysreg(value, pmxevcntr_el0);
+> >> +       u32 counter =3D ARMV8_IDX_TO_COUNTER(idx);
+> > Might be a good idea to make ARMV8_IDX_TO_COUNTER a static inline
+> > function that has a return type of u32. I had to go check the code to
+> > make sure it wasn't something larger.
+>=20
+> Architecturally, there are at most 32 counter registers, which would fit =
+in an s8,
+> so I don't think type checking would really help us here.
 
-If you don't mind forcing people to update sparse, then:
-
-Acked-by: Will Deacon <will@kernel.org>
-
-Will
+Ok. It would have saved me a few seconds while reading the code, but I
+guess if I hold the architecture in my head I'll be ok too.
