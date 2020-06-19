@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FA2E200E26
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC120201004
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:30:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391296AbgFSPFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:05:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34156 "EHLO mail.kernel.org"
+        id S2393256AbgFSPYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:24:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391269AbgFSPFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:05:16 -0400
+        id S2392812AbgFSPVH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:21:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACE2221835;
-        Fri, 19 Jun 2020 15:05:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D839320706;
+        Fri, 19 Jun 2020 15:21:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579116;
-        bh=JhpQfRsModk5sQ9aL2T3NULoav7X7hkWKs2gzjta+OE=;
+        s=default; t=1592580066;
+        bh=7IiQDXdq9Z5dE9WWdDCDCvrJ4FHOUElT9vMdc58iVhs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Jscg9vrZ4eTE7pl+9LbcRTpCR5A6Zv3frOESdnKM/foeO6yy9rEye+w8bWXeoehNk
-         IlwoIea1Tw/RYQp6dONac6XsU3M9PfzQLt1Ml4wGdoLY6zoT1+hCbxFaBKDVVpkRUL
-         yM/fs6GgFl4MoSSbiyEFCb6cRC+JkkHbLR6Ygn6U=
+        b=Nqlq7OCvT3RA2ndRYvkBrNrCCIjKgvp0+uu1FozrZU/Zd4JQFwR+GcVQlpHexldSA
+         OzVIBD0t5U4lW6i/N34vJfvqhG2SbR7Mww/wxILB9K4KiNGlrsA22KvExLF2XCSkuc
+         erRiNpwp7tv7NbfiBEcziUxEgq4IRkgySkdjjc28=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alston Tang <alston64@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        stable@vger.kernel.org, Dale Zhao <dale.zhao@amd.com>,
+        Sung Lee <sung.lee@amd.com>,
+        Yongqiang Sun <yongqiang.sun@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 014/261] libbpf: Fix memory leak and possible double-free in hashmap__clear
-Date:   Fri, 19 Jun 2020 16:30:25 +0200
-Message-Id: <20200619141650.554719956@linuxfoundation.org>
+Subject: [PATCH 5.7 108/376] drm/amd/display: Correct updating logic of dcn21s pipe VM flags
+Date:   Fri, 19 Jun 2020 16:30:26 +0200
+Message-Id: <20200619141715.458435986@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
+References: <20200619141710.350494719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,44 +47,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrii Nakryiko <andriin@fb.com>
+From: Dale Zhao <dale.zhao@amd.com>
 
-[ Upstream commit 229bf8bf4d910510bc1a2fd0b89bd467cd71050d ]
+[ Upstream commit 2a28fe92220a116735ef45939b7edcfee83cc6b0 ]
 
-Fix memory leak in hashmap_clear() not freeing hashmap_entry structs for each
-of the remaining entries. Also NULL-out bucket list to prevent possible
-double-free between hashmap__clear() and hashmap__free().
+[Why]:
+Renoir's pipe VM flags are not correctly updated if pipe strategy has
+changed during some scenarios. It will result in watermarks mistakenly
+calculation, thus underflow and garbage appear.
 
-Running test_progs-asan flavor clearly showed this problem.
+[How]:
+Correctly update pipe VM flags to pipes which have been populated.
 
-Reported-by: Alston Tang <alston64@fb.com>
-Signed-off-by: Andrii Nakryiko <andriin@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20200429012111.277390-5-andriin@fb.com
+Signed-off-by: Dale Zhao <dale.zhao@amd.com>
+Signed-off-by: Sung Lee <sung.lee@amd.com>
+Reviewed-by: Yongqiang Sun <yongqiang.sun@amd.com>
+Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/lib/bpf/hashmap.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/tools/lib/bpf/hashmap.c b/tools/lib/bpf/hashmap.c
-index 6122272943e6..9ef9f6201d8b 100644
---- a/tools/lib/bpf/hashmap.c
-+++ b/tools/lib/bpf/hashmap.c
-@@ -56,7 +56,14 @@ struct hashmap *hashmap__new(hashmap_hash_fn hash_fn,
- 
- void hashmap__clear(struct hashmap *map)
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
+index a721bb401ef0..6d1736cf5c12 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn21/dcn21_resource.c
+@@ -1694,12 +1694,8 @@ static int dcn21_populate_dml_pipes_from_context(
  {
-+	struct hashmap_entry *cur, *tmp;
-+	int bkt;
-+
-+	hashmap__for_each_entry_safe(map, cur, tmp, bkt) {
-+		free(cur);
-+	}
- 	free(map->buckets);
-+	map->buckets = NULL;
- 	map->cap = map->cap_bits = map->sz = 0;
- }
+ 	uint32_t pipe_cnt = dcn20_populate_dml_pipes_from_context(dc, context, pipes);
+ 	int i;
+-	struct resource_context *res_ctx = &context->res_ctx;
  
+-	for (i = 0; i < dc->res_pool->pipe_count; i++) {
+-
+-		if (!res_ctx->pipe_ctx[i].stream)
+-			continue;
++	for (i = 0; i < pipe_cnt; i++) {
+ 
+ 		pipes[i].pipe.src.hostvm = 1;
+ 		pipes[i].pipe.src.gpuvm = 1;
 -- 
 2.25.1
 
