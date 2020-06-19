@@ -2,69 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F5C201E76
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 01:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B54201E85
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 01:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730316AbgFSXDF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 19:03:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53914 "EHLO mail.kernel.org"
+        id S1730369AbgFSXRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 19:17:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55570 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729996AbgFSXDF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 19:03:05 -0400
-Received: from embeddedor (unknown [189.207.59.248])
+        id S1730253AbgFSXRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 19:17:36 -0400
+Received: from kicinski-fedora-PC1C0HJN (unknown [163.114.132.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D378922403;
-        Fri, 19 Jun 2020 23:03:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C401E22454;
+        Fri, 19 Jun 2020 23:17:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592607785;
-        bh=cdYHEQGb0tbwPgvd2pSEGoqkzQY6K9R5bsBpdMaNIo4=;
+        s=default; t=1592608656;
+        bh=B9FqHTgSnllLhsqibG6EHGoZbsrawisgzb3lcvFVlDU=;
         h=Date:From:To:Cc:Subject:From;
-        b=CEGiLtkFlaDdzvrRc56GKEv39hmbXW/QU/MwrqMvM1CfQL/NAuGNA12sNXwJhv6MA
-         z08fRif5tEl8fcUgodCC3HSph9zcFlifWAaCTmdNkBO8AWwnrOcmiU4Ot3Sxz0/aDd
-         tyoIJp1hklHh/iaXuZRuqPTuCychYNerCpl8mcx8=
-Date:   Fri, 19 Jun 2020 18:08:30 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] blk-iocost: Use struct_size() in kzalloc_node()
-Message-ID: <20200619230830.GA25608@embeddedor>
+        b=hY8yS7BDITPqc8AJ27en7GVL0Csa5KWFPnL1KVYDMr+H56nc7LJ5GgvNxNcr0y1N4
+         OwnrT9SfP7qTFkRrc+4JAmxWuCU8fwCsXdYxS2+IxK4xUpExwY4Vb3g6UNwwF9aGIA
+         202nKnEbTHM7LiKHNMOGGG7YHu6O6VYQ+YPZKfbY=
+Date:   Fri, 19 Jun 2020 16:17:34 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Ronald =?UTF-8?B?VHNjaGFsw6Ry?= <ronald@innovation.ch>,
+        Nicolai Stange <nicstange@gmail.com>,
+        David Rientjes <rientjes@google.com>,
+        Srivatsa Vaddagiri <vatsa@linux.vnet.ibm.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: debugfs_create_u32_array() memory leaks
+Message-ID: <20200619161734.25e99fa4@kicinski-fedora-PC1C0HJN>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the struct_size() helper instead of an open-coded version
-in order to avoid any potential type mistakes.
+Hi!
 
-This code was detected with the help of Coccinelle and, audited and
-fixed manually.
+I'm trying to use debugfs_create_u32_array() in drivers/net/netdevsim
+and it causes memory leaks:
 
-Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- block/blk-iocost.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+unreferenced object 0xffff8880546642a0 (size 16):
+  comm "test_udp_tuns.s", pid 2146, jiffies 4294928368 (age 3772.435s)
+  hex dump (first 16 bytes):
+    84 52 6a 4d 80 88 ff ff 04 00 00 00 f3 78 7e 89  .RjM.........x~.
+  backtrace:
+    [<000000006962a447>] debugfs_create_u32_array+0x3f/0x90
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 8ac4aad66ebc..cea5ee9be639 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -2045,8 +2045,7 @@ static struct blkg_policy_data *ioc_pd_alloc(gfp_t gfp, struct request_queue *q,
- 	int levels = blkcg->css.cgroup->level + 1;
- 	struct ioc_gq *iocg;
- 
--	iocg = kzalloc_node(sizeof(*iocg) + levels * sizeof(iocg->ancestors[0]),
--			    gfp, q->node);
-+	iocg = kzalloc_node(struct_size(iocg, ancestors, levels), gfp, q->node);
- 	if (!iocg)
- 		return NULL;
- 
--- 
-2.27.0
+I can see that debugfs_create_u32_array() allocates a structure at
+create time that ends up assigned to inode->i_private, but I don't 
+see it freed anywhere.
 
+Am I missing something? I'm pretty sure files get removed, cause the
+driver calls debugfs_remove_recursive() and no other file types leaks.
