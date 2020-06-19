@@ -2,112 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4729420150D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47D2D201502
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394512AbgFSQRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55948 "EHLO
+        id S2394508AbgFSQQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390753AbgFSPCb (ORCPT
+        with ESMTP id S2390956AbgFSPDD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:02:31 -0400
-Received: from mail-vs1-xe41.google.com (mail-vs1-xe41.google.com [IPv6:2607:f8b0:4864:20::e41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E3CDC06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:02:31 -0700 (PDT)
-Received: by mail-vs1-xe41.google.com with SMTP id y123so5760683vsb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:02:31 -0700 (PDT)
+        Fri, 19 Jun 2020 11:03:03 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD538C0613EF
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:03:03 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id g12so4017211pll.10
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:03:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KA1YYiLoYecDSXE7VUrhPC0pwfaz8HP7Uv5Pt43IOGY=;
-        b=s+Q5WK32U7x677VRiwsxq5vLGWbQmVm3qU5gzbBqxiAwaSVsdmV07dmcuRGlhrvRgG
-         gN3uVtClNBaOwGDGW+v0DnBXSP4Zm9FtdpKu5SXMFi4L23Y8wXEH0zoKon8G5VxoicCO
-         OzqH3UQ+Z2/HQSudWwlKu8rM/8m4nffPcAsiaxJmupRD9QjVSJZyQ5THFvZ2ZPnFT4Bf
-         wh4G66yucWvORbH60yEO2YLbaesEfRiyQPh8KrTmU8Ml/nuiYAFjgzhvlR4HXx3tmo61
-         i9w/weX5MHfrvqUltQMp55oet6EA22B754bpfiWu6Wdg0ExgKWQBRiYLmJ9AfH8Ys6ZT
-         tD+A==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+LnqhKjbJEUfkGCu1m/2g+LppzzVyXYZg47hg3uhOd0=;
+        b=ofA1AzoFRZ4MiXl9EfIriR7S7EEDw0MZ3OcZfvwiug8/LxQyXqMBhQNc2t5MB4T+MP
+         1cBRaqv+Adlb0QGtdhesz8tTqpZT/UwhaqJF283gfDbIcx+/t4EHoPX+zzrLRht1fkO7
+         /eKNTyjuZrSpP6Fa3jjLRB/oeFGV5+We667m5i+qOfK6jAKzhPFN4LZ7Aea1U3BBlq5y
+         r3hyxLdpzzZk0u/q8g8dw5E33HSygPnaxl4wZAuLkwk+LRt7Wwyb1K0YLAGrwQ694bzP
+         HPTAc7nLX+UjyYmLYhVbNDjEQQ2xyaNr+kVwkozO+qmrizxiTxaohrM6KVBv8BSzuh7G
+         rPbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KA1YYiLoYecDSXE7VUrhPC0pwfaz8HP7Uv5Pt43IOGY=;
-        b=Azo0GXGrXyCtlDa7kYLXUY/QA4fdPzWmX9PNS1JolYkkHl8P0kloTULyry08/E3QKc
-         LTuc6PWgxrJNc6Oe4iV/dufs44XNm6+YJVxw6T7F1HjLyK2BUnb48I/iFh4LGrD/bUAr
-         6fcfkwO/g0p17b31iwJtUWJBHYjFlht1Etjw/11GaF+rBweA6d/2u5fnpE/qlb7zzroy
-         Ep3CSLnKkwIOFgkKALItiz7RuBwwjoIR2FopFZs1Fwm0A3rUjczj+C7azf2wbQPv7O38
-         3ZIdizdceR0ZlgqzKBb+6Qx12xhsu8CH3dDCNGybjfsrNRhClvhdFaS280oqcXHF9CsY
-         53gg==
-X-Gm-Message-State: AOAM532Q88GAUPrlcaa6HujkUxU58lfLjRO4azQ2NxPpNOjNNPr/oEMS
-        UiMG8eM29wOgaYeSRPsBaIBau05msCwsD9ClY98=
-X-Google-Smtp-Source: ABdhPJz0U06vlRhoVb1EWe/pOvxcbD9a9RtgKCo3ANqJYbtqd6LdQTJsOKMaiouqkGcQgFgC7XuHVltyeyzAvVYDw70=
-X-Received: by 2002:a67:684f:: with SMTP id d76mr7813592vsc.66.1592578950686;
- Fri, 19 Jun 2020 08:02:30 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+LnqhKjbJEUfkGCu1m/2g+LppzzVyXYZg47hg3uhOd0=;
+        b=V23mDrxobCuQSG5XdfRNa9IFaWAWblTxRKadk9IiPYfFvFs6h5kJeX/EYa7rfCVODU
+         QfRsIdiw+ZYFuLiwUljIak70AGOFfYXkTz9d5uDBtO8y0VNMhcPrGnb72muoytU5xoZv
+         r75nCSrKFIjXXbzHNWTF1R2TjhAI95igLrF+X7Ucxffvj7xwCvZCpupEJFF75i6f2dyA
+         SvMhDEGppdOIttpXeFNEvREvw29JG8ZpgwmJBPRXUKVpEQMOGDF1l42iTVlathSXHSMZ
+         8w781itMG1Gz4Gv99dsWKQCvhnvmCvKp0zBF3d/mVtBc9qx5FxldQYXu0yWS9FX6n4w3
+         y4gw==
+X-Gm-Message-State: AOAM530ggNgann9Y4EukJ/7LuKwAnOjVRycvrYNqR2RnXnJvC76C88DH
+        T5qeJzChHt6NBzChyjtlCsdfEQ==
+X-Google-Smtp-Source: ABdhPJzxl6m4GmVs1yhzQxBYGEsuQSldHuD3SkC6vlqhKC8YiMob8skih3KD4PgAX5KiZe8FPTwA+g==
+X-Received: by 2002:a17:902:d392:: with SMTP id e18mr8544615pld.295.1592578983045;
+        Fri, 19 Jun 2020 08:03:03 -0700 (PDT)
+Received: from [192.168.1.188] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id q65sm6281283pfc.155.2020.06.19.08.02.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jun 2020 08:03:01 -0700 (PDT)
+Subject: Re: [PATCH 3/3] io_uring: add support for zone-append
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        "javier.gonz@samsung.com" <javier@javigon.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>
+Cc:     Kanchan Joshi <joshi.k@samsung.com>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "bcrl@kvack.org" <bcrl@kvack.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "selvakuma.s1@samsung.com" <selvakuma.s1@samsung.com>,
+        "nj.shetty@samsung.com" <nj.shetty@samsung.com>
+References: <1592414619-5646-1-git-send-email-joshi.k@samsung.com>
+ <CGME20200617172713epcas5p352f2907a12bd4ee3c97be1c7d8e1569e@epcas5p3.samsung.com>
+ <1592414619-5646-4-git-send-email-joshi.k@samsung.com>
+ <CY4PR04MB37510E916B6F243D189B4EB0E79B0@CY4PR04MB3751.namprd04.prod.outlook.com>
+ <20200618083529.ciifu4chr4vrv2j5@mpHalley.local>
+ <CY4PR04MB3751D5D6AFB0DA7B8A2DFF61E79B0@CY4PR04MB3751.namprd04.prod.outlook.com>
+ <20200618091113.eu2xdp6zmdooy5d2@mpHalley.local>
+ <20200619094149.uaorbger326s6yzz@mpHalley.local>
+ <31f1c27e-4a3d-a411-3d3b-f88a2d92ce7b@kernel.dk>
+ <24297973-82ad-a629-e5f5-38a5b12db83a@gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a68cb8f6-e17c-9ee3-b732-4be689ffebc3@kernel.dk>
+Date:   Fri, 19 Jun 2020 09:02:58 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200618210215.23602-1-daniel.gutson@eclypsium.com>
- <589c89ae-620e-36f8-2be5-4afc727c2911@intel.com> <CAFmMkTHNxSN_uWtm63TdkGxj44NXQQKEOmATXhjA=4DSCS92kQ@mail.gmail.com>
- <23babf62-00cb-cb47-bb19-da9508325934@intel.com> <CAD2FfiFbGdf5uKmsc14F4ZuuCUQYFwfnirn=Y0fu2F0=njvWug@mail.gmail.com>
- <80578b72-cb6f-8da9-1043-b4055c75d7f6@intel.com> <CAD2FfiG1BgYvR6wkeXGro8v6FQtVjKemmAOOf2W14z5KUWLqhw@mail.gmail.com>
- <d55f94bc-3b26-a556-f7e6-43e9b1007e13@intel.com> <CAD2FfiHCi2MfShGWaYWk_GcXW4xVr6chsLPZs78OJE+2_GErVg@mail.gmail.com>
- <3d454068-fd4e-4399-4bf5-2d010bb2ba7d@intel.com> <CAD2FfiF8QEarhyFD1GkfnaR+spyH86sChgRZm37ab_gzS2m_wg@mail.gmail.com>
- <aef4ff03-3a98-4425-2b01-203a88401370@intel.com>
-In-Reply-To: <aef4ff03-3a98-4425-2b01-203a88401370@intel.com>
-From:   Richard Hughes <hughsient@gmail.com>
-Date:   Fri, 19 Jun 2020 16:02:19 +0100
-Message-ID: <CAD2FfiEit9HR_ikc3WQXg9c_hyNHtk6b0rVnYJd-R8gJ7tbQOw@mail.gmail.com>
-Subject: Re: [PATCH] Ability to read the MKTME status from userspace
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Daniel Gutson <daniel@eclypsium.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <24297973-82ad-a629-e5f5-38a5b12db83a@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Jun 2020 at 15:48, Dave Hansen <dave.hansen@intel.com> wrote:
-> You cut out the important part.  The "pretty sure" involves a bunch of
-> preconditions and knowing what your hardware configuration is in the
-> first place.
+On 6/19/20 8:59 AM, Pavel Begunkov wrote:
+> On 19/06/2020 17:15, Jens Axboe wrote:
+>> On 6/19/20 3:41 AM, javier.gonz@samsung.com wrote:
+>>> Jens,
+>>>
+>>> Would you have time to answer a question below in this thread?
+>>>
+>>> On 18.06.2020 11:11, javier.gonz@samsung.com wrote:
+>>>> On 18.06.2020 08:47, Damien Le Moal wrote:
+>>>>> On 2020/06/18 17:35, javier.gonz@samsung.com wrote:
+>>>>>> On 18.06.2020 07:39, Damien Le Moal wrote:
+>>>>>>> On 2020/06/18 2:27, Kanchan Joshi wrote:
+>>>>>>>> From: Selvakumar S <selvakuma.s1@samsung.com>
+>>>>>>>>
+>>>>>>>> Introduce three new opcodes for zone-append -
+>>>>>>>>
+>>>>>>>>   IORING_OP_ZONE_APPEND     : non-vectord, similiar to IORING_OP_WRITE
+>>>>>>>>   IORING_OP_ZONE_APPENDV    : vectored, similar to IORING_OP_WRITEV
+>>>>>>>>   IORING_OP_ZONE_APPEND_FIXED : append using fixed-buffers
+>>>>>>>>
+>>>>>>>> Repurpose cqe->flags to return zone-relative offset.
+>>>>>>>>
+>>>>>>>> Signed-off-by: SelvaKumar S <selvakuma.s1@samsung.com>
+>>>>>>>> Signed-off-by: Kanchan Joshi <joshi.k@samsung.com>
+>>>>>>>> Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
+>>>>>>>> Signed-off-by: Javier Gonzalez <javier.gonz@samsung.com>
+>>>>>>>> ---
+>>>>>>>> fs/io_uring.c                 | 72 +++++++++++++++++++++++++++++++++++++++++--
+>>>>>>>> include/uapi/linux/io_uring.h |  8 ++++-
+>>>>>>>> 2 files changed, 77 insertions(+), 3 deletions(-)
+>>>>>>>>
+>>>>>>>> diff --git a/fs/io_uring.c b/fs/io_uring.c
+>>>>>>>> index 155f3d8..c14c873 100644
+>>>>>>>> --- a/fs/io_uring.c
+>>>>>>>> +++ b/fs/io_uring.c
+>>>>>>>> @@ -649,6 +649,10 @@ struct io_kiocb {
+>>>>>>>> 	unsigned long		fsize;
+>>>>>>>> 	u64			user_data;
+>>>>>>>> 	u32			result;
+>>>>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
+>>>>>>>> +	/* zone-relative offset for append, in bytes */
+>>>>>>>> +	u32			append_offset;
+>>>>>>>
+>>>>>>> this can overflow. u64 is needed.
+>>>>>>
+>>>>>> We chose to do it this way to start with because struct io_uring_cqe
+>>>>>> only has space for u32 when we reuse the flags.
+>>>>>>
+>>>>>> We can of course create a new cqe structure, but that will come with
+>>>>>> larger changes to io_uring for supporting append.
+>>>>>>
+>>>>>> Do you believe this is a better approach?
+>>>>>
+>>>>> The problem is that zone size are 32 bits in the kernel, as a number
+>>>>> of sectors.  So any device that has a zone size smaller or equal to
+>>>>> 2^31 512B sectors can be accepted. Using a zone relative offset in
+>>>>> bytes for returning zone append result is OK-ish, but to match the
+>>>>> kernel supported range of possible zone size, you need 31+9 bits...
+>>>>> 32 does not cut it.
+>>>>
+>>>> Agree. Our initial assumption was that u32 would cover current zone size
+>>>> requirements, but if this is a no-go, we will take the longer path.
+>>>
+>>> Converting to u64 will require a new version of io_uring_cqe, where we
+>>> extend at least 32 bits. I believe this will need a whole new allocation
+>>> and probably ioctl().
+>>>
+>>> Is this an acceptable change for you? We will of course add support for
+>>> liburing when we agree on the right way to do this.
+>>
+>> If you need 64-bit of return value, then it's not going to work. Even
+>> with the existing patches, reusing cqe->flags isn't going to fly, as
+>> it would conflict with eg doing zone append writes with automatic
+>> buffer selection.
+> 
+> Buffer selection is for reads/recv kind of requests, but appends
+> are writes. In theory they can co-exist using cqe->flags.
 
-Totally agree.
+Yeah good point, since it's just writes, doesn't matter. But the other
+point still stands, it could potentially conflict with other flags, but
+I guess only to the extent where both flags would need extra storage in
+->flags. So not a huge concern imho.
 
-> Let's take a step back.  We add read-only ABIs so that decisions can be
-> made.  What decision will somebody make from the ABI being proposed here?
 
-The question of "is my memory encrypted" is what I'm trying to decide.
-To the end user (or the person marking a compliance ticksheet for a
-government contract) all they want to know is the end result. At the
-moment for AMD SME this seems much simpler as there are less
-"preconditions".
+-- 
+Jens Axboe
 
-> Someone does 'cat /proc/mktme' (or whatever) and it says "1" or
-> whatever, which means yay, encryption is on.  What do they do?
-
-I think "is my memory encrypted" for Intel has to be a superset of:
-
-1. TME in CPU info
-2. not disabled by the platform
-3. not using unencrypted swap
-4. not using a memory accelerator
-5. entire DRAM area is marked with EFI_MEMORY_CPU_CRYPTO
-
-It seems the only way to answer the questions and make it easy for the
-consumer to know the answer is to ask the kernel for each of the 5
-different questions. At the moment we can only get 1, 3, maybe 4, soon
-to be 5, but not 2.
-
-Richard.
