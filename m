@@ -2,170 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71351200B8C
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495AA200CBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733239AbgFSOc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:32:29 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:38459 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1733213AbgFSOc0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:32:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592577144;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Cv1zrpU9i/feIUsJHJY4igrXbCUjdaFNDBoy9/47mEI=;
-        b=iJejxK/LgRth1tMS3lL9dQ1hlaWeNGdYpAOxjhVq8Ra8cbYOoY0w4qHtO2aYsJmSzeYijg
-        0JvOWXWRrr8QE4qGvJAtENlBussloqVNclCOgexjb+rtMkz2WH867ZkOHO4UIDyZMv5iWE
-        ZjmhrwxGMEy7UE5iqhnUCEa/Cfyczw0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-163-EFRcKdwYNtmIkMzwbFJFyg-1; Fri, 19 Jun 2020 10:32:20 -0400
-X-MC-Unique: EFRcKdwYNtmIkMzwbFJFyg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2389186AbgFSOtH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:49:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389156AbgFSOs7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:48:59 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CA2D78BB3F3;
-        Fri, 19 Jun 2020 14:32:18 +0000 (UTC)
-Received: from hp-dl360pgen8-07.khw2.lab.eng.bos.redhat.com (hp-dl360pgen8-07.khw2.lab.eng.bos.redhat.com [10.16.210.135])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7134E7C21D;
-        Fri, 19 Jun 2020 14:32:14 +0000 (UTC)
-From:   Jarod Wilson <jarod@redhat.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id AC386217A0;
+        Fri, 19 Jun 2020 14:48:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592578139;
+        bh=H5xDzHKG9GRHH4R47pWgDEYLAYfTowtEAnmIXJQZqIg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JByso0eGxXsO4iVU/qmNpMFBZhLXtpU6vZAyowKT6WN7QI2vZve3obxijZ1ni/Mam
+         SRWvkF9ymjwmnOcHMlvqRVQeqpi52keV8sVHUaG97avg550AKQGYqi1riatJirbp5S
+         1bV3wSWJJaC+aHI/PyT5urjl43jrGmDTEY55sNKw=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Jarod Wilson <jarod@redhat.com>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        netdev@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        Jeff Kirsher <Jeffrey.t.kirsher@intel.com>
-Subject: [PATCH net-next v3 2/4] ixgbe_ipsec: become aware of when running as a bonding slave
-Date:   Fri, 19 Jun 2020 10:31:53 -0400
-Message-Id: <20200619143155.20726-3-jarod@redhat.com>
-In-Reply-To: <20200619143155.20726-1-jarod@redhat.com>
-References: <20200619143155.20726-1-jarod@redhat.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org,
+        syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.14 068/190] fat: dont allow to mount if the FAT length == 0
+Date:   Fri, 19 Jun 2020 16:31:53 +0200
+Message-Id: <20200619141636.978715334@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Slave devices in a bond doing hardware encryption also need to be aware
-that they're slaves, so we operate on the slave instead of the bonding
-master to do the actual hardware encryption offload bits.
+From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
 
-CC: Jay Vosburgh <j.vosburgh@gmail.com>
-CC: Veaceslav Falico <vfalico@gmail.com>
-CC: Andy Gospodarek <andy@greyhouse.net>
-CC: "David S. Miller" <davem@davemloft.net>
-CC: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-CC: Jakub Kicinski <kuba@kernel.org>
-CC: Steffen Klassert <steffen.klassert@secunet.com>
-CC: Herbert Xu <herbert@gondor.apana.org.au>
-CC: netdev@vger.kernel.org
-CC: intel-wired-lan@lists.osuosl.org
-Acked-by: Jeff Kirsher <Jeffrey.t.kirsher@intel.com>
-Signed-off-by: Jarod Wilson <jarod@redhat.com>
+commit b1b65750b8db67834482f758fc385bfa7560d228 upstream.
+
+If FAT length == 0, the image doesn't have any data. And it can be the
+cause of overlapping the root dir and FAT entries.
+
+Also Windows treats it as invalid format.
+
+Reported-by: syzbot+6f1624f937d9d6911e2d@syzkaller.appspotmail.com
+Signed-off-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Marco Elver <elver@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Link: http://lkml.kernel.org/r/87r1wz8mrd.fsf@mail.parknet.co.jp
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- .../net/ethernet/intel/ixgbe/ixgbe_ipsec.c    | 39 +++++++++++++++----
- 1 file changed, 31 insertions(+), 8 deletions(-)
+ fs/fat/inode.c |    6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
-index 113f6087c7c9..26b0a58a064d 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
-@@ -432,6 +432,9 @@ static int ixgbe_ipsec_parse_proto_keys(struct xfrm_state *xs,
- 	char *alg_name = NULL;
- 	int key_len;
+--- a/fs/fat/inode.c
++++ b/fs/fat/inode.c
+@@ -1512,6 +1512,12 @@ static int fat_read_bpb(struct super_blo
+ 		goto out;
+ 	}
  
-+	if (xs->xso.slave_dev)
-+		dev = xs->xso.slave_dev;
++	if (bpb->fat_fat_length == 0 && bpb->fat32_length == 0) {
++		if (!silent)
++			fat_msg(sb, KERN_ERR, "bogus number of FAT sectors");
++		goto out;
++	}
 +
- 	if (!xs->aead) {
- 		netdev_err(dev, "Unsupported IPsec algorithm\n");
- 		return -EINVAL;
-@@ -478,8 +481,8 @@ static int ixgbe_ipsec_parse_proto_keys(struct xfrm_state *xs,
- static int ixgbe_ipsec_check_mgmt_ip(struct xfrm_state *xs)
- {
- 	struct net_device *dev = xs->xso.dev;
--	struct ixgbe_adapter *adapter = netdev_priv(dev);
--	struct ixgbe_hw *hw = &adapter->hw;
-+	struct ixgbe_adapter *adapter;
-+	struct ixgbe_hw *hw;
- 	u32 mfval, manc, reg;
- 	int num_filters = 4;
- 	bool manc_ipv4;
-@@ -497,6 +500,12 @@ static int ixgbe_ipsec_check_mgmt_ip(struct xfrm_state *xs)
- #define BMCIP_V6                 0x3
- #define BMCIP_MASK               0x3
+ 	error = 0;
  
-+	if (xs->xso.slave_dev)
-+		dev = xs->xso.slave_dev;
-+
-+	adapter = netdev_priv(dev);
-+	hw = &adapter->hw;
-+
- 	manc = IXGBE_READ_REG(hw, IXGBE_MANC);
- 	manc_ipv4 = !!(manc & MANC_EN_IPV4_FILTER);
- 	mfval = IXGBE_READ_REG(hw, IXGBE_MFVAL);
-@@ -561,14 +570,21 @@ static int ixgbe_ipsec_check_mgmt_ip(struct xfrm_state *xs)
- static int ixgbe_ipsec_add_sa(struct xfrm_state *xs)
- {
- 	struct net_device *dev = xs->xso.dev;
--	struct ixgbe_adapter *adapter = netdev_priv(dev);
--	struct ixgbe_ipsec *ipsec = adapter->ipsec;
--	struct ixgbe_hw *hw = &adapter->hw;
-+	struct ixgbe_adapter *adapter;
-+	struct ixgbe_ipsec *ipsec;
-+	struct ixgbe_hw *hw;
- 	int checked, match, first;
- 	u16 sa_idx;
- 	int ret;
- 	int i;
- 
-+	if (xs->xso.slave_dev)
-+		dev = xs->xso.slave_dev;
-+
-+	adapter = netdev_priv(dev);
-+	ipsec = adapter->ipsec;
-+	hw = &adapter->hw;
-+
- 	if (xs->id.proto != IPPROTO_ESP && xs->id.proto != IPPROTO_AH) {
- 		netdev_err(dev, "Unsupported protocol 0x%04x for ipsec offload\n",
- 			   xs->id.proto);
-@@ -746,12 +762,19 @@ static int ixgbe_ipsec_add_sa(struct xfrm_state *xs)
- static void ixgbe_ipsec_del_sa(struct xfrm_state *xs)
- {
- 	struct net_device *dev = xs->xso.dev;
--	struct ixgbe_adapter *adapter = netdev_priv(dev);
--	struct ixgbe_ipsec *ipsec = adapter->ipsec;
--	struct ixgbe_hw *hw = &adapter->hw;
-+	struct ixgbe_adapter *adapter;
-+	struct ixgbe_ipsec *ipsec;
-+	struct ixgbe_hw *hw;
- 	u32 zerobuf[4] = {0, 0, 0, 0};
- 	u16 sa_idx;
- 
-+	if (xs->xso.slave_dev)
-+		dev = xs->xso.slave_dev;
-+
-+	adapter = netdev_priv(dev);
-+	ipsec = adapter->ipsec;
-+	hw = &adapter->hw;
-+
- 	if (xs->xso.flags & XFRM_OFFLOAD_INBOUND) {
- 		struct rx_sa *rsa;
- 		u8 ipi;
--- 
-2.20.1
+ out:
+
 
