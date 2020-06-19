@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570B6201B56
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 21:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE652201B59
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 21:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389511AbgFSTe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 15:34:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41636 "EHLO
+        id S2389537AbgFSTeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 15:34:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389103AbgFSTeK (ORCPT
+        with ESMTP id S2389119AbgFSTeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 15:34:10 -0400
+        Fri, 19 Jun 2020 15:34:12 -0400
 Received: from mail.halogenos.org (halogenos.org [IPv6:2a02:c207:2037:5246::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65240C0613F0
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 666C2C061794
         for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 12:34:10 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id C2DD81500CE9;
-        Fri, 19 Jun 2020 21:34:08 +0200 (CEST)
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 30B2E1500CEA;
+        Fri, 19 Jun 2020 21:34:09 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=superboring.dev;
         s=dkim; t=1592595249;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=a58x5rdp6NhHrxJAuGMfI2H75s3fnGd+ePBOeX7Xa+M=;
-        b=NjT+J7byn4REMbkCaJNcDl5spPehj5Bbj8B0BECrg5lB8c4+Ei6rj54pxQOu2abkOHMxnw
-        IUfJLr2TON63f5MpUS9mLzXaaJvE0C0T218A8tDLQaQQxeG8h0ViU5DhUSuf/Z8mKZjOgK
-        CA8udFN60I3gyTJQCe8IlaXH7ACkaFeaGeO2AOPktmgiIgfrp8y49lPvJoc8fgGskun7qR
-        9VwHVE6jE5E0F6kRu2JgCrxMDwW8IZdVSqBH698NAmzQOc4MGTCIN6ND3me1C8k08Ef3lM
-        GNkhZWInfEqCpssDVY+fAXBg4Ee2iVgv4ZSQqUQ0leo3/V22Xoo0Rp312pCqNA==
+        bh=uq0xrum51HmWn3xiHXygblxWgDkAasvA84OM1An3Zuk=;
+        b=lcSigGO6Oc1jyiOTI7wQrJXQEiQ8k3vjSqkvoOX3vsJX+U648BcxKWqMkDNWzheshZeosC
+        1qqhYJQ7gyfKk2Km9QeuHImxLt3xIETY8lwzT5otvJctbriImIxEasC/BWGql0YR2VKFdK
+        OGSBUomAo9UzZ6IzuzgtEn/GdOa8a2nPzsgTto0Wtyj/1ZZO3VU37ZwJBJVX1K0494knY1
+        afX8r5+VbT2XeA4LtvrUaumEBkKq3kVyqYSKJH2TXDFteE+mAl364v6RtBf5v6S9GSj7Bb
+        4H7JKJ86MS667a7NrVHqVdWOk/zh8B1OXn6AzE4N6CQGWhArFpvjhM/ePZpOBw==
 From:   Simao Gomes Viana <devel@superboring.dev>
 To:     linux-kernel@vger.kernel.org
 Cc:     Simao Gomes Viana <devel@superboring.dev>,
         Joe Perches <joe@perches.com>
-Subject: [PATCH 7/9] drivers: cdrom: miscellaneous code style fixes
-Date:   Fri, 19 Jun 2020 21:33:39 +0200
-Message-Id: <20200619193341.51209-7-devel@superboring.dev>
+Subject: [PATCH 8/9] drivers: cdrom: change unsigned to unsigned int
+Date:   Fri, 19 Jun 2020 21:33:40 +0200
+Message-Id: <20200619193341.51209-8-devel@superboring.dev>
 In-Reply-To: <20200619193341.51209-1-devel@superboring.dev>
 References: <20200619180834.8032-1-devel@superboring.dev>
  <20200619193341.51209-1-devel@superboring.dev>
@@ -47,69 +47,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These were mainly reported by scripts/checkpatch.pl
+As reported by scripts/checkpatch.pl
 
 Signed-off-by: Simao Gomes Viana <devel@superboring.dev>
 ---
- drivers/cdrom/cdrom.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ drivers/cdrom/cdrom.c | 4 ++--
+ drivers/cdrom/gdrom.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/cdrom/cdrom.c b/drivers/cdrom/cdrom.c
-index f1c02d4d5583..6ff8da08230c 100644
+index 6ff8da08230c..d96458de1cb3 100644
 --- a/drivers/cdrom/cdrom.c
 +++ b/drivers/cdrom/cdrom.c
-@@ -1093,7 +1093,7 @@ int open_for_data(struct cdrom_device_info *cdi)
+@@ -1633,7 +1633,7 @@ void init_cdrom_command(struct packet_command *cgc, void *buf, int len,
+ #define copy_key(dest, src) memcpy((dest), (src), sizeof(dvd_key))
+ #define copy_chal(dest, src) memcpy((dest), (src), sizeof(dvd_challenge))
  
- 			/* Ok, the door should be closed now.. Check again */
- 			ret = cdo->drive_status(cdi, CDSL_CURRENT);
--			if ((ret == CDS_NO_DISC) || (ret==CDS_TRAY_OPEN)) {
-+			if (ret == CDS_NO_DISC || ret == CDS_TRAY_OPEN) {
- 				cd_dbg(CD_OPEN, "bummer. the tray is still not closed.\n");
- 				cd_dbg(CD_OPEN, "tray might not contain a medium\n");
- 				ret = -ENOMEDIUM;
-@@ -1242,8 +1242,7 @@ static int check_for_audio_disc(struct cdrom_device_info *cdi,
- 		if (ret == CDS_TRAY_OPEN) {
- 			cd_dbg(CD_OPEN, "the tray is open...\n");
- 			/* can/may i close it? */
--			if (CDROM_CAN(CDC_CLOSE_TRAY) &&
--			    cdi->options & CDO_AUTO_CLOSE) {
-+			if (CDROM_CAN(CDC_CLOSE_TRAY) && cdi->options & CDO_AUTO_CLOSE) {
- 				cd_dbg(CD_OPEN, "trying to close the tray\n");
- 				ret = cdo->tray_move(cdi, 0);
- 				if (ret) {
-@@ -1471,11 +1470,10 @@ static int cdrom_select_disc(struct cdrom_device_info *cdi, int slot)
- 	kfree(info);
- 
- 	if (cdi->use_count > 1 || cdi->keeplocked) {
--		if (slot == CDSL_CURRENT) {
--	    		return curslot;
--		} else {
-+		if (slot == CDSL_CURRENT)
-+			return curslot;
-+		else
- 			return -EBUSY;
--		}
- 	}
- 
- 	/* Specifying CDSL_CURRENT will attempt to load the currnet slot,
-@@ -3015,13 +3013,12 @@ static int cdrom_get_next_writable(struct cdrom_device_info *cdi,
- 
- use_last_written:
- 	ret = cdrom_get_last_written(cdi, next_writable);
--	if (ret) {
-+	if (ret)
- 		*next_writable = 0;
--		return ret;
--	} else {
-+	else
- 		*next_writable += 7;
--		return 0;
--	}
-+
-+	return ret;
+-static void setup_report_key(struct packet_command *cgc, unsigned agid, unsigned type)
++static void setup_report_key(struct packet_command *cgc, unsigned int agid, unsigned int type)
+ {
+ 	cgc->cmd[0] = GPCMD_REPORT_KEY;
+ 	cgc->cmd[10] = type | (agid << 6);
+@@ -1655,7 +1655,7 @@ static void setup_report_key(struct packet_command *cgc, unsigned agid, unsigned
+ 	cgc->data_direction = CGC_DATA_READ;
  }
  
- static noinline int mmc_ioctl_cdrom_read_data(struct cdrom_device_info *cdi,
+-static void setup_send_key(struct packet_command *cgc, unsigned agid, unsigned type)
++static void setup_send_key(struct packet_command *cgc, unsigned int agid, unsigned int type)
+ {
+ 	cgc->cmd[0] = GPCMD_SEND_KEY;
+ 	cgc->cmd[10] = type | (agid << 6);
+diff --git a/drivers/cdrom/gdrom.c b/drivers/cdrom/gdrom.c
+index 1b4fd34f2687..a52d515408ee 100644
+--- a/drivers/cdrom/gdrom.c
++++ b/drivers/cdrom/gdrom.c
+@@ -508,7 +508,7 @@ static unsigned int gdrom_bdops_check_events(struct gendisk *disk,
+ }
+ 
+ static int gdrom_bdops_ioctl(struct block_device *bdev, fmode_t mode,
+-	unsigned cmd, unsigned long arg)
++	unsigned int cmd, unsigned long arg)
+ {
+ 	int ret;
+ 
 -- 
 2.27.0
 
