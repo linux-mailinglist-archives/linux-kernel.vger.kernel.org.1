@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D4D200EB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBEA200E90
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392032AbgFSPKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:10:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40220 "EHLO mail.kernel.org"
+        id S2391832AbgFSPJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:09:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38544 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392005AbgFSPKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:10:17 -0400
+        id S2391825AbgFSPIz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:08:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 93A8F206FA;
-        Fri, 19 Jun 2020 15:10:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D473B21BE5;
+        Fri, 19 Jun 2020 15:08:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579417;
-        bh=bOJZp4MY8yMotHM7SIxa+gP+l7ndwy2nMGpeBaSHfwA=;
+        s=default; t=1592579335;
+        bh=GZYPLYE2TO3fT5PWQzRX0GmAaj6ck3IWKzJ3TDMR2rk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Eop+5ZteeRSkASjEygUO0ukQEp4qxVH/BMQJJCnHYZHtcrw2yXxqfwaTChdOigXxn
-         hoLXVq5P4xmmEt/WlHTxVWRta3LoilBtihYfYYUtkqvU3ILF3TI2cbFFgxrCP7AmwB
-         5mbBJdWy0T82bXHFjFd3LA6iJkTMeKUDzPlwAkKM=
+        b=uQbhF20m2lNxJOhUA3fPr96Q2dYOdGG+87ilcGq2MYVIT/EI81RzkfBTSP1vSBfHN
+         4QIFEM72Ljlu34TU/k5fc2+Xk5qcpmWLTxAxzCIsx5m5O/F279gxsDTNMeXBf3lqfG
+         m85nQVNpJ6yIRNtz/3Gf7PYZUCluNKi/7jVPxrBM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 088/261] media: cec: silence shift wrapping warning in __cec_s_log_addrs()
-Date:   Fri, 19 Jun 2020 16:31:39 +0200
-Message-Id: <20200619141654.102091639@linuxfoundation.org>
+Subject: [PATCH 5.4 089/261] net: allwinner: Fix use correct return type for ndo_start_xmit()
+Date:   Fri, 19 Jun 2020 16:31:40 +0200
+Message-Id: <20200619141654.150128975@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
 References: <20200619141649.878808811@linuxfoundation.org>
@@ -45,54 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Yunjian Wang <wangyunjian@huawei.com>
 
-[ Upstream commit 3b5af3171e2d5a73ae6f04965ed653d039904eb6 ]
+[ Upstream commit 09f6c44aaae0f1bdb8b983d7762676d5018c53bc ]
 
-The log_addrs->log_addr_type[i] value is a u8 which is controlled by
-the user and comes from the ioctl.  If it's over 31 then that results in
-undefined behavior (shift wrapping) and that leads to a Smatch static
-checker warning.  We already cap the value later so we can silence the
-warning just by re-ordering the existing checks.
+The method ndo_start_xmit() returns a value of type netdev_tx_t. Fix
+the ndo function to use the correct type. And emac_start_xmit() can
+leak one skb if 'channel' == 3.
 
-I think the UBSan checker will also catch this bug at runtime and
-generate a warning.  But otherwise the bug is harmless.
-
-Fixes: 9881fe0ca187 ("[media] cec: add HDMI CEC framework (adapter)")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/cec/cec-adap.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/ethernet/allwinner/sun4i-emac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/cec/cec-adap.c b/drivers/media/cec/cec-adap.c
-index b14c09cd9593..06383b26712b 100644
---- a/drivers/media/cec/cec-adap.c
-+++ b/drivers/media/cec/cec-adap.c
-@@ -1732,6 +1732,10 @@ int __cec_s_log_addrs(struct cec_adapter *adap,
- 		unsigned j;
+diff --git a/drivers/net/ethernet/allwinner/sun4i-emac.c b/drivers/net/ethernet/allwinner/sun4i-emac.c
+index 0537df06a9b5..ff318472a3ee 100644
+--- a/drivers/net/ethernet/allwinner/sun4i-emac.c
++++ b/drivers/net/ethernet/allwinner/sun4i-emac.c
+@@ -432,7 +432,7 @@ static void emac_timeout(struct net_device *dev)
+ /* Hardware start transmission.
+  * Send a packet to media from the upper layer.
+  */
+-static int emac_start_xmit(struct sk_buff *skb, struct net_device *dev)
++static netdev_tx_t emac_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ {
+ 	struct emac_board_info *db = netdev_priv(dev);
+ 	unsigned long channel;
+@@ -440,7 +440,7 @@ static int emac_start_xmit(struct sk_buff *skb, struct net_device *dev)
  
- 		log_addrs->log_addr[i] = CEC_LOG_ADDR_INVALID;
-+		if (log_addrs->log_addr_type[i] > CEC_LOG_ADDR_TYPE_UNREGISTERED) {
-+			dprintk(1, "unknown logical address type\n");
-+			return -EINVAL;
-+		}
- 		if (type_mask & (1 << log_addrs->log_addr_type[i])) {
- 			dprintk(1, "duplicate logical address type\n");
- 			return -EINVAL;
-@@ -1752,10 +1756,6 @@ int __cec_s_log_addrs(struct cec_adapter *adap,
- 			dprintk(1, "invalid primary device type\n");
- 			return -EINVAL;
- 		}
--		if (log_addrs->log_addr_type[i] > CEC_LOG_ADDR_TYPE_UNREGISTERED) {
--			dprintk(1, "unknown logical address type\n");
--			return -EINVAL;
--		}
- 		for (j = 0; j < feature_sz; j++) {
- 			if ((features[j] & 0x80) == 0) {
- 				if (op_is_dev_features)
+ 	channel = db->tx_fifo_stat & 3;
+ 	if (channel == 3)
+-		return 1;
++		return NETDEV_TX_BUSY;
+ 
+ 	channel = (channel == 1 ? 1 : 0);
+ 
 -- 
 2.25.1
 
