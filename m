@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17D02201615
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ED8E201613
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394558AbgFSQ0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:26:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52612 "EHLO mail.kernel.org"
+        id S2394859AbgFSQZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:25:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390217AbgFSO5S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:57:18 -0400
+        id S2390226AbgFSO5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:57:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD527217D8;
-        Fri, 19 Jun 2020 14:57:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5D2AC217D8;
+        Fri, 19 Jun 2020 14:57:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578638;
-        bh=jCryk4k0o3BpZ0fejcLGz8XNlSe7sOCzy0JTI2zsA7I=;
+        s=default; t=1592578640;
+        bh=8VsisCMdQB7FOqcUK+LQADDqxVzfGHy233uyzs+RPE0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kCyuawCtOdo4jNz7IX921vk3j4pyPCiO4QMGUskUIGp12zESTGOqEDEbeRHKbyWQ2
-         chgjLv8bq2hD8IJQ3WbwSYrEX9GkNyhy3D9Iwu+LJJUDoG3vvYdQJ1lLfeOM+MCBtw
-         P3O4o9biY0vK/NVJG8imE1eu/tnHdFa4KCXI8qCU=
+        b=U9dlgHhcKqFZOUE+K8mL7ve/7HtdP88UVDZoTVUnjhHTSyTkRXcq9N2LCC4ZPCCJy
+         IX2FHgJHw9NyP1shS8rai79EGGph4ryIbcLu7uAqV1rbZ2RL3bKYHxcsy1kNeksPL0
+         PG+pWeSffG2Ojnmh9qCsuTfdlG2gUGIBB3EkJ68k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mark Starovoytov <mstarovoitov@marvell.com>,
+        stable@vger.kernel.org, Sameeh Jubran <sameehj@amazon.com>,
+        Arthur Kiyanovski <akiyano@amazon.com>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 099/267] net: atlantic: make hw_get_regs optional
-Date:   Fri, 19 Jun 2020 16:31:24 +0200
-Message-Id: <20200619141653.621908074@linuxfoundation.org>
+Subject: [PATCH 4.19 100/267] net: ena: fix error returning in ena_com_get_hash_function()
+Date:   Fri, 19 Jun 2020 16:31:25 +0200
+Message-Id: <20200619141653.669694587@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
 References: <20200619141648.840376470@linuxfoundation.org>
@@ -45,43 +45,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Starovoytov <mstarovoitov@marvell.com>
+From: Arthur Kiyanovski <akiyano@amazon.com>
 
-[ Upstream commit d0f23741c202c685447050713907f3be39a985ee ]
+[ Upstream commit e9a1de378dd46375f9abfd8de1e6f59ee114a793 ]
 
-This patch fixes potential crash in case if hw_get_regs is NULL.
+In case the "func" parameter is NULL we now return "-EINVAL".
+This shouldn't happen in general, but when it does happen, this is the
+proper way to handle it.
 
-Signed-off-by: Mark Starovoytov <mstarovoitov@marvell.com>
+We also check func for NULL in the beginning of the function, as there
+is no reason to do all the work and realize in the end of the function
+it was useless.
+
+Signed-off-by: Sameeh Jubran <sameehj@amazon.com>
+Signed-off-by: Arthur Kiyanovski <akiyano@amazon.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/aquantia/atlantic/aq_nic.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/ethernet/amazon/ena/ena_com.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_nic.c b/drivers/net/ethernet/aquantia/atlantic/aq_nic.c
-index 15dcfb6704e5..adac5df0d6b4 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_nic.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_nic.c
-@@ -620,6 +620,9 @@ int aq_nic_get_regs(struct aq_nic_s *self, struct ethtool_regs *regs, void *p)
- 	u32 *regs_buff = p;
- 	int err = 0;
+diff --git a/drivers/net/ethernet/amazon/ena/ena_com.c b/drivers/net/ethernet/amazon/ena/ena_com.c
+index 3afc0e59a2bd..d07f7f65169a 100644
+--- a/drivers/net/ethernet/amazon/ena/ena_com.c
++++ b/drivers/net/ethernet/amazon/ena/ena_com.c
+@@ -2137,6 +2137,9 @@ int ena_com_get_hash_function(struct ena_com_dev *ena_dev,
+ 		rss->hash_key;
+ 	int rc;
  
-+	if (unlikely(!self->aq_hw_ops->hw_get_regs))
-+		return -EOPNOTSUPP;
++	if (unlikely(!func))
++		return -EINVAL;
 +
- 	regs->version = 1;
+ 	rc = ena_com_get_feature_ex(ena_dev, &get_resp,
+ 				    ENA_ADMIN_RSS_HASH_FUNCTION,
+ 				    rss->hash_key_dma_addr,
+@@ -2149,8 +2152,7 @@ int ena_com_get_hash_function(struct ena_com_dev *ena_dev,
+ 	if (rss->hash_func)
+ 		rss->hash_func--;
  
- 	err = self->aq_hw_ops->hw_get_regs(self->aq_hw,
-@@ -634,6 +637,9 @@ err_exit:
+-	if (func)
+-		*func = rss->hash_func;
++	*func = rss->hash_func;
  
- int aq_nic_get_regs_count(struct aq_nic_s *self)
- {
-+	if (unlikely(!self->aq_hw_ops->hw_get_regs))
-+		return 0;
-+
- 	return self->aq_nic_cfg.aq_hw_caps->mac_regs_count;
- }
- 
+ 	if (key)
+ 		memcpy(key, hash_key->key, (size_t)(hash_key->keys_num) << 2);
 -- 
 2.25.1
 
