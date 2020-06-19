@@ -2,82 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F04D2009DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2A92009E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:23:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732121AbgFSNWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 09:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbgFSNWw (ORCPT
+        id S1732679AbgFSNXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 09:23:25 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:39132 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731756AbgFSNXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 09:22:52 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DE3EC06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 06:22:52 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0bac004d57d24caa4a0e33.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ac00:4d57:d24c:aa4a:e33])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 1747A1EC03D0;
-        Fri, 19 Jun 2020 15:22:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1592572970;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=gEMLO6KVm1oIKIAxLPOc4rRHgVZxc+y/BwsFuOfLTRE=;
-        b=d6JTVPWK6JBiDGrITcwYYDhlXhKkzeVLRPbq6uoLnES4BND4yX3uHsRq2vAbtGeY+Bb0W/
-        myqVvLmlEO0kJ8Y3l1WCGAo+w8vke9bE3kRcXsw3/H72OQFnS3DmGmp5Nzv/YTO3+5O5bv
-        jwUx6ekS+qY6Y5iL8MGHE4RcWxm2mBQ=
-Date:   Fri, 19 Jun 2020 15:22:43 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Daniel Gutson <daniel@eclypsium.com>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Richard Hughes <hughsient@gmail.com>
-Subject: Re: [PATCH] Ability to read the MKTME status from userspace
-Message-ID: <20200619132243.GC32683@zn.tnic>
-References: <20200618210215.23602-1-daniel.gutson@eclypsium.com>
- <589c89ae-620e-36f8-2be5-4afc727c2911@intel.com>
- <CAFmMkTHNxSN_uWtm63TdkGxj44NXQQKEOmATXhjA=4DSCS92kQ@mail.gmail.com>
- <20200618220139.GH27951@zn.tnic>
- <CAFmMkTGMAu-huTnP1aeMb_W4NddbTD_b2jhbDVKBDrkwgB97wg@mail.gmail.com>
- <20200619074053.GA32683@zn.tnic>
- <CAFmMkTGV0ZR6C=EBGQAiz1vw1vrUXSLTnH5ZbBUvfhPLg_tF6g@mail.gmail.com>
+        Fri, 19 Jun 2020 09:23:22 -0400
+Received: by mail-lj1-f194.google.com with SMTP id a9so11461300ljn.6
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 06:23:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=E/TRBC6roif3JRfR0eyS1Twcm7a48T8psf0xx78VupM=;
+        b=XVPsDm+7s2P2YAk/NpTntK+gfNAwBj18+coRFPXf7MzTIgFenroCj1lr4t/Kw7ya9E
+         EDRoB/ZxIz2i62zDkJTOk+K+dm9x7xXiONRiyjadEZ9PGXLc848A4L1aj+7BKsgD8nep
+         rk7T6e/JVwlH10t0c/rv5omggD4Oi+UYadqdswsObtKITerUPoyurD0c4hT09kz4f2y0
+         Nk5j+AKNtYaabM/onwARZmr4Negk1hr4HWxD0UWUL5HERKpN2aDpc1ZV1G6RceEGaEz7
+         2nsGcqSmGmglWObzP/E1mSBAsxz4YiZ6o80jON3uU13GeJbjOj62BcOIQx2qpARFVjCF
+         HemQ==
+X-Gm-Message-State: AOAM533xgqaTq8KWJpMrgbpWxEKpX+B3wHCzcHb7gS7sbYUi4N9fOMhi
+        pie2A3jXnUhrF6maTXpICOXIYlDnYSf4BQ==
+X-Google-Smtp-Source: ABdhPJyDmos2erRDWIlEDAeX01T8RHF9cvr8rL7N4KSNa/VmvcUvm8MuMKsymrWUrrHGxoTzj6q3Ng==
+X-Received: by 2002:a2e:b615:: with SMTP id r21mr1773433ljn.1.1592573000818;
+        Fri, 19 Jun 2020 06:23:20 -0700 (PDT)
+Received: from localhost.localdomain ([213.87.137.195])
+        by smtp.googlemail.com with ESMTPSA id q11sm1398026lfe.34.2020.06.19.06.23.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 06:23:20 -0700 (PDT)
+From:   Denis Efremov <efremov@linux.com>
+To:     Julia Lawall <Julia.Lawall@lip6.fr>
+Cc:     Denis Efremov <efremov@linux.com>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] coccinelle: api/kstrdup: fix coccinelle position
+Date:   Fri, 19 Jun 2020 16:23:07 +0300
+Message-Id: <20200619132307.16612-1-efremov@linux.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAFmMkTGV0ZR6C=EBGQAiz1vw1vrUXSLTnH5ZbBUvfhPLg_tF6g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 10:01:36AM -0300, Daniel Gutson wrote:
-> Then the user will not know that he/she could improve the security of the
-> system by enabling the feature in the BIOS.
+There is a typo in rule r2. Position p1 should be attached to kzalloc()
+call.
 
-And how is the user going to know from your "module"? AFAICT, your
-module loads on any system - not only on ones which have MKTME in CPUID.
+Fixes: 29a36d4dec6c ("scripts/coccinelle: improve the coverage of some semantic patches")
+Signed-off-by: Denis Efremov <efremov@linux.com>
+---
+ scripts/coccinelle/api/kstrdup.cocci | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> The fact that the CPU has the cap and the BIOS disables it, can
-> trigger a prevention action.
-
-I can only venture guesses what "prevention action" is - you'll have to
-be more verbose here.
-
+diff --git a/scripts/coccinelle/api/kstrdup.cocci b/scripts/coccinelle/api/kstrdup.cocci
+index 19f2645e6076..3c6dc5469ee4 100644
+--- a/scripts/coccinelle/api/kstrdup.cocci
++++ b/scripts/coccinelle/api/kstrdup.cocci
+@@ -66,7 +66,7 @@ position p1,p2;
+ 
+ *   x = strlen(from) + 1;
+     ... when != \( x = E1 \| from = E1 \)
+-*   to = \(kmalloc@p1\|kzalloc@p2\)(x,flag);
++*   to = \(kmalloc@p1\|kzalloc@p1\)(x,flag);
+     ... when != \(x = E2 \| from = E2 \| to = E2 \)
+     if (to==NULL || ...) S
+     ... when != \(x = E3 \| from = E3 \| to = E3 \)
 -- 
-Regards/Gruss,
-    Boris.
+2.26.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
