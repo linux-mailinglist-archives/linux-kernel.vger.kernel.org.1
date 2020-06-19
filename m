@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31B2B200E98
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE77200D92
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391899AbgFSPJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:09:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38912 "EHLO mail.kernel.org"
+        id S2390015AbgFSO6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:58:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391390AbgFSPJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:09:17 -0400
+        id S2390003AbgFSO6m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:58:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCC2C21941;
-        Fri, 19 Jun 2020 15:09:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B86621919;
+        Fri, 19 Jun 2020 14:58:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579356;
-        bh=yZGjxzEZ9qBbHaqVz0eyopaTek4cdv6zmmvWszXjIek=;
+        s=default; t=1592578722;
+        bh=uZ84vTGYlo4IboKjY879TBGBz6Hhr7Vq0yu0/6vxmZ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A7b4PSKrh+jQ9E3xbmrGkJBJ9qIwAKremhHPid8E1ow3KhDse593//CLZ0az//D9i
-         1p5c3rmb6xEDs0gFWeab4AcTBzKfrXFt3RZleWjIpxKkTLv68ww7j6iQi4qfMJETck
-         i7fmy06D8Cc/NM68rps4EpuXaL1SqRsDVBuf6wJo=
+        b=AoBrptv1aLqfFRCusBhKIO+8MPYuihKpIK7nwwAhzLp1wfXx3eME6V36k36ijblyL
+         BW+b542Xl4AtcxCnJNrg76L2EmIgoXNS5xDl5a8udPDWcxsr72GZK+L1faasj289t5
+         aVhUTfWvZrWEWsGLn4jypxtR9sYNkJhl1Pm1kMxo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Weiping Zhang <zhangweiping@didiglobal.com>,
-        Keith Busch <kbusch@kernel.org>,
-        Max Gurtovoy <maxg@mellanox.com>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
+        stable@vger.kernel.org, Andrii Nakryiko <andriin@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 105/261] nvme-pci: align io queue count with allocted nvme_queue in nvme_probe
-Date:   Fri, 19 Jun 2020 16:31:56 +0200
-Message-Id: <20200619141654.904273166@linuxfoundation.org>
+Subject: [PATCH 4.19 132/267] selftests/bpf: Fix memory leak in extract_build_id()
+Date:   Fri, 19 Jun 2020 16:31:57 +0200
+Message-Id: <20200619141655.160330334@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,177 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Weiping Zhang <zhangweiping@didiglobal.com>
+From: Andrii Nakryiko <andriin@fb.com>
 
-[ Upstream commit 2a5bcfdd41d68559567cec3c124a75e093506cc1 ]
+[ Upstream commit 9f56bb531a809ecaa7f0ddca61d2cf3adc1cb81a ]
 
-Since commit 147b27e4bd08 ("nvme-pci: allocate device queues storage
-space at probe"), nvme_alloc_queue does not alloc the nvme queues
-itself anymore.
+getline() allocates string, which has to be freed.
 
-If the write/poll_queues module parameters are changed at runtime to
-values larger than the number of allocated queues in nvme_probe,
-nvme_alloc_queue will access unallocated memory.
-
-Add a new nr_allocated_queues member to struct nvme_dev to record how
-many queues were alloctated in nvme_probe to avoid using more than the
-allocated queues after a reset following a change to the
-write/poll_queues module parameters.
-
-Also add nr_write_queues and nr_poll_queues members to allow refreshing
-the number of write and poll queues based on a change to the module
-parameters when resetting the controller.
-
-Fixes: 147b27e4bd08 ("nvme-pci: allocate device queues storage space at probe")
-Signed-off-by: Weiping Zhang <zhangweiping@didiglobal.com>
-Reviewed-by: Keith Busch <kbusch@kernel.org>
-Reviewed-by: Max Gurtovoy <maxg@mellanox.com>
-[hch: add nvme_max_io_queues, update the commit message]
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: 81f77fd0deeb ("bpf: add selftest for stackmap with BPF_F_STACK_BUILD_ID")
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Cc: Song Liu <songliubraving@fb.com>
+Link: https://lore.kernel.org/bpf/20200429012111.277390-7-andriin@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nvme/host/pci.c | 57 ++++++++++++++++++++++++-----------------
- 1 file changed, 33 insertions(+), 24 deletions(-)
+ tools/testing/selftests/bpf/test_progs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
-index cd64ddb129e5..1c2129493508 100644
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -128,6 +128,9 @@ struct nvme_dev {
- 	dma_addr_t host_mem_descs_dma;
- 	struct nvme_host_mem_buf_desc *host_mem_descs;
- 	void **host_mem_desc_bufs;
-+	unsigned int nr_allocated_queues;
-+	unsigned int nr_write_queues;
-+	unsigned int nr_poll_queues;
- };
- 
- static int io_queue_depth_set(const char *val, const struct kernel_param *kp)
-@@ -210,25 +213,14 @@ struct nvme_iod {
- 	struct scatterlist *sg;
- };
- 
--static unsigned int max_io_queues(void)
-+static inline unsigned int nvme_dbbuf_size(struct nvme_dev *dev)
- {
--	return num_possible_cpus() + write_queues + poll_queues;
--}
--
--static unsigned int max_queue_count(void)
--{
--	/* IO queues + admin queue */
--	return 1 + max_io_queues();
--}
--
--static inline unsigned int nvme_dbbuf_size(u32 stride)
--{
--	return (max_queue_count() * 8 * stride);
-+	return dev->nr_allocated_queues * 8 * dev->db_stride;
- }
- 
- static int nvme_dbbuf_dma_alloc(struct nvme_dev *dev)
- {
--	unsigned int mem_size = nvme_dbbuf_size(dev->db_stride);
-+	unsigned int mem_size = nvme_dbbuf_size(dev);
- 
- 	if (dev->dbbuf_dbs)
- 		return 0;
-@@ -253,7 +245,7 @@ static int nvme_dbbuf_dma_alloc(struct nvme_dev *dev)
- 
- static void nvme_dbbuf_dma_free(struct nvme_dev *dev)
- {
--	unsigned int mem_size = nvme_dbbuf_size(dev->db_stride);
-+	unsigned int mem_size = nvme_dbbuf_size(dev);
- 
- 	if (dev->dbbuf_dbs) {
- 		dma_free_coherent(dev->dev, mem_size,
-@@ -2030,7 +2022,7 @@ static int nvme_setup_host_mem(struct nvme_dev *dev)
- static void nvme_calc_irq_sets(struct irq_affinity *affd, unsigned int nrirqs)
- {
- 	struct nvme_dev *dev = affd->priv;
--	unsigned int nr_read_queues;
-+	unsigned int nr_read_queues, nr_write_queues = dev->nr_write_queues;
- 
- 	/*
- 	 * If there is no interupt available for queues, ensure that
-@@ -2046,12 +2038,12 @@ static void nvme_calc_irq_sets(struct irq_affinity *affd, unsigned int nrirqs)
- 	if (!nrirqs) {
- 		nrirqs = 1;
- 		nr_read_queues = 0;
--	} else if (nrirqs == 1 || !write_queues) {
-+	} else if (nrirqs == 1 || !nr_write_queues) {
- 		nr_read_queues = 0;
--	} else if (write_queues >= nrirqs) {
-+	} else if (nr_write_queues >= nrirqs) {
- 		nr_read_queues = 1;
- 	} else {
--		nr_read_queues = nrirqs - write_queues;
-+		nr_read_queues = nrirqs - nr_write_queues;
- 	}
- 
- 	dev->io_queues[HCTX_TYPE_DEFAULT] = nrirqs - nr_read_queues;
-@@ -2075,7 +2067,7 @@ static int nvme_setup_irqs(struct nvme_dev *dev, unsigned int nr_io_queues)
- 	 * Poll queues don't need interrupts, but we need at least one IO
- 	 * queue left over for non-polled IO.
- 	 */
--	this_p_queues = poll_queues;
-+	this_p_queues = dev->nr_poll_queues;
- 	if (this_p_queues >= nr_io_queues) {
- 		this_p_queues = nr_io_queues - 1;
- 		irq_queues = 1;
-@@ -2105,14 +2097,25 @@ static void nvme_disable_io_queues(struct nvme_dev *dev)
- 		__nvme_disable_io_queues(dev, nvme_admin_delete_cq);
- }
- 
-+static unsigned int nvme_max_io_queues(struct nvme_dev *dev)
-+{
-+	return num_possible_cpus() + dev->nr_write_queues + dev->nr_poll_queues;
-+}
-+
- static int nvme_setup_io_queues(struct nvme_dev *dev)
- {
- 	struct nvme_queue *adminq = &dev->queues[0];
- 	struct pci_dev *pdev = to_pci_dev(dev->dev);
--	int result, nr_io_queues;
-+	unsigned int nr_io_queues;
- 	unsigned long size;
-+	int result;
- 
--	nr_io_queues = max_io_queues();
-+	/*
-+	 * Sample the module parameters once at reset time so that we have
-+	 * stable values to work with.
-+	 */
-+	dev->nr_write_queues = write_queues;
-+	dev->nr_poll_queues = poll_queues;
- 
- 	/*
- 	 * If tags are shared with admin queue (Apple bug), then
-@@ -2120,6 +2123,9 @@ static int nvme_setup_io_queues(struct nvme_dev *dev)
- 	 */
- 	if (dev->ctrl.quirks & NVME_QUIRK_SHARED_TAGS)
- 		nr_io_queues = 1;
-+	else
-+		nr_io_queues = min(nvme_max_io_queues(dev),
-+				   dev->nr_allocated_queues - 1);
- 
- 	result = nvme_set_queue_count(&dev->ctrl, &nr_io_queues);
- 	if (result < 0)
-@@ -2794,8 +2800,11 @@ static int nvme_probe(struct pci_dev *pdev, const struct pci_device_id *id)
- 	if (!dev)
- 		return -ENOMEM;
- 
--	dev->queues = kcalloc_node(max_queue_count(), sizeof(struct nvme_queue),
--					GFP_KERNEL, node);
-+	dev->nr_write_queues = write_queues;
-+	dev->nr_poll_queues = poll_queues;
-+	dev->nr_allocated_queues = nvme_max_io_queues(dev) + 1;
-+	dev->queues = kcalloc_node(dev->nr_allocated_queues,
-+			sizeof(struct nvme_queue), GFP_KERNEL, node);
- 	if (!dev->queues)
- 		goto free;
- 
+diff --git a/tools/testing/selftests/bpf/test_progs.c b/tools/testing/selftests/bpf/test_progs.c
+index 89f8b0dae7ef..bad3505d66e0 100644
+--- a/tools/testing/selftests/bpf/test_progs.c
++++ b/tools/testing/selftests/bpf/test_progs.c
+@@ -1118,6 +1118,7 @@ static int extract_build_id(char *build_id, size_t size)
+ 		len = size;
+ 	memcpy(build_id, line, len);
+ 	build_id[len] = '\0';
++	free(line);
+ 	return 0;
+ err:
+ 	fclose(fp);
 -- 
 2.25.1
 
