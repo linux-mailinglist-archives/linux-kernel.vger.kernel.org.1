@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B4E201027
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6991200E88
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404327AbgFSP0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:26:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56006 "EHLO mail.kernel.org"
+        id S2391795AbgFSPIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:08:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404140AbgFSPYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:24:19 -0400
+        id S2391738AbgFSPIk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:08:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF84A21582;
-        Fri, 19 Jun 2020 15:24:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C25E721852;
+        Fri, 19 Jun 2020 15:08:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580258;
-        bh=JmjN4SKRjIMoEBWFAxnMdHJm535jSOrlTjFMyuVq29s=;
+        s=default; t=1592579320;
+        bh=Tzw3Gzlm+3BA/nlhX9g2BWNAa7mep+kD4+xGWxixxX4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sY+zDvfyPGCMmwrnYNS0XZhnvcUWqgtwS0VbyDCEGoWBi+8SXKcHP8QRwiofqY7fg
-         HNd9TSJLXkpBQjLky45AUxdTAeHVbzzlMnEDqhXq1+RfSWQBIVHVfgwd0OH0vFEOyj
-         74NuPpCsf43QPGN7US1AnhjiySMMSnOdVHNCKvgk=
+        b=Jo+UPMt3saxLmx94h+O1C6IC2zHcWUQ4AwPzvA+Q8GYeNKHASPEIzZmonAeH7gAIv
+         BbHjImV2Fe81ZP5xnmwLlKt7jmW369T52eO3ks0hST4Wgkkp/OKAFI6Lsow0gEKXTl
+         49ACEI33k8eW+evfwZUKMzKb1k2g3PZPq7M6wGhA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Jaehoon Chung <jh80.chung@samsung.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 151/376] net: allwinner: Fix use correct return type for ndo_start_xmit()
-Date:   Fri, 19 Jun 2020 16:31:09 +0200
-Message-Id: <20200619141717.474853020@linuxfoundation.org>
+Subject: [PATCH 5.4 061/261] brcmfmac: fix wrong location to get firmware feature
+Date:   Fri, 19 Jun 2020 16:31:12 +0200
+Message-Id: <20200619141652.842535783@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
-References: <20200619141710.350494719@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,42 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yunjian Wang <wangyunjian@huawei.com>
+From: Jaehoon Chung <jh80.chung@samsung.com>
 
-[ Upstream commit 09f6c44aaae0f1bdb8b983d7762676d5018c53bc ]
+[ Upstream commit c57673852062428cdeabdd6501ac8b8e4c302067 ]
 
-The method ndo_start_xmit() returns a value of type netdev_tx_t. Fix
-the ndo function to use the correct type. And emac_start_xmit() can
-leak one skb if 'channel' == 3.
+sup_wpa feature is getting after setting feature_disable flag.
+If firmware is supported sup_wpa feature,  it's always enabled
+regardless of feature_disable flag.
 
-Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: b8a64f0e96c2 ("brcmfmac: support 4-way handshake offloading for WPA/WPA2-PSK")
+Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200330052528.10503-1-jh80.chung@samsung.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/allwinner/sun4i-emac.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/allwinner/sun4i-emac.c b/drivers/net/ethernet/allwinner/sun4i-emac.c
-index 18d3b4340bd4..b3b8a8010142 100644
---- a/drivers/net/ethernet/allwinner/sun4i-emac.c
-+++ b/drivers/net/ethernet/allwinner/sun4i-emac.c
-@@ -417,7 +417,7 @@ static void emac_timeout(struct net_device *dev, unsigned int txqueue)
- /* Hardware start transmission.
-  * Send a packet to media from the upper layer.
-  */
--static int emac_start_xmit(struct sk_buff *skb, struct net_device *dev)
-+static netdev_tx_t emac_start_xmit(struct sk_buff *skb, struct net_device *dev)
- {
- 	struct emac_board_info *db = netdev_priv(dev);
- 	unsigned long channel;
-@@ -425,7 +425,7 @@ static int emac_start_xmit(struct sk_buff *skb, struct net_device *dev)
+diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.c
+index 2c3526aeca6f..545015610cf8 100644
+--- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.c
++++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/feature.c
+@@ -283,13 +283,14 @@ void brcmf_feat_attach(struct brcmf_pub *drvr)
+ 	if (!err)
+ 		ifp->drvr->feat_flags |= BIT(BRCMF_FEAT_SCAN_RANDOM_MAC);
  
- 	channel = db->tx_fifo_stat & 3;
- 	if (channel == 3)
--		return 1;
-+		return NETDEV_TX_BUSY;
++	brcmf_feat_iovar_int_get(ifp, BRCMF_FEAT_FWSUP, "sup_wpa");
++
+ 	if (drvr->settings->feature_disable) {
+ 		brcmf_dbg(INFO, "Features: 0x%02x, disable: 0x%02x\n",
+ 			  ifp->drvr->feat_flags,
+ 			  drvr->settings->feature_disable);
+ 		ifp->drvr->feat_flags &= ~drvr->settings->feature_disable;
+ 	}
+-	brcmf_feat_iovar_int_get(ifp, BRCMF_FEAT_FWSUP, "sup_wpa");
  
- 	channel = (channel == 1 ? 1 : 0);
+ 	brcmf_feat_firmware_overrides(drvr);
  
 -- 
 2.25.1
