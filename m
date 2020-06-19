@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F3020167F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 531B620159F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395045AbgFSQbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:31:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46900 "EHLO mail.kernel.org"
+        id S2389664AbgFSOxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:53:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389615AbgFSOwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:52:45 -0400
+        id S2389616AbgFSOws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:52:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 982B1217D8;
-        Fri, 19 Jun 2020 14:52:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C91221556;
+        Fri, 19 Jun 2020 14:52:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578366;
-        bh=lomYkep2VdeiNmTFXg01kC37C66Vs93apprYh2lBNRE=;
+        s=default; t=1592578368;
+        bh=e3qeNO8EVoBm8gd2F3PpJi1vypzKZd7lY8KvJ41wVTA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0XiH5Dv4A7SWDF018qNICiY6r7z/GFoi6+SxOzoJasvYPOxUJpMa7eN24EahlITba
-         HpHEzoYNKiAQHi5mPiKRdPnGSVshEdhV1KU0OfLFvXbT/+2f52Cj2m13fTud1rQd31
-         qgvRvOm+iIn2KkuojWlEquqOd7cgBKmaQ72Z9J+4=
+        b=M4vqhjk89LMKMD95U06dXJMjwwlLxVU9YfqW3wavHnQtRUZrX9Iu4utw7WMZvH88b
+         0zA2Bai97UjS6g7UQpaqruqM0rR1qwuyyTHRpOpAVZVRJPCusvKDgl7qmzG8YnMv65
+         rEMqBWoXcowe6tU8wqRkQYJ8LyHzRx8yus7ANpCc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
-        <noltari@gmail.com>, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 4.14 185/190] mtd: rawnand: brcmnand: fix hamming oob layout
-Date:   Fri, 19 Jun 2020 16:33:50 +0200
-Message-Id: <20200619141643.097877783@linuxfoundation.org>
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 4.14 186/190] mtd: rawnand: pasemi: Fix the probe error path
+Date:   Fri, 19 Jun 2020 16:33:51 +0200
+Message-Id: <20200619141643.150186475@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
 References: <20200619141633.446429600@linuxfoundation.org>
@@ -44,43 +42,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Álvaro Fernández Rojas <noltari@gmail.com>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit 130bbde4809b011faf64f99dddc14b4b01f440c3 upstream.
+commit f51466901c07e6930435d30b02a21f0841174f61 upstream.
 
-First 2 bytes are used in large-page nand.
+nand_cleanup() is supposed to be called on error after a successful
+call to nand_scan() to free all NAND resources.
 
-Fixes: ef5eeea6e911 ("mtd: nand: brcm: switch to mtd_ooblayout_ops")
-Cc: stable@vger.kernel.org
-Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+There is no real Fixes tag applying here as the use of nand_release()
+in this driver predates by far the introduction of nand_cleanup() in
+commit d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
+which makes this change possible, hence pointing it as the commit to
+fix for backporting purposes, even if this commit is not introducing
+any bug.
+
+Fixes: d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20200512075733.745374-2-noltari@gmail.com
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-41-miquel.raynal@bootlin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/brcmnand/brcmnand.c |   11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ drivers/mtd/nand/pasemi_nand.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
---- a/drivers/mtd/nand/brcmnand/brcmnand.c
-+++ b/drivers/mtd/nand/brcmnand/brcmnand.c
-@@ -911,11 +911,14 @@ static int brcmnand_hamming_ooblayout_fr
- 		if (!section) {
- 			/*
- 			 * Small-page NAND use byte 6 for BBI while large-page
--			 * NAND use byte 0.
-+			 * NAND use bytes 0 and 1.
- 			 */
--			if (cfg->page_size > 512)
--				oobregion->offset++;
--			oobregion->length--;
-+			if (cfg->page_size > 512) {
-+				oobregion->offset += 2;
-+				oobregion->length -= 2;
-+			} else {
-+				oobregion->length--;
-+			}
- 		}
+--- a/drivers/mtd/nand/pasemi_nand.c
++++ b/drivers/mtd/nand/pasemi_nand.c
+@@ -163,7 +163,7 @@ static int pasemi_nand_probe(struct plat
+ 	if (mtd_device_register(pasemi_nand_mtd, NULL, 0)) {
+ 		dev_err(dev, "Unable to register MTD device\n");
+ 		err = -ENODEV;
+-		goto out_lpc;
++		goto out_cleanup_nand;
  	}
  
+ 	dev_info(dev, "PA Semi NAND flash at %pR, control at I/O %x\n", &res,
+@@ -171,6 +171,8 @@ static int pasemi_nand_probe(struct plat
+ 
+ 	return 0;
+ 
++ out_cleanup_nand:
++	nand_cleanup(chip);
+  out_lpc:
+ 	release_region(lpcctl, 4);
+  out_ior:
 
 
