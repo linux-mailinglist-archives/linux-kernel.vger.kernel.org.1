@@ -2,41 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 718CB201883
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C2ED201874
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393469AbgFSQtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:49:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57450 "EHLO mail.kernel.org"
+        id S2405749AbgFSQse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:48:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58272 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388080AbgFSOjs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:39:48 -0400
+        id S2387825AbgFSOkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:40:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6D5B4208B8;
-        Fri, 19 Jun 2020 14:39:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1770620773;
+        Fri, 19 Jun 2020 14:40:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577587;
-        bh=ygtLnoiUpOgaLKcoOxtcS9NrtUZR0kTHoYbA9bgfytU=;
+        s=default; t=1592577622;
+        bh=vufx0vyQjbhKY6H1Jy6DAqwq30Pr95FUeTOb5XINOxw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZLXm9GevYiUE83l16MclWqjL9fVYx8o2DkwLmDI1qq5d+7yRL0DiMnTJB/Ra/llWy
-         ooYYqvCU05ae9K5VMT66KpRkJLuh4mGISZf8QBSiiyupjewMIK2Xthuh7QGsotOckz
-         gAvADAK96FqEoLS4EJbRhCmoeYhwcRtUWqSDa7Ik=
+        b=P/UyZlNJace8g7YuDpoz/zC/Ng8ZfZQMWWAKa2L9QpX+Md9egy5Y1SMUZSovg4uXD
+         J7IQopgadXQC4Jwyxwe97PMLiHxzPPrTYfOMr8OoFIG7XEnpyDaaiFfZ4jf8SRgYDA
+         wxPdoCmplUk79uGUOf2h3vpR/2bqKK+jbJgoIQAU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hangbin Liu <liuhangbin@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 001/128] ipv6: fix IPV6_ADDRFORM operation logic
-Date:   Fri, 19 Jun 2020 16:31:35 +0200
-Message-Id: <20200619141620.218012110@linuxfoundation.org>
+        stable@vger.kernel.org, Johannes Thumshirn <jthumshirn@suse.de>,
+        Christoph Hellwig <hch@lst.de>,
+        Hannes Reinecke <hare@suse.com>,
+        Bart Van Assche <bart.vanassche@sandisk.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH 4.9 003/128] scsi: return correct blkprep status code in case scsi_init_io() fails.
+Date:   Fri, 19 Jun 2020 16:31:37 +0200
+Message-Id: <20200619141620.323404815@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
 References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -45,77 +47,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hangbin Liu <liuhangbin@gmail.com>
+From: Johannes Thumshirn <jthumshirn@suse.de>
 
-[ Upstream commit 79a1f0ccdbb4ad700590f61b00525b390cb53905 ]
+commit e7661a8e5ce10b5321882d0bbaf3f81070903319 upstream.
 
-Socket option IPV6_ADDRFORM supports UDP/UDPLITE and TCP at present.
-Previously the checking logic looks like:
-if (sk->sk_protocol == IPPROTO_UDP || sk->sk_protocol == IPPROTO_UDPLITE)
-	do_some_check;
-else if (sk->sk_protocol != IPPROTO_TCP)
-	break;
+When instrumenting the SCSI layer to run into the
+!blk_rq_nr_phys_segments(rq) case the following warning emitted from the
+block layer:
 
-After commit b6f6118901d1 ("ipv6: restrict IPV6_ADDRFORM operation"), TCP
-was blocked as the logic changed to:
-if (sk->sk_protocol == IPPROTO_UDP || sk->sk_protocol == IPPROTO_UDPLITE)
-	do_some_check;
-else if (sk->sk_protocol == IPPROTO_TCP)
-	do_some_check;
-	break;
-else
-	break;
+blk_peek_request: bad return=-22
 
-Then after commit 82c9ae440857 ("ipv6: fix restrict IPV6_ADDRFORM operation")
-UDP/UDPLITE were blocked as the logic changed to:
-if (sk->sk_protocol == IPPROTO_UDP || sk->sk_protocol == IPPROTO_UDPLITE)
-	do_some_check;
-if (sk->sk_protocol == IPPROTO_TCP)
-	do_some_check;
+This happens because since commit fd3fc0b4d730 ("scsi: don't BUG_ON()
+empty DMA transfers") we return the wrong error value from
+scsi_prep_fn() back to the block layer.
 
-if (sk->sk_protocol != IPPROTO_TCP)
-	break;
+[mkp: silenced checkpatch]
 
-Fix it by using Eric's code and simply remove the break in TCP check, which
-looks like:
-if (sk->sk_protocol == IPPROTO_UDP || sk->sk_protocol == IPPROTO_UDPLITE)
-	do_some_check;
-else if (sk->sk_protocol == IPPROTO_TCP)
-	do_some_check;
-else
-	break;
-
-Fixes: 82c9ae440857 ("ipv6: fix restrict IPV6_ADDRFORM operation")
-Signed-off-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+Fixes: fd3fc0b4d730 scsi: don't BUG_ON() empty DMA transfers
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Hannes Reinecke <hare@suse.com>
+Reviewed-by: Bart Van Assche <bart.vanassche@sandisk.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+[iwamatsu: - backport for 4.4.y and 4.9.y
+    - Use rq->nr_phys_segments instead of blk_rq_nr_phys_segments]
+Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/ipv6_sockglue.c |   13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+ drivers/scsi/scsi_lib.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/net/ipv6/ipv6_sockglue.c
-+++ b/net/ipv6/ipv6_sockglue.c
-@@ -184,14 +184,15 @@ static int do_ipv6_setsockopt(struct soc
- 					retv = -EBUSY;
- 					break;
- 				}
--			}
--			if (sk->sk_protocol == IPPROTO_TCP &&
--			    sk->sk_prot != &tcpv6_prot) {
--				retv = -EBUSY;
-+			} else if (sk->sk_protocol == IPPROTO_TCP) {
-+				if (sk->sk_prot != &tcpv6_prot) {
-+					retv = -EBUSY;
-+					break;
-+				}
-+			} else {
- 				break;
- 			}
--			if (sk->sk_protocol != IPPROTO_TCP)
--				break;
-+
- 			if (sk->sk_state != TCP_ESTABLISHED) {
- 				retv = -ENOTCONN;
- 				break;
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -1029,10 +1029,10 @@ int scsi_init_io(struct scsi_cmnd *cmd)
+ 	struct scsi_device *sdev = cmd->device;
+ 	struct request *rq = cmd->request;
+ 	bool is_mq = (rq->mq_ctx != NULL);
+-	int error;
++	int error = BLKPREP_KILL;
+ 
+ 	if (WARN_ON_ONCE(!rq->nr_phys_segments))
+-		return -EINVAL;
++		goto err_exit;
+ 
+ 	error = scsi_init_sgtable(rq, &cmd->sdb);
+ 	if (error)
 
 
