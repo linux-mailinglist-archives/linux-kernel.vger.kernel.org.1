@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D05020170E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:46:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C36F12017E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389428AbgFSOvS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:51:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44116 "EHLO mail.kernel.org"
+        id S2404669AbgFSQo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:44:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389384AbgFSOu4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:50:56 -0400
+        id S2388390AbgFSOmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:42:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38B2E20776;
-        Fri, 19 Jun 2020 14:50:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8625F20CC7;
+        Fri, 19 Jun 2020 14:42:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578256;
-        bh=nvgbRfzR8VCuy4iYcmNPWSPTPLMDk7u16hUJ9OkYZOs=;
+        s=default; t=1592577759;
+        bh=b/50F7gkO3+K/pAR6DbtLDdBm4g7DWks/GCUmwikn3E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s7PWO/1C/nSTSXeZetXgROpWVMaDZdYrA0GkJLe5KUI/pEmUJ45vKLySQ3uy0I0DJ
-         HaYmCYmY9+5akVc0nEpJviVrpDGxZQ7I7rum8Bd0jSpQikG5OBZ5zSCWtY98XcuYD9
-         zuG6XooKXok5EMSR69PZH5wqF17i0UpBnlhABtm8=
+        b=o+BOkUFEAhtrjnqiUh+PL5lTr7XE6nAyP9EE451tJFQLvpea1jJ4F5msklfMhp3BH
+         GV980X+XKKRcXoir4Gjbs8D6HRaQnYN9jMMW67OtJMFzW34ozZUmsWqKQ7z1xjTp03
+         xibHvmB+lHruIJg2oAV8vbiG0joQDzfVyFH010bs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arvind Sankar <nivedita@alum.mit.edu>,
-        Borislav Petkov <bp@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Dave Hansen <dave.hansen@intel.com>,
+        stable@vger.kernel.org, Yunjian Wang <wangyunjian@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 126/190] x86/mm: Stop printing BRK addresses
+Subject: [PATCH 4.9 077/128] net: allwinner: Fix use correct return type for ndo_start_xmit()
 Date:   Fri, 19 Jun 2020 16:32:51 +0200
-Message-Id: <20200619141639.921589009@linuxfoundation.org>
+Message-Id: <20200619141624.256867958@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,35 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arvind Sankar <nivedita@alum.mit.edu>
+From: Yunjian Wang <wangyunjian@huawei.com>
 
-[ Upstream commit 67d631b7c05eff955ccff4139327f0f92a5117e5 ]
+[ Upstream commit 09f6c44aaae0f1bdb8b983d7762676d5018c53bc ]
 
-This currently leaks kernel physical addresses into userspace.
+The method ndo_start_xmit() returns a value of type netdev_tx_t. Fix
+the ndo function to use the correct type. And emac_start_xmit() can
+leak one skb if 'channel' == 3.
 
-Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Kees Cook <keescook@chromium.org>
-Acked-by: Dave Hansen <dave.hansen@intel.com>
-Link: https://lkml.kernel.org/r/20200229231120.1147527-1-nivedita@alum.mit.edu
+Signed-off-by: Yunjian Wang <wangyunjian@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/mm/init.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/net/ethernet/allwinner/sun4i-emac.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
-index 32bb38f6fc18..8039a951db8f 100644
---- a/arch/x86/mm/init.c
-+++ b/arch/x86/mm/init.c
-@@ -112,8 +112,6 @@ __ref void *alloc_low_pages(unsigned int num)
- 	} else {
- 		pfn = pgt_buf_end;
- 		pgt_buf_end += num;
--		printk(KERN_DEBUG "BRK [%#010lx, %#010lx] PGTABLE\n",
--			pfn << PAGE_SHIFT, (pgt_buf_end << PAGE_SHIFT) - 1);
- 	}
+diff --git a/drivers/net/ethernet/allwinner/sun4i-emac.c b/drivers/net/ethernet/allwinner/sun4i-emac.c
+index 6ffdff68bfc4..672a8212c8d9 100644
+--- a/drivers/net/ethernet/allwinner/sun4i-emac.c
++++ b/drivers/net/ethernet/allwinner/sun4i-emac.c
+@@ -412,7 +412,7 @@ static void emac_timeout(struct net_device *dev)
+ /* Hardware start transmission.
+  * Send a packet to media from the upper layer.
+  */
+-static int emac_start_xmit(struct sk_buff *skb, struct net_device *dev)
++static netdev_tx_t emac_start_xmit(struct sk_buff *skb, struct net_device *dev)
+ {
+ 	struct emac_board_info *db = netdev_priv(dev);
+ 	unsigned long channel;
+@@ -420,7 +420,7 @@ static int emac_start_xmit(struct sk_buff *skb, struct net_device *dev)
  
- 	for (i = 0; i < num; i++) {
+ 	channel = db->tx_fifo_stat & 3;
+ 	if (channel == 3)
+-		return 1;
++		return NETDEV_TX_BUSY;
+ 
+ 	channel = (channel == 1 ? 1 : 0);
+ 
 -- 
 2.25.1
 
