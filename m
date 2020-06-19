@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E75A201028
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D4D200EB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393006AbgFSP0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:26:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56210 "EHLO mail.kernel.org"
+        id S2392032AbgFSPKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:10:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388599AbgFSPYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:24:30 -0400
+        id S2392005AbgFSPKR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:10:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9BCBD21548;
-        Fri, 19 Jun 2020 15:24:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 93A8F206FA;
+        Fri, 19 Jun 2020 15:10:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580269;
-        bh=5itkUDluYpaS3Zxz7oL2dZm1OCRzVTnguZY9d4Ovqcg=;
+        s=default; t=1592579417;
+        bh=bOJZp4MY8yMotHM7SIxa+gP+l7ndwy2nMGpeBaSHfwA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UYH+yIq7+p673tfPFaG2wKSXwRioVrEzQ01gYF8rskqDdo8WIeLboZSi8B2mdfzkb
-         TsHX6HmKXQM8iFdEAKncdJGKrYO/gDuff9M/XWzyclzeVvRdDJkvawTErmpUTp7Ahp
-         NdlcV8D0/u167zwwORc37ze86/97jsL7E2DoU91Y=
+        b=Eop+5ZteeRSkASjEygUO0ukQEp4qxVH/BMQJJCnHYZHtcrw2yXxqfwaTChdOigXxn
+         hoLXVq5P4xmmEt/WlHTxVWRta3LoilBtihYfYYUtkqvU3ILF3TI2cbFFgxrCP7AmwB
+         5mbBJdWy0T82bXHFjFd3LA6iJkTMeKUDzPlwAkKM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 178/376] mt76: mt7663: fix mt7615_mac_cca_stats_reset routine
-Date:   Fri, 19 Jun 2020 16:31:36 +0200
-Message-Id: <20200619141718.780052087@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 088/261] media: cec: silence shift wrapping warning in __cec_s_log_addrs()
+Date:   Fri, 19 Jun 2020 16:31:39 +0200
+Message-Id: <20200619141654.102091639@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
-References: <20200619141710.350494719@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,54 +45,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lorenzo Bianconi <lorenzo@kernel.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 886a862d3677ac0d3b57d19ffcf5b2d48b9c5267 ]
+[ Upstream commit 3b5af3171e2d5a73ae6f04965ed653d039904eb6 ]
 
-Fix PHYMUX_5 register definition for mt7663 in
-mt7615_mac_cca_stats_reset routine
+The log_addrs->log_addr_type[i] value is a u8 which is controlled by
+the user and comes from the ioctl.  If it's over 31 then that results in
+undefined behavior (shift wrapping) and that leads to a Smatch static
+checker warning.  We already cap the value later so we can silence the
+warning just by re-ordering the existing checks.
 
-Fixes: f40ac0f3d3c0 ("mt76: mt7615: introduce mt7663e support")
-Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+I think the UBSan checker will also catch this bug at runtime and
+generate a warning.  But otherwise the bug is harmless.
+
+Fixes: 9881fe0ca187 ("[media] cec: add HDMI CEC framework (adapter)")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt7615/mac.c  | 8 +++++++-
- drivers/net/wireless/mediatek/mt76/mt7615/regs.h | 1 +
- 2 files changed, 8 insertions(+), 1 deletion(-)
+ drivers/media/cec/cec-adap.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
-index a27a6d164009..656231786d55 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
-@@ -1574,8 +1574,14 @@ void mt7615_mac_cca_stats_reset(struct mt7615_phy *phy)
- {
- 	struct mt7615_dev *dev = phy->dev;
- 	bool ext_phy = phy != &dev->phy;
--	u32 reg = MT_WF_PHY_R0_PHYMUX_5(ext_phy);
-+	u32 reg;
+diff --git a/drivers/media/cec/cec-adap.c b/drivers/media/cec/cec-adap.c
+index b14c09cd9593..06383b26712b 100644
+--- a/drivers/media/cec/cec-adap.c
++++ b/drivers/media/cec/cec-adap.c
+@@ -1732,6 +1732,10 @@ int __cec_s_log_addrs(struct cec_adapter *adap,
+ 		unsigned j;
  
-+	if (is_mt7663(&dev->mt76))
-+		reg = MT7663_WF_PHY_R0_PHYMUX_5;
-+	else
-+		reg = MT_WF_PHY_R0_PHYMUX_5(ext_phy);
-+
-+	/* reset PD and MDRDY counters */
- 	mt76_clear(dev, reg, GENMASK(22, 20));
- 	mt76_set(dev, reg, BIT(22) | BIT(20));
- }
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/regs.h b/drivers/net/wireless/mediatek/mt76/mt7615/regs.h
-index 1e0d95b917e1..f7c2a633841c 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7615/regs.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt7615/regs.h
-@@ -151,6 +151,7 @@ enum mt7615_reg_base {
- #define MT_WF_PHY_WF2_RFCTRL0_LPBCN_EN	BIT(9)
- 
- #define MT_WF_PHY_R0_PHYMUX_5(_phy)	MT_WF_PHY(0x0614 + ((_phy) << 9))
-+#define MT7663_WF_PHY_R0_PHYMUX_5	MT_WF_PHY(0x0414)
- 
- #define MT_WF_PHY_R0_PHYCTRL_STS0(_phy)	MT_WF_PHY(0x020c + ((_phy) << 9))
- #define MT_WF_PHYCTRL_STAT_PD_OFDM	GENMASK(31, 16)
+ 		log_addrs->log_addr[i] = CEC_LOG_ADDR_INVALID;
++		if (log_addrs->log_addr_type[i] > CEC_LOG_ADDR_TYPE_UNREGISTERED) {
++			dprintk(1, "unknown logical address type\n");
++			return -EINVAL;
++		}
+ 		if (type_mask & (1 << log_addrs->log_addr_type[i])) {
+ 			dprintk(1, "duplicate logical address type\n");
+ 			return -EINVAL;
+@@ -1752,10 +1756,6 @@ int __cec_s_log_addrs(struct cec_adapter *adap,
+ 			dprintk(1, "invalid primary device type\n");
+ 			return -EINVAL;
+ 		}
+-		if (log_addrs->log_addr_type[i] > CEC_LOG_ADDR_TYPE_UNREGISTERED) {
+-			dprintk(1, "unknown logical address type\n");
+-			return -EINVAL;
+-		}
+ 		for (j = 0; j < feature_sz; j++) {
+ 			if ((features[j] & 0x80) == 0) {
+ 				if (op_is_dev_features)
 -- 
 2.25.1
 
