@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC957200E84
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E75A201028
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391736AbgFSPI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:08:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37942 "EHLO mail.kernel.org"
+        id S2393006AbgFSP0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:26:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56210 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391731AbgFSPIZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:08:25 -0400
+        id S2388599AbgFSPYa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:24:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6657821852;
-        Fri, 19 Jun 2020 15:08:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BCBD21548;
+        Fri, 19 Jun 2020 15:24:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579304;
-        bh=W2i2BRZmni5PV4/rL1upFoQqytctqsQ9UEQOK5v5ZHM=;
+        s=default; t=1592580269;
+        bh=5itkUDluYpaS3Zxz7oL2dZm1OCRzVTnguZY9d4Ovqcg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dlZq32jld0ZmZBiP9zkH7fQrcy+hhlEmJYabPR9JccijReOQDksRaa+TifoUlRXzP
-         AnvCn6xofxY2JVuW4gsWu4OWrjvlKrN4oUvBuc4TcjA66dOT2qVit6Y7kbBljJPWeA
-         RbC5L5sAbjp+i1P0M0omEtqb61aZ+82dNsz/wnIU=
+        b=UYH+yIq7+p673tfPFaG2wKSXwRioVrEzQ01gYF8rskqDdo8WIeLboZSi8B2mdfzkb
+         TsHX6HmKXQM8iFdEAKncdJGKrYO/gDuff9M/XWzyclzeVvRdDJkvawTErmpUTp7Ahp
+         NdlcV8D0/u167zwwORc37ze86/97jsL7E2DoU91Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 084/261] iocost_monitor: drop string wrap around numbers when outputting json
-Date:   Fri, 19 Jun 2020 16:31:35 +0200
-Message-Id: <20200619141653.919464743@linuxfoundation.org>
+        stable@vger.kernel.org, Lorenzo Bianconi <lorenzo@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 178/376] mt76: mt7663: fix mt7615_mac_cca_stats_reset routine
+Date:   Fri, 19 Jun 2020 16:31:36 +0200
+Message-Id: <20200619141718.780052087@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
+References: <20200619141710.350494719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,81 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tejun Heo <tj@kernel.org>
+From: Lorenzo Bianconi <lorenzo@kernel.org>
 
-[ Upstream commit 21f3cfeab304fc07b90d93d98d4d2f62110fe6b2 ]
+[ Upstream commit 886a862d3677ac0d3b57d19ffcf5b2d48b9c5267 ]
 
-Wrapping numbers in strings is used by some to work around bit-width issues in
-some enviroments. The problem isn't innate to json and the workaround seems to
-cause more integration problems than help. Let's drop the string wrapping.
+Fix PHYMUX_5 register definition for mt7663 in
+mt7615_mac_cca_stats_reset routine
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Fixes: f40ac0f3d3c0 ("mt76: mt7615: introduce mt7663e support")
+Signed-off-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Felix Fietkau <nbd@nbd.name>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/cgroup/iocost_monitor.py | 42 +++++++++++++++++-----------------
- 1 file changed, 21 insertions(+), 21 deletions(-)
+ drivers/net/wireless/mediatek/mt76/mt7615/mac.c  | 8 +++++++-
+ drivers/net/wireless/mediatek/mt76/mt7615/regs.h | 1 +
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/tools/cgroup/iocost_monitor.py b/tools/cgroup/iocost_monitor.py
-index 7e344a78a627..b8c082c9fd7d 100644
---- a/tools/cgroup/iocost_monitor.py
-+++ b/tools/cgroup/iocost_monitor.py
-@@ -112,14 +112,14 @@ class IocStat:
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
+index a27a6d164009..656231786d55 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/mac.c
+@@ -1574,8 +1574,14 @@ void mt7615_mac_cca_stats_reset(struct mt7615_phy *phy)
+ {
+ 	struct mt7615_dev *dev = phy->dev;
+ 	bool ext_phy = phy != &dev->phy;
+-	u32 reg = MT_WF_PHY_R0_PHYMUX_5(ext_phy);
++	u32 reg;
  
-     def dict(self, now):
-         return { 'device'               : devname,
--                 'timestamp'            : str(now),
--                 'enabled'              : str(int(self.enabled)),
--                 'running'              : str(int(self.running)),
--                 'period_ms'            : str(self.period_ms),
--                 'period_at'            : str(self.period_at),
--                 'period_vtime_at'      : str(self.vperiod_at),
--                 'busy_level'           : str(self.busy_level),
--                 'vrate_pct'            : str(self.vrate_pct), }
-+                 'timestamp'            : now,
-+                 'enabled'              : self.enabled,
-+                 'running'              : self.running,
-+                 'period_ms'            : self.period_ms,
-+                 'period_at'            : self.period_at,
-+                 'period_vtime_at'      : self.vperiod_at,
-+                 'busy_level'           : self.busy_level,
-+                 'vrate_pct'            : self.vrate_pct, }
++	if (is_mt7663(&dev->mt76))
++		reg = MT7663_WF_PHY_R0_PHYMUX_5;
++	else
++		reg = MT_WF_PHY_R0_PHYMUX_5(ext_phy);
++
++	/* reset PD and MDRDY counters */
+ 	mt76_clear(dev, reg, GENMASK(22, 20));
+ 	mt76_set(dev, reg, BIT(22) | BIT(20));
+ }
+diff --git a/drivers/net/wireless/mediatek/mt76/mt7615/regs.h b/drivers/net/wireless/mediatek/mt76/mt7615/regs.h
+index 1e0d95b917e1..f7c2a633841c 100644
+--- a/drivers/net/wireless/mediatek/mt76/mt7615/regs.h
++++ b/drivers/net/wireless/mediatek/mt76/mt7615/regs.h
+@@ -151,6 +151,7 @@ enum mt7615_reg_base {
+ #define MT_WF_PHY_WF2_RFCTRL0_LPBCN_EN	BIT(9)
  
-     def table_preamble_str(self):
-         state = ('RUN' if self.running else 'IDLE') if self.enabled else 'OFF'
-@@ -179,19 +179,19 @@ class IocgStat:
+ #define MT_WF_PHY_R0_PHYMUX_5(_phy)	MT_WF_PHY(0x0614 + ((_phy) << 9))
++#define MT7663_WF_PHY_R0_PHYMUX_5	MT_WF_PHY(0x0414)
  
-     def dict(self, now, path):
-         out = { 'cgroup'                : path,
--                'timestamp'             : str(now),
--                'is_active'             : str(int(self.is_active)),
--                'weight'                : str(self.weight),
--                'weight_active'         : str(self.active),
--                'weight_inuse'          : str(self.inuse),
--                'hweight_active_pct'    : str(self.hwa_pct),
--                'hweight_inuse_pct'     : str(self.hwi_pct),
--                'inflight_pct'          : str(self.inflight_pct),
--                'debt_ms'               : str(self.debt_ms),
--                'use_delay'             : str(self.use_delay),
--                'delay_ms'              : str(self.delay_ms),
--                'usage_pct'             : str(self.usage),
--                'address'               : str(hex(self.address)) }
-+                'timestamp'             : now,
-+                'is_active'             : self.is_active,
-+                'weight'                : self.weight,
-+                'weight_active'         : self.active,
-+                'weight_inuse'          : self.inuse,
-+                'hweight_active_pct'    : self.hwa_pct,
-+                'hweight_inuse_pct'     : self.hwi_pct,
-+                'inflight_pct'          : self.inflight_pct,
-+                'debt_ms'               : self.debt_ms,
-+                'use_delay'             : self.use_delay,
-+                'delay_ms'              : self.delay_ms,
-+                'usage_pct'             : self.usage,
-+                'address'               : self.address }
-         for i in range(len(self.usages)):
-             out[f'usage_pct_{i}'] = str(self.usages[i])
-         return out
+ #define MT_WF_PHY_R0_PHYCTRL_STS0(_phy)	MT_WF_PHY(0x020c + ((_phy) << 9))
+ #define MT_WF_PHYCTRL_STAT_PD_OFDM	GENMASK(31, 16)
 -- 
 2.25.1
 
