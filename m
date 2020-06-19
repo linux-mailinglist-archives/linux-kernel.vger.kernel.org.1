@@ -2,47 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5EC720174B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:46:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E29B820181F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395293AbgFSQgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:36:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41610 "EHLO mail.kernel.org"
+        id S2388249AbgFSOl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:41:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389167AbgFSOtE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:49:04 -0400
+        id S2388221AbgFSOlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:41:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A50FC20DD4;
-        Fri, 19 Jun 2020 14:49:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 89A1221527;
+        Fri, 19 Jun 2020 14:41:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578144;
-        bh=CKdKwvcY/fb4n4u7xICRN+j5znN2zpd/bFyAEIqpr28=;
+        s=default; t=1592577679;
+        bh=kq7xnAF9snUBez46/Ih5rjBI7O4wxsDS2jImrawFsYc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UmjBChimo0IepVIDJ4Cw8GtpdvMj6ZoG2211uqPxJwGgbObK5lK0K8eXC4hEbRWWj
-         u8l7zvGRdtPbT0USkuzAEJPe/d/hG0DUmavobW7yY1pDi2Sta6G1VW6+UwzmKS2wPt
-         wLTSiRfDPkuDSjrnG8UBn0DUgP/RRX+vL/ZMHszk=
+        b=Yn5lyytj1cVATiFPD0cupf9E0KL75dtKW2BVygbIXgWPWVDH8en4hS7IPeGvew26U
+         Qu2JHcLTC7LcH6m1hT/hHAQ1BeaZPS9rJCxYEAwcayw+1uoMId/+VYsO0FrlIJ1cV/
+         Z+meDMlkmlqLbY+ikg40izWVJFJISduYlw76wLpw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>,
-        Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>, Feng Tang <feng.tang@intel.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 092/190] spi: dw: Fix Rx-only DMA transfers
-Date:   Fri, 19 Jun 2020 16:32:17 +0200
-Message-Id: <20200619141638.192320638@linuxfoundation.org>
+        stable@vger.kernel.org, Qiujun Huang <hqjagain@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        syzbot+b1c61e5f11be5782f192@syzkaller.appspotmail.com
+Subject: [PATCH 4.9 044/128] ath9k: Fix use-after-free Write in ath9k_htc_rx_msg
+Date:   Fri, 19 Jun 2020 16:32:18 +0200
+Message-Id: <20200619141622.548236961@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -52,53 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Qiujun Huang <hqjagain@gmail.com>
 
-[ Upstream commit 46164fde6b7890e7a3982d54549947c8394c0192 ]
+commit e4ff08a4d727146bb6717a39a8d399d834654345 upstream.
 
-Tx-only DMA transfers are working perfectly fine since in this case
-the code just ignores the Rx FIFO overflow interrupts. But it turns
-out the SPI Rx-only transfers are broken since nothing pushing any
-data to the shift registers, so the Rx FIFO is left empty and the
-SPI core subsystems just returns a timeout error. Since DW DMAC
-driver doesn't support something like cyclic write operations of
-a single byte to a device register, the only way to support the
-Rx-only SPI transfers is to fake it by using a dummy Tx-buffer.
-This is what we intend to fix in this commit by setting the
-SPI_CONTROLLER_MUST_TX flag for DMA-capable platform.
+Write out of slab bounds. We should check epid.
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Georgy Vlasov <Georgy.Vlasov@baikalelectronics.ru>
-Cc: Ramil Zaripov <Ramil.Zaripov@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Feng Tang <feng.tang@intel.com>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Cc: devicetree@vger.kernel.org
-Link: https://lore.kernel.org/r/20200529131205.31838-9-Sergey.Semin@baikalelectronics.ru
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The case reported by syzbot:
+https://lore.kernel.org/linux-usb/0000000000006ac55b05a1c05d72@google.com
+BUG: KASAN: use-after-free in htc_process_conn_rsp
+drivers/net/wireless/ath/ath9k/htc_hst.c:131 [inline]
+BUG: KASAN: use-after-free in ath9k_htc_rx_msg+0xa25/0xaf0
+drivers/net/wireless/ath/ath9k/htc_hst.c:443
+Write of size 2 at addr ffff8881cea291f0 by task swapper/1/0
+
+Call Trace:
+ htc_process_conn_rsp drivers/net/wireless/ath/ath9k/htc_hst.c:131
+[inline]
+ath9k_htc_rx_msg+0xa25/0xaf0
+drivers/net/wireless/ath/ath9k/htc_hst.c:443
+ath9k_hif_usb_reg_in_cb+0x1ba/0x630
+drivers/net/wireless/ath/ath9k/hif_usb.c:718
+__usb_hcd_giveback_urb+0x29a/0x550 drivers/usb/core/hcd.c:1650
+usb_hcd_giveback_urb+0x368/0x420 drivers/usb/core/hcd.c:1716
+dummy_timer+0x1258/0x32ae drivers/usb/gadget/udc/dummy_hcd.c:1966
+call_timer_fn+0x195/0x6f0 kernel/time/timer.c:1404
+expire_timers kernel/time/timer.c:1449 [inline]
+__run_timers kernel/time/timer.c:1773 [inline]
+__run_timers kernel/time/timer.c:1740 [inline]
+run_timer_softirq+0x5f9/0x1500 kernel/time/timer.c:1786
+
+Reported-and-tested-by: syzbot+b1c61e5f11be5782f192@syzkaller.appspotmail.com
+Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200404041838.10426-4-hqjagain@gmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/spi/spi-dw.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/wireless/ath/ath9k/htc_hst.c |    3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
-index b11d0cd3fd20..9fcee7273a79 100644
---- a/drivers/spi/spi-dw.c
-+++ b/drivers/spi/spi-dw.c
-@@ -531,6 +531,7 @@ int dw_spi_add_host(struct device *dev, struct dw_spi *dws)
- 			dws->dma_inited = 0;
- 		} else {
- 			master->can_dma = dws->dma_ops->can_dma;
-+			master->flags |= SPI_CONTROLLER_MUST_TX;
- 		}
- 	}
+--- a/drivers/net/wireless/ath/ath9k/htc_hst.c
++++ b/drivers/net/wireless/ath/ath9k/htc_hst.c
+@@ -114,6 +114,9 @@ static void htc_process_conn_rsp(struct
  
--- 
-2.25.1
-
+ 	if (svc_rspmsg->status == HTC_SERVICE_SUCCESS) {
+ 		epid = svc_rspmsg->endpoint_id;
++		if (epid < 0 || epid >= ENDPOINT_MAX)
++			return;
++
+ 		service_id = be16_to_cpu(svc_rspmsg->service_id);
+ 		max_msglen = be16_to_cpu(svc_rspmsg->max_msg_len);
+ 		endpoint = &target->endpoint[epid];
 
 
