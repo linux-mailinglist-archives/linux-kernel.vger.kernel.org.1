@@ -2,74 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6793F201B4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 21:31:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B161201B4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 21:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388909AbgFSTbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 15:31:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388758AbgFSTbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 15:31:17 -0400
-Received: from localhost (mobile-166-170-222-206.mycingular.net [166.170.222.206])
+        id S2388996AbgFSTcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 15:32:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388960AbgFSTcR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 15:32:17 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96932C06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 12:32:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3QzKeVygR1Og2gnr7c4ILqWHyNCSEx2U2v1kqCy0+HM=; b=cdcVINB6e402t8tTeuprfHRaQx
+        ieoW0tyn4qvbs/UOQIJpBelH9jI/VNXpf0Bi0UvKn1KXtAGPCzxY9UI0lWkxgpbDc4+NSrbz9FLMF
+        4ZGfllz0WvM0/+kpgpMvKqujaR93bAtTEeDnhB51l6nGgf7z/1w0J8HRjFNmKuwxRWM62V+iMoYkX
+        y7U2YLgokqBmpTVDCMSDPaJIOiL+DywMvCwiUVqJoIb+XH+xrcZcbiwMvN3r+XKYwb7KcI2jvD3IK
+        NlEOrfKhUgiz/0elInanFdO+bGPiOVGux3+MMeGiwgwnLdClIKtuMPUxZ3l+Yw9jCFVYJBUC5c5L5
+        QCsgVycQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jmMjm-0005kh-BI; Fri, 19 Jun 2020 19:31:42 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACF3321556;
-        Fri, 19 Jun 2020 19:31:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592595077;
-        bh=2vZl3YpAW0Af4EaK4iaA+JD2OKbiTxKGWLGtbaWrA4s=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=uZZ18+xU/JUp2i4ewDh19cMwVoZ5ejidjByHfIc5G/DlC/galABDNhx32TWKp0pqb
-         m2o4TgEZGU1LkIGTpbHiWC3FTi80mB/VDVvIf+7Wgi3fJt4LFR4egGPJ+52ZsURJXg
-         TVRXaeIvVEs0PeCIi2kwilYRD6K6Fz2GuINd+ruQ=
-Date:   Fri, 19 Jun 2020 14:31:14 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Flavio Suligoi <f.suligoi@asem.it>
-Cc:     Tom Joseph <tjoseph@cadence.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] pci: controller: cadence: fix wrong path in comment
-Message-ID: <20200619193114.GA2187639@bjorn-Precision-5520>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3ECC1302753;
+        Fri, 19 Jun 2020 21:31:40 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2BE7A2C28ECDD; Fri, 19 Jun 2020 21:31:40 +0200 (CEST)
+Date:   Fri, 19 Jun 2020 21:31:40 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     kan.liang@linux.intel.com
+Cc:     mingo@redhat.com, acme@kernel.org, tglx@linutronix.de,
+        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        jolsa@redhat.com, namhyung@kernel.org, dave.hansen@intel.com,
+        yu-cheng.yu@intel.com, bigeasy@linutronix.de, gorcunov@gmail.com,
+        hpa@zytor.com, alexey.budankov@linux.intel.com, eranian@google.com,
+        ak@linux.intel.com, like.xu@linux.intel.com,
+        yao.jin@linux.intel.com
+Subject: Re: [PATCH 17/21] x86/fpu: Use proper mask to replace full
+ instruction mask
+Message-ID: <20200619193140.GI576888@hirez.programming.kicks-ass.net>
+References: <1592575449-64278-1-git-send-email-kan.liang@linux.intel.com>
+ <1592575449-64278-18-git-send-email-kan.liang@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200619151134.29893-1-f.suligoi@asem.it>
+In-Reply-To: <1592575449-64278-18-git-send-email-kan.liang@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 05:11:34PM +0200, Flavio Suligoi wrote:
-> All native pci drivers are in drivers/pci/controller,
-> but this comment still refers to the old pathname,
-> when all pci drivers were located directly under the
-> drivers/pci directory.
-> 
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> ---
->  drivers/pci/controller/cadence/pcie-cadence-ep.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> index 1c15c8352125..2a48b34ff249 100644
-> --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> @@ -276,7 +276,7 @@ static int cdns_pcie_ep_send_legacy_irq(struct cdns_pcie_ep *ep, u8 fn, u8 intx)
->  	cdns_pcie_ep_assert_intx(ep, fn, intx, true);
->  	/*
->  	 * The mdelay() value was taken from dra7xx_pcie_raise_legacy_irq()
-> -	 * from drivers/pci/dwc/pci-dra7xx.c
-> +	 * from drivers/pci/controller/dwc/pci-dra7xx.c
+On Fri, Jun 19, 2020 at 07:04:05AM -0700, kan.liang@linux.intel.com wrote:
 
-I think the function name by itself would be enough, so maybe we
-should remove the filename completely.
+> KVM includes the header file fpu/internal.h. To avoid 'undefined
+> xfeatures_mask_all' compiling issue, xfeatures_mask_all has to be
+> exported.
 
->  	 */
->  	mdelay(1);
->  	cdns_pcie_ep_assert_intx(ep, fn, intx, false);
-> -- 
-> 2.17.1
-> 
+> diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+> index 587e03f..eb2e44e 100644
+> --- a/arch/x86/kernel/fpu/xstate.c
+> +++ b/arch/x86/kernel/fpu/xstate.c
+> @@ -58,6 +58,7 @@ static short xsave_cpuid_features[] __initdata = {
+>   * XSAVE buffer, both supervisor and user xstates.
+>   */
+>  u64 xfeatures_mask_all __read_mostly;
+> +EXPORT_SYMBOL_GPL(xfeatures_mask_all);
+
+*groan*...
+
+AFAICT KVM doesn't actually use any of those functions, can't we have
+something like BUILD_KVM (like BUILD_VDSO) and exclude those functions
+from the KVM build?
+
+I so detest exporting random crap because kvm..
