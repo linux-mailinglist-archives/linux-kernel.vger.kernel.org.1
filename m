@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5463F200EE7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4EB200DE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:05:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391625AbgFSPMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:12:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42982 "EHLO mail.kernel.org"
+        id S2390503AbgFSPC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:02:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403902AbgFSPMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:12:30 -0400
+        id S2390753AbgFSPB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:01:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3745721924;
-        Fri, 19 Jun 2020 15:12:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9672D2193E;
+        Fri, 19 Jun 2020 15:01:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579549;
-        bh=Z/EMi5jh5Ob/9rSaNYgP/r+ElXkLFtWLz4IwvkyWt+E=;
+        s=default; t=1592578916;
+        bh=xxUjlhi8/WByqG1Pmjnz44v+8zF0P2hZJkQQenoOhaA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uY3woeQb26rN0hknSnEMyIXe1PcK7DmMWM3S3ODNYDCFJuKL8yV6bzAnQw069BReg
-         VZM8PsIUp/nlbw0cRWk7wD7zyeIDCmZitQAXTs7oj82FJWIR7TFMTafd6uiDfo2lyu
-         eWJOJs0RULE7IqPFo4tag+pK26U2gaYYff0nIz1E=
+        b=knxf76yKaJjCrk1DO2t3RVaAlMPVGZxn2qDSqRsFFx0hRpeBhre6WLe7oKuQhNFqY
+         QPSr7QWqytibyR8yrFe6HbL7Aij3olGixui4YmwbpZnnjSBnAK6Wsa54wP7S9aec4x
+         mps58hYWuiB97eJ1XBfO3WIeDSt4xVDR1A2m0F0o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Mimi Zohar <zohar@linux.ibm.com>
-Subject: [PATCH 5.4 177/261] ima: Directly assign the ima_default_policy pointer to ima_rules
-Date:   Fri, 19 Jun 2020 16:33:08 +0200
-Message-Id: <20200619141658.405136282@linuxfoundation.org>
+        stable@vger.kernel.org, Corey Minyard <cminyard@mvista.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 205/267] pci:ipmi: Move IPMI PCI class id defines to pci_ids.h
+Date:   Fri, 19 Jun 2020 16:33:10 +0200
+Message-Id: <20200619141658.569061824@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+From: Corey Minyard <cminyard@mvista.com>
 
-commit 067a436b1b0aafa593344fddd711a755a58afb3b upstream.
+[ Upstream commit 05c3d056086a6217a77937b7fa0df35ec75715e6 ]
 
-This patch prevents the following oops:
-
-[   10.771813] BUG: kernel NULL pointer dereference, address: 0000000000000
-[...]
-[   10.779790] RIP: 0010:ima_match_policy+0xf7/0xb80
-[...]
-[   10.798576] Call Trace:
-[   10.798993]  ? ima_lsm_policy_change+0x2b0/0x2b0
-[   10.799753]  ? inode_init_owner+0x1a0/0x1a0
-[   10.800484]  ? _raw_spin_lock+0x7a/0xd0
-[   10.801592]  ima_must_appraise.part.0+0xb6/0xf0
-[   10.802313]  ? ima_fix_xattr.isra.0+0xd0/0xd0
-[   10.803167]  ima_must_appraise+0x4f/0x70
-[   10.804004]  ima_post_path_mknod+0x2e/0x80
-[   10.804800]  do_mknodat+0x396/0x3c0
-
-It occurs when there is a failure during IMA initialization, and
-ima_init_policy() is not called. IMA hooks still call ima_match_policy()
-but ima_rules is NULL. This patch prevents the crash by directly assigning
-the ima_default_policy pointer to ima_rules when ima_rules is defined. This
-wouldn't alter the existing behavior, as ima_rules is always set at the end
-of ima_init_policy().
-
-Cc: stable@vger.kernel.org # 3.7.x
-Fixes: 07f6a79415d7d ("ima: add appraise action keywords and default rules")
-Reported-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Corey Minyard <cminyard@mvista.com>
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/integrity/ima/ima_policy.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/char/ipmi/ipmi_si_pci.c | 5 -----
+ include/linux/pci_ids.h         | 4 ++++
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -204,7 +204,7 @@ static struct ima_rule_entry *arch_polic
- static LIST_HEAD(ima_default_rules);
- static LIST_HEAD(ima_policy_rules);
- static LIST_HEAD(ima_temp_rules);
--static struct list_head *ima_rules;
-+static struct list_head *ima_rules = &ima_default_rules;
+diff --git a/drivers/char/ipmi/ipmi_si_pci.c b/drivers/char/ipmi/ipmi_si_pci.c
+index 022e03634ce2..9e9700b1a8e6 100644
+--- a/drivers/char/ipmi/ipmi_si_pci.c
++++ b/drivers/char/ipmi/ipmi_si_pci.c
+@@ -18,11 +18,6 @@ module_param_named(trypci, si_trypci, bool, 0);
+ MODULE_PARM_DESC(trypci, "Setting this to zero will disable the"
+ 		 " default scan of the interfaces identified via pci");
  
- static int ima_policy __initdata;
+-#define PCI_CLASS_SERIAL_IPMI		0x0c07
+-#define PCI_CLASS_SERIAL_IPMI_SMIC	0x0c0700
+-#define PCI_CLASS_SERIAL_IPMI_KCS	0x0c0701
+-#define PCI_CLASS_SERIAL_IPMI_BT	0x0c0702
+-
+ #define PCI_DEVICE_ID_HP_MMC 0x121A
  
-@@ -712,7 +712,6 @@ void __init ima_init_policy(void)
- 			  ARRAY_SIZE(default_appraise_rules),
- 			  IMA_DEFAULT_POLICY);
+ static void ipmi_pci_cleanup(struct si_sm_io *io)
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index f4e278493f5b..861ee391dc33 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -117,6 +117,10 @@
+ #define PCI_CLASS_SERIAL_USB_DEVICE	0x0c03fe
+ #define PCI_CLASS_SERIAL_FIBER		0x0c04
+ #define PCI_CLASS_SERIAL_SMBUS		0x0c05
++#define PCI_CLASS_SERIAL_IPMI		0x0c07
++#define PCI_CLASS_SERIAL_IPMI_SMIC	0x0c0700
++#define PCI_CLASS_SERIAL_IPMI_KCS	0x0c0701
++#define PCI_CLASS_SERIAL_IPMI_BT	0x0c0702
  
--	ima_rules = &ima_default_rules;
- 	ima_update_policy_flag();
- }
- 
+ #define PCI_BASE_CLASS_WIRELESS			0x0d
+ #define PCI_CLASS_WIRELESS_RF_CONTROLLER	0x0d10
+-- 
+2.25.1
+
 
 
