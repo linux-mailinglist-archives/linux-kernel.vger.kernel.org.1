@@ -2,59 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE8AA200641
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 12:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EBB020065D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 12:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732441AbgFSK2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 06:28:52 -0400
-Received: from a3.inai.de ([88.198.85.195]:37880 "EHLO a3.inai.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732386AbgFSK2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 06:28:25 -0400
-Received: by a3.inai.de (Postfix, from userid 25121)
-        id 66EA058743C1C; Fri, 19 Jun 2020 12:28:08 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by a3.inai.de (Postfix) with ESMTP id 63D8460D220A6;
-        Fri, 19 Jun 2020 12:28:08 +0200 (CEST)
-Date:   Fri, 19 Jun 2020 12:28:08 +0200 (CEST)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     Christoph Hellwig <hch@infradead.org>
-cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-arch@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: Re: [PATCH] linux++, this: rename "struct notifier_block *this"
-In-Reply-To: <20200619074631.GA1427@infradead.org>
-Message-ID: <nycvar.YFH.7.77.849.2006191217280.9730@n3.vanv.qr>
-References: <20200618210645.GB2212102@localhost.localdomain> <20200619074631.GA1427@infradead.org>
-User-Agent: Alpine 2.22 (LSU 394 2020-01-19)
+        id S1732372AbgFSKba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 06:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732320AbgFSK2H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 06:28:07 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EDCC0613EF;
+        Fri, 19 Jun 2020 03:28:06 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 425E12A51F9
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>, erwanaliasr1@gmail.com,
+        matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
+        Mars Cheng <mars.cheng@mediatek.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: [PATCH 1/7] dt-bindings: arm64: dts: mediatek: Add mt8183-kukui-krane-sku176
+Date:   Fri, 19 Jun 2020 12:27:51 +0200
+Message-Id: <20200619102757.1358675-2-enric.balletbo@collabora.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200619102757.1358675-1-enric.balletbo@collabora.com>
+References: <20200619102757.1358675-1-enric.balletbo@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 2020-06-19 09:46, Christoph Hellwig wrote:
+The krane-sku176 is the Lenovo IdeaPad Duet Chromebook. A 2-in-1
+detachable device using the MediaTek MT8183 SoC.
 
->On Fri, Jun 19, 2020 at 12:06:45AM +0300, Alexey Dobriyan wrote:
->> Rename
->> 	struct notifier_block *this
->> to
->> 	struct notifier_block *nb
->> 
->> "nb" is arguably a better name for notifier block.
->
->But not enough better to cause tons of pointless churn.  Feel free
->to use better naming in new code you write or do significant changes
->to, but stop these pointless renames.
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+---
 
-Well, judging from the mention of "linux++" in the subject, I figure 
-this is the old discussion of someone trying to make Linux code, or 
-parts thereof, work in a C++ environment. Since the patch does not just 
-touch headers but .c files, I deduce that there seems to be a project 
-trying to build Linux, or a subset thereof, as a C++ program for the fun 
-of it. UML could come to mind.
+ Documentation/devicetree/bindings/arm/mediatek.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Is it a hot potato? Definitely. But so was IPv6 NAT, and now we have it 
-anyway.
+diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+index abc544dde6920..30908963ae261 100644
+--- a/Documentation/devicetree/bindings/arm/mediatek.yaml
++++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+@@ -114,4 +114,9 @@ properties:
+           - enum:
+               - mediatek,mt8183-evb
+           - const: mediatek,mt8183
++      - description: Google Krane (Lenovo IdeaPad Duet, 10e,...)
++        items:
++          - const: google,krane-sku176
++          - const: google,krane
++          - const: mediatek,mt8183
+ ...
+-- 
+2.27.0
+
