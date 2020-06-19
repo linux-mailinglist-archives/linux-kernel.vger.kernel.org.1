@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B0B201649
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B43201642
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394953AbgFSQ2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:28:52 -0400
-Received: from lhrrgout.huawei.com ([185.176.76.210]:2345 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389951AbgFSQ22 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 12:28:28 -0400
-Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.106])
-        by Forcepoint Email with ESMTP id 562AE804842AEAABF565;
-        Fri, 19 Jun 2020 17:28:24 +0100 (IST)
-Received: from localhost (10.52.127.178) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Fri, 19 Jun
- 2020 17:28:23 +0100
-Date:   Fri, 19 Jun 2020 17:27:33 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Sasha Levin <sashal@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>,
-        "Lars-Peter Clausen" <lars@metafoo.de>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH AUTOSEL 4.4 23/60] iio: buffer: Don't allow buffers
- without any channels enabled to be activated
-Message-ID: <20200619172733.00005d9d@Huawei.com>
-In-Reply-To: <20200618013004.610532-23-sashal@kernel.org>
-References: <20200618013004.610532-1-sashal@kernel.org>
-        <20200618013004.610532-23-sashal@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.127.178]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+        id S2394922AbgFSQ2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:28:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40990 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394919AbgFSQ2G (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 12:28:06 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD365C06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 09:28:06 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id jz3so4273712pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 09:28:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amacapital-net.20150623.gappssmtp.com; s=20150623;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=jpB5wP3PIwE7dFDxzA5CoClVFh2E2ceSqx2mQLiEpAM=;
+        b=q6KwgYq2vJOzzV4VWWfYDK11E4HZJbayuZOECWOWVrLf2XcwA/z8IQbFCYxno5VfOK
+         0l4z1k7x95m+biDZW25sxSwp7Mtv0jgFM0woNZ0PSlX1hE416H8DkB8v63U0DQhaguxN
+         WrYgoKF9xIWJCSVoC9u4whW5+1fGB1OnaHYoHh0+PLKLTmMYlZCCMAKa0N7BGZ7ymNeB
+         XYBbx5godAom4qRjt6gxwrvmOweFAW6zq1spjDhV046ar6wKQNrhWPhDkHoxVwabXRpW
+         1aXFiofSt2N5/GnL9eNGFuMpGWIiEl2YRK1kUyz6O2scaIoKHZb5UcRv+grUUhFTQNdv
+         cP6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=jpB5wP3PIwE7dFDxzA5CoClVFh2E2ceSqx2mQLiEpAM=;
+        b=jbOUQ3JXay3dXgxAyKcZVFPpxHawjaCo6OWbkCOngjeWaGTS34lQ+u4K84nEJ21cic
+         KZlOtg1X2lADBH6c3S8jxUm1ePw/yKXG3J9g2Lf2mPMre6J0AQXFiw1yBToz7VvZ0Txf
+         hCSw709H7cdY54L4huwZ7yt4op7X6Qx+XRt44F044muBDqkn2FVM+aX2xSQEGNss3Y9c
+         CsDYvmjrb1H2LCRVZ2skUPF/IZh5Td0mUY5MM+31KCpGeBEBHlfAxNGzsnDacQEds/OO
+         GTpLbl7WCpgTJrvMa6CDjG4QlqeEBPjnXmfJDr8i+NOLkPhcG2oPThgzG8I4IPmkc4PO
+         KSlQ==
+X-Gm-Message-State: AOAM532jLg1HZC1Qw8GfLnn7dvYo2WuYRXhom43AwTUmewRTWBWmZeBH
+        /ghuJTdQH8CVMuikt0ud6ZW4NA==
+X-Google-Smtp-Source: ABdhPJwxb0GvnZCeBO+xcJmUodHQQzsR50V8+c3pEMTT9u4we77eeEOQI22XI+hn7cDSVdnszRPzPQ==
+X-Received: by 2002:a17:90a:aa88:: with SMTP id l8mr4376953pjq.145.1592584086180;
+        Fri, 19 Jun 2020 09:28:06 -0700 (PDT)
+Received: from ?IPv6:2601:646:c200:1ef2:ac67:5f51:c66e:4fa6? ([2601:646:c200:1ef2:ac67:5f51:c66e:4fa6])
+        by smtp.gmail.com with ESMTPSA id c1sm5982052pfo.197.2020.06.19.09.28.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jun 2020 09:28:05 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Andy Lutomirski <luto@amacapital.net>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH] Ability to read the MKTME status from userspace
+Date:   Fri, 19 Jun 2020 09:28:03 -0700
+Message-Id: <7D245565-78D4-4587-AD5E-3D4E945D5A94@amacapital.net>
+References: <20200619161752.GG32683@zn.tnic>
+Cc:     Richard Hughes <hughsient@gmail.com>,
+        Daniel Gutson <daniel@eclypsium.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200619161752.GG32683@zn.tnic>
+To:     Borislav Petkov <bp@alien8.de>
+X-Mailer: iPhone Mail (17F80)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 17 Jun 2020 21:29:27 -0400
-Sasha Levin <sashal@kernel.org> wrote:
 
-> From: Lars-Peter Clausen <lars@metafoo.de>
-> 
-> [ Upstream commit b7329249ea5b08b2a1c2c3f24a2f4c495c4f14b8 ]
-> 
-> Before activating a buffer make sure that at least one channel is enabled.
-> Activating a buffer with 0 channels enabled doesn't make too much sense and
-> disallowing this case makes sure that individual driver don't have to add
-> special case code to handle it.
-> 
-> Currently, without this patch enabling a buffer is possible and no error is
-> produced. With this patch -EINVAL is returned.
-> 
-> An example of execution with this patch and some instrumented print-code:
->    root@analog:~# cd /sys/bus/iio/devices/iio\:device3/buffer
->    root@analog:/sys/bus/iio/devices/iio:device3/buffer# echo 1 > enable
->    0: iio_verify_update 748 indio_dev->masklength 2 *insert_buffer->scan_mask 00000000
->    1: iio_verify_update 753
->    2:__iio_update_buffers 1115 ret -22
->    3: iio_buffer_store_enable 1241 ret -22
->    -bash: echo: write error: Invalid argument
-> 1, 2 & 3 are exit-error paths. 0 the first print in iio_verify_update()
-> rergardless of error path.
-> 
-> Without this patch (and same instrumented print-code):
->    root@analog:~# cd /sys/bus/iio/devices/iio\:device3/buffer
->    root@analog:/sys/bus/iio/devices/iio:device3/buffer# echo 1 > enable
->    0: iio_verify_update 748 indio_dev->masklength 2 *insert_buffer->scan_mask 00000000
->    root@analog:/sys/bus/iio/devices/iio:device3/buffer#
-> Buffer is enabled with no error.
-> 
-> Note from Jonathan: Probably not suitable for automatic application to stable.
-> This has been there from the very start.  It tidies up an odd corner
-> case but won't effect any 'real' users.
-> 
+> On Jun 19, 2020, at 9:17 AM, Borislav Petkov <bp@alien8.de> wrote:
+>=20
+> =EF=BB=BFOn Fri, Jun 19, 2020 at 08:48:47AM -0700, Andy Lutomirski wrote:
+>> Boris, it wouldn=E2=80=99t be totally crazy for cpuinfo to learn to
+>> distinguish between =E2=80=9Cyour platform has this feature but Linux
+>> isn=E2=80=99t using it=E2=80=9D and =E2=80=9Cyour platform doesn=E2=80=99=
+t have this feature
+>> in the first place=E2=80=9D. And I suppose there=E2=80=99s this extra sil=
+ly state
+>> =E2=80=9Cyour platform has this feature, but your firmware didn=E2=80=99t=
+ enable
+>> it=E2=80=9D. This would be a big job.
+>=20
+> Well, I believe all the kernel can do is supply bits of information -
+> just like MSRs - and depending on the settings of those bits, userspace
+> can decide what the situation is. For example:
+>=20
+> bit 0 - CPUID support
+> bit 1 - BIOS enabled
+> bit 2 - quirk applied
+> bit 3 - microcode fixes present
+> ...
+>=20
+> and so on.
+>=20
 
-As noted. I don't think it matters if we do apply this to stable.
-It closes an interface oddity rather than an actual known bug.
+Indeed.
 
-> Fixes: 84b36ce5f79c0 ("staging:iio: Add support for multiple buffers")
-> Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-> Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/iio/industrialio-buffer.c | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/iio/industrialio-buffer.c b/drivers/iio/industrialio-buffer.c
-> index 864a61b05665..fea41b328ab9 100644
-> --- a/drivers/iio/industrialio-buffer.c
-> +++ b/drivers/iio/industrialio-buffer.c
-> @@ -641,6 +641,13 @@ static int iio_verify_update(struct iio_dev *indio_dev,
->  	bool scan_timestamp;
->  	unsigned int modes;
->  
-> +	if (insert_buffer &&
-> +	    bitmap_empty(insert_buffer->scan_mask, indio_dev->masklength)) {
-> +		dev_dbg(&indio_dev->dev,
-> +			"At least one scan element must be enabled first\n");
-> +		return -EINVAL;
-> +	}
-> +
->  	memset(config, 0, sizeof(*config));
->  
->  	/*
+> It needs a proper definition though and userspace to say, yes, we want
+> that and that is useful for us.
 
+Maybe the right approach is to just keep this kind of use in mind for when w=
+e inevitably redo cpu features when Intel ships their hybrid Atom/Core machi=
+nes.
 
+>=20
+> Where it ends up is then beside the point - /proc/cpuinfo,
+> /sys/devices/system/cpu, whatever...
+>=20
+> --=20
+> Regards/Gruss,
+>    Boris.
+>=20
+> https://people.kernel.org/tglx/notes-about-netiquette
