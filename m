@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0837C200BC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:38:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28D7200C23
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387769AbgFSOho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:37:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54192 "EHLO mail.kernel.org"
+        id S1733291AbgFSOmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:42:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387710AbgFSOhX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:37:23 -0400
+        id S2387999AbgFSOmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:42:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6D2421527;
-        Fri, 19 Jun 2020 14:37:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1ED8820CC7;
+        Fri, 19 Jun 2020 14:42:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577443;
-        bh=FdpUTESJ9f6tKR31I9XJPxlSZiptBJC8TU1UArWeeCo=;
+        s=default; t=1592577733;
+        bh=5Je26gO6C3CocQCMRXvtb19WLm+OtkVowkKyukTrP44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kfln0CwobEvuC3+rk2bOyNf1NjqPcXVOuSVhmfu63GqizOlw3JzK3np7hRoYFvHDe
-         3iRIUZ6qYW1l9r+d4yc/4hSqw4fC+84kq3cOnyzHjR9N56Yg82OV+MdNwONVp18gVx
-         vpE167h9Wxah6UZ7Sad76iDIrXmzVRvcjTw3zip8=
+        b=LbKxH4j8+CKOrDFdPRyNCtsqIy940NcejMo/ha9hlJLicCk5amNYQSYOQ9hbk7JyV
+         kOjMD2GXstEdniy/HnmviY7hbHtF+BQgDqj+ZrN/R1Lt+MsjZ8c+WMqiwcvPYj+2Ka
+         lAkY5wZxBz/kLmNNqvaKYZcO05owkj5f6m+xcsrQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+        stable@vger.kernel.org, Kees Cook <keescook@chromium.org>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 052/101] ARM: 8978/1: mm: make act_mm() respect THREAD_SIZE
-Date:   Fri, 19 Jun 2020 16:32:41 +0200
-Message-Id: <20200619141616.787994343@linuxfoundation.org>
+Subject: [PATCH 4.9 068/128] e1000: Distribute switch variables for initialization
+Date:   Fri, 19 Jun 2020 16:32:42 +0200
+Message-Id: <20200619141623.808308755@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
-References: <20200619141614.001544111@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,63 +45,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Kees Cook <keescook@chromium.org>
 
-[ Upstream commit e1de94380af588bdf6ad6f0cc1f75004c35bc096 ]
+[ Upstream commit a34c7f5156654ebaf7eaace102938be7ff7036cb ]
 
-Recent work with KASan exposed the folling hard-coded bitmask
-in arch/arm/mm/proc-macros.S:
+Variables declared in a switch statement before any case statements
+cannot be automatically initialized with compiler instrumentation (as
+they are not part of any execution flow). With GCC's proposed automatic
+stack variable initialization feature, this triggers a warning (and they
+don't get initialized). Clang's automatic stack variable initialization
+(via CONFIG_INIT_STACK_ALL=y) doesn't throw a warning, but it also
+doesn't initialize such variables[1]. Note that these warnings (or silent
+skipping) happen before the dead-store elimination optimization phase,
+so even when the automatic initializations are later elided in favor of
+direct initializations, the warnings remain.
 
-  bic     rd, sp, #8128
-  bic     rd, rd, #63
+To avoid these problems, move such variables into the "case" where
+they're used or lift them up into the main function body.
 
-This forms the bitmask 0x1FFF that is coinciding with
-(PAGE_SIZE << THREAD_SIZE_ORDER) - 1, this code was assuming
-that THREAD_SIZE is always 8K (8192).
+drivers/net/ethernet/intel/e1000/e1000_main.c: In function ‘e1000_xmit_frame’:
+drivers/net/ethernet/intel/e1000/e1000_main.c:3143:18: warning: statement will never be executed [-Wswitch-unreachable]
+ 3143 |     unsigned int pull_size;
+      |                  ^~~~~~~~~
 
-As KASan was increasing THREAD_SIZE_ORDER to 2, I ran into
-this bug.
+[1] https://bugs.llvm.org/show_bug.cgi?id=44916
 
-Fix it by this little oneline suggested by Ard:
-
-  bic     rd, sp, #(THREAD_SIZE - 1) & ~63
-
-Where THREAD_SIZE is defined using THREAD_SIZE_ORDER.
-
-We have to also include <linux/const.h> since the THREAD_SIZE
-expands to use the _AC() macro.
-
-Cc: Ard Biesheuvel <ardb@kernel.org>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mm/proc-macros.S | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/intel/e1000/e1000_main.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm/mm/proc-macros.S b/arch/arm/mm/proc-macros.S
-index e6bfdcc381f8..1da55d34f4d6 100644
---- a/arch/arm/mm/proc-macros.S
-+++ b/arch/arm/mm/proc-macros.S
-@@ -4,6 +4,7 @@
-  *  VMA_VM_FLAGS
-  *  VM_EXEC
-  */
-+#include <linux/const.h>
- #include <asm/asm-offsets.h>
- #include <asm/thread_info.h>
- 
-@@ -30,7 +31,7 @@
-  * act_mm - get current->active_mm
-  */
- 	.macro	act_mm, rd
--	bic	\rd, sp, #8128
-+	bic	\rd, sp, #(THREAD_SIZE - 1) & ~63
- 	bic	\rd, \rd, #63
- 	ldr	\rd, [\rd, #TI_TASK]
- 	ldr	\rd, [\rd, #TSK_ACTIVE_MM]
+diff --git a/drivers/net/ethernet/intel/e1000/e1000_main.c b/drivers/net/ethernet/intel/e1000/e1000_main.c
+index 39a09e18c1b7..3b16ee0de246 100644
+--- a/drivers/net/ethernet/intel/e1000/e1000_main.c
++++ b/drivers/net/ethernet/intel/e1000/e1000_main.c
+@@ -3167,8 +3167,9 @@ static netdev_tx_t e1000_xmit_frame(struct sk_buff *skb,
+ 		hdr_len = skb_transport_offset(skb) + tcp_hdrlen(skb);
+ 		if (skb->data_len && hdr_len == len) {
+ 			switch (hw->mac_type) {
++			case e1000_82544: {
+ 				unsigned int pull_size;
+-			case e1000_82544:
++
+ 				/* Make sure we have room to chop off 4 bytes,
+ 				 * and that the end alignment will work out to
+ 				 * this hardware's requirements
+@@ -3189,6 +3190,7 @@ static netdev_tx_t e1000_xmit_frame(struct sk_buff *skb,
+ 				}
+ 				len = skb_headlen(skb);
+ 				break;
++			}
+ 			default:
+ 				/* do nothing */
+ 				break;
 -- 
 2.25.1
 
