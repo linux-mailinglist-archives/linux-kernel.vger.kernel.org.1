@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4B020107E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF3A201284
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393772AbgFSPbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:31:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34886 "EHLO mail.kernel.org"
+        id S2393086AbgFSPWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:22:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393758AbgFSPa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:30:57 -0400
+        id S2403877AbgFSPPU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:15:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7674206B7;
-        Fri, 19 Jun 2020 15:30:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE92A206DB;
+        Fri, 19 Jun 2020 15:15:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580656;
-        bh=D4A67mbrWqK5bcyd2xtaSN2eqdhN9WQjyd9DakMMtOs=;
+        s=default; t=1592579719;
+        bh=0KyO+5mrWMuKtoyYwUv5HIPOy5RHKWqUa3tEeT5t9Q4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bJjPvH3KhiPe6K0gDfT4SHgKtsbSqXcrAZX+c92fOV9ZYdcf0yngGYwO2wxoIJrEf
-         +ZM3tkEQh137DjjyugNs6AnwxF251VeU8r2PQFGm4RlT3aVako3vlFFfp7SUG06UuS
-         hSK14QyG7N2BF7uOoKpEU0ImWHDP8ZoyeoCUxB2M=
+        b=UarD7/46nNEYucoKFi+4LUU4x8fYivAdKZjwIT8VLf9xAxh4G9CvY0g0/KhFiA+vJ
+         JaJrpYOvtYmYrWPJh35Y+psjaFk5tZpO+gNcrukUeGJRD6iL4K3Ds7zdxOmUHEhU/W
+         Wl2C1wKMFBE9xMTUgT/bxBfsRapFeTt2qsWbBkKg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>,
-        Thierry Reding <treding@nvidia.com>
-Subject: [PATCH 5.7 332/376] soc/tegra: pmc: Select GENERIC_PINCONF
-Date:   Fri, 19 Jun 2020 16:34:10 +0200
-Message-Id: <20200619141726.047887372@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 5.4 240/261] mtd: rawnand: Fix nand_gpio_waitrdy()
+Date:   Fri, 19 Jun 2020 16:34:11 +0200
+Message-Id: <20200619141701.384262685@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
-References: <20200619141710.350494719@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,36 +45,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Corentin Labbe <clabbe@baylibre.com>
+From: Boris Brezillon <boris.brezillon@collabora.com>
 
-commit 5098e2b95e8e6f56266c2d5c180c75917090082a upstream.
+commit e45a4b652dbd2f8b5a3b8e97e89f602a58cb28aa upstream.
 
-I have hit the following build error:
-armv7a-hardfloat-linux-gnueabi-ld: drivers/soc/tegra/pmc.o: in function `pinconf_generic_dt_node_to_map_pin':
-pmc.c:(.text+0x500): undefined reference to `pinconf_generic_dt_node_to_map'
-armv7a-hardfloat-linux-gnueabi-ld: drivers/soc/tegra/pmc.o:(.rodata+0x1f88): undefined reference to `pinconf_generic_dt_free_map'
+Mimic what's done in nand_soft_waitrdy() and add one to the jiffies
+timeout so we don't end up waiting less than actually required.
 
-So SOC_TEGRA_PMC should select GENERIC_PINCONF.
-
-Fixes: 4a37f11c8f57 ("soc/tegra: pmc: Implement pad configuration via pinctrl")
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
-Signed-off-by: Thierry Reding <treding@nvidia.com>
+Reported-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Fixes: b0e137ad24b6c ("mtd: rawnand: Provide helper for polling GPIO R/B pin")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
+Reviewed-by: Tudor Ambarus <tudor.ambarus@microchip.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20200518155237.297549-1-boris.brezillon@collabora.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/soc/tegra/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+ drivers/mtd/nand/raw/nand_base.c |   10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
---- a/drivers/soc/tegra/Kconfig
-+++ b/drivers/soc/tegra/Kconfig
-@@ -133,6 +133,7 @@ config SOC_TEGRA_FLOWCTRL
- 
- config SOC_TEGRA_PMC
- 	bool
-+	select GENERIC_PINCONF
- 
- config SOC_TEGRA_POWERGATE_BPMP
- 	def_bool y
+--- a/drivers/mtd/nand/raw/nand_base.c
++++ b/drivers/mtd/nand/raw/nand_base.c
+@@ -731,8 +731,14 @@ EXPORT_SYMBOL_GPL(nand_soft_waitrdy);
+ int nand_gpio_waitrdy(struct nand_chip *chip, struct gpio_desc *gpiod,
+ 		      unsigned long timeout_ms)
+ {
+-	/* Wait until R/B pin indicates chip is ready or timeout occurs */
+-	timeout_ms = jiffies + msecs_to_jiffies(timeout_ms);
++
++	/*
++	 * Wait until R/B pin indicates chip is ready or timeout occurs.
++	 * +1 below is necessary because if we are now in the last fraction
++	 * of jiffy and msecs_to_jiffies is 1 then we will wait only that
++	 * small jiffy fraction - possibly leading to false timeout.
++	 */
++	timeout_ms = jiffies + msecs_to_jiffies(timeout_ms) + 1;
+ 	do {
+ 		if (gpiod_get_value_cansleep(gpiod))
+ 			return 0;
 
 
