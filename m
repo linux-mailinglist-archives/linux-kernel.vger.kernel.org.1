@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE32200CF6
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:53:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4B45200C4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389489AbgFSOvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:51:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44932 "EHLO mail.kernel.org"
+        id S2388194AbgFSOn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:43:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389440AbgFSOvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:51:23 -0400
+        id S2388505AbgFSOnp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:43:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7422221527;
-        Fri, 19 Jun 2020 14:51:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C0A3521707;
+        Fri, 19 Jun 2020 14:43:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578283;
-        bh=9q9FCR8Oo+rubBoJznCQ2ZmbuBcOa70GiIHcLshJxEY=;
+        s=default; t=1592577825;
+        bh=FeCyewu7Db/5Xu+nwArUyTocoh2rNveCn+wmznFtYgw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VguCsqBcpYYU3F9vqfAbmuV/KHLTCKRimvYdewhlmztAMwD7SRLW9tYUCNT6/ENjG
-         QBYSKfZlp6ilUiiF3tnbISRarNSkdJy7MUJdSTSxA2XuN+rUxm2Ye/mm3BF3m7ADBg
-         zvyIfb7kSWksen29VDYt/obIg8h1/9ntGX920alE=
+        b=Ih41QiMEesPmK1iwXm2rdkyjvyAXokcQqXmgqhlccbfVwo9z6NVYcnLZxN4HCgVQG
+         GonSeOmUxL9658eAhc+65TgWexTRDynajSRd8SMCgLoLi/gnzMBquXtSLAVgklgw6G
+         EuIgttamJubvMJ4quODT4oTWHr25hzRbtIuY2qeE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        stable@vger.kernel.org, Giuliano Procida <gprocida@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 153/190] PCI: Make ACS quirk implementations more uniform
-Date:   Fri, 19 Jun 2020 16:33:18 +0200
-Message-Id: <20200619141641.374762290@linuxfoundation.org>
+Subject: [PATCH 4.9 105/128] blk-mq: move blk_mq_update_nr_hw_queues synchronize_rcu call
+Date:   Fri, 19 Jun 2020 16:33:19 +0200
+Message-Id: <20200619141625.689301820@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,122 +43,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+From: Giuliano Procida <gprocida@google.com>
 
-[ Upstream commit c8de8ed2dcaac82e5d76d467dc0b02e0ee79809b ]
+This fixes the
+4.9 backport commit f530afb974c2e82047bd6220303a2dbe30eff304
+which was
+upstream commit f5bbbbe4d63577026f908a809f22f5fd5a90ea1f.
 
-The ACS quirks differ in needless ways, which makes them look more
-different than they really are.
+The upstream commit added a call to synchronize_rcu to
+_blk_mq_update_nr_hw_queues, just after freezing queues.
 
-Reorder the ACS flags in order of definitions in the spec:
+In the backport this landed (in blk_mq_update_nr_hw_queues instead),
+just after unfreezeing queues.
 
-  PCI_ACS_SV   Source Validation
-  PCI_ACS_TB   Translation Blocking
-  PCI_ACS_RR   P2P Request Redirect
-  PCI_ACS_CR   P2P Completion Redirect
-  PCI_ACS_UF   Upstream Forwarding
-  PCI_ACS_EC   P2P Egress Control
-  PCI_ACS_DT   Direct Translated P2P
+This commit moves the call to its intended place.
 
-(PCIe r5.0, sec 7.7.8.2) and use similar code structure in all.  No
-functional change intended.
-
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Logan Gunthorpe <logang@deltatee.com>
-Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
+Fixes: f530afb974c2 ("blk-mq: sync the update nr_hw_queues with blk_mq_queue_tag_busy_iter")
+Signed-off-by: Giuliano Procida <gprocida@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c | 41 +++++++++++++++++++----------------------
- 1 file changed, 19 insertions(+), 22 deletions(-)
+ block/blk-mq.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 81d76e34b0db..44be840dac0d 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -4305,18 +4305,18 @@ static bool pci_quirk_cavium_acs_match(struct pci_dev *dev)
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 58be2eaa5aaa..e0ed7317e98c 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -2331,6 +2331,10 @@ void blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set, int nr_hw_queues)
  
- static int pci_quirk_cavium_acs(struct pci_dev *dev, u16 acs_flags)
- {
-+	if (!pci_quirk_cavium_acs_match(dev))
-+		return -ENOTTY;
-+
- 	/*
--	 * Cavium root ports don't advertise an ACS capability.  However,
-+	 * Cavium Root Ports don't advertise an ACS capability.  However,
- 	 * the RTL internally implements similar protection as if ACS had
--	 * Request Redirection, Completion Redirection, Source Validation,
-+	 * Source Validation, Request Redirection, Completion Redirection,
- 	 * and Upstream Forwarding features enabled.  Assert that the
- 	 * hardware implements and enables equivalent ACS functionality for
- 	 * these flags.
- 	 */
--	acs_flags &= ~(PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_SV | PCI_ACS_UF);
--
--	if (!pci_quirk_cavium_acs_match(dev))
--		return -ENOTTY;
-+	acs_flags &= ~(PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
+ 	list_for_each_entry(q, &set->tag_list, tag_set_list)
+ 		blk_mq_freeze_queue(q);
++	/*
++	 * Sync with blk_mq_queue_tag_busy_iter.
++	 */
++	synchronize_rcu();
  
- 	return acs_flags ? 0 : 1;
+ 	set->nr_hw_queues = nr_hw_queues;
+ 	list_for_each_entry(q, &set->tag_list, tag_set_list) {
+@@ -2346,10 +2350,6 @@ void blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set, int nr_hw_queues)
+ 
+ 	list_for_each_entry(q, &set->tag_list, tag_set_list)
+ 		blk_mq_unfreeze_queue(q);
+-	/*
+-	 * Sync with blk_mq_queue_tag_busy_iter.
+-	 */
+-	synchronize_rcu();
  }
-@@ -4334,7 +4334,7 @@ static int pci_quirk_xgene_acs(struct pci_dev *dev, u16 acs_flags)
- }
+ EXPORT_SYMBOL_GPL(blk_mq_update_nr_hw_queues);
  
- /*
-- * Many Intel PCH root ports do provide ACS-like features to disable peer
-+ * Many Intel PCH Root Ports do provide ACS-like features to disable peer
-  * transactions and validate bus numbers in requests, but do not provide an
-  * actual PCIe ACS capability.  This is the list of device IDs known to fall
-  * into that category as provided by Intel in Red Hat bugzilla 1037684.
-@@ -4382,37 +4382,34 @@ static bool pci_quirk_intel_pch_acs_match(struct pci_dev *dev)
- 	return false;
- }
- 
--#define INTEL_PCH_ACS_FLAGS (PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF | PCI_ACS_SV)
-+#define INTEL_PCH_ACS_FLAGS (PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF)
- 
- static int pci_quirk_intel_pch_acs(struct pci_dev *dev, u16 acs_flags)
- {
--	u16 flags = dev->dev_flags & PCI_DEV_FLAGS_ACS_ENABLED_QUIRK ?
--		    INTEL_PCH_ACS_FLAGS : 0;
--
- 	if (!pci_quirk_intel_pch_acs_match(dev))
- 		return -ENOTTY;
- 
--	return acs_flags & ~flags ? 0 : 1;
-+	if (dev->dev_flags & PCI_DEV_FLAGS_ACS_ENABLED_QUIRK)
-+		acs_flags &= ~(INTEL_PCH_ACS_FLAGS);
-+
-+	return acs_flags ? 0 : 1;
- }
- 
- /*
-- * These QCOM root ports do provide ACS-like features to disable peer
-+ * These QCOM Root Ports do provide ACS-like features to disable peer
-  * transactions and validate bus numbers in requests, but do not provide an
-  * actual PCIe ACS capability.  Hardware supports source validation but it
-  * will report the issue as Completer Abort instead of ACS Violation.
-- * Hardware doesn't support peer-to-peer and each root port is a root
-- * complex with unique segment numbers.  It is not possible for one root
-- * port to pass traffic to another root port.  All PCIe transactions are
-- * terminated inside the root port.
-+ * Hardware doesn't support peer-to-peer and each Root Port is a Root
-+ * Complex with unique segment numbers.  It is not possible for one Root
-+ * Port to pass traffic to another Root Port.  All PCIe transactions are
-+ * terminated inside the Root Port.
-  */
- static int pci_quirk_qcom_rp_acs(struct pci_dev *dev, u16 acs_flags)
- {
--	u16 flags = (PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF | PCI_ACS_SV);
--	int ret = acs_flags & ~flags ? 0 : 1;
--
--	dev_info(&dev->dev, "Using QCOM ACS Quirk (%d)\n", ret);
-+	acs_flags &= ~(PCI_ACS_SV | PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF);
- 
--	return ret;
-+	return acs_flags ? 0 : 1;
- }
- 
- /*
 -- 
 2.25.1
 
