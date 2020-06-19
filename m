@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DA5C200DFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15A7200F08
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:16:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391042AbgFSPDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:03:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60028 "EHLO mail.kernel.org"
+        id S2403964AbgFSPOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:14:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390968AbgFSPDQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:03:16 -0400
+        id S2392062AbgFSPOC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:14:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 004E6206DB;
-        Fri, 19 Jun 2020 15:03:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0527521582;
+        Fri, 19 Jun 2020 15:14:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578996;
-        bh=W2jMoETnaFmFGYNSvufQG5lSA4sk7X15UaQ2Ol1DU6E=;
+        s=default; t=1592579641;
+        bh=QasecetVS2wywm5+DfOgUE0zZX8LEXJJBx2rbD4hdMc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TNJ8kHQm7C2OayoawZ01m7xprgjqZ0Opbk426ncY3BMlUwFKCbfB8fhvrHaVj02Ny
-         FxpOsJMJY6RZ6vtOmaln4clMphWp5EWycz22PGv8Sa97iUqymcMEny27vfYX/+upy3
-         qvZMmGP/TWl+zaZN5vLpqPWd3Qk3vOZ9W2fqChbE=
+        b=mNVTQSUKUzaWQnhlFAk3gdmLX/vS2vOsXFT1irPNS28OH089QLz5Q8PH4VMlS1gbs
+         RMoRhl4mBU0lTFyPEGN/zUg7t70qWarlzWdD1nwIwtr9+NH4TX3vNxM03uXb4eluWL
+         mIXl0seINtZab7f5VrXPCKzy2FaHR5xrAGjui0jc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        Marcel Holtmann <marcel@holtmann.org>
-Subject: [PATCH 4.19 236/267] Bluetooth: hci_bcm: fix freeing not-requested IRQ
-Date:   Fri, 19 Jun 2020 16:33:41 +0200
-Message-Id: <20200619141700.028285625@linuxfoundation.org>
+        stable@vger.kernel.org, Anders Roxell <anders.roxell@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 5.4 211/261] power: vexpress: add suppress_bind_attrs to true
+Date:   Fri, 19 Jun 2020 16:33:42 +0200
+Message-Id: <20200619141700.003858944@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,70 +43,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+From: Anders Roxell <anders.roxell@linaro.org>
 
-commit 81bd5d0c62437c02caac6b3f942fcda874063cb0 upstream.
+commit 73174acc9c75960af2daa7dcbdb9781fc0d135cb upstream.
 
-When BT module can't be initialized, but it has an IRQ, unloading
-the driver WARNs when trying to free not-yet-requested IRQ. Fix it by
-noting whether the IRQ was requested.
+Make sure that the POWER_RESET_VEXPRESS driver won't have bind/unbind
+attributes available via the sysfs, so lets be explicit here and use
+".suppress_bind_attrs = true" to prevent userspace from doing something
+silly.
 
-WARNING: CPU: 2 PID: 214 at kernel/irq/devres.c:144 devm_free_irq+0x49/0x4ca
-[...]
-WARNING: CPU: 2 PID: 214 at kernel/irq/manage.c:1746 __free_irq+0x8b/0x27c
-Trying to free already-free IRQ 264
-Modules linked in: hci_uart(-) btbcm bluetooth ecdh_generic ecc libaes
-CPU: 2 PID: 214 Comm: rmmod Tainted: G        W         5.6.1mq-00044-ga5f9ea098318-dirty #928
-[...]
-[<b016aefb>] (devm_free_irq) from [<af8ba1ff>] (bcm_close+0x97/0x118 [hci_uart])
-[<af8ba1ff>] (bcm_close [hci_uart]) from [<af8b736f>] (hci_uart_unregister_device+0x33/0x3c [hci_uart])
-[<af8b736f>] (hci_uart_unregister_device [hci_uart]) from [<b035930b>] (serdev_drv_remove+0x13/0x20)
-[<b035930b>] (serdev_drv_remove) from [<b037093b>] (device_release_driver_internal+0x97/0x118)
-[<b037093b>] (device_release_driver_internal) from [<b0370a0b>] (driver_detach+0x2f/0x58)
-[<b0370a0b>] (driver_detach) from [<b036f855>] (bus_remove_driver+0x41/0x94)
-[<b036f855>] (bus_remove_driver) from [<af8ba8db>] (bcm_deinit+0x1b/0x740 [hci_uart])
-[<af8ba8db>] (bcm_deinit [hci_uart]) from [<af8ba86f>] (hci_uart_exit+0x13/0x30 [hci_uart])
-[<af8ba86f>] (hci_uart_exit [hci_uart]) from [<b01900bd>] (sys_delete_module+0x109/0x1d0)
-[<b01900bd>] (sys_delete_module) from [<b0101001>] (ret_fast_syscall+0x1/0x5a)
-[...]
-
+Link: https://lore.kernel.org/r/20200527112608.3886105-2-anders.roxell@linaro.org
 Cc: stable@vger.kernel.org
-Fixes: 6cc4396c8829 ("Bluetooth: hci_bcm: Add wake-up capability")
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/bluetooth/hci_bcm.c |    5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/power/reset/vexpress-poweroff.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/bluetooth/hci_bcm.c
-+++ b/drivers/bluetooth/hci_bcm.c
-@@ -115,6 +115,7 @@ struct bcm_device {
- 	u32			oper_speed;
- 	int			irq;
- 	bool			irq_active_low;
-+	bool			irq_acquired;
+--- a/drivers/power/reset/vexpress-poweroff.c
++++ b/drivers/power/reset/vexpress-poweroff.c
+@@ -143,6 +143,7 @@ static struct platform_driver vexpress_r
+ 	.driver = {
+ 		.name = "vexpress-reset",
+ 		.of_match_table = vexpress_reset_of_match,
++		.suppress_bind_attrs = true,
+ 	},
+ };
  
- #ifdef CONFIG_PM
- 	struct hci_uart		*hu;
-@@ -288,6 +289,8 @@ static int bcm_request_irq(struct bcm_da
- 		goto unlock;
- 	}
- 
-+	bdev->irq_acquired = true;
-+
- 	device_init_wakeup(bdev->dev, true);
- 
- 	pm_runtime_set_autosuspend_delay(bdev->dev,
-@@ -456,7 +459,7 @@ static int bcm_close(struct hci_uart *hu
- 	}
- 
- 	if (bdev) {
--		if (IS_ENABLED(CONFIG_PM) && bdev->irq > 0) {
-+		if (IS_ENABLED(CONFIG_PM) && bdev->irq_acquired) {
- 			devm_free_irq(bdev->dev, bdev->irq, bdev);
- 			device_init_wakeup(bdev->dev, false);
- 			pm_runtime_disable(bdev->dev);
 
 
