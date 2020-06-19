@@ -2,35 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030D42016E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8332B201784
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388856AbgFSOqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:46:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38136 "EHLO mail.kernel.org"
+        id S2395400AbgFSQjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:39:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38214 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388836AbgFSOqY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:46:24 -0400
+        id S2387887AbgFSOq1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:46:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7F48420DD4;
-        Fri, 19 Jun 2020 14:46:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3938221556;
+        Fri, 19 Jun 2020 14:46:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577984;
-        bh=HjIIrdyaQ83b1V7S2LAZQuZL99+VB1+436lKSf7nNBU=;
+        s=default; t=1592577987;
+        bh=9t8nNr8DviJl2ioTT/69aMYI784JuhggJjQlH+cGemM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ScxYP0Fngg86ExrNg4OsU2SivT/j80XmT/OwhKhCiqIO2O1kIqz32LPHEMSrr0w/V
-         nD0DP0ZXLc+wMqOrJ8uBJkO3NRhaDkCx3N5KMni17i1KiMC8wont2VXMMrD0fAnURY
-         Xo5kFxc2brhD+UMRre3kbd9I18JCrW/0sr/2ZGac=
+        b=UHw/5NOgy+IMOuk+plT/mDr8lfIpgMAXwNssXBlOx9rVtb+Z/udYLwl+NkkLg7n/X
+         YF8o7y+O1jfOCjZeBpMl+tqw0gByemCfzAE0DzSsr7tGAFz8x/hdTIJLRCCgz/z27y
+         klcxJDdbsdbaGXWVJUS+VpTrwqxUFRsTaN71r7os=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Waiman Long <longman@redhat.com>,
+        Borislav Petkov <bp@suse.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Kosina <jkosina@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        KarimAllah Ahmed <karahmed@amazon.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tim Chen <tim.c.chen@linux.intel.com>, x86-ml <x86@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 038/190] KVM: x86: only do L1TF workaround on affected processors
-Date:   Fri, 19 Jun 2020 16:31:23 +0200
-Message-Id: <20200619141635.473250358@linuxfoundation.org>
+Subject: [PATCH 4.14 039/190] x86/speculation: Change misspelled STIPB to STIBP
+Date:   Fri, 19 Jun 2020 16:31:24 +0200
+Message-Id: <20200619141635.535158976@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
 References: <20200619141633.446429600@linuxfoundation.org>
@@ -43,78 +53,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Bonzini <pbonzini@redhat.com>
+From: Waiman Long <longman@redhat.com>
 
-[ Upstream commit d43e2675e96fc6ae1a633b6a69d296394448cc32 ]
+[ Upstream commit aa77bfb354c495fc4361199e63fc5765b9e1e783 ]
 
-KVM stores the gfn in MMIO SPTEs as a caching optimization.  These are split
-in two parts, as in "[high 11111 low]", to thwart any attempt to use these bits
-in an L1TF attack.  This works as long as there are 5 free bits between
-MAXPHYADDR and bit 50 (inclusive), leaving bit 51 free so that the MMIO
-access triggers a reserved-bit-set page fault.
+STIBP stands for Single Thread Indirect Branch Predictors. The acronym,
+however, can be easily mis-spelled as STIPB. It is perhaps due to the
+presence of another related term - IBPB (Indirect Branch Predictor
+Barrier).
 
-The bit positions however were computed wrongly for AMD processors that have
-encryption support.  In this case, x86_phys_bits is reduced (for example
-from 48 to 43, to account for the C bit at position 47 and four bits used
-internally to store the SEV ASID and other stuff) while x86_cache_bits in
-would remain set to 48, and _all_ bits between the reduced MAXPHYADDR
-and bit 51 are set.  Then low_phys_bits would also cover some of the
-bits that are set in the shadow_mmio_value, terribly confusing the gfn
-caching mechanism.
+Fix the mis-spelling in the code.
 
-To fix this, avoid splitting gfns as long as the processor does not have
-the L1TF bug (which includes all AMD processors).  When there is no
-splitting, low_phys_bits can be set to the reduced MAXPHYADDR removing
-the overlap.  This fixes "npt=0" operation on EPYC processors.
-
-Thanks to Maxim Levitsky for bisecting this bug.
-
-Cc: stable@vger.kernel.org
-Fixes: 52918ed5fcf0 ("KVM: SVM: Override default MMIO mask if memory encryption is enabled")
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jiri Kosina <jkosina@suse.cz>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: KarimAllah Ahmed <karahmed@amazon.de>
+Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: x86-ml <x86@kernel.org>
+Link: https://lkml.kernel.org/r/1544039368-9009-1-git-send-email-longman@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/mmu.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+ arch/x86/kernel/cpu/bugs.c | 6 +++---
+ arch/x86/kernel/process.h  | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu.c b/arch/x86/kvm/mmu.c
-index d8878266553c..7220ab210dcf 100644
---- a/arch/x86/kvm/mmu.c
-+++ b/arch/x86/kvm/mmu.c
-@@ -275,6 +275,8 @@ static bool is_executable_pte(u64 spte);
- void kvm_mmu_set_mmio_spte_mask(u64 mmio_mask, u64 mmio_value)
- {
- 	BUG_ON((mmio_mask & mmio_value) != mmio_value);
-+	WARN_ON(mmio_value & (shadow_nonpresent_or_rsvd_mask << shadow_nonpresent_or_rsvd_mask_len));
-+	WARN_ON(mmio_value & shadow_nonpresent_or_rsvd_lower_gfn_mask);
- 	shadow_mmio_value = mmio_value | SPTE_SPECIAL_MASK;
- 	shadow_mmio_mask = mmio_mask | SPTE_SPECIAL_MASK;
- }
-@@ -467,16 +469,15 @@ static void kvm_mmu_reset_all_pte_masks(void)
- 	 * the most significant bits of legal physical address space.
- 	 */
- 	shadow_nonpresent_or_rsvd_mask = 0;
--	low_phys_bits = boot_cpu_data.x86_cache_bits;
--	if (boot_cpu_data.x86_cache_bits <
--	    52 - shadow_nonpresent_or_rsvd_mask_len) {
-+	low_phys_bits = boot_cpu_data.x86_phys_bits;
-+	if (boot_cpu_has_bug(X86_BUG_L1TF) &&
-+	    !WARN_ON_ONCE(boot_cpu_data.x86_cache_bits >=
-+			  52 - shadow_nonpresent_or_rsvd_mask_len)) {
-+		low_phys_bits = boot_cpu_data.x86_cache_bits
-+			- shadow_nonpresent_or_rsvd_mask_len;
- 		shadow_nonpresent_or_rsvd_mask =
--			rsvd_bits(boot_cpu_data.x86_cache_bits -
--				  shadow_nonpresent_or_rsvd_mask_len,
--				  boot_cpu_data.x86_cache_bits - 1);
--		low_phys_bits -= shadow_nonpresent_or_rsvd_mask_len;
--	} else
--		WARN_ON_ONCE(boot_cpu_has_bug(X86_BUG_L1TF));
-+			rsvd_bits(low_phys_bits, boot_cpu_data.x86_cache_bits - 1);
-+	}
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index 1de9a3c404af..3c3406a36812 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -61,7 +61,7 @@ static u64 __ro_after_init x86_spec_ctrl_mask = SPEC_CTRL_IBRS;
+ u64 __ro_after_init x86_amd_ls_cfg_base;
+ u64 __ro_after_init x86_amd_ls_cfg_ssbd_mask;
  
- 	shadow_nonpresent_or_rsvd_lower_gfn_mask =
- 		GENMASK_ULL(low_phys_bits - 1, PAGE_SHIFT);
+-/* Control conditional STIPB in switch_to() */
++/* Control conditional STIBP in switch_to() */
+ DEFINE_STATIC_KEY_FALSE(switch_to_cond_stibp);
+ /* Control conditional IBPB in switch_mm() */
+ DEFINE_STATIC_KEY_FALSE(switch_mm_cond_ibpb);
+@@ -750,12 +750,12 @@ spectre_v2_user_select_mitigation(enum spectre_v2_mitigation_cmd v2_cmd)
+ 			"always-on" : "conditional");
+ 	}
+ 
+-	/* If enhanced IBRS is enabled no STIPB required */
++	/* If enhanced IBRS is enabled no STIBP required */
+ 	if (spectre_v2_enabled == SPECTRE_V2_IBRS_ENHANCED)
+ 		return;
+ 
+ 	/*
+-	 * If SMT is not possible or STIBP is not available clear the STIPB
++	 * If SMT is not possible or STIBP is not available clear the STIBP
+ 	 * mode.
+ 	 */
+ 	if (!smt_possible || !boot_cpu_has(X86_FEATURE_STIBP))
+diff --git a/arch/x86/kernel/process.h b/arch/x86/kernel/process.h
+index 898e97cf6629..320ab978fb1f 100644
+--- a/arch/x86/kernel/process.h
++++ b/arch/x86/kernel/process.h
+@@ -19,7 +19,7 @@ static inline void switch_to_extra(struct task_struct *prev,
+ 	if (IS_ENABLED(CONFIG_SMP)) {
+ 		/*
+ 		 * Avoid __switch_to_xtra() invocation when conditional
+-		 * STIPB is disabled and the only different bit is
++		 * STIBP is disabled and the only different bit is
+ 		 * TIF_SPEC_IB. For CONFIG_SMP=n TIF_SPEC_IB is not
+ 		 * in the TIF_WORK_CTXSW masks.
+ 		 */
 -- 
 2.25.1
 
