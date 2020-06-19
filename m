@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C34CC201210
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5D520129E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393342AbgFSPYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:24:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53448 "EHLO mail.kernel.org"
+        id S2405423AbgFSPxy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:53:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392947AbgFSPWG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:22:06 -0400
+        id S2392963AbgFSPWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:22:13 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8798921548;
-        Fri, 19 Jun 2020 15:22:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 76D922158C;
+        Fri, 19 Jun 2020 15:22:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580125;
-        bh=sI8qGZ67vRCEu32jaQy/usE2cJJy7oZBz5RPrSs/cAY=;
+        s=default; t=1592580133;
+        bh=GyawCehqGpm2VcAuaYavesS82XTSN3Zi4tiNLnMQVpI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j5mOI2nw4gACG4Gzp3Ps6D0LwCd5N0zy5fDUPrEgmdAizFbhUNAYQodKPF0WXUXrx
-         FMK7009xFoaVJY8Jy+zewhNY/Zr6ZWguWwza6OsUaCgW/WALA5MaE+7Pv+DCGfWYHu
-         8IRGEGAhoEo1zTwedYsuW9FQ+W51Sbux7OKYkIWg=
+        b=LcsjT9JZO6TEvOZLEMxnQLBJF/aA+8F+OzPmVdo4QN3cfxt7bEEiYq/eqsITjg/xb
+         0ESB8dnlcSRU2lobcxPoBk5YwCrO0S10A1JQL8yWNw+5qEq8kgyO9nSBgOrV4a4KHz
+         oYPWYaWdpBshJIuiC7drFzxsA6buBbjI1+bACxzs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Doug Berger <opendmb@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Roi Dayan <roid@mellanox.com>,
+        Saeed Mahameed <saeedm@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 131/376] net: bcmgenet: set Rx mode before starting netif
-Date:   Fri, 19 Jun 2020 16:30:49 +0200
-Message-Id: <20200619141716.535789404@linuxfoundation.org>
+Subject: [PATCH 5.7 134/376] net/mlx5e: CT: Avoid false warning about rule may be used uninitialized
+Date:   Fri, 19 Jun 2020 16:30:52 +0200
+Message-Id: <20200619141716.679086744@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -45,49 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Doug Berger <opendmb@gmail.com>
+From: Roi Dayan <roid@mellanox.com>
 
-[ Upstream commit 72f96347628e73dbb61b307f18dd19293cc6792a ]
+[ Upstream commit 70a5698a5683cd504b03c6030ee622b1bec3f702 ]
 
-This commit explicitly calls the bcmgenet_set_rx_mode() function when
-the network interface is started. This function is normally called by
-ndo_set_rx_mode when the flags are changed, but apparently not when
-the driver is suspended and resumed.
+Avoid gcc warning by preset rule to invalid ptr.
 
-This change ensures that address filtering or promiscuous mode are
-properly restored by the driver after the MAC may have been reset.
-
-Fixes: b6e978e50444 ("net: bcmgenet: add suspend/resume callbacks")
-Signed-off-by: Doug Berger <opendmb@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 4c3844d9e97e ("net/mlx5e: CT: Introduce connection tracking")
+Signed-off-by: Roi Dayan <roid@mellanox.com>
+Signed-off-by: Saeed Mahameed <saeedm@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/broadcom/genet/bcmgenet.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/broadcom/genet/bcmgenet.c b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-index 79636c78127c..38bdfd4b46f0 100644
---- a/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-+++ b/drivers/net/ethernet/broadcom/genet/bcmgenet.c
-@@ -70,6 +70,9 @@
- #define GENET_RDMA_REG_OFF	(priv->hw_params->rdma_offset + \
- 				TOTAL_DESC * DMA_DESC_SIZE)
- 
-+/* Forward declarations */
-+static void bcmgenet_set_rx_mode(struct net_device *dev);
-+
- static inline void bcmgenet_writel(u32 value, void __iomem *offset)
+diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
+index 153d6eb19d3c..470282daed19 100644
+--- a/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
++++ b/drivers/net/ethernet/mellanox/mlx5/core/en/tc_ct.c
+@@ -1132,7 +1132,7 @@ mlx5_tc_ct_flow_offload(struct mlx5e_priv *priv,
  {
- 	/* MIPS chips strapped for BE will automagically configure the
-@@ -2803,6 +2806,7 @@ static void bcmgenet_netif_start(struct net_device *dev)
- 	struct bcmgenet_priv *priv = netdev_priv(dev);
+ 	bool clear_action = attr->ct_attr.ct_action & TCA_CT_ACT_CLEAR;
+ 	struct mlx5_tc_ct_priv *ct_priv = mlx5_tc_ct_get_ct_priv(priv);
+-	struct mlx5_flow_handle *rule;
++	struct mlx5_flow_handle *rule = ERR_PTR(-EINVAL);
+ 	int err;
  
- 	/* Start the network engine */
-+	bcmgenet_set_rx_mode(dev);
- 	bcmgenet_enable_rx_napi(priv);
- 
- 	umac_enable_set(priv, CMD_TX_EN | CMD_RX_EN, true);
+ 	if (!ct_priv)
 -- 
 2.25.1
 
