@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1043F20168A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D17AB20159E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395077AbgFSQcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:32:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46702 "EHLO mail.kernel.org"
+        id S2388353AbgFSOw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:52:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389604AbgFSOwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:52:36 -0400
+        id S2388738AbgFSOwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:52:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1BF4217D8;
-        Fri, 19 Jun 2020 14:52:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 394D821556;
+        Fri, 19 Jun 2020 14:52:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578356;
-        bh=NwfQU7fSe4QB0jQSwOpSIhax6afxMeJGfgwLHF+zpZ4=;
+        s=default; t=1592578358;
+        bh=yQxQpjtkHjofVTksYCvmMXdlPiITVMnCbSS367MJYxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zIWfXjX8pRv4hXBpGDj38i7kXK2/T4DIiC96L44G1c0268Vl8DeeQ603jmqkpie1w
-         G82lMt6pK84TTfOpqVwphB1TmnmKCZ1TNBs4wDc6ZRGLEfLzjJWSyV1jUbt3HGqbC5
-         r33dMyddYg7ICGC/B6HXnZTgol/Md/a6nx7k2OQc=
+        b=bAzaOs842SGnqUrQClSyy5TdTcTsaxFk0xnipd8M+b2iivnVnNWYRVbU4cwodBff8
+         sYRFkTBnx6JCUr5+EwHMEMRT3DMMNNMEoZ8dArqFuRqUFDwufyaR+FWy6s0TFwhFl3
+         JPNEjVF9G5zwm+BOXpG/B+1o2GGqS1c9M1zezMGk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 4.14 181/190] powerpc/64s: Save FSCR to init_task.thread.fscr after feature init
-Date:   Fri, 19 Jun 2020 16:33:46 +0200
-Message-Id: <20200619141642.890318318@linuxfoundation.org>
+        stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 4.14 182/190] kbuild: force to build vmlinux if CONFIG_MODVERSION=y
+Date:   Fri, 19 Jun 2020 16:33:47 +0200
+Message-Id: <20200619141642.949498508@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
 References: <20200619141633.446429600@linuxfoundation.org>
@@ -42,81 +42,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Ellerman <mpe@ellerman.id.au>
+From: Masahiro Yamada <masahiroy@kernel.org>
 
-commit 912c0a7f2b5daa3cbb2bc10f303981e493de73bd upstream.
+commit 4b50c8c4eaf06a825d1c005c0b1b4a8307087b83 upstream.
 
-At boot the FSCR is initialised via one of two paths. On most systems
-it's set to a hard coded value in __init_FSCR().
+This code does not work as stated in the comment.
 
-On newer skiboot systems we use the device tree CPU features binding,
-where firmware can tell Linux what bits to set in FSCR (and HFSCR).
+$(CONFIG_MODVERSIONS) is always empty because it is expanded before
+include/config/auto.conf is included. Hence, 'make modules' with
+CONFIG_MODVERSION=y cannot record the version CRCs.
 
-In both cases the value that's configured at boot is not propagated
-into the init_task.thread.fscr value prior to the initial fork of init
-(pid 1), which means the value is not used by any processes other than
-swapper (the idle task).
+This has been broken since 2003, commit ("kbuild: Enable modules to be
+build using the "make dir/" syntax"). [1]
 
-For the __init_FSCR() case this is OK, because the value in
-init_task.thread.fscr is initialised to something sensible. However it
-does mean that the value set in __init_FSCR() is not used other than
-for swapper, which is odd and confusing.
-
-The bigger problem is for the device tree CPU features case it
-prevents firmware from setting (or clearing) FSCR bits for use by user
-space. This means all existing kernels can not have features
-enabled/disabled by firmware if those features require
-setting/clearing FSCR bits.
-
-We can handle both cases by saving the FSCR value into
-init_task.thread.fscr after we have initialised it at boot. This fixes
-the bug for device tree CPU features, and will allow us to simplify
-the initialisation for the __init_FSCR() case in a future patch.
-
-Fixes: 5a61ef74f269 ("powerpc/64s: Support new device tree binding for discovering CPU features")
-Cc: stable@vger.kernel.org # v4.12+
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200527145843.2761782-3-mpe@ellerman.id.au
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/history/history.git/commit/?id=15c6240cdc44bbeef3c4797ec860f9765ef4f1a7
+Cc: linux-stable <stable@vger.kernel.org> # v2.5.71+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/kernel/prom.c |   19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ Makefile |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
---- a/arch/powerpc/kernel/prom.c
-+++ b/arch/powerpc/kernel/prom.c
-@@ -658,6 +658,23 @@ static void __init early_reserve_mem(voi
- #endif
- }
+--- a/Makefile
++++ b/Makefile
+@@ -542,12 +542,8 @@ KBUILD_MODULES :=
+ KBUILD_BUILTIN := 1
  
-+#ifdef CONFIG_PPC64
-+static void __init save_fscr_to_task(void)
-+{
-+	/*
-+	 * Ensure the init_task (pid 0, aka swapper) uses the value of FSCR we
-+	 * have configured via the device tree features or via __init_FSCR().
-+	 * That value will then be propagated to pid 1 (init) and all future
-+	 * processes.
-+	 */
-+	if (early_cpu_has_feature(CPU_FTR_ARCH_207S))
-+		init_task.thread.fscr = mfspr(SPRN_FSCR);
-+}
-+#else
-+static inline void save_fscr_to_task(void) {};
-+#endif
-+
-+
- void __init early_init_devtree(void *params)
- {
- 	phys_addr_t limit;
-@@ -743,6 +760,8 @@ void __init early_init_devtree(void *par
- 		BUG();
- 	}
+ # If we have only "make modules", don't compile built-in objects.
+-# When we're building modules with modversions, we need to consider
+-# the built-in objects during the descend as well, in order to
+-# make sure the checksums are up to date before we record them.
+-
+ ifeq ($(MAKECMDGOALS),modules)
+-  KBUILD_BUILTIN := $(if $(CONFIG_MODVERSIONS),1)
++  KBUILD_BUILTIN :=
+ endif
  
-+	save_fscr_to_task();
+ # If we have "make <whatever> modules", compile modules
+@@ -1249,6 +1245,13 @@ ifdef CONFIG_MODULES
+ 
+ all: modules
+ 
++# When we're building modules with modversions, we need to consider
++# the built-in objects during the descend as well, in order to
++# make sure the checksums are up to date before we record them.
++ifdef CONFIG_MODVERSIONS
++  KBUILD_BUILTIN := 1
++endif
 +
- #if defined(CONFIG_SMP) && defined(CONFIG_PPC64)
- 	/* We'll later wait for secondaries to check in; there are
- 	 * NCPUS-1 non-boot CPUs  :-)
+ # Build modules
+ #
+ # A module can be listed more than once in obj-m resulting in
 
 
