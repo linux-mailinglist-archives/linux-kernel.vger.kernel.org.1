@@ -2,171 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD6D201644
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF34E201655
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394933AbgFSQ2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41038 "EHLO
+        id S2394972AbgFSQ3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:29:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394951AbgFSQ2Z (ORCPT
+        with ESMTP id S2394853AbgFSQ3F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 12:28:25 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E64C06174E;
-        Fri, 19 Jun 2020 09:28:25 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 542132A54CA
-Received: by earth.universe (Postfix, from userid 1000)
-        id CAF173C08CD; Fri, 19 Jun 2020 18:28:20 +0200 (CEST)
-Date:   Fri, 19 Jun 2020 18:28:20 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Emil Velikov <emil.velikov@collabora.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2 3/6] power: supply: gpio-charger: add
- charge-current-limit feature
-Message-ID: <20200619162820.hhv5rftp4xkhwtix@earth.universe>
-References: <20200605224403.181015-1-sebastian.reichel@collabora.com>
- <20200605224403.181015-4-sebastian.reichel@collabora.com>
- <20200615175844.GA2032047@bogus>
+        Fri, 19 Jun 2020 12:29:05 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA011C06174E
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 09:29:03 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a9so12180500ljn.6
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 09:29:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/V/EEJuGfM3cwX7ubb4ViNyVH2RhhYxz5LHLfNXzhkM=;
+        b=B/w9WI6cwkaKNiVZI/74T8mkbfDvQKda2PFwcG461AJl+Gf6uYMVSHq4gpulO8Ry+L
+         8qGuQp5or3fxXwqYPSXsF7PbTNUas9uFLKTpxcFSJDk2fzA7L4QjvyQtCJGcqQCf1NGb
+         r7M5175o1wb2hP868cNxoHI7udC1F3ZvHPxoHlWzfHnNjeWVeJ1LphNBc9gN3ms4J7FK
+         RewOaHYWx3Z3gWld8GO3oojFfFMg4Mf3MoB9qvV10x9svpEHRwh/lGM+Wc5FBQjcMyK1
+         u/uXYEmCvfoXlzhQXBTW8ZgKtQt16FRjDptA3n3UBSB8fTta2S2z1Z1e2o1zw6elE8Ny
+         9qmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/V/EEJuGfM3cwX7ubb4ViNyVH2RhhYxz5LHLfNXzhkM=;
+        b=IRYHxXIQPyEtuZwAXD+bbb1cSaxZI2Adarzt0+f/ppvjO8jLCnpV11qT8jEsOepWlw
+         A+DMQn138zTNpz8Z2pQySdxSc4+md6f369pWa2lfHlTS8rO3TB+zigtm1EmZ4u9UEV5c
+         TV9dhx6CgbF8ZxDiSrOfvVJpmHReJmAx6cB5qBFOf9FbtfZBzAsfQqvZcLc2LcbDEQqi
+         wy7YPC5ARq0ygGVshEH/7y2uV0b14IiZbz73E43poVNc16J8AFVedZqLMWReOLUxmbiF
+         JCSjKk3feap5UDzN6ayG6ueqJ5dt2VvgycnWvfbnBfJwkmx8IsfKyTALQ/YgiwwTVLRy
+         48/Q==
+X-Gm-Message-State: AOAM533Gh4tN0fzHwET6bOQBHzK7ZFn1BsJl4C6wg2GV3quGHEJEytFF
+        guY/V8BacLbsSmrTAI2fF2aKALTqwWxE/DJkGMYRSg==
+X-Google-Smtp-Source: ABdhPJyn3yaIiMt6831syIMHyWp/J+Qai964ORpX8fPeiKbLuy9BlJOQCTa0wVXzGV0An0hM3kXnQYBOBF/tgtfFMcI=
+X-Received: by 2002:a2e:8e94:: with SMTP id z20mr2052818ljk.21.1592584141654;
+ Fri, 19 Jun 2020 09:29:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="yyzsddwp6z7jengx"
-Content-Disposition: inline
-In-Reply-To: <20200615175844.GA2032047@bogus>
+References: <20200618222225.102337-1-axelrasmussen@google.com>
+ <20200618222225.102337-2-axelrasmussen@google.com> <20200619083023.GS576905@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200619083023.GS576905@hirez.programming.kicks-ass.net>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Fri, 19 Jun 2020 09:28:24 -0700
+Message-ID: <CAJHvVciGnK9Ve7NeZ=LUbWT3PGhG7hRWh+J80ncR6Mgwk316fw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 1/1] mmap_lock: add tracepoints around mmap_lock acquisition
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Michel Lespinasse <walken@google.com>,
+        David Howells <dhowells@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Jonathan Adams <jwadams@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Ying Han <yinghan@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---yyzsddwp6z7jengx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Mon, Jun 15, 2020 at 11:58:44AM -0600, Rob Herring wrote:
-> On Sat, Jun 06, 2020 at 12:44:00AM +0200, Sebastian Reichel wrote:
-> > Add new charge-current-limit feature to gpio-charger.
-> >=20
-> > Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-> > ---
-> >  .../bindings/power/supply/gpio-charger.yaml   |  31 ++++
-> >  drivers/power/supply/gpio-charger.c           | 140 ++++++++++++++++++
-> >  2 files changed, 171 insertions(+)
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/power/supply/gpio-charge=
-r.yaml b/Documentation/devicetree/bindings/power/supply/gpio-charger.yaml
-> > index 30eabbb14ef3..e11cfdc68a51 100644
-> > --- a/Documentation/devicetree/bindings/power/supply/gpio-charger.yaml
-> > +++ b/Documentation/devicetree/bindings/power/supply/gpio-charger.yaml
-> > @@ -39,6 +39,25 @@ properties:
-> >      maxItems: 1
-> >      description: GPIO indicating the charging status
-> > =20
-> > +  charge-current-limit-gpios:
-> > +    minItems: 1
-> > +    maxItems: 32
-> > +    description: GPIOs used for current limiting
+On Fri, Jun 19, 2020 at 1:30 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Jun 18, 2020 at 03:22:25PM -0700, Axel Rasmussen wrote:
+> > diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
+> > index f11b9bd3431d..6aabea1cbc5d 100644
+> > --- a/kernel/locking/rwsem.c
+> > +++ b/kernel/locking/rwsem.c
+> > @@ -1495,6 +1495,20 @@ void __sched down_read(struct rw_semaphore *sem)
+> >  }
+> >  EXPORT_SYMBOL(down_read);
+> >
+> > +/*
+> > + * lock for reading
+> > + */
+> > +void __sched down_read_contended_hook(struct rw_semaphore *sem,
+> > +                                   void (*pre)(void *),
+> > +                                   void (*post)(void *), void *arg)
+> > +{
+> > +     might_sleep();
+> > +     rwsem_acquire_read(&sem->dep_map, 0, 0, _RET_IP_);
+> > +     LOCK_CONTENDED_HOOK(sem, __down_read_trylock, __down_read, pre, post,
+> > +                         arg);
+> > +}
+> > +EXPORT_SYMBOL(down_read_contended_hook);
 > > +
-> > +  charge-current-limit-mapping:
-> > +    description: List of touples with current in uA and a GPIO bitmap =
-(in
->=20
-> s/touples/tuples/
->=20
-> > +      this order). The touples must be provided in descending order of=
- the
->=20
-> and here.
-
-Ack.
-
-> > +      current limit.
-> > +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> > +    items:
-> > +      items:
-> > +        - description:
-> > +            Current limit in uA
-> > +        - description:
-> > +            Encoded GPIO setting. Bit 0 represents last GPIO from the
-> > +            charge-current-limit-gpios property. Bit 1 second to last
-> > +            GPIO and so on.
->=20
-> Seems a bit odd that bit N doesn't represent index N of the gpios.
-
-I was looking at it from a graphical POV (i.e. "last" bit represents
-last element):
-
-list =3D <element3, element2, element1, element0>;
-bits =3D 0b1011; // element3, 1 and 0
-
-Basically when writing it the order is the same at the cost of list
-index being reverse of bit index. But I do not really mind the order.
-If people think its better the other way around I can swap it.
-
--- Sebastian
-
+> >  int __sched down_read_killable(struct rw_semaphore *sem)
+> >  {
+> >       might_sleep();
+> > @@ -1509,6 +1523,24 @@ int __sched down_read_killable(struct rw_semaphore *sem)
+> >  }
+> >  EXPORT_SYMBOL(down_read_killable);
+> >
+> > +int __sched down_read_killable_contended_hook(struct rw_semaphore *sem,
+> > +                                           void (*pre)(void *),
+> > +                                           void (*post)(void *, int),
+> > +                                           void *arg)
+> > +{
+> > +     might_sleep();
+> > +     rwsem_acquire_read(&sem->dep_map, 0, 0, _RET_IP_);
 > > +
-> >  required:
-> >    - compatible
-> > =20
-> > @@ -47,6 +66,12 @@ anyOf:
-> >      - gpios
-> >    - required:
-> >      - charge-status-gpios
-> > +  - required:
-> > +    - charge-current-limit-gpios
+> > +     if (LOCK_CONTENDED_HOOK_RETURN(sem, __down_read_trylock,
+> > +                                    __down_read_killable, pre, post, arg)) {
+> > +             rwsem_release(&sem->dep_map, _RET_IP_);
+> > +             return -EINTR;
+> > +     }
 > > +
-> > +dependencies:
-> > +  charge-current-limit-gpios: [ charge-current-limit-mapping ]
-> > +  charge-current-limit-mapping: [ charge-current-limit-gpios ]
-> > =20
-> >  additionalProperties: false
-> > =20
-> > @@ -60,4 +85,10 @@ examples:
-> > =20
-> >        gpios =3D <&gpd 28 GPIO_ACTIVE_LOW>;
-> >        charge-status-gpios =3D <&gpc 27 GPIO_ACTIVE_LOW>;
+> > +     return 0;
+> > +}
+> > +EXPORT_SYMBOL(down_read_killable_contended_hook);
 > > +
-> > +      charge-current-limit-gpios =3D <&gpioA 11 GPIO_ACTIVE_HIGH>,
-> > +                                   <&gpioA 12 GPIO_ACTIVE_HIGH>;
-> > +      charge-current-limit-mapping =3D <2500000 0x00>, // 2.5 A =3D> b=
-oth GPIOs low
-> > +                                     <700000 0x01>, // 700 mA =3D> GPI=
-O A.12 high
-> > +                                     <0 0x02>; // 0 mA =3D> GPIO A.11 =
-high
-> >      };
+> >  /*
+> >   * trylock for reading -- returns 1 if successful, 0 if contention
+> >   */
+> > @@ -1533,6 +1565,20 @@ void __sched down_write(struct rw_semaphore *sem)
+> >  }
+> >  EXPORT_SYMBOL(down_write);
+> >
+> > +/*
+> > + * lock for writing
+> > + */
+> > +void __sched down_write_contended_hook(struct rw_semaphore *sem,
+> > +                                    void (*pre)(void *),
+> > +                                    void (*post)(void *), void *arg)
+> > +{
+> > +     might_sleep();
+> > +     rwsem_acquire(&sem->dep_map, 0, 0, _RET_IP_);
+> > +     LOCK_CONTENDED_HOOK(sem, __down_write_trylock, __down_write, pre, post,
+> > +                         arg);
+> > +}
+> > +EXPORT_SYMBOL(down_write_contended_hook);
+> > +
+> >  /*
+> >   * lock for writing
+> >   */
+> > @@ -1551,6 +1597,24 @@ int __sched down_write_killable(struct rw_semaphore *sem)
+> >  }
+> >  EXPORT_SYMBOL(down_write_killable);
+> >
+> > +int __sched down_write_killable_contended_hook(struct rw_semaphore *sem,
+> > +                                            void (*pre)(void *),
+> > +                                            void (*post)(void *, int),
+> > +                                            void *arg)
+> > +{
+> > +     might_sleep();
+> > +     rwsem_acquire_read(&sem->dep_map, 0, 0, _RET_IP_);
+> > +
+> > +     if (LOCK_CONTENDED_HOOK_RETURN(sem, __down_write_trylock,
+> > +                                    __down_write_killable, pre, post, arg)) {
+> > +             rwsem_release(&sem->dep_map, _RET_IP_);
+> > +             return -EINTR;
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > +EXPORT_SYMBOL(down_write_killable_contended_hook);
+> > +
+> >  /*
+> >   * trylock for writing -- returns 1 if successful, 0 if contention
+> >   */
+>
+> NAK, absolutely not going to happen. This is an atrocious API to expose,
+> worse you're exporting.
 
---yyzsddwp6z7jengx
-Content-Type: application/pgp-signature; name="signature.asc"
+Ack about splitting this up.
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl7s55sACgkQ2O7X88g7
-+posXxAAimYGCMZqPCMGM572BWT84enhMCGLDZmbHF2T+nErP9bjg6Kl/7chCfr6
-YtyFPcX5kAhq4yCwymzAEWjsnmo4Vn01XcXCvXZkUy9TZYyxTpqLN5IQupFoe1h6
-QbP54+FosPdTsf2Yvm7QVyDxlbYMpuPPpU95jZRBtl4zsP5VGeZMwe0Ohf5x//aT
-qBL/nY/l06OVq/pKV1OjfvAu6P4G1OkKnNw+AJ+itTZWZi+0I5xfsWZJ6Q9qHCXq
-Gew48sWBTKQS4jLECNZuA7GcdYxNdjh8yl8t2jNCAw4WL7uSHL1wBBkzUmYjGB2h
-qF5Q8w48iI3Dl2VwEvUp52Ca/AGu98e5gJp0QBqYUUxojZ15m4jbYk4elu05vb+v
-kVdFvtpVWAhRChbiw7+PmOR+4WBC8d3CxpTgbGcFgort3mNPer8b1eS5YmA1eko9
-d5Lb4xsw72+PrdSOdVFOqLW0jduAhlJuZfpnaStzfBO+YZWPJrkkmr78GZ/oIRrg
-Tv78EKJ0ppyDv7wSev+4FbhsrneE16fJ6EoXrMwHzQt310wXam/bZu9ffzALPCsw
-eNZFiCNV+0AXyziGJ9OLJQCVchgt5KgwkwDv0eVhDPZ6qUl7aG7lmCcVuFZrvFnB
-v5BSRmZ3xE10iEmifEEhYlA4LYc/zFjdtWexbmc6Fj230KbY3zQ=
-=3lsp
------END PGP SIGNATURE-----
-
---yyzsddwp6z7jengx--
+Thanks for taking a look. :)
