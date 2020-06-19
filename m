@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5233201510
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A697B201355
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405577AbgFSQRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:17:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58966 "EHLO mail.kernel.org"
+        id S2391602AbgFSQAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:00:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45026 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390483AbgFSPCY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:02:24 -0400
+        id S2403987AbgFSPO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:14:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D890F20734;
-        Fri, 19 Jun 2020 15:02:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BA6B62186A;
+        Fri, 19 Jun 2020 15:14:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578944;
-        bh=7w10rXu2sVvzKN7TaS3j1o+cBwIhXDiwMwU0dEUW7Jo=;
+        s=default; t=1592579668;
+        bh=YS/1+C5Gc/aYgEcSiM1bzy5ILHrf1WyuBfOZNkmRka0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UkjED8wHXhJUEXltBCR8V9K8d4j0SCMwfiR0/wvYugIPN2HOXMSwfLqsUvWOYN9Gs
-         qF+iH1l/qFkJ7a3oENl3+9EUWbJRr8vhdmB6u7XF10sB+8XV/uUSM3TYJYjzaJsOEo
-         JDGY60tHTRtPYKjkhIosKtO044ZAO8Y1/dLjeDLk=
+        b=UiDO+F1vImqFvDHSQSW5BlF8JtyE0Xdpbzi9VelaDdfGi04rCsxT7Vw0B544nMtz1
+         b1unFmumjXbSVjbj1+LzwI1IwXaJLKoxmTyh7wbXA1KdeQEpD3NaqpeXlX5ly57eZV
+         SImQPSwqeurtSBju+1Newh7agib9BgtG2grOetvs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Daniel Drake <drake@endlessm.com>,
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
         Bjorn Helgaas <bhelgaas@google.com>,
-        Aaron Plattner <aplattner@nvidia.com>,
-        Peter Wu <peter@lekensteyn.nl>,
-        Ilia Mirkin <imirkin@alum.mit.edu>,
-        Karol Herbst <kherbst@redhat.com>,
-        Maik Freudenberg <hhfeuer@gmx.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 215/267] PCI: Enable NVIDIA HDA controllers
-Date:   Fri, 19 Jun 2020 16:33:20 +0200
-Message-Id: <20200619141659.038588653@linuxfoundation.org>
+Subject: [PATCH 5.4 191/261] serial: 8250_pci: Move Pericom IDs to pci_ids.h
+Date:   Fri, 19 Jun 2020 16:33:22 +0200
+Message-Id: <20200619141659.055686659@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,103 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit b516ea586d717472178e6ef1c152e85608b0ce32 ]
+[ Upstream commit 62a7f3009a460001eb46984395280dd900bc4ef4 ]
 
-Many NVIDIA GPUs can be configured as either a single-function video device
-or a multi-function device with video at function 0 and an HDA audio
-controller at function 1.  The HDA controller can be enabled or disabled by
-a bit in the function 0 config space.
+Move the IDs to pci_ids.h so it can be used by next patch.
 
-Some BIOSes leave the HDA disabled, which means the HDMI connector from the
-NVIDIA GPU may not work.  Sometimes the BIOS enables the HDA if an HDMI
-cable is connected at boot time, but that doesn't handle hotplug cases.
-
-Enable the HDA controller on device enumeration and resume and re-read the
-header type, which tells us whether the GPU is a multi-function device.
-
-This quirk is limited to NVIDIA PCI devices with the VGA Controller device
-class.  This is expected to correspond to product configurations where the
-NVIDIA GPU has connectors attached.  Other products where the device class
-is 3D Controller are expected to correspond to configurations where the
-NVIDIA GPU is dedicated (dGPU) and has no connectors.  See original post
-(URL below) for more details.
-
-This commit takes inspiration from an earlier patch by Daniel Drake.
-
-Link: https://lore.kernel.org/r/20190708051744.24039-1-drake@endlessm.com v2
-Link: https://lore.kernel.org/r/20190613063514.15317-1-drake@endlessm.com v1
-Link: https://devtalk.nvidia.com/default/topic/1024022
-Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=75985
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Signed-off-by: Daniel Drake <drake@endlessm.com>
-[bhelgaas: commit log, log message, return early if already enabled]
+Link: https://lore.kernel.org/r/20200508065343.32751-1-kai.heng.feng@canonical.com
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
 Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Cc: Aaron Plattner <aplattner@nvidia.com>
-Cc: Peter Wu <peter@lekensteyn.nl>
-Cc: Ilia Mirkin <imirkin@alum.mit.edu>
-Cc: Karol Herbst <kherbst@redhat.com>
-Cc: Maik Freudenberg <hhfeuer@gmx.de>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/quirks.c    | 30 ++++++++++++++++++++++++++++++
- include/linux/pci_ids.h |  1 +
- 2 files changed, 31 insertions(+)
+ drivers/tty/serial/8250/8250_pci.c | 6 ------
+ include/linux/pci_ids.h            | 6 ++++++
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index 8ac2d5a4a224..502dca568d6c 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -5120,6 +5120,36 @@ DECLARE_PCI_FIXUP_CLASS_FINAL(PCI_VENDOR_ID_NVIDIA, PCI_ANY_ID,
- 			      PCI_CLASS_SERIAL_UNKNOWN, 8,
- 			      quirk_gpu_usb_typec_ucsi);
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+index 8a01d034f9d1..7cad66eb39ff 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -1871,12 +1871,6 @@ pci_moxa_setup(struct serial_private *priv,
+ #define PCIE_DEVICE_ID_WCH_CH384_4S	0x3470
+ #define PCIE_DEVICE_ID_WCH_CH382_2S	0x3253
  
-+/*
-+ * Enable the NVIDIA GPU integrated HDA controller if the BIOS left it
-+ * disabled.  https://devtalk.nvidia.com/default/topic/1024022
-+ */
-+static void quirk_nvidia_hda(struct pci_dev *gpu)
-+{
-+	u8 hdr_type;
-+	u32 val;
-+
-+	/* There was no integrated HDA controller before MCP89 */
-+	if (gpu->device < PCI_DEVICE_ID_NVIDIA_GEFORCE_320M)
-+		return;
-+
-+	/* Bit 25 at offset 0x488 enables the HDA controller */
-+	pci_read_config_dword(gpu, 0x488, &val);
-+	if (val & BIT(25))
-+		return;
-+
-+	pci_info(gpu, "Enabling HDA controller\n");
-+	pci_write_config_dword(gpu, 0x488, val | BIT(25));
-+
-+	/* The GPU becomes a multi-function device when the HDA is enabled */
-+	pci_read_config_byte(gpu, PCI_HEADER_TYPE, &hdr_type);
-+	gpu->multifunction = !!(hdr_type & 0x80);
-+}
-+DECLARE_PCI_FIXUP_CLASS_HEADER(PCI_VENDOR_ID_NVIDIA, PCI_ANY_ID,
-+			       PCI_BASE_CLASS_DISPLAY, 16, quirk_nvidia_hda);
-+DECLARE_PCI_FIXUP_CLASS_RESUME_EARLY(PCI_VENDOR_ID_NVIDIA, PCI_ANY_ID,
-+			       PCI_BASE_CLASS_DISPLAY, 16, quirk_nvidia_hda);
-+
- /*
-  * Some IDT switches incorrectly flag an ACS Source Validation error on
-  * completions for config read requests even though PCIe r4.0, sec
+-#define PCI_VENDOR_ID_PERICOM			0x12D8
+-#define PCI_DEVICE_ID_PERICOM_PI7C9X7951	0x7951
+-#define PCI_DEVICE_ID_PERICOM_PI7C9X7952	0x7952
+-#define PCI_DEVICE_ID_PERICOM_PI7C9X7954	0x7954
+-#define PCI_DEVICE_ID_PERICOM_PI7C9X7958	0x7958
+-
+ #define PCI_VENDOR_ID_ACCESIO			0x494f
+ #define PCI_DEVICE_ID_ACCESIO_PCIE_COM_2SDB	0x1051
+ #define PCI_DEVICE_ID_ACCESIO_MPCIE_COM_2S	0x1053
 diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 47833d8f8928..b952f1557f5d 100644
+index 1dfc4e1dcb94..9a57e6717e5c 100644
 --- a/include/linux/pci_ids.h
 +++ b/include/linux/pci_ids.h
-@@ -1336,6 +1336,7 @@
- #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP78S_SMBUS    0x0752
- #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP77_IDE       0x0759
- #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP73_SMBUS     0x07D8
-+#define PCI_DEVICE_ID_NVIDIA_GEFORCE_320M           0x08A0
- #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP79_SMBUS     0x0AA2
- #define PCI_DEVICE_ID_NVIDIA_NFORCE_MCP89_SATA	    0x0D85
+@@ -1832,6 +1832,12 @@
+ #define PCI_VENDOR_ID_NVIDIA_SGS	0x12d2
+ #define PCI_DEVICE_ID_NVIDIA_SGS_RIVA128 0x0018
  
++#define PCI_VENDOR_ID_PERICOM			0x12D8
++#define PCI_DEVICE_ID_PERICOM_PI7C9X7951	0x7951
++#define PCI_DEVICE_ID_PERICOM_PI7C9X7952	0x7952
++#define PCI_DEVICE_ID_PERICOM_PI7C9X7954	0x7954
++#define PCI_DEVICE_ID_PERICOM_PI7C9X7958	0x7958
++
+ #define PCI_SUBVENDOR_ID_CHASE_PCIFAST		0x12E0
+ #define PCI_SUBDEVICE_ID_CHASE_PCIFAST4		0x0031
+ #define PCI_SUBDEVICE_ID_CHASE_PCIFAST8		0x0021
 -- 
 2.25.1
 
