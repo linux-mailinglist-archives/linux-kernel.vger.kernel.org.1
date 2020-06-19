@@ -2,38 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F7DB200D48
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7FA7200D55
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389968AbgFSOz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:55:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50122 "EHLO mail.kernel.org"
+        id S2390056AbgFSO4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:56:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389958AbgFSOzS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:55:18 -0400
+        id S2390031AbgFSO4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:56:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99DC52158C;
-        Fri, 19 Jun 2020 14:55:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E654F217D8;
+        Fri, 19 Jun 2020 14:56:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578518;
-        bh=mRHbs5IOpUfsa2d3zxU/pzHYEeSBgoCFaCcWPJgVZj0=;
+        s=default; t=1592578567;
+        bh=dvWepCxdi7jIX3sSPFT9LVNwFKQBWAt3kMnaBN2VAAY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ooZmeHRpw8+GUbioCOHhUgymSxJKpS3Pchrp/03csYi9iPbQwNu1m7MPYJ7mTTnGr
-         H+SvApWyv34D89U7aRNRt20ND1xNiUAVagAXX2FRukU47AKFnPJfRE7aUGGmBBmkVi
-         7m4A+N0TN3wDg+RLQIvmVwRMIsA1Thcl0gTdgGls=
+        b=Vny/8b3LIt9VaNXa1E/xROMjjCmTEAcEJzJE1e7LMn888rxgQhXC78/jGv2or3RpE
+         SSyyLjv8DN5pf+TEY3I6Zz/kPRlTkRF76leY4CWSggiem+VyQLiXg0TYJbxvPNIrsy
+         8s2VckAukqtmvJ1px8BBH6h2W6RN7hWWIsCSVrPQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Kai Huang <kai.huang@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Waiman Long <longman@redhat.com>,
+        Borislav Petkov <bp@suse.de>, "H. Peter Anvin" <hpa@zytor.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Kosina <jkosina@suse.cz>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        KarimAllah Ahmed <karahmed@amazon.de>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tim Chen <tim.c.chen@linux.intel.com>, x86-ml <x86@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 051/267] kvm: x86: Fix L1TF mitigation for shadow MMU
-Date:   Fri, 19 Jun 2020 16:30:36 +0200
-Message-Id: <20200619141651.334232453@linuxfoundation.org>
+Subject: [PATCH 4.19 054/267] x86/speculation: Change misspelled STIPB to STIBP
+Date:   Fri, 19 Jun 2020 16:30:39 +0200
+Message-Id: <20200619141651.470028722@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
 References: <20200619141648.840376470@linuxfoundation.org>
@@ -46,72 +53,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kai Huang <kai.huang@linux.intel.com>
+From: Waiman Long <longman@redhat.com>
 
-[ Upstream commit 61455bf26236e7f3d72705382a6437fdfd1bd0af ]
+[ Upstream commit aa77bfb354c495fc4361199e63fc5765b9e1e783 ]
 
-Currently KVM sets 5 most significant bits of physical address bits
-reported by CPUID (boot_cpu_data.x86_phys_bits) for nonpresent or
-reserved bits SPTE to mitigate L1TF attack from guest when using shadow
-MMU. However for some particular Intel CPUs the physical address bits
-of internal cache is greater than physical address bits reported by
-CPUID.
+STIBP stands for Single Thread Indirect Branch Predictors. The acronym,
+however, can be easily mis-spelled as STIPB. It is perhaps due to the
+presence of another related term - IBPB (Indirect Branch Predictor
+Barrier).
 
-Use the kernel's existing boot_cpu_data.x86_cache_bits to determine the
-five most significant bits. Doing so improves KVM's L1TF mitigation in
-the unlikely scenario that system RAM overlaps the high order bits of
-the "real" physical address space as reported by CPUID. This aligns with
-the kernel's warnings regarding L1TF mitigation, e.g. in the above
-scenario the kernel won't warn the user about lack of L1TF mitigation
-if x86_cache_bits is greater than x86_phys_bits.
+Fix the mis-spelling in the code.
 
-Also initialize shadow_nonpresent_or_rsvd_mask explicitly to make it
-consistent with other 'shadow_{xxx}_mask', and opportunistically add a
-WARN once if KVM's L1TF mitigation cannot be applied on a system that
-is marked as being susceptible to L1TF.
-
-Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Kai Huang <kai.huang@linux.intel.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Waiman Long <longman@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: David Woodhouse <dwmw@amazon.co.uk>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jiri Kosina <jkosina@suse.cz>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: KarimAllah Ahmed <karahmed@amazon.de>
+Cc: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Tim Chen <tim.c.chen@linux.intel.com>
+Cc: x86-ml <x86@kernel.org>
+Link: https://lkml.kernel.org/r/1544039368-9009-1-git-send-email-longman@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/mmu.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ arch/x86/kernel/cpu/bugs.c | 6 +++---
+ arch/x86/kernel/process.h  | 2 +-
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu.c b/arch/x86/kvm/mmu.c
-index 62f1e4663bc3..440ffe810e5d 100644
---- a/arch/x86/kvm/mmu.c
-+++ b/arch/x86/kvm/mmu.c
-@@ -479,16 +479,24 @@ static void kvm_mmu_reset_all_pte_masks(void)
- 	 * If the CPU has 46 or less physical address bits, then set an
- 	 * appropriate mask to guard against L1TF attacks. Otherwise, it is
- 	 * assumed that the CPU is not vulnerable to L1TF.
-+	 *
-+	 * Some Intel CPUs address the L1 cache using more PA bits than are
-+	 * reported by CPUID. Use the PA width of the L1 cache when possible
-+	 * to achieve more effective mitigation, e.g. if system RAM overlaps
-+	 * the most significant bits of legal physical address space.
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index cf07437cd106..0ea87f9095f0 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -61,7 +61,7 @@ static u64 __ro_after_init x86_spec_ctrl_mask = SPEC_CTRL_IBRS;
+ u64 __ro_after_init x86_amd_ls_cfg_base;
+ u64 __ro_after_init x86_amd_ls_cfg_ssbd_mask;
+ 
+-/* Control conditional STIPB in switch_to() */
++/* Control conditional STIBP in switch_to() */
+ DEFINE_STATIC_KEY_FALSE(switch_to_cond_stibp);
+ /* Control conditional IBPB in switch_mm() */
+ DEFINE_STATIC_KEY_FALSE(switch_mm_cond_ibpb);
+@@ -750,12 +750,12 @@ spectre_v2_user_select_mitigation(enum spectre_v2_mitigation_cmd v2_cmd)
+ 			"always-on" : "conditional");
+ 	}
+ 
+-	/* If enhanced IBRS is enabled no STIPB required */
++	/* If enhanced IBRS is enabled no STIBP required */
+ 	if (spectre_v2_enabled == SPECTRE_V2_IBRS_ENHANCED)
+ 		return;
+ 
+ 	/*
+-	 * If SMT is not possible or STIBP is not available clear the STIPB
++	 * If SMT is not possible or STIBP is not available clear the STIBP
+ 	 * mode.
  	 */
--	low_phys_bits = boot_cpu_data.x86_phys_bits;
--	if (boot_cpu_data.x86_phys_bits <
-+	shadow_nonpresent_or_rsvd_mask = 0;
-+	low_phys_bits = boot_cpu_data.x86_cache_bits;
-+	if (boot_cpu_data.x86_cache_bits <
- 	    52 - shadow_nonpresent_or_rsvd_mask_len) {
- 		shadow_nonpresent_or_rsvd_mask =
--			rsvd_bits(boot_cpu_data.x86_phys_bits -
-+			rsvd_bits(boot_cpu_data.x86_cache_bits -
- 				  shadow_nonpresent_or_rsvd_mask_len,
--				  boot_cpu_data.x86_phys_bits - 1);
-+				  boot_cpu_data.x86_cache_bits - 1);
- 		low_phys_bits -= shadow_nonpresent_or_rsvd_mask_len;
--	}
-+	} else
-+		WARN_ON_ONCE(boot_cpu_has_bug(X86_BUG_L1TF));
-+
- 	shadow_nonpresent_or_rsvd_lower_gfn_mask =
- 		GENMASK_ULL(low_phys_bits - 1, PAGE_SHIFT);
- }
+ 	if (!smt_possible || !boot_cpu_has(X86_FEATURE_STIBP))
+diff --git a/arch/x86/kernel/process.h b/arch/x86/kernel/process.h
+index 898e97cf6629..320ab978fb1f 100644
+--- a/arch/x86/kernel/process.h
++++ b/arch/x86/kernel/process.h
+@@ -19,7 +19,7 @@ static inline void switch_to_extra(struct task_struct *prev,
+ 	if (IS_ENABLED(CONFIG_SMP)) {
+ 		/*
+ 		 * Avoid __switch_to_xtra() invocation when conditional
+-		 * STIPB is disabled and the only different bit is
++		 * STIBP is disabled and the only different bit is
+ 		 * TIF_SPEC_IB. For CONFIG_SMP=n TIF_SPEC_IB is not
+ 		 * in the TIF_WORK_CTXSW masks.
+ 		 */
 -- 
 2.25.1
 
