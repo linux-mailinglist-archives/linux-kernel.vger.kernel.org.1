@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B1E20014F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 06:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3052200146
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 06:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730449AbgFSEex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 00:34:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44054 "EHLO
+        id S1729497AbgFSEeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 00:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728974AbgFSEeL (ORCPT
+        with ESMTP id S1725826AbgFSEeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 00:34:11 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A87FC0613EE
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 21:34:10 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id o84so8849266ybg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 21:34:10 -0700 (PDT)
+        Fri, 19 Jun 2020 00:34:12 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 897B0C06174E
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 21:34:12 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id g72so6186576qke.18
+        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 21:34:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=vw05Hr6gQMHkdgIxFDB0bOiYw6mRSy0yRyh3Egshj0w=;
-        b=ZddSThi+qbrT7YkxNz4wUq09u5efYQVzacpmPUU5wXZvewpGwwvsBNBuCirRe91Pl/
-         GTwjZZeNjoD1R9JzSCf/zpC7nayfMgEoSYcRBm4g0sygDxq48AsqiLbTpsuw/ZuhxUJj
-         Agd3d730HeSJl6UpV/wiCV41SpWbUOGXFGnDWKvlKd2Owzv6NO3/TvEIw8PqTrViCfIE
-         tQTr+ZyoTPQVBtAFS+yUDOguNd5gcuoijiiduoT0efPC4exk3CYwVmJ+pqTC1Pa5F5Bh
-         zqWW3bXrFBXXLZIdw9c/AMwdrIrdsR3CrAlr8tDvBv6v/GhTPyp49cLcE4uyZUKolPf7
-         7x6A==
+        bh=B9OjWQQRubCk4XMq/CTkTwsjp8frz17P8j83zo66Jbo=;
+        b=TtSottKPCuuLgqpiyKFfnA+pXx/sc+Er9VFs3CvG6L3i+PD3TOlPvTPHWolk/woh6u
+         qZ+RikZ01YRJT9O5zsF5K8tTsCkZBL/V8gjcXVgJBDtgNLQKn2dZFsdw87LJ0u32scSv
+         GspHq1GVCJdeKSSaehcELtzMR+q2bQnPAA3ePbQBv1ln2in7YarCVS+XzFx8FOie9sRN
+         ruWVi2/HCEVRdeLuGsE4c/ZGCNe7b8Y/diAwhhO6JL+dJ27sakrEFe5TSKHhENwt47Va
+         DWFYfGNY6Z6R1/cZMwynbwew4h2yi5UPpzxHrJoO96iXcPBpm47wMXossIWRkYmeZMIu
+         WErg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=vw05Hr6gQMHkdgIxFDB0bOiYw6mRSy0yRyh3Egshj0w=;
-        b=NWKUveCZZtlamB29WEKWEg+ZE3oNABvdTDxChK5yHw17FDdHidGjQaqrp4QNuiSIBf
-         JGzJKYNH+H8+fozxjfoyR9w4QueuLyElmldnlZo/EvosJpS0dPWxsNxsmCjfP0e8DWQw
-         es8VAoRBfQxZJZcp9/mBMd9WR+UBsEoHPEbKZRUfsx9HKitCoWuxe026rscx8VHOZdOu
-         6MppvCmKS3Wz/dWOh3b622jxil43d2heTIDPJo6NpdQM7GO9bEFY9EdXjEqJFvLiV2bT
-         7+2yOIOLrxcvo8j8AKegPZg1rucFKs4GsIQySXINZlcKG3MHHBLeB2jLPFhevn4QCbjj
-         iWyQ==
-X-Gm-Message-State: AOAM532yMDsyxgcEQdV4cyWcfuDlqc+B/Rokh93fBt9/krwPll2GbwUv
-        +90F0TgDkdgxpLxRmVkbXM6I+SGUuvxr
-X-Google-Smtp-Source: ABdhPJz2gzcoW6j04ojC5EmMo4415rURb8VGmSsabv1X5bkihuqmh+TIpgCID0kpVPAfOvnirS6HF9aL6lle
-X-Received: by 2002:a25:a0c7:: with SMTP id i7mr3267724ybm.420.1592541249751;
- Thu, 18 Jun 2020 21:34:09 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 21:33:47 -0700
+        bh=B9OjWQQRubCk4XMq/CTkTwsjp8frz17P8j83zo66Jbo=;
+        b=Ea58yVGWSZ0vzI6IYCpiuvrWR1u6Dhv6Eit9dERbnApuNf54wONrR1lJAA/tTeWZyy
+         THyimiP7OKtzGbXB1pmQ6aJ7ahEZiRsefq/uKJmKWmrl7eGg/XDVqzYlyiwgqu1i5DU+
+         gdPSzNWiuV3kg2C2RCENO/Re6WFoTpqDbbhHDznQqD5VAtH1mAOlETSOm3CXaAdpyIgV
+         PzOie8Cv6FiFr0//N2chwyDltA9+bcRnptW7iFispyFn9vxCk77oqqd78F3gJmRpHG8o
+         uzzsG7spfH2K3rKJXNNpAjEkpFxDjBtTwcNOhzA3MaIiPpK9QFzLojjXToMtUXJInbpt
+         ++2Q==
+X-Gm-Message-State: AOAM530MndeG2s3CkwPZbgf0TZ9KOV4AkyhoVp3xvhAoRyAmdg87m5ZR
+        lNtxJP/+SLq+J5GeqJjH0PdFluzd5zBq
+X-Google-Smtp-Source: ABdhPJy5tuEalUmcFic6Dcp7nA2ZPQ1mMnQU+s6qnDgHxx5GHf/LLyEUIHq/i92m9Bj2ejARMdAe9ix9NN79
+X-Received: by 2002:a05:6214:a0e:: with SMTP id dw14mr6918504qvb.109.1592541251596;
+ Thu, 18 Jun 2020 21:34:11 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 21:33:48 -0700
 In-Reply-To: <20200619043356.90024-1-irogers@google.com>
-Message-Id: <20200619043356.90024-2-irogers@google.com>
+Message-Id: <20200619043356.90024-3-irogers@google.com>
 Mime-Version: 1.0
 References: <20200619043356.90024-1-irogers@google.com>
 X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
-Subject: [PATCH v2 01/10] perf parse-events: Use automatic variable for flex input
+Subject: [PATCH v2 02/10] perf parse-events: Use automatic variable for yacc input
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -80,36 +80,36 @@ Signed-off-by: Ian Rogers <irogers@google.com>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/tools/perf/util/Build b/tools/perf/util/Build
-index 8d18380ecd10..66cf009f78d8 100644
+index 66cf009f78d8..4e1aa52d75a8 100644
 --- a/tools/perf/util/Build
 +++ b/tools/perf/util/Build
-@@ -193,7 +193,7 @@ CFLAGS_genelf_debug.o  += -Wno-packed
- 
- $(OUTPUT)util/parse-events-flex.c: util/parse-events.l $(OUTPUT)util/parse-events-bison.c
- 	$(call rule_mkdir)
--	$(Q)$(call echo-cmd,flex)$(FLEX) -o $@ --header-file=$(OUTPUT)util/parse-events-flex.h $(PARSER_DEBUG_FLEX) util/parse-events.l
-+	$(Q)$(call echo-cmd,flex)$(FLEX) -o $@ --header-file=$(OUTPUT)util/parse-events-flex.h $(PARSER_DEBUG_FLEX) $<
+@@ -197,7 +197,7 @@ $(OUTPUT)util/parse-events-flex.c: util/parse-events.l $(OUTPUT)util/parse-event
  
  $(OUTPUT)util/parse-events-bison.c: util/parse-events.y
  	$(call rule_mkdir)
-@@ -201,7 +201,7 @@ $(OUTPUT)util/parse-events-bison.c: util/parse-events.y
+-	$(Q)$(call echo-cmd,bison)$(BISON) -v util/parse-events.y -d $(PARSER_DEBUG_BISON) -o $@ -p parse_events_
++	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) -o $@ -p parse_events_
  
  $(OUTPUT)util/expr-flex.c: util/expr.l $(OUTPUT)util/expr-bison.c
  	$(call rule_mkdir)
--	$(Q)$(call echo-cmd,flex)$(FLEX) -o $@ --header-file=$(OUTPUT)util/expr-flex.h $(PARSER_DEBUG_FLEX) util/expr.l
-+	$(Q)$(call echo-cmd,flex)$(FLEX) -o $@ --header-file=$(OUTPUT)util/expr-flex.h $(PARSER_DEBUG_FLEX) $<
+@@ -205,7 +205,7 @@ $(OUTPUT)util/expr-flex.c: util/expr.l $(OUTPUT)util/expr-bison.c
  
  $(OUTPUT)util/expr-bison.c: util/expr.y
  	$(call rule_mkdir)
-@@ -209,7 +209,7 @@ $(OUTPUT)util/expr-bison.c: util/expr.y
+-	$(Q)$(call echo-cmd,bison)$(BISON) -v util/expr.y -d $(PARSER_DEBUG_BISON) -o $@ -p expr_
++	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d $(PARSER_DEBUG_BISON) -o $@ -p expr_
  
  $(OUTPUT)util/pmu-flex.c: util/pmu.l $(OUTPUT)util/pmu-bison.c
  	$(call rule_mkdir)
--	$(Q)$(call echo-cmd,flex)$(FLEX) -o $@ --header-file=$(OUTPUT)util/pmu-flex.h util/pmu.l
-+	$(Q)$(call echo-cmd,flex)$(FLEX) -o $@ --header-file=$(OUTPUT)util/pmu-flex.h $<
+@@ -213,7 +213,7 @@ $(OUTPUT)util/pmu-flex.c: util/pmu.l $(OUTPUT)util/pmu-bison.c
  
  $(OUTPUT)util/pmu-bison.c: util/pmu.y
  	$(call rule_mkdir)
+-	$(Q)$(call echo-cmd,bison)$(BISON) -v util/pmu.y -d -o $@ -p perf_pmu_
++	$(Q)$(call echo-cmd,bison)$(BISON) -v $< -d -o $@ -p perf_pmu_
+ 
+ CFLAGS_parse-events-flex.o  += -w
+ CFLAGS_pmu-flex.o           += -w
 -- 
 2.27.0.111.gc72c7da667-goog
 
