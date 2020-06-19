@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CEE42017BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 666DC20168F
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395514AbgFSQmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:42:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35596 "EHLO mail.kernel.org"
+        id S2389546AbgFSOwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:52:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45712 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388551AbgFSOoT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:44:19 -0400
+        id S2389152AbgFSOv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:51:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EF89E21707;
-        Fri, 19 Jun 2020 14:44:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0F64621852;
+        Fri, 19 Jun 2020 14:51:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577859;
-        bh=YGB3RjlvoFqQ6Gp0s5xKy1Vy0GNUVzaHRZx854z92ug=;
+        s=default; t=1592578316;
+        bh=tQhxigQbmQOKnMbx5j51NiN66GZ0gOKoylnatGUazao=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ot+PvC/Az55ACdKwqXvRI1XthgWSDTCLlqiVYLeg9BWiL4vYPYu/RXHMLeaKGyAl9
-         q3NA5hzCnNOa/AMGMngvKQYOfaJK4m+GIgzIa5Ri5UGBeSnCZTEESjgcISWtF9nA3j
-         4XryfGLz6LtgjcX/Jr9LzdZ0NXUO6glvkOTB97cY=
+        b=hVs6o9wPAcFH1EaxOYuS/cEc99+wWuzbo+B9KgzaEz4dRVIBh43IUu4I3DY/AI25J
+         Z1I1RWb5W55OM/BQ22kEsVwHaHHJmQD5jMbd2bvau7rki/M8dHUe2WPHdIiilLdM7A
+         KnMO5GFAZR+6MwTH4psUjM/LgMpdqxFMcA5l3c/I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 4.9 117/128] sparc64: fix misuses of access_process_vm() in genregs32_[sg]et()
-Date:   Fri, 19 Jun 2020 16:33:31 +0200
-Message-Id: <20200619141626.312794435@linuxfoundation.org>
+        stable@vger.kernel.org, Larry Finger <Larry.Finger@lwfinger.net>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.14 167/190] b43legacy: Fix case where channel status is corrupted
+Date:   Fri, 19 Jun 2020 16:33:32 +0200
+Message-Id: <20200619141642.121194934@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
-References: <20200619141620.148019466@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,61 +43,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Larry Finger <Larry.Finger@lwfinger.net>
 
-commit 142cd25293f6a7ecbdff4fb0af17de6438d46433 upstream.
+commit ec4d3e3a054578de34cd0b587ab8a1ac36f629d9 upstream.
 
-We do need access_process_vm() to access the target's reg_window.
-However, access to caller's memory (storing the result in
-genregs32_get(), fetching the new values in case of genregs32_set())
-should be done by normal uaccess primitives.
+This patch fixes commit 75388acd0cd8 ("add mac80211-based driver for
+legacy BCM43xx devices")
 
-Fixes: ad4f95764040 ([SPARC64]: Fix user accesses in regset code.)
-Cc: stable@kernel.org
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+In https://bugzilla.kernel.org/show_bug.cgi?id=207093, a defect in
+b43legacy is reported. Upon testing, thus problem exists on PPC and
+X86 platforms, is present in the oldest kernel tested (3.2), and
+has been present in the driver since it was first added to the kernel.
+
+The problem is a corrupted channel status received from the device.
+Both the internal card in a PowerBook G4 and the PCMCIA version
+(Broadcom BCM4306 with PCI ID 14e4:4320) have the problem. Only Rev, 2
+(revision 4 of the 802.11 core) of the chip has been tested. No other
+devices using b43legacy are available for testing.
+
+Various sources of the problem were considered. Buffer overrun and
+other sources of corruption within the driver were rejected because
+the faulty channel status is always the same, not a random value.
+It was concluded that the faulty data is coming from the device, probably
+due to a firmware bug. As that source is not available, the driver
+must take appropriate action to recover.
+
+At present, the driver reports the error, and them continues to process
+the bad packet. This is believed that to be a mistake, and the correct
+action is to drop the correpted packet.
+
+Fixes: 75388acd0cd8 ("add mac80211-based driver for legacy BCM43xx devices")
+Cc: Stable <stable@vger.kernel.org>
+Signed-off-by: Larry Finger <Larry.Finger@lwfinger.net>
+Reported-and-tested by: F. Erhard <erhard_f@mailbox.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200407190043.1686-1-Larry.Finger@lwfinger.net
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/sparc/kernel/ptrace_64.c |   17 +++--------------
- 1 file changed, 3 insertions(+), 14 deletions(-)
+ drivers/net/wireless/broadcom/b43legacy/xmit.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/arch/sparc/kernel/ptrace_64.c
-+++ b/arch/sparc/kernel/ptrace_64.c
-@@ -533,19 +533,13 @@ static int genregs32_get(struct task_str
- 			for (; count > 0 && pos < 32; count--) {
- 				if (access_process_vm(target,
- 						      (unsigned long)
--						      &reg_window[pos],
-+						      &reg_window[pos++],
- 						      &reg, sizeof(reg),
- 						      FOLL_FORCE)
- 				    != sizeof(reg))
- 					return -EFAULT;
--				if (access_process_vm(target,
--						      (unsigned long) u,
--						      &reg, sizeof(reg),
--						      FOLL_FORCE | FOLL_WRITE)
--				    != sizeof(reg))
-+				if (put_user(reg, u++))
- 					return -EFAULT;
--				pos++;
--				u++;
- 			}
- 		}
+--- a/drivers/net/wireless/broadcom/b43legacy/xmit.c
++++ b/drivers/net/wireless/broadcom/b43legacy/xmit.c
+@@ -571,6 +571,7 @@ void b43legacy_rx(struct b43legacy_wldev
+ 	default:
+ 		b43legacywarn(dev->wl, "Unexpected value for chanstat (0x%X)\n",
+ 		       chanstat);
++		goto drop;
  	}
-@@ -645,12 +639,7 @@ static int genregs32_set(struct task_str
- 			}
- 		} else {
- 			for (; count > 0 && pos < 32; count--) {
--				if (access_process_vm(target,
--						      (unsigned long)
--						      u,
--						      &reg, sizeof(reg),
--						      FOLL_FORCE)
--				    != sizeof(reg))
-+				if (get_user(reg, u++))
- 					return -EFAULT;
- 				if (access_process_vm(target,
- 						      (unsigned long)
+ 
+ 	memcpy(IEEE80211_SKB_RXCB(skb), &status, sizeof(status));
 
 
