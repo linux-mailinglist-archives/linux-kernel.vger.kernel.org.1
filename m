@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEF63200E2E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E959D200E6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391341AbgFSPFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:05:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34632 "EHLO mail.kernel.org"
+        id S2390969AbgFSPHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:07:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391331AbgFSPFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:05:40 -0400
+        id S2391559AbgFSPHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:07:18 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71E412158C;
-        Fri, 19 Jun 2020 15:05:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BFA5521835;
+        Fri, 19 Jun 2020 15:07:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579140;
-        bh=q2rVo/aR3JTRBRIML0kZmbB8f0+fBsJ6fAx8XSXDfSQ=;
+        s=default; t=1592579237;
+        bh=i9Cm6uE8F2dwMgkxMHO8K4IqGtya6rXxjwkvqMYxwkw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nzOiDE924EOoSB++dhIKtoxaTUsFNVvQZBm2KEvni9Rh4nyoGfVBh8YlWfFtKvFaw
-         MfnGptHuzZT5h1QnjI7CDZ+Fr4pZnKHkaJyia2BhfPAUJycxDO+64pgJ63rnCKt0nO
-         1PLNzt72FNR/5wViCHYJm8EpcFFnjcrmMHbsGgtk=
+        b=xQvr1WP7odbzbKqqUjRrEPbWl9/fxYqTVsksu22rwYMvIT2kq6HK9WGUHn3bPP5kf
+         Wf6ekCeaQRWmSiQYy4TfP8QbFkYSshKNBMwTyQMtJ7YmBzuV5GFtF/VMZvPiG7DPZL
+         +YKKgbAOE15NxlT4ZyGHiVu3Nr5g+PgVDI2syz1c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 022/261] arm64: cacheflush: Fix KGDB trap detection
-Date:   Fri, 19 Jun 2020 16:30:33 +0200
-Message-Id: <20200619141650.972111586@linuxfoundation.org>
+        Weiping Zhang <zhangweiping@didiglobal.com>,
+        Bart van Assche <bvanassche@acm.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 029/261] block: reset mapping if failed to update hardware queue count
+Date:   Fri, 19 Jun 2020 16:30:40 +0200
+Message-Id: <20200619141651.310835453@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
 References: <20200619141649.878808811@linuxfoundation.org>
@@ -45,62 +45,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Thompson <daniel.thompson@linaro.org>
+From: Weiping Zhang <zhangweiping@didiglobal.com>
 
-[ Upstream commit ab8ad279ceac4fc78ae4dcf1a26326e05695e537 ]
+[ Upstream commit aa880ad690ab6d4c53934af85fb5a43e69ecb0f5 ]
 
-flush_icache_range() contains a bodge to avoid issuing IPIs when the kgdb
-trap handler is running because issuing IPIs is unsafe (and not needed)
-in this execution context. However the current test, based on
-kgdb_connected is flawed: it both over-matches and under-matches.
+When we increase hardware queue count, blk_mq_update_queue_map will
+reset the mapping between cpu and hardware queue base on the hardware
+queue count(set->nr_hw_queues). The mapping cannot be reset if it
+encounters error in blk_mq_realloc_hw_ctxs, but the fallback flow will
+continue using it, then blk_mq_map_swqueue will touch a invalid memory,
+because the mapping points to a wrong hctx.
 
-The over match occurs because kgdb_connected is set when gdb attaches
-to the stub and remains set during normal running. This is relatively
-harmelss because in almost all cases irq_disabled() will be false.
+blktest block/030:
 
-The under match is more serious. When kdb is used instead of kgdb to access
-the debugger then kgdb_connected is not set in all the places that the
-debug core updates sw breakpoints (and hence flushes the icache). This
-can lead to deadlock.
+null_blk: module loaded
+Increasing nr_hw_queues to 8 fails, fallback to 1
+==================================================================
+BUG: KASAN: null-ptr-deref in blk_mq_map_swqueue+0x2f2/0x830
+Read of size 8 at addr 0000000000000128 by task nproc/8541
 
-Fix by replacing the ad-hoc check with the proper kgdb macro. This also
-allows us to drop the #ifdef wrapper.
+CPU: 5 PID: 8541 Comm: nproc Not tainted 5.7.0-rc4-dbg+ #3
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+rel-1.13.0-0-gf21b5a4-rebuilt.opensuse.org 04/01/2014
+Call Trace:
+dump_stack+0xa5/0xe6
+__kasan_report.cold+0x65/0xbb
+kasan_report+0x45/0x60
+check_memory_region+0x15e/0x1c0
+__kasan_check_read+0x15/0x20
+blk_mq_map_swqueue+0x2f2/0x830
+__blk_mq_update_nr_hw_queues+0x3df/0x690
+blk_mq_update_nr_hw_queues+0x32/0x50
+nullb_device_submit_queues_store+0xde/0x160 [null_blk]
+configfs_write_file+0x1c4/0x250 [configfs]
+__vfs_write+0x4c/0x90
+vfs_write+0x14b/0x2d0
+ksys_write+0xdd/0x180
+__x64_sys_write+0x47/0x50
+do_syscall_64+0x6f/0x310
+entry_SYSCALL_64_after_hwframe+0x49/0xb3
 
-Fixes: 3b8c9f1cdfc5 ("arm64: IPI each CPU after invalidating the I-cache for kernel mappings")
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-Link: https://lore.kernel.org/r/20200504170518.2959478-1-daniel.thompson@linaro.org
-Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Weiping Zhang <zhangweiping@didiglobal.com>
+Tested-by: Bart van Assche <bvanassche@acm.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/include/asm/cacheflush.h | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ block/blk-mq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/include/asm/cacheflush.h b/arch/arm64/include/asm/cacheflush.h
-index 665c78e0665a..3e7dda6f1ab1 100644
---- a/arch/arm64/include/asm/cacheflush.h
-+++ b/arch/arm64/include/asm/cacheflush.h
-@@ -79,7 +79,7 @@ static inline void flush_icache_range(unsigned long start, unsigned long end)
- 	 * IPI all online CPUs so that they undergo a context synchronization
- 	 * event and are forced to refetch the new instructions.
- 	 */
--#ifdef CONFIG_KGDB
-+
- 	/*
- 	 * KGDB performs cache maintenance with interrupts disabled, so we
- 	 * will deadlock trying to IPI the secondary CPUs. In theory, we can
-@@ -89,9 +89,9 @@ static inline void flush_icache_range(unsigned long start, unsigned long end)
- 	 * the patching operation, so we don't need extra IPIs here anyway.
- 	 * In which case, add a KGDB-specific bodge and return early.
- 	 */
--	if (kgdb_connected && irqs_disabled())
-+	if (in_dbg_master())
- 		return;
--#endif
-+
- 	kick_all_cpus_sync();
- }
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 22ce0c6a8e6a..0550366e25d8 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -3304,8 +3304,8 @@ static void __blk_mq_update_nr_hw_queues(struct blk_mq_tag_set *set,
  
+ 	prev_nr_hw_queues = set->nr_hw_queues;
+ 	set->nr_hw_queues = nr_hw_queues;
+-	blk_mq_update_queue_map(set);
+ fallback:
++	blk_mq_update_queue_map(set);
+ 	list_for_each_entry(q, &set->tag_list, tag_set_list) {
+ 		blk_mq_realloc_hw_ctxs(set, q);
+ 		if (q->nr_hw_queues != set->nr_hw_queues) {
 -- 
 2.25.1
 
