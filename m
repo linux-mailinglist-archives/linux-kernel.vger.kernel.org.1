@@ -2,87 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E4F8201148
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BAA201176
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391933AbgFSPjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:39:31 -0400
-Received: from nbd.name ([46.4.11.11]:41566 "EHLO nbd.name"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405058AbgFSPj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:39:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=nbd.name;
-         s=20160729; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ZLaASyG1bJEXgQgjxKPmX/Bt2Syq4o0+QkutZUnfNQ4=; b=PKLNQl+9eYGgvffWNp/AB2jlaX
-        wR4IUVBVcaHgntEvbpPPyg/VAhM+3074Krp6clo7Bmw3oR1qZ9eaAyzpf75NXRki7ARvgVN8/iWr2
-        SOrBloi3i9vXo8SKEs6ko6RAeWN7BJzQ18OzkDbDYdOblX6mNTE4VepGMNm0QoQZfvxo=;
-Received: from p54ae948c.dip0.t-ipconnect.de ([84.174.148.140] helo=nf.local)
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <nbd@nbd.name>)
-        id 1jmJ6o-0000TV-Al; Fri, 19 Jun 2020 17:39:14 +0200
-Subject: Re: [PATCH 4.19 157/267] mt76: avoid rx reorder buffer overflow
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     stable@vger.kernel.org, Chih-Min Chen <chih-min.chen@mediatek.com>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Sasha Levin <sashal@kernel.org>
-References: <20200619141648.840376470@linuxfoundation.org>
- <20200619141656.344416983@linuxfoundation.org>
-From:   Felix Fietkau <nbd@nbd.name>
-Autocrypt: addr=nbd@nbd.name; prefer-encrypt=mutual; keydata=
- xsDiBEah5CcRBADIY7pu4LIv3jBlyQ/2u87iIZGe6f0f8pyB4UjzfJNXhJb8JylYYRzIOSxh
- ExKsdLCnJqsG1PY1mqTtoG8sONpwsHr2oJ4itjcGHfn5NJSUGTbtbbxLro13tHkGFCoCr4Z5
- Pv+XRgiANSpYlIigiMbOkide6wbggQK32tC20QxUIwCg4k6dtV/4kwEeiOUfErq00TVqIiEE
- AKcUi4taOuh/PQWx/Ujjl/P1LfJXqLKRPa8PwD4j2yjoc9l+7LptSxJThL9KSu6gtXQjcoR2
- vCK0OeYJhgO4kYMI78h1TSaxmtImEAnjFPYJYVsxrhay92jisYc7z5R/76AaELfF6RCjjGeP
- wdalulG+erWju710Bif7E1yjYVWeA/9Wd1lsOmx6uwwYgNqoFtcAunDaMKi9xVQW18FsUusM
- TdRvTZLBpoUAy+MajAL+R73TwLq3LnKpIcCwftyQXK5pEDKq57OhxJVv1Q8XkA9Dn1SBOjNB
- l25vJDFAT9ntp9THeDD2fv15yk4EKpWhu4H00/YX8KkhFsrtUs69+vZQwc0cRmVsaXggRmll
- dGthdSA8bmJkQG5iZC5uYW1lPsJgBBMRAgAgBQJGoeQnAhsjBgsJCAcDAgQVAggDBBYCAwEC
- HgECF4AACgkQ130UHQKnbvXsvgCgjsAIIOsY7xZ8VcSm7NABpi91yTMAniMMmH7FRenEAYMa
- VrwYTIThkTlQzsFNBEah5FQQCACMIep/hTzgPZ9HbCTKm9xN4bZX0JjrqjFem1Nxf3MBM5vN
- CYGBn8F4sGIzPmLhl4xFeq3k5irVg/YvxSDbQN6NJv8o+tP6zsMeWX2JjtV0P4aDIN1pK2/w
- VxcicArw0VYdv2ZCarccFBgH2a6GjswqlCqVM3gNIMI8ikzenKcso8YErGGiKYeMEZLwHaxE
- Y7mTPuOTrWL8uWWRL5mVjhZEVvDez6em/OYvzBwbkhImrryF29e3Po2cfY2n7EKjjr3/141K
- DHBBdgXlPNfDwROnA5ugjjEBjwkwBQqPpDA7AYPvpHh5vLbZnVGu5CwG7NAsrb2isRmjYoqk
- wu++3117AAMFB/9S0Sj7qFFQcD4laADVsabTpNNpaV4wAgVTRHKV/kC9luItzwDnUcsZUPdQ
- f3MueRJ3jIHU0UmRBG3uQftqbZJj3ikhnfvyLmkCNe+/hXhPu9sGvXyi2D4vszICvc1KL4RD
- aLSrOsROx22eZ26KqcW4ny7+va2FnvjsZgI8h4sDmaLzKczVRIiLITiMpLFEU/VoSv0m1F4B
- FtRgoiyjFzigWG0MsTdAN6FJzGh4mWWGIlE7o5JraNhnTd+yTUIPtw3ym6l8P+gbvfoZida0
- TspgwBWLnXQvP5EDvlZnNaKa/3oBes6z0QdaSOwZCRA3QSLHBwtgUsrT6RxRSweLrcabwkkE
- GBECAAkFAkah5FQCGwwACgkQ130UHQKnbvW2GgCfTKx80VvCR/PvsUlrvdOLsIgeRGAAn1ee
- RjMaxwtSdaCKMw3j33ZbsWS4
-Message-ID: <f5d39fea-7691-c961-48c8-52f98b0033db@nbd.name>
-Date:   Fri, 19 Jun 2020 17:39:13 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        id S2404973AbgFSPmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:42:23 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:21585 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2393535AbgFSPjx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:39:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592581191;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ApAwRnIqoKoWTTJBXjZG+FIZOjIxYSpaUm7PAr6FKp4=;
+        b=FgbMGbaNrri7g0e8F0ed/VWy4BULI0vu6/CDqeBg/tZhR3Mk4DBfOt9+y0YxAjuBxyctOq
+        PiBS8E/yKKnH6GIAcyCe+EsxKjt2MfOS0LEw3kDv6au3h1m7aN08DtfpdNYWBtbrm/o5D+
+        bkLxm8iatMVeMxZubCXUpjrWQb+3Jlk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-506-T7shlh7sO1iy-CaAz7ymvA-1; Fri, 19 Jun 2020 11:39:50 -0400
+X-MC-Unique: T7shlh7sO1iy-CaAz7ymvA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7A53F81EDED;
+        Fri, 19 Jun 2020 15:39:34 +0000 (UTC)
+Received: from localhost.localdomain.com (ovpn-112-254.ams2.redhat.com [10.36.112.254])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3C18460BF4;
+        Fri, 19 Jun 2020 15:39:27 +0000 (UTC)
+From:   Mohammed Gamal <mgamal@redhat.com>
+To:     kvm@vger.kernel.org, pbonzini@redhat.com
+Cc:     linux-kernel@vger.kernel.org, vkuznets@redhat.com,
+        sean.j.christopherson@intel.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, thomas.lendacky@amd.com,
+        babu.moger@amd.com, Mohammed Gamal <mgamal@redhat.com>
+Subject: [PATCH v2 00/11] KVM: Support guest MAXPHYADDR < host MAXPHYADDR
+Date:   Fri, 19 Jun 2020 17:39:14 +0200
+Message-Id: <20200619153925.79106-1-mgamal@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200619141656.344416983@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-19 16:32, Greg Kroah-Hartman wrote:
-> From: Ryder Lee <ryder.lee@mediatek.com>
-> 
-> [ Upstream commit 7c4f744d6703757be959f521a7a441bf34745d99 ]
-> 
-> Enlarge slot to support 11ax 256 BA (256 MPDUs in an AMPDU)
-> 
-> Signed-off-by: Chih-Min Chen <chih-min.chen@mediatek.com>
-> Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-> Signed-off-by: Felix Fietkau <nbd@nbd.name>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-It does not make sense to backport this commit. It doesn't fix anything,
-it's just preparation work for the mt7915 driver.
+When EPT/NPT is enabled, KVM does not really look at guest physical
+address size. Address bits above maximum physical memory size are reserved.
+Because KVM does not look at these guest physical addresses, it currently
+effectively supports guest physical address sizes equal to the host.
 
-- Felix
+This can be problem when having a mixed setup of machines with 5-level page
+tables and machines with 4-level page tables, as live migration can change
+MAXPHYADDR while the guest runs, which can theoretically introduce bugs.
+
+In this patch series we add checks on guest physical addresses in EPT
+violation/misconfig and NPF vmexits and if needed inject the proper
+page faults in the guest.
+
+A more subtle issue is when the host MAXPHYADDR is larger than that of the
+guest. Page faults caused by reserved bits on the guest won't cause an EPT
+violation/NPF and hence we also check guest MAXPHYADDR and add PFERR_RSVD_MASK
+error code to the page fault if needed.
+
+The last 3 patches (i.e. SVM bits and patch 11) are not intended for
+immediate inclusion and probably need more discussion.
+We've been noticing some unexpected behavior in handling NPF vmexits
+on AMD CPUs (see individual patches for details), and thus we are
+proposing a workaround (see last patch) that adds a capability that
+userspace can use to decide who to deal with hosts that might have
+issues supprting guest MAXPHYADDR < host MAXPHYADDR.
+
+
+Mohammed Gamal (7):
+  KVM: x86: Add helper functions for illegal GPA checking and page fault
+    injection
+  KVM: x86: mmu: Move translate_gpa() to mmu.c
+  KVM: x86: mmu: Add guest physical address check in translate_gpa()
+  KVM: VMX: Add guest physical address check in EPT violation and
+    misconfig
+  KVM: SVM: introduce svm_need_pf_intercept
+  KVM: SVM: Add guest physical address check in NPF/PF interception
+  KVM: x86: SVM: VMX: Make GUEST_MAXPHYADDR < HOST_MAXPHYADDR support
+    configurable
+
+Paolo Bonzini (4):
+  KVM: x86: rename update_bp_intercept to update_exception_bitmap
+  KVM: x86: update exception bitmap on CPUID changes
+  KVM: VMX: introduce vmx_need_pf_intercept
+  KVM: VMX: optimize #PF injection when MAXPHYADDR does not match
+
+ arch/x86/include/asm/kvm_host.h | 10 ++------
+ arch/x86/kvm/cpuid.c            |  2 ++
+ arch/x86/kvm/mmu.h              |  6 +++++
+ arch/x86/kvm/mmu/mmu.c          | 12 +++++++++
+ arch/x86/kvm/svm/svm.c          | 41 +++++++++++++++++++++++++++---
+ arch/x86/kvm/svm/svm.h          |  6 +++++
+ arch/x86/kvm/vmx/nested.c       | 28 ++++++++++++--------
+ arch/x86/kvm/vmx/vmx.c          | 45 +++++++++++++++++++++++++++++----
+ arch/x86/kvm/vmx/vmx.h          |  6 +++++
+ arch/x86/kvm/x86.c              | 29 ++++++++++++++++++++-
+ arch/x86/kvm/x86.h              |  1 +
+ include/uapi/linux/kvm.h        |  1 +
+ 12 files changed, 158 insertions(+), 29 deletions(-)
+
+-- 
+2.26.2
+
