@@ -2,80 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E4A200C78
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BB67200B79
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387519AbgFSOqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:46:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388412AbgFSOqK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:46:10 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B601F2168B;
-        Fri, 19 Jun 2020 14:46:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577970;
-        bh=9m+nedHFamROTEbfxZl0O8S6WBufhsoEggKhtJGuz4w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2O9pLpRPSzADPYAn47DKJBHv9L/bhbL0D1B/s1Jmmoc+lKdUA3vlcRwHWknTyYJsg
-         glDG/R2onXOvZ9Gyan43iEkRBxX/Z3g4ysJd29MYdtsl2Cr5S4SxHqPBfolckNkYzN
-         l7THI61JMtqXSd4oOvXnnym2hgmiBZn06BuZqePw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+        id S1733176AbgFSObF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:31:05 -0400
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:36519 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726594AbgFSObD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:31:03 -0400
+Received: by mail-qv1-f65.google.com with SMTP id x16so4540253qvr.3
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:31:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=EJ2H/fVddiAPK6hXHAtQLifLDsxa0nRqV7Ub9F0/6dA=;
+        b=BzvkDu2m1ekzExLNWtg8GFpN1K72nnVMOjw3cC9rvR+v1X0nY4aYeTQlYMMounSg2M
+         my+9E1t6SCQjfdVPqeN2TxuF0m53+/L0Fpe2i0tD/Vk5rcAxIkSQfpcKDKpy+kfP2Heb
+         stgkwSJe0if/ORJdjvAcEY3V1ltjJG5+cxOKrqPvrOJRDa4x+v9Qwy3ZpdzSWh5GG68N
+         c9UlUKtOHzCgVS+xyUCSGoSYvr/W77Gq0vKsrybKsm3EnLAOxWJt6VGLu5WNa3BFRQHZ
+         VaSVn52674XeFdUFDzUB7L8dm+D8eZt7ODgxU1Bh6YhA3YbKXHIp3DVKMD3AllIolZJd
+         9AIQ==
+X-Gm-Message-State: AOAM532i+i3gUth0N8zjEBTN4mgSYx7BbfLXH+RDFm0d7/aGrverwT2p
+        DCzarUDLZh8lwr2GUyzx20Uf8NA=
+X-Google-Smtp-Source: ABdhPJzcp62d0u37b3F1PLhEb1DX16D3sr8ZkLqMrAJ65xtkR6qmdSiVLa9KtI9kCGPkQ1Wjb+pSIw==
+X-Received: by 2002:a0c:efcf:: with SMTP id a15mr9180329qvt.108.1592577061579;
+        Fri, 19 Jun 2020 07:31:01 -0700 (PDT)
+Received: from bill-the-cat.local (2606-a000-1401-8080-8c25-1271-b281-e614.inf6.spectrum.com. [2606:a000:1401:8080:8c25:1271:b281:e614])
+        by smtp.gmail.com with ESMTPSA id u1sm6271677qkj.5.2020.06.19.07.31.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 07:31:00 -0700 (PDT)
+From:   Tom Rini <trini@konsulko.com>
 To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Su Kang Yin <cantona@cantona.net>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 4.14 009/190] crypto: talitos - fix ECB and CBC algs ivsize
-Date:   Fri, 19 Jun 2020 16:30:54 +0200
-Message-Id: <20200619141633.935484791@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
-User-Agent: quilt/0.66
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "Ronald G . Minnich" <rminnich@gmail.com>
+Subject: [PATCH] initrd: Remove erroneous comment
+Date:   Fri, 19 Jun 2020 10:30:56 -0400
+Message-Id: <20200619143056.24538-1-trini@konsulko.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Su Kang Yin <cantona@cantona.net>
+Most architectures have been passing the location of an initrd via the
+initrd= option since their inception.  Remove the comment as it's both
+wrong and unrelated to the commit that introduced it.
 
-commit e1de42fdfc6a ("crypto: talitos - fix ECB algs ivsize")
-wrongly modified CBC algs ivsize instead of ECB aggs ivsize.
-
-This restore the CBC algs original ivsize of removes ECB's ones.
-
-Fixes: e1de42fdfc6a ("crypto: talitos - fix ECB algs ivsize")
-Signed-off-by: Su Kang Yin <cantona@cantona.net>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 694cfd87b0c8 ("x86/setup: Add an initrdmem= option to specify initrd physical address")
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Borislav Petkov <bp@suse.de>
+Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: H. Peter Anvin (Intel) <hpa@zytor.com>
+Cc: Ronald G. Minnich <rminnich@gmail.com>
+Signed-off-by: Tom Rini <trini@konsulko.com>
 ---
- drivers/crypto/talitos.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+For a bit more context, I assume there's been some confusion between
+"initrd" being a keyword in things like extlinux.conf and also that for
+quite a long time now initrd information is passed via device tree and
+not the command line on relevant architectures.  But it's still true
+that it's been a valid command line option to the kernel since the 90s.
+It's just the case that in 2018 the code was consolidated from under
+arch/ and in to this file.
+---
+ init/do_mounts_initrd.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
---- a/drivers/crypto/talitos.c
-+++ b/drivers/crypto/talitos.c
-@@ -2636,7 +2636,6 @@ static struct talitos_alg_template drive
- 			.cra_ablkcipher = {
- 				.min_keysize = AES_MIN_KEY_SIZE,
- 				.max_keysize = AES_MAX_KEY_SIZE,
--				.ivsize = AES_BLOCK_SIZE,
- 			}
- 		},
- 		.desc_hdr_template = DESC_HDR_TYPE_COMMON_NONSNOOP_NO_AFEU |
-@@ -2670,6 +2669,7 @@ static struct talitos_alg_template drive
- 			.cra_ablkcipher = {
- 				.min_keysize = AES_MIN_KEY_SIZE,
- 				.max_keysize = AES_MAX_KEY_SIZE,
-+				.ivsize = AES_BLOCK_SIZE,
- 				.setkey = ablkcipher_aes_setkey,
- 			}
- 		},
-
+diff --git a/init/do_mounts_initrd.c b/init/do_mounts_initrd.c
+index d72beda824aa..53314d7da4be 100644
+--- a/init/do_mounts_initrd.c
++++ b/init/do_mounts_initrd.c
+@@ -45,11 +45,6 @@ static int __init early_initrdmem(char *p)
+ }
+ early_param("initrdmem", early_initrdmem);
+ 
+-/*
+- * This is here as the initrd keyword has been in use since 11/2018
+- * on ARM, PowerPC, and MIPS.
+- * It should not be; it is reserved for bootloaders.
+- */
+ static int __init early_initrd(char *p)
+ {
+ 	return early_initrdmem(p);
+-- 
+2.17.1
 
