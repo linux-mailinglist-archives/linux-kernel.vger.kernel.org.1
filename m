@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F12200C22
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0F5200BB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388339AbgFSOmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:42:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60798 "EHLO mail.kernel.org"
+        id S1733249AbgFSOgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:36:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388315AbgFSOmB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:42:01 -0400
+        id S2387566AbgFSOgl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:36:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DED3220A8B;
-        Fri, 19 Jun 2020 14:42:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D8A9120CC7;
+        Fri, 19 Jun 2020 14:36:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577721;
-        bh=4GDj40YMC236QJ/h4DC1Ce/InFlHhNvYDg8ll0+BQsg=;
+        s=default; t=1592577400;
+        bh=sXl+Ns5JOxqJylekxpc8ie6/U3eKfS139lWdkI5jD24=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E/pJjACZzjtE2pue+j0aMOz4oC2wu1EzwOD1a34OlApGPHzC6nPj5tX5WeidJnJNb
-         LwszwCWn0yIixpxGGk2CDmkqC8MKCodBWhvBrFUTa/RRHdFyt2TRhV/t9mWo0Sh4H9
-         KXxUuH7+pXfFc0ZcKCmDTe2SHhlq50FamotqzC6c=
+        b=GW9O7RNOqKL7AxpAqszzrYDog6PD/bFFe3QJVI2noTnCePWJyD0PSX+D/SXOSOUSw
+         /KvOcZ/SmBgydOS5i98RnzVpGhoVpwTS93KVoWR7819hRKsLRMCL4x7akbXgjxMznn
+         Iv/fVaPPRllZ3M9dGOFp7RBOaLLYyihdLJqKa7Bg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
-        Martin Sperl <kernel@martin.sperl.org>,
-        Mark Brown <broonie@kernel.org>
-Subject: [PATCH 4.9 022/128] spi: bcm2835aux: Fix controller unregister order
+        stable@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>,
+        Fredrik Strupe <fredrik@strupe.net>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 007/101] ARM: 8977/1: ptrace: Fix mask for thumb breakpoint hook
 Date:   Fri, 19 Jun 2020 16:31:56 +0200
-Message-Id: <20200619141621.339552116@linuxfoundation.org>
+Message-Id: <20200619141614.398810825@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
-References: <20200619141620.148019466@linuxfoundation.org>
+In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
+References: <20200619141614.001544111@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lukas Wunner <lukas@wunner.de>
+From: Fredrik Strupe <fredrik@strupe.net>
 
-commit b9dd3f6d417258ad0beeb292a1bc74200149f15d upstream.
+[ Upstream commit 3866f217aaa81bf7165c7f27362eee5d7919c496 ]
 
-The BCM2835aux SPI driver uses devm_spi_register_master() on bind.
-As a consequence, on unbind, __device_release_driver() first invokes
-bcm2835aux_spi_remove() before unregistering the SPI controller via
-devres_release_all().
+call_undef_hook() in traps.c applies the same instr_mask for both 16-bit
+and 32-bit thumb instructions. If instr_mask then is only 16 bits wide
+(0xffff as opposed to 0xffffffff), the first half-word of 32-bit thumb
+instructions will be masked out. This makes the function match 32-bit
+thumb instructions where the second half-word is equal to instr_val,
+regardless of the first half-word.
 
-This order is incorrect:  bcm2835aux_spi_remove() turns off the SPI
-controller, including its interrupts and clock.  The SPI controller
-is thus no longer usable.
+The result in this case is that all undefined 32-bit thumb instructions
+with the second half-word equal to 0xde01 (udf #1) work as breakpoints
+and will raise a SIGTRAP instead of a SIGILL, instead of just the one
+intended 16-bit instruction. An example of such an instruction is
+0xeaa0de01, which is unallocated according to Arm ARM and should raise a
+SIGILL, but instead raises a SIGTRAP.
 
-When the SPI controller is subsequently unregistered, it unbinds all
-its slave devices.  If their drivers need to access the SPI bus,
-e.g. to quiesce their interrupts, unbinding will fail.
+This patch fixes the issue by setting all the bits in instr_mask, which
+will still match the intended 16-bit thumb instruction (where the
+upper half is always 0), but not any 32-bit thumb instructions.
 
-As a rule, devm_spi_register_master() must not be used if the
-->remove() hook performs teardown steps which shall be performed
-after unbinding of slaves.
-
-Fix by using the non-devm variant spi_register_master().  Note that the
-struct spi_master as well as the driver-private data are not freed until
-after bcm2835aux_spi_remove() has finished, so accessing them is safe.
-
-Fixes: 1ea29b39f4c8 ("spi: bcm2835aux: add bcm2835 auxiliary spi device driver")
-Signed-off-by: Lukas Wunner <lukas@wunner.de>
-Cc: stable@vger.kernel.org # v4.4+
-Cc: Martin Sperl <kernel@martin.sperl.org>
-Link: https://lore.kernel.org/r/32f27f4d8242e4d75f9a53f7e8f1f77483b08669.1589557526.git.lukas@wunner.de
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Cc: Oleg Nesterov <oleg@redhat.com>
+Signed-off-by: Fredrik Strupe <fredrik@strupe.net>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-bcm2835aux.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arm/kernel/ptrace.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/spi/spi-bcm2835aux.c
-+++ b/drivers/spi/spi-bcm2835aux.c
-@@ -485,7 +485,7 @@ static int bcm2835aux_spi_probe(struct p
- 		goto out_clk_disable;
- 	}
+diff --git a/arch/arm/kernel/ptrace.c b/arch/arm/kernel/ptrace.c
+index d54c53b7ab63..711d854ea13a 100644
+--- a/arch/arm/kernel/ptrace.c
++++ b/arch/arm/kernel/ptrace.c
+@@ -227,8 +227,8 @@ static struct undef_hook arm_break_hook = {
+ };
  
--	err = devm_spi_register_master(&pdev->dev, master);
-+	err = spi_register_master(master);
- 	if (err) {
- 		dev_err(&pdev->dev, "could not register SPI master: %d\n", err);
- 		goto out_clk_disable;
-@@ -505,6 +505,8 @@ static int bcm2835aux_spi_remove(struct
- 	struct spi_master *master = platform_get_drvdata(pdev);
- 	struct bcm2835aux_spi *bs = spi_master_get_devdata(master);
- 
-+	spi_unregister_master(master);
-+
- 	bcm2835aux_spi_reset_hw(bs);
- 
- 	/* disable the HW block by releasing the clock */
+ static struct undef_hook thumb_break_hook = {
+-	.instr_mask	= 0xffff,
+-	.instr_val	= 0xde01,
++	.instr_mask	= 0xffffffff,
++	.instr_val	= 0x0000de01,
+ 	.cpsr_mask	= PSR_T_BIT,
+ 	.cpsr_val	= PSR_T_BIT,
+ 	.fn		= break_trap,
+-- 
+2.25.1
+
 
 
