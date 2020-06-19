@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62779200C7E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 478F9200CF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:53:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388849AbgFSOqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388831AbgFSOqV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:46:21 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C88C06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:46:20 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id b4so9102705qkn.11
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:46:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+s6pkBRDM30YuGdJhldYKeWDIO48yG6flkbbQQFbzXo=;
-        b=cVyekK6gNaex1l33w5CHjg7QMVi68Sw9rhx+fP+2dHuJ9VuuQAjQuvPC0embsAEdll
-         pL39qxS6t4Z72V7EuzIFUxGRiUy0R9xd48CMucaUVTTfLG6KJuB1lp1lfDG99zhzwayW
-         RiNI4sAMzD5UAnCVeEJWJkrrLXz2X5a1+EHq7MfcAf4QEvRW11cPPhA2vSJJXwgq8+AN
-         wSG6JToEpWDGOJRIkVr0GSgtT9FzIJgJ3aJeeIbBu9wiiXvhrQHVX2R98vmzUHyZ8cjv
-         lNeHlLryFxqhdOjBqQ+153TWRlnSTkOAXNDtxCU6bs6aX/NcBxp1dDa0Y7/0d+TcX9er
-         bwfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+s6pkBRDM30YuGdJhldYKeWDIO48yG6flkbbQQFbzXo=;
-        b=neBrbNm/WRBh1E00NRTKZLyxyCiIMQwCgZbRoCTqKB1VYL0ZX1p35qkbDT4QLvnNfy
-         YfYCWqoaeGZphazEDBr5xACsHAy2YcfpwOthKH99wkFZj1esgh1rcsLrmsAaWF4XC3Oa
-         pwml7IBlyhBf/oVJ5pJ9jPKnH1cbq9dkncJtq2GBjERo4Mw6HabZFfFdzd2wheWDnzo0
-         vETR1+T178G3bfB4Erxy1qtle/ibDaRTZd9ps8sjVIk5AWFqsuGZ8BOUXImz6QcS1Exj
-         4FVEgrtx8KsIZ1p1/oZxYQpPmhKTg7APEdLJmU8inz8zo2IV+rMkL/hTZmCZcoDoPDTS
-         +hBA==
-X-Gm-Message-State: AOAM533Q7A8/BOSx9WXSbwCug+P2/As8fTiBkpSs5b2Ne5ciCom4OVQE
-        FoxQiy69G5e31xW5F5dnJ8WKrQ==
-X-Google-Smtp-Source: ABdhPJygwoh996Fm9/gdg5XwxRwtTBWoa4pQqIYXEJJKN05JlUNfo4ySIZl5kXOYWSFVrRj4BFCHdg==
-X-Received: by 2002:a05:620a:205e:: with SMTP id d30mr3855514qka.450.1592577979603;
-        Fri, 19 Jun 2020 07:46:19 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id 6sm6469489qkl.26.2020.06.19.07.46.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 07:46:19 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.93)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1jmIHa-00AoSr-JK; Fri, 19 Jun 2020 11:46:18 -0300
-Date:   Fri, 19 Jun 2020 11:46:18 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Jinpu Wang <jinpu.wang@cloud.ionos.com>
-Cc:     Bo YU <tsu.yubo@gmail.com>,
-        Danil Kipnis <danil.kipnis@cloud.ionos.com>,
-        ledford@redhat.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] RDMA/rtrs: fix potential resources leaks
-Message-ID: <20200619144618.GO6578@ziepe.ca>
-References: <20200619131017.pr7eoca2bzdtlbk4@debian.debian-2>
- <CAMGffEntL4XkF6bCuhUDP+AOBO4mpKK1pTe3NgPUW86ySyy7Wg@mail.gmail.com>
+        id S2389480AbgFSOvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:51:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:36082 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389446AbgFSOv1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:51:27 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3EE28101E;
+        Fri, 19 Jun 2020 07:51:27 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8F9373F71F;
+        Fri, 19 Jun 2020 07:51:25 -0700 (PDT)
+Date:   Fri, 19 Jun 2020 15:51:23 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Chris Redpath <chrid.redpath@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] sched/uclamp: Protect uclamp fast path code with
+ static key
+Message-ID: <20200619145113.tgaxvzejmpstsnx7@e107158-lin.cambridge.arm.com>
+References: <20200618195525.7889-1-qais.yousef@arm.com>
+ <20200618195525.7889-3-qais.yousef@arm.com>
+ <jhjwo43cpfl.mognet@arm.com>
+ <20200619115723.GF3129@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAMGffEntL4XkF6bCuhUDP+AOBO4mpKK1pTe3NgPUW86ySyy7Wg@mail.gmail.com>
+In-Reply-To: <20200619115723.GF3129@suse.de>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 03:16:57PM +0200, Jinpu Wang wrote:
-> Hi, Bo,
-> On Fri, Jun 19, 2020 at 3:10 PM Bo YU <tsu.yubo@gmail.com> wrote:
-> >
-> > Dev is returned from allocation function kzalloc but it does not
-> > free it in out_err path.
-> If allocation failed, kzalloc return NULL, nothing to free.
+On 06/19/20 12:57, Mel Gorman wrote:
+> On Fri, Jun 19, 2020 at 11:36:46AM +0100, Valentin Schneider wrote:
+> > >                                    nouclamp                 uclamp      uclamp-static-key
+> > > Hmean     send-64         162.43 (   0.00%)      157.84 *  -2.82%*      163.39 *   0.59%*
+> > > Hmean     send-128        324.71 (   0.00%)      314.78 *  -3.06%*      326.18 *   0.45%*
+> > > Hmean     send-256        641.55 (   0.00%)      628.67 *  -2.01%*      648.12 *   1.02%*
+> > > Hmean     send-1024      2525.28 (   0.00%)     2448.26 *  -3.05%*     2543.73 *   0.73%*
+> > > Hmean     send-2048      4836.14 (   0.00%)     4712.08 *  -2.57%*     4867.69 *   0.65%*
+> > > Hmean     send-3312      7540.83 (   0.00%)     7425.45 *  -1.53%*     7621.06 *   1.06%*
+> > > Hmean     send-4096      9124.53 (   0.00%)     8948.82 *  -1.93%*     9276.25 *   1.66%*
+> > > Hmean     send-8192     15589.67 (   0.00%)    15486.35 *  -0.66%*    15819.98 *   1.48%*
+> > > Hmean     send-16384    26386.47 (   0.00%)    25752.25 *  -2.40%*    26773.74 *   1.47%*
+> > >
+> > 
+> > Am I reading this correctly in that compiling in uclamp but having the
+> > static key enabled gives a slight improvement compared to not compiling in
+> > uclamp? I suppose the important bit is that we're not seeing regressions
+> > anymore, but still.
+> > 
+> 
+> I haven't reviewed the series in depth because from your review, another
+> version is likely in the works. However, it is not that unusual to
+> see small fluctuations like this that are counter-intuitive. The report
+> indicates the difference is likely outside of the noise with * around the
+> percentage difference instead of () but it could be small boot-to-boot
+> variance, differences in code layout, slight differences in slab usage
+> patterns etc. The definitive evidence that uclamp overhead is no there
+> is whether the uclamp functions show up in annotated profiles or not.
 
-You should re-organize this to not confuse coverity.
+The diff between nouclamp and uclamp-static-key (disabling uclamp in fast path)
 
-IS_ERR_OR_NULL should rarely be used and is the problem here
+     8.73%     -1.55%  [kernel.kallsyms]        [k] try_to_wake_up
+     0.07%     +0.04%  [kernel.kallsyms]        [k] deactivate_task
+     0.13%     -0.02%  [kernel.kallsyms]        [k] activate_task
 
-Jason
+The diff between nouclamp and uclamp-static-key (uclamp actively used in the
+fast path)
+
+     8.73%     -0.72%  [kernel.kallsyms]        [k] try_to_wake_up
+     0.13%     +0.39%  [kernel.kallsyms]        [k] activate_task
+     0.07%     +0.38%  [kernel.kallsyms]        [k] deactivate_task
+
+I will include these numbers in the commit message in v2.
+
+Thanks
+
+--
+Qais Yousef
