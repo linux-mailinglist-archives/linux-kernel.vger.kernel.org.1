@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C91F2015D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:32:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09271201826
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394741AbgFSQXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:23:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55576 "EHLO mail.kernel.org"
+        id S2405719AbgFSQre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:47:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59422 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389204AbgFSO7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:59:25 -0400
+        id S2387407AbgFSOlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:41:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F07821919;
-        Fri, 19 Jun 2020 14:59:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A14E920A8B;
+        Fri, 19 Jun 2020 14:41:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578764;
-        bh=IU24YtlhCdcevlf6Cuee3hpgUBgk5huQL7F9ovzA37s=;
+        s=default; t=1592577666;
+        bh=j3L0vg0sqCLdsfzZaqiXwRkts1w+MR6PXYLFGuIKpHk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l4rvX1pGLlwcbkT2s4jde0P/UgpoSddrTg6izgupq3SPYkCqtAaKpthm3UirIFGmb
-         q1wM1VBOvzyLGxuxKQo/wSO8edQUu/zwVi//eYOhuJWDDVMW1N7WcQqnQry0ichSJm
-         GVXHWkUeGFAoXCis2D97ocFcvto8ZFgrERy3y4EM=
+        b=uroFFYb2Kty2YitC38LKs6V75khaWOCIr2bev0Ogl3IIUoyCzbhHvCIISlWiyvLlI
+         Q4EJRkCpxNaiTMnYf1mO2Q9ZNAB9J/fAv87nn6wVzpqv48tQo/vaTBcB0nB4t9mhDG
+         NRWJuPneM94X5qGxRxG4w0ZPl0ff/wq6wGN8596k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Allison Collins <allison.henderson@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 147/267] xfs: reset buffer write failure state on successful completion
-Date:   Fri, 19 Jun 2020 16:32:12 +0200
-Message-Id: <20200619141655.886861807@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Xing Li <lixing@loongson.cn>, Huacai Chen <chenhc@lemote.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.9 040/128] KVM: MIPS: Define KVM_ENTRYHI_ASID to cpu_asid_mask(&boot_cpu_data)
+Date:   Fri, 19 Jun 2020 16:32:14 +0200
+Message-Id: <20200619141622.332370606@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,83 +45,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brian Foster <bfoster@redhat.com>
+From: Xing Li <lixing@loongson.cn>
 
-[ Upstream commit b6983e80b03bd4fd42de71993b3ac7403edac758 ]
+commit fe2b73dba47fb6d6922df1ad44e83b1754d5ed4d upstream.
 
-The buffer write failure flag is intended to control the internal
-write retry that XFS has historically implemented to help mitigate
-the severity of transient I/O errors. The flag is set when a buffer
-is resubmitted from the I/O completion path due to a previous
-failure. It is checked on subsequent I/O completions to skip the
-internal retry and fall through to the higher level configurable
-error handling mechanism. The flag is cleared in the synchronous and
-delwri submission paths and also checked in various places to log
-write failure messages.
+The code in decode_config4() of arch/mips/kernel/cpu-probe.c
 
-There are a couple minor problems with the current usage of this
-flag. One is that we issue an internal retry after every submission
-from xfsaild due to how delwri submission clears the flag. This
-results in double the expected or configured number of write
-attempts when under sustained failures. Another more subtle issue is
-that the flag is never cleared on successful I/O completion. This
-can cause xfs_wait_buftarg() to suggest that dirty buffers are being
-thrown away due to the existence of the flag, when the reality is
-that the flag might still be set because the write succeeded on the
-retry.
+        asid_mask = MIPS_ENTRYHI_ASID;
+        if (config4 & MIPS_CONF4_AE)
+                asid_mask |= MIPS_ENTRYHI_ASIDX;
+        set_cpu_asid_mask(c, asid_mask);
 
-Clear the write failure flag on successful I/O completion to address
-both of these problems. This means that the internal retry attempt
-occurs once since the last time a buffer write failed and that
-various other contexts only see the flag set when the immediately
-previous write attempt has failed.
+set asid_mask to cpuinfo->asid_mask.
 
-Signed-off-by: Brian Foster <bfoster@redhat.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Allison Collins <allison.henderson@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+So in order to support variable ASID_MASK, KVM_ENTRYHI_ASID should also
+be changed to cpu_asid_mask(&boot_cpu_data).
+
+Cc: Stable <stable@vger.kernel.org>  #4.9+
+Reviewed-by: Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
+Signed-off-by: Xing Li <lixing@loongson.cn>
+[Huacai: Change current_cpu_data to boot_cpu_data for optimization]
+Signed-off-by: Huacai Chen <chenhc@lemote.com>
+Message-Id: <1590220602-3547-2-git-send-email-chenhc@lemote.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/xfs/xfs_buf.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ arch/mips/include/asm/kvm_host.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/xfs/xfs_buf.c b/fs/xfs/xfs_buf.c
-index c1f7c0d5d608..b33a9cd4fe94 100644
---- a/fs/xfs/xfs_buf.c
-+++ b/fs/xfs/xfs_buf.c
-@@ -1202,8 +1202,10 @@ xfs_buf_ioend(
- 		bp->b_ops->verify_read(bp);
- 	}
+--- a/arch/mips/include/asm/kvm_host.h
++++ b/arch/mips/include/asm/kvm_host.h
+@@ -244,7 +244,7 @@ enum emulation_result {
+ #define MIPS3_PG_FRAME		0x3fffffc0
  
--	if (!bp->b_error)
-+	if (!bp->b_error) {
-+		bp->b_flags &= ~XBF_WRITE_FAIL;
- 		bp->b_flags |= XBF_DONE;
-+	}
- 
- 	if (bp->b_iodone)
- 		(*(bp->b_iodone))(bp);
-@@ -1263,7 +1265,7 @@ xfs_bwrite(
- 
- 	bp->b_flags |= XBF_WRITE;
- 	bp->b_flags &= ~(XBF_ASYNC | XBF_READ | _XBF_DELWRI_Q |
--			 XBF_WRITE_FAIL | XBF_DONE);
-+			 XBF_DONE);
- 
- 	error = xfs_buf_submit(bp);
- 	if (error) {
-@@ -2000,7 +2002,7 @@ xfs_buf_delwri_submit_buffers(
- 		 * synchronously. Otherwise, drop the buffer from the delwri
- 		 * queue and submit async.
- 		 */
--		bp->b_flags &= ~(_XBF_DELWRI_Q | XBF_WRITE_FAIL);
-+		bp->b_flags &= ~_XBF_DELWRI_Q;
- 		bp->b_flags |= XBF_WRITE;
- 		if (wait_list) {
- 			bp->b_flags &= ~XBF_ASYNC;
--- 
-2.25.1
-
+ #define VPN2_MASK		0xffffe000
+-#define KVM_ENTRYHI_ASID	MIPS_ENTRYHI_ASID
++#define KVM_ENTRYHI_ASID	cpu_asid_mask(&boot_cpu_data)
+ #define TLB_IS_GLOBAL(x)	((x).tlb_lo[0] & (x).tlb_lo[1] & ENTRYLO_G)
+ #define TLB_VPN2(x)		((x).tlb_hi & VPN2_MASK)
+ #define TLB_ASID(x)		((x).tlb_hi & KVM_ENTRYHI_ASID)
 
 
