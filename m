@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1728A200EBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729ED200DB9
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403796AbgFSPK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:10:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40630 "EHLO mail.kernel.org"
+        id S2389994AbgFSPAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:00:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403769AbgFSPKg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:10:36 -0400
+        id S2390608AbgFSPAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:00:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7ABE1206FA;
-        Fri, 19 Jun 2020 15:10:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3349B218AC;
+        Fri, 19 Jun 2020 15:00:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579436;
-        bh=ROUYVJJ3ePUN3a1iYmd1eoCs5co0/fGeJQMZ/InFDNc=;
+        s=default; t=1592578800;
+        bh=d8+EqofeeBMOBFNJT6NfDdQN0skLq6rIHmBekhQBzSo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=crTZvFx1AHMVpA6gSZsz8yBLU1/H3vOsbN2wtbHQ8IjMVdrWEAkveXDTRaI1Zp2YR
-         0ZcdcPqYSOlaLEAf7Yy/QkwYSEp/h/YThMwtyYa+yIquDFeZv+47Tv/KaqVaWjfEUb
-         5Mzz1bIR9MX17xVkUcsiwkVfD+CsO90PMsuVXNl4=
+        b=V54FZ9vSiDT3xsANoU/EjYKxLXFdUfUGhmqviSYhDLZ1uESEaTJx7sNmJIKFDYzbh
+         jLuSQtgiyHpOvHmQV9tttbUPnHQNGm5Yj8eGkuE0fFrHl6Q2n/Yny1PmdLukWLV/sT
+         45faoNF7TVGBtVZ3TkA0KVMEAPm48kSJkIODAVE0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Fugang Duan <fugang.duan@nxp.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Ganapathi Bhat <ganapathi.bhat@nxp.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 135/261] net: ethernet: fec: move GPR register offset and bit into DT
-Date:   Fri, 19 Jun 2020 16:32:26 +0200
-Message-Id: <20200619141656.318313725@linuxfoundation.org>
+Subject: [PATCH 4.19 162/267] mwifiex: Fix memory corruption in dump_station
+Date:   Fri, 19 Jun 2020 16:32:27 +0200
+Message-Id: <20200619141656.581746549@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,110 +46,87 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fugang Duan <fugang.duan@nxp.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 8a448bf832af537d26aa557d183a16943dce4510 ]
+[ Upstream commit 3aa42bae9c4d1641aeb36f1a8585cd1d506cf471 ]
 
-The commit da722186f654 (net: fec: set GPR bit on suspend by DT
-configuration) set the GPR reigster offset and bit in driver for
-wake on lan feature.
+The mwifiex_cfg80211_dump_station() uses static variable for iterating
+over a linked list of all associated stations (when the driver is in UAP
+role). This has a race condition if .dump_station is called in parallel
+for multiple interfaces. This corruption can be triggered by registering
+multiple SSIDs and calling, in parallel for multiple interfaces
+    iw dev <iface> station dump
 
-But it introduces two issues here:
-- one SOC has two instances, they have different bit
-- different SOCs may have different offset and bit
+[16750.719775] Unable to handle kernel paging request at virtual address dead000000000110
+...
+[16750.899173] Call trace:
+[16750.901696]  mwifiex_cfg80211_dump_station+0x94/0x100 [mwifiex]
+[16750.907824]  nl80211_dump_station+0xbc/0x278 [cfg80211]
+[16750.913160]  netlink_dump+0xe8/0x320
+[16750.916827]  netlink_recvmsg+0x1b4/0x338
+[16750.920861]  ____sys_recvmsg+0x7c/0x2b0
+[16750.924801]  ___sys_recvmsg+0x70/0x98
+[16750.928564]  __sys_recvmsg+0x58/0xa0
+[16750.932238]  __arm64_sys_recvmsg+0x28/0x30
+[16750.936453]  el0_svc_common.constprop.3+0x90/0x158
+[16750.941378]  do_el0_svc+0x74/0x90
+[16750.944784]  el0_sync_handler+0x12c/0x1a8
+[16750.948903]  el0_sync+0x114/0x140
+[16750.952312] Code: f9400003 f907f423 eb02007f 54fffd60 (b9401060)
+[16750.958583] ---[ end trace c8ad181c2f4b8576 ]---
 
-So to support wake-on-lan feature on other i.MX platforms, it should
-configure the GPR reigster offset and bit from DT.
+This patch drops the use of the static iterator, and instead every time
+the function is called iterates to the idx-th position of the
+linked-list.
 
-So the patch is to improve the commit da722186f654 (net: fec: set GPR
-bit on suspend by DT configuration) to support multiple ethernet
-instances on i.MX series.
+It would be better to convert the code not to use linked list for
+associated stations storage (since the chip has a limited number of
+associated stations anyway - it could just be an array). Such a change
+may be proposed in the future. In the meantime this patch can backported
+into stable kernels in this simple form.
 
-v2:
- * switch back to store the quirks bitmask in driver_data
-v3:
- * suggested by Sascha Hauer, use a struct fec_devinfo for
-   abstracting differences between different hardware variants,
-   it can give more freedom to describe the differences.
-
-Signed-off-by: Fugang Duan <fugang.duan@nxp.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 8baca1a34d4c ("mwifiex: dump station support in uap mode")
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Acked-by: Ganapathi Bhat <ganapathi.bhat@nxp.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200515075924.13841-1-pali@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/fec_main.c | 24 +++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ drivers/net/wireless/marvell/mwifiex/cfg80211.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/net/ethernet/freescale/fec_main.c b/drivers/net/ethernet/freescale/fec_main.c
-index 39c112f1543c..f0acbfa31482 100644
---- a/drivers/net/ethernet/freescale/fec_main.c
-+++ b/drivers/net/ethernet/freescale/fec_main.c
-@@ -88,8 +88,6 @@ static void fec_enet_itr_coal_init(struct net_device *ndev);
- 
- struct fec_devinfo {
- 	u32 quirks;
--	u8 stop_gpr_reg;
--	u8 stop_gpr_bit;
- };
- 
- static const struct fec_devinfo fec_imx25_info = {
-@@ -112,8 +110,6 @@ static const struct fec_devinfo fec_imx6q_info = {
- 		  FEC_QUIRK_HAS_BUFDESC_EX | FEC_QUIRK_HAS_CSUM |
- 		  FEC_QUIRK_HAS_VLAN | FEC_QUIRK_ERR006358 |
- 		  FEC_QUIRK_HAS_RACC,
--	.stop_gpr_reg = 0x34,
--	.stop_gpr_bit = 27,
- };
- 
- static const struct fec_devinfo fec_mvf600_info = {
-@@ -3452,19 +3448,23 @@ static int fec_enet_get_irq_cnt(struct platform_device *pdev)
- }
- 
- static int fec_enet_init_stop_mode(struct fec_enet_private *fep,
--				   struct fec_devinfo *dev_info,
- 				   struct device_node *np)
+diff --git a/drivers/net/wireless/marvell/mwifiex/cfg80211.c b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
+index 7b74ef71bef1..650191db25cb 100644
+--- a/drivers/net/wireless/marvell/mwifiex/cfg80211.c
++++ b/drivers/net/wireless/marvell/mwifiex/cfg80211.c
+@@ -1468,7 +1468,8 @@ mwifiex_cfg80211_dump_station(struct wiphy *wiphy, struct net_device *dev,
+ 			      int idx, u8 *mac, struct station_info *sinfo)
  {
- 	struct device_node *gpr_np;
-+	u32 out_val[3];
- 	int ret = 0;
+ 	struct mwifiex_private *priv = mwifiex_netdev_get_priv(dev);
+-	static struct mwifiex_sta_node *node;
++	struct mwifiex_sta_node *node;
++	int i;
  
--	if (!dev_info)
--		return 0;
+ 	if ((GET_BSS_ROLE(priv) == MWIFIEX_BSS_ROLE_STA) &&
+ 	    priv->media_connected && idx == 0) {
+@@ -1478,13 +1479,10 @@ mwifiex_cfg80211_dump_station(struct wiphy *wiphy, struct net_device *dev,
+ 		mwifiex_send_cmd(priv, HOST_CMD_APCMD_STA_LIST,
+ 				 HostCmd_ACT_GEN_GET, 0, NULL, true);
+ 
+-		if (node && (&node->list == &priv->sta_list)) {
+-			node = NULL;
+-			return -ENOENT;
+-		}
 -
--	gpr_np = of_parse_phandle(np, "gpr", 0);
-+	gpr_np = of_parse_phandle(np, "fsl,stop-mode", 0);
- 	if (!gpr_np)
- 		return 0;
- 
-+	ret = of_property_read_u32_array(np, "fsl,stop-mode", out_val,
-+					 ARRAY_SIZE(out_val));
-+	if (ret) {
-+		dev_dbg(&fep->pdev->dev, "no stop mode property\n");
-+		return ret;
-+	}
-+
- 	fep->stop_gpr.gpr = syscon_node_to_regmap(gpr_np);
- 	if (IS_ERR(fep->stop_gpr.gpr)) {
- 		dev_err(&fep->pdev->dev, "could not find gpr regmap\n");
-@@ -3473,8 +3473,8 @@ static int fec_enet_init_stop_mode(struct fec_enet_private *fep,
- 		goto out;
- 	}
- 
--	fep->stop_gpr.reg = dev_info->stop_gpr_reg;
--	fep->stop_gpr.bit = dev_info->stop_gpr_bit;
-+	fep->stop_gpr.reg = out_val[1];
-+	fep->stop_gpr.bit = out_val[2];
- 
- out:
- 	of_node_put(gpr_np);
-@@ -3550,7 +3550,7 @@ fec_probe(struct platform_device *pdev)
- 	if (of_get_property(np, "fsl,magic-packet", NULL))
- 		fep->wol_flag |= FEC_WOL_HAS_MAGIC_PACKET;
- 
--	ret = fec_enet_init_stop_mode(fep, dev_info, np);
-+	ret = fec_enet_init_stop_mode(fep, np);
- 	if (ret)
- 		goto failed_stop_mode;
- 
+-		node = list_prepare_entry(node, &priv->sta_list, list);
+-		list_for_each_entry_continue(node, &priv->sta_list, list) {
++		i = 0;
++		list_for_each_entry(node, &priv->sta_list, list) {
++			if (i++ != idx)
++				continue;
+ 			ether_addr_copy(mac, node->mac_addr);
+ 			return mwifiex_dump_station_info(priv, node, sinfo);
+ 		}
 -- 
 2.25.1
 
