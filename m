@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A27820127E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3062010C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392988AbgFSPWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:22:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46256 "EHLO mail.kernel.org"
+        id S2393969AbgFSPdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:33:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37120 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404042AbgFSPPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:15:41 -0400
+        id S2404939AbgFSPdI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:33:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8731A206DB;
-        Fri, 19 Jun 2020 15:15:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E3B582166E;
+        Fri, 19 Jun 2020 15:33:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579741;
-        bh=YtVlJQS36T/FGl827kIC89tbz5tIe3JW861Tai/VvyU=;
+        s=default; t=1592580787;
+        bh=eDxLH4ouDqLNWQDr9hjpdo2YNXdlxYjycEeNZepbj/8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=boXh9rGN52ac/nZbXyGwK+hwpcS6MjxSEUbrTM/k6Pbxj9GvlRf2wZK8hfaE4CGjj
-         l/4MvuX1NXaiLlUF5fbfUaY7emV3oxT/OIz5/cCGcenGuFTm9pOeaMmfvcXNSie+9s
-         XTm1RQQEyIiRFEAhJFfLd7ofP/hPNUNHSaMmH+JI=
+        b=qB1l/4nkd9ytutk2NFY6D40kEZSm7JhdmJ0ugO9N//SwrFFaOMnwBoh94W/0bmGK/
+         5AqaomU3oBpb3aWGwUBFJl8zSlHsS/P+4WLhlZ+k/+XXf84radF6n5UE73FfINnfwW
+         USdigQb6/2GxQ2xzDw7eUFOj54pBDMgtfayK7RkU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 5.4 248/261] mtd: rawnand: socrates: Fix the probe error path
-Date:   Fri, 19 Jun 2020 16:34:19 +0200
-Message-Id: <20200619141701.774619103@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 5.7 342/376] powerpc/64s: Dont let DT CPU features set FSCR_DSCR
+Date:   Fri, 19 Jun 2020 16:34:20 +0200
+Message-Id: <20200619141726.521924280@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
+References: <20200619141710.350494719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,40 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miquel Raynal <miquel.raynal@bootlin.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-commit 9c6c2e5cc77119ce0dacb4f9feedb73ce0354421 upstream.
+commit 993e3d96fd08c3ebf7566e43be9b8cd622063e6d upstream.
 
-nand_release() is supposed be called after MTD device registration.
-Here, only nand_scan() happened, so use nand_cleanup() instead.
+The device tree CPU features binding includes FSCR bit numbers which
+Linux is instructed to set by firmware.
 
-There is no real Fixes tag applying here as the use of nand_release()
-in this driver predates by far the introduction of nand_cleanup() in
-commit d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
-which makes this change possible. However, pointing this commit as the
-culprit for backporting purposes makes sense even if this commit is not
-introducing any bug.
+Whether that's a good idea or not, in the case of the DSCR the Linux
+implementation has a hard requirement that the FSCR_DSCR bit not be
+set by default. We use it to track when a process reads/writes to
+DSCR, so it must be clear to begin with.
 
-Fixes: d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-51-miquel.raynal@bootlin.com
+So if firmware tells us to set FSCR_DSCR we must ignore it.
+
+Currently this does not cause a bug in our DSCR handling because the
+value of FSCR that the device tree CPU features code establishes is
+only used by swapper. All other tasks use the value hard coded in
+init_task.thread.fscr.
+
+However we'd like to fix that in a future commit, at which point this
+will become necessary.
+
+Fixes: 5a61ef74f269 ("powerpc/64s: Support new device tree binding for discovering CPU features")
+Cc: stable@vger.kernel.org # v4.12+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200527145843.2761782-2-mpe@ellerman.id.au
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- drivers/mtd/nand/raw/socrates_nand.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/kernel/dt_cpu_ftrs.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
---- a/drivers/mtd/nand/raw/socrates_nand.c
-+++ b/drivers/mtd/nand/raw/socrates_nand.c
-@@ -169,7 +169,7 @@ static int socrates_nand_probe(struct pl
- 	if (!res)
- 		return res;
+--- a/arch/powerpc/kernel/dt_cpu_ftrs.c
++++ b/arch/powerpc/kernel/dt_cpu_ftrs.c
+@@ -346,6 +346,14 @@ static int __init feat_enable_dscr(struc
+ {
+ 	u64 lpcr;
  
--	nand_release(nand_chip);
-+	nand_cleanup(nand_chip);
++	/*
++	 * Linux relies on FSCR[DSCR] being clear, so that we can take the
++	 * facility unavailable interrupt and track the task's usage of DSCR.
++	 * See facility_unavailable_exception().
++	 * Clear the bit here so that feat_enable() doesn't set it.
++	 */
++	f->fscr_bit_nr = -1;
++
+ 	feat_enable(f);
  
- out:
- 	iounmap(host->io_base);
+ 	lpcr = mfspr(SPRN_LPCR);
 
 
