@@ -2,162 +2,320 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85AF82003EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 10:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6252003EE
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 10:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731300AbgFSIaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 04:30:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731022AbgFSIaB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 04:30:01 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B43EC06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 01:30:01 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id m2so4010440pjv.2
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 01:30:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=bal/f6C5W3hI/7eEDoJMPCvhC5IDLMyLNXSt4/S+Z6w=;
-        b=asHKwznp8EZNJTx5F+A/9eKKgUGgsWkbC1twAT3301DPYW41sseSJwhpPeYQW2YpvB
-         IjWQD8A0wDX/58ArkSviJh+wTiDlUhI4RX5exrXQ2fB89EmRq9QC+2EeGsn5/8xCNHcT
-         dLdt/XKSjGAfV2aXSpQB0gjVamY2HLSon89Dg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=bal/f6C5W3hI/7eEDoJMPCvhC5IDLMyLNXSt4/S+Z6w=;
-        b=lrwMP4l06XCEiegq9aUrPVWadkYuZwTBmnKFJ2MtkNraMUZSiZcSRazy5JnSHurger
-         7yVb9UG2MOWxSDi4wD78/ACsefIqdmePiINynjMIWc0QvvMKCVPJtbWSNzNntkyzF9Q2
-         iwPL/hkPvID3Gl/r0TQvBGZSQnxWXxuS1UuFnBLank0grEvnTyMWOpUGyIRdGQW7CGlb
-         QBN4x28+PTkxLVAjxzLa03Z8520Rno+sfllvxuw+gR1Hh/bEA46e7GpASYeHx3plQYM0
-         QmB/s6NXmOBozw0xHzcS6Yjz602EXy3/8MhUsfNmLZU9rGcjSxJiuT2dm0xHaEqrvdM5
-         7m4Q==
-X-Gm-Message-State: AOAM532GCY4mAU++WSgNe9XAKU5f/w6WeDJi+zALlEQcmysKOl26flb0
-        oin2Q+7sKwKPcJVdEYAw1hGgCw==
-X-Google-Smtp-Source: ABdhPJzSNN0Qpr5cQYl53gfznBN1okIAMcFX4yLnK/9HsM4RGMZCO2BfOQ/cjG1bNmm74yfvZUvcTw==
-X-Received: by 2002:a17:90a:284b:: with SMTP id p11mr2480021pjf.22.1592555400970;
-        Fri, 19 Jun 2020 01:30:00 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id hi19sm4687515pjb.49.2020.06.19.01.30.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 01:30:00 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        id S1731463AbgFSIbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 04:31:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52374 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730651AbgFSIa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 04:30:57 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E2F7A20776;
+        Fri, 19 Jun 2020 08:30:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592555456;
+        bh=nUWAQt6wgk6P7nZCV8zYSDW4pTP25h4u2rDxVqGr44g=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mQHwp9NwoFnBYbFuD04qnsjpygLzur/y6KSIe990VNSpsOg/24Yrw5q0X6IL8DZPZ
+         qNviLHdVj3he4xABz7LoMzeBphSIExNVe8eeBRmuUJl5SzQNA3ah5bSyI3fsbNznjM
+         pKPFOfDI/EEkLgqCyBtpE6qn1nf7sPRwAX25aCDA=
+Date:   Fri, 19 Jun 2020 09:20:41 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel Gutson <daniel.gutson@eclypsium.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, Daniel Gutson <daniel@eclypsium.com>
+Subject: Re: [PATCH] Ability to read the MKTME status from userspace
+Message-ID: <20200619072041.GA2795@kroah.com>
+References: <20200618210215.23602-1-daniel.gutson@eclypsium.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <bc265120-0d48-bcab-a58e-3b94f8c540ce@arm.com>
-References: <20200617113851.607706-1-alexandru.elisei@arm.com> <20200617113851.607706-4-alexandru.elisei@arm.com> <159242503203.62212.1690942414916053920@swboyd.mtv.corp.google.com> <bc265120-0d48-bcab-a58e-3b94f8c540ce@arm.com>
-Subject: Re: [PATCH v5 3/7] arm64: perf: Remove PMU locking
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     mark.rutland@arm.com, will@kernel.org,
-        Julien Thierry <julien.thierry@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>, maz@kernel.org,
-        Will Deacon <will.deacon@arm.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, catalin.marinas@arm.com,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-To:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Fri, 19 Jun 2020 01:29:59 -0700
-Message-ID: <159255539947.62212.6059916295459835174@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200618210215.23602-1-daniel.gutson@eclypsium.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Alexandru Elisei (2020-06-18 03:51:31)
-> Hi,
->=20
-> On 6/17/20 9:17 PM, Stephen Boyd wrote:
-> > Quoting Alexandru Elisei (2020-06-17 04:38:47)
-> >> From: Julien Thierry <julien.thierry@arm.com>
-> >>
-> >> The PMU is disabled and enabled, and the counters are programmed from
-> >> contexts where interrupts or preemption is disabled.
-> >>
-> >> The functions to toggle the PMU and to program the PMU counters access=
- the
-> >> registers directly and don't access data modified by the interrupt han=
-dler.
-> >> That, and the fact that they're always called from non-preemptible
-> >> contexts, means that we don't need to disable interrupts or use a spin=
-lock.
-> > Maybe we should add a lockdep assertion that the code isn't preemptible?
-> > I.e. add a cant_sleep() call? Or is it more that we don't need locking
-> > because we're just doing register accesses and don't need to protect
-> > those accesses from each other?
->=20
-> It's both. The spinlocks were there to protect the functions from being p=
-reempted
-> and possibly migrated to another CPU, and from being interrupted by the P=
-MU irq
-> handler.
->=20
-> There was no data race with the interrupt handler, but before the previou=
-s patch
-> ("arm64: perf: Avoid PMXEV* indirection"), in order to read/write/program=
- a
-> counter, one had to write the counter number to a counter selection regis=
-ter, and
-> then write/read the desired value from another register. This was done fr=
-om both
-> the armv8pmu_{enable,disable}_event() functions and the irq handler, and =
-the
-> spinlock was necessary. Now that we can access a counter using a single r=
-egister
-> access, there's no need to protect the functions from being interrupted b=
-y the IRQ
-> handler. As for armv8pmu_{start,stop}(), they consist of one register wri=
-te, so
-> it's also safe for the irq handler to interrupt them.
->=20
-> For the preemption part of the locking. The armv8pmu_{enable,disable}_eve=
-nt(),
-> when called by the perf core code via the pmu->{start,stop,add,del} callb=
-acks, are
-> guaranteed to be called with IRQs and preemption disabled, as per the com=
-ment in
-> include/linux/perf_event.h. They are also called from the arm_pmu driver =
-by the
-> CPU PM notifiers, which should also be executed with interrupts disabled.=
- Should
-> we check here that the top level code respects these guarantees?
->=20
-> The armv8pmu_{start,stop}() functions are called from the irq handler, so=
- we're
-> safe from preemption in this case. They are also called via
-> pmu->pmu_{enable,disable} callbacks, and I didn't find an explicit contra=
-ct
-> regarding preemption in include/linux/perf_event.h. I've checked the othe=
-r call
-> sites, and I didn't find any instances where they are called with preempt=
-ion
-> enabled, which makes sense as we don't want to disable the PMU on a anoth=
-er CPU by
-> accident.
+On Thu, Jun 18, 2020 at 06:02:15PM -0300, Daniel Gutson wrote:
+> From: Daniel Gutson <daniel@eclypsium.com>
+> 
+> The intent of this patch is to provide visibility of the
+> MKTME status to userspace. This is an important factor for
+> firmware security related applilcations.
+> 
+> Signed-off-by: Daniel Gutson <daniel@eclypsium.com>
 
-If they're all callbacks then it's overkill to add this. Presumably it
-is better to enforce this wherever the callbacks are called from so as
-to not litter the callee with random cant_sleep() calls. Probably best
-to ignore my suggestion.
+Code review that is agnostic as to the need for this at all, I figured
+might as well as this needs work even if everyone agrees that the
+function/feature is needed:
 
->=20
-> I would be inclined to add cant_sleep() calls to armv8pmu_{start,stop}().=
- In the
-> previous iteration, there were WARN_ONs in these functions, and Will said=
- [1] they
-> can be removed because they are per-CPU operations. Will, what do you thi=
-nk about
-> adding the lockdep assertions?
->=20
-> [1] https://www.spinics.net/lists/arm-kernel/msg745161.html
->=20
+> ---
+>  MAINTAINERS                 |  5 +++
+>  arch/x86/include/asm/cpu.h  |  8 ++++
+>  arch/x86/kernel/cpu/intel.c | 12 +++---
+>  drivers/misc/Kconfig        | 11 +++++
+>  drivers/misc/Makefile       |  1 +
+>  drivers/misc/mktme_status.c | 81 +++++++++++++++++++++++++++++++++++++
+>  6 files changed, 113 insertions(+), 5 deletions(-)
+>  create mode 100644 drivers/misc/mktme_status.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 50659d76976b..dc3b3c0e4701 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -11335,6 +11335,11 @@ W:	https://linuxtv.org
+>  T:	git git://linuxtv.org/media_tree.git
+>  F:	drivers/media/radio/radio-miropcm20*
+>  
+> +MKTME_STATUS MKTME STATUS READING SUPPORT
 
-If I read it correctly Will is saying the same thing in that thread.
+You list the same thing twice on one line?
+
+> +M:	Daniel Gutson <daniel.gutson@eclypsium.com>
+> +S:	Supported
+> +F:	drivers/misc/mktme_status.c
+> +
+>  MMP SUPPORT
+>  R:	Lubomir Rintel <lkundrak@v3.sk>
+>  L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> diff --git a/arch/x86/include/asm/cpu.h b/arch/x86/include/asm/cpu.h
+> index dd17c2da1af5..8929c1240135 100644
+> --- a/arch/x86/include/asm/cpu.h
+> +++ b/arch/x86/include/asm/cpu.h
+> @@ -26,6 +26,14 @@ struct x86_cpu {
+>  	struct cpu cpu;
+>  };
+>  
+> +enum mktme_status_type {
+> +	MKTME_ENABLED,
+> +	MKTME_DISABLED,
+> +	MKTME_UNINITIALIZED
+> +};
+
+You are exporting these values to userspace, so you need to specify
+exactly what these enums resolve to, AND put them in a userspace visable
+.h file so that they can be checked/read/understood.
+
+> +
+> +extern enum mktme_status_type get_mktme_status(void);
+> +
+>  #ifdef CONFIG_HOTPLUG_CPU
+>  extern int arch_register_cpu(int num);
+>  extern void arch_unregister_cpu(int);
+> diff --git a/arch/x86/kernel/cpu/intel.c b/arch/x86/kernel/cpu/intel.c
+> index a19a680542ce..1f6054523226 100644
+> --- a/arch/x86/kernel/cpu/intel.c
+> +++ b/arch/x86/kernel/cpu/intel.c
+> @@ -489,11 +489,7 @@ static void srat_detect_node(struct cpuinfo_x86 *c)
+>  #define TME_ACTIVATE_CRYPTO_ALGS(x)	((x >> 48) & 0xffff)	/* Bits 63:48 */
+>  #define TME_ACTIVATE_CRYPTO_AES_XTS_128	1
+>  
+> -/* Values for mktme_status (SW only construct) */
+> -#define MKTME_ENABLED			0
+> -#define MKTME_DISABLED			1
+> -#define MKTME_UNINITIALIZED		2
+> -static int mktme_status = MKTME_UNINITIALIZED;
+> +static enum mktme_status_type mktme_status = MKTME_UNINITIALIZED;
+>  
+>  static void detect_tme(struct cpuinfo_x86 *c)
+>  {
+> @@ -1107,6 +1103,12 @@ bool handle_user_split_lock(struct pt_regs *regs, long error_code)
+>  	return true;
+>  }
+>  
+> +enum mktme_status_type get_mktme_status(void)
+> +{
+> +	return mktme_status;
+> +}
+> +EXPORT_SYMBOL_GPL(get_mktme_status);
+
+prefix of the subsystem first please:
+	mktme_get_status
+
+Or, better yet, why not just export the variable directly?  Why is this
+a function at all?
+
+> +
+>  /*
+>   * This function is called only when switching between tasks with
+>   * different split-lock detection modes. It sets the MSR for the
+> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
+> index 99e151475d8f..0dc978efbbd5 100644
+> --- a/drivers/misc/Kconfig
+> +++ b/drivers/misc/Kconfig
+> @@ -465,6 +465,17 @@ config PVPANIC
+>  	  a paravirtualized device provided by QEMU; it lets a virtual machine
+>  	  (guest) communicate panic events to the host.
+>  
+> +config MKTME_STATUS
+> +	tristate "MKTME status reading support"
+> +	depends on X86_64 && SECURITYFS
+> +	help
+> +	  This driver provides support for reading the MKTME status. The status
+> +	  can be read from the mktme virtual file in the securityfs filesystem,
+> +	  under the mktme directory.
+> +
+> +	  The MKTME (Multi-Key Total Memory Encryption) status can be
+> +	  0 (enabled), 1 (disabled), or 3 (uninitialized).
+
+name of the module, should you enable this, etc...
+
+> +
+>  source "drivers/misc/c2port/Kconfig"
+>  source "drivers/misc/eeprom/Kconfig"
+>  source "drivers/misc/cb710/Kconfig"
+> diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
+> index 9abf2923d831..f2f02efe34fd 100644
+> --- a/drivers/misc/Makefile
+> +++ b/drivers/misc/Makefile
+> @@ -58,3 +58,4 @@ obj-$(CONFIG_PVPANIC)   	+= pvpanic.o
+>  obj-$(CONFIG_HABANA_AI)		+= habanalabs/
+>  obj-$(CONFIG_UACCE)		+= uacce/
+>  obj-$(CONFIG_XILINX_SDFEC)	+= xilinx_sdfec.o
+> +obj-$(CONFIG_MKTME_STATUS)	+= mktme_status.o
+> diff --git a/drivers/misc/mktme_status.c b/drivers/misc/mktme_status.c
+> new file mode 100644
+> index 000000000000..795993181e77
+> --- /dev/null
+> +++ b/drivers/misc/mktme_status.c
+> @@ -0,0 +1,81 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * MKTME Status driver
+> + *
+> + * Copyright 2020 (c) Daniel Gutson (daniel.gutson@eclypsium.com)
+> + *
+> + * This file is licensed under  the terms of the GNU General Public
+> + * License version 2. This program is licensed "as is" without any
+> + * warranty of any kind, whether express or implied.
+
+these sentances are not needed if you have the SPDX line above, so
+please drop them.
+
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/security.h>
+> +#include <asm/cpu.h>
+> +
+> +#ifdef pr_fmt
+> +#undef pr_fmt
+> +#endif
+> +#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+No need to check, just define the thing, BEFORE the #include lines.
+
+> +
+> +struct dentry *mktme_dir;
+> +struct dentry *mktme_file;
+
+static?
+
+> +
+> +/* Buffer to return: always 3 because of the following chars:
+> + *     value \n \0
+> + */
+> +#define BUFFER_SIZE 3
+
+Why a define?
+
+> +
+> +static ssize_t mktme_status_read(struct file *filp, char __user *buf,
+> +				 size_t count, loff_t *ppos)
+> +{
+> +	char tmp[BUFFER_SIZE];
+> +
+> +	if (*ppos == BUFFER_SIZE)
+> +		return 0; // nothing else to read
+
+Why check this if you are using simple_read_from_buffer()?  Shouldn't
+that handle this type of check for you correctly?  As it is, I don't
+think you are doing this right anyway.
+
+> +
+> +	sprintf(tmp, "%d\n", (int)get_mktme_status() & 1);
+> +	return simple_read_from_buffer(buf, count, ppos, tmp, sizeof(tmp));
+> +}
+> +
+> +static const struct file_operations mktme_status_ops = {
+> +	.read = mktme_status_read,
+> +};
+> +
+> +static int __init mod_init(void)
+> +{
+> +	mktme_dir = securityfs_create_dir("mktme", NULL);
+> +	if (IS_ERR(mktme_dir)) {
+> +		pr_err("Couldn't create mktme sysfs dir\n");
+> +		return -1;
+
+Don't make up random error numbers, use the EWHATEVER defines please.
+
+> +	}
+> +
+> +	pr_info("mktme securityfs dir creation successful\n");
+
+If code works properly, it should be quiet, do not do this.  Would you
+want to see your kernel log full of this for every individual virtual
+file that was created?
+
+
+> +
+> +	mktme_file = securityfs_create_file("status", 0600, mktme_dir, NULL,
+> +					    &mktme_status_ops);
+> +	if (IS_ERR(mktme_file)) {
+> +		pr_err("Error creating sysfs file bioswe\n");
+
+"bioswe", what is that?
+
+And this isn't sysfs.
+
+Did anyone actually review this?
+
+
+> +		goto out_file;
+> +	}
+> +
+> +	return 0;
+> +
+> +out_file:
+> +	securityfs_remove(mktme_file);
+> +	securityfs_remove(mktme_dir);
+> +	return -1;
+
+Again, random return values, please do not.
+
+> +}
+> +
+> +static void __exit mod_exit(void)
+> +{
+> +	securityfs_remove(mktme_file);
+> +	securityfs_remove(mktme_dir);
+> +}
+> +
+> +module_init(mod_init);
+> +module_exit(mod_exit);
+> +
+> +MODULE_DESCRIPTION("MKTME Status driver");
+
+Is this really a driver?
+
+Also no Documentation/ABI/ update for your new userspace api that you
+just created?
+
+thanks,
+
+greg k-h
