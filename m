@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F839200DB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83526200ED5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390618AbgFSPAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:00:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56234 "EHLO mail.kernel.org"
+        id S2392140AbgFSPL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:11:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389916AbgFSO7z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:59:55 -0400
+        id S2403835AbgFSPLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:11:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B29B0218AC;
-        Fri, 19 Jun 2020 14:59:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DDE3206FA;
+        Fri, 19 Jun 2020 15:11:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578795;
-        bh=18KOcZajMmpY2rbqPpuMqji5HUMM1Fd6BXCK/THQZIg=;
+        s=default; t=1592579502;
+        bh=za9EyI3o5uaFj1FcFu/tNsgXVP1mJnijVnQloGQKC8c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Nfnx7BBcnQmVBE6i1l0pNDSXawj3w1wB6RsyDaQxBdLVA++s6DuaLKqJ+SL76biyS
-         iopllzBs8ZLh0w1L46bjjwpJ/cm+8n/pEvzdf7Dqo759mAu2M+HZnfntZnrgc49rUw
-         Cub7Lci58kcbXLizvFp0h1WfzchosWguSAnWQe+E=
+        b=Fctz7xQWVsAwYjjoe7xhh8R81IlgyaP+OV6SETwHTB/GzlNhldr3aAb1FJ/ONIiSj
+         HB+cDNGFOm6x/ytryHUQ9PCxknzWpHVbvZEK1wstEDPnIQt5Eau5DHlrjlAG/gqJHI
+         vf0+BmzWnqRLNzkt7Pq3TKZFnN2IH8U1EwA1JdN8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Mario Limonciello <Mario.limonciello@dell.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org, Alan Maguire <alan.maguire@oracle.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 152/267] platform/x86: intel-vbtn: Also handle tablet-mode switch on "Detachable" and "Portable" chassis-types
-Date:   Fri, 19 Jun 2020 16:32:17 +0200
-Message-Id: <20200619141656.121339159@linuxfoundation.org>
+Subject: [PATCH 5.4 129/261] selftests/bpf: CONFIG_IPV6_SEG6_BPF required for test_seg6_loop.o
+Date:   Fri, 19 Jun 2020 16:32:20 +0200
+Message-Id: <20200619141656.047260123@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,67 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Alan Maguire <alan.maguire@oracle.com>
 
-[ Upstream commit 1fac39fd0316b19c3e57a182524332332d1643ce ]
+[ Upstream commit 3c8e8cf4b18b3a7034fab4c4504fc4b54e4b6195 ]
 
-Commit de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode
-switch on 2-in-1's") added a DMI chassis-type check to avoid accidentally
-reporting SW_TABLET_MODE = 1 to userspace on laptops.
+test_seg6_loop.o uses the helper bpf_lwt_seg6_adjust_srh();
+it will not be present if CONFIG_IPV6_SEG6_BPF is not specified.
 
-Some devices with a detachable keyboard and using the intel-vbnt (INT33D6)
-interface to report if they are in tablet mode (keyboard detached) or not,
-report 32 / "Detachable" as chassis-type, e.g. the HP Pavilion X2 series.
-
-Other devices with a detachable keyboard and using the intel-vbnt (INT33D6)
-interface to report SW_TABLET_MODE, report 8 / "Portable" as chassis-type.
-The Dell Venue 11 Pro 7130 is an example of this.
-
-Extend the DMI chassis-type check to also accept Portables and Detachables
-so that the intel-vbtn driver will report SW_TABLET_MODE on these devices.
-
-Note the chassis-type check was originally added to avoid a false-positive
-tablet-mode report on the Dell XPS 9360 laptop. To the best of my knowledge
-that laptop is using a chassis-type of 9 / "Laptop", so after this commit
-we still ignore the tablet-switch for that chassis-type.
-
-Fixes: de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode switch on 2-in-1's")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Mario Limonciello <Mario.limonciello@dell.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Fixes: b061017f8b4d ("selftests/bpf: add realistic loop tests")
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Link: https://lore.kernel.org/bpf/1590147389-26482-2-git-send-email-alan.maguire@oracle.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel-vbtn.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ tools/testing/selftests/bpf/config | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
-index 23cda7aa96cd..5f8120d12859 100644
---- a/drivers/platform/x86/intel-vbtn.c
-+++ b/drivers/platform/x86/intel-vbtn.c
-@@ -157,12 +157,22 @@ static void detect_tablet_mode(struct platform_device *device)
- static bool intel_vbtn_has_switches(acpi_handle handle)
- {
- 	const char *chassis_type = dmi_get_system_info(DMI_CHASSIS_TYPE);
-+	unsigned long chassis_type_int;
- 	unsigned long long vgbs;
- 	acpi_status status;
- 
--	if (!(chassis_type && strcmp(chassis_type, "31") == 0))
-+	if (kstrtoul(chassis_type, 10, &chassis_type_int))
- 		return false;
- 
-+	switch (chassis_type_int) {
-+	case  8: /* Portable */
-+	case 31: /* Convertible */
-+	case 32: /* Detachable */
-+		break;
-+	default:
-+		return false;
-+	}
-+
- 	status = acpi_evaluate_integer(handle, "VGBS", NULL, &vgbs);
- 	return ACPI_SUCCESS(status);
- }
+diff --git a/tools/testing/selftests/bpf/config b/tools/testing/selftests/bpf/config
+index 5dc109f4c097..b9601f13cf03 100644
+--- a/tools/testing/selftests/bpf/config
++++ b/tools/testing/selftests/bpf/config
+@@ -25,6 +25,7 @@ CONFIG_XDP_SOCKETS=y
+ CONFIG_FTRACE_SYSCALLS=y
+ CONFIG_IPV6_TUNNEL=y
+ CONFIG_IPV6_GRE=y
++CONFIG_IPV6_SEG6_BPF=y
+ CONFIG_NET_FOU=m
+ CONFIG_NET_FOU_IP_TUNNELS=y
+ CONFIG_IPV6_FOU=m
 -- 
 2.25.1
 
