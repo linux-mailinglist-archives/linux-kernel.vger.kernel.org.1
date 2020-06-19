@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B78D201777
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 008D9201838
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395370AbgFSQiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:38:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39212 "EHLO mail.kernel.org"
+        id S2387628AbgFSQs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:48:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388920AbgFSOrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:47:10 -0400
+        id S2388152AbgFSOka (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:40:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52EFB2168B;
-        Fri, 19 Jun 2020 14:47:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2989720773;
+        Fri, 19 Jun 2020 14:40:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578029;
-        bh=kIU1GCkQJrmZFCdDbLhvIX7ErBnoyiO8O8nd1wmRA/M=;
+        s=default; t=1592577629;
+        bh=M5fd0eDw+8QWXAEFGd3bGemif6hc4uE35x4W0JpWdsM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p7CJYAMWrPRb9DvaKzBAAS5S44RwhRONXXpkCk34l3Hq5H6DzydnC/aBlWH60QMqr
-         oZidS9685P/NdGBpXPPis4iPfyNzUOcgKmWmQd87Uklee5/cEuZW4eDcai6f1MOYtu
-         HanUa/0S/202/j8Rb0V2Xew+/JFGAKNvxoRFE/CQ=
+        b=VAOQdzMSSR19pvuUxVz2KWXVWBVVFbbvedHfbruZvpJ3imrT63pFews5PSnwXwLPz
+         XR5de4ZhRPa+o+1LfrUaU1R6kGZCgRjvEBzQa8H4nNxSsNdTB6WrAicUEBbCFKw3fT
+         vxUukKWIq5ZvwR+z+haAYdkLmo2PzBQaJ2ZGT87c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+7d2debdcdb3cb93c1e5e@syzkaller.appspotmail.com,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 4.14 054/190] proc: Use new_inode not new_inode_pseudo
-Date:   Fri, 19 Jun 2020 16:31:39 +0200
-Message-Id: <20200619141636.284305699@linuxfoundation.org>
+        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 006/128] sched/fair: Dont NUMA balance for kthreads
+Date:   Fri, 19 Jun 2020 16:31:40 +0200
+Message-Id: <20200619141620.471245074@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,83 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+From: Jens Axboe <axboe@kernel.dk>
 
-commit ef1548adada51a2f32ed7faef50aa465e1b4c5da upstream.
+[ Upstream commit 18f855e574d9799a0e7489f8ae6fd8447d0dd74a ]
 
-Recently syzbot reported that unmounting proc when there is an ongoing
-inotify watch on the root directory of proc could result in a use
-after free when the watch is removed after the unmount of proc
-when the watcher exits.
+Stefano reported a crash with using SQPOLL with io_uring:
 
-Commit 69879c01a0c3 ("proc: Remove the now unnecessary internal mount
-of proc") made it easier to unmount proc and allowed syzbot to see the
-problem, but looking at the code it has been around for a long time.
+  BUG: kernel NULL pointer dereference, address: 00000000000003b0
+  CPU: 2 PID: 1307 Comm: io_uring-sq Not tainted 5.7.0-rc7 #11
+  RIP: 0010:task_numa_work+0x4f/0x2c0
+  Call Trace:
+   task_work_run+0x68/0xa0
+   io_sq_thread+0x252/0x3d0
+   kthread+0xf9/0x130
+   ret_from_fork+0x35/0x40
 
-Looking at the code the fsnotify watch should have been removed by
-fsnotify_sb_delete in generic_shutdown_super.  Unfortunately the inode
-was allocated with new_inode_pseudo instead of new_inode so the inode
-was not on the sb->s_inodes list.  Which prevented
-fsnotify_unmount_inodes from finding the inode and removing the watch
-as well as made it so the "VFS: Busy inodes after unmount" warning
-could not find the inodes to warn about them.
+which is task_numa_work() oopsing on current->mm being NULL.
 
-Make all of the inodes in proc visible to generic_shutdown_super,
-and fsnotify_sb_delete by using new_inode instead of new_inode_pseudo.
-The only functional difference is that new_inode places the inodes
-on the sb->s_inodes list.
+The task work is queued by task_tick_numa(), which checks if current->mm is
+NULL at the time of the call. But this state isn't necessarily persistent,
+if the kthread is using use_mm() to temporarily adopt the mm of a task.
 
-I wrote a small test program and I can verify that without changes it
-can trigger this issue, and by replacing new_inode_pseudo with
-new_inode the issues goes away.
+Change the task_tick_numa() check to exclude kernel threads in general,
+as it doesn't make sense to attempt ot balance for kthreads anyway.
 
-Cc: stable@vger.kernel.org
-Link: https://lkml.kernel.org/r/000000000000d788c905a7dfa3f4@google.com
-Reported-by: syzbot+7d2debdcdb3cb93c1e5e@syzkaller.appspotmail.com
-Fixes: 0097875bd415 ("proc: Implement /proc/thread-self to point at the directory of the current thread")
-Fixes: 021ada7dff22 ("procfs: switch /proc/self away from proc_dir_entry")
-Fixes: 51f0885e5415 ("vfs,proc: guarantee unique inodes in /proc")
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Reported-by: Stefano Garzarella <sgarzare@redhat.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Peter Zijlstra <peterz@infradead.org>
+Link: https://lore.kernel.org/r/865de121-8190-5d30-ece5-3b097dc74431@kernel.dk
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/proc/inode.c       |    2 +-
- fs/proc/self.c        |    2 +-
- fs/proc/thread_self.c |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ kernel/sched/fair.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/proc/inode.c
-+++ b/fs/proc/inode.c
-@@ -432,7 +432,7 @@ const struct inode_operations proc_link_
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 5e65c7eea872..8233032a2f01 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -2542,7 +2542,7 @@ void task_tick_numa(struct rq *rq, struct task_struct *curr)
+ 	/*
+ 	 * We don't care about NUMA placement if we don't have memory.
+ 	 */
+-	if (!curr->mm || (curr->flags & PF_EXITING) || work->next != work)
++	if ((curr->flags & (PF_EXITING | PF_KTHREAD)) || work->next != work)
+ 		return;
  
- struct inode *proc_get_inode(struct super_block *sb, struct proc_dir_entry *de)
- {
--	struct inode *inode = new_inode_pseudo(sb);
-+	struct inode *inode = new_inode(sb);
- 
- 	if (inode) {
- 		inode->i_ino = de->low_ino;
---- a/fs/proc/self.c
-+++ b/fs/proc/self.c
-@@ -41,7 +41,7 @@ int proc_setup_self(struct super_block *
- 	inode_lock(root_inode);
- 	self = d_alloc_name(s->s_root, "self");
- 	if (self) {
--		struct inode *inode = new_inode_pseudo(s);
-+		struct inode *inode = new_inode(s);
- 		if (inode) {
- 			inode->i_ino = self_inum;
- 			inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
---- a/fs/proc/thread_self.c
-+++ b/fs/proc/thread_self.c
-@@ -42,7 +42,7 @@ int proc_setup_thread_self(struct super_
- 	inode_lock(root_inode);
- 	thread_self = d_alloc_name(s->s_root, "thread-self");
- 	if (thread_self) {
--		struct inode *inode = new_inode_pseudo(s);
-+		struct inode *inode = new_inode(s);
- 		if (inode) {
- 			inode->i_ino = thread_self_inum;
- 			inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
+ 	/*
+-- 
+2.25.1
+
 
 
