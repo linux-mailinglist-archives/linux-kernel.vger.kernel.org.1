@@ -2,38 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B8B8200E6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80012200E8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391592AbgFSPHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:07:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36314 "EHLO mail.kernel.org"
+        id S2391828AbgFSPI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:08:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391535AbgFSPHH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:07:07 -0400
+        id S2391815AbgFSPIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:08:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 180DF21835;
-        Fri, 19 Jun 2020 15:07:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D0EE21974;
+        Fri, 19 Jun 2020 15:08:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579226;
-        bh=7NsuvXTif01JnkdbHSo08MuqQTzSoDAw+D/hR9QqYyg=;
+        s=default; t=1592579332;
+        bh=LBMRf9JHo+eK6vmiBgsR6DL+jYRuMcEM+eXkqBtF1NY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1+kPPzUOBzJCjyFyJFmBex48YufzjKkrJD/Wx8U5ns3GG7BE0LT8LtgDickjC93lx
-         LKRKv6OIOgR+Ywj1KE3s8vaQqE6IwRLuIRylIf4JdqNTBgSqyVelyfYUTIU3gSZDk7
-         H87XwD4DI4I+VylYfbjRUTCE28nwTbQ7rnKAakgA=
+        b=1Yn6z9GmHltqXTzfvg964uLk+WkEiw1B8hlFcFQ7WXhv1FDdf0oFy11LTyUcjWwVo
+         QDi9ld6s+e8K4rnNtC9YNWKHDRvHtldj+CXpP/QzrwlFo2+g2UIE4pn+YPpxYvH4EY
+         S2J5H89CcbSPFkNPgovKDJoS0+7GI81/b+xixNyQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jon Doron <arilou@gmail.com>,
-        Roman Kagan <rvkagan@yandex-team.ru>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, Gao Xiang <xiang@kernel.org>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Laura Abbott <labbott@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Wei Liu <wei.liu@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 054/261] x86/kvm/hyper-v: Explicitly align hcall param for kvm_hyperv_exit
-Date:   Fri, 19 Jun 2020 16:31:05 +0200
-Message-Id: <20200619141652.519326765@linuxfoundation.org>
+Subject: [PATCH 5.4 056/261] x86: fix vmap arguments in map_irq_stack
+Date:   Fri, 19 Jun 2020 16:31:07 +0200
+Message-Id: <20200619141652.603688877@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
 References: <20200619141649.878808811@linuxfoundation.org>
@@ -46,73 +69,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jon Doron <arilou@gmail.com>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit f7d31e65368aeef973fab788aa22c4f1d5a6af66 ]
+[ Upstream commit 0348801151b5aefbcf9d6e9b9e30aceb3a2a7b13 ]
 
-The problem the patch is trying to address is the fact that 'struct
-kvm_hyperv_exit' has different layout on when compiling in 32 and 64 bit
-modes.
+vmap does not take a gfp_t, the flags argument is for VM_* flags.
 
-In 64-bit mode the default alignment boundary is 64 bits thus
-forcing extra gaps after 'type' and 'msr' but in 32-bit mode the
-boundary is at 32 bits thus no extra gaps.
-
-This is an issue as even when the kernel is 64 bit, the userspace using
-the interface can be both 32 and 64 bit but the same 32 bit userspace has
-to work with 32 bit kernel.
-
-The issue is fixed by forcing the 64 bit layout, this leads to ABI
-change for 32 bit builds and while we are obviously breaking '32 bit
-userspace with 32 bit kernel' case, we're fixing the '32 bit userspace
-with 64 bit kernel' one.
-
-As the interface has no (known) users and 32 bit KVM is rather baroque
-nowadays, this seems like a reasonable decision.
-
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Jon Doron <arilou@gmail.com>
-Message-Id: <20200424113746.3473563-2-arilou@gmail.com>
-Reviewed-by: Roman Kagan <rvkagan@yandex-team.ru>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Christophe Leroy <christophe.leroy@c-s.fr>
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: David Airlie <airlied@linux.ie>
+Cc: Gao Xiang <xiang@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Haiyang Zhang <haiyangz@microsoft.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+Cc: Laura Abbott <labbott@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Michael Kelley <mikelley@microsoft.com>
+Cc: Minchan Kim <minchan@kernel.org>
+Cc: Nitin Gupta <ngupta@vflare.org>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Robin Murphy <robin.murphy@arm.com>
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc: Stephen Hemminger <sthemmin@microsoft.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Wei Liu <wei.liu@kernel.org>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Heiko Carstens <heiko.carstens@de.ibm.com>
+Cc: Paul Mackerras <paulus@ozlabs.org>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Will Deacon <will@kernel.org>
+Link: http://lkml.kernel.org/r/20200414131348.444715-3-hch@lst.de
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- Documentation/virt/kvm/api.txt | 2 ++
- include/uapi/linux/kvm.h       | 2 ++
- 2 files changed, 4 insertions(+)
+ arch/x86/kernel/irq_64.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/virt/kvm/api.txt b/Documentation/virt/kvm/api.txt
-index 4833904d32a5..a18e996fa54b 100644
---- a/Documentation/virt/kvm/api.txt
-+++ b/Documentation/virt/kvm/api.txt
-@@ -4444,9 +4444,11 @@ EOI was received.
- #define KVM_EXIT_HYPERV_SYNIC          1
- #define KVM_EXIT_HYPERV_HCALL          2
- 			__u32 type;
-+			__u32 pad1;
- 			union {
- 				struct {
- 					__u32 msr;
-+					__u32 pad2;
- 					__u64 control;
- 					__u64 evt_page;
- 					__u64 msg_page;
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index 52641d8ca9e8..e735bc4075dc 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -189,9 +189,11 @@ struct kvm_hyperv_exit {
- #define KVM_EXIT_HYPERV_SYNIC          1
- #define KVM_EXIT_HYPERV_HCALL          2
- 	__u32 type;
-+	__u32 pad1;
- 	union {
- 		struct {
- 			__u32 msr;
-+			__u32 pad2;
- 			__u64 control;
- 			__u64 evt_page;
- 			__u64 msg_page;
+diff --git a/arch/x86/kernel/irq_64.c b/arch/x86/kernel/irq_64.c
+index 12df3a4abfdd..6b32ab009c19 100644
+--- a/arch/x86/kernel/irq_64.c
++++ b/arch/x86/kernel/irq_64.c
+@@ -43,7 +43,7 @@ static int map_irq_stack(unsigned int cpu)
+ 		pages[i] = pfn_to_page(pa >> PAGE_SHIFT);
+ 	}
+ 
+-	va = vmap(pages, IRQ_STACK_SIZE / PAGE_SIZE, GFP_KERNEL, PAGE_KERNEL);
++	va = vmap(pages, IRQ_STACK_SIZE / PAGE_SIZE, VM_MAP, PAGE_KERNEL);
+ 	if (!va)
+ 		return -ENOMEM;
+ 
 -- 
 2.25.1
 
