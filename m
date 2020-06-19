@@ -2,188 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C517E200832
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 13:56:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29FF420083D
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 13:57:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732834AbgFSL4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 07:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732225AbgFSL4B (ORCPT
+        id S1732846AbgFSL5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 07:57:48 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:39824 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732226AbgFSL5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 07:56:01 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E19C06174E;
-        Fri, 19 Jun 2020 04:56:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=qkiSuMBHq1jJPg79H69BLQzOTNgh3NSXy1sjSUD7sso=; b=YmQH+Tq34JCOA4Fpp+Ct6KEZnt
-        8L0h3XQhFTfcl+EZx9PD/QmFfjIZnpy4HoPgNnfBqHv64Iq5KfuRrtvHpLcfBtAlvvzZLZIa6wd8f
-        WBdUMayWL2szYgJzuQAOr0qIZuM5ocftxFPIzNGVjJSWVMSlvpoZeOYI4S4AGQO8Nb0yis8YPFDTs
-        gFrJkRAnXtTDuea5wOUzzuns5noEUpSfRbZfvMS0JhmrqudLco3NaWgMJzebBPpoOvVOvwgRaFW3F
-        NclEHximP3q4U57rebPA25c4PcGKBj5TM+IBkvwcGuWphYM+ITP6Po2I7wixaC/wuvOd6BghDK1It
-        5dgYN/wg==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jmFcc-0002c8-O0; Fri, 19 Jun 2020 11:55:50 +0000
-Date:   Fri, 19 Jun 2020 04:55:50 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Junxiao Bi <junxiao.bi@oracle.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-erofs@lists.ozlabs.org, Christoph Hellwig <hch@lst.de>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] gfs2: Rework read and page fault locking
-Message-ID: <20200619115550.GY8681@bombadil.infradead.org>
-References: <20200619093916.1081129-1-agruenba@redhat.com>
- <20200619093916.1081129-3-agruenba@redhat.com>
+        Fri, 19 Jun 2020 07:57:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592567863; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Date: Message-ID: Subject: From: Cc: To: Sender;
+ bh=yxSnad5euOraE9R6X/yaFZQEvD8fvlYxjxhLwBIPjZw=; b=CrP/0ld35V/kJB8OMGqzR/zItdA8vA8nJVbY2PE44uGl4+UX9bKYSBMm5XmMkUHH1hxaZiqu
+ ooeYRL7llcPfeU9lw57GW4VF4gGw/6bd3ViOq/2Kn1tNYUsR/1PBw0Ozw+fW3XQ+JddEV5sI
+ ykxQ9jz/VsppVL+xQVUi6Q/NZUs=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n11.prod.us-west-2.postgun.com with SMTP id
+ 5eeca825f3deea03f3b47098 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 19 Jun 2020 11:57:25
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2ACE3C4339C; Fri, 19 Jun 2020 11:57:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from [192.168.1.102] (unknown [183.83.143.239])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: charante)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 39BB3C433C8;
+        Fri, 19 Jun 2020 11:57:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 39BB3C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=charante@codeaurora.org
+To:     Sumit Semwal <sumit.semwal@linaro.org>, michael.j.ruhl@intel.com,
+        David.Laight@ACULAB.COM,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>
+Cc:     Linaro MM SIG <linaro-mm-sig@lists.linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Charan Teja Kalla <charante@codeaurora.org>
+Subject: [PATCH v2] dmabuf: use spinlock to access dmabuf->name
+Message-ID: <a83e7f0d-4e54-9848-4b58-e1acdbe06735@codeaurora.org>
+Date:   Fri, 19 Jun 2020 17:27:19 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200619093916.1081129-3-agruenba@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 11:39:16AM +0200, Andreas Gruenbacher wrote:
->  static int gfs2_readpage(struct file *file, struct page *page)
->  {
-> -	struct address_space *mapping = page->mapping;
-> -	struct gfs2_inode *ip = GFS2_I(mapping->host);
-> -	struct gfs2_holder gh;
->  	int error;
->  
-> -	unlock_page(page);
-> -	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
-> -	error = gfs2_glock_nq(&gh);
-> -	if (unlikely(error))
-> -		goto out;
-> -	error = AOP_TRUNCATED_PAGE;
-> -	lock_page(page);
-> -	if (page->mapping == mapping && !PageUptodate(page))
-> -		error = __gfs2_readpage(file, page);
-> -	else
-> -		unlock_page(page);
-> -	gfs2_glock_dq(&gh);
-> -out:
-> -	gfs2_holder_uninit(&gh);
-> -	if (error && error != AOP_TRUNCATED_PAGE)
-> +	error = __gfs2_readpage(file, page);
-> +	if (error)
->  		lock_page(page);
->  	return error;
+There exists a sleep-while-atomic bug while accessing the dmabuf->name
+under mutex in the dmabuffs_dname(). This is caused from the SELinux
+permissions checks on a process where it tries to validate the inherited
+files from fork() by traversing them through iterate_fd() (which
+traverse files under spin_lock) and call
+match_file(security/selinux/hooks.c) where the permission checks happen.
+This audit information is logged using dump_common_audit_data() where it
+calls d_path() to get the file path name. If the file check happen on
+the dmabuf's fd, then it ends up in ->dmabuffs_dname() and use mutex to
+access dmabuf->name. The flow will be like below:
+flush_unauthorized_files()
+  iterate_fd()
+    spin_lock() --> Start of the atomic section.
+      match_file()
+        file_has_perm()
+          avc_has_perm()
+            avc_audit()
+              slow_avc_audit()
+	        common_lsm_audit()
+		  dump_common_audit_data()
+		    audit_log_d_path()
+		      d_path()
+                        dmabuffs_dname()
+                          mutex_lock()--> Sleep while atomic.
 
-I don't think this is right.  If you return an error from ->readpage, I'm
-pretty sure you're supposed to unlock that page.  Looking at
-generic_file_buffered_read():
+Call trace captured (on 4.19 kernels) is below:
+___might_sleep+0x204/0x208
+__might_sleep+0x50/0x88
+__mutex_lock_common+0x5c/0x1068
+__mutex_lock_common+0x5c/0x1068
+mutex_lock_nested+0x40/0x50
+dmabuffs_dname+0xa0/0x170
+d_path+0x84/0x290
+audit_log_d_path+0x74/0x130
+common_lsm_audit+0x334/0x6e8
+slow_avc_audit+0xb8/0xf8
+avc_has_perm+0x154/0x218
+file_has_perm+0x70/0x180
+match_file+0x60/0x78
+iterate_fd+0x128/0x168
+selinux_bprm_committing_creds+0x178/0x248
+security_bprm_committing_creds+0x30/0x48
+install_exec_creds+0x1c/0x68
+load_elf_binary+0x3a4/0x14e0
+search_binary_handler+0xb0/0x1e0
 
-                error = mapping->a_ops->readpage(filp, page);
-                if (unlikely(error)) {
-                        if (error == AOP_TRUNCATED_PAGE) {
-                                put_page(page);
-                                error = 0;
-                                goto find_page;
-                        }
-                        goto readpage_error;
-                }
-...
-readpage_error:
-                put_page(page);
-                goto out;
-...
-out:
-        ra->prev_pos = prev_index;
-        ra->prev_pos <<= PAGE_SHIFT;
-        ra->prev_pos |= prev_offset;
+So, use spinlock to access dmabuf->name to avoid sleep-while-atomic.
 
-        *ppos = ((loff_t)index << PAGE_SHIFT) + offset;
-        file_accessed(filp);
-        return written ? written : error;
+Cc: <stable@vger.kernel.org> [5.3+]
+Signed-off-by: Charan Teja Reddy <charante@codeaurora.org>
+---
 
-so we don't call unlock_page() in generic code, which means the next time
-we try to get this page, we'll do ...
+Changes in V2: Addressed review comments from Ruhl, Michael J
 
-                page = find_get_page(mapping, index);
-...
-                if (!PageUptodate(page)) {
-                        error = wait_on_page_locked_killable(page);
-and presumably we'll wait forever because nobody is going to unlock this
-page?
+Changes in V1: https://lore.kernel.org/patchwork/patch/1255055/
 
-> @@ -598,16 +582,9 @@ static void gfs2_readahead(struct readahead_control *rac)
->  {
->  	struct inode *inode = rac->mapping->host;
->  	struct gfs2_inode *ip = GFS2_I(inode);
-> -	struct gfs2_holder gh;
->  
-> -	gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
-> -	if (gfs2_glock_nq(&gh))
-> -		goto out_uninit;
->  	if (!gfs2_is_stuffed(ip))
->  		mpage_readahead(rac, gfs2_block_map);
-> -	gfs2_glock_dq(&gh);
-> -out_uninit:
-> -	gfs2_holder_uninit(&gh);
->  }
+ drivers/dma-buf/dma-buf.c | 11 +++++++----
+ include/linux/dma-buf.h   |  1 +
+ 2 files changed, 8 insertions(+), 4 deletions(-)
 
-Not for this patch, obviously, but why do you go to the effort of using
-iomap_readpage() to implement gfs2_readpage(), but don't use iomap for
-gfs2_readahead()?  Far more pages are brought in through ->readahead
-than are brought in through ->readpage.
-
->  static ssize_t gfs2_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
->  {
-> +	struct gfs2_inode *ip;
-> +	struct gfs2_holder gh;
-> +	size_t written = 0;
->  	ssize_t ret;
->  
-> +	gfs2_holder_mark_uninitialized(&gh);
->  	if (iocb->ki_flags & IOCB_DIRECT) {
->  		ret = gfs2_file_direct_read(iocb, to);
-
-Again, future work, but you probably want to pass in &gh here so you
-don't have to eat up another 32 bytes or so of stack space on an unused
-gfs2_holder.
-
->  		if (likely(ret != -ENOTBLK))
->  			return ret;
->  		iocb->ki_flags &= ~IOCB_DIRECT;
->  	}
-> -	return generic_file_read_iter(iocb, to);
-> +	iocb->ki_flags |= IOCB_CACHED;
-> +	ret = generic_file_read_iter(iocb, to);
-> +	iocb->ki_flags &= ~IOCB_CACHED;
-> +	if (ret >= 0) {
-> +		if (!iov_iter_count(to))
-> +			return ret;
-> +		written = ret;
-> +	} else {
-> +		switch(ret) {
-> +		case -EAGAIN:
-> +			if (iocb->ki_flags & IOCB_NOWAIT)
-> +				return ret;
-> +			break;
-> +		case -ECANCELED:
-> +			break;
-> +		default:
-> +			return ret;
-> +		}
-> +	}
-
-I'm wondering if we want to do this in common code rather than making it
-something special only a few filesystems do (either because they care
-about workloads with many threads accessing the same file, or because
-their per-file locks are very heavy-weight).
-
+diff --git a/drivers/dma-buf/dma-buf.c b/drivers/dma-buf/dma-buf.c
+index 01ce125..d81d298 100644
+--- a/drivers/dma-buf/dma-buf.c
++++ b/drivers/dma-buf/dma-buf.c
+@@ -45,10 +45,10 @@ static char *dmabuffs_dname(struct dentry *dentry, char *buffer, int buflen)
+ 	size_t ret = 0;
+ 
+ 	dmabuf = dentry->d_fsdata;
+-	dma_resv_lock(dmabuf->resv, NULL);
++	spin_lock(&dmabuf->name_lock);
+ 	if (dmabuf->name)
+ 		ret = strlcpy(name, dmabuf->name, DMA_BUF_NAME_LEN);
+-	dma_resv_unlock(dmabuf->resv);
++	spin_unlock(&dmabuf->name_lock);
+ 
+ 	return dynamic_dname(dentry, buffer, buflen, "/%s:%s",
+ 			     dentry->d_name.name, ret > 0 ? name : "");
+@@ -341,8 +341,10 @@ static long dma_buf_set_name(struct dma_buf *dmabuf, const char __user *buf)
+ 		kfree(name);
+ 		goto out_unlock;
+ 	}
++	spin_lock(&dmabuf->name_lock);
+ 	kfree(dmabuf->name);
+ 	dmabuf->name = name;
++	spin_unlock(&dmabuf->name_lock);
+ 
+ out_unlock:
+ 	dma_resv_unlock(dmabuf->resv);
+@@ -405,10 +407,10 @@ static void dma_buf_show_fdinfo(struct seq_file *m, struct file *file)
+ 	/* Don't count the temporary reference taken inside procfs seq_show */
+ 	seq_printf(m, "count:\t%ld\n", file_count(dmabuf->file) - 1);
+ 	seq_printf(m, "exp_name:\t%s\n", dmabuf->exp_name);
+-	dma_resv_lock(dmabuf->resv, NULL);
++	spin_lock(&dmabuf->name_lock);
+ 	if (dmabuf->name)
+ 		seq_printf(m, "name:\t%s\n", dmabuf->name);
+-	dma_resv_unlock(dmabuf->resv);
++	spin_unlock(&dmabuf->name_lock);
+ }
+ 
+ static const struct file_operations dma_buf_fops = {
+@@ -546,6 +548,7 @@ struct dma_buf *dma_buf_export(const struct dma_buf_export_info *exp_info)
+ 	dmabuf->size = exp_info->size;
+ 	dmabuf->exp_name = exp_info->exp_name;
+ 	dmabuf->owner = exp_info->owner;
++	spin_lock_init(&dmabuf->name_lock);
+ 	init_waitqueue_head(&dmabuf->poll);
+ 	dmabuf->cb_excl.poll = dmabuf->cb_shared.poll = &dmabuf->poll;
+ 	dmabuf->cb_excl.active = dmabuf->cb_shared.active = 0;
+diff --git a/include/linux/dma-buf.h b/include/linux/dma-buf.h
+index ab0c156..93108fd 100644
+--- a/include/linux/dma-buf.h
++++ b/include/linux/dma-buf.h
+@@ -311,6 +311,7 @@ struct dma_buf {
+ 	void *vmap_ptr;
+ 	const char *exp_name;
+ 	const char *name;
++	spinlock_t name_lock;
+ 	struct module *owner;
+ 	struct list_head list_node;
+ 	void *priv;
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
