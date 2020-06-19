@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1200200D6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D676200C81
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390284AbgFSO5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:57:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52840 "EHLO mail.kernel.org"
+        id S2388871AbgFSOqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:46:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38536 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390237AbgFSO52 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:57:28 -0400
+        id S2388863AbgFSOql (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:46:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E6750217D8;
-        Fri, 19 Jun 2020 14:57:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D91621582;
+        Fri, 19 Jun 2020 14:46:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578648;
-        bh=T3peY554NwlALNIfveCqi8a67Cv2Pt7s4h5T++96M/A=;
+        s=default; t=1592578000;
+        bh=99AtoJOv4PI+Kkh6dHzVaD4c6A7Q7IDYN8jBHeaylXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jLwCwLLgcSVLQhngVeLuBEtkg6sr6FBlvWFS/2M8RZNy5z0EM1lE84UvIXwgP+GsI
-         kgbDzfbfpEBsGyBhpRygudgljoEMk4lthKP2wVi4OKmz+6U92s0rIERkCP9glPXY8f
-         2Z5UvuB4l4kA+LHK0JK6FuDrSrmVyp+OG8VWuW/c=
+        b=cCmdG+SnwW3QWZ05+EWW9QwrzOQzVTxYu4/Go75Nvz/+cT9S2hubRxQB0qOGU9oHw
+         ZkRkD5n3j0xHYBx+s9PZenSovT827sscy4VI+Hw8kvbjOmcjX95dLA5/A5WBnlQV83
+         BX3kznXc3X1eQiygpCRjfJKppzbGYYELUgqUcvI0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        stable@vger.kernel.org, Lukas Wunner <lukas@wunner.de>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Feng Tang <feng.tang@intel.com>,
+        Baruch Siach <baruch@tkos.co.il>,
         Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 103/267] spi: dw: Zero DMA Tx and Rx configurations on stack
-Date:   Fri, 19 Jun 2020 16:31:28 +0200
-Message-Id: <20200619141653.798594279@linuxfoundation.org>
+Subject: [PATCH 4.14 044/190] spi: dw: Fix controller unregister order
+Date:   Fri, 19 Jun 2020 16:31:29 +0200
+Message-Id: <20200619141635.795939060@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,46 +46,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Lukas Wunner <lukas@wunner.de>
 
-[ Upstream commit 3cb97e223d277f84171cc4ccecab31e08b2ee7b5 ]
+[ Upstream commit ca8b19d61e3fce5d2d7790cde27a0b57bcb3f341 ]
 
-Some DMA controller drivers do not tolerate non-zero values in
-the DMA configuration structures. Zero them to avoid issues with
-such DMA controller drivers. Even despite above this is a good
-practice per se.
+The Designware SPI driver uses devm_spi_register_controller() on bind.
+As a consequence, on unbind, __device_release_driver() first invokes
+dw_spi_remove_host() before unregistering the SPI controller via
+devres_release_all().
 
-Fixes: 7063c0d942a1 ("spi/dw_spi: add DMA support")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Feng Tang <feng.tang@intel.com>
-Cc: Feng Tang <feng.tang@intel.com>
-Link: https://lore.kernel.org/r/20200506153025.21441-1-andriy.shevchenko@linux.intel.com
+This order is incorrect:  dw_spi_remove_host() shuts down the chip,
+rendering the SPI bus inaccessible even though the SPI controller is
+still registered.  When the SPI controller is subsequently unregistered,
+it unbinds all its slave devices.  Because their drivers cannot access
+the SPI bus, e.g. to quiesce interrupts, the slave devices may be left
+in an improper state.
+
+As a rule, devm_spi_register_controller() must not be used if the
+->remove() hook performs teardown steps which shall be performed after
+unregistering the controller and specifically after unbinding of slaves.
+
+Fix by reverting to the non-devm variant of spi_register_controller().
+
+An alternative approach would be to use device-managed functions for all
+steps in dw_spi_remove_host(), e.g. by calling devm_add_action_or_reset()
+on probe.  However that approach would add more LoC to the driver and
+it wouldn't lend itself as well to backporting to stable.
+
+Fixes: 04f421e7b0b1 ("spi: dw: use managed resources")
+Signed-off-by: Lukas Wunner <lukas@wunner.de>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: stable@vger.kernel.org # v3.14+
+Cc: Baruch Siach <baruch@tkos.co.il>
+Link: https://lore.kernel.org/r/3fff8cb8ae44a9893840d0688be15bb88c090a14.1590408496.git.lukas@wunner.de
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-dw-mid.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/spi/spi-dw.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/spi/spi-dw-mid.c b/drivers/spi/spi-dw-mid.c
-index 3db905f5f345..f7ec8b98e6db 100644
---- a/drivers/spi/spi-dw-mid.c
-+++ b/drivers/spi/spi-dw-mid.c
-@@ -155,6 +155,7 @@ static struct dma_async_tx_descriptor *dw_spi_dma_prepare_tx(struct dw_spi *dws,
- 	if (!xfer->tx_buf)
- 		return NULL;
+diff --git a/drivers/spi/spi-dw.c b/drivers/spi/spi-dw.c
+index 5c16f7b17029..b11d0cd3fd20 100644
+--- a/drivers/spi/spi-dw.c
++++ b/drivers/spi/spi-dw.c
+@@ -534,7 +534,7 @@ int dw_spi_add_host(struct device *dev, struct dw_spi *dws)
+ 		}
+ 	}
  
-+	memset(&txconf, 0, sizeof(txconf));
- 	txconf.direction = DMA_MEM_TO_DEV;
- 	txconf.dst_addr = dws->dma_addr;
- 	txconf.dst_maxburst = 16;
-@@ -201,6 +202,7 @@ static struct dma_async_tx_descriptor *dw_spi_dma_prepare_rx(struct dw_spi *dws,
- 	if (!xfer->rx_buf)
- 		return NULL;
+-	ret = devm_spi_register_master(dev, master);
++	ret = spi_register_master(master);
+ 	if (ret) {
+ 		dev_err(&master->dev, "problem registering spi master\n");
+ 		goto err_dma_exit;
+@@ -558,6 +558,8 @@ void dw_spi_remove_host(struct dw_spi *dws)
+ {
+ 	dw_spi_debugfs_remove(dws);
  
-+	memset(&rxconf, 0, sizeof(rxconf));
- 	rxconf.direction = DMA_DEV_TO_MEM;
- 	rxconf.src_addr = dws->dma_addr;
- 	rxconf.src_maxburst = 16;
++	spi_unregister_master(dws->master);
++
+ 	if (dws->dma_ops && dws->dma_ops->dma_exit)
+ 		dws->dma_ops->dma_exit(dws);
+ 
 -- 
 2.25.1
 
