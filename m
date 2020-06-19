@@ -2,107 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED3942003F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 10:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8FD2200400
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 10:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731501AbgFSIdQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 04:33:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731206AbgFSIdJ (ORCPT
+        id S1731569AbgFSIeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 04:34:24 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:41124 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731538AbgFSIeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 04:33:09 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EA15C06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 01:33:07 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id p3so1514591pgh.3
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 01:33:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=DxLF1QSYdlhCh6NZL9lmn8uNXMfSoRVrgwAtr7oZT4g=;
-        b=czFUd1Jfcxsr/gudLfab9c+CCTq3xnDtsEMHFd3r480lJ4fgsRGvMZQDDhTIPFxXrX
-         cIxDj30f/Wk7M/+djM0hRt7UZ8DA0X5MD7qP6m6ddEKjqhzxGWuzCBV95HWA5BN+SbF2
-         CuTiI6mPAfQUJoVB8yd+LKok9tIbAJj/vpMUw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=DxLF1QSYdlhCh6NZL9lmn8uNXMfSoRVrgwAtr7oZT4g=;
-        b=b/uvGWSgnogaxAQVMSt72H8leuEb6GGJjfgTywq+JNuTtqrScpYOa24ZoxnwOrtSMU
-         LARw7ofMZqENahfFtf1ENiOZAzZY+tWmqsvfz5bzUHoNxpqd+Ibbw0994q6A99MSuwxM
-         HaRT9S7FRFWvHS4mCqpNcffOOZL5C4506nc2HKoXvui2gq4JscC/0jMItUc4KquhtvdV
-         IQVvLG8sbV3eDL4npLPhitL0yEGOQbqj4vTyal+wndty7lSR3h3zJgbgodzuiQHS1ETT
-         UyMAQTznZ4SMISEnMKNDUKVGwmXGMAg9R6JIQES0+lBCanaG32ZUb+MQv3YHwQjtrooc
-         O5bQ==
-X-Gm-Message-State: AOAM532m69gfEUU8GcpMgrGJS/jkBX059/+rKszWla6hXMbwrKbx0pvb
-        qYJpYIB+QiKXcivKTtAgdZKHKA==
-X-Google-Smtp-Source: ABdhPJxh9NkKuR5QgKNed2psurq5OoIwxIxtvYn54t0bYKHdssnhTLFQ5n/2YwUBvXXcSHO6doPqJg==
-X-Received: by 2002:aa7:9acc:: with SMTP id x12mr7140195pfp.24.1592555586085;
-        Fri, 19 Jun 2020 01:33:06 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:1:fa53:7765:582b:82b9])
-        by smtp.gmail.com with ESMTPSA id a7sm4578348pjd.2.2020.06.19.01.33.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Jun 2020 01:33:05 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <8db25400-5a01-18f6-d362-af3ad229361a@arm.com>
-References: <20200617113851.607706-1-alexandru.elisei@arm.com> <20200617113851.607706-7-alexandru.elisei@arm.com> <159242539231.62212.11549121838391298623@swboyd.mtv.corp.google.com> <8db25400-5a01-18f6-d362-af3ad229361a@arm.com>
-Subject: Re: [PATCH v5 6/7] arm_pmu: Introduce pmu_irq_ops
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     mark.rutland@arm.com, Julien Thierry <julien.thierry@arm.com>,
-        maz@kernel.org, Will Deacon <will.deacon@arm.com>,
-        catalin.marinas@arm.com, will@kernel.org,
-        Julien Thierry <julien.thierry.kdev@gmail.com>
-To:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Fri, 19 Jun 2020 01:33:04 -0700
-Message-ID: <159255558463.62212.4785740630471861314@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+        Fri, 19 Jun 2020 04:34:18 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0U01FUt1_1592555654;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U01FUt1_1592555654)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 19 Jun 2020 16:34:14 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
+Subject: [PATCH v13 00/18] per memcg lru lock
+Date:   Fri, 19 Jun 2020 16:33:38 +0800
+Message-Id: <1592555636-115095-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Alexandru Elisei (2020-06-18 03:51:24)
-> Hi,
->=20
-> On 6/17/20 9:23 PM, Stephen Boyd wrote:
-> > Quoting Alexandru Elisei (2020-06-17 04:38:50)
-> >> diff --git a/drivers/perf/arm_pmu.c b/drivers/perf/arm_pmu.c
-> >> index df352b334ea7..17e5952d21e4 100644
-> >> --- a/drivers/perf/arm_pmu.c
-> >> +++ b/drivers/perf/arm_pmu.c
-> >> @@ -26,8 +26,46 @@
-> >> =20
-> >>  #include <asm/irq_regs.h>
-> >> =20
-> >> +static int armpmu_count_irq_users(const int irq);
-> >> +
-> >> +struct pmu_irq_ops {
-> >> +       void (*enable_pmuirq)(unsigned int irq);
-> >> +       void (*disable_pmuirq)(unsigned int irq);
-> >> +       void (*free_pmuirq)(unsigned int irq, int cpu, void __percpu *=
-devid);
-> > Does 'cpu' need to be signed?
->=20
-> I'm not sure what you mean. The cpu argument comes from
-> drivers/perf/arm_pmu_platform.c::armpmu_free_irqs -> arpmu_free_irq, wher=
-e is the
-> iterator variable used by the macro for_each_cpu. The documentation for t=
-he macro
-> states:
->=20
-> /**
-> * for_each_cpu - iterate over every cpu in a mask
-> * @cpu: the (optionally unsigned) integer iterator ^^^^^^^^^^^^^^^^^^^
->=20
-> I could write a patch to convert to an unsigned int, but it seems like un=
-necessary
-> churn to me.
+This is a new version which bases on linux-next, merged much suggestion
+from Hugh Dickins, from compaction fix to less TestClearPageLRU and
+comments reverse etc. Thank a lot, Hugh!
 
-Ok. It would be nice to make it unsigned in the arm_pmu_platform.c file.
-Not required for this patch series.
+Johannes Weiner has suggested:
+"So here is a crazy idea that may be worth exploring:
+
+Right now, pgdat->lru_lock protects both PageLRU *and* the lruvec's
+linked list.
+
+Can we make PageLRU atomic and use it to stabilize the lru_lock
+instead, and then use the lru_lock only serialize list operations?
+..."
+
+With new memcg charge path and this solution, we could isolate
+LRU pages to exclusive visit them in compaction, page migration, reclaim,
+memcg move_accunt, huge page split etc scenarios while keeping pages' 
+memcg stable. Then possible to change per node lru locking to per memcg
+lru locking. As to pagevec_lru_move_fn funcs, it would be safe to let
+pages remain on lru list, lru lock could guard them for list integrity.
+
+The patchset includes 3 parts:
+1, some code cleanup and minimum optimization as a preparation.
+2, use TestCleanPageLRU as page isolation's precondition
+3, replace per node lru_lock with per memcg per node lru_lock
+
+The 3rd part moves per node lru_lock into lruvec, thus bring a lru_lock for
+each of memcg per node. So on a large machine, each of memcg don't
+have to suffer from per node pgdat->lru_lock competition. They could go
+fast with their self lru_lock
+
+Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
+containers on a 2s * 26cores * HT box with a modefied case:
+https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
+
+With this patchset, the readtwice performance increased about 80%
+in concurrent containers.
+
+Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
+idea 8 years ago, and others who give comments as well: Daniel Jordan, 
+Mel Gorman, Shakeel Butt, Matthew Wilcox etc.
+
+Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
+and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
+
+Alex Shi (16):
+  mm/vmscan: remove unnecessary lruvec adding
+  mm/page_idle: no unlikely double check for idle page counting
+  mm/compaction: correct the comments of compact_defer_shift
+  mm/compaction: rename compact_deferred as compact_should_defer
+  mm/thp: move lru_add_page_tail func to huge_memory.c
+  mm/thp: clean up lru_add_page_tail
+  mm/thp: narrow lru locking
+  mm/memcg: add debug checking in lock_page_memcg
+  mm/swap: fold vm event PGROTATED into pagevec_move_tail_fn
+  mm/lru: introduce TestClearPageLRU
+  mm/compaction: do page isolation first in compaction
+  mm/mlock: reorder isolation sequence during munlock
+  mm/swap: serialize memcg changes during pagevec_lru_move_fn
+  mm/lru: replace pgdat lru_lock with lruvec lock
+  mm/lru: introduce the relock_page_lruvec function
+  mm/pgdat: remove pgdat lru_lock
+
+Hugh Dickins (2):
+  mm/vmscan: use relock for move_pages_to_lru
+  mm/lru: revise the comments of lru_lock
+
+ Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +-
+ Documentation/admin-guide/cgroup-v1/memory.rst     |  21 ++-
+ Documentation/trace/events-kmem.rst                |   2 +-
+ Documentation/vm/unevictable-lru.rst               |  22 +--
+ include/linux/compaction.h                         |   4 +-
+ include/linux/memcontrol.h                         |  95 +++++++++++
+ include/linux/mm_types.h                           |   2 +-
+ include/linux/mmzone.h                             |   6 +-
+ include/linux/page-flags.h                         |   1 +
+ include/linux/swap.h                               |   4 +-
+ include/trace/events/compaction.h                  |   2 +-
+ mm/compaction.c                                    | 113 ++++++++-----
+ mm/filemap.c                                       |   4 +-
+ mm/huge_memory.c                                   |  54 +++++--
+ mm/memcontrol.c                                    |  56 ++++++-
+ mm/mlock.c                                         |  93 +++++------
+ mm/mmzone.c                                        |   1 +
+ mm/page_alloc.c                                    |   1 -
+ mm/page_idle.c                                     |   8 -
+ mm/rmap.c                                          |   4 +-
+ mm/swap.c                                          | 175 +++++++--------------
+ mm/swap_state.c                                    |   5 +-
+ mm/vmscan.c                                        | 165 ++++++++++---------
+ mm/workingset.c                                    |   4 +-
+ 24 files changed, 500 insertions(+), 357 deletions(-)
+
+-- 
+1.8.3.1
+
