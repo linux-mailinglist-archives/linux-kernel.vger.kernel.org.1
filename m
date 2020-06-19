@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2ED201874
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A51201882
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:01:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405749AbgFSQse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:48:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58272 "EHLO mail.kernel.org"
+        id S2405790AbgFSQtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:49:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387825AbgFSOkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:40:22 -0400
+        id S1733089AbgFSOju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:39:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1770620773;
-        Fri, 19 Jun 2020 14:40:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCE99208B8;
+        Fri, 19 Jun 2020 14:39:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577622;
-        bh=vufx0vyQjbhKY6H1Jy6DAqwq30Pr95FUeTOb5XINOxw=;
+        s=default; t=1592577590;
+        bh=Q5RfkEOwMa2sKTnOL1vN4j9QXp/MzQ8CeuVxeHJ2GsE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P/UyZlNJace8g7YuDpoz/zC/Ng8ZfZQMWWAKa2L9QpX+Md9egy5Y1SMUZSovg4uXD
-         J7IQopgadXQC4Jwyxwe97PMLiHxzPPrTYfOMr8OoFIG7XEnpyDaaiFfZ4jf8SRgYDA
-         wxPdoCmplUk79uGUOf2h3vpR/2bqKK+jbJgoIQAU=
+        b=uEdpMf17Bxg9dIjPYnCBY9b77fdstKgpaDtABX590dgjU/GKtZc/FfhsVOBg2AdAR
+         7SUIo3irjwhDLmL+skXyd1RuXAeD+GAHY0lkalc+s7DqBHgTNGUFUFcxXARNJ6v2Vm
+         JAMewakClS12YpwGR2ge8FuYpqeysX6V6o4Xudb0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Thumshirn <jthumshirn@suse.de>,
-        Christoph Hellwig <hch@lst.de>,
-        Hannes Reinecke <hare@suse.com>,
-        Bart Van Assche <bart.vanassche@sandisk.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4.9 003/128] scsi: return correct blkprep status code in case scsi_init_io() fails.
-Date:   Fri, 19 Jun 2020 16:31:37 +0200
-Message-Id: <20200619141620.323404815@linuxfoundation.org>
+        stable@vger.kernel.org, Xiaochun Lee <lixc17@lenovo.com>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Subject: [PATCH 4.9 010/128] x86/PCI: Mark Intel C620 MROMs as having non-compliant BARs
+Date:   Fri, 19 Jun 2020 16:31:44 +0200
+Message-Id: <20200619141620.689591324@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
 References: <20200619141620.148019466@linuxfoundation.org>
@@ -47,51 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Thumshirn <jthumshirn@suse.de>
+From: Xiaochun Lee <lixc17@lenovo.com>
 
-commit e7661a8e5ce10b5321882d0bbaf3f81070903319 upstream.
+commit 1574051e52cb4b5b7f7509cfd729b76ca1117808 upstream.
 
-When instrumenting the SCSI layer to run into the
-!blk_rq_nr_phys_segments(rq) case the following warning emitted from the
-block layer:
+The Intel C620 Platform Controller Hub has MROM functions that have non-PCI
+registers (undocumented in the public spec) where BAR 0 is supposed to be,
+which results in messages like this:
 
-blk_peek_request: bad return=-22
+  pci 0000:00:11.0: [Firmware Bug]: reg 0x30: invalid BAR (can't size)
 
-This happens because since commit fd3fc0b4d730 ("scsi: don't BUG_ON()
-empty DMA transfers") we return the wrong error value from
-scsi_prep_fn() back to the block layer.
+Mark these MROM functions as having non-compliant BARs so we don't try to
+probe any of them.  There are no other BARs on these devices.
 
-[mkp: silenced checkpatch]
+See the Intel C620 Series Chipset Platform Controller Hub Datasheet,
+May 2019, Document Number 336067-007US, sec 2.1, 35.5, 35.6.
 
-Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-Fixes: fd3fc0b4d730 scsi: don't BUG_ON() empty DMA transfers
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Hannes Reinecke <hare@suse.com>
-Reviewed-by: Bart Van Assche <bart.vanassche@sandisk.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-[iwamatsu: - backport for 4.4.y and 4.9.y
-    - Use rq->nr_phys_segments instead of blk_rq_nr_phys_segments]
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+[bhelgaas: commit log, add 0xa26d]
+Link: https://lore.kernel.org/r/1589513467-17070-1-git-send-email-lixiaochun.2888@163.com
+Signed-off-by: Xiaochun Lee <lixc17@lenovo.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/scsi/scsi_lib.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/scsi/scsi_lib.c
-+++ b/drivers/scsi/scsi_lib.c
-@@ -1029,10 +1029,10 @@ int scsi_init_io(struct scsi_cmnd *cmd)
- 	struct scsi_device *sdev = cmd->device;
- 	struct request *rq = cmd->request;
- 	bool is_mq = (rq->mq_ctx != NULL);
--	int error;
-+	int error = BLKPREP_KILL;
+---
+ arch/x86/pci/fixup.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+--- a/arch/x86/pci/fixup.c
++++ b/arch/x86/pci/fixup.c
+@@ -571,6 +571,10 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_IN
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6f60, pci_invalid_bar);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6fa0, pci_invalid_bar);
+ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x6fc0, pci_invalid_bar);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa1ec, pci_invalid_bar);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa1ed, pci_invalid_bar);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa26c, pci_invalid_bar);
++DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0xa26d, pci_invalid_bar);
  
- 	if (WARN_ON_ONCE(!rq->nr_phys_segments))
--		return -EINVAL;
-+		goto err_exit;
- 
- 	error = scsi_init_sgtable(rq, &cmd->sdb);
- 	if (error)
+ /*
+  * Device [1022:7914]
 
 
