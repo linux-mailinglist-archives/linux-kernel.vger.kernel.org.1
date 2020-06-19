@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0142201121
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:42:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0ACF2012DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391248AbgFSPaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:30:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33856 "EHLO mail.kernel.org"
+        id S2392327AbgFSPOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:14:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404408AbgFSPaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:30:07 -0400
+        id S2392088AbgFSPO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:14:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87CC121D79;
-        Fri, 19 Jun 2020 15:30:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F01D12158C;
+        Fri, 19 Jun 2020 15:14:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580606;
-        bh=biZxo7xIfF834z9nqNS71nzofZ7r6Uqho9xZzSIhqPU=;
+        s=default; t=1592579665;
+        bh=1PzUjo7vtRgpMi9M/u+rqrEhgYH75PTlYUkDKGDkuwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T/M4uGwE4cFSiLPvH4M0BCwwOH0UDMR2e7KdhdMgxQda9UrkWO+baqRn7ue9+jVVs
-         3VdL20tpM5PQTGi89gLUpbY0UWJ+5nnlrJ6m03a0uHVrtqrJCLXa2+xHjlr+/02sIS
-         sorhIKrMGn9SaXdscFTSIbsflBqIf3bU3P9BX+9A=
+        b=sEw4+GOKhH1W7T4e7VyGZ1pIvG46Cc6kwYZ7iqpgeEYmwGpGYUUaj5vVk4JJCpf/b
+         gb6uOUXJ5++/6A1a+xPfrRroKyg3TCnFJZ5AtjpiOfzplibF5jVaYechteZKxtgIP8
+         mdC0DphI577Q+5o/lMcplVCLXxXhK5aXOd7kse0k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.7 283/376] ext4: fix race between ext4_sync_parent() and rename()
+        stable@vger.kernel.org, Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 190/261] PCI: Add Loongson vendor ID
 Date:   Fri, 19 Jun 2020 16:33:21 +0200
-Message-Id: <20200619141723.728742706@linuxfoundation.org>
+Message-Id: <20200619141659.009207412@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
-References: <20200619141710.350494719@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,109 +43,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Tiezhu Yang <yangtiezhu@loongson.cn>
 
-commit 08adf452e628b0e2ce9a01048cfbec52353703d7 upstream.
+[ Upstream commit 9acb9fe18d863aacc99948963f8d5d447dc311be ]
 
-'igrab(d_inode(dentry->d_parent))' without holding dentry->d_lock is
-broken because without d_lock, d_parent can be concurrently changed due
-to a rename().  Then if the old directory is immediately deleted, old
-d_parent->inode can be NULL.  That causes a NULL dereference in igrab().
+Add the Loongson vendor ID to pci_ids.h to be used by the controller
+driver in the future.
 
-To fix this, use dget_parent() to safely grab a reference to the parent
-dentry, which pins the inode.  This also eliminates the need to use
-d_find_any_alias() other than for the initial inode, as we no longer
-throw away the dentry at each step.
+The Loongson vendor ID can be found at the following link:
+https://git.kernel.org/pub/scm/utils/pciutils/pciutils.git/tree/pci.ids
 
-This is an extremely hard race to hit, but it is possible.  Adding a
-udelay() in between the reads of ->d_parent and its ->d_inode makes it
-reproducible on a no-journal filesystem using the following program:
-
-    #include <fcntl.h>
-    #include <unistd.h>
-
-    int main()
-    {
-        if (fork()) {
-            for (;;) {
-                mkdir("dir1", 0700);
-                int fd = open("dir1/file", O_RDWR|O_CREAT|O_SYNC);
-                write(fd, "X", 1);
-                close(fd);
-            }
-        } else {
-            mkdir("dir2", 0700);
-            for (;;) {
-                rename("dir1/file", "dir2/file");
-                rmdir("dir1");
-            }
-        }
-    }
-
-Fixes: d59729f4e794 ("ext4: fix races in ext4_sync_parent()")
-Cc: stable@vger.kernel.org
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Link: https://lore.kernel.org/r/20200506183140.541194-1-ebiggers@kernel.org
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/fsync.c |   28 +++++++++++++---------------
- 1 file changed, 13 insertions(+), 15 deletions(-)
+ include/linux/pci_ids.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
---- a/fs/ext4/fsync.c
-+++ b/fs/ext4/fsync.c
-@@ -44,30 +44,28 @@
-  */
- static int ext4_sync_parent(struct inode *inode)
- {
--	struct dentry *dentry = NULL;
--	struct inode *next;
-+	struct dentry *dentry, *next;
- 	int ret = 0;
+diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
+index 6693cf561cd1..1dfc4e1dcb94 100644
+--- a/include/linux/pci_ids.h
++++ b/include/linux/pci_ids.h
+@@ -148,6 +148,8 @@
  
- 	if (!ext4_test_inode_state(inode, EXT4_STATE_NEWENTRY))
- 		return 0;
--	inode = igrab(inode);
-+	dentry = d_find_any_alias(inode);
-+	if (!dentry)
-+		return 0;
- 	while (ext4_test_inode_state(inode, EXT4_STATE_NEWENTRY)) {
- 		ext4_clear_inode_state(inode, EXT4_STATE_NEWENTRY);
--		dentry = d_find_any_alias(inode);
--		if (!dentry)
--			break;
--		next = igrab(d_inode(dentry->d_parent));
-+
-+		next = dget_parent(dentry);
- 		dput(dentry);
--		if (!next)
--			break;
--		iput(inode);
--		inode = next;
-+		dentry = next;
-+		inode = dentry->d_inode;
-+
- 		/*
- 		 * The directory inode may have gone through rmdir by now. But
- 		 * the inode itself and its blocks are still allocated (we hold
--		 * a reference to the inode so it didn't go through
--		 * ext4_evict_inode()) and so we are safe to flush metadata
--		 * blocks and the inode.
-+		 * a reference to the inode via its dentry), so it didn't go
-+		 * through ext4_evict_inode()) and so we are safe to flush
-+		 * metadata blocks and the inode.
- 		 */
- 		ret = sync_mapping_buffers(inode->i_mapping);
- 		if (ret)
-@@ -76,7 +74,7 @@ static int ext4_sync_parent(struct inode
- 		if (ret)
- 			break;
- 	}
--	iput(inode);
-+	dput(dentry);
- 	return ret;
- }
+ /* Vendors and devices.  Sort key: vendor first, device next. */
  
++#define PCI_VENDOR_ID_LOONGSON		0x0014
++
+ #define PCI_VENDOR_ID_TTTECH		0x0357
+ #define PCI_DEVICE_ID_TTTECH_MC322	0x000a
+ 
+-- 
+2.25.1
+
 
 
