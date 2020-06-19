@@ -2,78 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF97201409
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB37201391
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391762AbgFSPIl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:08:41 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:38545 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391739AbgFSPIa (ORCPT
+        id S2392090AbgFSPLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:11:15 -0400
+Received: from conuserg-07.nifty.com ([210.131.2.74]:53361 "EHLO
+        conuserg-07.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391351AbgFSPLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:08:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592579309;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ekfNBp4LhaeldweXzxt1Y3e5nQyJLwRxW69/ByaQ7Fw=;
-        b=h22kqdSUcUgVDxPkw3NOD25KCmLE4I+WKjJFqoYxmW/70GHZvtKaLIPxu7XNYSn5AhmLqf
-        lW8UjjmzOYjhAmJwZ7iExpJdmo28FyDVLwSVrqW0tpH2Cq/lJqUOzNFAsps8j/Qve4DSkf
-        5rnTdG+4HAc0iD/8Cm9l5/rsylfMIM4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-472-GAiLBo89OQ-_9mut8R-4Ow-1; Fri, 19 Jun 2020 11:08:27 -0400
-X-MC-Unique: GAiLBo89OQ-_9mut8R-4Ow-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E8E488018D9;
-        Fri, 19 Jun 2020 15:08:25 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-117-31.rdu2.redhat.com [10.10.117.31])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D56755D9E8;
-        Fri, 19 Jun 2020 15:08:17 +0000 (UTC)
-Subject: Re: [PATCH v2 2/2] xfs: Fix false positive lockdep warning with
- sb_internal & fs_reclaim
-To:     Christoph Hellwig <hch@infradead.org>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dave Chinner <david@fromorbit.com>, Qian Cai <cai@lca.pw>,
-        Eric Sandeen <sandeen@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200617175310.20912-1-longman@redhat.com>
- <20200617175310.20912-3-longman@redhat.com>
- <20200619132155.GA27677@infradead.org>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <9ac58106-d7f5-fda2-2695-c68b5072f696@redhat.com>
-Date:   Fri, 19 Jun 2020 11:08:17 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Fri, 19 Jun 2020 11:11:05 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-07.nifty.com with ESMTP id 05JFA0TO003778;
+        Sat, 20 Jun 2020 00:10:01 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-07.nifty.com 05JFA0TO003778
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1592579401;
+        bh=+TnARtnceYuO5resxwSI80CrcBwzGNK3O4AoiEU1u1I=;
+        h=From:To:Cc:Subject:Date:From;
+        b=1cPNYMFjZC2GqfERRfi1r/aXkaHG3jYk3jvmIGqIPk0duuZ7tJp33kWmLrSQP49iC
+         STLxvC+m/ml7tBoBOAq82q5ldYJDCWo7nl/krw/0slr7rDhzrG+cBmoE1ulBSCJxMD
+         Pk8TzXkjpPUW2JDw+ht3IbqKDxvh/lQLdqC+uBmEPpIzDBBjE0VEuP7I0L3cE6s3fb
+         Unm3+qfynk0tv27kHre8oos7AH+NObK3Ziu6wMS3ACgK7EQCCCaRpBHereJssV7kgA
+         7pQwlDoa3P215oOZ6sLrZKebVpCLtlIwEqnA0Mljn1jucdaXsfWCowdyQojC44XXx5
+         Z+Ir36/KZxp3g==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Revert "Makefile: install modules.builtin even if CONFIG_MODULES=n"
+Date:   Sat, 20 Jun 2020 00:09:55 +0900
+Message-Id: <20200619150955.13417-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200619132155.GA27677@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/19/20 9:21 AM, Christoph Hellwig wrote:
-> I find it really confusing that we record this in current->flags.
-> per-thread state makes total sense for not dipping into fs reclaim.
-> But for annotating something related to memory allocation passing flags
-> seems a lot more descriptive to me, as it is about particular locks.
->
-I am dropping this patchset as just using PF_MEMALLOC_NOFS is good enough.
+This reverts commit e0b250b57dcf403529081e5898a9de717f96b76b,
+which broke build systems that need to install files to a certain
+path, but do not set INSTALL_MOD_PATH when invoking 'make install'.
 
-Cheers,
-Longman
+  $ make INSTALL_PATH=/tmp/destdir install
+  mkdir: cannot create directory ‘/lib/modules/5.8.0-rc1+/’: Permission denied
+  Makefile:1342: recipe for target '_builtin_inst_' failed
+  make: *** [_builtin_inst_] Error 1
+
+While modules.builtin is useful also for CONFIG_MODULES=n, this change
+in the behavior is quite unexpected. Maybe "make modules_install"
+can install modules.builtin irrespective of CONFIG_MODULES as Jonas
+originally suggested.
+
+Anyway, that commit should be reverted ASAP.
+
+Reported-by: Douglas Anderson <dianders@chromium.org>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Cc: Jonas Karlman <jonas@kwiboo.se>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+Changes in v2:
+  - add more commit description
+
+ Makefile | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 29abe44ada91..9880e911afe3 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1336,16 +1336,6 @@ dt_binding_check: scripts_dtc
+ # ---------------------------------------------------------------------------
+ # Modules
+ 
+-# install modules.builtin regardless of CONFIG_MODULES
+-PHONY += _builtin_inst_
+-_builtin_inst_:
+-	@mkdir -p $(MODLIB)/
+-	@cp -f modules.builtin $(MODLIB)/
+-	@cp -f $(objtree)/modules.builtin.modinfo $(MODLIB)/
+-
+-PHONY += install
+-install: _builtin_inst_
+-
+ ifdef CONFIG_MODULES
+ 
+ # By default, build modules as well
+@@ -1389,7 +1379,7 @@ PHONY += modules_install
+ modules_install: _modinst_ _modinst_post
+ 
+ PHONY += _modinst_
+-_modinst_: _builtin_inst_
++_modinst_:
+ 	@rm -rf $(MODLIB)/kernel
+ 	@rm -f $(MODLIB)/source
+ 	@mkdir -p $(MODLIB)/kernel
+@@ -1399,6 +1389,8 @@ _modinst_: _builtin_inst_
+ 		ln -s $(CURDIR) $(MODLIB)/build ; \
+ 	fi
+ 	@sed 's:^:kernel/:' modules.order > $(MODLIB)/modules.order
++	@cp -f modules.builtin $(MODLIB)/
++	@cp -f $(objtree)/modules.builtin.modinfo $(MODLIB)/
+ 	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.modinst
+ 
+ # This depmod is only for convenience to give the initial
+-- 
+2.25.1
 
