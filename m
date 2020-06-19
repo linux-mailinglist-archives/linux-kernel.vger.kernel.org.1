@@ -2,80 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D624201E71
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 00:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BAC2201E7E
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 01:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730232AbgFSW6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 18:58:53 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55747 "EHLO
+        id S1730274AbgFSXH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 19:07:57 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:59729 "EHLO
         us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730201AbgFSW6v (ORCPT
+        with ESMTP id S1730253AbgFSXH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 18:58:51 -0400
+        Fri, 19 Jun 2020 19:07:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592607530;
+        s=mimecast20190719; t=1592608075;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=E2BNk2Ub7uBT0HBt8BMR2hg/5o8g14jlSam4dCx84bQ=;
-        b=cPKE3WWVwDbAMxYSBshkPK1kjbrkYoyf6FT0wbGYl7mmRFb5l9QOAkIukDSUGcy35rpPTw
-        nxHsrzqLRJ0a6DgWGj6VQy+ts4yreyQV70UF4fcXoZofoz723pfKUxEwKWTa+KaqZcASN5
-        2CGcLSmfb+NtCPYMQmgYfyIdqAKnXAw=
+        bh=GSUEEvPHg8lObb4w3f5YO1A3aV/mftn8qgOUKpTDcXY=;
+        b=Q/B5YPGXdZORGNqWk0GIx+RV8RSzTmYiYGOq5Wv9zNdyB+V0q2gbJVg+FE6F6GZIG5OwPr
+        wk0ayakO1i+6bLkE7YsYuG0C/Xplrl31uSgqOTf6Sm6oQCHMjceI353uWdEq21SDz/HXc1
+        DDns6DxOBtQeS5SxZnLYUnj2FwGYfYM=
 Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
  [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-259-3F4YsLcRO0KdIJkYrjFrFg-1; Fri, 19 Jun 2020 18:58:48 -0400
-X-MC-Unique: 3F4YsLcRO0KdIJkYrjFrFg-1
-Received: by mail-wm1-f69.google.com with SMTP id p24so4891983wmc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 15:58:48 -0700 (PDT)
+ us-mta-439-322ypdpyNdyClo4eoop75w-1; Fri, 19 Jun 2020 19:07:51 -0400
+X-MC-Unique: 322ypdpyNdyClo4eoop75w-1
+Received: by mail-wm1-f69.google.com with SMTP id g84so4910418wmf.4
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 16:07:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=E2BNk2Ub7uBT0HBt8BMR2hg/5o8g14jlSam4dCx84bQ=;
-        b=qQGoPrproIGc4d33dxfnaGKTGyKOu4V9yZeqyYxF3vgfOcSw3RVz1wrOV9+2Ie01z1
-         5+CubXXxN01Oj2KyiH4f0ytk9DdlZYDhPMjglv6Eu9bKXzJiVHVZ9l1IymALEpA1vRCh
-         HQkghparLoiy1DvPdivuY53KAWE1IMc4w91tmWSYAVheqHRACXR+oOH34k5aVt5gK1mt
-         6J6DbOHcsNjE36pgVBXKe1nRVDTiGuDQEExGtgbbrxRXYJkjTYljoh/mP63iESgEz84c
-         1miUbYYO3ThL9mo2j9C7imdl8cWxlbByfRYe1XhzZTGOwjvbed3zBAsKCM7JnvKiTgjB
-         Wh8g==
-X-Gm-Message-State: AOAM5324e85tEFbN5Ufz7ZHDtTjw3qFHkXzsUmaSXsMFQhHAeP/AHbWo
-        PVOIpuqNJNEXBnLlxpco87Da1IGRg8JBQ87GAgNmlEOQOGCpmn+ngCaJMKSMuKm0lK2nVKbL0b8
-        jCAJOLsxoQrdj+6PXeFlxVo0A
-X-Received: by 2002:a7b:cc94:: with SMTP id p20mr5779789wma.148.1592607527323;
-        Fri, 19 Jun 2020 15:58:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzMKhY/RzPovyTwhCbOPKYFuzo5dk0SjaJP0wmIxsSDDxtGzS04gtLD/QEWjSSWySAcyxN+DQ==
-X-Received: by 2002:a7b:cc94:: with SMTP id p20mr5779776wma.148.1592607527023;
-        Fri, 19 Jun 2020 15:58:47 -0700 (PDT)
+        bh=GSUEEvPHg8lObb4w3f5YO1A3aV/mftn8qgOUKpTDcXY=;
+        b=V+130reXCf5w+Nm1NeipY5lLLROFyjzmsqYmE74776QiRKzUSgKKXnzjzFgZuTwUKq
+         iU+fZkH3NdlDeWJ6ADqLlT8yoiYvR3htZAqFU1keggAzCt24Kvia5hyNHiS4KUFGbvgd
+         F7TDH1IbgWXoOxmefSTCPvVtpj20BBEO+KctQE/W/9lNNKC7FQ6UKbJdHCZEXBe+Nh99
+         QkdL2j5kICpjHFPefg2XoSQC0OA080T3Z7bYccAoHg02NS7hGnVZoBE+9pJx28hdLr2H
+         1Y6KjuVb82gfubXVciABLPQWXS00gLDspKpAbG0B7lNglrGXv8/8PcJf/N+GIw4hjNqu
+         IETQ==
+X-Gm-Message-State: AOAM531GRuSepBOSVd3ALSaawOXgw0S+QVHhWG/4FpM5lmeVjnsFFVdl
+        FxMFH/365W5+hw15Ly100oLJcOAs4cSZYJ3J/mGunDKrUHCTcseV3Af3gg9ibXjzJ5UbyoyQMxi
+        LLtSiaY7nTsFvseGaNioZuOUn
+X-Received: by 2002:a1c:544d:: with SMTP id p13mr6302396wmi.25.1592608070481;
+        Fri, 19 Jun 2020 16:07:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzu/JztVAYCCE55vZNqDpvaVxdrydq0oPQaM9B94p/nNj1BvYm/PY+IP5k5u5Z3b+ipgQzpGA==
+X-Received: by 2002:a1c:544d:: with SMTP id p13mr6302365wmi.25.1592608070215;
+        Fri, 19 Jun 2020 16:07:50 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:e1d2:138e:4eff:42cb? ([2001:b07:6468:f312:e1d2:138e:4eff:42cb])
-        by smtp.gmail.com with ESMTPSA id r12sm8693338wrc.22.2020.06.19.15.58.45
+        by smtp.gmail.com with ESMTPSA id m65sm7644751wmf.17.2020.06.19.16.07.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jun 2020 15:58:46 -0700 (PDT)
-Subject: Re: RFC - kernel selftest result documentation (KTAP)
-To:     Frank Rowand <frowand.list@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Brendan Higgins <brendanhiggins@google.com>
-Cc:     "Bird, Tim" <Tim.Bird@sony.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        David Gow <davidgow@google.com>
-References: <CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com>
- <202006141120.96FF8C5@keescook>
- <CY4PR13MB11757D57CD441C5CAEC3F257FD9C0@CY4PR13MB1175.namprd13.prod.outlook.com>
- <7161fadb-45ba-c4c0-8bbb-cb47d2dd0265@redhat.com>
- <CY4PR13MB11755F5A6879CA3FFD005426FD9D0@CY4PR13MB1175.namprd13.prod.outlook.com>
- <CAFd5g454n4ZPgCdWaAxezFueG47TztqBx4L7x4oYwgPAR3BZNA@mail.gmail.com>
- <202006161653.15C278A5@keescook>
- <398200b2-f8bc-894d-6d6f-366ff98a490e@gmail.com>
+        Fri, 19 Jun 2020 16:07:49 -0700 (PDT)
+Subject: Re: [PATCH v2 00/11] KVM: Support guest MAXPHYADDR < host MAXPHYADDR
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Mohammed Gamal <mgamal@redhat.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, vkuznets@redhat.com,
+        sean.j.christopherson@intel.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, babu.moger@amd.com
+References: <20200619153925.79106-1-mgamal@redhat.com>
+ <5a52fd65-e1b2-ca87-e923-1d5ac167cfb9@amd.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <c60c25ab-6737-1cc9-4370-dae4ebb4b823@redhat.com>
-Date:   Sat, 20 Jun 2020 00:58:45 +0200
+Message-ID: <52295811-f78a-46c5-ff9e-23709ba95a3d@redhat.com>
+Date:   Sat, 20 Jun 2020 01:07:49 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <398200b2-f8bc-894d-6d6f-366ff98a490e@gmail.com>
+In-Reply-To: <5a52fd65-e1b2-ca87-e923-1d5ac167cfb9@amd.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -84,20 +75,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/06/20 20:47, Frank Rowand wrote:
-> Or if the entire test depends on the missing config then Bail out might
-> be appropriate.
+On 19/06/20 23:52, Tom Lendacky wrote:
+>> A more subtle issue is when the host MAXPHYADDR is larger than that
+>> of the guest. Page faults caused by reserved bits on the guest won't
+>> cause an EPT violation/NPF and hence we also check guest MAXPHYADDR
+>> and add PFERR_RSVD_MASK error code to the page fault if needed.
+>
+> I'm probably missing something here, but I'm confused by this
+> statement. Is this for a case where a page has been marked not
+> present and the guest has also set what it believes are reserved
+> bits? Then when the page is accessed, the guest sees a page fault
+> without the error code for reserved bits?
 
-No, in that case you want
+No, for non-present page there is no issue because there are no reserved
+bits in that case.  If the page is present and no reserved bits are set
+according to the host, however, there are two cases to consider:
 
-	1..0 # SKIP: unsupported configuration
+- if the page is not accessible to the guest according to the
+permissions in the page table, it will cause a #PF.  We need to trap it
+and change the error code into P|RSVD if the guest physical address has
+any guest-reserved bits.
 
-The spec is not clear if "Bail out!" is an error condition or just a
-warning that only part of the test was run, but prove(1) and Automake
-both treat it as the former, for example.
+- if the page is accessible to the guest according to the permissions in
+the page table, it will cause a #NPF.  Again, we need to trap it, check
+the guest physical address and inject a P|RSVD #PF if the guest physical
+address has any guest-reserved bits.
 
-For example, an ENOSPC error creating a temporary file could be turned
-into a bail-out, while an ENOSYS would be a skip.
+The AMD specific issue happens in the second case.  By the time the NPF
+vmexit occurs, the accessed and/or dirty bits have been set and this
+should not have happened before the RSVD page fault that we want to
+inject.  On Intel processors, instead, EPT violations trigger before
+accessed and dirty bits are set.  I cannot find an explicit mention of
+the intended behavior in either the
+Intel SDM or the AMD APM.
 
 Paolo
 
