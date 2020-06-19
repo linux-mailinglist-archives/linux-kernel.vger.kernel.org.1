@@ -2,100 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 576D5201A06
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 20:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79DA62019EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 20:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394812AbgFSSKG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 19 Jun 2020 14:10:06 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33570 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732403AbgFSSKE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 14:10:04 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05JI4ZNo013853
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 14:10:04 -0400
-Received: from smtp.notes.na.collabserv.com (smtp.notes.na.collabserv.com [192.155.248.66])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31rwwu0s1u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 14:10:04 -0400
-Received: from localhost
-        by smtp.notes.na.collabserv.com with smtp.notes.na.collabserv.com ESMTP
-        for <linux-kernel@vger.kernel.org> from <miltonm@us.ibm.com>;
-        Fri, 19 Jun 2020 18:10:03 -0000
-Received: from us1a3-smtp03.a3.dal06.isc4sb.com (10.106.154.98)
-        by smtp.notes.na.collabserv.com (10.106.227.127) with smtp.notes.na.collabserv.com ESMTP;
-        Fri, 19 Jun 2020 18:09:55 -0000
-Received: from us1a3-mail228.a3.dal06.isc4sb.com ([10.146.103.71])
-          by us1a3-smtp03.a3.dal06.isc4sb.com
-          with ESMTP id 2020061918095479-734599 ;
-          Fri, 19 Jun 2020 18:09:54 +0000 
-In-Reply-To: <20200619165154.GA20461@cnn>
-From:   "Milton Miller II" <miltonm@us.ibm.com>
-To:     Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org, manikandan.e@hcl.com,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        vijaykhemka@fb.com, saipsdasari@fb.com, patrickw3@fb.com
-Date:   Fri, 19 Jun 2020 18:09:55 +0000
+        id S2392071AbgFSSEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 14:04:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49280 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389671AbgFSSEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 14:04:44 -0400
+Received: from embeddedor (unknown [189.207.59.248])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B073420DD4;
+        Fri, 19 Jun 2020 18:04:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592589883;
+        bh=4BtD3MYD+VZOU9pnwXf8Ajs1DRRHrNXmV37Wuhj/+Gc=;
+        h=Date:From:To:Cc:Subject:From;
+        b=UZfGmO8K/btUZpFfszkFst5DdKQp3Z5but4edsWZRZEa649haUjZIo/YfTaIihf9J
+         MHr9+242B2LfW5ZQt0C4GlvHuYwNDDu7tyNRlhvSOcIUkM0svtcIKnULrfGL0b200u
+         ZoFkVbUk1/ukdB7mdywIyqBa/v5CzlQwfKGRCUVM=
+Date:   Fri, 19 Jun 2020 13:10:07 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] net: dsa: sja1105: Use struct_size() in kzalloc()
+Message-ID: <20200619181007.GA32353@embeddedor>
 MIME-Version: 1.0
-Sensitivity: 
-Importance: Normal
-X-Priority: 3 (Normal)
-References: <20200619165154.GA20461@cnn>
-X-Mailer: IBM iNotes ($HaikuForm 1054.1) | IBM Domino Build
- SCN1812108_20180501T0841_FP65 April 15, 2020 at 09:48
-X-LLNOutbound: False
-X-Disclaimed: 37575
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset=UTF-8
-x-cbid: 20061918-4409-0000-0000-00000305A032
-X-IBM-SpamModules-Scores: BY=0; FL=0; FP=0; FZ=0; HX=0; KW=0; PH=0;
- SC=0.424974; ST=0; TS=0; UL=0; ISC=; MB=0.000960
-X-IBM-SpamModules-Versions: BY=3.00013312; HX=3.00000242; KW=3.00000007;
- PH=3.00000004; SC=3.00000295; SDB=6.01393884; UDB=6.00746056; IPR=6.01176167;
- MB=3.00032629; MTD=3.00000008; XFM=3.00000015; UTC=2020-06-19 18:10:01
-X-IBM-AV-DETECTION: SAVI=unsuspicious REMOTE=unsuspicious XFE=unused
-X-IBM-AV-VERSION: SAVI=2020-06-19 16:54:29 - 6.00011502
-x-cbparentid: 20061918-4410-0000-0000-00006256AC0D
-Message-Id: <OFB20C104E.283BBF6D-ON0025858C.0062CC5B-0025858C.0063C8F2@notes.na.collabserv.com>
-Subject: Re:  [PATCH v4] hwmon:(adm1275) Enable adm1278 ADM1278_TEMP1_EN
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-19_20:2020-06-19,2020-06-19 signatures=0
-X-Proofpoint-Spam-Reason: orgsafe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On : 06/19/2020 abiout 12:46PM in some timezone,  Manikandan Elumalai  wrote:
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes.
 
->The adm1278 temp attribute need it for openbmc platform .
->This feature not enabled by default, so PMON_CONFIG needs to enable
->it.
->
->Signed-off-by: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
->---
->---    v4 -Reported-by: kernel test robot <lkp@intel.com>
+This code was detected with the help of Coccinelle and, audited and
+fixed manually.
 
-Thie above tag should be Adjacent to the Signed-off-by.
+Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ drivers/net/dsa/sja1105/sja1105_tas.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
->---    v3 -fix invalid signed-off.
->---       -removed checkpath warnings.
->---       -write ADM1278_TEMP1_EN and ADM1278_VOUT_EN conf in single
->line operation.
->---    v2 -add Signed-off-by.
->---       -removed ADM1278_TEMP1_EN check.
->---
-
-The canonical format is to have a line of 3 dashes then the trailing changelog 
-
-Please read the documentation at 
-
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#the-canonical-patch-format
-
-milton
+diff --git a/drivers/net/dsa/sja1105/sja1105_tas.c b/drivers/net/dsa/sja1105/sja1105_tas.c
+index 3aa1a8b5f766..31d8acff1f01 100644
+--- a/drivers/net/dsa/sja1105/sja1105_tas.c
++++ b/drivers/net/dsa/sja1105/sja1105_tas.c
+@@ -475,8 +475,7 @@ bool sja1105_gating_check_conflicts(struct sja1105_private *priv, int port,
+ 	if (list_empty(&gating_cfg->entries))
+ 		return false;
+ 
+-	dummy = kzalloc(sizeof(struct tc_taprio_sched_entry) * num_entries +
+-			sizeof(struct tc_taprio_qopt_offload), GFP_KERNEL);
++	dummy = kzalloc(struct_size(dummy, entries, num_entries), GFP_KERNEL);
+ 	if (!dummy) {
+ 		NL_SET_ERR_MSG_MOD(extack, "Failed to allocate memory");
+ 		return true;
+-- 
+2.27.0
 
