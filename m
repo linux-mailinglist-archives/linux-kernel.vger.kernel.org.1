@@ -2,213 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15FB8201A22
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 20:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CD7201A28
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 20:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389313AbgFSSRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 14:17:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57840 "EHLO
+        id S2394897AbgFSSRl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 14:17:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731949AbgFSSRA (ORCPT
+        with ESMTP id S2389232AbgFSSRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 14:17:00 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE3EC06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 11:16:59 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id u26so9321698wmn.1
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 11:16:59 -0700 (PDT)
+        Fri, 19 Jun 2020 14:17:35 -0400
+Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB8BC06174E;
+        Fri, 19 Jun 2020 11:17:35 -0700 (PDT)
+Received: by mail-qv1-xf30.google.com with SMTP id p15so4891810qvr.9;
+        Fri, 19 Jun 2020 11:17:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=pdRjq7c/C/ExAewHNaf0dxUTQHfeQV9fMMSHlW7P0AE=;
-        b=dS4o87kUMtecMW/ZQvrys54WL2/itW2B/vToYbHnOcr9N48VVNJ9xgI659JhyNw4PH
-         HKSeh9slMa7USwzD2nDspF8ls9FiQhsIZLlqGaOFEtAXHzx8QHXyj9XelWR+FyreNNe8
-         60KfPSUtf3c7d/Tf5MGr9q+/5uZjYMxSgW5r4=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3uZCoM2AWA6/XtPvpJamTOlHYSrROKfn1hw8fNerrOg=;
+        b=f1MTzq5px1ZySmzMqwu8CBDsMcxnBOYGuyxhP7gnhUomFLUDKg0ESORk9IVOIyvxMV
+         6CAuFtQa/yKhdEZwRrwn9VgZfDyHPq01i8x+574sPCEbXnyKbH/SJ5NF5E36EvtnfMKz
+         eNGL8G7uZ/nCucgPYOpmJpeejDtvzyiyaRD+MmIb6LWZAavDBnE/J16UjPL5TB/rxVUQ
+         DVIbMgEubdkd1b4/km22idxq9bWhB+uwCEuVBoNlirINAfXmsn3rPUZsHMS7IIgt7FCx
+         eDe9r+JB9c5Q8N2Fxzeenlyl8PIfTZGy9UrluWwVlm/MoJHZHtqjLBvfNSOaoCQCPE8H
+         vRTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=pdRjq7c/C/ExAewHNaf0dxUTQHfeQV9fMMSHlW7P0AE=;
-        b=SY6iGuX4uvxT1mpfpgstMXTwfx5F0QmC/QaJ/pqoHr898pw6holk4dKLfPbLl7E/yO
-         SCN4Gvw8YvEMkYBUHcgTz4hrYXKZqZQbI0cB++ZurHo31PYYxIdtp7R1nc+Squ1QeDse
-         jqvJVIJn7RE0Cv90bZpuToPMQMA36aBBG8vaU0x4mk5U+eklQKRLq6hCFZluwnFt98y3
-         bUS8Oh/r15YCW14X9O40ctLTZVHphx0Lx/PcW7Cg6bXfx53Y5cJmZK7wmlYGdVwgf6FS
-         y4F04NUXorVX46cFpc/ZzkoKwzleHYnmmv2zuWyV/IKA0vV8Ky8/942+CGY/ZwMaQmQh
-         4NTg==
-X-Gm-Message-State: AOAM5332K5Cie55+CIkjIQ1SUB/MMoGReJZyImSwY4F6Nw8cOOyJMjr4
-        O4QvHmWrZvimvbzrbpxl7tzZplGw9/gJOFnfiFiU
-X-Google-Smtp-Source: ABdhPJwslo2aZ//Il/+AnJDXJ+Og9D8A3zuCJ0ipsamQcWxfOxHFCDRIthtT+4r3npxgym3eQiMm3dd4E8fsfjnrrW0=
-X-Received: by 2002:a1c:f608:: with SMTP id w8mr4878392wmc.78.1592590618426;
- Fri, 19 Jun 2020 11:16:58 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3uZCoM2AWA6/XtPvpJamTOlHYSrROKfn1hw8fNerrOg=;
+        b=KT3nLm1YKD3SrikmRyzkyZja7A6cPvfN48c+bRMl40CYLxBsxhrdANodntC1Jre1Ol
+         6wIMUZNKa5zVl2c7vgxlZ7Dd8rLGXSoO3UTwKmtCl8pt/7SMssvGNcIrX+GB3xYK53Qb
+         JeoWbzSKqTUixr351qKyLtxxCXgZ6GUvi21Ti6wej9+kQTJEHbnfcy3zgjAFP3/DO0ox
+         +naX7hvB9VUGPRj3uVRSdeOat8WZ2hY7e2bu16wtTZZBVGboYNaxusoDdGCwxOqpr4Xk
+         t/KXX4flexWRnDpLVyUXVksHyX6/BdTlL7AO/V49ncN0dW4B35/q68+qOFjys+OrySfi
+         /6lg==
+X-Gm-Message-State: AOAM533HY3wbAzt0zLAGS10E7tiBgnjOcLbGdIOABrOx9pXiu0ND+TBI
+        PvFb+jZctg1s3P0aMMuJXftN0xQcQAo=
+X-Google-Smtp-Source: ABdhPJypDjUGC4ELUXzah3KfvqRPnDFmNebIAcKuobBGd0JRNhy9gTlVawM4bflVC2fHItXQAqIoaw==
+X-Received: by 2002:ad4:4d04:: with SMTP id l4mr10316591qvl.88.1592590654677;
+        Fri, 19 Jun 2020 11:17:34 -0700 (PDT)
+Received: from [192.168.1.46] (c-73-88-245-53.hsd1.tn.comcast.net. [73.88.245.53])
+        by smtp.gmail.com with ESMTPSA id u14sm6467749qkj.18.2020.06.19.11.17.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jun 2020 11:17:34 -0700 (PDT)
+Subject: Re: RFC - kernel selftest result documentation (KTAP)
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        "Bird, Tim" <Tim.Bird@sony.com>
+Cc:     David Gow <davidgow@google.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>
+References: <CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com>
+ <CABVgOSkrKHs_uWLZ++_fBC_mfe3RgDxmCvnkcyn1P_wjXTV9Og@mail.gmail.com>
+ <CY4PR13MB11756803217A9D20456E826FFD9C0@CY4PR13MB1175.namprd13.prod.outlook.com>
+ <CAFd5g458XTDftQAOm-K4Squ5-ZuZnZcFdVUG0JtUWF56cODOVg@mail.gmail.com>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <f5554a01-0862-f7c3-5c6d-f77c9ee8c8f9@gmail.com>
+Date:   Fri, 19 Jun 2020 13:17:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200603153608.30056-1-alex@ghiti.fr> <20200603153608.30056-3-alex@ghiti.fr>
- <CAOnJCU+JSuOGbOmZW-vqb-A_qR7CJc=qG16FbgOLWSm1vhJH1A@mail.gmail.com> <23529a84-44a0-3c45-f16d-5a7ee528610d@ghiti.fr>
-In-Reply-To: <23529a84-44a0-3c45-f16d-5a7ee528610d@ghiti.fr>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Fri, 19 Jun 2020 11:16:47 -0700
-Message-ID: <CAOnJCU+s5JuNdPg_R-Cg2+WnMjR51DD0ekbRr84EFCig6=YyZA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] riscv: Use PUD/PGDIR entries for linear mapping when possible
-To:     Alex Ghiti <alex@ghiti.fr>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <Atish.Patra@wdc.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAFd5g458XTDftQAOm-K4Squ5-ZuZnZcFdVUG0JtUWF56cODOVg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 9:28 PM Alex Ghiti <alex@ghiti.fr> wrote:
->
-> Hi Atish,
->
-> Le 6/18/20 =C3=A0 8:47 PM, Atish Patra a =C3=A9crit :
-> > On Wed, Jun 3, 2020 at 8:38 AM Alexandre Ghiti <alex@ghiti.fr> wrote:
-> >> Improve best_map_size so that PUD or PGDIR entries are used for linear
-> >> mapping when possible as it allows better TLB utilization.
-> >>
-> >> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
-> >> ---
-> >>   arch/riscv/mm/init.c | 45 +++++++++++++++++++++++++++++++++---------=
---
-> >>   1 file changed, 34 insertions(+), 11 deletions(-)
-> >>
-> >> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> >> index 9a5c97e091c1..d275f9f834cf 100644
-> >> --- a/arch/riscv/mm/init.c
-> >> +++ b/arch/riscv/mm/init.c
-> >> @@ -424,13 +424,29 @@ static void __init create_pgd_mapping(pgd_t *pgd=
-p,
-> >>          create_pgd_next_mapping(nextp, va, pa, sz, prot);
-> >>   }
-> >>
-> >> -static uintptr_t __init best_map_size(phys_addr_t base, phys_addr_t s=
-ize)
-> >> +static bool is_map_size_ok(uintptr_t map_size, phys_addr_t base,
-> >> +                          uintptr_t base_virt, phys_addr_t size)
-> >>   {
-> >> -       /* Upgrade to PMD_SIZE mappings whenever possible */
-> >> -       if ((base & (PMD_SIZE - 1)) || (size & (PMD_SIZE - 1)))
-> >> -               return PAGE_SIZE;
-> >> +       return !((base & (map_size - 1)) || (base_virt & (map_size - 1=
-)) ||
-> >> +                       (size < map_size));
-> >> +}
-> >> +
-> >> +static uintptr_t __init best_map_size(phys_addr_t base, uintptr_t bas=
-e_virt,
-> >> +                                     phys_addr_t size)
-> >> +{
-> >> +#ifndef __PAGETABLE_PMD_FOLDED
-> >> +       if (is_map_size_ok(PGDIR_SIZE, base, base_virt, size))
-> >> +               return PGDIR_SIZE;
-> >> +
-> >> +       if (pgtable_l4_enabled)
-> >> +               if (is_map_size_ok(PUD_SIZE, base, base_virt, size))
-> >> +                       return PUD_SIZE;
-> >> +#endif
-> >> +
-> >> +       if (is_map_size_ok(PMD_SIZE, base, base_virt, size))
-> >> +               return PMD_SIZE;
-> >>
-> >> -       return PMD_SIZE;
-> >> +       return PAGE_SIZE;
-> >>   }
-> >>
-> >>   /*
-> >> @@ -576,7 +592,7 @@ void create_kernel_page_table(pgd_t *pgdir, uintpt=
-r_t map_size)
-> >>   asmlinkage void __init setup_vm(uintptr_t dtb_pa)
-> >>   {
-> >>          uintptr_t va, end_va;
-> >> -       uintptr_t map_size =3D best_map_size(load_pa, MAX_EARLY_MAPPIN=
-G_SIZE);
-> >> +       uintptr_t map_size;
-> >>
-> >>          load_pa =3D (uintptr_t)(&_start);
-> >>          load_sz =3D (uintptr_t)(&_end) - load_pa;
-> >> @@ -587,6 +603,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
-> >>
-> >>          kernel_virt_addr =3D KERNEL_VIRT_ADDR;
-> >>
-> >> +       map_size =3D best_map_size(load_pa, PAGE_OFFSET, MAX_EARLY_MAP=
-PING_SIZE);
-> >>          va_pa_offset =3D PAGE_OFFSET - load_pa;
-> >>          va_kernel_pa_offset =3D kernel_virt_addr - load_pa;
-> >>          pfn_base =3D PFN_DOWN(load_pa);
-> >> @@ -700,6 +717,8 @@ static void __init setup_vm_final(void)
-> >>
-> >>          /* Map all memory banks */
-> >>          for_each_memblock(memory, reg) {
-> >> +               uintptr_t remaining_size;
-> >> +
-> >>                  start =3D reg->base;
-> >>                  end =3D start + reg->size;
-> >>
-> >> @@ -707,15 +726,19 @@ static void __init setup_vm_final(void)
-> >>                          break;
-> >>                  if (memblock_is_nomap(reg))
-> >>                          continue;
-> >> -               if (start <=3D __pa(PAGE_OFFSET) &&
-> >> -                   __pa(PAGE_OFFSET) < end)
-> >> -                       start =3D __pa(PAGE_OFFSET);
-> >>
-> >> -               map_size =3D best_map_size(start, end - start);
-> >> -               for (pa =3D start; pa < end; pa +=3D map_size) {
-> >> +               pa =3D start;
-> >> +               remaining_size =3D reg->size;
-> >> +
-> >> +               while (remaining_size) {
-> >>                          va =3D (uintptr_t)__va(pa);
-> >> +                       map_size =3D best_map_size(pa, va, remaining_s=
-ize);
-> >> +
-> >>                          create_pgd_mapping(swapper_pg_dir, va, pa,
-> >>                                             map_size, PAGE_KERNEL);
-> >> +
-> >> +                       pa +=3D map_size;
-> >> +                       remaining_size -=3D map_size;
-> >>                  }
-> >>          }
-> >>
-> > This may not work in the RV32 with 2G memory  and if the map_size is
-> > determined to be a page size
-> > for the last memblock. Both pa & remaining_size will overflow and the
-> > loop will try to map memory from zero again.
->
-> I'm not sure I understand: if pa starts at 0x8000_0000 and size is 2G,
-> then pa will overflow in the last iteration, but remaining_size will
-> then be equal to 0 right ?
->
-Not unless the remaining_size is at least page size aligned. The last
-remaining size would "fff".
-It will overflow as well after subtracting the map_size.
+On 2020-06-16 15:03, Brendan Higgins wrote:
+> On Mon, Jun 15, 2020 at 10:34 AM Bird, Tim <Tim.Bird@sony.com> wrote:
+>>
+>>> -----Original Message-----
+>>> From: David Gow <davidgow@google.com>
+>>>
+>>> On Thu, Jun 11, 2020 at 2:11 AM Bird, Tim <Tim.Bird@sony.com> wrote:
+> [...]
+>>> KUnit is currently outputting "TAP version 14", as we were hoping some
+>>> of our changes would get into the TAP14 spec. (Any comments, Brendan?)
+>>> Maybe this should end up saying "KTAP version 1" or something?
+>>
+>> I don't know if this will break any existing results parsers or not.
+>> I hesitate to use "TAP version 14", as TAP appears to be a dormant
+>> initiative at the moment, and there's no guarantee that the kernel's
+>> changes will get adopted into an official spec.
+> 
+> We were using "TAP version 14" since the "extensions" we are using
+> were all proposed among the TAP people to go into the next version of
+> TAP. Based on discussions among them they seem to like the subtest
+> stuff:
+> 
+> https://github.com/TestAnything/testanything.github.io/pull/36
+> 
+> Anyway, I can still appreciate that they might change their minds.
+> 
+>> If we are a strict super-set of TAP, then I suppose we could just
+>> start using TAP version 14, and unilaterally declare that our changes
+>> make a new spec.  But since we don't control the web site this feels
+>> like a hostile takeover.
+> 
+> I just thought it was okay because it was already in their proposed
+> TAP14 spec, but yeah, if we just decide amongst ourselves to use it,
+> we should probably do something else.
+> 
+>> I'm most comfortable with calling our thing KTAP, and just
+>> referencing TAP as inspiration.  I don't have a strong opinion on
+> 
+> I am cool with that.
 
-> And by the way, I realize that this loop only handles sizes that are
-> aligned on map_size.
->
+I like a KTAP specification, based on the proposed TAP 14, but with a
+good edit, and with the extensions and changes that are coming out
+of this conversation.
 
-Yeah.
+It would be great if we could just have a finished TAP 14, but my
+understanding is that efforts to move that forward are not making
+any progress.  And if we fork to make KTAP, maybe that will be
+the incentive for TAP to move forward, and maybe KTAP could be
+merged back into TAP.
 
-> Thanks,
->
-> Alex
->
->
-> >
-> >> --
-> >> 2.20.1
-> >>
-> >>
-> >
+-Frank
 
+> 
+>> KTAP vs TAP, but I do feel strongly that kselftest and kunit should use the
+>> same version line (if we can get them to use the same conventions).
+> 
+> Yeah, I agree: it would be better if there was just one version of
+> (K)TAP in the kernel.
+> 
+>>>> Test plan line
+>>>> --------------
+>>>> The test plan indicates the number of individual test cases intended to
+>>>> be executed by the test. It always starts with "1.." and is followed
+>>>> by the number of tests cases.  In the example above, 1..1", indicates
+>>>> that this test reports only 1 test case.
+>>>>
+>>>> The test plan line can be placed in two locations:
+>>>>  * the second line of test output, when the number of test cases is known
+>>>>    in advance
+>>>>  * as the last line of test output, when the number of test cases is not
+>>>>    known in advance.
+>>>>
+>>>> Most often, the number of test cases is known in advance, and the test plan
+>>>> line appears as the second line of test output, immediately following
+>>>> the output version line.  The number of test cases might not be known
+>>>> in advance if the number of tests is calculated from runtime data.
+>>>> In this case, the test plan line is emitted as the last line of test
+>>>> output.
+>>>
+>>> KUnit is currently including the test plan line only for subtests, as
+>>> the current version doesn't actually know how many test suites will
+>>> run in advance.
+>>> This is something there's work underway to fix, though.
+>> Sounds good.  You can just put the line at the bottom if it's
+>> obnoxious to calculate ahead of time.
+> 
+> I thought that is not in the TAP spec?
+> 
+> I kind of like printing out ahead of time how many tests we expect to
+> run, so if we crash we know how many tests weren't run.
+> 
+> In any case, until we get the change in that David is referencing, we
+> cannot print out the test plan for the "super test" before or after
+> because KUnit doesn't know when it is "done". So moving it to the
+> bottom doesn't really help us.
+> 
+>> Does this mean that KUnit treats each sub-test as an individual test case
+>> of the "super-test"?
+> 
+> Yes.
+> 
+> At the top level, we have all test suites. Each subtest in TAP is a
+> test suite in KUnit. Each case in each subtest in TAP is a test case
+> in KUnit.
+> 
+>> In results summaries for a super-test, are all sub-test cases counted,
+>> or just the list of sub-tests?
+> 
+> Just the sub-tests. Each subtest is responsible for counting it's own cases:
+> 
+> https://github.com/isaacs/testanything.github.io/blob/tap14/tap-version-14-specification.md#subtests
+> 
+> Cheers
+> 
 
-
---=20
-Regards,
-Atish
