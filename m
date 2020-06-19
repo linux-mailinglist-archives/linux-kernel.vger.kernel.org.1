@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8BB200C8D
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E0C200C00
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388932AbgFSOrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:47:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39104 "EHLO mail.kernel.org"
+        id S2387739AbgFSOkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:40:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388915AbgFSOrF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:47:05 -0400
+        id S2388138AbgFSOkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:40:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C7439217BA;
-        Fri, 19 Jun 2020 14:47:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABCED20A8B;
+        Fri, 19 Jun 2020 14:40:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578024;
-        bh=3Gy/92jLZF+v7FYdCtBsRReY/y1P8gmS+TEu783FoGw=;
+        s=default; t=1592577625;
+        bh=9m+nedHFamROTEbfxZl0O8S6WBufhsoEggKhtJGuz4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t9tos96goJJO3JMzKyIbDbM8BeHKpmw9riWQuKzB93CO3RGda0eh7sHzpQB24jL85
-         gdYZieNq7Kb4bAEBswqP1KF2/4ZVmC4zO9nRyNPiDLgsL/GiBSk14ntQq/HWLS+JOP
-         FxWSdKqwijqZfV6pmJQgHEuClO76V4OKkoKm1qhs=
+        b=m7rgyq+ksGPWpZSyiQX4D5eT018Kl1i+12pkY3tmppHdAH74VbvpbdsO/XedhrsvO
+         tVvxKf1hpjsELW2wv2B2N1Web0+d9i0HYNZ9DChkvX1hbZKVAjlOBzmlnLWV4+UmHH
+         SUdda3FhEvSY6/WksAFdLpwOAyTdMRI5qt+vrDuM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tanner Love <tannerlove@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 052/190] selftests/net: in rxtimestamp getopt_long needs terminating null entry
-Date:   Fri, 19 Jun 2020 16:31:37 +0200
-Message-Id: <20200619141636.187659962@linuxfoundation.org>
+        stable@vger.kernel.org, Su Kang Yin <cantona@cantona.net>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH 4.9 004/128] crypto: talitos - fix ECB and CBC algs ivsize
+Date:   Fri, 19 Jun 2020 16:31:38 +0200
+Message-Id: <20200619141620.369942370@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
-References: <20200619141633.446429600@linuxfoundation.org>
+In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
+References: <20200619141620.148019466@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,31 +43,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: tannerlove <tannerlove@google.com>
+From: Su Kang Yin <cantona@cantona.net>
 
-[ Upstream commit 865a6cbb2288f8af7f9dc3b153c61b7014fdcf1e ]
+commit e1de42fdfc6a ("crypto: talitos - fix ECB algs ivsize")
+wrongly modified CBC algs ivsize instead of ECB aggs ivsize.
 
-getopt_long requires the last element to be filled with zeros.
-Otherwise, passing an unrecognized option can cause a segfault.
+This restore the CBC algs original ivsize of removes ECB's ones.
 
-Fixes: 16e781224198 ("selftests/net: Add a test to validate behavior of rx timestamps")
-Signed-off-by: Tanner Love <tannerlove@google.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: e1de42fdfc6a ("crypto: talitos - fix ECB algs ivsize")
+Signed-off-by: Su Kang Yin <cantona@cantona.net>
+Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- tools/testing/selftests/networking/timestamping/rxtimestamp.c |    1 +
- 1 file changed, 1 insertion(+)
 
---- a/tools/testing/selftests/networking/timestamping/rxtimestamp.c
-+++ b/tools/testing/selftests/networking/timestamping/rxtimestamp.c
-@@ -114,6 +114,7 @@ static struct option long_options[] = {
- 	{ "tcp", no_argument, 0, 't' },
- 	{ "udp", no_argument, 0, 'u' },
- 	{ "ip", no_argument, 0, 'i' },
-+	{ NULL, 0, NULL, 0 },
- };
- 
- static int next_port = 19999;
+---
+ drivers/crypto/talitos.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/crypto/talitos.c
++++ b/drivers/crypto/talitos.c
+@@ -2636,7 +2636,6 @@ static struct talitos_alg_template drive
+ 			.cra_ablkcipher = {
+ 				.min_keysize = AES_MIN_KEY_SIZE,
+ 				.max_keysize = AES_MAX_KEY_SIZE,
+-				.ivsize = AES_BLOCK_SIZE,
+ 			}
+ 		},
+ 		.desc_hdr_template = DESC_HDR_TYPE_COMMON_NONSNOOP_NO_AFEU |
+@@ -2670,6 +2669,7 @@ static struct talitos_alg_template drive
+ 			.cra_ablkcipher = {
+ 				.min_keysize = AES_MIN_KEY_SIZE,
+ 				.max_keysize = AES_MAX_KEY_SIZE,
++				.ivsize = AES_BLOCK_SIZE,
+ 				.setkey = ablkcipher_aes_setkey,
+ 			}
+ 		},
 
 
