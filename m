@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA43E2013FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:08:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC6720157E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:23:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405566AbgFSQHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:07:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38672 "EHLO mail.kernel.org"
+        id S2390597AbgFSO76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:59:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391844AbgFSPJD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:09:03 -0400
+        id S2390568AbgFSO7u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:59:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A423D21974;
-        Fri, 19 Jun 2020 15:09:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7AD5321973;
+        Fri, 19 Jun 2020 14:59:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579343;
-        bh=B89FK8vACx+eNd7wzQx7lR+6NkbB8MD1A2RxKuGY980=;
+        s=default; t=1592578790;
+        bh=FmZBpMkmKEa+BWw2RykpSg1I5MeKBmsg8bPHuXEZEK8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VtNBeinP5TvCeDsB56h9zH+RHsp5IjXkgzxFahSsgWoiFwjUS+sgk5u7EhqNGm1FC
-         iHG7Wj0sQJkDwvkPENln2NCk05ygfr8deJJ5ubdYYdesluSbm/POdBuV+b6GKDvPmZ
-         UtKRbe7/JNp0gKBJXGF3hEyyP5kv0vFmM5ocYyb4=
+        b=Rblfrh5fxY6dMjjQ335dTTeutn74mUMH86p0c0/369EF/2eUyGY4OLqVWNdOj+eL6
+         VVIXfc51GdakcOFyF1/b6xaWottdgJsIDsQMcHLsnOcDyITpcvPEz+jUqGubpDslR0
+         L16JJfwo2gUw5pIPgX6T4kPK/Tdx1u8vfCbRXs+w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 100/261] platform/x86: intel-vbtn: Split keymap into buttons and switches parts
-Date:   Fri, 19 Jun 2020 16:31:51 +0200
-Message-Id: <20200619141654.652759246@linuxfoundation.org>
+Subject: [PATCH 4.19 127/267] media: platform: fcp: Set appropriate DMA parameters
+Date:   Fri, 19 Jun 2020 16:31:52 +0200
+Message-Id: <20200619141654.922135292@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
+References: <20200619141648.840376470@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,82 +47,69 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
 
-[ Upstream commit f6ba524970c4b73b234bf41ecd6628f5803b1559 ]
+[ Upstream commit dd844fb8e50b12e65bbdc5746c9876c6735500df ]
 
-Split the sparse keymap into 2 separate keymaps, a buttons and a switches
-keymap and combine the 2 to a single map again in intel_vbtn_input_setup().
+Enabling CONFIG_DMA_API_DEBUG=y and CONFIG_DMA_API_DEBUG_SG=y will
+enable extra validation on DMA operations ensuring that the size
+restraints are met.
 
-This is a preparation patch for not telling userspace that we have switches
-when we do not have them (and for doing the same for the buttons).
+When using the FCP in conjunction with the VSP1/DU, and display frames,
+the size of the DMA operations is larger than the default maximum
+segment size reported by the DMA core (64K). With the DMA debug enabled,
+this produces a warning such as the following:
 
-Fixes: de9647efeaa9 ("platform/x86: intel-vbtn: Only activate tablet mode switch on 2-in-1's")
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+"DMA-API: rcar-fcp fea27000.fcp: mapping sg segment longer than device
+claims to support [len=3145728] [max=65536]"
+
+We have no specific limitation on the segment size which isn't already
+handled by the VSP1/DU which actually handles the DMA allcoations and
+buffer management, so define a maximum segment size of up to 4GB (a 32
+bit mask).
+
+Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Fixes: 7b49235e83b2 ("[media] v4l: Add Renesas R-Car FCP driver")
+Signed-off-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/platform/x86/intel-vbtn.c | 28 +++++++++++++++++++++++++---
- 1 file changed, 25 insertions(+), 3 deletions(-)
+ drivers/media/platform/rcar-fcp.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/platform/x86/intel-vbtn.c b/drivers/platform/x86/intel-vbtn.c
-index 3b3789bb8ec5..2ab3dbd26b5e 100644
---- a/drivers/platform/x86/intel-vbtn.c
-+++ b/drivers/platform/x86/intel-vbtn.c
-@@ -39,14 +39,20 @@ static const struct key_entry intel_vbtn_keymap[] = {
- 	{ KE_IGNORE, 0xC7, { KEY_VOLUMEDOWN } },	/* volume-down key release */
- 	{ KE_KEY,    0xC8, { KEY_ROTATE_LOCK_TOGGLE } },	/* rotate-lock key press */
- 	{ KE_KEY,    0xC9, { KEY_ROTATE_LOCK_TOGGLE } },	/* rotate-lock key release */
-+};
-+
-+static const struct key_entry intel_vbtn_switchmap[] = {
- 	{ KE_SW,     0xCA, { .sw = { SW_DOCK, 1 } } },		/* Docked */
- 	{ KE_SW,     0xCB, { .sw = { SW_DOCK, 0 } } },		/* Undocked */
- 	{ KE_SW,     0xCC, { .sw = { SW_TABLET_MODE, 1 } } },	/* Tablet */
- 	{ KE_SW,     0xCD, { .sw = { SW_TABLET_MODE, 0 } } },	/* Laptop */
--	{ KE_END },
+diff --git a/drivers/media/platform/rcar-fcp.c b/drivers/media/platform/rcar-fcp.c
+index 43c78620c9d8..5c6b00737fe7 100644
+--- a/drivers/media/platform/rcar-fcp.c
++++ b/drivers/media/platform/rcar-fcp.c
+@@ -8,6 +8,7 @@
+  */
+ 
+ #include <linux/device.h>
++#include <linux/dma-mapping.h>
+ #include <linux/list.h>
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+@@ -21,6 +22,7 @@
+ struct rcar_fcp_device {
+ 	struct list_head list;
+ 	struct device *dev;
++	struct device_dma_parameters dma_parms;
  };
  
-+#define KEYMAP_LEN \
-+	(ARRAY_SIZE(intel_vbtn_keymap) + ARRAY_SIZE(intel_vbtn_switchmap) + 1)
-+
- struct intel_vbtn_priv {
-+	struct key_entry keymap[KEYMAP_LEN];
- 	struct input_dev *input_dev;
- 	bool wakeup_mode;
- };
-@@ -54,13 +60,29 @@ struct intel_vbtn_priv {
- static int intel_vbtn_input_setup(struct platform_device *device)
- {
- 	struct intel_vbtn_priv *priv = dev_get_drvdata(&device->dev);
--	int ret;
-+	int ret, keymap_len = 0;
-+
-+	if (true) {
-+		memcpy(&priv->keymap[keymap_len], intel_vbtn_keymap,
-+		       ARRAY_SIZE(intel_vbtn_keymap) *
-+		       sizeof(struct key_entry));
-+		keymap_len += ARRAY_SIZE(intel_vbtn_keymap);
-+	}
-+
-+	if (true) {
-+		memcpy(&priv->keymap[keymap_len], intel_vbtn_switchmap,
-+		       ARRAY_SIZE(intel_vbtn_switchmap) *
-+		       sizeof(struct key_entry));
-+		keymap_len += ARRAY_SIZE(intel_vbtn_switchmap);
-+	}
-+
-+	priv->keymap[keymap_len].type = KE_END;
+ static LIST_HEAD(fcp_devices);
+@@ -136,6 +138,9 @@ static int rcar_fcp_probe(struct platform_device *pdev)
  
- 	priv->input_dev = devm_input_allocate_device(&device->dev);
- 	if (!priv->input_dev)
- 		return -ENOMEM;
+ 	fcp->dev = &pdev->dev;
  
--	ret = sparse_keymap_setup(priv->input_dev, intel_vbtn_keymap, NULL);
-+	ret = sparse_keymap_setup(priv->input_dev, priv->keymap, NULL);
- 	if (ret)
- 		return ret;
++	fcp->dev->dma_parms = &fcp->dma_parms;
++	dma_set_max_seg_size(fcp->dev, DMA_BIT_MASK(32));
++
+ 	pm_runtime_enable(&pdev->dev);
  
+ 	mutex_lock(&fcp_lock);
 -- 
 2.25.1
 
