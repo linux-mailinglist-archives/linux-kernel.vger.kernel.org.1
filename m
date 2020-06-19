@@ -2,80 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35FF2201944
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59724201968
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:26:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732585AbgFSRTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 13:19:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725788AbgFSRTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 13:19:50 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C5A4214DB;
-        Fri, 19 Jun 2020 17:19:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592587190;
-        bh=UU6h0Ye5eIxC7LueL8AYqU7mot8kZdliXuGlk2DiP0M=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GQsI0Q9wfEmvoWW++btFeKUl2SOze4JhxLrZzB+AsI5xJbGQ1jIiIB9uz8bgTpIgX
-         3V323vrb5AYbd5Tck7ypW7k/c+jmZ+6NNbR7WfG4gqUWXlM2iHLPuOKRGTTrc9yjJm
-         w3lRufpR1bq40Hx3cVfje8OIkRoEJfCFN7sL9/cs=
-Date:   Fri, 19 Jun 2020 12:25:14 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Jon Mason <jdmason@kudzu.us>, Dave Jiang <dave.jiang@intel.com>,
-        Allen Hubbe <allenbh@gmail.com>
-Cc:     linux-ntb@googlegroups.com, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] NTB: Use struct_size() helper in devm_kzalloc()
-Message-ID: <20200619172514.GA1074@embeddedor>
+        id S2392251AbgFSRZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 13:25:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731175AbgFSRZX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 13:25:23 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D3AC06174E;
+        Fri, 19 Jun 2020 10:25:22 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id u8so4323723pje.4;
+        Fri, 19 Jun 2020 10:25:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=OIGAZSabrhFgy3X+4oVeL5X78+6UeCl/BmE8pXuAxYE=;
+        b=APfopFZRKxDNenAFDX8N8y2gNRPGw63S9Fo/wxCush+BUzDCx1IsYOrIsmlnqJWvJf
+         6PffcoyW55FLPoI1OHOTtVUBhFyOM1a1W560fFXsqOBMKt6tw7TNy4p/icfX3+N0AUcX
+         7r7VMuiH274BHevz78l03bSfVMo+1EboLjY/ijqHAWgoQqF8mjvVgmjDugT9aURnz0A5
+         WD0NvDsoiuhN9U6jK6xcmhRiVwlAvurpkxUADyLJrHaY/IolKPkjVBgmYICQqqHG6Udq
+         Gso4xXl+fyOm7goGcaLhQSXw1NVVbAsOuw+FaL5jc+ABVZ1A18xMC8vJ5u8E/3g/Mj7Q
+         0pBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OIGAZSabrhFgy3X+4oVeL5X78+6UeCl/BmE8pXuAxYE=;
+        b=SKBO9uMifl55JJ9SWconDXRP6A95Voh/D7x3a3Nsj8YN/BEDr5yQ16VyNjYtdomQv+
+         vCU+2fRqDzs3X7FXKojxYZQpC3JCwnYhdQbm/igIBlWzFngWCTpDRoy57WtXs9DKk9NM
+         fyvcZJMMZgqQnBqKXFxTPUP9ReV8kBJRlVSC7TBuZ7Ic2h7lLDniHpMuoOGGZfnzE49h
+         1sAWL37xoHy8k6LyFNZKB6qzxwcJsRyhitzXBTWOx+1oVm28Zu0gsVOhL47eCKb2wQGI
+         DZb9zpDQeqkPZ8nop3U0ELO4JCIlnL2MwJoxHPAQQ+wza/XFVNbVx3sLg8t+EVH3Ib1g
+         cGbA==
+X-Gm-Message-State: AOAM532b7klLByyaqkD3irSVHIHpbUtgPIMFAv6Og5mt+9B1NWZU/L7F
+        RxPljbRBAieoruexbqZDHz8=
+X-Google-Smtp-Source: ABdhPJxM2HsJThgQl1f7W+yXmwyvSlEtgzAVT2RQk+OmiyMzQieee/yq9elAEyvDireL8vfQwQ77uw==
+X-Received: by 2002:a17:902:7288:: with SMTP id d8mr9332975pll.18.1592587522468;
+        Fri, 19 Jun 2020 10:25:22 -0700 (PDT)
+Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
+        by smtp.gmail.com with ESMTPSA id m16sm6319376pfh.187.2020.06.19.10.25.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 10:25:21 -0700 (PDT)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Date:   Sat, 20 Jun 2020 02:25:19 +0900
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, linux-serial@vger.kernel.org
+Subject: Re: [PATCH v1 0/6] console: unify return codes from ->setup() hook
+Message-ID: <20200619172519.GC310968@jagdpanzerIV.localdomain>
+References: <20200618164751.56828-1-andriy.shevchenko@linux.intel.com>
+ <20200619093917.GK3617@alley>
+ <20200619094726.GD2428291@smile.fi.intel.com>
+ <20200619102132.GB310968@jagdpanzerIV.localdomain>
+ <20200619112638.GL3617@alley>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200619112638.GL3617@alley>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the struct_size() helper instead of an open-coded version
-in order to avoid any potential type mistakes. Also, remove unnecessary
-variable _struct_size_.
+On (20/06/19 13:26), Petr Mladek wrote:
+> On Fri 2020-06-19 19:21:32, Sergey Senozhatsky wrote:
+> > On (20/06/19 12:47), Andy Shevchenko wrote:
+> > > On Fri, Jun 19, 2020 at 11:39:18AM +0200, Petr Mladek wrote:
+> > > > On Thu 2020-06-18 19:47:45, Andy Shevchenko wrote:
+> > [..]
+> > > > I am going to push it the following week via printk tree unless
+> > > > anybody complains.
+> > > 
+> > > Thanks, Petr, I guess you may also incorporate Sergey's patch
+> > > he proposed. Sergey, are you going to submit it officially?
+> > 
+> > I can send a patch, unless Petr has objections.
+> 
+> Go ahead :-)
 
-This code was detected with the help of Coccinelle and, audited and
-fixed manually.
+Oops, I just sent it, but I forgot to specify in-reply-to message-id :(
 
-Addresses-KSPP-ID: https://github.com/KSPP/linux/issues/83
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/ntb/test/ntb_msi_test.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/ntb/test/ntb_msi_test.c b/drivers/ntb/test/ntb_msi_test.c
-index 99d826ed9c34..7095ecd6223a 100644
---- a/drivers/ntb/test/ntb_msi_test.c
-+++ b/drivers/ntb/test/ntb_msi_test.c
-@@ -319,7 +319,6 @@ static void ntb_msit_remove_dbgfs(struct ntb_msit_ctx *nm)
- static int ntb_msit_probe(struct ntb_client *client, struct ntb_dev *ntb)
- {
- 	struct ntb_msit_ctx *nm;
--	size_t struct_size;
- 	int peers;
- 	int ret;
- 
-@@ -352,9 +351,7 @@ static int ntb_msit_probe(struct ntb_client *client, struct ntb_dev *ntb)
- 		return ret;
- 	}
- 
--	struct_size = sizeof(*nm) + sizeof(*nm->peers) * peers;
--
--	nm = devm_kzalloc(&ntb->dev, struct_size, GFP_KERNEL);
-+	nm = devm_kzalloc(&ntb->dev, struct_size(nm, peers, peers), GFP_KERNEL);
- 	if (!nm)
- 		return -ENOMEM;
- 
--- 
-2.27.0
-
+	-ss
