@@ -2,170 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA611200E3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BB3B200E62
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:11:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391425AbgFSPGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391420AbgFSPGS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:06:18 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CFF5C0613EE
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:06:17 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id j189so8688938oih.10
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:06:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=l5bPDp6tSQ6UB25Tmr+FxCYVIvJPeZJlOAF1u+aQ9Rs=;
-        b=V1jFXKxH9JLOzMoiPIzD5AaSDKHq7RFlO6xezDKhJyRYz93hCrYjWgdK7OEyodFwM2
-         kDzGATay8IHh8e80+mnVWhb8ejljyl7TC9nAm9rnfWCRB2CH7Y5/uH3a16+C1ds/YG6W
-         L2ObS2Ab5ArSWEXfmwsNABGkjrImJGIKuRrck=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=l5bPDp6tSQ6UB25Tmr+FxCYVIvJPeZJlOAF1u+aQ9Rs=;
-        b=dRPuXgYB8mI0Ar1uESYOSHf5xC1tdv2/DdEZM+5XZcAFenBcj3GbJrWv/BXgWGJNtZ
-         fXnpUBt/SC1ytfyPEcgAzOrqr2AmQjMhyszo/yAKf8KMTMlo8LISh1BvXSWoTJiqyAcm
-         JMHR/2BbS0SJJfvkP+dtIEP51dmZmRRshNNmBvpNEQNAJDE0BhAXyR3Zza0yH1mDorBT
-         ++yIAigaw9LjLj/Eqd4aE6snQSaE3nw4RSuTcYbvEmgt5D9bhY3syDfQaYXBkjO/83Qp
-         ja6rt4lGWTg7IEzPE/X2OTED13lZGhvdGnjjWOH84Sfy0Qpjqqpwhdg87wGMDWy/JG0a
-         arkg==
-X-Gm-Message-State: AOAM533FV5xUv82wRqx56EJj9i7ADnDcT080UrO41G2yQCxbkJYP2kFu
-        NTVNK0sKsNSAFJjctgaibQJFHhZw5MGw4XvfuOdLIA==
-X-Google-Smtp-Source: ABdhPJzkpCIjuIXUDXsaWuT9KnXo7xRSxKpK3kVIgCwYzrv9QHH1pbq5icbg335wwjGkDiUm4Nr1W4w/4YXBEbh0gJs=
-X-Received: by 2002:aca:aaca:: with SMTP id t193mr3427302oie.14.1592579176624;
- Fri, 19 Jun 2020 08:06:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200604081224.863494-5-daniel.vetter@ffwll.ch>
- <b11c2140-1b9c-9013-d9bb-9eb2c1906710@shipmail.org> <20200611083430.GD20149@phenom.ffwll.local>
- <20200611141515.GW6578@ziepe.ca> <20200616120719.GL20149@phenom.ffwll.local>
- <CAKMK7uE7DKUo9Z+yCpY+mW5gmKet8ugbF3yZNyHGqsJ=e-g_hA@mail.gmail.com>
- <20200617152835.GF6578@ziepe.ca> <20200618150051.GS20149@phenom.ffwll.local>
- <20200618172338.GM6578@ziepe.ca> <CAKMK7uEbqTu4q-amkLXyd1i8KNtLaoO2ZFoGqYiG6D0m0FKpOg@mail.gmail.com>
- <20200619113934.GN6578@ziepe.ca>
-In-Reply-To: <20200619113934.GN6578@ziepe.ca>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Fri, 19 Jun 2020 17:06:04 +0200
-Message-ID: <CAKMK7uE-kWA==Cko5uenMrcnopEjq42HxoDTDywzBAbHqsN13g@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep annotations
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m_=28Intel=29?= 
-        <thomas_os@shipmail.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Thomas Hellstrom <thomas.hellstrom@intel.com>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Mika Kuoppala <mika.kuoppala@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S2391069AbgFSPHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:07:06 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:35897 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390694AbgFSPGz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:06:55 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 49pMbF4KHNz9v09k;
+        Fri, 19 Jun 2020 17:06:49 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id MKUyKzZbmliB; Fri, 19 Jun 2020 17:06:49 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 49pMbF3KBSz9v09j;
+        Fri, 19 Jun 2020 17:06:49 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 803898B879;
+        Fri, 19 Jun 2020 17:06:51 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id txvLaR4ia8Ej; Fri, 19 Jun 2020 17:06:51 +0200 (CEST)
+Received: from pc16570vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4E4088B868;
+        Fri, 19 Jun 2020 17:06:51 +0200 (CEST)
+Received: by pc16570vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 11F0B65AF4; Fri, 19 Jun 2020 15:06:50 +0000 (UTC)
+Message-Id: <cover.1592578278.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v1 0/8] powerpc/32s: Allocate modules outside of vmalloc space for STRICT_KERNEL_RWX
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri, 19 Jun 2020 15:06:50 +0000 (UTC)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 1:39 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
->
-> On Fri, Jun 19, 2020 at 09:22:09AM +0200, Daniel Vetter wrote:
-> > > As I've understood GPU that means you need to show that the commands
-> > > associated with the buffer have completed. This is all local stuff
-> > > within the driver, right? Why use fence (other than it already exists=
-)
-> >
-> > Because that's the end-of-dma thing. And it's cross-driver for the
-> > above reasons, e.g.
-> > - device A renders some stuff. Userspace gets dma_fence A out of that
-> > (well sync_file or one of the other uapi interfaces, but you get the
-> > idea)
-> > - userspace (across process or just different driver) issues more
-> > rendering for device B, which depends upon the rendering done on
-> > device A. So dma_fence A is an dependency and will block this dma
-> > operation. Userspace (and the kernel) gets dma_fence B out of this
-> > - because unfortunate reasons, the same rendering on device B also
-> > needs a userptr buffer, which means that dma_fence B is also the one
-> > that the mmu_range_notifier needs to wait on before it can tell core
-> > mm that it can go ahead and release those pages
->
-> I was afraid you'd say this - this is complete madness for other DMA
-> devices to borrow the notifier hook of the first device!
+On book3s32 (hash), exec protection is set per 256Mb segments with NX bit.
+Instead of clearing NX bit on vmalloc space when CONFIG_MODULES is selected,
+allocate modules in a dedicated segment (0xb0000000-0xbfffffff by default).
+This allows to keep exec protection on vmalloc space while allowing exec
+on modules.
 
-The first device might not even have a notifier. This is the 2nd
-device, waiting on a dma_fence of its own, but which happens to be
-queued up as a dma operation behind something else.
+Christophe Leroy (8):
+  powerpc/ptdump: Refactor update of st->last_pa
+  powerpc/ptdump: Refactor update of pg_state
+  powerpc: Set user/kernel boundary at TASK_SIZE instead of PAGE_OFFSET
+  powerpc/lib: Prepare code-patching for modules allocated outside
+    vmalloc space
+  powerpc: Use MODULES_VADDR if defined
+  powerpc/32s: Only leave NX unset on segments used for modules
+  powerpc/32s: Kernel space starts at TASK_SIZE
+  powerpc/32s: Use dedicated segment for modules with STRICT_KERNEL_RWX
 
-> What if the first device is a page faulting device and doesn't call
-> dma_fence??
+ arch/powerpc/Kconfig                         |  1 +
+ arch/powerpc/include/asm/book3s/32/pgtable.h | 15 ++----
+ arch/powerpc/include/asm/page.h              |  2 +-
+ arch/powerpc/kernel/head_32.S                | 12 ++---
+ arch/powerpc/kernel/module.c                 | 11 ++++
+ arch/powerpc/lib/code-patching.c             |  2 +-
+ arch/powerpc/mm/book3s32/hash_low.S          |  2 +-
+ arch/powerpc/mm/book3s32/mmu.c               | 17 +++++--
+ arch/powerpc/mm/kasan/kasan_init_32.c        |  6 +++
+ arch/powerpc/mm/ptdump/ptdump.c              | 53 ++++++++++++--------
+ 10 files changed, 78 insertions(+), 43 deletions(-)
 
-Not sure what you mean with this ... even if it does page-faulting for
-some other reasons, it'll emit a dma_fence which the 2nd device can
-consume as a dependency.
+-- 
+2.25.0
 
-> It you are going to treat things this way then the mmu notifier really
-> needs to be part of the some core DMA buf, and not randomly sprinkled
-> in drivers
-
-So maybe again unclear, we don't allow such userptr dma-buf to even be
-shared. They're just for slurping in stuff in the local device
-(general from file io or something the cpu has done or similar). There
-have been attempts to use it as the general backing storage, but that
-didn't go down too well because way too many complications.
-
-Generally most memory the gpu operates on isn't stuff that's
-mmu_notifier'ed. And also, the device with userptr support only waits
-for its own dma_fence (because well you can't share this stuff, we
-disallow that).
-
-The problem is that there's piles of other dependencies for a dma job.
-GPU doesn't just consume a single buffer each time, it consumes entire
-lists of buffers and mixes them all up in funny ways. Some of these
-buffers are userptr, entirely local to the device. Other buffers are
-just normal device driver allocations (and managed with some shrinker
-to keep them in check). And then there's the actually shared dma-buf
-with other devices. The trouble is that they're all bundled up
-together.
-
-Now we probably should have some helper code for userptr so that all
-drivers do this roughly the same, but that's just not there yet. But
-it can't be a dma-buf exporter behind the dma-buf interfaces, because
-even just pinned get_user_pages would be too different semantics
-compared to normal shared dma-buf objects, that's all very tightly
-tied into the specific driver.
-
-> But really this is what page pinning is supposed to be used for, the
-> MM behavior when it blocks on a pinned page is less invasive than if
-> it stalls inside a mmu notifier.
->
-> You can mix it, use mmu notififers to keep track if the buffer is
-> still live, but when you want to trigger DMA then pin the pages and
-> keep them pinned until DMA is done. The pin protects things (well,
-> fork is still a problem)
-
-Hm I thought amdgpu had that (or drm/radeon as the previous
-incarnation of that stack), and was unhappy about the issues. Would
-need Christian K=C3=B6nig to chime in.
-
-> Do not need to wait on dma_fence in notifiers.
-
-Maybe :-) The goal of this series is more to document current rules
-and make them more consistent. Fixing them if we don't like them might
-be a follow-up task, but that would likely be a pile more work. First
-we need to know what the exact shape of the problem even is.
--Daniel
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
