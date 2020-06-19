@@ -2,78 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6687D201981
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7827F201985
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 19:35:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391478AbgFSRbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 13:31:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50786 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732343AbgFSRbh (ORCPT
+        id S2391010AbgFSReq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 13:34:46 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:31897 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732307AbgFSReq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 13:31:37 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A3AFC06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 10:31:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UGQYAy353h8usQVvoM8ZQptssTrkQAxhrWa3SGPOXCg=; b=fsiqp5BfJvmIshAQeSR6UH4L1M
-        R+O+x1YUSNeVrjNEAszs+DmO1vQICJ+VHQBSNfga4LH1s8W+yzm8nquE3G+PhLGuJrQJkjuQ1s4tz
-        D7kXk1GfOkjmUgupg/Wkc/GDRmYoKiLs+6OF0rEda59MCMbJNB2Ae5Yr2dF+n43ztn0X0dpRcCe1K
-        52wJbR2fJE7EYrRYVcp3z726n7i67i93HQz6LoryyqxfNiPwjMll5igno6C2fccVn5zr9Xy58avYJ
-        tHTkG642Sl/j1g9xQolnxBvJHTMddV/N3t1M5YQ+WoxGbeQPGguh/Kn1OraQnsnNiQ6ru4k6AmMp3
-        SW+EDHVw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jmKqw-0003Ny-SX; Fri, 19 Jun 2020 17:30:59 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9C55E3079CB;
-        Fri, 19 Jun 2020 19:30:55 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 68F0321390E42; Fri, 19 Jun 2020 19:30:55 +0200 (CEST)
-Date:   Fri, 19 Jun 2020 19:30:55 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Fri, 19 Jun 2020 13:34:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592588084;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FSCXX8Dn6TNSzzYA9q3ZlYEoSdRai2clmlWhOcdNdrI=;
+        b=Lnm/XM7D0nU77eahJTS44OuwgtGC+fmw5vddS7mgcwf9b9r19kOJu3ACk0jmtZiXGf/zzP
+        XP3fqTanSfZGoArtWGsYCKnS2mIBTHNan8tVUnEQTkT1FAF4rkQACBHdoZBmhtQFxtxONi
+        jmCxNkBHa+kWhaEPQFuX6+Q56i5Ho2Q=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-369-9R5IdaOZOGmaUKDeMk5i2w-1; Fri, 19 Jun 2020 13:34:43 -0400
+X-MC-Unique: 9R5IdaOZOGmaUKDeMk5i2w-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B824E800053;
+        Fri, 19 Jun 2020 17:34:41 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (ovpn-113-94.phx2.redhat.com [10.3.113.94])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 178775D9E5;
+        Fri, 19 Jun 2020 17:34:37 +0000 (UTC)
+Date:   Fri, 19 Jun 2020 13:34:36 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Chris Redpath <chrid.redpath@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] sched/uclamp: Fix initialization of strut uclamp_rq
-Message-ID: <20200619173055.GA576888@hirez.programming.kicks-ass.net>
-References: <20200618195525.7889-1-qais.yousef@arm.com>
- <20200618195525.7889-2-qais.yousef@arm.com>
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [PATCH] Sched: Add a tracepoint to track rq->nr_running
+Message-ID: <20200619173436.GF36031@lorien.usersys.redhat.com>
+References: <20200619141120.1476-1-pauld@redhat.com>
+ <20200619124641.7f94ad14@oasis.local.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200618195525.7889-2-qais.yousef@arm.com>
+In-Reply-To: <20200619124641.7f94ad14@oasis.local.home>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 08:55:24PM +0100, Qais Yousef wrote:
+On Fri, Jun 19, 2020 at 12:46:41PM -0400 Steven Rostedt wrote:
+> On Fri, 19 Jun 2020 10:11:20 -0400
+> Phil Auld <pauld@redhat.com> wrote:
+> 
+> > 
+> > diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+> > index ed168b0e2c53..a6d9fe5a68cf 100644
+> > --- a/include/trace/events/sched.h
+> > +++ b/include/trace/events/sched.h
+> > @@ -634,6 +634,10 @@ DECLARE_TRACE(sched_overutilized_tp,
+> >  	TP_PROTO(struct root_domain *rd, bool overutilized),
+> >  	TP_ARGS(rd, overutilized));
+> >  
+> > +DECLARE_TRACE(sched_update_nr_running_tp,
+> > +	TP_PROTO(int cpu, int change, unsigned int nr_running),
+> > +	TP_ARGS(cpu, change, nr_running));
+> > +
+> >  #endif /* _TRACE_SCHED_H */
+> >  
+> >  /* This part must be outside protection */
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 9a2fbf98fd6f..6f28fdff1d48 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -6,7 +6,10 @@
+> >   *
+> >   *  Copyright (C) 1991-2002  Linus Torvalds
+> >   */
+> > +
+> > +#define SCHED_CREATE_TRACE_POINTS
+> >  #include "sched.h"
+> > +#undef SCHED_CREATE_TRACE_POINTS
+> 
+> Because of the macro magic, and really try not to have trace events
+> defined in any headers. Otherwise, we have weird defines like you are
+> doing, and it doesn't fully protect it if a C file adds this header and
+> defines CREATE_TRACE_POINTS first.
+> 
+> 
+> >  
+> >  #include <linux/nospec.h>
+> >  
+> > @@ -21,9 +24,6 @@
+> >  
+> > --- a/kernel/sched/sched.h
+> > +++ b/kernel/sched/sched.h
+> > @@ -75,6 +75,15 @@
+> >  #include "cpupri.h"
+> >  #include "cpudeadline.h"
+> >  
+> > +#ifdef SCHED_CREATE_TRACE_POINTS
+> > +#define CREATE_TRACE_POINTS
+> > +#endif
+> > +#include <trace/events/sched.h>
+> > +
+> > +#ifdef SCHED_CREATE_TRACE_POINTS
+> > +#undef CREATE_TRACE_POINTS
+> > +#endif
+> > +
+> >  #ifdef CONFIG_SCHED_DEBUG
+> >  # define SCHED_WARN_ON(x)	WARN_ONCE(x, #x)
+> >  #else
+> > @@ -1959,6 +1968,7 @@ static inline void add_nr_running(struct rq *rq, unsigned count)
+> >  	unsigned prev_nr = rq->nr_running;
+> >  
+> >  	rq->nr_running = prev_nr + count;
+> > +	trace_sched_update_nr_running_tp(cpu_of(rq), count, rq->nr_running);
+> 
+> Instead of having sched.h define CREATE_TRACE_POINTS, I would have the
+> following:
+> 
+> 	if (trace_sched_update_nr_running_tp_enabled()) {
+> 		call_trace_sched_update_nr_runnig(rq, count);
+> 	}
+> 
+> Then in sched/core.c:
+> 
+> void trace_sched_update_nr_running(struct rq *rq, int count)
+> {
+> 	trace_sched_update_nr_running_tp(cpu_of(rq), count, rq->nr_running);
+> }
+> 
+> The trace_*_enabled() above uses static branches, where the if turns to
+> a nop (pass through) when disabled and a jmp when enabled (same logic
+> that trace points use themselves).
+> 
+> Then you don't need this macro dance, and risk having another C file
+> define CREATE_TRACE_POINTS and spend hours debugging why it suddenly
+> broke.
+>
 
-> +	for_each_clamp_id(clamp_id) {
-> +		memset(uc_rq[clamp_id].bucket,
-> +		       0,
-> +		       sizeof(struct uclamp_bucket)*UCLAMP_BUCKETS);
-> +
-> +		uc_rq[clamp_id].value = uclamp_none(clamp_id);
+Awesome, thanks Steve. I was really hoping there was a better way to do
+that. I try it this way. 
 
-I think you can replace all that with:
 
-		*uc_rq = (struct uclamp_rq){
-			.value = uclamp_none(clamp_id),
-		};
+Cheers,
+Phil
 
-it's shorter and is free or weird line-breaks :-)
+> -- Steve
+> 
 
-> +	}
+-- 
+
