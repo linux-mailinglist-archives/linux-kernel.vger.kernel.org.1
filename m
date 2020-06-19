@@ -2,81 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAB42200929
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 14:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8E2200936
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732771AbgFSM6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 08:58:47 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:55424 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732660AbgFSM6n (ORCPT
+        id S1732913AbgFSM7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 08:59:37 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:49003 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728851AbgFSM7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 08:58:43 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05JCwZSv058358;
-        Fri, 19 Jun 2020 07:58:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592571515;
-        bh=VgzXtbEPK3BZf4YNOTbshjleKAPVz3hmnBNiNTgI/zo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=H7zJqw4J394jESjLoLpCTIRcxQ3THnu16UGGA0JLjWpKvYH6W2FJh49k8LBlgF4yC
-         Jbujo8GyR9XPxL5FSTrtz5W1ng/UW2fuZ/dSZHVvt8VBLKfvxlXHSIWnHJk1K6GH9K
-         0dw8poqah9BCNbsk6JtFNvGZMDqc0vlmdjn8DJxc=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05JCwZ8b081271
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 19 Jun 2020 07:58:35 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 19
- Jun 2020 07:58:35 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 19 Jun 2020 07:58:35 -0500
-Received: from a0230074-Latitude-E7470.ent.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05JCw2Hr015675;
-        Fri, 19 Jun 2020 07:58:31 -0500
-From:   Faiz Abbas <faiz_abbas@ti.com>
-To:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-mmc@vger.kernel.org>, <adrian.hunter@intel.com>,
-        <will@kernel.org>, <catalin.marinas@arm.com>, <robh+dt@kernel.org>,
-        <ulf.hansson@linaro.org>
-CC:     <faiz_abbas@ti.com>
-Subject: [PATCH 7/7] arm64: defconfig: Enable AM654x SDHCI controller
-Date:   Fri, 19 Jun 2020 18:28:01 +0530
-Message-ID: <20200619125801.9530-8-faiz_abbas@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200619125801.9530-1-faiz_abbas@ti.com>
-References: <20200619125801.9530-1-faiz_abbas@ti.com>
+        Fri, 19 Jun 2020 08:59:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592571575;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=hBBlOSUa1hmxJFitkEzGoexVk8IU/eydjJtgFiP7xqM=;
+        b=T3XBdYw+pMbYeN3SXOp0Vc8yhzI8rWFWZly8qL34Lj6PyyhKl2bzrsU+xbCYDBExyhFwAj
+        VUJDsdPn7KFUpLt5kM8+vcWt8CDDqeknlr+RlNEydR0k6JvHTf3bT27mZo56AFPQ7vSPhl
+        HAnLTnnv04LzrPDQnzVpeQ4PtPRA3VY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-185-tkdsXn0gP0i7gwfFWZ4qZQ-1; Fri, 19 Jun 2020 08:59:33 -0400
+X-MC-Unique: tkdsXn0gP0i7gwfFWZ4qZQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B8000835B51;
+        Fri, 19 Jun 2020 12:59:31 +0000 (UTC)
+Received: from t480s.redhat.com (ovpn-113-137.ams2.redhat.com [10.36.113.137])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D8A9F5D9CA;
+        Fri, 19 Jun 2020 12:59:23 +0000 (UTC)
+From:   David Hildenbrand <david@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Wei Yang <richard.weiyang@gmail.com>
+Subject: [PATCH v2 0/3] mm/shuffle: fix and cleanups
+Date:   Fri, 19 Jun 2020 14:59:19 +0200
+Message-Id: <20200619125923.22602-1-david@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable CONFIG_SDHCI_AM654 to Support AM65x sdhci controller.
+Patch #1 is a fix for overlapping zones and offline sections. Patch #2
+documents why we have to shuffle on memory hotplug, when onlining memory.
+Patch #3 removes dynamic reconfiguration which is currently dead code.
 
-Signed-off-by: Faiz Abbas <faiz_abbas@ti.com>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+v1 -> v2:
+- Replace "mm/memory_hotplug: don't shuffle complete zone when onlining
+  memory" by "mm/memory_hotplug: document why shuffle_zone() is relevant"
+- "mm/shuffle: remove dynamic reconfiguration"
+-- Add details why autodetection is not implemented
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 883e8bace3ed..40dd13e0adc5 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -731,6 +731,7 @@ CONFIG_MMC_DW_ROCKCHIP=y
- CONFIG_MMC_SUNXI=y
- CONFIG_MMC_BCM2835=y
- CONFIG_MMC_SDHCI_XENON=y
-+CONFIG_MMC_SDHCI_AM654=y
- CONFIG_MMC_OWL=y
- CONFIG_NEW_LEDS=y
- CONFIG_LEDS_CLASS=y
+David Hildenbrand (3):
+  mm/shuffle: don't move pages between zones and don't read garbage
+    memmaps
+  mm/memory_hotplug: document why shuffle_zone() is relevant
+  mm/shuffle: remove dynamic reconfiguration
+
+ mm/memory_hotplug.c |  8 ++++++++
+ mm/shuffle.c        | 46 +++++++++++----------------------------------
+ mm/shuffle.h        | 17 -----------------
+ 3 files changed, 19 insertions(+), 52 deletions(-)
+
 -- 
-2.17.1
+2.26.2
 
