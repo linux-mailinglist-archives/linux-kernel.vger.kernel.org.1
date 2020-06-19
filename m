@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C67200BAA
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7370C200BAD
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387515AbgFSOgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:36:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52664 "EHLO mail.kernel.org"
+        id S1733265AbgFSOgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:36:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387489AbgFSOgS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:36:18 -0400
+        id S2387524AbgFSOgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:36:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8305F208B8;
-        Fri, 19 Jun 2020 14:36:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97C3B208B8;
+        Fri, 19 Jun 2020 14:36:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577375;
-        bh=1LmcsPC1zCe33YrGdpNY/3BxDcgXlzzZqRGqsdz1Bbg=;
+        s=default; t=1592577383;
+        bh=kQbqdj8REMwrIl4FmTaEqGjxQ70zFvb4uKvsRKKwsZU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U3BB0E8ldFzQeti2Ne3GnnO6sT0K51OMgDL6BHzvfBrPWDCuk8OB5M8b63fcMbJOG
-         /8yTUpHWLCztlaZMjIzIfL2+8AKHvBa00xP4gDSb+W7yrx2YIFgUuj2snJB6JYE3in
-         OBeJ23Leyu/BCJaIFpzb97HZ6JmD+gAOS36+Ht5U=
+        b=VOsvRTpiOAt67bMeWyn5aaPIHsmfGdknbQy9fVhB2dGiWMlLkfC96L7Xmh3smscow
+         dUI9Vy7VjNZFeNUg1ySPISdSedbKxxn4bcZMoInFyDElrisB3ZvH8dIgYnYHAxPv08
+         yMC2TwHmOSWylZyV+J4UeNgYdsFdaLesW0N5opWw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Anthony Steinhauser <asteinhauser@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 025/101] x86/speculation: PR_SPEC_FORCE_DISABLE enforcement for indirect branches.
-Date:   Fri, 19 Jun 2020 16:32:14 +0200
-Message-Id: <20200619141615.407629372@linuxfoundation.org>
+Subject: [PATCH 4.4 028/101] spi: No need to assign dummy value in spi_unregister_controller()
+Date:   Fri, 19 Jun 2020 16:32:17 +0200
+Message-Id: <20200619141615.556571212@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
 References: <20200619141614.001544111@linuxfoundation.org>
@@ -45,51 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anthony Steinhauser <asteinhauser@google.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 4d8df8cbb9156b0a0ab3f802b80cb5db57acc0bf ]
+[ Upstream commit ebc37af5e0a134355ea2b62ed4141458bdbd5389 ]
 
-Currently, it is possible to enable indirect branch speculation even after
-it was force-disabled using the PR_SPEC_FORCE_DISABLE option. Moreover, the
-PR_GET_SPECULATION_CTRL command gives afterwards an incorrect result
-(force-disabled when it is in fact enabled). This also is inconsistent
-vs. STIBP and the documention which cleary states that
-PR_SPEC_FORCE_DISABLE cannot be undone.
+The device_for_each_child() doesn't require the returned value to be checked.
+Thus, drop the dummy variable completely and have no warning anymore:
 
-Fix this by actually enforcing force-disabled indirect branch
-speculation. PR_SPEC_ENABLE called after PR_SPEC_FORCE_DISABLE now fails
-with -EPERM as described in the documentation.
+drivers/spi/spi.c: In function ‘spi_unregister_controller’:
+drivers/spi/spi.c:2480:6: warning: variable ‘dummy’ set but not used [-Wunused-but-set-variable]
+  int dummy;
+      ^~~~~
 
-Fixes: 9137bb27e60e ("x86/speculation: Add prctl() control for indirect branch speculation")
-Signed-off-by: Anthony Steinhauser <asteinhauser@google.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/cpu/bugs.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/spi/spi.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 94e10898126a..2d2631f9a519 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -1232,11 +1232,14 @@ static int ib_prctl_set(struct task_struct *task, unsigned long ctrl)
- 			return 0;
- 		/*
- 		 * Indirect branch speculation is always disabled in strict
--		 * mode.
-+		 * mode. It can neither be enabled if it was force-disabled
-+		 * by a  previous prctl call.
-+
- 		 */
- 		if (spectre_v2_user_ibpb == SPECTRE_V2_USER_STRICT ||
- 		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT ||
--		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED)
-+		    spectre_v2_user_stibp == SPECTRE_V2_USER_STRICT_PREFERRED ||
-+		    task_spec_ib_force_disable(task))
- 			return -EPERM;
- 		task_clear_spec_ib_disable(task);
- 		task_update_spec_tif(task);
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index c132c676df3a..e5460d84ed08 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -1917,8 +1917,6 @@ static int __unregister(struct device *dev, void *null)
+  */
+ void spi_unregister_master(struct spi_master *master)
+ {
+-	int dummy;
+-
+ 	if (master->queued) {
+ 		if (spi_destroy_queue(master))
+ 			dev_err(&master->dev, "queue remove failed\n");
+@@ -1928,7 +1926,7 @@ void spi_unregister_master(struct spi_master *master)
+ 	list_del(&master->list);
+ 	mutex_unlock(&board_lock);
+ 
+-	dummy = device_for_each_child(&master->dev, NULL, __unregister);
++	device_for_each_child(&master->dev, NULL, __unregister);
+ 	device_unregister(&master->dev);
+ }
+ EXPORT_SYMBOL_GPL(spi_unregister_master);
 -- 
 2.25.1
 
