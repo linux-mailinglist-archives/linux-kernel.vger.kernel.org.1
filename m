@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA23201505
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5782F201500
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390919AbgFSQQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:16:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59682 "EHLO mail.kernel.org"
+        id S2394498AbgFSQQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:16:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59858 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390906AbgFSPCz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:02:55 -0400
+        id S2390928AbgFSPDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:03:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C79BD206DB;
-        Fri, 19 Jun 2020 15:02:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D684621841;
+        Fri, 19 Jun 2020 15:03:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578975;
-        bh=ZHm2e9kSWCE/+gbErOovveJIiw92+SIMeDzUp+xvYz0=;
+        s=default; t=1592578983;
+        bh=47bjv5OmHgy6hA58VLYMWuBDqhtIvn88MVvyr/tlets=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e2BcyR7u7zaaMrsnasLQSNZSuUhUnLjuxsokrnZw50Iebpyv/DA/vnQ4WyB33w1Q5
-         osETVg9xu9BB/O/Cv9cveGvcnHaoENHBNXOPgc5cLMVfzvljcpYnJSdKWW47fJs2K8
-         /u8oQLD9/xyTWTqTifryxMGrGQMeQMleF1nHVayA=
+        b=WedEIFEQpCH/ymgkgMJRYMbLpYtNntNEBHAicMoOpqOciWJMlIV+FsS6C5iPlW7OO
+         5Bc6lznP7Y+9GgmvePf7dzOOsL5XbGIKsf2onYQxxFYZ2pIkyNzricmDVso4mlF5o3
+         otijXhn1AFEZyPOX6NBWx3Qx5+fIBYYoYkMY5xkc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 229/267] btrfs: fix wrong file range cleanup after an error filling dealloc range
-Date:   Fri, 19 Jun 2020 16:33:34 +0200
-Message-Id: <20200619141659.700007592@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Aaron Brown <aaron.f.brown@intel.com>,
+        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Subject: [PATCH 4.19 232/267] e1000e: Disable TSO for buffer overrun workaround
+Date:   Fri, 19 Jun 2020 16:33:37 +0200
+Message-Id: <20200619141659.848204481@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
 References: <20200619141648.840376470@linuxfoundation.org>
@@ -44,45 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit e2c8e92d1140754073ad3799eb6620c76bab2078 ]
+commit f29801030ac67bf98b7a65d3aea67b30769d4f7c upstream.
 
-If an error happens while running dellaloc in COW mode for a range, we can
-end up calling extent_clear_unlock_delalloc() for a range that goes beyond
-our range's end offset by 1 byte, which affects 1 extra page. This results
-in clearing bits and doing page operations (such as a page unlock) outside
-our target range.
+Commit b10effb92e27 ("e1000e: fix buffer overrun while the I219 is
+processing DMA transactions") imposes roughly 30% performance penalty.
 
-Fix that by calling extent_clear_unlock_delalloc() with an inclusive end
-offset, instead of an exclusive end offset, at cow_file_range().
+The commit log states that "Disabling TSO eliminates performance loss
+for TCP traffic without a noticeable impact on CPU performance", so
+let's disable TSO by default to regain the loss.
 
-Fixes: a315e68f6e8b30 ("Btrfs: fix invalid attempt to free reserved space on failure to cow range")
-CC: stable@vger.kernel.org # 4.14+
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+CC: stable <stable@vger.kernel.org>
+Fixes: b10effb92e27 ("e1000e: fix buffer overrun while the I219 is processing DMA transactions")
+BugLink: https://bugs.launchpad.net/bugs/1802691
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Tested-by: Aaron Brown <aaron.f.brown@intel.com>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- fs/btrfs/inode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/intel/e1000e/netdev.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index b4f295a058d8..887f9ebc2bc2 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1136,8 +1136,8 @@ static noinline int cow_file_range(struct inode *inode,
- 	 */
- 	if (extent_reserved) {
- 		extent_clear_unlock_delalloc(inode, start,
--					     start + cur_alloc_size,
--					     start + cur_alloc_size,
-+					     start + cur_alloc_size - 1,
-+					     start + cur_alloc_size - 1,
- 					     locked_page,
- 					     clear_bits,
- 					     page_ops);
--- 
-2.25.1
-
+--- a/drivers/net/ethernet/intel/e1000e/netdev.c
++++ b/drivers/net/ethernet/intel/e1000e/netdev.c
+@@ -5251,6 +5251,10 @@ static void e1000_watchdog_task(struct w
+ 					/* oops */
+ 					break;
+ 				}
++				if (hw->mac.type == e1000_pch_spt) {
++					netdev->features &= ~NETIF_F_TSO;
++					netdev->features &= ~NETIF_F_TSO6;
++				}
+ 			}
+ 
+ 			/* enable transmits in the hardware, need to do this
 
 
