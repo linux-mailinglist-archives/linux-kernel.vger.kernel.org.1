@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE93201090
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A27820127E
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404847AbgFSPbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:31:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35376 "EHLO mail.kernel.org"
+        id S2392988AbgFSPWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:22:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46256 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393817AbgFSPbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:31:22 -0400
+        id S2404042AbgFSPPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:15:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0D362193E;
-        Fri, 19 Jun 2020 15:31:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8731A206DB;
+        Fri, 19 Jun 2020 15:15:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580682;
-        bh=r2yHVLBRkViANlrNr1ctGy2yImraShqdjiFxyaql51U=;
+        s=default; t=1592579741;
+        bh=YtVlJQS36T/FGl827kIC89tbz5tIe3JW861Tai/VvyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oNWJivngs82eemhTvekDlFttaYZZ1diMB6IyWkGNiLdhgcheos1AKveHrwQQtbwFV
-         rX3j0+ynGLYKt0SUZLxRJQGfBCUtATA7TYb8HH3pM1KvjLZ9hMRL9y2CjTe5V6rNdP
-         QZ3J0huZrZFNrFBUNjp+HEFL4BPVFrTMhW4AO4jw=
+        b=boXh9rGN52ac/nZbXyGwK+hwpcS6MjxSEUbrTM/k6Pbxj9GvlRf2wZK8hfaE4CGjj
+         l/4MvuX1NXaiLlUF5fbfUaY7emV3oxT/OIz5/cCGcenGuFTm9pOeaMmfvcXNSie+9s
+         XTm1RQQEyIiRFEAhJFfLd7ofP/hPNUNHSaMmH+JI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kbuild test robot <lkp@intel.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH 5.7 341/376] powerpc/32: Disable KASAN with pages bigger than 16k
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: [PATCH 5.4 248/261] mtd: rawnand: socrates: Fix the probe error path
 Date:   Fri, 19 Jun 2020 16:34:19 +0200
-Message-Id: <20200619141726.474527078@linuxfoundation.org>
+Message-Id: <20200619141701.774619103@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
-References: <20200619141710.350494719@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-commit 888468ce725a4cd56d72dc7e5096078f7a9251a0 upstream.
+commit 9c6c2e5cc77119ce0dacb4f9feedb73ce0354421 upstream.
 
-Mapping of early shadow area is implemented by using a single static
-page table having all entries pointing to the same early shadow page.
-The shadow area must therefore occupy full PGD entries.
+nand_release() is supposed be called after MTD device registration.
+Here, only nand_scan() happened, so use nand_cleanup() instead.
 
-The shadow area has a size of 128MB starting at 0xf8000000.
-With 4k pages, a PGD entry is 4MB
-With 16k pages, a PGD entry is 64MB
-With 64k pages, a PGD entry is 1GB which is too big.
+There is no real Fixes tag applying here as the use of nand_release()
+in this driver predates by far the introduction of nand_cleanup() in
+commit d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
+which makes this change possible. However, pointing this commit as the
+culprit for backporting purposes makes sense even if this commit is not
+introducing any bug.
 
-Until we rework the early shadow mapping, disable KASAN when the page
-size is too big.
-
-Fixes: 2edb16efc899 ("powerpc/32: Add KASAN support")
-Cc: stable@vger.kernel.org # v5.2+
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/7195fcde7314ccbf7a081b356084a69d421b10d4.1590660977.git.christophe.leroy@csgroup.eu
+Fixes: d44154f969a4 ("mtd: nand: Provide nand_cleanup() function to free NAND related resources")
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-51-miquel.raynal@bootlin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/powerpc/Kconfig |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/raw/socrates_nand.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -170,8 +170,8 @@ config PPC
- 	select HAVE_ARCH_AUDITSYSCALL
- 	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
- 	select HAVE_ARCH_JUMP_LABEL
--	select HAVE_ARCH_KASAN			if PPC32
--	select HAVE_ARCH_KASAN_VMALLOC		if PPC32
-+	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
-+	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
- 	select HAVE_ARCH_KGDB
- 	select HAVE_ARCH_MMAP_RND_BITS
- 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
+--- a/drivers/mtd/nand/raw/socrates_nand.c
++++ b/drivers/mtd/nand/raw/socrates_nand.c
+@@ -169,7 +169,7 @@ static int socrates_nand_probe(struct pl
+ 	if (!res)
+ 		return res;
+ 
+-	nand_release(nand_chip);
++	nand_cleanup(nand_chip);
+ 
+ out:
+ 	iounmap(host->io_base);
 
 
