@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D8AD201278
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:56:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEA252010CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392850AbgFSPVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:21:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46988 "EHLO mail.kernel.org"
+        id S2393687AbgFSPdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:33:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404074AbgFSPQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:16:27 -0400
+        id S2404915AbgFSPdF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:33:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7D4BA2158C;
-        Fri, 19 Jun 2020 15:16:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4EAE920786;
+        Fri, 19 Jun 2020 15:33:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579786;
-        bh=sFg5RpJdn4Zf+1Sc6Km2wWkYZjZb20V+2z6/fcV0ukY=;
+        s=default; t=1592580784;
+        bh=9bceEJ9pJZhQjQluZuGetqYQXAYC7KXWl/AlOJEesNk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VRtcwsf7JB3YBEeatqCylBpp1amdLEqb4KPKYq+5vVxr8tdQ1uhJuY1KQrnGc0B3X
-         KqkFp1r1bM3Vjt7Ag7wz4XzDceedXbO0oRogas+odgLmiiF6M79hUZQq1xWp8J4td6
-         EY1GHmVlQv9gM6jPKlWcXUAAL4pJ39PHMdhe2VxY=
+        b=J1um2GMFMKAs7kOUqHyHkyaTaDaClE/iI7jyH6sHIyvzuo0b7zMFKlOp00MZFRRky
+         PH5iTi5dX6NFwloMt+pWM81/xf+c0HqgRHgdKLB1durV1kar4r/2hbGv3Zf+uhBzyu
+         GoC/hp2nw4mZxgQwheOYoA6NmH4PNP9qEs+jncqI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>
-Subject: [PATCH 5.4 258/261] perf probe: Fix to check blacklist address correctly
+        stable@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: [PATCH 5.7 351/376] pwm: jz4740: Enhance precision in calculation of duty cycle
 Date:   Fri, 19 Jun 2020 16:34:29 +0200
-Message-Id: <20200619141702.241854622@linuxfoundation.org>
+Message-Id: <20200619141726.940210748@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
-References: <20200619141649.878808811@linuxfoundation.org>
+In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
+References: <20200619141710.350494719@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,119 +46,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Paul Cercueil <paul@crapouillou.net>
 
-commit 80526491c2ca6abc028c0f0dbb0707a1f35fb18a upstream.
+commit 9017dc4fbd59c09463019ce494cfe36d654495a8 upstream.
 
-Fix to check kprobe blacklist address correctly with relocated address
-by adjusting debuginfo address.
+Calculating the hardware value for the duty from the hardware value of
+the period resulted in a precision loss versus calculating it from the
+clock rate directly.
 
-Since the address in the debuginfo is same as objdump, it is different
-from relocated kernel address with KASLR.  Thus, 'perf probe' always
-misses to catch the blacklisted addresses.
+(Also remove a cast that doesn't really need to be here)
 
-Without this patch, 'perf probe' can not detect the blacklist addresses
-on a KASLR enabled kernel.
-
-  # perf probe kprobe_dispatcher
-  Failed to write event: Invalid argument
-    Error: Failed to add events.
-  #
-
-With this patch, it correctly shows the error message.
-
-  # perf probe kprobe_dispatcher
-  kprobe_dispatcher is blacklisted function, skip it.
-  Probe point 'kprobe_dispatcher' not found.
-    Error: Failed to add events.
-  #
-
-Fixes: 9aaf5a5f479b ("perf probe: Check kprobes blacklist when adding new events")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: stable@vger.kernel.org
-Link: http://lore.kernel.org/lkml/158763966411.30755.5882376357738273695.stgit@devnote2
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Fixes: f6b8a5700057 ("pwm: Add Ingenic JZ4740 support")
+Cc: <stable@vger.kernel.org>
+Suggested-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- tools/perf/util/probe-event.c |   21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ drivers/pwm/pwm-jz4740.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/tools/perf/util/probe-event.c
-+++ b/tools/perf/util/probe-event.c
-@@ -102,7 +102,7 @@ void exit_probe_symbol_maps(void)
- 	symbol__exit();
- }
+--- a/drivers/pwm/pwm-jz4740.c
++++ b/drivers/pwm/pwm-jz4740.c
+@@ -158,11 +158,11 @@ static int jz4740_pwm_apply(struct pwm_c
+ 	/* Calculate period value */
+ 	tmp = (unsigned long long)rate * state->period;
+ 	do_div(tmp, NSEC_PER_SEC);
+-	period = (unsigned long)tmp;
++	period = tmp;
  
--static struct ref_reloc_sym *kernel_get_ref_reloc_sym(void)
-+static struct ref_reloc_sym *kernel_get_ref_reloc_sym(struct map **pmap)
- {
- 	/* kmap->ref_reloc_sym should be set if host_machine is initialized */
- 	struct kmap *kmap;
-@@ -114,6 +114,10 @@ static struct ref_reloc_sym *kernel_get_
- 	kmap = map__kmap(map);
- 	if (!kmap)
- 		return NULL;
-+
-+	if (pmap)
-+		*pmap = map;
-+
- 	return kmap->ref_reloc_sym;
- }
+ 	/* Calculate duty value */
+-	tmp = (unsigned long long)period * state->duty_cycle;
+-	do_div(tmp, state->period);
++	tmp = (unsigned long long)rate * state->duty_cycle;
++	do_div(tmp, NSEC_PER_SEC);
+ 	duty = period - tmp;
  
-@@ -125,7 +129,7 @@ static int kernel_get_symbol_address_by_
- 	struct map *map;
- 
- 	/* ref_reloc_sym is just a label. Need a special fix*/
--	reloc_sym = kernel_get_ref_reloc_sym();
-+	reloc_sym = kernel_get_ref_reloc_sym(NULL);
- 	if (reloc_sym && strcmp(name, reloc_sym->name) == 0)
- 		*addr = (reloc) ? reloc_sym->addr : reloc_sym->unrelocated_addr;
- 	else {
-@@ -745,6 +749,7 @@ post_process_kernel_probe_trace_events(s
- 				       int ntevs)
- {
- 	struct ref_reloc_sym *reloc_sym;
-+	struct map *map;
- 	char *tmp;
- 	int i, skipped = 0;
- 
-@@ -753,7 +758,7 @@ post_process_kernel_probe_trace_events(s
- 		return post_process_offline_probe_trace_events(tevs, ntevs,
- 						symbol_conf.vmlinux_name);
- 
--	reloc_sym = kernel_get_ref_reloc_sym();
-+	reloc_sym = kernel_get_ref_reloc_sym(&map);
- 	if (!reloc_sym) {
- 		pr_warning("Relocated base symbol is not found!\n");
- 		return -EINVAL;
-@@ -764,9 +769,13 @@ post_process_kernel_probe_trace_events(s
- 			continue;
- 		if (tevs[i].point.retprobe && !kretprobe_offset_is_supported())
- 			continue;
--		/* If we found a wrong one, mark it by NULL symbol */
-+		/*
-+		 * If we found a wrong one, mark it by NULL symbol.
-+		 * Since addresses in debuginfo is same as objdump, we need
-+		 * to convert it to addresses on memory.
-+		 */
- 		if (kprobe_warn_out_range(tevs[i].point.symbol,
--					  tevs[i].point.address)) {
-+			map__objdump_2mem(map, tevs[i].point.address))) {
- 			tmp = NULL;
- 			skipped++;
- 		} else {
-@@ -2922,7 +2931,7 @@ static int find_probe_trace_events_from_
- 	/* Note that the symbols in the kmodule are not relocated */
- 	if (!pev->uprobes && !pev->target &&
- 			(!pp->retprobe || kretprobe_offset_is_supported())) {
--		reloc_sym = kernel_get_ref_reloc_sym();
-+		reloc_sym = kernel_get_ref_reloc_sym(NULL);
- 		if (!reloc_sym) {
- 			pr_warning("Relocated base symbol is not found!\n");
- 			ret = -EINVAL;
+ 	if (duty >= period)
 
 
