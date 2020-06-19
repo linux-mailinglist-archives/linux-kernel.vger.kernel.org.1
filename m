@@ -2,146 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F4A20178A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CDA20174C
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395414AbgFSQjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:39:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53446 "EHLO
+        id S2395299AbgFSQgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:36:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388044AbgFSOqN (ORCPT
+        with ESMTP id S2389163AbgFSOtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:46:13 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9087C06174E
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:46:13 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id x207so4524351pfc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 07:46:13 -0700 (PDT)
+        Fri, 19 Jun 2020 10:49:03 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117D4C06174E;
+        Fri, 19 Jun 2020 07:49:04 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id b5so4577665pgm.8;
+        Fri, 19 Jun 2020 07:49:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:user-agent:in-reply-to:references:mime-version
-         :content-transfer-encoding:subject:to:cc:from:message-id;
-        bh=A0SEVOpcHsuNLyVpfZPRTNP6bN8WLwpJrFGg1Si+7zc=;
-        b=hDYBK+hJsTswP+AygfR6OvIsJOwgnE+LcdcWgjBF9CzDe3hFVVAtCDCkErHcOiADYL
-         AHu0OWSQR8kChAvNiBY0zFmcKPIDpNw4bn8z4xV9Fja3qdadw3vXaDE4k+fFTfPuwIDL
-         dc9/jnOjBWaO1NYjOVvnGoiFtsBBYd5PDo4iHwPOiq5+w2LaFwN9J9JY2m4EbAY27dxa
-         DpJq0oSQ9WmOuoRbUYUEg13RJQpt0EspYcWir8FdwXaa9gcMZqa953V81eaYSt8QBijH
-         48ezNOcuapVYBaz5Bm/dAlEFskuIL51gNsqEcurnIag8R+ICKObpVkV/atNqiGY/+BP8
-         DxGA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=ctscLOlaKZHuHAvTFyT78hwNlRcZSz4aJaHfOiGs+e0=;
+        b=ZHBdCnX7+qH7Kxr7PP2Ge6MSsRgRj0s/ihGp4bPB13nAk+lg2mZ9GPpFQHv5SE351v
+         bM5jgHNdHfrUEaaLrMrXiCuqIYiwQEqSrs829H2hVv+qrNrXPAIra7ygBRVJb1mhIt/N
+         1uXJzpSK2VT48LrvhU5HdW+QJTwStqm3A26IHPJ9X0mwkp68M1TF85ET6Ul4g606Lnjh
+         mTZ9oGfAXFD5HTO+GmCIIMB4dHVTl8BFajZxa2Kk9QbceYPQuGQq5O3WZkk06dO0oIwq
+         XOemreiCAGbB5Yr07/Q0AtBCWzBJoqZExVDVf0M3Htqv+XndSHiJh7ib/ft/GHuKHdPn
+         WQIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:user-agent:in-reply-to:references
-         :mime-version:content-transfer-encoding:subject:to:cc:from
-         :message-id;
-        bh=A0SEVOpcHsuNLyVpfZPRTNP6bN8WLwpJrFGg1Si+7zc=;
-        b=bB2qdUskQQ6sjlEOeG83NJu4+wJVI5omU7XqmYR8d0uupAyK9uo7z14BRFcBWR3Fsj
-         Qa3VrRJODhhSa3AUIYFsHBxnSWPgl/KuxgZevbP5+9R29GSmpQGy1eWQExYMV4P9ibVD
-         zxquIgmTnIzRrmstgeb3DUKlSTxMIukTcZycapFQs9GqtOI4LAltj8LkZTYePbtFWHuN
-         chWDXODQpxs37RdapxuOi7a1oLB/XLI7JDl7HoGsq/TzpqIa+/1tRd9iQSdlecj0ODei
-         fmZuFgV5UTO8hYmQDBF6MDzI72JsWlRRCKpp1CGBybfJYGe/GUoJOGcSkSsE1Q8dkcB0
-         R9tQ==
-X-Gm-Message-State: AOAM5331+//SQlvudUiJqokpVFKAb3UCQzDSp3MtFua3OBYxSD9fpu7y
-        v5ghg7nUqFUohJpiWE/4V/qw
-X-Google-Smtp-Source: ABdhPJzVlezxuG+CQ9cITtvILzSkjISRO1w39LFc9MyW0u6lJuN2Z7NwBMQ3JY/UrrlMKImkm/3V2w==
-X-Received: by 2002:a62:1c5:: with SMTP id 188mr8395366pfb.213.1592577973213;
-        Fri, 19 Jun 2020 07:46:13 -0700 (PDT)
-Received: from ?IPv6:2409:4072:6e9c:5ed9:4574:ef47:f924:dba6? ([2409:4072:6e9c:5ed9:4574:ef47:f924:dba6])
-        by smtp.gmail.com with ESMTPSA id w17sm6742233pff.27.2020.06.19.07.46.10
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=ctscLOlaKZHuHAvTFyT78hwNlRcZSz4aJaHfOiGs+e0=;
+        b=a5kV3SF6z/NLZ/yFn9rR7ZWCQ+oVnslzXVFzuUbOVd+hbF13JCMRp635+bc9563NXe
+         Q6Ke8ehFu1h6E6YujUIyBPrQbU7F291cKey79rRcHQ7iywhqgZkIKY/dprGrYYCWAcrZ
+         A2Zd5QKtZkqSIJQBvYjuCT5xJaK2e33EoI8sQscJkhhbdBldY9PtFOm/D2/vChHV52G2
+         y5Dv7z+G1ppaPgVbWCw2cfb/dCYr7HFJAHCy6PB8emDekkMLBwTTmqXv9leK9Ng1HKyH
+         xVxWUYwzGBIIqG2EteLAfMSbccpUrW/GPOBOZOMTlc7FR8r6/Rcf+8lsIgBAgjp8DijZ
+         XggQ==
+X-Gm-Message-State: AOAM533L7IjnIaUFsnhEKMOzla6tWRZT0cVUjmwcSud0bt7kXo4qcAj1
+        hURz/kdc7yXhojE60H20/fY=
+X-Google-Smtp-Source: ABdhPJxerp4UqGlBqo7ylxGcCO9oCGFDfiOp3F5MBCTgeGs6IAVexj7p0hvG8EQQNbo8S8SNGMozPQ==
+X-Received: by 2002:a63:1406:: with SMTP id u6mr3318908pgl.108.1592578142495;
+        Fri, 19 Jun 2020 07:49:02 -0700 (PDT)
+Received: from cnn ([2402:3a80:455:d3c:b10e:bd87:9e7c:d04])
+        by smtp.gmail.com with ESMTPSA id n19sm5975012pfu.194.2020.06.19.07.48.57
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 19 Jun 2020 07:46:12 -0700 (PDT)
-Date:   Fri, 19 Jun 2020 20:16:03 +0530
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20200616184805.k7eowfhdevasqite@e107158-lin.cambridge.arm.com>
-References: <20200213091427.13435-1-manivannan.sadhasivam@linaro.org> <20200213091427.13435-2-manivannan.sadhasivam@linaro.org> <20200616184805.k7eowfhdevasqite@e107158-lin.cambridge.arm.com>
+        Fri, 19 Jun 2020 07:49:01 -0700 (PDT)
+Date:   Fri, 19 Jun 2020 20:18:53 +0530
+From:   Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     saipsdasari@fb.com, patrickw3@fb.com, vijaykhemka@fb.com,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        manikandan.e@hcl.com
+Subject: [PATCH v4] hwmon:(adm1275) Enable adm1278 ADM1278_TEMP1_EN
+Message-ID: <20200619144853.GA18271@cnn>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 1/2] net: qrtr: Migrate nameservice to kernel from userspace
-To:     Qais Yousef <qais.yousef@arm.com>
-CC:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Message-ID: <9184F012-1FDC-4F6B-8B3E-5D2B87F5DACA@linaro.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,=20
+The adm1278 temp attribute need it for openbmc platform .
+This feature not enabled by default, so PMON_CONFIG needs to enable it.
 
-On 17 June 2020 12:18:06 AM IST, Qais Yousef <qais=2Eyousef@arm=2Ecom> wro=
-te:
->Hi Manivannan, David
->
->On 02/13/20 14:44, Manivannan Sadhasivam wrote:
->
->[=2E=2E=2E]
->
->> +	trace_printk("advertising new server [%d:%x]@[%d:%d]\n",
->> +		     srv->service, srv->instance, srv->node, srv->port);
->
->I can't tell exactly from the discussion whether this is the version
->that got
->merged into 5=2E7 or not, but it does match the commit message=2E
->
+v4:
+---
+Reported-by: kernel test robot <lkp@intel.com>
+v3:
+----
+fix invalid signed-off.
+removed checkpath warnings.
+write ADM1278_TEMP1_EN and ADM1278_VOUT_EN conf in single line operation.
+v2:
+----
+add Signed-off-by.
+removed ADM1278_TEMP1_EN check.
 
-This got merged and there was a follow up patch to replace trace_printk() =
-with tracepoints got merged as well=2E=20
+Signed-off-by: Manikandan Elumalai <manikandan.hcl.ers.epl@gmail.com>
+---
+ drivers/hwmon/pmbus/adm1275.c | 12 +++++-------
+ 1 file changed, 5 insertions(+), 7 deletions(-)
 
-Thanks,=20
-Mani
+diff --git a/drivers/hwmon/pmbus/adm1275.c b/drivers/hwmon/pmbus/adm1275.c
+index 5caa37fb..d4e1925 100644
+--- a/drivers/hwmon/pmbus/adm1275.c
++++ b/drivers/hwmon/pmbus/adm1275.c
+@@ -666,11 +666,12 @@ static int adm1275_probe(struct i2c_client *client,
+ 		tindex = 3;
+ 
+ 		info->func[0] |= PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT |
+-			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT;
++			PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT |
++			PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP;
+ 
+-		/* Enable VOUT if not enabled (it is disabled by default) */
+-		if (!(config & ADM1278_VOUT_EN)) {
+-			config |= ADM1278_VOUT_EN;
++		/* Enable VOUT & TEMP1 if not enabled (disabled by default) */
++		if ((config & (ADM1278_VOUT_EN | ADM1278_TEMP1_EN)) != (ADM1278_VOUT_EN | ADM1278_TEMP1_EN)) {
++			config |= ADM1278_VOUT_EN | ADM1278_TEMP1_EN;
+ 			ret = i2c_smbus_write_byte_data(client,
+ 							ADM1275_PMON_CONFIG,
+ 							config);
+@@ -681,9 +682,6 @@ static int adm1275_probe(struct i2c_client *client,
+ 			}
+ 		}
+ 
+-		if (config & ADM1278_TEMP1_EN)
+-			info->func[0] |=
+-				PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP;
+ 		if (config & ADM1278_VIN_EN)
+ 			info->func[0] |= PMBUS_HAVE_VIN;
+ 		break;
+-- 
+2.7.4
 
->This patch introduces several trace_printk() which AFAIK is intended
->for
->debugging only and shouldn't make it into mainline kernels=2E
->
->It causes this big message to be printed to the log too
->
->[    0=2E000000]
->**********************************************************
->[    0=2E000000] **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE =
-=20
->**
->[    0=2E000000] **                                                    =
-=20
->**
->[    0=2E000000] ** trace_printk() being used=2E Allocating extra memory=
-=2E=20
->**
->[    0=2E000000] **                                                    =
-=20
->**
->[    0=2E000000] ** This means that this is a DEBUG kernel and it is   =
-=20
->**
->[    0=2E000000] ** unsafe for production use=2E                         =
-=20
->**
->[    0=2E000000] **                                                    =
-=20
->**
->[    0=2E000000] ** If you see this message and you are not debugging  =
-=20
->**
->[    0=2E000000] ** the kernel, report this immediately to your vendor!=
-=20
->**
->[    0=2E000000] **                                                    =
-=20
->**
->[    0=2E000000] **   NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE NOTICE =
-=20
->**
->[    0=2E000000]
->**********************************************************
->
->Shouldn't this be replaced with one of pr_*() variants instead?
->
->Thanks
->
->--
->Qais Yousef
-
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
