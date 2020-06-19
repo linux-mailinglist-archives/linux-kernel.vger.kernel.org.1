@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBC6200FBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:23:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0F4200F68
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392528AbgFSPVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:21:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49042 "EHLO mail.kernel.org"
+        id S2404183AbgFSPRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:17:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392592AbgFSPSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:18:39 -0400
+        id S2404156AbgFSPRO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:17:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 826FD206DB;
-        Fri, 19 Jun 2020 15:18:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 695FB2158C;
+        Fri, 19 Jun 2020 15:17:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579919;
-        bh=QvvVCvpXuafBpUcquVWzRQSZlm/2kfM6wsz5kMmPuOY=;
+        s=default; t=1592579834;
+        bh=UCFZxBdhCTtSOkMISHI4v+UNZnsH2SbHB6zuHhVW3k0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xnSiCQ/4vHTVijhEZeFf+hBusMZUbw3GAw3eiqNWeNFHWdxkhvHwciIb9U7A9EAFf
-         XDWFiv6KtAAUyN0fgjqwFGiCkSaJMOc3QYVNKLCUtnH7m3Gmo/0W+PFLOnN0dPGcN1
-         9RZyMtRaaHOI9kYhIX6fmoIIwBG1odu7bVyju8fQ=
+        b=2QL9aJu4+IC63dwGqjoEfZKA/9IZRjAk0foIZlkjMgN/gFgeIutw/td0o8waUhmP+
+         skPRyniPbOeTfaUoqexWLc8FJj2QKPOMfxyWMojXy2IZE0e5Dtwz8Ua3+wtCtNKxo6
+         /jL3qv8/Bpy1VxW8tN1s5nV5oFtB1fBEzvDPC2c0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julien Thierry <jthierry@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Miroslav Benes <mbenes@suse.cz>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 013/376] objtool: Ignore empty alternatives
-Date:   Fri, 19 Jun 2020 16:28:51 +0200
-Message-Id: <20200619141710.991167259@linuxfoundation.org>
+        stable@vger.kernel.org, Joshua Aberback <joshua.aberback@amd.com>,
+        Jun Lei <Jun.Lei@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 014/376] drm/amd/display: Force watermark value propagation
+Date:   Fri, 19 Jun 2020 16:28:52 +0200
+Message-Id: <20200619141711.039530106@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -46,43 +46,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julien Thierry <jthierry@redhat.com>
+From: Joshua Aberback <joshua.aberback@amd.com>
 
-[ Upstream commit 7170cf47d16f1ba29eca07fd818870b7af0a93a5 ]
+[ Upstream commit 868149c9a072cbdc22a73ce25a487f9fbfa171ef ]
 
-The .alternatives section can contain entries with no original
-instructions. Objtool will currently crash when handling such an entry.
+[Why]
+The HUBBUB watermark registers are in an area that cannot be power
+gated, but the HUBP copies of the watermark values are in areas that can
+be power gated. When we power on a pipe, it will not automatically take
+the HUBBUB values, we need to force propagation by writing to a
+watermark register.
 
-Just skip that entry, but still give a warning to discourage useless
-entries.
+[How]
+ - new HUBBUB function to re-write current value in a WM register
+ - touch WM register after enabling the plane in program_pipe
 
-Signed-off-by: Julien Thierry <jthierry@redhat.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Joshua Aberback <joshua.aberback@amd.com>
+Reviewed-by: Jun Lei <Jun.Lei@amd.com>
+Acked-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/objtool/check.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c | 5 ++++-
+ drivers/gpu/drm/amd/display/dc/inc/hw/dchubbub.h   | 2 ++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 3c6da70e6084..5a867a469ba5 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -916,6 +916,12 @@ static int add_special_section_alts(struct objtool_file *file)
- 		}
+diff --git a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
+index a023a4d59f41..c4fa13e4eaf9 100644
+--- a/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
++++ b/drivers/gpu/drm/amd/display/dc/dcn20/dcn20_hwseq.c
+@@ -1478,8 +1478,11 @@ static void dcn20_program_pipe(
+ 	if (pipe_ctx->update_flags.bits.odm)
+ 		hws->funcs.update_odm(dc, context, pipe_ctx);
  
- 		if (special_alt->group) {
-+			if (!special_alt->orig_len) {
-+				WARN_FUNC("empty alternative entry",
-+					  orig_insn->sec, orig_insn->offset);
-+				continue;
-+			}
+-	if (pipe_ctx->update_flags.bits.enable)
++	if (pipe_ctx->update_flags.bits.enable) {
+ 		dcn20_enable_plane(dc, pipe_ctx, context);
++		if (dc->res_pool->hubbub->funcs->force_wm_propagate_to_pipes)
++			dc->res_pool->hubbub->funcs->force_wm_propagate_to_pipes(dc->res_pool->hubbub);
++	}
+ 
+ 	if (pipe_ctx->update_flags.raw || pipe_ctx->plane_state->update_flags.raw || pipe_ctx->stream->update_flags.raw)
+ 		dcn20_update_dchubp_dpp(dc, pipe_ctx, context);
+diff --git a/drivers/gpu/drm/amd/display/dc/inc/hw/dchubbub.h b/drivers/gpu/drm/amd/display/dc/inc/hw/dchubbub.h
+index f5dd0cc73c63..47a566d82d6e 100644
+--- a/drivers/gpu/drm/amd/display/dc/inc/hw/dchubbub.h
++++ b/drivers/gpu/drm/amd/display/dc/inc/hw/dchubbub.h
+@@ -144,6 +144,8 @@ struct hubbub_funcs {
+ 	void (*allow_self_refresh_control)(struct hubbub *hubbub, bool allow);
+ 
+ 	void (*apply_DEDCN21_147_wa)(struct hubbub *hubbub);
 +
- 			ret = handle_group_alt(file, special_alt, orig_insn,
- 					       &new_insn);
- 			if (ret)
++	void (*force_wm_propagate_to_pipes)(struct hubbub *hubbub);
+ };
+ 
+ struct hubbub {
 -- 
 2.25.1
 
