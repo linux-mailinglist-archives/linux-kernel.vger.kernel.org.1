@@ -2,162 +2,399 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FDB6201D62
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 23:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2763201D80
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 23:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728294AbgFSV5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 17:57:09 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:55400 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726220AbgFSV5G (ORCPT
+        id S1728489AbgFSV5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 17:57:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728256AbgFSV5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 17:57:06 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05JLlxg9037623;
-        Fri, 19 Jun 2020 21:57:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=Fh1TauyG94rhfUBSdHsqI+sTrR/HW9QksqHgZMTrwBE=;
- b=znXBd2T4mtleYKCi6c7EstsMXMARd5a6vKJLbs2GOEqSryoCxLKYTjLyJBpt5nw5bvTY
- dmSI1HoX0wSTYGBs25Lrxr0RCBiflgP0MnVlBilJSX4JjUmkHCCPFjCtLL9N2n0e3fJO
- uhsXSH8rR6gtXb0n/S9aOBmW9Ch2N2ve6+CiwLpIz1SOj50CC727B4tQ2czdkouCoSpZ
- HHa6wh8D2V5Inv6zfMl5n9JNIFR7sagELED6qkC7Qt1m/hYKrxbaqwXpcoqqSM/oyssx
- Y5RltoRP9EzPnHoOdWOPN+U9xGZC2pYQeZrEtxzlRJFe8d7rG+6R7Angrvvkin5enBc8 fQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 31q6608w70-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 19 Jun 2020 21:57:01 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05JLnIeI076693;
-        Fri, 19 Jun 2020 21:57:01 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 31q66s28td-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 19 Jun 2020 21:57:01 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05JLv0D3002185;
-        Fri, 19 Jun 2020 21:57:00 GMT
-Received: from dhcp-10-159-240-10.vpn.oracle.com (/10.159.240.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 19 Jun 2020 14:57:00 -0700
-Subject: Re: [PATCH] proc: Avoid a thundering herd of threads freeing proc
- dentries
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Matthew Wilcox <matthew.wilcox@oracle.com>,
-        Srinivas Eeda <SRINIVAS.EEDA@oracle.com>,
-        "joe.jin@oracle.com" <joe.jin@oracle.com>,
-        Wengang Wang <wen.gang.wang@oracle.com>
-References: <54091fc0-ca46-2186-97a8-d1f3c4f3877b@oracle.com>
- <20200618233958.GV8681@bombadil.infradead.org>
- <877dw3apn8.fsf@x220.int.ebiederm.org>
- <2cf6af59-e86b-f6cc-06d3-84309425bd1d@oracle.com>
- <87bllf87ve.fsf_-_@x220.int.ebiederm.org>
- <caa9adf6-e1bb-167b-6f59-d17fd587d4fa@oracle.com>
- <87k1036k9y.fsf@x220.int.ebiederm.org>
-From:   Junxiao Bi <junxiao.bi@oracle.com>
-Message-ID: <68a1f51b-50bf-0770-2367-c3e1b38be535@oracle.com>
-Date:   Fri, 19 Jun 2020 14:56:58 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        Fri, 19 Jun 2020 17:57:24 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9075AC0613F0
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 14:57:24 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id d27so8392973qtg.4
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 14:57:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=massaru-org.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=rdhxkZX4GmXKSSpsPwGF4bgioI4q0DW5JlXRU/AUlkk=;
+        b=mRiPlpOuXbePKoXKYhDFTZ4Jtt6zf1Okl1KJwxQLCsOk74sMT88rOgCfDBrGrWz6F7
+         +DE0O4fOnwgtlG3IN91gYWFphtijC32KzwEXJhu5w29ejvAp+98RKifWyXchiMYMCX92
+         mZH9Id5OWqXgM6ymZE+c7sazt/Mhu8ki3ndIAKoousXZuQiGULxgVSwjKiStbU6TpPul
+         4ZvjVI1CdsQeLJ698wirI9deBBVy6eXjlqeVxlcyHvXwVMgG+fY46jatAGSNLBElK0A8
+         JAdrCGSKtCeblFPMe/mEHvTiHEh/fLjYm32V0ZaiAJ6G84FkXrGHfv1xwNLoYb6cggDe
+         hacA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=rdhxkZX4GmXKSSpsPwGF4bgioI4q0DW5JlXRU/AUlkk=;
+        b=D8AH6uVEZA03XoOh6ai9Jl6Z28z+MHJU1i7WPqqqT0bIkkHKMEpgKmZw1mfSqrGmM1
+         THzSDFP7MTi+kNwuZYjQ6yLGtj31DXD53cK4ZZHgoIdNv5pFpEmaOA7IajXAsFfJ/KjB
+         k2g/Hs1h/oMnwZkkkIHHZU1dzpgv1XFZExlJMlRc7fCMbL60Y40BJ8SuH4lgsMmNYR4Y
+         KRbCuMfU+LP0F5T8lJuG5KON2igoJzTSb5xu+F8mv3QJNlCXBhKcEENocrhsz8fQfI2p
+         MjucqCwFQEi/E2VZAF4af9nXFExrFspROH5W4oT6rMWN7Zech5B7cdLoj1EAopDz1lDY
+         EKOQ==
+X-Gm-Message-State: AOAM530J33L6mMTlgX9B/Uw78q3OaAlo03kHTUcLfbvcphcr7iiy/gAP
+        0kf3gZk3+FY0NEmzKzpyOfBq/Q==
+X-Google-Smtp-Source: ABdhPJzDEbhH9/2WoXmmZH2RrRnKaQv0db5TBB7Xaag8scxB9vAIb4QCZdoLN4qlc8YWSIKcq0cqcA==
+X-Received: by 2002:ac8:688a:: with SMTP id m10mr2810282qtq.254.1592603843298;
+        Fri, 19 Jun 2020 14:57:23 -0700 (PDT)
+Received: from bbking.lan ([2804:14c:4a5:36c::cd2])
+        by smtp.gmail.com with ESMTPSA id g140sm7437850qke.98.2020.06.19.14.57.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 14:57:22 -0700 (PDT)
+Message-ID: <2251a43aa773dbd4a417dca20ba12ee0559f9031.camel@massaru.org>
+Subject: Re: [RESEND, PATCH v2] lib: overflow-test: add KUnit test of
+ check_*_overflow functions
+From:   Vitor Massaru Iha <vitor@massaru.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     kunit-dev@googlegroups.com, skhan@linuxfoundation.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brendanhiggins@google.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux@rasmusvillemoes.dk, davidgow@google.com
+Date:   Fri, 19 Jun 2020 18:57:19 -0300
+In-Reply-To: <202006181949.6402C456@keescook>
+References: <20200618140814.135948-1-vitor@massaru.org>
+         <202006181949.6402C456@keescook>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.3 (3.36.3-1.fc32) 
 MIME-Version: 1.0
-In-Reply-To: <87k1036k9y.fsf@x220.int.ebiederm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9657 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0 phishscore=0
- mlxscore=0 bulkscore=0 malwarescore=0 mlxlogscore=926 suspectscore=11
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006190152
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9657 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
- bulkscore=0 phishscore=0 adultscore=0 priorityscore=1501 mlxscore=0
- spamscore=0 clxscore=1015 mlxlogscore=945 suspectscore=11 impostorscore=0
- cotscore=-2147483648 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006190152
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/19/20 10:24 AM, ebiederm@xmission.com wrote:
+On Thu, 2020-06-18 at 20:05 -0700, Kees Cook wrote:
+> On Thu, Jun 18, 2020 at 11:08:14AM -0300, Vitor Massaru Iha wrote:
+> > This adds the conversion of the runtime tests of check_*_overflow
+> > functions,
+> > from `lib/test_overflow.c`to KUnit tests.
+> > 
+> > The log similar to the one seen in dmesg running test_overflow.c
+> > can be
+> > seen in `test.log`.
+> > 
+> > Signed-off-by: Vitor Massaru Iha <vitor@massaru.org>
+> > Tested-by: David Gow <davidgow@google.com>
+> > ---
+> > v2:
+> >   * moved lib/test_overflow.c to lib/overflow-test.c; 
 
-> Junxiao Bi <junxiao.bi@oracle.com> writes:
->
->> Hi Eric,
->>
->> The patch didn't improve lock contention.
-> Which raises the question where is the lock contention coming from.
->
-> Especially with my first variant.  Only the last thread to be reaped
-> would free up anything in the cache.
->
-> Can you comment out the call to proc_flush_pid entirely?
+Sure.
 
-Still high lock contention. Collect the following hot path.
+> I still don't want a dash in the filename, as this creates a
+> difference
+> between the source name and the module name. While I still prefer
+> overflow_kunit.c, I can get over it and accept overflow_test.c :)
+> 
+> >     * back to original license;
+> >     * fixed style code;
+> >     * keeps __initconst and added _refdata on overflow_test_cases
+> > variable;
+> >     * keeps macros intact making asserts with the variable err;
+> >     * removed duplicate test_s8_overflow();
+> >   * fixed typos on commit message;
+> > ---
+> >  lib/Kconfig.debug                        | 20 +++++++--
+> >  lib/Makefile                             |  2 +-
+> >  lib/{test_overflow.c => overflow-test.c} | 54 +++++++++-----------
+> > ----
+> >  3 files changed, 38 insertions(+), 38 deletions(-)
+> >  rename lib/{test_overflow.c => overflow-test.c} (96%)
+> > 
+> > diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> > index d74ac0fd6b2d..fb8a3955e969 100644
+> > --- a/lib/Kconfig.debug
+> > +++ b/lib/Kconfig.debug
+> > @@ -2000,9 +2000,6 @@ config TEST_UUID
+> >  config TEST_XARRAY
+> >  	tristate "Test the XArray code at runtime"
+> >  
+> > -config TEST_OVERFLOW
+> > -	tristate "Test check_*_overflow() functions at runtime"
+> > -
+> >  config TEST_RHASHTABLE
+> >  	tristate "Perform selftest on resizable hash table"
+> >  	help
+> > @@ -2155,6 +2152,23 @@ config SYSCTL_KUNIT_TEST
+> >  
+> >  	  If unsure, say N.
+> >  
+> > +config OVERFLOW_KUNIT_TEST
+> > +	tristate "KUnit test for overflow" if !KUNIT_ALL_TESTS
+> > +	depends on KUNIT
+> > +	default KUNIT_ALL_TESTS
+> > +	help
+> > +	  This builds the overflow KUnit tests.
+> > +
+> > +	  KUnit tests run during boot and output the results to the
+> > debug log
+> > +	  in TAP format (http://testanything.org/). Only useful for
+> > kernel devs
+> > +	  running KUnit test harness and are not for inclusion into a
+> > production
+> > +	  build.
+> > +
+> > +	  For more information on KUnit and unit tests in general
+> > please refer
+> > +	  to the KUnit documentation in Documentation/dev-tools/kunit/.
+> > +
+> > +	  If unsure, say N.
+> > +
+> >  config LIST_KUNIT_TEST
+> >  	tristate "KUnit Test for Kernel Linked-list structures" if
+> > !KUNIT_ALL_TESTS
+> >  	depends on KUNIT
+> > diff --git a/lib/Makefile b/lib/Makefile
+> > index b1c42c10073b..3b725c9f92d4 100644
+> > --- a/lib/Makefile
+> > +++ b/lib/Makefile
+> > @@ -75,7 +75,6 @@ obj-$(CONFIG_TEST_LIST_SORT) += test_list_sort.o
+> >  obj-$(CONFIG_TEST_MIN_HEAP) += test_min_heap.o
+> >  obj-$(CONFIG_TEST_LKM) += test_module.o
+> >  obj-$(CONFIG_TEST_VMALLOC) += test_vmalloc.o
+> > -obj-$(CONFIG_TEST_OVERFLOW) += test_overflow.o
+> >  obj-$(CONFIG_TEST_RHASHTABLE) += test_rhashtable.o
+> >  obj-$(CONFIG_TEST_SORT) += test_sort.o
+> >  obj-$(CONFIG_TEST_USER_COPY) += test_user_copy.o
+> > @@ -318,3 +317,4 @@ obj-$(CONFIG_OBJAGG) += objagg.o
+> >  # KUnit tests
+> >  obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
+> >  obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
+> > +obj-$(CONFIG_OVERFLOW_KUNIT_TEST) += overflow-test.o
+> > diff --git a/lib/test_overflow.c b/lib/overflow-test.c
+> > similarity index 96%
+> > rename from lib/test_overflow.c
+> > rename to lib/overflow-test.c
+> > index 7a4b6f6c5473..d40ef06b1ade 100644
+> > --- a/lib/test_overflow.c
+> > +++ b/lib/overflow-test.c
+> > @@ -4,14 +4,11 @@
+> >   */
+> >  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> >  
+> > +#include <kunit/test.h>
+> >  #include <linux/device.h>
+> >  #include <linux/init.h>
+> > -#include <linux/kernel.h>
+> >  #include <linux/mm.h>
+> > -#include <linux/module.h>
+> >  #include <linux/overflow.h>
+> > -#include <linux/slab.h>
+> > -#include <linux/types.h>
+> >  #include <linux/vmalloc.h>
+> >  
+> >  #define DEFINE_TEST_ARRAY(t)			\
+> > @@ -270,7 +267,7 @@ DEFINE_TEST_FUNC(u64, "%llu");
+> >  DEFINE_TEST_FUNC(s64, "%lld");
+> >  #endif
+> >  
+> > -static int __init test_overflow_calculation(void)
+> > +static void __init overflow_calculation_test(struct kunit *test)
+> >  {
+> >  	int err = 0;
+> >  
+> > @@ -285,10 +282,10 @@ static int __init
+> > test_overflow_calculation(void)
+> >  	err |= test_s64_overflow();
+> >  #endif
+> >  
+> > -	return err;
+> > +	KUNIT_EXPECT_FALSE(test, err);
+> >  }
+> 
+> Ah! Well, yes, I guess that is one way to do it. :) I'm just curious:
+> why the change away from doing EXPECTs on individual tests?
 
-     74.90%     0.01%  proc_race 
-[kernel.kallsyms]                               [k] 
-entry_SYSCALL_64_after_hwframe
-             |
-              --74.89%--entry_SYSCALL_64_after_hwframe
-                        |
-                         --74.88%--do_syscall_64
-                                   |
-                                   |--69.70%--exit_to_usermode_loop
-                                   |          |
-                                   |           --69.70%--do_signal
-                                   |                     |
-                                   | --69.69%--get_signal
-                                   | |
-                                   | |--56.30%--do_group_exit
-                                   | |          |
-                                   | |           --56.30%--do_exit
-                                   | |                     |
-                                   | |                     
-|--27.50%--_raw_write_lock_irq
-                                   | |                     |          |
-                                   | |                     | 
---27.47%--queued_write_lock_slowpath
-                                   | |                     
-|                     |
-                                   | |                     | 
---27.18%--native_queued_spin_lock_slowpath
-                                   | |                     |
-                                   | |                     
-|--26.10%--release_task.part.20
-                                   | |                     |          |
-                                   | |                     |           
---25.60%--_raw_write_lock_irq
-                                   | |                     
-|                     |
-                                   | |                     | 
---25.56%--queued_write_lock_slowpath
-                                   | |                     
-|                                |
-                                   | |                     | 
---25.23%--native_queued_spin_lock_slowpath
-                                   | |                     |
-                                   | |                      --0.56%--mmput
-                                   | |                                |
-                                   | |                                 
---0.55%--exit_mmap
-                                   | |
-|                                 --13.31%--_raw_spin_lock_irq
-|                                           |
-| --13.28%--native_queued_spin_lock_slowpath
-                                   |
+When returning the err variables, I was not sure if it was to make the
+asserts individually, I can do that.
 
-Thanks,
+> >  
+> > -static int __init test_overflow_shift(void)
+> > +static void __init overflow_shift_test(struct kunit *test)
+> >  {
+> >  	int err = 0;
+> >  
+> > @@ -479,7 +476,7 @@ static int __init test_overflow_shift(void)
+> >  	err |= TEST_ONE_SHIFT(0, 31, s32, 0, false);
+> >  	err |= TEST_ONE_SHIFT(0, 63, s64, 0, false);
+> >  
+> > -	return err;
+> > +	KUNIT_EXPECT_FALSE(test, err);
+> >  }
+> >  
+> >  /*
+> > @@ -555,7 +552,7 @@ DEFINE_TEST_ALLOC(kvzalloc_node, kvfree,     0,
+> > 1, 1);
+> >  DEFINE_TEST_ALLOC(devm_kmalloc,  devm_kfree, 1, 1, 0);
+> >  DEFINE_TEST_ALLOC(devm_kzalloc,  devm_kfree, 1, 1, 0);
+> >  
+> > -static int __init test_overflow_allocation(void)
+> > +static void __init overflow_allocation_test(struct kunit *test)
+> >  {
+> >  	const char device_name[] = "overflow-test";
+> >  	struct device *dev;
+> > @@ -563,10 +560,8 @@ static int __init
+> > test_overflow_allocation(void)
+> >  
+> >  	/* Create dummy device for devm_kmalloc()-family tests. */
+> >  	dev = root_device_register(device_name);
+> > -	if (IS_ERR(dev)) {
+> > -		pr_warn("Cannot register test device\n");
+> > -		return 1;
+> > -	}
+> > +	if (IS_ERR(dev))
+> > +		kunit_warn(test, "Cannot register test device\n");
+> >  
+> >  	err |= test_kmalloc(NULL);
+> >  	err |= test_kmalloc_node(NULL);
+> > @@ -585,30 +580,21 @@ static int __init
+> > test_overflow_allocation(void)
+> >  
+> >  	device_unregister(dev);
+> >  
+> > -	return err;
+> > +	KUNIT_EXPECT_FALSE(test, err);
+> >  }
+> >  
+> > -static int __init test_module_init(void)
+> > -{
+> > -	int err = 0;
+> > -
+> > -	err |= test_overflow_calculation();
+> > -	err |= test_overflow_shift();
+> > -	err |= test_overflow_allocation();
+> > -
+> > -	if (err) {
+> > -		pr_warn("FAIL!\n");
+> > -		err = -EINVAL;
+> > -	} else {
+> > -		pr_info("all tests passed\n");
+> > -	}
+> > +static struct kunit_case __refdata overflow_test_cases[] = {
+> 
+> Erm, __refdata? This seems like it should be __initdata.
 
-Junxiao.
+I tried to use __initdata, but the build still gave warnings.
 
->
-> That will rule out the proc_flush_pid in d_invalidate entirely.
->
-> The only candidate I can think of d_invalidate aka (proc_flush_pid) vs ps.
->
-> Eric
+> 
+> > +	KUNIT_CASE(overflow_calculation_test),
+> > +	KUNIT_CASE(overflow_shift_test),
+> > +	KUNIT_CASE(overflow_allocation_test),
+> > +	{}
+> > +};
+> >  
+> > -	return err;
+> > -}
+> > +static struct kunit_suite overflow_test_suite = {
+> 
+> And this.
+> 
+> > +	.name = "overflow",
+> > +	.test_cases = overflow_test_cases,
+> > +};
+> >  
+> > -static void __exit test_module_exit(void)
+> > -{ }
+> > +kunit_test_suites(&overflow_test_suite);
+> 
+> I suspect the problem causing the need for __refdata there is the
+> lack
+> of __init markings on the functions in kunit_test_suites()?
+
+From the kunit_test_suites() documentation I saw that I need to write
+the test as a module to solve this problem. I'll fix this.
+
+> 
+> (Or maybe this is explained somewhere else I've missed it.)
+> 
+> For example, would this work? (I haven't tested it all.)
+
+Oops. It doesn't work, I'm sorry.
+
+
+> 
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 59f3144f009a..aad746d59d2f 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -233,9 +233,9 @@ size_t kunit_suite_num_test_cases(struct
+> kunit_suite *suite);
+>  unsigned int kunit_test_case_num(struct kunit_suite *suite,
+>  				 struct kunit_case *test_case);
+>  
+> -int __kunit_test_suites_init(struct kunit_suite **suites);
+> +int __init __kunit_test_suites_init(struct kunit_suite **suites);
+>  
+> -void __kunit_test_suites_exit(struct kunit_suite **suites);
+> +void __exit __kunit_test_suites_exit(struct kunit_suite **suites);
+>  
+>  /**
+>   * kunit_test_suites() - used to register one or more &struct
+> kunit_suite
+> @@ -263,8 +263,9 @@ void __kunit_test_suites_exit(struct kunit_suite
+> **suites);
+>   * everything else is definitely initialized.
+>   */
+>  #define kunit_test_suites(suites_list...)				
+> \
+> -	static struct kunit_suite *suites[] = {suites_list, NULL};	
+> \
+> -	static int kunit_test_suites_init(void)				
+> \
+> +	static struct kunit_suite *suites[] __initdata =		\
+> +		{suites_list, NULL};					
+> \
+> +	static int __init kunit_test_suites_init(void)			
+> \
+>  	{								\
+>  		return __kunit_test_suites_init(suites);		\
+>  	}								\
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index c36037200310..bfb0f563721b 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -381,7 +381,7 @@ static void kunit_init_suite(struct kunit_suite
+> *suite)
+>  	kunit_debugfs_create_suite(suite);
+>  }
+>  
+> -int __kunit_test_suites_init(struct kunit_suite **suites)
+> +int __init __kunit_test_suites_init(struct kunit_suite **suites)
+>  {
+>  	unsigned int i;
+>  
+> @@ -393,7 +393,7 @@ int __kunit_test_suites_init(struct kunit_suite
+> **suites)
+>  }
+>  EXPORT_SYMBOL_GPL(__kunit_test_suites_init);
+>  
+> -static void kunit_exit_suite(struct kunit_suite *suite)
+> +static void __exit kunit_exit_suite(struct kunit_suite *suite)
+>  {
+>  	kunit_debugfs_destroy_suite(suite);
+>  }
+> 
+> >  
+> > -module_init(test_module_init);
+> > -module_exit(test_module_exit);
+> >  MODULE_LICENSE("Dual MIT/GPL");
+> > 
+> > base-commit: 7bf200b3a4ac10b1b0376c70b8c66ed39eae7cdd
+> > prerequisite-patch-id: e827b6b22f950b9f69620805a04e4a264cf4cc6a
+> > -- 
+> > 2.26.2
+> > 
+> 
+> Thanks again for the conversion!
+
+
+Thanks for the review.
+
