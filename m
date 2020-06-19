@@ -2,176 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D2D201502
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AEDA2014E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394508AbgFSQQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390956AbgFSPDD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:03:03 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD538C0613EF
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:03:03 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id g12so4017211pll.10
-        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 08:03:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+LnqhKjbJEUfkGCu1m/2g+LppzzVyXYZg47hg3uhOd0=;
-        b=ofA1AzoFRZ4MiXl9EfIriR7S7EEDw0MZ3OcZfvwiug8/LxQyXqMBhQNc2t5MB4T+MP
-         1cBRaqv+Adlb0QGtdhesz8tTqpZT/UwhaqJF283gfDbIcx+/t4EHoPX+zzrLRht1fkO7
-         /eKNTyjuZrSpP6Fa3jjLRB/oeFGV5+We667m5i+qOfK6jAKzhPFN4LZ7Aea1U3BBlq5y
-         r3hyxLdpzzZk0u/q8g8dw5E33HSygPnaxl4wZAuLkwk+LRt7Wwyb1K0YLAGrwQ694bzP
-         HPTAc7nLX+UjyYmLYhVbNDjEQQ2xyaNr+kVwkozO+qmrizxiTxaohrM6KVBv8BSzuh7G
-         rPbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+LnqhKjbJEUfkGCu1m/2g+LppzzVyXYZg47hg3uhOd0=;
-        b=V23mDrxobCuQSG5XdfRNa9IFaWAWblTxRKadk9IiPYfFvFs6h5kJeX/EYa7rfCVODU
-         QfRsIdiw+ZYFuLiwUljIak70AGOFfYXkTz9d5uDBtO8y0VNMhcPrGnb72muoytU5xoZv
-         r75nCSrKFIjXXbzHNWTF1R2TjhAI95igLrF+X7Ucxffvj7xwCvZCpupEJFF75i6f2dyA
-         SvMhDEGppdOIttpXeFNEvREvw29JG8ZpgwmJBPRXUKVpEQMOGDF1l42iTVlathSXHSMZ
-         8w781itMG1Gz4Gv99dsWKQCvhnvmCvKp0zBF3d/mVtBc9qx5FxldQYXu0yWS9FX6n4w3
-         y4gw==
-X-Gm-Message-State: AOAM530ggNgann9Y4EukJ/7LuKwAnOjVRycvrYNqR2RnXnJvC76C88DH
-        T5qeJzChHt6NBzChyjtlCsdfEQ==
-X-Google-Smtp-Source: ABdhPJzxl6m4GmVs1yhzQxBYGEsuQSldHuD3SkC6vlqhKC8YiMob8skih3KD4PgAX5KiZe8FPTwA+g==
-X-Received: by 2002:a17:902:d392:: with SMTP id e18mr8544615pld.295.1592578983045;
-        Fri, 19 Jun 2020 08:03:03 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id q65sm6281283pfc.155.2020.06.19.08.02.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 19 Jun 2020 08:03:01 -0700 (PDT)
-Subject: Re: [PATCH 3/3] io_uring: add support for zone-append
-To:     Pavel Begunkov <asml.silence@gmail.com>,
-        "javier.gonz@samsung.com" <javier@javigon.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     Kanchan Joshi <joshi.k@samsung.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "bcrl@kvack.org" <bcrl@kvack.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "selvakuma.s1@samsung.com" <selvakuma.s1@samsung.com>,
-        "nj.shetty@samsung.com" <nj.shetty@samsung.com>
-References: <1592414619-5646-1-git-send-email-joshi.k@samsung.com>
- <CGME20200617172713epcas5p352f2907a12bd4ee3c97be1c7d8e1569e@epcas5p3.samsung.com>
- <1592414619-5646-4-git-send-email-joshi.k@samsung.com>
- <CY4PR04MB37510E916B6F243D189B4EB0E79B0@CY4PR04MB3751.namprd04.prod.outlook.com>
- <20200618083529.ciifu4chr4vrv2j5@mpHalley.local>
- <CY4PR04MB3751D5D6AFB0DA7B8A2DFF61E79B0@CY4PR04MB3751.namprd04.prod.outlook.com>
- <20200618091113.eu2xdp6zmdooy5d2@mpHalley.local>
- <20200619094149.uaorbger326s6yzz@mpHalley.local>
- <31f1c27e-4a3d-a411-3d3b-f88a2d92ce7b@kernel.dk>
- <24297973-82ad-a629-e5f5-38a5b12db83a@gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <a68cb8f6-e17c-9ee3-b732-4be689ffebc3@kernel.dk>
-Date:   Fri, 19 Jun 2020 09:02:58 -0600
+        id S2405549AbgFSQPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:15:10 -0400
+Received: from mout.web.de ([212.227.15.14]:56741 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391043AbgFSPDo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:03:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1592579002;
+        bh=GxYh1qdG0mY8NBgFhfOclaGuSJllPFVrAzWx8/7J4Os=;
+        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
+        b=dnvK6hy2/lDP5qxtum5D/NUKgieXMtg84RL1gjMcc3KhM8XXcg6vioONzhpJn0kU+
+         WVM+kDtsg8f7e9ETrZ3b1COhHwG4Ftzw7Ou3eB96vAIFsc8X+MwTDkxO4Xo8C8YI4R
+         PHEKFyY4p9AbETpahXMIosqf67WegJ09PwosLGvM=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.132.139.231]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MhWop-1jIAOH0MHT-00eetB; Fri, 19
+ Jun 2020 17:03:22 +0200
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        "Gustavo A. R. Silva" <garsilva@embeddedor.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v3] coccinelle: misc: add array_size_dup script to detect
+ missed overflow checks
+From:   Markus Elfring <Markus.Elfring@web.de>
+To:     Denis Efremov <efremov@linux.com>,
+        Coccinelle <cocci@systeme.lip6.fr>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Julia Lawall <julia.lawall@lip6.fr>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nicolas Palix <nicolas.palix@imag.fr>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <cf6ab028-4297-dfab-35a7-cb6589fe61ac@web.de>
+Date:   Fri, 19 Jun 2020 17:03:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <24297973-82ad-a629-e5f5-38a5b12db83a@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:0dDirl9a1cXle/tNkqr42+2WaoqiVXrFC5lI+chji2DVPI7fmJX
+ B+FHitTBLLj7znFEwh45Sc1LCXF9QziVsXM8GJXu4q29LHgXELN1w4KC/13krJ0QxmMaVw7
+ yaQGaVb+R91z53LDiUE9igNYXrkfEBRa3WmuiuPD5EE95Zq3Rgi/VPQT0HKVva6J2HZaAKj
+ KaMc1LUoPBZ0DsbHU7uCQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:joucBZ9eE5E=:RIurRgSuJTokqpZGz+2J0+
+ bzt2le0VsugVrWTRNfAclI6TswkmQMTisFuD7m4bfql08FVvEVAK3IkzGCLw4rEoRxiNLV5C3
+ 27sQ8k8C1YjbJGA+F4oQDFze8uBYna+DaifXRmHZI40KmW/Sf2+zfK+3oMd/otG3LW4blgPFw
+ y+QtNd6OfHNclWKRy8YwawTX+L/9DI7YhgxmcUPAJs+l6JyI/gc/J86fP2GfUvwgUEeU2UY0/
+ JHWpNDieZu0lJZCN2h03TRvGD1NupB54Sh/MRRJbVeHhopPy6D0RzteNzfyzsA1kkdtd9FqER
+ XFUvUhIYZsKpO3Pys7qBNw9GBgRACNidMgkb1FLiGxStctedIsD8s/z4MDfM8493oODh7fYeW
+ ca9rqK4/tz/VzLnSCSKxgQEQGHNSMqS9o4K83vgl0dlT7YUFhGKO8RaS9kcu1Azu1k7EkRJFr
+ yT7nCzogr1wE27RktKqppzOAmLZHNjcJmBkx/n5n4u2qXDp7eyCZyXy0XSwMiiB/o0+FWlM9W
+ GSCPtp8fjsmLfPh4r9UeYY5qoGh2VOQ/Go7t5AZLSRLv9ohyeYUEulo+ag6JugMJPTlVMqWmH
+ X/tpwhbATdJD35oRRLR5IzqhZ2ebXMOZTyfxM/FvWjjTojNKy0i18naG72gYUvn3F1g7RxK+e
+ oIgWgMKnGxUz3OMzIwjFiiCgPXtIMr7PF2IgMXUqQ+KR3mUIzTWPt/4GIicridnDYz2RAUmU0
+ LAfyaHNCpwA4bbUz/YdDOgWkmui8s7l3bhxVsUbVYCymMqlkxadpudYNbX3ofpu7tKEiSfy74
+ T0qiZAMhgM4DOskVTOwmdoUW7l1Cu6EZRAFfvicro78szVX7pW67gXfJ2+M356EUle9IgASf0
+ 9yEzzyUQNkcqZY+kJkwSY+ZKJnXlz6WRoZard745n861vN2ZE32S1V74vCBn5WXDape0tu5Kr
+ TuRxinw2M64b3ABfzQHH/uGflLBUnhdKJeNA6HFbAukTfzZtGVwBev/hvdSmVX5SpvvH6Vifg
+ aJQ6dPJkJImQs7StvSXyR7S933tPFJTb0xdRQCFoXAwa4ETPq9a9LLQgn8VKE3gt09DYbHJzJ
+ v8geyl17eODgecgJ5wJUCvEx70k+R3PAinonliCaiQUuNup53NaqDXO8D+63/WYEd5WeMSWuM
+ PNVU0JX7tmrbw+4GQBJC4mjRPgulKt8rdb2zz63RrI6YSORmfw0KI1AICp1FZw923gY0TUg/1
+ sYwn1O6MfVqqCW4BS
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/19/20 8:59 AM, Pavel Begunkov wrote:
-> On 19/06/2020 17:15, Jens Axboe wrote:
->> On 6/19/20 3:41 AM, javier.gonz@samsung.com wrote:
->>> Jens,
->>>
->>> Would you have time to answer a question below in this thread?
->>>
->>> On 18.06.2020 11:11, javier.gonz@samsung.com wrote:
->>>> On 18.06.2020 08:47, Damien Le Moal wrote:
->>>>> On 2020/06/18 17:35, javier.gonz@samsung.com wrote:
->>>>>> On 18.06.2020 07:39, Damien Le Moal wrote:
->>>>>>> On 2020/06/18 2:27, Kanchan Joshi wrote:
->>>>>>>> From: Selvakumar S <selvakuma.s1@samsung.com>
->>>>>>>>
->>>>>>>> Introduce three new opcodes for zone-append -
->>>>>>>>
->>>>>>>>   IORING_OP_ZONE_APPEND     : non-vectord, similiar to IORING_OP_WRITE
->>>>>>>>   IORING_OP_ZONE_APPENDV    : vectored, similar to IORING_OP_WRITEV
->>>>>>>>   IORING_OP_ZONE_APPEND_FIXED : append using fixed-buffers
->>>>>>>>
->>>>>>>> Repurpose cqe->flags to return zone-relative offset.
->>>>>>>>
->>>>>>>> Signed-off-by: SelvaKumar S <selvakuma.s1@samsung.com>
->>>>>>>> Signed-off-by: Kanchan Joshi <joshi.k@samsung.com>
->>>>>>>> Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
->>>>>>>> Signed-off-by: Javier Gonzalez <javier.gonz@samsung.com>
->>>>>>>> ---
->>>>>>>> fs/io_uring.c                 | 72 +++++++++++++++++++++++++++++++++++++++++--
->>>>>>>> include/uapi/linux/io_uring.h |  8 ++++-
->>>>>>>> 2 files changed, 77 insertions(+), 3 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/fs/io_uring.c b/fs/io_uring.c
->>>>>>>> index 155f3d8..c14c873 100644
->>>>>>>> --- a/fs/io_uring.c
->>>>>>>> +++ b/fs/io_uring.c
->>>>>>>> @@ -649,6 +649,10 @@ struct io_kiocb {
->>>>>>>> 	unsigned long		fsize;
->>>>>>>> 	u64			user_data;
->>>>>>>> 	u32			result;
->>>>>>>> +#ifdef CONFIG_BLK_DEV_ZONED
->>>>>>>> +	/* zone-relative offset for append, in bytes */
->>>>>>>> +	u32			append_offset;
->>>>>>>
->>>>>>> this can overflow. u64 is needed.
->>>>>>
->>>>>> We chose to do it this way to start with because struct io_uring_cqe
->>>>>> only has space for u32 when we reuse the flags.
->>>>>>
->>>>>> We can of course create a new cqe structure, but that will come with
->>>>>> larger changes to io_uring for supporting append.
->>>>>>
->>>>>> Do you believe this is a better approach?
->>>>>
->>>>> The problem is that zone size are 32 bits in the kernel, as a number
->>>>> of sectors.  So any device that has a zone size smaller or equal to
->>>>> 2^31 512B sectors can be accepted. Using a zone relative offset in
->>>>> bytes for returning zone append result is OK-ish, but to match the
->>>>> kernel supported range of possible zone size, you need 31+9 bits...
->>>>> 32 does not cut it.
->>>>
->>>> Agree. Our initial assumption was that u32 would cover current zone size
->>>> requirements, but if this is a no-go, we will take the longer path.
->>>
->>> Converting to u64 will require a new version of io_uring_cqe, where we
->>> extend at least 32 bits. I believe this will need a whole new allocation
->>> and probably ioctl().
->>>
->>> Is this an acceptable change for you? We will of course add support for
->>> liburing when we agree on the right way to do this.
->>
->> If you need 64-bit of return value, then it's not going to work. Even
->> with the existing patches, reusing cqe->flags isn't going to fly, as
->> it would conflict with eg doing zone append writes with automatic
->> buffer selection.
-> 
-> Buffer selection is for reads/recv kind of requests, but appends
-> are writes. In theory they can co-exist using cqe->flags.
+> Changes in v2:
+=E2=80=A6
+> - assignment operator used
 
-Yeah good point, since it's just writes, doesn't matter. But the other
-point still stands, it could potentially conflict with other flags, but
-I guess only to the extent where both flags would need extra storage in
-->flags. So not a huge concern imho.
+I would prefer the distinction for the application of corresponding metava=
+riables.
 
 
--- 
-Jens Axboe
+> Changes in v3:
+=E2=80=A6
+>  - \(&E1\|&E2\) changed to &\(E1\|E2\)
 
+Would it be more helpful to mention the movement of the ampersand
+before SmPL disjunctions?
+
+
+=E2=80=A6
+> +virtual context
+> +virtual report
+> +virtual org
+
+Can the following SmPL code variant become more attractive?
+
++virtual context, report, org
+
+
+=E2=80=A6
+> +expression subE1 <=3D as.E1;
+> +expression subE2 <=3D as.E2;
+> +expression as.E1, as.E2, E3;
+
+How do you think about the following SmPL code variant?
+
++expression subE1 <=3D as.E1,
++           subE2 <=3D as.E2,
++           as.E1,
++           as.E2,
++           E3;
+
+
+=E2=80=A6
+> +coccilib.report.print_report(p2[0],
+> +f"WARNING: same struct_size (line {p1[0].line})")
+
+Please align such function parameters.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/coding-style.rst?id=3D5e857ce6eae7ca21b2055cca4885545e=
+29228fe2#n93
+
++coccilib.report.print_report(p2[0],
++                             f"WARNING: same struct_size (line {p1[0].lin=
+e})")
+
+
+Regards,
+Markus
