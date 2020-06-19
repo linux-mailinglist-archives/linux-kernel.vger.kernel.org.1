@@ -2,83 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BE0200AE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AB1D200ADB
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 16:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732864AbgFSOCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 10:02:31 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:37119 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725806AbgFSOC1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:02:27 -0400
-Received: from ip-109-41-0-196.web.vodafone.de ([109.41.0.196] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jmHau-0002Hs-LG; Fri, 19 Jun 2020 14:02:15 +0000
-Date:   Fri, 19 Jun 2020 16:01:48 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Christian Brauner <christian@brauner.io>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the pidfd tree with the
- powerpc-fixes tree
-Message-ID: <20200619140148.4ytme4wsvtw2oyrg@wittgenstein>
-References: <20200618121131.4ad29150@canb.auug.org.au>
- <878sgjcnjp.fsf@mpe.ellerman.id.au>
+        id S1732513AbgFSOCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:02:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60232 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725806AbgFSOCK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:02:10 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 56105207E8;
+        Fri, 19 Jun 2020 14:02:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592575329;
+        bh=gJzzZB7/IPivlAu1L2QO6aYOv9XFiWRSXkWULQj1ojM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZxO+IZbH+VtKny5dA4LoKDHP3cFZWC2M+d93WxoSHMmBFB2bXateTHCfRn1kNRTt+
+         TneX/HlmNh7IevONOCK4SQGDxtvzMm7JPuVTTsPRI40QQ6z9F8e1kbgol+Zm8YYfBw
+         ehz6msbFKlfo+8G3URyAVEfR/InnfbMCPwXgnJPU=
+Date:   Fri, 19 Jun 2020 16:02:06 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel Gutson <daniel@eclypsium.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
+        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Ability to read the MKTME status from userspace
+Message-ID: <20200619140206.GA1862477@kroah.com>
+References: <20200618210215.23602-1-daniel.gutson@eclypsium.com>
+ <20200619072041.GA2795@kroah.com>
+ <CAFmMkTF7QBJQdKxhsPiUPifsxykyCVv=NYandpB0z8EccAxMXw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <878sgjcnjp.fsf@mpe.ellerman.id.au>
+In-Reply-To: <CAFmMkTF7QBJQdKxhsPiUPifsxykyCVv=NYandpB0z8EccAxMXw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 09:17:30PM +1000, Michael Ellerman wrote:
-> Stephen Rothwell <sfr@canb.auug.org.au> writes:
-> > Hi all,
+On Fri, Jun 19, 2020 at 10:51:32AM -0300, Daniel Gutson wrote:
+> > > +enum mktme_status_type get_mktme_status(void)
+> > > +{
+> > > +     return mktme_status;
+> > > +}
+> > > +EXPORT_SYMBOL_GPL(get_mktme_status);
 > >
-> > Today's linux-next merge of the pidfd tree got a conflict in:
+> > prefix of the subsystem first please:
+> >         mktme_get_status
 > >
-> >   arch/powerpc/kernel/syscalls/syscall.tbl
-> >
-> > between commit:
-> >
-> >   35e32a6cb5f6 ("powerpc/syscalls: Split SPU-ness out of ABI")
-> >
-> > from the powerpc-fixes tree and commit:
-> >
-> >   9b4feb630e8e ("arch: wire-up close_range()")
-> >
-> > from the pidfd tree.
-> >
-> > I fixed it up (see below) and can carry the fix as necessary. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts.
 > 
-> Thanks.
+> OK.
 > 
-> I thought the week between rc1 and rc2 would be a safe time to do that
-> conversion of the syscall table, but I guess I was wrong :)
-
-:)
-
+> > Or, better yet, why not just export the variable directly?  Why is this
+> > a function at all?
 > 
-> I'm planning to send those changes to Linus for rc2, so the conflict
-> will then be vs mainline. But I guess it's pretty trivial so it doesn't
-> really matter.
+> Because I want this to be read only.
 
-close_range() is targeted for the v5.9 merge window. I always do
-test-merges with mainline at the time I'm creating a pr and I'll just
-mention to Linus that there's conflict with ppc. :)
+read-only to who?
 
-Thanks!
-Christian
+> > > +
+> > > +/* Buffer to return: always 3 because of the following chars:
+> > > + *     value \n \0
+> > > + */
+> > > +#define BUFFER_SIZE 3
+> >
+> > Why a define?
+> 
+> Do you suggest `static const int` instead?
+
+Why do you need it at all?
+
+> > > +
+> > > +     sprintf(tmp, "%d\n", (int)get_mktme_status() & 1);
+> > > +     return simple_read_from_buffer(buf, count, ppos, tmp, sizeof(tmp));
+> > > +}
+> > > +
+> > > +static const struct file_operations mktme_status_ops = {
+> > > +     .read = mktme_status_read,
+> > > +};
+> > > +
+> > > +static int __init mod_init(void)
+> > > +{
+> > > +     mktme_dir = securityfs_create_dir("mktme", NULL);
+> > > +     if (IS_ERR(mktme_dir)) {
+> > > +             pr_err("Couldn't create mktme sysfs dir\n");
+> > > +             return -1;
+> >
+> > Don't make up random error numbers, use the EWHATEVER defines please.
+> >
+> 
+> Could you please suggest one?
+
+Why not return the error given to you?  Why throw that information away?
+
+> > Also no Documentation/ABI/ update for your new userspace api that you
+> > just created?
+> >
+> 
+> should that be a comment in the .h?
+
+No, you need a description in Documentation/ABI/ about any
+sysfs/configfs/securityfs/whatever for new things you are creating.
+
+thanks,
+
+greg k-h
