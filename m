@@ -2,194 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF691FFF21
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 02:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9457B1FFF24
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 02:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728227AbgFSAB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 18 Jun 2020 20:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727982AbgFSAB6 (ORCPT
+        id S1728186AbgFSAHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 18 Jun 2020 20:07:19 -0400
+Received: from out01.mta.xmission.com ([166.70.13.231]:57062 "EHLO
+        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726001AbgFSAHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 18 Jun 2020 20:01:58 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71448C0613EE
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 17:01:58 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id fc4so3682553qvb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 18 Jun 2020 17:01:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RNchvC4tH2Tj4K3jgyuexvmGUcl61SJ/ygEHsSpC1MI=;
-        b=cy8LU4gN5EMWqz2rD+681PTcDvGi0NtokQF1JnGdedhKjh7HV+2NeV7U6F1NvAWJ7A
-         QenGDTy+fEKKwZFCU/PBkCALnDs3uLdWypWU8v+CrMLetqK+L43rwP75KaAqvcyCp/Sg
-         kQmIZkd+7vZ0Qjr9gtzlUgONWZsqGsnGcybEw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RNchvC4tH2Tj4K3jgyuexvmGUcl61SJ/ygEHsSpC1MI=;
-        b=niMCM+4dqmvGuX/fjHPmaQPcYqs+sLK/kydOvoRg7/Y8Q6Wku/mAEN9lyMgDU2QwTJ
-         wfcQgRP4WMycrQrhdIfC45bqbWrkHDiJw5jqARtcIro4iG34WpPDYWspXbWEV6KKERRW
-         fdrQ97ETV07CtMbmkXQalmDg6zlA+D2Qjp+Y/sFiBE7sO2VyjGUuFiP1x344P6UV+W7z
-         RhxbklErNbLsgCSNyFItD6Ax1YGV1vcR3KtxElp4CHb1CdHV41aYkLhFhA2+1tS4XXXy
-         XqpozNlUjfys4+L1xo0qtDDdU/MmS0imLzslRMEYWY1FTXN5oIpuXPY0xbRVUKz4dOuz
-         hfCw==
-X-Gm-Message-State: AOAM530eOLfWthSCfMa8pKz+LT5k11vkkMsXAMdut8bb7r6lSEsERx+r
-        FZdhMbyLy4MKqdFIcAvHTnBrjg==
-X-Google-Smtp-Source: ABdhPJwlQKbcQQUzDdsZoGymkXo/pBXE0eYMdHpV8eExonBxpGTRc2ese8BIwCGXZuMM/eqMx76keg==
-X-Received: by 2002:a05:6214:1342:: with SMTP id b2mr6425412qvw.80.1592524917556;
-        Thu, 18 Jun 2020 17:01:57 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id g5sm5271583qta.46.2020.06.18.17.01.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Jun 2020 17:01:57 -0700 (PDT)
-Date:   Thu, 18 Jun 2020 20:01:56 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Davidlohr Bueso <dave@stgolabs.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        rcu@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Subject: Re: [PATCH 6/7] rcutorture: Add support to get the number of wakeups
- of main GP kthread
-Message-ID: <20200619000156.GD40119@google.com>
-References: <20200618202955.4024-1-joel@joelfernandes.org>
- <20200618202955.4024-6-joel@joelfernandes.org>
- <20200618224058.GD2723@paulmck-ThinkPad-P72>
+        Thu, 18 Jun 2020 20:07:18 -0400
+Received: from in01.mta.xmission.com ([166.70.13.51])
+        by out01.mta.xmission.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.90_1)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jm4Yr-0005eM-GX; Thu, 18 Jun 2020 18:07:13 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
+        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.87)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1jm4Ym-0006Uh-Qy; Thu, 18 Jun 2020 18:07:13 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Junxiao Bi <junxiao.bi@oracle.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <matthew.wilcox@oracle.com>,
+        Srinivas Eeda <SRINIVAS.EEDA@oracle.com>,
+        "joe.jin\@oracle.com" <joe.jin@oracle.com>
+References: <54091fc0-ca46-2186-97a8-d1f3c4f3877b@oracle.com>
+        <20200618233958.GV8681@bombadil.infradead.org>
+Date:   Thu, 18 Jun 2020 19:02:51 -0500
+In-Reply-To: <20200618233958.GV8681@bombadil.infradead.org> (Matthew Wilcox's
+        message of "Thu, 18 Jun 2020 16:39:58 -0700")
+Message-ID: <877dw3apn8.fsf@x220.int.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200618224058.GD2723@paulmck-ThinkPad-P72>
+Content-Type: text/plain
+X-XM-SPF: eid=1jm4Ym-0006Uh-Qy;;;mid=<877dw3apn8.fsf@x220.int.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19NVkE1QwlpS7bOnHbUSF8lVHt7TQQejhQ=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
+        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
+        *      [score: 0.4693]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa06 0; Body=1 Fuz1=1 Fuz2=1]
+X-Spam-DCC: ; sa06 0; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: ;Matthew Wilcox <willy@infradead.org>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 4221 ms - load_scoreonly_sql: 0.06 (0.0%),
+        signal_user_changed: 11 (0.3%), b_tie_ro: 10 (0.2%), parse: 1.05
+        (0.0%), extract_message_metadata: 25 (0.6%), get_uri_detail_list: 8
+        (0.2%), tests_pri_-1000: 6 (0.2%), tests_pri_-950: 1.59 (0.0%),
+        tests_pri_-900: 1.18 (0.0%), tests_pri_-90: 196 (4.6%), check_bayes:
+        194 (4.6%), b_tokenize: 12 (0.3%), b_tok_get_all: 23 (0.5%),
+        b_comp_prob: 3.7 (0.1%), b_tok_touch_all: 150 (3.6%), b_finish: 1.26
+        (0.0%), tests_pri_0: 264 (6.3%), check_dkim_signature: 0.66 (0.0%),
+        check_dkim_adsp: 2.6 (0.1%), poll_dns_idle: 3682 (87.3%),
+        tests_pri_10: 2.4 (0.1%), tests_pri_500: 3707 (87.8%), rewrite_mail:
+        0.00 (0.0%)
+Subject: Re: severe proc dentry lock contention
+X-Spam-Flag: No
+X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
+X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 03:40:58PM -0700, Paul E. McKenney wrote:
-> On Thu, Jun 18, 2020 at 04:29:54PM -0400, Joel Fernandes (Google) wrote:
-> > This is useful to check for any improvements or degradation related to
-> > number of GP kthread wakeups during testing.
-> > 
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> 
-> This was a good way to collect the data for your testing, but
-> we can expect rcutorture to only do so much.  ;-)
+Matthew Wilcox <willy@infradead.org> writes:
 
-np, I will push this one into a git tag for the next time I need it ;)
+> On Thu, Jun 18, 2020 at 03:17:33PM -0700, Junxiao Bi wrote:
+>> When debugging some performance issue, i found that thousands of threads
+>> exit around same time could cause a severe spin lock contention on proc
+>> dentry "/proc/$parent_process_pid/task/", that's because threads needs to
+>> clean up their pid file from that dir when exit. Check the following
+>> standalone test case that simulated the case and perf top result on v5.7
+>> kernel. Any idea on how to fix this?
 
-thanks,
+>
+> Thanks, Junxiao.
+>
+> We've looked at a few different ways of fixing this problem.
+>
+> Even though the contention is within the dcache, it seems like a usecase
+> that the dcache shouldn't be optimised for -- generally we do not have
+> hundreds of CPUs removing dentries from a single directory in parallel.
+>
+> We could fix this within procfs.  We don't have a great patch yet, but
+> the current approach we're looking at allows only one thread at a time
+> to call dput() on any /proc/*/task directory.
+>
+> We could also look at fixing this within the scheduler.  Only allowing
+> one CPU to run the threads of an exiting process would fix this particular
+> problem, but might have other consequences.
+>
+> I was hoping that 7bc3e6e55acf would fix this, but that patch is in 5.7,
+> so that hope is ruled out.
 
- - Joel
+Does anyone know if problem new in v5.7?  I am wondering if I introduced
+this problem when I refactored the code or if I simply churned the code
+but the issue remains effectively the same.
 
+Can you try only flushing entries when the last thread of the process is
+reaped?  I think in practice we would want to be a little more
+sophisticated but it is a good test case to see if it solves the issue.
 
-> 							Thanx, Paul
-> 
-> > ---
-> >  kernel/rcu/Kconfig.debug |  1 +
-> >  kernel/rcu/rcu.h         |  2 ++
-> >  kernel/rcu/rcutorture.c  | 23 ++++++++++++++++++++++-
-> >  kernel/rcu/tree.c        |  7 +++++++
-> >  4 files changed, 32 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/rcu/Kconfig.debug b/kernel/rcu/Kconfig.debug
-> > index 3cf6132a4bb9f..3323e3378af5a 100644
-> > --- a/kernel/rcu/Kconfig.debug
-> > +++ b/kernel/rcu/Kconfig.debug
-> > @@ -50,6 +50,7 @@ config RCU_TORTURE_TEST
-> >  	select TASKS_RCU
-> >  	select TASKS_RUDE_RCU
-> >  	select TASKS_TRACE_RCU
-> > +	select SCHEDSTATS
-> >  	default n
-> >  	help
-> >  	  This option provides a kernel module that runs torture tests
-> > diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> > index cf66a3ccd7573..7e867e81d9738 100644
-> > --- a/kernel/rcu/rcu.h
-> > +++ b/kernel/rcu/rcu.h
-> > @@ -511,6 +511,7 @@ srcu_batches_completed(struct srcu_struct *sp) { return 0; }
-> >  static inline void rcu_force_quiescent_state(void) { }
-> >  static inline void show_rcu_gp_kthreads(void) { }
-> >  static inline int rcu_get_gp_kthreads_prio(void) { return 0; }
-> > +static inline struct task_struct *rcu_get_main_gp_kthread(void) { return 0; }
-> >  static inline void rcu_fwd_progress_check(unsigned long j) { }
-> >  #else /* #ifdef CONFIG_TINY_RCU */
-> >  bool rcu_dynticks_zero_in_eqs(int cpu, int *vp);
-> > @@ -519,6 +520,7 @@ unsigned long rcu_exp_batches_completed(void);
-> >  unsigned long srcu_batches_completed(struct srcu_struct *sp);
-> >  void show_rcu_gp_kthreads(void);
-> >  int rcu_get_gp_kthreads_prio(void);
-> > +struct task_struct *rcu_get_main_gp_kthread(void);
-> >  void rcu_fwd_progress_check(unsigned long j);
-> >  void rcu_force_quiescent_state(void);
-> >  extern struct workqueue_struct *rcu_gp_wq;
-> > diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> > index d0d265304d147..959a1f84d6904 100644
-> > --- a/kernel/rcu/rcutorture.c
-> > +++ b/kernel/rcu/rcutorture.c
-> > @@ -23,6 +23,7 @@
-> >  #include <linux/rcupdate_wait.h>
-> >  #include <linux/interrupt.h>
-> >  #include <linux/sched/signal.h>
-> > +#include <linux/sched/stat.h>
-> >  #include <uapi/linux/sched/types.h>
-> >  #include <linux/atomic.h>
-> >  #include <linux/bitops.h>
-> > @@ -460,9 +461,29 @@ static void rcu_sync_torture_init(void)
-> >  	INIT_LIST_HEAD(&rcu_torture_removed);
-> >  }
-> >  
-> > +unsigned long rcu_gp_nr_wakeups;
-> > +
-> > +static void rcu_flavor_init(void)
-> > +{
-> > +	rcu_sync_torture_init();
-> > +
-> > +	/* Make sure schedstat is enabled for GP thread wakeup count. */
-> > +	force_schedstat_enabled();
-> > +	rcu_gp_nr_wakeups = rcu_get_main_gp_kthread()->se.statistics.nr_wakeups;
-> > +}
-> > +
-> > +static void rcu_flavor_cleanup(void)
-> > +{
-> > +	unsigned long now_nr = rcu_get_main_gp_kthread()->se.statistics.nr_wakeups;
-> > +
-> > +	pr_alert("End-test: Cleanup: Total GP-kthread wakeups: %lu\n",
-> > +		now_nr - rcu_gp_nr_wakeups);
-> > +}
-> > +
-> >  static struct rcu_torture_ops rcu_ops = {
-> >  	.ttype		= RCU_FLAVOR,
-> > -	.init		= rcu_sync_torture_init,
-> > +	.init		= rcu_flavor_init,
-> > +	.cleanup	= rcu_flavor_cleanup,
-> >  	.readlock	= rcu_torture_read_lock,
-> >  	.read_delay	= rcu_read_delay,
-> >  	.readunlock	= rcu_torture_read_unlock,
-> > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> > index c3bae7a83d792..a3a175feb310a 100644
-> > --- a/kernel/rcu/tree.c
-> > +++ b/kernel/rcu/tree.c
-> > @@ -175,6 +175,13 @@ int rcu_get_gp_kthreads_prio(void)
-> >  }
-> >  EXPORT_SYMBOL_GPL(rcu_get_gp_kthreads_prio);
-> >  
-> > +/* Retrieve RCU's main GP kthread task_struct */
-> > +struct task_struct *rcu_get_main_gp_kthread(void)
-> > +{
-> > +	return rcu_state.gp_kthread;
-> > +}
-> > +EXPORT_SYMBOL_GPL(rcu_get_main_gp_kthread);
-> > +
-> >  /*
-> >   * Number of grace periods between delays, normalized by the duration of
-> >   * the delay.  The longer the delay, the more the grace periods between
-> > -- 
-> > 2.27.0.111.gc72c7da667-goog
-> > 
+diff --git a/kernel/exit.c b/kernel/exit.c
+index cebae77a9664..d56e4eb60bdd 100644
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -152,7 +152,7 @@ void put_task_struct_rcu_user(struct task_struct *task)
+ void release_task(struct task_struct *p)
+ {
+ 	struct task_struct *leader;
+-	struct pid *thread_pid;
++	struct pid *thread_pid = NULL;
+ 	int zap_leader;
+ repeat:
+ 	/* don't need to get the RCU readlock here - the process is dead and
+@@ -165,7 +165,8 @@ void release_task(struct task_struct *p)
+ 
+ 	write_lock_irq(&tasklist_lock);
+ 	ptrace_release_task(p);
+-	thread_pid = get_pid(p->thread_pid);
++	if (p == p->group_leader)
++		thread_pid = get_pid(p->thread_pid);
+ 	__exit_signal(p);
+ 
+ 	/*
+@@ -188,8 +189,10 @@ void release_task(struct task_struct *p)
+ 	}
+ 
+ 	write_unlock_irq(&tasklist_lock);
+-	proc_flush_pid(thread_pid);
+-	put_pid(thread_pid);
++	if (thread_pid) {
++		proc_flush_pid(thread_pid);
++		put_pid(thread_pid);
++	}
+ 	release_thread(p);
+ 	put_task_struct_rcu_user(p);
+ 
