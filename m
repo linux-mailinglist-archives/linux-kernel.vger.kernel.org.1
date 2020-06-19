@@ -2,158 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED221201E56
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 00:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA7A8201E4F
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 00:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730053AbgFSW5J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 18:57:09 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44146 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730018AbgFSW5A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 18:57:00 -0400
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05JMi1Al009982;
-        Fri, 19 Jun 2020 15:52:50 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=MXEQfSNu0oOIHQdNYOlGMqFfLG5osBvasPMi0pITXmY=;
- b=PXXxR/WnXTEHkqXxZZ6nW+y+ayi5fJptldqhoAFQvlOyuhFGpUVix/BnF6lJsm8c4YKt
- s/AsQ7PcAf80n7vD6LYYq+Ueov6UA1wY562iJCVVj0/+zzgXG4aCjNujVbbSSd6B0aWt
- A3JVNe3BUlvm0VlU2Oz/zA4oUErjgGLtNrA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31s2rcs60q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 19 Jun 2020 15:52:50 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 19 Jun 2020 15:52:49 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hpY42+eU+wRAb7amWRzru/RsyfXpBgUqT/wwann+BT/rd25rS4ukSVi4CI03CPe+BNN515Oepv7YDecUM8t7DdtW4RL0pOASERHLLmzHURLQl2rLZtnvjVincxhliVMpCeYpkfpYZfawWnlCIO0FSJr83rSNEec3uUnRih8/t6vvZy3RvLm45Hzq8OmQ+RjjshGzYRe/ef985blSvVaGlCF09Jx3M2qQy7dnuehg8crSuP2IKl3URHtve++gWwZQErlF+fkP02qZJxjBLCn0a0vmcNevN9t6WhGKsompB7zAhy0E16+YVbXXWiEJxax9ur71X9VjUqdTNkzX0SiKmw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MXEQfSNu0oOIHQdNYOlGMqFfLG5osBvasPMi0pITXmY=;
- b=WqBHrBcEzlMQ31ni5UQQdOmRA9o7nkN+erBkjdAlq60vZtPRnjZZNdhuOWDpqK55Jok3dnuzLuC22hEpwnPgmncYixQXJwDCQKEadlPxQYfewbXAYwYKTKHkhopVSyX3ERGQ7HuGNslVR/HeBnyOJ3LfdFiHGvSmZDGAIiaKDMeWUeqFbM5LEFfixCB22WhCVF07BiohaNLKtOhntLWfbW1aQN82RcFc7jdO1gXxVbIz8NlTrJjXduYpJBbPTZAFdgecAnQusiVz98FmpCmXbAXcKAnf2mCBV+iXVIPTRVIn7as+wLiQ5HMm8ymqabJlHOSLmZkpr27ys6jHl7Vj9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MXEQfSNu0oOIHQdNYOlGMqFfLG5osBvasPMi0pITXmY=;
- b=jKGOjoZOOCwpm+mk5BIpFMJqh9eHS6iOdBlr+GK61wowyp+U+MdBVZcO3PSi7TuStUeKgaQRASLtC9p5tpkICY4ZXMum67uPnmZ/d05btKjqKrtumthJExU1V1p9eOVrK33hICXYjJMfPusN93qzeKJZ4SXc0X4bRzRI9a0htDE=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3144.namprd15.prod.outlook.com (2603:10b6:a03:fe::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22; Fri, 19 Jun
- 2020 22:52:46 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::48e3:c159:703d:a2f1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::48e3:c159:703d:a2f1%5]) with mapi id 15.20.3109.021; Fri, 19 Jun 2020
- 22:52:46 +0000
-Date:   Fri, 19 Jun 2020 15:52:43 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 06/19] mm: memcg/slab: obj_cgroup API
-Message-ID: <20200619225243.GB237539@carbon.dhcp.thefacebook.com>
-References: <20200608230654.828134-1-guro@fb.com>
- <20200608230654.828134-7-guro@fb.com>
- <CALvZod4hq5moKcb6f5L6VAS+v5+jKf8Hyd0gLotD7bMK7FsKgg@mail.gmail.com>
- <20200619213810.GA237539@carbon.dhcp.thefacebook.com>
- <CALvZod4-hsXx6GcrftsXtMA08w9gJ3Sk_Lv0CxzDF20xsyf9JQ@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod4-hsXx6GcrftsXtMA08w9gJ3Sk_Lv0CxzDF20xsyf9JQ@mail.gmail.com>
-X-ClientProxiedBy: BY3PR10CA0008.namprd10.prod.outlook.com
- (2603:10b6:a03:255::13) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        id S1730007AbgFSW45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 18:56:57 -0400
+Received: from smtp.uniroma2.it ([160.80.6.16]:33339 "EHLO smtp.uniroma2.it"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729890AbgFSW4r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 18:56:47 -0400
+Received: from localhost.localdomain ([160.80.103.126])
+        by smtp-2015.uniroma2.it (8.14.4/8.14.4/Debian-8) with ESMTP id 05JMuRJA014086
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Sat, 20 Jun 2020 00:56:27 +0200
+From:   Andrea Mayer <andrea.mayer@uniroma2.it>
+To:     David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Donald Sharp <sharpd@cumulusnetworks.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Dinesh Dutt <didutt@gmail.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels@gmail.com>,
+        Andrea Mayer <andrea.mayer@uniroma2.it>
+Subject: [net-next,v1,0/5] Strict mode for VRF
+Date:   Sat, 20 Jun 2020 00:54:42 +0200
+Message-Id: <20200619225447.1445-1-andrea.mayer@uniroma2.it>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:a2a9) by BY3PR10CA0008.namprd10.prod.outlook.com (2603:10b6:a03:255::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21 via Frontend Transport; Fri, 19 Jun 2020 22:52:46 +0000
-X-Originating-IP: [2620:10d:c090:400::5:a2a9]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b77858f9-0cfa-4169-cb0e-08d814a37be8
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3144:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB314421BE3F689D528CA0CB01BE980@BYAPR15MB3144.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-Forefront-PRVS: 0439571D1D
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2k0rrDcXlUByyXdb+yX1GeXudEUVx1rK70BUxS3fUjCdPLeRvTrKL2cDQLI0PY9Hhx5BQNaBZZOwFn3HQOT4DqNYijqu3WaC7E749UpIUV19Ije+Z0t33iaXghgOZZ8bPFAKY7v+O7pAKSNyS9Glu1TUCmhW0bv43VVRjf8uLj0+hLRCusI5yQlJ3HjlrT2Pff9peFrD1Aws5C2eH2yxFzyyHXjl4Jgp1Fe8JlMRS3LP7y8agtZs2rWlVO41Blsk67x8okdeOmVJISNtGmG7Ta2gvG7yk4y7A6+PQxAfUvWGTjVDJZF2MWxR6+adEE8mY9lAZlPtihFwmZIJ69aLuw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(346002)(376002)(366004)(39860400002)(396003)(2906002)(86362001)(66946007)(1076003)(66476007)(66556008)(16526019)(478600001)(186003)(54906003)(316002)(9686003)(8936002)(55016002)(7696005)(52116002)(8676002)(6916009)(33656002)(6666004)(53546011)(4326008)(5660300002)(83380400001)(6506007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: JIXC9i0ze9PYZ0buFoC+P6npuyiIWDKWl16a44MEjFbxC5IrUTv1DV5LfrwMHHoKHPt3iWke659QmkJLTMc6Dmjpv3JEmQjxjo6+J7Acs3C/4CWd4hiX6v1u+uOdUAawGdjCJkeOM32gWWmirBEKyboVGUXwYqp1AV/sXJk/1AgDraWI5AhihT1oXo7EoxcPzIv/ZQFLtdWSSRNE3lCfPE9Hr7Q1Y3AX2Kn9iqQUoDsjuO+VPa8HLM/qxj+OcPLVw0CjWl4JUxrHMiosbFqdRkv/RvbWUWW8LHCx6YM5XVQ8Xfg5B0ly7htlBtNM9savd2fXBT1+okH28B59+fdWQQGZQ3XfM0BppP2wX9e+bnbzXuIY29+NItHVLTREedcb2hKvgRMvIhppKAmsOlVKm/V4cD6KTib0beDw8bER8/ijQks32cimgZK6XW6TLOqO4BdWPGvlDYBJ9IGUYonVwEXf1/QCmLZs9DJPXfKlFzxyetyTGhoEMAIN/vSGzwf7j35UuDN5a54JP+6TyLtBrA==
-X-MS-Exchange-CrossTenant-Network-Message-Id: b77858f9-0cfa-4169-cb0e-08d814a37be8
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jun 2020 22:52:46.5036
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: wL7ShV2FRWOCjmtcvSmgQ2yOKjimfiV9ihX+eTwcqypfmTZllDhS+TsJHSisoIF5
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3144
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-19_22:2020-06-19,2020-06-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=1
- bulkscore=0 malwarescore=0 mlxscore=0 lowpriorityscore=0
- cotscore=-2147483648 priorityscore=1501 clxscore=1015 adultscore=0
- spamscore=0 mlxlogscore=999 impostorscore=0 phishscore=0 classifier=spam
- adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006190159
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.100.0 at smtp-2015
+X-Virus-Status: Clean
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 03:16:44PM -0700, Shakeel Butt wrote:
-> On Fri, Jun 19, 2020 at 2:38 PM Roman Gushchin <guro@fb.com> wrote:
-> >
-> [snip]
-> > > > memcg->objcg is rcu protected.
-> > > > objcg->memcg is a raw pointer, which is always pointing at a memory
-> > > > cgroup, but can be atomically swapped to the parent memory cgroup. So
-> > > > the caller
-> > >
-> > > What type of caller? The allocator?
-> >
-> > Basically whoever uses the pointer. Is it better to s/caller/user?
-> >
-> 
-> Yes 'user' feels better.
-> 
-> > >
-> [...]
-> > >
-> > > The normal stock can go to 32*nr_cpus*PAGE_SIZE. I am wondering if
-> > > just PAGE_SIZE is too less for obj stock.
-> >
-> > It works on top of the current stock of 32 pages, so it can grab these
-> > 32 pages without any atomic operations. And it should be easy to increase
-> > this limit if we'll see any benefits.
-> >
-> > Thank you for looking into the patchset!
-> >
-> > Andrew, can you, please, squash the following fix based on Shakeel's suggestions?
-> > Thanks!
-> >
-> > --
-> 
-> For the following squashed into the original patch:
-> 
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+This patch set adds the new "strict mode" functionality to the Virtual
+Routing and Forwarding infrastructure (VRF). Hereafter we discuss the
+requirements and the main features of the "strict mode" for VRF.
 
-Thank you!
+On VRF creation, it is necessary to specify the associated routing table used
+during the lookup operations. Currently, there is no mechanism that avoids
+creating multiple VRFs sharing the same routing table. In other words, it is not
+possible to force a one-to-one relationship between a specific VRF and the table
+associated with it.
+
+
+The "strict mode" imposes that each VRF can be associated to a routing table
+only if such routing table is not already in use by any other VRF.
+In particular, the strict mode ensures that:
+ 
+ 1) given a specific routing table, the VRF (if exists) is uniquely identified;
+ 2) given a specific VRF, the related table is not shared with any other VRF.
+
+Constraints (1) and (2) force a one-to-one relationship between each VRF and the
+corresponding routing table.
+
+
+The strict mode feature is designed to be network-namespace aware and it can be
+directly enabled/disabled acting on the "strict_mode" parameter.
+Read and write operations are carried out through the classic sysctl command on
+net.vrf.strict_mode path, i.e: sysctl -w net.vrf.strict_mode=1.
+
+Only two distinct values {0,1} are accepted by the strict_mode parameter:
+
+ - with strict_mode=0, multiple VRFs can be associated with the same table.
+   This is the (legacy) default kernel behavior, the same that we experience
+   when the strict mode patch set is not applied;
+
+ - with strict_mode=1, the one-to-one relationship between the VRFs and the
+   associated tables is guaranteed. In this configuration, the creation of a VRF
+   which refers to a routing table already associated with another VRF fails and
+   the error is returned to the user.
+
+
+The kernel keeps track of the associations between a VRF and the routing table
+during the VRF setup, in the "management" plane. Therefore, the strict mode does
+not impact the performance or the intrinsic functionality of the data plane in
+any way.
+
+When the strict mode is active it is always possible to disable the strict mode,
+while the reverse operation is not always allowed.
+Setting the strict_mode parameter to 0 is equivalent to removing the one-to-one
+constraint between any single VRF and its associated routing table.
+
+Conversely, if the strict mode is disabled and there are multiple VRFs that
+refer to the same routing table, then it is prohibited to set the strict_mode
+parameter to 1. In this configuration, any attempt to perform the operation will
+lead to an error and it will be reported to the user.
+To enable strict mode once again (by setting the strict_mode parameter to 1),
+you must first remove all the VRFs that share common tables.
+
+There are several use cases which can take advantage from the introduction of
+the strict mode feature. In particular, the strict mode allows us to:
+
+  i) guarantee the proper functioning of some applications which deal with
+     routing protocols;
+
+ ii) perform some tunneling decap operations which require to use specific
+     routing tables for segregating and forwarding the traffic.
+
+
+Considering (i), the creation of different VRFs that point to the same table
+leads to the situation where two different routing entities believe they have
+exclusive access to the same table. This leads to the situation where different
+routing daemons can conflict for gaining routes control due to overlapping
+tables. By enabling strict mode it is possible to prevent this situation which
+often occurs due to incorrect configurations done by the users. 
+The ability to enable/disable the strict mode functionality does not depend on
+the tool used for configuring the networking. In essence, the strict mode patch
+solves, at the kernel level, what some other patches [1] had tried to solve at
+the userspace level (using only iproute2) with all the related problems.
+
+Considering (ii), the introduction of the strict mode functionality allows us
+implementing the SRv6 End.DT4 behavior. Such behavior terminates a SR tunnel and
+it forwards the IPv4 traffic according to the routes present in the routing
+table supplied during the configuration. The SRv6 End.DT4 can be realized
+exploiting the routing capabilities made available by the VRF infrastructure.
+This behavior could leverage a specific VRF for forcing the traffic to be
+forwarded in accordance with the routes available in the VRF table.
+Anyway, in order to make the End.DT4 properly work, it must be guaranteed that
+the table used for the route lookup operations is bound to one and only one VRF.
+In this way, it is possible to use the table for uniquely retrieving the
+associated VRF and for routing packets.
+
+I would like to thank David Ahern for his constant and valuable support during
+the design and development phases of this patch set.
+
+Comments, suggestions and improvements are very welcome!
+
+Thanks,
+Andrea Mayer
+
+
+v1
+ l3mdev: add infrastructure for table to VRF mapping
+  - define l3mdev_lock as static, thanks to Jakub Kicinski;
+  - move lookup_by_table_id_t from l3mdev.c to l3mdev.h and update the
+    l3mdev_dev_table_lookup_{un}register functions accordingly, thanks to
+    David Ahern.
+
+ vrf: track associations between VRF devices and tables
+  - change shared_tables type from 'int' to 'u32', thanks to Stephen Hemminger
+    and David Ahern;
+  - update comments for share_tables.
+
+ vrf: add sysctl parameter for strict mode
+  - change type 'void __user *buffer' to 'void *buffer' in argument 3 of
+    vrf_shared_table_handler function, thanks to Jakub Kicinski.
+
+
+[1] https://lore.kernel.org/netdev/20200307205916.15646-1-sharpd@cumulusnetworks.com/
+
+Andrea Mayer (5):
+  l3mdev: add infrastructure for table to VRF mapping
+  vrf: track associations between VRF devices and tables
+  vrf: add sysctl parameter for strict mode
+  vrf: add l3mdev registration for table to VRF device lookup
+  selftests: add selftest for the VRF strict mode
+
+ drivers/net/vrf.c                             | 450 +++++++++++++++++-
+ include/net/l3mdev.h                          |  39 ++
+ net/l3mdev/l3mdev.c                           |  93 ++++
+ .../selftests/net/vrf_strict_mode_test.sh     | 390 +++++++++++++++
+ 4 files changed, 963 insertions(+), 9 deletions(-)
+ create mode 100755 tools/testing/selftests/net/vrf_strict_mode_test.sh
+
+-- 
+2.20.1
+
