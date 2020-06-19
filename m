@@ -2,45 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825462014DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:21:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 260D92013A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390924AbgFSPC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:02:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59030 "EHLO mail.kernel.org"
+        id S2394187AbgFSQBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:01:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390843AbgFSPC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:02:28 -0400
+        id S2389396AbgFSPNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:13:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6B92820776;
-        Fri, 19 Jun 2020 15:02:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64DFA21582;
+        Fri, 19 Jun 2020 15:13:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578947;
-        bh=RgSo48ZEwEmi3EaoBhdPFQ+MDiUJUxltzgDQSYLgcDE=;
+        s=default; t=1592579589;
+        bh=s90weQLx3+eky0D7QCfbXXrH6aktND1Y69vgtQvMBVw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EdQtTpPKalWMeAJmXDvyC7CLINgrjZhnhWLcUxn+lr2hfIiHwpUo3eXT0m1CoqJIZ
-         mxbIp/LUCg91f5LfJr3z8A5lYvilrRaiygEKjm+tbJVK6C6s+XPDqWU4L7PKG7IXLd
-         xQEBl3NEAofMVL5pDKqEMjCPRDG1Y6zRiyaJgnrA=
+        b=Hgwr3Sh7YUR7uvx8W8NR3pMDms9dWHgZlKrUOK1RTCMrmr7afyQgTJ5zBDUgquTh+
+         7Fdy1OOy54f1XczL2uCtbIM1SmqnL/G/CaN6Bqs2ndfapbY7k9ZzbU6H8ti0qE3oDl
+         V2FxZ8KjTpiE/wxG+7Non194GehaRPxiP3SsnIRU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Axtens <dja@axtens.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Gow <davidgow@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Daniel Micay <danielmicay@gmail.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 187/267] string.h: fix incompatibility between FORTIFY_SOURCE and KASAN
-Date:   Fri, 19 Jun 2020 16:32:52 +0200
-Message-Id: <20200619141657.721093582@linuxfoundation.org>
+        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        Marcos Paulo de Souza <mpdesouza@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 5.4 162/261] btrfs: send: emit file capabilities after chown
+Date:   Fri, 19 Jun 2020 16:32:53 +0200
+Message-Id: <20200619141657.655619309@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
-References: <20200619141648.840376470@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,308 +44,154 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Axtens <dja@axtens.net>
+From: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-[ Upstream commit 47227d27e2fcb01a9e8f5958d8997cf47a820afc ]
+commit 89efda52e6b6930f80f5adda9c3c9edfb1397191 upstream.
 
-The memcmp KASAN self-test fails on a kernel with both KASAN and
-FORTIFY_SOURCE.
+Whenever a chown is executed, all capabilities of the file being touched
+are lost.  When doing incremental send with a file with capabilities,
+there is a situation where the capability can be lost on the receiving
+side. The sequence of actions bellow shows the problem:
 
-When FORTIFY_SOURCE is on, a number of functions are replaced with
-fortified versions, which attempt to check the sizes of the operands.
-However, these functions often directly invoke __builtin_foo() once they
-have performed the fortify check.  Using __builtins may bypass KASAN
-checks if the compiler decides to inline it's own implementation as
-sequence of instructions, rather than emit a function call that goes out
-to a KASAN-instrumented implementation.
+  $ mount /dev/sda fs1
+  $ mount /dev/sdb fs2
 
-Why is only memcmp affected?
-============================
+  $ touch fs1/foo.bar
+  $ setcap cap_sys_nice+ep fs1/foo.bar
+  $ btrfs subvolume snapshot -r fs1 fs1/snap_init
+  $ btrfs send fs1/snap_init | btrfs receive fs2
 
-Of the string and string-like functions that kasan_test tests, only memcmp
-is replaced by an inline sequence of instructions in my testing on x86
-with gcc version 9.2.1 20191008 (Ubuntu 9.2.1-9ubuntu2).
+  $ chgrp adm fs1/foo.bar
+  $ setcap cap_sys_nice+ep fs1/foo.bar
 
-I believe this is due to compiler heuristics.  For example, if I annotate
-kmalloc calls with the alloc_size annotation (and disable some fortify
-compile-time checking!), the compiler will replace every memset except the
-one in kmalloc_uaf_memset with inline instructions.  (I have some WIP
-patches to add this annotation.)
+  $ btrfs subvolume snapshot -r fs1 fs1/snap_complete
+  $ btrfs subvolume snapshot -r fs1 fs1/snap_incremental
 
-Does this affect other functions in string.h?
-=============================================
+  $ btrfs send fs1/snap_complete | btrfs receive fs2
+  $ btrfs send -p fs1/snap_init fs1/snap_incremental | btrfs receive fs2
 
-Yes. Anything that uses __builtin_* rather than __real_* could be
-affected. This looks like:
+At this point, only a chown was emitted by "btrfs send" since only the
+group was changed. This makes the cap_sys_nice capability to be dropped
+from fs2/snap_incremental/foo.bar
 
- - strncpy
- - strcat
- - strlen
- - strlcpy maybe, under some circumstances?
- - strncat under some circumstances
- - memset
- - memcpy
- - memmove
- - memcmp (as noted)
- - memchr
- - strcpy
+To fix that, only emit capabilities after chown is emitted. The current
+code first checks for xattrs that are new/changed, emits them, and later
+emit the chown. Now, __process_new_xattr skips capabilities, letting
+only finish_inode_if_needed to emit them, if they exist, for the inode
+being processed.
 
-Whether a function call is emitted always depends on the compiler.  Most
-bugs should get caught by FORTIFY_SOURCE, but the missed memcmp test shows
-that this is not always the case.
+This behavior was being worked around in "btrfs receive" side by caching
+the capability and only applying it after chown. Now, xattrs are only
+emmited _after_ chown, making that workaround not needed anymore.
 
-Isn't FORTIFY_SOURCE disabled with KASAN?
-========================================-
+Link: https://github.com/kdave/btrfs-progs/issues/202
+CC: stable@vger.kernel.org # 4.4+
+Suggested-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-The string headers on all arches supporting KASAN disable fortify with
-kasan, but only when address sanitisation is _also_ disabled.  For example
-from x86:
-
- #if defined(CONFIG_KASAN) && !defined(__SANITIZE_ADDRESS__)
- /*
-  * For files that are not instrumented (e.g. mm/slub.c) we
-  * should use not instrumented version of mem* functions.
-  */
- #define memcpy(dst, src, len) __memcpy(dst, src, len)
- #define memmove(dst, src, len) __memmove(dst, src, len)
- #define memset(s, c, n) __memset(s, c, n)
-
- #ifndef __NO_FORTIFY
- #define __NO_FORTIFY /* FORTIFY_SOURCE uses __builtin_memcpy, etc. */
- #endif
-
- #endif
-
-This comes from commit 6974f0c4555e ("include/linux/string.h: add the
-option of fortified string.h functions"), and doesn't work when KASAN is
-enabled and the file is supposed to be sanitised - as with test_kasan.c
-
-I'm pretty sure this is not wrong, but not as expansive it should be:
-
- * we shouldn't use __builtin_memcpy etc in files where we don't have
-   instrumentation - it could devolve into a function call to memcpy,
-   which will be instrumented. Rather, we should use __memcpy which
-   by convention is not instrumented.
-
- * we also shouldn't be using __builtin_memcpy when we have a KASAN
-   instrumented file, because it could be replaced with inline asm
-   that will not be instrumented.
-
-What is correct behaviour?
-==========================
-
-Firstly, there is some overlap between fortification and KASAN: both
-provide some level of _runtime_ checking. Only fortify provides
-compile-time checking.
-
-KASAN and fortify can pick up different things at runtime:
-
- - Some fortify functions, notably the string functions, could easily be
-   modified to consider sub-object sizes (e.g. members within a struct),
-   and I have some WIP patches to do this. KASAN cannot detect these
-   because it cannot insert poision between members of a struct.
-
- - KASAN can detect many over-reads/over-writes when the sizes of both
-   operands are unknown, which fortify cannot.
-
-So there are a couple of options:
-
- 1) Flip the test: disable fortify in santised files and enable it in
-    unsanitised files. This at least stops us missing KASAN checking, but
-    we lose the fortify checking.
-
- 2) Make the fortify code always call out to real versions. Do this only
-    for KASAN, for fear of losing the inlining opportunities we get from
-    __builtin_*.
-
-(We can't use kasan_check_{read,write}: because the fortify functions are
-_extern inline_, you can't include _static_ inline functions without a
-compiler warning. kasan_check_{read,write} are static inline so we can't
-use them even when they would otherwise be suitable.)
-
-Take approach 2 and call out to real versions when KASAN is enabled.
-
-Use __underlying_foo to distinguish from __real_foo: __real_foo always
-refers to the kernel's implementation of foo, __underlying_foo could be
-either the kernel implementation or the __builtin_foo implementation.
-
-This is sometimes enough to make the memcmp test succeed with
-FORTIFY_SOURCE enabled. It is at least enough to get the function call
-into the module. One more fix is needed to make it reliable: see the next
-patch.
-
-Fixes: 6974f0c4555e ("include/linux/string.h: add the option of fortified string.h functions")
-Signed-off-by: Daniel Axtens <dja@axtens.net>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Tested-by: David Gow <davidgow@google.com>
-Reviewed-by: Dmitry Vyukov <dvyukov@google.com>
-Cc: Daniel Micay <danielmicay@gmail.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Alexander Potapenko <glider@google.com>
-Link: http://lkml.kernel.org/r/20200423154503.5103-3-dja@axtens.net
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/string.h | 60 +++++++++++++++++++++++++++++++++---------
- 1 file changed, 48 insertions(+), 12 deletions(-)
+ fs/btrfs/send.c |   67 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
-diff --git a/include/linux/string.h b/include/linux/string.h
-index f58e1ef76572..4db285b83f44 100644
---- a/include/linux/string.h
-+++ b/include/linux/string.h
-@@ -239,6 +239,31 @@ void __read_overflow3(void) __compiletime_error("detected read beyond size of ob
- void __write_overflow(void) __compiletime_error("detected write beyond size of object passed as 1st parameter");
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -23,6 +23,7 @@
+ #include "btrfs_inode.h"
+ #include "transaction.h"
+ #include "compression.h"
++#include "xattr.h"
  
- #if !defined(__NO_FORTIFY) && defined(__OPTIMIZE__) && defined(CONFIG_FORTIFY_SOURCE)
+ /*
+  * Maximum number of references an extent can have in order for us to attempt to
+@@ -4536,6 +4537,10 @@ static int __process_new_xattr(int num,
+ 	struct fs_path *p;
+ 	struct posix_acl_xattr_header dummy_acl;
+ 
++	/* Capabilities are emitted by finish_inode_if_needed */
++	if (!strncmp(name, XATTR_NAME_CAPS, name_len))
++		return 0;
 +
-+#ifdef CONFIG_KASAN
-+extern void *__underlying_memchr(const void *p, int c, __kernel_size_t size) __RENAME(memchr);
-+extern int __underlying_memcmp(const void *p, const void *q, __kernel_size_t size) __RENAME(memcmp);
-+extern void *__underlying_memcpy(void *p, const void *q, __kernel_size_t size) __RENAME(memcpy);
-+extern void *__underlying_memmove(void *p, const void *q, __kernel_size_t size) __RENAME(memmove);
-+extern void *__underlying_memset(void *p, int c, __kernel_size_t size) __RENAME(memset);
-+extern char *__underlying_strcat(char *p, const char *q) __RENAME(strcat);
-+extern char *__underlying_strcpy(char *p, const char *q) __RENAME(strcpy);
-+extern __kernel_size_t __underlying_strlen(const char *p) __RENAME(strlen);
-+extern char *__underlying_strncat(char *p, const char *q, __kernel_size_t count) __RENAME(strncat);
-+extern char *__underlying_strncpy(char *p, const char *q, __kernel_size_t size) __RENAME(strncpy);
-+#else
-+#define __underlying_memchr	__builtin_memchr
-+#define __underlying_memcmp	__builtin_memcmp
-+#define __underlying_memcpy	__builtin_memcpy
-+#define __underlying_memmove	__builtin_memmove
-+#define __underlying_memset	__builtin_memset
-+#define __underlying_strcat	__builtin_strcat
-+#define __underlying_strcpy	__builtin_strcpy
-+#define __underlying_strlen	__builtin_strlen
-+#define __underlying_strncat	__builtin_strncat
-+#define __underlying_strncpy	__builtin_strncpy
-+#endif
+ 	p = fs_path_alloc();
+ 	if (!p)
+ 		return -ENOMEM;
+@@ -5098,6 +5103,64 @@ static int send_extent_data(struct send_
+ 	return 0;
+ }
+ 
++/*
++ * Search for a capability xattr related to sctx->cur_ino. If the capability is
++ * found, call send_set_xattr function to emit it.
++ *
++ * Return 0 if there isn't a capability, or when the capability was emitted
++ * successfully, or < 0 if an error occurred.
++ */
++static int send_capabilities(struct send_ctx *sctx)
++{
++	struct fs_path *fspath = NULL;
++	struct btrfs_path *path;
++	struct btrfs_dir_item *di;
++	struct extent_buffer *leaf;
++	unsigned long data_ptr;
++	char *buf = NULL;
++	int buf_len;
++	int ret = 0;
 +
- __FORTIFY_INLINE char *strncpy(char *p, const char *q, __kernel_size_t size)
- {
- 	size_t p_size = __builtin_object_size(p, 0);
-@@ -246,14 +271,14 @@ __FORTIFY_INLINE char *strncpy(char *p, const char *q, __kernel_size_t size)
- 		__write_overflow();
- 	if (p_size < size)
- 		fortify_panic(__func__);
--	return __builtin_strncpy(p, q, size);
-+	return __underlying_strncpy(p, q, size);
- }
- 
- __FORTIFY_INLINE char *strcat(char *p, const char *q)
- {
- 	size_t p_size = __builtin_object_size(p, 0);
- 	if (p_size == (size_t)-1)
--		return __builtin_strcat(p, q);
-+		return __underlying_strcat(p, q);
- 	if (strlcat(p, q, p_size) >= p_size)
- 		fortify_panic(__func__);
- 	return p;
-@@ -267,7 +292,7 @@ __FORTIFY_INLINE __kernel_size_t strlen(const char *p)
- 	/* Work around gcc excess stack consumption issue */
- 	if (p_size == (size_t)-1 ||
- 	    (__builtin_constant_p(p[p_size - 1]) && p[p_size - 1] == '\0'))
--		return __builtin_strlen(p);
-+		return __underlying_strlen(p);
- 	ret = strnlen(p, p_size);
- 	if (p_size <= ret)
- 		fortify_panic(__func__);
-@@ -300,7 +325,7 @@ __FORTIFY_INLINE size_t strlcpy(char *p, const char *q, size_t size)
- 			__write_overflow();
- 		if (len >= p_size)
- 			fortify_panic(__func__);
--		__builtin_memcpy(p, q, len);
-+		__underlying_memcpy(p, q, len);
- 		p[len] = '\0';
++	path = alloc_path_for_send();
++	if (!path)
++		return -ENOMEM;
++
++	di = btrfs_lookup_xattr(NULL, sctx->send_root, path, sctx->cur_ino,
++				XATTR_NAME_CAPS, strlen(XATTR_NAME_CAPS), 0);
++	if (!di) {
++		/* There is no xattr for this inode */
++		goto out;
++	} else if (IS_ERR(di)) {
++		ret = PTR_ERR(di);
++		goto out;
++	}
++
++	leaf = path->nodes[0];
++	buf_len = btrfs_dir_data_len(leaf, di);
++
++	fspath = fs_path_alloc();
++	buf = kmalloc(buf_len, GFP_KERNEL);
++	if (!fspath || !buf) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	ret = get_cur_path(sctx, sctx->cur_ino, sctx->cur_inode_gen, fspath);
++	if (ret < 0)
++		goto out;
++
++	data_ptr = (unsigned long)(di + 1) + btrfs_dir_name_len(leaf, di);
++	read_extent_buffer(leaf, buf, data_ptr, buf_len);
++
++	ret = send_set_xattr(sctx, fspath, XATTR_NAME_CAPS,
++			strlen(XATTR_NAME_CAPS), buf, buf_len);
++out:
++	kfree(buf);
++	fs_path_free(fspath);
++	btrfs_free_path(path);
++	return ret;
++}
++
+ static int clone_range(struct send_ctx *sctx,
+ 		       struct clone_root *clone_root,
+ 		       const u64 disk_byte,
+@@ -6001,6 +6064,10 @@ static int finish_inode_if_needed(struct
+ 			goto out;
  	}
- 	return ret;
-@@ -313,12 +338,12 @@ __FORTIFY_INLINE char *strncat(char *p, const char *q, __kernel_size_t count)
- 	size_t p_size = __builtin_object_size(p, 0);
- 	size_t q_size = __builtin_object_size(q, 0);
- 	if (p_size == (size_t)-1 && q_size == (size_t)-1)
--		return __builtin_strncat(p, q, count);
-+		return __underlying_strncat(p, q, count);
- 	p_len = strlen(p);
- 	copy_len = strnlen(q, count);
- 	if (p_size < p_len + copy_len + 1)
- 		fortify_panic(__func__);
--	__builtin_memcpy(p + p_len, q, copy_len);
-+	__underlying_memcpy(p + p_len, q, copy_len);
- 	p[p_len + copy_len] = '\0';
- 	return p;
- }
-@@ -330,7 +355,7 @@ __FORTIFY_INLINE void *memset(void *p, int c, __kernel_size_t size)
- 		__write_overflow();
- 	if (p_size < size)
- 		fortify_panic(__func__);
--	return __builtin_memset(p, c, size);
-+	return __underlying_memset(p, c, size);
- }
  
- __FORTIFY_INLINE void *memcpy(void *p, const void *q, __kernel_size_t size)
-@@ -345,7 +370,7 @@ __FORTIFY_INLINE void *memcpy(void *p, const void *q, __kernel_size_t size)
- 	}
- 	if (p_size < size || q_size < size)
- 		fortify_panic(__func__);
--	return __builtin_memcpy(p, q, size);
-+	return __underlying_memcpy(p, q, size);
- }
- 
- __FORTIFY_INLINE void *memmove(void *p, const void *q, __kernel_size_t size)
-@@ -360,7 +385,7 @@ __FORTIFY_INLINE void *memmove(void *p, const void *q, __kernel_size_t size)
- 	}
- 	if (p_size < size || q_size < size)
- 		fortify_panic(__func__);
--	return __builtin_memmove(p, q, size);
-+	return __underlying_memmove(p, q, size);
- }
- 
- extern void *__real_memscan(void *, int, __kernel_size_t) __RENAME(memscan);
-@@ -386,7 +411,7 @@ __FORTIFY_INLINE int memcmp(const void *p, const void *q, __kernel_size_t size)
- 	}
- 	if (p_size < size || q_size < size)
- 		fortify_panic(__func__);
--	return __builtin_memcmp(p, q, size);
-+	return __underlying_memcmp(p, q, size);
- }
- 
- __FORTIFY_INLINE void *memchr(const void *p, int c, __kernel_size_t size)
-@@ -396,7 +421,7 @@ __FORTIFY_INLINE void *memchr(const void *p, int c, __kernel_size_t size)
- 		__read_overflow();
- 	if (p_size < size)
- 		fortify_panic(__func__);
--	return __builtin_memchr(p, c, size);
-+	return __underlying_memchr(p, c, size);
- }
- 
- void *__real_memchr_inv(const void *s, int c, size_t n) __RENAME(memchr_inv);
-@@ -427,11 +452,22 @@ __FORTIFY_INLINE char *strcpy(char *p, const char *q)
- 	size_t p_size = __builtin_object_size(p, 0);
- 	size_t q_size = __builtin_object_size(q, 0);
- 	if (p_size == (size_t)-1 && q_size == (size_t)-1)
--		return __builtin_strcpy(p, q);
-+		return __underlying_strcpy(p, q);
- 	memcpy(p, q, strlen(q) + 1);
- 	return p;
- }
- 
-+/* Don't use these outside the FORITFY_SOURCE implementation */
-+#undef __underlying_memchr
-+#undef __underlying_memcmp
-+#undef __underlying_memcpy
-+#undef __underlying_memmove
-+#undef __underlying_memset
-+#undef __underlying_strcat
-+#undef __underlying_strcpy
-+#undef __underlying_strlen
-+#undef __underlying_strncat
-+#undef __underlying_strncpy
- #endif
- 
- /**
--- 
-2.25.1
-
++	ret = send_capabilities(sctx);
++	if (ret < 0)
++		goto out;
++
+ 	/*
+ 	 * If other directory inodes depended on our current directory
+ 	 * inode's move/rename, now do their move/rename operations.
 
 
