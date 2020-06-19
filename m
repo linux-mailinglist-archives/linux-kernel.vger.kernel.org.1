@@ -2,122 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A10192009F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B42FB2009FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732690AbgFSNYw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 09:24:52 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:24789 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732644AbgFSNYp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 09:24:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592573084;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=eGlNqou5LDoam9OH21SBUp2++cVRlrtERoD4CCiv5eg=;
-        b=ZSRxq2t3FfWZtlGW034m7BFz7WsrEqsRTH9TOQvsEEvHP/4y0vZKTbWOdj6t5gmwXkugr5
-        QtkITl+ofpY0f6aalocauzIje/HanSiHu1kB9GgMsWgcDygKkZHuXB7hUbyC0S2054adMc
-        DiKmTktyWc6KwwhW4bUXW8gMY4rI4kU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-73-oAxdefiAP_u9TarLyJnNkA-1; Fri, 19 Jun 2020 09:24:42 -0400
-X-MC-Unique: oAxdefiAP_u9TarLyJnNkA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ED09A80F5C6;
-        Fri, 19 Jun 2020 13:24:20 +0000 (UTC)
-Received: from t480s.redhat.com (ovpn-113-137.ams2.redhat.com [10.36.113.137])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 150C719D61;
-        Fri, 19 Jun 2020 13:24:18 +0000 (UTC)
-From:   David Hildenbrand <david@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-mm@kvack.org, David Hildenbrand <david@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>
-Subject: [PATCH v1 2/2] mm/page_alloc: drop nr_free_pagecache_pages()
-Date:   Fri, 19 Jun 2020 15:24:10 +0200
-Message-Id: <20200619132410.23859-3-david@redhat.com>
-In-Reply-To: <20200619132410.23859-1-david@redhat.com>
-References: <20200619132410.23859-1-david@redhat.com>
+        id S1732763AbgFSNZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 09:25:28 -0400
+Received: from foss.arm.com ([217.140.110.172]:58808 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728851AbgFSNZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 09:25:27 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D8A822B;
+        Fri, 19 Jun 2020 06:25:26 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 37D0E3F6CF;
+        Fri, 19 Jun 2020 06:25:25 -0700 (PDT)
+References: <20200618195525.7889-1-qais.yousef@arm.com> <20200618195525.7889-3-qais.yousef@arm.com> <jhjwo43cpfl.mognet@arm.com> <20200619125148.y4cq3hwllgozbutq@e107158-lin.cambridge.arm.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Chris Redpath <chrid.redpath@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] sched/uclamp: Protect uclamp fast path code with static key
+In-reply-to: <20200619125148.y4cq3hwllgozbutq@e107158-lin.cambridge.arm.com>
+Date:   Fri, 19 Jun 2020 14:25:20 +0100
+Message-ID: <jhjsgerchmn.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-nr_free_pagecache_pages() isn't used outside page_alloc.c anymore - and
-the name does not really help to understand what's going on. Let's inline
-it instead and add a comment.
 
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Minchan Kim <minchan@kernel.org>
-Cc: Huang Ying <ying.huang@intel.com>
-Cc: Wei Yang <richard.weiyang@gmail.com>
-Signed-off-by: David Hildenbrand <david@redhat.com>
----
- include/linux/swap.h |  1 -
- mm/page_alloc.c      | 16 ++--------------
- 2 files changed, 2 insertions(+), 15 deletions(-)
+On 19/06/20 13:51, Qais Yousef wrote:
+> On 06/19/20 11:36, Valentin Schneider wrote:
+>>
+>> On 18/06/20 20:55, Qais Yousef wrote:
+>> > There is a report that when uclamp is enabled, a netperf UDP test
+>> > regresses compared to a kernel compiled without uclamp.
+>> >
+>> > https://lore.kernel.org/lkml/20200529100806.GA3070@suse.de/
+>> >
+>>
+>> ISTR the perennial form for those is: https://lkml.kernel.org/r/<message-id>
+>
+> The link is correct permalinnk from lore and contains the message-id as Peter
+> likes and he has accepted this form before.
+>
 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 124261acd5d0a..9bde6c6b2c045 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -327,7 +327,6 @@ void workingset_update_node(struct xa_node *node);
- /* linux/mm/page_alloc.c */
- extern unsigned long totalreserve_pages;
- extern unsigned long nr_free_buffer_pages(void);
--extern unsigned long nr_free_pagecache_pages(void);
- 
- /* Definition of global_zone_page_state not available yet */
- #define nr_free_pages() global_zone_page_state(NR_FREE_PAGES)
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 7b0dde69748c1..c38903d1b3b4d 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5177,19 +5177,6 @@ unsigned long nr_free_buffer_pages(void)
- }
- EXPORT_SYMBOL_GPL(nr_free_buffer_pages);
- 
--/**
-- * nr_free_pagecache_pages - count number of pages beyond high watermark
-- *
-- * nr_free_pagecache_pages() counts the number of pages which are beyond the
-- * high watermark within all zones.
-- *
-- * Return: number of pages beyond high watermark within all zones.
-- */
--unsigned long nr_free_pagecache_pages(void)
--{
--	return nr_free_zone_pages(gfp_zone(GFP_HIGHUSER_MOVABLE));
--}
--
- static inline void show_node(struct zone *zone)
- {
- 	if (IS_ENABLED(CONFIG_NUMA))
-@@ -5911,7 +5898,8 @@ void __ref build_all_zonelists(pg_data_t *pgdat)
- 		__build_all_zonelists(pgdat);
- 		/* cpuset refresh routine should be here */
- 	}
--	vm_total_pages = nr_free_pagecache_pages();
-+	/* Get the number of free pages beyond high watermark in all zones. */
-+	vm_total_pages = nr_free_zone_pages(gfp_zone(GFP_HIGHUSER_MOVABLE));
- 	/*
- 	 * Disable grouping by mobility if the number of pages in the
- 	 * system is too low to allow the mechanism to work. It would be
--- 
-2.26.2
+I think the objections I remember were on using lkml.org rather than
+lkml.kernel.org. Sorry!
 
+> If you look closely you'll see that what you suggest is just moving 'lkml' to
+> replace lore in the dns name and put an /r/. I don't see a need to enforce one
+> form over the other as the one I used is much easier to get.
+>
+
+My assumption would be that while lore may fade (it hasn't been there for
+that long, who knows what will come next), lkml.kernel.org ought to be
+perennial. Keyword here being "assumption".
+
+> If Peter really insists I'll be happy to change.
+>
+> [...]
+>
+>> > +	 * This could happen if sched_uclamp_unused was disabled while the
+>> > +	 * current task was running, hence we could end up with unbalanced call
+>> > +	 * to uclamp_rq_dec_id().
+>> > +	 */
+>> > +	if (unlikely(!bucket->tasks))
+>> > +		return;
+>>
+>> I'm slightly worried about silent returns for cases like these, can we try
+>> to cook something up to preserve the previous SCHED_WARN_ON()? Say,
+>> something like the horrendous below - alternatively might be feasible with
+>> with some clever p->on_rq flag.
+>
+> I am really against extra churn and debug code to detect an impossible case
+> that is not really tricky for reviewers to discern. Outside of enqueue/dequeue
+> path, it's only used in update_uclamp_active(). It is quite easy to see that
+> it's impossible, except for the legit case now when we have a static key
+> changing when a task is running.
+>
+
+Providing it isn't too much of a head scratcher (and admittedly what I am
+suggesting is borderline here), I believe it is worthwhile to add debug
+helps in what is assumed to be impossible cases - even more so in this case
+seeing as it had been deemed worth to check previously. We've been proved
+wrong on the "impossible" nature of some things before.
+
+We have a few of those checks strewn over the scheduler code, so it's not
+like we would be starting a new trend.
+
+> I am strongly against extra debug code just to be safe. It ends up with
+> confusion down the line and extra complexity, and since this is the hot path
+> maybe potential extra variables to mess with cache behaviors.
+>
+
+Hence why I'd put this under CONFIG_SCHED_DEBUG.
+
+> Thanks
