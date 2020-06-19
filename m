@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0527E2017BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6352015A1
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395523AbgFSQml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:42:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35522 "EHLO mail.kernel.org"
+        id S2389699AbgFSOx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 10:53:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387672AbgFSOoP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 10:44:15 -0400
+        id S2389722AbgFSOxP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 10:53:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 653B221556;
-        Fri, 19 Jun 2020 14:44:14 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B858D21852;
+        Fri, 19 Jun 2020 14:53:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592577854;
-        bh=xgCu3WtvZsZ1pBuh68rAkgwUoDM9qwBDw56mAhtC16Q=;
+        s=default; t=1592578395;
+        bh=se+Q4k5Btw+HJigqqx9lLs6qFSbEWJIzh+4yhN0UvOc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vQBFw7YIx3Z2/lV7BpmKmksM8FN54wrztQLo4dEcDKXmR8FCb2O77dLHOkWfp6fjr
-         77j5kpUtX14IZEUmo1y4Mxzm2YAcQePUCQ/LIpdsHKPV2J9C8S57QkjzeQfcbJmCb0
-         43oAEcB/rA7Pk3dIRWG2ZP4VPrqvdWZo8Y4mw9Rw=
+        b=zLa1JPYg2hT5eO6xjRgWjp6STpljnqCjbM7qbCec/+kKaDwQEMNcs7oGGeFQmvaAs
+         ex3T1IE1Ro/HAOYHPWPguPkQS99n4YwcuEf+SYP4YX2+Tykksf+FUsiKoULfFG/xSY
+         pG+X0J/8WUcxVIg0HrWDNqzcK0cQRp2rRZwU+o/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: [PATCH 4.9 116/128] sparc32: fix register window handling in genregs32_[gs]et()
+        stable@vger.kernel.org,
+        =?UTF-8?q?Frank=20Sch=C3=A4fer?= <fschaefer.oss@googlemail.com>,
+        Christian Lamparter <chunkeey@gmail.com>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 4.14 165/190] carl9170: remove P2P_GO support
 Date:   Fri, 19 Jun 2020 16:33:30 +0200
-Message-Id: <20200619141626.265166198@linuxfoundation.org>
+Message-Id: <20200619141642.010554389@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141620.148019466@linuxfoundation.org>
-References: <20200619141620.148019466@linuxfoundation.org>
+In-Reply-To: <20200619141633.446429600@linuxfoundation.org>
+References: <20200619141633.446429600@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,290 +45,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro <viro@zeniv.linux.org.uk>
+From: Christian Lamparter <chunkeey@gmail.com>
 
-commit cf51e129b96847f969bfb8af1ee1516a01a70b39 upstream.
+commit b14fba7ebd04082f7767a11daea7f12f3593de22 upstream.
 
-It needs access_process_vm() if the traced process does not share
-mm with the caller.  Solution is similar to what sparc64 does.
-Note that genregs32_set() is only ever called with pos being 0
-or 32 * sizeof(u32) (the latter - as part of PTRACE_SETREGS
-handling).
+This patch follows up on a bug-report by Frank Schäfer that
+discovered P2P GO wasn't working with wpa_supplicant.
+This patch removes part of the broken P2P GO support but
+keeps the vif switchover code in place.
 
-Cc: stable@kernel.org
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+Cc: <stable@vger.kernel.org>
+Link: <https://lkml.kernel.org/r/3a9d86b6-744f-e670-8792-9167257edef8@googlemail.com>
+Reported-by: Frank Schäfer <fschaefer.oss@googlemail.com>
+Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20200425092811.9494-1-chunkeey@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
- arch/sparc/kernel/ptrace_32.c |  230 ++++++++++++++++++------------------------
- 1 file changed, 99 insertions(+), 131 deletions(-)
+ drivers/net/wireless/ath/carl9170/fw.c   |    4 +---
+ drivers/net/wireless/ath/carl9170/main.c |   21 ++++-----------------
+ 2 files changed, 5 insertions(+), 20 deletions(-)
 
---- a/arch/sparc/kernel/ptrace_32.c
-+++ b/arch/sparc/kernel/ptrace_32.c
-@@ -45,82 +45,79 @@ enum sparc_regset {
- 	REGSET_FP,
- };
+--- a/drivers/net/wireless/ath/carl9170/fw.c
++++ b/drivers/net/wireless/ath/carl9170/fw.c
+@@ -351,9 +351,7 @@ static int carl9170_fw(struct ar9170 *ar
+ 		ar->hw->wiphy->interface_modes |= BIT(NL80211_IFTYPE_ADHOC);
  
-+static int regwindow32_get(struct task_struct *target,
-+			   const struct pt_regs *regs,
-+			   u32 *uregs)
-+{
-+	unsigned long reg_window = regs->u_regs[UREG_I6];
-+	int size = 16 * sizeof(u32);
-+
-+	if (target == current) {
-+		if (copy_from_user(uregs, (void __user *)reg_window, size))
-+			return -EFAULT;
-+	} else {
-+		if (access_process_vm(target, reg_window, uregs, size,
-+				      FOLL_FORCE) != size)
-+			return -EFAULT;
-+	}
-+	return 0;
-+}
-+
-+static int regwindow32_set(struct task_struct *target,
-+			   const struct pt_regs *regs,
-+			   u32 *uregs)
-+{
-+	unsigned long reg_window = regs->u_regs[UREG_I6];
-+	int size = 16 * sizeof(u32);
-+
-+	if (target == current) {
-+		if (copy_to_user((void __user *)reg_window, uregs, size))
-+			return -EFAULT;
-+	} else {
-+		if (access_process_vm(target, reg_window, uregs, size,
-+				      FOLL_FORCE | FOLL_WRITE) != size)
-+			return -EFAULT;
-+	}
-+	return 0;
-+}
-+
- static int genregs32_get(struct task_struct *target,
- 			 const struct user_regset *regset,
- 			 unsigned int pos, unsigned int count,
- 			 void *kbuf, void __user *ubuf)
- {
- 	const struct pt_regs *regs = target->thread.kregs;
--	unsigned long __user *reg_window;
--	unsigned long *k = kbuf;
--	unsigned long __user *u = ubuf;
--	unsigned long reg;
-+	u32 uregs[16];
-+	int ret;
+ 		if (SUPP(CARL9170FW_WLANTX_CAB)) {
+-			if_comb_types |=
+-				BIT(NL80211_IFTYPE_AP) |
+-				BIT(NL80211_IFTYPE_P2P_GO);
++			if_comb_types |= BIT(NL80211_IFTYPE_AP);
  
- 	if (target == current)
- 		flush_user_windows();
+ #ifdef CONFIG_MAC80211_MESH
+ 			if_comb_types |=
+--- a/drivers/net/wireless/ath/carl9170/main.c
++++ b/drivers/net/wireless/ath/carl9170/main.c
+@@ -582,11 +582,10 @@ static int carl9170_init_interface(struc
+ 	ar->disable_offload |= ((vif->type != NL80211_IFTYPE_STATION) &&
+ 	    (vif->type != NL80211_IFTYPE_AP));
  
--	pos /= sizeof(reg);
--	count /= sizeof(reg);
-+	ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
-+				  regs->u_regs,
-+				  0, 16 * sizeof(u32));
-+	if (ret || !count)
-+		return ret;
+-	/* While the driver supports HW offload in a single
+-	 * P2P client configuration, it doesn't support HW
+-	 * offload in the favourit, concurrent P2P GO+CLIENT
+-	 * configuration. Hence, HW offload will always be
+-	 * disabled for P2P.
++	/* The driver used to have P2P GO+CLIENT support,
++	 * but since this was dropped and we don't know if
++	 * there are any gremlins lurking in the shadows,
++	 * so best we keep HW offload disabled for P2P.
+ 	 */
+ 	ar->disable_offload |= vif->p2p;
  
--	if (kbuf) {
--		for (; count > 0 && pos < 16; count--)
--			*k++ = regs->u_regs[pos++];
+@@ -639,18 +638,6 @@ static int carl9170_op_add_interface(str
+ 			if (vif->type == NL80211_IFTYPE_STATION)
+ 				break;
+ 
+-			/* P2P GO [master] use-case
+-			 * Because the P2P GO station is selected dynamically
+-			 * by all participating peers of a WIFI Direct network,
+-			 * the driver has be able to change the main interface
+-			 * operating mode on the fly.
+-			 */
+-			if (main_vif->p2p && vif->p2p &&
+-			    vif->type == NL80211_IFTYPE_AP) {
+-				old_main = main_vif;
+-				break;
+-			}
 -
--		reg_window = (unsigned long __user *) regs->u_regs[UREG_I6];
--		reg_window -= 16;
--		for (; count > 0 && pos < 32; count--) {
--			if (get_user(*k++, &reg_window[pos++]))
--				return -EFAULT;
--		}
--	} else {
--		for (; count > 0 && pos < 16; count--) {
--			if (put_user(regs->u_regs[pos++], u++))
--				return -EFAULT;
--		}
--
--		reg_window = (unsigned long __user *) regs->u_regs[UREG_I6];
--		reg_window -= 16;
--		for (; count > 0 && pos < 32; count--) {
--			if (get_user(reg, &reg_window[pos++]) ||
--			    put_user(reg, u++))
--				return -EFAULT;
--		}
--	}
--	while (count > 0) {
--		switch (pos) {
--		case 32: /* PSR */
--			reg = regs->psr;
--			break;
--		case 33: /* PC */
--			reg = regs->pc;
--			break;
--		case 34: /* NPC */
--			reg = regs->npc;
--			break;
--		case 35: /* Y */
--			reg = regs->y;
--			break;
--		case 36: /* WIM */
--		case 37: /* TBR */
--			reg = 0;
--			break;
--		default:
--			goto finish;
--		}
--
--		if (kbuf)
--			*k++ = reg;
--		else if (put_user(reg, u++))
-+	if (pos < 32 * sizeof(u32)) {
-+		if (regwindow32_get(target, regs, uregs))
- 			return -EFAULT;
--		pos++;
--		count--;
-+		ret = user_regset_copyout(&pos, &count, &kbuf, &ubuf,
-+					  uregs,
-+					  16 * sizeof(u32), 32 * sizeof(u32));
-+		if (ret || !count)
-+			return ret;
- 	}
--finish:
--	pos *= sizeof(reg);
--	count *= sizeof(reg);
+ 			err = -EBUSY;
+ 			rcu_read_unlock();
  
--	return user_regset_copyout_zero(&pos, &count, &kbuf, &ubuf,
--					38 * sizeof(reg), -1);
-+	uregs[0] = regs->psr;
-+	uregs[1] = regs->pc;
-+	uregs[2] = regs->npc;
-+	uregs[3] = regs->y;
-+	uregs[4] = 0;	/* WIM */
-+	uregs[5] = 0;	/* TBR */
-+	return user_regset_copyout(&pos, &count, &kbuf, &ubuf,
-+				  uregs,
-+				  32 * sizeof(u32), 38 * sizeof(u32));
- }
- 
- static int genregs32_set(struct task_struct *target,
-@@ -129,82 +126,53 @@ static int genregs32_set(struct task_str
- 			 const void *kbuf, const void __user *ubuf)
- {
- 	struct pt_regs *regs = target->thread.kregs;
--	unsigned long __user *reg_window;
--	const unsigned long *k = kbuf;
--	const unsigned long __user *u = ubuf;
--	unsigned long reg;
-+	u32 uregs[16];
-+	u32 psr;
-+	int ret;
- 
- 	if (target == current)
- 		flush_user_windows();
- 
--	pos /= sizeof(reg);
--	count /= sizeof(reg);
--
--	if (kbuf) {
--		for (; count > 0 && pos < 16; count--)
--			regs->u_regs[pos++] = *k++;
--
--		reg_window = (unsigned long __user *) regs->u_regs[UREG_I6];
--		reg_window -= 16;
--		for (; count > 0 && pos < 32; count--) {
--			if (put_user(*k++, &reg_window[pos++]))
--				return -EFAULT;
--		}
--	} else {
--		for (; count > 0 && pos < 16; count--) {
--			if (get_user(reg, u++))
--				return -EFAULT;
--			regs->u_regs[pos++] = reg;
--		}
--
--		reg_window = (unsigned long __user *) regs->u_regs[UREG_I6];
--		reg_window -= 16;
--		for (; count > 0 && pos < 32; count--) {
--			if (get_user(reg, u++) ||
--			    put_user(reg, &reg_window[pos++]))
--				return -EFAULT;
--		}
--	}
--	while (count > 0) {
--		unsigned long psr;
--
--		if (kbuf)
--			reg = *k++;
--		else if (get_user(reg, u++))
--			return -EFAULT;
--
--		switch (pos) {
--		case 32: /* PSR */
--			psr = regs->psr;
--			psr &= ~(PSR_ICC | PSR_SYSCALL);
--			psr |= (reg & (PSR_ICC | PSR_SYSCALL));
--			regs->psr = psr;
--			break;
--		case 33: /* PC */
--			regs->pc = reg;
--			break;
--		case 34: /* NPC */
--			regs->npc = reg;
--			break;
--		case 35: /* Y */
--			regs->y = reg;
--			break;
--		case 36: /* WIM */
--		case 37: /* TBR */
--			break;
--		default:
--			goto finish;
--		}
-+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
-+				 regs->u_regs,
-+				 0, 16 * sizeof(u32));
-+	if (ret || !count)
-+		return ret;
- 
--		pos++;
--		count--;
-+	if (pos < 32 * sizeof(u32)) {
-+		if (regwindow32_get(target, regs, uregs))
-+			return -EFAULT;
-+		ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
-+					 uregs,
-+					 16 * sizeof(u32), 32 * sizeof(u32));
-+		if (ret)
-+			return ret;
-+		if (regwindow32_set(target, regs, uregs))
-+			return -EFAULT;
-+		if (!count)
-+			return 0;
- 	}
--finish:
--	pos *= sizeof(reg);
--	count *= sizeof(reg);
--
-+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
-+				 &psr,
-+				 32 * sizeof(u32), 33 * sizeof(u32));
-+	if (ret)
-+		return ret;
-+	regs->psr = (regs->psr & ~(PSR_ICC | PSR_SYSCALL)) |
-+		    (psr & (PSR_ICC | PSR_SYSCALL));
-+	if (!count)
-+		return 0;
-+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
-+				 &regs->pc,
-+				 33 * sizeof(u32), 34 * sizeof(u32));
-+	if (ret || !count)
-+		return ret;
-+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf,
-+				 &regs->y,
-+				 34 * sizeof(u32), 35 * sizeof(u32));
-+	if (ret || !count)
-+		return ret;
- 	return user_regset_copyin_ignore(&pos, &count, &kbuf, &ubuf,
--					 38 * sizeof(reg), -1);
-+					 35 * sizeof(u32), 38 * sizeof(u32));
- }
- 
- static int fpregs32_get(struct task_struct *target,
 
 
