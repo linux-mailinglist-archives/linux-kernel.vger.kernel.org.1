@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770D42012FC
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E6B02012EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404228AbgFSPTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:19:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48776 "EHLO mail.kernel.org"
+        id S2390451AbgFSPTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:19:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392582AbgFSPSN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:18:13 -0400
+        id S2392577AbgFSPR7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:17:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ABB5F21835;
-        Fri, 19 Jun 2020 15:18:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BDF22158C;
+        Fri, 19 Jun 2020 15:17:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579892;
-        bh=zJyy96p/S5Lp67gqr1bh7mhGEJc1LIXF5relYqsc5RM=;
+        s=default; t=1592579879;
+        bh=m4xrXkotUS3ZKETk0RvSF7L9HwTMlQwabdrk1sTDb3U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dVXw0n/4+Z9CxRRNt315OR0fnKNpZU2ZZrtwdwfuLS+130+0FsOfQFn/4BBh0yANq
-         oFkS6FwyxKuVd0qT1OrSXCmbhJfi1YTzHb4+YNCJ25AOi6VWCJVRvJOkd+HvVpuuqK
-         R+fhjIsuSMfVYQF3kXLX8i1QpWM7nGURd3chltZA=
+        b=Jzp7puPsJHsjtDdq8V2vNZ5xzH2k+GTzC/ogg6yVTOSYcSQ7ST0JajUbCmE84hK13
+         pZm7PAhef++j0hAYVLoEmv6lXZSx8pJjfdeA8NtjrlIwpQiXCke9mCifcz7X2doBFD
+         uMHBsgIWqiJFoOA+jGEaQR3RrdHRKgZP9l8gWD78=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 016/376] spi: spi-mem: Fix Dual/Quad modes on Octal-capable devices
-Date:   Fri, 19 Jun 2020 16:28:54 +0200
-Message-Id: <20200619141711.137253615@linuxfoundation.org>
+        stable@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Xi Wang <xi.wang@gmail.com>,
+        Luke Nelson <luke.r.nels@gmail.com>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 038/376] arm64: insn: Fix two bugs in encoding 32-bit logical immediates
+Date:   Fri, 19 Jun 2020 16:29:16 +0200
+Message-Id: <20200619141712.158603528@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
 References: <20200619141710.350494719@linuxfoundation.org>
@@ -45,49 +45,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Geert Uytterhoeven <geert+renesas@glider.be>
+From: Luke Nelson <lukenels@cs.washington.edu>
 
-[ Upstream commit 80300a7d5f2d7178335652f41d2e55ba898b4ec1 ]
+[ Upstream commit 579d1b3faa3735e781ff74aac0afd598515dbc63 ]
 
-Currently buswidths 2 and 4 are rejected for a device that advertises
-Octal capabilities.  Allow these buswidths, just like is done for
-buswidth 2 and Quad-capable devices.
+This patch fixes two issues present in the current function for encoding
+arm64 logical immediates when using the 32-bit variants of instructions.
 
-Fixes: b12a084c8729ef42 ("spi: spi-mem: add support for octal mode I/O data transfer")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Link: https://lore.kernel.org/r/20200416101418.14379-1-geert+renesas@glider.be
-Signed-off-by: Mark Brown <broonie@kernel.org>
+First, the code does not correctly reject an all-ones 32-bit immediate,
+and returns an undefined instruction encoding.
+
+Second, the code incorrectly rejects some 32-bit immediates that are
+actually encodable as logical immediates. The root cause is that the code
+uses a default mask of 64-bit all-ones, even for 32-bit immediates.
+This causes an issue later on when the default mask is used to fill the
+top bits of the immediate with ones, shown here:
+
+  /*
+   * Pattern: 0..01..10..01..1
+   *
+   * Fill the unused top bits with ones, and check if
+   * the result is a valid immediate (all ones with a
+   * contiguous ranges of zeroes).
+   */
+  imm |= ~mask;
+  if (!range_of_ones(~imm))
+          return AARCH64_BREAK_FAULT;
+
+To see the problem, consider an immediate of the form 0..01..10..01..1,
+where the upper 32 bits are zero, such as 0x80000001. The code checks
+if ~(imm | ~mask) contains a range of ones: the incorrect mask yields
+1..10..01..10..0, which fails the check; the correct mask yields
+0..01..10..0, which succeeds.
+
+The fix for both issues is to generate a correct mask based on the
+instruction immediate size, and use the mask to check for all-ones,
+all-zeroes, and values wider than the mask.
+
+Currently, arch/arm64/kvm/va_layout.c is the only user of this function,
+which uses 64-bit immediates and therefore won't trigger these bugs.
+
+We tested the new code against llvm-mc with all 1,302 encodable 32-bit
+logical immediates and all 5,334 encodable 64-bit logical immediates.
+
+Fixes: ef3935eeebff ("arm64: insn: Add encoder for bitwise operations using literals")
+Suggested-by: Will Deacon <will@kernel.org>
+Co-developed-by: Xi Wang <xi.wang@gmail.com>
+Signed-off-by: Xi Wang <xi.wang@gmail.com>
+Signed-off-by: Luke Nelson <luke.r.nels@gmail.com>
+Reviewed-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20200508181547.24783-2-luke.r.nels@gmail.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/spi/spi-mem.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ arch/arm64/kernel/insn.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
-index adaa0c49f966..9a86cc27fcc0 100644
---- a/drivers/spi/spi-mem.c
-+++ b/drivers/spi/spi-mem.c
-@@ -108,15 +108,17 @@ static int spi_check_buswidth_req(struct spi_mem *mem, u8 buswidth, bool tx)
- 		return 0;
+diff --git a/arch/arm64/kernel/insn.c b/arch/arm64/kernel/insn.c
+index 4a9e773a177f..cc2f3d901c91 100644
+--- a/arch/arm64/kernel/insn.c
++++ b/arch/arm64/kernel/insn.c
+@@ -1535,16 +1535,10 @@ static u32 aarch64_encode_immediate(u64 imm,
+ 				    u32 insn)
+ {
+ 	unsigned int immr, imms, n, ones, ror, esz, tmp;
+-	u64 mask = ~0UL;
+-
+-	/* Can't encode full zeroes or full ones */
+-	if (!imm || !~imm)
+-		return AARCH64_BREAK_FAULT;
++	u64 mask;
  
- 	case 2:
--		if ((tx && (mode & (SPI_TX_DUAL | SPI_TX_QUAD))) ||
--		    (!tx && (mode & (SPI_RX_DUAL | SPI_RX_QUAD))))
-+		if ((tx &&
-+		     (mode & (SPI_TX_DUAL | SPI_TX_QUAD | SPI_TX_OCTAL))) ||
-+		    (!tx &&
-+		     (mode & (SPI_RX_DUAL | SPI_RX_QUAD | SPI_RX_OCTAL))))
- 			return 0;
- 
+ 	switch (variant) {
+ 	case AARCH64_INSN_VARIANT_32BIT:
+-		if (upper_32_bits(imm))
+-			return AARCH64_BREAK_FAULT;
+ 		esz = 32;
  		break;
+ 	case AARCH64_INSN_VARIANT_64BIT:
+@@ -1556,6 +1550,12 @@ static u32 aarch64_encode_immediate(u64 imm,
+ 		return AARCH64_BREAK_FAULT;
+ 	}
  
- 	case 4:
--		if ((tx && (mode & SPI_TX_QUAD)) ||
--		    (!tx && (mode & SPI_RX_QUAD)))
-+		if ((tx && (mode & (SPI_TX_QUAD | SPI_TX_OCTAL))) ||
-+		    (!tx && (mode & (SPI_RX_QUAD | SPI_RX_OCTAL))))
- 			return 0;
- 
- 		break;
++	mask = GENMASK(esz - 1, 0);
++
++	/* Can't encode full zeroes, full ones, or value wider than the mask */
++	if (!imm || imm == mask || imm & ~mask)
++		return AARCH64_BREAK_FAULT;
++
+ 	/*
+ 	 * Inverse of Replicate(). Try to spot a repeating pattern
+ 	 * with a pow2 stride.
 -- 
 2.25.1
 
