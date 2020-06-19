@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711F2200A82
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B30E7200A88
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 15:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732776AbgFSNog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 09:44:36 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:54236 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731806AbgFSNog (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 09:44:36 -0400
-Received: from zn.tnic (p200300ec2f0bac004d57d24caa4a0e33.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:ac00:4d57:d24c:aa4a:e33])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id C47BB1EC03D0;
-        Fri, 19 Jun 2020 15:44:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1592574274;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Jw9EeswGVAhRId5Z/cmoaOU/4YK2HM29pcIB4hBn/pg=;
-        b=rYRKZmmpr9nuGcCzk+JgYOV0qgBhlUx5hgV+Cd3zH36cFiUm2unC+WhzcRnIpUJYkdJDvI
-        7rieju2IeWv5m3RIBAndZQvzy9eNwYM4sn4VlHQkd5fISffZAqOIRKuQFfVQnv8u3lIhPa
-        fLhN0aHPID/6C/9VlrgjBJhn8Apz2Zc=
-Date:   Fri, 19 Jun 2020 15:44:32 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Richard Hughes <hughsient@gmail.com>
-Cc:     Daniel Gutson <daniel@eclypsium.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] Ability to read the MKTME status from userspace
-Message-ID: <20200619134432.GE32683@zn.tnic>
-References: <20200618210215.23602-1-daniel.gutson@eclypsium.com>
- <589c89ae-620e-36f8-2be5-4afc727c2911@intel.com>
- <CAFmMkTHNxSN_uWtm63TdkGxj44NXQQKEOmATXhjA=4DSCS92kQ@mail.gmail.com>
- <20200618220139.GH27951@zn.tnic>
- <CAFmMkTGMAu-huTnP1aeMb_W4NddbTD_b2jhbDVKBDrkwgB97wg@mail.gmail.com>
- <20200619074053.GA32683@zn.tnic>
- <CAFmMkTGV0ZR6C=EBGQAiz1vw1vrUXSLTnH5ZbBUvfhPLg_tF6g@mail.gmail.com>
- <20200619132243.GC32683@zn.tnic>
- <CAD2FfiEr0kRWp2ut_PVqVDEVZqwESUxv=fxM9wUgi3n=ZCzPcQ@mail.gmail.com>
+        id S1732960AbgFSNpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 09:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732785AbgFSNpW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 09:45:22 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F15C06174E;
+        Fri, 19 Jun 2020 06:45:21 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id s18so11288463ioe.2;
+        Fri, 19 Jun 2020 06:45:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3KbCMnQ3fWd4OCh5WOjleAHLA7RE7+a68TWER+fluSg=;
+        b=RYAsabp67D/InlnPAiumJVkynZbAgsyRWv4Mx9DAozwizFjB3/C+cwmRYwLobjEppu
+         XWfoPExMMTISzF0JO3JD+Ar/qKt30A38vOuCNYiYFKuO4K2shOkdLphM76VKwsZP278/
+         bROUHjsEyd0yjTjSyaVI3QU56PW/2eYV7tmVCkJCQjxTVAQ1N84j4K8YB+ZWQM0rZLT1
+         wvBmz/1UCukS4r5gRZbxtEN5sTHsQSNXjQES5a4B0wQbYgJgctrL9230vCWGdveOI8Bu
+         UKvPuIrQAgTrxQJD7iv8fDot778pxeU8OXTeUgc+VmUpWieYaCHFtIKngEKGHKEbdG9O
+         h6Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3KbCMnQ3fWd4OCh5WOjleAHLA7RE7+a68TWER+fluSg=;
+        b=YJWUX0GTI7id8TgxSszwUVXnvv5QG8a12TRBpXDCYxSAY5PMSE7nAkenDtw6R4WLox
+         I0lRpKexGHXYsmnmDGWzmbhdoZl/7BzrzZpiYex7S85DPzv7FOlz2wq4IvK0iGK9C+xQ
+         QL55FyB42xPK4X/1uGt8Koiudr65Taah5gxB9osSoqVdV9LPxXXElIX88iwDwTpt+1ny
+         ReNZhawkCZvdj3whsER0S91vgFESbfVB+kyK+ttw0j+HVsqDxqWQj9Usoa/iMHGoi/8K
+         YlMPfw4HTHoI+I0r40nCcjUZqv//As0WXROE0UAJo2mIuCjNeGXsF5bVrpvpesyPpr/p
+         o08w==
+X-Gm-Message-State: AOAM532KhZePrV8JPeqHHquQPtwlGtkwr3Ino4yYrq1QSWK8bJe50viI
+        f7JbptEBwhFhi65RZW/nRvhfNtVyaIZeshJv8/s=
+X-Google-Smtp-Source: ABdhPJymf9lkb/99ztlOPnVqmjfseQ5wZThn/cprANDQ+siUR8wjgIkqr7UjfS+nJJstOGBrPuLNfd2PIePPHzrSZU8=
+X-Received: by 2002:a05:6602:2e87:: with SMTP id m7mr4397605iow.203.1592574320698;
+ Fri, 19 Jun 2020 06:45:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAD2FfiEr0kRWp2ut_PVqVDEVZqwESUxv=fxM9wUgi3n=ZCzPcQ@mail.gmail.com>
+References: <20200617145310.GK3183@techsingularity.net>
+In-Reply-To: <20200617145310.GK3183@techsingularity.net>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 19 Jun 2020 16:45:09 +0300
+Message-ID: <CAOQ4uxjdTUnA2ACQtyZ95QkTtH_zaKZEYLyok73yjrhuUyXmtg@mail.gmail.com>
+Subject: Re: [PATCH] fs, pseudo: Do not update atime for pseudo inodes
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 02:31:11PM +0100, Richard Hughes wrote:
-> 1. that the CPU supports TME (->cpuid, already done)
-> 2. that the platform has not disabled TME in some way
+On Wed, Jun 17, 2020 at 5:53 PM Mel Gorman <mgorman@techsingularity.net> wrote:
+>
+> The kernel uses internal mounts created by kern_mount() and populated
+> with files with no lookup path by alloc_file_pseudo() for a variety of
+> reasons. An relevant example is anonymous pipes because every vfs_write
+> also checks if atime needs to be updated even though it is unnecessary.
+> Most of the relevant users for alloc_file_pseudo() either have no statfs
+> helper or use simple_statfs which does not return st_atime. The closest
 
-Yes, this is what I'm proposing with clearing the flag in /proc/cpuinfo.
-The needed information is there:
+st_atime is returned by simple_getattr()
 
-1. TME in CPUID
-2. TME *not* in /proc/cpuinfo
+> proxy measure is the proc fd representations of such inodes which do not
+> appear to change once they are created. This patch sets the S_NOATIME
+> on inode->i_flags for inodes created by new_inode_pseudo() so that atime
+> will not be updated.
+>
 
-which means the platform doesn't support it.
+new_inode() calls new_inode_pseudo() ...
+You need to factor out a new helper.
 
-If we are going to export a list of features which the OS
-kernel/platform has enabled - and this means a contract between kernel
-and userspace - then this should not be a misc driver which gets loaded
-as a module but builtin, maybe a proper sysfs layout similar to
+Either you can provide callers analysis of all new_inode_pseudo() users
+or use a new helper to set S_NOATIME and call it from the relevant users
+(pipe, socket).
 
-/sys/devices/system/cpu/vulnerabilities
+How about S_NOCMTIME while you are at it?
+Doesn't file_update_time() show in profiling?
+Is there a valid use case for updating c/mtime of anonymous socket/pipe?
 
-which userspace can use. Along with proper ABI definition, design,
-documentation and all that belongs to a proper interface with userspace.
-Because once userspace uses it, it is practically cast in stone.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Thanks,
+Amir.
