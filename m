@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACA45200DF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A52200DCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390960AbgFSPDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:03:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59350 "EHLO mail.kernel.org"
+        id S2390782AbgFSPCE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:02:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57706 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390876AbgFSPCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:02:43 -0400
+        id S2389135AbgFSPBT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:01:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B50A21841;
-        Fri, 19 Jun 2020 15:02:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0FBBC21582;
+        Fri, 19 Jun 2020 15:01:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592578963;
-        bh=vLM00da0dcPE+XpMqn8kxehxh+b2qBbY1T82WW91wwQ=;
+        s=default; t=1592578879;
+        bh=qwUWf6gPEAo0RWe2h0rpmiMF6XJTd6r4hEWaMEbOJBU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b0zoFdov4rbFAdP1zmzQrEiqpDIw70de+OGSeEvLhmpLU77OaqTlATPKAFWP9S0v4
-         NhoWxbGIKF/iCCX4lVA65uPtFVJ0fTTniA8HDSA6A9p+KjwFMH8LBzP8XQRtANIHR4
-         JhwBYW0YJyK7tKS+ShVHerx7GAJZ4ka+SyYHO8aQ=
+        b=g4ZtFoQtGDmXT2cuyyMsICKZmkRicaE9fDbjRoz6VRvmsaIXLdMBBhpYNUaDcxQTM
+         iuoMGyoc5ij1oNwOyWdnlelFeEEmZMfdEC8nELEQz2MNbyMtLCWSzpR25Bi7r4QiT3
+         v0oMoIDYAxpNqU6zOBJ32JA3TkXvqU9i18iie4v4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 183/267] cpuidle: Fix three reference count leaks
-Date:   Fri, 19 Jun 2020 16:32:48 +0200
-Message-Id: <20200619141657.547951085@linuxfoundation.org>
+Subject: [PATCH 4.19 184/267] platform/x86: hp-wmi: Convert simple_strtoul() to kstrtou32()
+Date:   Fri, 19 Jun 2020 16:32:49 +0200
+Message-Id: <20200619141657.587720049@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141648.840376470@linuxfoundation.org>
 References: <20200619141648.840376470@linuxfoundation.org>
@@ -44,55 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit c343bf1ba5efcbf2266a1fe3baefec9cc82f867f ]
+[ Upstream commit 5cdc45ed3948042f0d73c6fec5ee9b59e637d0d2 ]
 
-kobject_init_and_add() takes reference even when it fails.
-If this function returns an error, kobject_put() must be called to
-properly clean up the memory associated with the object.
+First of all, unsigned long can overflow u32 value on 64-bit machine.
+Second, simple_strtoul() doesn't check for overflow in the input.
 
-Previous commit "b8eb718348b8" fixed a similar problem.
+Convert simple_strtoul() to kstrtou32() to eliminate above issues.
 
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-[ rjw: Subject ]
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cpuidle/sysfs.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/platform/x86/hp-wmi.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/cpuidle/sysfs.c b/drivers/cpuidle/sysfs.c
-index e754c7aae7f7..66979dc33680 100644
---- a/drivers/cpuidle/sysfs.c
-+++ b/drivers/cpuidle/sysfs.c
-@@ -467,7 +467,7 @@ static int cpuidle_add_state_sysfs(struct cpuidle_device *device)
- 		ret = kobject_init_and_add(&kobj->kobj, &ktype_state_cpuidle,
- 					   &kdev->kobj, "state%d", i);
- 		if (ret) {
--			kfree(kobj);
-+			kobject_put(&kobj->kobj);
- 			goto error_state;
- 		}
- 		cpuidle_add_s2idle_attr_group(kobj);
-@@ -598,7 +598,7 @@ static int cpuidle_add_driver_sysfs(struct cpuidle_device *dev)
- 	ret = kobject_init_and_add(&kdrv->kobj, &ktype_driver_cpuidle,
- 				   &kdev->kobj, "driver");
- 	if (ret) {
--		kfree(kdrv);
-+		kobject_put(&kdrv->kobj);
- 		return ret;
- 	}
- 
-@@ -692,7 +692,7 @@ int cpuidle_add_sysfs(struct cpuidle_device *dev)
- 	error = kobject_init_and_add(&kdev->kobj, &ktype_cpuidle, &cpu_dev->kobj,
- 				   "cpuidle");
- 	if (error) {
--		kfree(kdev);
-+		kobject_put(&kdev->kobj);
- 		return error;
- 	}
- 
+diff --git a/drivers/platform/x86/hp-wmi.c b/drivers/platform/x86/hp-wmi.c
+index 06a3c1ef8eee..952544ca0d84 100644
+--- a/drivers/platform/x86/hp-wmi.c
++++ b/drivers/platform/x86/hp-wmi.c
+@@ -474,8 +474,14 @@ static ssize_t postcode_show(struct device *dev, struct device_attribute *attr,
+ static ssize_t als_store(struct device *dev, struct device_attribute *attr,
+ 			 const char *buf, size_t count)
+ {
+-	u32 tmp = simple_strtoul(buf, NULL, 10);
+-	int ret = hp_wmi_perform_query(HPWMI_ALS_QUERY, HPWMI_WRITE, &tmp,
++	u32 tmp;
++	int ret;
++
++	ret = kstrtou32(buf, 10, &tmp);
++	if (ret)
++		return ret;
++
++	ret = hp_wmi_perform_query(HPWMI_ALS_QUERY, HPWMI_WRITE, &tmp,
+ 				       sizeof(tmp), sizeof(tmp));
+ 	if (ret)
+ 		return ret < 0 ? ret : -EINVAL;
 -- 
 2.25.1
 
