@@ -2,111 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9F112010D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1567C2010E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391076AbgFSPeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:34:17 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50714 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2404901AbgFSPeH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:34:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592580845;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1gjUns75l8t6S6FnUcYsN6ZlE6IET04KazBXsahJkg8=;
-        b=R89A4Vk1fiBeltHWigJoNwYNpFI/7x3JzBZIGYRejPjtRqZwhEvH/aye5EvgwfEDcWHCzr
-        w78g5PPSjhAkkUkWcP+2OavZGo7GhLyvVdloDeXAc2iMAorfPJSs5J6I8K/bBWj2WndLpn
-        apzsgtdEcqEnCJ+RHNJnxOnPu8I7vZA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-187-NbuglgpSPkKbOHTyzRHHIQ-1; Fri, 19 Jun 2020 11:34:00 -0400
-X-MC-Unique: NbuglgpSPkKbOHTyzRHHIQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2404875AbgFSPf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:35:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38486 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2393535AbgFSPfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:35:14 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44B44801503;
-        Fri, 19 Jun 2020 15:33:59 +0000 (UTC)
-Received: from agerstmayr-thinkpad.redhat.com (unknown [10.40.196.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 915942CE8A;
-        Fri, 19 Jun 2020 15:33:51 +0000 (UTC)
-From:   Andreas Gerstmayr <agerstmayr@redhat.com>
-To:     linux-perf-users@vger.kernel.org
-Cc:     Michael Petlan <mpetlan@redhat.com>,
-        Andreas Gerstmayr <agerstmayr@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] perf flamegraph: explicitly set utf-8 encoding
-Date:   Fri, 19 Jun 2020 17:32:31 +0200
-Message-Id: <20200619153232.203537-1-agerstmayr@redhat.com>
-In-Reply-To: <20200619130745.153113-1-agerstmayr@redhat.com>
-References: <20200619130745.153113-1-agerstmayr@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        by mail.kernel.org (Postfix) with ESMTPSA id 1772D2166E;
+        Fri, 19 Jun 2020 15:35:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592580914;
+        bh=maaYENQJ8ZL0EP/jDZtR5Sg7D2VvDgzl8nJ0dHfmwGM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=QKFkMf6CmSPcqyw5qJm923cZaKitao9xyRits+mLT1o5loUnNh9K3nPqJkQc3Eopa
+         vbf0NKpPB7Oqt6MXd5rtg+oOe9i4+XnBk2Z9AzigcDiUgFhM4RAoKOeSoCqYwuED/K
+         92nB46mQZbrh6THXGBQS7WhYLNzuQLqRWfR6wW/I=
+Date:   Sat, 20 Jun 2020 00:35:09 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Ming Lei <tom.leiming@gmail.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-block <linux-block@vger.kernel.org>
+Subject: Re: kprobe: __blkdev_put probe is missed
+Message-Id: <20200620003509.9521053fbd384f4f5d23408f@kernel.org>
+In-Reply-To: <20200619133240.GA351476@T590>
+References: <CACVXFVO5saamQXs0naLamTKJfXZMW+p446weeqJK=9+V34UM0g@mail.gmail.com>
+        <20200618125438.GA191266@T590>
+        <20200618225602.3f2cca3f0ed48427fc0a483b@kernel.org>
+        <20200618231901.GA196099@T590>
+        <20200619141239.56f6dda0976453b790190ff7@kernel.org>
+        <20200619072859.GA205278@T590>
+        <20200619081954.3d72a252@oasis.local.home>
+        <20200619133240.GA351476@T590>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-on some platforms the default encoding is not utf-8,
-which causes an UnicodeDecodeError when reading the flamegraph template
-and writing the flamegraph
+Hi Ming,
 
-Signed-off-by: Andreas Gerstmayr <agerstmayr@redhat.com>
----
+On Fri, 19 Jun 2020 21:32:40 +0800
+Ming Lei <ming.lei@redhat.com> wrote:
 
-changelog v2: also write to stdout with utf-8 encoding
+> On Fri, Jun 19, 2020 at 08:19:54AM -0400, Steven Rostedt wrote:
+> > On Fri, 19 Jun 2020 15:28:59 +0800
+> > Ming Lei <ming.lei@redhat.com> wrote:
+> > 
+> > > > 
+> > > > OK, then let's make events (for sure)
+> > > > 
+> > > > root@devnote2:/sys/kernel/debug/tracing# echo p __blkdev_put >> kprobe_events 
+> > > > root@devnote2:/sys/kernel/debug/tracing# echo r __blkdev_put >> kprobe_events 
+> > > > root@devnote2:/sys/kernel/debug/tracing# echo p blkdev_put >> kprobe_events 
+> > 
+> > Hi Ming,
+> > 
+> > Do you have the kprobe_events file?
+> > 
+> > > > root@devnote2:/sys/kernel/debug/tracing# echo 1 > events/kprobes/enable   
+> > > 
+> > > I can't find 'events/kprobes' in my VM with upstream kernel, also not found
+> > > the dir under fedora31(5.5.15-200) & rhel8(v4.18 based).
+> > 
+> > The events/kprobes directly will be created when you create a
+> > kprobe_event. It wont exist until then.
+> 
+> Hi Steven and Masami,
+> 
+> Got it, thanks for your help, now I can run the test, follows the steps
+> and results, and there is still one __blkdev_put probed.
 
- tools/perf/scripts/python/flamegraph.py | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Hmm, strange...
 
-diff --git a/tools/perf/scripts/python/flamegraph.py b/tools/perf/scripts/python/flamegraph.py
-index 61f3be9add6b..65780013f745 100755
---- a/tools/perf/scripts/python/flamegraph.py
-+++ b/tools/perf/scripts/python/flamegraph.py
-@@ -17,6 +17,7 @@
- from __future__ import print_function
- import sys
- import os
-+import io
- import argparse
- import json
+> And it is observed in my VM reliably with 5.7+ or Fedora kernel reliably,
+> kernel config is attached.
+
+Thanks for sharing it.
+
+> 
+> [root@ktest-01 tracing]# uname -a
+> Linux ktest-01 5.7.0+ #1900 SMP Fri Jun 19 16:26:47 CST 2020 x86_64 x86_64 x86_64 GNU/Linux
+> [root@ktest-01 tracing]#
+> [root@ktest-01 tracing]# cat kprobe_events
+> [root@ktest-01 tracing]#
+> [root@ktest-01 tracing]# echo p blkdev_put >> kprobe_events
+> [root@ktest-01 tracing]# echo p __blkdev_put >> kprobe_events
+> [root@ktest-01 tracing]# echo r __blkdev_put >> kprobe_events
+> [root@ktest-01 tracing]#
+> [root@ktest-01 tracing]# echo 1 > events/kprobes/enable
+> [root@ktest-01 tracing]# blockdev --getbsz /dev/sda1
+> 4096
+> [root@ktest-01 tracing]# echo 0 > events/kprobes/enable
+> [root@ktest-01 tracing]# cat trace
+> # tracer: nop
+> #
+> # entries-in-buffer/entries-written: 3/3   #P:8
+> #
+> #                              _-----=> irqs-off
+> #                             / _----=> need-resched
+> #                            | / _---=> hardirq/softirq
+> #                            || / _--=> preempt-depth
+> #                            ||| /     delay
+> #           TASK-PID   CPU#  ||||    TIMESTAMP  FUNCTION
+> #              | |       |   ||||       |         |
+>         blockdev-970   [005] .... 17603.447236: p_blkdev_put_0: (blkdev_put+0x0/0xb4)
+>         blockdev-970   [005] .... 17603.447244: p___blkdev_put_0: (__blkdev_put+0x0/0x19d)
+>         blockdev-970   [005] d... 17603.447251: r___blkdev_put_0: (blkdev_close+0x22/0x25 <- __blkdev_put)
+
+This shows __blkdev_put() is a tail-call. It is possible that the
+internal (nested) __blkdev_put() call becomes a goto inside the
+function by the gcc optimization.
+
+Ah, after all it is as expected. With your kconfig, the kernel is
+very agressively optimized.
+
+$ objdump -dS vmlinux | less
+...
+ffffffff81256dc3 <__blkdev_put>:
+{
+ffffffff81256dc3:       e8 98 85 df ff          callq  ffffffff8104f360 <__fentry__>
+ffffffff81256dc8:       41 57                   push   %r15
+ffffffff81256dca:       41 56                   push   %r14
+ffffffff81256dcc:       41 55                   push   %r13
+...
+ffffffff81256f05:       75 02                   jne    ffffffff81256f09 <__blkdev_put+0x146>
+        struct block_device *victim = NULL;
+ffffffff81256f07:       31 db                   xor    %ebx,%ebx
+                bdev->bd_contains = NULL;
+ffffffff81256f09:       48 c7 45 60 00 00 00    movq   $0x0,0x60(%rbp)
+ffffffff81256f10:       00 
+                put_disk_and_module(disk);
+ffffffff81256f11:       4c 89 f7                mov    %r14,%rdi
+ffffffff81256f14:       e8 c6 3d 11 00          callq  ffffffff8136acdf <put_disk_and_module>
+        mutex_unlock(&bdev->bd_mutex);
+ffffffff81256f19:       4c 89 ff                mov    %r15,%rdi
+                __blkdev_put(victim, mode, 1);
+ffffffff81256f1c:       41 bc 01 00 00 00       mov    $0x1,%r12d
+        mutex_unlock(&bdev->bd_mutex);
+ffffffff81256f22:       e8 8d d7 48 00          callq  ffffffff816e46b4 <mutex_unlock>
+        bdput(bdev);
+ffffffff81256f27:       48 89 ef                mov    %rbp,%rdi
+ffffffff81256f2a:       e8 f0 e9 ff ff          callq  ffffffff8125591f <bdput>
+        if (victim)
+ffffffff81256f2f:       48 85 db                test   %rbx,%rbx
+ffffffff81256f32:       74 08                   je     ffffffff81256f3c <__blkdev_put+0x179>
+ffffffff81256f34:       48 89 dd                mov    %rbx,%rbp
+ffffffff81256f37:       e9 b4 fe ff ff          jmpq   ffffffff81256df0 <__blkdev_put+0x2d> <<-----THIS!!
+}
+ffffffff81256f3c:       48 8b 44 24 28          mov    0x28(%rsp),%rax
+ffffffff81256f41:       65 48 33 04 25 28 00    xor    %gs:0x28,%rax
+ffffffff81256f48:       00 00 
+ffffffff81256f4a:       74 05                   je     ffffffff81256f51 <__blkdev_put+0x18e>
+ffffffff81256f4c:       e8 5a 4e 48 00          callq  ffffffff816dbdab <__stack_chk_fail>
+ffffffff81256f51:       48 83 c4 30             add    $0x30,%rsp
+ffffffff81256f55:       5b                      pop    %rbx
+ffffffff81256f56:       5d                      pop    %rbp
+ffffffff81256f57:       41 5c                   pop    %r12
+ffffffff81256f59:       41 5d                   pop    %r13
+ffffffff81256f5b:       41 5e                   pop    %r14
+ffffffff81256f5d:       41 5f                   pop    %r15
+ffffffff81256f5f:       c3                      retq   
+
+
+As you can see, the nested __blkdev_put() is coverted to a loop.
+If you put kprobe on __blkdev_put+0x2d, you'll see the event twice.
+
+Thank you,
  
-@@ -81,7 +82,7 @@ class FlameGraphCLI:
- 
-         if self.args.format == "html":
-             try:
--                with open(self.args.template) as f:
-+                with io.open(self.args.template, encoding="utf-8") as f:
-                     output_str = f.read().replace("/** @flamegraph_json **/",
-                                                   json_str)
-             except IOError as e:
-@@ -93,11 +94,12 @@ class FlameGraphCLI:
-             output_fn = self.args.output or "stacks.json"
- 
-         if output_fn == "-":
--            sys.stdout.write(output_str)
-+            with io.open(sys.stdout.fileno(), "w", encoding="utf-8", closefd=False) as out:
-+                out.write(output_str)
-         else:
-             print("dumping data to {}".format(output_fn))
-             try:
--                with open(output_fn, "w") as out:
-+                with io.open(output_fn, "w", encoding="utf-8") as out:
-                     out.write(output_str)
-             except IOError as e:
-                 print("Error writing output file: {}".format(e), file=sys.stderr)
+
+
 -- 
-2.25.4
-
+Masami Hiramatsu <mhiramat@kernel.org>
