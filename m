@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD5A20148A
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14ADD201487
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404257AbgFSQMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 12:12:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34364 "EHLO mail.kernel.org"
+        id S2393473AbgFSQLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:11:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391299AbgFSPF1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:05:27 -0400
+        id S2391319AbgFSPFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:05:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BB0721974;
-        Fri, 19 Jun 2020 15:05:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 542D82158C;
+        Fri, 19 Jun 2020 15:05:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579127;
-        bh=s4rkVUYjCfuB21bGlUbTs4ryKSA+p9BFofT562MSvhU=;
+        s=default; t=1592579134;
+        bh=+OpGqXvzZxY/hYzOBySZEbXhrLd9AA+Z4+FvPhEA0zg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=imcu0FZZRxoZnaN59RpFdhg0jywpzpE3DEF7Z1LRg4LbkFbcbgmkKbXFmlQv2Gngy
-         yjmLbx8LhS5ZLoic/4RinUXOe7fU2r6ZKGAJzxZ7+HWUkqDTWbcXaNf8GsF1bXIJv+
-         +LdoW6O6jJhNFumGjwJqxH4siLhsfAzenyXnD36Q=
+        b=Y1+dH66qq02K0Yd0wLwp0U9N58/yxmSjoCDPrTqmDCqK7guqnhCdbmEQz+mbj6m6u
+         8jyLASdCXkqEm/Xe1Mix7fOdCAhVF/GcDRl5UtqDBhIJVxmhPhIHvoQWDnmEZ0noyD
+         vu2GFw3iJhdy2UCk5rt086Uc6rgiJgsOP5kgpZ6U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mark Starovoytov <mstarovoitov@marvell.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Fangrui Song <maskray@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 018/261] net: atlantic: make hw_get_regs optional
-Date:   Fri, 19 Jun 2020 16:30:29 +0200
-Message-Id: <20200619141650.739339000@linuxfoundation.org>
+Subject: [PATCH 5.4 020/261] efi/libstub/x86: Work around LLVM ELF quirk build regression
+Date:   Fri, 19 Jun 2020 16:30:31 +0200
+Message-Id: <20200619141650.848126735@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
 References: <20200619141649.878808811@linuxfoundation.org>
@@ -45,43 +48,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Starovoytov <mstarovoitov@marvell.com>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-[ Upstream commit d0f23741c202c685447050713907f3be39a985ee ]
+[ Upstream commit f77767ed5f4d398b29119563155e4ece2dfeee13 ]
 
-This patch fixes potential crash in case if hw_get_regs is NULL.
+When building the x86 EFI stub with Clang, the libstub Makefile rules
+that manipulate the ELF object files may throw an error like:
 
-Signed-off-by: Mark Starovoytov <mstarovoitov@marvell.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+    STUBCPY drivers/firmware/efi/libstub/efi-stub-helper.stub.o
+  strip: drivers/firmware/efi/libstub/efi-stub-helper.stub.o: Failed to find link section for section 10
+  objcopy: drivers/firmware/efi/libstub/efi-stub-helper.stub.o: Failed to find link section for section 10
+
+This is the result of a LLVM feature [0] where symbol references are
+stored in a LLVM specific .llvm_addrsig section in a non-transparent way,
+causing generic ELF tools such as strip or objcopy to choke on them.
+
+So force the compiler not to emit these sections, by passing the
+appropriate command line option.
+
+[0] https://sourceware.org/bugzilla/show_bug.cgi?id=23817
+
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Peter Collingbourne <pcc@google.com>
+Cc: Sami Tolvanen <samitolvanen@google.com>
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Suggested-by: Fangrui Song <maskray@google.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/aquantia/atlantic/aq_nic.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/firmware/efi/libstub/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/ethernet/aquantia/atlantic/aq_nic.c b/drivers/net/ethernet/aquantia/atlantic/aq_nic.c
-index 12949f1ec1ea..145334fb18f4 100644
---- a/drivers/net/ethernet/aquantia/atlantic/aq_nic.c
-+++ b/drivers/net/ethernet/aquantia/atlantic/aq_nic.c
-@@ -690,6 +690,9 @@ int aq_nic_get_regs(struct aq_nic_s *self, struct ethtool_regs *regs, void *p)
- 	u32 *regs_buff = p;
- 	int err = 0;
+diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
+index ee0661ddb25b..8c5b5529dbc0 100644
+--- a/drivers/firmware/efi/libstub/Makefile
++++ b/drivers/firmware/efi/libstub/Makefile
+@@ -28,6 +28,7 @@ KBUILD_CFLAGS			:= $(cflags-y) -DDISABLE_BRANCH_PROFILING \
+ 				   -D__NO_FORTIFY \
+ 				   $(call cc-option,-ffreestanding) \
+ 				   $(call cc-option,-fno-stack-protector) \
++				   $(call cc-option,-fno-addrsig) \
+ 				   -D__DISABLE_EXPORTS
  
-+	if (unlikely(!self->aq_hw_ops->hw_get_regs))
-+		return -EOPNOTSUPP;
-+
- 	regs->version = 1;
- 
- 	err = self->aq_hw_ops->hw_get_regs(self->aq_hw,
-@@ -704,6 +707,9 @@ err_exit:
- 
- int aq_nic_get_regs_count(struct aq_nic_s *self)
- {
-+	if (unlikely(!self->aq_hw_ops->hw_get_regs))
-+		return 0;
-+
- 	return self->aq_nic_cfg.aq_hw_caps->mac_regs_count;
- }
- 
+ GCOV_PROFILE			:= n
 -- 
 2.25.1
 
