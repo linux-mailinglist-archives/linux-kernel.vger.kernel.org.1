@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C9A201448
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:14:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA47220146A
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 18:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391505AbgFSPG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:06:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35942 "EHLO mail.kernel.org"
+        id S2404068AbgFSQKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 12:10:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391481AbgFSPGo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:06:44 -0400
+        id S2391487AbgFSPGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:06:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06AAB21835;
-        Fri, 19 Jun 2020 15:06:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D38C221974;
+        Fri, 19 Jun 2020 15:06:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592579203;
-        bh=smA3SCmjab/9A4FLqv4aoQVzKZQhYnN5viQ9OPV9uHM=;
+        s=default; t=1592579208;
+        bh=LrwI3WVVMEZTLt+oktHm+tTG2mf3KGJ3BQ4rafhaoYY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FQ/Vkl20i9jK7GkkxuRDFgKU1i6fkapSiRLsr0wEdKTRpZwLg4c5nIL1kOOf1VDk7
-         G6ATcJyGXne+UcL33VVc3IlVybqZ3t87ltOSeoqr4m6z1zqGyIyC2yZBfvSvRfHO+Q
-         epT+OdDDkZ6Pf8CZUhkoV3oBXjc0oVJ+v0FAhzsc=
+        b=AKkPjlNJiAYZ2iZj5VfE2YNCBOCGXU1x7AjYrPXaOL9FVbrAHVvm3oUtbO8LtNDD/
+         UWRrxZB/mevfrbQzEURifgGVCR/2yhLG8d1pjJlCWEGFiS5YCPzz1KDU/TCvOniQXk
+         qmTqv5V2xZYz7gD+qCsEHrxE3OGEK0O4OIvbtca0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>,
+        stable@vger.kernel.org,
+        Matthias Schiffer <mschiffer@universe-factory.net>,
+        Sven Eckelmann <sven@narfation.org>,
+        Simon Wunderlich <sw@simonwunderlich.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 046/261] btrfs: do not ignore error from btrfs_next_leaf() when inserting checksums
-Date:   Fri, 19 Jun 2020 16:30:57 +0200
-Message-Id: <20200619141652.140037504@linuxfoundation.org>
+Subject: [PATCH 5.4 048/261] batman-adv: Revert "disable ethtool link speed detection when auto negotiation off"
+Date:   Fri, 19 Jun 2020 16:30:59 +0200
+Message-Id: <20200619141652.229645547@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
 References: <20200619141649.878808811@linuxfoundation.org>
@@ -44,46 +46,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Sven Eckelmann <sven@narfation.org>
 
-[ Upstream commit 7e4a3f7ed5d54926ec671bbb13e171cfe179cc50 ]
+[ Upstream commit 9ad346c90509ebd983f60da7d082f261ad329507 ]
 
-We are currently treating any non-zero return value from btrfs_next_leaf()
-the same way, by going to the code that inserts a new checksum item in the
-tree. However if btrfs_next_leaf() returns an error (a value < 0), we
-should just stop and return the error, and not behave as if nothing has
-happened, since in that case we do not have a way to know if there is a
-next leaf or we are currently at the last leaf already.
+The commit 8c46fcd78308 ("batman-adv: disable ethtool link speed detection
+when auto negotiation off") disabled the usage of ethtool's link_ksetting
+when auto negotation was enabled due to invalid values when used with
+tun/tap virtual net_devices. According to the patch, automatic measurements
+should be used for these kind of interfaces.
 
-So fix that by returning the error from btrfs_next_leaf().
+But there are major flaws with this argumentation:
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
+* automatic measurements are not implemented
+* auto negotiation has nothing to do with the validity of the retrieved
+  values
+
+The first point has to be fixed by a longer patch series. The "validity"
+part of the second point must be addressed in the same patch series by
+dropping the usage of ethtool's link_ksetting (thus always doing automatic
+measurements over ethernet).
+
+Drop the patch again to have more default values for various net_device
+types/configurations. The user can still overwrite them using the
+batadv_hardif's BATADV_ATTR_THROUGHPUT_OVERRIDE.
+
+Reported-by: Matthias Schiffer <mschiffer@universe-factory.net>
+Signed-off-by: Sven Eckelmann <sven@narfation.org>
+Signed-off-by: Simon Wunderlich <sw@simonwunderlich.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/file-item.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ net/batman-adv/bat_v_elp.c | 15 +--------------
+ 1 file changed, 1 insertion(+), 14 deletions(-)
 
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index f62a179f85bb..2b8f29c07668 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -798,10 +798,12 @@ again:
- 		nritems = btrfs_header_nritems(path->nodes[0]);
- 		if (!nritems || (path->slots[0] >= nritems - 1)) {
- 			ret = btrfs_next_leaf(root, path);
--			if (ret == 1)
-+			if (ret < 0) {
-+				goto out;
-+			} else if (ret > 0) {
- 				found_next = 1;
--			if (ret != 0)
- 				goto insert;
-+			}
- 			slot = path->slots[0];
- 		}
- 		btrfs_item_key_to_cpu(path->nodes[0], &found_key, slot);
+diff --git a/net/batman-adv/bat_v_elp.c b/net/batman-adv/bat_v_elp.c
+index 2614a9caee00..a39af0eefad3 100644
+--- a/net/batman-adv/bat_v_elp.c
++++ b/net/batman-adv/bat_v_elp.c
+@@ -120,20 +120,7 @@ static u32 batadv_v_elp_get_throughput(struct batadv_hardif_neigh_node *neigh)
+ 	rtnl_lock();
+ 	ret = __ethtool_get_link_ksettings(hard_iface->net_dev, &link_settings);
+ 	rtnl_unlock();
+-
+-	/* Virtual interface drivers such as tun / tap interfaces, VLAN, etc
+-	 * tend to initialize the interface throughput with some value for the
+-	 * sake of having a throughput number to export via ethtool. This
+-	 * exported throughput leaves batman-adv to conclude the interface
+-	 * throughput is genuine (reflecting reality), thus no measurements
+-	 * are necessary.
+-	 *
+-	 * Based on the observation that those interface types also tend to set
+-	 * the link auto-negotiation to 'off', batman-adv shall check this
+-	 * setting to differentiate between genuine link throughput information
+-	 * and placeholders installed by virtual interfaces.
+-	 */
+-	if (ret == 0 && link_settings.base.autoneg == AUTONEG_ENABLE) {
++	if (ret == 0) {
+ 		/* link characteristics might change over time */
+ 		if (link_settings.base.duplex == DUPLEX_FULL)
+ 			hard_iface->bat_v.flags |= BATADV_FULL_DUPLEX;
 -- 
 2.25.1
 
