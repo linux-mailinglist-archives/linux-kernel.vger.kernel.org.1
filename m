@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A458200FFE
-	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93508200E35
+	for <lists+linux-kernel@lfdr.de>; Fri, 19 Jun 2020 17:06:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404062AbgFSPYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 11:24:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51938 "EHLO mail.kernel.org"
+        id S2391377AbgFSPGD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 11:06:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392735AbgFSPUn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 11:20:43 -0400
+        id S2391356AbgFSPFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 11:05:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68D8A20B80;
-        Fri, 19 Jun 2020 15:20:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DBA1E21841;
+        Fri, 19 Jun 2020 15:05:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592580043;
-        bh=hX12khJAdZqJIox8b1e42ktmh3BYm/+28o1Cp2ygp9Y=;
+        s=default; t=1592579153;
+        bh=1ZqBWfgeh7FOkLqgoKPI+U9m04VMyCuq7dbiqJMlu9I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0X/6FC2/VRY56IhuoSb6eYEBLq0AWe/m7adPXVVevzs7SB9hzGgQIRoC7R8mwxPdq
-         wh+5Run5jEvCaa7QOWDoI08wfxYloydlG1vIH33l7LScg0JBiQwxEjeOLoUg09TZEM
-         /nGqw+WnEb3W1PGwmlLZdttgOIfUIVJE8DOpuygo=
+        b=bjs+Ux9oTaJdgr7YmjoWcPfFHUuVHLy0PNI1vZYAuTENLUVX0FYRrL6BstiYNFhzm
+         DuSpJZfb/x1YP8Yba1EjEk3WSS5J9CKgt/XcxoS/jyfAUqrkkP0gCeUGywP29lAMiv
+         1tq/cDUDWzZMIcWGj1NeV1478rVuIViCYClA1Skw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 100/376] media: dvb: return -EREMOTEIO on i2c transfer failure.
+Subject: [PATCH 5.4 007/261] crypto: ccp -- dont "select" CONFIG_DMADEVICES
 Date:   Fri, 19 Jun 2020 16:30:18 +0200
-Message-Id: <20200619141715.082043748@linuxfoundation.org>
+Message-Id: <20200619141650.244907382@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200619141710.350494719@linuxfoundation.org>
-References: <20200619141710.350494719@linuxfoundation.org>
+In-Reply-To: <20200619141649.878808811@linuxfoundation.org>
+References: <20200619141649.878808811@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,41 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 96f3a9392799dd0f6472648a7366622ffd0989f3 ]
+[ Upstream commit eebac678556d6927f09a992872f4464cf3aecc76 ]
 
-Currently when i2c transfers fail the error return -EREMOTEIO
-is assigned to err but then later overwritten when the tuner
-attach call is made.  Fix this by returning early with the
-error return code -EREMOTEIO on i2c transfer failure errors.
+DMADEVICES is the top-level option for the slave DMA
+subsystem, and should not be selected by device drivers,
+as this can cause circular dependencies such as:
 
-If the transfer fails, an uninitialized value will be read from b2.
+drivers/net/ethernet/freescale/Kconfig:6:error: recursive dependency detected!
+drivers/net/ethernet/freescale/Kconfig:6:	symbol NET_VENDOR_FREESCALE depends on PPC_BESTCOMM
+drivers/dma/bestcomm/Kconfig:6:	symbol PPC_BESTCOMM depends on DMADEVICES
+drivers/dma/Kconfig:6:	symbol DMADEVICES is selected by CRYPTO_DEV_SP_CCP
+drivers/crypto/ccp/Kconfig:10:	symbol CRYPTO_DEV_SP_CCP depends on CRYPTO
+crypto/Kconfig:16:	symbol CRYPTO is selected by LIBCRC32C
+lib/Kconfig:222:	symbol LIBCRC32C is selected by LIQUIDIO
+drivers/net/ethernet/cavium/Kconfig:65:	symbol LIQUIDIO depends on PTP_1588_CLOCK
+drivers/ptp/Kconfig:8:	symbol PTP_1588_CLOCK is implied by FEC
+drivers/net/ethernet/freescale/Kconfig:23:	symbol FEC depends on NET_VENDOR_FREESCALE
 
-Addresses-Coverity: ("Unused value")
+The LIQUIDIO driver causing this problem is addressed in a
+separate patch, but this change is needed to prevent it from
+happening again.
 
-Fixes: fbfee8684ff2 ("V4L/DVB (5651): Dibusb-mb: convert pll handling to properly use dvb-pll")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Using "depends on DMADEVICES" is what we do for all other
+implementations of slave DMA controllers as well.
+
+Fixes: b3c2fee5d66b ("crypto: ccp - Ensure all dependencies are specified")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/dibusb-mb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/crypto/ccp/Kconfig | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/dvb-usb/dibusb-mb.c b/drivers/media/usb/dvb-usb/dibusb-mb.c
-index d4ea72bf09c5..5131c8d4c632 100644
---- a/drivers/media/usb/dvb-usb/dibusb-mb.c
-+++ b/drivers/media/usb/dvb-usb/dibusb-mb.c
-@@ -81,7 +81,7 @@ static int dibusb_tuner_probe_and_attach(struct dvb_usb_adapter *adap)
- 
- 	if (i2c_transfer(&adap->dev->i2c_adap, msg, 2) != 2) {
- 		err("tuner i2c write failed.");
--		ret = -EREMOTEIO;
-+		return -EREMOTEIO;
- 	}
- 
- 	if (adap->fe_adap[0].fe->ops.i2c_gate_ctrl)
+diff --git a/drivers/crypto/ccp/Kconfig b/drivers/crypto/ccp/Kconfig
+index 8fec733f567f..63e227adbb13 100644
+--- a/drivers/crypto/ccp/Kconfig
++++ b/drivers/crypto/ccp/Kconfig
+@@ -10,10 +10,9 @@ config CRYPTO_DEV_CCP_DD
+ config CRYPTO_DEV_SP_CCP
+ 	bool "Cryptographic Coprocessor device"
+ 	default y
+-	depends on CRYPTO_DEV_CCP_DD
++	depends on CRYPTO_DEV_CCP_DD && DMADEVICES
+ 	select HW_RANDOM
+ 	select DMA_ENGINE
+-	select DMADEVICES
+ 	select CRYPTO_SHA1
+ 	select CRYPTO_SHA256
+ 	help
 -- 
 2.25.1
 
