@@ -2,144 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 632FC20259E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 19:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B5D32025C0
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 19:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728277AbgFTRb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 13:31:56 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:33383 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727946AbgFTRbz (ORCPT
+        id S1728380AbgFTRvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 13:51:09 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:19100 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726838AbgFTRvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 13:31:55 -0400
-Received: by mail-pf1-f196.google.com with SMTP id b201so6129437pfb.0;
-        Sat, 20 Jun 2020 10:31:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=76DjZtVoVNTfIvPgHLxvbVvnnrURAKQR9OKC4ML66Vc=;
-        b=NcMZn+Pzxwlz6Gc3cFevOO/D0qwfi7VTEkb0FG7Epa3QXMhJgsnU9SwDHmSF8BPEMI
-         WlkH0zPM1wJSlu6mFBuhk86denc+CsLLE5aKvguWZRE8RJRL45a3qdvecpTRufU2mBFW
-         66IxZW3dAxmGlUg3YKRHrp4VxhqsY9Bg/kKHoQZ/wTvJfd3P4EDICFMV43nAE1Ud7kG/
-         TR4AaqEU19zBeJU4d9futNbyEHsjIQpu5pNVM06fmqKxjC7P5o59bg7OTrkQx7RiQbZ8
-         F+vErMFePskpJIJhNfL+Ht9FnjD24vqUUG5P93YRMRcFH12g1aZjrBetNgxn+3Sr15bV
-         qn9g==
-X-Gm-Message-State: AOAM530vdv7tao7928QS4lfW93Wy3exu4Ua44WtN3X7j3aA2eQR9snQk
-        DW9dCaskM2PYdIVAoVElAg0=
-X-Google-Smtp-Source: ABdhPJx4WJJeoAZd88UMGoNU0tCyJbSMTb2c+Eg/pyZk/Y8Gvd8ak7lYZIWZRWF80NIVktK7gkeuqA==
-X-Received: by 2002:a05:6a00:22c2:: with SMTP id f2mr13824607pfj.187.1592674314328;
-        Sat, 20 Jun 2020 10:31:54 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id z11sm9592511pfk.141.2020.06.20.10.31.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Jun 2020 10:31:53 -0700 (PDT)
-Subject: Re: [PATCH v7 6/8] blktrace: fix debugfs use after free
-To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
-        viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
-        rostedt@goodmis.org, mingo@redhat.com, jack@suse.cz,
-        ming.lei@redhat.com, nstange@suse.de, akpm@linux-foundation.org
-Cc:     mhocko@suse.com, yukuai3@huawei.com, martin.petersen@oracle.com,
-        jejb@linux.ibm.com, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Omar Sandoval <osandov@fb.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        syzbot+603294af2d01acfdd6da@syzkaller.appspotmail.com
-References: <20200619204730.26124-1-mcgrof@kernel.org>
- <20200619204730.26124-7-mcgrof@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <75c3a94d-dcd1-05e4-47c6-db65f074136a@acm.org>
-Date:   Sat, 20 Jun 2020 10:31:51 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <20200619204730.26124-7-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Sat, 20 Jun 2020 13:51:09 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200620175106epoutp011717ddd0873c9cd4ee8b924f53119a8c~aUeYT5TLW3036330363epoutp01h
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 17:51:06 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200620175106epoutp011717ddd0873c9cd4ee8b924f53119a8c~aUeYT5TLW3036330363epoutp01h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1592675466;
+        bh=kgQx6GkHG+g2FYavxug1XfQFwsmcK85FkVaRvxsVKak=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=mCErTwcXor+EgQBDL6q5bWbxhFnCLx9Dpmkh1GLuCfRAp2MuPtXfdH6sXfIXeocib
+         bzlM7Yxv2Uy9Dx86eoTp7xSyqt3cIUNeR+HzZsl6JiE4P4lESP8LHCwaK56Cm56Chm
+         IMpNJm0K1eKcPy9QYz+O/nL5YX0QA9Wd6xv+j3do=
+Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
+        20200620175105epcas5p2a0f9f291f07c0bb8dc780b10d9f2f363~aUeXA9T8a2357823578epcas5p2L;
+        Sat, 20 Jun 2020 17:51:05 +0000 (GMT)
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B5.00.09475.98C4EEE5; Sun, 21 Jun 2020 02:51:05 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200620175104epcas5p25068bb07029c9d6aff56623e4ecb0a26~aUeVyRbn42357823578epcas5p2K;
+        Sat, 20 Jun 2020 17:51:04 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200620175104epsmtrp1c6797b3456983879c679dfb1c8b488b9~aUeVxm_Z81505115051epsmtrp1O;
+        Sat, 20 Jun 2020 17:51:04 +0000 (GMT)
+X-AuditID: b6c32a4b-39fff70000002503-e4-5eee4c8907b5
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        72.0D.08382.78C4EEE5; Sun, 21 Jun 2020 02:51:04 +0900 (KST)
+Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
+        [107.108.73.139]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200620175102epsmtip1e73ed9d8a4a6d1ef5bca3b802c7f6bf3~aUeUes8-P3245232452epsmtip1T;
+        Sat, 20 Jun 2020 17:51:02 +0000 (GMT)
+From:   Alim Akhtar <alim.akhtar@samsung.com>
+To:     linux-scsi@vger.kernel.org
+Cc:     avri.altman@wdc.com, martin.petersen@oracle.com,
+        kwmad.kim@samsung.com, stanley.chu@mediatek.com,
+        cang@codeaurora.org, linux-kernel@vger.kernel.org,
+        jejb@linux.ibm.com, Alim Akhtar <alim.akhtar@samsung.com>
+Subject: [PATCH -next] scsi: ufs: allow exynos ufs driver to build as module
+Date:   Sat, 20 Jun 2020 23:02:32 +0530
+Message-Id: <20200620173232.52521-1-alim.akhtar@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrLIsWRmVeSWpSXmKPExsWy7bCmum6nz7s4g/O3JCwezNvGZvHy51U2
+        i0/rl7FaLLqxjcni5pajLBaXd81hs+i+voPNYvnxf0wWS7feZHTg9Ljc18vkMWHRAUaPlpP7
+        WTw+Pr3F4tG3ZRWjx+dNch7tB7qZAtijuGxSUnMyy1KL9O0SuDKezXjFVLCEv2J++0+mBsaj
+        vF2MnBwSAiYS/2duYwGxhQR2M0rcWCTaxcgFZH9ilFi75QUjhPONUeLnnj5mmI7FHR3sEIm9
+        jBIfOvexQ7S3MEl8Wc0NYrMJaEvcnb6FCcQWEZCT2Lz8KwtIA7PANUaJc21/wPYJC/hIfNv1
+        mRXEZhFQlbi4/D+YzStgI7H22yM2iG3yEqs3HGAGaZYQOMcusaX1GhNEwkViyYQfUEXCEq+O
+        b2GHsKUkXva3AdkcQHa2RM8uY4hwjcTSecdYIGx7iQNX5rCAlDALaEqs36UPEmYW4JPo/f2E
+        CaKTV6KjTQiiWlWi+d1VqE5piYnd3awQJR4SU2YwQnweK3Fu9T3WCYwysxBmLmBkXMUomVpQ
+        nJueWmxaYJyXWq5XnJhbXJqXrpecn7uJEZwCtLx3MD568EHvECMTB+MhRgkOZiUR3sPv38QJ
+        8aYkVlalFuXHF5XmpBYfYpTmYFES51X6cSZOSCA9sSQ1OzW1ILUIJsvEwSnVwGSX9XhyopC8
+        ufLT47FmuQ9/vvlRXfrkTfQJ/kofh9qYepHU3zGlD0WOP5tyYddV97t3/vyLWXhrgrjSqT1O
+        07mTrJ8Yc+7JXKPj8061R99sw7eW16cK1E/rH9TeJ63+OPf4ASP9nZkqrqeX/hXxPtMVlFCU
+        IhvcvWBqa8t1Q06L629tQ2u2Z82pFPnkee3LvfU37XY5Fnx4HZNrz+UQcW5y26LPXqfV8g2r
+        Znw925m8bpVa109tb525WV6h78+n5YaHPYs+dui9eKncp7lrP6Xsmah9pXDHB1NRkcbF/voT
+        2x89N5j7cO21T74tC4Sbw0+Usc6xuLv99u3IxV7RlntfB06/ldez9v6703vtDHqUWIozEg21
+        mIuKEwHr95rocAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCLMWRmVeSWpSXmKPExsWy7bCSnG6Hz7s4g9XzmC0ezNvGZvHy51U2
+        i0/rl7FaLLqxjcni5pajLBaXd81hs+i+voPNYvnxf0wWS7feZHTg9Ljc18vkMWHRAUaPlpP7
+        WTw+Pr3F4tG3ZRWjx+dNch7tB7qZAtijuGxSUnMyy1KL9O0SuDKezXjFVLCEv2J++0+mBsaj
+        vF2MnBwSAiYSizs62LsYuTiEBHYzStw895IRIiEtcX3jBHYIW1hi5b/nUEVNTBIdW7YxgSTY
+        BLQl7k7fAmaLCMhJbF7+lQWkiFngAaNEz/fjLCAJYQEfiW+7PrOC2CwCqhIXl/8Hs3kFbCTW
+        fnvEBrFBXmL1hgPMExh5FjAyrGKUTC0ozk3PLTYsMMxLLdcrTswtLs1L10vOz93ECA44Lc0d
+        jNtXfdA7xMjEwXiIUYKDWUmE9/D7N3FCvCmJlVWpRfnxRaU5qcWHGKU5WJTEeW8ULowTEkhP
+        LEnNTk0tSC2CyTJxcEo1MIVtvnpqqsZGd8lXG93zDxx4sa/324PnBoY+4Xc/ftA2ehCTYTO7
+        c/+ir33f+xKN313TnrJpvZCE5EFN2YcFp8s/qsb6ez2Sjwq/dt64TH7nzN/T/cQOfNphuDm+
+        IfTVlQvsbbdsm6quKTwNfOdxb8X7s5smbVxswfTk6+ym8gKPqza8gVHN/infc/omB+5w/XPE
+        aGOG9rk5aZwXjTXUxW+su3T8k7Hc1sRO1h61Nr36e/K5TXnTtZqXv0iMrV77vjnA8EjyEZuJ
+        am+jIs83B3ox6s3lsS7KyGtsmjG5+r/9MqNYiW6lqet33dM+cN30sUxX9Frm649uLdwQcuGg
+        r+u1xx4+fvMP+ihznvp54pkSS3FGoqEWc1FxIgB4kK2XpwIAAA==
+X-CMS-MailID: 20200620175104epcas5p25068bb07029c9d6aff56623e4ecb0a26
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200620175104epcas5p25068bb07029c9d6aff56623e4ecb0a26
+References: <CGME20200620175104epcas5p25068bb07029c9d6aff56623e4ecb0a26@epcas5p2.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-19 13:47, Luis Chamberlain wrote:
-> This goes tested with:
-       ^^^^
-       got?
+Allow Exynos UFS driver to build as a module.
+This patch fix the below build issue reported by
+kernel build robot.
 
-> diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-> index 7ff2ea5cd05e..e6e2d25fdbd6 100644
-> --- a/kernel/trace/blktrace.c
-> +++ b/kernel/trace/blktrace.c
-> @@ -524,10 +524,18 @@ static int do_blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
->  	if (!bt->msg_data)
->  		goto err;
->  
-> -	ret = -ENOENT;
-> -
-> -	dir = debugfs_lookup(buts->name, blk_debugfs_root);
-> -	if (!dir)
-> +#ifdef CONFIG_BLK_DEBUG_FS
-> +	/*
-> +	 * When tracing whole make_request drivers (multiqueue) block devices,
-> +	 * reuse the existing debugfs directory created by the block layer on
-> +	 * init. For request-based block devices, all partitions block devices,
-                                                  ^^^^^^^^^^^^^^^^^^^^^
-It seems like a word is missing from the comment? Or did you perhaps
-want to refer to "all partition block devices"?
+drivers/scsi/ufs/ufs-exynos.o: in function `exynos_ufs_probe':
+drivers/scsi/ufs/ufs-exynos.c:1231: undefined reference to `ufshcd_pltfrm_init'
+drivers/scsi/ufs/ufs-exynos.o: in function `exynos_ufs_pre_pwr_mode':
+drivers/scsi/ufs/ufs-exynos.c:635: undefined reference to `ufshcd_get_pwr_dev_param'
+drivers/scsi/ufs/ufs-exynos.o:undefined reference to `ufshcd_pltfrm_shutdown'
+drivers/scsi/ufs/ufs-exynos.o:undefined reference to `ufshcd_pltfrm_suspend'
+drivers/scsi/ufs/ufs-exynos.o:undefined reference to `ufshcd_pltfrm_resume'
+drivers/scsi/ufs/ufs-exynos.o:undefined reference to `ufshcd_pltfrm_runtime_suspend'
+drivers/scsi/ufs/ufs-exynos.o:undefined reference to `ufshcd_pltfrm_runtime_resume'
+drivers/scsi/ufs/ufs-exynos.o:undefined reference to `ufshcd_pltfrm_runtime_idle'
 
-> +	 * and scsi-generic block devices we create a temporary new debugfs
-> +	 * directory that will be removed once the trace ends.
-> +	 */
-> +	if (queue_is_mq(q) && bdev && bdev == bdev->bd_contains)
-> +		dir = q->debugfs_dir;
-> +	else
-> +#endif
->  		bt->dir = dir = debugfs_create_dir(buts->name, blk_debugfs_root);
+Fixes: 55f4b1f73631 ("scsi: ufs: ufs-exynos: Add UFS host support for Exynos SoCs")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Alim Akhtar <alim.akhtar@samsung.com>
+---
+ drivers/scsi/ufs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Can it happen that two different threads each try to set up block
-tracing and hence that debugfs_create_dir() fails because a directory
-with name buts->name already exists?
+diff --git a/drivers/scsi/ufs/Kconfig b/drivers/scsi/ufs/Kconfig
+index 8cd90262784d..3188a50dfb51 100644
+--- a/drivers/scsi/ufs/Kconfig
++++ b/drivers/scsi/ufs/Kconfig
+@@ -162,7 +162,7 @@ config SCSI_UFS_BSG
+ 	  If unsure, say N.
+ 
+ config SCSI_UFS_EXYNOS
+-	bool "EXYNOS specific hooks to UFS controller platform driver"
++	tristate "EXYNOS specific hooks to UFS controller platform driver"
+ 	depends on SCSI_UFSHCD_PLATFORM && (ARCH_EXYNOS || COMPILE_TEST)
+ 	select PHY_SAMSUNG_UFS
+ 	help
 
->  	bt->dev = dev;
-> @@ -565,8 +573,6 @@ static int do_blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
->  
->  	ret = 0;
->  err:
-> -	if (dir && !bt->dir)
-> -		dput(dir);
->  	if (ret)
->  		blk_trace_free(bt);
->  	return ret;
-
-Shouldn't bt->dir be removed in this error path for make_request drivers?
-
-Thanks,
-
-Bart.
+base-commit: ce2cc8efd7a40cbd17841add878cb691d0ce0bba
+prerequisite-patch-id: c12207f678b32e29496ec7e324425c8f49422a2c
+prerequisite-patch-id: 8263330366e8c180c0ab9f76fbd4dbbcf0bee427
+prerequisite-patch-id: 7456972c04fc1a76c922196aecd98e9ed17cc6eb
+-- 
+2.17.1
 
