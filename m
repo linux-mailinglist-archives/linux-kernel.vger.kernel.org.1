@@ -2,63 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60712202286
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 10:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79003202292
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 10:18:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726993AbgFTIIk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 04:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
+        id S1727793AbgFTISp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 04:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbgFTIIk (ORCPT
+        with ESMTP id S1727114AbgFTISo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 04:08:40 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE496C06174E;
-        Sat, 20 Jun 2020 01:08:39 -0700 (PDT)
-Received: from p200300d06f23b4e5c41e49015ae3a59e.dip0.t-ipconnect.de ([2003:d0:6f23:b4e5:c41e:4901:5ae3:a59e] helo=kmk0.localnet)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <kurt.kanzenbach@linutronix.de>)
-        id 1jmYYH-0008Kf-2s; Sat, 20 Jun 2020 10:08:37 +0200
-From:   Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>
-To:     Vladimir Oltean <olteanv@gmail.com>,
-        Jiafei Pan <jiafei.pan@nxp.com>
-Cc:     "linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        Colin King <colin.king@canonical.com>,
-        Jiafei Pan <jiafei.pan@nxp.com>
-Subject: Re: [EXT] Re: stress-ng --hrtimers hangs system
-Date:   Sat, 20 Jun 2020 10:08:29 +0200
-Message-ID: <11546107.O9o76ZdvQC@kmk0>
-Organization: Linutronix GmbH
-In-Reply-To: <AM0PR04MB47726B40110E1B02471EEEDF8A810@AM0PR04MB4772.eurprd04.prod.outlook.com>
-References: <4781d250-9a29-cef3-268d-7d83c98bf16a@gmail.com> <87y2ovzcmd.fsf@kurt> <AM0PR04MB47726B40110E1B02471EEEDF8A810@AM0PR04MB4772.eurprd04.prod.outlook.com>
+        Sat, 20 Jun 2020 04:18:44 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA61C0613EE
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 01:18:43 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id d21so4776927lfb.6
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 01:18:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=l9sVdBupCrv1cQPqOx/4ngtnBtI/mnXzU0DrRVBMLaY=;
+        b=SnFY32DyDPj1zK0vky409Vn3NqW2WG/GmsMiPB9I18GDMz97DXS+BSp9rzp2aID4Fy
+         gS8g2VyoGI3370WkpwNQOefLHWOKkL0NJk4GVADh64N1T0WPC94o6vjTQ7IT2fqK87p5
+         xF3tFqvp/Zhboe7ZMHYDSbA3FUNN8cki/+SK/Aolscdj6iRlJ1SejviAiyUGfK2W2qiK
+         IwB4bettbXLd6sLwX4tnWruGZALxX/MHR0gHQxdwn523QnCeuPcw5BgQtZ+fh79P2uKo
+         t3JRdGV4bxN/DgIA+FlEQThWW9ebqb7mj1IT6pCmGp8mAWn56LZnJheA5lLdO6uvtL+7
+         Gfug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=l9sVdBupCrv1cQPqOx/4ngtnBtI/mnXzU0DrRVBMLaY=;
+        b=ZLk8qvSZkeX7Dqpq27T4RzpS6lePvPt5hNY2TShflRVbnJ7VEvEwCxFn25ZXY2kK2+
+         QoT+dB2BgBXVWEV8aggCipRiWnhr7Dx8sDxx1yYp47td30HnxF/H5ZElpjwK8aNOcKnJ
+         44/JjqloDG2XSOCtWbKCYhgTYzJb31O7sl20AVLGrPaIRfA2C8Mn8aYXxpmBmqPyIeLC
+         OlDGbMDyyeM1HGPTODRWBySVH27YTpniSTCEU+SqgJ8RjBkklkIdPglKPIGJq/xKsmzU
+         Cfl3PqLApOP6cWGxXNHjbRLpIorRrHychQbPbHg/Xg+Yao4FDiZWwMt0Q8e/TVPY95/5
+         +y8w==
+X-Gm-Message-State: AOAM5311Vd1gQwMGaLp05BJU4Zt+nfpzAvjoZKjxvW3FugkggXLS0Aa/
+        D4yiulRyvWAh+pZrC3TlEaG2luYRNz4jwXemSt3KHA==
+X-Google-Smtp-Source: ABdhPJy/xCtPGt72v4BxPlSqsZw2Unznj/h9degzI97MENYp9mLuIP04LbQCQK7gt/gt9CP99/+ObkVxw5J7N0J0qYU=
+X-Received: by 2002:ac2:5325:: with SMTP id f5mr4071169lfh.6.1592641121892;
+ Sat, 20 Jun 2020 01:18:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <20200619141614.001544111@linuxfoundation.org>
+In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sat, 20 Jun 2020 13:48:30 +0530
+Message-ID: <CA+G9fYu2d+j=2UiP-S5Ok0Ot-biux_EmM7_qcsMUaav5wfM3Hw@mail.gmail.com>
+Subject: Re: [PATCH 4.4 000/101] 4.4.228-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        linux- stable <stable@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiafei,
+On Fri, 19 Jun 2020 at 20:07, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.4.228 release.
+> There are 101 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sun, 21 Jun 2020 14:15:50 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.4.228-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On Friday, June 12, 2020 2:49:17 AM CEST Jiafei Pan wrote:
-> Hi, Kurt,
-> 
-> May I know whether you used "root" user to run stress-ng? using "root"
-> user will change the scheduler to be "SCHED_RR", so would you please
-> share test result with root and non-root users? Thanks.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Performed the test now as root and non-root user. Same result: No 
-problem.
+Summary
+------------------------------------------------------------------------
 
-Thanks,
-Kurt
+kernel: 4.4.228-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.4.y
+git commit: 2e99a284d540ce7de8faf22c51ee8a61deb49f40
+git describe: v4.4.227-102-g2e99a284d540
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.4-oe/bui=
+ld/v4.4.227-102-g2e99a284d540
+
+No regressions (compared to build v4.4.226-37-g61ef7e7aaf1d)
+
+No fixes (compared to build v4.4.226-37-g61ef7e7aaf1d)
+
+Ran 18074 total tests in the following environments and test suites.
+
+Environments
+--------------
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* perf
+* v4l2-compliance
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kvm-unit-tests
+
+Summary
+------------------------------------------------------------------------
+
+kernel: 4.4.228-rc1
+git repo: https://git.linaro.org/lkft/arm64-stable-rc.git
+git branch: 4.4.228-rc1-hikey-20200619-751
+git commit: fb3ad9b9982b81288e996643bc191ac4684831d2
+git describe: 4.4.228-rc1-hikey-20200619-751
+Test details: https://qa-reports.linaro.org/lkft/linaro-hikey-stable-rc-4.4=
+-oe/build/4.4.228-rc1-hikey-20200619-751
 
 
+No regressions (compared to build 4.4.228-rc1-hikey-20200616-749)
 
+
+No fixes (compared to build 4.4.228-rc1-hikey-20200616-749)
+
+Ran 1841 total tests in the following environments and test suites.
+
+Environments
+--------------
+- hi6220-hikey - arm64
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* perf
+* spectre-meltdown-checker-test
+* v4l2-compliance
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
