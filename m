@@ -2,93 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616A5202046
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 05:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B082720203B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 05:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732769AbgFTD24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 23:28:56 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:59956 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732724AbgFTD2z (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 23:28:55 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05K3Slbe127305;
-        Sat, 20 Jun 2020 03:28:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=LcF2q6oMmSa7YtKuR3BDORedAB+bdACVBYOQFoloR6M=;
- b=kn5Ey95Y5WxBO5UtguFy9Je3O7RnB9jHZHGGAQ/em5T6QadCownM5i9SJderYyyb2TP6
- L8mFeDq9xk+EHjfWVRRdVdueRJm182WqyxW7ehfh1D54i9R8ooFKKxvMcpwvL5tb8nOE
- 6YGJTTciM4QTlpaQChAV4Piw671T1IqCHeLFLVGxceK18gbsLmcY7duxB1OGBTFW2m8X
- 4LxETc5Qr2Yhg9y8TmF2nt5AhXl9RzrMZW5PPZBqqDzcqRBUkC9qX0DJcg8A0p0uzHEp
- 2pT5fG/5x/PRdKMZar03Bmn0eolyj5ZRi15A+FZSMtpxwo08WEgo5XpafC52S9lzzfGZ Kw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 31qg35fdgc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 20 Jun 2020 03:28:47 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05K3JH9I035722;
-        Sat, 20 Jun 2020 03:26:46 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 31s8g8c4wf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 20 Jun 2020 03:26:46 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05K3Qi5H011093;
-        Sat, 20 Jun 2020 03:26:45 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 19 Jun 2020 20:26:44 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     bvanassche@acm.org, jejb@linux.ibm.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bean Huo <huobean@gmail.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        beanhuo@micron.com
-Subject: Re: [PATCH v2 0/2] scsi: remove scsi_sdb_cache
-Date:   Fri, 19 Jun 2020 23:26:37 -0400
-Message-Id: <159262354734.7800.4948661939239497553.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200619154117.10262-1-huobean@gmail.com>
-References: <20200619154117.10262-1-huobean@gmail.com>
+        id S1732701AbgFTD1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 23:27:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56722 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732633AbgFTD1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 23:27:51 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EFD4D2311C;
+        Sat, 20 Jun 2020 03:27:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592623671;
+        bh=0D6JZ8JJv1a/lkBSX1+FdTETTuYln1rEbfJkzQ3aeIc=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=dRnvzJHI96sK/XqX8w3zM4LBGiCx16DduRQbOw7gST6lLGy+8pwDiXq81ZFdTFwAo
+         gwGbbDy2ZZtEwRWQnSCgwnNygk5XL8JmnnvXheu4j8JpO+ikEmYz21tW+GPGF7aUGp
+         dG7xlWdsPgc0r13aifchT1eNWBpaJgTYcATK7xm8=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9657 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
- phishscore=0 mlxlogscore=999 spamscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006200022
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9657 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 mlxscore=0
- clxscore=1015 malwarescore=0 impostorscore=0 adultscore=0
- cotscore=-2147483648 lowpriorityscore=0 mlxlogscore=999 spamscore=0
- suspectscore=0 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006200022
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <AM6PR04MB4966B94CFAE642E6AF5AEF79809B0@AM6PR04MB4966.eurprd04.prod.outlook.com>
+References: <1591687933-19495-1-git-send-email-Anson.Huang@nxp.com> <1591687933-19495-4-git-send-email-Anson.Huang@nxp.com> <AM6PR04MB49660A10856A3746C7103394809A0@AM6PR04MB4966.eurprd04.prod.outlook.com> <DB3PR0402MB39163BC04E4E5F4F6A22F6D4F59A0@DB3PR0402MB3916.eurprd04.prod.outlook.com> <AM6PR04MB4966B94CFAE642E6AF5AEF79809B0@AM6PR04MB4966.eurprd04.prod.outlook.com>
+Subject: RE: [PATCH V2 3/9] clk: imx: Support building SCU clock driver as module
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     dl-linux-imx <linux-imx@nxp.com>
+To:     Abel Vesa <abel.vesa@nxp.com>, Aisheng Dong <aisheng.dong@nxp.com>,
+        Andy Duan <fugang.duan@nxp.com>,
+        Anson Huang <anson.huang@nxp.com>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        Leonard Crestez <leonard.crestez@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        Stefan Agner <stefan.agner@toradex.com>, allison@lohutok.net,
+        arnd@arndb.de, festevam@gmail.com, gregkh@linuxfoundation.org,
+        info@metux.net, kernel@pengutronix.de,
+        linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux@armlinux.org.uk,
+        mturquette@baylibre.com, oleksandr.suvorov@toradex.com,
+        s.hauer@pengutronix.de, sfr@canb.auug.org.au, shawnguo@kernel.org,
+        tglx@linutronix.de, yuehaibing@huawei.com
+Date:   Fri, 19 Jun 2020 20:27:50 -0700
+Message-ID: <159262367025.62212.11651547971712516448@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Jun 2020 17:41:15 +0200, Bean Huo wrote:
+Quoting Aisheng Dong (2020-06-17 18:58:51)
+> > From: Anson Huang <anson.huang@nxp.com>
+> > > > +obj-$(CONFIG_MXC_CLK_SCU) +=3D mxc-clk-scu.o
+> > >
+> > > Like i.MX pinctrl, I'm not sure if it's really necessary to build core
+> > > libraries as modules. Probably the simplest way is only building
+> > > platform drivers part as module. And leave those core libraries built=
+ in kernel.
+> > > This may make the code a bit cleaner.
+> > >
+> >=20
+> > Will discuss this with Linaro guys about it, previous requirement I rec=
+eived is all
+> > SoC specific modules need to be built as module.
+> >=20
+>=20
+> Okay. AFAIK it's not conflict.
+> You still make drivers into modules.
+> Only difference is for those common libraries part, we don't convert them=
+ into module
+> Which is less meaningless.
+> =20
 
-> Changelog:
-> v1 -- v2:
->     1. split patch
->     2. fix more coding errors in the scsi_lib.c
-> 
-> Bean Huo (2):
->   scsi: remove scsi_sdb_cache
->   scsi: fix coding style errors in scsi_lib.c
-> 
-> [...]
+What is the benefit of making the core part of the SoC driver not a
+module? From the module perspective it should be perfectly fine to make
+it a module as well, and then depmod will sort out loading modules in
+the right order.
 
-Applied to 5.9/scsi-queue, thanks!
-
-[1/2] scsi: core: Remove scsi_sdb_cache
-      https://git.kernel.org/mkp/scsi/c/71df6fb976c3
-[2/2] scsi: core: Fix formatting errors in scsi_lib.c
-      https://git.kernel.org/mkp/scsi/c/4c7b4d63273d
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+This is for android right?
