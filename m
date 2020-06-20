@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1B420274C
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 01:08:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D40202761
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 01:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728924AbgFTXIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 19:08:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728625AbgFTXIJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 19:08:09 -0400
-Received: from X1 (nat-ab2241.sltdut.senawave.net [162.218.216.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3BF722474A;
-        Sat, 20 Jun 2020 23:08:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592694488;
-        bh=2IEhfBYyQCSyZpnt+8yfDe7vxNgCoT7PUvnS8+aWFus=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=p2z32yzBQhfcyRgHHNzs+5IIrjXsczCwFLqNTLfNQZAgGw2PskunGFm17A39sq7F7
-         h5teGa9mbxApkzTetkvnhBrzC0Q/6z12nDNoEFjq+RsTefTJN/7BmVbrlNyygUWIN+
-         YZXHA6FESindISNeo/FJ3Fbf/7UT2GK19N71Vke0=
-Date:   Sat, 20 Jun 2020 16:08:07 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com
-Subject: Re: [PATCH v13 00/18] per memcg lru lock
-Message-Id: <20200620160807.0e0997c3e0e3ca1b18e68a53@linux-foundation.org>
-In-Reply-To: <1592555636-115095-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1592555636-115095-1-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1729096AbgFTXc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 19:32:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728633AbgFTXc5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Jun 2020 19:32:57 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCFEC061794;
+        Sat, 20 Jun 2020 16:32:57 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id d4so6332792pgk.4;
+        Sat, 20 Jun 2020 16:32:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4UqfsRG46wjWjqH4jWh/MQFQOArV6ySZ/OgegkgOC6c=;
+        b=Vmv2nGxsguQy28IEVrlMlNItVy6qEqBUxn3/iGAyp63aeeTDhefUEA2EVOzxCVowUs
+         rp8br5eCzeRKWwtkVMBRv2MNxzWHtfwmW6zWaTbzNMZijtRI39rXvI+ngdceB835Sr7/
+         aMm/fftg9ZkjR4T4mluxQ/vV8+WSBBV7WjykhNYEKJSk0p3gPA10L11zOafxOmXBb4jL
+         ZNRP4SAmi3SGi0HJUEM8Z0TeR8GMHSYbKyVb1i2AxCzLp8nJnDoBnwFMn7eP92e/SSBx
+         fI3KPFtSJLxJ6iUB4ihR7PuaW0SnDzYcgl4QYVOzFkKzCYEPJlBZEdVnP+oK6lrFO263
+         0Uog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4UqfsRG46wjWjqH4jWh/MQFQOArV6ySZ/OgegkgOC6c=;
+        b=STVrTTQt14C9OYMeQJq8mpolqAL+sYEYEocsqUKOmJZMAD3CiUyvJQ3huVznCfl8Ga
+         uWhCvqo0YDsCUJDkAT9ha1iqnZ2Xiky7tp7nuskXXurXzibZ1v+DYS+52AB+z+ArZReL
+         hsmBWHNLY9frNSg9CwJfNimWKrAngP1z/YR6Tm+7BDIoMGe9xyjjUxkvCvfMtQzsbnU+
+         f1pzccvF8UJBAPLam/YTHbjbu6qtZO7hZlofyJddCyB58YkeJyCBcV7bmmrpY9bTNp/h
+         vgaLcN+zAnLHpoMLf8A2V0iauOzwk9piKblHHgBcw2oGoBXPMkrYNBYrELHWkvoKuLmK
+         L6/w==
+X-Gm-Message-State: AOAM532OQWCq8YmoVL6ktjgsYGghkued4p2756D93o8zwLU8PSH4v3/H
+        ODNR3P1YC8WoMy1y4HBQ554=
+X-Google-Smtp-Source: ABdhPJy77RnoEAFQ/B+urSnP2RFM0AmmF5T2YRjEstDU7bcpyu0QwYkpSmDDvBozs/4B88VQxRODLw==
+X-Received: by 2002:aa7:972b:: with SMTP id k11mr14471578pfg.299.1592695974963;
+        Sat, 20 Jun 2020 16:32:54 -0700 (PDT)
+Received: from [172.16.110.59] (047-044-021-226.biz.spectrum.com. [47.44.21.226])
+        by smtp.googlemail.com with ESMTPSA id 191sm9346005pfy.161.2020.06.20.16.32.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Jun 2020 16:32:54 -0700 (PDT)
+Subject: Re: [net-next,v1,0/5] Strict mode for VRF
+To:     Andrea Mayer <andrea.mayer@uniroma2.it>,
+        David Ahern <dsahern@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Shrijeet Mukherjee <shrijeet@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc:     Donald Sharp <sharpd@cumulusnetworks.com>,
+        Roopa Prabhu <roopa@cumulusnetworks.com>,
+        Dinesh Dutt <didutt@gmail.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Stefano Salsano <stefano.salsano@uniroma2.it>,
+        Paolo Lungaroni <paolo.lungaroni@cnit.it>,
+        Ahmed Abdelsalam <ahabdels@gmail.com>
+References: <20200619225447.1445-1-andrea.mayer@uniroma2.it>
+From:   David Ahern <dsahern@gmail.com>
+Message-ID: <f13c47d2-6b08-8f73-05d2-755a40fba6a8@gmail.com>
+Date:   Sat, 20 Jun 2020 16:32:53 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200619225447.1445-1-andrea.mayer@uniroma2.it>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 19 Jun 2020 16:33:38 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
+On 6/19/20 3:54 PM, Andrea Mayer wrote:
+> This patch set adds the new "strict mode" functionality to the Virtual
+> Routing and Forwarding infrastructure (VRF). Hereafter we discuss the
+> requirements and the main features of the "strict mode" for VRF.
+> 
 
-> This is a new version which bases on linux-next, merged much suggestion
-> from Hugh Dickins, from compaction fix to less TestClearPageLRU and
-> comments reverse etc. Thank a lot, Hugh!
-> 
-> Johannes Weiner has suggested:
-> "So here is a crazy idea that may be worth exploring:
-> 
-> Right now, pgdat->lru_lock protects both PageLRU *and* the lruvec's
-> linked list.
-> 
-> Can we make PageLRU atomic and use it to stabilize the lru_lock
-> instead, and then use the lru_lock only serialize list operations?
+For the set:
+Acked-by: David Ahern <dsahern@gmail.com>
 
-I don't understand this sentence.  How can a per-page flag stabilize a
-per-pgdat spinlock?  Perhaps some additional description will help.
-
-> ..."
-> 
-> With new memcg charge path and this solution, we could isolate
-> LRU pages to exclusive visit them in compaction, page migration, reclaim,
-> memcg move_accunt, huge page split etc scenarios while keeping pages' 
-> memcg stable. Then possible to change per node lru locking to per memcg
-> lru locking. As to pagevec_lru_move_fn funcs, it would be safe to let
-> pages remain on lru list, lru lock could guard them for list integrity.
-> 
-> The patchset includes 3 parts:
-> 1, some code cleanup and minimum optimization as a preparation.
-> 2, use TestCleanPageLRU as page isolation's precondition
-> 3, replace per node lru_lock with per memcg per node lru_lock
-> 
-> The 3rd part moves per node lru_lock into lruvec, thus bring a lru_lock for
-> each of memcg per node. So on a large machine, each of memcg don't
-> have to suffer from per node pgdat->lru_lock competition. They could go
-> fast with their self lru_lock
-> 
-> Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
-> containers on a 2s * 26cores * HT box with a modefied case:
-> https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
-> 
-> With this patchset, the readtwice performance increased about 80%
-> in concurrent containers.
-> 
-> Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
-> idea 8 years ago, and others who give comments as well: Daniel Jordan, 
-> Mel Gorman, Shakeel Butt, Matthew Wilcox etc.
-> 
-> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
-> and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
-> 
-> ...
->
->  24 files changed, 500 insertions(+), 357 deletions(-)
-
-It's a large patchset and afaict the whole point is performance gain. 
-80% in one specialized test sounds nice, but is there a plan for more
-extensive quantification?
-
-There isn't much sign of completed review activity here, so I'll go
-into hiding for a while.
