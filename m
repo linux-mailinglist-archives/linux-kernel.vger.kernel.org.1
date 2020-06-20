@@ -2,294 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9CA2022F0
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 11:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E37FA2022F9
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 11:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727952AbgFTJoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 05:44:04 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:47202 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727922AbgFTJn5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 05:43:57 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 9A73115D56D5ACFEE13B;
-        Sat, 20 Jun 2020 17:43:54 +0800 (CST)
-Received: from localhost.localdomain (10.175.118.36) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 20 Jun 2020 17:43:45 +0800
-From:   Luo bin <luobin9@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <luoxianjun@huawei.com>, <yin.yinshi@huawei.com>,
-        <cloud.wangxiaoyun@huawei.com>
-Subject: [PATCH net-next v1 5/5] hinic: add support to get eeprom information
-Date:   Sat, 20 Jun 2020 17:42:58 +0800
-Message-ID: <20200620094258.13181-6-luobin9@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200620094258.13181-1-luobin9@huawei.com>
-References: <20200620094258.13181-1-luobin9@huawei.com>
+        id S1727904AbgFTJtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 05:49:50 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:9231 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727861AbgFTJts (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Jun 2020 05:49:48 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5eeddbaf0000>; Sat, 20 Jun 2020 02:49:36 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Sat, 20 Jun 2020 02:49:48 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Sat, 20 Jun 2020 02:49:48 -0700
+Received: from [10.26.73.131] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 20 Jun
+ 2020 09:49:45 +0000
+Subject: Re: [PATCH 4.4 000/101] 4.4.228-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
+        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
+References: <20200619141614.001544111@linuxfoundation.org>
+From:   Jon Hunter <jonathanh@nvidia.com>
+Message-ID: <12502305-89a0-aca2-b24a-2d82010ed341@nvidia.com>
+Date:   Sat, 20 Jun 2020 10:49:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.118.36]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200619141614.001544111@linuxfoundation.org>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1592646576; bh=dE1OM9MnnumsnoiW+E+vk6MVkRr3hYNqKEE7JmLtTUQ=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=sTojLmPdbo+VkcUSEkMr0Rvik6ik0CBFb6Ld/OaPjRjo9uPUlfDlvUS9yr2HVhLOx
+         hDe8+hlQ4KfMZn77VUqUyi2RHXw6YOL6eLg5KUZbUN9lB03dM1SRGpBfK+ZAqReYXv
+         rXDUpb3XoMQ5n580714f5Ufb7PO2ZLa4MeiGeuEYIcGS5xja0bB2HJ9gXgTPgSUWa5
+         PWZHk+6+PnsPbtpBtXNLFPpT8ZXOySW+DFGa2K0LxPYkgxrlJ/fghwJn9r5Dsyqxxf
+         N9QPJm/xEIpdnPWJ4QDAEQsORC6cGsMvi2FRkcWKuX8IQTezMFic+d7xOLZGpH3ce2
+         aDGSW+r3Yc8SQ==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add support to get eeprom information from the plug-in module
-with ethtool -m cmd.
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
----
-V0->V1: remove unused variable port_id
+On 19/06/2020 15:31, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.228 release.
+> There are 101 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sun, 21 Jun 2020 14:15:50 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.4.228-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
- .../net/ethernet/huawei/hinic/hinic_ethtool.c | 68 +++++++++++++++++
- .../net/ethernet/huawei/hinic/hinic_hw_dev.h  |  4 +
- .../net/ethernet/huawei/hinic/hinic_port.c    | 75 +++++++++++++++++++
- .../net/ethernet/huawei/hinic/hinic_port.h    | 35 +++++++++
- 4 files changed, 182 insertions(+)
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-index 7be5564346cf..5bf0432b3fda 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-@@ -1795,6 +1795,72 @@ static int hinic_set_phys_id(struct net_device *netdev,
- 	return err;
- }
- 
-+static int hinic_get_module_info(struct net_device *netdev,
-+				 struct ethtool_modinfo *modinfo)
-+{
-+	struct hinic_dev *nic_dev = netdev_priv(netdev);
-+	u8 sfp_type_ext;
-+	u8 sfp_type;
-+	int err;
-+
-+	err = hinic_get_sfp_type(nic_dev->hwdev, &sfp_type, &sfp_type_ext);
-+	if (err)
-+		return err;
-+
-+	switch (sfp_type) {
-+	case MODULE_TYPE_SFP:
-+		modinfo->type = ETH_MODULE_SFF_8472;
-+		modinfo->eeprom_len = ETH_MODULE_SFF_8472_LEN;
-+		break;
-+	case MODULE_TYPE_QSFP:
-+		modinfo->type = ETH_MODULE_SFF_8436;
-+		modinfo->eeprom_len = ETH_MODULE_SFF_8436_MAX_LEN;
-+		break;
-+	case MODULE_TYPE_QSFP_PLUS:
-+		if (sfp_type_ext >= 0x3) {
-+			modinfo->type = ETH_MODULE_SFF_8636;
-+			modinfo->eeprom_len = ETH_MODULE_SFF_8636_MAX_LEN;
-+
-+		} else {
-+			modinfo->type = ETH_MODULE_SFF_8436;
-+			modinfo->eeprom_len = ETH_MODULE_SFF_8436_MAX_LEN;
-+		}
-+		break;
-+	case MODULE_TYPE_QSFP28:
-+		modinfo->type = ETH_MODULE_SFF_8636;
-+		modinfo->eeprom_len = ETH_MODULE_SFF_8636_MAX_LEN;
-+		break;
-+	default:
-+		netif_warn(nic_dev, drv, netdev,
-+			   "Optical module unknown: 0x%x\n", sfp_type);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int hinic_get_module_eeprom(struct net_device *netdev,
-+				   struct ethtool_eeprom *ee, u8 *data)
-+{
-+	struct hinic_dev *nic_dev = netdev_priv(netdev);
-+	u8 sfp_data[STD_SFP_INFO_MAX_SIZE];
-+	u16 len;
-+	int err;
-+
-+	if (!ee->len || ((ee->len + ee->offset) > STD_SFP_INFO_MAX_SIZE))
-+		return -EINVAL;
-+
-+	memset(data, 0, ee->len);
-+
-+	err = hinic_get_sfp_eeprom(nic_dev->hwdev, sfp_data, &len);
-+	if (err)
-+		return err;
-+
-+	memcpy(data, sfp_data + ee->offset, ee->len);
-+
-+	return 0;
-+}
-+
- static const struct ethtool_ops hinic_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS |
- 				     ETHTOOL_COALESCE_RX_MAX_FRAMES |
-@@ -1826,6 +1892,8 @@ static const struct ethtool_ops hinic_ethtool_ops = {
- 	.get_strings = hinic_get_strings,
- 	.self_test = hinic_diag_test,
- 	.set_phys_id = hinic_set_phys_id,
-+	.get_module_info = hinic_get_module_info,
-+	.get_module_eeprom = hinic_get_module_eeprom,
- };
- 
- static const struct ethtool_ops hinicvf_ethtool_ops = {
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h
-index 01fe94f2d4bc..958ea1a6a60d 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h
-@@ -130,9 +130,13 @@ enum hinic_port_cmd {
- 
- 	HINIC_PORT_CMD_SET_AUTONEG	= 219,
- 
-+	HINIC_PORT_CMD_GET_STD_SFP_INFO = 240,
-+
- 	HINIC_PORT_CMD_SET_LRO_TIMER	= 244,
- 
- 	HINIC_PORT_CMD_SET_VF_MAX_MIN_RATE = 249,
-+
-+	HINIC_PORT_CMD_GET_SFP_ABS	= 251,
- };
- 
- /* cmd of mgmt CPU message for HILINK module */
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.c b/drivers/net/ethernet/huawei/hinic/hinic_port.c
-index fc99d9f6799a..428d186956f3 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_port.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_port.c
-@@ -1326,3 +1326,78 @@ int hinic_reset_led_status(struct hinic_hwdev *hwdev, u8 port)
- 
- 	return err;
- }
-+
-+static bool hinic_if_sfp_absent(struct hinic_hwdev *hwdev)
-+{
-+	struct hinic_cmd_get_light_module_abs sfp_abs = {0};
-+	u16 out_size = sizeof(sfp_abs);
-+	u8 port_id = hwdev->port_id;
-+	int err;
-+
-+	sfp_abs.port_id = port_id;
-+	err = hinic_port_msg_cmd(hwdev, HINIC_PORT_CMD_GET_SFP_ABS,
-+				 &sfp_abs, sizeof(sfp_abs), &sfp_abs,
-+				 &out_size);
-+	if (sfp_abs.status || err || !out_size) {
-+		dev_err(&hwdev->hwif->pdev->dev,
-+			"Failed to get port%d sfp absent status, err: %d, status: 0x%x, out size: 0x%x\n",
-+			port_id, err, sfp_abs.status, out_size);
-+		return true;
-+	}
-+
-+	return ((sfp_abs.abs_status == 0) ? false : true);
-+}
-+
-+int hinic_get_sfp_eeprom(struct hinic_hwdev *hwdev, u8 *data, u16 *len)
-+{
-+	struct hinic_cmd_get_std_sfp_info sfp_info = {0};
-+	u16 out_size = sizeof(sfp_info);
-+	u8 port_id;
-+	int err;
-+
-+	if (!hwdev || !data || !len)
-+		return -EINVAL;
-+
-+	port_id = hwdev->port_id;
-+
-+	if (hinic_if_sfp_absent(hwdev))
-+		return -ENXIO;
-+
-+	sfp_info.port_id = port_id;
-+	err = hinic_port_msg_cmd(hwdev, HINIC_PORT_CMD_GET_STD_SFP_INFO,
-+				 &sfp_info, sizeof(sfp_info), &sfp_info,
-+				 &out_size);
-+	if (sfp_info.status || err || !out_size) {
-+		dev_err(&hwdev->hwif->pdev->dev,
-+			"Failed to get port%d sfp eeprom information, err: %d, status: 0x%x, out size: 0x%x\n",
-+			port_id, err, sfp_info.status, out_size);
-+		return -EIO;
-+	}
-+
-+	*len = min_t(u16, sfp_info.eeprom_len, STD_SFP_INFO_MAX_SIZE);
-+	memcpy(data, sfp_info.sfp_info, STD_SFP_INFO_MAX_SIZE);
-+
-+	return  0;
-+}
-+
-+int hinic_get_sfp_type(struct hinic_hwdev *hwdev, u8 *data0, u8 *data1)
-+{
-+	u8 sfp_data[STD_SFP_INFO_MAX_SIZE];
-+	u16 len;
-+	int err;
-+
-+	if (!hwdev || !data0 || !data1)
-+		return -EINVAL;
-+
-+	if (hinic_if_sfp_absent(hwdev))
-+		return -ENXIO;
-+
-+	err = hinic_get_sfp_eeprom(hwdev, sfp_data, &len);
-+	if (err)
-+		return err;
-+
-+	*data0 = sfp_data[0];
-+	*data1 = sfp_data[1];
-+
-+	return 0;
-+}
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.h b/drivers/net/ethernet/huawei/hinic/hinic_port.h
-index 5c916875f295..0d0354241345 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_port.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_port.h
-@@ -677,6 +677,37 @@ struct hinic_led_info {
- 	u8	reset;
- };
- 
-+#define MODULE_TYPE_SFP		0x3
-+#define MODULE_TYPE_QSFP28	0x11
-+#define MODULE_TYPE_QSFP	0x0C
-+#define MODULE_TYPE_QSFP_PLUS	0x0D
-+
-+#define STD_SFP_INFO_MAX_SIZE	640
-+
-+struct hinic_cmd_get_light_module_abs {
-+	u8 status;
-+	u8 version;
-+	u8 rsvd0[6];
-+
-+	u8 port_id;
-+	u8 abs_status; /* 0:present, 1:absent */
-+	u8 rsv[2];
-+};
-+
-+#define STD_SFP_INFO_MAX_SIZE	640
-+
-+struct hinic_cmd_get_std_sfp_info {
-+	u8 status;
-+	u8 version;
-+	u8 rsvd0[6];
-+
-+	u8 port_id;
-+	u8 wire_type;
-+	u16 eeprom_len;
-+	u32 rsvd;
-+	u8 sfp_info[STD_SFP_INFO_MAX_SIZE];
-+};
-+
- int hinic_port_add_mac(struct hinic_dev *nic_dev, const u8 *addr,
- 		       u16 vlan_id);
- 
-@@ -800,6 +831,10 @@ int hinic_reset_led_status(struct hinic_hwdev *hwdev, u8 port);
- int hinic_set_led_status(struct hinic_hwdev *hwdev, u8 port,
- 			 enum hinic_led_type type, enum hinic_led_mode mode);
- 
-+int hinic_get_sfp_type(struct hinic_hwdev *hwdev, u8 *data0, u8 *data1);
-+
-+int hinic_get_sfp_eeprom(struct hinic_hwdev *hwdev, u8 *data, u16 *len);
-+
- int hinic_open(struct net_device *netdev);
- 
- int hinic_close(struct net_device *netdev);
+All tests are passing for Tegra ...
+
+Test results for stable-v4.4:
+    6 builds:	6 pass, 0 fail
+    12 boots:	12 pass, 0 fail
+    25 tests:	25 pass, 0 fail
+
+Linux version:	4.4.228-rc1-g2e99a284d540
+Boards tested:	tegra124-jetson-tk1, tegra20-ventana,
+                tegra30-cardhu-a04
+
+Cheers
+Jon
+
 -- 
-2.17.1
-
+nvpublic
