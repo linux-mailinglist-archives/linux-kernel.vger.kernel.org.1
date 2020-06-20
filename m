@@ -2,122 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E14120253F
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 18:27:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1CB202544
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 18:28:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgFTQ13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 12:27:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726976AbgFTQ13 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 12:27:29 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A731C06174E;
-        Sat, 20 Jun 2020 09:27:29 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id m21so10150700eds.13;
-        Sat, 20 Jun 2020 09:27:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/BMMpD7qtU5pkOn7Z4pc22pm3d3A2SjW9M7WNCHeAiY=;
-        b=QVIIupKxa71Or8M1ClPfavFaWT0DeX7jreTr2LyxDbUbYAeTT4y0fkSdjacNshjutr
-         BeMoZok/aRl/E36YP4z8utRYnCpQeJ5Aosyto1cXGGEwZB9Gra6J+qWzl386BId7q3Kb
-         8zIuaryYutyw+jQVByn0gym1OPyOV3sBKxcJyokF47KHEjiSyBh68bw3mluJMNUxiviE
-         l2IIgYY1n6WTEeHI9b0DBJl/ZMaQPepwgGW+9b4jLj3L9tvm3gZwBORH5uWTbppWk5Vy
-         fg8a4rck24+F1awR4f3zwPG04llDWfBqgeOfpU4yIasIHqci9y8XaLPxj/eXRtObYhOw
-         GO5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/BMMpD7qtU5pkOn7Z4pc22pm3d3A2SjW9M7WNCHeAiY=;
-        b=byhBf2i3HQB11iFD1Ehd64JruTwni738Y8id1NWsU6SfoumLnQFZdOhoe3Ovs8vrCA
-         saHfJrXHFR/rIuDHfsbqvPVEnuva4v0HJ97lysKfACPHSus7IvlfoWNcIAmX3+5xH53/
-         nVp9jsLakGdQfgjBnm4gkf6P/G5nIP8nk9TWGVW9KFjr979bITpKw57jQKBHbFKybGTQ
-         LQfpQII14Wkj4/hDH/m3NbSQJXm8oGdUSo29WY1WCfISf8eHJIr65PiRwp9gbNMB6EbL
-         dBeBEaxdCDy4ji4y+eu9YItw1lUcYNqQ7Y4qehAKYJnpsYP6PgPoyzdwzW3l2lZbvACc
-         29IA==
-X-Gm-Message-State: AOAM530hgI0tXsUSXQSX8aHvz3ZX4ILf72kpjHz5WM6vrGKGbuoI2zvp
-        espR7NuaNKo1Hux8kLYc6VYGGvOxkKtL0CZKD6U=
-X-Google-Smtp-Source: ABdhPJypOsgdt+fPQZQTGg7oTELjjmivaxGQ2UlMWlYWToihFkcE5WrbmvWFN/dybafH1Uk8WYjOZIkXCWzA5J5yOUI=
-X-Received: by 2002:aa7:d952:: with SMTP id l18mr8585130eds.151.1592670447699;
- Sat, 20 Jun 2020 09:27:27 -0700 (PDT)
+        id S1728168AbgFTQ2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 12:28:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54262 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728050AbgFTQ2J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Jun 2020 12:28:09 -0400
+Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C95123ECE;
+        Sat, 20 Jun 2020 16:28:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592670488;
+        bh=yFk/7+rPK7MOqWnuonpQQMycM7+nxJOyOSJPaBANaGM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AfgPaqgmEq94lRamYUO8hAwdClsaJ7cCGp4mHebkROgiRcDVQ5Xe7RjavQipPVq6R
+         5W0QTNoyWXOfrzbB7gzaaHoBHn9qjFNNqmar8nqGvw8rqdpcOmViJJTZSQ0VdLugcA
+         /oOd9zXrhvM4KhOPUV3Rw9Kwjky+E8fQdkzgFACk=
+Date:   Sat, 20 Jun 2020 17:28:04 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+        "ludovic.desroches@microchip.com" <ludovic.desroches@microchip.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH] iio: at91_adc: remove usage of iio_priv_to_dev() helper
+Message-ID: <20200620172804.3e28e257@archlinux>
+In-Reply-To: <4b07863e8312e2abd0169a456f230a025621419c.camel@analog.com>
+References: <20200525102513.130664-1-alexandru.ardelean@analog.com>
+        <20200531154216.361285c6@archlinux>
+        <4b07863e8312e2abd0169a456f230a025621419c.camel@analog.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200528130816.1670-1-yuzenghui@huawei.com> <f1357380-9e98-4c1e-c1bf-a0a95bb5910d@huawei.com>
-In-Reply-To: <f1357380-9e98-4c1e-c1bf-a0a95bb5910d@huawei.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Sat, 20 Jun 2020 09:27:56 -0700
-Message-ID: <CAF6AEGun5DgsTzLRswxt2NRG9P+HVake0hQUKPR6czcNvc5LxQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dpu: Fix usage of ERR_PTR()
-To:     Zenghui Yu <yuzenghui@huawei.com>
-Cc:     linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Paul <sean@poorly.run>, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jeykumar Sankaran <jsanka@codeaurora.org>,
-        wanghaibin.wang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 20, 2020 at 3:26 AM Zenghui Yu <yuzenghui@huawei.com> wrote:
->
-> ping for this obvious fix...
+On Fri, 19 Jun 2020 08:02:55 +0000
+"Ardelean, Alexandru" <alexandru.Ardelean@analog.com> wrote:
 
-Hi, thanks, but there is already a similar fix in msm-next:
+> On Sun, 2020-05-31 at 15:42 +0100, Jonathan Cameron wrote:
+> > [External]
+> > 
+> > On Mon, 25 May 2020 13:25:13 +0300
+> > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
+> >   
+> > > We may want to get rid of the iio_priv_to_dev() helper. The reason is
+> > > that
+> > > we will hide some of the members of the iio_dev structure (to prevent
+> > > drivers from accessing them directly), and that will also mean hiding
+> > > the
+> > > implementation of the iio_priv_to_dev() helper inside the IIO core.
+> > > 
+> > > Hiding the implementation of iio_priv_to_dev() implies that some fast-
+> > > paths
+> > > may not be fast anymore, so a general idea is to try to get rid of the
+> > > iio_priv_to_dev() altogether.
+> > > The iio_priv() helper won't be affected by the rework, as the iio_dev
+> > > struct will keep a reference to the private information.
+> > > 
+> > > For this driver, not using iio_priv_to_dev(), means reworking some
+> > > paths to
+> > > pass the iio device and using iio_priv() to access the private
+> > > information.
+> > > 
+> > > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>  
+> > Looks good to me.  Will leave it a bit longer though to potentially
+> > get some people more familiar with the driver to sanity check it.
+> > 
+> > Poke me after the usual couple of weeks if I seem to have lost it
+> > down the back of the sofa.
+> >   
+> 
+> ping on this
 
-commit aa472721c8dbe1713cf510f56ffbc56ae9e14247
-Refs: v5.7-rc5-33-gaa472721c8db
-Author:     Chen Tao <chentao107@huawei.com>
-AuthorDate: Mon Jun 8 09:48:59 2020 +0800
-Commit:     Rob Clark <robdclark@chromium.org>
-CommitDate: Thu Jun 11 20:07:21 2020 -0700
+Applied to the togreg branch of iio.git and pushed out as testing for
+the autobuilders to play with it
 
-    drm/msm/dpu: fix error return code in dpu_encoder_init
+Thanks,
 
-    Fix to return negative error code -ENOMEM with the use of
-    ERR_PTR from dpu_encoder_init.
+J
+> 
+> > Thanks,
+> > 
+> > Jonathan
+> >   
+> > > ---
+> > >  drivers/iio/adc/at91_adc.c | 30 +++++++++++++++---------------
+> > >  1 file changed, 15 insertions(+), 15 deletions(-)
+> > > 
+> > > diff --git a/drivers/iio/adc/at91_adc.c b/drivers/iio/adc/at91_adc.c
+> > > index 0368b6dc6d60..896af58e88bc 100644
+> > > --- a/drivers/iio/adc/at91_adc.c
+> > > +++ b/drivers/iio/adc/at91_adc.c
+> > > @@ -287,13 +287,13 @@ static void handle_adc_eoc_trigger(int irq,
+> > > struct iio_dev *idev)
+> > >  	}
+> > >  }
+> > >  
+> > > -static int at91_ts_sample(struct at91_adc_state *st)
+> > > +static int at91_ts_sample(struct iio_dev *idev)
+> > >  {
+> > > +	struct at91_adc_state *st = iio_priv(idev);
+> > >  	unsigned int xscale, yscale, reg, z1, z2;
+> > >  	unsigned int x, y, pres, xpos, ypos;
+> > >  	unsigned int rxp = 1;
+> > >  	unsigned int factor = 1000;
+> > > -	struct iio_dev *idev = iio_priv_to_dev(st);
+> > >  
+> > >  	unsigned int xyz_mask_bits = st->res;
+> > >  	unsigned int xyz_mask = (1 << xyz_mask_bits) - 1;
+> > > @@ -449,7 +449,7 @@ static irqreturn_t at91_adc_9x5_interrupt(int irq,
+> > > void *private)
+> > >  
+> > >  		if (status & AT91_ADC_ISR_PENS) {
+> > >  			/* validate data by pen contact */
+> > > -			at91_ts_sample(st);
+> > > +			at91_ts_sample(idev);
+> > >  		} else {
+> > >  			/* triggered by event that is no pen contact, just
+> > > read
+> > >  			 * them to clean the interrupt and discard all.
+> > > @@ -737,10 +737,10 @@ static int at91_adc_read_raw(struct iio_dev
+> > > *idev,
+> > >  	return -EINVAL;
+> > >  }
+> > >  
+> > > -static int at91_adc_of_get_resolution(struct at91_adc_state *st,
+> > > +static int at91_adc_of_get_resolution(struct iio_dev *idev,
+> > >  				      struct platform_device *pdev)
+> > >  {
+> > > -	struct iio_dev *idev = iio_priv_to_dev(st);
+> > > +	struct at91_adc_state *st = iio_priv(idev);
+> > >  	struct device_node *np = pdev->dev.of_node;
+> > >  	int count, i, ret = 0;
+> > >  	char *res_name, *s;
+> > > @@ -866,10 +866,10 @@ static int at91_adc_probe_dt_ts(struct
+> > > device_node *node,
+> > >  	}
+> > >  }
+> > >  
+> > > -static int at91_adc_probe_dt(struct at91_adc_state *st,
+> > > +static int at91_adc_probe_dt(struct iio_dev *idev,
+> > >  			     struct platform_device *pdev)
+> > >  {
+> > > -	struct iio_dev *idev = iio_priv_to_dev(st);
+> > > +	struct at91_adc_state *st = iio_priv(idev);
+> > >  	struct device_node *node = pdev->dev.of_node;
+> > >  	struct device_node *trig_node;
+> > >  	int i = 0, ret;
+> > > @@ -910,7 +910,7 @@ static int at91_adc_probe_dt(struct at91_adc_state
+> > > *st,
+> > >  	}
+> > >  	st->vref_mv = prop;
+> > >  
+> > > -	ret = at91_adc_of_get_resolution(st, pdev);
+> > > +	ret = at91_adc_of_get_resolution(idev, pdev);
+> > >  	if (ret)
+> > >  		goto error_ret;
+> > >  
+> > > @@ -1010,9 +1010,9 @@ static void atmel_ts_close(struct input_dev *dev)
+> > >  		at91_adc_writel(st, AT91_ADC_IDR, AT91RL_ADC_IER_PEN);
+> > >  }
+> > >  
+> > > -static int at91_ts_hw_init(struct at91_adc_state *st, u32 adc_clk_khz)
+> > > +static int at91_ts_hw_init(struct iio_dev *idev, u32 adc_clk_khz)
+> > >  {
+> > > -	struct iio_dev *idev = iio_priv_to_dev(st);
+> > > +	struct at91_adc_state *st = iio_priv(idev);
+> > >  	u32 reg = 0;
+> > >  	u32 tssctim = 0;
+> > >  	int i = 0;
+> > > @@ -1085,11 +1085,11 @@ static int at91_ts_hw_init(struct
+> > > at91_adc_state *st, u32 adc_clk_khz)
+> > >  	return 0;
+> > >  }
+> > >  
+> > > -static int at91_ts_register(struct at91_adc_state *st,
+> > > +static int at91_ts_register(struct iio_dev *idev,
+> > >  		struct platform_device *pdev)
+> > >  {
+> > > +	struct at91_adc_state *st = iio_priv(idev);
+> > >  	struct input_dev *input;
+> > > -	struct iio_dev *idev = iio_priv_to_dev(st);
+> > >  	int ret;
+> > >  
+> > >  	input = input_allocate_device();
+> > > @@ -1161,7 +1161,7 @@ static int at91_adc_probe(struct platform_device
+> > > *pdev)
+> > >  	st = iio_priv(idev);
+> > >  
+> > >  	if (pdev->dev.of_node)
+> > > -		ret = at91_adc_probe_dt(st, pdev);
+> > > +		ret = at91_adc_probe_dt(idev, pdev);
+> > >  	else
+> > >  		ret = at91_adc_probe_pdata(st, pdev);
+> > >  
+> > > @@ -1301,11 +1301,11 @@ static int at91_adc_probe(struct
+> > > platform_device *pdev)
+> > >  			goto error_disable_adc_clk;
+> > >  		}
+> > >  	} else {
+> > > -		ret = at91_ts_register(st, pdev);
+> > > +		ret = at91_ts_register(idev, pdev);
+> > >  		if (ret)
+> > >  			goto error_disable_adc_clk;
+> > >  
+> > > -		at91_ts_hw_init(st, adc_clk_khz);
+> > > +		at91_ts_hw_init(idev, adc_clk_khz);
+> > >  	}
+> > >  
+> > >  	ret = iio_device_register(idev);  
 
-    Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
-    Signed-off-by: Chen Tao <chentao107@huawei.com>
-    Signed-off-by: Rob Clark <robdclark@chromium.org>
-
-
-BR,
--R
-
->
-> On 2020/5/28 21:08, Zenghui Yu wrote:
-> > ERR_PTR() is used in the kernel to encode an usual *negative* errno code
-> > into a pointer.  Passing a positive value (ENOMEM) to it will break the
-> > following IS_ERR() check.
-> >
-> > Though memory allocation is unlikely to fail, it's still worth fixing.
-> > And grepping shows that this is the only misuse of ERR_PTR() in kernel.
-> >
-> > Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
-> > Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> > ---
-> >   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 2 +-
-> >   1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> > index a1b79ee2bd9d..a2f6b688a976 100644
-> > --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> > +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> > @@ -2173,7 +2173,7 @@ struct drm_encoder *dpu_encoder_init(struct drm_device *dev,
-> >
-> >       dpu_enc = devm_kzalloc(dev->dev, sizeof(*dpu_enc), GFP_KERNEL);
-> >       if (!dpu_enc)
-> > -             return ERR_PTR(ENOMEM);
-> > +             return ERR_PTR(-ENOMEM);
-> >
-> >       rc = drm_encoder_init(dev, &dpu_enc->base, &dpu_encoder_funcs,
-> >                       drm_enc_mode, NULL);
-> >
