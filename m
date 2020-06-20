@@ -2,81 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A19201F5D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 03:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A7CB201F5B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 02:59:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731192AbgFTBAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 21:00:09 -0400
-Received: from mta-out1.inet.fi ([62.71.2.226]:58842 "EHLO julia1.inet.fi"
+        id S1731169AbgFTA7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 20:59:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731172AbgFTBAF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 21:00:05 -0400
-X-RazorGate-Vade-Verdict: clean 0
-X-RazorGate-Vade-Classification: clean
-X-RazorGate-Vade: gggruggvucftvghtrhhoucdtuddrgeduhedrudejjedgfeelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuuffpveftnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefuvfhfhffkffgfgggjtgfgsehtkeertddtfeejnecuhfhrohhmpefklhhkkhgrucfrrhhushhiuceoihhlkhhkrgdrphhruhhsihesphhprdhinhgvthdrfhhiqeenucggtffrrghtthgvrhhnpeekgfehudetffevteelffevheefvdetveefjeffkeegveeijedutefgudduveetleenucfkphepkeegrddvhedurdduleegrdduieegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehhvghloheplgduledvrdduieekrddurddutdehngdpihhnvghtpeekgedrvdehuddrudelgedrudeigedpmhgrihhlfhhrohhmpeeophhruhhsihhlqddusehmsghogidrihhnvghtrdhfihequceuqfffjgepkeeukffvoffkoffgpdhrtghpthhtohepoehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrgheqpdhrtghpthhtohepoehluhhtoheskhgvrhhnvghlrdhorhhgqedprhgtphhtthhopeeophgvthgvrhiisehinhhfrhgruggvrggurdhorhhgqedprhgtphhtthhopeeorhhivghlsehsuhhrrhhivghlrdgtohhmqedprhgtphhtthhopeeogiekieeskhgvrhhnvghlrdhorhhgqe
-Received: from [192.168.1.105] (84.251.194.164) by julia1.inet.fi (9.0.019.26-1) (authenticated as prusil-1)
-        id 5EEA260E000BCAB2; Sat, 20 Jun 2020 03:59:44 +0300
-Subject: Re: WARNING at switch_mm_irqs_off, followed by frozen machine
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, riel@surriel.com, luto@kernel.org,
-        x86@kernel.org
-References: <c060d969-beb1-f99b-ab56-d2e9fd85c5dc@pp.inet.fi>
- <20200618102135.GA616959@hirez.programming.kicks-ass.net>
-From:   Ilkka Prusi <ilkka.prusi@pp.inet.fi>
-Message-ID: <b532d1be-221c-865a-c400-0b8b6273b489@pp.inet.fi>
-Date:   Sat, 20 Jun 2020 03:59:43 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1730293AbgFTA7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 20:59:48 -0400
+Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A794D22B4D;
+        Sat, 20 Jun 2020 00:59:46 +0000 (UTC)
+Date:   Fri, 19 Jun 2020 20:59:44 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Ming Lei <ming.lei@redhat.com>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Ming Lei <tom.leiming@gmail.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-block <linux-block@vger.kernel.org>
+Subject: Re: kprobe: __blkdev_put probe is missed
+Message-ID: <20200619205944.4c9bb076@oasis.local.home>
+In-Reply-To: <20200619232820.GE353853@T590>
+References: <CACVXFVO5saamQXs0naLamTKJfXZMW+p446weeqJK=9+V34UM0g@mail.gmail.com>
+        <20200618125438.GA191266@T590>
+        <20200618225602.3f2cca3f0ed48427fc0a483b@kernel.org>
+        <20200618231901.GA196099@T590>
+        <20200619141239.56f6dda0976453b790190ff7@kernel.org>
+        <20200619072859.GA205278@T590>
+        <20200619081954.3d72a252@oasis.local.home>
+        <20200619133240.GA351476@T590>
+        <20200620003509.9521053fbd384f4f5d23408f@kernel.org>
+        <20200619232820.GE353853@T590>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20200618102135.GA616959@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sat, 20 Jun 2020 07:28:20 +0800
+Ming Lei <ming.lei@redhat.com> wrote:
 
-On 18.6.2020 13.21, Peter Zijlstra wrote:
-> On Wed, Jun 17, 2020 at 02:32:39AM +0300, Ilkka Prusi wrote:
->> Hi,
->>
->> Yesterday my computer with kernel version 5.7.2 was frozen badly enough that
->> hard reset was necessary (did not react to SysRq keys). Upon checking logs I
->> found following warning and information from the time just before resetting
->> it.
->>
->> Computer has AMD Ryzen 7 2700, Asus B450 motherboard.
->>
->> 5.8-rc1 encountered BUG() and did not boot (iommu and smp_processor_id()
->> called from wrong context, I'll see if I can catch log somehow).
-> Since you're building your own kernels, can you make sure to always
-> have:
->
->   - CONFIG_DEBUG_BUGVERBOSE=y
->   - CONFIG_DEBUG_INFO=y
->
-> and then when reporting, run the thing through:
->
->    ./scripts/decode_stacktrace.sh
+> Thanks for your investigation.
+> 
+> Some trace tools can just trace on function entry, such as bcc, and some
+> user script always trace on function entry.
+> 
+> I guess the issue should belong to kprobe implementation:
 
-Ok, thanks for letting me know, I'll try that.
+The issue is that kprobes is to dynamically add trace events into an
+already compiled kernel. I'm guessing you would get the same result
+from ftrace's function tracer. That's because the compiler has no idea
+about what or where you intend to add these dynamically created trace
+events (that's basically the point of kprobes). But if you add static
+events (and this includes trace_printk()), the compiler knows about
+them, because they exist at compile time, and will make sure they
+execute the number of times the code shows it. But if you don't have
+these events at compile time, the compiler is free to modify the code
+in such a way it doesn't make sense if you add a probe at run time.
 
+gdb suffers the same problem on user space debugging if you let the
+compiler aggressively optimize the code. If you step through highly
+optimized user space code with gdb, the position jumps all over the
+place. This is basically the same effect.
 
-> And then pattern match that against my local defconfig build of
-> arch/x86/mm/tlb.o and pray my compiler did anyting like your
-> (unspecified) compiler.
+> 
+> 1) __blkdev_put() is capable of being kprobed, so from user view, the
+> probe on entry of __blkdev_put() should be triggered
+> 
+> 2) from implementation view, I understand exception should be trapped
+> on the entry of __blkdev_put(), looks it isn't done.
 
-Forgot to mention that, currently it is:
+But it is done! But the compiler removed the second call and basically
+just inlined it. So that entry no longer exists. When you added a
+"trace_printk()" in there, the compiler is not allowed to skip that
+trace call. But because there's nothing in here to tell the compiler
+that it can't just remove the second call (which it did, and the kprobe
+is just showing you what the compiler did!) then there's nothing
+kprobes can do about it.
 
-gcc (Debian 9.3.0-13) 9.3.0
+> 
+> Correct me if the above is wrong, and is it possible to fix it in kprobe?
 
-I'll try your suggestions, sorry for not replying sooner.
+No.
 
---
-
-  - Ilkka Prusi
-
-
+-- Steve
