@@ -2,131 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7356220211D
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 05:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A288A20212A
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 06:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbgFTDzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 23:55:05 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:54744 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725290AbgFTDzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 23:55:04 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 1D6AD24E770376062A29;
-        Sat, 20 Jun 2020 11:54:58 +0800 (CST)
-Received: from [127.0.0.1] (10.166.213.90) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.487.0; Sat, 20 Jun 2020
- 11:54:48 +0800
-Subject: Re: [PATCH v8 5/5] dt-bindings: chosen: Document
- linux,low-memory-range for arm64 kdump
-To:     James Morse <james.morse@arm.com>, Rob Herring <robh@kernel.org>
-References: <20200521093805.64398-1-chenzhou10@huawei.com>
- <20200521093805.64398-6-chenzhou10@huawei.com>
- <CAL_Jsq+EV02YBqEGoJrsJW8Y+g_GkB_LkTwWCxNCb3F+8MSdyw@mail.gmail.com>
- <a419602e-6a85-ca35-39de-b3c26d433199@huawei.com>
- <20200526211800.GA352001@bogus>
- <ff7c9f68-b578-3a1a-0815-e61c6f87bc4e@arm.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, <dyoung@redhat.com>,
-        Baoquan He <bhe@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        <John.p.donnelly@oracle.com>, <pkushwaha@marvell.com>,
-        "Simon Horman" <horms@verge.net.au>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>,
-        "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        <kexec@lists.infradead.org>,
-        "Nicolas Saenz Julienne" <nsaenzjulienne@suse.de>,
-        Bhupesh Sharma <bhsharma@redhat.com>
-From:   chenzhou <chenzhou10@huawei.com>
-Message-ID: <5339140e-41ee-ab20-0a3b-fcf7da82796b@huawei.com>
-Date:   Sat, 20 Jun 2020 11:54:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1725802AbgFTEB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 00:01:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725290AbgFTEB2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Jun 2020 00:01:28 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69179C06174E;
+        Fri, 19 Jun 2020 21:01:26 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id dr13so12412354ejc.3;
+        Fri, 19 Jun 2020 21:01:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=JCYHOTJ0HAS5x0UPsw2q9jK1wV+WcKeUblO0ISjlJgU=;
+        b=BpTrv6FS1BtxTu/7reJBA3v3AN2iHL8PqOPuMbDISbkfo1Y9F0QDR+xfvUAUYnXk7L
+         HGd0iPvNVB2ne44BuzwbEF/UV9TZZXBI+kummTWlnH5N6IT7G+uAVt+s/aIdA4ENPEa4
+         6OnXvslHMUMra91nAYKQzM9N7LxDQSRuSa6fZ13W5OcKc+hpSI49Z8iiC4MYecUPk6Q+
+         ysaVxPr3LZiyllP93dDWnxf/mbn9jyPFsFFxNqEOEkeKBzgjiAyEutTwN3wGyEED6IXa
+         v4J9hF0lm0oLvNCzCbNYeOAnN3efqV79/gMrK2+vW99kyP5XYZVlXv6bCU5Qi4+1r0Ry
+         +JrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JCYHOTJ0HAS5x0UPsw2q9jK1wV+WcKeUblO0ISjlJgU=;
+        b=JVP48zjWdWew6u/H6YvYvwgxAorjRJEYu4mG4fMzpWybLXC/OrtQKQFwnN4wX5lZMC
+         cuV1/IUfm6aeEUInJ7JBsOtGAD77AP0vN3+oVZQp8ckBxY6DBsYQfd1xtAk4svyAXulq
+         vzxvZmtlmneTX/fibfNOK4nZ0a8tMHSnTXlg3UQ/R0HspFK0H3RfztqoY+FhzhqO6BPx
+         IBxHlIcZN+IaXTyCMtpI3I2z2CLbge0fWAEV3hv5IpLOzuym5F2cacLbHm87K0qC0nWk
+         n0iTKDKFBgPZXHkMRm2xQtEr3EvmcIPp+AyNoW4XgUa1rU5IOkP227kQnpLVSlHBhcAC
+         fpwg==
+X-Gm-Message-State: AOAM5334FKEJturS0YBOpAfZrdQyjpxjgfs6Ify776CWAawwf1lFgD12
+        Keiur/kTN8ththTfMEZghe4=
+X-Google-Smtp-Source: ABdhPJw8B1IDFKZl+3uJjpFdOAUNzM5C+vslwfi8RWTQWvnrVzqSBDRH9VsMG7hJ3K+t/v5fDAV0ew==
+X-Received: by 2002:a17:906:6410:: with SMTP id d16mr6860682ejm.376.1592625684787;
+        Fri, 19 Jun 2020 21:01:24 -0700 (PDT)
+Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
+        by smtp.gmail.com with ESMTPSA id lw11sm6000247ejb.58.2020.06.19.21.01.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 19 Jun 2020 21:01:24 -0700 (PDT)
+Subject: Re: [PATCH v5 2/2] phy: bcm63xx-usbh: Add BCM63xx USBH driver
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
+        jonas.gorski@gmail.com, kishon@ti.com, vkoul@kernel.org,
+        robh+dt@kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        p.zabel@pengutronix.de, krzk@kernel.org,
+        gregkh@linuxfoundation.org, alcooperx@gmail.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20200619100035.4032596-1-noltari@gmail.com>
+ <20200619100035.4032596-3-noltari@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <b5c1993b-dce9-f963-54f0-c92def0c7582@gmail.com>
+Date:   Fri, 19 Jun 2020 21:01:20 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Firefox/68.0 Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <ff7c9f68-b578-3a1a-0815-e61c6f87bc4e@arm.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.213.90]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200619100035.4032596-3-noltari@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi James, Rob,
 
 
-On 2020/5/30 0:11, James Morse wrote:
-> Hi guys,
->
-> On 26/05/2020 22:18, Rob Herring wrote:
->> On Fri, May 22, 2020 at 11:24:11AM +0800, chenzhou wrote:
->>> On 2020/5/21 21:29, Rob Herring wrote:
->>>> On Thu, May 21, 2020 at 3:35 AM Chen Zhou <chenzhou10@huawei.com> wrote:
->>>>> Add documentation for DT property used by arm64 kdump:
->>>>> linux,low-memory-range.
->>>>> "linux,low-memory-range" is an another memory region used for crash
->>>>> dump kernel devices.
->>>>> diff --git a/Documentation/devicetree/bindings/chosen.txt b/Documentation/devicetree/bindings/chosen.txt
->>>>> index 45e79172a646..bfe6fb6976e6 100644
->>>>> --- a/Documentation/devicetree/bindings/chosen.txt
->>>>> +++ b/Documentation/devicetree/bindings/chosen.txt
->>>>> +linux,low-memory-range
->>>>> +----------------------
->>>>> +This property (arm64 only) holds a base address and size, describing a
->>>>> +limited region below 4G. Similar to "linux,usable-memory-range", it is
->>>>> +an another memory range which may be considered available for use by the
->>>>> +kernel.
->>>> Why can't you just add a range to "linux,usable-memory-range"? It
->>>> shouldn't be hard to figure out which part is below 4G.
->>> The comments from James:
->>> Won't this break if your kdump kernel doesn't know what the extra parameters are?
->>> Or if it expects two ranges, but only gets one? These DT properties should be treated as
->>> ABI between kernel versions, we can't really change it like this.
->>>
->>> I think the 'low' region is an optional-extra, that is never mapped by the first kernel. I
->>> think the simplest thing to do is to add an 'linux,low-memory-range' that we
->>> memblock_add() after memblock_cap_memory_range() has been called.
->>> If its missing, or the new kernel doesn't know what its for, everything keeps working.
->>
->> I don't think there's a compatibility issue here though. The current 
->> kernel doesn't care if the property is longer than 1 base+size. It only 
->> checks if the size is less than 1 base+size.
-> Aha! I missed that.
->
->
->> And yes, we can rely on 
->> that implementation detail. It's only an ABI if an existing user 
->> notices.
->>
->> Now, if the low memory is listed first, then an older kdump kernel 
->> would get a different memory range. If that's a problem, then define 
->> that low memory goes last. 
-> This first entry would need to be the 'crashkernel' range where the kdump kernel is
-> placed, otherwise an older kernel won't boot. The rest can be optional extras, as long as
-> we are tolerant of it being missing...
-How about like this:
+On 6/19/2020 3:00 AM, Álvaro Fernández Rojas wrote:
+> Add BCM63xx USBH PHY driver for BMIPS.
+> 
+> Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 
-1. The low memory region remained as "Crash kernel (low)".
-2. Userspace will find "Crash kernel" and "Crash kernel (low)" region in /proc/iomem,
-and add "Crash kernel (low)" as the last range of property "linux,usable-memory-range".
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 
-Thanks,
-Chen Zhou
->
-> I'll try and look at the rest of this series on Monday,
->
->
-> Thanks,
->
-> James
->
-> .
->
-
-
+This looks great, thanks Alvaro!
+-- 
+Florian
