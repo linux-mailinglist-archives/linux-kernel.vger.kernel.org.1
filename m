@@ -2,53 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8EBB202643
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 21:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C55C202645
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 21:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728724AbgFTTzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 15:55:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59214 "EHLO mail.kernel.org"
+        id S1728769AbgFTTz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 15:55:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59280 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728666AbgFTTzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 15:55:23 -0400
-Subject: Re: [GIT PULL] Kselftest update for Linux 5.8-rc2
+        id S1728666AbgFTTzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Jun 2020 15:55:24 -0400
+Subject: Re: [GIT PULL] RISC-V Fixes for 5.8-rc2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592682923;
-        bh=Gyi0m8AG9kJtsE/Yi1oOG4tLKcnblnj8pAS1EfJmFoE=;
+        s=default; t=1592682924;
+        bh=YOhXoTb1o5C1Jl/TLWwhF9JZzy9ZzY00Jlr6C3UMC2c=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=O5rZDXz65ufCmt8yxy5TUQHzWMgvqEph2QZFjKbVquBsjys8VxwH9nbaEpwFolqI9
-         3sl6IAY8ZEQ9iC8Lz4Uy8qeZd+iJ1UoN72a0/kj8HJOBI5B1+XhvuOCb43nPCNZaTW
-         pwQuQqk8gGz1lVnnrJuNFy2sxSfJT3NRmbo1W+3A=
+        b=m6rbiu3I9do1tLyhAU9d/FO1rwxxO3a++llJhkKpGOFC5G/G4vYgEm56Y6SE6m5vX
+         B9bLvVJcGEx+f2/z6ioEWkBWUvt4PGwv5wFeTmtC4znX4ryv917ZTBX95/OsUjiH+c
+         oSb/dPuiy72Y/m63oZhzPny0+2I7WuZx+aX8OIso=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <3d0e22cc-af15-c142-1ee9-6f3c18a10557@linuxfoundation.org>
-References: <3d0e22cc-af15-c142-1ee9-6f3c18a10557@linuxfoundation.org>
+In-Reply-To: <mhng-ff59c9fd-a367-4804-bc35-73c8a572b016@palmerdabbelt-glaptop1>
+References: <mhng-ff59c9fd-a367-4804-bc35-73c8a572b016@palmerdabbelt-glaptop1>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <3d0e22cc-af15-c142-1ee9-6f3c18a10557@linuxfoundation.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest
- tags/linux-kselftest-5.8-rc2
-X-PR-Tracked-Commit-Id: 1b8eec510ba641418573eacc98a7e9c07726af30
+X-PR-Tracked-Message-Id: <mhng-ff59c9fd-a367-4804-bc35-73c8a572b016@palmerdabbelt-glaptop1>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git
+ tags/riscv-for-linus-5.8-rc2
+X-PR-Tracked-Commit-Id: 0e2c09011d4de4161f615ff860a605a9186cf62a
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 27c2760561c0c68595b60a084c317b34e85e7c73
-Message-Id: <159268292311.15446.8213048131415498108.pr-tracker-bot@kernel.org>
-Date:   Sat, 20 Jun 2020 19:55:23 +0000
-To:     Shuah Khan <skhan@linuxfoundation.org>
+X-PR-Merge-Commit-Id: 7fdfbe08a2b3e2bf776e2f2b341768ba93c2e158
+Message-Id: <159268292459.15446.1815019867968444758.pr-tracker-bot@kernel.org>
+Date:   Sat, 20 Jun 2020 19:55:24 +0000
+To:     Palmer Dabbelt <palmer@dabbelt.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 19 Jun 2020 10:52:49 -0600:
+The pull request you sent on Fri, 19 Jun 2020 16:24:29 -0700 (PDT):
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest tags/linux-kselftest-5.8-rc2
+> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.8-rc2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/27c2760561c0c68595b60a084c317b34e85e7c73
+https://git.kernel.org/torvalds/c/7fdfbe08a2b3e2bf776e2f2b341768ba93c2e158
 
 Thank you!
 
