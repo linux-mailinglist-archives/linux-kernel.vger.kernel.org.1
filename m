@@ -2,85 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CF8202712
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 00:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 256C4202720
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 00:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728635AbgFTWmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 18:42:05 -0400
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:44172 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728113AbgFTWmE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 18:42:04 -0400
-Received: by mail-qv1-f68.google.com with SMTP id g7so6248304qvx.11;
-        Sat, 20 Jun 2020 15:42:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=SoKNo8yPIy9RNdx7/9iXU9ePzHMIl0jPpiq/Y06wE3Y=;
-        b=jSn8WTupnx+h0peQ6avv5VNdLe7ZKf+7lY5f/vQUlWtqXuoRyW+MKKmtWMNzR438D4
-         drv/FvPk8DHkRBQ24A5pLzQw2iwc+7RzASk5/DrbYm450MwrTDruEAH5E/KwR8xIRltC
-         rsd0v2cSx/IBZjM7IwStVDt1R49t1HWVZ7NiC9fmUVx3krOBxgB+8n54GXDQsY1AuNwx
-         DXKw6lM2jKjLx+gpv8ERrxZqZIcNlKQk95huSkK90y2RlPXRMFjsJ+AHYsvYcAFFUM6N
-         Jl5/3RkbXPPWCSLGhWNiTWxoH1xCUPJrb1AqjrEvwtx4Fcj4Eh3v1peFXDAqFSkHHGPp
-         KxFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references;
-        bh=SoKNo8yPIy9RNdx7/9iXU9ePzHMIl0jPpiq/Y06wE3Y=;
-        b=ZGjfqbpgKv45tnJItcyu1QZgnaylPmUYRleOphzdPdhvC9Svsx5vSDtk9u8Ij+bp/T
-         1ACyx3B5s9vIODVb2B+bbzb56XK/E8qnEwvR3YqflbS+6xYkwl/iaO/cZwhXEuV5SDg7
-         fgLAeWzr62iHATNvUjz/oySPNbThRAtxSU0iqg4wewuC+AfIXaEKe5up01irA+4/+6iv
-         Km69o1bPbL5QTtVsjymizxdcbmZ0svjXNMf1zd1purdyPz/pG0LyJjYKL6U76blXMgvW
-         K1WIsBKNyfCuIkwQFCGZG/wQL2B8pVKFk++OI+f76/7WqmnC48d+inCwVfyYJLcXvk15
-         E0IQ==
-X-Gm-Message-State: AOAM531fBDeJ7LXGpwcILXFV+RanBPld1bmZUZmgjV13ASAi155+XIjb
-        0TkEOiPCCMV4puwSqn/s/ok=
-X-Google-Smtp-Source: ABdhPJyzxnMOSjaf0UcG8R3kB+eBooW88SM0KkzIocPQAuwAfERtMeOFBdlxVdpH73LeWPAg7opC/Q==
-X-Received: by 2002:a0c:c303:: with SMTP id f3mr15440201qvi.240.1592692862877;
-        Sat, 20 Jun 2020 15:41:02 -0700 (PDT)
-Received: from linux.home ([2604:2000:1344:41d:68f8:1450:6217:e25])
-        by smtp.googlemail.com with ESMTPSA id p22sm11248031qtc.7.2020.06.20.15.41.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jun 2020 15:41:02 -0700 (PDT)
-From:   Gaurav Singh <gaurav1086@gmail.com>
-To:     gaurav1086@gmail.com, Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org (open list:GPIO SUBSYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] max732x_probe: remove redundant check
-Date:   Sat, 20 Jun 2020 18:40:53 -0400
-Message-Id: <20200620224054.23840-1-gaurav1086@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200610113630.11922-1-gaurav1086@gmail.com>
-References: <20200610113630.11922-1-gaurav1086@gmail.com>
+        id S1729086AbgFTWnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 18:43:40 -0400
+Received: from mout.gmx.net ([212.227.17.21]:45831 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728955AbgFTWng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Jun 2020 18:43:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1592692947;
+        bh=OudamScKxsSwesQWI5fhg8i4uztyIzbbtXHCU+btXqg=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=JJlLzu+EP2kHN1UTDpUwB6LsqYgcAztufiCAgWCcxVFKraKCiYMrmS+mXlItATNNc
+         Ar2ZNr4QuMEd1/btmPM4zx9DQe1/1C/Ki4Grla16r4HglxaDLrhr3slsSc2iXWxzcg
+         iPLI2pWnBBJ38Vv5EeauBsNsISVxdiCIdDGhLFy8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([5.146.194.186]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M4s51-1jlPPh33Ch-0022vZ; Sun, 21
+ Jun 2020 00:42:26 +0200
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Andreas Kemnade <andreas@kemnade.info>
+Subject: [RFC PATCH 02/10] dt-bindings: Add vendor prefix for Netronix, Inc.
+Date:   Sun, 21 Jun 2020 00:42:13 +0200
+Message-Id: <20200620224222.1312520-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:yZqldghSPumPDLmSQbkIreQsfprG56cHRfGVJLO/YVdhlg8pdjP
+ qZiYkkWMBRqMgwiDDZxJ/FCfw8bxfnQru0qx9L7azU4/GJDQAEj3hBxzxC5XMdXgaq80k6Y
+ SHT+PXTXWZyf8p9LmwX14SH2+bFjtxTBBb9kbDuWJfCuNiZWshywX2QCJaoqMczHJC6Q/50
+ JgFxTAZrllSeaBrtPHSFQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:do6d/UNjmsA=:R9Ie587I12yWywA8J5SpSB
+ BLF9Oth0uc8kZzgmzZ4+u54wt5yGQoaFfnpyHNx4l7IyNaDg6+/+R/f1hgPMu85eYY5HE09ge
+ bFeuKAfPblPLjhk0gxae1vikVfpqrY6RpY8N5eF3Xa9+zkrpqK4Y89pTbt/tflnz2axOUyiu0
+ BvAA44P73R7IBIZ8spCb0xBlEBH3SzTHQ8G/xDG7QHTuO8Nu/6jGu0nDuRW58tKjlP8wVDFTf
+ ZzI9LiHs6GpZ78j9HiXl6PekpypY+lpzMEUnH27lemTM4RJsYLGbIwfBZL+heIywhQX97MHAb
+ 5SL6uP52Mi69J2ULGvkXFHkJzx/Fs7i7I7IYxkPKL/ymU8MFvMKscDgY+G5K3Ck09weMxr7gP
+ Jy0jIGL22XQFWJqcl0V2qb9wGpXdofOxE7C5RVcPq0cDuRJmOmj5VIulyg5E06RTTPEFlHBND
+ k2o+uWYiXoSgdVdqipbTMtaXSI4e4JI8U0fmy06dtPFWD0sn9phBsvgv/n7NEdnRGrzFLNBke
+ oij8xPQsuUXQy9zd+A47jW3jBXI+kBB2ef23e0Newv7WVZ67d12hN8ctUwrRFROZYR7JC2OoH
+ W5o6AdCPx+LdxxuKcq9SOT7R2f8YmacLH2k4LXIPVzqTbtjmiPsxpyyJNLNSZH+o34UgQDOat
+ Ai/Np7TPrDTSBHyAzDYL2vxL0w33qfURn5JvzZgROmpDVmJKA5zqCnHexmYh9brcPIHBbyJnx
+ IF5z7a8gKg+OEQpH3svSXi2q2BccfSlCEGZoAX+9ymRTM9U5nxCsb6viJpR5q+XHUyZbSvgHy
+ GTpx4KurBhFmMCbBR77FoeEz47J77XtYMhtMI2TPgRWWCDE6+vaGYROumvr7Fo6EwYLlAyXwk
+ ugZd6n5oTK6CzP5bkqC3e7G0qbXlzqHF3hOA6xh1/YtSo8243CecXf7SF0XM2hYffsQlOS+ph
+ qT94vPkRWA1tbFbEFuiGCoBPnwL4igL1WDeXeBw93/uNzFEGV3wZ7m/RwjtjoR9zZUQFnZUYA
+ US1nlqIwAY5Dq6mZcFv0w8eFA6mBmnO1qA/pSzihnRaemJPqBZccuknxaQJ8IaAwL3mEDR3GH
+ vMpRDMTFujK3T8upXyiZVDnqBlgx21pKIOvv8txYkHugk9kedVQGtxKT98Wz5r0fqkz+cIwDb
+ KXYWUc+ZoCBB5uWY1GKLQiYDQzU8VrTak0TZMvQxC2K+njpePApu/khJrp/lKWlzKaPzWZ/Ih
+ jixY0YPWy90Yjy2NK
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pdata is already checked for its validity.
-Remove the redundant check.
+Netronix, Inc. (http://www.netronixinc.com/) makes ebook reader board
+designs, which are for example used in Kobo and Tolino devices.
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
----
- drivers/gpio/gpio-max732x.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+An alternative prefix for Netronix would be "ntx", which is already used
+in code released by Netronix. It is shorter, but perhaps less clear.
 
-diff --git a/drivers/gpio/gpio-max732x.c b/drivers/gpio/gpio-max732x.c
-index 5fb0bcf31142..63472f308857 100644
---- a/drivers/gpio/gpio-max732x.c
-+++ b/drivers/gpio/gpio-max732x.c
-@@ -703,7 +703,7 @@ static int max732x_probe(struct i2c_client *client,
- 	if (ret)
- 		return ret;
- 
--	if (pdata && pdata->setup) {
-+	if (pdata->setup) {
- 		ret = pdata->setup(client, chip->gpio_chip.base,
- 				chip->gpio_chip.ngpio, pdata->context);
- 		if (ret < 0)
--- 
-2.17.1
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Docu=
+mentation/devicetree/bindings/vendor-prefixes.yaml
+index 9aeab66be85fc..516c6b6668fba 100644
+=2D-- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -704,6 +704,8 @@ patternProperties:
+     description: Broadcom Corporation (formerly NetLogic Microsystems)
+   "^netron-dy,.*":
+     description: Netron DY
++  "^netronix,.*":
++    description: Netronix, Inc.
+   "^netxeon,.*":
+     description: Shenzhen Netxeon Technology CO., LTD
+   "^neweast,.*":
+=2D-
+2.27.0
 
