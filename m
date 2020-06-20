@@ -2,68 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC5BE202043
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 05:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4DE202035
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 05:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732746AbgFTD2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 23:28:49 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:59872 "EHLO
+        id S1732675AbgFTD1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 23:27:02 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:58752 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732724AbgFTD2s (ORCPT
+        with ESMTP id S1732629AbgFTD1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 23:28:48 -0400
+        Fri, 19 Jun 2020 23:27:01 -0400
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05K3IrwA195240;
-        Sat, 20 Jun 2020 03:28:43 GMT
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05K3IXU3194488;
+        Sat, 20 Jun 2020 03:26:45 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2020-01-29;
- bh=2CzZq5GU6wgRj+8UAuT73tB62Tj9OsO+caXjTCosPng=;
- b=n3m7OKnY07P9PV4DmDKP+ivWEMnsJKZTHvqbV2INUUxd5JtiQAFikGd0ifDeq+UtVwYZ
- FiKi6A9hVGGa0NIuyeLjS0fRmBerfAox9qpsmgeLqL7KIz54+HZgYh+37ON055I24eMH
- jsMTodWI0YIPZwBCH9wKfmXXmnmjmXI+JBE234UjcIHFLJMLk2cP6zyZhOU/EeFtvoNP
- WnMMM+KYtp3jrPSe0UmgL3U37I1cEkEDHVroTfauuoTV/I8/dYgFC0oiD6hIKEHU5op+
- SF35ctm4w/UfqLTv/4GqPoUWzeaEAo5KFB7wR9ePff0PcDQTHIWSK0W5lTp6YUB1doQt vw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 31s9vqr1yu-1
+ bh=PF84+gWPFaJNdwDpeizHfentgldpxqhtBTI+d6ZBfuM=;
+ b=BT0qt+tc6qfjaZXXBP1CxgHKRKdWtr4bi40pftvAezuG/T58SvV25XVG0FwQXd7WSK66
+ Oa+lbZsqPLpb4fgUip1qB9+jrl4nmQQpcW5rzRft6I+BU70rV0qvYWjLO50nXixBn0MC
+ U26zhkmQ+WVKUcjUurKCMsHCLy3dNMaH5Cn+ollb6OywDNdP98yz38mvOfCdGQ2G2hDQ
+ 8dZrtxDBokGC79EfdJA7Roxu4J8OQ/dMNAzraTRQX98F98pPGqmZICYbJC2OEkc1di8z
+ 06nIzObYzRJnYYMpzDHGu2Iz32xkPfxK/MBEpKue+pEsXD8fseVlJ3zMLwVsFyuUqwUN 2A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 31s9vqr1vs-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 20 Jun 2020 03:28:43 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05K3JI5A035764;
-        Sat, 20 Jun 2020 03:26:42 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 31s8g8c4u8-1
+        Sat, 20 Jun 2020 03:26:45 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05K3Jc0p005666;
+        Sat, 20 Jun 2020 03:26:44 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 31sa8yh28f-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 20 Jun 2020 03:26:42 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05K3QdXq011083;
-        Sat, 20 Jun 2020 03:26:41 GMT
+        Sat, 20 Jun 2020 03:26:44 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05K3Qggp002429;
+        Sat, 20 Jun 2020 03:26:43 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 19 Jun 2020 20:26:39 -0700
+        with ESMTP ; Fri, 19 Jun 2020 20:26:42 -0700
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     cang@codeaurora.org, Asutosh Das <asutoshd@codeaurora.org>,
-        gregkh@google.com
+To:     Avri Altman <avri.altman@wdc.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Kiwoong Kim <kwmad.kim@samsung.com>,
+        Colin King <colin.king@canonical.com>,
+        Seungwon Jeon <essuuj@gmail.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-scsi@vger.kernel.org,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] Documentation:sysfs-ufs: Add WriteBooster documentation
-Date:   Fri, 19 Jun 2020 23:26:33 -0400
-Message-Id: <159262354734.7800.7343859411228839862.b4-ty@oracle.com>
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH][next] scsi: ufs: ufs-exynos: fix spelling mistake "pa_granularty" -> "pa_granularity"
+Date:   Fri, 19 Jun 2020 23:26:36 -0400
+Message-Id: <159262354734.7800.18123945491973468082.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.26.2
-In-Reply-To: <1591723067-22998-1-git-send-email-asutoshd@codeaurora.org>
-References: <1591723067-22998-1-git-send-email-asutoshd@codeaurora.org>
+In-Reply-To: <20200617084911.167359-1-colin.king@canonical.com>
+References: <20200617084911.167359-1-colin.king@canonical.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9657 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 bulkscore=0 malwarescore=0
- phishscore=0 mlxlogscore=895 spamscore=0 adultscore=0 suspectscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 adultscore=0
+ malwarescore=0 spamscore=0 mlxlogscore=960 mlxscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
  definitions=main-2006200022
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9657 signatures=668680
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1011
  malwarescore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
- mlxlogscore=929 mlxscore=0 phishscore=0 cotscore=-2147483648 spamscore=0
+ mlxlogscore=983 mlxscore=0 phishscore=0 cotscore=-2147483648 spamscore=0
  adultscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
  scancount=1 engine=8.12.0-2004280000 definitions=main-2006200022
 Sender: linux-kernel-owner@vger.kernel.org
@@ -71,14 +78,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 9 Jun 2020 10:17:46 -0700, Asutosh Das wrote:
+On Wed, 17 Jun 2020 09:49:11 +0100, Colin King wrote:
 
-> Adds sysfs documentation for WriteBooster entries.
+> There is a spelling mistake in a dev_warn message. Fix it.
 
 Applied to 5.9/scsi-queue, thanks!
 
-[1/1] scsi: ufs: docs: Add WriteBooster documentation
-      https://git.kernel.org/mkp/scsi/c/f51853fc0682
+[1/1] scsi: ufs: ufs-exynos: Fix spelling mistake "pa_granularty" -> "pa_granularity"
+      https://git.kernel.org/mkp/scsi/c/393403efc360
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
