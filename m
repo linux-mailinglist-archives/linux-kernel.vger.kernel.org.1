@@ -2,72 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF1420232E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 12:26:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45956202333
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 12:31:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727994AbgFTK0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 06:26:49 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6296 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727861AbgFTK0o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 06:26:44 -0400
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 9CEED5468307C131E412;
-        Sat, 20 Jun 2020 18:26:41 +0800 (CST)
-Received: from [10.173.222.27] (10.173.222.27) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.487.0; Sat, 20 Jun 2020 18:26:31 +0800
-Subject: Re: [PATCH] drm/msm/dpu: Fix usage of ERR_PTR()
-To:     <linux-arm-msm@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     <robdclark@gmail.com>, <sean@poorly.run>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>, <jsanka@codeaurora.org>,
-        <wanghaibin.wang@huawei.com>
-References: <20200528130816.1670-1-yuzenghui@huawei.com>
-From:   Zenghui Yu <yuzenghui@huawei.com>
-Message-ID: <f1357380-9e98-4c1e-c1bf-a0a95bb5910d@huawei.com>
-Date:   Sat, 20 Jun 2020 18:26:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728017AbgFTKb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 06:31:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726065AbgFTKad (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Jun 2020 06:30:33 -0400
+Received: from the.earth.li (the.earth.li [IPv6:2a00:1098:86:4d:c0ff:ee:15:900d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 280B0C06174E;
+        Sat, 20 Jun 2020 03:30:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=earth.li;
+         s=the; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject
+        :Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=DzAgpAOZLOM7f+2C2NYrc6NoYekk/Q+a1E7XT1PA1jE=; b=I32YmR/GknVIbL66bEJLdSOvv5
+        EvI5imvkGhippXrgNAjM/K4bcX0OYR3RmPg8MLyFxGDa7BeEBQdxG4ole587G3C4DEVw8o1p6WO/g
+        xhUSsAjNp7N+F/MIv4X/zZ24oJcYhKCVvp/o8p3S4kel9BDjyXF9s9eYxSdd17YW8BJt/mBaprSjD
+        Agf0PCCMBnHeEgp8wmt55EiQxZnugTCM5W/W4oIvw728AgzK0OzFcO2T8v99zPPAFDsu0Ta0VHD1u
+        cJcIQHfHjj0v7wotYIIr//v6mNYMeJO6n+kS2MJ7kF3E5nKderh5kGKl7jQdLd4oqsaKkWq08wydC
+        OC1WW3oA==;
+Received: from noodles by the.earth.li with local (Exim 4.92)
+        (envelope-from <noodles@earth.li>)
+        id 1jmal9-00048D-Gp; Sat, 20 Jun 2020 11:30:03 +0100
+Date:   Sat, 20 Jun 2020 11:30:03 +0100
+From:   Jonathan McDowell <noodles@earth.li>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Cc:     Vivien Didelot <vivien.didelot@gmail.com>,
+        David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v5 0/3] net: dsa: qca8k: Improve SGMII interface
+ handling
+Message-ID: <cover.1592648711.git.noodles@earth.li>
+References: <cover.1591816172.git.noodles@earth.li>
 MIME-Version: 1.0
-In-Reply-To: <20200528130816.1670-1-yuzenghui@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.173.222.27]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1591816172.git.noodles@earth.li>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping for this obvious fix...
+This 3 patch series migrates the qca8k switch driver over to PHYLINK,
+and then adds the SGMII clean-ups (i.e. the missing initialisation) on
+top of that as a second patch. The final patch is a simple spelling fix
+in a comment.
 
-On 2020/5/28 21:08, Zenghui Yu wrote:
-> ERR_PTR() is used in the kernel to encode an usual *negative* errno code
-> into a pointer.  Passing a positive value (ENOMEM) to it will break the
-> following IS_ERR() check.
-> 
-> Though memory allocation is unlikely to fail, it's still worth fixing.
-> And grepping shows that this is the only misuse of ERR_PTR() in kernel.
-> 
-> Fixes: 25fdd5933e4c ("drm/msm: Add SDM845 DPU support")
-> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
-> ---
->   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> index a1b79ee2bd9d..a2f6b688a976 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> @@ -2173,7 +2173,7 @@ struct drm_encoder *dpu_encoder_init(struct drm_device *dev,
->   
->   	dpu_enc = devm_kzalloc(dev->dev, sizeof(*dpu_enc), GFP_KERNEL);
->   	if (!dpu_enc)
-> -		return ERR_PTR(ENOMEM);
-> +		return ERR_PTR(-ENOMEM);
->   
->   	rc = drm_encoder_init(dev, &dpu_enc->base, &dpu_encoder_funcs,
->   			drm_enc_mode, NULL);
-> 
+As before, tested with a device where the CPU connection is RGMII (i.e.
+the common current use case) + one where the CPU connection is SGMII. I
+don't have any devices where the SGMII interface is brought out to
+something other than the CPU.
+
+v5:
+- Move spelling fix to separate patch
+- Use ds directly rather than ds->priv
+v4:
+- Enable pcs_poll so we keep phylink updated when doing in-band
+  negotiation
+- Explicitly check for PHY_INTERFACE_MODE_1000BASEX when setting SGMII
+  port mode.
+- Address Vladimir's review comments
+v3:
+- Move phylink changes to separate patch
+- Address rmk review comments
+v2:
+- Switch to phylink
+- Avoid need for device tree configuration options
+
+Jonathan McDowell (3):
+  net: dsa: qca8k: Switch to PHYLINK instead of PHYLIB
+  net: dsa: qca8k: Improve SGMII interface handling
+  net: dsa: qca8k: Minor comment spelling fix
+
+ drivers/net/dsa/qca8k.c | 341 ++++++++++++++++++++++++++++------------
+ drivers/net/dsa/qca8k.h |  13 ++
+ 2 files changed, 256 insertions(+), 98 deletions(-)
+
+-- 
+2.20.1
+
