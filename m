@@ -2,214 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678762025E0
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 20:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1BF2025CF
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 20:07:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728577AbgFTSId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 14:08:33 -0400
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:33379 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728543AbgFTSI1 (ORCPT
+        id S1728388AbgFTSHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 14:07:48 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:36862 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727808AbgFTSHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 14:08:27 -0400
-Received: by mail-oo1-f67.google.com with SMTP id v1so2555341ooh.0
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 11:08:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RZbyQxlPPlj+C7W88GsV5u7gIrqOuboIqILXGq1cy2Q=;
-        b=tMWXebqAWjrdZLG79HY5DmkUXSwJNJ3bTvr/2vz2mEjIAbm/GZzuoG0LIVAXnWR7xq
-         khS/7Lid18WkeVSpsMEIT5eeDbPlqdmXoNBG1isleqFYBACVmDjIFqJWnjbwuTtczJbK
-         DFuC/NOjA0I8oiMsiL5d6Mv1bGegc8bgFcHws99k/wP/TyG1vs+mVSeIqm3A5AS/eF3F
-         IrbucJuksXk8ly7peEtJAaPi62jjscixui+Hu/HCeO1atnE6MD4BlOjAbEQH5iWdurBi
-         i/Xb3RMg/0ZKELch9PkHsSjGiVjvYdLnH/x2MOaw3RXCM5JB9lqLFhalumAxmrV4T5Nk
-         mR3w==
+        Sat, 20 Jun 2020 14:07:47 -0400
+Received: by mail-pg1-f193.google.com with SMTP id p3so3380764pgh.3;
+        Sat, 20 Jun 2020 11:07:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RZbyQxlPPlj+C7W88GsV5u7gIrqOuboIqILXGq1cy2Q=;
-        b=b/epeKELtP5kQxIJzIRZgjqTpvVSI0i3dcpS+q3xGM0PLKbLiOo1zuAEKymnFF9C7Q
-         4FZEQHOViGUEfvZQzT1xyEV6Tqe+Uo4QFPyZHH5Edlyh/5QXOEjt3ShPn6Od8jnCX1Hk
-         kXXsLQtKwz/cPiZ1EmAfpPXv8XmsPlRV159aF6XARpPv2Fwgq+LlynycyREZ1VyO41+Z
-         RUjBpL2sgRoGHSvoMx5jwCqe6g0mTbROra4jgMHXPbTNb0YqDljnggwr4QhfikwwDwHI
-         CkZqO2iP2Mjw070O9NGTdsB0gayvwLPRBoeeWSvn/wgghUY7/Eup17cY3wzHHlzFCBF1
-         H4xQ==
-X-Gm-Message-State: AOAM532319XacT6TBUDaKjIzi27tzstBDnSgvjNYb5cEsnD5ZPWuoLQY
-        MtI23iywABZjHiqfCkc3nno=
-X-Google-Smtp-Source: ABdhPJwriTdACm85KeoPV/cP36XV2Rmp7EtTqHWTs3e/L+nR6mJQnPsBojze/11JRlSiFF4DdsfKAQ==
-X-Received: by 2002:a05:6820:54c:: with SMTP id n12mr2357343ooj.73.1592676445842;
-        Sat, 20 Jun 2020 11:07:25 -0700 (PDT)
-Received: from localhost.localdomain (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id y31sm2077901otb.41.2020.06.20.11.07.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jun 2020 11:07:25 -0700 (PDT)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
-        akpm@linuxfoundation.org, gregkh@linuxfoundation.org
-Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v4 17/17] dyndbg: combine flags & mask into a struct, simplify with it
-Date:   Sat, 20 Jun 2020 12:06:43 -0600
-Message-Id: <20200620180643.887546-18-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200620180643.887546-1-jim.cromie@gmail.com>
-References: <20200620180643.887546-1-jim.cromie@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=NzZdSjEt874a3GJH+7QELllYmmkWwmA69bmmuHgTAoc=;
+        b=hh4UONth6FNSudKukThq0sNryxE+OUj4MaywiVMXVCZsG96E7L41YXaSjFo76fy2gJ
+         sAzDdD1qNigqyzgnrGOi8/ODz3lC7+5zOnINlWwLw1LlpFzQWHFu3lndypKeI3xGL6lt
+         epZbwtA/C4hV+V7xTEry1UcSO9yZCG6aTpoBWH7PTkymPc1Aq0lxL6UftUMsDXIPC7iI
+         Z2OUhql+S5thxAlzM4cRKHcc5B/cbvuf79dUYnDXli2eOJUbT9fNfqFSdQN4MOTVEXWh
+         bcSu1hphLjrhIesM3/rgjxHDPJaPSstNzoJD8smvOWJa/fS4kMPIZljWU5//+t7L7Qih
+         Z/ag==
+X-Gm-Message-State: AOAM532ZB4zclxuJkJRhRZhEGhyD98XIdg85GJpqkbd1HCRgFWF45xOC
+        aABgAeQTHhW7gxIIRbo8NIrIqcQS5t0=
+X-Google-Smtp-Source: ABdhPJyXZ5+MX59b6ULR5gqIuxp5l3tCoeY0xbteLpJXFGzXJOEKGFgYUdAnj2qpGVZHCWN7S8ZLZw==
+X-Received: by 2002:a63:fa4d:: with SMTP id g13mr7185310pgk.26.1592676466144;
+        Sat, 20 Jun 2020 11:07:46 -0700 (PDT)
+Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id s22sm2614781pgv.43.2020.06.20.11.07.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Jun 2020 11:07:45 -0700 (PDT)
+Subject: Re: [PATCH v7 8/8] block: create the request_queue debugfs_dir on
+ registration
+To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
+        viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
+        rostedt@goodmis.org, mingo@redhat.com, jack@suse.cz,
+        ming.lei@redhat.com, nstange@suse.de, akpm@linux-foundation.org
+Cc:     mhocko@suse.com, yukuai3@huawei.com, martin.petersen@oracle.com,
+        jejb@linux.ibm.com, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20200619204730.26124-1-mcgrof@kernel.org>
+ <20200619204730.26124-9-mcgrof@kernel.org>
+From:   Bart Van Assche <bvanassche@acm.org>
+Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
+ mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
+ LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
+ fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
+ AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
+ 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
+ AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
+ igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
+ Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
+ jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
+ macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
+ CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
+ RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
+ PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
+ eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
+ lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
+ T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
+ ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
+ CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
+ oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
+ //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
+ mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
+ goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
+Message-ID: <02112994-4cd7-c749-6bd7-66a772593c90@acm.org>
+Date:   Sat, 20 Jun 2020 11:07:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200619204730.26124-9-mcgrof@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-flags & mask are used together everywhere, and are passed around
-together between multiple functions; they belong together in a struct,
-call that struct flag_settings.
+On 2020-06-19 13:47, Luis Chamberlain wrote:
+> We were only creating the request_queue debugfs_dir only
+> for make_request block drivers (multiqueue), but never for
+> request-based block drivers. We did this as we were only
+> creating non-blktrace additional debugfs files on that directory
+> for make_request drivers. However, since blktrace *always* creates
+> that directory anyway, we special-case the use of that directory
+> on blktrace. Other than this being an eye-sore, this exposes
+> request-based block drivers to the same debugfs fragile
+> race that used to exist with make_request block drivers
+> where if we start adding files onto that directory we can later
+> run a race with a double removal of dentries on the directory
+> if we don't deal with this carefully on blktrace.
+> 
+> Instead, just simplify things by always creating the request_queue
+> debugfs_dir on request_queue registration. Rename the mutex also to
+> reflect the fact that this is used outside of the blktrace context.
 
-Use struct flag_settings to rework 3 functions:
- - ddebug_exec_query - declares query and flag-settings,
-   		     calls other 2, passing flags
- - ddebug_parse_flags - fills flag_settings and returns
- - ddebug_change - test all callsites against query,
-   		   modify passing sites.
+There are two changes in this patch: a bug fix and a rename of a mutex.
+I don't like it to see two changes in a single patch.
 
-benefits:
- - bit-banging always needs flags & mask, best together.
- - simpler function signatures
- - 1 less parameter, less stack overhead
+Additionally, is the new mutex name really better than the old name? The
+proper way to use mutexes is to use mutexes to protect data instead of
+code. Where is the documentation that mentions which member variable(s)
+of which data structures are protected by the mutex formerly called
+blk_trace_mutex? Since the new name makes it even less clear which data
+is protected by this mutex, is the new name really better than the old name?
 
-no functional changes
+Thanks,
 
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
----
- lib/dynamic_debug.c | 45 ++++++++++++++++++++++++---------------------
- 1 file changed, 24 insertions(+), 21 deletions(-)
-
-diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index d737c733967a..c0bc78d67b36 100644
---- a/lib/dynamic_debug.c
-+++ b/lib/dynamic_debug.c
-@@ -62,6 +62,11 @@ struct ddebug_iter {
- 	unsigned int idx;
- };
- 
-+struct flag_settings {
-+	unsigned int flags;
-+	unsigned int mask;
-+};
-+
- static DEFINE_MUTEX(ddebug_lock);
- static LIST_HEAD(ddebug_tables);
- static int verbose;
-@@ -141,7 +146,7 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
-  * logs the changes.  Takes ddebug_lock.
-  */
- static int ddebug_change(const struct ddebug_query *query,
--			unsigned int flags, unsigned int mask)
-+			 struct flag_settings *modifiers)
- {
- 	int i;
- 	struct ddebug_table *dt;
-@@ -196,14 +201,14 @@ static int ddebug_change(const struct ddebug_query *query,
- 
- 			nfound++;
- 
--			newflags = (dp->flags & mask) | flags;
-+			newflags = (dp->flags & modifiers->mask) | modifiers->flags;
- 			if (newflags == dp->flags)
- 				continue;
- #ifdef CONFIG_JUMP_LABEL
- 			if (dp->flags & _DPRINTK_FLAGS_PRINT) {
--				if (!(flags & _DPRINTK_FLAGS_PRINT))
-+				if (!(modifiers->flags & _DPRINTK_FLAGS_PRINT))
- 					static_branch_disable(&dp->key.dd_key_true);
--			} else if (flags & _DPRINTK_FLAGS_PRINT)
-+			} else if (modifiers->flags & _DPRINTK_FLAGS_PRINT)
- 				static_branch_enable(&dp->key.dd_key_true);
- #endif
- 			dp->flags = newflags;
-@@ -436,11 +441,9 @@ static int ddebug_parse_query(char *words[], int nwords,
-  * flags fields of matched _ddebug's.  Returns 0 on success
-  * or <0 on error.
-  */
--static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
--			       unsigned int *maskp)
-+static int ddebug_parse_flags(const char *str, struct flag_settings *modifiers)
- {
--	unsigned flags = 0;
--	int op = '=', i;
-+	int op, i;
- 
- 	switch (*str) {
- 	case '+':
-@@ -457,7 +460,7 @@ static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
- 	for (; *str ; ++str) {
- 		for (i = ARRAY_SIZE(opt_array) - 1; i >= 0; i--) {
- 			if (*str == opt_array[i].opt_char) {
--				flags |= opt_array[i].flag;
-+				modifiers->flags |= opt_array[i].flag;
- 				break;
- 			}
- 		}
-@@ -466,30 +469,30 @@ static int ddebug_parse_flags(const char *str, unsigned int *flagsp,
- 			return -EINVAL;
- 		}
- 	}
--	vpr_info("flags=0x%x\n", flags);
-+	vpr_info("flags=0x%x\n", modifiers->flags);
- 
--	/* calculate final *flagsp, *maskp according to mask and op */
-+	/* calculate final flags, mask based upon op */
- 	switch (op) {
- 	case '=':
--		*maskp = 0;
--		*flagsp = flags;
-+		/* modifiers->flags already set */
-+		modifiers->mask = 0;
- 		break;
- 	case '+':
--		*maskp = ~0U;
--		*flagsp = flags;
-+		modifiers->mask = ~0U;
- 		break;
- 	case '-':
--		*maskp = ~flags;
--		*flagsp = 0;
-+		modifiers->mask = ~modifiers->flags;
-+		modifiers->flags = 0;
- 		break;
- 	}
--	vpr_info("*flagsp=0x%x *maskp=0x%x\n", *flagsp, *maskp);
-+	vpr_info("*flagsp=0x%x *maskp=0x%x\n", modifiers->flags, modifiers->mask);
-+
- 	return 0;
- }
- 
- static int ddebug_exec_query(char *query_string, const char *modname)
- {
--	unsigned int flags = 0, mask = 0;
-+	struct flag_settings modifiers = {};
- 	struct ddebug_query query = {};
- #define MAXWORDS 9
- 	int nwords, nfound;
-@@ -501,7 +504,7 @@ static int ddebug_exec_query(char *query_string, const char *modname)
- 		return -EINVAL;
- 	}
- 	/* check flags 1st (last arg) so query is pairs of spec,val */
--	if (ddebug_parse_flags(words[nwords-1], &flags, &mask)) {
-+	if (ddebug_parse_flags(words[nwords-1], &modifiers)) {
- 		pr_err("flags parse failed\n");
- 		return -EINVAL;
- 	}
-@@ -510,7 +513,7 @@ static int ddebug_exec_query(char *query_string, const char *modname)
- 		return -EINVAL;
- 	}
- 	/* actually go and implement the change */
--	nfound = ddebug_change(&query, flags, mask);
-+	nfound = ddebug_change(&query, &modifiers);
- 	vpr_info_dq(&query, nfound ? "applied" : "no-match");
- 
- 	return nfound;
--- 
-2.26.2
-
+Bart.
