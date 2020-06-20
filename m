@@ -2,116 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3132025A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 19:33:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C40DA2025B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 19:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728335AbgFTRdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 13:33:33 -0400
-Received: from mail-pj1-f66.google.com ([209.85.216.66]:35586 "EHLO
-        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727808AbgFTRdc (ORCPT
+        id S1728282AbgFTRsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 13:48:52 -0400
+Received: from vps01.wiesinger.com ([46.36.37.179]:55908 "EHLO
+        vps01.wiesinger.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726838AbgFTRsv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 13:33:32 -0400
-Received: by mail-pj1-f66.google.com with SMTP id i4so6085706pjd.0;
-        Sat, 20 Jun 2020 10:33:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=2P3Vzv5xtm8mkodco3WgSqBsNpt49S7EUwCeOg0xzd0=;
-        b=UsiqiPGQw/nRujRF8EsnHU6+gBVzQ6Bd2xfpo9Pzbc6GywP96mJDcsHF+Kg8ifSOVX
-         MoSizDL5Aw095ae3OeETxTCv0x3phTql7eRF8G9nVf8mUxl71W3Hrmun3wh+og5s7ZXe
-         s4bpj8iTSruYxDrWf9+7Wi4lOjmseAYOVVBf2YTqc/hcrT8+AZIIDCMgKE42SxS34wo2
-         EYJb7RAr97VKgw18JM7vx0VmxvCsvBppmfeMxmjlSkhwHx1LbRhItB5V8pZV+5P9Is6z
-         xLtdhlaC6Heo4c7szKToNJZT6ZPI4kOwB3R11Kt6JepweiqWrTZbdDtOxo3uQQN7hCD2
-         faRQ==
-X-Gm-Message-State: AOAM532OTLztNLuzQ72kr9znD3hv2hjMyHZSMLaMCzUzclC/8rMVlVw+
-        9rjePc5Upr1Gq6KC6Ab3lQej9WM4kV4=
-X-Google-Smtp-Source: ABdhPJytRswymFRQkcGFImTFiKQxq06LmY1uLhViW9168gtYVm2YXL6mzI9sfOCC4T0c2fQinH1mfg==
-X-Received: by 2002:a17:902:8a98:: with SMTP id p24mr12734212plo.90.1592674411462;
-        Sat, 20 Jun 2020 10:33:31 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id u19sm9947631pfk.98.2020.06.20.10.33.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Jun 2020 10:33:30 -0700 (PDT)
-Subject: Re: [PATCH v7 7/8] blktrace: ensure our debugfs dir exists
-To:     Luis Chamberlain <mcgrof@kernel.org>, axboe@kernel.dk,
-        viro@zeniv.linux.org.uk, gregkh@linuxfoundation.org,
-        rostedt@goodmis.org, mingo@redhat.com, jack@suse.cz,
-        ming.lei@redhat.com, nstange@suse.de, akpm@linux-foundation.org
-Cc:     mhocko@suse.com, yukuai3@huawei.com, martin.petersen@oracle.com,
-        jejb@linux.ibm.com, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20200619204730.26124-1-mcgrof@kernel.org>
- <20200619204730.26124-8-mcgrof@kernel.org>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <379e1fc9-a070-7730-71cd-aee7f582d403@acm.org>
-Date:   Sat, 20 Jun 2020 10:33:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        Sat, 20 Jun 2020 13:48:51 -0400
+X-Greylist: delayed 554 seconds by postgrey-1.27 at vger.kernel.org; Sat, 20 Jun 2020 13:48:50 EDT
+Received: from wiesinger.com (wiesinger.com [84.112.177.114])
+        by vps01.wiesinger.com (Postfix) with ESMTPS id 926C89F354;
+        Sat, 20 Jun 2020 19:39:34 +0200 (CEST)
+Received: from [192.168.32.150] (bgld-ip-150.intern [192.168.32.150])
+        (authenticated bits=0)
+        by wiesinger.com (8.15.2/8.15.2) with ESMTPSA id 05KHdWgB3943637
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Sat, 20 Jun 2020 19:39:33 +0200
+DKIM-Filter: OpenDKIM Filter v2.11.0 wiesinger.com 05KHdWgB3943637
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiesinger.com;
+        s=default; t=1592674773;
+        bh=zRIYqPWh3tap6pOFRwtw5nCeOhiwLSysRXfYdbvWm3M=;
+        h=From:Subject:To:Date:From;
+        b=1/qa6n46fj/cbAfPrPEPQntw53/jgwFRKm0ZEHVM8Lj8myrzQZciG3K0JueDUrFPz
+         aF82tU+JcunzWnYNBrR8G5RnxeItq2gP72rwZGgyA8B4r/HHdvWaxfAI+tQDAPn128
+         /IUBGHdZSWgEf6lga+pMjV2NKxCV9i0QdxaYisbyklfWVHJKmcl2q+NbyUXf1IJkms
+         jMnWnzb35vuq35ddi3ymEi6lgFl6wTnX3uhEw6v35hvV6fXIXRMsA+0O+MNdEvYoHl
+         fp8b+iWsdEnrUjoSfCuFnVA1YNvuWMg8zkyidtQf+cy2sJzvlbeQ5dYQ8T3JiED1PQ
+         vXEJjd+7g8pgXjjtzERGaVbdnsRd7E+B2hnJYIwtcmvi9JL9zjlpwSaDx8oTMEeycD
+         5+00dFXEgRf+jA/GjSfpJNPcnbwfQM3G9Gt9/F6ax5eEFvp6qtcDRRh4CjmiHE/qF7
+         Fq9LDPQM6sWAJgGEUXtqtImB4PJiT3ELJME4JmhF38kUTlJ8TH/+atIeBLcjXAwOOB
+         n2Ik9pL53b2ZB2yo77GvEAsl324KfoQRw5IBEQqgEreeh+N112WeYJ798ZPGaGkZVz
+         ugzXNBYSBLy5ke/aTwvyGYtVUg7aexf/dfXmpHqyj5UhHg0TBAE963pXBlE+nofmkf
+         GBoDCsLxdBLUmTGoW4PUuP3k=
+From:   Gerhard Wiesinger <lists@wiesinger.com>
+Subject: Banana Pi-R1 - kernel 5.6.0 and later broken - b43 DSA
+To:     arm@lists.fedoraproject.org,
+        Maxime Ripard <maxime.ripard@bootlin.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, filbar@centrum.cz
+Message-ID: <912a58ac-6f81-ba22-c79e-f2bf902dae2e@wiesinger.com>
+Date:   Sat, 20 Jun 2020 19:39:32 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200619204730.26124-8-mcgrof@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-19 13:47, Luis Chamberlain wrote:
-> diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-> index e6e2d25fdbd6..098780ec018f 100644
-> --- a/kernel/trace/blktrace.c
-> +++ b/kernel/trace/blktrace.c
-> @@ -538,6 +538,18 @@ static int do_blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
->  #endif
->  		bt->dir = dir = debugfs_create_dir(buts->name, blk_debugfs_root);
->  
-> +	/*
-> +	 * As blktrace relies on debugfs for its interface the debugfs directory
-> +	 * is required, contrary to the usual mantra of not checking for debugfs
-> +	 * files or directories.
-> +	 */
-> +	if (IS_ERR_OR_NULL(dir)) {
-> +		pr_warn("debugfs_dir not present for %s so skipping\n",
-> +			buts->name);
+Hello,
 
-Maybe mention in the message what is being skipped (block tracing)?
+I'm having troubles with the Banana Pi-R1 router with newer kernels. No 
+config changes, config works well since a lot of lernel updates ...
+Banana Pi-R1 is configured via systemd-networkd and uses the DSA 
+(Distributed Switch Architecture) with b53 switch. No visible difference 
+in interfaces, vlan config, bridge config, etc. Looks like actual 
+configuration in the switch in the hardware is broken.
 
-> +		ret = -ENOENT;
-> +		goto err;
-> +	}
-> +
->  	bt->dev = dev;
->  	atomic_set(&bt->dropped, 0);
->  	INIT_LIST_HEAD(&bt->running_list);
+# OK: Last good known version (booting that version is also ok)
+Linux bpi 5.5.18-200.fc31.armv7hl #1 SMP Fri Apr 17 17:25:00 UTC 2020 
+armv7l armv7l armv7l GNU/Linux
 
-Anyway:
+# NOK: no network
+Linux bpi 5.6.8-200.fc31.armv7hl #1 SMP Wed Apr 29 19:05:06 UTC 2020 
+armv7l armv7l armv7l GNU/Linux
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+# NOK: no network
+Linux bpi 5.6.0-300.fc32.armv7hl #1 SMP Mon Mar 30 16:37:50 UTC 2020 
+armv7l armv7l armv7l GNU/Linux
+
+# NOK: no network
+Linux bpi 5.6.19-200.fc31.armv7hl #1 SMP Wed Jun 17 17:10:22 UTC 2020 
+armv7l armv7l armv7l GNU/Linux
+
+# NOK: no network
+Linux bpi 5.7.4-200.fc32.armv7hl #1 SMP Fri Jun 19 00:52:22 UTC 2020 
+armv7l armv7l armv7l GNU/Linux
+
+
+Saw that there were a lot of changes in the near past in the b53 driver:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/log/drivers/net/dsa/b53?h=v5.8-rc1+
+
+
+Any ideas?
+
+Thnx.
+
+Ciao,
+Gerhard
+
