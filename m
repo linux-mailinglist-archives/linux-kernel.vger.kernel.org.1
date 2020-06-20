@@ -2,97 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E02520262E
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 21:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40B7C202638
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 21:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728698AbgFTT2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 15:28:08 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:40220 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728565AbgFTT2H (ORCPT
+        id S1728709AbgFTTju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 15:39:50 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:41660 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728483AbgFTTju (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 15:28:07 -0400
-Received: by mail-ed1-f68.google.com with SMTP id p18so10465444eds.7;
-        Sat, 20 Jun 2020 12:28:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=scA6CqquoWk914rmLn3+nLtaspjuXK54NYNT8t78XLk=;
-        b=qbC+poHvs39ZVCGTzMyJeIJUpytQ6pFd5qeGE3oFWIyiMKZEs3zbCIIiubSaxryjqV
-         fHZRmmlzPFxZAmT4fjc315VsprFu9yXwFVTZN0vi4+ogvLhR+DUhLmUmDWlARfH4lqP0
-         r6IiIGw2ywL+HM32SWPgf681lb9qGq8eGvDXWEeP7vGDUbWHKB4A3orCW0P0W8Y6nkSZ
-         OgbgK/AvNr8N2kaXrsvn/ZibEN+NvJI3DnlZF4FJWQZOu5Cuhzmm1vvW9LZurAgweB8C
-         cz7vBuOmkMsfWs5srbSEo67PGDoGURRN6jPG9y+GnpFnomPdS9ocuZVCOabSLdFbm0uZ
-         2lHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=scA6CqquoWk914rmLn3+nLtaspjuXK54NYNT8t78XLk=;
-        b=RcqOrpg4NMSnAd+yvC74ESuwPsJ3FSUIm2PhPhyzN8LsLkiXV8+dva8lp8RnaHUdeh
-         pyKhnZNku0XpaTwaQpEBpmhYBC+VjubfEp9szS5e3zEpsTVZ8vhJTFFDnDszJB8UShUW
-         gAUiNmD4d9zmOcFEXQGGI4j/G6rkd8a1CL8Eteft9aKmryiqk9uGhDqKyW/uwFS7/nDE
-         sxUkqVkcFmmH0iYyrlNiGb3jBR2b+V6F0XSQuVw9o763hzvMDj+6s2DCYvh1U+UL3Cyf
-         P8SzlydAxDvwZJsd4OxlbTrGbI+8S+kV1KLEZ3qFdNtJMxnDIIIKqZV4woQnX5zYAqIN
-         f15Q==
-X-Gm-Message-State: AOAM531lmSTf+mfqCCWK8X+qyBWgFePNK1WMg5L7FbI7nsOEmGDCsw9s
-        XVKxsMqf4VV3I4DPovXW6i8=
-X-Google-Smtp-Source: ABdhPJy+PKswvEJEFTPfiOtJ7Poy9kSHj4bTMlki+nCfU+FckH9OWUmHYVZxY191m6NdiJ0yfebZbA==
-X-Received: by 2002:a50:d78f:: with SMTP id w15mr9700997edi.245.1592681224048;
-        Sat, 20 Jun 2020 12:27:04 -0700 (PDT)
-Received: from localhost.localdomain (p200300f1371df700428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:371d:f700:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id gv18sm8034044ejb.113.2020.06.20.12.27.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jun 2020 12:27:03 -0700 (PDT)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     davem@davemloft.net, netdev@vger.kernel.org,
-        linux-amlogic@lists.infradead.org, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH 2/2] net: stmmac: dwmac-meson8b: add a compatible string for G12A SoCs
-Date:   Sat, 20 Jun 2020 21:26:41 +0200
-Message-Id: <20200620192641.175754-3-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200620192641.175754-1-martin.blumenstingl@googlemail.com>
-References: <20200620192641.175754-1-martin.blumenstingl@googlemail.com>
+        Sat, 20 Jun 2020 15:39:50 -0400
+X-Greylist: delayed 1464 seconds by postgrey-1.27 at vger.kernel.org; Sat, 20 Jun 2020 15:39:50 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=QHhdZsEwflik6dhlpG9lDRGf2hUbiRTywvrsqPNIe50=; b=Za6zjjv9SW/fcKUx1GQuuZ9KSj
+        3wWuDUlczJhnxt7HcGZtrKs/RQAJ2AxNVABPlYlAUBMiiPlezmVC/KuFD6oTzv+hc1dMlkYzLmgp1
+        BPrTo0wrA4qsogg8qYSC3XksacQyySS6ckSNjRripeZ512qO4mTc7KGXKNg8VQ5SVqp77jaNsBQCD
+        +bna6zliSxrpte3Z5JYZigx6V/DCULCJaNKwASL42oxHzh09Glukgz997JBujOxmA6MEj2P223Zis
+        hG0Xdtepr3u9WW7EyIJ91zJac8F2UV9HEp7UHIfZXswsSbuBZIPMuRls7H1qrI9KG2uToOIRL6u0B
+        oFWJCYJg==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jmixW-0004zd-13; Sat, 20 Jun 2020 19:15:22 +0000
+Date:   Sat, 20 Jun 2020 12:15:21 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Amir Goldstein <amir73il@gmail.com>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] Bypass filesystems for reading cached pages
+Message-ID: <20200620191521.GG8681@bombadil.infradead.org>
+References: <20200619155036.GZ8681@bombadil.infradead.org>
+ <CAOQ4uxjy6JTAQqvK9pc+xNDfzGQ3ACefTrySXtKb_OcAYQrdzw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOQ4uxjy6JTAQqvK9pc+xNDfzGQ3ACefTrySXtKb_OcAYQrdzw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Amlogic Meson G12A, G12B and SM1 have the same (at least as far as we
-know at the time of writing) PRG_ETHERNET glue register implementation.
-This implementation however is slightly different from AXG as it now has
-an undocument "auto cali idx val" register in PRG_ETH1[17:16] which
-seems to be related to RGMII Ethernet.
+On Sat, Jun 20, 2020 at 09:19:37AM +0300, Amir Goldstein wrote:
+> On Fri, Jun 19, 2020 at 6:52 PM Matthew Wilcox <willy@infradead.org> wrote:
+> > This patch lifts the IOCB_CACHED idea expressed by Andreas to the VFS.
+> > The advantage of this patch is that we can avoid taking any filesystem
+> > lock, as long as the pages being accessed are in the cache (and we don't
+> > need to readahead any pages into the cache).  We also avoid an indirect
+> > function call in these cases.
+> 
+> XFS is taking i_rwsem lock in read_iter() for a surprising reason:
+> https://lore.kernel.org/linux-xfs/CAOQ4uxjpqDQP2AKA8Hrt4jDC65cTo4QdYDOKFE-C3cLxBBa6pQ@mail.gmail.com/
+> In that post I claim that ocfs2 and cifs also do some work in read_iter().
+> I didn't go back to check what, but it sounds like cache coherence among
+> nodes.
 
-Add a new compatible string for G12A SoCs so the logic for this new
-register can be implemented in the future.
+That's out of date.  Here's POSIX-2017:
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c | 4 ++++
- 1 file changed, 4 insertions(+)
+https://pubs.opengroup.org/onlinepubs/9699919799/functions/read.html
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-index 234e8b6816ce..544bc621146c 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-meson8b.c
-@@ -491,6 +491,10 @@ static const struct of_device_id meson8b_dwmac_match[] = {
- 		.compatible = "amlogic,meson-axg-dwmac",
- 		.data = &meson_axg_dwmac_data,
- 	},
-+	{
-+		.compatible = "amlogic,meson-g12a-dwmac",
-+		.data = &meson_axg_dwmac_data,
-+	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, meson8b_dwmac_match);
--- 
-2.27.0
+  "I/O is intended to be atomic to ordinary files and pipes and
+  FIFOs. Atomic means that all the bytes from a single operation that
+  started out together end up together, without interleaving from other
+  I/O operations. It is a known attribute of terminals that this is not
+  honored, and terminals are explicitly (and implicitly permanently)
+  excepted, making the behavior unspecified. The behavior for other
+  device types is also left unspecified, but the wording is intended to
+  imply that future standards might choose to specify atomicity (or not)."
 
+That _doesn't_ say "a read cannot observe a write in progress".  It says
+"Two writes cannot interleave".  Indeed, further down in that section, it says:
+
+  "Earlier versions of this standard allowed two very different behaviors
+  with regard to the handling of interrupts. In order to minimize the
+  resulting confusion, it was decided that POSIX.1-2017 should support
+  only one of these behaviors. Historical practice on AT&T-derived systems
+  was to have read() and write() return -1 and set errno to [EINTR] when
+  interrupted after some, but not all, of the data requested had been
+  transferred. However, the US Department of Commerce FIPS 151-1 and FIPS
+  151-2 require the historical BSD behavior, in which read() and write()
+  return the number of bytes actually transferred before the interrupt. If
+  -1 is returned when any data is transferred, it is difficult to recover
+  from the error on a seekable device and impossible on a non-seekable
+  device. Most new implementations support this behavior. The behavior
+  required by POSIX.1-2017 is to return the number of bytes transferred."
+
+That explicitly allows for a write to be interrupted by a signal and
+later resumed, allowing a read to observe a half-complete write.
+
+> Because if I am not mistaken, even though this change has a potential
+> to improve many workloads, it may also degrade some workloads in cases
+> where case readahead is not properly tuned. Imagine reading a large file
+> and getting only a few pages worth of data read on every syscall.
+> Or did I misunderstand your patch's behavior in that case?
+
+I think you did.  If the IOCB_CACHED read hits a readahead page,
+it returns early.  Then call_read_iter() notices the read is not yet
+complete, and calls ->read_iter() to finish the read.  So it's two
+calls to generic_file_buffered_read() rather than one, but it's still
+one syscall.
