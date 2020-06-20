@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1A52025E4
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 20:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA4E2025DE
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 20:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728618AbgFTSIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 14:08:48 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:34667 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728484AbgFTSIP (ORCPT
+        id S1728548AbgFTSI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 14:08:27 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:45935 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728488AbgFTSIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 14:08:15 -0400
-Received: by mail-ot1-f65.google.com with SMTP id n5so9873945otj.1
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 11:08:14 -0700 (PDT)
+        Sat, 20 Jun 2020 14:08:17 -0400
+Received: by mail-ot1-f68.google.com with SMTP id m2so9823305otr.12
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 11:08:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tJ9r7Kj2JZ78SZKbu2ksaAjGKTUOUIiaxChKdLFlRa4=;
-        b=GtyYD6GoeEicv99hjQyT+uO5yuqQTWZdZJkEgMtnvjDaXThtAohiGjHri5YqTf20kL
-         I0bPbYnwDzVt3//oFSDs0eQvpFCgcPrvl8eq905pUvwP7lK/kZVkSUwhBh0QL8hhd1qW
-         aMmyNlwSUhjDKXj/QMQdEauYfC8zDioHlK7AEY6AuPpHSu5LSnzvcB1kF5QkFtdz7jhe
-         ZeJMSELoBWRo/vc/6miY5JZJVtkv/0YmR7okPgFvUt5/JAW/H3bkO7DPe9GwnFYNm0dZ
-         xp8fgroA21yriKwSGs7leBJaHOogAULpJR8Sv7c386COEB1hYBLgTpbluy4NcBTtbslb
-         OdiA==
+        bh=GmKiR2gu/wiGa6gUvyZ+gseeA9528zgy4FBcqF+x5zM=;
+        b=Cml31sO2iTQweHSZ0kWit25Wa2OGvwQU4JxGikW+aiQHQVicGINv9GWHRvlPcRkY5Q
+         VDCbE/mYOQWqOTfkb4qO/nbuc+6wxMbNBFid60zaKfTaWdO1uUeOw4rPt/6H8lw1+ouo
+         6rjgHCIas4X8jPMi+oyqXA1GhQ7cckPGgvJzBMPkagyRiS2BLrs/4NoJ/ydxgkGPGQyU
+         93BqM0P/tyavNED1AzVzZNkSvk/aBKtirmbNDtHeTYFktb5VQryk5yVU+v0n0c0Pbg2o
+         uO0IDBaupBeFtlvlvcpOgFKk/shBUc551w1aqI6K4tGw+ts8nPneuci0mIXQ9jdM4hzF
+         kCtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tJ9r7Kj2JZ78SZKbu2ksaAjGKTUOUIiaxChKdLFlRa4=;
-        b=UkNAAh9XPa168koK6GDJiHsYry7nfsQYwz1C102wWXBMbbRuHwe/cpGpxqAGsw8VVU
-         dIA4eYi8/ZfL7M8tpu9q0QG810XqUyXq++Z+BCNqkmPNVCkVMxb6aVSI8DOvnIe+xClr
-         qVlEwX1Dh3mpit3V+cWXO6au++2Y77iOFq78FVnt+H4zmCar1LtIpfe2NMFiw2EGjcVA
-         vU6zpDovBvXj5AB/Flzcfu4rLEQ14qQ6yH1YSgppb0eddrYZnvV9cee7+qxGpYibTfiZ
-         fx33qOB7jv16jm/boW1zyKMdeTfdRh1Ze+Sf5RUsXmAHTnmCe0ophZHB2ZjTHKqQm1Kh
-         vuXg==
-X-Gm-Message-State: AOAM532inp/WMKWO9PKY1cze+ruW1SrHeF4uUyMxpfgS0eC18v0wWQIl
-        PuSF8/JRSULfu3MO3o6RA0U=
-X-Google-Smtp-Source: ABdhPJxRAZQWn1D9IqENU9cHqUiT+YFEhKOY7c9IhLmFtr2dRN91ugTwiLs7eGikvZXi3pCWm+gGyA==
-X-Received: by 2002:a05:6830:60d:: with SMTP id w13mr7930485oti.243.1592676434481;
-        Sat, 20 Jun 2020 11:07:14 -0700 (PDT)
+        bh=GmKiR2gu/wiGa6gUvyZ+gseeA9528zgy4FBcqF+x5zM=;
+        b=A1CEtUPVdA8RSXX9HU+9R0K1vCE03qKx4RW8DJGluBGZnUEpoiJUR+svu0DMF/O+AX
+         OeRUAd1VB0UtuONTF8V56Y9EabkbkWAgbkXb0poN44pWiScWvr6JTjFcS5Xu7z+Wxl+K
+         vZv9b2/8rY6zUCNmEXOYgZnkkRTO6A5fb4DDCbOR3YffFDp4EIRP7fAvH03qN9+YJL5s
+         iPbYremi2j+fFjgO89McaDNiTjDJ02jGgVDtOnpiHyYjSnNCoqK5r3d9JBqBwTtR9PCx
+         MYH5c1/9XCUnxknJ1f7G4eFRMDT/wTLDELMU0coKvY2L7sA5Atte5PUGZTP8qtTG8xG9
+         j59w==
+X-Gm-Message-State: AOAM532QvUQ3YhhVtCX2r/w6LPNzs2ypXkaGyX9chRR6H0SmsEzEDpoW
+        5U5OypzV5e/XcK/Nm8titjKP16iz
+X-Google-Smtp-Source: ABdhPJxUTsgNoAaq1ANGr+sc1dqnW7jo0b0JYc6Lr+p58ebLdZBGJOJTKRtCOH4cPyPT9FQ7y1zhuQ==
+X-Received: by 2002:a9d:170c:: with SMTP id i12mr8147518ota.321.1592676436024;
+        Sat, 20 Jun 2020 11:07:16 -0700 (PDT)
 Received: from localhost.localdomain (c-24-9-77-57.hsd1.co.comcast.net. [24.9.77.57])
-        by smtp.googlemail.com with ESMTPSA id y31sm2077901otb.41.2020.06.20.11.07.13
+        by smtp.googlemail.com with ESMTPSA id y31sm2077901otb.41.2020.06.20.11.07.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jun 2020 11:07:14 -0700 (PDT)
+        Sat, 20 Jun 2020 11:07:15 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     jbaron@akamai.com, linux-kernel@vger.kernel.org,
         akpm@linuxfoundation.org, gregkh@linuxfoundation.org
 Cc:     linux@rasmusvillemoes.dk, Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v4 11/17] dyndbg: use gcc ?: to reduce word count
-Date:   Sat, 20 Jun 2020 12:06:37 -0600
-Message-Id: <20200620180643.887546-12-jim.cromie@gmail.com>
+Subject: [PATCH v4 12/17] dyndbg: refactor parse_linerange out of ddebug_parse_query
+Date:   Sat, 20 Jun 2020 12:06:38 -0600
+Message-Id: <20200620180643.887546-13-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200620180643.887546-1-jim.cromie@gmail.com>
 References: <20200620180643.887546-1-jim.cromie@gmail.com>
@@ -62,32 +62,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-reduce word count via gcc ?: extension, no actual code change.
+Make the code-block reusable to later handle "file foo.c:101-200" etc.
+This is a 99% code move, with reindent, function wrap & call, etc.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- lib/dynamic_debug.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ lib/dynamic_debug.c | 61 +++++++++++++++++++++++++--------------------
+ 1 file changed, 34 insertions(+), 27 deletions(-)
 
 diff --git a/lib/dynamic_debug.c b/lib/dynamic_debug.c
-index e879af4e66e0..6d0159075308 100644
+index 6d0159075308..ae6e523fdecd 100644
 --- a/lib/dynamic_debug.c
 +++ b/lib/dynamic_debug.c
-@@ -127,10 +127,10 @@ static void vpr_info_dq(const struct ddebug_query *query, const char *msg)
- 
- 	vpr_info("%s: func=\"%s\" file=\"%s\" module=\"%s\" format=\"%.*s\" lineno=%u-%u\n",
- 		 msg,
--		 query->function ? query->function : "",
--		 query->filename ? query->filename : "",
--		 query->module ? query->module : "",
--		 fmtlen, query->format ? query->format : "",
-+		 query->function ?: "",
-+		 query->filename ?: "",
-+		 query->module ?: "",
-+		 fmtlen, query->format ?: "",
- 		 query->first_lineno, query->last_lineno);
+@@ -291,6 +291,39 @@ static inline int parse_lineno(const char *str, unsigned int *val)
+ 	return 0;
  }
  
++static int parse_linerange(struct ddebug_query *query, const char *first)
++{
++	char *last = strchr(first, '-');
++
++	if (query->first_lineno || query->last_lineno) {
++		pr_err("match-spec: line used 2x\n");
++		return -EINVAL;
++	}
++	if (last)
++		*last++ = '\0';
++	if (parse_lineno(first, &query->first_lineno) < 0)
++		return -EINVAL;
++	if (last) {
++		/* range <first>-<last> */
++		if (parse_lineno(last, &query->last_lineno) < 0)
++			return -EINVAL;
++
++		/* special case for last lineno not specified */
++		if (query->last_lineno == 0)
++			query->last_lineno = UINT_MAX;
++
++		if (query->last_lineno < query->first_lineno) {
++			pr_err("last-line:%d < 1st-line:%d\n",
++			       query->last_lineno,
++			       query->first_lineno);
++			return -EINVAL;
++		}
++	} else {
++		query->last_lineno = query->first_lineno;
++	}
++	return 0;
++}
++
+ static int check_set(const char **dest, char *src, char *name)
+ {
+ 	int rc = 0;
+@@ -348,34 +381,8 @@ static int ddebug_parse_query(char *words[], int nwords,
+ 							    UNESCAPE_SPECIAL);
+ 			rc = check_set(&query->format, words[i+1], "format");
+ 		} else if (!strcmp(words[i], "line")) {
+-			char *first = words[i+1];
+-			char *last = strchr(first, '-');
+-			if (query->first_lineno || query->last_lineno) {
+-				pr_err("match-spec: line used 2x\n");
+-				return -EINVAL;
+-			}
+-			if (last)
+-				*last++ = '\0';
+-			if (parse_lineno(first, &query->first_lineno) < 0)
++			if (parse_linerange(query, words[i+1]))
+ 				return -EINVAL;
+-			if (last) {
+-				/* range <first>-<last> */
+-				if (parse_lineno(last, &query->last_lineno) < 0)
+-					return -EINVAL;
+-
+-				/* special case for last lineno not specified */
+-				if (query->last_lineno == 0)
+-					query->last_lineno = UINT_MAX;
+-
+-				if (query->last_lineno < query->first_lineno) {
+-					pr_err("last-line:%d < 1st-line:%d\n",
+-						query->last_lineno,
+-						query->first_lineno);
+-					return -EINVAL;
+-				}
+-			} else {
+-				query->last_lineno = query->first_lineno;
+-			}
+ 		} else {
+ 			pr_err("unknown keyword \"%s\"\n", words[i]);
+ 			return -EINVAL;
 -- 
 2.26.2
 
