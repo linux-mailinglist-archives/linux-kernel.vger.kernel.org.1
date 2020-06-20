@@ -2,214 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D428201F6B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 03:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8AC7201F72
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 03:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731293AbgFTBOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 21:14:18 -0400
-Received: from mail-dm6nam12on2077.outbound.protection.outlook.com ([40.107.243.77]:6044
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730293AbgFTBOQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 21:14:16 -0400
+        id S1731338AbgFTBUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 21:20:13 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:5174 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731323AbgFTBUL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 21:20:11 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05K1I5ih006581;
+        Fri, 19 Jun 2020 18:19:14 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=PO45wGZY/EFnGvrBDeyRWBDf4NqZCipiKwm7q3d2ZQM=;
+ b=NXCaZl9ZEahzDkydzQwa3BVb+yBBKqZUPtJxBKmqUvEU/oj1pFTt2Ip0h4ThDPKhD7mN
+ 6PF4+/JUgD9Qwr6a/bAB7YrA3zQ8UlYHREJ628uBneKZyVGDnPNB5B1aoJLZvylyunPs
+ 0O6LvPs67L99/dfS+/7VmDJ5lVn9PmOPqS8= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 31rqwqy40n-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 19 Jun 2020 18:19:14 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 19 Jun 2020 18:19:04 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DNxynIb/uTleJYFTulqmTUkgcQJ1Z6WAGNbmykBZpnZdCN9slyybz4j303Q0CGFDGSNrAgK68/ygya1CHaGN/dQYRBe8njCnD8aKRG/QNEyX1Uouss3r9D55Xgx22vg67LRalAhi8D9bZPwbK69FOxUXDERukPknkWz/LnYojS3Gft7qwv6RUvKkqkomgC3oMZbXX3XIL+G9kdxoa8F54AKFIxu31gOD/4KG4fOyJ66H58fqV6TB0fFciOHtMBaZ+u5RTm1zNkDsfsIMUxLm6XAIaV37CxlTjKbsHJk8FOdEemjCmdQumXJk6NJDvROrf+H50ec3sL0WrSmGkswCtQ==
+ b=Cw9mBICBSrFKeiE7uxrW7yYkGlbB7ud81zUfDf3XkL+1Yw4rweh5+xyLDrHqwdDk/g8nvONLQK4SmskgX4pKF+u2dm3VnJ7eYjRKOyl32k/GSTFqDxDhJZSWoUcR4FpNJhha/Kfm0Gp0W8K4B83lrqxh+hApdWwwL30foJjRnwIkV5N108uwHfg3t/mBL/pTME2FbF4JG+tYS8paHlsjsDLYe+V1zQDbOWWGZX6mdrENf7D104uT6iW7GmZExvHEVLMYJHRZeKHshDcsni0IzLM6cZzwLslEW3YJ3wU7m86+cpCxKNjJQRx89A0fCT51K5PRilaDXmHrm9H3NdgIYg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NLiJGhKBx803s8EWkgs8g6g1lHQUoZjDCDuZjE2SJac=;
- b=c5BrypJ531Vw0cU8BW1TTc3S6SCNRCXiZGUYvvTQjM3GsbjGzM/0zI1YdVBn87RV4XGJdZXG6Rvz3CuQml+weOb+G1naM/n65kvrGfrE25eNEXdePxhy8kM4pZezL0RbWJyUreIUv5TzX7I6CFVvUArYXN58X6Yqmk1Bn6Qem3xruBhu9Zbi6LgKiSw7Q6Izu9Hhu8J5kZwpU668hB45L8w08iRVztVv3GSW9rgf4AMklz3nh4v7Iq4hQWwTFVXLcPkK5c2B7SLoyQvgBN/d+l5TO3rik6ae3Hl5qQKAhnjFNVPmey0uqrfs3gpbJzZUXvaLOqQrq9+avh+/xhTQGw==
+ bh=PO45wGZY/EFnGvrBDeyRWBDf4NqZCipiKwm7q3d2ZQM=;
+ b=ehF6lLwoEn2cwHxE4C2azn5mB+BVQxGTT+xiTOLQ0B3xGagvKeeMzfIcWvpqrBaaDq53vM1Fwg69+mmzHDdK849mV13M0/XY9oUv2k2s0pYLrSxuZdArUX2AaI/kg+IDilJRwme3yLUgb6EmWBs0o4mQmMGprgE8pSVZm9MQbGuu9OnddLB8qYZxKhzUFWlPZ4/Mfxxq5lFmPMgqvsYgaB0M4am17HVrjObyNTmMTfJkbBztVJ2xLLioWwhu+a2lctXSUWEW5yReh48sMdP5BuWHg3T2L2aQga8gs+5dhUJ/5do12exuQQmu8gFDtySH8m+8S8FttgU5rGyRY/8Jng==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=xilinx.com; dmarc=pass action=none header.from=xilinx.com;
- dkim=pass header.d=xilinx.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NLiJGhKBx803s8EWkgs8g6g1lHQUoZjDCDuZjE2SJac=;
- b=sdyUAsOXgEBniBrO2O45cm1f/3DeT/+ipVpmiaOLBmiDJMGmWQFfYHfEqXMgIloe+UbjFJIB3Z/oT70nlVLGPZQDHsOS+6vPs3TiOniL3ie8AtH9c205SV9Aip7ADtlPLVWZB0RoKF1C4o30z8y4FmJuyy6+uwPpdf6ZZYfUc1k=
-Received: from DM6PR02MB4140.namprd02.prod.outlook.com (2603:10b6:5:97::21) by
- DM5PR0201MB3605.namprd02.prod.outlook.com (2603:10b6:4:7b::14) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3109.22; Sat, 20 Jun 2020 01:14:12 +0000
-Received: from DM6PR02MB4140.namprd02.prod.outlook.com
- ([fe80::3de9:d192:ff78:5302]) by DM6PR02MB4140.namprd02.prod.outlook.com
- ([fe80::3de9:d192:ff78:5302%5]) with mapi id 15.20.3109.024; Sat, 20 Jun 2020
- 01:14:11 +0000
-From:   Dragan Cvetic <draganc@xilinx.com>
-To:     Sasha Levin <sashal@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-CC:     John Hubbard <jhubbard@nvidia.com>,
-        Derek Kiernan <dkiernan@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michal Simek <michals@xilinx.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: RE: [PATCH AUTOSEL 5.4 199/266] misc: xilinx-sdfec: improve
- get_user_pages_fast() error handling
-Thread-Topic: [PATCH AUTOSEL 5.4 199/266] misc: xilinx-sdfec: improve
- get_user_pages_fast() error handling
-Thread-Index: AQHWRQ61FS7zdg3QMUy0hbZWF+zzJKjgtYLA
-Date:   Sat, 20 Jun 2020 01:14:11 +0000
-Message-ID: <DM6PR02MB4140DF2D6689DC0250F31523CB990@DM6PR02MB4140.namprd02.prod.outlook.com>
-References: <20200618011631.604574-1-sashal@kernel.org>
- <20200618011631.604574-199-sashal@kernel.org>
-In-Reply-To: <20200618011631.604574-199-sashal@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=xilinx.com;
-x-originating-ip: [149.199.80.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: a1046cf3-c501-4b57-3892-08d814b73d97
-x-ms-traffictypediagnostic: DM5PR0201MB3605:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR0201MB36057AC2B2F660DD8DBC40BCCB990@DM5PR0201MB3605.namprd02.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:2043;
-x-forefront-prvs: 0440AC9990
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: d7iCBDyJBjnaux6jXIQmfE4HSF7IUOXqc2BmdZo/P4K6DdImu1tf9S8bQ4fJDVjxH5HtkI84gGkveY2pCX0hatR20EZKUR9YBTCUEp0rAStVMImQ1DUL295oJzaw+OmhhCnP0F5V/FNoiQ/zGeJEF4KXT/QAA6KFp/C3LZcKlVYX4iST2E9TBTDL533IElqNfOH9dz2vguWwAUFygQBFFOPaLcVST/lx5Qd+TswNOxJELtrgdw9dDU8j0zRS6znB46XeBvbsGrf+r1hKRj7HZbAClWMjx6XRlcSSUfnhKlbSCVZfxdxiZZnUnmZgj1P+ZF45xQJPPMm/LxOuTJtQwYJs83tK02zQBdmH82vzFPHQeQBqhyQXOgBwwg7o+r7GzBOcmyTduTxaN76CsBcS5A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR02MB4140.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(39860400002)(346002)(366004)(136003)(376002)(396003)(83380400001)(4326008)(478600001)(2906002)(86362001)(966005)(53546011)(52536014)(33656002)(6506007)(66946007)(8936002)(54906003)(66446008)(110136005)(7696005)(66476007)(66556008)(64756008)(71200400001)(9686003)(26005)(186003)(8676002)(5660300002)(316002)(76116006)(55016002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: ZDAqdo2P5+sEqB6ffxCBRW6muQ5+suEnispvdopLNuB9y+X+901IUoYHuptyuwMTTsd/5cLx0mxWDMJfD7QrZiD4gd2k97G2gW8ff80puW0OdeyMRLu5BYkiluvOZ6IT6vazr6WogDdIfyU4pnTqEUtN5Pi0OvdBUpR5GRpk6SXiwUzbvGMoQanyt1MC7gEDIyHGoCvOnWa9jmmcyDiN5oI5By+4nWDWu+smA3gy1pPtFk6WNeVAiYKKKdKG9Q1oKSm3QGho8RTyRpOmxXCPxubzKOizDKDtdzxkKE25Z3wyWaleiXdLgcXSPnhT8HRDdzFZDT+PpAim0xZaUPYpfWD+2SLXe5lIIrxTkJK1JDwuIlAgTllXQjUyg2kR695YMkLBXLaRhLTK7LDLTuAyIBk9SJIGUpxoe6Ha6zedy3GtLX8gDZIbukUG9zAf1OzDiQlvHs7rmO7liAKYsaKN1Bze362T+vT+4SdQ57kumABdCN5qqsusHxLKtLTlXsy2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ bh=PO45wGZY/EFnGvrBDeyRWBDf4NqZCipiKwm7q3d2ZQM=;
+ b=CjNLpWKf4zJtY5TzCAACz51YDb1pcBydWXmwOl+sOTuOkoTJP2cWNjj3go0pZUcdz17sENuqU2yq8jtSpoEjtDgy3PhImIJxFGSlrN9gtRcx97v2r2i1dRd46WJrjs65Z1kTAwAaK8kn1UBj7FoLDAE3ZKjp7Ne1axaCgwh/0Ug=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2805.namprd15.prod.outlook.com (2603:10b6:a03:14e::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.23; Sat, 20 Jun
+ 2020 01:19:03 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::48e3:c159:703d:a2f1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::48e3:c159:703d:a2f1%5]) with mapi id 15.20.3109.021; Sat, 20 Jun 2020
+ 01:19:03 +0000
+Date:   Fri, 19 Jun 2020 18:19:00 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Kernel Team <kernel-team@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 08/19] mm: memcg/slab: save obj_cgroup for non-root
+ slab objects
+Message-ID: <20200620011900.GH237539@carbon.dhcp.thefacebook.com>
+References: <20200608230654.828134-1-guro@fb.com>
+ <20200608230654.828134-9-guro@fb.com>
+ <CALvZod67=97-thcR0QhhazFChWZ5p=ZjFLXYNnpj0ft5trRgjg@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod67=97-thcR0QhhazFChWZ5p=ZjFLXYNnpj0ft5trRgjg@mail.gmail.com>
+X-ClientProxiedBy: BYAPR08CA0029.namprd08.prod.outlook.com
+ (2603:10b6:a03:100::42) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a1046cf3-c501-4b57-3892-08d814b73d97
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Jun 2020 01:14:11.5457
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:2b5d) by BYAPR08CA0029.namprd08.prod.outlook.com (2603:10b6:a03:100::42) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Sat, 20 Jun 2020 01:19:02 +0000
+X-Originating-IP: [2620:10d:c090:400::5:2b5d]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: edce8810-b2e5-45e1-5688-08d814b7eafe
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2805:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB280515D0CE4A3DBB28116D3BBE990@BYAPR15MB2805.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
+X-Forefront-PRVS: 0440AC9990
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8BtontoYYepY5No/oOnNKSvXiZrEs6+jJ3m/7YzIKf1FhlTavNYTn8Xi0TOc0no9yhqZnjKXGPpaeKIw4DYVQ1FavJpnS7lyWNfb6q8BeOj7zk2RCpxwQGDc4o7YmzRgE4WZF3IFjKyjRmhz3ep4ENSyydT90ZBIVxG0iWRcOlAr/A30f9us4HP96scB2YGXiq9gENCSSrmJdHmHdESTLyVKh+NCV08gmQUY0Fmd9BX8xcDLNmTT7W3lEZsgFArscwejYNPQHLoOakrTSq52pWuJ3+qvx6aAPTLXyKJXDrMg32h6VhZ+MhJB1JKk84B2StBWQbc4dGi1WXZZje2nJQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(396003)(136003)(376002)(39860400002)(366004)(478600001)(52116002)(7696005)(186003)(6506007)(1076003)(33656002)(53546011)(66946007)(16526019)(66476007)(66556008)(54906003)(316002)(55016002)(9686003)(86362001)(5660300002)(4326008)(8936002)(6916009)(8676002)(2906002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 48GciOZntXfBDIazbIt8l3jYqExmJ21f5muzNrqM0f94TcNtrUTT7AhxgM8lsG6oXHy8hrawynGBRHIOowno+p0ojd2CriW7F0Xi7WArlCOzwktUxTTT61zekJy+iXz5SXth+Wlq1eCO8ryTAA4FrQznAzMFHLZmxqnm/Zca4em3LIbyl0UEIlPf2a2la8P5LNoWdh3d+Yfi+36w6EKyhuy1BSm+SirylYo3PVO1qMS5S9DolOxetshNOdChtxpdFLgdmBNyEPyv9wCpkS3fKP+7YENYCLQqVBlcS44fC1vCCM8tu49N409LPC7acJpPQMUpXkJuSBhAy1btx0UJpG8r5F/noE/5bQ41Jkfuw7yafHmxJcB11RiOVccRLtUwg+xxCLqs68b1PfRHnc1tldcEodAGY18QCteF13jaRwA43rN5G5IlNI0ZuleXWbGnpCjH5pVgGAyXkEaTWKnbra7QYTCk0d9LNgGRnTnSNq8uCyNNJB82czmW1ZehW3XCbqGX/QWH4uJiWQ4Ii4WXTg==
+X-MS-Exchange-CrossTenant-Network-Message-Id: edce8810-b2e5-45e1-5688-08d814b7eafe
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jun 2020 01:19:03.4703
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: cctLywiMkuljfWumdTx4eEVPMp9axFW0fu7oZIhkeXvQbyZ/ZLR+mX7Qu52iRTn4BqWshhEnUSakEELQWU+mCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR0201MB3605
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: okyMd5dpjSUfQ5im+1axgZ8lf3vKjAMk8Ctk7a5ZDwF0++e1AR7njS8WBtQzSZNW
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2805
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-19_22:2020-06-19,2020-06-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ suspectscore=1 phishscore=0 clxscore=1015 impostorscore=0 adultscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 mlxlogscore=999
+ cotscore=-2147483648 spamscore=0 mlxscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006200005
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sasha,
+On Fri, Jun 19, 2020 at 05:16:02PM -0700, Shakeel Butt wrote:
+> On Mon, Jun 8, 2020 at 4:07 PM Roman Gushchin <guro@fb.com> wrote:
+> >
+> > Store the obj_cgroup pointer in the corresponding place of
+> > page->obj_cgroups for each allocated non-root slab object.
+> > Make sure that each allocated object holds a reference to obj_cgroup.
+> >
+> > Objcg pointer is obtained from the memcg->objcg dereferencing
+> > in memcg_kmem_get_cache() and passed from pre_alloc_hook to
+> > post_alloc_hook. Then in case of successful allocation(s) it's
+> > getting stored in the page->obj_cgroups vector.
+> >
+> > The objcg obtaining part look a bit bulky now, but it will be simplified
+> > by next commits in the series.
+> >
+> > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> 
+> One nit below otherwise:
+> 
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> 
+> > ---
+> [snip]
+> > +static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+> > +                                             struct obj_cgroup *objcg,
+> > +                                             size_t size, void **p)
+> > +{
+> > +       struct page *page;
+> > +       unsigned long off;
+> > +       size_t i;
+> > +
+> > +       for (i = 0; i < size; i++) {
+> > +               if (likely(p[i])) {
+> > +                       page = virt_to_head_page(p[i]);
+> > +                       off = obj_to_index(s, page, p[i]);
+> > +                       obj_cgroup_get(objcg);
+> > +                       page_obj_cgroups(page)[off] = objcg;
+> > +               }
+> > +       }
+> > +       obj_cgroup_put(objcg);
+> 
+> Nit: we get the objcg reference in memcg_kmem_get_cache(), doesn't it
+> look cleaner to put that reference in memcg_kmem_put_cache() instead
+> of here.
 
-Thank you for the patch.
+memcg_kmem_put_cache() will go away completely later in the series.
 
+I know the code might look sub-optimal and messy on some stages,
+but it's only because there is a big transition from the original
+to the final state, and I don't wanna to increase intermediate diffs.
 
-> -----Original Message-----
-> From: Sasha Levin <sashal@kernel.org>
-> Sent: Thursday 18 June 2020 02:15
-> To: linux-kernel@vger.kernel.org; stable@vger.kernel.org
-> Cc: John Hubbard <jhubbard@nvidia.com>; Derek Kiernan <dkiernan@xilinx.co=
-m>; Dragan Cvetic <draganc@xilinx.com>; Arnd
-> Bergmann <arnd@arndb.de>; Greg Kroah-Hartman <gregkh@linuxfoundation.org>=
-; Michal Simek <michals@xilinx.com>; linux-arm-
-> kernel@lists.infradead.org; Sasha Levin <sashal@kernel.org>
-> Subject: [PATCH AUTOSEL 5.4 199/266] misc: xilinx-sdfec: improve get_user=
-_pages_fast() error handling
->=20
-> From: John Hubbard <jhubbard@nvidia.com>
->=20
-> [ Upstream commit 57343d51613227373759f5b0f2eede257fd4b82e ]
->=20
-> This fixes the case of get_user_pages_fast() returning a -errno.
-> The result needs to be stored in a signed integer. And for safe
-> signed/unsigned comparisons, it's best to keep everything signed.
-> And get_user_pages_fast() also expects a signed value for number
-> of pages to pin.
->=20
-> Therefore, change most relevant variables, from u32 to int. Leave
-> "n" unsigned, for convenience in checking for overflow. And provide
-> a WARN_ON_ONCE() and early return, if overflow occurs.
->=20
-> Also, as long as we're tidying up: rename the page array from page,
-> to pages, in order to match the conventions used in most other call
-> sites.
->=20
-> Fixes: 20ec628e8007e ("misc: xilinx_sdfec: Add ability to configure LDPC"=
-)
-> Cc: Derek Kiernan <derek.kiernan@xilinx.com>
-> Cc: Dragan Cvetic <dragan.cvetic@xilinx.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Michal Simek <michal.simek@xilinx.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-> Link: https://lore.kernel.org/r/20200527012628.1100649-2-jhubbard@nvidia.=
-com
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/misc/xilinx_sdfec.c | 27 +++++++++++++++++----------
->  1 file changed, 17 insertions(+), 10 deletions(-)
->=20
-> diff --git a/drivers/misc/xilinx_sdfec.c b/drivers/misc/xilinx_sdfec.c
-> index 48ba7e02bed7..d4c14b617201 100644
-> --- a/drivers/misc/xilinx_sdfec.c
-> +++ b/drivers/misc/xilinx_sdfec.c
-> @@ -602,10 +602,10 @@ static int xsdfec_table_write(struct xsdfec_dev *xs=
-dfec, u32 offset,
->  			      const u32 depth)
->  {
->  	u32 reg =3D 0;
-> -	u32 res;
-> -	u32 n, i;
-> +	int res, i, nr_pages;
-> +	u32 n;
->  	u32 *addr =3D NULL;
-> -	struct page *page[MAX_NUM_PAGES];
-> +	struct page *pages[MAX_NUM_PAGES];
->=20
->  	/*
->  	 * Writes that go beyond the length of
-> @@ -622,15 +622,22 @@ static int xsdfec_table_write(struct xsdfec_dev *xs=
-dfec, u32 offset,
->  	if ((len * XSDFEC_REG_WIDTH_JUMP) % PAGE_SIZE)
->  		n +=3D 1;
->=20
-> -	res =3D get_user_pages_fast((unsigned long)src_ptr, n, 0, page);
-> -	if (res < n) {
-> -		for (i =3D 0; i < res; i++)
-> -			put_page(page[i]);
-> +	if (WARN_ON_ONCE(n > INT_MAX))
-> +		return -EINVAL;
-> +
-> +	nr_pages =3D n;
-> +
-> +	res =3D get_user_pages_fast((unsigned long)src_ptr, nr_pages, 0, pages)=
-;
-> +	if (res < nr_pages) {
-> +		if (res > 0) {
-> +			for (i =3D 0; i < res; i++)
-> +				put_page(pages[i]);
-> +		}
->  		return -EINVAL;
->  	}
->=20
-> -	for (i =3D 0; i < n; i++) {
-> -		addr =3D kmap(page[i]);
-> +	for (i =3D 0; i < nr_pages; i++) {
-> +		addr =3D kmap(pages[i]);
->  		do {
->  			xsdfec_regwrite(xsdfec,
->  					base_addr + ((offset + reg) *
-> @@ -639,7 +646,7 @@ static int xsdfec_table_write(struct xsdfec_dev *xsdf=
-ec, u32 offset,
->  			reg++;
->  		} while ((reg < len) &&
->  			 ((reg * XSDFEC_REG_WIDTH_JUMP) % PAGE_SIZE));
-> -		put_page(page[i]);
-> +		put_page(pages[i]);
->  	}
->  	return reg;
->  }
-> --
-> 2.25.1
-
-Acked-by: Dragan Cvetic <dragan.cvetic@xilinx.com>
-
-Regards
-Dragan
+Please, take a look at the final result.
