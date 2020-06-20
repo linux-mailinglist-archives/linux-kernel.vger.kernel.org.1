@@ -2,71 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7922C202675
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 22:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79F5F202678
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 22:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728864AbgFTUoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 16:44:30 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:40290 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728814AbgFTUo3 (ORCPT
+        id S1728888AbgFTUs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 16:48:28 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:35039 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728868AbgFTUs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 16:44:29 -0400
-Received: by mail-lj1-f196.google.com with SMTP id n23so15217126ljh.7
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 13:44:28 -0700 (PDT)
+        Sat, 20 Jun 2020 16:48:27 -0400
+Received: by mail-lf1-f67.google.com with SMTP id t74so7502875lff.2
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 13:48:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ctY1Wy9wIIIcbQLpOXjoHpHxkeNAAsK0lL/c72YppyU=;
-        b=O2v3CokRst/vy3A+uiSf4+WOQv/7+8oGHSGKF44cG69xXPba/65IxO9vm/MuwdhUp5
-         OmxmT5M1sIiAkW4E/K7YlcHIRMfawaAfHxCts8wS3g3EHM4wwyxK8/CAmOI+3Byv+bdf
-         tWDCSaModGS2huVaIsqGxE2n4+E08fwbMEVKOdHw/Z/WcL0qaeIpJQJ5v2DpyLvALSCr
-         F/Q4lu70nVdxlNYuA6CXpnFFRvTMvcXflkz/I0lA2bCZlwDxSxmVDrwtKhktGm02Rjn3
-         Y2bcS67UG958vhQiVpGaldqjpisCJNCYm+jEIBMjUO6+kosucgpAY9iz1ffpf9cqgmHC
-         mDDg==
+        bh=XjItgRxlCwG7kM4tiHMGmFaM+sKcdbDC0+Nnh8enW9M=;
+        b=TEHM9w8J5DL8WMBxSWXMSM7g3AT8WZqQ4MmUuryQGW2mHrRezqSiaa+ubCi+VIz8vW
+         vGzQ/6aRajbJCPJJk/zYEwvOZ0K9UkWyBcLLNgn94SMpzNHl5YwAoHTw96JAy8/UYwJH
+         /SlGZU4qpC3HoFZczOdETesk2RJN2bPxqtZ7ptyf7srcAIwRSlQFhF1Zy0AYM7Qe0WzG
+         KoyChVvpkjkTFsaS/k0q7vntqsGXYyYNxLjBoQjdT8/sgEb8tR4EWipi2mitTnDXTPd1
+         jQNXQehKHBIdSrYpwdd7+J881kyAdAwXyX/KAd6UufTwjyZIO3flFkPiAKLKIDB2moK3
+         cFrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ctY1Wy9wIIIcbQLpOXjoHpHxkeNAAsK0lL/c72YppyU=;
-        b=TMaSF23m9zzrBVxgbVFDmT7/vxsjSOQlUzmFrGTySTtTgUPxLgW90zRktzFBjwNyfj
-         P0fmcCEsmHse/T/ckAsAMIPejOP7HhJioXRub5rkDnbAUlgj52d/87g+7KOtL6Tqwe3s
-         SVQk6AJz7pypBr8mBDH26Q9cal2OUy0Ui+oIGHSLOjdZmBv/PD42VixGbNQOSkTQtRYz
-         1LQ6Bx3Y7akHeEJnZ6h+a3r3+mOLbt9i2cWJbLa4nu43shCvzdcZ7IRgowv+nnHEfq6G
-         HHJHCwJ++gX84T2qnXHJj8kCKGPfPl9jiGv4GT+DSyha8Ha6VwSNqWFABxnetLcqWMkx
-         Q0XA==
-X-Gm-Message-State: AOAM533wFOEXLWjaQdFQ8oZ7U2NPT3D1b2AajUU4HtEUwikM8F1I3EiR
-        xcbq13kEcuvNYkxJC8rjtDUMmqnzfG899qVeZZU/uw==
-X-Google-Smtp-Source: ABdhPJxBM1udCjVBlr0yRSi7Ob7TlqTZf8Wuo6lMRWikVhe0vp5cJc9bcgk6tgDNV0FWDPtXeY2aQNoyhRip/C3VkZw=
-X-Received: by 2002:a2e:a40f:: with SMTP id p15mr5232818ljn.286.1592685807390;
- Sat, 20 Jun 2020 13:43:27 -0700 (PDT)
+        bh=XjItgRxlCwG7kM4tiHMGmFaM+sKcdbDC0+Nnh8enW9M=;
+        b=uWfQ/Ji/jgCuqUg3e8bXOc3q0roFYDBhwgQ3RheX6k144K/Nv3nXSLUAb5OrVcaW/l
+         WTBgPEWfqH0W7s0TZBsK9urDJ6Mb3fsDutosRD2sARpTEZnNXAWZcxElmZV+JTs5Prmf
+         UKUZzij+Ph9/tbGzp9LI5m3HiJIped+LkGfFqTdZT6rrKbO3pjopSn/dfcWSXTtHM/gv
+         LVVS3YAA2fCNKuNxk9CVpXnNxp2L+W5kMIOGBpIS/DmuTjhJZjC4erQ8uy18cmxjp0D0
+         2L1FLGNH1XBp49K4hxQzyVAnfDUNdCp1UYYMy14WP5OlvYnTczgnx+z7RT3aoDh2Rs1X
+         Hccg==
+X-Gm-Message-State: AOAM531gWwWs61bXGhq6QTszmTMfxXSMcjACPjcL+76vzKEd2VGwf2za
+        SMACLiA6MHmFaFoPkYnnGys0v7i4wnmiIJri2lym1Q==
+X-Google-Smtp-Source: ABdhPJylVUTQr8IvfKLH+J/M5vlpR1eJjw41oHLgdp91Fm0bMUP/KIJnEc359B0WLIAjdK0jFVDfSoek4c+gTfVpwzE=
+X-Received: by 2002:ac2:5473:: with SMTP id e19mr5435603lfn.21.1592686045343;
+ Sat, 20 Jun 2020 13:47:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200612120609.12730-1-paul@crapouillou.net>
-In-Reply-To: <20200612120609.12730-1-paul@crapouillou.net>
+References: <694a25fdce548c5ee8b060ef6a4b02746b8f25c0.1591986307.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <694a25fdce548c5ee8b060ef6a4b02746b8f25c0.1591986307.git.christophe.leroy@csgroup.eu>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 20 Jun 2020 22:43:16 +0200
-Message-ID: <CACRpkdZwFuiCfJNMrO3aH0eZnnmX__-5EjRnrR8tHh4gqSB=1w@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: ingenic: Add ingenic,jz4725b-gpio compatible string
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     od@zcrc.me,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Sat, 20 Jun 2020 22:47:14 +0200
+Message-ID: <CACRpkdYbOAnZb2H1jmD_QCgT7bkFYtpJ8cEGDFDDkJDG6aMhbQ@mail.gmail.com>
+Subject: Re: [PATCH v2] tty: serial: cpm_uart: Fix behaviour for non existing GPIOs
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org list" <linuxppc-dev@lists.ozlabs.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 2:06 PM Paul Cercueil <paul@crapouillou.net> wrote:
+On Fri, Jun 12, 2020 at 8:26 PM Christophe Leroy
+<christophe.leroy@csgroup.eu> wrote:
 
-> Add a compatible string to support the GPIO chips on the JZ4725B SoC.
-> There was already a compatible string for the pinctrl node, but not for
-> the individual GPIO chip nodes.
+> devm_gpiod_get_index() doesn't return NULL but -ENOENT when the
+> requested GPIO doesn't exist,  leading to the following messages:
 >
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> [    2.742468] gpiod_direction_input: invalid GPIO (errorpointer)
+> [    2.748147] can't set direction for gpio #2: -2
+> [    2.753081] gpiod_direction_input: invalid GPIO (errorpointer)
+> [    2.758724] can't set direction for gpio #3: -2
+> [    2.763666] gpiod_direction_output: invalid GPIO (errorpointer)
+> [    2.769394] can't set direction for gpio #4: -2
+> [    2.774341] gpiod_direction_input: invalid GPIO (errorpointer)
+> [    2.779981] can't set direction for gpio #5: -2
+> [    2.784545] ff000a20.serial: ttyCPM1 at MMIO 0xfff00a20 (irq = 39, base_baud = 8250000) is a CPM UART
+>
+> Use devm_gpiod_get_index_optional() instead.
+>
+> At the same time, handle the error case and properly exit
+> with an error.
+>
+> Fixes: 97cbaf2c829b ("tty: serial: cpm_uart: Convert to use GPIO descriptors")
+> Cc: stable@vger.kernel.org
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+> v2: Using devm_gpiod_get_index_optional() and exiting if error
 
-Patch applied.
+Excellent!
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
 Linus Walleij
