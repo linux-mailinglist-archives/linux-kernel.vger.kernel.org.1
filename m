@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C0C32026C9
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 23:22:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91BF32026CD
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 23:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728996AbgFTVWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 17:22:10 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:39388 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728891AbgFTVWJ (ORCPT
+        id S1729029AbgFTVW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 17:22:58 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:43205 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728999AbgFTVW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 17:22:09 -0400
-Received: by mail-pg1-f196.google.com with SMTP id v11so6209869pgb.6
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 14:22:08 -0700 (PDT)
+        Sat, 20 Jun 2020 17:22:56 -0400
+Received: by mail-lf1-f66.google.com with SMTP id g139so6711570lfd.10
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 14:22:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lZgSGwAntb0/3yR8kQL2Gr50e6PlDlNK7lkPR/KXNC0=;
-        b=U7Bt62yAVSNu4txp+rBDdYHJ/Ly/MAhXujOQpyxdcdSnGR2J53xkTjTB9RAA3RLhk4
-         8k/RWPaN1xvQxNWMl5IJMBmjhlEpCM9C1TVE+slLlTIFS5fDBps8ikBAFwbgF+lZmzQ9
-         GWV8ErBFE8jGDxMq72DENBH6z2v1SNrjr7vTi/xSroGAcYwvOjvTFMtwh8jBnFGmWoTh
-         7LX0Mq8DtcnC3MJl+22CCHq8kRXANya9+vzbotMdvugBt8gGkxEuvDxZIwQG9xNo/hLn
-         GJIk46VJyxRa4MVAoD1FZ7yqlLzCvx3IWNdqS7B1MDf3XNp2edMwgCimwJo8XpFYBOvj
-         pthw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bu69mp6xYWLDQSTwZZePNMWDQ59FaV2SiSFYy8pjBQY=;
+        b=BEK7VN2OmrlKRSG/e9OsYVGM9t0SGut4yO1XoCDqBns+EyWe9Og4n1eX2t4nRltuL+
+         x5wfhHR7jj3CWrLxOCc/LnjcDRGn+rRWym+xRsNFal5F7BVlIaNboF1Ff5lY7mkcVhWE
+         /JEM0Eo8ek/fwjZ64aZFUCx4MEpNUiR4uNUdjQTfPproxhWLhl/CMnd6vRMJ/Vh+olps
+         ESgLuxAtySplCfoo6fYq9gGdfDhkF3xosvL8nhrcKABMAJduOdka/pQcUaJgAO8l26Vm
+         kbfRxelGF5uRFZcgvdniVOyCHhz8FcHM95iT57XAuctop0mBCkRlA/zLwFo1hkKAXzsg
+         Ss8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lZgSGwAntb0/3yR8kQL2Gr50e6PlDlNK7lkPR/KXNC0=;
-        b=AVZrm+9clt1UAfGrNYB8e0v5u//+TAaLiCojELRLWc8ZMpBH1J1MQoG97jfSZ8hXGa
-         UWefY1Y++HTBsPKB6TS4q3RwJQzQnEnA/lmHJBv9z5nsAk/L0g7OCxBTWGs+8e75LpcR
-         Q3XZTkQBsWvYfo1luGawhQAEBypLXUd+22qkVnql6bXrmEqQdh2Bk5LUot23v3+Bc2o+
-         GKM/jaXzXRfe1J+csLdJdif+V/ECvKBGYuLgZBqNWgtZUAG6Fo93tTGgqUO8pqmseIna
-         xdnyI6o8/MFHm/DtuMpfH1cdU51e9puaitUK5yVSwpa0ujzeF9NK2oCmSpXnMFCd8X6n
-         yzPg==
-X-Gm-Message-State: AOAM531b2Sb+Z8IhGqJG33V/8IyIsIar8xJTzWBcGI74zzhxW/wRtD+X
-        5e9FB8WT2pTvsKJ+Tp8p7anFzw==
-X-Google-Smtp-Source: ABdhPJzETBIPzSKpGeMgGm10RL0hb3bG4nkEHjd55w7jaTnH8Xdo6StEMqi4XsC1Dhpr6fKRYqHm5w==
-X-Received: by 2002:a63:141:: with SMTP id 62mr1437460pgb.366.1592688067642;
-        Sat, 20 Jun 2020 14:21:07 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id 3sm53307pfv.156.2020.06.20.14.21.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 20 Jun 2020 14:21:07 -0700 (PDT)
-Subject: Re: [PATCH v4] docs: block: Create blk-mq documentation
-To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>,
-        corbet@lwn.net, linux-block@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel@collabora.com,
-        krisman@collabora.com, rdunlap@infradead.org,
-        dongli.zhang@oracle.com
-References: <20200620002036.113000-1-andrealmeid@collabora.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d7b3b500-cb3c-1348-61c9-9e14767fa4ac@kernel.dk>
-Date:   Sat, 20 Jun 2020 15:21:05 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bu69mp6xYWLDQSTwZZePNMWDQ59FaV2SiSFYy8pjBQY=;
+        b=s7vjfbicg7HxOWW+z6tLhFzJiN4AJZnBQBUEPtQyzcBib1cdNb+GpcxFcgDwKqMnFP
+         iD4QvUDqIpt0qly3p+te6xJqX20RqxfNy32HeVOO2VkB5nWdDCzN1aZBIqkDO3z/a44n
+         NBJFvA1Mth2JT3DP0CSZl7s2txv9jp5zau3x4Q+ddZD0iOzUSojqs/tv1QQFpn6up65L
+         pHx8/YGBLTmL4lMjD117oUXA5cHxu0NyJudKO+isY/Iw4ciOdLD4XAZs0WlSnPbhIagm
+         9rxf7VzOUAoOFNoawKGo/PtyOHScRGOUr7SIvNyan7lM66meYODQ3xFFIOPyO7YM4YSF
+         dXMw==
+X-Gm-Message-State: AOAM530CEZa3thm0olOM1z2QBpb3GYlV4pV+yjdNJBiRDKt1tZO1g3ZE
+        IcadUyY+BSDxA/IBCmVb0d6pjeRhb9Ws/0D9zF+dJw==
+X-Google-Smtp-Source: ABdhPJy/RkTLIDBZFRMNpiPSsRVm5Ak3I4Hbs3gJhBT50nyx7v4sALg7fToWgIJskHBwAdm4KDklfhLMkVmhKWNt8Ak=
+X-Received: by 2002:a19:ccd0:: with SMTP id c199mr2956592lfg.194.1592688113991;
+ Sat, 20 Jun 2020 14:21:53 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200620002036.113000-1-andrealmeid@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20200616061338.109499-1-john.stultz@linaro.org> <20200616061338.109499-5-john.stultz@linaro.org>
+In-Reply-To: <20200616061338.109499-5-john.stultz@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 20 Jun 2020 23:21:42 +0200
+Message-ID: <CACRpkda35FZC=uXr-ipxZQ2SWU2tUincOztJmDt+Sa52FKQs=w@mail.gmail.com>
+Subject: Re: [RFC][PATCH 4/5] pinctrl: qcom: Allow pinctrl-msm code to be
+ loadable as a module
+To:     John Stultz <john.stultz@linaro.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Todd Kjos <tkjos@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/19/20 6:20 PM, André Almeida wrote:
-> Create a documentation providing a background and explanation around the
-> operation of the Multi-Queue Block IO Queueing Mechanism (blk-mq).
-> 
-> The reference for writing this documentation was the source code and
-> "Linux Block IO: Introducing Multi-queue SSD Access on Multi-core
-> Systems", by Axboe et al.
+On Tue, Jun 16, 2020 at 8:13 AM John Stultz <john.stultz@linaro.org> wrote:
 
-This looks fine to me now - Jon, would you care to queue it up?
-You can add my:
+> Tweaks to allow pinctrl-msm code to be loadable as a module.
+> This is needed in order to support having the qcom-scm driver,
+> which pinctrl-msm calls into, configured as a module.
+>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Jason Cooper <jason@lakedaemon.net>
+> Cc: Marc Zyngier <maz@kernel.org>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Lina Iyer <ilina@codeaurora.org>
+> Cc: Saravana Kannan <saravanak@google.com>
+> Cc: Todd Kjos <tkjos@google.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: linux-arm-msm@vger.kernel.org
+> Cc: iommu@lists.linux-foundation.org
+> Cc: linux-gpio@vger.kernel.org
+> Signed-off-by: John Stultz <john.stultz@linaro.org>
 
-Reviewed-by: Jens Axboe <axboe@kernel.dk>
+Unless there are dependencies on the irqchip patches I can apply
+this if Bjorn is OK with it.
 
--- 
-Jens Axboe
-
+Yours,
+Linus Walleij
