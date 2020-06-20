@@ -2,261 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03431202563
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 18:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C555202569
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 18:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728009AbgFTQkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 12:40:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59636 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726043AbgFTQkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 12:40:40 -0400
-Received: from archlinux (cpc149474-cmbg20-2-0-cust94.5-4.cable.virginm.net [82.4.196.95])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0FCBF208D5;
-        Sat, 20 Jun 2020 16:40:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592671239;
-        bh=lfSzalvbtneZ8u/8cfqsrPZxTlT9H2bEBJMac45J2rA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pAqd9F3Tq6dKNOl+JLqJE94RTQ8RA+y2gHkD6XfvR23ET/VKwBv5V31BLXxbqORxC
-         3tEOumxZSSOl3VnVbkNYDhfJNyGl3GxvfxUZUC9fF9dwpynj8udwgyIUwhu5r5dG9y
-         FhO9dXAkwG/O4ajHz9/8n5Ex3NYsdsO3I2KSd64c=
-Date:   Sat, 20 Jun 2020 17:40:33 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>
-Cc:     "Eugen.Hristev@microchip.com" <Eugen.Hristev@microchip.com>,
-        "Jonathan.Cameron@Huawei.com" <Jonathan.Cameron@Huawei.com>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "lars@metafoo.de" <lars@metafoo.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>,
-        "songqiang1304521@gmail.com" <songqiang1304521@gmail.com>,
-        "lorenzo.bianconi83@gmail.com" <lorenzo.bianconi83@gmail.com>,
-        "alexandre.torgue@st.com" <alexandre.torgue@st.com>
-Subject: Re: [PATCH v2 3/3] iio: remove
- iio_triggered_buffer_postenable()/iio_triggered_buffer_predisable()
-Message-ID: <20200620174033.2ffec237@archlinux>
-In-Reply-To: <8ae96d9defc521ae3b8ac37ebfc9dd0f5b32cfb3.camel@analog.com>
-References: <20200525113855.178821-1-alexandru.ardelean@analog.com>
-        <20200525113855.178821-3-alexandru.ardelean@analog.com>
-        <20200531164020.765822dc@archlinux>
-        <a0253d719a4390f65668789e5fc182ec19355f17.camel@analog.com>
-        <20200602095406.00005add@Huawei.com>
-        <37ef45f4-9330-86ea-77c1-3138bb88601b@microchip.com>
-        <0eeae8e8c2c1a3f21e15c1931bacb197a8245104.camel@analog.com>
-        <e17fc5b3-fc6b-5980-7294-6d0a151138da@microchip.com>
-        <8ae96d9defc521ae3b8ac37ebfc9dd0f5b32cfb3.camel@analog.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728097AbgFTQvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 12:51:07 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:34950 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725290AbgFTQvH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Jun 2020 12:51:07 -0400
+Received: by mail-lj1-f193.google.com with SMTP id q19so14910725lji.2
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 09:51:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7gXamD6tdco3sX1rsWjyx/DNsG9Dx7HvJbp4Sgjo81s=;
+        b=JB70eXW6129XbjPHpJQunGUIMM53GNDzabriZYPRfLkmsKWzMVZsseChD9TekSyUpA
+         EVQwpFR3L7FM2Y9I+rLVZY00YWZJHYTfxve8+q//i3CHatLmxT3cCeBSGHuvknRjI6Pb
+         rL8GLj3b9jPvOO46NbZTvdDo/PPx58jx7G+YY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7gXamD6tdco3sX1rsWjyx/DNsG9Dx7HvJbp4Sgjo81s=;
+        b=cfYc/cO3dMgKeWH6nnm9LU4ptFUsj2BvOJYqBuxwVs+MJOtAiVcKXlt3oGgb2S4Mse
+         LSkoKnI1UkuxCbzMmF4bV0oM5xifkcr8g0RGan1aX90AQJfEBbl8953+BYM5QhnbR4VC
+         cBRcHHfx6eFkj467hcfxVCeNMNjY/tuTlvdjnJFV7fTGgcvWlnT7wxvLXhRUaLFo3pMj
+         4zX8urnSB4n7AOnXu+mUhnR3Z3MgTD4Z6DUlrtuWMATzZcu/XeKRBg5GlJNwBhyzvLF2
+         OYH3s2sL0lYyZAC2kgtkqfUZ9AB1dVkaygdwBmC4DsUPqPLiR8bBrxkrfpmhXdCn/R8l
+         InCg==
+X-Gm-Message-State: AOAM532pk1Pvc005O/VOsjJsSlc+EBfeOGP1Nelhyql7cFoLvnAduvX6
+        e+9beBJuMh/lleyxJXlC4ZRN7/gfPTo=
+X-Google-Smtp-Source: ABdhPJwmFdZynAkqymSpoFkU3tDwyXUrwM1u7eFu6j+cbukAmZbOQuioWKlJ1epO7E8Vb4mkBo3t1g==
+X-Received: by 2002:a2e:7006:: with SMTP id l6mr4857516ljc.453.1592671804614;
+        Sat, 20 Jun 2020 09:50:04 -0700 (PDT)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id c6sm2174731lff.77.2020.06.20.09.50.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 20 Jun 2020 09:50:03 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id a9so14869009ljn.6
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 09:50:03 -0700 (PDT)
+X-Received: by 2002:a2e:9cd4:: with SMTP id g20mr4470977ljj.371.1592671803344;
+ Sat, 20 Jun 2020 09:50:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <alpine.DEB.2.22.394.2006181751270.9276@xps-7390>
+ <20200619065007.GA3041@lst.de> <alpine.DEB.2.22.394.2006182351090.9276@xps-7390>
+ <20200619074233.GA3723@lst.de> <alpine.DEB.2.22.394.2006200640370.2845@xps-7390>
+In-Reply-To: <alpine.DEB.2.22.394.2006200640370.2845@xps-7390>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 20 Jun 2020 09:49:47 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whj7YBvNT3FPHc8oUqwRhjbRkJESnUx6bbpA5ys6W9ujw@mail.gmail.com>
+Message-ID: <CAHk-=whj7YBvNT3FPHc8oUqwRhjbRkJESnUx6bbpA5ys6W9ujw@mail.gmail.com>
+Subject: Re: Commit 25f12ae45fc1 ("maccess: rename probe_kernel_address to
+ get_kernel_nofault") causing several OOPSes
+To:     "Kenneth R. Crudup" <kenny@panix.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Jun 2020 13:37:16 +0000
-"Ardelean, Alexandru" <alexandru.Ardelean@analog.com> wrote:
+On Sat, Jun 20, 2020 at 6:46 AM Kenneth R. Crudup <kenny@panix.com> wrote:
+>
+> So, be totally surprised :) I've just booted with "maccess: rename
+> probe_kernel_address to get_kernel_nofault" intact and your probe_roms.c
+> patch with no issues.
+>
+> (Perhaps there's some sort of compiler optimization going on?)
 
-> On Thu, 2020-06-18 at 13:01 +0000, Eugen.Hristev@microchip.com wrote:
-> > On 17.06.2020 16:52, Ardelean, Alexandru wrote:  
-> > > On Wed, 2020-06-17 at 13:37 +0000, Eugen.Hristev@microchip.com wrote:  
-> > > > [External]
-> > > > 
-> > > > On 02.06.2020 11:54, Jonathan Cameron wrote:  
-> > > > > On Tue, 2 Jun 2020 07:50:23 +0000
-> > > > > "Ardelean, Alexandru" <alexandru.Ardelean@analog.com> wrote:
-> > > > >   
-> > > > > > On Sun, 2020-05-31 at 16:40 +0100, Jonathan Cameron wrote:  
-> > > > > > > On Mon, 25 May 2020 14:38:55 +0300
-> > > > > > > Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
-> > > > > > >   
-> > > > > > > > From: Lars-Peter Clausen <lars@metafoo.de>
-> > > > > > > > 
-> > > > > > > > This patch should be squashed into the first one, as the
-> > > > > > > > first one is
-> > > > > > > > breaking the build (intentionally) to make the IIO core files
-> > > > > > > > easier
-> > > > > > > > to
-> > > > > > > > review.
-> > > > > > > > 
-> > > > > > > > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> > > > > > > > Signed-off-by: Alexandru Ardelean <  
-> > > > > > > > alexandru.ardelean@analog.com>  
-> > > > > > > > ---  
-> > > > > > > 
-> > > > > > > Friend poke.  Version log?  
-> > > > > > 
-> > > > > > Version log is in the first patch.
-> > > > > > I was wondering if I omitted it.
-> > > > > > Seems, this time I didn't. But I admit, it probably would have
-> > > > > > been better
-> > > > > > here.  
-> > > > > Ah fair enough.  That works fine if there is a cover letter but not
-> > > > > so much just putting things in the first patch!  
-> > > > > > > Other than the wistful comment below (which I'm not expecting
-> > > > > > > you to
-> > > > > > > do anything about btw!) whole series looks good to me.
-> > > > > > > 
-> > > > > > > These are obviously no functional changes (I think) so it's
-> > > > > > > only really
-> > > > > > > patch 2 that
-> > > > > > > could do with more eyes and acks.
-> > > > > > > 
-> > > > > > > Far as I can tell that case is fine as well because of the
-> > > > > > > protections
-> > > > > > > on being in the right mode, but more eyes on that would be
-> > > > > > > great.
-> > > > > > > 
-> > > > > > > So assuming that's fine, what commit message do you want me to
-> > > > > > > use for
-> > > > > > > the fused single patch?  
-> > > > > > 
-> > > > > > Commit message-wise: I think the message in the first commit
-> > > > > > would be
-> > > > > > mostly sufficient.
-> > > > > > No idea what other description would be needed.
-> > > > > > 
-> > > > > > So, maybe something like:
-> > > > > > 
-> > > > > > ---------------------------------------------------------------
-> > > > > > -------
-> > > > > > All devices using a triggered buffer need to attach and detach
-> > > > > > the trigger
-> > > > > > to the device in order to properly work. Instead of doing this in
-> > > > > > each and
-> > > > > > every driver by hand move this into the core.
-> > > > > > 
-> > > > > > At this point in time, all drivers should have been resolved to
-> > > > > > attach/detach the poll-function in the same order.
-> > > > > > 
-> > > > > > This patch removes all explicit calls of
-> > > > > > iio_triggered_buffer_postenable()
-> > > > > > & iio_triggered_buffer_predisable() in all drivers, since the
-> > > > > > core handles
-> > > > > > now the pollfunc attach/detach.
-> > > > > > 
-> > > > > > The more peculiar change is for the 'at91-sama5d2_adc' driver,
-> > > > > > since it's
-> > > > > > not obvious that removing the hooks doesn't break anything**
-> > > > > > ---------------------------------------------------------------
-> > > > > > -------
-> > > > > >   
-> > > > > 
-> > > > > Looks good.
-> > > > >   
-> > > > > > ** for the comment about 'at91-sama5d2_adc', we really do need to
-> > > > > > get some
-> > > > > > testing; otherwise this risks breaking it.  
-> > > > 
-> > > > Hi,
-> > > > 
-> > > > I can test it, do we have any patchwork so I can easily download the
-> > > > patches ?
-> > > > I have issues when applying them.  
-> > > 
-> > > Is this good?
-> > > 
-> > > https://urldefense.com/v3/__https://patchwork.kernel.org/patch/11568743/__;!!A3Ni8CS0y2Y!sOycjyvbMtVr_UDFBvb0vdcf9ONdhs0VBLhTcuYO4qnuZmazm5342mRE2T-119Sk7-d50A$ 
-> > > Series:
-> > > https://urldefense.com/v3/__https://patchwork.kernel.org/project/linux-iio/list/?series=293141__;!!A3Ni8CS0y2Y!sOycjyvbMtVr_UDFBvb0vdcf9ONdhs0VBLhTcuYO4qnuZmazm5342mRE2T-119TNWi1mbQ$ 
-> > > 
-> > > Many thanks
-> > > Alex  
-> > 
-> > On at91-sama5d2-adc driver, sama5d2-xplained board,
-> > Tested-by: Eugen Hristev <eugen.hristev@microchip.com>
-> > 
-> > I applied all three patches and tested together with the other patch on 
-> > sama5d2-adc driver.
-> > It looks to be working fine. If I discover something later, I will let 
-> > you know.
-> > Thanks  
-> 
-> Also thanks from my side for testing.
+Hmm.
 
-Great.  Thanks for testing Eugen!
+Very strange. I was a tiny bit worried about that part of the patch,
+because I also changed the types (from "unsigned char *" to "void *"),
+but pointer arithmetic in "unsigned char *" and "void *" is the same,
+and Christoph's partial revert patch doesn't even revert that part.
 
-Applied and flattened into a single patch as discussed previously
-using a slightly edited version of your cover letter to reflect
-that Eugen was able to test it.
+But I really don't see what Christoph's revert would really even
+change It switches the order of the arguments back..
 
-Applied to the togreg branch of iio.git and pushed out as testing for
-the autobuilders to play with it.  Was a bit of fuzz but I don't think
-anything significant.
+It does re-introduce a bug in that macro that I fixed. This macro is
+buggy garbage:
 
-Thanks for all your hard work driving this one through!
++#define probe_kernel_address(addr, retval)             \
++       copy_from_kernel_nofault(&retval, addr, sizeof(retval))
 
-Jonathan
+in case 'retval' is a complex expression, becasue of possibly changing
+the C order of operations. So it needs to be "&(retval)" in the macro
+body.
 
-> 
-> 
-> >   
-> > > > Thanks !
-> > > >   
-> > > > > Agreed.
-> > > > >   
-> > > > > > > Thanks,
-> > > > > > > 
-> > > > > > > Jonathan
-> > > > > > >   
-> > > > > > > >    static const struct iio_trigger_ops
-> > > > > > > > atlas_interrupt_trigger_ops = {
-> > > > > > > > diff --git a/drivers/iio/dummy/iio_simple_dummy_buffer.c
-> > > > > > > > b/drivers/iio/dummy/iio_simple_dummy_buffer.c
-> > > > > > > > index 17606eca42b4..8e13c53d4360 100644
-> > > > > > > > --- a/drivers/iio/dummy/iio_simple_dummy_buffer.c
-> > > > > > > > +++ b/drivers/iio/dummy/iio_simple_dummy_buffer.c
-> > > > > > > > @@ -99,20 +99,6 @@ static irqreturn_t
-> > > > > > > > iio_simple_dummy_trigger_h(int
-> > > > > > > > irq, void *p)
-> > > > > > > >    }
-> > > > > > > > 
-> > > > > > > >    static const struct iio_buffer_setup_ops
-> > > > > > > > iio_simple_dummy_buffer_setup_ops = {
-> > > > > > > > - /*
-> > > > > > > > -  * iio_triggered_buffer_postenable:
-> > > > > > > > -  * Generic function that simply attaches the pollfunc to
-> > > > > > > > the
-> > > > > > > > trigger.
-> > > > > > > > -  * Replace this to mess with hardware state before we
-> > > > > > > > attach the
-> > > > > > > > -  * trigger.
-> > > > > > > > -  */
-> > > > > > > > - .postenable = &iio_triggered_buffer_postenable,
-> > > > > > > > - /*
-> > > > > > > > -  * iio_triggered_buffer_predisable:
-> > > > > > > > -  * Generic function that simple detaches the pollfunc from
-> > > > > > > > the
-> > > > > > > > trigger.
-> > > > > > > > -  * Replace this to put hardware state back again after the
-> > > > > > > > trigger
-> > > > > > > > is
-> > > > > > > > -  * detached but before userspace knows we have disabled the
-> > > > > > > > ring.
-> > > > > > > > -  */
-> > > > > > > > - .predisable = &iio_triggered_buffer_predisable,
-> > > > > > > >    };
-> > > > > > > >   
-> > > > > > > Hmm. Guess we should probably 'invent' a reason to illustrate
-> > > > > > > the bufer
-> > > > > > > ops in the dummy example.  Anyone feeling creative?  
-> > > > > > _______________________________________________
-> > > > > > linux-arm-kernel mailing list
-> > > > > > linux-arm-kernel@lists.infradead.org
-> > > > > > https://urldefense.com/v3/__http://lists.infradead.org/mailman/listinfo/linux-arm-kernel__;!!A3Ni8CS0y2Y!ulH92S3o_JWLMQfg5VBrFknwc_-a0K5AHpJBrTEB-RtYEp7PnRJ9jA_EacOzFQmbNIKO-Q$  
-> > > _______________________________________________
-> > > linux-arm-kernel mailing list
-> > > linux-arm-kernel@lists.infradead.org
-> > > https://urldefense.com/v3/__http://lists.infradead.org/mailman/listinfo/linux-arm-kernel__;!!A3Ni8CS0y2Y!sOycjyvbMtVr_UDFBvb0vdcf9ONdhs0VBLhTcuYO4qnuZmazm5342mRE2T-119RWwM-1NA$ 
-> > >   
+But that is never the case for 'retval'. For 'addr', yes, but 'addr'
+is only used simply (and copy_from_kernel_nofault() isn't a macro).
 
+I'm staring at that opatch and not seeing how it could _possibly_ make
+any difference in code generation.
+
+Which is the obvious next step: would you mind compiling that file
+with and without the patch and sending me the two object files?
+
+              Linus
