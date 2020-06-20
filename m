@@ -2,94 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2873D202125
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 05:59:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FBE120206B
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 05:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726987AbgFTD7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 23:59:50 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:49820 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725290AbgFTD7t (ORCPT
+        id S1732999AbgFTDap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 23:30:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58252 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732873AbgFTDa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 23:59:49 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05K3xYGG069386;
-        Sat, 20 Jun 2020 03:59:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=jCH3I8fpRAneS91Ia94tA1cV8cpC1hPLFvD4x1EGC0k=;
- b=QvlXEEss6T6r9k7y0sfcxvKYyepruSnUGRqIoK9/XJtFSLs1IsxQIjS69RSblTNsEGwJ
- Pu6HKtZL+eixxjGe9i8SrbSscHYWUUDlt7SkL5ShyCD4nS8IWusT7RFGqVK+rMUjnE4a
- Z3Zy7iKnDvaufjGPag6kxCfwCg4OW/VlR80eIgjk/Ph4jiW/WLA1x/wZ2kcTPH2zPadI
- /UhJQwxGetGZsuW+3hnJi2eJ4gKepn8EODjg7HU/bcVIz8+uybD4OLHMwGL1U328LP61
- RcgaaO1Op12eJa+pkqDrTaIOQc+X0kRwlYzOwyW9m8LIko5o0OSnxNu0Uw9jU7NtP9AU Jg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 31s9vqr37g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 20 Jun 2020 03:59:34 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05K3vT10097770;
-        Sat, 20 Jun 2020 03:59:34 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 31sa8ykcyf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 20 Jun 2020 03:59:33 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05K3xTn1023442;
-        Sat, 20 Jun 2020 03:59:29 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 19 Jun 2020 20:26:46 -0700
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     alim.akhtar@samsung.com, Stanley Chu <stanley.chu@mediatek.com>,
-        jejb@linux.ibm.com, avri.altman@wdc.com,
-        linux-scsi@vger.kernel.org, asutoshd@codeaurora.org
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        bvanassche@acm.org, kuohong.wang@mediatek.com,
-        chun-hung.wu@mediatek.com, chaotian.jing@mediatek.com,
-        matthias.bgg@gmail.com, linux-arm-kernel@lists.infradead.org,
-        peter.wang@mediatek.com, cc.chou@mediatek.com,
-        andy.teng@mediatek.com, linux-mediatek@lists.infradead.org,
-        beanhuo@micron.com, linux-kernel@vger.kernel.org,
-        cang@codeaurora.org
-Subject: Re: [PATCH] scsi: ufs-mediatek: Make ufs_mtk_wait_link_state as static function
-Date:   Fri, 19 Jun 2020 23:26:38 -0400
-Message-Id: <159262354733.7800.6869131850805388311.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200616095120.14570-1-stanley.chu@mediatek.com>
-References: <20200616095120.14570-1-stanley.chu@mediatek.com>
+        Fri, 19 Jun 2020 23:30:26 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82A7BC061262
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 20:30:20 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id k6so4798922pll.9
+        for <linux-kernel@vger.kernel.org>; Fri, 19 Jun 2020 20:30:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Fi8ab2CkfvIdd/5P+r0S5dxyJT2k4tSVWykkUvi99fU=;
+        b=j8nQ3B7FpehCsunpSEVQSYjhSIMs22zucCRygwZBlcD7nkUj3GKDredCjm7jP++dYB
+         i7TY+cL1cZ8JWvzIZIwoGoSA4hKFNbTalPofMuwWJS+BqEcADvjf61J9SbvMWxiL2Qla
+         oIQyEGAM0IVcrPLyW1oKnN6H6KktioV1Ny5ps=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Fi8ab2CkfvIdd/5P+r0S5dxyJT2k4tSVWykkUvi99fU=;
+        b=kcd/NTfoVzxncus4JMYLdxCJLDBPRw7p4tp1ThPQMh0pJ/5jkZIpwbCRzAUiImUBFE
+         fHk4TDAXtzzm1GMz/W/aapcPyzVbV9Oe+4AxMFcUbMn4XaBxETHMxmTc4Nmk3bkHQy/T
+         JiaCEkrT5+cKZFlQoYrP87Bqbz1tXaKzymeoCP7YXRZxVBipaXHDPjX43cA46M2mJEYy
+         6BWTZ954iDoC+ucCOvyEcq1wJ4j7Rir4MqbsnBWzThh8XcpKwFUaTyYRCLz0UyfbceGl
+         r3jodntdRfl5U+fZYNLhVqDXgl7LbUr+NnJdKslKypchu1PklHRiWVkagSeED1IN7S93
+         7AnA==
+X-Gm-Message-State: AOAM531brUBFedRvxEwbBMQCLIIb/3W1cDg6okB9vnMiXEADi8Ftl78j
+        Kx9X0RrbdSA3SQjbLlchXzR1m+HOCTg=
+X-Google-Smtp-Source: ABdhPJzKykKp69oTsLEAQ228A8aBga9uw6xzilqOJlYhvnET2ogoJrzcYkicI+7HggPAmmAR7pqRqg==
+X-Received: by 2002:a17:90b:3614:: with SMTP id ml20mr6333214pjb.41.1592623820052;
+        Fri, 19 Jun 2020 20:30:20 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id p19sm7198155pff.116.2020.06.19.20.30.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Jun 2020 20:30:17 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Joe Perches <joe@perches.com>,
+        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-mm@kvack.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH v2 01/16] docs: deprecated.rst: Add uninitialized_var()
+Date:   Fri, 19 Jun 2020 20:29:52 -0700
+Message-Id: <20200620033007.1444705-2-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200620033007.1444705-1-keescook@chromium.org>
+References: <20200620033007.1444705-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9657 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 adultscore=0
- malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006200026
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9657 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 clxscore=1015
- malwarescore=0 lowpriorityscore=0 suspectscore=0 priorityscore=1501
- mlxlogscore=999 mlxscore=0 phishscore=0 cotscore=-2147483648 spamscore=0
- adultscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006200026
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 16 Jun 2020 17:51:20 +0800, Stanley Chu wrote:
+Nothing should be using this macro, and the entire idea of tricking the
+compiler into silencing such warnings is a mistake.
 
-> Fix build warning reported by kernel test robot:
-> Make ufs_mtk_wait_link_state() as static functon.
-> 
-> Warning:
-> >> drivers/scsi/ufs/ufs-mediatek.c:181:5: warning: no previous prototype
-> >> for 'ufs_mtk_wait_link_state' [-Wmissing-prototypes]
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ Documentation/process/deprecated.rst | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-Applied to 5.9/scsi-queue, thanks!
-
-[1/1] scsi: ufs-mediatek: Make ufs_mtk_wait_link_state static
-      https://git.kernel.org/mkp/scsi/c/9a3cd470f8e3
-
+diff --git a/Documentation/process/deprecated.rst b/Documentation/process/deprecated.rst
+index 652e2aa02a66..943a926ecbbb 100644
+--- a/Documentation/process/deprecated.rst
++++ b/Documentation/process/deprecated.rst
+@@ -51,6 +51,24 @@ to make sure their systems do not continue running in the face of
+ "unreachable" conditions. (For example, see commits like `this one
+ <https://git.kernel.org/linus/d4689846881d160a4d12a514e991a740bcb5d65a>`_.)
+ 
++uninitialized_var()
++-------------------
++For any compiler warnings about uninitialized variables, just add
++an initializer. Using the uninitialized_var() macro (or similar
++warning-silencing tricks) is dangerous as it papers over `real bugs
++<https://lore.kernel.org/lkml/20200603174714.192027-1-glider@google.com/>`_
++(or can in the future), and suppresses unrelated compiler warnings
++(e.g. "unused variable"). If the compiler thinks it is uninitialized,
++either simply initialize the variable or make compiler changes. Keep in
++mind that in most cases, if an initialization is obviously redundant,
++the compiler's dead-store elimination pass will make sure there are no
++needless variable writes.
++
++As Linus has said, this macro
++`must <https://lore.kernel.org/lkml/CA+55aFw+Vbj0i=1TGqCR5vQkCzWJ0QxK6CernOU6eedsudAixw@mail.gmail.com/>`_
++`be <https://lore.kernel.org/lkml/CA+55aFwgbgqhbp1fkxvRKEpzyR5J8n1vKT1VZdz9knmPuXhOeg@mail.gmail.com/>`_
++`removed <https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=yVJu65TpLgN_ybYNv0VEOKA@mail.gmail.com/>`_.
++
+ open-coded arithmetic in allocator arguments
+ --------------------------------------------
+ Dynamic size calculations (especially multiplication) should not be
 -- 
-Martin K. Petersen	Oracle Linux Engineering
+2.25.1
+
