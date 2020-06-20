@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7CB201F5B
-	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 02:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26CE4201F58
+	for <lists+linux-kernel@lfdr.de>; Sat, 20 Jun 2020 02:58:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731169AbgFTA7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 19 Jun 2020 20:59:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52878 "EHLO mail.kernel.org"
+        id S1731122AbgFTA6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 19 Jun 2020 20:58:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730293AbgFTA7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 19 Jun 2020 20:59:48 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        id S1731105AbgFTA6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 19 Jun 2020 20:58:20 -0400
+Received: from embeddedor (unknown [189.207.59.248])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A794D22B4D;
-        Sat, 20 Jun 2020 00:59:46 +0000 (UTC)
-Date:   Fri, 19 Jun 2020 20:59:44 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Ming Lei <tom.leiming@gmail.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-block <linux-block@vger.kernel.org>
-Subject: Re: kprobe: __blkdev_put probe is missed
-Message-ID: <20200619205944.4c9bb076@oasis.local.home>
-In-Reply-To: <20200619232820.GE353853@T590>
-References: <CACVXFVO5saamQXs0naLamTKJfXZMW+p446weeqJK=9+V34UM0g@mail.gmail.com>
-        <20200618125438.GA191266@T590>
-        <20200618225602.3f2cca3f0ed48427fc0a483b@kernel.org>
-        <20200618231901.GA196099@T590>
-        <20200619141239.56f6dda0976453b790190ff7@kernel.org>
-        <20200619072859.GA205278@T590>
-        <20200619081954.3d72a252@oasis.local.home>
-        <20200619133240.GA351476@T590>
-        <20200620003509.9521053fbd384f4f5d23408f@kernel.org>
-        <20200619232820.GE353853@T590>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id C292D22B45;
+        Sat, 20 Jun 2020 00:58:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592614699;
+        bh=UOA15RhJAgb7M40tHY+iZioIy8bLsTRprxuHgmn+SRI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=jEEBMqK6zqXacbnI/fsTkMHX5oWrCUtfxRBO2DuKCYAbpLnDZti1k8esJqGCEfFYG
+         n0wZkG6tQXhF9b5QScqaHZyVek+CZMf0O/dud84MDdyGGYQSo2hnJUkufZ4Wnr96zN
+         kP2jTeNG/KHniI4ik/eni8gvNOtYXL4Qu6MCnkvU=
+Date:   Fri, 19 Jun 2020 20:03:44 -0500
+From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH][next] perf/x86/intel/uncore: Use struct_size() in
+ kzalloc_node()
+Message-ID: <20200620010344.GA1899@embeddedor>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Jun 2020 07:28:20 +0800
-Ming Lei <ming.lei@redhat.com> wrote:
+Make use of the struct_size() helper instead of an open-coded version
+in order to avoid any potential type mistakes. Also, remove unnecessary
+variable _size_.
 
-> Thanks for your investigation.
-> 
-> Some trace tools can just trace on function entry, such as bcc, and some
-> user script always trace on function entry.
-> 
-> I guess the issue should belong to kprobe implementation:
+This code was detected with the help of Coccinelle and, audited and
+fixed manually.
 
-The issue is that kprobes is to dynamically add trace events into an
-already compiled kernel. I'm guessing you would get the same result
-from ftrace's function tracer. That's because the compiler has no idea
-about what or where you intend to add these dynamically created trace
-events (that's basically the point of kprobes). But if you add static
-events (and this includes trace_printk()), the compiler knows about
-them, because they exist at compile time, and will make sure they
-execute the number of times the code shows it. But if you don't have
-these events at compile time, the compiler is free to modify the code
-in such a way it doesn't make sense if you add a probe at run time.
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+ arch/x86/events/intel/uncore.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-gdb suffers the same problem on user space debugging if you let the
-compiler aggressively optimize the code. If you step through highly
-optimized user space code with gdb, the position jumps all over the
-place. This is basically the same effect.
+diff --git a/arch/x86/events/intel/uncore.c b/arch/x86/events/intel/uncore.c
+index cf76d6631afa..958c6baaf200 100644
+--- a/arch/x86/events/intel/uncore.c
++++ b/arch/x86/events/intel/uncore.c
+@@ -313,12 +313,10 @@ static void uncore_pmu_init_hrtimer(struct intel_uncore_box *box)
+ static struct intel_uncore_box *uncore_alloc_box(struct intel_uncore_type *type,
+ 						 int node)
+ {
+-	int i, size, numshared = type->num_shared_regs ;
++	int i, numshared = type->num_shared_regs;
+ 	struct intel_uncore_box *box;
+ 
+-	size = sizeof(*box) + numshared * sizeof(struct intel_uncore_extra_reg);
+-
+-	box = kzalloc_node(size, GFP_KERNEL, node);
++	box = kzalloc_node(struct_size(box, shared_regs, numshared), GFP_KERNEL, node);
+ 	if (!box)
+ 		return NULL;
+ 
+-- 
+2.27.0
 
-> 
-> 1) __blkdev_put() is capable of being kprobed, so from user view, the
-> probe on entry of __blkdev_put() should be triggered
-> 
-> 2) from implementation view, I understand exception should be trapped
-> on the entry of __blkdev_put(), looks it isn't done.
-
-But it is done! But the compiler removed the second call and basically
-just inlined it. So that entry no longer exists. When you added a
-"trace_printk()" in there, the compiler is not allowed to skip that
-trace call. But because there's nothing in here to tell the compiler
-that it can't just remove the second call (which it did, and the kprobe
-is just showing you what the compiler did!) then there's nothing
-kprobes can do about it.
-
-> 
-> Correct me if the above is wrong, and is it possible to fix it in kprobe?
-
-No.
-
--- Steve
