@@ -2,113 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72672202790
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 02:23:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F387202782
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 02:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728828AbgFUAXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 20:23:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728720AbgFUAXU (ORCPT
+        id S1728621AbgFUACd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 20:02:33 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:44155 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726932AbgFUACc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 20:23:20 -0400
-Received: from omr2.cc.vt.edu (omr2.cc.ipv6.vt.edu [IPv6:2607:b400:92:8400:0:33:fb76:806e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C5FC061795
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 17:23:20 -0700 (PDT)
-Received: from mr5.cc.vt.edu (mail.ipv6.vt.edu [IPv6:2607:b400:92:9:0:9d:8fcb:4116])
-        by omr2.cc.vt.edu (8.14.4/8.14.4) with ESMTP id 05KIqele025348
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 14:52:40 -0400
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com [209.85.219.69])
-        by mr5.cc.vt.edu (8.14.7/8.14.7) with ESMTP id 05KIqZM1004291
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 14:52:40 -0400
-Received: by mail-qv1-f69.google.com with SMTP id q5so9428823qvp.23
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 11:52:40 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:mime-version:date
-         :message-id;
-        bh=dwZeMkh+DsPbnyYGwceXjBXapy6lVxCTDStNpO5K+aU=;
-        b=s4/6WPE+cE6MBlEcLzXX8260eUsMDqGnJCre5Gv3og8mc7d+HglTCWgId/XOcwtiOc
-         8AQ1KwlPEJxMCJsRfUUr696xEflCJFuR3zqGZHZ0MDM175acTenuzjnjymN6uH00U01r
-         bb96p9PCyuP0eb2diFYReGPbZxsdz1WrdBqsY4Ae/WdIM16TJoiVTWNRyVYcybScMdFv
-         Ka+VrJJeE5/62DH8yDT+zwCQN0BQM1zXDghvGIIXyfFgEoI+OYGAwL2lanvhc8Bo4sCL
-         rkRlEBYVVVer7JyTVOFOOzfTpYz/MDjdgU1Q+nJbAeBOXOVRMuhX0mD5hNHm3rQFY6yi
-         KJOw==
-X-Gm-Message-State: AOAM532vbbNaOTsNLbyhtan8EAisvLE2E+W3J3BJpX4d/rBiX0aN3hZM
-        q7FzCMnOENrrUZk5JW2/iGRGjuop2UsJqcJpLkc73/FHvie5cJx4iOWHLR6GbOrf9Hvsy9J0KY8
-        mdjjzJSG3xkRmoD11Ti5JDkFfeJq5PJ/I1i8=
-X-Received: by 2002:a37:a643:: with SMTP id p64mr9171253qke.214.1592679155361;
-        Sat, 20 Jun 2020 11:52:35 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzB9rQ95PmDCQcidxxn3PnhtBZFxvAShjGrkrwrdZoJbwcRrWurmQO9gfDk1BE1lWP+aUJ4Wg==
-X-Received: by 2002:a37:a643:: with SMTP id p64mr9171236qke.214.1592679155078;
-        Sat, 20 Jun 2020 11:52:35 -0700 (PDT)
-Received: from turing-police ([2601:5c0:c001:c9e1::359])
-        by smtp.gmail.com with ESMTPSA id b53sm10601172qtc.65.2020.06.20.11.52.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jun 2020 11:52:34 -0700 (PDT)
-From:   "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <valdis.kletnieks@vt.edu>
-X-Google-Original-From: "Valdis =?utf-8?Q?Kl=c4=93tnieks?=" <Valdis.Kletnieks@vt.edu>
-X-Mailer: exmh version 2.9.0 11/07/2018 with nmh-1.7+dev
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: kbuild: separate kerneldoc warnings from compiler warnings
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date:   Sat, 20 Jun 2020 14:52:33 -0400
-Message-ID: <591473.1592679153@turing-police>
+        Sat, 20 Jun 2020 20:02:32 -0400
+X-Originating-IP: 86.202.110.81
+Received: from localhost (lfbn-lyo-1-15-81.w86-202.abo.wanadoo.fr [86.202.110.81])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id A3856FF808;
+        Sun, 21 Jun 2020 00:02:20 +0000 (UTC)
+Date:   Sun, 21 Jun 2020 02:02:20 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Heiko Stuebner <heiko@sntech.de>,
+        Josua Mayer <josua.mayer@jm0.eu>,
+        Andreas Kemnade <andreas@kemnade.info>
+Subject: Re: [RFC PATCH 07/10] dt-bindings: rtc: Add bindings for Netronix
+ embedded controller RTC
+Message-ID: <20200621000220.GB131826@piout.net>
+References: <20200620224222.1312520-1-j.neuschaefer@gmx.net>
+ <20200620224222.1312520-6-j.neuschaefer@gmx.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200620224222.1312520-6-j.neuschaefer@gmx.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch introduces a new build flag 'K=1' which controls whether kerneldoc
-warnings should be issued, separating them from the compiler warnings that W=
-controls.
+Hi,
 
-Signed-off-by: Valdis Kletnieks <valdis.kletnieks@vt.edu>
+On 21/06/2020 00:42:18+0200, Jonathan Neuschäfer wrote:
+> The Netronix EC implements an RTC with the following functionality:
+> 
+> - Calendar-based time keeping with single-second resolution
+> - Automatic power-on with single-minute resolution
+> - Alarm at single-second resolution
+> 
+> This binding only supports timekeeping for now.
+> 
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> ---
+>  .../bindings/mfd/netronix,ntxec.yaml          |  7 +++++
+>  .../bindings/rtc/netronix,ntxec-rtc.yaml      | 27 +++++++++++++++++++
+>  2 files changed, 34 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/rtc/netronix,ntxec-rtc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml b/Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+> index 6562c41c5a9a9..f6a32f46f47bb 100644
+> --- a/Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+> @@ -34,6 +34,9 @@ properties:
+>    pwm:
+>      $ref: ../pwm/netronix,ntxec-pwm.yaml
+> 
+> +  rtc:
+> +    $ref: ../rtc/netronix,ntxec-rtc.yaml
+> +
 
-diff --git a/Makefile b/Makefile
-index 29abe44ada91..b1c0f9484a66 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1605,6 +1605,7 @@ PHONY += help
- 	@echo  '                       (sparse by default)'
- 	@echo  '  make C=2   [targets] Force check of all c source with $$CHECK'
- 	@echo  '  make RECORDMCOUNT_WARN=1 [targets] Warn about ignored mcount sections'
-+	@echo  '  make K=1   [targets] Warn about problems in kerneldoc comments'
- 	@echo  '  make W=n   [targets] Enable extra build checks, n=1,2,3 where'
- 	@echo  '		1: warnings which may be relevant and do not occur too often'
- 	@echo  '		2: warnings which occur quite often but may still be relevant'
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 2e8810b7e5ed..9bcb77f5a5f1 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -100,7 +100,7 @@ else ifeq ($(KBUILD_CHECKSRC),2)
-         cmd_force_checksrc = $(CHECK) $(CHECKFLAGS) $(c_flags) $<
- endif
- 
--ifneq ($(KBUILD_EXTRA_WARN),)
-+ifneq ($(KBUILD_KDOC_WARN),)
-   cmd_checkdoc = $(srctree)/scripts/kernel-doc -none $<
- endif
- 
-diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
-index 4aea7cf71d11..3fd5881c91b0 100644
---- a/scripts/Makefile.extrawarn
-+++ b/scripts/Makefile.extrawarn
-@@ -17,6 +17,12 @@ endif
- 
- export KBUILD_EXTRA_WARN
- 
-+ifeq ("$(origin K)", "command line")
-+  KBUILD_KDOC_WARN := $(K)
-+endif
-+
-+export KBUILD_KDOC_WARN
-+
- #
- # W=1 - warnings which may be relevant and do not occur too often
- #
+Shouldn't the node simply be documented here?
 
+Also, do you really need a compatible string to be able to proe the
+driver? What are the chances that you'll get a similar EC without an
+RTC?
 
+>  required:
+>    - compatible
+>    - reg
+> @@ -61,6 +64,10 @@ examples:
+>                              compatible = "netronix,ntxec-pwm";
+>                              #pwm-cells = <1>;
+>                      };
+> +
+> +                    rtc {
+> +                            compatible = "netronix,ntxec-rtc";
+> +                    };
+>              };
+>      };
+> 
+> diff --git a/Documentation/devicetree/bindings/rtc/netronix,ntxec-rtc.yaml b/Documentation/devicetree/bindings/rtc/netronix,ntxec-rtc.yaml
+> new file mode 100644
+> index 0000000000000..4b301ef7319c8
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/rtc/netronix,ntxec-rtc.yaml
+> @@ -0,0 +1,27 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/rtc/netronix,ntxec-rtc.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: RTC functionality in Netronix embedded controller
+> +
+> +maintainers:
+> +  - Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> +
+> +description: |
+> +  See also Documentation/devicetree/bindings/mfd/netronix,ntxec.yaml
+> +
+> +  The Netronix EC contains an RTC, which can be used for time-keeping, alarm,
+> +  and automatic power-on. Note that not all of this functionality is currently
+> +  supported in this binding.
+> +
+> +allOf:
+> +  - $ref: "rtc.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    const: netronix,ntxec-rtc
+> +
+> +required:
+> +  - compatible
+> --
+> 2.27.0
+> 
+
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
