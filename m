@@ -2,87 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD1C202D53
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 00:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AD64202D5A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 00:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgFUWEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 18:04:35 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:45666 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726099AbgFUWEe (ORCPT
+        id S1729837AbgFUWJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 18:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726362AbgFUWJq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 18:04:34 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 935251C0C0A; Mon, 22 Jun 2020 00:04:32 +0200 (CEST)
-Date:   Mon, 22 Jun 2020 00:04:32 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     corbet@lwn.net, changbin.du@intel.com, masahiroy@kernel.org,
-        rostedt@goodmis.org, j.neuschaefer@gmx.net,
-        andy.shevchenko@gmail.com, mchehab+samsung@kernel.org,
-        logang@deltatee.com, abbotti@mev.co.uk, jacob.e.keller@intel.com,
-        colin.king@canonical.com, gregkh@linuxfoundation.org,
-        mgreer@animalcreek.com, tytso@mit.edu, jack@suse.cz,
-        ebiggers@google.com, tglx@linutronix.de, akpm@linux-foundation.org,
-        paulmck@kernel.org, pawan.kumar.gupta@linux.intel.com,
-        jgross@suse.com, mike.kravetz@oracle.com, cohuck@redhat.com,
-        jacek.anaszewski@gmail.com, alex@alexanderweb.de,
-        dwlsalmeida@gmail.com, dsterba@suse.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Replace HTTP links with HTTPS ones:
- Documentation/admin-guide
-Message-ID: <20200621220432.GA916@amd>
-References: <20200621132049.45624-1-grandmaster@al2klimov.de>
+        Sun, 21 Jun 2020 18:09:46 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A710CC061795
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 15:09:46 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id 80so2099731qko.7
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 15:09:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=PKmshvnxCi3S4qzqvpETs1bTZ4nXpcFNE/ZdSSfX0T8=;
+        b=ok6whzLttVjTCO00ZovY5Qp+9Q/FskzrHZBq0nVmfOvL/dcgMm+F7BlV7yqhjjXb2X
+         /GwABUb/F6auR4clLv8LxDt1lKCw3f8fujRm3J4i/7DDAQgKxLpG0EuX57O3kZWS14gK
+         EsYW/RxS6uQwawrvN4U8hak6jfE0PruLgOG4UWxJzpqfzKghVgpaH+iIV0MUevUsYdyg
+         xB1iej8rKxcKHL0hPe/QqnHpLcOSZqD8qT5a3oe6uj8mx/sPXjLPrR9H/ehgbtv1McrY
+         iP1jdqNmUV9sf5TPwgiNsgcua92k6hyr6K5LzHUMB/vQlopQ/6WDMCA3F4wCOYffDokR
+         bXxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=PKmshvnxCi3S4qzqvpETs1bTZ4nXpcFNE/ZdSSfX0T8=;
+        b=GDqk2TRF3Zo+jOvfHubLu5uuCTtKGVKpDaH7qFkIr7u63elMHpoMJdk7H1f38lJMOh
+         ZmQxuqeqFomJ8nyOCTpheSIUcxyfuflKEQFJenbfN7z738lH3U93TMWFdT7njrhE9B3f
+         /00MwfjAYRjBKcGGMhkW47Zn4qbcuEoNJqySnO5V+Kig/VNcZcq94RNmPXmFhLXvY0qs
+         XJlMa0lCJRCNg39oe+rOWqe5NpGGyt9HJdiEG55vhNAvNqrWMg3gH0ilmsDepZi/Zv19
+         wJwYa3/Eam5oZ38I6yUdgsZgbtBzTU0QW7C+LtNvST/nAx7e88aK8+kGoLepSUYHwIsx
+         Wf2A==
+X-Gm-Message-State: AOAM531yksTgk3/7qa5FKqJwj4MzHxlBGyTN/FVdD3cDWPymjGaMPmu5
+        v/MQ+u9ooSWaKUVGlUwoOYwCIg==
+X-Google-Smtp-Source: ABdhPJxLimkm/zUVwedVJyzs6tH8cndzNlIvqCwJYXshoIa3c1bZDmz6pO0xFTlj2WcNXoCJFH1VsA==
+X-Received: by 2002:a37:cd4:: with SMTP id 203mr8810965qkm.342.1592777385668;
+        Sun, 21 Jun 2020 15:09:45 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id k17sm13998471qtb.5.2020.06.21.15.09.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Jun 2020 15:09:45 -0700 (PDT)
+Date:   Sun, 21 Jun 2020 18:09:37 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas_os@shipmail.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        linux-xfs@vger.kernel.org
+Subject: Re: [PATCH] mm: Track mmu notifiers in fs_reclaim_acquire/release
+Message-ID: <20200621220937.GA2034@lca.pw>
+References: <20200604081224.863494-2-daniel.vetter@ffwll.ch>
+ <20200610194101.1668038-1-daniel.vetter@ffwll.ch>
+ <20200621174205.GB1398@lca.pw>
+ <CAKMK7uFZAFVmceoYvqPovOifGw_Y8Ey-OMy6wioMjwPWhu9dDg@mail.gmail.com>
+ <20200621200103.GV20149@phenom.ffwll.local>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="+HP7ph2BbKc20aGI"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200621132049.45624-1-grandmaster@al2klimov.de>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200621200103.GV20149@phenom.ffwll.local>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jun 21, 2020 at 10:01:03PM +0200, Daniel Vetter wrote:
+> On Sun, Jun 21, 2020 at 08:07:08PM +0200, Daniel Vetter wrote:
+> > On Sun, Jun 21, 2020 at 7:42 PM Qian Cai <cai@lca.pw> wrote:
+> > >
+> > > On Wed, Jun 10, 2020 at 09:41:01PM +0200, Daniel Vetter wrote:
+> > > > fs_reclaim_acquire/release nicely catch recursion issues when
+> > > > allocating GFP_KERNEL memory against shrinkers (which gpu drivers tend
+> > > > to use to keep the excessive caches in check). For mmu notifier
+> > > > recursions we do have lockdep annotations since 23b68395c7c7
+> > > > ("mm/mmu_notifiers: add a lockdep map for invalidate_range_start/end").
+> > > >
+> > > > But these only fire if a path actually results in some pte
+> > > > invalidation - for most small allocations that's very rarely the case.
+> > > > The other trouble is that pte invalidation can happen any time when
+> > > > __GFP_RECLAIM is set. Which means only really GFP_ATOMIC is a safe
+> > > > choice, GFP_NOIO isn't good enough to avoid potential mmu notifier
+> > > > recursion.
+> > > >
+> > > > I was pondering whether we should just do the general annotation, but
+> > > > there's always the risk for false positives. Plus I'm assuming that
+> > > > the core fs and io code is a lot better reviewed and tested than
+> > > > random mmu notifier code in drivers. Hence why I decide to only
+> > > > annotate for that specific case.
+> > > >
+> > > > Furthermore even if we'd create a lockdep map for direct reclaim, we'd
+> > > > still need to explicit pull in the mmu notifier map - there's a lot
+> > > > more places that do pte invalidation than just direct reclaim, these
+> > > > two contexts arent the same.
+> > > >
+> > > > Note that the mmu notifiers needing their own independent lockdep map
+> > > > is also the reason we can't hold them from fs_reclaim_acquire to
+> > > > fs_reclaim_release - it would nest with the acquistion in the pte
+> > > > invalidation code, causing a lockdep splat. And we can't remove the
+> > > > annotations from pte invalidation and all the other places since
+> > > > they're called from many other places than page reclaim. Hence we can
+> > > > only do the equivalent of might_lock, but on the raw lockdep map.
+> > > >
+> > > > With this we can also remove the lockdep priming added in 66204f1d2d1b
+> > > > ("mm/mmu_notifiers: prime lockdep") since the new annotations are
+> > > > strictly more powerful.
+> > > >
+> > > > v2: Review from Thomas Hellstrom:
+> > > > - unbotch the fs_reclaim context check, I accidentally inverted it,
+> > > >   but it didn't blow up because I inverted it immediately
+> > > > - fix compiling for !CONFIG_MMU_NOTIFIER
+> > > >
+> > > > Cc: Thomas Hellström (Intel) <thomas_os@shipmail.org>
+> > > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > > Cc: Jason Gunthorpe <jgg@mellanox.com>
+> > > > Cc: linux-mm@kvack.org
+> > > > Cc: linux-rdma@vger.kernel.org
+> > > > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> > > > Cc: Christian König <christian.koenig@amd.com>
+> > > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > >
+> > > Replying the right patch here...
+> > >
+> > > Reverting this commit [1] fixed the lockdep warning below while applying
+> > > some memory pressure.
+> > >
+> > > [1] linux-next cbf7c9d86d75 ("mm: track mmu notifiers in fs_reclaim_acquire/release")
+> > 
+> > Hm, then I'm confused because
+> > - there's not mmut notifier lockdep map in the splat at a..
+> > - the patch is supposed to not change anything for fs_reclaim (but the
+> > interim version got that wrong)
+> > - looking at the paths it's kmalloc vs kswapd, both places I totally
+> > expect fs_reflaim to be used.
+> > 
+> > But you're claiming reverting this prevents the lockdep splat. If
+> > that's right, then my reasoning above is broken somewhere. Someone
+> > less blind than me having an idea?
+> > 
+> > Aside this is the first email I've typed, until I realized the first
+> > report was against the broken patch and that looked like a much more
+> > reasonable explanation (but didn't quite match up with the code
+> > paths).
+> 
+> Below diff should undo the functional change in my patch. Can you pls test
+> whether the lockdep splat is really gone with that? Might need a lot of
+> testing and memory pressure to be sure, since all these reclaim paths
+> aren't very deterministic.
 
---+HP7ph2BbKc20aGI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Well, I am running even heavy memory pressure workloads on linux-next
+like every day, and never saw this splat until today where your patch
+first show up.
 
-Hi!
+Since I am rather busy tracking another regression, here is the steps to
+reproduce (super easy to reproduce on multiple machines here.):
 
-> Rationale:
-> Reduces attack surface on kernel devs opening the links for MITM
-> as HTTPS traffic is much harder to manipulate.
+# git clone https://github.com/cailca/linux-mm.git
+# cd linux-mm; make
+# ./random 0
 
-> +++ b/Documentation/admin-guide/README.rst
-> @@ -1,6 +1,6 @@
->  .. _readme:
-> =20
-> -Linux kernel release 5.x <http://kernel.org/>
-> +Linux kernel release 5.x <https://kernel.org/>
->  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-
-You need to add one "=3D" here, IIRC.
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---+HP7ph2BbKc20aGI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl7v2W8ACgkQMOfwapXb+vI5cgCdGFRLd9+refQsglCD5LdtNPVx
-/CgAnRZd9VJjSbmBH3rNbU7YAeh+0vCw
-=18By
------END PGP SIGNATURE-----
-
---+HP7ph2BbKc20aGI--
+The .config is in there as well if ever matters.
