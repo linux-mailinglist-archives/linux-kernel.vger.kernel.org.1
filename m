@@ -2,212 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141B7202963
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 09:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 391C020296A
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 09:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729482AbgFUHg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 03:36:58 -0400
-Received: from mga06.intel.com ([134.134.136.31]:16490 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729423AbgFUHg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 03:36:56 -0400
-IronPort-SDR: Y7QEklAKhq1h4u32/BkHhpY9jXugHM9phUr4Ln8D3lHFzJWwO/q2cZKonkQUJvWWXMoBV0e5II
- kJm6Hyw725sQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9658"; a="204986831"
-X-IronPort-AV: E=Sophos;i="5.75,262,1589266800"; 
-   d="scan'208";a="204986831"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2020 00:36:55 -0700
-IronPort-SDR: fKe89FpcbZ7ysZDzI2TjwVwce1DW6iyYrXNJXfV1zY1fHS0oUOlxxHyH1Tauy2Lv5iNq9o++OX
- c19rlnb5u3Ew==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,262,1589266800"; 
-   d="scan'208";a="478102550"
-Received: from shbuild999.sh.intel.com ([10.239.146.107])
-  by fmsmga005.fm.intel.com with ESMTP; 21 Jun 2020 00:36:52 -0700
-From:   Feng Tang <feng.tang@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Kees Cook <keescook@chromium.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>, andi.kleen@intel.com,
-        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     Feng Tang <feng.tang@intel.com>
-Subject: [PATCH v5 3/3] mm: adjust vm_committed_as_batch according to vm overcommit policy
-Date:   Sun, 21 Jun 2020 15:36:40 +0800
-Message-Id: <1592725000-73486-4-git-send-email-feng.tang@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1592725000-73486-1-git-send-email-feng.tang@intel.com>
-References: <1592725000-73486-1-git-send-email-feng.tang@intel.com>
+        id S1729466AbgFUHmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 03:42:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729423AbgFUHmw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Jun 2020 03:42:52 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0686DC061794
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 00:42:51 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id s23so6816065pfh.7
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 00:42:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=frGpGD1gGEK1DdHYmVp70xVzhZtdl7uz6o/kq9Sz7lM=;
+        b=zGUghkd1g8cYCEAxLlIdjoC73QetExiHi8MofsyHfYXNepWTEYVE7RQNCJfo/wiNUt
+         vFBvABNe+ePYrhfEfWGQj4o7SfreOo4lml/10odlB/NJNgflW73Hxec7hRt3mD8weBmT
+         SqBAupQp97LO1uAYIzTB27DqiVL16O2NMr9ffqboWDTX8Bov/maXrhDUfDDLMDX3eA2N
+         hkbpRAPhlf7ffes/n+InDcVYRmsKwH4KyVbLrErLnYviK7OXZbiJW7FXgRVTouoCyeWT
+         PuPDm32dOB90Pxb+Chs9d8S9VINt59dZr3lSQVasT9LHr2/DPXoIdsSDkmd06hnLYhAQ
+         vGcg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=frGpGD1gGEK1DdHYmVp70xVzhZtdl7uz6o/kq9Sz7lM=;
+        b=GMMDP57Q2MJLYLYLCHi62Vwa9UMPkefwDRILVPlZ+YlOVyUE2n3Ktnfy/IkEseaBQ3
+         N75SC2+AI+jfsNX0gRi46o+FZmw0GHDiyrXEJ0OylKC2mVrtuG90y2XkdQ+6g/7CIrU1
+         mo3JnxxeE6NA1/dIZsET80aC1Zttv4DDrrZPGcU+tT9Ly2SQhLMcbYfV2nMpCJfh54tq
+         Rg9UtaR7pXiIakGyBSq+Ds45b+gnjdDNiL+x7d+4BRPw0euj1AJPRGcAn19yzpz/cVQj
+         FLw28KXZgMW7lgVucYTxZUcmwNmyj1T/c2dIqkXLR7hh3DgraaMWegT8+e4FkastGqIa
+         hIFQ==
+X-Gm-Message-State: AOAM532VBbj89YrbDLf10woqGVPpOMgvWxRNvv0LT7xd/sG5r9T6s95S
+        FZdbXIBmJbgws6jyfbasy4ce9g==
+X-Google-Smtp-Source: ABdhPJxxeebxj+wAA384otLJPlzJxSWAx7g4IEHWU6NMCdV8vlU+PV9+X2lTtdMYH0dHRanxC9G62Q==
+X-Received: by 2002:a63:6d42:: with SMTP id i63mr8424330pgc.77.1592725371399;
+        Sun, 21 Jun 2020 00:42:51 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id d4sm6092496pgf.9.2020.06.21.00.42.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Jun 2020 00:42:50 -0700 (PDT)
+Date:   Sun, 21 Jun 2020 00:40:03 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, inux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sibis@codeaurora.org,
+        vinod.koul@linaro.org, agross@kernel.org, ohad@wizery.com,
+        p.zabel@pengutronix.de, linux-remoteproc@vger.kernel.org
+Subject: Re: [PATCH] remoteproc: qcom: q6v5-mss: Fix kfree build error
+Message-ID: <20200621074003.GJ128451@builder.lan>
+References: <20200617065658.27567-1-naresh.kamboju@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=windows-1252
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200617065658.27567-1-naresh.kamboju@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When checking a performance change for will-it-scale scalability mmap test
-[1], we found very high lock contention for spinlock of percpu counter
-'vm_committed_as':
+On Tue 16 Jun 23:56 PDT 2020, Naresh Kamboju wrote:
 
-    94.14%     0.35%  [kernel.kallsyms]         [k] _raw_spin_lock_irqsave
-    48.21% _raw_spin_lock_irqsave;percpu_counter_add_batch;__vm_enough_memory;mmap_region;do_mmap;
-    45.91% _raw_spin_lock_irqsave;percpu_counter_add_batch;__do_munmap;
+> This patch adds linux/slab.h to fix build error in qcom_q6v5_mss.c
+> 
+> Build error:
+>  ../drivers/remoteproc/qcom_q6v5_mss.c:
+>   In function ‘q6v5_mpss_init_image’:
+>  ../drivers/remoteproc/qcom_q6v5_mss.c:772:3:
+>   error: implicit declaration of function ‘kfree’;
+>   did you mean ‘vfree’? [-Werror=implicit-function-declaration]
+>    772 |   kfree(metadata);
+>        |   ^~~~~
+>        |   vfree
+> 
+> Signed-off-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-Actually this heavy lock contention is not always necessary.  The
-'vm_committed_as' needs to be very precise when the strict
-OVERCOMMIT_NEVER policy is set, which requires a rather small batch number
-for the percpu counter.
+Thanks for the patch Naresh, it looks correct but I've not seen this
+build error myself. Could you please let me know what you built to get
+this and if you have any suggestion on what caused it? (So we can add a
+Fixes: tag etc)
 
-So keep 'batch' number unchanged for strict OVERCOMMIT_NEVER policy, and
-lift it to 64X for OVERCOMMIT_ALWAYS and OVERCOMMIT_GUESS policies.  Also
-add a sysctl handler to adjust it when the policy is reconfigured.
+Regards,
+Bjorn
 
-Benchmark with the same testcase in [1] shows 53% improvement on a 8C/16T
-desktop, and 2097%(20X) on a 4S/72C/144T server.  We tested with test
-platforms in 0day (server, desktop and laptop), and 80%+ platforms shows
-improvements with that test.  And whether it shows improvements depends on
-if the test mmap size is bigger than the batch number computed.
-
-And if the lift is 16X, 1/3 of the platforms will show improvements,
-though it should help the mmap/unmap usage generally, as Michal Hocko
-mentioned:
-
-: I believe that there are non-synthetic worklaods which would benefit from
-: a larger batch.  E.g.  large in memory databases which do large mmaps
-: during startups from multiple threads.
-
-[1] https://lore.kernel.org/lkml/20200305062138.GI5972@shao2-debian/
-
-Link: http://lkml.kernel.org/r/1589611660-89854-4-git-send-email-feng.tang@intel.com
-Signed-off-by: Feng Tang <feng.tang@intel.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Andi Kleen <andi.kleen@intel.com>
-Cc: Tim Chen <tim.c.chen@intel.com>
-Cc: Dave Hansen <dave.hansen@intel.com>
-Cc: Huang Ying <ying.huang@intel.com>
----
- include/linux/mm.h   |  2 ++
- include/linux/mman.h |  4 ++++
- kernel/sysctl.c      |  2 +-
- mm/mm_init.c         | 18 ++++++++++++++----
- mm/util.c            | 12 ++++++++++++
- 5 files changed, 33 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index e6ff54a..d00facb 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -206,6 +206,8 @@ int overcommit_ratio_handler(struct ctl_table *, int, void *, size_t *,
- 		loff_t *);
- int overcommit_kbytes_handler(struct ctl_table *, int, void *, size_t *,
- 		loff_t *);
-+int overcommit_policy_handler(struct ctl_table *, int, void *, size_t *,
-+		loff_t *);
- 
- #define nth_page(page,n) pfn_to_page(page_to_pfn((page)) + (n))
- 
-diff --git a/include/linux/mman.h b/include/linux/mman.h
-index 4b08e9c..91c93c1 100644
---- a/include/linux/mman.h
-+++ b/include/linux/mman.h
-@@ -57,8 +57,12 @@ extern struct percpu_counter vm_committed_as;
- 
- #ifdef CONFIG_SMP
- extern s32 vm_committed_as_batch;
-+extern void mm_compute_batch(void);
- #else
- #define vm_committed_as_batch 0
-+static inline void mm_compute_batch(void)
-+{
-+}
- #endif
- 
- unsigned long vm_memory_committed(void);
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 40180cd..10dcc06 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -2650,7 +2650,7 @@ static struct ctl_table vm_table[] = {
- 		.data		= &sysctl_overcommit_memory,
- 		.maxlen		= sizeof(sysctl_overcommit_memory),
- 		.mode		= 0644,
--		.proc_handler	= proc_dointvec_minmax,
-+		.proc_handler	= overcommit_policy_handler,
- 		.extra1		= SYSCTL_ZERO,
- 		.extra2		= &two,
- 	},
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 435e5f7..c5a6fb1 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -13,6 +13,7 @@
- #include <linux/memory.h>
- #include <linux/notifier.h>
- #include <linux/sched.h>
-+#include <linux/mman.h>
- #include "internal.h"
- 
- #ifdef CONFIG_DEBUG_MEMORY_INIT
-@@ -144,14 +145,23 @@ EXPORT_SYMBOL_GPL(mm_kobj);
- #ifdef CONFIG_SMP
- s32 vm_committed_as_batch = 32;
- 
--static void __meminit mm_compute_batch(void)
-+void mm_compute_batch(void)
- {
- 	u64 memsized_batch;
- 	s32 nr = num_present_cpus();
- 	s32 batch = max_t(s32, nr*2, 32);
--
--	/* batch size set to 0.4% of (total memory/#cpus), or max int32 */
--	memsized_batch = min_t(u64, (totalram_pages()/nr)/256, 0x7fffffff);
-+	unsigned long ram_pages = totalram_pages();
-+
-+	/*
-+	 * For policy of OVERCOMMIT_NEVER, set batch size to 0.4%
-+	 * of (total memory/#cpus), and lift it to 25% for other
-+	 * policies to easy the possible lock contention for percpu_counter
-+	 * vm_committed_as, while the max limit is INT_MAX
-+	 */
-+	if (sysctl_overcommit_memory == OVERCOMMIT_NEVER)
-+		memsized_batch = min_t(u64, ram_pages/nr/256, INT_MAX);
-+	else
-+		memsized_batch = min_t(u64, ram_pages/nr/4, INT_MAX);
- 
- 	vm_committed_as_batch = max_t(s32, memsized_batch, batch);
- }
-diff --git a/mm/util.c b/mm/util.c
-index 1c9d097..52ed9c1 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -746,6 +746,18 @@ int overcommit_ratio_handler(struct ctl_table *table, int write, void *buffer,
- 	return ret;
- }
- 
-+int overcommit_policy_handler(struct ctl_table *table, int write, void *buffer,
-+		size_t *lenp, loff_t *ppos)
-+{
-+	int ret;
-+
-+	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
-+	if (ret == 0 && write)
-+		mm_compute_batch();
-+
-+	return ret;
-+}
-+
- int overcommit_kbytes_handler(struct ctl_table *table, int write, void *buffer,
- 		size_t *lenp, loff_t *ppos)
- {
--- 
-2.7.4
-
+> ---
+>  drivers/remoteproc/qcom_q6v5_mss.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/remoteproc/qcom_q6v5_mss.c b/drivers/remoteproc/qcom_q6v5_mss.c
+> index feb70283b6a2..903b2bb97e12 100644
+> --- a/drivers/remoteproc/qcom_q6v5_mss.c
+> +++ b/drivers/remoteproc/qcom_q6v5_mss.c
+> @@ -26,6 +26,7 @@
+>  #include <linux/reset.h>
+>  #include <linux/soc/qcom/mdt_loader.h>
+>  #include <linux/iopoll.h>
+> +#include <linux/slab.h>
+>  
+>  #include "remoteproc_internal.h"
+>  #include "qcom_common.h"
+> -- 
+> 2.17.1
+> 
