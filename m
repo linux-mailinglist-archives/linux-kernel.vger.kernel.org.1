@@ -2,60 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 508B5202928
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 08:45:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2E020292B
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 08:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729359AbgFUGpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 02:45:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729343AbgFUGpB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 02:45:01 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5247C061794
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 23:45:01 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id d12so6539633qvn.0
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 23:45:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=n7FGqUqBz7HQE5WMQtZY+4uSesNR1mUYmdkePkgsuqw=;
-        b=qJWv7u126VOxL6oCiy+AK9zOUSDapRQfx0vti0TODZZNWIFvkSYsohehTFQLmoDhtI
-         eskJaiQxJEk5ZeWwIQUQarbFLf0wOmDaDoq8TKtR0cA/SDt9rOhvSXIP1L9E7+zkyPBC
-         JKH763oFTcsWRRUQMhAhOL3MldqlvgdmsrcVd5Vfe4r92jIjaGgdn6iIxF3LWUKuxgYD
-         O+3mspCb22dzmPIaVw30joeG6zg/W3dAD8ygdATXQhTJFv1d164ALcGr9IdFTf/sW5+t
-         9hjjcUi9R8i4LmdCGdQQQQvooHQP0O13guBQ7yLGt1AoGuQ9BRxKbW/Ryw568mLZcoSO
-         Lj4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=n7FGqUqBz7HQE5WMQtZY+4uSesNR1mUYmdkePkgsuqw=;
-        b=qFq5Oq2+rZPF4wfHxC2agb1GpTK73unWmnyls/FTgSTNWOq5CeGqCfnt/MVGMWUM7W
-         qhapBEQfCsQ/HzAjZ+I6yug4iXvIDhqQCEThnSTp2QFTzYDB33I2iR9SijziSmDUlAOA
-         nxERgw+ToQfkhAF8Q3yGrYR8+jY0YU0X1X2g3P5IYLElLR5FA7h/k/KWlN+s7XoQglxj
-         OEzn8GwaNj3kV1c0/jOeMJZjHjLrn5TobDlekFVoZmEdaY4ge9QUKqgPZsSHWgzHb4TE
-         OzfGxfLiPzz+Pr9/e1QKnFgdkr4+gq1aIfE3uAuw3V2p6auynvRAMkgYveG5DzyFniBb
-         XVmQ==
-X-Gm-Message-State: AOAM530gaQduU4TtMQNOjAhXGVTIrHOioJNVf0t5acgHJE48cbnuwtuf
-        pvDEkyWRUqH5/YtGFu6CMo373iKltj0bDNgb3w==
-X-Google-Smtp-Source: ABdhPJxEN21kAwO1/K5odcvfKkHuWWO2iMgz4s7+QVsUQyPTbw1sfXOOlyhtcP6E3vWBehzpHuIEnzJvYiE1EAyQBFU=
-X-Received: by 2002:a05:6214:a72:: with SMTP id ef18mr16651960qvb.239.1592721900716;
- Sat, 20 Jun 2020 23:45:00 -0700 (PDT)
+        id S1729386AbgFUGqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 02:46:13 -0400
+Received: from mga11.intel.com ([192.55.52.93]:52893 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729343AbgFUGqM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Jun 2020 02:46:12 -0400
+IronPort-SDR: 6dsQxrdn5jxFYoCf2Fexzo43fogM9h+zt5vJe1Oei8piVaYIr1esult/PRi3wpkkxHeb13QG4J
+ Ll3zKfkHH0wQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9658"; a="141765463"
+X-IronPort-AV: E=Sophos;i="5.75,262,1589266800"; 
+   d="scan'208";a="141765463"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2020 23:46:10 -0700
+IronPort-SDR: WILjAyTYVmSEtZLcHfnONIF693I2/TRglKBuVDY9n/ywmYD7ecVHGYM5oDd2FlKEAu5hk05F/n
+ Svt2ZBKcMZBg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,262,1589266800"; 
+   d="scan'208";a="300523236"
+Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
+  by fmsmga004.fm.intel.com with ESMTP; 20 Jun 2020 23:46:08 -0700
+Date:   Sun, 21 Jun 2020 14:45:50 +0800
+From:   Philip Li <philip.li@intel.com>
+To:     Denis Efremov <efremov@linux.com>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: Re: [kbuild-all] Re: ERROR: modpost: "__mulsi3" undefined!
+Message-ID: <20200621064550.GA11465@intel.com>
+References: <202006200036.E0OHtwu9%lkp@intel.com>
+ <2748b074-951c-000a-4d0a-780404e26dab@linux.com>
 MIME-Version: 1.0
-Received: by 2002:ac8:3647:0:0:0:0:0 with HTTP; Sat, 20 Jun 2020 23:45:00
- -0700 (PDT)
-Reply-To: info.moneygrampostunit@gmail.com
-From:   Money Gram <ubabanklome@gmail.com>
-Date:   Sun, 21 Jun 2020 06:45:00 +0000
-Message-ID: <CAG3MJgRU=-Pfz4QjWFadoMX60aD-j6kqi_Qf-SBmp73Pow08gw@mail.gmail.com>
-Subject: 35ygrw
-To:     bkoko002 <bkoko002@mail.ru>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2748b074-951c-000a-4d0a-780404e26dab@linux.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Happy to meet you congratulations respond for the details of the good news
+On Sat, Jun 20, 2020 at 09:41:28AM +0300, Denis Efremov wrote:
+> 
+> 
+> On 6/19/20 7:17 PM, kernel test robot wrote:
+> > Hi Denis,
+> > 
+> > First bad commit (maybe != root cause):
+> > 
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   5e857ce6eae7ca21b2055cca4885545e29228fe2
+> > commit: e4a42c82e943b97ce124539fcd7a47445b43fa0d kbuild: fix broken builds because of GZIP,BZIP2,LZOP variables
+> > date:   8 days ago
+> > config: openrisc-randconfig-c022-20200619 (attached as .config)
+> > compiler: or1k-linux-gcc (GCC) 9.3.0
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > All errors (new ones prefixed by >>, old ones prefixed by <<):
+> > 
+> 
+> > ERROR: modpost: "__mulsi3" [drivers/power/supply/pcf50633-charger.ko] undefined!
+> > ERROR: modpost: "__mulsi3" [drivers/power/supply/max17042_battery.ko] undefined!
+> >>> ERROR: modpost: "__mulsi3" [drivers/power/supply/max17040_battery.ko] undefined!
+> 
+> I'm not sure, but this report looks to me like the error was already in code before
+> and the patch only rearranges the report.
+sorry, this is a false positive report, kindly ignore it. We will resolve our
+side logic issue in earliest time.
+
+> 
+> > ERROR: modpost: "__mulsi3" [drivers/power/supply/da9150-fg.ko] undefined!
+> > ERROR: modpost: "__mulsi3" [drivers/power/supply/bq27xxx_battery.ko] undefined!
+> 
+> 
+> I found a similar reports:
+> https://lkml.org/lkml/2020/6/19/341
+> https://lkml.org/lkml/2019/12/11/2195
+> https://lkml.org/lkml/2019/12/11/1977
+> 
+> Thanks,
+> Denis
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
