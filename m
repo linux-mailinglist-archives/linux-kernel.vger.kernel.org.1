@@ -2,177 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 232F42029F8
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 12:07:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 978AE2029FC
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 12:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729773AbgFUKHN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 06:07:13 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:34845 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729687AbgFUKHN (ORCPT
+        id S1729804AbgFUKLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 06:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50358 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729687AbgFUKLb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 06:07:13 -0400
-Received: by mail-io1-f71.google.com with SMTP id i204so7832936ioa.2
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 03:07:11 -0700 (PDT)
+        Sun, 21 Jun 2020 06:11:31 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC34C061794;
+        Sun, 21 Jun 2020 03:11:29 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a1so878521ejg.12;
+        Sun, 21 Jun 2020 03:11:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=syU+EghuXe8/msbRaVp9ADnfn8XMm0nVNqlQ4ZjbmLQ=;
+        b=R7x9DFd+URt7M5W4fNSWOLOH/mpvW5rznedMB/MoHTDxPzi1CdgyZLiinplwvNr6vQ
+         N87HuWSET/GMoX2StOrnqVescYrrhXUaHEFnNUJlc4dgUWw6W8jsZSt1a6dstGu9aFS9
+         TcO06FZm8muJ4a0qXzxUGBfs7IpkfKOWZWCv9e5KXNsZ9Y6+YxjsdRnyJ9Kh5RJgJo51
+         knXNaumqT+g1jkASUpKMZPq+rf7plOCv3Q9alJrQz18/zEZ+EujWaj+N/sQA6yPEJ/L4
+         dyWRGVS7dqKVzP7J6YhLVSDm6KeU576nAdAVAD+hG3Q5gH952e/o5WR4JzLePlL9nZME
+         ckjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Mzm10RGjJNpKvxhGS4GfgH7+IDQ736GgimRVfF5QPkg=;
-        b=Z4R3tMm1zJHzS4oezlu/BoF4lmv52J3tsz6Gwg4bQ0Rof+73H93Kyvo7mHlHzkQ5XO
-         qThK7FePTC4lAVdGShFYs9SKQjv2jdh2OZqtOdNndR2lAKib48sYv7BYZcB/+36w/9V7
-         yb6JTNwk6VifXiswBgYkXw6G60SO14mHxAZ7YFBuYPV87L1PSa64f9on0pNuXTN4rs5w
-         PbF7qp3tbEOxBm/wWTW6w1gKFyONloICE9VbYgFZJaT3eRMWs5OF9r4BvNfvSGCfJmru
-         57EGFpR1Ndp4Z1ZENc0CxxiQuUmDL6ROUtMF4rGjMXHu7uzRQoQb0mRDqn1StxBo1Rlo
-         anIA==
-X-Gm-Message-State: AOAM530L08ZARM+m2pOzclR6nKj7wVasXqiEOJ9yN3aC2fHjQxhobvnj
-        BVGiqoupSVLz2I1oBe5Tbu6xqtIcGhtJ5fNmsSkEHb2OvKZg
-X-Google-Smtp-Source: ABdhPJwZv8cJwKrif3fd/MrdYQ8iTjiZ8EkVFX88TS7S24e46rMMWlVphVoI8B4IMCrijKdWohyDABfBLZvHxHlsPmsvK2k+AGGT
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=syU+EghuXe8/msbRaVp9ADnfn8XMm0nVNqlQ4ZjbmLQ=;
+        b=D+TV+Mws6DY39yjaukgz0ZM5KXgoAIjJZ1Cu9oD+JhyDbCpaQLBJ0Yo7y531M/HAgM
+         Vmm+VNZUYGoaJ6fa4iqnCUSMwHOCxkobPJ+YPnUCY4je0SRORh1GeK3ikJx3wW2kO7G3
+         3K8Dz2RlbqpX5xQwjlgTESRxjBaUwAdMewXhDyPH5Tbd2I3qZ0ITJgYg/9VKrziEgKlo
+         VdYz8M0sJOKB9mxuBsH/LQmPwsyRpIWwuESXGGfvDZjIDaNHqr3/97G7GlSfuH5z8idx
+         uvCN5hpnpG/5ZcE1h7AdMw6uaxAuQWGw+cgl/aMmv6061Al5dGoZqX3g+SG2tmbVJxaS
+         XRVQ==
+X-Gm-Message-State: AOAM530AUeUtQKbSS7X9p/+BvWTeBoFYU3NmC+FmW2WxFxCQghwvcMu+
+        7ivPAmXSV4xsrowfuBGsuQTr22qw
+X-Google-Smtp-Source: ABdhPJxSu/CHgpoPPGMxHtVHmLTgIb8gzCD9OnuYTTJADsNRs3SWD5Rp3RpJ37UdfwOIjcsHBV0ZKQ==
+X-Received: by 2002:a17:906:4056:: with SMTP id y22mr10862835ejj.304.1592734288123;
+        Sun, 21 Jun 2020 03:11:28 -0700 (PDT)
+Received: from localhost.localdomain ([82.209.196.123])
+        by smtp.gmail.com with ESMTPSA id y26sm9717201edv.91.2020.06.21.03.11.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Jun 2020 03:11:27 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] small random patches
+Date:   Sun, 21 Jun 2020 13:09:49 +0300
+Message-Id: <cover.1592733956.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:5fcd:: with SMTP id i74mr11780919ill.169.1592734031570;
- Sun, 21 Jun 2020 03:07:11 -0700 (PDT)
-Date:   Sun, 21 Jun 2020 03:07:11 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002c6fbf05a8954afe@google.com>
-Subject: BUG: sleeping function called from invalid context in do_user_addr_fault
-From:   syzbot <syzbot+7748c5375dc20dfdb92f@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Nothing interesting, just killing some stuff first.
+Based on top of io_uring-5.8 + 15 async-buf patches.
 
-syzbot found the following crash on:
+Pavel Begunkov (4):
+  io_uring: remove setting REQ_F_MUST_PUNT in rw
+  io_uring: remove REQ_F_MUST_PUNT
+  io_uring: set @poll->file after @poll init
+  io_uring: kill NULL checks for submit state
 
-HEAD commit:    7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1772c3a9100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=be4578b3f1083656
-dashboard link: https://syzkaller.appspot.com/bug?extid=7748c5375dc20dfdb92f
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+ fs/io_uring.c | 38 +++++++++-----------------------------
+ 1 file changed, 9 insertions(+), 29 deletions(-)
 
-Unfortunately, I don't have any reproducer for this crash yet.
+-- 
+2.24.0
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+7748c5375dc20dfdb92f@syzkaller.appspotmail.com
-
-BUG: sleeping function called from invalid context at arch/x86/mm/fault.c:1259
-in_atomic(): 0, irqs_disabled(): 0, non_block: 0, pid: 10572, name: syz-executor.3
-2 locks held by syz-executor.3/10572:
- #0: ffffffff892e89d0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0x5/0x30 include/linux/rcupdate.h:240
- #1: ffff88809b127028 (&mm->mmap_sem#2){++++}-{3:3}, at: do_user_addr_fault+0x344/0xba0 arch/x86/mm/fault.c:1242
-Preemption disabled at:
-[<ffffffff8147bc44>] irq_enter+0x64/0x100 kernel/softirq.c:358
-CPU: 0 PID: 10572 Comm: syz-executor.3 Not tainted 5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1e9/0x30e lib/dump_stack.c:118
- ___might_sleep+0x3c0/0x570 kernel/sched/core.c:6877
- do_user_addr_fault+0x377/0xba0 arch/x86/mm/fault.c:1259
- page_fault+0x39/0x40 arch/x86/entry/entry_64.S:1203
-RIP: 0010:__read_once_size include/linux/compiler.h:252 [inline]
-RIP: 0010:__sanitizer_cov_trace_pc+0x3f/0x60 kernel/kcov.c:202
-Code: c2 00 01 ff 00 74 11 f7 c2 00 01 00 00 74 35 83 b9 04 14 00 00 00 74 2c 8b 91 e0 13 00 00 83 fa 02 75 21 48 8b 91 e8 13 00 00 <48> 8b 32 48 8d 7e 01 8b 89 e4 13 00 00 48 39 cf 73 08 48 89 44 f2
-RSP: 0018:ffffc90004b37938 EFLAGS: 00010246
-RAX: ffffffff81c35ba2 RBX: 0000000000000001 RCX: ffff88805962a380
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff8880ae8387d8
-RBP: 0000000000000000 R08: dffffc0000000000 R09: ffffed1015d070fc
-R10: ffffed1015d070fc R11: 0000000000000000 R12: dffffc0000000000
-R13: ffffc90004b37d30 R14: ffffc900000ca3b0 R15: ffff8880a26f4170
- rcu_read_lock include/linux/rcupdate.h:635 [inline]
- __d_lookup+0xa2/0x6e0 fs/dcache.c:2386
- lookup_fast+0x99/0x700 fs/namei.c:1488
- walk_component+0x72/0x680 fs/namei.c:1842
- link_path_walk+0x66d/0xba0 fs/namei.c:2165
- path_openat+0x21d/0x38b0 fs/namei.c:3342
- do_filp_open+0x191/0x3a0 fs/namei.c:3373
- do_sys_openat2+0x463/0x770 fs/open.c:1179
- do_sys_open fs/open.c:1195 [inline]
- __do_sys_openat fs/open.c:1209 [inline]
- __se_sys_openat fs/open.c:1204 [inline]
- __x64_sys_openat+0x1c8/0x1f0 fs/open.c:1204
- do_syscall_64+0xf3/0x1b0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45ca59
-Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fada1226c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 00000000004f7e60 RCX: 000000000045ca59
-RDX: 0000000000000000 RSI: 0000000020000100 RDI: ffffffffffffff9c
-RBP: 000000000078c180 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 00000000000007b2 R14: 00000000004ca90b R15: 00007fada12276d4
-BUG: kernel NULL pointer dereference, address: 0000000000000000
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD a1df9067 P4D a1df9067 PUD a0772067 PMD 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 10572 Comm: syz-executor.3 Tainted: G        W         5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:__read_once_size include/linux/compiler.h:252 [inline]
-RIP: 0010:__sanitizer_cov_trace_pc+0x3f/0x60 kernel/kcov.c:202
-Code: c2 00 01 ff 00 74 11 f7 c2 00 01 00 00 74 35 83 b9 04 14 00 00 00 74 2c 8b 91 e0 13 00 00 83 fa 02 75 21 48 8b 91 e8 13 00 00 <48> 8b 32 48 8d 7e 01 8b 89 e4 13 00 00 48 39 cf 73 08 48 89 44 f2
-RSP: 0018:ffffc90004b37938 EFLAGS: 00010246
-RAX: ffffffff81c35ba2 RBX: 0000000000000001 RCX: ffff88805962a380
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff8880ae8387d8
-RBP: 0000000000000000 R08: dffffc0000000000 R09: ffffed1015d070fc
-R10: ffffed1015d070fc R11: 0000000000000000 R12: dffffc0000000000
-R13: ffffc90004b37d30 R14: ffffc900000ca3b0 R15: ffff8880a26f4170
-FS:  00007fada1227700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 00000000a7654000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- rcu_read_lock include/linux/rcupdate.h:635 [inline]
- __d_lookup+0xa2/0x6e0 fs/dcache.c:2386
- lookup_fast+0x99/0x700 fs/namei.c:1488
- walk_component+0x72/0x680 fs/namei.c:1842
- link_path_walk+0x66d/0xba0 fs/namei.c:2165
- path_openat+0x21d/0x38b0 fs/namei.c:3342
- do_filp_open+0x191/0x3a0 fs/namei.c:3373
- do_sys_openat2+0x463/0x770 fs/open.c:1179
- do_sys_open fs/open.c:1195 [inline]
- __do_sys_openat fs/open.c:1209 [inline]
- __se_sys_openat fs/open.c:1204 [inline]
- __x64_sys_openat+0x1c8/0x1f0 fs/open.c:1204
- do_syscall_64+0xf3/0x1b0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xb3
-RIP: 0033:0x45ca59
-Code: 0d b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fada1226c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 00000000004f7e60 RCX: 000000000045ca59
-RDX: 0000000000000000 RSI: 0000000020000100 RDI: ffffffffffffff9c
-RBP: 000000000078c180 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 00000000000007b2 R14: 00000000004ca90b R15: 00007fada12276d4
-Modules linked in:
-CR2: 0000000000000000
----[ end trace 4b5ea1725b962f43 ]---
-RIP: 0010:__read_once_size include/linux/compiler.h:252 [inline]
-RIP: 0010:__sanitizer_cov_trace_pc+0x3f/0x60 kernel/kcov.c:202
-Code: c2 00 01 ff 00 74 11 f7 c2 00 01 00 00 74 35 83 b9 04 14 00 00 00 74 2c 8b 91 e0 13 00 00 83 fa 02 75 21 48 8b 91 e8 13 00 00 <48> 8b 32 48 8d 7e 01 8b 89 e4 13 00 00 48 39 cf 73 08 48 89 44 f2
-RSP: 0018:ffffc90004b37938 EFLAGS: 00010246
-RAX: ffffffff81c35ba2 RBX: 0000000000000001 RCX: ffff88805962a380
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: ffff8880ae8387d8
-RBP: 0000000000000000 R08: dffffc0000000000 R09: ffffed1015d070fc
-R10: ffffed1015d070fc R11: 0000000000000000 R12: dffffc0000000000
-R13: ffffc90004b37d30 R14: ffffc900000ca3b0 R15: ffff8880a26f4170
-FS:  00007fada1227700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 00000000a7654000 CR4: 00000000001406f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
