@@ -2,112 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A4F202D7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 00:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D10202D7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 00:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgFUWps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 18:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52768 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726101AbgFUWpr (ORCPT
+        id S1730766AbgFUWsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 18:48:30 -0400
+Received: from outils.crapouillou.net ([89.234.176.41]:35472 "EHLO
+        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726064AbgFUWs3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 18:45:47 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCBA2C061794;
-        Sun, 21 Jun 2020 15:45:46 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id l17so13957187qki.9;
-        Sun, 21 Jun 2020 15:45:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=3I6qYF+rnBnkOJGlzBHotShl0MA4LrBISg2tIo433jE=;
-        b=UOoL/FdHx/7J1P9Sje5Dnv3JyYolJfSQwmd2rWTUg/XWghJBG++sukBfLoxuxVp0JD
-         ygRVSNU3bcWbKvYlWc7XgL+m6swLHmSlrWCbSjs1rPlg/DjfHkmRsQy0jMSvs/iOyyDo
-         48SXzIUhGToxftcnXgwbI4SQz53zm1kCtUtP551ZLuMqbUDx6IOaL11k1P6BayclJEuZ
-         WGn/Kcaa2FOxoqxjYfkFk7KZ3RjIL6IZSx8yjHT8lKeYiUCU3r/BxxM/E8F8lLqO8u3k
-         /yhQnreZ2B4ggXUF49OcRNZXggBRURLdjtfFo/wHUEAHWNUov7PlamBkr6t7yI2q7cbA
-         e5Kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=3I6qYF+rnBnkOJGlzBHotShl0MA4LrBISg2tIo433jE=;
-        b=Gmi0FQf4aVuMZeL8ACnjWXbgRbGKa8ocClAoZH6+j2OA7VswwY74HLd76IUgDlsCR/
-         cQSEK7pcbgdOELomgksATLSnRYTFK+8XCrqLNwT9SDJ+dBFWADfc+XXui0tBMDEk2qaO
-         Cxyw8/j0+nF2Mh5gdTwY+Zsv8tr9B/3Q+M80foSBD5ZBd98lLr0y1YEUXEr3oVLF67ji
-         oaTpyT9+F7vwEZnQd2aLJJtH1WULgiTvMK5OpeRW0nEunFTi9xxTcGdybZE5vAKukVNd
-         Ms0OY6c3uuzYr82lI75oXlT+NswOe37o8HCzycGHAzLM6jXn9xLPROLMcnPD1+NBA8Ug
-         RJ1w==
-X-Gm-Message-State: AOAM532osxzo8InPoa3vwYGC2HaUd9gqiEJyyAL0YYAKK7ERmbM+am4r
-        ijnloiBZGKp6+1XpiFKSLKk=
-X-Google-Smtp-Source: ABdhPJwzzcHolrY41026rPOZrohLb1e3e+kkD3FkVxgMEe05Aiiare9fT2AvsCC0DQXbqdDkp85DxQ==
-X-Received: by 2002:a37:6503:: with SMTP id z3mr12650524qkb.439.1592779546162;
-        Sun, 21 Jun 2020 15:45:46 -0700 (PDT)
-Received: from [192.168.1.46] (c-73-88-245-53.hsd1.tn.comcast.net. [73.88.245.53])
-        by smtp.gmail.com with ESMTPSA id w45sm6252365qtj.51.2020.06.21.15.45.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Jun 2020 15:45:45 -0700 (PDT)
-To:     "Bird, Tim" <Tim.Bird@sony.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-From:   Frank Rowand <frowand.list@gmail.com>
-Subject: RFC: KTAP documentation - expected messages
-Message-ID: <d38bf9f9-8a39-87a6-8ce7-d37e4a641675@gmail.com>
-Date:   Sun, 21 Jun 2020 17:45:44 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Sun, 21 Jun 2020 18:48:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1592779706; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:references; bh=W8v5qpEkJnRIN852lPSeQgbjFbf4oDUDEtLcrMPd8PQ=;
+        b=b4skdB/p7ZiolCg9gZot7J0Xka7x7c38c11eDflnfrbYx66cDRdA9IVMTlxZTI09oU0AwX
+        Y9Hc2FHkDvmkgJqh0H8oEFxSAJd5vrDCM3gasrF+DE+rbD08IKkGd5X3Q/0Rrdnpjhtoiu
+        7Qk8YHdCWGjqHLfjXLRQyZjHCOIP/TY=
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>, od@zcrc.me,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Cercueil <paul@crapouillou.net>
+Subject: [RESEND PATCH] usb: common: usb-conn-gpio: Register optional charger
+Date:   Mon, 22 Jun 2020 00:48:07 +0200
+Message-Id: <20200621224807.882184-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tim Bird started a thread [1] proposing that he document the selftest result
-format used by Linux kernel tests.  
+Register a power supply charger, if the Kconfig option
+USB_CONN_GPIO_CHARGER is set, whose online state depends on whether
+the USB role is set to device or not.
 
-[1] https://lore.kernel.org/r/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com
+This is useful when the USB role is the only way to know if the device
+is charging from USB. The API is the standard power supply charger API,
+you get a /sys/class/power_supply/xxx/online node which tells you the
+state of the charger.
 
-The issue of messages generated by the kernel being tested (that are not
-messages directly created by the tests, but are instead triggered as a
-side effect of the test) came up.  In this thread, I will call these
-messages "expected messages".  Instead of sidetracking that thread with
-a proposal to handle expected messages, I am starting this new thread.
+The sole purpose of this is to give userspace applications a way to
+know whether or not the charger is plugged.
 
-I implemented an API for expected messages that are triggered by tests
-in the Devicetree unittest code, with the expectation that the specific
-details may change when the Devicetree unittest code adapts the KUnit
-API.  It seems appropriate to incorporate the concept of expected
-messages in Tim's documentation instead of waiting to address the
-subject when the Devicetree unittest code adapts the KUnit API, since
-Tim's document may become the kernel selftest standard.
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ drivers/usb/common/Kconfig         | 11 +++++++
+ drivers/usb/common/usb-conn-gpio.c | 47 ++++++++++++++++++++++++++++++
+ 2 files changed, 58 insertions(+)
 
-Instead of creating a very long email containing multiple objects,
-I will reply to this email with a separate reply for each of:
+diff --git a/drivers/usb/common/Kconfig b/drivers/usb/common/Kconfig
+index d611477aae41..5405ae96c68f 100644
+--- a/drivers/usb/common/Kconfig
++++ b/drivers/usb/common/Kconfig
+@@ -49,3 +49,14 @@ config USB_CONN_GPIO
+ 
+ 	  To compile the driver as a module, choose M here: the module will
+ 	  be called usb-conn-gpio.ko
++
++if USB_CONN_GPIO
++
++config USB_CONN_GPIO_CHARGER
++	bool "USB charger support"
++	select POWER_SUPPLY
++	help
++	  Register a charger with the power supply subsystem. This will allow
++	  userspace to know whether or not the device is charging from USB.
++
++endif
+diff --git a/drivers/usb/common/usb-conn-gpio.c b/drivers/usb/common/usb-conn-gpio.c
+index ed204cbb63ea..129d48db280b 100644
+--- a/drivers/usb/common/usb-conn-gpio.c
++++ b/drivers/usb/common/usb-conn-gpio.c
+@@ -17,6 +17,7 @@
+ #include <linux/of.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
++#include <linux/power_supply.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/usb/role.h>
+ 
+@@ -38,6 +39,9 @@ struct usb_conn_info {
+ 	struct gpio_desc *vbus_gpiod;
+ 	int id_irq;
+ 	int vbus_irq;
++
++	struct power_supply_desc desc;
++	struct power_supply *charger;
+ };
+ 
+ /**
+@@ -98,6 +102,8 @@ static void usb_conn_detect_cable(struct work_struct *work)
+ 		ret = regulator_enable(info->vbus);
+ 		if (ret)
+ 			dev_err(info->dev, "enable vbus regulator failed\n");
++	} else if (IS_ENABLED(CONFIG_USB_CONN_GPIO_CHARGER)) {
++		power_supply_changed(info->charger);
+ 	}
+ 
+ 	info->last_role = role;
+@@ -121,10 +127,35 @@ static irqreturn_t usb_conn_isr(int irq, void *dev_id)
+ 	return IRQ_HANDLED;
+ }
+ 
++static enum power_supply_property usb_charger_properties[] = {
++	POWER_SUPPLY_PROP_ONLINE,
++};
++
++static int usb_charger_get_property(struct power_supply *psy,
++				    enum power_supply_property psp,
++				    union power_supply_propval *val)
++{
++	struct usb_conn_info *info = power_supply_get_drvdata(psy);
++
++	switch (psp) {
++	case POWER_SUPPLY_PROP_ONLINE:
++		val->intval = info->last_role == USB_ROLE_DEVICE;
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int usb_conn_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
++	struct power_supply_desc *desc;
+ 	struct usb_conn_info *info;
++	struct power_supply_config cfg = {
++		.of_node = dev->of_node,
++	};
+ 	int ret = 0;
+ 
+ 	info = devm_kzalloc(dev, sizeof(*info), GFP_KERNEL);
+@@ -203,6 +234,22 @@ static int usb_conn_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	if (IS_ENABLED(CONFIG_USB_CONN_GPIO_CHARGER)) {
++		desc = &info->desc;
++		desc->name = "usb-charger";
++		desc->properties = usb_charger_properties;
++		desc->num_properties = ARRAY_SIZE(usb_charger_properties);
++		desc->get_property = usb_charger_get_property;
++		desc->type = POWER_SUPPLY_TYPE_USB;
++		cfg.drv_data = info;
++
++		info->charger = devm_power_supply_register(dev, desc, &cfg);
++		if (IS_ERR(info->charger)) {
++			dev_err(dev, "Unable to register charger\n");
++			return PTR_ERR(info->charger);
++		}
++	}
++
+ 	platform_set_drvdata(pdev, info);
+ 
+ 	/* Perform initial detection */
+-- 
+2.27.0
 
-  The "expected messages" API implemention and use can be from
-  drivers/of/unittest.c in the mainline kernel.
-
-  of_unittest_expect - A proof of concept perl program to filter console
-                       output containing expected messages output
-
-                       of_unittest_expect is also available by cloning
-                       https://github.com/frowand/dt_tools.git
-
-  An example raw console output with timestamps and expect messages.
-
-  An example of console output processed by filter program
-  of_unittest_expect to be more human readable.  The expected
-  messages are not removed, but are flagged.
-
-  An example of console output processed by filter program
-  of_unittest_expect to be more human readable.  The expected
-  messages are removed instead of being flagged.
