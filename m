@@ -2,145 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 624A32028FF
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 08:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 189AF202917
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 08:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729329AbgFUGDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 02:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
+        id S1729348AbgFUGIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 02:08:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729282AbgFUGDo (ORCPT
+        with ESMTP id S1729336AbgFUGIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 02:03:44 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 745EDC061795
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 23:03:44 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id y18so6052480plr.4
-        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 23:03:44 -0700 (PDT)
+        Sun, 21 Jun 2020 02:08:09 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E0FC061795
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 23:08:07 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id i4so6818802pjd.0
+        for <linux-kernel@vger.kernel.org>; Sat, 20 Jun 2020 23:08:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=E37Y5fbYX2B/AUZ69TRQLOn9ZrdWJ1PDTbytHbYw12I=;
-        b=bEXtwFplRNji+ZAlc70WTzC2kmlYpyz9O7mWigm5rajr5DgliPr3sad6SDrRGM7Kxf
-         AwS4rnsGWi0suv+nLr/dTLjpe/5BBQWQ78Y/MLvC6fIzRiiGWDyDvxlIwAkT6yhVwCVd
-         L5Nqmm9rZgD4hg6kOnjyoD90IV4D0fRF8b6QhEkYL4UND9cEbgOAMAO0KGNbHg/xJxzE
-         G4QbwMr2XpUzZ00E4P0OlQSphxTK+8k6P8gtvtTANIoMPfCSKI8Lv2oSt70mXr3kVJnX
-         mRNNXqZ5KQsa4qUoQjbNJsw5b0Ou9b7vS1uP2/0cXZscaYixyou2r2uvCkhkOuP7Lkp+
-         jjhQ==
+        bh=a+NZmNa85rn9+KPzd4vANmtBgY1PrDp2O3PiIlzp/9U=;
+        b=eI396BnBH0g9oNApINxy4c96cZa+zZqLRZLKqxwpBTblF3nx8HJYtA2DhrAFt2lsGl
+         nsPxyZUBvcdS3x1dPG+5Bs6J55PX1VcrkPee/0B/cJZn+9Uim19jDcDSK2l51OdA31gG
+         BGg3D0rmMeSk219JidiohAbx8ozUcmsPS8XIQQVqzfX6ilNoWiNUdQz9n3DZXZhiTEsY
+         DqSY487fcfwKsm5bEpNrSpmKWCNW3/l13lGKFBRRTVl/+RNIN6bvHQFH5ol3tuqqXxma
+         bIBL30uXj4bpdquI0nfYhgdqE7r2JUsM7WXDVr3Kb2lI0S25AuzCwq57z9mnyJMMvJRw
+         TkLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=E37Y5fbYX2B/AUZ69TRQLOn9ZrdWJ1PDTbytHbYw12I=;
-        b=KMdBXeFodU9dyG5stDaS8T8p9mi5djmjb77zdlmJPEqBbAMa8A7smr/qiqwYbd3I5x
-         uGt1DloB4OBOUZOLmzMF7bKYrN6FmXrE+Z4Fa4wE7/D2nnseR4vEiD+Zl+HiIOlIH1EF
-         ioJ066ck8jv9LsL1+s2dya4dAQOuGrLWRgUV262xJ/rHzmN9OZJT8XR893yYHfwpdadL
-         TjW272Wf0+L6T/6DQ4haS7qtVcP3RNk2sM3Sn9dsk/1/VEsnsX1lM1IfWjtXmZy6Hg8w
-         tr9x+Vx/uFJi1n6xi9rRxyPADITu9vNK48v5LYiAPHybJChbgsio86l0e2Rp09KqE3FW
-         2kUQ==
-X-Gm-Message-State: AOAM532Vn8v8/t0Ymtp2207yYeBmHkVpVv/1NlSIZKptCMMjX6wQnqI6
-        B2uYz/DR62QqvLCpbkgTs9Y/9A==
-X-Google-Smtp-Source: ABdhPJxHRHspjuIwXRf0s9ZHcLtbwGIglVcsxqFPwAZTEDfrkST5fk9GgmGyQ7so94acwcjrzTu6RA==
-X-Received: by 2002:a17:90a:6ace:: with SMTP id b14mr12034953pjm.13.1592719423730;
-        Sat, 20 Jun 2020 23:03:43 -0700 (PDT)
+        bh=a+NZmNa85rn9+KPzd4vANmtBgY1PrDp2O3PiIlzp/9U=;
+        b=XYjGd2NN2q5HOPzhrd/885sAFlCJCyv2IQnPWhwCnsJDEoOzGrrHujoTjr7HYNaTr3
+         FN7XgdJpOYPQkGWbfAn02VeXikroac61sa8sE4cKsV/QdzVDo/1yCjUgqWf5btBqOX/R
+         +u+3wDQa47pIF6k1I3zN0lJL3/HZvD3L8S+tgV10JjDGlpalz5874iF+SnwbDsZURK0E
+         rSI+yHuPssMV4KAh+OQ5WOIvkDpve6rhfJvCx+/TyycTOP+5WyxQ5Zmj60gpaY0OSA/H
+         B0+u3OuwsyeR6PPiPX3U1hG4NoswjA3wLCL+C7F49VBMWrynsMT+odTQKtRd6DloTYIY
+         WXmg==
+X-Gm-Message-State: AOAM532Uby1AaFpsWalfSWuG4hDdyA73jMNTGINUY6wOSMz0/v1QsgGk
+        2dk4swmm3RBSY/56oPFSWug5Dw==
+X-Google-Smtp-Source: ABdhPJwPxg0VeG81i9p0d0Xp/Ilpo4o1aNYtAJHzWFbGpThw1h1pxb4MXkRTHJzf7a17aSwY0Niqjg==
+X-Received: by 2002:a17:90b:1087:: with SMTP id gj7mr12163713pjb.124.1592719687047;
+        Sat, 20 Jun 2020 23:08:07 -0700 (PDT)
 Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id 77sm10459560pfx.172.2020.06.20.23.03.42
+        by smtp.gmail.com with ESMTPSA id q36sm9700009pjq.18.2020.06.20.23.08.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 20 Jun 2020 23:03:42 -0700 (PDT)
-Date:   Sat, 20 Jun 2020 23:00:55 -0700
+        Sat, 20 Jun 2020 23:08:06 -0700 (PDT)
+Date:   Sat, 20 Jun 2020 23:05:19 -0700
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     John Stultz <john.stultz@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-gpio@vger.kernel.org
-Subject: Re: [RFC][PATCH 4/5] pinctrl: qcom: Allow pinctrl-msm code to be
- loadable as a module
-Message-ID: <20200621060055.GA2421@builder.lan>
-References: <20200616061338.109499-1-john.stultz@linaro.org>
- <20200616061338.109499-5-john.stultz@linaro.org>
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 18/21] regulator: qcom_smd: Fix pmi8994 label
+Message-ID: <20200621060519.GB2421@builder.lan>
+References: <20200620144639.335093-1-konradybcio@gmail.com>
+ <20200620144639.335093-19-konradybcio@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200616061338.109499-5-john.stultz@linaro.org>
+In-Reply-To: <20200620144639.335093-19-konradybcio@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 15 Jun 23:13 PDT 2020, John Stultz wrote:
+On Sat 20 Jun 07:46 PDT 2020, Konrad Dybcio wrote:
 
-> Tweaks to allow pinctrl-msm code to be loadable as a module.
-> This is needed in order to support having the qcom-scm driver,
-> which pinctrl-msm calls into, configured as a module.
+> s3 was mislabeled as s2. Fix it.
 > 
+> Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
 
-This means that we need a "depends on QCOM_SCM || QCOM_SCM=n" on all
-entries in the Kconfig that selects PINCTRL_MSM, or switch PINCTRL_MSM
-to be user selectable and make all the others depend on it.
-
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Joerg Roedel <joro@8bytes.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Jason Cooper <jason@lakedaemon.net>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Lina Iyer <ilina@codeaurora.org>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Cc: Todd Kjos <tkjos@google.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-arm-msm@vger.kernel.org
-> Cc: iommu@lists.linux-foundation.org
-> Cc: linux-gpio@vger.kernel.org
-> Signed-off-by: John Stultz <john.stultz@linaro.org>
-> ---
->  drivers/pinctrl/qcom/Kconfig       | 2 +-
->  drivers/pinctrl/qcom/pinctrl-msm.c | 3 +++
->  2 files changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pinctrl/qcom/Kconfig b/drivers/pinctrl/qcom/Kconfig
-> index ff1ee159dca2..5a7e1bc621e6 100644
-> --- a/drivers/pinctrl/qcom/Kconfig
-> +++ b/drivers/pinctrl/qcom/Kconfig
-> @@ -2,7 +2,7 @@
->  if (ARCH_QCOM || COMPILE_TEST)
->  
->  config PINCTRL_MSM
-> -	bool
-> +	tristate
->  	select PINMUX
->  	select PINCONF
->  	select GENERIC_PINCONF
-> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-> index 83b7d64bc4c1..54a226f682e9 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-> @@ -1355,3 +1355,6 @@ int msm_pinctrl_remove(struct platform_device *pdev)
->  }
->  EXPORT_SYMBOL(msm_pinctrl_remove);
->  
-> +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. pinctrl-msm driver");
-
-It's the "Qualcomm Technologies, Inc. TLMM driver"
-
-> +MODULE_LICENSE("GPL v2");
-> +
-
-Please don't retain my empty line at the end of this file :)
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
 Regards,
 Bjorn
 
+> ---
+>  drivers/regulator/qcom_smd-regulator.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/regulator/qcom_smd-regulator.c b/drivers/regulator/qcom_smd-regulator.c
+> index 53a64d856926..7f5c318c8259 100644
+> --- a/drivers/regulator/qcom_smd-regulator.c
+> +++ b/drivers/regulator/qcom_smd-regulator.c
+> @@ -821,7 +821,7 @@ static const struct rpm_regulator_data rpm_pm8994_regulators[] = {
+>  static const struct rpm_regulator_data rpm_pmi8994_regulators[] = {
+>  	{ "s1", QCOM_SMD_RPM_SMPB, 1, &pmi8994_ftsmps, "vdd_s1" },
+>  	{ "s2", QCOM_SMD_RPM_SMPB, 2, &pmi8994_hfsmps, "vdd_s2" },
+> -	{ "s2", QCOM_SMD_RPM_SMPB, 3, &pmi8994_hfsmps, "vdd_s3" },
+> +	{ "s3", QCOM_SMD_RPM_SMPB, 3, &pmi8994_hfsmps, "vdd_s3" },
+>  	{ "boost-bypass", QCOM_SMD_RPM_BBYB, 1, &pmi8994_bby, "vdd_bst_byp" },
+>  	{}
+>  };
 > -- 
-> 2.17.1
+> 2.27.0
 > 
