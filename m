@@ -2,64 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ADDB202882
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 06:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E49C520288C
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 06:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729244AbgFUEcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 00:32:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725807AbgFUEcm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 00:32:42 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2FF3C061794;
-        Sat, 20 Jun 2020 21:32:41 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 446421274A81F;
-        Sat, 20 Jun 2020 21:32:41 -0700 (PDT)
-Date:   Sat, 20 Jun 2020 21:32:40 -0700 (PDT)
-Message-Id: <20200620.213240.344394880607292689.davem@davemloft.net>
-To:     dhowells@redhat.com
-Cc:     netdev@vger.kernel.org,
-        syzbot+d3eccef36ddbd02713e9@syzkaller.appspotmail.com,
-        linux-afs@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] rxrpc: Fix notification call on completion of
- discarded calls
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <159260629601.2218121.13958646181773576175.stgit@warthog.procyon.org.uk>
-References: <159260629601.2218121.13958646181773576175.stgit@warthog.procyon.org.uk>
-X-Mailer: Mew version 6.8 on Emacs 26.3
+        id S1726110AbgFUEge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 00:36:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46868 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725836AbgFUEgd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Jun 2020 00:36:33 -0400
+Received: from X1 (nat-ab2241.sltdut.senawave.net [162.218.216.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F1CD22477E;
+        Sun, 21 Jun 2020 04:36:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592714193;
+        bh=8Is6WO1ey0nQPFB5gupTXkIMpseo8Kyx5Z9+J6XFIkI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=2rSDacdxSmtNbeXB/ki+X88EqpfdIdcDJEKcMmIXrAzCrCdYgyA3hT2pQk1pUfChv
+         vK5yopJzDZa0Wly1PQ2bK427zhV5HMATTDrTudmt3qj4Awdvk8QFCf27vfUnRCV2Fs
+         nqhY4BNtfsskJODq/AP2dfkTx7McM4F/3THyy/qo=
+Date:   Sat, 20 Jun 2020 21:36:32 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     andy.shevchenko@gmail.com, arnd@arndb.de, emil.l.velikov@gmail.com,
+        geert@linux-m68k.org, keescook@chromium.org,
+        linus.walleij@linaro.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com, syednwaris@gmail.com,
+        vilhelm.gray@gmail.com, yamada.masahiro@socionext.com
+Subject: Re: [PATCH v3 2/2] bits: Add tests of GENMASK
+Message-Id: <20200620213632.60c2c6b99ec9cf9392fa128d@linux-foundation.org>
+In-Reply-To: <20200608221823.35799-2-rikard.falkeborn@gmail.com>
+References: <20200608184222.GA899@rikard>
+        <20200608221823.35799-1-rikard.falkeborn@gmail.com>
+        <20200608221823.35799-2-rikard.falkeborn@gmail.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Sat, 20 Jun 2020 21:32:41 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
-Date: Fri, 19 Jun 2020 23:38:16 +0100
+On Tue,  9 Jun 2020 00:18:23 +0200 Rikard Falkeborn <rikard.falkeborn@gmail.com> wrote:
 
-> When preallocated service calls are being discarded, they're passed to
-> ->discard_new_call() to have the caller clean up any attached higher-layer
-> preallocated pieces before being marked completed.  However, the act of
-> marking them completed now invokes the call's notification function - which
-> causes a problem because that function might assume that the previously
-> freed pieces of memory are still there.
+> Add tests of GENMASK and GENMASK_ULL.
 > 
-> Fix this by setting a dummy notification function on the socket after
-> calling ->discard_new_call().
-> 
-> This results in the following kasan message when the kafs module is
-> removed.
- ...
-> Reported-by: syzbot+d3eccef36ddbd02713e9@syzkaller.appspotmail.com
-> Fixes: 5ac0d62226a0 ("rxrpc: Fix missing notification")
-> Signed-off-by: David Howells <dhowells@redhat.com>
+> A few test cases that should fail compilation are provided
+> under #ifdef TEST_GENMASK_FAILURES
 
-Applied, thanks David.
+WARNING: modpost: missing MODULE_LICENSE() in lib/test_bits.o
+
+
+Could you please send a fix?
