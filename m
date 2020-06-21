@@ -2,98 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 921F8202BF9
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 20:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA85202C01
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 20:24:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730578AbgFUSJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 14:09:36 -0400
-Received: from smtp.al2klimov.de ([78.46.175.9]:39934 "EHLO smtp.al2klimov.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730550AbgFUSJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 14:09:35 -0400
-Received: from authenticated-user (PRIMARY_HOSTNAME [PUBLIC_IP])
-        by smtp.al2klimov.de (Postfix) with ESMTPA id D2B2D467EF;
-        Sun, 21 Jun 2020 18:09:28 +0000 (UTC)
-Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: Documentation/process
-To:     Joe Perches <joe@perches.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Tony Fischetti <tony.fischetti@gmail.com>,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>, Will Deacon <will@kernel.org>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jacob Huisman <jacobhuisman@kernelthusiast.com>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
-        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-References: <20200621133630.46435-1-grandmaster@al2klimov.de>
- <CANiq72kA==S-G481VHx2qrKkJmaVK7ZOuYmin4xVr3XKB8x8ug@mail.gmail.com>
- <b7ba0047-8993-d3bf-327c-1fb70bc0282c@al2klimov.de>
- <2c60a30eb1fd3616fccd496e76d3d1cc54afc732.camel@perches.com>
-From:   "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Message-ID: <61b1a32f-e49b-6667-6fe3-d4348b7cf38c@al2klimov.de>
-Date:   Sun, 21 Jun 2020 20:09:27 +0200
+        id S1729957AbgFUSYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 14:24:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727103AbgFUSYx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Jun 2020 14:24:53 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70944C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 11:24:53 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id e4so16831514ljn.4
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 11:24:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=YBgsvtuV1+FGKsiCwr3BVYB/Gcp58aRuWaU/DnoMIcg=;
+        b=EkrN1LKZNMwqOTBRdx0cPhdlbCgUWu6nUUT4RBZigTrqcYvvEPs1OBGy72xFs6Xv3T
+         QSi69AOmPIRTEHcR12DxXw+uy5lLmb73+mqdVxpnAoMRclKm+SvibAAAKhqkcPf2b9oz
+         GuMMA5QUC8qmClY21eZLHLOsjrW4vui/GC6geS93z2QZimCfS6oXlI8S9CpXVfglMDAc
+         fEyTF1BwBticNvWlXJCDVEtOXbEYy+kso1YkQ/rrAyfafslqTQ2yMUCASXIqvLVeqiUG
+         /wyr3g7tUIwVF506zDvFUOWA9E8fiCG52qttn43KBpN21rv2foB6ikCrrJbKLVGhvsEv
+         Wu0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=YBgsvtuV1+FGKsiCwr3BVYB/Gcp58aRuWaU/DnoMIcg=;
+        b=gvvLaf+GZOb2fgxNDqRnC5x0ckhXPUYBwJeBB8jHKoCuhlqbUcwgeF8HHGJHC8BqXF
+         9BZ5NU9HwHyYm9sdDxJyyjjSqFUsbq9xyyyq2Y49cm68HGORUO8SycDSc2fepcC1kybA
+         T/GnLCSGvRyOIR4yYbRNP6d4FW7BM+MOlCNipCrypND7GVM2bqH6910AUNrHhh6CJ5LV
+         58IBDfkPipHZaZh+nZ23+VOXdJl9A5r3Cy2SOWg58+x4lToIKBMqx/UXMrG0kFprY3xI
+         N05xQCwcwqTe3MuFHCCfuEWcPrM+JzBG4gsHplUHyUrf79D74aVuuw9LKqog9Cly+oFM
+         xNKw==
+X-Gm-Message-State: AOAM530X7/7gsx0pJqeI2s9AmiQsvb0AHEdJ4rjAumYXBnaId+8ojRmo
+        HgOIR12jC6ZDFCJ4wWzJpWSjP8fkFBg5oVfjJSnSkQ==
+X-Google-Smtp-Source: ABdhPJxLZa8trPAUnCmC8L02O+Nk0zCWm3TEEurkUZceBNWISBjeHa1Igv4FklL/+ZCxx9vuteCBMDkrjby+Gs54Zz4=
+X-Received: by 2002:a2e:7303:: with SMTP id o3mr7169685ljc.100.1592763891900;
+ Sun, 21 Jun 2020 11:24:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2c60a30eb1fd3616fccd496e76d3d1cc54afc732.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp.al2klimov.de;
-        auth=pass smtp.auth=aklimov@al2klimov.de smtp.mailfrom=grandmaster@al2klimov.de
-X-Spamd-Bar: /
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 21 Jun 2020 20:24:40 +0200
+Message-ID: <CACRpkdasTF7DLFejjC005vuBfcv2upbNjd5Cw9j_d-CUnHOMDg@mail.gmail.com>
+Subject: [GIT PULL] pin control fixes for v5.8
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
+
+these are some early fixes collected during the first week after the merge
+window, all pretty self-evident, with the details in the signed tag. The revert
+is the crucial thing.
+
+Please pull them in!
+
+Yours,
+Linus Walleij
 
 
-Am 21.06.20 um 19:42 schrieb Joe Perches:
-> On Sun, 2020-06-21 at 16:30 +0200, Alexander A. Klimov wrote:
->> Am 21.06.20 um 15:46 schrieb Miguel Ojeda:
->>> On Sun, Jun 21, 2020 at 3:37 PM Alexander A. Klimov
->>> <grandmaster@al2klimov.de> wrote:
-> []
->>>>               Replace HTTP with HTTPS.
-> []
->> W/o a
->> such central "rule on how to HTTPSify links"
-> 
-> Maybe:
-> ---
->   scripts/checkpatch.pl | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 524df88f9364..4e49187a6137 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -3115,6 +3115,12 @@ sub process {
->   			}
->   		}
->   
-> +# check for URLs using old http:// links, suggest https:
-> +		if ($rawline =~ m{^\+.*\bhttp://}) {
-> +			WARN("HTTP_URL",
-> +			     "Prefer URLs using https: over http:\n" . $herecurr);
-> +		}
-> +
-Good idea!
+The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
 
->   # discourage the use of boolean for type definition attributes of Kconfig options
->   		if ($realfile =~ /Kconfig/ &&
->   		    $line =~ /^\+\s*\bboolean\b/) {
-> 
-> 
+  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git
+tags/pinctrl-v5.8-2
+
+for you to fetch changes up to 25fae752156db7253471347df08a2700501eafde:
+
+  pinctrl: single: fix function name in documentation (2020-06-20
+22:41:32 +0200)
+
+----------------------------------------------------------------
+Pin control fixes for the v5.8 cycle, first take:
+
+- Fix a warning on the Qualcomm SPMI GPIO chip being instatiated
+  twice without a unique irqchip struct.
+- Use the noirq variants of the suspend and resume callbacks in
+  the Tegra driver.
+- Clean up the errorpath on the MCP23s08 driver.
+- Revert the use of devm_of_iomap() in the Freescale driver as
+  it was regressing the platform.
+- Add some missing pins in the Qualcomm IPQ6018 driver.
+- Fix a simple documentation bug in the pinctrl-single driver.
+
+----------------------------------------------------------------
+Dmitry Baryshkov (1):
+      pinctrl: qcom: spmi-gpio: fix warning about irq chip reusage
+
+Drew Fustini (1):
+      pinctrl: single: fix function name in documentation
+
+Haibo Chen (1):
+      Revert "pinctrl: freescale: imx: Use 'devm_of_iomap()' to avoid
+a resource leak in case of error in 'imx_pinctrl_probe()'"
+
+Sivaprakash Murugesan (1):
+      pinctrl: qcom: ipq6018 Add missing pins in qpic pin group
+
+Vidya Sagar (1):
+      pinctrl: tegra: Use noirq suspend/resume callbacks
+
+kernel test robot (1):
+      pinctrl: mcp23s08: Split to three parts: fix ptr_ret.cocci warnings
+
+ drivers/pinctrl/freescale/pinctrl-imx.c  |  7 +++----
+ drivers/pinctrl/pinctrl-mcp23s08_spi.c   |  5 +----
+ drivers/pinctrl/pinctrl-single.c         |  2 +-
+ drivers/pinctrl/qcom/pinctrl-ipq6018.c   |  3 ++-
+ drivers/pinctrl/qcom/pinctrl-spmi-gpio.c | 21 ++++++++++-----------
+ drivers/pinctrl/tegra/pinctrl-tegra.c    |  4 ++--
+ 6 files changed, 19 insertions(+), 23 deletions(-)
