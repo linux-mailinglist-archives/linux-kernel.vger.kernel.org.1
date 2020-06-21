@@ -2,128 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DE220295D
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 09:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1DD5202960
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 09:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729435AbgFUHgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 03:36:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729423AbgFUHgI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 03:36:08 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE5F7C061795
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 00:36:08 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id k1so6104961pls.2
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 00:36:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4G7rfXIuXtIqafGfH0y8x3Zdpo0l2VCJjWiyyWzqbR0=;
-        b=FJ/k2J9QaZ9ZMtOAKL+9EWJv9i1+nd2l0oO00FwgN0N8J4/qppUWk0LMbaYdcVzHTU
-         lSTOE7lzJ9bjIh98iYbmcKyR6T2WWXuwSiwQCVDEyX+ByS3wRtiZ8XxCEjmykPp1uRFl
-         Q1cjXUuVnq95i3M/55s/LxSOWrh/1r9+mG6FHbeFJH0JHBUKGaxV4fdbhtQImCzV2hPC
-         bDHEBGpsn6YTJJFdl89GRhR/0bjWdqYrqqnYZqU4PlakMYRo2H+CsWNrLWVU1I6IAafj
-         oM+CLwgk9yGrJjIveD4eRxqTtPwnrIwrYOR06RSeh0sb4Lf2EqsZRcLHMrOO2zxxzHrt
-         tIcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4G7rfXIuXtIqafGfH0y8x3Zdpo0l2VCJjWiyyWzqbR0=;
-        b=Xm4ojVNhfsFAPKbkcQlGzRbQmxBbRdyh5/99zEFx1JvAl+ms4YR/fu+2UcmSk/fZXp
-         beqEC1ZLZbV8dwGwwKfKG9jFDhtO2MY6chxNVTdfDdBwbcRczUmrCoY/z823Euy8NCgf
-         vsd/RdSCqkuejvyC/Tgz5UH6ru3FPD+p/jZG5IFNv3cSj58gN7n534xKu8fG7q+BQqaV
-         /UgOiEajIpeUCPL2zihn+mf7hrovI5m8xoSqF5gPYYvhdOOF4nA+0M85uvlTUErX3zEC
-         TCbyVB6VcGGiynAxoaj5cmk55qGIhbDUyAdoQwo+yLkNAEtsacpdwq1vuWC2fEyzZnS1
-         k6Yw==
-X-Gm-Message-State: AOAM532cPqnhfpkKDkVjuocIYxbTX2nUc980Vx3tdneye+GYLcCwph8x
-        b14HrQWGL94YdZQiEwHTiJjXID65UCQ=
-X-Google-Smtp-Source: ABdhPJzDDEUMHD1pZ6etyMkMjEO533cH9YhgXfHiA12gTCuscJtDeAnJww8MPQIwpSxkosB3znkelQ==
-X-Received: by 2002:a17:90a:aa83:: with SMTP id l3mr11962467pjq.73.1592724968142;
-        Sun, 21 Jun 2020 00:36:08 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id j13sm10297079pje.25.2020.06.21.00.36.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Jun 2020 00:36:07 -0700 (PDT)
-Date:   Sun, 21 Jun 2020 00:33:20 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCHv3 0/2] Convert QCOM watchdog timer bindings to YAML
-Message-ID: <20200621073320.GI128451@builder.lan>
-References: <cover.1581459151.git.saiprakash.ranjan@codeaurora.org>
- <c2b8fabcf82b27c7334482bd53ebba62@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c2b8fabcf82b27c7334482bd53ebba62@codeaurora.org>
+        id S1729451AbgFUHgq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 03:36:46 -0400
+Received: from mga06.intel.com ([134.134.136.31]:16490 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729423AbgFUHgq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Jun 2020 03:36:46 -0400
+IronPort-SDR: wF5EK7ZOAEv6rtVCIUZfPn+9f18vYDreaxBjvRv3BUVnmCVfiql1OCYec6OZHNcylJIY5vmQ7t
+ DmyAsvFkrUvw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9658"; a="204986705"
+X-IronPort-AV: E=Sophos;i="5.75,262,1589266800"; 
+   d="scan'208";a="204986705"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2020 00:36:45 -0700
+IronPort-SDR: 2ZkjyPoeCU9wUIj4c9zkEnAOGKB/KZbBwhhJ45d23HKoc/wUjqnyRWC1lWrbR5sYW5XywW/oFQ
+ F9IUtRHztcQg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,262,1589266800"; 
+   d="scan'208";a="478102505"
+Received: from shbuild999.sh.intel.com ([10.239.146.107])
+  by fmsmga005.fm.intel.com with ESMTP; 21 Jun 2020 00:36:41 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Kees Cook <keescook@chromium.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Iurii Zaikin <yzaikin@google.com>, andi.kleen@intel.com,
+        tim.c.chen@intel.com, dave.hansen@intel.com, ying.huang@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     Feng Tang <feng.tang@intel.com>
+Subject: [PATCH v5 0/3] make vm_committed_as_batch aware of vm overcommit policy
+Date:   Sun, 21 Jun 2020 15:36:37 +0800
+Message-Id: <1592725000-73486-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 16 Jun 23:56 PDT 2020, Sai Prakash Ranjan wrote:
+When checking a performance change for will-it-scale scalability
+mmap test [1], we found very high lock contention for spinlock of
+percpu counter 'vm_committed_as':
 
-> Hi Bjorn,
-> 
+    94.14%     0.35%  [kernel.kallsyms]         [k] _raw_spin_lock_irqsave
+    48.21% _raw_spin_lock_irqsave;percpu_counter_add_batch;__vm_enough_memory;mmap_region;do_mmap;
+    45.91% _raw_spin_lock_irqsave;percpu_counter_add_batch;__do_munmap;
 
-Hi Sai,
+Actually this heavy lock contention is not always necessary. The
+'vm_committed_as' needs to be very precise when the strict
+OVERCOMMIT_NEVER policy is set, which requires a rather small batch
+number for the percpu counter.
 
-> On 2020-02-12 03:54, Sai Prakash Ranjan wrote:
-> > This series converts QCOM watchdog timer bindings to YAML. Also
-> > it adds the missing SoC-specific compatible for QCS404, SC7180,
-> > SDM845 and SM8150 SoCs.
-> > 
-> > v1:
-> > https://lore.kernel.org/lkml/cover.1576211720.git.saiprakash.ranjan@codeaurora.org/
-> > v2:
-> > https://lore.kernel.org/lkml/cover.1580570160.git.saiprakash.ranjan@codeaurora.org/
-> > 
-> > Changes since v2:
-> >  * Add missing compatibles to enum.
-> > 
-> > Changes since v1:
-> >  As per Rob's suggestion:
-> >   * Replaced oneOf+const with enum.
-> >   * Removed timeout-sec and included watchdog.yaml.
-> >   * Removed repeated use of const:qcom,kpss-wdt and made use of enum.
-> > 
-> > Sai Prakash Ranjan (2):
-> >   dt-bindings: watchdog: Convert QCOM watchdog timer bindings to YAML
-> >   dt-bindings: watchdog: Add compatible for QCS404, SC7180, SDM845,
-> >     SM8150
-> > 
-> >  .../devicetree/bindings/watchdog/qcom-wdt.txt | 28 -----------
-> >  .../bindings/watchdog/qcom-wdt.yaml           | 48 +++++++++++++++++++
-> >  2 files changed, 48 insertions(+), 28 deletions(-)
-> >  delete mode 100644
-> > Documentation/devicetree/bindings/watchdog/qcom-wdt.txt
-> >  create mode 100644
-> > Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml
-> 
-> 
-> Gentle ping!
-> 
+So keep 'batch' number unchanged for strict OVERCOMMIT_NEVER policy,
+and enlarge it for not-so-strict  OVERCOMMIT_ALWAYS and OVERCOMMIT_GUESS
+policies.
 
-This should better go through the watchdog tree, so I believe Guenter
-would be the one to pick this up.
+Benchmark with the same testcase in [1] shows 53% improvement on a
+8C/16T desktop, and 2097%(20X) on a 4S/72C/144T server. And for that
+case, whether it shows improvements depends on if the test mmap size
+is bigger than the batch number computed.
 
-Regards,
-Bjorn
+We tested 10+ platforms in 0day (server, desktop and laptop). If we
+lift it to 64X, 80%+ platforms show improvements, and for 16X lift,
+1/3 of the platforms will show improvements.
 
-> Thanks,
-> Sai
-> 
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
+And generally it should help the mmap/unmap usage,as Michal Hocko
+mentioned:
+
+: I believe that there are non-synthetic worklaods which would benefit
+: from a larger batch. E.g. large in memory databases which do large
+: mmaps during startups from multiple threads.
+
+Note: There are some style complain from checkpatch for patch 3,
+as sysctl handler declaration follows the similar format of sibling
+functions
+
+[1] https://lore.kernel.org/lkml/20200305062138.GI5972@shao2-debian/
+
+patch1: a cleanup for /proc/meminfo
+patch2: a preparation patch which also improve the accuracy of
+        vm_memory_committed
+patch3: main change
+
+This is against today's linux-mm git tree on github.
+
+Please help to review, thanks!
+
+- Feng
+
+----------------------------------------------------------------
+Changelog:
+
+  v5:
+    * rebase after 5.8-rc1
+    * remove the 3/4 patch in v4  which is merged in v5.7
+    * add code comments for vm_memory_committed() 
+
+  v4:
+    * Remove the VM_WARN_ONCE check for vm_committed_as underflow,
+      thanks to Qian Cai for finding and testing the warning
+
+  v3:
+    * refine commit log and cleanup code, according to comments
+      from Michal Hocko and Matthew Wilcox
+    * change the lift from 16X and 64X after test 
+  
+  v2:
+    * add the sysctl handler to cover runtime overcommit policy
+      change, as suggested by Andres Morton 
+    * address the accuracy concern of vm_memory_committed()
+      from Andi Kleen 
+
+Feng Tang (3):
+  proc/meminfo: avoid open coded reading of vm_committed_as
+  mm/util.c: make vm_memory_committed() more accurate
+  mm: adjust vm_committed_as_batch according to vm overcommit policy
+
+ fs/proc/meminfo.c    |  2 +-
+ include/linux/mm.h   |  2 ++
+ include/linux/mman.h |  4 ++++
+ kernel/sysctl.c      |  2 +-
+ mm/mm_init.c         | 18 ++++++++++++++----
+ mm/util.c            | 19 ++++++++++++++++++-
+ 6 files changed, 40 insertions(+), 7 deletions(-)
+
+-- 
+2.7.4
+
