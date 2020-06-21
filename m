@@ -2,112 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E73202C76
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 21:44:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 827A2202C7D
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 21:50:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730545AbgFUToj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 15:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730181AbgFUToi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 15:44:38 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52ADBC061794
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 12:44:38 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id m26so8381072lfo.13
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 12:44:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fSLpPxMEz7DxYqE5ffZM/BXJwv/YNcdB/XLkDwuN+BA=;
-        b=AWZ2VQ8N8O6rqj1PNwGwf2BvwoUMCwCk4LaNpr+V7Md3ptnDfdsWPgR9Tt3njRDzu+
-         EAAte8yrs8pHBp0eWRn2yPCe07Gfhfl2Vv1qyo6LMSWMoMisfXefIVlnq2mtJNZaEkuq
-         21wSz352wzUz3QiiKaE70UX/wrDTriZ8JcMLY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fSLpPxMEz7DxYqE5ffZM/BXJwv/YNcdB/XLkDwuN+BA=;
-        b=mDgv3ql7QzLRHyftlIP0qVoJ/zylqC6y+NasmGmrDHa1NJU+7kEeoKtU4gNqBJDIHY
-         NxOc1TX4YI7qFLMszAw78cYZVkwjeBYf3jFWoDZQZTWC4cACAAeqwMUNYeNWWsmnxp6d
-         VZm578YTKkTkkkFA1OIvThR5MgxLsxaLifG2wh20AKoiG4iveaNVE36WfbVR3KA8vpUK
-         AeUOtSAii576Xqedh7pOPQBT/gU4/a8jgXiWEJrOvxkVLunUcZv3DBuqE46tqOof748M
-         xoxvZE6mmhB7dIdEd741xT6XNzIOzj3sJtoWrw1+d0nY5Mx1BUYyKhUP4StX1/ndPzFe
-         malQ==
-X-Gm-Message-State: AOAM530wvoBHllV0qwz47xt7l98rOCn+2mcui1bWwX77vnS+QiI/2vjk
-        WxpRhtZAz1zU0ogEapHIDB8QvVQn5dg=
-X-Google-Smtp-Source: ABdhPJwuO8mt0qcgnDrQ0YXE3vtzqqnrnyW+Mrbx5xOuT+pPe4LMcPd008sfiB07r1at7MN+p4UnZg==
-X-Received: by 2002:a19:2292:: with SMTP id i140mr7674278lfi.95.1592768676311;
-        Sun, 21 Jun 2020 12:44:36 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id a22sm1710753lfg.96.2020.06.21.12.44.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 21 Jun 2020 12:44:35 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id n24so16894080lji.10
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 12:44:35 -0700 (PDT)
-X-Received: by 2002:a2e:b5d7:: with SMTP id g23mr6448596ljn.70.1592768675067;
- Sun, 21 Jun 2020 12:44:35 -0700 (PDT)
+        id S1730574AbgFUTux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 15:50:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50434 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730375AbgFUTux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Jun 2020 15:50:53 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0AEBF2084D;
+        Sun, 21 Jun 2020 19:50:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592769053;
+        bh=sQvbvZtNC41Uuf34UfNxe7YlKtNvaxn2Hj0hrJb16ic=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=cmannopnDOv4qkWaLIh5ai4GyQfnki8cosLeS6bTsQEeop4e6/Q6PvC55laeVbAEj
+         ptKHftYZfGPqgVW40mXxfy9nLWR2sh2B5l0N9YUZ+f+51P0sazlkRKGmXpQDhG9EMx
+         Rryxct6z2W7jbBJWGG6hJfuBYNo/whgT5EzMHBPg=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id E32EA3522FD1; Sun, 21 Jun 2020 12:50:52 -0700 (PDT)
+Date:   Sun, 21 Jun 2020 12:50:52 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/tree: Force quiescent state on callback overload
+Message-ID: <20200621195052.GF9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <1592764647-2452-1-git-send-email-neeraju@codeaurora.org>
 MIME-Version: 1.0
-References: <alpine.DEB.2.22.394.2006181751270.9276@xps-7390>
- <20200619065007.GA3041@lst.de> <alpine.DEB.2.22.394.2006182351090.9276@xps-7390>
- <20200619074233.GA3723@lst.de> <alpine.DEB.2.22.394.2006200640370.2845@xps-7390>
- <CAHk-=whj7YBvNT3FPHc8oUqwRhjbRkJESnUx6bbpA5ys6W9ujw@mail.gmail.com> <alpine.DEB.2.22.394.2006211226240.9484@xps-7390>
-In-Reply-To: <alpine.DEB.2.22.394.2006211226240.9484@xps-7390>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 21 Jun 2020 12:44:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjDfQZN8BeM-21vZ=ALa5jaJSRjRei+_0ET9uruwaYwaw@mail.gmail.com>
-Message-ID: <CAHk-=wjDfQZN8BeM-21vZ=ALa5jaJSRjRei+_0ET9uruwaYwaw@mail.gmail.com>
-Subject: Re: Commit 25f12ae45fc1 ("maccess: rename probe_kernel_address to
- get_kernel_nofault") causing several OOPSes
-To:     "Kenneth R. Crudup" <kenny@panix.com>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1592764647-2452-1-git-send-email-neeraju@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 21, 2020 at 12:30 PM Kenneth R. Crudup <kenny@panix.com> wrote:
->
-> > Which is the obvious next step: would you mind compiling that file
-> > with and without the patch and sending me the two object files?
->
-> It looks like you had already, do you still need me to do this?
+On Mon, Jun 22, 2020 at 12:07:27AM +0530, Neeraj Upadhyay wrote:
+> On callback overload, we want to force quiescent state immediately,
+> for the first and second fqs. Enforce the same, by including
+> RCU_GP_FLAG_OVLD flag, in fqsstart check.
+> 
+> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 
-Yes please. For me that patch makes no difference. With gcc, it
-generates the exact same code.
+Good catch!
 
-> FWIW, here's my gcc info:
->
-> $  gcc --version
-> gcc (Ubuntu 9.3.0-13ubuntu1) 9.3.0
+But what did you do to verify that this change does the right thing?
 
-Yeah, well, I've got
+						Thanx, Paul
 
-  gcc version 10.1.1 20200507 (Red Hat 10.1.1-1) (GCC)
-
-but it's not like yours is any known problematic one.
-
-But please compile that probe_roms file with Chrisptoph's patch that
-makes things work for you, and without it - but otherwise identically
-and with the same config options that work with that patch applied.
-
-> OH- I did change arch/x86/Makefile in my own builds- maybe this could matter?
-
-Doubtful, but who knows. The fact that so far yours seems to be the
-only report of this, and it looks inexplicable, maybe it has that
-tuning difference that triggers it.
-
-But don't change it now. If it is what triggers the issue, it's still
-an interesting datapoint.
-
-You might test (separately) if removing that change from your build
-makes a difference, but I'd like to see what the code generation
-difference is with the patch and without, since there _shouldn't_ be
-any.
-
-          Linus
+> ---
+>  kernel/rcu/tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index d0988a1..6226bfb 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1865,7 +1865,7 @@ static void rcu_gp_fqs_loop(void)
+>  			break;
+>  		/* If time for quiescent-state forcing, do it. */
+>  		if (!time_after(rcu_state.jiffies_force_qs, jiffies) ||
+> -		    (gf & RCU_GP_FLAG_FQS)) {
+> +		    (gf & (RCU_GP_FLAG_FQS | RCU_GP_FLAG_OVLD))) {
+>  			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
+>  					       TPS("fqsstart"));
+>  			rcu_gp_fqs(first_gp_fqs);
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
