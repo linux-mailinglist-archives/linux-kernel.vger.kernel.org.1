@@ -2,93 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12A012029FD
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 12:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B24A2029FA
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 12:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729825AbgFUKLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 06:11:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729794AbgFUKLe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 06:11:34 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32F8C061794;
-        Sun, 21 Jun 2020 03:11:33 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a1so878655ejg.12;
-        Sun, 21 Jun 2020 03:11:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=hXCaj+05K3j3ohDduMYvUhwQVadDBgc0NER8cldE3iM=;
-        b=JacV56jN0UAqIKn/L+yrXZ1YfYh4Q/eYmfobEmxx0heGkHbYeySg4Cj47tcTXnD7mt
-         cCkH53ca4G4ptICTZqM8IM285xnI9ZoY95ylV2hvfwyWAbO+whlUmGqtt+nBn2Kwn3az
-         dFGk7ZLN9aPqsHEXsBlvcgFOZo9k4TIx/dJoKDUyFBvp08Y9Tt/4dK6SVXpnEE6yeuQQ
-         Hpe7P6JmjNampNMDfJ3fgwizQ4xil4HuQIM9wJ8wVq+Phtbq3w524OzD6UTuoSacxepl
-         FhbT3lHYTzE6Iy7EQQAgdwOI9ApgVCt3w0kbtfhY/WGLWB6xSs+rqXPnePfzmfZr4kal
-         d68w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hXCaj+05K3j3ohDduMYvUhwQVadDBgc0NER8cldE3iM=;
-        b=jn+CIIKWhtA2BLfw5S9M5yKazc1q8H3ZQjBp2TO7wTuDN3BteExSbpbswKM5LAy078
-         JFTLH1NxJJ+7afnZPDMXQNwA/ldljb4FdY4BmecN9Bcv92O89WSxzWQ+/m/7RnaGRM0j
-         c+iFvyY9+l4kmBZsmKARPJWPMb26NP43iG03q9sa4jB4xCzRQeZRQ2JGQn5RiZWZMoF/
-         BSpeoEwN9IKAhi703kJ2t0wSoH6ZYhpoXKQbLRBzAhRz5/lMoijcD7vopSaLavS9CfMi
-         w7l1eDMheP6bvqN1doJpdTvEpeeclYOx71pECeXw5HrjR9twHQI+sYVVpmIlgA5jEwNR
-         XN5g==
-X-Gm-Message-State: AOAM532s07cqFhhxxWhSV24jOkYNnwBVelhKju3dHjnyvyQj0PK8trlK
-        WxVC2FVK3s2b+vkzpXTGuBSYZk2+
-X-Google-Smtp-Source: ABdhPJwD/Fk0NKPL/Oar5fQLEajIuGdP8tR9+xcDjlZPPAzxEKDeX9ycN/ovE37IkAAnKDCD+wLYTw==
-X-Received: by 2002:a17:906:191a:: with SMTP id a26mr1183980eje.315.1592734292554;
-        Sun, 21 Jun 2020 03:11:32 -0700 (PDT)
-Received: from localhost.localdomain ([82.209.196.123])
-        by smtp.gmail.com with ESMTPSA id y26sm9717201edv.91.2020.06.21.03.11.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Jun 2020 03:11:32 -0700 (PDT)
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] io_uring: kill NULL checks for submit state
-Date:   Sun, 21 Jun 2020 13:09:53 +0300
-Message-Id: <4b127f2fd5c4f5587a8c1d497c055cf39ab31cd3.1592733956.git.asml.silence@gmail.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <cover.1592733956.git.asml.silence@gmail.com>
-References: <cover.1592733956.git.asml.silence@gmail.com>
+        id S1729769AbgFUKLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 06:11:00 -0400
+Received: from mout.web.de ([212.227.15.4]:41983 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729687AbgFUKLA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Jun 2020 06:11:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1592734245;
+        bh=p+D6AQpitT2CYsOhHezJYTBqsp+E5HcAYLkeSqNN9pQ=;
+        h=X-UI-Sender-Class:To:Cc:Subject:From:Date;
+        b=aG7LBsT/dLUQg7J+5k696g+gDiS/yzh1RVXkWVMx0y074yP8CA0yLCuaFvGNcRxDL
+         MQ0MEZy0HgvfHY/8MSXutYUdNPuL9gNaQw4UnkmPXNVrUuwmu6AoACgXcDRa2q7Xrb
+         Uw693KPoc114gqnjnKlxl9rXz3g71rE48M6jHQEo=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.131.145.213]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mpl0r-1j5sTo1j8X-00qCIM; Sun, 21
+ Jun 2020 12:10:45 +0200
+To:     Gilad Ben-Yossef <gilad@benyossef.com>,
+        linux-crypto@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Libo Wang <libo.wang@arm.com>, Ofir Drang <ofir.drang@arm.com>
+Subject: Re: [PATCH 2/3] crypto: ccree: adapt ccree essiv support to kcapi
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <0a8aabe8-26c4-d530-9ba0-f7f177ba0afa@web.de>
+Date:   Sun, 21 Jun 2020 12:10:41 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:XgbPbFe+CFXKgGmgnBvELpemV/dejK74IaGKBUWI8uDsfOpQLNp
+ D5bigQ/FEQWuWqEmBssL9ABxGfrAM2IifeYD7GWXKaL5zHNgrlq3htjkcTDOKhiK99EW7jD
+ PYFllJKTQaS1z5K01S2Cn/jAohoOKusOs+gjsE87R+DDyO6ozygbhFSi9JtowYGxjOEizJu
+ L91Mi0gPogkV1yLLqeXLw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ZZ42yJARiv8=:nDxG63DqGL/LkSfSPB/eZq
+ Ptp41g4891PUwNSzKo09qDxqeyZCUCC2apfZgJNJaprTdx47LQyBLkVgoGRnKWNeZHPjy532z
+ 61BrI1kLDJaFfHThcrr6vhvB4Ct/tYliWN82A84hV5kjw9Lt46zLmfJJDpEUB5W8etRYOEqIJ
+ wZU1howyVtG1eE1SD+gzQZPGq8YJjGsEc386XbzahP4cnRE0qIv4zQnFkFbVhKsI40Iukf6fh
+ x13/A1qg1NFT5vz+sS4S6CLZdGNCk7gV/SDg7LG3U8LYOIamAGS2v8dWHnUpcBDjxdIsJWTez
+ k7O2ZeWF3Z61TPrVaob/XIk2aFS5kgLU5QoDxCBhkHvZGHSaB+hd9NjqSIgJozw62ogVnQRQB
+ fpL6mzBrOes9SRkOGkCaosZRp+AnBa9Ula7QPh8ccfBwCDzCIb4FVxFmS4WkjWKTo2o5pwJuv
+ SA2aySFsR6MRXYsmdP8nCCyOCQ3scRE7SOTSTTCDfnLi5g5G7PHmf2jxcDQJ0eHSQLTsc5MYf
+ CtsCJ8vOP/QbJnrT7F6FBZkH0GRo2ysH7bsFk2hjrYhc5LKtmYquXzr+M7GveWvifKOjPoHx9
+ Vkn9PGNeUf7npf7BWT3ZK1Y/irbEOQwiifknGr1hwlGfZDNRD5vMM/OmZIAxM9gE+0IJbCE++
+ eK5uwORLjZKgvwj7vW/giXHjGvc+Kf6LvFUTbnkwSITKe0tmn7XbPhq6gc2iVsSmZABg5ZJSt
+ ZnZzqHXWfxHdKHzrjW4kGbpWyyiamNnOYradddTsF+PaoXBSfIv5PEpy7gsMYhn07lQn3yhXK
+ IRAsY7uZU2bvugbtIdhU1nQszNM0XodSJsmlReI6T9S/ot86UVD1+EOTzRVkKn8SJAw41eOZu
+ dncGww3WG655kytt77OeQm4V0Lq/Xl+wFGmjTWbtq85NB2nTfdzThgVL1SSmSPM/5k0vnWVqI
+ a9h8T1W2O82r/HgY3PshzD+mIVSVm6LGNzk1gRZUdR8xi71OyYBGJM6Ck6r0KYqWDgNcl2XzK
+ yuOItQ4Hb/zQ/K6faxvSmYqVQvkl3dt6X3M5vsN1coqzsnDJ+lLmhbnQUE+/2XV3FeNP8ZkDe
+ 9myngzjAXYIqmqMtI0eMqfI33oALl+akeONTvBCbonWDHxaPJajrtQebkAAsj8DxMR908Wu9T
+ LykjywJ9oG/f+w57JIdTJv8grhMAt9wq1Jfn051xRJJGeWMC9AP3oPDuFTiJz242c27fmmaRH
+ PU6OcyCyf1OgC2Aqx
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After recent changes, io_submit_sqes() always passes valid submit state,
-so kill leftovers checking it for NULL.
+I propose to avoid a typo in the previous patch subject.
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
----
- fs/io_uring.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 676911260f60..0bcf819e9661 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1371,11 +1371,7 @@ static struct io_kiocb *io_alloc_req(struct io_ring_ctx *ctx,
- 	gfp_t gfp = GFP_KERNEL | __GFP_NOWARN;
- 	struct io_kiocb *req;
- 
--	if (!state) {
--		req = kmem_cache_alloc(req_cachep, gfp);
--		if (unlikely(!req))
--			goto fallback;
--	} else if (!state->free_reqs) {
-+	if (!state->free_reqs) {
- 		size_t sz;
- 		int ret;
- 
--- 
-2.24.0
+> This patch brings the ccree essiv interface into
+> compliance with kernel crypto api one.
 
+Can an imperative wording be nicer for the commit message?
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=64677779e8962c20b580b471790fe42367750599#n151
+
+Regards,
+Markus
