@@ -2,147 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF7E202B70
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 17:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4937F202B76
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 17:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730399AbgFUPnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 11:43:05 -0400
-Received: from smtpout1.mo528.mail-out.ovh.net ([46.105.34.251]:56875 "EHLO
-        smtpout1.mo528.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730356AbgFUPnF (ORCPT
+        id S1730422AbgFUPpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 11:45:50 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:54361 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730359AbgFUPpt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 11:43:05 -0400
-Received: from pro2.mail.ovh.net (unknown [10.109.143.237])
-        by mo528.mail-out.ovh.net (Postfix) with ESMTPS id 0C88D63E478B;
-        Sun, 21 Jun 2020 17:43:02 +0200 (CEST)
-Received: from localhost (89.70.180.118) by DAG2EX1.emp2.local (172.16.2.11)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Sun, 21 Jun
- 2020 17:43:01 +0200
-Date:   Sun, 21 Jun 2020 17:40:37 +0200
-From:   Tomasz Duszynski <tomasz.duszynski@octakon.com>
-To:     Jonathan Cameron <jic23@kernel.org>
-CC:     Tomasz Duszynski <tomasz.duszynski@octakon.com>,
-        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <robh+dt@kernel.org>,
-        <andy.shevchenko@gmail.com>, <pmeerw@pmeerw.net>
-Subject: Re: [PATCH v5 1/4] iio: chemical: scd30: add core driver
-Message-ID: <20200621154037.GA13809@arch>
-References: <20200607175812.95777-2-tomasz.duszynski@octakon.com>
- <20200620172502.0d532081@archlinux>
+        Sun, 21 Jun 2020 11:45:49 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01419;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0U0FRv8j_1592754341;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U0FRv8j_1592754341)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 21 Jun 2020 23:45:42 +0800
+Subject: Re: [PATCH v13 00/18] per memcg lru lock
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com
+References: <1592555636-115095-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200620160807.0e0997c3e0e3ca1b18e68a53@linux-foundation.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <5561f72b-8f9a-f84e-94a4-600c66084f29@linux.alibaba.com>
+Date:   Sun, 21 Jun 2020 23:44:47 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20200620172502.0d532081@archlinux>
-X-Originating-IP: [89.70.180.118]
-X-ClientProxiedBy: DAG2EX1.emp2.local (172.16.2.11) To DAG2EX1.emp2.local
- (172.16.2.11)
-X-Ovh-Tracer-Id: 9225060887347813458
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduhedrudektddgleefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpeffhffvuffkfhggtggujghisehttdertddttdejnecuhfhrohhmpefvohhmrghsiicuffhushiihihnshhkihcuoehtohhmrghsiidrughushiihihnshhkihesohgtthgrkhhonhdrtghomheqnecuggftrfgrthhtvghrnheptdehveethfffudetjeeftdekueehjeegjedvteffgfevkefffeegffeugeehgfejnecukfhppedtrddtrddtrddtpdekledrjedtrddukedtrdduudeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmohguvgepshhmthhpqdhouhhtpdhhvghlohepphhrohdvrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepthhomhgrshiirdguuhhsiiihnhhskhhisehotghtrghkohhnrdgtohhmpdhrtghpthhtohepphhmvggvrhifsehpmhgvvghrfidrnhgvth
+In-Reply-To: <20200620160807.0e0997c3e0e3ca1b18e68a53@linux-foundation.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 20, 2020 at 05:25:02PM +0100, Jonathan Cameron wrote:
-> On Sun, 7 Jun 2020 19:58:09 +0200
-> Tomasz Duszynski <tomasz.duszynski@octakon.com> wrote:
->
-> > Add Sensirion SCD30 carbon dioxide core driver.
-> >
-> > Signed-off-by: Tomasz Duszynski <tomasz.duszynski@octakon.com>
->
-> A few things I'd missed showed up in warnings when I applied this and
-> ran a sparse check.  Please fix up and send a v6.
-> Also sanity check the rest with sparse. Note if I'd missed this 0-day
-> would have sent use these warnings.
->
 
-Ah, forgot to add C=2 to prior building. Thanks for catching this.
 
-> Thanks,
->
-> Jonathan
->
-> > +
-> > +static int scd30_read_meas(struct scd30_state *state)
-> > +{
-> > +	int i, ret;
-> > +
-> > +	ret = state->command(state, CMD_READ_MEAS, 0, state->meas, sizeof(state->meas));
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	be32_to_cpu_array(state->meas, state->meas, ARRAY_SIZE(state->meas));
->
-> The type of the input to the above has the wrong endian markings.
->
-> CHECK   drivers/iio/chemical/scd30_core.c
-> drivers/iio/chemical/scd30_core.c:123:40: warning: incorrect type in argument 2 (different base types)
-> drivers/iio/chemical/scd30_core.c:123:40:    expected restricted __be32 const [usertype] *src
-> drivers/iio/chemical/scd30_core.c:123:40:    got int *
->
-> Whilst you could use a cast, it would be tidier to use an array of __be32.
->
+ÔÚ 2020/6/21 ÉÏÎç7:08, Andrew Morton Ð´µÀ:
+> On Fri, 19 Jun 2020 16:33:38 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
+> 
+>> This is a new version which bases on linux-next, merged much suggestion
+>> from Hugh Dickins, from compaction fix to less TestClearPageLRU and
+>> comments reverse etc. Thank a lot, Hugh!
+>>
+>> Johannes Weiner has suggested:
+>> "So here is a crazy idea that may be worth exploring:
+>>
+>> Right now, pgdat->lru_lock protects both PageLRU *and* the lruvec's
+>> linked list.
+>>
+>> Can we make PageLRU atomic and use it to stabilize the lru_lock
+>> instead, and then use the lru_lock only serialize list operations?
+> 
+> I don't understand this sentence.  How can a per-page flag stabilize a
+> per-pgdat spinlock?  Perhaps some additional description will help.
 
-Here's the only place where it's a __be32. All other places assume
-cpu endianess which means changing array type generates a few other warnings
-here and there. So I'd prefer to be lazy here and use a cast :).
+Hi Andrew,
 
-> > +
-> > +	for (i = 0; i < ARRAY_SIZE(state->meas); i++)
-> > +		state->meas[i] = scd30_float_to_fp(state->meas[i]);
-> > +
-> > +	/*
-> > +	 * co2 is left unprocessed while temperature and humidity are scaled
-> > +	 * to milli deg C and milli percent respectively.
-> > +	 */
-> > +	state->meas[SCD30_TEMP] *= 10;
-> > +	state->meas[SCD30_HR] *= 10;
-> > +
-> > +	return 0;
-> > +}
-> > +
->
-> ...
->
-> > +
-> > +static irqreturn_t scd30_trigger_handler(int irq, void *p)
-> > +{
-> > +	struct iio_poll_func *pf = p;
-> > +	struct iio_dev *indio_dev = pf->indio_dev;
-> > +	struct scd30_state *state = iio_priv(indio_dev);
-> > +	struct {
-> > +		int data[SCD30_MEAS_COUNT];
-> > +		s64 ts __aligned(8);
-> > +	} scan = { 0, };
-> should be scan = { {0, }, }; or something like that
-> as first element happens to be an array.
->
-> Actually there is padding in here you need to zero I think.
-> So memset is a better bet.
->
+Well, above comments miss a context, which lru_lock means new lru_lock on each
+of memcg not the current per node lru_lock. Sorry!
 
-Sure.
+Currently the lru bit changed under lru_lock, so isolate a page from lru just
+need take lru_lock. New patch will change it with a atomic action alone from 
+lru_lock, so isolate a page need both actions: TestClearPageLRU and take the
+lru_lock. like followings in isolate_lru_page():
 
-> > +	int ret;
-> > +
-> > +	mutex_lock(&state->lock);
-> > +	if (!iio_trigger_using_own(indio_dev))
-> > +		ret = scd30_read_poll(state);
-> > +	else
-> > +		ret = scd30_read_meas(state);
-> > +	memcpy(scan.data, state->meas, sizeof(state->meas));
-> > +	mutex_unlock(&state->lock);
-> > +	if (ret)
-> > +		goto out;
-> > +
-> > +	iio_push_to_buffers_with_timestamp(indio_dev, &scan, iio_get_time_ns(indio_dev));
-> > +out:
-> > +	iio_trigger_notify_done(indio_dev->trig);
-> > +	return IRQ_HANDLED;
-> > +}
-> > +
-> ...
+The main reason for this comes from isolate_migratepages_block() in compaction.c
+we have to take lru bit before lru lock, that serialized the page isolation in 
+memcg page charge/migration which will change page's lruvec and new lru_lock
+in it. The current isolation just take lru lock directly which fails on guard 
+page's lruvec change(memcg change).
+
+changes in isolate_lru_page():-	if (PageLRU(page)) {
++	if (TestClearPageLRU(page)) {
+ 		pg_data_t *pgdat = page_pgdat(page);
+ 		struct lruvec *lruvec;
++		int lru = page_lru(page);
+ 
+-		spin_lock_irq(&pgdat->lru_lock);
++		get_page(page);
+ 		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+-		if (PageLRU(page)) {
+-			int lru = page_lru(page);
+-			get_page(page);
+-			ClearPageLRU(page);
+-			del_page_from_lru_list(page, lruvec, lru);
+-			ret = 0;
+-		}
++		spin_lock_irq(&pgdat->lru_lock);
++		del_page_from_lru_list(page, lruvec, lru);
+ 		spin_unlock_irq(&pgdat->lru_lock);
++		ret = 0;
+ 	}
+
+> 
+
+>>
+>> Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
+>> containers on a 2s * 26cores * HT box with a modefied case:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
+>>
+>> With this patchset, the readtwice performance increased about 80%
+>> in concurrent containers.
+>>
+>> Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
+>> idea 8 years ago, and others who give comments as well: Daniel Jordan, 
+>> Mel Gorman, Shakeel Butt, Matthew Wilcox etc.
+>>
+>> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
+>> and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
+>>
+>> ...
+>>
+>>  24 files changed, 500 insertions(+), 357 deletions(-)
+> 
+> It's a large patchset and afaict the whole point is performance gain. 
+> 80% in one specialized test sounds nice, but is there a plan for more
+> extensive quantification?
+
+Once I got 5% aim7 performance gain on 16 cores machine, and about 20+%
+readtwice performance gain. the performance gain is increased a lot following
+larger cores.
+
+Is there some suggestion for this?
+
+> 
+> There isn't much sign of completed review activity here, so I'll go
+> into hiding for a while.
+> 
+
+Yes, it's relatively big. also much of change from comments part. :)
+Anyway, thanks for look into!
+
+Thanks
+Alex
