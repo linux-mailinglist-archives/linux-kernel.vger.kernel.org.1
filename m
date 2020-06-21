@@ -2,67 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D40E2028D2
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 07:27:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F130D2028DF
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 07:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729275AbgFUF1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 01:27:40 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:58734 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726015AbgFUF1k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 01:27:40 -0400
-Received: by ajax-webmail-mail-app3 (Coremail) ; Sun, 21 Jun 2020 13:27:24
- +0800 (GMT+08:00)
-X-Originating-IP: [210.32.144.65]
-Date:   Sun, 21 Jun 2020 13:27:24 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Jon Hunter" <jonathanh@nvidia.com>
-Cc:     kjlu@umn.edu, "Laxman Dewangan" <ldewangan@nvidia.com>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        "Vinod Koul" <vkoul@kernel.org>,
-        "Thierry Reding" <thierry.reding@gmail.com>,
-        dmaengine@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] [v3] dmaengine: tegra210-adma: Fix runtime PM
- imbalance on error
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.10 build 20190906(84e8bf8f)
- Copyright (c) 2002-2020 www.mailtech.cn zju.edu.cn
-In-Reply-To: <f4034e16-e720-57c4-eb9d-733786212a4a@nvidia.com>
-References: <20200618105727.14669-1-dinghao.liu@zju.edu.cn>
- <9f7684d9-7a75-497d-db1c-75cf0991a072@nvidia.com>
- <24ea1ef1.10213.172ca4d45be.Coremail.dinghao.liu@zju.edu.cn>
- <f4034e16-e720-57c4-eb9d-733786212a4a@nvidia.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
-MIME-Version: 1.0
-Message-ID: <711c004d.1832d.172d55876c5.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cC_KCgDX3uK87+5evJH9AA--.17515W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgcQBlZdtOvMDgADsG
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJTRUUUbX0S07vEb7Iv0x
-        C_Xr1lV2xY67kC6x804xWlV2xY67CY07I20VC2zVCF04k26cxKx2IYs7xG6rWj6s0DMIAI
-        bVAFxVCF77xC64kEw24lV2xY67C26IkvcIIF6IxKo4kEV4ylV2xY628lY4IE4IxF12IF4w
-        CS07vE84x0c7CEj48ve4kI8wCS07vE84ACjcxK6xIIjxv20xvE14v26w1j6s0DMIAIbVA2
-        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIAIbVA2z4x0Y4vEx4A2jsIE14v26r
-        xl6s0DMIAIbVA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1lV2xY62AIxVAIcxkEcVAq
-        07x20xvEncxIr21lV2xY6c02F40EFcxC0VAKzVAqx4xG6I80ewCS07vEYx0E2Ix0cI8IcV
-        AFwI0_Jr0_Jr4lV2xY6cIj6I8E87Iv67AKxVWUJVW8JwCS07vEOx8S6xCaFVCjc4AY6r1j
-        6r4UMIAIbVCjxxvEw4WlV2xY6xkIecxEwVAFwVW8WwCS07vEc2IjII80xcxEwVAKI48JMI
-        AIbVCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1lV2xY6xCjnVCjjxCrMIAIbVCFx2IqxVCF
-        s4IE7xkEbVWUJVW8JwCS07vEx2IqxVAqx4xG67AKxVWUJVWUGwCS07vEx2IqxVCjr7xvwV
-        AFwI0_JrI_JrWlV2xY6I8E67AF67kF1VAFwI0_Jw0_GFylV2xY6IIF0xvE2Ix0cI8IcVAF
-        wI0_Jr0_JF4lV2xY6IIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCS07vEIxAIcVCF04
-        k26cxKx2IYs7xG6rW3Jr0E3s1lV2xY6IIF0xvEx4A2jsIE14v26r1j6r4UMIAIbVCI42IY
-        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU=
+        id S1729316AbgFUFq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 01:46:27 -0400
+Received: from sender2-op-o12.zoho.com.cn ([163.53.93.243]:17185 "EHLO
+        sender2-op-o12.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725928AbgFUFq1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Jun 2020 01:46:27 -0400
+X-Greylist: delayed 910 seconds by postgrey-1.27 at vger.kernel.org; Sun, 21 Jun 2020 01:46:26 EDT
+ARC-Seal: i=1; a=rsa-sha256; t=1592717468; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=PG+gT53m50blBYBKu3rXvb37BnPHGejAeXguu4NXFnNPFA29XvBNQg0+50YhPyTFf4yN9Pwo4XW+uPOY3aIDP5VHAHxNY81L2ReQkWi+EeNWrqGI+41/YT15bohADHuqftapMtHafLeVYP42DlpaNe8HXeL+PtxRIwEQ15sSK9A=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1592717468; h=Cc:Date:From:Message-ID:Subject:To; 
+        bh=ncGOVGTvVXr8HQdPUjbtNc/ZzWf+9iRtPISZt83WDGs=; 
+        b=fgNoZzFZERJ2+LwtzhV+fUP1IQApZfJGFiPfTzI4IV2oUzfR5tzTHzgrD6aOecKFGiSiCw7hGozR+7mYfFejm1THGsKc0ehcHYXc9bbnmPxfP3isXCYg6RNZ5Bh+iG/7G/Qr9IhqA6+1F4B0Royv5eK67cZyAorifNCVg7CRfo8=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1592717468;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=From:To:Cc:Subject:Date:Message-Id;
+        bh=ncGOVGTvVXr8HQdPUjbtNc/ZzWf+9iRtPISZt83WDGs=;
+        b=MmB9gFrMT+YbnSW1Qt/ADDSaHZABafbFcKGO0aMC1cDWGGV5lRezItHATGoZ2K5g
+        OuwnU+ujAWa/sxxZhoX/UAdUs40yHH2VarLNWm7JjQarQDL3Vs2ze0FjfWwds8St9MI
+        c3GAjwEXZVo7o1GKhFfl/Ubywhe9xc4qs0HToelg=
+Received: from localhost.localdomain (113.87.91.105 [113.87.91.105]) by mx.zoho.com.cn
+        with SMTPS id 1592717466309467.4152727314364; Sun, 21 Jun 2020 13:31:06 +0800 (CST)
+From:   Chengguang Xu <cgxu519@mykernel.net>
+To:     jack@suse.com
+Cc:     linux-kernel@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
+Subject: [PATCH] quota: minor optimization for __dquot_initialize()
+Date:   Sun, 21 Jun 2020 13:31:00 +0800
+Message-Id: <20200621053100.11713-1-cgxu519@mykernel.net>
+X-Mailer: git-send-email 2.17.2
+X-ZohoCNMailClient: External
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cgo+ID4+Cj4gPj4gV2h5IG5vaWRsZT8KPiA+Pgo+ID4gCj4gPiBfbm9pZGxlIGlzIGVub3VnaCBm
-b3IgZml4aW5nIHRoaXMgYnVnLiBfc3luYyBtYXkgc3VzcGVuZAo+ID4gdGhlIGRldmljZSBiZXlv
-bmQgZXhwZWN0YXRpb24uCj4gCj4gSW4gdGhhdCBjYXNlLCB0aGVuIHRoZSBvdGhlciBpbnN0YW5j
-ZSB5b3UgYXJlIGZpeGluZyB3aXRoIHRoaXMgcGF0Y2ggaXMKPiBub3QgY29ycmVjdC4KPiAKCkZp
-bmUuIEkgd2lsbCBmaXggdGhpcyBzb29uLgoKUmVnYXJkcywKRGluZ2hhbwo=
+Count the number of quotas which are needed to initialize,
+instead of just setting to 1 so that we may avoid unnecessary
+process in special case.
+
+Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+---
+ fs/quota/dquot.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+index 7b4bac91146b..f93bd60c3998 100644
+--- a/fs/quota/dquot.c
++++ b/fs/quota/dquot.c
+@@ -1459,7 +1459,7 @@ static int __dquot_initialize(struct inode *inode, int type)
+ 		if (!sb_has_quota_active(sb, cnt))
+ 			continue;
+ 
+-		init_needed = 1;
++		init_needed++;
+ 
+ 		switch (cnt) {
+ 		case USRQUOTA:
+@@ -1483,6 +1483,7 @@ static int __dquot_initialize(struct inode *inode, int type)
+ 				goto out_put;
+ 			}
+ 			dquot = NULL;
++			init_needed--;
+ 		}
+ 		got[cnt] = dquot;
+ 	}
+-- 
+2.17.2
+
