@@ -2,117 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A40202949
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 09:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13C41202945
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 09:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729438AbgFUHMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 03:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51302 "EHLO
+        id S1729416AbgFUHM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 03:12:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729430AbgFUHMm (ORCPT
+        with ESMTP id S1729381AbgFUHM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 03:12:42 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00554C061796
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 00:12:41 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id j1so6809431pfe.4
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 00:12:41 -0700 (PDT)
+        Sun, 21 Jun 2020 03:12:26 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF5EC061794
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 00:12:25 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id a9so15870425ljn.6
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 00:12:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+rMtPSRpfPZ/10LjMZ9D5lqabt/ov8oGZq7vkldZVbI=;
-        b=GZEkkNN9SVWP4VKu+Md9ytVNTcZZ3bH5tDUMUWlQ7XFlTVqOFA7sd7e+7qbjJckms0
-         AZ2cYARf9REVrfk40td2X7poPOGaXlBctz9fQ4KHR+byiLCvOkDLKpUOouIaONISKWk/
-         rqj2o/S5+ShGPOVB9yR0WFACzDnrz+sJ8zbfKSEcLCWC6SqOL680l7foMo8TX0a7TYKn
-         y0qvNbgV/KC7GLMn93L1LJZcPutQLrtetJ2EQXlpB56k1ckuoIEdiFj5ot9xEcQl8qsx
-         aIkvqbhkczcPhNPJPTGCm86buhTJkdxlFH0Kx6yXYZubtkEWm6PBKkyPX6D8LhESvW58
-         FO/w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IayuXorUzdeGIXk8ft6rzJGAzRd7dFx1deomml1raLI=;
+        b=qBSERCHV3gHKZbj+5MfDrrS3T52cTDeosdJ+4Zh89kzgRNHbG/SOOcj8ntSJ4i15wc
+         ghnEeIiWnyvp1GDkkBX7lyzX8ck/9IEmJ7dp3KHnahojQoWIeUhwTepmOm8sAM3HkXVv
+         bgW7VOb0eN9Z1Voi0Hlfp5I05Q1CqJq6sD/RR7AIp4w8U1b0Zg5Wj19XWvgepd9vVlfu
+         bBT0lhbo13L2F9+Y2I/RWmGX6FHIZVTTeTigosifcSQD+rf6dqGtTbbNXKnkY4OML7h5
+         cKgxXQC0h7KO6QAFHLh03aw9Rq9Ybx/yuwBdoDlltsGUVbd1S5uaH3HAm12pnFK/lHr1
+         sCYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+rMtPSRpfPZ/10LjMZ9D5lqabt/ov8oGZq7vkldZVbI=;
-        b=bm5fua2JqlyQqtTlii/RkOS8med+Lee5F5I87PtTOAMC98OzFmTkLKzOWhrCy3yyIc
-         +eltrcSGC0GAmemTIrXLz47mKmVLcHuTek38y8SvjKK7ymGXTAmfuEowEp5UC6TvPMgV
-         yd8uDie6Tw/wfEMCKTxQYgiTnJBfnInc8YO3SMk2rv52qdn85XGTdpAFBBasxv7tK/jv
-         u7uTC+MI5HPA5V5DsAgwe5zK+YmrfwM8X9unezvt8aEts4n3r+shWrEx9NxgFMQDGiEl
-         NTWJB2PMJJA7hOZI/7yjHNOJItTlwA67I2AJbzsBmx8tzekAbw3+4prI1OkPiWczvDsY
-         F8Qg==
-X-Gm-Message-State: AOAM530mecQvl0YmumIR0kwN0OjcbrS8BI3gob5oIli5EKWCsZGwxsxL
-        cwdCzwRJDkZrfbGcOFJJMMZf0g==
-X-Google-Smtp-Source: ABdhPJxgRWInuUhCdGNKOQhoDTL4b8hXtC40JtehcB6BjEgPcRmNVe8MGFYLZwI/jyNblnjXqtHzow==
-X-Received: by 2002:a63:9742:: with SMTP id d2mr7971058pgo.95.1592723561429;
-        Sun, 21 Jun 2020 00:12:41 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id y81sm10530861pfb.33.2020.06.21.00.12.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Jun 2020 00:12:40 -0700 (PDT)
-Date:   Sun, 21 Jun 2020 00:09:53 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>
-Cc:     heikki.krogerus@linux.intel.com, mark.rutland@arm.com,
-        broonie@kernel.org, gregkh@linuxfoundation.org,
-        lgirdwood@gmail.com, agross@kernel.org, robh+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, rdunlap@infradead.org,
-        bryan.odonoghue@linaro.org, lijun.kernel@gmail.com
-Subject: Re: [PATCH v3 3/6] arm64: boot: dts: qcom: pm8150b: Add node for USB
- type C block
-Message-ID: <20200621070953.GE128451@builder.lan>
-References: <20200617180209.5636-1-wcheng@codeaurora.org>
- <20200617180209.5636-4-wcheng@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IayuXorUzdeGIXk8ft6rzJGAzRd7dFx1deomml1raLI=;
+        b=f+rFgp/rCF1VnDTqZaSNSROAmhTspgGd7ZCghY1aLwWsM8AXZnWavjC8eP/ry8BHhR
+         K7U9muS2PPx7wRKo1BIKg25AIImLMOwcEJzXEX9u7vCwKNWhbTeKuE6Y9tJsRCBJbxef
+         X4VikdohyTj3JtozCJUKG46nNfKPmp30tOCJTpaX4gGqGCI095eJg315YRt0lXBxW8+7
+         ZX291fTDQ35WzqqaBnnsz9y4VeJf6cq0XHMYi82e89Pk0HXlZB65hpiURpgyipENxkrh
+         DJ9vi33FZ9RaH0mocfom4j2QOI19RrzoYL5ILtAGCJVuXy09SlHYx88JWNLnO5tFlI2x
+         Tr+Q==
+X-Gm-Message-State: AOAM532vFT4OccUj+rC0u7XJBQ/CF9uVmEymbq/sMBsvP2ic5bo3PTfh
+        NRDqvWIYrT47WWsSfVlaraTp1NjXUF8q967c7QkwvQ==
+X-Google-Smtp-Source: ABdhPJx395NIpjS9VlxOjLyKWZCHE05uXubnxnPVd+jDzy1qgk82jL4ixo6FTF4AtKBRjNZMMj58YFxBjQ8QUKIFrcA=
+X-Received: by 2002:a2e:911:: with SMTP id 17mr5957682ljj.411.1592723544083;
+ Sun, 21 Jun 2020 00:12:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200617180209.5636-4-wcheng@codeaurora.org>
+References: <20200620082214.928028424@linuxfoundation.org>
+In-Reply-To: <20200620082214.928028424@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Sun, 21 Jun 2020 12:42:12 +0530
+Message-ID: <CA+G9fYvy_T8Ru2KdY42Kn6D=NLzPL+iP4ueDqV8_s+4k8mcG1Q@mail.gmail.com>
+Subject: Re: [PATCH 4.19 000/265] 4.19.129-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        Ben Hutchings <ben.hutchings@codethink.co.uk>,
+        lkft-triage@lists.linaro.org,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 17 Jun 11:02 PDT 2020, Wesley Cheng wrote:
+On Sat, 20 Jun 2020 at 13:53, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.129 release.
+> There are 265 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Mon, 22 Jun 2020 08:21:23 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.129-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> The PM8150B has a dedicated USB type C block, which can be used for type C
-> orientation and role detection.  Create the reference node to this type C
-> block for further use.
-> 
-> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/pm8150b.dtsi | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/pm8150b.dtsi b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-> index 322379d5c31f..ec44a8bc2f84 100644
-> --- a/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-> @@ -22,6 +22,14 @@ power-on@800 {
->  			status = "disabled";
->  		};
->  
-> +		qcom,typec@1500 {
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Please no "qcom," in the node names and please give it a label to make
-it easy to change the status of the node.
+Summary
+------------------------------------------------------------------------
 
-> +			compatible = "qcom,pm8150b-usb-typec";
-> +			status = "disabled";
-> +			reg = <0x1500>;
-> +			interrupts =
-> +				<0x2 0x15 0x5 IRQ_TYPE_EDGE_RISING>;
+kernel: 4.19.129-rc2
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 7e6addf7237fd56f0e64fd045b1d9e999705b189
+git describe: v4.19.128-266-g7e6addf7237f
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-4.19-oe/bu=
+ild/v4.19.128-266-g7e6addf7237f
 
-This is nicer on a single line, so please omit the line break.
+No regressions (compared to build v4.19.127-26-gf6c346f2d42d)
 
-Regards,
-Bjorn
 
-> +		};
-> +
->  		adc@3100 {
->  			compatible = "qcom,spmi-adc5";
->  			reg = <0x3100>;
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+No fixes (compared to build v4.19.127-26-gf6c346f2d42d)
+
+Ran 35260 total tests in the following environments and test suites.
+
+Environments
+--------------
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- nxp-ls2088
+- qemu_arm
+- qemu_arm64
+- qemu_i386
+- qemu_x86_64
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* install-android-platform-tools-r2600
+* install-android-platform-tools-r2800
+* kselftest
+* kselftest/drivers
+* kselftest/filesystems
+* kselftest/net
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-hugetlb-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-securebits-tests
+* kvm-unit-tests
+* ltp-controllers-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-io-tests
+* ltp-sched-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* perf
+* v4l2-compliance
+* ltp-open-posix-tests
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-native/drivers
+* kselftest-vsyscall-mode-native/filesystems
+* kselftest-vsyscall-mode-native/net
+* kselftest-vsyscall-mode-none
+* kselftest-vsyscall-mode-none/drivers
+* kselftest-vsyscall-mode-none/filesystems
+* kselftest-vsyscall-mode-none/net
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
