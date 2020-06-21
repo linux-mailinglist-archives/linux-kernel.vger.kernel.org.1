@@ -2,54 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D1B62027FA
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 04:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910F9202800
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 04:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729150AbgFUCa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 20 Jun 2020 22:30:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43772 "EHLO mail.kernel.org"
+        id S1729160AbgFUCyC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 20 Jun 2020 22:54:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728992AbgFUCaZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 20 Jun 2020 22:30:25 -0400
-Subject: Re: [PULL REQUEST] i2c for 5.8
+        id S1728992AbgFUCyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 20 Jun 2020 22:54:01 -0400
+Received: from Mani-XPS-13-9360.localdomain (unknown [157.50.185.55])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0BC12247AF;
+        Sun, 21 Jun 2020 02:53:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592706625;
-        bh=ps+Ob9O00oNteyh03C6SjL6ioYYkY47O5d74B5uMYhM=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=djakDrIzjq+HtXOp6rWAkzFhvB8VvYFArxtvf0fZsTz5N++sO3K2HUWeEiIeVIckJ
-         R593nAk7WOeUPnMKhL+c8D1A8ajokRtS5SAY2HSOBdW9zrYs65GYHy1xP0wqG/V3h5
-         Th1BsrfSgwOVV7yjCUrRDR7SQbf8tTsxwIdsoRDM=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200620171624.GA9805@kunai>
-References: <20200620171624.GA9805@kunai>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200620171624.GA9805@kunai>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
-X-PR-Tracked-Commit-Id: 28f9f8fb4f405ade488058f817b6cbd108e45e4e
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a5c6a1f0fe1d182489864b708fa472d0333b39d4
-Message-Id: <159270662525.3975.1993250401444445604.pr-tracker-bot@kernel.org>
-Date:   Sun, 21 Jun 2020 02:30:25 +0000
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        s=default; t=1592708041;
+        bh=8kz0YS2YpXAP78yJ5e4pDrntY+2vR5l3xnCBVIzu5io=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MkmXiACrOD/CQ+R0OcgDaSmrMSBNtwmVcOliTbhfTRdv+8ukxaJxc5XKrB1BU1Uww
+         WGUFIcBENadA6UIj0NCww9g6Igu6mWztI8mqCnpp54vVrt6bvmSkTYgLAr4h2LMygJ
+         iisi/tz0tzEA7birQe0bw/wIqRpOWPmYwxTxEdhE=
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     ulf.hansson@linaro.org
+Cc:     afaerber@suse.de, linux-mmc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <mani@kernel.org>
+Subject: [PATCH] mmc: owl-mmc: Get rid of of_match_ptr() macro
+Date:   Sun, 21 Jun 2020 08:23:30 +0530
+Message-Id: <20200621025330.10561-1-mani@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 20 Jun 2020 19:16:24 +0200:
+Remove the 'of_match_ptr()' macro to fix the warning when CONFIG_OF is
+not selected.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+drivers/mmc/host/owl-mmc.c:677:34: warning: unused variable 'owl_mmc_of_match'
+[-Wunused-const-variable]
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a5c6a1f0fe1d182489864b708fa472d0333b39d4
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Manivannan Sadhasivam <mani@kernel.org>
+---
+ drivers/mmc/host/owl-mmc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thank you!
-
+diff --git a/drivers/mmc/host/owl-mmc.c b/drivers/mmc/host/owl-mmc.c
+index 5e20c099fe03..df43f42855e2 100644
+--- a/drivers/mmc/host/owl-mmc.c
++++ b/drivers/mmc/host/owl-mmc.c
+@@ -689,7 +689,7 @@ MODULE_DEVICE_TABLE(of, owl_mmc_of_match);
+ static struct platform_driver owl_mmc_driver = {
+ 	.driver = {
+ 		.name	= "owl_mmc",
+-		.of_match_table = of_match_ptr(owl_mmc_of_match),
++		.of_match_table = owl_mmc_of_match,
+ 	},
+ 	.probe		= owl_mmc_probe,
+ 	.remove		= owl_mmc_remove,
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+2.17.1
+
