@@ -2,112 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37856202BAF
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 19:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCE7D202BB5
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 19:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730462AbgFURHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 13:07:53 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:46949 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730425AbgFURHw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 13:07:52 -0400
-Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 05LH7ZBL016733;
-        Mon, 22 Jun 2020 02:07:35 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 05LH7ZBL016733
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1592759255;
-        bh=dmolLOJlywaSglqxknwfQfBBia1cZw0OJiADvj1SeMs=;
-        h=From:Date:Subject:To:Cc:From;
-        b=MBzXXcrLrAiDeNTIKiYsWrYI87IISkEwSp3QHKYC/0mqxcR9yj3zhlK0LgXMfCVWR
-         7p06waEXKi+SdE7QtvP2RNFhPMguM0UpJKCeGPNijiSRZGNNkuVwPS+Lh04tNNZDRc
-         HhEOB6YUCB+Ko3Ak0Cc87QyQeL0qa6M5uFGukTJJ7iHKBp/G3Rm6QNFrQiQBimgI0/
-         feLC2nrMRTKC+0UPkcw3hxwUJbh0b4PbSq2Zl5o8kddnStPZpDyUAELYhItbQ0ecEB
-         OlhRecOD0qm8MXNDw0TWT4tat8d8C5L7ZNqI0h9MXlAWSoYg2oCg9rSDUQDD+PuEwu
-         cXTc04M0z36Vg==
-X-Nifty-SrcIP: [209.85.221.178]
-Received: by mail-vk1-f178.google.com with SMTP id d64so725152vke.4;
-        Sun, 21 Jun 2020 10:07:35 -0700 (PDT)
-X-Gm-Message-State: AOAM530S9u2UgYIe/S6n2mmSCTSqkgXPBwH6KqzIyCYA2i113ZA5Cwyf
-        c8A8L/954zTmi4QiMWaXCOhFiSuW/WBfLFJLVdQ=
-X-Google-Smtp-Source: ABdhPJwCjNvV1CWA0AKd+GVzhV18wBBaQLvcb9cCOVwlmW3uoBWAIjGM3sjS2sQ60W0/M6wen/dXyhKKYNGK51kzk+o=
-X-Received: by 2002:ac5:c94e:: with SMTP id s14mr529044vkm.96.1592759254302;
- Sun, 21 Jun 2020 10:07:34 -0700 (PDT)
-MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 22 Jun 2020 02:06:58 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAT6C26gEHyT17cwHkvjx3NgvjtuFuuhqYWwH5fSz7R6wA@mail.gmail.com>
-Message-ID: <CAK7LNAT6C26gEHyT17cwHkvjx3NgvjtuFuuhqYWwH5fSz7R6wA@mail.gmail.com>
-Subject: [GIT PULL] Kbuild fixes for v5.8-rc2
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1730507AbgFURK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 13:10:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42142 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730451AbgFURKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Jun 2020 13:10:23 -0400
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.8-3 tag
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592759423;
+        bh=ZKcl+97bymU6K1F3dGsUkV+JSxwqUs7q28xWWYpO+wU=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=iVYyOFyxHdDHTbhWE3egS6057Pzp4y6FCOLlBED+WpEZNOVs8ri5n4rW8oZfIcB1P
+         FzHW5rNfo7kcoOom84dTBzHF277d67ebvn80fO2biC5/OZfl9zwOvsH4JJwf6/G716
+         L/8DTQLB3YATYkBzTuYo0dz6ndLbXCLkNo/RnCbY=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <87366od72u.fsf@mpe.ellerman.id.au>
+References: <87366od72u.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <87366od72u.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git
+ tags/powerpc-5.8-3
+X-PR-Tracked-Commit-Id: c0e1c8c22bebecef40097c80c1c74492ff96d081
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 75613939084f59c0848b146e54ba463dc494c433
+Message-Id: <159275942292.6032.16018775763067134260.pr-tracker-bot@kernel.org>
+Date:   Sun, 21 Jun 2020 17:10:22 +0000
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        aneesh.kumar@linux.ibm.com, arnd@arndb.de,
+        christophe.leroy@csgroup.eu, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, npiggin@gmail.com,
+        peterz@infradead.org, rppt@linux.ibm.com, will@kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+The pull request you sent on Sun, 21 Jun 2020 20:52:25 +1000:
 
-Please pull some Kbuild fixes.
-Thanks.
+> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.8-3
 
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/75613939084f59c0848b146e54ba463dc494c433
 
-The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
+Thank you!
 
-  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kbuild-fixes-v5.8
-
-for you to fetch changes up to 214377e9b7e3185abf5998b8a90450e01bab21a7:
-
-  samples: watch_queue: build sample program for target architecture
-(2020-06-22 01:56:09 +0900)
-
-----------------------------------------------------------------
-Kbuild fixes for v5.8
-
- - fix -gz=zlib compiler option test for CONFIG_DEBUG_INFO_COMPRESSED
-
- - improve cc-option in scripts/Kbuild.include to clean up temp files
-
- - improve cc-option in scripts/Kconfig.include for more reliable compile
-   option test
-
- - do not copy modules.builtin by 'make install' because it would break
-   existing systems
-
- - use 'userprogs' syntax for watch_queue sample
-
-----------------------------------------------------------------
-Arvind Sankar (1):
-      Makefile: Improve compressed debug info support detection
-
-Masahiro Yamada (4):
-      kbuild: improve cc-option to clean up all temporary files
-      kconfig: unify cc-option and as-option
-      Revert "Makefile: install modules.builtin even if CONFIG_MODULES=n"
-      samples: watch_queue: build sample program for target architecture
-
-Masanari Iida (1):
-      scripts: Fix typo in headers_install.sh
-
- Makefile                     | 16 ++++------------
- arch/arm64/Kconfig           |  2 +-
- lib/Kconfig.debug            |  1 -
- samples/Kconfig              |  2 +-
- samples/watch_queue/Makefile | 10 ++++------
- scripts/Kbuild.include       | 11 ++++++-----
- scripts/Kconfig.include      |  8 +-------
- scripts/headers_install.sh   |  2 +-
- 8 files changed, 18 insertions(+), 34 deletions(-)
-
-
---
-Best Regards
-Masahiro Yamada
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
