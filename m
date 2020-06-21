@@ -2,59 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6740202C21
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 21:13:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EEA0202C35
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 21:30:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729964AbgFUTM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 15:12:57 -0400
-Received: from smtprelay0207.hostedemail.com ([216.40.44.207]:45460 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729279AbgFUTM4 (ORCPT
+        id S1730159AbgFUT37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 15:29:59 -0400
+Received: from mailbackend.panix.com ([166.84.1.89]:16996 "EHLO
+        mailbackend.panix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729090AbgFUT37 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 15:12:56 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id E526018224D6E;
-        Sun, 21 Jun 2020 19:12:55 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:1801:2393:2559:2562:3138:3139:3140:3141:3142:3351:3622:3865:3866:3870:3874:4321:4605:5007:7903:7904:10004:10400:10848:11232:11658:11914:12297:12740:12895:13069:13311:13357:13894:14659:21080:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: cows87_5b0326926e2c
-X-Filterd-Recvd-Size: 1505
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 21 Jun 2020 19:12:54 +0000 (UTC)
-Message-ID: <cb10e0a1a35e7dfc4f6a27dacb7883eaa3864811.camel@perches.com>
-Subject: Re: kbuild: separate kerneldoc warnings from compiler warnings
-From:   Joe Perches <joe@perches.com>
-To:     Valdis =?UTF-8?Q?Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sun, 21 Jun 2020 12:12:53 -0700
-In-Reply-To: <591473.1592679153@turing-police>
-References: <591473.1592679153@turing-police>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Sun, 21 Jun 2020 15:29:59 -0400
+Received: from xps-7390 (cpe-23-242-39-94.socal.res.rr.com [23.242.39.94])
+        by mailbackend.panix.com (Postfix) with ESMTPSA id 49qjKx3yTpz1h7Y;
+        Sun, 21 Jun 2020 15:29:57 -0400 (EDT)
+Date:   Sun, 21 Jun 2020 12:29:56 -0700 (PDT)
+From:   "Kenneth R. Crudup" <kenny@panix.com>
+Reply-To: "Kenneth R. Crudup" <kenny@panix.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+cc:     Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Commit 25f12ae45fc1 ("maccess: rename probe_kernel_address to
+ get_kernel_nofault") causing several OOPSes
+In-Reply-To: <CAHk-=whj7YBvNT3FPHc8oUqwRhjbRkJESnUx6bbpA5ys6W9ujw@mail.gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2006211226240.9484@xps-7390>
+References: <alpine.DEB.2.22.394.2006181751270.9276@xps-7390> <20200619065007.GA3041@lst.de> <alpine.DEB.2.22.394.2006182351090.9276@xps-7390> <20200619074233.GA3723@lst.de> <alpine.DEB.2.22.394.2006200640370.2845@xps-7390>
+ <CAHk-=whj7YBvNT3FPHc8oUqwRhjbRkJESnUx6bbpA5ys6W9ujw@mail.gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-06-20 at 14:52 -0400, Valdis Klētnieks wrote:
-> This patch introduces a new build flag 'K=1' which controls whether kerneldoc
-> warnings should be issued, separating them from the compiler warnings that W=
-> controls.
-[]
-> diff --git a/Makefile b/Makefile
-[]
-> @@ -1605,6 +1605,7 @@ PHONY += help
->  	@echo  '                       (sparse by default)'
->  	@echo  '  make C=2   [targets] Force check of all c source with $$CHECK'
->  	@echo  '  make RECORDMCOUNT_WARN=1 [targets] Warn about ignored mcount sections'
-> +	@echo  '  make K=1   [targets] Warn about problems in kerneldoc comments'
 
-Seems sensible. Thanks.
+On Sat, Jun 20, 2020 at 6:46 AM Kenneth R. Crudup <kenny@panix.com> wrote:
+
+> > So, be totally surprised :) I've just booted with "maccess: rename
+> > probe_kernel_address to get_kernel_nofault" intact and your probe_roms.c
+> > patch with no issues.
+> > (Perhaps there's some sort of compiler optimization going on?)
+
+On Sat, 20 Jun 2020, Linus Torvalds wrote:
 
 
+> I'm staring at that opatch and not seeing how it could _possibly_ make
+> any difference in code generation.
+
+> Which is the obvious next step: would you mind compiling that file
+> with and without the patch and sending me the two object files?
+
+It looks like you had already, do you still need me to do this?
+
+FWIW, here's my gcc info:
+
+$  gcc --version
+gcc (Ubuntu 9.3.0-13ubuntu1) 9.3.0
+
+OH- I did change arch/x86/Makefile in my own builds- maybe this could matter?
+Doubtful, but I could test later tonight or tomorrow (gotta do some ;l work in the
+meantime).
+
+----
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 00e378de8bc0..37aff76f3067 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -123,7 +123,8 @@ else
+         cflags-$(CONFIG_MPSC) += $(call cc-option,-march=nocona)
+
+         cflags-$(CONFIG_MCORE2) += \
+-                $(call cc-option,-march=core2,$(call cc-option,-mtune=generic))
++                $(call cc-option,-march=icelake-client,$(call cc-option,-mtune=native)) \
++                $(call cc-option,-mtune=icelake-client,$(call cc-option,-mtune=native))
+        cflags-$(CONFIG_MATOM) += $(call cc-option,-march=atom) \
+                $(call cc-option,-mtune=atom,$(call cc-option,-mtune=generic))
+         cflags-$(CONFIG_GENERIC_CPU) += $(call cc-option,-mtune=generic)
+----
+
+	-Kenny
+
+-- 
+Kenneth R. Crudup  Sr. SW Engineer, Scott County Consulting, Orange County CA
