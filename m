@@ -2,178 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2262028DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 07:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179502028D8
+	for <lists+linux-kernel@lfdr.de>; Sun, 21 Jun 2020 07:42:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729294AbgFUFmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 01:42:32 -0400
-Received: from mga05.intel.com ([192.55.52.43]:56488 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725928AbgFUFmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 01:42:31 -0400
-IronPort-SDR: rWgPbvwZL0UCVChk/HpVMsTv86Q6BypEqtU2itTLJm32jCqrVQrD8gyHOBC/2gXoSSf4hfH52y
- 0QwM8Tz+SKlg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9658"; a="228182900"
-X-IronPort-AV: E=Sophos;i="5.75,261,1589266800"; 
-   d="scan'208";a="228182900"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Jun 2020 22:42:27 -0700
-IronPort-SDR: VOb1jowSTpQ2GJHLhvEm6JfOh0omChL37JVXgDqDd26JM/zaz9FgMcxKXyy9YUPPOxXpct2SSo
- RiATUh3x6j2Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,261,1589266800"; 
-   d="scan'208";a="478051249"
-Received: from pl-dbox.sh.intel.com (HELO intel.com) ([10.239.159.39])
-  by fmsmga006.fm.intel.com with ESMTP; 20 Jun 2020 22:42:25 -0700
-Date:   Sun, 21 Jun 2020 13:42:07 +0800
-From:   Philip Li <philip.li@intel.com>
-To:     kernel test robot <lkp@intel.com>
-Cc:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [kbuild-all] ERROR: modpost: "__mulsi3" undefined!
-Message-ID: <20200621054207.GA8800@intel.com>
-References: <202006211117.Z854IHoJ%lkp@intel.com>
+        id S1729265AbgFUFmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 01:42:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37450 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725928AbgFUFmR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Jun 2020 01:42:17 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C74C061794;
+        Sat, 20 Jun 2020 22:42:16 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id m26so7791317lfo.13;
+        Sat, 20 Jun 2020 22:42:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zRKag/4LPSl5Xnsnl9sXPhKHWLjT9dMGxtuILiA1ji8=;
+        b=bHHamA0pKBbnulIdEuqz8qHkzFIHj+PifiHFGg0049fXDXHj+Mj7WI9ztirmz+HNT0
+         krHTPTUKsEl8qhfKMdkhyGG+xMnPfTsVRHCUbXSp+UJjelTH4UHAq8PqsrMh24fZvD5w
+         8D4Knh+ueUYb1qynIGy2MRJcrhIPOk2g+dVoyTY5YEHSvEShyB7qmgdLuHxNYKcRhD92
+         0Y0TDPkuzMIbkAuYBrH5birnoCPSZSegQYMeG4UZjr6Fzb7nKl3WN1hW5z+VfHAbnfUW
+         JxgZbMlvBGpuHO+QJbdGq9nLeRpNymW4BBeE1HfWygGlVUoolsRovAkMaFAx+ly7755L
+         tgdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zRKag/4LPSl5Xnsnl9sXPhKHWLjT9dMGxtuILiA1ji8=;
+        b=oYD+RZoR+SwZJ9XdXVWsbG/eOvUlSOSO4vgf/Rr3mwDGMngBGj8XL7vC3HhBEGbL2B
+         fqipsm+9GWCzYtIxAxgBz5rhCpXbh5b8++Xf+MEYE4vMFZJKaCJHoRR0+8Bz243JG0Zb
+         Tlg8LcuIPCk5DJG1dtGso9dJQ3DX0Kt/Apk8RhFpK1GmRpRYTYeLvZNwPtXc2crkvr3p
+         e0gGHWkrWWQyy9ihL5lcbnwc9Zyqk0+RiYxPZ6C4XR/yOB71esS2Exl1XjxENLTXXdS0
+         OmBmv/piJ49zWd4IsWOUXYmLWYqbf7Z+dSgNiwwUi/IPP+Szl4EAYOsAyidhD8CHZiF9
+         aU/g==
+X-Gm-Message-State: AOAM532csROqvKLytXM0mNrqn/c1VdTRtPHmjY/wLiqN2yKv8WQvnjR6
+        tHfqBYPMislBzlOnbmOy4UY=
+X-Google-Smtp-Source: ABdhPJwjMyYu4fZwYzbnhbK/7YJm2rB4RHQwOSH447wnhCnvAuhaqa23B80WJJZ1xEBy/LtZzBRrbw==
+X-Received: by 2002:ac2:447a:: with SMTP id y26mr6147470lfl.146.1592718135329;
+        Sat, 20 Jun 2020 22:42:15 -0700 (PDT)
+Received: from localhost.localdomain (h-82-196-111-136.NA.cust.bahnhof.se. [82.196.111.136])
+        by smtp.gmail.com with ESMTPSA id i22sm1990323ljb.50.2020.06.20.22.42.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 20 Jun 2020 22:42:14 -0700 (PDT)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     akpm@linux-foundation.org
+Cc:     andy.shevchenko@gmail.com, arnd@arndb.de, emil.l.velikov@gmail.com,
+        geert@linux-m68k.org, keescook@chromium.org,
+        linus.walleij@linaro.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lkp@intel.com,
+        rikard.falkeborn@gmail.com, syednwaris@gmail.com,
+        vilhelm.gray@gmail.com, yamada.masahiro@socionext.com
+Subject: [PATCH v4 1/2] linux/bits.h: fix unsigned less than zero warnings
+Date:   Sun, 21 Jun 2020 07:42:09 +0200
+Message-Id: <20200621054210.14804-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200620213632.60c2c6b99ec9cf9392fa128d@linux-foundation.org>
+References: <20200620213632.60c2c6b99ec9cf9392fa128d@linux-foundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202006211117.Z854IHoJ%lkp@intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 21, 2020 at 11:35:10AM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   8b6ddd10d678bebec32381f71b6b420bafc43ad0
-> commit: 30428ef5d1e8caf78639cc70a802f1cb7b1cec04 lib/test_lockup: test module to generate lockups
-> date:   2 months ago
-> config: openrisc-randconfig-c024-20200619 (attached as .config)
-> compiler: or1k-linux-gcc (GCC) 9.3.0
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>, old ones prefixed by <<):
-sorry, kindly ignore this, which is more likely a false positive. We will
-futher check and fix our logic issue.
+When calling the GENMASK and GENMASK_ULL macros with zero lower bit and
+an unsigned unknown high bit, some gcc versions warn due to the
+comparisons of the high and low bit in GENMASK_INPUT_CHECK.
 
-> 
-> ERROR: modpost: "__mulsi3" [lib/raid6/raid6_pq.ko] undefined!
-> ERROR: modpost: "__mulsi3" [lib/reed_solomon/reed_solomon.ko] undefined!
-> >> ERROR: modpost: "__mulsi3" [lib/test_lockup.ko] undefined!
-> ERROR: modpost: "__mulsi3" [lib/test_firmware.ko] undefined!
-> ERROR: modpost: "__mulsi3" [lib/lz4/lz4hc_compress.ko] undefined!
-> ERROR: modpost: "__mulsi3" [lib/math/prime_numbers.ko] undefined!
-> ERROR: modpost: "__mulsi3" [lib/math/cordic.ko] undefined!
-> ERROR: modpost: "__mulsi3" [net/sunrpc/auth_gss/rpcsec_gss_krb5.ko] undefined!
-> ERROR: modpost: "__mulsi3" [net/sunrpc/auth_gss/auth_rpcgss.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/ipack/devices/ipoctal.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/industrialio.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/temperature/mlx90632.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/proximity/srf04.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/proximity/ping.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/proximity/isl29501.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/pressure/t5403.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/pressure/ms5637.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/pressure/mpl115.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/pressure/icp10100.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/pressure/bmp280.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/potentiostat/lmp91000.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/potentiometer/tpl0102.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/potentiometer/mcp41010.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/potentiometer/mcp4018.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/potentiometer/max5481.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/potentiometer/ds1803.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/potentiometer/ad5272.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/magnetometer/st_magn.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/magnetometer/bmc150_magn.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/magnetometer/ak8975.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/light/veml6030.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/light/us5182d.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/light/tsl2772.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/light/tsl2583.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/light/tcs3472.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/light/tcs3414.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/light/si1145.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/light/si1133.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/light/max44009.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/light/max44000.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/light/lv0104cs.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/light/ltr501.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/light/cm32181.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/light/apds9300.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/imu/adis_lib.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/imu/adis16480.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/imu/adis16460.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/imu/adis16400.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/imu/st_lsm6dsx/st_lsm6dsx.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/imu/inv_mpu6050/inv-mpu6050.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/humidity/dht11.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/frequency/adf4350.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/gyro/adxrs450.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/dac/mcp4922.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/dac/mcp4725.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/dac/ltc1660.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/dac/dpot-dac.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/dac/ad5761.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/dac/ad5592r-base.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/dac/ad5360.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/common/st_sensors/st_sensors.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/common/ms_sensors/ms_sensors_i2c.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/chemical/bme680_core.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/chemical/atlas-sensor.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/buffer/kfifo_buf.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/amplifiers/hmc425a.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/amplifiers/ad8366.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/afe/iio-rescale.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/xilinx-xadc.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/vf610_adc.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/twl4030-madc.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/ti-ads8688.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/ti-ads1015.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/ti-adc0832.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/stmpe-adc.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/max9611.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/max1363.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/max1118.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/lp8788_adc.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/ina2xx-adc.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/hx711.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/da9150-gpadc.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/ad799x.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/ad7793.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/ad7780.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/ad7298.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/ad7292.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/ad7124.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/adc/ad_sigma_delta.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/accel/sca3000.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/accel/mma9553.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/accel/mma9551_core.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/accel/mma8452.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/accel/bma400_core.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/iio/accel/adxl372.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/hid/i2c-hid/i2c-hid.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/hid/usbhid/usbhid.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/hid/hid-wiimote.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/hid/hid-waltop.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/hid/wacom.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/hid/hid-uclogic.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/hid/hid-steam.ko] undefined!
-> ERROR: modpost: "__mulsi3" [drivers/hid/hid-sony.ko] undefined!
-> 
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+To silence the warnings, only perform the check if both inputs are
+known. This does not trigger any warnings, from the Wtype-limits help:
 
+	Warn if a comparison is always true or always false due to the
+	limited range of the data type, but do not warn for constant
+	expressions.
 
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
+As an example of the warning, kindly reported by the kbuild test robot:
+
+from drivers/mfd/atmel-smc.c:11:
+drivers/mfd/atmel-smc.c: In function 'atmel_smc_cs_encode_ncycles':
+include/linux/bits.h:26:28: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
+26 |   __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+|                            ^
+include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
+16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+|                                                              ^
+include/linux/bits.h:39:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
+39 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+|   ^~~~~~~~~~~~~~~~~~~
+>> drivers/mfd/atmel-smc.c:49:25: note: in expansion of macro 'GENMASK'
+49 |  unsigned int lsbmask = GENMASK(msbpos - 1, 0);
+|                         ^~~~~~~
+
+Fixes: 295bcca84916 ("linux/bits.h: add compile time sanity check of GENMASK inputs")
+Reported-by: kbuild test robot <lkp@intel.com>
+Reported-by: Emil Velikov <emil.l.velikov@gmail.com>
+Reported-by: Syed Nayyar Waris <syednwaris@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+v3-v4
+Added Emils Reviewed-by.
+
+v2-v3
+Added Andys Reviewed-by.
+
+v1->v2
+Change to require both high and low bit to be constant expressions
+instead of introducing somewhat arbitrary casts
+
+ include/linux/bits.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/bits.h b/include/linux/bits.h
+index 4671fbf28842..35ca3f5d11a0 100644
+--- a/include/linux/bits.h
++++ b/include/linux/bits.h
+@@ -23,7 +23,8 @@
+ #include <linux/build_bug.h>
+ #define GENMASK_INPUT_CHECK(h, l) \
+ 	(BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+-		__builtin_constant_p((l) > (h)), (l) > (h), 0)))
++		__builtin_constant_p(l) && __builtin_constant_p(h), \
++		(l) > (h), 0)))
+ #else
+ /*
+  * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
+-- 
+2.27.0
 
