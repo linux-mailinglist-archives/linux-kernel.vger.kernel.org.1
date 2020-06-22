@@ -2,99 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D35A4203B72
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 17:48:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AE9203B8B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 17:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729471AbgFVPsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 11:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729222AbgFVPsu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 11:48:50 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1564C061573;
-        Mon, 22 Jun 2020 08:48:50 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id u14so21424pjj.2;
-        Mon, 22 Jun 2020 08:48:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UTeMozTEnRvUc79vKWE21Wx7VbsBFwErofUbGnztYII=;
-        b=gYV5CCQ8bRRUQCfIIIN//96WfrVuHVcVJ6SRKfMJQAkN6uz2/TL7kHyCwxPUs2JnbX
-         VVu/rmqDIoaljcZqE78wbHblV5AWifkidKx1puFQFpiYQfoJxe+VkQShS2TLp767Gd0w
-         wKB8mlHaHw4nGWi9K7vDsyXtWI/PDjqq8/bixEkpZQYzfo5XRBDdZ+PYUVE6TAcox/zn
-         5jj2QwuHHis8QHQZEu0IMZswz1KmeJC7Y391RtYGCYGPXMcGMlCTIPRZSzyq/npPLQPI
-         CMTTVxkLSZzyFHXByOaKvwA94RoXqh6RuVx6Ox+XJ2gEblbS3+KLWZtHSZlga5IG88s/
-         2iNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UTeMozTEnRvUc79vKWE21Wx7VbsBFwErofUbGnztYII=;
-        b=HW8zuneNXWOB4rD8TeSPcfIwGEom06dY3JqXZgGGcmrf9M5MWUfCrI2+bhFGiiEEZe
-         DhjRRKFvJv91z3ufN/pElAPazOpJA8xfI8KEloi/NKikH9Bccz0b08Zbih4IK1SUNiyc
-         qVhvmVhqY5JCNQS0c9cqpemvWaipdeslyXUUmGUvfl+Y/o1+wmOSQvvViSzA+mWF23bT
-         RTgm3G6yh1WNwij3VtHdHjQsmaSwlnw0N2zvaI94mRZXGJL7kmEJcUktfNzH64t+p+8Q
-         nsQ5QfB6MCvMbL2KtmGyju5YXiwR1lTtAdI11dayv3CNAxUo9v6o6J05lottmdlusZfz
-         nUqQ==
-X-Gm-Message-State: AOAM530c4U2jxmB++Yvw5oJZ9pqbF6fj5tsMc9+VH1Bdg0wj0c9bP2cJ
-        2Z0IVqCdxsE++UHKuUsOPKJTtZyJwANhB0rq2j8=
-X-Google-Smtp-Source: ABdhPJyd++CbCxs4tfqmXSChUpZx5iYr8UfFfO4C772lsN5Xz0B61ofSXuAbMMaY4/KTZcliJwrSXzNECuZECVMOsSQ=
-X-Received: by 2002:a17:90a:ac05:: with SMTP id o5mr19461550pjq.228.1592840930325;
- Mon, 22 Jun 2020 08:48:50 -0700 (PDT)
+        id S1729414AbgFVPvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 11:51:20 -0400
+Received: from elvis.franken.de ([193.175.24.41]:33897 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729147AbgFVPvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 11:51:16 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1jnOj4-0002AG-02; Mon, 22 Jun 2020 17:51:14 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 3E785C06F0; Mon, 22 Jun 2020 17:48:55 +0200 (CEST)
+Date:   Mon, 22 Jun 2020 17:48:55 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     maobibo <maobibo@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Do not flush tlb when setting pmd entry
+Message-ID: <20200622154855.GC17294@alpha.franken.de>
+References: <1591177333-17833-1-git-send-email-maobibo@loongson.cn>
+ <20200615101443.GA10075@alpha.franken.de>
+ <4bef403d-baba-ddf8-c25c-3d6968897a53@loongson.cn>
+ <20200617111403.GC9940@alpha.franken.de>
+ <ea914a82-70c1-b9a3-f6f0-f92a6d6c6e7f@loongson.cn>
 MIME-Version: 1.0
-References: <20200622103817.476-1-nsaenzjulienne@suse.de> <20200622103817.476-3-nsaenzjulienne@suse.de>
- <CAHp75VcGoK=6FitfuzEhPZXSrtJiO_-XcD6jtg8SckprWhePgA@mail.gmail.com> <4aaabc8ff39007a97a03f335c6a51313a2c59551.camel@suse.de>
-In-Reply-To: <4aaabc8ff39007a97a03f335c6a51313a2c59551.camel@suse.de>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 22 Jun 2020 18:48:37 +0300
-Message-ID: <CAHp75VeCgum9WtuWLK63h4XEZc8Jz2py-i3NdSw4F1eyL-ngZg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/9] reset: Add Raspberry Pi 4 firmware reset controller
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        USB <linux-usb@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        tim.gover@raspberrypi.org, linux-pci <linux-pci@vger.kernel.org>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ea914a82-70c1-b9a3-f6f0-f92a6d6c6e7f@loongson.cn>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 6:08 PM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
-> On Mon, 2020-06-22 at 17:42 +0300, Andy Shevchenko wrote:
-> > On Mon, Jun 22, 2020 at 5:26 PM Nicolas Saenz Julienne
-> > <nsaenzjulienne@suse.de> wrote:
+On Sat, Jun 20, 2020 at 11:47:35AM +0800, maobibo wrote:
+> 
+> 
+> On 06/17/2020 07:14 PM, Thomas Bogendoerfer wrote:
+> > On Tue, Jun 16, 2020 at 06:34:21PM +0800, maobibo wrote:
+> >>
+> >>
+> >> On 06/15/2020 06:14 PM, Thomas Bogendoerfer wrote:
+> >>> On Wed, Jun 03, 2020 at 05:42:13PM +0800, Bibo Mao wrote:
+> >>>> Function set_pmd_at is to set pmd entry, if tlb entry need to
+> >>>> be flushed, there exists pmdp_huge_clear_flush alike function
+> >>>> before set_pmd_at is called. So it is not necessary to call
+> >>>> flush_tlb_all in this function.
+> >>>
+> >>> have you checked all set_pmd_at() calls ? I found a few case where
+> >>> it's not clear to me, if tlb flushing is done... If you think this
+> >>> is still the right thing to do, please change arch/mips/mm/pgtable-32.c
+> >>> as well.
+> >> well, I will double check this and do more testing about thp and hugepage.
+> > 
+> > I was more concerned about
+> > 
+> > fs/dax.c
+> > fs/proc/task_mmu.c
+> > mm/rmap.c
+> 
+> I think that flush_tlb_all should not be called in function set_pmd_at
+> on mips platform. However update_mmu_cache_pmd() should be called __after__
+> set_pmd_at() function to update tlb entry at some places, it is another issue.
+> Here is my analysis in the three files where set_pmd_at is called.
+> [..]
 
-...
+thank you for confirming that we are good with removing flush_tlb_all().
 
-> > > +       struct device_node *fw_node;
-> >
-> > If you are going to use fwnode (as it should be), make sure the proper
-> > data type is in use, i.e. struct fwnode_handle.
-> >
-> > Otherwise, if you want to be OF centric (I discourage this, don't know
-> > if RPi4 is ever going to run RHEL or other distros that require non-DT
-> > firmwares), don't name fw_node. It's confusing.
->
-> I agree it is confusing. I'll rename it. On the other hand, this is strictly DT
-> centric.
-
-AFAIU struct device_node *np is a usual pattern in OF-only world.
+Thomas.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
