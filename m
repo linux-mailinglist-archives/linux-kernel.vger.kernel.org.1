@@ -2,136 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C90E920442C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:02:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D5D20443C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731381AbgFVXCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 19:02:07 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17060 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731268AbgFVXCG (ORCPT
+        id S1731449AbgFVXEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 19:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731371AbgFVXEV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 19:02:06 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ef138130000>; Mon, 22 Jun 2020 16:00:35 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 22 Jun 2020 16:02:06 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 22 Jun 2020 16:02:06 -0700
-Received: from [10.2.59.206] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 22 Jun
- 2020 23:01:51 +0000
-Subject: Re: [PATCH 13/16] mm: support THP migration to device private memory
-To:     Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>
-CC:     Ralph Campbell <rcampbell@nvidia.com>,
-        <nouveau@lists.freedesktop.org>, <linux-rdma@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        "Ben Skeggs" <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Shuah Khan" <shuah@kernel.org>,
-        "Huang, Ying" <ying.huang@intel.com>
-References: <20200619215649.32297-1-rcampbell@nvidia.com>
- <20200619215649.32297-14-rcampbell@nvidia.com>
- <F1872509-3B1F-4A8A-BFF5-E4D44E451920@nvidia.com>
- <b6eed976-c515-72d6-a7be-2296cab8f0d4@nvidia.com>
- <C7BEB563-3698-442C-A188-1B66CBE4CF63@nvidia.com>
- <a5f502f8-70cd-014b-8066-bbaeb8024a29@nvidia.com>
- <4C364E23-0716-4D59-85A1-0C293B86BC2C@nvidia.com>
- <CAHbLzkqe50+KUsRH92O4Be2PjuwAYGw9nK+d-73syxi2Xnf9-Q@mail.gmail.com>
- <CAHbLzko=BqtPhxgf7f1bKKqoQxK9XCCPdp4YdL80K_uXFfcETQ@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <fa056e5e-ca87-aef1-e66e-58e8ebe5403e@nvidia.com>
-Date:   Mon, 22 Jun 2020 16:01:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 22 Jun 2020 19:04:21 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D36C1C061795
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 16:04:20 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id j4so8250631plk.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 16:04:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=SzgCWMDg2RKJ2NhPQUi7yzswSotPjadK1/0BdT/7pNM=;
+        b=CjobsTwjEzfFB7mg3yto+C37iPxoADkBtXnwx5Zwh1qhWDXJI9D8xzTYannQoMeE59
+         wYG8uphNg+tfYmpQDrje8+ZiMkr9C6zDHh05LXr1dxnbGcD7rcatVqb208oPrAX1xxqB
+         rMhirMwPU0VMi65dec2Qn/HinSWsI/vcDRVsMIGJs+5yaNri6IK5LoQwvGPcoK+2WLMn
+         sqYEhxjSdosxf/hM9s6W6CVJJi/xnF0Je9pZD+TXn6ArUzc0GmkZz3Hco2I6Im31YEfK
+         tis4ESU+TFUPNnp/+ik9M+TOUIBnySvS0k8SDIEYVkUGO+TUFQ8DH2mreAVwZRufQBL7
+         psPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=SzgCWMDg2RKJ2NhPQUi7yzswSotPjadK1/0BdT/7pNM=;
+        b=p9j3kbyzt/c+S7+j4LrAxC0Ths/sF8IBW2TwgV8j2NoDry6Qbp/NJSp5viaQ0aTypy
+         HAee+od4553f0ZV80FB9wp3oir1ysH00tAZkysaQCPhkgc7fZhgvAFcEOKFqUSvDgPbg
+         rmwO6EkWrgl56JXgpXj3iq4oTkAGn8rdutD13rK8plRpaNPCcG54BHUo4FypPKLLrQYs
+         Pjg14RUoVhUVn0oyQhGQOJ2hHF2EAKOXIyulkB2RJNuv2otDaBYXsvgknUUX+vhUUHIK
+         6lMvuBH3XPrN3KqJoOTRQnAkUYbAppQKgUfiQ5CU8NAVbArLrbGAfNGjdZzSi+jOxnUn
+         anOw==
+X-Gm-Message-State: AOAM5336BNcZVz3Vple+f6Vqebn/fWK+DXV3vztROMGMK+KtGrH8j1JC
+        KrrK6miMzAb6kSMiXJ7AG4nrUShpV0sGzrIhJcBI0g==
+X-Google-Smtp-Source: ABdhPJy9ExQlGK27NrlHcsj2o4KqK8zQSxV/IYN84Vo7oDdUJkzL59yBK014EWuci7pcT/EaZ13XpTPNDdTLyCE+wNI=
+X-Received: by 2002:a17:902:fe8b:: with SMTP id x11mr21225140plm.179.1592867060019;
+ Mon, 22 Jun 2020 16:04:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHbLzko=BqtPhxgf7f1bKKqoQxK9XCCPdp4YdL80K_uXFfcETQ@mail.gmail.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+References: <20200617210613.95432-1-ndesaulniers@google.com> <20200617212705.tq2q6bi446gydymo@google.com>
+In-Reply-To: <20200617212705.tq2q6bi446gydymo@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 22 Jun 2020 16:04:07 -0700
+Message-ID: <CAKwvOdniambW9_nVbDnd4A_+bdDdZMd2V1Q=Xw5EJYDGeh=eyQ@mail.gmail.com>
+Subject: Re: [PATCH] vmlinux.lds: consider .text.{hot|unlikely}.* part of
+ .text too
+To:     =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kees Cook <keescook@chromium.org>,
+        "# 3.4.x" <stable@vger.kernel.org>, Jian Cai <jiancai@google.com>,
+        Luis Lozano <llozano@google.com>,
+        Manoj Gupta <manojgupta@google.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1592866835; bh=Y6NBr0D1yM6UcnMk8vnlqkMWMVjsve14PP2JOfM1rUE=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=N01y1zIPkJH/Lms5VPCw+1hdpKCS6PQZaY+D44RrVIXwNweSuXmYr3z3AfacpMrRd
-         G6+/fqzWMSPGkgXP5CHVQpYsuLjMkY+7UKSYaWnH1EkZLLsUN4HnVHQvpRTB4ETFdv
-         mhmHUu3UNo7z2CHs8x9IfXei5XwR3Y9Zs7z/4nGOSZHwHXZyStlyAfAisuSqTF6kJk
-         6gCLh23dt5mh+yBb98fGlamGj9DI3thkQ6Su+m8vH3eU9D0J67Zac+QkklzP31wVYD
-         lHOctZ9rMoZOScVyrBhik3PE1youRWx4x2Ase8LtWQUNfGk29QlDgJu+UXoKCypz1b
-         XQu2ultXjtJaw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-22 15:33, Yang Shi wrote:
-> On Mon, Jun 22, 2020 at 3:30 PM Yang Shi <shy828301@gmail.com> wrote:
->> On Mon, Jun 22, 2020 at 2:53 PM Zi Yan <ziy@nvidia.com> wrote:
->>> On 22 Jun 2020, at 17:31, Ralph Campbell wrote:
->>>> On 6/22/20 1:10 PM, Zi Yan wrote:
->>>>> On 22 Jun 2020, at 15:36, Ralph Campbell wrote:
->>>>>> On 6/21/20 4:20 PM, Zi Yan wrote:
->>>>>>> On 19 Jun 2020, at 17:56, Ralph Campbell wrote:
-...
->>> Ying(cc=E2=80=99d) developed the code to swapout and swapin THP in one =
-piece: https://lore.kernel.org/linux-mm/20181207054122.27822-1-ying.huang@i=
-ntel.com/.
->>> I am not sure whether the patchset makes into mainstream or not. It cou=
-ld be a good technical reference
->>> for swapping in device private pages, although swapping in pages from d=
-isk and from device private
->>> memory are two different scenarios.
->>>
->>> Since the device private memory swapin impacts core mm performance, we =
-might want to discuss your patches
->>> with more people, like the ones from Ying=E2=80=99s patchset, in the ne=
-xt version.
->>
->> I believe Ying will give you more insights about how THP swap works.
->>
->> But, IMHO device memory migration (migrate to system memory) seems
->> like THP CoW more than swap.
+On Wed, Jun 17, 2020 at 2:27 PM F=C4=81ng-ru=C3=AC S=C3=B2ng <maskray@googl=
+e.com> wrote:
+>
+>
+> On 2020-06-17, Nick Desaulniers wrote:
+> >ld.bfd's internal linker script considers .text.hot AND .text.hot.* to
+> >be part of .text, as well as .text.unlikely and .text.unlikely.*.
+>
+> >ld.lld will produce .text.hot.*/.text.unlikely.* sections.
+>
+> Correction to this sentence. lld is not relevant here.
+>
+> -ffunction-sections combined with profile-guided optimization can
+> produce .text.hot.* .text.unlikely.* sections.  Newer clang may produce
+> .text.hot. .text.unlikely. (without suffix, but with a trailing dot)
+> when -fno-unique-section-names is specified, as an optimization to make
+> .strtab smaller.
+
+Then why was the bug report reporting https://reviews.llvm.org/D79600
+as the result of a bisection, if LLD is not relevant?  Was the
+bisection wrong?
+
+The upstream report wasn't initially public, for no good reason.  So I
+didn't include it, but if we end up taking v1, this should have
+
+Link: https://bugs.chromium.org/p/chromium/issues/detail?id=3D1084760
+
+The kernel doesn't use -fno-unique-section-names; is that another flag
+that's added by CrOS' compiler wrapper?
+https://source.chromium.org/chromiumos/chromiumos/codesearch/+/master:src/t=
+hird_party/toolchain-utils/compiler_wrapper/config.go;l=3D110
+Looks like no.  It doesn't use `-fno-unique-section-names` or
+`-ffunction-sections`.
 
 
-A fine point: overall, the desired behavior is "migrate", not CoW.
-That's important. Migrate means that you don't leave a page behind, even
-a read-only one. And that's exactly how device private migration is
-specified.
+>
+> We've already seen that GCC can place main in .text.startup without
+> -ffunction-sections. There may be other non -ffunction-sections cases
+> for .text.hot.* or .text.unlikely.*. So it is definitely a good idea to
+> be more specific even if we don't care about -ffunction-sections for
+> now.
+>
+> >Make sure to group these together.  Otherwise these orphan sections may
+> >be placed outside of the the _stext/_etext boundaries.
+> >
+> >Cc: stable@vger.kernel.org
+> >Link: https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommitdiff;h=
+=3Dadd44f8d5c5c05e08b11e033127a744d61c26aee
+> >Link: https://sourceware.org/git/?p=3Dbinutils-gdb.git;a=3Dcommitdiff;h=
+=3D1de778ed23ce7492c523d5850c6c6dbb34152655
+> >Link: https://reviews.llvm.org/D79600
+> >Reported-by: Jian Cai <jiancai@google.com>
+> >Debugged-by: Luis Lozano <llozano@google.com>
+> >Suggested-by: F=C4=81ng-ru=C3=AC S=C3=B2ng <maskray@google.com>
+> >Tested-by: Luis Lozano <llozano@google.com>
+> >Tested-by: Manoj Gupta <manojgupta@google.com>
+> >Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> >---
+> > include/asm-generic/vmlinux.lds.h | 4 +++-
+> > 1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> >diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vml=
+inux.lds.h
+> >index d7c7c7f36c4a..fe5aaef169e3 100644
+> >--- a/include/asm-generic/vmlinux.lds.h
+> >+++ b/include/asm-generic/vmlinux.lds.h
+> >@@ -560,7 +560,9 @@
+> >  */
+> > #define TEXT_TEXT                                                     \
+> >               ALIGN_FUNCTION();                                       \
+> >-              *(.text.hot TEXT_MAIN .text.fixup .text.unlikely)       \
+> >+              *(.text.hot .text.hot.*)                                \
+> >+              *(TEXT_MAIN .text.fixup)                                \
+> >+              *(.text.unlikely .text.unlikely.*)                      \
+> >               NOINSTR_TEXT                                            \
+> >               *(.text..refcount)                                      \
+> >               *(.ref.text)                                            \
+> >--
+> >2.27.0.290.gba653c62da-goog
+> >
 
-We should try to avoid any erosion of clarity here. Even if somehow
-(really?) the underlying implementation calls this THP CoW, the actual
-goal is to migrate pages over to the device (and back).
 
 
->>
->> When migrating in:
->=20
-> Sorry for my fat finger, hit sent button inadvertently, let me finish her=
-e.
->=20
-> When migrating in:
->=20
->          - if THP is enabled: allocate THP, but need handle allocation
-> failure by falling back to base page
->          - if THP is disabled: fallback to base page
->=20
-
-OK, but *all* page entries (base and huge/large pages) need to be cleared,
-when migrating to device memory, unless I'm really confused here.
-So: not CoW.
-
-thanks,
---=20
-John Hubbard
-NVIDIA
+--
+Thanks,
+~Nick Desaulniers
