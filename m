@@ -2,91 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36BD2203415
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 11:57:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01FF120342B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726853AbgFVJ5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 05:57:00 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:55388 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726644AbgFVJ47 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 05:56:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592819818;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=J3J1GK/1v24r8R8vBSVjEP1Qqwlwwoh+PJYXVdhCI1A=;
-        b=ALwYf9U93nFNEMsz/+Li9soi6lIcwwl7V+ibyrBDfUZpON86oiYk2th0VVVPYJdJAw4/W9
-        TXfVHR9fFOTpFVRIGTuoe5ip5GgDUsolp5r8CWesDYS5Od7c+Iw/KguaYFqZRXsxPYH1IU
-        qmAozIva87Fc7e1/PpVKq8fvYsBMY4o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-323-mFwUshu-OC2Ov1O5wyre8w-1; Mon, 22 Jun 2020 05:56:56 -0400
-X-MC-Unique: mFwUshu-OC2Ov1O5wyre8w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C871464;
-        Mon, 22 Jun 2020 09:56:54 +0000 (UTC)
-Received: from localhost (ovpn-115-184.ams2.redhat.com [10.36.115.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1987F7C1FD;
-        Mon, 22 Jun 2020 09:56:50 +0000 (UTC)
-Date:   Mon, 22 Jun 2020 10:56:49 +0100
-From:   Stefan Hajnoczi <stefanha@redhat.com>
-To:     Wang Qing <wangqing@vivo.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        virtualization@lists.linux-foundation.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] drivers/block: Use kobj_to_dev() API
-Message-ID: <20200622095649.GA6675@stefanha-x1.localdomain>
-References: <1592618024-28990-1-git-send-email-wangqing@vivo.com>
+        id S1727040AbgFVKAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 06:00:17 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2347 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726990AbgFVKAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 06:00:16 -0400
+Received: from lhreml710-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 29053AA4E1028E86C6D6;
+        Mon, 22 Jun 2020 11:00:14 +0100 (IST)
+Received: from localhost (10.52.127.176) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Mon, 22 Jun
+ 2020 11:00:13 +0100
+Date:   Mon, 22 Jun 2020 10:59:23 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Barry Song <song.bao.hua@hisilicon.com>
+CC:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+        Seth Jennings <sjenning@redhat.com>, <linuxarm@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-crypto@vger.kernel.org>, <akpm@linux-foundation.org>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>
+Subject: Re: [PATCH 1/3] crypto: permit users to specify numa node of acomp
+ hardware
+Message-ID: <20200622105923.0000710b@Huawei.com>
+In-Reply-To: <20200622024901.12632-2-song.bao.hua@hisilicon.com>
+References: <20200622024901.12632-1-song.bao.hua@hisilicon.com>
+        <20200622024901.12632-2-song.bao.hua@hisilicon.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <1592618024-28990-1-git-send-email-wangqing@vivo.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
-Content-Disposition: inline
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.127.176]
+X-ClientProxiedBy: lhreml708-chm.china.huawei.com (10.201.108.57) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---envbJBWh7q8WU6mo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Mon, 22 Jun 2020 14:48:59 +1200
+Barry Song <song.bao.hua@hisilicon.com> wrote:
 
-On Sat, Jun 20, 2020 at 09:53:43AM +0800, Wang Qing wrote:
-> Use kobj_to_dev() API instead of container_of().
->=20
-> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> For a Linux server with NUMA, there are possibly multiple (de)compressors
+> which are either local or remote to some NUMA node. Some drivers will
+> automatically use the (de)compressor near the CPU calling acomp_alloc().
+> However, it is not necessarily correct because users who send acomp_req
+> could be from different NUMA node with the CPU which allocates acomp.
+> 
+> Just like kernel has kmalloc() and kmalloc_node(), here crypto can have
+> same support.
+> 
+> Cc: Seth Jennings <sjenning@redhat.com>
+> Cc: Dan Streetman <ddstreet@ieee.org>
+> Cc: Vitaly Wool <vitaly.wool@konsulko.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+
+Hi Barry,
+
+Seems sensible to me.  A few trivial comments inline.
+
+Thanks,
+
+Jonathan
+
 > ---
->  drivers/block/virtio_blk.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  crypto/acompress.c         |  8 ++++++++
+>  crypto/api.c               | 22 ++++++++++++++--------
+>  crypto/internal.h          | 23 +++++++++++++++++++----
+>  include/crypto/acompress.h |  7 +++++++
+>  include/linux/crypto.h     |  3 ++-
+>  5 files changed, 50 insertions(+), 13 deletions(-)
+> 
+> diff --git a/crypto/acompress.c b/crypto/acompress.c
+> index 84a76723e851..c32c72048a1c 100644
+> --- a/crypto/acompress.c
+> +++ b/crypto/acompress.c
+> @@ -109,6 +109,14 @@ struct crypto_acomp *crypto_alloc_acomp(const char *alg_name, u32 type,
+>  }
+>  EXPORT_SYMBOL_GPL(crypto_alloc_acomp);
+>  
+> +struct crypto_acomp *crypto_alloc_acomp_node(const char *alg_name, u32 type,
+> +					u32 mask, int node)
+> +{
+> +	return crypto_alloc_tfm_node(alg_name, &crypto_acomp_type, type, mask,
+> +				node);
+> +}
+> +EXPORT_SYMBOL_GPL(crypto_alloc_acomp_node);
+> +
+>  struct acomp_req *acomp_request_alloc(struct crypto_acomp *acomp)
+>  {
+>  	struct crypto_tfm *tfm = crypto_acomp_tfm(acomp);
+> diff --git a/crypto/api.c b/crypto/api.c
+> index edcf690800d4..4ecf712286af 100644
+> --- a/crypto/api.c
+> +++ b/crypto/api.c
+> @@ -433,8 +433,9 @@ struct crypto_tfm *crypto_alloc_base(const char *alg_name, u32 type, u32 mask)
+>  }
+>  EXPORT_SYMBOL_GPL(crypto_alloc_base);
+>  
+> -void *crypto_create_tfm(struct crypto_alg *alg,
+> -			const struct crypto_type *frontend)
+> +void *crypto_create_tfm_node(struct crypto_alg *alg,
+> +			const struct crypto_type *frontend,
+> +			int node)
+>  {
+>  	char *mem;
+>  	struct crypto_tfm *tfm = NULL;
+> @@ -451,6 +452,7 @@ void *crypto_create_tfm(struct crypto_alg *alg,
+>  
+>  	tfm = (struct crypto_tfm *)(mem + tfmsize);
+>  	tfm->__crt_alg = alg;
+> +	tfm->node = node;
+>  
+>  	err = frontend->init_tfm(tfm);
+>  	if (err)
+> @@ -472,7 +474,7 @@ void *crypto_create_tfm(struct crypto_alg *alg,
+>  out:
+>  	return mem;
+>  }
+> -EXPORT_SYMBOL_GPL(crypto_create_tfm);
+> +EXPORT_SYMBOL_GPL(crypto_create_tfm_node);
+>  
+>  struct crypto_alg *crypto_find_alg(const char *alg_name,
+>  				   const struct crypto_type *frontend,
+> @@ -490,11 +492,13 @@ struct crypto_alg *crypto_find_alg(const char *alg_name,
+>  EXPORT_SYMBOL_GPL(crypto_find_alg);
+>  
+>  /*
+> - *	crypto_alloc_tfm - Locate algorithm and allocate transform
+> + *	crypto_alloc_tfm_node - Locate algorithm and allocate transform
+>   *	@alg_name: Name of algorithm
+>   *	@frontend: Frontend algorithm type
+>   *	@type: Type of algorithm
+>   *	@mask: Mask for type comparison
+> + *	@node: NUMA node in which users desire to put requests, if node is
+> + *		NUMA_NO_NODE, it means users have no special requirement.
+>   *
+>   *	crypto_alloc_tfm() will first attempt to locate an already loaded
+>   *	algorithm.  If that fails and the kernel supports dynamically loadable
+> @@ -509,8 +513,10 @@ EXPORT_SYMBOL_GPL(crypto_find_alg);
+>   *
+>   *	In case of error the return value is an error pointer.
+>   */
+> -void *crypto_alloc_tfm(const char *alg_name,
+> -		       const struct crypto_type *frontend, u32 type, u32 mask)
+> +
+> +void *crypto_alloc_tfm_node(const char *alg_name,
+> +		       const struct crypto_type *frontend, u32 type, u32 mask,
+> +		       int node)
+>  {
+>  	void *tfm;
+>  	int err;
+> @@ -524,7 +530,7 @@ void *crypto_alloc_tfm(const char *alg_name,
+>  			goto err;
+>  		}
+>  
+> -		tfm = crypto_create_tfm(alg, frontend);
+> +		tfm = crypto_create_tfm_node(alg, frontend, node);
+>  		if (!IS_ERR(tfm))
+>  			return tfm;
+>  
+> @@ -542,7 +548,7 @@ void *crypto_alloc_tfm(const char *alg_name,
+>  
+>  	return ERR_PTR(err);
+>  }
+> -EXPORT_SYMBOL_GPL(crypto_alloc_tfm);
+> +EXPORT_SYMBOL_GPL(crypto_alloc_tfm_node);
+>  
+>  /*
+>   *	crypto_destroy_tfm - Free crypto transform
+> diff --git a/crypto/internal.h b/crypto/internal.h
+> index ff06a3bd1ca1..1b92a5a61852 100644
+> --- a/crypto/internal.h
+> +++ b/crypto/internal.h
+> @@ -68,13 +68,28 @@ void crypto_remove_final(struct list_head *list);
+>  void crypto_shoot_alg(struct crypto_alg *alg);
+>  struct crypto_tfm *__crypto_alloc_tfm(struct crypto_alg *alg, u32 type,
+>  				      u32 mask);
+> -void *crypto_create_tfm(struct crypto_alg *alg,
+> -			const struct crypto_type *frontend);
+> +void *crypto_create_tfm_node(struct crypto_alg *alg,
+> +			const struct crypto_type *frontend, int node);
+> +
+> +static inline void *crypto_create_tfm(struct crypto_alg *alg,
+> +			const struct crypto_type *frontend)
+> +{
+> +	return crypto_create_tfm_node(alg, frontend, NUMA_NO_NODE);
+> +}
+> +
+>  struct crypto_alg *crypto_find_alg(const char *alg_name,
+>  				   const struct crypto_type *frontend,
+>  				   u32 type, u32 mask);
+> -void *crypto_alloc_tfm(const char *alg_name,
+> -		       const struct crypto_type *frontend, u32 type, u32 mask);
+> +
+> +void *crypto_alloc_tfm_node(const char *alg_name,
+> +		       const struct crypto_type *frontend, u32 type, u32 mask,
+> +		       int node);
+> +
+> +static inline void *crypto_alloc_tfm(const char *alg_name,
+> +		       const struct crypto_type *frontend, u32 type, u32 mask)
+> +{
+> +	return crypto_alloc_tfm_node(alg_name, frontend, type, mask, NUMA_NO_NODE);
+> +}
+>  
+>  int crypto_probing_notify(unsigned long val, void *v);
+>  
+> diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
+> index 2b4d2b06ccbd..b1a78687014a 100644
+> --- a/include/crypto/acompress.h
+> +++ b/include/crypto/acompress.h
+> @@ -106,6 +106,13 @@ struct acomp_alg {
+>   */
+>  struct crypto_acomp *crypto_alloc_acomp(const char *alg_name, u32 type,
+>  					u32 mask);
+> +/**
+> + * crypto_alloc_acomp_node() -- allocate ACOMPRESS tfm handle with desired NUMA
+> + *				node
 
-Reviewed-by: Stefan Hajnoczi <stefanha@redhat.com>
+Given slightly relaxed view on 80 chars now in place, I'd put that on one line.
 
---envbJBWh7q8WU6mo
-Content-Type: application/pgp-signature; name="signature.asc"
+Also kernel-doc needs to be complete so though it's tedious you should document
+the other parameters.
 
------BEGIN PGP SIGNATURE-----
+> + * @node:	specifies the NUMA node the ZIP hardware belongs to
+> + */
+> +struct crypto_acomp *crypto_alloc_acomp_node(const char *alg_name, u32 type,
+> +					u32 mask, int node);
+>  
+>  static inline struct crypto_tfm *crypto_acomp_tfm(struct crypto_acomp *tfm)
+>  {
+> diff --git a/include/linux/crypto.h b/include/linux/crypto.h
+> index 763863dbc079..c1a47ce4c09e 100644
+> --- a/include/linux/crypto.h
+> +++ b/include/linux/crypto.h
+> @@ -593,8 +593,9 @@ int crypto_has_alg(const char *name, u32 type, u32 mask);
+>   */
+>  
+>  struct crypto_tfm {
+> -
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl7wgGEACgkQnKSrs4Gr
-c8jiqwf+NDwvJrqVQacgMbfslm7ctFkXeq127ECemWo6fBJHJ0v01REWrK2Uw9U+
-envftxXJjZBtRea5aPUC2NBHfyVQoBuM3q5F2vbmSOOtOv+BHq0oDp16mUqsUD7k
-Jg//Y4VKXMFykxC2cHsq1AkyJxUvvU1eLyjs0T6AtbtW7rFysXeT95p7n0bd72ah
-G9yxU3htdGZUWygJKbCPYZXM/4uCfZpuiMq0GFdyBNH27aP/XvuD/pRJ4ag5Q9JZ
-wq5JtUbs7EqdAGQokCfY0/tk6emgN0MW7GPClOUA0kBcCUoOZivS6/igsjk5FF22
-UzBcDoKiDUf2nZhjEPcv1Wqqjkd5xw==
-=PUEf
------END PGP SIGNATURE-----
+Stray change. Shouldn't be in this patch.
 
---envbJBWh7q8WU6mo--
+
+>  	u32 crt_flags;
+> +
+> +	int node;
+>  	
+>  	void (*exit)(struct crypto_tfm *tfm);
+>  	
+
 
