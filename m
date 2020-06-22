@@ -2,88 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD412044A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:46:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DDA72044BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731398AbgFVXqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 19:46:35 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:54840 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731162AbgFVXqP (ORCPT
+        id S1731516AbgFVXr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 19:47:26 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:60775 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730658AbgFVXqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 19:46:15 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein.fritz.box)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jnW8h-0005DO-9d; Mon, 22 Jun 2020 23:46:11 +0000
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Guan Xuetao <gxt@pku.edu.cn>
-Subject: [PATCH 15/17] unicore: switch to copy_thread_tls()
-Date:   Tue, 23 Jun 2020 01:43:24 +0200
-Message-Id: <20200622234326.906346-16-christian.brauner@ubuntu.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200622234326.906346-1-christian.brauner@ubuntu.com>
-References: <20200622234326.906346-1-christian.brauner@ubuntu.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 22 Jun 2020 19:46:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592869566;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc; bh=A3Sr9mNHVM8s9WUTsyWY81eoKGneWkQuZ36cxKIntEs=;
+        b=WM25xbl3CeNLf/+a1h5dC0VNJYOBN6955c0D+EF1foUL6pFbDN7zlYQgN7j0CysGJf4pWi
+        mycGa2VNxbr54LU3C8gTrZWCw3PN5ZY+70hrH2GsPR8jC6mJuGtPaLG4gCtBKaNBiHwNtU
+        E2Q9Qg/07P3RZlRvKeWs8og0OV211mU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-12-LXVPb2CoMgOtLk5LQrxHpw-1; Mon, 22 Jun 2020 19:45:54 -0400
+X-MC-Unique: LXVPb2CoMgOtLk5LQrxHpw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 45101107ACCA;
+        Mon, 22 Jun 2020 23:45:51 +0000 (UTC)
+Received: from virtlab423.virt.lab.eng.bos.redhat.com (virtlab423.virt.lab.eng.bos.redhat.com [10.19.152.154])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3812D5C583;
+        Mon, 22 Jun 2020 23:45:46 +0000 (UTC)
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        frederic@kernel.org, mtosatti@redhat.com, juri.lelli@redhat.com,
+        abelits@marvell.com, bhelgaas@google.com,
+        linux-pci@vger.kernel.org, rostedt@goodmis.org, mingo@kernel.org,
+        peterz@infradead.org, tglx@linutronix.de, davem@davemloft.net,
+        akpm@linux-foundation.org, sfr@canb.auug.org.au,
+        stephen@networkplumber.org, rppt@linux.vnet.ibm.com
+Subject: [PATCH v2 0/3] Preventing job distribution to isolated CPUs        
+Date:   Mon, 22 Jun 2020 19:45:07 -0400
+Message-Id: <20200622234510.240834-1-nitesh@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the copy_thread_tls() calling convention which passes tls through a
-register. This is required so we can remove the copy_thread{_tls}() split
-and remove the HAVE_COPY_THREAD_TLS macro.
-
-Cc: Guan Xuetao <gxt@pku.edu.cn>
-Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
----
- arch/unicore32/Kconfig          | 1 +
- arch/unicore32/kernel/process.c | 8 ++++----
- 2 files changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/arch/unicore32/Kconfig b/arch/unicore32/Kconfig
-index 11ba1839d198..01451cf500d2 100644
---- a/arch/unicore32/Kconfig
-+++ b/arch/unicore32/Kconfig
-@@ -22,6 +22,7 @@ config UNICORE32
- 	select MODULES_USE_ELF_REL
- 	select NEED_DMA_MAP_STATE
- 	select MMU_GATHER_NO_RANGE if MMU
-+	select HAVE_COPY_THREAD_TLS
- 	help
- 	  UniCore-32 is 32-bit Instruction Set Architecture,
- 	  including a series of low-power-consumption RISC chip
-diff --git a/arch/unicore32/kernel/process.c b/arch/unicore32/kernel/process.c
-index b4fd3a604a18..49a305565a53 100644
---- a/arch/unicore32/kernel/process.c
-+++ b/arch/unicore32/kernel/process.c
-@@ -219,9 +219,9 @@ void release_thread(struct task_struct *dead_task)
- asmlinkage void ret_from_fork(void) __asm__("ret_from_fork");
- asmlinkage void ret_from_kernel_thread(void) __asm__("ret_from_kernel_thread");
- 
--int
--copy_thread(unsigned long clone_flags, unsigned long stack_start,
--	    unsigned long stk_sz, struct task_struct *p)
-+int copy_thread_tls(unsigned long clone_flags, unsigned long stack_start,
-+		    unsigned long stk_sz, struct task_struct *p,
-+		    unsigned long tls)
- {
- 	struct thread_info *thread = task_thread_info(p);
- 	struct pt_regs *childregs = task_pt_regs(p);
-@@ -241,7 +241,7 @@ copy_thread(unsigned long clone_flags, unsigned long stack_start,
- 			childregs->UCreg_sp = stack_start;
- 
- 		if (clone_flags & CLONE_SETTLS)
--			childregs->UCreg_16 = childregs->UCreg_03;
-+			childregs->UCreg_16 = tls;
- 	}
- 	return 0;
- }
--- 
-2.27.0
+                                                                           
+Testing                                                                    
+=======                                                                    
+* Patch 1:                                                                 
+  Fix for cpumask_local_spread() is tested by creating VFs, loading        
+  iavf module and by adding a tracepoint to confirm that only housekeeping 
+  CPUs are picked when an appropriate profile is set up and all remaining  
+  CPUs when no CPU isolation is configured.                                
+                                                                           
+* Patch 2:                                                                 
+  To test the PCI fix, I hotplugged a virtio-net-pci from qemu console     
+  and forced its addition to a specific node to trigger the code path that 
+  includes the proposed fix and verified that only housekeeping CPUs       
+  are included via tracepoint.                                             
+                                                                           
+* Patch 3:                                                                 
+  To test the fix in store_rps_map(), I tried configuring an isolated      
+  CPU by writing to /sys/class/net/en*/queues/rx*/rps_cpus which           
+  resulted in 'write error: Invalid argument' error. For the case          
+  where a non-isolated CPU is writing in rps_cpus the above operation      
+  succeeded without any error.                                             
+                                                                           
+                                                                           
+Changes from v1:                                                           
+===============                                                            
+- Included the suggestions made by Bjorn Helgaas in the commit messages.    
+- Included the 'Reviewed-by' and 'Acked-by' received for Patch-2.          
+                                                                           
+[1] https://patchwork.ozlabs.org/project/netdev/patch/51102eebe62336c6a4e584c7a503553b9f90e01c.camel@marvell.com/
+                                                                           
+Alex Belits (3):                                                           
+  lib: Restrict cpumask_local_spread to houskeeping CPUs                   
+  PCI: Restrict probe functions to housekeeping CPUs                       
+  net: Restrict receive packets queuing to housekeeping CPUs               
+                                                                           
+ drivers/pci/pci-driver.c |  5 ++++-                                       
+ lib/cpumask.c            | 43 +++++++++++++++++++++++-----------------    
+ net/core/net-sysfs.c     | 10 +++++++++-                                  
+ 3 files changed, 38 insertions(+), 20 deletions(-)                        
+                                                                           
+--
 
