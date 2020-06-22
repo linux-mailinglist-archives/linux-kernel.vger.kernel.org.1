@@ -2,86 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD08E2031F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D26962031FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbgFVIVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 04:21:13 -0400
-Received: from mga06.intel.com ([134.134.136.31]:17498 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726515AbgFVIVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 04:21:13 -0400
-IronPort-SDR: Z0ub+nEzRa1sJl/QzVKmJLdWLnXyF1ML/qJPGqiggccsGrtSySAI+HJ5AIUGm5RUHCuASSXe/i
- JUwi89sIjsvA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9659"; a="205175379"
-X-IronPort-AV: E=Sophos;i="5.75,266,1589266800"; 
-   d="scan'208";a="205175379"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 01:21:12 -0700
-IronPort-SDR: lgXUlVcfPPhCCYk4XrI6ebEkoEcFaxWXyendV0kAb4z4WPfx1WJA40Z4OUGsSg8IRUUdL1JudK
- gtHrl/iuAfgg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,266,1589266800"; 
-   d="scan'208";a="310853612"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga002.fm.intel.com with ESMTP; 22 Jun 2020 01:21:10 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 01692130; Mon, 22 Jun 2020 11:21:09 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v1] software node: Use software_node_unregister() when unregistering group of nodes
-Date:   Mon, 22 Jun 2020 11:21:08 +0300
-Message-Id: <20200622082108.25577-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.27.0
+        id S1726906AbgFVIXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 04:23:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726596AbgFVIW4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 04:22:56 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40054C061795
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:22:56 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id c21so9072877lfb.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:22:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h+ozlEIO/qxyAds7OwFWzzEoRVVdD8s4jy8p/vmQnnY=;
+        b=UcMLx/8mYxw2ta2G1/AB6B/unlXIkPifTtiot243yO126jlfY/UOTtF9MCEG5lyfMC
+         HmQRn9k87Yx2sKznyi3g+INXCkHZRLFyNwCVHk08E+ah9lynlEZFF8OXAH8fAw9biDMa
+         BaFpQKhYbNAkudPei3ewrrAa+HdCHeTrqHgFtVFbcbn3FapOccKSDthv/QZQYz6RtvRX
+         UWLAaLzXVZYIWirxe5Y/JtYqurly+ki1Ns9F1Qs0NxRr5yPSzLRqMQNwzgOXKcywg12K
+         OrIFAmz/DsdS91xHgTN/cgBFJ800I0InulmYvE6WqojOE/rGewhSAgjGuB72Aogatxt0
+         ZV6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h+ozlEIO/qxyAds7OwFWzzEoRVVdD8s4jy8p/vmQnnY=;
+        b=oFoee3jeb/ofrkyc9zbOZz6TePq5WETNn4Wa1GtbXkoZXG6Svhjo+LuwMd1NnZpGoE
+         qRPkrLjmfbB0vpAHBIAD46I6eoe6DmrIkXlxfJeNoUEDNj0RaywL/FiwreUGWepo890l
+         Xvd/JVpp90Dfk/JZ0Kl237rRWM+K9KaFZLlgvacp8gUTTKZemX5CnjrsKF8eYUJPHa2y
+         XL+KnpUBlVCiYxnUd1Ek5XmMaooGhbQTpCd0gPVjbCuqbBvyjCmNThcvAUPvKacxK0Cb
+         v2uEiJgtG310AXUD2UVGU3HvwoQsTxNcbcQkm7EYWFF226C2DfxrYyT8aw8962jGP8eV
+         5Zjg==
+X-Gm-Message-State: AOAM533oltUNQKIFTJkYYq2kXdyDkhaSeSGKGsdVhnXBGBsQQ1PNLFMw
+        TlPO3Qn6ZwkPwQ3F4EOtseiox+lu3ejWjqG3BqD3bA==
+X-Google-Smtp-Source: ABdhPJxyq3Xqu94mRkWd8rRoN/XkS/DhYnK8sHEIOt5mcr9WKVN7v3S6QLEPKw8ZT4mciLtuhkJ+Ae9wqzcESAsUXjQ=
+X-Received: by 2002:a05:6512:6ca:: with SMTP id u10mr9407371lff.184.1592814174117;
+ Mon, 22 Jun 2020 01:22:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200614010755.9129-1-valentin.schneider@arm.com>
+ <20200614010755.9129-2-valentin.schneider@arm.com> <CAKfTPtCyi9acak95_2_2uL3Cf0OMAbZhDav2LbPY+ULPrD7z4w@mail.gmail.com>
+ <20200620174912.GA18358@arm.com>
+In-Reply-To: <20200620174912.GA18358@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 22 Jun 2020 10:22:42 +0200
+Message-ID: <CAKfTPtDcKnF5kgORXCbppcF==ejcPcCqoCo0_vtSMX9_hJCjMg@mail.gmail.com>
+Subject: Re: [PATCH 1/3] thermal/cpu-cooling, sched/core: Cleanup thermal
+ pressure definition
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the commit
-  46d26819a505 ("software node: implement software_node_unregister()")
-has been applied a new helper appears that may be utilised in other places.
-For time being there is one such place, i.e. in
-software_node_unregister_node_group() which will benefit of the clean up.
+On Sat, 20 Jun 2020 at 19:49, Ionela Voinescu <ionela.voinescu@arm.com> wrote:
+>
+> Hi Vincent,
+>
+> On Thursday 18 Jun 2020 at 17:03:24 (+0200), Vincent Guittot wrote:
+> > On Sun, 14 Jun 2020 at 03:10, Valentin Schneider
+> > <valentin.schneider@arm.com> wrote:
+> [..]
+> > > diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
+> > > index e297e135c031..a1efd379b683 100644
+> > > --- a/drivers/thermal/cpufreq_cooling.c
+> > > +++ b/drivers/thermal/cpufreq_cooling.c
+> > > @@ -417,6 +417,11 @@ static int cpufreq_get_cur_state(struct thermal_cooling_device *cdev,
+> > >         return 0;
+> > >  }
+> > >
+> > > +__weak void
+> > > +arch_set_thermal_pressure(const struct cpumask *cpus, unsigned long th_pressure)
+> > > +{
+> > > +}
+> >
+> > Having this weak function declared in cpufreq_cooling is weird. This
+> > means that we will have to do so for each one that wants to use it.
+> >
+> > Can't you declare an empty function in a common header file ?
+>
+> Do we expect anyone other than cpufreq_cooling to call
+> arch_set_thermal_pressure()?
 
-Use software_node_unregister() when unregistering group of nodes.
+Yes, cpufreq cooling device is only 1 possible way to do thermal mitigation
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/base/swnode.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-index e5eb27375416..010828fc785b 100644
---- a/drivers/base/swnode.c
-+++ b/drivers/base/swnode.c
-@@ -761,17 +761,13 @@ EXPORT_SYMBOL_GPL(software_node_register_node_group);
-  */
- void software_node_unregister_node_group(const struct software_node **node_group)
- {
--	struct swnode *swnode;
- 	unsigned int i;
- 
- 	if (!node_group)
- 		return;
- 
--	for (i = 0; node_group[i]; i++) {
--		swnode = software_node_to_swnode(node_group[i]);
--		if (swnode)
--			fwnode_remove_software_node(&swnode->fwnode);
--	}
-+	for (i = 0; node_group[i]; i++)
-+		software_node_unregister(node_group[i]);
- }
- EXPORT_SYMBOL_GPL(software_node_unregister_node_group);
- 
--- 
-2.27.0
-
+>
+> I'm not against any of the options, either having it here as a week
+> default definition (same as done for arch_set_freq_scale() in cpufreq.c)
+> or in a common header (as done for arch_scale_freq_capacity() in sched.h).
+>
+> But for me, Valentin's implementation seems more natural as setters are
+> usually only called from within the framework that does the control
+> (throttling for thermal or frequency setting for cpufreq) and we
+> probably want to think twice if we want to call them from other places.
+>
+> Thanks,
+> Ionela.
