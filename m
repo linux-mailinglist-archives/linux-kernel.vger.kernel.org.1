@@ -2,95 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74BBC203E60
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 19:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5498E203E6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 19:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730172AbgFVRuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 13:50:37 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:33973 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729992AbgFVRug (ORCPT
+        id S1730176AbgFVRvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 13:51:42 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:33626 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730038AbgFVRvl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 13:50:36 -0400
-Received: by mail-ej1-f68.google.com with SMTP id y10so4501832eje.1;
-        Mon, 22 Jun 2020 10:50:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HOTnjMjsu7xKDVdNqVPUTaQv3pQPCvDqx33cGwyLPp8=;
-        b=SjbLwWFuJcdI9AzqCeHfRZT8iIDIcnPoGnl59o4XKNBcHmg3azNd0osaEn/TKN5VSV
-         NwSPt/dHMeNpev9wrlx/F8m6TKlhuxioBHu5iEbrHDbtivH09Qlx+9pXO4POBN6fcGzJ
-         WFu5BqzbqIa7fNsNKzbB8Omu0aEZOZPBPXpZb4koW8EqoP971a96FKTmEFeGAXkJpakS
-         AHopcjZkVAVGSxMsU9Fm7jpyoAwLAHBSp9muhYpVC82c03xYtqaIVCMuVWy5SkW70n/e
-         dyY25/6KEWvtwV0pNgxI6HQinRB3GTrwDsXWBh8xtPk95SU4d22Tdo7NhwIqgz57ZbXS
-         HBNQ==
-X-Gm-Message-State: AOAM533w79MrjNwhQ0iRccr+FCgzAsnBRqqqd3nZgATVOTHqOniMShM5
-        p6MLfeOhFTYAH5U8wQzL/ok=
-X-Google-Smtp-Source: ABdhPJwqCv6kCCLUnC8zvrY8jFVgGacYWcI+rhbYCVMJlmSQeTmHKLBbvMdE28EVRur5t8b44IybxQ==
-X-Received: by 2002:a17:906:6d4b:: with SMTP id a11mr17477631ejt.108.1592848234574;
-        Mon, 22 Jun 2020 10:50:34 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.235])
-        by smtp.googlemail.com with ESMTPSA id rv14sm11814489ejb.110.2020.06.22.10.50.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 22 Jun 2020 10:50:33 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 19:50:31 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Guillaume Tucker <guillaume.tucker@collabora.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Kukjin Kim <kgene@kernel.org>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCH] ARM: exynos: clear L310_AUX_CTRL_FULL_LINE_ZERO in
- default l2c_aux_val
-Message-ID: <20200622175031.GA29235@kozik-lap>
-References: <c6d979c0050502cd1bca8619cb5ff95db239db12.1591969825.git.guillaume.tucker@collabora.com>
+        Mon, 22 Jun 2020 13:51:41 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05MHZH8r029291;
+        Mon, 22 Jun 2020 19:51:30 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=STMicroelectronics;
+ bh=+PZsq8pFjVtQXiwxiX30dj4ToQd67jSm/ujam/GPUnM=;
+ b=y/k/kI/BEZfSRPgEhSyAorUbrMGEkO40uaKtDL8O28sh8GMZGDJ3spw0kOITNq3TjC05
+ Pf9ajyufwqEAi9TkLiHhBTrcIxr8lcQz2sW2GfSUvlcIldl+a5ROUcLW7VfK2/f+UlPt
+ 9WN1s9AvXJBjuJIUDJOfmb8p1ZFNQ61tOGhLyJzxz8/d5G9vi3MRjaYBTCENajpuZHUh
+ WA4LmlyW/zXB1rlnGXZLau9/Q5MF6kW/C8ew7CcULefBV65QXNqkQh4FDxdM3TE0T7vV
+ sM3o6KFA2y8UrF/Y4crFHoHMqDqg27eEwrdbVtLqz8yxjY7oFbygxGstdX/mIIppLxv0 7g== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 31s9bhts7w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 19:51:30 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 4BD7410002A;
+        Mon, 22 Jun 2020 19:51:28 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag3node1.st.com [10.75.127.7])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 10DFD2C90A2;
+        Mon, 22 Jun 2020 19:51:28 +0200 (CEST)
+Received: from lmecxl0889.tpe.st.com (10.75.127.44) by SFHDAG3NODE1.st.com
+ (10.75.127.7) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 22 Jun
+ 2020 19:51:26 +0200
+Subject: Re: [PATCH v7 3/5] remoteproc: Add support for runtime PM
+To:     Suman Anna <s-anna@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>
+CC:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Loic PALLARDY <loic.pallardy@st.com>,
+        "od@zcrc.me" <od@zcrc.me>,
+        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Tero Kristo <t-kristo@ti.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+References: <20200515104340.10473-1-paul@crapouillou.net>
+ <20200515104340.10473-3-paul@crapouillou.net>
+ <035bf8ad-3ef0-8314-ae5c-a94a24c230c8@ti.com>
+ <P2TQAQ.3VDG3B8W2EPF3@crapouillou.net>
+ <daa239fe-afd4-ff2e-3d5c-db09434cac95@ti.com>
+ <9XPMBQ.UM94FDID8MZW@crapouillou.net>
+ <107dc1d3-05c6-61be-b82c-197f0c43cdba@ti.com>
+ <VUEPBQ.GMXO6YRLF7N22@crapouillou.net> <20200611043951.GA3251@builder.lan>
+ <b877e6cf-b519-0926-01d2-ff5a41f0ef15@ti.com>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@st.com>
+Message-ID: <1e526a91-9322-c1dd-79aa-b47ffcf11694@st.com>
+Date:   Mon, 22 Jun 2020 19:51:26 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <c6d979c0050502cd1bca8619cb5ff95db239db12.1591969825.git.guillaume.tucker@collabora.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <b877e6cf-b519-0926-01d2-ff5a41f0ef15@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG3NODE1.st.com
+ (10.75.127.7)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-22_10:2020-06-22,2020-06-22 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 02:58:37PM +0100, Guillaume Tucker wrote:
-> This "alert" error message can be seen on exynos4412-odroidx2:
-> 
->     L2C: platform modifies aux control register: 0x02070000 -> 0x3e470001
->     L2C: platform provided aux values permit register corruption.
-> 
-> Followed by this plain error message:
-> 
->     L2C-310: enabling full line of zeros but not enabled in Cortex-A9
-> 
-> To fix it, don't set the L310_AUX_CTRL_FULL_LINE_ZERO flag (bit 0) in
-> the default value of l2c_aux_val.  It may instead be enabled when
-> applicable by the logic in l2c310_enable() if the attribute
-> "arm,full-line-zero-disable" was set in the device tree.
-> 
-> The initial commit that introduced this default value was in v2.6.38:
-> 
->   1cf0eb799759 "ARM: S5PV310: Add L2 cache init function in cpu.c"
-> 
-> However, the code to set the L310_AUX_CTRL_FULL_LINE_ZERO flag and
-> manage that feature was added much later and the default value was not
-> updated then.  So this seems to have been a subtle oversight
-> especially since enabling it only in the cache and not in the A9 core
-> doesn't actually prevent the platform from running.  According to the
-> TRM, the opposite would be a real issue, if the feature was enabled in
-> the A9 core but not in the cache controller.
-> 
-> Reported-by: "kernelci.org bot" <bot@kernelci.org>
-> Signed-off-by: Guillaume Tucker <guillaume.tucker@collabora.com>
-> ---
->  arch/arm/mach-exynos/exynos.c | 2 +-
+Hi, 
 
-Thanks, applied.
+On 6/11/20 11:17 PM, Suman Anna wrote:
+> On 6/10/20 11:39 PM, Bjorn Andersson wrote:
+>> On Wed 10 Jun 02:40 PDT 2020, Paul Cercueil wrote:
+>>
+>>> Hi,
+>>>
+>>> Le lun. 8 juin 2020 à 18:10, Suman Anna <s-anna@ti.com> a écrit :
+>>>> Hi Paul,
+>>>>
+>>>> On 6/8/20 5:46 PM, Paul Cercueil wrote:
+>>>>> Hi Suman,
+>>>>>
+>>>>>>>> On 5/15/20 5:43 AM, Paul Cercueil wrote:
+>>>>>>>>> Call pm_runtime_get_sync() before the firmware is loaded, and
+>>>>>>>>> pm_runtime_put() after the remote processor has been stopped.
+>>>>>>>>>
+>>>>>>>>> Even though the remoteproc device has no PM
+>>>>>>>>> callbacks, this allows the
+>>>>>>>>> parent device's PM callbacks to be properly called.
+>>>>>>>>
+>>>>>>>> I see this patch staged now for 5.8, and the latest
+>>>>>>>> -next branch has broken the pm-runtime autosuspend
+>>>>>>>> feature we have in the OMAP remoteproc driver. See
+>>>>>>>> commit 5f31b232c674 ("remoteproc/omap: Add support
+>>>>>>>> for runtime auto-suspend/resume").
+>>>>>>>>
+>>>>>>>> What was the original purpose of this patch, because
+>>>>>>>> there can be differing backends across different
+>>>>>>>> SoCs.
+>>>>>>>
+>>>>>>> Did you try pm_suspend_ignore_children()? It looks like it
+>>>>>>> was made for your use-case.
+>>>>>>
+>>>>>> Sorry for the delay in getting back. So, using
+>>>>>> pm_suspend_ignore_children() does fix my current issue.
+>>>>>>
+>>>>>> But I still fail to see the original purpose of this patch in
+>>>>>> the remoteproc core especially given that the core itself does
+>>>>>> not have any callbacks. If the sole intention was to call the
+>>>>>> parent pdev's callbacks, then I feel that state-machine is
+>>>>>> better managed within that particular platform driver itself,
+>>>>>> as the sequencing/device management can vary with different
+>>>>>> platform drivers.
+>>>>>
+>>>>> The problem is that with Ingenic SoCs some clocks must be enabled in
+>>>>> order to load the firmware, and the core doesn't give you an option
+>>>>> to register a callback to be called before loading it.
+>>>>
+>>>> Yep, I have similar usage in one of my remoteproc drivers (see
+>>>> keystone_remoteproc.c), and I think this all stems from the need to
+>>>> use/support loading into a processor's internal memories. My driver does
+>>>> leverage the pm-clks backend plugged into pm_runtime, so you won't see
+>>>> explicit calls on the clocks.
+>>>>
+>>>> I guess the question is what exact PM features you are looking for with
+>>>> the Ingenic SoC. I do see you are using pm_runtime autosuspend, and your
+>>>> callbacks are managing the clocks, but reset is managed only in
+>>>> start/stop.
+>>>>
+>>>>> The first version of my patchset added .prepare/.unprepare
+>>>>> callbacks to the struct rproc_ops, but the feedback from the
+>>>>> maintainers was that I should do it via runtime PM. However, it was
+>>>>> not possible to keep it contained in the driver, since again the
+>>>>> core doesn't provide a "prepare" callback, so no place to call
+>>>>> pm_runtime_get_sync().
+>>>> FWIW, the .prepare/.unprepare callbacks is actually now part of the
+>>>> rproc core. Looks like multiple developers had a need for this, and this
+>>>> functionality went in at the same time as your driver :). Not sure if
+>>>> you looked up the prior patches, I leveraged the patch that Loic had
+>>>> submitted a long-time ago, and a revised version of it is now part of
+>>>> 5.8-rc1.
+>>>
+>>> WTF maintainers, you refuse my patchset for adding a .prepare/.unprepare,
+>>> ask me to do it via runtime PM, then merge another patchset that adds these
+>>> callback. At least be constant in your decisions.
+>>>
+>>
+>> Sorry, I missed this when applying the two patches, but you're of course
+>> right.
+>>
+>>> Anyway, now we have two methods added to linux-next for doing the exact same
+>>> thing. What should we do about it?
+>>>
+>>
+>> I like the pm_runtime approach and as it was Arnaud that asked you to
+>> change it, perhaps he and Loic can agree on updating the ST driver so we
+>> can drop the prepare/unprepare ops again?
+> 
+> These callbacks were added primarily in preparation for the TI K3 rproc 
+> drivers, not just ST (the patch was resurrected from a very old patch 
+> from Loic).
+> 
+> I still think prepare/unprepare is actually better suited to scale well 
+> for the long term. This pm_runtime logic will now make the early-boot 
+> scenarios complicated, as you would have to match its status, but all 
+> actual operations are on the actual parent remoteproc platform device 
+> and not the child remoteproc device. I think it serves to mess up the 
+> state-machines of different platform drivers due to additional refcounts 
+> acquired and maybe performing some operations out of sequence to what a 
+> platform driver wants esp. if there is automated backend usage like 
+> genpd, pm_clks etc. I am yet to review Mathieu's latest MCU sync series, 
+> but the concept of different sync_ops already scales w.r.t the 
+> prepare/unprepare.
 
-Best regards,
-Krzysztof
 
+> 
+> As for my K3 drivers, the callbacks are doing more than just turning on 
+> clocks, as the R5Fs in general as a complex power-on sequence. I do not 
+> have remoteproc auto-suspend atm on the K3 drivers, but that typically 
+> means shutting down and restoring the core and would involve all the 
+> hardware-specific sequences, so the rpm callback implementations will be 
+> more than just clocks.
+> 
+> I looked through the patch history on the Ingenic remoteproc driver, and 
+> the only reason for either of runtime pm usage or prepare/unprepare ops 
+> usage is to ensure that clocks do not stay enabled in the case the 
+> processor is not loaded/started. The driver is using auto-boot, so when 
+> it probes, in general we expect the remoteproc to be running. So, the 
+> only failure case is if there is no firmware. Otherwise, Paul could have 
+> just used clk_bulk API in probe and remove.
+> 
+> Anyway, I will provide some additional review comments on the pm_runtime 
+> usage within the Ingenic rproc driver.
+
+Sorry for the late answer...
+
+Prepare/unprepare was proposed by Loïc for the memory management series.
+We abandoned it and migrated the memory registrations in parse_fw ops.
+So we don't use it anymore in ST.
+
+I suggested the pm-runtime before TI patchset, as it was matching
+with Ingenic driver need. 
+Now with the additional need introduced by Suman, seems that it is not sufficient
+for the K3-r5, due to the memory initialization.
+
+Anyway do we have to choice between the 2 implementations?
+Look to me that the pm_runtime could be used to manage the power for the
+remoteproc device (and perhaps associated power domain).
+While the .prepare is more for additional resources
+which ,need to be initialized before loading the firmware (such as some specific
+system resources).
+
+Regards,
+Arnaud
+
+> 
+> regards
+> Suman
+> 
