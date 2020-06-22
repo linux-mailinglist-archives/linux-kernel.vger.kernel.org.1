@@ -2,150 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07666203231
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:37:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAEB0203239
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgFVIh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 04:37:29 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:57976 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725912AbgFVIh3 (ORCPT
+        id S1726778AbgFVIi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 04:38:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725883AbgFVIi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 04:37:29 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07484;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0U0K3ntX_1592815044;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U0K3ntX_1592815044)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 22 Jun 2020 16:37:24 +0800
-Date:   Mon, 22 Jun 2020 16:37:24 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-Subject: Re: [PATCH v2 3/3] mm/shuffle: remove dynamic reconfiguration
-Message-ID: <20200622083724.GA96508@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200619125923.22602-1-david@redhat.com>
- <20200619125923.22602-4-david@redhat.com>
- <CAPcyv4hvwHDa=1suuuEFX5mmpOm12kv-Axbd8G7bp9iaA+FWAA@mail.gmail.com>
- <7a5f9ea1-7405-7058-af60-eea0bc165e79@redhat.com>
+        Mon, 22 Jun 2020 04:38:28 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1149C061794;
+        Mon, 22 Jun 2020 01:38:27 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id e22so2278994edq.8;
+        Mon, 22 Jun 2020 01:38:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cUFbNHgo6IB5Sy3bImSkiGN8kcxHOUvCTIjR4hYNmSs=;
+        b=bfWp2zi+iSVUaRV5UZNbccpk4TXYBNwDZiBOkKQ6/Dc+VtX1X+9Gs5ceoLzrXq/PZ9
+         vXaYBUjdU16fUvGvH7DbVVvuUJmvD7Ir0nCACqiMv0Rxj+i+sxU2NStf4EtixbkFlOKy
+         QytxIaPtV/BZMpCFLSoO8YESWhVSKs0LgUsjH68AGN5fjOsvqNDd6cdj+em6FuyBw7fK
+         R/OfsV6tCgIXwW0sjEGfTlXo82vaUwPu2gcM6g28cM4z8vWVksdp8wg+VX/MeN11ejjL
+         xYB9q3o3AMQI45ocSeuP0niuxAkeWPNtbZ9pnjPp+PDfBBgjjP83pPPZ4wgeWhBfQDtR
+         oHFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cUFbNHgo6IB5Sy3bImSkiGN8kcxHOUvCTIjR4hYNmSs=;
+        b=ksqzriVrNrdsx9UZwov79LDOg5/c1SM5qxL4EzFOJNI+xUM+jdCgyV1O7VMVh2aTVJ
+         J5h8DKhZKMTFKVPAmiTnEeRbRSlBljSwAMdmeDpJtpfwNMAVQP4suKO3nJGHyiqzGLIR
+         MzvW1yVthjsxVti2O5+U42VB2P2QCfmc/J3rl0tHCk2WJN1h5KyhYxSU21PeYvoLo5Dq
+         EpDkHVa3TGlV8xUOYyNDaM5/zAcbA38cqDxe6sOsL9iEwWw8N9FVnSTFLPsX4AyTYqwf
+         Bxa8QUAYzUrmzdIyP3dITf98/IjfaIiVcBSsqkWU4goSS45Z2ScGqkuzhJLmVbKbGbW8
+         ultQ==
+X-Gm-Message-State: AOAM530yxiqhB+3MWEH4FV93TnL7utBXdBZkAZbr9gY+no/zl5pKySpp
+        G7QlZWUxaUGRrORjwa7hgP9UnPX7le7jtrNgL6A=
+X-Google-Smtp-Source: ABdhPJwPApeAEn5hum2A9icysOaHVQpVvzup0Zr3/5gcyJTD1N5sRC7gkUmnieQOj9zEqFa6NauS3YRK5ZO9HhRy3/c=
+X-Received: by 2002:a50:ec8f:: with SMTP id e15mr6447759edr.70.1592815106098;
+ Mon, 22 Jun 2020 01:38:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7a5f9ea1-7405-7058-af60-eea0bc165e79@redhat.com>
+References: <20200622075749.21925-1-konradybcio@gmail.com> <20200622075749.21925-4-konradybcio@gmail.com>
+ <20200622080503.GQ128451@builder.lan>
+In-Reply-To: <20200622080503.GQ128451@builder.lan>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Mon, 22 Jun 2020 10:37:50 +0200
+Message-ID: <CAMS8qEWrnHc3CWrW-vzwxu+PR8FL9hcvCtBpS4oK9ZYXgGfLJg@mail.gmail.com>
+Subject: Re: [PATCH v2 3/8] soc: qcom: socinfo: Add socinfo entry for SDM630
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-clk@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 09:33:28AM +0200, David Hildenbrand wrote:
->On 20.06.20 03:49, Dan Williams wrote:
->> On Fri, Jun 19, 2020 at 5:59 AM David Hildenbrand <david@redhat.com> wrote:
->>>
->>> Commit e900a918b098 ("mm: shuffle initial free memory to improve
->>> memory-side-cache utilization") promised "autodetection of a
->>> memory-side-cache (to be added in a follow-on patch)" over a year ago.
->>>
->>> The original series included patches [1], however, they were dropped
->>> during review [2] to be followed-up later.
->>>
->>> Due to lack of platforms that publish an HMAT, autodetection is currently
->>> not implemented. However, manual activation is actively used [3]. Let's
->>> simplify for now and re-add when really (ever?) needed.
->>>
->>> [1] https://lkml.kernel.org/r/154510700291.1941238.817190985966612531.stgit@dwillia2-desk3.amr.corp.intel.com
->>> [2] https://lkml.kernel.org/r/154690326478.676627.103843791978176914.stgit@dwillia2-desk3.amr.corp.intel.com
->>> [3] https://lkml.kernel.org/r/CAPcyv4irwGUU2x+c6b4L=KbB1dnasNKaaZd6oSpYjL9kfsnROQ@mail.gmail.com
->>>
->>> Cc: Andrew Morton <akpm@linux-foundation.org>
->>> Cc: Johannes Weiner <hannes@cmpxchg.org>
->>> Cc: Michal Hocko <mhocko@suse.com>
->>> Cc: Minchan Kim <minchan@kernel.org>
->>> Cc: Huang Ying <ying.huang@intel.com>
->>> Cc: Wei Yang <richard.weiyang@gmail.com>
->>> Cc: Mel Gorman <mgorman@techsingularity.net>
->>> Cc: Dan Williams <dan.j.williams@intel.com>
->>> Signed-off-by: David Hildenbrand <david@redhat.com>
->>> ---
->>>  mm/shuffle.c | 28 ++--------------------------
->>>  mm/shuffle.h | 17 -----------------
->>>  2 files changed, 2 insertions(+), 43 deletions(-)
->>>
->>> diff --git a/mm/shuffle.c b/mm/shuffle.c
->>> index dd13ab851b3ee..9b5cd4b004b0f 100644
->>> --- a/mm/shuffle.c
->>> +++ b/mm/shuffle.c
->>> @@ -10,33 +10,11 @@
->>>  #include "shuffle.h"
->>>
->>>  DEFINE_STATIC_KEY_FALSE(page_alloc_shuffle_key);
->>> -static unsigned long shuffle_state __ro_after_init;
->>> -
->>> -/*
->>> - * Depending on the architecture, module parameter parsing may run
->>> - * before, or after the cache detection. SHUFFLE_FORCE_DISABLE prevents,
->>> - * or reverts the enabling of the shuffle implementation. SHUFFLE_ENABLE
->>> - * attempts to turn on the implementation, but aborts if it finds
->>> - * SHUFFLE_FORCE_DISABLE already set.
->>> - */
->>> -__meminit void page_alloc_shuffle(enum mm_shuffle_ctl ctl)
->>> -{
->>> -       if (ctl == SHUFFLE_FORCE_DISABLE)
->>> -               set_bit(SHUFFLE_FORCE_DISABLE, &shuffle_state);
->>> -
->>> -       if (test_bit(SHUFFLE_FORCE_DISABLE, &shuffle_state)) {
->>> -               if (test_and_clear_bit(SHUFFLE_ENABLE, &shuffle_state))
->>> -                       static_branch_disable(&page_alloc_shuffle_key);
->>> -       } else if (ctl == SHUFFLE_ENABLE
->>> -                       && !test_and_set_bit(SHUFFLE_ENABLE, &shuffle_state))
->>> -               static_branch_enable(&page_alloc_shuffle_key);
->>> -}
->>>
->>>  static bool shuffle_param;
->>>  static int shuffle_show(char *buffer, const struct kernel_param *kp)
->>>  {
->>> -       return sprintf(buffer, "%c\n", test_bit(SHUFFLE_ENABLE, &shuffle_state)
->>> -                       ? 'Y' : 'N');
->>> +       return sprintf(buffer, "%c\n", shuffle_param ? 'Y' : 'N');
->>>  }
->>>
->>>  static __meminit int shuffle_store(const char *val,
->>> @@ -47,9 +25,7 @@ static __meminit int shuffle_store(const char *val,
->>>         if (rc < 0)
->>>                 return rc;
->>>         if (shuffle_param)
->>> -               page_alloc_shuffle(SHUFFLE_ENABLE);
->>> -       else
->>> -               page_alloc_shuffle(SHUFFLE_FORCE_DISABLE);
->>> +               static_branch_enable(&page_alloc_shuffle_key);
->>>         return 0;
->>>  }
->> 
->> Let's do proper input validation here and require 1 / 'true' to enable
->> shuffling and not also allow 0 to be an 'enable' value.
->
->I don't think that's currently done?
->
->param_set_bool(val, kp) will only default val==NULL to 'true'. Passing 0
->will properly be handled by strtobool(). Or am I missing something?
->
+Hi Bjorn,
 
-Agree with this statement.
+you said "Applied" - so should I omit this patch when sending a v3 of
+the series or keep it in there?
 
->Thanks!
->
->-- 
->Thanks,
->
->David / dhildenb
-
--- 
-Wei Yang
-Help you, Help me
+Regards
+Konrad
