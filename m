@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 148F4203A75
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 17:15:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F559203A83
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 17:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729397AbgFVPPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 11:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729278AbgFVPPH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 11:15:07 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05036C061573;
-        Mon, 22 Jun 2020 08:15:07 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0a2500329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:2500:329c:23ff:fea6:a903])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8AA271EC02B9;
-        Mon, 22 Jun 2020 17:15:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1592838905;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=poCjt5Hnl2yRbfjwza7dJmmzO9NHIwqXjUHnukTHB7k=;
-        b=OTqVZBcmrQ4C/T8Pc6e4GzXfK3N3Ei8V1CKLAm443rbMtEtWDzOBDD3UXhEa581dDQdKgG
-        S53OljfjyDy6zfTko/ld3OsUeGy2gkvxl7LzdEgS8AVgVrXMpwoUgVHmyaKDtDw9SgGNUg
-        0ic4YC7Vxn7e8HylaUZPP0pIkejMXjU=
-Date:   Mon, 22 Jun 2020 17:15:02 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@elte.hu>, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH -v2] x86/msr: Move the F15h MSRs where they belong
-Message-ID: <20200622151502.GE32200@zn.tnic>
-References: <20200621163323.14e8533f@canb.auug.org.au>
- <20200621105350.GA28206@zn.tnic>
- <20200622113824.6a3ab82f@canb.auug.org.au>
- <20200622130407.GB32200@zn.tnic>
- <20200622141737.GA30611@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200622141737.GA30611@kernel.org>
+        id S1729304AbgFVPSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 11:18:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:43170 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728070AbgFVPSa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 11:18:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4098631B;
+        Mon, 22 Jun 2020 08:18:29 -0700 (PDT)
+Received: from e120937-lin.home (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 36C383F6CF;
+        Mon, 22 Jun 2020 08:18:28 -0700 (PDT)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        cristian.marussi@arm.com
+Subject: [PATCH v3 0/3] SCMI System Power Support
+Date:   Mon, 22 Jun 2020 16:18:13 +0100
+Message-Id: <20200622151816.15491-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 11:17:37AM -0300, Arnaldo Carvalho de Melo wrote:
-> So this reverts the change you made to the tools copy of that file and
-> then does the change you need to the kernel sources, ok.
->
-> In the future the change will be made just in the kernel files, as
-> kernel developers don't have to have the burden of checking if tooling
-> continues to work when they change kernel files.
+Hi all,
 
-Always nice to have less work. :-)
+this series wants to add the core SCMI System Power support and related
+events' handling logic: the protocol support itself is trivial and boils
+down to some bare initializations and supporting one SCMI System Power
+notification event meant to carry platform-originated System transition
+requests. This is patch [1/3].
 
-> That way later the perf developers get the warning in the perf build
-> process, see how this change in a file that is a copy from the kernel
-> sources affects tooling, and act upon it, simply updating the copy or
-> doing that + extra tooling adjustments, perhaps a new feature, etc.
+On top of this a new SCMI driver has been developed which registers for
+such System Power notification and acts accordingly to satisfy such
+plaform system-state transition requests that can be of forceful or
+graceful kind.
 
-Nice.
+In order to comply with such graceful requests, and co-operate with
+userspace entities to drive a clean shutdown/reboot, the logic of the
+driver relies on the same orderly_* API methods used by ACPI when handling
+ACPI Shutdown bus events.
+As an alternative method to tunnel graceful requests to userspace it is
+possible to configure, via available module parameters, a specific signal
+to be sent to CAD pid. This is patch [2/3].
 
-> Acked-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+Patch [3/3] is a mere JUNO example of the minimal DT bindings needed to
+enable the protocol at the DT level and is NOT meant to be upstream as of
+now.
 
-Thanks, queueing.
+The series is based on SCMI Notifications Core V10 [1] (only posted not
+merged) which in turn is based on top of scmi-for-next 5.8-rc1
+
+Thanks
+
+Cristian
+
+----
+
+[1] https://lore.kernel.org/linux-arm-kernel/20200619133834.18497-1-cristian.marussi@arm.com/
+
+Cristian Marussi (3):
+  firmware: arm_scmi: Add System Power Protocol support
+  firmware: arm_scmi: Add SCMI System Power Control driver
+  arm64: dts: juno: add SCMI SystemPower Protocol support
+
+ arch/arm64/boot/dts/arm/juno-base.dtsi        |   4 +
+ drivers/firmware/Kconfig                      |  12 +
+ drivers/firmware/arm_scmi/Makefile            |   3 +-
+ drivers/firmware/arm_scmi/driver.c            |   1 +
+ .../firmware/arm_scmi/scmi_power_control.c    | 389 ++++++++++++++++++
+ drivers/firmware/arm_scmi/system.c            | 136 ++++++
+ include/linux/scmi_protocol.h                 |  18 +
+ 7 files changed, 562 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/firmware/arm_scmi/scmi_power_control.c
+ create mode 100644 drivers/firmware/arm_scmi/system.c
 
 -- 
-Regards/Gruss,
-    Boris.
+2.17.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
