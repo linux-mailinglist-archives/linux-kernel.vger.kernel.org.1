@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7680203D21
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99053203D26
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729891AbgFVQwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 12:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729533AbgFVQwb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 12:52:31 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6D58C061573;
-        Mon, 22 Jun 2020 09:52:31 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id p5so16566762ile.6;
-        Mon, 22 Jun 2020 09:52:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=ml4K+H93SeXCIMnxVi3/6PCWqKGjDCE1p4VhTbgYGy0=;
-        b=NZt31C1ubnTF4OHvh/tYbT9DAEszGbXCpPS27shTbFzq/9UjRbQBgm/geZnGY6uywq
-         K6UUDNAWwo0inGf8MSPYWkmP7rsvs8noBfCvWHbeg62HHX/i6eMoBcrvP8BkkziZ7BQA
-         hzqMPDR8+03CVLvIB2JtweMn/UeoUkE6rq+IjJszEhSrOxPrVDqtW+E0vPQ0MSYVgYEF
-         kzy7ooi2q4prVEombNb/sFWlHttwFB3fT/ad3WP6BBboOB+Bs27PpVIbnOcEY8L7Ji6s
-         0ZXDf4fdEh9SpXYrSNalArM6JT9Rb+jn+JeVoUMsqimnRNqPZoCtLpRyhoy/xrayx122
-         IZnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=ml4K+H93SeXCIMnxVi3/6PCWqKGjDCE1p4VhTbgYGy0=;
-        b=gS0ERg3CCIF2ncr26ngzn00TGTt833BhJWA8v4S081rSH5rJ/PrHiwPC/k7QOAbeek
-         olCP8ZvfXWNPSU6tNIGpvsjQQC/n9YHX69wj2097rmhtowpeDGBezJqe6z73St+dEfhg
-         XhfpiAIMoSmt1+SAZAfLBNXpeiJ4nIOr/szoliKMcxH84j60KJAjFLl8/OOb9LIp/Mhp
-         av8sjXQd6hkbgc2VhMoeN+s7mGO0KUS0Tkx85Eibi3YFZ5Ju+ARbWXyYHR9UgLPhyze3
-         GA9iktEHGF8KOTIXdxtHUB/MNNiUsJ6l9zYwDgvqlymQLoLcvCugsNzzDQobuGv0kvs3
-         /Wbg==
-X-Gm-Message-State: AOAM530J5E/Y76Zmr9lXelwO73NVf2/AUCLnVRhQlLKLe6I0TSRci4eR
-        EBv890ObDs3FI0t12O3cHTan6k/rpqG6+sHJ5jc=
-X-Google-Smtp-Source: ABdhPJwdjC49IgldtmuqtkC47LHpTDI7DHSNwH7tRMpaXAH1EPNzfRXpd2NbYWgbRKaMkFq0rEYvZ7JsWdVpGKaobTY=
-X-Received: by 2002:a92:c0c8:: with SMTP id t8mr19085670ilf.176.1592844750896;
- Mon, 22 Jun 2020 09:52:30 -0700 (PDT)
+        id S1729925AbgFVQw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 12:52:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729519AbgFVQw5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 12:52:57 -0400
+Received: from localhost (mobile-166-170-222-206.mycingular.net [166.170.222.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3CB7420707;
+        Mon, 22 Jun 2020 16:52:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592844777;
+        bh=t+IlrfZ0txrH96mjZ3AX99x53oPkQ0E7qqZlBrlngJI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=LAOZECfRGx7DAOKstitrSP0q6DlJcu/eERuglIEQjVW8WGwmg5zZ/OIpUXPB+/zrH
+         sQSBmCaBB55o5Tp/Y/FGXNl7r54HpgLlPm7aFLyDKsxjiVuPK/gsHWZQQwgMWsXzZW
+         U3DK8OhlaePUrLFg0cG2NAElF+6II+P/T+2qfeEM=
+Date:   Mon, 22 Jun 2020 11:52:55 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Flavio Suligoi <f.suligoi@asem.it>
+Cc:     Tom Joseph <tjoseph@cadence.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] pci: controller: cadence: fix wrong path in
+ comment
+Message-ID: <20200622165255.GA2275961@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20200622155018.6043-1-sedat.dilek@gmail.com>
-In-Reply-To: <20200622155018.6043-1-sedat.dilek@gmail.com>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Mon, 22 Jun 2020 18:52:23 +0200
-Message-ID: <CA+icZUVGve+zN59_OOsW-G732uXmBGHha-+3dwE13OK338tH7g@mail.gmail.com>
-Subject: Re: [PATCH 5.7] x86/crypto: aesni: Fix build with LLVM_IAS=1
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>
-Cc:     Craig Topper <craig.topper@intel.com>,
-        Craig Topper <craig.topper@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200622091520.9336-1-f.suligoi@asem.it>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 5:50 PM Sedat Dilek <sedat.dilek@gmail.com> wrote:
+Please use "git log --oneline" to help construct the subject line.
+Maybe:
 
-> Craig Topper suggested me in ClangBuiltLinux issue #1050:
->
-> > I think the "too many positional arguments" is because the parser isn't able
-> > to handle the trailing commas.
-> >
-> > The "unknown use of instruction mnemonic" is because the macro was named
-> > GHASH_4_ENCRYPT_4_PARALLEL_DEC but its being instantiated with
-> > GHASH_4_ENCRYPT_4_PARALLEL_dec I guess gas ignores case on the
-> > macro instantiation, but llvm doesn't.
->
+  PCI: cadence-ep: Remove obsolete path from comment
 
-> Cc: Craig Topper <craig.topper@intel.com>
-> Cc: Craig Topper <craig.topper@gmail.com>
+On Mon, Jun 22, 2020 at 11:15:20AM +0200, Flavio Suligoi wrote:
+> This comment still refers to the old driver pathname,
+> when all PCI drivers were located directly under the
+> drivers/pci directory.
+> 
+> Anyway the function name itself is enough, so we can
+> remove the overabundant path reference.
+> 
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-That should be a s/Cc/Suggested-by/.
+I did not ack this.  Please don't add acks unless someone does so
+explicitly.
 
-- Sedat -
+> ---
+> 
+> v1: - after the suggestion of Bjorn, remove the whole comment line related to
+>       the wrong path
+>     - add: Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> 
+>  drivers/pci/controller/cadence/pcie-cadence-ep.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> index 1c15c8352125..690eefd328ea 100644
+> --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
+> @@ -276,7 +276,6 @@ static int cdns_pcie_ep_send_legacy_irq(struct cdns_pcie_ep *ep, u8 fn, u8 intx)
+>  	cdns_pcie_ep_assert_intx(ep, fn, intx, true);
+>  	/*
+>  	 * The mdelay() value was taken from dra7xx_pcie_raise_legacy_irq()
+> -	 * from drivers/pci/dwc/pci-dra7xx.c
+>  	 */
+>  	mdelay(1);
+>  	cdns_pcie_ep_assert_intx(ep, fn, intx, false);
+> -- 
+> 2.17.1
+> 
