@@ -2,346 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D6DE2038A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 16:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8580620389C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 16:01:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729234AbgFVODY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 10:03:24 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:55236 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728070AbgFVODW (ORCPT
+        id S1729091AbgFVOBi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 10:01:38 -0400
+Received: from mout.kundenserver.de ([212.227.126.130]:39551 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728070AbgFVOBh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 10:03:22 -0400
-Received: from 89-64-85-91.dynamic.chello.pl (89.64.85.91) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
- id b9bc4d710fe8cc24; Mon, 22 Jun 2020 16:03:19 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Dan Williams <dan.j.williams@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>
-Cc:     rafael.j.wysocki@intel.com, Len Brown <lenb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Ira Weiny <ira.weiny@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Myron Stowe <myron.stowe@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-nvdimm@lists.01.org, Bob Moore <robert.moore@intel.com>
-Subject: [RFT][PATCH v2 2/4] ACPI: OSL: Add support for deferred unmapping of ACPI memory
-Date:   Mon, 22 Jun 2020 15:53:40 +0200
-Message-ID: <1821880.vZFEW4x2Ui@kreacher>
-In-Reply-To: <2713141.s8EVnczdoM@kreacher>
-References: <158889473309.2292982.18007035454673387731.stgit@dwillia2-desk3.amr.corp.intel.com> <2713141.s8EVnczdoM@kreacher>
+        Mon, 22 Jun 2020 10:01:37 -0400
+Received: from oxbsgw03.schlund.de ([172.19.248.4]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MrhLw-1j1t691Xc4-00neo3; Mon, 22 Jun 2020 16:01:25 +0200
+Date:   Mon, 22 Jun 2020 16:01:24 +0200 (CEST)
+From:   Thomas Ruf <freelancer@rufusul.de>
+Reply-To: Thomas Ruf <freelancer@rufusul.de>
+To:     Richard Weinberger <richard.weinberger@gmail.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Federico Vaga <federico.vaga@cern.ch>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        dmaengine@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Message-ID: <501058700.545185.1592834484568@mailbusiness.ionos.de>
+In-Reply-To: <CAFLxGvyNazbyBpySuNA6SU-8tcvqYWKHsAHuhTLsofR=VoiEwQ@mail.gmail.com>
+References: <5614531.lOV4Wx5bFT@harkonnen>
+ <fe199e18-be45-cadc-8bad-4a83ed87bfba@intel.com>
+ <20200621072457.GA2324254@vkoul-mobl>
+ <20200621203634.y3tejmh6j4knf5iz@cwe-513-vol689.cern.ch>
+ <20200622044733.GB2324254@vkoul-mobl>
+ <419762761.402939.1592827272368@mailbusiness.ionos.de>
+ <CAFLxGvyNazbyBpySuNA6SU-8tcvqYWKHsAHuhTLsofR=VoiEwQ@mail.gmail.com>
+Subject: Re: DMA Engine: Transfer From Userspace
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-Mailer: Open-Xchange Mailer v7.10.1-Rev31
+X-Originating-Client: open-xchange-appsuite
+X-Provags-ID: V03:K1:vUZbxgo/OouGbsShJsc/bQjeMXYbOVzbSB/wP1nZxShgucZr6bZ
+ 2AOEe4HJkldFD7CXfBjfJFyZ/JGuDL5HGVwhDSjKdPhSft9odUjIHmW1Ve5M3t4wA250NKD
+ 0of89ztTKi1aCYli10qqAZTA9H8hQ8pOboNvMgJINUeibRo4iAnH+zDG/4pOhi9mMhCKDLT
+ CMhdIQKwqXbYoqKd/b2aA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zUA8ET7KTVw=:r4loVE6nt/IOlN/lgBbA4K
+ bCtT3/AfVymyJQDSvzItt6gqdNlSnHr+4l3bnVpPFZdpblsLj4xb0rQqbiRiJjgfIb94/pL9S
+ DB5nHWi+AQQU84OSXqAwkmii7l9axUa7dPyfpHOwfDdT09+qLej3ntdPj5eXHzRXMgB+zI5Y5
+ 3soG6ETaRbW05NzOm84znyzerWYkAkj8YtQNJnBn+VrLqBPNTqgjFmfi3mzs4+DcpPvEU2bkC
+ aSKvbRWSwbRQQC35eUfrDX4/NtLTf3xHO8GQD2jgARhvPPHl9aprf8CuRf/9HQAssZUvz0hcB
+ KnD5utRKWB7AnBrMWHCEub8mSysgTu6WCS12ZaFL6DWr5T3X2xDRaQzvQFunjyqLBWPDZ6zmu
+ dr4BntfS9x0EVeGwodMsn3ySn21YELlidDc4W8S/xkDtW5grJBTW9yqKgjDrWTefdCrP+W2o6
+ icGI2UF+eNMHm7aON1aU0VkITwOKv9lYEC4eHFMxTNymPjwrUb+oT+OiazPoMtr9ZQltc3yVL
+ y1LJj9LD3VWtD/9jb/9UC7uD1ox1ny2nm9POXLEH4uxL4bVQgixb9GKRGljJL8TU1U6f/KCM6
+ mSYc1IbLle7CsUl1Obbr9Z5GNWzx9SwQ6vo7csy+K0OvnZ6pQfV+woD0m05AD0YaE3t29pz9K
+ 9BW+3gb988wmRzbmfxwTRCrR1PidyFvI92KBdrLMYkwldleWL4ZTiKYIOmKO314HWtnd1N8rf
+ hZZBq1wBwhP6u4YVrPgGN6I4o3ZqHXOTS8Mh5QFYZdpcp23NghsqdoWFeQOG0nGq3vBBaLiFh
+ w0PEQfZK99k/3auzGsMDXuRhpwgCkEQASWlCjCrBBr8qq6Kv5o=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+> On 22 June 2020 at 14:27 Richard Weinberger <richard.weinberger@gmail.com> wrote:
+> 
+> 
+> On Mon, Jun 22, 2020 at 2:02 PM Thomas Ruf <freelancer@rufusul.de> wrote:
+> > > more the reason not do do so, why cant a kernel driver be added for your
+> > > usage?
+> >
+> > by chance i have written a driver allowing dma from user space using a memcpy like interface ;-)
+> > now i am trying to get this code upstream but was hit by the fact that DMA_SG is gone since Aug 2017 :-(
+> >
+> > just let me introduce myself and the project:
+> > - coding in C since '91
+> > - coding in C++ since '98
+> > - a lot of stuff not relevant for this ;-)
+> > - working as a freelancer since Nov '19
+> > - implemented a "dma-sg-proxy" driver for my client in Mar/Apr '20 to copy camera frames from uncached memory to cached memory using a second dma on a Zynq platform
+> > - last week we figured out that we can not upgrade from "Xilinx 2019.2" (kernel 4.19.x) to "2020.1" (kernel 5.4.x) because the DMA_SG interface is gone
+> > - subscribed to dmaengine on friday, saw the start of this discussion on saturday
+> > - talked to my client today if it is ok to try to revive DMA_SG and get our driver upstream to avoid such problems in future
+> 
+> How do you preserve bounds? This is the main reason why vfio requires an iommu.
 
-Implement acpi_os_unmap_deferred() and
-acpi_os_release_unused_mappings() and set ACPI_USE_DEFERRED_UNMAPPING
-to allow ACPICA to use deferred unmapping of memory in
-acpi_ex_system_memory_space_handler() so as to avoid RCU-related
-performance issues with memory opregions.
+Depends where the pointer "points to", i can detect:
+- virtually allocated user memory, the generated scatterlist is slit on page bounderies
+- contiguous pyhsical memory, in our case allocated by v4l2 (based on a dma without SG support), the generated scallterlist has just one entry
 
-Reported-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- drivers/acpi/osl.c                | 160 +++++++++++++++++++++++-------
- include/acpi/platform/aclinuxex.h |   4 +
- 2 files changed, 128 insertions(+), 36 deletions(-)
+sorry, i am not really familar with vfio :-(
 
-diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index 762c5d50b8fe..28863d908fa8 100644
---- a/drivers/acpi/osl.c
-+++ b/drivers/acpi/osl.c
-@@ -77,12 +77,16 @@ struct acpi_ioremap {
- 	void __iomem *virt;
- 	acpi_physical_address phys;
- 	acpi_size size;
--	unsigned long refcount;
-+	union {
-+		unsigned long refcount;
-+		struct list_head gc;
-+	} track;
- };
- 
- static LIST_HEAD(acpi_ioremaps);
- static DEFINE_MUTEX(acpi_ioremap_lock);
- #define acpi_ioremap_lock_held() lock_is_held(&acpi_ioremap_lock.dep_map)
-+static LIST_HEAD(unused_mappings);
- 
- static void __init acpi_request_region (struct acpi_generic_address *gas,
- 	unsigned int length, char *desc)
-@@ -250,7 +254,7 @@ void __iomem *acpi_os_get_iomem(acpi_physical_address phys, unsigned int size)
- 	map = acpi_map_lookup(phys, size);
- 	if (map) {
- 		virt = map->virt + (phys - map->phys);
--		map->refcount++;
-+		map->track.refcount++;
- 	}
- 	mutex_unlock(&acpi_ioremap_lock);
- 	return virt;
-@@ -335,7 +339,7 @@ void __iomem __ref
- 	/* Check if there's a suitable mapping already. */
- 	map = acpi_map_lookup(phys, size);
- 	if (map) {
--		map->refcount++;
-+		map->track.refcount++;
- 		goto out;
- 	}
- 
-@@ -358,7 +362,7 @@ void __iomem __ref
- 	map->virt = virt;
- 	map->phys = pg_off;
- 	map->size = pg_sz;
--	map->refcount = 1;
-+	map->track.refcount = 1;
- 
- 	list_add_tail_rcu(&map->list, &acpi_ioremaps);
- 
-@@ -375,40 +379,41 @@ void *__ref acpi_os_map_memory(acpi_physical_address phys, acpi_size size)
- EXPORT_SYMBOL_GPL(acpi_os_map_memory);
- 
- /* Must be called with mutex_lock(&acpi_ioremap_lock) */
--static unsigned long acpi_os_drop_map_ref(struct acpi_ioremap *map)
-+static bool acpi_os_drop_map_ref(struct acpi_ioremap *map, bool defer)
- {
--	unsigned long refcount = --map->refcount;
-+	if (--map->track.refcount)
-+		return true;
- 
--	if (!refcount)
--		list_del_rcu(&map->list);
--	return refcount;
-+	list_del_rcu(&map->list);
-+
-+	if (defer) {
-+		INIT_LIST_HEAD(&map->track.gc);
-+		list_add_tail(&map->track.gc, &unused_mappings);
-+		return true;
-+	}
-+
-+	return false;
- }
- 
--static void acpi_os_map_cleanup(struct acpi_ioremap *map)
-+static void __acpi_os_map_cleanup(struct acpi_ioremap *map)
- {
--	synchronize_rcu_expedited();
- 	acpi_unmap(map->phys, map->virt);
- 	kfree(map);
- }
- 
--/**
-- * acpi_os_unmap_iomem - Drop a memory mapping reference.
-- * @virt: Start of the address range to drop a reference to.
-- * @size: Size of the address range to drop a reference to.
-- *
-- * Look up the given virtual address range in the list of existing ACPI memory
-- * mappings, drop a reference to it and unmap it if there are no more active
-- * references to it.
-- *
-- * During early init (when acpi_permanent_mmap has not been set yet) this
-- * routine simply calls __acpi_unmap_table() to get the job done.  Since
-- * __acpi_unmap_table() is an __init function, the __ref annotation is needed
-- * here.
-- */
--void __ref acpi_os_unmap_iomem(void __iomem *virt, acpi_size size)
-+static void acpi_os_map_cleanup(struct acpi_ioremap *map)
-+{
-+	if (!map)
-+		return;
-+
-+	synchronize_rcu_expedited();
-+	__acpi_os_map_cleanup(map);
-+}
-+
-+static void __ref __acpi_os_unmap_iomem(void __iomem *virt, acpi_size size,
-+					bool defer)
- {
- 	struct acpi_ioremap *map;
--	unsigned long refcount;
- 
- 	if (!acpi_permanent_mmap) {
- 		__acpi_unmap_table(virt, size);
-@@ -416,26 +421,102 @@ void __ref acpi_os_unmap_iomem(void __iomem *virt, acpi_size size)
- 	}
- 
- 	mutex_lock(&acpi_ioremap_lock);
-+
- 	map = acpi_map_lookup_virt(virt, size);
- 	if (!map) {
- 		mutex_unlock(&acpi_ioremap_lock);
- 		WARN(true, PREFIX "%s: bad address %p\n", __func__, virt);
- 		return;
- 	}
--	refcount = acpi_os_drop_map_ref(map);
-+	if (acpi_os_drop_map_ref(map, defer))
-+		map = NULL;
-+
- 	mutex_unlock(&acpi_ioremap_lock);
- 
--	if (!refcount)
--		acpi_os_map_cleanup(map);
-+	acpi_os_map_cleanup(map);
-+}
-+
-+/**
-+ * acpi_os_unmap_iomem - Drop a memory mapping reference.
-+ * @virt: Start of the address range to drop a reference to.
-+ * @size: Size of the address range to drop a reference to.
-+ *
-+ * Look up the given virtual address range in the list of existing ACPI memory
-+ * mappings, drop a reference to it and unmap it if there are no more active
-+ * references to it.
-+ *
-+ * During early init (when acpi_permanent_mmap has not been set yet) this
-+ * routine simply calls __acpi_unmap_table() to get the job done.  Since
-+ * __acpi_unmap_table() is an __init function, the __ref annotation is needed
-+ * here.
-+ */
-+void __ref acpi_os_unmap_iomem(void __iomem *virt, acpi_size size)
-+{
-+	__acpi_os_unmap_iomem(virt, size, false);
- }
- EXPORT_SYMBOL_GPL(acpi_os_unmap_iomem);
- 
- void __ref acpi_os_unmap_memory(void *virt, acpi_size size)
- {
--	return acpi_os_unmap_iomem((void __iomem *)virt, size);
-+	acpi_os_unmap_iomem((void __iomem *)virt, size);
- }
- EXPORT_SYMBOL_GPL(acpi_os_unmap_memory);
- 
-+/**
-+ * acpi_os_unmap_deferred - Drop a memory mapping reference.
-+ * @virt: Start of the address range to drop a reference to.
-+ * @size: Size of the address range to drop a reference to.
-+ *
-+ * Look up the given virtual address range in the list of existing ACPI memory
-+ * mappings, drop a reference to it and if there are no more active references
-+ * to it, put it in the list of unused memory mappings.
-+ *
-+ * During early init (when acpi_permanent_mmap has not been set yet) this
-+ * routine behaves like acpi_os_unmap_memory().
-+ */
-+void __ref acpi_os_unmap_deferred(void *virt, acpi_size size)
-+{
-+	__acpi_os_unmap_iomem((void __iomem *)virt, size, true);
-+}
-+
-+/**
-+ * acpi_os_release_unused_mappings - Release unused ACPI memory mappings.
-+ */
-+void acpi_os_release_unused_mappings(void)
-+{
-+	struct list_head list;
-+
-+	INIT_LIST_HEAD(&list);
-+
-+	/*
-+	 * First avoid looking at mappings that may be added to the "unused"
-+	 * list while the synchronize_rcu() below is running.
-+	 */
-+	mutex_lock(&acpi_ioremap_lock);
-+
-+	list_splice_init(&unused_mappings, &list);
-+
-+	mutex_unlock(&acpi_ioremap_lock);
-+
-+	if (list_empty(&list))
-+		return;
-+
-+	/*
-+	 * Wait for the possible users of the mappings in the "unused" list to
-+	 * stop using them.
-+	 */
-+	synchronize_rcu();
-+
-+	/* Release the unused mappings in the list. */
-+	while (!list_empty(&list)) {
-+		struct acpi_ioremap *map;
-+
-+		map = list_entry(list.next, struct acpi_ioremap, track.gc);
-+		list_del(&map->track.gc);
-+		__acpi_os_map_cleanup(map);
-+	}
-+}
-+
- int acpi_os_map_generic_address(struct acpi_generic_address *gas)
- {
- 	u64 addr;
-@@ -461,7 +542,6 @@ void acpi_os_unmap_generic_address(struct acpi_generic_address *gas)
- {
- 	u64 addr;
- 	struct acpi_ioremap *map;
--	unsigned long refcount;
- 
- 	if (gas->space_id != ACPI_ADR_SPACE_SYSTEM_MEMORY)
- 		return;
-@@ -472,16 +552,18 @@ void acpi_os_unmap_generic_address(struct acpi_generic_address *gas)
- 		return;
- 
- 	mutex_lock(&acpi_ioremap_lock);
-+
- 	map = acpi_map_lookup(addr, gas->bit_width / 8);
- 	if (!map) {
- 		mutex_unlock(&acpi_ioremap_lock);
- 		return;
- 	}
--	refcount = acpi_os_drop_map_ref(map);
-+	if (acpi_os_drop_map_ref(map, false))
-+		map = NULL;
-+
- 	mutex_unlock(&acpi_ioremap_lock);
- 
--	if (!refcount)
--		acpi_os_map_cleanup(map);
-+	acpi_os_map_cleanup(map);
- }
- EXPORT_SYMBOL(acpi_os_unmap_generic_address);
- 
-@@ -1566,11 +1648,17 @@ static acpi_status acpi_deactivate_mem_region(acpi_handle handle, u32 level,
- acpi_status acpi_release_memory(acpi_handle handle, struct resource *res,
- 				u32 level)
- {
-+	acpi_status ret;
-+
- 	if (!(res->flags & IORESOURCE_MEM))
- 		return AE_TYPE;
- 
--	return acpi_walk_namespace(ACPI_TYPE_REGION, handle, level,
-+	ret = acpi_walk_namespace(ACPI_TYPE_REGION, handle, level,
- 				   acpi_deactivate_mem_region, NULL, res, NULL);
-+
-+	acpi_os_release_unused_mappings();
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(acpi_release_memory);
- 
-diff --git a/include/acpi/platform/aclinuxex.h b/include/acpi/platform/aclinuxex.h
-index 04f88f2de781..e13f364d6c69 100644
---- a/include/acpi/platform/aclinuxex.h
-+++ b/include/acpi/platform/aclinuxex.h
-@@ -138,6 +138,10 @@ static inline void acpi_os_terminate_debugger(void)
- /*
-  * OSL interfaces added by Linux
-  */
-+void acpi_os_unmap_deferred(void *virt, acpi_size size);
-+void acpi_os_release_unused_mappings(void);
-+
-+#define ACPI_USE_DEFERRED_UNMAPPING
- 
- #endif				/* __KERNEL__ */
- 
--- 
-2.26.2
+> > here the struct for the ioctl:
+> >
+> > typedef struct {
+> >   unsigned int struct_size;
+> >   const void *src_user_ptr;
+> >   void *dst_user_ptr;
+> >   unsigned long length;
+> >   unsigned int timeout_in_ms;
+> > } dma_sg_proxy_arg_t;
+> 
+> Is this on top of uio or a complete new subsystem?
 
+Completely independent, just my own idea for a simple uapi.
 
-
-
+Best regards,
+Thomas
