@@ -2,33 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87A922044AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2972044AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731331AbgFVXqw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 19:46:52 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:54779 "EHLO
+        id S1731455AbgFVXq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 19:46:58 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54784 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730961AbgFVXqK (ORCPT
+        with ESMTP id S1730632AbgFVXqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Jun 2020 19:46:10 -0400
 Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein.fritz.box)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jnW8e-0005DO-6Y; Mon, 22 Jun 2020 23:46:08 +0000
+        id 1jnW8e-0005DO-Lz; Mon, 22 Jun 2020 23:46:08 +0000
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Christian Brauner <christian.brauner@ubuntu.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-Subject: [PATCH 08/17] fork: remove do_fork()
-Date:   Tue, 23 Jun 2020 01:43:17 +0200
-Message-Id: <20200622234326.906346-9-christian.brauner@ubuntu.com>
+        linux-alpha@vger.kernel.org
+Subject: [PATCH 09/17] alpha: switch to copy_thread_tls()
+Date:   Tue, 23 Jun 2020 01:43:18 +0200
+Message-Id: <20200622234326.906346-10-christian.brauner@ubuntu.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200622234326.906346-1-christian.brauner@ubuntu.com>
 References: <20200622234326.906346-1-christian.brauner@ubuntu.com>
@@ -39,79 +35,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that all architectures have been switched to use _do_fork() and the new
-struct kernel_clone_args calling convention we can remove the legacy
-do_fork() helper completely. The calling convention used to be brittle and
-do_fork() didn't buy us anything. The only calling convention accepted
-should be based on struct kernel_clone_args going forward. It's cleaner and
-uniform.
+Use the copy_thread_tls() calling convention which passes tls through a
+register. This is required so we can remove the copy_thread{_tls}() split
+and remove the HAVE_COPY_THREAD_TLS macro.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc: "Peter Zijlstra (Intel)" <peterz@infradead.org>
+Cc: linux-alpha@vger.kernel.org
 Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
- include/linux/sched/task.h |  1 -
- kernel/fork.c              | 25 +------------------------
- 2 files changed, 1 insertion(+), 25 deletions(-)
+ arch/alpha/Kconfig          | 1 +
+ arch/alpha/kernel/process.c | 9 ++++-----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-index ddce0ea515d1..9f03c44941fb 100644
---- a/include/linux/sched/task.h
-+++ b/include/linux/sched/task.h
-@@ -96,7 +96,6 @@ extern void exit_files(struct task_struct *);
- extern void exit_itimers(struct signal_struct *);
- 
- extern long _do_fork(struct kernel_clone_args *kargs);
--extern long do_fork(unsigned long, unsigned long, unsigned long, int __user *, int __user *);
- struct task_struct *fork_idle(int);
- struct mm_struct *copy_init_mm(void);
- extern pid_t kernel_thread(int (*fn)(void *), void *arg, unsigned long flags);
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 9875aeb2ba41..0fd7eb1b38f9 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2493,29 +2493,6 @@ long _do_fork(struct kernel_clone_args *args)
- 	return nr;
- }
- 
--#ifndef CONFIG_HAVE_COPY_THREAD_TLS
--/* For compatibility with architectures that call do_fork directly rather than
-- * using the syscall entry points below. */
--long do_fork(unsigned long clone_flags,
--	      unsigned long stack_start,
--	      unsigned long stack_size,
--	      int __user *parent_tidptr,
--	      int __user *child_tidptr)
--{
--	struct kernel_clone_args args = {
--		.flags		= (lower_32_bits(clone_flags) & ~CSIGNAL),
--		.pidfd		= parent_tidptr,
--		.child_tid	= child_tidptr,
--		.parent_tid	= parent_tidptr,
--		.exit_signal	= (lower_32_bits(clone_flags) & CSIGNAL),
--		.stack		= stack_start,
--		.stack_size	= stack_size,
--	};
--
--	return _do_fork(&args);
--}
--#endif
--
+diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
+index 10862c5a8c76..b01515c6b2ed 100644
+--- a/arch/alpha/Kconfig
++++ b/arch/alpha/Kconfig
+@@ -38,6 +38,7 @@ config ALPHA
+ 	select OLD_SIGSUSPEND
+ 	select CPU_NO_EFFICIENT_FFS if !ALPHA_EV67
+ 	select MMU_GATHER_NO_RANGE
++	select HAVE_COPY_THREAD_TLS
+ 	help
+ 	  The Alpha is a 64-bit general-purpose processor designed and
+ 	  marketed by the Digital Equipment Corporation of blessed memory,
+diff --git a/arch/alpha/kernel/process.c b/arch/alpha/kernel/process.c
+index b45f0b0d6511..dfdb6b6ba61c 100644
+--- a/arch/alpha/kernel/process.c
++++ b/arch/alpha/kernel/process.c
+@@ -233,10 +233,9 @@ release_thread(struct task_struct *dead_task)
  /*
-  * Create a kernel thread.
+  * Copy architecture-specific thread state
   */
-@@ -2923,7 +2900,7 @@ static int unshare_fd(unsigned long unshare_flags, struct files_struct **new_fdp
- /*
-  * unshare allows a process to 'unshare' part of the process
-  * context which was originally shared using clone.  copy_*
-- * functions used by do_fork() cannot be used here directly
-+ * functions used by _do_fork() cannot be used here directly
-  * because they modify an inactive task_struct that is being
-  * constructed. Here we are modifying the current, active,
-  * task_struct.
+-int
+-copy_thread(unsigned long clone_flags, unsigned long usp,
+-	    unsigned long kthread_arg,
+-	    struct task_struct *p)
++int copy_thread_tls(unsigned long clone_flags, unsigned long usp,
++		    unsigned long kthread_arg, struct task_struct *p,
++		    unsigned long tls)
+ {
+ 	extern void ret_from_fork(void);
+ 	extern void ret_from_kernel_thread(void);
+@@ -267,7 +266,7 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
+ 	   required for proper operation in the case of a threaded
+ 	   application calling fork.  */
+ 	if (clone_flags & CLONE_SETTLS)
+-		childti->pcb.unique = regs->r20;
++		childti->pcb.unique = tls;
+ 	else
+ 		regs->r20 = 0;	/* OSF/1 has some strange fork() semantics.  */
+ 	childti->pcb.usp = usp ?: rdusp();
 -- 
 2.27.0
 
