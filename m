@@ -2,163 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17DF320365D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63FDA20366D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728107AbgFVMEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 08:04:54 -0400
-Received: from conuserg-11.nifty.com ([210.131.2.78]:62665 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727835AbgFVMEy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 08:04:54 -0400
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 05MC3SgG001221;
-        Mon, 22 Jun 2020 21:03:28 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 05MC3SgG001221
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1592827409;
-        bh=XT5p7CGO0IRfglTH035B6VnJfGMRKyJLc0ZZJHRD7vI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=vxcnk++Bh/HeR8KH8zvH64uyIKfNlEo5yYtjkH/52X7GM1W6grC2f/fYi44u3aO7Q
-         Zc2ON3HRrNHrIwYGTB46c+hVPdBIm7VdJdRPcc0vBkE8AbS4NWlehCVdwMLA3ocXnd
-         Fp4+7RwQrjN79zRVo/qK+/fuEDGxCGKISPdVIybR7Brvn/gY4LzKMnRS5+zWFSLvAx
-         e2i8LWJkaUDzZ9+fC2LN3MqBFvdpx2HTj6FWUrQeljYW/wiBjM+SB0O6zjgA9uxkNb
-         QWf8lMEh5XbIkTZScLcxASeXZ9n1+sgshBXwiDEQC6cw7q3+giUIxNaYP1pejGinkQ
-         NPTj859DtiRwg==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org
-Cc:     Katsuhiro Suzuki <katsuhiro@katsuster.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        - <alsa-devel@alsa-project.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: ASoC: Convert UniPhier EVEA codec to json-schema
-Date:   Mon, 22 Jun 2020 21:03:20 +0900
-Message-Id: <20200622120320.454535-1-yamada.masahiro@socionext.com>
-X-Mailer: git-send-email 2.25.1
+        id S1728139AbgFVMHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 08:07:37 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2352 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727864AbgFVMHg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 08:07:36 -0400
+Received: from lhreml715-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id D5E64B3F874B0C45841F;
+        Mon, 22 Jun 2020 13:07:34 +0100 (IST)
+Received: from DESKTOP-6T4S3DQ.china.huawei.com (10.47.81.228) by
+ lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.1913.5; Mon, 22 Jun 2020 13:07:34 +0100
+From:   Shiju Jose <shiju.jose@huawei.com>
+To:     <linux-acpi@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <rjw@rjwysocki.net>,
+        <helgaas@kernel.org>, <bp@alien8.de>, <james.morse@arm.com>,
+        <lenb@kernel.org>, <tony.luck@intel.com>,
+        <dan.carpenter@oracle.com>, <zhangliguang@linux.alibaba.com>,
+        <andriy.shevchenko@linux.intel.com>, <wangkefeng.wang@huawei.com>,
+        <jroedel@suse.de>
+CC:     <linuxarm@huawei.com>, <yangyicong@hisilicon.com>,
+        <jonathan.cameron@huawei.com>, <tanxiaofei@huawei.com>
+Subject: [PATCH v11 0/2] ACPI / APEI: Add support to notify the vendor specific HW errors
+Date:   Mon, 22 Jun 2020 13:05:25 +0100
+Message-ID: <20200622120527.690-1-shiju.jose@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.47.81.228]
+X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
+ lhreml715-chm.china.huawei.com (10.201.108.66)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the UniPhier EVEA sound codec binding to DT schema format.
+CPER records describing a firmware-first error are identified by GUID.
+The ghes driver currently logs, but ignores any unknown CPER records.
+This prevents describing errors that can't be represented by a standard
+entry, that would otherwise allow a driver to recover from an error.
+The UEFI spec calls these 'Non-standard Section Body' (N.2.3 of
+version 2.8).
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
+patch set
+1. add a notifier chain for these non-standard/vendor-records
+   in the ghes driver.
 
- .../sound/socionext,uniphier-evea.yaml        | 62 +++++++++++++++++++
- .../bindings/sound/uniphier,evea.txt          | 26 --------
- 2 files changed, 62 insertions(+), 26 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/uniphier,evea.txt
+2. add a driver to handle HiSilicon hip PCIe controller's errors.
+   
+Changes:
 
-diff --git a/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml b/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
-new file mode 100644
-index 000000000000..7ac1c0140d5d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
-@@ -0,0 +1,62 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/socionext,uniphier-evea.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: UniPhier EVEA SoC-internal sound codec
-+
-+maintainers:
-+  - <alsa-devel@alsa-project.org>
-+
-+properties:
-+  compatible:
-+    const: socionext,uniphier-evea
-+
-+  reg:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: evea
-+      - const: exiv
-+
-+  clocks:
-+    minItems: 2
-+    maxItems: 2
-+
-+  reset-names:
-+    items:
-+      - const: evea
-+      - const: exiv
-+      - const: adamv
-+
-+  resets:
-+    minItems: 3
-+    maxItems: 3
-+
-+  "#sound-dai-cells":
-+    const: 1
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - clock-names
-+  - clocks
-+  - reset-names
-+  - resets
-+  - "#sound-dai-cells"
-+
-+examples:
-+  - |
-+    codec@57900000 {
-+        compatible = "socionext,uniphier-evea";
-+        reg = <0x57900000 0x1000>;
-+        clock-names = "evea", "exiv";
-+        clocks = <&sys_clk 41>, <&sys_clk 42>;
-+        reset-names = "evea", "exiv", "adamv";
-+        resets = <&sys_rst 41>, <&sys_rst 42>, <&adamv_rst 0>;
-+        #sound-dai-cells = <1>;
-+    };
-diff --git a/Documentation/devicetree/bindings/sound/uniphier,evea.txt b/Documentation/devicetree/bindings/sound/uniphier,evea.txt
-deleted file mode 100644
-index 3f31b235f18b..000000000000
---- a/Documentation/devicetree/bindings/sound/uniphier,evea.txt
-+++ /dev/null
-@@ -1,26 +0,0 @@
--Socionext EVEA - UniPhier SoC internal codec driver
--
--Required properties:
--- compatible      : should be "socionext,uniphier-evea".
--- reg             : offset and length of the register set for the device.
--- clock-names     : should include following entries:
--                    "evea", "exiv"
--- clocks          : a list of phandle, should contain an entry for each
--                    entries in clock-names.
--- reset-names     : should include following entries:
--                    "evea", "exiv", "adamv"
--- resets          : a list of phandle, should contain reset entries of
--                    reset-names.
--- #sound-dai-cells: should be 1.
--
--Example:
--
--	codec {
--		compatible = "socionext,uniphier-evea";
--		reg = <0x57900000 0x1000>;
--		clock-names = "evea", "exiv";
--		clocks = <&sys_clk 41>, <&sys_clk 42>;
--		reset-names = "evea", "exiv", "adamv";
--		resets = <&sys_rst 41>, <&sys_rst 42>, <&adamv_rst 0>;
--		#sound-dai-cells = <1>;
--	};
+V11:
+1. Following modifications made by James Morse in the APEI patch
+   for the vendor error record.
+   - Removed kfifo and ghes_gdata_pool. Expanded commit message.
+   
+   Note: Kept the Signed-off-by: James Morse as he is given
+   because I am not sure the right format.
+   
+2. Changes in the HIP PCIe error handler driver
+   for the comments by Andy Shevchenko.
+
+V10:
+1. Changes for Bjorn's comments on HIP PCIe error handler driver
+   and APEI patch.
+   
+2. Changes in the HIP PCIe error handler driver
+   for the feedbacks by Andy Shevchenko.
+   
+V9:
+1. Fixed 2 improvements suggested by the kbuild test robot. 
+1.1 Change ghes_gdata_pool_init() as static function.
+1.2. Removed using buffer to store the error data for
+     logging in the hisi_pcie_handle_error()
+
+V8:
+1. Removed reporting the standard errors through the interface
+   because of the conflict with the recent patches in the
+   memory error handling path.
+2. Fix comments by Dan Carpenter.
+   
+V7:
+1. Add changes in the APEI driver suggested by Borislav Petkov, for
+   queuing up all the non-fatal HW errors to the work queue and
+   notify the registered kernel drivers from the bottom half using
+   blocking notifier, common interface for both standard and
+   vendor-spcific errors.
+2. Fix for further feedbacks in v5 HIP PCIe error handler driver
+   by Bjorn Helgaas.
+
+V6:
+1. Fix few changes in the patch subject line suggested by Bjorn Helgaas.
+
+V5:
+1. Fix comments from James Morse.
+1.1 Changed the notification method to use the atomic_notifier_chain.
+1.2 Add the error handled status for the user space.  
+
+V4:
+1. Fix for the following smatch warning in the PCIe error driver,
+   reported by kbuild test robot<lkp@intel.com>:
+   warn: should '((((1))) << (9 + i))' be a 64 bit type?
+   if (err->val_bits & BIT(HISI_PCIE_LOCAL_VALID_ERR_MISC + i))
+	^^^ This should be BIT_ULL() because it goes up to 9 + 32.
+
+V3:
+1. Fix the comments from Bjorn Helgaas.
+
+V2:
+1. Changes in the HiSilicon PCIe controller's error handling driver
+   for the comments from Bjorn Helgaas.
+   
+2. Changes in the APEI interface to support reporting the vendor error
+   for module with multiple devices, but use the same section type.
+   In the error handler will use socket id/sub module id etc to distinguish
+   the device.
+
+V1:  
+1. Fix comments from James Morse.
+
+2. add driver to handle HiSilicon hip08 PCIe controller's errors,
+   which is an application of the above interface.
+
+Shiju Jose (1):
+  ACPI / APEI: Add a notifier chain for unknown (vendor) CPER records
+
+Yicong Yang (1):
+  PCI: hip: Add handling of HiSilicon HIP PCIe controller errors
+
+ drivers/acpi/apei/ghes.c                 |  63 +++++
+ drivers/pci/controller/Kconfig           |   8 +
+ drivers/pci/controller/Makefile          |   1 +
+ drivers/pci/controller/pcie-hisi-error.c | 327 +++++++++++++++++++++++
+ include/acpi/ghes.h                      |  27 ++
+ 5 files changed, 426 insertions(+)
+ create mode 100644 drivers/pci/controller/pcie-hisi-error.c
+
 -- 
-2.25.1
+2.17.1
+
 
