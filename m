@@ -2,116 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B8C203572
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 13:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE1B20356B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 13:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728399AbgFVLPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 07:15:37 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:14058 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728215AbgFVLPJ (ORCPT
+        id S1728030AbgFVLOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 07:14:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727976AbgFVLOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 07:15:09 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05MB4TS7006545;
-        Mon, 22 Jun 2020 04:15:03 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0818;
- bh=TmPgcOEbZZLryZkT7gjyoSSvEgnovXaI76YL4tTdk08=;
- b=sFJoh8FZ5eG6EQPiXJOSlcXShYf+HP5+ft0o+m2U+w0HmvKr0f7UMv3KvD7duYQT+ssN
- FRUsF3cTAFQBQnC6aWqFuluqPseqsTo4k5hMLwhZgg6fzyQfaYyuenvq81dX5yxNJgAJ
- nl2/nqyF4bOjVCdYRFgwUSNV6GaxRyJR6Jpx/XMwQ61wiOtow/GTEamyO+bWk3zB0Y6F
- kETLYCGAgBN2kZ3TV3jkRYYnucJk/A5G/AlBW+aI0vnPS9FizxvBwNfbdzuNW6FzOr7L
- gQlzsxJWfOMZOrsTvJv92VvvpTzNok7P+eZYKNovVzdvsIw8DnE0LldJSEyHstQepAGa sQ== 
-Received: from sc-exch04.marvell.com ([199.233.58.184])
-        by mx0a-0016f401.pphosted.com with ESMTP id 31sftpg5y2-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 22 Jun 2020 04:15:03 -0700
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH04.marvell.com
- (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 22 Jun
- 2020 04:15:02 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 22 Jun 2020 04:15:02 -0700
-Received: from NN-LT0049.marvell.com (unknown [10.193.39.36])
-        by maili.marvell.com (Postfix) with ESMTP id 4A8BA3F703F;
-        Mon, 22 Jun 2020 04:14:58 -0700 (PDT)
-From:   Alexander Lobakin <alobakin@marvell.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Igor Russkikh <irusskikh@marvell.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        Yuval Mintz <yuval.mintz@marvell.com>,
-        Denis Bolotin <denis.bolotin@marvell.com>,
-        "Ram Amrani" <ram.amrani@marvell.com>,
-        Tomer Tayar <tomer.tayar@marvell.com>,
-        Alexander Lobakin <alobakin@marvell.com>,
-        <GR-everest-linux-l2@marvell.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH net 9/9] net: qed: fix "maybe uninitialized" warning
-Date:   Mon, 22 Jun 2020 14:14:13 +0300
-Message-ID: <20200622111413.7006-10-alobakin@marvell.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20200622111413.7006-1-alobakin@marvell.com>
-References: <20200622111413.7006-1-alobakin@marvell.com>
+        Mon, 22 Jun 2020 07:14:17 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1419C061796
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 04:14:16 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id q2so13807644wrv.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 04:14:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=F2NPYrA8TUG18okYjngm1OvmY6lDQ7IMqBV+pKwmot4=;
+        b=nLtn236Bgp7j+T7xS0LPk9VLrZZImPxcZ6gFAZYJ3N1bHZSz1E5GQ4TEJT8G20RfCQ
+         MS4aVbAniQ+9H72EomJ5hdm2NP4KrYJKH0RIZfN3WJMyfvqWUeznrda2MmXxlwj7btvI
+         C8TBX5Ddskw+7yUhdwcaS7aDKYZxdhd+nUWhHt44lbCZlS2heyumAnbmfPD232tnhHa+
+         RsdXX/TNDJFnk6DDrLmGI4McnKCRGp4PsEp3qy/unez3LfPOYhk0IyDouqfImTsg9Ci8
+         puG3o8kGeuNaKf+NWdxVHjlu67/C8+8ZYasu8p3pIUoCipTdnEW+x3TVQssBDEuFKTHy
+         OfWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=F2NPYrA8TUG18okYjngm1OvmY6lDQ7IMqBV+pKwmot4=;
+        b=jsJMvH4Fg8/aAs+WvZRVm+8cfYaQk2J1Vah5byq+oMCeZzXfUEdqqeuet1Vw6Kuso4
+         46j/B34be0vlpsYHJGUYpIDLxdYcAweepBWV1PvYH49Hh0VZhhvIjDa4qdYIgQQQkloA
+         9VdjyJ0rIPg1hzGj5GtmigFZk2lmVjdTszqjfHbCgsbMRORZlRbwJyXrNUoYBT+ZsBNw
+         y6FeusIAwG1ujckRRnuT7ehthcffosIBpLjev8q6swQUIGI7uM9OiewFAy6vev3N2/PO
+         i1uZZIUtbH4zSW+ZaBAFvsTKTSqB2Zoy3NSMq9lzY3lnTk5FM9uW1CukKDhSIK6/zt4X
+         eDFg==
+X-Gm-Message-State: AOAM533D4dOqUUDtY9wBMnxpcxNem108dmo5HbDhPQA+AMNdJaPx+C56
+        aGZ8QhghUdeeSpwtH4C05beYug==
+X-Google-Smtp-Source: ABdhPJynq2QWsup2B5/k+Cvj+7u07Ik3g+ZkD7wIB2mFdHcEV2OSczDPFFH6HCrWh10XnRML412UBw==
+X-Received: by 2002:adf:ef89:: with SMTP id d9mr4101818wro.124.1592824455563;
+        Mon, 22 Jun 2020 04:14:15 -0700 (PDT)
+Received: from dell ([2.27.35.144])
+        by smtp.gmail.com with ESMTPSA id q1sm2904444wro.82.2020.06.22.04.14.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 04:14:15 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 12:14:13 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Johnson CH Chen =?utf-8?B?KOmZs+aYreWLsyk=?= 
+        <JohnsonCH.Chen@moxa.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        "linux@roeck-us.net" <linux@roeck-us.net>
+Subject: Re: [PATCH 1/3] mfd: ds1374: Introduce Dallas/Maxim DS1374 MFD core
+ driver
+Message-ID: <20200622111413.GV954398@dell>
+References: <HK2PR01MB328111AB2520315A7D4A1172FA970@HK2PR01MB3281.apcprd01.prod.exchangelabs.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-22_04:2020-06-22,2020-06-22 signatures=0
+In-Reply-To: <HK2PR01MB328111AB2520315A7D4A1172FA970@HK2PR01MB3281.apcprd01.prod.exchangelabs.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable 'abs_ppfid' in qed_dev.c:qed_llh_add_mac_filter() always gets
-printed, but is initialized only under 'ref_cnt == 1' condition. This
-results in:
+On Mon, 22 Jun 2020, Johnson CH Chen (陳昭勳) wrote:
 
-In file included from ./include/linux/kernel.h:15:0,
-                 from ./include/asm-generic/bug.h:19,
-                 from ./arch/x86/include/asm/bug.h:86,
-                 from ./include/linux/bug.h:5,
-                 from ./include/linux/io.h:11,
-                 from drivers/net/ethernet/qlogic/qed/qed_dev.c:35:
-drivers/net/ethernet/qlogic/qed/qed_dev.c: In function 'qed_llh_add_mac_filter':
-./include/linux/printk.h:358:2: warning: 'abs_ppfid' may be used uninitialized
-in this function [-Wmaybe-uninitialized]
-  printk(KERN_NOTICE pr_fmt(fmt), ##__VA_ARGS__)
-  ^~~~~~
-drivers/net/ethernet/qlogic/qed/qed_dev.c:983:17: note: 'abs_ppfid' was declared
-here
-  u8 filter_idx, abs_ppfid;
-                 ^~~~~~~~~
+> Dallas/Maxim DS1374 is a counter designed to continuously count
+> time in seconds. It provides an I2C interface to the host to
+> access RTC clock or Alarm/Watchdog timer.
+> 
+> Add MFD Core driver, supporting the I2C communication to RTC and
+> Watchdog devices.
+> 
+> Signed-off-by: Johnson Chen <johnsonch.chen@moxa.com>
+> ---
+>  drivers/mfd/Kconfig  |  11 +++++
+>  drivers/mfd/Makefile |   2 +
+>  drivers/mfd/ds1374.c | 101 +++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 114 insertions(+)
+>  create mode 100644 drivers/mfd/ds1374.c
 
-...under W=1+.
+Not sure I see the point of this driver.
 
-Fix this by initializing it with zero.
+How/where is the device part registered?
 
-Fixes: 79284adeb99e ("qed: Add llh ppfid interface and 100g support for
-offload protocols")
-Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
-Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
----
- drivers/net/ethernet/qlogic/qed/qed_dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Is it DT only?  If not, what else?
 
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_dev.c b/drivers/net/ethernet/qlogic/qed/qed_dev.c
-index b41ada668948..3aa51374e727 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_dev.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_dev.c
-@@ -980,7 +980,7 @@ int qed_llh_add_mac_filter(struct qed_dev *cdev,
- 	struct qed_hwfn *p_hwfn = QED_LEADING_HWFN(cdev);
- 	struct qed_ptt *p_ptt = qed_ptt_acquire(p_hwfn);
- 	union qed_llh_filter filter = {};
--	u8 filter_idx, abs_ppfid;
-+	u8 filter_idx, abs_ppfid = 0;
- 	u32 high, low, ref_cnt;
- 	int rc = 0;
- 
+Also where are the bindings?
+
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index 687e9c848053w.d16031f4b487 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -1980,6 +1980,17 @@ config MFD_STM32_LPTIMER
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called stm32-lptimer.
+>  
+> +config MFD_DS1374
+> +	tristate "Support for Dallas/Maxim DS1374"
+> +	depends on I2C
+> +	select MFD_CORE
+> +	help
+> +	  Say yes here to add support for Dallas/Maxim DS1374 Semiconductor.
+> +	  This driver provides RTC and watchdog.
+> +
+> +	  This driver can also be built as a module. If so, module will be
+> +	  called ds1374.
+> +
+>  config MFD_STM32_TIMERS
+>  	tristate "Support for STM32 Timers"
+>  	depends on (ARCH_STM32 && OF) || COMPILE_TEST
+
 -- 
-2.21.0
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
