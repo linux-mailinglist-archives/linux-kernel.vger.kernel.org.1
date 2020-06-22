@@ -2,98 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20A4A203FF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30A64203FFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728227AbgFVTSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 15:18:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60444 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726308AbgFVTSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 15:18:18 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08E862075A;
-        Mon, 22 Jun 2020 19:18:16 +0000 (UTC)
-Date:   Mon, 22 Jun 2020 15:18:15 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Tom Zanussi <zanussi@kernel.org>, Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Julia Lawall <julia.lawall@inria.fr>
-Subject: [PATCH] ring-buffer: Zero out time extend if it is nested and not
- absolute
-Message-ID: <20200622151815.345d1bf5@oasis.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1728344AbgFVTTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 15:19:08 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:44794 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728068AbgFVTTF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 15:19:05 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05MJJ3q7030177;
+        Mon, 22 Jun 2020 14:19:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1592853544;
+        bh=4Uc57vnU9L76B5vi4WPRq81bboaPP34jgfbbQ+MxC3w=;
+        h=From:To:CC:Subject:Date;
+        b=jEazJJydbIUPSsGXDFDfIJRK3UoMRkk35oUQzNujT5acEcNsX6TNMArSA2lwMiTTO
+         zpoVhDSlBLq86GI7EcCT1izoFhaCfHGB5E66dO+gj7xbGZA0vVrRWQmszrz2I2I3bR
+         xSrLxuL1OpCLcmN6ellUgr2D/FLFyE74+E+uyaDo=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05MJJ3kN042288
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 22 Jun 2020 14:19:03 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 22
+ Jun 2020 14:19:03 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 22 Jun 2020 14:19:03 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05MJJ3xi125356;
+        Mon, 22 Jun 2020 14:19:03 -0500
+From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+To:     <sre@kernel.org>, <pali@kernel.org>, <robh@kernel.org>
+CC:     <afd@ti.com>, <r-rivera-matos@ti.com>, <dmurphy@ti.com>,
+        <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <sspatil@android.com>
+Subject: [PATCH v13 0/4] Add JEITA properties and introduce the bq2515x charger
+Date:   Mon, 22 Jun 2020 14:18:33 -0500
+Message-ID: <20200622191837.9326-1-r-rivera-matos@ti.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+This patchset adds additional health properties to the power_supply header.
+These additional properties are taken from the JEITA specification. This
+patchset also introduces the bq2515x family of charging ICs.
 
-Currently the ring buffer makes events that happen in interrupts that preempt
-another event have a delta of zero. (Hopefully we can change this soon). But
-this is to deal with the races of updating a global counter with lockless
-and nesting functions updating deltas.
+Dan Murphy (2):
+  power_supply: Add additional health properties to the header
+  dt-bindings: power: Convert battery.txt to battery.yaml
 
-With the addition of absolute time stamps, the time extend didn't follow
-this rule. A time extend can happen if two events happen longer than 2^27
-nanoseconds appart, as the delta time field in each event is only 27 bits.
-If that happens, then a time extend is injected with 2^59 bits of
-nanoseconds to use (18 years). But if the 2^27 nanoseconds happen between
-two events, and as it is writing the event, an interrupt triggers, it will
-see the 2^27 difference as well and inject a time extend of its own. But a
-recent change made the time extend logic not take into account the nesting,
-and this can cause two time extend deltas to happen moving the time stamp
-much further ahead than the current time. This gets all reset when the ring
-buffer moves to the next page, but that can cause time to appear to go
-backwards.
+Ricardo Rivera-Matos (2):
+  dt-bindings: power: Add the bindings for the bq2515x family of
+    chargers.
+  power: supply: bq25150 introduce the bq25150
 
-This was observed in a trace-cmd recording, and since the data is saved in a
-file, with trace-cmd report --debug, it was possible to see that this indeed
-did happen!
+ Documentation/ABI/testing/sysfs-class-power   |    3 +-
+ .../bindings/power/supply/battery.txt         |   83 +-
+ .../bindings/power/supply/battery.yaml        |  139 ++
+ .../bindings/power/supply/bq2515x.yaml        |   93 ++
+ drivers/power/supply/Kconfig                  |   13 +
+ drivers/power/supply/Makefile                 |    1 +
+ drivers/power/supply/bq2515x_charger.c        | 1158 +++++++++++++++++
+ drivers/power/supply/power_supply_sysfs.c     |    3 +
+ include/linux/power_supply.h                  |    3 +
+ 9 files changed, 1414 insertions(+), 82 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/power/supply/battery.yaml
+ create mode 100644 Documentation/devicetree/bindings/power/supply/bq2515x.yaml
+ create mode 100644 drivers/power/supply/bq2515x_charger.c
 
-  bash-52501   110d... 81778.908247: sched_switch:         bash:52501 [120] S ==> swapper/110:0 [120] [12770284:0x2e8:64]
-  <idle>-0     110d... 81778.908757: sched_switch:         swapper/110:0 [120] R ==> bash:52501 [120] [509947:0x32c:64]
- TIME EXTEND: delta:306454770 length:0
-  bash-52501   110.... 81779.215212: sched_swap_numa:      src_pid=52501 src_tgid=52388 src_ngid=52501 src_cpu=110 src_nid=2 dst_pid=52509 dst_tgid=52388 dst_ngid=52501 dst_cpu=49 dst_nid=1 [0:0x378:48]
- TIME EXTEND: delta:306458165 length:0
-  bash-52501   110dNh. 81779.521670: sched_wakeup:         migration/110:565 [0] success=1 CPU:110 [0:0x3b4:40]
-
-and at the next page, caused the time to go backwards:
-
-  bash-52504   110d... 81779.685411: sched_switch:         bash:52504 [120] S ==> swapper/110:0 [120] [8347057:0xfb4:64]
-CPU:110 [SUBBUFFER START] [81779379165886:0x1320000]
-  <idle>-0     110dN.. 81779.379166: sched_wakeup:         bash:52504 [120] success=1 CPU:110 [0:0x10:40]
-  <idle>-0     110d... 81779.379167: sched_switch:         swapper/110:0 [120] R ==> bash:52504 [120] [1168:0x3c:64]
-
-Cc: Tom Zanussi <zanussi@kernel.org>
-Cc: stable@vger.kernel.org
-Fixes: dc4e2801d400b ("ring-buffer: Redefine the unimplemented RINGBUF_TYPE_TIME_STAMP")
-Reported-by: Julia Lawall <julia.lawall@inria.fr>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/ring_buffer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index b8e1ca48be50..00867ff82412 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -2427,7 +2427,7 @@ rb_update_event(struct ring_buffer_per_cpu *cpu_buffer,
- 	if (unlikely(info->add_timestamp)) {
- 		bool abs = ring_buffer_time_stamp_abs(cpu_buffer->buffer);
- 
--		event = rb_add_time_stamp(event, info->delta, abs);
-+		event = rb_add_time_stamp(event, abs ? info->delta : delta, abs);
- 		length -= RB_LEN_TIME_EXTEND;
- 		delta = 0;
- 	}
 -- 
-2.25.4
+2.27.0
 
