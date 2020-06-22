@@ -2,119 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01D7204468
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25609204477
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730324AbgFVX0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 19:26:52 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16982 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727061AbgFVX0v (ORCPT
+        id S1730296AbgFVXaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 19:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728131AbgFVXaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 19:26:51 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ef13e0e0000>; Mon, 22 Jun 2020 16:26:06 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 22 Jun 2020 16:26:51 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 22 Jun 2020 16:26:51 -0700
-Received: from rcampbell-dev.nvidia.com (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 22 Jun
- 2020 23:26:41 +0000
-Subject: Re: [PATCH 09/16] mm/hmm: add output flag for compound page mapping
-To:     Jason Gunthorpe <jgg@mellanox.com>
-CC:     <nouveau@lists.freedesktop.org>, <linux-rdma@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jerome Glisse <jglisse@redhat.com>,
-        "John Hubbard" <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>
-References: <20200619215649.32297-1-rcampbell@nvidia.com>
- <20200619215649.32297-10-rcampbell@nvidia.com>
- <20200622172520.GB2874652@mellanox.com>
- <15ba19a9-5f71-546b-bdea-31e65fc39693@nvidia.com>
- <20200622231835.GD2874652@mellanox.com>
-X-Nvconfidentiality: public
-From:   Ralph Campbell <rcampbell@nvidia.com>
-Message-ID: <f5ae2cdd-5774-8d1e-5a30-657b611568b8@nvidia.com>
-Date:   Mon, 22 Jun 2020 16:26:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Mon, 22 Jun 2020 19:30:21 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 021CAC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 16:30:21 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id e18so8981653pgn.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 16:30:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=UWqQV2fZB9OmDJeh5A7wKzCKjHubm13ivYyuz+dxo9g=;
+        b=bUbfuxxz8CX/dO63xH28vPKUiPOsVTJi9AgkinEsU/PHv9FcsY3GO+vCXKz6K7ZbcH
+         K17+Z5IlfGvcQ7NoKcWU37Zv59d5kOdufCLXPoi2hdIPl8dViI5OgYVS5wGxiWhCEutS
+         yEuRbcSn+crkX1SvyLPKtSWr1vMP8MCwwci0Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=UWqQV2fZB9OmDJeh5A7wKzCKjHubm13ivYyuz+dxo9g=;
+        b=ecg4HWfuY6ZNeSkjYaFFQHSNsmv+IVS4Yn/hwpfbzdNtIWDKW2aHyNDmm/g/mySssN
+         7wOVKw3Lw6gku32rEwUlf2FtGT5i3TBUfMadM8UmAUoAlc95CtTtlUfSLCzD09tPN9vW
+         VlpBrC+3TcMS1zhjU4xiHS4+dno3I8yulo38OB6bv+577OdqKSktiSwYI0mPoyIYf6fL
+         gu6s61qGbt5NEVDalrooygRW1MNege3pVhS6bv1A5bNmquCREfTrRWCwjfgmYsFPLUkq
+         zUnXIiJvyTBJ9Rm5SvcTdJ9zwIdYcrguYq8wPB1lvxdjUXOYyU9HZ6Hsu76o5F3vVayC
+         TloA==
+X-Gm-Message-State: AOAM531BiZx5I6cfXFtsKjF8WB9b+5HoSKG1wv5xMr2LJADlWK150eM1
+        jIltee90V7I1cUbuSDsoi1VQYg==
+X-Google-Smtp-Source: ABdhPJyz2KvnmiiXZnfO//qQzAjGi3z8nzDMFB/UOoUeMpTq5NGsoYoqJSyavjLf8Sf2USB8VlglUg==
+X-Received: by 2002:a05:6a00:801:: with SMTP id m1mr22967569pfk.200.1592868620568;
+        Mon, 22 Jun 2020 16:30:20 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b5sm14968992pfg.191.2020.06.22.16.30.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 16:30:19 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 16:30:18 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     =?utf-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Cc:     Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, X86 ML <x86@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-arch@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/3] vmlinux.lds.h: Add .gnu.version* to DISCARDS
+Message-ID: <202006221629.5C8CF8AE2@keescook>
+References: <20200622205341.2987797-1-keescook@chromium.org>
+ <20200622205341.2987797-2-keescook@chromium.org>
+ <20200622220043.6j3vl6v7udmk2ppp@google.com>
+ <202006221524.CEB86E036B@keescook>
+ <20200622225237.ybol4qmz4mhkmlqc@google.com>
+ <202006221555.45BB6412F@keescook>
+ <CAFP8O3KdGc9TtziFX7UzmxA-=wfPzm5oi6NCEwRiyyrp+JD3Xg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200622231835.GD2874652@mellanox.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1592868366; bh=+OkYuEGtBWmCdamoI5RkV/30Ug8LA8Bd48QQ050WpCg=;
-        h=X-PGP-Universal:Subject:To:CC:References:X-Nvconfidentiality:From:
-         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
-         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=Z0yrcSnqqy39UtthHbXgST4onrT+geCMj9CZGPtxxEjYRjvnZ/kvuaig9BtbS5ewN
-         4PIcptsE5rT/Cya1Dawz6nY7KqIoA4ZCnrFgV8aylqKRcIyulrCQdQucOix/auD69Y
-         o+5+eqPgRY6cWpvS5AVPdQy8HhlNirNtE6d1O6Ay43A0Ufmn/YhE81mHzy6s8SVxj6
-         l2dqTvOK7OV8EoRMMdgr944mPz2zbtHk7IGwF+944sFLpQW5BPEzArNOBM6eKvlkia
-         GV7w1FT1kKnHhScFUsDCR2TRDrVQdKPPziglWU4Q7P8t1qWhtZohHk+jb9zgeiNkMI
-         oeV7F+nI1CdpQ==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFP8O3KdGc9TtziFX7UzmxA-=wfPzm5oi6NCEwRiyyrp+JD3Xg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 6/22/20 4:18 PM, Jason Gunthorpe wrote:
-> On Mon, Jun 22, 2020 at 11:10:05AM -0700, Ralph Campbell wrote:
->>
->> On 6/22/20 10:25 AM, Jason Gunthorpe wrote:
->>> On Fri, Jun 19, 2020 at 02:56:42PM -0700, Ralph Campbell wrote:
->>>> hmm_range_fault() returns an array of page frame numbers and flags for
->>>> how the pages are mapped in the requested process' page tables. The PFN
->>>> can be used to get the struct page with hmm_pfn_to_page() and the page size
->>>> order can be determined with compound_order(page) but if the page is larger
->>>> than order 0 (PAGE_SIZE), there is no indication that the page is mapped
->>>> using a larger page size. To be fully general, hmm_range_fault() would need
->>>> to return the mapping size to handle cases like a 1GB compound page being
->>>> mapped with 2MB PMD entries. However, the most common case is the mapping
->>>> size is the same as the underlying compound page size.
->>>> Add a new output flag to indicate this so that callers know it is safe to
->>>> use a large device page table mapping if one is available.
->>>
->>> But what size should the caller use?
->>>
->>> You already explained that the caller cannot use compound_ordet() to
->>> get the size, so what should it be?
->>>
->>> Probably this needs to be two flags, PUD and PMD, and the caller should
->>> use the PUD and PMD sizes to figure out how big it is?
->>>
->>> Jason
->>>
->>
->> I guess I didn't explain it as clearly as I thought. :-)
->>
->> The page size *can* be determined with compound_order(page) but without the
->> flag, the caller doesn't know how much of that page is being mapped by the
->> CPU. The flag says the CPU is mapping the whole compound page (based on compound_order)
->> and that the caller can use device mappings up to the size of compound_order(page).
+On Mon, Jun 22, 2020 at 04:04:40PM -0700, Fāng-ruì Sòng wrote:
+> On Mon, Jun 22, 2020 at 3:57 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Mon, Jun 22, 2020 at 03:52:37PM -0700, Fangrui Song wrote:
+> > > > And it's not in the output:
+> > > >
+> > > > $ readelf -Vs arch/x86/boot/compressed/vmlinux | grep version
+> > > > No version information found in this file.
+> > > >
+> > > > So... for the kernel we need to silence it right now.
+> > >
+> > > Re-link with -M (or -Map file) to check where .gnu.version{,_d,_r} input
+> > > sections come from?
+> >
+> > It's not reporting it correctly:
+> >
+> > .gnu.version_d  0x00000000008966b0        0x0
+> >  .gnu.version_d
+> >                 0x00000000008966b0        0x0 arch/x86/boot/compressed/kernel_info.o
+> >
+> > .gnu.version    0x00000000008966b0        0x0
+> >  .gnu.version   0x00000000008966b0        0x0 arch/x86/boot/compressed/kernel_info.o
+> >
+> > .gnu.version_r  0x00000000008966b0        0x0
+> >  .gnu.version_r
+> >                 0x00000000008966b0        0x0 arch/x86/boot/compressed/kernel_info.o
+> >
+> > it just reports whatever file is listed on the link command line first.
+> >
+> > > If it is a bug, we should probably figure out which version of binutils
+> > > has fixed the bug.
+> >
+> > I see this with binutils 2.34...
+> >
+> > --
+> > Kees Cook
 > 
-> No, I got it, I just don't like the assumption that just because a PMD
-> or PUD points to a page that the only possible value for
-> compound_page() is PMD or PUD respectively. Partial mapping should be
-> possible in both cases, if not today, then maybe down the road with
-> some of the large page work that has been floating about
-> 
-> It seems much safer to just directly encode the PUD/PMD size in the
-> flags
-> 
-> Jason
+> :( It deserves a binutils bug
+> (https://sourceware.org/bugzilla/enter_bug.cgi?product=binutils ) and
+> a comment..
 
-That is fine with me. I'll make that change for v2.
-I was just trying to minimize the number of flags being added.
+https://sourceware.org/bugzilla/show_bug.cgi?id=26153
 
+> With the description adjusted to say that this works around a bug
+> 
+> Reviewed-by: Fangrui Song <maskray@google.com>
+
+Adjusted, and thanks!
+
+-- 
+Kees Cook
