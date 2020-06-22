@@ -2,89 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D89220432A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:00:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC3EE204333
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730892AbgFVWAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 18:00:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730731AbgFVWAl (ORCPT
+        id S1730764AbgFVWCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 18:02:00 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:50854 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730634AbgFVWB7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 18:00:41 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2517C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 15:00:40 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id k15so14525652otp.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 15:00:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ssWsAVdFC4LIGEQJ/VJ7yId3i3p45oukKnw+xo78VEk=;
-        b=IxhcvSlpNYuQCTw0Lrdo+5HWUpG9/oG2cIvSJU0AysEb6Q3+C20QYbWhQXjpDm0NCG
-         HeaMsWI9CrY+bNkFIdUMzjpo+EWdLOU+nr8+nbnw+UhwvLwYjBPL5eSHzdKl4u+Bq3Wv
-         /G81w2Dj1ahzwZoNeOTnviQP/sjuRpbD1NxhB1VDIfn16Xrj7CGbl/hAj/ef6g9SB9i0
-         pRBkBtd9UBh3MPHPS8Y5qHYgmYNiETTTxYWq5lfx3AfLDp9ThVGPBywsw3QFRd7mMDVY
-         GqPgQHuyHGcA4wrw/LzCJX5S4Ay0Hmvzbu06ZvUHfOvkZskWpB+6h9oz8gvf8r+zJ82j
-         oCLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ssWsAVdFC4LIGEQJ/VJ7yId3i3p45oukKnw+xo78VEk=;
-        b=nuHwBoo9lH//cSxoq+atJ27muFUWcjZX3K+7gTfhmLEnX6rwKa8y4oIhK+j6zIOkGq
-         b6SZCorLZ5OWi4h681VDVp0VcdbtWIApjGxLtjtr+LDJSqQjFe2WjXmenkxdXWMDzcYn
-         Vu2Ol9pGxg3kwNnKBtfOWbhqg8Tzs533f1w6MBbYktWfOlFnuoZeH3sKaARZcqXzdqHP
-         ykU05Ry9S1/TrXYCBdaKQBnmwC6PXg3FsaAx5YWqCqW5YAnYdM6Rbtu/UFezQpJE3Nbi
-         EBEEpGM5L0an7SMYwOs2IEUb7N9kvwYrM6KaVlQQLy8G6EcI3m2eU+BWOhHNmhIuzKRr
-         yG+g==
-X-Gm-Message-State: AOAM533XL9w9c7fHlKKwXx57Ade6I/pub7ExZ3Z5fCP5DczfON81DytV
-        cpA5pSP83kSd0rWwTsKxjQvKSs4HqNM=
-X-Google-Smtp-Source: ABdhPJyYxWll1PhMA3qiAlsU+2CmqUgM/1ltQs5y0nw479HtQmeyac4j2CB/TDEIlkRuphVxnksC/Q==
-X-Received: by 2002:a4a:e74a:: with SMTP id n10mr15925806oov.71.1592863238529;
-        Mon, 22 Jun 2020 15:00:38 -0700 (PDT)
-Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id v2sm3594714otb.70.2020.06.22.15.00.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 15:00:37 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH] arm64: defconfig: Enable Qualcomm SM8250 pinctrl driver
-Date:   Mon, 22 Jun 2020 15:00:48 -0700
-Message-Id: <20200622220048.717073-1-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.26.2
+        Mon, 22 Jun 2020 18:01:59 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05MLwLRH160428;
+        Mon, 22 Jun 2020 22:01:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=CCgJV8PTfFcnadZ8v1sJiXpodQW9KDHDNAir5Ypvneo=;
+ b=u4njCZCcNPDBdH6MGDrdycuDwRayYxhbSKKeu+HlKTiyFRFU/9snwR7UJGj16mm3r3R7
+ JlBr+ZcfFzLJYZEuhsAB+9MG3Dd8rvR3WgoCDYMcEzliEcmC2ZufifnlRMG+DZs/jbdM
+ 6EMJK1IsUdvQKMCqqdy/DQSmsbyFbVwQ/p3GTsGK+hbOUsDk1vSG7Rgt6ZSYvx4KJTt1
+ 0kX/iTvRfE5z4jRKC0cQNvIWBFoYRNE+T3gsXHIZLP+DnWSys2TWZJSm/jpM3e8d1tVl
+ PnLwLWdGIDDv0zroPrYjDYpVMlm5nAnt2cIOJf6kWlz75HcqpePxOB88GRPTgfUR3vN5 Wg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 31sebbhvhu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 22 Jun 2020 22:01:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05MLrbO8020941;
+        Mon, 22 Jun 2020 22:01:44 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 31sv1mds0g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Jun 2020 22:01:44 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05MM1ehe032343;
+        Mon, 22 Jun 2020 22:01:40 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 22 Jun 2020 22:01:40 +0000
+Subject: Re: [hugetlbfs] c0d0381ade: vm-scalability.throughput -33.4%
+ regression
+To:     kernel test robot <rong.a.chen@intel.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Kirill A.Shutemov" <kirill.shutemov@linux.intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Prakash Sangappa <prakash.sangappa@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org
+References: <20200622005551.GK5535@shao2-debian>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <e140ec78-1fbd-73e2-7a11-7db3b714874d@oracle.com>
+Date:   Mon, 22 Jun 2020 15:01:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200622005551.GK5535@shao2-debian>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9660 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
+ adultscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006220141
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9660 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 lowpriorityscore=0
+ mlxlogscore=999 cotscore=-2147483648 mlxscore=0 phishscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 suspectscore=0 clxscore=1011
+ impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006220141
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The SM8250 pinctrl driver provides pin configuration, pin muxing and
-GPIO pin control for many pins on the SM8250 SoC.
+On 6/21/20 5:55 PM, kernel test robot wrote:
+> Greeting,
+> 
+> FYI, we noticed a -33.4% regression of vm-scalability.throughput due to commit:
+> 
+> 
+> commit: c0d0381ade79885c04a04c303284b040616b116e ("hugetlbfs: use i_mmap_rwsem for more pmd sharing synchronization")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> in testcase: vm-scalability
+> on test machine: 288 threads Intel(R) Xeon Phi(TM) CPU 7295 @ 1.50GHz with 80G memory
+> with following parameters:
+> 
+> 	runtime: 300s
+> 	size: 8T
+> 	test: anon-cow-seq-hugetlb
+> 	cpufreq_governor: performance
+> 	ucode: 0x11
+> 
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+Some performance regression is not surprising as the change includes acquiring
+and holding the i_mmap_rwsem (in read mode) during hugetlb page faults.  33.4%
+seems a bit high.  But, the test is primarily exercising the hugetlb page
+fault path and little else.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index b3d13e1a052a..bbbaaab5a4fa 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -469,6 +469,7 @@ CONFIG_PINCTRL_QCOM_SPMI_PMIC=y
- CONFIG_PINCTRL_SC7180=y
- CONFIG_PINCTRL_SDM845=y
- CONFIG_PINCTRL_SM8150=y
-+CONFIG_PINCTRL_SM8250=y
- CONFIG_GPIO_ALTERA=m
- CONFIG_GPIO_DWAPB=y
- CONFIG_GPIO_MB86S7X=y
+The reason for taking the i_mmap_rwsem is to prevent PMD unsharing from
+invalidating the pmd we are operating on.  This specific test case is operating
+on anonymous private mappings.  So, PMD sharing is not possible and we can
+eliminate acquiring the mutex in this case.  In fact, we should check all
+mappings (even sharable) for the possibly of PMD sharing and only take the
+mutex if necessary.  It will make the code a bit uglier, but will take care
+of some of these regressions.  We still need to take the mutex in the case
+of PMD sharing.  I'm afraid a regression is unavoidable in that case.
+
+I'll put together a patch.
 -- 
-2.26.2
-
+Mike Kravetz
