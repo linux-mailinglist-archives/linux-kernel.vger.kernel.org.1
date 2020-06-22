@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4F920423F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:56:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 576C2204245
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730174AbgFVU4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 16:56:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
+        id S1730309AbgFVU6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 16:58:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728582AbgFVU4g (ORCPT
+        with ESMTP id S1728880AbgFVU6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 16:56:36 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5418AC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:56:36 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id p82so6167249oif.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:56:36 -0700 (PDT)
+        Mon, 22 Jun 2020 16:58:19 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E488C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:58:19 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id z5so319559pgb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:58:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=asdOK2gESNr1qZfP5MeEvOEgqM/mfT3t6hygXJxiRd4=;
-        b=h5C3M3Bs03OcWQUVTbeK2VdjGU6tL3xvQsKhXZcMREkwWw4FLlHe94Ca3OEpEh1fHu
-         p4yteh7l/XjXKwpae5Ueu/frnb4dK5s9+iGWK06JpqwTkrmK1XjEiHw8qRsdxDSaxfBT
-         ZnK7dukBV88rnfpDyE4/AxMCq3fHdRE42BcIZZYxzzxqgkA37ddKs05bmqSlLJeDUWn9
-         7m3kOQOhgSdx0OmUuUUOSbhcj+cFu63laiu+YH2DS1GlN8kfVmmumzNwdd4Cgru+1tt5
-         HzENQHcyNFu6IiQLlaogh+Ojw3PG+YRYMX1GZdndmtFrtoVjvWOj0iFUF5exZ17kXFX9
-         1KCQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sr/y4QHqS3xWZ21Wk9dmfyjZQ6LCrqk5iTqq4P6aiwo=;
+        b=WmM8TNdWG84hPEFWUDsKw34SbwMoHJGCkVUzXg3ZdgN8UD/bP+6rBTWVdCr5Wsp15J
+         6AlfmTpIQhIMClVDzD8TwSa8yS2rDMux5VFEp8jrbqJuUaaJ39FhfqqQTFV/X17VWWAr
+         K2XYiZnqvq6p6KDoguyzLJH2rGdaXwGqh+hHw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=asdOK2gESNr1qZfP5MeEvOEgqM/mfT3t6hygXJxiRd4=;
-        b=L6ql1w3QmasINAzvnb8GubmOiVL0U4r43oHGsXUG3IJur03tyW4/yrpsL54/W0rEHe
-         2j8PwWeTXctwszPij2af5ho5pUCjzR5ynIPqBmi2qqf6z8rP/QZ/jdcnPWf/bbejLbGX
-         ydP1otlymRPG4PVflWeNXZSexY+UtWeCp7nlK/nVlf3uSljs87OISM44KOl3n3eNpE+R
-         +hAImHUHZXsVoELxJ+ynmjikr03ffl0/C/uYw2WAJ2coq4yE7+4FS1wgKwspRoIosNyj
-         ft0XQL7pSgrvHMEBa8K5pq2YoyRcvZpmtAM9jiFGfGqSjIFVuXRWSchmHtMz9jaYCek7
-         6Yyw==
-X-Gm-Message-State: AOAM532bpVi768Y+USXvBqDytTGd/NNj/Eivmo038Mrs47qVlEFe0+/Y
-        qjViQZfLUKdMDhnvVHVKLtxXFAbm8e4uMxSyomk=
-X-Google-Smtp-Source: ABdhPJy/ZEHqg5gFqADe7xER7K2662Zj5JuX/8k4X84jiHQk3BkslDvQonEaZuG9z3SK0xary+XixJL+GaynTVRL1i8=
-X-Received: by 2002:aca:75c1:: with SMTP id q184mr13943323oic.49.1592859395718;
- Mon, 22 Jun 2020 13:56:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sr/y4QHqS3xWZ21Wk9dmfyjZQ6LCrqk5iTqq4P6aiwo=;
+        b=XWOsMfFI4ID+rk20clTR+wbLlflszEO1cG1v67mS9LZw96Yl//41AvKMP7V9CxyvlA
+         P7JCiPoiGCBYJAwsH1mucz/JtNGW8b3po6x8nwPcm2tBWJygRjYAa3ooMDaARvh0qYr6
+         FVuFTEoxxNdLENonh2RQsf0tgUtcidXmkvHQv82gA5VbSrDQGydghkCPwvTBPGK/hR5I
+         JkUApipmj5QEIuzEh/j/QNRWhOhDsX99xHLXzmMxkjSnGDwU3eKNVJVFnCD8KlPFKzhK
+         2yG/bmY1LiByrc9T2cOZjI9pxJE9cHrgefrHZWXmHcdAIQNIqWqWsn7EL4Kx7e5vrsdG
+         zFbg==
+X-Gm-Message-State: AOAM532uJLogbZ/fHR002ltJX0VvHyaP6g/73GkJwVBoyBsKeTWLtikt
+        mPaN16l7CsjnTp2EDezD0wKtTg==
+X-Google-Smtp-Source: ABdhPJx/lBXKAYI7OT5DdVExc1fQfkJQ4YxcA7LRSDhA9xjX0BHqXWPN7q+irCe1VtLaI9esWOsLKA==
+X-Received: by 2002:a05:6a00:1342:: with SMTP id k2mr21694841pfu.32.1592859499131;
+        Mon, 22 Jun 2020 13:58:19 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u25sm14560176pfm.115.2020.06.22.13.58.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 13:58:17 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        clang-built-linux@googlegroups.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] arm64: Warn on orphan section placement
+Date:   Mon, 22 Jun 2020 13:58:13 -0700
+Message-Id: <20200622205815.2988115-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200619143056.24538-1-trini@konsulko.com> <CAP6exYJ64Hy9y3Dzh9Asrq8Y0oDWYk+tf4UAcasEc-ZxTY8DAw@mail.gmail.com>
- <20200622204034.GL27801@bill-the-cat>
-In-Reply-To: <20200622204034.GL27801@bill-the-cat>
-From:   ron minnich <rminnich@gmail.com>
-Date:   Mon, 22 Jun 2020 13:56:24 -0700
-Message-ID: <CAP6exYLd0uFbVSbn28iS1OV=jULtg2f+7t1DAn-fvGoRSd5dng@mail.gmail.com>
-Subject: Re: [PATCH] initrd: Remove erroneous comment
-To:     Tom Rini <trini@konsulko.com>
-Cc:     lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        "H . Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So, let me first add,  the comment can be removed as needed. Comments
-offered only for clarification.
+v2:
+- split by architecture, rebase to v5.8-rc2
+v1: https://lore.kernel.org/lkml/20200228002244.15240-1-keescook@chromium.org/
 
-On Mon, Jun 22, 2020 at 1:40 PM Tom Rini <trini@konsulko.com> wrote:
+A recent bug[1] was solved for builds linked with ld.lld, and tracking
+it down took way longer than it needed to (a year). Ultimately, it
+boiled down to differences between ld.bfd and ld.lld's handling of
+orphan sections. Similarly, the recent FGKASLR series brough up orphan
+section handling too[2]. In both cases, it would have been nice if the
+linker was running with --orphan-handling=warn so that surprise sections
+wouldn't silently get mapped into the kernel image at locations up to the
+whim of the linker's orphan handling logic. Instead, all desired sections
+should be explicitly identified in the linker script (to be either kept or
+discarded) with any orphans throwing a warning. The powerpc architecture
+actually already does this, so this series extends coverage to arm64.
 
-> But what do you mean UEFI "consumes" initrd= ?
+This series needs one additional commit that is not yet in
+any tree, but I hope to have it landed via x86 -tip shortly:
+https://lore.kernel.org/lkml/20200622205341.2987797-2-keescook@chromium.org
 
-What I mean is, there are bootloaders that will, if they see initrd=
-in the command line, remove it: the kernel will never see it.
+Thanks!
 
->  I guess looking at
-> Documentation/x86/boot.rst is where treating initrd= as a file that
-> should be handled and ramdisk_image / ramdisk_size set came from.  I do
-> wonder what happens in the case of ARM/ARM64 + UEFI without device tree.
+-Kees
 
-it is possible that the initrd= argument will not be seen by the
-kernel. That's my understanding. Will this be a problem if so? It
-would be for me :-)
+[1] https://github.com/ClangBuiltLinux/linux/issues/282
+[2] https://lore.kernel.org/lkml/202002242122.AA4D1B8@keescook/
 
->  And it doesn't provide any sort of link / context to the
-> boot loader specification project or similar that explains the cases
-> when a non-filename "initrd=" would reasonably (or unreasonably but
-> happens in reality) be removed.
+Kees Cook (2):
+  arm64/build: Use common DISCARDS in linker script
+  arm64/build: Warn on orphan section placement
 
-But it unreasonably happens as I learned the hard way :-)
+ arch/arm64/Makefile             |  4 ++++
+ arch/arm64/kernel/vmlinux.lds.S | 10 ++++++----
+ 2 files changed, 10 insertions(+), 4 deletions(-)
 
-Anyway, thanks Tom, I have no objections to whatever you all feel is
-best to do with that comment. It was a failed attempt on my part to
-explain the state of things :-)
+-- 
+2.25.1
 
-ron
