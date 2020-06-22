@@ -2,99 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4222040AF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:54:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0212040B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:55:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728375AbgFVTxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 15:53:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728050AbgFVTx3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 15:53:29 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 78A452075A;
-        Mon, 22 Jun 2020 19:53:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592855609;
-        bh=Pk37DB5gTmRlkyLSKbdhMhYz8yBgnO8vdFTIo8FufqI=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=102LvjAaeM5gEuJmFB+TgfaS9hA+iL2XSR7pm+FE0WNX58jHaMZXGsyFOE/N6F/oT
-         L7fSEXLmnTsTquoUUnQsbwWy0xG8XPvs434WkXHUPRVjCYKOEzEKKrvOWjPZ0ka4uq
-         yJbRq9dYRqMRY/CecHiuxMgIzKa1N4GOxQh3xDhg=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 5CCF63522FA9; Mon, 22 Jun 2020 12:53:29 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 12:53:29 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     linux-mm@kvack.org, Matthew Wilcox <willy@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
+        id S1728536AbgFVTzW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Jun 2020 15:55:22 -0400
+Received: from szxga08-in.huawei.com ([45.249.212.255]:35006 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728469AbgFVTzV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 15:55:21 -0400
+Received: from dggemi401-hub.china.huawei.com (unknown [172.30.72.54])
+        by Forcepoint Email with ESMTP id 2A294B9ADE7E2F007BED;
+        Tue, 23 Jun 2020 03:55:18 +0800 (CST)
+Received: from DGGEMI525-MBS.china.huawei.com ([169.254.6.126]) by
+ dggemi401-hub.china.huawei.com ([10.3.17.134]) with mapi id 14.03.0487.000;
+ Tue, 23 Jun 2020 03:55:14 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin King <colin.king@canonical.com>
+CC:     Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        RCU <rcu@vger.kernel.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
-Subject: Re: [PATCH v2 09/16] rcu/tree: Maintain separate array for vmalloc
- ptrs
-Message-ID: <20200622195329.GN9247@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200618175719.GT2723@paulmck-ThinkPad-P72>
- <20200618183448.GA15136@pc636>
- <20200618190359.GU2723@paulmck-ThinkPad-P72>
- <20200618203557.GB16976@pc636>
- <20200618203821.GU8681@bombadil.infradead.org>
- <20200618211709.GA17263@pc636>
- <20200618213427.GV2723@paulmck-ThinkPad-P72>
- <20200619154652.GA19990@pc636>
- <20200619162555.GJ2723@paulmck-ThinkPad-P72>
- <20200622190406.GA3787@pc636>
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH][next] mm/zswap: fix a couple of memory leaks and rework
+ kzalloc failure check
+Thread-Topic: [PATCH][next] mm/zswap: fix a couple of memory leaks and
+ rework kzalloc failure check
+Thread-Index: AQHWSKrZL+ewyBWBGU2y0eVQs72K+KjkblmAgACdXuA=
+Date:   Mon, 22 Jun 2020 19:55:14 +0000
+Message-ID: <B926444035E5E2439431908E3842AFD2514C4B@DGGEMI525-MBS.china.huawei.com>
+References: <20200622153546.49880-1-colin.king@canonical.com>
+ <20200622182816.GF4151@kadam>
+In-Reply-To: <20200622182816.GF4151@kadam>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.202.192]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200622190406.GA3787@pc636>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 09:04:06PM +0200, Uladzislau Rezki wrote:
-> > > > 
-> > > > Very good.  When does kfree_rcu() and friends move out of kernel/rcu?
-> > > > 
-> > > Do you mean to move the whole logic of kfree_rcu() from top to down to mm/?
-> > 
-> > I do mean exactly that.
-> > 
-> > That was my goal some years back when Rao Shoaib was making the first
-> > attempt along these lines, and it remains my goal.  After all, if this
-> > effort is at all successful, the coupling between kfree_rcu() with
-> > slab/slob/slub will become much tighter than that between kfree_rcu()
-> > and RCU.
-> > 
-> > There will need to be some additional RCU APIs used by kfree_rcu(),
-> > for example, something to tell RCU how many blocks are awaiting a
-> > grace period.  But these are narrow and easily defined APIs.
-> >
-> I also think that k[v]free_rcu() should reside somewhere under "mm/".
-> Currently they are defined as macros under "linux/rcupdate.h". So i
-> am not sure if definitions should stay there or moved also.
 
-I am not as worried about the high-level macros as I am about the code
-that does the bulk of the work, but they should still move as well.
-Otherwise, changes involving both the macros and the underlying
-implementation are harder than needed.
 
-> Implementation of the k[v]free_rcu() is under rcu/tree.c and for tiny
-> variant is under rcutiny.h. It can be moved to the mm/slab_common.c
-> or independent files can be created. I think, mm people should consult
-> what is the best way to go :)
+> -----Original Message-----
+> From: Dan Carpenter [mailto:dan.carpenter@oracle.com]
+> Sent: Tuesday, June 23, 2020 6:28 AM
+> To: Colin King <colin.king@canonical.com>
+> Cc: Seth Jennings <sjenning@redhat.com>; Dan Streetman
+> <ddstreet@ieee.org>; Vitaly Wool <vitaly.wool@konsulko.com>; Andrew
+> Morton <akpm@linux-foundation.org>; Song Bao Hua (Barry Song)
+> <song.bao.hua@hisilicon.com>; Stephen Rothwell <sfr@canb.auug.org.au>;
+> linux-mm@kvack.org; kernel-janitors@vger.kernel.org;
+> linux-kernel@vger.kernel.org
+> Subject: Re: [PATCH][next] mm/zswap: fix a couple of memory leaks and
+> rework kzalloc failure check
 > 
-> Any thoughts on it?
+> On Mon, Jun 22, 2020 at 04:35:46PM +0100, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> >
+> > kzalloc failures return NULL on out of memory errors, so replace the
+> > IS_ERR_OR_NULL check with the usual null pointer check.  Fix two memory
+> > leaks with on acomp and acomp_ctx by ensuring these objects are free'd
+> > on the error return path.
+> >
+> > Addresses-Coverity: ("Resource leak")
+> > Fixes: d4f86abd6e35 ("mm/zswap: move to use crypto_acomp API for
+> hardware acceleration")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-I don't have any opinion on exactly where in mm the underlying
-implementation code should go.  You suggestion of mm/slab_common.c
-seems fine to me.  ;-)
 
-							Thanx, Paul
+Colin, thanks for your patch. I am sorry I did the same thing with you here:
+https://lkml.org/lkml/2020/6/22/347
+
+
+> > ---
+> >  mm/zswap.c | 16 +++++++++++-----
+> >  1 file changed, 11 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/mm/zswap.c b/mm/zswap.c
+> > index 0d914ba6b4a0..14839cbac7ff 100644
+> > --- a/mm/zswap.c
+> > +++ b/mm/zswap.c
+> > @@ -433,23 +433,23 @@ static int zswap_cpu_comp_prepare(unsigned int
+> cpu, struct hlist_node *node)
+> >  		return 0;
+> >
+> >  	acomp_ctx = kzalloc(sizeof(*acomp_ctx), GFP_KERNEL);
+> > -	if (IS_ERR_OR_NULL(acomp_ctx)) {
+> > +	if (!acomp_ctx) {
+> >  		pr_err("Could not initialize acomp_ctx\n");
+> >  		return -ENOMEM;
+> >  	}
+> >  	acomp = crypto_alloc_acomp(pool->tfm_name, 0, 0);
+> > -	if (IS_ERR_OR_NULL(acomp)) {
+> > +	if (!acomp) {
+> 
+> This should be IS_ERR(acomp).  Please preserve the error code.
+> 
+> >  		pr_err("could not alloc crypto acomp %s : %ld\n",
+> >  				pool->tfm_name, PTR_ERR(acomp));
+> > -		return -ENOMEM;
+> > +		goto free_acomp_ctx;
+> >  	}
+> >  	acomp_ctx->acomp = acomp;
+> >
+> >  	req = acomp_request_alloc(acomp_ctx->acomp);
+> > -	if (IS_ERR_OR_NULL(req)) {
+> > +	if (!req) {
+> >  		pr_err("could not alloc crypto acomp %s : %ld\n",
+> >  		       pool->tfm_name, PTR_ERR(acomp));
+> > -		return -ENOMEM;
+> > +		goto free_acomp;
+> >  	}
+> >  	acomp_ctx->req = req;
+> >
+> > @@ -462,6 +462,12 @@ static int zswap_cpu_comp_prepare(unsigned int
+> cpu, struct hlist_node *node)
+> >  	*per_cpu_ptr(pool->acomp_ctx, cpu) = acomp_ctx;
+> >
+> >  	return 0;
+> > +
+> > +free_acomp:
+> > +	kfree(acomp);
+> 
+> The kfree() isn't correct.  It needs to be:
+> 
+> 	crypto_free_acomp(acomp);
+> 
+> > +free_acomp_ctx:
+> > +	kfree(acomp_ctx);
+> > +	return -ENOMEM;
+> 
+> regards,
+> dan carpenter
+
