@@ -2,39 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96BA32043CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEA792043EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731333AbgFVWnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 18:43:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59740 "EHLO mail.kernel.org"
+        id S1731524AbgFVWoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 18:44:37 -0400
+Received: from mga18.intel.com ([134.134.136.126]:27426 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731275AbgFVWnG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 18:43:06 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22EBA2078E;
-        Mon, 22 Jun 2020 22:43:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592865786;
-        bh=ZG0oMv+HAmfDvF6gKBVrwMs/TY/KDebSAxhQTCOFCJQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ci3EMpbouBoHNIOqrEXL813Y6Uhev2BcUCnKV5JtCD/fquS/TEwbJ+OHF02UUKYU0
-         2dR5Iw6HdvcHvup2srVfNxf5ZKOLwq9wMkpmkubEJ4BTD+AjqTEwZb4lAKSDP3ufmt
-         7zsUjkBWy9r5+gdTaT0ajC7QW3aS7PiQmcxjcDw4=
-From:   Sasha Levin <sashal@kernel.org>
-To:     peterz@infradead.org
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        jolsa@redhat.com, alexey.budankov@linux.intel.com,
-        songliubraving@fb.com, acme@redhat.com, allison@lohutok.net,
-        sashal@kernel.org
-Subject: [PATCH v3 03/14] tools/kernel.h: extend with dummy RCU functions
-Date:   Mon, 22 Jun 2020 18:42:47 -0400
-Message-Id: <20200622224258.1208588-4-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200622224258.1208588-1-sashal@kernel.org>
-References: <20200622224258.1208588-1-sashal@kernel.org>
+        id S1730943AbgFVWm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 18:42:59 -0400
+IronPort-SDR: XLFIK+YfUKeGhx+Tet1yfda2xJKB0G8cYqne/26fINdreBNzTGl7IusJgjbyLjDViBLp3x08EE
+ DKiSaR37P+OQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9660"; a="131303578"
+X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
+   d="scan'208";a="131303578"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 15:42:55 -0700
+IronPort-SDR: FGeySH7zGAHkWHnu3g5/cg1JH6n1nzHSgyhIDbSMWmggd/VhzW1w1yE+Qspo7J9cXaFqxvshkA
+ Qzk6yYhWPXfQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
+   d="scan'208";a="264634940"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
+  by fmsmga008.fm.intel.com with ESMTP; 22 Jun 2020 15:42:55 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 13/15] KVM: VMX: Rename "vmx_set_guest_msr" to "vmx_set_guest_uret_msr"
+Date:   Mon, 22 Jun 2020 15:42:47 -0700
+Message-Id: <20200622224249.29562-14-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.26.0
+In-Reply-To: <20200622224249.29562-1-sean.j.christopherson@intel.com>
+References: <20200622224249.29562-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -42,31 +48,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These calls were added by 108c14858b9e ("locking/lockdep: Add support
-for dynamic keys") and require no special handling in userspace, so just
-add empty function definitions.
+Add "uret" to vmx_set_guest_msr() to explicitly associate it with the
+guest_uret_msrs array, and to differentiate it from vmx_set_msr() as
+well as VMX's load/store MSRs.
 
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+No functional change intended.
+
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
 ---
- tools/include/linux/kernel.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/x86/kvm/vmx/vmx.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/tools/include/linux/kernel.h b/tools/include/linux/kernel.h
-index a7e54a08fb54c..902d3b9ab4c17 100644
---- a/tools/include/linux/kernel.h
-+++ b/tools/include/linux/kernel.h
-@@ -117,4 +117,11 @@ int scnprintf_pad(char * buf, size_t size, const char * fmt, ...);
- #define current_gfp_context(k) 0
- #define synchronize_rcu()
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 6662c1aab9b2..178315b2758b 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -645,7 +645,8 @@ struct vmx_uret_msr *vmx_find_uret_msr(struct vcpu_vmx *vmx, u32 msr)
+ 	return NULL;
+ }
  
-+static __maybe_unused int system_state;
-+#define SYSTEM_SCHEDULING 0
-+
-+#define might_sleep()
-+#define rcu_read_lock()
-+#define rcu_read_unlock()
-+
- #endif
+-static int vmx_set_guest_msr(struct vcpu_vmx *vmx, struct vmx_uret_msr *msr, u64 data)
++static int vmx_set_guest_uret_msr(struct vcpu_vmx *vmx,
++				  struct vmx_uret_msr *msr, u64 data)
+ {
+ 	int ret = 0;
+ 
+@@ -2232,7 +2233,7 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 	find_uret_msr:
+ 		msr = vmx_find_uret_msr(vmx, msr_index);
+ 		if (msr)
+-			ret = vmx_set_guest_msr(vmx, msr, data);
++			ret = vmx_set_guest_uret_msr(vmx, msr, data);
+ 		else
+ 			ret = kvm_set_msr_common(vcpu, msr_info);
+ 	}
+@@ -7282,7 +7283,7 @@ static void vmx_cpuid_update(struct kvm_vcpu *vcpu)
+ 		msr = vmx_find_uret_msr(vmx, MSR_IA32_TSX_CTRL);
+ 		if (msr) {
+ 			bool enabled = guest_cpuid_has(vcpu, X86_FEATURE_RTM);
+-			vmx_set_guest_msr(vmx, msr, enabled ? 0 : TSX_CTRL_RTM_DISABLE);
++			vmx_set_guest_uret_msr(vmx, msr, enabled ? 0 : TSX_CTRL_RTM_DISABLE);
+ 		}
+ 	}
+ }
 -- 
-2.25.1
+2.26.0
 
