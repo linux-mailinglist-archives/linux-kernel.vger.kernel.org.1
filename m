@@ -2,103 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6450C204084
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3390D204074
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728777AbgFVTcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 15:32:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728150AbgFVTcS (ORCPT
+        id S1728384AbgFVTaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 15:30:52 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:38836 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728140AbgFVTaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 15:32:18 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E60C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:32:18 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id t6so14083502otk.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:32:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kDvWJFrzfpWbkxz8YXuc2rLUJQ0CoVh8mMluFwhFK9g=;
-        b=X4t7jax66/02t8oexfXxT0PX6kXxK5rECyLccSKXxOoR/BkGQMHjqxEkJEN2Mm/X5C
-         YlhyuvZzjl2K51NtRfnqMTHkwxtI8Uq0QybiLU6lXgXwrWDYh7IL84D9cm5G/+7ATEVl
-         OCOfKFp6jJAOR6rkGn2vefwW2qKFVjRwzEs4z6NnDS7PLZU3CwM5YdQVmZ2xtadDm/Fb
-         vtQUapslp69ZExR2yYVeVqY7DHLy0vGOCzFNzhhDzqVrZRt45QgeZ3lmcFYM8mkvG4JR
-         5t2QO9VHFSR/CJ0E+pOVnXztmWWnD7FvUKEfCiGiWNgIgeoVy/op0sPXg6XwEFxkZpWB
-         yNMw==
+        Mon, 22 Jun 2020 15:30:52 -0400
+Received: by mail-ot1-f68.google.com with SMTP id 64so3170972oti.5;
+        Mon, 22 Jun 2020 12:30:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kDvWJFrzfpWbkxz8YXuc2rLUJQ0CoVh8mMluFwhFK9g=;
-        b=A0FPX4Fdhu4SNtHXtFqLYDJoUmIZe6XxUS2ScPOi65g7a5h1l5VUAtGLrWqnkwI1PG
-         JoLe28KX27L3QHqQiTYVUa7qZq7uV9S2h/y8z0QLo4SapM9w2cL14veUA7t3bsrWbWc8
-         MGayeX/Hrcz6lduxq4Gro9OCdP8SKYjsp0c3yFPhLhTBWY42pUN8l51lifF5jAihcJrG
-         mNFriauRFLwaGWWvYO1VeBztPipneA2+o2hLajDPS2cWftxyRJIVmCdvUJ0GKnTXmAja
-         nBbxGv3upE35VlLvwzFu73X9plorxkYAJASXsp3/A7h2Tv4Mni4DuA33Qe/42/aRSNJ0
-         JWjQ==
-X-Gm-Message-State: AOAM53194hXHw5aespQXzkXFCZAd5Qq4KXk2ui+MwOB+pOGoCmeQEb1C
-        HwjKro+vgGiDOKjE0PIEAtmUZg==
-X-Google-Smtp-Source: ABdhPJw1Yikg9xiPvrCpS0EyuUZHl3QTpNdEklGCVVNVy0Q/IhIJ13yL7Nwk/uZDAT74cBkAEULrRg==
-X-Received: by 2002:a9d:67c1:: with SMTP id c1mr14225076otn.27.1592854337928;
-        Mon, 22 Jun 2020 12:32:17 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id a10sm3630772ooo.39.2020.06.22.12.32.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 12:32:17 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 12:29:32 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Maulik Shah <mkshah@codeaurora.org>, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, rnayak@codeaurora.org, ilina@codeaurora.org,
-        lsrao@codeaurora.org, john.stultz@linaro.org
-Subject: Re: [PATCH] soc: qcom: rpmh-rsc: Set suppress_bind_attrs flag
-Message-ID: <20200622192932.GV128451@builder.lan>
-References: <1592808805-2437-1-git-send-email-mkshah@codeaurora.org>
- <159281658960.62212.15968925558324290917@swboyd.mtv.corp.google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f+m8WfznoPmZDhpXMJjjF8LFblQRh0TioPpDuSD1pp0=;
+        b=cZ5nn/bPlQ38WJLE5/Lfh/ECMriNLGxHjekmOlqKxv8Ry4UtJtu0seF2jKgvE3AhSw
+         dZ36TvvVExjo7D0f/2Cnypc+0X4n1yeWUniTCuEYFe3kp7w7OW+RI/Wia1RT+q134YdO
+         KLEDJpdPkfGzmvaBxBaqXipjDcfcCL+nIP08vbPJQosUp6hbu/DG86ELHHsZtfObuHSN
+         3OvWvXagIaafHyVw9oceZQCT6gtjLMwU4+mXk1Ui1pF+w+lYCHiQmEP80JFrLpkP8y8k
+         fdL7PP9UafxBe+/gNSxuxyRfq6dKHBMBg2p7D83W/gjMXwZciFMgtphv8nrPnhZpA6sb
+         zWHw==
+X-Gm-Message-State: AOAM530p9ntLtAPouQiRpXWHRPq1+kMrY/jrD4gtP/pFYMgNjT/0NkUj
+        XsEzolWI4wI+QD6lT4uo6QUyaJ9QJc3+ikqWegU=
+X-Google-Smtp-Source: ABdhPJwRxDC7XKOX0GSqgJfIIpa4gxfZ9Mz9zJRml/UI6rLWqLBUvxcLJOOvgyLDgRj/WAdDU+2gFeYTFa4HV4iICjw=
+X-Received: by 2002:a9d:62c2:: with SMTP id z2mr15002234otk.145.1592854250122;
+ Mon, 22 Jun 2020 12:30:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <159281658960.62212.15968925558324290917@swboyd.mtv.corp.google.com>
+References: <1591554886-21725-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <CA+V-a8sMAkhLh9n7d=4QaNLDDJuExcu4ctWX2P1xH6Jqj-D3DA@mail.gmail.com>
+In-Reply-To: <CA+V-a8sMAkhLh9n7d=4QaNLDDJuExcu4ctWX2P1xH6Jqj-D3DA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 22 Jun 2020 21:30:38 +0200
+Message-ID: <CAMuHMdVPcF4B8SiWPYuT2pRN5i_nn0n2tKrg8+y=XdhFkU-Vsw@mail.gmail.com>
+Subject: Re: [PATCH 00/11] Add support for HiHope RZ/G2M[N] Rev.3.0/4.0
+To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 22 Jun 02:03 PDT 2020, Stephen Boyd wrote:
+Hi Prabhakar,
 
-> Quoting Maulik Shah (2020-06-21 23:53:25)
-> > rpmh-rsc driver is fairly core to system and should not be removable
-> > once its probed. However it allows to unbind driver from sysfs using
-> > below command which results into a crash on sc7180.
-> 
-> What is the crash? The world falls apart because rpmh APIs start
-> referencing pointers that point to freed memory?
-> 
+On Mon, Jun 22, 2020 at 7:52 PM Lad, Prabhakar
+<prabhakar.csengg@gmail.com> wrote:
+> On Sun, Jun 7, 2020 at 7:35 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > This patch series adds supports for HiHope RZ/G2M[N] Rev.3.0/4.0
+> > boards.
+> >
+> > Patches are based on top of renesas-arm-dt-for-v5.9 branch [1].
+> >
+> > [1] git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-devel.git
+> >
+> > Cheers,
+> > Prabhakar
+> >
+> > Lad Prabhakar (11):
+> >   arm64: dts: renesas: r8a774a1-hihope-rzg2m[-ex/-ex-idk-1110wr]: Rename
+> >     HiHope RZ/G2M boards
+> >   arm64: dts: renesas: r8a774b1-hihope-rzg2n[-ex]: Rename HiHope RZ/G2N
+> >     boards
+> >   arm64: dts: renesas: hihope-common: Separate out Rev.2.0 specific into
+> >     hihope-common-rev2.dtsi file
+> >   arm64: dts: renesas: Add HiHope RZ/G2M[N] Rev.3.0/4.0 specific into
+> >     common file
+> >   arm64: dts: renesas: Add HiHope RZ/G2M Rev.3.0/4.0 main board support
+> >   arm64: dts: renesas: Add HiHope RZ/G2M Rev.3.0/4.0 sub board support
+> >   arm64: dts: renesas: hihope-rzg2-ex: Separate out lvds specific nodes
+> >     into common file
+> >   arm64: dts: renesas: Add HiHope RZ/G2M Rev.3.0/4.0 board with
+> >     idk-1110wr display
+> >   arm64: dts: renesas: Add HiHope RZ/G2N Rev.3.0/4.0 main board support
+> >   arm64: dts: renesas: Add HiHope RZ/G2N Rev.3.0/4.0 sub board support
+> >   arm64: dts: renesas: Add HiHope RZ/G2N Rev2.0/3.0/4.0 board with
+> >     idk-1110wr display
+> >
+> Thank you for the Ack's for the above patches.
+>
+> I shall re-spin the new version fixing the comments. I am waiting for
+> your feedback on patch 03/11.
 
-Presumably the devm_of_platform_populate() will cause said drivers to be
-dismantled as well - but I think it's safe to say that that code path
-isn't well tested...
+I'm sorry, but what exactly is still unresolved for patch 03/11?
 
-I've applied the patch, but would have preferred that some time was
-spent to make sure that things are unloadable as well.
+Gr{oetje,eeting}s,
 
-Regards,
-Bjorn
+                        Geert
 
-> > 
-> > echo 18200000.rsc > /sys/bus/platform/drivers/rpmh/unbind
-> > 
-> > Lets prevent unbind at runtime by setting suppress_bind_attrs flag.
-> 
-> Ok. But when the Android module brigade comes knocking they'll have to
-> revert this change and solve this problem too. Have fun!
-> 
-> > 
-> > Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> > ---
-> 
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
