@@ -2,99 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 365C5203E03
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 19:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E49203DF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 19:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730102AbgFVRc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 13:32:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730067AbgFVRcY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 13:32:24 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8AA4C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 10:32:24 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id w16so18835088ejj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 10:32:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=esraNk9vYcbt+aYhCal6Rv+dFZCSdTm7//1cm/DqNAg=;
-        b=LhbGWaTFVPf141FJ+VrlM1gm9G0Yx9T8OzJsVp75vXKaqYFoXf5GmC8kpq2EpwwBbc
-         WqOxWY+Tg9AsLYgOz1eO/LBiR+MVYTEfOkKxkgHAnxxI/56s2ggpsK/r/j/7SL1++AMP
-         SDLZKqsstrA3w9vruCcX1oPVY8uC0Q6yXReSYG9DVhLmm+/Uqq6mmd+e1SYBBXOExrgd
-         s9Qnj0Q1Hszp8W0gNV884tUzFLS+cHFswvbroJwNUn1qRoJIz/FwglnYHd4rTywkKgLw
-         Q7b6HII+eeMzKJpkWXli3tFONXpY94d5smgvEkrme+nK5Rm88QCngPMJej+Qa3qer9do
-         8iyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=esraNk9vYcbt+aYhCal6Rv+dFZCSdTm7//1cm/DqNAg=;
-        b=OGK9+gjcduRK+eXU4gOSpOfuECfqdrQ6KRiaWp9KhuErN2Ph0juBisffNnCHDUszAQ
-         IpKU3oLTE1YlCVb5s9JmH8TVwPb/T3pAJSlLA9q1KcY/co03nPT7BV7CKC69QUhYAclX
-         f5/+1F9TQsQLMhYRiWNY8q3puEGoHBExA8u7YBp8hprWP3l+0pQf9owq6lj/LfKSam7g
-         +06UXXGzPjG96/Wvv2ozSlD1sj92ZhW024vaCiW5oHEfpUFLuCopwSN5ngZCIPNpxCw6
-         7Re/VARVAi1V4fG+9OeR5W7aYJ3zwxLdNk1oiT5QVsjl7CigDnzHKKW3P1TkhPvdZPHt
-         M2pg==
-X-Gm-Message-State: AOAM533PeaoQsIvfix7si7Ne2IQG9718fky8uZmd9WRsQwfS0QhcXLsv
-        8YxcPQYle9jFpKolR72/u9tyQg==
-X-Google-Smtp-Source: ABdhPJy+SFPlroEIO3VTMMRuyksrmrJdFlyJ5PCayo2U6g0j3Kq28XVgQDvES259MOoHErSiuzhQNA==
-X-Received: by 2002:a17:906:e05:: with SMTP id l5mr17849171eji.318.1592847143378;
-        Mon, 22 Jun 2020 10:32:23 -0700 (PDT)
-Received: from localhost.localdomain (i59F66838.versanet.de. [89.246.104.56])
-        by smtp.gmail.com with ESMTPSA id z1sm4747386ejb.41.2020.06.22.10.32.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 10:32:22 -0700 (PDT)
-From:   Drew Fustini <drew@beagleboard.org>
-To:     Tony Lindgren <tony@atomide.com>, Rob Herring <robh+dt@kernel.org>,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        devicetree@vger.kernel.org, bcousson@baylibre.com,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Robert Nelson <robertcnelson@gmail.com>
-Cc:     Drew Fustini <drew@beagleboard.org>
-Subject: [PATCH v3 3/3] ARM: dts: am33xx-l4: change #pinctrl-cells from 1 to 2
-Date:   Mon, 22 Jun 2020 19:29:51 +0200
-Message-Id: <20200622172951.524306-4-drew@beagleboard.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200622172951.524306-1-drew@beagleboard.org>
-References: <20200622172951.524306-1-drew@beagleboard.org>
+        id S1729913AbgFVRbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 13:31:50 -0400
+Received: from verein.lst.de ([213.95.11.211]:35562 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729777AbgFVRbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 13:31:49 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id CC32B68AEF; Mon, 22 Jun 2020 19:31:46 +0200 (CEST)
+Date:   Mon, 22 Jun 2020 19:31:46 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] dma-pool: Fix too large DMA pools on medium systems
+Message-ID: <20200622173146.GA15796@lst.de>
+References: <20200608132217.29945-1-geert@linux-m68k.org> <20200620200936.GA106151@roeck-us.net> <CAMuHMdX3mBDm9iHk+jhbGfmo+dbix=3tp5z2ewyddWxM1tdqGQ@mail.gmail.com> <c0889f5c-34ae-2314-6530-a9240e0901f2@roeck-us.net> <alpine.DEB.2.22.394.2006211308500.195301@chino.kir.corp.google.com> <1287bffd-3363-0764-0309-32222b2b8c9a@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1287bffd-3363-0764-0309-32222b2b8c9a@arm.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This requires AM33XX_PADCONF macro in omap.h to be modified to keep pin
-conf and pin mux values separate.
+On Mon, Jun 22, 2020 at 05:07:55PM +0100, Robin Murphy wrote:
+> Another angle, though, is to question why this driver is making such a 
+> large allocation with GFP_ATOMIC in the first place. At a glance it looks 
+> like there's no reason at all other than that it's still using the legacy 
+> pci_alloc_consistent() API, since every path to that appears to have 
+> CAN_SLEEP passed as its flag - modernising that would arguably be an even 
+> better long-term win.
 
-pinctrl-single.c must also be changed to support "pinctrl-single,pins"
-with 3 arguments (offset, conf, mux).
+Maybe we can just try that for now?  If other problems show up we
+can still increase the initial pool size later in this cycle.
 
-Signed-off-by: Drew Fustini <drew@beagleboard.org>
----
- arch/arm/boot/dts/am33xx-l4.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm/boot/dts/am33xx-l4.dtsi b/arch/arm/boot/dts/am33xx-l4.dtsi
-index 7ff11d6bf0f2..dafd6e8b42a1 100644
---- a/arch/arm/boot/dts/am33xx-l4.dtsi
-+++ b/arch/arm/boot/dts/am33xx-l4.dtsi
-@@ -278,7 +278,7 @@ scm: scm@0 {
- 				am33xx_pinmux: pinmux@800 {
- 					compatible = "pinctrl-single";
- 					reg = <0x800 0x238>;
--					#pinctrl-cells = <1>;
-+					#pinctrl-cells = <2>;
- 					pinctrl-single,register-width = <32>;
- 					pinctrl-single,function-mask = <0x7f>;
- 				};
--- 
-2.25.1
-
+I'll try to cook up a patch.
