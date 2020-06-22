@@ -2,60 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678B4203780
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 15:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D88203789
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 15:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728335AbgFVNJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 09:09:09 -0400
-Received: from ms.lwn.net ([45.79.88.28]:37444 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728110AbgFVNJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 09:09:09 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id ADE672C8;
-        Mon, 22 Jun 2020 13:09:08 +0000 (UTC)
-Date:   Mon, 22 Jun 2020 07:09:07 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@collabora.com>,
-        linux-block@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        krisman@collabora.com, rdunlap@infradead.org,
-        dongli.zhang@oracle.com
-Subject: Re: [PATCH v4] docs: block: Create blk-mq documentation
-Message-ID: <20200622070907.3d2bb187@lwn.net>
-In-Reply-To: <d7b3b500-cb3c-1348-61c9-9e14767fa4ac@kernel.dk>
-References: <20200620002036.113000-1-andrealmeid@collabora.com>
-        <d7b3b500-cb3c-1348-61c9-9e14767fa4ac@kernel.dk>
-Organization: LWN.net
+        id S1728513AbgFVNKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 09:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44806 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728478AbgFVNKR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 09:10:17 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7012C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 06:10:16 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 97so12989942otg.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 06:10:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=F+fxtByV8XJfBDQUCtfrNN7N2L9LcG9m+MouCilHhEg=;
+        b=krWaNh6mktbYPiJFXjhvO2GGm/lh3IAexn5C5zlaHNYtpbtuX6nEX3dHxttasrcEBQ
+         r2Ke+i7ksGb0Zg3OHvJLCRpJCmj5t2cPKaC6n/Bu7vNWbIwo7oyAMpXdzNjOz75YkXz9
+         FKnRmUSO+pL/YuFF4vDZJ4m0WKsQyvSwGoT0I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F+fxtByV8XJfBDQUCtfrNN7N2L9LcG9m+MouCilHhEg=;
+        b=E4+D7AdXG8Cr8w1Jr0LYilNn69I6tD4zle0RRCirYxzHJcygn/o4DUjX0EkO7XiQHq
+         eFiDHAU4ma/lzQDHgmyw3AMubxpAZ6b0myPje/2S++pD4jjNILwDmqgqbwkycY4CAd4i
+         Eu/08psPmAZRfI6jszghSQ3lyX3z70P15TK8CfvItOa2yyw0iZT6I4HFQy0/L+4oQoTR
+         +KoCpgoe4uPlo7Iya0H93lht0eKMraFWBucA3sKweTz4BpZMo04B4tcSmyxn+qWFW0Na
+         CCPISJHu1xqvfoU1eLZwuOLodinCuep8k1XysqGpM3gu46nwJ+yZX0zGPMGoFXKvICeP
+         k4Yg==
+X-Gm-Message-State: AOAM53234jAWAWWJ6gwfgLTeDzdO6eU5Cs5Xn2hjRCn6B86mUscl3c+B
+        yAVoC+FG2THkep0uf9R2aZH5yEdlNsQ=
+X-Google-Smtp-Source: ABdhPJyjusKa9MNNUvgVPN1Brt+5rS5MpDfHDvGY2ZjIvRhWpfbzMm4RN0SawC1O1JKd17C8J/Dg6g==
+X-Received: by 2002:a05:6830:2045:: with SMTP id f5mr14747631otp.130.1592831415035;
+        Mon, 22 Jun 2020 06:10:15 -0700 (PDT)
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com. [209.85.161.49])
+        by smtp.gmail.com with ESMTPSA id t8sm3354588oor.42.2020.06.22.06.10.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jun 2020 06:10:14 -0700 (PDT)
+Received: by mail-oo1-f49.google.com with SMTP id k36so1079688ooi.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 06:10:13 -0700 (PDT)
+X-Received: by 2002:a4a:3e48:: with SMTP id t69mr1635161oot.38.1592831412617;
+ Mon, 22 Jun 2020 06:10:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20200520082723.96136-1-acourbot@chromium.org> <20200520082723.96136-8-acourbot@chromium.org>
+ <1592549952.23952.3.camel@mtksdaap41>
+In-Reply-To: <1592549952.23952.3.camel@mtksdaap41>
+From:   Alexandre Courbot <acourbot@chromium.org>
+Date:   Mon, 22 Jun 2020 22:10:00 +0900
+X-Gmail-Original-Message-ID: <CAPBb6MUiGtbBhfEoCVeTkQe1XrDea7wRUkybxtqQEThtQmJTwQ@mail.gmail.com>
+Message-ID: <CAPBb6MUiGtbBhfEoCVeTkQe1XrDea7wRUkybxtqQEThtQmJTwQ@mail.gmail.com>
+Subject: Re: [PATCH 07/10] media: mtk-vcodec: venc: remove redundant code
+To:     Tiffany Lin <tiffany.lin@mediatek.com>
+Cc:     Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Rui Wang <gtk_ruiwang@mediatek.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Maoguang Meng <maoguang.meng@mediatek.com>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Jun 2020 15:21:05 -0600
-Jens Axboe <axboe@kernel.dk> wrote:
+On Fri, Jun 19, 2020 at 3:59 PM Tiffany Lin <tiffany.lin@mediatek.com> wrote:
+>
+> On Wed, 2020-05-20 at 17:27 +0900, Alexandre Courbot wrote:
+> > vidioc_try_fmt() does clamp height and width when called on the OUTPUT
+> > queue, so clamping them prior to calling this function is redundant. Set
+> > the queue's parameters after calling vidioc_try_fmt() so we can use the
+> > values it computed.
+> >
+>
+> vidioc_try_fmt clamps height and width only when f->type ==
+> V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE
+>
+> Does this cleanup pass v4l2 compliance test?
 
-> On 6/19/20 6:20 PM, André Almeida wrote:
-> > Create a documentation providing a background and explanation around the
-> > operation of the Multi-Queue Block IO Queueing Mechanism (blk-mq).
-> > 
-> > The reference for writing this documentation was the source code and
-> > "Linux Block IO: Introducing Multi-queue SSD Access on Multi-core
-> > Systems", by Axboe et al.  
-> 
-> This looks fine to me now - Jon, would you care to queue it up?
-> You can add my:
-> 
-> Reviewed-by: Jens Axboe <axboe@kernel.dk>
+It doesn't result in more tests failing at least. :) But although I
+cannot test with a pristine upstream version, it seems like some tests
+are not passing to begin with. If you have different results with a
+true upstream I would like to hear about it. Otherwise I am willing to
+help with getting all the tests in the green.
 
-Done.
+Regarding this particular patch, you are right that we may end up
+writing an unclamped size in q_data. It's probably better to drop it
+for now.
 
-Thanks,
-
-jon
+> I recall compliance test will try different fmt and make sure driver
+> response enough information?
+>
+>
+> > Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> > ---
+> >  .../media/platform/mtk-vcodec/mtk_vcodec_enc.c   | 16 ++++------------
+> >  1 file changed, 4 insertions(+), 12 deletions(-)
+> >
+> > diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+> > index 05743a745a11..f0af78f112db 100644
+> > --- a/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+> > +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_enc.c
+> > @@ -449,7 +449,6 @@ static int vidioc_venc_s_fmt_out(struct file *file, void *priv,
+> >       struct mtk_q_data *q_data;
+> >       int ret, i;
+> >       const struct mtk_video_fmt *fmt;
+> > -     struct v4l2_pix_format_mplane *pix_fmt_mp = &f->fmt.pix_mp;
+> >
+> >       vq = v4l2_m2m_get_vq(ctx->m2m_ctx, f->type);
+> >       if (!vq) {
+> > @@ -474,20 +473,13 @@ static int vidioc_venc_s_fmt_out(struct file *file, void *priv,
+> >               f->fmt.pix.pixelformat = fmt->fourcc;
+> >       }
+> >
+> > -     pix_fmt_mp->height = clamp(pix_fmt_mp->height,
+> > -                             MTK_VENC_MIN_H,
+> > -                             MTK_VENC_MAX_H);
+> > -     pix_fmt_mp->width = clamp(pix_fmt_mp->width,
+> > -                             MTK_VENC_MIN_W,
+> > -                             MTK_VENC_MAX_W);
+> > -
+> > -     q_data->visible_width = f->fmt.pix_mp.width;
+> > -     q_data->visible_height = f->fmt.pix_mp.height;
+> > -     q_data->fmt = fmt;
+> > -     ret = vidioc_try_fmt(f, q_data->fmt);
+> > +     ret = vidioc_try_fmt(f, fmt);
+> >       if (ret)
+> >               return ret;
+> >
+> > +     q_data->fmt = fmt;
+> > +     q_data->visible_width = f->fmt.pix_mp.width;
+> > +     q_data->visible_height = f->fmt.pix_mp.height;
+> >       q_data->coded_width = f->fmt.pix_mp.width;
+> >       q_data->coded_height = f->fmt.pix_mp.height;
+> >
+>
