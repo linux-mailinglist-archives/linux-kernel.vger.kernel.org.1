@@ -2,94 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01320204078
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76CCE204082
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728548AbgFVTbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 15:31:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728140AbgFVTbR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 15:31:17 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DCBD20776;
-        Mon, 22 Jun 2020 19:31:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592854275;
-        bh=CDMl9Mj/szvYn6o9TddGFWgTqsHrkjrdv1OxwGlEWf4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PWpK7pPjONrZsljBOvbu1phO/3iPw89A0Bi4v07Ua94CsfNwKqmcM3B4flQfRq8U+
-         StM3bW7Gr3oDSGcOfEmf6JTOZGDbwI0eGxa9uktWrBlbHsD9pH3wnkT5iQk9m0e0Dp
-         N9Zek+Qt7bP9ew/BpmXKgxQnjQWj/6W7Lqj7VPkI=
-Date:   Mon, 22 Jun 2020 21:31:09 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Ronald =?iso-8859-1?Q?Tschal=E4r?= <ronald@innovation.ch>,
-        Nicolai Stange <nicstange@gmail.com>,
-        David Rientjes <rientjes@google.com>,
-        Srivatsa Vaddagiri <vatsa@linux.vnet.ibm.com>,
+        id S1728767AbgFVTcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 15:32:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728588AbgFVTby (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 15:31:54 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BA4C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:31:53 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id i12so317110pju.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:31:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dNG40zysheY5oB4//u6Wgw3XPF1EPVf4SWmTm1L7IBk=;
+        b=DooZtDOKEbuL4Lmq0EjvgBqtOhkWAVzaD4OoBh35ywAVTh+8jjPlVrIL5pPZ1PCtVX
+         +7Qt9x93Bf6jWHUSYtMRAfTERsAnE8XlcUxfZu12iJaw18sHA1rR1SQN279dsa6bQ3wr
+         FyhdWobCP/rLa3NIoSLGX9JY/N9OLOfKVoKSc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dNG40zysheY5oB4//u6Wgw3XPF1EPVf4SWmTm1L7IBk=;
+        b=XqvVdfW6N7PKQZROhBy9Kycafgv8/oaQAvqRHdxPiDU5UbHgmq/+y0WunyLc+p4mWi
+         UhnEUtNh6CYdCC3Uwe1yweCHpxqKP6iaNnNol1SF7bqrwpMiLMuGpImikOzoLGSHUyqo
+         dR1kkGyTzELMnNksLlJQVFARdU79OVltRa+3IRpfIQ+WXeuEySNB2yH83WkSrjKijM8G
+         BKvPDTa9D/hd0SQFJO4OKxLxkqDZ8jEaEwU1H+oZ6NwvUxe3uc291f2WtUxMQzsqb7qY
+         nBGfcXIj9IoxYAn9ZIMqn5hJBPTfMsMHE7JKESGLLYersYDzKiqRxO/DMzZjjuXr7UIP
+         tUlw==
+X-Gm-Message-State: AOAM531rH1SVNg0aIwktI0erDUDY64+2jqOBiu7ElAcZ+Rt4lvH9MqKt
+        PzeMJ9y8X9lYyIm4CsDneavSbw==
+X-Google-Smtp-Source: ABdhPJwzvg0AysINBE9mrBB80x8GFaUJiCmnxanMRMBRbZ6JfPpnLr9CRvHSZ2l6hQg9n7Rg0F4HWg==
+X-Received: by 2002:a17:90a:9f81:: with SMTP id o1mr19808289pjp.139.1592854313385;
+        Mon, 22 Jun 2020 12:31:53 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q129sm13899450pfc.60.2020.06.22.12.31.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 12:31:50 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Jann Horn <jannh@google.com>,
+        kernel-hardening@lists.openwall.com,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: Re: debugfs_create_u32_array() memory leaks
-Message-ID: <20200622193109.GA2163148@kroah.com>
-References: <20200619161734.25e99fa4@kicinski-fedora-PC1C0HJN>
- <20200620074542.GA2298609@kroah.com>
- <20200622122332.274c842e@kicinski-fedora-PC1C0HJN>
+Subject: [PATCH v4 0/5] Optionally randomize kernel stack offset each syscall
+Date:   Mon, 22 Jun 2020 12:31:41 -0700
+Message-Id: <20200622193146.2985288-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200622122332.274c842e@kicinski-fedora-PC1C0HJN>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 12:23:32PM -0700, Jakub Kicinski wrote:
-> On Sat, 20 Jun 2020 09:45:42 +0200 Greg Kroah-Hartman wrote:
-> > On Fri, Jun 19, 2020 at 04:17:34PM -0700, Jakub Kicinski wrote:
-> > > Hi!
-> > > 
-> > > I'm trying to use debugfs_create_u32_array() in drivers/net/netdevsim
-> > > and it causes memory leaks:
-> > > 
-> > > unreferenced object 0xffff8880546642a0 (size 16):
-> > >   comm "test_udp_tuns.s", pid 2146, jiffies 4294928368 (age 3772.435s)
-> > >   hex dump (first 16 bytes):
-> > >     84 52 6a 4d 80 88 ff ff 04 00 00 00 f3 78 7e 89  .RjM.........x~.
-> > >   backtrace:
-> > >     [<000000006962a447>] debugfs_create_u32_array+0x3f/0x90
-> > > 
-> > > I can see that debugfs_create_u32_array() allocates a structure at
-> > > create time that ends up assigned to inode->i_private, but I don't 
-> > > see it freed anywhere.
-> > > 
-> > > Am I missing something? I'm pretty sure files get removed, cause the
-> > > driver calls debugfs_remove_recursive() and no other file types leaks.  
-> > 
-> > Yeah, that's a bug, nice catch.  The debugfs_create*() functions should
-> > not allocate local memory as we can't know to free that memory when the
-> > file is removed.
-> > 
-> > Can you fix this up, or do you want me to?  I only see one in-kernel
-> > user of this, so it shouldn't be that tough to do so.  The one user
-> > never removes that file so that's why no one noticed this before.
-> 
-> Ah, I wasn't sure how to fix but since you say that create functions
-> shouldn't allocate memory seems like the fix will be to make callers
-> pass an equivalent of struct debugfs_blob_wrapper for u32.
+v4:
+- rebase to v5.8-rc2
+v3: https://lore.kernel.org/lkml/20200406231606.37619-1-keescook@chromium.org/
+v2: https://lore.kernel.org/lkml/20200324203231.64324-1-keescook@chromium.org/
+rfc: https://lore.kernel.org/kernel-hardening/20190329081358.30497-1-elena.reshetova@intel.com/
 
-Sounds good.
+Hi,
 
-> I'm happy to send a patch to that effect - I have a process question
-> tho - I need this change in net-next, should I sent the patch to you?
-> Can it still make it into 5.8 (debugfs -> Linus -> net -> net-next) or
-> perhaps can it go via net-next since there is no de facto bug in 5.8?
+This is a continuation and refactoring of Elena's earlier effort to add
+kernel stack base offset randomization. In the time since the previous
+discussions, two attacks[1][2] were made public that depended on stack
+determinism, so we're no longer in the position of "this is a good idea
+but we have no examples of attacks". :)
 
-I can take a fix now, and get it into 5.8 if that makes things easier
-for you.
+Earlier discussions also devolved into debates on entropy sources, which
+is mostly a red herring, given the already low entropy available due
+to stack size. Regardless, entropy can be changed/improved separately
+from this series as needed.
 
-thanks,
+Earlier discussions also got stuck debating how much syscall overhead
+was too much, but this is also a red herring since the feature itself
+needs to be selectable at boot with no cost for those that don't want it:
+this is solved here with static branches.
 
-greg k-h
+So, here is an improved version, made as arch-agnostic as possible,
+with usage added for x86 and arm64. It also includes some small static
+branch clean ups, and addresses some surprise performance issues due to
+the stack canary[3].
+
+Note that for v5.8, this depends on this fix (due to how x86 changed its
+stack protector removal for syscall entry):
+https://lore.kernel.org/lkml/202006221201.3641ED037E@keescook/
+
+Thanks!
+
+-Kees
+
+[1] https://a13xp0p0v.github.io/2020/02/15/CVE-2019-18683.html
+[2] https://repositorio-aberto.up.pt/bitstream/10216/125357/2/374717.pdf
+[3] https://lore.kernel.org/lkml/202003281520.A9BFF461@keescook/
+
+
+Kees Cook (5):
+  jump_label: Provide CONFIG-driven build state defaults
+  init_on_alloc: Unpessimize default-on builds
+  stack: Optionally randomize kernel stack offset each syscall
+  x86/entry: Enable random_kstack_offset support
+  arm64: entry: Enable random_kstack_offset support
+
+ Makefile                         |  4 ++++
+ arch/Kconfig                     | 23 ++++++++++++++++++
+ arch/arm64/Kconfig               |  1 +
+ arch/arm64/kernel/Makefile       |  5 ++++
+ arch/arm64/kernel/syscall.c      | 10 ++++++++
+ arch/x86/Kconfig                 |  1 +
+ arch/x86/entry/common.c          | 11 +++++++++
+ include/linux/jump_label.h       | 19 +++++++++++++++
+ include/linux/mm.h               | 18 +++++---------
+ include/linux/randomize_kstack.h | 40 ++++++++++++++++++++++++++++++++
+ init/main.c                      | 23 ++++++++++++++++++
+ mm/page_alloc.c                  | 12 ++--------
+ 12 files changed, 145 insertions(+), 22 deletions(-)
+ create mode 100644 include/linux/randomize_kstack.h
+
+-- 
+2.25.1
+
