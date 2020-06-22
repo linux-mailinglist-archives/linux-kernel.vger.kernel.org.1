@@ -2,45 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA792043EE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDBF2043CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:43:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731524AbgFVWoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 18:44:37 -0400
-Received: from mga18.intel.com ([134.134.136.126]:27426 "EHLO mga18.intel.com"
+        id S1731348AbgFVWnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 18:43:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730943AbgFVWm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 18:42:59 -0400
-IronPort-SDR: XLFIK+YfUKeGhx+Tet1yfda2xJKB0G8cYqne/26fINdreBNzTGl7IusJgjbyLjDViBLp3x08EE
- DKiSaR37P+OQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9660"; a="131303578"
-X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="131303578"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 15:42:55 -0700
-IronPort-SDR: FGeySH7zGAHkWHnu3g5/cg1JH6n1nzHSgyhIDbSMWmggd/VhzW1w1yE+Qspo7J9cXaFqxvshkA
- Qzk6yYhWPXfQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="264634940"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by fmsmga008.fm.intel.com with ESMTP; 22 Jun 2020 15:42:55 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 13/15] KVM: VMX: Rename "vmx_set_guest_msr" to "vmx_set_guest_uret_msr"
-Date:   Mon, 22 Jun 2020 15:42:47 -0700
-Message-Id: <20200622224249.29562-14-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200622224249.29562-1-sean.j.christopherson@intel.com>
-References: <20200622224249.29562-1-sean.j.christopherson@intel.com>
+        id S1731289AbgFVWnI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 18:43:08 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 75244207BC;
+        Mon, 22 Jun 2020 22:43:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592865787;
+        bh=1r88PiJ4+qN8LrCQuZ269REltscufpvg7w78mKLxLaw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=MIsk6Gl1eiC+MlHSP5rnz2wNKCPYbYXYQwMpB6Yh7x6wNUFOem98yTQF7YqqbzI3b
+         iZ9O4AfdakRzDbjQkNQGEuvIUJNGAWCY5NPN0F+EWJQsf6cwWPLcu4MzLZEDFVA1YN
+         7cI92fLDgdZ3yRl7o4JyLICv4n8dUWJe5OAcMvXo=
+From:   Sasha Levin <sashal@kernel.org>
+To:     peterz@infradead.org
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        jolsa@redhat.com, alexey.budankov@linux.intel.com,
+        songliubraving@fb.com, acme@redhat.com, allison@lohutok.net,
+        sashal@kernel.org
+Subject: [PATCH v3 04/14] tools bitmap: add bitmap_andnot definition
+Date:   Mon, 22 Jun 2020 18:42:48 -0400
+Message-Id: <20200622224258.1208588-5-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200622224258.1208588-1-sashal@kernel.org>
+References: <20200622224258.1208588-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -48,49 +42,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add "uret" to vmx_set_guest_msr() to explicitly associate it with the
-guest_uret_msrs array, and to differentiate it from vmx_set_msr() as
-well as VMX's load/store MSRs.
+Add definition of bitmap_andnot() and wire tools/lib/bitmap.c into
+liblockdep.
 
-No functional change intended.
+This is needed as a result of de4643a77356 ("locking/lockdep: Reuse lock
+chains that have been freed").
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kvm/vmx/vmx.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ tools/include/linux/bitmap.h | 10 ++++++++++
+ tools/lib/bitmap.c           | 15 +++++++++++++++
+ tools/lib/lockdep/Build      |  2 +-
+ 3 files changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 6662c1aab9b2..178315b2758b 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -645,7 +645,8 @@ struct vmx_uret_msr *vmx_find_uret_msr(struct vcpu_vmx *vmx, u32 msr)
- 	return NULL;
+diff --git a/tools/include/linux/bitmap.h b/tools/include/linux/bitmap.h
+index 477a1cae513f2..ab5df035f8eda 100644
+--- a/tools/include/linux/bitmap.h
++++ b/tools/include/linux/bitmap.h
+@@ -18,6 +18,8 @@ int __bitmap_and(unsigned long *dst, const unsigned long *bitmap1,
+ int __bitmap_equal(const unsigned long *bitmap1,
+ 		   const unsigned long *bitmap2, unsigned int bits);
+ void bitmap_clear(unsigned long *map, unsigned int start, int len);
++int __bitmap_andnot(unsigned long *dst, const unsigned long *bitmap1,
++			const unsigned long *bitmap2, unsigned int bits);
+ 
+ #define BITMAP_FIRST_WORD_MASK(start) (~0UL << ((start) & (BITS_PER_LONG - 1)))
+ 
+@@ -178,4 +180,12 @@ static inline int bitmap_equal(const unsigned long *src1,
+ 	return __bitmap_equal(src1, src2, nbits);
  }
  
--static int vmx_set_guest_msr(struct vcpu_vmx *vmx, struct vmx_uret_msr *msr, u64 data)
-+static int vmx_set_guest_uret_msr(struct vcpu_vmx *vmx,
-+				  struct vmx_uret_msr *msr, u64 data)
- {
- 	int ret = 0;
++static inline int bitmap_andnot(unsigned long *dst, const unsigned long *src1,
++                        const unsigned long *src2, unsigned int nbits)
++{
++	if (small_const_nbits(nbits))
++		return (*dst = *src1 & ~(*src2) & BITMAP_LAST_WORD_MASK(nbits)) != 0;
++	return __bitmap_andnot(dst, src1, src2, nbits);
++}
++
+ #endif /* _PERF_BITOPS_H */
+diff --git a/tools/lib/bitmap.c b/tools/lib/bitmap.c
+index 5043747ef6c5f..b6bc037623fc1 100644
+--- a/tools/lib/bitmap.c
++++ b/tools/lib/bitmap.c
+@@ -86,3 +86,18 @@ int __bitmap_equal(const unsigned long *bitmap1,
  
-@@ -2232,7 +2233,7 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 	find_uret_msr:
- 		msr = vmx_find_uret_msr(vmx, msr_index);
- 		if (msr)
--			ret = vmx_set_guest_msr(vmx, msr, data);
-+			ret = vmx_set_guest_uret_msr(vmx, msr, data);
- 		else
- 			ret = kvm_set_msr_common(vcpu, msr_info);
- 	}
-@@ -7282,7 +7283,7 @@ static void vmx_cpuid_update(struct kvm_vcpu *vcpu)
- 		msr = vmx_find_uret_msr(vmx, MSR_IA32_TSX_CTRL);
- 		if (msr) {
- 			bool enabled = guest_cpuid_has(vcpu, X86_FEATURE_RTM);
--			vmx_set_guest_msr(vmx, msr, enabled ? 0 : TSX_CTRL_RTM_DISABLE);
-+			vmx_set_guest_uret_msr(vmx, msr, enabled ? 0 : TSX_CTRL_RTM_DISABLE);
- 		}
- 	}
+ 	return 1;
  }
++
++int __bitmap_andnot(unsigned long *dst, const unsigned long *bitmap1,
++                                const unsigned long *bitmap2, unsigned int bits)
++{
++	unsigned int k;
++	unsigned int lim = bits/BITS_PER_LONG;
++	unsigned long result = 0;
++
++	for (k = 0; k < lim; k++)
++		result |= (dst[k] = bitmap1[k] & ~bitmap2[k]);
++	if (bits % BITS_PER_LONG)
++		result |= (dst[k] = bitmap1[k] & ~bitmap2[k] &
++			BITMAP_LAST_WORD_MASK(bits));
++	return result != 0;
++}
+diff --git a/tools/lib/lockdep/Build b/tools/lib/lockdep/Build
+index 6f667355b0687..219a9e2d9e0ba 100644
+--- a/tools/lib/lockdep/Build
++++ b/tools/lib/lockdep/Build
+@@ -1 +1 @@
+-liblockdep-y += common.o lockdep.o preload.o rbtree.o
++liblockdep-y += common.o lockdep.o preload.o rbtree.o ../../lib/bitmap.o
 -- 
-2.26.0
+2.25.1
 
