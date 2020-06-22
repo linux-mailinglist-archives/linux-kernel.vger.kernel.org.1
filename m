@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14AC4203FBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:00:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C816E203FD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:01:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730607AbgFVTAe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Jun 2020 15:00:34 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:40195 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730584AbgFVTAa (ORCPT
+        id S1730680AbgFVTBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 15:01:35 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22622 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730020AbgFVTBe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 15:00:30 -0400
-Received: by mail-oi1-f196.google.com with SMTP id t25so16597335oij.7;
-        Mon, 22 Jun 2020 12:00:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z59w5oiWxqTwMyQwuHYI8ey8CfTBnQaiPGy2tHrE1Oc=;
-        b=kRY6YDHpfLQEAztOC4Ywab6ilMvAmuAuWiSaXVUn22uJIEJvwHqhtDAmO1fj9jbNyJ
-         vz/LORpkiccAZOWYd5g8RUBpXOuoEbDEsbkt3YCI0M7Bwn2vhJenHHnJrhaasYTnEw+g
-         xGiHdj0fKc+xPIPCLO8bqHQiW7QH8vQ9YZrA1WG5eIEoUKQJE3udQJp8zP2SQH110Wdm
-         kiFl0W4FTpTaT8pj4AmDHWXXlaJ5A+OU+ee75dycJODC3q4AlZkiuI6Tjg5kIJD2XQXg
-         E9gimX1+bDJO6XJCCAtxiApHioh2dJMfVkMZ/Yu7zOiDad9BownqzrWLcyogJZoFnO8O
-         T40A==
-X-Gm-Message-State: AOAM532j3Dc4/LmfOzxI+9KevQH3wGW9+uFiueQ9yA+WoavbRng15CrH
-        HAz13jDPsMWz5ExnrIZH6fu+ANYsR5O/Ww7HJRO2sA==
-X-Google-Smtp-Source: ABdhPJwI07nEdURLpondejh5pGqI08dfdmqHKC9L6PmNZ7ntBKOHDPWXFaqyU2HpzIfswjDrRVT+XKP5PPe58sUQIKQ=
-X-Received: by 2002:aca:849:: with SMTP id 70mr13140333oii.153.1592852428711;
- Mon, 22 Jun 2020 12:00:28 -0700 (PDT)
+        Mon, 22 Jun 2020 15:01:34 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05MIWJxZ122180;
+        Mon, 22 Jun 2020 15:01:32 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31tyvucp16-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 15:01:32 -0400
+Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05MIWe11122980;
+        Mon, 22 Jun 2020 15:01:32 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31tyvucp0s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 15:01:32 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05MJ046U020167;
+        Mon, 22 Jun 2020 19:01:31 GMT
+Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
+        by ppma05wdc.us.ibm.com with ESMTP id 31sa38htam-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 19:01:31 +0000
+Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
+        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05MJ1SlX18350440
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Jun 2020 19:01:28 GMT
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 396A1BE054;
+        Mon, 22 Jun 2020 19:01:30 +0000 (GMT)
+Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A52DBBE053;
+        Mon, 22 Jun 2020 19:01:28 +0000 (GMT)
+Received: from swastik.ibm.com (unknown [9.160.110.135])
+        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 22 Jun 2020 19:01:28 +0000 (GMT)
+Subject: Re: [PATCH v2] ima: move APPRAISE_BOOTPARAM dependency on ARCH_POLICY
+ to runtime
+To:     Bruno Meneguele <bmeneg@redhat.com>
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zohar@linux.ibm.com, erichte@linux.ibm.com, nayna@linux.ibm.com,
+        stable@vger.kernel.org
+References: <20200622172754.10763-1-bmeneg@redhat.com>
+From:   Nayna <nayna@linux.vnet.ibm.com>
+Message-ID: <043e52d4-6835-c2c4-bc9d-d36ddb3db0e9@linux.vnet.ibm.com>
+Date:   Mon, 22 Jun 2020 15:01:27 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <CAMuHMdXHT9y09L19j2K=oQ1W+7x=SE7MEyjj6r1i=DPcokvWzg@mail.gmail.com>
- <20200617074023.30356-1-navid.emamdoost@gmail.com> <CAMuHMdULgdhgoydX-nnVSyCEBd4zkCgSyVZ+ojFzGM0gky6OJQ@mail.gmail.com>
- <CAMpxmJXV-Ujx2zgXxiYWOED2CYz_89aAiUUiqak1JbtNJKgSFg@mail.gmail.com>
-In-Reply-To: <CAMpxmJXV-Ujx2zgXxiYWOED2CYz_89aAiUUiqak1JbtNJKgSFg@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 22 Jun 2020 21:00:17 +0200
-Message-ID: <CAMuHMdV6oSWCt3+r-7X3VT7MkpxenYMvH1gHinU9nJUvKO3bsw@mail.gmail.com>
-Subject: Re: [PATCH v2] gpio: rcar: handle pm_runtime_get_sync failure case
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Navid Emamdoost <navid.emamdoost@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Navid Emamdoost <emamd001@umn.edu>,
-        Qiushi Wu <wu000273@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
-        mccamant@cs.umn.edu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20200622172754.10763-1-bmeneg@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-22_10:2020-06-22,2020-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 cotscore=-2147483648
+ clxscore=1011 mlxlogscore=999 spamscore=0 mlxscore=0 malwarescore=0
+ adultscore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 suspectscore=0 impostorscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006220122
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bartosz,
 
-On Mon, Jun 22, 2020 at 6:54 PM Bartosz Golaszewski
-<bgolaszewski@baylibre.com> wrote:
-> śr., 17 cze 2020 o 09:43 Geert Uytterhoeven <geert@linux-m68k.org> napisał(a):
-> > On Wed, Jun 17, 2020 at 9:40 AM Navid Emamdoost
-> > <navid.emamdoost@gmail.com> wrote:
-> > > Calling pm_runtime_get_sync increments the counter even in case of
-> > > failure, causing incorrect ref count. Call pm_runtime_put if
-> > > pm_runtime_get_sync fails.
-> > >
-> > > Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-> >
-> > Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+On 6/22/20 1:27 PM, Bruno Meneguele wrote:
+> IMA_APPRAISE_BOOTPARAM has been marked as dependent on !IMA_ARCH_POLICY in
+> compile time, enforcing the appraisal whenever the kernel had the arch
+> policy option enabled.
 >
-> Is this stable material?
+> However it breaks systems where the option is actually set but the system
+> wasn't booted in a "secure boot" platform. In this scenario, anytime the
+> an appraisal policy (i.e. ima_policy=appraisal_tcb) is used it will be
+> forced, giving no chance to the user set the 'fix' state (ima_appraise=fix)
+> to actually measure system's files.
+>
+> This patch remove this compile time dependency and move it to a runtime
+> decision, based on the arch policy loading failure/success.
 
-No, it cannot happen anyway.
+Thanks for looking at this.
 
-Gr{oetje,eeting}s,
+For arch specific policies, kernel signature verification is enabled 
+based on the secure boot state of the system. Perhaps, enforce the 
+appraisal as well based on if secure boot is enabled.
 
-                        Geert
+Thanks & Regards,
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+     - Nayna
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
