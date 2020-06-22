@@ -2,112 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BA0203096
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 09:23:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D051E2030A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 09:27:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731391AbgFVHXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 03:23:11 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:51895 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731310AbgFVHXK (ORCPT
+        id S1731390AbgFVH1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 03:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731360AbgFVH1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 03:23:10 -0400
-Received: from mail-qk1-f173.google.com ([209.85.222.173]) by
- mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
- id 1N5mOZ-1imNbr3LRr-017G92; Mon, 22 Jun 2020 09:23:09 +0200
-Received: by mail-qk1-f173.google.com with SMTP id z63so2571176qkb.8;
-        Mon, 22 Jun 2020 00:23:08 -0700 (PDT)
-X-Gm-Message-State: AOAM533FtBijGcTrtOkJi3oTOfrIFaN3Ii0dNUCTWz6GpY9qJR0aCuWl
-        BipsJ1TETOks0TyoHmJZTZOH/btYjUhKaArJRL4=
-X-Google-Smtp-Source: ABdhPJy4+PG/jO7wVUsFSfIpF5R/bWJiNgbXn/vFcnnPY0kXyJxZGx5a7B+H4vd/jRet/Oxk0DIvf3Vxob5pyRclbeM=
-X-Received: by 2002:a37:b484:: with SMTP id d126mr6037318qkf.394.1592810587540;
- Mon, 22 Jun 2020 00:23:07 -0700 (PDT)
+        Mon, 22 Jun 2020 03:27:49 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2241AC061795
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 00:27:49 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id s21so14745570oic.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 00:27:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=i3nL1FOZiHj0yAhZuO+cTGxj+n7PLyTcuScPp7qWic0=;
+        b=dnsjmqwHBtKGiOld1FMCqn5dRqN9aePTpgzT8zmcxrKfKdvQURQC6gYhBstXmbkspK
+         mMPfpw1xWrHynJ+sfv3AFJTWl1elALark/Kw0lPVyIvPHwNM/1YfyK31aIO0/z9pvj65
+         MVtPhKjORr2Fk46rpO9ulAs7BtXtCNqjxQaMSrWhU33MU3M1FeWVZ3WDeu6mCqlczb98
+         TvaCUmGZavaXMZC46rs09PCgu/dHuW5GuaKm7jkIgWYuaqpiSlWCV58i93XFQOEvnID7
+         lC7RRivzDmgEH4RjCcAixZUJBeAlPCCUda578U0D75/oZd7JLyahxlc8pyjlcZIqZ4Pr
+         iEyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i3nL1FOZiHj0yAhZuO+cTGxj+n7PLyTcuScPp7qWic0=;
+        b=TJph7Oq4YpMK5A9qWc92ZJAb0xha9GRKcCXx1mrwkKiik68T9Qu+2Pbl8HoX4HYZUc
+         aAaqdQAzFTpCEhq9uHr1QMIfYDNIUNJhec5zH38+wDBN09Z5MLJIAkOGuHP0MPXoJgkk
+         1l369wtjdvQKYTqsbvkp1zeUAZ/9MMRDGZ3z24bb+XV7V/GOwk0YiVRPsaU7ROwH5Rrd
+         vKQ4qH049ljtVJx6qSjA5f39mGIHvgV6+0/OxMIZd1dDQa0PnS+SDOPeMD46Fz038VSA
+         YqMM1qTaS4s+xhZzpCGvc0xTURFPWfw1MMTVdOuxzu6zMcjPLdQwzOSsn9CtwVqDkjnr
+         CYgQ==
+X-Gm-Message-State: AOAM533fRx+ZiXSQBOTGjFipl4uA/IdbGCLRYaBUJZ862U5RSAlwHh4w
+        6VGy748m7HSwKIQIRMNEiVzdpA==
+X-Google-Smtp-Source: ABdhPJwkNkIrZFl2zFX8mXQVZUpNLjPQIfXAMBF3MzPdeWB99FmyhgpY9JP4a4wvf14F7mTVhBDQJQ==
+X-Received: by 2002:aca:dec2:: with SMTP id v185mr11894603oig.171.1592810868372;
+        Mon, 22 Jun 2020 00:27:48 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id i72sm3015123oib.28.2020.06.22.00.27.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 00:27:47 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 00:25:02 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, loic.pallardy@st.com,
+        arnaud.pouliquen@st.com, s-anna@ti.com
+Subject: Re: [PATCH v4 5/9] remoteproc: Introducing function rproc_validate()
+Message-ID: <20200622072502.GG149351@builder.lan>
+References: <20200601175139.22097-1-mathieu.poirier@linaro.org>
+ <20200601175139.22097-6-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-References: <20200617092614.7897ccb2@canb.auug.org.au> <20200617092747.0cadb2de@canb.auug.org.au>
- <20200617055843.GB25631@kroah.com> <20200617161810.256ff93f@canb.auug.org.au> <20200622142512.702bdc68@canb.auug.org.au>
-In-Reply-To: <20200622142512.702bdc68@canb.auug.org.au>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Mon, 22 Jun 2020 09:22:51 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2UVN_p0JFj6mCRR8oig2dyeBF1-WVo_hCdy879Oup9yQ@mail.gmail.com>
-Message-ID: <CAK8P3a2UVN_p0JFj6mCRR8oig2dyeBF1-WVo_hCdy879Oup9yQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] Explicitly include linux/major.h where it is needed
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Linux-kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:fBwBo+t219rjGe+/E/Yy9L/qyDafIPU4CkHSJGF/y5sGmq4h1L6
- Oya/7JKMbDeHdy1j2+ShVeX1U5d1IS7gvcij2xlVkMvd9o5byULTJMT385qAMmuTZC0un/4
- cb7wXh1InsUSNm0sg2MFBXxx/kRtnkJfvrDGFHTUyBwSmmA0f3Ynq2xCCPKGqy3kAHlS4Gi
- GZGYZKMsoFAPYU18jGfCA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0+EXIFOA4Zk=:/DZlNc7lkgAx3su1tGXLfH
- SqS/kGgNFxhK3y6Gi8VufyRifA41wG2wCJ0+5S2IU8ekEtBLkk9dYocyvtlmC6OpswNzjJ7Vj
- grYpMFmk6B7d1n0ACf1EFyL/8btXZU4ixu7jzTpzeixnV/y9WlDelrv5u1Xqyqa+/dbC4TeUB
- cCSCg74UMYMd6UY2FINokCw8kBExsoZOBMVBZFH9X1p3kIfVYk9j8aXoZze6qVOaM7mmlpPr6
- KyDtjuvf46uDZNKP8AJ44C0NKXQySetq6JiDTNbawZYVrf1+ur9sooq22csGyFTDxEUrgQUZM
- BDQY1rMGBG95mBIC5OVvxkwrr797Tfp0LMWhDUxQHJnmM3BNsvtRUjz4v4I4jx7bzx1Qcksdx
- BCIqk3tv6oxVsg6lJU5UOg97oseji6xKbyp6dWNS+iVZaVZrrqZ8nQ2m5q9r5WpT/J+uCyEWK
- jHaCVaZ1KY2hEPARe+eLrrDi+EiVD7GG0Jfjnpk1tUuSH3gNNlL9MNPTUEvIcMq+ADV5QZ8st
- KwO7TVgYT+IqdexTArnd4CABdTTe7m+4ilAJXcThPqvWdg1aNtQak+Rj0VQ55O4i4e2aQSstH
- XZkMMDOWkdgII46Xncr5eOws4u52+PCVyo8cFCBypA+QKbQr/4iIRfgO6aAkgIiL5hQlO30xm
- Cu1eeXXGScuipiJA7tOyXDOe7pvoGF671MOJAzSHvALGfhBwgaLVfUipkr+RtDAh/L7UTHx9x
- Vrug4OqyvEFBZOAf/nt2gI3KPtjYZzZTmxVCZ2i6aq0JbAQM+qlUBi8TRV7P2KAnpVl3Empxt
- LBZiQXpPUttuys3Wt+7UCOywtAuFXqYMSziR1j8RNjTW2LvIAc=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200601175139.22097-6-mathieu.poirier@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 6:25 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> On Wed, 17 Jun 2020 16:18:10 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> > On Wed, 17 Jun 2020 07:58:43 +0200 Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > On Wed, Jun 17, 2020 at 09:27:47AM +1000, Stephen Rothwell wrote:
-> > > > This is in preparation for removing the include of major.h where it is
-> > > > not needed.
-> > > >
-> > > > These files were found using
-> > > >
-> > > >   grep -E -L '[<"](uapi/)?linux/major\.h' $(git grep -l -w -f /tmp/xx)
-> > > >
-> > > > where /tmp/xx contains all the symbols defined in major.h.  There were
-> > > > a couple of files in that list that did not need the include since the
-> > > > references are in comments.
-> > > >
-> > > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> > >
-> > > Any reason this had an RFC, but patch 2/2 did not?
-> >
-> > I forgot :-)  I added RFC just to hopefully get some attention as this
-> > is just the start of a long slow use of my "spare" time.
-> >
-> > > They look good to me, I will be glad to take these, but do you still
-> > > want reviews from others for this?  It seems simple enough to me...
-> >
-> > Yeah, well, we all know the simplest patches usually cause the most pain :-)
-> >
-> > However, I have been fairly careful and it is an easy include file to
-> > work with.  And I have done my usual build checks, so the linux-next
-> > maintainer won't complain about build problems :-)
-> >
-> > I would like to hear from Arnd, at least, as I don't want to step on
-> > his toes (he is having a larger look at our include files).
->
-> Any comment?
+On Mon 01 Jun 10:51 PDT 2020, Mathieu Poirier wrote:
 
-I now have a set of regex/header file pairs and a script that automatically
-adds the #include statements to any source file that needs them as a
-preparation for a larger-scale cleanup. Your change is going in the
-same direction, and linux/major.h is a header that was not on my list
-yet, so I'm completely happy with this.
+> Add a new function to assert the general health of the remote
+> processor before handing it to the remoteproc core.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 45 ++++++++++++++++++++++++++++
+>  1 file changed, 45 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index c70fa0372d07..0be8343dd851 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -2060,6 +2060,47 @@ struct rproc *rproc_get_by_phandle(phandle phandle)
+>  #endif
+>  EXPORT_SYMBOL(rproc_get_by_phandle);
+>  
+> +static int rproc_validate(struct rproc *rproc)
+> +{
+> +	/*
+> +	 * When adding a remote processor, the state of the device
+> +	 * can be offline or detached, nothing else.
+> +	 */
+> +	if (rproc->state != RPROC_OFFLINE &&
+> +	    rproc->state != RPROC_DETACHED)
+> +		goto inval;
 
-One thing that I did differently in my script is to insert the new #include
-statement in a way that retains alphabetical ordering of the other inclusions
-rather than adding it at the end.
+I would prefer that you just return -EINVAL; directly.
 
-If the headers were not sorted before, it just tries a trivial nearest match,
-adding it somewhat randomly, but it would still avoid some clashes with
-patches that add different headers at the end or that add the same header
-using the same method.
+Overall I think this would be better represented as a switch on
+rproc->state though.
 
-      Arnd
+
+I think the logic is sound though.
+
+Regards,
+Bjorn
+
+> +
+> +	if (rproc->state == RPROC_OFFLINE) {
+> +		/*
+> +		 * An offline processor without a start()
+> +		 * function makes no sense.
+> +		 */
+> +		if (!rproc->ops->start)
+> +			goto inval;
+> +	}
+> +
+> +	if (rproc->state == RPROC_DETACHED) {
+> +		/*
+> +		 * A remote processor in a detached state without an
+> +		 * attach() function makes not sense.
+> +		 */
+> +		if (!rproc->ops->attach)
+> +			goto inval;
+> +		/*
+> +		 * When attaching to a remote processor the device memory
+> +		 * is already available and as such there is no need to have a
+> +		 * cached table.
+> +		 */
+> +		if (rproc->cached_table)
+> +			goto inval;
+> +	}
+> +
+> +	return 0;
+> +
+> +inval:
+> +	return -EINVAL;
+> +}
+> +
+>  /**
+>   * rproc_add() - register a remote processor
+>   * @rproc: the remote processor handle to register
+> @@ -2089,6 +2130,10 @@ int rproc_add(struct rproc *rproc)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> +	ret = rproc_validate(rproc);
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	dev_info(dev, "%s is available\n", rproc->name);
+>  
+>  	/* create debugfs entries */
+> -- 
+> 2.20.1
+> 
