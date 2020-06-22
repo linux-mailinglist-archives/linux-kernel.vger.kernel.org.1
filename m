@@ -2,117 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC3E202F2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 06:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991BC202F43
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 06:28:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbgFVEZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 00:25:18 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:40997 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725943AbgFVEZQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 00:25:16 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49qxCZ42vcz9sSF;
-        Mon, 22 Jun 2020 14:25:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1592799914;
-        bh=81fk/3JF3x95g9UbYd0X5h2GkzbHPz5gmaEBxnj+jVM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eVLEF0MfrgFcjT4UopaKCdZqhjZCBkC8sCydLQ9rpzF8hQlysIiUlrEhVRRu1KbPu
-         xLQQKCzCgIn7jEHOh3zAUoxbqXhOWaE1C6lD5XEfLw03+d04InVN2f2k0y006OXJZn
-         HAXk8fJBbAm74ej4N0yssS0FE5AL5ZVMLQBTsD9Dplb9KDTLp2L82yHtZZ6TiBWn78
-         5T9XTcQZ10MiHxXSnmq2zpRJSZevl5teeqK3RrmfwwRAOD8e1q2qbtg64iMMDAP5s8
-         61qgMbTW9OJ1zi7aCJkktsNpFWKpuBsKC2Rc7yuytFLhL7fMCUeBZXEv8bYOmM7vit
-         uyoJrcO9LIIIw==
-Date:   Mon, 22 Jun 2020 14:25:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Linux-kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] Explicitly include linux/major.h where it is
- needed
-Message-ID: <20200622142512.702bdc68@canb.auug.org.au>
-In-Reply-To: <20200617161810.256ff93f@canb.auug.org.au>
-References: <20200617092614.7897ccb2@canb.auug.org.au>
-        <20200617092747.0cadb2de@canb.auug.org.au>
-        <20200617055843.GB25631@kroah.com>
-        <20200617161810.256ff93f@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4E7sxZ+o7+5.7k+KqzAJoZd";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1726356AbgFVE2k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 00:28:40 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:15666 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725767AbgFVE2i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 00:28:38 -0400
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 21 Jun 2020 21:28:37 -0700
+Received: from sivaprak-linux.qualcomm.com ([10.201.3.202])
+  by ironmsg01-sd.qualcomm.com with ESMTP; 21 Jun 2020 21:28:33 -0700
+Received: by sivaprak-linux.qualcomm.com (Postfix, from userid 459349)
+        id D187021844; Mon, 22 Jun 2020 09:58:31 +0530 (IST)
+From:   Sivaprakash Murugesan <sivaprak@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        sivaprak@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH V8 0/4] Add APSS clock controller support for IPQ6018
+Date:   Mon, 22 Jun 2020 09:58:08 +0530
+Message-Id: <1592800092-20533-1-git-send-email-sivaprak@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4E7sxZ+o7+5.7k+KqzAJoZd
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+The CPU on Qualcomm's IPQ6018 devices are primarily fed by APSS PLL and XO,
+these are connected to a clock mux and enable block.
 
-Hi Arnd,
+This patch series adds support for these clocks and inturn enables clocks
+required for CPU freq.
 
-On Wed, 17 Jun 2020 16:18:10 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Wed, 17 Jun 2020 07:58:43 +0200 Greg KH <gregkh@linuxfoundation.org> w=
-rote:
-> >
-> > On Wed, Jun 17, 2020 at 09:27:47AM +1000, Stephen Rothwell wrote: =20
-> > > This is in preparation for removing the include of major.h where it is
-> > > not needed.
-> > >=20
-> > > These files were found using
-> > >=20
-> > > 	grep -E -L '[<"](uapi/)?linux/major\.h' $(git grep -l -w -f /tmp/xx)
-> > >=20
-> > > where /tmp/xx contains all the symbols defined in major.h.  There were
-> > > a couple of files in that list that did not need the include since the
-> > > references are in comments.
-> > >=20
-> > > Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>   =20
-> >=20
-> > Any reason this had an RFC, but patch 2/2 did not? =20
->=20
-> I forgot :-)  I added RFC just to hopefully get some attention as this
-> is just the start of a long slow use of my "spare" time.
->=20
-> > They look good to me, I will be glad to take these, but do you still
-> > want reviews from others for this?  It seems simple enough to me... =20
->=20
-> Yeah, well, we all know the simplest patches usually cause the most pain =
-:-)
->=20
-> However, I have been fairly careful and it is an easy include file to
-> work with.  And I have done my usual build checks, so the linux-next
-> maintainer won't complain about build problems :-)
->=20
-> I would like to hear from Arnd, at least, as I don't want to step on
-> his toes (he is having a larger look at our include files).
+[V8]
+ * In patch 1 changed compatible string from const to enum
+ * Since this change is minimal retained Review tag from Rob
+ * In patch 3 re added Ack from Rob
+[V7]
+ * Removed dts patch from this series, will send that separately
+ * Addressed Rob's minor comment on the binding
+ * Patch 1 depends on a53 pll bindings
+   https://lkml.org/lkml/2020/5/4/60
+[V6]
+ * Split mailbox driver from this series, mailbox changes will sent as a
+   separate series
+ * Addressed review comments from Stephen
+[V5]
+ * Addressed Bjorn comments on apss clk and dt-bindings
+ * Patch 2 depends on a53 pll dt-bindings
+   https://www.spinics.net/lists/linux-clk/msg48358.html  
+[V4]
+ * Re-written PLL found on IPQ platforms as a separate driver
+ * Addressed stephen's comments on apss clock controller and pll
+ * Addressed Rob's review comments on bindings
+ * moved a53 pll binding from this series as it is not applicable, will send
+   it separately.
+[V3]
+ * Fixed dt binding check error in patch2
+   dt-bindings: clock: Add YAML schemas for QCOM A53 PLL
+[V2]
+ * Restructred the patch series as there are two different HW blocks,
+   the mux and enable belongs to the apcs block and PLL has a separate HW
+   block.
+ * Converted qcom mailbox and qcom a53 pll documentation to yaml.
+ * Addressed review comments from Stephen, Rob and Sibi where it is applicable.
+ * Changed this cover letter to state the purpose of this patch series
 
-Any comment?
+Sivaprakash Murugesan (4):
+  dt-bindings: clock: add ipq6018 a53 pll compatible
+  clk: qcom: Add ipq apss pll driver
+  clk: qcom: Add DT bindings for ipq6018 apss clock controller
+  clk: qcom: Add ipq6018 apss clock controller
 
---=20
-Cheers,
-Stephen Rothwell
+ .../devicetree/bindings/clock/qcom,a53pll.yaml     |  18 ++++
+ drivers/clk/qcom/Kconfig                           |  19 ++++
+ drivers/clk/qcom/Makefile                          |   2 +
+ drivers/clk/qcom/apss-ipq-pll.c                    |  95 ++++++++++++++++++
+ drivers/clk/qcom/apss-ipq6018.c                    | 106 +++++++++++++++++++++
+ include/dt-bindings/clock/qcom,apss-ipq.h          |  12 +++
+ 6 files changed, 252 insertions(+)
+ create mode 100644 drivers/clk/qcom/apss-ipq-pll.c
+ create mode 100644 drivers/clk/qcom/apss-ipq6018.c
+ create mode 100644 include/dt-bindings/clock/qcom,apss-ipq.h
 
---Sig_/4E7sxZ+o7+5.7k+KqzAJoZd
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+-- 
+2.7.4
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7wMqgACgkQAVBC80lX
-0GxoIAf+KqJYIQ6vTc/0E/3RWnBpf5RrYu0GH9BW7ka5MpfFK4pMfzJzcpt2TWeL
-O6efiNJ/SyHHA5BpeNsO/PLaYQH1uuXrOndVYqDzgC+9tOXzNNcg/QMbjV6R1krq
-VzdB0kRGcNvEO2dvHPVJeon6/CYuQsG4+TJKX80scHRRF0ASD6xE9WeiT9pIUlUB
-NUnjCkkVvYZnBJ+xkgwObQDlwCyODwQd0pgwQnsv/JC8+mOBvK79bxzWAoVQILai
-5mZOAn6Y/dyQyt8IITo4s3bcSLRr/W3bGFcS90h8aKdBc4xp3olDQAMnxJrUp+gn
-FAFRytt45UvyyiVGypIKzFMcHadQAg==
-=dZlI
------END PGP SIGNATURE-----
-
---Sig_/4E7sxZ+o7+5.7k+KqzAJoZd--
