@@ -2,695 +2,437 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9106F20317C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C10203174
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726384AbgFVII1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 04:08:27 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:44998 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726000AbgFVIIV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 04:08:21 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
+        id S1725824AbgFVIIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 04:08:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42626 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725807AbgFVIIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 04:08:10 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id AAE3720021;
-        Mon, 22 Jun 2020 10:08:03 +0200 (CEST)
+        by mail.kernel.org (Postfix) with ESMTPSA id F0B69207F5;
+        Mon, 22 Jun 2020 08:08:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592813289;
+        bh=SHCChp+bNlXWNoLAsNGuULN4WuQ9DOcslf9/ORLAUaI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=PBu/4N1wzSXm2axq7XmxtLyhQ282GrhRYcJIiyAvWZbtkntra/gNnNJ1KmRJ8LEaQ
+         /OK0rhA0Le7tRcyEeR+Wb71j7ZUkEhZi7FvXpJa9RKTYXT35z4TT4p7vfYhTMJ63Um
+         l++JtvnGeyHsg1TZQOQRW2o9p1NTpypJQCFxjHGA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 4.4.228
 Date:   Mon, 22 Jun 2020 10:08:02 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
-        linux-sunxi@googlegroups.com,
-        Thierry Reding <thierry.reding@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Icenowy Zheng <icenowy@aosc.io>, devicetree@vger.kernel.org,
-        Samuel Holland <samuel@sholland.org>,
-        Bhushan Shah <bshah@kde.org>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, Luca Weiss <luca@z3ntu.xyz>,
-        Martijn Braam <martijn@brixit.nl>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v4 3/5] drm: panel: Add Xingbangda XBD599 panel (ST7703
- controller)
-Message-ID: <20200622080802.GA650963@ravnborg.org>
-References: <20200617003209.670819-1-megous@megous.com>
- <20200617003209.670819-4-megous@megous.com>
- <20200620212529.GB74146@ravnborg.org>
- <20200620223010.fqjwijiixxkewk3p@core.my.home>
+Message-Id: <1592813282186118@kroah.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200620223010.fqjwijiixxkewk3p@core.my.home>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=edQTgYMH c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=IkcTkHD0fZMA:10 a=J_fg_7IlAAAA:8 a=e5mUnYsNAAAA:8
-        a=rpfOPJV_7YADzv3fI4AA:9 a=9TJecaD38D1O3S5X:21 a=qYyW2_D2GT2v-q_M:21
-        a=QEXdDO2ut3YA:10 a=zGOw-GkVl6h1W4ZARoUA:22 a=Vxmtnl_E_bksehYqCbjh:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jun 21, 2020 at 12:30:10AM +0200, Ondřej Jirman wrote:
-> On Sat, Jun 20, 2020 at 11:25:29PM +0200, Sam Ravnborg wrote:
-> > Hi Ondrej et al.
-> > 
-> > On Wed, Jun 17, 2020 at 02:32:07AM +0200, Ondrej Jirman wrote:
-> > > From: Icenowy Zheng <icenowy@aosc.io>
-> > > 
-> > > Xingbangda XBD599 is a 5.99" 720x1440 MIPI-DSI IPS LCD panel made by
-> > > Xingbangda, which is used on PinePhone final assembled phones.
-> > > 
-> > > It is based on Sitronix ST7703 LCD controller.
-> > 
-> > I am a little late to the game here - so sorry if this has been
-> > discussed before.
-> > We already have panel-rocktech-jh057n00900.c which is a panle driver
-> > based on st7703.
-> > Why is it we need a new driver?
-> 
-> No reason other than the driver not being named after the controller,
-> so I didn't notice.
-> 
-> > Would it not be better to have one st7703 driver that suipports both
-> > panels?
-> >
-> > The driver would need dedicated init functions depending on the panel.
-> > But a lot could also be shared.
-> 
-> I guess I can move the code there. 
-In the same process the river should then be renamed to follow other
-sitronix based drivers.
-So the next developer will recognize this and use the correct driver.
+I'm announcing the release of the 4.4.228 kernel.
 
-	Sam
+All users of the 4.4 kernel series must upgrade.
 
-> 
-> regards,
-> 	o.
-> 
-> > 	Sam
-> > 
-> > > 
-> > > Add support for it.
-> > > 
-> > > Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-> > > Signed-off-by: Ondrej Jirman <megous@megous.com>
-> > > ---
-> > >  drivers/gpu/drm/panel/Kconfig                 |  10 +
-> > >  drivers/gpu/drm/panel/Makefile                |   1 +
-> > >  drivers/gpu/drm/panel/panel-sitronix-st7703.c | 535 ++++++++++++++++++
-> > >  3 files changed, 546 insertions(+)
-> > >  create mode 100644 drivers/gpu/drm/panel/panel-sitronix-st7703.c
-> > > 
-> > > diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
-> > > index 39055c1f0e2f..b7bc157b0612 100644
-> > > --- a/drivers/gpu/drm/panel/Kconfig
-> > > +++ b/drivers/gpu/drm/panel/Kconfig
-> > > @@ -395,6 +395,16 @@ config DRM_PANEL_SITRONIX_ST7701
-> > >  	  ST7701 controller for 480X864 LCD panels with MIPI/RGB/SPI
-> > >  	  system interfaces.
-> > >  
-> > > +config DRM_PANEL_SITRONIX_ST7703
-> > > +	tristate "Sitronix ST7703 panel driver"
-> > > +	depends on OF
-> > > +	depends on DRM_MIPI_DSI
-> > > +	depends on BACKLIGHT_CLASS_DEVICE
-> > > +	help
-> > > +	  Say Y here if you want to enable support for the Sitronix
-> > > +	  ST7703 controller for 720X1440 LCD panels with MIPI/RGB/SPI
-> > > +	  system interfaces.
-> > > +
-> > >  config DRM_PANEL_SITRONIX_ST7789V
-> > >  	tristate "Sitronix ST7789V panel"
-> > >  	depends on OF && SPI
-> > > diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
-> > > index de74f282c433..47f4789a8685 100644
-> > > --- a/drivers/gpu/drm/panel/Makefile
-> > > +++ b/drivers/gpu/drm/panel/Makefile
-> > > @@ -41,6 +41,7 @@ obj-$(CONFIG_DRM_PANEL_SHARP_LQ101R1SX01) += panel-sharp-lq101r1sx01.o
-> > >  obj-$(CONFIG_DRM_PANEL_SHARP_LS037V7DW01) += panel-sharp-ls037v7dw01.o
-> > >  obj-$(CONFIG_DRM_PANEL_SHARP_LS043T1LE01) += panel-sharp-ls043t1le01.o
-> > >  obj-$(CONFIG_DRM_PANEL_SITRONIX_ST7701) += panel-sitronix-st7701.o
-> > > +obj-$(CONFIG_DRM_PANEL_SITRONIX_ST7703) += panel-sitronix-st7703.o
-> > >  obj-$(CONFIG_DRM_PANEL_SITRONIX_ST7789V) += panel-sitronix-st7789v.o
-> > >  obj-$(CONFIG_DRM_PANEL_SONY_ACX424AKP) += panel-sony-acx424akp.o
-> > >  obj-$(CONFIG_DRM_PANEL_SONY_ACX565AKM) += panel-sony-acx565akm.o
-> > > diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7703.c b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
-> > > new file mode 100644
-> > > index 000000000000..dbd46b6c0b46
-> > > --- /dev/null
-> > > +++ b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
-> > > @@ -0,0 +1,535 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +/*
-> > > + * DRM driver for Sitronix ST7703 MIPI DSI panel
-> > > + *
-> > > + * Copyright (C) 2020 Ondrej Jirman <megous@megous.com>
-> > > + * Copyright (C) 2019-2020 Icenowy Zheng <icenowy@aosc.io>
-> > > + *
-> > > + * Based on panel-rocktech-jh057n00900.c, which is:
-> > > + *   Copyright (C) Purism SPC 2019
-> > > + */
-> > > +
-> > > +#include <linux/delay.h>
-> > > +#include <linux/gpio/consumer.h>
-> > > +#include <linux/mod_devicetable.h>
-> > > +#include <linux/module.h>
-> > > +#include <linux/of_device.h>
-> > > +#include <linux/regulator/consumer.h>
-> > > +
-> > > +#include <drm/drm_mipi_dsi.h>
-> > > +#include <drm/drm_modes.h>
-> > > +#include <drm/drm_panel.h>
-> > > +#include <drm/drm_print.h>
-> > > +
-> > > +/* Manufacturer specific DCS commands */
-> > > +#define ST7703_CMD_SETDISP	0xB2
-> > > +#define ST7703_CMD_SETRGBIF	0xB3
-> > > +#define ST7703_CMD_SETCYC	0xB4
-> > > +#define ST7703_CMD_SETBGP	0xB5
-> > > +#define ST7703_CMD_SETVCOM	0xB6
-> > > +#define ST7703_CMD_SETOTP	0xB7
-> > > +#define ST7703_CMD_SETPOWER_EXT	0xB8
-> > > +#define ST7703_CMD_SETEXTC	0xB9
-> > > +#define ST7703_CMD_SETMIPI	0xBA
-> > > +#define ST7703_CMD_SETVDC	0xBC
-> > > +#define ST7703_CMD_UNK_BF	0xBF
-> > > +#define ST7703_CMD_SETSCR	0xC0
-> > > +#define ST7703_CMD_SETPOWER	0xC1
-> > > +#define ST7703_CMD_UNK_C6	0xC6
-> > > +#define ST7703_CMD_SETPANEL	0xCC
-> > > +#define ST7703_CMD_RDID1	0xDA
-> > > +#define ST7703_CMD_RDID2	0xDB
-> > > +#define ST7703_CMD_RDID3	0xDC
-> > > +#define ST7703_CMD_SETGAMMA	0xE0
-> > > +#define ST7703_CMD_SETEQ	0xE3
-> > > +#define ST7703_CMD_SETGIP1	0xE9
-> > > +#define ST7703_CMD_SETGIP2	0xEA
-> > > +
-> > > +struct st7703_panel_desc {
-> > > +	const struct drm_display_mode *mode;
-> > > +	unsigned int lanes;
-> > > +	unsigned long flags;
-> > > +	enum mipi_dsi_pixel_format format;
-> > > +	const char *const *supply_names;
-> > > +	unsigned int num_supplies;
-> > > +};
-> > > +
-> > > +struct st7703 {
-> > > +	struct device *dev;
-> > > +	struct drm_panel panel;
-> > > +	struct gpio_desc *reset_gpio;
-> > > +	struct regulator_bulk_data *supplies;
-> > > +	const struct st7703_panel_desc *desc;
-> > > +	bool prepared;
-> > > +};
-> > > +
-> > > +static inline struct st7703 *panel_to_st7703(struct drm_panel *panel)
-> > > +{
-> > > +	return container_of(panel, struct st7703, panel);
-> > > +}
-> > > +
-> > > +#define dsi_dcs_write_seq(dsi, cmd, seq...) do {			\
-> > > +		static const u8 d[] = { seq };				\
-> > > +		int ret;						\
-> > > +		ret = mipi_dsi_dcs_write(dsi, cmd, d, ARRAY_SIZE(d));	\
-> > > +		if (ret < 0)						\
-> > > +			return ret;					\
-> > > +	} while (0)
-> > > +
-> > > +
-> > > +static int st7703_init_sequence(struct st7703 *ctx)
-> > > +{
-> > > +	struct mipi_dsi_device *dsi = to_mipi_dsi_device(ctx->dev);
-> > > +	struct device *dev = ctx->dev;
-> > > +
-> > > +	/*
-> > > +	 * Init sequence was supplied by the panel vendor.
-> > > +	 */
-> > > +
-> > > +	/* Magic sequence to unlock user commands below. */
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETEXTC, 0xF1, 0x12, 0x83);
-> > > +
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETMIPI,
-> > > +			  0x33, /* VC_main = 0, Lane_Number = 3 (4 lanes) */
-> > > +			  0x81, /* DSI_LDO_SEL = 1.7V, RTERM = 90 Ohm */
-> > > +			  0x05, /* IHSRX = x6 (Low High Speed driving ability) */
-> > > +			  0xF9, /* TX_CLK_SEL = fDSICLK/16 */
-> > > +			  0x0E, /* HFP_OSC (min. HFP number in DSI mode) */
-> > > +			  0x0E, /* HBP_OSC (min. HBP number in DSI mode) */
-> > > +			  /* The rest is undocumented in ST7703 datasheet */
-> > > +			  0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > > +			  0x44, 0x25, 0x00, 0x91, 0x0a, 0x00, 0x00, 0x02,
-> > > +			  0x4F, 0x11, 0x00, 0x00, 0x37);
-> > > +
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETPOWER_EXT,
-> > > +			  0x25, /* PCCS = 2, ECP_DC_DIV = 1/4 HSYNC */
-> > > +			  0x22, /* DT = 15ms XDK_ECP = x2 */
-> > > +			  0x20, /* PFM_DC_DIV = /1 */
-> > > +			  0x03  /* ECP_SYNC_EN = 1, VGX_SYNC_EN = 1 */);
-> > > +
-> > > +	/* RGB I/F porch timing */
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETRGBIF,
-> > > +			  0x10, /* VBP_RGB_GEN */
-> > > +			  0x10, /* VFP_RGB_GEN */
-> > > +			  0x05, /* DE_BP_RGB_GEN */
-> > > +			  0x05, /* DE_FP_RGB_GEN */
-> > > +			  /* The rest is undocumented in ST7703 datasheet */
-> > > +			  0x03, 0xFF,
-> > > +			  0x00, 0x00,
-> > > +			  0x00, 0x00);
-> > > +
-> > > +	/* Source driving settings. */
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETSCR,
-> > > +			  0x73, /* N_POPON */
-> > > +			  0x73, /* N_NOPON */
-> > > +			  0x50, /* I_POPON */
-> > > +			  0x50, /* I_NOPON */
-> > > +			  0x00, /* SCR[31,24] */
-> > > +			  0xC0, /* SCR[23,16] */
-> > > +			  0x08, /* SCR[15,8] */
-> > > +			  0x70, /* SCR[7,0] */
-> > > +			  0x00  /* Undocumented */);
-> > > +
-> > > +	/* NVDDD_SEL = -1.8V, VDDD_SEL = out of range (possibly 1.9V?) */
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETVDC, 0x4E);
-> > > +
-> > > +	/*
-> > > +	 * SS_PANEL = 1 (reverse scan), GS_PANEL = 0 (normal scan)
-> > > +	 * REV_PANEL = 1 (normally black panel), BGR_PANEL = 1 (BGR)
-> > > +	 */
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETPANEL, 0x0B);
-> > > +
-> > > +	/* Zig-Zag Type C column inversion. */
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETCYC, 0x80);
-> > > +
-> > > +	/* Set display resolution. */
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETDISP,
-> > > +			  0xF0, /* NL = 240 */
-> > > +			  0x12, /* RES_V_LSB = 0, BLK_CON = VSSD,
-> > > +				 * RESO_SEL = 720RGB
-> > > +				 */
-> > > +			  0xF0  /* WHITE_GND_EN = 1 (GND),
-> > > +				 * WHITE_FRAME_SEL = 7 frames,
-> > > +				 * ISC = 0 frames
-> > > +				 */);
-> > > +
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETEQ,
-> > > +			  0x00, /* PNOEQ */
-> > > +			  0x00, /* NNOEQ */
-> > > +			  0x0B, /* PEQGND */
-> > > +			  0x0B, /* NEQGND */
-> > > +			  0x10, /* PEQVCI */
-> > > +			  0x10, /* NEQVCI */
-> > > +			  0x00, /* PEQVCI1 */
-> > > +			  0x00, /* NEQVCI1 */
-> > > +			  0x00, /* reserved */
-> > > +			  0x00, /* reserved */
-> > > +			  0xFF, /* reserved */
-> > > +			  0x00, /* reserved */
-> > > +			  0xC0, /* ESD_DET_DATA_WHITE = 1, ESD_WHITE_EN = 1 */
-> > > +			  0x10  /* SLPIN_OPTION = 1 (no need vsync after sleep-in)
-> > > +				 * VEDIO_NO_CHECK_EN = 0
-> > > +				 * ESD_WHITE_GND_EN = 0
-> > > +				 * ESD_DET_TIME_SEL = 0 frames
-> > > +				 */);
-> > > +
-> > > +	/* Undocumented command. */
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_UNK_C6, 0x01, 0x00, 0xFF, 0xFF, 0x00);
-> > > +
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETPOWER,
-> > > +			  0x74, /* VBTHS, VBTLS: VGH = 17V, VBL = -11V */
-> > > +			  0x00, /* FBOFF_VGH = 0, FBOFF_VGL = 0 */
-> > > +			  0x32, /* VRP  */
-> > > +			  0x32, /* VRN */
-> > > +			  0x77, /* reserved */
-> > > +			  0xF1, /* APS = 1 (small),
-> > > +				 * VGL_DET_EN = 1, VGH_DET_EN = 1,
-> > > +				 * VGL_TURBO = 1, VGH_TURBO = 1
-> > > +				 */
-> > > +			  0xFF, /* VGH1_L_DIV, VGL1_L_DIV (1.5MHz) */
-> > > +			  0xFF, /* VGH1_R_DIV, VGL1_R_DIV (1.5MHz) */
-> > > +			  0xCC, /* VGH2_L_DIV, VGL2_L_DIV (2.6MHz) */
-> > > +			  0xCC, /* VGH2_R_DIV, VGL2_R_DIV (2.6MHz) */
-> > > +			  0x77, /* VGH3_L_DIV, VGL3_L_DIV (4.5MHz) */
-> > > +			  0x77  /* VGH3_R_DIV, VGL3_R_DIV (4.5MHz) */);
-> > > +
-> > > +	/* Reference voltage. */
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETBGP,
-> > > +			  0x07, /* VREF_SEL = 4.2V */
-> > > +			  0x07  /* NVREF_SEL = 4.2V */);
-> > > +
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETVCOM,
-> > > +			  0x2C, /* VCOMDC_F = -0.67V */
-> > > +			  0x2C  /* VCOMDC_B = -0.67V */);
-> > > +
-> > > +	/* Undocumented command. */
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_UNK_BF, 0x02, 0x11, 0x00);
-> > > +
-> > > +	/* This command is to set forward GIP timing. */
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETGIP1,
-> > > +			  0x82, 0x10, 0x06, 0x05, 0xA2, 0x0A, 0xA5, 0x12,
-> > > +			  0x31, 0x23, 0x37, 0x83, 0x04, 0xBC, 0x27, 0x38,
-> > > +			  0x0C, 0x00, 0x03, 0x00, 0x00, 0x00, 0x0C, 0x00,
-> > > +			  0x03, 0x00, 0x00, 0x00, 0x75, 0x75, 0x31, 0x88,
-> > > +			  0x88, 0x88, 0x88, 0x88, 0x88, 0x13, 0x88, 0x64,
-> > > +			  0x64, 0x20, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88,
-> > > +			  0x02, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > > +			  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
-> > > +
-> > > +	/* This command is to set backward GIP timing. */
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETGIP2,
-> > > +			  0x02, 0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > > +			  0x00, 0x00, 0x00, 0x00, 0x02, 0x46, 0x02, 0x88,
-> > > +			  0x88, 0x88, 0x88, 0x88, 0x88, 0x64, 0x88, 0x13,
-> > > +			  0x57, 0x13, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88,
-> > > +			  0x75, 0x88, 0x23, 0x14, 0x00, 0x00, 0x02, 0x00,
-> > > +			  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-> > > +			  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x0A,
-> > > +			  0xA5, 0x00, 0x00, 0x00, 0x00);
-> > > +
-> > > +	/* Adjust the gamma characteristics of the panel. */
-> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETGAMMA,
-> > > +			  0x00, 0x09, 0x0D, 0x23, 0x27, 0x3C, 0x41, 0x35,
-> > > +			  0x07, 0x0D, 0x0E, 0x12, 0x13, 0x10, 0x12, 0x12,
-> > > +			  0x18, 0x00, 0x09, 0x0D, 0x23, 0x27, 0x3C, 0x41,
-> > > +			  0x35, 0x07, 0x0D, 0x0E, 0x12, 0x13, 0x10, 0x12,
-> > > +			  0x12, 0x18);
-> > > +
-> > > +	DRM_DEV_DEBUG_DRIVER(dev, "Panel init sequence done\n");
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int st7703_read_id(struct st7703 *ctx)
-> > > +{
-> > > +	struct mipi_dsi_device *dsi = to_mipi_dsi_device(ctx->dev);
-> > > +	u8 id1, id2, id3;
-> > > +	int ret;
-> > > +
-> > > +	ret = mipi_dsi_dcs_read(dsi, ST7703_CMD_RDID1, &id1, 1);
-> > > +	if (ret < 0) {
-> > > +		DRM_DEV_ERROR(ctx->dev, "could not read ID1\n");
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	ret = mipi_dsi_dcs_read(dsi, ST7703_CMD_RDID2, &id2, 1);
-> > > +	if (ret < 0) {
-> > > +		DRM_DEV_ERROR(ctx->dev, "could not read ID2\n");
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	ret = mipi_dsi_dcs_read(dsi, ST7703_CMD_RDID3, &id3, 1);
-> > > +	if (ret < 0) {
-> > > +		DRM_DEV_ERROR(ctx->dev, "could not read ID3\n");
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	DRM_DEV_INFO(ctx->dev,
-> > > +		     "manufacturer: %02x version: %02x driver: %02x\n",
-> > > +		     id1, id2, id3);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int st7703_prepare(struct drm_panel *panel)
-> > > +{
-> > > +	struct st7703 *ctx = panel_to_st7703(panel);
-> > > +	struct mipi_dsi_device *dsi = to_mipi_dsi_device(ctx->dev);
-> > > +	int ret;
-> > > +
-> > > +	if (ctx->prepared)
-> > > +		return 0;
-> > > +
-> > > +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-> > > +
-> > > +	ret = regulator_bulk_enable(ctx->desc->num_supplies, ctx->supplies);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	/* Wait for regulators to stabilize. */
-> > > +	usleep_range(10000, 20000);
-> > > +
-> > > +	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
-> > > +
-> > > +	/* There needs to be at least 15ms post-reset delay. */
-> > > +	usleep_range(15000, 20000);
-> > > +
-> > > +	ret = st7703_read_id(ctx);
-> > > +	if (ret < 0)
-> > > +		goto err_poweroff;
-> > > +
-> > > +	ret = st7703_init_sequence(ctx);
-> > > +	if (ret < 0) {
-> > > +		DRM_DEV_ERROR(ctx->dev,
-> > > +			      "Panel init sequence failed (%d)\n", ret);
-> > > +		goto err_poweroff;
-> > > +	}
-> > > +
-> > > +	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
-> > > +	if (ret < 0) {
-> > > +		DRM_DEV_ERROR(ctx->dev,
-> > > +			      "Failed to exit sleep mode (%d)\n", ret);
-> > > +		goto err_poweroff;
-> > > +	}
-> > > +
-> > > +	msleep(120);
-> > > +
-> > > +	ret = mipi_dsi_dcs_set_display_on(dsi);
-> > > +	if (ret) {
-> > > +		DRM_DEV_ERROR(ctx->dev,
-> > > +			      "Failed to turn on the display (%d)\n", ret);
-> > > +		goto err_poweroff;
-> > > +	}
-> > > +
-> > > +	ctx->prepared = true;
-> > > +
-> > > +	return 0;
-> > > +
-> > > +err_poweroff:
-> > > +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-> > > +	regulator_bulk_disable(ctx->desc->num_supplies, ctx->supplies);
-> > > +	return ret;
-> > > +}
-> > > +
-> > > +static int st7703_enable(struct drm_panel *panel)
-> > > +{
-> > > +	/*
-> > > +	 * Avoid flicker by waiting for slightly more than 1
-> > > +	 * frame's interval.
-> > > +	 */
-> > > +	msleep(50);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int st7703_unprepare(struct drm_panel *panel)
-> > > +{
-> > > +	struct st7703 *ctx = panel_to_st7703(panel);
-> > > +	struct mipi_dsi_device *dsi = to_mipi_dsi_device(ctx->dev);
-> > > +	int ret;
-> > > +
-> > > +	if (!ctx->prepared)
-> > > +		return 0;
-> > > +
-> > > +	ret = mipi_dsi_dcs_set_display_off(dsi);
-> > > +	if (ret < 0)
-> > > +		DRM_DEV_ERROR(ctx->dev,
-> > > +			      "Failed to turn off the display (%d)\n", ret);
-> > > +
-> > > +	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
-> > > +	if (ret < 0)
-> > > +		DRM_DEV_ERROR(ctx->dev,
-> > > +			      "Failed to enter sleep mode (%d)\n", ret);
-> > > +
-> > > +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-> > > +	regulator_bulk_disable(ctx->desc->num_supplies, ctx->supplies);
-> > > +	ctx->prepared = false;
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static int st7703_get_modes(struct drm_panel *panel,
-> > > +			    struct drm_connector *connector)
-> > > +{
-> > > +	struct st7703 *ctx = panel_to_st7703(panel);
-> > > +	struct drm_display_mode *mode;
-> > > +
-> > > +	mode = drm_mode_duplicate(connector->dev, ctx->desc->mode);
-> > > +	if (!mode) {
-> > > +		DRM_DEV_ERROR(ctx->dev, "Failed to add mode\n");
-> > > +		return -ENOMEM;
-> > > +	}
-> > > +
-> > > +	drm_mode_set_name(mode);
-> > > +
-> > > +	connector->display_info.width_mm = mode->width_mm;
-> > > +	connector->display_info.height_mm = mode->height_mm;
-> > > +	drm_mode_probed_add(connector, mode);
-> > > +
-> > > +	return 1;
-> > > +}
-> > > +
-> > > +static const struct drm_panel_funcs st7703_drm_funcs = {
-> > > +	.prepare   = st7703_prepare,
-> > > +	.enable    = st7703_enable,
-> > > +	.unprepare = st7703_unprepare,
-> > > +	.get_modes = st7703_get_modes,
-> > > +};
-> > > +
-> > > +static const struct drm_display_mode xbd599_mode = {
-> > > +	.hdisplay    = 720,
-> > > +	.hsync_start = 720 + 40,
-> > > +	.hsync_end   = 720 + 40 + 40,
-> > > +	.htotal	     = 720 + 40 + 40 + 40,
-> > > +	.vdisplay    = 1440,
-> > > +	.vsync_start = 1440 + 18,
-> > > +	.vsync_end   = 1440 + 18 + 10,
-> > > +	.vtotal	     = 1440 + 18 + 10 + 17,
-> > > +	.vrefresh    = 60,
-> > > +	.clock	     = 69000,
-> > > +	.flags	     = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-> > > +
-> > > +	.width_mm    = 68,
-> > > +	.height_mm   = 136,
-> > > +	.type        = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED,
-> > > +};
-> > > +
-> > > +static const char * const xbd599_supply_names[] = {
-> > > +	"iovcc",
-> > > +	"vcc",
-> > > +};
-> > > +
-> > > +static const struct st7703_panel_desc xbd599_desc = {
-> > > +	.mode = &xbd599_mode,
-> > > +	.lanes = 4,
-> > > +	.flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE,
-> > > +	.format = MIPI_DSI_FMT_RGB888,
-> > > +	.supply_names = xbd599_supply_names,
-> > > +	.num_supplies = ARRAY_SIZE(xbd599_supply_names),
-> > > +};
-> > > +
-> > > +static int st7703_probe(struct mipi_dsi_device *dsi)
-> > > +{
-> > > +	const struct st7703_panel_desc *desc;
-> > > +	struct device *dev = &dsi->dev;
-> > > +	struct st7703 *ctx;
-> > > +	int i, ret;
-> > > +
-> > > +	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-> > > +	if (!ctx)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	ctx->dev = dev;
-> > > +	ctx->desc = desc = of_device_get_match_data(dev);
-> > > +
-> > > +	dsi->mode_flags = desc->flags;
-> > > +	dsi->format = desc->format;
-> > > +	dsi->lanes = desc->lanes;
-> > > +
-> > > +	ctx->supplies = devm_kcalloc(&dsi->dev, desc->num_supplies,
-> > > +					sizeof(*ctx->supplies),
-> > > +					GFP_KERNEL);
-> > > +	if (!ctx->supplies)
-> > > +		return -ENOMEM;
-> > > +
-> > > +	for (i = 0; i < desc->num_supplies; i++)
-> > > +		ctx->supplies[i].supply = desc->supply_names[i];
-> > > +
-> > > +	ret = devm_regulator_bulk_get(&dsi->dev, desc->num_supplies,
-> > > +				      ctx->supplies);
-> > > +	if (ret < 0)
-> > > +		return ret;
-> > > +
-> > > +	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
-> > > +	if (IS_ERR(ctx->reset_gpio)) {
-> > > +		DRM_DEV_ERROR(dev, "Can't get reset gpio\n");
-> > > +		return PTR_ERR(ctx->reset_gpio);
-> > > +	}
-> > > +
-> > > +	mipi_dsi_set_drvdata(dsi, ctx);
-> > > +
-> > > +	drm_panel_init(&ctx->panel, &dsi->dev, &st7703_drm_funcs,
-> > > +		       DRM_MODE_CONNECTOR_DSI);
-> > > +
-> > > +	ret = drm_panel_of_backlight(&ctx->panel);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	drm_panel_add(&ctx->panel);
-> > > +
-> > > +	ret = mipi_dsi_attach(dsi);
-> > > +	if (ret < 0) {
-> > > +		drm_panel_remove(&ctx->panel);
-> > > +		return ret;
-> > > +	}
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static void st7703_shutdown(struct mipi_dsi_device *dsi)
-> > > +{
-> > > +	struct st7703 *ctx = mipi_dsi_get_drvdata(dsi);
-> > > +	int ret;
-> > > +
-> > > +	ret = drm_panel_unprepare(&ctx->panel);
-> > > +	if (ret < 0)
-> > > +		DRM_DEV_ERROR(&dsi->dev,
-> > > +			      "Failed to unprepare panel (%d)\n", ret);
-> > > +}
-> > > +
-> > > +static int st7703_remove(struct mipi_dsi_device *dsi)
-> > > +{
-> > > +	struct st7703 *ctx = mipi_dsi_get_drvdata(dsi);
-> > > +	int ret;
-> > > +
-> > > +	st7703_shutdown(dsi);
-> > > +
-> > > +	ret = mipi_dsi_detach(dsi);
-> > > +	if (ret < 0)
-> > > +		DRM_DEV_ERROR(&dsi->dev,
-> > > +			      "Failed to detach from DSI host (%d)\n", ret);
-> > > +
-> > > +	drm_panel_remove(&ctx->panel);
-> > > +
-> > > +	return 0;
-> > > +}
-> > > +
-> > > +static const struct of_device_id st7703_of_match[] = {
-> > > +	{ .compatible = "xingbangda,xbd599", .data = &xbd599_desc },
-> > > +	{ /* sentinel */ }
-> > > +};
-> > > +MODULE_DEVICE_TABLE(of, st7703_of_match);
-> > > +
-> > > +static struct mipi_dsi_driver st7703_driver = {
-> > > +	.probe	= st7703_probe,
-> > > +	.remove = st7703_remove,
-> > > +	.shutdown = st7703_shutdown,
-> > > +	.driver = {
-> > > +		.name = "st7703",
-> > > +		.of_match_table = st7703_of_match,
-> > > +	},
-> > > +};
-> > > +module_mipi_dsi_driver(st7703_driver);
-> > > +
-> > > +MODULE_AUTHOR("Icenowy Zheng <icenowy@aosc.io>");
-> > > +MODULE_DESCRIPTION("DRM driver for Sitronix ST7703 MIPI DSI panel");
-> > > +MODULE_LICENSE("GPL v2");
-> > > -- 
-> > > 2.27.0
-> > > 
-> > > _______________________________________________
-> > > dri-devel mailing list
-> > > dri-devel@lists.freedesktop.org
-> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+The updated 4.4.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-4.4.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+
+thanks,
+
+greg k-h
+
+------------
+
+ Makefile                                        |   15 -
+ arch/arm/kernel/ptrace.c                        |    4 
+ arch/arm/mach-tegra/tegra.c                     |    4 
+ arch/arm/mm/proc-macros.S                       |    3 
+ arch/arm64/include/asm/kvm_host.h               |    6 
+ arch/m68k/include/asm/mac_via.h                 |    1 
+ arch/m68k/mac/config.c                          |   21 --
+ arch/m68k/mac/via.c                             |    6 
+ arch/mips/kernel/genex.S                        |    6 
+ arch/mips/kernel/mips-cm.c                      |    6 
+ arch/mips/kernel/setup.c                        |   10 +
+ arch/mips/kernel/time.c                         |   70 +++++++
+ arch/powerpc/platforms/cell/spufs/file.c        |  113 +++++++----
+ arch/sparc/kernel/ptrace_32.c                   |  228 ++++++++++--------------
+ arch/x86/include/asm/cpufeatures.h              |    2 
+ arch/x86/include/asm/nospec-branch.h            |    1 
+ arch/x86/kernel/cpu/bugs.c                      |   93 ++++++---
+ arch/x86/kernel/process.c                       |   28 +-
+ arch/x86/kernel/process.h                       |    2 
+ arch/x86/kernel/reboot.c                        |    8 
+ arch/x86/kernel/time.c                          |    4 
+ arch/x86/kernel/vmlinux.lds.S                   |    4 
+ arch/x86/kvm/svm.c                              |    2 
+ arch/x86/kvm/vmx.c                              |    2 
+ arch/x86/mm/init.c                              |    2 
+ drivers/acpi/device_pm.c                        |    2 
+ drivers/acpi/scan.c                             |   28 ++
+ drivers/acpi/sysfs.c                            |    4 
+ drivers/clocksource/dw_apb_timer_of.c           |    6 
+ drivers/cpuidle/sysfs.c                         |    6 
+ drivers/firmware/efi/efivars.c                  |    4 
+ drivers/macintosh/windfarm_pm112.c              |   22 +-
+ drivers/md/md.c                                 |    3 
+ drivers/media/usb/dvb-usb/dibusb-mb.c           |    2 
+ drivers/media/usb/go7007/snd-go7007.c           |   35 +--
+ drivers/net/can/usb/kvaser_usb.c                |    6 
+ drivers/net/ethernet/allwinner/sun4i-emac.c     |    4 
+ drivers/net/ethernet/intel/e1000/e1000_main.c   |    4 
+ drivers/net/ethernet/intel/e1000e/e1000.h       |    1 
+ drivers/net/ethernet/intel/e1000e/netdev.c      |   12 -
+ drivers/net/ethernet/intel/igb/e1000_regs.h     |    3 
+ drivers/net/ethernet/intel/igb/igb_ethtool.c    |    3 
+ drivers/net/ethernet/intel/igb/igb_main.c       |    5 
+ drivers/net/ethernet/intel/ixgbe/ixgbe_common.c |    2 
+ drivers/net/ethernet/nxp/lpc_eth.c              |    3 
+ drivers/net/macvlan.c                           |    4 
+ drivers/net/phy/marvell.c                       |    2 
+ drivers/net/vmxnet3/vmxnet3_ethtool.c           |    2 
+ drivers/net/vxlan.c                             |    4 
+ drivers/net/wireless/ath/ath9k/hif_usb.c        |   58 ++++--
+ drivers/net/wireless/ath/ath9k/hif_usb.h        |    6 
+ drivers/net/wireless/ath/ath9k/htc_drv_init.c   |   10 -
+ drivers/net/wireless/ath/ath9k/htc_drv_txrx.c   |    6 
+ drivers/net/wireless/ath/ath9k/htc_hst.c        |    3 
+ drivers/net/wireless/ath/ath9k/wmi.c            |    5 
+ drivers/net/wireless/ath/ath9k/wmi.h            |    3 
+ drivers/net/wireless/ath/carl9170/fw.c          |    4 
+ drivers/net/wireless/ath/carl9170/main.c        |   21 --
+ drivers/net/wireless/b43/main.c                 |    2 
+ drivers/net/wireless/b43legacy/main.c           |    1 
+ drivers/net/wireless/b43legacy/xmit.c           |    1 
+ drivers/net/wireless/mwifiex/cfg80211.c         |   14 -
+ drivers/pci/probe.c                             |   24 ++
+ drivers/pinctrl/samsung/pinctrl-exynos.c        |    9 
+ drivers/power/reset/vexpress-poweroff.c         |    1 
+ drivers/pwm/pwm-fsl-ftm.c                       |    2 
+ drivers/scsi/scsi_lib.c                         |    4 
+ drivers/spi/spi-bcm2835.c                       |    4 
+ drivers/spi/spi-bcm2835aux.c                    |    4 
+ drivers/spi/spi-dw-mid.c                        |   16 +
+ drivers/spi/spi-dw.c                            |   14 -
+ drivers/spi/spi-pxa2xx.c                        |    4 
+ drivers/spi/spi.c                               |    5 
+ drivers/staging/android/ion/ion_heap.c          |    4 
+ drivers/video/fbdev/w100fb.c                    |    2 
+ drivers/w1/masters/omap_hdq.c                   |   10 -
+ fs/btrfs/file-item.c                            |    6 
+ fs/btrfs/inode.c                                |    6 
+ fs/btrfs/ioctl.c                                |    3 
+ fs/btrfs/send.c                                 |   67 +++++++
+ fs/btrfs/tree-log.c                             |   15 +
+ fs/btrfs/tree-log.h                             |    2 
+ fs/ext4/ext4_extents.h                          |    9 
+ fs/fat/inode.c                                  |    6 
+ fs/fs-writeback.c                               |    1 
+ fs/nilfs2/segment.c                             |    2 
+ fs/overlayfs/copy_up.c                          |    2 
+ fs/proc/inode.c                                 |    2 
+ fs/proc/self.c                                  |    2 
+ fs/proc/thread_self.c                           |    2 
+ include/linux/kgdb.h                            |    2 
+ include/linux/sunrpc/gss_api.h                  |    1 
+ include/linux/sunrpc/svcauth_gss.h              |    3 
+ kernel/cpu_pm.c                                 |    4 
+ kernel/debug/debug_core.c                       |    1 
+ kernel/sched/fair.c                             |    2 
+ lib/mpi/longlong.h                              |    2 
+ mm/slub.c                                       |    4 
+ net/bluetooth/hci_event.c                       |    1 
+ net/ipv6/ipv6_sockglue.c                        |   13 -
+ net/netfilter/nft_nat.c                         |    4 
+ net/sunrpc/auth_gss/gss_mech_switch.c           |   12 -
+ net/sunrpc/auth_gss/svcauth_gss.c               |   18 +
+ security/integrity/ima/ima.h                    |    7 
+ security/integrity/ima/ima_policy.c             |    3 
+ security/smack/smackfs.c                        |   10 +
+ sound/core/pcm_native.c                         |    5 
+ sound/isa/es1688/es1688.c                       |    4 
+ sound/usb/card.c                                |   20 +-
+ sound/usb/usbaudio.h                            |    2 
+ tools/perf/builtin-probe.c                      |    3 
+ tools/perf/util/dso.c                           |   16 +
+ tools/perf/util/dso.h                           |    1 
+ tools/perf/util/probe-finder.c                  |    1 
+ tools/perf/util/symbol.c                        |    2 
+ 115 files changed, 841 insertions(+), 470 deletions(-)
+
+Adrian Hunter (1):
+      perf symbols: Fix debuginfo search for Ubuntu
+
+Al Viro (1):
+      sparc32: fix register window handling in genregs32_[gs]et()
+
+Alexander Sverdlin (1):
+      macvlan: Skip loopback packets in RX handler
+
+Anders Roxell (1):
+      power: vexpress: add suppress_bind_attrs to true
+
+Andy Shevchenko (2):
+      spi: No need to assign dummy value in spi_unregister_controller()
+      spi: dw: Zero DMA Tx and Rx configurations on stack
+
+Anthony Steinhauser (3):
+      x86/speculation: Prevent rogue cross-process SSBD shutdown
+      x86/speculation: Avoid force-disabling IBPB based on STIBP and enhanced IBRS.
+      x86/speculation: PR_SPEC_FORCE_DISABLE enforcement for indirect branches.
+
+Ard Biesheuvel (1):
+      efi/efivars: Add missing kobject_put() in sysfs entry creation error path
+
+Arvind Sankar (1):
+      x86/mm: Stop printing BRK addresses
+
+Ashok Raj (1):
+      PCI: Program MPS for RCiEP devices
+
+Bob Haarman (1):
+      x86_64: Fix jiffies ODR violation
+
+Casey Schaufler (1):
+      Smack: slab-out-of-bounds in vsscanf
+
+Christian Lamparter (1):
+      carl9170: remove P2P_GO support
+
+Christoph Hellwig (1):
+      staging: android: ion: use vmap instead of vm_map_ram
+
+Christophe JAILLET (1):
+      video: fbdev: w100fb: Fix a potential double free.
+
+Chuhong Yuan (2):
+      ALSA: es1688: Add the missed snd_card_free()
+      media: go7007: fix a miss of snd_card_free
+
+Colin Ian King (1):
+      media: dvb: return -EREMOTEIO on i2c transfer failure.
+
+Daniel Thompson (1):
+      kgdb: Fix spurious true from in_dbg_master()
+
+Dmitry Osipenko (1):
+      ARM: tegra: Correct PL310 Auxiliary Control Register initialization
+
+Douglas Anderson (2):
+      kgdb: Prevent infinite recursive entries to the debugger
+      kernel/cpu_pm: Fix uninitted local in cpu_pm
+
+Eric W. Biederman (1):
+      proc: Use new_inode not new_inode_pseudo
+
+Filipe Manana (2):
+      btrfs: do not ignore error from btrfs_next_leaf() when inserting checksums
+      Btrfs: fix unreplayable log after snapshot delete + parent dir fsync
+
+Finn Thain (1):
+      m68k: mac: Don't call via_flush_cache() on Mac IIfx
+
+Fredrik Strupe (1):
+      ARM: 8977/1: ptrace: Fix mask for thumb breakpoint hook
+
+Greg Kroah-Hartman (1):
+      Linux 4.4.228
+
+Guoqing Jiang (1):
+      md: don't flush workqueue unconditionally in md_open
+
+H. Nikolaus Schaller (1):
+      w1: omap-hdq: cleanup to add missing newline for some dev_dbg
+
+Hangbin Liu (1):
+      ipv6: fix IPV6_ADDRFORM operation logic
+
+Harshad Shirwadkar (1):
+      ext4: fix EXT_MAX_EXTENT/INDEX to check for zeroed eh_max
+
+Hill Ma (1):
+      x86/reboot/quirks: Add MacBook6,1 reboot quirk
+
+Hsin-Yu Chao (1):
+      Bluetooth: Add SCO fallback for invalid LMP parameters error
+
+Ido Schimmel (1):
+      vxlan: Avoid infinite loop when suppressing NS messages with invalid options
+
+Jarod Wilson (1):
+      igb: improve handling of disconnected adapters
+
+Jens Axboe (1):
+      sched/fair: Don't NUMA balance for kthreads
+
+Jeremy Kerr (1):
+      powerpc/spufs: fix copy_to_user while atomic
+
+Jia-Ju Bai (1):
+      net: vmxnet3: fix possible buffer overflow caused by bad DMA value in vmxnet3_get_rss()
+
+Jiaxun Yang (1):
+      PCI: Don't disable decoding when mmio_always_on is set
+
+Johannes Thumshirn (1):
+      scsi: return correct blkprep status code in case scsi_init_io() fails.
+
+Jonathan Bakker (1):
+      pinctrl: samsung: Save/restore eint_mask over suspend for EINT_TYPE GPIOs
+
+Kai-Heng Feng (1):
+      igb: Report speed and duplex as unknown when device is runtime suspended
+
+Kees Cook (1):
+      e1000: Distribute switch variables for initialization
+
+Krzysztof Struczynski (1):
+      ima: Fix ima digest hash table key calculation
+
+Larry Finger (3):
+      b43legacy: Fix case where channel status is corrupted
+      b43: Fix connection problem with WPA3
+      b43_legacy: Fix connection problem with WPA3
+
+Linus Walleij (1):
+      ARM: 8978/1: mm: make act_mm() respect THREAD_SIZE
+
+Lukas Wunner (5):
+      spi: bcm2835aux: Fix controller unregister order
+      spi: dw: Fix controller unregister order
+      spi: Fix controller unregister order
+      spi: pxa2xx: Fix controller unregister order
+      spi: bcm2835: Fix controller unregister order
+
+Marc Zyngier (1):
+      KVM: arm64: Make vcpu_cp1x() work on Big Endian hosts
+
+Marcos Paulo de Souza (1):
+      btrfs: send: emit file capabilities after chown
+
+Masahiro Yamada (1):
+      kbuild: force to build vmlinux if CONFIG_MODVERSION=y
+
+Masami Hiramatsu (1):
+      perf probe: Do not show the skipped events
+
+Masashi Honma (1):
+      ath9k_htc: Silence undersized packet warnings
+
+Michael Ellerman (1):
+      drivers/macintosh: Fix memleak in windfarm_pm112 driver
+
+Michał Mirosław (1):
+      ALSA: pcm: disallow linking stream to itself
+
+Nathan Chancellor (1):
+      lib/mpi: Fix 64-bit MIPS build with Clang
+
+NeilBrown (2):
+      sunrpc: svcauth_gss_register_pseudoflavor must reject duplicate registrations.
+      sunrpc: clean up properly in gss_mech_unregister()
+
+OGAWA Hirofumi (1):
+      fat: don't allow to mount if the FAT length == 0
+
+Omar Sandoval (1):
+      btrfs: fix error handling when submitting direct I/O bio
+
+Pablo Neira Ayuso (1):
+      netfilter: nft_nat: return EOPNOTSUPP if type or flags are not supported
+
+Pali Rohár (1):
+      mwifiex: Fix memory corruption in dump_station
+
+Paolo Bonzini (1):
+      KVM: nSVM: leave ASID aside in copy_vmcb_control_area
+
+Punit Agrawal (1):
+      e1000e: Relax condition to trigger reset for ME workaround
+
+Qiujun Huang (4):
+      ath9k: Fix use-after-free Read in ath9k_wmi_ctrl_rx
+      ath9k: Fix use-after-free Write in ath9k_htc_rx_msg
+      ath9x: Fix stack-out-of-bounds Write in ath9k_hif_usb_rx_cb
+      ath9k: Fix general protection fault in ath9k_hif_usb_rx_cb
+
+Qiushi Wu (2):
+      ACPI: sysfs: Fix reference count leak in acpi_sysfs_add_hotplug_profile()
+      cpuidle: Fix three reference count leaks
+
+Rafael J. Wysocki (1):
+      ACPI: PM: Avoid using power resources if there are none for D0
+
+Roberto Sassu (1):
+      ima: Directly assign the ima_default_policy pointer to ima_rules
+
+Ryusuke Konishi (1):
+      nilfs2: fix null pointer dereference at nilfs_segctor_do_construct()
+
+Sasha Levin (1):
+      spi: dw: fix possible race condition
+
+Sean Christopherson (1):
+      KVM: nVMX: Consult only the "basic" exit reason when routing nested exit
+
+Serge Semin (5):
+      spi: dw: Enable interrupts in accordance with DMA xfer mode
+      clocksource: dw_apb_timer_of: Fix missing clockevent timers
+      mips: cm: Fix an invalid error code of INTVN_*_ERR
+      mips: Add udelay lpj numbers adjustment
+      spi: dw: Return any value retrieved from the dma_transfer callback
+
+Stefan Agner (1):
+      pwm: fsl-ftm: Use flat regmap cache
+
+Takashi Iwai (1):
+      ALSA: usb-audio: Fix inconsistent card PM state after resume
+
+Tejun Heo (1):
+      cgroup, blkcg: Prepare some symbols for module and !CONFIG_CGROUP usages
+
+Thomas Lendacky (1):
+      x86/speculation: Add support for STIBP always-on preferred mode
+
+Tiezhu Yang (1):
+      MIPS: Make sparse_init() using top-down allocation
+
+Waiman Long (1):
+      x86/speculation: Change misspelled STIPB to STIBP
+
+Wang Hai (1):
+      mm/slub: fix a memory leak in sysfs_slab_add()
+
+Wei Yongjun (1):
+      net: lpc-enet: fix error return code in lpc_mii_init()
+
+Xiaolong Huang (1):
+      can: kvaser_usb: kvaser_usb_leaf: Fix some info-leaks to USB devices
+
+Xie XiuQi (1):
+      ixgbe: fix signed-integer-overflow warning
+
+YuanJunQing (1):
+      MIPS: Fix IRQ tracing when call handle_fpe() and handle_msa_fpe()
+
+Yunjian Wang (1):
+      net: allwinner: Fix use correct return type for ndo_start_xmit()
+
+Yuxuan Shui (1):
+      ovl: initialize error in ovl_copy_xattr
+
+Zhao Qiang (1):
+      net: phy: marvell: Limit 88m1101 autoneg errata to 88E1145 as well.
+
