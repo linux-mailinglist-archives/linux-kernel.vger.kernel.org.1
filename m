@@ -2,242 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B151203D04
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:47:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7711F203D05
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729995AbgFVQrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 12:47:15 -0400
-Received: from muru.com ([72.249.23.125]:58702 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729936AbgFVQrK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 12:47:10 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 72CE6817C;
-        Mon, 22 Jun 2020 16:48:01 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     linux-omap@vger.kernel.org
-Cc:     "Andrew F . Davis" <afd@ti.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Suman Anna <s-anna@ti.com>, Tero Kristo <t-kristo@ti.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org
-Subject: [PATCH 6/6] ARM: dts: Configure omap4 and 5 l4_abe for genpd and drop platform data
-Date:   Mon, 22 Jun 2020 09:46:52 -0700
-Message-Id: <20200622164652.12054-7-tony@atomide.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200622164652.12054-1-tony@atomide.com>
-References: <20200622164652.12054-1-tony@atomide.com>
+        id S1729892AbgFVQsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 12:48:06 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39197 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729492AbgFVQsF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 12:48:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592844483;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=iOeVX/Nmmhafg16NYOvc8EUfqW7AqnkiAPvBHza8Wys=;
+        b=eSdYGrp+eWP0KUjr88ygVT3aDSNbTdKsKEiB2stqOTRpcSKjf57K9mwc15YI4gBlPs/Qqg
+        4Rr6N9NtZ18tinpxPphyNy4H88I+87k6DSk6blMz4xEbi+rtaEVeBTHPLeNI1gbN3MBfHc
+        5gTHLRDFOAN/UEXVTYSxx75vF7sUgEk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-45-Fzvk4pWYPoCGQCJxdaQUHw-1; Mon, 22 Jun 2020 12:47:59 -0400
+X-MC-Unique: Fzvk4pWYPoCGQCJxdaQUHw-1
+Received: by mail-wr1-f72.google.com with SMTP id e7so11213565wrp.14
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 09:47:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iOeVX/Nmmhafg16NYOvc8EUfqW7AqnkiAPvBHza8Wys=;
+        b=Yzx7OgE4rrn6t6RbPIz/3vyTV1Wvp8rJ9crfvsIkAm6GSkpk5394qS+yKe0LiDWM3e
+         kaSLqBTc7Vp1rE+QX2b4mRfoFlB+39kyTQPI8577TWiPkEiz+i399eJx7iV67jlwKE+w
+         fZy9QsWX/XKtiQbGIaOBUNY554+qbHlJ02jY5bFbcAHaseF/BFsu9sTegzw3pZM/vbZ0
+         qeXyXu+mnAS1jcLZuzuemfCukUA7BLY0xhUri4+nG8CnvodCNc5vnFEALgEg+FAMcZA+
+         ILx676qRUAwo+T6zZxNmhh45fX2Pr8HXh8eWXbVitCh3VwYF75XNT6QJeIJBoT8GvvSf
+         r7eQ==
+X-Gm-Message-State: AOAM533Trv4amu/RNFb7CE0Xn8egTzLtfL+WDiptx5iwT7hGG5gZyzEQ
+        Ki8Zs4c2i5RLZ/uE9S0Os0VrfoammcDF53Vf7n0pkkyd4C2IYwe/ol2NCJtjNwZUSInm0uGFuiX
+        yFsyEgyAwC+yRkgvgXX0a/y0L
+X-Received: by 2002:a05:600c:d5:: with SMTP id u21mr13001284wmm.156.1592844478703;
+        Mon, 22 Jun 2020 09:47:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwHLwyIASJ1NU8MCn0vyMb6gJ0n7NqOi3eUC+ZSx8IQnYJvHUsEt91e44yFMyg/Pc1Zq7UIrg==
+X-Received: by 2002:a05:600c:d5:: with SMTP id u21mr13001265wmm.156.1592844478401;
+        Mon, 22 Jun 2020 09:47:58 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:fd64:dd90:5ad5:d2e1? ([2001:b07:6468:f312:fd64:dd90:5ad5:d2e1])
+        by smtp.gmail.com with ESMTPSA id j14sm18864654wrs.75.2020.06.22.09.47.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jun 2020 09:47:57 -0700 (PDT)
+Subject: Re: [PATCH] kvm: lapic: fix broken vcpu hotplug
+To:     Igor Mammedov <imammedo@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        kvm@vger.kernel.org, wanpengli@tencent.com
+References: <20200622160830.426022-1-imammedo@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <c00acf88-0655-686e-3b8c-7aad03791f20@redhat.com>
+Date:   Mon, 22 Jun 2020 18:47:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200622160830.426022-1-imammedo@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can power off l4_abe domain when not in use when we configure it for
-genpd. And with that change, we can now also drop the old unused legacy
-platform data.
+On 22/06/20 18:08, Igor Mammedov wrote:
+> Guest fails to online hotplugged CPU with error
+>   smpboot: do_boot_cpu failed(-1) to wakeup CPU#4
+> 
+> It's caused by the fact that kvm_apic_set_state(), which used to call
+> recalculate_apic_map() unconditionally and pulled hotplugged CPU into
+> apic map, is updating map conditionally [1] on state change which doesn't
+> happen in this case and apic map update is skipped.
+> 
+> Note:
+> new CPU during kvm_arch_vcpu_create() is not visible to
+> kvm_recalculate_apic_map(), so all related update calls endup
+> as NOP and only follow up kvm_apic_set_state() used to trigger map
+> update that counted in hotplugged CPU.
+> Fix issue by forcing unconditional update from kvm_apic_set_state(),
+> like it used to be.
+> 
+> 1)
+> Fixes: (4abaffce4d25a KVM: LAPIC: Recalculate apic map in batch)
+> Signed-off-by: Igor Mammedov <imammedo@redhat.com>
+> ---
+> PS:
+> it's alternative to full revert of [1], I've posted earlier
+> https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2205600.html
+> so fii free to pick up whatever is better by now
+> ---
+>  arch/x86/kvm/lapic.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index 34a7e0533dad..5696831d4005 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -2556,6 +2556,7 @@ int kvm_apic_set_state(struct kvm_vcpu *vcpu, struct kvm_lapic_state *s)
+>  	struct kvm_lapic *apic = vcpu->arch.apic;
+>  	int r;
+>  
+> +	apic->vcpu->kvm->arch.apic_map_dirty = true;
+>  	kvm_lapic_set_base(vcpu, vcpu->arch.apic_base);
+>  	/* set SPIV separately to get count of SW disabled APICs right */
+>  	apic_set_spiv(apic, *((u32 *)(s->regs + APIC_SPIV)));
+> 
 
-Note that we also need to now use "simple-pm-bus" instead of "simple-bus"
-for PM runtime to get enabled for the bus.
+Queued, but it's better to set apic_map_dirty just before the call to
+kvm_recalculate_apic_map, or you can have a variant of the race that you
+pointed out.
 
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- arch/arm/boot/dts/omap4-l4-abe.dtsi        |  6 ++--
- arch/arm/boot/dts/omap4.dtsi               |  6 ++++
- arch/arm/boot/dts/omap5-l4-abe.dtsi        |  6 ++--
- arch/arm/boot/dts/omap5.dtsi               |  6 ++++
- arch/arm/mach-omap2/omap_hwmod_44xx_data.c | 33 ----------------------
- arch/arm/mach-omap2/omap_hwmod_54xx_data.c | 31 --------------------
- 6 files changed, 20 insertions(+), 68 deletions(-)
+Paolo
 
-diff --git a/arch/arm/boot/dts/omap4-l4-abe.dtsi b/arch/arm/boot/dts/omap4-l4-abe.dtsi
---- a/arch/arm/boot/dts/omap4-l4-abe.dtsi
-+++ b/arch/arm/boot/dts/omap4-l4-abe.dtsi
-@@ -1,14 +1,16 @@
- &l4_abe {						/* 0x40100000 */
--	compatible = "ti,omap4-l4-abe", "simple-bus";
-+	compatible = "ti,omap4-l4-abe", "simple-pm-bus";
- 	reg = <0x40100000 0x400>,
- 	      <0x40100400 0x400>;
- 	reg-names = "la", "ap";
-+	power-domains = <&prm_abe>;
-+	/* OMAP4_L4_ABE_CLKCTRL is read-only */
- 	#address-cells = <1>;
- 	#size-cells = <1>;
- 	ranges = <0x00000000 0x40100000 0x100000>,	/* segment 0 */
- 		 <0x49000000 0x49000000 0x100000>;
- 	segment@0 {					/* 0x40100000 */
--		compatible = "simple-bus";
-+		compatible = "simple-pm-bus";
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		ranges =
-diff --git a/arch/arm/boot/dts/omap4.dtsi b/arch/arm/boot/dts/omap4.dtsi
---- a/arch/arm/boot/dts/omap4.dtsi
-+++ b/arch/arm/boot/dts/omap4.dtsi
-@@ -637,6 +637,12 @@ prm_tesla: prm@400 {
- 		#reset-cells = <1>;
- 	};
- 
-+	prm_abe: prm@500 {
-+		compatible = "ti,omap4-prm-inst", "ti,omap-prm-inst";
-+		reg = <0x500 0x100>;
-+		#power-domain-cells = <0>;
-+	};
-+
- 	prm_core: prm@700 {
- 		compatible = "ti,omap4-prm-inst", "ti,omap-prm-inst";
- 		reg = <0x700 0x100>;
-diff --git a/arch/arm/boot/dts/omap5-l4-abe.dtsi b/arch/arm/boot/dts/omap5-l4-abe.dtsi
---- a/arch/arm/boot/dts/omap5-l4-abe.dtsi
-+++ b/arch/arm/boot/dts/omap5-l4-abe.dtsi
-@@ -1,14 +1,16 @@
- &l4_abe {						/* 0x40100000 */
--	compatible = "ti,omap5-l4-abe", "simple-bus";
-+	compatible = "ti,omap5-l4-abe", "simple-pm-bus";
- 	reg = <0x40100000 0x400>,
- 	      <0x40100400 0x400>;
- 	reg-names = "la", "ap";
-+	power-domains = <&prm_abe>;
-+	/* OMAP5_L4_ABE_CLKCTRL is read-only */
- 	#address-cells = <1>;
- 	#size-cells = <1>;
- 	ranges = <0x00000000 0x40100000 0x100000>,	/* segment 0 */
- 		 <0x49000000 0x49000000 0x100000>;
- 	segment@0 {					/* 0x40100000 */
--		compatible = "simple-bus";
-+		compatible = "simple-pm-bus";
- 		#address-cells = <1>;
- 		#size-cells = <1>;
- 		ranges =
-diff --git a/arch/arm/boot/dts/omap5.dtsi b/arch/arm/boot/dts/omap5.dtsi
---- a/arch/arm/boot/dts/omap5.dtsi
-+++ b/arch/arm/boot/dts/omap5.dtsi
-@@ -649,6 +649,12 @@ prm_dsp: prm@400 {
- 		#reset-cells = <1>;
- 	};
- 
-+	prm_abe: prm@500 {
-+		compatible = "ti,omap5-prm-inst", "ti,omap-prm-inst";
-+		reg = <0x500 0x100>;
-+		#power-domain-cells = <0>;
-+	};
-+
- 	prm_core: prm@700 {
- 		compatible = "ti,omap5-prm-inst", "ti,omap-prm-inst";
- 		reg = <0x700 0x100>;
-diff --git a/arch/arm/mach-omap2/omap_hwmod_44xx_data.c b/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
---- a/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_44xx_data.c
-@@ -124,21 +124,6 @@ static struct omap_hwmod_class omap44xx_l4_hwmod_class = {
- 	.name	= "l4",
- };
- 
--/* l4_abe */
--static struct omap_hwmod omap44xx_l4_abe_hwmod = {
--	.name		= "l4_abe",
--	.class		= &omap44xx_l4_hwmod_class,
--	.clkdm_name	= "abe_clkdm",
--	.prcm = {
--		.omap4 = {
--			.clkctrl_offs = OMAP4_CM1_ABE_L4ABE_CLKCTRL_OFFSET,
--			.context_offs = OMAP4_RM_ABE_AESS_CONTEXT_OFFSET,
--			.lostcontext_mask = OMAP4430_LOSTMEM_AESSMEM_MASK,
--			.flags	      = HWMOD_OMAP4_NO_CONTEXT_LOSS_BIT,
--		},
--	},
--};
--
- /* l4_cfg */
- static struct omap_hwmod omap44xx_l4_cfg_hwmod = {
- 	.name		= "l4_cfg",
-@@ -935,22 +920,6 @@ static struct omap_hwmod_ocp_if omap44xx_l4_cfg__l3_main_3 = {
- 	.user		= OCP_USER_MPU | OCP_USER_SDMA,
- };
- 
--/* l3_main_1 -> l4_abe */
--static struct omap_hwmod_ocp_if omap44xx_l3_main_1__l4_abe = {
--	.master		= &omap44xx_l3_main_1_hwmod,
--	.slave		= &omap44xx_l4_abe_hwmod,
--	.clk		= "l3_div_ck",
--	.user		= OCP_USER_MPU | OCP_USER_SDMA,
--};
--
--/* mpu -> l4_abe */
--static struct omap_hwmod_ocp_if omap44xx_mpu__l4_abe = {
--	.master		= &omap44xx_mpu_hwmod,
--	.slave		= &omap44xx_l4_abe_hwmod,
--	.clk		= "ocp_abe_iclk",
--	.user		= OCP_USER_MPU | OCP_USER_SDMA,
--};
--
- /* l3_main_1 -> l4_cfg */
- static struct omap_hwmod_ocp_if omap44xx_l3_main_1__l4_cfg = {
- 	.master		= &omap44xx_l3_main_1_hwmod,
-@@ -1178,8 +1147,6 @@ static struct omap_hwmod_ocp_if *omap44xx_hwmod_ocp_ifs[] __initdata = {
- 	&omap44xx_l3_main_1__l3_main_3,
- 	&omap44xx_l3_main_2__l3_main_3,
- 	&omap44xx_l4_cfg__l3_main_3,
--	&omap44xx_l3_main_1__l4_abe,
--	&omap44xx_mpu__l4_abe,
- 	&omap44xx_l3_main_1__l4_cfg,
- 	&omap44xx_l3_main_2__l4_per,
- 	&omap44xx_l4_cfg__l4_wkup,
-diff --git a/arch/arm/mach-omap2/omap_hwmod_54xx_data.c b/arch/arm/mach-omap2/omap_hwmod_54xx_data.c
---- a/arch/arm/mach-omap2/omap_hwmod_54xx_data.c
-+++ b/arch/arm/mach-omap2/omap_hwmod_54xx_data.c
-@@ -121,19 +121,6 @@ static struct omap_hwmod_class omap54xx_l4_hwmod_class = {
- 	.name	= "l4",
- };
- 
--/* l4_abe */
--static struct omap_hwmod omap54xx_l4_abe_hwmod = {
--	.name		= "l4_abe",
--	.class		= &omap54xx_l4_hwmod_class,
--	.clkdm_name	= "abe_clkdm",
--	.prcm = {
--		.omap4 = {
--			.clkctrl_offs = OMAP54XX_CM_ABE_L4_ABE_CLKCTRL_OFFSET,
--			.flags = HWMOD_OMAP4_NO_CONTEXT_LOSS_BIT,
--		},
--	},
--};
--
- /* l4_cfg */
- static struct omap_hwmod omap54xx_l4_cfg_hwmod = {
- 	.name		= "l4_cfg",
-@@ -547,22 +534,6 @@ static struct omap_hwmod_ocp_if omap54xx_l4_cfg__l3_main_3 = {
- 	.user		= OCP_USER_MPU | OCP_USER_SDMA,
- };
- 
--/* l3_main_1 -> l4_abe */
--static struct omap_hwmod_ocp_if omap54xx_l3_main_1__l4_abe = {
--	.master		= &omap54xx_l3_main_1_hwmod,
--	.slave		= &omap54xx_l4_abe_hwmod,
--	.clk		= "abe_iclk",
--	.user		= OCP_USER_MPU | OCP_USER_SDMA,
--};
--
--/* mpu -> l4_abe */
--static struct omap_hwmod_ocp_if omap54xx_mpu__l4_abe = {
--	.master		= &omap54xx_mpu_hwmod,
--	.slave		= &omap54xx_l4_abe_hwmod,
--	.clk		= "abe_iclk",
--	.user		= OCP_USER_MPU | OCP_USER_SDMA,
--};
--
- /* l3_main_1 -> l4_cfg */
- static struct omap_hwmod_ocp_if omap54xx_l3_main_1__l4_cfg = {
- 	.master		= &omap54xx_l3_main_1_hwmod,
-@@ -654,8 +625,6 @@ static struct omap_hwmod_ocp_if *omap54xx_hwmod_ocp_ifs[] __initdata = {
- 	&omap54xx_l3_main_1__l3_main_3,
- 	&omap54xx_l3_main_2__l3_main_3,
- 	&omap54xx_l4_cfg__l3_main_3,
--	&omap54xx_l3_main_1__l4_abe,
--	&omap54xx_mpu__l4_abe,
- 	&omap54xx_l3_main_1__l4_cfg,
- 	&omap54xx_l3_main_2__l4_per,
- 	&omap54xx_l3_main_1__l4_wkup,
--- 
-2.27.0
