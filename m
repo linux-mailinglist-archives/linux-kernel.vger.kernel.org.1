@@ -2,138 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68157204110
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9161F20414F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730500AbgFVUII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 16:08:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728973AbgFVUIF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 16:08:05 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ACCCC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:08:05 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id n24so20757271lji.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:08:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O1iewzZxKxZsHCFE1IpIKZAcHdEXX0k0VhJhMjCxJRk=;
-        b=jxiFrV3w0j5aLn+vYERXrsFANe18BmkW8WhpfbwrqvZCR3QlASLHN+s0dvUKCC7S0Z
-         HHlQLoUjWeB77nDpLPWTX2cD+NqKKStkAUVgrU+ZbFo1WfJUCp3PbvnavLvRJJfywm9B
-         PS8KIdxPs6dMefugAy/F3KfgHucAWcr7w9gXuUdcHllmvBB4qZe8A4Bp1EsirM9H8PWJ
-         v3uvp+OkmO1pC5tsQ4XX81pf9YCj8Gokg9OWfBfubRYEyWUdvxonrCWsPW+wes77jqgR
-         h6ape1nNvKoIrkpKbq7TDwpAj4bHv9zDGppyQfT3YxAm8q0kqdPmVMD48RqJ0ih/c0dw
-         +hLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O1iewzZxKxZsHCFE1IpIKZAcHdEXX0k0VhJhMjCxJRk=;
-        b=j+5WmGtb8NeCDZ3tITGZUZJePnjShqIB+uvhyGov4CM4mk3OT2kUw10dJXH9lnKF0e
-         9QxTGbnlocJ7+1xSNBYflNI/9Dtw5zzcCLGY1/5IluUpoincro2QB6Pe5SeFRzpysg6H
-         aY1XmVr8P6kWGJg+W3zUFIXrZ6cSvTGj9qrrJxYQqduyWxCdXkA9vaeI+oCFMCdhEc9h
-         kFUCRZnnPMbBDwjz10yL8bp1jTqhq7glF0UL2PG5+mBgQS5U03a96A5WWY4Xnli6BjTK
-         mlv7ITQfL6zh095dp1rKOcsOED/s5tDct7hd26hCOXz44ec/qwNzJa4hSpMN5jnmtw+S
-         lbUA==
-X-Gm-Message-State: AOAM532lMOUkOPOZXJij5IUmOF0TD9DojIEl1n/PCiLo0dsyXfeIwe2Z
-        n2ri7Zy7HnmO6whOKZZEy2bdig5hBg5Oi0xSmS+3KA==
-X-Google-Smtp-Source: ABdhPJy5dWzQBSNi9Zt/usqkY9agJUTDidKHpdWxCl7nmtqE+I17wPTUgLZYCHA4VjDO1Von9AZ6ddnuU6GBJyOUNKU=
-X-Received: by 2002:a2e:9a44:: with SMTP id k4mr9089871ljj.139.1592856483831;
- Mon, 22 Jun 2020 13:08:03 -0700 (PDT)
+        id S1730574AbgFVUJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 16:09:14 -0400
+Received: from mga12.intel.com ([192.55.52.136]:60195 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728530AbgFVUJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 16:09:07 -0400
+IronPort-SDR: LFVSAjT7u+N5vZPa59QDReV12rIKpjnkbs0ZPYtCAaByNwjoV647sWDA9DyO2iqQvLylDTOiKB
+ iudShdzF19fg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9660"; a="123527692"
+X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
+   d="scan'208";a="123527692"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 13:09:05 -0700
+IronPort-SDR: ACiGxnvdRH5yHzKRcBqEkHkrUW0Xmd5fP+wZakk5PUawdwmWwHSjFB8CI8ofv1H3JKPtVSPmv8
+ o5YF/XigfYJw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
+   d="scan'208";a="318877033"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
+  by FMSMGA003.fm.intel.com with ESMTP; 22 Jun 2020 13:09:05 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Christoffer Dall <christoffer.dall@arm.com>
+Subject: [PATCH v2 00/21] KVM: Cleanup and unify kvm_mmu_memory_cache usage
+Date:   Mon, 22 Jun 2020 13:08:01 -0700
+Message-Id: <20200622200822.4426-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.26.0
 MIME-Version: 1.0
-References: <20200622193146.2985288-1-keescook@chromium.org> <20200622193146.2985288-4-keescook@chromium.org>
-In-Reply-To: <20200622193146.2985288-4-keescook@chromium.org>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 22 Jun 2020 22:07:37 +0200
-Message-ID: <CAG48ez0pRtMZs3Hc3R2+XGHRwt9nZAGZu6vDpPBMbE+Askr_+Q@mail.gmail.com>
-Subject: Re: [PATCH v4 3/5] stack: Optionally randomize kernel stack offset
- each syscall
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 9:31 PM Kees Cook <keescook@chromium.org> wrote:
-> This provides the ability for architectures to enable kernel stack base
-> address offset randomization. This feature is controlled by the boot
-> param "randomize_kstack_offset=on/off", with its default value set by
-> CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT.
-[...]
-> +#define add_random_kstack_offset() do {                                        \
-> +       if (static_branch_maybe(CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT, \
-> +                               &randomize_kstack_offset)) {            \
-> +               u32 offset = this_cpu_read(kstack_offset);              \
-> +               u8 *ptr = __builtin_alloca(offset & 0x3FF);             \
-> +               asm volatile("" : "=m"(*ptr));                          \
-> +       }                                                               \
-> +} while (0)
+Note, patch 18 will conflict with the p4d rework in 5.8.  I originally
+stated I would send v2 only after that got pulled into Paolo's tree, but
+I got my timing wrong, i.e. I was thinking that would have already
+happened.  I'll send v3 if necessary.  I wanted to get v2 out there now
+that I actually compile tested other architectures.
 
-clang generates better code here if the mask is stack-aligned -
-otherwise it needs to round the stack pointer / the offset:
+Marc, I interpreted your "nothing caught fire" as Tested-by for the arm64
+patches, let me know if that's not what you intended.
 
-$ cat alloca_align.c
-#include <alloca.h>
-void callee(void);
 
-void alloca_blah(unsigned long rand) {
-  asm volatile(""::"r"(alloca(rand & MASK)));
-  callee();
-}
-$ clang -O3 -c -o alloca_align.o alloca_align.c -DMASK=0x3ff
-$ objdump -d alloca_align.o
-[...]
-   0: 55                    push   %rbp
-   1: 48 89 e5              mov    %rsp,%rbp
-   4: 81 e7 ff 03 00 00    and    $0x3ff,%edi
-   a: 83 c7 0f              add    $0xf,%edi
-   d: 83 e7 f0              and    $0xfffffff0,%edi
-  10: 48 89 e0              mov    %rsp,%rax
-  13: 48 29 f8              sub    %rdi,%rax
-  16: 48 89 c4              mov    %rax,%rsp
-  19: e8 00 00 00 00        callq  1e <alloca_blah+0x1e>
-  1e: 48 89 ec              mov    %rbp,%rsp
-  21: 5d                    pop    %rbp
-  22: c3                    retq
-$ clang -O3 -c -o alloca_align.o alloca_align.c -DMASK=0x3f0
-$ objdump -d alloca_align.o
-[...]
-   0: 55                    push   %rbp
-   1: 48 89 e5              mov    %rsp,%rbp
-   4: 48 89 e0              mov    %rsp,%rax
-   7: 81 e7 f0 03 00 00    and    $0x3f0,%edi
-   d: 48 29 f8              sub    %rdi,%rax
-  10: 48 89 c4              mov    %rax,%rsp
-  13: e8 00 00 00 00        callq  18 <alloca_blah+0x18>
-  18: 48 89 ec              mov    %rbp,%rsp
-  1b: 5d                    pop    %rbp
-  1c: c3                    retq
-$
+This series resurrects Christoffer Dall's series[1] to provide a common
+MMU memory cache implementation that can be shared by x86, arm64 and MIPS.
 
-(From a glance at the assembly, gcc seems to always assume that the
-length may be misaligned.)
+It also picks up a suggested change from Ben Gardon[2] to clear shadow
+page tables during initial allocation so as to avoid clearing entire
+pages while holding mmu_lock.
 
-Maybe this should be something along the lines of
-__builtin_alloca(offset & (0x3ff & ARCH_STACK_ALIGN_MASK)) (with
-appropriate definitions of the stack alignment mask depending on the
-architecture's choice of stack alignment for kernel code).
+The front half of the patches do house cleaning on x86's memory cache
+implementation in preparation for moving it to common code, along with a
+fair bit of cleanup on the usage.  The middle chunk moves the patches to
+common KVM, and the last two chunks convert arm64 and MIPS to the common
+implementation.
+
+Fully tested on x86 only.  Compile tested patches 14-21 on arm64, MIPS,
+s390 and PowerPC.
+
+v2:
+  - Rebase to kvm-5.8-2, commit 49b3deaad345 ("Merge tag ...").
+  - Use an asm-generic kvm_types.h for s390 and PowerPC instead of an
+    empty arch-specific file. [Marc]
+  - Explicit document "GFP_PGTABLE_USER == GFP_KERNEL_ACCOUNT | GFP_ZERO"
+    in the arm64 conversion patch. [Marc]
+  - Collect review tags. [Ben]
+
+[1] https://lkml.kernel.org/r/20191105110357.8607-1-christoffer.dall@arm
+[2] https://lkml.kernel.org/r/20190926231824.149014-4-bgardon@google.com
+
+Sean Christopherson (21):
+  KVM: x86/mmu: Track the associated kmem_cache in the MMU caches
+  KVM: x86/mmu: Consolidate "page" variant of memory cache helpers
+  KVM: x86/mmu: Use consistent "mc" name for kvm_mmu_memory_cache locals
+  KVM: x86/mmu: Remove superfluous gotos from mmu_topup_memory_caches()
+  KVM: x86/mmu: Try to avoid crashing KVM if a MMU memory cache is empty
+  KVM: x86/mmu: Move fast_page_fault() call above
+    mmu_topup_memory_caches()
+  KVM: x86/mmu: Topup memory caches after walking GVA->GPA
+  KVM: x86/mmu: Clean up the gorilla math in mmu_topup_memory_caches()
+  KVM: x86/mmu: Separate the memory caches for shadow pages and gfn
+    arrays
+  KVM: x86/mmu: Make __GFP_ZERO a property of the memory cache
+  KVM: x86/mmu: Zero allocate shadow pages (outside of mmu_lock)
+  KVM: x86/mmu: Skip filling the gfn cache for guaranteed direct MMU
+    topups
+  KVM: x86/mmu: Prepend "kvm_" to memory cache helpers that will be
+    global
+  KVM: Move x86's version of struct kvm_mmu_memory_cache to common code
+  KVM: Move x86's MMU memory cache helpers to common KVM code
+  KVM: arm64: Drop @max param from mmu_topup_memory_cache()
+  KVM: arm64: Use common code's approach for __GFP_ZERO with memory
+    caches
+  KVM: arm64: Use common KVM implementation of MMU memory caches
+  KVM: MIPS: Drop @max param from mmu_topup_memory_cache()
+  KVM: MIPS: Account pages used for GPA page tables
+  KVM: MIPS: Use common KVM implementation of MMU memory caches
+
+ arch/arm64/include/asm/kvm_host.h  |  11 ---
+ arch/arm64/include/asm/kvm_types.h |   8 ++
+ arch/arm64/kvm/arm.c               |   2 +
+ arch/arm64/kvm/mmu.c               |  54 +++---------
+ arch/mips/include/asm/kvm_host.h   |  11 ---
+ arch/mips/include/asm/kvm_types.h  |   7 ++
+ arch/mips/kvm/mmu.c                |  44 ++--------
+ arch/powerpc/include/asm/Kbuild    |   1 +
+ arch/s390/include/asm/Kbuild       |   1 +
+ arch/x86/include/asm/kvm_host.h    |  14 +---
+ arch/x86/include/asm/kvm_types.h   |   7 ++
+ arch/x86/kvm/mmu/mmu.c             | 129 +++++++++--------------------
+ arch/x86/kvm/mmu/paging_tmpl.h     |  10 +--
+ include/asm-generic/kvm_types.h    |   5 ++
+ include/linux/kvm_host.h           |   7 ++
+ include/linux/kvm_types.h          |  19 +++++
+ virt/kvm/kvm_main.c                |  55 ++++++++++++
+ 17 files changed, 175 insertions(+), 210 deletions(-)
+ create mode 100644 arch/arm64/include/asm/kvm_types.h
+ create mode 100644 arch/mips/include/asm/kvm_types.h
+ create mode 100644 arch/x86/include/asm/kvm_types.h
+ create mode 100644 include/asm-generic/kvm_types.h
+
+-- 
+2.26.0
+
