@@ -2,150 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86C0203F43
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB037203F53
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730388AbgFVSiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 14:38:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730229AbgFVSiX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 14:38:23 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6968C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:38:22 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id t9so1307742lfl.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:38:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6dM8INJn6kRGq2FEawAeL2GhPksub34NKJRoXVLKVcE=;
-        b=TI0Z47XkczX0wnBr4G2VO1hZyAajnpy917+FTnllD/eg5x9bdReWu3f2dbUHjKRtOL
-         CLpUGhQ4o4SL2lGrdV4YIZOWOsXJemDaDV3bGmDaPmnimpWBF3GQlVuk+XIuisvmmY7u
-         O9Hwy4lBfKEIlZagoRrIe9lGCNVXvUron3eByWqcIAmvKK5fr55pZbiNJyuLnmQ4js0E
-         rQ/cDhmT3Dun3WYknZ3xU5HIL2PmfDAICdFUTdzur3UfmknTVqyPZzRp4dXjn6fb0+AK
-         hkMR1q2AjYEp8t7rv2VoraMRvYOzYB4HwzCVqHopzhW0YTGv9Xxbp2drPlUiq+Iv6IvD
-         Vw7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6dM8INJn6kRGq2FEawAeL2GhPksub34NKJRoXVLKVcE=;
-        b=S2stQY7YoCy+7B7A96+DfP96sWyywUcl/Tr0lc9GS6kL2gDnqQjdi4zzNBg2gmxQt/
-         +BcYNo/pw+thqq4jP2Kwv74F1gkRwT4GPr9NPfaDIYjQrh7MyUGh/ssK2whlNsribQyQ
-         3q6GmRanZ9ipRf+yLjG/frxY1wfNePGwwG5J4RGhxoQ+dyrSIfHFu6i08KycC4hxZWWK
-         GUuXWcbl11zXlIniVqQA0sCRnjXi1qzaCfmV0rLj1iP7JA6L8rTqFEebEcn95Am/JQPB
-         t7HdmqH70ecm86UvHOtDODlSdvaPnvRgpc7dRJTxJ1naNkCT5SJv85a47iawsIsKVubc
-         1W9g==
-X-Gm-Message-State: AOAM5336bBFFZnel2CSDv036HTiYnPE40kMkv1ctVULwZnOxWxTQRePs
-        1hEWp2y50UQXeoIISv93pmfPW10LsmdvZJ+Jzgbjnw==
-X-Google-Smtp-Source: ABdhPJypw3V0u/eqAgrjFZ6CIZRmsTyCXAesLLFO7EQnnEnPC3jLn8U/EPc0mIxiDToaCSGXRmky4Slziv/WFp+a9iw=
-X-Received: by 2002:a05:6512:482:: with SMTP id v2mr10414987lfq.3.1592851100965;
- Mon, 22 Jun 2020 11:38:20 -0700 (PDT)
+        id S1730467AbgFVSjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 14:39:52 -0400
+Received: from mout.gmx.net ([212.227.17.22]:37227 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730319AbgFVSjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 14:39:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1592851115;
+        bh=rBxfEZ67KF13JJOQ5naIrxWqmKbXOOuTFfLMGcf4oQ4=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=C/H4h2hAu5T+DFzynYhRw7LeaZOUgXd6RZ0e53fe75L0+ia1e21F7QvExrlq/VDrD
+         V+fRN78upEy37Go90ECLnUlSloSEeE3fclqbeJdTw3wqXpNy+Y5pMXgdiJDc1Gv4+9
+         ep1r6vOGW8W81B4yGg/YUetHLyC/3qc1fw1qejs4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([5.146.194.186]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mirng-1jAn8g3ChI-00eu1N; Mon, 22
+ Jun 2020 20:38:34 +0200
+Date:   Mon, 22 Jun 2020 20:38:31 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Changbin Du <changbin.du@intel.com>,
+        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Greer <mgreer@animalcreek.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Eric Biggers <ebiggers@google.com>, Jan Kara <jack@suse.cz>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Juergen Gross <jgross@suse.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Alexander Schremmer <alex@alexanderweb.de>,
+        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        David Sterba <dsterba@suse.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones:
+ Documentation/admin-guide
+Message-ID: <20200622183831.GC2581@latitude>
+References: <20200622181944.51083-1-grandmaster@al2klimov.de>
 MIME-Version: 1.0
-References: <20200608230654.828134-1-guro@fb.com> <20200608230654.828134-11-guro@fb.com>
- <CALvZod4Bfx3j+=spRSct5_cBL4U+XFF228iZt3EdkGqf4kokrQ@mail.gmail.com>
- <20200622180153.GB301338@carbon.dhcp.thefacebook.com> <CALvZod6A3ibpurMsuj+8F3DXYh7sb3L8eNmHf_NUTpvQCiDDmw@mail.gmail.com>
- <20200622182545.GC301338@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20200622182545.GC301338@carbon.dhcp.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 22 Jun 2020 11:38:09 -0700
-Message-ID: <CALvZod4AeRb9fhw68tNzBCRrcnU4PifjRYn51ioxa-C1RMLGHw@mail.gmail.com>
-Subject: Re: [PATCH v6 10/19] mm: memcg/slab: deprecate memory.kmem.slabinfo
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Y5rl02BVI9TCfPar"
+Content-Disposition: inline
+In-Reply-To: <20200622181944.51083-1-grandmaster@al2klimov.de>
+X-Provags-ID: V03:K1:Pw4YmJzjjxXasVnBvT+TnaxSEF5MoRvjnalixj0MITaAolFwLpC
+ CXcOmef94fKi553CyiFAwmMiG8Cbq5oUwy4kGZVYoN+msroRWbUw2BGCeze0+fsh7dzjggF
+ hp+oQomD94xPCNxuaVGpFGIZhEawRN9MsVT0Iyt7Ts3xO5KsY/GFv5YSukGpCJ5p47bIjHs
+ /vekM9jd3dwGrpX8OnfXg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6jknfIzZmN8=:CeP7HnUmRRrFIRh5r8B8re
+ noM3p6Qzkc8gs+NgBkRkHNm1f7SUslHc+M9qnZu4Cyp2HKTf3V0L6oa0XbsE2JTS2TeKLh/+X
+ KTZ2d03IUmBKdiwB5dN+hp5v68idtFC2abeCtkkeE6aVOTZkEzrtS9RpJxoAFwk7wr8l2Tdo0
+ lRcoaZUPcOvjgUZhx8N9OepcHv3d9BAqaEPN2dovukmCyaIPbLmusREUHqo3imF+sPg+yK7ZB
+ kPE0NHKnybf2HTdFYQmbgVsUdYhBx20rV+N3cetdrp1ZwUxDPhyUiWrWA9Z2RUz5QFciBZsuq
+ Q6cBNvKL+DQKYSj/f9j3qOVbONQt8BhuI6tjJdvSmEUevzKj1crxgea78kSF/JyzW9nYnOtD1
+ nXHyrE1LQlh5G1GC8X9jLPhjJiiP3rB4qBHRgIGH/wEpZ1abz94bS+kbJdPV3PK3ZtE/9J5xi
+ HgTUfgv4CaedWQtV7Su3umBESd3Skh1vBnUY+6kfWoR1qaoSqdsqwS/E96ELKmA/dArmE8qss
+ e0xFMIovV5t0+8iFNLICvOKX77Xi8Er7pxBrQEuxpX3/sqVVUY16Qa0uONjeLrd4AHV9pq97q
+ xvvdUcAtcYxs1GOLyLQhJevDbJYRgNKolRlMA5kGewSI/ELgC5cD6T50dTA1u4EEKNNI7mPQU
+ 3r8qXs5ADdhI/uYMMit3sjyW4J1XM/8VoX7I+NeIhZeGwpVV0VPD8pOOigg58vQdABHg+IGsc
+ vh62lrXeqVW7gmYb5D3/3vBz6sXYirbfX57qwT+VI6ft3QRwdfP4ySQEAa32JBux15LqTYDWX
+ lxLd7Ay0udzZY4fz3rkDXEi4u81H7UBNJhsbnccyMMrORuWIJLCp6kamWpARVdDyRnkQ5cdrG
+ yIoJ2tAxhZWcmUhqxkBxYmD4t16sW6o61fMkaClskvOvhUksoImr3OrCKojGzRYLOJ8DLFB2g
+ lKcWuAfrlKjR0SeZ0LPtRDw4852b4bWqpacPbGTXi24hWdwUG+6/NqTNfOnNNRR2gFsMxyD4D
+ Wh6wB5cOzGOOkDBpNrDVhWxM+f2CrvIAOaHPPb458IeIqouywe26ul7Cu5vF5myMWh/N7lsDY
+ GuNwK18kfLWEyg5hdHCVwWu8dcH2EC/M8X+EagNRYF03YSiKwgkp/mvzy01613tuak4ohBHMf
+ qvCo+c9+4xXJBBapG27Q/lVmJufHYuOD5LB9fiBp9tUGOePSLQWKUpQgUwA0GzhIiYG9+Sygm
+ rfYjzMpqAABK3/CQ1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 11:25 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Mon, Jun 22, 2020 at 11:09:47AM -0700, Shakeel Butt wrote:
-> > On Mon, Jun 22, 2020 at 11:02 AM Roman Gushchin <guro@fb.com> wrote:
-> > >
-> > > On Mon, Jun 22, 2020 at 10:12:46AM -0700, Shakeel Butt wrote:
-> > > > On Mon, Jun 8, 2020 at 4:07 PM Roman Gushchin <guro@fb.com> wrote:
-> > > > >
-> > > > > Deprecate memory.kmem.slabinfo.
-> > > > >
-> > > > > An empty file will be presented if corresponding config options are
-> > > > > enabled.
-> > > > >
-> > > > > The interface is implementation dependent, isn't present in cgroup v2,
-> > > > > and is generally useful only for core mm debugging purposes. In other
-> > > > > words, it doesn't provide any value for the absolute majority of users.
-> > > > >
-> > > > > A drgn-based replacement can be found in tools/cgroup/slabinfo.py .
-> > > > > It does support cgroup v1 and v2, mimics memory.kmem.slabinfo output
-> > > > > and also allows to get any additional information without a need
-> > > > > to recompile the kernel.
-> > > > >
-> > > > > If a drgn-based solution is too slow for a task, a bpf-based tracing
-> > > > > tool can be used, which can easily keep track of all slab allocations
-> > > > > belonging to a memory cgroup.
-> > > > >
-> > > > > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > > > > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> > > > > Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-> > > >
-> > > > Hi Roman,
-> > > >
-> > > > I am not against removing the memory.kmem.slabinfo interface but I
-> > > > would like to have an alternative solution more accessible than
-> > > > tools/cgroup/slabinfo.py.
-> > > >
-> > > > In our case, we don't have ssh access and if we need something for
-> > > > debugging, it is much more preferable to provide a file to read to
-> > > > SREs. After the review, that file will be added to a whitelist and
-> > > > then we can directly read that file through automated tools without
-> > > > approval for each request.
-> > > >
-> > > > I am just wondering if a file interface can be provided for whatever
-> > > > tools/cgroup/slabinfo.py is providing.
-> > > >
-> > > > Shakeel
-> > >
-> > > Hello, Shakeel!
-> > >
-> > > I understand your point, but Idk how much we wanna make this code a part
-> > > of the kernel and the cgroup interface.
-> >
-> > No need for the cgroup interface. I was thinking of a new interface
-> > like /proc/slabinfo_full which tells active objects for each
-> > kmem_cache and memcg pair.
->
-> To me it's a perfect example where tools like drgn and bpf shine.
-> They are more flexible and do not blow the kernel up with
-> the debug-only code.
->
-> >
-> > > The problem is that reading
-> > > from it will be really slow in comparison to all other cgroup interface
-> > > files. Idk if Google's version of SLAB has a list of all slab pages,
-> > > but if not (as in generic SLUB case), it requires scanning of the whole RAM.
-> >
-> > That's a bummer. Does drgn-based script scan the whole RAM?
->
-> To be precise, not over all RAM, but over all struct pages.
-> Unfortunately, there is no better option with SLUB, as there is no
-> comprehensive list of slab pages available. So the only option is to scan
-> over all pages with PageSlab flag set.
->
 
-So, SLUB does not have any field available in the struct page to
-support the list of slab pages?
+--Y5rl02BVI9TCfPar
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Anyways, that's a separate discussion.
+>Subject: [PATCH] Replace HTTP links with HTTPS ones: Documentation/admin-g=
+uide
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+You already sent a patch with the exact same subject line.
+Please use an incrementing version number (PATCH v2, PATCH v3, etc.) for
+revised versions of a patch, and describe the differences below the ---
+line. This is (somewhat lengthily) explained here:
+
+  https://www.kernel.org/doc/html/latest/process/submitting-patches.html#th=
+e-canonical-patch-format
+
+
+Best regards,
+Jonathan Neusch=C3=A4fer
+
+--Y5rl02BVI9TCfPar
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl7w+p8ACgkQCDBEmo7z
+X9tWiRAAnuS5matKAOKnBQ++3jS1s4CaYlzM7n36VwGK0eRnd3MeMC3C3yJJYgO1
+GvBRp41Hld5Lwu526J+Y7oKdGMn0EY8DljpyhT0uQXeKkDB9rBrYxDDyitJ8I9YE
+76TvJtp/UsKHX+lk9FCFfyAADy1/pz4vBsRv1g1R1MQI+5QUtCuOafUCdsoytQK/
+7Vtj2CIEklI8eloPgSOTAZLaQoDgJWoIUSzy7Qui2g6UTFboOUROLlXgJR7QGJva
+KuA0/4Y4C9Q1s+LH+H5iZyTgEqjETGrOEJNR2oTJlUS0Hf+hmNdi4FU9SvjvkiNh
+BzbxMctzeW4b+UFHGHpUsmT5gsNTJtDh7di5eoHfZ1uJ9aHwoJa1XfbXCGp8+8a+
+88q+EgyF1DUV8dLG3j8831tPR8yJjk+aZwqoO6pLRU7mEzYOjjP80JrvRtpYj21x
+8mpZzc5gAktnPVaQr86gvydCt9SwSZgKuOyFKTKZaibQx4L83XchSzmFKg4NlI8+
+JHF1S9C8Cl8GcypYL3w4ZYaUqHm0Zl9bTBApwzZEfd03cPp/k1so8MK69LyXB5tR
+TsZrOjCBobS83KoOyMoKNRaw6JYgcLvmCyBygYyBpyUQB5xCCu7XPVd6Tc92DZB+
+tGL59Z3gojroAMoLlfRlQIiGhzLG1gp3EjI02/zOBPYViSMb14k=
+=Uq1b
+-----END PGP SIGNATURE-----
+
+--Y5rl02BVI9TCfPar--
