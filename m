@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A5A203619
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 13:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91167203615
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 13:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728015AbgFVLrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 07:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60238 "EHLO
+        id S1727938AbgFVLqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 07:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727120AbgFVLrL (ORCPT
+        with ESMTP id S1727836AbgFVLqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 07:47:11 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83117C061794;
-        Mon, 22 Jun 2020 04:47:10 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id 35so7492328ple.0;
-        Mon, 22 Jun 2020 04:47:10 -0700 (PDT)
+        Mon, 22 Jun 2020 07:46:20 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 107E7C061796
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 04:46:20 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id b4so15076898qkn.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 04:46:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=LiBGF084Pp6dCZ14UkujprrgGctzNH7WtCqeXOknFI8=;
-        b=uCuIUgPsr8qbzqBFVG3fkPY8Ev4mfasm1onLTS1Kaej+E0YJ/5qNW2E2u6OTXVOJ4F
-         B0Yu17EAQ454OPh4D0COZ+w/U+mXm0rZCFBYgxLd/Ya54XmMdKJLUBZbY1RGLnaUQpZX
-         bEHfRQIMwNl4/R7ELsH1AlFUQsB4AYrPbY0Al8YHq26SPi9MAOKh6QCtHf8FEAqhgO2s
-         ib635QAlY+CL3ZXwkcQ8R0sFKg5AbSg6RoKb8ywpPs0LXV196uouDxUfDZi5IXrnpF6Y
-         Wcf/Yiv7P+9XUd2v3i7VnU2qEQlbrPR2/SS0kRvAd72yP8BxNdsCxs3d3Aqx90bQ2zJj
-         7sjA==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NBKzXepzy68inRcMiAHpgcaZ+EYis2uiV6fI4xhZtmM=;
+        b=k8sCtVsIXQZTIM44uTx5XoGTEDbrW/uXOY8fvY9Nd/4DXh4saPSxYGA0cCfUbnlyLl
+         tHW4PMUz+IUIg6iJElEk/IVvMc03r9mZCDo7PkP58fQDAGJJHKTvWbHlwGlvSkCSJBE9
+         Ppej67LhjF9DHjvuE14BQiJBd6KnkgcnIxlNFcmKmCUHQqePe85Gy7qlE4M8VsBeHKUS
+         yKX1U0jk0j5Ks8Y76HvcbvQtdxXTdUE006wQlY/5i2fjpanXsf+qNhaiup+oN8Qg8/ox
+         /U6VE787P4r0dXZDbqERqe83AX626e55WkuKobSm/QiJ7uDeG7xH7wfc6SCv8Inqo2Uq
+         QFhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=LiBGF084Pp6dCZ14UkujprrgGctzNH7WtCqeXOknFI8=;
-        b=OIw3oqOy6MC0K7AJyty10dl0IPIO8SC1ypBxSMxcOPAqP+Vj6extEsvq5NKhP+CDqc
-         LZux7Yy+OE63+tNSxMAAQsyhNujMweX31ghZ4WlagiXiAT5PeN53BdaNgOgoqlILyx9A
-         7bO6pByQu40bzcoQe4UUcXtcW7uDtwM5xA/gbeKvBreDE+Re4KRTJpu8UmIoFiXbBVZO
-         RxNzh7S24k4y8V8RpU5JWUOeAISyYfhsoOmGkexje5yEnRMYfAU71oJIBDUkmH0XQ23y
-         IVSVj483gtikQfoFkCLB61Ym74sYk5wg4Y7155mcfWHYwuMnskINb5jnOfsJNEjCDDtN
-         bu1g==
-X-Gm-Message-State: AOAM5319rpE2kWyfQUWzCVKo2Bh5CpBVDDJMtFUSJh/d+X41mfZpcMIX
-        gnQ0AqcC6OESzuOjBdyhLaI=
-X-Google-Smtp-Source: ABdhPJy8GhbcijBg1WZAh0wJE6T5qBbkLL2oa1JLqC0YTaNAiGZlOFvFKD9dlGIpjD0/JWXAXijIHA==
-X-Received: by 2002:a17:90b:3c6:: with SMTP id go6mr18540571pjb.224.1592826430099;
-        Mon, 22 Jun 2020 04:47:10 -0700 (PDT)
-Received: from localhost ([43.224.245.180])
-        by smtp.gmail.com with ESMTPSA id r8sm14070896pfq.16.2020.06.22.04.47.08
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 22 Jun 2020 04:47:09 -0700 (PDT)
-From:   Geliang Tang <geliangtang@gmail.com>
-To:     Mat Martineau <mathew.j.martineau@linux.intel.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Geliang Tang <geliangtang@gmail.com>, netdev@vger.kernel.org,
-        mptcp@lists.01.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net v2] mptcp: drop sndr_key in mptcp_syn_options
-Date:   Mon, 22 Jun 2020 19:45:58 +0800
-Message-Id: <60f8315d6ae7b62d175c573f75cee50f14ce988b.1592826171.git.geliangtang@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NBKzXepzy68inRcMiAHpgcaZ+EYis2uiV6fI4xhZtmM=;
+        b=rmkvygbLYjaMJLXpPAEwlrdkTv2fHa/thIlji6pTb8hofhS423V413rpStIxwHJNHY
+         /GOpWbmoRWGC0sPODKL/XMMmqjO6bEAts5U/XCo01f2gn+kqXS4XmHV0RNccBv839TSh
+         oDVdUkX0VFbmyvSmhLwgV+U51PoXhgZ84V3Nr6wErHuYFQEhUOqoxAPdM1AToZOtW2Zp
+         enF8cp2hzmC3T2LIVTtAJFQAfGLnZ1qO0gE+M3R87Ss4FEFKOLsII1cdW/fnvgf2NKC7
+         iuAvbZnBs8b0NG4NJ+kBfUhNt5N/UyjIff6ujRY+2+Nkzh1O48fmqEJb8qqJ56K9QgzY
+         XYFw==
+X-Gm-Message-State: AOAM531IGBe672yJD2OMwl9EIbFfYCPPWjZzjO1CEca1tKbfnEMv0OrC
+        RqTOt0XrDA6ZF/jWuio73Wb/ow==
+X-Google-Smtp-Source: ABdhPJxthYjyMVCe6ZAxMUNKsmIMBTQD1YPg4YWyLhscgW6iJ+jy7QK2ERT6it0ZxPEWrnvgAqzIOg==
+X-Received: by 2002:ae9:c00d:: with SMTP id u13mr15622504qkk.434.1592826379164;
+        Mon, 22 Jun 2020 04:46:19 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id r37sm14964604qtk.34.2020.06.22.04.46.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 04:46:18 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jnKu1-00Brwt-CA; Mon, 22 Jun 2020 08:46:17 -0300
+Date:   Mon, 22 Jun 2020 08:46:17 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jerome Glisse <jglisse@redhat.com>
+Cc:     Felix Kuehling <felix.kuehling@amd.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
+        <thomas_os@shipmail.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
+ annotations
+Message-ID: <20200622114617.GU6578@ziepe.ca>
+References: <20200619113934.GN6578@ziepe.ca>
+ <CAKMK7uE-kWA==Cko5uenMrcnopEjq42HxoDTDywzBAbHqsN13g@mail.gmail.com>
+ <20200619151551.GP6578@ziepe.ca>
+ <CAKMK7uEvkshAM6KUYZu8_OCpF4+1Y_SM7cQ9nJWpagfke8s8LA@mail.gmail.com>
+ <20200619172308.GQ6578@ziepe.ca>
+ <20200619180935.GA10009@redhat.com>
+ <20200619181849.GR6578@ziepe.ca>
+ <56008d64-772d-5757-6136-f20591ef71d2@amd.com>
+ <20200619195538.GT6578@ziepe.ca>
+ <20200619203147.GC13117@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200619203147.GC13117@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In RFC 8684, we don't need to send sndr_key in SYN package anymore, so drop
-it.
+On Fri, Jun 19, 2020 at 04:31:47PM -0400, Jerome Glisse wrote:
+> Not doable as page refcount can change for things unrelated to GUP, with
+> John changes we can identify GUP and we could potentialy copy GUPed page
+> instead of COW but this can potentialy slow down fork() and i am not sure
+> how acceptable this would be. Also this does not solve GUP against page
+> that are already in fork tree ie page P0 is in process A which forks,
+> we now have page P0 in process A and B. Now we have process A which forks
+> again and we have page P0 in A, B, and C. Here B and C are two branches
+> with root in A. B and/or C can keep forking and grow the fork tree.
 
-Fixes: cc7972ea1932 ("mptcp: parse and emit MP_CAPABLE option according to v1 spec")
-Signed-off-by: Geliang Tang <geliangtang@gmail.com>
----
- net/mptcp/options.c | 2 --
- 1 file changed, 2 deletions(-)
+For a long time now RDMA has broken COW pages when creating user DMA
+regions.
 
-diff --git a/net/mptcp/options.c b/net/mptcp/options.c
-index 490b92534afc..df9a51425c6f 100644
---- a/net/mptcp/options.c
-+++ b/net/mptcp/options.c
-@@ -336,9 +336,7 @@ bool mptcp_syn_options(struct sock *sk, const struct sk_buff *skb,
- 	 */
- 	subflow->snd_isn = TCP_SKB_CB(skb)->end_seq;
- 	if (subflow->request_mptcp) {
--		pr_debug("local_key=%llu", subflow->local_key);
- 		opts->suboptions = OPTION_MPTCP_MPC_SYN;
--		opts->sndr_key = subflow->local_key;
- 		*size = TCPOLEN_MPTCP_MPC_SYN;
- 		return true;
- 	} else if (subflow->request_join) {
--- 
-2.17.1
+The problem has been that fork re-COW's regions that had their COW
+broken.
 
+So, if you break the COW upon mapping and prevent fork (and others)
+from copying DMA pinned then you'd cover the cases.
+
+> Semantic was change with 17839856fd588f4ab6b789f482ed3ffd7c403e1f to some
+> what "fix" that but GUP fast is still succeptible to this.
+
+Ah, so everyone breaks the COW now, not just RDMA..
+
+What do you mean 'GUP fast is still succeptible to this' ?
+
+Jason
