@@ -2,126 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8D5203C82
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0F21203C86
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:26:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729673AbgFVQ0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 12:26:16 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:18990 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729621AbgFVQ0P (ORCPT
+        id S1729813AbgFVQ0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 12:26:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729414AbgFVQ0Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 12:26:15 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1592843175; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=B8MkbA73HBcHUgVuuaeIgAVxKFah+m4d+ECDIS3Ed+0=; b=CCc+uidLqLM47nHpZA1zYfrL94cUG8hbFJz5ugyILhO1OKjoxpUygkE9FG0tZJe0CSiiSAtn
- g9bd7ByDX30x2M0aWFHwydFtql0s/nekK5+e5IkMaxbZPFNJi76lUIuIp+JsZOfkR6kuc19J
- emgdr4mjeMcb04zl8GluBZqazYc=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5ef0db98bfb34e631c46a28d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Jun 2020 16:26:00
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id AB0C6C433C8; Mon, 22 Jun 2020 16:25:59 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from jcrouse1-lnx.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jcrouse)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 57767C433C6;
-        Mon, 22 Jun 2020 16:25:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 57767C433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=jcrouse@codeaurora.org
-Date:   Mon, 22 Jun 2020 10:25:54 -0600
-From:   Jordan Crouse <jcrouse@codeaurora.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Eric Anholt <eric@anholt.net>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <sean@poorly.run>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] drm/msm: Fix address space size after refactor.
-Message-ID: <20200622162554.GA9114@jcrouse1-lnx.qualcomm.com>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        Eric Anholt <eric@anholt.net>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Sean Paul <sean@poorly.run>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20200617205310.2183722-1-eric@anholt.net>
- <CAF6AEGu1jV+SWg8apDdq5QghGUvr1wKV38R8XwTL97VXfVUmdQ@mail.gmail.com>
+        Mon, 22 Jun 2020 12:26:16 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE37EC061573;
+        Mon, 22 Jun 2020 09:26:15 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id i14so224787ejr.9;
+        Mon, 22 Jun 2020 09:26:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PRSeEGx+iywHLMnsI0Db78lh59FwNXwM+BHCFN43KFc=;
+        b=f+NZ8mdCqpTVLxe0XpcWX6E7uh+0QvDFVNbCU9PB5B4i5e02vkxaxW+aSFXxz5fIHW
+         pScwkQjC7YTqsVUwQbbjNTS0MAXhFigofiYrVWF31kSDTVZn9O8g5lUSCWyfkSAQ5coT
+         Xk1tDsPBAuOVtRD71vCjMQsQH3Jz9HljxZetviSYdJK00R9Sb9dK41zOn3U2Po79yBBQ
+         LxWsPsyl11fMbopq2gFSVevQfbZPIW1bkubUuu7gmztEmfNV/aC1wcWCbitTEJxlGoCi
+         Vd2XkiVBy3Dd9S3j2NiTk7qkrN+rmsM5gbNlFGfwqBLPQz7CElMHttc4ZS+IyoniuSpg
+         wheg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PRSeEGx+iywHLMnsI0Db78lh59FwNXwM+BHCFN43KFc=;
+        b=Jhduz6V/KB+6kU+FbTGSjO/YfDQLJucbBx3qmPLJVxc2T2mCiUSVDQ+HNeRaRCrfPq
+         N6eK7XhYDtNF3M4TuQKphIEMJlDeohjR4rxL1L2cQeiWyhsJSzqO7fn+YfE/NRsHVHFL
+         xNZGscSiE6aXAcAafpC6mTBXZTjPYGzqjALWf/vh5wCFR99i2VPEiyUCFQY99ge6nJYp
+         3t637ZzbfXzl/A4Oi8RFrFxN27gKkzO7YfPmjZKeTdmYRe2zl+lZDlC0NkMfsKEX1rol
+         GFU0cTCFMqE43OCGkdptajh4rx/krDXnNmyIMI4x6OENETWE9JEFFpKJfs1D33PEHae4
+         +s8Q==
+X-Gm-Message-State: AOAM5305VIYJsuuHRAjK4711Kd5zg9X0SqA9JMjBnwT5A9Bg8LdT+N3C
+        9BjGCUggVEUy7inxaTnPJ0g=
+X-Google-Smtp-Source: ABdhPJwR1x0eenUZ7pJJzQxRie8s6Q1SAZSIMaSKDxT+sCSr1QeFQ5qBZAPEp1gWydFVNWHfkV+PKg==
+X-Received: by 2002:a17:906:e298:: with SMTP id gg24mr16183015ejb.120.1592843174601;
+        Mon, 22 Jun 2020 09:26:14 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:a03f:b7f9:7600:74f4:a0e9:488b:65c7])
+        by smtp.gmail.com with ESMTPSA id p6sm11948424ejb.71.2020.06.22.09.26.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 09:26:14 -0700 (PDT)
+From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] spi: fsl: add missing __iomem annotation
+Date:   Mon, 22 Jun 2020 18:26:11 +0200
+Message-Id: <20200622162611.83694-1-luc.vanoostenryck@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGu1jV+SWg8apDdq5QghGUvr1wKV38R8XwTL97VXfVUmdQ@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 17, 2020 at 07:39:08PM -0700, Rob Clark wrote:
-> On Wed, Jun 17, 2020 at 1:53 PM Eric Anholt <eric@anholt.net> wrote:
-> >
-> > Previously the address space went from 16M to ~0u, but with the
-> > refactor one of the 'f's was dropped, limiting us to 256MB.
-> > Additionally, the new interface takes a start and size, not start and
-> > end, so we can't just copy and paste.
-> >
-> > Fixes regressions in dEQP-VK.memory.allocation.random.*
-> >
-> > Fixes: ccac7ce373c1 ("drm/msm: Refactor address space initialization")
-> > Signed-off-by: Eric Anholt <eric@anholt.net>
-> 
-> 
-> rebased on https://patchwork.freedesktop.org/series/78281/ (which
-> fixed half of the problem) and pushed this and 2/2 to msm-next so it
-> should show up in linux-next shortly..
-> 
-> planning to wait a short time more to see if we find any other issues
-> and then send a -fixes PR
+The field mspi->reg_base is annotated as an __iomem pointer. Good.
 
-I'll fix up the rest of the flubbed addresses sizes.
+However, this field is often assigned to a temporary variable:
+before being used. For example:
+	struct fsl_spi_reg *reg_base = mspi->reg_base;
 
-Jordan
+But this variable is missing the __iomem annotation.
+So, add the missing __iomem and make sparse & the bot happier.
 
-> BR,
-> -R
-> 
-> 
-> > ---
-> >  drivers/gpu/drm/msm/adreno/adreno_gpu.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> > index 89673c7ed473..5db06b590943 100644
-> > --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> > +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> > @@ -194,7 +194,7 @@ adreno_iommu_create_address_space(struct msm_gpu *gpu,
-> >         struct msm_gem_address_space *aspace;
-> >
-> >         aspace = msm_gem_address_space_create(mmu, "gpu", SZ_16M,
-> > -               0xfffffff);
-> > +               0xffffffff - SZ_16M);
-> >
-> >         if (IS_ERR(aspace) && !IS_ERR(mmu))
-> >                 mmu->funcs->destroy(mmu);
-> > --
-> > 2.26.2
-> >
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+---
+ drivers/spi/spi-fsl-spi.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
+diff --git a/drivers/spi/spi-fsl-spi.c b/drivers/spi/spi-fsl-spi.c
+index 67f022b8c81d..299e9870cf58 100644
+--- a/drivers/spi/spi-fsl-spi.c
++++ b/drivers/spi/spi-fsl-spi.c
+@@ -90,7 +90,7 @@ static void fsl_spi_change_mode(struct spi_device *spi)
+ {
+ 	struct mpc8xxx_spi *mspi = spi_master_get_devdata(spi->master);
+ 	struct spi_mpc8xxx_cs *cs = spi->controller_state;
+-	struct fsl_spi_reg *reg_base = mspi->reg_base;
++	struct fsl_spi_reg __iomem *reg_base = mspi->reg_base;
+ 	__be32 __iomem *mode = &reg_base->mode;
+ 	unsigned long flags;
+ 
+@@ -291,7 +291,7 @@ static int fsl_spi_cpu_bufs(struct mpc8xxx_spi *mspi,
+ 				struct spi_transfer *t, unsigned int len)
+ {
+ 	u32 word;
+-	struct fsl_spi_reg *reg_base = mspi->reg_base;
++	struct fsl_spi_reg __iomem *reg_base = mspi->reg_base;
+ 
+ 	mspi->count = len;
+ 
+@@ -309,7 +309,7 @@ static int fsl_spi_bufs(struct spi_device *spi, struct spi_transfer *t,
+ 			    bool is_dma_mapped)
+ {
+ 	struct mpc8xxx_spi *mpc8xxx_spi = spi_master_get_devdata(spi->master);
+-	struct fsl_spi_reg *reg_base;
++	struct fsl_spi_reg __iomem *reg_base;
+ 	unsigned int len = t->len;
+ 	u8 bits_per_word;
+ 	int ret;
+@@ -440,7 +440,7 @@ static int fsl_spi_do_one_msg(struct spi_master *master,
+ static int fsl_spi_setup(struct spi_device *spi)
+ {
+ 	struct mpc8xxx_spi *mpc8xxx_spi;
+-	struct fsl_spi_reg *reg_base;
++	struct fsl_spi_reg __iomem *reg_base;
+ 	int retval;
+ 	u32 hw_mode;
+ 	struct spi_mpc8xxx_cs *cs = spi_get_ctldata(spi);
+@@ -495,7 +495,7 @@ static void fsl_spi_cleanup(struct spi_device *spi)
+ 
+ static void fsl_spi_cpu_irq(struct mpc8xxx_spi *mspi, u32 events)
+ {
+-	struct fsl_spi_reg *reg_base = mspi->reg_base;
++	struct fsl_spi_reg __iomem *reg_base = mspi->reg_base;
+ 
+ 	/* We need handle RX first */
+ 	if (events & SPIE_NE) {
+@@ -530,7 +530,7 @@ static irqreturn_t fsl_spi_irq(s32 irq, void *context_data)
+ 	struct mpc8xxx_spi *mspi = context_data;
+ 	irqreturn_t ret = IRQ_NONE;
+ 	u32 events;
+-	struct fsl_spi_reg *reg_base = mspi->reg_base;
++	struct fsl_spi_reg __iomem *reg_base = mspi->reg_base;
+ 
+ 	/* Get interrupt events(tx/rx) */
+ 	events = mpc8xxx_spi_read_reg(&reg_base->event);
+@@ -550,7 +550,7 @@ static irqreturn_t fsl_spi_irq(s32 irq, void *context_data)
+ static void fsl_spi_grlib_cs_control(struct spi_device *spi, bool on)
+ {
+ 	struct mpc8xxx_spi *mpc8xxx_spi = spi_master_get_devdata(spi->master);
+-	struct fsl_spi_reg *reg_base = mpc8xxx_spi->reg_base;
++	struct fsl_spi_reg __iomem *reg_base = mpc8xxx_spi->reg_base;
+ 	u32 slvsel;
+ 	u16 cs = spi->chip_select;
+ 
+@@ -568,7 +568,7 @@ static void fsl_spi_grlib_probe(struct device *dev)
+ 	struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
+ 	struct spi_master *master = dev_get_drvdata(dev);
+ 	struct mpc8xxx_spi *mpc8xxx_spi = spi_master_get_devdata(master);
+-	struct fsl_spi_reg *reg_base = mpc8xxx_spi->reg_base;
++	struct fsl_spi_reg __iomem *reg_base = mpc8xxx_spi->reg_base;
+ 	int mbits;
+ 	u32 capabilities;
+ 
+@@ -594,7 +594,7 @@ static struct spi_master *fsl_spi_probe(struct device *dev,
+ 	struct fsl_spi_platform_data *pdata = dev_get_platdata(dev);
+ 	struct spi_master *master;
+ 	struct mpc8xxx_spi *mpc8xxx_spi;
+-	struct fsl_spi_reg *reg_base;
++	struct fsl_spi_reg __iomem *reg_base;
+ 	u32 regval;
+ 	int ret = 0;
+ 
+
+base-commit: 48778464bb7d346b47157d21ffde2af6b2d39110
 -- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.27.0
+
