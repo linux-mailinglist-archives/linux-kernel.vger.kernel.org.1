@@ -2,132 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B86202FC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 08:34:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56E0202FD9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 08:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731296AbgFVGe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 02:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39980 "EHLO
+        id S1726776AbgFVGj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 02:39:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731248AbgFVGe2 (ORCPT
+        with ESMTP id S1726738AbgFVGjZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 02:34:28 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F25C061795
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 23:34:28 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id t6so12168595otk.9
-        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 23:34:28 -0700 (PDT)
+        Mon, 22 Jun 2020 02:39:25 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B50C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 23:39:25 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id 64so1275168oti.5
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 23:39:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fA+O46nAmMQU+XrEe2RpDVyUBd8QOlVEvixhrlksQsk=;
-        b=b9/LB+2uOPC2C+s6xNSxYSTXptcjEphcExsNN+CkhnNfNoRXsHKjNJYc3YIrGGzPDH
-         ++YxJtnCQUmP3PD/YQoMg/BlUCiy2n33EYzQBEfkxbebiB4hcx+BikkxstWpvr+y3jeX
-         qgY4neCyplc7bi0sc+Gdk8vAKpmLkwwstm8khaq3fbVVb7HDadQ1Q458wU68MPQxzS/Z
-         sKdhLfpy4uFaJz0QHpn96Y+zk/5kQNrBiA9YhzfBvyyxrYtyVmgmVok3dFllvH+gkabs
-         KUE7uG1jIz+vpHmlB+wXVLblZD793pLEMsMXUA69TEoyqALcnB7iSbmSmSPNwdOOR0j+
-         bmgQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dNuMdqRwrLz9vD8xRJNwtGlXJp39SHPqNF0e6VyJIxM=;
+        b=bv4KyCepxXxyrUB07sqH9I911+MDHV9RKlAjq4QDoSgiSZCLomrGM4kqhCvgqbIm7w
+         x2cWkwy2Krx0Y9QOlBsAlJ6SjOlyuxDncP/pKu/83xR+NkBtQ2aZdoH9bsO2vsGLmq7/
+         DoIODaVtZPysg9dV78iybpIHuMrxrbPvwDiOfkJOh2aB8KlSRthYpFKSMOXaGr/4y8Ox
+         UkHhPvRFEpsyYr932fUEedU2G90zwQc7Rf8WMfx5EdWBDJHZCCyPwzwYOktLytK2+LX2
+         B7OpdS+q+tBaaTSK1BOzaxe0iUkKbz5oAnQypR/G41UqpUPCDQBv8nr0St5JfmymPvap
+         lPvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fA+O46nAmMQU+XrEe2RpDVyUBd8QOlVEvixhrlksQsk=;
-        b=gbWfu+/oIwT0CF/L5BaNPZNHPgyORo2whU0K7EP/F0DAhMcbdyffXP0rPUwOq8P84h
-         xZE/NEgvGzDHq7672C5jKH5Mhq2FBGn7Mj2BX4PyaipdY9oS2Xsgz7eILfBgRnQ/b60A
-         n3Eh0ilXYqX97l0Z3mbjUJoYS6azIVUkar725PY7Ovc4p9ycbTiydCrpudQtMkI83hG4
-         GIWg2xaOtM/ci8NDgNQ4Br2OLsabprZl8VRX1ELunnDjEjY1ZF2Ii9C0YbgJ8XV/yN/1
-         M8ZCXjy9/T/MB68OkhCojVHPbAHI5TmWPdG+yBPuIhD783LXhmBZDMBanPesYXc0L2EZ
-         x4vw==
-X-Gm-Message-State: AOAM530XwZgHqtoKfVMsIpu3FMcP/rXc/upqpODpvhxm9Or4JvZjGppW
-        b7Na/dOenyiD/bFxiG0K8zpO1dzn98bquvEMJvFlwg==
-X-Google-Smtp-Source: ABdhPJxjGYyJCmNve/9hcTZprbdLfZ54EQVt63NfNc2V6+/VXUjw/7gvzl9rJpUsQ+QN/VfX1wCUG1xliQmhzsSqEsY=
-X-Received: by 2002:a9d:64da:: with SMTP id n26mr7434635otl.36.1592807667489;
- Sun, 21 Jun 2020 23:34:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dNuMdqRwrLz9vD8xRJNwtGlXJp39SHPqNF0e6VyJIxM=;
+        b=somBJifjxApC/plgnE7ic9QjsG/w//3AEPsaTL+PoSkC/kDcEKiBoLBBDGgstIVeT2
+         Esv7G6r9W8HZgz45T6aSZSqUIeMjct2KC03uVLk6PrJNeDPHTTAHy3N14x1Vlvk0sVAd
+         mFCZ77nEyBsAwHpvDWRgwcLS+N/nBg8nkGvrBQPtzFgzGlSJSbpePvBO0wOX5FOYC5cw
+         uJcYAiw1v6QtJbgd6jJhWByPpRE6YUDue0za9AfZjMSx2+xTUijQ0VBGQGCSFwuZNsnY
+         h40Di7cWc51UiJXu6y/oS52MxvI9K8+yL5j2iyt+X8ncBdsXr6e1dzA2Z8b7b44Srfdc
+         AnDw==
+X-Gm-Message-State: AOAM530j7gF/finR+eXg1Yjcva2BkA/pUPSEuPDDjiypIAqWDvNRQqNT
+        GvUZNHtdm3WGnu7uU4DfG12nsQ==
+X-Google-Smtp-Source: ABdhPJxZt/4YFmgo2Vjb5O1nD5Di+/baUjXE79Mc3ZjNakah/nGTgnxw3LywvkYef71WhQyQxS1EDA==
+X-Received: by 2002:a05:6830:1e61:: with SMTP id m1mr12271701otr.13.1592807964696;
+        Sun, 21 Jun 2020 23:39:24 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id g12sm3271301oos.8.2020.06.21.23.39.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Jun 2020 23:39:24 -0700 (PDT)
+Date:   Sun, 21 Jun 2020 23:36:38 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, loic.pallardy@st.com,
+        arnaud.pouliquen@st.com, s-anna@ti.com
+Subject: Re: [PATCH v4 2/9] remoteproc: Add new attach() remoteproc operation
+Message-ID: <20200622063638.GC149351@builder.lan>
+References: <20200601175139.22097-1-mathieu.poirier@linaro.org>
+ <20200601175139.22097-3-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-References: <20200611114418.19852-1-sumit.semwal@linaro.org> <59f0062d-5ca9-84f1-ba92-c3463ff0e73d@codeaurora.org>
-In-Reply-To: <59f0062d-5ca9-84f1-ba92-c3463ff0e73d@codeaurora.org>
-From:   Sumit Semwal <sumit.semwal@linaro.org>
-Date:   Mon, 22 Jun 2020 12:04:16 +0530
-Message-ID: <CAO_48GHRf0AHTVFhroVe4O=+QVeHKNfKNwAf+5ioYyi1h7+Hsw@mail.gmail.com>
-Subject: Re: [PATCH v2] dma-buf: Move dma_buf_release() from fops to dentry_ops
-To:     Charan Teja Kalla <charante@codeaurora.org>
-Cc:     "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        Chenbo Feng <fengc@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linaro MM SIG <linaro-mm-sig@lists.linaro.org>,
-        syzbot+3643a18836bce555bff6@syzkaller.appspotmail.com,
-        "# 3.4.x" <stable@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200601175139.22097-3-mathieu.poirier@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Charan,
+On Mon 01 Jun 10:51 PDT 2020, Mathieu Poirier wrote:
 
-On Tue, 16 Jun 2020 at 19:13, Charan Teja Kalla <charante@codeaurora.org> wrote:
->
-> Thanks Sumit for the fix.
->
-> On 6/11/2020 5:14 PM, Sumit Semwal wrote:
-> > Charan Teja reported a 'use-after-free' in dmabuffs_dname [1], which
-> > happens if the dma_buf_release() is called while the userspace is
-> > accessing the dma_buf pseudo fs's dmabuffs_dname() in another process,
-> > and dma_buf_release() releases the dmabuf object when the last reference
-> > to the struct file goes away.
-> >
-> > I discussed with Arnd Bergmann, and he suggested that rather than tying
-> > the dma_buf_release() to the file_operations' release(), we can tie it to
-> > the dentry_operations' d_release(), which will be called when the last ref
-> > to the dentry is removed.
-> >
-> > The path exercised by __fput() calls f_op->release() first, and then calls
-> > dput, which eventually calls d_op->d_release().
-> >
-> > In the 'normal' case, when no userspace access is happening via dma_buf
-> > pseudo fs, there should be exactly one fd, file, dentry and inode, so
-> > closing the fd will kill of everything right away.
-> >
-> > In the presented case, the dentry's d_release() will be called only when
-> > the dentry's last ref is released.
-> >
-> > Therefore, lets move dma_buf_release() from fops->release() to
-> > d_ops->d_release()
-> >
-> > Many thanks to Arnd for his FS insights :)
-> >
-> > [1]: https://lore.kernel.org/patchwork/patch/1238278/
-> >
-> > Fixes: bb2bb9030425 ("dma-buf: add DMA_BUF_SET_NAME ioctls")
-> > Reported-by: syzbot+3643a18836bce555bff6@syzkaller.appspotmail.com
-> > Cc: <stable@vger.kernel.org> [5.3+]
-> > Cc: Arnd Bergmann <arnd@arndb.de>
-> > Reported-by: Charan Teja Reddy <charante@codeaurora.org>
-> > Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> > Signed-off-by: Sumit Semwal <sumit.semwal@linaro.org>
-> >
->
-> Tested this patch for Android running on Snapdragon hardware and see no
-> issues.
-> Tested-by: Charan Teja Reddy <charante@codeaurora.org>
-Thanks for your tested-by, appreciate it!
+> Add an new attach() operation in order to properly deal with
+> scenarios where the remoteproc core needs to attach to a
+> remote processor that has been booted by another entity.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  drivers/remoteproc/remoteproc_internal.h | 8 ++++++++
+>  include/linux/remoteproc.h               | 2 ++
+>  2 files changed, 10 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_internal.h b/drivers/remoteproc/remoteproc_internal.h
+> index 4ba7cb59d3e8..fc710866f8ce 100644
+> --- a/drivers/remoteproc/remoteproc_internal.h
+> +++ b/drivers/remoteproc/remoteproc_internal.h
+> @@ -79,6 +79,14 @@ static inline int rproc_unprepare_device(struct rproc *rproc)
+>  	return 0;
+>  }
+>  
+> +static inline int rproc_attach_device(struct rproc *rproc)
+> +{
+> +	if (rproc->ops->attach)
+> +		return rproc->ops->attach(rproc);
+> +
+> +	return 0;
 
-Chris,
-any luck with your CI to test if this also helps your
-dma_buf_release() bug that you guys have seen?
+Afaict we don't allow the registration of a remoteproc in DETACHED state
+without an "attach" function specified and as such we shouldn't be able
+to end up here.
 
-If you've not been able to test, and there are no more objections by
-EOD today, I will merge this to the drm-misc-fixes branch.
+On the other hand I think it would make sense to have a system where
+"attach" simply just means bring up the communication with the remote
+processor, so let's keep it as is and we can adjust it as necessary
+later.
 
->
-> > ---
-> > v2: per Arnd: Moved dma_buf_release() above to avoid forward declaration;
-> >      removed dentry_ops check.
-> > ---
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-<snip>
-Best,
-Sumit.
+Regards,
+Bjorn
+
+> +}
+> +
+>  static inline
+>  int rproc_fw_sanity_check(struct rproc *rproc, const struct firmware *fw)
+>  {
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index 21182ad2d059..bf6a310ba870 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -359,6 +359,7 @@ enum rsc_handling_status {
+>   * @unprepare:	unprepare device after stop
+>   * @start:	power on the device and boot it
+>   * @stop:	power off the device
+> + * @attach:	attach to a device that his already powered up
+>   * @kick:	kick a virtqueue (virtqueue id given as a parameter)
+>   * @da_to_va:	optional platform hook to perform address translations
+>   * @parse_fw:	parse firmware to extract information (e.g. resource table)
+> @@ -379,6 +380,7 @@ struct rproc_ops {
+>  	int (*unprepare)(struct rproc *rproc);
+>  	int (*start)(struct rproc *rproc);
+>  	int (*stop)(struct rproc *rproc);
+> +	int (*attach)(struct rproc *rproc);
+>  	void (*kick)(struct rproc *rproc, int vqid);
+>  	void * (*da_to_va)(struct rproc *rproc, u64 da, size_t len);
+>  	int (*parse_fw)(struct rproc *rproc, const struct firmware *fw);
+> -- 
+> 2.20.1
+> 
