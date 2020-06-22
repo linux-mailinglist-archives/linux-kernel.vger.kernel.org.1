@@ -2,82 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 892C420338E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 11:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1FC42033A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 11:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbgFVJhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 05:37:13 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:43414 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726500AbgFVJhM (ORCPT
+        id S1726947AbgFVJl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 05:41:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726802AbgFVJlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 05:37:12 -0400
-Received: by mail-il1-f198.google.com with SMTP id y13so1518370ila.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:37:12 -0700 (PDT)
+        Mon, 22 Jun 2020 05:41:24 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43C3AC061796
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:41:23 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id f18so2480358wml.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:41:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7JOFF+Nl1qiIhM1iOj4oCorX86E5B7hR8kg9WCnzUnw=;
+        b=I/eaN9xrQqwwgmhuM+4CqaeHsY6aV60kH8mKn4OebmUYtK7pNQK0wVGunsLFglKTAy
+         eUfthcd2EIQ1C+6upxc/23ua64/60kfHPQMRmNReX5PP2rqNblnCuw0jNW6ITtVZgxqW
+         JMjW13bHUWbsnkuYKGTXldz63/aT5JAfKOHfJsdcPLDI6CaCjZlEVCVN1/cNK9IA3bVM
+         sWSBmTqNhgt/nNmxR0EvpDrZ4oceKA+bx2hJY0Lo1o/pDYzIwKGHfLU+2NxtIdO7LXgx
+         9KJhrZfL7yYB7s5BDFwVOlo/2O7aGyMMJ8C/qk+ipYeZOh/5oEPkN+TeTC0+JThrTbg7
+         00hQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=NCIhNzemyaHeV1URQe9l6ctBEp+a/h06zCpmFD6sWu8=;
-        b=NxY+9OjL8XFAGxsMfLvAAci1bLu7fUjcUToRd9pApCmBi1c9YwAVsPFgJppoO1WNh2
-         km4pvsvyzpoUQ+45t/pU7W/GoeJnKetek/H4veWcqAVX75wzlbiUUCt3dA5atRZChUgH
-         4txLSimE5qEsNC1iWVbfFDhnKL1ciw6vY9e+8Du99TC18wC1Jj0551eUaCxPSKF+X2Ma
-         FhVJ51zioQ0pyg5Qcv53DDuuhZvdmOci7nDrEGVwdjTOg1aqv9k30sV9+VEcB5YTOf7L
-         Ns9X0KgPhXcRWuVFrKEK7OcgPG9m+ZvFX/nEo70Qr8rAtXfvOWpyAWGdC7FxJODid87Y
-         Vrjg==
-X-Gm-Message-State: AOAM532uTpJ9LtjqdJ3xurDErIz7Mf4bb056q4JY5LVt2HsgNFWyaaHO
-        RlDMA5P6VzbTTsPuWFBQsl3l8tEuc/ZrhJI/DlWn/bogDcMJ
-X-Google-Smtp-Source: ABdhPJya4TlXHk3sbbO0u6TW75Uj7uiXd6K8Q9hxTZjJt3xKDqXjWbWh/cInD1e9U3Z1gyM+ARL1XjZlxcsBVU2ArxN+/EdJ27gE
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7JOFF+Nl1qiIhM1iOj4oCorX86E5B7hR8kg9WCnzUnw=;
+        b=Fj/WCk+v/B4CXrXls+PiuSGf14IREVYnmxWt3kU7aV58U9o9yzW3/mtafwza1n58hN
+         OiWLDFUckUbzDtOaLEEfvekWu2A5pZXiyrhlw5qdBoaDnXNpGFydVQlVf6t6hWX5avGt
+         IIFpsx6MX0mY6lK2nXR8vnsw/aSjtJ9nDxPpcJ4ILqJ1QygiO7yiSWtZpY0DfeoVkn4a
+         FwdRzfYjIlr2GbBV0jbwlDy9NCzL5OLElbg5ulcN0Jk+KZ2IEpr61r6g4GMYtuNq0MVe
+         EF0I0WZ59SCxfKTa0Y7rFHBFmk4RQPPZf2QW0Vm22DZIPVIRQ28spv2ZBGsbrgHIvmT0
+         ROBg==
+X-Gm-Message-State: AOAM530w3qNlLj5zIt1UMmBy2f7fDoYBGfARcpO41Z9Eab0OnLSvxI8U
+        5BBk5xhfyatXmSCJt4Q/OUsXDA==
+X-Google-Smtp-Source: ABdhPJwbib6BkarNo+K48caVL1EEcMyD4P1NjsZ159e2tdZhAydKdMgyxCTWdsPKQgIV/5CqbPqSBg==
+X-Received: by 2002:a1c:4d0a:: with SMTP id o10mr17628133wmh.150.1592818881779;
+        Mon, 22 Jun 2020 02:41:21 -0700 (PDT)
+Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
+        by smtp.gmail.com with ESMTPSA id j24sm14392652wrd.43.2020.06.22.02.41.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 02:41:21 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+        Keyur Chudgar <keyur@os.amperecomputing.com>,
+        Quan Nguyen <quan@os.amperecomputing.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Fabien Parent <fparent@baylibre.com>,
+        Stephane Le Provost <stephane.leprovost@mediatek.com>,
+        Pedro Tsai <pedro.tsai@mediatek.com>,
+        Andrew Perepech <andrew.perepech@mediatek.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 00/15] net: phy: correctly model the PHY voltage supply in DT
+Date:   Mon, 22 Jun 2020 11:37:29 +0200
+Message-Id: <20200622093744.13685-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.26.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:d3cd:: with SMTP id c13mr16652193ilh.101.1592818632119;
- Mon, 22 Jun 2020 02:37:12 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 02:37:12 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c25ce105a8a8fcd9@google.com>
-Subject: linux-next build error (9)
-From:   syzbot <syzbot+dbf8cf3717c8ef4a90a0@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-next@vger.kernel.org, mingo@redhat.com, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, sfr@canb.auug.org.au,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-syzbot found the following crash on:
+PHY devices on an MDIO bus can have their own regulators. This is currently
+mostly modeled using the semi-standard phy-supply property on the MAC node.
+This seems to be conceptually wrong though, as the MAC shouldn't need to
+care about enabling the PHY regulator explicitly. Instead this should be
+done by the core PHY/MDIO code.
 
-HEAD commit:    27f11fea Add linux-next specific files for 20200622
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=138dc743100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=41c659db5cada6f4
-dashboard link: https://syzkaller.appspot.com/bug?extid=dbf8cf3717c8ef4a90a0
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+This series introduces a new DT property at the PHY node level in mdio.yaml
+and adds support for PHY regulator, then uses the new property on pumpkin
+boards. It also addresses several issues I noticed when working on this
+feature.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+dbf8cf3717c8ef4a90a0@syzkaller.appspotmail.com
+First four patches are just cosmetic improvements in source files we'll
+modify later in this series.
 
-./arch/x86/include/asm/kvm_para.h:99:29: error: inlining failed in call to always_inline 'kvm_handle_async_pf': function attribute mismatch
-./arch/x86/include/asm/processor.h:824:29: error: inlining failed in call to always_inline 'prefetchw': function attribute mismatch
-./arch/x86/include/asm/current.h:13:44: error: inlining failed in call to always_inline 'get_current': function attribute mismatch
-arch/x86/mm/fault.c:1353:1: error: inlining failed in call to always_inline 'handle_page_fault': function attribute mismatch
-./arch/x86/include/asm/processor.h:576:29: error: inlining failed in call to always_inline 'native_swapgs': function attribute mismatch
-./arch/x86/include/asm/fsgsbase.h:33:38: error: inlining failed in call to always_inline 'rdgsbase': function attribute mismatch
-./arch/x86/include/asm/irq_stack.h:40:29: error: inlining failed in call to always_inline 'run_on_irqstack_cond': function attribute mismatch
-./include/linux/debug_locks.h:15:28: error: inlining failed in call to always_inline '__debug_locks_off': function attribute mismatch
-./include/asm-generic/atomic-instrumented.h:70:1: error: inlining failed in call to always_inline 'atomic_add_return': function attribute mismatch
-kernel/locking/lockdep.c:396:29: error: inlining failed in call to always_inline 'lockdep_recursion_finish': function attribute mismatch
-kernel/locking/lockdep.c:4725:5: error: inlining failed in call to always_inline '__lock_is_held': function attribute mismatch
+Patches 5 and 6 modify the way PHY reset handling works. Currently the
+probe() callback needs to be implemented to take the PHY out of reset but
+PHY drivers without probe() can have resets defined as well.
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Patches 7-11 address an issue where we probe the PHY for ID without
+deasserting its reset signal. We delay the ID read until after the logical
+device is created and resets have been configured.
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Last four patches add the new DT property, implement support for PHY
+regulator in phy and mdio code and set the new property in the DT file
+for MediaTek's pumpkin boards.
+
+Bartosz Golaszewski (15):
+  net: phy: arrange headers in mdio_bus.c alphabetically
+  net: phy: arrange headers in mdio_device.c alphabetically
+  net: phy: arrange headers in phy_device.c alphabetically
+  net: mdio: add a forward declaration for reset_control to mdio.h
+  net: phy: reset the PHY even if probe() is not implemented
+  net: phy: mdio: reset MDIO devices even if probe() is not implemented
+  net: phy: split out the PHY driver request out of phy_device_create()
+  net: phy: check the PHY presence in get_phy_id()
+  net: phy: delay PHY driver probe until PHY registration
+  net: phy: simplify phy_device_create()
+  net: phy: drop get_phy_device()
+  dt-bindings: mdio: add phy-supply property to ethernet phy node
+  net: phy: mdio: add support for PHY supply regulator
+  net: phy: add PHY regulator support
+  ARM64: dts: mediatek: add a phy regulator to pumpkin-common.dtsi
+
+ .../devicetree/bindings/net/mdio.yaml         |   4 +
+ .../boot/dts/mediatek/pumpkin-common.dtsi     |   1 +
+ drivers/net/dsa/ocelot/felix_vsc9959.c        |   3 +-
+ drivers/net/ethernet/amd/xgbe/xgbe-phy-v2.c   |   5 +-
+ .../net/ethernet/hisilicon/hns/hns_dsaf_mac.c |   2 +-
+ drivers/net/ethernet/socionext/netsec.c       |   3 +-
+ drivers/net/phy/fixed_phy.c                   |   2 +-
+ drivers/net/phy/mdio-xgene.c                  |   2 +-
+ drivers/net/phy/mdio_bus.c                    |  55 +++--
+ drivers/net/phy/mdio_device.c                 |  51 ++++-
+ drivers/net/phy/nxp-tja11xx.c                 |   2 +-
+ drivers/net/phy/phy_device.c                  | 216 ++++++++++--------
+ drivers/net/phy/sfp.c                         |   2 +-
+ drivers/of/of_mdio.c                          |  11 +-
+ include/linux/mdio.h                          |   4 +
+ include/linux/phy.h                           |  21 +-
+ 16 files changed, 240 insertions(+), 144 deletions(-)
+
+-- 
+2.26.1
+
