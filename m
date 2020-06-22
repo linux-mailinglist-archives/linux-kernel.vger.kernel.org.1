@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 977462035E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 13:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D26932035EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 13:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727843AbgFVLjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 07:39:41 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:50627 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726998AbgFVLjk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 07:39:40 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1592825980; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=kQrKbNDc/6IkvX8zRZYkxck2Qap2jlhaPCjcowWErCM=; b=i4Xx0xJzTGSJIXHSfE/GMgV9dTERqixLlWH4Elr2Y+cZRsxuB9312w0HSPlueBt1iQ2F1qX0
- YR3pPgLHHXI2KEbcTEfGgrmAIji76YvfCsS7Elq1A/Tu9okB4AvWaJFZQ1fBuqzn3MRd4DPG
- TPjUZjb8p+ajvZQOSAH5WYfAiNU=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n13.prod.us-west-2.postgun.com with SMTP id
- 5ef09873117610c7ffc171ca (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Jun 2020 11:39:31
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6E665C43395; Mon, 22 Jun 2020 11:39:31 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.29.129] (unknown [49.36.71.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1727943AbgFVLlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 07:41:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49950 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727097AbgFVLlP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 07:41:15 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id BFEE6C433C8;
-        Mon, 22 Jun 2020 11:39:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org BFEE6C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=mkshah@codeaurora.org
-Subject: Re: [PATCH] soc: qcom: rpmh-rsc: Set suppress_bind_attrs flag
-To:     Stephen Boyd <swboyd@chromium.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dianders@chromium.org, rnayak@codeaurora.org, ilina@codeaurora.org,
-        lsrao@codeaurora.org, john.stultz@linaro.org
-References: <1592808805-2437-1-git-send-email-mkshah@codeaurora.org>
- <159281658960.62212.15968925558324290917@swboyd.mtv.corp.google.com>
-From:   Maulik Shah <mkshah@codeaurora.org>
-Message-ID: <a429dfbb-4125-6019-c102-d5b2f4d7379f@codeaurora.org>
-Date:   Mon, 22 Jun 2020 17:09:24 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
-MIME-Version: 1.0
-In-Reply-To: <159281658960.62212.15968925558324290917@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+        by mail.kernel.org (Postfix) with ESMTPSA id 606FD206BE;
+        Mon, 22 Jun 2020 11:41:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592826074;
+        bh=Gr89xbMKpVKYKTs/A/yFnhV+HBs9OuUAZRVKIIgaxFA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=a0kz93zgmDacOIYDBcjfWbeSNn9T0y3xinmF4FD/Rw3qfSDq1ZA9UZE56ChRDQahY
+         gbfFypcDMCyqJQxRAHACYzXnFIgKcOaeUodEOqgWc1xC9lhV05uWrZXtKMRdBnlzFD
+         MOZbPp/z2aC7UQ5uYdRmfDmONXzIh0DhZGBECHeo=
+From:   broonie@kernel.org
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] regulator fixes for v5.8-rc2
+Date:   Mon, 22 Jun 2020 12:40:20 +0100
+Message-Id: <20200622114114.606FD206BE@mail.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+The following changes since commit b3a9e3b9622ae10064826dccb4f7a52bd88c7407:
 
-Thanks for the review Stephen.
+  Linux 5.8-rc1 (2020-06-14 12:45:04 -0700)
 
-On 6/22/2020 2:33 PM, Stephen Boyd wrote:
-> Quoting Maulik Shah (2020-06-21 23:53:25)
->> rpmh-rsc driver is fairly core to system and should not be removable
->> once its probed. However it allows to unbind driver from sysfs using
->> below command which results into a crash on sc7180.
-> What is the crash? The world falls apart because rpmh APIs start
-> referencing pointers that point to freed memory?
-Yes.
->
->> echo 18200000.rsc > /sys/bus/platform/drivers/rpmh/unbind
->>
->> Lets prevent unbind at runtime by setting suppress_bind_attrs flag.
-> Ok. But when the Android module brigade comes knocking they'll have to
-> revert this change and solve this problem too. Have fun!
+are available in the Git repository at:
 
-No should not need to revert this change.
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git tags/regulator-fix-v5.8-rc2
 
-Even if rpmh-rsc is planned to be loadable module for android, Once 
-loaded it should be disallowed to be removed.
+for you to fetch changes up to 1b3bcca2085865c1facfbea9baf2f5cde5dc15e4:
 
-same is the case for PDC irqchip as well. these drivers are core to the 
-system and shouldn't be allowed to rmmod/unbind.
+  regulator: mt6358: Remove BROKEN dependency (2020-06-17 13:01:19 +0100)
 
-Thanks,
-Maulik
+----------------------------------------------------------------
+regulator: Fixes for v5.8
 
->
->> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
->> ---
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+This has a fix for the refactoring out of the pickable ranges
+functionality, plus the removal of a BROKEN dependency on mt6358 now
+that the dependencies were merged in -rc1 and a couple of device
+specific fixes.
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
+----------------------------------------------------------------
+Axel Lin (1):
+      regulator: mt6358: Remove BROKEN dependency
 
+Mark Brown (1):
+      Merge tag 'v5.8-rc1' into regulator-5.8
+
+Martin Fuzzey (1):
+      regulator: da9063: fix LDO9 suspend and warning.
+
+Matti Vaittinen (1):
+      regulator: Fix pickable ranges mapping
+
+Robin Gong (1):
+      regualtor: pfuze100: correct sw1a/sw2 on pfuze3000
+
+ drivers/regulator/Kconfig              |  2 +-
+ drivers/regulator/da9063-regulator.c   |  1 -
+ drivers/regulator/helpers.c            |  2 +-
+ drivers/regulator/pfuze100-regulator.c | 60 ++++++++++++++++++++++------------
+ 4 files changed, 41 insertions(+), 24 deletions(-)
