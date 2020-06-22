@@ -2,96 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDFED204217
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:44:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2387220421B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbgFVUn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 16:43:56 -0400
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:41703 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728311AbgFVUnu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 16:43:50 -0400
-Received: from [37.163.98.205] (port=42634 helo=melee.dev.aim)
-        by hostingweb31.netsons.net with esmtpa (Exim 4.93)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1jnTIA-00062o-Uu; Mon, 22 Jun 2020 22:43:47 +0200
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Luca Ceresoli <luca@lucaceresoli.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>, Keerthy <j-keerthy@ti.com>,
-        Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH v3 4/4] mfd: lp87565: add LP87524-Q1 variant
-Date:   Mon, 22 Jun 2020 22:43:29 +0200
-Message-Id: <20200622204329.11147-5-luca@lucaceresoli.net>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200622204329.11147-1-luca@lucaceresoli.net>
-References: <20200622204329.11147-1-luca@lucaceresoli.net>
+        id S1730283AbgFVUor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 16:44:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728421AbgFVUor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 16:44:47 -0400
+Received: from kicinski-fedora-PC1C0HJN (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 741D62076A;
+        Mon, 22 Jun 2020 20:44:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592858686;
+        bh=kS6Uoybp+uv0rgW5ZPADRgzJ/JhDOOrsBOC9xmxRys8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XmS8lT0PlQFUncpet6RPPNKJiTytxgchIQppj2jc87hagFVBEo+8Ql/sDjA93gw2V
+         xppXiWF4HGNFdnANH9VrVtroo6KHFOiae3pLMuLElLUvR+1kWmdgBhcC1GTEZDN2mH
+         Yikpwe2t+9MOfh2+wE9RxWptGDpvy8zmZqVX78Qk=
+Date:   Mon, 22 Jun 2020 13:44:44 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Li Heng <liheng40@huawei.com>
+Cc:     <vishal@chelsio.com>, <davem@davemloft.net>,
+        <hariprasad@chelsio.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH resend] net: cxgb4: fix return error value in t4_prep_fw
+Message-ID: <20200622134444.78f3fd74@kicinski-fedora-PC1C0HJN>
+In-Reply-To: <1592621361-39925-1-git-send-email-liheng40@huawei.com>
+References: <1592621361-39925-1-git-send-email-liheng40@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca+lucaceresoli.net/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for the LP87524B/J/P-Q1 Four 4-MHz Buck Converter. This is a
-variant of the LP87565 having 4 single-phase outputs and up to 10 A of
-total output current.
+On Sat, 20 Jun 2020 10:49:21 +0800 Li Heng wrote:
+> t4_prep_fw goto bye tag with positive return value when something
+> bad happened and which can not free resource in adap_init0.
+> so fix it to return negative value.
+> 
+> Fixes: 16e47624e76b ("cxgb4: Add new scheme to update T4/T5 firmware")
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Li Heng <liheng40@huawei.com>
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 
-Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
+I don't remember signing off on this..
 
----
-
-Changes in v3: none
-
-Changes in v2:
- - replace "regulator" -> "mfd" in subject line (Lee Jones)
- - add Acked-for-MFD-by: from Lee Jones
----
- drivers/mfd/lp87565.c       | 4 ++++
- include/linux/mfd/lp87565.h | 1 +
- 2 files changed, 5 insertions(+)
-
-diff --git a/drivers/mfd/lp87565.c b/drivers/mfd/lp87565.c
-index 4a5c8ade4ae0..cc1072927f6d 100644
---- a/drivers/mfd/lp87565.c
-+++ b/drivers/mfd/lp87565.c
-@@ -26,6 +26,10 @@ static const struct mfd_cell lp87565_cells[] = {
- 
- static const struct of_device_id of_lp87565_match_table[] = {
- 	{ .compatible = "ti,lp87565", },
-+	{
-+		.compatible = "ti,lp87524-q1",
-+		.data = (void *)LP87565_DEVICE_TYPE_LP87524_Q1,
-+	},
- 	{
- 		.compatible = "ti,lp87565-q1",
- 		.data = (void *)LP87565_DEVICE_TYPE_LP87565_Q1,
-diff --git a/include/linux/mfd/lp87565.h b/include/linux/mfd/lp87565.h
-index ce965354bbad..ad240f2d0d3f 100644
---- a/include/linux/mfd/lp87565.h
-+++ b/include/linux/mfd/lp87565.h
-@@ -14,6 +14,7 @@
- 
- enum lp87565_device_type {
- 	LP87565_DEVICE_TYPE_UNKNOWN	= 0,
-+	LP87565_DEVICE_TYPE_LP87524_Q1,
- 	LP87565_DEVICE_TYPE_LP87561_Q1,
- 	LP87565_DEVICE_TYPE_LP87565_Q1,
- };
--- 
-2.27.0
 
