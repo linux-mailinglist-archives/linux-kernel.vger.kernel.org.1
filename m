@@ -2,197 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F435203C07
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FAF9203C1F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:04:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729595AbgFVQDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 12:03:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729871AbgFVQDE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 12:03:04 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153CAC061796
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 09:03:04 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id t194so90792wmt.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 09:03:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=G7tyEQo0BCpuFpa+wLLnML4BSViFafq4hYNcPsQY6yA=;
-        b=OFzgfBlwCkrOzvIyVR98+1/FXds75qvrmXjxqkeiZis2MHuM8t8xekOzHXDkzHuUqC
-         /Um6dZ6t4Srg/Fp14boWWHax79dKiFmIXrhDSdg8YDHvC8v2X46ysLHrIqLc49O3yk9v
-         g4GxaTx1Hr78vxDccYzfFtECXgXqX1pOyPLoVzuHjWHax5i8FNFSYgOjRmkBoSzvoPVx
-         XED1CZ5vMKFHce07Ux4WKGnUSF5k2sMmuddM43Ab1B4iGGnPLHMWo4w5jJUdbh43V0nD
-         vSTgBCy/aJDKy9zjT6fEMZ1n9SGFXHZd5sC9LdGsI7hzu2crXDasuj1vY44cIQm7vTNE
-         sCmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=G7tyEQo0BCpuFpa+wLLnML4BSViFafq4hYNcPsQY6yA=;
-        b=cxkmmJXYHG3vecjb3pQCbIhMAUfxgVpFGgZTlY9IN54XKCwjlahuaTDMW2B3jfR741
-         qEHM7k8e+TLuDEjhwRpk45++ffXJ8yQSorC+qCbLUSSRSdFuX0RaB5Oe8BEF62sRvRex
-         nP8/U051ediv7A8WTlvX+ccuzHp88xJDcfRdb1kThSbkFOuvwAPUjYEH79zh4bRE5911
-         sqiYBKWaiLQEEptrnHJoGCiZJpBV93N4u8pstn+PtOs3Fvj616q2KRJhqJ3EqiseyNZe
-         BkMBoseLhhz3b9LP8AOmM4oyGO+XrkbKyJh1BM2UErDtOVW3hJe0C61VC4rcE/toUsnw
-         klXQ==
-X-Gm-Message-State: AOAM532qSbFl0A/f1eTCOKT+34RHiF4+LdYFX4bd8mG67dUUDrAiRXzH
-        OKiVNk3r6vTil8k91KxNIDQ0Kw==
-X-Google-Smtp-Source: ABdhPJwTHUBPzo//TrGs0VsDrKoOp6hfyS3KNMezVrR1B8EvnSENYTaLkUxTvt8cK17P23kZv45cqA==
-X-Received: by 2002:a05:600c:2201:: with SMTP id z1mr18818319wml.70.1592841782682;
-        Mon, 22 Jun 2020 09:03:02 -0700 (PDT)
-Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
-        by smtp.gmail.com with ESMTPSA id j18sm18502577wrn.59.2020.06.22.09.03.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 09:03:02 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 17:03:00 +0100
-From:   Daniel Thompson <daniel.thompson@linaro.org>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
-        gregkh@linuxfoundation.org, jason.wessel@windriver.com,
-        dianders@chromium.org, jslaby@suse.com, linux@armlinux.org.uk,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/7] kgdb: Add request_nmi() to the io ops table for
- kgdboc
-Message-ID: <20200622160300.avgfhnfkpqzqqtsr@holly.lan>
-References: <1592835984-28613-1-git-send-email-sumit.garg@linaro.org>
- <1592835984-28613-4-git-send-email-sumit.garg@linaro.org>
+        id S1729945AbgFVQEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 12:04:32 -0400
+Received: from m12-14.163.com ([220.181.12.14]:41004 "EHLO m12-14.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729298AbgFVQE2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 12:04:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=GQowN
+        qmoyj4kwdiKWWbLTZBxwMI8tC95BLG31CQkfsw=; b=j4bSP3K8au6Z9uvpu+lZA
+        7zGQjwZ8UGJZgJQVCfCcjhDZVg18x+b8kF4iDyXVFaxF2zcAhQA83ikxxBi5woEc
+        ytP3u7V1cqixEPc8uNYfgMJvmqsdRF3PAS2QHs8aeffY4zIVYJ7JmxCe17dI4RSm
+        7ScXnSs4Gogjsn+MXyNp+k=
+Received: from SZA191027643-PM.china.huawei.com (unknown [120.235.53.225])
+        by smtp10 (Coremail) with SMTP id DsCowABnbelA1vBeGrmZHw--.17892S2;
+        Tue, 23 Jun 2020 00:03:15 +0800 (CST)
+From:   yunaixin03610@163.com
+To:     netdev@vger.kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, wuguanping@huawei.com,
+        wangqindong@huawei.com
+Cc:     yunaixin <yunaixin03610@163.com>
+Subject: [PATCH 0/5] Adding Huawei BMA drivers
+Date:   Tue, 23 Jun 2020 00:03:06 +0800
+Message-Id: <20200622160311.1533-1-yunaixin03610@163.com>
+X-Mailer: git-send-email 2.26.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1592835984-28613-4-git-send-email-sumit.garg@linaro.org>
+Content-Transfer-Encoding: quoted-printable
+X-CM-TRANSID: DsCowABnbelA1vBeGrmZHw--.17892S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxtw4DtFWUKrW3tr15Aw1UZFb_yoWxtFWxpa
+        yjya4UurWxKFy7Xw1vy3W8KFn8J3WDtry5u393Z3WrX3s2yry5JryDWF15uF1fWa97Gr4I
+        vF1Y9F1fWFZ8X3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0ziX4S7UUUUU=
+X-Originating-IP: [120.235.53.225]
+X-CM-SenderInfo: 51xqtxx0lqijqwrqqiywtou0bp/xtbBZwNL5letzVI0DQAAsV
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 07:56:20PM +0530, Sumit Garg wrote:
-> From: Daniel Thompson <daniel.thompson@linaro.org>
-> 
-> Add request_nmi() callback to install a non-maskable interrupt handler
-> corresponding to IRQ retrieved from polling interface. If NMI handler
-> installation fails due to missing support from underlying irqchip driver
-> then fallback to install it as normal interrupt handler.
-> 
-> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-> Co-developed-by: Sumit Garg <sumit.garg@linaro.org>
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
->  drivers/tty/serial/kgdboc.c | 35 +++++++++++++++++++++++++++++++++++
->  include/linux/kgdb.h        |  7 +++++++
->  2 files changed, 42 insertions(+)
-> 
-> diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
-> index 84ffede..263afae 100644
-> --- a/drivers/tty/serial/kgdboc.c
-> +++ b/drivers/tty/serial/kgdboc.c
-> @@ -19,6 +19,9 @@
->  #include <linux/console.h>
->  #include <linux/vt_kern.h>
->  #include <linux/input.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/irq.h>
-> +#include <linux/irqdesc.h>
->  #include <linux/module.h>
->  #include <linux/platform_device.h>
->  #include <linux/serial_core.h>
-> @@ -390,12 +393,44 @@ static void kgdboc_post_exp_handler(void)
->  	kgdboc_restore_input();
->  }
->  
-> +static int kgdb_tty_irq;
-> +
-> +static int kgdboc_request_nmi(irq_handler_t fn, void *dev_id)
-> +{
-> +	int irq, res;
-> +
-> +	/* Better to avoid double allocation in the tty driver! */
-> +	if (kgdb_tty_irq)
-> +		return 0;
-> +
-> +	if (!kgdb_tty_driver->ops->poll_get_irq)
-> +		return -ENODEV;
-> +
-> +	irq =
-> +	    kgdb_tty_driver->ops->poll_get_irq(kgdb_tty_driver, kgdb_tty_line);
-> +	if (irq <= 0)
-> +		return irq ? irq : -ENODEV;
-> +
-> +	irq_set_status_flags(irq, IRQ_NOAUTOEN);
-> +	res = request_nmi(irq, fn, IRQF_PERCPU, "kgdboc", dev_id);
+From: yunaixin <yunaixin03610@163.com>
 
-Why do we need IRQF_PERCPU here. A UART interrupt is not normally
-per-cpu?
+This patch set contains 5 communication drivers for Huawei BMA software.=0D
+The BMA software is a system management software. It supports the status=0D
+monitoring, performance monitoring, and event monitoring of various=0D
+components, including server CPUs, memory, hard disks, NICs, IB cards,=0D
+PCIe cards, RAID controller cards, and optical modules.=0D
+=0D
+These 5 drivers are used to send/receive message through PCIe channel in=0D
+different ways by BMA software.
+
+yunaixin (5):
+  Huawei BMA: Adding Huawei BMA driver: host_edma_drv
+  Huawei BMA: Adding Huawei BMA driver: host_cdev_drv
+  Huawei BMA: Adding Huawei BMA driver: host_veth_drv
+  Huawei BMA: Adding Huawei BMA driver: cdev_veth_drv
+  Huawei BMA: Adding Huawei BMA driver: host_kbox_drv
+
+ drivers/net/ethernet/huawei/Kconfig           |    1 +
+ drivers/net/ethernet/huawei/Makefile          |    1 +
+ drivers/net/ethernet/huawei/bma/Kconfig       |    5 +
+ drivers/net/ethernet/huawei/bma/Makefile      |    9 +
+ .../net/ethernet/huawei/bma/cdev_drv/Kconfig  |   11 +
+ .../net/ethernet/huawei/bma/cdev_drv/Makefile |    2 +
+ .../ethernet/huawei/bma/cdev_drv/bma_cdev.c   |  369 +++
+ .../ethernet/huawei/bma/cdev_veth_drv/Kconfig |   11 +
+ .../huawei/bma/cdev_veth_drv/Makefile         |    2 +
+ .../bma/cdev_veth_drv/virtual_cdev_eth_net.c  | 1839 ++++++++++++
+ .../bma/cdev_veth_drv/virtual_cdev_eth_net.h  |  300 ++
+ .../net/ethernet/huawei/bma/edma_drv/Kconfig  |   11 +
+ .../net/ethernet/huawei/bma/edma_drv/Makefile |    2 +
+ .../huawei/bma/edma_drv/bma_devintf.c         |  597 ++++
+ .../huawei/bma/edma_drv/bma_devintf.h         |   40 +
+ .../huawei/bma/edma_drv/bma_include.h         |  116 +
+ .../ethernet/huawei/bma/edma_drv/bma_pci.c    |  533 ++++
+ .../ethernet/huawei/bma/edma_drv/bma_pci.h    |   94 +
+ .../ethernet/huawei/bma/edma_drv/edma_host.c  | 1462 ++++++++++
+ .../ethernet/huawei/bma/edma_drv/edma_host.h  |  351 +++
+ .../huawei/bma/include/bma_ker_intf.h         |   94 +
+ .../net/ethernet/huawei/bma/kbox_drv/Kconfig  |   11 +
+ .../net/ethernet/huawei/bma/kbox_drv/Makefile |    2 +
+ .../ethernet/huawei/bma/kbox_drv/kbox_dump.c  |  121 +
+ .../ethernet/huawei/bma/kbox_drv/kbox_dump.h  |   33 +
+ .../ethernet/huawei/bma/kbox_drv/kbox_hook.c  |  101 +
+ .../ethernet/huawei/bma/kbox_drv/kbox_hook.h  |   33 +
+ .../huawei/bma/kbox_drv/kbox_include.h        |   40 +
+ .../ethernet/huawei/bma/kbox_drv/kbox_main.c  |  168 ++
+ .../ethernet/huawei/bma/kbox_drv/kbox_main.h  |   23 +
+ .../ethernet/huawei/bma/kbox_drv/kbox_mce.c   |  264 ++
+ .../ethernet/huawei/bma/kbox_drv/kbox_mce.h   |   23 +
+ .../ethernet/huawei/bma/kbox_drv/kbox_panic.c |  187 ++
+ .../ethernet/huawei/bma/kbox_drv/kbox_panic.h |   25 +
+ .../huawei/bma/kbox_drv/kbox_printk.c         |  363 +++
+ .../huawei/bma/kbox_drv/kbox_printk.h         |   33 +
+ .../huawei/bma/kbox_drv/kbox_ram_drive.c      |  188 ++
+ .../huawei/bma/kbox_drv/kbox_ram_drive.h      |   31 +
+ .../huawei/bma/kbox_drv/kbox_ram_image.c      |  135 +
+ .../huawei/bma/kbox_drv/kbox_ram_image.h      |   84 +
+ .../huawei/bma/kbox_drv/kbox_ram_op.c         |  986 +++++++
+ .../huawei/bma/kbox_drv/kbox_ram_op.h         |   77 +
+ .../net/ethernet/huawei/bma/veth_drv/Kconfig  |   11 +
+ .../net/ethernet/huawei/bma/veth_drv/Makefile |    2 +
+ .../ethernet/huawei/bma/veth_drv/veth_hb.c    | 2502 +++++++++++++++++
+ .../ethernet/huawei/bma/veth_drv/veth_hb.h    |  440 +++
+ 46 files changed, 11733 insertions(+)
+ create mode 100644 drivers/net/ethernet/huawei/bma/Kconfig
+ create mode 100644 drivers/net/ethernet/huawei/bma/Makefile
+ create mode 100644 drivers/net/ethernet/huawei/bma/cdev_drv/Kconfig
+ create mode 100644 drivers/net/ethernet/huawei/bma/cdev_drv/Makefile
+ create mode 100644 drivers/net/ethernet/huawei/bma/cdev_drv/bma_cdev.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/cdev_veth_drv/Kconfig
+ create mode 100644 drivers/net/ethernet/huawei/bma/cdev_veth_drv/Makefile
+ create mode 100644 drivers/net/ethernet/huawei/bma/cdev_veth_drv/virtual_c=
+dev_eth_net.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/cdev_veth_drv/virtual_c=
+dev_eth_net.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/edma_drv/Kconfig
+ create mode 100644 drivers/net/ethernet/huawei/bma/edma_drv/Makefile
+ create mode 100644 drivers/net/ethernet/huawei/bma/edma_drv/bma_devintf.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/edma_drv/bma_devintf.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/edma_drv/bma_include.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/edma_drv/bma_pci.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/edma_drv/bma_pci.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/edma_drv/edma_host.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/edma_drv/edma_host.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/include/bma_ker_intf.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/Kconfig
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/Makefile
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_dump.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_dump.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_hook.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_hook.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_include.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_main.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_main.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_mce.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_mce.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_panic.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_panic.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_printk.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_printk.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_ram_drive=
+.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_ram_drive=
+.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_ram_image=
+.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_ram_image=
+.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_ram_op.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/kbox_drv/kbox_ram_op.h
+ create mode 100644 drivers/net/ethernet/huawei/bma/veth_drv/Kconfig
+ create mode 100644 drivers/net/ethernet/huawei/bma/veth_drv/Makefile
+ create mode 100644 drivers/net/ethernet/huawei/bma/veth_drv/veth_hb.c
+ create mode 100644 drivers/net/ethernet/huawei/bma/veth_drv/veth_hb.h
+
+--=20
+2.26.2.windows.1
 
 
-> +	if (res) {
-> +		res = request_irq(irq, fn, IRQF_SHARED, "kgdboc", dev_id);
-
-IRQF_SHARED?
-
-Currrently there is nothing that prevents concurrent activation of
-ttyNMI0 and the underlying serial driver. Using IRQF_SHARED means it
-becomes possible for both drivers to try to service the same interrupt.
-That risks some rather "interesting" problems.
-
-
-Daniel.
-
-
-> +		WARN_ON(res);
-> +	}
-> +
-> +	enable_irq(irq);
-> +
-> +	kgdb_tty_irq = irq;
-> +	return 0;
-> +}
-> +
->  static struct kgdb_io kgdboc_io_ops = {
->  	.name			= "kgdboc",
->  	.read_char		= kgdboc_get_char,
->  	.write_char		= kgdboc_put_char,
->  	.pre_exception		= kgdboc_pre_exp_handler,
->  	.post_exception		= kgdboc_post_exp_handler,
-> +	.request_nmi		= kgdboc_request_nmi,
->  };
->  
->  #if IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE)
-> diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
-> index 529116b..b32b044 100644
-> --- a/include/linux/kgdb.h
-> +++ b/include/linux/kgdb.h
-> @@ -16,6 +16,7 @@
->  #include <linux/linkage.h>
->  #include <linux/init.h>
->  #include <linux/atomic.h>
-> +#include <linux/interrupt.h>
->  #ifdef CONFIG_HAVE_ARCH_KGDB
->  #include <asm/kgdb.h>
->  #endif
-> @@ -276,6 +277,10 @@ struct kgdb_arch {
->   * the I/O driver.
->   * @post_exception: Pointer to a function that will do any cleanup work
->   * for the I/O driver.
-> + * @request_nmi: Pointer to a function that can install an non-maskable
-> + * interrupt handler that will be called when a character is pending and that
-> + * can be cleared by calling @read_char until it returns NO_POLL_CHAR. If NMI
-> + * installation fails then fallback to install normal interrupt handler.
->   * @cons: valid if the I/O device is a console; else NULL.
->   */
->  struct kgdb_io {
-> @@ -287,6 +292,8 @@ struct kgdb_io {
->  	void			(*deinit) (void);
->  	void			(*pre_exception) (void);
->  	void			(*post_exception) (void);
-> +	int			(*request_nmi)(irq_handler_t nmi_handler,
-> +					       void *dev_id);
->  	struct console		*cons;
->  };
->  
-> -- 
-> 2.7.4
-> 
