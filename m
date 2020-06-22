@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA712033B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 11:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A6D2033CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 11:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727775AbgFVJlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 05:41:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40692 "EHLO
+        id S1727996AbgFVJnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 05:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727010AbgFVJlc (ORCPT
+        with ESMTP id S1727070AbgFVJlf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 05:41:32 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2259CC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:41:32 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id a6so13983894wrm.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:41:32 -0700 (PDT)
+        Mon, 22 Jun 2020 05:41:35 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E383CC061795
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:41:33 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id c3so15902456wru.12
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:41:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=cfUc+TkUAgqz9MdoL32AGr8CBlEvrLInm5v62775Pps=;
-        b=A2nZUOgnmx1UP+ORv6aiykQQt+lLSQ1KO7Odnx9nMWmPGWBB/9zwG2qDldAgXJmqFF
-         xP5a4eGOadOLgU5l8x7N7j9+z2XQcTH/rFKkU1WWhZmJmVhXF2hTLLfHyQ5etAtMHKmX
-         GzjJGiUtKBqAj3ZO+9U33Aqe6H7sc3uFms0oEry7uZGxugnSgJBjckjsDuq2/0a7BeEq
-         I4qul8QuxKe+CEztgYEFZDIF1pwVYkuHKS4ZkApg+YQ/TcNclWYBEankibn6cVK3MPY7
-         ZU+9DUlAqUZCkiO9dP4Q1H37N9frUcXcUiOti5AX0YjukaK8I91Rvini9mJsIrmoYDWK
-         Og9w==
+        bh=nC0F5ZT+Ll5OOGkPAd3mIJIStND0frPBkptlTCmDLJg=;
+        b=swtzTFmLVIWLX97Ka8BE4T1dWXPt5l1jiTgEty4wbnCrweWQw3HbeTXNza6y2qcCXR
+         iIu5WIxWbsQs51WOv19l2MOnnx9biFYV7/MbY0YMlQ/cSE0G+PyDXwmHvUYyHhrnNdUq
+         xAHqSoVXMheRLlPuN1KpgliIQIXbuBOHq+PCzME+TGn0K+/URvl99z5NPSrgSbWHtdpH
+         2XLpBaTp7Jhs4GFXZGq+gopioO0XNjhy5k4P+p0oSTll4HgmIBiAnRFMRF6aTZi4O2og
+         vYAAkHtdQXctioWsdumoNSuMfzhqraPeWT6gTazq92hFSwkJkMSYyr7hlCsjXk1eVqPx
+         7WHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=cfUc+TkUAgqz9MdoL32AGr8CBlEvrLInm5v62775Pps=;
-        b=BswNjuFz2ZIYLgc78pNLBlJgRO13rIOkEJ44gCgak/rP6aQZt7Kz7p974CBDJwmYuu
-         R7f99qUWI/c2BtE4dlbbnjf3LA6Mr+UsTQyk+WpUQyXYnzjGMHZn0moGPbptIwFndKQb
-         hYu/arsqodCaHfYlqqjDcsr+OUhES2B/IS1+1vrlfMdZEYKWroO/q4W20Yly7AOKZlDd
-         nmiZEa//IV7cxpe54NrfILeaB6OBPkiOwAcZyWlfiMBW+gPoEqlzBB7n+AjJ3A3K7Kfo
-         4dGnzXTo4qCTniVlHmYFsrM8wvQc0R4+D9WtnczxOKeV1hZNJgeQCiMbnZQxmTr1oBnP
-         BEeA==
-X-Gm-Message-State: AOAM531YIoQ+cSokS23Lm6ye3utfJPr7cpxaA1hk7zPi7FdibnPVllVH
-        J3k0AxkhL4HNQwSrcJyPJsP5yg==
-X-Google-Smtp-Source: ABdhPJzkmYuQpu0uNoygH8mU35nl1Z6nB3WJ2gtz2NCWG24AiJQNaa6UhDtUjU6DEUC2R04sQUctyQ==
-X-Received: by 2002:a5d:470a:: with SMTP id y10mr5777035wrq.405.1592818890889;
-        Mon, 22 Jun 2020 02:41:30 -0700 (PDT)
+        bh=nC0F5ZT+Ll5OOGkPAd3mIJIStND0frPBkptlTCmDLJg=;
+        b=P2ka3VbmpVCMPXzg0vmzpWxuPmMLD/zMGdtLJE+zFIWXXDNLYULY//1gwBWa/hhwFl
+         PdpmQVF3r5GB1G6vhEtGhvEjusQHJnP27IoLEIRK1J7ue9eU1soWAp4JNxconb+aVJKB
+         CMGSbQM/gWYEZ+xfDWeN7mtox9gCAGRLSZZlrS3OBTyKHakMijAQkST1eW+oqrQ2ueKf
+         UkE3qqQj13WhtIEYjxob+8aRjO2FZhOgF+1zJnRG6HvL9RsKbR1qQnJCfV4Mj0J/WfOe
+         /efU/DMfa8wto6yttvySlIiToh7il1hGJy/E5KU1hdjDdCL9wFqsPbV9FKT037xg8WPL
+         duLg==
+X-Gm-Message-State: AOAM530YRgCUpYisfJlKYiUmZbm1JnmFK+6HTIRZnfSj/VZBNR4LNGEN
+        fnDfY4jV3foqTumpGlQEVYatYw==
+X-Google-Smtp-Source: ABdhPJzxHCym+Ub6CuSXGJUTfH6gp7OLN1NQWcaww2Sg2sQLihShVVzipPqZpx45p1tV4dBze4Q9ew==
+X-Received: by 2002:a5d:6802:: with SMTP id w2mr18207943wru.68.1592818892680;
+        Mon, 22 Jun 2020 02:41:32 -0700 (PDT)
 Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id j24sm14392652wrd.43.2020.06.22.02.41.29
+        by smtp.gmail.com with ESMTPSA id j24sm14392652wrd.43.2020.06.22.02.41.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 02:41:30 -0700 (PDT)
+        Mon, 22 Jun 2020 02:41:32 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Florian Fainelli <f.fainelli@gmail.com>,
@@ -82,9 +82,9 @@ Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         Pedro Tsai <pedro.tsai@mediatek.com>,
         Andrew Perepech <andrew.perepech@mediatek.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 05/15] net: phy: reset the PHY even if probe() is not implemented
-Date:   Mon, 22 Jun 2020 11:37:34 +0200
-Message-Id: <20200622093744.13685-6-brgl@bgdev.pl>
+Subject: [PATCH 06/15] net: phy: mdio: reset MDIO devices even if probe() is not implemented
+Date:   Mon, 22 Jun 2020 11:37:35 +0200
+Message-Id: <20200622093744.13685-7-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200622093744.13685-1-brgl@bgdev.pl>
 References: <20200622093744.13685-1-brgl@bgdev.pl>
@@ -97,70 +97,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Currently we only call phy_device_reset() if the PHY driver implements
-the probe() callback. This is not mandatory and many drivers (e.g.
-realtek) don't need probe() for most devices but still can have reset
-GPIOs defined. There's no reason to depend on the presence of probe()
-here so pull the reset code out of the if clause.
+Similarily to PHY drivers - there's no reason to require probe() to be
+implemented in order to call mdio_device_reset(). MDIO devices can have
+resets defined without needing to do anything in probe().
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/net/phy/phy_device.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
+ drivers/net/phy/mdio_device.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index 1b4df12c70ad..f6985db08340 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -2690,16 +2690,13 @@ static int phy_probe(struct device *dev)
+diff --git a/drivers/net/phy/mdio_device.c b/drivers/net/phy/mdio_device.c
+index f60443e48622..be615504b829 100644
+--- a/drivers/net/phy/mdio_device.c
++++ b/drivers/net/phy/mdio_device.c
+@@ -150,10 +150,10 @@ static int mdio_probe(struct device *dev)
+ 	struct mdio_driver *mdiodrv = to_mdio_driver(drv);
+ 	int err = 0;
  
- 	mutex_lock(&phydev->lock);
- 
--	if (phydev->drv->probe) {
+-	if (mdiodrv->probe) {
 -		/* Deassert the reset signal */
--		phy_device_reset(phydev, 0);
+-		mdio_device_reset(mdiodev, 0);
 +	/* Deassert the reset signal */
-+	phy_device_reset(phydev, 0);
++	mdio_device_reset(mdiodev, 0);
  
-+	if (phydev->drv->probe) {
- 		err = phydev->drv->probe(phydev);
--		if (err) {
--			/* Assert the reset signal */
--			phy_device_reset(phydev, 1);
-+		if (err)
- 			goto out;
--		}
- 	}
++	if (mdiodrv->probe) {
+ 		err = mdiodrv->probe(mdiodev);
+ 		if (err) {
+ 			/* Assert the reset signal */
+@@ -170,12 +170,11 @@ static int mdio_remove(struct device *dev)
+ 	struct device_driver *drv = mdiodev->dev.driver;
+ 	struct mdio_driver *mdiodrv = to_mdio_driver(drv);
  
- 	/* Start out supporting everything. Eventually,
-@@ -2761,6 +2758,10 @@ static int phy_probe(struct device *dev)
- 	phydev->state = PHY_READY;
- 
- out:
-+	/* Assert the reset signal */
-+	if (err)
-+		phy_device_reset(phydev, 1);
-+
- 	mutex_unlock(&phydev->lock);
- 
- 	return err;
-@@ -2779,12 +2780,12 @@ static int phy_remove(struct device *dev)
- 	sfp_bus_del_upstream(phydev->sfp_bus);
- 	phydev->sfp_bus = NULL;
- 
--	if (phydev->drv && phydev->drv->remove) {
-+	if (phydev->drv && phydev->drv->remove)
- 		phydev->drv->remove(phydev);
+-	if (mdiodrv->remove) {
++	if (mdiodrv->remove)
+ 		mdiodrv->remove(mdiodev);
  
 -		/* Assert the reset signal */
--		phy_device_reset(phydev, 1);
+-		mdio_device_reset(mdiodev, 1);
 -	}
 +	/* Assert the reset signal */
-+	phy_device_reset(phydev, 1);
-+
- 	phydev->drv = NULL;
++	mdio_device_reset(mdiodev, 1);
  
  	return 0;
+ }
 -- 
 2.26.1
 
