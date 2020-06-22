@@ -2,110 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A411204222
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:49:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65111204224
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:49:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728777AbgFVUs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 16:48:56 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:47053 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728512AbgFVUsz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 16:48:55 -0400
-Received: from hanvin-mobl2.amr.corp.intel.com (fmdmzpr03-ext.fm.intel.com [192.55.54.38])
-        (authenticated bits=0)
-        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 05MKmkhO2220693
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Mon, 22 Jun 2020 13:48:47 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 05MKmkhO2220693
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2020052301; t=1592858928;
-        bh=qK1GQ3W6Pi4xX9Ea+1auBCAyZ/O5uuSxujhiAeKID9g=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=SSPivWN2sEZECwBqhIcK0Id+FBFe9duWrX+JwbRCl8+i0wETIkqO+54ZgWB/+xSKQ
-         ZRIW+pNAjeUyplLl6g8KlaINBJXk/5rP91u69nUTDS8EHvoCOjaB3yHqvccXrRsLre
-         7EmzGWRxKaPzoh/Vd5PTea0r/nIs2/VBCZ4oBN2RppsW+9lHqWA7m3WGDVZuT47ki1
-         fGMxKSZ1RtA++vx1Q2SVvXy2EsNOPbN342ZJ4iGhiBD2mZ7FSamq2TrGGmNOpyh6zc
-         EWv93EIQqORSWFKagwG5uYcAl/mShXyTE5yw2qiH6PPR7rL9QK9HYTdKjvzk9GmMs3
-         AtOTLg6VhIbRw==
-Subject: Re: [PATCH] initrd: Remove erroneous comment
-To:     Tom Rini <trini@konsulko.com>, ron minnich <rminnich@gmail.com>
-Cc:     lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Dominik Brodowski <linux@dominikbrodowski.net>
-References: <20200619143056.24538-1-trini@konsulko.com>
- <CAP6exYJ64Hy9y3Dzh9Asrq8Y0oDWYk+tf4UAcasEc-ZxTY8DAw@mail.gmail.com>
- <20200622204034.GL27801@bill-the-cat>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-Message-ID: <2455d1e8-d6b4-760b-9a4c-0071c5ae986d@zytor.com>
-Date:   Mon, 22 Jun 2020 13:48:45 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1728898AbgFVUtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 16:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728512AbgFVUtU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 16:49:20 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27AFAC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:49:19 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id h10so8773354pgq.10
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:49:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PH47MJnT9iMtyTipendvYX/j3g8mD6+p2C6HpOMAS2s=;
+        b=WOD4bmbDBmCvKG9VPJe1yBY5F6RA/C5d94+rIsCOMC/AhYzvpHVOI31fkouMGWmnNs
+         WAaT2BCHxMTDm8CF9kN1Yzmk7+OiQZeiaaHVykdf/5VG9I+XluQq+BWZ7hsb8EYRz9Sj
+         4FyDsma3WccZgUj17OvcILKa/Y9C4tSpDet5s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PH47MJnT9iMtyTipendvYX/j3g8mD6+p2C6HpOMAS2s=;
+        b=Y4dYMHik3OdtbmUhEvkDR7Ast+1yTfCU+rbhbj818u9L6mDc6pP1EhoPcBN7Rafrzl
+         k1qzGxSKQWCuAUaXaUxEikGiT3e2+gNYP5+YF/kSTIzks1Ld62jMIfJIRPv07/UdjsA3
+         E5mgDwtNNPl9Ij0ljRilQVyKhtyOzWo2IrKDUaFWKFSW+pQliPXBduZvXPQ1gOe9zD1V
+         Pdkh1SecsgYe+0WTeDDmliu0FMC3tqNFJdvR2j9U5HXuGGZhzVmJT2Tng5BxS+YNRDJu
+         UyyOl9tiIFBn/DCMmM6U2p9nhJdimbtfWbXnneLzUKgqZG36Km/tvc0hddG60Cu+XTqj
+         Q6bQ==
+X-Gm-Message-State: AOAM532yTYl3/XKmpZrsOczfDApD2A3y+5IZ68O840fjqcWLLehYM5a8
+        oVMx++j3OtRfo/5fQrxxvfoTqQ==
+X-Google-Smtp-Source: ABdhPJx5Gl45//R2Ig0yurEEEVbHIR0XqfcdMn9gku7cjBoQNNfGNtFadJk52dJy3Fh27YYKIlXgsA==
+X-Received: by 2002:a63:6643:: with SMTP id a64mr11612472pgc.246.1592858958665;
+        Mon, 22 Jun 2020 13:49:18 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s30sm11975161pgn.34.2020.06.22.13.49.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 13:49:17 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] arm: Warn on orphan section placement
+Date:   Mon, 22 Jun 2020 13:49:13 -0700
+Message-Id: <20200622204915.2987555-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200622204034.GL27801@bill-the-cat>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-22 13:40, Tom Rini wrote:
-> On Mon, Jun 22, 2020 at 01:02:16PM -0700, ron minnich wrote:
-> 
->> The other thing you ought to consider fixing:
->> initrd is documented as follows:
->>
->>         initrd=         [BOOT] Specify the location of the initial ramdisk
->>
->> for bootloaders only.
->>
->> UEFI consumes initrd from the command line as well. As ARM servers
->> increasingly use UEFI, there may be situations in which the initrd
->> option doesn't make its way to the kernel? I don't know, UEFI is such
->> a black box to me. But I've seen this "initrd consumption" happen.
->>
->> Based on docs, and the growing use of bootloaders that are happy to
->> consume initrd= and not pass it to the kernel, you might be better off
->> trying to move to the new command line option anyway.
->>
->> IOW, this comment may not be what people want to see, but ... it might
->> also be right. Or possibly changed to:
->>
->> /*
->>  * The initrd keyword is in use today on ARM, PowerPC, and MIPS.
->>  * It is also reserved for use by bootloaders such as UEFI and may
->>  * be consumed by them and not passed on to the kernel.
->>  * The documentation also shows it as reserved for bootloaders.
->>  * It is advised to move to the initrdmem= option whereever possible.
->>  */
-> 
-> Fair warning, one of the other hats I wear is the chief custodian of the
-> U-Boot project.
-> 
-> Note that on most architectures in modern times the device tree is used
-> to pass in initrd type information and "initrd=" on the command line is
-> quite legacy.
-> 
-> But what do you mean UEFI "consumes" initrd= ?  It's quite expected that
-> when you configure grub/syslinux/systemd-boot/whatever via extlinux.conf
-> or similar with "initrd /some/file" something reasonable happens to
-> read that in to memory and pass along the location to Linux (which can
-> vary from arch to arch, when not using device tree).  I guess looking at 
-> Documentation/x86/boot.rst is where treating initrd= as a file that
-> should be handled and ramdisk_image / ramdisk_size set came from.  I do
-> wonder what happens in the case of ARM/ARM64 + UEFI without device tree.
-> 
+v2:
+- split by architecture, rebase to v5.8-rc2
+v1: https://lore.kernel.org/lkml/20200228002244.15240-1-keescook@chromium.org/
 
-UEFI plus the in-kernel UEFI stub is, in some ways, a "bootloader" in
-the traditional sense. It is totally fair that we should update the
-documentation with this as a different case, though, because it is part
-of the kernel tree and so the kernel now has partial ownership of the
-namespace.
+A recent bug[1] was solved for builds linked with ld.lld, and tracking
+it down took way longer than it needed to (a year). Ultimately, it
+boiled down to differences between ld.bfd and ld.lld's handling of
+orphan sections. Similarly, the recent FGKASLR series brough up orphan
+section handling too[2]. In both cases, it would have been nice if the
+linker was running with --orphan-handling=warn so that surprise sections
+wouldn't silently get mapped into the kernel image at locations up to the
+whim of the linker's orphan handling logic. Instead, all desired sections
+should be explicitly identified in the linker script (to be either kept or
+discarded) with any orphans throwing a warning. The powerpc architecture
+actually already does this, so this series extends coverage to arm.
 
-I suggest "STUB" for "in-kernel firmware stub" for this purpose; no need
-to restrict it to a specific firmware for the purpose of namespace
-reservation.
+This series needs one additional commit that is not yet in
+any tree, but I hope to have it landed via x86 -tip shortly:
+https://lore.kernel.org/lkml/20200228002244.15240-3-keescook@chromium.org/
 
-	-hpa
+Thanks!
+
+-Kees
+
+[1] https://github.com/ClangBuiltLinux/linux/issues/282
+[2] https://lore.kernel.org/lkml/202002242122.AA4D1B8@keescook/
+
+Kees Cook (2):
+  arm/build: Warn on orphan section placement
+  arm/boot: Warn on orphan section placement
+
+ arch/arm/Makefile                             |  4 ++++
+ arch/arm/boot/compressed/Makefile             |  2 ++
+ arch/arm/boot/compressed/vmlinux.lds.S        | 17 ++++++--------
+ .../arm/{kernel => include/asm}/vmlinux.lds.h | 22 ++++++++++++++-----
+ arch/arm/kernel/vmlinux-xip.lds.S             |  5 ++---
+ arch/arm/kernel/vmlinux.lds.S                 |  5 ++---
+ 6 files changed, 34 insertions(+), 21 deletions(-)
+ rename arch/arm/{kernel => include/asm}/vmlinux.lds.h (92%)
+
+-- 
+2.25.1
+
