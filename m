@@ -2,114 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8F4E204012
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:19:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E5F204028
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728588AbgFVTTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 15:19:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728552AbgFVTTl (ORCPT
+        id S1728198AbgFVTVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 15:21:34 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:48243 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727995AbgFVTVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 15:19:41 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBCFEC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:19:40 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id g7so14024736oti.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:19:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=YIazu2RiYqWy+wLjTZlhFuFMzL0wUDBze0yedPUrnMk=;
-        b=rF8znHBG1+wbr507/H4zIJpBiygQSLn5iMVT7/IHb9kHNVnPutLYZ1QtxmlZSchb5q
-         vK/gOdkb6X9ngylTLc+GTaJZm0Fp76zz/jc/gXPRUtqcpgChoP3qgFj6bm9pn9e3YBOj
-         njS6L9EqhsJkSslXOPjntPjJdvBe90oH5yJSanndoBxIj7puBLZhwadw4Aru/D0Qn3Bi
-         D5XyInJTmjuAH4I+4EQS4n8YBGhmAPd2aqeXx+yX715fFOsfmav3EBOhvVoIyxfpMcqW
-         9XHsu4GS4AJ6edJ4vsDuhoeFsPaVOzRV4u6oEmAbsTvXDf0fwKCf3PI4IO0hd5SJPxob
-         ryMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=YIazu2RiYqWy+wLjTZlhFuFMzL0wUDBze0yedPUrnMk=;
-        b=gnzQDlobJas855Sz8YujOdqrK7hjlIeg9XQ9Z/YeYbNtnZOpXHOri8iAKBMgffjyHC
-         8bt56lrMKeJdN1TzdLXE49uBgpUqwCBwy2Be8yPA1jMFhbBKbzG2SMUSxXh6SZPmv/Um
-         zXgPtP9kayiC0yKHzLFaQuIeSZdk8zxnN8SwBzCwXOrBRWm02+asJ0ozfG2B50o65zRC
-         /GV6LK+SiiSRptCNLXOBamHdNycelU3w8n3Baezw7OeAo9URvyn8nCiTtDssrCjVPpeD
-         xQPRCc75SkSn77Rwi1y2HvTylxRwlNRzxiojO3AjIT6OBkqcFu67hr5ulnC743JuAaDa
-         1zGw==
-X-Gm-Message-State: AOAM533/NoOQ35mGObYSjUdJmsgy4UDyae2QCaTxrScDwEPsHH2l3VUn
-        1zGbtrgswNuJ9RR/n0nC7r4xvg==
-X-Google-Smtp-Source: ABdhPJxiPUw6lHoXiRB0erNWvg5b58rqok96gMq7oOv2h2m7u4oT7tlhKuvuWvugubZR8nhuG0abtg==
-X-Received: by 2002:a9d:1722:: with SMTP id i34mr14228083ota.6.1592853580165;
-        Mon, 22 Jun 2020 12:19:40 -0700 (PDT)
-Received: from localhost.localdomain (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id m84sm3348294oif.32.2020.06.22.12.19.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 12:19:39 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH v7 5/5] arm64: dts: qcom: sdm845: Add IMEM and PIL info region
-Date:   Mon, 22 Jun 2020 12:19:42 -0700
-Message-Id: <20200622191942.255460-6-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200622191942.255460-1-bjorn.andersson@linaro.org>
-References: <20200622191942.255460-1-bjorn.andersson@linaro.org>
+        Mon, 22 Jun 2020 15:21:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592853691;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=C7RyCHezaJ4V0niM26jYi9h0CNHLN7luH74Uczt/+Xg=;
+        b=SdTBK/xQiJXjY4/dBLHCHJU0URkUQlHWw8vj+I2gsgKQeLvEqUy1WM1vwligRv0bs14qpQ
+        x/BbI/bu49DsINnK7P8enFiiB5EBuCLtbOVUqe8DvhnFQgqiMZJxNlEAKVRJKhaUmwPFRk
+        aJLaqGZD8THeg/uNMJTNtQe11JwEW4I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-N8cZWfZBNRClOT5kctZPuA-1; Mon, 22 Jun 2020 15:21:15 -0400
+X-MC-Unique: N8cZWfZBNRClOT5kctZPuA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 08FB4BFC2;
+        Mon, 22 Jun 2020 19:21:14 +0000 (UTC)
+Received: from localhost (ovpn-116-68.gru2.redhat.com [10.97.116.68])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 96CEA2B4BD;
+        Mon, 22 Jun 2020 19:21:13 +0000 (UTC)
+Date:   Mon, 22 Jun 2020 16:21:12 -0300
+From:   Bruno Meneguele <bmeneg@redhat.com>
+To:     Nayna <nayna@linux.vnet.ibm.com>
+Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zohar@linux.ibm.com, erichte@linux.ibm.com, nayna@linux.ibm.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] ima: move APPRAISE_BOOTPARAM dependency on
+ ARCH_POLICY to runtime
+Message-ID: <20200622192112.GB8956@glitch>
+References: <20200622172754.10763-1-bmeneg@redhat.com>
+ <043e52d4-6835-c2c4-bc9d-d36ddb3db0e9@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <043e52d4-6835-c2c4-bc9d-d36ddb3db0e9@linux.vnet.ibm.com>
+X-PGP-Key: http://keys.gnupg.net/pks/lookup?op=get&search=0x3823031E4660608D
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=bmeneg@redhat.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="s2ZSL+KKDSLx8OML"
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a simple-mfd representing IMEM on SDM845 and define the PIL
-relocation info region, so that post mortem tools will be able to locate
-the loaded remoteprocs.
+--s2ZSL+KKDSLx8OML
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+On Mon, Jun 22, 2020 at 03:01:27PM -0400, Nayna wrote:
+>=20
+> On 6/22/20 1:27 PM, Bruno Meneguele wrote:
+> > IMA_APPRAISE_BOOTPARAM has been marked as dependent on !IMA_ARCH_POLICY=
+ in
+> > compile time, enforcing the appraisal whenever the kernel had the arch
+> > policy option enabled.
+> >=20
+> > However it breaks systems where the option is actually set but the syst=
+em
+> > wasn't booted in a "secure boot" platform. In this scenario, anytime th=
+e
+> > an appraisal policy (i.e. ima_policy=3Dappraisal_tcb) is used it will b=
+e
+> > forced, giving no chance to the user set the 'fix' state (ima_appraise=
+=3Dfix)
+> > to actually measure system's files.
+> >=20
+> > This patch remove this compile time dependency and move it to a runtime
+> > decision, based on the arch policy loading failure/success.
+>=20
+> Thanks for looking at this.
+>=20
+> For arch specific policies, kernel signature verification is enabled base=
+d
+> on the secure boot state of the system. Perhaps, enforce the appraisal as
+> well based on if secure boot is enabled.
+>=20
+> Thanks & Regards,
 
-Changes since v6:
-- None
+That's a good point.
 
- arch/arm64/boot/dts/qcom/sdm845.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+I'm going to take another look and see where the check fits better and
+come back with a new patch(set).
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-index 8eb5a31346d2..fee50d979dc3 100644
---- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
-@@ -3724,6 +3724,21 @@ spmi_bus: spmi@c440000 {
- 			cell-index = <0>;
- 		};
- 
-+		imem@146bf000 {
-+			compatible = "simple-mfd";
-+			reg = <0 0x146bf000 0 0x1000>;
-+
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+
-+			ranges = <0 0 0x146bf000 0x1000>;
-+
-+			pil-reloc@94c {
-+				compatible = "qcom,pil-reloc-info";
-+				reg = <0x94c 0xc8>;
-+			};
-+		};
-+
- 		apps_smmu: iommu@15000000 {
- 			compatible = "qcom,sdm845-smmu-500", "arm,mmu-500";
- 			reg = <0 0x15000000 0 0x80000>;
--- 
-2.26.2
+Thanks Nayna.
+
+--=20
+bmeneg=20
+PGP Key: http://bmeneg.com/pubkey.txt
+
+--s2ZSL+KKDSLx8OML
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEdWo6nTbnZdbDmXutYdRkFR+RokMFAl7xBKgACgkQYdRkFR+R
+okM+3gf/WklZhJKgeCkRvrX3iYG8I3bbB7Vve/pzDsKzG9dYjwuriAm4fN8Eoaa9
+inXX10GjEZ4s+7bWDQUn++hiYVSG+tfYKvYQZLPa0AJBwar+m7VroeoyoV3W3vu6
+GAo9FwHLB50n02qyEv1vwalBy59mazStcToTKDnLQQ6dRetAD/CzZHce5qLojYvS
+R8GX28GhmyNPxERFrAn/0J72oK1nJV8MOfMrIjLlh8xryBrTM8uLsiPUgwsYrUEZ
+cPo/jRriLK9d49WWA2adw7mlhlxZ8/RN1ZcByDWthcUOp/a2GzgZaqMNCoYoKSyO
+EhhSgJkW8xg5/O9jpgh+h+cevAWazQ==
+=hG7c
+-----END PGP SIGNATURE-----
+
+--s2ZSL+KKDSLx8OML--
 
