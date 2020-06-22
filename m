@@ -2,104 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B85E2040C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 069092040CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728336AbgFVUCB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 16:02:01 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:60938 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728050AbgFVUCB (ORCPT
+        id S1728629AbgFVUCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 16:02:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52540 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728482AbgFVUC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 16:02:01 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05MK1gA0118523;
-        Mon, 22 Jun 2020 15:01:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592856102;
-        bh=UnjtmQf18KHv3JEllemSjYzNN6dGsJqMcXI38xM2/bI=;
-        h=From:To:CC:Subject:Date;
-        b=YZ3w+n5H/tTKuBe/BFuUtyjzbyb2kY9YwBhSdTtLoDMccWHyygnOAqoJXgh9DUwaI
-         NikZRkBFG3FvCkKZtusxO4TEi9Tkf2sdWo4g873NGSknBXyJ1OkCVluXXwkOety+3C
-         7vmFQO7uyPv90vQedVYkW33tmQjFcI0rjinSmr5Q=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05MK1gH1118398
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 22 Jun 2020 15:01:42 -0500
-Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 22
- Jun 2020 15:01:41 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 22 Jun 2020 15:01:41 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05MK1eSn061651;
-        Mon, 22 Jun 2020 15:01:41 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     Santosh Shilimkar <ssantosh@kernel.org>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH] soc: ti: k3-ringacc: fix: warn: variable dereferenced before check 'ring'
-Date:   Mon, 22 Jun 2020 23:01:37 +0300
-Message-ID: <20200622200137.30109-1-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 22 Jun 2020 16:02:28 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4867DC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:02:28 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id s13so14201315otd.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:02:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AlYKYXzcMv9BOPw1annEKLuHXEQQjMbSoxaUi+SHOLc=;
+        b=a1DlWOIFce+lAwR9uUnCAaEdNUPzRDELBo3GobG/t4Q+sUpyoCJht8jshG1hqpAlWI
+         wJUMVq+s9I5abhW13Mnkw6fMzEuC7otNASbPgnZPUp3Up9hzUudS3AB/SoXjQuvVSIRx
+         x8O5WT5bmaSiFj4R09vAr7aG6InGEa5JUVU9mm+nmOlpSKhDlsjSe+RyArqpzT1H3RuK
+         tLoxQP4HEKImhvYk+Py0UpbGvr50L66L6hgAZCH4fcXq4vnI+lTPXuKzELmJGggm8GR7
+         jHaJ5WXa4VYFcnRLqilmTQAgJv/x0VzLc75ZpuLeSOe7m4gj1GrV/n0gw72myXxagRRi
+         o9LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AlYKYXzcMv9BOPw1annEKLuHXEQQjMbSoxaUi+SHOLc=;
+        b=ttKq3iOumUYCM1fTXZd8wUild5TXbAYs2UUNWYUSn3lPVw+sCi1vGbUhXwCLuBBp3k
+         YDqd4g8/vXE7NV44JWkrQfZMKxS3+34q2E3r5eriPRhH/+ofzpB687jGgHDjf/j/iOSI
+         oamhJmk0buKdX0r33EDurqklMLOffcpe+mMVyJhT+88y+FsuebhwnT3/8b8tjlMrskwh
+         uifTk2IZEUzCaxKhdXb6Li+p0jVIYRHZjI/odU/kbP7XZEZy5SxiI2K0DBB+Gfj32kNj
+         i4TgQ98EOXb4g0o2VEPspDv3g5tTLnhCJv2DuHg6Zp2+IjJcmNG3IAYCbU7FDhKf66NV
+         K5Eg==
+X-Gm-Message-State: AOAM5319yEZSJsBk2HzY7RnrRIYBYfO7h5UyZJSXSpbuOk1PmbKCDz8T
+        W+KJAUSYBK6OVQCPJ1ITFuou62mC3bYzSPWMoL74v81qSnE=
+X-Google-Smtp-Source: ABdhPJw9iMpvNLp/TRxRoZmJOlM7QF3eTJlY6d4DZ3NjVE9nvNFE1yhiDkcHC4tSBPGGKwanZYXFmZdToTpf7zr+TmE=
+X-Received: by 2002:a9d:1722:: with SMTP id i34mr14357502ota.6.1592856147416;
+ Mon, 22 Jun 2020 13:02:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20200619143056.24538-1-trini@konsulko.com>
+In-Reply-To: <20200619143056.24538-1-trini@konsulko.com>
+From:   ron minnich <rminnich@gmail.com>
+Date:   Mon, 22 Jun 2020 13:02:16 -0700
+Message-ID: <CAP6exYJ64Hy9y3Dzh9Asrq8Y0oDWYk+tf4UAcasEc-ZxTY8DAw@mail.gmail.com>
+Subject: Re: [PATCH] initrd: Remove erroneous comment
+To:     Tom Rini <trini@konsulko.com>
+Cc:     lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix build warning in k3_ringacc_ring_cfg():
+The other thing you ought to consider fixing:
+initrd is documented as follows:
 
-smatch warnings:
-drivers/soc/ti/k3-ringacc.c:562 k3_ringacc_ring_cfg() warn: variable dereferenced before check 'ring' (see line 559)
+        initrd=         [BOOT] Specify the location of the initial ramdisk
 
-  557  int k3_ringacc_ring_cfg(struct k3_ring *ring, struct k3_ring_cfg *cfg)
-  558  {
- @559           struct k3_ringacc *ringacc = ring->parent;
-                                             ^^^^^^^^^^^^
-Dereference.
+for bootloaders only.
 
-  560           int ret = 0;
-  561
- @562           if (!ring || !cfg)
-                    ^^^^
+UEFI consumes initrd from the command line as well. As ARM servers
+increasingly use UEFI, there may be situations in which the initrd
+option doesn't make its way to the kernel? I don't know, UEFI is such
+a black box to me. But I've seen this "initrd consumption" happen.
 
-Check too late.  Delete it?
+Based on docs, and the growing use of bootloaders that are happy to
+consume initrd= and not pass it to the kernel, you might be better off
+trying to move to the new command line option anyway.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
----
- drivers/soc/ti/k3-ringacc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+IOW, this comment may not be what people want to see, but ... it might
+also be right. Or possibly changed to:
 
-diff --git a/drivers/soc/ti/k3-ringacc.c b/drivers/soc/ti/k3-ringacc.c
-index 5fb2ee2ac978..19156f15af0a 100644
---- a/drivers/soc/ti/k3-ringacc.c
-+++ b/drivers/soc/ti/k3-ringacc.c
-@@ -556,11 +556,13 @@ static int k3_ringacc_ring_cfg_sci(struct k3_ring *ring)
- 
- int k3_ringacc_ring_cfg(struct k3_ring *ring, struct k3_ring_cfg *cfg)
- {
--	struct k3_ringacc *ringacc = ring->parent;
-+	struct k3_ringacc *ringacc;
- 	int ret = 0;
- 
- 	if (!ring || !cfg)
- 		return -EINVAL;
-+	ringacc = ring->parent;
-+
- 	if (cfg->elm_size > K3_RINGACC_RING_ELSIZE_256 ||
- 	    cfg->mode >= K3_RINGACC_RING_MODE_INVALID ||
- 	    cfg->size & ~K3_RINGACC_CFG_RING_SIZE_ELCNT_MASK ||
--- 
-2.17.1
+/*
+ * The initrd keyword is in use today on ARM, PowerPC, and MIPS.
+ * It is also reserved for use by bootloaders such as UEFI and may
+ * be consumed by them and not passed on to the kernel.
+ * The documentation also shows it as reserved for bootloaders.
+ * It is advised to move to the initrdmem= option whereever possible.
+ */
 
+On Fri, Jun 19, 2020 at 7:31 AM Tom Rini <trini@konsulko.com> wrote:
+>
+> Most architectures have been passing the location of an initrd via the
+> initrd= option since their inception.  Remove the comment as it's both
+> wrong and unrelated to the commit that introduced it.
+>
+> Fixes: 694cfd87b0c8 ("x86/setup: Add an initrdmem= option to specify initrd physical address")
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+> Cc: H. Peter Anvin (Intel) <hpa@zytor.com>
+> Cc: Ronald G. Minnich <rminnich@gmail.com>
+> Signed-off-by: Tom Rini <trini@konsulko.com>
+> ---
+> For a bit more context, I assume there's been some confusion between
+> "initrd" being a keyword in things like extlinux.conf and also that for
+> quite a long time now initrd information is passed via device tree and
+> not the command line on relevant architectures.  But it's still true
+> that it's been a valid command line option to the kernel since the 90s.
+> It's just the case that in 2018 the code was consolidated from under
+> arch/ and in to this file.
+> ---
+>  init/do_mounts_initrd.c | 5 -----
+>  1 file changed, 5 deletions(-)
+>
+> diff --git a/init/do_mounts_initrd.c b/init/do_mounts_initrd.c
+> index d72beda824aa..53314d7da4be 100644
+> --- a/init/do_mounts_initrd.c
+> +++ b/init/do_mounts_initrd.c
+> @@ -45,11 +45,6 @@ static int __init early_initrdmem(char *p)
+>  }
+>  early_param("initrdmem", early_initrdmem);
+>
+> -/*
+> - * This is here as the initrd keyword has been in use since 11/2018
+> - * on ARM, PowerPC, and MIPS.
+> - * It should not be; it is reserved for bootloaders.
+> - */
+>  static int __init early_initrd(char *p)
+>  {
+>         return early_initrdmem(p);
+> --
+> 2.17.1
+>
