@@ -2,119 +2,380 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332B7204389
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E9E7204385
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730934AbgFVW0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 18:26:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
+        id S1730990AbgFVWXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 18:23:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730777AbgFVW0Q (ORCPT
+        with ESMTP id S1730808AbgFVWXu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 18:26:16 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2529AC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 15:26:16 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id v13so14581817otp.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 15:26:16 -0700 (PDT)
+        Mon, 22 Jun 2020 18:23:50 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30821C061573;
+        Mon, 22 Jun 2020 15:23:50 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id q8so17060484qkm.12;
+        Mon, 22 Jun 2020 15:23:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Whj9pPjVdxqNoQPO3/j1uYot6iyKYAdZJXRmnTL5xO8=;
-        b=p7Qxqg5dSBmq2hSsNLlQ5+RQja1zy1WyYt7A69O13Qz64ge9PlX6tdodta5m1mOyoJ
-         fiN5mS59lG0/DHWLxyJ9fd6KgT+4T2u8M+Zym1mEOB2eT60Whl+ktEDA7Siy1kfUs+pT
-         RTJKTDghbBAAP0xM0ZAogIU5UbG7kBnbN5TOrz+IU39QodAFe3Z+JdLSeGMjAEOq3OX6
-         tpHADkHQ6kFosnXVXny6G1T41zqnx80pSGoiTAgGTdFI/7qsaJcMRNt3NjrppdPtcJvg
-         /5k3CS58NDCDoEPLweGzunQJ2GpmotulLtyhI5asWN0alRZp6X5DSbnYKp98UKA7wwgw
-         4ftw==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=6ak7/xoV85fgFlGxeovTzLXqeps/akc4AmPjgdKSJ38=;
+        b=OVP4bwRNMW28kTW4zNKm7dDxbfZcwz/pWcDK/9NBeC7aUW6gth2xjAep2FSIK4pRhw
+         mEPDspNIbHGoP8q1/nRRGmckcfj6IU4hv0q9n+2AoAF2aYOcbEsz5hyyooKKY5OvsGx5
+         5dF8jJeDhBC4werymg9FuWFL9R3KIoPA74Jmjt60GueSMeTqcyDt0KIvqLoxEQI4uj4H
+         uTwSakIMel4kV7cdwxj3tZ0QYqu87wroz33Zg1rXDyl3kkg4e3S4FrYzT6muSdO6f+lf
+         XYqhQXrIrpQFdIgbfcDqyqnPTxFZeskN4nLAIbYVtBtfUlUxg/RbyptyHbeJQBpMeKNJ
+         7wbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Whj9pPjVdxqNoQPO3/j1uYot6iyKYAdZJXRmnTL5xO8=;
-        b=bh1JqI7ZIYHSZuqPEtcVGH7PplqaW3ON7m1vtS8u/jJjr+Wrh/e45EcfanlihDbLHu
-         5pgazswWVtN5orpoBy85XNXFBZdz4io5m9vQAd8oCNT1vqUyGIRP9/IXaTZ4D+19adJY
-         kYlWY3ZBiMb3SZuLLn0ugRtvMLwijZ/TnuUks5Vsj2e8I+SV2TJJLbK4ForqetSkxaOV
-         B2q+jFy2gs8E/hxypbB+vsu12TtwDwNX7PA8Kx/IlT+fOxoxenfId8z4GdXsdF8trFGd
-         AR+yIf0Ih9kMi3mp5W6As5NjpLtWYXmdWNUkJMvuP7iBgCwCHOi22vqXNFugM5SyCocc
-         IeFg==
-X-Gm-Message-State: AOAM530CipnqKYIo7csApxFoAOjeLxkegPHRUbMUBhv7eAn2ba0LrJ1B
-        r9qpbwLODpzBhxRuwmROiwenbw==
-X-Google-Smtp-Source: ABdhPJwPN1WmV+udGRk+h9E1afL6SIOkLi8rjKfsh1tBIrwek2pmebCqB86B9yLovtcWMsgdL/vfnQ==
-X-Received: by 2002:a05:6830:1dbb:: with SMTP id z27mr15880575oti.340.1592864775362;
-        Mon, 22 Jun 2020 15:26:15 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id p1sm3753330oot.34.2020.06.22.15.26.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 15:26:14 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 15:23:30 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, mathieu.poirier@linaro.org
-Subject: Re: [v4 PATCH 0/3] Extend coredump functionality
-Message-ID: <20200622222330.GN149351@builder.lan>
-References: <1590611177-15826-1-git-send-email-rishabhb@codeaurora.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6ak7/xoV85fgFlGxeovTzLXqeps/akc4AmPjgdKSJ38=;
+        b=H5N178u9mdpjzChV+4Pr1GXg/gUvw+zF64dr22lLlaWTRjk0n4C894sH77SIuHzJf0
+         kHFz/0LNHJuW9WHhLTnYKBC6YBxWw7AmQBI54luVW6FvIN1214jU948KL0rgKtCHxLZX
+         njGF4pRWbE/6SyafsIXCvRURbheARWsJz26lBjliwucAXblEnhei2vfk7dvgTS6bpxB7
+         msmSqqb0UznrjCp316wMC19EQncv2Nt86pfkG+vjlLJTtE7yDMzqO3PUmUJh4cdvHu4W
+         KbUun9HHyfY3Q3zVhyDUl1ItfxSLXBM+PZzGtQY85HzFC1MEFlhVj61TR8nnDNfU2TVc
+         eBhQ==
+X-Gm-Message-State: AOAM533NCfdzBMnQmchaerfVePJqUkiDfiJaWZvG/aOFYNjmX2WQLr7a
+        r4YeM/PSx/ECEi2MMbnIKKA=
+X-Google-Smtp-Source: ABdhPJzxRvg6eRJjiRlt5AC30xSeExZJ5qAr8A/hfqTvHMDn42QAuQjG4vPLYKI4yursxZCeqYsyyw==
+X-Received: by 2002:a37:a5cc:: with SMTP id o195mr4202360qke.326.1592864629265;
+        Mon, 22 Jun 2020 15:23:49 -0700 (PDT)
+Received: from [192.168.1.46] (c-73-88-245-53.hsd1.tn.comcast.net. [73.88.245.53])
+        by smtp.gmail.com with ESMTPSA id o15sm1086734qko.67.2020.06.22.15.23.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jun 2020 15:23:48 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] mfd: core: Make a best effort attempt to match
+ devices with the correct of_nodes
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     andy.shevchenko@gmail.com, michael@walle.cc, robh+dt@kernel.org,
+        broonie@kernel.org, devicetree@vger.kernel.org,
+        linus.walleij@linaro.org, linux@roeck-us.net,
+        andriy.shevchenko@linux.intel.com, robin.murphy@arm.com,
+        gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20200611191002.2256570-1-lee.jones@linaro.org>
+ <4b188fb5-6667-720d-46e1-6f103efe8966@gmail.com>
+ <20200615092644.GA2608702@dell>
+ <eef50a78-8571-5600-4fee-c824fd4a7f69@gmail.com>
+ <20200622085009.GP954398@dell>
+ <cd8952da-cc55-8087-b9f6-876417beb188@gmail.com>
+ <20200622151054.GW954398@dell>
+ <037c0fd2-df35-5981-7ef2-c6199841650d@gmail.com>
+ <20200622191133.GY954398@dell>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <dc893ce4-8a4d-b7d9-8591-18a8b9b2ea2b@gmail.com>
+Date:   Mon, 22 Jun 2020 17:23:47 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1590611177-15826-1-git-send-email-rishabhb@codeaurora.org>
+In-Reply-To: <20200622191133.GY954398@dell>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 27 May 13:26 PDT 2020, Rishabh Bhatnagar wrote:
+On 2020-06-22 14:11, Lee Jones wrote:
+> On Mon, 22 Jun 2020, Frank Rowand wrote:
+> 
+>> On 2020-06-22 10:10, Lee Jones wrote:
+>>> On Mon, 22 Jun 2020, Frank Rowand wrote:
+>>>
+>>>> On 2020-06-22 03:50, Lee Jones wrote:
+>>>>> On Thu, 18 Jun 2020, Frank Rowand wrote:
+>>>>>
+>>>>>> On 2020-06-15 04:26, Lee Jones wrote:
+>>>>>>> On Sun, 14 Jun 2020, Frank Rowand wrote:
+>>>>>>>
+>>>>>>>> Hi Lee,
+>>>>>>>>
+>>>>>>>> I'm looking at 5.8-rc1.
+>>>>>>>>
+>>>>>>>> The only use of OF_MFD_CELL() where the same compatible is specified
+>>>>>>>> for multiple elements of a struct mfd_cell array is for compatible
+>>>>>>>> "stericsson,ab8500-pwm" in drivers/mfd/ab8500-core.c:
+>>>>>>>>
+>>>>>>>>         OF_MFD_CELL("ab8500-pwm",
+>>>>>>>>                     NULL, NULL, 0, 1, "stericsson,ab8500-pwm"),
+>>>>>>>>         OF_MFD_CELL("ab8500-pwm",
+>>>>>>>>                     NULL, NULL, 0, 2, "stericsson,ab8500-pwm"),
+>>>>>>>>         OF_MFD_CELL("ab8500-pwm",
+>>>>>>>>                     NULL, NULL, 0, 3, "stericsson,ab8500-pwm"),
+>>>>>>
+>>>>>>          OF_MFD_CELL("ab8500-pwm",
+>>>>>>                      NULL, NULL, 0, 0, "stericsson,ab8500-pwm"),
+>>>>>>
+>>>>>>          OF_MFD_CELL_REG("ab8500-pwm-mc",
+>>>>>>                          NULL, NULL, 0, 0, "stericsson,ab8500-pwm", 0),
+>>>>>>          OF_MFD_CELL_REG("ab8500-pwm-mc",
+>>>>>>                          NULL, NULL, 0, 1, "stericsson,ab8500-pwm", 1),
+>>>>>>          OF_MFD_CELL_REG("ab8500-pwm-mc",
+>>>>>>                          NULL, NULL, 0, 2, "stericsson,ab8500-pwm", 2),
+>>>>>>
+>>>>>>>>
+>>>>>>>> The only .dts or .dtsi files where I see compatible "stericsson,ab8500-pwm"
+>>>>>>>> are:
+>>>>>>>>
+>>>>>>>>    arch/arm/boot/dts/ste-ab8500.dtsi
+>>>>>>>>    arch/arm/boot/dts/ste-ab8505.dtsi
+>>>>>>>>
+>>>>>>>> These two .dtsi files only have a single node with this compatible.
+>>>>>>>> Chasing back to .dts and .dtsi files that include these two .dtsi
+>>>>>>>> files, I see no case where there are multiple nodes with this
+>>>>>>>> compatible.
+>>>>>>>>
+>>>>>>>> So it looks to me like there is no .dts in mainline that is providing
+>>>>>>>> the three "stericsson,ab8500-pwm" nodes that drivers/mfd/ab8500-core.c
+>>>>>>>> is expecting.  No case that there are multiple mfd child nodes where
+>>>>>>>> mfd_add_device() would assign the first of n child nodes with the
+>>>>>>>> same compatible to multiple devices.
+>>>>>>>>
+>>>>>>>> So it appears to me that drivers/mfd/ab8500-core.c is currently broken.
+>>>>>>>> Am I missing something here?
+>>>>>>>>
+>>>>>>>> If I am correct, then either drivers/mfd/ab8500-core.c or
+>>>>>>>> ste-ab8500.dtsi and ste-ab8505.dtsi need to be fixed.
+>>>>>>>
+>>>>>>> Your analysis is correct.
+>>>>>>
+>>>>>> OK, if I'm not overlooking anything, that is good news.
+>>>>>>
+>>>>>> Existing .dts source files only have one "ab8500-pwm" child.  They already
+>>>>>> work correcly.
+>>>>>>
+>>>>>> Create a new compatible for the case of multiple children.  In my example
+>>>>>> I will add "-mc" (multiple children) to the existing compatible.  There
+>>>>>> is likely a better name, but this lets me provide an example.
+>>>>>>
+>>>>>> Modify drivers/mfd/ab8500-core.c to use the new compatible, and new .dts
+>>>>>> source files with multiple children use the new compatible:
+>>>>>>
+>>>>>>          OF_MFD_CELL("ab8500-pwm",
+>>>>>>                      NULL, NULL, 0, 0, "stericsson,ab8500-pwm"),
+>>>>>>
+>>>>>>          OF_MFD_CELL_REG("ab8500-pwm-mc",
+>>>>>>                          NULL, NULL, 0, 0, "stericsson,ab8500-pwm", 0),
+>>>>>>          OF_MFD_CELL_REG("ab8500-pwm-mc",
+>>>>>>                          NULL, NULL, 0, 1, "stericsson,ab8500-pwm", 1),
+>>>>>>          OF_MFD_CELL_REG("ab8500-pwm-mc",
+>>>>>>                          NULL, NULL, 0, 2, "stericsson,ab8500-pwm", 2),
+>>>>>>
+>>>>>> The "OF_MFD_CELL" entry is the existing entry, which will handle current
+>>>>>> .dts source files.  The new "OF_MFD_CELL_REG" entries will handle new
+>>>>>> .dts source files.
+>>>>>
+>>>>> Sorry, but I'm not sure what the above exercise is supposed to solve.
+>>>>>
+>>>>> Could you explain it for me please?
+>>>>
+>>>> The OF_MFD_CELL() entry handles all of the existing .dts source files
+>>>> that only have one ab8500-pwm child nodes.  So existing .dtb blobs
+>>>> continue to work.
+>>>>
+>>>> The OF_MFD_CELL_REG() entries will handle all of the new .dts source
+>>>> files that will have up to 3 ab8500-pwm child nodes.
+>>>>
+>>>> Compatibility is maintained for existing .dtb files.  A new kernel
+>>>> version with the changes will support new .dtb files that contain
+>>>> multiple ab8500-pwm child nodes.
+>>>
+>>> I can see *what* you're trying to do.  I was looking for an
+>>> explanation of *how* you think that will work.  FWIW, I don't think
+>>> what you're proposing will work as you envisage.  I thought that
+>>> perhaps I was missing something, which is why I requested further
+>>> explanation.
+>>>
+>>>>>> And of course the patch that creates OF_MFD_CELL_REG() needs to precede
+>>>>>> this change.
+>>>>>>
+>>>>>> I would remove the fallback code in the existing patch that tries to
+>>>>>> handle an incorrect binding.  Just error out if the binding is not
+>>>>>> used properly.
+>>>>>
+>>>>> What fallback code?
+>>>>
+>>>> Based on reading the patch description, I expected some extra code to try
+>>>> to handle the case where the compatible in more than one struct mfd_cell
+>>>> entry is "stericsson,ab8500-pwm" and there are multiple ab8500-pwm child
+>>>> nodes.
+>>>>
+>>>> Looking at the actual code (which I had not done before), I see that the
+>>>> "best effort attempt to match" is keeping a list of child nodes that
+>>>> have already been used (mfd_of_node_list) and avoiding re-use of such
+>>>> nodes.  This allows an invalid .dtb (one with multple "stericsson,ab8500-pwm"
+>>>> child nodes) to possibly be assigned unique child nodes for multiple
+>>>> struct mfd_cell entries to be "stericsson,ab8500-pwm".
+>>>>
+>>>> So it is confusing for me to call that "fallback code".  It really is
+>>>> "best effort attempt to match" for a broken .dtb code.
+>>>>
+>>>> There should be no best effort for a broken .dtb.  The broken .dtb should
+>>>> instead result in an error.
+>>>
+>>> The problem is, how can you tell the difference between a valid and a
+>>> broken FDT without pre-processing - which, as I explained in the
+>>> commit message, I am not prepared to do.  We cannot test individually
+>>> since all configurations (e.g. no 'reg' property are valid on an
+>>> individual basis.
+>>
+>> If my proposed changes are made, then there are at least 3 ways to detect
+>> a broken FDT or prevent the problem caused by the broken FDT.
+>>
+>>
+>> 1) Use the validation process that uses the bindings to validate the
+>> devicetree source.
+> 
+> Could you provide an example please?
 
-> This patch series moves the coredump functionality to a separate
-> file and adds "inline" coredump feature. Inline coredump directly
-> copies segments from device memory during coredump to userspace.
-> This avoids extra memory usage at the cost of speed. Recovery is
-> stalled until all data is read by userspace.
+I'm sorry I don't have a concise description and example.  I have not been
+keeping up with the state of the art in this area.
+
+A terribly non-precise pointer to the general area is:
+
+  https://elinux.org/Device_tree_future#Devicetree_Verification
+
+As a general comment, I think that validation / verification is a very
+valuable tool, but the schemas to support it are an ongoing project.
+
+Even after the schemas are all in place, it will still be possible for
+bad FDTs to be fed to the kernel, so it is not a total pancea.
+
 > 
-> Changelog:
+>> 2) Modify patch 1/3.  The small part of the patch to modify is:
+>>
+>> +static int mfd_match_of_node_to_dev(struct platform_device *pdev,
+>> +				    struct device_node *np,
+>> +				    const struct mfd_cell *cell)
+>> +{
+>> +	struct mfd_of_node_entry *of_entry;
+>> +	const __be32 *reg;
+>> +	u64 of_node_addr;
+>> +
+>> +	/* Skip devices 'disabled' by Device Tree */
+>> +	if (!of_device_is_available(np))
+>> +		return -ENODEV;
+>> +
+>> +	/* Skip if OF node has previously been allocated to a device */
+>> +	list_for_each_entry(of_entry, &mfd_of_node_list, list)
+>>
+>> Change:
+>>
+>> +		if (of_entry->np == np)
+>> +			return -EAGAIN;
+>>
+>> To:
+>>
+>> +		if (of_entry->np == np) {
+>> +			if (!cell->use_of_reg)
+>> +				return -EINVAL;
+>> +			else
+>> +				return -EAGAIN;
+>>
+>> There may be a better choice than EINVAL, but I am just showing the method.
+>>
+>> You may also want to refactor this section of the patch slightly
+>> differently to achieve the same result.  It was just easiest to
+>> show the suggested change the way I did it.
+>>
+>> The test that returns EINVAL detects the issue that the FDT does
+>> not match the binding (there is more one child node with the
+>> "stericsson,ab8500-pwm" compatible.
+> 
+> So here, instead of just failing a single device, we fail everything?
+> Sounds a lot like throwing the baby out with the bath water.  How is
+> that an improvement?
+> 
+>> 3) I'm not sure if the pre-parsing that is wanted is parsing of the
+>> devicetree or parsing of the struct mfd_cell array.  If the mfd_cell
+>> array then solution 3 is not acceptable.
+>>
+>> A different change to a small part of patch 1/3.  In mfd_add_devices(),
+>> validate parameter "cells".  The validation could precede the existing
+>> code, or it could be folded into the existing for loop.  The validation
+>> is checking for any other element of the cells array containing
+>> the same compatible value if cell->use_of_reg is not true for an element.
+>>
+>> If this validation occurs, then I think mfd_of_node_list, and all the
+>> associated code to deal with it is no longer needed.  But I didn't
+>> look at this part in detail, so maybe I missed something.
+>>
+>> The validation is something like (untested):
+>>
+>> 	if (IS_ENABLED(CONFIG_OF)
+>> 		for (i = 0; i < n_devs; i++) {
+>> 			this_cell = cells + i;
+>> 			if (!this_cell->use_of_reg) {
+>> 				for (j = 1; j < n_devs; j++) {
+>> 					if (j != i) {
+>> 						cell = cells + j;
+>> 						if (!strcmp(this_cell->of_compatible, cell->of_compatible))
+>> 							return -EINVAL;
+>> 					}
+>> 				}
+>> 			}
+>> 		}
+> 
+> I think I just threw-up a little. ;)
+
+I'm not surprised.
+
+But it actually is pretty simple code.
+
+> 
+> Did you read the commit message?
+
+Yes, I did.
+
+> 
+>   "We could code around this with some pre-parsing semantics, but the
+
+And as I said above, it was not clear to me what was meant by pre-parsing.
+
+>   added complexity required to cover each and every corner-case is not
+>   justified.  Merely patching the current failing (via this patch) is
+>   already working with some pretty small corner-cases"
+>   
+> Providing thorough pre-parsing would be highly complex and highly
+> error prone.  The example you provide above is not only ugly, there
+> are numerous issues with it.  Not least:
+> 
+>  * Only one corner-case is covered
+
+I agree with this.  I also agree it is a fool's errand to try to add
+code to fully validate all possible devicetree source errors in
+driver source.
+
+>  * Validation is only completed on a single mfd_cells struct
+
+On a single _array_ of struct mfd_cells.  But this does appear
+to be a fatal flaw.  I had not looked at enough callers of
+mfd_add_devices() to see that it is a common pattern for
+a single driver to call it multiple times.
+
+>  * False positives can occur and will fail as a result
+
+((What is an example of a false positive?))  Never mind, now that
+I see that the previous issue is a fatal flaw, this becomes
+academic.
+
+> 
+> The above actually makes the solution worse, not better.
 > 
 
-Hi Rishabh,
+Patch 1/3 silently fails to deal with a broken devicetree.
+It results on one of the three ab8500-pwm child nodes in
+the hypothetical devicetree source tree not being added.
 
-This looks good to me, but it doesn't apply cleanly on linux-next. Can
-you please take a look?
+That is not a good result either.
 
-Regards,
-Bjorn
+OK, so my solution #3 is a no go.  How about my solution #2,
+which you did not comment on?
 
-> v4 -> v3:
-> - Write a helper function to copy segment memory for every dump format
-> - Change segment dump fn to add offset and size adn covert mss driver
-> 
-> v3 -> v2:
-> - Move entire coredump functionality to remoteproc_coredump.c
-> - Modify rproc_coredump to perform dump according to conf. set by userspace
-> - Move the userspace configuration to debugfs from sysfs.
-> - Keep the default coredump implementation as is
-> 
-> v2 -> v1:
-> - Introduce new file for coredump.
-> - Add userspace sysfs configuration for dump type.
-> 
-> Rishabh Bhatnagar (3):
->   remoteproc: Move coredump functionality to a new file
->   remoteproc: Add inline coredump functionality
->   remoteproc: Add coredump debugfs entry
-> 
->  drivers/remoteproc/Makefile              |   1 +
->  drivers/remoteproc/qcom_q6v5_mss.c       |   9 +-
->  drivers/remoteproc/remoteproc_core.c     | 191 ------------------
->  drivers/remoteproc/remoteproc_coredump.c | 328 +++++++++++++++++++++++++++++++
->  drivers/remoteproc/remoteproc_debugfs.c  |  86 ++++++++
->  drivers/remoteproc/remoteproc_internal.h |   4 +
->  include/linux/remoteproc.h               |  21 +-
->  7 files changed, 443 insertions(+), 197 deletions(-)
->  create mode 100644 drivers/remoteproc/remoteproc_coredump.c
-> 
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+-Frank
