@@ -2,31 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2AF52044AC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1795F2044A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731445AbgFVXqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 19:46:54 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:54769 "EHLO
+        id S1731166AbgFVXqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 19:46:40 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54775 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730869AbgFVXqK (ORCPT
+        with ESMTP id S1730953AbgFVXqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 19:46:10 -0400
+        Mon, 22 Jun 2020 19:46:11 -0400
 Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein.fritz.box)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jnW8d-0005DO-8B; Mon, 22 Jun 2020 23:46:07 +0000
+        id 1jnW8d-0005DO-Ki; Mon, 22 Jun 2020 23:46:07 +0000
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Christian Brauner <christian.brauner@ubuntu.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Ley Foon Tan <ley.foon.tan@intel.com>
-Subject: [PATCH 06/17] nios2: enable HAVE_COPY_THREAD_TLS, switch to kernel_clone_args
-Date:   Tue, 23 Jun 2020 01:43:15 +0200
-Message-Id: <20200622234326.906346-7-christian.brauner@ubuntu.com>
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        uclinux-h8-devel@lists.sourceforge.jp
+Subject: [PATCH 07/17] h8300: select HAVE_COPY_THREAD_TLS, switch to kernel_clone_args
+Date:   Tue, 23 Jun 2020 01:43:16 +0200
+Message-Id: <20200622234326.906346-8-christian.brauner@ubuntu.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200622234326.906346-1-christian.brauner@ubuntu.com>
 References: <20200622234326.906346-1-christian.brauner@ubuntu.com>
@@ -69,19 +68,20 @@ creation but it will be the same layout and calling convention for all
 architectures. (Once that is done we can probably cleanup each
 copy_thread() function even more but that's for the future.)
 
-Since nios2 does support CLONE_SETTLS there's no reason to not select
-HAVE_COPY_THREAD_TLS. This brings us one step closer to getting rid of
-the copy_thread()/copy_thread_tls() split we still have and ultimately
-the HAVE_COPY_THREAD_TLS define in general. A lot of architectures have
-already converted and nios2 is one of the few hat haven't yet. This also
-unblocks implementing the clone3() syscall on nios2. Once that is done we
-can get of another ARCH_WANTS_* macro.
+Though h8300 doesn't not suppor the CLONE_SETTLS flag there's no reason to
+not switch to the copy_thread_tls() calling convention. As before
+CLONE_SETTLS with legacy clone will just be ignored. This brings us one
+step closer to getting rid of the copy_thread()/copy_thread_tls() split we
+still have and ultimately the HAVE_COPY_THREAD_TLS define in general. A lot
+of architectures have already converted and h8300 is one of the few hat
+haven't yet. This also unblocks implementing the clone3() syscall on h8300.
+Once that is done we can get of another ARCH_WANTS_* macro.
 
 Once Any architecture that supports HAVE_COPY_THREAD_TLS cannot call the
 do_fork() helper anymore. This is fine and intended since it should be
 removed in favor of the new, cleaner _do_fork() calling convention based
 on struct kernel_clone_args. In fact, most architectures have already
-switched.  With this patch, nios2 joins the other arches which can't use
+switched.  With this patch, h8300 joins the other arches which can't use
 the fork(), vfork(), clone(), clone3() syscalls directly and who follow
 the new process creation calling convention that is based on struct
 kernel_clone_args which we introduced a while back. This means less
@@ -128,97 +128,68 @@ Date:   Sat Jan 11 15:33:48 2020 -0800
       ARCH_WANT_SYS_CLONE3 and HAVE_COPY_THREAD_TLS.
 
 Note that in the meantime, m68k has already switched to the new calling
-convention. And I've got sparc patches acked by Dave and ia64 is already
-done too. You can find a link to a booting qemu nios2 system with all the
-changes here at [1].
+convention. And I've got sparc patches acked by Dave, patches for ia64, and
+nios2 have been sent out and are ready too.
 
-[1]: https://asciinema.org/a/333353
-Cc: linux-kernel@vger.kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Ley Foon Tan <ley.foon.tan@intel.com>
+Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: uclinux-h8-devel@lists.sourceforge.jp
 Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
- arch/nios2/Kconfig          |  1 +
- arch/nios2/kernel/entry.S   |  7 +------
- arch/nios2/kernel/process.c | 23 ++++++++++++++++++++---
- 3 files changed, 22 insertions(+), 9 deletions(-)
+ arch/h8300/Kconfig          |  1 +
+ arch/h8300/kernel/process.c | 18 +++++++++++++-----
+ 2 files changed, 14 insertions(+), 5 deletions(-)
 
-diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
-index c6645141bb2a..f9a05957a883 100644
---- a/arch/nios2/Kconfig
-+++ b/arch/nios2/Kconfig
-@@ -27,6 +27,7 @@ config NIOS2
- 	select USB_ARCH_HAS_HCD if USB_SUPPORT
+diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
+index d11666d538fe..de0eb417a0b9 100644
+--- a/arch/h8300/Kconfig
++++ b/arch/h8300/Kconfig
+@@ -26,6 +26,7 @@ config H8300
+ 	select HAVE_ARCH_HASH
  	select CPU_NO_EFFICIENT_FFS
- 	select MMU_GATHER_NO_RANGE if MMU
+ 	select UACCESS_MEMCPY
 +	select HAVE_COPY_THREAD_TLS
  
- config GENERIC_CSUM
+ config CPU_BIG_ENDIAN
  	def_bool y
-diff --git a/arch/nios2/kernel/entry.S b/arch/nios2/kernel/entry.S
-index 3d8d1d0bcb64..da8442450e46 100644
---- a/arch/nios2/kernel/entry.S
-+++ b/arch/nios2/kernel/entry.S
-@@ -389,12 +389,7 @@ ENTRY(ret_from_interrupt)
-  */
- ENTRY(sys_clone)
- 	SAVE_SWITCH_STACK
--	addi	sp, sp, -4
--	stw	r7, 0(sp)	/* Pass 5th arg thru stack */
--	mov	r7, r6		/* 4th arg is 3rd of clone() */
--	mov	r6, zero	/* 3rd arg always 0 */
--	call	do_fork
--	addi	sp, sp, 4
-+	call	nios2_clone
- 	RESTORE_SWITCH_STACK
- 	ret
- 
-diff --git a/arch/nios2/kernel/process.c b/arch/nios2/kernel/process.c
-index 509e7855e8dc..3dde4d6d8fbe 100644
---- a/arch/nios2/kernel/process.c
-+++ b/arch/nios2/kernel/process.c
-@@ -100,8 +100,8 @@ void flush_thread(void)
+diff --git a/arch/h8300/kernel/process.c b/arch/h8300/kernel/process.c
+index 0ef55e3052c9..ae23de4dcf42 100644
+--- a/arch/h8300/kernel/process.c
++++ b/arch/h8300/kernel/process.c
+@@ -105,9 +105,9 @@ void flush_thread(void)
  {
  }
  
 -int copy_thread(unsigned long clone_flags,
--		unsigned long usp, unsigned long arg, struct task_struct *p)
+-		unsigned long usp, unsigned long topstk,
+-		struct task_struct *p)
 +int copy_thread_tls(unsigned long clone_flags, unsigned long usp,
-+		    unsigned long arg, struct task_struct *p, unsigned long tls)
++		    unsigned long topstk, struct task_struct *p,
++		    unsigned long tls)
  {
- 	struct pt_regs *childregs = task_pt_regs(p);
- 	struct pt_regs *regs;
-@@ -140,7 +140,7 @@ int copy_thread(unsigned long clone_flags,
+ 	struct pt_regs *childregs;
  
- 	/* Initialize tls register. */
- 	if (clone_flags & CLONE_SETTLS)
--		childstack->r23 = regs->r8;
-+		childstack->r23 = tls;
+@@ -159,11 +159,19 @@ asmlinkage int sys_clone(unsigned long __user *args)
+ 	unsigned long  newsp;
+ 	uintptr_t parent_tidptr;
+ 	uintptr_t child_tidptr;
++	struct kernel_clone_args kargs = {};
  
- 	return 0;
- }
-@@ -259,3 +259,20 @@ int dump_fpu(struct pt_regs *regs, elf_fpregset_t *r)
- {
- 	return 0; /* Nios2 has no FPU and thus no FPU registers */
- }
+ 	get_user(clone_flags, &args[0]);
+ 	get_user(newsp, &args[1]);
+ 	get_user(parent_tidptr, &args[2]);
+ 	get_user(child_tidptr, &args[3]);
+-	return do_fork(clone_flags, newsp, 0,
+-		       (int __user *)parent_tidptr, (int __user *)child_tidptr);
 +
-+asmlinkage int nios2_clone(unsigned long clone_flags, unsigned long newsp,
-+			   int __user *parent_tidptr, int __user *child_tidptr,
-+			   unsigned long tls)
-+{
-+	struct kernel_clone_args args = {
-+		.flags		= (lower_32_bits(clone_flags) & ~CSIGNAL),
-+		.pidfd		= parent_tidptr,
-+		.child_tid	= child_tidptr,
-+		.parent_tid	= parent_tidptr,
-+		.exit_signal	= (lower_32_bits(clone_flags) & CSIGNAL),
-+		.stack		= newsp,
-+		.tls		= tls,
-+	};
++	kargs.flags		= (lower_32_bits(clone_flags) & ~CSIGNAL);
++	kargs.pidfd		= (int __user *)parent_tidptr;
++	kargs.child_tid		= (int __user *)child_tidptr;
++	kargs.parent_tid	= (int __user *)parent_tidptr;
++	kargs.exit_signal	= (lower_32_bits(clone_flags) & CSIGNAL);
++	kargs.stack		= newsp;
 +
-+	return _do_fork(&args);
-+}
++	return _do_fork(&kargs);
+ }
 -- 
 2.27.0
 
