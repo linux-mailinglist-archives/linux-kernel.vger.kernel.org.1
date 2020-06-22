@@ -2,145 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED74203011
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 09:05:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA7E20305A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 09:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731297AbgFVHFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 03:05:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726843AbgFVHFs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 03:05:48 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 56B73222C3;
-        Mon, 22 Jun 2020 07:05:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592809547;
-        bh=B8KgTSCiuvD2DUeXfT07K9LQ3YpjlNpWmmBMHHAftkQ=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=adw9FyaMkAXyD+TVvO7IZyR8UoBEeIx67hLCJQrDYYx5d2/h/7aaZWKzpgpJ25w+R
-         tvn97XK6Qaa08iN2rjR7VT+H7es+ZysPX5S1tldUQL9OQIrIUmHnp6rfbLPurN/Pb1
-         mWFdNR9TgHgrE3oGHgopSJ/LQYSqCtDLaId4cmXI=
-Content-Type: text/plain; charset="utf-8"
+        id S1731363AbgFVHKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 03:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731318AbgFVHKP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 03:10:15 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 769EDC061795
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 00:10:14 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id t25so14718788oij.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 00:10:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Gnm6o+0Hdw9Gs6PG3g5iLBKEOWre/ZeNRFkAN0MJIi4=;
+        b=hGprWhuTYlcdM3uoACEaOjqPwLSG+uCaWw8NVFoChC7syHeWbLr0mi6tiGR4ojdyfA
+         +uzQ9siBpAV9ebm27htqxAHP9QC/HkD/uB5V9L7Fbh81AKepqlKGLnmeOCEkzv2IUT6R
+         342GsUTAq7ZsFw1R3ruwVMMwpXkjwkZKDISibDHPPaWVKd7dCQwTqF4J6ka5xll81Qvh
+         8V4GvVrBb/MFXiVJQofykzYaz1Fy4M2+BKfDZxXdKVmBajNzvrJ/IpR5gNwHg9/LK+LH
+         klYS38eHqM8nuZcevdeYBdDEdaosmz7VW9jH/2UDlKR/VbAITMnrWptf2DiftQtf89Xp
+         gx8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Gnm6o+0Hdw9Gs6PG3g5iLBKEOWre/ZeNRFkAN0MJIi4=;
+        b=HnS1l369sx8zPq/iMTIEm9M8H/o6vpQFN63LY+A1ooTbsMKphWuTyBxcY1N4ptUPkN
+         CXN3++TbFFgFtJdl1mukQSRLnKnK9eY2ihTdE6aIwEkE80CZlUiw6HzM4f7WFmljvDfn
+         VkbDtH9ReqzOvCfh5kmFdtR2dam0yZvPTHY2EH6CP7S9jAXlVwkCELkS83ltrAy83W4q
+         8VSqkTUiH3BsdiXUGzfVyQiUfElUPPw6xM9iTYEIrSwfGSMj9wOORmfY6dBSy8EzcXmp
+         YdeEOkHp6rQb7yzFibk+mcyAy18wjByC3TxSMWwjakiZX1bQ49RXfJ0XVDf+gy+UiavM
+         R+7w==
+X-Gm-Message-State: AOAM533Jv3FVfITAhSUjP0/nfLTm4Q4zQNDuP0jGIlAHx46F+SHARbsr
+        n/CAbWG6hOHq47M5slC1QPvd6Q==
+X-Google-Smtp-Source: ABdhPJyN4NSurz/LsUB6M2KEX3is0xOR/sGwblrexAO062yBIviwY7ocYYFmWKEfLtm/5QjzWpw1uA==
+X-Received: by 2002:aca:4dc3:: with SMTP id a186mr11885127oib.17.1592809813734;
+        Mon, 22 Jun 2020 00:10:13 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id d72sm732706oob.15.2020.06.22.00.10.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 00:10:13 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 00:07:27 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, loic.pallardy@st.com,
+        arnaud.pouliquen@st.com, s-anna@ti.com
+Subject: Re: [PATCH v4 3/9] remoteproc: Introducing function rproc_attach()
+Message-ID: <20200622070727.GD149351@builder.lan>
+References: <20200601175139.22097-1-mathieu.poirier@linaro.org>
+ <20200601175139.22097-4-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1591687933-19495-5-git-send-email-Anson.Huang@nxp.com>
-References: <1591687933-19495-1-git-send-email-Anson.Huang@nxp.com> <1591687933-19495-5-git-send-email-Anson.Huang@nxp.com>
-Subject: Re: [PATCH V2 4/9] clk: imx: Support building i.MX common clock driver as module
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Linux-imx@nxp.com
-To:     Anson Huang <Anson.Huang@nxp.com>, abel.vesa@nxp.com,
-        aisheng.dong@nxp.com, allison@lohutok.net, arnd@arndb.de,
-        daniel.baluta@nxp.com, festevam@gmail.com, fugang.duan@nxp.com,
-        gregkh@linuxfoundation.org, info@metux.net, kernel@pengutronix.de,
-        leonard.crestez@nxp.com, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk, mturquette@baylibre.com,
-        oleksandr.suvorov@toradex.com, peng.fan@nxp.com,
-        s.hauer@pengutronix.de, sfr@canb.auug.org.au, shawnguo@kernel.org,
-        stefan.agner@toradex.com, tglx@linutronix.de, yuehaibing@huawei.com
-Date:   Mon, 22 Jun 2020 00:05:46 -0700
-Message-ID: <159280954666.62212.15832087518734077634@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200601175139.22097-4-mathieu.poirier@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Anson Huang (2020-06-09 00:32:08)
-> diff --git a/drivers/clk/imx/Makefile b/drivers/clk/imx/Makefile
-> index 1af8cff..1291f9b 100644
-> --- a/drivers/clk/imx/Makefile
-> +++ b/drivers/clk/imx/Makefile
-> @@ -1,25 +1,10 @@
->  # SPDX-License-Identifier: GPL-2.0
-> =20
-> -obj-$(CONFIG_MXC_CLK) +=3D \
-> -       clk.o \
-> -       clk-busy.o \
-> -       clk-composite-8m.o \
-> -       clk-cpu.o \
-> -       clk-composite-7ulp.o \
-> -       clk-divider-gate.o \
-> -       clk-fixup-div.o \
-> -       clk-fixup-mux.o \
-> -       clk-frac-pll.o \
-> -       clk-gate-exclusive.o \
-> -       clk-gate2.o \
-> -       clk-pfd.o \
-> -       clk-pfdv2.o \
-> -       clk-pllv1.o \
-> -       clk-pllv2.o \
-> -       clk-pllv3.o \
-> -       clk-pllv4.o \
-> -       clk-sscg-pll.o \
-> -       clk-pll14xx.o
-> +mxc-clk-objs +=3D clk.o clk-busy.o clk-composite-8m.o clk-cpu.o clk-comp=
-osite-7ulp.o \
-> +               clk-divider-gate.o clk-fixup-div.o clk-fixup-mux.o clk-fr=
-ac-pll.o \
-> +               clk-gate-exclusive.o clk-gate2.o clk-pfd.o clk-pfdv2.o cl=
-k-pllv1.o \
-> +               clk-pllv2.o clk-pllv3.o clk-pllv4.o clk-sscg-pll.o clk-pl=
-l14xx.o
-> +obj-$(CONFIG_MXC_CLK) +=3D mxc-clk.o
+On Mon 01 Jun 10:51 PDT 2020, Mathieu Poirier wrote:
 
-I enjoyed it when the files were all on their own line. Can you keep it
-like that and just add mxc-clk-objs +=3D to all the lines and remove the
-trailing slash?
-
-> =20
->  mxc-clk-scu-objs +=3D clk-scu.o clk-lpcg-scu.o
->  obj-$(CONFIG_MXC_CLK_SCU) +=3D mxc-clk-scu.o
-> diff --git a/drivers/clk/imx/clk-composite-8m.c b/drivers/clk/imx/clk-com=
-posite-8m.c
-> index d2b5af8..73e064b 100644
-> --- a/drivers/clk/imx/clk-composite-8m.c
-> +++ b/drivers/clk/imx/clk-composite-8m.c
-> @@ -243,3 +243,4 @@ struct clk_hw *imx8m_clk_hw_composite_flags(const cha=
-r *name,
->         kfree(mux);
->         return ERR_CAST(hw);
+> Introducing function rproc_attach() to enact the same actions as
+> rproc_start(), but without the steps related to the handling of
+> a firmware image.  That way we can properly deal with scenarios
+> where the remoteproc core needs to attach with a remote processsor
+> that has been booted by another entity.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  drivers/remoteproc/remoteproc_core.c | 42 ++++++++++++++++++++++++++++
+>  1 file changed, 42 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> index 9f04c30c4aaf..0b323f6b554b 100644
+> --- a/drivers/remoteproc/remoteproc_core.c
+> +++ b/drivers/remoteproc/remoteproc_core.c
+> @@ -1370,6 +1370,48 @@ static int rproc_start(struct rproc *rproc, const struct firmware *fw)
+>  	return ret;
 >  }
-> +EXPORT_SYMBOL_GPL(imx8m_clk_hw_composite_flags);
-
-Are all these files including <linux/export.h>? Because they should
-unless they're using something from <linux/module.h> like
-MODULE_LICENSE().
-
-> diff --git a/drivers/clk/imx/clk.c b/drivers/clk/imx/clk.c
-> index 87ab8db..cc894b5 100644
-> --- a/drivers/clk/imx/clk.c
-> +++ b/drivers/clk/imx/clk.c
-> @@ -143,16 +148,24 @@ void imx_cscmr1_fixup(u32 *val)
->  static int imx_keep_uart_clocks;
->  static struct clk ** const *imx_uart_clocks;
-> =20
-> -static int __init imx_keep_uart_clocks_param(char *str)
-> +static int __maybe_unused imx_keep_uart_clocks_param(char *str)
->  {
->         imx_keep_uart_clocks =3D 1;
-> =20
->         return 0;
->  }
+>  
+> +static int __maybe_unused rproc_attach(struct rproc *rproc)
+> +{
+> +	struct device *dev = &rproc->dev;
+> +	int ret;
 > +
-> +#ifdef MODULE
-> +__setup_param("earlycon", imx_keep_uart_earlycon,
-> +             imx_keep_uart_clocks_param);
-> +__setup_param("earlyprintk", imx_keep_uart_earlyprintk,
-> +             imx_keep_uart_clocks_param);
 
-Why not fix __setup_param() to take the same number of arguments in
-either case? That macro looks broken.
+For the case where we're going DETACHED -> RUNNING - > OFFLINE we
+need to consider the pm_runtime (and prepare/unprepare) state of the
+device as well...
 
-> +#else
->  __setup_param("earlycon", imx_keep_uart_earlycon,
->               imx_keep_uart_clocks_param, 0);
->  __setup_param("earlyprintk", imx_keep_uart_earlyprintk,
->               imx_keep_uart_clocks_param, 0);
-> +#endif
-> =20
->  void imx_register_uart_clocks(struct clk ** const clks[])
->  {
+
+Apart from that I think this looks good.
+
+Regards,
+Bjorn
+
+> +	ret = rproc_prepare_subdevices(rproc);
+> +	if (ret) {
+> +		dev_err(dev, "failed to prepare subdevices for %s: %d\n",
+> +			rproc->name, ret);
+> +		goto out;
+> +	}
+> +
+> +	/* Attach to the remote processor */
+> +	ret = rproc_attach_device(rproc);
+> +	if (ret) {
+> +		dev_err(dev, "can't attach to rproc %s: %d\n",
+> +			rproc->name, ret);
+> +		goto unprepare_subdevices;
+> +	}
+> +
+> +	/* Start any subdevices for the remote processor */
+> +	ret = rproc_start_subdevices(rproc);
+> +	if (ret) {
+> +		dev_err(dev, "failed to probe subdevices for %s: %d\n",
+> +			rproc->name, ret);
+> +		goto stop_rproc;
+> +	}
+> +
+> +	rproc->state = RPROC_RUNNING;
+> +
+> +	dev_info(dev, "remote processor %s is now attached\n", rproc->name);
+> +
+> +	return 0;
+> +
+> +stop_rproc:
+> +	rproc->ops->stop(rproc);
+> +unprepare_subdevices:
+> +	rproc_unprepare_subdevices(rproc);
+> +out:
+> +	return ret;
+> +}
+> +
+>  /*
+>   * take a firmware and boot a remote processor with it.
+>   */
+> -- 
+> 2.20.1
+> 
