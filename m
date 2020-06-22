@@ -2,80 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E18AC203674
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03530203682
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728156AbgFVMJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 08:09:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726889AbgFVMJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 08:09:07 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B6F920708;
-        Mon, 22 Jun 2020 12:09:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592827747;
-        bh=8+Idn4njerhZdj55dzmilrDtt7BWlwIiPjViGtK9Bec=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YufSqIhbppNX8i0EteJvQ+fJx/LKXRlTzimzgUaECnNZ9BgQXD3+3SqoxxGoigXo3
-         +bQyd4x+WIPbwSw/Eiogr6zDrjGZ2hFdrqHrvhnFjcC9mZUoXw8xI/BiZAgOOKGt+9
-         Ku7G6RLzbPdh1kmTPtZM2gOqaTw4//4XpLi0S9mI=
-Date:   Mon, 22 Jun 2020 13:09:05 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] regmap fixes for v5.8-rc2
-Message-ID: <20200622120905.GE4560@sirena.org.uk>
-References: <20200622114015.60DD1206BE@mail.kernel.org>
+        id S1728152AbgFVMNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 08:13:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35988 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726947AbgFVMM7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 08:12:59 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC729C061794;
+        Mon, 22 Jun 2020 05:12:59 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id q22so5211004pgk.2;
+        Mon, 22 Jun 2020 05:12:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I9HlSKQMhzG7oJydL+6eh0up9y5VwqFmL94sToYa/uE=;
+        b=lgX4gjHFucnFy5VkHP2WiY0D6XIEbcexKj1KxqJvBC+wiYLIl3kjnY5OiQ1lFBiGEL
+         SZV3TvRi8AXTgDSbP1PcCEh22JfsRDXasJvLF7aUyb7UGHlKr6q4SKwLdt7gO2Ll0svi
+         Bual2eB0y3TvXX0L8+Vg1km1WXhTjaeetYw4dJrSAxVa566HGLht8BDas3Ilc1JSmuuI
+         gzEiuavSKzSdNavT5PNXwQ65afsFpTlWu2jiv8+hIA7cZiZyJvN7pJXOmJUixy8B14up
+         y0yBURG+HoEUapcIxVxqS7s0AykmtYzDFVTMtMpkQuUleUQWWnyfZhPNvzcD/IzbyvId
+         gHmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I9HlSKQMhzG7oJydL+6eh0up9y5VwqFmL94sToYa/uE=;
+        b=LrHFKYfjXX61CHs5r9LpNUMCDZ3Nzf/nUXtAHa/mR/kaNi6BsgWPoRYzv+nFPD26/A
+         fQaWH7276vDYSIr0rjnkkv2Lv0zVvFRsjTKKDkoGTjCtLdwarfaTgTkywdlrLLxz1poA
+         506XgY1k00ZOzpkav1M/v3POnx58PFA1MCkJHyjJoC8QKnpKU2M98l7A8RThLLA/9bg/
+         p+a9ETSIXAMLel8Wr65XxvwSp5tAuJfvg0OML4ZV4zD8MUK4ZF7reh1jCS5rTvI1elmB
+         2ZSbRfaFQcoeuSA0DMAkGnIZxa3MHh9+B9LRL8EJeTfqdEdXbycAs0AfMdVxfREvNKAC
+         nD/g==
+X-Gm-Message-State: AOAM532dZzAS2Vxaq8ImtyVelWh6prJWWkORK5/9t4cwXpITjvWc1Yid
+        MHt33mJC4f01OX2W5q82kAE=
+X-Google-Smtp-Source: ABdhPJzcIKdS55H6Lk+xBsA8lIrAY3wgHsUWpiZth/n3tyJfyRUSFfw91QigIsAGY65JwPVcXZx7Vw==
+X-Received: by 2002:a62:ed02:: with SMTP id u2mr19752810pfh.283.1592827979227;
+        Mon, 22 Jun 2020 05:12:59 -0700 (PDT)
+Received: from varodek.localdomain ([2401:4900:b8b:123e:d7ae:5602:b3d:9c0])
+        by smtp.gmail.com with ESMTPSA id z9sm6745565pgh.94.2020.06.22.05.12.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 05:12:58 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1] [media] saa7164: use dev_pm_ops structure for power management
+Date:   Mon, 22 Jun 2020 17:39:13 +0530
+Message-Id: <20200622120912.92392-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="C94crkcyjafcjHxo"
-Content-Disposition: inline
-In-Reply-To: <20200622114015.60DD1206BE@mail.kernel.org>
-X-Cookie: laser, n.:
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The .suspend() and .resume() callbacks are not defined for this driver.
+Still, their power managemgement stucture can be easily upgraded to
+gemeric, without affecting its normal behaviour.
 
---C94crkcyjafcjHxo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ drivers/media/pci/saa7164/saa7164-core.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-On Mon, Jun 22, 2020 at 12:39:14PM +0100, broonie@kernel.org wrote:
-> The following changes since commit 93b929922dba3a42b0439ef13144c6032b7733=
-c8:
->=20
->   Merge series "regmap: provide simple bitops and use them in a driver" f=
-rom Bartosz Golaszewski <brgl@bgdev.pl> Bartosz Golaszewski <bgolaszewski@b=
-aylibre.com>: (2020-05-29 14:00:44 +0100)
->=20
+diff --git a/drivers/media/pci/saa7164/saa7164-core.c b/drivers/media/pci/saa7164/saa7164-core.c
+index 126d085be9a7..dba537c11797 100644
+--- a/drivers/media/pci/saa7164/saa7164-core.c
++++ b/drivers/media/pci/saa7164/saa7164-core.c
+@@ -1534,14 +1534,18 @@ static const struct pci_device_id saa7164_pci_tbl[] = {
+ };
+ MODULE_DEVICE_TABLE(pci, saa7164_pci_tbl);
+ 
++#define saa7164_suspend NULL
++#define saa7164_resume NULL
++
++static SIMPLE_DEV_PM_OPS(saa7164_pm_ops, saa7164_suspend, saa7164_resume);
++
+ static struct pci_driver saa7164_pci_driver = {
+ 	.name     = "saa7164",
+ 	.id_table = saa7164_pci_tbl,
+ 	.probe    = saa7164_initdev,
+ 	.remove   = saa7164_finidev,
+ 	/* TODO */
+-	.suspend  = NULL,
+-	.resume   = NULL,
++	.driver.pm = &saa7164_pm_ops,
+ };
+ 
+ static int __init saa7164_init(void)
+-- 
+2.27.0
 
-This (and my other pull requests today) are unsigned because I've
-automated the final checks and sending of the mails and that's not
-really compatible with signing the mails.  The tags themselves are
-signed so the signatures on the mails should've been redundant anyway
-but I figured it was better to say something.
-
---C94crkcyjafcjHxo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7wn2AACgkQJNaLcl1U
-h9CpYwf+PVuglYQqaRjDuOXTccFpSK8FwtBOGK+9Vg+qv0zXKG8aouPfB6+s4vGy
-yRJmTq0MdAeUVhRQjM3w15uvgFrKDdLMMYws5xf+jxEYNHTum8hH/wAADaHR0a06
-qaDC98+chfhbyZAI8s9idBOBkNsoRKndJvDVmavK+d5krrRjXAnH/mFSn9Px5OQ8
-st4XkWjw9dpc8sEQM3Fke0m0nt/W8EvJLaa174gplsj4SBI9CWtpUzEwzeUngsFd
-aombos+PxU601d7tH6rPf3XTjzlXs8EYR2JkizJG5ZfDkVRU5KrDgziSMsx5q1mR
-wxDCNtrHwcy3uNHhDe9eI/oZLss7wg==
-=NQWH
------END PGP SIGNATURE-----
-
---C94crkcyjafcjHxo--
