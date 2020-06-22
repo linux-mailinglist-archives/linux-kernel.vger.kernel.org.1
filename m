@@ -2,238 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 141B1204193
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163742041B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:14:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730919AbgFVULD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 16:11:03 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:4603 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730888AbgFVUKz (ORCPT
+        id S1730103AbgFVUOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 16:14:53 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:18112 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728363AbgFVUOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 16:10:55 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ef10ff40000>; Mon, 22 Jun 2020 13:09:24 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Mon, 22 Jun 2020 13:10:55 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Mon, 22 Jun 2020 13:10:55 -0700
-Received: from [10.2.173.37] (172.20.13.39) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 22 Jun
- 2020 20:10:47 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-CC:     <nouveau@lists.freedesktop.org>, <linux-rdma@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Jerome Glisse <jglisse@redhat.com>,
-        "John Hubbard" <jhubbard@nvidia.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Jason Gunthorpe" <jgg@mellanox.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH 13/16] mm: support THP migration to device private memory
-Date:   Mon, 22 Jun 2020 16:10:45 -0400
-X-Mailer: MailMate (1.13.1r5690)
-Message-ID: <C7BEB563-3698-442C-A188-1B66CBE4CF63@nvidia.com>
-In-Reply-To: <b6eed976-c515-72d6-a7be-2296cab8f0d4@nvidia.com>
-References: <20200619215649.32297-1-rcampbell@nvidia.com>
- <20200619215649.32297-14-rcampbell@nvidia.com>
- <F1872509-3B1F-4A8A-BFF5-E4D44E451920@nvidia.com>
- <b6eed976-c515-72d6-a7be-2296cab8f0d4@nvidia.com>
-MIME-Version: 1.0
-X-Originating-IP: [172.20.13.39]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: multipart/signed;
-        boundary="=_MailMate_48103850-4C7E-4E7F-8F24-58AD79C74F54_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1592856564; bh=ihfQmOQLv9n+2gLHbr3//D95KupVQ+bpw41KeT3rLH4=;
-        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
-         In-Reply-To:References:MIME-Version:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type;
-        b=i/P6QNrRNNWPXwaOGT5j6t/1CwnTT1SZA41PYw1sMxqXg1PI8Ruw5T4vSajWbTDCD
-         ZCN+DdfKqCNurX8sNMsgBQEY/7sA/wZIlhSMhcKnIX4YGlXgiUtC5qgEipkxjfvaw9
-         gXH47YH6lZoK39lRHQJ0KD+F+Zuq5Zu29OI8Ovf75FTn9ltAp7MKX8GG0xbTmrRVHO
-         Hq/O8lJaPrKvTeFh15oMxg3NkWqWL+u5hXtZlHSftBn7MVWbdQJ/t0dMK+oiLaVbie
-         5IrAhgTSFdAtsz76jl33ge8LhePBXN4sFyfLpDAfYycRL0ZW+gP3t7UKL1i0mI9bfy
-         B2EhYTTPr6k2Q==
+        Mon, 22 Jun 2020 16:14:53 -0400
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05MK276w105648;
+        Mon, 22 Jun 2020 16:14:40 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31tysqpa8n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 16:14:40 -0400
+Received: from m0098404.ppops.net (m0098404.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05MKDc4M150271;
+        Mon, 22 Jun 2020 16:14:39 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31tysqpa7t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 16:14:39 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05MKBLoJ026964;
+        Mon, 22 Jun 2020 20:14:37 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma03fra.de.ibm.com with ESMTP id 31sa381j4u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 20:14:36 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05MKEYPK53411960
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Jun 2020 20:14:34 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7CE21AE056;
+        Mon, 22 Jun 2020 20:14:34 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4B430AE04D;
+        Mon, 22 Jun 2020 20:14:32 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.80.202.125])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 22 Jun 2020 20:14:32 +0000 (GMT)
+Message-ID: <1592856871.4987.21.camel@linux.ibm.com>
+Subject: Re: [PATCH] ima_evm_utils: extended calc_bootaggr to PCRs 8 - 9
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Maurizio Drocco <maurizio.drocco@ibm.com>, roberto.sassu@huawei.com
+Cc:     Silviu.Vlasceanu@huawei.com, dmitry.kasatkin@gmail.com,
+        jejb@linux.ibm.com, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, serge@hallyn.com,
+        mdrocco@linux.vnet.ibm.com
+Date:   Mon, 22 Jun 2020 16:14:31 -0400
+In-Reply-To: <20200618201126.2081-2-maurizio.drocco@ibm.com>
+References: <b744c1b79ba14a17a786f5de04c1f3c4@huawei.com>
+         <20200618201126.2081-1-maurizio.drocco@ibm.com>
+         <20200618201126.2081-2-maurizio.drocco@ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-22_11:2020-06-22,2020-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 malwarescore=0
+ mlxscore=0 bulkscore=0 spamscore=0 clxscore=1015 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 phishscore=0 mlxlogscore=999
+ cotscore=-2147483648 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006220127
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_48103850-4C7E-4E7F-8F24-58AD79C74F54_=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Thu, 2020-06-18 at 16:11 -0400, Maurizio Drocco wrote:
+> From: Maurizio <maurizio.drocco@ibm.com>
+> 
+> If PCRs 8 - 9 are set (i.e. not all-zeros), cal_bootaggr should include
+> them into the digest.
+> 
+> Signed-off-by: Maurizio Drocco <maurizio.drocco@ibm.com>
+> ---
+>  src/evmctl.c | 16 +++++++++++++++-
+>  1 file changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/src/evmctl.c b/src/evmctl.c
+> index 1d065ce..554571e 100644
+> --- a/src/evmctl.c
+> +++ b/src/evmctl.c
+> @@ -1930,6 +1930,18 @@ static void calc_bootaggr(struct tpm_bank_info *bank)
+>  		}
+>  	}
+>  
+> +	if (strcmp(bank->algo_name, "sha1") != 0) {
+> +		for (i = 8; i < 10; i++) {
+> +			if (memcmp(bank->pcr[i], zero, bank->digest_size) != 0) {
+> +				err = EVP_DigestUpdate(pctx, bank->pcr[i], bank->digest_size);
+> +				if (!err) {
+> +					log_err("EVP_DigestUpdate() failed\n");
+> +					return;
+> +				}
+> +			}
+> +		}
+> +	}
 
-On 22 Jun 2020, at 15:36, Ralph Campbell wrote:
+Roberto, now that we're only including the PCRs 8 & 9 in the non-sha1
+"boot_aggregate", they can always be included.
 
-> On 6/21/20 4:20 PM, Zi Yan wrote:
->> On 19 Jun 2020, at 17:56, Ralph Campbell wrote:
->>
->>> Support transparent huge page migration to ZONE_DEVICE private memory=
-=2E
->>> A new flag (MIGRATE_PFN_COMPOUND) is added to the input PFN array to
->>> indicate the huge page was fully mapped by the CPU.
->>> Export prep_compound_page() so that device drivers can create huge
->>> device private pages after calling memremap_pages().
->>>
->>> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
->>> ---
->>>   include/linux/migrate.h |   1 +
->>>   include/linux/mm.h      |   1 +
->>>   mm/huge_memory.c        |  30 ++++--
->>>   mm/internal.h           |   1 -
->>>   mm/memory.c             |  10 +-
->>>   mm/memremap.c           |   9 +-
->>>   mm/migrate.c            | 226 ++++++++++++++++++++++++++++++++-----=
----
->>>   mm/page_alloc.c         |   1 +
->>>   8 files changed, 226 insertions(+), 53 deletions(-)
->>>
->>> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
->>> index 3e546cbf03dd..f6a64965c8bd 100644
->>> --- a/include/linux/migrate.h
->>> +++ b/include/linux/migrate.h
->>> @@ -166,6 +166,7 @@ static inline int migrate_misplaced_transhuge_pag=
-e(struct mm_struct *mm,
->>>   #define MIGRATE_PFN_MIGRATE	(1UL << 1)
->>>   #define MIGRATE_PFN_LOCKED	(1UL << 2)
->>>   #define MIGRATE_PFN_WRITE	(1UL << 3)
->>> +#define MIGRATE_PFN_COMPOUND	(1UL << 4)
->>>   #define MIGRATE_PFN_SHIFT	6
->>>
->>>   static inline struct page *migrate_pfn_to_page(unsigned long mpfn)
->>> diff --git a/include/linux/mm.h b/include/linux/mm.h
->>> index dc7b87310c10..020b9dd3cddb 100644
->>> --- a/include/linux/mm.h
->>> +++ b/include/linux/mm.h
->>> @@ -932,6 +932,7 @@ static inline unsigned int page_shift(struct page=
- *page)
->>>   }
->>>
->>>   void free_compound_page(struct page *page);
->>> +void prep_compound_page(struct page *page, unsigned int order);
->>>
->>>   #ifdef CONFIG_MMU
->>>   /*
->>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->>> index 78c84bee7e29..25d95f7b1e98 100644
->>> --- a/mm/huge_memory.c
->>> +++ b/mm/huge_memory.c
->>> @@ -1663,23 +1663,35 @@ int zap_huge_pmd(struct mmu_gather *tlb, stru=
-ct vm_area_struct *vma,
->>>   	} else {
->>>   		struct page *page =3D NULL;
->>>   		int flush_needed =3D 1;
->>> +		bool is_anon =3D false;
->>>
->>>   		if (pmd_present(orig_pmd)) {
->>>   			page =3D pmd_page(orig_pmd);
->>> +			is_anon =3D PageAnon(page);
->>>   			page_remove_rmap(page, true);
->>>   			VM_BUG_ON_PAGE(page_mapcount(page) < 0, page);
->>>   			VM_BUG_ON_PAGE(!PageHead(page), page);
->>>   		} else if (thp_migration_supported()) {
->>>   			swp_entry_t entry;
->>>
->>> -			VM_BUG_ON(!is_pmd_migration_entry(orig_pmd));
->>>   			entry =3D pmd_to_swp_entry(orig_pmd);
->>> -			page =3D pfn_to_page(swp_offset(entry));
->>> +			if (is_device_private_entry(entry)) {
->>> +				page =3D device_private_entry_to_page(entry);
->>> +				is_anon =3D PageAnon(page);
->>> +				page_remove_rmap(page, true);
->>> +				VM_BUG_ON_PAGE(page_mapcount(page) < 0, page);
->>> +				VM_BUG_ON_PAGE(!PageHead(page), page);
->>> +				put_page(page);
->>
->> Why do you hide this code behind thp_migration_supported()? It seems t=
-hat you just need
->> pmd swap entry not pmd migration entry. Also the condition is not cons=
-istent with the code
->> in __handle_mm_fault(), in which you handle is_device_private_entry() =
-directly without
->> checking thp_migration_support().
->
-> Good point, I think "else if (thp_migration_supported())" should be
-> "else if (is_pmd_migration_entry(orig_pmd))" since if the PMD *is*
-> a device private or migration entry, then it should be handled and the
-> VM_BUG_ON() should be that thp_migration_supported() is true
-> (or maybe remove the VM_BUG_ON?).
+Please reflect this change in the patch description and, here, in the
+code.
 
-I disagree. A device private entry is independent of a PMD migration entr=
-y, since a device private
-entry is just a swap entry, which is available when CONFIG_TRANSPARENT_HU=
-GEPAGE. So for architectures
-support THP but not THP migration (like ARM64), your code should still wo=
-rk.
+thanks,
 
-I would suggest you to check all the use of is_swap_pmd() and make sure t=
-he code
-can handle is_device_private_entry().
-
-For new device private code, you might need to guard it either statically=
- or dynamically in case
-CONFIG_DEVICE_PRIVATE is disabled. Potentially, you would like to make su=
-re a system without
-CONFIG_DEVICE_PRIVATE will not see is_device_private_entry() =3D=3D true =
-and give errors when it does.
-
-
->
->> Do we need to support split_huge_pmd() if a page is migrated to device=
-? Any new code
->> needed in split_huge_pmd()?
->
-> I was thinking that any CPU usage of the device private page would caus=
-e it to be
-> migrated back to system memory as a whole PMD/PUD page but I'll double =
-check.
-> At least there should be a check that the page isn't a device private p=
-age.
-
-Well, that depends. If we can allocate a THP on CPU memory, we can migrat=
-e the whole page back.
-But if no THP is allocated due to low on free memory or memory fragmentat=
-ion, I think you
-might need a fallback plan, either splitting the device private page and =
-migrating smaller
-pages instead or reclaiming CPU memory until you get a THP. IMHO, the for=
-mer might be preferred,
-since the latter might cost a lot of CPU cycles but still gives no THP af=
-ter all.
-
-
-
-=E2=80=94
-Best Regards,
-Yan Zi
-
---=_MailMate_48103850-4C7E-4E7F-8F24-58AD79C74F54_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl7xEEUPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKYSoP/Rjt9LBjM+NzAfwgzfrswt10MroG1LEsGSOi
-6d+od98EjIztweYrQvgYzzTL+h1Z7VJ6Z8jp2sqhm9aqZ64Rg+wCYiX/wmUQ+gYU
-Sva39zxKUsSgM/Ik1tQeKs1rtOKAq8rlbnpT42TMFwtMbxUjfYhfTH0C8llg6Ins
-vnLreKOAuQtE6lCZi2+ofWWqIARZvkhcBGwS4BFei3k1h/SNi43rK8eGHgGdyM3v
-ZrXktuWE2naGY5qs1o7MfIVKbyWyBQ5t/IIvbh2VADjwP0uLpdJcRxaG6Hiafml8
-J9MrjIKnZj2OUvN/Ic2W1n4PWnjCjbClPKKKlHze7LSmqFMnzPikiR/jbBF3XhQH
-UwLhNX2nubyJJq63CXjlaU2jUdqRqFA/u3VCcCp7LcBUHOemqURV65GT+PZ6CjyA
-RkZZPTkeD6NTzP7QRtF2Q568Olt6aZZOfSNGYHsbxWTCwqAM7rjOXttIijilGS42
-O15jkvrgeGTWbGhAP6ysyMKtQztrrr0UiBvP4ljLaGNTHn1dIU6jZeMybq0TWHGP
-zsn8FLDGsDNsneYK8PLY9rDAsZ1rIq7bqVTVi4AbfrVxTtYcblnvdEuQVBvE+4bT
-n11xLUaei+keSUBU2h0cxsk8kWd/If9R1Wvv/bULCg40LDn8He05P9FDmP6s0NQp
-UN85D1l4
-=g7TJ
------END PGP SIGNATURE-----
-
---=_MailMate_48103850-4C7E-4E7F-8F24-58AD79C74F54_=--
+Mimi
