@@ -2,116 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FF7B203739
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96B70203723
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbgFVMte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 08:49:34 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:53912 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728263AbgFVMtb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 08:49:31 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05MCcaSv012117;
-        Mon, 22 Jun 2020 12:47:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=86Y9KphH0K41n9/RrH5MoRxMmMMB41/XxF9s9qLpmAE=;
- b=zEKi7+e7YVW8K5QSUnie7ncKrgSB8wUbjyIbGGOv6PE/450jxXzMxjTyYdHH/xtW6ABX
- kUnAv5X3Gf4eRTPX2Jyp06dlfxiFz/TyailpiTcJBr24C6sdxpLAp45puWjwzZkiD63t
- ULrZ+PaK7s+Og5Sa2ZTIuizRIXryNbJjOSLxkvRJ0T2wYrF8tCB+LTDLFJHpqyJvKqU9
- WOTMlrLbQV9gYY3hRRWGv+ihQWYXbvCajQJVJ8M7l5UiuuuDlecdrbVKqO9j1OhTMEzM
- CvIvCFVzw5AKYbJMXHKpI5nRTBQB6fZScGKkYf9BmFgH/PzDTvk6IPV3EYY5D9OEZIZY QA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 31sebbet5b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 22 Jun 2020 12:47:57 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05MCdYCI178668;
-        Mon, 22 Jun 2020 12:45:57 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 31sv1kpfgs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Jun 2020 12:45:57 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05MCjrFW001796;
-        Mon, 22 Jun 2020 12:45:53 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 22 Jun 2020 12:45:52 +0000
-Date:   Mon, 22 Jun 2020 15:45:43 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Shiju Jose <shiju.jose@huawei.com>,
-        James Morse <james.morse@arm.com>
-Cc:     linux-acpi@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rjw@rjwysocki.net,
-        helgaas@kernel.org, bp@alien8.de, lenb@kernel.org,
-        tony.luck@intel.com, zhangliguang@linux.alibaba.com,
-        andriy.shevchenko@linux.intel.com, wangkefeng.wang@huawei.com,
-        jroedel@suse.de, linuxarm@huawei.com, yangyicong@hisilicon.com,
-        jonathan.cameron@huawei.com, tanxiaofei@huawei.com
-Subject: Re: [PATCH v11 0/2] ACPI / APEI: Add support to notify the vendor
- specific HW errors
-Message-ID: <20200622124543.GV4282@kadam>
-References: <20200622120527.690-1-shiju.jose@huawei.com>
+        id S1728150AbgFVMqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 08:46:50 -0400
+Received: from 8bytes.org ([81.169.241.247]:48400 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728070AbgFVMqt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 08:46:49 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 907AA36B; Mon, 22 Jun 2020 14:46:48 +0200 (CEST)
+Date:   Mon, 22 Jun 2020 14:46:47 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Robin Murphy <robin.murphy@arm.com>, Roman Gushchin <guro@fb.com>,
+        Yang Shi <shy828301@gmail.com>,
+        iommu@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richardw.yang@linux.intel.com>
+Subject: Re: kernel BUG at mm/huge_memory.c:2613!
+Message-ID: <20200622124646.GI3701@8bytes.org>
+References: <20200619001938.GA135965@carbon.dhcp.thefacebook.com>
+ <CAHbLzkrDcn-GQOrAM=m7+2g5_J6obsz4K50Oqb-1RD5p1iWTPQ@mail.gmail.com>
+ <20200619011449.GC135965@carbon.dhcp.thefacebook.com>
+ <20200619024026.GB21081@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200622120527.690-1-shiju.jose@huawei.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9659 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- adultscore=0 phishscore=0 bulkscore=0 suspectscore=0 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006220095
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9659 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 lowpriorityscore=0
- mlxlogscore=999 cotscore=-2147483648 mlxscore=0 phishscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 suspectscore=0 clxscore=1011
- impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006220095
+In-Reply-To: <20200619024026.GB21081@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 01:05:25PM +0100, Shiju Jose wrote:
-> CPER records describing a firmware-first error are identified by GUID.
-> The ghes driver currently logs, but ignores any unknown CPER records.
-> This prevents describing errors that can't be represented by a standard
-> entry, that would otherwise allow a driver to recover from an error.
-> The UEFI spec calls these 'Non-standard Section Body' (N.2.3 of
-> version 2.8).
-> 
-> patch set
-> 1. add a notifier chain for these non-standard/vendor-records
->    in the ghes driver.
-> 
-> 2. add a driver to handle HiSilicon hip PCIe controller's errors.
->    
-> Changes:
-> 
-> V11:
-> 1. Following modifications made by James Morse in the APEI patch
->    for the vendor error record.
->    - Removed kfifo and ghes_gdata_pool. Expanded commit message.
->    
->    Note: Kept the Signed-off-by: James Morse as he is given
->    because I am not sure the right format.
++ Robin
 
-Wait, what?  He doesn't seem to have given any S-o-b in the public
-thread.
+Robin, any idea on this?
 
-Signed-off-by means that you handled a patch.  Presumably you are the
-maintainer and hopefully you looked at the patch before applying it.
-Signed-off-by is like signing a legal document to say that you didn't
-add any Top Secrety SCO UNIXWare source code.  Reviewed-by means you
-reviewed it and approve.  Acked-by means you approve the patch which
-sort of means you are the maintainer or you care about it for some
-reason, for example, maybe there was a debate and you like the chosen
-approach.
-
-regards,
-dan carpenter
+On Thu, Jun 18, 2020 at 10:40:26PM -0400, Andrea Arcangeli wrote:
+> Hello,
+> 
+> On Thu, Jun 18, 2020 at 06:14:49PM -0700, Roman Gushchin wrote:
+> > I agree. The whole
+> > 
+> > 	page = alloc_pages_node(nid, alloc_flags, order);
+> > 	if (!page)
+> > 		continue;
+> > 	if (!order)
+> > 		break;
+> > 	if (!PageCompound(page)) {
+> > 		split_page(page, order);
+> > 		break;
+> > 	} else if (!split_huge_page(page)) {
+> > 		break;
+> > 	}
+> > 
+> > looks very suspicious to me.
+> > My wild guess is that gfp flags changed somewhere above, so we hit
+> > the branch which was never hit before.
+> 
+> Right to be suspicious about the above: split_huge_page on a regular
+> page allocated by a driver was never meant to work.
+> 
+> The PageLocked BUG_ON is just a symptom of a bigger issue, basically
+> split_huge_page it may survive, but it'll stay compound and in turn it
+> must be freed as compound.
+> 
+> The respective free method doesn't even contemplate freeing compound
+> pages, the only way the free method can survive, is by removing
+> __GFP_COMP forcefully in the allocation that was perhaps set here
+> (there are that many __GFP_COMP in that directory):
+> 
+> static void snd_malloc_dev_pages(struct snd_dma_buffer *dmab, size_t size)
+> {
+> 	gfp_t gfp_flags;
+> 
+> 	gfp_flags = GFP_KERNEL
+> 		| __GFP_COMP	/* compound page lets parts be mapped */
+> 
+> And I'm not sure what the comment means here, compound or non compound
+> doesn't make a difference when you map it, it's not a THP, the
+> mappings must be handled manually so nothing should check PG_compound
+> anyway in the mapping code.
+> 
+> Something like this may improve things, it's an untested quick hack,
+> but this assumes it's always a bug to setup a compound page for these
+> DMA allocations and given the API it's probably a correct
+> assumption.. Compound is slower, unless you need it, you can avoid it
+> and then split_page will give contiguous memory page granular. Ideally
+> the code shouldn't call split_page at all and it should free it all at
+> once by keeping track of the order and by returning the order to the
+> caller, something the API can't do right now as it returns a plain
+> array that can only represent individual small pages.
+> 
+> Once this is resolved, you may want to check your config, iommu passthrough
+> sounds more optimal for a soundcard.
+> 
+> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+> index f68a62c3c32b..3dfbc010fa83 100644
+> --- a/drivers/iommu/dma-iommu.c
+> +++ b/drivers/iommu/dma-iommu.c
+> @@ -499,6 +499,10 @@ static struct page **__iommu_dma_alloc_pages(struct device *dev,
+>  
+>  	/* IOMMU can map any pages, so himem can also be used here */
+>  	gfp |= __GFP_NOWARN | __GFP_HIGHMEM;
+> +	if (unlikely(gfp & __GFP_COMP)) {
+> +		WARN();
+> +		gfp &= ~__GFP_COMP;
+> +	}
+>  
+>  	while (count) {
+>  		struct page *page = NULL;
+> @@ -522,13 +526,8 @@ static struct page **__iommu_dma_alloc_pages(struct device *dev,
+>  				continue;
+>  			if (!order)
+>  				break;
+> -			if (!PageCompound(page)) {
+> -				split_page(page, order);
+> -				break;
+> -			} else if (!split_huge_page(page)) {
+> -				break;
+> -			}
+> -			__free_pages(page, order);
+> +			split_page(page, order);
+> +			break;
+>  		}
+>  		if (!page) {
+>  			__iommu_dma_free_pages(pages, i);
+> diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+> index 6850d13aa98c..378f5a36ec5f 100644
+> --- a/sound/core/memalloc.c
+> +++ b/sound/core/memalloc.c
+> @@ -28,7 +28,6 @@ static void snd_malloc_dev_pages(struct snd_dma_buffer *dmab, size_t size)
+>  	gfp_t gfp_flags;
+>  
+>  	gfp_flags = GFP_KERNEL
+> -		| __GFP_COMP	/* compound page lets parts be mapped */
+>  		| __GFP_NORETRY /* don't trigger OOM-killer */
+>  		| __GFP_NOWARN; /* no stack trace print - this call is non-critical */
+>  	dmab->area = dma_alloc_coherent(dmab->dev.dev, size, &dmab->addr,
