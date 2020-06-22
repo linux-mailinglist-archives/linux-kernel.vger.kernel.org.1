@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8911D2040CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D42D2040C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728602AbgFVUCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 16:02:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52484 "EHLO
+        id S1728527AbgFVUCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 16:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728482AbgFVUCP (ORCPT
+        with ESMTP id S1728344AbgFVUCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 16:02:15 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28646C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:44:55 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id a137so16733780oii.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:44:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mg5y3to7GQinVmHOzDaJ7XV7WqxlCDc/TMo6EnpGcTs=;
-        b=uDb/6m6qlj0PFysttennBODak4mm4qQYqd03MDZ1R33VQaWr4CXcIWuW+N7oowKUbF
-         p/oFBS3BbFxCJCG9pp24WhMgvUKl/t9LrlfGnUet39at5E5hYfbcZOnMKzhNiLRgC8Ag
-         NNR69Ib8p3Lw6dkFk+09kWRsu/7gEou0cOaeUPk3Aa5zNv5yEf9gY81qrBpajY2AheMH
-         5K+RWOWuy+YxqTz+vRkg+PsgBnKgUDGAv/OlMOB0NbI1g7KeB4u4AB51sMu9IxvGHJCX
-         9980XBEVvVrQMuSsLWfdeyoyHDyXOcY6SZ/YY2OfJ9YzflF7AQ2knlug0YsF8FnLkqm6
-         4Gsw==
+        Mon, 22 Jun 2020 16:02:14 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A44C061799;
+        Mon, 22 Jun 2020 12:45:48 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id g5so14134167otg.6;
+        Mon, 22 Jun 2020 12:45:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mg5y3to7GQinVmHOzDaJ7XV7WqxlCDc/TMo6EnpGcTs=;
-        b=ZTJ/N8tgtdDZxQpuiTCSykSWGIYPmPvt/ow72LNJh+kyux2DMhYW9lpKHad8usNAu7
-         gJv4rUHueyJP7jxCGbKTwbHcalt2gfORUxSIkDXgeY+YhhwJoCEydTiWGlxRs/NrTDZB
-         aNRGM2XNlKtHT+B72O/Kcr2SOJN9KTywweixD5o0PsFhr8sz2F56E42lhJBXrN64K/eZ
-         AXD/U2yYcrYAbg6gAviHA9kSkQ0U4vjoVe0ex8/1bZSUmAhJOzaWfOa76oX+B1Nq4pGw
-         bsvu28VwRaY3nRBjrh4uUlEAAZ2a5+hrozlWT8qQnZWHipbJgsRPr367dlbFg3AVvpG+
-         /Y8g==
-X-Gm-Message-State: AOAM531V4p9/sBozb4nCqpy9eilRXfCI9Y0TmQNQbuaEnhJhIAj9Gf//
-        TniBG0WgDqh6vBaZZEmZafplQPvWbvRde0pXHmwfLg==
-X-Google-Smtp-Source: ABdhPJy3zt3r18SZTCCHa918AxYLYtT476CxByuaL4koYHT2akdNKZsP1b9JbWI38R6lwVzUcvP4UMhS9YXded0oISI=
-X-Received: by 2002:aca:5d0b:: with SMTP id r11mr13230543oib.169.1592855094408;
- Mon, 22 Jun 2020 12:44:54 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=JFdwqUBGOKpOca1lCZxVxlB36FkBn0nL9aGlhv7LobQ=;
+        b=mrE8dhiZyWSJCooMpy21gElfdlMaAnNp9S4hl13ZtuiGMzf/ygBGunFbF5dmV5mM/p
+         QEdNGQRCRelWjMeSbRkrB4Ee6T1l+Mn3IQ5BUOYLLwJrrOhvNctfo9SBqIP1g9JZRJ1j
+         W3zZ0LZyjLHsJRiW39Nfr3s0zrPOhvq3fbaCj/gvTwEeWuvy3sd6Orbmw7/JyuB+Bvvb
+         +pRSPATYij9WIgepBHhadboL9Hdq4LJNn589ASrqxthDNQsXR6ZdhbTmYajRu0hvu1BP
+         XBURiO+zCKMPHVDvFxGW4KEtasblhBHwfAy5VwWVK/ryo9VP1d+PVTFFHHdaD3ab/5t+
+         Ouuw==
+X-Gm-Message-State: AOAM531gnZC40uY2G0YSCwLmpYu2aFkcbX7ALzSx85vORPkRfWkz9c/F
+        7zCEVNRVBm1m9OFLDEBmzDhOZwM79yj0BvAZPy4=
+X-Google-Smtp-Source: ABdhPJzFBhhKiuOVJLgp/6u2eHYaM+BdlaOVk5hNruUWVQp/mkDCmKEpqA1WyHR1hMiGQclups9bzxfH49OF60PMmK8=
+X-Received: by 2002:a4a:6513:: with SMTP id y19mr15673738ooc.75.1592855147614;
+ Mon, 22 Jun 2020 12:45:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAADnVQ+BqPeVqbgojN+nhYTE0nDcGF2-TfaeqyfPLOF-+DLn5Q@mail.gmail.com>
- <20200620212616.93894-1-zenczykowski@gmail.com>
-In-Reply-To: <20200620212616.93894-1-zenczykowski@gmail.com>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Mon, 22 Jun 2020 12:44:44 -0700
-Message-ID: <CALAqxLVeg=EE06Eh5yMBoXtb2KTHLKKnBLXwGu-yGV4aGgoVMA@mail.gmail.com>
-Subject: Re: [PATCH bpf v2] restore behaviour of CAP_SYS_ADMIN allowing the
- loading of networking bpf programs
-To:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Cc:     =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <maze@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Linux Network Development Mailing List 
-        <netdev@vger.kernel.org>,
+References: <20200616040442.21515-1-yu.c.chen@intel.com> <CAJZ5v0gBVBAjdCOXsM-Fa-iAkuv2JMi2mVkG5w7ADcg9dWencA@mail.gmail.com>
+ <20200622171759.GA26527@chenyu-office.sh.intel.com>
+In-Reply-To: <20200622171759.GA26527@chenyu-office.sh.intel.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 22 Jun 2020 21:45:35 +0200
+Message-ID: <CAJZ5v0grJZyOX7fFx_nNjtOLT1NGyu1L10H3TY+e0HR3+T8JZA@mail.gmail.com>
+Subject: Re: [PATCH][v2] PM / s2idle: Clear _TIF_POLLING_NRFLAG before suspend
+ to idle
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Len Brown <lenb@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        BPF Mailing List <bpf@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
+        Rui Zhang <rui.zhang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 20, 2020 at 2:26 PM Maciej =C5=BBenczykowski
-<zenczykowski@gmail.com> wrote:
+On Mon, Jun 22, 2020 at 7:16 PM Chen Yu <yu.c.chen@intel.com> wrote:
 >
-> From: Maciej =C5=BBenczykowski <maze@google.com>
->
-> This is a fix for a regression introduced in 5.8-rc1 by:
->   commit 2c78ee898d8f10ae6fb2fa23a3fbaec96b1b7366
->   'bpf: Implement CAP_BPF'
->
-> Before the above commit it was possible to load network bpf programs
-> with just the CAP_SYS_ADMIN privilege.
->
-> The Android bpfloader happens to run in such a configuration (it has
-> SYS_ADMIN but not NET_ADMIN) and creates maps and loads bpf programs
-> for later use by Android's netd (which has NET_ADMIN but not SYS_ADMIN).
->
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Daniel Borkmann <daniel@iogearbox.net>
-> Reported-by: John Stultz <john.stultz@linaro.org>
-> Fixes: 2c78ee898d8f ("bpf: Implement CAP_BPF")
-> Signed-off-by: Maciej =C5=BBenczykowski <maze@google.com>
+> Hi Rafael,
+> On Mon, Jun 22, 2020 at 06:19:35PM +0200, Rafael J. Wysocki wrote:
+> [cut]
+> > > +{
+> > > +       if (!current_clr_polling_and_test())
+> > > +               s2idle_enter(drv, dev, index);
+> > > +
+> > > +       return index;
+> >
+> > Is the value returned here used at all?
+> >
+> It is not used for now IMO.
+> > >          */
+> > >         index = find_deepest_state(drv, dev, U64_MAX, 0, true);
+> > >         if (index > 0)
+> > > -               enter_s2idle_proper(drv, dev, index);
+> > > +               call_s2idle(drv, dev, index);
+> >
+> > I'm wondering why this can't be
+> >
+> >     if (index > 0 && !current_clr_polling_and_test())
+> >             enter_s2idle_proper(drv, dev, index);
+> >
+> Yes, it should be simpler, but I guess Peter was trying to
+> make call_s2idle() consistent with call_cpuidle(),
+> and also s2idle_enter() is analogous to cpuidle_enter().
 
-Thanks so much for helping narrow this regression down and submitting this =
-fix!
-It's much appreciated!
+So IMO it would be better to do the simplest fix first and then do the
+cleanup on top of it.
 
-Tested-by: John Stultz <john.stultz@linaro.org>
-
-thanks
--john
+Thanks!
