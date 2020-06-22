@@ -2,81 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FBD203DA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 19:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C84C203DB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 19:21:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729992AbgFVRQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 13:16:59 -0400
-Received: from mga07.intel.com ([134.134.136.100]:45056 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729309AbgFVRQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 13:16:58 -0400
-IronPort-SDR: 86mAV5nhuhI2qHoZ+TnVsJ2aL9OvBy/Zw6fI7cDO/SATsH7OBXLYpabw9NQ64fjmFcRmTXWGW4
- uQY9ubV4wKWw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9660"; a="209013397"
-X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="209013397"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 10:16:58 -0700
-IronPort-SDR: +l1MFBOMI9UhPmyFiCJ4R+cL2z3IkOTUTF9pRTc+CphmYwvRwUqLABqom5f94wtlmyqtCnrZds
- b2fHQJn3BHUw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="300909504"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by fmsmga004.fm.intel.com with ESMTP; 22 Jun 2020 10:16:55 -0700
-Date:   Tue, 23 Jun 2020 01:18:00 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, Len Brown <lenb@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rui Zhang <rui.zhang@intel.com>
-Subject: Re: [PATCH][v2] PM / s2idle: Clear _TIF_POLLING_NRFLAG before
- suspend to idle
-Message-ID: <20200622171759.GA26527@chenyu-office.sh.intel.com>
-References: <20200616040442.21515-1-yu.c.chen@intel.com>
- <CAJZ5v0gBVBAjdCOXsM-Fa-iAkuv2JMi2mVkG5w7ADcg9dWencA@mail.gmail.com>
+        id S1729860AbgFVRVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 13:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729689AbgFVRVs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 13:21:48 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3278C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 10:21:47 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id q8so16179321qkm.12
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 10:21:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=MzgADEAaLqCZCtsDLm4ffnQ0XJMngefK8MXJLmFTvck=;
+        b=uX+zhOgVW+nlqPiDDtZqvcAR75AbQcp2kCL/N+ApGQszZm947kPt/N0/zTbjUDtqyf
+         Kwa9p5gh2MYjmQw7c6jMkNbHOzT34ZrIwytzIYyuRFQ0zJupadvYrs4OGCKVC3mJsjXx
+         3yKUKN8z7n+0j1rTjeBhexEk/2PnxAgBro4na06oyfM8NC1rD0QTSd2UosPwknBt2Nkd
+         tpa5CAoOPSQfPuo2HXz8rcmMK00eNpOb6xmzAX3Zj7YQeJD+udYlzdw+QOtw4mBIEy2z
+         LzbiIEsj8bP7JESN8XI2tz+K7LhJHeUwp6jWOn+HQF4P4s2Kr/MIjbOqr9xvDeGvhvk6
+         lmeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=MzgADEAaLqCZCtsDLm4ffnQ0XJMngefK8MXJLmFTvck=;
+        b=bVaz0EgO08nwY9XJgJnB9HWzL9IyZX27sFeOAWfoTEF4K3RoUJMQ6d9ZmRFgGkojrU
+         Z2WD6FOVv0Z7mAKVz0ZoPz9546+U+OPI7pWa/EL2ZPUZP6E0WrV8tBRUAeGOiNrzS1mQ
+         vhuzTZi657gsZva7AVJKS/RSsfQlV0RV9BNJezn56mJnla4RJBLKFK8H/uSv7Fipm+Bw
+         Z3/4ar1MV3bQ3x+dpNR9m0cUAla6dcFDGJjyof6EoN990yh4J2R8mtfnrqAfz+aVIg5X
+         RHI5TseKubJMweoIOjuPRW7ZH5L0Gv9UBBMygzit4J8v+dbTZYSig56bdXMEwRjHWCOx
+         WjBA==
+X-Gm-Message-State: AOAM531iKDagpTWDnhuKweoto1O0fg5LQ/dYVdBsxMKnKRzQMzYTboJU
+        aoNWymXoxOHy4I+ylKRqXbfi/U8gDh29swdr8pw=
+X-Google-Smtp-Source: ABdhPJxZqkmAhVP0paPh3WE2sAeZTFRn0t8rbUW/ItKmMa0yC7tqqcmwTKxMKl7PghguJLzu1PVzIIIfoka4yfHm9TE=
+X-Received: by 2002:a37:a542:: with SMTP id o63mr2398063qke.316.1592846507256;
+ Mon, 22 Jun 2020 10:21:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0gBVBAjdCOXsM-Fa-iAkuv2JMi2mVkG5w7ADcg9dWencA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Received: by 2002:ac8:22f4:0:0:0:0:0 with HTTP; Mon, 22 Jun 2020 10:21:46
+ -0700 (PDT)
+Reply-To: cephasagbeh1@gmail.com
+From:   Cephas Agbeh <peterokekechambers@gmail.com>
+Date:   Mon, 22 Jun 2020 19:21:46 +0200
+Message-ID: <CAOyO=icNPnVttGZjQkbUjqwDieScNuGMqPCLTXP+x=oVcXdCLA@mail.gmail.com>
+Subject: Important Notification.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
-On Mon, Jun 22, 2020 at 06:19:35PM +0200, Rafael J. Wysocki wrote:
-[cut]
-> > +{
-> > +       if (!current_clr_polling_and_test())
-> > +               s2idle_enter(drv, dev, index);
-> > +
-> > +       return index;
-> 
-> Is the value returned here used at all?
->
-It is not used for now IMO.
-> >          */
-> >         index = find_deepest_state(drv, dev, U64_MAX, 0, true);
-> >         if (index > 0)
-> > -               enter_s2idle_proper(drv, dev, index);
-> > +               call_s2idle(drv, dev, index);
-> 
-> I'm wondering why this can't be
-> 
->     if (index > 0 && !current_clr_polling_and_test())
->             enter_s2idle_proper(drv, dev, index);
-> 
-Yes, it should be simpler, but I guess Peter was trying to
-make call_s2idle() consistent with call_cpuidle(),
-and also s2idle_enter() is analogous to cpuidle_enter().
+I am bringing this notice to your attention in respect of the death of
+a deceased client of mine that has the same surname with you and his
+fund valued at $19.9M to be paid to you.contact me at
+cephasagbeh1@gmail.com for more details.
 
-Thanks,
-Chenyu
+Yours Sincerely,
+Cephas Agbeh,
+Attorney At Law.
