@@ -2,122 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C254B2036DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A12203709
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:42:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728253AbgFVMc1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 08:32:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:50688 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728044AbgFVMc0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 08:32:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 657271F1;
-        Mon, 22 Jun 2020 05:32:25 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EF82F3F71E;
-        Mon, 22 Jun 2020 05:32:23 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 13:32:21 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Pranith Kumar <bobby.prani@gmail.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Tyler Hicks <tyhicks@canonical.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:SECURITY SUBSYSTEM" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: [RFC PATCH] security: Add a config option to disable security
- mitigations
-Message-ID: <20200622123220.5qdykbd3rtjfsjkq@e107158-lin.cambridge.arm.com>
-References: <20200618010755.4179-1-bobby.prani@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200618010755.4179-1-bobby.prani@gmail.com>
-User-Agent: NeoMutt/20171215
+        id S1728291AbgFVMmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 08:42:01 -0400
+Received: from mail-n.franken.de ([193.175.24.27]:41500 "EHLO drew.franken.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728122AbgFVMmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 08:42:00 -0400
+X-Greylist: delayed 530 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Jun 2020 08:41:59 EDT
+Received: from mb.fritz.box (ip4d15f5fc.dynamic.kabel-deutschland.de [77.21.245.252])
+        (Authenticated sender: lurchi)
+        by mail-n.franken.de (Postfix) with ESMTPSA id 44BD27220C6C8;
+        Mon, 22 Jun 2020 14:33:00 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: Strange problem with SCTP+IPv6
+From:   Michael Tuexen <Michael.Tuexen@lurchi.franken.de>
+In-Reply-To: <CADvbK_d9mV9rBg7oLC+9u4fg3d_5a_g8ukPe83vOAE8ZM3FhHA@mail.gmail.com>
+Date:   Mon, 22 Jun 2020 14:32:57 +0200
+Cc:     minyard@acm.org, Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
+        linux-sctp@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <BCB69E7B-240A-4ED3-B434-0186B573E4D1@lurchi.franken.de>
+References: <20200621155604.GA23135@minyard.net>
+ <CADvbK_d9mV9rBg7oLC+9u4fg3d_5a_g8ukPe83vOAE8ZM3FhHA@mail.gmail.com>
+To:     Xin Long <lucien.xin@gmail.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=disabled version=3.4.1
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on mail-n.franken.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/17/20 18:07, Pranith Kumar wrote:
-> Instead of having to pass 'mitigations=off' on the kernel command line,
-> add a config option that has a similar effect.
+
+
+> On 22. Jun 2020, at 14:01, Xin Long <lucien.xin@gmail.com> wrote:
 > 
-> Adding this makes it easier to disable mitigations in scenarios where
-> you cannot modify the command line or are unable to pass a command line
-> while booting.
+> On Sun, Jun 21, 2020 at 11:56 PM Corey Minyard <minyard@acm.org> wrote:
+>> 
+>> I've stumbled upon a strange problem with SCTP and IPv6.  If I create an
+>> sctp listening socket on :: and set the IPV6_V6ONLY socket option on it,
+>> then I make a connection to it using ::1, the connection will drop after
+>> 2.5 seconds with an ECONNRESET error.
+>> 
+>> It only happens on SCTP, it doesn't have the issue if you connect to a
+>> full IPv6 address instead of ::1, and it doesn't happen if you don't
+>> set IPV6_V6ONLY.  I have verified current end of tree kernel.org.
+>> I tried on an ARM system and x86_64.
+>> 
+>> I haven't dug into the kernel to see if I could find anything yet, but I
+>> thought I would go ahead and report it.  I am attaching a reproducer.
+>> Basically, compile the following code:
+> The code only set IPV6_V6ONLY on server side, so the client side will
+> still bind all the local ipv4 addresses (as you didn't call bind() to
+> bind any specific addresses ). Then after the connection is created,
+Let's focus on the loopback addresses ::1 and 127.0.0.1.
 
-Better wait to hear from others too, but I think if you want a config, then it
-better support all possible variations of the option too, not just the 'off'
-one.
+So the server will only use ::1. The client will send an INIT from
+::1 to ::1 and lists 127.0.0.1 and ::1. That is what I would expect.
+Is that happening?
 
+The server would respond with an INIT-ACK from ::1 to ::1 and would
+not list any IP addresses. Especially not 127.0.0.1, since it is IPv6 only.
+
+After the association has beed established, the client can't send
+any IPv4 packet to the server, since the server did not announce
+any. The server can't send any IPv4 packets since it is IPv6 only.
+
+This is what I would expect and this scenario should just work.
+What am I missing?
+
+Best regards
+Michael
+> the client will send HB on the v4 paths to the server. The server
+> will abort the connection, as it can't support v4.
 > 
-> Signed-off-by: Pranith Kumar <bobby.prani@gmail.com>
-> ---
->  kernel/cpu.c     | 2 +-
->  security/Kconfig | 8 ++++++++
->  2 files changed, 9 insertions(+), 1 deletion(-)
+> So you can work around it by either:
 > 
-> diff --git a/kernel/cpu.c b/kernel/cpu.c
-> index 6ff2578ecf17..584eb39585d6 100644
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -2542,7 +2542,7 @@ early_param("mitigations", mitigations_parse_cmdline);
->  /* mitigations=off */
->  bool cpu_mitigations_off(void)
->  {
-> -	return cpu_mitigations == CPU_MITIGATIONS_OFF;
-> +	return cpu_mitigations == CPU_MITIGATIONS_OFF || IS_ENABLED(CONFIG_DISABLE_MITIGATIONS);
->  }
+>  - set IPV6_V6ONLY on client side.
+> 
+> or
+> 
+>  - bind to the specific v6 addresses on the client side.
+> 
+> I don't see RFC said something about this.
+> So it may not be a good idea to change the current behaviour
+> to not establish the connection in this case, which may cause regression.
+> 
+>> 
+>>  gcc -g -o sctptest -Wall sctptest.c
+>> 
+>> and run it in one window as a server:
+>> 
+>>  ./sctptest a
+>> 
+>> (Pass in any option to be the server) and run the following in another
+>> window as the client:
+>> 
+>>  ./sctptest
+>> 
+>> It disconnects after about 2.5 seconds.  If it works, it should just sit
+>> there forever.
+>> 
+>> -corey
+>> 
+>> 
+>> #include <stdio.h>
+>> #include <stdbool.h>
+>> #include <string.h>
+>> #include <unistd.h>
+>> #include <fcntl.h>
+>> #include <sys/select.h>
+>> #include <arpa/inet.h>
+>> #include <netinet/sctp.h>
+>> #include <sys/types.h>
+>> #include <sys/socket.h>
+>> #include <netdb.h>
+>> 
+>> static int
+>> getaddr(const char *addr, const char *port, bool listen,
+>>        struct addrinfo **rai)
+>> {
+>>    struct addrinfo *ai, hints;
+>> 
+>>    memset(&hints, 0, sizeof(hints));
+>>    hints.ai_flags = AI_ADDRCONFIG;
+>>    if (listen)
+>>        hints.ai_flags |= AI_PASSIVE;
+>>    hints.ai_family = AF_UNSPEC;
+>>    hints.ai_socktype = SOCK_STREAM;
+>>    hints.ai_protocol = IPPROTO_SCTP;
+>>    if (getaddrinfo(addr, port, &hints, &ai)) {
+>>        perror("getaddrinfo");
+>>        return -1;
+>>    }
+>> 
+>>    *rai = ai;
+>>    return 0;
+>> }
+>> 
+>> static int
+>> waitread(int s)
+>> {
+>>    char data[1];
+>>    ssize_t rv;
+>> 
+>>    rv = read(s, data, sizeof(data));
+>>    if (rv == -1) {
+>>        perror("read");
+>>        return -1;
+>>    }
+>>    printf("Read %d bytes\n", (int) rv);
+>>    return 0;
+>> }
+>> 
+>> static int
+>> do_server(void)
+>> {
+>>    int err, ls, s, optval;
+>>    struct addrinfo *ai;
+>> 
+>>    printf("Server\n");
+>> 
+>>    err = getaddr("::", "3023", true, &ai);
+>>    if (err)
+>>        return err;
+>> 
+>>    ls = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+>>    if (ls == -1) {
+>>        perror("socket");
+>>        return -1;
+>>    }
+>> 
+>>    optval = 1;
+>>    if (setsockopt(ls, SOL_SOCKET, SO_REUSEADDR,
+>>                   (void *)&optval, sizeof(optval)) == -1) {
+>>        perror("setsockopt reuseaddr");
+>>        return -1;
+>>    }
+>> 
+>>    /* Comment this out and it will work. */
+>>    if (setsockopt(ls, IPPROTO_IPV6, IPV6_V6ONLY, &optval,
+>>                   sizeof(optval)) == -1) {
+>>        perror("setsockopt ipv6 only");
+>>        return -1;
+>>    }
+>> 
+>>    err = bind(ls, ai->ai_addr, ai->ai_addrlen);
+>>    if (err == -1) {
+>>        perror("bind");
+>>        return -1;
+>>    }
+>> 
+>>    err = listen(ls, 5);
+>>    if (err == -1) {
+>>        perror("listen");
+>>        return -1;
+>>    }
+>> 
+>>    s = accept(ls, NULL, NULL);
+>>    if (s == -1) {
+>>        perror("accept");
+>>        return -1;
+>>    }
+>> 
+>>    close(ls);
+>> 
+>>    err = waitread(s);
+>>    close(s);
+>>    return err;
+>> }
+>> 
+>> static int
+>> do_client(void)
+>> {
+>>    int err, s;
+>>    struct addrinfo *ai;
+>> 
+>>    printf("Client\n");
+>> 
+>>    err = getaddr("::1", "3023", false, &ai);
+>>    if (err)
+>>        return err;
+>> 
+>>    s = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
+>>    if (s == -1) {
+>>        perror("socket");
+>>        return -1;
+>>    }
+>> 
+>>    err = connect(s, ai->ai_addr, ai->ai_addrlen);
+>>    if (err == -1) {
+>>        perror("connect");
+>>        return -1;
+>>    }
+>> 
+>>    err = waitread(s);
+>>    close(s);
+>>    return err;
+>> }
+>> 
+>> int
+>> main(int argc, char *argv[])
+>> {
+>>    int err;
+>> 
+>>    if (argc > 1)
+>>        err = do_server();
+>>    else
+>>        err = do_client();
+>>    return !!err;
+>> }
+>> 
 
-So if cmdline asked for this to be auto, but the config is compiled with off
-then the config always wins according to this.
-
-This conflict makes me think this is probably going to be a bad idea because
-2 points of control would create a confusion of which one should be honored.
-
-You can set the cmdline in the config too, have you tried this?
-
-On arm64, I can add additional cmdline paramter in the config
-
-	Boot options --> Default kernel command string
-
-On x86 I found this too
-
-	Processor type and features --> Built-in kernel command line
-
-Beside that, you can always use kexec to boot a new kernel with extra cmdline
-option
-
-The command I used in the past (from memory, so worth double checking)
-
-	kexec --command-line "$(cat /proc/cmdline) migrations=off" -f Image
-
->  EXPORT_SYMBOL_GPL(cpu_mitigations_off);
->  
-> diff --git a/security/Kconfig b/security/Kconfig
-> index cd3cc7da3a55..90b8e9c89a6d 100644
-> --- a/security/Kconfig
-> +++ b/security/Kconfig
-> @@ -65,6 +65,14 @@ config PAGE_TABLE_ISOLATION
->  
->  	  See Documentation/x86/pti.rst for more details.
->  
-> +config DISABLE_MITIGATIONS
-> +	bool "Disable kernel security mitigations"
-> +	default n
-
-No need for default n in general as it is the default anyway :)
-
-HTH.
-
-Thanks
-
---
-Qais Yousef
