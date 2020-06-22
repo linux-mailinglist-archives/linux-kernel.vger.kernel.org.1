@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35B80204299
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 23:23:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EB8204289
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 23:22:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730634AbgFVVXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 17:23:31 -0400
-Received: from mga12.intel.com ([192.55.52.136]:2469 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730460AbgFVVXa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 17:23:30 -0400
-IronPort-SDR: dpFSCi1544XuAKCIGfSov51p5HubZ1RFSF97AyqncOx3jTg3Mhm3x0Mc1afnj6ftv87YqcasMo
- G96M1rx0B1Eg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9660"; a="123548596"
-X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="123548596"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 14:23:29 -0700
-IronPort-SDR: YU7fP6RdkdXBthLv3FK4h2DNntPCXOCmcZe053PnGOAcQrgdaPS3xyaH4oySFH+lnqaZBSospj
- 70roBrLzBkVw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="278894306"
-Received: from scheller-mobl.ger.corp.intel.com (HELO localhost) ([10.252.33.117])
-  by orsmga006.jf.intel.com with ESMTP; 22 Jun 2020 14:23:25 -0700
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     pengfei.xu@intel.com,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        stable@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Tadeusz Struk <tadeusz.struk@intel.com>,
-        Nikita Sobolev <Nikita.Sobolev@synopsys.com>,
-        Petr Vorel <petr.vorel@gmail.com>,
-        Joey Pabalinas <joeypabalinas@gmail.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 3/3] selftests: tpm: Use /bin/sh instead of /bin/bash
-Date:   Tue, 23 Jun 2020 00:20:22 +0300
-Message-Id: <20200622212034.20624-4-jarkko.sakkinen@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200622212034.20624-1-jarkko.sakkinen@linux.intel.com>
-References: <20200622212034.20624-1-jarkko.sakkinen@linux.intel.com>
+        id S1730494AbgFVVWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 17:22:53 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:39748 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730460AbgFVVWw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 17:22:52 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05ML2xIt106480;
+        Mon, 22 Jun 2020 17:22:38 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31tysvg7v8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 17:22:38 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05ML4WE3112081;
+        Mon, 22 Jun 2020 17:22:38 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31tysvg7uv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 17:22:38 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05MLFbdJ028588;
+        Mon, 22 Jun 2020 21:22:37 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma01dal.us.ibm.com with ESMTP id 31sa38q828-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 21:22:37 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05MLMZtg41353574
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Jun 2020 21:22:36 GMT
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E265B6A047;
+        Mon, 22 Jun 2020 21:22:35 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3CC7D6A051;
+        Mon, 22 Jun 2020 21:22:35 +0000 (GMT)
+Received: from [9.211.67.55] (unknown [9.211.67.55])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 22 Jun 2020 21:22:35 +0000 (GMT)
+Subject: Re: [PATCH v2 0/6] kernfs: proposed locking and concurrency
+ improvement
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Ian Kent <raven@themaw.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <159237905950.89469.6559073274338175600.stgit@mickey.themaw.net>
+ <20200619153833.GA5749@mtj.thefacebook.com>
+ <16d9d5aa-a996-d41d-cbff-9a5937863893@linux.vnet.ibm.com>
+ <20200619222356.GA13061@mtj.duckdns.org>
+ <fa22c563-73b7-5e45-2120-71108ca8d1a0@linux.vnet.ibm.com>
+ <20200622175343.GC13061@mtj.duckdns.org>
+From:   Rick Lindsley <ricklind@linux.vnet.ibm.com>
+Message-ID: <82b2379e-36d0-22c2-41eb-71571e992b37@linux.vnet.ibm.com>
+Date:   Mon, 22 Jun 2020 14:22:34 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200622175343.GC13061@mtj.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-22_12:2020-06-22,2020-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 adultscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0
+ clxscore=1015 phishscore=0 mlxscore=0 priorityscore=1501 malwarescore=0
+ cotscore=-2147483648 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006220137
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's better to use /bin/sh instead of /bin/bash in order to run the tests
-in the BusyBox shell.
+On 6/22/20 10:53 AM, Tejun Heo wrote:
 
-Fixes: 6ea3dfe1e073 ("selftests: add TPM 2.0 tests")
-Cc: stable@vger.kernel.org
-Cc: linux-integrity@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
----
- tools/testing/selftests/tpm2/test_smoke.sh | 2 +-
- tools/testing/selftests/tpm2/test_space.sh | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+> I don't know. The above highlights the absurdity of the approach itself to
+> me. You seem to be aware of it too in writing: 250,000 "devices".
 
-diff --git a/tools/testing/selftests/tpm2/test_smoke.sh b/tools/testing/selftests/tpm2/test_smoke.sh
-index 338d6b0272dc..1334e301d2a0 100755
---- a/tools/testing/selftests/tpm2/test_smoke.sh
-+++ b/tools/testing/selftests/tpm2/test_smoke.sh
-@@ -1,4 +1,4 @@
--#!/bin/bash
-+#!/bin/sh
- # SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
- 
- # Kselftest framework requirement - SKIP code is 4.
-diff --git a/tools/testing/selftests/tpm2/test_space.sh b/tools/testing/selftests/tpm2/test_space.sh
-index 847cabb20a5f..00259cb746cf 100755
---- a/tools/testing/selftests/tpm2/test_space.sh
-+++ b/tools/testing/selftests/tpm2/test_space.sh
-@@ -1,4 +1,4 @@
--#!/bin/bash
-+#!/bin/sh
- # SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
- 
- # Kselftest framework requirement - SKIP code is 4.
--- 
-2.25.1
+Just because it is absurd doesn't mean it wasn't built that way :)
+
+I agree, and I'm trying to influence the next hardware design.  However, what's already out there is memory units that must be accessed in 256MB blocks.  If you want to remove/add a GB, that's really 4 blocks of memory you're manipulating, to the hardware.  Those blocks have to be registered and recognized by the kernel for that to work.
+
+Rick
 
