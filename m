@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D63C202ED3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 05:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5B1202ED6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 05:13:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731175AbgFVDKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 23:10:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726559AbgFVDK3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 23:10:29 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48A8C061794;
-        Sun, 21 Jun 2020 20:10:28 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id a6so3545909wmm.0;
-        Sun, 21 Jun 2020 20:10:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KaJJanZVJWZSvXqCSXtZ01YBvvSbfqMJxJAq4m8RlJ4=;
-        b=VNeqMFnCbwSDhvSCFusejCiUhY+v5LZqCDBVNZje9D1IEEtEkcxeteRTy8tVy9l+mx
-         vSRdmMpsr3gi37oT2S1aG4EoNGUD3BzIue7rxm9mwxva/939hEnI80BYzJZ9Za701Y1Y
-         5tc3Y6TURIOCEG4KTQzvj2d0Qe+hJo4l8fEiKGSKhyZkOJpgetkLOFazmrN/m0NYtTUa
-         j/Uc1ICNpneSm8ibtkR5Xwd0xsszxwgegINScmDJAEe2onCrZAwv9M4y914h7kQBUwIq
-         RQA5x+uJBccVCu+FwG4ztwbNfIPu0/zowaGIXWSxZH+CpP7jmP4wkkggdUQlCrHASpW8
-         i83A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=KaJJanZVJWZSvXqCSXtZ01YBvvSbfqMJxJAq4m8RlJ4=;
-        b=Cn6H+Ly7tNxDF8+TTdAcVfzXoX2o28yv9dDsC5Ymg51d0fIJ7nIiLUwJItVYnBO1Jh
-         cSs8/QKfPvsx+ekPhT0aF5tJiO66/fZHJ/joOI3/JEG+DreHp9TxLquameo+I+HHqt5p
-         mUo31ZY0Cc/OAF5JtGsIpbnvSgkgsuxqDSYCVRZ4ICugHoAOnMrz9zv4YAN/D8eQ05la
-         j7HiLGoRUgNv1R0dwHVmyk30xMp1Syk8EobFZrVKR79Vc3/gxC0t0PrDdiBOf06kKKkp
-         xNJrYlI4abs/FmJOSg39/3g0pgBu0zEFOoEEYTORRRmXpaXawZtrkGtxSqb7Yqosv0lp
-         qsDg==
-X-Gm-Message-State: AOAM5319WhMdk6x4AVeUrqYHSWDDWJeKg6h+kXRxCgHVf+DWsZ8DXQ/u
-        o7xx2yarfoHxW5JFQnGFrliunpXw8SI=
-X-Google-Smtp-Source: ABdhPJyO/HF2psz8EfCJjptSfq+BtoUhvsimoiOXrkuKyF8rU5I6IzwFBNCoetjrXbGXngkpnnPsNg==
-X-Received: by 2002:a1c:8048:: with SMTP id b69mr15645697wmd.169.1592795427324;
-        Sun, 21 Jun 2020 20:10:27 -0700 (PDT)
-Received: from localhost.localdomain ([45.124.203.15])
-        by smtp.gmail.com with ESMTPSA id y196sm10031766wmd.11.2020.06.21.20.10.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Jun 2020 20:10:26 -0700 (PDT)
-From:   Joel Stanley <joel@jms.id.au>
-To:     devicetree-compiler@vger.kernel.org,
-        David Gibson <david@gibson.dropbear.id.au>
-Cc:     linux-kernel@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v4 2/2] checks: Improve i2c reg property checking
-Date:   Mon, 22 Jun 2020 12:40:05 +0930
-Message-Id: <20200622031005.1890039-3-joel@jms.id.au>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200622031005.1890039-1-joel@jms.id.au>
-References: <20200622031005.1890039-1-joel@jms.id.au>
+        id S1726747AbgFVDN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 23:13:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726649AbgFVDNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Jun 2020 23:13:25 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 46A71253BB;
+        Mon, 22 Jun 2020 03:13:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592795605;
+        bh=XGykBpJ30XX3b6TPGbSr+m6G6XNDRVZ1v1eR+xyxTOM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=xYOL530IGS33v9M4oB3FT1yonPx5WyBzjfUtIv7eBlUTCTsNhxDyAUyiBadmtD1mO
+         l10QvfJncjYwzSpe1UMMfoqjDfPVp9Z0VbUk9H2gQ9X1HHQp2WvWnVQnimTtPeDXvq
+         dQ7qYL2W2Lq7k6YBgPyqnaJLF5XC6/ZVgR16zoTQ=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 286563522B3D; Sun, 21 Jun 2020 20:13:25 -0700 (PDT)
+Date:   Sun, 21 Jun 2020 20:13:25 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/tree: Force quiescent state on callback overload
+Message-ID: <20200622031325.GG9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <1592764647-2452-1-git-send-email-neeraju@codeaurora.org>
+ <20200621195052.GF9247@paulmck-ThinkPad-P72>
+ <94686c2e-b589-2598-e658-42f13cec1216@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <94686c2e-b589-2598-e658-42f13cec1216@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i2c bindings in the kernel tree describe support for 10 bit
-addressing, which must be indicated with the I2C_TEN_BIT_ADDRESS flag.
-When this is set the address can be up to 10 bits. When it is not set
-the address is a maximum of 7 bits.
+On Mon, Jun 22, 2020 at 01:30:31AM +0530, Neeraj Upadhyay wrote:
+> Hi Paul,
+> 
+> On 6/22/2020 1:20 AM, Paul E. McKenney wrote:
+> > On Mon, Jun 22, 2020 at 12:07:27AM +0530, Neeraj Upadhyay wrote:
+> > > On callback overload, we want to force quiescent state immediately,
+> > > for the first and second fqs. Enforce the same, by including
+> > > RCU_GP_FLAG_OVLD flag, in fqsstart check.
+> > > 
+> > > Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> > 
+> > Good catch!
+> > 
+> > But what did you do to verify that this change does the right thing?
+> > 
+> > 						Thanx, Paul
+> > 
+> 
+> I haven't done a runtime verification of this code path; I posted this,
+> based on review of this code.
 
-See Documentation/devicetree/bindings/i2c/i2c.txt.
+My concern is that under overload, the FQS scans would happen continuously
+rather than accelerating only the first such scan in a given grace period.
+This would of course result in a CPU-bound grace-period kthread, which
+users might not be all that happy with.
 
-Take into account this flag when checking the address is valid.
+Or am I missing something subtle that prevents this?
 
-Signed-off-by: Joel Stanley <joel@jms.id.au>
----
-v2: Mask reg when checking the 10-bit size
-v3: Fix test
-v4: Add U to define
----
- checks.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+But yes, it does look like the current mainline code fails to do the
+first scan immediately, so again, good catch!
 
-diff --git a/checks.c b/checks.c
-index 69b0156c940c..b7955dbd71ca 100644
---- a/checks.c
-+++ b/checks.c
-@@ -1023,6 +1023,7 @@ static void check_i2c_bus_bridge(struct check *c, struct dt_info *dti, struct no
- WARNING(i2c_bus_bridge, check_i2c_bus_bridge, NULL, &addr_size_cells);
- 
- #define I2C_OWN_SLAVE_ADDRESS	(1U << 30)
-+#define I2C_TEN_BIT_ADDRESS	(1U << 31)
- 
- static void check_i2c_bus_reg(struct check *c, struct dt_info *dti, struct node *node)
- {
-@@ -1057,10 +1058,13 @@ static void check_i2c_bus_reg(struct check *c, struct dt_info *dti, struct node
- 		reg = fdt32_to_cpu(*(cells++));
- 		/* Ignore I2C_OWN_SLAVE_ADDRESS */
- 		reg &= ~I2C_OWN_SLAVE_ADDRESS;
--		if (reg > 0x3ff)
-+
-+		if ((reg & I2C_TEN_BIT_ADDRESS) && ((reg & ~I2C_TEN_BIT_ADDRESS) > 0x3ff))
- 			FAIL_PROP(c, dti, node, prop, "I2C address must be less than 10-bits, got \"0x%x\"",
- 				  reg);
--
-+		else if (reg > 0x7f)
-+			FAIL_PROP(c, dti, node, prop, "I2C address must be less than 7-bits, got \"0x%x\". Set I2C_TEN_BIT_ADDRESS for 10 bit addresses or fix the property",
-+				  reg);
- 	}
- }
- WARNING(i2c_bus_reg, check_i2c_bus_reg, NULL, &reg_format, &i2c_bus_bridge);
--- 
-2.27.0
+							Thanx, Paul
 
+> Thanks
+> Neeraj
+> 
+> > > ---
+> > >   kernel/rcu/tree.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index d0988a1..6226bfb 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -1865,7 +1865,7 @@ static void rcu_gp_fqs_loop(void)
+> > >   			break;
+> > >   		/* If time for quiescent-state forcing, do it. */
+> > >   		if (!time_after(rcu_state.jiffies_force_qs, jiffies) ||
+> > > -		    (gf & RCU_GP_FLAG_FQS)) {
+> > > +		    (gf & (RCU_GP_FLAG_FQS | RCU_GP_FLAG_OVLD))) {
+> > >   			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
+> > >   					       TPS("fqsstart"));
+> > >   			rcu_gp_fqs(first_gp_fqs);
+> > > -- 
+> > > The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> > > a Linux Foundation Collaborative Project
+> > > 
+> 
+> -- 
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of
+> the Code Aurora Forum, hosted by The Linux Foundation
