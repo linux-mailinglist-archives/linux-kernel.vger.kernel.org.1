@@ -2,113 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1655F203FF6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5591204007
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728311AbgFVTSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 15:18:54 -0400
-Received: from mga11.intel.com ([192.55.52.93]:65396 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728068AbgFVTSx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 15:18:53 -0400
-IronPort-SDR: wrrSBOPmd16Q1WVpsKl6gCnksCDNcI2K4n6bbk+3Sdw9iZXUWzqNpWfF2YEno758VxMJoKNEUg
- AAyyGUgw0egA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9660"; a="142104136"
-X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="142104136"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 12:18:52 -0700
-IronPort-SDR: YVmGmOk4LxL2JOfJJgRpdCtim8lytnwabCI48Si0wsEpZcel5g8mmnT70/lza4l6ki1cS5jCpe
- 8nU3TqECXK3w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="478491690"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by fmsmga006.fm.intel.com with ESMTP; 22 Jun 2020 12:18:51 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: x86/mmu: Don't put invalid SPs back on the list of active pages
-Date:   Mon, 22 Jun 2020 12:18:50 -0700
-Message-Id: <20200622191850.8529-1-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
+        id S1728456AbgFVTTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 15:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728165AbgFVTTN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 15:19:13 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD4FC061573;
+        Mon, 22 Jun 2020 12:19:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RQJq+7AzCVSDpLZ6UztkdVPIx33ju3bxwq7Nfv4giNc=; b=ETs4k3/6ptZjuGJ6PGMlAriF7D
+        M2ZdWwBt07llvSQB3BRcysDLSM3TjUVsx2uKutQ2vRUYTecj/a7AXSp0PL3NPz0UPP2IXjq5VLKjn
+        6ozhtSFlY44iX3P4Ap8ARRAzJivWbV/gjuu+us5GHL1+vWt3oT6DCfP/QV87dyc4uhiGZcDLgnu8N
+        uiRNKe31sLOCccpwMvpf0WOFRcD3KbMhRWGZYheSJnDhCgDg6cO7jup1Xc7/MnC1OFUfosB6V8oNv
+        9IKsT6yEgtZCNKy+qKjYCc4j/f7UfIglA9F+Jwa67DqAWH/1GBFptB4m0SRMrD+ASdOEZEdHCcMpn
+        0uIbqEuA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jnRy5-0001ra-3v; Mon, 22 Jun 2020 19:18:57 +0000
+Date:   Mon, 22 Jun 2020 20:18:57 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        agruenba@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [RFC] Bypass filesystems for reading cached pages
+Message-ID: <20200622191857.GB21350@casper.infradead.org>
+References: <20200619155036.GZ8681@bombadil.infradead.org>
+ <20200622003215.GC2040@dread.disaster.area>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200622003215.GC2040@dread.disaster.area>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete a shadow page from the invalidation list instead of throwing it
-back on the list of active pages when it's a root shadow page with
-active users.  Invalid active root pages will be explicitly freed by
-mmu_free_root_page() when the root_count hits zero, i.e. they don't need
-to be put on the active list to avoid leakage.
+On Mon, Jun 22, 2020 at 10:32:15AM +1000, Dave Chinner wrote:
+> On Fri, Jun 19, 2020 at 08:50:36AM -0700, Matthew Wilcox wrote:
+> > 
+> > This patch lifts the IOCB_CACHED idea expressed by Andreas to the VFS.
+> > The advantage of this patch is that we can avoid taking any filesystem
+> > lock, as long as the pages being accessed are in the cache (and we don't
+> > need to readahead any pages into the cache).  We also avoid an indirect
+> > function call in these cases.
+> 
+> What does this micro-optimisation actually gain us except for more
+> complexity in the IO path?
+> 
+> i.e. if a filesystem lock has such massive overhead that it slows
+> down the cached readahead path in production workloads, then that's
+> something the filesystem needs to address, not unconditionally
+> bypass the filesystem before the IO gets anywhere near it.
 
-Use sp->role.invalid to detect that a shadow page has already been
-zapped, i.e. is not on a list.
+You're been talking about adding a range lock to XFS for a while now.
+I remain quite sceptical that range locks are a good idea; they have not
+worked out well as a replacement for the mmap_sem, although the workload
+for the mmap_sem is quite different and they may yet show promise for
+the XFS iolock.
 
-WARN if an invalid page is encountered when zapping pages, as it should
-now be impossible.
+There are production workloads that do not work well on top of a single
+file on an XFS filesystem.  For example, using an XFS file in a host as
+the backing store for a guest block device.  People tend to work around
+that kind of performance bug rather than report it.
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/mmu/mmu.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+Do you agree that the guarantees that XFS currently supplies regarding
+locked operation will be maintained if the I/O is contained within a
+single page and the mutex is not taken?  ie add this check to the original
+patch:
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index fdd05c233308..fa5bd3f987dd 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2757,10 +2757,13 @@ static bool __kvm_mmu_prepare_zap_page(struct kvm *kvm,
- 	if (!sp->root_count) {
- 		/* Count self */
- 		(*nr_zapped)++;
--		list_move(&sp->link, invalid_list);
-+		if (sp->role.invalid)
-+			list_add(&sp->link, invalid_list);
-+		else
-+			list_move(&sp->link, invalid_list);
- 		kvm_mod_used_mmu_pages(kvm, -1);
- 	} else {
--		list_move(&sp->link, &kvm->arch.active_mmu_pages);
-+		list_del(&sp->link);
- 
- 		/*
- 		 * Obsolete pages cannot be used on any vCPUs, see the comment
-@@ -5732,12 +5735,11 @@ static void kvm_zap_obsolete_pages(struct kvm *kvm)
- 			break;
- 
- 		/*
--		 * Skip invalid pages with a non-zero root count, zapping pages
--		 * with a non-zero root count will never succeed, i.e. the page
--		 * will get thrown back on active_mmu_pages and we'll get stuck
--		 * in an infinite loop.
-+		 * Invalid pages should never land back on the list of active
-+		 * pages.  Skip the bogus page, otherwise we'll get stuck in an
-+		 * infinite loop if the page gets put back on the list (again).
- 		 */
--		if (sp->role.invalid && sp->root_count)
-+		if (WARN_ON(sp->role.invalid))
- 			continue;
- 
- 		/*
-@@ -6015,7 +6017,7 @@ void kvm_mmu_zap_all(struct kvm *kvm)
- 	spin_lock(&kvm->mmu_lock);
- restart:
- 	list_for_each_entry_safe(sp, node, &kvm->arch.active_mmu_pages, link) {
--		if (sp->role.invalid && sp->root_count)
-+		if (WARN_ON(sp->role.invalid))
- 			continue;
- 		if (__kvm_mmu_prepare_zap_page(kvm, sp, &invalid_list, &ign))
- 			goto restart;
--- 
-2.26.0
+        if (iocb->ki_pos / PAGE_SIZE !=
+            (iocb->ki_pos + iov_iter_count(iter) - 1) / PAGE_SIZE)
+                goto uncached;
 
+I think that gets me almost everything I want.  Small I/Os are going to
+notice the pain of the mutex more than large I/Os.
