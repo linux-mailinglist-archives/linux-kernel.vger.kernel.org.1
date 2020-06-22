@@ -2,196 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F66F20321D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:31:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED65B20322B
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgFVIbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 04:31:43 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:50697 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbgFVIbm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 04:31:42 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 99AAFC0009;
-        Mon, 22 Jun 2020 08:31:34 +0000 (UTC)
-Date:   Mon, 22 Jun 2020 10:35:01 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Roman Kovalivskyi <roman.kovalivskyi@globallogic.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Luis Oliveira <lolivei@synopsys.com>,
-        Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
-        Michael Rodin <mrodin@de.adit-jv.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hugues Fruchet <hugues.fruchet@st.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Adam Ford <aford173@gmail.com>,
-        Todor Tomov <todor.tomov@linaro.org>,
-        Suresh Udipi <sudipi@jp.adit-jv.com>,
-        Andrew Gabbasov <andrew_gabbasov@mentor.com>,
-        Eugeniu Rosca <erosca@de.adit-jv.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.org>
-Subject: Re: [PATCH v2 3/6] media: ov5647: Add support for non-continuous
- clock mode
-Message-ID: <20200622083501.htr7mzngchyn7n7q@uno.localdomain>
-References: <cover.1589850165.git.roman.kovalivskyi@globallogic.com>
- <cd04fe908fc1a747949ee83044f4d2abc1885cee.1589850165.git.roman.kovalivskyi@globallogic.com>
- <20200519115707.GK20066@paasikivi.fi.intel.com>
- <20200618101326.zpcdcb3zdrtgz45t@uno.localdomain>
- <7d718df8-5256-3ff6-01ec-2f1a14f53580@globallogic.com>
+        id S1726401AbgFVIgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 04:36:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58398 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725616AbgFVIgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 04:36:38 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 737B0206C3;
+        Mon, 22 Jun 2020 08:36:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592814997;
+        bh=p3/nAndPqD+xJSr38RP3st3phWO4emLpokfz2oHkG4o=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=F+oC2C6ZvX3DFlstmcmu9ZiRw5t6G3wCRTyqZ3JKEBm3CDgIpZnmVC0YbNiwSVRIf
+         tVQoME3X6ac+Febu65absGTTSCg3cNaZJUIt6zbfLsuoCMQeFwdJ4vyN/paAD17R63
+         0qkXyoMBD0xKrUWWh0yN51mlQC64LUOWeZa81t+s=
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <7d718df8-5256-3ff6-01ec-2f1a14f53580@globallogic.com>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <202006211709.hxHhenC8%lkp@intel.com>
+References: <202006211709.hxHhenC8%lkp@intel.com>
+Subject: Re: drivers/clk/clk-divider.c:39:17: sparse: sparse: incorrect type in argument 1 (different base types)
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+To:     kernel test robot <lkp@intel.com>
+Date:   Mon, 22 Jun 2020 01:36:36 -0700
+Message-ID: <159281499670.62212.17969220355200979156@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Roman,
+Quoting kernel test robot (2020-06-21 02:05:20)
+> Hi Stephen,
+>=20
+> First bad commit (maybe !=3D root cause):
+>=20
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   64677779e8962c20b580b471790fe42367750599
+> commit: bbd7ffdbef6888459f301c5889f3b14ada38b913 clk: Allow the common cl=
+k framework to be selectable
+> date:   7 weeks ago
+> config: alpha-randconfig-s032-20200621 (attached as .config)
+> compiler: alpha-linux-gcc (GCC) 9.3.0
+> reproduce:
+>         # apt-get install sparse
+>         # sparse version: v0.6.2-rc2-13-gc59158c8-dirty
+>         git checkout bbd7ffdbef6888459f301c5889f3b14ada38b913
+>         # save the attached .config to linux build tree
+>         make W=3D1 C=3D1 ARCH=3Dalpha CF=3D'-fdiagnostic-prefix -D__CHECK=
+_ENDIAN__'
+>=20
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>=20
+>=20
+> sparse warnings: (new ones prefixed by >>)
+>=20
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+>    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
+be32
+> >> drivers/clk/clk-divider.c:39:17: sparse: sparse: incorrect type in arg=
+ument 1 (different base types) @@     expected unsigned int [usertype] @@  =
+   got restricted __be32 [usertype] @@
+> >> drivers/clk/clk-divider.c:39:17: sparse:     expected unsigned int [us=
+ertype]
+>    drivers/clk/clk-divider.c:39:17: sparse:     got restricted __be32 [us=
+ertype]
+>=20
+> vim +39 drivers/clk/clk-divider.c
+>=20
+> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  17 =20
+> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  18  /*
+> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  19   * DOC: basic adjustable di=
+vider clock that cannot gate
+> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  20   *
+> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  21   * Traits of this clock:
+> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  22   * prepare - clk_prepare on=
+ly ensures that parents are prepared
+> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  23   * enable - clk_enable only=
+ ensures that parents are enabled
+> 9556f9dad8f576 Brian Norris   2015-04-13  24   * rate - rate is adjustabl=
+e.  clk->rate =3D ceiling(parent->rate / divisor)
+> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  25   * parent - fixed parent.  =
+No clk_set_parent support
+> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  26   */
+> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  27 =20
+> 434d69fad63b44 Jonas Gorski   2019-04-18  28  static inline u32 clk_div_r=
+eadl(struct clk_divider *divider)
+> 434d69fad63b44 Jonas Gorski   2019-04-18  29  {
+> 434d69fad63b44 Jonas Gorski   2019-04-18  30    if (divider->flags & CLK_=
+DIVIDER_BIG_ENDIAN)
+> 434d69fad63b44 Jonas Gorski   2019-04-18 @31            return ioread32be=
+(divider->reg);
 
-On Mon, Jun 22, 2020 at 10:00:46AM +0300, Roman Kovalivskyi wrote:
-> Hi Jacopo,
->
-> On 18.06.20 13:13, Jacopo Mondi wrote:
-> > Hi Roman, Sakari
-> >
-> > On Tue, May 19, 2020 at 02:57:07PM +0300, Sakari Ailus wrote:
-> >> Hi Roman,
-> >>
-> >> On Tue, May 19, 2020 at 04:16:18AM +0300, Roman Kovalivskyi wrote:
-> >>> From: Dave Stevenson <dave.stevenson@raspberrypi.org>
-> >>>
-> >>> The driver was only supporting continuous clock mode
-> >>> although this was not stated anywhere.
-> >>> Non-continuous clock saves a small amount of power and
-> >>> on some SoCs is easier to interface with.
-> >>>
-> > not much to add to what Sakari said, apart for
-> >
-> >>> Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.org>
-> >>> Signed-off-by: Roman Kovalivskyi <roman.kovalivskyi@globallogic.com>
-> >>> ---
-> >>>  drivers/media/i2c/ov5647.c | 25 ++++++++++++++++++++++---
-> >>>  1 file changed, 22 insertions(+), 3 deletions(-)
-> >>>
-> >>> diff --git a/drivers/media/i2c/ov5647.c b/drivers/media/i2c/ov5647.c
-> >>> index 796cc80f8ee1..10f35c637f91 100644
-> >>> --- a/drivers/media/i2c/ov5647.c
-> >>> +++ b/drivers/media/i2c/ov5647.c
-> >>> @@ -44,6 +44,7 @@
-> >>>  #define PWDN_ACTIVE_DELAY_MS	20
-> >>>
-> >>>  #define MIPI_CTRL00_CLOCK_LANE_GATE		BIT(5)
-> >>> +#define MIPI_CTRL00_LINE_SYNC_ENABLE		BIT(4)
-> >>>  #define MIPI_CTRL00_BUS_IDLE			BIT(2)
-> >>>  #define MIPI_CTRL00_CLOCK_LANE_DISABLE		BIT(0)
-> >>>
-> >>> @@ -95,6 +96,7 @@ struct ov5647 {
-> >>>  	int				power_count;
-> >>>  	struct clk			*xclk;
-> >>>  	struct gpio_desc		*pwdn;
-> >>> +	bool				is_clock_contiguous;
-> > the clock is 'continuous' not contigous :)
-> >
-> > I plan to upport more ov5647 patches soon, Roman are you planning a
-> > resend of this series or should I do so (keeping your signoffs of
-> > course)
-> >
-> > Thanks
-> >   j
->
-> I would be grateful if someone more competent would continue with this
-> patch series, so feel free to update it with v3.
-
-I think you did a very good job, I just happen to have a bit more time
-to dedicate to this.
-
-I'll make sure I'll cc you and the cc list from your series.
-
-Thanks
-  j
-
->
-> >>>  };
-> >>>
-> >>>  static inline struct ov5647 *to_state(struct v4l2_subdev *sd)
-> >>> @@ -274,9 +276,15 @@ static int ov5647_set_virtual_channel(struct v4l2_subdev *sd, int channel)
-> >>>
-> >>>  static int ov5647_stream_on(struct v4l2_subdev *sd)
-> >>>  {
-> >>> +	struct ov5647 *ov5647 = to_state(sd);
-> >>> +	u8 val = MIPI_CTRL00_BUS_IDLE;
-> >>>  	int ret;
-> >>>
-> >>> -	ret = ov5647_write(sd, OV5647_REG_MIPI_CTRL00, MIPI_CTRL00_BUS_IDLE);
-> >>> +	if (ov5647->is_clock_contiguous)
-> >>> +		val |= MIPI_CTRL00_CLOCK_LANE_GATE |
-> >>> +		       MIPI_CTRL00_LINE_SYNC_ENABLE;
-> >>> +
-> >>> +	ret = ov5647_write(sd, OV5647_REG_MIPI_CTRL00, val);
-> >>>  	if (ret < 0)
-> >>>  		return ret;
-> >>>
-> >>> @@ -573,7 +581,7 @@ static const struct v4l2_subdev_internal_ops ov5647_subdev_internal_ops = {
-> >>>  	.open = ov5647_open,
-> >>>  };
-> >>>
-> >>> -static int ov5647_parse_dt(struct device_node *np)
-> >>> +static int ov5647_parse_dt(struct ov5647 *sensor, struct device_node *np)
-> >>>  {
-> >>>  	struct v4l2_fwnode_endpoint bus_cfg = { .bus_type = 0 };
-> >>>  	struct device_node *ep;
-> >>> @@ -586,6 +594,17 @@ static int ov5647_parse_dt(struct device_node *np)
-> >>>
-> >>>  	ret = v4l2_fwnode_endpoint_parse(of_fwnode_handle(ep), &bus_cfg);
-> >>>
-> >> Extra newline.
-> >>
-> >>> +	if (!ret) {
-> >>> +		of_node_put(ep);
-> >>> +		of_node_put(np);
-> >> Why to put np as well?
-> >>
-> >>> +		return ret;
-> >> Please add a label at the end; it makes error handling easier.
-> >>
-> >>> +	}
-> >>> +
-> >>> +	if (bus_cfg.bus_type == V4L2_MBUS_CSI2_DPHY
-> >>> +		|| bus_cfg.bus_type == V4L2_MBUS_CSI2_CPHY)
-> >> I bet this device is D-PHY only.
-> >>
-> >>> +		sensor->is_clock_contiguous = bus_cfg.bus.mipi_csi2.flags
-> >>> +			& V4L2_MBUS_CSI2_NONCONTINUOUS_CLOCK;
-> >> Now that you're making use of bus specific parameters, please set the bus
-> >> type first before calling v4l2_fwnode_endpoint_parse().
-> >>
-> >>> +
-> >>>  	of_node_put(ep);
-> >>>  	return ret;
-> >>>  }
-> >>> @@ -604,7 +623,7 @@ static int ov5647_probe(struct i2c_client *client)
-> >>>  		return -ENOMEM;
-> >>>
-> >>>  	if (IS_ENABLED(CONFIG_OF) && np) {
-> >>> -		ret = ov5647_parse_dt(np);
-> >>> +		ret = ov5647_parse_dt(sensor, np);
-> >>>  		if (ret) {
-> >>>  			dev_err(dev, "DT parsing error: %d\n", ret);
-> >>>  			return ret;
-> >> --
-> >> Kind regards,
-> >>
-> >> Sakari Ailus
->
->
-> --
->
-> Best regards,
-> Roman Kovalivskyi
->
+Ok. I guess we'll need to force cast the pointer to be __be32 in this
+case. Before it wasn't in generic code so the architecture was masking
+the issue.
