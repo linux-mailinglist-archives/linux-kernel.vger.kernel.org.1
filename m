@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E475220429D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 23:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E792042A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 23:26:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730642AbgFVVYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 17:24:50 -0400
-Received: from smtprelay0192.hostedemail.com ([216.40.44.192]:51818 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728555AbgFVVYu (ORCPT
+        id S1730532AbgFVV0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 17:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730430AbgFVV03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 17:24:50 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id EB19718029134;
-        Mon, 22 Jun 2020 21:24:48 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2693:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:3874:4250:4321:5007:7875:7903:8957:9010:10004:10400:11232:11658:11914:12043:12114:12296:12297:12740:12760:12895:13160:13229:13255:13439:14093:14097:14181:14659:14721:21063:21080:21221:21324:21451:21627:21795:30012:30034:30051:30054:30056:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: sink53_2c02d6f26e36
-X-Filterd-Recvd-Size: 3649
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Mon, 22 Jun 2020 21:24:47 +0000 (UTC)
-Message-ID: <8a218fa14cc2e1690df32d278c82587c7507a820.camel@perches.com>
-Subject: Re: [PATCH] checkpatch: fix CONST_STRUCT when
- const_structs.checkpatch is missing
-From:   Joe Perches <joe@perches.com>
-To:     Quentin Monnet <quentin@isovalent.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Date:   Mon, 22 Jun 2020 14:24:47 -0700
-In-Reply-To: <20200622204844.21030-1-quentin@isovalent.com>
-References: <20200622204844.21030-1-quentin@isovalent.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Mon, 22 Jun 2020 17:26:29 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25D72C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 14:26:28 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id z5so356114pgb.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 14:26:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+fGVHQGbJSfeZpDFh+8/BeMq0iFulsSXIRYour5Vm0w=;
+        b=J00hIsrXU7lUbB9T6uH+6OCvgVWQVpgD3QI0ZPH4Hk8LTAUfUiRewvjxyBQzGiD1ve
+         iFnCJBgzFqit6FhHqe5BM8n1JJmg8rHtVkq3RtopnM4OgUUVSs4z5vEKGujmdV8eaHzg
+         QPi3H0BTKGLlJqCPNPE+nQs3/vQLHDYWXLkWY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+fGVHQGbJSfeZpDFh+8/BeMq0iFulsSXIRYour5Vm0w=;
+        b=nQAumhEMXdqVuKpXvUcsQXogMWh0NtShzUH4fp4IADK6M9ICLEA69gBGpHGq0kRg8t
+         Kt4vOJyTy49Wb6dVJReJMnqwvso1gukQGHDU4cALnBMX90We9RNYTKBGE6RuaxfAGM1i
+         8uhTK7p15LaV9fUBt3Qc2Aptafvs3r6MerRQJbSHnGnzEHoCzYf++IGvMPxvkV24rzpr
+         TKWGzaL2gf3heEyq5q+to3bY1Y6mjeRFekg65hS6NF8qMZhNOM+oFrcIRmH/G4V4yw3Y
+         TOes799Lcldb5pA00rqIFOSNTN5d72D9FCHG5/8+GZ2BQgbCJLYdTGzS+QGM84hOo0gH
+         sYyA==
+X-Gm-Message-State: AOAM531TeE814vuw5x5OBEYH0oikY9fNq5k5BD1WmiX+f+tIUqBX7Uaq
+        ZzY2SrErPxuJDTwNHm1Z6zOiJQ==
+X-Google-Smtp-Source: ABdhPJz9FSwoUGnk0FK8dRtqojR7DRsccJU6Ok7KN9Xp0A18XOCuQ0Au72MfAI1gfeRNqQL2b31VvQ==
+X-Received: by 2002:aa7:8a4c:: with SMTP id n12mr22059315pfa.326.1592861187688;
+        Mon, 22 Jun 2020 14:26:27 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u35sm11783923pgm.48.2020.06.22.14.26.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 14:26:26 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 14:26:25 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Jann Horn <jannh@google.com>,
+        kernel-hardening@lists.openwall.com,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 3/5] stack: Optionally randomize kernel stack offset
+ each syscall
+Message-ID: <202006221425.805E17B67@keescook>
+References: <20200622193146.2985288-1-keescook@chromium.org>
+ <20200622193146.2985288-4-keescook@chromium.org>
+ <87a7b943-ed15-8521-773e-c182a37ee61e@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a7b943-ed15-8521-773e-c182a37ee61e@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-06-22 at 21:48 +0100, Quentin Monnet wrote:
-> Checkpatch reports warnings when some specific structs are not declared
-> as const in the code. The list of structs to consider was initially
-> defined in the checkpatch.pl script itself, but it was later moved to an
-> external file (scripts/const_structs.checkpatch). This introduced two
-> minor issues:
+On Mon, Jun 22, 2020 at 12:40:49PM -0700, Randy Dunlap wrote:
+> On 6/22/20 12:31 PM, Kees Cook wrote:
+> > This provides the ability for architectures to enable kernel stack base
+> > address offset randomization. This feature is controlled by the boot
+> > param "randomize_kstack_offset=on/off", with its default value set by
+> > CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT.
+> > 
+> > Co-developed-by: Elena Reshetova <elena.reshetova@intel.com>
+> > Signed-off-by: Elena Reshetova <elena.reshetova@intel.com>
+> > Link: https://lore.kernel.org/r/20190415060918.3766-1-elena.reshetova@intel.com
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > ---
+> >  Makefile                         |  4 ++++
+> >  arch/Kconfig                     | 23 ++++++++++++++++++
+> >  include/linux/randomize_kstack.h | 40 ++++++++++++++++++++++++++++++++
+> >  init/main.c                      | 23 ++++++++++++++++++
+> >  4 files changed, 90 insertions(+)
+> >  create mode 100644 include/linux/randomize_kstack.h
 > 
-> - When file scripts/const_structs.checkpatch is not present (for
->   example, if checkpatch is run outside of the kernel directory with the
->   "--no-tree" option), a warning is printed to stderr to tell the user
->   that "No structs that should be const will be found". This is fair,
->   but the warning is printed unconditionally, even if the option
->   "--ignore CONST_STRUCT" is passed. In the latter case, we explicitly
->   ask checkpatch to skip this check, so no warning should be printed.
-> 
-> - When scripts/const_structs.checkpatch is missing, or even when trying
->   to silence the warning by adding an empty file, $const_structs is set
->   to "", and the regex used for finding structs that should be const,
->   "$line =~ /\bstruct\s+($const_structs)\b(?!\s*\{)/)", matches all
->   structs found in the code, thus reporting a number of false positives.
-> 
-> Let's fix the first item by skipping scripts/const_structs.checkpatch
-> processing if "CONST_STRUCT" checks are ignored, and the second one by
-> skipping the test if $const_structs is an empty string.
-> 
-> Fixes: bf1fa1dae68e ("checkpatch: externalize the structs that should be const")
+> Please add documentation for the new kernel boot parameter to
+> Documentation/admin-guide/kernel-parameters.txt.
 
-Probably not worthy of a Fixes: line, as that's
-generally used for backporting, but OK by me.
+Oops, yes. Thanks for the reminder!
 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -781,8 +781,10 @@ sub read_words {
->  }
->  
->  my $const_structs = "";
+(I wonder if checkpatch can notice "+early_param" and suggest the Doc
+update hmmm)
 
-This might be a tiny bit faster/less cpu using:
-
-my $const_structs;
-
-> -read_words(\$const_structs, $conststructsfile)
-> -    or warn "No structs that should be const will be found - file '$conststructsfile': $!\n";
-> +if (show_type("CONST_STRUCT")) {
-> +	read_words(\$const_structs, $conststructsfile)
-> +	    or warn "No structs that should be const will be found - file '$conststructsfile': $!\n";
-> +}
->  
->  my $typeOtherTypedefs = "";
->  if (length($typedefsfile)) {
-> @@ -6660,7 +6662,8 @@ sub process {
->  
->  # check for various structs that are normally const (ops, kgdb, device_tree)
->  # and avoid what seem like struct definitions 'struct foo {'
-> -		if ($line !~ /\bconst\b/ &&
-> +		if ($const_structs ne "" &&
-
-instead testing
-
-		if (defined($const_structs) &&
-
-> +		    $line !~ /\bconst\b/ &&
->  		    $line =~ /\bstruct\s+($const_structs)\b(?!\s*\{)/) {
->  			WARN("CONST_STRUCT",
->  			     "struct $1 should normally be const\n" . $herecurr);
-
+-- 
+Kees Cook
