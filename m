@@ -2,110 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FA7B204427
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:00:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83CB320444D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731351AbgFVXAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 19:00:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731175AbgFVXAP (ORCPT
+        id S1731114AbgFVXOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 19:14:15 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47566 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730985AbgFVXOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 19:00:15 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF6DC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 16:00:15 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id b5so9098354pfp.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 16:00:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=83TCNCBjNohNVrqhGduE8K74z3IQ6/Lu6H9fSwHcKBI=;
-        b=DEgcNUgmnqgavBlvTgADYfLgOafyX/H5FdDRdvi9Bb6S/WBs7kYll9YiPjRSOvgAEG
-         v7bulz7OBSDhmA+jwBGRGVdMGRWVjDRy6+FOm9QURTY20m2IeGFzm5+8yMNEN2Dr6Oa1
-         ibe8QqZwP9MNkKA71L+uamdauQHqW1Qj57tvg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=83TCNCBjNohNVrqhGduE8K74z3IQ6/Lu6H9fSwHcKBI=;
-        b=El77Bk34l+2r4K7MseJxdqtjL1mQ+bWxOlr0vpSKNyz6aHWIKl5vNQ7cFYx3Q/RwtQ
-         CHYYhgedwWsRG1IzjuCB2+CFrlnO/rLhklXYEAFk9mRgEtqucgEnaHchpiC/4+IKXooL
-         zrAUBHJYOEnck5du3H17HMnFgR3zSi8xlrPM1axZicx1P4SDI3rLxEv0ttwhMkqQL2pv
-         gacjaaoCXvOkXdiUIAk1odbMSBMYv0XuPOPeHToayRypmxcYflXib/1Rb0GJVxuSVB7I
-         hYYgp0OK4POsQ+FG2wt0FzF7EWj09Vx6v1AJCF2VaYvXngRsrMAwnzCV/t19zvD/vCP+
-         tAZw==
-X-Gm-Message-State: AOAM531aMzyCiyP4EK2Dpuh1eaVRJdxHwAwTpivCSkH1M0k2l8BKYOb5
-        zrncSzQenlMeYP1KnHG4FlDiXQ==
-X-Google-Smtp-Source: ABdhPJzDfln86XAWzAEV3/P8Jj4TpYbAS/ch7Sm25KrySby0/SNFjM433WHLKjjRx44/ZmqpW6wv+w==
-X-Received: by 2002:a63:df56:: with SMTP id h22mr14511327pgj.140.1592866814612;
-        Mon, 22 Jun 2020 16:00:14 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v7sm14485890pfn.147.2020.06.22.16.00.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 16:00:13 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 16:00:12 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Fangrui Song <maskray@google.com>
-Cc:     Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] x86/boot: Warn on orphan section placement
-Message-ID: <202006221600.81F5586@keescook>
-References: <20200622205341.2987797-1-keescook@chromium.org>
- <20200622205341.2987797-4-keescook@chromium.org>
- <20200622220628.t5fklwmbtqoird5f@google.com>
- <202006221543.EA2FCFA2FF@keescook>
- <20200622224928.o2a7jkq33guxfci4@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200622224928.o2a7jkq33guxfci4@google.com>
+        Mon, 22 Jun 2020 19:14:14 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05MN1AJi056068;
+        Mon, 22 Jun 2020 19:14:00 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31tyrxk9fn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 19:14:00 -0400
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05MN1v4N059847;
+        Mon, 22 Jun 2020 19:13:59 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31tyrxk9ff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 19:13:59 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05MMk4Zo005614;
+        Mon, 22 Jun 2020 22:49:00 GMT
+Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
+        by ppma05wdc.us.ibm.com with ESMTP id 31sa38jynt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 22:49:00 +0000
+Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
+        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05MMmxx528770752
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Jun 2020 22:48:59 GMT
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 82C77C6055;
+        Mon, 22 Jun 2020 22:48:59 +0000 (GMT)
+Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4A083C6057;
+        Mon, 22 Jun 2020 22:48:58 +0000 (GMT)
+Received: from DESKTOP-AV6EVPG.localdomain (unknown [9.160.111.155])
+        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Mon, 22 Jun 2020 22:48:58 +0000 (GMT)
+From:   Maurizio Drocco <maurizio.drocco@ibm.com>
+To:     zohar@linux.ibm.com
+Cc:     Silviu.Vlasceanu@huawei.com, dmitry.kasatkin@gmail.com,
+        jejb@linux.ibm.com, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, maurizio.drocco@ibm.com,
+        mdrocco@linux.vnet.ibm.com, roberto.sassu@huawei.com,
+        serge@hallyn.com
+Subject: [PATCH] ima: extend boot_aggregate with kernel measurements
+Date:   Mon, 22 Jun 2020 00:50:19 -0400
+Message-Id: <20200622045019.1636-1-maurizio.drocco@ibm.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <1592856871.4987.21.camel@linux.ibm.com>
+References: <1592856871.4987.21.camel@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-22_15:2020-06-22,2020-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ adultscore=0 phishscore=0 spamscore=0 mlxscore=0 impostorscore=0
+ cotscore=-2147483648 suspectscore=1 mlxlogscore=999 clxscore=1015
+ priorityscore=1501 bulkscore=0 malwarescore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006220148
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 03:49:28PM -0700, Fangrui Song wrote:
-> On 2020-06-22, Kees Cook wrote:
-> > On Mon, Jun 22, 2020 at 03:06:28PM -0700, Fangrui Song wrote:
-> > > LLD may report warnings for 3 synthetic sections if they are orphans:
-> > > 
-> > > ld.lld: warning: <internal>:(.symtab) is being placed in '.symtab'
-> > > ld.lld: warning: <internal>:(.shstrtab) is being placed in '.shstrtab'
-> > > ld.lld: warning: <internal>:(.strtab) is being placed in '.strtab'
-> > > 
-> > > Are they described?
-> > 
-> > Perhaps:
-> > 
-> > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> > index db600ef218d7..57e9c142e401 100644
-> > --- a/include/asm-generic/vmlinux.lds.h
-> > +++ b/include/asm-generic/vmlinux.lds.h
-> > @@ -792,6 +792,9 @@
-> > 		.stab.exclstr 0 : { *(.stab.exclstr) }			\
-> > 		.stab.index 0 : { *(.stab.index) }			\
-> > 		.stab.indexstr 0 : { *(.stab.indexstr) }		\
-> > +		.symtab 0 : { *(.symtab) }				\
-> > +		.strtab 0 : { *(.strtab) }				\
-> > +		.shstrtab 0 : { *(.shstrtab) }				\
-> > 		.comment 0 : { *(.comment) }
-> > 
-> > #ifdef CONFIG_GENERIC_BUG
-> 
-> This LGTM. Nit: .comment before .symtab is a more common order.
+IMA is not considering TPM registers 8-9 when calculating the boot
+aggregate. When registers 8-9 are used to store measurements of the
+kernel and its command line (e.g., grub2 bootloader with tpm module
+enabled), IMA should include them in the boot aggregate. Registers
+8-9 are only included in non-SHA1 boot_aggregate digests to avoid
+ambiguity.
 
-Adjusted.
+Signed-off-by: Maurizio Drocco <maurizio.drocco@ibm.com>
+---
+ security/integrity/ima/ima.h        |  2 +-
+ security/integrity/ima/ima_crypto.c | 15 ++++++++++++++-
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
-> Reviewed-by: Fangrui Song <maskray@google.com>
-
-Thanks!
-
+diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
+index df93ac258e01..9d94080bdad8 100644
+--- a/security/integrity/ima/ima.h
++++ b/security/integrity/ima/ima.h
+@@ -30,7 +30,7 @@
+ 
+ enum ima_show_type { IMA_SHOW_BINARY, IMA_SHOW_BINARY_NO_FIELD_LEN,
+ 		     IMA_SHOW_BINARY_OLD_STRING_FMT, IMA_SHOW_ASCII };
+-enum tpm_pcrs { TPM_PCR0 = 0, TPM_PCR8 = 8 };
++enum tpm_pcrs { TPM_PCR0 = 0, TPM_PCR8 = 8, TPM_PCR10 = 10 };
+ 
+ /* digest size for IMA, fits SHA1 or MD5 */
+ #define IMA_DIGEST_SIZE		SHA1_DIGEST_SIZE
+diff --git a/security/integrity/ima/ima_crypto.c b/security/integrity/ima/ima_crypto.c
+index 220b14920c37..d02917d85033 100644
+--- a/security/integrity/ima/ima_crypto.c
++++ b/security/integrity/ima/ima_crypto.c
+@@ -823,13 +823,26 @@ static int ima_calc_boot_aggregate_tfm(char *digest, u16 alg_id,
+ 	if (rc != 0)
+ 		return rc;
+ 
+-	/* cumulative sha1 over tpm registers 0-7 */
++	/* cumulative digest over tpm registers 0-7 */
+ 	for (i = TPM_PCR0; i < TPM_PCR8; i++) {
+ 		ima_pcrread(i, &d);
+ 		/* now accumulate with current aggregate */
+ 		rc = crypto_shash_update(shash, d.digest,
+ 					 crypto_shash_digestsize(tfm));
+ 	}
++	/*
++	 * extend cumulative digest over tpm registers 8-9, which contain
++	 * measurement for the kernel command line (reg. 8) and image (reg. 9)
++	 * in a typical PCR allocation. Registers 8-9 are only included in
++	 * non-SHA1 boot_aggregate digests to avoid ambiguity.
++	 */
++	if (alg_id != TPM_ALG_SHA1) {
++		for (i = TPM_PCR8; i < TPM_PCR10; i++) {
++			ima_pcrread(i, &d);
++			rc = crypto_shash_update(shash, d.digest,
++						crypto_shash_digestsize(tfm));
++		}
++	}
+ 	if (!rc)
+ 		crypto_shash_final(shash, digest);
+ 	return rc;
 -- 
-Kees Cook
+2.17.1
+
