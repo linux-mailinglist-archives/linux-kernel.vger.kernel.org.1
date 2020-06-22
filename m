@@ -2,101 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82328203915
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 16:25:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64DBE203943
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 16:27:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729257AbgFVOZp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Jun 2020 10:25:45 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:49675 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728070AbgFVOZp (ORCPT
+        id S1729742AbgFVO1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 10:27:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729515AbgFVO1U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 10:25:45 -0400
-X-Originating-IP: 90.76.143.236
-Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
-        (Authenticated sender: antoine.tenart@bootlin.com)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 036B21BF20D;
-        Mon, 22 Jun 2020 14:25:41 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <964739eb70dcd58153d8548f7b57719b@0leil.net>
-References: <20200619122300.2510533-1-antoine.tenart@bootlin.com> <20200619122300.2510533-5-antoine.tenart@bootlin.com> <964739eb70dcd58153d8548f7b57719b@0leil.net>
-Subject: Re: [PATCH net-next v3 4/8] net: phy: mscc: take into account the 1588 block in MACsec init
-To:     Quentin Schulz <foss@0leil.net>
-From:   Antoine Tenart <antoine.tenart@bootlin.com>
-Cc:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
-        hkallweit1@gmail.com, richardcochran@gmail.com,
-        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        thomas.petazzoni@bootlin.com, allan.nielsen@microchip.com
-Message-ID: <159283594086.1456598.17039454007067615022@kwain>
-Date:   Mon, 22 Jun 2020 16:25:41 +0200
+        Mon, 22 Jun 2020 10:27:20 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E1EC061795
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 07:27:20 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id n2so7632386pld.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 07:27:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=3GI1uGL8qRj0UWsRg1f35/N6knURd5cco/VjWV8guxI=;
+        b=CcQ+0S6+v97SJO9VqZ1l3zquEMKhBkbcW/mJDEWfKfhOwMPLFJd8tfH+lqmbqz5SEH
+         wJe2AxmAsInK6RWKkFdunWoh0OZpYUei2rkv+4VsjH18jzdmSoWWbzfI+3TeuZ2ZcTZc
+         DyDiyAcuwI0MJxW/DCAxav6ctw9GQsLe3aQLlmFsco10yy1oVcIx4uoPm4LQBQR08cYt
+         jSe7oExrAEuFqb52wL+qT6kK4ZPX7LVJXEgB3s+gcBG7h5j7YuCyw5Fg5/chnvLQfeXB
+         4tYZ8jGawHQD9UufmWlaYnikek7LGVN/3/uxEjH+L1Pl74VKof4oz54ibaDXG0nahoMO
+         nwoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=3GI1uGL8qRj0UWsRg1f35/N6knURd5cco/VjWV8guxI=;
+        b=iwhPp6rc18nanE9dM9eqtwv8LjmylF5PkiNMut+LqRxPCZgTExn7tgjtXAkYmdwaiF
+         AYQUzZM8lpnQGSFOWwpY3FTyLVCMSBJ6gHNb+Wrbo3/0lDCLccq/HedKKQM57Rvpwk3Q
+         Rj15e4kslb0my5DXSA6eGYh5Gn0U58KjJRT5LRsngmhmHk9Au8n2nNetZv+dlmxOQ5u8
+         aWoE9m2FO2UzplwTo0V3seCT6YbR7TLwAcngPK40wdGDh6au1XDguuKeEdf+f/vvS/ko
+         hfzECvyrXFtXcpKtXBP3P++m3HX17CZV7VGq4hPs9v7mNF9rtmcypi0vqZ/IPBsIwLLb
+         rkig==
+X-Gm-Message-State: AOAM533Lyu3qtvDJc/B4N1kOnrlvHmkk5obqHKCEXEkoNUoJcbKmHDmu
+        l2Y6vfz1a79JAoeknf1h35R2mg==
+X-Google-Smtp-Source: ABdhPJwIWQswOm3gAoyhRJ8B6sV7a9AiL57ArtJyCd3xKaqvSlNveqUuHLc4rb86sbspHNrCNoA0tw==
+X-Received: by 2002:a17:90a:acf:: with SMTP id r15mr19289807pje.171.1592836039745;
+        Mon, 22 Jun 2020 07:27:19 -0700 (PDT)
+Received: from localhost.localdomain ([117.252.67.186])
+        by smtp.gmail.com with ESMTPSA id d6sm14547939pjh.5.2020.06.22.07.27.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 22 Jun 2020 07:27:18 -0700 (PDT)
+From:   Sumit Garg <sumit.garg@linaro.org>
+To:     kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, daniel.thompson@linaro.org,
+        jason.wessel@windriver.com, dianders@chromium.org, jslaby@suse.com,
+        linux@armlinux.org.uk, linux-kernel@vger.kernel.org,
+        Sumit Garg <sumit.garg@linaro.org>
+Subject: [PATCH 0/7] Enable support for kgdb NMI console feature
+Date:   Mon, 22 Jun 2020 19:56:17 +0530
+Message-Id: <1592835984-28613-1-git-send-email-sumit.garg@linaro.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin,
+This work is derived from Daniel's prior work here [1]. It has been
+rebased (tag: kgdb-5.8-rc1 + console hardening patch-set[2]), reworked
+to use serial RX interrupt as NMI (pseudo NMI on aarch64) in order to
+drop into debugger and tested on Developerbox (using amba-pl011).
 
-Quoting Quentin Schulz (2020-06-21 17:38:42)
-> On 2020-06-19 14:22, Antoine Tenart wrote:
-> > This patch takes in account the use of the 1588 block in the MACsec
-> > initialization, as a conditional configuration has to be done (when the
-> > 1588 block is used).
-> > 
-> > Signed-off-by: Antoine Tenart <antoine.tenart@bootlin.com>
-> > ---
-> >  drivers/net/phy/mscc/mscc_macsec.c | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/net/phy/mscc/mscc_macsec.c
-> > b/drivers/net/phy/mscc/mscc_macsec.c
-> > index c0eeb62cb940..713c62b1d1f0 100644
-> > --- a/drivers/net/phy/mscc/mscc_macsec.c
-> > +++ b/drivers/net/phy/mscc/mscc_macsec.c
-> > @@ -285,7 +285,9 @@ static void vsc8584_macsec_mac_init(struct
-> > phy_device *phydev,
-> >                                MSCC_MAC_CFG_PKTINF_CFG_STRIP_PREAMBLE_ENA |
-> >                                MSCC_MAC_CFG_PKTINF_CFG_INSERT_PREAMBLE_ENA |
-> >                                (bank == HOST_MAC ?
-> > -                               MSCC_MAC_CFG_PKTINF_CFG_ENABLE_TX_PADDING : 0));
-> > +                               MSCC_MAC_CFG_PKTINF_CFG_ENABLE_TX_PADDING : 0) |
-> > +                              (IS_ENABLED(CONFIG_NETWORK_PHY_TIMESTAMPING) ?
-> > +                               MSCC_MAC_CFG_PKTINF_CFG_MACSEC_BYPASS_NUM_PTP_STALL_CLKS(0x8) : 
-> > 0));
-> 
-> Do we have more info on this 0x8? Where does it come from? What does it 
-> mean?
+- Patch #1 is more of a fix required for NMI console to replace kgdb IO
+  console.
+- Patches #2 to #6 adds an architecture agnostic fallback mechanism to
+  enable kgdb NMI console using serial RX interrupt as NMI.
+- Patch #7 is an optimization patch that gets rid of inefficient timer
+  based tasklet and rather uses irq_work.
 
-I unfortunately do not have more information about this.
+Usage of kgdb NMI console:
+- Enable "CONFIG_SERIAL_KGDB_NMI".
+- Kernel cmdline modification for Developerbox:
+   console=ttyNMI0 kgdboc=ttyAMA0
 
-> Also this starts to get a little bit hard to read. Would it make sense 
-> to have
-> two temp variables? e.g.:
-> 
->         padding = bank == HOST_MAC ? MSCC_MAC_CFG_PKTINF_CFG_ENABLE_TX_PADDING 
-> : 0;
->         ptp_stall_clks = IS_ENABLED(CONFIG_NETWORK_PHY_TIMESTAMPING) ?
->                 MSCC_MAC_CFG_PKTINF_CFG_MACSEC_BYPASS_NUM_PTP_STALL_CLKS(0x8) : 0;
-> 
->         vsc8584_macsec_phy_write(phydev, bank, MSCC_MAC_CFG_PKTINF_CFG,
->                                  MSCC_MAC_CFG_PKTINF_CFG_STRIP_FCS_ENA |
->                                  MSCC_MAC_CFG_PKTINF_CFG_INSERT_FCS_ENA |
->                                  MSCC_MAC_CFG_PKTINF_CFG_LPI_RELAY_ENA |
->                                  MSCC_MAC_CFG_PKTINF_CFG_STRIP_PREAMBLE_ENA |
->                                  MSCC_MAC_CFG_PKTINF_CFG_INSERT_PREAMBLE_ENA |
->                                  padding |
->                                  ptp_stall_clks);
+[1] https://git.linaro.org/people/daniel.thompson/linux.git/log/?h=kgdb/polled_request_irq
+[2] https://lkml.org/lkml/2020/6/4/294
 
-I'm not convinced this would be better. I guess that is a question of
-personal preference; I don't really mind either solution.  I'll keep it
-as-is for now, as it follows what was already done.
+Daniel Thompson (5):
+  tty: serial: Add poll_get_irq() to the polling interface
+  kgdb: Add request_nmi() to the io ops table for kgdboc
+  serial: kgdb_nmi: Add support for interrupt based fallback
+  serial: 8250: Implement poll_get_irq() interface
+  serial: kgdb_nmi: Replace hrtimer with irq_work ping
 
-Thanks,
-Antoine
+Sumit Garg (2):
+  serial: kgdb_nmi: Allow NMI console to replace kgdb IO console
+  serial: amba-pl011: Implement poll_get_irq() interface
+
+ drivers/tty/serial/8250/8250_port.c |  16 ++++++
+ drivers/tty/serial/amba-pl011.c     |  12 +++++
+ drivers/tty/serial/kgdb_nmi.c       | 100 ++++++++++++++++++++++++------------
+ drivers/tty/serial/kgdboc.c         |  35 +++++++++++++
+ drivers/tty/serial/serial_core.c    |  18 +++++++
+ include/linux/kgdb.h                |   7 +++
+ include/linux/serial_core.h         |   1 +
+ include/linux/tty_driver.h          |   1 +
+ 8 files changed, 158 insertions(+), 32 deletions(-)
 
 -- 
-Antoine Ténart, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.7.4
+
