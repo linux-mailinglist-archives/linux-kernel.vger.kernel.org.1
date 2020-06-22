@@ -2,136 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83CB320444D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E88F204431
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731114AbgFVXOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 19:14:15 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:47566 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730985AbgFVXOO (ORCPT
+        id S1731433AbgFVXCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 19:02:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52398 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731406AbgFVXCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 19:14:14 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05MN1AJi056068;
-        Mon, 22 Jun 2020 19:14:00 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31tyrxk9fn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Jun 2020 19:14:00 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05MN1v4N059847;
-        Mon, 22 Jun 2020 19:13:59 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31tyrxk9ff-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Jun 2020 19:13:59 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05MMk4Zo005614;
-        Mon, 22 Jun 2020 22:49:00 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma05wdc.us.ibm.com with ESMTP id 31sa38jynt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Jun 2020 22:49:00 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05MMmxx528770752
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Jun 2020 22:48:59 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 82C77C6055;
-        Mon, 22 Jun 2020 22:48:59 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4A083C6057;
-        Mon, 22 Jun 2020 22:48:58 +0000 (GMT)
-Received: from DESKTOP-AV6EVPG.localdomain (unknown [9.160.111.155])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 22 Jun 2020 22:48:58 +0000 (GMT)
-From:   Maurizio Drocco <maurizio.drocco@ibm.com>
-To:     zohar@linux.ibm.com
-Cc:     Silviu.Vlasceanu@huawei.com, dmitry.kasatkin@gmail.com,
-        jejb@linux.ibm.com, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, maurizio.drocco@ibm.com,
-        mdrocco@linux.vnet.ibm.com, roberto.sassu@huawei.com,
-        serge@hallyn.com
-Subject: [PATCH] ima: extend boot_aggregate with kernel measurements
-Date:   Mon, 22 Jun 2020 00:50:19 -0400
-Message-Id: <20200622045019.1636-1-maurizio.drocco@ibm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <1592856871.4987.21.camel@linux.ibm.com>
-References: <1592856871.4987.21.camel@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-22_15:2020-06-22,2020-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 phishscore=0 spamscore=0 mlxscore=0 impostorscore=0
- cotscore=-2147483648 suspectscore=1 mlxlogscore=999 clxscore=1015
- priorityscore=1501 bulkscore=0 malwarescore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006220148
+        Mon, 22 Jun 2020 19:02:14 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57700C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 16:02:13 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id m26so10590975lfo.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 16:02:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ecq4FS9wELzuVh2aNsJmKpLPD9PbAHLuJOkUzY8Xxes=;
+        b=CDLwChJW595HajdiJojE/+eW1r1r4swlZKiMJEBB/xgJUPsRe7eatKhRtaAggFj9bD
+         7SzxCuD4enZovjYeo6u5UKDTYtZFs1omXlP2i+IVjYWh2nOQGvAi5LMciy5upiypKr7f
+         6bDx5tB2jaerpTT/GcWq7hUccgf2L0SGDaRwyd7yQUj89bOAQNLhWjsjc5Qjs342fZc/
+         bIgLxa6HcvwPEPhx8OlcMZ5e1H7GcWzrjte7ozSnnSwPsbx68QHWcfWv8QUnQ60N7/iJ
+         8KFigh54NcYqABzqIEhNuYZAOZowoa/IpyLCdxifXX1tDDo3gS8+ZXm5JFFXy74iFeV/
+         v/gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ecq4FS9wELzuVh2aNsJmKpLPD9PbAHLuJOkUzY8Xxes=;
+        b=tgpWi2bFjBvSTauTdV75orERM8/SroxChqGreGd/DJ3tUWlFlGh63uYJv7YxFr+lRP
+         jRlF11pzqmj2ejS17kotxJ0b31vTn7C/Zbu9uQ56fnPhrOL9vg+o9AVx87YRe4g49ynN
+         fh84qFRQ00UeAt30s+j3MVZoXtMKJyOvaFZlVitizIMnvEY4pAVE08JYBi4/napwNHE7
+         SWqBrtoVmb3wijd2SkjjW0fNiAYGtp8+J+qvv4RCK9+yBsB7vPrAtQHHiwfeDWnRNEGW
+         jK3AyDbZiKO+a1Yjxlht+xa+pouXt9z9SkmOo0xRZSH5xATHzKqJaozsczrdTnYQFZ/m
+         TzhQ==
+X-Gm-Message-State: AOAM5323tHzgkihrTl8ebrxe+7hHgPcnOy+2k9yTm+PPISx1f3H2be3h
+        xEreNYDPB/Y5fnbRc33HTJ48T5x1thT47mOENOLBfqL1
+X-Google-Smtp-Source: ABdhPJzpXmJeWyudmGnFcSJwgw8D3FpyMLH8rnnQyE9NCv3nyMOzGL3CkYp5ze+ga7o74BuYJeUW/t+chDaZtbSGJBY=
+X-Received: by 2002:ac2:5467:: with SMTP id e7mr10346942lfn.122.1592866931554;
+ Mon, 22 Jun 2020 16:02:11 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200616011742.138975-1-rajatja@google.com> <20200616011742.138975-3-rajatja@google.com>
+ <20200619161009.GH42799@otc-nc-03>
+In-Reply-To: <20200619161009.GH42799@otc-nc-03>
+From:   Rajat Jain <rajatja@google.com>
+Date:   Mon, 22 Jun 2020 16:01:34 -0700
+Message-ID: <CACK8Z6FZ560vfMYH8idaea31_9dq4Vvo7LiMASnxZKZJtX89wg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] pci: acs: Enable PCI_ACS_TB for untrusted/external-facing
+ devices
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>, iommu@lists.linux-foundation.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        "Krishnakumar, Lalithambika" <lalithambika.krishnakumar@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Prashant Malani <pmalani@google.com>,
+        Benson Leung <bleung@google.com>,
+        Todd Broch <tbroch@google.com>,
+        Alex Levin <levinale@google.com>,
+        Mattias Nissler <mnissler@google.com>,
+        Rajat Jain <rajatxjain@gmail.com>,
+        Bernie Keany <bernie.keany@intel.com>,
+        Aaron Durbin <adurbin@google.com>,
+        Diego Rivas <diegorivas@google.com>,
+        Duncan Laurie <dlaurie@google.com>,
+        Furquan Shaikh <furquan@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        Christian Kellner <christian@kellner.me>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Oliver O'Halloran" <oohall@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IMA is not considering TPM registers 8-9 when calculating the boot
-aggregate. When registers 8-9 are used to store measurements of the
-kernel and its command line (e.g., grub2 bootloader with tpm module
-enabled), IMA should include them in the boot aggregate. Registers
-8-9 are only included in non-SHA1 boot_aggregate digests to avoid
-ambiguity.
+Hi Ashok,
 
-Signed-off-by: Maurizio Drocco <maurizio.drocco@ibm.com>
----
- security/integrity/ima/ima.h        |  2 +-
- security/integrity/ima/ima_crypto.c | 15 ++++++++++++++-
- 2 files changed, 15 insertions(+), 2 deletions(-)
+On Fri, Jun 19, 2020 at 9:10 AM Raj, Ashok <ashok.raj@intel.com> wrote:
+>
+> Hi Rajat
+>
+>
+> On Mon, Jun 15, 2020 at 06:17:41PM -0700, Rajat Jain wrote:
+> > When enabling ACS, currently the bit "translation blocking" was
+> > not getting changed at all. Set it to disable translation blocking
+>
+> Maybe you meant "enable translation blocking" ?
 
-diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-index df93ac258e01..9d94080bdad8 100644
---- a/security/integrity/ima/ima.h
-+++ b/security/integrity/ima/ima.h
-@@ -30,7 +30,7 @@
- 
- enum ima_show_type { IMA_SHOW_BINARY, IMA_SHOW_BINARY_NO_FIELD_LEN,
- 		     IMA_SHOW_BINARY_OLD_STRING_FMT, IMA_SHOW_ASCII };
--enum tpm_pcrs { TPM_PCR0 = 0, TPM_PCR8 = 8 };
-+enum tpm_pcrs { TPM_PCR0 = 0, TPM_PCR8 = 8, TPM_PCR10 = 10 };
- 
- /* digest size for IMA, fits SHA1 or MD5 */
- #define IMA_DIGEST_SIZE		SHA1_DIGEST_SIZE
-diff --git a/security/integrity/ima/ima_crypto.c b/security/integrity/ima/ima_crypto.c
-index 220b14920c37..d02917d85033 100644
---- a/security/integrity/ima/ima_crypto.c
-+++ b/security/integrity/ima/ima_crypto.c
-@@ -823,13 +823,26 @@ static int ima_calc_boot_aggregate_tfm(char *digest, u16 alg_id,
- 	if (rc != 0)
- 		return rc;
- 
--	/* cumulative sha1 over tpm registers 0-7 */
-+	/* cumulative digest over tpm registers 0-7 */
- 	for (i = TPM_PCR0; i < TPM_PCR8; i++) {
- 		ima_pcrread(i, &d);
- 		/* now accumulate with current aggregate */
- 		rc = crypto_shash_update(shash, d.digest,
- 					 crypto_shash_digestsize(tfm));
- 	}
-+	/*
-+	 * extend cumulative digest over tpm registers 8-9, which contain
-+	 * measurement for the kernel command line (reg. 8) and image (reg. 9)
-+	 * in a typical PCR allocation. Registers 8-9 are only included in
-+	 * non-SHA1 boot_aggregate digests to avoid ambiguity.
-+	 */
-+	if (alg_id != TPM_ALG_SHA1) {
-+		for (i = TPM_PCR8; i < TPM_PCR10; i++) {
-+			ima_pcrread(i, &d);
-+			rc = crypto_shash_update(shash, d.digest,
-+						crypto_shash_digestsize(tfm));
-+		}
-+	}
- 	if (!rc)
- 		crypto_shash_final(shash, digest);
- 	return rc;
--- 
-2.17.1
+Oops, yes.
 
+>
+> Keep the commit log simple:
+>
+> When enabling ACS, enable translation blocking for external facing ports
+> and untrusted devices.
+
+Ack. Will change in the next iteration (currently waiting to see if
+there are any more comments).
+
+Thanks & Regards,
+
+Rajat
+
+>
+> > too for all external facing or untrusted devices. This is OK
+> > because ATS is only allowed on internal devces.
+> >
+> > Signed-off-by: Rajat Jain <rajatja@google.com>
+> > ---
+> >  drivers/pci/pci.c    |  4 ++++
+> >  drivers/pci/quirks.c | 11 +++++++++++
+> >  2 files changed, 15 insertions(+)
+> >
+> > diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> > index d2ff987585855..79853b52658a2 100644
+> > --- a/drivers/pci/pci.c
+> > +++ b/drivers/pci/pci.c
+> > @@ -3330,6 +3330,10 @@ static void pci_std_enable_acs(struct pci_dev *dev)
+> >       /* Upstream Forwarding */
+> >       ctrl |= (cap & PCI_ACS_UF);
+> >
+> > +     if (dev->external_facing || dev->untrusted)
+> > +             /* Translation Blocking */
+> > +             ctrl |= (cap & PCI_ACS_TB);
+> > +
+> >       pci_write_config_word(dev, pos + PCI_ACS_CTRL, ctrl);
+> >  }
+> >
+> > diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+> > index b341628e47527..6294adeac4049 100644
+> > --- a/drivers/pci/quirks.c
+> > +++ b/drivers/pci/quirks.c
+> > @@ -4934,6 +4934,13 @@ static void pci_quirk_enable_intel_rp_mpc_acs(struct pci_dev *dev)
+> >       }
+> >  }
+> >
+> > +/*
+> > + * Currently this quirk does the equivalent of
+> > + * PCI_ACS_RR | PCI_ACS_CR | PCI_ACS_UF | PCI_ACS_SV
+> > + *
+> > + * Currently missing, it also needs to do equivalent of PCI_ACS_TB,
+> > + * if dev->external_facing || dev->untrusted
+> > + */
+> >  static int pci_quirk_enable_intel_pch_acs(struct pci_dev *dev)
+> >  {
+> >       if (!pci_quirk_intel_pch_acs_match(dev))
+> > @@ -4973,6 +4980,10 @@ static int pci_quirk_enable_intel_spt_pch_acs(struct pci_dev *dev)
+> >       ctrl |= (cap & PCI_ACS_CR);
+> >       ctrl |= (cap & PCI_ACS_UF);
+> >
+> > +     if (dev->external_facing || dev->untrusted)
+> > +             /* Translation Blocking */
+> > +             ctrl |= (cap & PCI_ACS_TB);
+> > +
+> >       pci_write_config_dword(dev, pos + INTEL_SPT_ACS_CTRL, ctrl);
+> >
+> >       pci_info(dev, "Intel SPT PCH root port ACS workaround enabled\n");
+> > --
+> > 2.27.0.290.gba653c62da-goog
+> >
