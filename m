@@ -2,122 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DDF4203FA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:00:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78DD3203FA5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730495AbgFVS74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 14:59:56 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:53998 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730439AbgFVS7r (ORCPT
+        id S1730518AbgFVTAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 15:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730504AbgFVS76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 14:59:47 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05MIxWCa102688;
-        Mon, 22 Jun 2020 13:59:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592852372;
-        bh=4Fus+1STo6fJcdmND8htjDFw0u7LkR/zKPWh9+ob2Js=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=qyg3tID1vrJyNSQsdOx4SLEYJiWxEaKzFXGiYYAaUVOdbogChUdwYEkuueZ5rxEpj
-         G73bxoNwoynr6vZ7mQi0HVmEPJaXltuJy09Gzj5rF1qUk2kxtpEiFURoDXTxsbXgOh
-         rcYL2WQ+rfsAgb2hhXfRDaNAJAEddkru+evl57r8=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05MIxW7D038101
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 22 Jun 2020 13:59:32 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 22
- Jun 2020 13:59:32 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 22 Jun 2020 13:59:32 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05MIxWM0113512;
-        Mon, 22 Jun 2020 13:59:32 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>, <robh@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH v29 16/16] leds: lp5523: Fix various formatting issues in the code
-Date:   Mon, 22 Jun 2020 13:59:19 -0500
-Message-ID: <20200622185919.2131-17-dmurphy@ti.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200622185919.2131-1-dmurphy@ti.com>
-References: <20200622185919.2131-1-dmurphy@ti.com>
+        Mon, 22 Jun 2020 14:59:58 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE38CC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:59:57 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id l17so16522073qki.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:59:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=TpvdD/J8VwHzvZd0v6OyP8qTfmXp+6SIfe2vfAxjGyo=;
+        b=a85HKK1kZBB03vsHeCPwXTkvFBVYKIduK9M11nnCMoNQ85WDdtUzATqJzzw5iWPSkN
+         jIH+VsvZMOJiyygWpdlkAt4miJRj2esXs67ECxP+bRp1PCJ85Oi8Jrb8TxkBf9GTai4c
+         CnEOplnB1bmQF0rKQmHvCleV013rhesLq9hy+s6q4PTqdCXRkWlonKo3ZGvpWqt+9K62
+         Zw1QM7z4Ob3w/5sFHTzPH3AESLdGqshPqG7gh8wRuMBucjrMVmJbaT44lJD3viUIULtV
+         2OGb/jHooIJTBYt1vnwzud1qXpmcBk49sPZQpwoCmalT3CGhUH+6AhVkosK08Zo+Jxv8
+         u6vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=TpvdD/J8VwHzvZd0v6OyP8qTfmXp+6SIfe2vfAxjGyo=;
+        b=p/cm5Ao+GE6vO31+t5nDnjbhOImll+ZZubBKO/DmqiIJpdsE8pJUNqd2lNzjDv0TpK
+         G3JGLyLVUKQYWMaXX5NFqlS5H9BoHX7+mCLdt+YlSNVfkM8CSQcaoWcgukD02nooh6g7
+         BDaI4F/pOyn4QzqTgCa++pLxSGpDoLafrCDegZunQfdVLGpHUbYpHsB+LGBhanXq9e9x
+         LWsEMZy8pshYfIx3/k+TYN0RzmToxHTdUP6SzXTG3vbbB1802a4ym5Gy7mAIMxiEdRGf
+         VrRuLbl+p8yZRUkkiGk188QwyaPDDedTC8CbnJN9xJhedpYWqgPaMxVndRJLjJwZXN+g
+         9Nzw==
+X-Gm-Message-State: AOAM532j7O0ezZ/rlOS5j24TsgdUg0ebsgHz9eMWA4Yhu0joli8bmGr1
+        6mev+YNPusFfSsjHvnKLlE0=
+X-Google-Smtp-Source: ABdhPJwcRpOXlOzNeD1ZeqA3JR6F+t1eie3QH4OXUnvCZxYSjmk86oye3yMPNcvPix9Qpg6DGlQ6Xg==
+X-Received: by 2002:ae9:c113:: with SMTP id z19mr17078056qki.355.1592852397173;
+        Mon, 22 Jun 2020 11:59:57 -0700 (PDT)
+Received: from LeoBras (177-131-65-187.dynamic.desktop.com.br. [177.131.65.187])
+        by smtp.gmail.com with ESMTPSA id u7sm13928861qku.119.2020.06.22.11.59.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 11:59:56 -0700 (PDT)
+Message-ID: <4bf1d32da3d13a44e3c2e4b04f369fe52c24a023.camel@gmail.com>
+Subject: Re: [PATCH 4/4] powerpc/pseries/iommu: Remove default DMA window
+ before creating DDW
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Ram Pai <linuxram@us.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Mon, 22 Jun 2020 15:59:28 -0300
+In-Reply-To: <ade15776-61d1-b660-db74-7aeba4eddfdf@ozlabs.ru>
+References: <20200619050619.266888-1-leobras.c@gmail.com>
+         <20200619050619.266888-5-leobras.c@gmail.com>
+         <ade15776-61d1-b660-db74-7aeba4eddfdf@ozlabs.ru>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix checkpatch errors and warnings for the LP5523.c device
-driver.
+Hello Alexey, thanks for the feedback!
 
-Acked-by: Pavel Machek <pavel@ucw.cz>
-Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- drivers/leds/leds-lp5523.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+On Mon, 2020-06-22 at 20:02 +1000, Alexey Kardashevskiy wrote:
+> 
+> On 19/06/2020 15:06, Leonardo Bras wrote:
+> > On LoPAR "DMA Window Manipulation Calls", it's recommended to remove the
+> > default DMA window for the device, before attempting to configure a DDW,
+> > in order to make the maximum resources available for the next DDW to be
+> > created.
+> > 
+> > This is a requirement for some devices to use DDW, given they only
+> > allow one DMA window.
+> > 
+> > If setting up a new DDW fails anywhere after the removal of this
+> > default DMA window, restore it using reset_dma_window.
+> 
+> Nah... If we do it like this, then under pHyp we lose 32bit DMA for good
+> as pHyp can only create a single window and it has to map at
+> 0x800.0000.0000.0000. They probably do not care though.
+> 
+> Under KVM, this will fail as VFIO allows creating  2 windows and it
+> starts from 0 but the existing iommu_bypass_supported_pSeriesLP() treats
+> the window address == 0 as a failure. And we want to keep both DMA
+> windows for PCI adapters with both 64bit and 32bit PCI functions (I
+> heard AMD GPU video + audio are like this) or someone could hotplug
+> 32bit DMA device on a vphb with already present 64bit DMA window so we
+> do not remove the default window.
 
-diff --git a/drivers/leds/leds-lp5523.c b/drivers/leds/leds-lp5523.c
-index 9776dc72a764..f55d97258d5e 100644
---- a/drivers/leds/leds-lp5523.c
-+++ b/drivers/leds/leds-lp5523.c
-@@ -23,13 +23,13 @@
- 
- #define LP5523_PROGRAM_LENGTH		32	/* bytes */
- /* Memory is used like this:
--   0x00 engine 1 program
--   0x10 engine 2 program
--   0x20 engine 3 program
--   0x30 engine 1 muxing info
--   0x40 engine 2 muxing info
--   0x50 engine 3 muxing info
--*/
-+ * 0x00 engine 1 program
-+ * 0x10 engine 2 program
-+ * 0x20 engine 3 program
-+ * 0x30 engine 1 muxing info
-+ * 0x40 engine 2 muxing info
-+ * 0x50 engine 3 muxing info
-+ */
- #define LP5523_MAX_LEDS			9
- 
- /* Registers */
-@@ -326,7 +326,7 @@ static int lp5523_update_program_memory(struct lp55xx_chip *chip,
- 					const u8 *data, size_t size)
- {
- 	u8 pattern[LP5523_PROGRAM_LENGTH] = {0};
--	unsigned cmd;
-+	unsigned int cmd;
- 	char c[3];
- 	int nrchars;
- 	int ret;
-@@ -468,6 +468,7 @@ static int lp5523_mux_parse(const char *buf, u16 *mux, size_t len)
- static void lp5523_mux_to_array(u16 led_mux, char *array)
- {
- 	int i, pos = 0;
-+
- 	for (i = 0; i < LP5523_MAX_LEDS; i++)
- 		pos += sprintf(array + pos, "%x", LED_ACTIVE(led_mux, i));
- 
-@@ -506,7 +507,7 @@ static int lp5523_load_mux(struct lp55xx_chip *chip, u16 mux, int nr)
- 	if (ret)
- 		return ret;
- 
--	ret = lp55xx_write(chip, LP5523_REG_PROG_MEM , (u8)(mux >> 8));
-+	ret = lp55xx_write(chip, LP5523_REG_PROG_MEM, (u8)(mux >> 8));
- 	if (ret)
- 		return ret;
- 
--- 
-2.26.2
+Well, then I would suggest doing something like this:
+	query_ddw(...);
+  	if (query.windows_available == 0){
+		remove_dma_window(...,default_win);
+		query_ddw(...);
+	}
+
+This would make sure to cover cases of windows available == 1
+and windows available > 1; 
+
+> The last discussed thing I remember was that there was supposed to be a
+> new bit in "ibm,architecture-vec-5" (forgot the details), we could use
+> that to decide whether to keep the default window or not, like this.
+
+I checked on the latest LoPAR draft (soon to be published), for the
+ibm,architecture-vec 'option array 5' and this entry was the only
+recently added one that is related to this patchset:
+
+Byte 8 - Bit 0:
+SRIOV Virtual Functions Support Dynamic DMA Windows (DDW):
+0: SRIOV Virtual Functions do not support DDW
+1: SRIOV Virtual Functions do support DDW
+
+Isn't this equivalent to having a "ibm,ddw-applicable" property?
+
+
+> 
+> > Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> > ---
+> >  arch/powerpc/platforms/pseries/iommu.c | 20 +++++++++++++++++---
+> >  1 file changed, 17 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
+> > index de633f6ae093..68d1ea957ac7 100644
+> > --- a/arch/powerpc/platforms/pseries/iommu.c
+> > +++ b/arch/powerpc/platforms/pseries/iommu.c
+> > @@ -1074,8 +1074,9 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+> >  	u64 dma_addr, max_addr;
+> >  	struct device_node *dn;
+> >  	u32 ddw_avail[3];
+> > +
+> >  	struct direct_window *window;
+> > -	struct property *win64;
+> > +	struct property *win64, *dfl_win;
+> 
+> Make it "default_win" or "def_win", "dfl" hurts to read :)
+
+Sure, no problem :)
+
+> 
+> >  	struct dynamic_dma_window_prop *ddwprop;
+> >  	struct failed_ddw_pdn *fpdn;
+> >  
+> > @@ -1110,8 +1111,19 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+> >  	if (ret)
+> >  		goto out_failed;
+> >  
+> > -       /*
+> > -	 * Query if there is a second window of size to map the
+> > +	/*
+> > +	 * First step of setting up DDW is removing the default DMA window,
+> > +	 * if it's present. It will make all the resources available to the
+> > +	 * new DDW window.
+> > +	 * If anything fails after this, we need to restore it.
+> > +	 */
+> > +
+> > +	dfl_win = of_find_property(pdn, "ibm,dma-window", NULL);
+> > +	if (dfl_win)
+> > +		remove_dma_window(pdn, ddw_avail, dfl_win);
+> 
+> Before doing so, you want to make sure that the "reset" is actually
+> supported. Thanks,
+
+Good catch, I will improve that.
+
+> 
+> 
+> > +
+> > +	/*
+> > +	 * Query if there is a window of size to map the
+> >  	 * whole partition.  Query returns number of windows, largest
+> >  	 * block assigned to PE (partition endpoint), and two bitmasks
+> >  	 * of page sizes: supported and supported for migrate-dma.
+> > @@ -1219,6 +1231,8 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+> >  	kfree(win64);
+> >  
+> >  out_failed:
+> > +	if (dfl_win)
+> > +		reset_dma_window(dev, pdn);
+> >  
+> >  	fpdn = kzalloc(sizeof(*fpdn), GFP_KERNEL);
+> >  	if (!fpdn)
+> > 
+
+Best regards,
+Leonardo
 
