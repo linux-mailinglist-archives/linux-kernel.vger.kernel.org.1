@@ -2,117 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13DFC203521
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:54:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 188F9203526
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727120AbgFVKyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 06:54:13 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6382 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727024AbgFVKyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 06:54:12 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id DD2B3CE1167AFCF01F41;
-        Mon, 22 Jun 2020 18:54:09 +0800 (CST)
-Received: from SWX921481.china.huawei.com (10.126.203.232) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 22 Jun 2020 18:54:01 +0800
-From:   Barry Song <song.bao.hua@hisilicon.com>
-To:     <akpm@linux-foundation.org>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Seth Jennings <sjenning@redhat.com>,
-        "Dan Streetman" <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>
-Subject: [PATCH] mm/zswap: careful error path implementation in comp_prepare
-Date:   Mon, 22 Jun 2020 22:52:28 +1200
-Message-ID: <20200622105228.17720-1-song.bao.hua@hisilicon.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S1727833AbgFVKyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 06:54:50 -0400
+Received: from sonic309-24.consmr.mail.ir2.yahoo.com ([77.238.179.82]:41954
+        "EHLO sonic309-24.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727798AbgFVKyu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 06:54:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1592823288; bh=u+2W15QLNb9HleqIDd+XjS10sGkxRA68vm2qT7T5JWU=; h=Date:From:Reply-To:Subject:References:From:Subject; b=fnnK4OtihxtpdGNxX8yZKb9GYNm8lyL4l3yHmP+oTqPL4YH8Rx+A/nvwnSCkN2OJGGx0B/3o55bSHg9KqJORneJXZoh9w0C/I750TN5LskLR5RaZLIb/tZeI3B8yH2Q3FSgzbG3wzuW+ckLstFs/1SDfSrz+apQMQ0iVaWo+M6qAtGR58U6igwZcylTCferRFeDiPQm/HTKjWEg0nbWsY2DPBhSwNrFbjBrjOTq1u57oONyA1DeLN9qu2d8ITGI169BgudWBMDez9XO5ICX1Ju1VudZIHHQPspKUHF2WW8USJUOVTsW4cexD8GZL+m5KVRU4sg3/nw/h8b0cteUuOQ==
+X-YMail-OSG: NQQ_4pgVM1l8UaDZ0uTNyqOgm2K2iXDpmfP9j6wnFpdGlUglGFTqeMV6GdYKBIs
+ 3iur1AJwJDg7PZalUGCQI7cSa9c0Ikpup1XSibC6AwnxVGgmUTPdIixh31Vvb1qKcphNfuVjte75
+ QXPqjCRZG.mwOn_xDQ8afT_IXO3J55N5AEx24xOMd3Tjzu0ysnELv0JfA.I.C9rNVIIvYDHud3uN
+ 9NYVa76Tt1Xupygi_S05qmD3eneggehKpVvVT271z7AClNclrk.qVT_bscp54iQY_rcglh9qJEeY
+ KV4pc5SyKw8VXeuB7xiJvj3pvsup5dJu2b3RWdDSAGu5tUEyzvFl8X63opAc4.XFOfmkET0ZGhCV
+ osYKHi29zyWgPnQ8nWluvVaUE7BKEwJR61EwaH_fTYAPPnIpMcJerNpX7V302QeD2yX8_qJr1usj
+ Sv5iYjsx8WNHB0h_D4Zi0Dkz68J7b03kxDUOW2ROHohcR.5sxAWTMN3Bmc9fyHFhWjcraB6WAcyF
+ q38yvrqBOl6unGEVarydXPrQA1S8650dDWonKWC2PH1vyZzY1Mtf68J0DgH187a0I41hWdGKYokO
+ ljue6vvRkCE22n45pCbdSFXrV8bThQF8iX6Gzb5NNbgEh1yngsYPAPv6_CKZPQcpoLRUA0MYYTVM
+ I7S26vy1CjLfz_Dz6SzG2bcCLIzatt9Y.7V.gRFkY.nDhjnJQVKWAO1Z3WHs2kwV9OyVuxiboYQ_
+ DrqZSHy1csegLtrRBbdiu7Di5KMAHeOz_SHV2._Rg5E9MPbk5DEra0BmBBRIecYX2V0Z1TgOdDKC
+ W5.3jPKzMI.34rIMer.ZGvF6ecM6ADtf7QO45BzEFcpDB0twlM5H7IupoNTGvJs9jLcJDJm8TObb
+ KgVGyNAe7mkwAndhXOYLJiJ5UAqWQGxqZe3Zs26A0ea3JYEYYbZWSZJJ_gDnqZGQp6dQ2oFtAJTN
+ zSPurOOZl_n4WuNcE1ugef9uzYkqeK.MEoX.WMS_i1GoHpgZqUGx5ZAJTwuI5IhHAx2NzP214Sxx
+ SswwDKrcuOftbBG3IRrDUv.sZwXMTY0Q4OTmcb_jz2c8F3m6tukDti7rSP9KW7La9orPUBYAuaEU
+ BhWmCtEMgizF8G9zN37SKAQwNQdtIqDl171rPh33gOOivh7jaMN9.gO6SWxUEnUkNOhVfsARVeQo
+ DJLHBW8khIdfk6zQ3KFYbVolm0xV7OpJ0J8lMcx5UwnbAXX5EbOonxWHtqwmO_5Ld9sW066DDq88
+ QRZelyBW2ieSjVIIhtNwKHKAWU2GPQxpy1DMlmY9e_dG72dTdtsTW_lAPb0TASXrcYl6MehpJv7v
+ I.A--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ir2.yahoo.com with HTTP; Mon, 22 Jun 2020 10:54:48 +0000
+Date:   Mon, 22 Jun 2020 10:54:46 +0000 (UTC)
+From:   "Mr. Ban Ki Moon" <bbankimoon42@gmail.com>
+Reply-To: bkimoon65@gmail.com
+Message-ID: <597075524.3263771.1592823286944@mail.yahoo.com>
+Subject: Congratulation!
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.126.203.232]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <597075524.3263771.1592823286944.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16138 YMailNodin Mozilla/5.0 (Windows NT 6.1; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Free the allocated memory and resource while an error occurs.
-
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: David S. Miller" <davem@davemloft.net>
-Cc: Seth Jennings <sjenning@redhat.com>
-Cc: Dan Streetman <ddstreet@ieee.org>
-Cc: Vitaly Wool <vitaly.wool@konsulko.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
----
- -v1: an incremental patch againest linux-next to fix the issue pointed
-      out by Vitaly
-
- mm/zswap.c | 25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
-
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 0d914ba6b4a0..c0a85ef46610 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -428,28 +428,31 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
- 	struct crypto_acomp *acomp;
- 	struct acomp_req *req;
- 	struct crypto_acomp_ctx *acomp_ctx;
-+	int ret;
- 
- 	if (WARN_ON(*per_cpu_ptr(pool->acomp_ctx, cpu)))
- 		return 0;
- 
- 	acomp_ctx = kzalloc(sizeof(*acomp_ctx), GFP_KERNEL);
--	if (IS_ERR_OR_NULL(acomp_ctx)) {
--		pr_err("Could not initialize acomp_ctx\n");
-+	if (!acomp_ctx) {
-+		pr_err("Could not allocate acomp_ctx\n");
- 		return -ENOMEM;
- 	}
- 	acomp = crypto_alloc_acomp(pool->tfm_name, 0, 0);
--	if (IS_ERR_OR_NULL(acomp)) {
-+	if (IS_ERR(acomp)) {
- 		pr_err("could not alloc crypto acomp %s : %ld\n",
- 				pool->tfm_name, PTR_ERR(acomp));
--		return -ENOMEM;
-+		ret = PTR_ERR(acomp);
-+		goto free_ctx;
- 	}
- 	acomp_ctx->acomp = acomp;
- 
- 	req = acomp_request_alloc(acomp_ctx->acomp);
--	if (IS_ERR_OR_NULL(req)) {
--		pr_err("could not alloc crypto acomp %s : %ld\n",
--		       pool->tfm_name, PTR_ERR(acomp));
--		return -ENOMEM;
-+	if (!req) {
-+		pr_err("could not alloc crypto acomp_request %s\n",
-+		       pool->tfm_name);
-+		ret = -ENOMEM;
-+		goto free_acomp;
- 	}
- 	acomp_ctx->req = req;
- 
-@@ -462,6 +465,12 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
- 	*per_cpu_ptr(pool->acomp_ctx, cpu) = acomp_ctx;
- 
- 	return 0;
-+
-+free_acomp:
-+	crypto_free_acomp(acomp_ctx->acomp);
-+free_ctx:
-+	kfree(acomp_ctx);
-+	return ret;
- }
- 
- static int zswap_cpu_comp_dead(unsigned int cpu, struct hlist_node *node)
--- 
-2.27.0
-
-
+Congratulation! Your Email Address was selected as a winner of =C2=A32000,0=
+00.00 on Euro-Mega DRAW
