@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0E62044AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDA3020449F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731476AbgFVXrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 19:47:01 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:54760 "EHLO
+        id S1731176AbgFVXqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 19:46:15 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54764 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730641AbgFVXqK (ORCPT
+        with ESMTP id S1730678AbgFVXqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 19:46:10 -0400
+        Mon, 22 Jun 2020 19:46:08 -0400
 Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein.fritz.box)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jnW8a-0005DO-VF; Mon, 22 Jun 2020 23:46:05 +0000
+        id 1jnW8c-0005DO-65; Mon, 22 Jun 2020 23:46:06 +0000
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
@@ -24,9 +24,9 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         "David S . Miller" <davem@davemloft.net>,
         Arnd Bergmann <arnd@arndb.de>, Guo Ren <guoren@kernel.org>,
         linux-csky@vger.kernel.org, sparclinux@vger.kernel.org
-Subject: [PATCH 03/17] sparc: share process creation helpers between sparc and sparc64
-Date:   Tue, 23 Jun 2020 01:43:12 +0200
-Message-Id: <20200622234326.906346-4-christian.brauner@ubuntu.com>
+Subject: [PATCH 04/17] sparc: unconditionally enable HAVE_COPY_THREAD_TLS
+Date:   Tue, 23 Jun 2020 01:43:13 +0200
+Message-Id: <20200622234326.906346-5-christian.brauner@ubuntu.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200622234326.906346-1-christian.brauner@ubuntu.com>
 References: <20200622234326.906346-1-christian.brauner@ubuntu.com>
@@ -37,15 +37,11 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As promised in the previous patch, this moves the process creation
-helpers into a common process.c file that is shared between sparc and
-sparc64. It allows us to get rid of quite a bit custom assembler and the
-to remove the separe 32bit specific sparc_do_fork() call.
-
-One thing to note, is that when clone() was called with a separate stack
-for the child the assembler would align it. But copy_thread() has always
-been doing that too so that line wasn't needed and can thus simply be
-removed.
+Now that both sparc and sparc64 support copy_thread_tls() and don't rely
+on do_fork() anymore, turn on HAVE_COPY_THREAD_TLS unconditionally. Once
+all architectures are switched over this macro will be removed and
+the old do_fork() calling convention fully abandoned in favor of the
+cleaner struct kernel_clone_args one.
 
 Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 Acked-by: David S. Miller <davem@davemloft.net>
@@ -55,377 +51,57 @@ Cc: Guo Ren <guoren@kernel.org>
 Cc: linux-csky@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Cc: sparclinux@vger.kernel.org
-Link: https://lore.kernel.org/r/20200512171527.570109-3-christian.brauner@ubuntu.com
+Link: https://lore.kernel.org/r/20200512171527.570109-4-christian.brauner@ubuntu.com
 ---
- arch/sparc/kernel/Makefile     |   1 +
- arch/sparc/kernel/entry.S      |  29 +++------
- arch/sparc/kernel/kernel.h     |  11 ++--
- arch/sparc/kernel/process.c    | 110 +++++++++++++++++++++++++++++++++
- arch/sparc/kernel/process_32.c |  27 --------
- arch/sparc/kernel/process_64.c |  94 ----------------------------
- 6 files changed, 123 insertions(+), 149 deletions(-)
- create mode 100644 arch/sparc/kernel/process.c
+ arch/sparc/Kconfig             | 2 +-
+ arch/sparc/kernel/process_32.c | 7 ++++---
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/arch/sparc/kernel/Makefile b/arch/sparc/kernel/Makefile
-index 97c0e19263d1..d3a0e072ebe8 100644
---- a/arch/sparc/kernel/Makefile
-+++ b/arch/sparc/kernel/Makefile
-@@ -33,6 +33,7 @@ obj-y                   += irq_$(BITS).o
- obj-$(CONFIG_SPARC32)   += sun4m_irq.o sun4d_irq.o
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index e2bb4956e130..66213c0cb557 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -48,6 +48,7 @@ config SPARC
+ 	select LOCKDEP_SMALL if LOCKDEP
+ 	select NEED_DMA_MAP_STATE
+ 	select NEED_SG_DMA_LENGTH
++	select HAVE_COPY_THREAD_TLS
  
- obj-y                   += process_$(BITS).o
-+obj-y                   += process.o
- obj-y                   += signal_$(BITS).o
- obj-y                   += sigutil_$(BITS).o
- obj-$(CONFIG_SPARC32)   += ioport.o
-diff --git a/arch/sparc/kernel/entry.S b/arch/sparc/kernel/entry.S
-index f636acf3312f..d58940280f8d 100644
---- a/arch/sparc/kernel/entry.S
-+++ b/arch/sparc/kernel/entry.S
-@@ -869,14 +869,11 @@ flush_patch_two:
- 	ld	[%curptr + TI_TASK], %o4
- 	rd	%psr, %g4
- 	WRITE_PAUSE
--	mov	SIGCHLD, %o0			! arg0:	clone flags
- 	rd	%wim, %g5
- 	WRITE_PAUSE
--	mov	%fp, %o1			! arg1:	usp
- 	std	%g4, [%o4 + AOFF_task_thread + AOFF_thread_fork_kpsr]
--	add	%sp, STACKFRAME_SZ, %o2		! arg2:	pt_regs ptr
--	mov	0, %o3
--	call	sparc_do_fork
-+	add	%sp, STACKFRAME_SZ, %o0
-+	call	sparc_fork
- 	 mov	%l5, %o7
+ config SPARC32
+ 	def_bool !64BIT
+@@ -94,7 +95,6 @@ config SPARC64
+ 	select ARCH_HAS_PTE_SPECIAL
+ 	select PCI_DOMAINS if PCI
+ 	select ARCH_HAS_GIGANTIC_PAGE
+-	select HAVE_COPY_THREAD_TLS
  
- 	/* Whee, kernel threads! */
-@@ -888,19 +885,11 @@ flush_patch_three:
- 	ld	[%curptr + TI_TASK], %o4
- 	rd	%psr, %g4
- 	WRITE_PAUSE
--
--	/* arg0,1: flags,usp  -- loaded already */
--	cmp	%o1, 0x0			! Is new_usp NULL?
- 	rd	%wim, %g5
- 	WRITE_PAUSE
--	be,a	1f
--	 mov	%fp, %o1			! yes, use callers usp
--	andn	%o1, 7, %o1			! no, align to 8 bytes
--1:
- 	std	%g4, [%o4 + AOFF_task_thread + AOFF_thread_fork_kpsr]
--	add	%sp, STACKFRAME_SZ, %o2		! arg2:	pt_regs ptr
--	mov	0, %o3
--	call	sparc_do_fork
-+	add	%sp, STACKFRAME_SZ, %o0
-+	call	sparc_clone
- 	 mov	%l5, %o7
- 
- 	/* Whee, real vfork! */
-@@ -914,13 +903,9 @@ flush_patch_four:
- 	rd	%wim, %g5
- 	WRITE_PAUSE
- 	std	%g4, [%o4 + AOFF_task_thread + AOFF_thread_fork_kpsr]
--	sethi	%hi(0x4000 | 0x0100 | SIGCHLD), %o0
--	mov	%fp, %o1
--	or	%o0, %lo(0x4000 | 0x0100 | SIGCHLD), %o0
--	sethi	%hi(sparc_do_fork), %l1
--	mov	0, %o3
--	jmpl	%l1 + %lo(sparc_do_fork), %g0
--	 add	%sp, STACKFRAME_SZ, %o2
-+	sethi	%hi(sparc_vfork), %l1
-+	jmpl	%l1 + %lo(sparc_vfork), %g0
-+	 add	%sp, STACKFRAME_SZ, %o0
- 
-         .align  4
- linux_sparc_ni_syscall:
-diff --git a/arch/sparc/kernel/kernel.h b/arch/sparc/kernel/kernel.h
-index f6f498ba3198..9cd09a3ef35f 100644
---- a/arch/sparc/kernel/kernel.h
-+++ b/arch/sparc/kernel/kernel.h
-@@ -14,6 +14,11 @@ extern const char *sparc_pmu_type;
- extern unsigned int fsr_storage;
- extern int ncpus_probed;
- 
-+/* process{_32,_64}.c */
-+asmlinkage long sparc_clone(struct pt_regs *regs);
-+asmlinkage long sparc_fork(struct pt_regs *regs);
-+asmlinkage long sparc_vfork(struct pt_regs *regs);
-+
- #ifdef CONFIG_SPARC64
- /* setup_64.c */
- struct seq_file;
-@@ -153,12 +158,6 @@ void floppy_hardint(void);
- extern unsigned long sun4m_cpu_startup;
- extern unsigned long sun4d_cpu_startup;
- 
--/* process_32.c */
--asmlinkage int sparc_do_fork(unsigned long clone_flags,
--                             unsigned long stack_start,
--                             struct pt_regs *regs,
--                             unsigned long stack_size);
--
- /* signal_32.c */
- asmlinkage void do_sigreturn(struct pt_regs *regs);
- asmlinkage void do_rt_sigreturn(struct pt_regs *regs);
-diff --git a/arch/sparc/kernel/process.c b/arch/sparc/kernel/process.c
-new file mode 100644
-index 000000000000..8bbe62d77b77
---- /dev/null
-+++ b/arch/sparc/kernel/process.c
-@@ -0,0 +1,110 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+/*
-+ * This file handles the architecture independent parts of process handling..
-+ */
-+
-+#include <linux/compat.h>
-+#include <linux/errno.h>
-+#include <linux/kernel.h>
-+#include <linux/ptrace.h>
-+#include <linux/sched.h>
-+#include <linux/sched/task.h>
-+#include <linux/sched/task_stack.h>
-+#include <linux/signal.h>
-+
-+#include "kernel.h"
-+
-+asmlinkage long sparc_fork(struct pt_regs *regs)
-+{
-+	unsigned long orig_i1 = regs->u_regs[UREG_I1];
-+	long ret;
-+	struct kernel_clone_args args = {
-+		.exit_signal	= SIGCHLD,
-+		/* Reuse the parent's stack for the child. */
-+		.stack		= regs->u_regs[UREG_FP],
-+	};
-+
-+	ret = _do_fork(&args);
-+
-+	/* If we get an error and potentially restart the system
-+	 * call, we're screwed because copy_thread_tls() clobbered
-+	 * the parent's %o1.  So detect that case and restore it
-+	 * here.
-+	 */
-+	if ((unsigned long)ret >= -ERESTART_RESTARTBLOCK)
-+		regs->u_regs[UREG_I1] = orig_i1;
-+
-+	return ret;
-+}
-+
-+asmlinkage long sparc_vfork(struct pt_regs *regs)
-+{
-+	unsigned long orig_i1 = regs->u_regs[UREG_I1];
-+	long ret;
-+
-+	struct kernel_clone_args args = {
-+		.flags		= CLONE_VFORK | CLONE_VM,
-+		.exit_signal	= SIGCHLD,
-+		/* Reuse the parent's stack for the child. */
-+		.stack		= regs->u_regs[UREG_FP],
-+	};
-+
-+	ret = _do_fork(&args);
-+
-+	/* If we get an error and potentially restart the system
-+	 * call, we're screwed because copy_thread_tls() clobbered
-+	 * the parent's %o1.  So detect that case and restore it
-+	 * here.
-+	 */
-+	if ((unsigned long)ret >= -ERESTART_RESTARTBLOCK)
-+		regs->u_regs[UREG_I1] = orig_i1;
-+
-+	return ret;
-+}
-+
-+asmlinkage long sparc_clone(struct pt_regs *regs)
-+{
-+	unsigned long orig_i1 = regs->u_regs[UREG_I1];
-+	unsigned int flags = lower_32_bits(regs->u_regs[UREG_I0]);
-+	long ret;
-+
-+	struct kernel_clone_args args = {
-+		.flags		= (flags & ~CSIGNAL),
-+		.exit_signal	= (flags & CSIGNAL),
-+		.tls		= regs->u_regs[UREG_I3],
-+	};
-+
-+#ifdef CONFIG_COMPAT
-+	if (test_thread_flag(TIF_32BIT)) {
-+		args.pidfd	= compat_ptr(regs->u_regs[UREG_I2]);
-+		args.child_tid	= compat_ptr(regs->u_regs[UREG_I4]);
-+		args.parent_tid	= compat_ptr(regs->u_regs[UREG_I2]);
-+	} else
-+#endif
-+	{
-+		args.pidfd	= (int __user *)regs->u_regs[UREG_I2];
-+		args.child_tid	= (int __user *)regs->u_regs[UREG_I4];
-+		args.parent_tid	= (int __user *)regs->u_regs[UREG_I2];
-+	}
-+
-+	/* Did userspace give setup a separate stack for the child or are we
-+	 * reusing the parent's?
-+	 */
-+	if (regs->u_regs[UREG_I1])
-+		args.stack = regs->u_regs[UREG_I1];
-+	else
-+		args.stack = regs->u_regs[UREG_FP];
-+
-+	ret = _do_fork(&args);
-+
-+	/* If we get an error and potentially restart the system
-+	 * call, we're screwed because copy_thread_tls() clobbered
-+	 * the parent's %o1.  So detect that case and restore it
-+	 * here.
-+	 */
-+	if ((unsigned long)ret >= -ERESTART_RESTARTBLOCK)
-+		regs->u_regs[UREG_I1] = orig_i1;
-+
-+	return ret;
-+}
+ config ARCH_PROC_KCORE_TEXT
+ 	def_bool y
 diff --git a/arch/sparc/kernel/process_32.c b/arch/sparc/kernel/process_32.c
-index 13cb5638fab8..229a10bab74a 100644
+index 229a10bab74a..3e1f7b639e9a 100644
 --- a/arch/sparc/kernel/process_32.c
 +++ b/arch/sparc/kernel/process_32.c
-@@ -257,33 +257,6 @@ clone_stackframe(struct sparc_stackf __user *dst,
- 	return sp;
- }
+@@ -273,8 +273,9 @@ clone_stackframe(struct sparc_stackf __user *dst,
+ extern void ret_from_fork(void);
+ extern void ret_from_kernel_thread(void);
  
--asmlinkage int sparc_do_fork(unsigned long clone_flags,
--                             unsigned long stack_start,
--                             struct pt_regs *regs,
--                             unsigned long stack_size)
--{
--	unsigned long parent_tid_ptr, child_tid_ptr;
--	unsigned long orig_i1 = regs->u_regs[UREG_I1];
--	long ret;
--
--	parent_tid_ptr = regs->u_regs[UREG_I2];
--	child_tid_ptr = regs->u_regs[UREG_I4];
--
--	ret = do_fork(clone_flags, stack_start, stack_size,
--		      (int __user *) parent_tid_ptr,
--		      (int __user *) child_tid_ptr);
--
--	/* If we get an error and potentially restart the system
--	 * call, we're screwed because copy_thread() clobbered
--	 * the parent's %o1.  So detect that case and restore it
--	 * here.
--	 */
--	if ((unsigned long)ret >= -ERESTART_RESTARTBLOCK)
--		regs->u_regs[UREG_I1] = orig_i1;
--
--	return ret;
--}
--
- /* Copy a Sparc thread.  The fork() return value conventions
-  * under SunOS are nothing short of bletcherous:
-  * Parent -->  %o0 == childs  pid, %o1 == 0
-diff --git a/arch/sparc/kernel/process_64.c b/arch/sparc/kernel/process_64.c
-index 8c400fca4e9f..278bf287c4be 100644
---- a/arch/sparc/kernel/process_64.c
-+++ b/arch/sparc/kernel/process_64.c
-@@ -572,100 +572,6 @@ void fault_in_user_windows(struct pt_regs *regs)
- 	force_sig(SIGSEGV);
- }
+-int copy_thread(unsigned long clone_flags, unsigned long sp,
+-		unsigned long arg, struct task_struct *p)
++int copy_thread_tls(unsigned long clone_flags, unsigned long sp,
++		    unsigned long arg, struct task_struct *p,
++		    unsigned long tls)
+ {
+ 	struct thread_info *ti = task_thread_info(p);
+ 	struct pt_regs *childregs, *regs = current_pt_regs();
+@@ -376,7 +377,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
+ 	regs->u_regs[UREG_I1] = 0;
  
--asmlinkage long sparc_fork(struct pt_regs *regs)
--{
--	unsigned long orig_i1 = regs->u_regs[UREG_I1];
--	long ret;
--	struct kernel_clone_args args = {
--		.exit_signal	= SIGCHLD,
--		/* Reuse the parent's stack for the child. */
--		.stack		= regs->u_regs[UREG_FP],
--	};
--
--	ret = _do_fork(&args);
--
--	/* If we get an error and potentially restart the system
--	 * call, we're screwed because copy_thread_tls() clobbered
--	 * the parent's %o1.  So detect that case and restore it
--	 * here.
--	 */
--	if ((unsigned long)ret >= -ERESTART_RESTARTBLOCK)
--		regs->u_regs[UREG_I1] = orig_i1;
--
--	return ret;
--}
--
--asmlinkage long sparc_vfork(struct pt_regs *regs)
--{
--	unsigned long orig_i1 = regs->u_regs[UREG_I1];
--	long ret;
--
--	struct kernel_clone_args args = {
--		.flags		= CLONE_VFORK | CLONE_VM,
--		.exit_signal	= SIGCHLD,
--		/* Reuse the parent's stack for the child. */
--		.stack		= regs->u_regs[UREG_FP],
--	};
--
--	ret = _do_fork(&args);
--
--	/* If we get an error and potentially restart the system
--	 * call, we're screwed because copy_thread_tls() clobbered
--	 * the parent's %o1.  So detect that case and restore it
--	 * here.
--	 */
--	if ((unsigned long)ret >= -ERESTART_RESTARTBLOCK)
--		regs->u_regs[UREG_I1] = orig_i1;
--
--	return ret;
--}
--
--asmlinkage long sparc_clone(struct pt_regs *regs)
--{
--	unsigned long orig_i1 = regs->u_regs[UREG_I1];
--	unsigned int flags = lower_32_bits(regs->u_regs[UREG_I0]);
--	long ret;
--
--	struct kernel_clone_args args = {
--		.flags		= (flags & ~CSIGNAL),
--		.exit_signal	= (flags & CSIGNAL),
--		.tls		= regs->u_regs[UREG_I3],
--	};
--
--#ifdef CONFIG_COMPAT
--	if (test_thread_flag(TIF_32BIT)) {
--		args.pidfd	= compat_ptr(regs->u_regs[UREG_I2]);
--		args.child_tid	= compat_ptr(regs->u_regs[UREG_I4]);
--		args.parent_tid	= compat_ptr(regs->u_regs[UREG_I2]);
--	} else
--#endif
--	{
--		args.pidfd	= (int __user *)regs->u_regs[UREG_I2];
--		args.child_tid	= (int __user *)regs->u_regs[UREG_I4];
--		args.parent_tid	= (int __user *)regs->u_regs[UREG_I2];
--	}
--
--	/* Did userspace setup a separate stack for the child or are we
--	 * copying the parent's?
--	 */
--	if (regs->u_regs[UREG_I1])
--		args.stack = regs->u_regs[UREG_I1];
--	else
--		args.stack = regs->u_regs[UREG_FP];
--
--	ret = _do_fork(&args);
--
--	/* If we get an error and potentially restart the system
--	 * call, we're screwed because copy_thread_tls() clobbered
--	 * the parent's %o1.  So detect that case and restore it
--	 * here.
--	 */
--	if ((unsigned long)ret >= -ERESTART_RESTARTBLOCK)
--		regs->u_regs[UREG_I1] = orig_i1;
--
--	return ret;
--}
--
- /* Copy a Sparc thread.  The fork() return value conventions
-  * under SunOS are nothing short of bletcherous:
-  * Parent -->  %o0 == childs  pid, %o1 == 0
+ 	if (clone_flags & CLONE_SETTLS)
+-		childregs->u_regs[UREG_G7] = regs->u_regs[UREG_I3];
++		childregs->u_regs[UREG_G7] = tls;
+ 
+ 	return 0;
+ }
 -- 
 2.27.0
 
