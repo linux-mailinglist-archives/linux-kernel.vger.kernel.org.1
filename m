@@ -2,62 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8718A20330E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 11:15:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBB82032B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 11:03:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726660AbgFVJPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 05:15:14 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:46442 "EHLO inva020.nxp.com"
+        id S1726557AbgFVJDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 05:03:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726128AbgFVJPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 05:15:14 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 869911A0B94;
-        Mon, 22 Jun 2020 11:15:12 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 069CF1A0A69;
-        Mon, 22 Jun 2020 11:15:08 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 6E2F6402E3;
-        Mon, 22 Jun 2020 17:15:02 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: fsl_easrc: Fix uninitialized scalar variable in fsl_easrc_set_ctx_format
-Date:   Mon, 22 Jun 2020 17:03:31 +0800
-Message-Id: <1592816611-16297-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725907AbgFVJDm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 05:03:42 -0400
+Received: from kernel.org (unknown [104.132.0.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C351B206D7;
+        Mon, 22 Jun 2020 09:03:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592816621;
+        bh=dfPq2bWzwrh5d/nPvytI9Z/3m/amVEV2Rcw1LlZyQmc=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=vhvP7fE2MPNiHbfOeqUpBKYvYHUd3trLSwHmotHtfbD0VQFAa3Kwf3asD6snmMfVn
+         7p1K872LOY3D+lW5N2LJm3deS04WJDM10Qxgq0hfBEHc7pew9hlgtznyNjzvlDqDoI
+         hWZw7i2g7uSA8PFpTf60IR4oph7Kn4ltUnLQO8vI=
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200620033007.1444705-8-keescook@chromium.org>
+References: <20200620033007.1444705-1-keescook@chromium.org> <20200620033007.1444705-8-keescook@chromium.org>
+Subject: Re: [PATCH v2 07/16] clk: st: Remove uninitialized_var() usage
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Joe Perches <joe@perches.com>,
+        Andy Whitcroft <apw@canonical.com>, x86@kernel.org,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        b43-dev@lists.infradead.org, netdev@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-wireless@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-spi@vger.kernel.org, linux-mm@kvack.org,
+        clang-built-linux@googlegroups.com
+To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
+Date:   Mon, 22 Jun 2020 02:03:41 -0700
+Message-ID: <159281662109.62212.9073761737183602994@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The "ret" in fsl_easrc_set_ctx_format is not initialized, then
-the unknown value maybe returned by this function.
+Quoting Kees Cook (2020-06-19 20:29:58)
+> Using uninitialized_var() is dangerous as it papers over real bugs[1]
+> (or can in the future), and suppresses unrelated compiler warnings (e.g.
+> "unused variable"). If the compiler thinks it is uninitialized, either
+> simply initialize the variable or make compiler changes. As a precursor
+> to removing[2] this[3] macro[4], just remove this variable since it was
+> actually unused:
+>=20
+> drivers/clk/st/clkgen-fsyn.c: In function \u2018quadfs_set_rate\u2019:
+> drivers/clk/st/clkgen-fsyn.c:793:6: warning: unused variable \u2018i\u201=
+9 [-Wunused-variable]
+>   793 |  int i;
+>       |      ^
+>=20
+> [1] https://lore.kernel.org/lkml/20200603174714.192027-1-glider@google.co=
+m/
+> [2] https://lore.kernel.org/lkml/CA+55aFw+Vbj0i=3D1TGqCR5vQkCzWJ0QxK6Cern=
+OU6eedsudAixw@mail.gmail.com/
+> [3] https://lore.kernel.org/lkml/CA+55aFwgbgqhbp1fkxvRKEpzyR5J8n1vKT1VZdz=
+9knmPuXhOeg@mail.gmail.com/
+> [4] https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=3DyVJu65TpLg=
+N_ybYNv0VEOKA@mail.gmail.com/
+>=20
+> Fixes: 5f7aa9071e93 ("clk: st: Support for QUADFS inside ClockGenB/C/D/E/=
+F")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
 
-Fixes: 955ac624058f ("ASoC: fsl_easrc: Add EASRC ASoC CPU DAI drivers")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_easrc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/fsl/fsl_easrc.c b/sound/soc/fsl/fsl_easrc.c
-index 2f6b3d8bfcfc..03b3aef41d34 100644
---- a/sound/soc/fsl/fsl_easrc.c
-+++ b/sound/soc/fsl/fsl_easrc.c
-@@ -1132,7 +1132,7 @@ static int fsl_easrc_set_ctx_format(struct fsl_asrc_pair *ctx,
- 	struct fsl_easrc_ctx_priv *ctx_priv = ctx->private;
- 	struct fsl_easrc_data_fmt *in_fmt = &ctx_priv->in_params.fmt;
- 	struct fsl_easrc_data_fmt *out_fmt = &ctx_priv->out_params.fmt;
--	int ret;
-+	int ret = 0;
- 
- 	/* Get the bitfield values for input data format */
- 	if (in_raw_format && out_raw_format) {
--- 
-2.21.0
-
+Acked-by: Stephen Boyd <sboyd@kernel.org>
