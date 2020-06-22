@@ -2,156 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F72204080
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F9320408A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728702AbgFVTcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 15:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728594AbgFVTbz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 15:31:55 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682E5C061796
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:31:55 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id s23so8851327pfh.7
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:31:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zcPQ3teAeONtZCSjASMvWQH+0FGked91D84DWb3cnhA=;
-        b=BKy23l2w1m43ZpBXQM2fDRryt6KkrHZIrILWSDueLTLg7JkO/xXIBdrpxBtpXqG8Eo
-         C+whcf+rw091oqysj+R7yNmqCI48ZtM7rhgZGnobI7SE5xNIel15JCPoNXr8RLA/8gKA
-         FUXw0i2C4M8kbA9Vh9+15Qvp6mVOpj0mucLag=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zcPQ3teAeONtZCSjASMvWQH+0FGked91D84DWb3cnhA=;
-        b=H9GdzCUVjuD1c6aqOXBe0Y2/wZiQ/7fVR+oEAAu7njT84sL5NALFKZkca6C0sJ4Jf3
-         VvuHA3PpjG/u85RcgUGbHl8VlEDkF68cBTubIdx/wxdqIuCON3/ZtjZlX5LCZZyaM22W
-         KaBL+5SP25RanBOynSFsxE+ninS8fzekx8pW2LvktnFsr/xM6KpngNmqOkvMtIdbM6eD
-         ksOHcKgCdl+2JNpG8E/0zXbWw3adeha6UJTEwEb2LtdHmlIl986jh4t0GQhKfzb/YE/Z
-         /RLl3kA8g4FmkUJrM3B5K+h0qCjt6erJbyrrM+V9D4s1lB+v1jh/07KaUYGOVDvAu2Ot
-         wedg==
-X-Gm-Message-State: AOAM5318VZ0+UM7DL2eVfWQ2dasDYMDkK1Fk+cm/t6kefnmTqy4ShCqP
-        qV2nyRsTipr9tAA7iEpyCA2vPA==
-X-Google-Smtp-Source: ABdhPJwITrbj7E83VXsf9fWrxu//1aHMGodlvPkjapka8zNgM+eZ+A/1KAwdust7T+yhFUZyNvTBXw==
-X-Received: by 2002:a63:3f42:: with SMTP id m63mr14501829pga.310.1592854314990;
-        Mon, 22 Jun 2020 12:31:54 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id n189sm14916252pfn.108.2020.06.22.12.31.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 12:31:54 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Alexander Popov <alex.popov@linux.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Jann Horn <jannh@google.com>,
-        kernel-hardening@lists.openwall.com,
-        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4 5/5] arm64: entry: Enable random_kstack_offset support
-Date:   Mon, 22 Jun 2020 12:31:46 -0700
-Message-Id: <20200622193146.2985288-6-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200622193146.2985288-1-keescook@chromium.org>
-References: <20200622193146.2985288-1-keescook@chromium.org>
+        id S1728333AbgFVTff (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 15:35:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728143AbgFVTff (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 15:35:35 -0400
+Received: from kicinski-fedora-PC1C0HJN (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB12A206E2;
+        Mon, 22 Jun 2020 19:35:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592854535;
+        bh=QfRYrK8z5849Hl/Iv9wWsynxoV1oaehOiifKZ4mfpNY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JfokhTk1gxTrybajXHO0w4B3ciBNWwU36SoEDCyE/+X6vK5Et00KAkjVxKNN0XkgA
+         W8G1f60AQ7oE2E7AwqAtU5bKVib0D7X1scKH4ZmxBAWYF9E55FYjVEoj7/qyFR74V7
+         bGedwatZMKBKP00o8oIw6WbbODkDwYbay9WLC3tw=
+Date:   Mon, 22 Jun 2020 12:35:33 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Gaurav Singh <gaurav1086@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
+        linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH] [net] dcb_doit: remove redundant skb check
+Message-ID: <20200622123533.4fd450b6@kicinski-fedora-PC1C0HJN>
+In-Reply-To: <20200621165657.9814-1-gaurav1086@gmail.com>
+References: <20200621165657.9814-1-gaurav1086@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow for a randomized stack offset on a per-syscall basis, with roughly
-5 bits of entropy.
+On Sun, 21 Jun 2020 12:56:28 -0400 Gaurav Singh wrote:
+> Remove the redundant null check for skb.
+> 
+> Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
 
-In order to avoid unconditional stack canaries on syscall entry, also
-downgrade from -fstack-protector-strong to -fstack-protector to avoid
-triggering checks due to alloca(). Examining the resulting syscall.o,
-sees no changes in canary coverage (none before, none now).
+Thanks for the patch, it looks correct, but could you describe your
+proof / reasoning based on which this change is correct?
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- arch/arm64/Kconfig          |  1 +
- arch/arm64/kernel/Makefile  |  5 +++++
- arch/arm64/kernel/syscall.c | 10 ++++++++++
- 3 files changed, 16 insertions(+)
+Please post non-bug fixes like this with a [net-next] rather than [net]
+tag (https://www.kernel.org/doc/html/latest/networking/netdev-FAQ.html).
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index a4a094bedcb2..2902e5316e1a 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -135,6 +135,7 @@ config ARM64
- 	select HAVE_ARCH_MMAP_RND_BITS
- 	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
- 	select HAVE_ARCH_PREL32_RELOCATIONS
-+	select HAVE_ARCH_RANDOMIZE_KSTACK_OFFSET
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_STACKLEAK
- 	select HAVE_ARCH_THREAD_STRUCT_WHITELIST
-diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-index 151f28521f1e..39fc23d3770b 100644
---- a/arch/arm64/kernel/Makefile
-+++ b/arch/arm64/kernel/Makefile
-@@ -11,6 +11,11 @@ CFLAGS_REMOVE_ftrace.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_insn.o = $(CC_FLAGS_FTRACE)
- CFLAGS_REMOVE_return_address.o = $(CC_FLAGS_FTRACE)
- 
-+# Downgrade to -fstack-protector to avoid triggering unneeded stack canary
-+# checks due to randomize_kstack_offset.
-+CFLAGS_REMOVE_syscall.o += -fstack-protector-strong
-+CFLAGS_syscall.o	+= $(subst -fstack-protector-strong,-fstack-protector,$(filter -fstack-protector-strong,$(KBUILD_CFLAGS)))
-+
- # Object file lists.
- obj-y			:= debug-monitors.o entry.o irq.o fpsimd.o		\
- 			   entry-common.o entry-fpsimd.o process.o ptrace.o	\
-diff --git a/arch/arm64/kernel/syscall.c b/arch/arm64/kernel/syscall.c
-index 5f5b868292f5..00d3c84db9cd 100644
---- a/arch/arm64/kernel/syscall.c
-+++ b/arch/arm64/kernel/syscall.c
-@@ -5,6 +5,7 @@
- #include <linux/errno.h>
- #include <linux/nospec.h>
- #include <linux/ptrace.h>
-+#include <linux/randomize_kstack.h>
- #include <linux/syscalls.h>
- 
- #include <asm/daifflags.h>
-@@ -42,6 +43,8 @@ static void invoke_syscall(struct pt_regs *regs, unsigned int scno,
- {
- 	long ret;
- 
-+	add_random_kstack_offset();
-+
- 	if (scno < sc_nr) {
- 		syscall_fn_t syscall_fn;
- 		syscall_fn = syscall_table[array_index_nospec(scno, sc_nr)];
-@@ -51,6 +54,13 @@ static void invoke_syscall(struct pt_regs *regs, unsigned int scno,
- 	}
- 
- 	regs->regs[0] = ret;
-+
-+	/*
-+	 * Since the compiler chooses a 4 bit alignment for the stack,
-+	 * let's save one additional bit (9 total), which gets us up
-+	 * near 5 bits of entropy.
-+	 */
-+	choose_random_kstack_offset(get_random_int() & 0x1FF);
- }
- 
- static inline bool has_syscall_work(unsigned long flags)
--- 
-2.25.1
+> diff --git a/net/dcb/dcbnl.c b/net/dcb/dcbnl.c
+> index d2a4553bcf39..84dde5a2066e 100644
+> --- a/net/dcb/dcbnl.c
+> +++ b/net/dcb/dcbnl.c
+> @@ -1736,7 +1736,7 @@ static int dcb_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+>  	struct net_device *netdev;
+>  	struct dcbmsg *dcb = nlmsg_data(nlh);
+>  	struct nlattr *tb[DCB_ATTR_MAX + 1];
+> -	u32 portid = skb ? NETLINK_CB(skb).portid : 0;
+> +	u32 portid = NETLINK_CB(skb).portid;
+>  	int ret = -EINVAL;
+>  	struct sk_buff *reply_skb;
+>  	struct nlmsghdr *reply_nlh = NULL;
 
