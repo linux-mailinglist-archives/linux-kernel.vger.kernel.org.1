@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3868E20407D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2B820407F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:32:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728519AbgFVTbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 15:31:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47744 "EHLO
+        id S1728672AbgFVTb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 15:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728129AbgFVTbw (ORCPT
+        with ESMTP id S1728140AbgFVTbw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Jun 2020 15:31:52 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F46FC061795
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA080C061796
         for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:31:52 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id d12so2018961ply.1
+Received: by mail-pf1-x444.google.com with SMTP id j1so8869538pfe.4
         for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:31:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4nbp+NPCtqAP+1aCZB+BxvvOvC8Ydbr5MOs46Iqp71U=;
-        b=i8xeTUYkhUyZD/ZejYoQPEhDfLdlYyCVxvPsD8xQpm+zO42lEdDiJvk8BDYgGEcuJQ
-         qLArX4e0fAxdqKPkGHLw5VUwjVETfJ760S8EqnIUxpKn48TOqu7uedsiGT2X2OlwBuzf
-         rL0LTOtoD7Ifjax5kOpx8Vz+vl26lvwToxEYs=
+        bh=bd9f3BBqo3zGwwTfmvjboaNS4RxuJ7DCwqiU44HfZsQ=;
+        b=jQvwT91aNdu6DbbTFmcHtowv1QDuWeDxsDk/RqKsPvwbGbHTpYzrDrmmY/0dq+aBJQ
+         jlwYwDhLmthT175NDbEj6C17KQJgc9BEyT+EwcD3Md/NbUgFJ+PR+YCJt9RkY1QSZdRZ
+         QY9d67wu3uA3m5bOy/gHJd8An71KIaVS3oaeE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4nbp+NPCtqAP+1aCZB+BxvvOvC8Ydbr5MOs46Iqp71U=;
-        b=P+HvTEFJAyeENZ/qUWnFyN6B4UiWmqUVRrXZn7iICo1Rc5Vcvhb6e07v0dMB6t/L+8
-         wLdTka6F5whkuz/TcVGT6i0+XLZzrvV09ZxlRa6kZsatkp2PtwIVwJyLqBVm6okV4bkV
-         P5Xlv5b2mEHkFn9O2wueySltPDxibDlW9gABVikHUprgQEn8C0WNhXaj9Kau2BcaHCjf
-         MrAbavJg0lNIjZCNmiipkL9vJL/Kb8mTDYstiug2YeCEukI+hdUb3hEvytQJiE9+NuEJ
-         6XW3ofSlX+SBk+oFraqJNwwKfzIg1LgWe9krnP5Q3r7YXQV/W5B5IvAaN4TbO4LmegcD
-         r/BA==
-X-Gm-Message-State: AOAM533ncUJSoKWq3RCntmnB/2uibyvP3LjRArlhHqno8bqdhyM8Q7yl
-        hLuIzehSj+TXgd/rCj+TWXdleA==
-X-Google-Smtp-Source: ABdhPJx7b/cjaG3iRKt8wz6ljAUXxwMmy0SXSiUuqqLbeMskXHHKqA0MuLk0OKzDDvDp/IX6avXBCw==
-X-Received: by 2002:a17:90a:5a07:: with SMTP id b7mr18992351pjd.130.1592854311856;
-        Mon, 22 Jun 2020 12:31:51 -0700 (PDT)
+        bh=bd9f3BBqo3zGwwTfmvjboaNS4RxuJ7DCwqiU44HfZsQ=;
+        b=l0swADG7S3Set0ahPh1rbZLBh95Wg3v7ZmFlPOjp9qeghEmveCINGYXeDs8GwWWZl/
+         0MX0fB1htW07UeQ4VaQm4N20mxoa83gA2zfO6SCmRTWA+GNNeewyvg8DMAkct839QIaD
+         etJhUgWdwvh82sjOykwvzu+91+GSBe2EmsViPeteYvCOlHC8BP8w88ARyraC6lctVRUH
+         dF5GalQS5asKEwd2+aJtNfXuOGVhpq6IP9CPg8lRwfCpOXuoQvxJAY4cspYGG+VvNRP5
+         31pMYetieEQcouoUfWjO/VI6F6jIxb3PCqUf3B7BILyuVhblfluEH2ZkpOZ4/YkKgr6K
+         MvqQ==
+X-Gm-Message-State: AOAM532CyzIvGyXIVmkvudaBvaIgJvphzIyrHSTkwxQ05sQivQnEGYTS
+        iZu0r/+RLXPQosV3qfGqCkVMtmAXjYg=
+X-Google-Smtp-Source: ABdhPJy/XsCwbSTQ8GDNdy6eIPIN39i7/vLM9SHQLKSs+iIR061Tg/mVW3fZLxYeE/B4wCdXiH9v5A==
+X-Received: by 2002:a62:1d0b:: with SMTP id d11mr15185345pfd.1.1592854312494;
+        Mon, 22 Jun 2020 12:31:52 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q22sm14396934pfg.192.2020.06.22.12.31.49
+        by smtp.gmail.com with ESMTPSA id y18sm14064284pfn.177.2020.06.22.12.31.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 22 Jun 2020 12:31:50 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
 To:     Thomas Gleixner <tglx@linutronix.de>
 Cc:     Kees Cook <keescook@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Potapenko <glider@google.com>,
         Elena Reshetova <elena.reshetova@intel.com>, x86@kernel.org,
         Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        Alexander Potapenko <glider@google.com>,
         Alexander Popov <alex.popov@linux.com>,
         Ard Biesheuvel <ard.biesheuvel@linaro.org>,
         Jann Horn <jannh@google.com>,
         kernel-hardening@lists.openwall.com,
         linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/5] jump_label: Provide CONFIG-driven build state defaults
-Date:   Mon, 22 Jun 2020 12:31:42 -0700
-Message-Id: <20200622193146.2985288-2-keescook@chromium.org>
+Subject: [PATCH v4 2/5] init_on_alloc: Unpessimize default-on builds
+Date:   Mon, 22 Jun 2020 12:31:43 -0700
+Message-Id: <20200622193146.2985288-3-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200622193146.2985288-1-keescook@chromium.org>
 References: <20200622193146.2985288-1-keescook@chromium.org>
@@ -74,113 +74,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Choosing the initial state of static branches changes the assembly
-layout (if the condition is expected to be likely, inline, or unlikely,
-out of line via a jump). A few places in the kernel use (or could be
-using) a CONFIG to choose the default state, so provide the
-infrastructure to do this and convert the existing cases (init_on_alloc
-and init_on_free) to the new macros.
+Right now, the state of CONFIG_INIT_ON_ALLOC_DEFAULT_ON (and
+...ON_FREE...) did not change the assembly ordering of the static branch
+tests. Use the new jump_label macro to check CONFIG settings to default
+to the "expected" state, unpessimizes the resulting assembly code.
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Alexander Potapenko <glider@google.com>
 Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- include/linux/jump_label.h | 19 +++++++++++++++++++
- include/linux/mm.h         | 12 ++----------
- mm/page_alloc.c            | 12 ++----------
- 3 files changed, 23 insertions(+), 20 deletions(-)
+ include/linux/mm.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/jump_label.h b/include/linux/jump_label.h
-index 3526c0aee954..615fdfb871a3 100644
---- a/include/linux/jump_label.h
-+++ b/include/linux/jump_label.h
-@@ -382,6 +382,21 @@ struct static_key_false {
- 		[0 ... (count) - 1] = STATIC_KEY_FALSE_INIT,	\
- 	}
- 
-+#define _DEFINE_STATIC_KEY_1(name)	DEFINE_STATIC_KEY_TRUE(name)
-+#define _DEFINE_STATIC_KEY_0(name)	DEFINE_STATIC_KEY_FALSE(name)
-+#define DEFINE_STATIC_KEY_MAYBE(cfg, name)			\
-+	__PASTE(_DEFINE_STATIC_KEY_, IS_ENABLED(cfg))(name)
-+
-+#define _DEFINE_STATIC_KEY_RO_1(name)	DEFINE_STATIC_KEY_TRUE_RO(name)
-+#define _DEFINE_STATIC_KEY_RO_0(name)	DEFINE_STATIC_KEY_FALSE_RO(name)
-+#define DEFINE_STATIC_KEY_MAYBE_RO(cfg, name)			\
-+	__PASTE(_DEFINE_STATIC_KEY_RO_, IS_ENABLED(cfg))(name)
-+
-+#define _DECLARE_STATIC_KEY_1(name)	DECLARE_STATIC_KEY_TRUE(name)
-+#define _DECLARE_STATIC_KEY_0(name)	DECLARE_STATIC_KEY_FALSE(name)
-+#define DECLARE_STATIC_KEY_MAYBE(cfg, name)			\
-+	__PASTE(_DECLARE_STATIC_KEY_, IS_ENABLED(cfg))(name)
-+
- extern bool ____wrong_branch_error(void);
- 
- #define static_key_enabled(x)							\
-@@ -482,6 +497,10 @@ extern bool ____wrong_branch_error(void);
- 
- #endif /* CONFIG_JUMP_LABEL */
- 
-+#define static_branch_maybe(config, x)					\
-+	(IS_ENABLED(config) ? static_branch_likely(x)			\
-+			    : static_branch_unlikely(x))
-+
- /*
-  * Advanced usage; refcount, branch is enabled when: count != 0
-  */
 diff --git a/include/linux/mm.h b/include/linux/mm.h
-index dc7b87310c10..0e6824fd4458 100644
+index 0e6824fd4458..0a05b20870c2 100644
 --- a/include/linux/mm.h
 +++ b/include/linux/mm.h
-@@ -2889,11 +2889,7 @@ static inline void kernel_poison_pages(struct page *page, int numpages,
- 					int enable) { }
- #endif
- 
--#ifdef CONFIG_INIT_ON_ALLOC_DEFAULT_ON
--DECLARE_STATIC_KEY_TRUE(init_on_alloc);
--#else
--DECLARE_STATIC_KEY_FALSE(init_on_alloc);
--#endif
-+DECLARE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_ALLOC_DEFAULT_ON, init_on_alloc);
+@@ -2892,7 +2892,8 @@ static inline void kernel_poison_pages(struct page *page, int numpages,
+ DECLARE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_ALLOC_DEFAULT_ON, init_on_alloc);
  static inline bool want_init_on_alloc(gfp_t flags)
  {
- 	if (static_branch_unlikely(&init_on_alloc) &&
-@@ -2902,11 +2898,7 @@ static inline bool want_init_on_alloc(gfp_t flags)
+-	if (static_branch_unlikely(&init_on_alloc) &&
++	if (static_branch_maybe(CONFIG_INIT_ON_ALLOC_DEFAULT_ON,
++				&init_on_alloc) &&
+ 	    !page_poisoning_enabled())
+ 		return true;
  	return flags & __GFP_ZERO;
- }
- 
--#ifdef CONFIG_INIT_ON_FREE_DEFAULT_ON
--DECLARE_STATIC_KEY_TRUE(init_on_free);
--#else
--DECLARE_STATIC_KEY_FALSE(init_on_free);
--#endif
-+DECLARE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_FREE_DEFAULT_ON, init_on_free);
+@@ -2901,7 +2902,8 @@ static inline bool want_init_on_alloc(gfp_t flags)
+ DECLARE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_FREE_DEFAULT_ON, init_on_free);
  static inline bool want_init_on_free(void)
  {
- 	return static_branch_unlikely(&init_on_free) &&
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 48eb0f1410d4..5885a612fa18 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -136,18 +136,10 @@ unsigned long totalcma_pages __read_mostly;
+-	return static_branch_unlikely(&init_on_free) &&
++	return static_branch_maybe(CONFIG_INIT_ON_FREE_DEFAULT_ON,
++				   &init_on_free) &&
+ 	       !page_poisoning_enabled();
+ }
  
- int percpu_pagelist_fraction;
- gfp_t gfp_allowed_mask __read_mostly = GFP_BOOT_MASK;
--#ifdef CONFIG_INIT_ON_ALLOC_DEFAULT_ON
--DEFINE_STATIC_KEY_TRUE(init_on_alloc);
--#else
--DEFINE_STATIC_KEY_FALSE(init_on_alloc);
--#endif
-+DEFINE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_ALLOC_DEFAULT_ON, init_on_alloc);
- EXPORT_SYMBOL(init_on_alloc);
- 
--#ifdef CONFIG_INIT_ON_FREE_DEFAULT_ON
--DEFINE_STATIC_KEY_TRUE(init_on_free);
--#else
--DEFINE_STATIC_KEY_FALSE(init_on_free);
--#endif
-+DEFINE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_FREE_DEFAULT_ON, init_on_free);
- EXPORT_SYMBOL(init_on_free);
- 
- static int __init early_init_on_alloc(char *buf)
 -- 
 2.25.1
 
