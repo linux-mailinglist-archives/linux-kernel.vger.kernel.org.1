@@ -2,80 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A79B202FD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 08:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6450F202FDC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 08:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbgFVGjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 02:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725933AbgFVGjT (ORCPT
+        id S1726810AbgFVGlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 02:41:03 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:13483 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726738AbgFVGlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 02:39:19 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C511CC061794;
-        Sun, 21 Jun 2020 23:39:18 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id mb16so16843514ejb.4;
-        Sun, 21 Jun 2020 23:39:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UTfi4b8erlafdjROIQMGSunv2DNbIWrzkDCZLv011tE=;
-        b=DFK98p1wLeynT/wsoxfmOQMAl5w+7qY8JSvESy9eH1v/rvYDHPqu6IAplDSWkC04md
-         rqCDl2dBYvoSQigQJdoB/KsF7/Tn87GvcgffgEpRtUHo7o2ztPJVrFxM2EbAnFDIShUP
-         Zxn/hkfTTH4BtxZWHV1qsmVaGAUZAdiYxkHTwFKFCZyMzLyxUQ4g3XTe1j7V6ST91Pfc
-         41qr2/WzM5MT5POyYA2Ia6YKiEoE+XjGGWODVXztEKFBp/tsGAJflQd+VUXVGUnn2WwN
-         hhMmUC05v4mzLSlbmXkOprdGl+B4knk7knd3YfWQpdPvwyAZwv/sotrPOueGnngf/3ft
-         x4qg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UTfi4b8erlafdjROIQMGSunv2DNbIWrzkDCZLv011tE=;
-        b=eBTRG2m5Kea9JYj5APKa8qyRdHsb4ubo8aoPS/dayISVrfYkj9oazlDb4k+uaWgH0l
-         4trAiyWHodNnvQCszzoQLVfJtcBSjvXuv8iWB5pQ679+YEXrdGKnTI16T2EsuF2I3yDX
-         L8ihIlSeYpsP2f/Sp10q+Jeqy+4MOWqcB73R+tXg/6hhDKszt2Y1PEGiJoURLvfiOnf2
-         yZRtWzwWiJteWbZDoUDQT/DYgvtcAUFo+S1e75XWV6SsgbHMDS1k32lipr/+3coHAnFW
-         ZDPrQlSIBjafUnm68FJ0EVgG25upCCmdyt5lqi1ZoBYnRaR6bEuxKgJKghjkH2Uj9KRH
-         1VkQ==
-X-Gm-Message-State: AOAM5315cOvhHTqtOdvbx3/SPLRyyGlDZplTsBrWcJHkuqVZnizCGh8G
-        r2//Ql6of2surwzb8kgIjn83w0EVe634shSOtKw=
-X-Google-Smtp-Source: ABdhPJwmb95kBquCZL4hUerl8N+Bx61Cmy8RB0rTg0YvcGRWZm5k/9ODdc6AKUOl7Bp+hr+WaQeoZhRXeU7wRyWqVCs=
-X-Received: by 2002:a17:906:945:: with SMTP id j5mr14496147ejd.52.1592807957515;
- Sun, 21 Jun 2020 23:39:17 -0700 (PDT)
+        Mon, 22 Jun 2020 02:41:02 -0400
+X-UUID: 113fd86292b8463c85841b09498296b0-20200622
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=0UhSaCVwkP3dmW3o9DgNK5ccp+DPXmFQmtvdUVswH80=;
+        b=qWtPBdjl9k/PCosEmtEsrJEKPx1Z5Nw/LEaqF0mP8Uthy38jppjiIb89uAoKy9HhMBiJ/2bqkZIGj7SlJko/GjLnHXiPKB8zkdDEo9Yu1PpAJGtFwQ8A1T3zQtxyBHN5YqS/9Or71SN9DuJwqT/hrCHt1EHohp+ox6rdW4IEeSs=;
+X-UUID: 113fd86292b8463c85841b09498296b0-20200622
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <wen.su@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 781094810; Mon, 22 Jun 2020 14:40:56 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 22 Jun 2020 14:40:53 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 22 Jun 2020 14:40:53 +0800
+From:   Wen Su <Wen.Su@mediatek.com>
+To:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <wsd_upstream@mediatek.com>, <wen.su@mediatek.com>
+Subject: [RESEND v2 0/4] Add Support for MediaTek PMIC MT6359 Regulator
+Date:   Mon, 22 Jun 2020 14:40:46 +0800
+Message-ID: <1592808050-14260-1-git-send-email-Wen.Su@mediatek.com>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-References: <20200621213806.551879-1-konradybcio@gmail.com>
- <20200621213806.551879-7-konradybcio@gmail.com> <CANi4RBQ-o=K+X_AoZf_NvB19Hum0d9tpr6qjqPThsSNQZaj74A@mail.gmail.com>
-In-Reply-To: <CANi4RBQ-o=K+X_AoZf_NvB19Hum0d9tpr6qjqPThsSNQZaj74A@mail.gmail.com>
-From:   Konrad Dybcio <konradybcio@gmail.com>
-Date:   Mon, 22 Jun 2020 08:38:41 +0200
-Message-ID: <CAMS8qEW+7sjtdUcdUOcdDFCXSv2R4U4O-puyCP2utG_2rjBQ+A@mail.gmail.com>
-Subject: Re: [PATCH 6/8] arm64: dts: qcom: sdm630: Add sdm630 dts file
-To:     Alexey Minnekhanov <alexey.min@gmail.com>
-Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-clk@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-gpio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Qualcomm keeps them separate, so there's probably a good reason to,
-and I would prefer to do so as well. But if you guys really want it
-merged, then it's doable I guess..
+VGhpcyBwYXRjaHNldCBhZGQgc3VwcG9ydCB0byBNVDYzNTkgUE1JQyByZWd1bGF0b3IuIE1UNjM1
+OSBpcyBwcmltYXJ5DQpQTUlDIGZvciBNVDY3NzkgcGxhdGZvcm0uDQoNCkNoYW5nZXMgc2luY2Ug
+djI6DQotIHJlbW92ZSBvcGVuIGNvZGluZyBpbiB0aGUgbXQ2MzU5IHJlZ3VsYXRvciBmb3Igdm9s
+dF90YWJsZSB0eXBlIHJlZ3VsYXRvcnMNCi0gcmVmaW5lIGNvZGluZyBzdHlsZSBpbiB0aGUgbXQ2
+MzU5IHJlZ3VsYXRvciB0byBhdm9pZCB1c2luZyB0ZXJuZXJ5IG9wZXJhdG9yDQotIHJlbW92ZSB1
+bm5lY2Vzc2FyeSByZWplY3Qgb3BlcmF0aW9uIGluIG10NjM1OSByZWd1bGF0b3Igc2V0IG1vZGUg
+ZnVuY3Rpb24NCg0Kd2VuLnN1ICg0KToNCiAgZHQtYmluZGluZ3M6IHJlZ3VsYXRvcjogQWRkIGRv
+Y3VtZW50IGZvciBNVDYzNTkgcmVndWxhdG9yDQogIG1mZDogQWRkIGZvciBQTUlDIE1UNjM1OSBy
+ZWdpc3RlcnMgZGVmaW5pdGlvbg0KICByZWd1bGF0b3I6IG10NjM1OTogQWRkIHN1cHBvcnQgZm9y
+IE1UNjM1OSByZWd1bGF0b3INCiAgYXJtNjQ6IGR0czogbXQ2MzU5OiBhZGQgUE1JQyBNVDYzNTkg
+cmVsYXRlZCBub2Rlcw0KDQogLi4uL2JpbmRpbmdzL3JlZ3VsYXRvci9tdDYzNTktcmVndWxhdG9y
+LnR4dCAgICAgICAgfCAgNTkgKysNCiBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210NjM1
+OS5kdHNpICAgICAgICAgICB8IDMxMiArKysrKysrKw0KIGRyaXZlcnMvcmVndWxhdG9yL0tjb25m
+aWcgICAgICAgICAgICAgICAgICAgICAgICAgIHwgICA5ICsNCiBkcml2ZXJzL3JlZ3VsYXRvci9N
+YWtlZmlsZSAgICAgICAgICAgICAgICAgICAgICAgICB8ICAgMSArDQogZHJpdmVycy9yZWd1bGF0
+b3IvbXQ2MzU5LXJlZ3VsYXRvci5jICAgICAgICAgICAgICAgfCA4NTkgKysrKysrKysrKysrKysr
+KysrKysrDQogaW5jbHVkZS9saW51eC9tZmQvbXQ2MzU5L3JlZ2lzdGVycy5oICAgICAgICAgICAg
+ICAgfCA1MzEgKysrKysrKysrKysrKw0KIGluY2x1ZGUvbGludXgvcmVndWxhdG9yL210NjM1OS1y
+ZWd1bGF0b3IuaCAgICAgICAgIHwgIDU4ICsrDQogNyBmaWxlcyBjaGFuZ2VkLCAxODI5IGluc2Vy
+dGlvbnMoKykNCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2Jp
+bmRpbmdzL3JlZ3VsYXRvci9tdDYzNTktcmVndWxhdG9yLnR4dA0KIGNyZWF0ZSBtb2RlIDEwMDY0
+NCBhcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210NjM1OS5kdHNpDQogY3JlYXRlIG1vZGUg
+MTAwNjQ0IGRyaXZlcnMvcmVndWxhdG9yL210NjM1OS1yZWd1bGF0b3IuYw0KIGNyZWF0ZSBtb2Rl
+IDEwMDY0NCBpbmNsdWRlL2xpbnV4L21mZC9tdDYzNTkvcmVnaXN0ZXJzLmgNCiBjcmVhdGUgbW9k
+ZSAxMDA2NDQgaW5jbHVkZS9saW51eC9yZWd1bGF0b3IvbXQ2MzU5LXJlZ3VsYXRvci5oDQo=
 
-Regards
-Konrad
