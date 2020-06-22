@@ -2,197 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C4E20349C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:14:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FFB2034A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:16:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726998AbgFVKOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 06:14:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45962 "EHLO
+        id S1727889AbgFVKQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 06:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726515AbgFVKOu (ORCPT
+        with ESMTP id S1727017AbgFVKQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 06:14:50 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2C08C061794;
-        Mon, 22 Jun 2020 03:14:49 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id a6so14093352wrm.4;
-        Mon, 22 Jun 2020 03:14:49 -0700 (PDT)
+        Mon, 22 Jun 2020 06:16:46 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551D5C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 03:16:45 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id y11so18637213ljm.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 03:16:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=GwBr2dPBvwAjgTtJ8lfJ7e2nCgxZw5uneLTn7+d7QZI=;
-        b=ZyIdXWuWUXIti5lVyrcHA3iAno46VvfHLdNd7a3YW1h/Vob7qbNBx5HNYwgXoZbh2P
-         0M0doMuNqphQtc/13cl0cvsfueOaNWwM+TO/gGdj8UdwxTA2RdZO+C5imfxRbknLeAOh
-         LW3uEYGcXcAo3O4aTaqW1CH0iKuGUwyuTCB3lDBTHpCowe6ZNSTJFtVL2UMRvVOoK+Ls
-         0fA1vqDKad6J+wuUSRLPgL0IyOh+Xpym0wwLFGxwqO54mA3mcwWcaMRZRZQtHzvL0mfd
-         rly94LmPCdzjBb91QP8MmbOa+qnJ3WdoR6TZH4xwDgYAL8ejmrdAq3Telr4eA1ool7e0
-         gMHg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=R3B47LhSzlhf0CyG1tgvim2OLOrvyZ3razYI3nJme5U=;
+        b=F7/MYp6K3ALqvV1Pk4dcuMsGKwszBlgZe6Wswk+bxqBKID6d74blxWVWa8ithjNlbB
+         f+ZfUhB55CLLROLEhJ/H71hH4eGx/w74csavIqcgv2EUFST86ArC2UEIQN/srrf83gGj
+         5UbUUqyvat9aUPnhxdtMeGggVsExXeL7vO3xXKMMMybrsHMSNMAr8IwdwtSbEZJM6JaM
+         25hZeuIRs4MnuCB81nu7KQGTa+ZxC2MHgMzQOgAj/vZT5c+jKs39G2PVD6hKP6fNq31j
+         981OSedENF5UJm6cPOHI+q/RjPTzDzvIvgFpySUuC1ijacExCY4BKFyAOTEpmQqF49Xb
+         rP3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=GwBr2dPBvwAjgTtJ8lfJ7e2nCgxZw5uneLTn7+d7QZI=;
-        b=IWeA7QZYd148uHNPjN+VwFnrIjV/zBAyGgVqhtrGZU7nT7eRG+FoBYtodRbAJUtGdL
-         SJ5wp53k1M3WT6TuPLqLoOiob90d1bX6ECJfcB+MEwYBuncBzwPJ2nHteWjx6JAfJEb9
-         gb6rG0HJ+uGn2qMb2Sh4nzclQGkT3OrVw+1eElbUURL54FoORRxnohom7GjMskROQmi9
-         2cJQsUqGOmXgaN3r5eSRkaWM6mMlGQFCkoa0HkoXIwiCwOd1plQDmuLjVKINlCU2XPPJ
-         FQhw8ikyqtAMZT63Bg6HesCltS1bjnFbU2n9WABS2YeUkMtkI0rOzqq/O1RbJxJeQuP9
-         YlUg==
-X-Gm-Message-State: AOAM532KsYezJFglQINBnWD7EzMbkizVP70mtKWa56REszgOGzwx2mK3
-        3ycJodVIplrGKZtgZ4Ph29I=
-X-Google-Smtp-Source: ABdhPJyitqWWoxzESQBtwV+qG/1sliJMrSE3i06JJxb7oS2UDbglm39DdzqQW/SmB10MCNA/+eYQCg==
-X-Received: by 2002:a5d:4984:: with SMTP id r4mr8731756wrq.215.1592820887609;
-        Mon, 22 Jun 2020 03:14:47 -0700 (PDT)
-Received: from ziggy.stardust ([213.195.114.138])
-        by smtp.gmail.com with ESMTPSA id 104sm17593743wrl.25.2020.06.22.03.14.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jun 2020 03:14:46 -0700 (PDT)
-Subject: Re: [PATCH 4/7] arm64: dts: mt8183: Fix unit name warnings
-To:     Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Collabora Kernel ML <kernel@collabora.com>, erwanaliasr1@gmail.com,
-        drinkcat@chromium.org, hsinyi@chromium.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20200619102757.1358675-1-enric.balletbo@collabora.com>
- <20200619102757.1358675-5-enric.balletbo@collabora.com>
-From:   Matthias Brugger <matthias.bgg@gmail.com>
-Autocrypt: addr=matthias.bgg@gmail.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <ec4fb6c1-37a3-08b2-ae57-3e35868383ef@gmail.com>
-Date:   Mon, 22 Jun 2020 12:14:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=R3B47LhSzlhf0CyG1tgvim2OLOrvyZ3razYI3nJme5U=;
+        b=Q2cZVZNzASN0rp0Ac0Uf1FWDo+jgTJB/r4rRJkQelc8GPsz/E9ChifnZdKKoFiciMV
+         7rQp1JAG+wIFdEZfcmguYGw73KkfdR2dgwSSUL6mTD9YOjtX4w3JCdN55H1+I9lcYPIH
+         /iEacDUanw/Zm1TXYogJSr+qBUVzvTs0AsjwK/hKpi53YHGQLtpgW/g08M+pbl4wr9VO
+         nQasO1rkxj0MMT7wRSAM8BvrkIdSUtvK8OHzGOJfqtgN6BF43tbWScnkQr3Y1dUH21b+
+         ZrjNbQdectUDLkfUblAR3AZ3hsEhrPCPLW74x1VYpMKFRzvHqMIvLgocx1NqGaSG8+SY
+         qSjQ==
+X-Gm-Message-State: AOAM533EiRQiFjwPy81DTuR0pE5CohkWpbbbk24ByK9WmdB2WX5RJ8Ty
+        qMf8nbhfL3SLqEQy9UzWZUT2Sfjw3w4MfGMQ/JF8Hg==
+X-Google-Smtp-Source: ABdhPJyKVFwQEbwtY+Abdz6wmfxYTSKmli499smwlc6siT5OYxo93F6Kbx9OmqeCMdTsTov+7kmIswdfNAfgYfOBi4o=
+X-Received: by 2002:a2e:984b:: with SMTP id e11mr7726051ljj.358.1592821003711;
+ Mon, 22 Jun 2020 03:16:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200619102757.1358675-5-enric.balletbo@collabora.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <87y2onbdtb.fsf@nanos.tec.linutronix.de> <8E41B15F-D567-4C52-94E9-367015480345@amacapital.net>
+ <20200616132705.GW2531@hirez.programming.kicks-ass.net> <20200617131742.GD8389@yuki.lan>
+ <87r1ucb0rt.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <87r1ucb0rt.fsf@nanos.tec.linutronix.de>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 22 Jun 2020 15:46:32 +0530
+Message-ID: <CA+G9fYu18y4iWOkTCDWi9dUj+FosStVTH-6swN7wE4GePZa=Ng@mail.gmail.com>
+Subject: Re: [LKP] Re: [LTP] [x86/entry] 2bbc68f837: ltp.ptrace08.fail
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Cyril Hrubis <chrubis@suse.cz>, LTP List <ltp@lists.linux.it>,
+        lkft-triage@lists.linaro.org
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        Andy Lutomirski <luto@kernel.org>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 19 Jun 2020 at 01:32, Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> Cyril Hrubis <chrubis@suse.cz> writes:
+> > What is does is to write:
+> >
+> >       (void*)1 to u_debugreg[0]
+> >       (void*)1 to u_debugreg[7]
+> >       do_debug addr to u_debugreg[0]
+> >
+> > Looking at the kernel code the write to register 7 enables the breakpoints and
+> > what we attempt here is to change an invalid address to a valid one after we
+> > enabled the breakpoint but that's as far I can go.
+> >
+> > So does anyone has an idea how to trigger the bug without the do_debug function
+> > address? Would any valid kernel function address suffice?
+>
+> According to https://www.openwall.com/lists/oss-security/2018/05/01/3
+> the trigger is to set the breakpoint to do_debug() and then execute
+> INT1, aka. ICEBP which ends up in do_debug() ....
+>
+> In principle each kernel address is ok, but do_debug() is interesting
+> due to the recursion issue because user space can reach it by executing
+> INT1.
+>
+> So you might check for exc_debug() if do_debug() is not available and
+> make the whole thing fail gracefully with a usefu error message.
 
+My two cents,
+LTP test case ptrace08 fails on x86_64 and i386.
 
-On 19/06/2020 12:27, Enric Balletbo i Serra wrote:
-> Remove the unit address from the DT nodes that doesn't have a reg
-> property. This fixes the following unit name warnings:
-> 
->   Warning (unit_address_vs_reg): /cpus/idle-states/cluster-sleep@0: node has a unit name, but no reg or ranges property
->   Warning (unit_address_vs_reg): /cpus/idle-states/cluster-sleep@1: node has a unit name, but no reg or ranges property
-> 
-> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> ---
-> 
->  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> index 00137ec61164d..e356076749148 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
-> @@ -168,7 +168,7 @@ CPU_SLEEP: cpu-sleep {
->  				min-residency-us = <800>;
->  			};
->  
-> -			CLUSTER_SLEEP0: cluster-sleep@0 {
-> +			CLUSTER_SLEEP0: cluster-sleep0 {
+ptrace08.c:62: BROK: Cannot find address of kernel symbol \"do_debug\"
 
-Should be:
-cluster-sleep-0
+This error is coming from test case setup
+KERNEL_SYM = do_debug
 
->  				compatible = "arm,idle-state";
->  				local-timer-stop;
->  				arm,psci-suspend-param = <0x01010001>;
-> @@ -176,7 +176,7 @@ CLUSTER_SLEEP0: cluster-sleep@0 {
->  				exit-latency-us = <400>;
->  				min-residency-us = <1000>;
->  			};
-> -			CLUSTER_SLEEP1: cluster-sleep@1 {
-> +			CLUSTER_SLEEP1: cluster-sleep1 {
+if (strcmp(symname, KERNEL_SYM))
+tst_brk(TBROK, "Cannot find address of kernel symbol \"%s\"",
+KERNEL_SYM);
 
-Same here.
+Test case got pass when DEBUG_INFO config enabled
 
-Regards,
-Matthias1
+CONFIG_DEBUG_INFO=y
 
->  				compatible = "arm,idle-state";
->  				local-timer-stop;
->  				arm,psci-suspend-param = <0x01010001>;
-> 
+ptrace08.c:68: INFO: Kernel symbol \"do_debug\" found at 0xd8898410
+
+Full test log,
+https://lkft.validation.linaro.org/scheduler/job/1483117#L1325
+
+ref:
+https://bugs.linaro.org/show_bug.cgi?id=5651#c1
