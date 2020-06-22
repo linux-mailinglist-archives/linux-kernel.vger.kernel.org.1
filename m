@@ -2,100 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A263203230
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A68F6203224
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:34:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726557AbgFVIhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 04:37:08 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:40276 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgFVIhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 04:37:06 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 12D09200917;
-        Mon, 22 Jun 2020 10:37:05 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 530D720091C;
-        Mon, 22 Jun 2020 10:37:02 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 3E4C6402CA;
-        Mon, 22 Jun 2020 16:36:58 +0800 (SGT)
-From:   Qiang Zhao <qiang.zhao@nxp.com>
-To:     shawnguo@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        leoyang.li@nxp.com, qiang.zhao@nxp.com,
-        Chuanhua Han <chuanhua.han@nxp.com>
-Subject: [RESEND PATCH 2/2] arm64: dts: lx2160a: add DT node for all DSPI controller
-Date:   Mon, 22 Jun 2020 16:31:09 +0800
-Message-Id: <20200622083109.3441-2-qiang.zhao@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200622083109.3441-1-qiang.zhao@nxp.com>
-References: <20200622083109.3441-1-qiang.zhao@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1725976AbgFVIei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 04:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725616AbgFVIei (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 04:34:38 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4CE4C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:34:36 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id l17so14018178wmj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:34:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iumTCPIQ5JgGRCUXbn3oWrglqPPjaXK37FVM57bSflI=;
+        b=v+QT9yYRCkBvviTFtqwMM6R1p8xJCXCmU5EzRl2/Msz9xNSQiynSP58ZJxKiHqdLBl
+         jy01IszLE6KSujR5GrL121LclHi8zO/zEVfqMJ3dimS8VV0ImQUrb4VlTL26KGyGoYHp
+         SM3xUp0XJft9toVfWgGSrhZ83Kw1rGyFkY5DrWdEj/rEXGOeiJr/kdQb3bB79X8+jqCO
+         0lR/imQOAg8a75RJrLck4HJ5aumvhzFaxouUV/VKBjYBjUj7c0nPg6o2TI7jRQmXNpeI
+         BKXcPcUqfhcby73EdiXz1pX1DXxPU0qrYY1c9uyxMpnj3LU8lqZgl+Aj3DIHJUKti5nX
+         SKmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iumTCPIQ5JgGRCUXbn3oWrglqPPjaXK37FVM57bSflI=;
+        b=p9aycxVNiDjxTP+nFvEN/NwWFsQgvaaRqpAFBKwfqUlp6MGSLjELEyyjhoCjjbO7q9
+         xtwoyVFBEmBVR3n8qR304tJS5SblpUTMF4OV6vixmCgCSPh2ryrE5liogqWeiRaC1d0c
+         xfd77ILIkmKbQ8DmO0NKzEg8qpXtFtVlkZ9F+C2UpbUJTqjNeOBK7AAE703hs8DN5+XK
+         t1uy4CYL0Sl7YGfVRPOpK1IGm40/r/5jWD8dgss1oPhotxnRjse43Dm4/ewKwHOSbfq7
+         UnkwgIzdLMyxfPGGA1DvZvt3QKQOgg3pUCTtO8ghNc+M6xckahET/eCp4vNehlkGmUMe
+         BS/g==
+X-Gm-Message-State: AOAM532V/I+aNOLfhdw1/q1ZEVmE9LqTVPmxdlWRU9HfPI8cAOSiQ84f
+        epblccAevsMxh17K+mHnw10W3Q==
+X-Google-Smtp-Source: ABdhPJy8EF0FGsP5udLRcNjPlqG9OY1hIfHKLNuaRTjiy8Jh4ufHvnQFqnkLAt+MaeylObvSEY79jw==
+X-Received: by 2002:a1c:f714:: with SMTP id v20mr16932709wmh.81.1592814875416;
+        Mon, 22 Jun 2020 01:34:35 -0700 (PDT)
+Received: from localhost.localdomain ([2.27.35.144])
+        by smtp.gmail.com with ESMTPSA id w17sm17477224wra.42.2020.06.22.01.34.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 01:34:34 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linus.walleij@linaro.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 1/1] ARM: dts: ux500: Supply nodes for the other 2 AB8500 PWM devices
+Date:   Mon, 22 Jun 2020 09:34:32 +0100
+Message-Id: <20200622083432.1491715-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuanhua Han <chuanhua.han@nxp.com>
+As per 'struct mfd_cell ab8500_devs[]' there are not 1, but 3 PWM
+devices on the AB8500.  Until now, each of them have referenced
+the same Device Tree node.  This change ensures each device has
+their own.
 
-Add device tree node for first flash (CS0) connected
-to all dspi controller.
+Due to recent `dtc` checks [0], nodes cannot share the same node
+name, so we are forced to rename the affected nodes by appending
+their associated numeric 'bank ID'.
 
-Signed-off-by: Chuanhua Han <chuanhua.han@nxp.com>
-Signed-off-by: Wasim Khan <wasim.khan@nxp.com>
-Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
+[0] ste-ab8500.dtsi:210.16-214.7: ERROR (duplicate_node_names):
+      /soc/prcmu@80157000/ab8500/ab8500-pwm: Duplicate node name
+
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- arch/arm64/boot/dts/freescale/fsl-lx2160a-qds.dts | 36 +++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ arch/arm/boot/dts/ste-ab8500.dtsi | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a-qds.dts b/arch/arm64/boot/dts/freescale/fsl-lx2160a-qds.dts
-index 3b88e1e..2d1fe6c 100644
---- a/arch/arm64/boot/dts/freescale/fsl-lx2160a-qds.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a-qds.dts
-@@ -35,6 +35,42 @@
- 	status = "okay";
- };
+diff --git a/arch/arm/boot/dts/ste-ab8500.dtsi b/arch/arm/boot/dts/ste-ab8500.dtsi
+index 3cd6ee6d50e0e..aab5719cc1a93 100644
+--- a/arch/arm/boot/dts/ste-ab8500.dtsi
++++ b/arch/arm/boot/dts/ste-ab8500.dtsi
+@@ -201,7 +201,19 @@ ab8500-sysctrl {
+ 					compatible = "stericsson,ab8500-sysctrl";
+ 				};
  
-+&dspi0 {
-+	status = "okay";
+-				ab8500-pwm {
++				ab8500-pwm-1 {
++					compatible = "stericsson,ab8500-pwm";
++					clocks = <&ab8500_clock AB8500_SYSCLK_INT>;
++					clock-names = "intclk";
++				};
 +
-+	dflash0: flash@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <1000000>;
-+	};
-+};
++				ab8500-pwm-2 {
++					compatible = "stericsson,ab8500-pwm";
++					clocks = <&ab8500_clock AB8500_SYSCLK_INT>;
++					clock-names = "intclk";
++				};
 +
-+&dspi1 {
-+	status = "okay";
-+
-+	dflash1: flash@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <1000000>;
-+	};
-+};
-+
-+&dspi2 {
-+	status = "okay";
-+
-+	dflash2: flash@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <1000000>;
-+	};
-+};
-+
- &esdhc0 {
- 	status = "okay";
- };
++				ab8500-pwm-3 {
+ 					compatible = "stericsson,ab8500-pwm";
+ 					clocks = <&ab8500_clock AB8500_SYSCLK_INT>;
+ 					clock-names = "intclk";
 -- 
-2.7.4
+2.25.1
 
