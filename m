@@ -2,77 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91AE9203B8B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 17:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B289203B7A
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 17:49:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729414AbgFVPvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 11:51:20 -0400
-Received: from elvis.franken.de ([193.175.24.41]:33897 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729147AbgFVPvQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 11:51:16 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1jnOj4-0002AG-02; Mon, 22 Jun 2020 17:51:14 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 3E785C06F0; Mon, 22 Jun 2020 17:48:55 +0200 (CEST)
-Date:   Mon, 22 Jun 2020 17:48:55 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     maobibo <maobibo@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Do not flush tlb when setting pmd entry
-Message-ID: <20200622154855.GC17294@alpha.franken.de>
-References: <1591177333-17833-1-git-send-email-maobibo@loongson.cn>
- <20200615101443.GA10075@alpha.franken.de>
- <4bef403d-baba-ddf8-c25c-3d6968897a53@loongson.cn>
- <20200617111403.GC9940@alpha.franken.de>
- <ea914a82-70c1-b9a3-f6f0-f92a6d6c6e7f@loongson.cn>
+        id S1729595AbgFVPt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 11:49:26 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:42264 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728293AbgFVPtZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 11:49:25 -0400
+Received: by mail-ot1-f67.google.com with SMTP id t6so13408054otk.9;
+        Mon, 22 Jun 2020 08:49:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ukHKRXuBbPQ+hCHp8ZkdpCwZxoKqRm4bkB6SlAMSyts=;
+        b=INgfEx/Ox65qHBF2f2NKQt1uc/q5M9MQyJEXraXilxZsnR2p63v95aQDFUg2lt4BOe
+         wsVUgsYQihmF5uVltxwEpzEX7kmV12CrsxaVatYko5nZk+g1WRhfF/kBycqXDhEYB1gw
+         XhPdnD6a6mXHZOQdbXbG7rMpkj2edullhoN0KdWB4T0DcxXfT5feK8GtvW6u+yzHROtF
+         cTk0q1zyt9mLiuHgkubaajG16nftVdM4gqhC9lj/WU+Tx/OfvBlieZX6NilOlDIKgw6q
+         Wv9ASm+62Iw2FcRFVvfRBy8tHLh7yn9W8EMvZh6W+uegbMglLVFAFOPpua2faISK0HRP
+         UiVg==
+X-Gm-Message-State: AOAM5302uTANwsXB1tjuT+A7/FS3CtcSetVQO3zxZAshistlTalWjFRs
+        +U9GHRwMeWIu6iHr0k7r2g1ctvpNS6v8oezAp/E=
+X-Google-Smtp-Source: ABdhPJyVUFz/In4cnlLRHIolL4alEhLcXovuLEA210Edp2UfV5x+qTGIiJivAxU9OTkdQkDrFPDlwe46o1wzUgjWtl4=
+X-Received: by 2002:a9d:62c2:: with SMTP id z2mr14189823otk.145.1592840964455;
+ Mon, 22 Jun 2020 08:49:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ea914a82-70c1-b9a3-f6f0-f92a6d6c6e7f@loongson.cn>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20200515053500.215929-1-saravanak@google.com> <20200515053500.215929-5-saravanak@google.com>
+ <CAMuHMdUnbDvn6GdK51MN-+5iRp6zYRf-yzKY+OwcQOGrYqOZPA@mail.gmail.com>
+ <CAGETcx9JKbNQWQwNah7pO5ppVSAe86R-OmMujZPYNkuTCLwKnQ@mail.gmail.com>
+ <CAMuHMdU2gF=aTeVxRvtzAMLGY=GyBDfBwrYZxoRkL1tV7dL56g@mail.gmail.com>
+ <CAGETcx-rHFthf-aLb_S-ST6Evozvgis5XX5u0LNxyvfMoJOLKQ@mail.gmail.com>
+ <CAMuHMdXW0jM-A5cvYtFVcgc1Gm3tKkvr0+kWpeJqpJDzNOuYeA@mail.gmail.com>
+ <CAGETcx8W96KAw-d_siTX4qHB_-7ddk0miYRDQeHE6E0_8qx-6Q@mail.gmail.com> <CAGETcx87JNfKEu4brQ3S-9wObv=OwXkAoDBSREQH5dAD68TPsA@mail.gmail.com>
+In-Reply-To: <CAGETcx87JNfKEu4brQ3S-9wObv=OwXkAoDBSREQH5dAD68TPsA@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 22 Jun 2020 17:49:13 +0200
+Message-ID: <CAMuHMdUsWAQ3XUGh1Jg_Y3LWz4G5aaZfHqL8JjNZv3DrW3TjvQ@mail.gmail.com>
+Subject: Re: [PATCH v1 4/4] of: platform: Batch fwnode parsing when adding all
+ top level devices
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Len Brown <lenb@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Ji Luo <ji.luo@nxp.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 20, 2020 at 11:47:35AM +0800, maobibo wrote:
-> 
-> 
-> On 06/17/2020 07:14 PM, Thomas Bogendoerfer wrote:
-> > On Tue, Jun 16, 2020 at 06:34:21PM +0800, maobibo wrote:
-> >>
-> >>
-> >> On 06/15/2020 06:14 PM, Thomas Bogendoerfer wrote:
-> >>> On Wed, Jun 03, 2020 at 05:42:13PM +0800, Bibo Mao wrote:
-> >>>> Function set_pmd_at is to set pmd entry, if tlb entry need to
-> >>>> be flushed, there exists pmdp_huge_clear_flush alike function
-> >>>> before set_pmd_at is called. So it is not necessary to call
-> >>>> flush_tlb_all in this function.
-> >>>
-> >>> have you checked all set_pmd_at() calls ? I found a few case where
-> >>> it's not clear to me, if tlb flushing is done... If you think this
-> >>> is still the right thing to do, please change arch/mips/mm/pgtable-32.c
-> >>> as well.
-> >> well, I will double check this and do more testing about thp and hugepage.
-> > 
-> > I was more concerned about
-> > 
-> > fs/dax.c
-> > fs/proc/task_mmu.c
-> > mm/rmap.c
-> 
-> I think that flush_tlb_all should not be called in function set_pmd_at
-> on mips platform. However update_mmu_cache_pmd() should be called __after__
-> set_pmd_at() function to update tlb entry at some places, it is another issue.
-> Here is my analysis in the three files where set_pmd_at is called.
-> [..]
+Hi Saravana,
 
-thank you for confirming that we are good with removing flush_tlb_all().
+On Sat, Jun 20, 2020 at 4:33 AM Saravana Kannan <saravanak@google.com> wrote:
+> On Fri, Jun 19, 2020 at 1:07 PM Saravana Kannan <saravanak@google.com> wrote:
+> > I think instead of deferred_probe_work_func() moving the device to the
+> > end of the dpm_list, I think the device probing successfully is what
+> > should move it to the end of the dpm_list. That way, the dpm_list is
+> > actually ordered by when the devices become functional and not the
+> > random order in DT or random probe order which can get pretty
+> > convoluted with multiple deferred probes. This feels right and will
+> > make suspend/resume more robust against DT ordering -- but I'm not
+> > sure what other wide ranging impact this has for other platforms.
+>
+> If you want to play around with a potential fix to test my hypothesis,
+> I think it's just adding this one line to driver_bound():
+> ============
+> klist_add_tail(&dev->p->knode_driver, &dev->driver->p->klist_devices);
+> device_links_driver_bound(dev);
+> +device_pm_move_to_tail(dev);
+>
+> device_pm_check_callbacks(dev);
+> ============
 
-Thomas.
+Thanks, that seems to fix the issue for me, on both affected systems!
+Note that this has quite some impact on the order devices are suspended,
+but this seems harmless.
+
+Will try on more systems later...
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
