@@ -2,96 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C086620361E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 13:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E28F203626
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 13:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728056AbgFVLr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 07:47:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727048AbgFVLr7 (ORCPT
+        id S1728048AbgFVLuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 07:50:05 -0400
+Received: from conuserg-10.nifty.com ([210.131.2.77]:31734 "EHLO
+        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726998AbgFVLuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 07:47:59 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F951C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 04:47:59 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1jnKva-0001H0-SL; Mon, 22 Jun 2020 13:47:54 +0200
-Received: from [IPv6:2a03:f580:87bc:d400:789c:8c3:eaa5:9d1b] (unknown [IPv6:2a03:f580:87bc:d400:789c:8c3:eaa5:9d1b])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits)
-         client-signature RSA-PSS (4096 bits))
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id B78C851EDB3;
-        Mon, 22 Jun 2020 11:47:53 +0000 (UTC)
-Subject: Re: [PATCH 0/6] Add Microchip MCP25XXFD CAN driver
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     wg@grandegger.com, kernel@martin.sperl.org,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20200610074442.10808-1-manivannan.sadhasivam@linaro.org>
- <fbbca009-3c53-6aa9-94ed-7e9e337c31a4@pengutronix.de>
- <20200618085533.GA26093@mani>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- mQINBFFVq30BEACtnSvtXHoeHJxG6nRULcvlkW6RuNwHKmrqoksispp43X8+nwqIFYgb8UaX
- zu8T6kZP2wEIpM9RjEL3jdBjZNCsjSS6x1qzpc2+2ivjdiJsqeaagIgvy2JWy7vUa4/PyGfx
- QyUeXOxdj59DvLwAx8I6hOgeHx2X/ntKAMUxwawYfPZpP3gwTNKc27dJWSomOLgp+gbmOmgc
- 6U5KwhAxPTEb3CsT5RicsC+uQQFumdl5I6XS+pbeXZndXwnj5t84M+HEj7RN6bUfV2WZO/AB
- Xt5+qFkC/AVUcj/dcHvZwQJlGeZxoi4veCoOT2MYqfR0ax1MmN+LVRvKm29oSyD4Ts/97cbs
- XsZDRxnEG3z/7Winiv0ZanclA7v7CQwrzsbpCv+oj+zokGuKasofzKdpywkjAfSE1zTyF+8K
- nxBAmzwEqeQ3iKqBc3AcCseqSPX53mPqmwvNVS2GqBpnOfY7Mxr1AEmxdEcRYbhG6Xdn+ACq
- Dq0Db3A++3PhMSaOu125uIAIwMXRJIzCXYSqXo8NIeo9tobk0C/9w3fUfMTrBDtSviLHqlp8
- eQEP8+TDSmRP/CwmFHv36jd+XGmBHzW5I7qw0OORRwNFYBeEuiOIgxAfjjbLGHh9SRwEqXAL
- kw+WVTwh0MN1k7I9/CDVlGvc3yIKS0sA+wudYiselXzgLuP5cQARAQABtCZNYXJjIEtsZWlu
- ZS1CdWRkZSA8bWtsQHBlbmd1dHJvbml4LmRlPokCVAQTAQoAPgIbAwIeAQIXgAULCQgHAwUV
- CgkICwUWAgMBABYhBMFAC6CzmJ5vvH1bXCte4hHFiupUBQJcUsSbBQkM366zAAoJECte4hHF
- iupUgkAP/2RdxKPZ3GMqag33jKwKAbn/fRqAFWqUH9TCsRH3h6+/uEPnZdzhkL4a9p/6OeJn
- Z6NXqgsyRAOTZsSFcwlfxLNHVxBWm8pMwrBecdt4lzrjSt/3ws2GqxPsmza1Gs61lEdYvLST
- Ix2vPbB4FAfE0kizKAjRZzlwOyuHOr2ilujDsKTpFtd8lV1nBNNn6HBIBR5ShvJnwyUdzuby
- tOsSt7qJEvF1x3y49bHCy3uy+MmYuoEyG6zo9udUzhVsKe3hHYC2kfB16ZOBjFC3lH2U5An+
- yQYIIPZrSWXUeKjeMaKGvbg6W9Oi4XEtrwpzUGhbewxCZZCIrzAH2hz0dUhacxB201Y/faY6
- BdTS75SPs+zjTYo8yE9Y9eG7x/lB60nQjJiZVNvZ88QDfVuLl/heuIq+fyNajBbqbtBT5CWf
- mOP4Dh4xjm3Vwlz8imWW/drEVJZJrPYqv0HdPbY8jVMpqoe5jDloyVn3prfLdXSbKPexlJaW
- 5tnPd4lj8rqOFShRnLFCibpeHWIumqrIqIkiRA9kFW3XMgtU6JkIrQzhJb6Tc6mZg2wuYW0d
- Wo2qvdziMgPkMFiWJpsxM9xPk9BBVwR+uojNq5LzdCsXQ2seG0dhaOTaaIDWVS8U/V8Nqjrl
- 6bGG2quo5YzJuXKjtKjZ4R6k762pHJ3tnzI/jnlc1sXz
-Message-ID: <ccd98238-8480-ad05-a9e6-0a0536175753@pengutronix.de>
-Date:   Mon, 22 Jun 2020 13:47:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 22 Jun 2020 07:50:03 -0400
+Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
+        by conuserg-10.nifty.com with ESMTP id 05MBmUTK027768;
+        Mon, 22 Jun 2020 20:48:30 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 05MBmUTK027768
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1592826510;
+        bh=f3EMttsKXE8wNghn4PUIkbuq9XEwF9UBbOhFXf+0tEM=;
+        h=From:To:Cc:Subject:Date:From;
+        b=EffVA766bsXs0n9u8OkWf4xQynGfSdkWMT4HeX/Km0vF0bsfBxzerDUwLDSnEC1K8
+         DOSLb+82bW93i/JmF0RdINFHFT7drAheGrR2iQ+k7sJO3R2Vpvp1qXgryZspiIdB3A
+         LSMFteQi1niRGNhrmmqnIu50IQboMyi8drVd0Kw3/+0veJ3H/mxWVCLNMIJ+ZqhrIi
+         FImWJnKxi1IMh6rB30oqeAFDS396u5SxfXGJlvmZ56TA3AKlkcOe1g5/suiCYEeE5+
+         onpOHeqRfQn1cXpq0UHAIKvP1SAZYewvxkAq86qMc7dzeaJAwGFjrZxwWv3rDSQZlE
+         X0kztVDqz+Zmw==
+X-Nifty-SrcIP: [126.90.202.47]
+From:   Masahiro Yamada <yamada.masahiro@socionext.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        devicetree@vger.kernel.org
+Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: reset: Convert UniPhier reset to json-schema
+Date:   Mon, 22 Jun 2020 20:48:26 +0900
+Message-Id: <20200622114826.450442-1-yamada.masahiro@socionext.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200618085533.GA26093@mani>
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/18/20 10:55 AM, Manivannan Sadhasivam wrote:
-> So how should we proceed from here? It is okay for me to work on adding some
-> features and also fixing the issues you've reported so far. But I want to reach
-> a consensus before moving forward.
-> 
-> If you think that it makes sense to go with your set of patches, then I need an
-> estimate on when you'll post the first revision.
+Convert the UniPhier reset controller binding to DT schema format.
+I excluded the glue resets because their bindings are too different.
 
-Done, I've posted my current version, which is -41.
+Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+---
 
-Marc
+ .../reset/socionext,uniphier-reset.yaml       | 112 ++++++++++++++++
+ .../bindings/reset/uniphier-reset.txt         | 121 +-----------------
+ 2 files changed, 113 insertions(+), 120 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/reset/socionext,uniphier-reset.yaml
 
+diff --git a/Documentation/devicetree/bindings/reset/socionext,uniphier-reset.yaml b/Documentation/devicetree/bindings/reset/socionext,uniphier-reset.yaml
+new file mode 100644
+index 000000000000..4c9b0ebf6869
+--- /dev/null
++++ b/Documentation/devicetree/bindings/reset/socionext,uniphier-reset.yaml
+@@ -0,0 +1,112 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/reset/socionext,uniphier-reset.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: UniPhier reset controller
++
++maintainers:
++  - Masahiro Yamada <yamada.masahiro@socionext.com>
++
++properties:
++  compatible:
++    oneOf:
++      - description: System reset
++        enum:
++          - socionext,uniphier-ld4-reset
++          - socionext,uniphier-pro4-reset
++          - socionext,uniphier-sld8-reset
++          - socionext,uniphier-pro5-reset
++          - socionext,uniphier-pxs2-reset
++          - socionext,uniphier-ld6b-reset
++          - socionext,uniphier-ld11-reset
++          - socionext,uniphier-ld20-reset
++          - socionext,uniphier-pxs3-reset
++      - description: Media I/O (MIO) reset, SD reset
++        enum:
++          - socionext,uniphier-ld4-mio-reset
++          - socionext,uniphier-pro4-mio-reset
++          - socionext,uniphier-sld8-mio-reset
++          - socionext,uniphier-pro5-sd-reset
++          - socionext,uniphier-pxs2-sd-reset
++          - socionext,uniphier-ld11-mio-reset
++          - socionext,uniphier-ld11-sd-reset
++          - socionext,uniphier-ld20-sd-reset
++          - socionext,uniphier-pxs3-sd-reset
++      - description: Peripheral reset
++        enum:
++          - socionext,uniphier-ld4-peri-reset
++          - socionext,uniphier-pro4-peri-reset
++          - socionext,uniphier-sld8-peri-reset
++          - socionext,uniphier-pro5-peri-reset
++          - socionext,uniphier-pxs2-peri-reset
++          - socionext,uniphier-ld11-peri-reset
++          - socionext,uniphier-ld20-peri-reset
++          - socionext,uniphier-pxs3-peri-reset
++      - description: Analog signal amplifier reset
++        enum:
++          - socionext,uniphier-ld11-adamv-reset
++          - socionext,uniphier-ld20-adamv-reset
++
++  "#reset-cells":
++    const: 1
++
++additionalProperties: false
++
++required:
++  - compatible
++  - "#reset-cells"
++
++examples:
++  - |
++    sysctrl@61840000 {
++        compatible = "socionext,uniphier-sysctrl", "simple-mfd", "syscon";
++        reg = <0x61840000 0x4000>;
++
++        reset {
++            compatible = "socionext,uniphier-ld11-reset";
++            #reset-cells = <1>;
++        };
++
++        // other nodes ...
++    };
++
++  - |
++    mioctrl@59810000 {
++        compatible = "socionext,uniphier-mioctrl", "simple-mfd", "syscon";
++        reg = <0x59810000 0x800>;
++
++        reset {
++            compatible = "socionext,uniphier-ld11-mio-reset";
++            #reset-cells = <1>;
++        };
++
++        // other nodes ...
++    };
++
++  - |
++    perictrl@59820000 {
++        compatible = "socionext,uniphier-perictrl", "simple-mfd", "syscon";
++        reg = <0x59820000 0x200>;
++
++        reset {
++            compatible = "socionext,uniphier-ld11-peri-reset";
++            #reset-cells = <1>;
++        };
++
++        // other nodes ...
++    };
++
++  - |
++    adamv@57920000 {
++        compatible = "socionext,uniphier-ld11-adamv", "simple-mfd", "syscon";
++        reg = <0x57920000 0x1000>;
++
++        reset {
++            compatible = "socionext,uniphier-ld11-adamv-reset";
++            #reset-cells = <1>;
++        };
++
++        // other nodes ...
++    };
+diff --git a/Documentation/devicetree/bindings/reset/uniphier-reset.txt b/Documentation/devicetree/bindings/reset/uniphier-reset.txt
+index e320a8cc9e4d..88e06e5e8d23 100644
+--- a/Documentation/devicetree/bindings/reset/uniphier-reset.txt
++++ b/Documentation/devicetree/bindings/reset/uniphier-reset.txt
+@@ -1,123 +1,4 @@
+-UniPhier reset controller
+-
+-
+-System reset
+-------------
+-
+-Required properties:
+-- compatible: should be one of the following:
+-    "socionext,uniphier-ld4-reset"  - for LD4 SoC
+-    "socionext,uniphier-pro4-reset" - for Pro4 SoC
+-    "socionext,uniphier-sld8-reset" - for sLD8 SoC
+-    "socionext,uniphier-pro5-reset" - for Pro5 SoC
+-    "socionext,uniphier-pxs2-reset" - for PXs2/LD6b SoC
+-    "socionext,uniphier-ld11-reset" - for LD11 SoC
+-    "socionext,uniphier-ld20-reset" - for LD20 SoC
+-    "socionext,uniphier-pxs3-reset" - for PXs3 SoC
+-- #reset-cells: should be 1.
+-
+-Example:
+-
+-	sysctrl@61840000 {
+-		compatible = "socionext,uniphier-ld11-sysctrl",
+-			     "simple-mfd", "syscon";
+-		reg = <0x61840000 0x4000>;
+-
+-		reset {
+-			compatible = "socionext,uniphier-ld11-reset";
+-			#reset-cells = <1>;
+-		};
+-
+-		other nodes ...
+-	};
+-
+-
+-Media I/O (MIO) reset, SD reset
+--------------------------------
+-
+-Required properties:
+-- compatible: should be one of the following:
+-    "socionext,uniphier-ld4-mio-reset"  - for LD4 SoC
+-    "socionext,uniphier-pro4-mio-reset" - for Pro4 SoC
+-    "socionext,uniphier-sld8-mio-reset" - for sLD8 SoC
+-    "socionext,uniphier-pro5-sd-reset"  - for Pro5 SoC
+-    "socionext,uniphier-pxs2-sd-reset"  - for PXs2/LD6b SoC
+-    "socionext,uniphier-ld11-mio-reset" - for LD11 SoC (MIO)
+-    "socionext,uniphier-ld11-sd-reset"  - for LD11 SoC (SD)
+-    "socionext,uniphier-ld20-sd-reset"  - for LD20 SoC
+-    "socionext,uniphier-pxs3-sd-reset"  - for PXs3 SoC
+-- #reset-cells: should be 1.
+-
+-Example:
+-
+-	mioctrl@59810000 {
+-		compatible = "socionext,uniphier-ld11-mioctrl",
+-			     "simple-mfd", "syscon";
+-		reg = <0x59810000 0x800>;
+-
+-		reset {
+-			compatible = "socionext,uniphier-ld11-mio-reset";
+-			#reset-cells = <1>;
+-		};
+-
+-		other nodes ...
+-	};
+-
+-
+-Peripheral reset
+-----------------
+-
+-Required properties:
+-- compatible: should be one of the following:
+-    "socionext,uniphier-ld4-peri-reset"  - for LD4 SoC
+-    "socionext,uniphier-pro4-peri-reset" - for Pro4 SoC
+-    "socionext,uniphier-sld8-peri-reset" - for sLD8 SoC
+-    "socionext,uniphier-pro5-peri-reset" - for Pro5 SoC
+-    "socionext,uniphier-pxs2-peri-reset" - for PXs2/LD6b SoC
+-    "socionext,uniphier-ld11-peri-reset" - for LD11 SoC
+-    "socionext,uniphier-ld20-peri-reset" - for LD20 SoC
+-    "socionext,uniphier-pxs3-peri-reset" - for PXs3 SoC
+-- #reset-cells: should be 1.
+-
+-Example:
+-
+-	perictrl@59820000 {
+-		compatible = "socionext,uniphier-ld11-perictrl",
+-			     "simple-mfd", "syscon";
+-		reg = <0x59820000 0x200>;
+-
+-		reset {
+-			compatible = "socionext,uniphier-ld11-peri-reset";
+-			#reset-cells = <1>;
+-		};
+-
+-		other nodes ...
+-	};
+-
+-
+-Analog signal amplifier reset
+------------------------------
+-
+-Required properties:
+-- compatible: should be one of the following:
+-    "socionext,uniphier-ld11-adamv-reset" - for LD11 SoC
+-    "socionext,uniphier-ld20-adamv-reset" - for LD20 SoC
+-- #reset-cells: should be 1.
+-
+-Example:
+-
+-	adamv@57920000 {
+-		compatible = "socionext,uniphier-ld11-adamv",
+-			     "simple-mfd", "syscon";
+-		reg = <0x57920000 0x1000>;
+-
+-		adamv_rst: reset {
+-			compatible = "socionext,uniphier-ld11-adamv-reset";
+-			#reset-cells = <1>;
+-		};
+-
+-		other nodes ...
+-	};
++UniPhier glue reset controller
+ 
+ 
+ Peripheral core reset in glue layer
 -- 
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
+2.25.1
+
