@@ -2,97 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD089203AB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 17:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2BE7203ACB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 17:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729301AbgFVPX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 11:23:56 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:36633 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729150AbgFVPXy (ORCPT
+        id S1729564AbgFVP0M convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 22 Jun 2020 11:26:12 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:48863 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729049AbgFVP0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 11:23:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592839432;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wGpF0Z4o98o6k0v3vIzdGQK4IxCExf5QSKDcyS94Xvc=;
-        b=WIzqC71X0A5hN4gOoXemTu/J+1yvz80y1jvPYSibdSKjR1ZKagJQeRVM+YbkbwPdic1C9o
-        ibBWhrgXrP9pTFWPmbMj+B3Gehohy/Tfm5IjYNjdSodvExbdGT3CCQkzHl19bPaIcXo3Mc
-        GLvs6Ass6OeGnxsyzVbGpUJ3Jn5BG2w=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-493-zORpBuoTOyu4u2Yvkgs1rA-1; Mon, 22 Jun 2020 11:23:51 -0400
-X-MC-Unique: zORpBuoTOyu4u2Yvkgs1rA-1
-Received: by mail-wm1-f69.google.com with SMTP id l2so6985636wmi.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 08:23:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wGpF0Z4o98o6k0v3vIzdGQK4IxCExf5QSKDcyS94Xvc=;
-        b=FCJu5bTWbcih27Y51HompCnTeQ1mS/36vZmVJk66D6+VLGjA6C5lz1PnxYcrayVj1o
-         mjGULw/IA6AcI4IJV+X2aNWvz7t4DKxA4CZr+7b1FK2z/61iJL8V9fUhGmWK7yOHGTVA
-         LASAR3m+cgXyLWXaSP6aFe/MseW3IQTrfGl5h8xonyZPUf8I+8JFwo3w12Hees2Wsgnx
-         WUrr0BJi8pd+rpPVysTGaEFMgMY32/qet7HMhLGiz3aiGYZnlJFWqVaU4Kryg3WdPlZ3
-         nw06a7GZbH1dugqC1Xyo52LEXcmqqR4VzyIkxtji5GsOYxCDWRKGK5cs9UpfABWTp1A9
-         pyxQ==
-X-Gm-Message-State: AOAM531fFbMWx+uzKdB/tIYGYhq3d0cyCS4pbz8I+58sdO9fE3c+CUe+
-        GZPagCIOBMnYrpbD1SF0S0g9ToWeFsgMMMlsiTu9ZXiqhF5yULQUUQkf0+rTEXxZkaPhyDWXXW/
-        QLs0SFSn50Sr9kLoCgB8e8SA0
-X-Received: by 2002:adf:ef46:: with SMTP id c6mr1166990wrp.34.1592839429932;
-        Mon, 22 Jun 2020 08:23:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyJvSRmLdiYDCgpOU1rHgnpl7Ep95bf98pJLlBYjznBMbbO5UABy+Hb03Ct9Xk8BS49lBEPeA==
-X-Received: by 2002:adf:ef46:: with SMTP id c6mr1166972wrp.34.1592839429751;
-        Mon, 22 Jun 2020 08:23:49 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:fd64:dd90:5ad5:d2e1? ([2001:b07:6468:f312:fd64:dd90:5ad5:d2e1])
-        by smtp.gmail.com with ESMTPSA id 63sm19975505wra.86.2020.06.22.08.23.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jun 2020 08:23:49 -0700 (PDT)
-Subject: Re: [PATCH v2 00/11] KVM: Support guest MAXPHYADDR < host MAXPHYADDR
-To:     Mohammed Gamal <mgamal@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, vkuznets@redhat.com,
-        sean.j.christopherson@intel.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, babu.moger@amd.com
-References: <20200619153925.79106-1-mgamal@redhat.com>
- <5a52fd65-e1b2-ca87-e923-1d5ac167cfb9@amd.com>
- <a5793938619c1c328b8283aab90166e352071317.camel@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <08594d32-9be2-b4d6-1dac-a335e8bda9f7@redhat.com>
-Date:   Mon, 22 Jun 2020 17:23:48 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Mon, 22 Jun 2020 11:26:11 -0400
+Received: from localhost (lfbn-tou-1-1075-236.w90-76.abo.wanadoo.fr [90.76.143.236])
+        (Authenticated sender: antoine.tenart@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 7C089240008;
+        Mon, 22 Jun 2020 15:26:05 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <a5793938619c1c328b8283aab90166e352071317.camel@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <f7b8b3fe41ba9e395eb0bb6bee9a020c@0leil.net>
+References: <20200619122300.2510533-1-antoine.tenart@bootlin.com> <20200619122300.2510533-6-antoine.tenart@bootlin.com> <f7b8b3fe41ba9e395eb0bb6bee9a020c@0leil.net>
+Subject: Re: [PATCH net-next v3 5/8] net: phy: mscc: 1588 block initialization
+To:     Quentin Schulz <foss@0leil.net>
+From:   Antoine Tenart <antoine.tenart@bootlin.com>
+Cc:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
+        hkallweit1@gmail.com, richardcochran@gmail.com,
+        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas.petazzoni@bootlin.com, allan.nielsen@microchip.com
+Message-ID: <159283956449.1456598.3334254941386336677@kwain>
+Date:   Mon, 22 Jun 2020 17:26:04 +0200
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/06/20 17:08, Mohammed Gamal wrote:
->> Also, something to consider. On AMD, when memory encryption is 
->> enabled (via the SYS_CFG MSR), a guest can actually have a larger
->> MAXPHYADDR than the host. How do these patches all play into that?
+Hi Quentin,
 
-As long as the NPT page tables handle the guest MAXPHYADDR just fine,
-there's no need to do anything.  I think that's the case?
-
-Paolo
-
-> Well the patches definitely don't address that case. It's assumed a
-> guest VM's MAXPHYADDR <= host MAXPHYADDR, and hence we handle the case
-> where a guests's physical address space is smaller and try to trap
-> faults that may go unnoticed by the host.
+Quoting Quentin Schulz (2020-06-21 18:57:14)
 > 
-> My question is in the case of guest MAXPHYADDR > host MAXPHYADDR, do we
-> expect somehow that there might be guest physical addresses that
-> contain what the host could see as reserved bits? And how'd the host
-> handle that?
+> Feels weird to review my own patches a year later having written them,
+> almost nostalgic :)
 
+:)
+
+> On 2020-06-19 14:22, Antoine Tenart wrote:
+> [...]
+> > @@ -373,6 +374,21 @@ struct vsc8531_private {
+> >       unsigned long ingr_flows;
+> >       unsigned long egr_flows;
+> >  #endif
+> > +
+> > +     bool input_clk_init;
+> > +     struct vsc85xx_ptp *ptp;
+> > +
+> > +     /* For multiple port PHYs; the MDIO address of the base PHY in the
+> > +      * pair of two PHYs that share a 1588 engine. PHY0 and PHY2 are 
+> > coupled.
+> > +      * PHY1 and PHY3 as well. PHY0 and PHY1 are base PHYs for their
+> > +      * respective pair.
+> > +      */
+> > +     unsigned int ts_base_addr;
+> > +     u8 ts_base_phy;
+> > +
+> 
+> I hate myself now for this bad naming. After reading the code, 
+> ts_base_addr is the address
+> of the base PHY (of a pair) on the MDIO bus and ts_base_phy is the 
+> "internal" (package)
+> address of the base PHy (of a pair). This is not very explicit.
+> 
+> Would ts_base_phy renamed into a ts_base_pkg_addr work better?
+> 
+> > +     /* ts_lock: used for per-PHY timestamping operations.
+> > +      */
+> 
+> I don't remember exactly the comment best practices in net anymore, but 
+> one line
+> comment instead?
+
+If you look at next patches, you'll see the comment is then multi-lines,
+as other members are added to the structure. I'll fix it anyway.
+
+> [...]
+> 
+> >  #endif /* _MSCC_PHY_H_ */
+> > diff --git a/drivers/net/phy/mscc/mscc_main.c 
+> > b/drivers/net/phy/mscc/mscc_main.c
+> > index 052a0def6e83..87ddae514627 100644
+> > --- a/drivers/net/phy/mscc/mscc_main.c
+> > +++ b/drivers/net/phy/mscc/mscc_main.c
+> > @@ -1299,11 +1299,29 @@ static void vsc8584_get_base_addr(struct
+> > phy_device *phydev)
+> >       __phy_write(phydev, MSCC_EXT_PAGE_ACCESS, MSCC_PHY_PAGE_STANDARD);
+> >       mutex_unlock(&phydev->mdio.bus->mdio_lock);
+> > 
+> > -     if (val & PHY_ADDR_REVERSED)
+> > +     /* In the package, there are two pairs of PHYs (PHY0 + PHY2 and
+> > +      * PHY1 + PHY3). The first PHY of each pair (PHY0 and PHY1) is
+> > +      * the base PHY for timestamping operations.
+> > +      */
+> > +     if (val & PHY_ADDR_REVERSED) {
+> >               vsc8531->base_addr = phydev->mdio.addr + addr;
+> > -     else
+> > +             vsc8531->ts_base_addr = phydev->mdio.addr;
+> > +             vsc8531->ts_base_phy = addr;
+> > +             if (addr > 1) {
+> > +                     vsc8531->ts_base_addr += 2;
+> > +                     vsc8531->ts_base_phy += 2;
+> > +             }
+> > +     } else {
+> >               vsc8531->base_addr = phydev->mdio.addr - addr;
+> > 
+> > +             vsc8531->ts_base_addr = phydev->mdio.addr;
+> > +             vsc8531->ts_base_phy = addr;
+> 
+> The two lines above are identical in both conditions, what about moving
+> them just before the if (val & PHY_ADDR_REVERSED) line?
+
+That's right, I'll fix it for v4.
+
+> [...]
+> 
+> > +static const u32 vsc85xx_egr_latency[] = {
+> > +     /* Copper Egress */
+> > +     1272, /* 1000Mbps */
+> > +     12516, /* 100Mbps */
+> > +     125444, /* 10Mbps */
+> > +     /* Fiber Egress */
+> > +     1277, /* 1000Mbps */
+> > +     12537, /* 100Mbps */
+> > +     /* Copper Egress when MACsec ON */
+> > +     3496, /* 1000Mbps */
+> > +     34760, /* 100Mbps */
+> > +     347844, /* 10Mbps */
+> > +     /* Fiber Egress when MACsec ON */
+> > +     3502, /* 1000Mbps */
+> > +     34780, /* 100Mbps */
+> > +};
+> > +
+> > +static const u32 vsc85xx_ingr_latency[] = {
+> > +     /* Copper Ingress */
+> > +     208, /* 1000Mbps */
+> > +     304, /* 100Mbps */
+> > +     2023, /* 10Mbps */
+> > +     /* Fiber Ingress */
+> > +     98, /* 1000Mbps */
+> > +     197, /* 100Mbps */
+> > +     /* Copper Ingress when MACsec ON */
+> > +     2408, /* 1000Mbps */
+> > +     22300, /* 100Mbps */
+> > +     222009, /* 10Mbps */
+> > +     /* Fiber Ingress when MACsec ON */
+> > +     2299, /* 1000Mbps */
+> > +     22192, /* 100Mbps */
+> > +};
+> > +
+> 
+> Wouldn't it make more sense to separate the latencies into two different
+> arrays? One for non-MACsec and one with? No idx "hack" later in the 
+> function that way.
+
+Removing the "idx += 5" means having an added logic on the struct to
+used to retrieve the delay (I'll use two extra variables). But I do
+agree because that will improve the latency definition, and that alone
+is better.
+
+> [...]
+> 
+> > +static int vsc85xx_eth1_conf(struct phy_device *phydev, enum ts_blk 
+> > blk,
+> > +                          bool enable)
+> > +{
+> > +     struct vsc8531_private *vsc8531 = phydev->priv;
+> > +     u32 val = ANA_ETH1_FLOW_ADDR_MATCH2_DEST;
+> > +
+> > +     if (vsc8531->ptp->rx_filter == HWTSTAMP_FILTER_PTP_V2_L2_EVENT) {
+> > +             /* PTP over Ethernet multicast address for SYNC and DELAY msg */
+> > +             u8 ptp_multicast[6] = {0x01, 0x1b, 0x19, 0x00, 0x00, 0x00};
+> > +
+> 
+> I think this is actually part of "the" standard:
+> https://en.wikipedia.org/wiki/Precision_Time_Protocol#Message_transport
+> 
+> So would it make sense to make it available to all drivers via one of 
+> the
+> include/linux/ptp_*.h?
+
+That's right. I had a look and only two drivers (including this one)
+seems to be using the PTP over Ethernet multicast address. Also that
+would mean adding a new header (there are none, to my knowledge, where
+this would fit) for a single line definition.
+
+I don't know, I believe this is a good idea, but maybe a bit to early?
+
+> [...]
+> 
+> > +static bool vsc8584_is_1588_input_clk_configured(struct phy_device 
+> > *phydev)
+> > +{
+> > +     struct vsc8531_private *vsc8531 = phydev->priv;
+> > +
+> > +     if (vsc8531->ts_base_addr != phydev->mdio.addr) {
+> > +             struct mdio_device *dev;
+> > +
+> > +             dev = phydev->mdio.bus->mdio_map[vsc8531->ts_base_addr];
+> > +             phydev = container_of(dev, struct phy_device, mdio);
+> > +             vsc8531 = phydev->priv;
+> > +     }
+> > +
+> > +     return vsc8531->input_clk_init;
+> > +}
+> > +
+> > +static void vsc8584_set_input_clk_configured(struct phy_device 
+> > *phydev)
+> > +{
+> > +     struct vsc8531_private *vsc8531 = phydev->priv;
+> > +
+> > +     if (vsc8531->ts_base_addr != phydev->mdio.addr) {
+> > +             struct mdio_device *dev;
+> > +
+> > +             dev = phydev->mdio.bus->mdio_map[vsc8531->ts_base_addr];
+> > +             phydev = container_of(dev, struct phy_device, mdio);
+> > +             vsc8531 = phydev->priv;
+> > +     }
+> > +
+> > +     vsc8531->input_clk_init = true;
+> > +}
+> 
+> Duplicated code here.
+> Maybe:
+> 
+> static struct vsc8531_private * vsc8584_get_ts_base_phydev(struct 
+> phy_device *phydev)
+> {
+>         struct vsc8531_private *vsc8531 = phydev->priv;
+>         if (vsc8531->ts_base_addr != phydev->mdio.addr) {
+>                 struct mdio_device *dev;
+> 
+>                 dev = phydev->mdio.bus->mdio_map[vsc8531->ts_base_addr];
+>                 phydev = container_of(dev, struct phy_device, mdio);
+>                 vsc8531 = phydev->priv;
+>         }
+>         return vsc8531;
+> }
+
+I'll do something of the like for v4. I'll still keep the is_configured
+and set_configured helpers as I don't want to expose the base PHY
+private structure outside of those helpers.
+
+> [...]
+> 
+> > diff --git a/drivers/net/phy/mscc/mscc_ptp.h 
+> > b/drivers/net/phy/mscc/mscc_ptp.h
+> [...]
+> > +
+> > +struct vsc85xx_ptphdr {
+> > +     u8 tsmt; /* transportSpecific | messageType */
+> > +     u8 ver;  /* reserved0 | versionPTP */
+> > +     __be16 msglen;
+> > +     u8 domain;
+> > +     u8 rsrvd1;
+> > +     __be16 flags;
+> > +     __be64 correction;
+> > +     __be32 rsrvd2;
+> > +     __be64 clk_identity;
+> > +     __be16 src_port_id;
+> > +     __be16 seq_id;
+> > +     u8 ctrl;
+> > +     u8 log_interval;
+> > +} __attribute__((__packed__));
+> > +
+> 
+> AFAICT, this is also part of "the" standard:
+> http://wiki.hevs.ch/uit/index.php5/Standards/Ethernet_PTP/frames#PTP_Header
+> Would maybe be better to have it in one of the header files in include/?
+
+Having common definitions when multiple drivers do use the same struct,
+or defined values is good. However if like here it is used in a single
+driver, and especially for this kind of representation, I don't believe
+that would add any value.
+
+Thanks,
+Antoine
+
+-- 
+Antoine Ténart, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
