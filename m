@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3378203440
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B92F0203442
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727812AbgFVKBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 06:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43798 "EHLO
+        id S1727850AbgFVKBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 06:01:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727104AbgFVKBN (ORCPT
+        with ESMTP id S1727112AbgFVKBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 06:01:13 -0400
+        Mon, 22 Jun 2020 06:01:15 -0400
 Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F550C061796
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 03:01:13 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id x16so5120822wmj.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 03:01:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDD2C061797
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 03:01:15 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id u26so13163507wmn.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 03:01:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=A+lImr9HJg7an5aR2kWVhsrz0bguXORdrvazpSsfAy4=;
-        b=Tsq60zSlQyklW6ikiOvVha9m8MSQkGcpaji1GbS6xFPATyiJUUq3JKJyfCAyoxgehy
-         6CzmzBfAhfYC+JJ7E2jJttBs8SlhgR8oo9tMY8qH0H5uA72QFI9xKDo+9n217Y4MWcDI
-         iIpqF19hJetEL+xliD5MhEvVcUjPcnrYARK0a04t2IuYk/3fmnQix3PKNa1StSQ2Ywir
-         OsASWBCKRjtVl/oQTuUFv5MYvUju1kmBOyveg54l6ZkSpLRCgEJ7CT/LJK7QfCebpVVu
-         Mj4niG7n9b0pf3hzpGxkqMvGlvJ+MWwIDdWWPh8rjVNo3Yy750rQCUi4Ar9S11Dn+wof
-         slIA==
+        bh=vANIsXo74NzXiDIyR10LVPoVvN0SF3cCppVREngNaSg=;
+        b=xtlQ6vt2ftcI+XabUk5dlYEY+EoWH8nR8xcQ0FineEvTFIyHxwdZru/XNV/dfPCuwH
+         p+2SV3EvOLiwS1nhvc60TsvMW4YNirrfN8g/xcNwpKisI/ZQhpTItmGFfFpSHrXsGu+S
+         b7MvvTAW41tXqhs9scOYapiZqZ36Pfyhf81lebKF4vMaR5ghYo5mQz1TbDxar4ISYJoU
+         r97GfAQhf4HMDRDYdamUBfw7XB2G5c/8Yd3xQBk2wd2NRH8kL2poxNolBqJT2m6c+bYv
+         ZbtsK6uSEB72jNc60WhrddXbm/mQa5m5tZApNrkGL3PmfTcjFpfrBr+Em/UQj5iDvDis
+         u71g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=A+lImr9HJg7an5aR2kWVhsrz0bguXORdrvazpSsfAy4=;
-        b=W73YWYB2kxPocHqssmXQHHqz4jM3n6h3kWpvxfRfKlF6ysH+X5g3SHTflw6nAFOA/z
-         VqwQRPX2irTrhX7dkfHCW9pmb9kBq7L9EQOIavG0ZUah1wfVEFBogceLEVGGpLf3/Xi5
-         /cFDRBfrrvSlfBOnezB8S6hqLDiu/t4rRTuPL//VwME7kIzZiP9sjiH/cMvMUXncxJrX
-         pTMzBc6inVYWNPS687eOUNEAhdQRvO5+KsGpRUnUY/l6S45vOTbPXzz6M0E/ZUzt4oHe
-         QaEUmR1k0nW6zc/YJdI94OOjsXGdcyecFXRN3PYrY2XUfMv7sHK/U7OZZivkzfQs3b5M
-         heFQ==
-X-Gm-Message-State: AOAM531JWi2Ci0Hz019fchUVUKesZzFTxUFdJtTP5OesmyPq3KkkvZ/L
-        /TInLaHjkVMtdBuqSHn/zPaZlQ==
-X-Google-Smtp-Source: ABdhPJz+xi3uc649226XqSHmo+O8gA+/80J/5T5A137PMAF2MXQi5PymwGW6I5MXBKX7A322evi/xw==
-X-Received: by 2002:a1c:3bc2:: with SMTP id i185mr17995739wma.33.1592820071777;
-        Mon, 22 Jun 2020 03:01:11 -0700 (PDT)
+        bh=vANIsXo74NzXiDIyR10LVPoVvN0SF3cCppVREngNaSg=;
+        b=DN1OOdoKr2eefR0df/FUBrmtZxdDc5TuQEGZ/1dOsBPSwg7foN/2l7O64BelcCOo66
+         SQXSkn8zvYPDZV2xxqUEdPyI+1FB7hSwYcAEhJ6iJW2lfgzP1BxTknNAKQ/XAATVNxvM
+         6H35uyQB8CwPmN1onJq4sgfIU0EO3j1TnYCK5vEprlH3aSc6lKA+ENDuMEu8cV9yDI2T
+         MhecAuo7tdBKhEP7arrDokkCURIUNtfAvYBguKN0QETw3es9sw+G8jKuznnc5Zjn0i/A
+         3keQzZCP4HE2sLNRnpTcDjhOfT9Wqtcz9M/10myqroeP4Cq10h+nFdwpFBnESrLIwXdi
+         5i8Q==
+X-Gm-Message-State: AOAM532NIxrtMZ/jC4mdn0F0UW2RJ2jGrJMyT/nLa28sn92K3ZaBbty5
+        aIC2pwRxWgDM0Yrfku14tsMrLIIAkKA=
+X-Google-Smtp-Source: ABdhPJzUHixuKfQa4u9XvxcXJoOatBovm5nA4dkuN9R2ixW6hpip+ioKdNDg9ycFUOAJ0KD49goWaA==
+X-Received: by 2002:a1c:c1:: with SMTP id 184mr17443884wma.74.1592820073899;
+        Mon, 22 Jun 2020 03:01:13 -0700 (PDT)
 Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id x205sm16822187wmx.21.2020.06.22.03.01.10
+        by smtp.gmail.com with ESMTPSA id x205sm16822187wmx.21.2020.06.22.03.01.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 03:01:11 -0700 (PDT)
+        Mon, 22 Jun 2020 03:01:12 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Jonathan Corbet <corbet@lwn.net>,
         Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
@@ -73,9 +73,9 @@ Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Pedro Tsai <pedro.tsai@mediatek.com>,
         Andrew Perepech <andrew.perepech@mediatek.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 04/11] net: devres: rename the release callback of devm_register_netdev()
-Date:   Mon, 22 Jun 2020 12:00:49 +0200
-Message-Id: <20200622100056.10151-5-brgl@bgdev.pl>
+Subject: [PATCH 05/11] Documentation: devres: add missing mdio helper
+Date:   Mon, 22 Jun 2020 12:00:50 +0200
+Message-Id: <20200622100056.10151-6-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200622100056.10151-1-brgl@bgdev.pl>
 References: <20200622100056.10151-1-brgl@bgdev.pl>
@@ -88,36 +88,26 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Make it an explicit counterpart to devm_register_netdev() just like we
-do with devm_free_netdev() for better clarity.
+We have a devres variant of mdiobus_register() but it's not listed in
+devres.rst. Add it under other mdio devm functions.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- net/devres.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/driver-api/driver-model/devres.rst | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/net/devres.c b/net/devres.c
-index 1583ccb207c0..d7aa92243844 100644
---- a/net/devres.c
-+++ b/net/devres.c
-@@ -39,7 +39,7 @@ struct net_device *devm_alloc_etherdev_mqs(struct device *dev, int sizeof_priv,
- }
- EXPORT_SYMBOL(devm_alloc_etherdev_mqs);
+diff --git a/Documentation/driver-api/driver-model/devres.rst b/Documentation/driver-api/driver-model/devres.rst
+index e0b58c392e4f..5463fc8a60c1 100644
+--- a/Documentation/driver-api/driver-model/devres.rst
++++ b/Documentation/driver-api/driver-model/devres.rst
+@@ -343,6 +343,7 @@ MDIO
+   devm_mdiobus_alloc()
+   devm_mdiobus_alloc_size()
+   devm_mdiobus_free()
++  devm_mdiobus_register()
  
--static void devm_netdev_release(struct device *dev, void *this)
-+static void devm_unregister_netdev(struct device *dev, void *this)
- {
- 	struct net_device_devres *res = this;
- 
-@@ -60,7 +60,7 @@ int devm_register_netdev(struct device *dev, struct net_device *ndev)
- 	struct net_device_devres *dr;
- 	int ret;
- 
--	dr = devres_alloc(devm_netdev_release, sizeof(*dr), GFP_KERNEL);
-+	dr = devres_alloc(devm_unregister_netdev, sizeof(*dr), GFP_KERNEL);
- 	if (!dr)
- 		return -ENOMEM;
- 
+ MEM
+   devm_free_pages()
 -- 
 2.26.1
 
