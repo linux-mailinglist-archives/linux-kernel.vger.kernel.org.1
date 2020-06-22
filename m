@@ -2,152 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6489203EB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA387203ECB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730309AbgFVSFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 14:05:39 -0400
-Received: from mga11.intel.com ([192.55.52.93]:57644 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730118AbgFVSFi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 14:05:38 -0400
-IronPort-SDR: +um5RqvL5fTo3djfaWdxYJVPCkuJMU1jTBtGhZz/BBxoqlESFUeuhgRaEhDhBBbPMMaBRycFBF
- yP8MT6JMGYrg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9660"; a="142088893"
-X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="142088893"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 11:05:36 -0700
-IronPort-SDR: 5/ey3twZq8UaSJ5XwbK7VHYYrg3QWceUd+VkfKGYV4MS9zawE6WFARTY0196+Gce73tfUU2rsj
- oPW5m+URFdkQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="278842816"
-Received: from gdeschee-mobl.amr.corp.intel.com (HELO [10.255.6.183]) ([10.255.6.183])
-  by orsmga006.jf.intel.com with ESMTP; 22 Jun 2020 11:05:32 -0700
-Subject: Re: [PATCH 17/21] x86/fpu: Use proper mask to replace full
- instruction mask
-To:     "Liang, Kan" <kan.liang@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, acme@kernel.org, tglx@linutronix.de,
-        bp@alien8.de, x86@kernel.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, yu-cheng.yu@intel.com,
-        bigeasy@linutronix.de, gorcunov@gmail.com, hpa@zytor.com,
-        alexey.budankov@linux.intel.com, eranian@google.com,
-        ak@linux.intel.com, like.xu@linux.intel.com,
-        yao.jin@linux.intel.com
-References: <1592575449-64278-1-git-send-email-kan.liang@linux.intel.com>
- <1592575449-64278-18-git-send-email-kan.liang@linux.intel.com>
- <20200619193140.GI576888@hirez.programming.kicks-ass.net>
- <aa3d239b-6ffe-261e-e70a-ffd17b8b506b@linux.intel.com>
- <c95b6ade-2cc9-e065-01ab-b449dd846c50@intel.com>
- <56653932-4c11-60f9-1541-a19ea307c0a9@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <5223f714-87eb-947e-e65c-886431cc7655@intel.com>
-Date:   Mon, 22 Jun 2020 11:05:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1730332AbgFVSId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 14:08:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729873AbgFVSIc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 14:08:32 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644CAC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:08:31 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id c194so16472650oig.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:08:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jm6bjK+DZcG0T8JiyiA68BtynZx883K3XjW2OLQiO2A=;
+        b=bftkEq2a51p+DW68Q2XCLk5dmflAD5WMjTxB6mlUfr5UbyRvEI+GIOHsciMkO2Vp9l
+         cb9W4q2OsKVrxVpjj0yoEjGi8S9dPNQ8x9RvbvEZVswLS/lpuRiz9ERT/vZDta/heeQR
+         /5u9toSK/cSkeiwGAdW+NDWN/X9HasreMvD75VZNZCiUL/XVffLbdvf44KiopBTZjBh1
+         EHSAoJjsoTfyyypZkvahGppgkuQJc4DNB1kgmW8S9BhFNquV+95N4KTkVO2p4nCsOyJJ
+         kVTI41Denqsbm5hzgxC2TMehhvNedd/a8NQVYIkI29R/sBHyI1ldstkoJ3reSRwdB/jU
+         74qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jm6bjK+DZcG0T8JiyiA68BtynZx883K3XjW2OLQiO2A=;
+        b=YR0iPqzrsKqzIpdOFkvFhDXtJxyjV5nc0HJNq2RI8TNwV8Fp4RmNjeeUtwIEWFYmMz
+         fSefKjBJcWrYCqPLWWXCos8bXuWOiGJppVavF4DsvFlpWxgB/KZno+bwXPFDKXZ1K+kd
+         42Zc4bvKZItxoZ3A7mX21oY38JEWAO1a4YapDH3kC7vMP93pSnVc0zaBHM98KBqfFmW2
+         duFQYBkjfN9BOUdO0C3ZMnxpjZvtgJ4ug4ug7Z075+DBCAODHs34VJ0jdj2PQLnKw+V7
+         b6pHd4Wjq40b1Wp8Q6zJGTGPhyS5zfNN+iQRCgaZVWKrPtVLk3ggRaQq6ARkoEBvCVI7
+         ftyQ==
+X-Gm-Message-State: AOAM531Gmv6oQr4JtzxmSefsR+HG3P6pAveh+GBD//U46flOj0R1qhpf
+        YcuGidgr2P8xeEbF/+C/EPm4cV9NSkQ=
+X-Google-Smtp-Source: ABdhPJyK93YJhfPtxJTdAiMfzN0O99PZVEz67jcgBt6vGBzhF0DwyY6f+HuyEeSZcDAH+We/1ZoeWA==
+X-Received: by 2002:aca:c34b:: with SMTP id t72mr13773010oif.34.1592849310661;
+        Mon, 22 Jun 2020 11:08:30 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id t1sm3556113oot.36.2020.06.22.11.08.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 11:08:29 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 11:05:45 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, loic.pallardy@st.com,
+        arnaud.pouliquen@st.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 06/11] remoteproc: stm32: Properly set co-processor
+ state when attaching
+Message-ID: <20200622180545.GL149351@builder.lan>
+References: <20200601175552.22286-1-mathieu.poirier@linaro.org>
+ <20200601175552.22286-7-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-In-Reply-To: <56653932-4c11-60f9-1541-a19ea307c0a9@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200601175552.22286-7-mathieu.poirier@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/20 10:47 AM, Liang, Kan wrote:
->> I'm wondering if we should just take these copy_*regs_to_*() functions
->> and uninline them.  Yeah, they are basically wrapping one instruction,
->> but it might literally be the most heavyweight instruction in the
->> whole ISA.
+On Mon 01 Jun 10:55 PDT 2020, Mathieu Poirier wrote:
+
+> Introduce the required mechanic to set the state of the M4 in order
+> to properly deal with scenarios where the co-processor has been
+> stated by another entity.
 > 
-> Thanks for the suggestions, but I'm not sure if I follow these methods.
+> Mainly based on the work published by Arnaud Pouliquen [1].
 > 
-> I don't think simply removing the "inline" key word for the
-> copy_xregs_to_kernel() functions would help here.
-> Do you mean exporting the copy_*regs_to_*()?
-
-The thing that worries me here is exporting "internal" FPU state like
-xfeatures_mask_all.  I'm much happier exporting a function with a much
-more defined purpose.
-
-So, yes, I'm suggesting exporting the functions, *not* the data structures.
-
->> Or, maybe just make an out-of-line version for KVM to call?
+> [1]. https://patchwork.kernel.org/project/linux-remoteproc/list/?series=239877
 > 
-> I think the out-of-line version for KVM still needs the
-> xfeatures_mask_all. Because the size of vcpu's XSAVE buffer
-> (&vcpu->arch.guest_fpu) is the same as other kernel XSAVE buffers, such
-> as task->fpu. The xfeatures_mask_all is required for KVM to filter out
-> the dynamic supervisor feature as well. I think even if we make an
-> out-of-line version for KVM, we still have to export the
-> xfeatures_mask_all for KVM.
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-No.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-You do this in a .h file:
+> ---
+>  drivers/remoteproc/stm32_rproc.c | 32 ++++++++++++++++++++++++++++++++
+>  1 file changed, 32 insertions(+)
+> 
+> diff --git a/drivers/remoteproc/stm32_rproc.c b/drivers/remoteproc/stm32_rproc.c
+> index 80fd8fd831da..2154c8b90a2a 100644
+> --- a/drivers/remoteproc/stm32_rproc.c
+> +++ b/drivers/remoteproc/stm32_rproc.c
+> @@ -38,6 +38,13 @@
+>  #define STM32_MBX_VQ1_ID	1
+>  #define STM32_MBX_SHUTDOWN	"shutdown"
+>  
+> +#define M4_STATE_OFF		0
+> +#define M4_STATE_INI		1
+> +#define M4_STATE_CRUN		2
+> +#define M4_STATE_CSTOP		3
+> +#define M4_STATE_STANDBY	4
+> +#define M4_STATE_CRASH		5
+> +
+>  struct stm32_syscon {
+>  	struct regmap *map;
+>  	u32 reg;
+> @@ -635,12 +642,30 @@ static int stm32_rproc_parse_dt(struct platform_device *pdev,
+>  	return 0;
+>  }
+>  
+> +static int stm32_rproc_get_m4_status(struct stm32_rproc *ddata,
+> +				     unsigned int *state)
+> +{
+> +	/* See stm32_rproc_parse_dt() */
+> +	if (!ddata->m4_state.map) {
+> +		/*
+> +		 * We couldn't get the coprocessor's state, assume
+> +		 * it is not running.
+> +		 */
+> +		state = M4_STATE_OFF;
+> +		return 0;
+> +	}
+> +
+> +	return regmap_read(ddata->m4_state.map, ddata->m4_state.reg, state);
+> +}
+> +
+> +
+>  static int stm32_rproc_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+>  	struct stm32_rproc *ddata;
+>  	struct device_node *np = dev->of_node;
+>  	struct rproc *rproc;
+> +	unsigned int state;
+>  	int ret;
+>  
+>  	ret = dma_coerce_mask_and_coherent(dev, DMA_BIT_MASK(32));
+> @@ -663,6 +688,13 @@ static int stm32_rproc_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		goto free_rproc;
+>  
+> +	ret = stm32_rproc_get_m4_status(ddata, &state);
+> +	if (ret)
+> +		goto free_rproc;
+> +
+> +	if (state == M4_STATE_CRUN)
 
-extern void notinline_copy_xregs_to_kernel(struct xregs_state *xstate);
+I presume this won't ever be e.g. M4_STATE_CRASH or M4_STATE_STANDBY?
 
-And then this in a .c file:
+Regards,
+Bjorn
 
-void notinline_copy_xregs_to_kernel(struct xregs_state *xstate)
-{
-	copy_xregs_to_kernel(xstate);
-}
-EXPORT_SYMBOL_GPL(notinline_copy_xregs_to_kernel);
-
-
-KVM now calls notinline_copy_xregs_to_kernel() (not what it should
-really be called).  It does *not* need 'xfeatures_mask_all' exported in
-this case.  That preserves the inlining for core kernel users.
-
-It's not the prettiest situation, but it is straightforward.
+> +		rproc->state = RPROC_DETACHED;
+> +
+>  	rproc->has_iommu = false;
+>  	ddata->workqueue = create_workqueue(dev_name(dev));
+>  	if (!ddata->workqueue) {
+> -- 
+> 2.20.1
+> 
