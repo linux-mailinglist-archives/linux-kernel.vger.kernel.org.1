@@ -2,95 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E6F920367E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBC7203680
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728116AbgFVMLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 08:11:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35780 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727852AbgFVMLi (ORCPT
+        id S1728147AbgFVMMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 08:12:00 -0400
+Received: from mail-ej1-f48.google.com ([209.85.218.48]:44079 "EHLO
+        mail-ej1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727852AbgFVML7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 08:11:38 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD11C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 05:11:38 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id n24so17788505ejd.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 05:11:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Zwilt9vL4hQVp9xstjNnlSMflEMCndqnATlv+WlgaOk=;
-        b=uYNoiKQgiqbIFRXqocXZ0XQ5Sgg9QqfrYhCT/KpGOozaG1eU+xKiwLXUXE1twUgJsO
-         FlBlEW/EruQMaIP0kHpFsUJSNIOpgtqZZgOwirV1fHoevKw4M6hhCmL21W5ZyhtPsNAI
-         41ZTBm+4FMiPuQgtVy0o9pTqm28rGRwUjVr2UigqUAPJtnbQ2bSseVvrp7YYqMvANMud
-         QXCqSpViZciAMF+K6kMpk6FL19gqjV6DNNQFChvkMXlQNVQUsDxoaLR+aTChO8zxaEJ9
-         8nX1X+hve2JfYwAQzBtrP45rUmWP7DRlKSkBqpjbl8EgvYVmz1IQr+VeohcVp9sdWYUx
-         GZjQ==
+        Mon, 22 Jun 2020 08:11:59 -0400
+Received: by mail-ej1-f48.google.com with SMTP id ga4so4198125ejb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 05:11:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Zwilt9vL4hQVp9xstjNnlSMflEMCndqnATlv+WlgaOk=;
-        b=Nbk6ceRXOdVZl7besInWckBltoC1NbTebuHI+H/Fyi2lpesi7hpApiwtv+0QI99B89
-         X8jg+utv7YsYORefyibyWjCAMkY7oxSbvfycFNTvo10f9aV6p9DGbeor7ARKpTh07D+K
-         glPoQMKt+mX+423k2G33hXYJuJ2yCXcw6BJgU5VViLiss2V2kDmekgbLnd1AJoe7awWi
-         Xd82aHBdK/4zH3ENgb0IHFYMMF7DFe0VJgDv7GgRuYHXYfI4UtgIN3CQKZNnRHL5xcIw
-         Gj52jI8kz52FTKfxHfKaqxSenUZnS28vE0Wk+MdGtQJyEKLmivfLHYEHqs8+KKsFsMUC
-         MQbg==
-X-Gm-Message-State: AOAM533uxfgRgzk+o1FHRnaLTAlWntYKxrfcT5hanqA675Ph16B3wxa9
-        mK5ozcFX2eAE46WOp0cQyyfzfN61
-X-Google-Smtp-Source: ABdhPJyKLq6DZRNFLtGsYdWfeKFkZ6GDdxLaa/HZvqwh0eh0fHf6gb/gYU8cugP51b87cw2PWYryTA==
-X-Received: by 2002:a17:906:fcb1:: with SMTP id qw17mr1940194ejb.445.1592827897047;
-        Mon, 22 Jun 2020 05:11:37 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:a03f:b7f9:7600:c5d2:e67d:372a:5e48])
-        by smtp.gmail.com with ESMTPSA id bs1sm12242112edb.43.2020.06.22.05.11.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 05:11:36 -0700 (PDT)
-From:   Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-To:     Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>
-Cc:     openrisc@lists.librecores.org, linux-kernel@vger.kernel.org,
-        Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] openrisc: fix __user in raw_copy_to_user()'s prototype
-Date:   Mon, 22 Jun 2020 14:11:24 +0200
-Message-Id: <20200622121124.80398-1-luc.vanoostenryck@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=b1faUQbOs5qeYo5N21a8jYBHSSlOL9ES80kAu+hsLFU=;
+        b=Kr9SSBBDPWgo5p6IUDPH++Yk8BY1neHwhyzUnz/OAfB1Q5rWxw4eeQCZIU/igxXzoR
+         XiI6hsB9akj/I+Bh4/wvw8DFydq2LHIjuajl/ZebMLNBVsbqIJ7fM+UM8qPyFaL5UACZ
+         Lq9LrjbWktXhqgHDZ1b3JeYUM/ESt7Ev79xPtpFMBefse61/amoCrHNpxO6N2CQdSqJq
+         Yp53R1eC8jY2RXbkRw87RjSegBxKBWikCjUZT4XVM9zDZzyG9dDiLRqEkufyoOJmrD5Q
+         ZoI3h1L3sMUnSK+zteu9x/KzNBvEQnZ9uxk5hNwog6HUrwA9rGgDjfqTh0ArCuXghbSb
+         8kLQ==
+X-Gm-Message-State: AOAM533iKdLSw1yO2fYDwlKzKmWj356YKMygnxjWGG91DHn1UanSo/Q1
+        m1omwMknt0Ho6WrkDinjhZzXUNkYO0NiJw==
+X-Google-Smtp-Source: ABdhPJwHKvCyt5z9lGLpzs9XEq/SF9X+awMj0tflVpNmHTydwSHSVKd1PzMqNC27lA+m4tr922UFHQ==
+X-Received: by 2002:a17:906:3483:: with SMTP id g3mr15158613ejb.373.1592827917305;
+        Mon, 22 Jun 2020 05:11:57 -0700 (PDT)
+Received: from [10.68.32.147] (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
+        by smtp.gmail.com with ESMTPSA id ch25sm1398102edb.90.2020.06.22.05.11.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jun 2020 05:11:56 -0700 (PDT)
+Reply-To: efremov@linux.com
+Subject: Re: [Cocci] [PATCH v3] coccinelle: misc: add array_size_dup script to
+ detect missed overflow checks
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Kees Cook <keescook@chromium.org>, cocci@systeme.lip6.fr,
+        linux-kernel@vger.kernel.org
+References: <20200615102045.4558-1-efremov@linux.com>
+ <20200619131313.15468-1-efremov@linux.com>
+ <alpine.DEB.2.22.394.2006212255140.2501@hadrien>
+From:   Denis Efremov <efremov@linux.com>
+Autocrypt: addr=efremov@linux.com; keydata=
+ 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
+Message-ID: <4983fb06-006e-d26b-7cfb-d987ad27e57d@linux.com>
+Date:   Mon, 22 Jun 2020 15:12:26 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.DEB.2.22.394.2006212255140.2501@hadrien>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-raw_copy_to_user()'s prototype seems to be a copy & paste of
-raw_copy_from_user() and as such has the __user annotation
-in the 'from' argument instead of the 'to'.
 
-So, move the __user annotation in the prototype to the 'to'.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
----
- arch/openrisc/include/asm/uaccess.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 6/21/20 11:56 PM, Julia Lawall wrote:
+> Is it a python 2 vs python 3 thing?
 
-diff --git a/arch/openrisc/include/asm/uaccess.h b/arch/openrisc/include/asm/uaccess.h
-index 17c24f14615f..46e31bb4a9ad 100644
---- a/arch/openrisc/include/asm/uaccess.h
-+++ b/arch/openrisc/include/asm/uaccess.h
-@@ -241,7 +241,7 @@ raw_copy_from_user(void *to, const void __user *from, unsigned long size)
- 	return __copy_tofrom_user(to, (__force const void *)from, size);
- }
- static inline unsigned long
--raw_copy_to_user(void *to, const void __user *from, unsigned long size)
-+raw_copy_to_user(void __user *to, const void *from, unsigned long size)
- {
- 	return __copy_tofrom_user((__force void *)to, from, size);
- }
--- 
-2.27.0
+Yes, python2 is no longer supported and I
+thought it would be safe to use this syntax.
 
+Ok, I will make it portable in v4.
+
+Denis
