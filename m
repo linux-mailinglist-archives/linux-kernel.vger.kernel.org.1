@@ -2,97 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528C7203CB5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F82203D0C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729792AbgFVQiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 12:38:00 -0400
-Received: from mga09.intel.com ([134.134.136.24]:45770 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729260AbgFVQiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 12:38:00 -0400
-IronPort-SDR: 9aDMIAudlv/lEvT+ZUeEA7/uq/VReLVbFLjEUN6pspFkwuSVFpkk5MHyVXhiCGo1rW8arDqOcQ
- Df7FA9WczP6w==
-X-IronPort-AV: E=McAfee;i="6000,8403,9660"; a="145321772"
-X-IronPort-AV: E=Sophos;i="5.75,267,1589266800"; 
-   d="scan'208";a="145321772"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 09:37:59 -0700
-IronPort-SDR: tUatlQhKCXoMlU2i9XOmGEVCNLlPs3jyOOdZIjUT+MC7KpNBMZ6zeCIwkpHCizk0l5JO/fepmN
- cdClWSlqsypg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,267,1589266800"; 
-   d="scan'208";a="478444703"
-Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
-  by fmsmga006.fm.intel.com with SMTP; 22 Jun 2020 09:37:57 -0700
-Received: by lahna (sSMTP sendmail emulation); Mon, 22 Jun 2020 19:37:56 +0300
-Date:   Mon, 22 Jun 2020 19:37:56 +0300
-From:   Mika Westerberg <mika.westerberg@linux.intel.com>
-To:     Mario Limonciello <mario.limonciello@dell.com>
-Cc:     Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] Allow breaking up Thunderbolt/USB4 updates
-Message-ID: <20200622163756.GV2795@lahna.fi.intel.com>
-References: <20200622143035.25327-1-mario.limonciello@dell.com>
+        id S1730027AbgFVQs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 12:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729492AbgFVQs0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 12:48:26 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3823CC061573;
+        Mon, 22 Jun 2020 09:48:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=BrA6e9Pl0lgGnSBNPXFINOYzmqpmgi0UVxl9CB0xQ/8=; b=ZWvQZSn5KNZaPrVUa67GFcqEqL
+        /blvNZ/bNLp/o7RXq/ylNNY2aWZE2DovjOw1XnNIVhCJUVZxeQexl4pXg6DQpjErJEjae3wDZ/tn0
+        hm30mRptxfgQPD6ntYecY20sPolsiZoXp/YyKVHwa/b87Fl2Ddplg15+ootEZ8YYWEfgx9w1QsWHj
+        kwspysoeyB1rx97ofZrNnEzRS3G7WVr+FS7q7g05mPwlM+na9XtdxfgNw8rghH4RndcC3Gol8AN0X
+        4ZQuekN/yNTUdQfkrRK35Cc7PDRVd3n0xxz6jU+sUaaw58e33AebsrCviImFbkDpm7TVauHJFTd+z
+        LwvJiFEw==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jnPTU-0007dG-P9; Mon, 22 Jun 2020 16:39:13 +0000
+Subject: Re: [PATCH 1/5] Huawei BMA: Adding Huawei BMA driver: host_edma_drv
+To:     yunaixin03610@163.com, netdev@vger.kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, wuguanping@huawei.com,
+        wangqindong@huawei.com
+References: <20200622160311.1533-1-yunaixin03610@163.com>
+ <20200622160311.1533-2-yunaixin03610@163.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <ca9b537a-c90a-4156-8e43-65ad9ddfca23@infradead.org>
+Date:   Mon, 22 Jun 2020 09:39:09 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200622143035.25327-1-mario.limonciello@dell.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20200622160311.1533-2-yunaixin03610@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mario,
+On 6/22/20 9:03 AM, yunaixin03610@163.com wrote:
+> diff --git a/drivers/net/ethernet/huawei/bma/edma_drv/Kconfig b/drivers/net/ethernet/huawei/bma/edma_drv/Kconfig
+> new file mode 100644
+> index 000000000000..97829c5487c2
+> --- /dev/null
+> +++ b/drivers/net/ethernet/huawei/bma/edma_drv/Kconfig
+> @@ -0,0 +1,11 @@
+> +#
+> +# Huawei BMA software driver configuration
+> +#
+> +
+> +config BMA
+> +	tristate "Huawei BMA Software Communication Driver"
+> +
+> +	---help---
 
-On Mon, Jun 22, 2020 at 09:30:33AM -0500, Mario Limonciello wrote:
-> Currently updates to Thunderbolt and USB4 controllers are fully atomic
-> actions. When writing into the non-active NVM nothing gets flushed to
-> the hardware until authenticate is sent.
-> 
-> There has been some desire to improve the perceived performance of these
-> updates, particularly for userland that may perform the update upon
-> a performance sensitive time like logging out.
-> 
-> So allow userland to flush the image to hardware at runtime, and then
-> allow authenticating the image at another time.
-> 
-> For the Dell WD19TB some specific hardware capability exists that allows
-> extending this to automatically complete the update when unplugged.
-> Export that functionality to userspace as well.
-> 
-> This patch series is done relative thunderbolt.git/next.
+Juse use
+	help
 
-Thanks for the patch series. I wonder if you could base this on top of
-my "retimer NVM upgrade" series here (you are also Cc'd):
+Use of ---help--- is being phased out (removed).
 
-  https://lore.kernel.org/linux-usb/20200616135617.85752-1-mika.westerberg@linux.intel.com/
+> +	  This driver supports Huawei BMA Software. It is used 
+> +	  to communication between Huawei BMA and BMC software.
+> +
 
-That series moves some of the common NVM functionality into a separate
-file (nvm.c).
+thanks.
+-- 
+~Randy
 
-> Mario Limonciello (2):
->   thunderbolt: Add support for separating the flush to SPI and
->     authenticate
->   thunderbolt: Add support for authenticate on disconnect
-> 
->  .../ABI/testing/sysfs-bus-thunderbolt         | 24 +++++-
->  drivers/thunderbolt/Makefile                  |  1 +
->  drivers/thunderbolt/eeprom.c                  |  2 +
->  drivers/thunderbolt/lc.c                      | 14 ++++
->  drivers/thunderbolt/quirks.c                  | 38 +++++++++
->  drivers/thunderbolt/switch.c                  | 81 +++++++++++++++----
->  drivers/thunderbolt/tb-quirks.h               | 16 ++++
->  drivers/thunderbolt/tb.h                      |  4 +
->  drivers/thunderbolt/tb_regs.h                 |  1 +
->  9 files changed, 162 insertions(+), 19 deletions(-)
->  create mode 100644 drivers/thunderbolt/quirks.c
->  create mode 100644 drivers/thunderbolt/tb-quirks.h
-> 
-> -- 
-> 2.25.1
