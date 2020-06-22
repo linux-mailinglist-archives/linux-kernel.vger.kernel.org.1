@@ -2,45 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12CAF2043F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:46:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D5DD2043CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731563AbgFVWpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 18:45:00 -0400
-Received: from mga18.intel.com ([134.134.136.126]:27426 "EHLO mga18.intel.com"
+        id S1727061AbgFVWnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 18:43:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731186AbgFVWm5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 18:42:57 -0400
-IronPort-SDR: rrQdXBB1pzl7O0uBTA+CRVWxWpdN6M8nfQ0ZieKxjwMzK9pyi8AileE6z79hAs8BmYob0euarC
- PoUcUJg/XS3g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9660"; a="131303574"
-X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="131303574"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 15:42:54 -0700
-IronPort-SDR: FAzpuBBf11NBdp3BnF5sXwz5dNqTfJt2k/bHeEQM4oziqWdZgdT6N8zu6h9Cn0p5afhdaaPytx
- pL1960fCdI1w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="264634927"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by fmsmga008.fm.intel.com with ESMTP; 22 Jun 2020 15:42:54 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 09/15] KVM: VMX: Check guest support for RDTSCP before processing MSR_TSC_AUX
-Date:   Mon, 22 Jun 2020 15:42:43 -0700
-Message-Id: <20200622224249.29562-10-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200622224249.29562-1-sean.j.christopherson@intel.com>
-References: <20200622224249.29562-1-sean.j.christopherson@intel.com>
+        id S1731255AbgFVWnC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 18:43:02 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 121DC2075A;
+        Mon, 22 Jun 2020 22:43:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592865782;
+        bh=adOZdv3SYieL9hgLbbyrBQ4+44f+L6BK/R5WYMPBOGI=;
+        h=From:To:Cc:Subject:Date:From;
+        b=dKQ2UGXx2lqVnP12zlv3VXZHNqo8KJuNP4jza47Kp2uR8y0sRpSrB5kC7azBwJH1F
+         doLMCpyMs0AVsMdKmHYroNojUrHY4sPvPtIcKeW0XPN4hW9UCPzOpgC/eMzpDJo+1w
+         9+cBUeWoVfFhymY+6uN4BF4isDc1n8lpbaa1YIZA=
+From:   Sasha Levin <sashal@kernel.org>
+To:     peterz@infradead.org
+Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        jolsa@redhat.com, alexey.budankov@linux.intel.com,
+        songliubraving@fb.com, acme@redhat.com, allison@lohutok.net,
+        sashal@kernel.org
+Subject: [PATCH v3 00/14] Fix up liblockdep for 5.8-rc
+Date:   Mon, 22 Jun 2020 18:42:44 -0400
+Message-Id: <20200622224258.1208588-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -48,37 +40,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check for RDTSCP support prior to checking if MSR_TSC_AUX is in the uret
-MSRs array so that the array lookup and manipulation are back-to-back.
-This paves the way toward adding a helper to wrap the lookup and
-manipulation.
+Hi Peter,
 
-No functional change intended.
+This series fixes up most of liblockdep to work with the current kernel
+tree.
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
- arch/x86/kvm/vmx/vmx.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+Change in v3:
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index a0f4049d956f..954b9aa950f2 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1751,9 +1751,11 @@ static void setup_msrs(struct vcpu_vmx *vmx)
- 	index = __vmx_find_uret_msr(vmx, MSR_EFER);
- 	if (index >= 0 && update_transition_efer(vmx, index))
- 		move_msr_up(vmx, index, nr_active_uret_msrs++);
--	index = __vmx_find_uret_msr(vmx, MSR_TSC_AUX);
--	if (index >= 0 && guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDTSCP))
--		move_msr_up(vmx, index, nr_active_uret_msrs++);
-+	if (guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDTSCP)) {
-+		index = __vmx_find_uret_msr(vmx, MSR_TSC_AUX);
-+		if (index >= 0)
-+			move_msr_up(vmx, index, nr_active_uret_msrs++);
-+	}
- 	index = __vmx_find_uret_msr(vmx, MSR_IA32_TSX_CTRL);
- 	if (index >= 0)
- 		move_msr_up(vmx, index, nr_active_uret_msrs++);
+ - Rebase on top of the 5.8 merge window work.
+
+Sasha Levin (14):
+  tools headers: Add kprobes.h header
+  tools headers: Add rcupdate.h header
+  tools/kernel.h: extend with dummy RCU functions
+  tools bitmap: add bitmap_andnot definition
+  tools/lib/lockdep: add definition required for IRQ flag tracing
+  tools bitmap: add bitmap_clear definition
+  tools/lib/lockdep: Hook up vsprintf, find_bit, hweight libraries
+  tools/lib/lockdep: Enable building with CONFIG_TRACE_IRQFLAGS
+  tools/lib/lockdep: New stacktrace API
+  tools/lib/lockdep: call lockdep_init_task on init
+  tools/lib/lockdep: switch to using lockdep_init_map_waits
+  tools/kernel.h: hide noinstr
+  tools/lib/lockdep: explicitly declare lockdep_init_task()
+  tools/kernel.h: hide task_struct.hardirq_chain_key
+
+ tools/include/linux/bitmap.h                  | 10 ++++++
+ tools/include/linux/kernel.h                  | 11 ++++++
+ tools/include/linux/kprobes.h                 |  7 ++++
+ tools/include/linux/lockdep.h                 | 10 ++++++
+ tools/include/linux/rcupdate.h                | 12 +++++++
+ tools/include/linux/stacktrace.h              |  8 +++++
+ tools/lib/bitmap.c                            | 35 +++++++++++++++++++
+ tools/lib/lockdep/Build                       |  2 +-
+ tools/lib/lockdep/Makefile                    |  2 +-
+ tools/lib/lockdep/include/liblockdep/common.h |  4 +--
+ tools/lib/lockdep/include/liblockdep/mutex.h  |  2 +-
+ tools/lib/lockdep/include/liblockdep/rwlock.h |  2 +-
+ tools/lib/lockdep/lockdep.c                   |  4 +--
+ tools/lib/lockdep/preload.c                   |  8 ++++-
+ 14 files changed, 108 insertions(+), 9 deletions(-)
+ create mode 100644 tools/include/linux/kprobes.h
+ create mode 100644 tools/include/linux/rcupdate.h
+
 -- 
-2.26.0
+2.25.1
 
