@@ -2,337 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8202A203F87
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:58:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C2B203F8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730177AbgFVS6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 14:58:17 -0400
-Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:28556 "EHLO
-        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729605AbgFVS6O (ORCPT
+        id S1730283AbgFVS7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 14:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730030AbgFVS7P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 14:58:14 -0400
-Received: from pps.filterd (m0170394.ppops.net [127.0.0.1])
-        by mx0b-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05MIoSj5022733;
-        Mon, 22 Jun 2020 14:58:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=smtpout1;
- bh=mbwotjRWtSOvl44DzN3YwKh0qNCAiAFYlom+lnO1gq0=;
- b=CgUUM8Y2v5/J0PHjCsSz5M9ZVtHbHv70h1U+6EPBSlXnxdXbQtMs1SjbRPXDNQAGAsp4
- tI1TA8y4WCxag0j/VeRHQzAspp/2mKDX0LG/e7TakbNcGcw/K+G/slYfEjBC06MII7WE
- 6QK24qUL3f/tlfVQThYGWab33y3CwoV2vuK6KVaWk0JbN6BUxi5SVbkxjefOU0GIibdB
- Xvwb7xbNy3Q3L5MCfFKwfKYlbCluBhP5xUXOe/VrW+l9yV/f2Yr4cjpGwiVo07FLQOEv
- jv8z9jEYQhwKorQqlmlTQyMStwYztjS/cV98oE/Ny+7hrqb+8P7Ptk1+Jqnxvsqvneaa Og== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0b-00154904.pphosted.com with ESMTP id 31sd15nyud-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Jun 2020 14:58:11 -0400
-Received: from pps.filterd (m0142699.ppops.net [127.0.0.1])
-        by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05MIspVs064442;
-        Mon, 22 Jun 2020 14:58:10 -0400
-Received: from ausc60ps301.us.dell.com (ausc60ps301.us.dell.com [143.166.148.206])
-        by mx0a-00154901.pphosted.com with ESMTP id 31tqd12cnp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Jun 2020 14:58:10 -0400
-X-LoopCount0: from 10.173.37.130
-X-PREM-Routing: D-Outbound
-X-IronPort-AV: E=Sophos;i="5.60,349,1549951200"; 
-   d="scan'208";a="1454816471"
-From:   Mario Limonciello <mario.limonciello@dell.com>
-To:     Andreas Noever <andreas.noever@gmail.com>,
-        Michael Jamet <michael.jamet@intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Yehezkel Bernat <YehezkelShB@gmail.com>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mario Limonciello <mario.limonciello@dell.com>
-Subject: [PATCH v2 2/2] thunderbolt: Add support for authenticate on disconnect
-Date:   Mon, 22 Jun 2020 13:57:58 -0500
-Message-Id: <20200622185758.28145-3-mario.limonciello@dell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200622185758.28145-1-mario.limonciello@dell.com>
-References: <20200622185758.28145-1-mario.limonciello@dell.com>
+        Mon, 22 Jun 2020 14:59:15 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FDCC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:59:14 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id f18so16587203qkh.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:59:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=UJAR19ZQh+sTT93leBEvrqV+pEQ6XvP1o7bASqIMgsM=;
+        b=LeipoEn2ydGrr/qIxHUn9PtwhmBuuEvdGb9+GYbxyVIT0TCx4iNlAIYen6lBAjEpsV
+         XgsdUbI6I96q3adC/dSCrGSdumZLcUv27RR+4dfVU4YjqeB6XFiAJsyx7z1zQJegi4U1
+         6NEfS+X4TyWRiHnBZgZqZBvc/1QPZonPSE97sr7Z/Vspp3HIgfGvnRVQQgZbfrVPjLKo
+         6BUbXn+uwo57TPTyIVrA07ow3zOQnvrnShakxgtMIFwL7/CDvNDv+j2MaQv/+4HnuyKP
+         e8BRqAs7RQSBsGZLdztJSx1b3h0rlPXnKreaZEBf8oDjlVBDwvZd6vKdCNj9F9lEu8GA
+         6B8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=UJAR19ZQh+sTT93leBEvrqV+pEQ6XvP1o7bASqIMgsM=;
+        b=c0LPjpL3sbAksAazbDwACLjTGEiblzfu875mzU/yyECGImOXTByKT5Yacv2V4Wogru
+         Mw4RUJ4p1jNIFpEkw3RJ9bA5nraXo4HqWT8lN4lv6V6ghZDzkK42Y4RjzgLDu2LjLDB3
+         zUf89bIkJRLmOZhZY7/AG+PmcI7frFolmZe32xJVkUVdyjg0vYq+dhdX7SIXlgxrc5sr
+         HCb/Z3yYVpm6X2jhcoZ6H0AdcC/wCtTGR2SLRMP97/hiZ7u8T6ILMJ1GLzSDwILNJPUY
+         jF3iXsRxNUuw+F3f/bUFxAaHMOb5q3x+ZdIqbQYfzy1wrGv0mFgfLhynW4tgtRd7Wyed
+         9KRQ==
+X-Gm-Message-State: AOAM532I/3Cmed4RLbme0fn47p2rlhddDSr2C00ZBI3yP5ggkFyF82dA
+        1HusXxW2PU2D4tolfeJCJoaodYsw
+X-Google-Smtp-Source: ABdhPJw3Fdoo4dZs+fR7uUjNE0nJB4yGTuFtPQwUEK3HCzivIlWeQ+GT7/xLbn050PlHT1NTXA1qUA==
+X-Received: by 2002:a05:620a:958:: with SMTP id w24mr3380351qkw.20.1592852353496;
+        Mon, 22 Jun 2020 11:59:13 -0700 (PDT)
+Received: from LeoBras (177-131-65-187.dynamic.desktop.com.br. [177.131.65.187])
+        by smtp.gmail.com with ESMTPSA id c80sm6260720qke.26.2020.06.22.11.59.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 11:59:12 -0700 (PDT)
+Message-ID: <c15189a5c77752ea62022608dab28601965afaaa.camel@gmail.com>
+Subject: Re: [PATCH 1/4] powerpc/pseries/iommu: Update call to
+ ibm,query-pe-dma-windows
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Ram Pai <linuxram@us.ibm.com>, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 22 Jun 2020 15:58:44 -0300
+In-Reply-To: <cfbcacde-ca7f-5fc7-2fcf-267f698f3d49@ozlabs.ru>
+References: <20200619050619.266888-1-leobras.c@gmail.com>
+         <20200619050619.266888-2-leobras.c@gmail.com>
+         <cfbcacde-ca7f-5fc7-2fcf-267f698f3d49@ozlabs.ru>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-22_11:2020-06-22,2020-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
- malwarescore=0 adultscore=0 bulkscore=0 priorityscore=1501 spamscore=0
- phishscore=0 lowpriorityscore=0 impostorscore=0 cotscore=-2147483648
- suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006220126
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxscore=0 spamscore=0
- mlxlogscore=999 phishscore=0 suspectscore=0 adultscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006220125
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some external devices can support completing thunderbolt authentication
-when they are unplugged. For this to work though, the link controller must
-remain operational.
+Hello Alexey, thank you for the feedback!
 
-The only device known to support this right now is the Dell WD19TB, so add
-a quirk for this.
+On Mon, 2020-06-22 at 20:02 +1000, Alexey Kardashevskiy wrote:
+> 
+> On 19/06/2020 15:06, Leonardo Bras wrote:
+> > From LoPAR level 2.8, "ibm,ddw-extensions" index 3 can make the number of
+> > outputs from "ibm,query-pe-dma-windows" go from 5 to 6.
+> > 
+> > This change of output size is meant to expand the address size of
+> > largest_available_block PE TCE from 32-bit to 64-bit, which ends up
+> > shifting page_size and migration_capable.
+> > 
+> > This ends up requiring the update of
+> > ddw_query_response->largest_available_block from u32 to u64, and manually
+> > assigning the values from the buffer into this struct, according to
+> > output size.
+> > 
+> > Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> > ---
+> >  arch/powerpc/platforms/pseries/iommu.c | 57 +++++++++++++++++++++-----
+> >  1 file changed, 46 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
+> > index 6d47b4a3ce39..e5a617738c8b 100644
+> > --- a/arch/powerpc/platforms/pseries/iommu.c
+> > +++ b/arch/powerpc/platforms/pseries/iommu.c
+> > @@ -334,7 +334,7 @@ struct direct_window {
+> >  /* Dynamic DMA Window support */
+> >  struct ddw_query_response {
+> >  	u32 windows_available;
+> > -	u32 largest_available_block;
+> > +	u64 largest_available_block;
+> >  	u32 page_size;
+> >  	u32 migration_capable;
+> >  };
+> > @@ -869,14 +869,32 @@ static int find_existing_ddw_windows(void)
+> >  }
+> >  machine_arch_initcall(pseries, find_existing_ddw_windows);
+> >  
+> > +/*
+> > + * From LoPAR level 2.8, "ibm,ddw-extensions" index 3 can rule how many output
+> > + * parameters ibm,query-pe-dma-windows will have, ranging from 5 to 6.
+> > + */
+> > +
+> > +static int query_ddw_out_sz(struct device_node *par_dn)
+> 
+> Can easily be folded into query_ddw().
 
-Signed-off-by: Mario Limonciello <mario.limonciello@dell.com>
----
- .../ABI/testing/sysfs-bus-thunderbolt         | 13 ++++++
- drivers/thunderbolt/Makefile                  |  2 +-
- drivers/thunderbolt/eeprom.c                  |  1 +
- drivers/thunderbolt/lc.c                      | 14 +++++++
- drivers/thunderbolt/quirks.c                  | 36 +++++++++++++++++
- drivers/thunderbolt/switch.c                  | 40 +++++++++++++++++--
- drivers/thunderbolt/tb.h                      |  7 ++++
- drivers/thunderbolt/tb_regs.h                 |  1 +
- 8 files changed, 109 insertions(+), 5 deletions(-)
- create mode 100644 drivers/thunderbolt/quirks.c
+Sure, but it will get inlined by the compiler, and I think it reads
+better this way. 
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-thunderbolt b/Documentation/ABI/testing/sysfs-bus-thunderbolt
-index 7d0500b4d58a..dd565c378b40 100644
---- a/Documentation/ABI/testing/sysfs-bus-thunderbolt
-+++ b/Documentation/ABI/testing/sysfs-bus-thunderbolt
-@@ -276,3 +276,16 @@ Date:		Oct 2020
- KernelVersion:	v5.9
- Contact:	Mika Westerberg <mika.westerberg@linux.intel.com>
- Description:	Retimer vendor identifier read from the hardware.
-+
-+What:		/sys/bus/thunderbolt/devices/.../nvm_authenticate_on_disconnect
-+Date:		Oct 2020
-+KernelVersion:	v5.9
-+Contact:	Mario Limonciello <mario.limonciello@dell.com>
-+Description:	For supported devices, automatically authenticate the new Thunderbolt
-+		image when the device is disconnected from the host system.
-+
-+		This file will accept writing values "1" or "2"
-+		- Writing "1" will flush the image to the storage
-+		area and prepare the device for authentication on disconnect.
-+		- Writing "2" will run some basic validation on the image
-+		and flush it to the storage area.
-diff --git a/drivers/thunderbolt/Makefile b/drivers/thunderbolt/Makefile
-index cf7e1b42f4ad..4ab5bfad7bfd 100644
---- a/drivers/thunderbolt/Makefile
-+++ b/drivers/thunderbolt/Makefile
-@@ -2,6 +2,6 @@
- obj-${CONFIG_USB4} := thunderbolt.o
- thunderbolt-objs := nhi.o nhi_ops.o ctl.o tb.o switch.o cap.o path.o tunnel.o eeprom.o
- thunderbolt-objs += domain.o dma_port.o icm.o property.o xdomain.o lc.o tmu.o usb4.o
--thunderbolt-objs += nvm.o retimer.o
-+thunderbolt-objs += nvm.o retimer.o quirks.o
- 
- obj-${CONFIG_USB4_KUNIT_TEST} += test.o
-diff --git a/drivers/thunderbolt/eeprom.c b/drivers/thunderbolt/eeprom.c
-index b451a5aa90b5..3ebca44ab3fa 100644
---- a/drivers/thunderbolt/eeprom.c
-+++ b/drivers/thunderbolt/eeprom.c
-@@ -599,6 +599,7 @@ int tb_drom_read(struct tb_switch *sw)
- 		sw->uid = header->uid;
- 	sw->vendor = header->vendor_id;
- 	sw->device = header->model_id;
-+	tb_check_quirks(sw);
- 
- 	crc = tb_crc32(sw->drom + TB_DROM_DATA_START, header->data_len);
- 	if (crc != header->data_crc32) {
-diff --git a/drivers/thunderbolt/lc.c b/drivers/thunderbolt/lc.c
-index bd44d50246d2..828b4655d6a1 100644
---- a/drivers/thunderbolt/lc.c
-+++ b/drivers/thunderbolt/lc.c
-@@ -366,3 +366,17 @@ int tb_lc_dp_sink_dealloc(struct tb_switch *sw, struct tb_port *in)
- 	tb_port_dbg(in, "sink %d de-allocated\n", sink);
- 	return 0;
- }
-+
-+/**
-+ * tb_lc_force_power() - Forces LC to be powered on
-+ * @sw: thunderbolt switch
-+ *
-+ * This is useful to let authentication cycle pass even without
-+ * a Thunderbolt link present.
-+ */
-+int tb_lc_force_power(struct tb_switch *sw)
-+{
-+	u32 in = 0xffff;
-+
-+	return tb_sw_write(sw, &in, TB_CFG_SWITCH, TB_LC_POWER, 1);
-+}
-diff --git a/drivers/thunderbolt/quirks.c b/drivers/thunderbolt/quirks.c
-new file mode 100644
-index 000000000000..e8eace99bfcb
---- /dev/null
-+++ b/drivers/thunderbolt/quirks.c
-@@ -0,0 +1,36 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Thunderbolt driver - quirks
-+ *
-+ * Copyright (c) 2020 Mario Limonciello <mario.limonciello@dell.com>
-+ */
-+
-+#include "tb.h"
-+
-+static void quirk_force_power_link(struct tb_switch *sw)
-+{
-+	sw->quirks |= QUIRK_FORCE_POWER_LINK_CONTROLLER;
-+}
-+
-+struct tb_quirk {
-+	u16 vendor;
-+	u16 device;
-+	void (*hook)(struct tb_switch *sw);
-+};
-+
-+static struct tb_quirk tb_quirks[] = {
-+	/* Dell WD19TB supports self-authentication on unplug */
-+	{ 0x00d4, 0xb070, quirk_force_power_link },
-+};
-+
-+void tb_check_quirks(struct tb_switch *sw)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(tb_quirks); i++) {
-+		const struct tb_quirk *q = &tb_quirks[i];
-+
-+		if (sw->device == q->device && sw->vendor == q->vendor)
-+			q->hook(sw);
-+	}
-+}
-diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
-index bbfbfebeee7f..712395f518b8 100644
---- a/drivers/thunderbolt/switch.c
-+++ b/drivers/thunderbolt/switch.c
-@@ -1493,8 +1493,8 @@ static ssize_t nvm_authenticate_show(struct device *dev,
- 	return sprintf(buf, "%#x\n", status);
- }
- 
--static ssize_t nvm_authenticate_store(struct device *dev,
--	struct device_attribute *attr, const char *buf, size_t count)
-+static ssize_t nvm_authenticate_sysfs(struct device *dev, const char *buf,
-+				      bool disconnect)
- {
- 	struct tb_switch *sw = tb_to_switch(dev);
- 	int val;
-@@ -1532,8 +1532,12 @@ static ssize_t nvm_authenticate_store(struct device *dev,
- 				goto exit_unlock;
- 		}
- 		if (val == WRITE_AND_AUTHENTICATE) {
--			sw->nvm->authenticating = true;
--			ret = nvm_authenticate(sw);
-+			if (disconnect) {
-+				ret = tb_lc_force_power(sw);
-+			} else {
-+				sw->nvm->authenticating = true;
-+				ret = nvm_authenticate(sw);
-+			}
- 		}
- 	}
- 
-@@ -1543,12 +1547,35 @@ static ssize_t nvm_authenticate_store(struct device *dev,
- 	pm_runtime_mark_last_busy(&sw->dev);
- 	pm_runtime_put_autosuspend(&sw->dev);
- 
-+	return ret;
-+}
-+
-+static ssize_t nvm_authenticate_store(struct device *dev,
-+	struct device_attribute *attr, const char *buf, size_t count)
-+{
-+	int ret = nvm_authenticate_sysfs(dev, buf, false);
- 	if (ret)
- 		return ret;
- 	return count;
- }
- static DEVICE_ATTR_RW(nvm_authenticate);
- 
-+static ssize_t nvm_authenticate_on_disconnect_show(struct device *dev,
-+	struct device_attribute *attr, char *buf)
-+{
-+	return nvm_authenticate_show(dev, attr, buf);
-+}
-+
-+static ssize_t nvm_authenticate_on_disconnect_store(struct device *dev,
-+	struct device_attribute *attr, const char *buf, size_t count)
-+{
-+	int ret;
-+
-+	ret = nvm_authenticate_sysfs(dev, buf, true);
-+	return ret ? ret : count;
-+}
-+static DEVICE_ATTR_RW(nvm_authenticate_on_disconnect);
-+
- static ssize_t nvm_version_show(struct device *dev,
- 				struct device_attribute *attr, char *buf)
- {
-@@ -1606,6 +1633,7 @@ static struct attribute *switch_attrs[] = {
- 	&dev_attr_generation.attr,
- 	&dev_attr_key.attr,
- 	&dev_attr_nvm_authenticate.attr,
-+	&dev_attr_nvm_authenticate_on_disconnect.attr,
- 	&dev_attr_nvm_version.attr,
- 	&dev_attr_rx_speed.attr,
- 	&dev_attr_rx_lanes.attr,
-@@ -1660,6 +1688,10 @@ static umode_t switch_attr_is_visible(struct kobject *kobj,
- 		if (tb_route(sw))
- 			return attr->mode;
- 		return 0;
-+	} else if (attr == &dev_attr_nvm_authenticate_on_disconnect.attr) {
-+		if (sw->quirks & QUIRK_FORCE_POWER_LINK_CONTROLLER)
-+			return attr->mode;
-+		return 0;
- 	}
- 
- 	return sw->safe_mode ? 0 : attr->mode;
-diff --git a/drivers/thunderbolt/tb.h b/drivers/thunderbolt/tb.h
-index 43a8ca2eb3d8..07e1cfc3a096 100644
---- a/drivers/thunderbolt/tb.h
-+++ b/drivers/thunderbolt/tb.h
-@@ -133,6 +133,7 @@ struct tb_switch_tmu {
-  * @depth: Depth in the chain this switch is connected (ICM only)
-  * @rpm_complete: Completion used to wait for runtime resume to
-  *		  complete (ICM only)
-+ * @quirks: Quirks used for this Thunderbolt switch
-  *
-  * When the switch is being added or removed to the domain (other
-  * switches) you need to have domain lock held.
-@@ -171,6 +172,7 @@ struct tb_switch {
- 	u8 link;
- 	u8 depth;
- 	struct completion rpm_complete;
-+	unsigned long quirks;
- };
- 
- /**
-@@ -849,6 +851,7 @@ bool tb_lc_lane_bonding_possible(struct tb_switch *sw);
- bool tb_lc_dp_sink_query(struct tb_switch *sw, struct tb_port *in);
- int tb_lc_dp_sink_alloc(struct tb_switch *sw, struct tb_port *in);
- int tb_lc_dp_sink_dealloc(struct tb_switch *sw, struct tb_port *in);
-+int tb_lc_force_power(struct tb_switch *sw);
- 
- static inline int tb_route_length(u64 route)
- {
-@@ -941,4 +944,8 @@ int usb4_usb3_port_allocate_bandwidth(struct tb_port *port, int *upstream_bw,
- 				      int *downstream_bw);
- int usb4_usb3_port_release_bandwidth(struct tb_port *port, int *upstream_bw,
- 				     int *downstream_bw);
-+
-+/* keep link controller awake during update */
-+#define QUIRK_FORCE_POWER_LINK_CONTROLLER       (1<<1)
-+void tb_check_quirks(struct tb_switch *sw);
- #endif
-diff --git a/drivers/thunderbolt/tb_regs.h b/drivers/thunderbolt/tb_regs.h
-index 2ac6af8e0c13..fd4fc144d17f 100644
---- a/drivers/thunderbolt/tb_regs.h
-+++ b/drivers/thunderbolt/tb_regs.h
-@@ -409,6 +409,7 @@ struct tb_regs_hop {
- #define TB_LC_SNK_ALLOCATION_SNK1_SHIFT	4
- #define TB_LC_SNK_ALLOCATION_SNK1_MASK	GENMASK(7, 4)
- #define TB_LC_SNK_ALLOCATION_SNK1_CM	0x1
-+#define TB_LC_POWER			0x740
- 
- /* Link controller registers */
- #define TB_LC_PORT_ATTR			0x8d
--- 
-2.25.1
+I mean, I understand you have a reason to think it's better to fold it
+in query_ddw(), and I would like to better understand that to improve
+my code in the future.
+
+> > +{
+> > +	int ret;
+> > +	u32 ddw_ext[3];
+> > +
+> > +	ret = of_property_read_u32_array(par_dn, "ibm,ddw-extensions",
+> > +					 &ddw_ext[0], 3);
+> > +	if (ret || ddw_ext[0] < 2 || ddw_ext[2] != 1)
+> 
+> Oh that PAPR thing again :-/
+> 
+> ===
+> The “ibm,ddw-extensions” property value is a list of integers the first
+> integer indicates the number of extensions implemented and subsequent
+> integers, one per extension, provide a value associated with that
+> extension.
+> ===
+> 
+> So ddw_ext[0] is length.
+> Listindex==2 is for "reset" says PAPR and
+> Listindex==3 is for this new 64bit "largest_available_block".
+> 
+> So I'd expect ddw_ext[2] to have the "reset" token and ddw_ext[3] to
+> have "1" for this new feature but indexes are smaller. I am confused.
+> Either way these "2" and "3" needs to be defined in macros, "0" probably
+> too.
+
+Remember these indexes are not C-like 0-starting indexes, where the
+size would be Listindex==1.
+Basically, in C-like array it's :
+a[0] == size, 
+a[1] == reset_token, 
+a[2] == new 64bit "largest_available_block"
+
+> Please post 'lsprop "ibm,ddw-extensions"' here. Thanks,
+
+Sure:
+[root@host pci@800000029004005]# lsprop "ibm,ddw-extensions"
+ibm,dd
+w-extensions
+                 00000002 00000056 00000000
+
+
+> 
+> > +		return 5;
+> > +	return 6;
+> > +}
+> > +
+> >  static int query_ddw(struct pci_dev *dev, const u32 *ddw_avail,
+> > -			struct ddw_query_response *query)
+> > +		     struct ddw_query_response *query,
+> > +		     struct device_node *par_dn)
+> >  {
+> >  	struct device_node *dn;
+> >  	struct pci_dn *pdn;
+> > -	u32 cfg_addr;
+> > +	u32 cfg_addr, query_out[5];
+> >  	u64 buid;
+> > -	int ret;
+> > +	int ret, out_sz;
+> >  
+> >  	/*
+> >  	 * Get the config address and phb buid of the PE window.
+> > @@ -888,12 +906,29 @@ static int query_ddw(struct pci_dev *dev, const u32 *ddw_avail,
+> >  	pdn = PCI_DN(dn);
+> >  	buid = pdn->phb->buid;
+> >  	cfg_addr = ((pdn->busno << 16) | (pdn->devfn << 8));
+> > +	out_sz = query_ddw_out_sz(par_dn);
+> > +
+> > +	ret = rtas_call(ddw_avail[0], 3, out_sz, query_out,
+> > +			cfg_addr, BUID_HI(buid), BUID_LO(buid));
+> > +	dev_info(&dev->dev, "ibm,query-pe-dma-windows(%x) %x %x %x returned %d\n",
+> > +		 ddw_avail[0], cfg_addr, BUID_HI(buid), BUID_LO(buid), ret);
+> > +
+> > +	switch (out_sz) {
+> > +	case 5:
+> > +		query->windows_available = query_out[0];
+> > +		query->largest_available_block = query_out[1];
+> > +		query->page_size = query_out[2];
+> > +		query->migration_capable = query_out[3];
+> > +		break;
+> > +	case 6:
+> > +		query->windows_available = query_out[0];
+> > +		query->largest_available_block = ((u64)query_out[1] << 32) |
+> > +						 query_out[2];
+> > +		query->page_size = query_out[3];
+> > +		query->migration_capable = query_out[4];
+> > +		break;
+> > +	}
+> >  
+> > -	ret = rtas_call(ddw_avail[0], 3, 5, (u32 *)query,
+> > -		  cfg_addr, BUID_HI(buid), BUID_LO(buid));
+> > -	dev_info(&dev->dev, "ibm,query-pe-dma-windows(%x) %x %x %x"
+> > -		" returned %d\n", ddw_avail[0], cfg_addr, BUID_HI(buid),
+> > -		BUID_LO(buid), ret);
+> >  	return ret;
+> >  }
+> >  
+> > @@ -1040,7 +1075,7 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+> >  	 * of page sizes: supported and supported for migrate-dma.
+> >  	 */
+> >  	dn = pci_device_to_OF_node(dev);
+> > -	ret = query_ddw(dev, ddw_avail, &query);
+> > +	ret = query_ddw(dev, ddw_avail, &query, pdn);
+> >  	if (ret != 0)
+> >  		goto out_failed;
+> >  
+> > @@ -1068,7 +1103,7 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
+> >  	/* check largest block * page size > max memory hotplug addr */
+> >  	max_addr = ddw_memory_hotplug_max();
+> >  	if (query.largest_available_block < (max_addr >> page_shift)) {
+> > -		dev_dbg(&dev->dev, "can't map partition max 0x%llx with %u "
+> > +		dev_dbg(&dev->dev, "can't map partition max 0x%llx with %llu "
+> >  			  "%llu-sized pages\n", max_addr,  query.largest_available_block,
+> >  			  1ULL << page_shift);
+> >  		goto out_failed;
+> > 
+
+Best regards,
+Leonardo
 
