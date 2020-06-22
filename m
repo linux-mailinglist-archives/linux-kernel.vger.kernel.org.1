@@ -2,101 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C866D2044B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3262044C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:50:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731507AbgFVXrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 19:47:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39118 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731477AbgFVXrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 19:47:11 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EAEE0207BC;
-        Mon, 22 Jun 2020 23:47:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592869631;
-        bh=zuAl0hZaesLweDDqN9N64XfiecF7aWEc6rnzWcjyJNE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=V6xcK0T46oJBmyvem6+iGQS/7nBYzaRFJxGNHfqHqRwvQluS9j6fK/wSYce/HhyW7
-         NyskHl15RmCBvINQMJsWvfRQM3U2UHdLdapQjTbGvebpc1U9XDhtuZa8y/nvc3QvqK
-         stt7ZjXoOjZkxh+MvRQ3yqcL/wMZ+ECqpnXcqQa4=
-Date:   Tue, 23 Jun 2020 08:47:06 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ming Lei <ming.lei@redhat.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ming Lei <tom.leiming@gmail.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-block <linux-block@vger.kernel.org>
-Subject: Re: kprobe: __blkdev_put probe is missed
-Message-Id: <20200623084706.e6e99e99d7da6690e7a6c199@kernel.org>
-In-Reply-To: <20200622090148.6e0f2ac9@oasis.local.home>
-References: <20200618125438.GA191266@T590>
-        <20200618225602.3f2cca3f0ed48427fc0a483b@kernel.org>
-        <20200618231901.GA196099@T590>
-        <20200619141239.56f6dda0976453b790190ff7@kernel.org>
-        <20200619072859.GA205278@T590>
-        <20200619081954.3d72a252@oasis.local.home>
-        <20200619133240.GA351476@T590>
-        <20200620003509.9521053fbd384f4f5d23408f@kernel.org>
-        <20200619232820.GE353853@T590>
-        <20200620103747.fb83f804083ef9956740acee@kernel.org>
-        <20200622002753.GC670933@T590>
-        <20200622090148.6e0f2ac9@oasis.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1731023AbgFVXuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 19:50:08 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:41441 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728636AbgFVXuH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 19:50:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1592869807; x=1624405807;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=rZllEpf8ZszlyvJoAGgIfYMlPA/MYJ1fDs3XrZKxdZc=;
+  b=oCJRZhCaB08569ZvGCGoPG0FqzY4lsh0JvZ5Ey4b6im1WHKfpxlKrLmL
+   2Ybt5F+BxgjBGj8WpNJbtKVawvGs++kAdUHjTb7sy+XD/DIW4MLjOYmxy
+   fzR94s2TEyrHUa8aOwuiQ6MPbGSctXz9oz/oT3dBqZm1EIsuoTbCZVJu9
+   MwHau4FIAUJz7jyo78pHHuqBlcGH+JHd88Un2bbpA+LDBqIjBtKihNzLD
+   i2vblqOcbxa2SxAkqC9zyLb27GByp/Detnf/0p4VMsAv49UQxFeVNnhni
+   NGbb0ghHmhzsyRUcL5zA9oXe5LYhYkH5XHMiiSwWhXpX38bYmNnfQPM9e
+   A==;
+IronPort-SDR: w58p2vJDUuC1etz4K2HV9UCvQup0jV6RVz+pUc/SgCesYTZeX/yQFYDmkQmyDCu1uTqLY7f82S
+ CuHfLzzBzsGHGNrMAXq0stAUCgQJsOvSZmhEHlopXz5T84UYx0zxPo3Bd7Apd0TBO8wHh8e7b2
+ O/JNqBBqiXrgOivp5PeDar0xUSeF+vi4y7O8V1IrJzzS/AL4RGBaaOu7uxbJtKEf/oxTIUsZ6a
+ dRivYXpc5DgZXS6E1flOCPiLmYoD+xCgaZfgytDpTlplVR/4zpi9cheqFz+rgwWpGU5UdSi4Nt
+ L1w=
+X-IronPort-AV: E=Sophos;i="5.75,268,1589212800"; 
+   d="scan'208";a="140646385"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 23 Jun 2020 07:50:06 +0800
+IronPort-SDR: rR/kW+sJPyHkatnuX/t0dcIWK/1KvL7vSG0HOKOpVqImaTSYBgymY2KgAY/7bhDjTrPQrFLXoJ
+ nZzxVedu3qBFYtm4/WWWhAaTm4wTla67g=
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 16:39:12 -0700
+IronPort-SDR: JiLUl4lWt6ijHyeGhTrIqNZmAwbOJ4TKFawtA72xtj+eWa4H8YRT6IHsXhbWWv1znpHQhmz8OU
+ jEid+rR83mPg==
+WDCIronportException: Internal
+Received: from lpt-lee-f.ad.shared (HELO yoda.hgst.com) ([10.86.58.181])
+  by uls-op-cesaip01.wdc.com with ESMTP; 22 Jun 2020 16:50:06 -0700
+From:   Atish Patra <atish.patra@wdc.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greentime Hu <greentime.hu@sifive.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Subject: [PATCH] RISC-V: Use a local variable instead of smp_processor_id()
+Date:   Mon, 22 Jun 2020 16:47:25 -0700
+Message-Id: <20200622234725.92511-1-atish.patra@wdc.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Jun 2020 09:01:48 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+From: Greentime Hu <greentime.hu@sifive.com>
 
-> On Mon, 22 Jun 2020 08:27:53 +0800
-> Ming Lei <ming.lei@redhat.com> wrote:
-> 
-> > Can you kprobe guys improve the implementation for covering this case?
-> > For example, put probe on 3) in case the above situation is recognized.
-> 
-> To do so would require solving the halting problem.
-> 
->   https://en.wikipedia.org/wiki/Halting_problem
-> 
-> Or perhaps reading the DWARF output of the compiler to determine if it
-> optimized the location you are looking for.
+Store the smp_processor_id() in a local variable to save some
+pointer chasing.
 
-As far as I can see, gcc-9.3 doesn't generate this information :(
-Maybe the optimizer forgot to push the tail-call callsite information
-to dwarf generator when making a recursive tail-call to a loop.
+Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+Signed-off-by: Atish Patra <atish.patra@wdc.com>
+---
+ arch/riscv/kernel/smpboot.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-> The first case is impossible to solve, the second would take a lot of
-> work, (are you going to fund it?)
-
-What I can provide is "--skip-prologue" option for the perf-probe
-which will be similar to the "-P" option. If the compiler correctly
-generates the information, we can enable it automatically. But
-as far as I can see, it doesn't.
-
-[OT] DWARF has its option(and GNU extension) but it seems not correctly
-implemented yet.
+diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
+index 4e9922790f6e..3e033e97dd08 100644
+--- a/arch/riscv/kernel/smpboot.c
++++ b/arch/riscv/kernel/smpboot.c
+@@ -146,6 +146,7 @@ void __init smp_cpus_done(unsigned int max_cpus)
+ asmlinkage __visible void smp_callin(void)
+ {
+ 	struct mm_struct *mm = &init_mm;
++	unsigned int curr_cpuid = smp_processor_id();
  
-http://www.dwarfstd.org/ShowIssue.php?issue=100909.2
-
-What I found on __blkdev_put and the callers, the "tail-call to other
-function" were recorded as a call-site DIE with DW_AT_tail_call. But
-if the "tail-call to itself (recursive call)" was expanded as a loop,
-it was just disappeared. No call-site information, nor the DW_AT_tail_call.
-
-Thank you,
-
+ 	if (!IS_ENABLED(CONFIG_RISCV_SBI))
+ 		clint_clear_ipi(cpuid_to_hartid_map(smp_processor_id()));
+@@ -155,9 +156,9 @@ asmlinkage __visible void smp_callin(void)
+ 	current->active_mm = mm;
+ 
+ 	trap_init();
+-	notify_cpu_starting(smp_processor_id());
+-	update_siblings_masks(smp_processor_id());
+-	set_cpu_online(smp_processor_id(), 1);
++	notify_cpu_starting(curr_cpuid);
++	update_siblings_masks(curr_cpuid);
++	set_cpu_online(curr_cpuid, 1);
+ 	/*
+ 	 * Remote TLB flushes are ignored while the CPU is offline, so emit
+ 	 * a local TLB flush right now just in case.
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+2.26.2
+
