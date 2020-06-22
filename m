@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85A6D2033CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 11:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 093392033C4
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 11:43:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727996AbgFVJnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 05:43:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40718 "EHLO
+        id S1727962AbgFVJmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 05:42:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgFVJlf (ORCPT
+        with ESMTP id S1727098AbgFVJlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 05:41:35 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E383CC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:41:33 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id c3so15902456wru.12
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:41:33 -0700 (PDT)
+        Mon, 22 Jun 2020 05:41:37 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6BCCC061797
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:41:35 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id b6so15932740wrs.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:41:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=nC0F5ZT+Ll5OOGkPAd3mIJIStND0frPBkptlTCmDLJg=;
-        b=swtzTFmLVIWLX97Ka8BE4T1dWXPt5l1jiTgEty4wbnCrweWQw3HbeTXNza6y2qcCXR
-         iIu5WIxWbsQs51WOv19l2MOnnx9biFYV7/MbY0YMlQ/cSE0G+PyDXwmHvUYyHhrnNdUq
-         xAHqSoVXMheRLlPuN1KpgliIQIXbuBOHq+PCzME+TGn0K+/URvl99z5NPSrgSbWHtdpH
-         2XLpBaTp7Jhs4GFXZGq+gopioO0XNjhy5k4P+p0oSTll4HgmIBiAnRFMRF6aTZi4O2og
-         vYAAkHtdQXctioWsdumoNSuMfzhqraPeWT6gTazq92hFSwkJkMSYyr7hlCsjXk1eVqPx
-         7WHQ==
+        bh=GfxRtzTQEG/5B2vcAI0+WR3x7R55kmvGCSrvKLTEK2Q=;
+        b=A0YsIPLNyYjq0ssEvXKicqSfckLBHv0GVryALC9d+AV98+m0KCKKpxY0AwyeTaC/SV
+         4ewNSwSYjUQsP4yxHm8UWF9gryWmZ5NreLHL6eNRWjMmIjJRCWiNutTjs4Dj5nQbR/al
+         xKYExJnhmZzF3ijNBmLN0+9cPyr9XfVrG4iIqj5hbRDxQ5onbhon50y62e0SSGhWhkuw
+         rmocxlBQDpuSpCL4KghX633TaDScTSjnEqyd5R5g43WJlC81zN4EIN3Bn8mQId8I8MeF
+         8+2wsc96b1npN8idQoXobDeawhU/GfrNBYEANPkdYosOat1y3XLGX18/UsW4P4z0HqDS
+         YNGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=nC0F5ZT+Ll5OOGkPAd3mIJIStND0frPBkptlTCmDLJg=;
-        b=P2ka3VbmpVCMPXzg0vmzpWxuPmMLD/zMGdtLJE+zFIWXXDNLYULY//1gwBWa/hhwFl
-         PdpmQVF3r5GB1G6vhEtGhvEjusQHJnP27IoLEIRK1J7ue9eU1soWAp4JNxconb+aVJKB
-         CMGSbQM/gWYEZ+xfDWeN7mtox9gCAGRLSZZlrS3OBTyKHakMijAQkST1eW+oqrQ2ueKf
-         UkE3qqQj13WhtIEYjxob+8aRjO2FZhOgF+1zJnRG6HvL9RsKbR1qQnJCfV4Mj0J/WfOe
-         /efU/DMfa8wto6yttvySlIiToh7il1hGJy/E5KU1hdjDdCL9wFqsPbV9FKT037xg8WPL
-         duLg==
-X-Gm-Message-State: AOAM530YRgCUpYisfJlKYiUmZbm1JnmFK+6HTIRZnfSj/VZBNR4LNGEN
-        fnDfY4jV3foqTumpGlQEVYatYw==
-X-Google-Smtp-Source: ABdhPJzxHCym+Ub6CuSXGJUTfH6gp7OLN1NQWcaww2Sg2sQLihShVVzipPqZpx45p1tV4dBze4Q9ew==
-X-Received: by 2002:a5d:6802:: with SMTP id w2mr18207943wru.68.1592818892680;
-        Mon, 22 Jun 2020 02:41:32 -0700 (PDT)
+        bh=GfxRtzTQEG/5B2vcAI0+WR3x7R55kmvGCSrvKLTEK2Q=;
+        b=dHcZtCdtR2ppS7xruof1XHxfF1v8us7hZM3cG4mbLDqMHwzrhiuy9gSBVPvEwa69Zv
+         00PwXnHznTz2GVXKhdmvlMMnWVAlXjOE+JnhVCikwdNAAFnHVge3bsecbmY98/rdDXP9
+         1KA3dCav1RpDQv6Y62a6PiEtm5xVUZPyV6p0zQwBMKUWruoxzpGq+SRLpnzjBhs3dp5t
+         nbkcAQ2YJa9l5s91ntC5poNMtzxWv7Vri1Ah0QQlSGo4Ffj94Zs6cCyZXninmAAO0xVu
+         Sv0aC/hl1GUXsTA4odew7WcDZgSCZbWrfJ6kgHiaCrXyO2CfgerYFfxYCUcURsUo08Tj
+         qs7w==
+X-Gm-Message-State: AOAM530LnJFKmJMXPQmwUp9xKWXobFCfO0PQ9Ptmd2IGuhSim3P9m8s8
+        45SW3ggPzdvPcu22U9F4/l6n9A==
+X-Google-Smtp-Source: ABdhPJwe0PlqLfQqK/nfnfTmRDAPWRDDBJzvm26MZsgDYSHOQIM+GwOvMWfHdMQjezh7QNqFssNhEA==
+X-Received: by 2002:a5d:4bd2:: with SMTP id l18mr400661wrt.119.1592818894547;
+        Mon, 22 Jun 2020 02:41:34 -0700 (PDT)
 Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id j24sm14392652wrd.43.2020.06.22.02.41.31
+        by smtp.gmail.com with ESMTPSA id j24sm14392652wrd.43.2020.06.22.02.41.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 02:41:32 -0700 (PDT)
+        Mon, 22 Jun 2020 02:41:34 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Florian Fainelli <f.fainelli@gmail.com>,
@@ -82,9 +82,9 @@ Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         Pedro Tsai <pedro.tsai@mediatek.com>,
         Andrew Perepech <andrew.perepech@mediatek.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 06/15] net: phy: mdio: reset MDIO devices even if probe() is not implemented
-Date:   Mon, 22 Jun 2020 11:37:35 +0200
-Message-Id: <20200622093744.13685-7-brgl@bgdev.pl>
+Subject: [PATCH 07/15] net: phy: split out the PHY driver request out of phy_device_create()
+Date:   Mon, 22 Jun 2020 11:37:36 +0200
+Message-Id: <20200622093744.13685-8-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200622093744.13685-1-brgl@bgdev.pl>
 References: <20200622093744.13685-1-brgl@bgdev.pl>
@@ -97,49 +97,112 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Similarily to PHY drivers - there's no reason to require probe() to be
-implemented in order to call mdio_device_reset(). MDIO devices can have
-resets defined without needing to do anything in probe().
+Move the code requesting the PHY driver module out of phy_device_create()
+into a separate helper. This will be later reused when we delay the
+module loading.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/net/phy/mdio_device.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/net/phy/phy_device.c | 71 ++++++++++++++++++++----------------
+ 1 file changed, 39 insertions(+), 32 deletions(-)
 
-diff --git a/drivers/net/phy/mdio_device.c b/drivers/net/phy/mdio_device.c
-index f60443e48622..be615504b829 100644
---- a/drivers/net/phy/mdio_device.c
-+++ b/drivers/net/phy/mdio_device.c
-@@ -150,10 +150,10 @@ static int mdio_probe(struct device *dev)
- 	struct mdio_driver *mdiodrv = to_mdio_driver(drv);
- 	int err = 0;
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index f6985db08340..8037a9663a85 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -558,7 +558,7 @@ static const struct device_type mdio_bus_phy_type = {
+ 	.pm = MDIO_BUS_PHY_PM_OPS,
+ };
  
--	if (mdiodrv->probe) {
--		/* Deassert the reset signal */
--		mdio_device_reset(mdiodev, 0);
-+	/* Deassert the reset signal */
-+	mdio_device_reset(mdiodev, 0);
+-static int phy_request_driver_module(struct phy_device *dev, u32 phy_id)
++static int phy_do_request_driver_module(struct phy_device *dev, u32 phy_id)
+ {
+ 	int ret;
  
-+	if (mdiodrv->probe) {
- 		err = mdiodrv->probe(mdiodev);
- 		if (err) {
- 			/* Assert the reset signal */
-@@ -170,12 +170,11 @@ static int mdio_remove(struct device *dev)
- 	struct device_driver *drv = mdiodev->dev.driver;
- 	struct mdio_driver *mdiodrv = to_mdio_driver(drv);
- 
--	if (mdiodrv->remove) {
-+	if (mdiodrv->remove)
- 		mdiodrv->remove(mdiodev);
- 
--		/* Assert the reset signal */
--		mdio_device_reset(mdiodev, 1);
--	}
-+	/* Assert the reset signal */
-+	mdio_device_reset(mdiodev, 1);
- 
+@@ -578,6 +578,40 @@ static int phy_request_driver_module(struct phy_device *dev, u32 phy_id)
  	return 0;
  }
+ 
++static int phy_request_driver_module(struct phy_device *phydev)
++{
++	int ret;
++
++	/* Request the appropriate module unconditionally; don't
++	 * bother trying to do so only if it isn't already loaded,
++	 * because that gets complicated. A hotplug event would have
++	 * done an unconditional modprobe anyway.
++	 * We don't do normal hotplug because it won't work for MDIO
++	 * -- because it relies on the device staying around for long
++	 * enough for the driver to get loaded. With MDIO, the NIC
++	 * driver will get bored and give up as soon as it finds that
++	 * there's no driver _already_ loaded.
++	 */
++	if (phydev->is_c45) {
++		const int num_ids = ARRAY_SIZE(phydev->c45_ids.device_ids);
++		int i;
++
++		for (i = 1; i < num_ids; i++) {
++			if (phydev->c45_ids.device_ids[i] == 0xffffffff)
++				continue;
++
++			ret = phy_do_request_driver_module(phydev,
++						phydev->c45_ids.device_ids[i]);
++			if (ret)
++				break;
++		}
++	} else {
++		ret = phy_do_request_driver_module(phydev, phydev->phy_id);
++	}
++
++	return ret;
++}
++
+ struct phy_device *phy_device_create(struct mii_bus *bus, int addr, u32 phy_id,
+ 				     bool is_c45,
+ 				     struct phy_c45_device_ids *c45_ids)
+@@ -622,38 +656,11 @@ struct phy_device *phy_device_create(struct mii_bus *bus, int addr, u32 phy_id,
+ 
+ 	mutex_init(&dev->lock);
+ 	INIT_DELAYED_WORK(&dev->state_queue, phy_state_machine);
++	device_initialize(&mdiodev->dev);
+ 
+-	/* Request the appropriate module unconditionally; don't
+-	 * bother trying to do so only if it isn't already loaded,
+-	 * because that gets complicated. A hotplug event would have
+-	 * done an unconditional modprobe anyway.
+-	 * We don't do normal hotplug because it won't work for MDIO
+-	 * -- because it relies on the device staying around for long
+-	 * enough for the driver to get loaded. With MDIO, the NIC
+-	 * driver will get bored and give up as soon as it finds that
+-	 * there's no driver _already_ loaded.
+-	 */
+-	if (is_c45 && c45_ids) {
+-		const int num_ids = ARRAY_SIZE(c45_ids->device_ids);
+-		int i;
+-
+-		for (i = 1; i < num_ids; i++) {
+-			if (c45_ids->device_ids[i] == 0xffffffff)
+-				continue;
+-
+-			ret = phy_request_driver_module(dev,
+-						c45_ids->device_ids[i]);
+-			if (ret)
+-				break;
+-		}
+-	} else {
+-		ret = phy_request_driver_module(dev, phy_id);
+-	}
+-
+-	if (!ret) {
+-		device_initialize(&mdiodev->dev);
+-	} else {
+-		kfree(dev);
++	ret = phy_request_driver_module(dev);
++	if (ret) {
++		phy_device_free(dev);
+ 		dev = ERR_PTR(ret);
+ 	}
+ 
 -- 
 2.26.1
 
