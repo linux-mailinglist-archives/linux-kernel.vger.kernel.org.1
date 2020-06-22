@@ -2,68 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C216020447F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B532A204481
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730590AbgFVXe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 19:34:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
+        id S1730734AbgFVXey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 19:34:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730494AbgFVXe0 (ORCPT
+        with ESMTP id S1730296AbgFVXex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 19:34:26 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE605C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 16:34:26 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id c16so6423359ioi.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 16:34:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=9KZxEDIlKmY7xP+zYVnD/gSwqClc8XBRQPoFy49KsrQ=;
-        b=GvfOAJ1HY5mApGDR4mEMpsukw4W/vkLPqNdG6V4tp/5MnwuZOtvSE4uSIdvIQ4UkjT
-         wChP8n0VV/p6d8v3NTiCYzKbcrdH7wBk8zI+T+FiPVuHyE35eQVQNAzWZ01/OSAZV1hu
-         HVG7kHNgp69X2zmtQ428K88hmcExu0iSAoB2QDG2gdOZb3uwPpxufjUfWDfXb2+S/F4L
-         uKEbCBKJNUo/05Vmnl0+wmPUf3t0XM/LGMfSa8t7u7FKNmgN/rpLgwrk+x/wr/NMkzxC
-         zv6gplB3tN6I0Lw8/0bDKhHZJdogYeAzK2y5zql1a5PMNgV2PeHhI1SJkiryPY4wtvLu
-         wRDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=9KZxEDIlKmY7xP+zYVnD/gSwqClc8XBRQPoFy49KsrQ=;
-        b=cSQGw25xwBTMPOBsTR7vpM8TjgpCh52bOulouPkWHXAgtSTqmyCqQrmRtJvV0KaxE0
-         dYou5k2Mqs80RXlqKTfW9OijwNsv8yD0JD47KLZHJDusBFU+JkqmDX55PfsoFCBx3aya
-         bpB9zKFY0ncvckf+neoYG8fK/N90CafuLQTBAg8a2JyeMiCEqgU1SYiBY94NVcXQObnJ
-         qBwDBoz1HiyiR/c4irBFukneA8yhlPvJQVd/ocXWSuI3ppq541j8fBOrZkrYD39mURLc
-         3rvsH6EFDHoPf3WFoIdz+Ropg/ey1bl7YNZ5/lvkmM7tSWoT1LAwekTil+fZtaBT5PjC
-         SxgQ==
-X-Gm-Message-State: AOAM531m/yBdQGQ+yv01qCTFjCvQ1f0AmFfp/xreZ+V1TQuzHhytua2T
-        9N3IB3JY1qJwBlcospLBz6fBI24c40Oo1ZID8Ro=
-X-Google-Smtp-Source: ABdhPJyyAWk1YDbnrvCZ2wOfu+uska6zUi51fC+5Ru7HfTb5PDmWGtFCuW+dfCLJ3NGZk4n+P3sgHl3WHJ1gY5HW7Ic=
-X-Received: by 2002:a6b:b344:: with SMTP id c65mr8376002iof.123.1592868866065;
- Mon, 22 Jun 2020 16:34:26 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:a5d:9659:0:0:0:0:0 with HTTP; Mon, 22 Jun 2020 16:34:25
- -0700 (PDT)
-Reply-To: lisatofan110@gmail.com
-From:   Lisa Tofan <hamidoukader1@gmail.com>
-Date:   Tue, 23 Jun 2020 01:34:25 +0200
-Message-ID: <CAH-Qesec9uQ6An2FvKXzwu3u2g7Wvi3e5Msnz4RdUVjCp=BA-g@mail.gmail.com>
-Subject: Hello Dear
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 22 Jun 2020 19:34:53 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFBA8C061573;
+        Mon, 22 Jun 2020 16:34:53 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 4ED341297218C;
+        Mon, 22 Jun 2020 16:34:53 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 16:34:52 -0700 (PDT)
+Message-Id: <20200622.163452.937354562065071557.davem@davemloft.net>
+To:     tuomas.tynkkynen@iki.fi
+Cc:     steve.glendinning@shawell.net, UNGLinuxDriver@microchip.com,
+        kuba@kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usbnet: smsc95xx: Fix use-after-free after removal
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200621104326.30604-1-tuomas.tynkkynen@iki.fi>
+References: <20200621104326.30604-1-tuomas.tynkkynen@iki.fi>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 22 Jun 2020 16:34:53 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear,
+From: Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
+Date: Sun, 21 Jun 2020 13:43:26 +0300
 
-This is Miss Lisa Tofan, How are you today hope all is well with you,
-please I will need your urgent attention
+> Syzbot reports an use-after-free in workqueue context:
+> 
+> BUG: KASAN: use-after-free in mutex_unlock+0x19/0x40 kernel/locking/mutex.c:737
+>  mutex_unlock+0x19/0x40 kernel/locking/mutex.c:737
+>  __smsc95xx_mdio_read drivers/net/usb/smsc95xx.c:217 [inline]
+>  smsc95xx_mdio_read+0x583/0x870 drivers/net/usb/smsc95xx.c:278
+>  check_carrier+0xd1/0x2e0 drivers/net/usb/smsc95xx.c:644
+>  process_one_work+0x777/0xf90 kernel/workqueue.c:2274
+>  worker_thread+0xa8f/0x1430 kernel/workqueue.c:2420
+>  kthread+0x2df/0x300 kernel/kthread.c:255
+> 
+> It looks like that smsc95xx_unbind() is freeing the structures that are
+> still in use by the concurrently running workqueue callback. Thus switch
+> to using cancel_delayed_work_sync() to ensure the work callback really
+> is no longer active.
+> 
+> Reported-by: syzbot+29dc7d4ae19b703ff947@syzkaller.appspotmail.com
+> Signed-off-by: Tuomas Tynkkynen <tuomas.tynkkynen@iki.fi>
 
-regarding this important discussion kindly contact me back here my
-Email: lisatofan110@gmail.com: for more details,
-Thanks,
-Miss Lisa Tofan
+Applied, thanks.
