@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92CF22033CB
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 11:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F262033A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 11:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbgFVJle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 05:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40692 "EHLO
+        id S1727094AbgFVJlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 05:41:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726971AbgFVJl3 (ORCPT
+        with ESMTP id S1726972AbgFVJla (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 05:41:29 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894CEC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:41:28 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id g10so14196789wmh.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:41:28 -0700 (PDT)
+        Mon, 22 Jun 2020 05:41:30 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7EAC06179A
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:41:30 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id g18so6882044wrm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:41:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XLmPOYVdaqe+y9UvFG8JqfkTSyC/6Nk+DJj6OjGJzDQ=;
-        b=2GosbQAaXiA/JCZI+g11JdzSxLyfN527ZSvaJacFgJHvRnRrhvLEPiWmyJFet6DLEb
-         hARZd6Itp8Ly0hWe26lMW947wIjwj7XUtHNewIkPpHDfvslkT6iaZRGzwVc1+AdkfN9E
-         77J7zDnRp2cYGiifSFx4PYoShheiwsluJXswRLqt8WCuWUWb6Embtw6Z9mU9W3xNZj5+
-         FkCtTAjDmKfNu78ysMk7zie06INp6h4obBSJsjUfKcugxIeYOlBAJsbCB32uIVigpa55
-         H1TopXYcKvoxi2/iyqbeMnFO353y8FNqh6Aqq/dcIb9ZhBcMg37bYYwmNiEdTQ26X7wA
-         iCKA==
+        bh=mOzBIeRVdsbICiHu3pBzNsfTlUAFWbCE1cSbRbG1tJ8=;
+        b=JaPBL52s4sikmFvHY2AeWFMdnIt4op0dMdw+2FQiSixTq4d3+bBSRsdwR810I4r17W
+         Dc1Sq8XgKmuI3/9qeQSaRigNEUtgpr3V54J04DIfxrMUrogAvx9GOjtxzTIREfdMQfH/
+         ZIoRTVgzdEw7FUgW+wJfkmEOOAhCW69U1CPS7FhzT/GuIAsc5CiRXTTEG/mAZov3cV1/
+         Kw2v4DduJlhcgiBk0rJIlyn1FmnjOS6Kg1a7IMwNMqUETbLfpnIxgx6hHvx4LD/zZ23w
+         MiFdp3RuROPF6Vz8gGOhgj1XQ/lErO7eajC9HU+kNQCI4qgh6cJgSRDclHcQ/M0Q+ZK0
+         akZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XLmPOYVdaqe+y9UvFG8JqfkTSyC/6Nk+DJj6OjGJzDQ=;
-        b=CcDqcR/tHzg8ixhzgbBwao3Kqk7dPeZEnbsKmCZP4TaTWkq/9S1maH/rphILSVzGNL
-         YLLxX4EIvSsmdgSUiCOXQzsJisW6vhZyrS+UJByeIuV2HIDepmBmWZsxKvlHPQnvBbqR
-         a0o2h5H8Q45bn4ObAXC4YpVqnSHCe3BIsEURL0Kmvg4lyZ7814R6i4ppCxcUs8vSJypS
-         74koWw5gktNBVHNmxILYxB1FccFsjA1VNsi9fJ1vKVFEaGziA8xuPcOKt+55U+TIfYtC
-         7aCk8yESC8I3TWXHlRpOWSRfpH27CnCWvOulVj45IfSktj5MyFWMdCsm2/REL3uLESAf
-         MjSQ==
-X-Gm-Message-State: AOAM531iP7v0VAv7GkunNMgMMMWnkXZtms7pzFka/FcogaCt2RU+qfkR
-        UivB9U0GIwwPc8UX88gRhRS4ag==
-X-Google-Smtp-Source: ABdhPJzDaXbcIaH5nH0mryMVoe9yjbkPdBB2oGScnXDu1GQppXU4cUVJs6lCaQVoAVfhbUhW/QgYFw==
-X-Received: by 2002:a1c:f204:: with SMTP id s4mr18359072wmc.159.1592818887262;
-        Mon, 22 Jun 2020 02:41:27 -0700 (PDT)
+        bh=mOzBIeRVdsbICiHu3pBzNsfTlUAFWbCE1cSbRbG1tJ8=;
+        b=l8vDxFRLKVwB2iN9tnQi2DLeLokeQb46E40HdRp4S8pRKP2H4wJ3n1bD+dtPTIEvBj
+         Uf3SxcbSepRth61EzQxz84aZEogrlngoouC7iY1xMCOARYB8d4QfJau15MwT/5wjqKhb
+         ViU14Cj4n3anDMXciYb6GdUT/h0EACefyQt5EvD/uUJ2FlVH/Rv4FubKrfZzW2a2vbz9
+         2O2dlNKEqGpAvuTygD70L5T7aRTGQ6RED42dOP95UO4hok9MI1Km5YgSXZX8jpSEcInd
+         mioXjeraPimIbWN0IBDq4309jqGqejocRAjPOacI68ObZt4lIh+EikX4LVzCEaaEswal
+         o2lQ==
+X-Gm-Message-State: AOAM532CpH3AyHgEKhbp8fBlJ5E/MoHypCmhTbdrbsSwyfJzRWDPa+gK
+        PzCjJ9WFlA70z8n8cVBOqVrGuQ==
+X-Google-Smtp-Source: ABdhPJxEiAeVa66A6smNF2oImo2X8TfJpMFC5Ia7rzUA6Mu5ujbCfk8T+XkaVik5JQL7C6EsJsyEww==
+X-Received: by 2002:adf:f608:: with SMTP id t8mr3023154wrp.308.1592818889179;
+        Mon, 22 Jun 2020 02:41:29 -0700 (PDT)
 Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id j24sm14392652wrd.43.2020.06.22.02.41.25
+        by smtp.gmail.com with ESMTPSA id j24sm14392652wrd.43.2020.06.22.02.41.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 02:41:26 -0700 (PDT)
+        Mon, 22 Jun 2020 02:41:28 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Florian Fainelli <f.fainelli@gmail.com>,
@@ -82,9 +82,9 @@ Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         Pedro Tsai <pedro.tsai@mediatek.com>,
         Andrew Perepech <andrew.perepech@mediatek.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 03/15] net: phy: arrange headers in phy_device.c alphabetically
-Date:   Mon, 22 Jun 2020 11:37:32 +0200
-Message-Id: <20200622093744.13685-4-brgl@bgdev.pl>
+Subject: [PATCH 04/15] net: mdio: add a forward declaration for reset_control to mdio.h
+Date:   Mon, 22 Jun 2020 11:37:33 +0200
+Message-Id: <20200622093744.13685-5-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.26.1
 In-Reply-To: <20200622093744.13685-1-brgl@bgdev.pl>
 References: <20200622093744.13685-1-brgl@bgdev.pl>
@@ -97,61 +97,28 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Keeping the headers in alphabetical order is better for readability and
-allows to easily see if given header is already included.
+This header refers to struct reset_control but doesn't include any reset
+header. The structure definition is probably somehow indirectly pulled in
+since no warnings are reported but for the sake of correctness add the
+forward declaration for struct reset_control.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/net/phy/phy_device.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ include/linux/mdio.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index 04946de74fa0..1b4df12c70ad 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -9,28 +9,28 @@
+diff --git a/include/linux/mdio.h b/include/linux/mdio.h
+index 36d2e0673d03..9ac5e7ff6156 100644
+--- a/include/linux/mdio.h
++++ b/include/linux/mdio.h
+@@ -17,6 +17,7 @@
+ #define MII_REGADDR_C45_MASK	GENMASK(15, 0)
  
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ struct gpio_desc;
++struct reset_control;
+ struct mii_bus;
  
--#include <linux/kernel.h>
--#include <linux/string.h>
--#include <linux/errno.h>
--#include <linux/unistd.h>
--#include <linux/slab.h>
--#include <linux/interrupt.h>
--#include <linux/init.h>
-+#include <linux/bitmap.h>
- #include <linux/delay.h>
--#include <linux/netdevice.h>
-+#include <linux/errno.h>
- #include <linux/etherdevice.h>
--#include <linux/skbuff.h>
-+#include <linux/ethtool.h>
-+#include <linux/init.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/kernel.h>
-+#include <linux/mdio.h>
-+#include <linux/mii.h>
- #include <linux/mm.h>
- #include <linux/module.h>
--#include <linux/mii.h>
--#include <linux/ethtool.h>
--#include <linux/bitmap.h>
-+#include <linux/netdevice.h>
- #include <linux/phy.h>
- #include <linux/phy_led_triggers.h>
- #include <linux/sfp.h>
--#include <linux/mdio.h>
--#include <linux/io.h>
-+#include <linux/skbuff.h>
-+#include <linux/slab.h>
-+#include <linux/string.h>
- #include <linux/uaccess.h>
-+#include <linux/unistd.h>
- 
- MODULE_DESCRIPTION("PHY library");
- MODULE_AUTHOR("Andy Fleming");
+ /* Multiple levels of nesting are possible. However typically this is
 -- 
 2.26.1
 
