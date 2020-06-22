@@ -2,95 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD34B202E39
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 04:06:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C200B202E35
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 04:05:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731036AbgFVCGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 22:06:00 -0400
-Received: from mail.zju.edu.cn ([61.164.42.155]:9664 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731026AbgFVCF7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 22:05:59 -0400
-Received: from localhost.localdomain (unknown [210.32.144.65])
-        by mail-app3 (Coremail) with SMTP id cC_KCgDnEnjhEfBeyJcJAQ--.40864S4;
-        Mon, 22 Jun 2020 10:05:25 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Patrice Chotard <patrice.chotard@st.com>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Dejin Zheng <zhengdejin5@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] i2c: sprd: Fix runtime PM imbalance on error
-Date:   Mon, 22 Jun 2020 10:05:18 +0800
-Message-Id: <20200622020520.5334-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgDnEnjhEfBeyJcJAQ--.40864S4
-X-Coremail-Antispam: 1UD129KBjvJXoWrKrWrZF17ur48GF48JF1xGrg_yoW8JrWrpr
-        W0gF90kFW7XrZagF4DArsxXFy5W3yft3y5JFWjk3WfZFs8X3Wktr45JF1FqF48JrWkJF4f
-        Jw4qya9xCFy0yF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9v1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJr0_GcWl84ACjcxK6I8E
-        87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c
-        8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_
-        Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-        xGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc2xSY4AK
-        67AK6r4UMxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_GFWkJr1UJwCFx2IqxV
-        CFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r10
-        6r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxV
-        WUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG
-        6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
-        W8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbpwZ7UUUUU==
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgcQBlZdtOvMDgAIsN
+        id S1727005AbgFVCFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 22:05:10 -0400
+Received: from out1.zte.com.cn ([202.103.147.172]:46928 "EHLO mxct.zte.com.cn"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726602AbgFVCFJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Jun 2020 22:05:09 -0400
+Received: from mse-fl1.zte.com.cn (unknown [10.30.14.238])
+        by Forcepoint Email with ESMTPS id 5E3CD125675DA9057D73;
+        Mon, 22 Jun 2020 10:05:03 +0800 (CST)
+Received: from notes_smtp.zte.com.cn (notes_smtp.zte.com.cn [10.30.1.239])
+        by mse-fl1.zte.com.cn with ESMTP id 05M24bra071947;
+        Mon, 22 Jun 2020 10:04:37 +0800 (GMT-8)
+        (envelope-from wang.yi59@zte.com.cn)
+Received: from fox-host8.localdomain ([10.74.120.8])
+          by szsmtp06.zte.com.cn (Lotus Domino Release 8.5.3FP6)
+          with ESMTP id 2020062210043948-4034274 ;
+          Mon, 22 Jun 2020 10:04:39 +0800 
+From:   Yi Wang <wang.yi59@zte.com.cn>
+To:     pmladek@suse.com
+Cc:     sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        keescook@chromium.org, will@kernel.org, mchehab+samsung@kernel.org,
+        dianders@chromium.org, anton@enomsg.org, ccross@android.com,
+        tony.luck@intel.com, xue.zhihong@zte.com.cn, wang.yi59@zte.com.cn,
+        jiang.xuexin@zte.com.cn, wangyong <wang.yong12@zte.com.cn>
+Subject: [RFC PATCH RT] when panic use prink_flush_buffer to dump printk_ringbuffer
+Date:   Mon, 22 Jun 2020 10:07:01 +0800
+Message-Id: <1592791621-45694-1-git-send-email-wang.yi59@zte.com.cn>
+X-Mailer: git-send-email 1.8.3.1
+X-MIMETrack: Itemize by SMTP Server on SZSMTP06/server/zte_ltd(Release 8.5.3FP6|November
+ 21, 2013) at 2020-06-22 10:04:39,
+        Serialize by Router on notes_smtp/zte_ltd(Release 9.0.1FP7|August  17, 2016) at
+ 2020-06-22 10:04:38,
+        Serialize complete at 2020-06-22 10:04:38
+X-MAIL: mse-fl1.zte.com.cn 05M24bra071947
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pm_runtime_get_sync() increments the runtime PM usage counter even
-the call returns an error code. Thus a corresponding decrement is
-needed on the error handling path to keep the counter balanced.
+From: wangyong <wang.yong12@zte.com.cn>
 
-Fix this by adding the missed function call.
+echo  c > proc/sysrq-trigger to trigger system panic, there is no debug
+information.
+I think the  reason is using printk_kthread_func, since panic will call
+local_irq_disable to disable interrupts, and then call smp_send_stop to 
+stop other cpus, the printk thread probably is not waken up by irq_work
+and can't print messages during panic.
 
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Using printk_flush_buffer to force flush printk_ringbuffer after all 
+messages are added to printk_ringbuffer by printk.
+Because printk_kthread_func may call console_lock and be blocked when
+cpus stop, so printk_flush_buffer does't call console_lock.
+
+Signed-off-by: wangyong <wang.yong12@zte.com.cn>
 ---
- drivers/i2c/busses/i2c-sprd.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ include/linux/printk.h |  1 +
+ kernel/panic.c         |  2 +
+ kernel/printk/printk.c | 99 ++++++++++++++++++++++++++++++++++++++------------
+ 3 files changed, 78 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
-index 19cda6742423..675f72a3fd60 100644
---- a/drivers/i2c/busses/i2c-sprd.c
-+++ b/drivers/i2c/busses/i2c-sprd.c
-@@ -285,8 +285,10 @@ static int sprd_i2c_master_xfer(struct i2c_adapter *i2c_adap,
- 	int im, ret;
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index bbfe04c..66a5acf 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -193,6 +193,7 @@ void dump_stack_print_info(const char *log_lvl);
+ void show_regs_print_info(const char *log_lvl);
+ extern asmlinkage void dump_stack(void) __cold;
+ struct wait_queue_head *printk_wait_queue(void);
++void printk_flush_buffer(void);
+ #else
+ static inline __printf(1, 0)
+ int vprintk(const char *s, va_list args)
+diff --git a/kernel/panic.c b/kernel/panic.c
+index 4d893b6..c19b84b 100644
+--- a/kernel/panic.c
++++ b/kernel/panic.c
+@@ -301,6 +301,7 @@ void panic(const char *fmt, ...)
+ 		 * We can't use the "normal" timers since we just panicked.
+ 		 */
+ 		pr_emerg("Rebooting in %d seconds..\n", panic_timeout);
++		printk_flush_buffer();
  
- 	ret = pm_runtime_get_sync(i2c_dev->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(i2c_dev->dev);
- 		return ret;
-+	}
+ 		for (i = 0; i < panic_timeout * 1000; i += PANIC_TIMER_STEP) {
+ 			touch_nmi_watchdog();
+@@ -334,6 +335,7 @@ void panic(const char *fmt, ...)
+ 	disabled_wait();
+ #endif
+ 	pr_emerg("---[ end Kernel panic - not syncing: %s ]---\n", buf);
++	printk_flush_buffer();
  
- 	for (im = 0; im < num - 1; im++) {
- 		ret = sprd_i2c_handle_msg(i2c_adap, &msgs[im], 0);
-@@ -571,8 +573,10 @@ static int sprd_i2c_remove(struct platform_device *pdev)
+ 	/* Do not scroll important messages printed above */
+ 	suppress_printk = 1;
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 6296d34..96e7f07 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -1875,6 +1875,59 @@ static void cont_add(int ctx, int cpu, u32 caller_id, int facility, int level,
+ 	}
+ }
+ 
++/*
++ * Record key parameters used to print printk_ringbuffer
++ */
++static struct prb_info {
++	struct prb_iterator iter;
++	char *ext_text;
++	char *text;
++	char *buf;
++	u64 master_seq;
++} prb_info;
++void printk_flush_buffer(void)
++{
++	int ret;
++	size_t len;
++	size_t ext_len;
++	struct printk_log *msg;
++	struct prb_info *info;
++
++	info = &prb_info;
++	if (!info->ext_text || !info->text || !info->buf)
++		return;
++
++	do {
++		ret = prb_iter_next(&info->iter, info->buf,
++					 PRINTK_RECORD_MAX, &info->master_seq);
++		if (ret == -ERESTARTSYS) {
++			continue;
++		} else if (ret < 0) {
++			/* iterator invalid, start over */
++			prb_iter_init(&info->iter, &printk_rb, NULL);
++			continue;
++		} else if (ret == 0) {
++			break;
++		}
++
++		msg = (struct printk_log *)info->buf;
++		format_text(msg, info->master_seq, info->ext_text, &ext_len,
++				info->text, &len, printk_time);
++
++		//console_lock(); since printk thread may hold lock
++		call_console_drivers(info->master_seq, info->ext_text, ext_len,
++				info->text, len, msg->level, msg->facility);
++
++		if (len > 0 || ext_len > 0)
++			printk_delay(msg->level);
++	} while (ret != 0);
++
++	kfree(info->ext_text);
++	kfree(info->text);
++	kfree(info->buf);
++}
++EXPORT_SYMBOL(printk_flush_buffer);
++
+ /* ring buffer used as memory allocator for temporary sprint buffers */
+ DECLARE_STATIC_PRINTKRB(sprint_rb,
+ 			ilog2(PRINTK_RECORD_MAX + sizeof(struct prb_entry) +
+@@ -2681,52 +2734,50 @@ late_initcall(printk_late_init);
+ #if defined CONFIG_PRINTK
+ static int printk_kthread_func(void *data)
+ {
+-	struct prb_iterator iter;
+-	struct printk_log *msg;
+-	size_t ext_len;
+-	char *ext_text;
+-	u64 master_seq;
+-	size_t len;
+-	char *text;
+-	char *buf;
++
  	int ret;
++	size_t len;
++	size_t ext_len;
++	struct printk_log *msg;
++	struct prb_info *info;
  
- 	ret = pm_runtime_get_sync(i2c_dev->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(i2c_dev->dev);
- 		return ret;
-+	}
+-	ext_text = kmalloc(CONSOLE_EXT_LOG_MAX, GFP_KERNEL);
+-	text = kmalloc(PRINTK_SPRINT_MAX, GFP_KERNEL);
+-	buf = kmalloc(PRINTK_RECORD_MAX, GFP_KERNEL);
+-	if (!ext_text || !text || !buf)
++	info = &prb_info;
++	info->ext_text = kmalloc(CONSOLE_EXT_LOG_MAX, GFP_KERNEL);
++	info->text = kmalloc(PRINTK_SPRINT_MAX, GFP_KERNEL);
++	info->buf = kmalloc(PRINTK_RECORD_MAX, GFP_KERNEL);
++	if (!info->ext_text || !info->text || !info->buf)
+ 		return -1;
  
- 	i2c_del_adapter(&i2c_dev->adap);
- 	clk_disable_unprepare(i2c_dev->clk);
+-	prb_iter_init(&iter, &printk_rb, NULL);
++	prb_iter_init(&info->iter, &printk_rb, NULL);
+ 
+ 	/* the printk kthread never exits */
+ 	for (;;) {
+-		ret = prb_iter_wait_next(&iter, buf,
+-					 PRINTK_RECORD_MAX, &master_seq);
++		ret = prb_iter_wait_next(&info->iter, info->buf,
++					 PRINTK_RECORD_MAX, &info->master_seq);
+ 		if (ret == -ERESTARTSYS) {
+ 			continue;
+ 		} else if (ret < 0) {
+ 			/* iterator invalid, start over */
+-			prb_iter_init(&iter, &printk_rb, NULL);
++			prb_iter_init(&info->iter, &printk_rb, NULL);
+ 			continue;
+ 		}
+ 
+-		msg = (struct printk_log *)buf;
+-		format_text(msg, master_seq, ext_text, &ext_len, text,
+-			    &len, printk_time);
++		msg = (struct printk_log *)info->buf;
++		format_text(msg, info->master_seq, info->ext_text, &ext_len,
++				info->text, &len, printk_time);
+ 
+ 		console_lock();
+ 		console_may_schedule = 0;
+-		call_console_drivers(master_seq, ext_text, ext_len, text, len,
+-				     msg->level, msg->facility);
++		call_console_drivers(info->master_seq, info->ext_text, ext_len,
++				info->text, len, msg->level, msg->facility);
+ 		if (len > 0 || ext_len > 0)
+ 			printk_delay(msg->level);
+ 		console_unlock();
+ 	}
+ 
+-	kfree(ext_text);
+-	kfree(text);
+-	kfree(buf);
++	kfree(info->ext_text);
++	kfree(info->text);
++	kfree(info->buf);
+ 
+ 	return 0;
+ }
 -- 
-2.17.1
+2.15.2
 
