@@ -2,97 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 153C6203E7B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 19:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE07203E8D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 19:57:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730132AbgFVRxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 13:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60612 "EHLO
+        id S1730208AbgFVR5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 13:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729864AbgFVRxr (ORCPT
+        with ESMTP id S1730124AbgFVR5P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 13:53:47 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BC83C061573;
-        Mon, 22 Jun 2020 10:53:47 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id a14so2057866qvq.6;
-        Mon, 22 Jun 2020 10:53:47 -0700 (PDT)
+        Mon, 22 Jun 2020 13:57:15 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE9AC061797
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 10:57:14 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id c194so16437941oig.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 10:57:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=aI7AFW3ATWYt7qJdSuoHvMFK956GDUQlWuGNOU4nfiI=;
-        b=CRWvA9PWU2ITV60zpx4EgXzCM55vziCjbaNwks/D63WzA5S+uC9bFIoRf/rrKIj+29
-         SkvDtsRjgbuErDRQjQU0J30xwxIx9q6ZzyTOCT9qWjW478v2Odeo6ldUnpEDk7W4+W+m
-         sLBlBSkYWta7t7EdcU1A4uRGMBOH6oRgW2QeA1aE4fA8iYBJdywSjoka2ZHJcADwd0I3
-         qu7CCA5PT5Q8sIsOjY68UDesnlLy3rPe/iMEiQyZqbJF2eb6RWt4o+SyUFGUdNaTA2Ol
-         zCcxR2WV9A4XFF0pr3gZ5P/uQIKywbZV+Bd5B1HXGadCdNLui3re2Qe+2FeoL1m8ls/+
-         1D1A==
+        bh=M3GEVdXIf0tk+DXRvjn8ivHe3tRnJ1flWGbCBgMSqFc=;
+        b=fKYxb8a5H/16u9zlWS8iJSngzhsQi8W1gBgVdQKgopZCmgNRKW4ShQtq754r/X5ZHq
+         fy6m5ZY5hX4E0YahT9PIK9K0hD3j10Uy59Ms3GAKtrVZaffV73Avh9kzG2xPwcQpE2jN
+         8f9MCiTyTnGs+lgdJ4+REJgssZ4aoLmVB39814XTPl2qPHqWj/gzwk+XimPFIVVEHUvp
+         JzsFN060SsfLCwR1b2ZTOFv/2dloiWXa9fBsxadwXtQFyVQEwAdDKS6LxeGJ6e36GFJZ
+         nvfChvHXG4x7H6NJ79akzQS3olwqvZy18fNlsxK0nyMeuPuAZK5+wYZs67khpZMIQQqQ
+         mHaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=aI7AFW3ATWYt7qJdSuoHvMFK956GDUQlWuGNOU4nfiI=;
-        b=kuCx6XmB5A39WEY7qSOF0MRbSKad1bCn8U6NUd3PmYVDuG6SaN2k3yzu84roznOmA5
-         id3+t66KtRN4WfDsJ6FSs+12HSAd7rMGZcgQQnQ5tUWGWUqRw9r4OnTdD+aonlFgbHxC
-         5VYDtAiql+98FMzaQhtf4AyaBBe97PnOvDpqq+BTRMDWLjW0RNEa6dhm3aoyc9qBq1Xe
-         WgmG3plwGB4fBniR5OLvjQUGR0ZYZ08f7IQoh67qAoHCSUOm45mdxlYq83UIYn4xfu8F
-         Dphy4dXwOTBng7VllO++ag+p7zu3AS1U6MA/4Tb1pM7AWro395s6vd0HK95hT8C0yDIE
-         NPeg==
-X-Gm-Message-State: AOAM530h0HtO6keS48D49IGxmPVfZQP/zU6WtOATD+qX2dpKq/3ZatfZ
-        6mx80TBoYPpQtGmWBUf0jc4=
-X-Google-Smtp-Source: ABdhPJzv3P99geGSDEBfnzJ929miMpBdopbd+1+vh8L6/V432OG2iCsT4kcU5NWLwQq6Ru3OMnJHQA==
-X-Received: by 2002:ad4:4374:: with SMTP id u20mr22835856qvt.144.1592848425956;
-        Mon, 22 Jun 2020 10:53:45 -0700 (PDT)
-Received: from localhost ([199.96.181.106])
-        by smtp.gmail.com with ESMTPSA id u27sm14366487qkm.121.2020.06.22.10.53.45
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M3GEVdXIf0tk+DXRvjn8ivHe3tRnJ1flWGbCBgMSqFc=;
+        b=qHSo93NbHBD+/m1nohCkUCJUgMCAUW9mkqY0ivqCXIn1MAWIu4pC0HiVHDufkAW4Ao
+         XvYeJwQ8yWknKqOELTUvZtUVvourUvqL2cyPfzkiYkCL7hDXrmOQmlqZX/70KjQVvgW+
+         Sf9TRVwGoEV6gohAeO5iKB+RH9S4YDvvKycH2eeTHejT4Ul1Y4z6f1an5hCW4Tk0AXAh
+         0Z+M3CzM5ydITJ3TgX9rVfR+6Ij5iOU2VNnr1gwIsNZEuxGjgf0hloTxgLSjarTdRUYO
+         cfHSS7IhiAb28CydzjfiXrp49A+m0aXRz5c2bMib4FgD6y8Q5UPHH0tBJdoX9f8dchXm
+         63GA==
+X-Gm-Message-State: AOAM53330LBsGAXrH0fatyeb00fYWm6trvW9rEmUGWJ5t2QQvUNWivKG
+        Bq4UBTSD8+N4Wq5fIIqC1eWaWg==
+X-Google-Smtp-Source: ABdhPJxkLE5HD8rZWtgYIPepWBzqCb0jDBaJuqVva8yCjfKKXg5Nh77NsC5ouVeAKrFlZLLucadR5A==
+X-Received: by 2002:aca:7213:: with SMTP id p19mr13643738oic.58.1592848634118;
+        Mon, 22 Jun 2020 10:57:14 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id k7sm3510087oon.29.2020.06.22.10.57.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 10:53:45 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 13:53:43 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Rick Lindsley <ricklind@linux.vnet.ibm.com>
-Cc:     Ian Kent <raven@themaw.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/6] kernfs: proposed locking and concurrency
- improvement
-Message-ID: <20200622175343.GC13061@mtj.duckdns.org>
-References: <159237905950.89469.6559073274338175600.stgit@mickey.themaw.net>
- <20200619153833.GA5749@mtj.thefacebook.com>
- <16d9d5aa-a996-d41d-cbff-9a5937863893@linux.vnet.ibm.com>
- <20200619222356.GA13061@mtj.duckdns.org>
- <fa22c563-73b7-5e45-2120-71108ca8d1a0@linux.vnet.ibm.com>
+        Mon, 22 Jun 2020 10:57:13 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 10:54:28 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Martin Botka <martin.botka1@gmail.com>
+Subject: Re: [PATCH v2 8/8] arm64: dts: qcom: Add support for Sony Xperia
+ 10/10 Plus (Ganges platform)
+Message-ID: <20200622175428.GU128451@builder.lan>
+References: <20200622075749.21925-1-konradybcio@gmail.com>
+ <20200622075749.21925-9-konradybcio@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fa22c563-73b7-5e45-2120-71108ca8d1a0@linux.vnet.ibm.com>
+In-Reply-To: <20200622075749.21925-9-konradybcio@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 07:44:29PM -0700, Rick Lindsley wrote:
->     echo 0 > /sys/devices//system/memory/memory10374/online
+On Mon 22 Jun 00:57 PDT 2020, Konrad Dybcio wrote:
+
+> From: Martin Botka <martin.botka1@gmail.com>
 > 
-> and boom - you've taken memory chunk 10374 offline.
+> Add device tree support for the Sony Xperia 10 and 10
+> Plus smartphones. They are all based on the Sony Ganges
+> platform (sdm630/636) and share a lot of common code.
+> The differences are really minor, so a Ganges-common DTSI
+> has been created to reduce clutter.
 > 
-> These changes are not just a whim. I used lockstat to measure contention
-> during boot. The addition of 250,000 "devices" in parallel created
-> tremendous contention on the kernfs_mutex and, it appears, on one of the
-> directories within it where memory nodes are created. Using a mutex means
-> that the details of that mutex must bounce around all the cpus ... did I
-> mention 1500+ cpus? A whole lot of thrash ...
+> 10 - Kirin
+> 10 Plus - Mermaid
+> 
+> This platform is based on SoMC Nile, but there are some
+> major differences when it comes to pin configuration and
+> panel setup (among others).
+> 
+> The boards currently support:
+> * Screen console
+> * SDHCI
+> * I2C
+> * pstore log dump
+> * GPIO keys
+> * PSCI idle states
+> 
+> Signed-off-by: Martin Botka <martin.botka1@gmail.com>
+> Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
+> Tested-by: Martin Botka <martin.botka1@gmail.com>
 
-I don't know. The above highlights the absurdity of the approach itself to
-me. You seem to be aware of it too in writing: 250,000 "devices".
+Same comments as on patch 7 regarding the model, but apart from that
+this looks good.
 
-Thanks.
+Happy to see these patches on the list, keep up the good work!
 
--- 
-tejun
+Regards,
+Bjorn
+
+> ---
+>  arch/arm64/boot/dts/qcom/Makefile             |  2 +
+>  .../qcom/sdm630-sony-xperia-ganges-kirin.dts  | 13 ++++++
+>  .../dts/qcom/sdm630-sony-xperia-ganges.dtsi   | 40 +++++++++++++++++++
+>  .../sdm636-sony-xperia-ganges-mermaid.dts     | 20 ++++++++++
+>  4 files changed, 75 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges-kirin.dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges.dtsi
+>  create mode 100644 arch/arm64/boot/dts/qcom/sdm636-sony-xperia-ganges-mermaid.dts
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> index 1cad7cb07574..c98bafe03a96 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -16,9 +16,11 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-hp-envy-x2.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-lenovo-miix-630.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-mtp.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-idp.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= sdm630-sony-xperia-ganges-kirin.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sdm630-sony-xperia-nile-discovery.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sdm630-sony-xperia-nile-pioneer.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sdm630-sony-xperia-nile-voyager.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= sdm636-sony-xperia-ganges-mermaid.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sdm660-xiaomi-lavender.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-cheza-r1.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-cheza-r2.dtb
+> diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges-kirin.dts b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges-kirin.dts
+> new file mode 100644
+> index 000000000000..246710a01046
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges-kirin.dts
+> @@ -0,0 +1,13 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2020, Martin Botka
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "sdm630-sony-xperia-ganges.dtsi"
+> +
+> +/ {
+> +	model = "SoMC Kirin-RoW";
+> +	compatible = "sony,kirin-row", "qcom,sdm630", "qcom,sdm630-mtp";
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges.dtsi b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges.dtsi
+> new file mode 100644
+> index 000000000000..ea051b3d14b8
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges.dtsi
+> @@ -0,0 +1,40 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2020, Martin Botka
+> + */
+> +
+> +/dts-v1/;
+> +
+> +/* Ganges is very similar to Nile, but
+> + * there are some differences that will need
+> + * to be addresed when more peripherals are
+> + * enabled upstream. Hence the separate DTSI.
+> + */
+> +#include "sdm630-sony-xperia-nile.dtsi"
+> +
+> +/ {
+> +	chosen {
+> +		framebuffer@9d400000 {
+> +			reg = <0 0x9d400000 0 (2520 * 1080 * 4)>;
+> +			height = <2520>;
+> +		};
+> +	};
+> +
+> +	soc {
+> +
+> +		i2c@c175000 {
+> +			status = "okay";
+> +
+> +			/* Novatek touchscreen */
+> +		};
+> +
+> +		/* Yes, this is intentional.
+> +		 * Ganges devices only use gpio-keys for
+> +		 * Volume Down, but currently there's an
+> +		 * issue with it that has to be resolved.
+> +		 * Until then, let's not make the kernel panic
+> +		 */
+> +		/delete-node/ gpio-keys;
+> +	};
+> +
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/sdm636-sony-xperia-ganges-mermaid.dts b/arch/arm64/boot/dts/qcom/sdm636-sony-xperia-ganges-mermaid.dts
+> new file mode 100644
+> index 000000000000..96b7782d58de
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sdm636-sony-xperia-ganges-mermaid.dts
+> @@ -0,0 +1,20 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2020, Martin Botka
+> + */
+> +
+> +/dts-v1/;
+> +
+> +/* Mermaid uses sdm636, but it's different ever so slightly
+> + * that we can ignore it for the time being. Sony also commonizes
+> + * the Ganges platform as a whole in downstream kernels.
+> + */
+> +#include "sdm630-sony-xperia-ganges.dtsi"
+> +
+> +/ {
+> +	model = "SoMC Mermaid-RoW";
+> +	compatible = "sony,mermaid-row", "qcom,sdm636", "qcom,sdm636-mtp";
+> +
+> +	qcom,msm-id = <345 0>;
+> +	qcom,pmic-id = <0x1001b 0x101011a 0x00 0x00 0x1001b 0x201011a 0x00 0x00 0x1001b 0x102001a 0x00 0x00>;
+> +};
+> -- 
+> 2.27.0
+> 
