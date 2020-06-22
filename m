@@ -2,142 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522D5203B01
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 17:36:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365F5203B13
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 17:38:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729397AbgFVPga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 11:36:30 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:42271 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728911AbgFVPg3 (ORCPT
+        id S1729295AbgFVPiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 11:38:06 -0400
+Received: from mx0b-00328301.pphosted.com ([148.163.141.47]:29714 "EHLO
+        mx0b-00328301.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729452AbgFVPiB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 11:36:29 -0400
-X-UUID: 953dfad5722f44c9a217319518176f26-20200622
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=qdItIghJblrh+db3nUEdEkdirsZuBwUJohdvjwiFA2g=;
-        b=Kh07k9mIL6TjTltkdT1EqxEwMOXT7Lz3joV7xWNrJ3KwrfRNiPQW6KUIPeynAHRzEBxEyOeZDiR0admpp+yqpKqRdTGJCaZaoBJsXLkwi8Ax1GQZQp/uFrYOpqKwBoc+pE2eTdn6xQ74iOtpp2blVbcFizKdDxecHZwiX0ETk+E=;
-X-UUID: 953dfad5722f44c9a217319518176f26-20200622
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <dennis-yc.hsieh@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 2018445330; Mon, 22 Jun 2020 23:36:24 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 22 Jun 2020 23:36:19 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 22 Jun 2020 23:36:19 +0800
-Message-ID: <1592840183.1307.12.camel@mtkswgap22>
-Subject: Re: [PATCH v1 03/11] soc: mediatek: cmdq: add write_s function
-From:   Dennis-YC Hsieh <dennis-yc.hsieh@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, CK Hu <ck.hu@mediatek.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        HS Liao <hs.liao@mediatek.com>
-Date:   Mon, 22 Jun 2020 23:36:23 +0800
-In-Reply-To: <a9c6f28a-94d1-f92b-a017-935e80d0ec26@gmail.com>
-References: <1592749115-24158-1-git-send-email-dennis-yc.hsieh@mediatek.com>
-         <1592749115-24158-4-git-send-email-dennis-yc.hsieh@mediatek.com>
-         <a9c6f28a-94d1-f92b-a017-935e80d0ec26@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Mon, 22 Jun 2020 11:38:01 -0400
+Received: from pps.filterd (m0156136.ppops.net [127.0.0.1])
+        by mx0b-00328301.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05MFWDw4004965;
+        Mon, 22 Jun 2020 08:37:56 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=invensense.com; h=from : to : cc :
+ subject : date : message-id : content-type : mime-version; s=pfpt1;
+ bh=OO3b4rB+9zYsVQANeUog8pBy9uZ+S99UHgmlUtm3kiI=;
+ b=Aw90S5iUT1K2dyK3iCDnzRE8NTq1wI8dBk7pf5fi7W9knXWWAv8+3j5DXPXW0IYPZ2mT
+ sP9DtzSi8Vnf4qtRJMJLezOfbm/+SnOMJHq8wEyJqBSs4so7FzTPm2uYFzzw4e5FJVml
+ kM7UmH3B8tfuTyXCWeiwq+Y88NN+1zxhyT5PAhgeF4OFF5+4UAtb/mJP8AoH7LgbuZjV
+ 94noqy042EBOLgdWD9iKPz1Hr0QKBWm96IDm6LDSPf9gh1XDCBErMvv5hsuM0aLCkADX
+ HUxe8Alnm+WwaVuUABu3IgLgV7IZs9fX6TEm+BEv8N2/D5amMrzfH5jlP6klQF+36J0O Pw== 
+Received: from nam04-sn1-obe.outbound.protection.outlook.com (mail-sn1nam04lp2055.outbound.protection.outlook.com [104.47.44.55])
+        by mx0b-00328301.pphosted.com with ESMTP id 31sedp0ukd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 08:37:56 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gSdbbFjLy/CXCxcdEwK1f6nSIWCGjJpo8nKz+mW2yRYidjf1imgldqOMHCtuq7N0q8NkP2O4loy+18JkcMnLWNFOT0OK+agAcmAFkIRBsj1HsEYpAwV4Pz10YQjP5uPxRMY+7mgverPWUXOmA1DFAH3jChSaAPAz7xG6QcsaSpi/lBCDmYnphDOg1MYYKeXvvD8ew5Ip0ySYtonWjgOpyrh2W32yTQSUTnispiBXTLah2GegTbBJn0g7GqnGOxxCBwnUGvn20se0sX26MZ7CCOzgSH39BViM6z2CD4b7zHf0QNYoV+RJU5QzixPsjLnuVlVyFxZayXENFZusg2N5PQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OO3b4rB+9zYsVQANeUog8pBy9uZ+S99UHgmlUtm3kiI=;
+ b=nEj/6gSWmVql66FCuqA0ZF/nUAJacgBoM97A4NaNUy3z68acpkJ8Ky72T33y15gpl5/bxMFYVUJvw+dh7YJnV4COZxSl1WW2MJOHn4quWHV4LVc6Ijq12PBDHUI9CTG/DgQYZyOlmmh7ljecqs5hMSQQcm7Qxd7JQeJrXF2Lr3N1giMtTXYTxXxAhv+ly64WT4Yb+14ovMW3MdBkDepmT/AtZurUPskA9GJYnMOWesz3BDu2d6/Z/swVy1etTZuXM2I3UgG5zfe4NBmajByystrKq+k5QCgRLYOv7XPn4MS2g9fdaLG47YOJlPInYaz1lLx6h5CsYcOXd2I79ZfZ/A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=invensense.com; dmarc=pass action=none
+ header.from=invensense.com; dkim=pass header.d=invensense.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=invensense.onmicrosoft.com; s=selector2-invensense-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OO3b4rB+9zYsVQANeUog8pBy9uZ+S99UHgmlUtm3kiI=;
+ b=JnHkBiCnrmQepSLWyKRQwuvXztjwRqThqMMVoGCNeKXWohmH09KUyyez00cnrN+b/Qv5KFeR85WN62fTs9US95qH2sBZY9KMx2KUmWmVT/QiY3oKwCT6FySRGwYiNrjs76ZlJdmLHS1VM4R0q65bnBs/AqhRrTRRKp0uFoOl30U=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=invensense.com;
+Received: from MN2PR12MB4422.namprd12.prod.outlook.com (2603:10b6:208:265::9)
+ by MN2PR12MB4501.namprd12.prod.outlook.com (2603:10b6:208:269::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22; Mon, 22 Jun
+ 2020 15:37:54 +0000
+Received: from MN2PR12MB4422.namprd12.prod.outlook.com
+ ([fe80::8940:8e95:6996:cc0]) by MN2PR12MB4422.namprd12.prod.outlook.com
+ ([fe80::8940:8e95:6996:cc0%7]) with mapi id 15.20.3109.027; Mon, 22 Jun 2020
+ 15:37:54 +0000
+From:   Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+To:     jic23@kernel.org, robh+dt@kernel.org, robh@kernel.org,
+        mchehab+huawei@kernel.org, davem@davemloft.net,
+        gregkh@linuxfoundation.org
+Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jean-Baptiste Maneyrol <jmaneyrol@invensense.com>
+Subject: [PATCH v4 00/13] iio: imu: new inv_icm42600 driver
+Date:   Mon, 22 Jun 2020 17:37:16 +0200
+Message-Id: <20200622153729.12702-1-jmaneyrol@invensense.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: LO2P265CA0054.GBRP265.PROD.OUTLOOK.COM
+ (2603:10a6:600:60::18) To MN2PR12MB4422.namprd12.prod.outlook.com
+ (2603:10b6:208:265::9)
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from frgnb-buildozer.invcorp.invensense.com (77.157.193.39) by LO2P265CA0054.GBRP265.PROD.OUTLOOK.COM (2603:10a6:600:60::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21 via Frontend Transport; Mon, 22 Jun 2020 15:37:52 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [77.157.193.39]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 65bc68ee-f1a3-4b31-f866-08d816c23ac3
+X-MS-TrafficTypeDiagnostic: MN2PR12MB4501:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <MN2PR12MB4501587287C23D864F86589DC4970@MN2PR12MB4501.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 0442E569BC
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: L6gimCiqXSGWWEnyOqNx7+oBdsm5iVUdWeZb2BKvLVMTUQ2qs3AzcOaogIqWKscwb2di/H4GOKTFESwiwwhXjV7pKbP7s6JRn8mpvnWCYn18TnpcU1tW0u2ti9uZbSAqatvitChcl/Ynf6pSgpvzj32Kzs6DXP2rFNS33WLMOB3lEEPLAOWhv1CGrx1UxdzL5/5wb3tFPfi/9IkcuCnzgNkNIMDVHMLs4WNnLvJ/NkYU4+J8ivpfvNlmY8p81sdxNsSceHEzQRHL4MJWvyziv6joIdqLz9Sdjlizp1mELSuULRz/AWa50miEVCTtzBLyaMZcw0Gi5/Fe69jRE6GApQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB4422.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(376002)(39850400004)(136003)(366004)(396003)(4326008)(66946007)(7696005)(52116002)(8676002)(66476007)(66556008)(956004)(2616005)(1076003)(83380400001)(107886003)(86362001)(36756003)(478600001)(6486002)(6666004)(26005)(316002)(8936002)(16526019)(5660300002)(2906002)(186003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: vfoX3+GAK2yF637v1vpUs1sGH2BL13MY01Xq4UBdh3Q7tq+0cOlyujRBRIuJArzy/W8c83MdeU89h00+GnhPiv6dQuiAmvhHmGjFBsL2svTRKlTZThGDnCXOKYue/elzGk2wKshQjVoECVGUN6ULlzwNLSufNxzcGa2A6moZtE3o7Wb0bgZyW1L5Z653lS49hOgoybE9fco7PFK99+YQGDa3kAmtyTkPRZBWkQD2W/hleiDcGHotryxT7q+N4i58OOM46KNVVR57z7m7ZJnyyPGz3RC0gaovWVQI4zIlW6EY+uM0aX3EWrhpWWRQEYTjoY0q4WTqoVEPZ4ZVNbdriQTE4rr+BZ5RJ7WArbKPVN9e++NLPtoVHim2FaacaFYFZbzYmJ/z1R1QRWSA5RNE5KHUy+fO+zITlwoMokHIBiS1YuV15hVDRePPBX4Ac6+V3KSkMa5bvCaSMejKJs/lvbzbAXtSg8JprR3H5sG0jTI=
+X-OriginatorOrg: invensense.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 65bc68ee-f1a3-4b31-f866-08d816c23ac3
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2020 15:37:53.9866
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 462b3b3b-e42b-47ea-801a-f1581aac892d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VWlF9RC16oKJmXAmYSPA9YRV7tZot4+HiweX6BWmlizr0vb29WX7dvIoJK+XUpO0I333XKh/yqlWftGCsLYwrMaVC5KBahwbVUqHSC4e+xQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4501
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-22_09:2020-06-22,2020-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ adultscore=0 mlxlogscore=999 spamscore=0 mlxscore=0 lowpriorityscore=0
+ phishscore=0 priorityscore=1501 bulkscore=0 cotscore=-2147483648
+ malwarescore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006220116
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWF0dGhpYXMsDQoNCnRoYW5rcyBmb3IgeW91ciBjb21tZW50Lg0KDQpPbiBNb24sIDIwMjAt
-MDYtMjIgYXQgMTM6MDcgKzAyMDAsIE1hdHRoaWFzIEJydWdnZXIgd3JvdGU6DQo+IA0KPiBPbiAy
-MS8wNi8yMDIwIDE2OjE4LCBEZW5uaXMgWUMgSHNpZWggd3JvdGU6DQo+ID4gYWRkIHdyaXRlX3Mg
-ZnVuY3Rpb24gaW4gY21kcSBoZWxwZXIgZnVuY3Rpb25zIHdoaWNoDQo+ID4gd3JpdGVzIHZhbHVl
-IGNvbnRhaW5zIGluIGludGVybmFsIHJlZ2lzdGVyIHRvIGFkZHJlc3MNCj4gPiB3aXRoIGxhcmdl
-IGRtYSBhY2Nlc3Mgc3VwcG9ydC4NCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBEZW5uaXMgWUMg
-SHNpZWggPGRlbm5pcy15Yy5oc2llaEBtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGRyaXZl
-cnMvc29jL21lZGlhdGVrL210ay1jbWRxLWhlbHBlci5jICAgfCAgIDE5ICsrKysrKysrKysrKysr
-KysrKysNCj4gPiAgaW5jbHVkZS9saW51eC9tYWlsYm94L210ay1jbWRxLW1haWxib3guaCB8ICAg
-IDEgKw0KPiA+ICBpbmNsdWRlL2xpbnV4L3NvYy9tZWRpYXRlay9tdGstY21kcS5oICAgIHwgICAx
-OSArKysrKysrKysrKysrKysrKysrDQo+ID4gIDMgZmlsZXMgY2hhbmdlZCwgMzkgaW5zZXJ0aW9u
-cygrKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstY21k
-cS1oZWxwZXIuYyBiL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1jbWRxLWhlbHBlci5jDQo+ID4g
-aW5kZXggYmYzMmUzYjJjYTZjLi44MTdhNWE5N2RiZTUgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVy
-cy9zb2MvbWVkaWF0ZWsvbXRrLWNtZHEtaGVscGVyLmMNCj4gPiArKysgYi9kcml2ZXJzL3NvYy9t
-ZWRpYXRlay9tdGstY21kcS1oZWxwZXIuYw0KPiA+IEBAIC0xOCw2ICsxOCwxMCBAQCBzdHJ1Y3Qg
-Y21kcV9pbnN0cnVjdGlvbiB7DQo+ID4gIAl1bmlvbiB7DQo+ID4gIAkJdTMyIHZhbHVlOw0KPiA+
-ICAJCXUzMiBtYXNrOw0KPiA+ICsJCXN0cnVjdCB7DQo+ID4gKwkJCXUxNiBhcmdfYzsNCj4gPiAr
-CQkJdTE2IHNyY19yZWc7DQo+ID4gKwkJfTsNCj4gPiAgCX07DQo+ID4gIAl1bmlvbiB7DQo+ID4g
-IAkJdTE2IG9mZnNldDsNCj4gPiBAQCAtMjIyLDYgKzIyNiwyMSBAQCBpbnQgY21kcV9wa3Rfd3Jp
-dGVfbWFzayhzdHJ1Y3QgY21kcV9wa3QgKnBrdCwgdTggc3Vic3lzLA0KPiA+ICB9DQo+ID4gIEVY
-UE9SVF9TWU1CT0woY21kcV9wa3Rfd3JpdGVfbWFzayk7DQo+ID4gIA0KPiA+ICtpbnQgY21kcV9w
-a3Rfd3JpdGVfcyhzdHJ1Y3QgY21kcV9wa3QgKnBrdCwgdTE2IGhpZ2hfYWRkcl9yZWdfaWR4LA0K
-PiA+ICsJCSAgICAgdTE2IGFkZHJfbG93LCB1MTYgc3JjX3JlZ19pZHgpDQo+ID4gK3sNCj4gDQo+
-IERvIEkgdW5kZXJzdGFuZCBjb3JyZWN0bHkgdGhhdCB3ZSB1c2UgQ01EUV9BRERSX0hJR0goYWRk
-cikgYW5kDQo+IENNRFFfQUREUl9MT1coYWRkcikgdG8gY2FsY3VsYXRlIGluIHRoZSBjbGllbnQg
-aGlnaF9hZGRyX3JlZ19pZHggYW5kIGFkZHJfbG93DQo+IHJlc3BlY3RpdmVseT8NCj4gDQo+IElu
-IHRoYXQgY2FzZSBJIHRoaW5rIGEgYmV0dGVyIGludGVyZmFjZSB3b3VsZCBiZSB0byBwYXNzIHRo
-ZSBhZGRyZXNzIGFuZCBkbyB0aGUNCj4gaGlnaC9sb3cgY2FsY3VsYXRpb24gaW4gdGhlIGNtZHFf
-cGt0X3dyaXRlX3MNCg0KTm90IGV4YWN0bHkuIFRoZSBoaWdoX2FkZHJfcmVnX2lkeCBwYXJhbWV0
-ZXIgaXMgaW5kZXggb2YgaW50ZXJuYWwNCnJlZ2lzdGVyICh3aGljaCBzdG9yZSBhZGRyZXNzIGJp
-dFs0NzoxNl0pLCBub3QgcmVzdWx0IG9mDQpDTURRX0FERFJfSElHSChhZGRyKS4gDQoNClRoZSBD
-TURRX0FERFJfSElHSCBtYWNybyB1c2UgaW4gcGF0Y2ggMDIvMTEgY21kcV9wa3RfYXNzaWduKCkg
-YXBpLiBUaGlzDQphcGkgaGVscHMgYXNzaWduIGFkZHJlc3MgYml0WzQ3OjE2XSBpbnRvIG9uZSBv
-ZiBpbnRlcm5hbCByZWdpc3RlciBieQ0KaW5kZXguIEFuZCBzYW1lIGluZGV4IGNvdWxkIGJlIHVz
-ZSBpbiBjbWRxX3BrdF93cml0ZV9zKCkuIFRoZSBnY2UNCmNvbWJpbmUgYml0WzQ3OjE2XSBpbiBp
-bnRlcm5hbCByZWdpc3RlciBhbmQgYml0WzE1OjBdIGluIGFkZHJfbG93DQpwYXJhbWV0ZXIgdG8g
-ZmluYWwgYWRkcmVzcy4gU28gaXQgaXMgYmV0dGVyIHRvIGtlZXAgaW50ZXJmYWNlIGluIHRoaXMN
-CndheS4NCg0KDQpSZWdhcmRzLA0KRGVubmlzDQoNCj4gDQo+IFJlZ2FyZHMsDQo+IE1hdHRoaWFz
-DQo+IA0KPiA+ICsJc3RydWN0IGNtZHFfaW5zdHJ1Y3Rpb24gaW5zdCA9IHt9Ow0KPiA+ICsNCj4g
-PiArCWluc3Qub3AgPSBDTURRX0NPREVfV1JJVEVfUzsNCj4gPiArCWluc3Quc3JjX3QgPSBDTURR
-X1JFR19UWVBFOw0KPiA+ICsJaW5zdC5zb3AgPSBoaWdoX2FkZHJfcmVnX2lkeDsNCj4gPiArCWlu
-c3Qub2Zmc2V0ID0gYWRkcl9sb3c7DQo+ID4gKwlpbnN0LnNyY19yZWcgPSBzcmNfcmVnX2lkeDsN
-Cj4gPiArDQo+ID4gKwlyZXR1cm4gY21kcV9wa3RfYXBwZW5kX2NvbW1hbmQocGt0LCBpbnN0KTsN
-Cj4gPiArfQ0KPiA+ICtFWFBPUlRfU1lNQk9MKGNtZHFfcGt0X3dyaXRlX3MpOw0KPiA+ICsNCj4g
-PiAgaW50IGNtZHFfcGt0X3dmZShzdHJ1Y3QgY21kcV9wa3QgKnBrdCwgdTE2IGV2ZW50KQ0KPiA+
-ICB7DQo+ID4gIAlzdHJ1Y3QgY21kcV9pbnN0cnVjdGlvbiBpbnN0ID0geyB7MH0gfTsNCj4gPiBk
-aWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tYWlsYm94L210ay1jbWRxLW1haWxib3guaCBiL2lu
-Y2x1ZGUvbGludXgvbWFpbGJveC9tdGstY21kcS1tYWlsYm94LmgNCj4gPiBpbmRleCAxMjFjM2Ji
-NmQzZGUuLmVlNjdkZDNiODZmNSAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L21haWxi
-b3gvbXRrLWNtZHEtbWFpbGJveC5oDQo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9tYWlsYm94L210
-ay1jbWRxLW1haWxib3guaA0KPiA+IEBAIC01OSw2ICs1OSw3IEBAIGVudW0gY21kcV9jb2RlIHsN
-Cj4gPiAgCUNNRFFfQ09ERV9KVU1QID0gMHgxMCwNCj4gPiAgCUNNRFFfQ09ERV9XRkUgPSAweDIw
-LA0KPiA+ICAJQ01EUV9DT0RFX0VPQyA9IDB4NDAsDQo+ID4gKwlDTURRX0NPREVfV1JJVEVfUyA9
-IDB4OTAsDQo+ID4gIAlDTURRX0NPREVfTE9HSUMgPSAweGEwLA0KPiA+ICB9Ow0KPiA+ICANCj4g
-PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9zb2MvbWVkaWF0ZWsvbXRrLWNtZHEuaCBiL2lu
-Y2x1ZGUvbGludXgvc29jL21lZGlhdGVrL210ay1jbWRxLmgNCj4gPiBpbmRleCA4MzM0MDIxMWUx
-ZDMuLmUxYzVhNzU0OWI0ZiAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L3NvYy9tZWRp
-YXRlay9tdGstY21kcS5oDQo+ID4gKysrIGIvaW5jbHVkZS9saW51eC9zb2MvbWVkaWF0ZWsvbXRr
-LWNtZHEuaA0KPiA+IEBAIC0xMiw2ICsxMiw4IEBADQo+ID4gICNpbmNsdWRlIDxsaW51eC90aW1l
-ci5oPg0KPiA+ICANCj4gPiAgI2RlZmluZSBDTURRX05PX1RJTUVPVVQJCTB4ZmZmZmZmZmZ1DQo+
-ID4gKyNkZWZpbmUgQ01EUV9BRERSX0hJR0goYWRkcikJKCh1MzIpKCgoYWRkcikgPj4gMTYpICYg
-R0VOTUFTSygzMSwgMCkpKQ0KPiA+ICsjZGVmaW5lIENNRFFfQUREUl9MT1coYWRkcikJKCh1MTYp
-KGFkZHIpIHwgQklUKDEpKQ0KPiA+ICANCj4gPiAgc3RydWN0IGNtZHFfcGt0Ow0KPiA+ICANCj4g
-PiBAQCAtMTAzLDYgKzEwNSwyMyBAQCBpbnQgY21kcV9wa3Rfd3JpdGVfbWFzayhzdHJ1Y3QgY21k
-cV9wa3QgKnBrdCwgdTggc3Vic3lzLA0KPiA+ICAJCQl1MTYgb2Zmc2V0LCB1MzIgdmFsdWUsIHUz
-MiBtYXNrKTsNCj4gPiAgDQo+ID4gIC8qKg0KPiA+ICsgKiBjbWRxX3BrdF93cml0ZV9zKCkgLSBh
-cHBlbmQgd3JpdGVfcyBjb21tYW5kIHRvIHRoZSBDTURRIHBhY2tldA0KPiA+ICsgKiBAcGt0Ogl0
-aGUgQ01EUSBwYWNrZXQNCj4gPiArICogQGhpZ2hfYWRkcl9yZWdfaWR4OglpbnRlcm5hbCByZWdp
-c3RlciBJRCB3aGljaCBjb250YWlucyBoaWdoIGFkZHJlc3Mgb2YgcGENCj4gPiArICogQGFkZHJf
-bG93Oglsb3cgYWRkcmVzcyBvZiBwYQ0KPiA+ICsgKiBAc3JjX3JlZ19pZHg6CXRoZSBDTURRIGlu
-dGVybmFsIHJlZ2lzdGVyIElEIHdoaWNoIGNhY2hlIHNvdXJjZSB2YWx1ZQ0KPiA+ICsgKg0KPiA+
-ICsgKiBSZXR1cm46IDAgZm9yIHN1Y2Nlc3M7IGVsc2UgdGhlIGVycm9yIGNvZGUgaXMgcmV0dXJu
-ZWQNCj4gPiArICoNCj4gPiArICogU3VwcG9ydCB3cml0ZSB2YWx1ZSB0byBwaHlzaWNhbCBhZGRy
-ZXNzIHdpdGhvdXQgc3Vic3lzLiBVc2UgQ01EUV9BRERSX0hJR0goKQ0KPiA+ICsgKiB0byBnZXQg
-aGlnaCBhZGRyZXNzIGFuZCBjYWxsIGNtZHFfcGt0X2Fzc2lnbigpIHRvIGFzc2lnbiB2YWx1ZSBp
-bnRvIGludGVybmFsDQo+ID4gKyAqIHJlZy4gQWxzbyB1c2UgQ01EUV9BRERSX0xPVygpIHRvIGdl
-dCBsb3cgYWRkcmVzcyBmb3IgYWRkcl9sb3cgcGFyYW1ldGVyIHdoZW4NCj4gPiArICogY2FsbCB0
-byB0aGlzIGZ1bmN0aW9uLg0KPiA+ICsgKi8NCj4gPiAraW50IGNtZHFfcGt0X3dyaXRlX3Moc3Ry
-dWN0IGNtZHFfcGt0ICpwa3QsIHUxNiBoaWdoX2FkZHJfcmVnX2lkeCwNCj4gPiArCQkgICAgIHUx
-NiBhZGRyX2xvdywgdTE2IHNyY19yZWdfaWR4KTsNCj4gPiArDQo+ID4gKy8qKg0KPiA+ICAgKiBj
-bWRxX3BrdF93ZmUoKSAtIGFwcGVuZCB3YWl0IGZvciBldmVudCBjb21tYW5kIHRvIHRoZSBDTURR
-IHBhY2tldA0KPiA+ICAgKiBAcGt0Ogl0aGUgQ01EUSBwYWNrZXQNCj4gPiAgICogQGV2ZW50Ogl0
-aGUgZGVzaXJlZCBldmVudCB0eXBlIHRvICJ3YWl0IGFuZCBDTEVBUiINCj4gPiANCg0K
+Changelog
+v1
+  -initial patch submission
+v2
+  - formatting reworks, missing headers, code cleanup ...
+  - delete all debug traces
+  - add commentaries for better explanation of suspend/resume, timestamp, ...
+  - delete i2c/spi table ids keeping only of, and use I2C probe_new function
+  - switch calibbias to SI units and add calibias_available attribute
+  - use DMA-safe buffer for all regmap_bulk_* calls
+  - delete iio trigger usage and setup/handle interrupt in core module
+  - add open-drain interrupt support
+  - add FIFO on reference counter and buffer postenable/predisable to replace
+    iio trigger usage
+  - check that temperature data is present before copying in buffer
+  - add temperature sensor off when fifo is turned off
+  - delete timestamp channel reading
+  - move timestamp state in IIO device private data
+  - allow only 1 ODR change in a batch of data
+  - add driver-open-drain in devicetree YAML and delete spi options
+v3
+  - delete const pointer cast for iio_device_get_drvdata
+  - change gyro and accel init to return the allocated iio_dev structure
+  - delete manual parent device assignment
+  - correct style and improve readability
+  - add commentaries about IIO buffer and watermark complex computation
+  - add timestamp alignment in IIO buffer structure
+  - wrap lines 80 columns for dt bindings
+  - add ABI documentation for calibbias values in SI units
+v4
+  - return high resolution 16 bits temperature as raw data when polled with the
+    corresponding scale and offset.
+  - for data buffer return temperature in the same 16 bits using the same
+    scale and offset. Convert low resolution temperature FIFO data to high
+    resolution format.
+  - explicitely zero out data buffer before copying to iio buffer.
+
+This series add a new driver for managing InvenSense ICM-426xx 6-axis IMUs.
+This next generation of chips includes new generations of 3-axis gyroscope
+and 3-axis accelerometer, support of I3C in addition to I2C and SPI, and
+intelligent MotionTracking features like pedometer, tilt detection, and
+tap detection.
+
+This series is delivering a driver supporting gyroscope, accelerometer and
+temperature data, with polling and buffering using hwfifo and watermark,
+on I2C and SPI busses.
+
+Gyroscope and accelerometer sensors are completely independent and can have
+different ODRs. Since there is only a single FIFO a specific value is used to
+mark invalid data. For keeping the device standard we are de-multiplexing data
+from the FIFO to 2 IIO devices with 2 buffers, 1 for the accelerometer and 1
+for the gyroscope. This architecture also enables to easily turn each sensor
+on/off without impacting the other. The device interrupt is used to read the
+FIFO and launch parsing of accelerometer and gyroscope data. A complex
+timestamping mechanism is added to handle correctly FIFO watermark and dynamic
+changes of settings.
+
+
+
+Jean-Baptiste Maneyrol (13):
+  iio: imu: inv_icm42600: add core of new inv_icm42600 driver
+  iio: imu: inv_icm42600: add I2C driver for inv_icm42600 driver
+  iio: imu: inv_icm42600: add SPI driver for inv_icm42600 driver
+  iio: imu: inv_icm42600: add gyroscope IIO device
+  iio: imu: inv_icm42600: add accelerometer IIO device
+  iio: imu: inv_icm42600: add temperature sensor support
+  iio: imu: add Kconfig and Makefile for inv_icm42600 driver
+  Documentation: ABI: add specific icm42600 documentation
+  iio: imu: inv_icm42600: add device interrupt
+  iio: imu: inv_icm42600: add buffer support in iio devices
+  iio: imu: inv_icm42600: add accurate timestamping
+  dt-bindings: iio: imu: Add inv_icm42600 documentation
+  MAINTAINERS: add entry for inv_icm42600 6-axis imu sensor
+
+ .../ABI/testing/sysfs-bus-iio-icm42600        |  20 +
+ .../bindings/iio/imu/invensense,icm42600.yaml |  90 ++
+ MAINTAINERS                                   |   8 +
+ drivers/iio/imu/Kconfig                       |   1 +
+ drivers/iio/imu/Makefile                      |   1 +
+ drivers/iio/imu/inv_icm42600/Kconfig          |  29 +
+ drivers/iio/imu/inv_icm42600/Makefile         |  15 +
+ drivers/iio/imu/inv_icm42600/inv_icm42600.h   | 395 +++++++++
+ .../iio/imu/inv_icm42600/inv_icm42600_accel.c | 787 +++++++++++++++++
+ .../imu/inv_icm42600/inv_icm42600_buffer.c    | 601 +++++++++++++
+ .../imu/inv_icm42600/inv_icm42600_buffer.h    |  98 +++
+ .../iio/imu/inv_icm42600/inv_icm42600_core.c  | 786 +++++++++++++++++
+ .../iio/imu/inv_icm42600/inv_icm42600_gyro.c  | 798 ++++++++++++++++++
+ .../iio/imu/inv_icm42600/inv_icm42600_i2c.c   | 101 +++
+ .../iio/imu/inv_icm42600/inv_icm42600_spi.c   | 100 +++
+ .../iio/imu/inv_icm42600/inv_icm42600_temp.c  |  84 ++
+ .../iio/imu/inv_icm42600/inv_icm42600_temp.h  |  30 +
+ .../imu/inv_icm42600/inv_icm42600_timestamp.c | 195 +++++
+ .../imu/inv_icm42600/inv_icm42600_timestamp.h |  85 ++
+ 19 files changed, 4224 insertions(+)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-icm42600
+ create mode 100644 Documentation/devicetree/bindings/iio/imu/invensense,icm42600.yaml
+ create mode 100644 drivers/iio/imu/inv_icm42600/Kconfig
+ create mode 100644 drivers/iio/imu/inv_icm42600/Makefile
+ create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600.h
+ create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_accel.c
+ create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_buffer.c
+ create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_buffer.h
+ create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_core.c
+ create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_gyro.c
+ create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_i2c.c
+ create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_spi.c
+ create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_temp.c
+ create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_temp.h
+ create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_timestamp.c
+ create mode 100644 drivers/iio/imu/inv_icm42600/inv_icm42600_timestamp.h
+
+-- 
+2.17.1
 
