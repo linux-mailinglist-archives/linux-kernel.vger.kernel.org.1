@@ -2,124 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29C220364E
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67107203665
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728024AbgFVMBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 08:01:22 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:44191 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727901AbgFVMBV (ORCPT
+        id S1728105AbgFVMHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 08:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726889AbgFVMHA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 08:01:21 -0400
-Received: from oxbsgw05.schlund.de ([172.19.248.8]) by
- mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1M1YpJ-1jqMCo0ArD-0033vK; Mon, 22 Jun 2020 14:01:13 +0200
-Date:   Mon, 22 Jun 2020 14:01:12 +0200 (CEST)
-From:   Thomas Ruf <freelancer@rufusul.de>
-Reply-To: Thomas Ruf <freelancer@rufusul.de>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Federico Vaga <federico.vaga@cern.ch>
-Cc:     Dave Jiang <dave.jiang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <419762761.402939.1592827272368@mailbusiness.ionos.de>
-In-Reply-To: <20200622044733.GB2324254@vkoul-mobl>
-References: <5614531.lOV4Wx5bFT@harkonnen>
- <fe199e18-be45-cadc-8bad-4a83ed87bfba@intel.com>
- <20200621072457.GA2324254@vkoul-mobl>
- <20200621203634.y3tejmh6j4knf5iz@cwe-513-vol689.cern.ch>
- <20200622044733.GB2324254@vkoul-mobl>
-Subject: Re: DMA Engine: Transfer From Userspace
+        Mon, 22 Jun 2020 08:07:00 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5630FC061794;
+        Mon, 22 Jun 2020 05:07:00 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id ga6so8073954pjb.1;
+        Mon, 22 Jun 2020 05:07:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ou9Z/Ox/FwTNRKwSYB37fOjhliFS4VQZs0FMTQAQC5I=;
+        b=PSqV8oLCQOb7Tmzo31U7GZn+L294sHL3jjZIZwdpZ3FcDVcSyU1+IKfDX63ylkv/U4
+         cxSiNOGrbjokKMbcEbqSSmXGoG/DxlJXTUeWnwG8oe2W4NvYHc+QTgMLdeFszPyvZzTr
+         Uzy4Yp5J5K3unoJq0TgbjANslW/6rHLf7A6fVqwz3EKHMneyiAj1UNL2HPGKIOgPwSrU
+         dI+xlWn2/AiZHK7rJsdSCzFPEXgCvEZggaeyoQn3UPzhHwkiGrKjsyBFZz8xKnMxFEyY
+         MQSDu4D1qbSgLRiP83rr6LjNfHhOQGV/FQ7ZDotrV8OUMqgqjDfuDcloOLbC51wQTYX5
+         vIcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ou9Z/Ox/FwTNRKwSYB37fOjhliFS4VQZs0FMTQAQC5I=;
+        b=RerVJP3QxlIe/B1MD7apMDvtCx87SCfZnHe+ONCCweN9R2hUtT6DrmOYOwyckXoiN1
+         Vzt1cz3QWkxaRyiIHzjC/yiUltKxY9sFe7NdK1lWoOBPFVFEoMz+mZS1ZkE4sv1UwQzt
+         qoKoegBAVGbo06/ycdbse5tcSWxlfzZjNVX7ipQ75SaaHikmb0SyEGF7gmT6KHFzNzIu
+         CF17b9QGsJlTj+WQQCdMSkYpB0xZDZA5ufHciPFBtAljJSNgF56dMpJJ0tFIlAY3vE0U
+         kph+TuG+0f6jkNZunM++XgPEycJhy+0F0Jb052tvuTjE2rm2U7DiYLdwmzqlv2U4ypZD
+         RCXQ==
+X-Gm-Message-State: AOAM5327PUOm6wWYJVnYWMPzVqH4EiHJXWJ6LcivZSw78RN9rrI4mXM7
+        Nm3p0jxVg11C80xbzLG3wv4=
+X-Google-Smtp-Source: ABdhPJxWH1R7RNazyZb+CXYHrdyY/Qo/VwMC9R+HrORsdOghiTJDVI2x/EEpEoO0/7/ggGXeEFOFDg==
+X-Received: by 2002:a17:902:7008:: with SMTP id y8mr20024907plk.84.1592827619747;
+        Mon, 22 Jun 2020 05:06:59 -0700 (PDT)
+Received: from varodek.localdomain ([2401:4900:b8b:123e:d7ae:5602:b3d:9c0])
+        by smtp.gmail.com with ESMTPSA id j8sm13195391pji.3.2020.06.22.05.06.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 05:06:58 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org
+Subject: [PATCH v1] [media] saa7134: use generic power management
+Date:   Mon, 22 Jun 2020 17:32:30 +0530
+Message-Id: <20200622120229.89610-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.1-Rev31
-X-Originating-Client: open-xchange-appsuite
-X-Provags-ID: V03:K1:vqrA2vYCx1uDKgThEtFbc6VetceM3TsFmqGIYceaPIpVSI5rnwV
- jzWDzPXiDwgkQcxT8pv7GNOBsNYxsO/aTbTl5MNduvTJdzN9E6ySMEGq9oulNx6DLewTTcv
- IbU4Es9KWA2nfkMVzCo7BgUNM53vUPbRVBWn7phzqGV5XbJ5InGXp3ohszv7FweaB3T5dOO
- f+WHDbV6ksaSSCy2OFiOQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lTMpz7zt9FY=:e3CrO0pQcDG1ENDm9Agbim
- LwkiEWdidKgMtWnZDC8zwqgwno/NN/u8G3gEE20lZ5xSADOOVvtmlERnTktRfO5tyTYSmh8n7
- Ci/bOL3IPq6DsCeABXLzgZmgztWYL4eweH5DAooRRW6OsJ3wRuaeoEUfkYW1ui1A/GTLBZODp
- Jx7u/j22nPeBWtglUP1HIpR8+a4EFa1/XNsoaH08duAM9TJPdMbuNRuHRKlMHK6zydC7pSBC+
- rZQlQoCaBAmW3ssdjmE19Wm/34T83NC2B5klDwiyectWnyd8ePvTMi4TOxiEDo3QWopZB0P7j
- nhxRXY51XylKbKU2/97HJcNZFszNsZiX8Sf4asmlAY7eZLbAms/DPibtm/MnK4dHiacP3uPDY
- T28T6jQI3bL6c1fK40b732tQVaKVPgNIW2erI6FQb9jYN/EdAu1LhEej5ZjtXOHah7nYECNnH
- y/w0sJOyHKExCrLGfoa8cnYEsLRhVpDx5WwMG9N64aAjE8X3WUFgIABV41qfsPiHLeNSvLNs0
- nln7TCGJaBomeqtuvUVU4DO4TRGzRBvrYK1JGwyv0ia21roRhM0AzEB9x0NVgklAy2PkOBTsz
- Pz5IDdqG4rTp1Ug4UImXvTwN9UL4J/7JB7YHryyuK30/yliYD9vNqnqPDE/aRFGoVjt1BJneS
- CRCHRXwb5aVF0B1w9JnBF49oiuc2wLveoUu15sNWEPzWAl86c8vN1a8SpZP2p8/ZfE/b+zgBt
- 4xbMXbOpOjgyQobS/RxjY8tXSBdJ5PY1jyz99Se/+HbRnUsgKQ3XYUZMm6bCa7P7Rr4xV/eQ+
- HM4o8+RoiCUpmz+eX6bc97AQn4xtRY4jyu2Htz2tlcQUpPa7zM=
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On 22 June 2020 at 06:47 Vinod Koul <vkoul@kernel.org> wrote:
-> 
-> On 21-06-20, 22:36, Federico Vaga wrote:
-> > On Sun, Jun 21, 2020 at 12:54:57PM +0530, Vinod Koul wrote:
-> > > On 19-06-20, 16:31, Dave Jiang wrote:
-> > > > 
-> > > > 
-> > > > On 6/19/2020 3:47 PM, Federico Vaga wrote:
-> > > > > Hello,
-> > > > >
-> > > > > is there the possibility of using a DMA engine channel from userspace?
-> > > > >
-> > > > > Something like:
-> > > > > - configure DMA using ioctl() (or whatever configuration mechanism)
-> > > > > - read() or write() to trigger the transfer
-> > > > >
-> > > > 
-> > > > I may have supposedly promised Vinod to look into possibly providing
-> > > > something like this in the future. But I have not gotten around to do that
-> > > > yet. Currently, no such support.
-> > > 
-> > > And I do still have serious reservations about this topic :) Opening up
-> > > userspace access to DMA does not sound very great from security point of
-> > > view.
-> > 
-> > I was thinking about a dedicated module, and not something that the DMA engine
-> > offers directly. You load the module only if you need it (like the test module)
-> 
-> But loading that module would expose dma to userspace. 
-> > 
-> > > Federico, what use case do you have in mind?
-> > 
-> > Userspace drivers
-> 
-> more the reason not do do so, why cant a kernel driver be added for your
-> usage?
+With the support of generic PM callbacks, drivers no longer need to use
+legacy .suspend() and .resume() in which they had to maintain PCI states
+changes and device's power state themselves. The required operations are
+done by PCI core.
 
-by chance i have written a driver allowing dma from user space using a memcpy like interface ;-)
-now i am trying to get this code upstream but was hit by the fact that DMA_SG is gone since Aug 2017 :-(
+Compile-tested only.
 
-just let me introduce myself and the project:
-- coding in C since '91
-- coding in C++ since '98
-- a lot of stuff not relevant for this ;-)
-- working as a freelancer since Nov '19
-- implemented a "dma-sg-proxy" driver for my client in Mar/Apr '20 to copy camera frames from uncached memory to cached memory using a second dma on a Zynq platform
-- last week we figured out that we can not upgrade from "Xilinx 2019.2" (kernel 4.19.x) to "2020.1" (kernel 5.4.x) because the DMA_SG interface is gone
-- subscribed to dmaengine on friday, saw the start of this discussion on saturday
-- talked to my client today if it is ok to try to revive DMA_SG and get our driver upstream to avoid such problems in future
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ drivers/media/pci/saa7134/saa7134-core.c | 25 ++++++++----------------
+ 1 file changed, 8 insertions(+), 17 deletions(-)
 
-here the struct for the ioctl:
+diff --git a/drivers/media/pci/saa7134/saa7134-core.c b/drivers/media/pci/saa7134/saa7134-core.c
+index e4623ed2f831..eb01109d4f98 100644
+--- a/drivers/media/pci/saa7134/saa7134-core.c
++++ b/drivers/media/pci/saa7134/saa7134-core.c
+@@ -1370,10 +1370,8 @@ static void saa7134_finidev(struct pci_dev *pci_dev)
+ 	kfree(dev);
+ }
+ 
+-#ifdef CONFIG_PM
+-
+ /* resends a current buffer in queue after resume */
+-static int saa7134_buffer_requeue(struct saa7134_dev *dev,
++static int __maybe_unused saa7134_buffer_requeue(struct saa7134_dev *dev,
+ 				  struct saa7134_dmaqueue *q)
+ {
+ 	struct saa7134_buf *buf, *next;
+@@ -1397,8 +1395,9 @@ static int saa7134_buffer_requeue(struct saa7134_dev *dev,
+ 	return 0;
+ }
+ 
+-static int saa7134_suspend(struct pci_dev *pci_dev , pm_message_t state)
++static int __maybe_unused saa7134_suspend(struct device *dev_d)
+ {
++	struct pci_dev *pci_dev = to_pci_dev(dev_d);
+ 	struct v4l2_device *v4l2_dev = pci_get_drvdata(pci_dev);
+ 	struct saa7134_dev *dev = container_of(v4l2_dev, struct saa7134_dev, v4l2_dev);
+ 
+@@ -1428,21 +1427,15 @@ static int saa7134_suspend(struct pci_dev *pci_dev , pm_message_t state)
+ 	if (dev->remote && dev->remote->dev->users)
+ 		saa7134_ir_close(dev->remote->dev);
+ 
+-	pci_save_state(pci_dev);
+-	pci_set_power_state(pci_dev, pci_choose_state(pci_dev, state));
+-
+ 	return 0;
+ }
+ 
+-static int saa7134_resume(struct pci_dev *pci_dev)
++static int __maybe_unused saa7134_resume(struct device *dev_d)
+ {
+-	struct v4l2_device *v4l2_dev = pci_get_drvdata(pci_dev);
++	struct v4l2_device *v4l2_dev = dev_get_drvdata(dev_d);
+ 	struct saa7134_dev *dev = container_of(v4l2_dev, struct saa7134_dev, v4l2_dev);
+ 	unsigned long flags;
+ 
+-	pci_set_power_state(pci_dev, PCI_D0);
+-	pci_restore_state(pci_dev);
+-
+ 	/* Do things that are done in saa7134_initdev ,
+ 		except of initializing memory structures.*/
+ 
+@@ -1490,7 +1483,6 @@ static int saa7134_resume(struct pci_dev *pci_dev)
+ 
+ 	return 0;
+ }
+-#endif
+ 
+ /* ----------------------------------------------------------- */
+ 
+@@ -1522,15 +1514,14 @@ EXPORT_SYMBOL(saa7134_ts_unregister);
+ 
+ /* ----------------------------------------------------------- */
+ 
++static SIMPLE_DEV_PM_OPS(saa7134_pm_ops, saa7134_suspend, saa7134_resume);
++
+ static struct pci_driver saa7134_pci_driver = {
+ 	.name     = "saa7134",
+ 	.id_table = saa7134_pci_tbl,
+ 	.probe    = saa7134_initdev,
+ 	.remove   = saa7134_finidev,
+-#ifdef CONFIG_PM
+-	.suspend  = saa7134_suspend,
+-	.resume   = saa7134_resume
+-#endif
++	.driver.pm = &saa7134_pm_ops,
+ };
+ 
+ static int __init saa7134_init(void)
+-- 
+2.27.0
 
-typedef struct {
-  unsigned int struct_size;
-  const void *src_user_ptr;
-  void *dst_user_ptr;
-  unsigned long length;
-  unsigned int timeout_in_ms;
-} dma_sg_proxy_arg_t;
-
-best regards,
-Thomas
