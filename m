@@ -2,56 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C41820327F
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:49:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4A8203285
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726976AbgFVItW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 04:49:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34740 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgFVItV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 04:49:21 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 069E620578;
-        Mon, 22 Jun 2020 08:49:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592815761;
-        bh=nqEHgJ/8zmmb+slp1bSk06vjVO02xSDQ92E2cQ0WCu4=;
-        h=In-Reply-To:References:Subject:From:To:Date:From;
-        b=dRtGB3B4q9cxOd8MTr4qujLsF6cHhJ93qEa/sbiWi5ixp2NySc8agWhHVgrnNYDtg
-         I8UrfDCOVchUbM8RNKSGrlS2uM5EBGsuU7nHGG2PUPSbp70eHeS2eMB9KI3/uwzwoE
-         zUBVlFU802PHsllDuuwcECRYgMyS4IL+oykhu860=
-Content-Type: text/plain; charset="utf-8"
+        id S1726992AbgFVIul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 04:50:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725952AbgFVIul (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 04:50:41 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB812C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:50:39 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id c75so15139488ila.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:50:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yBGCr/V9grcgTVKtjGPTu3uIDpYRoMlulyR+BOcCRPM=;
+        b=JjvyfnVU/VrzPRA4p3VAEpiukaK7042CHJJ9Msht32f/G58yo+vV2CgRHYLgTuQGMP
+         oDLiRgzQWku62N4w/CTwZhe8C2qjieyLjNWO8MMxCsE0nz5yNEUhWmkpp9BBDVZ2uxwN
+         ugcRkFazsc0m30EKhzkpUe8RTAqkMxsCpn3xLWgLmqrbOmo2mu11SUl+jWgzZT+LLqyt
+         p8SJC9VBNqDfcjhlFD91INM7jAcIn4M4Gl6DKSikaCi9pj83XB6Czyc8TfPGd61eKaBe
+         OmTOoCnLQJuBjR5G0hbY8Kxqc4pkjZn+m5X33HJzvKE/RfNoMWF1rkJRAKqq9B5M2xgY
+         VhoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yBGCr/V9grcgTVKtjGPTu3uIDpYRoMlulyR+BOcCRPM=;
+        b=jXhKz5UykwKQu6rSVzjm8DdbpzTaQhInOkT05jTS1NNTQ4EXc23M6gCv3HGNDLzCCD
+         S5w/Vz2Uf+nYO0jowF3HDeFUaarnYA+UuFayyzk0RrwmyWfQ2EKEYzJM9NsgIPfJ9KwF
+         nEx5VcHDS+KLNpwr+qjWwpin26aHY2d5T6asVAfTdr6v59jTaTYDiIF8Dbv77KtEHrT3
+         jPbKgg2hDGlPBXFDcA4gnnSC+fifVpMgwPn8gzbNT0w0en7rZXr3F9Yshb50chUWtKDo
+         8YO35dJTD6LOOISwZmnSyD4XB2IPL06KwDHmprlUzr6u0X2WjZKK78HiNNACQgt6jZEA
+         luvQ==
+X-Gm-Message-State: AOAM5339XfERLDkhqWnpRXJ2oU0/dEPeXTwjKa3T1B+NIM+1K2fnfC4x
+        fd/6+b3mRw3tDSnmy1CkxNQvg6R1gw8Gg28osXU=
+X-Google-Smtp-Source: ABdhPJyhazzYy9KUt8Nmim0LruffHvheYvqRC85M11WITsrB/FQs3mY3YK3RVeXqv6nyZFvEG4LLL+GHWHlD4yGefFU=
+X-Received: by 2002:a92:db49:: with SMTP id w9mr14874855ilq.188.1592815839182;
+ Mon, 22 Jun 2020 01:50:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <1592800092-20533-5-git-send-email-sivaprak@codeaurora.org>
-References: <1592800092-20533-1-git-send-email-sivaprak@codeaurora.org> <1592800092-20533-5-git-send-email-sivaprak@codeaurora.org>
-Subject: Re: [PATCH V8 4/4] clk: qcom: Add ipq6018 apss clock controller
-From:   Stephen Boyd <sboyd@kernel.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mturquette@baylibre.com, robh+dt@kernel.org,
-        sivaprak@codeaurora.org
-Date:   Mon, 22 Jun 2020 01:49:20 -0700
-Message-ID: <159281576034.62212.7529127708731581039@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+References: <20200621133704.77896-1-alexander.kapshuk@gmail.com>
+ <20200621135437.GA18092@nautica> <20200622083957.lfgz4j2dop5ryiz6@wittgenstein>
+In-Reply-To: <20200622083957.lfgz4j2dop5ryiz6@wittgenstein>
+From:   Alexander Kapshuk <alexander.kapshuk@gmail.com>
+Date:   Mon, 22 Jun 2020 11:50:03 +0300
+Message-ID: <CAJ1xhMVpJM+CSiA4PgHNbksp1F9MHsKsQO0iBXr4_m7oShj6-A@mail.gmail.com>
+Subject: Re: [PATCH] kernel/signal.c: Export symbol __lock_task_sighand
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Dominique Martinet <asmadeus@codewreck.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, oleg@redhat.com,
+        ebiederm@xmission.com, Andrew Morton <akpm@linux-foundation.org>,
+        liuzhiqiang26@huawei.com, joel@joelfernandes.org,
+        paulmck@linux.vnet.ibm.com, kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Sivaprakash Murugesan (2020-06-21 21:28:12)
-> The CPU on Qualcomm ipq6018 devices are clocked primarily by a aplha PLL
-> and xo which are connected to a mux and enable block.
->=20
-> Add support for the mux and enable block which feeds the CPU on ipq6018
-> devices.
->=20
-> Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-> Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
-> ---
+On Mon, Jun 22, 2020 at 11:40 AM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
+>
+> On Sun, Jun 21, 2020 at 03:54:37PM +0200, Dominique Martinet wrote:
+> > Alexander Kapshuk wrote on Sun, Jun 21, 2020:
+> > > Export symbol __lock_task_sighand, so it is accessible from code compiled
+> > > as modules.
+> > > This fixes the following modpost error:
+> > > ERROR: modpost: "__lock_task_sighand" [net/9p/9pnet.ko] undefined!
+> >
+> > This can't fix something that's not broken (yet)! :)
+> >
+> > I think it'd make more sense to describe why you think we should export
+> > it, rather than describe a precise usecase e.g. justify why this would
+> > be interesting to use from modules (e.g. it would help modules like 9p
+> > take a lock on the current signal handler safely and cleanly through
+> > lock_task_sighand())
+> >
+> >
+> >
+> > Christian, Andrew - assuming this passes reviews from someone else I'm
+> > not sure how to go forward with this; it'd be simpler for me if I could
+> > take it in the 9p tree as I need it for the patch Alexander pointed at,
+> > but I'm not normally touching any file outside of the 9p tree.
+> > Is it better to let either of you take it normally (I think it'd be
+> > you?) and wait for that to land, or can I take it in my tree for the
+> > next merge window?
+>
+> Hm, I don't think the patch is really needed though; see my other mail. :)
+>
+> Christian
 
-Applied to clk-next
+Thanks Oleg and Christian for your feedback.
+Based on what you both expressed, my patch that exported
+__lock_task_sighand as well as the original patch to address a sparse
+warning in net/9p/client.c
+should be dropped and the warning considered a false positive.
+
+I'll let Dominique have the final say on this.
+Thanks.
