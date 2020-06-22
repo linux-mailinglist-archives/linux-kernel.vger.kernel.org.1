@@ -2,16 +2,16 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C937203214
+	by mail.lfdr.de (Postfix) with ESMTP id AEC2C203215
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:30:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725928AbgFVIan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 04:30:43 -0400
-Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:15462 "EHLO
+        id S1726008AbgFVIao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 04:30:44 -0400
+Received: from seldsegrel01.sonyericsson.com ([37.139.156.29]:15473 "EHLO
         SELDSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725788AbgFVIam (ORCPT
+        by vger.kernel.org with ESMTP id S1725826AbgFVIan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 04:30:42 -0400
+        Mon, 22 Jun 2020 04:30:43 -0400
 From:   Peter Enderborg <peter.enderborg@sony.com>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         <linux-kernel@vger.kernel.org>,
@@ -21,34 +21,54 @@ To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Randy Dunlap <rdunlap@infradead.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Ingo Molnar <mingo@redhat.com>
-Subject: [PATCH v4 0/2] debugfs: Add access restriction option
-Date:   Mon, 22 Jun 2020 10:30:17 +0200
-Message-ID: <20200622083019.15479-1-peter.enderborg@sony.com>
+CC:     Peter Enderborg <peter.enderborg@sony.com>
+Subject: [PATCH 1/2] tracefs: Remove unnecessary debug_fs checks.
+Date:   Mon, 22 Jun 2020 10:30:18 +0200
+Message-ID: <20200622083019.15479-2-peter.enderborg@sony.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200617133738.6631-1-peter.enderborg@sony.com>
+In-Reply-To: <20200622083019.15479-1-peter.enderborg@sony.com>
 References: <20200617133738.6631-1-peter.enderborg@sony.com>
+ <20200622083019.15479-1-peter.enderborg@sony.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=B7jHL9lM c=1 sm=1 tr=0 a=kIrCkORFHx6JeP9rmF/Kww==:117 a=nTHF0DUjJn0A:10 a=QyXUC8HyAAAA:8 a=KbOOyE1mfVfSFiGyvBAA:9
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=B7jHL9lM c=1 sm=1 tr=0 a=Jtaq2Av1iV2Yg7i8w6AGMw==:117 a=nTHF0DUjJn0A:10 a=QyXUC8HyAAAA:8 a=z6gsHLkEAAAA:8 a=g-dhFznQ5d8k2vTQpKYA:9 a=d-OLMTCWyvARjPbQ-enb:22
 X-SEG-SpamProfiler-Score: 0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since debugfs include sensitive information it need to be treated
-carefully. But it also has many very useful debug functions for userspace.
-With this option we can have same configuration for system with
-need of debugfs and a way to turn it off. This gives a extra protection
-for exposure on systems where user-space services with system
-access are attacked.
+This is a preparation for debugfs restricted mode.
+We don't need debugfs to trace, the removed check stop tracefs to work
+if debugfs is not initialised. We instead tries to automount within
+debugfs and relay on it's handling. The code path is to create a
+backward compatibility from when tracefs was part of debugfs, it is now
+standalone and does not need debugfs. When debugfs is in restricted
+it is compiled in but not active and return EPERM to clients and
+tracefs wont work if it assumes it is active it is compiled in
+kernel.
 
-v2. Removed MOUNT as part of restrictions. Added API's restrictions as
-    separate restriction.
-v3  Updated Documentation after Randy Dunlap reviews and suggestions.
-v4  Removed #ifdefs from inode.c and using internal.h for configuration
-    and now using BIT() for that. Function is now always on, and are
-    instead selected by a built in default or command line parameter.
-    Added preparation patch that removes check debugfs is initialised.
-    Reported-by: kernel test robot <lkp@intel.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Peter Enderborg <peter.enderborg@sony.com>
+---
+ kernel/trace/trace.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index ec44b0e2a19c..34ed82364edb 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -8946,9 +8946,7 @@ struct dentry *tracing_init_dentry(void)
+ 	if (tr->dir)
+ 		return NULL;
+ 
+-	if (WARN_ON(!tracefs_initialized()) ||
+-		(IS_ENABLED(CONFIG_DEBUG_FS) &&
+-		 WARN_ON(!debugfs_initialized())))
++	if (WARN_ON(!tracefs_initialized()))
+ 		return ERR_PTR(-ENODEV);
+ 
+ 	/*
+-- 
+2.26.2
 
