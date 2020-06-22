@@ -2,126 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D94220410B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87890204103
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730538AbgFVUGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 16:06:47 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:64196 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728452AbgFVUGq (ORCPT
+        id S1730495AbgFVUG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 16:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53196 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728683AbgFVUG0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 16:06:46 -0400
+        Mon, 22 Jun 2020 16:06:26 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2725C061573;
+        Mon, 22 Jun 2020 13:06:25 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id t74so10384706lff.2;
+        Mon, 22 Jun 2020 13:06:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1592856405; x=1624392405;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=dhX5V0GqezWrUqw0t1fAesVT7r5tLsi4pWKqMw8Vja0=;
-  b=AIdF2grKv2iBPy/ZRs4jq1dpTsSqf7twLxPBnhzQp4dGf3HNURKThudr
-   10FRt9qt9pjz21ffR6BgK0gYGNU6esunndhM7kajAjArYx534Bo+Jy/dt
-   WSV6yU3DfRDIY0vEGcR5CkLlLJjoUQeoDwJsmNrHuYLvQsFtiVzV7uOmZ
-   U=;
-IronPort-SDR: 8K/wjNAkTviTaTXV0uRLcpluwsNNje5KkaZUyySdZNc6901rap/Po1q+CXE75qcQGgMImplhPa
- 9ZpBV4FR5UIA==
-X-IronPort-AV: E=Sophos;i="5.75,268,1589241600"; 
-   d="scan'208";a="46041765"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2c-579b7f5b.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 22 Jun 2020 20:06:45 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
-        by email-inbound-relay-2c-579b7f5b.us-west-2.amazon.com (Postfix) with ESMTPS id 96BD6A0361;
-        Mon, 22 Jun 2020 20:06:44 +0000 (UTC)
-Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 22 Jun 2020 20:06:44 +0000
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.161.175) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Mon, 22 Jun 2020 20:06:35 +0000
-From:   Andra Paraschiv <andraprs@amazon.com>
-To:     <linux-kernel@vger.kernel.org>
-CC:     Anthony Liguori <aliguori@amazon.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        "Bjoern Doebel" <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        "Frank van der Linden" <fllinden@amazon.com>,
-        Alexander Graf <graf@amazon.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        "Matt Wilson" <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        "Uwe Dannowski" <uwed@amazon.de>, <kvm@vger.kernel.org>,
-        <ne-devel-upstream@amazon.com>,
-        Andra Paraschiv <andraprs@amazon.com>
-Subject: [PATCH v4 18/18] MAINTAINERS: Add entry for the Nitro Enclaves driver
-Date:   Mon, 22 Jun 2020 23:03:29 +0300
-Message-ID: <20200622200329.52996-19-andraprs@amazon.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
-In-Reply-To: <20200622200329.52996-1-andraprs@amazon.com>
-References: <20200622200329.52996-1-andraprs@amazon.com>
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8ErtUVrdJpAbz3pd9Rfcv2rTfSjq1rTMRt5MW6xhVzE=;
+        b=PwPu1Itn22Czcra35Wl9y+HPNG5b6dE6oFFiVLBWzfkauq+K01m5h9jAeD8zkFbNHx
+         6k6K2m6bgqrqYG3UzINXlpH3kTPJgeG6dF195AuwewOFJ4rHnyW/WeLFrlG4vAwBiew9
+         xpJZHwTMDaPWMJ7Y94DaH7zs94yBdU1ooRkgN4uvFpAnALdwl23IPrJRG5twjM8YpUZv
+         WTW3Kxv4OipMrH6+ab/jQW5c3O5LPCelTrdDYOo+uGsYDeLFDb+3xIRswmJ3uJyC4N3H
+         2TdQtWf6mGArjpXK5HQYNdD876NUHwvPEA7wUiru0wIQuvJQ1Z80gCV6lMCPmRyrTkZd
+         431A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8ErtUVrdJpAbz3pd9Rfcv2rTfSjq1rTMRt5MW6xhVzE=;
+        b=Ev5mxY97E7nZUEgk5D/CaqMnlQ3FV1oQeXzsriZDMmpo/tVYyK+irJgY2cDk3nmLQT
+         vOY2KUw4gEua9izGJbbEY5FkpDCli19sPNDiJD3eSXzyDpKlYfbGBHvjGTC59y2mbQkn
+         3HeVn8fvoEzaqcbZRtuurp9ZNQ2LUVXLn0gEx9MNt5JoHsZ3ubl0STu7MCKKJWWCFNdC
+         E50Xa5rSB40ycyYKMw8ZW8AIbCyeVY62+jesCtOnVaTTEFzcJfN9Q4a08uHRtDofwhpo
+         YPVoTHhj1/jivqB6CjDeBPZILMyQsldnXqGBPo44e5NHbu/V9oEInM6bgYjQu8I3AhEz
+         CNoQ==
+X-Gm-Message-State: AOAM5332RwRG4h2kHajnAvQ0C/PA90vzwxcAEYBgSPUJO8z6ouJw4YDq
+        FVBP/VjI4TQoVAEad1yD+2zBpb5plalYOt9dPuc=
+X-Google-Smtp-Source: ABdhPJzzTxdtaswIHUw4TPj2KWjh68BJOmFYPczOXd8+/J2FzZJRxNHcgmTVZuXvfsSr1vnZBg/jlieyCaiBLSNXA5s=
+X-Received: by 2002:ac2:5093:: with SMTP id f19mr10773563lfm.10.1592856384425;
+ Mon, 22 Jun 2020 13:06:24 -0700 (PDT)
 MIME-Version: 1.0
-X-Originating-IP: [10.43.161.175]
-X-ClientProxiedBy: EX13D18UWA001.ant.amazon.com (10.43.160.11) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+References: <20200621133630.46435-1-grandmaster@al2klimov.de>
+ <CANiq72kA==S-G481VHx2qrKkJmaVK7ZOuYmin4xVr3XKB8x8ug@mail.gmail.com>
+ <b7ba0047-8993-d3bf-327c-1fb70bc0282c@al2klimov.de> <CANiq72=Y+beqZ8Dmieo_GKbyaLN8Nf1n3bVntj_o90Cn-nADRQ@mail.gmail.com>
+ <20200622070623.086f1623@lwn.net> <CANiq72m6BNYe2ETNXJ2oLc6Jzad6kBBJK7_dz+BwZCeqYFXZqg@mail.gmail.com>
+ <adf85348dcbfbf64157e6519115b3a0c9f35df55.camel@perches.com>
+In-Reply-To: <adf85348dcbfbf64157e6519115b3a0c9f35df55.camel@perches.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Mon, 22 Jun 2020 22:06:13 +0200
+Message-ID: <CANiq72mSz+LWLwOCa=9YtzKaD+NjhjZdRdwFiZ-gLMbjYd=QzA@mail.gmail.com>
+Subject: Re: [PATCH] Replace HTTP links with HTTPS ones: Documentation/process
+To:     Joe Perches <joe@perches.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Tony Fischetti <tony.fischetti@gmail.com>,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>, Will Deacon <will@kernel.org>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jacob Huisman <jacobhuisman@kernelthusiast.com>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        =?UTF-8?Q?Jonathan_Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Konstantin Ryabitsev <konstantin@linuxfoundation.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Andra Paraschiv <andraprs@amazon.com>
----
-Changelog
+On Mon, Jun 22, 2020 at 7:29 PM Joe Perches <joe@perches.com> wrote:
+>
+> scripts/get_maintainer.pl --self-test=links has a reachability test
+> using wget.
+>
+> Perhaps a script like that could be used for http:// vs https://
 
-v3 -> v4
++1
 
-* No changes.
+Not sure about `--no-check-certificate` if the goal is to move to
+"proper HTTPS". Perhaps we can try first without it and if that fails,
+print a warning and try with `--no-check-certificate` etc.
 
-v2 -> v3
-
-* Update file entries to be in alphabetical order.
-
-v1 -> v2
-
-* No changes.
----
- MAINTAINERS | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7b5ffd646c6b..66f35c4de16f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -12115,6 +12115,19 @@ S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/lftan/nios2.git
- F:	arch/nios2/
- 
-+NITRO ENCLAVES (NE)
-+M:	Andra Paraschiv <andraprs@amazon.com>
-+M:	Alexandru Vasile <lexnv@amazon.com>
-+M:	Alexandru Ciobotaru <alcioa@amazon.com>
-+L:	linux-kernel@vger.kernel.org
-+S:	Supported
-+W:	https://aws.amazon.com/ec2/nitro/nitro-enclaves/
-+F:	Documentation/nitro_enclaves/
-+F:	drivers/virt/nitro_enclaves/
-+F:	include/linux/nitro_enclaves.h
-+F:	include/uapi/linux/nitro_enclaves.h
-+F:	samples/nitro_enclaves/
-+
- NOHZ, DYNTICKS SUPPORT
- M:	Frederic Weisbecker <fweisbec@gmail.com>
- M:	Thomas Gleixner <tglx@linutronix.de>
--- 
-2.20.1 (Apple Git-117)
-
-
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in Romania. Registration number J22/2621/2005.
-
+Cheers,
+Miguel
