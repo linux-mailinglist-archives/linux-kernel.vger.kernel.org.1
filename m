@@ -2,143 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A0A203687
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:15:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06659203691
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728050AbgFVMP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 08:15:56 -0400
-Received: from mail-ed1-f48.google.com ([209.85.208.48]:44931 "EHLO
-        mail-ed1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726947AbgFVMPz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 08:15:55 -0400
-Received: by mail-ed1-f48.google.com with SMTP id s28so13416234edw.11
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 05:15:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=hQzYMaUlZUDlc8Lem8l9/7cthTQDrT2IC1P1jvMCOQw=;
-        b=Dtr8IYktUZfhlUZhlXZK2CNk58bd23iVdkSg6gPBTMh/lqABrZqPti7GogH8EytJzD
-         yorQIITXTmTs2SBHV8oYJMW1Ts9CVoHQaueOwhoCE6n4DoPp0k2MAUspzxUOZQdZULpp
-         SZaBUXceKuoo11p2qIqDQVlFnCEFaRpKLf5eduo15TsyvMDE899MaFNG6Sv/rDngZUeC
-         p80XB1Q+BWIeGa96R4QQSJdRSV7Ayk6wMxYyKoHu/Oa6kMVBZxFRJbtPEYHeB+Gidk2Q
-         KjqmO22Fd2ee6CrmpIr37dpFFSAg3ywO0UxLaG/kkNYWHOCzLEZycsZVwEZqw8yqzrLm
-         XzOg==
-X-Gm-Message-State: AOAM533WfNopHzB0yQiGDZq/MAXKc7B3j16uw2/WhjSzOxD3IblsPH0z
-        akSAThAWgR8TjyggIvkU+eK2pyTobNPWgw==
-X-Google-Smtp-Source: ABdhPJwjuFE6Tx1w7jw/7lOt+LiuyZiM8PuDJdjY4MSvZygRdc6baVasVMTneLOhh1Bx5lOa/+DSiQ==
-X-Received: by 2002:aa7:d98e:: with SMTP id u14mr17025220eds.247.1592828153714;
-        Mon, 22 Jun 2020 05:15:53 -0700 (PDT)
-Received: from [10.68.32.147] (broadband-37-110-38-130.ip.moscow.rt.ru. [37.110.38.130])
-        by smtp.gmail.com with ESMTPSA id j3sm12254485edr.87.2020.06.22.05.15.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jun 2020 05:15:53 -0700 (PDT)
-Reply-To: efremov@linux.com
-Subject: Re: [Cocci] [PATCH v3] coccinelle: misc: add array_size_dup script to
- detect missed overflow checks
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Kees Cook <keescook@chromium.org>, cocci@systeme.lip6.fr,
-        linux-kernel@vger.kernel.org
-References: <20200615102045.4558-1-efremov@linux.com>
- <20200619131313.15468-1-efremov@linux.com>
- <alpine.DEB.2.22.394.2006212255140.2501@hadrien>
-From:   Denis Efremov <efremov@linux.com>
-Autocrypt: addr=efremov@linux.com; keydata=
- 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
-Message-ID: <e57c419b-a64a-55a1-be7a-8f45edaea3bf@linux.com>
-Date:   Mon, 22 Jun 2020 15:16:23 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1728132AbgFVMRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 08:17:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:49294 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728103AbgFVMRw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 08:17:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C5A91F1;
+        Mon, 22 Jun 2020 05:17:51 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 02FD73F71E;
+        Mon, 22 Jun 2020 05:17:49 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 13:17:47 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Phil Auld <pauld@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>
+Subject: Re: [PATCH] Sched: Add a tracepoint to track rq->nr_running
+Message-ID: <20200622121746.b43ziyjq2eqsseym@e107158-lin.cambridge.arm.com>
+References: <20200619141120.1476-1-pauld@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2006212255140.2501@hadrien>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200619141120.1476-1-pauld@redhat.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-What do you think about removing duplicates warning from the rule?
+On 06/19/20 10:11, Phil Auld wrote:
+> Add a bare tracepoint trace_sched_update_nr_running_tp which tracks
+> ->nr_running CPU's rq. This is used to accurately trace this data and
+> provide a visualization of scheduler imbalances in, for example, the
+> form of a heat map.  The tracepoint is accessed by loading an external
+> kernel module. An example module (forked from Qais' module and including
+> the pelt related tracepoints) can be found at:
+> 
+>   https://github.com/auldp/tracepoints-helpers.git
+> 
+> A script to turn the trace-cmd report output into a heatmap plot can be
+> found at:
+> 
+>   https://github.com/jirvoz/plot-nr-running
+> 
+> The tracepoints are added to add_nr_running() and sub_nr_running() which
+> are in kernel/sched/sched.h. Since sched.h includes trace/events/tlb.h
+> via mmu_context.h we had to limit when CREATE_TRACE_POINTS is defined.
+> 
+> Signed-off-by: Phil Auld <pauld@redhat.com>
+> CC: Qais Yousef <qais.yousef@arm.com>
+> CC: Ingo Molnar <mingo@redhat.com>
+> CC: Peter Zijlstra <peterz@infradead.org>
+> CC: Vincent Guittot <vincent.guittot@linaro.org>
+> CC: linux-kernel@vger.kernel.org
+> ---
+>  include/trace/events/sched.h |  4 ++++
+>  kernel/sched/core.c          |  9 ++++-----
+>  kernel/sched/fair.c          |  2 --
+>  kernel/sched/pelt.c          |  2 --
+>  kernel/sched/sched.h         | 12 ++++++++++++
+>  5 files changed, 20 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/trace/events/sched.h b/include/trace/events/sched.h
+> index ed168b0e2c53..a6d9fe5a68cf 100644
+> --- a/include/trace/events/sched.h
+> +++ b/include/trace/events/sched.h
+> @@ -634,6 +634,10 @@ DECLARE_TRACE(sched_overutilized_tp,
+>  	TP_PROTO(struct root_domain *rd, bool overutilized),
+>  	TP_ARGS(rd, overutilized));
+>  
+> +DECLARE_TRACE(sched_update_nr_running_tp,
+> +	TP_PROTO(int cpu, int change, unsigned int nr_running),
+> +	TP_ARGS(cpu, change, nr_running));
+> +
+>  #endif /* _TRACE_SCHED_H */
+>  
+>  /* This part must be outside protection */
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 9a2fbf98fd6f..6f28fdff1d48 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -6,7 +6,10 @@
+>   *
+>   *  Copyright (C) 1991-2002  Linus Torvalds
+>   */
+> +
+> +#define SCHED_CREATE_TRACE_POINTS
+>  #include "sched.h"
+> +#undef SCHED_CREATE_TRACE_POINTS
+>  
+>  #include <linux/nospec.h>
+>  
+> @@ -21,9 +24,6 @@
+>  
+>  #include "pelt.h"
+>  
+> -#define CREATE_TRACE_POINTS
+> -#include <trace/events/sched.h>
+> -
+>  /*
+>   * Export tracepoints that act as a bare tracehook (ie: have no trace event
+>   * associated with them) to allow external modules to probe them.
+> @@ -34,6 +34,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_dl_tp);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_irq_tp);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(pelt_se_tp);
+>  EXPORT_TRACEPOINT_SYMBOL_GPL(sched_overutilized_tp);
+> +EXPORT_TRACEPOINT_SYMBOL_GPL(sched_update_nr_running_tp);
+>  
+>  DEFINE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
+>  
+> @@ -7969,5 +7970,3 @@ const u32 sched_prio_to_wmult[40] = {
+>   /*  10 */  39045157,  49367440,  61356676,  76695844,  95443717,
+>   /*  15 */ 119304647, 148102320, 186737708, 238609294, 286331153,
+>  };
+> -
+> -#undef CREATE_TRACE_POINTS
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index da3e5b54715b..fe5d9b6db8f7 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -22,8 +22,6 @@
+>   */
+>  #include "sched.h"
+>  
+> -#include <trace/events/sched.h>
+> -
+>  /*
+>   * Targeted preemption latency for CPU-bound tasks:
+>   *
+> diff --git a/kernel/sched/pelt.c b/kernel/sched/pelt.c
+> index b647d04d9c8b..bb69a0ae8d6c 100644
+> --- a/kernel/sched/pelt.c
+> +++ b/kernel/sched/pelt.c
+> @@ -28,8 +28,6 @@
+>  #include "sched.h"
+>  #include "pelt.h"
+>  
+> -#include <trace/events/sched.h>
+> -
+>  /*
+>   * Approximate:
+>   *   val * y^n,    where y^32 ~= 0.5 (~1 scheduling period)
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index db3a57675ccf..6ae96679c169 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -75,6 +75,15 @@
+>  #include "cpupri.h"
+>  #include "cpudeadline.h"
+>  
+> +#ifdef SCHED_CREATE_TRACE_POINTS
+> +#define CREATE_TRACE_POINTS
+> +#endif
+> +#include <trace/events/sched.h>
+> +
+> +#ifdef SCHED_CREATE_TRACE_POINTS
+> +#undef CREATE_TRACE_POINTS
+> +#endif
+> +
+>  #ifdef CONFIG_SCHED_DEBUG
+>  # define SCHED_WARN_ON(x)	WARN_ONCE(x, #x)
+>  #else
+> @@ -1959,6 +1968,7 @@ static inline void add_nr_running(struct rq *rq, unsigned count)
+>  	unsigned prev_nr = rq->nr_running;
+>  
+>  	rq->nr_running = prev_nr + count;
+> +	trace_sched_update_nr_running_tp(cpu_of(rq), count, rq->nr_running);
 
-I mean this kind of warnings: "WARNING: same array_size (line {p1[0].line})"
+This is a very specific call site, so I guess it looks fine to pass very
+specific info too.
 
-As for now, I think it's better to not disturb developers with this kind
-of things.
+But I think we can do better by just passing struct rq and add a new helper
+sched_trace_rq_nr_running() (see the bottom of fair.c for a similar helper
+functions for tracepoints).
 
-Thanks,
-Denis
+This will allow the user to extract, cpu, nr_running and potentially other info
+while only pass a single argument to the tracepoint. Potentially extending its
+future usefulness.
 
->> +@as_dup@
->> +expression subE1 <= as.E1;
->> +expression subE2 <= as.E2;
->> +expression as.E1, as.E2, E3;
->> +assignment operator aop;
->> +position p1, p2;
->> +@@
->> +
->> +* array_size(E1, E2)@p1
->> +  ... when != \(E1\|E2\|subE1\|subE2\) aop E3
->> +      when != &\(E1\|E2\|subE1\|subE2\)
->> +* array_size(E1, E2)@p2
->> +
->> +@script:python depends on report@
->> +p1 << as_dup.p1;
->> +p2 << as_dup.p2;
->> +@@
->> +
->> +coccilib.report.print_report(p2[0],
->> +f"WARNING: same array_size (line {p1[0].line})")
->> +
->> +@script:python depends on org@
->> +p1 << as_dup.p1;
->> +p2 << as_dup.p2;
->> +@@
->> +
->> +coccilib.org.print_todo(p2[0],
->> +f"WARNING: same array_size (line {p1[0].line})")
->> +
+The count can be inferred by storing the last nr_running and taking the diff
+when a new call happens.
 
+	...
+
+	cpu = sched_trace_rq_cpu(rq);
+	nr_running = sched_trace_rq_nr_running(rq);
+	count = last_nr_running[cpu] - nr_running;
+	last_nr_running[cpu] = nr_running;
+
+	...
+
+I haven't looked at BTF, but it could potentially allow us to access members of
+unexported structs reliably without having to export all these helper
+functions. It's been something I wanted to look into but no time yet.
+
+Thanks
+
+--
+Qais Yousef
+
+>  
+>  #ifdef CONFIG_SMP
+>  	if (prev_nr < 2 && rq->nr_running >= 2) {
+> @@ -1973,6 +1983,8 @@ static inline void add_nr_running(struct rq *rq, unsigned count)
+>  static inline void sub_nr_running(struct rq *rq, unsigned count)
+>  {
+>  	rq->nr_running -= count;
+> +	trace_sched_update_nr_running_tp(cpu_of(rq), -count, rq->nr_running);
+> +
+>  	/* Check if we still need preemption */
+>  	sched_update_tick_dependency(rq);
+>  }
+> -- 
+> 2.18.0
+> 
