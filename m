@@ -2,161 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67107203665
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 908C0203655
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728105AbgFVMHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 08:07:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35076 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726889AbgFVMHA (ORCPT
+        id S1728100AbgFVMDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 08:03:11 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:59514 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726889AbgFVMDL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 08:07:00 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5630FC061794;
-        Mon, 22 Jun 2020 05:07:00 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id ga6so8073954pjb.1;
-        Mon, 22 Jun 2020 05:07:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ou9Z/Ox/FwTNRKwSYB37fOjhliFS4VQZs0FMTQAQC5I=;
-        b=PSqV8oLCQOb7Tmzo31U7GZn+L294sHL3jjZIZwdpZ3FcDVcSyU1+IKfDX63ylkv/U4
-         cxSiNOGrbjokKMbcEbqSSmXGoG/DxlJXTUeWnwG8oe2W4NvYHc+QTgMLdeFszPyvZzTr
-         Uzy4Yp5J5K3unoJq0TgbjANslW/6rHLf7A6fVqwz3EKHMneyiAj1UNL2HPGKIOgPwSrU
-         dI+xlWn2/AiZHK7rJsdSCzFPEXgCvEZggaeyoQn3UPzhHwkiGrKjsyBFZz8xKnMxFEyY
-         MQSDu4D1qbSgLRiP83rr6LjNfHhOQGV/FQ7ZDotrV8OUMqgqjDfuDcloOLbC51wQTYX5
-         vIcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ou9Z/Ox/FwTNRKwSYB37fOjhliFS4VQZs0FMTQAQC5I=;
-        b=RerVJP3QxlIe/B1MD7apMDvtCx87SCfZnHe+ONCCweN9R2hUtT6DrmOYOwyckXoiN1
-         Vzt1cz3QWkxaRyiIHzjC/yiUltKxY9sFe7NdK1lWoOBPFVFEoMz+mZS1ZkE4sv1UwQzt
-         qoKoegBAVGbo06/ycdbse5tcSWxlfzZjNVX7ipQ75SaaHikmb0SyEGF7gmT6KHFzNzIu
-         CF17b9QGsJlTj+WQQCdMSkYpB0xZDZA5ufHciPFBtAljJSNgF56dMpJJ0tFIlAY3vE0U
-         kph+TuG+0f6jkNZunM++XgPEycJhy+0F0Jb052tvuTjE2rm2U7DiYLdwmzqlv2U4ypZD
-         RCXQ==
-X-Gm-Message-State: AOAM5327PUOm6wWYJVnYWMPzVqH4EiHJXWJ6LcivZSw78RN9rrI4mXM7
-        Nm3p0jxVg11C80xbzLG3wv4=
-X-Google-Smtp-Source: ABdhPJxWH1R7RNazyZb+CXYHrdyY/Qo/VwMC9R+HrORsdOghiTJDVI2x/EEpEoO0/7/ggGXeEFOFDg==
-X-Received: by 2002:a17:902:7008:: with SMTP id y8mr20024907plk.84.1592827619747;
-        Mon, 22 Jun 2020 05:06:59 -0700 (PDT)
-Received: from varodek.localdomain ([2401:4900:b8b:123e:d7ae:5602:b3d:9c0])
-        by smtp.gmail.com with ESMTPSA id j8sm13195391pji.3.2020.06.22.05.06.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 05:06:58 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org
-Subject: [PATCH v1] [media] saa7134: use generic power management
-Date:   Mon, 22 Jun 2020 17:32:30 +0530
-Message-Id: <20200622120229.89610-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Mon, 22 Jun 2020 08:03:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592827389;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XVrUkWunS1SNkKo57Lfv0f1FPTYSboRjBRmoZLWSzhU=;
+        b=Z5GkBE1hD1FvRxwTP71pRGEzdbi8G0HrcUOq45h5j4OGPEeeHTPqKSHz+v4Gt3ng3P4OSt
+        7hQDyYFPeaHl/uqgtSYl/ucy/qLVzPhGEuadoFYjCjG/afczo7CCIQi6RsDJ2nUmyWO/Gc
+        jqjGF0yAjIxk8g5FHiibf+4GyrkmTPo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-362-hb0t208fPqq-Zx5kPmQn6w-1; Mon, 22 Jun 2020 08:03:05 -0400
+X-MC-Unique: hb0t208fPqq-Zx5kPmQn6w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC3A881CBE3;
+        Mon, 22 Jun 2020 12:03:03 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.236])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 77C9F5C1BD;
+        Mon, 22 Jun 2020 12:03:01 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Mon, 22 Jun 2020 14:03:03 +0200 (CEST)
+Date:   Mon, 22 Jun 2020 14:03:00 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Dominique Martinet <asmadeus@codewreck.org>,
+        Alexander Kapshuk <alexander.kapshuk@gmail.com>,
+        linux-kernel@vger.kernel.org, ebiederm@xmission.com,
+        akpm@linux-foundation.org, liuzhiqiang26@huawei.com,
+        joel@joelfernandes.org, paulmck@linux.vnet.ibm.com,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] kernel/signal.c: Export symbol __lock_task_sighand
+Message-ID: <20200622120259.GD6516@redhat.com>
+References: <20200621133704.77896-1-alexander.kapshuk@gmail.com>
+ <20200622062527.GA6516@redhat.com>
+ <20200622083905.c3nurmkbo5yhd6lj@wittgenstein>
+ <20200622102401.GA12377@nautica>
+ <20200622113610.okzntx7jmnk6n7au@wittgenstein>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200622113610.okzntx7jmnk6n7au@wittgenstein>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the support of generic PM callbacks, drivers no longer need to use
-legacy .suspend() and .resume() in which they had to maintain PCI states
-changes and device's power state themselves. The required operations are
-done by PCI core.
+On 06/22, Christian Brauner wrote:
+>
+> On Mon, Jun 22, 2020 at 12:24:01PM +0200, Dominique Martinet wrote:
+> > Christian Brauner wrote on Mon, Jun 22, 2020:
+> > > On Mon, Jun 22, 2020 at 08:25:28AM +0200, Oleg Nesterov wrote:
+> > >> current->sighand is stable and can't go away. Unless "current" is exiting and
+> > >> has already passed exit_notify(). So I don't think net/9p needs this helper.
+> > >
+> > > From what I can gather from the thread (cf. [1]) that is linked in the
+> > > commit message the main motivation for all of this is sparse not being
+> > > happy and not some bug. (Maybe I'm not seeing something though.)
+> > >
+> > > The patch itself linked here doesn't seem to buy anything. I agree with
+> > > Oleg. Afaict, lock_task_sighand() would only be needed here if the task
+> > > wouldn't be current. So maybe it should just be dropped from the series.
+> >
+> > Sure. I honestly have no idea on what guarantees we have from the task
+> > being current here as opposed to any other task -- I guess that another
+> > thread calling exit for exemple would have to wait?
+>
+> When a thread in a non-trivial thread-group (sorry for the math
+> reference :)) execs it'll unshare its struct sighand.
 
-Compile-tested only.
+Well, not really...
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/media/pci/saa7134/saa7134-core.c | 25 ++++++++----------------
- 1 file changed, 8 insertions(+), 17 deletions(-)
+The execing threads will kill other other threads, then it will check
+if ->sighand should be unshared. The latter is very unlikely, I don't
+think CLONE_SIGHAND without CLONE_THREAD is actually used today.
 
-diff --git a/drivers/media/pci/saa7134/saa7134-core.c b/drivers/media/pci/saa7134/saa7134-core.c
-index e4623ed2f831..eb01109d4f98 100644
---- a/drivers/media/pci/saa7134/saa7134-core.c
-+++ b/drivers/media/pci/saa7134/saa7134-core.c
-@@ -1370,10 +1370,8 @@ static void saa7134_finidev(struct pci_dev *pci_dev)
- 	kfree(dev);
- }
- 
--#ifdef CONFIG_PM
--
- /* resends a current buffer in queue after resume */
--static int saa7134_buffer_requeue(struct saa7134_dev *dev,
-+static int __maybe_unused saa7134_buffer_requeue(struct saa7134_dev *dev,
- 				  struct saa7134_dmaqueue *q)
- {
- 	struct saa7134_buf *buf, *next;
-@@ -1397,8 +1395,9 @@ static int saa7134_buffer_requeue(struct saa7134_dev *dev,
- 	return 0;
- }
- 
--static int saa7134_suspend(struct pci_dev *pci_dev , pm_message_t state)
-+static int __maybe_unused saa7134_suspend(struct device *dev_d)
- {
-+	struct pci_dev *pci_dev = to_pci_dev(dev_d);
- 	struct v4l2_device *v4l2_dev = pci_get_drvdata(pci_dev);
- 	struct saa7134_dev *dev = container_of(v4l2_dev, struct saa7134_dev, v4l2_dev);
- 
-@@ -1428,21 +1427,15 @@ static int saa7134_suspend(struct pci_dev *pci_dev , pm_message_t state)
- 	if (dev->remote && dev->remote->dev->users)
- 		saa7134_ir_close(dev->remote->dev);
- 
--	pci_save_state(pci_dev);
--	pci_set_power_state(pci_dev, pci_choose_state(pci_dev, state));
--
- 	return 0;
- }
- 
--static int saa7134_resume(struct pci_dev *pci_dev)
-+static int __maybe_unused saa7134_resume(struct device *dev_d)
- {
--	struct v4l2_device *v4l2_dev = pci_get_drvdata(pci_dev);
-+	struct v4l2_device *v4l2_dev = dev_get_drvdata(dev_d);
- 	struct saa7134_dev *dev = container_of(v4l2_dev, struct saa7134_dev, v4l2_dev);
- 	unsigned long flags;
- 
--	pci_set_power_state(pci_dev, PCI_D0);
--	pci_restore_state(pci_dev);
--
- 	/* Do things that are done in saa7134_initdev ,
- 		except of initializing memory structures.*/
- 
-@@ -1490,7 +1483,6 @@ static int saa7134_resume(struct pci_dev *pci_dev)
- 
- 	return 0;
- }
--#endif
- 
- /* ----------------------------------------------------------- */
- 
-@@ -1522,15 +1514,14 @@ EXPORT_SYMBOL(saa7134_ts_unregister);
- 
- /* ----------------------------------------------------------- */
- 
-+static SIMPLE_DEV_PM_OPS(saa7134_pm_ops, saa7134_suspend, saa7134_resume);
-+
- static struct pci_driver saa7134_pci_driver = {
- 	.name     = "saa7134",
- 	.id_table = saa7134_pci_tbl,
- 	.probe    = saa7134_initdev,
- 	.remove   = saa7134_finidev,
--#ifdef CONFIG_PM
--	.suspend  = saa7134_suspend,
--	.resume   = saa7134_resume
--#endif
-+	.driver.pm = &saa7134_pm_ops,
- };
- 
- static int __init saa7134_init(void)
--- 
-2.27.0
+But this doesn't really matter. I mean, even if you race with another
+thread doing exec/exit/whatever, current->sighand is stable. Unless, again,
+current has already exited (called exit_notify()).
+
+> The new struct
+> sighand will be assigned using rcu_assign_pointer() so afaik (Paul or
+> Oleg can yell at me if I'm talking nonsense) any prior callers will see
+> the prior sighand value.
+
+Yes, but see above.
+
+If tsk is not current, then (in general) it is not safe to use tsk->sighand
+directly. It can can be changed by exec (as you explained), or you can hit
+tsk->sighand == NULL if you race with exit.
+
+Oleg.
 
