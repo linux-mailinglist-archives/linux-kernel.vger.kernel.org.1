@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90CEA20345A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40793203463
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728057AbgFVKCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 06:02:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44066 "EHLO
+        id S1728090AbgFVKCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 06:02:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728047AbgFVKCd (ORCPT
+        with ESMTP id S1728076AbgFVKCq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 06:02:33 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37697C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 03:02:33 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id k1so7371313pls.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 03:02:33 -0700 (PDT)
+        Mon, 22 Jun 2020 06:02:46 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 491B5C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 03:02:46 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id b5so7927565pgm.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 03:02:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BW+qkInTI792+5SD3uVI8MjMruRpyDQz0sbzM/ucZxk=;
-        b=Tv63MdAQ6gBF5E+ofAHRAZAT2Es/hHrRSDRy9HXr7jVPs+A/OrW93KYxav6B+zeJTW
-         TcBg6tGVXyWb1SEENQsAleMug9j+adz5L2QjHzWzr0D6u+YcfL8dTQHu3isCg+pfaVxn
-         xiZGejGpEIEWpN4kz9Nu63t5KzwyA1YwwVj9jl0iPT/3kEpVV6IFC29Gi/yb2LoQPi85
-         jcjhfWE8W0XiJaj8XOXEUbouNKJutghZFQvbBbmmLBuobFB8ABE0IPQQmKTBRWTd4vb3
-         Glst1RI1zLV6ZD4gK6/fV1YqxxWncQziyF3ajFix/S6Minj1pRE8YMAJ4vkyFRxtF7WG
-         7+0A==
+        bh=UPfmAW9k8YyxmbJfm5TOX0rp7z1+5PCTQPPv7MynyCo=;
+        b=uKK474M/DbSWPi0A9JS0iYgw/SrXIx956BIytebki1lDXi+7oJ8Cg7SfJXI0/W0PJ/
+         mc1bwIpk/P2AJwKUHODchTR0cI3/y4KQIvBTsPjf+mtoMvLWmUWTu5RwqSnbrcdbkNzW
+         KcVbCLQaawMJiO+e1z8JH3CEe/zQX8F50uaQc6itwvXZ7r4XZ9ZWnkkd7tsfMR6LGTW6
+         k93lU3fN8e59+VV4yZFbThj80NLzSpcnvaikv7/RvPMHMW1bXLsQIztOLZJ7bI1DoFZv
+         mxhhyjkMTZF4BQKvjElioLCqHnTMEJsBfCil8xpPWPD+anvRgVJLKngH0bXq+CvjjAAk
+         EKlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=BW+qkInTI792+5SD3uVI8MjMruRpyDQz0sbzM/ucZxk=;
-        b=AEMdf3V4AH3cBP3yZS9M8b3SM7JlUxDSLRfRy3Ear2xzcCkEPKftlswYItcr0qyLZE
-         EdXPugkYTYu0IVBswhfJAD/lYqBFl9gsOa0XLCiRmMX0ZBsqNdCO9lpI9gkS/9QQYk9R
-         fkvbiFj/y5ZGRuFx+nTi+QUpDdVbEu3zrG72z2B//YxDTzQxjdapQwbsyI3NKVojTfno
-         vAA6H/DIoI575dqdlZqNWakHh7/ResGvtkp3Qqb1N1238mbykY4mMlh5YE2UnOBPONhy
-         3fgACaf6F5hCvVaDA2rpETlDJSUWNONFuIcdrgKm5PcyKUnQp/rRheYSm2oCO8ze/abN
-         5SCg==
-X-Gm-Message-State: AOAM532+zqOLUPWWylx8HuzSjxHhpssoc5czyHeFd/waRjKzNcBjBEFW
-        Wdw0fU3ilNDTrg7E0Z3Lvscaz18osE/apQ==
-X-Google-Smtp-Source: ABdhPJzxu9s82+7X6IP0X6GMVUuGoAbeZzCHE9NQCKVX1wH1vSvDvXrpFD4xLd2/RDzJd4F1/UxStA==
-X-Received: by 2002:a17:90a:c7d0:: with SMTP id gf16mr16772979pjb.151.1592820152372;
-        Mon, 22 Jun 2020 03:02:32 -0700 (PDT)
+        bh=UPfmAW9k8YyxmbJfm5TOX0rp7z1+5PCTQPPv7MynyCo=;
+        b=kezsWoNU55GZrwUja5u4IIegLK6kgdiga3eRogIqwU6CCF1ZW+Kd7VGi1EnzS5GE0w
+         AzWvnXPAy/RFAV885Qwx59AXTf1zMMMbnI6MDfi8WygixhFK+6jTWR9ZwvdPWU8Omc+2
+         uKb5Te1vhfoc2bRTgHZ5qn1jrm+Dr4CYeX8kExyT7gkPj9eBEcs1vekCiZ4xfc/EKCC7
+         nPFosXi2PHoT8zC9oWJcOkqLPC3K3rJdrGV5e2g8gbfsrgMVarbb7+v1yAASdmA6U4Pt
+         O/dHuLgAErczVKGExADxUZ5oQTLICHodDgpAhdv0BC0QUpU+nEOODMDeSvzIJtf+yhlJ
+         vU0A==
+X-Gm-Message-State: AOAM530JlUW8LhmxevKUe6BgL79nlblIjL1Yijn+GGF2sT3LbSeVT+wZ
+        OPytnjLmTSHwhp43oo5uBTc3SV0n7CDCIA==
+X-Google-Smtp-Source: ABdhPJzFvMZDuguMc04jWKwLl8+KA4qlX6DB/J4as9lGq7oGXLaJ7NHwFqAF8q7So1Z4NQSmNtUM1g==
+X-Received: by 2002:a62:1917:: with SMTP id 23mr19585651pfz.272.1592820165480;
+        Mon, 22 Jun 2020 03:02:45 -0700 (PDT)
 Received: from [192.168.10.94] (124-171-83-152.dyn.iinet.net.au. [124.171.83.152])
-        by smtp.gmail.com with ESMTPSA id x1sm13046052pfn.76.2020.06.22.03.02.23
+        by smtp.gmail.com with ESMTPSA id s22sm5774931pgv.43.2020.06.22.03.02.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jun 2020 03:02:31 -0700 (PDT)
-Subject: Re: [PATCH 2/4] powerpc/pseries/iommu: Implement
- ibm,reset-pe-dma-windows rtas call
+        Mon, 22 Jun 2020 03:02:44 -0700 (PDT)
+Subject: Re: [PATCH 3/4] powerpc/pseries/iommu: Move window-removing part of
+ remove_ddw into remove_dma_window
 To:     Leonardo Bras <leobras.c@gmail.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
@@ -59,7 +59,7 @@ To:     Leonardo Bras <leobras.c@gmail.com>,
         Ram Pai <linuxram@us.ibm.com>
 Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
 References: <20200619050619.266888-1-leobras.c@gmail.com>
- <20200619050619.266888-3-leobras.c@gmail.com>
+ <20200619050619.266888-4-leobras.c@gmail.com>
 From:   Alexey Kardashevskiy <aik@ozlabs.ru>
 Autocrypt: addr=aik@ozlabs.ru; keydata=
  mQINBE+rT0sBEADFEI2UtPRsLLvnRf+tI9nA8T91+jDK3NLkqV+2DKHkTGPP5qzDZpRSH6mD
@@ -134,12 +134,12 @@ Autocrypt: addr=aik@ozlabs.ru; keydata=
  c7E5M+/NpslPCmYnDjs5qg0/3ihh6XuOGggZQOqrYPC3PnsNs3NxirwOkVPQgO6mXxpuifvJ
  DG9EMkK8IBXnLulqVk54kf7fE0jT/d8RTtJIA92GzsgdK2rpT1MBKKVffjRFGwN7nQVOzi4T
  XrB5p+6ML7Bd84xOEGsj/vdaXmz1esuH7BOZAGEZfLRCHJ0GVCSssg==
-Message-ID: <2f004ecc-4788-47b6-e9ae-0c08d4723008@ozlabs.ru>
-Date:   Mon, 22 Jun 2020 20:02:22 +1000
+Message-ID: <51201582-efe5-85df-7e65-a998e91ab63f@ozlabs.ru>
+Date:   Mon, 22 Jun 2020 20:02:39 +1000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200619050619.266888-3-leobras.c@gmail.com>
+In-Reply-To: <20200619050619.266888-4-leobras.c@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -151,76 +151,118 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 19/06/2020 15:06, Leonardo Bras wrote:
-> Platforms supporting the DDW option starting with LoPAR level 2.7 implement
-> ibm,ddw-extensions. The first extension available (index 2) carries the
-> token for ibm,reset-pe-dma-windows rtas call, which is used to restore
-> the default DMA window for a device, if it has been deleted.
+> Move the window-removing part of remove_ddw into a new function
+> (remove_dma_window), so it can be used to remove other DMA windows.
 > 
-> It does so by resetting the TCE table allocation for the PE to it's
-> boot time value, available in "ibm,dma-window" device tree node.
+> It's useful for removing DMA windows that don't create DIRECT64_PROPNAME
+> property, like the default DMA window from the device, which uses
+> "ibm,dma-window".
 > 
 > Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
 > ---
->  arch/powerpc/platforms/pseries/iommu.c | 33 ++++++++++++++++++++++++++
->  1 file changed, 33 insertions(+)
+>  arch/powerpc/platforms/pseries/iommu.c | 53 +++++++++++++++-----------
+>  1 file changed, 31 insertions(+), 22 deletions(-)
 > 
 > diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-> index e5a617738c8b..5e1fbc176a37 100644
+> index 5e1fbc176a37..de633f6ae093 100644
 > --- a/arch/powerpc/platforms/pseries/iommu.c
 > +++ b/arch/powerpc/platforms/pseries/iommu.c
-> @@ -1012,6 +1012,39 @@ static phys_addr_t ddw_memory_hotplug_max(void)
->  	return max_addr;
->  }
+> @@ -767,25 +767,14 @@ static int __init disable_ddw_setup(char *str)
 >  
-> +/*
-> + * Platforms supporting the DDW option starting with LoPAR level 2.7 implement
-> + * ibm,ddw-extensions, which carries the rtas token for
-> + * ibm,reset-pe-dma-windows.
-> + * That rtas-call can be used to restore the default DMA window for the device.
-> + */
-> +static void reset_dma_window(struct pci_dev *dev, struct device_node *par_dn)
-> +{
+>  early_param("disable_ddw", disable_ddw_setup);
+>  
+> -static void remove_ddw(struct device_node *np, bool remove_prop)
+> +static void remove_dma_window(struct device_node *pdn, u32 *ddw_avail,
+
+You do not need the entire ddw_avail here, pass just the token you need.
+
+Also, despite this particular file, the "pdn" name is usually used for
+struct pci_dn (not device_node), let's keep it that way.
+
+
+> +			      struct property *win)
+>  {
+>  	struct dynamic_dma_window_prop *dwp;
+> -	struct property *win64;
+> -	u32 ddw_avail[3];
+>  	u64 liobn;
+> -	int ret = 0;
+> -
+> -	ret = of_property_read_u32_array(np, "ibm,ddw-applicable",
+> -					 &ddw_avail[0], 3);
+> -
+> -	win64 = of_find_property(np, DIRECT64_PROPNAME, NULL);
+> -	if (!win64)
+> -		return;
+> -
+> -	if (ret || win64->length < sizeof(*dwp))
+> -		goto delprop;
 > +	int ret;
-> +	u32 cfg_addr, ddw_ext[3];
-> +	u64 buid;
-> +	struct device_node *dn;
-> +	struct pci_dn *pdn;
+>  
+> -	dwp = win64->value;
+> +	dwp = win->value;
+>  	liobn = (u64)be32_to_cpu(dwp->liobn);
+>  
+>  	/* clear the whole window, note the arg is in kernel pages */
+> @@ -793,24 +782,44 @@ static void remove_ddw(struct device_node *np, bool remove_prop)
+>  		1ULL << (be32_to_cpu(dwp->window_shift) - PAGE_SHIFT), dwp);
+>  	if (ret)
+>  		pr_warn("%pOF failed to clear tces in window.\n",
+> -			np);
+> +			pdn);
+>  	else
+>  		pr_debug("%pOF successfully cleared tces in window.\n",
+> -			 np);
+> +			 pdn);
+>  
+>  	ret = rtas_call(ddw_avail[2], 1, 1, NULL, liobn);
+>  	if (ret)
+>  		pr_warn("%pOF: failed to remove direct window: rtas returned "
+>  			"%d to ibm,remove-pe-dma-window(%x) %llx\n",
+> -			np, ret, ddw_avail[2], liobn);
+> +			pdn, ret, ddw_avail[2], liobn);
+>  	else
+>  		pr_debug("%pOF: successfully removed direct window: rtas returned "
+>  			"%d to ibm,remove-pe-dma-window(%x) %llx\n",
+> -			np, ret, ddw_avail[2], liobn);
+> +			pdn, ret, ddw_avail[2], liobn);
+> +}
 > +
-> +	ret = of_property_read_u32_array(par_dn, "ibm,ddw-extensions",
-> +					 &ddw_ext[0], 3);
-
-s/3/2/ as for the reset extension you do not need the "64bit largest
-block" extension.
-
-
+> +static void remove_ddw(struct device_node *np, bool remove_prop)
+> +{
+> +	struct property *win;
+> +	u32 ddw_avail[3];
+> +	int ret = 0;
+> +
+> +	ret = of_property_read_u32_array(np, "ibm,ddw-applicable",
+> +					 &ddw_avail[0], 3);
 > +	if (ret)
 > +		return;
 > +
-> +	dn = pci_device_to_OF_node(dev);
-> +	pdn = PCI_DN(dn);
-> +	buid = pdn->phb->buid;
-> +	cfg_addr = ((pdn->busno << 16) | (pdn->devfn << 8));
+> +	win = of_find_property(np, DIRECT64_PROPNAME, NULL);
+> +	if (!win)
+> +		return;
 > +
-> +	ret = rtas_call(ddw_ext[1], 3, 1, NULL, cfg_addr,
+> +	if (win->length >= sizeof(struct dynamic_dma_window_prop))
 
 
-Here the "reset" extention is in ddw_ext[1]. Hm. 1/4 has a bug then.
+Any good reason not to make it "=="? Is there something optional or we
+expect extension (which may not grow from the end but may add cells in
+between). Thanks,
 
-And I am pretty sure it won't compile as reset_dma_window() is not used
-and it is static so fold it into one the next patches. Thanks,
 
-
-> +			BUID_HI(buid), BUID_LO(buid));
-> +	if (ret)
-> +		dev_info(&dev->dev,
-> +			 "ibm,reset-pe-dma-windows(%x) %x %x %x returned %d ",
-> +			 ddw_ext[1], cfg_addr, BUID_HI(buid), BUID_LO(buid),
-> +			 ret);
-> +}
+> +		remove_dma_window(np, ddw_avail, win);
 > +
->  /*
->   * If the PE supports dynamic dma windows, and there is space for a table
->   * that can map all pages in a linear offset, then setup such a table,
+> +	if (!remove_prop)
+> +		return;
+>  
+> -delprop:
+> -	if (remove_prop)
+> -		ret = of_remove_property(np, win64);
+> +	ret = of_remove_property(np, win);
+>  	if (ret)
+>  		pr_warn("%pOF: failed to remove direct window property: %d\n",
+>  			np, ret);
 > 
 
 -- 
