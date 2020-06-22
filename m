@@ -2,222 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA52203FC9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:01:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D86A9203FB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:00:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730658AbgFVTA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 15:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730351AbgFVS7h (ORCPT
+        id S1730424AbgFVS7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 14:59:44 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:42328 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730382AbgFVS7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 14:59:37 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17EFC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:59:37 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id r22so15046337qke.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:59:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :organization:user-agent:mime-version:content-transfer-encoding;
-        bh=f4iy9Hd1w0zJAlXEFRCnJHxvinMyhXg+8Iy3wz3TXII=;
-        b=eECU36ZVjZz8hZY846jkt5SJoCTI+4a8kDaC/+DEX+OfOjFg6ncgMcPhIa4GruhLg4
-         BG0cLqfGfolvPcZcFYfhqxo0FMAiF/NmAK2HYMwjazdJKX/eJo5MbeANBbFofDZTb8/X
-         KfLkchm/gOLRPh5Swk3bdBZJTWhq4+Nq0XQGKZtLZPWCC4ZEM2cwJ5QXjSaJ4mbqAHUR
-         fL54FRINqrSwmhGbUlA+k0veRzVjSDDENfLH8KCJyeyewscnfXHU5+7gWkTOZ/ofU+Mx
-         JEqK6Pk//PAeJwzG7aOPEG0TnnarSIzf0+KMcAnsPoC+Vv10k0DON44NqOTCyOb1C1SQ
-         FgHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=f4iy9Hd1w0zJAlXEFRCnJHxvinMyhXg+8Iy3wz3TXII=;
-        b=FCJcClbF64CKPCN+Kr4JPmaZuoS1Es/cySfqgMtov4dhHmlevWbWzDgjiHpvkJK5Bk
-         86UPnhGG6jQgQBuWrP76CBWw5Wq1Tt72JJ5tUqo+xIZARWaenmaz4hG8MvW5Iyv9LkSs
-         ZHLCObfMcfH9PW0AQJVsGCMrZrPvw9ChSSzCxrtnBq49MJxN23K2ZUarzW4X+7K+4fBr
-         xlZEBrBUCVNQloIy7BgDzG56bDMKfZl31MN0VKvcDp+cIElEXZzx2OmY7C9pDrGOb1gd
-         /xfamCCCKQoHwVj/yGp/wAmWT3mOmdm2rF2y3Vw4Aj7nsEPIuSHWHWTvXa3oFdy0Kq/G
-         SWuA==
-X-Gm-Message-State: AOAM532JtOM51nILnTxfeXJGWX9d6DEQKgNADBFyNNsgtUmFTMiCUAjx
-        H5SwnUU94ejCW291FihMaHY=
-X-Google-Smtp-Source: ABdhPJzzoWaREA/uNfK0f9aPzY48EBbv95gn9nHTvdkd33MN1QQwXKfRvdvvVRCYJRObdZRJCWK7aQ==
-X-Received: by 2002:a05:620a:788:: with SMTP id 8mr7327048qka.127.1592852376858;
-        Mon, 22 Jun 2020 11:59:36 -0700 (PDT)
-Received: from LeoBras (177-131-65-187.dynamic.desktop.com.br. [177.131.65.187])
-        by smtp.gmail.com with ESMTPSA id i14sm13900216qkl.105.2020.06.22.11.59.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 11:59:36 -0700 (PDT)
-Message-ID: <ccf7b591f2bf61ba4705699b2e2b050c3cf48d99.camel@gmail.com>
-Subject: Re: [PATCH 3/4] powerpc/pseries/iommu: Move window-removing part of
- remove_ddw into remove_dma_window
-From:   Leonardo Bras <leobras.c@gmail.com>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Ram Pai <linuxram@us.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Date:   Mon, 22 Jun 2020 15:59:14 -0300
-In-Reply-To: <51201582-efe5-85df-7e65-a998e91ab63f@ozlabs.ru>
-References: <20200619050619.266888-1-leobras.c@gmail.com>
-         <20200619050619.266888-4-leobras.c@gmail.com>
-         <51201582-efe5-85df-7e65-a998e91ab63f@ozlabs.ru>
-Organization: IBM
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Mon, 22 Jun 2020 14:59:41 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05MIxVxG024952;
+        Mon, 22 Jun 2020 13:59:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1592852371;
+        bh=R4dHNQasNqNWmy1suWpwALJni0NAZjJCL1xLlVBfBvI=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References;
+        b=HHxqYWRoEpduU5G8rIYDuyeZFRkM54wTXrqz1qP8Ht4RTEfMR2Fle02O/oKZy9UpI
+         0ofAX5vRJy4jnjTqRhWZ41udc2snaHgVW9O85R39VCcw15d3obUAmD7k3RT6kEb0ku
+         OgUNSYGGJ6iUbg/21GfF1dRymfqnAvmtIauZGTIs=
+Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05MIxVBE038082
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 22 Jun 2020 13:59:31 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 22
+ Jun 2020 13:59:31 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 22 Jun 2020 13:59:31 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05MIxUXS088136;
+        Mon, 22 Jun 2020 13:59:31 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>, <robh@kernel.org>
+CC:     <devicetree@vger.kernel.org>, <linux-leds@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v29 13/16] leds: lp5523: Update the lp5523 code to add multicolor brightness function
+Date:   Mon, 22 Jun 2020 13:59:16 -0500
+Message-ID: <20200622185919.2131-14-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200622185919.2131-1-dmurphy@ti.com>
+References: <20200622185919.2131-1-dmurphy@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Alexey, thanks for the feedback!
+Add the multicolor brightness call back to support the multicolor
+framework.  This call back allows setting  brightness on grouped channels
+in a single function.
 
-On Mon, 2020-06-22 at 20:02 +1000, Alexey Kardashevskiy wrote:
-> 
-> On 19/06/2020 15:06, Leonardo Bras wrote:
-> > Move the window-removing part of remove_ddw into a new function
-> > (remove_dma_window), so it can be used to remove other DMA windows.
-> > 
-> > It's useful for removing DMA windows that don't create DIRECT64_PROPNAME
-> > property, like the default DMA window from the device, which uses
-> > "ibm,dma-window".
-> > 
-> > Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
-> > ---
-> >  arch/powerpc/platforms/pseries/iommu.c | 53 +++++++++++++++-----------
-> >  1 file changed, 31 insertions(+), 22 deletions(-)
-> > 
-> > diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-> > index 5e1fbc176a37..de633f6ae093 100644
-> > --- a/arch/powerpc/platforms/pseries/iommu.c
-> > +++ b/arch/powerpc/platforms/pseries/iommu.c
-> > @@ -767,25 +767,14 @@ static int __init disable_ddw_setup(char *str)
-> >  
-> >  early_param("disable_ddw", disable_ddw_setup);
-> >  
-> > -static void remove_ddw(struct device_node *np, bool remove_prop)
-> > +static void remove_dma_window(struct device_node *pdn, u32 *ddw_avail,
-> 
-> You do not need the entire ddw_avail here, pass just the token you need.
+Acked-by: Pavel Machek <pavel@ucw.cz>
+Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
+Signed-off-by: Dan Murphy <dmurphy@ti.com>
+---
+ drivers/leds/leds-lp5523.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-Well, I just emulated the behavior of create_ddw() and query_ddw() as
-both just pass the array instead of the token, even though they only
-use a single token. 
-
-I think it's to make the rest of the code independent of the design of
-the "ibm,ddw-applicable" array, and if it changes, only local changes
-on the functions will be needed.
-
-> Also, despite this particular file, the "pdn" name is usually used for
-> struct pci_dn (not device_node), let's keep it that way.
-
-Sure, I got confused for some time about this, as we have:
-static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn).
-but on *_ddw() we have "struct pci_dn *pdn".
-
-I will also add a patch that renames those 'struct device_node *pdn' to
-something like 'struct device_node *parent_dn'.
-
-> > +			      struct property *win)
-> >  {
-> >  	struct dynamic_dma_window_prop *dwp;
-> > -	struct property *win64;
-> > -	u32 ddw_avail[3];
-> >  	u64 liobn;
-> > -	int ret = 0;
-> > -
-> > -	ret = of_property_read_u32_array(np, "ibm,ddw-applicable",
-> > -					 &ddw_avail[0], 3);
-> > -
-> > -	win64 = of_find_property(np, DIRECT64_PROPNAME, NULL);
-> > -	if (!win64)
-> > -		return;
-> > -
-> > -	if (ret || win64->length < sizeof(*dwp))
-> > -		goto delprop;
-> > +	int ret;
-> >  
-> > -	dwp = win64->value;
-> > +	dwp = win->value;
-> >  	liobn = (u64)be32_to_cpu(dwp->liobn);
-> >  
-> >  	/* clear the whole window, note the arg is in kernel pages */
-> > @@ -793,24 +782,44 @@ static void remove_ddw(struct device_node *np, bool remove_prop)
-> >  		1ULL << (be32_to_cpu(dwp->window_shift) - PAGE_SHIFT), dwp);
-> >  	if (ret)
-> >  		pr_warn("%pOF failed to clear tces in window.\n",
-> > -			np);
-> > +			pdn);
-> >  	else
-> >  		pr_debug("%pOF successfully cleared tces in window.\n",
-> > -			 np);
-> > +			 pdn);
-> >  
-> >  	ret = rtas_call(ddw_avail[2], 1, 1, NULL, liobn);
-> >  	if (ret)
-> >  		pr_warn("%pOF: failed to remove direct window: rtas returned "
-> >  			"%d to ibm,remove-pe-dma-window(%x) %llx\n",
-> > -			np, ret, ddw_avail[2], liobn);
-> > +			pdn, ret, ddw_avail[2], liobn);
-> >  	else
-> >  		pr_debug("%pOF: successfully removed direct window: rtas returned "
-> >  			"%d to ibm,remove-pe-dma-window(%x) %llx\n",
-> > -			np, ret, ddw_avail[2], liobn);
-> > +			pdn, ret, ddw_avail[2], liobn);
-> > +}
-> > +
-> > +static void remove_ddw(struct device_node *np, bool remove_prop)
-> > +{
-> > +	struct property *win;
-> > +	u32 ddw_avail[3];
-> > +	int ret = 0;
-> > +
-> > +	ret = of_property_read_u32_array(np, "ibm,ddw-applicable",
-> > +					 &ddw_avail[0], 3);
-> > +	if (ret)
-> > +		return;
-> > +
-> > +	win = of_find_property(np, DIRECT64_PROPNAME, NULL);
-> > +	if (!win)
-> > +		return;
-> > +
-> > +	if (win->length >= sizeof(struct dynamic_dma_window_prop))
-> 
-> Any good reason not to make it "=="? Is there something optional or we
-> expect extension (which may not grow from the end but may add cells in
-> between). Thanks,
-
-Well, it comes from the old behavior of remove_ddw():
--	if (ret || win64->length < sizeof(*dwp))
--		goto delprop;
-
-As I reversed the logic from 'if (test) go out' to 'if (!test) do
-stuff', I also reversed (a < b) to !(a < b) => (a >= b).
-
-I have no problem changing that to '==', but it will produce a
-different behavior than before. 
-
-> 
-> 
-> > +		remove_dma_window(np, ddw_avail, win);
-> > +
-> > +	if (!remove_prop)
-> > +		return;
-> >  
-> > -delprop:
-> > -	if (remove_prop)
-> > -		ret = of_remove_property(np, win64);
-> > +	ret = of_remove_property(np, win);
-> >  	if (ret)
-> >  		pr_warn("%pOF: failed to remove direct window property: %d\n",
-> >  			np, ret);
-> > 
-
-Best regards,
-Leonardo
+diff --git a/drivers/leds/leds-lp5523.c b/drivers/leds/leds-lp5523.c
+index b076c16df9ab..9776dc72a764 100644
+--- a/drivers/leds/leds-lp5523.c
++++ b/drivers/leds/leds-lp5523.c
+@@ -791,6 +791,25 @@ static ssize_t store_master_fader_leds(struct device *dev,
+ 	return ret;
+ }
+ 
++static int lp5523_multicolor_brightness(struct lp55xx_led *led)
++{
++	struct lp55xx_chip *chip = led->chip;
++	int ret;
++	int i;
++
++	mutex_lock(&chip->lock);
++	for (i = 0; i < led->mc_cdev.num_colors; i++) {
++		ret = lp55xx_write(chip,
++				   LP5523_REG_LED_PWM_BASE +
++				   led->mc_cdev.subled_info[i].channel,
++				   led->mc_cdev.subled_info[i].brightness);
++		if (ret)
++			break;
++	}
++	mutex_unlock(&chip->lock);
++	return ret;
++}
++
+ static int lp5523_led_brightness(struct lp55xx_led *led)
+ {
+ 	struct lp55xx_chip *chip = led->chip;
+@@ -857,6 +876,7 @@ static struct lp55xx_device_config lp5523_cfg = {
+ 	.max_channel  = LP5523_MAX_LEDS,
+ 	.post_init_device   = lp5523_post_init_device,
+ 	.brightness_fn      = lp5523_led_brightness,
++	.multicolor_brightness_fn = lp5523_multicolor_brightness,
+ 	.set_led_current    = lp5523_set_led_current,
+ 	.firmware_cb        = lp5523_firmware_loaded,
+ 	.run_engine         = lp5523_run_engine,
+-- 
+2.26.2
 
