@@ -2,79 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3D0203EA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AB5B203EA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730295AbgFVSCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 14:02:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730179AbgFVSCJ (ORCPT
+        id S1730242AbgFVSBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 14:01:52 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:57786 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730046AbgFVSBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 14:02:09 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DBD8C061573;
-        Mon, 22 Jun 2020 11:02:09 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id y10so4535240eje.1;
-        Mon, 22 Jun 2020 11:02:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N8ncUP5m23nGjZIgL4bF3D8cjQSnQ88Xff+6y4avOsc=;
-        b=ABekFSyvmWn68PLFbmT4LUVG8byPCMilHNm7vqnBdCBV55KzEnQ44pTMTSo26oUxdY
-         WAptexDHEh/V+fsg2OvEgwKbMYSgYUDyL6fZiSv1yESvqW76EuzP33sBE8IHnKB16Eus
-         GhZtYZDif3Q2YVkhzm87bR9EEF6sD5TXFTJQHyPOjPP9BT0mqcbA7M9TWVJ1DcTbqO2Y
-         CrQG/MWr3rPtas4jUchxF2P+zWu0bN208z8Ayki7ULmdpJ4Pz2EcWRqLQuHH93esan9r
-         LglKSKxuBw5Vo3YaGLEU/QzZM9CJ9R/+7eXHppK4C6rK0C1yXfz6awgN+GIU+cV8JVyC
-         H4ig==
+        Mon, 22 Jun 2020 14:01:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592848910;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EiPE/eywHM8Zlh7BqbyFgYnaqP2KFeRz5sUsSupRbV4=;
+        b=LapND8sO7FclfJ1RNrt/YIeiOmBCL+6K1h2vaEXk1eqK/e/oYXbM60G160mA2unzoECWHG
+        d9mBU0LDPP1W+UVSYx7OPXaXNGhhEZJm6CkHGsJsNCu5/ckUuz7ovx9+g7WH33l8cdm1gw
+        d/QBvN7rnwr4Y0uiE09mVwu1CBNOhEg=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-445-5BBtAU7yNJOmbneYzdf6rA-1; Mon, 22 Jun 2020 14:01:48 -0400
+X-MC-Unique: 5BBtAU7yNJOmbneYzdf6rA-1
+Received: by mail-wr1-f72.google.com with SMTP id i10so7451355wrn.21
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:01:48 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N8ncUP5m23nGjZIgL4bF3D8cjQSnQ88Xff+6y4avOsc=;
-        b=iw2FLWf5d156lZBePTTzbO/vlozDoO7nE7r+gN1lX/cEy/dNWJlc7zLZTmWEiHTCJg
-         1dNwCIlo1gP+qIT4si44JgW8XQgDWk8GHeucA0eiBi6GVj5WnZA7vrcIqJEcx09R4EPQ
-         NUO5vw0g7wANoxaUowzCg7S1SVeqw+7VU57DtoHAXrY1bk8TVHKjOD0dhzIGJx5sArdP
-         inVXpHIv91N/VnRmWVAnfy8A+GwLZh9I4aMMIuXBPj5haX8rFLrypb5+hCUkV2I91dG2
-         sG3XyUzhLGGbJrOaO/IKwR/KI24+MBBOz7MBImOBm0hKhSY2zI+XpqfL87kLj8sENu5+
-         lVBg==
-X-Gm-Message-State: AOAM533OGValjMni62UHdSAZGMGHhcu92Hn3a90WJXyc5q5iIJdNZRB0
-        J7AZtwhUKl35mxIuK41hpkAYP51rEabpxf0EC4U=
-X-Google-Smtp-Source: ABdhPJzy1eOtcrb4Ztzzlpxz2vyV7gDQb2/lcT2CNnTSaKFW0lqCRQKUk68wF2yJdSqy2wwTVxnzLyyxbek301vQtt4=
-X-Received: by 2002:a17:906:f115:: with SMTP id gv21mr16115978ejb.340.1592848928328;
- Mon, 22 Jun 2020 11:02:08 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=EiPE/eywHM8Zlh7BqbyFgYnaqP2KFeRz5sUsSupRbV4=;
+        b=MfYYNoirMqdUw/xVOtj1eGmhNrf9agzMjjh5lj53VIRWgZsgtsI5cGPK4dYatXZ1Sf
+         02BuOsfHzJhZf6HMQIYvDcgbQEUzcxTGqFS8URpI6oWVFDTZGx5CdmTPYmBIly93v7ZE
+         V2jT+8l5Fve4UiU9KF/A3SDCdCrj9StHK+hGtlWCCrPF894ff+KTFGwB1BcRFqAe2JjD
+         l55BgNGPojqux4TQvS8elBGW74FM4R7EKkGkHfKVvvS6LOgrzEpcQp4abiNHpXjxGyjC
+         bmagarcp6TsYfriluoLjViPMLvWKUVpMi46hEyZCSmQlCrZzyzINWenvryLqwY3yc/qK
+         3gQA==
+X-Gm-Message-State: AOAM531Gf9Ql1cXchrIY5r5d7qMpdkpLyznLV1wDWhJ+gtLpW6t1RpKL
+        jglLRv71PLUZRT7YiPKgltaxdutWvQzjhsUUjh2MVrgY06t4FO+GLVFdD598oVP6rCbHu+c34ks
+        gCGMn2jVMctkvtBO3KxiM82Om
+X-Received: by 2002:adf:e80a:: with SMTP id o10mr20912742wrm.185.1592848907194;
+        Mon, 22 Jun 2020 11:01:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJywKtN0A+o5NJL2EDMhmcg7QtC83uSGVNvOTAksFhKv0w2PvIEBb39TCc2Fpd4C2r7Vr0waSA==
+X-Received: by 2002:adf:e80a:: with SMTP id o10mr20912729wrm.185.1592848906985;
+        Mon, 22 Jun 2020 11:01:46 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id c5sm380556wmb.24.2020.06.22.11.01.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jun 2020 11:01:46 -0700 (PDT)
+Subject: Re: [PATCH v2 00/11] KVM: Support guest MAXPHYADDR < host MAXPHYADDR
+To:     Tom Lendacky <thomas.lendacky@amd.com>,
+        Mohammed Gamal <mgamal@redhat.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, vkuznets@redhat.com,
+        sean.j.christopherson@intel.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, babu.moger@amd.com
+References: <20200619153925.79106-1-mgamal@redhat.com>
+ <5a52fd65-e1b2-ca87-e923-1d5ac167cfb9@amd.com>
+ <52295811-f78a-46c5-ff9e-23709ba95a3d@redhat.com>
+ <0d1acded-93a4-c1fa-b8f8-cfca9e082cd1@amd.com>
+ <40ac43a1-468f-24d5-fdbf-d012bdae49ed@redhat.com>
+ <c89bda4a-2db9-6cb1-8b01-0a6e69694f43@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <4ed45f38-6a31-32ab-cec7-baade67a8c1b@redhat.com>
+Date:   Mon, 22 Jun 2020 20:01:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20200622075749.21925-1-konradybcio@gmail.com> <20200622075749.21925-7-konradybcio@gmail.com>
- <20200622174920.GS128451@builder.lan>
-In-Reply-To: <20200622174920.GS128451@builder.lan>
-From:   Konrad Dybcio <konradybcio@gmail.com>
-Date:   Mon, 22 Jun 2020 20:01:32 +0200
-Message-ID: <CAMS8qEUP0ojnzww6T46cMTtA2kA2hZxdjepQUF+-ACSFRvTSSg@mail.gmail.com>
-Subject: Re: [PATCH v2 6/8] arm64: dts: qcom: sdm630: Add sdm630 dts file
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-clk@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-gpio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <c89bda4a-2db9-6cb1-8b01-0a6e69694f43@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bjorn!
+On 22/06/20 19:57, Tom Lendacky wrote:
+>>> In bare-metal, there's no guarantee a CPU will report all the faults in a
+>>> single PF error code. And because of race conditions, software can never
+>>> rely on that behavior. Whenever the OS thinks it has cured an error, it
+>>> must always be able to handle another #PF for the same access when it
+>>> retries because another processor could have modified the PTE in the
+>>> meantime.
+>> I agree, but I don't understand the relation to this patch.  Can you
+>> explain?
+>
+> I guess I'm trying to understand why RSVD has to be reported to the guest
+> on a #PF (vs an NPF) when there's no guarantee that it can receive that
+> error code today even when guest MAXPHYADDR == host MAXPHYADDR. That would
+> eliminate the need to trap #PF.
 
-Thanks for your review. I will address these issues and send a v3 shortly.
+That's an interesting observation!  But do processors exist where either:
 
-Regards
-Konrad
+1) RSVD doesn't win over all other bits, assuming no race conditions
+
+2) A/D bits can be clobbered in a page table entry that has reserved
+bits set?
+
+Running the x86/access.flat testcase from kvm-unit-tests on bare metal
+suggests that all existing processors do neither of the above.
+
+In particular, the second would be a showstopper on AMD.
+
+Paolo
+
