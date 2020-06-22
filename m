@@ -2,98 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BA0F2043DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCC62043FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731421AbgFVWnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 18:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49506 "EHLO
+        id S1731625AbgFVWpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 18:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731363AbgFVWnj (ORCPT
+        with ESMTP id S1731503AbgFVWo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 18:43:39 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D1EFC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 15:43:39 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id j1so9099611pfe.4
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 15:43:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mOfL9Rbfa1j0SjGQbfLe+co+fpbObqYEOOANsb7QdZc=;
-        b=gimWoMj2Ct00U6evnt7HxrSzc6GeTAvOoICOsHyx4pF6AbgddWeXDK5Q6KvH9IqNn2
-         gHwo3IN3YST6IUoObLJdUmDfGXmKoHkIx1FNlHiVWRqXRSJNa9l+964dbINMSoNCS7OW
-         1ITThEbh/ZfveaIpPagnSOlyLx7r5lAqYgzOY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mOfL9Rbfa1j0SjGQbfLe+co+fpbObqYEOOANsb7QdZc=;
-        b=l/PKwRLVlAG/09mEW94NS/K7VM1l9FW5swqyittll7EvSmxwFEa6ArrYn6slii43IZ
-         /w12CYyRFXa0FmuzqDTKe16v93AVIL4x1HgBB4eH06UbduH/l2GlkPh6nUXaZxNwGoPx
-         USTT8cgmtncZdWgz9TFUtPT+B2Cf7uvtWKWvuygRPy0ZvVIBZ+dHAe617lFH39upzFPh
-         p1sZs3gOtrgi0bSpymuAtnq5fZsP+dT6dVmc0gxZGXZNfS7xxJyNWmXC+HAGLGFTWoPw
-         zHVRPWkcyWhNvy3vON1FkCUThf9TqEWPQ2MQ5xLktbxUE6CavXqcjw8MXokVYgJeePBi
-         vbzA==
-X-Gm-Message-State: AOAM532TVBlflGdqZV5B1fpXbIVPwHxUbd9BeNucKMCe/AXyNqJVlUI+
-        PoA+TMbe6AiIwVqL8/9W57g0vg==
-X-Google-Smtp-Source: ABdhPJxpwKQPPN371n84T7aMTqaDCcT052EAqsIZT7sWeFEyvd4S8r6YbbsRta6X/rrFqFzDg24kNQ==
-X-Received: by 2002:a62:ea0b:: with SMTP id t11mr9201925pfh.276.1592865818848;
-        Mon, 22 Jun 2020 15:43:38 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i14sm14708966pfo.14.2020.06.22.15.43.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 15:43:38 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 15:43:37 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Fangrui Song <maskray@google.com>
-Cc:     Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] x86/boot: Warn on orphan section placement
-Message-ID: <202006221543.EA2FCFA2FF@keescook>
-References: <20200622205341.2987797-1-keescook@chromium.org>
- <20200622205341.2987797-4-keescook@chromium.org>
- <20200622220628.t5fklwmbtqoird5f@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200622220628.t5fklwmbtqoird5f@google.com>
+        Mon, 22 Jun 2020 18:44:59 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1CEFC061573;
+        Mon, 22 Jun 2020 15:44:58 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id B0DCE1296C088;
+        Mon, 22 Jun 2020 15:44:58 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 15:44:58 -0700 (PDT)
+Message-Id: <20200622.154458.2067869648476467711.davem@davemloft.net>
+To:     clabbe@baylibre.com
+Cc:     linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: Re: [PATCH] sparc: piggyback: handle invalid image
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <1591775719-28390-1-git-send-email-clabbe@baylibre.com>
+References: <1591775719-28390-1-git-send-email-clabbe@baylibre.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 22 Jun 2020 15:44:58 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 03:06:28PM -0700, Fangrui Song wrote:
-> LLD may report warnings for 3 synthetic sections if they are orphans:
+From: Corentin Labbe <clabbe@baylibre.com>
+Date: Wed, 10 Jun 2020 07:55:19 +0000
+
+> With an old elftoaout, the generation of tftpboot.img fail with "lseek:
+> invalid argument".
+> This is due to offset being negative.
 > 
-> ld.lld: warning: <internal>:(.symtab) is being placed in '.symtab'
-> ld.lld: warning: <internal>:(.shstrtab) is being placed in '.shstrtab'
-> ld.lld: warning: <internal>:(.strtab) is being placed in '.strtab'
+> Instead of printing this error message, let's print a better one.
 > 
-> Are they described?
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 
-Perhaps:
-
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index db600ef218d7..57e9c142e401 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -792,6 +792,9 @@
- 		.stab.exclstr 0 : { *(.stab.exclstr) }			\
- 		.stab.index 0 : { *(.stab.index) }			\
- 		.stab.indexstr 0 : { *(.stab.indexstr) }		\
-+		.symtab 0 : { *(.symtab) }				\
-+		.strtab 0 : { *(.strtab) }				\
-+		.shstrtab 0 : { *(.shstrtab) }				\
- 		.comment 0 : { *(.comment) }
- 
- #ifdef CONFIG_GENERIC_BUG
-
--- 
-Kees Cook
+Applied, thank you.
