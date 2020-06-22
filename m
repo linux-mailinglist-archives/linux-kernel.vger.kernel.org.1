@@ -2,122 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72E53203E87
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 19:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D98203E91
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 19:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730185AbgFVR4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 13:56:15 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:39336 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1730122AbgFVR4N (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 13:56:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592848571;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ySuDF4uW5IhgSc5+6f1wy6JDv5FU7nQ5DALwzLWqkuw=;
-        b=gguJfFy+YoxyW7ozl7feWl/wCpcIYgp7MXEl8NAHBukC0TEd6r/4ndO8ja+dTXKVGPagIg
-        midZbYNGkD9JPd3C0Gl7scN0AYTaN5vBjMUVn6uLmnJFdJf8xfNlmCKO8Khivv6O77Ki7E
-        KeXatbTweYI4XVoAnGtENzn6Boo23Tc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-189-AWUGfKRlOj6DKO4q4ct8zA-1; Mon, 22 Jun 2020 13:56:09 -0400
-X-MC-Unique: AWUGfKRlOj6DKO4q4ct8zA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2F1718005AD;
-        Mon, 22 Jun 2020 17:56:08 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-116-193.rdu2.redhat.com [10.10.116.193])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2E8AD6FDD1;
-        Mon, 22 Jun 2020 17:56:04 +0000 (UTC)
-Subject: Re: [PATCH v4] xfs: Fix false positive lockdep warning with
- sb_internal & fs_reclaim
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Qian Cai <cai@lca.pw>, Eric Sandeen <sandeen@redhat.com>
-References: <20200618171941.9475-1-longman@redhat.com>
- <20200618225810.GJ2005@dread.disaster.area>
- <20200618230405.GK2005@dread.disaster.area>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <14d9c969-3fbe-ed1f-6821-050fc2c6289e@redhat.com>
-Date:   Mon, 22 Jun 2020 13:56:04 -0400
+        id S1730230AbgFVR5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 13:57:22 -0400
+Received: from mail-dm6nam10on2089.outbound.protection.outlook.com ([40.107.93.89]:29284
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730046AbgFVR5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 13:57:20 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nROy3uuWG9v8yha7yVD3jjTCrzkfwuP4tdvHXSDeTnkpGfhyvBFFTUgY2Q4WM2WlODd9Yh41y4ngVdNOolkWbh5b2cfYiAgE+aGuR5QS1Tdh/dZvYMpLe/A1ZikbGtm70ItxglZYbnha+UowIouP5GOc3UFzLq/hBg37HG8z/ZH3/mRJ2ApCN8R1nRM/Q28LbPkiZwy0ZWqLKgoTVa3660EMBRUeL2pz3gYVl3oKpwxc/DBr32AVI/8VkTAYOrhe0atyZWedk8z0vvMTzH1thCIP/8bjghqNuEdSs3FjwguOi0J5XJAN0ejdfFnCcqg4oE6ubIb9o+U+nq9/tlCrJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c01qQEw4iFn1q/ZGA9HLaikJ/JHXHoIeuKezD4zmBHo=;
+ b=AKM8TaBOguD557IALFtGz4Q/8KLnh7aGVvVpTY+Hqu96VGKyybTD5FcYmfPaOzI6zzD2AFuS1nue37yPU/1oiTAarOvXtTyMxkO1lWNLt9BOYM+R0Q3ucQAAjFAUUZpax/YwG0gs7XrdEwmQDvMCHlSv1hpRkqbh5xOSRves94pQR6lpyP0avqAC+5vmJm/VmBZZPIP//TLEz/qUd3wga7ohyxnmueanvUw9xu7u320SeNoKyZqUG4c8wMWhxHOED4+4oU1pkK3CqASv/0H1cUmT96DyDizkpwwtynZcdBx4GZ8e2UYE4kYFf/8UWfrtdqyQ4sIWtKMPNXr+tr087A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=c01qQEw4iFn1q/ZGA9HLaikJ/JHXHoIeuKezD4zmBHo=;
+ b=OKaJ5CgksivOikITAU3/X8uzrAVjFH7jlIjSNKkFevfJCnhJPCTjIcmliRRNz7yLqOk8gvLwY9Eo/Y08ZcjOhFiFoMCl1nJ7THkSRkvg7a5wxPJhH+7xTGY59hVyPQnMKyW0eH0Agq1v8sSJ8w+oeJTe6KkhL10mSpNDZbjpr3E=
+Authentication-Results: amd.com; dkim=none (message not signed)
+ header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM5PR1201MB0026.namprd12.prod.outlook.com (2603:10b6:4:52::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3109.22; Mon, 22 Jun 2020 17:57:17 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::4ce1:9947:9681:c8b1]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::4ce1:9947:9681:c8b1%10]) with mapi id 15.20.3109.027; Mon, 22 Jun
+ 2020 17:57:17 +0000
+Subject: Re: [PATCH v2 00/11] KVM: Support guest MAXPHYADDR < host MAXPHYADDR
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Mohammed Gamal <mgamal@redhat.com>, kvm@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, vkuznets@redhat.com,
+        sean.j.christopherson@intel.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, babu.moger@amd.com
+References: <20200619153925.79106-1-mgamal@redhat.com>
+ <5a52fd65-e1b2-ca87-e923-1d5ac167cfb9@amd.com>
+ <52295811-f78a-46c5-ff9e-23709ba95a3d@redhat.com>
+ <0d1acded-93a4-c1fa-b8f8-cfca9e082cd1@amd.com>
+ <40ac43a1-468f-24d5-fdbf-d012bdae49ed@redhat.com>
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+Message-ID: <c89bda4a-2db9-6cb1-8b01-0a6e69694f43@amd.com>
+Date:   Mon, 22 Jun 2020 12:57:16 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200618230405.GK2005@dread.disaster.area>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+ Thunderbird/68.8.0
+In-Reply-To: <40ac43a1-468f-24d5-fdbf-d012bdae49ed@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DM6PR02CA0046.namprd02.prod.outlook.com
+ (2603:10b6:5:177::23) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.236.30.118] (165.204.77.1) by DM6PR02CA0046.namprd02.prod.outlook.com (2603:10b6:5:177::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Mon, 22 Jun 2020 17:57:16 +0000
+X-Originating-IP: [165.204.77.1]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: ae1f2544-27df-4637-7734-08d816d5b3c4
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0026:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB00260FA7A232910EA3A0F3DDEC970@DM5PR1201MB0026.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0442E569BC
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: HD/tKgCvzc/MNDTznGZwyD1F8GA4W6UZFBtmrjXlmAf4/S+WnQl6MlyusO+M3QbPY1d/IFbUfgvmflylz2ANO4pYuMKYRCBy2Wse7kpwNBXejhnqPgEx4SdMnf9MikHWusNzpmOJMYYTADpFOOCsrcMwz7xSGtLl7y13Ao2mnHnS9uO8fHfjo1/s4YoDr6sfUDq7K3+ZTVq9n/jGLjW72O6S02W147XOsF88kcd2oewiIU9TZnPYvcdtt+mHi7usBNOXF239zwHtj8YXjdxOsevpolVPI6behAGuz13blgUu6J6T96y2LeXnJa/Fwvum8GvvxI6LTnBN/maE6X+PbXH9Gpd9S74ErEPCDE+j568iyXtZhw52U/MfVsK20npl
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(346002)(376002)(136003)(366004)(39860400002)(110136005)(66556008)(66476007)(66946007)(36756003)(16576012)(31696002)(316002)(52116002)(8936002)(4326008)(83380400001)(2906002)(8676002)(31686004)(5660300002)(6486002)(2616005)(956004)(16526019)(26005)(186003)(53546011)(86362001)(478600001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: j4SMMZ3mbkgL/VZ4b8QYXJcaK/oeavuq16IZT2VV7uh4AGsM0t4Je1VoUzHrTYNG5MXAWml5ugo/ImB0lNCzkP2h6oMjk4GDbXVRpC9ZBIAGGN8B24zE1t3cgBQNCR4rlfR2OPbzDgqdeJ92q9V0vM8TNFpSbHkWJwBjVfxOIzHN7JeLCsqY9/1ZeN8fF98HnxWWmcqTDfnXEfNp0JBJAI4j5qj2zwMXs9fLv8TH6LzGTAgA0lVJBBYu3e2c/I2Ur/zpPsna5I1KfORsi98NScI+nGlGQOKjYY2RBx2LjRmjLwCd0GFFRhgj/xSZRqgL9odxjwt0/3hvbfAbW7Jsgt+tnEfLHyaSSbdQYzDv0ktl1tOlY2EUA1DbSqyRxQsazx4Oayoq8Pf7cw5nlXoZ/lEUpl86CXdVETl2H9g4Q66mq+MAPPfMDbnL5Boyq5DGIXnIMlwWnrovIuaStA7q2ZBBXb7JUCx6YyvVl9gnEC8=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ae1f2544-27df-4637-7734-08d816d5b3c4
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2020 17:57:17.4446
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mr2B2viO7s7SqFCO6QP0suTL9d7kBMO+26IEzxwViFHNexliHJhRUUSEf3BjeUJ2A9Py0bwgqd4CwIC6hkYsfg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0026
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/18/20 7:04 PM, Dave Chinner wrote:
-> On Fri, Jun 19, 2020 at 08:58:10AM +1000, Dave Chinner wrote:
->> On Thu, Jun 18, 2020 at 01:19:41PM -0400, Waiman Long wrote:
->>> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
->>> index 379cbff438bc..1b94b9bfa4d7 100644
->>> --- a/fs/xfs/xfs_super.c
->>> +++ b/fs/xfs/xfs_super.c
->>> @@ -913,11 +913,33 @@ xfs_fs_freeze(
->>>   	struct super_block	*sb)
->>>   {
->>>   	struct xfs_mount	*mp = XFS_M(sb);
->>> +	unsigned long		pflags;
->>> +	int			ret;
->>>   
->>> +	/*
->>> +	 * A fs_reclaim pseudo lock is added to check for potential deadlock
->>> +	 * condition with fs reclaim. The following lockdep splat was hit
->>> +	 * occasionally. This is actually a false positive as the allocation
->>> +	 * is being done only after the frozen filesystem is no longer dirty.
->>> +	 * One way to avoid this splat is to add GFP_NOFS to the affected
->>> +	 * allocation calls. This is what PF_MEMALLOC_NOFS is for.
->>> +	 *
->>> +	 *       CPU0                    CPU1
->>> +	 *       ----                    ----
->>> +	 *  lock(sb_internal);
->>> +	 *                               lock(fs_reclaim);
->>> +	 *                               lock(sb_internal);
->>> +	 *  lock(fs_reclaim);
->>> +	 *
->>> +	 *  *** DEADLOCK ***
->>> +	 */
->> The lockdep splat is detailed in the commit message - it most
->> definitely does not need to be repeated in full here because:
+On 6/22/20 12:03 PM, Paolo Bonzini wrote:
+> On 22/06/20 18:33, Tom Lendacky wrote:
+>> I'm not a big fan of trapping #PF for this. Can't this have a performance
+>> impact on the guest? If I'm not mistaken, Qemu will default to TCG
+>> physical address size (40-bits), unless told otherwise, causing #PF to now
+>> be trapped. Maybe libvirt defaults to matching host/guest CPU MAXPHYADDR?
+> 
+> Yes, this is true.  We should change it similar to how we handle TSC
+> frequency (and having support for guest MAXPHYADDR < host MAXPHYADDR is
+> a prerequisite).
+> 
+>> In bare-metal, there's no guarantee a CPU will report all the faults in a
+>> single PF error code. And because of race conditions, software can never
+>> rely on that behavior. Whenever the OS thinks it has cured an error, it
+>> must always be able to handle another #PF for the same access when it
+>> retries because another processor could have modified the PTE in the
+>> meantime.
+> 
+> I agree, but I don't understand the relation to this patch.  Can you
+> explain?
+
+I guess I'm trying to understand why RSVD has to be reported to the guest
+on a #PF (vs an NPF) when there's no guarantee that it can receive that
+error code today even when guest MAXPHYADDR == host MAXPHYADDR. That would
+eliminate the need to trap #PF.
+
+Thanks,
+Tom
+
+> 
+>> What's the purpose of reporting RSVD in the error code in the
+>> guest in regards to live migration?
 >>
->> 	a) it doesn't explain why the splat occurring is, and
->> 	b) we most definitely don't care about how the lockdep check
->> 	   that triggered it is implemented.
-> I should have added this:
->
-> 	c) a lot of people don't understand what lockdep reports
-> 	   are telling them is a problem.
->
-> I get a lot of questions like "I saw this lockdep thing, but I can't
-> work out what it actually means, so can you have a look at it
-> Dave?". Hence I think directly quoting something people tend not to
-> understand to explain the problem they didn't understand isn't the
-> best approach to improving understanding of the problem...
-
-OK, how about simplifying the comment to as follows:
-
-        /*
-          * Disable fs reclaim in memory allocation for fs freeze to avoid
-          * causing a possible circular locking dependency lockdep splat
-          * involving fs reclaim.
-          */
-
-Does that look good enough for you?
-
-Cheers,
-Longman
-
+>>> - if the page is accessible to the guest according to the permissions in
+>>> the page table, it will cause a #NPF.  Again, we need to trap it, check
+>>> the guest physical address and inject a P|RSVD #PF if the guest physical
+>>> address has any guest-reserved bits.
+>>>
+>>> The AMD specific issue happens in the second case.  By the time the NPF
+>>> vmexit occurs, the accessed and/or dirty bits have been set and this
+>>> should not have happened before the RSVD page fault that we want to
+>>> inject.  On Intel processors, instead, EPT violations trigger before
+>>> accessed and dirty bits are set.  I cannot find an explicit mention of
+>>> the intended behavior in either the
+>>> Intel SDM or the AMD APM.
+>>
+>> Section 15.25.6 of the AMD APM volume 2 talks about page faults (nested vs
+>> guest) and fault ordering. It does talk about setting guest A/D bits
+>> during the walk, before an #NPF is taken. I don't see any way around that
+>> given a virtual MAXPHYADDR in the guest being less than the host MAXPHYADDR.
+> 
+> Right you are...  Then this behavior cannot be implemented on AMD.
+> 
+> Paolo
+> 
