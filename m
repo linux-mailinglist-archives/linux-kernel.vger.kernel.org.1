@@ -2,263 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59A12203709
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612602036DE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728291AbgFVMmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 08:42:01 -0400
-Received: from mail-n.franken.de ([193.175.24.27]:41500 "EHLO drew.franken.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728122AbgFVMmA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 08:42:00 -0400
-X-Greylist: delayed 530 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Jun 2020 08:41:59 EDT
-Received: from mb.fritz.box (ip4d15f5fc.dynamic.kabel-deutschland.de [77.21.245.252])
-        (Authenticated sender: lurchi)
-        by mail-n.franken.de (Postfix) with ESMTPSA id 44BD27220C6C8;
-        Mon, 22 Jun 2020 14:33:00 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Subject: Re: Strange problem with SCTP+IPv6
-From:   Michael Tuexen <Michael.Tuexen@lurchi.franken.de>
-In-Reply-To: <CADvbK_d9mV9rBg7oLC+9u4fg3d_5a_g8ukPe83vOAE8ZM3FhHA@mail.gmail.com>
-Date:   Mon, 22 Jun 2020 14:32:57 +0200
-Cc:     minyard@acm.org, Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        linux-sctp@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+        id S1728176AbgFVMdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 08:33:50 -0400
+Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:50712 "EHLO
+        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728044AbgFVMdt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 08:33:49 -0400
+Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id BED762E15E0;
+        Mon, 22 Jun 2020 15:33:46 +0300 (MSK)
+Received: from sas2-32987e004045.qloud-c.yandex.net (sas2-32987e004045.qloud-c.yandex.net [2a02:6b8:c08:b889:0:640:3298:7e00])
+        by mxbackcorp2j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id HW0XVSmIOX-XjXq6q2p;
+        Mon, 22 Jun 2020 15:33:46 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1592829226; bh=fvyycw4re93HVkcugbpWZ1oaVNue5Odc1T1ODvb5EyM=;
+        h=Message-ID:Date:To:From:Subject;
+        b=ouAAR+rF5wdOu1HwL6djC2b7CCeeKodAkhQm+wq4N7Uyt0RiG5RASQ7OXrcAzXaRR
+         En5DsLTDc7iQfTO20jg9ZkB3ABcIQlmwt8olPhoc1NJg0QLunk+mR+yTtkIYh9w87G
+         IS8TSNNyWvn9wJ1ovBxcpV8mmx4DPIYBqnz6KY1Q=
+Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:14::1:13])
+        by sas2-32987e004045.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id CkFvV9sfDr-Xjl8SaSZ;
+        Mon, 22 Jun 2020 15:33:45 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: [PATCH 1/4] scripts/decode_stacktrace: skip missing symbols
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+To:     linux-kernel@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Date:   Mon, 22 Jun 2020 15:33:45 +0300
+Message-ID: <159282922499.248444.4883465570858385250.stgit@buzz>
+User-Agent: StGit/0.22-39-gd257
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <BCB69E7B-240A-4ED3-B434-0186B573E4D1@lurchi.franken.de>
-References: <20200621155604.GA23135@minyard.net>
- <CADvbK_d9mV9rBg7oLC+9u4fg3d_5a_g8ukPe83vOAE8ZM3FhHA@mail.gmail.com>
-To:     Xin Long <lucien.xin@gmail.com>
-X-Mailer: Apple Mail (2.3608.80.23.2.2)
-X-Spam-Status: No, score=-2.9 required=5.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=disabled version=3.4.1
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on mail-n.franken.de
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+For now script turns missing symbols into '0' and make bogus decode.
+Skip them instead. Also simplify parsing output of 'nm'.
 
+Before:
 
-> On 22. Jun 2020, at 14:01, Xin Long <lucien.xin@gmail.com> wrote:
-> 
-> On Sun, Jun 21, 2020 at 11:56 PM Corey Minyard <minyard@acm.org> wrote:
->> 
->> I've stumbled upon a strange problem with SCTP and IPv6.  If I create an
->> sctp listening socket on :: and set the IPV6_V6ONLY socket option on it,
->> then I make a connection to it using ::1, the connection will drop after
->> 2.5 seconds with an ECONNRESET error.
->> 
->> It only happens on SCTP, it doesn't have the issue if you connect to a
->> full IPv6 address instead of ::1, and it doesn't happen if you don't
->> set IPV6_V6ONLY.  I have verified current end of tree kernel.org.
->> I tried on an ARM system and x86_64.
->> 
->> I haven't dug into the kernel to see if I could find anything yet, but I
->> thought I would go ahead and report it.  I am attaching a reproducer.
->> Basically, compile the following code:
-> The code only set IPV6_V6ONLY on server side, so the client side will
-> still bind all the local ipv4 addresses (as you didn't call bind() to
-> bind any specific addresses ). Then after the connection is created,
-Let's focus on the loopback addresses ::1 and 127.0.0.1.
+$ echo 'xxx+0x0/0x0' | ./scripts/decode_stacktrace.sh vmlinux ""
+xxx (home/khlebnikov/src/linux/./arch/x86/include/asm/processor.h:398)
 
-So the server will only use ::1. The client will send an INIT from
-::1 to ::1 and lists 127.0.0.1 and ::1. That is what I would expect.
-Is that happening?
+After:
 
-The server would respond with an INIT-ACK from ::1 to ::1 and would
-not list any IP addresses. Especially not 127.0.0.1, since it is IPv6 only.
+$ echo 'xxx+0x0/0x0' | ./scripts/decode_stacktrace.sh vmlinux ""
+xxx+0x0/0x0
 
-After the association has beed established, the client can't send
-any IPv4 packet to the server, since the server did not announce
-any. The server can't send any IPv4 packets since it is IPv6 only.
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+---
+ scripts/decode_stacktrace.sh |    6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-This is what I would expect and this scenario should just work.
-What am I missing?
-
-Best regards
-Michael
-> the client will send HB on the v4 paths to the server. The server
-> will abort the connection, as it can't support v4.
-> 
-> So you can work around it by either:
-> 
->  - set IPV6_V6ONLY on client side.
-> 
-> or
-> 
->  - bind to the specific v6 addresses on the client side.
-> 
-> I don't see RFC said something about this.
-> So it may not be a good idea to change the current behaviour
-> to not establish the connection in this case, which may cause regression.
-> 
->> 
->>  gcc -g -o sctptest -Wall sctptest.c
->> 
->> and run it in one window as a server:
->> 
->>  ./sctptest a
->> 
->> (Pass in any option to be the server) and run the following in another
->> window as the client:
->> 
->>  ./sctptest
->> 
->> It disconnects after about 2.5 seconds.  If it works, it should just sit
->> there forever.
->> 
->> -corey
->> 
->> 
->> #include <stdio.h>
->> #include <stdbool.h>
->> #include <string.h>
->> #include <unistd.h>
->> #include <fcntl.h>
->> #include <sys/select.h>
->> #include <arpa/inet.h>
->> #include <netinet/sctp.h>
->> #include <sys/types.h>
->> #include <sys/socket.h>
->> #include <netdb.h>
->> 
->> static int
->> getaddr(const char *addr, const char *port, bool listen,
->>        struct addrinfo **rai)
->> {
->>    struct addrinfo *ai, hints;
->> 
->>    memset(&hints, 0, sizeof(hints));
->>    hints.ai_flags = AI_ADDRCONFIG;
->>    if (listen)
->>        hints.ai_flags |= AI_PASSIVE;
->>    hints.ai_family = AF_UNSPEC;
->>    hints.ai_socktype = SOCK_STREAM;
->>    hints.ai_protocol = IPPROTO_SCTP;
->>    if (getaddrinfo(addr, port, &hints, &ai)) {
->>        perror("getaddrinfo");
->>        return -1;
->>    }
->> 
->>    *rai = ai;
->>    return 0;
->> }
->> 
->> static int
->> waitread(int s)
->> {
->>    char data[1];
->>    ssize_t rv;
->> 
->>    rv = read(s, data, sizeof(data));
->>    if (rv == -1) {
->>        perror("read");
->>        return -1;
->>    }
->>    printf("Read %d bytes\n", (int) rv);
->>    return 0;
->> }
->> 
->> static int
->> do_server(void)
->> {
->>    int err, ls, s, optval;
->>    struct addrinfo *ai;
->> 
->>    printf("Server\n");
->> 
->>    err = getaddr("::", "3023", true, &ai);
->>    if (err)
->>        return err;
->> 
->>    ls = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
->>    if (ls == -1) {
->>        perror("socket");
->>        return -1;
->>    }
->> 
->>    optval = 1;
->>    if (setsockopt(ls, SOL_SOCKET, SO_REUSEADDR,
->>                   (void *)&optval, sizeof(optval)) == -1) {
->>        perror("setsockopt reuseaddr");
->>        return -1;
->>    }
->> 
->>    /* Comment this out and it will work. */
->>    if (setsockopt(ls, IPPROTO_IPV6, IPV6_V6ONLY, &optval,
->>                   sizeof(optval)) == -1) {
->>        perror("setsockopt ipv6 only");
->>        return -1;
->>    }
->> 
->>    err = bind(ls, ai->ai_addr, ai->ai_addrlen);
->>    if (err == -1) {
->>        perror("bind");
->>        return -1;
->>    }
->> 
->>    err = listen(ls, 5);
->>    if (err == -1) {
->>        perror("listen");
->>        return -1;
->>    }
->> 
->>    s = accept(ls, NULL, NULL);
->>    if (s == -1) {
->>        perror("accept");
->>        return -1;
->>    }
->> 
->>    close(ls);
->> 
->>    err = waitread(s);
->>    close(s);
->>    return err;
->> }
->> 
->> static int
->> do_client(void)
->> {
->>    int err, s;
->>    struct addrinfo *ai;
->> 
->>    printf("Client\n");
->> 
->>    err = getaddr("::1", "3023", false, &ai);
->>    if (err)
->>        return err;
->> 
->>    s = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
->>    if (s == -1) {
->>        perror("socket");
->>        return -1;
->>    }
->> 
->>    err = connect(s, ai->ai_addr, ai->ai_addrlen);
->>    if (err == -1) {
->>        perror("connect");
->>        return -1;
->>    }
->> 
->>    err = waitread(s);
->>    close(s);
->>    return err;
->> }
->> 
->> int
->> main(int argc, char *argv[])
->> {
->>    int err;
->> 
->>    if (argc > 1)
->>        err = do_server();
->>    else
->>        err = do_client();
->>    return !!err;
->> }
->> 
+diff --git a/scripts/decode_stacktrace.sh b/scripts/decode_stacktrace.sh
+index 66a6d511b524..6ec8d6dff86c 100755
+--- a/scripts/decode_stacktrace.sh
++++ b/scripts/decode_stacktrace.sh
+@@ -56,7 +56,11 @@ parse_symbol() {
+ 	if [[ "${cache[$module,$name]+isset}" == "isset" ]]; then
+ 		local base_addr=${cache[$module,$name]}
+ 	else
+-		local base_addr=$(nm "$objfile" | grep -i ' t ' | awk "/ $name\$/ {print \$1}" | head -n1)
++		local base_addr=$(nm "$objfile" | awk '$3 == "'$name'" && ($2 == "t" || $2 == "T") {print $1; exit}')
++		if [[ $base_addr == "" ]] ; then
++			# address not found
++			return
++		fi
+ 		cache[$module,$name]="$base_addr"
+ 	fi
+ 	# Let's start doing the math to get the exact address into the
 
