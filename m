@@ -2,129 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21EEB203A1B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 16:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66476203A29
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 17:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729257AbgFVO5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 10:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728824AbgFVO5I (ORCPT
+        id S1729420AbgFVO77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 10:59:59 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:39075 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729347AbgFVO74 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 10:57:08 -0400
-Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45AABC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 07:57:08 -0700 (PDT)
-Received: by mail-vk1-xa44.google.com with SMTP id h190so1388658vkh.6
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 07:57:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DaQaRL/n2na4izh2TsmRyDKAg7niGqHtN8UJRlkcUNk=;
-        b=Yh6uQc0Tk44UUcYHHPdxzcHe4JMuPLNwLsMpf1hfB3Jh8Tu5KzLiUZOVxNrSzFNeRC
-         1VX+uZFI62Ls1+BJbg7pP2QF3IogycASPqdpS7cK4qx+8UL3mK0h3koU2KF86qJLyXNp
-         ISsh8AdquX9pm+IhFbc8LzxKYCLQ8dhUJwD7E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DaQaRL/n2na4izh2TsmRyDKAg7niGqHtN8UJRlkcUNk=;
-        b=OddyixyEqS1drP9zHfM4nNRcSwEC5oemezzlYfWGgptPqYT3fKVWemWZ+4+6m92kWZ
-         0Htl7TKqZ8MfiHJrFaSId2ayy1S5F6dTpHu79UN8CJpK6P7FFVLOgfu1LvY58Vxm+Axs
-         B3mWf42pMUpqWBSsu0Nt8dAR0LbBycW2AIVkprx3KmoABFE9AXx8zU7JTqpAnTIpvCR5
-         xRGBemDUZnQUfXi97f+0PAg0jbQtbrpCEDT1OZygHjUglr7aNBwDFmj4pqo7EtNbTojq
-         mV7LppVk5gTrWtkg6E328RnPmsr2Jo07irHPQeVFETABl7YxxXfKxoXPVzKRBHJgwPoF
-         LOIQ==
-X-Gm-Message-State: AOAM533Iu+1rwjjUReGyb2xxKhq9nkHhLPhPMd3RdNtogmEwyk1zk96O
-        IJkCS8HNBNj/XQHtM14MLtxpnmtu4QQ=
-X-Google-Smtp-Source: ABdhPJwzx4bwvEx8BZEUPSrKMIh+8QmnD0QjCLcI6BKhT70C1hhApMLhkSyj6qtokstyBbn1SfE87w==
-X-Received: by 2002:a1f:9e8a:: with SMTP id h132mr9462823vke.14.1592837827205;
-        Mon, 22 Jun 2020 07:57:07 -0700 (PDT)
-Received: from mail-vk1-f173.google.com (mail-vk1-f173.google.com. [209.85.221.173])
-        by smtp.gmail.com with ESMTPSA id x16sm2083598vko.54.2020.06.22.07.57.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jun 2020 07:57:06 -0700 (PDT)
-Received: by mail-vk1-f173.google.com with SMTP id s192so4024493vkh.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 07:57:06 -0700 (PDT)
-X-Received: by 2002:ac5:ce86:: with SMTP id 6mr16311424vke.75.1592837825897;
- Mon, 22 Jun 2020 07:57:05 -0700 (PDT)
+        Mon, 22 Jun 2020 10:59:56 -0400
+Received: from desktop ([188.192.134.246]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1N5VTm-1ilzVH1REo-016zBv; Mon, 22 Jun 2020 16:59:33 +0200
+From:   <mail@adrianschmutzler.de>
+To:     "'David Woodhouse'" <dwmw2@infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Cc:     "'kexec'" <kexec@lists.infradead.org>,
+        "'openwrt-devel'" <openwrt-devel@lists.openwrt.org>,
+        <linux-mtd@lists.infradead.org>,
+        "'linux-arm-kernel'" <linux-arm-kernel@lists.infradead.org>,
+        "'openconnect-devel'" <openconnect-devel@lists.infradead.org>
+References: <5277ad6f4147325a921678367b4501d87217e95c.camel@infradead.org>
+In-Reply-To: <5277ad6f4147325a921678367b4501d87217e95c.camel@infradead.org>
+Subject: RE: lists.infradead.org restored from backup, git.infradead.org down.
+Date:   Mon, 22 Jun 2020 16:59:32 +0200
+Message-ID: <001e01d648a5$bd1ee2d0$375ca870$@adrianschmutzler.de>
+X-Mailer: Microsoft Outlook 15.0
 MIME-Version: 1.0
-References: <20200619141958.1.I58d549fded1fd2299543ede6a103fe2bb94c805d@changeid>
-In-Reply-To: <20200619141958.1.I58d549fded1fd2299543ede6a103fe2bb94c805d@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 22 Jun 2020 07:56:54 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VCX27cMs4q+jJ528UdEM93yZ96+kYTQPgU3ZqZ-whgEw@mail.gmail.com>
-Message-ID: <CAD=FV=VCX27cMs4q+jJ528UdEM93yZ96+kYTQPgU3ZqZ-whgEw@mail.gmail.com>
-Subject: Re: [PATCH] tpm_tis_spi: Prefer async probe
-To:     Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     Nicolas Boichat <drinkcat@chromium.org>,
-        Andrey Pronin <apronin@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Thread-Index: AQG5hV8pLw0uSvkNbgUKrUeSyIoqiqkeQGlQ
+Content-Language: de
+Content-Type: multipart/signed;
+        micalg=pgp-sha256;
+        protocol="application/pgp-signature";
+        boundary="=-=XMvxVdaVBbhA+p=-="
+X-Provags-ID: V03:K1:WJk5W5PG4j7/5TJ/HBZSoGxsduLFv8ECFfIo31dmkCy9/2aWeOJ
+ 5f4fCbbnGBOffxKcwVAZTc7BPU7kp4PqdN7QxmzOvAp4RtTkkBzVV5G6RKugkyuwY0GTBkB
+ xoSQcRBiY7IuV8lWi/9hTKNy4S6V0eIcoMqOkyCcb9K33gsupvVI3Gr9LyZJcgF9pshtz6D
+ gmHmDZK0dXm+LVv6dai+w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ToHgZf6XnjE=:k1cmNqwWpx0vUkjYHY6T/t
+ evS0DyVoCNnAdtZFyXI6X24vw4tGnefcnyOmGlnhUzb+HrvpPhYPcwZws+nA9sxGm09YnL/I2
+ 0wrjzehpzjA8+ZMGJP3WxbjKFyEikX2ThHHB0GbfZgsdGFSAzJUJYYAWYRU9wKM0wFPQHz3Ol
+ KGNMh8ps3YMRsu44p0PDdi6qBHIrbM1Kx5dybOxIVmsdic8ufkyQ16zOxV/34Ht5pPL14Ff/q
+ PtEvdKO2QsXFqFlWO3lnGyNZl4FqML3yd5wgBHETqwC2z8ug/6NDFsdZgZSwPRLtwfHFlgvMm
+ JrlsQLRHnMeFiKCpbQJ6IuhoAfCdwzM3tG4Pql7iqjJFRhUey9q4m0q8N6iN/ldhlaoyszgOa
+ qHm+8aksg2/KVBoSxys9kMXmIV3s8IoV9SEWzvc7v+m3MxPTNeeUcODPv1PSwdyz0L+HMZZAc
+ GASPbFlWFD4oicMw2Xuhxf1ByGjHCDLwsjYvtYTMelj6P8OxamM67hLh+ygCfJnwfyInLwTKi
+ hkVBqYVK4HvSNDqW8fOz3u+WgT2nvVYAFkW3nW8wQ0p6p/GuN3Ehen76uowpyGmtFn6SYVetd
+ lqTXBEnvH1cBQtXinCK9NecLNztTI74kxjmgNvbRlPpgKF3z8lfP4thhfyhWtSENfYryUtxUt
+ L22Q0BeBWTl1/vjTA+x1AgyL2un3oo3Kz+3ckOjFA/9A+RABvJ8rfitbosonmSyjiYov8I0lO
+ eIl9su221YRmjRpHbsKJq3cDZbmQYhwCHUYXQdY9uAlErePwLRiU6ZLXPu5477Zx1GmFAWpAf
+ GWYrFkMxp92Nw7ZvWRF/CN9ygYECRXq+XnuwHDhjA/LgcbHShYPMyy6FxdEAyR5srsOMq5+
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a multipart message in MIME format.
+
+--=-=XMvxVdaVBbhA+p=-=
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
 Hi,
 
-On Fri, Jun 19, 2020 at 2:20 PM Douglas Anderson <dianders@chromium.org> wrote:
->
-> On a Chromebook I'm working on I noticed a big (~1 second) delay
-> during bootup where nothing was happening.  Right around this big
-> delay there were messages about the TPM:
->
-> [    2.311352] tpm_tis_spi spi0.0: TPM ready IRQ confirmed on attempt 2
-> [    3.332790] tpm_tis_spi spi0.0: Cr50 firmware version: ...
->
-> I put a few printouts in and saw that tpm_tis_spi_init() (specifically
-> tpm_chip_register() in that function) was taking the lion's share of
-> this time, though ~115 ms of the time was in cr50_print_fw_version().
->
-> Let's make a one-line change to prefer async probe for tpm_tis_spi.
-> There's no reason we need to block other drivers from probing while we
-> load.
->
-> NOTES:
-> * It's possible that other hardware runs through the init sequence
->   faster than Cr50 and this isn't such a big problem for them.
->   However, even if they are faster they are still doing _some_
->   transfers over a SPI bus so this should benefit everyone even if to
->   a lesser extent.
-> * It's possible that there are extra delays in the code that could be
->   optimized out.  I didn't dig since once I enabled async probe they
->   no longer impacted me.
+> -----Original Message-----
+> From: openwrt-devel [mailto:openwrt-devel-bounces@lists.openwrt.org]
+> On Behalf Of David Woodhouse
+> Sent: Montag, 22. Juni 2020 14:52
+> To: linux-kernel@vger.kernel.org
+> Cc: kexec <kexec@lists.infradead.org>; openwrt-devel <openwrt-
+> devel@lists.openwrt.org>; linux-mtd@lists.infradead.org; linux-arm-kernel
+> <linux-arm-kernel@lists.infradead.org>; openconnect-devel <openconnect-
+> devel@lists.infradead.org>
+> Subject: lists.infradead.org restored from backup, git.infradead.org down.
+>=20
+> The machine hosting lists.infradead.org and git.infradead.org suffered a
+> complete disk failure over the weekend; sadly the last backup of the
+> mailman config was fairly old (May 2018) so the subscriber lists and arch=
+ives
+> have been reset to that date, but the lists should be running again.
+>=20
+> I've recreated the new lists which had been created since then.
+>=20
+> The lists should be up and running again on a new host; we can recreate
+> archives if anyone can provide the mailboxes.
 
-I will note that I did continue to dig into the delays, actually.  I
-haven't fully resolved all of them, but I'm fairly sure that most of
-them are actually inefficiencies in the SPI driver on my platform,
-which seems to have a lot of overhead in starting a new transfer.
-I'll work on fixing that, but in any case we should still do the async
-probe because it's very safe and gives a perf boost.  Why do I say
-it's safe?
+There is this page:
+https://www.mail-archive.com/openwrt-devel@lists.openwrt.org/
 
-1. It's not like our probe order was defined by anything anyway.  When
-we probe is at the whim of when the SPI controller probes and that can
-be any time.
+Don't know whether they provide a sufficient interface though or will respo=
+nd and help if asked nicely ...
 
-2. If someone needs to access the TPM from another driver then they
-have to handle the fact that it might not have probed yet anyway
-because perhaps the SPI controller hasn't probed yet.
+Best
 
-3. There may be other drivers probing at the same time as us anyway
-because _they_ used async probe.
+Adrian
 
-While I won't say that it's impossible to tickle a bug by turning on
-async probe, I would assert that in almost all cases the bug was
-already there and needed to be fixed anyway.  ;-)
+>=20
+> Users will have to resubscribe (and in some cases, unsubscribe again).
+> Apologies for the inconvenience.
+>=20
+> If you had personal email hosted on, or going through,
+> bombadil.infradead.org then please let me know and we can move you to
+> another box.
+>=20
+> The dead box was also git.infradead.org; I'll be fixing that next... if y=
+ou had an
+> account and want it reinstated then please let me know.
+
+--=-=XMvxVdaVBbhA+p=-=
+Content-Type: application/pgp-signature;
+	name="openpgp-digital-signature.asc"
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEESgN6p2H3WoMOAf81oNyKO7qxAnAFAl7wx0gACgkQoNyKO7qx
+AnCxgg/+LUncYyqX/WHSsM8AxoC8qVdMxLvcW0jjo/Sf1suYv2qBJJaTMjrAHRkk
+nGgf8pJ4WNyke1yCYJ4rk3MHJTqBNeXd589pzivShmpW7vLXiZo/0dITBRzk7lMk
+Zic6H3yrNws13ssM+z1xX8LJLi9UKmDwLtEp3GxXFRtjmuldSKsrZJfY0Mnj1Aj/
+as7OrOZckoLTM3FAzz1PbDYXDoRKJczliFpnj05MJeWbgsG5gZZehgJ9LozqArCn
+tyZC+MElMM6JujPdAO4wzcMo43fDzs0QWNvNGkd2SDU23H5VSx+5KGEww5lSyAbf
+Y5stkGfd51PDHvZWZfVvU9XT8ZhDq2+1Id3Ef72E+oEuXfCKywxKpb4EkQoXBbhQ
+lOPtGPVmqdg6cHZpsV/N2z2kWelbLbElA0iMWbHqC804sHs5E+hutKyaD/ep2igC
+I0D4VbhxSaagt5I7EqcB4HW3wTJ59yi133d7Ws8hFdCAn2Wkp1KuoxVs4Py3DFWJ
+k/PPKj3b3YeGiyppp/6Nxnw5rmSV/TQu8s1SRh2l2G3rIBpifPCvlO/7nwh8ASGo
+9c70bDTAHpR0cMzqcmu6obuTHvOWmp/qyJBUS2yEYeS32UOgceD7abICagTLHs0X
+O92cZ/+o+T5iMQl6dUko6GgNwMp0iWjuijXB7Xfa9PJFHwYZsMc=
+=dbBk
+-----END PGP SIGNATURE-----
 
 
--Doug
+--=-=XMvxVdaVBbhA+p=-=--
+
