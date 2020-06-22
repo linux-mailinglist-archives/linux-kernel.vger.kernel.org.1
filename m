@@ -2,144 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD4BB202E5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 04:28:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 023C8202E6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 04:38:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731051AbgFVC2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 22:28:43 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:29868 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731021AbgFVC2n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 22:28:43 -0400
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200622022840epoutp023faa3974554b7d571cf3f3d15be9117c~avLjkMwEb1873418734epoutp02n
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 02:28:40 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200622022840epoutp023faa3974554b7d571cf3f3d15be9117c~avLjkMwEb1873418734epoutp02n
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1592792920;
-        bh=j+KRWMeL94ow0fZi3QmpG8KRcj/J1YvaKWgzqFi+vCo=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=NnuIzdx0fIwbuHSXKIaEvDbrClT0LOud+TmJyA/QUlnMCM1qkJB0HkFg0+nRIx4ml
-         qZRTYAv7CxjzcklgIK3Fn2fIQC7nP7dD1mMU39QNiEzkhwhIEktjgxr57CSFKgRht3
-         lnSQB/Ah1xM3+X1wi8rft7Cmh9tYi/h5mXIb7W4U=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20200622022840epcas5p10a3c21e7709fe8d6ea90fcb62f48d7ef~avLjLH_5K0180201802epcas5p1U;
-        Mon, 22 Jun 2020 02:28:40 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CF.25.09475.75710FE5; Mon, 22 Jun 2020 11:28:40 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200622022838epcas5p3a8f55c596b3cd46eff780b6ee0eb5401~avLiI7e252477724777epcas5p31;
-        Mon, 22 Jun 2020 02:28:38 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20200622022838epsmtrp2da2cd61dc0dbdd2aa40d91a0218c6f3d~avLiINBU91717117171epsmtrp2q;
-        Mon, 22 Jun 2020 02:28:38 +0000 (GMT)
-X-AuditID: b6c32a4b-389ff70000002503-15-5ef01757445b
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        58.43.08303.65710FE5; Mon, 22 Jun 2020 11:28:38 +0900 (KST)
-Received: from alimakhtar02 (unknown [107.108.234.165]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200622022835epsmtip1654e0d7c668f83c7483fdd7fe7074415~avLfAmfOH2921629216epsmtip1h;
-        Mon, 22 Jun 2020 02:28:35 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Tamseel Shams'" <m.shams@samsung.com>, <kgene@kernel.org>,
-        <krzk@kernel.org>, <gregkh@linuxfoundation.org>, <jslaby@suse.com>
-Cc:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200617105907.7143-1-m.shams@samsung.com>
-Subject: RE: [PATCH] serial: samsung: fix spelling mistake
-Date:   Mon, 22 Jun 2020 07:58:32 +0530
-Message-ID: <00c701d6483c$d6587f90$83097eb0$@samsung.com>
+        id S1731064AbgFVCij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 22:38:39 -0400
+Received: from mga14.intel.com ([192.55.52.115]:51961 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726699AbgFVCii (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Jun 2020 22:38:38 -0400
+IronPort-SDR: YZ9+yFhwDv6e5NaSTk2Ps81coVqmVMrFFPck9LDVeGmnTdLsv02HFSgfZ8GFiE1+PBmcQ4FiP7
+ qT3YxR2ohEcw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9659"; a="142704079"
+X-IronPort-AV: E=Sophos;i="5.75,265,1589266800"; 
+   d="scan'208";a="142704079"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2020 19:38:38 -0700
+IronPort-SDR: kLI/D8Q8tZxkRPPFuiYPaE98ZUv1IOQQhFqpjbEvK2nvhnQsDpBIUcqoVcKllluunqSdvOAhbn
+ t3Z8I20xo8XQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,265,1589266800"; 
+   d="scan'208";a="422482828"
+Received: from joy-optiplex-7040.sh.intel.com (HELO joy-OptiPlex-7040) ([10.239.13.16])
+  by orsmga004.jf.intel.com with ESMTP; 21 Jun 2020 19:38:31 -0700
+Date:   Sun, 21 Jun 2020 22:28:28 -0400
+From:   Yan Zhao <yan.y.zhao@intel.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        "cjia@nvidia.com" <cjia@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "libvir-list@redhat.com" <libvir-list@redhat.com>,
+        "Zhengxiao.zx@alibaba-inc.com" <Zhengxiao.zx@alibaba-inc.com>,
+        "shuangtai.tst@alibaba-inc.com" <shuangtai.tst@alibaba-inc.com>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "eauger@redhat.com" <eauger@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "Yang, Ziye" <ziye.yang@intel.com>,
+        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
+        "pasic@linux.ibm.com" <pasic@linux.ibm.com>,
+        "aik@ozlabs.ru" <aik@ozlabs.ru>,
+        "felipe@nutanix.com" <felipe@nutanix.com>,
+        "Ken.Xue@amd.com" <Ken.Xue@amd.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        "eskultet@redhat.com" <eskultet@redhat.com>,
+        "Zeng, Xin" <xin.zeng@intel.com>,
+        "zhenyuw@linux.intel.com" <zhenyuw@linux.intel.com>,
+        "dinechin@redhat.com" <dinechin@redhat.com>,
+        "intel-gvt-dev@lists.freedesktop.org" 
+        <intel-gvt-dev@lists.freedesktop.org>,
+        "Liu, Changpeng" <changpeng.liu@intel.com>,
+        "berrange@redhat.com" <berrange@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Wang, Zhi A" <zhi.a.wang@intel.com>,
+        "jonathan.davies@nutanix.com" <jonathan.davies@nutanix.com>,
+        "He, Shaopeng" <shaopeng.he@intel.com>
+Subject: Re: [PATCH v5 0/4] introduction of migration_version attribute for
+ VFIO live migration
+Message-ID: <20200622022827.GA18338@joy-OptiPlex-7040>
+Reply-To: Yan Zhao <yan.y.zhao@intel.com>
+References: <20200602165527.34137955@x1.home>
+ <20200603031948.GB12300@joy-OptiPlex-7040>
+ <20200602215528.7a1008f0@x1.home>
+ <20200603052443.GC12300@joy-OptiPlex-7040>
+ <20200603102628.017e2896@x1.home>
+ <20200605102224.GB2936@work-vm>
+ <20200605083149.1809e783@x1.home>
+ <20200605143950.GG2897@work-vm>
+ <20200610003731.GA13961@joy-OptiPlex-7040>
+ <20200619164046.2bdc2f67@w520.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQHKng1dpmBVsT1kIn4KbhhNPgyntAIoJRNTqOn8EuA=
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrPKsWRmVeSWpSXmKPExsWy7bCmum6E+Ic4gw8bmC2aF69ns5iy4QOT
-        Rf/j18wW589vYLfY9Pgaq8XlXXPYLGac38dkcWZxL7vF3dbF7A6cHptWdbJ57J+7ht1j85J6
-        j74tqxg91m+5yuLxeZNcAFsUl01Kak5mWWqRvl0CV8aqVWuZC9ZwVez7dJqlgfE6RxcjJ4eE
-        gInEjGML2bsYuTiEBHYzSqy/3coG4XxilOi+e4kVwvnMKHH96xxGmJZHZ/ZDVe1ilLj5pgGq
-        /w2jxOEt19lAqtgEdCV2LG4DqxIRaGWUOPvgAZjDLDCZUeLjwwOsIFWcAhYSZ8/3sYDYwgJW
-        EkeOXWUCsVkEVCV+7GxgBrF5BSwlJvxoYIOwBSVOznwCVs8soC2xbOFrZoibFCR+Pl0GNlME
-        aM7EjjOsEDXiEkd/9jCDLJYQWMohsXXJGjaIBheJSW8XskDYwhKvjm9hh7ClJD6/2wtUwwFk
-        Z0v07DKGCNdILJ13DKrcXuLAlTksICXMApoS63fpQ6zik+j9/YQJopNXoqNNCKJaVaL53VWo
-        TmmJid3drBC2h8S/28uYJzAqzkLy2Cwkj81C8sAshGULGFlWMUqmFhTnpqcWmxYY56WW6xUn
-        5haX5qXrJefnbmIEpykt7x2Mjx580DvEyMTBeIhRgoNZSYT3dcC7OCHelMTKqtSi/Pii0pzU
-        4kOM0hwsSuK8Sj/OxAkJpCeWpGanphakFsFkmTg4pRqYpB57XZY78kZaQHl9F3fW5uOS3+Mi
-        1f6YbdVqVvBLcOS3zriwcGt5cHnxibIWRYEFK9KU7XepLG78fHFNIevjlGyHk1MclW1iKlyz
-        684um///1VqT4ACP97sMjrz9yeOj1aTL+TZ3lsCG580id587ukhWbzwuEa6keu4eh8Jj29wD
-        956m5MQumHZOo+vM/0y2Cx4lsV+fGJsdzb93ztdhJ8NpFgZePR6B3nrppF9NX8xSmdsWr70m
-        nigavV1R9AfTk+dvD7+4fexE14UCtW9G824cWCV77qG4+5xN1YH1d9IDm+Y+LV89mcX756OY
-        Ldpbd8jUd+bpLI/fmNJpYnR2oYjA2U4dKzYfo2Vf/29UYinOSDTUYi4qTgQAjpPKJ8IDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsWy7bCSnG6Y+Ic4gxkvLSyaF69ns5iy4QOT
-        Rf/j18wW589vYLfY9Pgaq8XlXXPYLGac38dkcWZxL7vF3dbF7A6cHptWdbJ57J+7ht1j85J6
-        j74tqxg91m+5yuLxeZNcAFsUl01Kak5mWWqRvl0CV8a+7dNYC1q4Kloe2jUwrufoYuTkkBAw
-        kXh0Zj8biC0ksINRYvZsY4i4tMT1jRPYIWxhiZX/ngPZXEA1rxgl1mx4zAySYBPQldixuI0N
-        JCEi0M0o0X/pB5jDLDCVUeLYhAZmiJZORonP786zgrRwClhInD3fxwJiCwtYSRw5dpUJxGYR
-        UJX4sbMBbCyvgKXEhB8NbBC2oMTJmU/A6pkFtCWe3nwKZy9b+JoZ4j4FiZ9Pl4HNFwGaObHj
-        DCtEjbjE0Z89zBMYhWchGTULyahZSEbNQtKygJFlFaNkakFxbnpusWGBUV5quV5xYm5xaV66
-        XnJ+7iZGcLRpae1g3LPqg94hRiYOxkOMEhzMSiK8rwPexQnxpiRWVqUW5ccXleakFh9ilOZg
-        URLn/TprYZyQQHpiSWp2ampBahFMlomDU6qBKeX0JnX2pxsLpi6YvHua6J2NkWpZjZufHjHa
-        5C6/g5fDuWZ5RZr+uUmC+3+3ZNxfMPlOxIyDj76d+Z/Hv7d22h8Ds6a3DMb189/6tPy6ab/P
-        UoVZ0GW+1SzFJ3ozL71i2qLyW95Edv3m6YlSBy9eYv3llFjfWeMU8qJb7v68JK2Ny1ZYu9U4
-        N8w65RKSt3tTkaUs1+EbYRcE3j1jOuKuk8La+/+DXnN6dEJPeMP87eFnX85m3Lb71H+NxNtd
-        Ux+l9QvfdtGL4+W6uc7u9UOxSWbuAZXartwJZz4w6jVxyB/R/sTy/XzVikofG5PdPGpblaTV
-        og5bMkQIFKlxVF+rjtnbZlpvGPTzLfPNs3cblViKMxINtZiLihMBu4+y6yUDAAA=
-X-CMS-MailID: 20200622022838epcas5p3a8f55c596b3cd46eff780b6ee0eb5401
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200617111707epcas5p3fcb86caeac4a852d44f37ae40759c8a1
-References: <CGME20200617111707epcas5p3fcb86caeac4a852d44f37ae40759c8a1@epcas5p3.samsung.com>
-        <20200617105907.7143-1-m.shams@samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200619164046.2bdc2f67@w520.home>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tamseel,
+On Fri, Jun 19, 2020 at 04:40:46PM -0600, Alex Williamson wrote:
+> On Tue, 9 Jun 2020 20:37:31 -0400
+> Yan Zhao <yan.y.zhao@intel.com> wrote:
+> 
+> > On Fri, Jun 05, 2020 at 03:39:50PM +0100, Dr. David Alan Gilbert wrote:
+> > > > > > I tried to simplify the problem a bit, but we keep going backwards.  If
+> > > > > > the requirement is that potentially any source device can migrate to any
+> > > > > > target device and we cannot provide any means other than writing an
+> > > > > > opaque source string into a version attribute on the target and
+> > > > > > evaluating the result to determine compatibility, then we're requiring
+> > > > > > userspace to do an exhaustive search to find a potential match.  That
+> > > > > > sucks.     
+> > > > >  
+> > hi Alex and Dave,
+> > do you think it's good for us to put aside physical devices and mdev aggregation
+> > for the moment, and use Alex's original idea that
+> > 
+> > +  Userspace should regard two mdev devices compatible when ALL of below
+> > +  conditions are met:
+> > +  (0) The mdev devices are of the same type
+> > +  (1) success when reading from migration_version attribute of one mdev device.
+> > +  (2) success when writing migration_version string of one mdev device to
+> > +  migration_version attribute of the other mdev device.
+> 
+> I think Pandora's box is already opened, if we can't articulate how
+> this solution would evolve to support features that we know are coming,
+> why should we proceed with this approach?  We've already seen interest
+> in breaking rule (0) in this thread, so we can't focus the solution on
+> mdev devices.
+> 
+> Maybe the best we can do is to compare one instance of a device to
+> another instance of a device, without any capability to predict
+> compatibility prior to creating devices, in the case on mdev.  The
+> string would need to include not only the device and vendor driver
+> compatibility, but also anything that has modified the state of the
+> device, such as creation time or post-creation time configuration.  The
+> user is left on their own for creating a compatible device, or
+> filtering devices to determine which might be, or which might generate,
+> compatible devices.  It's not much of a solution, I wonder if anyone
+> would even use it.
+> 
+> > and what about adding another sysfs attribute for vendors to put
+> > recommended migration compatible device type. e.g.
+> > #cat /sys/bus/pci/devices/0000:00:02.0/mdev_supported_types/i915-GVTg_V5_8/migration_compatible_devices
+> > parent id: 8086 591d
+> > mdev_type: i915-GVTg_V5_8
+> > 
+> > vendors are free to define the format and conent of this migration_compatible_devices
+> > and it's even not to be a full list.
+> > 
+> > before libvirt or user to do live migration, they have to read and test
+> > migration_version attributes of src/target devices to check migration compatibility.
+> 
+> AFAICT, free-form, vendor defined attributes are useless to libvirt.
+> Vendors could already put this information in the description attribute
+> and have it ignored by userspace tools due to the lack of defined
+> format.  It's also not clear what value this provides when it's
+> necessarily incomplete, a driver written today cannot know what future
+> drivers might be compatible with its migration data.  Thanks,
+>
+hi Alex
+maybe the problem can be divided into two pieces:
+(1) how to create/locate two migration compatible devices. For normal
+users, the most common and safest way to do it is to find a exact duplication
+of the source device. so for mdev, it's probably to create a target mdev
+of the same parent pci id, mdev type and creation parameters as the
+source mdev; and for physical devices, it's to locate a target device of the
+same pci id as the source device, plus some extra constraints (e.g. the
+target NVMe device is configured to the same remote device as the source
+NVMe device; or the target QAT device is supporting equal encryption
+algorithm set as the source QAT device...).
+I think a possible solution for this piece is to let vendor drivers provide a
+creating/locating script to find such exact duplication of source device.
+Then before libvirt is about to do live migration, it can use this script to
+create a target vm of exactly duplicated configuration of the source vm.
 
-> -----Original Message-----
-> From: Tamseel Shams <m.shams=40samsung.com>
-> Sent: 17 June 2020 16:29
-> To: kgene=40kernel.org; krzk=40kernel.org; gregkh=40linuxfoundation.org;
-> jslaby=40suse.com
-> Cc: linux-arm-kernel=40lists.infradead.org; linux-samsung-soc=40vger.kern=
-el.org;
-> linux-serial=40vger.kernel.org; linux-kernel=40vger.kernel.org;
-> alim.akhtar=40samsung.com; Tamseel Shams <m.shams=40samsung.com>
-> Subject: =5BPATCH=5D serial: samsung: fix spelling mistake
->=20
-> There is a spelling mistake in a comment. Fix it.
->=20
-> Signed-off-by: Tamseel Shams <m.shams=40samsung.com>
-> ---
-Reviewed-by: Alim Akhtar <alim.akhtar=40samsung.com>
+(2) how to identify two devices are migration compatible after they are
+created and even they are not exactly identical (e.g. their parent
+devices are of minor difference in hardware SKUs). This identification is
+necessary even after in step (1) when libvirt has created/located two
+identical devices and are about to start live migration.
+Also, users are free to create/configure target devices and use the
+read-and-test interfaces defined in this series to check if they are
+live migration compatible.
+The read and test behavior in this patch set can grant vendor drivers the
+freedom to decide whether to support migration between only exact identical
+devices or able to support migration between devices of minor
+difference. 
 
->  drivers/tty/serial/samsung_tty.c =7C 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/tty/serial/samsung_tty.c b/drivers/tty/serial/samsun=
-g_tty.c
-> index 6ef614d8648c..050a47fecdef 100644
-> --- a/drivers/tty/serial/samsung_tty.c
-> +++ b/drivers/tty/serial/samsung_tty.c
-> =40=40 -6,7 +6,7 =40=40
->   *	http://armlinux.simtec.co.uk/
->   */
->=20
-> -/* Hote on 2410 error handling
-> +/* Note on 2410 error handling
->   *
->   * The s3c2410 manual has a love/hate affair with the contents of the
->   * UERSTAT register in the UART blocks, and keeps marking some of the
-> --
-> 2.17.1
+So, do you think we can let this series focus on the second piece of
+problem and leave the first piece to other future series.
+
+Thanks
+Yan
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
