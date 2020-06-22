@@ -2,123 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD98204553
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A45B62045EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731765AbgFWAaZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:30:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731656AbgFWAaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:30:18 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3413B207BC;
-        Tue, 23 Jun 2020 00:30:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592872217;
-        bh=ZDfG0P7ylzy19vMVGWl1TZy1vCbWxB7/o0OTYOQnG3Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gZQhR0XTjWdpIhXDG3G2Xqfq1N/OykxSvLpo6BGE0UmK8GzSsEwMQJYI6DKFhf5tr
-         pBfpMKH6NeQUu/11IMJhLtYjorPwZjq4If3VAgScZlm6LY4rAe6QHtJ9QrUpKplQ4L
-         XyOvWPW4EIHQ+smNQfNBFKX4rvKn8cTcKeta2FD8=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 10/30] refperf: Dynamically allocate experiment-summary output buffer
-Date:   Mon, 22 Jun 2020 17:29:53 -0700
-Message-Id: <20200623003013.26252-10-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200623002941.GA26089@paulmck-ThinkPad-P72>
-References: <20200623002941.GA26089@paulmck-ThinkPad-P72>
+        id S1732039AbgFWAkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731625AbgFWAkO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:40:14 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11A6FC061573;
+        Mon, 22 Jun 2020 17:39:34 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id j189so17349124oih.10;
+        Mon, 22 Jun 2020 17:39:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8gg5xcfbj2whqXxmSEa9T/iWOw2YwyVIV2mrfaawyUE=;
+        b=iBqtOtj6PpiscFSPYPQwVkLB3pum2HERpu/4Zbx3HuodXjwvGfuDEjUADFUPcnmJkT
+         0q3lFKM2x4/sNmAQytMDGbS6DJdlHvvxW7hEIRemFt4mI00wyTIIU2rWmZ39kgbpQHei
+         Vo36HARttyGRuF3D80oVRnp4OXoN7MvDb4FaJb+x3vtvF7ANKAl8+YbbgJQ4wrFtYT9s
+         rDuBrct6kpUAzUQvFg84HY38NmcXS9QBjcxj1WFGcQUpSBob+Lce8qJej4Bzl/8Gcs/O
+         y/kLRFQzmjcWBhjmTq+Cdt+7eQjgriUmPBj3p1evFawWxas1mT3DfhqYEy+wKuEudafe
+         1IDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8gg5xcfbj2whqXxmSEa9T/iWOw2YwyVIV2mrfaawyUE=;
+        b=SNP//5M8tRdLeU0VpGuCPn+ICTBSaCnTfb9br9iws+73Uz+TDaj8ldXMViLD4XCtu2
+         eIYtdCPtUOREML8RLLvin+qm+2yxZH3hBgwMBXtcTOvFzY9w1gREyKzx1KUU41l4HEim
+         um28lDOdzsrNHn74aPCWnqPH0rD9Cc1AwQVeFZMx1zvYzjwv4EE/cNJ7bMpoSktz8rK+
+         sK+fIkkQoqzLjcMKsHp6cDKewlh4i7bD3PtcvQiWkNJUfIQo8eVJWO1oAVXj8rdgBWF4
+         INdaYeeYP728VnEYVJr3fV+/FjsuMMcuW0fzn7JG43uzJfdGmnT8AzAxI7kPgrdn9E3u
+         7IdQ==
+X-Gm-Message-State: AOAM532qTHPYiXcCtJ9IYtjVHRFTUbzKKIYW6MEWv6EKzb0HXh0HBajv
+        vaXQC5b70WjYViayU7wbGKNfZ6Hg
+X-Google-Smtp-Source: ABdhPJx8hTNMnfiRhhP2jbOGvs6MmoC/nZk9+07kzXuHFoV0Tu0ZpvLDzw6IBOGmsupvMEvAIlqCNA==
+X-Received: by 2002:a05:6808:295:: with SMTP id z21mr14399674oic.178.1592872772765;
+        Mon, 22 Jun 2020 17:39:32 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:4111:8b00::3])
+        by smtp.gmail.com with ESMTPSA id y31sm3677828otb.41.2020.06.22.17.39.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 17:39:32 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH 0/2] Small fixes around cacheflush.h
+Date:   Mon, 22 Jun 2020 16:47:38 -0700
+Message-Id: <20200622234740.72825-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+Hi all,
 
-Currently, the buffer used to accumulate the experiment-summary output
-is fixed size, which will cause problems if someone decides to run
-one hundred experiments.  This commit therefore dynamically allocates
-this buffer.
+These two patches are the culmination of the small discussion here:
 
-Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/refperf.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+https://lore.kernel.org/lkml/CAMuHMdVSduTOi5bUgF9sLQdGADwyL1+qALWsKgin1TeOLGhAKQ@mail.gmail.com/
 
-diff --git a/kernel/rcu/refperf.c b/kernel/rcu/refperf.c
-index 6324449..75b9cce 100644
---- a/kernel/rcu/refperf.c
-+++ b/kernel/rcu/refperf.c
-@@ -333,9 +333,10 @@ u64 process_durations(int n)
- // point all the timestamps are printed.
- static int main_func(void *arg)
- {
-+	bool errexit = false;
- 	int exp, r;
- 	char buf1[64];
--	char buf[512];
-+	char *buf;
- 	u64 *result_avg;
- 
- 	set_cpus_allowed_ptr(current, cpumask_of(nreaders % nr_cpu_ids));
-@@ -343,8 +344,11 @@ static int main_func(void *arg)
- 
- 	VERBOSE_PERFOUT("main_func task started");
- 	result_avg = kzalloc(nruns * sizeof(*result_avg), GFP_KERNEL);
--	if (!result_avg)
-+	buf = kzalloc(64 + nruns * 32, GFP_KERNEL);
-+	if (!result_avg || !buf) {
- 		VERBOSE_PERFOUT_ERRSTRING("out of memory");
-+		errexit = true;
-+	}
- 	atomic_inc(&n_init);
- 
- 	// Wait for all threads to start.
-@@ -354,7 +358,7 @@ static int main_func(void *arg)
- 
- 	// Start exp readers up per experiment
- 	for (exp = 0; exp < nruns && !torture_must_stop(); exp++) {
--		if (!result_avg)
-+		if (errexit)
- 			break;
- 		if (torture_must_stop())
- 			goto end;
-@@ -391,13 +395,13 @@ static int main_func(void *arg)
- 	strcat(buf, "Threads\tTime(ns)\n");
- 
- 	for (exp = 0; exp < nruns; exp++) {
--		if (!result_avg)
-+		if (errexit)
- 			break;
- 		sprintf(buf1, "%d\t%llu.%03d\n", exp + 1, result_avg[exp] / 1000, (int)(result_avg[exp] % 1000));
- 		strcat(buf, buf1);
- 	}
- 
--	if (result_avg)
-+	if (!errexit)
- 		PERFOUT("%s", buf);
- 
- 	// This will shutdown everything including us.
-@@ -412,6 +416,8 @@ static int main_func(void *arg)
- 
- end:
- 	torture_kthread_stopping("main_func");
-+	kfree(result_avg);
-+	kfree(buf);
- 	return 0;
- }
- 
--- 
-2.9.5
+I have fallen behind on fixing issues so sorry for not sending these
+sooner and letting these warnings slip into mainline. Please let me know
+if there are any comments or concerns. They are two completely
+independent patches so if they need to be routed via separate trees,
+that is fine. It was just easier to send them together since they are
+dealing with the same problem.
+
+Cheers,
+Nathan
+
 
