@@ -2,93 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2074204024
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC162204054
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728282AbgFVTUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 15:20:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45936 "EHLO
+        id S1728361AbgFVT3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 15:29:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727995AbgFVTUU (ORCPT
+        with ESMTP id S1728140AbgFVT3M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 15:20:20 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FC20C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:20:19 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id g139so9492514lfd.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:20:19 -0700 (PDT)
+        Mon, 22 Jun 2020 15:29:12 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B606C061573;
+        Mon, 22 Jun 2020 12:29:12 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id e8so3424359pgc.5;
+        Mon, 22 Jun 2020 12:29:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FQGOol6oHmAM1Ng4z/uCNOq7Oann9kEoHMOFg8EwYLs=;
-        b=IFBDbRGuOV6E9NDzvc7om4hzvpex+EGEmN8GTzzHydmrjGWlNV1uO2E/g0yWsPAWi9
-         zjE8fuW1yOUP8g12Xuq00kdOTLqwSAJjTTg4ZhbhSNW78kg7QgBPir5Ap1BUj/a16o21
-         J57EE3or5bby4Cv0SEw6LiqfvNQgXwWltI7MvZlT8kzMM3Tsk60+advzEk7PdkR7W8ew
-         lAX4Uf72XIJc7hIEhbjko+c/4/DUWSRg2tWy/gAaZ6fE3lyf47k3iqQJVh4oETlneyHj
-         rbyugQ5vCtpTGtNlXxITC7wQNanT6yfSqWFi8FTnk95apjQCxRAxuFuuW7sA49kDUMsN
-         wbTA==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=weFW+qBZEi0cjMZ8qKBQnrqgCTJqFGMu4e+wMxpY3S0=;
+        b=hOHzZhnjPlVmB1AgzeDEpstCV1xfdjrYDO6AA94oOzYU+zA51t/S6ljcFBEau4qMa0
+         BsvmBQd0s7lyOaJO17brRHx/rKD5X8w9joeMEqDt6hl3p5Gc/7weN30i8amCtoU1GXgj
+         wN4ubXQaixPbfVkRu47J/wD+RtYmL4LQpTtfUdBbIRTUFqGE+3BuWmb5b3lm46Jb3eoD
+         nFJ5hWenHRXHY+bHEQTbSuUIt+ph8vnfLPJGBW8wW2zGCCSG6X/M2c1o7phpj2ZuKqGC
+         8+kVSaQ1fcNlZFxxsNPUZ8z2e8XeRnkC6u3NvbZ7oYcg8JTWaft30Ob0Kq5Hvbo1ymSa
+         2Mxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FQGOol6oHmAM1Ng4z/uCNOq7Oann9kEoHMOFg8EwYLs=;
-        b=dCiynsxjXIVtoFTyG9XZDvI4zwC20JIHXytBa/fbrmV6nyauqts4ffBH7v/XxQnNST
-         3o7rnhQYh7F1mgsDi2OCxP5zYflEkpsVA56UKCPh8OHJfoP8paypl+apA+H8egfYk5wm
-         eAYE/AyAqUZJNuhWTAk1WmdaX5A8l6WhWsYDugAy7TKniBYxySs35g+QLilRoLsMIVJQ
-         agmGZE/xY0AJNWEz41hO8OUT1uM1PpY3INkbJ9TjR012DimUfdxlPxcksp2N6CXZBFSz
-         C7WhgJgPcVERxecyBuJ19FbmlY/+cXHIqivCmvaz1G1+f21ADfSYMjHePDwMyBe8YH5Z
-         0qIw==
-X-Gm-Message-State: AOAM533Eglmfo0byoDvdNbGyS19592z1Isjp//1IWKp0Kr3soSag/l8I
-        t6o5Frq39hiWhP5SHWX3aUop2dSXyKbpcatNMpM=
-X-Google-Smtp-Source: ABdhPJz4RZaNe5vITzo3tnXIR0fi+rJgtxh0xTAogXKk2pl7INIbw94pdlI6wWGIyDWeWTdqocO4Dka7MgKG6ttG2UI=
-X-Received: by 2002:a19:b07:: with SMTP id 7mr10494968lfl.38.1592853617855;
- Mon, 22 Jun 2020 12:20:17 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=weFW+qBZEi0cjMZ8qKBQnrqgCTJqFGMu4e+wMxpY3S0=;
+        b=WeoLH8Ifma99128/j4vstF85Ad2X5rK9iIzu5IzMKLWThbbG67tMvFoGyvMFPaFhBN
+         oxFS36IdM/tut8OY/6fAq2/2B82Qbf1aTzFjGUp8MkWQ87Hxav0v71aLmMTXwCUSlZeW
+         JXc6A/vjaGThukHh3TCqNBmC09Ex/YmW5eWutTwRsHQYZh6R2wtmShGBU4B1Zrfv6cuM
+         Xz6aYF7BURQP+UJ+SABibQ4BUzgGEX1GLYyH3s4EB+fok3sef7B5jtA4xkO6o9wPCRsv
+         +Ikt/bEuc2fgeqXD2PXnf8Q3H2l6CzStKXzipzO3CeMMzuhANHzMTdxyZIZ+azVJ/aej
+         tjDg==
+X-Gm-Message-State: AOAM531KgB0pD0enm31sFW3Z/wxIg0In+2OBkgzB5dvlmVBmTQ89IQ1Q
+        9qp0lb0qMXCElyj+b7Sv3LUT3KbF
+X-Google-Smtp-Source: ABdhPJzFByGxHqIqF8a8PWWKyVKm/TgcNYGpi4+R2KSq9pZvcj79Qg87brfTOkdQg+2rJVHd2ZlhZw==
+X-Received: by 2002:a63:29c8:: with SMTP id p191mr14727856pgp.333.1592854151907;
+        Mon, 22 Jun 2020 12:29:11 -0700 (PDT)
+Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:1:3e01:2939:5992:52da])
+        by smtp.gmail.com with ESMTPSA id mu17sm264603pjb.53.2020.06.22.12.29.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 12:29:10 -0700 (PDT)
+From:   Minchan Kim <minchan@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-mm <linux-mm@kvack.org>, linux-api@vger.kernel.org,
+        oleksandr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        John Dias <joaodias@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jann Horn <jannh@google.com>,
+        alexander.h.duyck@linux.intel.com, sj38.park@gmail.com,
+        David Rientjes <rientjes@google.com>,
+        Arjun Roy <arjunroy@google.com>,
+        Minchan Kim <minchan@kernel.org>
+Subject: [PATCH v8 0/4]  introduce memory hinting API for external process
+Date:   Mon, 22 Jun 2020 12:28:56 -0700
+Message-Id: <20200622192900.22757-1-minchan@kernel.org>
+X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
 MIME-Version: 1.0
-References: <1592363698-4266-1-git-send-email-jrdr.linux@gmail.com>
- <d9e8ad0f-f2aa-eea4-5bc7-a802c626ace6@oracle.com> <CAFqt6zbJD+k9xkV9Se0nL2qKfnea3mRrWJ4gzPmPJBquYk4M+w@mail.gmail.com>
- <fe2a1d23-7abd-86a9-4aec-2c14fb11cdea@nvidia.com> <CAFqt6zb8hK+mpqfrZ_QoGLO4nNfbHvZ7aJLRrcNRgDsywFHKqg@mail.gmail.com>
- <5a5133e6-b84d-a2cc-fcb4-db85c4e65d62@oracle.com>
-In-Reply-To: <5a5133e6-b84d-a2cc-fcb4-db85c4e65d62@oracle.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Tue, 23 Jun 2020 00:58:32 +0530
-Message-ID: <CAFqt6zY0wGGL2gkL9Vi3udEp3xNUzUoGmuJpj_H1ff7EBYr-qw@mail.gmail.com>
-Subject: Re: [RFC PATCH] xen/privcmd: Convert get_user_pages*() to pin_user_pages*()
-To:     Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc:     John Hubbard <jhubbard@nvidia.com>,
-        Juergen Gross <jgross@suse.com>, sstabellini@kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        paul@xen.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 12:40 AM Boris Ostrovsky
-<boris.ostrovsky@oracle.com> wrote:
->
-> On 6/22/20 2:52 PM, Souptick Joarder wrote:
-> >
-> > I read the code again. I think, this check is needed to handle a scenario when
-> > lock_pages() return -ENOSPC. Better to keep this check. Let me post v2 of this
-> > RFC for a clear view.
->
->
-> Actually, error handling seems to be somewhat broken here. If
-> lock_pages() returns number of pinned pages then that's what we end up
-> returning from privcmd_ioctl_dm_op(), all the way to user ioctl(). Which
-> I don't think is right, we should return proper (negative) error.
->
+Now, we have MADV_PAGEOUT and MADV_COLD as madvise hinting API. With that,
+application could give hints to kernel what memory range are preferred to be
+reclaimed. However, in some platform(e.g., Android), the information
+required to make the hinting decision is not known to the app.
+Instead, it is known to a centralized userspace daemon(e.g., ActivityManagerService),
+and that daemon must be able to initiate reclaim on its own without any app
+involvement.
 
-What -ERRNO is more appropriate here ? -ENOSPC ?
+To solve the concern, this patch introduces new syscall - process_madvise(2).
+Bascially, it's same with madvise(2) syscall but it has some differences.
 
->
-> Do you mind fixing that we well? Then you should be able to avoid
-> testing pages in a loop.
+1. It needs pidfd of target process to provide the hint
+2. It supports only MADV_{COLD|PAGEOUT} at this moment.
+   Other hints in madvise will be opened when there are explicit requests from
+   community to prevent unexpected bugs we couldn't support.
+3. Only privileged processes can do something for other process's address
+   space.
 
-Ok, let me try to fix it.
->
->
-> -boris
->
+For more detail of the new API, please see "mm: introduce external memory hinting API"
+description in this patchset.
+
+* from v7 -  http://lore.kernel.org/r/20200302193630.68771-1-minchan@kernel.org
+  * dropping pid support from new syscall and fold releated patches into syscall patch
+  * dropping KSM patch by discussion - Oleksandr, I lost the discussion.
+    Please resend the single patch against of the patchset if you resolves the discussion.
+    https://lore.kernel.org/linux-api/20200302193630.68771-8-minchan@kernel.org/
+
+* from v6 - https://lore.kernel.org/linux-api/20200219014433.88424-1-minchan@kernel.org/
+  * fix comments and descriptions - Suren
+  * Add Reviewed-by - Suren
+  * fix build break reported by 0-day
+
+* from v5 - https://lore.kernel.org/linux-mm/20200214170520.160271-1-minchan@kernel.org/
+  * use null task and requestor's mm for io_madvise - Jann and Jens
+  * use right commit description for moving pidfd_get_pid - Christoph
+
+* from v4 - https://lore.kernel.org/linux-mm/20200212233946.246210-1-minchan@kernel.org/
+  * pass mm down to functions, not accessing task->mm - Jann
+  * clean up - Alexander
+  * add Reviewed-by - Alexander, SeongJae
+  * patch reordering
+
+* from v3 - https://lore.kernel.org/linux-mm/20200128001641.5086-1-minchan@kernel.org/
+  * verify task->mm aftere access_mm - Oleg
+  * split some patches for easy review - Alexander
+  * clean up fatal signal checking - Suren
+
+* from v2 - https://lore.kernel.org/linux-mm/20200116235953.163318-1-minchan@kernel.org/
+  * check signal callee and caller to bail out - Kirill Tkhai
+  * put more clarification for justification of new API
+
+* from v1 - https://lore.kernel.org/linux-mm/20200110213433.94739-1-minchan@kernel.org/
+  * fix syscall number - SeongJae
+  * use get_pid_task - Kirill Tkhai
+  * extend API to support pid as well as pidfd - Kirill Tkhai
+
+Minchan Kim (4):
+  mm/madvise: pass task and mm to do_madvise
+  pid: move pidfd_get_pid() to pid.c
+  mm/madvise: introduce process_madvise() syscall: an external memory
+    hinting API
+  mm/madvise: check fatal signal pending of target process
+
+ arch/alpha/kernel/syscalls/syscall.tbl      |   1 +
+ arch/arm/tools/syscall.tbl                  |   1 +
+ arch/arm64/include/asm/unistd.h             |   2 +-
+ arch/arm64/include/asm/unistd32.h           |   2 +
+ arch/ia64/kernel/syscalls/syscall.tbl       |   1 +
+ arch/m68k/kernel/syscalls/syscall.tbl       |   1 +
+ arch/microblaze/kernel/syscalls/syscall.tbl |   1 +
+ arch/mips/kernel/syscalls/syscall_n32.tbl   |   1 +
+ arch/mips/kernel/syscalls/syscall_n64.tbl   |   1 +
+ arch/mips/kernel/syscalls/syscall_o32.tbl   |   1 +
+ arch/parisc/kernel/syscalls/syscall.tbl     |   1 +
+ arch/powerpc/kernel/syscalls/syscall.tbl    |   1 +
+ arch/s390/kernel/syscalls/syscall.tbl       |   1 +
+ arch/sh/kernel/syscalls/syscall.tbl         |   1 +
+ arch/sparc/kernel/syscalls/syscall.tbl      |   1 +
+ arch/x86/entry/syscalls/syscall_32.tbl      |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl      |   2 +
+ arch/xtensa/kernel/syscalls/syscall.tbl     |   1 +
+ fs/io_uring.c                               |   2 +-
+ include/linux/compat.h                      |   4 +
+ include/linux/mm.h                          |   3 +-
+ include/linux/pid.h                         |   1 +
+ include/linux/syscalls.h                    |   2 +
+ include/uapi/asm-generic/unistd.h           |   4 +-
+ kernel/exit.c                               |  17 --
+ kernel/pid.c                                |  17 ++
+ kernel/sys_ni.c                             |   2 +
+ mm/madvise.c                                | 190 +++++++++++++++++---
+ 28 files changed, 217 insertions(+), 46 deletions(-)
+
+-- 
+2.27.0.111.gc72c7da667-goog
+
