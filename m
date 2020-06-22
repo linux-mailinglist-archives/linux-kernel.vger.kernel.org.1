@@ -2,135 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB037203F53
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3DF7203F44
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:38:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730467AbgFVSjw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 14:39:52 -0400
-Received: from mout.gmx.net ([212.227.17.22]:37227 "EHLO mout.gmx.net"
+        id S1730412AbgFVSio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 14:38:44 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:53964 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730319AbgFVSjv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 14:39:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1592851115;
-        bh=rBxfEZ67KF13JJOQ5naIrxWqmKbXOOuTFfLMGcf4oQ4=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=C/H4h2hAu5T+DFzynYhRw7LeaZOUgXd6RZ0e53fe75L0+ia1e21F7QvExrlq/VDrD
-         V+fRN78upEy37Go90ECLnUlSloSEeE3fclqbeJdTw3wqXpNy+Y5pMXgdiJDc1Gv4+9
-         ep1r6vOGW8W81B4yGg/YUetHLyC/3qc1fw1qejs4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([5.146.194.186]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mirng-1jAn8g3ChI-00eu1N; Mon, 22
- Jun 2020 20:38:34 +0200
-Date:   Mon, 22 Jun 2020 20:38:31 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Changbin Du <changbin.du@intel.com>,
-        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Logan Gunthorpe <logang@deltatee.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Greer <mgreer@animalcreek.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Eric Biggers <ebiggers@google.com>, Jan Kara <jack@suse.cz>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Juergen Gross <jgross@suse.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Oliver Neukum <oneukum@suse.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        Alexander Schremmer <alex@alexanderweb.de>,
-        "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        David Sterba <dsterba@suse.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Replace HTTP links with HTTPS ones:
- Documentation/admin-guide
-Message-ID: <20200622183831.GC2581@latitude>
-References: <20200622181944.51083-1-grandmaster@al2klimov.de>
+        id S1730229AbgFVSio (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 14:38:44 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1jnRL2-001hpO-LZ; Mon, 22 Jun 2020 20:38:36 +0200
+Date:   Mon, 22 Jun 2020 20:38:36 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     yunaixin03610@163.com
+Cc:     netdev@vger.kernel.org, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, wuguanping@huawei.com,
+        wangqindong@huawei.com
+Subject: Re: [PATCH 3/5] Huawei BMA: Adding Huawei BMA driver: host_veth_drv
+Message-ID: <20200622183836.GD405672@lunn.ch>
+References: <20200622160311.1533-1-yunaixin03610@163.com>
+ <20200622160311.1533-4-yunaixin03610@163.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Y5rl02BVI9TCfPar"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200622181944.51083-1-grandmaster@al2klimov.de>
-X-Provags-ID: V03:K1:Pw4YmJzjjxXasVnBvT+TnaxSEF5MoRvjnalixj0MITaAolFwLpC
- CXcOmef94fKi553CyiFAwmMiG8Cbq5oUwy4kGZVYoN+msroRWbUw2BGCeze0+fsh7dzjggF
- hp+oQomD94xPCNxuaVGpFGIZhEawRN9MsVT0Iyt7Ts3xO5KsY/GFv5YSukGpCJ5p47bIjHs
- /vekM9jd3dwGrpX8OnfXg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6jknfIzZmN8=:CeP7HnUmRRrFIRh5r8B8re
- noM3p6Qzkc8gs+NgBkRkHNm1f7SUslHc+M9qnZu4Cyp2HKTf3V0L6oa0XbsE2JTS2TeKLh/+X
- KTZ2d03IUmBKdiwB5dN+hp5v68idtFC2abeCtkkeE6aVOTZkEzrtS9RpJxoAFwk7wr8l2Tdo0
- lRcoaZUPcOvjgUZhx8N9OepcHv3d9BAqaEPN2dovukmCyaIPbLmusREUHqo3imF+sPg+yK7ZB
- kPE0NHKnybf2HTdFYQmbgVsUdYhBx20rV+N3cetdrp1ZwUxDPhyUiWrWA9Z2RUz5QFciBZsuq
- Q6cBNvKL+DQKYSj/f9j3qOVbONQt8BhuI6tjJdvSmEUevzKj1crxgea78kSF/JyzW9nYnOtD1
- nXHyrE1LQlh5G1GC8X9jLPhjJiiP3rB4qBHRgIGH/wEpZ1abz94bS+kbJdPV3PK3ZtE/9J5xi
- HgTUfgv4CaedWQtV7Su3umBESd3Skh1vBnUY+6kfWoR1qaoSqdsqwS/E96ELKmA/dArmE8qss
- e0xFMIovV5t0+8iFNLICvOKX77Xi8Er7pxBrQEuxpX3/sqVVUY16Qa0uONjeLrd4AHV9pq97q
- xvvdUcAtcYxs1GOLyLQhJevDbJYRgNKolRlMA5kGewSI/ELgC5cD6T50dTA1u4EEKNNI7mPQU
- 3r8qXs5ADdhI/uYMMit3sjyW4J1XM/8VoX7I+NeIhZeGwpVV0VPD8pOOigg58vQdABHg+IGsc
- vh62lrXeqVW7gmYb5D3/3vBz6sXYirbfX57qwT+VI6ft3QRwdfP4ySQEAa32JBux15LqTYDWX
- lxLd7Ay0udzZY4fz3rkDXEi4u81H7UBNJhsbnccyMMrORuWIJLCp6kamWpARVdDyRnkQ5cdrG
- yIoJ2tAxhZWcmUhqxkBxYmD4t16sW6o61fMkaClskvOvhUksoImr3OrCKojGzRYLOJ8DLFB2g
- lKcWuAfrlKjR0SeZ0LPtRDw4852b4bWqpacPbGTXi24hWdwUG+6/NqTNfOnNNRR2gFsMxyD4D
- Wh6wB5cOzGOOkDBpNrDVhWxM+f2CrvIAOaHPPb458IeIqouywe26ul7Cu5vF5myMWh/N7lsDY
- GuNwK18kfLWEyg5hdHCVwWu8dcH2EC/M8X+EagNRYF03YSiKwgkp/mvzy01613tuak4ohBHMf
- qvCo+c9+4xXJBBapG27Q/lVmJufHYuOD5LB9fiBp9tUGOePSLQWKUpQgUwA0GzhIiYG9+Sygm
- rfYjzMpqAABK3/CQ1
+In-Reply-To: <20200622160311.1533-4-yunaixin03610@163.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 23, 2020 at 12:03:09AM +0800, yunaixin03610@163.com wrote:
+> From: yunaixin <yunaixin03610@163.com>
+> 
+> The BMA software is a system management software offered by Huawei. It supports the status monitoring, performance monitoring, and event monitoring of various components, including server CPUs, memory, hard disks, NICs, IB cards, PCIe cards, RAID controller cards, and optical modules.
+> 
+> This host_veth_drv driver is one of the communication drivers used by BMA software. It depends on the host_edma_drv driver. The host_veth_drv driver will create a virtual net device "veth" once loaded. BMA software will use it to send/receive RESTful messages to/from BMC software.
 
---Y5rl02BVI9TCfPar
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This might be acceptable, maybe. Some more details of the RESTful API
+would be good. Is this using Redfish?
 
->Subject: [PATCH] Replace HTTP links with HTTPS ones: Documentation/admin-g=
-uide
+> diff --git a/drivers/net/ethernet/huawei/bma/veth_drv/veth_hb.c b/drivers/net/ethernet/huawei/bma/veth_drv/veth_hb.c
+> new file mode 100644
+> index 000000000000..9681ce3bfc7b
+> --- /dev/null
+> +++ b/drivers/net/ethernet/huawei/bma/veth_drv/veth_hb.c
+> @@ -0,0 +1,2502 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Huawei iBMA driver.
+> + * Copyright (c) 2017, Huawei Technologies Co., Ltd.
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License
+> + * as published by the Free Software Foundation; either version 2
+> + * of the License, or (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + */
 
-You already sent a patch with the exact same subject line.
-Please use an incrementing version number (PATCH v2, PATCH v3, etc.) for
-revised versions of a patch, and describe the differences below the ---
-line. This is (somewhat lengthily) explained here:
+You have a SPDX, hence you don't need this text.
 
-  https://www.kernel.org/doc/html/latest/process/submitting-patches.html#th=
-e-canonical-patch-format
+> +static u32 veth_ethtool_get_link(struct net_device *dev);
 
+The veth prefix is already in use, drivers/net/veth.c. Please use
+something else, e.g. bmaveth. Please use it consistently thought the
+driver.
 
-Best regards,
-Jonathan Neusch=C3=A4fer
+> +
+> +int debug;			/* debug switch*/
+> +module_param_call(debug, &edma_param_set_debug, &param_get_int, &debug, 0644);
+> +
+> +MODULE_PARM_DESC(debug, "Debug switch (0=close debug, 1=open debug)");
 
---Y5rl02BVI9TCfPar
-Content-Type: application/pgp-signature; name="signature.asc"
+No module parameters.
 
------BEGIN PGP SIGNATURE-----
+> +
+> +#define VETH_LOG(lv, fmt, args...)    \
+> +do {	\
+> +	if (debug < (lv))	\
+> +		continue;	\
+> +	if (lv == DLOG_DEBUG)	\
+> +		netdev_dbg(g_bspveth_dev.pnetdev, "%s(), %d, " \
+> +		fmt, __func__, __LINE__, ## args);	\
+> +	else if (lv == DLOG_ERROR)	\
+> +		netdev_err(g_bspveth_dev.pnetdev, "%s(), %d, " \
+> +		fmt, __func__, __LINE__, ## args);	\
+> +} while (0)
 
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl7w+p8ACgkQCDBEmo7z
-X9tWiRAAnuS5matKAOKnBQ++3jS1s4CaYlzM7n36VwGK0eRnd3MeMC3C3yJJYgO1
-GvBRp41Hld5Lwu526J+Y7oKdGMn0EY8DljpyhT0uQXeKkDB9rBrYxDDyitJ8I9YE
-76TvJtp/UsKHX+lk9FCFfyAADy1/pz4vBsRv1g1R1MQI+5QUtCuOafUCdsoytQK/
-7Vtj2CIEklI8eloPgSOTAZLaQoDgJWoIUSzy7Qui2g6UTFboOUROLlXgJR7QGJva
-KuA0/4Y4C9Q1s+LH+H5iZyTgEqjETGrOEJNR2oTJlUS0Hf+hmNdi4FU9SvjvkiNh
-BzbxMctzeW4b+UFHGHpUsmT5gsNTJtDh7di5eoHfZ1uJ9aHwoJa1XfbXCGp8+8a+
-88q+EgyF1DUV8dLG3j8831tPR8yJjk+aZwqoO6pLRU7mEzYOjjP80JrvRtpYj21x
-8mpZzc5gAktnPVaQr86gvydCt9SwSZgKuOyFKTKZaibQx4L83XchSzmFKg4NlI8+
-JHF1S9C8Cl8GcypYL3w4ZYaUqHm0Zl9bTBApwzZEfd03cPp/k1so8MK69LyXB5tR
-TsZrOjCBobS83KoOyMoKNRaw6JYgcLvmCyBygYyBpyUQB5xCCu7XPVd6Tc92DZB+
-tGL59Z3gojroAMoLlfRlQIiGhzLG1gp3EjI02/zOBPYViSMb14k=
-=Uq1b
------END PGP SIGNATURE-----
+Don't do this. Just use netdev_dbg or netdev_err directly.
 
---Y5rl02BVI9TCfPar--
+> +#ifdef __UT_TEST
+> +u32 g_testdma;
+> +
+> +u32 g_testlbk;
+> +
+> +#endif
+
+Remove all your unit test code please.
+
+> +
+> +struct bspveth_device g_bspveth_dev = {};
+> +
+> +static int veth_int_handler(struct notifier_block *pthis, unsigned long ev,
+> +			    void *unuse);
+> +
+> +static struct notifier_block g_veth_int_nb = {
+> +	.notifier_call = veth_int_handler,
+> +};
+> +
+> +static const struct veth_stats veth_gstrings_stats[] = {
+> +	{"rx_packets", NET_STATS, VETH_STAT_SIZE(stats.rx_packets),
+> +	 VETH_STAT_OFFSET(stats.rx_packets)},
+> +	{"rx_bytes", NET_STATS, VETH_STAT_SIZE(stats.rx_bytes),
+> +	 VETH_STAT_OFFSET(stats.rx_bytes)},
+> +	{"rx_dropped", NET_STATS, VETH_STAT_SIZE(stats.rx_dropped),
+> +	 VETH_STAT_OFFSET(stats.rx_dropped)},
+> +	{"rx_head", QUEUE_RX_STATS, QUEUE_TXRX_STAT_SIZE(head),
+> +	 QUEUE_TXRX_STAT_OFFSET(head)},
+> +	{"rx_tail", QUEUE_RX_STATS, QUEUE_TXRX_STAT_SIZE(tail),
+> +	 QUEUE_TXRX_STAT_OFFSET(tail)},
+> +	{"rx_next_to_fill", QUEUE_RX_STATS,
+> +	 QUEUE_TXRX_STAT_SIZE(next_to_fill),
+> +	 QUEUE_TXRX_STAT_OFFSET(next_to_fill)},
+> +	{"rx_shmq_head", SHMQ_RX_STATS, SHMQ_TXRX_STAT_SIZE(head),
+> +	 SHMQ_TXRX_STAT_OFFSET(head)},
+> +	{"rx_shmq_tail", SHMQ_RX_STATS, SHMQ_TXRX_STAT_SIZE(tail),
+> +	 SHMQ_TXRX_STAT_OFFSET(tail)},
+> +	{"rx_shmq_next_to_free", SHMQ_RX_STATS,
+> +	 SHMQ_TXRX_STAT_SIZE(next_to_free),
+> +	 SHMQ_TXRX_STAT_OFFSET(next_to_free)},
+> +	{"rx_queue_full", QUEUE_RX_STATS,
+> +	 QUEUE_TXRX_STAT_SIZE(s.q_full),
+> +	 QUEUE_TXRX_STAT_OFFSET(s.q_full)},
+> +	{"rx_dma_busy", QUEUE_RX_STATS,
+> +	 QUEUE_TXRX_STAT_SIZE(s.dma_busy),
+> +	 QUEUE_TXRX_STAT_OFFSET(s.dma_busy)},
+> +	{"rx_dma_failed", QUEUE_RX_STATS,
+> +	 QUEUE_TXRX_STAT_SIZE(s.dma_failed),
+7> +	 QUEUE_TXRX_STAT_OFFSET(s.dma_failed)},
+> +
+> +	{"tx_packets", NET_STATS, VETH_STAT_SIZE(stats.tx_packets),
+> +	 VETH_STAT_OFFSET(stats.tx_packets)},
+> +	{"tx_bytes", NET_STATS, VETH_STAT_SIZE(stats.tx_bytes),
+> +	 VETH_STAT_OFFSET(stats.tx_bytes)},
+> +	{"tx_dropped", NET_STATS, VETH_STAT_SIZE(stats.tx_dropped),
+> +	 VETH_STAT_OFFSET(stats.tx_dropped)},
+> +
+> +	{"tx_head", QUEUE_TX_STATS, QUEUE_TXRX_STAT_SIZE(head),
+> +	 QUEUE_TXRX_STAT_OFFSET(head)},
+> +	{"tx_tail", QUEUE_TX_STATS, QUEUE_TXRX_STAT_SIZE(tail),
+> +	 QUEUE_TXRX_STAT_OFFSET(tail)},
+> +	{"tx_next_to_free", QUEUE_TX_STATS,
+> +	 QUEUE_TXRX_STAT_SIZE(next_to_free),
+> +	 QUEUE_TXRX_STAT_OFFSET(next_to_free)},
+> +	{"tx_shmq_head", SHMQ_TX_STATS, SHMQ_TXRX_STAT_SIZE(head),
+> +	 SHMQ_TXRX_STAT_OFFSET(head)},
+> +	{"tx_shmq_tail", SHMQ_TX_STATS, SHMQ_TXRX_STAT_SIZE(tail),
+> +	 SHMQ_TXRX_STAT_OFFSET(tail)},
+> +	{"tx_shmq_next_to_free", SHMQ_TX_STATS,
+> +	 SHMQ_TXRX_STAT_SIZE(next_to_free),
+> +	 SHMQ_TXRX_STAT_OFFSET(next_to_free)},
+> +
+> +	{"tx_queue_full", QUEUE_TX_STATS,
+> +	 QUEUE_TXRX_STAT_SIZE(s.q_full),
+> +	 QUEUE_TXRX_STAT_OFFSET(s.q_full)},
+> +	{"tx_dma_busy", QUEUE_TX_STATS,
+> +	 QUEUE_TXRX_STAT_SIZE(s.dma_busy),
+> +	 QUEUE_TXRX_STAT_OFFSET(s.dma_busy)},
+> +	{"tx_dma_failed", QUEUE_TX_STATS,
+> +	 QUEUE_TXRX_STAT_SIZE(s.dma_failed),
+> +	 QUEUE_TXRX_STAT_OFFSET(s.dma_failed)},
+> +
+> +	{"recv_int", VETH_STATS, VETH_STAT_SIZE(recv_int),
+> +	 VETH_STAT_OFFSET(recv_int)},
+> +	{"tobmc_int", VETH_STATS, VETH_STAT_SIZE(tobmc_int),
+> +	 VETH_STAT_OFFSET(tobmc_int)},
+> +};
+> +
+> +#define VETH_GLOBAL_STATS_LEN	\
+> +		(sizeof(veth_gstrings_stats) / sizeof(struct veth_stats))
+> +
+> +static int veth_param_get_statics(char *buf, const struct kernel_param *kp)
+> +{
+> +	int len = 0;
+> +	int i = 0, j = 0, type = 0;
+> +	struct bspveth_rxtx_q *pqueue = NULL;
+> +	__kernel_time_t running_time = 0;
+> +
+> +	if (!buf)
+> +		return 0;
+> +
+> +	GET_SYS_SECONDS(running_time);
+> +
+> +	running_time -= g_bspveth_dev.init_time;
+> +
+> +	len += sprintf(buf + len,
+> +			"================VETH INFO=============\r\n");
+> +	len += sprintf(buf + len, "[version     ]:" VETH_VERSION "\n");
+> +	len += sprintf(buf + len, "[link state  ]:%d\n",
+> +			veth_ethtool_get_link(g_bspveth_dev.pnetdev));
+> +	len += sprintf(buf + len, "[running_time]:%luD %02lu:%02lu:%02lu\n",
+> +			running_time / (SECONDS_PER_DAY),
+> +			running_time % (SECONDS_PER_DAY) / SECONDS_PER_HOUR,
+> +			running_time % SECONDS_PER_HOUR / SECONDS_PER_MINUTE,
+> +			running_time % SECONDS_PER_MINUTE);
+> +	len += sprintf(buf + len,
+> +			"[bspveth_dev ]:MAX_QUEUE_NUM :0x%-16x	",
+> +			MAX_QUEUE_NUM);
+> +	len += sprintf(buf + len,
+> +			"MAX_QUEUE_BDNUM :0x%-16x\r\n", MAX_QUEUE_BDNUM);
+> +	len += sprintf(buf + len,
+> +			"[bspveth_dev ]:pnetdev	  :0x%-16p	",
+> +			g_bspveth_dev.pnetdev);
+> +	len += sprintf(buf + len,
+> +			"ppcidev		 :0x%-16p\r\n",
+> +			g_bspveth_dev.ppcidev);
+> +	len += sprintf(buf + len,
+> +			"[bspveth_dev ]:pshmpool_p:0x%-16p	",
+> +			g_bspveth_dev.pshmpool_p);
+> +	len += sprintf(buf + len,
+> +			"pshmpool_v	  :0x%-16p\r\n",
+> +			g_bspveth_dev.pshmpool_v);
+> +	len += sprintf(buf + len,
+> +			"[bspveth_dev ]:shmpoolsize:0x%-16x	",
+> +			g_bspveth_dev.shmpoolsize);
+> +	len += sprintf(buf + len,
+> +			"g_veth_dbg_lv		:0x%-16x\r\n", debug);
+> +
+> +	for (i = 0; i < MAX_QUEUE_NUM; i++) {
+> +		for (j = 0, type = BSPVETH_RX; j < 2; j++, type++) {
+> +			if (type == BSPVETH_RX) {
+> +				pqueue = g_bspveth_dev.prx_queue[i];
+> +				len += sprintf(buf + len,
+> +				"=============RXQUEUE STATIS============\r\n");
+> +			} else {
+> +				pqueue = g_bspveth_dev.ptx_queue[i];
+> +				len += sprintf(buf + len,
+> +				"=============TXQUEUE STATIS============\r\n");
+> +			}
+> +
+> +			if (!pqueue) {
+> +				len += sprintf(buf + len, "NULL\r\n");
+> +				continue;
+> +			}
+> +
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[pkt	] :%lld\r\n", i,
+> +					pqueue->s.pkt);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[pktbyte	] :%lld\r\n", i,
+> +					pqueue->s.pktbyte);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[refill	] :%lld\r\n", i,
+> +					pqueue->s.refill);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[freetx	] :%lld\r\n", i,
+> +					pqueue->s.freetx);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[dmapkt	] :%lld\r\n", i,
+> +					pqueue->s.dmapkt);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[dmapktbyte	] :%lld\r\n", i,
+> +					pqueue->s.dmapktbyte);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[next_to_fill ] :%d\r\n", i,
+> +					pqueue->next_to_fill);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[next_to_free ] :%d\r\n", i,
+> +					pqueue->next_to_free);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[head	] :%d\r\n", i,
+> +					pqueue->head);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[tail	] :%d\r\n", i,
+> +					pqueue->tail);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[work_limit	] :%d\r\n", i,
+> +					pqueue->work_limit);
+> +			len += sprintf(buf + len,
+> +			"=================SHARE=================\r\n");
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[next_to_fill] :%d\r\n", i,
+> +					pqueue->pshmqhd_v->next_to_fill);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[next_to_free] :%d\r\n", i,
+> +					pqueue->pshmqhd_v->next_to_free);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[head	] :%d\r\n", i,
+> +					pqueue->pshmqhd_v->head);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[tail	] :%d\r\n", i,
+> +					pqueue->pshmqhd_v->tail);
+> +			len += sprintf(buf + len,
+> +			"=======================================\r\n");
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[dropped_pkt] :%d\r\n", i,
+> +					pqueue->s.dropped_pkt);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[netifrx_err] :%d\r\n", i,
+> +					pqueue->s.netifrx_err);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[null_point	] :%d\r\n", i,
+> +					pqueue->s.null_point);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[retry_err	] :%d\r\n", i,
+> +					pqueue->s.retry_err);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[allocskb_err  ] :%d\r\n",
+> +					i, pqueue->s.allocskb_err);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[q_full	] :%d\r\n", i,
+> +					pqueue->s.q_full);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[q_emp	] :%d\r\n", i,
+> +					pqueue->s.q_emp);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[need_fill	] :%d\r\n", i,
+> +					pqueue->s.need_fill);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[need_free	] :%d\r\n", i,
+> +					pqueue->s.need_free);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[type_err	] :%d\r\n", i,
+> +					pqueue->s.type_err);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[shm_full	] :%d\r\n", i,
+> +					pqueue->s.shm_full);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[shm_emp	] :%d\r\n", i,
+> +					pqueue->s.shm_emp);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[shmretry_err ] :%d\r\n", i,
+> +					pqueue->s.shmretry_err);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[shmqueue_noinit] :%d\r\n",
+> +					i, pqueue->s.shmqueue_noinit);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[dma_busy	] :%d\r\n", i,
+> +					pqueue->s.dma_busy);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[dma_mapping_err] :%d\r\n",
+> +					i, pqueue->s.dma_mapping_err);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[dma_failed	] :%d\r\n", i,
+> +					pqueue->s.dma_failed);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[dma_burst	] :%d\r\n", i,
+> +					pqueue->s.dma_burst);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[lbk_cnt	] :%d\r\n", i,
+> +					pqueue->s.lbk_cnt);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[dma_need_offset] :%d\r\n",
+> +					i, pqueue->s.dma_need_offset);
+> +			len += sprintf(buf + len,
+> +					"QUEUE[%d]--[lbk_txerr	] :%d\r\n", i,
+> +					pqueue->s.lbk_txerr);
+> +		}
+> +	}
+> +
+> +	len += sprintf(buf + len, "=============BSPVETH STATIS===========\r\n");
+> +	len += sprintf(buf + len,
+> +				"[bspveth_dev]:run_dma_rx_task:0x%-8x(%d)\r\n",
+> +				g_bspveth_dev.run_dma_rx_task,
+> +				g_bspveth_dev.run_dma_rx_task);
+> +	len += sprintf(buf + len,
+> +				"[bspveth_dev]:run_dma_tx_task:0x%-8x(%d)\r\n",
+> +				g_bspveth_dev.run_dma_tx_task,
+> +				g_bspveth_dev.run_dma_tx_task);
+> +	len += sprintf(buf + len,
+> +				"[bspveth_dev]:run_skb_rx_task:0x%-8x(%d)\r\n",
+> +				g_bspveth_dev.run_skb_rx_task,
+> +				g_bspveth_dev.run_skb_rx_task);
+> +	len += sprintf(buf + len,
+> +				"[bspveth_dev]:run_skb_fr_task:0x%-8x(%d)\r\n",
+> +				g_bspveth_dev.run_skb_fr_task,
+> +				g_bspveth_dev.run_skb_fr_task);
+> +	len += sprintf(buf + len,
+> +				"[bspveth_dev]:recv_int	     :0x%-8x(%d)\r\n",
+> +				g_bspveth_dev.recv_int, g_bspveth_dev.recv_int);
+> +	len += sprintf(buf + len,
+> +				"[bspveth_dev]:tobmc_int      :0x%-8x(%d)\r\n",
+> +				g_bspveth_dev.tobmc_int,
+> +				g_bspveth_dev.tobmc_int);
+> +	len += sprintf(buf + len,
+> +				"[bspveth_dev]:shutdown_cnt   :0x%-8x(%d)\r\n",
+> +				g_bspveth_dev.shutdown_cnt,
+> +				g_bspveth_dev.shutdown_cnt);
+> +
+> +	return len;
+> +}
+> +
+> +module_param_call(statistics, NULL, veth_param_get_statics, &debug, 0444);
+> +
+> +MODULE_PARM_DESC(statistics, "Statistics info of veth driver,readonly");
+
+That is a horrible abuse of module parameters!
+
+I stopped reviewing here.
+
+  Andrew
