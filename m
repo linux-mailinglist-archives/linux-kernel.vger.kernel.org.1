@@ -2,180 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 064DC2044E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:59:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8242044CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731342AbgFVX7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 19:59:48 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:41949 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731175AbgFVX7s (ORCPT
+        id S1731075AbgFVXxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 19:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60370 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730227AbgFVXxt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 19:59:48 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200622235945epoutp0457e51f9835ed392d2b132afc2c3195fa~bAy0SpBWa2094420944epoutp04Q
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 23:59:45 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200622235945epoutp0457e51f9835ed392d2b132afc2c3195fa~bAy0SpBWa2094420944epoutp04Q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1592870385;
-        bh=YExroDqc6XzESFm8WunT73Vwegt7O2NMI3eTkUs4C38=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=k+JgZuETmQ9o+0EMIw4bTkiG5QYFyXbfSMNJn21ke5BDVOf6AzWIPpL9n71mzHEo4
-         Qov3tNO4QxhxI6dbqRlWHrW4RrajJ3i9Fv7JkSxVeYnkvXe7UDBlVFD02H/291Fhdx
-         ni5p0bw4NEpyyUwNB++hfu5lrv1R9ShSuBwfU2S8=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
-        20200622235944epcas1p1d7b823d4a1887b71eccd67af654f27fe~bAyzmnqUJ1886118861epcas1p11;
-        Mon, 22 Jun 2020 23:59:44 +0000 (GMT)
-Received: from epsmges1p4.samsung.com (unknown [182.195.40.166]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 49rRGl41M6zMqYkk; Mon, 22 Jun
-        2020 23:59:43 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p4.samsung.com (Symantec Messaging Gateway) with SMTP id
-        73.54.28581.FE541FE5; Tue, 23 Jun 2020 08:59:43 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20200622235942epcas1p3cda4faa2bf5ad932189cbe1a87b0b0fd~bAyyBP-sU2815928159epcas1p38;
-        Mon, 22 Jun 2020 23:59:42 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200622235942epsmtrp13d82fa0db9948bc0dac8fdbe90844315~bAyyAg5232670726707epsmtrp1d;
-        Mon, 22 Jun 2020 23:59:42 +0000 (GMT)
-X-AuditID: b6c32a38-2e3ff70000006fa5-fa-5ef145efa0c5
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        10.F1.08303.EE541FE5; Tue, 23 Jun 2020 08:59:42 +0900 (KST)
-Received: from [10.253.105.155] (unknown [10.253.105.155]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20200622235942epsmtip16d13b33e18f9c69da82d677090e641a9~bAyxdYJnb0379503795epsmtip1G;
-        Mon, 22 Jun 2020 23:59:42 +0000 (GMT)
-Subject: Re: New mode DM-Verity error handling
-To:     Milan Broz <gmazyland@gmail.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Cc:     dm-devel@redhat.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agk@redhat.com, corbet@lwn.net
-From:   JeongHyeon Lee <jhs2.lee@samsung.com>
-Message-ID: <250156a6-a2d6-dbfd-daa3-be9c36f0cf36@samsung.com>
-Date:   Tue, 23 Jun 2020 08:53:32 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
-        Thunderbird/60.6.1
+        Mon, 22 Jun 2020 19:53:49 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01E8C061573;
+        Mon, 22 Jun 2020 16:53:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=Mz/A+hFfuf24LVGItLsLfUEgCItsEK6JiOXYHwMwFLQ=; b=VnLhWmtjHgbFCQ6Yr0nSQfHPy
+        TSbERVRaAM8pnpmgV7XlFpnLWt/E9Qq6dXeNOkp0zXJab0YenjSNZRFGanOc8RglhvdxAnuxVQGNo
+        /kWpdFWWPkSj+XWD7JaIIwK171gc5VYUH8VKQtkXJ6grVq457ol0PvS4xfcukZ/5xb6ycFitF2AFo
+        IFBq2Ntw0w+RJ1njeQSRCrl44goxjpO5KrGxaKgJPDmBwjgq17mAm40qqtetacSOSfTqEMPg8yFJg
+        a0i3VbQvStMgEnKcJfyjwzNdhkHQznIQgtmQNRNZ5FIQcOnLAK2Veb0uhu6HikuPCSjPzpLXE8fhD
+        JqtWS9cjA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:58994)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jnWG3-00013A-4g; Tue, 23 Jun 2020 00:53:47 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jnWFw-0000UE-KX; Tue, 23 Jun 2020 00:53:40 +0100
+Date:   Tue, 23 Jun 2020 00:53:40 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Sascha Hauer <s.hauer@pengutronix.de>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kernel@pengutronix.de
+Subject: Re: [PATCH 1/2] net: ethernet: mvneta: Fix Serdes configuration for
+ SoCs without comphy
+Message-ID: <20200622235340.GQ1551@shell.armlinux.org.uk>
+References: <20200616083140.8498-1-s.hauer@pengutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <b7eaf4a7-6692-ffdf-2bbc-b622f93ef601@gmail.com>
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDJsWRmVeSWpSXmKPExsWy7bCmnu57149xBr1P5SzWnzrGbPHkQDuj
-        xd53s1ktju2fxW6xsG0Ji8XlXXPYLJaueMtq0bbxK6MDh8fOWXfZPRZsKvVY3DeZ1eP9vqts
-        Hp83yQWwRuXYZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl
-        5gCdoqRQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpMDQo0CtOzC0uzUvXS87PtTI0
-        MDAyBapMyMmYdnEha8EW/op1K3gbGKfwdDFyckgImEhce/+TsYuRi0NIYAejxL/bd5ghnE+M
-        El+ezYbKfGaUuH96KhtMy4dXz5kgErsYJQ6uOwPlvGeU+Ll6EwtIlbCAnsTHzq+sILaIQJHE
-        tAVNYHFmILv381uwOJuAtsTtlk3sIDavgJ3E338XmUBsFgFVid27l4LViwpESNw/toEVokZQ
-        4uTMJ2BxTgFbiY3rjjJBzJSX2P52DjOELS5x68l8sIMkBHo5JDZNmMUCcbaLxIT+U6wQtrDE
-        q+Nb2CFsKYmX/W1QdrnElabLjBB2jcSEC91Q9cYS81sWAi3gAFqgKbF+lz5EWFFi5++5jBB7
-        +STefe1hBSmREOCV6GgTgihRkljx7xrUBRISGw53QwPRQ2Jp63TWCYyKs5B8NgvJN7OQfDML
-        YfECRpZVjGKpBcW56anFhgUmyJG9iRGcTLUsdjDOfftB7xAjEwfjIUYJDmYlEd7XAe/ihHhT
-        EiurUovy44tKc1KLDzGaAsN6IrOUaHI+MJ3nlcQbmhoZGxtbmJiZm5kaK4nznrS6ECckkJ5Y
-        kpqdmlqQWgTTx8TBKdXAxCouFXBE41fyuvWJXNlmamvSz7/05lghwtP/J/mP/pE1hdP2lCw+
-        bbZ1Xr9XiMyUuVbBgg1+/6dKqc6+6TKhoqbf9ZdqoPCGkt95s930jm+Y0jOrOcr4v4ToX801
-        bKbufvYfHd8Yfz99+INWVvDz3X2LDv/Ln2tc8s/Vp0lUNee8Ea/axCMMHU2Lurnla7wcrQWE
-        JkyMvfqTs7zhx4mFhzRmG9Zk1y+UenvAluH/R/7okF5dyd/amy8fv7lWnXNLKSev7rcW5ZvS
-        3S/Kfn2/uuLlarVtZlslHzf/3aS55WTVwlrBkPn3o+vOya2Sijfc9NmcYwZfeM3p+NtmzHtk
-        kv0ueKzVSAn7MtPQ08xSiaU4I9FQi7moOBEAtqQW3C8EAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrFLMWRmVeSWpSXmKPExsWy7bCSnO47149xBktmGFqsP3WM2eLJgXZG
-        i73vZrNaHNs/i91iYdsSFovLu+awWSxd8ZbVom3jV0YHDo+ds+6yeyzYVOqxuG8yq8f7fVfZ
-        PD5vkgtgjeKySUnNySxLLdK3S+DKmHZxIWvBFv6KdSt4Gxin8HQxcnJICJhIfHj1nKmLkYtD
-        SGAHo8TL9p1MEAkJiQ2b1rJ3MXIA2cIShw8XQ9S8ZZS4unovO0iNsICexMfOr6wgtohAkcS7
-        BQ/AbGYge+ftk1BDtzFJTGyYzwKSYBPQlrjdsgmsmVfATuLvv4tgy1gEVCV2714KViMqECFx
-        5v0KFogaQYmTM5+A2ZwCthIb1x1lglhgJjFv80NmCFteYvvbOVC2uMStJ/OZJjAKzULSPgtJ
-        yywkLbOQtCxgZFnFKJlaUJybnltsWGCUl1quV5yYW1yal66XnJ+7iREcPVpaOxj3rPqgd4iR
-        iYPxEKMEB7OSCO/rgHdxQrwpiZVVqUX58UWlOanFhxilOViUxHm/zloYJySQnliSmp2aWpBa
-        BJNl4uCUamCSZ/lyeI3ItBfuVxRWSWzKj3ZplDt7NIht6UaVnSkNjV+jH3u91N9lYt9u+O3W
-        3hdrVynffuzzfIv8ta0X9j16+y28Kz79/bo1TRxbVuQ8tFqvf+yir6Hp94KWstPZkcWxO2y/
-        MTNefRdy8WdUWYXsesa2vPMms1MvcbIrtfrKXlj4ek3oldvcqjOTtq0W9+dRELZJD1ZMPvO7
-        1+x1rudJP20u/uKP575qLzTxNb+gI3vj0I+Vn65WqB68q1xjFWk7W3pa288HM2L4c7ovZU2y
-        /LIy4qzhjLSs3dq7FwVIG30x921pnqRzjONiZFHJJl62w6yOHYsjqjY0b54b2Zd42TWdb33z
-        /eQf0rb3612UWIozEg21mIuKEwGDjIQCDQMAAA==
-X-CMS-MailID: 20200622235942epcas1p3cda4faa2bf5ad932189cbe1a87b0b0fd
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20200618070250epcas1p409eb2ddd19ecc5d55c219ac3dc884f25
-References: <CGME20200618070250epcas1p409eb2ddd19ecc5d55c219ac3dc884f25@epcas1p4.samsung.com>
-        <98eac3fc-c399-625d-5730-29853b3a0771@samsung.com>
-        <20200618154444.GB18007@redhat.com> <20200618165006.GA103290@google.com>
-        <20200618170952.GA18057@redhat.com>
-        <b7eaf4a7-6692-ffdf-2bbc-b622f93ef601@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200616083140.8498-1-s.hauer@pengutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Milan Broz.
+On Tue, Jun 16, 2020 at 10:31:39AM +0200, Sascha Hauer wrote:
+> The MVNETA_SERDES_CFG register is only available on older SoCs like the
+> Armada XP. On newer SoCs like the Armada 38x the fields are moved to
+> comphy. This patch moves the writes to this register next to the comphy
+> initialization, so that depending on the SoC either comphy or
+> MVNETA_SERDES_CFG is configured.
+> With this we no longer write to the MVNETA_SERDES_CFG on SoCs where it
+> doesn't exist.
+> 
+> Suggested-by: Russell King <rmk+kernel@armlinux.org.uk>
+> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+> ---
+>  drivers/net/ethernet/marvell/mvneta.c | 80 +++++++++++++++------------
+>  1 file changed, 44 insertions(+), 36 deletions(-)
+> 
+> diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
+> index 51889770958d8..9933eb4577d43 100644
+> --- a/drivers/net/ethernet/marvell/mvneta.c
+> +++ b/drivers/net/ethernet/marvell/mvneta.c
+> @@ -106,6 +106,7 @@
+>  #define      MVNETA_TX_IN_PRGRS                  BIT(1)
+>  #define      MVNETA_TX_FIFO_EMPTY                BIT(8)
+>  #define MVNETA_RX_MIN_FRAME_SIZE                 0x247c
+> +/* Only exists on Armada XP and Armada 370 */
+>  #define MVNETA_SERDES_CFG			 0x24A0
+>  #define      MVNETA_SGMII_SERDES_PROTO		 0x0cc7
+>  #define      MVNETA_QSGMII_SERDES_PROTO		 0x0667
+> @@ -3514,26 +3515,55 @@ static int mvneta_setup_txqs(struct mvneta_port *pp)
+>  	return 0;
+>  }
+>  
+> -static int mvneta_comphy_init(struct mvneta_port *pp)
+> +static int mvneta_comphy_init(struct mvneta_port *pp, phy_interface_t interface)
+>  {
+>  	int ret;
+>  
+> -	if (!pp->comphy)
+> -		return 0;
+> -
+> -	ret = phy_set_mode_ext(pp->comphy, PHY_MODE_ETHERNET,
+> -			       pp->phy_interface);
+> +	ret = phy_set_mode_ext(pp->comphy, PHY_MODE_ETHERNET, interface);
+>  	if (ret)
+>  		return ret;
+>  
+>  	return phy_power_on(pp->comphy);
+>  }
+>  
+> +static int mvneta_config_interface(struct mvneta_port *pp,
+> +				   phy_interface_t interface)
+> +{
+> +	int ret = 0;
+> +
+> +	if (pp->comphy) {
+> +		if (interface == PHY_INTERFACE_MODE_SGMII ||
+> +		    interface == PHY_INTERFACE_MODE_1000BASEX ||
+> +		    interface == PHY_INTERFACE_MODE_2500BASEX) {
+> +			ret = mvneta_comphy_init(pp, interface);
+> +		}
+> +	} else {
+> +		switch (interface) {
+> +		case PHY_INTERFACE_MODE_QSGMII:
+> +			mvreg_write(pp, MVNETA_SERDES_CFG,
+> +				    MVNETA_QSGMII_SERDES_PROTO);
+> +			break;
+> +
+> +		case PHY_INTERFACE_MODE_SGMII:
+> +		case PHY_INTERFACE_MODE_1000BASEX:
+> +			mvreg_write(pp, MVNETA_SERDES_CFG,
+> +				    MVNETA_SGMII_SERDES_PROTO);
+> +			break;
+> +		default:
+> +			return -EINVAL;
 
-Thank for your reply.
+I've just noticed that you made changes to the patch I sent, such as
+adding this default case that errors out, and by doing so, you have
+caused a regression by causing a WARN_ON() splat.
 
+It was not accidental that my patch had "break;" here instead of an
+error return, and I left the interface mode checking in
+mvneta_port_power_up() that you also removed.
 
-I didn't understand well, could you explain it in more detail?
+mvneta supports RGMII, and since RGMII doesn't use the serdes, there
+is no need to write to MVNETA_SGMII_SERDES_PROTO, and so we want to
+ignore those, not return -EINVAL.
 
-For what reason isn't panic better?
+Since the interface type was already validated both by phylink when
+the interface is brought up, and also by the driver at probe time
+through mvneta_port_power_up(), which performs early validation of
+the mode given in DT this was not a problem... there is no need to
+consider anything but the RGMII case in the "default" case here.
 
-Is it because there is a place to use other device-mapper?
+So, please fix this... at minimum fixing this switch() statement not
+to error out in the RGMII cases.  However, I think actually following
+what was in my patch (which was there for good reason) rather than
+randomly changing it would have been better.
 
-Or other things? I just wonder. I would like to hear various 
-explanations and information.
+This will have made the kernel on the SolidRun Clearfog platform
+trigger the WARN_ON()s for the dedicated gigabit port, which uses
+RGMII, and doesn't have a comphy specified in DT... and having
+waited for the compile to finish and the resulting kernel to boot...
 
-
-I just wanted user to use what they wanted through the options(flags).
-
-Yes, If adding a new feature, modify user-space to support.
-
-
-Oh, I'm sorry :(
-
-If when i suggested new patch, i will send you a patch that increased 
-minor version.
-
-Thank you for all your detailed information.
-
+WARNING: CPU: 0 PID: 268 at drivers/net/ethernet/marvell/mvneta.c:3512 mvneta_start_dev+0x220/0x23c
 
 Thanks.
 
-JeongHyeon Lee
+> +		}
+> +	}
+> +
+> +	pp->phy_interface = interface;
+> +
+> +	return ret;
+> +}
+> +
+>  static void mvneta_start_dev(struct mvneta_port *pp)
+>  {
+>  	int cpu;
+>  
+> -	WARN_ON(mvneta_comphy_init(pp));
+> +	WARN_ON(mvneta_config_interface(pp, pp->phy_interface));
+>  
+>  	mvneta_max_rx_size_set(pp, pp->pkt_size);
+>  	mvneta_txq_max_tx_size_set(pp, pp->pkt_size);
+> @@ -3907,14 +3937,10 @@ static void mvneta_mac_config(struct phylink_config *config, unsigned int mode,
+>  	if (state->speed == SPEED_2500)
+>  		new_ctrl4 |= MVNETA_GMAC4_SHORT_PREAMBLE_ENABLE;
+>  
+> -	if (pp->comphy && pp->phy_interface != state->interface &&
+> -	    (state->interface == PHY_INTERFACE_MODE_SGMII ||
+> -	     state->interface == PHY_INTERFACE_MODE_1000BASEX ||
+> -	     state->interface == PHY_INTERFACE_MODE_2500BASEX)) {
+> -		pp->phy_interface = state->interface;
+> -
+> -		WARN_ON(phy_power_off(pp->comphy));
+> -		WARN_ON(mvneta_comphy_init(pp));
+> +	if (pp->phy_interface != state->interface) {
+> +		if (pp->comphy)
+> +			WARN_ON(phy_power_off(pp->comphy));
+> +		WARN_ON(mvneta_config_interface(pp, state->interface));
+>  	}
+>  
+>  	if (new_ctrl0 != gmac_ctrl0)
+> @@ -4958,20 +4984,10 @@ static void mvneta_conf_mbus_windows(struct mvneta_port *pp,
+>  }
+>  
+>  /* Power up the port */
+> -static int mvneta_port_power_up(struct mvneta_port *pp, int phy_mode)
+> +static void mvneta_port_power_up(struct mvneta_port *pp, int phy_mode)
+>  {
+>  	/* MAC Cause register should be cleared */
+>  	mvreg_write(pp, MVNETA_UNIT_INTR_CAUSE, 0);
+> -
+> -	if (phy_mode == PHY_INTERFACE_MODE_QSGMII)
+> -		mvreg_write(pp, MVNETA_SERDES_CFG, MVNETA_QSGMII_SERDES_PROTO);
+> -	else if (phy_mode == PHY_INTERFACE_MODE_SGMII ||
+> -		 phy_interface_mode_is_8023z(phy_mode))
+> -		mvreg_write(pp, MVNETA_SERDES_CFG, MVNETA_SGMII_SERDES_PROTO);
+> -	else if (!phy_interface_mode_is_rgmii(phy_mode))
+> -		return -EINVAL;
+> -
+> -	return 0;
+>  }
+>  
+>  /* Device initialization routine */
+> @@ -5157,11 +5173,7 @@ static int mvneta_probe(struct platform_device *pdev)
+>  	if (err < 0)
+>  		goto err_netdev;
+>  
+> -	err = mvneta_port_power_up(pp, phy_mode);
+> -	if (err < 0) {
+> -		dev_err(&pdev->dev, "can't power up port\n");
+> -		goto err_netdev;
+> -	}
+> +	mvneta_port_power_up(pp, phy_mode);
+>  
+>  	/* Armada3700 network controller does not support per-cpu
+>  	 * operation, so only single NAPI should be initialized.
+> @@ -5315,11 +5327,7 @@ static int mvneta_resume(struct device *device)
+>  		}
+>  	}
+>  	mvneta_defaults_set(pp);
+> -	err = mvneta_port_power_up(pp, pp->phy_interface);
+> -	if (err < 0) {
+> -		dev_err(device, "can't power up port\n");
+> -		return err;
+> -	}
+> +	mvneta_port_power_up(pp, pp->phy_interface);
+>  
+>  	netif_device_attach(dev);
+>  
+> -- 
+> 2.27.0
+> 
+> 
 
-
-
-On 22/06/2020 16:58, Milan Broz wrote:
-> On 18/06/2020 19:09, Mike Snitzer wrote:
->> On Thu, Jun 18 2020 at 12:50pm -0400,
->> Sami Tolvanen <samitolvanen@google.com> wrote:
->>
->>> On Thu, Jun 18, 2020 at 11:44:45AM -0400, Mike Snitzer wrote:
->>>> I do not accept that panicing the system because of verity failure is
->>>> reasonable.
->>>>
->>>> In fact, even rebooting (via DM_VERITY_MODE_RESTART) looks very wrong.
->>>>
->>>> The device should be put in a failed state and left for admin recovery.
->>> That's exactly how the restart mode works on some Android devices. The
->>> bootloader sees the verification error and puts the device in recovery
->>> mode. Using the restart mode on systems without firmware support won't
->>> make sense, obviously.
->> OK, so I need further justification from Samsung why they are asking for
->> this panic mode.
-> I think when we have reboot already, panic is not much better :-)
->
-> Just please note that dm-verity is used not only in Android world (with own tooling)
-> but in normal Linux distributions, and I need to modify userspace (veritysetup) to support
-> and recognize this flag.
->
-> Please *always* increase minor dm-verity target version when adding a new feature
-> - we can then provide some better hint if it is not supported.
->
-> Thanks,
-> Milan
->
->
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
