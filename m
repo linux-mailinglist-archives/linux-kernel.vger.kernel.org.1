@@ -2,124 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF8220314C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:03:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08475203172
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725841AbgFVIDt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 04:03:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53806 "EHLO
+        id S1726110AbgFVIHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 04:07:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725777AbgFVIDs (ORCPT
+        with ESMTP id S1725881AbgFVIHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 04:03:48 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 715CEC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:03:48 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id r9so13911067wmh.2
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:03:48 -0700 (PDT)
+        Mon, 22 Jun 2020 04:07:51 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23738C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:07:50 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id m2so12333215otr.12
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:07:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ywxvkE6q0cbrbXTJPKV3+AgmecGjcEiMLhxzggDoG6o=;
-        b=B05aJafbS6ANDvwzCVLuomo34ddofnlUEe/dzFaae8H9n6l2rKJI6IrZm/zCfUTcG4
-         OCLkNzJtVemG5dLrAysL/t/jVfGhLyhQTy382vmEjbizP4S+UajTShxqcx/D3Ekis/sx
-         xjlHvyulEEeWN0OSkG4fYkV3K3HMQaRIBA0DdfA8Kz931INPhBaszFpcn02RhVs+MHbT
-         UejiUNIdu5uDqXrb0p/vZjjA1o51htumX5Jv2W2cDFrlcJUf6NNfdCjp1NGj6emOae9i
-         q4hwpXDA6BEg0uXpq9feIG9z6QgYtR0NfoQn0C5RgzJRgi4p8FemcfwKSmYpVKug8pAe
-         Ky5Q==
+        bh=s/Z1KJBqPxAzU1XgEqeVVc6digaYa1vATfTaGO5Of4k=;
+        b=IzYnAgcxm+xpe2QdoJiV1WLYry/jKp+aUcau2Htwx0SqiXCsVl8puTpiwvJU2tomPp
+         gI87/rn9FgEiiOIAAiFW5Cf5p01dhmyviPMchpSQAfyiDJ2tflG8LxVXBN5vIImkdgLc
+         Y6lXaX6ajm9dlaWwf2+xVX47m6XKhLl6FyIvrY5jTMUqXvTpymfUB9mJT5uOfHAnE7lh
+         89I8Ku04hZOHNaf7cDNWhQnihP9hzOZoniCUwkc6GgdJRysAUNKVo5wr0LPc1l5BI84R
+         aDfXLX4nGniF2ZcKansa+sYpnkMQQW6RzeTINilm/e9cowcR2pNo0LIiZd5UNxkC2C1K
+         Wlbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ywxvkE6q0cbrbXTJPKV3+AgmecGjcEiMLhxzggDoG6o=;
-        b=i8sdnkLYh0MBk/jextVWd+H8FHI/ffAjfix+wtiHW3s0yEFIV6BwCN805YZxc1VQ0G
-         FJ3GBD6R1z06dKyPNxLHuasP8f/3sLpYmkHI0hIOJ3m+U7UGYQGEqaAjru9ZUsC2wXTt
-         /fLaBvFiEI48p5JprCz75p2CTKNpRMRrnQS5UmSFnoG0u8ZmAWnG8xTN+vG0buQV9sAk
-         gXIO2VWW4jHJsdhCiydqdb6xPcMGfVi1v81sYUJtMGJnulrjQNc6wB9ekYbEbcCOjYzG
-         q4Eebt4GG19Hr3GMF6ZD3NPVS6vkyMiDsO/0ANoKtUPfF/DA28HKAjoPCOMZDNKTu9Yz
-         PnVg==
-X-Gm-Message-State: AOAM532vsyVud4mh0suNU2yZaM5PDkcZ0JoCWpuId/4nzZy+EVhFQZ51
-        6gn/4ukM28Hnc4Qi93GAAFO/wZKgsek=
-X-Google-Smtp-Source: ABdhPJyHIKw9WEzh6N3BXcgx11UwI1xf/377zz0nUKvGGyqiZiH4zAvWq3AiOlscznnhY/lIRP2Cng==
-X-Received: by 2002:a1c:2c45:: with SMTP id s66mr17990066wms.40.1592813026778;
-        Mon, 22 Jun 2020 01:03:46 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:110:673c:7143:200f:54b7])
-        by smtp.gmail.com with ESMTPSA id k16sm16791759wrp.66.2020.06.22.01.03.46
+        bh=s/Z1KJBqPxAzU1XgEqeVVc6digaYa1vATfTaGO5Of4k=;
+        b=n4lSDTQgrBfn70ZKVfzoe38IcPBBPVCdp2wvV05OFV0Cpps6kkjkHwS9b4l6DHr+en
+         p9l6y1k5DPnVRQby+a5rb0/1UnlatEMRxAg86C/VTuh2QcGL6+nPdUrKKs86Q2UbdoNk
+         xI8cJv6BB/jgHLQQBvyiAGVdL9D4RGDgL1DwLwzynQTZo06nHjPH6wSRqg8MArkhBChU
+         cmffnSrTen2ANUtILb+fNWQgSsCbivbee3+Fbly4LOsFVfNA+PKQmSnDGh+otgRuVFOu
+         CVIU/P1Sqru2eTlUXb4Kw4oyXSJRcSniSSPJXXJVZgdtyWYmktowZUHmWE9c1eqmsglr
+         yvvA==
+X-Gm-Message-State: AOAM533JMgRD1Ic32/I6AcnDsQH90SM5YzHunDz6eknguBb0+8frG5CH
+        IlLKlsKRPKCczZSOr69LcCU19Q==
+X-Google-Smtp-Source: ABdhPJxuIPLfMi3Tn0La+LJtRlI42WZAm5jHZEVxLV276qtbDnq4/rDsn3UqE9MZ+dKeEP1jO66wGQ==
+X-Received: by 2002:a05:6830:1c7b:: with SMTP id s27mr2790946otg.194.1592813269518;
+        Mon, 22 Jun 2020 01:07:49 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id h23sm3274987oou.14.2020.06.22.01.07.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 01:03:46 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 10:03:45 +0200
-From:   Matthias Maennich <maennich@google.com>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     Julia Lawall <julia.lawall@inria.fr>, linux-kernel@vger.kernel.org,
-        kernel-team@android.com, YueHaibing <yuehaibing@huawei.com>,
-        jeyu@kernel.org, cocci@systeme.lip6.fr, stable@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] scripts: add dummy report mode to add_namespace.cocci
-Message-ID: <20200622080345.GD260206@google.com>
-References: <20200604164145.173925-1-maennich@google.com>
- <alpine.DEB.2.21.2006042130080.2577@hadrien>
- <bf757b9d-6a67-598b-ed6e-7ee24464abfa@linuxfoundation.org>
+        Mon, 22 Jun 2020 01:07:48 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 01:05:03 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v2 3/8] soc: qcom: socinfo: Add socinfo entry for SDM630
+Message-ID: <20200622080503.GQ128451@builder.lan>
+References: <20200622075749.21925-1-konradybcio@gmail.com>
+ <20200622075749.21925-4-konradybcio@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bf757b9d-6a67-598b-ed6e-7ee24464abfa@linuxfoundation.org>
+In-Reply-To: <20200622075749.21925-4-konradybcio@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 04, 2020 at 02:39:18PM -0600, Shuah Khan wrote:
->On 6/4/20 1:31 PM, Julia Lawall wrote:
->>
->>
->>On Thu, 4 Jun 2020, Matthias Maennich wrote:
->>
->>>When running `make coccicheck` in report mode using the
->>>add_namespace.cocci file, it will fail for files that contain
->>>MODULE_LICENSE. Those match the replacement precondition, but spatch
->>>errors out as virtual.ns is not set.
->>>
->>>In order to fix that, add the virtual rule nsdeps and only do search and
->>>replace if that rule has been explicitly requested.
->>>
->>>In order to make spatch happy in report mode, we also need a dummy rule,
->>>as otherwise it errors out with "No rules apply". Using a script:python
->>>rule appears unrelated and odd, but this is the shortest I could come up
->>>with.
->>>
->>>Adjust scripts/nsdeps accordingly to set the nsdeps rule when run trough
->>>`make nsdeps`.
->>>
->>>Suggested-by: Julia Lawall <julia.lawall@inria.fr>
->>>Fixes: c7c4e29fb5a4 ("scripts: add_namespace: Fix coccicheck failed")
->>>Cc: YueHaibing <yuehaibing@huawei.com>
->>>Cc: jeyu@kernel.org
->>>Cc: cocci@systeme.lip6.fr
->>>Cc: stable@vger.kernel.org
->>>Signed-off-by: Matthias Maennich <maennich@google.com>
->>
->>Acked-by: Julia Lawall <julia.lawall@inria.fr>
->>
->>Shuah reported the problem to me, so you could add
->>
->>Reported-by: Shuah Khan <skhan@linuxfoundation.org>
->>
->
->Very cool. No errors with this patch. Thanks for fixing it
->quickly.
+On Mon 22 Jun 00:57 PDT 2020, Konrad Dybcio wrote:
 
-I am happy I could fix that and thanks for confirming. I assume your
-Tested-by could be added?
+> This patch adds missing soc ID for SDM630.
+> 
+> Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
 
-Is somebody willing to take this patch through their tree?
+Applied
 
-Cheers,
-Matthias
+Thanks,
+Bjorn
 
->
->thanks,
->-- Shuah
->
->
->
+> ---
+>  drivers/soc/qcom/socinfo.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
+> index 5983c6ffb078..705f142ee588 100644
+> --- a/drivers/soc/qcom/socinfo.c
+> +++ b/drivers/soc/qcom/socinfo.c
+> @@ -202,6 +202,7 @@ static const struct soc_id soc_id[] = {
+>  	{ 310, "MSM8996AU" },
+>  	{ 311, "APQ8096AU" },
+>  	{ 312, "APQ8096SG" },
+> +	{ 318, "SDM630" },
+>  	{ 321, "SDM845" },
+>  	{ 341, "SDA845" },
+>  };
+> -- 
+> 2.27.0
+> 
