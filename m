@@ -2,29 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2972044AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BC962044A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 01:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731455AbgFVXq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 19:46:58 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:54784 "EHLO
+        id S1731308AbgFVXq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 19:46:27 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:54792 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730632AbgFVXqK (ORCPT
+        with ESMTP id S1731093AbgFVXqM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 19:46:10 -0400
+        Mon, 22 Jun 2020 19:46:12 -0400
 Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein.fritz.box)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jnW8e-0005DO-Lz; Mon, 22 Jun 2020 23:46:08 +0000
+        id 1jnW8f-0005DO-25; Mon, 22 Jun 2020 23:46:09 +0000
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-alpha@vger.kernel.org
-Subject: [PATCH 09/17] alpha: switch to copy_thread_tls()
-Date:   Tue, 23 Jun 2020 01:43:18 +0200
-Message-Id: <20200622234326.906346-10-christian.brauner@ubuntu.com>
+        Mark Salter <msalter@redhat.com>,
+        Aurelien Jacquiot <jacquiot.aurelien@gmail.com>,
+        linux-c6x-dev@linux-c6x.org
+Subject: [PATCH 10/17] c6x: switch to copy_thread_tls()
+Date:   Tue, 23 Jun 2020 01:43:19 +0200
+Message-Id: <20200622234326.906346-11-christian.brauner@ubuntu.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200622234326.906346-1-christian.brauner@ubuntu.com>
 References: <20200622234326.906346-1-christian.brauner@ubuntu.com>
@@ -39,52 +41,44 @@ Use the copy_thread_tls() calling convention which passes tls through a
 register. This is required so we can remove the copy_thread{_tls}() split
 and remove the HAVE_COPY_THREAD_TLS macro.
 
-Cc: linux-alpha@vger.kernel.org
+CC: Mark Salter <msalter@redhat.com>
+Cc: Aurelien Jacquiot <jacquiot.aurelien@gmail.com>
+Cc: linux-c6x-dev@linux-c6x.org
 Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
- arch/alpha/Kconfig          | 1 +
- arch/alpha/kernel/process.c | 9 ++++-----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ arch/c6x/Kconfig          | 1 +
+ arch/c6x/kernel/process.c | 6 +++---
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-index 10862c5a8c76..b01515c6b2ed 100644
---- a/arch/alpha/Kconfig
-+++ b/arch/alpha/Kconfig
-@@ -38,6 +38,7 @@ config ALPHA
- 	select OLD_SIGSUSPEND
- 	select CPU_NO_EFFICIENT_FFS if !ALPHA_EV67
- 	select MMU_GATHER_NO_RANGE
+diff --git a/arch/c6x/Kconfig b/arch/c6x/Kconfig
+index 6444ebfd06a6..9cde76a5928e 100644
+--- a/arch/c6x/Kconfig
++++ b/arch/c6x/Kconfig
+@@ -22,6 +22,7 @@ config C6X
+ 	select GENERIC_CLOCKEVENTS
+ 	select MODULES_USE_ELF_RELA
+ 	select MMU_GATHER_NO_RANGE if MMU
 +	select HAVE_COPY_THREAD_TLS
- 	help
- 	  The Alpha is a 64-bit general-purpose processor designed and
- 	  marketed by the Digital Equipment Corporation of blessed memory,
-diff --git a/arch/alpha/kernel/process.c b/arch/alpha/kernel/process.c
-index b45f0b0d6511..dfdb6b6ba61c 100644
---- a/arch/alpha/kernel/process.c
-+++ b/arch/alpha/kernel/process.c
-@@ -233,10 +233,9 @@ release_thread(struct task_struct *dead_task)
+ 
+ config MMU
+ 	def_bool n
+diff --git a/arch/c6x/kernel/process.c b/arch/c6x/kernel/process.c
+index cb9c8b63cddd..afa3ea9a93aa 100644
+--- a/arch/c6x/kernel/process.c
++++ b/arch/c6x/kernel/process.c
+@@ -104,9 +104,9 @@ void start_thread(struct pt_regs *regs, unsigned int pc, unsigned long usp)
  /*
-  * Copy architecture-specific thread state
+  * Copy a new thread context in its stack.
   */
--int
--copy_thread(unsigned long clone_flags, unsigned long usp,
--	    unsigned long kthread_arg,
--	    struct task_struct *p)
+-int copy_thread(unsigned long clone_flags, unsigned long usp,
+-		unsigned long ustk_size,
+-		struct task_struct *p)
 +int copy_thread_tls(unsigned long clone_flags, unsigned long usp,
-+		    unsigned long kthread_arg, struct task_struct *p,
++		    unsigned long ustk_size, struct task_struct *p,
 +		    unsigned long tls)
  {
- 	extern void ret_from_fork(void);
- 	extern void ret_from_kernel_thread(void);
-@@ -267,7 +266,7 @@ copy_thread(unsigned long clone_flags, unsigned long usp,
- 	   required for proper operation in the case of a threaded
- 	   application calling fork.  */
- 	if (clone_flags & CLONE_SETTLS)
--		childti->pcb.unique = regs->r20;
-+		childti->pcb.unique = tls;
- 	else
- 		regs->r20 = 0;	/* OSF/1 has some strange fork() semantics.  */
- 	childti->pcb.usp = usp ?: rdusp();
+ 	struct pt_regs *childregs;
+ 
 -- 
 2.27.0
 
