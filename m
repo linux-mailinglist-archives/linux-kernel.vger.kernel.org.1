@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0904B202FAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 08:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5735202FBE
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 08:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731262AbgFVGZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 02:25:40 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:39272 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731248AbgFVGZj (ORCPT
+        id S1731286AbgFVG3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 02:29:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731264AbgFVG3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 02:25:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592807138;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=iWL52GgKhbpQ7k8TUhHZOgGLDFtwgrzAarEVSsatCzw=;
-        b=Eb7tmoflb6VBCF4WnplXCDFWv8sfUkiKuN37MbYhS+Wamm0lo7mAa1eUEeGV2LVBwL7hiZ
-        5TWavyoCqDUV1P2+3vJ8yXlBtVwu8gH1uDE8QxaP6FLGCyOWQeG5l4I6TnFPbFNKuLdhQE
-        cyQ2+VOObj7JAK53IxxowPL5DFsULGc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-421-EkiwYrYNOTaGGSmPNZE8MQ-1; Mon, 22 Jun 2020 02:25:34 -0400
-X-MC-Unique: EkiwYrYNOTaGGSmPNZE8MQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6EEE4800053;
-        Mon, 22 Jun 2020 06:25:32 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.236])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 583EC7C1FF;
-        Mon, 22 Jun 2020 06:25:29 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Mon, 22 Jun 2020 08:25:32 +0200 (CEST)
-Date:   Mon, 22 Jun 2020 08:25:28 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Alexander Kapshuk <alexander.kapshuk@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, christian.brauner@ubuntu.com,
-        ebiederm@xmission.com, akpm@linux-foundation.org,
-        liuzhiqiang26@huawei.com, joel@joelfernandes.org,
-        paulmck@linux.vnet.ibm.com, asmadeus@codewreck.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] kernel/signal.c: Export symbol __lock_task_sighand
-Message-ID: <20200622062527.GA6516@redhat.com>
-References: <20200621133704.77896-1-alexander.kapshuk@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200621133704.77896-1-alexander.kapshuk@gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Mon, 22 Jun 2020 02:29:38 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03B76C061795
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 23:29:38 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id w1so14539932qkw.5
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 23:29:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=BxvQQx+Wy1krZ65HicoIC7/eb0GyxDGrmJy22QqCBA0=;
+        b=M03jICB363eoqmJKO7SRs6VbzeWui/1FNicU9CHRcFjolXrAUSsTXmsLebSn+KznZF
+         +qg1WYg3oK3zdZHPyuA/ESjfDIG+RCNdp7JuD7mimhMInBnRzOiTGUWoeH4dGhaga7/C
+         4iurT5ac7MzQXq8xKJX8qC3Q8JOR8RBWo/RuiGNYPEd+ZWSeFTjtDXRuJoSFgvs9fK6T
+         WSqgixYxYyyeRJ74QdZitfRJe1d8rFJ0ckbVojlOKvbzdYJEHGiKR+srF61LxoZLxtNu
+         Hwwj2RbGXBW5pvc6xmWVRxUZR9uovpp+KZ3PqRwQaXX9egp7jkKcrAXXIT4rOrGjVRWA
+         qmpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=BxvQQx+Wy1krZ65HicoIC7/eb0GyxDGrmJy22QqCBA0=;
+        b=Tt6fGfKbzEzgFsllkWnbsNOI1TAcJlY42+O2sgR05leoaIrHXozqCB/D18CayFM74u
+         6PQT8/Uj4/8eywZJgBeakEZEDBV5p5fdz4guYvuln5Oue4EZbP5uvpyhSjR3HpZmZXPm
+         +owAfnF59d3j86ybeNfTjVARcw5+Q3TlZeQQKJZmOxdfUxgUiCLSbHa1qvxJMMOaWNtE
+         03nnitGGL8JWuweYB6kjkZ8SYi5HTw3Zv7nxfOGoOo49zMnHKynTQCg83tNnhkbFOsZK
+         /+20kB1gt1LnJ3eszO6iucp9q7467IgtmYWsZuWGQKw21LnOBc5LqrAn0rPGzTpA0Bbe
+         KZ9A==
+X-Gm-Message-State: AOAM531aQNX/4tT5Hte3YeIVNZYE2lEQyRJZBvN1xqsQQRyVyVJknOrw
+        9PEstgcandw8F93ncOUDJo9k8A==
+X-Google-Smtp-Source: ABdhPJwUojk4T47kPFkLOHYRZhssHDuQcnpEx0Vt6cKmSFoNT8fTpSVALdMBi7q/kStIMb6uHlvEpw==
+X-Received: by 2002:a37:c0f:: with SMTP id 15mr621940qkm.427.1592807377208;
+        Sun, 21 Jun 2020 23:29:37 -0700 (PDT)
+Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id s42sm14692579qtk.14.2020.06.21.23.29.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 21 Jun 2020 23:29:36 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Qian Cai <cai@lca.pw>
+Mime-Version: 1.0 (1.0)
+Subject: Re: linux-next boot error: WARNING in kmem_cache_free
+Date:   Mon, 22 Jun 2020 02:29:35 -0400
+Message-Id: <4A35E92B-9DEF-4833-81DD-0C6FA50EB174@lca.pw>
+References: <000000000000617f9d05a8a5a2c4@google.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org, sfr@canb.auug.org.au,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+In-Reply-To: <000000000000617f9d05a8a5a2c4@google.com>
+To:     syzbot <syzbot+95bccd805a4aa06a4b0d@syzkaller.appspotmail.com>
+X-Mailer: iPhone Mail (17F80)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/21, Alexander Kapshuk wrote:
->
-> Export symbol __lock_task_sighand, so it is accessible from code compiled
-> as modules.
-> This fixes the following modpost error:
-> ERROR: modpost: "__lock_task_sighand" [net/9p/9pnet.ko] undefined!
->
-> Where __lock_task_sighand is called via lock_task_sighand in net/9p/client.c
-> See https://lore.kernel.org/lkml/20200620201456.14304-1-alexander.kapshuk@gmail.com/.
 
-Why?
 
-current->sighand is stable and can't go away. Unless "current" is exiting and
-has already passed exit_notify(). So I don't think net/9p needs this helper.
+> On Jun 22, 2020, at 1:37 AM, syzbot <syzbot+95bccd805a4aa06a4b0d@syzkaller=
+.appspotmail.com> wrote:
+>=20
+> WARNING: CPU: 0 PID: 0 at mm/slab.h:232 kmem_cache_free+0x0/0x200 mm/slab.=
+c:2262
 
-However, the games with TIF_SIGPENDING doesn't look right in any case.
+Is there any particular reason to use CONFIG_SLAB rather than CONFIG_SLUB?
 
-Oleg.
+You are really asking for trouble to test something that almost nobody is ex=
+ercising that code path very well nowadays.
 
+Anyway, there is a patchset in -mm that might well introduce this regression=
+ that we could go to confirm it, but I kind of don=E2=80=99t want to spend t=
+oo much time on SLAB that suppose to be obsolete eventually.=
