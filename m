@@ -2,59 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75404203BE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:02:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F435203C07
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729860AbgFVQCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 12:02:44 -0400
-Received: from sonic302-21.consmr.mail.ne1.yahoo.com ([66.163.186.147]:45874
-        "EHLO sonic302-21.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729716AbgFVQCW (ORCPT
+        id S1729595AbgFVQDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 12:03:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729871AbgFVQDE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 12:02:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1592841741; bh=cK2qy9Lv5SAgMg9nAvfVmkJPj46H3ss3vOVyjpHm6Nk=; h=Date:From:Reply-To:Subject:References:From:Subject; b=imnMzKvnrwdEkzevY9v55JCHWrS7mFcRp2xLflBpdsWBX5v32iTt1Jwj292Sqyxc6zTWfVf6UW3RltjDxv8H8ZAxxFg96tpPBoXA2f/GRkfTuiNcUr3yDzOGiHeT9IqR//B+9C8c9YoGDJPnAeuuKcQvLl1HS8J+STK4/r0WZ3jbtWFF0MKDjydg+AbeXShoRDHqwsqAaAi7D9jDq8wNDWBIR81puaAh7APGDPK32RqjpFS85hxXrbmotW59Gm/gC9SoLB52q4udtwMI++FS4HYmIHt+kUh9tNcMAsNUvFYo0HWMN59EiLf7lYGm/4AR40adfmghUfkmt4dYpTZmZQ==
-X-YMail-OSG: AhKkJLAVM1lDQ3XPPTTJWpEw.A_YPk4v7tBrtMEv9XTYrBN0vKxPyUyPokZyCLH
- 0NPJEnbM.Ixt5u0eXkMwZesEBqS.rCtCLJgnod2Yg.I9TXOm0suNzcmJ92mBaA3mHgRFUusjI.6E
- 3Gu4LEq019.le8uhDgpgUZ.YgtmiKAQJK6Bd4WPLqozbdEc8urSPipLpvwJTvKec65xmptWyRiVv
- 5wejfhjut7ltVV2EWvbGnxpPsKrHXW63gZY0z7W.qC8yTTTM6xXIAPM6OYdYDYNn.6t5yJFWlC1P
- OIdbZEYbWLsjaYGAZ3nhw68imywZs7JgVqTzxfR4ZQQxpuo3K8t9CM9O0hpOCt10FP__XXwyrmrD
- TCoCE7B_Edu3G.zjOUn_rksR4jYB.m1Rp.1vZ_bLxnQwCiAul5Wqfj8PNdUGzT.zvxnBCUVqWq9J
- 8hXM6oMyn8gklCF.R8KCTVo6NRJRq4thjGWIexrpJEGu0QolvkJTIALFEd6_slAReLmAOEup3xKy
- .77XY9y0L2WZlQcf1QY4ryEv90HkLK9R59Zd1MxuC8qefRgY6y6xUFmVBWO8SDJCCjnQpB48PRDP
- pRTSfD8hEjxrcMoyLQRR8ik6SRBEuL1N.zoJ2juJT7TtdJItukcqyaFlw7VOC6cm49vWb13NtnZ0
- gQ2bWEWTG5v0uAlc54_ulltpKs.Fgm6hkagBtyzunEJ52PGAuturV.LPWyLoBYPiB1KC1HlV8gI8
- yJqtTplsyPL2eALndgi_xv5WXRslUdVun50zfx9iDK5v_kT1lyZrnl7BpPa5N7roHYs5FCR3fGlt
- 00HJ7sf.lnan3Im8PEbT96k38NwI6o6wqQk3XTx1x0TOib38VwKLgaWNY916uiRI1upzFCMVqmW6
- hKW.i_z2qDWeeQaZVyBhDmfLTpSCKpEZXqJt.HWEa0uB7F6lyRoT1rQEzhMY_zbISz6YbRmtNDlq
- VLlEzjYA6uILpMVD7EkmwXGP0XOJgDIix93HShigByDXDbmOlbnVPelpKvxPRFg3gnhpf.0Rc47i
- 08Ic.liUMCD9zHGFCga9cXgoGaM8kFbRyDB3CB8uLHuuV8rIwOstkm24RLt0t3H1wtfuP85AC7r8
- v042NbRsPX1Mj80LTxFt.KStV8ND4Dc1.IiPBslhVUpEA9f2YrGnkjCHG4.U4j0M0U489djAouYX
- y9F8lECiGIH30pwUi5p9NUzViYBtaTM7ID67rbGjIKdkEdFs14rCm3KSzct0U2izLUB1NerwsRiF
- IQWasnNhp61WOxqpf4zyo6bEJMCV1B8QkTG.8HvHCcJtAwYQhWHkE5SwAzxSGopkwGBC4.Xf9
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.ne1.yahoo.com with HTTP; Mon, 22 Jun 2020 16:02:21 +0000
-Date:   Mon, 22 Jun 2020 16:02:19 +0000 (UTC)
-From:   Karim Zakari <kariim1960z@gmail.com>
-Reply-To: kzakari04@gmail.com
-Message-ID: <1507214802.1850985.1592841739314@mail.yahoo.com>
-Subject: URGENT REPLY.
+        Mon, 22 Jun 2020 12:03:04 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153CAC061796
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 09:03:04 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id t194so90792wmt.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 09:03:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=G7tyEQo0BCpuFpa+wLLnML4BSViFafq4hYNcPsQY6yA=;
+        b=OFzgfBlwCkrOzvIyVR98+1/FXds75qvrmXjxqkeiZis2MHuM8t8xekOzHXDkzHuUqC
+         /Um6dZ6t4Srg/Fp14boWWHax79dKiFmIXrhDSdg8YDHvC8v2X46ysLHrIqLc49O3yk9v
+         g4GxaTx1Hr78vxDccYzfFtECXgXqX1pOyPLoVzuHjWHax5i8FNFSYgOjRmkBoSzvoPVx
+         XED1CZ5vMKFHce07Ux4WKGnUSF5k2sMmuddM43Ab1B4iGGnPLHMWo4w5jJUdbh43V0nD
+         vSTgBCy/aJDKy9zjT6fEMZ1n9SGFXHZd5sC9LdGsI7hzu2crXDasuj1vY44cIQm7vTNE
+         sCmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=G7tyEQo0BCpuFpa+wLLnML4BSViFafq4hYNcPsQY6yA=;
+        b=cxkmmJXYHG3vecjb3pQCbIhMAUfxgVpFGgZTlY9IN54XKCwjlahuaTDMW2B3jfR741
+         qEHM7k8e+TLuDEjhwRpk45++ffXJ8yQSorC+qCbLUSSRSdFuX0RaB5Oe8BEF62sRvRex
+         nP8/U051ediv7A8WTlvX+ccuzHp88xJDcfRdb1kThSbkFOuvwAPUjYEH79zh4bRE5911
+         sqiYBKWaiLQEEptrnHJoGCiZJpBV93N4u8pstn+PtOs3Fvj616q2KRJhqJ3EqiseyNZe
+         BkMBoseLhhz3b9LP8AOmM4oyGO+XrkbKyJh1BM2UErDtOVW3hJe0C61VC4rcE/toUsnw
+         klXQ==
+X-Gm-Message-State: AOAM532qSbFl0A/f1eTCOKT+34RHiF4+LdYFX4bd8mG67dUUDrAiRXzH
+        OKiVNk3r6vTil8k91KxNIDQ0Kw==
+X-Google-Smtp-Source: ABdhPJwTHUBPzo//TrGs0VsDrKoOp6hfyS3KNMezVrR1B8EvnSENYTaLkUxTvt8cK17P23kZv45cqA==
+X-Received: by 2002:a05:600c:2201:: with SMTP id z1mr18818319wml.70.1592841782682;
+        Mon, 22 Jun 2020 09:03:02 -0700 (PDT)
+Received: from holly.lan (cpc141214-aztw34-2-0-cust773.18-1.cable.virginm.net. [86.9.19.6])
+        by smtp.gmail.com with ESMTPSA id j18sm18502577wrn.59.2020.06.22.09.03.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 09:03:02 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 17:03:00 +0100
+From:   Daniel Thompson <daniel.thompson@linaro.org>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     kgdb-bugreport@lists.sourceforge.net, linux-serial@vger.kernel.org,
+        gregkh@linuxfoundation.org, jason.wessel@windriver.com,
+        dianders@chromium.org, jslaby@suse.com, linux@armlinux.org.uk,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/7] kgdb: Add request_nmi() to the io ops table for
+ kgdboc
+Message-ID: <20200622160300.avgfhnfkpqzqqtsr@holly.lan>
+References: <1592835984-28613-1-git-send-email-sumit.garg@linaro.org>
+ <1592835984-28613-4-git-send-email-sumit.garg@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1507214802.1850985.1592841739314.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16138 YMailNodin Mozilla/5.0 (Windows NT 6.1; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1592835984-28613-4-git-send-email-sumit.garg@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 22, 2020 at 07:56:20PM +0530, Sumit Garg wrote:
+> From: Daniel Thompson <daniel.thompson@linaro.org>
+> 
+> Add request_nmi() callback to install a non-maskable interrupt handler
+> corresponding to IRQ retrieved from polling interface. If NMI handler
+> installation fails due to missing support from underlying irqchip driver
+> then fallback to install it as normal interrupt handler.
+> 
+> Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
+> Co-developed-by: Sumit Garg <sumit.garg@linaro.org>
+> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  drivers/tty/serial/kgdboc.c | 35 +++++++++++++++++++++++++++++++++++
+>  include/linux/kgdb.h        |  7 +++++++
+>  2 files changed, 42 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
+> index 84ffede..263afae 100644
+> --- a/drivers/tty/serial/kgdboc.c
+> +++ b/drivers/tty/serial/kgdboc.c
+> @@ -19,6 +19,9 @@
+>  #include <linux/console.h>
+>  #include <linux/vt_kern.h>
+>  #include <linux/input.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/irq.h>
+> +#include <linux/irqdesc.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/serial_core.h>
+> @@ -390,12 +393,44 @@ static void kgdboc_post_exp_handler(void)
+>  	kgdboc_restore_input();
+>  }
+>  
+> +static int kgdb_tty_irq;
+> +
+> +static int kgdboc_request_nmi(irq_handler_t fn, void *dev_id)
+> +{
+> +	int irq, res;
+> +
+> +	/* Better to avoid double allocation in the tty driver! */
+> +	if (kgdb_tty_irq)
+> +		return 0;
+> +
+> +	if (!kgdb_tty_driver->ops->poll_get_irq)
+> +		return -ENODEV;
+> +
+> +	irq =
+> +	    kgdb_tty_driver->ops->poll_get_irq(kgdb_tty_driver, kgdb_tty_line);
+> +	if (irq <= 0)
+> +		return irq ? irq : -ENODEV;
+> +
+> +	irq_set_status_flags(irq, IRQ_NOAUTOEN);
+> +	res = request_nmi(irq, fn, IRQF_PERCPU, "kgdboc", dev_id);
+
+Why do we need IRQF_PERCPU here. A UART interrupt is not normally
+per-cpu?
 
 
-Good-Day Friend,
+> +	if (res) {
+> +		res = request_irq(irq, fn, IRQF_SHARED, "kgdboc", dev_id);
 
- Hope you are doing great Today. I have a proposed business deal worthy (US$16.5 Million Dollars) that will benefit both parties. This is legitimate' legal and your personality will not be compromised.
+IRQF_SHARED?
 
-Waiting for your response for more details, As you are willing to execute this business opportunity with me.
+Currrently there is nothing that prevents concurrent activation of
+ttyNMI0 and the underlying serial driver. Using IRQF_SHARED means it
+becomes possible for both drivers to try to service the same interrupt.
+That risks some rather "interesting" problems.
 
-Sincerely Yours,
-Mr. Karim Zakari.
+
+Daniel.
+
+
+> +		WARN_ON(res);
+> +	}
+> +
+> +	enable_irq(irq);
+> +
+> +	kgdb_tty_irq = irq;
+> +	return 0;
+> +}
+> +
+>  static struct kgdb_io kgdboc_io_ops = {
+>  	.name			= "kgdboc",
+>  	.read_char		= kgdboc_get_char,
+>  	.write_char		= kgdboc_put_char,
+>  	.pre_exception		= kgdboc_pre_exp_handler,
+>  	.post_exception		= kgdboc_post_exp_handler,
+> +	.request_nmi		= kgdboc_request_nmi,
+>  };
+>  
+>  #if IS_BUILTIN(CONFIG_KGDB_SERIAL_CONSOLE)
+> diff --git a/include/linux/kgdb.h b/include/linux/kgdb.h
+> index 529116b..b32b044 100644
+> --- a/include/linux/kgdb.h
+> +++ b/include/linux/kgdb.h
+> @@ -16,6 +16,7 @@
+>  #include <linux/linkage.h>
+>  #include <linux/init.h>
+>  #include <linux/atomic.h>
+> +#include <linux/interrupt.h>
+>  #ifdef CONFIG_HAVE_ARCH_KGDB
+>  #include <asm/kgdb.h>
+>  #endif
+> @@ -276,6 +277,10 @@ struct kgdb_arch {
+>   * the I/O driver.
+>   * @post_exception: Pointer to a function that will do any cleanup work
+>   * for the I/O driver.
+> + * @request_nmi: Pointer to a function that can install an non-maskable
+> + * interrupt handler that will be called when a character is pending and that
+> + * can be cleared by calling @read_char until it returns NO_POLL_CHAR. If NMI
+> + * installation fails then fallback to install normal interrupt handler.
+>   * @cons: valid if the I/O device is a console; else NULL.
+>   */
+>  struct kgdb_io {
+> @@ -287,6 +292,8 @@ struct kgdb_io {
+>  	void			(*deinit) (void);
+>  	void			(*pre_exception) (void);
+>  	void			(*post_exception) (void);
+> +	int			(*request_nmi)(irq_handler_t nmi_handler,
+> +					       void *dev_id);
+>  	struct console		*cons;
+>  };
+>  
+> -- 
+> 2.7.4
+> 
