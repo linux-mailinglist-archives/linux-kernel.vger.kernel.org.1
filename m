@@ -2,200 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CF00202F38
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 06:28:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECA6D202F4D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 06:32:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726079AbgFVE2i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 00:28:38 -0400
-Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:15666 "EHLO
-        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725497AbgFVE2h (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 00:28:37 -0400
-Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
-  by alexa-out-sd-02.qualcomm.com with ESMTP; 21 Jun 2020 21:28:37 -0700
-Received: from sivaprak-linux.qualcomm.com ([10.201.3.202])
-  by ironmsg01-sd.qualcomm.com with ESMTP; 21 Jun 2020 21:28:33 -0700
-Received: by sivaprak-linux.qualcomm.com (Postfix, from userid 459349)
-        id 37800218E3; Mon, 22 Jun 2020 09:58:32 +0530 (IST)
-From:   Sivaprakash Murugesan <sivaprak@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        sivaprak@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V8 4/4] clk: qcom: Add ipq6018 apss clock controller
-Date:   Mon, 22 Jun 2020 09:58:12 +0530
-Message-Id: <1592800092-20533-5-git-send-email-sivaprak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1592800092-20533-1-git-send-email-sivaprak@codeaurora.org>
-References: <1592800092-20533-1-git-send-email-sivaprak@codeaurora.org>
+        id S1726165AbgFVEcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 00:32:18 -0400
+Received: from mga11.intel.com ([192.55.52.93]:48287 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725934AbgFVEcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 00:32:18 -0400
+IronPort-SDR: IfrdkJvhcBZLZ3jS64wy9VAfIq+HU6oT5f5lmyaCZJoVXGexJmj1Ez6rSGroQPyoMK0z6BNXWN
+ D31BeQLPf/Zw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9659"; a="141922171"
+X-IronPort-AV: E=Sophos;i="5.75,265,1589266800"; 
+   d="scan'208";a="141922171"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2020 21:32:17 -0700
+IronPort-SDR: Yx+XOhfbkDOqzLdXMgDXDVJRW7YxbzqttsA38FgTYJQeoyfz/be9ut09lQUtW8CFVuu0vnn6Pk
+ /qkeAr3ahYgA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,265,1589266800"; 
+   d="scan'208";a="262860550"
+Received: from yy-desk-7060.sh.intel.com (HELO localhost) ([10.239.159.127])
+  by fmsmga007.fm.intel.com with ESMTP; 21 Jun 2020 21:32:14 -0700
+Date:   Mon, 22 Jun 2020 12:32:14 +0800
+From:   Yuan Yao <yuan.yao@linux.intel.com>
+To:     Mohammed Gamal <mgamal@redhat.com>
+Cc:     kvm@vger.kernel.org, pbonzini@redhat.com,
+        linux-kernel@vger.kernel.org, vkuznets@redhat.com,
+        sean.j.christopherson@intel.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, thomas.lendacky@amd.com,
+        babu.moger@amd.com
+Subject: Re: [PATCH v2 00/11] KVM: Support guest MAXPHYADDR < host MAXPHYADDR
+Message-ID: <20200622043214.2qy4iteismo45lbb@yy-desk-7060>
+References: <20200619153925.79106-1-mgamal@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200619153925.79106-1-mgamal@redhat.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The CPU on Qualcomm ipq6018 devices are clocked primarily by a aplha PLL
-and xo which are connected to a mux and enable block.
-
-Add support for the mux and enable block which feeds the CPU on ipq6018
-devices.
-
-Reviewed-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
----
- drivers/clk/qcom/Kconfig        |  11 +++++
- drivers/clk/qcom/Makefile       |   1 +
- drivers/clk/qcom/apss-ipq6018.c | 106 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 118 insertions(+)
- create mode 100644 drivers/clk/qcom/apss-ipq6018.c
-
-diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-index 49e265ddcdab..f510ef61db69 100644
---- a/drivers/clk/qcom/Kconfig
-+++ b/drivers/clk/qcom/Kconfig
-@@ -97,6 +97,17 @@ config IPQ_APSS_PLL
- 	  Say Y if you want to support CPU frequency scaling on ipq based
- 	  devices.
- 
-+config IPQ_APSS_6018
-+	tristate "IPQ APSS Clock Controller"
-+	select IPQ_APSS_PLL
-+	depends on QCOM_APCS_IPC || COMPILE_TEST
-+	help
-+	  Support for APSS clock controller on IPQ platforms. The
-+	  APSS clock controller manages the Mux and enable block that feeds the
-+	  CPUs.
-+	  Say Y if you want to support CPU frequency scaling on
-+	  ipq based devices.
-+
- config IPQ_GCC_4019
- 	tristate "IPQ4019 Global Clock Controller"
- 	help
-diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
-index 7942c00902ec..21439b94395a 100644
---- a/drivers/clk/qcom/Makefile
-+++ b/drivers/clk/qcom/Makefile
-@@ -20,6 +20,7 @@ clk-qcom-$(CONFIG_QCOM_GDSC) += gdsc.o
- obj-$(CONFIG_APQ_GCC_8084) += gcc-apq8084.o
- obj-$(CONFIG_APQ_MMCC_8084) += mmcc-apq8084.o
- obj-$(CONFIG_IPQ_APSS_PLL) += apss-ipq-pll.o
-+obj-$(CONFIG_IPQ_APSS_6018) += apss-ipq6018.o
- obj-$(CONFIG_IPQ_GCC_4019) += gcc-ipq4019.o
- obj-$(CONFIG_IPQ_GCC_6018) += gcc-ipq6018.o
- obj-$(CONFIG_IPQ_GCC_806X) += gcc-ipq806x.o
-diff --git a/drivers/clk/qcom/apss-ipq6018.c b/drivers/clk/qcom/apss-ipq6018.c
-new file mode 100644
-index 000000000000..004f7e1ecdc2
---- /dev/null
-+++ b/drivers/clk/qcom/apss-ipq6018.c
-@@ -0,0 +1,106 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2018, The Linux Foundation. All rights reserved.
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/err.h>
-+#include <linux/platform_device.h>
-+#include <linux/clk-provider.h>
-+#include <linux/regmap.h>
-+#include <linux/module.h>
-+
-+#include <dt-bindings/clock/qcom,apss-ipq.h>
-+
-+#include "common.h"
-+#include "clk-regmap.h"
-+#include "clk-branch.h"
-+#include "clk-alpha-pll.h"
-+#include "clk-regmap-mux.h"
-+
-+enum {
-+	P_XO,
-+	P_APSS_PLL_EARLY,
-+};
-+
-+static const struct clk_parent_data parents_apcs_alias0_clk_src[] = {
-+	{ .fw_name = "xo" },
-+	{ .fw_name = "pll" },
-+};
-+
-+static const struct parent_map parents_apcs_alias0_clk_src_map[] = {
-+	{ P_XO, 0 },
-+	{ P_APSS_PLL_EARLY, 5 },
-+};
-+
-+static struct clk_regmap_mux apcs_alias0_clk_src = {
-+	.reg = 0x0050,
-+	.width = 3,
-+	.shift = 7,
-+	.parent_map = parents_apcs_alias0_clk_src_map,
-+	.clkr.hw.init = &(struct clk_init_data){
-+		.name = "apcs_alias0_clk_src",
-+		.parent_data = parents_apcs_alias0_clk_src,
-+		.num_parents = 2,
-+		.ops = &clk_regmap_mux_closest_ops,
-+		.flags = CLK_SET_RATE_PARENT,
-+	},
-+};
-+
-+static struct clk_branch apcs_alias0_core_clk = {
-+	.halt_reg = 0x0058,
-+	.clkr = {
-+		.enable_reg = 0x0058,
-+		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data){
-+			.name = "apcs_alias0_core_clk",
-+			.parent_hws = (const struct clk_hw *[]){
-+				&apcs_alias0_clk_src.clkr.hw },
-+			.num_parents = 1,
-+			.flags = CLK_SET_RATE_PARENT,
-+			.ops = &clk_branch2_ops,
-+		},
-+	},
-+};
-+
-+static const struct regmap_config apss_ipq6018_regmap_config = {
-+	.reg_bits       = 32,
-+	.reg_stride     = 4,
-+	.val_bits       = 32,
-+	.max_register   = 0x1000,
-+	.fast_io        = true,
-+};
-+
-+static struct clk_regmap *apss_ipq6018_clks[] = {
-+	[APCS_ALIAS0_CLK_SRC] = &apcs_alias0_clk_src.clkr,
-+	[APCS_ALIAS0_CORE_CLK] = &apcs_alias0_core_clk.clkr,
-+};
-+
-+static const struct qcom_cc_desc apss_ipq6018_desc = {
-+	.config = &apss_ipq6018_regmap_config,
-+	.clks = apss_ipq6018_clks,
-+	.num_clks = ARRAY_SIZE(apss_ipq6018_clks),
-+};
-+
-+static int apss_ipq6018_probe(struct platform_device *pdev)
-+{
-+	struct regmap *regmap;
-+
-+	regmap = dev_get_regmap(pdev->dev.parent, NULL);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	return qcom_cc_really_probe(pdev, &apss_ipq6018_desc, regmap);
-+}
-+
-+static struct platform_driver apss_ipq6018_driver = {
-+	.probe = apss_ipq6018_probe,
-+	.driver = {
-+		.name   = "qcom,apss-ipq6018-clk",
-+	},
-+};
-+
-+module_platform_driver(apss_ipq6018_driver);
-+
-+MODULE_DESCRIPTION("QCOM APSS IPQ 6018 CLK Driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.7.4
-
+  On Fri, Jun 19, 2020 at 05:39:14PM +0200, Mohammed Gamal wrote:
+> When EPT/NPT is enabled, KVM does not really look at guest physical
+> address size. Address bits above maximum physical memory size are reserved.
+> Because KVM does not look at these guest physical addresses, it currently
+> effectively supports guest physical address sizes equal to the host.
+> 
+> This can be problem when having a mixed setup of machines with 5-level page
+> tables and machines with 4-level page tables, as live migration can change
+> MAXPHYADDR while the guest runs, which can theoretically introduce bugs.
+> 
+> In this patch series we add checks on guest physical addresses in EPT
+> violation/misconfig and NPF vmexits and if needed inject the proper
+> page faults in the guest.
+> 
+> A more subtle issue is when the host MAXPHYADDR is larger than that of the
+> guest. Page faults caused by reserved bits on the guest won't cause an EPT
+> violation/NPF and hence we also check guest MAXPHYADDR and add PFERR_RSVD_MASK
+> error code to the page fault if needed.
+> 
+> The last 3 patches (i.e. SVM bits and patch 11) are not intended for
+> immediate inclusion and probably need more discussion.
+> We've been noticing some unexpected behavior in handling NPF vmexits
+> on AMD CPUs (see individual patches for details), and thus we are
+> proposing a workaround (see last patch) that adds a capability that
+> userspace can use to decide who to deal with hosts that might have
+> issues supprting guest MAXPHYADDR < host MAXPHYADDR.
+> 
+> 
+> Mohammed Gamal (7):
+>   KVM: x86: Add helper functions for illegal GPA checking and page fault
+>     injection
+>   KVM: x86: mmu: Move translate_gpa() to mmu.c
+>   KVM: x86: mmu: Add guest physical address check in translate_gpa()
+>   KVM: VMX: Add guest physical address check in EPT violation and
+>     misconfig
+>   KVM: SVM: introduce svm_need_pf_intercept
+>   KVM: SVM: Add guest physical address check in NPF/PF interception
+>   KVM: x86: SVM: VMX: Make GUEST_MAXPHYADDR < HOST_MAXPHYADDR support
+>     configurable
+> 
+> Paolo Bonzini (4):
+>   KVM: x86: rename update_bp_intercept to update_exception_bitmap
+>   KVM: x86: update exception bitmap on CPUID changes
+>   KVM: VMX: introduce vmx_need_pf_intercept
+>   KVM: VMX: optimize #PF injection when MAXPHYADDR does not match
+> 
+>  arch/x86/include/asm/kvm_host.h | 10 ++------
+>  arch/x86/kvm/cpuid.c            |  2 ++
+>  arch/x86/kvm/mmu.h              |  6 +++++
+>  arch/x86/kvm/mmu/mmu.c          | 12 +++++++++
+>  arch/x86/kvm/svm/svm.c          | 41 +++++++++++++++++++++++++++---
+>  arch/x86/kvm/svm/svm.h          |  6 +++++
+>  arch/x86/kvm/vmx/nested.c       | 28 ++++++++++++--------
+>  arch/x86/kvm/vmx/vmx.c          | 45 +++++++++++++++++++++++++++++----
+>  arch/x86/kvm/vmx/vmx.h          |  6 +++++
+>  arch/x86/kvm/x86.c              | 29 ++++++++++++++++++++-
+>  arch/x86/kvm/x86.h              |  1 +
+>  include/uapi/linux/kvm.h        |  1 +
+>  12 files changed, 158 insertions(+), 29 deletions(-)
+> 
+> -- 
+> 2.26.2
+> 
