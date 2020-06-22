@@ -2,104 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5102036A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9D5F2036B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbgFVMXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 08:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37652 "EHLO
+        id S1728166AbgFVM1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 08:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728034AbgFVMXs (ORCPT
+        with ESMTP id S1728044AbgFVM1e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 08:23:48 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8139C061794;
-        Mon, 22 Jun 2020 05:23:47 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id z17so1520866edr.9;
-        Mon, 22 Jun 2020 05:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=CTAR7V/Z8zO/EvXyOnCI3u6opFpSGrn79lAtP0brC4o=;
-        b=OrCajufrkP+2em4jab8O0EUkLyInrnq97bHfibUDuf2Prp6DIG52ZuCKqEnSSXByxV
-         305EkbA4hU6d96Uwlkp4ifmNXh0MxmOPl0/qRQ0i73mu0+roArjE1bXdc0K9EnScimt/
-         mvHVWsms4eRxlSMH2iTDXCOVAO4fC22owLSQUfbmbp/fmOjCIzqzXaEcsj9ivDWIjjMY
-         MP/E9h4Os5eS88A2kED2o5tIEbaYETySLrczO8Pmm9LNbTUjmhHBVdJkZ6JBlGUdnNiB
-         p5S3S0jA4yPGQtYKKuzTAQZpOwALWHV9jIhQRQKx91lihd8I8CkJ3EeXiZzg5xNe+vG6
-         Dr1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CTAR7V/Z8zO/EvXyOnCI3u6opFpSGrn79lAtP0brC4o=;
-        b=BdsiLcHOmmyRDho3Ib5gOn0B9prwrFmOz5fDsYS7T6fydUOD+PB3rfq/ZlcLkvQR6z
-         /um9R6XIRwZ4VsmJz30kZYyR9hMvn7py83a/fBA9Aun5huJ5O4We8EsKAiJzRJW8HE/T
-         fE8bMTb5sd7u/7F/RuyDaDtRB12NE5luWajqdbiWizXNWbhZ8WYO0/GczTos7NrGMI/E
-         EmADZqgKQGYUazMv5oyWh77b+2dW/yXMNqbwm+myRkoZpYpaUnP12FlBWtZkuh7WYbG6
-         hj785MWEQfaSYjEyNYmnUA6ZgHnp0goy8+OCSIRpa8DhYeZ6ngDUZCVuFjyi1DMYaaCF
-         kSJQ==
-X-Gm-Message-State: AOAM530HeKlizbKw1i9EYvayHRpHnHWQFw26HXhkdJdzdIegrtuRcQEn
-        gaz8me9DhYeO6bGpMHWvMDM=
-X-Google-Smtp-Source: ABdhPJwahOmxgh0msKa/vZwSsJo8AdxSNjyxVr2M4XbxaHGEO/ntewNWr/iJEOM+rUWu1ncWvnA6qA==
-X-Received: by 2002:aa7:cb53:: with SMTP id w19mr16162146edt.328.1592828626457;
-        Mon, 22 Jun 2020 05:23:46 -0700 (PDT)
-Received: from BV030612LT ([188.24.129.96])
-        by smtp.gmail.com with ESMTPSA id a24sm11398519ejc.109.2020.06.22.05.23.45
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 22 Jun 2020 05:23:45 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 15:23:43 +0300
-From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-To:     Stephen Boyd <sboyd@kernel.org>
-Cc:     afaerber@suse.de,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-actions@lists.infradead.org,
-        Michael Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 09/11] clk: actions: Add Actions S500 SoC Reset
- Management Unit support
-Message-ID: <20200622122343.GB23301@BV030612LT>
-References: <cover.1592407030.git.cristian.ciocaltea@gmail.com>
- <e361b46511756070277ff10f94e1735bb69cc300.1592407030.git.cristian.ciocaltea@gmail.com>
- <159281354799.62212.7256905433525537681@swboyd.mtv.corp.google.com>
+        Mon, 22 Jun 2020 08:27:34 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF5AC061794
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 05:27:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YfMOzPuDOeX4F8QITGOgeYF7rNWEDYNWfPQiK8lEsik=; b=UvymxQapcE7G9G3BNTsfVoWsAb
+        fZmDam+SDYF0RgZ4jiOp+7/7gPZWzGAG/TUtctH4Eqic5aqhN7oVwjo+ioPIRs5ZeVBl8dnwywvF5
+        EA7lMmLB3RyR2Q74YVlBrN+h7Zk+/ZmIwiYGz81OJzz2UblNm8ADO/TlMuucDyIphFy5UQImZGUy/
+        WRtKPGf+RamqB45FMAPFdYZA+dtQ41ouB7b1BhTVmK3T5kEAS8WmHux8Fy0NNTmcnyQrIrYiucmml
+        JBaZXZs6UiGyTqEelgstXdPFaORQ64QdAlB61NIx5TRPECKpr6pdRKPjJ3CdKfeYaWqmald2Tsy9m
+        eKouWOCA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jnLXa-0004J3-P2; Mon, 22 Jun 2020 12:27:10 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4847A301631;
+        Mon, 22 Jun 2020 14:27:08 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CAED4236D2014; Mon, 22 Jun 2020 14:27:08 +0200 (CEST)
+Date:   Mon, 22 Jun 2020 14:27:08 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [rcu:dev.2020.06.17a 35/38] kernel/sched/core.c:2650
+ try_to_wake_up() error: uninitialized symbol 'cpu'.
+Message-ID: <20200622122708.GB576871@hirez.programming.kicks-ass.net>
+References: <20200622121116.GD4151@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <159281354799.62212.7256905433525537681@swboyd.mtv.corp.google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200622121116.GD4151@kadam>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 01:12:27AM -0700, Stephen Boyd wrote:
-> Quoting Cristian Ciocaltea (2020-06-17 09:48:09)
-> > Add Reset Management Unit (RMU) support for Actions Semi S500 SoC.
-> > 
-> > Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
-> > ---
-> >  drivers/clk/actions/owl-s500.c | 80 ++++++++++++++++++++++++++++++++++
-> >  1 file changed, 80 insertions(+)
-> > 
-> > diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
-> > index 025a8f6d6482..3bce72301c65 100644
-> > --- a/drivers/clk/actions/owl-s500.c
-> > +++ b/drivers/clk/actions/owl-s500.c
-> > @@ -10,6 +10,8 @@
-> >   *
-> >   * Copyright (c) 2018 LSI-TEC - Caninos Loucos
-> >   * Author: Edgar Bernardi Righi <edgar.righi@lsitec.org.br>
-> > + *
-> > + * Copyright (c) 2020 Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+On Mon, Jun 22, 2020 at 03:11:17PM +0300, Dan Carpenter wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2020.06.17a
+> head:   d3779e78b9848a707448dbb4a0cb6c4bb651fe9c
+> commit: 59a5d883f2ccdce1700862b5983cfd3473630aea [35/38] EXP sched: Alleged fix for v5.8 merge-window scheduler issue
+> config: x86_64-randconfig-m001-20200621 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-13) 9.3.0
 > 
-> You should only add your copyright when you modify a large amount of the
-> file. Adding 80 lines to a 500 line file doesn't count. Sorry.
->
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> smatch warnings:
+> kernel/sched/core.c:2650 try_to_wake_up() error: uninitialized symbol 'cpu'.
+> 
+> # https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git/commit/?id=59a5d883f2ccdce1700862b5983cfd3473630aea
+> git remote add rcu https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git
+> git remote update rcu
+> git checkout 59a5d883f2ccdce1700862b5983cfd3473630aea
+> vim +/cpu +2650 kernel/sched/core.c
+> 
+> ^1da177e4c3f41 kernel/sched.c      Linus Torvalds 2005-04-16  2644  
+> b5179ac70de85e kernel/sched/core.c Peter Zijlstra 2016-05-11  2645  	ttwu_queue(p, cpu, wake_flags);
+> aacedf26fb7601 kernel/sched/core.c Peter Zijlstra 2019-06-07  2646  unlock:
+> 013fdb8086acaa kernel/sched.c      Peter Zijlstra 2011-04-05  2647  	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+> aacedf26fb7601 kernel/sched/core.c Peter Zijlstra 2019-06-07  2648  out:
+> aacedf26fb7601 kernel/sched/core.c Peter Zijlstra 2019-06-07  2649  	if (success)
+> aacedf26fb7601 kernel/sched/core.c Peter Zijlstra 2019-06-07 @2650  		ttwu_stat(p, cpu, wake_flags);
+>                                                                                              ^^^
+> This can be uninitialized on a couple "goto unlock;" paths.  Lines
+> 2581 and 2622.  The KASan tool will warn about this at run time as well.
+> I'm not sure why the build bot doesn't include the whole function for
+> this bug report...
 
-Sure, I removed it. Thanks!
-
-> >   */
-> >  
-> >  #include <linux/clk-provider.h>
+Indeed, lemme go fix.
