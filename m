@@ -2,83 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4717F20354A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 13:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7922203550
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 13:06:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727970AbgFVLGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 07:06:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60808 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727048AbgFVLGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 07:06:00 -0400
-Received: from kozik-lap.mshome.net (unknown [194.230.155.235])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7FA7C20767;
-        Mon, 22 Jun 2020 11:05:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592823960;
-        bh=bfVZtAFU8NdMRRNSEVZYVNoiKI0ceYpx6CxgFvwkv3Y=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VuFBEsCGCO32GnoZZXedi+W8XKo3fucdlXJrWtbSMRxhxS2ZXsh6vO3KitDLZtt3q
-         vrliGSvpcYHocYrBfFQb3lz++9bVCLJb9QaIhJ2dDC86wS8nMPy6BiW7Au39Gf8FPL
-         nDH7Ko+oj8aUZ0h823e/HyllJ3ITvDrncJPz4vT8=
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Mark Brown <broonie@kernel.org>, Peng Ma <peng.ma@nxp.com>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Subject: [PATCH v4 4/4] spi: spi-fsl-dspi: Initialize completion before possible interrupt
-Date:   Mon, 22 Jun 2020 13:05:43 +0200
-Message-Id: <20200622110543.5035-4-krzk@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200622110543.5035-1-krzk@kernel.org>
-References: <20200622110543.5035-1-krzk@kernel.org>
+        id S1727933AbgFVLGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 07:06:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727798AbgFVLGg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 07:06:36 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67C1C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 04:06:35 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id k15so12699213otp.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 04:06:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bVCGBNAMVVzJBUyEH8AYaaJuZeDFv/AQspAXfpR7QWs=;
+        b=H0nc56373dVnFC0+ikr2sQCUW3pSnEIy19Lc57N1R1+mlC6lUNu5QQPGytZhsXgC7f
+         c6Uk3RG80/AsxrGiNe5k//VGeexfUJ264jlYjVOoIG+NxTKBE+lhBVgR/a/XpjmBh1vO
+         /mvEhZTrcZNBlPOdxsj6hPKS4fIuxWRF29fs9M4eYDgc6TEbmTSITFQdJnLM770QuTdR
+         c91KXzpGjPgaX/ZJo6uxQ4z2MAjuHjSKvZcjDOS9bP3f198zaE1eW0140/qQiNCNazUn
+         RJomDJKecJdfe65g/1abkUo1Zl7W+quhWj4+4IwZaYIUHiOxcTzLlE1Af+Uvco54MLIA
+         dQrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bVCGBNAMVVzJBUyEH8AYaaJuZeDFv/AQspAXfpR7QWs=;
+        b=faDlJM6+we8ErwyO/xY6myNmR8705ndSEJ4ahHME/P6YYa8zfOet//glvkK4lcyZ3a
+         4V/3EX5TDDLDfs7phqWmr/4Vejy+lh76BiP0D1snmAmRhuJ4hGiMdvRRAQgrO4SolTPm
+         VKWruM34jN1HwNPGvRckQIF9m9lc9epP2m2oEjAssiMkMtcJXCylMmZ+dcMbHyZzg7oW
+         opYtNfI+LEzowc/x2USrPaHUA8s0RV+gzm4gjXl5a3RwG8PQfdyyMhed2JNfHoFSQD3Q
+         VAsRnNBBswbtMkOs9kWkubS7FDNe7uXwMqTaphrY+W3Y5abKeQLSvQv7C/8/dnsNOWBh
+         5rKQ==
+X-Gm-Message-State: AOAM532beEQj00Z7EOP2AVsZ1+gxbJ5zSB0awNx/manI5rC1OUeX0jaK
+        00vnyGz2GuS+/YjjMa5/2W7wAGdq+hUTvN4zyieGTw==
+X-Google-Smtp-Source: ABdhPJxAl2Be/hK5NnkGkpXO2GQ9KziacpATXhsXKpvvVg2BuS4BDxq29uLM52C/E3EyVpoHnBW9WWKjtAa5gKfsGeQ=
+X-Received: by 2002:a9d:638c:: with SMTP id w12mr10791348otk.251.1592823994787;
+ Mon, 22 Jun 2020 04:06:34 -0700 (PDT)
+MIME-Version: 1.0
+References: <000000000000c25ce105a8a8fcd9@google.com> <20200622094923.GP576888@hirez.programming.kicks-ass.net>
+In-Reply-To: <20200622094923.GP576888@hirez.programming.kicks-ass.net>
+From:   Marco Elver <elver@google.com>
+Date:   Mon, 22 Jun 2020 13:06:23 +0200
+Message-ID: <CANpmjNMJL2euWekeJ-pRcW7-BQaDCmfCSr=8Z3Mfnz-ugtUX4g@mail.gmail.com>
+Subject: Re: linux-next build error (9)
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     syzbot <syzbot+dbf8cf3717c8ef4a90a0@syzkaller.appspotmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, jmattson@google.com,
+        joro@8bytes.org, kvm@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        sean.j.christopherson@intel.com,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Thomas Gleixner <tglx@linutronix.de>, vkuznets@redhat.com,
+        wanpengli@tencent.com, "the arch/x86 maintainers" <x86@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The interrupt handler calls completion and is IRQ requested before the
-completion is initialized.  Logically it should be the other way.
+On Mon, 22 Jun 2020 at 11:49, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Jun 22, 2020 at 02:37:12AM -0700, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following crash on:
+> >
+> > HEAD commit:    27f11fea Add linux-next specific files for 20200622
+> > git tree:       linux-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=138dc743100000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=41c659db5cada6f4
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=dbf8cf3717c8ef4a90a0
+> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> >
+> > IMPORTANT: if you fix the bug, please add the following tag to the commit:
+> > Reported-by: syzbot+dbf8cf3717c8ef4a90a0@syzkaller.appspotmail.com
+> >
+> > ./arch/x86/include/asm/kvm_para.h:99:29: error: inlining failed in call to always_inline 'kvm_handle_async_pf': function attribute mismatch
+> > ./arch/x86/include/asm/processor.h:824:29: error: inlining failed in call to always_inline 'prefetchw': function attribute mismatch
+> > ./arch/x86/include/asm/current.h:13:44: error: inlining failed in call to always_inline 'get_current': function attribute mismatch
+> > arch/x86/mm/fault.c:1353:1: error: inlining failed in call to always_inline 'handle_page_fault': function attribute mismatch
+> > ./arch/x86/include/asm/processor.h:576:29: error: inlining failed in call to always_inline 'native_swapgs': function attribute mismatch
+> > ./arch/x86/include/asm/fsgsbase.h:33:38: error: inlining failed in call to always_inline 'rdgsbase': function attribute mismatch
+> > ./arch/x86/include/asm/irq_stack.h:40:29: error: inlining failed in call to always_inline 'run_on_irqstack_cond': function attribute mismatch
+> > ./include/linux/debug_locks.h:15:28: error: inlining failed in call to always_inline '__debug_locks_off': function attribute mismatch
+> > ./include/asm-generic/atomic-instrumented.h:70:1: error: inlining failed in call to always_inline 'atomic_add_return': function attribute mismatch
+> > kernel/locking/lockdep.c:396:29: error: inlining failed in call to always_inline 'lockdep_recursion_finish': function attribute mismatch
+> > kernel/locking/lockdep.c:4725:5: error: inlining failed in call to always_inline '__lock_is_held': function attribute mismatch
+>
+> Hurmph, I though that was cured in GCC >= 8. Marco?
 
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Yeah, time to upgrade syzbot's compiler. This experimental gcc 9.0.0
+still has the bug, but stable gcc 9 doesn't. For now, I think this
+requires no fixes on the kernel side.
 
----
-
-Changes since v2:
-1. None
-
-Changes since v1:
-1. Rework the commit msg.
----
- drivers/spi/spi-fsl-dspi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-index e0b30e4b1b69..91c6affe139c 100644
---- a/drivers/spi/spi-fsl-dspi.c
-+++ b/drivers/spi/spi-fsl-dspi.c
-@@ -1389,6 +1389,8 @@ static int dspi_probe(struct platform_device *pdev)
- 		goto poll_mode;
- 	}
- 
-+	init_completion(&dspi->xfer_done);
-+
- 	ret = request_threaded_irq(dspi->irq, dspi_interrupt, NULL,
- 				   IRQF_SHARED, pdev->name, dspi);
- 	if (ret < 0) {
-@@ -1396,8 +1398,6 @@ static int dspi_probe(struct platform_device *pdev)
- 		goto out_clk_put;
- 	}
- 
--	init_completion(&dspi->xfer_done);
--
- poll_mode:
- 
- 	if (dspi->devtype_data->trans_mode == DSPI_DMA_MODE) {
--- 
-2.17.1
-
+Thanks,
+-- Marco
