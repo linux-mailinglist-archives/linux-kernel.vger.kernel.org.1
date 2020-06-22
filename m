@@ -2,62 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467C320435F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FF06204365
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730937AbgFVWPX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 18:15:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727018AbgFVWPX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 18:15:23 -0400
-Received: from kicinski-fedora-PC1C0HJN (unknown [163.114.132.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6191920738;
-        Mon, 22 Jun 2020 22:15:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592864122;
-        bh=vEPF3QHZSG88UIS1f+UfYPfeu2Wme3edT4i/j95Q9xc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Y0MhcMwGCpIi3dZuB694pDXY7J8J7fevOTbdI4/weNvBzfLFHi8hSpDykOAB6lzOk
-         O9HQKRYW9vU7UQX+Zf+eMHwKbCqUPsSVUjxI7RELhwGC1dg/KgJJADsQiRjgVAfhRn
-         U5To28uUmCB+06pcb9AdoIYvcslRk/S5SRX/rczA=
-Date:   Mon, 22 Jun 2020 15:15:20 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Luo bin <luobin9@huawei.com>
-Cc:     <davem@davemloft.net>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <luoxianjun@huawei.com>,
-        <yin.yinshi@huawei.com>, <cloud.wangxiaoyun@huawei.com>
-Subject: Re: [PATCH net-next v1 5/5] hinic: add support to get eeprom
- information
-Message-ID: <20200622151520.79ab2af9@kicinski-fedora-PC1C0HJN>
-In-Reply-To: <20200620094258.13181-6-luobin9@huawei.com>
-References: <20200620094258.13181-1-luobin9@huawei.com>
-        <20200620094258.13181-6-luobin9@huawei.com>
+        id S1730987AbgFVWSR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 18:18:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727018AbgFVWSR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 18:18:17 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E1E1C061573;
+        Mon, 22 Jun 2020 15:18:15 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id l12so19577994ejn.10;
+        Mon, 22 Jun 2020 15:18:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fFefmQtm/yGDL3KNRZLYpoPVW1HgBh8SHc0jxMAqabA=;
+        b=bOf7by4F/Qo0wgYXg4O4C6TcKy4OyfcjYLybNt1i7TNWOiAnTMn/MJFG4+0GK+vxyu
+         dc4BLAO1KXF7q2xnIUxPIdcrdJSE7sJzgnDMFDJyb8N9YDj++gaxtlkLkZRHcg3vLezY
+         tAIOvGTSOpCqMk6Fml3mBrc5CgLk8ZqLTyE8YixJ8jiixWHjR+hu+bT+CAP+2Uk5/9cg
+         5Q5RXWh4rMupKVITCpGexfIwa3BvcN5F62jGqT0XCNKPgnmYQz6z3h0vlAXSFmCeY9vl
+         uUp/G6ddHde23BD4W6htFMiBtZTCY2f5WLwGAidWe7Ak+XNU13lO6NL0g2AtAq31Ptyu
+         GURA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fFefmQtm/yGDL3KNRZLYpoPVW1HgBh8SHc0jxMAqabA=;
+        b=g2nqpseLg12cBbcBz+Qrmwot2Dja2ocmEDhkcxj+BRsOx2eTEoJFc/Ssn3ZBPI1cC2
+         gkN1jB+KaD6y3rqI2PHw+gmSILn/8NqrgAtFhUlI36XWxDP6RmtcSsMVhkYbiVitXonm
+         MBKHnX0Dv7pocz3vpSpwBd0rXqHxXVuIoUzeAr5gg+I3vbGoMmhqudBPkVfoLp6uTork
+         /whapSYcXlffbTrouVahR/Uj+B1aMdQFadNGG3mbRJxC6gLrf/iRS2jHQEMq+AKlU6p1
+         hgpr9LsZzuaMlKKrDw0DNug5VC8oYrIzP7TldF0xZI7wE5AXLXmci+KYG1QTKMXrFKel
+         gnlg==
+X-Gm-Message-State: AOAM533E5er329119u/wZZRvao1ULuX4v4WVvKhGGKE2WuSHWb52D12S
+        DSy4xQW+NdkPIdB8IyEiJpMQ19TY
+X-Google-Smtp-Source: ABdhPJy/pGu2MfSGc9DZA57E/DJlW8BMfWArrEv189ahxHqhtCn1lfuKUdOUY3qBMVlrUMbTyeoA+Q==
+X-Received: by 2002:a17:907:2052:: with SMTP id pg18mr16759552ejb.513.1592864294018;
+        Mon, 22 Jun 2020 15:18:14 -0700 (PDT)
+Received: from localhost.localdomain ([5.100.193.85])
+        by smtp.gmail.com with ESMTPSA id dm1sm13314421ejc.99.2020.06.22.15.18.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 15:18:13 -0700 (PDT)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] iopoll fixes + cleanups
+Date:   Tue, 23 Jun 2020 01:16:31 +0300
+Message-Id: <cover.1592863245.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 20 Jun 2020 17:42:58 +0800 Luo bin wrote:
-> diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.h b/drivers/net/ethernet/huawei/hinic/hinic_port.h
-> index 5c916875f295..0d0354241345 100644
-> --- a/drivers/net/ethernet/huawei/hinic/hinic_port.h
-> +++ b/drivers/net/ethernet/huawei/hinic/hinic_port.h
-> @@ -677,6 +677,37 @@ struct hinic_led_info {
->  	u8	reset;
->  };
->  
-> +#define MODULE_TYPE_SFP		0x3
-> +#define MODULE_TYPE_QSFP28	0x11
-> +#define MODULE_TYPE_QSFP	0x0C
-> +#define MODULE_TYPE_QSFP_PLUS	0x0D
-> +
-> +#define STD_SFP_INFO_MAX_SIZE	640
+[1] fixes a recent for-stable patch, should be for stable as well.
+[2] fixes getting mm from a wrong task in iopoll path.
 
-Please use the existing defines, e.g. from #include <linux/sfp.h>
-there is no need for every driver to redefine those constants.
+[3,4] are unrelated cleanups. I don't send them separately because
+they may conflict.
+
+Pavel Begunkov (4):
+  io_uring: fix hanging iopoll in case of -EAGAIN
+  io_uring: handle EAGAIN iopoll
+  io-wq: compact io-wq flags numbers
+  io-wq: return next work from ->do_work() directly
+
+ fs/io-wq.c    |  8 +++---
+ fs/io-wq.h    | 10 ++++----
+ fs/io_uring.c | 71 ++++++++++++++++++++++++---------------------------
+ 3 files changed, 41 insertions(+), 48 deletions(-)
+
+-- 
+2.24.0
+
