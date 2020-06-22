@@ -2,180 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F885203F60
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F872203F85
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:58:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730087AbgFVSon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 14:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729605AbgFVSom (ORCPT
+        id S1730129AbgFVS6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 14:58:13 -0400
+Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:29100 "EHLO
+        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730020AbgFVS6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 14:44:42 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C2AC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:44:41 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id m26so10226929lfo.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:44:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bsa2D8UcUdmWeSVi19Th9t5QWO+7dW+3wkTgqvnKWig=;
-        b=rkI2USsN/jAc+p2oilopycy25wr5sVI0tpE2XgEi6pMS/rAQbP7Hu26UR19nfOq1AJ
-         1Np5Qo2/xMDdO95rUi5ytBqxbCK2w4BlWMl5z+bmsPHMTUSBbdJt5DbMQuaFAHu3GsE3
-         hwGcOZtlqQSOx98Ccw6FViwLUqd8WVOjvdPIk8D9wZMA9ReaVhAYgEHpiR64jXe9FJKD
-         SSXVNwkefgbQAKI/mrun0pFeINVWBsg+T/l3iCorhuci/7B5/ehgHBErhOy9GFBHPr08
-         lmKZj+cqwUytlTTcH2nJyWykLOcJJ/aZT0F2qIBlAhfLdLnxlmRp+NlswiEiG6VvnbO5
-         PZow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bsa2D8UcUdmWeSVi19Th9t5QWO+7dW+3wkTgqvnKWig=;
-        b=bn6SC6nYMRPnbs6vIncDtvP7hpFmn96OvrRIVS7pLoW+yOHNpnIheRyKqd2GjKajOe
-         4/mZw1nKI9lekk9RPA5Lzga6oj8Z06NjBPJp0MLhCPXR+jnJXVjHYXvUZ+A8nVcmH4fB
-         vWdiruHqZwylNCEXXMqlfRSQBit/X51XdaKBxdhRxeJAPzbVAyAG+eo2wGDAKFhA2tUT
-         aX/60zw7TF7tY5YPMWvobKXc2kTQ6+xyVSZSVdCXOlhOcOR1wBAW8yH9LPbgvZsR7zNQ
-         ehKIledbN0AoZhX83NCpTyZqVT+87T4eV0Tqt9AsbIVH5Fm2JPx0gaoME4GvYhIhNmQY
-         GEDw==
-X-Gm-Message-State: AOAM5316bMd0jV2wHTv9cx1JLc2HwXU6bFER+Zc9EFgTOBffjmlaIktA
-        cfTSHYS8Lrz8DaKY87WJZK63EcAdChnNycWQXcCF8rA4
-X-Google-Smtp-Source: ABdhPJxr4uBUcKdGTWVm9gTrdLJWlX+Uz75PHVP1LlPA9Qi3PeqXxZmwj0YtBtqv0zY1bHUzBIsUY0GR1ixqYwH0wio=
-X-Received: by 2002:a19:c744:: with SMTP id x65mr10603363lff.133.1592851479925;
- Mon, 22 Jun 2020 11:44:39 -0700 (PDT)
+        Mon, 22 Jun 2020 14:58:12 -0400
+Received: from pps.filterd (m0170391.ppops.net [127.0.0.1])
+        by mx0a-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05MIqNe0001082;
+        Mon, 22 Jun 2020 14:58:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=smtpout1; bh=5b1fSfonp/BJXJKqsOYlCbdrMWdCJ3vP3o0FriV+a6A=;
+ b=oYjdpjiUHSNXDf/bEayv/0RMQElJzfVHq3FHA5oTdeQIUv/B+kBeFdaXA7iqiMT2WwjJ
+ Dw+6MoLfT4gBcU3jTIXBD8urnEj2l1yJ5pGHdbhsplIn1rsNlUXRVH14xkaM3uxXdxzr
+ Cq6CQ0iTEfvEyuPnK8n/8X9Juwj5GksPSHhTDmPl5+3FmZexSyk/qY8qWp7Zt70/29TX
+ 9viYJowGRhCS3G3S5mHsLBVY+KHR6T2NmIllzPl2/5Yq3Gyqr3um4ZYpyMzYS/n5UqLc
+ oovPNSBcNe+T+cnzhaU49THIZB9CufX1gp0Nqn1VaMBipQ4flhFv+S+5Ly8Ao1jw2wWJ VA== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0a-00154904.pphosted.com with ESMTP id 31sdkwwxkt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 22 Jun 2020 14:58:12 -0400
+Received: from pps.filterd (m0142699.ppops.net [127.0.0.1])
+        by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05MIspVu064442;
+        Mon, 22 Jun 2020 14:58:11 -0400
+Received: from ausc60ps301.us.dell.com (ausc60ps301.us.dell.com [143.166.148.206])
+        by mx0a-00154901.pphosted.com with ESMTP id 31tqd12cnp-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 22 Jun 2020 14:58:11 -0400
+X-LoopCount0: from 10.173.37.130
+X-PREM-Routing: D-Outbound
+X-IronPort-AV: E=Sophos;i="5.60,349,1549951200"; 
+   d="scan'208";a="1454816469"
+From:   Mario Limonciello <mario.limonciello@dell.com>
+To:     Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mario Limonciello <mario.limonciello@dell.com>
+Subject: [PATCH v2 0/2] Allow breaking up Thunderbolt/USB4 updates
+Date:   Mon, 22 Jun 2020 13:57:56 -0500
+Message-Id: <20200622185758.28145-1-mario.limonciello@dell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <1592363698-4266-1-git-send-email-jrdr.linux@gmail.com>
- <d9e8ad0f-f2aa-eea4-5bc7-a802c626ace6@oracle.com> <CAFqt6zbJD+k9xkV9Se0nL2qKfnea3mRrWJ4gzPmPJBquYk4M+w@mail.gmail.com>
- <fe2a1d23-7abd-86a9-4aec-2c14fb11cdea@nvidia.com>
-In-Reply-To: <fe2a1d23-7abd-86a9-4aec-2c14fb11cdea@nvidia.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Tue, 23 Jun 2020 00:22:56 +0530
-Message-ID: <CAFqt6zb8hK+mpqfrZ_QoGLO4nNfbHvZ7aJLRrcNRgDsywFHKqg@mail.gmail.com>
-Subject: Re: [RFC PATCH] xen/privcmd: Convert get_user_pages*() to pin_user_pages*()
-To:     John Hubbard <jhubbard@nvidia.com>
-Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>, sstabellini@kernel.org,
-        xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        paul@xen.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-22_11:2020-06-22,2020-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=722
+ malwarescore=0 adultscore=0 bulkscore=0 priorityscore=1501 spamscore=0
+ phishscore=0 lowpriorityscore=0 impostorscore=0 cotscore=-2147483648
+ suspectscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006220126
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=776 malwarescore=0
+ phishscore=0 spamscore=0 bulkscore=0 adultscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006220125
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 1:00 PM John Hubbard <jhubbard@nvidia.com> wrote:
->
-> On 2020-06-18 20:12, Souptick Joarder wrote:
-> > On Wed, Jun 17, 2020 at 11:29 PM Boris Ostrovsky
-> > <boris.ostrovsky@oracle.com> wrote:
-> >>
-> >> On 6/16/20 11:14 PM, Souptick Joarder wrote:
-> >>> In 2019, we introduced pin_user_pages*() and now we are converting
-> >>> get_user_pages*() to the new API as appropriate. [1] & [2] could
-> >>> be referred for more information.
->
->
-> Ideally, the commit description should say which case, in
-> pin_user_pages.rst, that this is.
->
+Currently updates to Thunderbolt and USB4 controllers are fully atomic
+actions. When writing into the non-active NVM nothing gets flushed to
+the hardware until authenticate is sent.
 
-Ok.
+There has been some desire to improve the perceived performance of these
+updates, particularly for userland that may perform the update upon
+a performance sensitive time like logging out.
 
->
-> >>>
-> >>> [1] Documentation/core-api/pin_user_pages.rst
-> >>>
-> >>> [2] "Explicit pinning of user-space pages":
-> >>>          https://lwn.net/Articles/807108/
-> >>>
-> >>> Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
-> >>> Cc: John Hubbard <jhubbard@nvidia.com>
-> >>> ---
-> >>> Hi,
-> >>>
-> >>> I have compile tested this patch but unable to run-time test,
-> >>> so any testing help is much appriciated.
-> >>>
-> >>> Also have a question, why the existing code is not marking the
-> >>> pages dirty (since it did FOLL_WRITE) ?
-> >>
-> >>
-> >> Indeed, seems to me it should. Paul?
->
-> Definitely good to get an answer from an expert in this code, but
-> meanwhile, it's reasonable to just mark them dirty. Below...
->
-> >>
-> >>
-> >>>
-> >>>   drivers/xen/privcmd.c | 7 ++-----
-> >>>   1 file changed, 2 insertions(+), 5 deletions(-)
-> >>>
-> >>> diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
-> >>> index a250d11..543739e 100644
-> >>> --- a/drivers/xen/privcmd.c
-> >>> +++ b/drivers/xen/privcmd.c
-> >>> @@ -594,7 +594,7 @@ static int lock_pages(
-> >>>                if (requested > nr_pages)
-> >>>                        return -ENOSPC;
-> >>>
-> >>> -             pinned = get_user_pages_fast(
-> >>> +             pinned = pin_user_pages_fast(
-> >>>                        (unsigned long) kbufs[i].uptr,
-> >>>                        requested, FOLL_WRITE, pages);
-> >>>                if (pinned < 0)
-> >>> @@ -614,10 +614,7 @@ static void unlock_pages(struct page *pages[], unsigned int nr_pages)
-> >>>        if (!pages)
-> >>>                return;
-> >>>
-> >>> -     for (i = 0; i < nr_pages; i++) {
-> >>> -             if (pages[i])
-> >>> -                     put_page(pages[i]);
-> >>> -     }
-> >>> +     unpin_user_pages(pages, nr_pages);
->
->
-> ...so just use unpin_user_pages_dirty_lock() here, I think.
->
->
-> >>
-> >>
-> >> Why are you no longer checking for valid pages?
-> >
-> > My understanding is, in case of lock_pages() end up returning partial
-> > mapped pages,
-> > we should pass no. of partial mapped pages to unlock_pages(), not nr_pages.
-> > This will avoid checking extra check to validate the pages[i].
-> >
-> > and if lock_pages() returns 0 in success, anyway we have all the pages[i] valid.
-> > I will try to correct it in v2.
-> >
-> > But I agree, there is no harm to check for pages[i] and I believe,
->
->
-> Generally, it *is* harmful to do unnecessary checks, in most code, but especially
-> in most kernel code. If you can convince yourself that the check for null pages
-> is redundant here, then please let's remove that check. The code becomes then
-> becomes shorter, simpler, and faster.
+So allow userland to flush the image to hardware at runtime, and then
+allow authenticating the image at another time.
 
-I read the code again. I think, this check is needed to handle a scenario when
-lock_pages() return -ENOSPC. Better to keep this check. Let me post v2 of this
-RFC for a clear view.
+For the Dell WD19TB some specific hardware capability exists that allows
+extending this to automatically complete the update when unplugged.
+Export that functionality to userspace as well.
 
->
->
-> > unpin_user_pages()
-> > is the right place to do so.
-> >
-> > John any thought ?
->
->
-> So far I haven't seen any cases to justify changing the implementation of
-> unpin_user_pages().
->
->
-> thanks,
-> --
-> John Hubbard
-> NVIDIA
+Changes from v1 to v2:
+ - Improve documentation
+ - Drop tb-quirks.h
+ - Adjust function and parameter names to Mika's preferences
+ - Rebase onto thunderbolt.git/bleeding-edge to move on top of retimer work
+
+Mario Limonciello (2):
+  thunderbolt: Add support for separating the flush to SPI and
+    authenticate
+  thunderbolt: Add support for authenticate on disconnect
+
+ .../ABI/testing/sysfs-bus-thunderbolt         | 24 +++++-
+ drivers/thunderbolt/Makefile                  |  1 +
+ drivers/thunderbolt/eeprom.c                  |  2 +
+ drivers/thunderbolt/lc.c                      | 14 ++++
+ drivers/thunderbolt/quirks.c                  | 38 +++++++++
+ drivers/thunderbolt/switch.c                  | 81 +++++++++++++++----
+ drivers/thunderbolt/tb-quirks.h               | 16 ++++
+ drivers/thunderbolt/tb.h                      |  4 +
+ drivers/thunderbolt/tb_regs.h                 |  1 +
+ 9 files changed, 162 insertions(+), 19 deletions(-)
+ create mode 100644 drivers/thunderbolt/quirks.c
+ create mode 100644 drivers/thunderbolt/tb-quirks.h
+
+--
+2.25.1
+
