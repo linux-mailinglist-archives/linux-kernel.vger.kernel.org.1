@@ -2,308 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96AC3203EA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43EFE203EA9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730227AbgFVSB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 14:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730046AbgFVSBx (ORCPT
+        id S1730312AbgFVSCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 14:02:12 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:42218 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730281AbgFVSCL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 14:01:53 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B8E3C061573;
-        Mon, 22 Jun 2020 11:01:53 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id er17so8378210qvb.8;
-        Mon, 22 Jun 2020 11:01:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Jom6FB/6i46rN+8UOD3WhmDHiHJVG44IC/T2lpxw+zs=;
-        b=UVBP+IvVp9e1XfiNdmq8PbTRt7b+QWBboEnJSbQo92m0SUa8otWAcu9uL7PId+fpYd
-         bPnXekFkkeAjv7OHezUHWxhYkHP6H7v2xaeNrCc7byFyPavpcBwmIIXguJ6icLNURvdc
-         wbjPZQ89Z+4I5oTSp2nTIbWj+khDSfh7D1Q+c/i2yIS51Nm8QsOGnh4ScCv7No20pgRF
-         4IyUqwjNqgo8W9yyDjnRUHULiivQFnRnuI4oc+FtxEDGlYnVlsyeM16/hGlLWGRY+bh3
-         PzkpKLpJjj4SzG9XyqEd8zSOOSkKe6kOyXZiivXguDcGq8I9b6p3tbarolnRqwNbryBS
-         X9BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Jom6FB/6i46rN+8UOD3WhmDHiHJVG44IC/T2lpxw+zs=;
-        b=leDufUZKTQcPkwsB5fPhk3ACOMsK/A0/IcsgSFtdh5Up6dGxNtJ7YlaJR0fNNuVvW1
-         2q6ebSQBN+X6ZAB94LRowE0e159bhTaWJ5vhfeLk+ydKfykSru44JKy4JORU7q1VqE5E
-         /9I9bv2+sX06hi7WQ+47c5d46xv8hRoaG4FQrOe75djBu76/RXT7jFPam57vliDyqWpL
-         95AE/s/JkeYLdldABgPuI3jNOEaRbXuFzzReIqxhxE4Ru63OuB2YWMSubie+Th9bQfPg
-         GJp9VVLVU2GLAZmk8FU+1pWZ7lJSZzybauNDorlw3VNAcSkJxwVegqBNljEBThU8m/jc
-         QFpw==
-X-Gm-Message-State: AOAM531D1gcHhrYd7qZC55BHe7T/R0fCS+5FonsJOfBIWtH55Cn+H0Ea
-        GWJNpSCzDtcnfS+bWC4mWAI=
-X-Google-Smtp-Source: ABdhPJwSbmT+HcIqt6reqTP2PLhiQYAX5ru7M9VqEh3FFc03FeoRJ+5t9o8xa1JVDMYq5h71qBSXEA==
-X-Received: by 2002:ad4:55b4:: with SMTP id f20mr22279534qvx.148.1592848912699;
-        Mon, 22 Jun 2020 11:01:52 -0700 (PDT)
-Received: from [192.168.1.46] (c-73-88-245-53.hsd1.tn.comcast.net. [73.88.245.53])
-        by smtp.gmail.com with ESMTPSA id m57sm11737465qtk.19.2020.06.22.11.01.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jun 2020 11:01:50 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] mfd: core: Make a best effort attempt to match
- devices with the correct of_nodes
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     andy.shevchenko@gmail.com, michael@walle.cc, robh+dt@kernel.org,
-        broonie@kernel.org, devicetree@vger.kernel.org,
-        linus.walleij@linaro.org, linux@roeck-us.net,
-        andriy.shevchenko@linux.intel.com, robin.murphy@arm.com,
-        gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20200611191002.2256570-1-lee.jones@linaro.org>
- <4b188fb5-6667-720d-46e1-6f103efe8966@gmail.com>
- <20200615092644.GA2608702@dell>
- <eef50a78-8571-5600-4fee-c824fd4a7f69@gmail.com>
- <20200622085009.GP954398@dell>
- <cd8952da-cc55-8087-b9f6-876417beb188@gmail.com>
- <20200622151054.GW954398@dell>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <037c0fd2-df35-5981-7ef2-c6199841650d@gmail.com>
-Date:   Mon, 22 Jun 2020 13:01:49 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Mon, 22 Jun 2020 14:02:11 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05MHuGvQ019573;
+        Mon, 22 Jun 2020 11:02:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=0CA59a8DtemSIalh7Ph72U1JASpBgG2ApuSeHSQzxtk=;
+ b=hHXzLRff2d9m2EApKvTDoVb+5Zo3xhJvyLwNE2d4LsHPH6j44GXu07HbXJaFjFcHNGvp
+ Q75Mlmoey434xkods99DCvjmu6aOIBzazKUb6vvYdzTZijN1SyYVe/TqyfcEchY5y8IK
+ R9Zei/bCI0TUKVFoxgQz4n+pKKReF1tkRCM= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31t2qpxq4g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 22 Jun 2020 11:02:00 -0700
+Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 22 Jun 2020 11:01:59 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IqFg/YEP47yRXmrxTl+6Zuodg6IPjOwfsTdWXA4dtvA86uo8gHSJpthLcjK5p1Lr2epQM1BKH3FKFa6bVVGgHzOQcauS4UOl130UrM4nuj8LOcOEipU1vBtaOh2lqVrrGOizUMbbs/Ij9M74XJ2VaoM1yi+XtplITYCsRGCXfj0UXLCLrx+NwseVrH1taytjp2tDSdB19agFqRE+DkF2I5kXrgdJEXnpZtYWeWxGSPxXfHfSh6jOxpKfacEADR/ujMbnGqYkAoWakjZ1HaokYLyGtHyUHuEyYHBQrx93/zMqMmj7/ccB/f4dR3XU6hA3uX1yiXeGhP0+KmXymc1MjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0CA59a8DtemSIalh7Ph72U1JASpBgG2ApuSeHSQzxtk=;
+ b=RCXrPW9gr6/sP3D427VRVGyPXdWQNuBW128YAGYGx01TdsxKivDD8l7fwyTY+ZXL475pVyyJ1+pmJgxypwuHymCpEJ4wMg8xCdswEV0+rcsX6y0RJiXiMsB61qewFkF0q4JEPqgEPvsAVg9yJvic8CnvEM3X0UbSQ75Fsa5MFjd6nFGTpfYf0JiHMRRQ1Nhw3r6Zz2sr+s+D0MJTPC13zX8aYxA/CQNy1ADbb+Y4Jy1MiqeNMjU4eCveEoWtwtCEFK1MdanJiVO8+SKmsWbByNDuitST8m+1jc8fxsnmVaezLdCHMorgVrjHam6lTVRbreXkpIbK6afR0n+Os+qa3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=0CA59a8DtemSIalh7Ph72U1JASpBgG2ApuSeHSQzxtk=;
+ b=OgBwhS9SpPQemoN0rAwQPj6olXYTI1lusBlfpOWx8oBjTS0Kt17lUIWR1zs6duegp1U/BexSf0oIiZn16j+alx5z6tUpTU7ovOi9fBnj/QK0B8aHTit0lIdvvi0OYQXFe/IQj4e88bo6JG4QXDXAJp2R1Duj35fEJnYxyjRM2Uc=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2710.namprd15.prod.outlook.com (2603:10b6:a03:153::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.23; Mon, 22 Jun
+ 2020 18:01:57 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::48e3:c159:703d:a2f1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::48e3:c159:703d:a2f1%5]) with mapi id 15.20.3109.027; Mon, 22 Jun 2020
+ 18:01:56 +0000
+Date:   Mon, 22 Jun 2020 11:01:53 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Kernel Team <kernel-team@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 10/19] mm: memcg/slab: deprecate memory.kmem.slabinfo
+Message-ID: <20200622180153.GB301338@carbon.dhcp.thefacebook.com>
+References: <20200608230654.828134-1-guro@fb.com>
+ <20200608230654.828134-11-guro@fb.com>
+ <CALvZod4Bfx3j+=spRSct5_cBL4U+XFF228iZt3EdkGqf4kokrQ@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod4Bfx3j+=spRSct5_cBL4U+XFF228iZt3EdkGqf4kokrQ@mail.gmail.com>
+X-ClientProxiedBy: BYAPR06CA0012.namprd06.prod.outlook.com
+ (2603:10b6:a03:d4::25) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-In-Reply-To: <20200622151054.GW954398@dell>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:88b0) by BYAPR06CA0012.namprd06.prod.outlook.com (2603:10b6:a03:d4::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21 via Frontend Transport; Mon, 22 Jun 2020 18:01:56 +0000
+X-Originating-IP: [2620:10d:c090:400::5:88b0]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d4d6d511-54e5-489e-5546-08d816d65a45
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2710:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB27102F6153EA239903D8AA89BE970@BYAPR15MB2710.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Forefront-PRVS: 0442E569BC
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vyG2pIX8EN+i3T5q+2D/FiQZVIHayIL5DTg38kej18irQMYrxhk5LURLr+pXlFdmh0IMtj3Mll5p++CwDRZJWUEAG2rY1L0zjrCPOJRrGVcUGp+Uz9xxMneSlsc0QkXqmIbjhQuDUU7slsh/oKUlUCRmhVvld8yNLGiqmfCjFtQAUce7zl6Q6gQcI/nB+pVupzw2qCVUnEqtNNKUU3sHG07XE4ds72eAHVnQ4gubfJcdIESBi3hQ9HarVzomKBzthCISqeZtnkwJzrgo/l5+Z/r2ytzKGbZHjQTBuTqrZldKIno7tJv6qIId8nKjJ9CrdN2q/RNgl9gZWtfvk5FSzQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(396003)(136003)(39860400002)(346002)(376002)(54906003)(9686003)(83380400001)(2906002)(1076003)(16526019)(6666004)(6506007)(55016002)(53546011)(4326008)(6916009)(186003)(52116002)(7696005)(33656002)(86362001)(316002)(66556008)(66476007)(478600001)(5660300002)(66946007)(8676002)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: Yl70YKRyT194VpdEyNIo8e2p5XuDdLP+iT4s0LOQd1f0p1I4pwR/A23yeEa6blOmlOlRHE5qKHkztuuI3HokNsfLGAf1zfk8YL4ljNtZFMVZES31gDDUMET7v6hhKsyNb6z+Uzq53KA76Zyz0G7naL6vtsQvumW3b7wdFJoOoQHahQzSE/Lm/k1G9RNbEezeNOECJLMt9QdP6Fm1Ln6iTtpzD5SZ/KZ18yovQtte40Bw3jBfL9SNvKeEiq0+U0NWoAeoL8zEtHZYseQXDzH59AsjTjmwnj854fkbRbo/IT1VigrVc5c73z/BfKzEBaOWRUinWrEhnsBneeZUw6d+1qpAgF4bDYV2XHZf91s8CvHsyQ1deSUvznGWSB1ANB40/YkvIrjLhXmlNiI+JRkc/UcMmdSouu9bwC+14LOsp8YSmTXFmJ4DqaJeri2lGMM/SL1ygdXwdlZ2NQz/mX2LAt6SfIAAR1PT8FbrYoA5XEHTVG6LMLzt2sDifhSHA4ThXFmsqQphnsvUpbmYFtneow==
+X-MS-Exchange-CrossTenant-Network-Message-Id: d4d6d511-54e5-489e-5546-08d816d65a45
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Jun 2020 18:01:56.8721
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EZ+SD2t2Geuu9jiEh2wDpogFSdkPyYu8rXmbZDeeD4Wq3qqyfpsqR/AgLRiprlh4
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2710
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-22_10:2020-06-22,2020-06-22 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ priorityscore=1501 spamscore=0 cotscore=-2147483648 adultscore=0
+ malwarescore=0 clxscore=1015 impostorscore=0 phishscore=0 mlxscore=0
+ bulkscore=0 mlxlogscore=912 suspectscore=2 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006220122
+X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-22 10:10, Lee Jones wrote:
-> On Mon, 22 Jun 2020, Frank Rowand wrote:
+On Mon, Jun 22, 2020 at 10:12:46AM -0700, Shakeel Butt wrote:
+> On Mon, Jun 8, 2020 at 4:07 PM Roman Gushchin <guro@fb.com> wrote:
+> >
+> > Deprecate memory.kmem.slabinfo.
+> >
+> > An empty file will be presented if corresponding config options are
+> > enabled.
+> >
+> > The interface is implementation dependent, isn't present in cgroup v2,
+> > and is generally useful only for core mm debugging purposes. In other
+> > words, it doesn't provide any value for the absolute majority of users.
+> >
+> > A drgn-based replacement can be found in tools/cgroup/slabinfo.py .
+> > It does support cgroup v1 and v2, mimics memory.kmem.slabinfo output
+> > and also allows to get any additional information without a need
+> > to recompile the kernel.
+> >
+> > If a drgn-based solution is too slow for a task, a bpf-based tracing
+> > tool can be used, which can easily keep track of all slab allocations
+> > belonging to a memory cgroup.
+> >
+> > Signed-off-by: Roman Gushchin <guro@fb.com>
+> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> > Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 > 
->> On 2020-06-22 03:50, Lee Jones wrote:
->>> On Thu, 18 Jun 2020, Frank Rowand wrote:
->>>
->>>> On 2020-06-15 04:26, Lee Jones wrote:
->>>>> On Sun, 14 Jun 2020, Frank Rowand wrote:
->>>>>
->>>>>> Hi Lee,
->>>>>>
->>>>>> I'm looking at 5.8-rc1.
->>>>>>
->>>>>> The only use of OF_MFD_CELL() where the same compatible is specified
->>>>>> for multiple elements of a struct mfd_cell array is for compatible
->>>>>> "stericsson,ab8500-pwm" in drivers/mfd/ab8500-core.c:
->>>>>>
->>>>>>         OF_MFD_CELL("ab8500-pwm",
->>>>>>                     NULL, NULL, 0, 1, "stericsson,ab8500-pwm"),
->>>>>>         OF_MFD_CELL("ab8500-pwm",
->>>>>>                     NULL, NULL, 0, 2, "stericsson,ab8500-pwm"),
->>>>>>         OF_MFD_CELL("ab8500-pwm",
->>>>>>                     NULL, NULL, 0, 3, "stericsson,ab8500-pwm"),
->>>>
->>>>          OF_MFD_CELL("ab8500-pwm",
->>>>                      NULL, NULL, 0, 0, "stericsson,ab8500-pwm"),
->>>>
->>>>          OF_MFD_CELL_REG("ab8500-pwm-mc",
->>>>                          NULL, NULL, 0, 0, "stericsson,ab8500-pwm", 0),
->>>>          OF_MFD_CELL_REG("ab8500-pwm-mc",
->>>>                          NULL, NULL, 0, 1, "stericsson,ab8500-pwm", 1),
->>>>          OF_MFD_CELL_REG("ab8500-pwm-mc",
->>>>                          NULL, NULL, 0, 2, "stericsson,ab8500-pwm", 2),
->>>>
->>>>>>
->>>>>> The only .dts or .dtsi files where I see compatible "stericsson,ab8500-pwm"
->>>>>> are:
->>>>>>
->>>>>>    arch/arm/boot/dts/ste-ab8500.dtsi
->>>>>>    arch/arm/boot/dts/ste-ab8505.dtsi
->>>>>>
->>>>>> These two .dtsi files only have a single node with this compatible.
->>>>>> Chasing back to .dts and .dtsi files that include these two .dtsi
->>>>>> files, I see no case where there are multiple nodes with this
->>>>>> compatible.
->>>>>>
->>>>>> So it looks to me like there is no .dts in mainline that is providing
->>>>>> the three "stericsson,ab8500-pwm" nodes that drivers/mfd/ab8500-core.c
->>>>>> is expecting.  No case that there are multiple mfd child nodes where
->>>>>> mfd_add_device() would assign the first of n child nodes with the
->>>>>> same compatible to multiple devices.
->>>>>>
->>>>>> So it appears to me that drivers/mfd/ab8500-core.c is currently broken.
->>>>>> Am I missing something here?
->>>>>>
->>>>>> If I am correct, then either drivers/mfd/ab8500-core.c or
->>>>>> ste-ab8500.dtsi and ste-ab8505.dtsi need to be fixed.
->>>>>
->>>>> Your analysis is correct.
->>>>
->>>> OK, if I'm not overlooking anything, that is good news.
->>>>
->>>> Existing .dts source files only have one "ab8500-pwm" child.  They already
->>>> work correcly.
->>>>
->>>> Create a new compatible for the case of multiple children.  In my example
->>>> I will add "-mc" (multiple children) to the existing compatible.  There
->>>> is likely a better name, but this lets me provide an example.
->>>>
->>>> Modify drivers/mfd/ab8500-core.c to use the new compatible, and new .dts
->>>> source files with multiple children use the new compatible:
->>>>
->>>>          OF_MFD_CELL("ab8500-pwm",
->>>>                      NULL, NULL, 0, 0, "stericsson,ab8500-pwm"),
->>>>
->>>>          OF_MFD_CELL_REG("ab8500-pwm-mc",
->>>>                          NULL, NULL, 0, 0, "stericsson,ab8500-pwm", 0),
->>>>          OF_MFD_CELL_REG("ab8500-pwm-mc",
->>>>                          NULL, NULL, 0, 1, "stericsson,ab8500-pwm", 1),
->>>>          OF_MFD_CELL_REG("ab8500-pwm-mc",
->>>>                          NULL, NULL, 0, 2, "stericsson,ab8500-pwm", 2),
->>>>
->>>> The "OF_MFD_CELL" entry is the existing entry, which will handle current
->>>> .dts source files.  The new "OF_MFD_CELL_REG" entries will handle new
->>>> .dts source files.
->>>
->>> Sorry, but I'm not sure what the above exercise is supposed to solve.
->>>
->>> Could you explain it for me please?
->>
->> The OF_MFD_CELL() entry handles all of the existing .dts source files
->> that only have one ab8500-pwm child nodes.  So existing .dtb blobs
->> continue to work.
->>
->> The OF_MFD_CELL_REG() entries will handle all of the new .dts source
->> files that will have up to 3 ab8500-pwm child nodes.
->>
->> Compatibility is maintained for existing .dtb files.  A new kernel
->> version with the changes will support new .dtb files that contain
->> multiple ab8500-pwm child nodes.
+> Hi Roman,
 > 
-> I can see *what* you're trying to do.  I was looking for an
-> explanation of *how* you think that will work.  FWIW, I don't think
-> what you're proposing will work as you envisage.  I thought that
-> perhaps I was missing something, which is why I requested further
-> explanation.
+> I am not against removing the memory.kmem.slabinfo interface but I
+> would like to have an alternative solution more accessible than
+> tools/cgroup/slabinfo.py.
 > 
->>>> And of course the patch that creates OF_MFD_CELL_REG() needs to precede
->>>> this change.
->>>>
->>>> I would remove the fallback code in the existing patch that tries to
->>>> handle an incorrect binding.  Just error out if the binding is not
->>>> used properly.
->>>
->>> What fallback code?
->>
->> Based on reading the patch description, I expected some extra code to try
->> to handle the case where the compatible in more than one struct mfd_cell
->> entry is "stericsson,ab8500-pwm" and there are multiple ab8500-pwm child
->> nodes.
->>
->> Looking at the actual code (which I had not done before), I see that the
->> "best effort attempt to match" is keeping a list of child nodes that
->> have already been used (mfd_of_node_list) and avoiding re-use of such
->> nodes.  This allows an invalid .dtb (one with multple "stericsson,ab8500-pwm"
->> child nodes) to possibly be assigned unique child nodes for multiple
->> struct mfd_cell entries to be "stericsson,ab8500-pwm".
->>
->> So it is confusing for me to call that "fallback code".  It really is
->> "best effort attempt to match" for a broken .dtb code.
->>
->> There should be no best effort for a broken .dtb.  The broken .dtb should
->> instead result in an error.
+> In our case, we don't have ssh access and if we need something for
+> debugging, it is much more preferable to provide a file to read to
+> SREs. After the review, that file will be added to a whitelist and
+> then we can directly read that file through automated tools without
+> approval for each request.
 > 
-> The problem is, how can you tell the difference between a valid and a
-> broken FDT without pre-processing - which, as I explained in the
-> commit message, I am not prepared to do.  We cannot test individually
-> since all configurations (e.g. no 'reg' property are valid on an
-> individual basis.
-
-If my proposed changes are made, then there are at least 3 ways to detect
-a broken FDT or prevent the problem caused by the broken FDT.
-
-
-1) Use the validation process that uses the bindings to validate the
-devicetree source.
-
-
-2) Modify patch 1/3.  The small part of the patch to modify is:
-
-+static int mfd_match_of_node_to_dev(struct platform_device *pdev,
-+				    struct device_node *np,
-+				    const struct mfd_cell *cell)
-+{
-+	struct mfd_of_node_entry *of_entry;
-+	const __be32 *reg;
-+	u64 of_node_addr;
-+
-+	/* Skip devices 'disabled' by Device Tree */
-+	if (!of_device_is_available(np))
-+		return -ENODEV;
-+
-+	/* Skip if OF node has previously been allocated to a device */
-+	list_for_each_entry(of_entry, &mfd_of_node_list, list)
-
-Change:
-
-+		if (of_entry->np == np)
-+			return -EAGAIN;
-
-To:
-
-+		if (of_entry->np == np) {
-+			if (!cell->use_of_reg)
-+				return -EINVAL;
-+			else
-+				return -EAGAIN;
-
-There may be a better choice than EINVAL, but I am just showing the method.
-
-You may also want to refactor this section of the patch slightly
-differently to achieve the same result.  It was just easiest to
-show the suggested change the way I did it.
-
-The test that returns EINVAL detects the issue that the FDT does
-not match the binding (there is more one child node with the
-"stericsson,ab8500-pwm" compatible.
-
-
-3) I'm not sure if the pre-parsing that is wanted is parsing of the
-devicetree or parsing of the struct mfd_cell array.  If the mfd_cell
-array then solution 3 is not acceptable.
-
-A different change to a small part of patch 1/3.  In mfd_add_devices(),
-validate parameter "cells".  The validation could precede the existing
-code, or it could be folded into the existing for loop.  The validation
-is checking for any other element of the cells array containing
-the same compatible value if cell->use_of_reg is not true for an element.
-
-If this validation occurs, then I think mfd_of_node_list, and all the
-associated code to deal with it is no longer needed.  But I didn't
-look at this part in detail, so maybe I missed something.
-
-The validation is something like (untested):
-
-	if (IS_ENABLED(CONFIG_OF)
-		for (i = 0; i < n_devs; i++) {
-			this_cell = cells + i;
-			if (!this_cell->use_of_reg) {
-				for (j = 1; j < n_devs; j++) {
-					if (j != i) {
-						cell = cells + j;
-						if (!strcmp(this_cell->of_compatible, cell->of_compatible))
-							return -EINVAL;
-					}
-				}
-			}
-		}
-	
-
-
-
+> I am just wondering if a file interface can be provided for whatever
+> tools/cgroup/slabinfo.py is providing.
 > 
-> The best we can do is "best effort", to try and match each cell with
-> its requested OF node.
-> 
+> Shakeel
 
+Hello, Shakeel!
+
+I understand your point, but Idk how much we wanna make this code a part
+of the kernel and the cgroup interface. The problem is that reading
+from it will be really slow in comparison to all other cgroup interface
+files. Idk if Google's version of SLAB has a list of all slab pages,
+but if not (as in generic SLUB case), it requires scanning of the whole RAM.
+So it's not suitable for periodic reading "just in case". But also
+the absolute majority of users don't need this information.
+
+If for some reason you're not comfortable with deploying drgn, it's fairly
+easy to write a small standalone tool (similar to page-types), which will
+do the trick. Maybe it can work for you?
+
+Thanks!
