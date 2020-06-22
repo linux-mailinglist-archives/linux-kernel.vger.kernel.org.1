@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9E82034B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:23:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 762402034BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgFVKXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 06:23:43 -0400
-Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:57347 "EHLO
-        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726841AbgFVKXm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 06:23:42 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id nJc1j11Tpn3JWnJc4jZiTl; Mon, 22 Jun 2020 12:23:40 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1592821420; bh=f/ULth+WPXG/hWu8Ht7Ecw0hWHHS+idcagxLi4SEmhU=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=jF9UasZ/5EAMII3du05bFA3W9vQlYTG5dEezJEWbioY4xYvZsmHYNfLxJi2z7b6p0
-         5ns7WKvXbkGZASOIMoGCM1HQEiurIVJwIeseO4ct6UfGOOkGNr73EHu/gqdkP7SeeQ
-         sYx1OSGkKngZCOsH+tkZhXpFo4xleDFGg/xDEM3LqbyxmTCNQdsHJT54bZLdwRojl/
-         KdoJfa4/D0pjp9naJOh6U5tccPK27QcvjhqUAIs1zhQxon6xqLt/dEDwK0XDnCUeAc
-         mcjVM93f0CcA/qTrQrPtVavxhfB0KHvn7HquSWx0qhcdskqD7EDYuq+DFOBx3INJBX
-         fEF7eal7bSZsg==
-Subject: Re: [PATCH RESEND] media: cros-ec-cec: do not bail on
- device_init_wakeup failure
-To:     Dariusz Marcinkiewicz <darekm@google.com>,
-        linux-media@vger.kernel.org
-Cc:     narmstrong@baylibre.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Dariusz Marcinkiewicz <darekm@chromium.org>,
-        linux-kernel@vger.kernel.org
-References: <20200622100520.143622-1-darekm@google.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <ca796f62-7d1f-3391-0373-ec9b98b1c47a@xs4all.nl>
-Date:   Mon, 22 Jun 2020 12:23:37 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1727114AbgFVKYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 06:24:21 -0400
+Received: from nautica.notk.org ([91.121.71.147]:48747 "EHLO nautica.notk.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726841AbgFVKYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 06:24:19 -0400
+Received: by nautica.notk.org (Postfix, from userid 1001)
+        id DBA46C01A; Mon, 22 Jun 2020 12:24:16 +0200 (CEST)
+Date:   Mon, 22 Jun 2020 12:24:01 +0200
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Alexander Kapshuk <alexander.kapshuk@gmail.com>,
+        linux-kernel@vger.kernel.org, ebiederm@xmission.com,
+        akpm@linux-foundation.org, liuzhiqiang26@huawei.com,
+        joel@joelfernandes.org, paulmck@linux.vnet.ibm.com,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] kernel/signal.c: Export symbol __lock_task_sighand
+Message-ID: <20200622102401.GA12377@nautica>
+References: <20200621133704.77896-1-alexander.kapshuk@gmail.com>
+ <20200622062527.GA6516@redhat.com>
+ <20200622083905.c3nurmkbo5yhd6lj@wittgenstein>
 MIME-Version: 1.0
-In-Reply-To: <20200622100520.143622-1-darekm@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfGXI0eTxzr8KTbetnLgAYjh9qScosjRXUdJOPWPZlPqM6Oq5U2RVg1ofWC1UIDgWz+Xw7odQNObqtVNREyZrgw5+mVn68FuxZ7fnEXM9gP9z9BnlIopo
- KkqQZiNRvZN3iQ8dqnnTjP0OFGF0d2JZoV7pLBIF9YPZ5ps63pulHWiQkLNB32TFqGg1FzvJoZrMbjmbIwMnn296FTb/9Cidk8ceBAdg4YM3d7bqcTpt64jk
- RZkJw3KT3SOqq8Y8X3ryJlMsWks/YBme5p5Q4X0mf20cyepkJFYkhq2MEiMsZXK5sorIzdIxYqe6rscK8rqTgkhbY7h8pMoUkSgpSPW8hW7CFTASdVwF/llk
- vYtOi9fKNF0lDmswHbDUeeTuR5gxDcuX3N4HtEeJJBKmUE2HCdmnhNnmHiiS7zSvHkIkCzrtyWnoTQVVCMvr5yvPDtt7YoqMkucubT/Kd37S5eWU0x/Jl+Kq
- lPlZyhYROrwx0m1vIj2PXitF6bUaQzXO20d1YcWJpJQ3V3iJONqjh5BE6yAL8isb0sWz6nibLvU96vUk
+Content-Disposition: inline
+In-Reply-To: <20200622083905.c3nurmkbo5yhd6lj@wittgenstein>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/06/2020 12:05, Dariusz Marcinkiewicz wrote:
-> Do not fail probing when device_init_wakeup fails.
+Christian Brauner wrote on Mon, Jun 22, 2020:
+> On Mon, Jun 22, 2020 at 08:25:28AM +0200, Oleg Nesterov wrote:
+>> current->sighand is stable and can't go away. Unless "current" is exiting and
+>> has already passed exit_notify(). So I don't think net/9p needs this helper.
 > 
-> device_init_wakeup fails when the device is already enabled as wakeup
-> device. Hence, the driver fails to probe the device if:
-> - The device has already been enabled for wakeup (via e.g. sysfs)
-> - The driver has been unloaded and is being loaded again.
+> From what I can gather from the thread (cf. [1]) that is linked in the
+> commit message the main motivation for all of this is sparse not being
+> happy and not some bug. (Maybe I'm not seeing something though.)
 > 
-> This goal of the patch is to fix the above cases.
-> 
-> Overwhelming majority of the drivers do not check device_init_wakeup
-> return value.
-> 
-> Signed-off-by: Dariusz Marcinkiewicz <darekm@google.com>
+> The patch itself linked here doesn't seem to buy anything. I agree with
+> Oleg. Afaict, lock_task_sighand() would only be needed here if the task
+> wouldn't be current. So maybe it should just be dropped from the series.
 
-This can be CCed to stable, I guess?
+Sure. I honestly have no idea on what guarantees we have from the task
+being current here as opposed to any other task -- I guess that another
+thread calling exit for exemple would have to wait?
+What about the possibility of sighand being null that the function does
+check, is that impossible for current as well?
 
-Can you provide a Fixes: tag as well?
 
-Regards,
+Honestly not a part of the code I'm much familiar with, this all
+predates my involvement with 9p by a fair bit...
 
-	Hans
+Anyway, not particularily fussy on this, it just looked like "the right
+way" to lock a task signal handler among the few common patterns I could
+see; I think it would make sense to just convert all such locks to a
+single pattern for a maintenance pov but it's much more work than I'm
+willing to do.
+I'll just drop the patch :)
 
-> ---
->  drivers/media/cec/platform/cros-ec/cros-ec-cec.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-> index 0e7e2772f08f..2d95e16cd248 100644
-> --- a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-> +++ b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-> @@ -277,11 +277,7 @@ static int cros_ec_cec_probe(struct platform_device *pdev)
->  	platform_set_drvdata(pdev, cros_ec_cec);
->  	cros_ec_cec->cros_ec = cros_ec;
->  
-> -	ret = device_init_wakeup(&pdev->dev, 1);
-> -	if (ret) {
-> -		dev_err(&pdev->dev, "failed to initialize wakeup\n");
-> -		return ret;
-> -	}
-> +	device_init_wakeup(&pdev->dev, 1);
->  
->  	cros_ec_cec->adap = cec_allocate_adapter(&cros_ec_cec_ops, cros_ec_cec,
->  						 DRV_NAME,
-> 
 
+>> However, the games with TIF_SIGPENDING doesn't look right in any
+>> case.
+
+I definitely agree with this, hence my comment about an old patchset
+that will remove these eventually, but while I did send the patches over
+a year ago I never took them up due to lack of proper testing.
+It's been something people regularily complained about that it makes the
+task unkillable in a weird way and many tools like syzbot don't like it
+(and potentially users who try ^C won't either)
+
+I guess I'll try to find some time to finish that instead... Will be
+more useful than trying to wrap my head around all of that :P
+
+
+Thanks!
+-- 
+Dominique
