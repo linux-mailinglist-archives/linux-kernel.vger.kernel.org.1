@@ -2,142 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED65B20322B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C4C203233
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:37:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726401AbgFVIgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 04:36:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58398 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725616AbgFVIgi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 04:36:38 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 737B0206C3;
-        Mon, 22 Jun 2020 08:36:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592814997;
-        bh=p3/nAndPqD+xJSr38RP3st3phWO4emLpokfz2oHkG4o=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=F+oC2C6ZvX3DFlstmcmu9ZiRw5t6G3wCRTyqZ3JKEBm3CDgIpZnmVC0YbNiwSVRIf
-         tVQoME3X6ac+Febu65absGTTSCg3cNaZJUIt6zbfLsuoCMQeFwdJ4vyN/paAD17R63
-         0qkXyoMBD0xKrUWWh0yN51mlQC64LUOWeZa81t+s=
-Content-Type: text/plain; charset="utf-8"
+        id S1726704AbgFVIhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 04:37:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59040 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725912AbgFVIhi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 04:37:38 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2801BC061795
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:37:37 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id 9so18303841ljc.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:37:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3eXBIJ/ong3y2DHs11bafvAglqmRKvwsWXz4ncOvgbk=;
+        b=MyVxAdfQuB3hNhVA6gFQPxOHMVZq4kOoEBR5d6+KvfCryN2lealybR0S635YEMAIb1
+         7CZFmBV4O9X4eZXOcbPkmEiodDZvxNhCOL7WBwd6J2Cj3/1b8ZHiWxf3RAU10cL4ibcx
+         GbHMLomNSEpu9ejd3MB182JsijA8KDOJSvVUdgJjLz2nAVxl/RIeI6YgcqGWOAnwYJJT
+         viXUnrmiCJWl8KHn52/cVCN1oD7n+D/UloNHOitJhWjYp/wwwu2k1gBiVKxW9DHxhhzZ
+         GIzmRw7Ry3GeuyRqGCH5rOdvc2R9lNBZeBPcVKaXbXeyiK68BDupWJy+Gt6110i0Vpos
+         q/Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3eXBIJ/ong3y2DHs11bafvAglqmRKvwsWXz4ncOvgbk=;
+        b=uJc8Waf8ZfunSaGQsCB+M/T3gJy52APbPXSopYwzLH0dYN38sNqWnUNUhR89RbCWRQ
+         9WHh3w5ArJFWq5GfMJzNJbVEHRPP6yPJMo05oRFhXAYhJI1+Nl3dDPYRdIpfuOwSXp0O
+         juVYx1ZIqlcAt46JgSwucgkQ23AL8tWSxtlbJq/iwPLU45Hr0/QkWT08tIhYFqnDtCt1
+         ITHqeBFz8hng9wEhu0YrXuhz0GlVA8WU68pMGq4u5DX7ulfk/zhJ4/HSMxXqCX6nazOc
+         xx2/hsBqJX5k0QzExn96gLV18MbNLqfL+opCOMplo5XUIKS0rnJRoByyoS99u3unlKaB
+         AzaQ==
+X-Gm-Message-State: AOAM530dvoTvlu7d09tImNpEX/QK3tDWxiuzZ3eVe/tgmXhyTmLs7AV5
+        1Ua79XZmKlmUQ897mXOEZNk3j9y17lZvPL6/BEPW1Q==
+X-Google-Smtp-Source: ABdhPJyq2873ShtFN9NjzvHiLg+t0lqwT8VYMxYMqaId//U8qDN7eqNChDblrwuN2XX52zIX4exu3kqPkTH2dU3Dtk0=
+X-Received: by 2002:a05:651c:512:: with SMTP id o18mr8528544ljp.226.1592815055424;
+ Mon, 22 Jun 2020 01:37:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <202006211709.hxHhenC8%lkp@intel.com>
-References: <202006211709.hxHhenC8%lkp@intel.com>
-Subject: Re: drivers/clk/clk-divider.c:39:17: sparse: sparse: incorrect type in argument 1 (different base types)
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-To:     kernel test robot <lkp@intel.com>
-Date:   Mon, 22 Jun 2020 01:36:36 -0700
-Message-ID: <159281499670.62212.17969220355200979156@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+References: <20200614010755.9129-1-valentin.schneider@arm.com>
+ <20200614010755.9129-2-valentin.schneider@arm.com> <CAKfTPtCyi9acak95_2_2uL3Cf0OMAbZhDav2LbPY+ULPrD7z4w@mail.gmail.com>
+ <20200620174912.GA18358@arm.com> <jhjmu4xcqyk.mognet@arm.com>
+In-Reply-To: <jhjmu4xcqyk.mognet@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 22 Jun 2020 10:37:23 +0200
+Message-ID: <CAKfTPtDG26Y9s4c+MbdmbxJaiCv6s6WTqmzztcoFsm2SnRL=vQ@mail.gmail.com>
+Subject: Re: [PATCH 1/3] thermal/cpu-cooling, sched/core: Cleanup thermal
+ pressure definition
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Ionela Voinescu <ionela.voinescu@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        "open list:THERMAL" <linux-pm@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        LAK <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting kernel test robot (2020-06-21 02:05:20)
-> Hi Stephen,
->=20
-> First bad commit (maybe !=3D root cause):
->=20
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t master
-> head:   64677779e8962c20b580b471790fe42367750599
-> commit: bbd7ffdbef6888459f301c5889f3b14ada38b913 clk: Allow the common cl=
-k framework to be selectable
-> date:   7 weeks ago
-> config: alpha-randconfig-s032-20200621 (attached as .config)
-> compiler: alpha-linux-gcc (GCC) 9.3.0
-> reproduce:
->         # apt-get install sparse
->         # sparse version: v0.6.2-rc2-13-gc59158c8-dirty
->         git checkout bbd7ffdbef6888459f301c5889f3b14ada38b913
->         # save the attached .config to linux build tree
->         make W=3D1 C=3D1 ARCH=3Dalpha CF=3D'-fdiagnostic-prefix -D__CHECK=
-_ENDIAN__'
->=20
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->=20
->=20
-> sparse warnings: (new ones prefixed by >>)
->=20
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
->    drivers/clk/clk-divider.c:31:24: sparse: sparse: cast to restricted __=
-be32
-> >> drivers/clk/clk-divider.c:39:17: sparse: sparse: incorrect type in arg=
-ument 1 (different base types) @@     expected unsigned int [usertype] @@  =
-   got restricted __be32 [usertype] @@
-> >> drivers/clk/clk-divider.c:39:17: sparse:     expected unsigned int [us=
-ertype]
->    drivers/clk/clk-divider.c:39:17: sparse:     got restricted __be32 [us=
-ertype]
->=20
-> vim +39 drivers/clk/clk-divider.c
->=20
-> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  17 =20
-> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  18  /*
-> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  19   * DOC: basic adjustable di=
-vider clock that cannot gate
-> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  20   *
-> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  21   * Traits of this clock:
-> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  22   * prepare - clk_prepare on=
-ly ensures that parents are prepared
-> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  23   * enable - clk_enable only=
- ensures that parents are enabled
-> 9556f9dad8f576 Brian Norris   2015-04-13  24   * rate - rate is adjustabl=
-e.  clk->rate =3D ceiling(parent->rate / divisor)
-> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  25   * parent - fixed parent.  =
-No clk_set_parent support
-> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  26   */
-> 9d9f78ed9af0e4 Mike Turquette 2012-03-15  27 =20
-> 434d69fad63b44 Jonas Gorski   2019-04-18  28  static inline u32 clk_div_r=
-eadl(struct clk_divider *divider)
-> 434d69fad63b44 Jonas Gorski   2019-04-18  29  {
-> 434d69fad63b44 Jonas Gorski   2019-04-18  30    if (divider->flags & CLK_=
-DIVIDER_BIG_ENDIAN)
-> 434d69fad63b44 Jonas Gorski   2019-04-18 @31            return ioread32be=
-(divider->reg);
+On Sun, 21 Jun 2020 at 00:28, Valentin Schneider
+<valentin.schneider@arm.com> wrote:
+>
+>
+> On 20/06/20 18:49, Ionela Voinescu wrote:
+> > Hi Vincent,
+> >
+> > On Thursday 18 Jun 2020 at 17:03:24 (+0200), Vincent Guittot wrote:
+> >> On Sun, 14 Jun 2020 at 03:10, Valentin Schneider
+> >> <valentin.schneider@arm.com> wrote:
+> > [..]
+> >> > diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
+> >> > index e297e135c031..a1efd379b683 100644
+> >> > --- a/drivers/thermal/cpufreq_cooling.c
+> >> > +++ b/drivers/thermal/cpufreq_cooling.c
+> >> > @@ -417,6 +417,11 @@ static int cpufreq_get_cur_state(struct thermal_cooling_device *cdev,
+> >> >         return 0;
+> >> >  }
+> >> >
+> >> > +__weak void
+> >> > +arch_set_thermal_pressure(const struct cpumask *cpus, unsigned long th_pressure)
+> >> > +{
+> >> > +}
+> >>
+> >> Having this weak function declared in cpufreq_cooling is weird. This
+> >> means that we will have to do so for each one that wants to use it.
+> >>
+> >> Can't you declare an empty function in a common header file ?
+> >
+> > Do we expect anyone other than cpufreq_cooling to call
+> > arch_set_thermal_pressure()?
+> >
+> > I'm not against any of the options, either having it here as a week
+> > default definition (same as done for arch_set_freq_scale() in cpufreq.c)
+> > or in a common header (as done for arch_scale_freq_capacity() in sched.h).
+> >
+>
+> Same thoughts here; I was going for the arch_set_freq_scale() way.
+>
+> > But for me, Valentin's implementation seems more natural as setters are
+> > usually only called from within the framework that does the control
+> > (throttling for thermal or frequency setting for cpufreq) and we
+> > probably want to think twice if we want to call them from other places.
+> >
+>
+> Well TBH I was tempted to go the other way and keep the definition in
+> core.c, given a simple per-cpu value is fairly generic. More precisely, it
 
-Ok. I guess we'll need to force cast the pointer to be __be32 in this
-case. Before it wasn't in generic code so the architecture was masking
-the issue.
+Having all definitions in the same place is my main concern here.
+If topology.c defines arch_set_thermal_pressure it should also provide
+the empty function when the feature is not available or possible
+instead of relying of each user of the interface to define a weak
+function just in case.
+
+> seems somewhat awkward that architectures have to redefine those interfaces
+> when, given what cpufreq_cooling is doing, they'll have to go for per-cpu
+> storage in some way or another.
+>
+> I ultimately decided against it, seeing as it isn't too difficult to come
+> up with other drivers of thermal pressure. There was that TDP-bound thing
+> [1], where IIUC you could end up with throttling not because of thermal but
+> because of power constraints. And then there's always FW that can cap stuff
+> as a last resort, and some architectures will want to inform the scheduler
+> of that when/if they'll be able to query FW for that.
+>
+> [1]: 20200428032258.2518-1-currojerez@riseup.net
+>
+> > Thanks,
+> > Ionela.
