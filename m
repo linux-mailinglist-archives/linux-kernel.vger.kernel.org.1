@@ -2,68 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DE5202FA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 08:15:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EB14202FAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 08:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731261AbgFVGPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 02:15:18 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:62533 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731211AbgFVGPR (ORCPT
+        id S1731257AbgFVGSw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 02:18:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37600 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731238AbgFVGSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 02:15:17 -0400
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 21 Jun 2020 23:15:16 -0700
-Received: from sivaprak-linux.qualcomm.com ([10.201.3.202])
-  by ironmsg03-sd.qualcomm.com with ESMTP; 21 Jun 2020 23:15:13 -0700
-Received: by sivaprak-linux.qualcomm.com (Postfix, from userid 459349)
-        id 0D624218C5; Mon, 22 Jun 2020 11:45:11 +0530 (IST)
-From:   Sivaprakash Murugesan <sivaprak@codeaurora.org>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        stanimir.varbanov@linaro.org, ardb@kernel.org,
-        sivaprak@codeaurora.org, cotequeiroz@gmail.com,
-        ebiggers@google.com, horia.geanta@nxp.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] crypto: qce: sha: Do not modify scatterlist passed along with request
-Date:   Mon, 22 Jun 2020 11:45:06 +0530
-Message-Id: <1592806506-23978-4-git-send-email-sivaprak@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1592806506-23978-1-git-send-email-sivaprak@codeaurora.org>
-References: <1592806506-23978-1-git-send-email-sivaprak@codeaurora.org>
+        Mon, 22 Jun 2020 02:18:51 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD0CBC061795
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 23:18:49 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id 9so17887552ljc.8
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 23:18:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=EwHajz3b3OzliZZ0iljg79Qo0FRnx6yIvPIMoMPNCF0=;
+        b=L680i4qLfffD6qOBHAVVNs/RTGmimhbH54HePc+aAEEFMZsU+KwUMLtg0o3/KjZxwi
+         AsJtSTQQ9TWWeiUXdQ6E95DBB6nBEu9Bw9RHmSduuUFi5efeqeK0TwchSwQmEm1b/LR9
+         guCuBfe2PDw3TrUU4GG5GeGv7DXpvHYmlHIldJ2LtIJ7sYX6q2DjQR1wjBtOZiQOZo0Z
+         c9Wg8EN9kOlCKoKR3DMaVb8rhfL6NJ6XMN3s8YaoUJrXHuvkQxL1kSCVF2HJjwP4WKbo
+         VBXH7bVYaJLr5EKRWY/wyAk5DctM3eO6l3XrzLPT9iajAEGxLTpci91ZvZNz83XG70eE
+         IcaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=EwHajz3b3OzliZZ0iljg79Qo0FRnx6yIvPIMoMPNCF0=;
+        b=BSSph9oxtHjWHP0DPudwtasC74GWcZL6Jk+SrPdlhlQMIwSyvRW4AHqf+x3aX0cKvH
+         7YKY+fWVk+gKy9Ajp+qpLbs0vubHqtJ7fU5ufrsKrLuRzIRhLH9Y/XFTakLBQoyGCoA4
+         p150kQArRCgO7YFj9uPkGVXUP2RKMGK7be0xGqlatP2h8/+HzXCTelkm9bqrJoXO6qah
+         iq8i0kJHDok74zj2zujIqhIDrcnqcQtZYT9M8mQkPYZEUHDEuoGGL0tNsUTSuIAb/mgf
+         jqqefS6IUV0dEouCM2Da/zZSTsK8boylDKWua3snLKxERuwh43KLgTsiKriQgpCIV4Ly
+         tmww==
+X-Gm-Message-State: AOAM531ey/+ki0TDCtpPTsTHIlnpH0v71GkcnoAo8KlEVR3MnkhjrBgO
+        W518rhAZ0FyNuCqOA+5MvpcGI9s6CoFOB1+ZCZ9qsw==
+X-Google-Smtp-Source: ABdhPJzk1dBKVTKlDCM/pQw++y3L1fqg3Nln3xfdv33XwAIbfQ+dtjXOSdb7gqcWA/t3i5e0VbW2AJq+r8s5HIFRXi8=
+X-Received: by 2002:a2e:9116:: with SMTP id m22mr7607612ljg.431.1592806727377;
+ Sun, 21 Jun 2020 23:18:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200617065658.27567-1-naresh.kamboju@linaro.org> <20200621074003.GJ128451@builder.lan>
+In-Reply-To: <20200621074003.GJ128451@builder.lan>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 22 Jun 2020 11:48:35 +0530
+Message-ID: <CA+G9fYvOSRL5WaU1tYTxe4Y16h_kBbNsOibsH6Od5dc1tcmK6Q@mail.gmail.com>
+Subject: Re: [PATCH] remoteproc: qcom: q6v5-mss: Fix kfree build error
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org, inux-remoteproc@vger.kernel.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Sibi Sankar <sibis@codeaurora.org>,
+        Vinod Koul <vinod.koul@linaro.org>, agross@kernel.org,
+        Ohad Ben Cohen <ohad@wizery.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-remoteproc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Crypto test driver's test_ahash_speed calls crypto_ahash_update and
-crypto_ahash_final APIs repeatedly for all the available test vector
-buffer lengths.
+On Sun, 21 Jun 2020 at 13:12, Bjorn Andersson
+<bjorn.andersson@linaro.org> wrote:
+>
+> On Tue 16 Jun 23:56 PDT 2020, Naresh Kamboju wrote:
+>
+> > This patch adds linux/slab.h to fix build error in qcom_q6v5_mss.c
+> >
+> > Build error:
+> >  ../drivers/remoteproc/qcom_q6v5_mss.c:
+> >   In function =E2=80=98q6v5_mpss_init_image=E2=80=99:
+> >  ../drivers/remoteproc/qcom_q6v5_mss.c:772:3:
+> >   error: implicit declaration of function =E2=80=98kfree=E2=80=99;
+> >   did you mean =E2=80=98vfree=E2=80=99? [-Werror=3Dimplicit-function-de=
+claration]
+> >    772 |   kfree(metadata);
+> >        |   ^~~~~
+> >        |   vfree
+> >
+> > Signed-off-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+>
+> Thanks for the patch Naresh, it looks correct but I've not seen this
+> build error myself. Could you please let me know what you built to get
+> this and if you have any suggestion on what caused it? (So we can add a
+> Fixes: tag etc)
 
-if we mark the end for scatterlist based on the current vector size then
-the subsequent vectors might fail if the later buffer lengths are higher.
+Thanks for the review.
+This was an arm64 modules build failure on linux -next 20200616 tag.
+This fix has already been taken care of by
+Herbert Xu <herbert@gondor.apana.org.au> and got merged.
+Fixes: f0187db056dc ("iov_iter: Move unnecessary inclusion of...")
 
-To avoid this, in qce do not mark the end of scatterlist in update API,
-the qce_ahash_async_req_handle API already takes care of this copying
-right amount of buffer from the request scatter list.
+ref:
+https://lore.kernel.org/lkml/20200616010502.GA28834@gondor.apana.org.au/
 
-Signed-off-by: Sivaprakash Murugesan <sivaprak@codeaurora.org>
----
- drivers/crypto/qce/sha.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/crypto/qce/sha.c b/drivers/crypto/qce/sha.c
-index 9e54a667d72f..c230843e2ffb 100644
---- a/drivers/crypto/qce/sha.c
-+++ b/drivers/crypto/qce/sha.c
-@@ -292,8 +292,6 @@ static int qce_ahash_update(struct ahash_request *req)
- 	if (!sg_last)
- 		return -EINVAL;
- 
--	sg_mark_end(sg_last);
--
- 	if (rctx->buflen) {
- 		sg_init_table(rctx->sg, 2);
- 		sg_set_buf(rctx->sg, rctx->tmpbuf, rctx->buflen);
--- 
-2.7.4
-
+- Naresh
