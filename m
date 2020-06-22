@@ -2,130 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0494C204239
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:54:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4F920423F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730291AbgFVUxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 16:53:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60574 "EHLO
+        id S1730174AbgFVU4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 16:56:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728898AbgFVUxt (ORCPT
+        with ESMTP id S1728582AbgFVU4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 16:53:49 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67371C061797
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:53:49 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id e8so3555650pgc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:53:49 -0700 (PDT)
+        Mon, 22 Jun 2020 16:56:36 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5418AC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:56:36 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id p82so6167249oif.1
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:56:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pYQ7/UZeNlKUAAzd40PNMMjARn27pZcaavNwLjboXuY=;
-        b=Jfz8nxtlqDdyEUFiNYROIMCvx3CmfLB7i6PghJ1Hi/EURISUOQ/go/6wXg7kWsRNYD
-         CEdymigcOLNz1dztI4QdAZRu9I+C66qxkjsJ/hePmRB2EUTooiBBhOhS3fRT899g11PY
-         e1r9p/89eFlp4rd1hjPImny24bey3KDGQa2Cc=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=asdOK2gESNr1qZfP5MeEvOEgqM/mfT3t6hygXJxiRd4=;
+        b=h5C3M3Bs03OcWQUVTbeK2VdjGU6tL3xvQsKhXZcMREkwWw4FLlHe94Ca3OEpEh1fHu
+         p4yteh7l/XjXKwpae5Ueu/frnb4dK5s9+iGWK06JpqwTkrmK1XjEiHw8qRsdxDSaxfBT
+         ZnK7dukBV88rnfpDyE4/AxMCq3fHdRE42BcIZZYxzzxqgkA37ddKs05bmqSlLJeDUWn9
+         7m3kOQOhgSdx0OmUuUUOSbhcj+cFu63laiu+YH2DS1GlN8kfVmmumzNwdd4Cgru+1tt5
+         HzENQHcyNFu6IiQLlaogh+Ojw3PG+YRYMX1GZdndmtFrtoVjvWOj0iFUF5exZ17kXFX9
+         1KCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pYQ7/UZeNlKUAAzd40PNMMjARn27pZcaavNwLjboXuY=;
-        b=c8DSazTYBp5+9lvq4rR+YK4k4JKGO6Mi+slPeRL3hm/NxVf2RBU6D6iTors7UljwSw
-         Cg3PxbfX5FJP5MEE90rR0Vofj2tog3Y0sZv+YwYyKtihNNmKEoT1bttmEaNZrSPajUSo
-         2iGc0BNBsRcxSzJq2fRHyHGjJU7LTADEKUlbhpZhVCWwhKz430ZH35UOJvz0lu4dvv+7
-         1+b3nzMmv6fAjdz4VPTj80ryAwdcj8dYkhBQ2ehQdWOu7zFM1lEvTGFAUL8dUaaZBwSl
-         Jjkbt4HZG5mMojgsQOu2ZCU4LgsPe9hepa7XmtKky9+WbKo5cRQ8Tw+ZCZfXd5/m1OKc
-         P6bw==
-X-Gm-Message-State: AOAM532NVj46zwMtq6/3zWftz3Xz36I+QXhZb2Zl/pJ6GJsNWJunR9Lw
-        XOWkDuqn/QsIJKQzfNDagiiFzw==
-X-Google-Smtp-Source: ABdhPJyWBB6BndMTxHuqz2+8/tyBjuTLToAfkoMCHeFnVOD1O3PKDOktg7HbB+hrbiRrwlvZpQKeHA==
-X-Received: by 2002:a65:4304:: with SMTP id j4mr14175789pgq.152.1592859228964;
-        Mon, 22 Jun 2020 13:53:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id i5sm366797pjd.23.2020.06.22.13.53.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 13:53:46 -0700 (PDT)
-From:   Kees Cook <keescook@chromium.org>
-To:     Borislav Petkov <bp@suse.de>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] x86/boot: Warn on orphan section placement
-Date:   Mon, 22 Jun 2020 13:53:41 -0700
-Message-Id: <20200622205341.2987797-4-keescook@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200622205341.2987797-1-keescook@chromium.org>
-References: <20200622205341.2987797-1-keescook@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=asdOK2gESNr1qZfP5MeEvOEgqM/mfT3t6hygXJxiRd4=;
+        b=L6ql1w3QmasINAzvnb8GubmOiVL0U4r43oHGsXUG3IJur03tyW4/yrpsL54/W0rEHe
+         2j8PwWeTXctwszPij2af5ho5pUCjzR5ynIPqBmi2qqf6z8rP/QZ/jdcnPWf/bbejLbGX
+         ydP1otlymRPG4PVflWeNXZSexY+UtWeCp7nlK/nVlf3uSljs87OISM44KOl3n3eNpE+R
+         +hAImHUHZXsVoELxJ+ynmjikr03ffl0/C/uYw2WAJ2coq4yE7+4FS1wgKwspRoIosNyj
+         ft0XQL7pSgrvHMEBa8K5pq2YoyRcvZpmtAM9jiFGfGqSjIFVuXRWSchmHtMz9jaYCek7
+         6Yyw==
+X-Gm-Message-State: AOAM532bpVi768Y+USXvBqDytTGd/NNj/Eivmo038Mrs47qVlEFe0+/Y
+        qjViQZfLUKdMDhnvVHVKLtxXFAbm8e4uMxSyomk=
+X-Google-Smtp-Source: ABdhPJy/ZEHqg5gFqADe7xER7K2662Zj5JuX/8k4X84jiHQk3BkslDvQonEaZuG9z3SK0xary+XixJL+GaynTVRL1i8=
+X-Received: by 2002:aca:75c1:: with SMTP id q184mr13943323oic.49.1592859395718;
+ Mon, 22 Jun 2020 13:56:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200619143056.24538-1-trini@konsulko.com> <CAP6exYJ64Hy9y3Dzh9Asrq8Y0oDWYk+tf4UAcasEc-ZxTY8DAw@mail.gmail.com>
+ <20200622204034.GL27801@bill-the-cat>
+In-Reply-To: <20200622204034.GL27801@bill-the-cat>
+From:   ron minnich <rminnich@gmail.com>
+Date:   Mon, 22 Jun 2020 13:56:24 -0700
+Message-ID: <CAP6exYLd0uFbVSbn28iS1OV=jULtg2f+7t1DAn-fvGoRSd5dng@mail.gmail.com>
+Subject: Re: [PATCH] initrd: Remove erroneous comment
+To:     Tom Rini <trini@konsulko.com>
+Cc:     lkml - Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        "H . Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't want to depend on the linker's orphan section placement
-heuristics as these can vary between linkers, and may change between
-versions. All sections need to be explicitly named in the linker
-script.
+So, let me first add,  the comment can be removed as needed. Comments
+offered only for clarification.
 
-Add the common debugging sections. Discard the unused note, rel, plt,
-dyn, and hash sections that are not needed in the compressed vmlinux.
-Disable .eh_frame generation in the linker and enable orphan section
-warnings.
+On Mon, Jun 22, 2020 at 1:40 PM Tom Rini <trini@konsulko.com> wrote:
 
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- arch/x86/boot/compressed/Makefile      |  3 ++-
- arch/x86/boot/compressed/vmlinux.lds.S | 11 +++++++++++
- 2 files changed, 13 insertions(+), 1 deletion(-)
+> But what do you mean UEFI "consumes" initrd= ?
 
-diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-index 7619742f91c9..646720a05f89 100644
---- a/arch/x86/boot/compressed/Makefile
-+++ b/arch/x86/boot/compressed/Makefile
-@@ -48,6 +48,7 @@ GCOV_PROFILE := n
- UBSAN_SANITIZE :=n
- 
- KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
-+KBUILD_LDFLAGS += $(call ld-option,--no-ld-generated-unwind-info)
- # Compressed kernel should be built as PIE since it may be loaded at any
- # address by the bootloader.
- ifeq ($(CONFIG_X86_32),y)
-@@ -59,7 +60,7 @@ else
- KBUILD_LDFLAGS += $(shell $(LD) --help 2>&1 | grep -q "\-z noreloc-overflow" \
- 	&& echo "-z noreloc-overflow -pie --no-dynamic-linker")
- endif
--LDFLAGS_vmlinux := -T
-+LDFLAGS_vmlinux := --orphan-handling=warn -T
- 
- hostprogs	:= mkpiggy
- HOST_EXTRACFLAGS += -I$(srctree)/tools/include
-diff --git a/arch/x86/boot/compressed/vmlinux.lds.S b/arch/x86/boot/compressed/vmlinux.lds.S
-index 8f1025d1f681..6fe3ecdfd685 100644
---- a/arch/x86/boot/compressed/vmlinux.lds.S
-+++ b/arch/x86/boot/compressed/vmlinux.lds.S
-@@ -75,5 +75,16 @@ SECTIONS
- 	. = ALIGN(PAGE_SIZE);	/* keep ZO size page aligned */
- 	_end = .;
- 
-+	STABS_DEBUG
-+	DWARF_DEBUG
-+
- 	DISCARDS
-+	/DISCARD/ : {
-+		*(.note.*)
-+		*(.rela.*) *(.rela_*)
-+		*(.rel.*) *(.rel_*)
-+		*(.plt) *(.plt.*)
-+		*(.dyn*)
-+		*(.hash) *(.gnu.hash)
-+	}
- }
--- 
-2.25.1
+What I mean is, there are bootloaders that will, if they see initrd=
+in the command line, remove it: the kernel will never see it.
 
+>  I guess looking at
+> Documentation/x86/boot.rst is where treating initrd= as a file that
+> should be handled and ramdisk_image / ramdisk_size set came from.  I do
+> wonder what happens in the case of ARM/ARM64 + UEFI without device tree.
+
+it is possible that the initrd= argument will not be seen by the
+kernel. That's my understanding. Will this be a problem if so? It
+would be for me :-)
+
+>  And it doesn't provide any sort of link / context to the
+> boot loader specification project or similar that explains the cases
+> when a non-filename "initrd=" would reasonably (or unreasonably but
+> happens in reality) be removed.
+
+But it unreasonably happens as I learned the hard way :-)
+
+Anyway, thanks Tom, I have no objections to whatever you all feel is
+best to do with that comment. It was a failed attempt on my part to
+explain the state of things :-)
+
+ron
