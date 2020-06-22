@@ -2,100 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E99F8203004
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 08:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD820203016
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 09:07:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731312AbgFVG6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 02:58:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbgFVG6g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 02:58:36 -0400
-Received: from localhost.localdomain (unknown [171.61.66.58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D6E42543C;
-        Mon, 22 Jun 2020 06:58:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592809115;
-        bh=GqFAi7Q4sHYSuj6BAxMwU4DVplPmfDCh76OdL45s+EM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XUubVqh7SwrB1MbftvIpwdhMm7y6KHzJxeFvVNTH/tD6Xxo5XFxARiUaBkZM8W1kz
-         r50RblSeNtI1MSjlbdZWVJ4r6EGHDEE4S8YxivgVlaOwL0dE1m6u9AM9MRE19IlpgE
-         7T81WWPH0+y6mERjA2wlJwJ3tM4TTSV9pa3hQ3rI=
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/3] ALSA: compress: document the compress gapless audio state machine
-Date:   Mon, 22 Jun 2020 12:28:10 +0530
-Message-Id: <20200622065811.221485-3-vkoul@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200622065811.221485-1-vkoul@kernel.org>
-References: <20200622065811.221485-1-vkoul@kernel.org>
+        id S1731325AbgFVHHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 03:07:31 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6381 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731258AbgFVHHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 03:07:31 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 9387677F378764EFCB63;
+        Mon, 22 Jun 2020 15:07:28 +0800 (CST)
+Received: from DESKTOP-J8O3A6U.china.huawei.com (10.173.221.213) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 22 Jun 2020 15:07:22 +0800
+From:   Xiang Zheng <zhengxiang9@huawei.com>
+To:     <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <alex.williamson@redhat.com>, <cohuck@redhat.com>,
+        <wanghaibin.wang@huawei.com>
+Subject: [PATCH] vfio/type1: Add conditional rescheduling after iommu map failed
+Date:   Mon, 22 Jun 2020 15:02:17 +0800
+Message-ID: <20200622070217.4768-1-zhengxiang9@huawei.com>
+X-Mailer: git-send-email 2.15.1.windows.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.173.221.213]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Also documented the galpess transitions. Please note that these are not
-really stream states, but show how the stream steps in gapless mode
+c5e6688752c25 ("vfio/type1: Add conditional rescheduling") missed
+a "cond_resched()" in vfio_iommu_map if iommu map failed.
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+This is a very tiny optimization and the case can hardly happen.
+
+Signed-off-by: Xiang Zheng <zhengxiang9@huawei.com>
 ---
- .../sound/designs/compress-offload.rst        | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ drivers/vfio/vfio_iommu_type1.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/sound/designs/compress-offload.rst b/Documentation/sound/designs/compress-offload.rst
-index 6f86db82298b..0bebfd33b933 100644
---- a/Documentation/sound/designs/compress-offload.rst
-+++ b/Documentation/sound/designs/compress-offload.rst
-@@ -251,6 +251,38 @@ Sequence flow for gapless would be:
+diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+index 5e556ac9102a..48fb9cc4a40a 100644
+--- a/drivers/vfio/vfio_iommu_type1.c
++++ b/drivers/vfio/vfio_iommu_type1.c
+@@ -1225,8 +1225,10 @@ static int vfio_iommu_map(struct vfio_iommu *iommu, dma_addr_t iova,
+ 	return 0;
  
- (note: order for partial_drain and write for next track can be reversed as well)
+ unwind:
+-	list_for_each_entry_continue_reverse(d, &iommu->domain_list, next)
++	list_for_each_entry_continue_reverse(d, &iommu->domain_list, next) {
+ 		iommu_unmap(d->domain, iova, npage << PAGE_SHIFT);
++		cond_resched();
++	}
  
-+Gapless Playback SM
-+===================
-+
-+For Gapless, we move from running state to partial drain and back, along
-+with setting of meta_data and signalling for next track ::
-+
-+
-+                                        +----------+
-+                compr_drain_notify()    |          |
-+              +------------------------>|  RUNNING |
-+              |                         |          |
-+              |                         +----------+
-+              |                              |
-+              |                              |
-+              |                              | compr_next_track()
-+              |                              |
-+              |                              V
-+              |                         +----------+
-+              |                         |          |
-+              |                         |NEXT_TRACK|
-+              |                         |          |
-+              |                         +----------+
-+              |                              |
-+              |                              |
-+              |                              | compr_partial_drain()
-+              |                              |
-+              |                              V
-+              |                         +----------+
-+              |                         |          |
-+              +------------------------ | PARTIAL_ |
-+                                        |  DRAIN   |
-+                                        +----------+
- 
- Not supported
- =============
+ 	return ret;
+ }
 -- 
-2.26.2
+2.19.1
+
 
