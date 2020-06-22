@@ -2,121 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D921120358B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 13:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CBC20357E
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 13:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729315AbgFVLVy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 07:21:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728664AbgFVLRj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 07:17:39 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C91C061794;
-        Mon, 22 Jun 2020 04:17:38 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id k11so17594466ejr.9;
-        Mon, 22 Jun 2020 04:17:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TZiwZIrCsEEo6wwyPFdJPE4K71P6aGthJLmX8PuGg2U=;
-        b=YYNlxB3Uju5mOajQTpUA4vt4nTLtkKo0voPP61L+DegsW9AcPKRSvzXweV6r3OZKDS
-         ZPR1tKH6zK2JInKbEmi3gMXOO2R9tmGL45IRX/tOT3pq1pY2tJ/Le0qZvcNfCN5MYYvJ
-         jKdm1rJOiDRG5Hn9FUMmuUO+qJa2cqya3dr2ZQl9bLMTTjEf1kLlwmTnxNUsevwQG4E7
-         mAeXziqLLgNBJrhvQ8Xiib4UU08aWyCVVSnivJm3Vsx4F0zno9jlet3oNyIGO8LSE76j
-         kloffnQrKGSfYFYuXzWcf/MD5XbQB48LfbBYX9sPz5LnuvDng0JgzQj9IDZKbTY7NMaJ
-         mE3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TZiwZIrCsEEo6wwyPFdJPE4K71P6aGthJLmX8PuGg2U=;
-        b=oWWVURlv1qg1usXADoVJPbCYw8ZTwk6JnmTsywjIKLuvjWcq7hnHYGnX4kx80kNNwp
-         Qf3PmFO5pqGzPEdkmpMtDPwOKbUMYW83uH42kZ4aZypHHowvK88qNRjhgpaRh9x4xqx/
-         aaloy1bO0LJ1b93el/lKtEaPWw4QPa82SNNnwMJM1YEQqPlqqNZhQvh+Ua2N/gmm2Aw6
-         0hz9fUGXzm4NiKHKkShPB2urQfZijJNzzknSQobzz9lIhgudwGNr3hYXJMpyq97aGNxd
-         13WnIPPG03pSgIeK/6o0ZFmYK0cQ9E7Sw3PO3xSxnkDmaHGrHYX/iEHgtdnlyWiCVX4/
-         YSsg==
-X-Gm-Message-State: AOAM533rFf936+madbWBOAz1urbJ9pj5AACRsspLm6R0wg2hT8yrFfsq
-        8ZEBjvs5XOCwzNZUgZzCUSKO56tyQ+y6T2voUjo=
-X-Google-Smtp-Source: ABdhPJyP1teXpZMQJBSy6XRfAPiUcGdFA51dFuisvct6xWquwQV7kcR13vg76tHLi5aN+VwYBucVCdFLkuJU6CUrNpU=
-X-Received: by 2002:a17:906:2e50:: with SMTP id r16mr14796322eji.305.1592824657403;
- Mon, 22 Jun 2020 04:17:37 -0700 (PDT)
+        id S1728593AbgFVLSB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 07:18:01 -0400
+Received: from mout.web.de ([212.227.15.14]:38151 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728769AbgFVLRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 07:17:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1592824664;
+        bh=/5WLjwd8sz5iXYEWHrgMiI49OGUB+mk2Z1j2lPDY2Ac=;
+        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
+        b=VZ+Sq4YmeYHBNUwFww8q0f5H4yg/7iv7upqdTU19QrY02nT+0fpUwgid+x3b+VBV1
+         fBgefrUjYf2TXbXDpD9b7iqlcJpVzmB7sZbwombiRKi7JBgsvyyM8c5onudsvqObup
+         2FIdBIn2js/BqzjBRJUx4cN+vmzmacF2denFiba0=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([78.49.69.81]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MS17v-1jQ4151M0R-00TSp9; Mon, 22
+ Jun 2020 13:17:44 +0200
+Cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [v3] coccinelle: misc: add array_size_dup script to detect missed
+ overflow checks
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+To:     Julia Lawall <julia.lawall@inria.fr>,
+        Denis Efremov <efremov@linux.com>
+Message-ID: <5f91ec99-5c21-78c2-f484-76a0b5bd3e71@web.de>
+Date:   Mon, 22 Jun 2020 13:17:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20200622110543.5035-1-krzk@kernel.org>
-In-Reply-To: <20200622110543.5035-1-krzk@kernel.org>
-From:   Vladimir Oltean <olteanv@gmail.com>
-Date:   Mon, 22 Jun 2020 14:17:26 +0300
-Message-ID: <CA+h21hqQLaghmEYso9ZMeJHQuiDMgi5UN9-06je84_0n9iripA@mail.gmail.com>
-Subject: Re: [PATCH v4 1/4] spi: spi-fsl-dspi: Fix lockup if device is removed
- during SPI transfer
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Mark Brown <broonie@kernel.org>, Peng Ma <peng.ma@nxp.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:es1+goQmOENsqBhxvdebywUx/OyieJP5wb/Ee8pVOtvV9+K1QfJ
+ /geXOz+u6/u1fho0wPPJFwnN4ZtbaaZXA6XvS8ZnXjvXafDeg1f2hShcmsq0ecaZiQM/neb
+ WdvW4r+gdpF43Upizarr4aV6C89obGKBhO9Ds96VHfgSgzzswf7fiKrbpFFylIDuGbH7/Je
+ PDhPZfM6OoU8kM/PbyJTQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ojpzMAXksUg=:3o6/608ltrIquJhGJiTPv6
+ d8A2NJ5P5gHixY7U6TFo62skaX2G3kkA3frATjvmejOtTPlTnwEgWOvtoBpBCNcPl9avHx7nl
+ UbfGO/FjCg8+Fdb5BhJE8ZgfryZ+dp0cXcz55xNQS59cbiCZW+qoACM7ymtrrtCwnA4SPEqKy
+ tTjyrVvwMMw7qVvEQaqqOhCkFpL7jtfgMSkP1DjA+TaL3EKXCFqMiaGC9I57lGCi8ZZfgs2G1
+ vEexnWAN6tFle5WhTWJRf240DbksYOS9B4XhIF9mFrHQdtoNL4LIYDImfdAdsNUj1xgUFLIOo
+ i6eEK3tSBsqy3PaZosvR17SXR4DvgZr95dmCBFh7LG+7QSq3f84EyMJWhdFGiMrPEXkFn9s8r
+ BQ1NzuU7KU10iFZJNCJmkrg0HPTLC1nK8ldn7jO/PW8PuzZaPOkh+wgDjFFBLUgc18gRGO9fU
+ COUJaBRdEWR+yL5LJeqxatRb3lPlUpx6I1u4OaG7G1xSV0JKAHYzkYehZqYvEjw6pOOR6KPGL
+ mC54h4aeCAbvE0T83jxcDNVamP4gO49dK44PZCB9iiEVpYkbkGAShLgUjH2vJ4XuvDVpmeRVb
+ RAkJJfEpBQ4abUe4+RGSIpFPrJRFcTwNQjLlJHV/8SyhLcjiclg2wG0K3dGOs13URp9uMaTDd
+ ACvOol1DH3SMUVJz5Hkbz6I0zLuvL+UhpRMYl0Nd229BPvr/MXLmags66/SffiMLBmxKRqD7N
+ U5E3CppfUEMk5Jsbi4rpPNIvLqIuyL1izExKo6RgH7KRk34oeYcXz+XTg9u07WIHrBN08uTNJ
+ gM2Mx873sZKdo8msM7e6v+XPE4HLAhB9gp54cfaxcsC8y53rVPrfWNWdMLU81fMPCrglA9Pgk
+ Er4liWNQcLGdhRtG5o8WN3THI5NUfW2AFF1p0V1XAq8zx4BJETqG4C4NpfF0kkUs3OH0v0+Oc
+ 5mrtk21sEQ5h5ZGkSPNhXeg8/kSonS+oqHk/wplQTjkyk8Uw5ninH6GjyX8Y88tkee2ZJ2s7l
+ R8yNeCyDCc62ZY3Kl0rU9FduL1h8sKuIjRwtvFXdMWQwWfy8wFQ7WJNl4psVUFu3cEH8Vq15P
+ 08qRIRy67mbVD5zNY5VFNvdGThw+loy+I6tC2jxfC9lCfHQ+9koqGzjHIAXp9qKdrje1zWiFb
+ eum+HdALXmCxbV1esikwNIWTN5+qIb8j1gYHHB6Kk1LFnKyydmUfZTXpK7ow4B6w7WdpgHjqY
+ XopqEuBYJQLLqn9Ax
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Jun 2020 at 14:06, Krzysztof Kozlowski <krzk@kernel.org> wrote:
+> > +coccilib.report.print_report(p1[0],
+> > +f"WARNING: array_size is used down the code (line {p2[0].line}) to co=
+mpute the same size")
 >
-> During device removal, the driver should unregister the SPI controller
-> and stop the hardware.  Otherwise the dspi_transfer_one_message() could
-> wait on completion infinitely.
->
-> Additionally, calling spi_unregister_controller() first in device
-> removal reverse-matches the probe function, where SPI controller is
-> registered at the end.
->
-> Fixes: 05209f457069 ("spi: fsl-dspi: add missing clk_disable_unprepare() in dspi_remove()")
-> Cc: <stable@vger.kernel.org>
-> Reported-by: Vladimir Oltean <olteanv@gmail.com>
-> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->
-> ---
+> I get python failures for all of these messages.
 
-Reviewed-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Tested-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+This is interesting, isn't it?
 
->
-> Changes since v3:
-> 1. New patch.
-> ---
->  drivers/spi/spi-fsl-dspi.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/spi/spi-fsl-dspi.c b/drivers/spi/spi-fsl-dspi.c
-> index 58190c94561f..ec0fd0d366eb 100644
-> --- a/drivers/spi/spi-fsl-dspi.c
-> +++ b/drivers/spi/spi-fsl-dspi.c
-> @@ -1434,9 +1434,18 @@ static int dspi_remove(struct platform_device *pdev)
->         struct fsl_dspi *dspi = spi_controller_get_devdata(ctlr);
->
->         /* Disconnect from the SPI framework */
-> +       spi_unregister_controller(dspi->ctlr);
-> +
-> +       /* Disable RX and TX */
-> +       regmap_update_bits(dspi->regmap, SPI_MCR,
-> +                          SPI_MCR_DIS_TXF | SPI_MCR_DIS_RXF,
-> +                          SPI_MCR_DIS_TXF | SPI_MCR_DIS_RXF);
-> +
-> +       /* Stop Running */
-> +       regmap_update_bits(dspi->regmap, SPI_MCR, SPI_MCR_HALT, SPI_MCR_HALT);
-> +
->         dspi_release_dma(dspi);
->         clk_disable_unprepare(dspi->clk);
-> -       spi_unregister_controller(dspi->ctlr);
->
->         return 0;
->  }
-> --
-> 2.17.1
->
+
+> I know nothing about python.
+
+You probably know more also about this programming language
+than you express here.
+
+
+> How is this supposed to work?
+
+I suggest to take another look at information from the section
+=E2=80=9C2.4.3. Formatted string literals=E2=80=9D.
+https://docs.python.org/3/reference/lexical_analysis.html#f-strings
+
+This software documentation provides the information =E2=80=9CNew in versi=
+on 3.6=E2=80=9D.
+Will such a detail trigger any more software development consequences?
+
+Regards,
+Markus
