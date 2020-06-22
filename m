@@ -2,93 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5AAF202DD5
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 02:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26006202DD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 02:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730991AbgFVAHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 21 Jun 2020 20:07:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44238 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730963AbgFVAHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 21 Jun 2020 20:07:22 -0400
-Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4DD9E252A2;
-        Mon, 22 Jun 2020 00:07:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592784441;
-        bh=JLrHQHbaxR/ifwMoCSus6Uygootyff549B3fo1vMEqc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qHhJJsS7lK5nlTZMVDBjgri0A4rh1Pr2OPTsJC/f73PpHfKHvu/vZYkBaZ2553t+J
-         rOszx+Kr61RPMRNNEPZrpQCrfAy7NJJbHRsmYnskGzWHmJQ4UtfkjVT6DFsDRpJfjw
-         vtlIWhhzT7GvOeHVXSznlSUIseUL0W9+s8Zl+Cuc=
-Date:   Sun, 21 Jun 2020 20:07:20 -0400
-From:   Sasha Levin <sashal@kernel.org>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 4.4 23/60] iio: buffer: Don't allow buffers
- without any channels enabled to be activated
-Message-ID: <20200622000720.GE1931@sasha-vm>
-References: <20200618013004.610532-1-sashal@kernel.org>
- <20200618013004.610532-23-sashal@kernel.org>
- <20200619172733.00005d9d@Huawei.com>
+        id S1730980AbgFVAHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 21 Jun 2020 20:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37388 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730964AbgFVAHS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 21 Jun 2020 20:07:18 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE8DCC061794;
+        Sun, 21 Jun 2020 17:07:16 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id n24so17224666lji.10;
+        Sun, 21 Jun 2020 17:07:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WvyoJLWbvYovBZDThjO4KvAc+JnCVfaWx2gRyLYJaLc=;
+        b=JSelNxKjeXmr8WKOnvqsaDTdPTEfee1w3DFhFJmMY3UJp4rtgHXfEtAwYGxzXz/nWB
+         9EycUo1Y7E3+JqRgsL7y0FaGDUc5XJFJKj0nQVrGUwgZXVUCu8Yikq0qUT/oy448Zh1k
+         9JZ2eoewFIeGoXoKf/OrDF2Hh2v8IPwvZilecSZ8zFzSTu9L+Hl+L1aowe8yrngRi5H6
+         gYD0AG0SLQY6dhxsSRJUguek6LGIjkK13AKMTTjhoaOdxno+x/2tGJK0o8UDFgffQyfW
+         1ckwqFvz1+dA9yuTyKxxTDQbzcbU7JdOIkhf2jKw4V9wcyC7E8yL3Sb30nKHtNJmAikq
+         I1DA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WvyoJLWbvYovBZDThjO4KvAc+JnCVfaWx2gRyLYJaLc=;
+        b=XOmZ/9tHQcaI7GC01qFsVPCaDU7Ujl2UTLnhDRmG/b+/RWiyoMOSvnuYMp78gDdUTM
+         LrYot70FDVcvM2mq0MBJjsVquuU3QZq4nRPxnkM+q2o5YtYDUO9Oc+zzdw4aJ2azNJhN
+         o1REXmFMuEveXMQywTQr//srEfO7fqBxVsObz8n2vxyant9IsAeGms5SG37P/iX4qDHh
+         qpu4rauB4Mg3+7ExuxgUl3pAhpJSZJWa/7HqPZ27AZBmOXmt8cDnyFcpnV0rjSUWcFEx
+         JUQLm3GOCIXYFrYl5BjYAOj+xbi9PLeZcldJT42Y0+RxKOd6HkN+utKy8eNDL8LNweC7
+         0rZg==
+X-Gm-Message-State: AOAM531GceYRLYHDvkWB2CtNgk8Drf+iWQxvorCw/JrntU+HxfXS+3St
+        dqJEJ/zvWYmkYsc5psiDfVBGzFWdWj+FqLAjw6Q=
+X-Google-Smtp-Source: ABdhPJzXStpvSWMAIYjnJ83Cre3YeogPrVw5UteM7x6Wp3yQyXcHi7NWmWeev7sXv8YkBeRIUomiDg4LjLUhFiUsizc=
+X-Received: by 2002:a2e:b88c:: with SMTP id r12mr7126256ljp.266.1592784435267;
+ Sun, 21 Jun 2020 17:07:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200619172733.00005d9d@Huawei.com>
+References: <20200621213806.551879-1-konradybcio@gmail.com> <20200621213806.551879-7-konradybcio@gmail.com>
+In-Reply-To: <20200621213806.551879-7-konradybcio@gmail.com>
+From:   Alexey Minnekhanov <alexey.min@gmail.com>
+Date:   Mon, 22 Jun 2020 03:07:31 +0300
+Message-ID: <CANi4RBQ-o=K+X_AoZf_NvB19Hum0d9tpr6qjqPThsSNQZaj74A@mail.gmail.com>
+Subject: Re: [PATCH 6/8] arm64: dts: qcom: sdm630: Add sdm630 dts file
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 05:27:33PM +0100, Jonathan Cameron wrote:
->On Wed, 17 Jun 2020 21:29:27 -0400
->Sasha Levin <sashal@kernel.org> wrote:
->
->> From: Lars-Peter Clausen <lars@metafoo.de>
->>
->> [ Upstream commit b7329249ea5b08b2a1c2c3f24a2f4c495c4f14b8 ]
->>
->> Before activating a buffer make sure that at least one channel is enabled.
->> Activating a buffer with 0 channels enabled doesn't make too much sense and
->> disallowing this case makes sure that individual driver don't have to add
->> special case code to handle it.
->>
->> Currently, without this patch enabling a buffer is possible and no error is
->> produced. With this patch -EINVAL is returned.
->>
->> An example of execution with this patch and some instrumented print-code:
->>    root@analog:~# cd /sys/bus/iio/devices/iio\:device3/buffer
->>    root@analog:/sys/bus/iio/devices/iio:device3/buffer# echo 1 > enable
->>    0: iio_verify_update 748 indio_dev->masklength 2 *insert_buffer->scan_mask 00000000
->>    1: iio_verify_update 753
->>    2:__iio_update_buffers 1115 ret -22
->>    3: iio_buffer_store_enable 1241 ret -22
->>    -bash: echo: write error: Invalid argument
->> 1, 2 & 3 are exit-error paths. 0 the first print in iio_verify_update()
->> rergardless of error path.
->>
->> Without this patch (and same instrumented print-code):
->>    root@analog:~# cd /sys/bus/iio/devices/iio\:device3/buffer
->>    root@analog:/sys/bus/iio/devices/iio:device3/buffer# echo 1 > enable
->>    0: iio_verify_update 748 indio_dev->masklength 2 *insert_buffer->scan_mask 00000000
->>    root@analog:/sys/bus/iio/devices/iio:device3/buffer#
->> Buffer is enabled with no error.
->>
->> Note from Jonathan: Probably not suitable for automatic application to stable.
->> This has been there from the very start.  It tidies up an odd corner
->> case but won't effect any 'real' users.
->>
->
->As noted. I don't think it matters if we do apply this to stable.
->It closes an interface oddity rather than an actual known bug.
+Parts of this are similar or identical to sdm660.dtsi. SoCs should be
+very similar.
+Maybe this can be reorganized, so that we have some common base between
+sdm630/660. I'd like to avoid copying such large amounts of code to sdm660
+.dtsi file..
 
-I'll drop it, thanks!
-
--- 
-Thanks,
-Sasha
+=D0=BF=D0=BD, 22 =D0=B8=D1=8E=D0=BD. 2020 =D0=B3. =D0=B2 00:39, Konrad Dybc=
+io <konradybcio@gmail.com>:
+>
+> Add devicetree files for SDM630 SoC and its pin configuration.
+> This commit adds basic nodes like cpu, psci and other required
+> configuration for booting up from eMMC to the serial console.
+>
+> Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
