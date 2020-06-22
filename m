@@ -2,81 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F180D2030B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 09:36:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C72E2030BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 09:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731424AbgFVHgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 03:36:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731354AbgFVHgx (ORCPT
+        id S1731444AbgFVHkd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 03:40:33 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:56648 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731354AbgFVHkc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 03:36:53 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DD2BC061795
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 00:36:53 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id y11so18113001ljm.9
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 00:36:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8jMd68d9AA5HKRSwD8btncLpXQpP12S2zPFIYOSY6iI=;
-        b=hMUPfG1NvzklTAO84EV2hfqw9q8vRlb17BtAPtKzrxDuauzTU9TdVJ19q+ctkvKrpJ
-         lxFGho4TmZSCcTAqrLqo0PGFQP/yJnE4m1KUetOuKUhCfEz2udC/n0gQX95fa0WugnBh
-         uJ3tPAQ+BvlkpYCkRfTxht7PjweJtsPxVEeObz84OElS05vMoHrkLRPgbGMb0E56Lynx
-         JOo/7zwJlYUdDziU+J0As7CSj+7FKn6bkoX8Rrha9nQRxh+5aIN3oec79oyQ3k5gNgVs
-         vtQXZ5EWcmOxfVuS1JZ5Ot4JY6CI0y1/BITzYt6ezNORuPBKyjz0NZUQ6u4OfmkmgBZa
-         G+DA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8jMd68d9AA5HKRSwD8btncLpXQpP12S2zPFIYOSY6iI=;
-        b=lu6gAKH3qm68C/Ri5eROf4iktmpE+WRwe5CrIWvimnzIRgXw5g71kvwwOqKtAYG9wq
-         PoVJaLQI2WgsAVmnuPaOR6neszqjBUdB6fWh/i9sHmmLkmAeP1p164zxY4XC0RSdukx+
-         54E8FMcSeM8jhU/skm2KoLZzxvnG5m9Nhn+oBKiuhzWMUvXTXfBM+AQGAOkveSbvVY24
-         kHOoHfU71wR0glKv1fz73mWP8J4S/M79Cri+YHYcsk22VPQiy6wMhk/AlIfWux0gJxeH
-         6rrF+iH27Mblzj5vyHQM7bes4RxkM17OodeUQvPjZBXWEIQOOPIyRE2Me4oh1bqHvq+Z
-         Cn6Q==
-X-Gm-Message-State: AOAM5330JNqCRNbtv4tyXm0Zf3sSH/Ty8p+LNTAVHHvvRutJtLr+NhSg
-        yrSdk97yYR1zwSL8F62Se5yWt/kdsYpotMpCCkLaGg==
-X-Google-Smtp-Source: ABdhPJwHMBfbNH8fHLFwGb0U4Poyr72O07MbwbdDDd5vaN6Cets0kr4TApTjHKoHivQYCbHDp3CzGhYjAFPqe1YH+Rk=
-X-Received: by 2002:a05:651c:112e:: with SMTP id e14mr7364725ljo.338.1592811411727;
- Mon, 22 Jun 2020 00:36:51 -0700 (PDT)
+        Mon, 22 Jun 2020 03:40:32 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05M7dnKn051599;
+        Mon, 22 Jun 2020 02:39:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1592811589;
+        bh=fCZLwQLl1dKhVCSvVo/xXTvv6C6GozmwvIPOhBfSi/E=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Xs8pQ0Q/z2kF47RXVYwcxp3ebVDuwTw5B53iXjLItRa1zbNtLMqK7u3ccbqJhWp9Q
+         WO7zQb1pQDNBRko6aWK8U15hduAmgqEvWpXRqnH9/D4yIa0Ijzlzd89y7JjbsPPEBE
+         bcFzG5wP6I8wmXh4o9BE7FWaobdC3yMkCocAPJpw=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05M7dni8071605
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 22 Jun 2020 02:39:49 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 22
+ Jun 2020 02:39:48 -0500
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 22 Jun 2020 02:39:48 -0500
+Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05M7dkWn038301;
+        Mon, 22 Jun 2020 02:39:47 -0500
+Subject: Re: [PATCH 0/2] arm64: dts: ti: k3: add platforms chipid module nodes
+To:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Nishanth Menon <nm@ti.com>
+CC:     Dave Gerlach <d-gerlach@ti.com>, <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+References: <20200613164346.28852-1-grygorii.strashko@ti.com>
+ <8b8f7f92-571d-4a44-4858-7d79676a6375@ti.com>
+ <1dcd2e6c-924d-8151-8100-0b42f154a59c@ti.com>
+From:   Tero Kristo <t-kristo@ti.com>
+Message-ID: <35f0f680-f612-0c14-024c-7f2251650d85@ti.com>
+Date:   Mon, 22 Jun 2020 10:39:46 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200616015024.287683-1-hengqing.hu@gmail.com>
-In-Reply-To: <20200616015024.287683-1-hengqing.hu@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 22 Jun 2020 09:36:40 +0200
-Message-ID: <CACRpkdZNS7JD4Po9d4TXzB=+bn9qUez-eFwUjp=cF3yE8nrE0w@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: amd: fix npins for uart0 in kerncz_groups
-To:     Jacky Hu <hengqing.hu@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1dcd2e6c-924d-8151-8100-0b42f154a59c@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 3:50 AM Jacky Hu <hengqing.hu@gmail.com> wrote:
+On 19/06/2020 19:26, Grygorii Strashko wrote:
+> 
+> 
+> On 15/06/2020 10:47, Peter Ujfalusi wrote:
+>> Hi Grygorii,
+>>
+>> On 13/06/2020 19.43, Grygorii Strashko wrote:
+>>> Hi Tero,
+>>>
+>>> Hence k3 platforms chipid module driver was merged, there is follow 
+>>> up series
+>>> to add corresponding DT chipid nodes.
+>>>
+>>> [1] https://lkml.org/lkml/2020/5/29/979
+>>>
+>>> Grygorii Strashko (2):
+>>>    arm64: dts: ti: k3-am65-wakeup: add k3 platforms chipid module node
+>>>    arm64: dts: ti: k3-j721e-mcu-wakeup: add k3 platforms chipid 
+>>> module node
+>>
+>> Can you also send a patch to enable the socinfo build?
+> 
+> Posted.
+> 
+>>
+>> diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
+>> index 8dd05b2a925c..1d3710e3626a 100644
+>> --- a/arch/arm64/Kconfig.platforms
+>> +++ b/arch/arm64/Kconfig.platforms
+>> @@ -98,6 +98,7 @@ config ARCH_K3
+>>       select TI_SCI_PROTOCOL
+>>       select TI_SCI_INTR_IRQCHIP
+>>       select TI_SCI_INTA_IRQCHIP
+>> +    select TI_K3_SOCINFO
+>>       help
+>>         This enables support for Texas Instruments' K3 multicore SoC
+>>         architecture.
+>>
+>> With this added:
+>> Tested-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> Tero: FYI. There is no dependecies for this series.
 
-> uart0_pins is defined as:
-> static const unsigned uart0_pins[] = {135, 136, 137, 138, 139};
->
-> which npins is wronly specified as 9 later
->         {
->                 .name = "uart0",
->                 .pins = uart0_pins,
->                 .npins = 9,
->         },
->
-> npins should be 5 instead of 9 according to the definition.
->
-> Signed-off-by: Jacky Hu <hengqing.hu@gmail.com>
+Queued for 5.9, thanks.
 
-Seems like an obvious bug so patch applied for fixes.
+-Tero
 
-Yours,
-Linus Walleij
+> 
+> Best regards,
+> grygorii
+
+--
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
