@@ -2,125 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35F61202FAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 08:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324C2202FB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 08:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731270AbgFVGU6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 02:20:58 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:27461 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731238AbgFVGU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 02:20:58 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1592806857; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=5I7VSl/4Rul7O9mJZbZ9v3pTVJhuCI7n/dCMG5x7Lq4=;
- b=YXGd3zJxMpbCdP02LgThoMPzApwIqxsF0YJGAMGkhnhTzv5VcGmExI5cy0GzpW8xdkCnlJn7
- cAenbo4ckANtm1buvH1vu3e0hBW0T1btpVM1wZePtud5RIQTTY7k1qXtQErzhm29s/z3r+9o
- rOij9BGr9ZDZoXwBTUXKz4UResU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 5ef04dc586de6ccd44e5cfc8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 22 Jun 2020 06:20:53
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9EFBAC4339C; Mon, 22 Jun 2020 06:20:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0DBB5C433C6;
-        Mon, 22 Jun 2020 06:20:52 +0000 (UTC)
+        id S1731272AbgFVG2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 02:28:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731244AbgFVG2H (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 02:28:07 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42B3C061794
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 23:28:06 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id d67so14629194oig.6
+        for <linux-kernel@vger.kernel.org>; Sun, 21 Jun 2020 23:28:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=bBeZtgAb2UNyQsPAk8bOgNUxMw9atU2V4z23o4bn6XI=;
+        b=XpfBsbheJAYZrbK/j5IY5yMhOIOhPfZ/M7slKgD99C+U30Bca2GdZYM+IgyjfZqOcz
+         NnjoH0pjO99FBV0xZt2hpJ7aRxXVxDTIW+I/CwUs+XoT78QKEuJHMD1dW753BAM+O6u+
+         kzxY2NsU0JUIoAYg1OgG8X1xz5Y+xs5dxq/KzRBIi2uUKzdTQZQkU++y4+yoGIvqWLqp
+         jwvlpBx0J6POiXhKB/tnBZvK3jfJholo08tKIVzSfuBLDMKH6BwO3p6Bb5X/VB6gEfFW
+         nnWEafuX5l10Fa5JUJrQJo0klSUaflvs5rptLLwNEgE8PWWxeRkPw54LIbvprajD3cbz
+         U3NA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bBeZtgAb2UNyQsPAk8bOgNUxMw9atU2V4z23o4bn6XI=;
+        b=otkZwOgXbBxaDe+vk051mGalYXBDI0pxyD1hOi0lTiWm2yAmTvTRKNZkgg0xLgkhIn
+         VB8krgCUNOuyjPERywQKHlmWRg0uFc30v3D+m1QHDknP+jGyqzM9ABx/KptxPFmC3KMp
+         Y31muHW3l3ERxqlXV4pQostCetobw1FI7XTX6CiDp0utaE9kf6nFBYIlUXpmENfK+Gp3
+         xYRGY/dCEzFua3ytOxks0Py4TiPQbTX3cBoGkSVW/DWVFVlS7TQ+bcMCbQ/Z2UHxh6iQ
+         rkjdjIzcBIsWFfUgO80pkRIOcmx4QhAHpHlIshz5xgqX6gQIVUIYDUv3nwTFGuTQd97b
+         1chA==
+X-Gm-Message-State: AOAM531mQ/I+pW2mynxMrhOohgvlOmTa3gYURtx/UplZkpHgadgSqVxh
+        FjryKp8jBJqgV9LXljtWO/pRPQ==
+X-Google-Smtp-Source: ABdhPJx9x//osLbnYbR5OAnNACxidGIX37VhvaHF67pUSeaNzIOWnZGZ+S4wjOC6Rbzpp5uBkUCKUQ==
+X-Received: by 2002:aca:c203:: with SMTP id s3mr11807861oif.95.1592807286045;
+        Sun, 21 Jun 2020 23:28:06 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id w1sm3237052ooq.1.2020.06.21.23.28.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 21 Jun 2020 23:28:05 -0700 (PDT)
+Date:   Sun, 21 Jun 2020 23:25:19 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, loic.pallardy@st.com,
+        arnaud.pouliquen@st.com, s-anna@ti.com
+Subject: Re: [PATCH v4 1/9] remoteproc: Add new RPROC_DETACHED state
+Message-ID: <20200622062519.GB149351@builder.lan>
+References: <20200601175139.22097-1-mathieu.poirier@linaro.org>
+ <20200601175139.22097-2-mathieu.poirier@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 22 Jun 2020 11:50:52 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Andy Gross <agross@kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCHv3 0/2] Convert QCOM watchdog timer bindings to YAML
-In-Reply-To: <20200621073320.GI128451@builder.lan>
-References: <cover.1581459151.git.saiprakash.ranjan@codeaurora.org>
- <c2b8fabcf82b27c7334482bd53ebba62@codeaurora.org>
- <20200621073320.GI128451@builder.lan>
-Message-ID: <ce4c2b44cb15af12b04c09f1786a6c1a@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200601175139.22097-2-mathieu.poirier@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-21 13:03, Bjorn Andersson wrote:
-> On Tue 16 Jun 23:56 PDT 2020, Sai Prakash Ranjan wrote:
-> 
->> Hi Bjorn,
->> 
-> 
-> Hi Sai,
-> 
->> On 2020-02-12 03:54, Sai Prakash Ranjan wrote:
->> > This series converts QCOM watchdog timer bindings to YAML. Also
->> > it adds the missing SoC-specific compatible for QCS404, SC7180,
->> > SDM845 and SM8150 SoCs.
->> >
->> > v1:
->> > https://lore.kernel.org/lkml/cover.1576211720.git.saiprakash.ranjan@codeaurora.org/
->> > v2:
->> > https://lore.kernel.org/lkml/cover.1580570160.git.saiprakash.ranjan@codeaurora.org/
->> >
->> > Changes since v2:
->> >  * Add missing compatibles to enum.
->> >
->> > Changes since v1:
->> >  As per Rob's suggestion:
->> >   * Replaced oneOf+const with enum.
->> >   * Removed timeout-sec and included watchdog.yaml.
->> >   * Removed repeated use of const:qcom,kpss-wdt and made use of enum.
->> >
->> > Sai Prakash Ranjan (2):
->> >   dt-bindings: watchdog: Convert QCOM watchdog timer bindings to YAML
->> >   dt-bindings: watchdog: Add compatible for QCS404, SC7180, SDM845,
->> >     SM8150
->> >
->> >  .../devicetree/bindings/watchdog/qcom-wdt.txt | 28 -----------
->> >  .../bindings/watchdog/qcom-wdt.yaml           | 48 +++++++++++++++++++
->> >  2 files changed, 48 insertions(+), 28 deletions(-)
->> >  delete mode 100644
->> > Documentation/devicetree/bindings/watchdog/qcom-wdt.txt
->> >  create mode 100644
->> > Documentation/devicetree/bindings/watchdog/qcom-wdt.yaml
->> 
->> 
->> Gentle ping!
->> 
-> 
-> This should better go through the watchdog tree, so I believe Guenter
-> would be the one to pick this up.
-> 
+On Mon 01 Jun 10:51 PDT 2020, Mathieu Poirier wrote:
 
-Ah right, then a gentle ping for Guenter.
+> Add a new RPROC_DETACHED state to take into account scenarios
+> where the remoteproc core needs to attach to a remote processor
+> that is booted by another entity.
+> 
+> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Thanks,
-Sai
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Regards,
+Bjorn
+
+> ---
+>  drivers/remoteproc/remoteproc_sysfs.c | 1 +
+>  include/linux/remoteproc.h            | 5 ++++-
+>  2 files changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
+> index 7f8536b73295..8b462c501465 100644
+> --- a/drivers/remoteproc/remoteproc_sysfs.c
+> +++ b/drivers/remoteproc/remoteproc_sysfs.c
+> @@ -71,6 +71,7 @@ static const char * const rproc_state_string[] = {
+>  	[RPROC_RUNNING]		= "running",
+>  	[RPROC_CRASHED]		= "crashed",
+>  	[RPROC_DELETED]		= "deleted",
+> +	[RPROC_DETACHED]	= "detached",
+>  	[RPROC_LAST]		= "invalid",
+>  };
+>  
+> diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> index e7b7bab8b235..21182ad2d059 100644
+> --- a/include/linux/remoteproc.h
+> +++ b/include/linux/remoteproc.h
+> @@ -400,6 +400,8 @@ struct rproc_ops {
+>   * @RPROC_RUNNING:	device is up and running
+>   * @RPROC_CRASHED:	device has crashed; need to start recovery
+>   * @RPROC_DELETED:	device is deleted
+> + * @RPROC_DETACHED:	device has been booted by another entity and waiting
+> + *			for the core to attach to it
+>   * @RPROC_LAST:		just keep this one at the end
+>   *
+>   * Please note that the values of these states are used as indices
+> @@ -414,7 +416,8 @@ enum rproc_state {
+>  	RPROC_RUNNING	= 2,
+>  	RPROC_CRASHED	= 3,
+>  	RPROC_DELETED	= 4,
+> -	RPROC_LAST	= 5,
+> +	RPROC_DETACHED	= 5,
+> +	RPROC_LAST	= 6,
+>  };
+>  
+>  /**
+> -- 
+> 2.20.1
+> 
