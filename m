@@ -2,57 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3DA2038FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 16:21:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06420203906
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 16:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729164AbgFVOVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 10:21:06 -0400
-Received: from mga17.intel.com ([192.55.52.151]:17383 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728441AbgFVOVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 10:21:06 -0400
-IronPort-SDR: M1QOWFk8H9xWL+wGVKmKLnrpxkPVwMRLCtD3ySLsAdKlY87mwGiRuMwnI2Xn+DXm0sgW8geCIM
- rN55YXQGgZeA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9659"; a="124043591"
-X-IronPort-AV: E=Sophos;i="5.75,267,1589266800"; 
-   d="scan'208";a="124043591"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 07:21:05 -0700
-IronPort-SDR: VPZVZdo91oqUn3223c7HO4fiswgP6WBbhibM2xzYlVAcGE0AmY8xI+XXEXdaWdoVzh2OY6QfGS
- yzRR86q/zA7w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,267,1589266800"; 
-   d="scan'208";a="300853515"
-Received: from linux-01.iind.intel.com ([10.106.147.3])
-  by fmsmga004.fm.intel.com with ESMTP; 22 Jun 2020 07:19:20 -0700
-From:   Gyan Gupta <gyan.gupta@intel.com>
-To:     gyan.gupta@intel.com, x86-ml <x86@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Subject: [PATCH -v2] x86/msr: Filter MSR writes
-Date:   Mon, 22 Jun 2020 19:52:28 +0530
-Message-Id: <1592835748-4589-1-git-send-email-gyan.gupta@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S1729231AbgFVOXJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 10:23:09 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:35834 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728441AbgFVOXI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 10:23:08 -0400
+Received: by mail-wr1-f66.google.com with SMTP id g18so7822961wrm.2
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 07:23:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=29xwZ9yIkXzw59/mMSGaEdWIR6Vo+2txFUnfBg7oNgM=;
+        b=YpNUdG5IC4w7BklHSHyMCXDURvlPYhiAhDADLx5lLzVSJ0W7OIGKoulU0IhXwBpOIE
+         VETB3+okUPOoNkZiPR0mK8G6rV2MEwM7g5Y8pjD4PpIVQX1EFHvnO5rQibud+FkOEyUr
+         4z8QlVY+fk3FRifE7qILnL8aEwJTWtyuErZ3OClRhESo9+k2HKSD/Y1wEWvmU2yfQZB/
+         c3oe4kP2VdQSlGMGpMUSsvAeb1P+v29Ka3bme2J4hr+WsLgAGvoS5PGxWcaUgmrDoIfE
+         NDWEErMkwMsnGDnkLKVPUxOJINGn/JFima6s5H5l+S7AmU3/L8AB2Yp/MXI0YGvBPxU5
+         B5Iw==
+X-Gm-Message-State: AOAM531eucHCk9Mkg7DbSHo2HqQkhLINyAYNrTLpej0lg4vb4qCwYh/U
+        7R986zy0FSAlqk/k0gUU/Fk=
+X-Google-Smtp-Source: ABdhPJyu52XSWNlixn7z2wIy6iYWYGXCxkK5rKvpQkDm57BgEa1vANNzCWwbLOUkJk/gMEEnCX6Kuw==
+X-Received: by 2002:a05:6000:ce:: with SMTP id q14mr11556962wrx.294.1592835786276;
+        Mon, 22 Jun 2020 07:23:06 -0700 (PDT)
+Received: from localhost (ip-37-188-173-135.eurotel.cz. [37.188.173.135])
+        by smtp.gmail.com with ESMTPSA id c66sm17946153wma.20.2020.06.22.07.23.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 07:23:05 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 16:23:04 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Mel Gorman <mgorman@techsingularity.net>
+Cc:     ????????? <jaewon31.kim@samsung.com>,
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "bhe@redhat.com" <bhe@redhat.com>,
+        "minchan@kernel.org" <minchan@kernel.org>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jaewon31.kim@gmail.com" <jaewon31.kim@gmail.com>,
+        ????????? <ytk.lee@samsung.com>,
+        ????????? <cmlaika.kim@samsung.com>
+Subject: Re: [PATCH v4] page_alloc: consider highatomic reserve in watermark
+ fast
+Message-ID: <20200622142304.GD31426@dhcp22.suse.cz>
+References: <20200622091107.GC31426@dhcp22.suse.cz>
+ <20200619235958.11283-1-jaewon31.kim@samsung.com>
+ <CGME20200619055816epcas1p184da90b01aff559fe3cd690ebcd921ca@epcms1p6>
+ <20200622094020epcms1p639cc33933fbb7a9d578adb16a6ea0734@epcms1p6>
+ <20200622100439.GQ3183@techsingularity.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200622100439.GQ3183@techsingularity.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@alien8.de>
+On Mon 22-06-20 11:04:39, Mel Gorman wrote:
+> On Mon, Jun 22, 2020 at 06:40:20PM +0900, ????????? wrote:
+> > >But more importantly, I have hard time to follow why we need both
+> > >zone_watermark_fast and zone_watermark_ok now. They should be
+> > >essentially the same for anything but order == 0. For order 0 the
+> > >only difference between the two is that zone_watermark_ok checks for
+> > >ALLOC_HIGH resp ALLOC_HARDER, ALLOC_OOM. So what is exactly fast about
+> > >the former and why do we need it these days?
+> > > 
+> > 
+> > I think the author, Mel, may ansewr. But I think the wmark_fast may
+> > fast by 1) not checking more condition about wmark and 2) using inline
+> > rather than function. According to description on commit 48ee5f3696f6,
+> > it seems to bring about 4% improvement.
+> > 
+> 
+> The original intent was that watermark checks were expensive as some of the
+> calculations are only necessary when a zone is relatively low on memory
+> and the check does not always have to be 100% accurate. This is probably
+> still true given that __zone_watermark_ok() makes a number of calculations
+> depending on alloc flags even if a zone is almost completely free.
 
-> The whitelist is still TBD, I might be able to remove it competely and defer the
-> whole whitelisting to the future. when people start reporting MSRs (see
-> pr_err_ratelimited() call below).
+OK, so we are talking about 
+	if (alloc_flags & ALLOC_HIGH)
+		min -= min / 2;
 
-I am also working on a similar functionality where we allow specific MSRs(whitelisted MSRs) to be allowed to read & write.
-Additionally, writes are subjected to checks where only certain bits can be allowed to be modified. This is to increase security & safety of system.
-For example, MCi_CTL can be used to enable/disable error reporting of hw unit. So in our use case once error reporting is enabled, it must 
-not be disabled. Also we want to have restrictions on rdmsr for security purposes.
+	if (unlikely((alloc_flags & (ALLOC_HARDER|ALLOC_OOM))) {
+		/*
+		 * OOM victims can try even harder than normal ALLOC_HARDER
+		 * users on the grounds that it's definitely going to be in
+		 * the exit path shortly and free memory. Any allocation it
+		 * makes during the free path will be small and short-lived.
+		 */
+		if (alloc_flags & ALLOC_OOM)
+			min -= min / 2;
+		else
+			min -= min / 4;
+	}
 
-- Gyan
-
+Is this something even measurable and something that would justify a
+complex code? If we really want to keep it even after these changes
+which are making the two closer in the cost then can we have it
+documented at least?
+-- 
+Michal Hocko
+SUSE Labs
