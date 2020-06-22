@@ -2,143 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 486A8203F4B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 849F6203F59
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730449AbgFVSjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 14:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730428AbgFVSjO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 14:39:14 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D930FC06179A
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:39:13 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id d6so263558pjs.3
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:39:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Gb+JetmJfxvfJpxHC8m6WwdUvvjtG/PEO/NrvZ7SUq0=;
-        b=g47As6pTItcLFTPBKcE7GoqTMDitRniLcUVZb/sgo6Z6hU1SBXf3XA30MossVWhFm+
-         WrZs8HM7KrKN7vIEe4hAi7PM9veaLBUBzmO1d6hg/ZrKjGDYlC+J8mnlzIu7m8jCiDVX
-         oUMZ6YXzkXP7P/9ND3v2M3GdghI0Eiq5bwNDzgs5cWvWuZbpdd3bSkITbG7/ShPdrwrX
-         oq7EH8OJ65SqfDB5bRXrhOWPzVNj9lb6ggrqKdEFfG/SWqJeDT88TfoVD+co4a3hK8cD
-         TZxZzP6pibR5VmEHPFJiQguXyVlIy2oApu1xDzwGn7gtMfXUFW3LNOourTReEdtotVmu
-         1u6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Gb+JetmJfxvfJpxHC8m6WwdUvvjtG/PEO/NrvZ7SUq0=;
-        b=UfWVC6Pj9VwskZBDcmpzRv3RFGptZ9SiErxN/5CwPPa9Vbn60lz/Vvep2OJUVoq2mQ
-         JERbZloBOW20a6GXd5YYDwYJ/VHPX1OIXtcI2TK1nzTzmBfxyBW94fUcmRy6+SvHwP/s
-         +Oe2Ku7E65II6fWSH/u+P5Cyp3U44EujPwh5KqdxLquQRey11sSEveTzyitUGewX7Wc6
-         TkrYPX2yk2d2xYf7OGeO/YTovjppEelQVPlCNZ+l2gnfbPvZFYlxWd6HW/ORgb5rSZsH
-         LnRWFskjw9Wb0zybRtocF1+5bFCALlHwb9Aw5O7IXbxJ50970wsEKc8H3uoIIcgNvVBf
-         A+7w==
-X-Gm-Message-State: AOAM531+Re3cHLQHjQwn7d10+zoPmh19SV4qhRji8wCr3caWJaW8JETI
-        XHZdLIIevMDh5JEUb6jmLLsKaDAy3QEFRm+TU0IcCw==
-X-Google-Smtp-Source: ABdhPJxjYmvT3fQkCRcyhTKfiFZOdTkx+4rML9Oc+LRvsn6ucoVJwJ7PtyGZkVKmwrq2pv/vivr0Qr/enJgVlPaAiao=
-X-Received: by 2002:a17:902:fe8b:: with SMTP id x11mr20457257plm.179.1592851152937;
- Mon, 22 Jun 2020 11:39:12 -0700 (PDT)
+        id S1730410AbgFVSkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 14:40:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44194 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729605AbgFVSkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 14:40:52 -0400
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3D472073E
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 18:40:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592851252;
+        bh=ummMjX41XB0RRf8l8TTRWyYH8+hc44L6LHZf3H73YC8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=wSCsG5hIV6ZBfn+dFHGxUmYzBqbWn8+GKXzmKRWdH9+v86DGH4XaiVFU9X3X6p6dG
+         xWGHaj01lg2D3ch/gfC9VSizFk7D7KKXPgHl08Q1u37VZkSBr++XDiqVYPRUEe7v+3
+         wgPQWM8v9Y9SDwGM+qC7fPe1OdXb+5wBa9XNjsTA=
+Received: by mail-wr1-f47.google.com with SMTP id q5so5346102wru.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:40:51 -0700 (PDT)
+X-Gm-Message-State: AOAM533LuytW24aHInfPGRQaWPOR9jBX0BxZvnRBmDCFANNvJ7ZtoGyX
+        IZSyu062YdcURa2nqJ3iFYVLntHW77hUUqszldxCnw==
+X-Google-Smtp-Source: ABdhPJz5M3EsisMMo/x090Cfd0ALE75dfYWGHpWLEOo1QV5wAcPSmZiCEsS/+gxuCYK8WO72MQWuSswYv/WPuWAeYCk=
+X-Received: by 2002:a5d:6acf:: with SMTP id u15mr19669170wrw.18.1592851250402;
+ Mon, 22 Jun 2020 11:40:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200620033007.1444705-1-keescook@chromium.org> <20200620033007.1444705-12-keescook@chromium.org>
-In-Reply-To: <20200620033007.1444705-12-keescook@chromium.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 22 Jun 2020 11:39:01 -0700
-Message-ID: <CAKwvOdm7+8xhbMZRPq0+2X1hez=cNGf=psX7ofNUfqq9iY5ScA@mail.gmail.com>
-Subject: Re: [PATCH v2 11/16] media: sur40: Remove uninitialized_var() usage
-To:     Kees Cook <keescook@chromium.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Joe Perches <joe@perches.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
-        b43-dev@lists.infradead.org,
-        Network Development <netdev@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        linux-ide@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-spi@vger.kernel.org,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
+References: <20200619174127.22304-1-bp@alien8.de> <20200619174127.22304-2-bp@alien8.de>
+ <CALCETrXZhFJGJA2h4zP743KYTtni-rQSUME8mtSYUdk1-ZTauQ@mail.gmail.com>
+ <20200622170908.GH32200@zn.tnic> <CALCETrU0C5yVwfAOj+v1RqNBZY+phXrdvCBZMKdOXOExBgMbVg@mail.gmail.com>
+ <ef327682-7e9f-5652-1664-3e201ac38f60@intel.com>
+In-Reply-To: <ef327682-7e9f-5652-1664-3e201ac38f60@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 22 Jun 2020 11:40:38 -0700
+X-Gmail-Original-Message-ID: <CALCETrUT1_WVjMbPZhUcX9sjFvLBZKCc2fxeJJsD940k1Ajyrw@mail.gmail.com>
+Message-ID: <CALCETrUT1_WVjMbPZhUcX9sjFvLBZKCc2fxeJJsD940k1Ajyrw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] x86/fpu: Reset MXCSR to default in kernel_fpu_begin()
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, jpa@kernelbug.mail.kapsi.fi,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 8:30 PM Kees Cook <keescook@chromium.org> wrote:
+On Mon, Jun 22, 2020 at 11:38 AM Dave Hansen <dave.hansen@intel.com> wrote:
 >
-> Using uninitialized_var() is dangerous as it papers over real bugs[1]
-> (or can in the future), and suppresses unrelated compiler warnings (e.g.
-> "unused variable"). If the compiler thinks it is uninitialized, either
-> simply initialize the variable or make compiler changes. As a precursor
-> to removing[2] this[3] macro[4], just remove this variable since it was
-> actually unused:
+> On 6/22/20 11:33 AM, Andy Lutomirski wrote:
+> > Suppose you do:
+> >
+> > double x = 1.0;
+> >
+> > kernel_fpu_begin();
+> >
+> > x += 2.0;
+> >
+> > We want to make sure that GCC puts things in the right order.  I
+> > suppose that even a memory clobber is insufficient here, though.
 >
-> drivers/input/touchscreen/sur40.c:459:6: warning: variable 'packet_id' set but not used [-Wunused-but-set-variable]
->   459 |  u32 packet_id;
->       |      ^~~~~~~~~
+> Even with CONFIG_PREEMPT disabled, we still have:
 >
-> However, in keeping with the documentation desires outlined in commit
-> 335abaea7a27 ("Input: sur40 - silence unnecessary noisy debug output"),
-> comment out the assignment instead of removing it.
+>         #define preempt_disable()                       barrier()
 >
-> [1] https://lore.kernel.org/lkml/20200603174714.192027-1-glider@google.com/
-> [2] https://lore.kernel.org/lkml/CA+55aFw+Vbj0i=1TGqCR5vQkCzWJ0QxK6CernOU6eedsudAixw@mail.gmail.com/
-> [3] https://lore.kernel.org/lkml/CA+55aFwgbgqhbp1fkxvRKEpzyR5J8n1vKT1VZdz9knmPuXhOeg@mail.gmail.com/
-> [4] https://lore.kernel.org/lkml/CA+55aFz2500WfbKXAx8s67wrm9=yVJu65TpLgN_ybYNv0VEOKA@mail.gmail.com/
->
-> Fixes: 335abaea7a27 ("Input: sur40 - silence unnecessary noisy debug output")
+> I don't see us supporting preemptible kernel_fpu regions any time soon,
+> so shouldn't this be sufficient now and for a long time?
 
-Probably should comment out `/* u32 packet_id */` rather than removing
-it then, but that doesn't really matter. Either way,
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+That's on the wrong end of the function.  It'sL
 
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  drivers/input/touchscreen/sur40.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/drivers/input/touchscreen/sur40.c b/drivers/input/touchscreen/sur40.c
-> index 34d31c7ec8ba..620cdd7d214a 100644
-> --- a/drivers/input/touchscreen/sur40.c
-> +++ b/drivers/input/touchscreen/sur40.c
-> @@ -456,8 +456,6 @@ static void sur40_poll(struct input_dev *input)
->  {
->         struct sur40_state *sur40 = input_get_drvdata(input);
->         int result, bulk_read, need_blobs, packet_blobs, i;
-> -       u32 uninitialized_var(packet_id);
-> -
->         struct sur40_header *header = &sur40->bulk_in_buffer->header;
->         struct sur40_blob *inblob = &sur40->bulk_in_buffer->blobs[0];
->
-> @@ -491,7 +489,7 @@ static void sur40_poll(struct input_dev *input)
->                 if (need_blobs == -1) {
->                         need_blobs = le16_to_cpu(header->count);
->                         dev_dbg(sur40->dev, "need %d blobs\n", need_blobs);
-> -                       packet_id = le32_to_cpu(header->packet_id);
-> +                       /* packet_id = le32_to_cpu(header->packet_id); */
->                 }
->
->                 /*
-> --
-> 2.25.1
->
-> --
-> You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20200620033007.1444705-12-keescook%40chromium.org.
+preempt_disable();
+LDMXCSR;
+<-- some kind of barrier here might be nice
 
-
-
--- 
-Thanks,
-~Nick Desaulniers
+--Andy
