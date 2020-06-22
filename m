@@ -2,47 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 336BF204235
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6608220423D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728828AbgFVUxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 16:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60558 "EHLO
+        id S1730410AbgFVUyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 16:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728131AbgFVUxr (ORCPT
+        with ESMTP id S1728545AbgFVUxs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 16:53:47 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600A9C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:53:47 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id e18so8799643pgn.7
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:53:47 -0700 (PDT)
+        Mon, 22 Jun 2020 16:53:48 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04B0BC061796
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:53:48 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id y17so8096627plb.8
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 13:53:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mDXLfB+PQDLRQ6NmPDmR2JF3Ok4ZVjhNHcZbi8M58JY=;
-        b=jPi/b9t/cgTj3qq2Y+w0Tp93JhZufwpflaLmvJiEevWxTi3dExayl9ry4eqVJN/fWa
-         o8Dul0iXlzYg6sDsWr+LM+o6q4SVmNEyXDnChNwemh29HXQJQCorReaJsa0EvUAllkee
-         p8bfk/EkllHSz3PZVmYDOYLn+iUf/LwJlmHSw=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=0f9fJa8OA2NYK/yNB2OP/HZmbwcQdR1u3azDKPTOctw=;
+        b=Hd+JD6CBzuK2BqDJ7ALVYyglKxpkRCQl/0Pa2q6BAjhgJ3NHdrXKo6F4eQ6/jyDStH
+         FIVqU3u47cOdbudkrx208IcOhncwoGH1jnGAJADb0o2PduIem6t5sPc9hr2tyZhQYq1l
+         95xaMVXc58L8xguf+zEj8rW6zjssA+PybgqA0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mDXLfB+PQDLRQ6NmPDmR2JF3Ok4ZVjhNHcZbi8M58JY=;
-        b=lTuOqsnXZGthZKPv6lWNfR5DRuLLn4TLfFG4h/i5iHP1ZYcmEwbY+aleRiHovxTGLn
-         K0Bx6yzMTZ1bKXi6OGK+HKMTE+kikGMTash7hrD/VZeYLE9gaQADd/fo7zlNOoof3c/i
-         lYkTAHQuhBsYpS70MncRLQjWdlRiLombf7O54Gf4Hth41VSkW8gQaBjiuWjh7DIpgGSM
-         4iWICISD8pMOw7P+74/vsLC7mG12d5IJrHhDCsZ5VDzTylX78hQILfrKEyrvvb7FE5ge
-         DIRJD/rpnwM/RtzjV+N7bZpv9lJeoN0GwNYReObhtEaH5ln9LBUuHPfbp9HEWIs1xayD
-         +wBQ==
-X-Gm-Message-State: AOAM5307hnVAJoxJJqQ/H2C8stVYiC7VX38YaHXvM/xiqRmQSVwcqAWQ
-        OObrqFIVpQ/pCtNCx4Ha5Ktkqw==
-X-Google-Smtp-Source: ABdhPJzyxPTRZcNzcoXYNKkQYAQPnWOSEGrY4CLCWimk1cAn3PmhaciF3QcwlYv13B0JtnQ3oe6LXg==
-X-Received: by 2002:a05:6a00:7c6:: with SMTP id n6mr20534999pfu.120.1592859226960;
-        Mon, 22 Jun 2020 13:53:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=0f9fJa8OA2NYK/yNB2OP/HZmbwcQdR1u3azDKPTOctw=;
+        b=MnfmAXPmRsRc9CNlr8uWoGbOvzDIYk0/D6e32+XAXHBxbfxW9l2eTBqswIoDIN3Buq
+         r3RIgxpesUW1COoT57j6Ly41+Kc8pA6hROclkUhzGUE8SDhTeuVz8H7k6XPsr2/7R7Q4
+         qio4XGjfaq5WAj8a1kiaMmbb6v1qjiqydC5nlJYnr+FNwCIf949xGI4OflsfLehH8jPj
+         O0XKKy7aQD1Po+sk6aOtp6VN0KD0ySARlSO0ABKube4JX0lJWQeWjy5DKpbGdaFsL56l
+         bEKqrH9+eD5HnI+5M9lUJO0CH2MZCfKI00YYbx6wPnB8fKtSl3/Vx21KZB8MJ4gxTLAW
+         lyTA==
+X-Gm-Message-State: AOAM532ZZIdnuGdu0xJnmMb5K2WXf1eUcs5hUnrHIlszO7FGf5nH/XVc
+        C9EMGmvh+HJaIsCvu4WL/HW7kQ==
+X-Google-Smtp-Source: ABdhPJwDyDpJoERWXvnmPuVM21tZ6v5TTnDZi7kCn7EzQhXmCI8+YdMStbWxb/4Hf75B75ybRmVdhw==
+X-Received: by 2002:a17:902:d916:: with SMTP id c22mr21722171plz.145.1592859227557;
+        Mon, 22 Jun 2020 13:53:47 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q22sm11005302pgn.91.2020.06.22.13.53.45
+        by smtp.gmail.com with ESMTPSA id c1sm13934721pfo.197.2020.06.22.13.53.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Mon, 22 Jun 2020 13:53:46 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
@@ -55,10 +55,12 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Nathan Chancellor <natechancellor@gmail.com>,
         clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/3] x86: Warn on orphan section placement
-Date:   Mon, 22 Jun 2020 13:53:38 -0700
-Message-Id: <20200622205341.2987797-1-keescook@chromium.org>
+Subject: [PATCH v2 1/3] vmlinux.lds.h: Add .gnu.version* to DISCARDS
+Date:   Mon, 22 Jun 2020 13:53:39 -0700
+Message-Id: <20200622205341.2987797-2-keescook@chromium.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200622205341.2987797-1-keescook@chromium.org>
+References: <20200622205341.2987797-1-keescook@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,41 +68,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v2:
-- split by architecture, rebase to v5.8-rc2
-v1: https://lore.kernel.org/lkml/20200228002244.15240-1-keescook@chromium.org/
+For vmlinux linking, no architecture uses the .gnu.version* section,
+so remove it via the common DISCARDS macro in preparation for adding
+--orphan-handling=warn more widely.
 
-A recent bug[1] was solved for builds linked with ld.lld, and tracking
-it down took way longer than it needed to (a year). Ultimately, it
-boiled down to differences between ld.bfd and ld.lld's handling of
-orphan sections. Similarly, the recent FGKASLR series brough up orphan
-section handling too[2]. In both cases, it would have been nice if the
-linker was running with --orphan-handling=warn so that surprise sections
-wouldn't silently get mapped into the kernel image at locations up to the
-whim of the linker's orphan handling logic. Instead, all desired sections
-should be explicitly identified in the linker script (to be either kept or
-discarded) with any orphans throwing a warning. The powerpc architecture
-actually already does this, so this series extends coverage to x86.
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ include/asm-generic/vmlinux.lds.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks!
-
--Kees
-
-[1] https://github.com/ClangBuiltLinux/linux/issues/282
-[2] https://lore.kernel.org/lkml/202002242122.AA4D1B8@keescook/
-
-Kees Cook (3):
-  vmlinux.lds.h: Add .gnu.version* to DISCARDS
-  x86/build: Warn on orphan section placement
-  x86/boot: Warn on orphan section placement
-
- arch/x86/Makefile                      |  4 ++++
- arch/x86/boot/compressed/Makefile      |  3 ++-
- arch/x86/boot/compressed/vmlinux.lds.S | 11 +++++++++++
- arch/x86/kernel/vmlinux.lds.S          |  6 ++++++
- include/asm-generic/vmlinux.lds.h      |  1 +
- 5 files changed, 24 insertions(+), 1 deletion(-)
-
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index db600ef218d7..6fbe9ed10cdb 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -934,6 +934,7 @@
+ 	*(.discard)							\
+ 	*(.discard.*)							\
+ 	*(.modinfo)							\
++	*(.gnu.version*)						\
+ 	}
+ 
+ /**
 -- 
 2.25.1
 
