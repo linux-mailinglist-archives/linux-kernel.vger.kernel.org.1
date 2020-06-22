@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A317203290
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCAD203293
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:53:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726928AbgFVIxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 04:53:01 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:38030 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbgFVIxB (ORCPT
+        id S1727023AbgFVIx0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 04:53:26 -0400
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:41163 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725966AbgFVIx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 04:53:01 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 74C061C0C0A; Mon, 22 Jun 2020 10:52:59 +0200 (CEST)
-Date:   Mon, 22 Jun 2020 10:52:59 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     kernel list <linux-kernel@vger.kernel.org>,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, intel-gfx@lists.freedesktop.org
-Subject: v5.8-rc1 on thinkpad x220, intel graphics: interface frozen, can
- still switch to text console
-Message-ID: <20200622085258.GA22686@duo.ucw.cz>
+        Mon, 22 Jun 2020 04:53:26 -0400
+Received: by mail-lj1-f175.google.com with SMTP id 9so18356761ljc.8;
+        Mon, 22 Jun 2020 01:53:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nZTBXhwF66GMXMYe0wTj59WMwAfoF1kcnBYniC5n5Lk=;
+        b=De+tA9zcJGOWfFb/l9sfP6OoEAd1xrRtnLFcM+bDdL5YEIroDzpS76hF4UPBjBbUHd
+         us+R9wiNHH2LL95iuoNDzNRQsSk89nTJs+mjnjxt+qivLSDHj+Cx1VgBvEaeOgkH8684
+         opG+AeQSO8Ql+ZCqc8kLdaxhnjvKxIjZtPdPGuhMkaXN0+gZ51mYkcPfViTuRgl/wadP
+         uV+7EcDFfw4lCSknBPSJJWCdoBdneMRBRIHUsEOCwb/wzx8coPyEbeSXD0Y+ZSE70N8q
+         kK2HqgaY8VzoW/HgHIuG5WkYDOQLq92L6heK4UNh7grZNHkEl3/WXAbkzQC5wVyrxwn/
+         D5PQ==
+X-Gm-Message-State: AOAM5314ikFZO/N7HsBXZnnAgatZu6nZ5mKt9hKyJ9KekPWj6Hh2I6aE
+        7SZ0bf4KWCtMltfMrxn3IVs10kCt
+X-Google-Smtp-Source: ABdhPJxhy1Tbua04JsvQKGuKDKMK+vCeEpwG5Q/ZsF7deKMryw6WrVZjGR80MUIR2OdIl475OwDqOw==
+X-Received: by 2002:a2e:98c2:: with SMTP id s2mr8503520ljj.288.1592816003291;
+        Mon, 22 Jun 2020 01:53:23 -0700 (PDT)
+Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
+        by smtp.gmail.com with ESMTPSA id e80sm3333134lfd.64.2020.06.22.01.53.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 01:53:22 -0700 (PDT)
+Received: from johan by xi.terra with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1jnICf-0004Dg-Td; Mon, 22 Jun 2020 10:53:21 +0200
+Date:   Mon, 22 Jun 2020 10:53:21 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     James Hilliard <james.hilliard1@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>
+Subject: Re: [PATCH v2] USB: Serial: cypress_M8: Enable Simply Automated UPB
+ PIM
+Message-ID: <20200622085321.GA3334@localhost>
+References: <20200616220403.1807003-1-james.hilliard1@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="2oS5YaxWCcQjTEyO"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200616220403.1807003-1-james.hilliard1@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 16, 2020 at 04:04:03PM -0600, James Hilliard wrote:
+> This is a UPB(Universal Powerline Bus) PIM(Powerline Interface Module)
+> which allows for controlling multiple UPB compatible devices from
+> Linux using the standard serial interface.
+> 
+> Based on vendor application source code there are two different models
+> of USB based PIM devices in addition to a number of RS232 based PIM's.
+> 
+> The vendor UPB application source contains the following USB ID's:
+> #define USB_PCS_VENDOR_ID 0x04b4
+> #define USB_PCS_PIM_PRODUCT_ID 0x5500
+> 
+> #define USB_SAI_VENDOR_ID 0x17dd
+> #define USB_SAI_PIM_PRODUCT_ID 0x5500
+> 
+> The first set of ID's correspond to the PIM variant sold by Powerline
+> Control Systems while the second corresponds to the Simply Automated
+> Incorporated PIM. As the product ID for both of these match the default
+> cypress HID->COM RS232 product ID it assumed that they both use an
+> internal variant of this HID->COM RS232 converter hardware. However
+> as the vendor ID for the Simply Automated variant is different we need
+> to also add it to the cypress_M8 driver so that it is properly
+> detected.
+> 
+> Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
+> ---
+> Changes v1 -> v2:
+>   - Add more detailed commit message.
 
---2oS5YaxWCcQjTEyO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Now applied, thanks.
 
-Hi!
+Would you mind posting the output of "lsusb -v" for this device for
+completeness?
 
-Linux duo 5.8.0-rc1+ #117 SMP PREEMPT Mon Jun 15 16:13:54 CEST 2020 x86_64 =
-GNU/Linux
-
-[133747.719711] [  17456]     0 17456     4166      271    65536        0  =
-           0 sshd
-[133747.719718] [  17466]  1000 17466     4166      289    65536        0  =
-           0 sshd
-[133747.719724] [  17468]  1000 17468   433587   303033  2588672        0  =
-           0 unison
-[133747.719730] [  18023]  1000 18023     1316       16    40960        0  =
-           0 sleep
-[133747.719737] oom-kill:constraint=3DCONSTRAINT_NONE,nodemask=3D(null),tas=
-k=3Dchromium,pid=3D27368,uid=3D1000
-[133747.719795] Out of memory: Killed process 27368 (chromium) total-vm:668=
-6908kB, anon-rss:647056kB, file-rss:0kB, shmem-rss:7452kB, UID:1000 pgtable=
-s:5304kB oom_score_adj:300
-[133747.799893] oom_reaper: reaped process 27368 (chromium), now anon-rss:0=
-kB, file-rss:0kB, shmem-rss:6836kB
-[136841.820558] i915 0000:00:02.0: [drm] Resetting chip for stopped heartbe=
-at on rcs0
-[136841.924333] i915 0000:00:02.0: [drm] Xorg[3016] context reset due
-to GPU hang
-
-Kernel is v5.8-rc1.
-
-Any ideas?
-
-Best regards,
-									Pavel
---=20
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
-g.html
-
---2oS5YaxWCcQjTEyO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCXvBxagAKCRAw5/Bqldv6
-8v2DAJ92b8dghQBXzFffjNNLy6CEyC262ACfYxgoVq6bAVMZNICYquHEtA+jVrM=
-=0WGl
------END PGP SIGNATURE-----
-
---2oS5YaxWCcQjTEyO--
+Johan
