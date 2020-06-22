@@ -2,188 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4ED203283
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C7E20328D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:52:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgFVIuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 04:50:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
+        id S1727012AbgFVIvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 04:51:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725952AbgFVIuO (ORCPT
+        with ESMTP id S1725952AbgFVIvx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 04:50:14 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DB2C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:50:14 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id l10so15775930wrr.10
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:50:14 -0700 (PDT)
+        Mon, 22 Jun 2020 04:51:53 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754FAC061795
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:51:52 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id n23so18317608ljh.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 01:51:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=2pe38k03Di4JjdcjaPHQ0TSLRnrktMq6M6UKWiJjYyg=;
-        b=H1czj5/tMXsaUU8jQQLmo48P8FXGXM8lfjYElph8keBvcmynoIYkw0E/kw12Qs4yyc
-         aKZUVFUeAr4xwDwwprzPZUYnnVQ8SD7aLLFMk+HhdohYt6MRABXL8V1whsNg/xR4D7MJ
-         yEd9UUKTw/7Iayn7Ib1fEor3k2SJeS4R3q+9RirnkQ+CUrF5FYz8RMguG3ULwQBytL4A
-         2giF7V5YClwVmgYBwRZUAOPPpiOdDJV0hj1KPD9RrkfgBXcF3Ejq8DIM7uPv52IzMpHL
-         G/QTdlbqyUpfPstPjjVNiTlJDKE3elvdOFPjTEJpUvlSF66pUx+FAszQK28076qfdiCe
-         WdAg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5iSOzHwBaotY/UIRNioAEBuXDPVG7zu4qxXMNrK9fyc=;
+        b=g1brCWmwJtbkSmFV9tqet1ryr9ApeCcCobA98O+cU+FVDj94qF4u9u0ipyjv7QP2qo
+         21prTrr4rLVKagZO1Ra+ay+gNxNr917nLzNVLjeCbu4H8rSqpfyjR3kLirlWPjVNhK+T
+         6QeOABhjPryupAkfoIxNCmCs1oKwrRJYxQQUcWvqw0So+1UGczY8TbVrX0AdRZxSHDUO
+         UIR2+jQozywcAJJqc3Mlk6cLafjWJ1imBHjeftPy7Mr7Ml7HMaV+jqn/W2D4waHIkcom
+         J1L6fq9amVsuNkhjxaOkV2BUbByvpCXBuzl8LU/7fNF4G3bmFcAly/3OtqShrxr7ehiG
+         TyBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=2pe38k03Di4JjdcjaPHQ0TSLRnrktMq6M6UKWiJjYyg=;
-        b=ZSbeh8CxRQRT8+jvvuQPGsVSBLeHDElvkEbhGAbkbW/ldQQzALjtiUFH9cYMt7deWN
-         GXL8vo0QfqWfLjwJkOMukL9YK5tI38udkOGka8EY5sXNwBbC4px/Rlq5WdO0ez51bHw6
-         yVsUVqUmc0QFJLJpcB94yBIJ19kFJ2Tg/1HKlAqA1lEhWkh39Ks1UuJSsGl8jUH8fCBz
-         dyfmB4SigrDrIsOdQMnFgRUFEFYMJzXtWNsKj8Tqtr3KUezPMsozZzB3+x72jIdIrBY6
-         iRtH7T3tnXd0GavQzizHrMSS4qAtxkEoy+BdH90L5Q+r2R3l0PlEzzeuz8fv+GkbkQ+6
-         c7iw==
-X-Gm-Message-State: AOAM5306IUBUqvGeOw2J6EUwBDP5d89P5sWwVGAA2naE02bKPS2cWMfA
-        QUCCvU68rEpv6Z62M8oUw1dsOg==
-X-Google-Smtp-Source: ABdhPJwpmSXOor6kxYfD8+BD9tXBZQyiV+hdFCfcDxHCaiqLZmk8jIfRba/ngIRMDSLcC6TR3zEXhQ==
-X-Received: by 2002:a5d:62d1:: with SMTP id o17mr17565839wrv.162.1592815812390;
-        Mon, 22 Jun 2020 01:50:12 -0700 (PDT)
-Received: from dell ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id i19sm10121054wrb.56.2020.06.22.01.50.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 01:50:11 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 09:50:09 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     andy.shevchenko@gmail.com, michael@walle.cc, robh+dt@kernel.org,
-        broonie@kernel.org, devicetree@vger.kernel.org,
-        linus.walleij@linaro.org, linux@roeck-us.net,
-        andriy.shevchenko@linux.intel.com, robin.murphy@arm.com,
-        gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] mfd: core: Make a best effort attempt to match
- devices with the correct of_nodes
-Message-ID: <20200622085009.GP954398@dell>
-References: <20200611191002.2256570-1-lee.jones@linaro.org>
- <4b188fb5-6667-720d-46e1-6f103efe8966@gmail.com>
- <20200615092644.GA2608702@dell>
- <eef50a78-8571-5600-4fee-c824fd4a7f69@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5iSOzHwBaotY/UIRNioAEBuXDPVG7zu4qxXMNrK9fyc=;
+        b=siuZT0UxidXTeoo9El6DK/e+Qzsn/ShO8JUi4+amnWl7kTvyZ1odp2oGSrB8TArudJ
+         v6QtQ9W1BHhXFevkvfm9lvGLQxENu8Sl7CxYB5FHkBcCNMRWh9zKx1La+Omx9LqJ8cwI
+         uafOyV5KDsmLdsjWre8JiI6HmHZwupbcBRrvnLvHJAbVmlmk74RD3CJOGSEdI2UVcYpv
+         u2Ff7+M88xZvb+Fvv5WS9Odm+a55XU1bfSIwCa6HFtRYyV15EzJYKUl/F6ZPZZ58lymx
+         /8WhX3ras02/rlugcVgBYkDW1XFlwsB19QS9Wo0nbDj+CaSUGgkiUSZrne0anpGk9urv
+         hmBA==
+X-Gm-Message-State: AOAM530jqEe7eNG0K6UKsWFu6fN206cSYEilpnBbhEXafV5L3iOhwmcZ
+        y9ErayBfMlvkHMIC+4a56RdYG/IIN0/X4cH+j7zSkA==
+X-Google-Smtp-Source: ABdhPJzPcxI7lreAQVQmWGeoQhl8ktN6/1zLDkgbhAhAe090FX+hV8+nsH6dFhqYb8sndBXmAohGrA73QF7C0Ox0Zno=
+X-Received: by 2002:a05:651c:318:: with SMTP id a24mr7713808ljp.55.1592815910815;
+ Mon, 22 Jun 2020 01:51:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <eef50a78-8571-5600-4fee-c824fd4a7f69@gmail.com>
+References: <20200508065356.2493343-1-mpe@ellerman.id.au>
+In-Reply-To: <20200508065356.2493343-1-mpe@ellerman.id.au>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Mon, 22 Jun 2020 14:21:38 +0530
+Message-ID: <CA+G9fYtHP+Gg+BrR_GkBMxu2oOi-_e9pATtpb6TVRswv1G1r1Q@mail.gmail.com>
+Subject: Re: [PATCH 1/2] selftests/lkdtm: Don't clear dmesg when running tests
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Joe Lawrence <joe.lawrence@redhat.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>,
+        Justin Cook <justin.cook@linaro.org>,
+        lkft-triage@lists.linaro.org, Miroslav Benes <mbenes@suse.cz>,
+        Petr Mladek <pmladek@suse.com>, Shuah Khan <shuah@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Jun 2020, Frank Rowand wrote:
+On Fri, 8 May 2020 at 12:23, Michael Ellerman <mpe@ellerman.id.au> wrote:
+>
+> It is Very Rude to clear dmesg in test scripts. That's because the
+> script may be part of a larger test run, and clearing dmesg
+> potentially destroys the output of other tests.
+>
+> We can avoid using dmesg -c by saving the content of dmesg before the
+> test, and then using diff to compare that to the dmesg afterward,
+> producing a log with just the added lines.
+>
+> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+> ---
+>  tools/testing/selftests/lkdtm/run.sh | 14 ++++++++------
+>  1 file changed, 8 insertions(+), 6 deletions(-)
+>
+> diff --git a/tools/testing/selftests/lkdtm/run.sh b/tools/testing/selftests/lkdtm/run.sh
+> index dadf819148a4..0b409e187c7b 100755
+> --- a/tools/testing/selftests/lkdtm/run.sh
+> +++ b/tools/testing/selftests/lkdtm/run.sh
+> @@ -59,23 +59,25 @@ if [ -z "$expect" ]; then
+>         expect="call trace:"
+>  fi
+>
+> -# Clear out dmesg for output reporting
+> -dmesg -c >/dev/null
+> -
+>  # Prepare log for report checking
+> -LOG=$(mktemp --tmpdir -t lkdtm-XXXXXX)
+> +LOG=$(mktemp --tmpdir -t lkdtm-log-XXXXXX)
+> +DMESG=$(mktemp --tmpdir -t lkdtm-dmesg-XXXXXX)
+>  cleanup() {
+> -       rm -f "$LOG"
+> +       rm -f "$LOG" "$DMESG"
+>  }
+>  trap cleanup EXIT
+>
+> +# Save existing dmesg so we can detect new content below
+> +dmesg > "$DMESG"
+> +
+>  # Most shells yell about signals and we're expecting the "cat" process
+>  # to usually be killed by the kernel. So we have to run it in a sub-shell
+>  # and silence errors.
+>  ($SHELL -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
+>
+>  # Record and dump the results
+> -dmesg -c >"$LOG"
+> +dmesg | diff --changed-group-format='%>' --unchanged-group-format='' "$DMESG" - > "$LOG" || true
 
-> On 2020-06-15 04:26, Lee Jones wrote:
-> > On Sun, 14 Jun 2020, Frank Rowand wrote:
-> > 
-> >> Hi Lee,
-> >>
-> >> I'm looking at 5.8-rc1.
-> >>
-> >> The only use of OF_MFD_CELL() where the same compatible is specified
-> >> for multiple elements of a struct mfd_cell array is for compatible
-> >> "stericsson,ab8500-pwm" in drivers/mfd/ab8500-core.c:
-> >>
-> >>         OF_MFD_CELL("ab8500-pwm",
-> >>                     NULL, NULL, 0, 1, "stericsson,ab8500-pwm"),
-> >>         OF_MFD_CELL("ab8500-pwm",
-> >>                     NULL, NULL, 0, 2, "stericsson,ab8500-pwm"),
-> >>         OF_MFD_CELL("ab8500-pwm",
-> >>                     NULL, NULL, 0, 3, "stericsson,ab8500-pwm"),
-> 
->          OF_MFD_CELL("ab8500-pwm",
->                      NULL, NULL, 0, 0, "stericsson,ab8500-pwm"),
-> 
->          OF_MFD_CELL_REG("ab8500-pwm-mc",
->                          NULL, NULL, 0, 0, "stericsson,ab8500-pwm", 0),
->          OF_MFD_CELL_REG("ab8500-pwm-mc",
->                          NULL, NULL, 0, 1, "stericsson,ab8500-pwm", 1),
->          OF_MFD_CELL_REG("ab8500-pwm-mc",
->                          NULL, NULL, 0, 2, "stericsson,ab8500-pwm", 2),
-> 
-> >>
-> >> The only .dts or .dtsi files where I see compatible "stericsson,ab8500-pwm"
-> >> are:
-> >>
-> >>    arch/arm/boot/dts/ste-ab8500.dtsi
-> >>    arch/arm/boot/dts/ste-ab8505.dtsi
-> >>
-> >> These two .dtsi files only have a single node with this compatible.
-> >> Chasing back to .dts and .dtsi files that include these two .dtsi
-> >> files, I see no case where there are multiple nodes with this
-> >> compatible.
-> >>
-> >> So it looks to me like there is no .dts in mainline that is providing
-> >> the three "stericsson,ab8500-pwm" nodes that drivers/mfd/ab8500-core.c
-> >> is expecting.  No case that there are multiple mfd child nodes where
-> >> mfd_add_device() would assign the first of n child nodes with the
-> >> same compatible to multiple devices.
-> >>
-> >> So it appears to me that drivers/mfd/ab8500-core.c is currently broken.
-> >> Am I missing something here?
-> >>
-> >> If I am correct, then either drivers/mfd/ab8500-core.c or
-> >> ste-ab8500.dtsi and ste-ab8505.dtsi need to be fixed.
-> > 
-> > Your analysis is correct.
-> 
-> OK, if I'm not overlooking anything, that is good news.
-> 
-> Existing .dts source files only have one "ab8500-pwm" child.  They already
-> work correcly.
-> 
-> Create a new compatible for the case of multiple children.  In my example
-> I will add "-mc" (multiple children) to the existing compatible.  There
-> is likely a better name, but this lets me provide an example.
-> 
-> Modify drivers/mfd/ab8500-core.c to use the new compatible, and new .dts
-> source files with multiple children use the new compatible:
-> 
->          OF_MFD_CELL("ab8500-pwm",
->                      NULL, NULL, 0, 0, "stericsson,ab8500-pwm"),
-> 
->          OF_MFD_CELL_REG("ab8500-pwm-mc",
->                          NULL, NULL, 0, 0, "stericsson,ab8500-pwm", 0),
->          OF_MFD_CELL_REG("ab8500-pwm-mc",
->                          NULL, NULL, 0, 1, "stericsson,ab8500-pwm", 1),
->          OF_MFD_CELL_REG("ab8500-pwm-mc",
->                          NULL, NULL, 0, 2, "stericsson,ab8500-pwm", 2),
-> 
-> The "OF_MFD_CELL" entry is the existing entry, which will handle current
-> .dts source files.  The new "OF_MFD_CELL_REG" entries will handle new
-> .dts source files.
+We are facing problems with the diff `=%>` part of the option.
+This report is from the OpenEmbedded environment.
+We have the same problem from livepatch_testcases.
 
-Sorry, but I'm not sure what the above exercise is supposed to solve.
+# selftests lkdtm BUG.sh
+lkdtm: BUG.sh_ #
+# diff unrecognized option '--changed-group-format=%>'
+unrecognized: option_'--changed-group-format=%>' #
+# BusyBox v1.27.2 (2020-03-30 164108 UTC) multi-call binary.
+v1.27.2: (2020-03-30_164108 #
+#
+: _ #
+# Usage diff [-abBdiNqrTstw] [-L LABEL] [-S FILE] [-U LINES] FILE1 FILE2
+diff: [-abBdiNqrTstw]_[-L #
+# BUG missing 'kernel BUG at' [FAIL]
 
-Could you explain it for me please?
-
-> And of course the patch that creates OF_MFD_CELL_REG() needs to precede
-> this change.
-> 
-> I would remove the fallback code in the existing patch that tries to
-> handle an incorrect binding.  Just error out if the binding is not
-> used properly.
-
-What fallback code?
-
-> > Although it's not "broken", it just works when it really shouldn't.
-> > 
-> > I will be fixing the 'ab8500-pwm' case in due course.
-> > 
-> >> Moving forward, your proposed OF_MFD_CELL_REG() method seems a good
-> >> approach (I have not completely read the actual code in the patch yet
-> >> though).
-> > 
-> > Thanks.
-> > 
-> 
+Full test output log,
+https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20200621/testrun/2850083/suite/kselftest/test/lkdtm_BUG.sh/log
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Linaro LKFT
+https://lkft.linaro.org
