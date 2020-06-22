@@ -2,128 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ECFC203518
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13DFC203521
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbgFVKuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 06:50:12 -0400
-Received: from mga01.intel.com ([192.55.52.88]:8792 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726919AbgFVKuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 06:50:12 -0400
-IronPort-SDR: XmpAACf/NJ9SEkMQG3MB7Bzz/DQGnz9QUX+wBRZn5hlIIqTfXs488OylMnKp2WErga/5kMylWo
- yCblGXls5w4g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9659"; a="161804871"
-X-IronPort-AV: E=Sophos;i="5.75,266,1589266800"; 
-   d="scan'208";a="161804871"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 03:50:09 -0700
-IronPort-SDR: +QctP/WMWVDPHFonorsaeCyL/QQUU1bGcxijVpSxNK/A/KeR2KgCRegkpa/7mSusW3PgBzgVg8
- RK9uS0ItioJw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,266,1589266800"; 
-   d="scan'208";a="384452378"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga001.fm.intel.com with ESMTP; 22 Jun 2020 03:50:09 -0700
-Received: from [10.249.226.81] (abudanko-mobl.ccr.corp.intel.com [10.249.226.81])
-        by linux.intel.com (Postfix) with ESMTP id 72E51580514;
-        Mon, 22 Jun 2020 03:50:04 -0700 (PDT)
-Subject: Re: [PATCH v7 01/13] tools/libperf: introduce notion of static polled
- file descriptors
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <be40edeb-0cb9-5e11-2a22-8392316cdced@linux.intel.com>
- <49eca46e-4d0e-2ae5-d7d9-e37a4d680270@linux.intel.com>
- <20200608084344.GA1520715@krava>
- <2d80a43a-54cf-3d12-92fd-066217c95d76@linux.intel.com>
- <20200608160758.GD1558310@krava>
- <bde9bcc3-9ec0-6e37-26f6-139b038ad3de@linux.intel.com>
- <20200615123048.GB2088119@krava>
- <8b29e324-eb8d-2266-562b-ca46aec76a3e@linux.intel.com>
- <20200615165802.GD2088119@krava>
- <8351b3ee-d345-a394-d687-443f2d2f7ec4@linux.intel.com>
- <20200622102142.GA2583819@krava>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <cad3d9a6-da28-c627-de73-17169a7c36a1@linux.intel.com>
-Date:   Mon, 22 Jun 2020 13:50:03 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1727120AbgFVKyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 06:54:13 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6382 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727024AbgFVKyM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 06:54:12 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id DD2B3CE1167AFCF01F41;
+        Mon, 22 Jun 2020 18:54:09 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.203.232) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 22 Jun 2020 18:54:01 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Seth Jennings <sjenning@redhat.com>,
+        "Dan Streetman" <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>
+Subject: [PATCH] mm/zswap: careful error path implementation in comp_prepare
+Date:   Mon, 22 Jun 2020 22:52:28 +1200
+Message-ID: <20200622105228.17720-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20200622102142.GA2583819@krava>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.203.232]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Free the allocated memory and resource while an error occurs.
 
-On 22.06.2020 13:21, Jiri Olsa wrote:
-> On Mon, Jun 22, 2020 at 12:47:19PM +0300, Alexey Budankov wrote:
-> 
-> SNIP
-> 
->>>>>>>> fdarray__del(array, fdkey);
->>>>>>>
->>>>>>> I think there's solution without having filterable type,
->>>>>>> I'm not sure why you think this is needed
->>>>>>>
->>>>>>> I'm busy with other things this week, but I think I can
->>>>>>> come up with some patch early next week if needed
->>>>>>
->>>>>> Friendly reminder.
->>>>>
->>>>> hm? I believe we discussed this in here:
->>>>>   https://lore.kernel.org/lkml/20200609145611.GI1558310@krava/
->>>>
->>>> Do you want it to be implemented like in the patch posted by the link?
->>>
->>> no idea.. looking for good solution ;-)
->>>
->>> how about switching completely to epoll? I tried and it
->>> does not look that bad
->>
->> Well, epoll() is perhaps possible but why does it want switching to epoll()?
->> What are the benefits and/or specific task being solved by this switch? 
-> 
-> epoll change fixes the same issues as the patch you took in v8
-> 
-> on top of it it's not a hack and wil make polling more user
-> friendly because of the clear interface
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: David S. Miller" <davem@davemloft.net>
+Cc: Seth Jennings <sjenning@redhat.com>
+Cc: Dan Streetman <ddstreet@ieee.org>
+Cc: Vitaly Wool <vitaly.wool@konsulko.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ -v1: an incremental patch againest linux-next to fix the issue pointed
+      out by Vitaly
 
-Clear. The opposite thing is /proc/sys/fs/epoll/max_user_watches limit that
-will affect Perf tool usage additionally to the current process limit on 
-a number of simultaneously open file descriptors (ulimit -n). So move to 
-epoll() will impose one limit what can affect Perf tool scalability.
+ mm/zswap.c | 25 +++++++++++++++++--------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
 
-> 
->>
->>>
->>> there might be some loose ends (interface change), but
->>> I think this would solve our problems with fdarray
->>
->> Your first patch accomodated in v8 actually avoids fds typing
->> and solves pos (=fdarray__add()) staleness issue with fdarray.
-> 
-> yea, it was a change meant for discussion (which never happened),
-> and I considered it to be more a hack than a solution
-> 
-> I suppose we can live with that for a while, but I'd like to
-> have clean solution for polling as well
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 0d914ba6b4a0..c0a85ef46610 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -428,28 +428,31 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
+ 	struct crypto_acomp *acomp;
+ 	struct acomp_req *req;
+ 	struct crypto_acomp_ctx *acomp_ctx;
++	int ret;
+ 
+ 	if (WARN_ON(*per_cpu_ptr(pool->acomp_ctx, cpu)))
+ 		return 0;
+ 
+ 	acomp_ctx = kzalloc(sizeof(*acomp_ctx), GFP_KERNEL);
+-	if (IS_ERR_OR_NULL(acomp_ctx)) {
+-		pr_err("Could not initialize acomp_ctx\n");
++	if (!acomp_ctx) {
++		pr_err("Could not allocate acomp_ctx\n");
+ 		return -ENOMEM;
+ 	}
+ 	acomp = crypto_alloc_acomp(pool->tfm_name, 0, 0);
+-	if (IS_ERR_OR_NULL(acomp)) {
++	if (IS_ERR(acomp)) {
+ 		pr_err("could not alloc crypto acomp %s : %ld\n",
+ 				pool->tfm_name, PTR_ERR(acomp));
+-		return -ENOMEM;
++		ret = PTR_ERR(acomp);
++		goto free_ctx;
+ 	}
+ 	acomp_ctx->acomp = acomp;
+ 
+ 	req = acomp_request_alloc(acomp_ctx->acomp);
+-	if (IS_ERR_OR_NULL(req)) {
+-		pr_err("could not alloc crypto acomp %s : %ld\n",
+-		       pool->tfm_name, PTR_ERR(acomp));
+-		return -ENOMEM;
++	if (!req) {
++		pr_err("could not alloc crypto acomp_request %s\n",
++		       pool->tfm_name);
++		ret = -ENOMEM;
++		goto free_acomp;
+ 	}
+ 	acomp_ctx->req = req;
+ 
+@@ -462,6 +465,12 @@ static int zswap_cpu_comp_prepare(unsigned int cpu, struct hlist_node *node)
+ 	*per_cpu_ptr(pool->acomp_ctx, cpu) = acomp_ctx;
+ 
+ 	return 0;
++
++free_acomp:
++	crypto_free_acomp(acomp_ctx->acomp);
++free_ctx:
++	kfree(acomp_ctx);
++	return ret;
+ }
+ 
+ static int zswap_cpu_comp_dead(unsigned int cpu, struct hlist_node *node)
+-- 
+2.27.0
 
-I wouldn't treat it as a hack but more as a fix because returned
-pos is now a part of interface that can be safely used in callers.
-Can we go with this fix for the patch set?
 
-Thanks,
-Alexey
