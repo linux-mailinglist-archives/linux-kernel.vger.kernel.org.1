@@ -2,266 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52333203FC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:00:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AA52203FC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730637AbgFVTAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 15:00:48 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:60926 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730350AbgFVS7j (ORCPT
+        id S1730658AbgFVTA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 15:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730351AbgFVS7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 14:59:39 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05MIxUru053509;
-        Mon, 22 Jun 2020 13:59:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592852370;
-        bh=wCZ4MMAr4l2mgIibN19UwQ6B7f7fRNfZT+ZnfSiiaXc=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=eWbfOSoqkyFriFyj2gsYfVo00dI2lwUGz6UFWSnIhqidLb+TyedeJwaKstdMv82Kp
-         6A3GFb9XeEbOPiCmqtww6rMeKWsFm0R46P1ujWSt0kgU/KQ+woVb9AaXMsUl6+VojT
-         07adl9eqcg6xfD1Us9T4XF4ZrTnbKeg3TjHJPcG4=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05MIxUMs038070
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 22 Jun 2020 13:59:30 -0500
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 22
- Jun 2020 13:59:30 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 22 Jun 2020 13:59:30 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05MIxTd9113468;
-        Mon, 22 Jun 2020 13:59:30 -0500
-From:   Dan Murphy <dmurphy@ti.com>
-To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>, <robh@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-leds@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, Dan Murphy <dmurphy@ti.com>
-Subject: [PATCH v29 10/16] leds: lp55xx: Convert LED class registration to devm_*
-Date:   Mon, 22 Jun 2020 13:59:13 -0500
-Message-ID: <20200622185919.2131-11-dmurphy@ti.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200622185919.2131-1-dmurphy@ti.com>
-References: <20200622185919.2131-1-dmurphy@ti.com>
+        Mon, 22 Jun 2020 14:59:37 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A17EFC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:59:37 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id r22so15046337qke.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:59:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :organization:user-agent:mime-version:content-transfer-encoding;
+        bh=f4iy9Hd1w0zJAlXEFRCnJHxvinMyhXg+8Iy3wz3TXII=;
+        b=eECU36ZVjZz8hZY846jkt5SJoCTI+4a8kDaC/+DEX+OfOjFg6ncgMcPhIa4GruhLg4
+         BG0cLqfGfolvPcZcFYfhqxo0FMAiF/NmAK2HYMwjazdJKX/eJo5MbeANBbFofDZTb8/X
+         KfLkchm/gOLRPh5Swk3bdBZJTWhq4+Nq0XQGKZtLZPWCC4ZEM2cwJ5QXjSaJ4mbqAHUR
+         fL54FRINqrSwmhGbUlA+k0veRzVjSDDENfLH8KCJyeyewscnfXHU5+7gWkTOZ/ofU+Mx
+         JEqK6Pk//PAeJwzG7aOPEG0TnnarSIzf0+KMcAnsPoC+Vv10k0DON44NqOTCyOb1C1SQ
+         FgHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=f4iy9Hd1w0zJAlXEFRCnJHxvinMyhXg+8Iy3wz3TXII=;
+        b=FCJcClbF64CKPCN+Kr4JPmaZuoS1Es/cySfqgMtov4dhHmlevWbWzDgjiHpvkJK5Bk
+         86UPnhGG6jQgQBuWrP76CBWw5Wq1Tt72JJ5tUqo+xIZARWaenmaz4hG8MvW5Iyv9LkSs
+         ZHLCObfMcfH9PW0AQJVsGCMrZrPvw9ChSSzCxrtnBq49MJxN23K2ZUarzW4X+7K+4fBr
+         xlZEBrBUCVNQloIy7BgDzG56bDMKfZl31MN0VKvcDp+cIElEXZzx2OmY7C9pDrGOb1gd
+         /xfamCCCKQoHwVj/yGp/wAmWT3mOmdm2rF2y3Vw4Aj7nsEPIuSHWHWTvXa3oFdy0Kq/G
+         SWuA==
+X-Gm-Message-State: AOAM532JtOM51nILnTxfeXJGWX9d6DEQKgNADBFyNNsgtUmFTMiCUAjx
+        H5SwnUU94ejCW291FihMaHY=
+X-Google-Smtp-Source: ABdhPJzzoWaREA/uNfK0f9aPzY48EBbv95gn9nHTvdkd33MN1QQwXKfRvdvvVRCYJRObdZRJCWK7aQ==
+X-Received: by 2002:a05:620a:788:: with SMTP id 8mr7327048qka.127.1592852376858;
+        Mon, 22 Jun 2020 11:59:36 -0700 (PDT)
+Received: from LeoBras (177-131-65-187.dynamic.desktop.com.br. [177.131.65.187])
+        by smtp.gmail.com with ESMTPSA id i14sm13900216qkl.105.2020.06.22.11.59.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 11:59:36 -0700 (PDT)
+Message-ID: <ccf7b591f2bf61ba4705699b2e2b050c3cf48d99.camel@gmail.com>
+Subject: Re: [PATCH 3/4] powerpc/pseries/iommu: Move window-removing part of
+ remove_ddw into remove_dma_window
+From:   Leonardo Bras <leobras.c@gmail.com>
+To:     Alexey Kardashevskiy <aik@ozlabs.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Ram Pai <linuxram@us.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Date:   Mon, 22 Jun 2020 15:59:14 -0300
+In-Reply-To: <51201582-efe5-85df-7e65-a998e91ab63f@ozlabs.ru>
+References: <20200619050619.266888-1-leobras.c@gmail.com>
+         <20200619050619.266888-4-leobras.c@gmail.com>
+         <51201582-efe5-85df-7e65-a998e91ab63f@ozlabs.ru>
+Organization: IBM
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the LED class registration calls to the LED devm_*
-registration calls.
+Hello Alexey, thanks for the feedback!
 
-Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
-Acked-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Dan Murphy <dmurphy@ti.com>
----
- drivers/leds/leds-lp5521.c        |  9 +++------
- drivers/leds/leds-lp5523.c        |  9 +++------
- drivers/leds/leds-lp5562.c        |  9 +++------
- drivers/leds/leds-lp55xx-common.c | 15 +--------------
- drivers/leds/leds-lp55xx-common.h |  2 --
- drivers/leds/leds-lp8501.c        |  9 +++------
- 6 files changed, 13 insertions(+), 40 deletions(-)
+On Mon, 2020-06-22 at 20:02 +1000, Alexey Kardashevskiy wrote:
+> 
+> On 19/06/2020 15:06, Leonardo Bras wrote:
+> > Move the window-removing part of remove_ddw into a new function
+> > (remove_dma_window), so it can be used to remove other DMA windows.
+> > 
+> > It's useful for removing DMA windows that don't create DIRECT64_PROPNAME
+> > property, like the default DMA window from the device, which uses
+> > "ibm,dma-window".
+> > 
+> > Signed-off-by: Leonardo Bras <leobras.c@gmail.com>
+> > ---
+> >  arch/powerpc/platforms/pseries/iommu.c | 53 +++++++++++++++-----------
+> >  1 file changed, 31 insertions(+), 22 deletions(-)
+> > 
+> > diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
+> > index 5e1fbc176a37..de633f6ae093 100644
+> > --- a/arch/powerpc/platforms/pseries/iommu.c
+> > +++ b/arch/powerpc/platforms/pseries/iommu.c
+> > @@ -767,25 +767,14 @@ static int __init disable_ddw_setup(char *str)
+> >  
+> >  early_param("disable_ddw", disable_ddw_setup);
+> >  
+> > -static void remove_ddw(struct device_node *np, bool remove_prop)
+> > +static void remove_dma_window(struct device_node *pdn, u32 *ddw_avail,
+> 
+> You do not need the entire ddw_avail here, pass just the token you need.
 
-diff --git a/drivers/leds/leds-lp5521.c b/drivers/leds/leds-lp5521.c
-index 6f0272249dc8..6d2163c0f625 100644
---- a/drivers/leds/leds-lp5521.c
-+++ b/drivers/leds/leds-lp5521.c
-@@ -541,19 +541,17 @@ static int lp5521_probe(struct i2c_client *client,
- 
- 	ret = lp55xx_register_leds(led, chip);
- 	if (ret)
--		goto err_register_leds;
-+		goto err_out;
- 
- 	ret = lp55xx_register_sysfs(chip);
- 	if (ret) {
- 		dev_err(&client->dev, "registering sysfs failed\n");
--		goto err_register_sysfs;
-+		goto err_out;
- 	}
- 
- 	return 0;
- 
--err_register_sysfs:
--	lp55xx_unregister_leds(led, chip);
--err_register_leds:
-+err_out:
- 	lp55xx_deinit_device(chip);
- err_init:
- 	return ret;
-@@ -566,7 +564,6 @@ static int lp5521_remove(struct i2c_client *client)
- 
- 	lp5521_stop_all_engines(chip);
- 	lp55xx_unregister_sysfs(chip);
--	lp55xx_unregister_leds(led, chip);
- 	lp55xx_deinit_device(chip);
- 
- 	return 0;
-diff --git a/drivers/leds/leds-lp5523.c b/drivers/leds/leds-lp5523.c
-index d0b931a136b9..15e7051392f5 100644
---- a/drivers/leds/leds-lp5523.c
-+++ b/drivers/leds/leds-lp5523.c
-@@ -908,19 +908,17 @@ static int lp5523_probe(struct i2c_client *client,
- 
- 	ret = lp55xx_register_leds(led, chip);
- 	if (ret)
--		goto err_register_leds;
-+		goto err_out;
- 
- 	ret = lp55xx_register_sysfs(chip);
- 	if (ret) {
- 		dev_err(&client->dev, "registering sysfs failed\n");
--		goto err_register_sysfs;
-+		goto err_out;
- 	}
- 
- 	return 0;
- 
--err_register_sysfs:
--	lp55xx_unregister_leds(led, chip);
--err_register_leds:
-+err_out:
- 	lp55xx_deinit_device(chip);
- err_init:
- 	return ret;
-@@ -933,7 +931,6 @@ static int lp5523_remove(struct i2c_client *client)
- 
- 	lp5523_stop_all_engines(chip);
- 	lp55xx_unregister_sysfs(chip);
--	lp55xx_unregister_leds(led, chip);
- 	lp55xx_deinit_device(chip);
- 
- 	return 0;
-diff --git a/drivers/leds/leds-lp5562.c b/drivers/leds/leds-lp5562.c
-index edb57c42e8b1..1c94422408b0 100644
---- a/drivers/leds/leds-lp5562.c
-+++ b/drivers/leds/leds-lp5562.c
-@@ -554,19 +554,17 @@ static int lp5562_probe(struct i2c_client *client,
- 
- 	ret = lp55xx_register_leds(led, chip);
- 	if (ret)
--		goto err_register_leds;
-+		goto err_out;
- 
- 	ret = lp55xx_register_sysfs(chip);
- 	if (ret) {
- 		dev_err(&client->dev, "registering sysfs failed\n");
--		goto err_register_sysfs;
-+		goto err_out;
- 	}
- 
- 	return 0;
- 
--err_register_sysfs:
--	lp55xx_unregister_leds(led, chip);
--err_register_leds:
-+err_out:
- 	lp55xx_deinit_device(chip);
- err_init:
- 	return ret;
-@@ -580,7 +578,6 @@ static int lp5562_remove(struct i2c_client *client)
- 	lp5562_stop_engine(chip);
- 
- 	lp55xx_unregister_sysfs(chip);
--	lp55xx_unregister_leds(led, chip);
- 	lp55xx_deinit_device(chip);
- 
- 	return 0;
-diff --git a/drivers/leds/leds-lp55xx-common.c b/drivers/leds/leds-lp55xx-common.c
-index 44ced02b49f9..882ef39e4965 100644
---- a/drivers/leds/leds-lp55xx-common.c
-+++ b/drivers/leds/leds-lp55xx-common.c
-@@ -181,7 +181,7 @@ static int lp55xx_init_led(struct lp55xx_led *led,
- 		led->cdev.name = name;
- 	}
- 
--	ret = led_classdev_register(dev, &led->cdev);
-+	ret = devm_led_classdev_register(dev, &led->cdev);
- 	if (ret) {
- 		dev_err(dev, "led register err: %d\n", ret);
- 		return ret;
-@@ -490,23 +490,10 @@ int lp55xx_register_leds(struct lp55xx_led *led, struct lp55xx_chip *chip)
- 	return 0;
- 
- err_init_led:
--	lp55xx_unregister_leds(led, chip);
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(lp55xx_register_leds);
- 
--void lp55xx_unregister_leds(struct lp55xx_led *led, struct lp55xx_chip *chip)
--{
--	int i;
--	struct lp55xx_led *each;
--
--	for (i = 0; i < chip->num_leds; i++) {
--		each = led + i;
--		led_classdev_unregister(&each->cdev);
--	}
--}
--EXPORT_SYMBOL_GPL(lp55xx_unregister_leds);
--
- int lp55xx_register_sysfs(struct lp55xx_chip *chip)
- {
- 	struct device *dev = &chip->cl->dev;
-diff --git a/drivers/leds/leds-lp55xx-common.h b/drivers/leds/leds-lp55xx-common.h
-index 783ed5103ce5..b9b1041e8143 100644
---- a/drivers/leds/leds-lp55xx-common.h
-+++ b/drivers/leds/leds-lp55xx-common.h
-@@ -189,8 +189,6 @@ extern void lp55xx_deinit_device(struct lp55xx_chip *chip);
- /* common LED class device functions */
- extern int lp55xx_register_leds(struct lp55xx_led *led,
- 				struct lp55xx_chip *chip);
--extern void lp55xx_unregister_leds(struct lp55xx_led *led,
--				struct lp55xx_chip *chip);
- 
- /* common device attributes functions */
- extern int lp55xx_register_sysfs(struct lp55xx_chip *chip);
-diff --git a/drivers/leds/leds-lp8501.c b/drivers/leds/leds-lp8501.c
-index 2638dbf0e8ac..a58019cdb8c3 100644
---- a/drivers/leds/leds-lp8501.c
-+++ b/drivers/leds/leds-lp8501.c
-@@ -344,19 +344,17 @@ static int lp8501_probe(struct i2c_client *client,
- 
- 	ret = lp55xx_register_leds(led, chip);
- 	if (ret)
--		goto err_register_leds;
-+		goto err_out;
- 
- 	ret = lp55xx_register_sysfs(chip);
- 	if (ret) {
- 		dev_err(&client->dev, "registering sysfs failed\n");
--		goto err_register_sysfs;
-+		goto err_out;
- 	}
- 
- 	return 0;
- 
--err_register_sysfs:
--	lp55xx_unregister_leds(led, chip);
--err_register_leds:
-+err_out:
- 	lp55xx_deinit_device(chip);
- err_init:
- 	return ret;
-@@ -369,7 +367,6 @@ static int lp8501_remove(struct i2c_client *client)
- 
- 	lp8501_stop_engine(chip);
- 	lp55xx_unregister_sysfs(chip);
--	lp55xx_unregister_leds(led, chip);
- 	lp55xx_deinit_device(chip);
- 
- 	return 0;
--- 
-2.26.2
+Well, I just emulated the behavior of create_ddw() and query_ddw() as
+both just pass the array instead of the token, even though they only
+use a single token. 
+
+I think it's to make the rest of the code independent of the design of
+the "ibm,ddw-applicable" array, and if it changes, only local changes
+on the functions will be needed.
+
+> Also, despite this particular file, the "pdn" name is usually used for
+> struct pci_dn (not device_node), let's keep it that way.
+
+Sure, I got confused for some time about this, as we have:
+static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn).
+but on *_ddw() we have "struct pci_dn *pdn".
+
+I will also add a patch that renames those 'struct device_node *pdn' to
+something like 'struct device_node *parent_dn'.
+
+> > +			      struct property *win)
+> >  {
+> >  	struct dynamic_dma_window_prop *dwp;
+> > -	struct property *win64;
+> > -	u32 ddw_avail[3];
+> >  	u64 liobn;
+> > -	int ret = 0;
+> > -
+> > -	ret = of_property_read_u32_array(np, "ibm,ddw-applicable",
+> > -					 &ddw_avail[0], 3);
+> > -
+> > -	win64 = of_find_property(np, DIRECT64_PROPNAME, NULL);
+> > -	if (!win64)
+> > -		return;
+> > -
+> > -	if (ret || win64->length < sizeof(*dwp))
+> > -		goto delprop;
+> > +	int ret;
+> >  
+> > -	dwp = win64->value;
+> > +	dwp = win->value;
+> >  	liobn = (u64)be32_to_cpu(dwp->liobn);
+> >  
+> >  	/* clear the whole window, note the arg is in kernel pages */
+> > @@ -793,24 +782,44 @@ static void remove_ddw(struct device_node *np, bool remove_prop)
+> >  		1ULL << (be32_to_cpu(dwp->window_shift) - PAGE_SHIFT), dwp);
+> >  	if (ret)
+> >  		pr_warn("%pOF failed to clear tces in window.\n",
+> > -			np);
+> > +			pdn);
+> >  	else
+> >  		pr_debug("%pOF successfully cleared tces in window.\n",
+> > -			 np);
+> > +			 pdn);
+> >  
+> >  	ret = rtas_call(ddw_avail[2], 1, 1, NULL, liobn);
+> >  	if (ret)
+> >  		pr_warn("%pOF: failed to remove direct window: rtas returned "
+> >  			"%d to ibm,remove-pe-dma-window(%x) %llx\n",
+> > -			np, ret, ddw_avail[2], liobn);
+> > +			pdn, ret, ddw_avail[2], liobn);
+> >  	else
+> >  		pr_debug("%pOF: successfully removed direct window: rtas returned "
+> >  			"%d to ibm,remove-pe-dma-window(%x) %llx\n",
+> > -			np, ret, ddw_avail[2], liobn);
+> > +			pdn, ret, ddw_avail[2], liobn);
+> > +}
+> > +
+> > +static void remove_ddw(struct device_node *np, bool remove_prop)
+> > +{
+> > +	struct property *win;
+> > +	u32 ddw_avail[3];
+> > +	int ret = 0;
+> > +
+> > +	ret = of_property_read_u32_array(np, "ibm,ddw-applicable",
+> > +					 &ddw_avail[0], 3);
+> > +	if (ret)
+> > +		return;
+> > +
+> > +	win = of_find_property(np, DIRECT64_PROPNAME, NULL);
+> > +	if (!win)
+> > +		return;
+> > +
+> > +	if (win->length >= sizeof(struct dynamic_dma_window_prop))
+> 
+> Any good reason not to make it "=="? Is there something optional or we
+> expect extension (which may not grow from the end but may add cells in
+> between). Thanks,
+
+Well, it comes from the old behavior of remove_ddw():
+-	if (ret || win64->length < sizeof(*dwp))
+-		goto delprop;
+
+As I reversed the logic from 'if (test) go out' to 'if (!test) do
+stuff', I also reversed (a < b) to !(a < b) => (a >= b).
+
+I have no problem changing that to '==', but it will produce a
+different behavior than before. 
+
+> 
+> 
+> > +		remove_dma_window(np, ddw_avail, win);
+> > +
+> > +	if (!remove_prop)
+> > +		return;
+> >  
+> > -delprop:
+> > -	if (remove_prop)
+> > -		ret = of_remove_property(np, win64);
+> > +	ret = of_remove_property(np, win);
+> >  	if (ret)
+> >  		pr_warn("%pOF: failed to remove direct window property: %d\n",
+> >  			np, ret);
+> > 
+
+Best regards,
+Leonardo
 
