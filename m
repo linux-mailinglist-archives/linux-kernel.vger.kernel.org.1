@@ -2,80 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 489CC203F5C
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F14DF203F64
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:45:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730369AbgFVSmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 14:42:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729605AbgFVSmT (ORCPT
+        id S1730156AbgFVSpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 14:45:09 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12286 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729605AbgFVSpI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 14:42:19 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B79A2C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:42:18 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id z9so20502754ljh.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 11:42:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9aX2e0KRVgCu7iM/YzQ9kW8CY4++NvSyG3ZKNDs8dBA=;
-        b=PkWyxtttxziJ7sl0J3cRRVqapHbtXt4kdu65zklL3qMNyj/kjW1Ul758pFfOfq7bc6
-         vIq4C4PwC6Rlt93ZeCqqhOxf9pF6Rgwm3KfctMtfhrPhEunuiOYxoQIodSkAGBAjfR8q
-         xzyUIeOenWufKMgp6iggI7PqKYqK1589MvKHc4dpa40qgOEfP0EvG9bdKk8YWo8Ob6He
-         FsMNnr04wAZwfZLSOPoNm3SjxtkYkPzfpdrxz13T+dinoILo/fLnB+dQRAE64Un2byUt
-         pHgq7o/3EyZRFF07xl3YG6cAcHeypZ4n5d37OtAYejFZr3KkIzRPD3Jv4UyRTNA6Yf3C
-         P43w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9aX2e0KRVgCu7iM/YzQ9kW8CY4++NvSyG3ZKNDs8dBA=;
-        b=qQgDhjXitktf4ijwWRK+5pqxXKQ9b4X0ZBxRkoKB5xnzNTkj9lsDkP3MaUkB4I9ppP
-         8nSsU3TVLavQFPq12+RZwR3ztmAW9QrQ5qEZNVdbMts+HYpFdyLDHvBLqQnB0GaHoL5u
-         Jnar8oWflwuh1UcIkcWXbUxuQSVFrszDDpHj9cPQmQPpXCKnfWtb+3Auf6nElkAp2Oje
-         jKGkHAiR+bbIbb/0bbhlUfBUKFPGBL0Bzp/hCG/g2yIKCT0F6L0IPpt8K+ao6EstRw32
-         ZthDMcwRdhk8tg9PMDDztzD8B7Z1pA+ESqVAIKVgLleW5NacN+/7ly91d6EKSRG+9EYz
-         HZIQ==
-X-Gm-Message-State: AOAM533RO3JLKB1+Vm3JHMLG2NhyHlfotw6D8LlBDKikI/hfuRf/bSyF
-        Z87REGS7DK+o33CitlMNJoQNeirjVf2pTAjpY7Rm7Q==
-X-Google-Smtp-Source: ABdhPJwRCFcJmK2mEPD2AfdCfvBCKYaTqaRO4KPnzwM344nnPLVu6HlrS309q7QQ41IdOgsCzHLKXZ2bpzLAvYJB3zg=
-X-Received: by 2002:a2e:960b:: with SMTP id v11mr9389585ljh.77.1592851336994;
- Mon, 22 Jun 2020 11:42:16 -0700 (PDT)
+        Mon, 22 Jun 2020 14:45:08 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ef0fc270000>; Mon, 22 Jun 2020 11:44:55 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 22 Jun 2020 11:45:08 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 22 Jun 2020 11:45:08 -0700
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 22 Jun
+ 2020 18:44:59 +0000
+Subject: Re: [PATCH 08/16] nouveau/hmm: fault one page at a time
+To:     Jason Gunthorpe <jgg@mellanox.com>
+CC:     <nouveau@lists.freedesktop.org>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jerome Glisse <jglisse@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>
+References: <20200619215649.32297-1-rcampbell@nvidia.com>
+ <20200619215649.32297-9-rcampbell@nvidia.com>
+ <20200622172233.GA2874652@mellanox.com>
+From:   Ralph Campbell <rcampbell@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <f529df0d-707c-cb67-ac12-356784e54ef8@nvidia.com>
+Date:   Mon, 22 Jun 2020 11:44:59 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-References: <20200608230654.828134-1-guro@fb.com> <20200608230654.828134-15-guro@fb.com>
-In-Reply-To: <20200608230654.828134-15-guro@fb.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 22 Jun 2020 11:42:05 -0700
-Message-ID: <CALvZod6Y5sfLQSpZov8TXx9Ybndq_vuNproG-2vM8trztFzk8A@mail.gmail.com>
-Subject: Re: [PATCH v6 14/19] mm: memcg/slab: remove memcg_kmem_get_cache()
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200622172233.GA2874652@mellanox.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1592851495; bh=edTvH4CLD4vItWTGQfSjP32xxPYuTSK47wQwLKtpC2o=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=Rw1MHPXFCHxs683/WECRpVcEISDyJHi11DYaKjk6Je+Hzsfmso1p97Ec8fYZM2+nM
+         A+Whgg2ThDXh90YDXJAKBJwzuaP2WzJlG8bwz/1/VnakrGPCT7sb/aLJ+IleyTzN4h
+         9jH1TmNccMQ6YU399/RKKkKq2dPSZhr92L71xYLncMKZOVOR48E1BIFUCpW11mwjOE
+         t+M8mWr0WSNGayrNmi4RHcERwZ+hLyLIlZZD5cjsTt043/R1L5B5ihX/JKG3DP2Aem
+         qU3pd3KpJt+qQyE2dumEr5djt4hCCHzY/BBBtQZeeGZ0+hG3skWe1a6K8PfsLkY2WT
+         4nfL0AaTfpmSw==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 8, 2020 at 4:07 PM Roman Gushchin <guro@fb.com> wrote:
->
-> The memcg_kmem_get_cache() function became really trivial,
-> so let's just inline it into the single call point:
-> memcg_slab_pre_alloc_hook().
->
-> It will make the code less bulky and can also help the compiler
-> to generate a better code.
->
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+On 6/22/20 10:22 AM, Jason Gunthorpe wrote:
+> On Fri, Jun 19, 2020 at 02:56:41PM -0700, Ralph Campbell wrote:
+>> The SVM page fault handler groups faults into a range of contiguous
+>> virtual addresses and requests hmm_range_fault() to populate and
+>> return the page frame number of system memory mapped by the CPU.
+>> In preparation for supporting large pages to be mapped by the GPU,
+>> process faults one page at a time. In addition, use the hmm_range
+>> default_flags to fix a corner case where the input hmm_pfns array
+>> is not reinitialized after hmm_range_fault() returns -EBUSY and must
+>> be called again.
+> 
+> Are you sure? hmm_range_fault is pretty expensive per call..
+> 
+> Jason
+> 
+
+Short answer is no, I'm not 100% sure.
+
+The GPU might generate a list of dozens or hundreds of fault entries in the
+same 4K page, or sequential 4K pages, or some other stride.
+A single 2MB mapping might satisfy all of those after calling hmm_range_fault()
+for the first fault entry and then skipping all the other fault entries
+that fall into that range. So mostly, I'm proposing this change because it
+makes handling the compound page case and -EBUSY case simpler.
+
+As for performance, that is hard to say because nouveau is missing policies
+for whether to migrate data to GPU memory on a fault or to map system memory.
+Since GPU memory is much higher bandwidth, overall performance
+can be much higher if the data is migrated to the GPU's local memory but
+currently, migration is only performed explicitly under application request
+(via OpenCL clEnqueueSVMMigrateMem() call).
+If the GPU is only accessing system memory a few times, then it can be faster
+to map system memory and not migrate the data so it depends on the application.
+Then there is thrashing to consider if the GPU and CPU are both trying to
+access the same pages...
