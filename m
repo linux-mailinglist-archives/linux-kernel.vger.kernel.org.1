@@ -2,152 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 177B3204399
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 444272043AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 00:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731126AbgFVW14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 18:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47018 "EHLO
+        id S1730982AbgFVWaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 18:30:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731096AbgFVW1u (ORCPT
+        with ESMTP id S1730785AbgFVWaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 18:27:50 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C0F0C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 15:27:50 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id x207so9073970pfc.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 15:27:50 -0700 (PDT)
+        Mon, 22 Jun 2020 18:30:46 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CFDAC061573;
+        Mon, 22 Jun 2020 15:30:46 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id ga4so6056411ejb.11;
+        Mon, 22 Jun 2020 15:30:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JI0wkwVCNwXzxyeXGfReWogDJ8TItG8DNO4AEUQrZHU=;
-        b=dXhvjxgsKaYVqQPZKIedonRiQSDzKyvMILv82JolQOk3j6k4i+l8LLeVQR0zMdWyMF
-         NV4K5H1nj1Fe6XqV4PoiAxy70HQrCiGYUADhUS3shyAnm3nLjJyCum+9jvjgntLPNBNg
-         s10y2Bg2EUA1xvV2Tk/e1CQRLU91b62R9aXyw=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=l7mIVPy1j/cnam/uUYY8bMLQFIQliSv4zuXgPQh246o=;
+        b=Pwsb9oeBu0j8MMFXMvO/QoeRRQK/fHcITcJW55FVfh1JJjng4fwYpvXU1IneQcrRW7
+         LD7dMNDGKuzrDMxgWhfTICpondbKKL9PAouUdCuORnS+zlIeZ6XEuWgr8onxlJfEH0/l
+         6tsDPxVue6v2ZKjiRW9yzXflx087sb2Rux6xT6Uk6DeVg3Mb/yCRUNQGmbC3mMDpCXJl
+         5whB7gWzJD8GUGjNF+1EQTJLnIE+e+sT+Cn1+tIj1hwBxZtBSa/lA2mUonbqbk4pntxt
+         RX/FDMCurmb8TBfHodG01tzffxKeFuKvAUUcI+ie1XGa6iSr705nfpEfm7/HUlGBNM3x
+         Tndg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JI0wkwVCNwXzxyeXGfReWogDJ8TItG8DNO4AEUQrZHU=;
-        b=lY+jhLAAkW0s5zaCgnzwY2ubhKuFHOMDJAgaF69emS62NIJ0r3KIb2fG1nBvU6Fq00
-         mbzI7KV15s0rTNzlSl1Q83WgN/L+fYvqxCNLgVijqzG9R3bDOWaJWx8LjQ0R5TAU33ww
-         eOONltEYqzehFRcuG45ESKYC9A+cnPqDEKZRuKfGjR5Pq/EEQFPD+RtToLHm134ua2EP
-         P4BKUKti086nloXdeBVKYNvn+AU0/lROhUkj4IL2OMAXwyl+m7LdIM0Vrf+fl4+ilGHT
-         OmIXAYiWF1sgX8LAbOSeoXq3ZSh97LUg++U7FNii/ZoOrHfCQ9djnsZNLEVlgQhZbXUE
-         V1xA==
-X-Gm-Message-State: AOAM530Lu3W4dOIzHXunjR6iaLI1hOK4iBryqxcS7ap6TWayFMj+zL48
-        LmOVMSUNer8kTtv5uEo05sssVw==
-X-Google-Smtp-Source: ABdhPJw5Vi6XCzy6KcvEhS8a1/qSQm1bAo70j7dQ+DEeYLhkCjl8U+R/8n9cXiPZR7Z/RPMXOKbyzA==
-X-Received: by 2002:a62:2743:: with SMTP id n64mr21722151pfn.163.1592864869777;
-        Mon, 22 Jun 2020 15:27:49 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id fv7sm453463pjb.41.2020.06.22.15.27.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 15:27:49 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 15:27:47 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Fangrui Song <maskray@google.com>
-Cc:     Borislav Petkov <bp@suse.de>, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] vmlinux.lds.h: Add .gnu.version* to DISCARDS
-Message-ID: <202006221524.CEB86E036B@keescook>
-References: <20200622205341.2987797-1-keescook@chromium.org>
- <20200622205341.2987797-2-keescook@chromium.org>
- <20200622220043.6j3vl6v7udmk2ppp@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=l7mIVPy1j/cnam/uUYY8bMLQFIQliSv4zuXgPQh246o=;
+        b=mbF/mP1HvnKZYCsOJLzZfHBJIoBhG5QHwQ88bq4c8yop0+HfIXf98Q0W6s9Mbqvbqz
+         ild5lOHz1intjEuayqdvzZenMVBHbyPtYmrR9EdQSq+w808+SEnrkonDlSG2y1Fv2SXN
+         4o4l7IQmGFEpHLUCtzrUz/Xl8unXJ3Cn0FD/K4/rGC7uG9zrM9M20sUDEWKAtX7iqOtB
+         EaCi0SOhPiDBWk4OTPPUdBNdEkAls0rbO7CZ+oHDk6QZw65enstAeh5Y6CPhMmimriMO
+         ObdiZD0cbyVsNLtm17tuN5VwVc323zoBj+XLbamYwrcQIO++adLDUfCpCGArZKXQtj5p
+         7Oyg==
+X-Gm-Message-State: AOAM531PWsmlzS+rZWganmgCgA0fYqZv8LbBlfI9Tpg2RXilPPQ1kvJ0
+        IA9FP4TP4Q1iVAVLn+XJNcsJqZHnu1hi4nH18J2M9Kvw
+X-Google-Smtp-Source: ABdhPJzJ4tbwUKrBs9zx94rndjWy/D6LNvS8e9C2V2fig1gCFONmOKtK4IzllJJ5OXm3iVgG0hOxsdz/9Rv4cfIk3HA=
+X-Received: by 2002:a17:906:fa13:: with SMTP id lo19mr9158149ejb.213.1592865044714;
+ Mon, 22 Jun 2020 15:30:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200622220043.6j3vl6v7udmk2ppp@google.com>
+References: <20200619215649.32297-1-rcampbell@nvidia.com> <20200619215649.32297-14-rcampbell@nvidia.com>
+ <F1872509-3B1F-4A8A-BFF5-E4D44E451920@nvidia.com> <b6eed976-c515-72d6-a7be-2296cab8f0d4@nvidia.com>
+ <C7BEB563-3698-442C-A188-1B66CBE4CF63@nvidia.com> <a5f502f8-70cd-014b-8066-bbaeb8024a29@nvidia.com>
+ <4C364E23-0716-4D59-85A1-0C293B86BC2C@nvidia.com>
+In-Reply-To: <4C364E23-0716-4D59-85A1-0C293B86BC2C@nvidia.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 22 Jun 2020 15:30:18 -0700
+Message-ID: <CAHbLzkqe50+KUsRH92O4Be2PjuwAYGw9nK+d-73syxi2Xnf9-Q@mail.gmail.com>
+Subject: Re: [PATCH 13/16] mm: support THP migration to device private memory
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Ralph Campbell <rcampbell@nvidia.com>,
+        nouveau@lists.freedesktop.org, linux-rdma@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>,
+        "Huang, Ying" <ying.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 03:00:43PM -0700, Fangrui Song wrote:
-> On 2020-06-22, Kees Cook wrote:
-> > For vmlinux linking, no architecture uses the .gnu.version* section,
-> > so remove it via the common DISCARDS macro in preparation for adding
-> > --orphan-handling=warn more widely.
-> > 
-> > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > ---
-> > include/asm-generic/vmlinux.lds.h | 1 +
-> > 1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-> > index db600ef218d7..6fbe9ed10cdb 100644
-> > --- a/include/asm-generic/vmlinux.lds.h
-> > +++ b/include/asm-generic/vmlinux.lds.h
-> > @@ -934,6 +934,7 @@
-> > 	*(.discard)							\
-> > 	*(.discard.*)							\
-> > 	*(.modinfo)							\
-> > +	*(.gnu.version*)						\
-> > 	}
-> > 
-> > /**
-> > -- 
-> > 2.25.1
-> 
-> I wonder what lead to .gnu.version{,_d,_r} sections in the kernel.
+On Mon, Jun 22, 2020 at 2:53 PM Zi Yan <ziy@nvidia.com> wrote:
+>
+> On 22 Jun 2020, at 17:31, Ralph Campbell wrote:
+>
+> > On 6/22/20 1:10 PM, Zi Yan wrote:
+> >> On 22 Jun 2020, at 15:36, Ralph Campbell wrote:
+> >>
+> >>> On 6/21/20 4:20 PM, Zi Yan wrote:
+> >>>> On 19 Jun 2020, at 17:56, Ralph Campbell wrote:
+> >>>>
+> >>>>> Support transparent huge page migration to ZONE_DEVICE private memo=
+ry.
+> >>>>> A new flag (MIGRATE_PFN_COMPOUND) is added to the input PFN array t=
+o
+> >>>>> indicate the huge page was fully mapped by the CPU.
+> >>>>> Export prep_compound_page() so that device drivers can create huge
+> >>>>> device private pages after calling memremap_pages().
+> >>>>>
+> >>>>> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+> >>>>> ---
+> >>>>>    include/linux/migrate.h |   1 +
+> >>>>>    include/linux/mm.h      |   1 +
+> >>>>>    mm/huge_memory.c        |  30 ++++--
+> >>>>>    mm/internal.h           |   1 -
+> >>>>>    mm/memory.c             |  10 +-
+> >>>>>    mm/memremap.c           |   9 +-
+> >>>>>    mm/migrate.c            | 226 ++++++++++++++++++++++++++++++++--=
+------
+> >>>>>    mm/page_alloc.c         |   1 +
+> >>>>>    8 files changed, 226 insertions(+), 53 deletions(-)
+> >>>>>
+> >>>>> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+> >>>>> index 3e546cbf03dd..f6a64965c8bd 100644
+> >>>>> --- a/include/linux/migrate.h
+> >>>>> +++ b/include/linux/migrate.h
+> >>>>> @@ -166,6 +166,7 @@ static inline int migrate_misplaced_transhuge_p=
+age(struct mm_struct *mm,
+> >>>>>    #define MIGRATE_PFN_MIGRATE    (1UL << 1)
+> >>>>>    #define MIGRATE_PFN_LOCKED     (1UL << 2)
+> >>>>>    #define MIGRATE_PFN_WRITE      (1UL << 3)
+> >>>>> +#define MIGRATE_PFN_COMPOUND     (1UL << 4)
+> >>>>>    #define MIGRATE_PFN_SHIFT      6
+> >>>>>
+> >>>>>    static inline struct page *migrate_pfn_to_page(unsigned long mpf=
+n)
+> >>>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> >>>>> index dc7b87310c10..020b9dd3cddb 100644
+> >>>>> --- a/include/linux/mm.h
+> >>>>> +++ b/include/linux/mm.h
+> >>>>> @@ -932,6 +932,7 @@ static inline unsigned int page_shift(struct pa=
+ge *page)
+> >>>>>    }
+> >>>>>
+> >>>>>    void free_compound_page(struct page *page);
+> >>>>> +void prep_compound_page(struct page *page, unsigned int order);
+> >>>>>
+> >>>>>    #ifdef CONFIG_MMU
+> >>>>>    /*
+> >>>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> >>>>> index 78c84bee7e29..25d95f7b1e98 100644
+> >>>>> --- a/mm/huge_memory.c
+> >>>>> +++ b/mm/huge_memory.c
+> >>>>> @@ -1663,23 +1663,35 @@ int zap_huge_pmd(struct mmu_gather *tlb, st=
+ruct vm_area_struct *vma,
+> >>>>>           } else {
+> >>>>>                   struct page *page =3D NULL;
+> >>>>>                   int flush_needed =3D 1;
+> >>>>> +         bool is_anon =3D false;
+> >>>>>
+> >>>>>                   if (pmd_present(orig_pmd)) {
+> >>>>>                           page =3D pmd_page(orig_pmd);
+> >>>>> +                 is_anon =3D PageAnon(page);
+> >>>>>                           page_remove_rmap(page, true);
+> >>>>>                           VM_BUG_ON_PAGE(page_mapcount(page) < 0, p=
+age);
+> >>>>>                           VM_BUG_ON_PAGE(!PageHead(page), page);
+> >>>>>                   } else if (thp_migration_supported()) {
+> >>>>>                           swp_entry_t entry;
+> >>>>>
+> >>>>> -                 VM_BUG_ON(!is_pmd_migration_entry(orig_pmd));
+> >>>>>                           entry =3D pmd_to_swp_entry(orig_pmd);
+> >>>>> -                 page =3D pfn_to_page(swp_offset(entry));
+> >>>>> +                 if (is_device_private_entry(entry)) {
+> >>>>> +                         page =3D device_private_entry_to_page(ent=
+ry);
+> >>>>> +                         is_anon =3D PageAnon(page);
+> >>>>> +                         page_remove_rmap(page, true);
+> >>>>> +                         VM_BUG_ON_PAGE(page_mapcount(page) < 0, p=
+age);
+> >>>>> +                         VM_BUG_ON_PAGE(!PageHead(page), page);
+> >>>>> +                         put_page(page);
+> >>>>
+> >>>> Why do you hide this code behind thp_migration_supported()? It seems=
+ that you just need
+> >>>> pmd swap entry not pmd migration entry. Also the condition is not co=
+nsistent with the code
+> >>>> in __handle_mm_fault(), in which you handle is_device_private_entry(=
+) directly without
+> >>>> checking thp_migration_support().
+> >>>
+> >>> Good point, I think "else if (thp_migration_supported())" should be
+> >>> "else if (is_pmd_migration_entry(orig_pmd))" since if the PMD *is*
+> >>> a device private or migration entry, then it should be handled and th=
+e
+> >>> VM_BUG_ON() should be that thp_migration_supported() is true
+> >>> (or maybe remove the VM_BUG_ON?).
+> >>
+> >> I disagree. A device private entry is independent of a PMD migration e=
+ntry, since a device private
+> >> entry is just a swap entry, which is available when CONFIG_TRANSPARENT=
+_HUGEPAGE. So for architectures
+> >> support THP but not THP migration (like ARM64), your code should still=
+ work.
+> >
+> > I'll fix this up for v2 and you can double check me.
+>
+> Sure.
+>
+> >
+> >> I would suggest you to check all the use of is_swap_pmd() and make sur=
+e the code
+> >> can handle is_device_private_entry().
+> >
+> > OK.
+> >
+> >> For new device private code, you might need to guard it either statica=
+lly or dynamically in case
+> >> CONFIG_DEVICE_PRIVATE is disabled. Potentially, you would like to make=
+ sure a system without
+> >> CONFIG_DEVICE_PRIVATE will not see is_device_private_entry() =3D=3D tr=
+ue and give errors when it does.
+> >
+> > I have compiled and run with CONFIG_DEVICE_PRIVATE off but I can test m=
+ore combinations of
+> > config settings.
+>
+> Thanks.
+>
+> >
+> >>>
+> >>>> Do we need to support split_huge_pmd() if a page is migrated to devi=
+ce? Any new code
+> >>>> needed in split_huge_pmd()?
+> >>>
+> >>> I was thinking that any CPU usage of the device private page would ca=
+use it to be
+> >>> migrated back to system memory as a whole PMD/PUD page but I'll doubl=
+e check.
+> >>> At least there should be a check that the page isn't a device private=
+ page.
+> >>
+> >> Well, that depends. If we can allocate a THP on CPU memory, we can mig=
+rate the whole page back.
+> >> But if no THP is allocated due to low on free memory or memory fragmen=
+tation, I think you
+> >> might need a fallback plan, either splitting the device private page a=
+nd migrating smaller
+> >> pages instead or reclaiming CPU memory until you get a THP. IMHO, the =
+former might be preferred,
+> >> since the latter might cost a lot of CPU cycles but still gives no THP=
+ after all.
+> >
+> > Sounds reasonable. I'll work on adding the fallback path for v2.
+>
+> Ying(cc=E2=80=99d) developed the code to swapout and swapin THP in one pi=
+ece: https://lore.kernel.org/linux-mm/20181207054122.27822-1-ying.huang@int=
+el.com/.
+> I am not sure whether the patchset makes into mainstream or not. It could=
+ be a good technical reference
+> for swapping in device private pages, although swapping in pages from dis=
+k and from device private
+> memory are two different scenarios.
+>
+> Since the device private memory swapin impacts core mm performance, we mi=
+ght want to discuss your patches
+> with more people, like the ones from Ying=E2=80=99s patchset, in the next=
+ version.
 
-This looks like a bug in bfd.ld? There are no versioned symbols in any
-of the input files (and no output section either!)
+I believe Ying will give you more insights about how THP swap works.
 
-The link command is:
-$ ld -m elf_x86_64 --no-ld-generated-unwind-info -z noreloc-overflow -pie \
---no-dynamic-linker   --orphan-handling=warn -T \
-arch/x86/boot/compressed/vmlinux.lds \
-arch/x86/boot/compressed/kernel_info.o \
-arch/x86/boot/compressed/head_64.o arch/x86/boot/compressed/misc.o \
-arch/x86/boot/compressed/string.o arch/x86/boot/compressed/cmdline.o \
-arch/x86/boot/compressed/error.o arch/x86/boot/compressed/piggy.o \
-arch/x86/boot/compressed/cpuflags.o \
-arch/x86/boot/compressed/early_serial_console.o \
-arch/x86/boot/compressed/kaslr.o arch/x86/boot/compressed/kaslr_64.o \
-arch/x86/boot/compressed/mem_encrypt.o \
-arch/x86/boot/compressed/pgtable_64.o arch/x86/boot/compressed/acpi.o \
--o arch/x86/boot/compressed/vmlinux
+But, IMHO device memory migration (migrate to system memory) seems
+like THP CoW more than swap.
 
-None of the inputs have the section:
+When migrating in:
 
-$ for i in arch/x86/boot/compressed/kernel_info.o \
-arch/x86/boot/compressed/head_64.o arch/x86/boot/compressed/misc.o \
-arch/x86/boot/compressed/string.o arch/x86/boot/compressed/cmdline.o \
-arch/x86/boot/compressed/error.o arch/x86/boot/compressed/piggy.o \
-arch/x86/boot/compressed/cpuflags.o \
-arch/x86/boot/compressed/early_serial_console.o \
-arch/x86/boot/compressed/kaslr.o arch/x86/boot/compressed/kaslr_64.o \
-arch/x86/boot/compressed/mem_encrypt.o \
-arch/x86/boot/compressed/pgtable_64.o arch/x86/boot/compressed/acpi.o \
-; do echo -n $i": "; readelf -Vs $i | grep 'version'; done
-arch/x86/boot/compressed/kernel_info.o: No version information found in this file.
-arch/x86/boot/compressed/head_64.o: No version information found in this file.
-arch/x86/boot/compressed/misc.o: No version information found in this file.
-arch/x86/boot/compressed/string.o: No version information found in this file.
-arch/x86/boot/compressed/cmdline.o: No version information found in this file.
-arch/x86/boot/compressed/error.o: No version information found in this file.
-arch/x86/boot/compressed/piggy.o: No version information found in this file.
-arch/x86/boot/compressed/cpuflags.o: No version information found in this file.
-arch/x86/boot/compressed/early_serial_console.o: No version information found in this file.
-arch/x86/boot/compressed/kaslr.o: No version information found in this file.
-arch/x86/boot/compressed/kaslr_64.o: No version information found in this file.
-arch/x86/boot/compressed/mem_encrypt.o: No version information found in this file.
-arch/x86/boot/compressed/pgtable_64.o: No version information found in this file.
-arch/x86/boot/compressed/acpi.o: No version information found in this file.
-
-And it's not in the output:
-
-$ readelf -Vs arch/x86/boot/compressed/vmlinux | grep version
-No version information found in this file.
-
-So... for the kernel we need to silence it right now.
-
--- 
-Kees Cook
+>
+>
+>
+> =E2=80=94
+> Best Regards,
+> Yan Zi
