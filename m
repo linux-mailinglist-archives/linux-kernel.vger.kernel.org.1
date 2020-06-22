@@ -2,100 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA713203C40
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5583F203C49
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729856AbgFVQJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 12:09:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729390AbgFVQJP (ORCPT
+        id S1729568AbgFVQMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 12:12:03 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:26402 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729275AbgFVQMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 12:09:15 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DD6C061573;
-        Mon, 22 Jun 2020 09:09:14 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id 80so4140978qko.7;
-        Mon, 22 Jun 2020 09:09:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=XMziTAReggV8cPAuUjcDsW9X5b6xE1JpK9TNborUBOU=;
-        b=MJhG8orPav1AYK2ETOPNu4cBBY4tMHZVI/mufHGSHxANJrEwJoAsNA/0nDzK50VJ0m
-         nOGHG5uR1AL7PAILE3fBokX3QWxK5USDt+PNZrSMkGOqrDSHfdP7D7nqX21BeBq/X+vJ
-         09OTdcMJ6FGLISfTaCz3OamgoCWCJ+f2Euc0Fb78/qKRUeQKKPospZhPMTjPM4h3yJ7L
-         EdyObI4OScXAjCD9h8FAl59zF8wqnZkND516f9tZ24+NfWkvDgF/0vTb7Qev2hDtXN0j
-         Q4wJQmWjhy1GulrO6+ZBVy+muwvq1dJIJpclDQLTLthByeVR5CESWm/IUk+uyg+Bs8eQ
-         w7hw==
+        Mon, 22 Jun 2020 12:12:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592842320;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u9CuuDZWez1gPD7/EQaGB6uwPoIx9m3Z+Jr1eQeEOo4=;
+        b=OqG/YNjvJelR3an6wmWgRM/jTG+mG+3Q7x3IIzg/0mQg2aF6Fq0HlYvOJicBR5HIvrwsfr
+        eo6YS54kbd+kH1HnNP5qNA7p0efawqR7H179wLDw9VWML5wii2KptQae0rGDhwmycHxvwL
+        BTGNxizRF+jZ0fEffbR52h0LUAFsziE=
+Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
+ [209.85.160.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-463-Iqzdi2DYNmOKAnY7037Xhw-1; Mon, 22 Jun 2020 12:11:58 -0400
+X-MC-Unique: Iqzdi2DYNmOKAnY7037Xhw-1
+Received: by mail-qt1-f199.google.com with SMTP id i5so2884428qtw.3
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 09:11:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=XMziTAReggV8cPAuUjcDsW9X5b6xE1JpK9TNborUBOU=;
-        b=lJJir9p4AKxUToA1FSKy65bfaPMdop61y5lkgXpWarAT5Rbg+dEup6qw5g6Eahch7R
-         2MbaJ9ww7wpJvIfmNDxpYFi/SlowKPgpKzXvrSG6ivVWCBAh5Qhm78YdKGnTEZ0NwiBy
-         GUtm4OwOtyvyFBEkzYGd2lDWepxPNwdYbEAoiOKsqCFdpx9bdOajfIBcEJ62N5V+2DbW
-         YePYl+9iuNY/dsSpO+KxlX4Riv8OSslia92LfsAy6+s6YKR7Cbmhp05TAsJjrr2IUmd2
-         SRPu7o7GAytECJ+ewiwUKMBo9er4lMQ9hE4wTHWE90H0N9mYlP8NZAoo3IO4I5gG6C5/
-         wlyg==
-X-Gm-Message-State: AOAM533zqWVIeIB03HA+RByYgYR8s3KUOvul7kOpL/DtiqPsiDcX0azy
-        /soCm1GuK97Ui7/xQBCWkS0dkmMkRXU=
-X-Google-Smtp-Source: ABdhPJw8IGp1XM6bglkDUhuZK0Gi9PEqdX+50SW/65k6xMxLuOOWrKHawZTz1THzehYG4YmYCvywrg==
-X-Received: by 2002:a05:620a:810:: with SMTP id s16mr16003595qks.360.1592842153712;
-        Mon, 22 Jun 2020 09:09:13 -0700 (PDT)
-Received: from [192.168.1.46] (c-73-88-245-53.hsd1.tn.comcast.net. [73.88.245.53])
-        by smtp.gmail.com with ESMTPSA id s42sm15774713qtk.14.2020.06.22.09.09.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jun 2020 09:09:12 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] mfd: core: Make a best effort attempt to match
- devices with the correct of_nodes
-To:     Lee Jones <lee.jones@linaro.org>, andy.shevchenko@gmail.com,
-        michael@walle.cc, robh+dt@kernel.org, broonie@kernel.org,
-        devicetree@vger.kernel.org, linus.walleij@linaro.org,
-        linux@roeck-us.net, andriy.shevchenko@linux.intel.com,
-        robin.murphy@arm.com, gregkh@linuxfoundation.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20200611191002.2256570-1-lee.jones@linaro.org>
- <20200622080913.GO954398@dell>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <3aa3c8ad-4e6a-9b9b-be58-bd9da5a0fb0a@gmail.com>
-Date:   Mon, 22 Jun 2020 11:09:10 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=u9CuuDZWez1gPD7/EQaGB6uwPoIx9m3Z+Jr1eQeEOo4=;
+        b=JeUYRaOiBHbOeskWhe/E/1gNxHm6WGNXksa2V/c4XnoM61u2s/Xgfjf4r7IHXf/b8/
+         4lgcfygPqRbeTPDQb+FNc6cm5MEBhqvM5zrDayDfnR23yYR6TcX23/Rd/j4QnR/pameC
+         VYIGdV2tqmtmA8bcnGozH0nZgo0gJQkL3CfTeb6zCSJhBnG95oGw2cbIqqTfFFvySFlQ
+         ponQs/7tt+Ncj676TXG+hnpbvqQu2Iq6HDHSUAsff2j23GoPSX2hBey5fXNr4Dua9tdF
+         8zC3Bn9EMyIMojgZ6YM+CDP+coiN4+2YfZ+xTvCjy+Xo+V6SiTCnpNjuoG/LEOA1/2+K
+         eBkQ==
+X-Gm-Message-State: AOAM532Y0meadEeEM7k6MlMqqmRvgc/bS4ml7cfRVCzYMP5ZX++WY99I
+        S9BQmnJZfm2n2cNwFYNq0u+mMxC22DgV1hXTusB6td5jEC9ZbkC6mYqu/nzM/uFeOhPtYxEQySd
+        EXPGuxRF1+rdQjL/rA6KyIpH0WlXwkjrognXXpHlb
+X-Received: by 2002:ac8:6897:: with SMTP id m23mr17079716qtq.379.1592842318276;
+        Mon, 22 Jun 2020 09:11:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyifxHd4I0K380+T02Us257PwSC14VpREUv7M9piQBBjhpblxB2co9TPhLyGBKM46r+UB9UoruDIOuGXxRi6q8=
+X-Received: by 2002:ac8:6897:: with SMTP id m23mr17079684qtq.379.1592842317963;
+ Mon, 22 Jun 2020 09:11:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200622080913.GO954398@dell>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200611113404.17810-1-mst@redhat.com> <20200611113404.17810-3-mst@redhat.com>
+ <20200611152257.GA1798@char.us.oracle.com> <CAJaqyWdwXMX0JGhmz6soH2ZLNdaH6HEdpBM8ozZzX9WUu8jGoQ@mail.gmail.com>
+ <CAJaqyWdwgy0fmReOgLfL4dAv-E+5k_7z3d9M+vHqt0aO2SmOFg@mail.gmail.com> <20200622114622-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20200622114622-mutt-send-email-mst@kernel.org>
+From:   Eugenio Perez Martin <eperezma@redhat.com>
+Date:   Mon, 22 Jun 2020 18:11:21 +0200
+Message-ID: <CAJaqyWfrf94Gc-DMaXO+f=xC8eD3DVCD9i+x1dOm5W2vUwOcGQ@mail.gmail.com>
+Subject: Re: [PATCH RFC v8 02/11] vhost: use batched get_vq_desc version
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        Jason Wang <jasowang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-22 03:09, Lee Jones wrote:
-> On Thu, 11 Jun 2020, Lee Jones wrote:
-> 
->> Currently, when a child platform device (sometimes referred to as a
->> sub-device) is registered via the Multi-Functional Device (MFD) API,
->> the framework attempts to match the newly registered platform device
->> with its associated Device Tree (OF) node.  Until now, the device has
->> been allocated the first node found with an identical OF compatible
->> string.  Unfortunately, if there are, say for example '3' devices
->> which are to be handled by the same driver and therefore have the same
->> compatible string, each of them will be allocated a pointer to the
->> *first* node.
-> 
-> Any more reviews/comments before I apply this?
-> 
+On Mon, Jun 22, 2020 at 5:55 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Fri, Jun 19, 2020 at 08:07:57PM +0200, Eugenio Perez Martin wrote:
+> > On Mon, Jun 15, 2020 at 2:28 PM Eugenio Perez Martin
+> > <eperezma@redhat.com> wrote:
+> > >
+> > > On Thu, Jun 11, 2020 at 5:22 PM Konrad Rzeszutek Wilk
+> > > <konrad.wilk@oracle.com> wrote:
+> > > >
+> > > > On Thu, Jun 11, 2020 at 07:34:19AM -0400, Michael S. Tsirkin wrote:
+> > > > > As testing shows no performance change, switch to that now.
+> > > >
+> > > > What kind of testing? 100GiB? Low latency?
+> > > >
+> > >
+> > > Hi Konrad.
+> > >
+> > > I tested this version of the patch:
+> > > https://lkml.org/lkml/2019/10/13/42
+> > >
+> > > It was tested for throughput with DPDK's testpmd (as described in
+> > > http://doc.dpdk.org/guides/howto/virtio_user_as_exceptional_path.html)
+> > > and kernel pktgen. No latency tests were performed by me. Maybe it is
+> > > interesting to perform a latency test or just a different set of tests
+> > > over a recent version.
+> > >
+> > > Thanks!
+> >
+> > I have repeated the tests with v9, and results are a little bit different:
+> > * If I test opening it with testpmd, I see no change between versions
+>
+>
+> OK that is testpmd on guest, right? And vhost-net on the host?
+>
 
-Yes, outstanding issues, so please do not apply.
+Hi Michael.
 
-Shortly after you sent this email, you sent a reply to one of my
-earlier emails in this thread.  I have replied to that email,
-so we still have an ongoing conversation where we are trying
-to resolve my understanding of the problem and whether the
-solution is appropriate.
+No, sorry, as described in
+http://doc.dpdk.org/guides/howto/virtio_user_as_exceptional_path.html.
+But I could add to test it in the guest too.
 
--Frank
+These kinds of raw packets "bursts" do not show performance
+differences, but I could test deeper if you think it would be worth
+it.
+
+> > * If I forward packets between two vhost-net interfaces in the guest
+> > using a linux bridge in the host:
+>
+> And here I guess you mean virtio-net in the guest kernel?
+
+Yes, sorry: Two virtio-net interfaces connected with a linux bridge in
+the host. More precisely:
+* Adding one of the interfaces to another namespace, assigning it an
+IP, and starting netserver there.
+* Assign another IP in the range manually to the other virtual net
+interface, and start the desired test there.
+
+If you think it would be better to perform then differently please let me know.
+
+>
+> >   - netperf UDP_STREAM shows a performance increase of 1.8, almost
+> > doubling performance. This gets lower as frame size increase.
+> >   - rests of the test goes noticeably worse: UDP_RR goes from ~6347
+> > transactions/sec to 5830
+>
+> OK so it seems plausible that we still have a bug where an interrupt
+> is delayed. That is the main difference between pmd and virtio.
+> Let's try disabling event index, and see what happens - that's
+> the trickiest part of interrupts.
+>
+
+Got it, will get back with the results.
+
+Thank you very much!
+
+>
+>
+> >   - TCP_STREAM goes from ~10.7 gbps to ~7Gbps
+> >   - TCP_RR from 6223.64 transactions/sec to 5739.44
+>
+
