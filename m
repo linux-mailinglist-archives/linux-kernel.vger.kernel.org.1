@@ -2,170 +2,695 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77F7B203159
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9106F20317C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725928AbgFVIFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 04:05:21 -0400
-Received: from mx0b-00128a01.pphosted.com ([148.163.139.77]:1120 "EHLO
-        mx0b-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725883AbgFVIFT (ORCPT
+        id S1726384AbgFVII1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 04:08:27 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:44998 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726000AbgFVIIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 04:05:19 -0400
-Received: from pps.filterd (m0167090.ppops.net [127.0.0.1])
-        by mx0b-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05M7xtHq007586;
-        Mon, 22 Jun 2020 04:05:16 -0400
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2059.outbound.protection.outlook.com [104.47.36.59])
-        by mx0b-00128a01.pphosted.com with ESMTP id 31sf37d1a3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Jun 2020 04:05:16 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=L/zULQzpGCj7RIxbI17CA4musGQQtRXtPsoYTScjE69WmcqUxvqqbwvKTKS/uymsJs4S6l5bn1Ajarhhupk+sdKK+jUxKCbVJHad1/mIgfeb0UUtz6eW860M4d5pVDz9OjzOPequrGnYjNpXztm9xRJ+ER3wKcEzWbHjvOMHwFN0tgU0EhjUEcE35YZkMnAHowChJUDSdXG/70u042UzK5rPiKHUEHGuH3PgGfHw5gyzClud3qGWcK3b9FRADHxEaV6ffFsb2H/eIC7kwgCCVsS4tXD85OO8OoRt3BPdUIbUNNsIxy7mBRuJCZjQ53qRI6gNhFcZRq1WBcKFUJk3Lw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xToXUgyZdzxOhFpo35qjKYJdRTzrr63ednNkgH5AtiI=;
- b=LFdPxgwoBf31rc7D9UVmPlOvJcWM9HgTD1MbAwEzs+tOGzToCN+uoJDV2o68y8LCryII2r6r/UsinCbdrxUtid8+n0lskv+Y58D7A3UDyaonXUNFp/6aWwt0YKxQeyOTh54shn2HlAHYMBGcqy+Z/+qPMHe9aeGzo6bln5QbagAbGZHiDOfEVo4ZOT7YtDu5mi0n0S0kL6FZNu1IGMsXg5S4B3YrFU6ajN/qWEVoLo/lkERq32hIj68phKgGhQv4jU9RgDdAwLD1t7TI6qtq1tLBRfSe6B8S7K514Mq4HJjsjudpsQT8bPmo/YduUu4isnzULQ6Vnb/VItw1nSoB+A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
- dkim=pass header.d=analog.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=analog.onmicrosoft.com; s=selector2-analog-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=xToXUgyZdzxOhFpo35qjKYJdRTzrr63ednNkgH5AtiI=;
- b=KPlFe5eNmE+R06n6+4vBFDpzg4gsHjCVGTTLWaPPvXEwNT1zA0oyLUTkcuJxcRzRWgc4wqdLOeKhIOHXm/Pfl7sXUI8pqFO+QDXMAL+aEJXFcllg52nWn5nL05aML2DSRNTdNqg+2YVPavSKHnQ2w9IU/KeyFmuS7JmfrK+ZQkU=
-Received: from MWHPR03MB3199.namprd03.prod.outlook.com (2603:10b6:301:3f::29)
- by MWHPR03MB3087.namprd03.prod.outlook.com (2603:10b6:301:46::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.23; Mon, 22 Jun
- 2020 08:05:13 +0000
-Received: from MWHPR03MB3199.namprd03.prod.outlook.com
- ([fe80::41d5:c2a2:5c61:404b]) by MWHPR03MB3199.namprd03.prod.outlook.com
- ([fe80::41d5:c2a2:5c61:404b%5]) with mapi id 15.20.3109.026; Mon, 22 Jun 2020
- 08:05:13 +0000
-From:   "Berghe, Darius" <Darius.Berghe@analog.com>
-To:     "jic23@kernel.org" <jic23@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>
-Subject: Re: [PATCH v1 3/3] iio:adc:ltc2471: add dt binding yaml
-Thread-Topic: [PATCH v1 3/3] iio:adc:ltc2471: add dt binding yaml
-Thread-Index: AQHWRxfiZTDXvULAjUShILSZOmnVSKjkSYUA
-Date:   Mon, 22 Jun 2020 08:05:13 +0000
-Message-ID: <053ba6af36636cb5b87c885ef1c6e157405e4412.camel@analog.com>
-References: <20200617133523.58158-1-darius.berghe@analog.com>
-         <20200617133523.58158-3-darius.berghe@analog.com>
-         <20200620163124.29d9cd38@archlinux>
-In-Reply-To: <20200620163124.29d9cd38@archlinux>
-Accept-Language: ro-RO, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=analog.com;
-x-originating-ip: [137.71.226.54]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 62ebbe47-09dd-4131-e20e-08d81682fde4
-x-ms-traffictypediagnostic: MWHPR03MB3087:
-x-microsoft-antispam-prvs: <MWHPR03MB30876EF373AC2E62210B30C696970@MWHPR03MB3087.namprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 0442E569BC
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: C0AjcqbczQgniVbMpncg2QTblIB9zFqfT19UMEFMofa4UTdAyN6Mb+qRxxTvPITm6h6k+toR/2oiqb/6sm/r+WO0P9aP6Ak/L1sf4L7SHjDD/QvzMxhfiU0kIMCgmwaCv2noV6E6K1NY+criK3C6SjhCTBhlBDemxyAItw4u1UNlq3prIYAmJ33BZpqrYVBywSMLl0xCrAQwrbewrZNWi5Gkumb9nBJuKtU1pAuo0C4oZp0U73aYohmgVBCfSpOFBLBXzw+28ktmKxgdQVJGklY7XvpiTiuuXnyKyL/OEiTOZCXk0emM7Odf7DwPSohB69R94WBvryCEETOlb8mjFWd9BUHn1jZM+gYMmdSbbH0Y0twLPcSARagoofJ9HAWTeFDLCwlmwt+TiBFlHnJP7A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR03MB3199.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(136003)(39860400002)(346002)(376002)(396003)(83380400001)(66476007)(2906002)(6512007)(66446008)(64756008)(66556008)(8676002)(966005)(86362001)(478600001)(66946007)(76116006)(8936002)(91956017)(2616005)(5660300002)(36756003)(6486002)(71200400001)(6916009)(316002)(186003)(4326008)(26005)(54906003)(6506007);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: xM/3u/zOKPm4CjNxVX65oM6CxZYLBMRVrVk/VfkfviHvWOi6UJO4DFbfcUp9uVJaqOl6bXPllQszWao++/mwg/8gTQKhODtOiLxHt9XYBL6DE7h7V0iLBG3yX4KFsc1f6YrSBYmDgzQRWCCHEGu0mmDD1dWlfYi3LMjqQBLVO5Xceub35FIVSJBkfwEhlnyYBVtPoAnRF0dP/qFwTuIopdTkoP0Bx41XuoqNULo9eQwGnJbEZ78vctct8z9o34lUEHxU5PlXVn4A8C2eLYGwwjUiQBfBn30jRdjB2B9N/Y8dS3GK57PNwQMclI3Ib3mSDvmnJ+d8fH5kMlvnCF53hVjtHcRpXVtxPpTnk2DH01t8BEMHM3Ln/SGkOIbsL4TQJtmTw+7AnuHK2p0fduR7dasyt1177OkLfG6d7gfbyXGPcoL5hHfZ76/sfbDVSFUaBa+sM3q80fOYGJB5pr05/AXE9A+/kQzve12rJEuOViY=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B77727A003F96648A21EF3C0CD1D51AD@namprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Mon, 22 Jun 2020 04:08:21 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id AAE3720021;
+        Mon, 22 Jun 2020 10:08:03 +0200 (CEST)
+Date:   Mon, 22 Jun 2020 10:08:02 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     =?utf-8?Q?Ond=C5=99ej?= Jirman <megous@megous.com>,
+        linux-sunxi@googlegroups.com,
+        Thierry Reding <thierry.reding@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Icenowy Zheng <icenowy@aosc.io>, devicetree@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>,
+        Bhushan Shah <bshah@kde.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Luca Weiss <luca@z3ntu.xyz>,
+        Martijn Braam <martijn@brixit.nl>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v4 3/5] drm: panel: Add Xingbangda XBD599 panel (ST7703
+ controller)
+Message-ID: <20200622080802.GA650963@ravnborg.org>
+References: <20200617003209.670819-1-megous@megous.com>
+ <20200617003209.670819-4-megous@megous.com>
+ <20200620212529.GB74146@ravnborg.org>
+ <20200620223010.fqjwijiixxkewk3p@core.my.home>
 MIME-Version: 1.0
-X-OriginatorOrg: analog.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 62ebbe47-09dd-4131-e20e-08d81682fde4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jun 2020 08:05:13.2311
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: JL+iWnAyzeTaR89QlbkWoVO8TJM2R9XB1awpUhP+BoEyIuPJ/Pdd7paB8TOcwcvbRzJBdbrJ7TwcFCB8XdtveV4pFG1r0lJ1bJiKCTiSyQQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR03MB3087
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-22_02:2020-06-22,2020-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- cotscore=-2147483648 clxscore=1015 bulkscore=0 mlxscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=999 lowpriorityscore=0
- phishscore=0 spamscore=0 adultscore=0 suspectscore=0 classifier=spam
- adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006220060
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200620223010.fqjwijiixxkewk3p@core.my.home>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=edQTgYMH c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=IkcTkHD0fZMA:10 a=J_fg_7IlAAAA:8 a=e5mUnYsNAAAA:8
+        a=rpfOPJV_7YADzv3fI4AA:9 a=9TJecaD38D1O3S5X:21 a=qYyW2_D2GT2v-q_M:21
+        a=QEXdDO2ut3YA:10 a=zGOw-GkVl6h1W4ZARoUA:22 a=Vxmtnl_E_bksehYqCbjh:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gU2F0LCAyMDIwLTA2LTIwIGF0IDE2OjMxICswMTAwLCBKb25hdGhhbiBDYW1lcm9uIHdyb3Rl
-Og0KPiBbRXh0ZXJuYWxdDQo+IA0KPiBPbiBXZWQsIDE3IEp1biAyMDIwIDE2OjM1OjIzICswMzAw
-DQo+IERhcml1cyBCZXJnaGUgPGRhcml1cy5iZXJnaGVAYW5hbG9nLmNvbT4gd3JvdGU6DQo+IA0K
-PiA+IEFkZCBkdCBiaW5kaW5nIGRvY3VtZW50YXRpb24gZm9yIGx0YzI0NzEgZHJpdmVyLiBUaGlz
-IGNvdmVycyBhbGwgc3VwcG9ydGVkDQo+ID4gZGV2aWNlcy4NCj4gPiANCj4gPiBTaWduZWQtb2Zm
-LWJ5OiBEYXJpdXMgQmVyZ2hlIDxkYXJpdXMuYmVyZ2hlQGFuYWxvZy5jb20+DQo+IEEgZmV3IHRo
-aW5ncyBpbmxpbmUgYnV0IGJhc2ljYWxseSBmaW5lLg0KPiANCj4gV2Ugc2hvdWxkIGhvd2V2ZXIg
-YWxzbyB0aGluayBhYm91dCBkb2N1bWVudGluZyBwb3dlciBzdXBwbGllcy4NCj4gRXZlbiB0aG91
-Z2ggdGhlIGRyaXZlciBkb2Vzbid0IGN1cnJlbnRseSBjb250cm9sIHRoZSBiaW5kaW5nIHNob3Vs
-ZA0KPiBiZSBhcyBjb21wbGV0ZSBhcyBwb3NzaWJsZS4NCj4gDQo+IEpvbmF0aGFuDQo+IA0KSGkg
-Sm9uYXRoYW4sDQoNCkFuZCB0aGFua3MgZm9yIHRoZSByZXZpZXcgIQ0KDQpUaGlzIGNoaXBzIGhh
-dmUgYSBmaXhlZCBpbnRlcm5hbCB2cmVmIG9mIDEuMjVWIHRoYXQgaXMgb3V0cHV0IG9uIHRoZSBS
-RUZPVVQgcGluLCB0aGVyZSBpcyBubyBwbGFjZSBmb3IgY29uZmlndXJhdGlvbiBoZXJlLiBPciBw
-ZXJoYXBzIGRpZCB5b3UgbWVhbiB0aGUgVkNDICgyLjdWLTUuNVYpID8gSSdtIG5vdCBzdXJlIHdo
-YXQgdGhlIGFkZGVkIHZhbHVlIHdvdWxkIGJlIHRvIGFkZCB2cmVmLXN1cHBseSBhbmQgdmNjLXN1
-cHBseSB0byB5YW1sIGlmIHRoZXkgYXJlIG5vdCBpbXBsZW1lbnRlZC4gSSBmaW5kIGl0IGNvbmZ1
-c2luZy4NCg0KPiA+IC0tLQ0KPiA+ICAuLi4vYmluZGluZ3MvaWlvL2FkYy9hZGksbHRjMjQ3MS55
-YW1sICAgICAgICAgfCA1MiArKysrKysrKysrKysrKysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2Vk
-LCA1MiBpbnNlcnRpb25zKCspDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvaWlvL2FkYy9hZGksbHRjMjQ3MS55YW1sDQo+ID4gDQo+ID4g
-ZGlmZiAtLWdpdCBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9paW8vYWRjL2Fk
-aSxsdGMyNDcxLnlhbWwgYi9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvaWlvL2Fk
-Yy9hZGksbHRjMjQ3MS55YW1sDQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPiBpbmRleCAw
-MDAwMDAwMDAwMDAuLjBiODRlMTRlYzk4NA0KPiA+IC0tLSAvZGV2L251bGwNCj4gPiArKysgYi9E
-b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvaWlvL2FkYy9hZGksbHRjMjQ3MS55YW1s
-DQo+ID4gQEAgLTAsMCArMSw1MiBAQA0KPiA+ICsjIFNQRFgtTGljZW5zZS1JZGVudGlmaWVyOiAo
-R1BMLTIuMC1vbmx5IE9SIEJTRC0yLUNsYXVzZSkNCj4gPiArIyBDb3B5cmlnaHQgMjAyMCBBbmFs
-b2cgRGV2aWNlcyBJbmMuDQo+ID4gKyVZQU1MIDEuMg0KPiA+ICstLS0NCj4gPiArJGlkOiBodHRw
-czovL3VybGRlZmVuc2UuY29tL3YzL19faHR0cDovL2RldmljZXRyZWUub3JnL3NjaGVtYXMvYmlu
-ZGluZ3MvaWlvL2FkYy9hZGksbHRjMjQ3MS55YW1sKl9fO0l3ISFBM05pOENTMHkyWSF2VXBEd1Nz
-bGNhTnJjM2RiNkFRNngzZ3pZSGJSX1d4T3RReVBpbmtlWkNqZ3BpUTRlbEViak16RHMxT0dFWVpv
-dTRFJCANCj4gPiArJHNjaGVtYTogaHR0cHM6Ly91cmxkZWZlbnNlLmNvbS92My9fX2h0dHA6Ly9k
-ZXZpY2V0cmVlLm9yZy9tZXRhLXNjaGVtYXMvY29yZS55YW1sKl9fO0l3ISFBM05pOENTMHkyWSF2
-VXBEd1NzbGNhTnJjM2RiNkFRNngzZ3pZSGJSX1d4T3RReVBpbmtlWkNqZ3BpUTRlbEViak16RHMx
-T0c0Y21SdVc0JCANCj4gPiArDQo+ID4gK3RpdGxlOiBBbmFsb2cgRGV2aWNlcyBMVEMyNDcxIDE2
-LWJpdCBJMkMgU2lnbWEtRGVsdGEgQURDDQo+ID4gKw0KPiA+ICttYWludGFpbmVyczoNCj4gPiAr
-ICAtIE1pa2UgTG9vaWptYW5zIDxtaWtlLmxvb2lqbWFuc0B0b3BpYy5ubD4NCj4gPiArDQo+ID4g
-K2Rlc2NyaXB0aW9uOiB8DQo+ID4gKyAgQW5hbG9nIERldmljZXMgTFRDMjQ3MSAoc2luZ2xlLWVu
-ZGVkKSBhbmQgTFRDMjQ3MyAoZGlmZmVyZW50aWFsKSAxNi1iaXQNCj4gPiArICBJMkMgU2lnbWEt
-RGVsdGEgQURDIHdpdGggc2VsZWN0YWJsZSAyMDgvODMzc3BzIG91dHB1dCByYXRlLg0KPiA+ICsg
-IGh0dHBzOi8vd3d3LmFuYWxvZy5jb20vbWVkaWEvZW4vdGVjaG5pY2FsLWRvY3VtZW50YXRpb24v
-ZGF0YS1zaGVldHMvMjQ3MTNmYi5wZGYNCj4gPiArDQo+ID4gKyAgQW5hbG9nIERldmljZXMgTFRD
-MjQ2MSAoc2luZ2xlLWVuZGVkKSBhbmQgTFRDMjQ2MyAoZGlmZmVyZW50aWFsKSAxNi1iaXQNCj4g
-PiArICBJMkMgU2lnbWEtRGVsdGEgQURDIHdpdGggNjBzcHMgb3V0cHV0IHJhdGUuDQo+ID4gKyAg
-aHR0cHM6Ly93d3cuYW5hbG9nLmNvbS9tZWRpYS9lbi90ZWNobmljYWwtZG9jdW1lbnRhdGlvbi9k
-YXRhLXNoZWV0cy8yNDYxM2ZhLnBkZg0KPiANCj4gUHV0IHRoZXNlIHR3byBibG9ja3MgaW4gbnVt
-ZXJpYyBvcmRlci4gIElmIHdlIGVuZCB1cCBhZGRpbmcgYSBidW5jaCBtb3JlDQo+IGRldmljZXMg
-aXQgd2lsbCBiZSBtdWNoIG1vcmUgY29uc2lzdGVudCBpZiB0aGV5IGFyZSBvcmRlci4NCj4gDQoN
-CkFjaywgd2lsbCBkby4NCg0KPiA+ICsNCj4gPiArcHJvcGVydGllczoNCj4gPiArICBjb21wYXRp
-YmxlOg0KPiA+ICsgICAgZW51bToNCj4gPiArICAgICAgLSBhZGksbHRjMjQ3MQ0KPiA+ICsgICAg
-ICAtIGFkaSxsdGMyNDczDQo+ID4gKyAgICAgIC0gYWRpLGx0YzI0NjENCj4gPiArICAgICAgLSBh
-ZGksbHRjMjQ2Mw0KPiANCj4gUHV0IHRoZW0gaW4gbnVtZXJpYyBvcmRlci4NCj4gDQoNCkFjaywg
-d2lsbCBkby4NCg0KPiA+ICsNCj4gPiArICByZWc6DQo+ID4gKyAgICBtYXhJdGVtczogMQ0KPiA+
-ICsNCj4gPiArcmVxdWlyZWQ6DQo+ID4gKyAgLSBjb21wYXRpYmxlDQo+ID4gKyAgLSByZWcNCj4g
-PiArDQo+ID4gK2V4YW1wbGVzOg0KPiA+ICsgIC0gfA0KPiA+ICsgICAgaTJjMCB7DQo+ID4gKyAg
-ICAgIGx0YzI0NjFAMTQgew0KPiANCj4gU2hvdWxkIHVzZSBhIGdlbmVyaWMgbmFtZQ0KPiBhZGNA
-MTQNCj4gDQoNCkFjaywgd2lsbCBkby4NCg0KPiA+ICsgICAgICAgIGNvbXBhdGlibGUgPSAibHRj
-MjQ2MSI7DQo+ID4gKyAgICAgICAgcmVnID0gPDB4MTQ+Ow0KPiA+ICsgICAgICB9Ow0KPiA+ICsg
-ICAgfTsNCj4gPiArICAtIHwNCj4gPiArICAgIGkyYzAgew0KPiANCj4gTm90IGEgbG90IG9mIHBv
-aW50IGluIHR3byBleGFtcGxlcyBnaXZlbiBob3cgc2ltaWxhciB0aGV5IGFyZS4NCj4gSSdkIGp1
-c3Qga2VlcCB0aGUgb25lLiANCj4gDQoNCkFjaywgd2lsbCBkby4NCkkgb25seSBjaG9zZSB0byBn
-aXZlIHR3byBleGFtcGxlcyBiZWNhdXNlIHRoZSBjaGlwIGhhcyAyIHBvc3NpYmxlIEkyQyBzbGF2
-ZSBhZGRyZXNzZXMgMHgxNCBhbmQgMHg1NCBkZXBlbmRpbmcgb24gdGhlIEFPIHBpbiB2YWx1ZSBi
-ZWluZyBsb3cgb3IgaGlnaC4gQnV0IHlvdSdyZSByaWdodCwgdGhleSdyZSB0b28gc2ltcGxlIGFu
-ZCBzaW1pbGFyLg0KDQpCZXN0IHJlZ2FyZHMsDQpEYXJpdXMNCg0KPiA+ICsgICAgICBsdGMyNDcz
-QDU0IHsNCj4gPiArICAgICAgICBjb21wYXRpYmxlID0gImx0YzI0NzMiOw0KPiA+ICsgICAgICAg
-IHJlZyA9IDwweDU0PjsNCj4gPiArICAgICAgfTsNCj4gPiArICAgIH07DQo+ID4gKw0K
+On Sun, Jun 21, 2020 at 12:30:10AM +0200, Ondřej Jirman wrote:
+> On Sat, Jun 20, 2020 at 11:25:29PM +0200, Sam Ravnborg wrote:
+> > Hi Ondrej et al.
+> > 
+> > On Wed, Jun 17, 2020 at 02:32:07AM +0200, Ondrej Jirman wrote:
+> > > From: Icenowy Zheng <icenowy@aosc.io>
+> > > 
+> > > Xingbangda XBD599 is a 5.99" 720x1440 MIPI-DSI IPS LCD panel made by
+> > > Xingbangda, which is used on PinePhone final assembled phones.
+> > > 
+> > > It is based on Sitronix ST7703 LCD controller.
+> > 
+> > I am a little late to the game here - so sorry if this has been
+> > discussed before.
+> > We already have panel-rocktech-jh057n00900.c which is a panle driver
+> > based on st7703.
+> > Why is it we need a new driver?
+> 
+> No reason other than the driver not being named after the controller,
+> so I didn't notice.
+> 
+> > Would it not be better to have one st7703 driver that suipports both
+> > panels?
+> >
+> > The driver would need dedicated init functions depending on the panel.
+> > But a lot could also be shared.
+> 
+> I guess I can move the code there. 
+In the same process the river should then be renamed to follow other
+sitronix based drivers.
+So the next developer will recognize this and use the correct driver.
+
+	Sam
+
+> 
+> regards,
+> 	o.
+> 
+> > 	Sam
+> > 
+> > > 
+> > > Add support for it.
+> > > 
+> > > Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+> > > Signed-off-by: Ondrej Jirman <megous@megous.com>
+> > > ---
+> > >  drivers/gpu/drm/panel/Kconfig                 |  10 +
+> > >  drivers/gpu/drm/panel/Makefile                |   1 +
+> > >  drivers/gpu/drm/panel/panel-sitronix-st7703.c | 535 ++++++++++++++++++
+> > >  3 files changed, 546 insertions(+)
+> > >  create mode 100644 drivers/gpu/drm/panel/panel-sitronix-st7703.c
+> > > 
+> > > diff --git a/drivers/gpu/drm/panel/Kconfig b/drivers/gpu/drm/panel/Kconfig
+> > > index 39055c1f0e2f..b7bc157b0612 100644
+> > > --- a/drivers/gpu/drm/panel/Kconfig
+> > > +++ b/drivers/gpu/drm/panel/Kconfig
+> > > @@ -395,6 +395,16 @@ config DRM_PANEL_SITRONIX_ST7701
+> > >  	  ST7701 controller for 480X864 LCD panels with MIPI/RGB/SPI
+> > >  	  system interfaces.
+> > >  
+> > > +config DRM_PANEL_SITRONIX_ST7703
+> > > +	tristate "Sitronix ST7703 panel driver"
+> > > +	depends on OF
+> > > +	depends on DRM_MIPI_DSI
+> > > +	depends on BACKLIGHT_CLASS_DEVICE
+> > > +	help
+> > > +	  Say Y here if you want to enable support for the Sitronix
+> > > +	  ST7703 controller for 720X1440 LCD panels with MIPI/RGB/SPI
+> > > +	  system interfaces.
+> > > +
+> > >  config DRM_PANEL_SITRONIX_ST7789V
+> > >  	tristate "Sitronix ST7789V panel"
+> > >  	depends on OF && SPI
+> > > diff --git a/drivers/gpu/drm/panel/Makefile b/drivers/gpu/drm/panel/Makefile
+> > > index de74f282c433..47f4789a8685 100644
+> > > --- a/drivers/gpu/drm/panel/Makefile
+> > > +++ b/drivers/gpu/drm/panel/Makefile
+> > > @@ -41,6 +41,7 @@ obj-$(CONFIG_DRM_PANEL_SHARP_LQ101R1SX01) += panel-sharp-lq101r1sx01.o
+> > >  obj-$(CONFIG_DRM_PANEL_SHARP_LS037V7DW01) += panel-sharp-ls037v7dw01.o
+> > >  obj-$(CONFIG_DRM_PANEL_SHARP_LS043T1LE01) += panel-sharp-ls043t1le01.o
+> > >  obj-$(CONFIG_DRM_PANEL_SITRONIX_ST7701) += panel-sitronix-st7701.o
+> > > +obj-$(CONFIG_DRM_PANEL_SITRONIX_ST7703) += panel-sitronix-st7703.o
+> > >  obj-$(CONFIG_DRM_PANEL_SITRONIX_ST7789V) += panel-sitronix-st7789v.o
+> > >  obj-$(CONFIG_DRM_PANEL_SONY_ACX424AKP) += panel-sony-acx424akp.o
+> > >  obj-$(CONFIG_DRM_PANEL_SONY_ACX565AKM) += panel-sony-acx565akm.o
+> > > diff --git a/drivers/gpu/drm/panel/panel-sitronix-st7703.c b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+> > > new file mode 100644
+> > > index 000000000000..dbd46b6c0b46
+> > > --- /dev/null
+> > > +++ b/drivers/gpu/drm/panel/panel-sitronix-st7703.c
+> > > @@ -0,0 +1,535 @@
+> > > +// SPDX-License-Identifier: GPL-2.0
+> > > +/*
+> > > + * DRM driver for Sitronix ST7703 MIPI DSI panel
+> > > + *
+> > > + * Copyright (C) 2020 Ondrej Jirman <megous@megous.com>
+> > > + * Copyright (C) 2019-2020 Icenowy Zheng <icenowy@aosc.io>
+> > > + *
+> > > + * Based on panel-rocktech-jh057n00900.c, which is:
+> > > + *   Copyright (C) Purism SPC 2019
+> > > + */
+> > > +
+> > > +#include <linux/delay.h>
+> > > +#include <linux/gpio/consumer.h>
+> > > +#include <linux/mod_devicetable.h>
+> > > +#include <linux/module.h>
+> > > +#include <linux/of_device.h>
+> > > +#include <linux/regulator/consumer.h>
+> > > +
+> > > +#include <drm/drm_mipi_dsi.h>
+> > > +#include <drm/drm_modes.h>
+> > > +#include <drm/drm_panel.h>
+> > > +#include <drm/drm_print.h>
+> > > +
+> > > +/* Manufacturer specific DCS commands */
+> > > +#define ST7703_CMD_SETDISP	0xB2
+> > > +#define ST7703_CMD_SETRGBIF	0xB3
+> > > +#define ST7703_CMD_SETCYC	0xB4
+> > > +#define ST7703_CMD_SETBGP	0xB5
+> > > +#define ST7703_CMD_SETVCOM	0xB6
+> > > +#define ST7703_CMD_SETOTP	0xB7
+> > > +#define ST7703_CMD_SETPOWER_EXT	0xB8
+> > > +#define ST7703_CMD_SETEXTC	0xB9
+> > > +#define ST7703_CMD_SETMIPI	0xBA
+> > > +#define ST7703_CMD_SETVDC	0xBC
+> > > +#define ST7703_CMD_UNK_BF	0xBF
+> > > +#define ST7703_CMD_SETSCR	0xC0
+> > > +#define ST7703_CMD_SETPOWER	0xC1
+> > > +#define ST7703_CMD_UNK_C6	0xC6
+> > > +#define ST7703_CMD_SETPANEL	0xCC
+> > > +#define ST7703_CMD_RDID1	0xDA
+> > > +#define ST7703_CMD_RDID2	0xDB
+> > > +#define ST7703_CMD_RDID3	0xDC
+> > > +#define ST7703_CMD_SETGAMMA	0xE0
+> > > +#define ST7703_CMD_SETEQ	0xE3
+> > > +#define ST7703_CMD_SETGIP1	0xE9
+> > > +#define ST7703_CMD_SETGIP2	0xEA
+> > > +
+> > > +struct st7703_panel_desc {
+> > > +	const struct drm_display_mode *mode;
+> > > +	unsigned int lanes;
+> > > +	unsigned long flags;
+> > > +	enum mipi_dsi_pixel_format format;
+> > > +	const char *const *supply_names;
+> > > +	unsigned int num_supplies;
+> > > +};
+> > > +
+> > > +struct st7703 {
+> > > +	struct device *dev;
+> > > +	struct drm_panel panel;
+> > > +	struct gpio_desc *reset_gpio;
+> > > +	struct regulator_bulk_data *supplies;
+> > > +	const struct st7703_panel_desc *desc;
+> > > +	bool prepared;
+> > > +};
+> > > +
+> > > +static inline struct st7703 *panel_to_st7703(struct drm_panel *panel)
+> > > +{
+> > > +	return container_of(panel, struct st7703, panel);
+> > > +}
+> > > +
+> > > +#define dsi_dcs_write_seq(dsi, cmd, seq...) do {			\
+> > > +		static const u8 d[] = { seq };				\
+> > > +		int ret;						\
+> > > +		ret = mipi_dsi_dcs_write(dsi, cmd, d, ARRAY_SIZE(d));	\
+> > > +		if (ret < 0)						\
+> > > +			return ret;					\
+> > > +	} while (0)
+> > > +
+> > > +
+> > > +static int st7703_init_sequence(struct st7703 *ctx)
+> > > +{
+> > > +	struct mipi_dsi_device *dsi = to_mipi_dsi_device(ctx->dev);
+> > > +	struct device *dev = ctx->dev;
+> > > +
+> > > +	/*
+> > > +	 * Init sequence was supplied by the panel vendor.
+> > > +	 */
+> > > +
+> > > +	/* Magic sequence to unlock user commands below. */
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETEXTC, 0xF1, 0x12, 0x83);
+> > > +
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETMIPI,
+> > > +			  0x33, /* VC_main = 0, Lane_Number = 3 (4 lanes) */
+> > > +			  0x81, /* DSI_LDO_SEL = 1.7V, RTERM = 90 Ohm */
+> > > +			  0x05, /* IHSRX = x6 (Low High Speed driving ability) */
+> > > +			  0xF9, /* TX_CLK_SEL = fDSICLK/16 */
+> > > +			  0x0E, /* HFP_OSC (min. HFP number in DSI mode) */
+> > > +			  0x0E, /* HBP_OSC (min. HBP number in DSI mode) */
+> > > +			  /* The rest is undocumented in ST7703 datasheet */
+> > > +			  0x20, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> > > +			  0x44, 0x25, 0x00, 0x91, 0x0a, 0x00, 0x00, 0x02,
+> > > +			  0x4F, 0x11, 0x00, 0x00, 0x37);
+> > > +
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETPOWER_EXT,
+> > > +			  0x25, /* PCCS = 2, ECP_DC_DIV = 1/4 HSYNC */
+> > > +			  0x22, /* DT = 15ms XDK_ECP = x2 */
+> > > +			  0x20, /* PFM_DC_DIV = /1 */
+> > > +			  0x03  /* ECP_SYNC_EN = 1, VGX_SYNC_EN = 1 */);
+> > > +
+> > > +	/* RGB I/F porch timing */
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETRGBIF,
+> > > +			  0x10, /* VBP_RGB_GEN */
+> > > +			  0x10, /* VFP_RGB_GEN */
+> > > +			  0x05, /* DE_BP_RGB_GEN */
+> > > +			  0x05, /* DE_FP_RGB_GEN */
+> > > +			  /* The rest is undocumented in ST7703 datasheet */
+> > > +			  0x03, 0xFF,
+> > > +			  0x00, 0x00,
+> > > +			  0x00, 0x00);
+> > > +
+> > > +	/* Source driving settings. */
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETSCR,
+> > > +			  0x73, /* N_POPON */
+> > > +			  0x73, /* N_NOPON */
+> > > +			  0x50, /* I_POPON */
+> > > +			  0x50, /* I_NOPON */
+> > > +			  0x00, /* SCR[31,24] */
+> > > +			  0xC0, /* SCR[23,16] */
+> > > +			  0x08, /* SCR[15,8] */
+> > > +			  0x70, /* SCR[7,0] */
+> > > +			  0x00  /* Undocumented */);
+> > > +
+> > > +	/* NVDDD_SEL = -1.8V, VDDD_SEL = out of range (possibly 1.9V?) */
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETVDC, 0x4E);
+> > > +
+> > > +	/*
+> > > +	 * SS_PANEL = 1 (reverse scan), GS_PANEL = 0 (normal scan)
+> > > +	 * REV_PANEL = 1 (normally black panel), BGR_PANEL = 1 (BGR)
+> > > +	 */
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETPANEL, 0x0B);
+> > > +
+> > > +	/* Zig-Zag Type C column inversion. */
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETCYC, 0x80);
+> > > +
+> > > +	/* Set display resolution. */
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETDISP,
+> > > +			  0xF0, /* NL = 240 */
+> > > +			  0x12, /* RES_V_LSB = 0, BLK_CON = VSSD,
+> > > +				 * RESO_SEL = 720RGB
+> > > +				 */
+> > > +			  0xF0  /* WHITE_GND_EN = 1 (GND),
+> > > +				 * WHITE_FRAME_SEL = 7 frames,
+> > > +				 * ISC = 0 frames
+> > > +				 */);
+> > > +
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETEQ,
+> > > +			  0x00, /* PNOEQ */
+> > > +			  0x00, /* NNOEQ */
+> > > +			  0x0B, /* PEQGND */
+> > > +			  0x0B, /* NEQGND */
+> > > +			  0x10, /* PEQVCI */
+> > > +			  0x10, /* NEQVCI */
+> > > +			  0x00, /* PEQVCI1 */
+> > > +			  0x00, /* NEQVCI1 */
+> > > +			  0x00, /* reserved */
+> > > +			  0x00, /* reserved */
+> > > +			  0xFF, /* reserved */
+> > > +			  0x00, /* reserved */
+> > > +			  0xC0, /* ESD_DET_DATA_WHITE = 1, ESD_WHITE_EN = 1 */
+> > > +			  0x10  /* SLPIN_OPTION = 1 (no need vsync after sleep-in)
+> > > +				 * VEDIO_NO_CHECK_EN = 0
+> > > +				 * ESD_WHITE_GND_EN = 0
+> > > +				 * ESD_DET_TIME_SEL = 0 frames
+> > > +				 */);
+> > > +
+> > > +	/* Undocumented command. */
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_UNK_C6, 0x01, 0x00, 0xFF, 0xFF, 0x00);
+> > > +
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETPOWER,
+> > > +			  0x74, /* VBTHS, VBTLS: VGH = 17V, VBL = -11V */
+> > > +			  0x00, /* FBOFF_VGH = 0, FBOFF_VGL = 0 */
+> > > +			  0x32, /* VRP  */
+> > > +			  0x32, /* VRN */
+> > > +			  0x77, /* reserved */
+> > > +			  0xF1, /* APS = 1 (small),
+> > > +				 * VGL_DET_EN = 1, VGH_DET_EN = 1,
+> > > +				 * VGL_TURBO = 1, VGH_TURBO = 1
+> > > +				 */
+> > > +			  0xFF, /* VGH1_L_DIV, VGL1_L_DIV (1.5MHz) */
+> > > +			  0xFF, /* VGH1_R_DIV, VGL1_R_DIV (1.5MHz) */
+> > > +			  0xCC, /* VGH2_L_DIV, VGL2_L_DIV (2.6MHz) */
+> > > +			  0xCC, /* VGH2_R_DIV, VGL2_R_DIV (2.6MHz) */
+> > > +			  0x77, /* VGH3_L_DIV, VGL3_L_DIV (4.5MHz) */
+> > > +			  0x77  /* VGH3_R_DIV, VGL3_R_DIV (4.5MHz) */);
+> > > +
+> > > +	/* Reference voltage. */
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETBGP,
+> > > +			  0x07, /* VREF_SEL = 4.2V */
+> > > +			  0x07  /* NVREF_SEL = 4.2V */);
+> > > +
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETVCOM,
+> > > +			  0x2C, /* VCOMDC_F = -0.67V */
+> > > +			  0x2C  /* VCOMDC_B = -0.67V */);
+> > > +
+> > > +	/* Undocumented command. */
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_UNK_BF, 0x02, 0x11, 0x00);
+> > > +
+> > > +	/* This command is to set forward GIP timing. */
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETGIP1,
+> > > +			  0x82, 0x10, 0x06, 0x05, 0xA2, 0x0A, 0xA5, 0x12,
+> > > +			  0x31, 0x23, 0x37, 0x83, 0x04, 0xBC, 0x27, 0x38,
+> > > +			  0x0C, 0x00, 0x03, 0x00, 0x00, 0x00, 0x0C, 0x00,
+> > > +			  0x03, 0x00, 0x00, 0x00, 0x75, 0x75, 0x31, 0x88,
+> > > +			  0x88, 0x88, 0x88, 0x88, 0x88, 0x13, 0x88, 0x64,
+> > > +			  0x64, 0x20, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88,
+> > > +			  0x02, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> > > +			  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00);
+> > > +
+> > > +	/* This command is to set backward GIP timing. */
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETGIP2,
+> > > +			  0x02, 0x21, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> > > +			  0x00, 0x00, 0x00, 0x00, 0x02, 0x46, 0x02, 0x88,
+> > > +			  0x88, 0x88, 0x88, 0x88, 0x88, 0x64, 0x88, 0x13,
+> > > +			  0x57, 0x13, 0x88, 0x88, 0x88, 0x88, 0x88, 0x88,
+> > > +			  0x75, 0x88, 0x23, 0x14, 0x00, 0x00, 0x02, 0x00,
+> > > +			  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+> > > +			  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, 0x0A,
+> > > +			  0xA5, 0x00, 0x00, 0x00, 0x00);
+> > > +
+> > > +	/* Adjust the gamma characteristics of the panel. */
+> > > +	dsi_dcs_write_seq(dsi, ST7703_CMD_SETGAMMA,
+> > > +			  0x00, 0x09, 0x0D, 0x23, 0x27, 0x3C, 0x41, 0x35,
+> > > +			  0x07, 0x0D, 0x0E, 0x12, 0x13, 0x10, 0x12, 0x12,
+> > > +			  0x18, 0x00, 0x09, 0x0D, 0x23, 0x27, 0x3C, 0x41,
+> > > +			  0x35, 0x07, 0x0D, 0x0E, 0x12, 0x13, 0x10, 0x12,
+> > > +			  0x12, 0x18);
+> > > +
+> > > +	DRM_DEV_DEBUG_DRIVER(dev, "Panel init sequence done\n");
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int st7703_read_id(struct st7703 *ctx)
+> > > +{
+> > > +	struct mipi_dsi_device *dsi = to_mipi_dsi_device(ctx->dev);
+> > > +	u8 id1, id2, id3;
+> > > +	int ret;
+> > > +
+> > > +	ret = mipi_dsi_dcs_read(dsi, ST7703_CMD_RDID1, &id1, 1);
+> > > +	if (ret < 0) {
+> > > +		DRM_DEV_ERROR(ctx->dev, "could not read ID1\n");
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	ret = mipi_dsi_dcs_read(dsi, ST7703_CMD_RDID2, &id2, 1);
+> > > +	if (ret < 0) {
+> > > +		DRM_DEV_ERROR(ctx->dev, "could not read ID2\n");
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	ret = mipi_dsi_dcs_read(dsi, ST7703_CMD_RDID3, &id3, 1);
+> > > +	if (ret < 0) {
+> > > +		DRM_DEV_ERROR(ctx->dev, "could not read ID3\n");
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	DRM_DEV_INFO(ctx->dev,
+> > > +		     "manufacturer: %02x version: %02x driver: %02x\n",
+> > > +		     id1, id2, id3);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int st7703_prepare(struct drm_panel *panel)
+> > > +{
+> > > +	struct st7703 *ctx = panel_to_st7703(panel);
+> > > +	struct mipi_dsi_device *dsi = to_mipi_dsi_device(ctx->dev);
+> > > +	int ret;
+> > > +
+> > > +	if (ctx->prepared)
+> > > +		return 0;
+> > > +
+> > > +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
+> > > +
+> > > +	ret = regulator_bulk_enable(ctx->desc->num_supplies, ctx->supplies);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	/* Wait for regulators to stabilize. */
+> > > +	usleep_range(10000, 20000);
+> > > +
+> > > +	gpiod_set_value_cansleep(ctx->reset_gpio, 0);
+> > > +
+> > > +	/* There needs to be at least 15ms post-reset delay. */
+> > > +	usleep_range(15000, 20000);
+> > > +
+> > > +	ret = st7703_read_id(ctx);
+> > > +	if (ret < 0)
+> > > +		goto err_poweroff;
+> > > +
+> > > +	ret = st7703_init_sequence(ctx);
+> > > +	if (ret < 0) {
+> > > +		DRM_DEV_ERROR(ctx->dev,
+> > > +			      "Panel init sequence failed (%d)\n", ret);
+> > > +		goto err_poweroff;
+> > > +	}
+> > > +
+> > > +	ret = mipi_dsi_dcs_exit_sleep_mode(dsi);
+> > > +	if (ret < 0) {
+> > > +		DRM_DEV_ERROR(ctx->dev,
+> > > +			      "Failed to exit sleep mode (%d)\n", ret);
+> > > +		goto err_poweroff;
+> > > +	}
+> > > +
+> > > +	msleep(120);
+> > > +
+> > > +	ret = mipi_dsi_dcs_set_display_on(dsi);
+> > > +	if (ret) {
+> > > +		DRM_DEV_ERROR(ctx->dev,
+> > > +			      "Failed to turn on the display (%d)\n", ret);
+> > > +		goto err_poweroff;
+> > > +	}
+> > > +
+> > > +	ctx->prepared = true;
+> > > +
+> > > +	return 0;
+> > > +
+> > > +err_poweroff:
+> > > +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
+> > > +	regulator_bulk_disable(ctx->desc->num_supplies, ctx->supplies);
+> > > +	return ret;
+> > > +}
+> > > +
+> > > +static int st7703_enable(struct drm_panel *panel)
+> > > +{
+> > > +	/*
+> > > +	 * Avoid flicker by waiting for slightly more than 1
+> > > +	 * frame's interval.
+> > > +	 */
+> > > +	msleep(50);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int st7703_unprepare(struct drm_panel *panel)
+> > > +{
+> > > +	struct st7703 *ctx = panel_to_st7703(panel);
+> > > +	struct mipi_dsi_device *dsi = to_mipi_dsi_device(ctx->dev);
+> > > +	int ret;
+> > > +
+> > > +	if (!ctx->prepared)
+> > > +		return 0;
+> > > +
+> > > +	ret = mipi_dsi_dcs_set_display_off(dsi);
+> > > +	if (ret < 0)
+> > > +		DRM_DEV_ERROR(ctx->dev,
+> > > +			      "Failed to turn off the display (%d)\n", ret);
+> > > +
+> > > +	ret = mipi_dsi_dcs_enter_sleep_mode(dsi);
+> > > +	if (ret < 0)
+> > > +		DRM_DEV_ERROR(ctx->dev,
+> > > +			      "Failed to enter sleep mode (%d)\n", ret);
+> > > +
+> > > +	gpiod_set_value_cansleep(ctx->reset_gpio, 1);
+> > > +	regulator_bulk_disable(ctx->desc->num_supplies, ctx->supplies);
+> > > +	ctx->prepared = false;
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static int st7703_get_modes(struct drm_panel *panel,
+> > > +			    struct drm_connector *connector)
+> > > +{
+> > > +	struct st7703 *ctx = panel_to_st7703(panel);
+> > > +	struct drm_display_mode *mode;
+> > > +
+> > > +	mode = drm_mode_duplicate(connector->dev, ctx->desc->mode);
+> > > +	if (!mode) {
+> > > +		DRM_DEV_ERROR(ctx->dev, "Failed to add mode\n");
+> > > +		return -ENOMEM;
+> > > +	}
+> > > +
+> > > +	drm_mode_set_name(mode);
+> > > +
+> > > +	connector->display_info.width_mm = mode->width_mm;
+> > > +	connector->display_info.height_mm = mode->height_mm;
+> > > +	drm_mode_probed_add(connector, mode);
+> > > +
+> > > +	return 1;
+> > > +}
+> > > +
+> > > +static const struct drm_panel_funcs st7703_drm_funcs = {
+> > > +	.prepare   = st7703_prepare,
+> > > +	.enable    = st7703_enable,
+> > > +	.unprepare = st7703_unprepare,
+> > > +	.get_modes = st7703_get_modes,
+> > > +};
+> > > +
+> > > +static const struct drm_display_mode xbd599_mode = {
+> > > +	.hdisplay    = 720,
+> > > +	.hsync_start = 720 + 40,
+> > > +	.hsync_end   = 720 + 40 + 40,
+> > > +	.htotal	     = 720 + 40 + 40 + 40,
+> > > +	.vdisplay    = 1440,
+> > > +	.vsync_start = 1440 + 18,
+> > > +	.vsync_end   = 1440 + 18 + 10,
+> > > +	.vtotal	     = 1440 + 18 + 10 + 17,
+> > > +	.vrefresh    = 60,
+> > > +	.clock	     = 69000,
+> > > +	.flags	     = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
+> > > +
+> > > +	.width_mm    = 68,
+> > > +	.height_mm   = 136,
+> > > +	.type        = DRM_MODE_TYPE_DRIVER | DRM_MODE_TYPE_PREFERRED,
+> > > +};
+> > > +
+> > > +static const char * const xbd599_supply_names[] = {
+> > > +	"iovcc",
+> > > +	"vcc",
+> > > +};
+> > > +
+> > > +static const struct st7703_panel_desc xbd599_desc = {
+> > > +	.mode = &xbd599_mode,
+> > > +	.lanes = 4,
+> > > +	.flags = MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_SYNC_PULSE,
+> > > +	.format = MIPI_DSI_FMT_RGB888,
+> > > +	.supply_names = xbd599_supply_names,
+> > > +	.num_supplies = ARRAY_SIZE(xbd599_supply_names),
+> > > +};
+> > > +
+> > > +static int st7703_probe(struct mipi_dsi_device *dsi)
+> > > +{
+> > > +	const struct st7703_panel_desc *desc;
+> > > +	struct device *dev = &dsi->dev;
+> > > +	struct st7703 *ctx;
+> > > +	int i, ret;
+> > > +
+> > > +	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
+> > > +	if (!ctx)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	ctx->dev = dev;
+> > > +	ctx->desc = desc = of_device_get_match_data(dev);
+> > > +
+> > > +	dsi->mode_flags = desc->flags;
+> > > +	dsi->format = desc->format;
+> > > +	dsi->lanes = desc->lanes;
+> > > +
+> > > +	ctx->supplies = devm_kcalloc(&dsi->dev, desc->num_supplies,
+> > > +					sizeof(*ctx->supplies),
+> > > +					GFP_KERNEL);
+> > > +	if (!ctx->supplies)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	for (i = 0; i < desc->num_supplies; i++)
+> > > +		ctx->supplies[i].supply = desc->supply_names[i];
+> > > +
+> > > +	ret = devm_regulator_bulk_get(&dsi->dev, desc->num_supplies,
+> > > +				      ctx->supplies);
+> > > +	if (ret < 0)
+> > > +		return ret;
+> > > +
+> > > +	ctx->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_LOW);
+> > > +	if (IS_ERR(ctx->reset_gpio)) {
+> > > +		DRM_DEV_ERROR(dev, "Can't get reset gpio\n");
+> > > +		return PTR_ERR(ctx->reset_gpio);
+> > > +	}
+> > > +
+> > > +	mipi_dsi_set_drvdata(dsi, ctx);
+> > > +
+> > > +	drm_panel_init(&ctx->panel, &dsi->dev, &st7703_drm_funcs,
+> > > +		       DRM_MODE_CONNECTOR_DSI);
+> > > +
+> > > +	ret = drm_panel_of_backlight(&ctx->panel);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	drm_panel_add(&ctx->panel);
+> > > +
+> > > +	ret = mipi_dsi_attach(dsi);
+> > > +	if (ret < 0) {
+> > > +		drm_panel_remove(&ctx->panel);
+> > > +		return ret;
+> > > +	}
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static void st7703_shutdown(struct mipi_dsi_device *dsi)
+> > > +{
+> > > +	struct st7703 *ctx = mipi_dsi_get_drvdata(dsi);
+> > > +	int ret;
+> > > +
+> > > +	ret = drm_panel_unprepare(&ctx->panel);
+> > > +	if (ret < 0)
+> > > +		DRM_DEV_ERROR(&dsi->dev,
+> > > +			      "Failed to unprepare panel (%d)\n", ret);
+> > > +}
+> > > +
+> > > +static int st7703_remove(struct mipi_dsi_device *dsi)
+> > > +{
+> > > +	struct st7703 *ctx = mipi_dsi_get_drvdata(dsi);
+> > > +	int ret;
+> > > +
+> > > +	st7703_shutdown(dsi);
+> > > +
+> > > +	ret = mipi_dsi_detach(dsi);
+> > > +	if (ret < 0)
+> > > +		DRM_DEV_ERROR(&dsi->dev,
+> > > +			      "Failed to detach from DSI host (%d)\n", ret);
+> > > +
+> > > +	drm_panel_remove(&ctx->panel);
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +static const struct of_device_id st7703_of_match[] = {
+> > > +	{ .compatible = "xingbangda,xbd599", .data = &xbd599_desc },
+> > > +	{ /* sentinel */ }
+> > > +};
+> > > +MODULE_DEVICE_TABLE(of, st7703_of_match);
+> > > +
+> > > +static struct mipi_dsi_driver st7703_driver = {
+> > > +	.probe	= st7703_probe,
+> > > +	.remove = st7703_remove,
+> > > +	.shutdown = st7703_shutdown,
+> > > +	.driver = {
+> > > +		.name = "st7703",
+> > > +		.of_match_table = st7703_of_match,
+> > > +	},
+> > > +};
+> > > +module_mipi_dsi_driver(st7703_driver);
+> > > +
+> > > +MODULE_AUTHOR("Icenowy Zheng <icenowy@aosc.io>");
+> > > +MODULE_DESCRIPTION("DRM driver for Sitronix ST7703 MIPI DSI panel");
+> > > +MODULE_LICENSE("GPL v2");
+> > > -- 
+> > > 2.27.0
+> > > 
+> > > _______________________________________________
+> > > dri-devel mailing list
+> > > dri-devel@lists.freedesktop.org
+> > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
