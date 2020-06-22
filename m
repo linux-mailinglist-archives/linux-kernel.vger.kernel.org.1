@@ -2,137 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D012F20343A
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACCA20349D
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 12:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbgFVKBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 06:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43882 "EHLO
+        id S1727079AbgFVKPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 06:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727863AbgFVKBZ (ORCPT
+        with ESMTP id S1726660AbgFVKPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 06:01:25 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128E6C061797
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 03:01:25 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id g21so10647128wmg.0
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 03:01:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7pEL+pOqyLTkwaRij99JSBZiVqVmOtzJ61ge9c76alE=;
-        b=eaQDTmoIva7YgqUT7n4mmFYcgVR8tYbiSv+EsIHLIkQIJviMpTReLXYVtvFOol2q0e
-         LdphqNn3acWhpQSuesmQgbP86SDv2CFnYiE9kY21eMu86QB0XYrJByJRId49gHAlMstK
-         B4PEF9TayTWp8MPD7056GMzylW6Q4ubJ6zSD88ao0ofMVT8s1OPaucGSs+G1NKXCU30e
-         StG0ZCrSCfsoa1hh3rlMOqh0cMq2OsJKG43o3A8mXuwgeMr2MQBldeFEmmaxo9KTVZVr
-         OFBWf0C3jGOzn1RbJXOwkVbboUkef6zzBQaj44aHFBunXxesBGFG26tktECmHQNvp0dY
-         2sXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7pEL+pOqyLTkwaRij99JSBZiVqVmOtzJ61ge9c76alE=;
-        b=oGJrhEhqZG6f6UuKIkGIxAyxSdFGd9RItnGZWPGVTYjwWj4u/bfW8NBDr8eS0HJLOH
-         ULjHO5X1ufnpb+8r+hPa6nbU16WjZsilAwM3wH2RJW3ZIJ3MzcaJD+UPIBtFIsGm/Wo7
-         /auEGTQYuDGE9CJaR0VAAuJMdiSc4+Q7m1rd+5TkGtHgfnE7fZ+CeJz+QHY35T1VXTm9
-         alFuuAYsfTyLks/v5Uksr4A+4iSwDFOioHhLpp2LxCnbCMdT4X/4wYgFBrVnBaURCtOk
-         xrUKiqdGNazCjBh5tGx3ecf64kkq2Y0G02NgvO9tOhIbVvrpwQRfIj7wnnWtUPQs1zrw
-         gy1Q==
-X-Gm-Message-State: AOAM532DyRrM5VEWEqsiP+dpE3FTUzHCKWC9zLVydPMoeUmykzVo2Pga
-        ryo3V6iMDfxdO9FvSliVSJkv/g==
-X-Google-Smtp-Source: ABdhPJzbn3QUtTBkSaHKKRlQD+NAcxXoZjCO6pjuNjVVzgSeYV529/r6h+a5y21qbFYnMCH6f96pIg==
-X-Received: by 2002:a1c:804c:: with SMTP id b73mr699546wmd.59.1592820083830;
-        Mon, 22 Jun 2020 03:01:23 -0700 (PDT)
-Received: from localhost.localdomain (lfbn-nic-1-65-232.w2-15.abo.wanadoo.fr. [2.15.156.232])
-        by smtp.gmail.com with ESMTPSA id x205sm16822187wmx.21.2020.06.22.03.01.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 03:01:23 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Realtek linux nic maintainers <nic_swsd@realtek.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org,
-        Fabien Parent <fparent@baylibre.com>,
-        Stephane Le Provost <stephane.leprovost@mediatek.com>,
-        Pedro Tsai <pedro.tsai@mediatek.com>,
-        Andrew Perepech <andrew.perepech@mediatek.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH 11/11] net: ethernet: mtk-star-emac: use devm_of_mdiobus_register()
-Date:   Mon, 22 Jun 2020 12:00:56 +0200
-Message-Id: <20200622100056.10151-12-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20200622100056.10151-1-brgl@bgdev.pl>
-References: <20200622100056.10151-1-brgl@bgdev.pl>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Mon, 22 Jun 2020 06:15:38 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D8FC061795
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 03:15:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=2RjTqVx5JWKQDiDk1go5O08KBZuLHTrJZdO+ffoqORs=; b=XZmXIctwNA4j8p/VK6gkF6Lpkg
+        VsjApmEIxDl9erX9MR9GUKKQsmT8McHyqkS04B7GRfg0xXEZ/2wEFYk54fsfSRUPVnC21GSNIQiqS
+        Nr9o5I9YU2sivkQPKM9uOBLrxCn2i7rXhrU2t8HBJ98k/1d85TZiuZe9AbEa6MtJQsrKmx8Eql+G2
+        ZOMqYS62aAnUl9/EkKQ064QoZV+92sTJkTWYXeMnv4Y2RrwIaLvVViM/xR9wNlg2m6xO9KdBGfTR5
+        VcFtoc7tg7qYrAHnlhapkLaRtE0MkGRh11egDlw9K4O8lHKO6UVEtjxrLIhxT3lPnJiERXCUsDQ5p
+        zSMRjlpA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jnJTj-0008JL-UK; Mon, 22 Jun 2020 10:15:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 46A8F303CE9;
+        Mon, 22 Jun 2020 12:15:02 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id 2418729994FCF; Mon, 22 Jun 2020 12:15:02 +0200 (CEST)
+Message-ID: <20200622100122.477087977@infradead.org>
+User-Agent: quilt/0.66
+Date:   Mon, 22 Jun 2020 12:01:22 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     mingo@kernel.org, tglx@linutronix.de
+Cc:     linux-kernel@vger.kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        paulmck@kernel.org, frederic@kernel.org, peterz@infradead.org,
+        torvalds@linux-foundation.org, hch@lst.de
+Subject: [PATCH -v2 0/5] sched: TTWU, IPI and stuff
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Hi,
 
-Shrink the code by using the managed variant of of_mdiobus_register().
+Like earlier, Paul's rcutorture is fixed by #1, but now it actually makes sense
+and I can explain how it happens. Therefore this patch is _much_ better than the
+last one :-)
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
- drivers/net/ethernet/mediatek/mtk_star_emac.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+I was going to push 1-3 into sched/urgent, #3 removes the horrible BUG_ON crap in
+kernel/smp.c and trades them for slightly less horrible unions.
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_star_emac.c b/drivers/net/ethernet/mediatek/mtk_star_emac.c
-index 3e765bdcf9e1..13250553263b 100644
---- a/drivers/net/ethernet/mediatek/mtk_star_emac.c
-+++ b/drivers/net/ethernet/mediatek/mtk_star_emac.c
-@@ -1389,7 +1389,7 @@ static int mtk_star_mdio_init(struct net_device *ndev)
- 	priv->mii->write = mtk_star_mdio_write;
- 	priv->mii->priv = priv;
- 
--	ret = of_mdiobus_register(priv->mii, mdio_node);
-+	ret = devm_of_mdiobus_register(dev, priv->mii, mdio_node);
- 
- out_put_node:
- 	of_node_put(mdio_node);
-@@ -1441,13 +1441,6 @@ static void mtk_star_clk_disable_unprepare(void *data)
- 	clk_bulk_disable_unprepare(MTK_STAR_NCLKS, priv->clks);
- }
- 
--static void mtk_star_mdiobus_unregister(void *data)
--{
--	struct mtk_star_priv *priv = data;
--
--	mdiobus_unregister(priv->mii);
--}
--
- static int mtk_star_probe(struct platform_device *pdev)
- {
- 	struct device_node *of_node;
-@@ -1549,10 +1542,6 @@ static int mtk_star_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	ret = devm_add_action_or_reset(dev, mtk_star_mdiobus_unregister, priv);
--	if (ret)
--		return ret;
--
- 	ret = eth_platform_get_mac_address(dev, ndev->dev_addr);
- 	if (ret || !is_valid_ether_addr(ndev->dev_addr))
- 		eth_hw_addr_random(ndev);
--- 
-2.26.1
+I was planning on keeping #4,#5 back for the next round, but if Linus wants
+them now, that can certainly be arranged too. I have some further work on top
+that creates and uses irq_work_queue_remote() to replace many (hopefully all)
+smp_call_function_single_async() users so we can get rid of that head-ache, but
+those need to cook a little more.
+
+(#5 has 'trivial' conflicts with patches from hch that are targeted at
+the next round)
 
