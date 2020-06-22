@@ -2,106 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 468B7203617
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 13:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0DB20361C
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 13:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727976AbgFVLqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 07:46:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
+        id S1728005AbgFVLrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 07:47:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727120AbgFVLqw (ORCPT
+        with ESMTP id S1727048AbgFVLrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 07:46:52 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77DC0C061794
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 04:46:52 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id v1so12436043qvx.8
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 04:46:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=j19qINoTS0ZUB5VmYI6tnBHGsC7YwPPKrYVY46VAbqw=;
-        b=TLI75zhb3hcV71NRaoY51FnnY5U5mwBw4h8IRj01n/GB6WFaLkNAhOJ8mnrRi3Kt3U
-         D5/gxSxGrus9cNQo5m1Gcy6XqXBDCOw3JYI8VmnY7KeZnA7NkePDxNoyI09U/OSYdl2+
-         hZ/u5zK+54x66LU6Nq3QU4GNpunW1AZfRo/MZdfk+il4B1WHnDB1+DQ7fPll1n+1XZ+L
-         y6GDaAQ/h9xMJ4jkd550Ctde6Of3UWj0ud5H+4FdWvJ7l8GD/L64pmBh0KUAiTwOsVGu
-         PIXKyL4z1yLzsRB7rNwGrL+OhEOFvq49zwARR2aWdduxZjBc784HqWV1e9Xm+McOFmSC
-         UTrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=j19qINoTS0ZUB5VmYI6tnBHGsC7YwPPKrYVY46VAbqw=;
-        b=egZ7OXYElDOd6i54z1Q+pw50pRAAX7YigI6cV3ZlMB4FQq6j3HQUn6MwhUYmthvycE
-         erejC+WgUX3OTG41xFRiNQWzNMZKwRGMSHVzYcSBFyPZlPL7Aw/xKt52i7SbkXImq3hI
-         SVmXIhoa0MWE9bPWnYD1EClVm76DR1CAE9fUo3scWPYeCOBrd1i7FGQpT5pQpd9IryqV
-         sUHmiejxJGcZqKDZBJW2FcosQx2VYPU48ztO0/hV9EhZmDHwgC7+io6oKX7F4EC/JArd
-         0gpbdPYSgFikaBeMG9PEYG1jTLD80Mw091Zs8I3JFLSYYc2V5ThGoFHdG3CFcoRdUgkb
-         oQPg==
-X-Gm-Message-State: AOAM5331ed1vfGRwF9/mP4K3Jj+C3AKoeRkZk8b8ZvVd3aNDeYK/JHrP
-        pNJpJL+DP+Ov9BnMyIz9sxhCzmcEFLI=
-X-Google-Smtp-Source: ABdhPJxtMErmxXcluP2xrN//Yw4g53tHUvtp06FFk3nIs69FZwkQ9eA3ZuOzcfzQAtTaVbdUTCxXPynvXwE=
-X-Received: by 2002:a0c:8d46:: with SMTP id s6mr21215475qvb.241.1592826411606;
- Mon, 22 Jun 2020 04:46:51 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 13:46:36 +0200
-Message-Id: <20200622114639.165874-1-darekm@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
-Subject: [PATCH v2] media: cros-ec-cec: do not bail on device_init_wakeup failure
-From:   Dariusz Marcinkiewicz <darekm@google.com>
-To:     linux-media@vger.kernel.org
-Cc:     narmstrong@baylibre.com, Dariusz Marcinkiewicz <darekm@google.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Dariusz Marcinkiewicz <darekm@chromium.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 22 Jun 2020 07:47:49 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D98E2C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 04:47:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=hfvlznUygRqFdDOHpCKEfZ5wshmNz2jqwQWxzgI5F8M=; b=hB9jERzJlmZnJBe8CaL8pMG6AM
+        1QB7D2d74rQagF7YirNJKOAqQuhulFZq9XYnkB8UcAOGbj/AcujtaY6iY73yeFAn2M48LDsPltcF4
+        KHk36hmTf7vIu2C9yUKP0Gog1tGsl66tM3Oz0eReMYD4OkfTNLLZ0Esp5TJXr09JkGCvkgnpvkCKg
+        6g7LwpCcI7270kho6avvrMpRN1OtCVqUqC0RyE6umWVwPcpm4uzspqgCbyPsCU4L9a5mi87TSll4Y
+        662/U+e1b3Ca0Bqrhs8GgSKEVq0jwnIp/SUA+hP7DGuSysyuBtK0csKvAw0pHNTRtbA63I0QFTbR2
+        s6wcVfrg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jnKv0-0003i5-PL; Mon, 22 Jun 2020 11:47:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F24E830018A;
+        Mon, 22 Jun 2020 13:47:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D4392236D2014; Mon, 22 Jun 2020 13:47:13 +0200 (CEST)
+Date:   Mon, 22 Jun 2020 13:47:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andy Lutomirski <luto@amacapital.net>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Mark Rutland <Mark.Rutland@arm.com>,
+        Matthew Helsley <mhelsley@vmware.com>,
+        Steven Rostedt <rostedt@goodmis.org>, jthierry@redhat.com,
+        Miroslav Benes <mbenes@suse.cz>
+Subject: Re: [PATCH 1/7] x86/entry: Fix #UD vs WARN more
+Message-ID: <20200622114713.GE577403@hirez.programming.kicks-ass.net>
+References: <20200618190207.GO576905@hirez.programming.kicks-ass.net>
+ <257B4193-08FB-4B3E-85E9-6C512B52C2C2@amacapital.net>
+ <20200618211823.GP576905@hirez.programming.kicks-ass.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200618211823.GP576905@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not fail probing when device_init_wakeup fails.
+On Thu, Jun 18, 2020 at 11:18:23PM +0200, Peter Zijlstra wrote:
 
-device_init_wakeup fails when the device is already enabled as wakeup
-device. Hence, the driver fails to probe the device if:
-- The device has already been enabled for wakeup (by e.g. sysfs)
-- The driver has been unloaded and is being loaded again.
+> > So maybe also do an untraced cond_local_irq_enable()?  After all, if
+> > we’re trying to report a bug from IRQs on, it should be okay to have
+> > IRQs on while reporting it. It might even work better than having IRQs
+> > off.
+> 
+> Yes, very good point. Now I want to go look at the old code... I'll frob
+> something tomorrow, brain is pretty fried by now.
 
-This goal of the patch is to fix the above cases.
+How's this then?
 
-Overwhelming majority of the drivers do not check device_init_wakeup
-return code.
-
-v2: add Fixes tags
-
-Fixes: cd70de2d356ee ("media: platform: Add ChromeOS EC CEC driver")
-Signed-off-by: Dariusz Marcinkiewicz <darekm@google.com>
 ---
- drivers/media/cec/platform/cros-ec/cros-ec-cec.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+Subject: x86/entry: Fix #UD vs WARN more
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Tue Jun 16 13:28:36 CEST 2020
 
-diff --git a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-index 0e7e2772f08f..2d95e16cd248 100644
---- a/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-+++ b/drivers/media/cec/platform/cros-ec/cros-ec-cec.c
-@@ -277,11 +277,7 @@ static int cros_ec_cec_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, cros_ec_cec);
- 	cros_ec_cec->cros_ec = cros_ec;
+vmlinux.o: warning: objtool: exc_invalid_op()+0x47: call to probe_kernel_read() leaves .noinstr.text section
+
+Since we use UD2 as a short-cut for 'CALL __WARN', treat it as such.
+Have the bare exception handler do the report_bug() thing.
+
+Fixes: 15a416e8aaa7 ("x86/entry: Treat BUG/WARN as NMI-like entries")
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/kernel/traps.c |   72 +++++++++++++++++++++++++-----------------------
+ 1 file changed, 38 insertions(+), 34 deletions(-)
+
+--- a/arch/x86/kernel/traps.c
++++ b/arch/x86/kernel/traps.c
+@@ -86,15 +86,14 @@ static inline void cond_local_irq_disabl
  
--	ret = device_init_wakeup(&pdev->dev, 1);
--	if (ret) {
--		dev_err(&pdev->dev, "failed to initialize wakeup\n");
--		return ret;
+ int is_valid_bugaddr(unsigned long addr)
+ {
+-	unsigned short ud;
+-
+ 	if (addr < TASK_SIZE_MAX)
+ 		return 0;
+ 
+-	if (probe_kernel_address((unsigned short *)addr, ud))
+-		return 0;
+-
+-	return ud == INSN_UD0 || ud == INSN_UD2;
++	/*
++	 * We got #UD, if the text isn't readable we'd have gotten
++	 * a different exception.
++	 */
++	return *(unsigned short)addr == INSN_UD2;
+ }
+ 
+ static nokprobe_inline int
+@@ -216,40 +215,45 @@ static inline void handle_invalid_op(str
+ 		      ILL_ILLOPN, error_get_trap_addr(regs));
+ }
+ 
+-DEFINE_IDTENTRY_RAW(exc_invalid_op)
++static noinstr bool handle_bug(struct pt_regs *regs)
+ {
+-	bool rcu_exit;
++	bool handled = false;
++
++	if (!is_valid_bugaddr(regs->ip))
++		return handled;
+ 
+ 	/*
+-	 * Handle BUG/WARN like NMIs instead of like normal idtentries:
+-	 * if we bugged/warned in a bad RCU context, for example, the last
+-	 * thing we want is to BUG/WARN again in the idtentry code, ad
+-	 * infinitum.
++	 * All lies, just get the WARN/BUG out.
++	 */
++	instrumentation_begin();
++	/*
++	 * Since we're emulating a CALL with exceptions, restore the interrupt
++	 * state to what it was at the exception site.
+ 	 */
+-	if (!user_mode(regs) && is_valid_bugaddr(regs->ip)) {
+-		enum bug_trap_type type;
++	if (regs->flags & X86_EFLAGS_IF)
++		raw_local_irq_enable();
++	if (report_bug(regs->ip, regs) == BUG_TRAP_TYPE_WARN) {
++		regs->ip += LEN_UD2;
++		handled = true;
++	}
++	if (regs->flags & X86_EFLAGS_IF)
++		raw_local_irq_disable();
++	instrumentation_end();
+ 
+-		nmi_enter();
+-		instrumentation_begin();
+-		trace_hardirqs_off_finish();
+-		type = report_bug(regs->ip, regs);
+-		if (regs->flags & X86_EFLAGS_IF)
+-			trace_hardirqs_on_prepare();
+-		instrumentation_end();
+-		nmi_exit();
+-
+-		if (type == BUG_TRAP_TYPE_WARN) {
+-			/* Skip the ud2. */
+-			regs->ip += LEN_UD2;
+-			return;
+-		}
++	return handled;
++}
+ 
+-		/*
+-		 * Else, if this was a BUG and report_bug returns or if this
+-		 * was just a normal #UD, we want to continue onward and
+-		 * crash.
+-		 */
 -	}
-+	device_init_wakeup(&pdev->dev, 1);
++DEFINE_IDTENTRY_RAW(exc_invalid_op)
++{
++	bool rcu_exit;
++
++	/*
++	 * We use UD2 as a short encoding for 'CALL __WARN', as such
++	 * handle it before exception entry to avoid recursive WARN
++	 * in case exception entry is the one triggering WARNs.
++	 */
++	if (!user_mode(regs) && handle_bug(regs))
++		return;
  
- 	cros_ec_cec->adap = cec_allocate_adapter(&cros_ec_cec_ops, cros_ec_cec,
- 						 DRV_NAME,
--- 
-2.27.0.111.gc72c7da667-goog
-
+ 	rcu_exit = idtentry_enter_cond_rcu(regs);
+ 	instrumentation_begin();
