@@ -2,47 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF564204116
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAF3204113
 	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730578AbgFVUIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 16:08:17 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:47089 "EHLO
+        id S1730559AbgFVUIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 16:08:15 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:57577 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730555AbgFVUIM (ORCPT
+        by vger.kernel.org with ESMTP id S1730552AbgFVUIM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Jun 2020 16:08:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592856491;
+        s=mimecast20190719; t=1592856490;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=X8VYE8zT0ZZk/gQDPSYsv+TzjOnRAhnxP4MI/7fpLnk=;
-        b=AMU/HKr3clEfxkKp3NPJFdbPrVYcFYnI7ASPK3nKV5E4CYidJm0iMBKtd3skQeAxGKhQbY
-        hQiGkd8YJoL/GOyIhQSEkFV6IQ0F39D8WDXdvbBDqfJGrULVPK2Fj9cz7Ecq5vBJLvlJ4g
-        PIrScEzY0a77Vohk8wQslgVXvNJt/b4=
+        bh=Dmkn5ElK0S49yC+YYieD973IcE+n74T+jY14yBT/f54=;
+        b=hf0EjPfFl/+9MNhZjzAnDiR1AToHjuu0/VRUqzAYps4eyH76Dc1R+HobrbW3WalZJGU0Ji
+        bHn2OndtGnJ/rLeO7AkCpWdwK1zafIS+nyUMz2ndl1P9cIQkBMgpTOq+0rVjyxrYj49Urz
+        NcW9SN99wz5WhcPyrO7ywe5dBpWunxE=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-442-3s15gR-KNumnjuFOuEV44A-1; Mon, 22 Jun 2020 16:08:06 -0400
-X-MC-Unique: 3s15gR-KNumnjuFOuEV44A-1
+ us-mta-483-6phvVNLoPj2iszwMxObftw-1; Mon, 22 Jun 2020 16:08:09 -0400
+X-MC-Unique: 6phvVNLoPj2iszwMxObftw-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 07A108005AD;
-        Mon, 22 Jun 2020 20:08:05 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A655D107B7C8;
+        Mon, 22 Jun 2020 20:08:07 +0000 (UTC)
 Received: from Whitewolf.redhat.com (ovpn-117-166.rdu2.redhat.com [10.10.117.166])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1BF9D5C1BD;
-        Mon, 22 Jun 2020 20:08:04 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 666E65C240;
+        Mon, 22 Jun 2020 20:08:06 +0000 (UTC)
 From:   Lyude Paul <lyude@redhat.com>
 To:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
 Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         Ilia Mirkin <imirkin@alum.mit.edu>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Alex Deucher <alexander.deucher@amd.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [RFC v5 04/10] drm/nouveau/kms/nv140-: Don't modify depth in state during atomic commit
-Date:   Mon, 22 Jun 2020 16:07:24 -0400
-Message-Id: <20200622200730.120716-5-lyude@redhat.com>
+Subject: [RFC v5 05/10] drm/nouveau/kms/nv50-: Fix disabling dithering
+Date:   Mon, 22 Jun 2020 16:07:25 -0400
+Message-Id: <20200622200730.120716-6-lyude@redhat.com>
 In-Reply-To: <20200622200730.120716-1-lyude@redhat.com>
 References: <20200622200730.120716-1-lyude@redhat.com>
 MIME-Version: 1.0
@@ -53,84 +55,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, we modify the depth value stored in the atomic state when
-performing a commit in order to workaround the fact we haven't
-implemented support for depths higher then 10 yet. This isn't idempotent
-though, as it will happen every atomic commit where we modify the OR
-state even if the head's depth in the atomic state hasn't been modified.
+While we expose the ability to turn off hardware dithering for nouveau,
+we actually make the mistake of turning it on anyway, due to
+dithering_depth containing a non-zero value if our dithering depth isn't
+also set to 6 bpc.
 
-Normally this wouldn't matter, since we don't modify OR state outside of
-modesets, but since the CRC capture region is implemented as part of the
-OR state in hardware we'll want to make sure all commits modifying OR
-state are idempotent so as to avoid changing the depth unexpectedly.
-
-So, fix this by simply not writing the reduced depth value we come up
-with to the atomic state.
+So, fix it by never enabling dithering when it's disabled.
 
 Signed-off-by: Lyude Paul <lyude@redhat.com>
 ---
- drivers/gpu/drm/nouveau/dispnv50/headc37d.c | 11 +++++++----
- drivers/gpu/drm/nouveau/dispnv50/headc57d.c | 11 +++++++----
- 2 files changed, 14 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/nouveau/dispnv50/head.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/headc37d.c b/drivers/gpu/drm/nouveau/dispnv50/headc37d.c
-index 4a9a32b89f746..9ef3c603fc43e 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/headc37d.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/headc37d.c
-@@ -27,17 +27,20 @@ static void
- headc37d_or(struct nv50_head *head, struct nv50_head_atom *asyh)
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/head.c b/drivers/gpu/drm/nouveau/dispnv50/head.c
+index e29ea40e7c334..72bc3bce396a7 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/head.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/head.c
+@@ -84,18 +84,20 @@ nv50_head_atomic_check_dither(struct nv50_head_atom *armh,
  {
- 	struct nv50_dmac *core = &nv50_disp(head->base.base.dev)->core->chan;
-+	u8 depth;
- 	u32 *push;
-+
- 	if ((push = evo_wait(core, 2))) {
- 		/*XXX: This is a dirty hack until OR depth handling is
- 		 *     improved later for deep colour etc.
- 		 */
- 		switch (asyh->or.depth) {
--		case 6: asyh->or.depth = 5; break;
--		case 5: asyh->or.depth = 4; break;
--		case 2: asyh->or.depth = 1; break;
--		case 0:	asyh->or.depth = 4; break;
-+		case 6: depth = 5; break;
-+		case 5: depth = 4; break;
-+		case 2: depth = 1; break;
-+		case 0:	depth = 4; break;
- 		default:
-+			depth = asyh->or.depth;
- 			WARN_ON(1);
- 			break;
- 		}
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/headc57d.c b/drivers/gpu/drm/nouveau/dispnv50/headc57d.c
-index 859131a8bc3c8..97141eb8e75ab 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/headc57d.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/headc57d.c
-@@ -27,17 +27,20 @@ static void
- headc57d_or(struct nv50_head *head, struct nv50_head_atom *asyh)
- {
- 	struct nv50_dmac *core = &nv50_disp(head->base.base.dev)->core->chan;
-+	u8 depth;
- 	u32 *push;
-+
- 	if ((push = evo_wait(core, 2))) {
- 		/*XXX: This is a dirty hack until OR depth handling is
- 		 *     improved later for deep colour etc.
- 		 */
- 		switch (asyh->or.depth) {
--		case 6: asyh->or.depth = 5; break;
--		case 5: asyh->or.depth = 4; break;
--		case 2: asyh->or.depth = 1; break;
--		case 0:	asyh->or.depth = 4; break;
-+		case 6: depth = 5; break;
-+		case 5: depth = 4; break;
-+		case 2: depth = 1; break;
-+		case 0:	depth = 4; break;
- 		default:
-+			depth = asyh->or.depth;
- 			WARN_ON(1);
- 			break;
- 		}
+ 	u32 mode = 0x00;
+ 
+-	if (asyc->dither.mode == DITHERING_MODE_AUTO) {
+-		if (asyh->base.depth > asyh->or.bpc * 3)
+-			mode = DITHERING_MODE_DYNAMIC2X2;
+-	} else {
+-		mode = asyc->dither.mode;
+-	}
++	if (asyc->dither.mode) {
++		if (asyc->dither.mode == DITHERING_MODE_AUTO) {
++			if (asyh->base.depth > asyh->or.bpc * 3)
++				mode = DITHERING_MODE_DYNAMIC2X2;
++		} else {
++			mode = asyc->dither.mode;
++		}
+ 
+-	if (asyc->dither.depth == DITHERING_DEPTH_AUTO) {
+-		if (asyh->or.bpc >= 8)
+-			mode |= DITHERING_DEPTH_8BPC;
+-	} else {
+-		mode |= asyc->dither.depth;
++		if (asyc->dither.depth == DITHERING_DEPTH_AUTO) {
++			if (asyh->or.bpc >= 8)
++				mode |= DITHERING_DEPTH_8BPC;
++		} else {
++			mode |= asyc->dither.depth;
++		}
+ 	}
+ 
+ 	asyh->dither.enable = mode;
 -- 
 2.26.2
 
