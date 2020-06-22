@@ -2,206 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401252030AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 09:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF032030B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 09:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731386AbgFVHdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 03:33:43 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:60085 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1731323AbgFVHdn (ORCPT
+        id S1731432AbgFVHiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 03:38:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731354AbgFVHiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 03:33:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592811220;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Bl1UeornAt/775yEZ4avXhN5Jaa/cDGCCOWXwTwWe1I=;
-        b=GpDyoyByw8k0aUyf64KHwtbsbYi0LY8V0n1z/J6zMZrHjmtnHiiX/ax6TtSwWuoWQq41jM
-        +q08pocTZwGe1ZHV3ohq6Rc2CHRkURVsKNlRbUxln/F8ezzB+UA2zHyLaGHRUJEnOadl4l
-        nV3kyNeJ3FQOPP7bRYFl9WqB9JPrhEI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-81-QKvxSkPTPMOLxRw3SSrOFA-1; Mon, 22 Jun 2020 03:33:34 -0400
-X-MC-Unique: QKvxSkPTPMOLxRw3SSrOFA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2C864A0BD8;
-        Mon, 22 Jun 2020 07:33:33 +0000 (UTC)
-Received: from [10.36.113.213] (ovpn-113-213.ams2.redhat.com [10.36.113.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CF4AC5C296;
-        Mon, 22 Jun 2020 07:33:29 +0000 (UTC)
-Subject: Re: [PATCH v2 3/3] mm/shuffle: remove dynamic reconfiguration
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Huang Ying <ying.huang@intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>
-References: <20200619125923.22602-1-david@redhat.com>
- <20200619125923.22602-4-david@redhat.com>
- <CAPcyv4hvwHDa=1suuuEFX5mmpOm12kv-Axbd8G7bp9iaA+FWAA@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
- 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
-Organization: Red Hat GmbH
-Message-ID: <7a5f9ea1-7405-7058-af60-eea0bc165e79@redhat.com>
-Date:   Mon, 22 Jun 2020 09:33:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <CAPcyv4hvwHDa=1suuuEFX5mmpOm12kv-Axbd8G7bp9iaA+FWAA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        Mon, 22 Jun 2020 03:38:54 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73BB8C061794
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 00:38:53 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id i16so11927377qtr.7
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 00:38:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=pFf+0uM7OhIyngSgu5Yj3nmTerq75fKAoaRpUy4UdZc=;
+        b=bTVxwjJv+BTutnnXMZTcEX3+yPsFy6WBiq161bQHyVik5hKmDYVz6l3cXO9z35R9M7
+         ycQUCVSiaYVFbU6w+1WTRaBAZV9ldva9qanfc1jYpovqrquAv4/jL1+xXqTJAcoeou+o
+         PMLpwjGVL0NKZuj9lg1bwKpePJCe5tULsWUfkWfwapaMcELKPAhQ2LPuerMI+rpMbSgf
+         u0hUvagxULfqU5kCvRVB016gWF1LgC3hLeScJ/VigNKOGXvCrndZyv+jix5YCMWZXDqz
+         aQLT3gkFHPkujKYdmcrstb7SGKFiQhap0PPmpiazbezehuq/szKbWCDJRgkPbizzx3dj
+         pFBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=pFf+0uM7OhIyngSgu5Yj3nmTerq75fKAoaRpUy4UdZc=;
+        b=rZFHRrQJ5J5KOnyj1U8kztK/WEDhHXAKsCE2SefTHkDTXJu7ZIQaNDaxha6syv+WId
+         I8pUrS4hbBH6McBYHlXgFTpqSxQo01LiE95D48jJLZljLIqLdtBD2kkkr+DCk0zRaQBD
+         gvCjQohz43xHFY4WGUP3rreLyzAiI4v3LHUy0cav0rQPJmy9kDmxYlywhcnTAtmIb4fW
+         vZafEFtgbg1o5CG36oYfEPnzQ7I6ZcM1vSIYRPBRcu8GQmQhMpHktj8aVHHdUKfRn2z/
+         rTSdL2yqPEP0xBEiprCuusSONBREoy7D3m3OXylV8+zgZTDHxrYzhYilrzs64d0c5ZoE
+         J9rw==
+X-Gm-Message-State: AOAM531aJiUaZC3IKz3ZNpNml0nKbMK4cE7v6GXJehbul0VPjVbkN6Qq
+        uMRu/AOFHZ3L5WJJTuxJneA=
+X-Google-Smtp-Source: ABdhPJyOjIb0iw1iEKpl95OKmTjBr1Oy0RUGpwzNGuopcAG0sGqjFXgoB4uVMm0o57J4Hut2uISUIQ==
+X-Received: by 2002:ac8:3f75:: with SMTP id w50mr9210884qtk.123.1592811532729;
+        Mon, 22 Jun 2020 00:38:52 -0700 (PDT)
+Received: from ip-172-31-24-31.ec2.internal (ec2-54-234-246-66.compute-1.amazonaws.com. [54.234.246.66])
+        by smtp.gmail.com with ESMTPSA id p26sm632325qkm.76.2020.06.22.00.38.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 00:38:52 -0700 (PDT)
+From:   "Rodolfo C. Villordo" <rodolfovillordo@gmail.com>
+Cc:     rodolfovillordo@gmail.com, Rob Springer <rspringer@google.com>,
+        Todd Poynor <toddpoynor@google.com>,
+        Ben Chan <benchan@chromium.org>, Richard Yeh <rcy@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] staging: gasket: replace symbolic permissions
+Date:   Mon, 22 Jun 2020 07:36:12 +0000
+Message-Id: <20200622073612.12282-1-rodolfovillordo@gmail.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20.06.20 03:49, Dan Williams wrote:
-> On Fri, Jun 19, 2020 at 5:59 AM David Hildenbrand <david@redhat.com> wrote:
->>
->> Commit e900a918b098 ("mm: shuffle initial free memory to improve
->> memory-side-cache utilization") promised "autodetection of a
->> memory-side-cache (to be added in a follow-on patch)" over a year ago.
->>
->> The original series included patches [1], however, they were dropped
->> during review [2] to be followed-up later.
->>
->> Due to lack of platforms that publish an HMAT, autodetection is currently
->> not implemented. However, manual activation is actively used [3]. Let's
->> simplify for now and re-add when really (ever?) needed.
->>
->> [1] https://lkml.kernel.org/r/154510700291.1941238.817190985966612531.stgit@dwillia2-desk3.amr.corp.intel.com
->> [2] https://lkml.kernel.org/r/154690326478.676627.103843791978176914.stgit@dwillia2-desk3.amr.corp.intel.com
->> [3] https://lkml.kernel.org/r/CAPcyv4irwGUU2x+c6b4L=KbB1dnasNKaaZd6oSpYjL9kfsnROQ@mail.gmail.com
->>
->> Cc: Andrew Morton <akpm@linux-foundation.org>
->> Cc: Johannes Weiner <hannes@cmpxchg.org>
->> Cc: Michal Hocko <mhocko@suse.com>
->> Cc: Minchan Kim <minchan@kernel.org>
->> Cc: Huang Ying <ying.huang@intel.com>
->> Cc: Wei Yang <richard.weiyang@gmail.com>
->> Cc: Mel Gorman <mgorman@techsingularity.net>
->> Cc: Dan Williams <dan.j.williams@intel.com>
->> Signed-off-by: David Hildenbrand <david@redhat.com>
->> ---
->>  mm/shuffle.c | 28 ++--------------------------
->>  mm/shuffle.h | 17 -----------------
->>  2 files changed, 2 insertions(+), 43 deletions(-)
->>
->> diff --git a/mm/shuffle.c b/mm/shuffle.c
->> index dd13ab851b3ee..9b5cd4b004b0f 100644
->> --- a/mm/shuffle.c
->> +++ b/mm/shuffle.c
->> @@ -10,33 +10,11 @@
->>  #include "shuffle.h"
->>
->>  DEFINE_STATIC_KEY_FALSE(page_alloc_shuffle_key);
->> -static unsigned long shuffle_state __ro_after_init;
->> -
->> -/*
->> - * Depending on the architecture, module parameter parsing may run
->> - * before, or after the cache detection. SHUFFLE_FORCE_DISABLE prevents,
->> - * or reverts the enabling of the shuffle implementation. SHUFFLE_ENABLE
->> - * attempts to turn on the implementation, but aborts if it finds
->> - * SHUFFLE_FORCE_DISABLE already set.
->> - */
->> -__meminit void page_alloc_shuffle(enum mm_shuffle_ctl ctl)
->> -{
->> -       if (ctl == SHUFFLE_FORCE_DISABLE)
->> -               set_bit(SHUFFLE_FORCE_DISABLE, &shuffle_state);
->> -
->> -       if (test_bit(SHUFFLE_FORCE_DISABLE, &shuffle_state)) {
->> -               if (test_and_clear_bit(SHUFFLE_ENABLE, &shuffle_state))
->> -                       static_branch_disable(&page_alloc_shuffle_key);
->> -       } else if (ctl == SHUFFLE_ENABLE
->> -                       && !test_and_set_bit(SHUFFLE_ENABLE, &shuffle_state))
->> -               static_branch_enable(&page_alloc_shuffle_key);
->> -}
->>
->>  static bool shuffle_param;
->>  static int shuffle_show(char *buffer, const struct kernel_param *kp)
->>  {
->> -       return sprintf(buffer, "%c\n", test_bit(SHUFFLE_ENABLE, &shuffle_state)
->> -                       ? 'Y' : 'N');
->> +       return sprintf(buffer, "%c\n", shuffle_param ? 'Y' : 'N');
->>  }
->>
->>  static __meminit int shuffle_store(const char *val,
->> @@ -47,9 +25,7 @@ static __meminit int shuffle_store(const char *val,
->>         if (rc < 0)
->>                 return rc;
->>         if (shuffle_param)
->> -               page_alloc_shuffle(SHUFFLE_ENABLE);
->> -       else
->> -               page_alloc_shuffle(SHUFFLE_FORCE_DISABLE);
->> +               static_branch_enable(&page_alloc_shuffle_key);
->>         return 0;
->>  }
-> 
-> Let's do proper input validation here and require 1 / 'true' to enable
-> shuffling and not also allow 0 to be an 'enable' value.
+WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
++               .attr = __ATTR(_name, S_IRUGO, _show_function, NULL),          \
+warning detected by checkpatch.pl
 
-I don't think that's currently done?
+Unable to use __ATTR_RO(). Driver has multiple files using the same show
+function:
 
-param_set_bool(val, kp) will only default val==NULL to 'true'. Passing 0
-will properly be handled by strtobool(). Or am I missing something?
+$ grep GASKET_SYSFS_RO drivers/staging/gasket/*
+drivers/staging/gasket/apex_driver.c:   GASKET_SYSFS_RO(node_0_page_table_entries, sysfs_show,
+drivers/staging/gasket/apex_driver.c:   GASKET_SYSFS_RO(node_0_simple_page_table_entries, sysfs_show,
+drivers/staging/gasket/apex_driver.c:   GASKET_SYSFS_RO(node_0_num_mapped_pages, sysfs_show,
+drivers/staging/gasket/gasket_core.c:   GASKET_SYSFS_RO(bar_offsets, gasket_sysfs_data_show, ATTR_BAR_OFFSETS),
+drivers/staging/gasket/gasket_core.c:   GASKET_SYSFS_RO(bar_sizes, gasket_sysfs_data_show, ATTR_BAR_SIZES),
+drivers/staging/gasket/gasket_core.c:   GASKET_SYSFS_RO(driver_version, gasket_sysfs_data_show,
+drivers/staging/gasket/gasket_core.c:   GASKET_SYSFS_RO(framework_version, gasket_sysfs_data_show,
+drivers/staging/gasket/gasket_core.c:   GASKET_SYSFS_RO(device_type, gasket_sysfs_data_show, ATTR_DEVICE_TYPE),
+drivers/staging/gasket/gasket_core.c:   GASKET_SYSFS_RO(revision, gasket_sysfs_data_show,
+drivers/staging/gasket/gasket_core.c:   GASKET_SYSFS_RO(pci_address, gasket_sysfs_data_show, ATTR_PCI_ADDRESS),
+drivers/staging/gasket/gasket_core.c:   GASKET_SYSFS_RO(status, gasket_sysfs_data_show, ATTR_STATUS),
+drivers/staging/gasket/gasket_core.c:   GASKET_SYSFS_RO(is_device_owned, gasket_sysfs_data_show,
+drivers/staging/gasket/gasket_core.c:   GASKET_SYSFS_RO(device_owner, gasket_sysfs_data_show,
+drivers/staging/gasket/gasket_core.c:   GASKET_SYSFS_RO(write_open_count, gasket_sysfs_data_show,
+drivers/staging/gasket/gasket_core.c:   GASKET_SYSFS_RO(reset_count, gasket_sysfs_data_show, ATTR_RESET_COUNT),
+drivers/staging/gasket/gasket_core.c:   GASKET_SYSFS_RO(user_mem_ranges, gasket_sysfs_data_show,
+drivers/staging/gasket/gasket_interrupt.c:      GASKET_SYSFS_RO(interrupt_counts, interrupt_sysfs_show,
 
-Thanks!
+Signed-off-by: Rodolfo C. Villordo <rodolfovillordo@gmail.com>
+---
+ drivers/staging/gasket/gasket_sysfs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/staging/gasket/gasket_sysfs.h b/drivers/staging/gasket/gasket_sysfs.h
+index ab5aa351d555..d5e167dfbe76 100644
+--- a/drivers/staging/gasket/gasket_sysfs.h
++++ b/drivers/staging/gasket/gasket_sysfs.h
+@@ -71,7 +71,7 @@ struct gasket_sysfs_attribute {
+ 
+ #define GASKET_SYSFS_RO(_name, _show_function, _attr_type)                     \
+ 	{                                                                      \
+-		.attr = __ATTR(_name, S_IRUGO, _show_function, NULL),          \
++		.attr = __ATTR(_name, 0444, _show_function, NULL),          \
+ 		.data.attr_type = _attr_type                                   \
+ 	}
+ 
 -- 
-Thanks,
-
-David / dhildenb
+2.17.1
 
