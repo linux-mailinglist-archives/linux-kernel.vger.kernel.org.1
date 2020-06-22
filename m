@@ -2,51 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B94203FAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04473203F9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 20:59:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730546AbgFVTAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 15:00:14 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:54112 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730519AbgFVTAI (ORCPT
+        id S1730467AbgFVS7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 14:59:50 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:60942 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730416AbgFVS7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 15:00:08 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05MIxVIF102667;
-        Mon, 22 Jun 2020 13:59:31 -0500
+        Mon, 22 Jun 2020 14:59:44 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05MIxWjK053537;
+        Mon, 22 Jun 2020 13:59:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592852371;
-        bh=duixcIbyvLfRQUl05kcDLZ9l5wNOLbe7Kwc9Cia/AFw=;
+        s=ti-com-17Q1; t=1592852372;
+        bh=9rbi449bFmHQundQ8dlXaifDs/ndof179QCH2fsw94w=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=FSeU5aq6cPZbz03hYKjj1gLFeIbC03rtMYc0uoQOSmKkEmvrf+QDP5zYdHHFpJFgg
-         8ne0TyJ0FR6BCCseSVldWIXJc/JrHHrIoOp+M7zo5kKieugOAO2rITolbmxXuWswAx
-         SO3ed4XXxMJckSkRQfmK//XR+ElV2BqQhMydX2L0=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05MIxVp6038079
+        b=Zt6mwbywt8/DxgUn594YhlVIt4rza/ACSG5n9E9qmLJZu2HrowFRmDPU8zfUaNmyP
+         FOQASu8kbRdv0uJURPzlZKyNfr/aIVGcpBOvqQN7gfHGiBdeBMZ1w4729qjUZSBtxv
+         orMhq/gtRC/NMdsg0cojrAz2MjOniaBgrnl1/7n0=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05MIxWqt010424
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 22 Jun 2020 13:59:31 -0500
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+        Mon, 22 Jun 2020 13:59:32 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 22
- Jun 2020 13:59:30 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ Jun 2020 13:59:32 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 22 Jun 2020 13:59:30 -0500
+ Frontend Transport; Mon, 22 Jun 2020 13:59:31 -0500
 Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05MIxUab113498;
-        Mon, 22 Jun 2020 13:59:30 -0500
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05MIxVNo078747;
+        Mon, 22 Jun 2020 13:59:31 -0500
 From:   Dan Murphy <dmurphy@ti.com>
 To:     <jacek.anaszewski@gmail.com>, <pavel@ucw.cz>, <robh@kernel.org>
 CC:     <devicetree@vger.kernel.org>, <linux-leds@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Dan Murphy <dmurphy@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH v29 12/16] ARM: defconfig: u8500: Add LP55XX_COMMON config flag
-Date:   Mon, 22 Jun 2020 13:59:15 -0500
-Message-ID: <20200622185919.2131-13-dmurphy@ti.com>
+        <linux-arm-kernel@lists.infradead.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v29 15/16] leds: lp55xx: Fix file permissions to use DEVICE_ATTR macros
+Date:   Mon, 22 Jun 2020 13:59:18 -0500
+Message-ID: <20200622185919.2131-16-dmurphy@ti.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200622185919.2131-1-dmurphy@ti.com>
 References: <20200622185919.2131-1-dmurphy@ti.com>
@@ -59,29 +57,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dependencies for the LP55XX LED drivers have been updated so that
-the child devices (i.e. LP5521) now depends on the LP55XX_COMMON config
-flag as opposed to the device selecting the LP55XX_COMMON flag.  The
-LP55XX_COMMON needs to be set in the defconfig.
+Fix the checkpatch warnings for the use of the file permission macros.
+In converting the file permissions to the DEVICE_ATTR_XX macros the
+call back function names needed to be updated within the code.
 
-CC: Linus Walleij <linus.walleij@linaro.org>
+This means that the lp55xx_ needed to be dropped in the name to keep in
+harmony with the ABI documentation.
+
+Acked-by: Pavel Machek <pavel@ucw.cz>
+Acked-by: Jacek Anaszewski <jacek.anaszewski@gmail.com>
 Signed-off-by: Dan Murphy <dmurphy@ti.com>
 ---
- arch/arm/configs/u8500_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/leds/leds-lp55xx-common.c | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
 
-diff --git a/arch/arm/configs/u8500_defconfig b/arch/arm/configs/u8500_defconfig
-index 28dd7cf56048..dea599e1c17e 100644
---- a/arch/arm/configs/u8500_defconfig
-+++ b/arch/arm/configs/u8500_defconfig
-@@ -113,6 +113,7 @@ CONFIG_NEW_LEDS=y
- CONFIG_LEDS_CLASS=y
- CONFIG_LEDS_LM3530=y
- CONFIG_LEDS_GPIO=y
-+CONFIG_LEDS_LP55XX_COMMON=y
- CONFIG_LEDS_LP5521=y
- CONFIG_LEDS_TRIGGER_HEARTBEAT=y
- CONFIG_RTC_CLASS=y
+diff --git a/drivers/leds/leds-lp55xx-common.c b/drivers/leds/leds-lp55xx-common.c
+index d33564aef563..59c3234ba1d7 100644
+--- a/drivers/leds/leds-lp55xx-common.c
++++ b/drivers/leds/leds-lp55xx-common.c
+@@ -83,7 +83,7 @@ static int lp55xx_post_init_device(struct lp55xx_chip *chip)
+ 	return cfg->post_init_device(chip);
+ }
+ 
+-static ssize_t lp55xx_show_current(struct device *dev,
++static ssize_t led_current_show(struct device *dev,
+ 			    struct device_attribute *attr,
+ 			    char *buf)
+ {
+@@ -92,7 +92,7 @@ static ssize_t lp55xx_show_current(struct device *dev,
+ 	return scnprintf(buf, PAGE_SIZE, "%d\n", led->led_current);
+ }
+ 
+-static ssize_t lp55xx_store_current(struct device *dev,
++static ssize_t led_current_store(struct device *dev,
+ 			     struct device_attribute *attr,
+ 			     const char *buf, size_t len)
+ {
+@@ -116,7 +116,7 @@ static ssize_t lp55xx_store_current(struct device *dev,
+ 	return len;
+ }
+ 
+-static ssize_t lp55xx_show_max_current(struct device *dev,
++static ssize_t max_current_show(struct device *dev,
+ 			    struct device_attribute *attr,
+ 			    char *buf)
+ {
+@@ -125,9 +125,8 @@ static ssize_t lp55xx_show_max_current(struct device *dev,
+ 	return scnprintf(buf, PAGE_SIZE, "%d\n", led->max_current);
+ }
+ 
+-static DEVICE_ATTR(led_current, S_IRUGO | S_IWUSR, lp55xx_show_current,
+-		lp55xx_store_current);
+-static DEVICE_ATTR(max_current, S_IRUGO , lp55xx_show_max_current, NULL);
++static DEVICE_ATTR_RW(led_current);
++static DEVICE_ATTR_RO(max_current);
+ 
+ static struct attribute *lp55xx_led_attrs[] = {
+ 	&dev_attr_led_current.attr,
+@@ -271,7 +270,7 @@ static int lp55xx_request_firmware(struct lp55xx_chip *chip)
+ 				GFP_KERNEL, chip, lp55xx_firmware_loaded);
+ }
+ 
+-static ssize_t lp55xx_show_engine_select(struct device *dev,
++static ssize_t select_engine_show(struct device *dev,
+ 			    struct device_attribute *attr,
+ 			    char *buf)
+ {
+@@ -281,7 +280,7 @@ static ssize_t lp55xx_show_engine_select(struct device *dev,
+ 	return sprintf(buf, "%d\n", chip->engine_idx);
+ }
+ 
+-static ssize_t lp55xx_store_engine_select(struct device *dev,
++static ssize_t select_engine_store(struct device *dev,
+ 			     struct device_attribute *attr,
+ 			     const char *buf, size_t len)
+ {
+@@ -323,7 +322,7 @@ static inline void lp55xx_run_engine(struct lp55xx_chip *chip, bool start)
+ 		chip->cfg->run_engine(chip, start);
+ }
+ 
+-static ssize_t lp55xx_store_engine_run(struct device *dev,
++static ssize_t run_engine_store(struct device *dev,
+ 			     struct device_attribute *attr,
+ 			     const char *buf, size_t len)
+ {
+@@ -348,9 +347,8 @@ static ssize_t lp55xx_store_engine_run(struct device *dev,
+ 	return len;
+ }
+ 
+-static DEVICE_ATTR(select_engine, S_IRUGO | S_IWUSR,
+-		   lp55xx_show_engine_select, lp55xx_store_engine_select);
+-static DEVICE_ATTR(run_engine, S_IWUSR, NULL, lp55xx_store_engine_run);
++static DEVICE_ATTR_RW(select_engine);
++static DEVICE_ATTR_WO(run_engine);
+ 
+ static struct attribute *lp55xx_engine_attributes[] = {
+ 	&dev_attr_select_engine.attr,
 -- 
 2.26.2
 
