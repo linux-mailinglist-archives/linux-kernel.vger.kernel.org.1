@@ -2,244 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7438204060
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:29:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6450C204084
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728410AbgFVT3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 15:29:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
+        id S1728777AbgFVTcU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 15:32:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728594AbgFVT3X (ORCPT
+        with ESMTP id S1728150AbgFVTcS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 15:29:23 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F67C061573;
-        Mon, 22 Jun 2020 12:29:23 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id b5so8653309pgm.8;
-        Mon, 22 Jun 2020 12:29:23 -0700 (PDT)
+        Mon, 22 Jun 2020 15:32:18 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E60C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:32:18 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id t6so14083502otk.9
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 12:32:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=8Ul/VyioCZgSyOOWRzsGy5FBJiYJTcxPpaUmWpPopUw=;
-        b=aSwM6DsYB1/dpxaO1GdMEYGz5So4Bsx1gHNxIcRQmwSHWyd2LDIyy526R7Dm3vg/U0
-         hPW8FovOHjF3ncjzSwNS49l65o4mEwt+stfbXxbXTtabuP9VzJKt5kNpsKqf8gWbm7e8
-         Jy7KLq/Oa8nWPd65hZpHq6atvB/hDkCkGB5hzYKgwST5ssIXtMTaX607CWH2DAsebuZc
-         TknY4iL3TlMu7nX6yjVZb1gWo1BmzG1feeMDspM9plW9Ecx/qLNW1DSCzw3r6Hp5ot3y
-         5HWMB02qByZbhRTIdJ8xnRPm+YzVrRE+zMT+QXXnuQNRfRXjGlzZvKk1PtjLFbK8TCW7
-         Zqcg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kDvWJFrzfpWbkxz8YXuc2rLUJQ0CoVh8mMluFwhFK9g=;
+        b=X4t7jax66/02t8oexfXxT0PX6kXxK5rECyLccSKXxOoR/BkGQMHjqxEkJEN2Mm/X5C
+         YlhyuvZzjl2K51NtRfnqMTHkwxtI8Uq0QybiLU6lXgXwrWDYh7IL84D9cm5G/+7ATEVl
+         OCOfKFp6jJAOR6rkGn2vefwW2qKFVjRwzEs4z6NnDS7PLZU3CwM5YdQVmZ2xtadDm/Fb
+         vtQUapslp69ZExR2yYVeVqY7DHLy0vGOCzFNzhhDzqVrZRt45QgeZ3lmcFYM8mkvG4JR
+         5t2QO9VHFSR/CJ0E+pOVnXztmWWnD7FvUKEfCiGiWNgIgeoVy/op0sPXg6XwEFxkZpWB
+         yNMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=8Ul/VyioCZgSyOOWRzsGy5FBJiYJTcxPpaUmWpPopUw=;
-        b=tizh9Qd0OK37FJWAgfKljBC95Ijjiw8oKgWCjVSfGUDJFuOpjc3nc11Lg9JxlqdTDJ
-         uoyUOFcSv1rfgC1C+n1StKCJ3807mFHHRZZVzaFJ5jiiy1QYtOZrOEw+h/VshX2Nh/Yy
-         vawH70gORfmVcS8fgGv+XclBgyC3mNg8VMIa5c97/cO8YTnHLOXpEkPXvsGgNacC+/9z
-         1++UAdzWcQlmP2dYwLdAuDJzrFXB4opxTNat3F47Jx9xDOTMXC/rMcpb0jmks3/1Bn3h
-         Fa0MPnXC7e1PKJMPNekh65GJhgugeKQLgyJSjX+77zcwFL77tVlNfbO23XkFY68jvLMc
-         pN9A==
-X-Gm-Message-State: AOAM5317J7vIKpPmmWHRdgpd1GVJ97/6iXR+2YBev1MKOBI3gFwkhUiO
-        NGgE49GND1o8GmNI0Pj3aJj0J/XD
-X-Google-Smtp-Source: ABdhPJw2WQbvHFWoo0cnD9rBNEULjMl/Sezb/fUY29hFdcN9wqV/dwQmcM+u/jI25YdJul3DpG7Ejg==
-X-Received: by 2002:a63:cd4d:: with SMTP id a13mr14285541pgj.49.1592854163147;
-        Mon, 22 Jun 2020 12:29:23 -0700 (PDT)
-Received: from bbox-1.mtv.corp.google.com ([2620:15c:211:1:3e01:2939:5992:52da])
-        by smtp.gmail.com with ESMTPSA id mu17sm264603pjb.53.2020.06.22.12.29.20
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kDvWJFrzfpWbkxz8YXuc2rLUJQ0CoVh8mMluFwhFK9g=;
+        b=A0FPX4Fdhu4SNtHXtFqLYDJoUmIZe6XxUS2ScPOi65g7a5h1l5VUAtGLrWqnkwI1PG
+         JoLe28KX27L3QHqQiTYVUa7qZq7uV9S2h/y8z0QLo4SapM9w2cL14veUA7t3bsrWbWc8
+         MGayeX/Hrcz6lduxq4Gro9OCdP8SKYjsp0c3yFPhLhTBWY42pUN8l51lifF5jAihcJrG
+         mNFriauRFLwaGWWvYO1VeBztPipneA2+o2hLajDPS2cWftxyRJIVmCdvUJ0GKnTXmAja
+         nBbxGv3upE35VlLvwzFu73X9plorxkYAJASXsp3/A7h2Tv4Mni4DuA33Qe/42/aRSNJ0
+         JWjQ==
+X-Gm-Message-State: AOAM53194hXHw5aespQXzkXFCZAd5Qq4KXk2ui+MwOB+pOGoCmeQEb1C
+        HwjKro+vgGiDOKjE0PIEAtmUZg==
+X-Google-Smtp-Source: ABdhPJw1Yikg9xiPvrCpS0EyuUZHl3QTpNdEklGCVVNVy0Q/IhIJ13yL7Nwk/uZDAT74cBkAEULrRg==
+X-Received: by 2002:a9d:67c1:: with SMTP id c1mr14225076otn.27.1592854337928;
+        Mon, 22 Jun 2020 12:32:17 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id a10sm3630772ooo.39.2020.06.22.12.32.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 12:29:21 -0700 (PDT)
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-mm <linux-mm@kvack.org>, linux-api@vger.kernel.org,
-        oleksandr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        John Dias <joaodias@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jann Horn <jannh@google.com>,
-        alexander.h.duyck@linux.intel.com, sj38.park@gmail.com,
-        David Rientjes <rientjes@google.com>,
-        Arjun Roy <arjunroy@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Brauner <christian@brauner.io>,
-        Daniel Colascione <dancol@google.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        SeongJae Park <sjpark@amazon.de>, linux-man@vger.kernel.org
-Subject: [PATCH v8 4/4] mm/madvise: check fatal signal pending of target process
-Date:   Mon, 22 Jun 2020 12:29:00 -0700
-Message-Id: <20200622192900.22757-5-minchan@kernel.org>
-X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
-In-Reply-To: <20200622192900.22757-1-minchan@kernel.org>
-References: <20200622192900.22757-1-minchan@kernel.org>
+        Mon, 22 Jun 2020 12:32:17 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 12:29:32 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Maulik Shah <mkshah@codeaurora.org>, agross@kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dianders@chromium.org, rnayak@codeaurora.org, ilina@codeaurora.org,
+        lsrao@codeaurora.org, john.stultz@linaro.org
+Subject: Re: [PATCH] soc: qcom: rpmh-rsc: Set suppress_bind_attrs flag
+Message-ID: <20200622192932.GV128451@builder.lan>
+References: <1592808805-2437-1-git-send-email-mkshah@codeaurora.org>
+ <159281658960.62212.15968925558324290917@swboyd.mtv.corp.google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <159281658960.62212.15968925558324290917@swboyd.mtv.corp.google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Bail out to prevent unnecessary CPU overhead if target process has pending
-fatal signal during (MADV_COLD|MADV_PAGEOUT) operation.
+On Mon 22 Jun 02:03 PDT 2020, Stephen Boyd wrote:
 
-Link: http://lkml.kernel.org/r/20200302193630.68771-4-minchan@kernel.org
-Signed-off-by: Minchan Kim <minchan@kernel.org>
-Reviewed-by: Suren Baghdasaryan <surenb@google.com>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-Cc: Brian Geffon <bgeffon@google.com>
-Cc: Christian Brauner <christian@brauner.io>
-Cc: Daniel Colascione <dancol@google.com>
-Cc: Jann Horn <jannh@google.com>
-Cc: Jens Axboe <axboe@kernel.dk>
-Cc: Joel Fernandes <joel@joelfernandes.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: John Dias <joaodias@google.com>
-Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Oleksandr Natalenko <oleksandr@redhat.com>
-Cc: Sandeep Patil <sspatil@google.com>
-Cc: SeongJae Park <sj38.park@gmail.com>
-Cc: SeongJae Park <sjpark@amazon.de>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Sonny Rao <sonnyrao@google.com>
-Cc: Tim Murray <timmurray@google.com>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: <linux-man@vger.kernel.org>
----
- mm/madvise.c | 29 +++++++++++++++++++++--------
- 1 file changed, 21 insertions(+), 8 deletions(-)
+> Quoting Maulik Shah (2020-06-21 23:53:25)
+> > rpmh-rsc driver is fairly core to system and should not be removable
+> > once its probed. However it allows to unbind driver from sysfs using
+> > below command which results into a crash on sc7180.
+> 
+> What is the crash? The world falls apart because rpmh APIs start
+> referencing pointers that point to freed memory?
+> 
 
-diff --git a/mm/madvise.c b/mm/madvise.c
-index 23abca3f93fa..a16dba21cdf6 100644
---- a/mm/madvise.c
-+++ b/mm/madvise.c
-@@ -39,6 +39,7 @@
- struct madvise_walk_private {
- 	struct mmu_gather *tlb;
- 	bool pageout;
-+	struct task_struct *target_task;
- };
- 
- /*
-@@ -319,6 +320,10 @@ static int madvise_cold_or_pageout_pte_range(pmd_t *pmd,
- 	if (fatal_signal_pending(current))
- 		return -EINTR;
- 
-+	if (private->target_task &&
-+			fatal_signal_pending(private->target_task))
-+		return -EINTR;
-+
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- 	if (pmd_trans_huge(*pmd)) {
- 		pmd_t orig_pmd;
-@@ -480,12 +485,14 @@ static const struct mm_walk_ops cold_walk_ops = {
- };
- 
- static void madvise_cold_page_range(struct mmu_gather *tlb,
-+			     struct task_struct *task,
- 			     struct vm_area_struct *vma,
- 			     unsigned long addr, unsigned long end)
- {
- 	struct madvise_walk_private walk_private = {
- 		.pageout = false,
- 		.tlb = tlb,
-+		.target_task = task,
- 	};
- 
- 	tlb_start_vma(tlb, vma);
-@@ -493,7 +500,8 @@ static void madvise_cold_page_range(struct mmu_gather *tlb,
- 	tlb_end_vma(tlb, vma);
- }
- 
--static long madvise_cold(struct vm_area_struct *vma,
-+static long madvise_cold(struct task_struct *task,
-+			struct vm_area_struct *vma,
- 			struct vm_area_struct **prev,
- 			unsigned long start_addr, unsigned long end_addr)
- {
-@@ -506,19 +514,21 @@ static long madvise_cold(struct vm_area_struct *vma,
- 
- 	lru_add_drain();
- 	tlb_gather_mmu(&tlb, mm, start_addr, end_addr);
--	madvise_cold_page_range(&tlb, vma, start_addr, end_addr);
-+	madvise_cold_page_range(&tlb, task, vma, start_addr, end_addr);
- 	tlb_finish_mmu(&tlb, start_addr, end_addr);
- 
- 	return 0;
- }
- 
- static void madvise_pageout_page_range(struct mmu_gather *tlb,
-+			     struct task_struct *task,
- 			     struct vm_area_struct *vma,
- 			     unsigned long addr, unsigned long end)
- {
- 	struct madvise_walk_private walk_private = {
- 		.pageout = true,
- 		.tlb = tlb,
-+		.target_task = task,
- 	};
- 
- 	tlb_start_vma(tlb, vma);
-@@ -542,7 +552,8 @@ static inline bool can_do_pageout(struct vm_area_struct *vma)
- 		inode_permission(file_inode(vma->vm_file), MAY_WRITE) == 0;
- }
- 
--static long madvise_pageout(struct vm_area_struct *vma,
-+static long madvise_pageout(struct task_struct *task,
-+			struct vm_area_struct *vma,
- 			struct vm_area_struct **prev,
- 			unsigned long start_addr, unsigned long end_addr)
- {
-@@ -558,7 +569,7 @@ static long madvise_pageout(struct vm_area_struct *vma,
- 
- 	lru_add_drain();
- 	tlb_gather_mmu(&tlb, mm, start_addr, end_addr);
--	madvise_pageout_page_range(&tlb, vma, start_addr, end_addr);
-+	madvise_pageout_page_range(&tlb, task, vma, start_addr, end_addr);
- 	tlb_finish_mmu(&tlb, start_addr, end_addr);
- 
- 	return 0;
-@@ -938,7 +949,8 @@ static int madvise_inject_error(int behavior,
- #endif
- 
- static long
--madvise_vma(struct vm_area_struct *vma, struct vm_area_struct **prev,
-+madvise_vma(struct task_struct *task, struct vm_area_struct *vma,
-+		struct vm_area_struct **prev,
- 		unsigned long start, unsigned long end, int behavior)
- {
- 	switch (behavior) {
-@@ -947,9 +959,9 @@ madvise_vma(struct vm_area_struct *vma, struct vm_area_struct **prev,
- 	case MADV_WILLNEED:
- 		return madvise_willneed(vma, prev, start, end);
- 	case MADV_COLD:
--		return madvise_cold(vma, prev, start, end);
-+		return madvise_cold(task, vma, prev, start, end);
- 	case MADV_PAGEOUT:
--		return madvise_pageout(vma, prev, start, end);
-+		return madvise_pageout(task, vma, prev, start, end);
- 	case MADV_FREE:
- 	case MADV_DONTNEED:
- 		return madvise_dontneed_free(vma, prev, start, end, behavior);
-@@ -1166,7 +1178,8 @@ int do_madvise(struct task_struct *target_task, struct mm_struct *mm,
- 			tmp = end;
- 
- 		/* Here vma->vm_start <= start < tmp <= (end|vma->vm_end). */
--		error = madvise_vma(vma, &prev, start, tmp, behavior);
-+		error = madvise_vma(target_task, vma, &prev,
-+					start, tmp, behavior);
- 		if (error)
- 			goto out;
- 		start = tmp;
--- 
-2.27.0.111.gc72c7da667-goog
+Presumably the devm_of_platform_populate() will cause said drivers to be
+dismantled as well - but I think it's safe to say that that code path
+isn't well tested...
 
+I've applied the patch, but would have preferred that some time was
+spent to make sure that things are unloadable as well.
+
+Regards,
+Bjorn
+
+> > 
+> > echo 18200000.rsc > /sys/bus/platform/drivers/rpmh/unbind
+> > 
+> > Lets prevent unbind at runtime by setting suppress_bind_attrs flag.
+> 
+> Ok. But when the Android module brigade comes knocking they'll have to
+> revert this change and solve this problem too. Have fun!
+> 
+> > 
+> > Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> > ---
+> 
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
