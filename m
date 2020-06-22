@@ -2,185 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7144B2036B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:27:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5E22036B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 14:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728149AbgFVM1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 08:27:30 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:50571 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728044AbgFVM12 (ORCPT
+        id S1728182AbgFVM1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 08:27:49 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:37560 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728044AbgFVM1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 08:27:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592828846;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W2h10LpTAvNoSkQ5Wfs3ntSIZK6FE0PEMdGXqFWlN0Y=;
-        b=Y4vRIsQnNtDAwuF3Yi/p0dqPKhEL5wrWVvs/SERTYnkwDIcdXSm0l9uh0whU1ZaJKrrj3t
-        1uZDZdgW5wB35Bl9vwHOl92ZToLd9oh7hkmFwL3e6LmufjJClt4He8ZlQykS1dvqZE7UC2
-        1+nACv3BW1eikgKHIRxFPZZBGAr/x8k=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-435-G5HG_SQ0M9uGQRhRyvd_Dg-1; Mon, 22 Jun 2020 08:27:23 -0400
-X-MC-Unique: G5HG_SQ0M9uGQRhRyvd_Dg-1
-Received: by mail-qk1-f198.google.com with SMTP id s75so7060153qka.1
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 05:27:23 -0700 (PDT)
+        Mon, 22 Jun 2020 08:27:47 -0400
+Received: by mail-pf1-f196.google.com with SMTP id j1so8354480pfe.4;
+        Mon, 22 Jun 2020 05:27:46 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=W2h10LpTAvNoSkQ5Wfs3ntSIZK6FE0PEMdGXqFWlN0Y=;
-        b=f6gLkPWExRmgX+CTyXXiK9ClhiQRbsOfh+cYUf4gWzjsskuqrqmHWU75JwJEEwMI1Z
-         lIw+jZn/W0RYA9UbLiP30Tfx/SAWeJuSvNoxo0W5j86yPNY12+ImPN/mAjqInAFxnVQy
-         a4Iuo45vNVlOumtYPuR1mpMN63VHivoaQ4nTBapuUNoAz8WAlhdgOd0leoFm/9c1QmH7
-         TrNTyuR5N5tyRXmu08ZY87XXKq1Fd8+zg9Jq9b5dn5Wr4WM7/vBj1dxrCaMghfmuqtwm
-         bGxYMmcsq7/Lm1S1Ii9yYl/ZJt0nruoh84zBC0yYJX2Q/7KY/peZXLwrYuHROGB1Rb5u
-         A8CQ==
-X-Gm-Message-State: AOAM531MGyQU/W/WxmqAdioGZnhBpTCTu8IyJ+9vQazaTSy0ibxZYGMH
-        X3OFVeo6u6B334bN4yuNdC6+ghpCoNRKjzvLBtBJdAYHCu6vMufaQkibvM59xCA57vYoryZgcl4
-        itaH24xH4aVRN7zu1AU3ympUJ
-X-Received: by 2002:a37:57c3:: with SMTP id l186mr15256199qkb.498.1592828843117;
-        Mon, 22 Jun 2020 05:27:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwqVS/BGYYFeq6hAqLQIa8xxrqgAC/n0blfyZ/3TKrhs1/dEQRePf7h+6AbOmI33MYNzXvvAA==
-X-Received: by 2002:a37:57c3:: with SMTP id l186mr15256181qkb.498.1592828842808;
-        Mon, 22 Jun 2020 05:27:22 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id b196sm4114868qkg.11.2020.06.22.05.27.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jun 2020 05:27:22 -0700 (PDT)
-Subject: Re: [PATCH v7 0/7] Add interrupt support to FPGA DFL drivers
-To:     Xu Yilun <yilun.xu@intel.com>, mdf@kernel.org,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     bhu@redhat.com, mtosatti@redhat.com, gregkh@linuxfoundation.org,
-        jun.j.tian@intel.com, hao.wu@intel.com
-References: <1592280528-6350-1-git-send-email-yilun.xu@intel.com>
- <20200622064806.GA5101@yilunxu-OptiPlex-7050>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <c9a33ee6-67f2-36b8-0870-ebc038b929ce@redhat.com>
-Date:   Mon, 22 Jun 2020 05:27:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EywcY6vS9cylelIV1NX4lE8fuwIV3UqzEJ1KluaxKEQ=;
+        b=MrAhikw59itfNsVas1+eC2lpwabDyRyOmgu2ur9Uk7WNWHJAOLfCxqhpa5ZdFioZ0c
+         oJfACHIzXEBxvjWnAC8tDqYYPw5RUSC/xCY3eVtuVhhrLBSHAxn9k7d+pePqUGe1/u9T
+         Urz/YZqypudYqrZFq5cII39zNrE358/y1N2wn7EUSFg1IrLWLWiPLEBlScZ6dls9Y65g
+         sAiYKjz34xjouS4xBeG1TwQiIxtO8Fc8e5MWbYBxzhAtNwCDh8TbD8o9wCEkmrU9HaOe
+         caD0nwXPkrzYmy8eXeK84oDQTLlhzJ02pb0tpd8en7whJBG2+8Md0rwkVaogOhMXwmQi
+         kiRA==
+X-Gm-Message-State: AOAM5320CCH8lYZCJ1tGOsq2cX7PWJ8vUIWo29W4TqNBtP+1mIDj8WWh
+        hX2td72fGmcpChjwvoRTCZg=
+X-Google-Smtp-Source: ABdhPJyTiqAV+V55lsVYMa3ppMo+Ee9nBX4Ii6+mVgydtVh78CU8KmXFOKHKPtJwrv4kquV9O7DWLw==
+X-Received: by 2002:a63:2a8a:: with SMTP id q132mr12273112pgq.279.1592828865482;
+        Mon, 22 Jun 2020 05:27:45 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id v8sm13526689pfn.217.2020.06.22.05.27.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 05:27:43 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id A280840430; Mon, 22 Jun 2020 12:27:42 +0000 (UTC)
+Date:   Mon, 22 Jun 2020 12:27:42 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk,
+        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
+        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
+        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
+        martin.petersen@oracle.com, jejb@linux.ibm.com,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v7 5/8] loop: be paranoid on exit and prevent new
+ additions / removals
+Message-ID: <20200622122742.GU11244@42.do-not-panic.com>
+References: <20200619204730.26124-1-mcgrof@kernel.org>
+ <20200619204730.26124-6-mcgrof@kernel.org>
+ <7e76d892-b5fd-18ec-c96e-cf4537379eba@acm.org>
 MIME-Version: 1.0
-In-Reply-To: <20200622064806.GA5101@yilunxu-OptiPlex-7050>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7e76d892-b5fd-18ec-c96e-cf4537379eba@acm.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In addition to reviewing, I have run these changes on the pac a10 card and while i do not have an afu using interrupts, I have exercised some of the new interfaces.
+On Sat, Jun 20, 2020 at 10:11:46AM -0700, Bart Van Assche wrote:
+> On 2020-06-19 13:47, Luis Chamberlain wrote:
+> > Be pedantic on removal as well and hold the mutex.
+> > This should prevent uses of addition while we exit.
+> > 
+> > Reviewed-by: Ming Lei <ming.lei@redhat.com>
+> > Reviewed-by: Christoph Hellwig <hch@lst.de>
+> > Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
+> > ---
+> >  drivers/block/loop.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+> > index c33bbbfd1bd9..d55e1b52f076 100644
+> > --- a/drivers/block/loop.c
+> > +++ b/drivers/block/loop.c
+> > @@ -2402,6 +2402,8 @@ static void __exit loop_exit(void)
+> >  
+> >  	range = max_loop ? max_loop << part_shift : 1UL << MINORBITS;
+> >  
+> > +	mutex_lock(&loop_ctl_mutex);
+> > +
+> >  	idr_for_each(&loop_index_idr, &loop_exit_cb, NULL);
+> >  	idr_destroy(&loop_index_idr);
+> >  
+> > @@ -2409,6 +2411,8 @@ static void __exit loop_exit(void)
+> >  	unregister_blkdev(LOOP_MAJOR, "loop");
+> >  
+> >  	misc_deregister(&loop_misc);
+> > +
+> > +	mutex_unlock(&loop_ctl_mutex);
+> >  }
+> >  
+> >  module_init(loop_init);
+> 
+> Is try_module_get(fops->owner) called before a loop device is opened and
+> is module_put(fops->owner) called after a loop device is closed? Does
+> that mean that it is impossible to unload the loop driver while a loop
+> device is open? Does that mean that the above patch is not necessary or
+> did I perhaps miss something?
 
-The most useful i have submitted to selftests drivers/fpga.  In the future, this would be a good place to put other fpga unit tests. 
+That's not the only way to add or remove the loop module though.
 
-The selftest patch depends on this change.
+You may add/remove it manually. And again, as mentioned in the commit log,
+I couldn't trigger a race myself, however this seemed the more pedantic
+and careful strategy we can take.
 
-So you can also add
+Note: this will bring you sanity if you try to figure out *why* we still
+get:
 
-Tested-by: Tom Rix <trix@redhat.com>
+[235530.144343] debugfs: Directory 'loop0' with parent 'block' already present!
+[235530.149477] blktrace: debugfs_dir not present for loop0 so skipping
+[235530.232328] debugfs: Directory 'loop0' with parent 'block' already present!
+[235530.238962] blktrace: debugfs_dir not present for loop0 so skipping
 
-Tom
+If you run run_0004.sh from break-blktrace [0]. Even with all my patches
+merged we still run into this. And so the bug lies within the block
+layer or on the driver. I haven't been able to find the issue yet.
 
-On 6/21/20 11:48 PM, Xu Yilun wrote:
-> Hi Moritz:
->
-> Could you please help review the patchset when you have time?
->
-> You have already reviewed the first 3 patches some time ago. The
-> comments are all fixed. Hao and Redhat guys also have done several
-> rounds of review. The patches are all Acked-by Hao, reviewed by
-> Marcelo & Tom.
->
-> There is little change to the code for several months, seems it stays
-> ready and just need your final Ack.
->
-> Actually this is the last feature for our first generation PAC A10 Card,
-> and is important for users to have the full support.
->
-> We really need your help on code review ...
->
-> Many thanks!
-> Yilun
->
-> On Tue, Jun 16, 2020 at 12:08:41PM +0800, Xu Yilun wrote:
->> This patchset add interrupt support to FPGA DFL drivers.
->>
->> With these patches, DFL driver will parse and assign interrupt resources
->> for enumerated feature devices and their sub features.
->>
->> This patchset also introduces a set of APIs for user to monitor DFL
->> interrupts. Three sub features (DFL FME error, DFL AFU error and user
->> interrupt) drivers now support these APIs.
->>
->> Patch #1: DFL framework change. Accept interrupt info input from DFL bus
->>           driver, and add interrupt parsing and assignment for feature
->>           sub devices.
->> Patch #2: DFL pci driver change, add interrupt info on DFL enumeration.
->> Patch #3: DFL framework change. Add helper functions for feature sub
->>           device drivers to handle interrupt and notify users.
->> Patch #4: Add interrupt support for AFU error reporting sub feature.
->> Patch #5: Add interrupt support for FME global error reporting sub
->>           feature.
->> Patch #6: Add interrupt support for a new sub feature, to handle user
->>           interrupts implemented in AFU.
->> Patch #7: Documentation for DFL interrupt handling.
->>
->> Main changes from v1:
->>  - Early validating irq table for each feature in parse_feature_irq()
->>    in Patch #1.
->>  - Changes IOCTL interfaces. use DFL_FPGA_FME/PORT_XXX_GET_IRQ_NUM
->>    instead of DFL_FPGA_FME/PORT_XXX_GET_INFO, delete flag field for
->>    DFL_FPGA_FME/PORT_XXX_SET_IRQ param
->>
->> Main changes from v2:
->>  - put parse_feature_irqs() inside create_feature_instance().
->>  - refines code for dfl_fpga_set_irq_triggers, delete local variable j.
->>  - put_user() instead of copy_to_user() for DFL_FPGA_XXX_GET_IRQ_NUM IOCTL
->>
->> Main changes from v3:
->>  - rebased to 5.7-rc1.
->>  - fail the dfl enumeration when irq parsing error happens.
->>  - Add 2 helper functions in dfl.c to handle generic irq ioctls in feature
->>    drivers.
->>
->> Main changes from v4:
->>  - Minor fixes for Hao's comments.
->>
->> Main changes from v5:
->>  - Remove unnecessary type casting in Patch #1 & #3.
->>  - Minor fixes for Moritz's comments.
->>
->> Main changes from v6:
->>  - Add the header file <linux/interrupt.h> for Patch #1, to fix build
->>    error on ARCH=xtensa
->>  - Minor fixes in Patch #2 & #3.
->>
->> Xu Yilun (7):
->>   fpga: dfl: parse interrupt info for feature devices on enumeration
->>   fpga: dfl: pci: add irq info for feature devices enumeration
->>   fpga: dfl: introduce interrupt trigger setting API
->>   fpga: dfl: afu: add interrupt support for port error reporting
->>   fpga: dfl: fme: add interrupt support for global error reporting
->>   fpga: dfl: afu: add AFU interrupt support
->>   Documentation: fpga: dfl: add descriptions for interrupt related
->>     interfaces.
->>
->>  Documentation/fpga/dfl.rst    |  19 +++
->>  drivers/fpga/dfl-afu-error.c  |  17 +++
->>  drivers/fpga/dfl-afu-main.c   |  32 +++++
->>  drivers/fpga/dfl-fme-error.c  |  18 +++
->>  drivers/fpga/dfl-fme-main.c   |   6 +
->>  drivers/fpga/dfl-pci.c        |  76 +++++++++--
->>  drivers/fpga/dfl.c            | 310 ++++++++++++++++++++++++++++++++++++++++++
->>  drivers/fpga/dfl.h            |  57 ++++++++
->>  include/uapi/linux/fpga-dfl.h |  82 +++++++++++
->>  9 files changed, 608 insertions(+), 9 deletions(-)
->>
->> -- 
->> 2.7.4
+[0] https://github.com/mcgrof/break-blktrace
 
+  Luis
