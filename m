@@ -2,103 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C816E203FD1
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB16C203FD2
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 21:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730680AbgFVTBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 15:01:35 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:22622 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730020AbgFVTBe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 15:01:34 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05MIWJxZ122180;
-        Mon, 22 Jun 2020 15:01:32 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31tyvucp16-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Jun 2020 15:01:32 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05MIWe11122980;
-        Mon, 22 Jun 2020 15:01:32 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31tyvucp0s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Jun 2020 15:01:32 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05MJ046U020167;
-        Mon, 22 Jun 2020 19:01:31 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma05wdc.us.ibm.com with ESMTP id 31sa38htam-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 22 Jun 2020 19:01:31 +0000
-Received: from b03ledav005.gho.boulder.ibm.com (b03ledav005.gho.boulder.ibm.com [9.17.130.236])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05MJ1SlX18350440
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 22 Jun 2020 19:01:28 GMT
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 396A1BE054;
-        Mon, 22 Jun 2020 19:01:30 +0000 (GMT)
-Received: from b03ledav005.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A52DBBE053;
-        Mon, 22 Jun 2020 19:01:28 +0000 (GMT)
-Received: from swastik.ibm.com (unknown [9.160.110.135])
-        by b03ledav005.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Mon, 22 Jun 2020 19:01:28 +0000 (GMT)
-Subject: Re: [PATCH v2] ima: move APPRAISE_BOOTPARAM dependency on ARCH_POLICY
- to runtime
-To:     Bruno Meneguele <bmeneg@redhat.com>
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zohar@linux.ibm.com, erichte@linux.ibm.com, nayna@linux.ibm.com,
-        stable@vger.kernel.org
-References: <20200622172754.10763-1-bmeneg@redhat.com>
-From:   Nayna <nayna@linux.vnet.ibm.com>
-Message-ID: <043e52d4-6835-c2c4-bc9d-d36ddb3db0e9@linux.vnet.ibm.com>
-Date:   Mon, 22 Jun 2020 15:01:27 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S1730252AbgFVTBy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 15:01:54 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:36000 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730020AbgFVTBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 15:01:53 -0400
+Received: from zn.tnic (p200300ec2f0a2500329c23fffea6a903.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:2500:329c:23ff:fea6:a903])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 8F4741EC0103;
+        Mon, 22 Jun 2020 21:01:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1592852512;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=fFTXe6NWvwELBv+XCutWGcjhfy4SKXvhxjJFh6sDiCk=;
+        b=VlGvQK+DIsz77R8A9TE/Su03CLM04cveRdKHy3K2nUfnNc/aXSXTwwjyklo9fA61Kf1P8h
+        nvntN/boqCA5FPVml22Xxs+AP9QaJVPal+5Uz6iFTUUZFtmxgkQpMfQnX6UC8DLwqcgcD0
+        SozFUwJCuuQfQ+49iJHIfIK2zsmigow=
+Date:   Mon, 22 Jun 2020 21:01:49 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     X86 ML <x86@kernel.org>, jpa@kernelbug.mail.kapsi.fi,
+        Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] selftests/fpu: Add an FPU selftest
+Message-ID: <20200622190149.GL32200@zn.tnic>
+References: <20200619174127.22304-1-bp@alien8.de>
+ <20200619174127.22304-3-bp@alien8.de>
+ <CALCETrXXzt8WZMs3dsReCJ5wdF3zhxFmUtGnmdCgV7_exFUKKQ@mail.gmail.com>
+ <20200622171240.GI32200@zn.tnic>
+ <CALCETrV87t=meNgb1zqz_E5=XaifttX79DMeLK87k1DvzVER1Q@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200622172754.10763-1-bmeneg@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-22_10:2020-06-22,2020-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 cotscore=-2147483648
- clxscore=1011 mlxlogscore=999 spamscore=0 mlxscore=0 malwarescore=0
- adultscore=0 bulkscore=0 phishscore=0 lowpriorityscore=0
- priorityscore=1501 suspectscore=0 impostorscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006220122
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CALCETrV87t=meNgb1zqz_E5=XaifttX79DMeLK87k1DvzVER1Q@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 22, 2020 at 11:26:50AM -0700, Andy Lutomirski wrote:
+> For all the ridiculous distro gcc versions out there.  Also, it seems
+> less fragile, since it tests for what you actually care about
 
-On 6/22/20 1:27 PM, Bruno Meneguele wrote:
-> IMA_APPRAISE_BOOTPARAM has been marked as dependent on !IMA_ARCH_POLICY in
-> compile time, enforcing the appraisal whenever the kernel had the arch
-> policy option enabled.
->
-> However it breaks systems where the option is actually set but the system
-> wasn't booted in a "secure boot" platform. In this scenario, anytime the
-> an appraisal policy (i.e. ima_policy=appraisal_tcb) is used it will be
-> forced, giving no chance to the user set the 'fix' state (ima_appraise=fix)
-> to actually measure system's files.
->
-> This patch remove this compile time dependency and move it to a runtime
-> decision, based on the arch policy loading failure/success.
+Let's cross that bridge when we get there.
 
-Thanks for looking at this.
+Do you know of an actual compiler not supporting
+-mpreferred-stack-boundary?
 
-For arch specific policies, kernel signature verification is enabled 
-based on the secure boot state of the system. Perhaps, enforce the 
-appraisal as well based on if secure boot is enabled.
+-- 
+Regards/Gruss,
+    Boris.
 
-Thanks & Regards,
-
-     - Nayna
-
+https://people.kernel.org/tglx/notes-about-netiquette
