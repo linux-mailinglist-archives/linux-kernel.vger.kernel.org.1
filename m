@@ -2,146 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4717C203E77
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 19:53:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 745F9203E83
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 19:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730238AbgFVRwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 13:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60456 "EHLO
+        id S1730159AbgFVRzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 13:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730046AbgFVRwp (ORCPT
+        with ESMTP id S1730067AbgFVRzi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 13:52:45 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE3BC061573;
-        Mon, 22 Jun 2020 10:52:45 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id v13so13779617otp.4;
-        Mon, 22 Jun 2020 10:52:45 -0700 (PDT)
+        Mon, 22 Jun 2020 13:55:38 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C286C061795
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 10:55:37 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id v13so13789480otp.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 10:55:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c3U81bx6gTZu2W3e+xYnSw5Jlusy05+ISUo5eh+2kNw=;
-        b=Unr5f4zxpWyYCGUAyXtqaimObdGmGC3elLdwRoYnR31VNUlv0Qbb6Zb2CdjAttYj+I
-         VnX4HFMBLGhGkweyGlkSM/jtXLHA61tBm5PrEoFqIQmms4s5IT913IOLeDkhPbnMLfL7
-         a8ugnSoJaTnsoRYHnSoyucUqs/L4S5yB+zU6ltiJSx1aPsBGmwC/46yI9SPeFlvG4EGs
-         t/wKxVJ48BfroR7HIDRdBifEVRaDLinqsbXBWxedoPY0COD7LSnxsoPwuNHZZFqnvntU
-         BR6cTnEAZZ+jheABPKvut/+MqKzgjzDPI/nZb9vkrvj+OZM9z+j4qctTlHpmrrtN8jbR
-         vfSA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yL/GGFgKvPpT/ESkDllNmDDqKcU651dh4sx64jW309s=;
+        b=AT4AvU9sAT5ioVcP/Ma82mag06FRZC53FNcWA1/DQgm2s3sS33VltL9VIEI3UqR0M5
+         TNTcrDi7uP7DdLozHKbKufOXZKfzrTJpjDIVIcd3As/rfGfC4xxeW2Fu65Yr0k22eOEi
+         qX9SP3JdyPQMPfz5IvW1Aef66AMQtm5vGBr+K+tWNkBWMLB4zsAi1h+uRlBAQ/7tlORO
+         tkP+zf5ZaWa98u/3LgqRZiDpD8ublLJ9e2OB8sb0Kah9I5R793MuvtMFLtNKlJan3iKh
+         VYRwouZuzG9f+nUHLefWF6ZF6Ydga4Ge/rPCe6pxSPMh99UBaVKUMbauepZ0T61t9Nyu
+         JoDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c3U81bx6gTZu2W3e+xYnSw5Jlusy05+ISUo5eh+2kNw=;
-        b=qiJih6z+8ztxRfv96Xj+zGKP1R6VdVJRDASxagbk7iahWXijV831zJFhEI9HLEImrQ
-         KcCi2TBH4rPq+QCY1IxKfeUUugt6yihV1YU2AlniAiZ5WbIReC19z6b5wQHQLIMCSDUp
-         Y4aqnMTVdcXxciG5vIaysQNKpwQtYM5wfb8MSIkZsLF3lbaRpc6U8y6wFOtOU3IZKBeV
-         PdTJuHntOT600bTxq/zVbkMJKpeApE5wCoPiika0en1F0Pj6MjpjDbFUDULLmX7m9MI5
-         TtrIjaUTHc+T+3hAKdeDdiaKI/XZkGLgSYSDcXtOG6eDmfQ+OBP42yrFt0GPrHg7WjKQ
-         pylw==
-X-Gm-Message-State: AOAM5334oGVDEkyLnJu9KcWc+nLeNCRC+W/QsDIdOuCuCmeXL6PtvGa0
-        vYCqKO0R6MXCqnNn/ypCPZQ5vjLgwLHLwOjbi0s=
-X-Google-Smtp-Source: ABdhPJx5eB39CGljKy11xsnx0bd/2ros2b0o0ME+sXda1JV9InGs/LiwGuCe2IW0OuAoRtAUkyMzKJv4hF8AiOQzA/Y=
-X-Received: by 2002:a9d:6188:: with SMTP id g8mr14046396otk.43.1592848365088;
- Mon, 22 Jun 2020 10:52:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <1591554886-21725-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <1591554886-21725-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Mon, 22 Jun 2020 18:52:18 +0100
-Message-ID: <CA+V-a8sMAkhLh9n7d=4QaNLDDJuExcu4ctWX2P1xH6Jqj-D3DA@mail.gmail.com>
-Subject: Re: [PATCH 00/11] Add support for HiHope RZ/G2M[N] Rev.3.0/4.0
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Magnus Damm <magnus.damm@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yL/GGFgKvPpT/ESkDllNmDDqKcU651dh4sx64jW309s=;
+        b=WBJZPuzenEiL/eYmIJu9rXwAPGdmBltr4H37NYBit2pCregWmXwNFqQPbad7ORfUhf
+         euFDAEXqrazCblZYt9v6sJduDc/qwV3K1bnuupgmpAbxHihposRguwHaaVz1DQHV0SGT
+         OdAgGeG3VazSSn53GBI5AYAVujsbI1CQHx/7A9aqTUIRTHfe7pGuayIgwv5SOQRI/8uv
+         Q4CLajjXnpiDBXBfo8YUKJfkPgD1brQFxhlL2TTL8nB4qML9qS7YDbJbqAd3pIGpP1iN
+         AQPO4FOLQPCZbviWxfJz16HRMJ3JNJYBaOriOVlqXow1ThXFrDMwo80GcaAaMto+VAeK
+         bovg==
+X-Gm-Message-State: AOAM531LdQrkGvZsSoPHf5jfLUBHHQZbri9RzLQItLdzSW5FVYZEFEEU
+        5cpV6adLc3ZCw9m3UT5eQX35PQ==
+X-Google-Smtp-Source: ABdhPJxdPSEtlZTw4FnQA7BtS442zJ/JmTFbMHgsow0c1g5UJUAeaTEOfHwjrLB7P+2NEyn5SJtbgg==
+X-Received: by 2002:a4a:e2c1:: with SMTP id l1mr15507498oot.12.1592848536280;
+        Mon, 22 Jun 2020 10:55:36 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id k15sm3552652oom.22.2020.06.22.10.55.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 10:55:35 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 10:52:50 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Linus Walleij <linus.walleij@linaro.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        ??ukasz Patron <priv.luk@gmail.com>
+Subject: Re: [PATCH v2 7/8] arm64: dts: qcom: Add support for Sony Xperia
+ XA2/Plus/Ultra (Nile platform)
+Message-ID: <20200622175250.GT128451@builder.lan>
+References: <20200622075749.21925-1-konradybcio@gmail.com>
+ <20200622075749.21925-8-konradybcio@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200622075749.21925-8-konradybcio@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On Mon 22 Jun 00:57 PDT 2020, Konrad Dybcio wrote:
 
-On Sun, Jun 7, 2020 at 7:35 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
->
-> Hi All,
->
-> This patch series adds supports for HiHope RZ/G2M[N] Rev.3.0/4.0
-> boards.
->
-> Patches are based on top of renesas-arm-dt-for-v5.9 branch [1].
->
-> [1] git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-devel.git
->
-> Cheers,
-> Prabhakar
->
-> Lad Prabhakar (11):
->   arm64: dts: renesas: r8a774a1-hihope-rzg2m[-ex/-ex-idk-1110wr]: Rename
->     HiHope RZ/G2M boards
->   arm64: dts: renesas: r8a774b1-hihope-rzg2n[-ex]: Rename HiHope RZ/G2N
->     boards
->   arm64: dts: renesas: hihope-common: Separate out Rev.2.0 specific into
->     hihope-common-rev2.dtsi file
->   arm64: dts: renesas: Add HiHope RZ/G2M[N] Rev.3.0/4.0 specific into
->     common file
->   arm64: dts: renesas: Add HiHope RZ/G2M Rev.3.0/4.0 main board support
->   arm64: dts: renesas: Add HiHope RZ/G2M Rev.3.0/4.0 sub board support
->   arm64: dts: renesas: hihope-rzg2-ex: Separate out lvds specific nodes
->     into common file
->   arm64: dts: renesas: Add HiHope RZ/G2M Rev.3.0/4.0 board with
->     idk-1110wr display
->   arm64: dts: renesas: Add HiHope RZ/G2N Rev.3.0/4.0 main board support
->   arm64: dts: renesas: Add HiHope RZ/G2N Rev.3.0/4.0 sub board support
->   arm64: dts: renesas: Add HiHope RZ/G2N Rev2.0/3.0/4.0 board with
->     idk-1110wr display
->
-Thank you for the Ack's for the above patches.
+> Add device tree support for the Sony Xperia XA2, XA2 Plus and
+> XA2 Ultra smartphones. They are all based on the Sony Nile
+> platform (sdm630) and share a lot of common code. The
+> differences are really minor, so a Nile-common DTSI
+> has been created to reduce clutter.
+> 
+> XA2 - Pioneer
+> XA2 Plus - Voyager
+> XA2 Ultra - Discovery
+> 
+> The boards currently support:
+> * Screen console
+> * SDHCI
+> * I2C
+> * pstore log dump
+> * GPIO keys
+> * PSCI idle states
+> 
+> Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
+> Tested-by: ??ukasz Patron <priv.luk@gmail.com>
+> ---
+>  arch/arm64/boot/dts/qcom/Makefile             |   3 +
+>  .../sdm630-sony-xperia-nile-discovery.dts     |  13 ++
+>  .../qcom/sdm630-sony-xperia-nile-pioneer.dts  |  13 ++
+>  .../qcom/sdm630-sony-xperia-nile-voyager.dts  |  20 +++
+>  .../dts/qcom/sdm630-sony-xperia-nile.dtsi     | 135 ++++++++++++++++++
+>  5 files changed, 184 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-discovery.dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-pioneer.dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-voyager.dts
+>  create mode 100644 arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
+> index 0f2c33d611df..1cad7cb07574 100644
+> --- a/arch/arm64/boot/dts/qcom/Makefile
+> +++ b/arch/arm64/boot/dts/qcom/Makefile
+> @@ -16,6 +16,9 @@ dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-hp-envy-x2.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-lenovo-miix-630.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= msm8998-mtp.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sc7180-idp.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= sdm630-sony-xperia-nile-discovery.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= sdm630-sony-xperia-nile-pioneer.dtb
+> +dtb-$(CONFIG_ARCH_QCOM)	+= sdm630-sony-xperia-nile-voyager.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sdm660-xiaomi-lavender.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-cheza-r1.dtb
+>  dtb-$(CONFIG_ARCH_QCOM)	+= sdm845-cheza-r2.dtb
+> diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-discovery.dts b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-discovery.dts
+> new file mode 100644
+> index 000000000000..1312eebe76a1
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-discovery.dts
+> @@ -0,0 +1,13 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2020, Konrad Dybcio
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "sdm630-sony-xperia-nile.dtsi"
+> +
+> +/ {
+> +	model = "SoMC Discovery-RoW";
 
-I shall re-spin the new version fixing the comments. I am waiting for
-your feedback on patch 03/11.
+Given that this is already stated by the compatible, would it be
+reasonable to make this use the marketing name instead?
 
-Cheers,
---Prabhakar
+(I.e. "Sony Mobile Xperia XA2 Ultra")
 
+> +	compatible = "sony,discovery-row", "qcom,sdm630", "qcom,sdm630-mtp";
 
->  arch/arm64/boot/dts/renesas/Makefile          |  17 ++-
->  .../boot/dts/renesas/hihope-common-rev2.dtsi  | 101 +++++++++++++
->  .../boot/dts/renesas/hihope-common-rev4.dtsi  | 143 ++++++++++++++++++
->  .../arm64/boot/dts/renesas/hihope-common.dtsi |  87 +----------
->  .../boot/dts/renesas/hihope-rzg2-ex-lvds.dtsi |  52 +++++++
->  .../boot/dts/renesas/hihope-rzg2-ex.dtsi      |  37 -----
->  .../r8a774a1-hihope-rzg2m-ex-idk-1110wr.dts   |  43 +-----
->  .../dts/renesas/r8a774a1-hihope-rzg2m-ex.dts  |   6 +-
->  ...a774a1-hihope-rzg2m-rev2-ex-idk-1110wr.dts |  15 ++
->  .../renesas/r8a774a1-hihope-rzg2m-rev2-ex.dts |  19 +++
->  .../renesas/r8a774a1-hihope-rzg2m-rev2.dts    |  38 +++++
->  .../dts/renesas/r8a774a1-hihope-rzg2m.dts     |   5 +-
->  arch/arm64/boot/dts/renesas/r8a774a1.dtsi     |   2 +
->  .../r8a774b1-hihope-rzg2n-ex-idk-1110wr.dts   |  15 ++
->  .../dts/renesas/r8a774b1-hihope-rzg2n-ex.dts  |   6 +-
->  ...a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dts |  15 ++
->  .../renesas/r8a774b1-hihope-rzg2n-rev2-ex.dts |  15 ++
->  .../renesas/r8a774b1-hihope-rzg2n-rev2.dts    |  42 +++++
->  .../dts/renesas/r8a774b1-hihope-rzg2n.dts     |   5 +-
->  arch/arm64/boot/dts/renesas/r8a774b1.dtsi     |   2 +
->  20 files changed, 490 insertions(+), 175 deletions(-)
->  create mode 100644 arch/arm64/boot/dts/renesas/hihope-common-rev2.dtsi
->  create mode 100644 arch/arm64/boot/dts/renesas/hihope-common-rev4.dtsi
->  create mode 100644 arch/arm64/boot/dts/renesas/hihope-rzg2-ex-lvds.dtsi
->  create mode 100644 arch/arm64/boot/dts/renesas/r8a774a1-hihope-rzg2m-rev2-ex-idk-1110wr.dts
->  create mode 100644 arch/arm64/boot/dts/renesas/r8a774a1-hihope-rzg2m-rev2-ex.dts
->  create mode 100644 arch/arm64/boot/dts/renesas/r8a774a1-hihope-rzg2m-rev2.dts
->  create mode 100644 arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex-idk-1110wr.dts
->  create mode 100644 arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dts
->  create mode 100644 arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-rev2-ex.dts
->  create mode 100644 arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-rev2.dts
->
-> --
-> 2.17.1
->
+Does the -mtp one have any significance? Otherwise I would like you to
+drop this - given that this isn't going to be compatible with the actual
+MTP hardware.
+
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-pioneer.dts b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-pioneer.dts
+> new file mode 100644
+> index 000000000000..76f20ad5273f
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-pioneer.dts
+> @@ -0,0 +1,13 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2020, Konrad Dybcio
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "sdm630-sony-xperia-nile.dtsi"
+> +
+> +/ {
+> +	model = "SoMC Pioneer-RoW";
+> +	compatible = "sony,pioneer-row", "qcom,sdm630", "qcom,sdm630-mtp";
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-voyager.dts b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-voyager.dts
+> new file mode 100644
+> index 000000000000..82e54a73d172
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile-voyager.dts
+> @@ -0,0 +1,20 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2020, Konrad Dybcio
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "sdm630-sony-xperia-nile.dtsi"
+> +
+> +/ {
+> +	model = "SoMC Voyager-RoW";
+> +	compatible = "sony,voyager-row", "qcom,sdm630", "qcom,sdm630-mtp";
+> +
+> +	chosen {
+> +		framebuffer@9d400000 {
+> +			reg = <0 0x9d400000 0 (2160 * 1080 * 4)>;
+> +			height = <2160>;
+> +		};
+> +	};
+> +};
+> diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
+> new file mode 100644
+> index 000000000000..af75ab211b5f
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-nile.dtsi
+> @@ -0,0 +1,135 @@
+> +// SPDX-License-Identifier: BSD-3-Clause
+> +/*
+> + * Copyright (c) 2020, Konrad Dybcio
+> + */
+> +
+> +/dts-v1/;
+> +
+> +#include "sdm630.dtsi"
+> +#include "pm660.dtsi"
+> +#include "pm660l.dtsi"
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/input/input.h>
+> +#include <dt-bindings/input/gpio-keys.h>
+> +
+> +/ {
+> +	/* required for bootloader to select correct board */
+> +	qcom,msm-id = <318 0>;
+> +	qcom,board-id = <8 1>;
+> +	qcom,pmic-id = <0x1001b 0x101011a 0x00 0x00 0x1001b 0x201011a 0x00 0x00>;
+> +
+> +	/* This part enables graphical output via bootloader-enabled display */
+> +	chosen {
+> +		bootargs = "earlycon=tty0 console=tty0";
+> +
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		stdout-path = "framebuffer0";
+> +
+> +		framebuffer0: framebuffer@9d400000 {
+> +		compatible = "simple-framebuffer";
+
+Please check the indentation here.
+
+> +		reg = <0 0x9d400000 0 (1920 * 1080 * 4)>;
+> +		width = <1080>;
+> +		height = <1920>;
+> +		stride = <(1080 * 4)>;
+> +		format = "a8r8g8b8";
+> +		status= "okay";
+> +		};
+> +	};
+> +
+> +	reserved-memory {
+> +		#address-cells = <2>;
+> +		#size-cells = <2>;
+> +		ranges;
+> +
+> +		ramoops@ffc00000 {
+> +			compatible = "ramoops";
+> +			reg = <0x0 0xffc00000 0x0 0x100000>;
+> +			record-size = <0x10000>;
+> +			console-size = <0x60000>;
+> +			ftrace-size = <0x10000>;
+> +			pmsg-size = <0x20000>;
+> +			ecc-size = <16>;
+> +			status = "okay";
+> +		};
+> +
+> +		debug_region@ffb00000 {
+> +			reg = <0x00 0xffb00000 0x00 0x100000>;
+> +			no-map;
+> +		};
+> +
+> +		removed_region@85800000 {
+> +			reg = <0x00 0x85800000 0x00 0x3700000>;
+> +			no-map;
+> +		};
+> +	};
+> +
+> +	soc {
+> +		gpio_keys {
+
+/soc is for mmio devices, as such gpio_keys should be moved outside
+"soc".
+
+Regards,
+Bjorn
+
+> +			status = "okay";
+> +			compatible = "gpio-keys";
+> +			input-name = "gpio-keys";
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			autorepeat;
+> +
+> +			camera_focus {
+> +				label = "Camera Focus";
+> +				gpios = <&tlmm 64 GPIO_ACTIVE_LOW>;
+> +				linux,input-type = <1>;
+> +				linux,code = <KEY_CAMERA_FOCUS>;
+> +				debounce-interval = <15>;
+> +			};
+> +
+> +			camera_snapshot {
+> +				label = "Camera Snapshot";
+> +				gpios = <&tlmm 113 GPIO_ACTIVE_LOW>;
+> +				linux,input-type = <1>;
+> +				linux,code = <KEY_CAMERA>;
+> +				debounce-interval = <15>;
+> +			};
+> +
+> +			vol_down {
+> +				label = "Volume Down";
+> +				gpios = <&pm660l_gpios 7 GPIO_ACTIVE_LOW>;
+> +				linux,input-type = <1>;
+> +				linux,code = <KEY_VOLUMEDOWN>;
+> +				gpio-key,wakeup;
+> +				debounce-interval = <15>;
+> +			};
+> +		};
+> +
+> +		sdhci@c0c4000 {
+> +			status = "okay";
+> +
+> +			/* SoMC Nile platform's eMMC doesn't support HS200 mode */
+> +			/delete-property/ mmc-hs200-1_8v;
+> +		};
+> +
+> +		i2c@c175000 {
+> +			status = "okay";
+> +
+> +			/* Synaptics touchscreen */
+> +		};
+> +
+> +		i2c@c176000 {
+> +			status = "okay";
+> +
+> +			/* SMB1351 charger */
+> +		};
+> +
+> +		/* I2C3, 4, 5, 7 and 8 are disabled on this board. */
+> +
+> +		i2c@c1b6000 {
+> +			status = "okay";
+> +
+> +			/* NXP NFC */
+> +		};
+> +
+> +		serial@c1af000 {
+> +			status = "okay";
+> +		};
+> +	};
+> +};
+> -- 
+> 2.27.0
+> 
