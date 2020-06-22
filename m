@@ -2,92 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A0D4203C3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA713203C40
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 18:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729828AbgFVQIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 12:08:45 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:35248 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726328AbgFVQIo (ORCPT
+        id S1729856AbgFVQJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 12:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729390AbgFVQJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 12:08:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592842123;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=oLt4zilRnLpSNkiF0C8oekFwW4sIceZdS9Lxg4NGfQA=;
-        b=X+zIOwQ8lKRqow7O8kpUKjELqX+MtcdM3skTior4cv7zfv7AmK8lNqfc9Y7GoepUIC36+g
-        Z+3bz4cwxpkNpPV7HAJO/L2DaKZTYdWY1IxH7YSIUge8b81A6bTn9p3cG6sgJBiAj6SuLA
-        3i+Ka4CUFbXufcW0PKWhWbQaVErj9AQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-327-IPnes8dvMvar_MJTs1dysA-1; Mon, 22 Jun 2020 12:08:35 -0400
-X-MC-Unique: IPnes8dvMvar_MJTs1dysA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 545F5A0BD9;
-        Mon, 22 Jun 2020 16:08:33 +0000 (UTC)
-Received: from dell-r430-03.lab.eng.brq.redhat.com (dell-r430-03.lab.eng.brq.redhat.com [10.37.153.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ECEC45BACD;
-        Mon, 22 Jun 2020 16:08:31 +0000 (UTC)
-From:   Igor Mammedov <imammedo@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, kvm@vger.kernel.org, wanpengli@tencent.com
-Subject: [PATCH] kvm: lapic: fix broken vcpu hotplug
-Date:   Mon, 22 Jun 2020 12:08:30 -0400
-Message-Id: <20200622160830.426022-1-imammedo@redhat.com>
+        Mon, 22 Jun 2020 12:09:15 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75DD6C061573;
+        Mon, 22 Jun 2020 09:09:14 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id 80so4140978qko.7;
+        Mon, 22 Jun 2020 09:09:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=XMziTAReggV8cPAuUjcDsW9X5b6xE1JpK9TNborUBOU=;
+        b=MJhG8orPav1AYK2ETOPNu4cBBY4tMHZVI/mufHGSHxANJrEwJoAsNA/0nDzK50VJ0m
+         nOGHG5uR1AL7PAILE3fBokX3QWxK5USDt+PNZrSMkGOqrDSHfdP7D7nqX21BeBq/X+vJ
+         09OTdcMJ6FGLISfTaCz3OamgoCWCJ+f2Euc0Fb78/qKRUeQKKPospZhPMTjPM4h3yJ7L
+         EdyObI4OScXAjCD9h8FAl59zF8wqnZkND516f9tZ24+NfWkvDgF/0vTb7Qev2hDtXN0j
+         Q4wJQmWjhy1GulrO6+ZBVy+muwvq1dJIJpclDQLTLthByeVR5CESWm/IUk+uyg+Bs8eQ
+         w7hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XMziTAReggV8cPAuUjcDsW9X5b6xE1JpK9TNborUBOU=;
+        b=lJJir9p4AKxUToA1FSKy65bfaPMdop61y5lkgXpWarAT5Rbg+dEup6qw5g6Eahch7R
+         2MbaJ9ww7wpJvIfmNDxpYFi/SlowKPgpKzXvrSG6ivVWCBAh5Qhm78YdKGnTEZ0NwiBy
+         GUtm4OwOtyvyFBEkzYGd2lDWepxPNwdYbEAoiOKsqCFdpx9bdOajfIBcEJ62N5V+2DbW
+         YePYl+9iuNY/dsSpO+KxlX4Riv8OSslia92LfsAy6+s6YKR7Cbmhp05TAsJjrr2IUmd2
+         SRPu7o7GAytECJ+ewiwUKMBo9er4lMQ9hE4wTHWE90H0N9mYlP8NZAoo3IO4I5gG6C5/
+         wlyg==
+X-Gm-Message-State: AOAM533zqWVIeIB03HA+RByYgYR8s3KUOvul7kOpL/DtiqPsiDcX0azy
+        /soCm1GuK97Ui7/xQBCWkS0dkmMkRXU=
+X-Google-Smtp-Source: ABdhPJw8IGp1XM6bglkDUhuZK0Gi9PEqdX+50SW/65k6xMxLuOOWrKHawZTz1THzehYG4YmYCvywrg==
+X-Received: by 2002:a05:620a:810:: with SMTP id s16mr16003595qks.360.1592842153712;
+        Mon, 22 Jun 2020 09:09:13 -0700 (PDT)
+Received: from [192.168.1.46] (c-73-88-245-53.hsd1.tn.comcast.net. [73.88.245.53])
+        by smtp.gmail.com with ESMTPSA id s42sm15774713qtk.14.2020.06.22.09.09.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jun 2020 09:09:12 -0700 (PDT)
+Subject: Re: [PATCH v2 1/3] mfd: core: Make a best effort attempt to match
+ devices with the correct of_nodes
+To:     Lee Jones <lee.jones@linaro.org>, andy.shevchenko@gmail.com,
+        michael@walle.cc, robh+dt@kernel.org, broonie@kernel.org,
+        devicetree@vger.kernel.org, linus.walleij@linaro.org,
+        linux@roeck-us.net, andriy.shevchenko@linux.intel.com,
+        robin.murphy@arm.com, gregkh@linuxfoundation.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20200611191002.2256570-1-lee.jones@linaro.org>
+ <20200622080913.GO954398@dell>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <3aa3c8ad-4e6a-9b9b-be58-bd9da5a0fb0a@gmail.com>
+Date:   Mon, 22 Jun 2020 11:09:10 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20200622080913.GO954398@dell>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Guest fails to online hotplugged CPU with error
-  smpboot: do_boot_cpu failed(-1) to wakeup CPU#4
+On 2020-06-22 03:09, Lee Jones wrote:
+> On Thu, 11 Jun 2020, Lee Jones wrote:
+> 
+>> Currently, when a child platform device (sometimes referred to as a
+>> sub-device) is registered via the Multi-Functional Device (MFD) API,
+>> the framework attempts to match the newly registered platform device
+>> with its associated Device Tree (OF) node.  Until now, the device has
+>> been allocated the first node found with an identical OF compatible
+>> string.  Unfortunately, if there are, say for example '3' devices
+>> which are to be handled by the same driver and therefore have the same
+>> compatible string, each of them will be allocated a pointer to the
+>> *first* node.
+> 
+> Any more reviews/comments before I apply this?
+> 
 
-It's caused by the fact that kvm_apic_set_state(), which used to call
-recalculate_apic_map() unconditionally and pulled hotplugged CPU into
-apic map, is updating map conditionally [1] on state change which doesn't
-happen in this case and apic map update is skipped.
+Yes, outstanding issues, so please do not apply.
 
-Note:
-new CPU during kvm_arch_vcpu_create() is not visible to
-kvm_recalculate_apic_map(), so all related update calls endup
-as NOP and only follow up kvm_apic_set_state() used to trigger map
-update that counted in hotplugged CPU.
-Fix issue by forcing unconditional update from kvm_apic_set_state(),
-like it used to be.
+Shortly after you sent this email, you sent a reply to one of my
+earlier emails in this thread.  I have replied to that email,
+so we still have an ongoing conversation where we are trying
+to resolve my understanding of the problem and whether the
+solution is appropriate.
 
-1)
-Fixes: (4abaffce4d25a KVM: LAPIC: Recalculate apic map in batch)
-Signed-off-by: Igor Mammedov <imammedo@redhat.com>
----
-PS:
-it's alternative to full revert of [1], I've posted earlier
-https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2205600.html
-so fii free to pick up whatever is better by now
----
- arch/x86/kvm/lapic.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 34a7e0533dad..5696831d4005 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -2556,6 +2556,7 @@ int kvm_apic_set_state(struct kvm_vcpu *vcpu, struct kvm_lapic_state *s)
- 	struct kvm_lapic *apic = vcpu->arch.apic;
- 	int r;
- 
-+	apic->vcpu->kvm->arch.apic_map_dirty = true;
- 	kvm_lapic_set_base(vcpu, vcpu->arch.apic_base);
- 	/* set SPIV separately to get count of SW disabled APICs right */
- 	apic_set_spiv(apic, *((u32 *)(s->regs + APIC_SPIV)));
--- 
-2.26.2
-
+-Frank
