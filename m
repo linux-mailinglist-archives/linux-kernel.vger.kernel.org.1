@@ -2,124 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D76F204176
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 141B1204193
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 22:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730852AbgFVUKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 16:10:04 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50112 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730463AbgFVUKB (ORCPT
+        id S1730919AbgFVULD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 16:11:03 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:4603 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730888AbgFVUKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 16:10:01 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jnSlP-0005N4-Mn; Mon, 22 Jun 2020 20:09:55 +0000
-Date:   Mon, 22 Jun 2020 22:09:55 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Todd Kjos <tkjos@google.com>
-Cc:     gregkh@linuxfoundation.org, christian@brauner.io, arve@android.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        maco@google.com, joel@joelfernandes.org, kernel-team@android.com
-Subject: Re: [PATCH] binder: fix null deref of proc->context
-Message-ID: <20200622200955.unq7elx2ry2vrnfe@wittgenstein>
-References: <20200622200715.114382-1-tkjos@google.com>
+        Mon, 22 Jun 2020 16:10:55 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ef10ff40000>; Mon, 22 Jun 2020 13:09:24 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Mon, 22 Jun 2020 13:10:55 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Mon, 22 Jun 2020 13:10:55 -0700
+Received: from [10.2.173.37] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 22 Jun
+ 2020 20:10:47 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+CC:     <nouveau@lists.freedesktop.org>, <linux-rdma@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kselftest@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Jerome Glisse <jglisse@redhat.com>,
+        "John Hubbard" <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "Jason Gunthorpe" <jgg@mellanox.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH 13/16] mm: support THP migration to device private memory
+Date:   Mon, 22 Jun 2020 16:10:45 -0400
+X-Mailer: MailMate (1.13.1r5690)
+Message-ID: <C7BEB563-3698-442C-A188-1B66CBE4CF63@nvidia.com>
+In-Reply-To: <b6eed976-c515-72d6-a7be-2296cab8f0d4@nvidia.com>
+References: <20200619215649.32297-1-rcampbell@nvidia.com>
+ <20200619215649.32297-14-rcampbell@nvidia.com>
+ <F1872509-3B1F-4A8A-BFF5-E4D44E451920@nvidia.com>
+ <b6eed976-c515-72d6-a7be-2296cab8f0d4@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200622200715.114382-1-tkjos@google.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: multipart/signed;
+        boundary="=_MailMate_48103850-4C7E-4E7F-8F24-58AD79C74F54_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1592856564; bh=ihfQmOQLv9n+2gLHbr3//D95KupVQ+bpw41KeT3rLH4=;
+        h=X-PGP-Universal:From:To:CC:Subject:Date:X-Mailer:Message-ID:
+         In-Reply-To:References:MIME-Version:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type;
+        b=i/P6QNrRNNWPXwaOGT5j6t/1CwnTT1SZA41PYw1sMxqXg1PI8Ruw5T4vSajWbTDCD
+         ZCN+DdfKqCNurX8sNMsgBQEY/7sA/wZIlhSMhcKnIX4YGlXgiUtC5qgEipkxjfvaw9
+         gXH47YH6lZoK39lRHQJ0KD+F+Zuq5Zu29OI8Ovf75FTn9ltAp7MKX8GG0xbTmrRVHO
+         Hq/O8lJaPrKvTeFh15oMxg3NkWqWL+u5hXtZlHSftBn7MVWbdQJ/t0dMK+oiLaVbie
+         5IrAhgTSFdAtsz76jl33ge8LhePBXN4sFyfLpDAfYycRL0ZW+gP3t7UKL1i0mI9bfy
+         B2EhYTTPr6k2Q==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 01:07:15PM -0700, Todd Kjos wrote:
-> The binder driver makes the assumption proc->context pointer is invariant after
-> initialization (as documented in the kerneldoc header for struct proc).
-> However, in commit f0fe2c0f050d ("binder: prevent UAF for binderfs devices II")
-> proc->context is set to NULL during binder_deferred_release().
-> 
-> Another proc was in the middle of setting up a transaction to the dying
-> process and crashed on a NULL pointer deref on "context" which is a local
-> set to &proc->context:
-> 
->     new_ref->data.desc = (node == context->binder_context_mgr_node) ? 0 : 1;
-> 
-> Here's the stack:
-> 
-> [ 5237.855435] Call trace:
-> [ 5237.855441] binder_get_ref_for_node_olocked+0x100/0x2ec
-> [ 5237.855446] binder_inc_ref_for_node+0x140/0x280
-> [ 5237.855451] binder_translate_binder+0x1d0/0x388
-> [ 5237.855456] binder_transaction+0x2228/0x3730
-> [ 5237.855461] binder_thread_write+0x640/0x25bc
-> [ 5237.855466] binder_ioctl_write_read+0xb0/0x464
-> [ 5237.855471] binder_ioctl+0x30c/0x96c
-> [ 5237.855477] do_vfs_ioctl+0x3e0/0x700
-> [ 5237.855482] __arm64_sys_ioctl+0x78/0xa4
-> [ 5237.855488] el0_svc_common+0xb4/0x194
-> [ 5237.855493] el0_svc_handler+0x74/0x98
-> [ 5237.855497] el0_svc+0x8/0xc
-> 
-> The fix is to move the kfree of the binder_device to binder_free_proc()
-> so the binder_device is freed when we know there are no references
-> remaining on the binder_proc.
-> 
-> Fixes: f0fe2c0f050d ("binder: prevent UAF for binderfs devices II")
-> Signed-off-by: Todd Kjos <tkjos@google.com>
+--=_MailMate_48103850-4C7E-4E7F-8F24-58AD79C74F54_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks, looks good to me!
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
+On 22 Jun 2020, at 15:36, Ralph Campbell wrote:
 
-Christian
+> On 6/21/20 4:20 PM, Zi Yan wrote:
+>> On 19 Jun 2020, at 17:56, Ralph Campbell wrote:
+>>
+>>> Support transparent huge page migration to ZONE_DEVICE private memory=
+=2E
+>>> A new flag (MIGRATE_PFN_COMPOUND) is added to the input PFN array to
+>>> indicate the huge page was fully mapped by the CPU.
+>>> Export prep_compound_page() so that device drivers can create huge
+>>> device private pages after calling memremap_pages().
+>>>
+>>> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+>>> ---
+>>>   include/linux/migrate.h |   1 +
+>>>   include/linux/mm.h      |   1 +
+>>>   mm/huge_memory.c        |  30 ++++--
+>>>   mm/internal.h           |   1 -
+>>>   mm/memory.c             |  10 +-
+>>>   mm/memremap.c           |   9 +-
+>>>   mm/migrate.c            | 226 ++++++++++++++++++++++++++++++++-----=
+---
+>>>   mm/page_alloc.c         |   1 +
+>>>   8 files changed, 226 insertions(+), 53 deletions(-)
+>>>
+>>> diff --git a/include/linux/migrate.h b/include/linux/migrate.h
+>>> index 3e546cbf03dd..f6a64965c8bd 100644
+>>> --- a/include/linux/migrate.h
+>>> +++ b/include/linux/migrate.h
+>>> @@ -166,6 +166,7 @@ static inline int migrate_misplaced_transhuge_pag=
+e(struct mm_struct *mm,
+>>>   #define MIGRATE_PFN_MIGRATE	(1UL << 1)
+>>>   #define MIGRATE_PFN_LOCKED	(1UL << 2)
+>>>   #define MIGRATE_PFN_WRITE	(1UL << 3)
+>>> +#define MIGRATE_PFN_COMPOUND	(1UL << 4)
+>>>   #define MIGRATE_PFN_SHIFT	6
+>>>
+>>>   static inline struct page *migrate_pfn_to_page(unsigned long mpfn)
+>>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>>> index dc7b87310c10..020b9dd3cddb 100644
+>>> --- a/include/linux/mm.h
+>>> +++ b/include/linux/mm.h
+>>> @@ -932,6 +932,7 @@ static inline unsigned int page_shift(struct page=
+ *page)
+>>>   }
+>>>
+>>>   void free_compound_page(struct page *page);
+>>> +void prep_compound_page(struct page *page, unsigned int order);
+>>>
+>>>   #ifdef CONFIG_MMU
+>>>   /*
+>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>> index 78c84bee7e29..25d95f7b1e98 100644
+>>> --- a/mm/huge_memory.c
+>>> +++ b/mm/huge_memory.c
+>>> @@ -1663,23 +1663,35 @@ int zap_huge_pmd(struct mmu_gather *tlb, stru=
+ct vm_area_struct *vma,
+>>>   	} else {
+>>>   		struct page *page =3D NULL;
+>>>   		int flush_needed =3D 1;
+>>> +		bool is_anon =3D false;
+>>>
+>>>   		if (pmd_present(orig_pmd)) {
+>>>   			page =3D pmd_page(orig_pmd);
+>>> +			is_anon =3D PageAnon(page);
+>>>   			page_remove_rmap(page, true);
+>>>   			VM_BUG_ON_PAGE(page_mapcount(page) < 0, page);
+>>>   			VM_BUG_ON_PAGE(!PageHead(page), page);
+>>>   		} else if (thp_migration_supported()) {
+>>>   			swp_entry_t entry;
+>>>
+>>> -			VM_BUG_ON(!is_pmd_migration_entry(orig_pmd));
+>>>   			entry =3D pmd_to_swp_entry(orig_pmd);
+>>> -			page =3D pfn_to_page(swp_offset(entry));
+>>> +			if (is_device_private_entry(entry)) {
+>>> +				page =3D device_private_entry_to_page(entry);
+>>> +				is_anon =3D PageAnon(page);
+>>> +				page_remove_rmap(page, true);
+>>> +				VM_BUG_ON_PAGE(page_mapcount(page) < 0, page);
+>>> +				VM_BUG_ON_PAGE(!PageHead(page), page);
+>>> +				put_page(page);
+>>
+>> Why do you hide this code behind thp_migration_supported()? It seems t=
+hat you just need
+>> pmd swap entry not pmd migration entry. Also the condition is not cons=
+istent with the code
+>> in __handle_mm_fault(), in which you handle is_device_private_entry() =
+directly without
+>> checking thp_migration_support().
+>
+> Good point, I think "else if (thp_migration_supported())" should be
+> "else if (is_pmd_migration_entry(orig_pmd))" since if the PMD *is*
+> a device private or migration entry, then it should be handled and the
+> VM_BUG_ON() should be that thp_migration_supported() is true
+> (or maybe remove the VM_BUG_ON?).
 
-> ---
->  drivers/android/binder.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> index e47c8a4c83db..f50c5f182bb5 100644
-> --- a/drivers/android/binder.c
-> +++ b/drivers/android/binder.c
-> @@ -4686,8 +4686,15 @@ static struct binder_thread *binder_get_thread(struct binder_proc *proc)
->  
->  static void binder_free_proc(struct binder_proc *proc)
->  {
-> +	struct binder_device *device;
-> +
->  	BUG_ON(!list_empty(&proc->todo));
->  	BUG_ON(!list_empty(&proc->delivered_death));
-> +	device = container_of(proc->context, struct binder_device, context);
-> +	if (refcount_dec_and_test(&device->ref)) {
-> +		kfree(proc->context->name);
-> +		kfree(device);
-> +	}
->  	binder_alloc_deferred_release(&proc->alloc);
->  	put_task_struct(proc->tsk);
->  	binder_stats_deleted(BINDER_STAT_PROC);
-> @@ -5406,7 +5413,6 @@ static int binder_node_release(struct binder_node *node, int refs)
->  static void binder_deferred_release(struct binder_proc *proc)
->  {
->  	struct binder_context *context = proc->context;
-> -	struct binder_device *device;
->  	struct rb_node *n;
->  	int threads, nodes, incoming_refs, outgoing_refs, active_transactions;
->  
-> @@ -5423,12 +5429,6 @@ static void binder_deferred_release(struct binder_proc *proc)
->  		context->binder_context_mgr_node = NULL;
->  	}
->  	mutex_unlock(&context->context_mgr_node_lock);
-> -	device = container_of(proc->context, struct binder_device, context);
-> -	if (refcount_dec_and_test(&device->ref)) {
-> -		kfree(context->name);
-> -		kfree(device);
-> -	}
-> -	proc->context = NULL;
->  	binder_inner_proc_lock(proc);
->  	/*
->  	 * Make sure proc stays alive after we
-> -- 
-> 2.27.0.111.gc72c7da667-goog
-> 
+I disagree. A device private entry is independent of a PMD migration entr=
+y, since a device private
+entry is just a swap entry, which is available when CONFIG_TRANSPARENT_HU=
+GEPAGE. So for architectures
+support THP but not THP migration (like ARM64), your code should still wo=
+rk.
+
+I would suggest you to check all the use of is_swap_pmd() and make sure t=
+he code
+can handle is_device_private_entry().
+
+For new device private code, you might need to guard it either statically=
+ or dynamically in case
+CONFIG_DEVICE_PRIVATE is disabled. Potentially, you would like to make su=
+re a system without
+CONFIG_DEVICE_PRIVATE will not see is_device_private_entry() =3D=3D true =
+and give errors when it does.
+
+
+>
+>> Do we need to support split_huge_pmd() if a page is migrated to device=
+? Any new code
+>> needed in split_huge_pmd()?
+>
+> I was thinking that any CPU usage of the device private page would caus=
+e it to be
+> migrated back to system memory as a whole PMD/PUD page but I'll double =
+check.
+> At least there should be a check that the page isn't a device private p=
+age.
+
+Well, that depends. If we can allocate a THP on CPU memory, we can migrat=
+e the whole page back.
+But if no THP is allocated due to low on free memory or memory fragmentat=
+ion, I think you
+might need a fallback plan, either splitting the device private page and =
+migrating smaller
+pages instead or reclaiming CPU memory until you get a THP. IMHO, the for=
+mer might be preferred,
+since the latter might cost a lot of CPU cycles but still gives no THP af=
+ter all.
+
+
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_48103850-4C7E-4E7F-8F24-58AD79C74F54_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl7xEEUPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKYSoP/Rjt9LBjM+NzAfwgzfrswt10MroG1LEsGSOi
+6d+od98EjIztweYrQvgYzzTL+h1Z7VJ6Z8jp2sqhm9aqZ64Rg+wCYiX/wmUQ+gYU
+Sva39zxKUsSgM/Ik1tQeKs1rtOKAq8rlbnpT42TMFwtMbxUjfYhfTH0C8llg6Ins
+vnLreKOAuQtE6lCZi2+ofWWqIARZvkhcBGwS4BFei3k1h/SNi43rK8eGHgGdyM3v
+ZrXktuWE2naGY5qs1o7MfIVKbyWyBQ5t/IIvbh2VADjwP0uLpdJcRxaG6Hiafml8
+J9MrjIKnZj2OUvN/Ic2W1n4PWnjCjbClPKKKlHze7LSmqFMnzPikiR/jbBF3XhQH
+UwLhNX2nubyJJq63CXjlaU2jUdqRqFA/u3VCcCp7LcBUHOemqURV65GT+PZ6CjyA
+RkZZPTkeD6NTzP7QRtF2Q568Olt6aZZOfSNGYHsbxWTCwqAM7rjOXttIijilGS42
+O15jkvrgeGTWbGhAP6ysyMKtQztrrr0UiBvP4ljLaGNTHn1dIU6jZeMybq0TWHGP
+zsn8FLDGsDNsneYK8PLY9rDAsZ1rIq7bqVTVi4AbfrVxTtYcblnvdEuQVBvE+4bT
+n11xLUaei+keSUBU2h0cxsk8kWd/If9R1Wvv/bULCg40LDn8He05P9FDmP6s0NQp
+UN85D1l4
+=g7TJ
+-----END PGP SIGNATURE-----
+
+--=_MailMate_48103850-4C7E-4E7F-8F24-58AD79C74F54_=--
