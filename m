@@ -2,144 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A858A203207
-	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD08E2031F7
+	for <lists+linux-kernel@lfdr.de>; Mon, 22 Jun 2020 10:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726710AbgFVIZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 04:25:09 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:47880 "EHLO inva021.nxp.com"
+        id S1726896AbgFVIVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 04:21:13 -0400
+Received: from mga06.intel.com ([134.134.136.31]:17498 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726080AbgFVIZJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 04:25:09 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 5950F200903;
-        Mon, 22 Jun 2020 10:25:07 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id F07332008F6;
-        Mon, 22 Jun 2020 10:25:04 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 8F729402CA;
-        Mon, 22 Jun 2020 16:25:01 +0800 (SGT)
-From:   Qiang Zhao <qiang.zhao@nxp.com>
-To:     shawnguo@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        leoyang.li@nxp.com, Xiaowei Bao <xiaowei.bao@nxp.com>
-Subject: [PATCH] arm64: dts: ls1028a: Add DSPI nodes
-Date:   Mon, 22 Jun 2020 16:19:20 +0800
-Message-Id: <20200622081920.22269-1-qiang.zhao@nxp.com>
-X-Mailer: git-send-email 2.17.1
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1726515AbgFVIVN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 04:21:13 -0400
+IronPort-SDR: Z0ub+nEzRa1sJl/QzVKmJLdWLnXyF1ML/qJPGqiggccsGrtSySAI+HJ5AIUGm5RUHCuASSXe/i
+ JUwi89sIjsvA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9659"; a="205175379"
+X-IronPort-AV: E=Sophos;i="5.75,266,1589266800"; 
+   d="scan'208";a="205175379"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 01:21:12 -0700
+IronPort-SDR: lgXUlVcfPPhCCYk4XrI6ebEkoEcFaxWXyendV0kAb4z4WPfx1WJA40Z4OUGsSg8IRUUdL1JudK
+ gtHrl/iuAfgg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,266,1589266800"; 
+   d="scan'208";a="310853612"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 22 Jun 2020 01:21:10 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 01692130; Mon, 22 Jun 2020 11:21:09 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1] software node: Use software_node_unregister() when unregistering group of nodes
+Date:   Mon, 22 Jun 2020 11:21:08 +0300
+Message-Id: <20200622082108.25577-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaowei Bao <xiaowei.bao@nxp.com>
+After the commit
+  46d26819a505 ("software node: implement software_node_unregister()")
+has been applied a new helper appears that may be utilised in other places.
+For time being there is one such place, i.e. in
+software_node_unregister_node_group() which will benefit of the clean up.
 
-Add the DSPI nodes for ls1028a.
+Use software_node_unregister() when unregistering group of nodes.
 
-Signed-off-by: Xiaowei Bao <xiaowei.bao@nxp.com>
-Signed-off-by: Zhao Qiang <qiang.zhao@nxp.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts | 85 +++++++++++++++++++++++
- 1 file changed, 85 insertions(+)
+ drivers/base/swnode.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-index dd69c5b..e4f00c2 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-qds.dts
-@@ -107,6 +107,91 @@
- 	};
- };
+diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+index e5eb27375416..010828fc785b 100644
+--- a/drivers/base/swnode.c
++++ b/drivers/base/swnode.c
+@@ -761,17 +761,13 @@ EXPORT_SYMBOL_GPL(software_node_register_node_group);
+  */
+ void software_node_unregister_node_group(const struct software_node **node_group)
+ {
+-	struct swnode *swnode;
+ 	unsigned int i;
  
-+&dspi0 {
-+	bus-num = <0>;
-+	status = "okay";
-+
-+	flash@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		spi-cpol;
-+		spi-cpha;
-+		reg = <0>;
-+		spi-max-frequency = <10000000>;
-+	};
-+
-+	flash@1 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		spi-cpol;
-+		spi-cpha;
-+		reg = <1>;
-+		spi-max-frequency = <10000000>;
-+	};
-+
-+	flash@2 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		spi-cpol;
-+		spi-cpha;
-+		reg = <2>;
-+		spi-max-frequency = <10000000>;
-+	};
-+};
-+
-+&dspi1 {
-+	bus-num = <1>;
-+	status = "okay";
-+
-+	flash@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		spi-cpol;
-+		spi-cpha;
-+		reg = <0>;
-+		spi-max-frequency = <10000000>;
-+	};
-+
-+	flash@1 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		spi-cpol;
-+		spi-cpha;
-+		reg = <1>;
-+		spi-max-frequency = <10000000>;
-+	};
-+
-+	flash@2 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		spi-cpol;
-+		spi-cpha;
-+		reg = <2>;
-+		spi-max-frequency = <10000000>;
-+	};
-+};
-+
-+&dspi2 {
-+	bus-num = <2>;
-+	status = "okay";
-+
-+	flash@0 {
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		compatible = "jedec,spi-nor";
-+		spi-cpol;
-+		spi-cpha;
-+		reg = <0>;
-+		spi-max-frequency = <10000000>;
-+	};
-+};
-+
- &duart0 {
- 	status = "okay";
- };
+ 	if (!node_group)
+ 		return;
+ 
+-	for (i = 0; node_group[i]; i++) {
+-		swnode = software_node_to_swnode(node_group[i]);
+-		if (swnode)
+-			fwnode_remove_software_node(&swnode->fwnode);
+-	}
++	for (i = 0; node_group[i]; i++)
++		software_node_unregister(node_group[i]);
+ }
+ EXPORT_SYMBOL_GPL(software_node_unregister_node_group);
+ 
 -- 
-2.7.4
+2.27.0
 
