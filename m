@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605DD206089
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0D4206031
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392219AbgFWUnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:43:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40782 "EHLO mail.kernel.org"
+        id S2389274AbgFWUk1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:40:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392553AbgFWUnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:43:47 -0400
+        id S2391831AbgFWUkX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:40:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D126221927;
-        Tue, 23 Jun 2020 20:43:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCD7720675;
+        Tue, 23 Jun 2020 20:40:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945027;
-        bh=3ALKqSb//yNIIQlkl8NRcrYMmxqeQWP1nF4+ZNgu8uA=;
+        s=default; t=1592944824;
+        bh=aJy1wXut2lURQAXKT/zw1Qi3JWbRdii4jqOG+7o93cQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zpRdtL2i8Jam4sD/N2J9W+HKDM9snfZYyI150HJIpfxLQ9cETzF66XABSRBCSckNT
-         YhQZP6tnSby4tP2F98KBf9uNhMVFp5Z+70IErCcpRWie6IUfF0Cq/PhQg/k+J8HKu3
-         Nl9sia2SJURYBSlHZmpwhAcllL+w2KqPsmRyinKA=
+        b=k1HPB3P0i1/gp4z7Kkxf4bF/iNsztTkkGxkONtUcKvyJR1HlzzEfygfd+gXCMhioH
+         P5jMY8E7I+OyEy8HfHWzXMWhA6qpLZHM2TWI1RXSPIcyTvR9sJS+6+sg5K5zOQB/6s
+         0+UcRlWKjFhalwx1gynWFHlVED/hKCeOZ2h5TKns=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 011/136] ARM: integrator: Add some Kconfig selections
-Date:   Tue, 23 Jun 2020 21:57:47 +0200
-Message-Id: <20200623195304.178784277@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 140/206] blktrace: fix endianness in get_pdu_int()
+Date:   Tue, 23 Jun 2020 21:57:48 +0200
+Message-Id: <20200623195323.873758816@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
-References: <20200623195303.601828702@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,59 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 
-[ Upstream commit d2854bbe5f5c4b4bec8061caf4f2e603d8819446 ]
+[ Upstream commit 71df3fd82e7cccec7b749a8607a4662d9f7febdd ]
 
-The CMA and DMA_CMA Kconfig options need to be selected
-by the Integrator in order to produce boot console on some
-Integrator systems.
+In function get_pdu_len() replace variable type from __u64 to
+__be64. This fixes sparse warning.
 
-The REGULATOR and REGULATOR_FIXED_VOLTAGE need to be
-selected in order to boot the system from an external
-MMC card when using MMCI/PL181 from the device tree
-probe path.
-
-Select these things directly from the Kconfig so we are
-sure to be able to bring the systems up with console
-from any device tree.
-
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-integrator/Kconfig | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ kernel/trace/blktrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/mach-integrator/Kconfig b/arch/arm/mach-integrator/Kconfig
-index cefe44f6889bd..ba124f8704fac 100644
---- a/arch/arm/mach-integrator/Kconfig
-+++ b/arch/arm/mach-integrator/Kconfig
-@@ -3,6 +3,8 @@ menuconfig ARCH_INTEGRATOR
- 	depends on ARCH_MULTI_V4T || ARCH_MULTI_V5 || ARCH_MULTI_V6
- 	select ARM_AMBA
- 	select COMMON_CLK_VERSATILE
-+	select CMA
-+	select DMA_CMA
- 	select HAVE_TCM
- 	select ICST
- 	select MFD_SYSCON
-@@ -34,14 +36,13 @@ config INTEGRATOR_IMPD1
- 	select ARM_VIC
- 	select GPIO_PL061
- 	select GPIOLIB
-+	select REGULATOR
-+	select REGULATOR_FIXED_VOLTAGE
- 	help
- 	  The IM-PD1 is an add-on logic module for the Integrator which
- 	  allows ARM(R) Ltd PrimeCells to be developed and evaluated.
- 	  The IM-PD1 can be found on the Integrator/PP2 platform.
+diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
+index 5c84f7421871d..42027cf4ea91e 100644
+--- a/kernel/trace/blktrace.c
++++ b/kernel/trace/blktrace.c
+@@ -1267,7 +1267,7 @@ static inline __u16 t_error(const struct trace_entry *ent)
  
--	  To compile this driver as a module, choose M here: the
--	  module will be called impd1.
--
- config INTEGRATOR_CM7TDMI
- 	bool "Integrator/CM7TDMI core module"
- 	depends on ARCH_INTEGRATOR_AP
+ static __u64 get_pdu_int(const struct trace_entry *ent, bool has_cg)
+ {
+-	const __u64 *val = pdu_start(ent, has_cg);
++	const __be64 *val = pdu_start(ent, has_cg);
+ 	return be64_to_cpu(*val);
+ }
+ 
 -- 
 2.25.1
 
