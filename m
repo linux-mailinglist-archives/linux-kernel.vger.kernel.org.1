@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D66B720603A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F81B20604C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392280AbgFWUkr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:40:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36812 "EHLO mail.kernel.org"
+        id S2392313AbgFWUlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:41:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392262AbgFWUkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:40:39 -0400
+        id S2392174AbgFWUlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:41:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 759FC20675;
-        Tue, 23 Jun 2020 20:40:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9270C20702;
+        Tue, 23 Jun 2020 20:41:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944840;
-        bh=k2ujJbbLaLkp8RkQ81qTnaWFmJhWwsTCR9ZgosbWkAo=;
+        s=default; t=1592944869;
+        bh=iUhx2mCEszatdkL0B/6D09sYtm+d5NmvFLb6a1swACw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J3fPejAdub6QHV1bZ1J/1NKvV/UPZh8e3ar5PhVR2XPiGsJIiQyZg6SMuFDt1rivb
-         RnDWi4ljpMifyFwDtjQnNIFF58ufc8CCam2fM34w0GNrc2HO5i0ycIsgqWShh37xeN
-         IGimKHtFA7ME0cSoyUmkkt9P0b/QICrAkXODdJDw=
+        b=Q5yaPbwEWtHXQRASNc2bEaVz4Nbkj8eOlclVntApR6AFpSdAQ32VsFudZXrnOaJ4h
+         +KxjxxQR3qxQhzT7jCr0OUvN7x937+Pf4WX6GJziolCF9XrjxC5HlZiHequIFJ0pLN
+         G/0r11V8+rfIBGfzmIWD2ddJrc39smsZxjR3yuHc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
+        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
+        Qiushi Wu <wu000273@umn.edu>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 128/206] gfs2: Allow lock_nolock mount to specify jid=X
-Date:   Tue, 23 Jun 2020 21:57:36 +0200
-Message-Id: <20200623195323.273161227@linuxfoundation.org>
+Subject: [PATCH 4.19 129/206] scsi: iscsi: Fix reference count leak in iscsi_boot_create_kobj
+Date:   Tue, 23 Jun 2020 21:57:37 +0200
+Message-Id: <20200623195323.321288415@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
 References: <20200623195316.864547658@linuxfoundation.org>
@@ -44,44 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bob Peterson <rpeterso@redhat.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit ea22eee4e6027d8927099de344f7fff43c507ef9 ]
+[ Upstream commit 0267ffce562c8bbf9b57ebe0e38445ad04972890 ]
 
-Before this patch, a simple typo accidentally added \n to the jid=
-string for lock_nolock mounts. This made it impossible to mount a
-gfs2 file system with a journal other than journal0. Thus:
+kobject_init_and_add() takes reference even when it fails. If this
+function returns an error, kobject_put() must be called to properly
+clean up the memory associated with the object.
 
-mount -tgfs2 -o hostdata="jid=1" <device> <mount pt>
-
-Resulted in:
-mount: wrong fs type, bad option, bad superblock on <device>
-
-In most cases this is not a problem. However, for debugging and
-testing purposes we sometimes want to test the integrity of other
-journals. This patch removes the unnecessary \n and thus allows
-lock_nolock users to specify an alternate journal.
-
-Signed-off-by: Bob Peterson <rpeterso@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Link: https://lore.kernel.org/r/20200528201353.14849-1-wu000273@umn.edu
+Reviewed-by: Lee Duncan <lduncan@suse.com>
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/ops_fstype.c | 2 +-
+ drivers/scsi/iscsi_boot_sysfs.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
-index b041cb8ae383d..ed77b10bdfb53 100644
---- a/fs/gfs2/ops_fstype.c
-+++ b/fs/gfs2/ops_fstype.c
-@@ -903,7 +903,7 @@ fail:
- }
- 
- static const match_table_t nolock_tokens = {
--	{ Opt_jid, "jid=%d\n", },
-+	{ Opt_jid, "jid=%d", },
- 	{ Opt_err, NULL },
- };
- 
+diff --git a/drivers/scsi/iscsi_boot_sysfs.c b/drivers/scsi/iscsi_boot_sysfs.c
+index d453667612f88..15d64f96e623c 100644
+--- a/drivers/scsi/iscsi_boot_sysfs.c
++++ b/drivers/scsi/iscsi_boot_sysfs.c
+@@ -360,7 +360,7 @@ iscsi_boot_create_kobj(struct iscsi_boot_kset *boot_kset,
+ 	boot_kobj->kobj.kset = boot_kset->kset;
+ 	if (kobject_init_and_add(&boot_kobj->kobj, &iscsi_boot_ktype,
+ 				 NULL, name, index)) {
+-		kfree(boot_kobj);
++		kobject_put(&boot_kobj->kobj);
+ 		return NULL;
+ 	}
+ 	boot_kobj->data = data;
 -- 
 2.25.1
 
