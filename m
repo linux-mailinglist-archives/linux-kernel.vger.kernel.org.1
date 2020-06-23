@@ -2,45 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7B820602E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BA72060A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392213AbgFWUkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:40:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36164 "EHLO mail.kernel.org"
+        id S2404004AbgFWUpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:45:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42166 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390938AbgFWUkP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:40:15 -0400
+        id S2392657AbgFWUox (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:44:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E16C021883;
-        Tue, 23 Jun 2020 20:40:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5713E21927;
+        Tue, 23 Jun 2020 20:44:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944814;
-        bh=ANj6Jzi3abtazOkw7RqmxVYzGVqP7AJKyywwP4JH8rs=;
+        s=default; t=1592945092;
+        bh=2ywDc0xZpZr4pNeuplAx72Tl1vqpLH6y/lFRNLON1GE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BRg3SiyEJJx6DCdfvBPXNyz/359LJf/ajTT6XqoDz6BD8i5mJ+WDA6P7SlcE2TKBG
-         0DZt6c2Yp4aaHpGSgzqLLelAIfcxJn+hP+/PJUq4auWytXZEdB4n0XfzAKg6Rhi0Uh
-         VRz2xSfkq15rPt/XShVSSgPTR5h+TPNt5cfDvfyk=
+        b=cNTZSfB0bZ5gkk7fNnbjP5zDfF7kbb9f+V39YaSp+iGRjOncAbWVwc6E2oXVovyfo
+         T1YavHdy42HgkCYjqRnQ3qunT7DOTkx9IDwtLIQ95hDLnT4hdvAn4wNIhu9CqRwo0N
+         hFMW9LT97LxbB+WUmuJNecWxanEJHDzFjxNxPd3M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org, Georgi Djakov <georgi.djakov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 136/206] include/linux/bitops.h: avoid clang shift-count-overflow warnings
+Subject: [PATCH 4.14 008/136] clk: qcom: msm8916: Fix the address location of pll->config_reg
 Date:   Tue, 23 Jun 2020 21:57:44 +0200
-Message-Id: <20200623195323.676418958@linuxfoundation.org>
+Message-Id: <20200623195304.033620732@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
+References: <20200623195303.601828702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,63 +48,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-[ Upstream commit bd93f003b7462ae39a43c531abca37fe7073b866 ]
+[ Upstream commit f47ab3c2f5338828a67e89d5f688d2cef9605245 ]
 
-Clang normally does not warn about certain issues in inline functions when
-it only happens in an eliminated code path. However if something else
-goes wrong, it does tend to complain about the definition of hweight_long()
-on 32-bit targets:
+During the process of debugging a processor derived from the msm8916 which
+we found the new processor was not starting one of its PLLs.
 
-  include/linux/bitops.h:75:41: error: shift count >= width of type [-Werror,-Wshift-count-overflow]
-          return sizeof(w) == 4 ? hweight32(w) : hweight64(w);
-                                                 ^~~~~~~~~~~~
-  include/asm-generic/bitops/const_hweight.h:29:49: note: expanded from macro 'hweight64'
-   define hweight64(w) (__builtin_constant_p(w) ? __const_hweight64(w) : __arch_hweight64(w))
-                                                  ^~~~~~~~~~~~~~~~~~~~
-  include/asm-generic/bitops/const_hweight.h:21:76: note: expanded from macro '__const_hweight64'
-   define __const_hweight64(w) (__const_hweight32(w) + __const_hweight32((w) >> 32))
-                                                                             ^  ~~
-  include/asm-generic/bitops/const_hweight.h:20:49: note: expanded from macro '__const_hweight32'
-   define __const_hweight32(w) (__const_hweight16(w) + __const_hweight16((w) >> 16))
-                                                  ^
-  include/asm-generic/bitops/const_hweight.h:19:72: note: expanded from macro '__const_hweight16'
-   define __const_hweight16(w) (__const_hweight8(w)  + __const_hweight8((w)  >> 8 ))
-                                                                         ^
-  include/asm-generic/bitops/const_hweight.h:12:9: note: expanded from macro '__const_hweight8'
-            (!!((w) & (1ULL << 2))) +     \
+After tracing the addresses and writes that downstream was doing and
+comparing to upstream it became obvious that we were writing to a different
+register location than downstream when trying to configure the PLL.
 
-Adding an explicit cast to __u64 avoids that warning and makes it easier
-to read other output.
+This error is also present in upstream msm8916.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Link: http://lkml.kernel.org/r/20200505135513.65265-1-arnd@arndb.de
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+As an example clk-pll.c::clk_pll_recalc_rate wants to write to
+pll->config_reg updating the bit-field POST_DIV_RATIO. That bit-field is
+defined in PLL_USER_CTL not in PLL_CONFIG_CTL. Taking the BIMC PLL as an
+example
+
+lm80-p0436-13_c_qc_snapdragon_410_processor_hrd.pdf
+
+0x01823010 GCC_BIMC_PLL_USER_CTL
+0x01823014 GCC_BIMC_PLL_CONFIG_CTL
+
+This pattern is repeated for gpll0, gpll1, gpll2 and bimc_pll.
+
+This error is likely not apparent since the bootloader will already have
+initialized these PLLs.
+
+This patch corrects the location of config_reg from PLL_CONFIG_CTL to
+PLL_USER_CTL for all relevant PLLs on msm8916.
+
+Fixes commit 3966fab8b6ab ("clk: qcom: Add MSM8916 Global Clock Controller support")
+
+Cc: Georgi Djakov <georgi.djakov@linaro.org>
+Cc: Andy Gross <agross@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Michael Turquette <mturquette@baylibre.com>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Link: https://lkml.kernel.org/r/20200329124116.4185447-1-bryan.odonoghue@linaro.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/bitops.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/qcom/gcc-msm8916.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index e02cbca3cfaf0..5c1522ed2d7c7 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -50,7 +50,7 @@ static inline int get_bitmask_order(unsigned int count)
- 
- static __always_inline unsigned long hweight_long(unsigned long w)
- {
--	return sizeof(w) == 4 ? hweight32(w) : hweight64(w);
-+	return sizeof(w) == 4 ? hweight32(w) : hweight64((__u64)w);
- }
- 
- /**
+diff --git a/drivers/clk/qcom/gcc-msm8916.c b/drivers/clk/qcom/gcc-msm8916.c
+index 2057809219f4e..7426d910e0797 100644
+--- a/drivers/clk/qcom/gcc-msm8916.c
++++ b/drivers/clk/qcom/gcc-msm8916.c
+@@ -270,7 +270,7 @@ static struct clk_pll gpll0 = {
+ 	.l_reg = 0x21004,
+ 	.m_reg = 0x21008,
+ 	.n_reg = 0x2100c,
+-	.config_reg = 0x21014,
++	.config_reg = 0x21010,
+ 	.mode_reg = 0x21000,
+ 	.status_reg = 0x2101c,
+ 	.status_bit = 17,
+@@ -297,7 +297,7 @@ static struct clk_pll gpll1 = {
+ 	.l_reg = 0x20004,
+ 	.m_reg = 0x20008,
+ 	.n_reg = 0x2000c,
+-	.config_reg = 0x20014,
++	.config_reg = 0x20010,
+ 	.mode_reg = 0x20000,
+ 	.status_reg = 0x2001c,
+ 	.status_bit = 17,
+@@ -324,7 +324,7 @@ static struct clk_pll gpll2 = {
+ 	.l_reg = 0x4a004,
+ 	.m_reg = 0x4a008,
+ 	.n_reg = 0x4a00c,
+-	.config_reg = 0x4a014,
++	.config_reg = 0x4a010,
+ 	.mode_reg = 0x4a000,
+ 	.status_reg = 0x4a01c,
+ 	.status_bit = 17,
+@@ -351,7 +351,7 @@ static struct clk_pll bimc_pll = {
+ 	.l_reg = 0x23004,
+ 	.m_reg = 0x23008,
+ 	.n_reg = 0x2300c,
+-	.config_reg = 0x23014,
++	.config_reg = 0x23010,
+ 	.mode_reg = 0x23000,
+ 	.status_reg = 0x2301c,
+ 	.status_bit = 17,
 -- 
 2.25.1
 
