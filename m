@@ -2,93 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1A6205766
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3E832057DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:50:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732913AbgFWQk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 12:40:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:34166 "EHLO foss.arm.com"
+        id S2387552AbgFWQsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 12:48:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38658 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732174AbgFWQk0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 12:40:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8CBB01F1;
-        Tue, 23 Jun 2020 09:40:25 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 050EE3F73C;
-        Tue, 23 Jun 2020 09:40:23 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 17:40:21 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Doug Anderson <dianders@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        hsinyi@chromium.org, Joel Fernandes <joelaf@google.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Quentin Perret <qperret@google.com>, ctheegal@codeaurora.org,
-        Guenter Roeck <groeck@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cros_ec_spi: Even though we're RT priority, don't bump
- cpu freq
-Message-ID: <20200623164021.lcrnwpli7wdlsn5i@e107158-lin.cambridge.arm.com>
-References: <20200610151818.1.I666ecd9c6f3c6405bd75831a21001b8109b6438c@changeid>
- <20200612125250.7bwjfnxhurdf5bwj@e107158-lin.cambridge.arm.com>
- <CAD=FV=WuYZRO=sv4ODr0SFk0gTtvCW0dNQXbFGrBDqRgjYv-jA@mail.gmail.com>
- <20200619153851.vigshoae3ahiy63x@e107158-lin.cambridge.arm.com>
- <CAD=FV=XursDFUWL=aGUwFgXc4BugUMdT5e+Fwwo5w2gReCjUaQ@mail.gmail.com>
+        id S1732347AbgFWQpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 12:45:10 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5CC1EAEB1;
+        Tue, 23 Jun 2020 16:45:07 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     gregkh@linuxfoundation.org
+Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Subject: [PATCH 00/50] staging: vchiq: Getting rid of the vchi/vchiq split
+Date:   Tue, 23 Jun 2020 18:41:46 +0200
+Message-Id: <20200623164235.29566-1-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=XursDFUWL=aGUwFgXc4BugUMdT5e+Fwwo5w2gReCjUaQ@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/22/20 11:21, Doug Anderson wrote:
+vchi acts as a mid layer between vchiq and its kernel services, while
+arguably providing little to no benefit: half of the functions exposed
+are a 1:1 copy of vchiq's, and the rest provide some functionality which
+can be easly integrated into vchiq without all the churn. Moreover it
+has been found in the past as a blockage to further fixes in vchiq as
+every change needed its vchi counterpart, if even possible.
 
-[...]
+Hence this series, which merges all vchi functionality into vchiq and
+provies a simpler and more concise API to services.
 
-> > If you propose something that will help the discussion. I think based on the
-> > same approach Peter has taken to prevent random RT priorities. In uclamp case
-> > I think we just want to allow driver to opt RT tasks out of the default
-> > boosting behavior.
-> >
-> > I'm a bit wary that this extra layer of tuning might create a confusion, but
-> > I can't reason about why is it bad for a driver to say I don't want my RT task
-> > to be boosted too.
-> 
-> Right.  I was basically just trying to say "turn my boosting off".
-> 
-> ...so I guess you're saying that doing a v2 of my patch with the
-> proper #ifdef protection wouldn't be a good way to go and I'd need to
-> propose some sort of API for this?
+I'm aware that kernel's vchi API tries to mimic its userspace
+counterpart (or vice versa). Obviously this breaks the parity, but I
+don't think it's a sane goal to have. There is little sense or gain from
+it, and adds impossible constraints to upstreaming the driver.
 
-It's up to Peter really.
+Overall this fall short of removing 1100 lines of code, which is pretty
+neat on itself.
 
-It concerns me in general to start having in-kernel users of uclamp that might
-end up setting random values (like we ended having random RT priorities), that
-really don't mean a lot outside the context of the specific system it was
-tested on. Given the kernel could run anywhere, it's hard to rationalize what's
-okay or not.
+So far it has been tested trough bcm2835-camera, audio and vchiq-test. I
+can't do much about vc-sm-cma for now as it's only available downstream,
+but I made sure not to break anything and will provide some patches for
+the RPi devs to pick-up, so as to make their life easier.
 
-Opting out of default RT boost for a specific task in the kernel, could make
-sense though it still concerns me for the same reasons. Is this okay for all
-possible systems this can run on?
+Note that in order to keep the divergence between the downstream and
+upstream versions of this as small as possible I picked up some
+mmal-vchiq patches that might not be absolutely necessary to the goal of
+the series.
 
-It feels better for userspace to turn RT boosting off for all tasks if you know
-your system is powerful, or use the per task API to switch off boosting for the
-tasks you know they don't need it.
+Regards,
+Nicolas
 
-But if we want to allow in-kernel users, IMO it needs to be done in
-a controlled way, in a similar manner Peter changed how RT priority can be set
-in the kernel.
+Previous versions:
+ RFC: https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2174964.html
 
-It would be good hear what Peter thinks.
+---
 
-Thanks
+Dave Stevenson (8):
+  staging: mmal-vchiq: Allocate and free components as required
+  staging: mmal-vchiq: Avoid use of bool in structures
+  staging: mmal-vchiq: Make timeout a defined parameter
+  staging: mmal-vchiq: Make a mmal_buf struct for passing parameters
+  staging: mmal-vchiq: Fixup vchiq-mmal include ordering
+  staging: mmal-vchiq: Fix client_component for 64 bit kernel
+  staging: mmal-vchiq: Always return the param size from param_get
+  staging: mmal-vchiq: If the VPU returns an error, don't negate it
 
---
-Qais Yousef
+Jacopo Mondi (1):
+  staging: bcm2835: Break MMAL support out from camera
+
+Naushir Patuck (1):
+  staging: mmal-vchiq: Fix formatting errors in mmal_parameters.h
+
+Nicolas Saenz Julienne (39):
+  staging: vchi: Get rid of all useless callback reasons
+  staging: vchi: Get rid of vchi_msg_peek()
+  staging: vchi: Get rid of struct vchi_instance_handle
+  staging: vchi: Unify struct shim_service and struct
+    vchi_service_handle
+  staging: vc04_services: bcm2835-audio: Use vchi_msg_hold()
+  staging: vchi: Get rid of vchi_msg_dequeue()
+  staging: vchi_common: Get rid of all unused definitions
+  staging: vchi: Get rid of unnecessary defines
+  staging: vc04_services: Get rid of vchi_cfg.h
+  staging: vchi: Get rid of flags argument in vchi_msg_hold()
+  staging: vchi: Use enum vchiq_bulk_mode instead of vchi's transmission
+    flags
+  staging: vchi: Use vchiq's enum vchiq_reason
+  staging: vchi: Get rid of effect less expression
+  staging: vchiq: Introduce vchiq_validate_params()
+  staging: vchiq: Move message queue into struct vchiq_service
+  staging: vchiq: Get rid of vchiq_util.h
+  staging: vchi: Expose struct vchi_service
+  staging: vchiq: Export vchiq_get_service_userdata()
+  staging: vchiq: Export vchiq_msg_queue_push
+  staging: vchi: Get rid of vchiq_shim's message callback
+  staging: vchiq: Don't use a typedef for vchiq_callback
+  staging: vchi: Use struct vchiq_service_params
+  staging: vchi: Get rid of struct vchi_service
+  staging: vchiq: Pass vchiq's message when holding a message
+  staging: vchi: Rework vchi_msg_hold() to match vchiq_msg_hold()
+  staging: vchiq: Unify fourcc definition mechanisms
+  staging: vchi: Get rid of struct vchiq_instance forward declaration
+  staging: vchi: Don't include vchiq_core.h
+  staging: vchiq: Get rid of unnecessary definitions in vchiq_if.h
+  staging: vchiq: Make vchiq_add_service() local
+  staging: vchiq: Move definitions only used by core into core header
+  staging: vchi: Get rid of vchi_bulk_queue_receive()
+  staging: vchi: Get rid of vchi_bulk_queue_transmit()
+  staging: vchi: Move vchi_queue_kernel_message() into vchiq
+  staging: vchiq: Get rid of vchi
+  staging: vchiq: Move conditional barrier definition into vchiq_core.h
+  staging: vchiq: Use vchiq.h as the main header file for services
+  staging: vchiq: Move defines into core header
+  staging: vchiq: Move vchiq.h into include directory
+
+Phil Elwell (1):
+  staging: vchiq_arm: Add a matching unregister call
+
+ drivers/staging/vc04_services/Kconfig         |   2 +
+ drivers/staging/vc04_services/Makefile        |   9 +-
+ .../vc04_services/bcm2835-audio/Makefile      |   2 +-
+ .../bcm2835-audio/bcm2835-vchiq.c             | 100 ++-
+ .../vc04_services/bcm2835-audio/bcm2835.h     |   4 +-
+ .../bcm2835-audio/vc_vchi_audioserv_defs.h    |   5 +-
+ .../vc04_services/bcm2835-camera/Kconfig      |   1 +
+ .../vc04_services/bcm2835-camera/Makefile     |   4 +-
+ .../bcm2835-camera/bcm2835-camera.c           |  66 +-
+ .../linux/raspberrypi/vchiq.h}                |  67 +-
+ .../vc04_services/interface/{vchi => }/TODO   |   0
+ .../vc04_services/interface/vchi/vchi.h       | 159 -----
+ .../vc04_services/interface/vchi/vchi_cfg.h   | 238 -------
+ .../interface/vchi/vchi_common.h              | 138 ----
+ .../vc04_services/interface/vchiq_arm/vchiq.h |  21 -
+ .../interface/vchiq_arm/vchiq_2835_arm.c      |   1 +
+ .../interface/vchiq_arm/vchiq_arm.c           |  87 ++-
+ .../interface/vchiq_arm/vchiq_core.c          |  97 ++-
+ .../interface/vchiq_arm/vchiq_core.h          |  46 +-
+ .../interface/vchiq_arm/vchiq_ioctl.h         |   2 +-
+ .../interface/vchiq_arm/vchiq_shim.c          | 617 ------------------
+ .../interface/vchiq_arm/vchiq_util.c          |  85 ---
+ .../interface/vchiq_arm/vchiq_util.h          |  50 --
+ .../staging/vc04_services/vchiq-mmal/Kconfig  |   7 +
+ .../staging/vc04_services/vchiq-mmal/Makefile |   9 +
+ .../mmal-common.h                             |   5 +
+ .../mmal-encodings.h                          |   0
+ .../mmal-msg-common.h                         |   0
+ .../mmal-msg-format.h                         |   0
+ .../mmal-msg-port.h                           |   0
+ .../{bcm2835-camera => vchiq-mmal}/mmal-msg.h |   2 +-
+ .../mmal-parameters.h                         |  32 +-
+ .../mmal-vchiq.c                              | 277 ++++----
+ .../mmal-vchiq.h                              |   6 +-
+ 34 files changed, 521 insertions(+), 1618 deletions(-)
+ rename drivers/staging/vc04_services/{interface/vchiq_arm/vchiq_if.h => include/linux/raspberrypi/vchiq.h} (56%)
+ rename drivers/staging/vc04_services/interface/{vchi => }/TODO (100%)
+ delete mode 100644 drivers/staging/vc04_services/interface/vchi/vchi.h
+ delete mode 100644 drivers/staging/vc04_services/interface/vchi/vchi_cfg.h
+ delete mode 100644 drivers/staging/vc04_services/interface/vchi/vchi_common.h
+ delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h
+ delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
+ delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.c
+ delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_util.h
+ create mode 100644 drivers/staging/vc04_services/vchiq-mmal/Kconfig
+ create mode 100644 drivers/staging/vc04_services/vchiq-mmal/Makefile
+ rename drivers/staging/vc04_services/{bcm2835-camera => vchiq-mmal}/mmal-common.h (96%)
+ rename drivers/staging/vc04_services/{bcm2835-camera => vchiq-mmal}/mmal-encodings.h (100%)
+ rename drivers/staging/vc04_services/{bcm2835-camera => vchiq-mmal}/mmal-msg-common.h (100%)
+ rename drivers/staging/vc04_services/{bcm2835-camera => vchiq-mmal}/mmal-msg-format.h (100%)
+ rename drivers/staging/vc04_services/{bcm2835-camera => vchiq-mmal}/mmal-msg-port.h (100%)
+ rename drivers/staging/vc04_services/{bcm2835-camera => vchiq-mmal}/mmal-msg.h (99%)
+ rename drivers/staging/vc04_services/{bcm2835-camera => vchiq-mmal}/mmal-parameters.h (96%)
+ rename drivers/staging/vc04_services/{bcm2835-camera => vchiq-mmal}/mmal-vchiq.c (88%)
+ rename drivers/staging/vc04_services/{bcm2835-camera => vchiq-mmal}/mmal-vchiq.h (97%)
+
+-- 
+2.27.0
+
