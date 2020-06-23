@@ -2,164 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB31B20455A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22EA020455F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731825AbgFWAaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:30:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731728AbgFWAaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:30:21 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4D1BC20B80;
-        Tue, 23 Jun 2020 00:30:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592872221;
-        bh=3pYFhXqKTFY2pMPdZv3LeLmznqsHYNsP2sxRiFF0Q6M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ja5ENAKSF+kr1G//xlSSSKWQv6w5XMG5IuFcNHVBv+Iiv+52YS85CZEmo4TnGRiGz
-         PLfvOCxgFJh9/I+9ubqnGf69UDy/tO2qZ4IDtRUMo0fWis10OzRBMthHYwDEkpwdey
-         42m8YoWDA9Kz0XChENbB/2AhGpy7V1G1Ys97MBsU=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 30/30] refscale: Change --torture type from refperf to refscale
-Date:   Mon, 22 Jun 2020 17:30:13 -0700
-Message-Id: <20200623003013.26252-30-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200623002941.GA26089@paulmck-ThinkPad-P72>
-References: <20200623002941.GA26089@paulmck-ThinkPad-P72>
+        id S1731860AbgFWAbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:31:05 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2467 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731717AbgFWAa7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:30:59 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ef14ce70000>; Mon, 22 Jun 2020 17:29:27 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 22 Jun 2020 17:30:58 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Mon, 22 Jun 2020 17:30:58 -0700
+Received: from [10.2.59.206] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 23 Jun
+ 2020 00:30:50 +0000
+Subject: Re: [RESEND PATCH 2/3] nouveau: fix mixed normal and device private
+ page migration
+To:     Ralph Campbell <rcampbell@nvidia.com>,
+        <nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+CC:     Jerome Glisse <jglisse@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        "Jason Gunthorpe" <jgg@mellanox.com>,
+        Ben Skeggs <bskeggs@redhat.com>
+References: <20200622233854.10889-1-rcampbell@nvidia.com>
+ <20200622233854.10889-3-rcampbell@nvidia.com>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <f2bf81df-8faa-0f51-3f74-cb3b31d96aad@nvidia.com>
+Date:   Mon, 22 Jun 2020 17:30:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200622233854.10889-3-rcampbell@nvidia.com>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1592872167; bh=2WrAbqXV4DGqxlrZm0+ZDSPDtMkQaV6QGvn6pSPJL84=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=GUxJV+C/xcw2X+UKzYR0HO4lSwOnk4RAsKDmxnyBhUc/ZDOpq7i1TBhtNI0IuxO8t
+         Vk3aU9aLCeDYez3x/H43zWX4DVKc7QreC8NXnlEDeI6R1j2f10oqs644W1dGmzh+vp
+         3d1+XPUn3Qt0Y8dyGN1pG/18VShsrDIK+uZxaMdNQuaTdUoZaTkcoesEazRT376OJS
+         KNAxa2LzMt6rAmVPucNTn5Lpahf5/zF5vaRa1HPQ5H2GLNV/WaMzoduLSJnX2PwT6x
+         8cGJ8f8oRxHYkmU9TDnVvOT9Fv+gWry9WmY8iIA/L2UlSqnNZtiwHjomp3maYRYPB+
+         h7QmH3p7gxbzA==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On 2020-06-22 16:38, Ralph Campbell wrote:
+> The OpenCL function clEnqueueSVMMigrateMem(), without any flags, will
+> migrate memory in the given address range to device private memory. The
+> source pages might already have been migrated to device private memory.
+> In that case, the source struct page is not checked to see if it is
+> a device private page and incorrectly computes the GPU's physical
+> address of local memory leading to data corruption.
+> Fix this by checking the source struct page and computing the correct
+> physical address.
+> 
+> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+> ---
+>   drivers/gpu/drm/nouveau/nouveau_dmem.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouveau/nouveau_dmem.c
+> index cc9993837508..f6a806ba3caa 100644
+> --- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
+> +++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
+> @@ -540,6 +540,12 @@ static unsigned long nouveau_dmem_migrate_copy_one(struct nouveau_drm *drm,
+>   	if (!(src & MIGRATE_PFN_MIGRATE))
+>   		goto out;
+>   
+> +	if (spage && is_device_private_page(spage)) {
+> +		paddr = nouveau_dmem_page_addr(spage);
+> +		*dma_addr = DMA_MAPPING_ERROR;
+> +		goto done;
+> +	}
+> +
+>   	dpage = nouveau_dmem_page_alloc_locked(drm);
+>   	if (!dpage)
+>   		goto out;
+> @@ -560,6 +566,7 @@ static unsigned long nouveau_dmem_migrate_copy_one(struct nouveau_drm *drm,
+>   			goto out_free_page;
+>   	}
+>   
+> +done:
+>   	*pfn = NVIF_VMM_PFNMAP_V0_V | NVIF_VMM_PFNMAP_V0_VRAM |
+>   		((paddr >> PAGE_SHIFT) << NVIF_VMM_PFNMAP_V0_ADDR_SHIFT);
+>   	if (src & MIGRATE_PFN_WRITE)
+> @@ -615,6 +622,7 @@ nouveau_dmem_migrate_vma(struct nouveau_drm *drm,
+>   	struct migrate_vma args = {
+>   		.vma		= vma,
+>   		.start		= start,
+> +		.src_owner	= drm->dev,
 
-This commit renames the rcutorture config/refperf to config/refscale to
-further avoid conflation with the Linux kernel's perf feature.
+Hi Ralph,
 
-Reported-by: Ingo Molnar <mingo@kernel.org>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- .../bin/{kvm-recheck-refperf.sh => kvm-recheck-refscale.sh}       | 8 ++++----
- tools/testing/selftests/rcutorture/bin/kvm.sh                     | 8 ++++----
- tools/testing/selftests/rcutorture/bin/parse-console.sh           | 4 ++--
- .../selftests/rcutorture/configs/{refperf => refscale}/CFLIST     | 0
- .../selftests/rcutorture/configs/{refperf => refscale}/CFcommon   | 0
- .../selftests/rcutorture/configs/{refperf => refscale}/NOPREEMPT  | 0
- .../selftests/rcutorture/configs/{refperf => refscale}/PREEMPT    | 0
- .../rcutorture/configs/{refperf => refscale}/ver_functions.sh     | 0
- 8 files changed, 10 insertions(+), 10 deletions(-)
- rename tools/testing/selftests/rcutorture/bin/{kvm-recheck-refperf.sh => kvm-recheck-refscale.sh} (87%)
- rename tools/testing/selftests/rcutorture/configs/{refperf => refscale}/CFLIST (100%)
- rename tools/testing/selftests/rcutorture/configs/{refperf => refscale}/CFcommon (100%)
- rename tools/testing/selftests/rcutorture/configs/{refperf => refscale}/NOPREEMPT (100%)
- rename tools/testing/selftests/rcutorture/configs/{refperf => refscale}/PREEMPT (100%)
- rename tools/testing/selftests/rcutorture/configs/{refperf => refscale}/ver_functions.sh (100%)
+This .src_owner setting does look like a required fix, but it seems like
+a completely separate fix from what is listed in this patch's commit
+description, right? (It feels like a casualty of rearranging the patches.)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck-refperf.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck-refscale.sh
-similarity index 87%
-rename from tools/testing/selftests/rcutorture/bin/kvm-recheck-refperf.sh
-rename to tools/testing/selftests/rcutorture/bin/kvm-recheck-refscale.sh
-index 0e29cfd..35a463d 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-recheck-refperf.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck-refscale.sh
-@@ -1,9 +1,9 @@
- #!/bin/bash
- # SPDX-License-Identifier: GPL-2.0+
- #
--# Analyze a given results directory for refperf performance measurements.
-+# Analyze a given results directory for refscale performance measurements.
- #
--# Usage: kvm-recheck-refperf.sh resdir
-+# Usage: kvm-recheck-refscale.sh resdir
- #
- # Copyright (C) IBM Corporation, 2016
- #
-@@ -51,7 +51,7 @@ END {
- 	print configfile " results:";
- 	newNR = asort(readertimes);
- 	if (newNR <= 0) {
--		print "No refperf records found???"
-+		print "No refscale records found???"
- 		exit;
- 	}
- 	medianidx = int(newNR / 2);
-@@ -67,5 +67,5 @@ END {
- 	print "Minimum reader duration: " readertimes[1];
- 	print "Median reader duration: " medianvalue;
- 	print "Maximum reader duration: " readertimes[newNR];
--	print "Computed from refperf printk output.";
-+	print "Computed from refscale printk output.";
- }'
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 48b6a72..ce05db3 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -180,14 +180,14 @@ do
- 		shift
- 		;;
- 	--torture)
--		checkarg --torture "(suite name)" "$#" "$2" '^\(lock\|rcu\|rcuperf\|refperf\)$' '^--'
-+		checkarg --torture "(suite name)" "$#" "$2" '^\(lock\|rcu\|rcuperf\|refscale\)$' '^--'
- 		TORTURE_SUITE=$2
- 		shift
--		if test "$TORTURE_SUITE" = rcuperf || test "$TORTURE_SUITE" = refperf
-+		if test "$TORTURE_SUITE" = rcuperf || test "$TORTURE_SUITE" = refscale
- 		then
--			# If you really want jitter for refperf or
-+			# If you really want jitter for refscale or
- 			# rcuperf, specify it after specifying the rcuperf
--			# or the refperf.  (But why jitter in these cases?)
-+			# or the refscale.  (But why jitter in these cases?)
- 			jitter=0
- 		fi
- 		;;
-diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-index 85af11d..8cb908f 100755
---- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
-+++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-@@ -33,8 +33,8 @@ then
- fi
- cat /dev/null > $file.diags
- 
--# Check for proper termination, except for rcuperf and refperf.
--if test "$TORTURE_SUITE" != rcuperf && test "$TORTURE_SUITE" != refperf
-+# Check for proper termination, except for rcuperf and refscale.
-+if test "$TORTURE_SUITE" != rcuperf && test "$TORTURE_SUITE" != refscale
- then
- 	# check for abject failure
- 
-diff --git a/tools/testing/selftests/rcutorture/configs/refperf/CFLIST b/tools/testing/selftests/rcutorture/configs/refscale/CFLIST
-similarity index 100%
-rename from tools/testing/selftests/rcutorture/configs/refperf/CFLIST
-rename to tools/testing/selftests/rcutorture/configs/refscale/CFLIST
-diff --git a/tools/testing/selftests/rcutorture/configs/refperf/CFcommon b/tools/testing/selftests/rcutorture/configs/refscale/CFcommon
-similarity index 100%
-rename from tools/testing/selftests/rcutorture/configs/refperf/CFcommon
-rename to tools/testing/selftests/rcutorture/configs/refscale/CFcommon
-diff --git a/tools/testing/selftests/rcutorture/configs/refperf/NOPREEMPT b/tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT
-similarity index 100%
-rename from tools/testing/selftests/rcutorture/configs/refperf/NOPREEMPT
-rename to tools/testing/selftests/rcutorture/configs/refscale/NOPREEMPT
-diff --git a/tools/testing/selftests/rcutorture/configs/refperf/PREEMPT b/tools/testing/selftests/rcutorture/configs/refscale/PREEMPT
-similarity index 100%
-rename from tools/testing/selftests/rcutorture/configs/refperf/PREEMPT
-rename to tools/testing/selftests/rcutorture/configs/refscale/PREEMPT
-diff --git a/tools/testing/selftests/rcutorture/configs/refperf/ver_functions.sh b/tools/testing/selftests/rcutorture/configs/refscale/ver_functions.sh
-similarity index 100%
-rename from tools/testing/selftests/rcutorture/configs/refperf/ver_functions.sh
-rename to tools/testing/selftests/rcutorture/configs/refscale/ver_functions.sh
+
+thanks,
 -- 
-2.9.5
-
+John Hubbard
+NVIDIA
