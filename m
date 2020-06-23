@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA606206445
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBEE2064ED
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393450AbgFWVSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:18:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44422 "EHLO mail.kernel.org"
+        id S2389303AbgFWUPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:15:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389879AbgFWUZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:25:27 -0400
+        id S2388673AbgFWUO4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:14:56 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E506A206EB;
-        Tue, 23 Jun 2020 20:25:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2797D2137B;
+        Tue, 23 Jun 2020 20:14:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943927;
-        bh=l+vdpzOVeGO3TMMUuL/CLgAWrYwic5QuU3wFg6KYmjE=;
+        s=default; t=1592943295;
+        bh=VfL9CLyZVLIp2zfGthrYY2e/74QZ38cKLsJZHIQkQwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e5zvw9xg7GllYNHZQ1h4KmFOZ1LOOS3ntsIiheUxyLGtQYMcm1IrbQCa1Hio6ZkDX
-         ncKG9w7I/Z9U7X/LTpeIr+6szdO0CJm9T8Eyg6Yf1n6eCVOlfLGJyXVEPXvG5lnTca
-         sQbc+WP4/KHt86hx5uRIIksM0HDVxY6L8tVyguhs=
+        b=z9ksRvgaHO24OYPq/QRQMwpnSVn2SX5yKtyYFcDV/8tbETs6lI8UEpOWV9Py1Hz4z
+         0pxV7z8yjsi/59CS4x5PPwyBbxj8wj8rlWkFuq70VUYjB17qvSxqQkdtrDUoR1vBOz
+         CtSx0E2gX0kHoiKsOT+dazaZfaWDAEBzYxNTG8/w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Jerome Brunet <jbrunet@baylibre.com>,
+        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 106/314] clk: meson: meson8b: Fix the polarity of the RESET_N lines
-Date:   Tue, 23 Jun 2020 21:55:01 +0200
-Message-Id: <20200623195343.913407811@linuxfoundation.org>
+Subject: [PATCH 5.7 305/477] rxrpc: Adjust /proc/net/rxrpc/calls to display call->debug_id not user_ID
+Date:   Tue, 23 Jun 2020 21:55:02 +0200
+Message-Id: <20200623195421.964479469@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
+References: <20200623195407.572062007@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,165 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit 0d3051c790ed2ef6bd91b92b07220313f06b95b3 ]
+[ Upstream commit 32f71aa497cfb23d37149c2ef16ad71fce2e45e2 ]
 
-CLKC_RESET_VID_DIVIDER_CNTL_RESET_N_POST and
-CLKC_RESET_VID_DIVIDER_CNTL_RESET_N_PRE are active low. This means:
-- asserting them requires setting the register value to 0
-- de-asserting them requires setting the register value to 1
+The user ID value isn't actually much use - and leaks a kernel pointer or a
+userspace value - so replace it with the call debug ID, which appears in trace
+points.
 
-Set the register value accordingly for these two reset lines by setting
-the inverted the register value compared to all other reset lines.
-
-Fixes: 189621726bc2f6 ("clk: meson: meson8b: register the built-in reset controller")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Link: https://lore.kernel.org/r/20200417184127.1319871-3-martin.blumenstingl@googlemail.com
+Signed-off-by: David Howells <dhowells@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/meson/meson8b.c | 79 ++++++++++++++++++++++++++-----------
- 1 file changed, 56 insertions(+), 23 deletions(-)
+ net/rxrpc/proc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clk/meson/meson8b.c b/drivers/clk/meson/meson8b.c
-index ab0b56daec548..52337a100a90d 100644
---- a/drivers/clk/meson/meson8b.c
-+++ b/drivers/clk/meson/meson8b.c
-@@ -3491,54 +3491,87 @@ static struct clk_regmap *const meson8b_clk_regmaps[] = {
- static const struct meson8b_clk_reset_line {
- 	u32 reg;
- 	u8 bit_idx;
-+	bool active_low;
- } meson8b_clk_reset_bits[] = {
- 	[CLKC_RESET_L2_CACHE_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 30
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 30,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_AXI_64_TO_128_BRIDGE_A5_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 29
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 29,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_SCU_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 28
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 28,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_CPU3_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 27
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 27,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_CPU2_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 26
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 26,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_CPU1_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 25
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 25,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_CPU0_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 24
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 24,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_A5_GLOBAL_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 18
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 18,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_A5_AXI_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 17
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 17,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_A5_ABP_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL0, .bit_idx = 16
-+		.reg = HHI_SYS_CPU_CLK_CNTL0,
-+		.bit_idx = 16,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_AXI_64_TO_128_BRIDGE_MMC_SOFT_RESET] = {
--		.reg = HHI_SYS_CPU_CLK_CNTL1, .bit_idx = 30
-+		.reg = HHI_SYS_CPU_CLK_CNTL1,
-+		.bit_idx = 30,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_VID_CLK_CNTL_SOFT_RESET] = {
--		.reg = HHI_VID_CLK_CNTL, .bit_idx = 15
-+		.reg = HHI_VID_CLK_CNTL,
-+		.bit_idx = 15,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_VID_DIVIDER_CNTL_SOFT_RESET_POST] = {
--		.reg = HHI_VID_DIVIDER_CNTL, .bit_idx = 7
-+		.reg = HHI_VID_DIVIDER_CNTL,
-+		.bit_idx = 7,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_VID_DIVIDER_CNTL_SOFT_RESET_PRE] = {
--		.reg = HHI_VID_DIVIDER_CNTL, .bit_idx = 3
-+		.reg = HHI_VID_DIVIDER_CNTL,
-+		.bit_idx = 3,
-+		.active_low = false,
- 	},
- 	[CLKC_RESET_VID_DIVIDER_CNTL_RESET_N_POST] = {
--		.reg = HHI_VID_DIVIDER_CNTL, .bit_idx = 1
-+		.reg = HHI_VID_DIVIDER_CNTL,
-+		.bit_idx = 1,
-+		.active_low = true,
- 	},
- 	[CLKC_RESET_VID_DIVIDER_CNTL_RESET_N_PRE] = {
--		.reg = HHI_VID_DIVIDER_CNTL, .bit_idx = 0
-+		.reg = HHI_VID_DIVIDER_CNTL,
-+		.bit_idx = 0,
-+		.active_low = true,
- 	},
- };
+diff --git a/net/rxrpc/proc.c b/net/rxrpc/proc.c
+index 8b179e3c802a1..543afd9bd6642 100644
+--- a/net/rxrpc/proc.c
++++ b/net/rxrpc/proc.c
+@@ -68,7 +68,7 @@ static int rxrpc_call_seq_show(struct seq_file *seq, void *v)
+ 			 "Proto Local                                          "
+ 			 " Remote                                         "
+ 			 " SvID ConnID   CallID   End Use State    Abort   "
+-			 " UserID           TxSeq    TW RxSeq    RW RxSerial RxTimo\n");
++			 " DebugId  TxSeq    TW RxSeq    RW RxSerial RxTimo\n");
+ 		return 0;
+ 	}
  
-@@ -3547,22 +3580,22 @@ static int meson8b_clk_reset_update(struct reset_controller_dev *rcdev,
- {
- 	struct meson8b_clk_reset *meson8b_clk_reset =
- 		container_of(rcdev, struct meson8b_clk_reset, reset);
--	unsigned long flags;
- 	const struct meson8b_clk_reset_line *reset;
-+	unsigned int value = 0;
-+	unsigned long flags;
- 
- 	if (id >= ARRAY_SIZE(meson8b_clk_reset_bits))
- 		return -EINVAL;
- 
- 	reset = &meson8b_clk_reset_bits[id];
- 
-+	if (assert != reset->active_low)
-+		value = BIT(reset->bit_idx);
-+
- 	spin_lock_irqsave(&meson_clk_lock, flags);
- 
--	if (assert)
--		regmap_update_bits(meson8b_clk_reset->regmap, reset->reg,
--				   BIT(reset->bit_idx), BIT(reset->bit_idx));
--	else
--		regmap_update_bits(meson8b_clk_reset->regmap, reset->reg,
--				   BIT(reset->bit_idx), 0);
-+	regmap_update_bits(meson8b_clk_reset->regmap, reset->reg,
-+			   BIT(reset->bit_idx), value);
- 
- 	spin_unlock_irqrestore(&meson_clk_lock, flags);
- 
+@@ -100,7 +100,7 @@ static int rxrpc_call_seq_show(struct seq_file *seq, void *v)
+ 	rx_hard_ack = READ_ONCE(call->rx_hard_ack);
+ 	seq_printf(seq,
+ 		   "UDP   %-47.47s %-47.47s %4x %08x %08x %s %3u"
+-		   " %-8.8s %08x %lx %08x %02x %08x %02x %08x %06lx\n",
++		   " %-8.8s %08x %08x %08x %02x %08x %02x %08x %06lx\n",
+ 		   lbuff,
+ 		   rbuff,
+ 		   call->service_id,
+@@ -110,7 +110,7 @@ static int rxrpc_call_seq_show(struct seq_file *seq, void *v)
+ 		   atomic_read(&call->usage),
+ 		   rxrpc_call_states[call->state],
+ 		   call->abort_code,
+-		   call->user_call_ID,
++		   call->debug_id,
+ 		   tx_hard_ack, READ_ONCE(call->tx_top) - tx_hard_ack,
+ 		   rx_hard_ack, READ_ONCE(call->rx_top) - rx_hard_ack,
+ 		   call->rx_serial,
 -- 
 2.25.1
 
