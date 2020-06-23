@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5957F204680
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 03:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8CC204683
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 03:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732484AbgFWBFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 21:05:12 -0400
+        id S1732535AbgFWBFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 21:05:24 -0400
 Received: from mail29.static.mailgun.info ([104.130.122.29]:49147 "EHLO
         mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731526AbgFWBFM (ORCPT
+        by vger.kernel.org with ESMTP id S1731820AbgFWBFW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 21:05:12 -0400
+        Mon, 22 Jun 2020 21:05:22 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1592874311; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=XSGSsXlXDBiekM7bF6DTX6/EWPB4KQKjvQGP3O6Lh6I=; b=Xe1VXlAYYaOJ5puYp9mJpG4ovM9iq15EPEi4dheASzpAT9zdOvD1ULleKrmHENg/qiOgmn43
- HV41D3k5aRA3xZQE1DBsMZ938AQrYaD4gSqvOql/yLFwsRFisYzgcdSMBsC0aSTk48CLKyAe
- /aN8aGQhc59LPinjmnrnyqH09zM=
+ s=smtp; t=1592874321; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=uz0dphFHv5gXxX27iBEVAusWSb4Wag9GpadQ1BZnNP4=; b=Yq43X0n5dV8ki66w0DXezUmHuZ1reQx9zTjiRD4uh+MZsrXtAT5fnkWq6yw3um++iXrqQ+gZ
+ vT5skmmLaRJl+OI+lf4qg8xIhaQwLilDIGOKDcChOX8qCW6dwRonRUfG5t2QP3g2yrZKYEz4
+ SdsqCkVv4xrsUx/EBAl2emYI7PY=
 X-Mailgun-Sending-Ip: 104.130.122.29
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5ef1553dad153efa344cc466 (version=TLS1.2,
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 5ef1553d5866879c7602e90c (version=TLS1.2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Jun 2020 01:05:01
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A731AC433CB; Tue, 23 Jun 2020 01:05:00 +0000 (UTC)
+        id A8F71C4339C; Tue, 23 Jun 2020 01:05:01 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id DC876C433C6;
-        Tue, 23 Jun 2020 01:04:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DC876C433C6
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 678ADC433C8;
+        Tue, 23 Jun 2020 01:05:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 678ADC433C8
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rishabhb@codeaurora.org
 From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
@@ -46,53 +47,242 @@ To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     bjorn.andersson@linaro.org, tsoni@codeaurora.org,
         psodagud@codeaurora.org, sidgup@codeaurora.org, elder@ieee.org,
         Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Subject: [PATCH v5 0/2] Extend SSR notifications framework
-Date:   Mon, 22 Jun 2020 18:04:29 -0700
-Message-Id: <1592874271-26697-1-git-send-email-rishabhb@codeaurora.org>
+Subject: [PATCH v5 1/2] remoteproc: qcom: Add per subsystem SSR notification
+Date:   Mon, 22 Jun 2020 18:04:30 -0700
+Message-Id: <1592874271-26697-2-git-send-email-rishabhb@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1592874271-26697-1-git-send-email-rishabhb@codeaurora.org>
+References: <1592874271-26697-1-git-send-email-rishabhb@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set of patches gives kernel client drivers the ability to register
-for a particular remoteproc's SSR notifications. Also the notifications
-are extended to before/after-powerup/shutdown stages.
-It also fixes the bug where clients need to register for notifications
-again if the platform driver is removed. This is done by creating a
-global list of per-remoteproc notification info data structures which
-remain static. An API is exported to register for a remoteproc's SSR
-notifications and uses remoteproc's ssr_name and notifier block as
-arguments.
+Currently there is a single notification chain which is called whenever any
+remoteproc shuts down. This leads to all the listeners being notified, and
+is not an optimal design as kernel drivers might only be interested in
+listening to notifications from a particular remoteproc. Create a global
+list of remoteproc notification info data structures. This will hold the
+name and notifier_list information for a particular remoteproc. The API
+to register for notifications will use name argument to retrieve the
+notification info data structure and the notifier block will be added to
+that data structure's notification chain. Also move from blocking notifier
+to srcu notifer based implementation to support dynamic notifier head
+creation.
 
-Changelog:
-v5 -> v4:
-- Make qcom_ssr_get_subsys static function
-- Fix mutex locking
-- Fix function comments
+Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+---
+ drivers/remoteproc/qcom_common.c      | 86 +++++++++++++++++++++++++++++------
+ drivers/remoteproc/qcom_common.h      |  5 +-
+ include/linux/remoteproc/qcom_rproc.h | 20 ++++++--
+ 3 files changed, 91 insertions(+), 20 deletions(-)
 
-v4 -> v3:
-- Fix naming convention 
-
-v3 -> v2:
-- Create a global list of per remoteproc notification data structure
-- Pass ssr_name and crashed information as part of notification data
-- Move notification type enum to qcom_rproc.h from remoteproc.h
-
-v2 -> v1:
-- Fix commit text
-
-Rishabh Bhatnagar (1):
-  remoteproc: qcom: Add per subsystem SSR notification
-
-Siddharth Gupta (1):
-  remoteproc: qcom: Add notification types to SSR
-
- drivers/remoteproc/qcom_common.c      | 128 ++++++++++++++++++++++++++++++----
- drivers/remoteproc/qcom_common.h      |   5 +-
- include/linux/remoteproc/qcom_rproc.h |  36 ++++++++--
- 3 files changed, 149 insertions(+), 20 deletions(-)
-
+diff --git a/drivers/remoteproc/qcom_common.c b/drivers/remoteproc/qcom_common.c
+index 9028cea..658f2ca 100644
+--- a/drivers/remoteproc/qcom_common.c
++++ b/drivers/remoteproc/qcom_common.c
+@@ -12,6 +12,7 @@
+ #include <linux/module.h>
+ #include <linux/notifier.h>
+ #include <linux/remoteproc.h>
++#include <linux/remoteproc/qcom_rproc.h>
+ #include <linux/rpmsg/qcom_glink.h>
+ #include <linux/rpmsg/qcom_smd.h>
+ #include <linux/soc/qcom/mdt_loader.h>
+@@ -23,7 +24,14 @@
+ #define to_smd_subdev(d) container_of(d, struct qcom_rproc_subdev, subdev)
+ #define to_ssr_subdev(d) container_of(d, struct qcom_rproc_ssr, subdev)
+ 
+-static BLOCKING_NOTIFIER_HEAD(ssr_notifiers);
++struct qcom_ssr_subsystem {
++	const char *name;
++	struct srcu_notifier_head notifier_list;
++	struct list_head list;
++};
++
++static LIST_HEAD(qcom_ssr_subsystem_list);
++static DEFINE_MUTEX(qcom_ssr_subsys_lock);
+ 
+ static int glink_subdev_start(struct rproc_subdev *subdev)
+ {
+@@ -189,37 +197,80 @@ void qcom_remove_smd_subdev(struct rproc *rproc, struct qcom_rproc_subdev *smd)
+ }
+ EXPORT_SYMBOL_GPL(qcom_remove_smd_subdev);
+ 
++static struct qcom_ssr_subsystem *qcom_ssr_get_subsys(const char *name)
++{
++	struct qcom_ssr_subsystem *info;
++
++	mutex_lock(&qcom_ssr_subsys_lock);
++	/* Match in the global qcom_ssr_subsystem_list with name */
++	list_for_each_entry(info, &qcom_ssr_subsystem_list, list)
++		if (!strcmp(info->name, name))
++			return info;
++
++	info = kzalloc(sizeof(*info), GFP_KERNEL);
++	if (!info)
++		return ERR_PTR(-ENOMEM);
++	info->name = kstrdup_const(name, GFP_KERNEL);
++	srcu_init_notifier_head(&info->notifier_list);
++
++	/* Add to global notification list */
++	list_add_tail(&info->list, &qcom_ssr_subsystem_list);
++	mutex_unlock(&qcom_ssr_subsys_lock);
++
++	return info;
++}
++
+ /**
+  * qcom_register_ssr_notifier() - register SSR notification handler
+- * @nb:		notifier_block to notify for restart notifications
++ * @name:	Subsystem's SSR name
++ * @nb:		notifier_block to be invoked upon subsystem's state change
+  *
+- * Returns 0 on success, negative errno on failure.
++ * This registers the @nb notifier block as part the notifier chain for a
++ * remoteproc associated with @name. The notifier block's callback
++ * will be invoked when the remote processor's SSR events occur
++ * (pre/post startup and pre/post shutdown).
+  *
+- * This register the @notify function as handler for restart notifications. As
+- * remote processors are stopped this function will be called, with the SSR
+- * name passed as a parameter.
++ * Return: a subsystem cookie on success, ERR_PTR on failure.
+  */
+-int qcom_register_ssr_notifier(struct notifier_block *nb)
++void *qcom_register_ssr_notifier(const char *name, struct notifier_block *nb)
+ {
+-	return blocking_notifier_chain_register(&ssr_notifiers, nb);
++	struct qcom_ssr_subsystem *info;
++
++	info = qcom_ssr_get_subsys(name);
++	if (IS_ERR(info))
++		return info;
++
++	srcu_notifier_chain_register(&info->notifier_list, nb);
++
++	return &info->notifier_list;
+ }
+ EXPORT_SYMBOL_GPL(qcom_register_ssr_notifier);
+ 
+ /**
+  * qcom_unregister_ssr_notifier() - unregister SSR notification handler
++ * @notify:	subsystem coookie returned from qcom_register_ssr_notifier
+  * @nb:		notifier_block to unregister
++ *
++ * This function will unregister the notifier from the particular notifier
++ * chain.
++ *
++ * Return: 0 on success, %ENOENT otherwise.
+  */
+-void qcom_unregister_ssr_notifier(struct notifier_block *nb)
++int qcom_unregister_ssr_notifier(void *notify, struct notifier_block *nb)
+ {
+-	blocking_notifier_chain_unregister(&ssr_notifiers, nb);
++	return srcu_notifier_chain_unregister(notify, nb);
+ }
+ EXPORT_SYMBOL_GPL(qcom_unregister_ssr_notifier);
+ 
+ static void ssr_notify_unprepare(struct rproc_subdev *subdev)
+ {
+ 	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
++	struct qcom_ssr_notif_data data = {
++		.name = ssr->info->name,
++		.crashed = false,
++	};
+ 
+-	blocking_notifier_call_chain(&ssr_notifiers, 0, (void *)ssr->name);
++	srcu_notifier_call_chain(&ssr->info->notifier_list, 0, &data);
+ }
+ 
+ /**
+@@ -229,12 +280,20 @@ static void ssr_notify_unprepare(struct rproc_subdev *subdev)
+  * @ssr_name:	identifier to use for notifications originating from @rproc
+  *
+  * As the @ssr is registered with the @rproc SSR events will be sent to all
+- * registered listeners in the system as the remoteproc is shut down.
++ * registered listeners for the particular remoteproc when it is shutdown.
+  */
+ void qcom_add_ssr_subdev(struct rproc *rproc, struct qcom_rproc_ssr *ssr,
+ 			 const char *ssr_name)
+ {
+-	ssr->name = ssr_name;
++	struct qcom_ssr_subsystem *info;
++
++	info = qcom_ssr_get_subsys(ssr_name);
++	if (IS_ERR(info)) {
++		dev_err(&rproc->dev, "Failed to add ssr subdevice\n");
++		return;
++	}
++
++	ssr->info = info;
+ 	ssr->subdev.unprepare = ssr_notify_unprepare;
+ 
+ 	rproc_add_subdev(rproc, &ssr->subdev);
+@@ -249,6 +308,7 @@ EXPORT_SYMBOL_GPL(qcom_add_ssr_subdev);
+ void qcom_remove_ssr_subdev(struct rproc *rproc, struct qcom_rproc_ssr *ssr)
+ {
+ 	rproc_remove_subdev(rproc, &ssr->subdev);
++	ssr->info = NULL;
+ }
+ EXPORT_SYMBOL_GPL(qcom_remove_ssr_subdev);
+ 
+diff --git a/drivers/remoteproc/qcom_common.h b/drivers/remoteproc/qcom_common.h
+index 34e5188..dfc641c 100644
+--- a/drivers/remoteproc/qcom_common.h
++++ b/drivers/remoteproc/qcom_common.h
+@@ -26,10 +26,11 @@ struct qcom_rproc_subdev {
+ 	struct qcom_smd_edge *edge;
+ };
+ 
++struct qcom_ssr_subsystem;
++
+ struct qcom_rproc_ssr {
+ 	struct rproc_subdev subdev;
+-
+-	const char *name;
++	struct qcom_ssr_subsystem *info;
+ };
+ 
+ void qcom_add_glink_subdev(struct rproc *rproc, struct qcom_rproc_glink *glink,
+diff --git a/include/linux/remoteproc/qcom_rproc.h b/include/linux/remoteproc/qcom_rproc.h
+index fa8e386..58422b1 100644
+--- a/include/linux/remoteproc/qcom_rproc.h
++++ b/include/linux/remoteproc/qcom_rproc.h
+@@ -5,17 +5,27 @@ struct notifier_block;
+ 
+ #if IS_ENABLED(CONFIG_QCOM_RPROC_COMMON)
+ 
+-int qcom_register_ssr_notifier(struct notifier_block *nb);
+-void qcom_unregister_ssr_notifier(struct notifier_block *nb);
++struct qcom_ssr_notif_data {
++	const char *name;
++	bool crashed;
++};
++
++void *qcom_register_ssr_notifier(const char *name, struct notifier_block *nb);
++int qcom_unregister_ssr_notifier(void *notify, struct notifier_block *nb);
+ 
+ #else
+ 
+-static inline int qcom_register_ssr_notifier(struct notifier_block *nb)
++static inline void *qcom_register_ssr_notifier(const char *name,
++					       struct notifier_block *nb)
+ {
+-	return 0;
++	return NULL;
+ }
+ 
+-static inline void qcom_unregister_ssr_notifier(struct notifier_block *nb) {}
++static inline int qcom_unregister_ssr_notifier(void *notify,
++					       struct notifier_block *nb)
++{
++	return 0;
++}
+ 
+ #endif
+ 
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
