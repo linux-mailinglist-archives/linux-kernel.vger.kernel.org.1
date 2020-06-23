@@ -2,145 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B49204B74
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1E66204B68
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:41:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731626AbgFWHoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 03:44:07 -0400
-Received: from mail-co1nam11on2060.outbound.protection.outlook.com ([40.107.220.60]:6021
-        "EHLO NAM11-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731158AbgFWHoH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 03:44:07 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VhXLLHljaq8DAI1ss8rQ922xSAkuJ4IiQe6b4uM/FqZXaNCa4/o53idOLTdryhnXHDpYjt5JZ6+498u8oCSVVGBLLU4yV2uc8wQDKEs8vWr3ezL80GiaYY84JqOLEXgXzAtsHJ11zplrsJS8gU2B1hWwlZy42hQNjWP4Qw6qgIohBL6sLvZP9WqzSDvxFx4ljQImhQyDmnMF81RNuXq4iayRISyU++x6hBaCdMJcn6BrhIHDSPEASCaWiXRv40deI9rKxeb9BnEOceiWYZxzCqIpB1k76Hbj8MWKsgG3n6dom1FcW6jrET+mifrWLW+Ofa5vLSQ9REuOGcUYVPVI4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GzcYXAM/aHEQnw4+nA0wsykCAPcGuJA6haz1YRPKGvw=;
- b=azHT15p7ciQTYciwfpKaMfRcoRyzfau8AQeb9r9nB/Igwce41XvPU3tP5PHZI0gaeP6V5eqchEnTfP97OLQ+rtdLXvtEySKCO7QPhw8gaj19narf9rBf4s/0xjtYRjDka4nS7fg/yHziICsr9/D1jPOMEagfyevNvIq8+PBvthTKVfPT4TY/yBXja41Njstk+xaykdL0yNrze8V+jbPpsbjbefzMCK97slccnbjw/oM1/wE5DLqM+QuLyC1dvcNwXIZ03MQZSJBhLRrcpH9wQ8y3CQirM9r8fi755FFSmtPgKpDn79neN45n1pSQ8DTMRrppGOwaTOh35wXh7AV+Vg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=synaptics.com; dmarc=pass action=none
- header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GzcYXAM/aHEQnw4+nA0wsykCAPcGuJA6haz1YRPKGvw=;
- b=K5dGeHvyujVnuInEb2AaNXEGFwhYadDgMGgIfKZXlOxFuoRvnnMawIT3YBf25Uu9hfo9KMb19Gk5ZaTooPi/uzeKX3fakg7qGV4GUQ/fvi2co5xuB71Ft7A+I5QZwNjagnTBgUE4Mu1p4uWLua1HBY8HcwS2djViPLeEFil+AUU=
-Authentication-Results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=synaptics.com;
-Received: from BYAPR03MB3573.namprd03.prod.outlook.com (2603:10b6:a02:ae::15)
- by BY5PR03MB5141.namprd03.prod.outlook.com (2603:10b6:a03:1e9::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22; Tue, 23 Jun
- 2020 07:44:05 +0000
-Received: from BYAPR03MB3573.namprd03.prod.outlook.com
- ([fe80::d1ae:8ea7:ea:8998]) by BYAPR03MB3573.namprd03.prod.outlook.com
- ([fe80::d1ae:8ea7:ea:8998%7]) with mapi id 15.20.3109.027; Tue, 23 Jun 2020
- 07:44:05 +0000
-Date:   Tue, 23 Jun 2020 15:41:04 +0800
-From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] net: phy: export phy_disable_interrupts()
-Message-ID: <20200623154104.3ba15b4d@xhacker.debian>
-In-Reply-To: <20200623154031.736123a6@xhacker.debian>
-References: <20200623154031.736123a6@xhacker.debian>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: TYAPR01CA0205.jpnprd01.prod.outlook.com
- (2603:1096:404:29::25) To BYAPR03MB3573.namprd03.prod.outlook.com
- (2603:10b6:a02:ae::15)
+        id S1731371AbgFWHla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 03:41:30 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:58982 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731054AbgFWHl3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 03:41:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592898088;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kANMhVOVTkewDfS+wze7GKWDAqJzYtfvX0eoCKjfpM4=;
+        b=MWu64jiNxPsqzmYF+W8QwiTeLJGnrqLtlBwx0WUE753YBmCGTf/XyJPmEEREivuAwJnDTH
+        Yu+SqjYRIniu+yfkLcWD1g4Swkrx8CqKV/waEdovAq0b4tBWvOla/3S6SR90sNE7GgwObz
+        pAun7osbRHXfXIpnABUI9ljqhhPDvwM=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-228--_o9LfK4MrGYgGwL0aBUwg-1; Tue, 23 Jun 2020 03:41:26 -0400
+X-MC-Unique: -_o9LfK4MrGYgGwL0aBUwg-1
+Received: by mail-ot1-f71.google.com with SMTP id z23so1888657ote.14
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 00:41:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kANMhVOVTkewDfS+wze7GKWDAqJzYtfvX0eoCKjfpM4=;
+        b=h1KGodOwpeiR4AvV1rtJWevd/j4H+XwJOssruFZxid5QuV0NCmzU6Zggt1eYdCpDBw
+         I5dhHpQjmJv0YVel5IYRhoH2CInO8ZElLV/bxEBAyoUAJjvWeTLDqcRQHx9uRlNNF9bU
+         ynKjTz4+Dhcm7tEt+Kxy5GS/WHSsRpRfIb67EFxuiY2ck9EgJIwtJ8lrg/IF5N2Fca1T
+         ERNrV9e96CySEpir1ZbBoQi9jV0GSct0EFfW06KoaSKQ/uVdRmqPnY75PlSuN0m1+DDt
+         WcIpseDsmFVVAeNxw5tXaDX/rtp60FB8i62rmJ0keOrtDK01+gbzWhBCCxfCi1GFBl57
+         D0Mw==
+X-Gm-Message-State: AOAM533yWx9QZYO2iqpo4XjhIKNMkW2ieKrCiKjV7dXk1sWgrhqpuHX2
+        /oDKtqrQWTdmHM+Bbw/mP3cQGi7vjdhF492dI6EiyMQ/+xsmbj72FRHCwoB3RKQh2pYopIB370q
+        qvCaFEaxZkHKS7hXYc0OqFBoDi9VxeFsnW+d0qifh
+X-Received: by 2002:aca:5049:: with SMTP id e70mr15806168oib.72.1592898085705;
+        Tue, 23 Jun 2020 00:41:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxvT6etI273O3836DUQF/ve/uxCrBhp8TObCS3rPpRZkC9DlVwAUGbt/aCSwt2x93cFLClNeboKKcK+g/zgNg8=
+X-Received: by 2002:aca:5049:: with SMTP id e70mr15806157oib.72.1592898085470;
+ Tue, 23 Jun 2020 00:41:25 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xhacker.debian (124.74.246.114) by TYAPR01CA0205.jpnprd01.prod.outlook.com (2603:1096:404:29::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21 via Frontend Transport; Tue, 23 Jun 2020 07:44:02 +0000
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-X-Originating-IP: [124.74.246.114]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9159be9b-767d-4a02-98cb-08d817493438
-X-MS-TrafficTypeDiagnostic: BY5PR03MB5141:
-X-Microsoft-Antispam-PRVS: <BY5PR03MB514184C71E1F012A287C5A32ED940@BY5PR03MB5141.namprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 04433051BF
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: wFGgbI6IWtrDYFFVeN+bQkWPFu7JNBykU1lzxXkUsLM7EJHYAqRUAv21G5HjliNxH7kk22Tf6xrOquyi7BRHiRFvgMY5nA+Pr603QY5UJuyop9qa5E6Ys2qTo4uGA8s5L9hZWQ3DCCx8KNWuet20Z908tIs7xS7YmUt/i7P5hOXA5RPjWv+sNwuyxs/ns8rkIOhr1RrRVip6dOStloZWOsvm8EvTylfjdMHzVQxp8lRYwuuAD72/LgEchKdE6cWBSQVK6uDOKAE8mq1HgmtqGs0Zz5y6P9T7PzlCmfQiQlUbJFUvxJtOALNZoat1UG+9
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3573.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(83380400001)(66476007)(66556008)(5660300002)(8676002)(55016002)(86362001)(6506007)(66946007)(9686003)(7696005)(52116002)(8936002)(2906002)(110136005)(498600001)(26005)(1076003)(186003)(4326008)(16526019)(956004);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: npz4OD7Iu3HEdUUlJ6kkg6n51xB+JOhbX1Rtr+iYQG5yV4cYgBhe3272uDRXvsk14QL+GPhiUCl7tPv9TJugWCHgsHyTx+73mJyTZFn/TmJfxBub5CWyEj8QeX58tiyYIdrXDchxsqT9Na+HClJPWkAxPjRRVW3n9L41BOr3OPeygyLl7x0uMRRWbvNgezy8NOnbn5YHAb2fZm8LZ0A/DOI6OY4eEfyXjg0yiffb2ljFzjMQiPYImCQk+o6kcLK4TEOcr3gJndXfg8XX0e/YMkTCCOnlfEr2xuyGCSOjStziKOCX3WcNyXVbWbxM4NyBxZWQFMnzznRlWfdxQLrOoZAgv1iBtjEITqBfkaBaLMg4k02wSVJr1G8Njo08EQxt6gHAYbA/Yr4UHXgCvM3xnGe6+vUt3U2uGSCFgTxv8ypM4ZruAB3heh2E2aC4QbIwriNq5izzlSRi+qLTTps3EajVcnCNXWZFeRXr/AIGGSuUhaTGwcsLHTP4OUi9ptgL
-X-OriginatorOrg: synaptics.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9159be9b-767d-4a02-98cb-08d817493438
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2020 07:44:05.0470
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: I8soDgEyIkbmvujkdeZH8zjhQyiLC5C7JJqlCZmM8OiyXDmno9kV3KyDTEz9i1ZYqREbOZV0CkWs3ToFaFOsvQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR03MB5141
+References: <20200619155036.GZ8681@bombadil.infradead.org> <20200622003215.GC2040@dread.disaster.area>
+ <CAHc6FU4b_z+vhjVPmaU46VhqoD+Y7jLN3=BRDZPrS2v=_pVpfw@mail.gmail.com> <20200623005218.GF2040@dread.disaster.area>
+In-Reply-To: <20200623005218.GF2040@dread.disaster.area>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Tue, 23 Jun 2020 09:41:13 +0200
+Message-ID: <CAHc6FU7KgYJsEGy_BCUB2Akvgrn7NMKyrGpcFe2iCb02wjNK3Q@mail.gmail.com>
+Subject: Re: [RFC] Bypass filesystems for reading cached pages
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We face an issue with rtl8211f, a pin is shared between INTB and PMEB,
-and the PHY Register Accessible Interrupt is enabled by default, so
-the INTB/PMEB pin is always active in polling mode case.
+On Tue, Jun 23, 2020 at 2:52 AM Dave Chinner <david@fromorbit.com> wrote:
+> On Mon, Jun 22, 2020 at 04:35:05PM +0200, Andreas Gruenbacher wrote:
+> > On Mon, Jun 22, 2020 at 2:32 AM Dave Chinner <david@fromorbit.com> wrote:
+> > > On Fri, Jun 19, 2020 at 08:50:36AM -0700, Matthew Wilcox wrote:
+> > > >
+> > > > This patch lifts the IOCB_CACHED idea expressed by Andreas to the VFS.
+> > > > The advantage of this patch is that we can avoid taking any filesystem
+> > > > lock, as long as the pages being accessed are in the cache (and we don't
+> > > > need to readahead any pages into the cache).  We also avoid an indirect
+> > > > function call in these cases.
+> > >
+> > > What does this micro-optimisation actually gain us except for more
+> > > complexity in the IO path?
+> > >
+> > > i.e. if a filesystem lock has such massive overhead that it slows
+> > > down the cached readahead path in production workloads, then that's
+> > > something the filesystem needs to address, not unconditionally
+> > > bypass the filesystem before the IO gets anywhere near it.
+> >
+> > I'm fine with not moving that functionality into the VFS. The problem
+> > I have in gfs2 is that taking glocks is really expensive. Part of that
+> > overhead is accidental, but we definitely won't be able to fix it in
+> > the short term. So something like the IOCB_CACHED flag that prevents
+> > generic_file_read_iter from issuing readahead I/O would save the day
+> > for us. Does that idea stand a chance?
+>
+> I have no problem with a "NOREADAHEAD" flag being passed to
+> generic_file_read_iter(). It's not a "already cached" flag though,
+> it's a "don't start any IO" directive, just like the NOWAIT flag is
+> a "don't block on locks or IO in progress" directive and not an
+> "already cached" flag. Readahead is something we should be doing,
+> unless a filesystem has a very good reason not to, such as the gfs2
+> locking case here...
 
-As Heiner pointed out "I was thinking about calling
-phy_disable_interrupts() in phy_init_hw(), to have a defined init
-state as we don't know in which state the PHY is if the PHY driver is
-loaded. We shouldn't assume that it's the chip power-on defaults, BIOS
-or boot loader could have changed this. Or in case of dual-boot
-systems the other OS could leave the PHY in whatever state."
+The requests coming in can have the IOCB_NOWAIT flag set or cleared.
+The idea was to have an additional flag that implies IOCB_NOWAIT so
+that you can do:
 
-Export phy_disable_interrupts() so that it could be used in
-phy_init_hw() to have a defined init state.
+    iocb->ki_flags |= IOCB_NOIO;
+    generic_file_read_iter()
+    if ("failed because of IOCB_NOIO") {
+        if ("failed because of IOCB_NOWAIT")
+            return -EAGAIN;
+        iocb->ki_flags &= ~IOCB_NOIO;
+        "locking"
+         generic_file_read_iter()
+        "unlocking"
+    }
 
-Suggested-by: Heiner Kallweit <hkallweit1@gmail.com>
-Signed-off-by: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
----
- drivers/net/phy/phy.c | 3 ++-
- include/linux/phy.h   | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+without having to save iocb->ki_flags. The alternative would be:
 
-diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
-index 1de3938628f4..cd2dbbdba235 100644
---- a/drivers/net/phy/phy.c
-+++ b/drivers/net/phy/phy.c
-@@ -840,7 +840,7 @@ static void phy_error(struct phy_device *phydev)
-  * phy_disable_interrupts - Disable the PHY interrupts from the PHY side
-  * @phydev: target phy_device struct
-  */
--static int phy_disable_interrupts(struct phy_device *phydev)
-+int phy_disable_interrupts(struct phy_device *phydev)
- {
- 	int err;
- 
-@@ -852,6 +852,7 @@ static int phy_disable_interrupts(struct phy_device *phydev)
- 	/* Clear the interrupt */
- 	return phy_clear_interrupt(phydev);
- }
-+EXPORT_SYMBOL_GPL(phy_disable_interrupts);
- 
- /**
-  * phy_interrupt - PHY interrupt handler
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index 8c05d0fb5c00..b693b609b2f5 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -1416,6 +1416,7 @@ int phy_ethtool_ksettings_set(struct phy_device *phydev,
- int phy_mii_ioctl(struct phy_device *phydev, struct ifreq *ifr, int cmd);
- int phy_do_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd);
- int phy_do_ioctl_running(struct net_device *dev, struct ifreq *ifr, int cmd);
-+int phy_disable_interrupts(struct phy_device *phydev);
- void phy_request_interrupt(struct phy_device *phydev);
- void phy_free_interrupt(struct phy_device *phydev);
- void phy_print_status(struct phy_device *phydev);
--- 
-2.27.0
+    int flags = iocb->ki_flags;
+    iocb->ki_flags |= IOCB_NOIO | IOCB_NOWAIT;
+    ret = generic_file_read_iter()
+    if ("failed because of IOCB_NOIO or IOCB_NOWAIT") {
+        if ("failed because of IOCB_NOWAIT" && (flags & IOCB_NOWAIT))
+            return -EAGAIN;
+        iocb->ki_flags &= ~IOCB_NOIO;
+        "locking"
+         generic_file_read_iter()
+        "unlocking"
+    }
+
+Andreas
 
