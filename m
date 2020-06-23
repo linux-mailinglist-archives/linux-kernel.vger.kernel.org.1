@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59772206386
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10CDE206381
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390676AbgFWU0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:26:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45684 "EHLO mail.kernel.org"
+        id S2390636AbgFWU0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:26:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45250 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390654AbgFWU03 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:26:29 -0400
+        id S2390617AbgFWU0J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:26:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2A96B20702;
-        Tue, 23 Jun 2020 20:26:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2F473206EB;
+        Tue, 23 Jun 2020 20:26:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943989;
-        bh=9YmC30CBs5fIMIMnajxNVucl7OFNhF85IfK4dlpZ0J0=;
+        s=default; t=1592943968;
+        bh=rZ3gVjyl0q9k6+5KuneBHr88hjhSjb8oON7VpteEGaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kw2eXpN5TojHhmtEqqSm/tGd0P1u7A3Lj+f2eyRaeUVKybUmLHQv3hdwn5K7SJtR/
-         u1Tu5MgYkAARBwMt5QTYhilepm0zMn082BHcw96UgvNo13SeWumq9qhCV468aUH8rM
-         hEEh8ZOYDnNckqrsKIqVFdkB2cbNZdbJKKYfKepU=
+        b=DIHdcYk911JKnsqNVmeXQvw2zzb0MwDBKmWgEGUQhWEcLIskd685ptaseugjixoVV
+         ulnrllQ2NFS0A8Ir/P73q7CqU43TMdIFh3wCtmeD3mCRYoHyhWdC3uvz1xX1fABdiK
+         cTZDnOnOFfdCMzs/I1LGjgViueuufcl6BXLpqex4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 098/314] staging: gasket: Fix mapping refcnt leak when register/store fails
-Date:   Tue, 23 Jun 2020 21:54:53 +0200
-Message-Id: <20200623195343.533198356@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 121/314] drivers: base: Fix NULL pointer exception in __platform_driver_probe() if a driver developer is foolish
+Date:   Tue, 23 Jun 2020 21:55:16 +0200
+Message-Id: <20200623195344.644574888@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
 References: <20200623195338.770401005@linuxfoundation.org>
@@ -43,46 +45,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-[ Upstream commit e3436ce60cf5f5eaedda2b8c622f69feb97595e2 ]
+[ Upstream commit 388bcc6ecc609fca1b4920de7dc3806c98ec535e ]
 
-gasket_sysfs_register_store() invokes get_mapping(), which returns a
-reference of the specified gasket_sysfs_mapping object to "mapping" with
-increased refcnt.
+If platform bus driver registration is failed then, accessing
+platform bus spin lock (&drv->driver.bus->p->klist_drivers.k_lock)
+in __platform_driver_probe() without verifying the return value
+__platform_driver_register() can lead to NULL pointer exception.
 
-When gasket_sysfs_register_store() returns, local variable "mapping"
-becomes invalid, so the refcount should be decreased to keep refcount
-balanced.
+So check the return value before attempting the spin lock.
 
-The reference counting issue happens in one exception handling path of
-gasket_sysfs_register_store(). When gasket_dev is NULL, the function
-forgets to decrease the refcnt increased by get_mapping(), causing a
-refcnt leak.
+One such example is below:
 
-Fix this issue by calling put_mapping() when gasket_dev is NULL.
+For a custom usecase, I have intentionally failed the platform bus
+registration and I expected all the platform device/driver
+registrations to fail gracefully. But I came across this panic
+issue.
 
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Link: https://lore.kernel.org/r/1587618941-13718-1-git-send-email-xiyuyang19@fudan.edu.cn
+[    1.331067] BUG: kernel NULL pointer dereference, address: 00000000000000c8
+[    1.331118] #PF: supervisor write access in kernel mode
+[    1.331163] #PF: error_code(0x0002) - not-present page
+[    1.331208] PGD 0 P4D 0
+[    1.331233] Oops: 0002 [#1] PREEMPT SMP
+[    1.331268] CPU: 3 PID: 1 Comm: swapper/0 Tainted: G        W         5.6.0-00049-g670d35fb0144 #165
+[    1.331341] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
+[    1.331406] RIP: 0010:_raw_spin_lock+0x15/0x30
+[    1.331588] RSP: 0000:ffffc9000001be70 EFLAGS: 00010246
+[    1.331632] RAX: 0000000000000000 RBX: 00000000000000c8 RCX: 0000000000000001
+[    1.331696] RDX: 0000000000000001 RSI: 0000000000000092 RDI: 0000000000000000
+[    1.331754] RBP: 00000000ffffffed R08: 0000000000000501 R09: 0000000000000001
+[    1.331817] R10: ffff88817abcc520 R11: 0000000000000670 R12: 00000000ffffffed
+[    1.331881] R13: ffffffff82dbc268 R14: ffffffff832f070a R15: 0000000000000000
+[    1.331945] FS:  0000000000000000(0000) GS:ffff88817bd80000(0000) knlGS:0000000000000000
+[    1.332008] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[    1.332062] CR2: 00000000000000c8 CR3: 000000000681e001 CR4: 00000000003606e0
+[    1.332126] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[    1.332189] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[    1.332252] Call Trace:
+[    1.332281]  __platform_driver_probe+0x92/0xee
+[    1.332323]  ? rtc_dev_init+0x2b/0x2b
+[    1.332358]  cmos_init+0x37/0x67
+[    1.332396]  do_one_initcall+0x7d/0x168
+[    1.332428]  kernel_init_freeable+0x16c/0x1c9
+[    1.332473]  ? rest_init+0xc0/0xc0
+[    1.332508]  kernel_init+0x5/0x100
+[    1.332543]  ret_from_fork+0x1f/0x30
+[    1.332579] CR2: 00000000000000c8
+[    1.332616] ---[ end trace 3bd87f12e9010b87 ]---
+[    1.333549] note: swapper/0[1] exited with preempt_count 1
+[    1.333592] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
+[    1.333736] Kernel Offset: disabled
+
+Note, this can only be triggered if a driver errors out from this call,
+which should never happen.  If it does, the driver needs to be fixed.
+
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Link: https://lore.kernel.org/r/20200408214003.3356-1-sathyanarayanan.kuppuswamy@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/gasket/gasket_sysfs.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/base/platform.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/staging/gasket/gasket_sysfs.c b/drivers/staging/gasket/gasket_sysfs.c
-index ad852ea1d4a92..af26bc9f184a5 100644
---- a/drivers/staging/gasket/gasket_sysfs.c
-+++ b/drivers/staging/gasket/gasket_sysfs.c
-@@ -373,6 +373,7 @@ ssize_t gasket_sysfs_register_store(struct device *device,
- 	gasket_dev = mapping->gasket_dev;
- 	if (!gasket_dev) {
- 		dev_err(device, "Device driver may have been removed\n");
-+		put_mapping(mapping);
- 		return 0;
- 	}
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 604a461848c98..0b67d41bab8ff 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -802,6 +802,8 @@ int __init_or_module __platform_driver_probe(struct platform_driver *drv,
+ 	/* temporary section violation during probe() */
+ 	drv->probe = probe;
+ 	retval = code = __platform_driver_register(drv, module);
++	if (retval)
++		return retval;
  
+ 	/*
+ 	 * Fixup that section violation, being paranoid about code scanning
 -- 
 2.25.1
 
