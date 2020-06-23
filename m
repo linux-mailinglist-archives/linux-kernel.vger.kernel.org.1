@@ -2,115 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6609A205B76
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 21:08:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D424205B79
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 21:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387451AbgFWTIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 15:08:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733220AbgFWTIx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 15:08:53 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C1FD1207D0;
-        Tue, 23 Jun 2020 19:08:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592939332;
-        bh=BlTLROcajuvf6wPLoEzW1weh5p9WvRSaQ89FkLzeY/0=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=jOTYkjJbzaf4BjFZ3qCwPmrk2w6U14U9q8wpnRoCz3NHtGRgklc0vX9DBYaLRtf7b
-         LJ5VDsLKHtMJGqhGM5OlrtXQLSsIN3pHfFsdCK1XXxGPbcbuP/XqCg5j0Vn+mWM1tD
-         TPEbT0mA38RUgRBCyVU+qt0nY6sAAURzZBkBIZuk=
-Content-Type: text/plain; charset="utf-8"
+        id S2387460AbgFWTK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 15:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733273AbgFWTKY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 15:10:24 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60147C061573;
+        Tue, 23 Jun 2020 12:10:24 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id s9so4473385ljm.11;
+        Tue, 23 Jun 2020 12:10:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dHQMA4UMIloAnkWnBe4zD/F3dI97qrJrNziC5PnX2g0=;
+        b=IbI6c2kEofavva6TOZDrMhgWUH2XEThq7tbgwyc7v9vi4A8C7HZTveNFs1qkIDK65W
+         fhFFL6pbXEV3yIKsDJzrKIeNgCeFfgUv4kcjTsnfOoqvELxfTHm3kReFYH8X0AhWOqXq
+         vqOP0OjgHGwvEtRTtbZKEYb19j4JTUgBChXEHbHqW5PHOo6WohYo9xKz4cCtgnSjBHJo
+         X7uSdaI87B8Dk7bUF3SGyy/AbWEGFA7nvJ1U6YFprtNu14xA+woyEUT0dRi8qznXkpjG
+         jZno2JJzq2w+lRT0hqlTid6IKG/aZ5GoaGsNClri5axFwK+8xZ/FzYeuaDrSDDS9Dnyr
+         8wqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dHQMA4UMIloAnkWnBe4zD/F3dI97qrJrNziC5PnX2g0=;
+        b=TF/JEek1FEdd5NT6FdbxqZebC7XB1sdJb5natu/u3+WZzPh546kJhLUO0B7zGGZFSW
+         PlihNjkkBW+9JOpDUvhofCngPwBqFo04IDcKGkHhiaRggmy9gOKRMloC4kHl3bVQntWA
+         q09rjBN2wwjnIhyCDpmp0G3mSZyIv5pECGjreq8aBLTkMQlyKZX7f6T+DYEWd36GwcCv
+         BioIRLvHbPzfrPnY02kxn3ICpxzwdjogPO3ZqKuMdwSxugaxIIQyrMzfxjTddOiI20uq
+         PhrC21n5iTYRBjgzfKzRgvD+FkluN/Vl+bI94ht2H8CI87fLBJqeT72rkODK+tNj0B4Z
+         Edzw==
+X-Gm-Message-State: AOAM531UTBsj6QKovAlm6X9TIts957BdVrVXjeDJ8oyq+DgHYlRD29t3
+        /BW2gImhdDeSL7A+rN6bgwSIK5CImD75uwXt7nM=
+X-Google-Smtp-Source: ABdhPJwHhGkjJFBEPVdJgcvEqW+deafijsmk2UkonQ5shGuWfJwZI2ZPPhkNKshZpF9anGEQE95M9C8PJfns10JcSj4=
+X-Received: by 2002:a2e:800c:: with SMTP id j12mr11123439ljg.218.1592939422627;
+ Tue, 23 Jun 2020 12:10:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20200616055223.119360-1-ikjn@chromium.org>
-References: <20200616055223.119360-1-ikjn@chromium.org>
-Subject: Re: [PATCH] clk: Provide future parent in clk notification
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        linux-kernel@vger.kernel.org, Ikjoon Jang <ikjn@chromium.org>
-To:     Ikjoon Jang <ikjn@chromium.org>, linux-clk@vger.kernel.org
-Date:   Tue, 23 Jun 2020 12:08:52 -0700
-Message-ID: <159293933210.62212.706350398043250620@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+References: <1592937087-8885-1-git-send-email-tharvey@gateworks.com> <1592939214-13637-1-git-send-email-tharvey@gateworks.com>
+In-Reply-To: <1592939214-13637-1-git-send-email-tharvey@gateworks.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Tue, 23 Jun 2020 16:10:10 -0300
+Message-ID: <CAOMZO5Bh92_qpS8VjaYxiHs6rcYBLrgnwJX8ftHshMQgm70-dg@mail.gmail.com>
+Subject: Re: [PATCH v3] ARM: dts: imx6qdl-gw551x: fix audio SSI
+To:     Tim Harvey <tharvey@gateworks.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Ikjoon Jang (2020-06-15 22:52:23)
-> Current clk notification handlers cannot know its new parent in
-> PRE_RATE_CHANGE event. This patch simply adds parent clk to
-> clk_notifier_data so the child clk is now able to know its future
-> parent prior to reparenting.
+On Tue, Jun 23, 2020 at 4:07 PM Tim Harvey <tharvey@gateworks.com> wrote:
+>
+> The audio codec on the GW551x routes to ssi1
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 3117e851cef1 ("ARM: dts: imx: Add TDA19971 HDMI Receiver to GW551x")
+> Signed-off-by: Tim Harvey <tharvey@gateworks.com>
 
-Yes, but why is that important?
-
->=20
-> Change-Id: I099a784d5302a93951bdc6254d85f8df8c770462
-
-Please remove these.
-
-> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-> ---
->  drivers/clk/clk.c   | 30 +++++++++++++++++-------------
->  include/linux/clk.h |  9 ++++++---
->  2 files changed, 23 insertions(+), 16 deletions(-)
->=20
-> diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-> index 3f588ed06ce3..62c4e7b50ae5 100644
-> --- a/drivers/clk/clk.c
-> +++ b/drivers/clk/clk.c
-> @@ -1846,7 +1849,7 @@ static int __clk_set_parent(struct clk_core *core, =
-struct clk_core *parent,
->   * take on the rate of its parent.
->   */
->  static int __clk_speculate_rates(struct clk_core *core,
-> -                                unsigned long parent_rate)
-> +                                struct clk_core *parent)
->  {
->         struct clk_core *child;
->         unsigned long new_rate;
-> @@ -1854,11 +1857,12 @@ static int __clk_speculate_rates(struct clk_core =
-*core,
-> =20
->         lockdep_assert_held(&prepare_lock);
-> =20
-> -       new_rate =3D clk_recalc(core, parent_rate);
-> +       new_rate =3D clk_recalc(core, parent ? parent->rate : 0);
-> =20
->         /* abort rate change if a driver returns NOTIFY_BAD or NOTIFY_STO=
-P */
->         if (core->notifier_count)
-> -               ret =3D __clk_notify(core, PRE_RATE_CHANGE, core->rate, n=
-ew_rate);
-> +               ret =3D __clk_notify(core, parent, PRE_RATE_CHANGE,
-> +                                  core->rate, new_rate);
-> =20
->         if (ret & NOTIFY_STOP_MASK) {
->                 pr_debug("%s: clk notifier callback for clock %s aborted =
-with error %d\n",
-> @@ -1867,7 +1871,7 @@ static int __clk_speculate_rates(struct clk_core *c=
-ore,
->         }
-> =20
->         hlist_for_each_entry(child, &core->children, child_node) {
-> -               ret =3D __clk_speculate_rates(child, new_rate);
-> +               ret =3D __clk_speculate_rates(child, core);
-
-How does this work? core->rate isn't assigned yet when we're speculating
-rates down the tree to the leaves. So that clk_recalc() in the above
-hunk would need to save the rate away, which is wrong because it isn't
-changed yet, for this line to make sense.
-
-Given that I had to read this for a few minutes to figure this out it
-seems that trying to combine the parent and the rate as arguments is
-actually more complicated than adding another parameter. Please just add
-another argument.
-
->                 if (ret & NOTIFY_STOP_MASK)
->                         break;
->         }
+Reviewed-by: Fabio Estevam <festevam@gmail.com>
