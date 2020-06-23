@@ -2,140 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DCA205636
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 17:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B54F205638
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 17:42:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733043AbgFWPl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 11:41:59 -0400
-Received: from sonic307-2.consmr.mail.bf2.yahoo.com ([74.6.134.41]:39834 "EHLO
-        sonic307-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732942AbgFWPl7 (ORCPT
+        id S1733065AbgFWPmR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 11:42:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37620 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732951AbgFWPmQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 11:41:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1592926918; bh=Uv9Il0GvVfNf8ySja/n2kkVJo04KZ3nX+ejOBNQOQ/8=; h=Date:From:Reply-To:Subject:References:From:Subject; b=gLsv7Nvqz8ZI/vmtt+5QfKC9S67NxI2VG+rsC5u30lMg8pThiB4ttg01ePCif4BGQIYryr/eC8cRgf1CfAAWaVXkmlO6ouvnGWlcw6lj2e3gExoUA9B4gq56M57vVX7oHMQpLVMhiOS329dCdodZ4QRIZmM2JluRSdNZKtWgZpXGFBmjRDuSTEi9o0JLWAers2/3I2n0t7uxjpoLrADY5svsNzn/uyNsTZ1StokDCYda5n8+ZQVJ1rs/tVT7xVJYiavRdR9GH9Y7Iao0khTguzCSzwZ7G07gXZX15u5vuj2mw1oo4JKSHHcXEWzZ+3EnXmuGVA0Fc4CiXKym8TTTiw==
-X-YMail-OSG: 2.cqplcVM1nCAUc9U6wWy3rFRq_BiUYQlAj5ldmdVBxZi.kK_bVst2l3_2kf3xf
- eF3gb6RGOpCBTMjjVSSA8MzkyEBJC_wkWmWSwpExzo._59ytwvsfUEMz4vrTPA20y.DyrvpXMeIy
- GOzrKnoHrggeDchTCoL9lbzQNNUnB7PKOfeeJTxDTK98eXNzNldfQt3_M36tBBjbVDwvURZFbcyu
- OAOdlZMynoAIEEhHZ3KBDi5a0bbLVwaz3oLkuIOO27x3_x9s1JF8FmxL7gM1EZ3x1aZk2XZRCnZS
- yjrLoaKjRWpmUoqMNh4yXJENcYKvnLAz_.2tZyihTTh6786FJCsTJ1kV.TU1DDAX1gw7wGYbXY6E
- a8B7NsgRQHU2upAMGXapv2XgRD9Xc7Ya7Wsu5xgN.5DkPbsruw0CNGZua3FEDir5JZJY4lEDwHeF
- AvHYqcJSh5jbx9Gj0zUgOA6OBmMW_aAlo5L8UL73woAn2xs9yRZndt1SSmJDQSab_9D_1DjCgfC0
- GZwX97lolzNJaN2P_EdxwHxK1FwpZ7U4SPRtU4tGm1PWfMl3dBtmD4K1kQmgeKPj16UZU.vp.h3B
- jL3CqfDkh73SPPiVqHd2oKu7tvL5xtSn8og9oZckQEasytn4yCsk0tjxCw6Y2lyxGoW8vQppv_M5
- axQ04YylW3E6xUHEfp9qOQG1mqIKl9jSnqNXo9uOQJkRa5A6_I7IHz7QNiSX__lL8OtzYux1OCk9
- pp5gsE199uu04KmtXQcQ_omyM1Tva7RB7cHDEOw.ymFMT1GGg1WZ6_jU5656wsJjK1c4EhKfljlW
- 1pC6c2aO1G8sKAJGYs.W_hC.N7xmmNYLvJfwtjKiTwkTTz9mI0c_2STCINq9QMHzS3V.DqFnwv1h
- c8bbRlI_tJV1HIjew7I69RbFLC8o_Far0Kk6fgKpFSkVkaJ18AWk3OGZfOZYOextLeXqdXudUlt4
- ki5o6qgefFnMm4wIznw62CXDDB6zsT7WsGJeQly8sAoV20Uj50oHPHmR2WCy__aVrFbQb4LDolMO
- eoUHiRNJmPywO3hDkYavAHIsWyKDLRxnDMJ2QPJYTmTjG0Ux6eP85cVCbdVGcVQKYVvB4Me3ZFN6
- JfoWscssLqGDvkvqcrJPJcduHOB3WbIxM1xRCcp2meXnvZXa2n2cSPXYSo5Ay2JYjwZ4PDM6hZRZ
- 19QtHd4.2Q5JmI6Ix6CB9Lm9BIDy2kUmFnF9wEwGZ45OBSJCs2DtfazGrK4T0L.dPTVQWH1IwLkk
- YUDM8_Unj0br5vyCwnVsSclKwQ0Q6dkx6DPrTZz86dCn4OIA3LF1V8NS_B5O2O6hpkeyyY3DjTjJ
- jBHT4UQT1eng-
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.bf2.yahoo.com with HTTP; Tue, 23 Jun 2020 15:41:58 +0000
-Date:   Tue, 23 Jun 2020 15:41:58 +0000 (UTC)
-From:   Barr Kummar Faso <barrkummarfaso@gmail.com>
-Reply-To: wu.paymentofic@fastservice.com
-Message-ID: <974620190.1748971.1592926918023@mail.yahoo.com>
-Subject: YOUR GIFT WESTERN UNION PAYMENT
+        Tue, 23 Jun 2020 11:42:16 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79155C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 08:42:16 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id m9so3403172qvx.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 08:42:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=k9npaZkB/RX+A77Mjxy8tZOLesXDgVyirFfZLx7RsY8=;
+        b=FPBrUaqD+INXJNZq97GAZ8wt0va9XMksIvOQgUMsCLh5PhfHnsz+Efu5Na78VXWJDy
+         1XGzChK2G0CNZjY7N2MBk7hQmzSCtWqq7r6C/3RhPhMC7Ezb5WuUmKtWAZG5o1xssGYG
+         JfuM2ZMrklYBBVcoZO2EY1qioMp/UBzxm+s4I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k9npaZkB/RX+A77Mjxy8tZOLesXDgVyirFfZLx7RsY8=;
+        b=YchcdYorqgZGysL/U6qLsvHTHTQeXYfsSloirDPNpFRwMec41g1gh1aih2hnqHwVEB
+         BDSLSECPWqq8VpsQNGSGP2wWVAhKSNL/Rtsjn7qVdOde6Y7PMa20MxL/Z9mbs4EwpOnw
+         RhJcmLy34wZOQe7rgcmzsVm539o+ah98AlH23dvURBFbw3ea/Vttfs6VRgKJ8qgwB388
+         QOm99OAa0f3Uhdoo/sm3af9gre5fARG+EkZAO/oyofn1UX8yxwhX3MSlcDNmI9/FWiXN
+         Er3rovuFByTHDpdrZeISGDCr8viw+lH6kvp/7bgEXVz1dbltEiVw/gagGGgfNz3K0vWe
+         xu3Q==
+X-Gm-Message-State: AOAM533qHWEJTrHzdXsdfmRkU5axZdBatAcGIcQCnkWT3bgiKaBs1H0v
+        Jmcor0p5xpciFbHX8Wb58egCpCzADTo=
+X-Google-Smtp-Source: ABdhPJzCnBPX85hWbeFdqNNPtt+wSv9RuuKhMXclYBSr+NMQYCtrb2esRWUO8PeTG4ifuFQWlIHL7g==
+X-Received: by 2002:ad4:4f23:: with SMTP id fc3mr27529525qvb.25.1592926935691;
+        Tue, 23 Jun 2020 08:42:15 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id g4sm843079qka.97.2020.06.23.08.42.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 08:42:14 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 11:42:14 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc:     paulmck@kernel.org, josh@joshtriplett.org, rostedt@goodmis.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        rcu@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/tree: Force quiescent state on callback overload
+Message-ID: <20200623154214.GE9005@google.com>
+References: <1592764647-2452-1-git-send-email-neeraju@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <974620190.1748971.1592926918023.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16138 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:77.0) Gecko/20100101 Firefox/77.0
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1592764647-2452-1-git-send-email-neeraju@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Jun 22, 2020 at 12:07:27AM +0530, Neeraj Upadhyay wrote:
+> On callback overload, we want to force quiescent state immediately,
+> for the first and second fqs. Enforce the same, by including
+> RCU_GP_FLAG_OVLD flag, in fqsstart check.
+> 
+> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+> ---
+
+Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+
+And I think needs fixes tag:
+Fixes: 1fca4d12f4637 ("rcu: Expedite first two FQS scans under callback-overload conditions")
+
+thanks,
+
+ - Joel
 
 
-ATTN;BENEFICIARY:
-
-
-
-
-
-You are welcome to Western UNION office Burkina Faso.
-
-
-
-Am Barr Kummar Faso by name, The new director of Western Union Foreign Oper=
-ation.
-
-
-I resumed work today and your daily transfer file was submitted as pending =
-payment in our Western union Bank and after my verification, I called the f=
-ormal Accountant Officer in-charge of your payment to find out the reason w=
-hy they are delaying your daily transfer and he explained that you was unab=
-le to activate your daily installment account fully.
-
-
-However, I don't know your financial capability at this moment and it was t=
-he reason why I decided to help in this matter just to make it easy for you=
- to start receiving your daily transfer because I know that when you receiv=
-e the total sum $900.000.00 usd that you will definitely compensate me.
-
-
-
-I don't want you to lose this fund at this stage after all your efforts. Mo=
-st wise people prefer to use this medium western union money transfer now a=
-s the best and reliable means of transfer,Kindly take control of yourself a=
-nd leave everything to God because I know that from now on, you will be the=
- one to say that our lord is good, so I will advice you to send me your dir=
-ect phone number your address,country,Pass port because I will text you the=
- MTCN through SMS and attach other information and send to you through your=
- email box, Sender name Sender=E2=80=99s address with including all documen=
-ts involve in the transaction.
-
-
-For this moment I will be very glad for your quick response by sending sum =
-of $25.00 so that I will quickly do the needful and finalize everything wit=
-hin 1:43pm our local time here, I am giving you every assurance that as soo=
-n as I receive the $25.00 that I will activate your daily installment accou=
-nt and proceed with your first transfer of $7,000.00 before 1:43pm our loca=
-l time because I will close once its 6:30pm.
-
-
-Contact person Barr Faso Kummar
-contact Email: wu.paymentofic@fastservice.com
-
-
-
-Be aware that all verification's and arrangement involve in this transfer h=
-as being made in your favour. So I need your maximum co-operation to ensure=
- that strictest confidence is maintained to avoid any further delay.
-
-
-Send the $25.00 through Western Union Money Transfer to below following inf=
-ormation and get back to me with copy of the Western Union slip OK?
-
-
-Receiver's Name...
-Country.... Burkina Faso
-Text Question..........Good
-Answer.............News
-Amount .......$25 USD
-MTCN............
-
-
-I felt pains after going through your payment file and found the reason why=
- you have not start receiving your fund from this department and ready to d=
-o my utmost to make sure you receive it all OK?
-
-
-Be rest assured that I will activate your daily installment account and pos=
-t your first $7,000 USD for you to pick-up today as soon as we receive the =
-fee from you.
-
-
-Please do not hesitate to contact us again should you require additional in=
-formation or call +226 74 43 41 61 for further urgent attention, as we are =
-here to serve you the best.
-
-
-Regard's
-Barrister Kummar Faso
-New Director Western Union Foreign Operation
-Our:Code of conduct:1000%
+>  kernel/rcu/tree.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index d0988a1..6226bfb 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1865,7 +1865,7 @@ static void rcu_gp_fqs_loop(void)
+>  			break;
+>  		/* If time for quiescent-state forcing, do it. */
+>  		if (!time_after(rcu_state.jiffies_force_qs, jiffies) ||
+> -		    (gf & RCU_GP_FLAG_FQS)) {
+> +		    (gf & (RCU_GP_FLAG_FQS | RCU_GP_FLAG_OVLD))) {
+>  			trace_rcu_grace_period(rcu_state.name, rcu_state.gp_seq,
+>  					       TPS("fqsstart"));
+>  			rcu_gp_fqs(first_gp_fqs);
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
