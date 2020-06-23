@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6475205E8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C3E205E8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390320AbgFWUXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:23:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41812 "EHLO mail.kernel.org"
+        id S2389554AbgFWUXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:23:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389399AbgFWUXh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:23:37 -0400
+        id S2390333AbgFWUXm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:23:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F7472070E;
-        Tue, 23 Jun 2020 20:23:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F3AB2064B;
+        Tue, 23 Jun 2020 20:23:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943817;
-        bh=pBFSjGkku60qxWIrDHSWrcAFOrzcX0FpQ9HRqw4cDXM=;
+        s=default; t=1592943821;
+        bh=1/Ug3NUSWhGxrIJbKLUJW53F3W8/kqdziOuHqE34yD4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xX/JuHyzE0SJOsEfS416HJ9L2KFPlv8rIAiUtBtjfbR75i/2i4/fgFbFVHDsIEaPn
-         bOWnYLH2PIVqMiPkzbDe6SpRfvH68KXz/49F+Tp46+LTom6drD3kniIiQA/tO+uHfJ
-         MadSraoA5PTpMCa5PAYCErwYaeWZy4BXdywB2tUE=
+        b=MtQn1n8dhR74MejTUijCOapbevQuv49RqknMqgY79nB/Ljz2OAMn1e+haKVmm6Bef
+         M6naYpxmT1YcQec/RkFCRbQyB/VF7JJLqHWVhnObFL72svG0cIwazpQG7IxnReYsYU
+         lD5WE2rwYlQuhXg2smeeIhvcsCZoOuIiUNB9ReR4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org, Martin Wilck <mwilck@suse.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Mike Snitzer <snitzer@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 032/314] misc: fastrpc: Fix an incomplete memory release in fastrpc_rpmsg_probe()
-Date:   Tue, 23 Jun 2020 21:53:47 +0200
-Message-Id: <20200623195340.354548339@linuxfoundation.org>
+Subject: [PATCH 5.4 034/314] dm mpath: switch paths in dm_blk_ioctl() code path
+Date:   Tue, 23 Jun 2020 21:53:49 +0200
+Message-Id: <20200623195340.443778876@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
 References: <20200623195338.770401005@linuxfoundation.org>
@@ -45,40 +45,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Martin Wilck <mwilck@suse.com>
 
-[ Upstream commit 0978de9fc7335c73934ab8fac189fb4cb3f23191 ]
+[ Upstream commit 2361ae595352dec015d14292f1b539242d8446d6 ]
 
-fastrpc_channel_ctx is not freed if misc_register() fails, this would
-lead to a memory leak. Fix this leak by adding kfree in misc_register()
-error path.
+SCSI LUN passthrough code such as qemu's "scsi-block" device model
+pass every IO to the host via SG_IO ioctls. Currently, dm-multipath
+calls choose_pgpath() only in the block IO code path, not in the ioctl
+code path (unless current_pgpath is NULL). This has the effect that no
+path switching and thus no load balancing is done for SCSI-passthrough
+IO, unless the active path fails.
 
-Fixes: 278d56f970ae ("misc: fastrpc: Reference count channel context")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20200511162722.2552-1-srinivas.kandagatla@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fix this by using the same logic in multipath_prepare_ioctl() as in
+multipath_clone_and_map().
+
+Note: The allegedly best path selection algorithm, service-time,
+still wouldn't work perfectly, because the io size of the current
+request is always set to 0. Changing that for the IO passthrough
+case would require the ioctl cmd and arg to be passed to dm's
+prepare_ioctl() method.
+
+Signed-off-by: Martin Wilck <mwilck@suse.com>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/fastrpc.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/md/dm-mpath.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index 842f2210dc7e2..ee3291f7e6156 100644
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -1434,8 +1434,10 @@ static int fastrpc_rpmsg_probe(struct rpmsg_device *rpdev)
- 					    domains[domain_id]);
- 	data->miscdev.fops = &fastrpc_fops;
- 	err = misc_register(&data->miscdev);
--	if (err)
-+	if (err) {
-+		kfree(data);
- 		return err;
-+	}
+diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
+index 456d790c918c0..f2de4c73cc8fa 100644
+--- a/drivers/md/dm-mpath.c
++++ b/drivers/md/dm-mpath.c
+@@ -1856,7 +1856,7 @@ static int multipath_prepare_ioctl(struct dm_target *ti,
+ 	int r;
  
- 	kref_init(&data->refcount);
+ 	current_pgpath = READ_ONCE(m->current_pgpath);
+-	if (!current_pgpath)
++	if (!current_pgpath || !test_bit(MPATHF_QUEUE_IO, &m->flags))
+ 		current_pgpath = choose_pgpath(m, 0);
  
+ 	if (current_pgpath) {
 -- 
 2.25.1
 
