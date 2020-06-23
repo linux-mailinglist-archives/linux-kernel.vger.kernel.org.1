@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 355CD2061EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D412061EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404073AbgFWUwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:52:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45786 "EHLO mail.kernel.org"
+        id S2403923AbgFWUwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:52:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46140 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392679AbgFWUrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:47:24 -0400
+        id S2392699AbgFWUrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:47:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7CF5620781;
-        Tue, 23 Jun 2020 20:47:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1A2C82098B;
+        Tue, 23 Jun 2020 20:47:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945245;
-        bh=FErfLAtSgFwdrckrYiDutcgWgLZ2rUZ1zmULEUoVWeU=;
+        s=default; t=1592945257;
+        bh=uqj9LlV6wpnyksVFlwbmyPsNGWszrcyh1dI43T+emtY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JrrX3HfuXU1RPJvEh1t10dwP/sFTdE+k0YxjTXlHBz97rO4E8BZ0YdD6hz7iinZ5R
-         QTJ8J8kEI7mjQfjnz6r9ReRd+wNEsFcAcixfCt2ljCnGgOalyZAp7ZOpV2mTgZX/2w
-         xZ/t7sOavTeDb/QcaPGT9tYcjzPlW1HqczIVy4pE=
+        b=wUJkMCPOkHFC/rVgOibuCxmw4WIs3KNaeJr8wq2kRdTuGxLovrOJPMjbk8FIuNQAc
+         1ovUL6TgCCAOpZQ4pNWhjqvXNJdogRdTgHNLFA+anIaFFT+1nE5WMHk5D6TPWNHR08
+         XYT8FiAI6PTyEtvROz7ZVBD/7B/mV0xrrF32VK18=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Aditya Paluri <Venkata.AdityaPaluri@synopsys.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 068/136] PCI/PTM: Inherit Switch Downstream Port PTM settings from Upstream Port
-Date:   Tue, 23 Jun 2020 21:58:44 +0200
-Message-Id: <20200623195307.112744100@linuxfoundation.org>
+Subject: [PATCH 4.14 070/136] watchdog: da9062: No need to ping manually before setting timeout
+Date:   Tue, 23 Jun 2020 21:58:46 +0200
+Message-Id: <20200623195307.202137941@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
 References: <20200623195303.601828702@linuxfoundation.org>
@@ -45,75 +47,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+From: Stefan Riedmueller <s.riedmueller@phytec.de>
 
-[ Upstream commit 7b38fd9760f51cc83d80eed2cfbde8b5ead9e93a ]
+[ Upstream commit a0948ddba65f4f6d3cfb5e2b84685485d0452966 ]
 
-Except for Endpoints, we enable PTM at enumeration-time.  Previously we did
-not account for the fact that Switch Downstream Ports are not permitted to
-have a PTM capability; their PTM behavior is controlled by the Upstream
-Port (PCIe r5.0, sec 7.9.16).  Since Downstream Ports don't have a PTM
-capability, we did not mark them as "ptm_enabled", which meant that
-pci_enable_ptm() on an Endpoint failed because there was no PTM path to it.
+There is actually no need to ping the watchdog before disabling it
+during timeout change. Disabling the watchdog already takes care of
+resetting the counter.
 
-Mark Downstream Ports as "ptm_enabled" if their Upstream Port has PTM
-enabled.
+This fixes an issue during boot when the userspace watchdog handler takes
+over and the watchdog is already running. Opening the watchdog in this case
+leads to the first ping and directly after that without the required
+heartbeat delay a second ping issued by the set_timeout call. Due to the
+missing delay this resulted in a reset.
 
-Fixes: eec097d43100 ("PCI: Add pci_enable_ptm() for drivers to enable PTM on endpoints")
-Reported-by: Aditya Paluri <Venkata.AdityaPaluri@synopsys.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Link: https://lore.kernel.org/r/20200403130728.39260-3-s.riedmueller@phytec.de
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pcie/ptm.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+ drivers/watchdog/da9062_wdt.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/pci/pcie/ptm.c b/drivers/pci/pcie/ptm.c
-index 3008bba360f35..ec6f6213960b4 100644
---- a/drivers/pci/pcie/ptm.c
-+++ b/drivers/pci/pcie/ptm.c
-@@ -47,10 +47,6 @@ void pci_ptm_init(struct pci_dev *dev)
- 	if (!pci_is_pcie(dev))
- 		return;
- 
--	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_PTM);
--	if (!pos)
--		return;
+diff --git a/drivers/watchdog/da9062_wdt.c b/drivers/watchdog/da9062_wdt.c
+index 79383ff620199..1443386bb590b 100644
+--- a/drivers/watchdog/da9062_wdt.c
++++ b/drivers/watchdog/da9062_wdt.c
+@@ -94,11 +94,6 @@ static int da9062_wdt_update_timeout_register(struct da9062_watchdog *wdt,
+ 					      unsigned int regval)
+ {
+ 	struct da9062 *chip = wdt->hw;
+-	int ret;
 -
- 	/*
- 	 * Enable PTM only on interior devices (root ports, switch ports,
- 	 * etc.) on the assumption that it causes no link traffic until an
-@@ -60,6 +56,23 @@ void pci_ptm_init(struct pci_dev *dev)
- 	     pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END))
- 		return;
+-	ret = da9062_reset_watchdog_timer(wdt);
+-	if (ret)
+-		return ret;
  
-+	/*
-+	 * Switch Downstream Ports are not permitted to have a PTM
-+	 * capability; their PTM behavior is controlled by the Upstream
-+	 * Port (PCIe r5.0, sec 7.9.16).
-+	 */
-+	ups = pci_upstream_bridge(dev);
-+	if (pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM &&
-+	    ups && ups->ptm_enabled) {
-+		dev->ptm_granularity = ups->ptm_granularity;
-+		dev->ptm_enabled = 1;
-+		return;
-+	}
-+
-+	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_PTM);
-+	if (!pos)
-+		return;
-+
- 	pci_read_config_dword(dev, pos + PCI_PTM_CAP, &cap);
- 	local_clock = (cap & PCI_PTM_GRANULARITY_MASK) >> 8;
- 
-@@ -69,7 +82,6 @@ void pci_ptm_init(struct pci_dev *dev)
- 	 * the spec recommendation (PCIe r3.1, sec 7.32.3), select the
- 	 * furthest upstream Time Source as the PTM Root.
- 	 */
--	ups = pci_upstream_bridge(dev);
- 	if (ups && ups->ptm_enabled) {
- 		ctrl = PCI_PTM_CTRL_ENABLE;
- 		if (ups->ptm_granularity == 0)
+ 	return regmap_update_bits(chip->regmap,
+ 				  DA9062AA_CONTROL_D,
 -- 
 2.25.1
 
