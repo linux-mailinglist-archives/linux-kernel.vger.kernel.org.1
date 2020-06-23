@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA28205EF4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E1C205EF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389269AbgFWU1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:27:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47346 "EHLO mail.kernel.org"
+        id S2388644AbgFWU2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:28:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390788AbgFWU1o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:27:44 -0400
+        id S2390811AbgFWU1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:27:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3D1F92064B;
-        Tue, 23 Jun 2020 20:27:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 50C32206EB;
+        Tue, 23 Jun 2020 20:27:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944064;
-        bh=JT7YxV6z/6qiwExiVMHHGnzReWH50EhdvoD/VQr3wiI=;
+        s=default; t=1592944074;
+        bh=M6TT/wa8OZMxO/0biWgPTLNtCFxHhFd3MFg8EdmO0so=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=L67PAqsSR+ubxEcyUe2z43DLRaG/VrBr69465STczqROwaiGxU1qf2H7YxNXXReen
-         pDnJPch0zGWVv/qY6ogh2Ht9ou+nIWjqPNyke3sNkpX2Bo3BR3wGPQn1ueOg+BjgBW
-         uU4znbUkg3sBDMi3gT09GcNP+dRF2vSre3X8t+a8=
+        b=dbbcwOvypWsGRkplHn+uSO598Qlyesruj3P+UQ1MqHIezYTml2fNwfF4r4BgWCyMr
+         EgH/9pB97N1iK/b1RyLxXn4t31I8IMqUuAdObkqSbTEWK0Euqh/2Pds6Sfng7qozpj
+         q4lWU/4mc7MqLhKWpVcc1zsMdhpeYGqOb58lbois=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Suganath Prabu S <suganath-prabu.subramani@broadcom.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Chen Li <licheng0822@thundersoft.com>,
+        Yongbo Zhang <giraffesnn123@gmail.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 131/314] scsi: mpt3sas: Fix double free warnings
-Date:   Tue, 23 Jun 2020 21:55:26 +0200
-Message-Id: <20200623195345.120586545@linuxfoundation.org>
+Subject: [PATCH 5.4 132/314] SoC: rsnd: add interrupt support for SSI BUSIF buffer
+Date:   Tue, 23 Jun 2020 21:55:27 +0200
+Message-Id: <20200623195345.168565407@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
 References: <20200623195338.770401005@linuxfoundation.org>
@@ -45,41 +46,279 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Suganath Prabu S <suganath-prabu.subramani@broadcom.com>
+From: Yongbo Zhang <giraffesnn123@gmail.com>
 
-[ Upstream commit cbbfdb2a2416c9f0cde913cf09670097ac281282 ]
+[ Upstream commit 66c705d07d784fb6b4622c6e47b6acae357472db ]
 
-Fix following warning from Smatch static analyser:
+SSI BUSIF buffer is possible to overflow or underflow, especially in a
+hypervisor environment. If there is no interrupt support, it will eventually
+lead to errors in pcm data.
+This patch adds overflow and underflow interrupt support for SSI BUSIF buffer.
 
-drivers/scsi/mpt3sas/mpt3sas_base.c:5256 _base_allocate_memory_pools()
-warn: 'ioc->hpr_lookup' double freed
-
-drivers/scsi/mpt3sas/mpt3sas_base.c:5256 _base_allocate_memory_pools()
-warn: 'ioc->internal_lookup' double freed
-
-Link: https://lore.kernel.org/r/20200508110738.30732-1-suganath-prabu.subramani@broadcom.com
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Suganath Prabu S <suganath-prabu.subramani@broadcom.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: Chen Li <licheng0822@thundersoft.com>
+Signed-off-by: Yongbo Zhang <giraffesnn123@gmail.com>
+Tested-by: Chen Li <licheng0822@thundersoft.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Link: https://lore.kernel.org/r/20200512093003.28332-1-giraffesnn123@gmail.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/mpt3sas/mpt3sas_base.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/sh/rcar/gen.c  |   8 +++
+ sound/soc/sh/rcar/rsnd.h |   9 +++
+ sound/soc/sh/rcar/ssi.c  | 145 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 162 insertions(+)
 
-diff --git a/drivers/scsi/mpt3sas/mpt3sas_base.c b/drivers/scsi/mpt3sas/mpt3sas_base.c
-index 752b71cfbe12c..7fd1d731555f9 100644
---- a/drivers/scsi/mpt3sas/mpt3sas_base.c
-+++ b/drivers/scsi/mpt3sas/mpt3sas_base.c
-@@ -4777,7 +4777,9 @@ _base_release_memory_pools(struct MPT3SAS_ADAPTER *ioc)
+diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
+index af19010b9d88f..8bd49c8a9517e 100644
+--- a/sound/soc/sh/rcar/gen.c
++++ b/sound/soc/sh/rcar/gen.c
+@@ -224,6 +224,14 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
+ 		RSND_GEN_S_REG(SSI_SYS_STATUS5,	0x884),
+ 		RSND_GEN_S_REG(SSI_SYS_STATUS6,	0x888),
+ 		RSND_GEN_S_REG(SSI_SYS_STATUS7,	0x88c),
++		RSND_GEN_S_REG(SSI_SYS_INT_ENABLE0, 0x850),
++		RSND_GEN_S_REG(SSI_SYS_INT_ENABLE1, 0x854),
++		RSND_GEN_S_REG(SSI_SYS_INT_ENABLE2, 0x858),
++		RSND_GEN_S_REG(SSI_SYS_INT_ENABLE3, 0x85c),
++		RSND_GEN_S_REG(SSI_SYS_INT_ENABLE4, 0x890),
++		RSND_GEN_S_REG(SSI_SYS_INT_ENABLE5, 0x894),
++		RSND_GEN_S_REG(SSI_SYS_INT_ENABLE6, 0x898),
++		RSND_GEN_S_REG(SSI_SYS_INT_ENABLE7, 0x89c),
+ 		RSND_GEN_S_REG(HDMI0_SEL,	0x9e0),
+ 		RSND_GEN_S_REG(HDMI1_SEL,	0x9e4),
+ 
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index ea6cbaa9743ee..d47608ff5facc 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -189,6 +189,14 @@ enum rsnd_reg {
+ 	SSI_SYS_STATUS5,
+ 	SSI_SYS_STATUS6,
+ 	SSI_SYS_STATUS7,
++	SSI_SYS_INT_ENABLE0,
++	SSI_SYS_INT_ENABLE1,
++	SSI_SYS_INT_ENABLE2,
++	SSI_SYS_INT_ENABLE3,
++	SSI_SYS_INT_ENABLE4,
++	SSI_SYS_INT_ENABLE5,
++	SSI_SYS_INT_ENABLE6,
++	SSI_SYS_INT_ENABLE7,
+ 	HDMI0_SEL,
+ 	HDMI1_SEL,
+ 	SSI9_BUSIF0_MODE,
+@@ -237,6 +245,7 @@ enum rsnd_reg {
+ #define SSI9_BUSIF_ADINR(i)	(SSI9_BUSIF0_ADINR + (i))
+ #define SSI9_BUSIF_DALIGN(i)	(SSI9_BUSIF0_DALIGN + (i))
+ #define SSI_SYS_STATUS(i)	(SSI_SYS_STATUS0 + (i))
++#define SSI_SYS_INT_ENABLE(i) (SSI_SYS_INT_ENABLE0 + (i))
+ 
+ 
+ struct rsnd_priv;
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 4a7d3413917fc..47d5ddb526f21 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -372,6 +372,9 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 	u32 wsr		= ssi->wsr;
+ 	int width;
+ 	int is_tdm, is_tdm_split;
++	int id = rsnd_mod_id(mod);
++	int i;
++	u32 sys_int_enable = 0;
+ 
+ 	is_tdm		= rsnd_runtime_is_tdm(io);
+ 	is_tdm_split	= rsnd_runtime_is_tdm_split(io);
+@@ -447,6 +450,38 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 		cr_mode = DIEN;		/* PIO : enable Data interrupt */
  	}
  
- 	kfree(ioc->hpr_lookup);
-+	ioc->hpr_lookup = NULL;
- 	kfree(ioc->internal_lookup);
-+	ioc->internal_lookup = NULL;
- 	if (ioc->chain_lookup) {
- 		for (i = 0; i < ioc->scsiio_depth; i++) {
- 			for (j = ioc->chains_per_prp_buffer;
++	/* enable busif buffer over/under run interrupt. */
++	if (is_tdm || is_tdm_split) {
++		switch (id) {
++		case 0:
++		case 1:
++		case 2:
++		case 3:
++		case 4:
++			for (i = 0; i < 4; i++) {
++				sys_int_enable = rsnd_mod_read(mod,
++					SSI_SYS_INT_ENABLE(i * 2));
++				sys_int_enable |= 0xf << (id * 4);
++				rsnd_mod_write(mod,
++					       SSI_SYS_INT_ENABLE(i * 2),
++					       sys_int_enable);
++			}
++
++			break;
++		case 9:
++			for (i = 0; i < 4; i++) {
++				sys_int_enable = rsnd_mod_read(mod,
++					SSI_SYS_INT_ENABLE((i * 2) + 1));
++				sys_int_enable |= 0xf << 4;
++				rsnd_mod_write(mod,
++					       SSI_SYS_INT_ENABLE((i * 2) + 1),
++					       sys_int_enable);
++			}
++
++			break;
++		}
++	}
++
+ init_end:
+ 	ssi->cr_own	= cr_own;
+ 	ssi->cr_mode	= cr_mode;
+@@ -496,6 +531,13 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
+ {
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+ 	struct device *dev = rsnd_priv_to_dev(priv);
++	int is_tdm, is_tdm_split;
++	int id = rsnd_mod_id(mod);
++	int i;
++	u32 sys_int_enable = 0;
++
++	is_tdm		= rsnd_runtime_is_tdm(io);
++	is_tdm_split	= rsnd_runtime_is_tdm_split(io);
+ 
+ 	if (!rsnd_ssi_is_run_mods(mod, io))
+ 		return 0;
+@@ -517,6 +559,38 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
+ 		ssi->wsr	= 0;
+ 	}
+ 
++	/* disable busif buffer over/under run interrupt. */
++	if (is_tdm || is_tdm_split) {
++		switch (id) {
++		case 0:
++		case 1:
++		case 2:
++		case 3:
++		case 4:
++			for (i = 0; i < 4; i++) {
++				sys_int_enable = rsnd_mod_read(mod,
++						SSI_SYS_INT_ENABLE(i * 2));
++				sys_int_enable &= ~(0xf << (id * 4));
++				rsnd_mod_write(mod,
++					       SSI_SYS_INT_ENABLE(i * 2),
++					       sys_int_enable);
++			}
++
++			break;
++		case 9:
++			for (i = 0; i < 4; i++) {
++				sys_int_enable = rsnd_mod_read(mod,
++					SSI_SYS_INT_ENABLE((i * 2) + 1));
++				sys_int_enable &= ~(0xf << 4);
++				rsnd_mod_write(mod,
++					       SSI_SYS_INT_ENABLE((i * 2) + 1),
++					       sys_int_enable);
++			}
++
++			break;
++		}
++	}
++
+ 	return 0;
+ }
+ 
+@@ -622,6 +696,11 @@ static int rsnd_ssi_irq(struct rsnd_mod *mod,
+ 			int enable)
+ {
+ 	u32 val = 0;
++	int is_tdm, is_tdm_split;
++	int id = rsnd_mod_id(mod);
++
++	is_tdm		= rsnd_runtime_is_tdm(io);
++	is_tdm_split	= rsnd_runtime_is_tdm_split(io);
+ 
+ 	if (rsnd_is_gen1(priv))
+ 		return 0;
+@@ -635,6 +714,19 @@ static int rsnd_ssi_irq(struct rsnd_mod *mod,
+ 	if (enable)
+ 		val = rsnd_ssi_is_dma_mode(mod) ? 0x0e000000 : 0x0f000000;
+ 
++	if (is_tdm || is_tdm_split) {
++		switch (id) {
++		case 0:
++		case 1:
++		case 2:
++		case 3:
++		case 4:
++		case 9:
++			val |= 0x0000ff00;
++			break;
++		}
++	}
++
+ 	rsnd_mod_write(mod, SSI_INT_ENABLE, val);
+ 
+ 	return 0;
+@@ -651,6 +743,12 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
+ 	u32 status;
+ 	bool elapsed = false;
+ 	bool stop = false;
++	int id = rsnd_mod_id(mod);
++	int i;
++	int is_tdm, is_tdm_split;
++
++	is_tdm		= rsnd_runtime_is_tdm(io);
++	is_tdm_split	= rsnd_runtime_is_tdm_split(io);
+ 
+ 	spin_lock(&priv->lock);
+ 
+@@ -672,6 +770,53 @@ static void __rsnd_ssi_interrupt(struct rsnd_mod *mod,
+ 		stop = true;
+ 	}
+ 
++	status = 0;
++
++	if (is_tdm || is_tdm_split) {
++		switch (id) {
++		case 0:
++		case 1:
++		case 2:
++		case 3:
++		case 4:
++			for (i = 0; i < 4; i++) {
++				status = rsnd_mod_read(mod,
++						       SSI_SYS_STATUS(i * 2));
++				status &= 0xf << (id * 4);
++
++				if (status) {
++					rsnd_dbg_irq_status(dev,
++						"%s err status : 0x%08x\n",
++						rsnd_mod_name(mod), status);
++					rsnd_mod_write(mod,
++						       SSI_SYS_STATUS(i * 2),
++						       0xf << (id * 4));
++					stop = true;
++					break;
++				}
++			}
++			break;
++		case 9:
++			for (i = 0; i < 4; i++) {
++				status = rsnd_mod_read(mod,
++						SSI_SYS_STATUS((i * 2) + 1));
++				status &= 0xf << 4;
++
++				if (status) {
++					rsnd_dbg_irq_status(dev,
++						"%s err status : 0x%08x\n",
++						rsnd_mod_name(mod), status);
++					rsnd_mod_write(mod,
++						SSI_SYS_STATUS((i * 2) + 1),
++						0xf << 4);
++					stop = true;
++					break;
++				}
++			}
++			break;
++		}
++	}
++
+ 	rsnd_ssi_status_clear(mod);
+ rsnd_ssi_interrupt_out:
+ 	spin_unlock(&priv->lock);
 -- 
 2.25.1
 
