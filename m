@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99723204539
+	by mail.lfdr.de (Postfix) with ESMTP id 23650204538
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731776AbgFWAXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:23:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48280 "EHLO mail.kernel.org"
+        id S1731767AbgFWAW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:22:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731524AbgFWAVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731527AbgFWAVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Jun 2020 20:21:52 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 72DEC20809;
+        by mail.kernel.org (Postfix) with ESMTPSA id 9BF4820836;
         Tue, 23 Jun 2020 00:21:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592871711;
-        bh=iCKOvbCRfqkVczFsIKppK3kQNn2OlK2C2edwVd11wls=;
+        bh=/CiuJ8N63nbne1ba3aBdq1NMNrybxRRLEfsSFK702sc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UvTK9Bf9uANAh8kx4Yr3cThD+XvHhN/0pYIXS4WbTn+/tQwioQ9QGt3uYYBhuAM1T
-         CdIFEcYSQQjoTuyRgCgA1NA8H9k3KvDhaBTfpaKrlWUyj+dbg9YbwjWOLvW2ht9+W7
-         KRHMQh3tflCZPfTQCTJuGCn3feKVV6T5zSFWMU88=
+        b=y7pQnvCrFGvgYPEhxYMLUGYpoq81ZqznQCNOdfMRRk4GKBgLihsuuogZG9QiC5cvk
+         Hv55xQrpWgz/dQpYN3rwOOHDSRet5yYTq9th2y7ESyOAnhulN2Nr4CIScbr+boQuDZ
+         ndgLUaYgIjDmv7vqYkbvO0/lCND3HnVr/rzq8AI4=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,10 +31,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 11/26] fs/btrfs: Add cond_resched() for try_release_extent_mapping() stalls
-Date:   Mon, 22 Jun 2020 17:21:32 -0700
-Message-Id: <20200623002147.25750-11-paulmck@kernel.org>
+        Lihao Liang <lihaoliang@google.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 12/26] rcu: Update comment from rsp->rcu_gp_seq to rsp->gp_seq
+Date:   Mon, 22 Jun 2020 17:21:33 -0700
+Message-Id: <20200623002147.25750-12-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002128.GA25456@paulmck-ThinkPad-P72>
 References: <20200623002128.GA25456@paulmck-ThinkPad-P72>
@@ -43,57 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Lihao Liang <lihaoliang@google.com>
 
-Very large I/Os can cause the following RCU CPU stall warning:
-
-RIP: 0010:rb_prev+0x8/0x50
-Code: 49 89 c0 49 89 d1 48 89 c2 48 89 f8 e9 e5 fd ff ff 4c 89 48 10 c3 4c =
-89 06 c3 4c 89 40 10 c3 0f 1f 00 48 8b 0f 48 39 cf 74 38 <48> 8b 47 10 48 85 c0 74 22 48 8b 50 08 48 85 d2 74 0c 48 89 d0 48
-RSP: 0018:ffffc9002212bab0 EFLAGS: 00000287 ORIG_RAX: ffffffffffffff13
-RAX: ffff888821f93630 RBX: ffff888821f93630 RCX: ffff888821f937e0
-RDX: 0000000000000000 RSI: 0000000000102000 RDI: ffff888821f93630
-RBP: 0000000000103000 R08: 000000000006c000 R09: 0000000000000238
-R10: 0000000000102fff R11: ffffc9002212bac8 R12: 0000000000000001
-R13: ffffffffffffffff R14: 0000000000102000 R15: ffff888821f937e0
- __lookup_extent_mapping+0xa0/0x110
- try_release_extent_mapping+0xdc/0x220
- btrfs_releasepage+0x45/0x70
- shrink_page_list+0xa39/0xb30
- shrink_inactive_list+0x18f/0x3b0
- shrink_lruvec+0x38e/0x6b0
- shrink_node+0x14d/0x690
- do_try_to_free_pages+0xc6/0x3e0
- try_to_free_mem_cgroup_pages+0xe6/0x1e0
- reclaim_high.constprop.73+0x87/0xc0
- mem_cgroup_handle_over_high+0x66/0x150
- exit_to_usermode_loop+0x82/0xd0
- do_syscall_64+0xd4/0x100
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-On a PREEMPT=n kernel, the try_release_extent_mapping() function's
-"while" loop might run for a very long time on a large I/O.  This commit
-therefore adds a cond_resched() to this loop, providing RCU any needed
-quiescent states.
-
+Signed-off-by: Lihao Liang <lihaoliang@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- fs/btrfs/extent_io.c | 2 ++
- 1 file changed, 2 insertions(+)
+ kernel/rcu/tree.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 68c9605..7042395 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4515,6 +4515,8 @@ int try_release_extent_mapping(struct page *page, gfp_t mask)
- 
- 			/* once for us */
- 			free_extent_map(em);
-+
-+			cond_resched(); /* Allow large-extent preemption. */
- 		}
- 	}
- 	return try_release_extent_state(tree, page, mask);
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index 9c6f734..575745f 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -41,7 +41,7 @@ struct rcu_node {
+ 	raw_spinlock_t __private lock;	/* Root rcu_node's lock protects */
+ 					/*  some rcu_state fields as well as */
+ 					/*  following. */
+-	unsigned long gp_seq;	/* Track rsp->rcu_gp_seq. */
++	unsigned long gp_seq;	/* Track rsp->gp_seq. */
+ 	unsigned long gp_seq_needed; /* Track furthest future GP request. */
+ 	unsigned long completedqs; /* All QSes done for this node. */
+ 	unsigned long qsmask;	/* CPUs or groups that need to switch in */
+@@ -149,7 +149,7 @@ union rcu_noqs {
+ /* Per-CPU data for read-copy update. */
+ struct rcu_data {
+ 	/* 1) quiescent-state and grace-period handling : */
+-	unsigned long	gp_seq;		/* Track rsp->rcu_gp_seq counter. */
++	unsigned long	gp_seq;		/* Track rsp->gp_seq counter. */
+ 	unsigned long	gp_seq_needed;	/* Track furthest future GP request. */
+ 	union rcu_noqs	cpu_no_qs;	/* No QSes yet for this CPU. */
+ 	bool		core_needs_qs;	/* Core waits for quiesc state. */
 -- 
 2.9.5
 
