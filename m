@@ -2,81 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69D1C204573
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 483E72045F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:43:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731997AbgFWAcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:32:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731487AbgFWAcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:32:33 -0400
-Received: from embeddedor (unknown [189.207.59.248])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD1F92053B;
-        Tue, 23 Jun 2020 00:32:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592872353;
-        bh=Upgc+1fy6WFH3XNcBPCvqoAbvhOSY1dzH3U/SYaFv04=;
-        h=Date:From:To:Cc:Subject:From;
-        b=1n1lxV3OcLThhL8WtBPjr/PToUwi5lyitl08vDuv+e1LoNi9J0195yAj5Gf5ejRYd
-         NecAdT8RxzHXY+jo9uWPg1chv5+TeIWmDkHrxE0LXCmlqRfM3vDs05oq275kVf1+Hv
-         QXmD9lMJ394RNnlLyk/VjqAHpAwETqlcKPGHnzj0=
-Date:   Mon, 22 Jun 2020 19:38:02 -0500
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH][next] perf cputopo: Use struct_size() helper
-Message-ID: <20200623003802.GA21572@embeddedor>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1731815AbgFWAnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731566AbgFWAnI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:43:08 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5861EC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 17:43:08 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id b4so17334276qkn.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 17:43:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=FBwIr+e7jchXkt4H6NuRTDKCZPzK552qDXzcqbEDs6A=;
+        b=gyUZBOOzt670fE92C1H0iaD0YACDowMWCt1Yg0vHM7ewn375tV7lJPyuf9yyJMK1hU
+         2TVCWtSpSQZdhiGiAbXjOayedf9NICfebY6TTZ3kqGgqvQF/asjbyXr4pkiBu/LhK122
+         DKm0saOCl+8vEE0dM7mZksUpIIl5h8zR60FZ6qzno3Vp/w42ULGGhY/Zb/KuFGRHhB2f
+         4Al128UAiE0YOrGQOl+fiDpwoezJDDBYRe+NEFVxpj/F1DRL8QGLU+MxNWfl0cd9TkLq
+         3BTGmSB3VNi+PVqVpuJoR+bGC3Smkt5U0aECRwLS7jX901sFjestTpB3cMGYRHFdK0oN
+         13mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=FBwIr+e7jchXkt4H6NuRTDKCZPzK552qDXzcqbEDs6A=;
+        b=ElV+Eg8F/twOW0E1GhXZpyYpEOrJWf2xIPtzxDIimLqO+++uISNaezKqpIUfHWI6+S
+         IQX1q5txtUHE2Q5uhsWRYZXMicjlwzOpy1GhvS6LnikpeXD9fx89TO5npIVF9MlXHdRA
+         TX0KPzdTDWSJ6dXxBCMYgBhvkHlaHdBtXSUH6e+k8hqq+0AIiN2IzWkFu52E7uyLAc4o
+         B9JX8h17twjzweijjm8MabR2pBT1nkscy8rHVJLD5YApzoOp97vibetSsjcCS8C0jcyg
+         JJUzkrBw09H57JCpfo+nRuZ16VqKJDiFDHzlrHGxvJRLVjyV2mXVcR3/JPjUQOnteJ65
+         zYPw==
+X-Gm-Message-State: AOAM532UV9Dvme667CCbBH1DYE220RfnMIjFs1nTRu1NtiAgEdxCqotK
+        1YBuPrSRs19vCsEV6sfOrX/yREyS
+X-Google-Smtp-Source: ABdhPJy8yhN8dEOHDWjDvJKogoT9P6faHK76jOSvqXmfq56hqURheop/aYNpu9v8b7kCBZT13YPisQ==
+X-Received: by 2002:a37:a20d:: with SMTP id l13mr16239706qke.296.1592872987098;
+        Mon, 22 Jun 2020 17:43:07 -0700 (PDT)
+Received: from localhost.localdomain ([72.53.229.195])
+        by smtp.gmail.com with ESMTPSA id i14sm14544702qkl.105.2020.06.22.17.43.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 17:43:06 -0700 (PDT)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Janos Farkas <chexum+dev@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH v1 0/2] address romfs performance regression
+Date:   Mon, 22 Jun 2020 20:42:59 -0400
+Message-Id: <20200623004301.26117-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make use of the struct_size() helper instead of an open-coded version
-in order to avoid any potential type mistakes.
+Tree: next-20200613
 
-This code was detected with the help of Coccinelle and, audited and
-fixed manually.
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Deepa Dinamani <deepa.kernel@gmail.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: Janos Farkas <chexum+dev@gmail.com>
+Cc: Jeff Layton <jlayton@kernel.org>
+To: linux-kernel@vger.kernel.org
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- tools/perf/util/cputopo.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Sven Van Asbroeck (2):
+  romfs: use s_blocksize(_bits) if CONFIG_BLOCK
+  romfs: address performance regression since v3.10
 
-diff --git a/tools/perf/util/cputopo.c b/tools/perf/util/cputopo.c
-index 1b52402a8923..1d1b26e39f12 100644
---- a/tools/perf/util/cputopo.c
-+++ b/tools/perf/util/cputopo.c
-@@ -7,6 +7,7 @@
- #include <api/fs/fs.h>
- #include <linux/zalloc.h>
- #include <perf/cpumap.h>
-+#include <linux/overflow.h>
- 
- #include "cputopo.h"
- #include "cpumap.h"
-@@ -321,7 +322,7 @@ struct numa_topology *numa_topology__new(void)
- 
- 	nr = (u32) node_map->nr;
- 
--	tp = zalloc(sizeof(*tp) + sizeof(tp->nodes[0])*nr);
-+	tp = zalloc(struct_size(tp, nodes, nr));
- 	if (!tp)
- 		goto out;
- 
+ fs/romfs/storage.c | 25 ++++++++--------
+ fs/romfs/super.c   | 71 ++++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 78 insertions(+), 18 deletions(-)
+
 -- 
-2.27.0
+2.17.1
 
