@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FDC8206015
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 505D9205F51
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392051AbgFWUjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:39:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34842 "EHLO mail.kernel.org"
+        id S2391239AbgFWUbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:31:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52078 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389762AbgFWUjN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:39:13 -0400
+        id S2391204AbgFWUb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:31:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BF9BF2080C;
-        Tue, 23 Jun 2020 20:39:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 358EF2070E;
+        Tue, 23 Jun 2020 20:31:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944753;
-        bh=P8a4WFjZpL3Kvdj6tkFAa9TA2uxS7qZYDNT4HyyeK+U=;
+        s=default; t=1592944289;
+        bh=VtCfLABy9jFIpwB0CiuNGNBuZRK0+oBQP1HeBXvQ2ps=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Tghslh8udw7HgA4OQ4tMOrT8VmYDQyqdXtXIoK1gh/PvfAM0Y6mT2LQzMKvJu/EWE
-         cpIeH1BC9PeDPDLBBwl6qEKQvb+4zHKn0dNigj1I/J3eOwIHJy9GQ4GVwx37LzqESH
-         oLUSfXmrBiRv9LJ0gh9DXeSDBXdVFwCkF/W/3Q/M=
+        b=yvYaoQyBy/S8txccoQ0a9n7aOTZodDfqeRVUFtXS5mYcPpRZz5dEqW5RtkffI2pe5
+         05hwTca/3gNy45ZVvTmLDtxRENp4QIMU2DjGt27+aplibW7jUwPH0Yh5o0aKt7c8Vc
+         9Z4ucA2jTez13UEpqKdynNwTaxZxfYfj2NGaVI+Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        stable@vger.kernel.org, dihu <anny.hu@linux.alibaba.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 112/206] x86/apic: Make TSC deadline timer detection message visible
-Date:   Tue, 23 Jun 2020 21:57:20 +0200
-Message-Id: <20200623195322.450511624@linuxfoundation.org>
+Subject: [PATCH 5.4 247/314] bpf/sockmap: Fix kernel panic at __tcp_bpf_recvmsg
+Date:   Tue, 23 Jun 2020 21:57:22 +0200
+Message-Id: <20200623195350.731188809@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +46,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: dihu <anny.hu@linux.alibaba.com>
 
-[ Upstream commit de308d1815c9e8fe602a958c5c76142ff6501d75 ]
+[ Upstream commit 487082fb7bd2a32b66927d2b22e3a81b072b44f0 ]
 
-The commit
+When user application calls read() with MSG_PEEK flag to read data
+of bpf sockmap socket, kernel panic happens at
+__tcp_bpf_recvmsg+0x12c/0x350. sk_msg is not removed from ingress_msg
+queue after read out under MSG_PEEK flag is set. Because it's not
+judged whether sk_msg is the last msg of ingress_msg queue, the next
+sk_msg may be the head of ingress_msg queue, whose memory address of
+sg page is invalid. So it's necessary to add check codes to prevent
+this problem.
 
-  c84cb3735fd5 ("x86/apic: Move TSC deadline timer debug printk")
+[20759.125457] BUG: kernel NULL pointer dereference, address:
+0000000000000008
+[20759.132118] CPU: 53 PID: 51378 Comm: envoy Tainted: G            E
+5.4.32 #1
+[20759.140890] Hardware name: Inspur SA5212M4/YZMB-00370-109, BIOS
+4.1.12 06/18/2017
+[20759.149734] RIP: 0010:copy_page_to_iter+0xad/0x300
+[20759.270877] __tcp_bpf_recvmsg+0x12c/0x350
+[20759.276099] tcp_bpf_recvmsg+0x113/0x370
+[20759.281137] inet_recvmsg+0x55/0xc0
+[20759.285734] __sys_recvfrom+0xc8/0x130
+[20759.290566] ? __audit_syscall_entry+0x103/0x130
+[20759.296227] ? syscall_trace_enter+0x1d2/0x2d0
+[20759.301700] ? __audit_syscall_exit+0x1e4/0x290
+[20759.307235] __x64_sys_recvfrom+0x24/0x30
+[20759.312226] do_syscall_64+0x55/0x1b0
+[20759.316852] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-removed the message which said that the deadline timer was enabled.
-It added a pr_debug() message which is issued when deadline timer
-validation succeeds.
-
-Well, issued only when CONFIG_DYNAMIC_DEBUG is enabled - otherwise
-pr_debug() calls get optimized away if DEBUG is not defined in the
-compilation unit.
-
-Therefore, make the above message pr_info() so that it is visible in
-dmesg.
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200525104218.27018-1-bp@alien8.de
+Signed-off-by: dihu <anny.hu@linux.alibaba.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+Link: https://lore.kernel.org/bpf/20200605084625.9783-1-anny.hu@linux.alibaba.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/apic/apic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv4/tcp_bpf.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 53dc8492f02ff..e9456a2eef585 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2024,7 +2024,7 @@ void __init init_apic_mappings(void)
- 	unsigned int new_apicid;
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index 69b0254083904..ad9f382027311 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -96,6 +96,9 @@ int __tcp_bpf_recvmsg(struct sock *sk, struct sk_psock *psock,
+ 		} while (i != msg_rx->sg.end);
  
- 	if (apic_validate_deadline_timer())
--		pr_debug("TSC deadline timer available\n");
-+		pr_info("TSC deadline timer available\n");
- 
- 	if (x2apic_mode) {
- 		boot_cpu_physical_apicid = read_apic_id();
+ 		if (unlikely(peek)) {
++			if (msg_rx == list_last_entry(&psock->ingress_msg,
++						      struct sk_msg, list))
++				break;
+ 			msg_rx = list_next_entry(msg_rx, list);
+ 			continue;
+ 		}
 -- 
 2.25.1
 
