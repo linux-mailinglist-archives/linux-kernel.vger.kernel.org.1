@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83E98206053
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38ABC2060A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392355AbgFWUlh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:41:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37912 "EHLO mail.kernel.org"
+        id S2392723AbgFWUpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:45:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42136 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392328AbgFWUl1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:41:27 -0400
+        id S2392615AbgFWUot (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:44:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BB1BF20702;
-        Tue, 23 Jun 2020 20:41:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B38E621927;
+        Tue, 23 Jun 2020 20:44:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944887;
-        bh=ST7I5Qr5aRpP417BVZyF0nxV9j9clDaxUtqZypHbO90=;
+        s=default; t=1592945090;
+        bh=/IpTzBkDfJ4lupPf7oD6qJgqnHI+D4xLBUJjRnYvZJs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hCGeYNU8aOsuN1Yt+98uFYeyg0IgvoMT+ZFAwynfr89MVkRcYEb7KfjoonPuEsvUz
-         UEe7me66e/3a0qAALdKdc7y0s18bmpkIIsiS587SXOV8ShRGmQq3rz8rIGueddc5O4
-         Ondy2rI1oAw1nIfOW8fbIIbcju8mrxpFckkjGYdg=
+        b=f1cHMmZWdATTOTe0NwpwZpNrFSWmDvCkfTpHJJ9b7lh8z0CRTRay48O9fKDkalySU
+         4kIuDXRoE67XI0nQ+hWnLRSxIpOrMgHt2QiBSo0TJyxCk07X9qGxaOIN5HZ7MQWTZJ
+         ethJdOVNCe/qe1qGJT8e8jOtiwJ81LPVkAbN3dp0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tero Kristo <t-kristo@ti.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suman Anna <s-anna@ti.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 133/206] crypto: omap-sham - add proper load balancing support for multicore
-Date:   Tue, 23 Jun 2020 21:57:41 +0200
-Message-Id: <20200623195323.524648188@linuxfoundation.org>
+Subject: [PATCH 4.14 007/136] remoteproc: Fix IDR initialisation in rproc_alloc()
+Date:   Tue, 23 Jun 2020 21:57:43 +0200
+Message-Id: <20200623195303.982139803@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
+References: <20200623195303.601828702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,167 +46,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tero Kristo <t-kristo@ti.com>
+From: Alex Elder <elder@linaro.org>
 
-[ Upstream commit 281c377872ff5d15d80df25fc4df02d2676c7cde ]
+[ Upstream commit 6442df49400b466431979e7634849a464a5f1861 ]
 
-The current implementation of the multiple accelerator core support for
-OMAP SHA does not work properly. It always picks up the first probed
-accelerator core if this is available, and rest of the book keeping also
-gets confused if there are two cores available. Add proper load
-balancing support for SHA, and also fix any bugs related to the
-multicore support while doing it.
+If ida_simple_get() returns an error when called in rproc_alloc(),
+put_device() is called to clean things up.  By this time the rproc
+device type has been assigned, with rproc_type_release() as the
+release function.
 
-Signed-off-by: Tero Kristo <t-kristo@ti.com>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+The first thing rproc_type_release() does is call:
+    idr_destroy(&rproc->notifyids);
+
+But at the time the ida_simple_get() call is made, the notifyids
+field in the remoteproc structure has not been initialized.
+
+I'm not actually sure this case causes an observable problem, but
+it's incorrect.  Fix this by initializing the notifyids field before
+calling ida_simple_get() in rproc_alloc().
+
+Fixes: b5ab5e24e960 ("remoteproc: maintain a generic child device for each rproc")
+Signed-off-by: Alex Elder <elder@linaro.org>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Reviewed-by: Suman Anna <s-anna@ti.com>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Link: https://lore.kernel.org/r/20200415204858.2448-2-mathieu.poirier@linaro.org
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/omap-sham.c | 64 ++++++++++++++++++--------------------
- 1 file changed, 31 insertions(+), 33 deletions(-)
+ drivers/remoteproc/remoteproc_core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/crypto/omap-sham.c b/drivers/crypto/omap-sham.c
-index 0641185bd82f9..2faaa4069cdd8 100644
---- a/drivers/crypto/omap-sham.c
-+++ b/drivers/crypto/omap-sham.c
-@@ -168,8 +168,6 @@ struct omap_sham_hmac_ctx {
- };
+diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+index 8f4fa1a52f057..d6372470e5bea 100644
+--- a/drivers/remoteproc/remoteproc_core.c
++++ b/drivers/remoteproc/remoteproc_core.c
+@@ -1432,6 +1432,7 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
+ 	rproc->dev.type = &rproc_type;
+ 	rproc->dev.class = &rproc_class;
+ 	rproc->dev.driver_data = rproc;
++	idr_init(&rproc->notifyids);
  
- struct omap_sham_ctx {
--	struct omap_sham_dev	*dd;
+ 	/* Assign a unique device index and name */
+ 	rproc->index = ida_simple_get(&rproc_dev_index, 0, 0, GFP_KERNEL);
+@@ -1450,8 +1451,6 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
+ 
+ 	mutex_init(&rproc->lock);
+ 
+-	idr_init(&rproc->notifyids);
 -
- 	unsigned long		flags;
- 
- 	/* fallback stuff */
-@@ -921,27 +919,35 @@ static int omap_sham_update_dma_stop(struct omap_sham_dev *dd)
- 	return 0;
- }
- 
-+struct omap_sham_dev *omap_sham_find_dev(struct omap_sham_reqctx *ctx)
-+{
-+	struct omap_sham_dev *dd;
-+
-+	if (ctx->dd)
-+		return ctx->dd;
-+
-+	spin_lock_bh(&sham.lock);
-+	dd = list_first_entry(&sham.dev_list, struct omap_sham_dev, list);
-+	list_move_tail(&dd->list, &sham.dev_list);
-+	ctx->dd = dd;
-+	spin_unlock_bh(&sham.lock);
-+
-+	return dd;
-+}
-+
- static int omap_sham_init(struct ahash_request *req)
- {
- 	struct crypto_ahash *tfm = crypto_ahash_reqtfm(req);
- 	struct omap_sham_ctx *tctx = crypto_ahash_ctx(tfm);
- 	struct omap_sham_reqctx *ctx = ahash_request_ctx(req);
--	struct omap_sham_dev *dd = NULL, *tmp;
-+	struct omap_sham_dev *dd;
- 	int bs = 0;
- 
--	spin_lock_bh(&sham.lock);
--	if (!tctx->dd) {
--		list_for_each_entry(tmp, &sham.dev_list, list) {
--			dd = tmp;
--			break;
--		}
--		tctx->dd = dd;
--	} else {
--		dd = tctx->dd;
--	}
--	spin_unlock_bh(&sham.lock);
-+	ctx->dd = NULL;
- 
--	ctx->dd = dd;
-+	dd = omap_sham_find_dev(ctx);
-+	if (!dd)
-+		return -ENODEV;
- 
- 	ctx->flags = 0;
- 
-@@ -1191,8 +1197,7 @@ err1:
- static int omap_sham_enqueue(struct ahash_request *req, unsigned int op)
- {
- 	struct omap_sham_reqctx *ctx = ahash_request_ctx(req);
--	struct omap_sham_ctx *tctx = crypto_tfm_ctx(req->base.tfm);
--	struct omap_sham_dev *dd = tctx->dd;
-+	struct omap_sham_dev *dd = ctx->dd;
- 
- 	ctx->op = op;
- 
-@@ -1202,7 +1207,7 @@ static int omap_sham_enqueue(struct ahash_request *req, unsigned int op)
- static int omap_sham_update(struct ahash_request *req)
- {
- 	struct omap_sham_reqctx *ctx = ahash_request_ctx(req);
--	struct omap_sham_dev *dd = ctx->dd;
-+	struct omap_sham_dev *dd = omap_sham_find_dev(ctx);
- 
- 	if (!req->nbytes)
- 		return 0;
-@@ -1307,21 +1312,8 @@ static int omap_sham_setkey(struct crypto_ahash *tfm, const u8 *key,
- 	struct omap_sham_hmac_ctx *bctx = tctx->base;
- 	int bs = crypto_shash_blocksize(bctx->shash);
- 	int ds = crypto_shash_digestsize(bctx->shash);
--	struct omap_sham_dev *dd = NULL, *tmp;
- 	int err, i;
- 
--	spin_lock_bh(&sham.lock);
--	if (!tctx->dd) {
--		list_for_each_entry(tmp, &sham.dev_list, list) {
--			dd = tmp;
--			break;
--		}
--		tctx->dd = dd;
--	} else {
--		dd = tctx->dd;
--	}
--	spin_unlock_bh(&sham.lock);
--
- 	err = crypto_shash_setkey(tctx->fallback, key, keylen);
- 	if (err)
- 		return err;
-@@ -1339,7 +1331,7 @@ static int omap_sham_setkey(struct crypto_ahash *tfm, const u8 *key,
- 
- 	memset(bctx->ipad + keylen, 0, bs - keylen);
- 
--	if (!test_bit(FLAGS_AUTO_XOR, &dd->flags)) {
-+	if (!test_bit(FLAGS_AUTO_XOR, &sham.flags)) {
- 		memcpy(bctx->opad, bctx->ipad, bs);
- 
- 		for (i = 0; i < bs; i++) {
-@@ -2142,6 +2134,7 @@ static int omap_sham_probe(struct platform_device *pdev)
- 	}
- 
- 	dd->flags |= dd->pdata->flags;
-+	sham.flags |= dd->pdata->flags;
- 
- 	pm_runtime_use_autosuspend(dev);
- 	pm_runtime_set_autosuspend_delay(dev, DEFAULT_AUTOSUSPEND_DELAY);
-@@ -2169,6 +2162,9 @@ static int omap_sham_probe(struct platform_device *pdev)
- 	spin_unlock(&sham.lock);
- 
- 	for (i = 0; i < dd->pdata->algs_info_size; i++) {
-+		if (dd->pdata->algs_info[i].registered)
-+			break;
-+
- 		for (j = 0; j < dd->pdata->algs_info[i].size; j++) {
- 			struct ahash_alg *alg;
- 
-@@ -2220,9 +2216,11 @@ static int omap_sham_remove(struct platform_device *pdev)
- 	list_del(&dd->list);
- 	spin_unlock(&sham.lock);
- 	for (i = dd->pdata->algs_info_size - 1; i >= 0; i--)
--		for (j = dd->pdata->algs_info[i].registered - 1; j >= 0; j--)
-+		for (j = dd->pdata->algs_info[i].registered - 1; j >= 0; j--) {
- 			crypto_unregister_ahash(
- 					&dd->pdata->algs_info[i].algs_list[j]);
-+			dd->pdata->algs_info[i].registered--;
-+		}
- 	tasklet_kill(&dd->done_task);
- 	pm_runtime_disable(&pdev->dev);
- 
+ 	INIT_LIST_HEAD(&rproc->carveouts);
+ 	INIT_LIST_HEAD(&rproc->mappings);
+ 	INIT_LIST_HEAD(&rproc->traces);
 -- 
 2.25.1
 
