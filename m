@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C36B020639E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2979A20631C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:28:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390998AbgFWU3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:29:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49450 "EHLO mail.kernel.org"
+        id S2389514AbgFWURO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:17:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389433AbgFWU30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:29:26 -0400
+        id S2388879AbgFWURE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:17:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8C4B62064B;
-        Tue, 23 Jun 2020 20:29:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E36C2080C;
+        Tue, 23 Jun 2020 20:17:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944166;
-        bh=ycKibgpvqpaTzDGa1RwVCoCM+vNuXe2xAOkllgyZWxM=;
+        s=default; t=1592943424;
+        bh=ua2CwIbuX9rW6cSbfOZaPkhnt2NKjBdgLpNFabwYfcQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jLWoExXWj4N+mh2rY77JF9+id9ET6fnRjxU1s84Dvy8rwhPoh7lZehdmmuf6L2j0C
-         Pn+iz6zyA2jrduIpLFkfOg5GEp4P3+59ZlMG1QkXitvYncueSIB35VTEvp2+IxeIXu
-         jndEvvm2T4V8NHlX3Y3N/Ez6AL03j2fEfSzGe+j8=
+        b=LXF/bVh8aXbnNBfJQq+ICqkPWucdcqQaQg/Y3yInOCaJmZag2siCzdDY/KE46GuSQ
+         UafWRpKg0okj7Mmce+kx6PgA7G2u8uym0sZgUhqZDoNdiMXBS7kkjuoNTPb5fAKAkO
+         0HPiorbqWMfITvIy0EwYNrqEmIzg7y4dI2/hcGFc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Christophe Leroy <christophe.leroy@c-s.fr>,
-        Qian Cai <cai@lca.pw>, Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Tobias Klauser <tklauser@distanz.ch>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andriin@fb.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 168/314] powerpc/64s/pgtable: fix an undefined behaviour
-Date:   Tue, 23 Jun 2020 21:56:03 +0200
-Message-Id: <20200623195346.895059149@linuxfoundation.org>
+Subject: [PATCH 5.7 369/477] tools, bpftool: Fix memory leak in codegen error cases
+Date:   Tue, 23 Jun 2020 21:56:06 +0200
+Message-Id: <20200623195424.972829781@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
+References: <20200623195407.572062007@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,77 +45,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <cai@lca.pw>
+From: Tobias Klauser <tklauser@distanz.ch>
 
-[ Upstream commit c2e929b18cea6cbf71364f22d742d9aad7f4677a ]
+[ Upstream commit d4060ac969563113101c79433f2ae005feca1c29 ]
 
-Booting a power9 server with hash MMU could trigger an undefined
-behaviour because pud_offset(p4d, 0) will do,
+Free the memory allocated for the template on error paths in function
+codegen.
 
-0 >> (PAGE_SHIFT:16 + PTE_INDEX_SIZE:8 + H_PMD_INDEX_SIZE:10)
-
-Fix it by converting pud_index() and friends to static inline
-functions.
-
-UBSAN: shift-out-of-bounds in arch/powerpc/mm/ptdump/ptdump.c:282:15
-shift exponent 34 is too large for 32-bit type 'int'
-CPU: 6 PID: 1 Comm: swapper/0 Not tainted 5.6.0-rc4-next-20200303+ #13
-Call Trace:
-dump_stack+0xf4/0x164 (unreliable)
-ubsan_epilogue+0x18/0x78
-__ubsan_handle_shift_out_of_bounds+0x160/0x21c
-walk_pagetables+0x2cc/0x700
-walk_pud at arch/powerpc/mm/ptdump/ptdump.c:282
-(inlined by) walk_pagetables at arch/powerpc/mm/ptdump/ptdump.c:311
-ptdump_check_wx+0x8c/0xf0
-mark_rodata_ro+0x48/0x80
-kernel_init+0x74/0x194
-ret_from_kernel_thread+0x5c/0x74
-
-Suggested-by: Christophe Leroy <christophe.leroy@c-s.fr>
-Signed-off-by: Qian Cai <cai@lca.pw>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Reviewed-by: Christophe Leroy <christophe.leroy@c-s.fr>
-Link: https://lore.kernel.org/r/20200306044852.3236-1-cai@lca.pw
+Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Andrii Nakryiko <andriin@fb.com>
+Link: https://lore.kernel.org/bpf/20200610130804.21423-1-tklauser@distanz.ch
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/include/asm/book3s/64/pgtable.h | 23 ++++++++++++++++----
- 1 file changed, 19 insertions(+), 4 deletions(-)
+ tools/bpf/bpftool/gen.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
-index a143d394ff46f..e1eb8aa9cfbbb 100644
---- a/arch/powerpc/include/asm/book3s/64/pgtable.h
-+++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
-@@ -998,10 +998,25 @@ extern struct page *pgd_page(pgd_t pgd);
- #define pud_page_vaddr(pud)	__va(pud_val(pud) & ~PUD_MASKED_BITS)
- #define pgd_page_vaddr(pgd)	__va(pgd_val(pgd) & ~PGD_MASKED_BITS)
- 
--#define pgd_index(address) (((address) >> (PGDIR_SHIFT)) & (PTRS_PER_PGD - 1))
--#define pud_index(address) (((address) >> (PUD_SHIFT)) & (PTRS_PER_PUD - 1))
--#define pmd_index(address) (((address) >> (PMD_SHIFT)) & (PTRS_PER_PMD - 1))
--#define pte_index(address) (((address) >> (PAGE_SHIFT)) & (PTRS_PER_PTE - 1))
-+static inline unsigned long pgd_index(unsigned long address)
-+{
-+	return (address >> PGDIR_SHIFT) & (PTRS_PER_PGD - 1);
-+}
-+
-+static inline unsigned long pud_index(unsigned long address)
-+{
-+	return (address >> PUD_SHIFT) & (PTRS_PER_PUD - 1);
-+}
-+
-+static inline unsigned long pmd_index(unsigned long address)
-+{
-+	return (address >> PMD_SHIFT) & (PTRS_PER_PMD - 1);
-+}
-+
-+static inline unsigned long pte_index(unsigned long address)
-+{
-+	return (address >> PAGE_SHIFT) & (PTRS_PER_PTE - 1);
-+}
- 
- /*
-  * Find an entry in a page-table-directory.  We combine the address region
+diff --git a/tools/bpf/bpftool/gen.c b/tools/bpf/bpftool/gen.c
+index f8113b3646f52..f5960b48c8615 100644
+--- a/tools/bpf/bpftool/gen.c
++++ b/tools/bpf/bpftool/gen.c
+@@ -225,6 +225,7 @@ static int codegen(const char *template, ...)
+ 		} else {
+ 			p_err("unrecognized character at pos %td in template '%s'",
+ 			      src - template - 1, template);
++			free(s);
+ 			return -EINVAL;
+ 		}
+ 	}
+@@ -235,6 +236,7 @@ static int codegen(const char *template, ...)
+ 			if (*src != '\t') {
+ 				p_err("not enough tabs at pos %td in template '%s'",
+ 				      src - template - 1, template);
++				free(s);
+ 				return -EINVAL;
+ 			}
+ 		}
 -- 
 2.25.1
 
