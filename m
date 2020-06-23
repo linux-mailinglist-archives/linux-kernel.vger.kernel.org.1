@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BB5205F48
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1945D20600D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390955AbgFWUbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:31:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51650 "EHLO mail.kernel.org"
+        id S2392017AbgFWUjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:39:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34648 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388271AbgFWUbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:31:11 -0400
+        id S2391454AbgFWUjC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:39:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DD392064B;
-        Tue, 23 Jun 2020 20:31:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8558D2168B;
+        Tue, 23 Jun 2020 20:39:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944271;
-        bh=wp2eEhecngahC/65rFUimCdQA1SXjWVXATveRRM+YOQ=;
+        s=default; t=1592944743;
+        bh=XcBV+wjKIIA/Pn/o9fzLm7Oh5APquGeFo8EkXS09APM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ixUw6Vpm5bJH+fkweIYWdQkthqBdFvOeIcSO9mXL51ekKah4ybGPXz4Z9Ki6JyA2o
-         cy/jMtN4Lmu/LEpKgdAbqIES/s4KNUtu9EmmDmoLsg5nF0Oz7rQLe+S+E55qozO6yD
-         Un30T1rGGXVRQpfzdPxTNuRYmDu5C3NcSjr8126M=
+        b=gdKjkTuIZ2I1Vxnf2E+/nFxvSA0U2rbh30nujZw6ZnPvZgLqicVcjzy956D6f8ZYl
+         Qi8qEwKidvjuPlXo5n0wlMwINjNgxtNk1S5h7iBJKFREJ7teeIInpxE4CAWHyosMqS
+         1A/PZlzhYhlrbrt1UWoPtt4CtTqq6xToO2d7kg/M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tanner Love <tannerlove@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 240/314] selftests/net: in timestamping, strncpy needs to preserve null byte
-Date:   Tue, 23 Jun 2020 21:57:15 +0200
-Message-Id: <20200623195350.404510408@linuxfoundation.org>
+Subject: [PATCH 4.19 108/206] usb: gadget: lpc32xx_udc: dont dereference ep pointer before null check
+Date:   Tue, 23 Jun 2020 21:57:16 +0200
+Message-Id: <20200623195322.259906924@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,63 +44,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: tannerlove <tannerlove@google.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 8027bc0307ce59759b90679fa5d8b22949586d20 ]
+[ Upstream commit eafa80041645cd7604c4357b1a0cd4a3c81f2227 ]
 
-If user passed an interface option longer than 15 characters, then
-device.ifr_name and hwtstamp.ifr_name became non-null-terminated
-strings. The compiler warned about this:
+Currently pointer ep is being dereferenced before it is null checked
+leading to a null pointer dereference issue.  Fix this by only assigning
+pointer udc once ep is known to be not null.  Also remove a debug
+message that requires a valid udc which may not be possible at that
+point.
 
-timestamping.c:353:2: warning: ‘strncpy’ specified bound 16 equals \
-destination size [-Wstringop-truncation]
-  353 |  strncpy(device.ifr_name, interface, sizeof(device.ifr_name));
-
-Fixes: cb9eff097831 ("net: new user space API for time stamping of incoming and outgoing packets")
-Signed-off-by: Tanner Love <tannerlove@google.com>
-Acked-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Addresses-Coverity: ("Dereference before null check")
+Fixes: 24a28e428351 ("USB: gadget driver for LPC32xx")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/networking/timestamping/timestamping.c   | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/udc/lpc32xx_udc.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/networking/timestamping/timestamping.c b/tools/testing/selftests/networking/timestamping/timestamping.c
-index aca3491174a1e..f4bb4fef0f399 100644
---- a/tools/testing/selftests/networking/timestamping/timestamping.c
-+++ b/tools/testing/selftests/networking/timestamping/timestamping.c
-@@ -313,10 +313,16 @@ int main(int argc, char **argv)
- 	int val;
- 	socklen_t len;
- 	struct timeval next;
-+	size_t if_len;
+diff --git a/drivers/usb/gadget/udc/lpc32xx_udc.c b/drivers/usb/gadget/udc/lpc32xx_udc.c
+index 21921db068f6d..cf56819f16e4c 100644
+--- a/drivers/usb/gadget/udc/lpc32xx_udc.c
++++ b/drivers/usb/gadget/udc/lpc32xx_udc.c
+@@ -1602,17 +1602,17 @@ static int lpc32xx_ep_enable(struct usb_ep *_ep,
+ 			     const struct usb_endpoint_descriptor *desc)
+ {
+ 	struct lpc32xx_ep *ep = container_of(_ep, struct lpc32xx_ep, ep);
+-	struct lpc32xx_udc *udc = ep->udc;
++	struct lpc32xx_udc *udc;
+ 	u16 maxpacket;
+ 	u32 tmp;
+ 	unsigned long flags;
  
- 	if (argc < 2)
- 		usage(0);
- 	interface = argv[1];
-+	if_len = strlen(interface);
-+	if (if_len >= IFNAMSIZ) {
-+		printf("interface name exceeds IFNAMSIZ\n");
-+		exit(1);
-+	}
+ 	/* Verify EP data */
+ 	if ((!_ep) || (!ep) || (!desc) ||
+-	    (desc->bDescriptorType != USB_DT_ENDPOINT)) {
+-		dev_dbg(udc->dev, "bad ep or descriptor\n");
++	    (desc->bDescriptorType != USB_DT_ENDPOINT))
+ 		return -EINVAL;
+-	}
++
++	udc = ep->udc;
+ 	maxpacket = usb_endpoint_maxp(desc);
+ 	if ((maxpacket == 0) || (maxpacket > ep->maxpacket)) {
+ 		dev_dbg(udc->dev, "bad ep descriptor's packet size\n");
+@@ -1860,7 +1860,7 @@ static int lpc32xx_ep_dequeue(struct usb_ep *_ep, struct usb_request *_req)
+ static int lpc32xx_ep_set_halt(struct usb_ep *_ep, int value)
+ {
+ 	struct lpc32xx_ep *ep = container_of(_ep, struct lpc32xx_ep, ep);
+-	struct lpc32xx_udc *udc = ep->udc;
++	struct lpc32xx_udc *udc;
+ 	unsigned long flags;
  
- 	for (i = 2; i < argc; i++) {
- 		if (!strcasecmp(argv[i], "SO_TIMESTAMP"))
-@@ -350,12 +356,12 @@ int main(int argc, char **argv)
- 		bail("socket");
+ 	if ((!ep) || (ep->hwep_num <= 1))
+@@ -1870,6 +1870,7 @@ static int lpc32xx_ep_set_halt(struct usb_ep *_ep, int value)
+ 	if (ep->is_in)
+ 		return -EAGAIN;
  
- 	memset(&device, 0, sizeof(device));
--	strncpy(device.ifr_name, interface, sizeof(device.ifr_name));
-+	memcpy(device.ifr_name, interface, if_len + 1);
- 	if (ioctl(sock, SIOCGIFADDR, &device) < 0)
- 		bail("getting interface IP address");
++	udc = ep->udc;
+ 	spin_lock_irqsave(&udc->lock, flags);
  
- 	memset(&hwtstamp, 0, sizeof(hwtstamp));
--	strncpy(hwtstamp.ifr_name, interface, sizeof(hwtstamp.ifr_name));
-+	memcpy(hwtstamp.ifr_name, interface, if_len + 1);
- 	hwtstamp.ifr_data = (void *)&hwconfig;
- 	memset(&hwconfig, 0, sizeof(hwconfig));
- 	hwconfig.tx_type =
+ 	if (value == 1) {
 -- 
 2.25.1
 
