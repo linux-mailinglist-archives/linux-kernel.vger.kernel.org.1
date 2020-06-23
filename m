@@ -2,76 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88A0A206870
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 01:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F7920686C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 01:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388330AbgFWXap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 19:30:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387769AbgFWXak (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 19:30:40 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88933C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 16:30:40 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id b92so175228pjc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 16:30:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=89qgK7zoxJ0CxIlIbUd135zUy4sjIO0yIPQYW2bQXdo=;
-        b=C6iShYJWie7aVa8GVkryo9BBNF5E6UroklqVgSNbUnmSrvA/2+VZNYJpL3shXp5iRK
-         YOa71XUddAxmNPhn1KQICzn6sn8ghlmd8u8IPSmWoIj600lgmpjGm/BJzz2+0x6nymui
-         xrNQR0cWvVWYaYEihMFcAHbwekRqpAHoivNOD0YJpsLbMqrfhnomGqCk+9sqB/vNzExS
-         xcLmA6sRW5m1GbHyQUampD5E8um9yye/cBHTyQ9xOryjd+talV+Xz97xMPw5blS8EJMV
-         g43wyqAInEAQSVWC5w90SsQ8Hu3XeyKxUd+rcxLhypmbpHewByKemSeuEd4RuNost1ls
-         W9SA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=89qgK7zoxJ0CxIlIbUd135zUy4sjIO0yIPQYW2bQXdo=;
-        b=Lue0S8knD63rUG2MdvPQFGukE4jIu1uWEQUJSHsx2TyrqtXECLdnA3x+ATmEFiOIBt
-         6P80NEbR7HE457CvRdxoOYVbf4Ng+ltsnQgg4kQxM0Cy3coR6D/8wdPnreBR0cE0rMRk
-         6vfegJt2EpTf8T44OTCm3qqbgO0DLK3Jten3hbHHFs1l146c0aM9HjFNKpQQjQ8IOmnC
-         ney874BrGc/XYquIhmZzjrznnoBcLSosGBmBjWlNqSLndU5GaHXPjQAshxsedmpB3hRG
-         iBAP1euacW4s65fFfIPhTxZC7lL9FsiaYMOrFsxu3qz9Kj72fmbc5721z6AKHW/Oss2L
-         QnrA==
-X-Gm-Message-State: AOAM532irlp37aQ8/mLIF9Mk814iAmfkSITr1d5a2EjfaY+Iz+YAcoPt
-        CQleUiWh9U9bG79s+QsPusRuZkoL37I=
-X-Google-Smtp-Source: ABdhPJxaKkxXXN2/KWbYMt8R19keUrj+/zo74qexOzyZbqDPwyo6rkVti8N8GMoMRPk/tKDyOyMfaw==
-X-Received: by 2002:a17:90a:7608:: with SMTP id s8mr27397634pjk.159.1592955039921;
-        Tue, 23 Jun 2020 16:30:39 -0700 (PDT)
-Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
-        by smtp.gmail.com with ESMTPSA id u35sm14655786pgm.48.2020.06.23.16.30.39
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 23 Jun 2020 16:30:39 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 16:30:11 -0700
-From:   Nicolin Chen <nicoleotsuka@gmail.com>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] ASoC: fsl-asoc-card: Add WM8524 support
-Message-ID: <20200623233003.GA28038@Asurada-Nvidia>
-References: <1592895167-30483-1-git-send-email-shengjiu.wang@nxp.com>
+        id S2388181AbgFWXa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 19:30:29 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:60782 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387779AbgFWXaX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 19:30:23 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1jnsMq-0002Nq-2j; Wed, 24 Jun 2020 01:30:16 +0200
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     jic23@kernel.org
+Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
+        heiko@sntech.de, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        xxm@rock-chips.com,
+        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+Subject: [PATCH v6 3/3] iio: adc: rockchip_saradc: Add support iio buffers
+Date:   Wed, 24 Jun 2020 01:30:11 +0200
+Message-Id: <20200623233011.2319035-3-heiko@sntech.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200623233011.2319035-1-heiko@sntech.de>
+References: <20200623233011.2319035-1-heiko@sntech.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1592895167-30483-1-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 02:52:46PM +0800, Shengjiu Wang wrote:
-> WM8524 only supports playback mode, and only works at
-> slave mode.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+From: Simon Xue <xxm@rock-chips.com>
 
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
+Add the ability to also support access via (triggered) buffers
+next to the existing direct mode.
+
+Device in question is the Odroid Go Advance that connects a joystick
+to two of the saradc channels for X and Y axis and the new (and still
+pending) adc joystick driver of course wants to use triggered buffers
+from the iio subsystem.
+
+Signed-off-by: Simon Xue <xxm@rock-chips.com>
+[some simplifications and added commit description]
+Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+---
+changes in v6:
+- remove unneeded header
+- remove unneeded blank line change
+changes in v5:
+- use IIO_CPU instead of IIO_LE as suggested by Peter
+changes in v4:
+- comment for the channel-num sanity check in probe
+- move to struct for data+timestamp, that way we get the 8-byte
+  alignment automatically - checked by comparing sizeof results
+changes in v3:
+- split buffer struct into values and timestamp area similar to dln2-adc
+  and make sure timestamp gets 8-byte aligned - ALIGN uses 4 as it aligns
+  u16 elements not bytes - hopefully I got it right this time ;-)
+changes in v2:
+- use devm_iio_triggered_buffer_setup
+- calculate data array size from channel number (curtesy of at91-sama5d2_adc)
+
+ drivers/iio/adc/Kconfig           |   2 +
+ drivers/iio/adc/rockchip_saradc.c | 147 +++++++++++++++++++++++-------
+ 2 files changed, 114 insertions(+), 35 deletions(-)
+
+diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
+index 5b57437cef75..ddf830267e24 100644
+--- a/drivers/iio/adc/Kconfig
++++ b/drivers/iio/adc/Kconfig
+@@ -865,6 +865,8 @@ config ROCKCHIP_SARADC
+ 	tristate "Rockchip SARADC driver"
+ 	depends on ARCH_ROCKCHIP || (ARM && COMPILE_TEST)
+ 	depends on RESET_CONTROLLER
++	select IIO_BUFFER
++	select IIO_TRIGGERED_BUFFER
+ 	help
+ 	  Say yes here to build support for the SARADC found in SoCs from
+ 	  Rockchip.
+diff --git a/drivers/iio/adc/rockchip_saradc.c b/drivers/iio/adc/rockchip_saradc.c
+index 5d2e07dc72fd..eb2222c312da 100644
+--- a/drivers/iio/adc/rockchip_saradc.c
++++ b/drivers/iio/adc/rockchip_saradc.c
+@@ -15,7 +15,10 @@
+ #include <linux/delay.h>
+ #include <linux/reset.h>
+ #include <linux/regulator/consumer.h>
++#include <linux/iio/buffer.h>
+ #include <linux/iio/iio.h>
++#include <linux/iio/trigger_consumer.h>
++#include <linux/iio/triggered_buffer.h>
+ 
+ #define SARADC_DATA			0x00
+ 
+@@ -32,9 +35,9 @@
+ #define SARADC_DLY_PU_SOC_MASK		0x3f
+ 
+ #define SARADC_TIMEOUT			msecs_to_jiffies(100)
++#define SARADC_MAX_CHANNELS		6
+ 
+ struct rockchip_saradc_data {
+-	int				num_bits;
+ 	const struct iio_chan_spec	*channels;
+ 	int				num_channels;
+ 	unsigned long			clk_rate;
+@@ -49,8 +52,37 @@ struct rockchip_saradc {
+ 	struct reset_control	*reset;
+ 	const struct rockchip_saradc_data *data;
+ 	u16			last_val;
++	const struct iio_chan_spec *last_chan;
+ };
+ 
++static void rockchip_saradc_power_down(struct rockchip_saradc *info)
++{
++	/* Clear irq & power down adc */
++	writel_relaxed(0, info->regs + SARADC_CTRL);
++}
++
++static int rockchip_saradc_conversion(struct rockchip_saradc *info,
++				   struct iio_chan_spec const *chan)
++{
++	reinit_completion(&info->completion);
++
++	/* 8 clock periods as delay between power up and start cmd */
++	writel_relaxed(8, info->regs + SARADC_DLY_PU_SOC);
++
++	info->last_chan = chan;
++
++	/* Select the channel to be used and trigger conversion */
++	writel(SARADC_CTRL_POWER_CTRL
++			| (chan->channel & SARADC_CTRL_CHN_MASK)
++			| SARADC_CTRL_IRQ_ENABLE,
++		   info->regs + SARADC_CTRL);
++
++	if (!wait_for_completion_timeout(&info->completion, SARADC_TIMEOUT))
++		return -ETIMEDOUT;
++
++	return 0;
++}
++
+ static int rockchip_saradc_read_raw(struct iio_dev *indio_dev,
+ 				    struct iio_chan_spec const *chan,
+ 				    int *val, int *val2, long mask)
+@@ -62,22 +94,11 @@ static int rockchip_saradc_read_raw(struct iio_dev *indio_dev,
+ 	case IIO_CHAN_INFO_RAW:
+ 		mutex_lock(&indio_dev->mlock);
+ 
+-		reinit_completion(&info->completion);
+-
+-		/* 8 clock periods as delay between power up and start cmd */
+-		writel_relaxed(8, info->regs + SARADC_DLY_PU_SOC);
+-
+-		/* Select the channel to be used and trigger conversion */
+-		writel(SARADC_CTRL_POWER_CTRL
+-				| (chan->channel & SARADC_CTRL_CHN_MASK)
+-				| SARADC_CTRL_IRQ_ENABLE,
+-		       info->regs + SARADC_CTRL);
+-
+-		if (!wait_for_completion_timeout(&info->completion,
+-						 SARADC_TIMEOUT)) {
+-			writel_relaxed(0, info->regs + SARADC_CTRL);
++		ret = rockchip_saradc_conversion(info, chan);
++		if (ret) {
++			rockchip_saradc_power_down(info);
+ 			mutex_unlock(&indio_dev->mlock);
+-			return -ETIMEDOUT;
++			return ret;
+ 		}
+ 
+ 		*val = info->last_val;
+@@ -91,7 +112,7 @@ static int rockchip_saradc_read_raw(struct iio_dev *indio_dev,
+ 		}
+ 
+ 		*val = ret / 1000;
+-		*val2 = info->data->num_bits;
++		*val2 = chan->scan_type.realbits;
+ 		return IIO_VAL_FRACTIONAL_LOG2;
+ 	default:
+ 		return -EINVAL;
+@@ -104,10 +125,9 @@ static irqreturn_t rockchip_saradc_isr(int irq, void *dev_id)
+ 
+ 	/* Read value */
+ 	info->last_val = readl_relaxed(info->regs + SARADC_DATA);
+-	info->last_val &= GENMASK(info->data->num_bits - 1, 0);
++	info->last_val &= GENMASK(info->last_chan->scan_type.realbits - 1, 0);
+ 
+-	/* Clear irq & power down adc */
+-	writel_relaxed(0, info->regs + SARADC_CTRL);
++	rockchip_saradc_power_down(info);
+ 
+ 	complete(&info->completion);
+ 
+@@ -118,51 +138,55 @@ static const struct iio_info rockchip_saradc_iio_info = {
+ 	.read_raw = rockchip_saradc_read_raw,
+ };
+ 
+-#define SARADC_CHANNEL(_index, _id) {				\
++#define SARADC_CHANNEL(_index, _id, _res) {			\
+ 	.type = IIO_VOLTAGE,					\
+ 	.indexed = 1,						\
+ 	.channel = _index,					\
+ 	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),		\
+ 	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_SCALE),	\
+ 	.datasheet_name = _id,					\
++	.scan_index = _index,					\
++	.scan_type = {						\
++		.sign = 'u',					\
++		.realbits = _res,				\
++		.storagebits = 16,				\
++		.endianness = IIO_CPU,				\
++	},							\
+ }
+ 
+ static const struct iio_chan_spec rockchip_saradc_iio_channels[] = {
+-	SARADC_CHANNEL(0, "adc0"),
+-	SARADC_CHANNEL(1, "adc1"),
+-	SARADC_CHANNEL(2, "adc2"),
++	SARADC_CHANNEL(0, "adc0", 10),
++	SARADC_CHANNEL(1, "adc1", 10),
++	SARADC_CHANNEL(2, "adc2", 10),
+ };
+ 
+ static const struct rockchip_saradc_data saradc_data = {
+-	.num_bits = 10,
+ 	.channels = rockchip_saradc_iio_channels,
+ 	.num_channels = ARRAY_SIZE(rockchip_saradc_iio_channels),
+ 	.clk_rate = 1000000,
+ };
+ 
+ static const struct iio_chan_spec rockchip_rk3066_tsadc_iio_channels[] = {
+-	SARADC_CHANNEL(0, "adc0"),
+-	SARADC_CHANNEL(1, "adc1"),
++	SARADC_CHANNEL(0, "adc0", 12),
++	SARADC_CHANNEL(1, "adc1", 12),
+ };
+ 
+ static const struct rockchip_saradc_data rk3066_tsadc_data = {
+-	.num_bits = 12,
+ 	.channels = rockchip_rk3066_tsadc_iio_channels,
+ 	.num_channels = ARRAY_SIZE(rockchip_rk3066_tsadc_iio_channels),
+ 	.clk_rate = 50000,
+ };
+ 
+ static const struct iio_chan_spec rockchip_rk3399_saradc_iio_channels[] = {
+-	SARADC_CHANNEL(0, "adc0"),
+-	SARADC_CHANNEL(1, "adc1"),
+-	SARADC_CHANNEL(2, "adc2"),
+-	SARADC_CHANNEL(3, "adc3"),
+-	SARADC_CHANNEL(4, "adc4"),
+-	SARADC_CHANNEL(5, "adc5"),
++	SARADC_CHANNEL(0, "adc0", 10),
++	SARADC_CHANNEL(1, "adc1", 10),
++	SARADC_CHANNEL(2, "adc2", 10),
++	SARADC_CHANNEL(3, "adc3", 10),
++	SARADC_CHANNEL(4, "adc4", 10),
++	SARADC_CHANNEL(5, "adc5", 10),
+ };
+ 
+ static const struct rockchip_saradc_data rk3399_saradc_data = {
+-	.num_bits = 10,
+ 	.channels = rockchip_rk3399_saradc_iio_channels,
+ 	.num_channels = ARRAY_SIZE(rockchip_rk3399_saradc_iio_channels),
+ 	.clk_rate = 1000000,
+@@ -214,6 +238,47 @@ static void rockchip_saradc_regulator_disable(void *data)
+ 	regulator_disable(info->vref);
+ }
+ 
++static irqreturn_t rockchip_saradc_trigger_handler(int irq, void *p)
++{
++	struct iio_poll_func *pf = p;
++	struct iio_dev *i_dev = pf->indio_dev;
++	struct rockchip_saradc *info = iio_priv(i_dev);
++	/*
++	 * @values: each channel takes an u16 value
++	 * @timestamp: will be 8-byte aligned automatically
++	 */
++	struct {
++		u16 values[SARADC_MAX_CHANNELS];
++		int64_t timestamp;
++	} data;
++	int ret;
++	int i, j = 0;
++
++	mutex_lock(&i_dev->mlock);
++
++	for_each_set_bit(i, i_dev->active_scan_mask, i_dev->masklength) {
++		const struct iio_chan_spec *chan = &i_dev->channels[i];
++
++		ret = rockchip_saradc_conversion(info, chan);
++		if (ret) {
++			rockchip_saradc_power_down(info);
++			goto out;
++		}
++
++		data.values[j] = info->last_val;
++		j++;
++	}
++
++	iio_push_to_buffers_with_timestamp(i_dev, &data,
++					   iio_get_time_ns(i_dev));
++out:
++	mutex_unlock(&i_dev->mlock);
++
++	iio_trigger_notify_done(i_dev->trig);
++
++	return IRQ_HANDLED;
++}
++
+ static int rockchip_saradc_probe(struct platform_device *pdev)
+ {
+ 	struct rockchip_saradc *info = NULL;
+@@ -242,6 +307,12 @@ static int rockchip_saradc_probe(struct platform_device *pdev)
+ 
+ 	info->data = match->data;
+ 
++	/* Sanity check for possible later IP variants with more channels */
++	if (info->data->num_channels > SARADC_MAX_CHANNELS) {
++		dev_err(&pdev->dev, "max channels exceeded");
++		return -EINVAL;
++	}
++
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	info->regs = devm_ioremap_resource(&pdev->dev, mem);
+ 	if (IS_ERR(info->regs))
+@@ -357,6 +428,12 @@ static int rockchip_saradc_probe(struct platform_device *pdev)
+ 	indio_dev->channels = info->data->channels;
+ 	indio_dev->num_channels = info->data->num_channels;
+ 
++	ret = devm_iio_triggered_buffer_setup(&indio_dev->dev, indio_dev, NULL,
++					      rockchip_saradc_trigger_handler,
++					      NULL);
++	if (ret)
++		return ret;
++
+ 	ret = devm_iio_device_register(&pdev->dev, indio_dev);
+ 	if (ret)
+ 		return ret;
+-- 
+2.26.2
+
