@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D356C2060A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFEC205F97
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392616AbgFWUot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:44:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42022 "EHLO mail.kernel.org"
+        id S2389699AbgFWUd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:33:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391610AbgFWUoo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:44:44 -0400
+        id S2390263AbgFWUdg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:33:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A29F121927;
-        Tue, 23 Jun 2020 20:44:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61C342080C;
+        Tue, 23 Jun 2020 20:33:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945085;
-        bh=ayWTO8VHzqz9p3VnbCd0mRbHFFuvyRKBUrFM+f6HTXs=;
+        s=default; t=1592944416;
+        bh=BeNoM61Ga5yyRjpP8AmXMwEPB8tRVkJNovcta/xrdv8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mKGmgKtGzoJDViCF58b4Rzp8CO5AAVEiSPaS/jjiT6hSoBW8Xj4CI4OccUFrBuFQQ
-         /AF1hBoayHp2w+FnWM8cDJ4iKcD2iBQOlP604/fvLLiNQCMY8KiR4pDFH9DdcJP7jM
-         gY8ycJiIcOKylYZyQPfmTTCgyP45i8YqhTwsC+LE=
+        b=QWvGS9HW7vm42zK8OlNRyajKkNpY2tqb8W62PHIlm/8q6jjF3SWLf5BkupZSxusOG
+         GHiroROfmDTGpNAjCVC1D5m0gfwV18l3IH5PteyuVqT9UHu44xuYHEaAxN55Xpj8B7
+         8AvhYaGwbpjseAprYB4Ji+yyQN6T9Q85PvDWZuZY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adam Honse <calcprogrammer1@gmail.com>,
-        Jean Delvare <jdelvare@suse.de>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Wolfram Sang <wsa@the-dreams.de>,
+        stable@vger.kernel.org, Zhiqiang Liu <liuzhiqiang26@huawei.com>,
+        Coly Li <colyli@suse.de>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 005/136] i2c: piix4: Detect secondary SMBus controller on AMD AM4 chipsets
+Subject: [PATCH 5.4 266/314] bcache: fix potential deadlock problem in btree_gc_coalesce
 Date:   Tue, 23 Jun 2020 21:57:41 +0200
-Message-Id: <20200623195303.885163523@linuxfoundation.org>
+Message-Id: <20200623195351.663361083@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
-References: <20200623195303.601828702@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,48 +44,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Adam Honse <calcprogrammer1@gmail.com>
+From: Zhiqiang Liu <liuzhiqiang26@huawei.com>
 
-[ Upstream commit f27237c174fd9653033330e4e532cd9d153ce824 ]
+[ Upstream commit be23e837333a914df3f24bf0b32e87b0331ab8d1 ]
 
-The AMD X370 and other AM4 chipsets (A/B/X 3/4/5 parts) and Threadripper
-equivalents have a secondary SMBus controller at I/O port address
-0x0B20.  This bus is used by several manufacturers to control
-motherboard RGB lighting via embedded controllers.  I have been using
-this bus in my OpenRGB project to control the Aura RGB on many
-motherboards and ASRock also uses this bus for their Polychrome RGB
-controller.
+coccicheck reports:
+  drivers/md//bcache/btree.c:1538:1-7: preceding lock on line 1417
 
-I am not aware of any CZ-compatible platforms which do not have the
-second SMBus channel.  All of AMD's AM4- and Threadripper- series
-chipsets that OpenRGB users have tested appear to have this secondary
-bus.  I also noticed this secondary bus is present on older AMD
-platforms including my FM1 home server.
+In btree_gc_coalesce func, if the coalescing process fails, we will goto
+to out_nocoalesce tag directly without releasing new_nodes[i]->write_lock.
+Then, it will cause a deadlock when trying to acquire new_nodes[i]->
+write_lock for freeing new_nodes[i] before return.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=202587
-Signed-off-by: Adam Honse <calcprogrammer1@gmail.com>
-Reviewed-by: Jean Delvare <jdelvare@suse.de>
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Tested-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-Signed-off-by: Wolfram Sang <wsa@the-dreams.de>
+btree_gc_coalesce func details as follows:
+	if alloc new_nodes[i] fails:
+		goto out_nocoalesce;
+	// obtain new_nodes[i]->write_lock
+	mutex_lock(&new_nodes[i]->write_lock)
+	// main coalescing process
+	for (i = nodes - 1; i > 0; --i)
+		[snipped]
+		if coalescing process fails:
+			// Here, directly goto out_nocoalesce
+			 // tag will cause a deadlock
+			goto out_nocoalesce;
+		[snipped]
+	// release new_nodes[i]->write_lock
+	mutex_unlock(&new_nodes[i]->write_lock)
+	// coalesing succ, return
+	return;
+out_nocoalesce:
+	btree_node_free(new_nodes[i])	// free new_nodes[i]
+	// obtain new_nodes[i]->write_lock
+	mutex_lock(&new_nodes[i]->write_lock);
+	// set flag for reuse
+	clear_bit(BTREE_NODE_dirty, &ew_nodes[i]->flags);
+	// release new_nodes[i]->write_lock
+	mutex_unlock(&new_nodes[i]->write_lock);
+
+To fix the problem, we add a new tag 'out_unlock_nocoalesce' for
+releasing new_nodes[i]->write_lock before out_nocoalesce tag. If
+coalescing process fails, we will go to out_unlock_nocoalesce tag
+for releasing new_nodes[i]->write_lock before free new_nodes[i] in
+out_nocoalesce tag.
+
+(Coly Li helps to clean up commit log format.)
+
+Fixes: 2a285686c109816 ("bcache: btree locking rework")
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Signed-off-by: Coly Li <colyli@suse.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-piix4.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/md/bcache/btree.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-piix4.c b/drivers/i2c/busses/i2c-piix4.c
-index 4b81dc231b18f..5345b731bb7cc 100644
---- a/drivers/i2c/busses/i2c-piix4.c
-+++ b/drivers/i2c/busses/i2c-piix4.c
-@@ -960,7 +960,8 @@ static int piix4_probe(struct pci_dev *dev, const struct pci_device_id *id)
- 	}
+diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+index 46a8b5a91c386..3c1109fceb2fb 100644
+--- a/drivers/md/bcache/btree.c
++++ b/drivers/md/bcache/btree.c
+@@ -1442,7 +1442,7 @@ static int btree_gc_coalesce(struct btree *b, struct btree_op *op,
+ 			if (__set_blocks(n1, n1->keys + n2->keys,
+ 					 block_bytes(b->c)) >
+ 			    btree_blocks(new_nodes[i]))
+-				goto out_nocoalesce;
++				goto out_unlock_nocoalesce;
  
- 	if (dev->vendor == PCI_VENDOR_ID_AMD &&
--	    dev->device == PCI_DEVICE_ID_AMD_HUDSON2_SMBUS) {
-+	    (dev->device == PCI_DEVICE_ID_AMD_HUDSON2_SMBUS ||
-+	     dev->device == PCI_DEVICE_ID_AMD_KERNCZ_SMBUS)) {
- 		retval = piix4_setup_sb800(dev, id, 1);
- 	}
+ 			keys = n2->keys;
+ 			/* Take the key of the node we're getting rid of */
+@@ -1471,7 +1471,7 @@ static int btree_gc_coalesce(struct btree *b, struct btree_op *op,
+ 
+ 		if (__bch_keylist_realloc(&keylist,
+ 					  bkey_u64s(&new_nodes[i]->key)))
+-			goto out_nocoalesce;
++			goto out_unlock_nocoalesce;
+ 
+ 		bch_btree_node_write(new_nodes[i], &cl);
+ 		bch_keylist_add(&keylist, &new_nodes[i]->key);
+@@ -1517,6 +1517,10 @@ static int btree_gc_coalesce(struct btree *b, struct btree_op *op,
+ 	/* Invalidated our iterator */
+ 	return -EINTR;
+ 
++out_unlock_nocoalesce:
++	for (i = 0; i < nodes; i++)
++		mutex_unlock(&new_nodes[i]->write_lock);
++
+ out_nocoalesce:
+ 	closure_sync(&cl);
  
 -- 
 2.25.1
