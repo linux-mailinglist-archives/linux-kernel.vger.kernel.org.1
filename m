@@ -2,252 +2,1383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D14CD204851
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 06:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 215642048A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 06:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732305AbgFWEDM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 00:03:12 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:21868 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732241AbgFWEDG (ORCPT
+        id S1728729AbgFWEXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 00:23:11 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:24951 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725986AbgFWEXK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 00:03:06 -0400
-X-UUID: bd2d35281db1495b9f582c8778a958cc-20200623
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=e5gLSl/1mTN2/gkuRR/doutH5GxfcozvGZbTJlualu0=;
-        b=Pr0uOWSWrbSgcGJtlofyCmQ8KXfhY1NFbA6jXTQVfgisYCnCZO9UtqnXZL7Zm1wbgoYuj+wxPu6LxM92eYnQ8i8Wr0XI/YiT+nAV28yJJp6veHxvMsGY+eZc6wdUA0PXDqDU9bKMcVeI1jKp4y/mWK1DDJ+e19+g5NRfn+2zerQ=;
-X-UUID: bd2d35281db1495b9f582c8778a958cc-20200623
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw02.mediatek.com
-        (envelope-from <neal.liu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 2006745245; Tue, 23 Jun 2020 12:02:58 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 23 Jun 2020 12:02:51 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 23 Jun 2020 12:02:51 +0800
-Message-ID: <1592884977.14160.1.camel@mtkswgap22>
-Subject: Re: [PATCH v2 2/2] soc: mediatek: devapc: add devapc-mt6873 driver
-From:   Neal Liu <neal.liu@mediatek.com>
-To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
-CC:     Neal Liu <neal.liu@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <devicetree@vger.kernel.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Date:   Tue, 23 Jun 2020 12:02:57 +0800
-In-Reply-To: <CAAOTY_-ZGcsv+LEYs+3qfEE=pv8ToWSPFu+7Oum=s-nUuSsDJw@mail.gmail.com>
-References: <1592559720-8482-1-git-send-email-neal.liu@mediatek.com>
-         <1592559720-8482-3-git-send-email-neal.liu@mediatek.com>
-         <CAAOTY_8JRnhGKOB+faOaHR6p2nknHiMjAnbfo=390c5jNHtp=A@mail.gmail.com>
-         <1592623132.15277.7.camel@mtkswgap22>
-         <CAAOTY_-ZGcsv+LEYs+3qfEE=pv8ToWSPFu+7Oum=s-nUuSsDJw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
-MIME-Version: 1.0
-X-TM-SNTS-SMTP: E4501519B3A57E7D1488FAEBD1E9F8F9321B0C6E1892EB37DAC542BC5E176C632000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+        Tue, 23 Jun 2020 00:23:10 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20200623042302epoutp014bda556efc7cd1a6459cdc49e5ccdc63~bEYsbfI261142211422epoutp019
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 04:23:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20200623042302epoutp014bda556efc7cd1a6459cdc49e5ccdc63~bEYsbfI261142211422epoutp019
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1592886182;
+        bh=OOB/MYQP2/k2iMJtZZCvE3+Y629iwLIKjkNfSyycE3I=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=DAT8Ak/MB8S7M15eBe2i5OPjO4P//Au3HMfpmu7t6oYM9rfZlucrrUnrcgUrah3ny
+         HpB+sTD1PROmLvyyU5+JTyWJXdjx7zmJ1s0btA9cdYn+GAAzDO/8lbYz4rNNqF2WxF
+         ApFR3puzBZxRho8mgo/HoH7RDzLYZllhn/TDPOtU=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p2.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200623042301epcas1p26a5e74f41f0fb20a0e61165d003234e6~bEYr6INDi1999419994epcas1p2a;
+        Tue, 23 Jun 2020 04:23:01 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [RFC PATCH v3 4/5] scsi: ufs: L2P map management for HPB read
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Daejun Park <daejun7.park@samsung.com>,
+        "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <231786897.01592884981694.JavaMail.epsvc@epcpadp2>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <231786897.01592886181765.JavaMail.epsvc@epcpadp2>
+Date:   Tue, 23 Jun 2020 13:03:49 +0900
+X-CMS-MailID: 20200623040349epcms2p7a17dca266ed2cb1900fbb40a0933e5cf
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200623010201epcms2p11aebdf1fbc719b409968cba997507114
+References: <231786897.01592884981694.JavaMail.epsvc@epcpadp2>
+        <963815509.21592884502243.JavaMail.epsvc@epcpadp1>
+        <231786897.01592884381695.JavaMail.epsvc@epcpadp2>
+        <963815509.21592879582091.JavaMail.epsvc@epcpadp2>
+        <CGME20200623010201epcms2p11aebdf1fbc719b409968cba997507114@epcms2p7>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQ2h1bi1LdWFuZywNCg0KDQpPbiBTdW4sIDIwMjAtMDYtMjEgYXQgMDc6MzYgKzA4MDAsIENo
-dW4tS3VhbmcgSHUgd3JvdGU6DQo+IEhpLCBOZWFsOg0KPiANCj4gTmVhbCBMaXUgPG5lYWwubGl1
-QG1lZGlhdGVrLmNvbT4g5pa8IDIwMjDlubQ25pyIMjDml6Ug6YCx5YWtIOS4iuWNiDExOjE45a+r
-6YGT77yaDQo+ID4NCj4gPiBIaSBDaHVuLUt1YW5nLA0KPiA+DQo+ID4gVGhhbmtzIGZvciB5b3Vy
-IHF1aWNrIGZlZWRiYWNrLg0KPiA+DQo+ID4gT24gU2F0LCAyMDIwLTA2LTIwIGF0IDAwOjI1ICsw
-ODAwLCBDaHVuLUt1YW5nIEh1IHdyb3RlOg0KPiA+ID4gSGksIE5lYWw6DQo+ID4gPg0KPiA+ID4g
-TmVhbCBMaXUgPG5lYWwubGl1QG1lZGlhdGVrLmNvbT4g5pa8IDIwMjDlubQ25pyIMTnml6Ug6YCx
-5LqUIOS4i+WNiDY6MDHlr6vpgZPvvJoNCj4gPiA+ID4NCj4gPiA+ID4gTVQ2ODczIGJ1cyBmcmFi
-cmljIHByb3ZpZGVzIFRydXN0Wm9uZSBzZWN1cml0eSBzdXBwb3J0IGFuZCBkYXRhDQo+ID4gPiA+
-IHByb3RlY3Rpb24gdG8gcHJldmVudCBzbGF2ZXMgZnJvbSBiZWluZyBhY2Nlc3NlZCBieSB1bmV4
-cGVjdGVkDQo+ID4gPiA+IG1hc3RlcnMuDQo+ID4gPiA+IFRoZSBzZWN1cml0eSB2aW9sYXRpb25z
-IGFyZSBsb2dnZWQgYW5kIHNlbnQgdG8gdGhlIHByb2Nlc3NvciBmb3INCj4gPiA+ID4gZnVydGhl
-ciBhbmFseXNpcyBvciBjb3VudGVybWVhc3VyZXMuDQo+ID4gPiA+DQo+ID4gPiA+IEFueSBvY2N1
-cnJlbmNlIG9mIHNlY3VyaXR5IHZpb2xhdGlvbiB3b3VsZCByYWlzZSBhbiBpbnRlcnJ1cHQsIGFu
-ZA0KPiA+ID4gPiBpdCB3aWxsIGJlIGhhbmRsZWQgYnkgZGV2YXBjLW10Njg3MyBkcml2ZXIuIFRo
-ZSB2aW9sYXRpb24NCj4gPiA+ID4gaW5mb3JtYXRpb24gaXMgcHJpbnRlZCBpbiBvcmRlciB0byBm
-aW5kIHRoZSBtdXJkZXJlci4NCj4gPiA+ID4NCj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogTmVhbCBM
-aXUgPG5lYWwubGl1QG1lZGlhdGVrLmNvbT4NCj4gPiA+ID4gLS0tDQo+ID4gPg0KPiA+ID4gW3Nu
-aXBdDQo+ID4gPg0KPiA+ID4gPiArDQo+ID4gPiA+ICsvKg0KPiA+ID4gPiArICogbXRrX2RldmFw
-Y19wZF9nZXQgLSBnZXQgZGV2YXBjIHBkX3R5cGVzIG9mIHJlZ2lzdGVyIGFkZHJlc3MuDQo+ID4g
-PiA+ICsgKg0KPiA+ID4gPiArICogUmV0dXJucyB0aGUgdmFsdWUgb2YgcmVnIGFkZHINCj4gPiA+
-ID4gKyAqLw0KPiA+ID4gPiArc3RhdGljIHZvaWQgX19pb21lbSAqbXRrX2RldmFwY19wZF9nZXQo
-c3RydWN0IG10a19kZXZhcGNfY29udGV4dCAqZGV2YXBjX2N0eCwNCj4gPiA+ID4gKyAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW50IHNsYXZlX3R5cGUsDQo+ID4gPiA+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGVudW0gREVWQVBDX1BEX1JFR19U
-WVBFIHBkX3JlZ190eXBlLA0KPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICB1MzIgaW5kZXgpDQo+ID4gPiA+ICt7DQo+ID4gPiA+ICsgICAgICAgc3RydWN0IG10
-a19kZXZhcGNfdmlvX2luZm8gKnZpb19pbmZvID0gZGV2YXBjX2N0eC0+c29jLT52aW9faW5mbzsN
-Cj4gPiA+ID4gKyAgICAgICB1MzIgc2xhdmVfdHlwZV9udW0gPSBkZXZhcGNfY3R4LT5zb2MtPnNs
-YXZlX3R5cGVfbnVtOw0KPiA+ID4gPiArICAgICAgIGNvbnN0IHUzMiAqZGV2YXBjX3BkcyA9IGRl
-dmFwY19jdHgtPnNvYy0+ZGV2YXBjX3BkczsNCj4gPiA+DQo+ID4gPiBkZXZhcGNfcGRzID0gbXQ2
-ODczX2RldmFwY19wZHM7DQo+ID4NCj4gPiBBcmUgeW91IHNheWluZyBhbGwgcGxhdGZvcm0gcmVs
-YXRlZCB2YXJpYWJsZXMgJiBmdW5jdGlvbnMgc2hvdWxkIGFzc2lnbg0KPiA+ICYgY2FsbCBpdCBk
-aXJlY3RseSBpbiB0aGlzIGNvbW1vbiBmbG93Pw0KPiA+IEkgZG9uJ3QgdGhpbmsgaXQncyBhIGdv
-b2QgaWRlYSB0byBnbyBiYWNrd2FyZHMgc2luY2Ugd2UgYWxyZWFkeSBleHRyYWN0DQo+ID4gdGhl
-IGNvbW1vbiBvdXQgb2YgaXQuDQo+IA0KPiBJIHRoaW5rIHdlIHNob3VsZCAiZG8gb25lIHRoaW5n
-IGluIG9uZSBwYXRjaCIuIFdoZW4geW91IG1peCB0d28gdGhpbmdzDQo+IGludG8gb25lIHBhdGNo
-LCBob3cgZG9lcyByZXZpZXdlciBrbm93IGVhY2ggbW9kaWZpY2F0aW9uIGJlbG9uZyB0bw0KPiBm
-aXJzdCB0aGluZyBvciBzZWNvbmQgdGhpbmc/IEZvciBzdXBwb3J0aW5nIG11bHRpcGxlIFNvQywg
-dGhlIHBhdGNoZXMNCj4gc2VxdWVuY2UgbG9vayBsaWtlIHRoaXM6DQo+IA0KPiBQYXRjaCAxOiBB
-ZGQgc3VwcG9ydCBTb0MgMS4NCj4gUGF0Y2ggMjogQWJzdHJhY3QgZnVuY3Rpb24gYW5kIHZhcmlh
-YmxlIGZvciBTb0MgMi4NCj4gUGF0Y2ggMzogQWRkIHN1cHBvcnQgU29DIDIuDQo+IFBhdGNoIDQ6
-IEFic3RyYWN0IGZ1bmN0aW9uIGFuZCB2YXJpYWJsZSBmb3IgU29DIDMuDQo+IFBhdGNoIDU6IEFk
-ZCBzdXBwb3J0IFNvQyAzLg0KPiBQYXRjaCA2OiBBYnN0cmFjdCBmdW5jdGlvbiBhbmQgdmFyaWFi
-bGUgZm9yIFNvQyA0Lg0KPiBQYXRjaCA3OiBBZGQgc3VwcG9ydCBTb0MgNC4NCj4gDQo+IEluIHBh
-dGNoIDEsIHlvdSBzaG91bGQgbm90IGRvIGFueSB0aGluZyBhYm91dCBhYnN0cmFjdGlvbiwgYnV0
-IHlvdQ0KPiB3YW50IHRvIG1lcmdlIHBhdGNoIDIsIDQsIDYgaW50byB0aGlzIHBhdGNoLCBzbyB0
-aGlzIHBhdGNoJ3MgdGl0bGUNCj4gc2hvdWxkIGJlICJBZGQgc3VwcG9ydCBTb0MgMSBhbmQgYWJz
-dHJhY3QgZnVuY3Rpb24gYW5kIHZhcmlibGUgZm9yIFNvQw0KPiAyLCBTb0MgMywgYW5kIFNvQyA0
-Ig0KPiANCg0KT2theSwgSSdsbCB0cnkgdG8gc3BsaXQgZHJpdmVyIHRvIG11bHRpcGxlIHBhdGNo
-ZXMgZm9yIGRpZmZlcmVudA0KZnVuY3Rpb25hbGl0eS4gVGhhbmtzIGZvciBzdWdnZXN0aW9uLg0K
-DQo+ID4NCj4gPiA+DQo+ID4gPg0KPiA+ID4gPiArICAgICAgIHZvaWQgX19pb21lbSAqcmVnOw0K
-PiA+ID4gPiArDQo+ID4gPiA+ICsgICAgICAgaWYgKCFkZXZhcGNfcGRzKQ0KPiA+ID4NCj4gPiA+
-IE5ldmVyIGhhcHBlbi4NCj4gPiA+DQo+ID4gPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gTlVM
-TDsNCj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAgIGlmICgoc2xhdmVfdHlwZSA8IHNsYXZlX3R5
-cGVfbnVtICYmDQo+ID4gPiA+ICsgICAgICAgICAgICBpbmRleCA8IHZpb19pbmZvLT52aW9fbWFz
-a19zdGFfbnVtW3NsYXZlX3R5cGVdKSAmJg0KPiA+ID4gPiArICAgICAgICAgICBwZF9yZWdfdHlw
-ZSA8IFBEX1JFR19UWVBFX05VTSkgew0KPiA+ID4NCj4gPiA+IEFsd2F5cyB0cnVlLg0KPiA+ID4N
-Cj4gPiA+ID4gKyAgICAgICAgICAgICAgIHJlZyA9IGRldmFwY19jdHgtPmRldmFwY19wZF9iYXNl
-W3NsYXZlX3R5cGVdICsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgZGV2YXBjX3Bk
-c1twZF9yZWdfdHlwZV07DQo+ID4gPiA+ICsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIGlmIChw
-ZF9yZWdfdHlwZSA9PSBWSU9fTUFTSyB8fCBwZF9yZWdfdHlwZSA9PSBWSU9fU1RBKQ0KPiA+ID4g
-PiArICAgICAgICAgICAgICAgICAgICAgICByZWcgKz0gMHg0ICogaW5kZXg7DQo+ID4gPiA+ICsN
-Cj4gPiA+ID4gKyAgICAgICB9IGVsc2Ugew0KPiA+ID4gPiArICAgICAgICAgICAgICAgcHJfZXJy
-KFBGWCAiT3V0IE9mIEJvdW5kYXJ5LCBzbGF2ZV90eXBlOjB4JXgvcGRfcmVnX3R5cGU6MHgleC9p
-bmRleDoweCV4XG4iLA0KPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgIHNsYXZlX3R5cGUs
-IHBkX3JlZ190eXBlLCBpbmRleCk7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICByZXR1cm4gTlVM
-TDsNCj4gPiA+ID4gKyAgICAgICB9DQo+ID4gPiA+ICsNCj4gPiA+ID4gKyAgICAgICByZXR1cm4g
-cmVnOw0KPiA+ID4gPiArfQ0KPiA+ID4gPiArDQo+ID4gPg0KPiA+ID4gW3NuaXBdDQo+ID4gPg0K
-PiA+ID4gPiArDQo+ID4gPiA+ICsvKg0KPiA+ID4gPiArICogc3RhcnRfZGV2YXBjIC0gaW5pdGlh
-bGl6ZSBkZXZhcGMgc3RhdHVzIGFuZCBzdGFydCByZWNlaXZpbmcgaW50ZXJydXB0DQo+ID4gPiA+
-ICsgKiAgICAgICAgICAgICAgIHdoaWxlIGRldmFwYyB2aW9sYXRpb24gaXMgdHJpZ2dlcmVkLg0K
-PiA+ID4gPiArICovDQo+ID4gPiA+ICtzdGF0aWMgdm9pZCBzdGFydF9kZXZhcGMoc3RydWN0IG10
-a19kZXZhcGNfY29udGV4dCAqZGV2YXBjX2N0eCkNCj4gPiA+ID4gK3sNCj4gPiA+ID4gKyAgICAg
-ICB1MzIgc2xhdmVfdHlwZV9udW0gPSBkZXZhcGNfY3R4LT5zb2MtPnNsYXZlX3R5cGVfbnVtOw0K
-PiA+ID4gPiArICAgICAgIGNvbnN0IHN0cnVjdCBtdGtfZGV2aWNlX2luZm8gKipkZXZpY2VfaW5m
-bzsNCj4gPiA+ID4gKyAgICAgICBjb25zdCBzdHJ1Y3QgbXRrX2RldmljZV9udW0gKm5kZXZpY2Vz
-Ow0KPiA+ID4gPiArICAgICAgIHZvaWQgX19pb21lbSAqcGRfdmlvX3NoaWZ0X3N0YV9yZWc7DQo+
-ID4gPiA+ICsgICAgICAgdm9pZCBfX2lvbWVtICpwZF9hcGNfY29uX3JlZzsNCj4gPiA+ID4gKyAg
-ICAgICBpbnQgc2xhdmVfdHlwZSwgaSwgdmlvX2lkeCwgaW5kZXg7DQo+ID4gPiA+ICsgICAgICAg
-dTMyIHZpb19zaGlmdF9zdGE7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKyAgICAgICBuZGV2aWNlcyA9
-IGRldmFwY19jdHgtPnNvYy0+bmRldmljZXM7DQo+ID4gPg0KPiA+ID4gbmRldmljZXMgPSBtdGs2
-ODczX2RldmljZXNfbnVtOw0KPiA+ID4NCj4gPiA+DQo+ID4gPiA+ICsNCj4gPiA+ID4gKyAgICAg
-ICBkZXZpY2VfaW5mbyA9IGRldmFwY19jdHgtPnNvYy0+ZGV2aWNlX2luZm87DQo+ID4gPiA+ICsN
-Cj4gPiA+ID4gKyAgICAgICBmb3IgKHNsYXZlX3R5cGUgPSAwOyBzbGF2ZV90eXBlIDwgc2xhdmVf
-dHlwZV9udW07IHNsYXZlX3R5cGUrKykgew0KPiA+ID4gPiArICAgICAgICAgICAgICAgcGRfYXBj
-X2Nvbl9yZWcgPSBtdGtfZGV2YXBjX3BkX2dldChkZXZhcGNfY3R4LCBzbGF2ZV90eXBlLA0KPiA+
-ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBB
-UENfQ09OLCAwKTsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIHBkX3Zpb19zaGlmdF9zdGFfcmVn
-ID0gbXRrX2RldmFwY19wZF9nZXQoZGV2YXBjX2N0eCwgc2xhdmVfdHlwZSwNCj4gPiA+ID4gKyAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgVklP
-X1NISUZUX1NUQSwgMCk7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIGlmICgh
-cGRfYXBjX2Nvbl9yZWcgfHwgIXBkX3Zpb19zaGlmdF9zdGFfcmVnIHx8ICFkZXZpY2VfaW5mbykN
-Cj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuOw0KPiA+ID4gPiArDQo+ID4g
-PiA+ICsgICAgICAgICAgICAgICAvKiBDbGVhciBERVZBUEMgdmlvbGF0aW9uIHN0YXR1cyAqLw0K
-PiA+ID4gPiArICAgICAgICAgICAgICAgd3JpdGVsKEJJVCgzMSksIHBkX2FwY19jb25fcmVnKTsN
-Cj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAgICAgICAgICAgLyogQ2xlYXIgdmlvbGF0aW9uIHNo
-aWZ0IHN0YXR1cyAqLw0KPiA+ID4gPiArICAgICAgICAgICAgICAgdmlvX3NoaWZ0X3N0YSA9IHJl
-YWRsKHBkX3Zpb19zaGlmdF9zdGFfcmVnKTsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgIGlmICh2
-aW9fc2hpZnRfc3RhKQ0KPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICB3cml0ZWwodmlv
-X3NoaWZ0X3N0YSwgcGRfdmlvX3NoaWZ0X3N0YV9yZWcpOw0KPiA+ID4gPiArDQo+ID4gPiA+ICsg
-ICAgICAgICAgICAgICAvKiBDbGVhciB0eXBlIDIgdmlvbGF0aW9uIHN0YXR1cyAqLw0KPiA+ID4g
-PiArICAgICAgICAgICAgICAgY2hlY2tfdHlwZTJfdmlvX3N0YXR1cyhkZXZhcGNfY3R4LCBzbGF2
-ZV90eXBlLCAmdmlvX2lkeCwgJmkpOw0KPiA+ID4gPiArDQo+ID4gPiA+ICsgICAgICAgICAgICAg
-ICAvKiBDbGVhciB2aW9sYXRpb24gc3RhdHVzICovDQo+ID4gPiA+ICsgICAgICAgICAgICAgICBm
-b3IgKGkgPSAwOyBpIDwgbmRldmljZXNbc2xhdmVfdHlwZV0udmlvX3NsYXZlX251bTsgaSsrKSB7
-DQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHZpb19pZHggPSBkZXZpY2VfaW5mb1tz
-bGF2ZV90eXBlXVtpXS52aW9faW5kZXg7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
-IGlmICgoY2hlY2tfdmlvX3N0YXR1cyhkZXZhcGNfY3R4LCBzbGF2ZV90eXBlLCB2aW9faWR4KQ0K
-PiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPT0g
-VklPTEFUSU9OX1RSSUdHRVJFRCkgJiYNCj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBjbGVhcl92aW9fc3RhdHVzKGRldmFwY19jdHgsIHNsYXZlX3R5cGUsDQo+ID4gPiA+ICsg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB2aW9faWR4KSkgew0K
-PiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHByX3dhcm4oUEZYICJDbGVh
-ciB2aW8gc3RhdHVzIGZhaWxlZCwgc2xhdmVfdHlwZToweCV4LCB2aW9faW5kZXg6MHgleFxuIiwN
-Cj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNsYXZlX3R5
-cGUsIHZpb19pZHgpOw0KPiA+ID4gPiArDQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgaW5kZXggPSBpOw0KPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIG10a19kZXZhcGNfZHVtcF92aW9fZGJnKGRldmFwY19jdHgsIHNsYXZlX3R5cGUsDQo+ID4g
-PiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgJnZpb19pZHgsICZpbmRleCk7DQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgaSA9IGluZGV4IC0gMTsNCj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgfQ0K
-PiA+ID4gPiArDQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIG1hc2tfbW9kdWxlX2ly
-cShkZXZhcGNfY3R4LCBzbGF2ZV90eXBlLCB2aW9faWR4LCBmYWxzZSk7DQo+ID4gPiA+ICsgICAg
-ICAgICAgICAgICB9DQo+ID4gPiA+ICsgICAgICAgfQ0KPiA+ID4gPiArfQ0KPiA+ID4gPiArDQo+
-ID4gPiA+ICtzdGF0aWMgREVGSU5FX1NQSU5MT0NLKGRldmFwY19sb2NrKTsNCj4gPiA+DQo+ID4g
-PiBVc2VsZXNzLCBzbyByZW1vdmUgaXQuDQo+ID4NCj4gPiBXZSB1c2UgZGV2YXBjX2xvY2sgaW4g
-YmVsb3cgaXNyLCB3aGF0IGRvIHlvdSBtZWFuIHVzZWxlc3M/DQo+IA0KPiBXZSB1c2Ugc3Bpbmxv
-Y2sgYmVjYXVzZSBhIHRocmVhZCBjb250ZXh0IGFuZCBpcnEgY29udGV4dCB3b3VsZCBhY2Nlc3MN
-Cj4gdGhlIHNhbWUgcmVzb3VyY2UsIGJ1dCB3aGVyZSBpcyB0aGUgdGhyZWFkIGNvbnRleHQ/IElm
-IHRoZSB0aHJlYWQNCj4gY29udGV4dCBleGlzdCBpbiBhbm90aGVyIHBhdGNoLCBtb3ZlIHRoaXMg
-c3BpbmxvY2sgdG8gdGhhdCBwYXRjaC4NCj4gDQo+IFJlZ2FyZHMsDQo+IENodW4tS3VhbmcuDQo+
-IA0KPiA+DQo+ID4gPg0KPiA+ID4gPiArDQo+ID4gPiA+ICsvKg0KPiA+ID4gPiArICogZGV2YXBj
-X3Zpb2xhdGlvbl9pcnEgLSB0aGUgZGV2YXBjIEludGVycnVwdCBTZXJ2aWNlIFJvdXRpbmUgKElT
-Uikgd2lsbCBkdW1wDQo+ID4gPiA+ICsgKiAgICAgICAgICAgICAgICAgICAgICAgdmlvbGF0aW9u
-IGluZm9ybWF0aW9uIGluY2x1ZGluZyB3aGljaCBtYXN0ZXIgdmlvbGF0ZXMNCj4gPiA+ID4gKyAq
-ICAgICAgICAgICAgICAgICAgICAgICBhY2Nlc3Mgc2xhdmUuDQo+ID4gPiA+ICsgKi8NCj4gPiA+
-ID4gK3N0YXRpYyBpcnFyZXR1cm5fdCBkZXZhcGNfdmlvbGF0aW9uX2lycShpbnQgaXJxX251bWJl
-ciwNCj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVj
-dCBtdGtfZGV2YXBjX2NvbnRleHQgKmRldmFwY19jdHgpDQo+ID4gPiA+ICt7DQo+ID4gPiA+ICsg
-ICAgICAgdTMyIHNsYXZlX3R5cGVfbnVtID0gZGV2YXBjX2N0eC0+c29jLT5zbGF2ZV90eXBlX251
-bTsNCj4gPiA+ID4gKyAgICAgICBjb25zdCBzdHJ1Y3QgbXRrX2RldmljZV9pbmZvICoqZGV2aWNl
-X2luZm87DQo+ID4gPiA+ICsgICAgICAgc3RydWN0IG10a19kZXZhcGNfdmlvX2luZm8gKnZpb19p
-bmZvOw0KPiA+ID4gPiArICAgICAgIGludCBzbGF2ZV90eXBlLCB2aW9faWR4LCBpbmRleDsNCj4g
-PiA+ID4gKyAgICAgICBjb25zdCBjaGFyICp2aW9fbWFzdGVyOw0KPiA+ID4gPiArICAgICAgIHVu
-c2lnbmVkIGxvbmcgZmxhZ3M7DQo+ID4gPiA+ICsgICAgICAgdTggcGVybTsNCj4gPiA+ID4gKw0K
-PiA+ID4gPiArICAgICAgIHNwaW5fbG9ja19pcnFzYXZlKCZkZXZhcGNfbG9jaywgZmxhZ3MpOw0K
-PiA+ID4gPiArDQo+ID4gPiA+ICsgICAgICAgZGV2aWNlX2luZm8gPSBkZXZhcGNfY3R4LT5zb2Mt
-PmRldmljZV9pbmZvOw0KPiA+ID4gPiArICAgICAgIHZpb19pbmZvID0gZGV2YXBjX2N0eC0+c29j
-LT52aW9faW5mbzsNCj4gPiA+ID4gKyAgICAgICB2aW9faWR4ID0gLTE7DQo+ID4gPiA+ICsgICAg
-ICAgaW5kZXggPSAtMTsNCj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAgIC8qIFRoZXJlIGFyZSBt
-dWx0aXBsZSBERVZBUENfUEQgKi8NCj4gPiA+ID4gKyAgICAgICBmb3IgKHNsYXZlX3R5cGUgPSAw
-OyBzbGF2ZV90eXBlIDwgc2xhdmVfdHlwZV9udW07IHNsYXZlX3R5cGUrKykgew0KPiA+ID4gPiAr
-ICAgICAgICAgICAgICAgaWYgKCFjaGVja190eXBlMl92aW9fc3RhdHVzKGRldmFwY19jdHgsIHNs
-YXZlX3R5cGUsICZ2aW9faWR4LA0KPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICZpbmRleCkpDQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
-IGlmICghbXRrX2RldmFwY19kdW1wX3Zpb19kYmcoZGV2YXBjX2N0eCwgc2xhdmVfdHlwZSwNCj4g
-PiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAmdmlvX2lkeCwgJmluZGV4KSkNCj4gPiA+ID4gKyAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBjb250aW51ZTsNCj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAgICAgICAgICAgLyogRW5z
-dXJlIHRoYXQgdmlvbGF0aW9uIGluZm8gYXJlIHdyaXR0ZW4gYmVmb3JlDQo+ID4gPiA+ICsgICAg
-ICAgICAgICAgICAgKiBmdXJ0aGVyIG9wZXJhdGlvbnMNCj4gPiA+ID4gKyAgICAgICAgICAgICAg
-ICAqLw0KPiA+ID4gPiArICAgICAgICAgICAgICAgc21wX21iKCk7DQo+ID4gPiA+ICsNCj4gPiA+
-ID4gKyAgICAgICAgICAgICAgIG1hc2tfbW9kdWxlX2lycShkZXZhcGNfY3R4LCBzbGF2ZV90eXBl
-LCB2aW9faWR4LCB0cnVlKTsNCj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAgICAgICAgICAgY2xl
-YXJfdmlvX3N0YXR1cyhkZXZhcGNfY3R4LCBzbGF2ZV90eXBlLCB2aW9faWR4KTsNCj4gPiA+ID4g
-Kw0KPiA+ID4gPiArICAgICAgICAgICAgICAgcGVybSA9IGdldF9wZXJtaXNzaW9uKGRldmFwY19j
-dHgsIHNsYXZlX3R5cGUsIGluZGV4LA0KPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIHZpb19pbmZvLT5kb21haW5faWQpOw0KPiA+ID4gPiArDQo+ID4gPiA+ICsg
-ICAgICAgICAgICAgICB2aW9fbWFzdGVyID0gZGV2YXBjX2N0eC0+c29jLT5tYXN0ZXJfZ2V0DQo+
-ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICh2aW9faW5mby0+bWFzdGVyX2lkLA0KPiA+
-ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgdmlvX2luZm8tPnZpb19hZGRyLA0KPiA+ID4g
-PiArICAgICAgICAgICAgICAgICAgICAgICAgc2xhdmVfdHlwZSwNCj4gPiA+ID4gKyAgICAgICAg
-ICAgICAgICAgICAgICAgIHZpb19pbmZvLT5zaGlmdF9zdGFfYml0LA0KPiA+ID4gPiArICAgICAg
-ICAgICAgICAgICAgICAgICAgdmlvX2luZm8tPmRvbWFpbl9pZCk7DQo+ID4gPg0KPiA+ID4gQ2Fs
-bCBtdDY4NzNfYnVzX2lkX3RvX21hc3RlcigpIGRpcmVjdGx5Lg0KPiA+ID4NCj4gPiA+ID4gKw0K
-PiA+ID4gPiArICAgICAgICAgICAgICAgaWYgKCF2aW9fbWFzdGVyKQ0KPiA+ID4gPiArICAgICAg
-ICAgICAgICAgICAgICAgICB2aW9fbWFzdGVyID0gIlVOS05PV05fTUFTVEVSIjsNCj4gPiA+ID4g
-Kw0KPiA+ID4gPiArICAgICAgICAgICAgICAgcHJfaW5mbyhQRlggIlZpb2xhdGlvbiAtIHNsYXZl
-X3R5cGU6MHgleCwgc3lzX2luZGV4OjB4JXgsIGN0cmxfaW5kZXg6MHgleCwgdmlvX2luZGV4OjB4
-JXhcbiIsDQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHNsYXZlX3R5cGUsDQo+ID4g
-PiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGRldmljZV9pbmZvW3NsYXZlX3R5cGVdW2luZGV4
-XS5zeXNfaW5kZXgsDQo+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGRldmljZV9pbmZv
-W3NsYXZlX3R5cGVdW2luZGV4XS5jdHJsX2luZGV4LA0KPiA+ID4gPiArICAgICAgICAgICAgICAg
-ICAgICAgICBkZXZpY2VfaW5mb1tzbGF2ZV90eXBlXVtpbmRleF0udmlvX2luZGV4KTsNCj4gPiA+
-ID4gKw0KPiA+ID4gPiArICAgICAgICAgICAgICAgcHJfaW5mbyhQRlggIlZpb2xhdGlvbiBNYXN0
-ZXI6ICVzXG4iLCB2aW9fbWFzdGVyKTsNCj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICAgICAgICAg
-ICAgZGV2YXBjX3Zpb19yZWFzb24ocGVybSk7DQo+ID4gPiA+ICsNCj4gPiA+ID4gKyAgICAgICAg
-ICAgICAgIG1hc2tfbW9kdWxlX2lycShkZXZhcGNfY3R4LCBzbGF2ZV90eXBlLCB2aW9faWR4LCBm
-YWxzZSk7DQo+ID4gPiA+ICsgICAgICAgfQ0KPiA+ID4gPiArDQo+ID4gPiA+ICsgICAgICAgc3Bp
-bl91bmxvY2tfaXJxcmVzdG9yZSgmZGV2YXBjX2xvY2ssIGZsYWdzKTsNCj4gPiA+ID4gKyAgICAg
-ICByZXR1cm4gSVJRX0hBTkRMRUQ7DQo+ID4gPiA+ICt9DQo+ID4gPiA+ICsNCj4gPg0KPiA+IFtz
-bmlwXQ0KPiA+DQoNCg==
+This is a patch for managing L2P map in HPB module.
+
+The HPB divides logical addresses into several regions. A region consists
+of several sub-regions. The sub-region is a basic unit where L2P mapping is
+managed. The driver loads L2P mapping data of each sub-region. The loaded
+sub-region is called active-state. The HPB driver unloads L2P mapping data
+as region unit. The unloaded region is called inactive-state.
+
+Sub-region/region candidates to be loaded and unloaded are delivered from
+the UFS device. The UFS device delivers the recommended active sub-region
+and inactivate region to the driver using sensedata.
+The HPB module performs L2P mapping management on the host through the
+delivered information.
+
+A pinned region is a pre-set regions on the UFS device that is always
+activate-state.
+
+The data structure for map data request and L2P map uses mempool API,
+minimizing allocation overhead while avoiding static allocation.
+
+The map_work manages active/inactive by 2 "to-do" lists.
+Each hpb lun maintains 2 "to-do" lists:
+  hpb->lh_inact_rgn - regions to be inactivated, and
+  hpb->lh_act_srgn - subregions to be activated
+Those lists are maintained on IO completion.
+
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+---
+ drivers/scsi/ufs/ufshpb.c | 992 +++++++++++++++++++++++++++++++++++++-
+ drivers/scsi/ufs/ufshpb.h |  72 +++
+ 2 files changed, 1060 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/scsi/ufs/ufshpb.c b/drivers/scsi/ufs/ufshpb.c
+index 84a9af2fdc80..e1af4c2ed9ab 100644
+--- a/drivers/scsi/ufs/ufshpb.c
++++ b/drivers/scsi/ufs/ufshpb.c
+@@ -15,6 +15,7 @@
+ #include "ufshpb.h"
+ 
+ static struct ufshpb_driver ufshpb_drv;
++unsigned int ufshpb_host_map_kbytes = 1 * 1024;
+ 
+ static int ufshpb_create_sysfs(struct ufs_hba *hba, struct ufshpb_lu *hpb);
+ 
+@@ -25,6 +26,63 @@ static inline int ufshpb_is_valid_srgn(struct ufshpb_region *rgn,
+ 		srgn->srgn_state == HPB_SRGN_VALID;
+ }
+ 
++static inline bool ufshpb_is_general_lun(int lun)
++{
++	return lun < UFS_UPIU_MAX_UNIT_NUM_ID;
++}
++
++static inline bool
++ufshpb_is_pinned_region(struct ufshpb_lu *hpb, int rgn_idx)
++{
++	if (hpb->lu_pinned_end != PINNED_NOT_SET &&
++	    rgn_idx >= hpb->lu_pinned_start &&
++	    rgn_idx <= hpb->lu_pinned_end)
++		return true;
++
++	return false;
++}
++
++static bool ufshpb_is_empty_rsp_lists(struct ufshpb_lu *hpb)
++{
++	bool ret = true;
++	unsigned long flags;
++
++	spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++	if (!list_empty(&hpb->lh_inact_rgn) || !list_empty(&hpb->lh_act_srgn))
++		ret = false;
++	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++
++	return ret;
++}
++
++static inline int ufshpb_may_field_valid(struct ufs_hba *hba,
++					 struct ufshcd_lrb *lrbp,
++					 struct ufshpb_rsp_field *rsp_field)
++{
++	if (be16_to_cpu(rsp_field->sense_data_len) != DEV_SENSE_SEG_LEN ||
++	    rsp_field->desc_type != DEV_DES_TYPE ||
++	    rsp_field->additional_len != DEV_ADDITIONAL_LEN ||
++	    rsp_field->hpb_type == HPB_RSP_NONE ||
++	    rsp_field->active_rgn_cnt > MAX_ACTIVE_NUM ||
++	    rsp_field->inactive_rgn_cnt > MAX_INACTIVE_NUM ||
++	    (!rsp_field->active_rgn_cnt && !rsp_field->inactive_rgn_cnt))
++		return -EINVAL;
++
++	if (!ufshpb_is_general_lun(lrbp->lun)) {
++		dev_warn(hba->dev, "ufshpb: lun(%d) not supported\n",
++			 lrbp->lun);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++
++static inline struct ufshpb_lu *ufshpb_get_hpb_data(struct scsi_cmnd *cmd)
++{
++	return cmd->device->hostdata;
++}
++
+ static inline int ufshpb_get_state(struct ufshpb_lu *hpb)
+ {
+ 	return atomic_read(&hpb->hpb_state);
+@@ -59,6 +117,765 @@ static inline void ufshpb_lu_put(struct ufshpb_lu *hpb)
+ 	put_device(&hpb->hpb_lu_dev);
+ }
+ 
++static struct ufshpb_req *ufshpb_get_map_req(struct ufshpb_lu *hpb,
++					     struct ufshpb_subregion *srgn)
++{
++	struct ufshpb_req *map_req;
++	struct request *req;
++	struct bio *bio;
++
++	map_req = kmem_cache_alloc(hpb->map_req_cache, GFP_KERNEL);
++	if (!map_req)
++		return NULL;
++
++	req = blk_get_request(hpb->sdev_ufs_lu->request_queue,
++			      REQ_OP_SCSI_IN, BLK_MQ_REQ_PREEMPT);
++	if (IS_ERR(req))
++		goto free_map_req;
++
++	bio = bio_alloc(GFP_KERNEL, hpb->pages_per_srgn);
++	if (!bio) {
++		blk_put_request(req);
++		goto free_map_req;
++	}
++
++	map_req->hpb = hpb;
++	map_req->req = req;
++	map_req->bio = bio;
++
++	map_req->rgn_idx = srgn->rgn_idx;
++	map_req->srgn_idx = srgn->srgn_idx;
++	map_req->mctx = srgn->mctx;
++	map_req->lun = hpb->lun;
++
++	return map_req;
++
++free_map_req:
++	kmem_cache_free(hpb->map_req_cache, map_req);
++	return NULL;
++}
++
++static inline void ufshpb_put_map_req(struct ufshpb_lu *hpb,
++				      struct ufshpb_req *map_req)
++{
++	bio_put(map_req->bio);
++	blk_put_request(map_req->req);
++	kmem_cache_free(hpb->map_req_cache, map_req);
++}
++
++
++static inline int ufshpb_clear_dirty_bitmap(struct ufshpb_lu *hpb,
++				     struct ufshpb_subregion *srgn)
++{
++	WARN_ON(!srgn->mctx);
++	bitmap_zero(srgn->mctx->ppn_dirty, hpb->entries_per_srgn);
++	return 0;
++}
++
++static void ufshpb_update_active_info(struct ufshpb_lu *hpb, int rgn_idx,
++				      int srgn_idx)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++
++	rgn = hpb->rgn_tbl + rgn_idx;
++	srgn = rgn->srgn_tbl + srgn_idx;
++
++	list_del_init(&rgn->list_inact_rgn);
++
++	if (list_empty(&srgn->list_act_srgn))
++		list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
++}
++
++static void ufshpb_update_inactive_info(struct ufshpb_lu *hpb, int rgn_idx)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	int srgn_idx;
++
++	rgn = hpb->rgn_tbl + rgn_idx;
++
++	for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt; srgn_idx++) {
++		srgn = rgn->srgn_tbl + srgn_idx;
++
++		list_del_init(&srgn->list_act_srgn);
++	}
++
++	if (list_empty(&rgn->list_inact_rgn))
++		list_add_tail(&rgn->list_inact_rgn, &hpb->lh_inact_rgn);
++}
++
++static void ufshpb_activate_subregion(struct ufshpb_lu *hpb,
++					  struct ufshpb_subregion *srgn)
++{
++	struct ufshpb_region *rgn;
++
++	/*
++	 * If there is no mctx in subregion
++	 * after I/O progress for HPB_READ_BUFFER, the region to which the
++	 * subregion belongs was evicted.
++	 * Mask sure the the region must not evict in I/O progress
++	 */
++	WARN_ON(!srgn->mctx);
++
++	rgn = hpb->rgn_tbl + srgn->rgn_idx;
++
++	if (unlikely(rgn->rgn_state == HPB_RGN_INACTIVE)) {
++		dev_err(&hpb->hpb_lu_dev,
++			"region %d subregion %d evicted\n",
++			srgn->rgn_idx, srgn->srgn_idx);
++		return;
++	}
++	srgn->srgn_state = HPB_SRGN_VALID;
++}
++
++static void ufshpb_map_req_compl_fn(struct request *req, blk_status_t error)
++{
++	struct ufshpb_req *map_req = (struct ufshpb_req *) req->end_io_data;
++	struct ufshpb_lu *hpb = map_req->hpb;
++	struct ufshpb_subregion *srgn;
++	unsigned long flags;
++
++	srgn = hpb->rgn_tbl[map_req->rgn_idx].srgn_tbl +
++		map_req->srgn_idx;
++
++	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++	ufshpb_activate_subregion(hpb, srgn);
++	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++
++	ufshpb_put_map_req(map_req->hpb, map_req);
++	ufshpb_lu_put(hpb);
++}
++
++static inline void ufshpb_set_read_buf_cmd(unsigned char *cdb, int rgn_idx,
++					   int srgn_idx, int srgn_mem_size)
++{
++	cdb[0] = UFSHPB_READ_BUFFER;
++	cdb[1] = UFSHPB_READ_BUFFER_ID;
++
++	put_unaligned_be16(rgn_idx, &cdb[2]);
++	put_unaligned_be16(srgn_idx, &cdb[4]);
++	put_unaligned_be24(srgn_mem_size, &cdb[6]);
++
++	cdb[9] = 0x00;
++}
++
++static int ufshpb_map_req_add_bio_page(struct ufshpb_lu *hpb,
++				       struct request_queue *q, struct bio *bio,
++				       struct ufshpb_map_ctx *mctx)
++{
++	int i, ret = 0;
++
++	for (i = 0; i < hpb->pages_per_srgn; i++) {
++		ret = bio_add_pc_page(q, bio, mctx->m_page[i], PAGE_SIZE, 0);
++		if (ret != PAGE_SIZE) {
++			dev_notice(&hpb->hpb_lu_dev,
++				   "bio_add_pc_page fail %d\n", ret);
++			return -ENOMEM;
++		}
++	}
++
++	return 0;
++}
++
++static int ufshpb_execute_map_req(struct ufshpb_lu *hpb,
++				  struct ufshpb_req *map_req)
++{
++	struct request_queue *q;
++	struct request *req;
++	struct scsi_request *rq;
++	int ret = 0;
++
++	q = hpb->sdev_ufs_lu->request_queue;
++	ret = ufshpb_map_req_add_bio_page(hpb, q, map_req->bio,
++					  map_req->mctx);
++	if (ret) {
++		dev_notice(&hpb->hpb_lu_dev,
++			   "map_req_add_bio_page fail %d - %d\n",
++			   map_req->rgn_idx, map_req->srgn_idx);
++		return ret;
++	}
++
++	req = map_req->req;
++
++	blk_rq_append_bio(req, &map_req->bio);
++
++	req->timeout = 0;
++	req->end_io_data = (void *)map_req;
++
++	rq = scsi_req(req);
++	ufshpb_set_read_buf_cmd(rq->cmd, map_req->rgn_idx,
++				map_req->srgn_idx, hpb->srgn_mem_size);
++	rq->cmd_len = HPB_READ_BUFFER_CMD_LENGTH;
++
++	blk_execute_rq_nowait(q, NULL, req, 1, ufshpb_map_req_compl_fn);
++
++	atomic_inc(&hpb->stats.map_req_cnt);
++	return 0;
++}
++
++static struct ufshpb_map_ctx *ufshpb_get_map_ctx(struct ufshpb_lu *hpb)
++{
++	struct ufshpb_map_ctx *mctx;
++	int i, j;
++
++	mctx = mempool_alloc(ufshpb_drv.ufshpb_mctx_pool, GFP_KERNEL);
++	if (!mctx)
++		return NULL;
++
++	mctx->m_page = kmem_cache_alloc(hpb->m_page_cache, GFP_KERNEL);
++	if (!mctx->m_page)
++		goto release_mctx;
++
++	mctx->ppn_dirty = bitmap_zalloc(hpb->entries_per_srgn, GFP_KERNEL);
++	if (!mctx->ppn_dirty)
++		goto release_m_page;
++
++	for (i = 0; i < hpb->pages_per_srgn; i++) {
++		mctx->m_page[i] = mempool_alloc(ufshpb_drv.ufshpb_page_pool,
++						GFP_KERNEL);
++		if (!mctx->m_page[i]) {
++			for (j = 0; j < i; j++)
++				mempool_free(mctx->m_page[j],
++					     ufshpb_drv.ufshpb_page_pool);
++			goto release_ppn_dirty;
++		}
++		clear_page(page_address(mctx->m_page[i]));
++	}
++
++	return mctx;
++release_ppn_dirty:
++	bitmap_free(mctx->ppn_dirty);
++release_m_page:
++	kmem_cache_free(hpb->m_page_cache, mctx->m_page);
++release_mctx:
++	mempool_free(mctx, ufshpb_drv.ufshpb_mctx_pool);
++	return NULL;
++}
++
++static inline void ufshpb_put_map_ctx(struct ufshpb_lu *hpb,
++				      struct ufshpb_map_ctx *mctx)
++{
++	int i;
++
++	for (i = 0; i < hpb->pages_per_srgn; i++)
++		mempool_free(mctx->m_page[i],
++			     ufshpb_drv.ufshpb_page_pool);
++
++	bitmap_free(mctx->ppn_dirty);
++	kmem_cache_free(hpb->m_page_cache, mctx->m_page);
++	mempool_free(mctx, ufshpb_drv.ufshpb_mctx_pool);
++}
++
++static int ufshpb_check_issue_state_srgns(struct ufshpb_lu *hpb,
++					  struct ufshpb_region *rgn)
++{
++	struct ufshpb_subregion *srgn;
++	int srgn_idx;
++
++	for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt; srgn_idx++) {
++		srgn  = rgn->srgn_tbl + srgn_idx;
++
++		if (srgn->srgn_state == HPB_SRGN_ISSUED)
++			return -EPERM;
++	}
++	return 0;
++}
++
++static inline void ufshpb_add_lru_info(struct victim_select_info *lru_info,
++				       struct ufshpb_region *rgn)
++{
++	rgn->rgn_state = HPB_RGN_ACTIVE;
++	list_add_tail(&rgn->list_lru_rgn, &lru_info->lh_lru_rgn);
++	atomic_inc(&lru_info->active_cnt);
++}
++
++static inline void ufshpb_hit_lru_info(struct victim_select_info *lru_info,
++				       struct ufshpb_region *rgn)
++{
++	list_move_tail(&rgn->list_lru_rgn, &lru_info->lh_lru_rgn);
++}
++
++static struct ufshpb_region *ufshpb_victim_lru_info(struct ufshpb_lu *hpb)
++{
++	struct victim_select_info *lru_info = &hpb->lru_info;
++	struct ufshpb_region *rgn, *victim_rgn = NULL;
++
++	list_for_each_entry(rgn, &lru_info->lh_lru_rgn, list_lru_rgn) {
++		WARN_ON(!rgn);
++		if (ufshpb_check_issue_state_srgns(hpb, rgn))
++			continue;
++
++		victim_rgn = rgn;
++		break;
++	}
++
++	return victim_rgn;
++}
++
++static inline void ufshpb_cleanup_lru_info(struct victim_select_info *lru_info,
++					   struct ufshpb_region *rgn)
++{
++	list_del_init(&rgn->list_lru_rgn);
++	rgn->rgn_state = HPB_RGN_INACTIVE;
++	atomic_dec(&lru_info->active_cnt);
++}
++
++static inline void ufshpb_purge_active_subregion(struct ufshpb_lu *hpb,
++						 struct ufshpb_subregion *srgn)
++{
++	if (srgn->srgn_state != HPB_SRGN_UNUSED) {
++		ufshpb_put_map_ctx(hpb, srgn->mctx);
++		srgn->srgn_state = HPB_SRGN_UNUSED;
++		srgn->mctx = NULL;
++	}
++}
++
++static void __ufshpb_evict_region(struct ufshpb_lu *hpb,
++				  struct ufshpb_region *rgn)
++{
++	struct victim_select_info *lru_info;
++	struct ufshpb_subregion *srgn;
++	int srgn_idx;
++
++	lru_info = &hpb->lru_info;
++
++	dev_dbg(&hpb->hpb_lu_dev, "evict region %d\n", rgn->rgn_idx);
++
++	ufshpb_cleanup_lru_info(lru_info, rgn);
++
++	for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt; srgn_idx++) {
++		srgn = rgn->srgn_tbl + srgn_idx;
++
++		ufshpb_purge_active_subregion(hpb, srgn);
++	}
++}
++
++static int ufshpb_evict_region(struct ufshpb_lu *hpb, struct ufshpb_region *rgn)
++{
++	unsigned long flags;
++	int ret = 0;
++
++	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++	if (rgn->rgn_state == HPB_RGN_PINNED) {
++		dev_warn(&hpb->hpb_lu_dev,
++			 "pinned region cannot drop-out. region %d\n",
++			 rgn->rgn_idx);
++		goto out;
++	}
++	if (!list_empty(&rgn->list_lru_rgn)) {
++		if (ufshpb_check_issue_state_srgns(hpb, rgn)) {
++			ret = -EBUSY;
++			goto out;
++		}
++
++		__ufshpb_evict_region(hpb, rgn);
++	}
++out:
++	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++	return ret;
++}
++
++static inline struct
++ufshpb_rsp_field *ufshpb_get_hpb_rsp(struct ufshcd_lrb *lrbp)
++{
++	return (struct ufshpb_rsp_field *)&lrbp->ucd_rsp_ptr->sr.sense_data_len;
++}
++
++static int ufshpb_issue_map_req(struct ufshpb_lu *hpb,
++				struct ufshpb_region *rgn,
++				struct ufshpb_subregion *srgn)
++{
++	struct ufshpb_req *map_req;
++	unsigned long flags;
++	int ret;
++	int err = -EAGAIN;
++	bool alloc_required = false;
++	enum HPB_RGN_STATE state = HPB_SRGN_INVALID;
++
++	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++	/*
++	 * Since the region state change occurs only in the map_work,
++	 * the state of the region cannot HPB_RGN_INACTIVE at this point.
++	 * The region state must be changed in the map_work
++	 */
++	WARN_ON(rgn->rgn_state == HPB_RGN_INACTIVE);
++
++	if (srgn->srgn_state == HPB_SRGN_UNUSED)
++		alloc_required = true;
++
++	/*
++	 * If the subregion is already ISSUED state,
++	 * a specific event (e.g., GC or wear-leveling, etc.) occurs in
++	 * the device and HPB response for map loading is received.
++	 * In this case, after finishing the HPB_READ_BUFFER,
++	 * the next HPB_READ_BUFFER is performed again to obtain the latest
++	 * map data.
++	 */
++	if (srgn->srgn_state == HPB_SRGN_ISSUED)
++		goto unlock_out;
++
++	srgn->srgn_state = HPB_SRGN_ISSUED;
++	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++
++	if (alloc_required) {
++		WARN_ON(srgn->mctx);
++		srgn->mctx = ufshpb_get_map_ctx(hpb);
++		if (!srgn->mctx) {
++			dev_notice(&hpb->hpb_lu_dev,
++			    "get map_ctx failed. region %d - %d\n",
++			    rgn->rgn_idx, srgn->srgn_idx);
++			state = HPB_SRGN_UNUSED;
++			goto change_srgn_state;
++		}
++	}
++
++	ufshpb_clear_dirty_bitmap(hpb, srgn);
++	map_req = ufshpb_get_map_req(hpb, srgn);
++	if (!map_req)
++		goto change_srgn_state;
++
++	ret = ufshpb_lu_get(hpb);
++	if (unlikely(ret)) {
++		dev_notice(&hpb->hpb_lu_dev,
++			   "%s: ufshpb_lu_get failed: %d", __func__, ret);
++		goto free_map_req;
++	}
++
++	ret = ufshpb_execute_map_req(hpb, map_req);
++	if (ret) {
++		dev_notice(&hpb->hpb_lu_dev,
++			   "%s: issue map_req failed: %d, region %d - %d\n",
++			   __func__, ret, srgn->rgn_idx, srgn->srgn_idx);
++		ufshpb_lu_put(hpb);
++		goto free_map_req;
++	}
++	return 0;
++
++free_map_req:
++	ufshpb_put_map_req(hpb, map_req);
++change_srgn_state:
++	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++	srgn->srgn_state = state;
++unlock_out:
++	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++	return err;
++}
++
++static int ufshpb_add_region(struct ufshpb_lu *hpb, struct ufshpb_region *rgn)
++{
++	struct ufshpb_region *victim_rgn;
++	struct victim_select_info *lru_info = &hpb->lru_info;
++	unsigned long flags;
++	int ret = 0;
++
++	spin_lock_irqsave(&hpb->hpb_state_lock, flags);
++	/*
++	 * If region belongs to lru_list, just move the region
++	 * to the front of lru list. because the state of the region
++	 * is already active-state
++	 */
++	if (!list_empty(&rgn->list_lru_rgn)) {
++		ufshpb_hit_lru_info(lru_info, rgn);
++		goto out;
++	}
++
++	if (rgn->rgn_state == HPB_RGN_INACTIVE) {
++		if (atomic_read(&lru_info->active_cnt)
++		    == lru_info->max_lru_active_cnt) {
++			/*
++			 * If the maximum number of active regions
++			 * is exceeded, evict the least recently used region.
++			 * This case may occur when the device responds
++			 * to the eviction information late.
++			 * It is okay to evict the least recently used region,
++			 * because the device could detect this region
++			 * by not issuing HPB_READ
++			 */
++			victim_rgn = ufshpb_victim_lru_info(hpb);
++			if (!victim_rgn) {
++				dev_warn(&hpb->hpb_lu_dev,
++				    "cannot get victim region error\n");
++				ret = -ENOMEM;
++				goto out;
++			}
++
++			dev_dbg(&hpb->hpb_lu_dev,
++				"LRU full (%d), choost victim %d\n",
++				atomic_read(&lru_info->active_cnt),
++				victim_rgn->rgn_idx);
++			__ufshpb_evict_region(hpb, victim_rgn);
++		}
++
++		/*
++		 * When a region is added to lru_info list_head,
++		 * it is guaranteed that the subregion has been
++		 * assigned all mctx. If failed, try to receive mctx again
++		 * without being added to lru_info list_head
++		 */
++		ufshpb_add_lru_info(lru_info, rgn);
++	}
++out:
++	spin_unlock_irqrestore(&hpb->hpb_state_lock, flags);
++	return ret;
++}
++
++static void ufshpb_rsp_req_region_update(struct ufshpb_lu *hpb,
++					 struct ufshpb_rsp_field *rsp_field)
++{
++	int i, rgn_idx, srgn_idx;
++
++	/*
++	 * If the active region and the inactive region are the same,
++	 * we will inactivate this region.
++	 * The device could check this (region inactivated) and
++	 * will response the proper active region information
++	 */
++	spin_lock(&hpb->rsp_list_lock);
++	for (i = 0; i < rsp_field->active_rgn_cnt; i++) {
++		rgn_idx =
++			be16_to_cpu(rsp_field->hpb_active_field[i].active_rgn);
++		srgn_idx =
++			be16_to_cpu(rsp_field->hpb_active_field[i].active_srgn);
++
++		dev_dbg(&hpb->hpb_lu_dev, "activate(%d) region %d - %d\n",
++			i, rgn_idx, srgn_idx);
++		ufshpb_update_active_info(hpb, rgn_idx, srgn_idx);
++		atomic_inc(&hpb->stats.rb_active_cnt);
++	}
++
++	for (i = 0; i < rsp_field->inactive_rgn_cnt; i++) {
++		rgn_idx = be16_to_cpu(rsp_field->hpb_inactive_field[i]);
++		dev_dbg(&hpb->hpb_lu_dev, "inactivate(%d) region %d\n",
++			i, rgn_idx);
++		ufshpb_update_inactive_info(hpb, rgn_idx);
++		atomic_inc(&hpb->stats.rb_inactive_cnt);
++	}
++	spin_unlock(&hpb->rsp_list_lock);
++
++	dev_dbg(&hpb->hpb_lu_dev, "Noti: #ACT %u #INACT %u\n",
++		rsp_field->active_rgn_cnt, rsp_field->inactive_rgn_cnt);
++
++	queue_work(ufshpb_drv.ufshpb_wq, &hpb->map_work);
++}
++
++/* routine : isr (ufs) */
++static void ufshpb_rsp_upiu(struct ufs_hba *hba, struct ufshcd_lrb *lrbp)
++{
++	struct ufshpb_lu *hpb;
++	struct ufshpb_rsp_field *rsp_field;
++	int data_seg_len, ret;
++
++	data_seg_len = be32_to_cpu(lrbp->ucd_rsp_ptr->header.dword_2)
++		& MASK_RSP_UPIU_DATA_SEG_LEN;
++
++	/* To flush remained rsp_list, we queue the map_work task */
++	if (!data_seg_len) {
++		if (!ufshpb_is_general_lun(lrbp->lun))
++			return;
++
++		hpb = ufshpb_get_hpb_data(lrbp->cmd);
++		ret = ufshpb_lu_get(hpb);
++		if (ret)
++			return;
++
++		if (!ufshpb_is_empty_rsp_lists(hpb))
++			queue_work(ufshpb_drv.ufshpb_wq, &hpb->map_work);
++
++		goto put_hpb;
++	}
++
++	/* Check HPB_UPDATE_ALERT */
++	if (!(lrbp->ucd_rsp_ptr->header.dword_2 &
++	      UPIU_HEADER_DWORD(0, 2, 0, 0)))
++		return;
++
++	rsp_field = ufshpb_get_hpb_rsp(lrbp);
++	if (ufshpb_may_field_valid(hba, lrbp, rsp_field))
++		return;
++
++	hpb = ufshpb_get_hpb_data(lrbp->cmd);
++	ret = ufshpb_lu_get(hpb);
++	if (ret)
++		return;
++
++	atomic_inc(&hpb->stats.rb_noti_cnt);
++
++	switch (rsp_field->hpb_type) {
++	case HPB_RSP_REQ_REGION_UPDATE:
++		WARN_ON(data_seg_len != DEV_DATA_SEG_LEN);
++		ufshpb_rsp_req_region_update(hpb, rsp_field);
++		break;
++	case HPB_RSP_DEV_RESET:
++		dev_warn(&hpb->hpb_lu_dev,
++			 "UFS device lost HPB information during PM.\n");
++		break;
++	default:
++		dev_notice(&hpb->hpb_lu_dev, "hpb_type is not available: %d\n",
++			   rsp_field->hpb_type);
++		break;
++	}
++put_hpb:
++	ufshpb_lu_put(hpb);
++}
++
++static void ufshpb_add_active_list(struct ufshpb_lu *hpb,
++				   struct ufshpb_region *rgn,
++				   struct ufshpb_subregion *srgn)
++{
++	if (!list_empty(&rgn->list_inact_rgn))
++		return;
++
++	if (!list_empty(&srgn->list_act_srgn)) {
++		list_move(&srgn->list_act_srgn, &hpb->lh_act_srgn);
++		return;
++	}
++
++	list_add(&srgn->list_act_srgn, &hpb->lh_act_srgn);
++}
++
++static void ufshpb_add_pending_evict_list(struct ufshpb_lu *hpb,
++				    struct ufshpb_region *rgn,
++				    struct list_head *pending_list)
++{
++	struct ufshpb_subregion *srgn;
++	int srgn_idx;
++
++	if (!list_empty(&rgn->list_inact_rgn))
++		return;
++
++	for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt; srgn_idx++) {
++		srgn = rgn->srgn_tbl + srgn_idx;
++
++		if (!list_empty(&srgn->list_act_srgn))
++			return;
++	}
++
++	list_add_tail(&rgn->list_inact_rgn, pending_list);
++}
++
++static void ufshpb_run_active_subregion_list(struct ufshpb_lu *hpb)
++{
++	struct ufshpb_region *rgn;
++	struct ufshpb_subregion *srgn;
++	unsigned long flags;
++	int ret = 0;
++
++	spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++	while ((srgn = list_first_entry_or_null(&hpb->lh_act_srgn,
++						struct ufshpb_subregion,
++						list_act_srgn))) {
++		list_del_init(&srgn->list_act_srgn);
++		spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++
++		rgn = hpb->rgn_tbl + srgn->rgn_idx;
++		ret = ufshpb_add_region(hpb, rgn);
++		if (ret)
++			break;
++
++		ret = ufshpb_issue_map_req(hpb, rgn, srgn);
++		if (ret) {
++			dev_notice(&hpb->hpb_lu_dev,
++			    "issue map_req failed. ret %d, region %d - %d\n",
++			    ret, rgn->rgn_idx, srgn->srgn_idx);
++			break;
++		}
++		spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++	}
++
++	if (ret) {
++		dev_notice(&hpb->hpb_lu_dev, "region %d - %d, will retry\n",
++			   rgn->rgn_idx, srgn->srgn_idx);
++		spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++		ufshpb_add_active_list(hpb, rgn, srgn);
++	}
++	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++}
++
++static void ufshpb_run_inactive_region_list(struct ufshpb_lu *hpb)
++{
++	struct ufshpb_region *rgn;
++	unsigned long flags;
++	int ret;
++	LIST_HEAD(pending_list);
++
++	spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++	while ((rgn = list_first_entry_or_null(&hpb->lh_inact_rgn,
++					       struct ufshpb_region,
++					       list_inact_rgn))) {
++		list_del_init(&rgn->list_inact_rgn);
++		spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++
++		ret = ufshpb_evict_region(hpb, rgn);
++		if (ret) {
++			spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++			ufshpb_add_pending_evict_list(hpb, rgn, &pending_list);
++			spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++		}
++
++		spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++	}
++
++	list_splice(&pending_list, &hpb->lh_inact_rgn);
++	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++}
++
++static void ufshpb_map_work_handler(struct work_struct *work)
++{
++	struct ufshpb_lu *hpb;
++	int ret;
++
++	hpb = container_of(work, struct ufshpb_lu, map_work);
++	ret = ufshpb_lu_get(hpb);
++	if (ret) {
++		dev_info(&hpb->hpb_lu_dev, "%s: exit, state %d\n",
++			 __func__, ufshpb_get_state(hpb));
++		return;
++	}
++
++	ufshpb_run_inactive_region_list(hpb);
++	ufshpb_run_active_subregion_list(hpb);
++
++	ufshpb_lu_put(hpb);
++}
++
++/*
++ * this function doesn't need to hold lock due to be called in init.
++ * (hpb_state_lock, rsp_list_lock, etc..)
++ */
++static int ufshpb_init_pinned_active_region(struct ufs_hba *hba,
++					    struct ufshpb_lu *hpb,
++					    struct ufshpb_region *rgn)
++{
++	struct ufshpb_subregion *srgn;
++	int srgn_idx, i;
++	int err = 0;
++
++	for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt; srgn_idx++) {
++		srgn = rgn->srgn_tbl + srgn_idx;
++
++		srgn->mctx = ufshpb_get_map_ctx(hpb);
++		srgn->srgn_state = HPB_SRGN_INVALID;
++		if (!srgn->mctx) {
++			dev_err(hba->dev,
++				"alloc mctx for pinned region failed\n");
++			goto release;
++		}
++
++		list_add_tail(&srgn->list_act_srgn, &hpb->lh_act_srgn);
++	}
++
++	rgn->rgn_state = HPB_RGN_PINNED;
++	return 0;
++
++release:
++	for (i = 0; i < srgn_idx; i++) {
++		srgn = rgn->srgn_tbl + i;
++		ufshpb_put_map_ctx(hpb, srgn->mctx);
++	}
++	return err;
++}
++
+ static void ufshpb_init_subregion_tbl(struct ufshpb_lu *hpb,
+ 				      struct ufshpb_region *rgn)
+ {
+@@ -67,6 +884,8 @@ static void ufshpb_init_subregion_tbl(struct ufshpb_lu *hpb,
+ 	for (srgn_idx = 0; srgn_idx < rgn->srgn_cnt; srgn_idx++) {
+ 		struct ufshpb_subregion *srgn = rgn->srgn_tbl + srgn_idx;
+ 
++		INIT_LIST_HEAD(&srgn->list_act_srgn);
++
+ 		srgn->rgn_idx = rgn->rgn_idx;
+ 		srgn->srgn_idx = srgn_idx;
+ 		srgn->srgn_state = HPB_SRGN_UNUSED;
+@@ -99,6 +918,8 @@ static void ufshpb_init_lu_parameter(struct ufs_hba *hba,
+ 	hpb->lu_pinned_end = hpb_lu_info->num_pinned ?
+ 		(hpb_lu_info->pinned_start + hpb_lu_info->num_pinned - 1)
+ 		: PINNED_NOT_SET;
++	hpb->lru_info.max_lru_active_cnt =
++		hpb_lu_info->max_active_rgns - hpb_lu_info->num_pinned;
+ 
+ 	rgn_mem_size = (1ULL << hpb_dev_info->rgn_size) * HPB_RGN_SIZE_UNIT
+ 		/ HPB_ENTRY_BLOCK_SIZE * HPB_ENTRY_SIZE;
+@@ -152,6 +973,9 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
+ 		rgn = rgn_table + rgn_idx;
+ 		rgn->rgn_idx = rgn_idx;
+ 
++		INIT_LIST_HEAD(&rgn->list_inact_rgn);
++		INIT_LIST_HEAD(&rgn->list_lru_rgn);
++
+ 		if (rgn_idx == hpb->rgns_per_lu - 1)
+ 			srgn_cnt = ((hpb->srgns_per_lu - 1) %
+ 				    hpb->srgns_per_rgn) + 1;
+@@ -161,7 +985,13 @@ static int ufshpb_alloc_region_tbl(struct ufs_hba *hba, struct ufshpb_lu *hpb)
+ 			goto release_srgn_table;
+ 		ufshpb_init_subregion_tbl(hpb, rgn);
+ 
+-		rgn->rgn_state = HPB_RGN_INACTIVE;
++		if (ufshpb_is_pinned_region(hpb, rgn_idx)) {
++			ret = ufshpb_init_pinned_active_region(hba, hpb, rgn);
++			if (ret)
++				goto release_srgn_table;
++		} else {
++			rgn->rgn_state = HPB_RGN_INACTIVE;
++		}
+ 	}
+ 
+ 	return 0;
+@@ -185,7 +1015,10 @@ static void ufshpb_destroy_subregion_tbl(struct ufshpb_lu *hpb,
+ 		struct ufshpb_subregion *srgn;
+ 
+ 		srgn = rgn->srgn_tbl + srgn_idx;
+-		srgn->srgn_state = HPB_SRGN_UNUSED;
++		if (srgn->srgn_state != HPB_SRGN_UNUSED) {
++			srgn->srgn_state = HPB_SRGN_UNUSED;
++			ufshpb_put_map_ctx(hpb, srgn->mctx);
++		}
+ 	}
+ }
+ 
+@@ -215,8 +1048,36 @@ static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb,
+ 	int ret;
+ 
+ 	spin_lock_init(&hpb->hpb_state_lock);
++	spin_lock_init(&hpb->rsp_list_lock);
++
++	INIT_LIST_HEAD(&hpb->lru_info.lh_lru_rgn);
++	INIT_LIST_HEAD(&hpb->lh_act_srgn);
++	INIT_LIST_HEAD(&hpb->lh_inact_rgn);
++	INIT_LIST_HEAD(&hpb->list_hpb_lu);
++
++	INIT_WORK(&hpb->map_work, ufshpb_map_work_handler);
++
++	hpb->map_req_cache = kmem_cache_create("ufshpb_req_cache",
++			  sizeof(struct ufshpb_req), 0, 0, NULL);
++	if (!hpb->map_req_cache) {
++		dev_err(hba->dev, "ufshpb(%d) ufshpb_req_cache create fail",
++			hpb->lun);
++		return -ENOMEM;
++	}
++
++	hpb->m_page_cache = kmem_cache_create("ufshpb_m_page_cache",
++			  sizeof(struct page *) * hpb->pages_per_srgn,
++			  0, 0, NULL);
++	if (!hpb->m_page_cache) {
++		dev_err(hba->dev, "ufshpb(%d) ufshpb_m_page_cache create fail",
++			hpb->lun);
++		ret = -ENOMEM;
++		goto release_req_cache;
++	}
+ 
+ 	ret = ufshpb_alloc_region_tbl(hba, hpb);
++	if (ret)
++		goto release_m_page_cache;
+ 
+ 	ret = ufshpb_create_sysfs(hba, hpb);
+ 	if (ret)
+@@ -226,6 +1087,10 @@ static int ufshpb_lu_hpb_init(struct ufs_hba *hba, struct ufshpb_lu *hpb,
+ 
+ release_rgn_table:
+ 	ufshpb_destroy_region_tbl(hpb);
++release_m_page_cache:
++	kmem_cache_destroy(hpb->m_page_cache);
++release_req_cache:
++	kmem_cache_destroy(hpb->map_req_cache);
+ 	return ret;
+ }
+ 
+@@ -257,10 +1122,42 @@ static struct ufshpb_lu *ufshpb_alloc_hpb_lu(struct ufs_hba *hba, int lun,
+ 	return NULL;
+ }
+ 
++static void ufshpb_discard_rsp_lists(struct ufshpb_lu *hpb)
++{
++	struct ufshpb_region *rgn, *next_rgn;
++	struct ufshpb_subregion *srgn, *next_srgn;
++	unsigned long flags;
++
++	/*
++	 * If the device reset occurred, the remained HPB region information
++	 * may be stale. Therefore, by dicarding the lists of HPB response
++	 * that remained after reset, it prevents unnecessary work.
++	 */
++	spin_lock_irqsave(&hpb->rsp_list_lock, flags);
++	list_for_each_entry_safe(rgn, next_rgn, &hpb->lh_inact_rgn,
++				 list_inact_rgn)
++		list_del_init(&rgn->list_inact_rgn);
++
++	list_for_each_entry_safe(srgn, next_srgn, &hpb->lh_act_srgn,
++				 list_act_srgn)
++		list_del_init(&srgn->list_act_srgn);
++	spin_unlock_irqrestore(&hpb->rsp_list_lock, flags);
++}
++
++static inline void ufshpb_cancel_jobs(struct ufshpb_lu *hpb)
++{
++	cancel_work_sync(&hpb->map_work);
++}
++
+ static void ufshpb_lu_release(struct ufshpb_lu *hpb)
+ {
++	ufshpb_cancel_jobs(hpb);
++
+ 	ufshpb_destroy_region_tbl(hpb);
+ 
++	kmem_cache_destroy(hpb->map_req_cache);
++	kmem_cache_destroy(hpb->m_page_cache);
++
+ 	list_del_init(&hpb->list_hpb_lu);
+ }
+ 
+@@ -347,6 +1244,9 @@ static void ufshpb_reset_host(struct ufs_hba *hba)
+ 		dev_info(&hpb->hpb_lu_dev, "ufshpb run reset_host");
+ 
+ 		ufshpb_set_state(hpb, HPB_RESET);
++		ufshpb_cancel_jobs(hpb);
++		ufshpb_discard_rsp_lists(hpb);
++
+ 		ufshpb_lu_put(hpb);
+ 	}
+ }
+@@ -361,6 +1261,7 @@ static void ufshpb_suspend(struct ufs_hba *hba)
+ 
+ 		dev_info(&hpb->hpb_lu_dev, "ufshpb goto suspend");
+ 		ufshpb_set_state(hpb, HPB_SUSPEND);
++		ufshpb_cancel_jobs(hpb);
+ 
+ 		ufshpb_lu_put(hpb);
+ 	}
+@@ -376,6 +1277,9 @@ static void ufshpb_resume(struct ufs_hba *hba)
+ 
+ 		dev_info(&hpb->hpb_lu_dev, "ufshpb resume");
+ 		ufshpb_set_state(hpb, HPB_PRESENT);
++		if (!ufshpb_is_empty_rsp_lists(hpb))
++			queue_work(ufshpb_drv.ufshpb_wq, &hpb->map_work);
++
+ 		ufshpb_lu_put(hpb);
+ 	}
+ }
+@@ -617,6 +1521,8 @@ static void ufshpb_scan_hpb_lu(struct ufs_hba *hba,
+ 	struct scsi_device *sdev;
+ 	struct ufshpb_lu *hpb;
+ 	int find_hpb_lu = 0;
++	int tot_active_srgn_pages = 0;
++	int pool_size;
+ 	int ret;
+ 
+ 	INIT_LIST_HEAD(&ufshpb_drv.lh_hpb_lu);
+@@ -637,6 +1543,9 @@ static void ufshpb_scan_hpb_lu(struct ufs_hba *hba,
+ 		if (!hpb)
+ 			continue;
+ 
++		tot_active_srgn_pages += hpb_lu_info.max_active_rgns *
++				hpb->srgns_per_rgn * hpb->pages_per_srgn;
++
+ 		hpb->sdev_ufs_lu = sdev;
+ 		sdev->hostdata = hpb;
+ 
+@@ -648,11 +1557,31 @@ static void ufshpb_scan_hpb_lu(struct ufs_hba *hba,
+ 		return;
+ 
+ 	ufshpb_check_hpb_reset_query(hba);
++
++	pool_size = DIV_ROUND_UP(ufshpb_host_map_kbytes * 1024, PAGE_SIZE);
++	if (pool_size > tot_active_srgn_pages) {
++		dev_info(hba->dev,
++			"reset pool_size to %lu KB.\n",
++			tot_active_srgn_pages * PAGE_SIZE / 1024);
++		mempool_resize(ufshpb_drv.ufshpb_mctx_pool,
++			       tot_active_srgn_pages);
++		mempool_resize(ufshpb_drv.ufshpb_page_pool,
++			       tot_active_srgn_pages);
++	}
++
+ 	dev_set_drvdata(&hba->ufsf.hpb_dev, &ufshpb_drv);
+ 
+ 	list_for_each_entry(hpb, &ufshpb_drv.lh_hpb_lu, list_hpb_lu) {
+ 		dev_info(&hpb->hpb_lu_dev, "set state to present\n");
+ 		ufshpb_set_state(hpb, HPB_PRESENT);
++
++		if ((hpb->lu_pinned_end - hpb->lu_pinned_start) > 0) {
++			dev_info(&hpb->hpb_lu_dev,
++			    "loading pinned regions %d - %d\n",
++			    hpb->lu_pinned_start, hpb->lu_pinned_end);
++			queue_work(ufshpb_drv.ufshpb_wq,
++				&hpb->map_work);
++		}
+ 	}
+ }
+ 
+@@ -719,6 +1648,8 @@ static int ufshpb_remove(struct device *dev)
+ 		sdev = hpb->sdev_ufs_lu;
+ 		sdev->hostdata = NULL;
+ 
++		ufshpb_cancel_jobs(hpb);
++
+ 		device_del(&hpb->hpb_lu_dev);
+ 
+ 		dev_info(&hpb->hpb_lu_dev, "hpb_lu_dev refcnt %d\n",
+@@ -744,10 +1675,10 @@ static struct ufshpb_driver ufshpb_drv = {
+ 		.reset_host = ufshpb_reset_host,
+ 		.suspend = ufshpb_suspend,
+ 		.resume = ufshpb_resume,
++		.rsp_upiu = ufshpb_rsp_upiu,
+ 	},
+ };
+ 
+-unsigned int ufshpb_host_map_kbytes = 1 * 1024;
+ module_param(ufshpb_host_map_kbytes, uint, 0644);
+ MODULE_PARM_DESC(ufshpb_host_map_kbytes,
+ 	 "ufshpb host mapping memory kilo-bytes for ufshpb memory-pool");
+@@ -755,17 +1686,70 @@ MODULE_PARM_DESC(ufshpb_host_map_kbytes,
+ static int __init ufshpb_init(void)
+ {
+ 	int ret;
++	unsigned int pool_size;
++
++	ufshpb_drv.ufshpb_mctx_cache = kmem_cache_create("ufshpb_mctx_cache",
++					sizeof(struct ufshpb_map_ctx),
++					0, 0, NULL);
++	if (!ufshpb_drv.ufshpb_mctx_cache) {
++		pr_err("ufshpb: cannot init mctx cache\n");
++		return -ENOMEM;
++	}
++
++	pool_size = DIV_ROUND_UP(ufshpb_host_map_kbytes * 1024, PAGE_SIZE);
++	pr_info("%s:%d ufshpb_host_map_kbytes %u pool_size %u\n",
++	       __func__, __LINE__, ufshpb_host_map_kbytes, pool_size);
++
++	ufshpb_drv.ufshpb_mctx_pool = mempool_create_slab_pool(
++				     pool_size, ufshpb_drv.ufshpb_mctx_cache);
++	if (!ufshpb_drv.ufshpb_mctx_pool) {
++		pr_err("ufshpb: cannot init mctx pool\n");
++		ret = -ENOMEM;
++		goto release_mctx_cache;
++	}
++
++	ufshpb_drv.ufshpb_page_pool = mempool_create_page_pool(pool_size, 0);
++	if (!ufshpb_drv.ufshpb_page_pool) {
++		pr_err("ufshpb: cannot init page pool\n");
++		ret = -ENOMEM;
++		goto release_mctx_pool;
++	}
++
++	ufshpb_drv.ufshpb_wq = alloc_workqueue("ufshpb-wq",
++					WQ_UNBOUND | WQ_MEM_RECLAIM, 0);
++	if (!ufshpb_drv.ufshpb_wq) {
++		pr_err("ufshpb: alloc workqueue failed\n");
++		ret = -ENOMEM;
++		goto release_page_pool;
++	}
+ 
+ 	ret = driver_register(&ufshpb_drv.drv);
+-	if (ret)
++	if (ret) {
+ 		pr_err("ufshpb: driver register failed\n");
++		goto release_wq;
++	}
+ 
++	return 0;
++release_wq:
++	destroy_workqueue(ufshpb_drv.ufshpb_wq);
++release_page_pool:
++	mempool_destroy(ufshpb_drv.ufshpb_page_pool);
++release_mctx_pool:
++	mempool_destroy(ufshpb_drv.ufshpb_mctx_pool);
++release_mctx_cache:
++	kmem_cache_destroy(ufshpb_drv.ufshpb_mctx_cache);
+ 	return ret;
+ }
+ 
+ static void __exit ufshpb_exit(void)
+ {
+ 	driver_unregister(&ufshpb_drv.drv);
++
++	mempool_destroy(ufshpb_drv.ufshpb_page_pool);
++	mempool_destroy(ufshpb_drv.ufshpb_mctx_pool);
++	kmem_cache_destroy(ufshpb_drv.ufshpb_mctx_cache);
++
++	destroy_workqueue(ufshpb_drv.ufshpb_wq);
+ }
+ 
+ MODULE_AUTHOR("Yongmyong Lee <ymhungry.lee@samsung.com>");
+diff --git a/drivers/scsi/ufs/ufshpb.h b/drivers/scsi/ufs/ufshpb.h
+index eaa4a3e035b1..d9c27348d354 100644
+--- a/drivers/scsi/ufs/ufshpb.h
++++ b/drivers/scsi/ufs/ufshpb.h
+@@ -101,10 +101,36 @@ struct ufshpb_lu_info {
+ 	int max_active_rgns;
+ };
+ 
++struct ufshpb_active_field {
++	__be16 active_rgn;
++	__be16 active_srgn;
++} __packed;
++
++struct ufshpb_rsp_field {
++	__be16 sense_data_len;
++	u8 desc_type;
++	u8 additional_len;
++	u8 hpb_type;
++	u8 reserved;
++	u8 active_rgn_cnt;
++	u8 inactive_rgn_cnt;
++	struct ufshpb_active_field hpb_active_field[2];
++	__be16 hpb_inactive_field[2];
++} __packed;
++
++struct ufshpb_map_ctx {
++	struct page **m_page;
++	unsigned long *ppn_dirty;
++};
++
+ struct ufshpb_subregion {
++	struct ufshpb_map_ctx *mctx;
+ 	enum HPB_SRGN_STATE srgn_state;
+ 	int rgn_idx;
+ 	int srgn_idx;
++
++	/* below information is used by rsp_list */
++	struct list_head list_act_srgn;
+ };
+ 
+ struct ufshpb_region {
+@@ -112,6 +138,39 @@ struct ufshpb_region {
+ 	enum HPB_RGN_STATE rgn_state;
+ 	int rgn_idx;
+ 	int srgn_cnt;
++
++	/* below information is used by rsp_list */
++	struct list_head list_inact_rgn;
++
++	/* below information is used by lru */
++	struct list_head list_lru_rgn;
++};
++
++/**
++ * struct ufshpb_req - UFSHPB READ BUFFER (for caching map) request structure
++ * @req: block layer request for READ BUFFER
++ * @bio: bio for holding map page
++ * @hpb: ufshpb_lu structure that related to the L2P map
++ * @mctx: L2P map information
++ * @rgn_idx: target region index
++ * @srgn_idx: target sub-region index
++ * @lun: target logical unit number
++ */
++struct ufshpb_req {
++	struct request *req;
++	struct bio *bio;
++	struct ufshpb_lu *hpb;
++	struct ufshpb_map_ctx *mctx;
++
++	unsigned int rgn_idx;
++	unsigned int srgn_idx;
++	unsigned int lun;
++};
++
++struct victim_select_info {
++	struct list_head lh_lru_rgn;
++	int max_lru_active_cnt; /* supported hpb #region - pinned #region */
++	atomic_t active_cnt;
+ };
+ 
+ struct ufshpb_stats {
+@@ -134,6 +193,16 @@ struct ufshpb_lu {
+ 	spinlock_t hpb_state_lock;
+ 	atomic_t hpb_state; /* hpb_state_lock */
+ 
++	spinlock_t rsp_list_lock;
++	struct list_head lh_act_srgn; /* rsp_list_lock */
++	struct list_head lh_inact_rgn; /* rsp_list_lock */
++
++	/* cached L2P map management worker */
++	struct work_struct map_work;
++
++	/* for selecting victim */
++	struct victim_select_info lru_info;
++
+ 	/* pinned region information */
+ 	u32 lu_pinned_start;
+ 	u32 lu_pinned_end;
+@@ -152,6 +221,9 @@ struct ufshpb_lu {
+ 
+ 	struct ufshpb_stats stats;
+ 
++	struct kmem_cache *map_req_cache;
++	struct kmem_cache *m_page_cache;
++
+ 	struct ufsf_feature_info *ufsf;
+ 	struct list_head list_hpb_lu;
+ };
+-- 
+2.17.1
+
 
