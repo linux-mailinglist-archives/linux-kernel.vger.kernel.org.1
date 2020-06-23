@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB8220635C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E631F206360
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390245AbgFWUXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:23:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40974 "EHLO mail.kernel.org"
+        id S2390277AbgFWUXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:23:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390226AbgFWUWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:22:54 -0400
+        id S2390274AbgFWUXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:23:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBF4620780;
-        Tue, 23 Jun 2020 20:22:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 16B8C2070E;
+        Tue, 23 Jun 2020 20:23:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943774;
-        bh=ETVQV97saw+ydWD4BwAxXdz3de9wHC72zewN7Xcb5Ao=;
+        s=default; t=1592943794;
+        bh=KkBMj9YRD+62VQ1A+vZUx6Bw2StxSTW354l2AhqQOsc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cbjC3907ysF5bxFYKuAAxp4MHpPqo9/DjKop/N7g9Nk/LSm0Bb/sIWxlSWmZSOYHm
-         bsIvtxD7cI688w1tU1yAy/yJOTCxRqU+d0OCJ0D/Ft58IE7AX8GVomdQ5IANyQCVOZ
-         W2LD4d0de35D8OT5DygiJqRbkwcE+vs6sZagIZh4=
+        b=CVtUmx4AuPhhx9biYqs842q/qqZ29g7P1A6MCjI/eMCguKVBSeEaptOcAA6PnjAEM
+         +Nyy6vyxT4ToBPV5tpMM9/BVTf0gLwKCjnYH2GMvnYYSGbajxok042JhZCZgquIYZO
+         0GNAwgDAa8OGDZRgI2lqci8ntIyMYDMG4cctVuk4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 046/314] coresight: tmc: Fix TMC mode read in tmc_read_prepare_etb()
-Date:   Tue, 23 Jun 2020 21:54:01 +0200
-Message-Id: <20200623195341.007599011@linuxfoundation.org>
+Subject: [PATCH 5.4 053/314] powerpc/ptdump: Add _PAGE_COHERENT flag
+Date:   Tue, 23 Jun 2020 21:54:08 +0200
+Message-Id: <20200623195341.353912059@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
 References: <20200623195338.770401005@linuxfoundation.org>
@@ -45,91 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit 347adb0d6385c3220dc01ab61807a5b1892901cc ]
+[ Upstream commit 3af4786eb429b2df76cbd7ce3bae21467ac3e4fb ]
 
-On some QCOM platforms like SC7180, SDM845 and SM8150,
-reading TMC mode register without proper coresight power
-management can lead to async exceptions like the one in
-the call trace below in tmc_read_prepare_etb(). This can
-happen if the user tries to read the TMC etf data via
-device node without setting up source and the sink first.
-Fix this by having a check for coresight sysfs mode
-before reading TMC mode management register.
+For platforms using shared.c (4xx, Book3e, Book3s/32), also handle the
+_PAGE_COHERENT flag which corresponds to the M bit of the WIMG flags.
 
- Kernel panic - not syncing: Asynchronous SError Interrupt
- CPU: 7 PID: 2605 Comm: hexdump Tainted: G S                5.4.30 #122
- Call trace:
-  dump_backtrace+0x0/0x188
-  show_stack+0x20/0x2c
-  dump_stack+0xdc/0x144
-  panic+0x168/0x36c
-  panic+0x0/0x36c
-  arm64_serror_panic+0x78/0x84
-  do_serror+0x130/0x138
-  el1_error+0x84/0xf8
-  tmc_read_prepare_etb+0x88/0xb8
-  tmc_open+0x40/0xd8
-  misc_open+0x120/0x158
-  chrdev_open+0xb8/0x1a4
-  do_dentry_open+0x268/0x3a0
-  vfs_open+0x34/0x40
-  path_openat+0x39c/0xdf4
-  do_filp_open+0x90/0x10c
-  do_sys_open+0x150/0x3e8
-  __arm64_compat_sys_openat+0x28/0x34
-  el0_svc_common+0xa8/0x160
-  el0_svc_compat_handler+0x2c/0x38
-  el0_svc_compat+0x8/0x10
-
-Fixes: 4525412a5046 ("coresight: tmc: making prepare/unprepare functions generic")
-Reported-by: Stephen Boyd <swboyd@chromium.org>
-Suggested-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Link: https://lore.kernel.org/r/20200518180242.7916-14-mathieu.poirier@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+[mpe: Make it more verbose, use "coherent" rather than "m"]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/324c3d860717e8e91fca3bb6c0f8b23e1644a404.1589866984.git.christophe.leroy@csgroup.eu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/coresight/coresight-tmc-etf.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ arch/powerpc/mm/ptdump/shared.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-index d0cc3985b72a0..36cce2bfb7449 100644
---- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
-+++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
-@@ -596,13 +596,6 @@ int tmc_read_prepare_etb(struct tmc_drvdata *drvdata)
- 		goto out;
- 	}
- 
--	/* There is no point in reading a TMC in HW FIFO mode */
--	mode = readl_relaxed(drvdata->base + TMC_MODE);
--	if (mode != TMC_MODE_CIRCULAR_BUFFER) {
--		ret = -EINVAL;
--		goto out;
--	}
--
- 	/* Don't interfere if operated from Perf */
- 	if (drvdata->mode == CS_MODE_PERF) {
- 		ret = -EINVAL;
-@@ -616,8 +609,15 @@ int tmc_read_prepare_etb(struct tmc_drvdata *drvdata)
- 	}
- 
- 	/* Disable the TMC if need be */
--	if (drvdata->mode == CS_MODE_SYSFS)
-+	if (drvdata->mode == CS_MODE_SYSFS) {
-+		/* There is no point in reading a TMC in HW FIFO mode */
-+		mode = readl_relaxed(drvdata->base + TMC_MODE);
-+		if (mode != TMC_MODE_CIRCULAR_BUFFER) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
- 		__tmc_etb_disable_hw(drvdata);
-+	}
- 
- 	drvdata->reading = true;
- out:
+diff --git a/arch/powerpc/mm/ptdump/shared.c b/arch/powerpc/mm/ptdump/shared.c
+index f7ed2f187cb01..784f8df17f732 100644
+--- a/arch/powerpc/mm/ptdump/shared.c
++++ b/arch/powerpc/mm/ptdump/shared.c
+@@ -30,6 +30,11 @@ static const struct flag_info flag_array[] = {
+ 		.val	= _PAGE_PRESENT,
+ 		.set	= "present",
+ 		.clear	= "       ",
++	}, {
++		.mask	= _PAGE_COHERENT,
++		.val	= _PAGE_COHERENT,
++		.set	= "coherent",
++		.clear	= "        ",
+ 	}, {
+ 		.mask	= _PAGE_GUARDED,
+ 		.val	= _PAGE_GUARDED,
 -- 
 2.25.1
 
