@@ -2,59 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD41205382
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 15:32:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CFC20537A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 15:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732761AbgFWNcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 09:32:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50820 "EHLO mail.kernel.org"
+        id S1732721AbgFWNbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 09:31:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732655AbgFWNbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 09:31:45 -0400
+        id S1732632AbgFWNbo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 09:31:44 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 26AD52082F;
-        Tue, 23 Jun 2020 13:31:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8051D207BB;
+        Tue, 23 Jun 2020 13:31:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592919104;
-        bh=tN9aRL4pHrBCYhyfhZTcndNej+VastPj+Z3hzYU/sxE=;
+        s=default; t=1592919103;
+        bh=km1TTFWf9AKbBi+av9lc+XYXFzm3Utc9eo+duYioHqg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nQU2DpCpmVq12wLuLrk0MrKQUOgMkCPGT+rmign2Kj5uahu12lS4nRQyauln7+ahW
-         gTYcHP0qWrjGLx1/iau3BvvNLNJtIQ6Eu3wWDw/kXAT7GaHzmYwLCO0GBvF0If4f7p
-         a6C/5dim3pncgyVECy1BGmVEZmukvtT4HfR6UV04=
+        b=qaQg+Cl+ziyIeJaT/ZDvBMckGqm+Pyu6qOuPCrD9OXD8tAxJL5f1rndIwfXUq01JK
+         qOpcZPXStPwVQDo0yOuLZzFwkxsKrih4A18Bp6lB97FoeBk3pqKrccLlWQtOwc4FdQ
+         QJeEwN1/iwBh8h/T7orF37EjNy22gCDsT2SDbffY=
 Received: from mchehab by mail.kernel.org with local (Exim 4.93)
         (envelope-from <mchehab@kernel.org>)
-        id 1jnj1Z-007VJh-DS; Tue, 23 Jun 2020 15:31:41 +0200
+        id 1jnj1Z-007VJl-Em; Tue, 23 Jun 2020 15:31:41 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Nitin Gupta <nigupta@nvidia.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        dri-devel@lists.freedesktop.org, linux-mm@kvack.org,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: [PATCH v3 3/7] docs: move nommu-mmap.txt to admin-guide and rename to ReST
-Date:   Tue, 23 Jun 2020 15:31:36 +0200
-Message-Id: <3a63d1833b513700755c85bf3bda0a6c4ab56986.1592918949.git.mchehab+huawei@kernel.org>
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Pragat Pandya <pragat.pandya@gmail.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Harald Seiler <hws@denx.de>
+Subject: [PATCH v3 4/7] docs: move mailbox.txt to driver-api and rename it
+Date:   Tue, 23 Jun 2020 15:31:37 +0200
+Message-Id: <03e40c31b86c1f4fd3597bf4bfb8346901286bab.1592918949.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1592918949.git.mchehab+huawei@kernel.org>
 References: <cover.1592918949.git.mchehab+huawei@kernel.org>
@@ -65,106 +46,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The nommu-mmap.txt file provides description of user visible
-behaviuour. So, move it to the admin-guide.
+This file is already at the ReST format. Move it to
+driver-api and rename it.
 
-As it is already at the ReST, also rename it.
-
-Suggested-by: Mike Rapoport <rppt@linux.ibm.com>
 Suggested-by: Jonathan Corbet <corbet@lwn.net>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/admin-guide/mm/index.rst                          | 1 +
- Documentation/{nommu-mmap.txt => admin-guide/mm/nommu-mmap.rst} | 0
- Documentation/admin-guide/sysctl/vm.rst                         | 2 +-
- Documentation/gpu/drm-mm.rst                                    | 2 +-
- init/Kconfig                                                    | 2 +-
- mm/Kconfig                                                      | 2 +-
- mm/nommu.c                                                      | 2 +-
- 7 files changed, 6 insertions(+), 5 deletions(-)
- rename Documentation/{nommu-mmap.txt => admin-guide/mm/nommu-mmap.rst} (100%)
+ Documentation/driver-api/index.rst                    | 1 +
+ Documentation/{mailbox.txt => driver-api/mailbox.rst} | 0
+ 2 files changed, 1 insertion(+)
+ rename Documentation/{mailbox.txt => driver-api/mailbox.rst} (100%)
 
-diff --git a/Documentation/admin-guide/mm/index.rst b/Documentation/admin-guide/mm/index.rst
-index 11db46448354..774dad6d3d29 100644
---- a/Documentation/admin-guide/mm/index.rst
-+++ b/Documentation/admin-guide/mm/index.rst
-@@ -31,6 +31,7 @@ the Linux memory management.
-    idle_page_tracking
-    ksm
-    memory-hotplug
-+   nommu-map
-    numa_memory_policy
-    numaperf
-    pagemap
-diff --git a/Documentation/nommu-mmap.txt b/Documentation/admin-guide/mm/nommu-mmap.rst
+diff --git a/Documentation/driver-api/index.rst b/Documentation/driver-api/index.rst
+index 6567187e7687..3eb0085d5e42 100644
+--- a/Documentation/driver-api/index.rst
++++ b/Documentation/driver-api/index.rst
+@@ -48,6 +48,7 @@ available subsections can be seen below.
+    scsi
+    libata
+    target
++   mailbox
+    mtdnand
+    miscellaneous
+    mei/index
+diff --git a/Documentation/mailbox.txt b/Documentation/driver-api/mailbox.rst
 similarity index 100%
-rename from Documentation/nommu-mmap.txt
-rename to Documentation/admin-guide/mm/nommu-mmap.rst
-diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
-index 4b7c496199ca..4b9d2e8e9142 100644
---- a/Documentation/admin-guide/sysctl/vm.rst
-+++ b/Documentation/admin-guide/sysctl/vm.rst
-@@ -598,7 +598,7 @@ trimming of allocations is initiated.
- 
- The default value is 1.
- 
--See Documentation/nommu-mmap.txt for more information.
-+See Documentation/admin-guide/mm/nommu-mmap.rst for more information.
- 
- 
- numa_zonelist_order
-diff --git a/Documentation/gpu/drm-mm.rst b/Documentation/gpu/drm-mm.rst
-index 8d10e6b38918..9abee1589c1e 100644
---- a/Documentation/gpu/drm-mm.rst
-+++ b/Documentation/gpu/drm-mm.rst
-@@ -311,7 +311,7 @@ To use drm_gem_cma_get_unmapped_area(), drivers must fill the struct
- a pointer on drm_gem_cma_get_unmapped_area().
- 
- More detailed information about get_unmapped_area can be found in
--Documentation/nommu-mmap.txt
-+Documentation/admin-guide/mm/nommu-mmap.rst
- 
- Memory Coherency
- ----------------
-diff --git a/init/Kconfig b/init/Kconfig
-index a46aa8f3174d..2dd5531dae98 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1957,7 +1957,7 @@ config MMAP_ALLOW_UNINITIALIZED
- 	  userspace.  Since that isn't generally a problem on no-MMU systems,
- 	  it is normally safe to say Y here.
- 
--	  See Documentation/nommu-mmap.txt for more information.
-+	  See Documentation/mm/nommu-mmap.rst for more information.
- 
- config SYSTEM_DATA_VERIFICATION
- 	def_bool n
-diff --git a/mm/Kconfig b/mm/Kconfig
-index f2104cc0d35c..d41f3fa7e923 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -387,7 +387,7 @@ config NOMMU_INITIAL_TRIM_EXCESS
- 	  This option specifies the initial value of this option.  The default
- 	  of 1 says that all excess pages should be trimmed.
- 
--	  See Documentation/nommu-mmap.txt for more information.
-+	  See Documentation/mm/nommu-mmap.rst for more information.
- 
- config TRANSPARENT_HUGEPAGE
- 	bool "Transparent Hugepage Support"
-diff --git a/mm/nommu.c b/mm/nommu.c
-index f32a69095d50..314174817b04 100644
---- a/mm/nommu.c
-+++ b/mm/nommu.c
-@@ -5,7 +5,7 @@
-  *  Replacement code for mm functions to support CPU's that don't
-  *  have any form of memory management unit (thus no virtual memory).
-  *
-- *  See Documentation/nommu-mmap.txt
-+ *  See Documentation/mm/nommu-mmap.rst
-  *
-  *  Copyright (c) 2004-2008 David Howells <dhowells@redhat.com>
-  *  Copyright (c) 2000-2003 David McCullough <davidm@snapgear.com>
+rename from Documentation/mailbox.txt
+rename to Documentation/driver-api/mailbox.rst
 -- 
 2.26.2
 
