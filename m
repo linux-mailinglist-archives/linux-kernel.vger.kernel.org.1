@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB624206614
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:52:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB7F82065EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393887AbgFWVhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:37:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50252 "EHLO mail.kernel.org"
+        id S2393897AbgFWVf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:35:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51614 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387709AbgFWUJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:09:13 -0400
+        id S2388398AbgFWUK1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:10:27 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F92C206C3;
-        Tue, 23 Jun 2020 20:09:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 67FE2206C3;
+        Tue, 23 Jun 2020 20:10:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942953;
-        bh=WeGvs3GV1kUhvXPyuoJ5QLSqTBl7j/Dpft+cOBtvAB0=;
+        s=default; t=1592943026;
+        bh=J8QAdJqFo59qas2Kh4rCIOp5wty6CYAC1DAaLthyu1M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KFirUG31VIrJZSH3bzdacyChReFkK+uBvzzhrsm5HmBcBDibZL6r73YUPljBy9XDj
-         mTcgq5ye1bswOi/C8AWXULgJwqqO0i1GLcfEZvZ2sKJTQpatTVNpevNXW/58vjixyX
-         vrqM9Cdo2UVEIGjT6K/gFYGdV/NN8IzMzHeQYAFI=
+        b=oT65vGHpJt7bA4jJ24OwY58zC9YI7vLVdCWHFDSiVC1AmlZ9VkBr96z6RbEErzqhv
+         h4ZgQgNK9x4zWp2u27EqI4a1JHMna9iAhSq4C1N4dbQX7Q7+J1Zhf9Irlc3u7jaQFk
+         P99nrDqzaSgPfKsVtKS6sgxR/5UKJXK4A+A6hQ9g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Robert Foss <robert.foss@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 199/477] arm64: dts: qcom: c630: Add WiFi node
-Date:   Tue, 23 Jun 2020 21:53:16 +0200
-Message-Id: <20200623195416.992536122@linuxfoundation.org>
+Subject: [PATCH 5.7 203/477] tty: n_gsm: Fix SOF skipping
+Date:   Tue, 23 Jun 2020 21:53:20 +0200
+Message-Id: <20200623195417.177369978@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -45,42 +44,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
 
-[ Upstream commit 3fb298d0b2f2a1d47d53806d4ddf8f4ae83353cc ]
+[ Upstream commit 84d6f81c1fb58b56eba81ff0a36cf31946064b40 ]
 
-Specify regulators and enable the &wifi node. The firmware uses the 8
-bit version of the host capability message, so specify this quirk.
+For at least some modems like the TELIT LE910, skipping SOF makes
+transfers blocking indefinitely after a short amount of data
+transferred.
 
-Reviewed-by: Robert Foss <robert.foss@linaro.org>
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20191018055841.3729591-1-bjorn.andersson@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Given the small improvement provided by skipping the SOF (just one
+byte on about 100 bytes), it seems better to completely remove this
+"feature" than make it optional.
+
+Fixes: e1eaea46bb40 ("tty: n_gsm line discipline")
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Link: https://lore.kernel.org/r/20200512115323.1447922-3-gregory.clement@bootlin.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/tty/n_gsm.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-index 51a670ad15b24..4b9860a2c8ebd 100644
---- a/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm850-lenovo-yoga-c630.dts
-@@ -577,3 +577,14 @@
- 		};
- 	};
- };
-+
-+&wifi {
-+	status = "okay";
-+
-+	vdd-0.8-cx-mx-supply = <&vreg_l5a_0p8>;
-+	vdd-1.8-xo-supply = <&vreg_l7a_1p8>;
-+	vdd-1.3-rfa-supply = <&vreg_l17a_1p3>;
-+	vdd-3.3-ch0-supply = <&vreg_l25a_3p3>;
-+
-+	qcom,snoc-host-cap-8bit-quirk;
-+};
+diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+index d77ed82a4840e..20b22c55547e0 100644
+--- a/drivers/tty/n_gsm.c
++++ b/drivers/tty/n_gsm.c
+@@ -677,7 +677,6 @@ static void gsm_data_kick(struct gsm_mux *gsm)
+ {
+ 	struct gsm_msg *msg, *nmsg;
+ 	int len;
+-	int skip_sof = 0;
+ 
+ 	list_for_each_entry_safe(msg, nmsg, &gsm->tx_list, list) {
+ 		if (gsm->constipated && msg->addr)
+@@ -699,15 +698,10 @@ static void gsm_data_kick(struct gsm_mux *gsm)
+ 			print_hex_dump_bytes("gsm_data_kick: ",
+ 					     DUMP_PREFIX_OFFSET,
+ 					     gsm->txframe, len);
+-
+-		if (gsm->output(gsm, gsm->txframe + skip_sof,
+-						len - skip_sof) < 0)
++		if (gsm->output(gsm, gsm->txframe, len) < 0)
+ 			break;
+ 		/* FIXME: Can eliminate one SOF in many more cases */
+ 		gsm->tx_bytes -= msg->len;
+-		/* For a burst of frames skip the extra SOF within the
+-		   burst */
+-		skip_sof = 1;
+ 
+ 		list_del(&msg->list);
+ 		kfree(msg);
 -- 
 2.25.1
 
