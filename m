@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E442060A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5E2206057
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392730AbgFWUpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:45:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42306 "EHLO mail.kernel.org"
+        id S2403872AbgFWUlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:41:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389681AbgFWUo7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:44:59 -0400
+        id S2391913AbgFWUlh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:41:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DEB2421BE5;
-        Tue, 23 Jun 2020 20:44:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5B7D52053B;
+        Tue, 23 Jun 2020 20:41:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945100;
-        bh=0ITsDM3fOKZh+tWWm63frmHczA2dJQnz3x74cD9OrLA=;
+        s=default; t=1592944897;
+        bh=TMiyGgn59z1wPXiit7wOGB9KEZd/5dwFmdSTrlJu4DE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cFdI+rrKPkpFIKKto9/J4AfXX4I5T/8zcJx8aq7ccEmSp6Sl3A6tNJqwHdxgFFVXc
-         CiTF29umMVTKsm5Ac6Mal5sIjU76o2yvDcAcz7S2YxHNz0mGilaxm1/BezHJ1qajk/
-         Ink+UYTnljUZmDYplGdiv/9hebaDLi8fWJ1JBU5Q=
+        b=EPoHpwyYYB8MCJCvWF6kM4Fn9vZMDC0jm6GXwvN7DYnRHCioPBG45NnLhLRMom419
+         M2un7XuGaGdOnPr2drqiVLaYr8pfyIOyr51R8WKEqa0eZLNjIWvVRNx1XXrFUD0Owb
+         DYKmh4lLvVXSIo+OZrZ1h4cAzgg3I8LX/pu/4Atg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, ashimida <ashimida@linux.alibaba.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        stable@vger.kernel.org, YiFei Zhu <zhuyifei@google.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Stanislav Fomichev <sdf@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 032/136] mksysmap: Fix the mismatch of .L symbols in System.map
+Subject: [PATCH 4.19 160/206] net/filter: Permit reading NET in load_bytes_relative when MAC not set
 Date:   Tue, 23 Jun 2020 21:58:08 +0200
-Message-Id: <20200623195305.267444170@linuxfoundation.org>
+Message-Id: <20200623195324.870879506@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
-References: <20200623195303.601828702@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,44 +45,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ashimida <ashimida@linux.alibaba.com>
+From: YiFei Zhu <zhuyifei1999@gmail.com>
 
-[ Upstream commit 72d24accf02add25e08733f0ecc93cf10fcbd88c ]
+[ Upstream commit 0f5d82f187e1beda3fe7295dfc500af266a5bd80 ]
 
-When System.map was generated, the kernel used mksysmap to
-filter the kernel symbols, but all the symbols with the
-second letter 'L' in the kernel were filtered out, not just
-the symbols starting with 'dot + L'.
+Added a check in the switch case on start_header that checks for
+the existence of the header, and in the case that MAC is not set
+and the caller requests for MAC, -EFAULT. If the caller requests
+for NET then MAC's existence is completely ignored.
 
-For example:
-ashimida@ubuntu:~/linux$ cat System.map |grep ' .L'
-ashimida@ubuntu:~/linux$ nm -n vmlinux |grep ' .L'
-ffff0000088028e0 t bLength_show
-......
-ffff0000092e0408 b PLLP_OUTC_lock
-ffff0000092e0410 b PLLP_OUTA_lock
+There is no function to check NET header's existence and as far
+as cgroup_skb/egress is concerned it should always be set.
 
-The original intent should be to filter out all local symbols
-starting with '.L', so the dot should be escaped.
+Removed for ptr >= the start of header, considering offset is
+bounded unsigned and should always be true. len <= end - mac is
+redundant to ptr + len <= end.
 
-Fixes: 00902e984732 ("mksysmap: Add h8300 local symbol pattern")
-Signed-off-by: ashimida <ashimida@linux.alibaba.com>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Fixes: 3eee1f75f2b9 ("bpf: fix bpf_skb_load_bytes_relative pkt length check")
+Signed-off-by: YiFei Zhu <zhuyifei@google.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Reviewed-by: Stanislav Fomichev <sdf@google.com>
+Link: https://lore.kernel.org/bpf/76bb820ddb6a95f59a772ecbd8c8a336f646b362.1591812755.git.zhuyifei@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/mksysmap | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/core/filter.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/scripts/mksysmap b/scripts/mksysmap
-index a35acc0d0b827..9aa23d15862a0 100755
---- a/scripts/mksysmap
-+++ b/scripts/mksysmap
-@@ -41,4 +41,4 @@
- # so we just ignore them to let readprofile continue to work.
- # (At least sparc64 has __crc_ in the middle).
+diff --git a/net/core/filter.c b/net/core/filter.c
+index 40b3af05c883c..b5521b60a2d4f 100644
+--- a/net/core/filter.c
++++ b/net/core/filter.c
+@@ -1730,25 +1730,27 @@ BPF_CALL_5(bpf_skb_load_bytes_relative, const struct sk_buff *, skb,
+ 	   u32, offset, void *, to, u32, len, u32, start_header)
+ {
+ 	u8 *end = skb_tail_pointer(skb);
+-	u8 *net = skb_network_header(skb);
+-	u8 *mac = skb_mac_header(skb);
+-	u8 *ptr;
++	u8 *start, *ptr;
  
--$NM -n $1 | grep -v '\( [aNUw] \)\|\(__crc_\)\|\( \$[adt]\)\|\( .L\)' > $2
-+$NM -n $1 | grep -v '\( [aNUw] \)\|\(__crc_\)\|\( \$[adt]\)\|\( \.L\)' > $2
+-	if (unlikely(offset > 0xffff || len > (end - mac)))
++	if (unlikely(offset > 0xffff))
+ 		goto err_clear;
+ 
+ 	switch (start_header) {
+ 	case BPF_HDR_START_MAC:
+-		ptr = mac + offset;
++		if (unlikely(!skb_mac_header_was_set(skb)))
++			goto err_clear;
++		start = skb_mac_header(skb);
+ 		break;
+ 	case BPF_HDR_START_NET:
+-		ptr = net + offset;
++		start = skb_network_header(skb);
+ 		break;
+ 	default:
+ 		goto err_clear;
+ 	}
+ 
+-	if (likely(ptr >= mac && ptr + len <= end)) {
++	ptr = start + offset;
++
++	if (likely(ptr + len <= end)) {
+ 		memcpy(to, ptr, len);
+ 		return 0;
+ 	}
 -- 
 2.25.1
 
