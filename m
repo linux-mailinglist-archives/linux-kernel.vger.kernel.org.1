@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A95F205C8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D01E205C8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:04:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387977AbgFWUDH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:03:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40472 "EHLO mail.kernel.org"
+        id S2387996AbgFWUDN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:03:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387964AbgFWUDC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:03:02 -0400
+        id S2387976AbgFWUDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:03:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0539A2078A;
-        Tue, 23 Jun 2020 20:03:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 07CB020FC3;
+        Tue, 23 Jun 2020 20:03:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942581;
-        bh=9/LBg4O0E12RfutimPzYdGkz066z0xWK9cekAAQRx5c=;
+        s=default; t=1592942586;
+        bh=noT/ndaq04FfNDvkcR4+jGr6eoHVMEXPR6grHla+rLc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2gsnxsBV4tQv2JTzEV0g60/Ge44pZAcmEbGSPdnt9ty5zdkfAKu6qmUkI0qqeQ80+
-         OopOv0DsgoIqw492zgpeCQFL7p3hCJrchvMZkt8bHEa8s0kCtOsLClWWpiMvPsOUUO
-         yd3DCRlSb7B/ACobjsP5VbZUh50n3s6Lm9uMaVdE=
+        b=zrafEy8i2DIE4C9ZaaxQ/NXe60pKrNE//LKAdec5rtjZdFCIzqlb9ggZI3Cx9K8Ei
+         UFB1MNkn1AnLC51NBx13eOHsIiNHDt8KIJm+fDyAwqMe74KePI0+xDr0H52BTsk/pM
+         clBnjsjwuzM6OEIVyztcWv87s9wQjiB8wa1R+5NI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Baluta <daniel.baluta@nxp.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Tomasz Maciej Nowak <tmn505@gmail.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 054/477] ASoC: SOF: Do nothing when DSP PM callbacks are not set
-Date:   Tue, 23 Jun 2020 21:50:51 +0200
-Message-Id: <20200623195410.161234058@linuxfoundation.org>
+Subject: [PATCH 5.7 056/477] PCI: aardvark: Dont blindly enable ASPM L0s and dont write to read-only register
+Date:   Tue, 23 Jun 2020 21:50:53 +0200
+Message-Id: <20200623195410.260083381@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -47,58 +47,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Baluta <daniel.baluta@nxp.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit c26fde3b15ed41f5f452f1da727795f787833287 ]
+[ Upstream commit 90c6cb4a355e7befcb557d217d1d8b8bd5875a05 ]
 
-This provides a better separation between runtime and PM sleep
-callbacks.
+Trying to change Link Status register does not have any effect as this
+is a read-only register. Trying to overwrite bits for Negotiated Link
+Width does not make sense.
 
-Only do nothing if given runtime flag is set and calback is not set.
+In future proper change of link width can be done via Lane Count Select
+bits in PCIe Control 0 register.
 
-With the current implementation, if PM sleep callback is set but runtime
-callback is not set then at runtime resume we reload the firmware even
-if we do not support runtime resume callback.
+Trying to unconditionally enable ASPM L0s via ASPM Control bits in Link
+Control register is wrong. There should be at least some detection if
+endpoint supports L0s as isn't mandatory.
 
-Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-Signed-off-by: Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Link: https://lore.kernel.org/r/20200515135958.17511-2-kai.vehmanen@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Moreover ASPM Control bits in Link Control register are controlled by
+pcie/aspm.c code which sets it according to system ASPM settings,
+immediately after aardvark driver probes. So setting these bits by
+aardvark driver has no long running effect.
+
+Remove code which touches ASPM L0s bits from this driver and let
+kernel's ASPM implementation to set ASPM state properly.
+
+Some users are reporting issues that this code is problematic for some
+Intel wifi cards and removing it fixes them, see e.g.:
+https://bugzilla.kernel.org/show_bug.cgi?id=196339
+
+If problems with Intel wifi cards occur even after this commit, then
+pcie/aspm.c code could be modified / hooked to not enable ASPM L0s state
+for affected problematic cards.
+
+Link: https://lore.kernel.org/r/20200430080625.26070-3-pali@kernel.org
+Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sof/pm.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/pci/controller/pci-aardvark.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/sound/soc/sof/pm.c b/sound/soc/sof/pm.c
-index c410822d9920d..01d83ddc16bac 100644
---- a/sound/soc/sof/pm.c
-+++ b/sound/soc/sof/pm.c
-@@ -90,7 +90,10 @@ static int sof_resume(struct device *dev, bool runtime_resume)
- 	int ret;
+diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+index 2a20b649f40cc..3a6d07dc0a385 100644
+--- a/drivers/pci/controller/pci-aardvark.c
++++ b/drivers/pci/controller/pci-aardvark.c
+@@ -353,10 +353,6 @@ static void advk_pcie_setup_hw(struct advk_pcie *pcie)
  
- 	/* do nothing if dsp resume callbacks are not set */
--	if (!sof_ops(sdev)->resume || !sof_ops(sdev)->runtime_resume)
-+	if (!runtime_resume && !sof_ops(sdev)->resume)
-+		return 0;
-+
-+	if (runtime_resume && !sof_ops(sdev)->runtime_resume)
- 		return 0;
+ 	advk_pcie_wait_for_link(pcie);
  
- 	/* DSP was never successfully started, nothing to resume */
-@@ -175,7 +178,10 @@ static int sof_suspend(struct device *dev, bool runtime_suspend)
- 	int ret;
- 
- 	/* do nothing if dsp suspend callback is not set */
--	if (!sof_ops(sdev)->suspend)
-+	if (!runtime_suspend && !sof_ops(sdev)->suspend)
-+		return 0;
-+
-+	if (runtime_suspend && !sof_ops(sdev)->runtime_suspend)
- 		return 0;
- 
- 	if (sdev->fw_state != SOF_FW_BOOT_COMPLETE)
+-	reg = PCIE_CORE_LINK_L0S_ENTRY |
+-		(1 << PCIE_CORE_LINK_WIDTH_SHIFT);
+-	advk_writel(pcie, reg, PCIE_CORE_LINK_CTRL_STAT_REG);
+-
+ 	reg = advk_readl(pcie, PCIE_CORE_CMD_STATUS_REG);
+ 	reg |= PCIE_CORE_CMD_MEM_ACCESS_EN |
+ 		PCIE_CORE_CMD_IO_ACCESS_EN |
 -- 
 2.25.1
 
