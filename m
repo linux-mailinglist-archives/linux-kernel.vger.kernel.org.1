@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFD8A206454
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412A1206533
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390889AbgFWVTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:19:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43258 "EHLO mail.kernel.org"
+        id S2393303AbgFWVcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:32:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54458 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389874AbgFWUYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:24:33 -0400
+        id S2388557AbgFWUMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:12:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 295962073E;
-        Tue, 23 Jun 2020 20:24:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 975D420EDD;
+        Tue, 23 Jun 2020 20:12:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943873;
-        bh=7e30EfUiSxO/sFuvj8K/fgjGMIOHz30SAJcVZVXkjhQ=;
+        s=default; t=1592943162;
+        bh=4No8kJj82MoxCjfbp7pfjrtBJ3527AwcbSZTRVcL31s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0X/cT2CLA9JWlyufgjrcU6ZK5EeTWj2Zr1tgez5B5FCSJOou00WWnCzyV6w7KQrhM
-         hQR0aW+8xKbqlzTWa7hQVnNLDvbfbbHcD8rf9jeHzOXxh7Gflj11xT0MB3ArZiO49w
-         IEkL42e9P8RWUsGIuFMG6f9D23xuy9zZJ/+sYm04=
+        b=v05v46xo+evEGYTp2aXcHTimM+nGlYQnUM+lvitije6ztri0/M96E5Z44dLQq2xpl
+         9TtbwrHoGI7O+JDxdTFOC7KztP0VrxOJem7XYv4Q6a0MIUCnHLc8WWnGa03TRfcVoF
+         bHsXkjgy3WTUoqvEMOABXvPvV8Mnolivs8OZoiJo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen Zhou <chenzhou10@huawei.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
+        stable@vger.kernel.org, Laurent Dufour <ldufour@linux.ibm.com>,
+        Greg Kurz <groug@kaod.org>, Ram Pai <linuxram@us.ibm.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 084/314] staging: greybus: fix a missing-check bug in gb_lights_light_config()
-Date:   Tue, 23 Jun 2020 21:54:39 +0200
-Message-Id: <20200623195342.876247014@linuxfoundation.org>
+Subject: [PATCH 5.7 284/477] KVM: PPC: Book3S HV: Relax check on H_SVM_INIT_ABORT
+Date:   Tue, 23 Jun 2020 21:54:41 +0200
+Message-Id: <20200623195420.996711569@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
+References: <20200623195407.572062007@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Zhou <chenzhou10@huawei.com>
+From: Laurent Dufour <ldufour@linux.ibm.com>
 
-[ Upstream commit 9bb086e5ba9495ac150fbbcc5c8c2bccc06261dd ]
+[ Upstream commit e3326ae3d59e443a379367c6936941d6ab55d316 ]
 
-In gb_lights_light_config(), 'light->name' is allocated by kstrndup().
-It returns NULL when fails, add check for it.
+The commit 8c47b6ff29e3 ("KVM: PPC: Book3S HV: Check caller of H_SVM_*
+Hcalls") added checks of secure bit of SRR1 to filter out the Hcall
+reserved to the Ultravisor.
 
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-Acked-by: Rui Miguel Silva <rmfrfs@gmail.com>
-Link: https://lore.kernel.org/r/20200401030017.100274-1-chenzhou10@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+However, the Hcall H_SVM_INIT_ABORT is made by the Ultravisor passing the
+context of the VM calling UV_ESM. This allows the Hypervisor to return to
+the guest without going through the Ultravisor. Thus the Secure bit of SRR1
+is not set in that particular case.
+
+In the case a regular VM is calling H_SVM_INIT_ABORT, this hcall will be
+filtered out in kvmppc_h_svm_init_abort() because kvm->arch.secure_guest is
+not set in that case.
+
+Fixes: 8c47b6ff29e3 ("KVM: PPC: Book3S HV: Check caller of H_SVM_* Hcalls")
+Signed-off-by: Laurent Dufour <ldufour@linux.ibm.com>
+Reviewed-by: Greg Kurz <groug@kaod.org>
+Reviewed-by: Ram Pai <linuxram@us.ibm.com>
+Signed-off-by: Paul Mackerras <paulus@ozlabs.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/greybus/light.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/powerpc/kvm/book3s_hv.c | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
-index d6ba25f21d807..d2672b65c3f49 100644
---- a/drivers/staging/greybus/light.c
-+++ b/drivers/staging/greybus/light.c
-@@ -1026,7 +1026,8 @@ static int gb_lights_light_config(struct gb_lights *glights, u8 id)
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 93493f0cbfe8e..ee581cde48788 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -1099,9 +1099,14 @@ int kvmppc_pseries_do_hcall(struct kvm_vcpu *vcpu)
+ 			ret = kvmppc_h_svm_init_done(vcpu->kvm);
+ 		break;
+ 	case H_SVM_INIT_ABORT:
+-		ret = H_UNSUPPORTED;
+-		if (kvmppc_get_srr1(vcpu) & MSR_S)
+-			ret = kvmppc_h_svm_init_abort(vcpu->kvm);
++		/*
++		 * Even if that call is made by the Ultravisor, the SSR1 value
++		 * is the guest context one, with the secure bit clear as it has
++		 * not yet been secured. So we can't check it here.
++		 * Instead the kvm->arch.secure_guest flag is checked inside
++		 * kvmppc_h_svm_init_abort().
++		 */
++		ret = kvmppc_h_svm_init_abort(vcpu->kvm);
+ 		break;
  
- 	light->channels_count = conf.channel_count;
- 	light->name = kstrndup(conf.name, NAMES_MAX, GFP_KERNEL);
--
-+	if (!light->name)
-+		return -ENOMEM;
- 	light->channels = kcalloc(light->channels_count,
- 				  sizeof(struct gb_channel), GFP_KERNEL);
- 	if (!light->channels)
+ 	default:
 -- 
 2.25.1
 
