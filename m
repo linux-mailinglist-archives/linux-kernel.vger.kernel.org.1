@@ -2,171 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 681BB2056EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 506B42056F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732592AbgFWQRr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 12:17:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
+        id S1733018AbgFWQSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 12:18:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729562AbgFWQRr (ORCPT
+        with ESMTP id S1732185AbgFWQSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 12:17:47 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBBC0C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:17:45 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id l11so21190806wru.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:17:45 -0700 (PDT)
+        Tue, 23 Jun 2020 12:18:03 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5155C061795
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:18:02 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id o38so7141093qtf.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:18:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=mtC3PJGWDMIcehgxPBpR+PLKV5Q1ssV6CDNH3+eOQLw=;
-        b=AgZt1w4gGD2RpEAMlnkEkOstZUnDRyAAjz/EQMmp6yPl3Lis6UbhheQUte9x7A3Sl8
-         INAAavAqBXoG8u813E9qRNezIwY3TA/qTfYzBEtibXtlJot3xHssjhseNF9Iko9zdxlZ
-         gSBzxiH+ouRSdrfa366RTmwgZ2QRhz5Frxqn4=
+        d=lca.pw; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=SowX6r/DrbyMyIPo7bbmN6dCO4WOaZBpx8lXkNiYwRQ=;
+        b=q5PXizvouRcfNA2W9Djqc/Z84L8gq+5xyPGe7rkAVVUXYo0XRUHAEI4yVuKgTSfgc9
+         RoYCG4UkEgCC9vVO+IYyrz7JORXpNUWmlzMkIni2Vfw9kxBsp2K+YgamdfZElTJuJZTW
+         bbafUUDUQEhd51JcrBKUA9xHz8S+ZvnGFC/bx4j/zd/tIY4JT4nqabnA6jtnfro4Yx69
+         YevfddRvEKhgwHMyV0hQh6x3L1BXH3reCRQkEUr6zmcuCWOBikrw37RohUhW9xkrCqv7
+         nLIezDVzEaNlXEnFqrM5wDtOVHCyOyKL9todYtNNNUOatrNgrkdDPEXpNyPANNjAfT9T
+         s5yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=mtC3PJGWDMIcehgxPBpR+PLKV5Q1ssV6CDNH3+eOQLw=;
-        b=BxkmvMW1+e76fwxIFzPdt2EqyUe42VmYhrAc12z4LiZQUjGTwSVqLOxnFyOOhwYV6r
-         0dNdAdYHuWeY/kToOPvS3EyHMYfKjFqIoUxjJoAFGGOQIVKLqWhNhF7hW2SyNVaosQcu
-         9gmX/28DC7Fr+hac938bDo6YNDrtepQmrHL8STnhgaq86q1ieLG5ENO4EX/Yn4E0DtDp
-         l3eVsRvQpM2SgMwpI5ckoRZXYw1OiHxqmg04a+plYnjmUj/B97CCtnsTr7PN4GGgWRar
-         RxDg8XnQu1n22DZoL/PSY1KX2JIR6HNR5koc+Gk+VyngqQO+7CGEvxwMBORsjpgWqZt/
-         gASA==
-X-Gm-Message-State: AOAM5338PLBoHT4WZVa1FO0cDa1rrKuwP5CgRbV3oBy+VvacyaO87hhN
-        sF38xx115qJ0WQTB93/RJWYnaA==
-X-Google-Smtp-Source: ABdhPJyWm7Jfm7MiyZs5D80QWQxf/J5hWl6QhbRvpHGCjtbEL/+fbiu5ejjrpoum+qf6AjPPBpCveg==
-X-Received: by 2002:adf:e38d:: with SMTP id e13mr5383859wrm.304.1592929064445;
-        Tue, 23 Jun 2020 09:17:44 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id y19sm4146273wmi.6.2020.06.23.09.17.43
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=SowX6r/DrbyMyIPo7bbmN6dCO4WOaZBpx8lXkNiYwRQ=;
+        b=cDEXAX7a9F/KOnteo/6QtR1KTU+iTcJ4kWmHl009fG3Gj/SzYE2JizXbOT31UUH20m
+         583K7eQZnyLVbM2fGWU+Zj6DWJRqleY+HULBKxi/ogHK0zZN1dqXURBDmCScR5ACp9JK
+         sdjbvqBX5hCtVffc8H3zg7HJDa/LSQmGRocTEV648SgSgxYFuiwDFJvGin9I76KAWqkg
+         lo8h+Fa0NAHhrKtFUop0Tid2zed/ZokPBbt8LwpFBl7fiBRPd90DDbgL6IPqzUVBkU3P
+         yFlBv46pUR8C7m8tXkU/3IB/lwciHCWN4JvVT6cuUqoXYivehdOSYa0yKxKcF01cQ7Cc
+         +cRg==
+X-Gm-Message-State: AOAM533ncrikqeuQ9DgolaGagwWKcBPzy3hDKyNMrev4/7GM9KWXES5n
+        vMm7lNjurM2/h39K9OTDaVxwSQ==
+X-Google-Smtp-Source: ABdhPJy2/MUFYS3DJu96XPGFYPvGEfp9/cvT3JQEnV1SM172gUGWrPZ+0/Xawft3xZIbg4oUrttvEg==
+X-Received: by 2002:ac8:4448:: with SMTP id m8mr22935603qtn.4.1592929081912;
+        Tue, 23 Jun 2020 09:18:01 -0700 (PDT)
+Received: from lca.pw (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id d140sm966654qkc.22.2020.06.23.09.18.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 09:17:43 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 18:17:41 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= 
-        <ville.syrjala@linux.intel.com>,
+        Tue, 23 Jun 2020 09:18:01 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 12:17:54 -0400
+From:   Qian Cai <cai@lca.pw>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Thomas =?iso-8859-1?Q?Hellstr=F6m?= <thomas_os@shipmail.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Linux MM <linux-mm@kvack.org>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
         Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC v5 01/10] drm/vblank: Register drmm cleanup action once per
- drm_vblank_crtc
-Message-ID: <20200623161741.GN20149@phenom.ffwll.local>
-Mail-Followup-To: Lyude Paul <lyude@redhat.com>,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20200622200730.120716-1-lyude@redhat.com>
- <20200622200730.120716-2-lyude@redhat.com>
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        linux-xfs@vger.kernel.org
+Subject: Re: [PATCH] mm: Track mmu notifiers in fs_reclaim_acquire/release
+Message-ID: <20200623161754.GA1140@lca.pw>
+References: <20200604081224.863494-2-daniel.vetter@ffwll.ch>
+ <20200610194101.1668038-1-daniel.vetter@ffwll.ch>
+ <20200621174205.GB1398@lca.pw>
+ <CAKMK7uFZAFVmceoYvqPovOifGw_Y8Ey-OMy6wioMjwPWhu9dDg@mail.gmail.com>
+ <20200621200103.GV20149@phenom.ffwll.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200622200730.120716-2-lyude@redhat.com>
-X-Operating-System: Linux phenom 5.6.0-1-amd64 
+In-Reply-To: <20200621200103.GV20149@phenom.ffwll.local>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 04:07:21PM -0400, Lyude Paul wrote:
-> Since we'll be allocating resources for kthread_create_worker() in the
-> next commit (which could fail and require us to clean up the mess),
-> let's simplify the cleanup process a bit by registering a
-> drm_vblank_init_release() action for each drm_vblank_crtc so they're
-> still cleaned up if we fail to initialize one of them.
+On Sun, Jun 21, 2020 at 10:01:03PM +0200, Daniel Vetter wrote:
+> On Sun, Jun 21, 2020 at 08:07:08PM +0200, Daniel Vetter wrote:
+> > On Sun, Jun 21, 2020 at 7:42 PM Qian Cai <cai@lca.pw> wrote:
+> > >
+> > > On Wed, Jun 10, 2020 at 09:41:01PM +0200, Daniel Vetter wrote:
+> > > > fs_reclaim_acquire/release nicely catch recursion issues when
+> > > > allocating GFP_KERNEL memory against shrinkers (which gpu drivers tend
+> > > > to use to keep the excessive caches in check). For mmu notifier
+> > > > recursions we do have lockdep annotations since 23b68395c7c7
+> > > > ("mm/mmu_notifiers: add a lockdep map for invalidate_range_start/end").
+> > > >
+> > > > But these only fire if a path actually results in some pte
+> > > > invalidation - for most small allocations that's very rarely the case.
+> > > > The other trouble is that pte invalidation can happen any time when
+> > > > __GFP_RECLAIM is set. Which means only really GFP_ATOMIC is a safe
+> > > > choice, GFP_NOIO isn't good enough to avoid potential mmu notifier
+> > > > recursion.
+> > > >
+> > > > I was pondering whether we should just do the general annotation, but
+> > > > there's always the risk for false positives. Plus I'm assuming that
+> > > > the core fs and io code is a lot better reviewed and tested than
+> > > > random mmu notifier code in drivers. Hence why I decide to only
+> > > > annotate for that specific case.
+> > > >
+> > > > Furthermore even if we'd create a lockdep map for direct reclaim, we'd
+> > > > still need to explicit pull in the mmu notifier map - there's a lot
+> > > > more places that do pte invalidation than just direct reclaim, these
+> > > > two contexts arent the same.
+> > > >
+> > > > Note that the mmu notifiers needing their own independent lockdep map
+> > > > is also the reason we can't hold them from fs_reclaim_acquire to
+> > > > fs_reclaim_release - it would nest with the acquistion in the pte
+> > > > invalidation code, causing a lockdep splat. And we can't remove the
+> > > > annotations from pte invalidation and all the other places since
+> > > > they're called from many other places than page reclaim. Hence we can
+> > > > only do the equivalent of might_lock, but on the raw lockdep map.
+> > > >
+> > > > With this we can also remove the lockdep priming added in 66204f1d2d1b
+> > > > ("mm/mmu_notifiers: prime lockdep") since the new annotations are
+> > > > strictly more powerful.
+> > > >
+> > > > v2: Review from Thomas Hellstrom:
+> > > > - unbotch the fs_reclaim context check, I accidentally inverted it,
+> > > >   but it didn't blow up because I inverted it immediately
+> > > > - fix compiling for !CONFIG_MMU_NOTIFIER
+> > > >
+> > > > Cc: Thomas Hellström (Intel) <thomas_os@shipmail.org>
+> > > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > > Cc: Jason Gunthorpe <jgg@mellanox.com>
+> > > > Cc: linux-mm@kvack.org
+> > > > Cc: linux-rdma@vger.kernel.org
+> > > > Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+> > > > Cc: Christian König <christian.koenig@amd.com>
+> > > > Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> > >
+> > > Replying the right patch here...
+> > >
+> > > Reverting this commit [1] fixed the lockdep warning below while applying
+> > > some memory pressure.
+> > >
+> > > [1] linux-next cbf7c9d86d75 ("mm: track mmu notifiers in fs_reclaim_acquire/release")
+> > 
+> > Hm, then I'm confused because
+> > - there's not mmut notifier lockdep map in the splat at a..
+> > - the patch is supposed to not change anything for fs_reclaim (but the
+> > interim version got that wrong)
+> > - looking at the paths it's kmalloc vs kswapd, both places I totally
+> > expect fs_reflaim to be used.
+> > 
+> > But you're claiming reverting this prevents the lockdep splat. If
+> > that's right, then my reasoning above is broken somewhere. Someone
+> > less blind than me having an idea?
+> > 
+> > Aside this is the first email I've typed, until I realized the first
+> > report was against the broken patch and that looked like a much more
+> > reasonable explanation (but didn't quite match up with the code
+> > paths).
 > 
-> Changes since v3:
-> * Use drmm_add_action_or_reset() - Daniel Vetter
+> Below diff should undo the functional change in my patch. Can you pls test
+> whether the lockdep splat is really gone with that? Might need a lot of
+> testing and memory pressure to be sure, since all these reclaim paths
+> aren't very deterministic.
+
+No, this patch does not help but reverting the whole patch still fixed
+the splat.
+
+> -Daniel
 > 
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: nouveau@lists.freedesktop.org
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
 > ---
->  drivers/gpu/drm/drm_vblank.c | 23 ++++++++++-------------
->  1 file changed, 10 insertions(+), 13 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_vblank.c b/drivers/gpu/drm/drm_vblank.c
-> index 85e5f2db16085..ce5c1e1d29963 100644
-> --- a/drivers/gpu/drm/drm_vblank.c
-> +++ b/drivers/gpu/drm/drm_vblank.c
-> @@ -492,16 +492,12 @@ static void vblank_disable_fn(struct timer_list *t)
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index d807587c9ae6..27ea763c6155 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -4191,11 +4191,6 @@ void fs_reclaim_acquire(gfp_t gfp_mask)
+>  		if (gfp_mask & __GFP_FS)
+>  			__fs_reclaim_acquire();
 >  
->  static void drm_vblank_init_release(struct drm_device *dev, void *ptr)
->  {
-> -	unsigned int pipe;
+> -#ifdef CONFIG_MMU_NOTIFIER
+> -		lock_map_acquire(&__mmu_notifier_invalidate_range_start_map);
+> -		lock_map_release(&__mmu_notifier_invalidate_range_start_map);
+> -#endif
 > -
-> -	for (pipe = 0; pipe < dev->num_crtcs; pipe++) {
-> -		struct drm_vblank_crtc *vblank = &dev->vblank[pipe];
-> +	struct drm_vblank_crtc *vblank = ptr;
->  
-> -		drm_WARN_ON(dev, READ_ONCE(vblank->enabled) &&
-> -			    drm_core_check_feature(dev, DRIVER_MODESET));
-> +	drm_WARN_ON(dev, READ_ONCE(vblank->enabled) &&
-> +		    drm_core_check_feature(dev, DRIVER_MODESET));
->  
-> -		del_timer_sync(&vblank->disable_timer);
-> -	}
-> +	del_timer_sync(&vblank->disable_timer);
->  }
->  
->  /**
-> @@ -511,7 +507,7 @@ static void drm_vblank_init_release(struct drm_device *dev, void *ptr)
->   *
->   * This function initializes vblank support for @num_crtcs display pipelines.
->   * Cleanup is handled automatically through a cleanup function added with
-> - * drmm_add_action().
-> + * drmm_add_action_or_reset().
->   *
->   * Returns:
->   * Zero on success or a negative error code on failure.
-> @@ -530,10 +526,6 @@ int drm_vblank_init(struct drm_device *dev, unsigned int num_crtcs)
->  
->  	dev->num_crtcs = num_crtcs;
->  
-> -	ret = drmm_add_action(dev, drm_vblank_init_release, NULL);
-> -	if (ret)
-> -		return ret;
-> -
->  	for (i = 0; i < num_crtcs; i++) {
->  		struct drm_vblank_crtc *vblank = &dev->vblank[i];
->  
-> @@ -542,6 +534,11 @@ int drm_vblank_init(struct drm_device *dev, unsigned int num_crtcs)
->  		init_waitqueue_head(&vblank->queue);
->  		timer_setup(&vblank->disable_timer, vblank_disable_fn, 0);
->  		seqlock_init(&vblank->seqlock);
-> +
-> +		ret = drmm_add_action_or_reset(dev, drm_vblank_init_release,
-> +					       vblank);
-> +		if (ret)
-> +			return ret;
 >  	}
->  
->  	return 0;
-
-Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-
+>  }
+>  EXPORT_SYMBOL_GPL(fs_reclaim_acquire);
 > -- 
-> 2.26.2
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
