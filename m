@@ -2,91 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7FE1206663
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1C0206692
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393963AbgFWVlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:41:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36478 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388457AbgFWVlG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 17:41:06 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE12C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:41:06 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id h15so107862wrq.8
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:41:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=md3WRq3geqJdLGPOhsJGIsEQs0nCW0GjeQLNIB2+260=;
-        b=EDzyiZJvtCxMv+eDdYCMUvn8C/dN+/dOmev0o842aiMgBm6n5ofpm2xArfPfHY/hwK
-         RUxb1M2dfHYMQcLNaq3VVgiwl32wI5Fw2T/BQHQ5LxgeqhjbxjElSNtePs03KKVaRRfa
-         Ru8ynNignHOlZUHiEr2oZl83BCN8Td67IdjMHUQw2ybs62SPFx/X4x6zckSe0bHudMBX
-         1or47UBvL5IcXnaESTfwo+OM8PwDdHwxZu88fSMISrR9+s1vqhwiLC1h5VnNgJK6Y3l4
-         2fzNuhwER1WS88ulI8VWHFJ3BAflixyuRHdnOGYMvVsh0R4XDdu13CRwYi6493L97ryA
-         6i0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=md3WRq3geqJdLGPOhsJGIsEQs0nCW0GjeQLNIB2+260=;
-        b=MM6Ga55yIkc/WD4PASXLuNn3ukHGI0AK4g6CXR8+GoMGmeB7mw/bk2YM+RPPQiiKPe
-         lXw5NcfTvynrZ6GU9/8z8P+tfXgLa/ebnJpbB5jYY61pc/0OknMwzKWoIda//HKHf/MF
-         OGid/Tk53aK5E7c8b3yYYbhSB+d15zBOsjKWBYAp4mmTbFmVguRUVn8hSS8tKFbvHFHK
-         zkNHWb2yE0lB/IFHt+NpV7NOzFkAKS6jrHtB00SRDGrfsk17kxpxnxlUYRJJ/LzIRZMb
-         yQcxXZdeOePKO//7grwHsgI4hKUVmxEFrY0AJ1LzPQlweakk9CJAfy4enlKEqlhCKJ/p
-         SbnQ==
-X-Gm-Message-State: AOAM53016WRxMUXgfpqh4H27NoixavrGnJUH97jUX72Zm8mEJ+3Y9yAZ
-        VEgatPO4+Nepi2bd4LJSBA==
-X-Google-Smtp-Source: ABdhPJznv+RV68KZFbn8Afvx05E3kwhi1vnwFncc+m8HUFuX/FF+Db3CpJwGe47cL299GaisUun/oA==
-X-Received: by 2002:adf:f711:: with SMTP id r17mr27909588wrp.409.1592948465540;
-        Tue, 23 Jun 2020 14:41:05 -0700 (PDT)
-Received: from localhost.localdomain ([46.53.253.162])
-        by smtp.gmail.com with ESMTPSA id u9sm5458017wme.16.2020.06.23.14.41.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 14:41:05 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 00:41:03 +0300
-From:   Alexey Dobriyan <adobriyan@gmail.com>
-To:     Christian Kujau <lists@nerdbynature.de>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Willy Tarreau <w@1wt.eu>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: process '/usr/bin/rsync' started with executable stack
-Message-ID: <20200623214103.GA42474@localhost.localdomain>
-References: <alpine.DEB.2.22.1.446.2006231023390.3892@trent.utfs.org>
- <202006231131.AD0A7F5F@keescook>
- <alpine.DEB.2.22.1.446.2006231430280.3892@trent.utfs.org>
+        id S2393868AbgFWVok (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:44:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388581AbgFWVoe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 17:44:34 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E58EC2078A;
+        Tue, 23 Jun 2020 21:44:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592948673;
+        bh=F3cduie+7HxSmm3SlSwpnqOPWqiGsIacr9+k/Jixv34=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=M5bJeLzLT3a2G97qkSIxIdL8AP9OVQH66mZATVT5N9VcCipgteLJXmLIdzHwhFAys
+         xPdKK4dYoA8o0b4cNSS0tWZhXiMqCl65BAwqglM5u6GJDFQB2ccrPA6CqOpyEePXej
+         uHDE1j5uiQI2UNKyh5G0tWXRmiViTwulhSUZqmdc=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D19AD3522657; Tue, 23 Jun 2020 14:44:33 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 14:44:33 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, x86@kernel.org, elver@google.com,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        will@kernel.org, dvyukov@google.com, glider@google.com,
+        andreyknvl@google.com
+Subject: Re: [PATCH 2/9] rcu: Fixup noinstr warnings
+Message-ID: <20200623214433.GX9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200603114014.152292216@infradead.org>
+ <20200603114051.896465666@infradead.org>
+ <20200615154905.GZ2531@hirez.programming.kicks-ass.net>
+ <20200615155513.GG2554@hirez.programming.kicks-ass.net>
+ <20200615162427.GI2554@hirez.programming.kicks-ass.net>
+ <20200615171404.GI2723@paulmck-ThinkPad-P72>
+ <20200619221555.GA12280@paulmck-ThinkPad-P72>
+ <20200623204646.GF2483@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.1.446.2006231430280.3892@trent.utfs.org>
+In-Reply-To: <20200623204646.GF2483@worktop.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 02:33:50PM -0700, Christian Kujau wrote:
-> On Tue, 23 Jun 2020, Kees Cook wrote:
-> > > $ checksec --format=json --extended --file=`which rsync` | jq
-> > > {
-> > >   "/usr/bin/rsync": {
-> > >     "relro": "full",
-> > >     "canary": "yes",
-> > >     "nx": "no",
-> > ^^^^^^^^^^^^^^^^^^
-> > 
-> > It is, indeed, marked executable, it seems. What distro is this?
+On Tue, Jun 23, 2020 at 10:46:46PM +0200, Peter Zijlstra wrote:
+> On Fri, Jun 19, 2020 at 03:15:55PM -0700, Paul E. McKenney wrote:
 > 
-> Arch Linux (x86-64) with 5.6.5.a-1-hardened[0], running in a Xen DomU.
+> > Just following up because I don't see this anywhere.  If I am supposed
+> > to take this (which is more plausible now that v5.8-rc1 is out), please
+> > let me know.
+> 
+> Sorry, I got distracted by that NULL ptr thing, but that seems sorted
+> now. If you don't mind taking it through your rcu/urgent tree for -rc3
+> or so that would be awesome.
 
-Congratulations!
+Will do!
 
-https://www.archlinux.org/packages/extra/x86_64/rsync/
+Just to double-check, this is the patch from you with Message-ID
+20200603114051.896465666@infradead.org, correct?
 
-  GNU_STACK      0x0000000000000000 0x0000000000000000 0x0000000000000000
-                 0x0000000000000000 0x0000000000000000  RWE    0x10
+Or, if you prefer, this commit now on -rcu?
+
+	5fe289eccfe5 ("rcu: Fixup noinstr warnings")
+
+If this is the correct commit, I will rebase it on top of v5.8-rc2,
+and if it passes tests, send it along via rcu/urgent.
+
+							Thanx, Paul
