@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 635D1205C5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97214205C62
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387649AbgFWUBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:01:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37880 "EHLO mail.kernel.org"
+        id S2387669AbgFWUBe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:01:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38104 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387634AbgFWUBV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:01:21 -0400
+        id S2387659AbgFWUBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:01:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BEB93206C3;
-        Tue, 23 Jun 2020 20:01:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 86CBB20E65;
+        Tue, 23 Jun 2020 20:01:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942481;
-        bh=Su3a4FMJKqxjEDGcxDd9SXYLpEOQqK4yUuCllM+3hWg=;
+        s=default; t=1592942489;
+        bh=NPhdMSexgXVr2CMyXgOIkLzPcvA1wkS4We3dSQZTImo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YTZO8Xt50i9MojyMQ018YVPtucup6q06yjCSTFNuRFKUwJe3bzLngIlcb+7thSFme
-         1MwmN6VkWCS+U8UhiGqtkzjNtGy7PqjJvpmqP7GhtKg1naFaKsMPF3etCokTmTwD7J
-         CYe6wmxS28/6f1OGkZn45cCIxi7VstYXKv63w394=
+        b=tOZSEcX4KXrUSc4B1QdbIl+EOT0kDbAejqdZfsJNLDZFDf65KH7nRLzjiHf83r+tU
+         fEfeq2/E7QFjEnACEJFCpAJJzW3mX0yn2rBTZXyJRRHHHwlXdEzVnygLjZLC6Q/nge
+         U/Zuiiyt2U8cbyMwRnPX0o90qY/kKjVzmQmrvcKY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 016/477] ARM: integrator: Add some Kconfig selections
-Date:   Tue, 23 Jun 2020 21:50:13 +0200
-Message-Id: <20200623195408.368449340@linuxfoundation.org>
+Subject: [PATCH 5.7 019/477] ASoC: codecs: wm97xx: fix ac97 dependency
+Date:   Tue, 23 Jun 2020 21:50:16 +0200
+Message-Id: <20200623195408.514096798@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -43,59 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Walleij <linus.walleij@linaro.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit d2854bbe5f5c4b4bec8061caf4f2e603d8819446 ]
+[ Upstream commit ee2cbe06935bfa58f1fe07dc2a2283945f4b97dc ]
 
-The CMA and DMA_CMA Kconfig options need to be selected
-by the Integrator in order to produce boot console on some
-Integrator systems.
+A recent build fix got the dependency slightly wrong, breaking
+builds with CONFIG_AC97_BUS_NEW:
 
-The REGULATOR and REGULATOR_FIXED_VOLTAGE need to be
-selected in order to boot the system from an external
-MMC card when using MMCI/PL181 from the device tree
-probe path.
+WARNING: unmet direct dependencies detected for SND_SOC_WM9713
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AC97_BUS [=n]
+  Selected by [m]:
+  - SND_SOC_ZYLONITE [=m] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_PXA2XX_SOC [=m] && MACH_ZYLONITE [=y] && AC97_BUS [=n]=n
 
-Select these things directly from the Kconfig so we are
-sure to be able to bring the systems up with console
-from any device tree.
+WARNING: unmet direct dependencies detected for SND_SOC_WM9712
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_AC97_BUS [=n]
+  Selected by [m]:
+  - SND_PXA2XX_SOC_EM_X270 [=m] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_PXA2XX_SOC [=m] && (MACH_EM_X270 [=n] || MACH_EXEDA [=n] || MACH_CM_X300 [=y]) && AC97_BUS [=n]=n
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Change the dependency to allow either version of the AC97 library
+code.
+
+Fixes: 5a309875787d ("ASoC: Fix SND_SOC_ALL_CODECS imply ac97 fallout")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Link: https://lore.kernel.org/r/20200428212721.2877627-1-arnd@arndb.de
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/mach-integrator/Kconfig | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/soc/codecs/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/mach-integrator/Kconfig b/arch/arm/mach-integrator/Kconfig
-index 982eabc361635..2406cab73835a 100644
---- a/arch/arm/mach-integrator/Kconfig
-+++ b/arch/arm/mach-integrator/Kconfig
-@@ -4,6 +4,8 @@ menuconfig ARCH_INTEGRATOR
- 	depends on ARCH_MULTI_V4T || ARCH_MULTI_V5 || ARCH_MULTI_V6
- 	select ARM_AMBA
- 	select COMMON_CLK_VERSATILE
-+	select CMA
-+	select DMA_CMA
- 	select HAVE_TCM
- 	select ICST
- 	select MFD_SYSCON
-@@ -35,14 +37,13 @@ config INTEGRATOR_IMPD1
- 	select ARM_VIC
- 	select GPIO_PL061
- 	select GPIOLIB
-+	select REGULATOR
-+	select REGULATOR_FIXED_VOLTAGE
- 	help
- 	  The IM-PD1 is an add-on logic module for the Integrator which
- 	  allows ARM(R) Ltd PrimeCells to be developed and evaluated.
- 	  The IM-PD1 can be found on the Integrator/PP2 platform.
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index e60e0b6a689cd..8cdc68c141dc2 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -1620,19 +1620,19 @@ config SND_SOC_WM9090
  
--	  To compile this driver as a module, choose M here: the
--	  module will be called impd1.
--
- config INTEGRATOR_CM7TDMI
- 	bool "Integrator/CM7TDMI core module"
- 	depends on ARCH_INTEGRATOR_AP
+ config SND_SOC_WM9705
+ 	tristate
+-	depends on SND_SOC_AC97_BUS
++	depends on SND_SOC_AC97_BUS || AC97_BUS_NEW
+ 	select REGMAP_AC97
+ 	select AC97_BUS_COMPAT if AC97_BUS_NEW
+ 
+ config SND_SOC_WM9712
+ 	tristate
+-	depends on SND_SOC_AC97_BUS
++	depends on SND_SOC_AC97_BUS || AC97_BUS_NEW
+ 	select REGMAP_AC97
+ 	select AC97_BUS_COMPAT if AC97_BUS_NEW
+ 
+ config SND_SOC_WM9713
+ 	tristate
+-	depends on SND_SOC_AC97_BUS
++	depends on SND_SOC_AC97_BUS || AC97_BUS_NEW
+ 	select REGMAP_AC97
+ 	select AC97_BUS_COMPAT if AC97_BUS_NEW
+ 
 -- 
 2.25.1
 
