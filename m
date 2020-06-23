@@ -2,64 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A136820670A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 00:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9771206711
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 00:15:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389313AbgFWWOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 18:14:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387609AbgFWWOB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 18:14:01 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A17D420724;
-        Tue, 23 Jun 2020 22:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592950441;
-        bh=i4JI7Wlg1bRXKCVQ70zwdpyCQhPCsjcBPSKZS7v3IWY=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=g5GRLEgnX5RuHYiIAAHJ6VpF3ogoy853hF421Cx+cQgz/pXWZFIZH1CtC+B84295Y
-         CNuKhhNNjrMQM9B2sRZxhAAd4gxM+Cpww9KuiSxk7fWmRvE7cNA4z+06q7CD1p89yX
-         Z/GT/1ck/+Kpwmf5VxbKY9yDkv1VfuhFAoUpUYPo=
-Date:   Wed, 24 Jun 2020 00:13:57 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cristian Klein <cristian.klein@elastisys.com>,
-        Nathan Chancellor <natechancellor@gmail.com>
-Subject: Re: linux-next: build failures after merge of the hid tree
-In-Reply-To: <20200623103736.25f67de5@canb.auug.org.au>
-Message-ID: <nycvar.YFH.7.76.2006240012170.13242@cbobk.fhfr.pm>
-References: <20200621140421.7f4552df@canb.auug.org.au> <20200623103736.25f67de5@canb.auug.org.au>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S2390210AbgFWWPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 18:15:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388062AbgFWWPp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 18:15:45 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4243FC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 15:15:44 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id h18so173437qvl.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 15:15:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=25Ut+90unfc/17zR5QP1XFu2lQ+gkSVHUM/pNIHUamo=;
+        b=QWwvalzBaMOov3jyg7ZlDqMdpGmOXFv+H0bRVWqpuxO7B0uAWJnCyTQiAOI0tgHwB7
+         CvT+YGWcpO5uVVcaO8lIaGGXmlyPa+YTDzHlkQWibomUzo/z94EKTGPGF990wWmYtKKa
+         XPfG1ZCjhqKgyMxmd/le6unBuqrUqWTRp72ijuUuRmrg4Iv475uwnTxRt+Jly2YYUD3d
+         bEoFRQPDvKX9FAocXcGZQMfK00U/g4oZH7X8c/2tPg6YXI70xA9xBknE/HtxDQB8u5VS
+         4oB4YAbW1jDws9NuV1lGwZfvyPo/FJnCJL+E/CjMPM/vBAMjXTgcICmjai8BX9kBHhY+
+         R07Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=25Ut+90unfc/17zR5QP1XFu2lQ+gkSVHUM/pNIHUamo=;
+        b=qmtVWVu0avLfB2eHHekV5YzV0/xiGKtgn79VG6PJnjcGHnYk9NuToO5H6bOehKc2v9
+         la/nZzS72EuaeW7pOYcE88fPq8NyyEMFAreAX3/o3oC0VQg6+6tvQOdAQWGyNm6E0Ig3
+         UszJltcbzIDm4/efPkPAJJYrxEBgmbrxBnW2iWbwK9vYdWooG6LeK6TggSv4FCio1eBK
+         IU6x3Ykv2vA1Ns0dD8kUfnDHjNbk8R0tkHVnRq27ftUMuYmLOgKBoXmFbjiycnzJwTP1
+         FR0XHv+K3JlH3Zpl9GcvfFg4juU2wJgXJwMY2mgWCTw6ZVN6IiP7BX5qaPZLZzPa/P9c
+         CcgA==
+X-Gm-Message-State: AOAM533o8UGboLxVwUc6JgQ19KOw6tbLClY2oSPnyElQOoTi88TDncYx
+        04oTbbOeaTGL+k19kp8Mfs78WP2UBMRCpigKntP59Q==
+X-Google-Smtp-Source: ABdhPJzi0pCJ8bBLbaZzf1GYjs5Vf7FmPHkYOzYRQObkC339lGul3X0AUJf1Bq9uiHeSTWtlbtB0MWcje0NFCpC/vWw=
+X-Received: by 2002:a05:6214:964:: with SMTP id do4mr29164894qvb.84.1592950543505;
+ Tue, 23 Jun 2020 15:15:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20200623103740.25876-1-quentin@isovalent.com> <895052df95b2fc85b07e5a493fbb1ff415d8f62c.camel@perches.com>
+In-Reply-To: <895052df95b2fc85b07e5a493fbb1ff415d8f62c.camel@perches.com>
+From:   Quentin Monnet <quentin@isovalent.com>
+Date:   Tue, 23 Jun 2020 23:15:32 +0100
+Message-ID: <CACdoK4KknQMerx0k=bZxyQ35v1geGw99CitpP4hHMZ_o7W2eiA@mail.gmail.com>
+Subject: Re: [PATCH v2] checkpatch: fix CONST_STRUCT when const_structs.checkpatch
+ is missing
+To:     Joe Perches <joe@perches.com>
+Cc:     Andy Whitcroft <apw@canonical.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Jun 2020, Stephen Rothwell wrote:
+On Tue, 23 Jun 2020 at 17:48, Joe Perches <joe@perches.com> wrote:
+>
+> Hi again.
+>
+> On Tue, 2020-06-23 at 11:37 +0100, Quentin Monnet wrote:
+> > Checkpatch reports warnings when some specific structs are not declared
+> > as const in the code. The list of structs to consider was initially
+> > defined in the checkpatch.pl script itself, but it was later moved to a=
+n
+> > external file (scripts/const_structs.checkpatch), in commit bf1fa1dae68=
+e
+> > ("checkpatch: externalize the structs that should be const"). This
+> > introduced two minor issues:
+> []
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > @@ -770,7 +770,7 @@ sub read_words {
+> >                               next;
+> >                       }
+> >
+> > -                     $$wordsRef .=3D '|' if ($$wordsRef ne "");
+> > +                     $$wordsRef .=3D '|' if (defined($$wordsRef) && $$=
+wordsRef ne "");
+>
+> perl is a weird language and the $$wordsRef ne "" test
+> isn't required as the append will work even if the
+> thing being appended to isn't defined.
+>
+> You can read the perlsyn docs
+> http://perldoc.perl.org/perlsyn.html
+> or
+> https://stackoverflow.com/questions/2166575/when-is-it-ok-to-use-an-undef=
+ined-variable-in-perl-with-warnings-enabled
 
-> > I don't know what caused it, but commit
-> > 
-> >   470376737e88 ("HID: allow building hid.ko as an external module")
-> > 
-> > did not fix it.  BTW, I build with "make O=...".
+I didn't want to touch $typeOtherTypedefs in v2, and I thought I
+needed that =C2=AB $$wordsRef ne "" =C2=BB for the
+"read_words(\$typeOtherTypedefs, $typedefsfile)" where the variable
+was defined but possibly empty? Anyway, thanks for the lore and the
+links :).
 
-That's actually the patch that almost certainly broke it.
+>
+> so perhaps remove the test and improve the additional
+> $typedefsfile use too
 
-CCing Cristian (author of that patch) and Nathan, who apparently sent a 
-fixup patch for this, but I haven't seen it, as our corporate mailserver 
-had severe issues yesterday.
+Agreed, your version looks better. I'll resubmit a v3 with your
+suggestions, please feel free to comment and add a "Co-authored-by:"
+tag if you feel this is appropriate.
 
-If there is no resolution by tomorrow, we'll just drop it.
-
--- 
-Jiri Kosina
-SUSE Labs
-
+Thank you,
+Quentin
