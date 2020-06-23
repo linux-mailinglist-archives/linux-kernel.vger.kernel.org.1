@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5242061ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C42EB2061C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404040AbgFWUw1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:52:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46012 "EHLO mail.kernel.org"
+        id S2392772AbgFWUuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:50:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404053AbgFWUrc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:47:32 -0400
+        id S2403925AbgFWUss (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:48:48 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48AE62098B;
-        Tue, 23 Jun 2020 20:47:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 806C421548;
+        Tue, 23 Jun 2020 20:48:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945252;
-        bh=E6trreKOq08MadMW0fAVgORvOM/a9Y36lusfwYyNt4U=;
+        s=default; t=1592945329;
+        bh=+tp58noZXQoEUGiIglKdWJQNuoOipzmLxZuJLK3D7ss=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GJRhe74PHINcodBpmKP7WDHJq5Ufv6Wnumic7W80UI6NebpCxMh9s26ruPDUOe9+j
-         GrnpkEYCBgqlXoEAeITP/U04EuAbc2luJ7ZRoEPuxTgpJ0DEJHG26vpVDNBc8wNJWq
-         9mODeU3LLAQnx8rmH/bPvHzboRLTwI0R+8DN5lUA=
+        b=QmTvbjEX3xJKwPnGGKpEmylIbFYOSXRDuIXbZd89yeSejbjOYwwJsvcOzA6wFDaRz
+         Gs4VT5eCBXmK9VN/WeMMAoAGpJ0odC71O/TPGblscjK1uh7wJiqRiuEfAz/SV2AgSq
+         Y+glTGQdFB+EGIbiX39+Qxe1c6CZPIa1qFN0tKOU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 097/136] blktrace: use errno instead of bi_status
-Date:   Tue, 23 Jun 2020 21:59:13 +0200
-Message-Id: <20200623195308.548366419@linuxfoundation.org>
+        stable@vger.kernel.org, Tanner Love <tannerlove@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 101/136] selftests/net: in timestamping, strncpy needs to preserve null byte
+Date:   Tue, 23 Jun 2020 21:59:17 +0200
+Message-Id: <20200623195308.752003832@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
 References: <20200623195303.601828702@linuxfoundation.org>
@@ -44,48 +45,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
+From: tannerlove <tannerlove@google.com>
 
-[ Upstream commit 48bc3cd3e07a1486f45d9971c75d6090976c3b1b ]
+[ Upstream commit 8027bc0307ce59759b90679fa5d8b22949586d20 ]
 
-In blk_add_trace_spliti() blk_add_trace_bio_remap() use
-blk_status_to_errno() to pass the error instead of pasing the bi_status.
-This fixes the sparse warning.
+If user passed an interface option longer than 15 characters, then
+device.ifr_name and hwtstamp.ifr_name became non-null-terminated
+strings. The compiler warned about this:
 
-Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+timestamping.c:353:2: warning: ‘strncpy’ specified bound 16 equals \
+destination size [-Wstringop-truncation]
+  353 |  strncpy(device.ifr_name, interface, sizeof(device.ifr_name));
+
+Fixes: cb9eff097831 ("net: new user space API for time stamping of incoming and outgoing packets")
+Signed-off-by: Tanner Love <tannerlove@google.com>
+Acked-by: Willem de Bruijn <willemb@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/blktrace.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ .../selftests/networking/timestamping/timestamping.c   | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index a60c09e0bda87..30a98156f4743 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -1022,8 +1022,10 @@ static void blk_add_trace_split(void *ignore,
+diff --git a/tools/testing/selftests/networking/timestamping/timestamping.c b/tools/testing/selftests/networking/timestamping/timestamping.c
+index 5cdfd743447b7..900ed4b478996 100644
+--- a/tools/testing/selftests/networking/timestamping/timestamping.c
++++ b/tools/testing/selftests/networking/timestamping/timestamping.c
+@@ -332,10 +332,16 @@ int main(int argc, char **argv)
+ 	int val;
+ 	socklen_t len;
+ 	struct timeval next;
++	size_t if_len;
  
- 		__blk_add_trace(bt, bio->bi_iter.bi_sector,
- 				bio->bi_iter.bi_size, bio_op(bio), bio->bi_opf,
--				BLK_TA_SPLIT, bio->bi_status, sizeof(rpdu),
--				&rpdu, blk_trace_bio_get_cgid(q, bio));
-+				BLK_TA_SPLIT,
-+				blk_status_to_errno(bio->bi_status),
-+				sizeof(rpdu), &rpdu,
-+				blk_trace_bio_get_cgid(q, bio));
- 	}
- 	rcu_read_unlock();
- }
-@@ -1060,7 +1062,8 @@ static void blk_add_trace_bio_remap(void *ignore,
- 	r.sector_from = cpu_to_be64(from);
+ 	if (argc < 2)
+ 		usage(0);
+ 	interface = argv[1];
++	if_len = strlen(interface);
++	if (if_len >= IFNAMSIZ) {
++		printf("interface name exceeds IFNAMSIZ\n");
++		exit(1);
++	}
  
- 	__blk_add_trace(bt, bio->bi_iter.bi_sector, bio->bi_iter.bi_size,
--			bio_op(bio), bio->bi_opf, BLK_TA_REMAP, bio->bi_status,
-+			bio_op(bio), bio->bi_opf, BLK_TA_REMAP,
-+			blk_status_to_errno(bio->bi_status),
- 			sizeof(r), &r, blk_trace_bio_get_cgid(q, bio));
- 	rcu_read_unlock();
- }
+ 	for (i = 2; i < argc; i++) {
+ 		if (!strcasecmp(argv[i], "SO_TIMESTAMP"))
+@@ -369,12 +375,12 @@ int main(int argc, char **argv)
+ 		bail("socket");
+ 
+ 	memset(&device, 0, sizeof(device));
+-	strncpy(device.ifr_name, interface, sizeof(device.ifr_name));
++	memcpy(device.ifr_name, interface, if_len + 1);
+ 	if (ioctl(sock, SIOCGIFADDR, &device) < 0)
+ 		bail("getting interface IP address");
+ 
+ 	memset(&hwtstamp, 0, sizeof(hwtstamp));
+-	strncpy(hwtstamp.ifr_name, interface, sizeof(hwtstamp.ifr_name));
++	memcpy(hwtstamp.ifr_name, interface, if_len + 1);
+ 	hwtstamp.ifr_data = (void *)&hwconfig;
+ 	memset(&hwconfig, 0, sizeof(hwconfig));
+ 	hwconfig.tx_type =
 -- 
 2.25.1
 
