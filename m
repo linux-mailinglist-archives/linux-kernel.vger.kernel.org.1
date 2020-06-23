@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7C220622B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED6E42061E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392952AbgFWU4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:56:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40392 "EHLO mail.kernel.org"
+        id S2393067AbgFWUv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:51:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46284 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403914AbgFWUnb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:43:31 -0400
+        id S2403959AbgFWUrm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:47:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3C53E21BE5;
-        Tue, 23 Jun 2020 20:43:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0FE2520781;
+        Tue, 23 Jun 2020 20:47:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945011;
-        bh=SxyvSRQdP/oBsDW8DbXBAL6YdZBkaEfAOCB+Zzit6/k=;
+        s=default; t=1592945262;
+        bh=DspF4mRpvdIHBDbtUS+l6DngaJ7lWk6C5tuTK4ZcaIM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ilmOqijePMdGh2TilnfALM0kvZ16SXviIzX+yh4YA9vwVoH1wU54XSLHvCdAQSLu3
-         9c2gvcU6UsgaqCDkqa9BMXTtKnT+KY00PIlxIGdvpdX5XzdYRYzIEP3KDJ2bWul32z
-         rXxj4zhDXGoCx+km17DZB6T0Jr8tEiy85QUvesEA=
+        b=R7pbdl557MxmdzTqgXfHxXLC+j2bnEI7Z7WYcNaboVdjWfvxlNx1QfRvLz5UA5nfx
+         61dPit/DW43IjGm92MSrmAUYnSs2eJtGI6QIAGa/6HOZZs7U6myZP2XVhm/Hv1AsXr
+         njCDwvAJQVm6+jhPqI/EGBAgYK1jUsGvQ2E6xlxM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mike Gerow <gerow@google.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Eric Biggers <ebiggers@google.com>,
-        =?UTF-8?q?Kai=20L=C3=BCke?= <kai@kinvolk.io>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: [PATCH 4.19 199/206] crypto: algboss - dont wait during notifier callback
-Date:   Tue, 23 Jun 2020 21:58:47 +0200
-Message-Id: <20200623195326.828238315@linuxfoundation.org>
+        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        kbuild test robot <lkp@intel.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 072/136] USB: gadget: udc: s3c2410_udc: Remove pointless NULL check in s3c2410_udc_nuke
+Date:   Tue, 23 Jun 2020 21:58:48 +0200
+Message-Id: <20200623195307.304210269@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
+References: <20200623195303.601828702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,55 +46,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-commit 77251e41f89a813b4090f5199442f217bbf11297 upstream.
+[ Upstream commit 7a0fbcf7c308920bc6116b3a5fb21c8cc5fec128 ]
 
-When a crypto template needs to be instantiated, CRYPTO_MSG_ALG_REQUEST
-is sent to crypto_chain.  cryptomgr_schedule_probe() handles this by
-starting a thread to instantiate the template, then waiting for this
-thread to complete via crypto_larval::completion.
+Clang warns:
 
-This can deadlock because instantiating the template may require loading
-modules, and this (apparently depending on userspace) may need to wait
-for the crc-t10dif module (lib/crc-t10dif.c) to be loaded.  But
-crc-t10dif's module_init function uses crypto_register_notifier() and
-therefore takes crypto_chain.rwsem for write.  That can't proceed until
-the notifier callback has finished, as it holds this semaphore for read.
+drivers/usb/gadget/udc/s3c2410_udc.c:255:11: warning: comparison of
+address of 'ep->queue' equal to a null pointer is always false
+[-Wtautological-pointer-compare]
+        if (&ep->queue == NULL)
+             ~~~~^~~~~    ~~~~
+1 warning generated.
 
-Fix this by removing the wait on crypto_larval::completion from within
-cryptomgr_schedule_probe().  It's actually unnecessary because
-crypto_alg_mod_lookup() calls crypto_larval_wait() itself after sending
-CRYPTO_MSG_ALG_REQUEST.
+It is not wrong, queue is not a pointer so if ep is not NULL, the
+address of queue cannot be NULL. No other driver does a check like this
+and this check has been around since the driver was first introduced,
+presumably with no issues so it does not seem like this check should be
+something else. Just remove it.
 
-This only actually became a problem in v4.20 due to commit b76377543b73
-("crc-t10dif: Pick better transform if one becomes available"), but the
-unnecessary wait was much older.
+Commit afe956c577b2d ("kbuild: Enable -Wtautological-compare") exposed
+this but it is not the root cause of the warning.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207159
-Reported-by: Mike Gerow <gerow@google.com>
-Fixes: 398710379f51 ("crypto: algapi - Move larval completion into algboss")
-Cc: <stable@vger.kernel.org> # v3.6+
-Cc: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Reported-by: Kai Lüke <kai@kinvolk.io>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 3fc154b6b8134 ("USB Gadget driver for Samsung s3c2410 ARM SoC")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1004
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- crypto/algboss.c |    2 --
- 1 file changed, 2 deletions(-)
+ drivers/usb/gadget/udc/s3c2410_udc.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
---- a/crypto/algboss.c
-+++ b/crypto/algboss.c
-@@ -193,8 +193,6 @@ static int cryptomgr_schedule_probe(stru
- 	if (IS_ERR(thread))
- 		goto err_put_larval;
- 
--	wait_for_completion_interruptible(&larval->completion);
+diff --git a/drivers/usb/gadget/udc/s3c2410_udc.c b/drivers/usb/gadget/udc/s3c2410_udc.c
+index 394abd5d65c02..cf12ca567e692 100644
+--- a/drivers/usb/gadget/udc/s3c2410_udc.c
++++ b/drivers/usb/gadget/udc/s3c2410_udc.c
+@@ -268,10 +268,6 @@ static void s3c2410_udc_done(struct s3c2410_ep *ep,
+ static void s3c2410_udc_nuke(struct s3c2410_udc *udc,
+ 		struct s3c2410_ep *ep, int status)
+ {
+-	/* Sanity check */
+-	if (&ep->queue == NULL)
+-		return;
 -
- 	return NOTIFY_STOP;
- 
- err_put_larval:
+ 	while (!list_empty(&ep->queue)) {
+ 		struct s3c2410_request *req;
+ 		req = list_entry(ep->queue.next, struct s3c2410_request,
+-- 
+2.25.1
+
 
 
