@@ -2,100 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04D40206541
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 667FC2065CA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388453AbgFWVcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:32:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
+        id S2393511AbgFWVdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387937AbgFWVck (ORCPT
+        with ESMTP id S2391365AbgFWVdO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 17:32:40 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AEEBC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:32:40 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d4700b1ffa781b59a9277.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:4700:b1ff:a781:b59a:9277])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id A9BE51EC03D2;
-        Tue, 23 Jun 2020 23:32:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1592947958;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=//ND16OFzwTBiuWssLvSmqe373yB5auCq2YNaZGV8qg=;
-        b=aU0FiBypVYBxEKswwZ9r+EqE3zuMAVmYJud5MWTd4NyApocxpFWAbv2w3kPw8qlLuO2nP0
-        WkL6FiS4D0gy9PPe/abK5zshZEz79E2Sz600N5nVDYKiYDU7CyMdyeOZaArwA8NQFz1m7l
-        zCds/ygCwVlXaTTTQG98OOE6rEFJ3ek=
-Date:   Tue, 23 Jun 2020 23:32:30 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        jpa@kernelbug.mail.kapsi.fi, Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] selftests/fpu: Add an FPU selftest
-Message-ID: <20200623213230.GL32590@zn.tnic>
-References: <20200622190149.GL32200@zn.tnic>
- <B4D00859-000A-4F8C-8CFB-45B9BBCCA16D@amacapital.net>
- <20200623102831.GB32590@zn.tnic>
- <CALCETrXfaEr9OGc5EDpxnhRZxFk5YZBBNVH-N32Eg8V8diwqXg@mail.gmail.com>
- <20200623184726.GI32590@zn.tnic>
- <CAKwvOdnt+8RR=1JPjDNaVY8T1K7wmqFjSGM7XNUUGRb=t1hiWQ@mail.gmail.com>
- <20200623191336.GK32590@zn.tnic>
- <CAKwvOdkTYqpphqr2cvL2pDuK33aYzxXsLDQ6+_PSUk6qxUuQ7A@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdkTYqpphqr2cvL2pDuK33aYzxXsLDQ6+_PSUk6qxUuQ7A@mail.gmail.com>
+        Tue, 23 Jun 2020 17:33:14 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 827C9C061573;
+        Tue, 23 Jun 2020 14:33:14 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id C76DA129425B6;
+        Tue, 23 Jun 2020 14:33:13 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 14:33:11 -0700 (PDT)
+Message-Id: <20200623.143311.995885759487352025.davem@davemloft.net>
+To:     likaige@loongson.cn
+Cc:     benve@cisco.com, _govind@gmx.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lixuefeng@loongson.cn,
+        yangtiezhu@loongson.cn
+Subject: Re: [PATCH RESEND] net/cisco: Fix a sleep-in-atomic-context bug in
+ enic_init_affinity_hint()
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <1592899989-22049-1-git-send-email-likaige@loongson.cn>
+References: <1592899989-22049-1-git-send-email-likaige@loongson.cn>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 23 Jun 2020 14:33:14 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 01:58:15PM -0700, Nick Desaulniers wrote:
-> My point was more so about avoiding needless cc-option checks when
-> they're tautological.
+From: Kaige Li <likaige@loongson.cn>
+Date: Tue, 23 Jun 2020 16:13:09 +0800
 
-No, you're right. The oldest gcc we support is 4.8 and that eats -msse2
-just fine.
-
-> When Andy says "consider dropping the problematic GCC version" I
-> wonder if it was meant *just for this selftest* as I suggested, or
-> outright (which is untenable IMO, as it's a large jump to GCC 7.1+).
-
-Yeah, he's been schooled now :)
-
-> I'm not sure I agree, but I'll take feature detection any day over
-> version detection.
-
-Yeah, we had another issue recently with a funky compiler on some funky
-distro:
-
-https://lkml.kernel.org/r/CAEJqkgi3w%2BzvMkRBP4VtAewX1UJxrVNRQ03MtRN_yH-PwOOScQ@mail.gmail.com
-
-and I have to say, I'm not at all happy about such subtle issues
-stemming from how a distro builds its compiler and that having an impact
-on the kernel build. But I guess this is the new reality now since we're
-getting more and more married to the compiler.
-
-> Guilty, your honor. :P
+> The kernel module may sleep with holding a spinlock.
 > 
-> Maybe the feature test should be copy+pasta'd to those other places in
-> the kernel, rather than the version check?
+> The function call paths (from bottom to top) are:
+> 
+> [FUNC] zalloc_cpumask_var(GFP_KERNEL)
+> drivers/net/ethernet/cisco/enic/enic_main.c, 125: zalloc_cpumask_var in enic_init_affinity_hint
+> drivers/net/ethernet/cisco/enic/enic_main.c, 1918: enic_init_affinity_hint in enic_open
+> drivers/net/ethernet/cisco/enic/enic_main.c, 2348: enic_open in enic_reset
+> drivers/net/ethernet/cisco/enic/enic_main.c, 2341: spin_lock in enic_reset
+> 
+> To fix this bug, GFP_KERNEL is replaced with GFP_ATOMIC.
+> 
+> Signed-off-by: Kaige Li <likaige@loongson.cn>
 
-"pasta'd"- mmhmhm, tasty noodles. Good idea for lunch tomorrow, thanks!
-:-)
+Just grepping around for GFP_KERNEL usage in atomic contexts I guess
+is fine.
 
-But sure, if you feel bored. Let it soak a while first, though, until
-all the builders and bots have seen it and haven't triggered moar funky
-build errors.
+But you really have to look at the bigger picture.
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Calling a NIC driver open function from a context holding a spinlock
+is very much the real problem, so many operations have to sleep and
+in face that ->ndo_open() method is defined as being allowed to sleep
+and that's why the core networking never invokes it with spinlocks
+held.
