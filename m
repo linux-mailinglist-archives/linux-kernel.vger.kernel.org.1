@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5369B206564
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D8120655B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387825AbgFWUCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:02:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39506 "EHLO mail.kernel.org"
+        id S2387597AbgFWUBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:01:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37502 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387812AbgFWUCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:02:21 -0400
+        id S2387555AbgFWUBI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:01:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C6EEF2078A;
-        Tue, 23 Jun 2020 20:02:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E174206C3;
+        Tue, 23 Jun 2020 20:01:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942540;
-        bh=Ghva/ikaioyruQdakRl/7NQRVz7NaOjmIaeQi/c1K+o=;
+        s=default; t=1592942468;
+        bh=8S3YEdXpkcnmfREyCAK8cGhMQ1RhxM689r8xymK6pB0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vbx0IddBqrG74Q4eol103od7DttexxhP+NKnAMeMlaqXwVgfL0Z2Q3vDrRb2fDzan
-         ljELKwhL+xn8Wu/IIfjtsX4yL8KGZbq30bcl+qje8focs7n3lwprPz12iFGYUMLTjn
-         9+iCPXN5y+Iuylg4KHYbV1aP5ueusxPoQ9fkNIF4=
+        b=nSrQ6y4E4eLbL56uXgNbLpedu/P/uBuYPj4ARCbKl2hXnTLGfLQItWNF8vtoiP80S
+         NzVcB0I4hFsrn4CwJgOzXuAyG6YsugyAdkeVcVUdUbkjGBQuc2XOQovd0xKQpcMKMK
+         6vZomRUCqVaLh41VhRBlwqFpmBhKYNAxc+rTcysk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 008/477] iio: pressure: bmp280: Tolerate IRQ before registering
-Date:   Tue, 23 Jun 2020 21:50:05 +0200
-Message-Id: <20200623195407.984909154@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Pouiller?= 
+        <jerome.pouiller@silabs.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 011/477] staging: wfx: check ssidlen and prevent an array overflow
+Date:   Tue, 23 Jun 2020 21:50:08 +0200
+Message-Id: <20200623195408.128626482@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -46,56 +44,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 97b31a6f5fb95b1ec6575b78a7240baddba34384 ]
+[ Upstream commit 87f86cddda65cab8a7e3df8a00e16abeccaa0730 ]
 
-With DEBUG_SHIRQ enabled we have a kernel crash
+We need to cap "ssidlen" to prevent a memcpy() overflow.
 
-[  116.482696] BUG: kernel NULL pointer dereference, address: 0000000000000000
-
-...
-
-[  116.606571] Call Trace:
-[  116.609023]  <IRQ>
-[  116.611047]  complete+0x34/0x50
-[  116.614206]  bmp085_eoc_irq+0x9/0x10 [bmp280]
-
-because DEBUG_SHIRQ mechanism fires an IRQ before registration and drivers
-ought to be able to handle an interrupt happening before request_irq() returns.
-
-Fixes: aae953949651 ("iio: pressure: bmp280: add support for BMP085 EOC interrupt")
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Fixes: 40115bbc40e2 ("staging: wfx: implement the rest of mac80211 API")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+Link: https://lore.kernel.org/r/20200424104235.GA416402@mwanda
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/iio/pressure/bmp280-core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/staging/wfx/sta.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
-index 29c209cc1108e..2540e7c2358c1 100644
---- a/drivers/iio/pressure/bmp280-core.c
-+++ b/drivers/iio/pressure/bmp280-core.c
-@@ -713,7 +713,7 @@ static int bmp180_measure(struct bmp280_data *data, u8 ctrl_meas)
- 	unsigned int ctrl;
- 
- 	if (data->use_eoc)
--		init_completion(&data->done);
-+		reinit_completion(&data->done);
- 
- 	ret = regmap_write(data->regmap, BMP280_REG_CTRL_MEAS, ctrl_meas);
- 	if (ret)
-@@ -969,6 +969,9 @@ static int bmp085_fetch_eoc_irq(struct device *dev,
- 			"trying to enforce it\n");
- 		irq_trig = IRQF_TRIGGER_RISING;
+diff --git a/drivers/staging/wfx/sta.c b/drivers/staging/wfx/sta.c
+index 9d430346a58bb..969d7a4a7fbd9 100644
+--- a/drivers/staging/wfx/sta.c
++++ b/drivers/staging/wfx/sta.c
+@@ -520,7 +520,9 @@ static void wfx_do_join(struct wfx_vif *wvif)
+ 		ssidie = ieee80211_bss_get_ie(bss, WLAN_EID_SSID);
+ 	if (ssidie) {
+ 		ssidlen = ssidie[1];
+-		memcpy(ssid, &ssidie[2], ssidie[1]);
++		if (ssidlen > IEEE80211_MAX_SSID_LEN)
++			ssidlen = IEEE80211_MAX_SSID_LEN;
++		memcpy(ssid, &ssidie[2], ssidlen);
  	}
-+
-+	init_completion(&data->done);
-+
- 	ret = devm_request_threaded_irq(dev,
- 			irq,
- 			bmp085_eoc_irq,
+ 	rcu_read_unlock();
+ 
 -- 
 2.25.1
 
