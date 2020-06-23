@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54C7C2062A0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D3920631E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:28:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388848AbgFWVFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:05:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60210 "EHLO mail.kernel.org"
+        id S2389532AbgFWURT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:17:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33126 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391840AbgFWUg4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:36:56 -0400
+        id S2387797AbgFWURM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:17:12 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2E74F2085B;
-        Tue, 23 Jun 2020 20:36:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B059920E65;
+        Tue, 23 Jun 2020 20:17:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944616;
-        bh=z0SmxGV1pqsUgPF9FXoSEQO2G7CZWOSKbwK9/UajNNM=;
+        s=default; t=1592943432;
+        bh=7t6CfnVzOeadJbe0Kdv99c49zQUwFDZsr9J9sUyQwFs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z5Ou0PtgVaeP9EAmElqeWrcUdPHJ+IpewctGxbboctzuNkPF6k3HfVlNMfDauVvib
-         0y4lBglu0eueVXK/ne+xqWJgAKu8IBLk23AwkGGxCyC+bC/J0XO/TLbKRpniPq+LZ6
-         527N53aArqWqruBFRNW8zfOWC8jVnZt32ZnHBwmI=
+        b=wxiZVt2X2oxtsiWGVgxx36A8+9VwEeYOYlntFHQuYsxre/rjsMH/A6LT7BXRJSSwE
+         TRL1oRfUaeRaGwmf/JNuiPCTIpCKIKH3K9b2Lrh0ulzim5DXc5t7rguXDEcLytdW4Q
+         gW7L4iXprG7Muz7Hqmc66pnRGPFi5YT0yf4MhREA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 057/206] staging: gasket: Fix mapping refcnt leak when put attribute fails
-Date:   Tue, 23 Jun 2020 21:56:25 +0200
-Message-Id: <20200623195319.781016698@linuxfoundation.org>
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 389/477] crypto: hisilicon - Cap block size at 2^31
+Date:   Tue, 23 Jun 2020 21:56:26 +0200
+Message-Id: <20200623195425.918956155@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
+References: <20200623195407.572062007@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-[ Upstream commit 57a66838e1494cd881b7f4e110ec685736e8e3ca ]
+[ Upstream commit c61e5644c69775ae9d54b86018fca238aca64a9b ]
 
-gasket_sysfs_put_attr() invokes get_mapping(), which returns a reference
-of the specified gasket_sysfs_mapping object to "mapping" with increased
-refcnt.
+The function hisi_acc_create_sg_pool may allocate a block of
+memory of size PAGE_SIZE * 2^(MAX_ORDER - 1).  This value may
+exceed 2^31 on ia64, which would overflow the u32.
 
-When gasket_sysfs_put_attr() returns, local variable "mapping" becomes
-invalid, so the refcount should be decreased to keep refcount balanced.
+This patch caps it at 2^31.
 
-The reference counting issue happens in one path of
-gasket_sysfs_put_attr(). When mapping attribute is unknown, the function
-forgets to decrease the refcnt increased by get_mapping(), causing a
-refcnt leak.
-
-Fix this issue by calling put_mapping() when put attribute fails due to
-unknown attribute.
-
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Link: https://lore.kernel.org/r/1587618895-13660-1-git-send-email-xiyuyang19@fudan.edu.cn
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Fixes: d8ac7b85236b ("crypto: hisilicon - fix large sgl memory...")
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/gasket/gasket_sysfs.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/crypto/hisilicon/sgl.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/staging/gasket/gasket_sysfs.c b/drivers/staging/gasket/gasket_sysfs.c
-index fc45f0d13e87d..9c982f1c0881d 100644
---- a/drivers/staging/gasket/gasket_sysfs.c
-+++ b/drivers/staging/gasket/gasket_sysfs.c
-@@ -343,6 +343,7 @@ void gasket_sysfs_put_attr(struct device *device,
+diff --git a/drivers/crypto/hisilicon/sgl.c b/drivers/crypto/hisilicon/sgl.c
+index 0e8c7e324fb46..725a739800b0a 100644
+--- a/drivers/crypto/hisilicon/sgl.c
++++ b/drivers/crypto/hisilicon/sgl.c
+@@ -66,7 +66,8 @@ struct hisi_acc_sgl_pool *hisi_acc_create_sgl_pool(struct device *dev,
  
- 	dev_err(device, "Unable to put unknown attribute: %s\n",
- 		attr->attr.attr.name);
-+	put_mapping(mapping);
- }
- EXPORT_SYMBOL(gasket_sysfs_put_attr);
- 
+ 	sgl_size = sizeof(struct acc_hw_sge) * sge_nr +
+ 		   sizeof(struct hisi_acc_hw_sgl);
+-	block_size = PAGE_SIZE * (1 << (MAX_ORDER - 1));
++	block_size = 1 << (PAGE_SHIFT + MAX_ORDER <= 32 ?
++			   PAGE_SHIFT + MAX_ORDER - 1 : 31);
+ 	sgl_num_per_block = block_size / sgl_size;
+ 	block_num = count / sgl_num_per_block;
+ 	remain_sgl = count % sgl_num_per_block;
 -- 
 2.25.1
 
