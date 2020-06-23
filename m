@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42BCC2063FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAE37206143
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391015AbgFWVOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:14:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49850 "EHLO mail.kernel.org"
+        id S2391887AbgFWUhr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:37:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32816 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389977AbgFWU3o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:29:44 -0400
+        id S2391869AbgFWUhe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:37:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8B20E206EB;
-        Tue, 23 Jun 2020 20:29:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35DA92080C;
+        Tue, 23 Jun 2020 20:37:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944184;
-        bh=/jeMIeMAvV5mVKmzcCa+7ivUMMjbE+45PxVQ2In6AYM=;
+        s=default; t=1592944654;
+        bh=e5olAQa2168Y12AwxA8wag4NGC2SyeuofjYAZkfcgpE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aw+8J0tGsrVg6zlhlXB+CG91SvPVnyKO0PS/rchNKdnEeBmGQtqUElqrfInxjjY1P
-         WJWXNXiIeYnMauM5gQ6UcE7PBuQ/5khE0JHPO8HFd2pxAsYJhoN0E4x52UMAJ6/ucJ
-         MhzhAT1qXni/rqXNzU82tfO/QuYjvrnGO/YEciKU=
+        b=ui40uzQpDB/QIWVjIfr8/UgAAoJSGMK+cxfP8tmEZ74y3vEmiNmTkikLFMrgTCH5P
+         mxLEJAzqIJFzZaa4PR3XKVtMOGHqkWE0Zaw9ba6jLhamP8lxUC+ly5Q29enOc7okUh
+         OurQq1lgfrnYlfVh7C/lJgfIAx+ukUiqv9yvf8Ts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wei Yongjun <weiyongjun1@huawei.com>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
+        stable@vger.kernel.org,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 206/314] mailbox: zynqmp-ipi: Fix NULL vs IS_ERR() check in zynqmp_ipi_mbox_probe()
-Date:   Tue, 23 Jun 2020 21:56:41 +0200
-Message-Id: <20200623195348.745935338@linuxfoundation.org>
+Subject: [PATCH 4.19 074/206] PCI/ASPM: Allow ASPM on links to PCIe-to-PCI/PCI-X Bridges
+Date:   Tue, 23 Jun 2020 21:56:42 +0200
+Message-Id: <20200623195320.585211060@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,78 +46,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wei Yongjun <weiyongjun1@huawei.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
 
-[ Upstream commit 445aeeb569f8d7904f8cf80b7c6826bb651ef80e ]
+[ Upstream commit 66ff14e59e8a30690755b08bc3042359703fb07a ]
 
-In case of error, the function devm_ioremap() returns NULL pointer not
-ERR_PTR(). So we should check whether the return value of devm_ioremap()
-is NULL instead of IS_ERR.
+7d715a6c1ae5 ("PCI: add PCI Express ASPM support") added the ability for
+Linux to enable ASPM, but for some undocumented reason, it didn't enable
+ASPM on links where the downstream component is a PCIe-to-PCI/PCI-X Bridge.
 
-Fixes: 4981b82ba2ff ("mailbox: ZynqMP IPI mailbox controller")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
+Remove this exclusion so we can enable ASPM on these links.
+
+The Dell OptiPlex 7080 mentioned in the bugzilla has a TI XIO2001
+PCIe-to-PCI Bridge.  Enabling ASPM on the link leading to it allows the
+Intel SoC to enter deeper Package C-states, which is a significant power
+savings.
+
+[bhelgaas: commit log]
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=207571
+Link: https://lore.kernel.org/r/20200505173423.26968-1-kai.heng.feng@canonical.com
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mailbox/zynqmp-ipi-mailbox.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
+ drivers/pci/pcie/aspm.c | 10 ----------
+ 1 file changed, 10 deletions(-)
 
-diff --git a/drivers/mailbox/zynqmp-ipi-mailbox.c b/drivers/mailbox/zynqmp-ipi-mailbox.c
-index 86887c9a349a0..f9cc674ba9b76 100644
---- a/drivers/mailbox/zynqmp-ipi-mailbox.c
-+++ b/drivers/mailbox/zynqmp-ipi-mailbox.c
-@@ -504,10 +504,9 @@ static int zynqmp_ipi_mbox_probe(struct zynqmp_ipi_mbox *ipi_mbox,
- 		mchan->req_buf_size = resource_size(&res);
- 		mchan->req_buf = devm_ioremap(mdev, res.start,
- 					      mchan->req_buf_size);
--		if (IS_ERR(mchan->req_buf)) {
-+		if (!mchan->req_buf) {
- 			dev_err(mdev, "Unable to map IPI buffer I/O memory\n");
--			ret = PTR_ERR(mchan->req_buf);
--			return ret;
-+			return -ENOMEM;
- 		}
- 	} else if (ret != -ENODEV) {
- 		dev_err(mdev, "Unmatched resource %s, %d.\n", name, ret);
-@@ -520,10 +519,9 @@ static int zynqmp_ipi_mbox_probe(struct zynqmp_ipi_mbox *ipi_mbox,
- 		mchan->resp_buf_size = resource_size(&res);
- 		mchan->resp_buf = devm_ioremap(mdev, res.start,
- 					       mchan->resp_buf_size);
--		if (IS_ERR(mchan->resp_buf)) {
-+		if (!mchan->resp_buf) {
- 			dev_err(mdev, "Unable to map IPI buffer I/O memory\n");
--			ret = PTR_ERR(mchan->resp_buf);
--			return ret;
-+			return -ENOMEM;
- 		}
- 	} else if (ret != -ENODEV) {
- 		dev_err(mdev, "Unmatched resource %s.\n", name);
-@@ -543,10 +541,9 @@ static int zynqmp_ipi_mbox_probe(struct zynqmp_ipi_mbox *ipi_mbox,
- 		mchan->req_buf_size = resource_size(&res);
- 		mchan->req_buf = devm_ioremap(mdev, res.start,
- 					      mchan->req_buf_size);
--		if (IS_ERR(mchan->req_buf)) {
-+		if (!mchan->req_buf) {
- 			dev_err(mdev, "Unable to map IPI buffer I/O memory\n");
--			ret = PTR_ERR(mchan->req_buf);
--			return ret;
-+			return -ENOMEM;
- 		}
- 	} else if (ret != -ENODEV) {
- 		dev_err(mdev, "Unmatched resource %s.\n", name);
-@@ -559,10 +556,9 @@ static int zynqmp_ipi_mbox_probe(struct zynqmp_ipi_mbox *ipi_mbox,
- 		mchan->resp_buf_size = resource_size(&res);
- 		mchan->resp_buf = devm_ioremap(mdev, res.start,
- 					       mchan->resp_buf_size);
--		if (IS_ERR(mchan->resp_buf)) {
-+		if (!mchan->resp_buf) {
- 			dev_err(mdev, "Unable to map IPI buffer I/O memory\n");
--			ret = PTR_ERR(mchan->resp_buf);
--			return ret;
-+			return -ENOMEM;
- 		}
- 	} else if (ret != -ENODEV) {
- 		dev_err(mdev, "Unmatched resource %s.\n", name);
+diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+index db2efa219028c..6e50f84733b75 100644
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -633,16 +633,6 @@ static void pcie_aspm_cap_init(struct pcie_link_state *link, int blacklist)
+ 
+ 	/* Setup initial capable state. Will be updated later */
+ 	link->aspm_capable = link->aspm_support;
+-	/*
+-	 * If the downstream component has pci bridge function, don't
+-	 * do ASPM for now.
+-	 */
+-	list_for_each_entry(child, &linkbus->devices, bus_list) {
+-		if (pci_pcie_type(child) == PCI_EXP_TYPE_PCI_BRIDGE) {
+-			link->aspm_disable = ASPM_STATE_ALL;
+-			break;
+-		}
+-	}
+ 
+ 	/* Get and check endpoint acceptable latencies */
+ 	list_for_each_entry(child, &linkbus->devices, bus_list) {
 -- 
 2.25.1
 
