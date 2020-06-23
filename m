@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD841205FED
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1DF2205F26
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391877AbgFWUhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:37:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32776 "EHLO mail.kernel.org"
+        id S2391094AbgFWU34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:29:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49878 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391863AbgFWUhb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:37:31 -0400
+        id S2391018AbgFWU3r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:29:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A47BD20781;
-        Tue, 23 Jun 2020 20:37:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 316C82064B;
+        Tue, 23 Jun 2020 20:29:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944652;
-        bh=Y7FAiX8CURS11zx9KBYS3lzd3Tvh+mY6DZ2CwCmsM7Q=;
+        s=default; t=1592944186;
+        bh=VfL9CLyZVLIp2zfGthrYY2e/74QZ38cKLsJZHIQkQwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aCob0pbZemgeqJxDcqE1cCUJ37dGUTC1QsCiZ5W6yYUktFQ5g1s81YIcwQ15bBmjl
-         1wZt0Z+h97CLLioaIjP+8MGNhJIp6Qm2VGLFyh9Ho6WTviR8nAVl6kfVdQmqv7ign9
-         6cpixtTkpicl3/Qu25w/xxKtW/RvAsR459L8IXx0=
+        b=xIYW8dfmXWnoogIlN7dadE7HuPexQdK17aUzE2ivIl2w0xm9xPEjQRZdtXN5wMtJZ
+         Q4ggRrrvNYHBpzCt/h3G6tp5C1mV776rJWzvrdVZCfQvmG9iobDNrMyfx1HD1V2eva
+         /iH4vsk/RjPhzPCIx16t5SsJHmyWzNtoAs+1QBIE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Andrew Murray <andrew.murray@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 073/206] PCI: rcar: Fix incorrect programming of OB windows
-Date:   Tue, 23 Jun 2020 21:56:41 +0200
-Message-Id: <20200623195320.547670274@linuxfoundation.org>
+Subject: [PATCH 5.4 207/314] rxrpc: Adjust /proc/net/rxrpc/calls to display call->debug_id not user_ID
+Date:   Tue, 23 Jun 2020 21:56:42 +0200
+Message-Id: <20200623195348.793829014@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,72 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Murray <andrew.murray@arm.com>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit 2b9f217433e31d125fb697ca7974d3de3ecc3e92 ]
+[ Upstream commit 32f71aa497cfb23d37149c2ef16ad71fce2e45e2 ]
 
-The outbound windows (PCIEPAUR(x), PCIEPALR(x)) describe a mapping between
-a CPU address (which is determined by the window number 'x') and a
-programmed PCI address - Thus allowing the controller to translate CPU
-accesses into PCI accesses.
+The user ID value isn't actually much use - and leaks a kernel pointer or a
+userspace value - so replace it with the call debug ID, which appears in trace
+points.
 
-However the existing code incorrectly writes the CPU address - lets fix
-this by writing the PCI address instead.
-
-For memory transactions, existing DT users describe a 1:1 identity mapping
-and thus this change should have no effect. However the same isn't true for
-I/O.
-
-Link: https://lore.kernel.org/r/20191004132941.6660-1-andrew.murray@arm.com
-Fixes: c25da4778803 ("PCI: rcar: Add Renesas R-Car PCIe driver")
-Tested-by: Marek Vasut <marek.vasut+renesas@gmail.com>
-Signed-off-by: Andrew Murray <andrew.murray@arm.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Reviewed-by: Marek Vasut <marek.vasut+renesas@gmail.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pcie-rcar.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ net/rxrpc/proc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/pci/controller/pcie-rcar.c b/drivers/pci/controller/pcie-rcar.c
-index 333ab6092f174..00296c5eacb9c 100644
---- a/drivers/pci/controller/pcie-rcar.c
-+++ b/drivers/pci/controller/pcie-rcar.c
-@@ -335,11 +335,12 @@ static struct pci_ops rcar_pcie_ops = {
- };
+diff --git a/net/rxrpc/proc.c b/net/rxrpc/proc.c
+index 8b179e3c802a1..543afd9bd6642 100644
+--- a/net/rxrpc/proc.c
++++ b/net/rxrpc/proc.c
+@@ -68,7 +68,7 @@ static int rxrpc_call_seq_show(struct seq_file *seq, void *v)
+ 			 "Proto Local                                          "
+ 			 " Remote                                         "
+ 			 " SvID ConnID   CallID   End Use State    Abort   "
+-			 " UserID           TxSeq    TW RxSeq    RW RxSerial RxTimo\n");
++			 " DebugId  TxSeq    TW RxSeq    RW RxSerial RxTimo\n");
+ 		return 0;
+ 	}
  
- static void rcar_pcie_setup_window(int win, struct rcar_pcie *pcie,
--				   struct resource *res)
-+				   struct resource_entry *window)
- {
- 	/* Setup PCIe address space mappings for each resource */
- 	resource_size_t size;
- 	resource_size_t res_start;
-+	struct resource *res = window->res;
- 	u32 mask;
- 
- 	rcar_pci_write_reg(pcie, 0x00000000, PCIEPTCTLR(win));
-@@ -353,9 +354,9 @@ static void rcar_pcie_setup_window(int win, struct rcar_pcie *pcie,
- 	rcar_pci_write_reg(pcie, mask << 7, PCIEPAMR(win));
- 
- 	if (res->flags & IORESOURCE_IO)
--		res_start = pci_pio_to_address(res->start);
-+		res_start = pci_pio_to_address(res->start) - window->offset;
- 	else
--		res_start = res->start;
-+		res_start = res->start - window->offset;
- 
- 	rcar_pci_write_reg(pcie, upper_32_bits(res_start), PCIEPAUR(win));
- 	rcar_pci_write_reg(pcie, lower_32_bits(res_start) & ~0x7F,
-@@ -384,7 +385,7 @@ static int rcar_pcie_setup(struct list_head *resource, struct rcar_pcie *pci)
- 		switch (resource_type(res)) {
- 		case IORESOURCE_IO:
- 		case IORESOURCE_MEM:
--			rcar_pcie_setup_window(i, pci, res);
-+			rcar_pcie_setup_window(i, pci, win);
- 			i++;
- 			break;
- 		case IORESOURCE_BUS:
+@@ -100,7 +100,7 @@ static int rxrpc_call_seq_show(struct seq_file *seq, void *v)
+ 	rx_hard_ack = READ_ONCE(call->rx_hard_ack);
+ 	seq_printf(seq,
+ 		   "UDP   %-47.47s %-47.47s %4x %08x %08x %s %3u"
+-		   " %-8.8s %08x %lx %08x %02x %08x %02x %08x %06lx\n",
++		   " %-8.8s %08x %08x %08x %02x %08x %02x %08x %06lx\n",
+ 		   lbuff,
+ 		   rbuff,
+ 		   call->service_id,
+@@ -110,7 +110,7 @@ static int rxrpc_call_seq_show(struct seq_file *seq, void *v)
+ 		   atomic_read(&call->usage),
+ 		   rxrpc_call_states[call->state],
+ 		   call->abort_code,
+-		   call->user_call_ID,
++		   call->debug_id,
+ 		   tx_hard_ack, READ_ONCE(call->tx_top) - tx_hard_ack,
+ 		   rx_hard_ack, READ_ONCE(call->rx_top) - rx_hard_ack,
+ 		   call->rx_serial,
 -- 
 2.25.1
 
