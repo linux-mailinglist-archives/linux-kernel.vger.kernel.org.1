@@ -2,174 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87EB42050F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:41:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68F252050EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:40:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732467AbgFWLl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 07:41:26 -0400
-Received: from conuserg-08.nifty.com ([210.131.2.75]:33479 "EHLO
-        conuserg-08.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732245AbgFWLlZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 07:41:25 -0400
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-08.nifty.com with ESMTP id 05NBe8ci003070;
-        Tue, 23 Jun 2020 20:40:09 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-08.nifty.com 05NBe8ci003070
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1592912410;
-        bh=PygYU/2RRMrfiio7nz6fPQ9Z7mq5YCkWc1Sf7EhnCkI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=sVizWFATWNcpy5d9L3all7xagM7c44OaE+nOQol8xIWPF1MVnRFYRK+KAyHkpv+Di
-         K0ohhgAFzmEXqysWpfY+oy9zqY8dlFfcvS7uTwCnWxFtcA9BtjqO2tiz2Opou6yamU
-         OQDbKdbG89dg+9GLB1EHru5JKHnKyuXLcpjRJm1jzx3444+h8jKKOvJtWjR1NcF06p
-         ebdnrAdGVhto+zkF6R/d7tKHpxWO4gjBmdj4cWAkWl5Utk5NAF3uAOwWx66gkL8fcy
-         trtsxYJwBvJj/kYN2jxwGKo7YronIzoFNQBUX5USckS9u6fIQKRCmGW7XmbVQefPgM
-         971JdwhmVLzhA==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <yamada.masahiro@socionext.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org
-Cc:     Katsuhiro Suzuki <katsuhiro@katsuster.net>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        - <alsa-devel@alsa-project.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] dt-bindings: ASoC: Convert UniPhier EVEA codec to json-schema
-Date:   Tue, 23 Jun 2020 20:40:05 +0900
-Message-Id: <20200623114005.791643-1-yamada.masahiro@socionext.com>
-X-Mailer: git-send-email 2.25.1
+        id S1732421AbgFWLkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 07:40:22 -0400
+Received: from verein.lst.de ([213.95.11.211]:38965 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732332AbgFWLkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 07:40:22 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id E0B8668AEF; Tue, 23 Jun 2020 13:40:18 +0200 (CEST)
+Date:   Tue, 23 Jun 2020 13:40:18 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Ralph Campbell <rcampbell@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Jerome Glisse <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Jason Gunthorpe <jgg@mellanox.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [RESEND PATCH] mm: fix migrate_vma_setup() src_owner and
+ normal pages
+Message-ID: <20200623114018.GA17496@lst.de>
+References: <20200622222008.9971-1-rcampbell@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200622222008.9971-1-rcampbell@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the UniPhier EVEA sound codec binding to DT schema format.
+On Mon, Jun 22, 2020 at 03:20:08PM -0700, Ralph Campbell wrote:
+> The caller of migrate_vma_setup() does not know what type of page is
+> stored in the CPU's page tables. Pages within the specified range are
+> free to be swapped out, migrated, or freed until after migrate_vma_setup()
+> returns. The caller needs to set struct migrate_vma.src_owner in case a
+> page is a ZONE device private page that the device owns and might want to
+> migrate. However, the current code skips normal anonymous pages if
+> src_owner is set, thus preventing those pages from being migrated.
+> Remove the src_owner check for normal pages since src_owner only applies
+> to device private pages and allow a range of normal and device private
+> pages to be migrated.
 
-Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
----
-
-Changes in v2:
-  - Add schema for subnode 'port'
-
- .../sound/socionext,uniphier-evea.yaml        | 70 +++++++++++++++++++
- .../bindings/sound/uniphier,evea.txt          | 26 -------
- 2 files changed, 70 insertions(+), 26 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
- delete mode 100644 Documentation/devicetree/bindings/sound/uniphier,evea.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml b/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
-new file mode 100644
-index 000000000000..228168f685cf
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/socionext,uniphier-evea.yaml
-@@ -0,0 +1,70 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/socionext,uniphier-evea.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: UniPhier EVEA SoC-internal sound codec
-+
-+maintainers:
-+  - <alsa-devel@alsa-project.org>
-+
-+properties:
-+  compatible:
-+    const: socionext,uniphier-evea
-+
-+  reg:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: evea
-+      - const: exiv
-+
-+  clocks:
-+    minItems: 2
-+    maxItems: 2
-+
-+  reset-names:
-+    items:
-+      - const: evea
-+      - const: exiv
-+      - const: adamv
-+
-+  resets:
-+    minItems: 3
-+    maxItems: 3
-+
-+  "#sound-dai-cells":
-+    const: 1
-+
-+patternProperties:
-+  "^port@[0-9]$":
-+    type: object
-+    properties:
-+      endpoint: true
-+    required:
-+      - endpoint
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - clock-names
-+  - clocks
-+  - reset-names
-+  - resets
-+  - "#sound-dai-cells"
-+
-+examples:
-+  - |
-+    codec@57900000 {
-+        compatible = "socionext,uniphier-evea";
-+        reg = <0x57900000 0x1000>;
-+        clock-names = "evea", "exiv";
-+        clocks = <&sys_clk 41>, <&sys_clk 42>;
-+        reset-names = "evea", "exiv", "adamv";
-+        resets = <&sys_rst 41>, <&sys_rst 42>, <&adamv_rst 0>;
-+        #sound-dai-cells = <1>;
-+    };
-diff --git a/Documentation/devicetree/bindings/sound/uniphier,evea.txt b/Documentation/devicetree/bindings/sound/uniphier,evea.txt
-deleted file mode 100644
-index 3f31b235f18b..000000000000
---- a/Documentation/devicetree/bindings/sound/uniphier,evea.txt
-+++ /dev/null
-@@ -1,26 +0,0 @@
--Socionext EVEA - UniPhier SoC internal codec driver
--
--Required properties:
--- compatible      : should be "socionext,uniphier-evea".
--- reg             : offset and length of the register set for the device.
--- clock-names     : should include following entries:
--                    "evea", "exiv"
--- clocks          : a list of phandle, should contain an entry for each
--                    entries in clock-names.
--- reset-names     : should include following entries:
--                    "evea", "exiv", "adamv"
--- resets          : a list of phandle, should contain reset entries of
--                    reset-names.
--- #sound-dai-cells: should be 1.
--
--Example:
--
--	codec {
--		compatible = "socionext,uniphier-evea";
--		reg = <0x57900000 0x1000>;
--		clock-names = "evea", "exiv";
--		clocks = <&sys_clk 41>, <&sys_clk 42>;
--		reset-names = "evea", "exiv", "adamv";
--		resets = <&sys_rst 41>, <&sys_rst 42>, <&adamv_rst 0>;
--		#sound-dai-cells = <1>;
--	};
--- 
-2.25.1
-
+src_owner being set means we want to migrate from device private
+memory to normal host DRAM.  What kind of problem do you see of
+not touching already present pages in that path?
