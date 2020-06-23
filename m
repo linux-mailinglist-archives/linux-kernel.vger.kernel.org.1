@@ -2,125 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C78C8204E3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:43:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F65B204E33
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:42:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732196AbgFWJnS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 05:43:18 -0400
-Received: from mout.web.de ([212.227.15.4]:55107 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731944AbgFWJnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:43:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1592905359;
-        bh=xHb59Ik5mAbrqdY1zcG1yB/bqUHWlNrxdtT4MivxF94=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=FYSS/gEYpgENWyDltRdkuIpfv5bECdYKDpWA1AGzry2NJqDphTFpdw61u7dQoC03L
-         ceJvFy1ypF42JgvnlKyCbgyQl6KpNz1ufTyf+ARKkhE6zDVcy8ePDAxLghtVtuTWYw
-         5qiViykkdoC+RPqkyc51o+LtynPlcCbtZiK35kwI=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([78.49.105.198]) by smtp.web.de (mrweb005
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1Mw9x2-1ixlBT0uG4-00s8d3; Tue, 23
- Jun 2020 11:42:39 +0200
-Subject: Re: [v4] coccinelle: misc: add array_size_dup script to detect missed
- overflow checks
-To:     Julia Lawall <julia.lawall@inria.fr>,
-        Denis Efremov <efremov@linux.com>,
-        Coccinelle <cocci@systeme.lip6.fr>
-Cc:     Gilles Muller <Gilles.Muller@lip6.fr>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        "Gustavo A. R. Silva" <garsilva@embeddedor.com>,
-        Kees Cook <keescook@chromium.org>
-References: <4014118b-90a6-68c5-048f-32485fa3e852@web.de>
- <alpine.DEB.2.22.394.2006230902210.2367@hadrien>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <6b9a8459-3b32-8d8d-596e-203a33d2982a@web.de>
-Date:   Tue, 23 Jun 2020 11:42:35 +0200
+        id S1731968AbgFWJmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 05:42:47 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:38604 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732023AbgFWJmq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 05:42:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592905364;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QoBwKmjOvInG9MfmBsLrqKkfpaZqKCYNSmoYTUfOHHE=;
+        b=W4imJMlVrdXnxVmceX+aEA5Vc0QjNCsiOIZ/YP4/e15mTqZa3dvrTqJ/Vi9YdJVop+Ad/F
+        X77hWs09TzvvUVpIOtWeIFvLPBA6x9X8PKtpgyta+JyChwSyGbYYYSCUFZzAvBi1yGreuh
+        xPFYNC5qVZGN9GyBGJnQ5L+aRMU6J4A=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-139-Wx1_qQ-AMCSa3ZFrMk9Jsw-1; Tue, 23 Jun 2020 05:42:43 -0400
+X-MC-Unique: Wx1_qQ-AMCSa3ZFrMk9Jsw-1
+Received: by mail-wr1-f71.google.com with SMTP id y13so1448886wrp.13
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 02:42:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QoBwKmjOvInG9MfmBsLrqKkfpaZqKCYNSmoYTUfOHHE=;
+        b=WPb3ykm5vc1jvP2Bidut4/6CCZQ41N8tfdx/rEVNz20dxuPM9Vu6nMVuWSsB+PkCI4
+         zDqpMkHMCZ4CtZ9WklXMEe80acpcWoVF9tlmvfnNZD1cy+orVAU1DrwkS3SZoPvo17DF
+         KrqRcaioyICbC/872OPg89SgsPS6rZtR3s8NFZffF2cFnfOi/TbLxZ1tv0r8v45xrCZn
+         GR5bsgRYYA/rOLDsJoqDWObR9cvSLejhMmbeSu8i9THxFRb+t5IToI762vuDKeLC1OWT
+         CaIjHKTOAeJYHzk4znvjRhLq1kUFWsU53YgPMQ04+PjMgNLrTVa5gd89W77iIEzrLa3B
+         HJoA==
+X-Gm-Message-State: AOAM533mskYcjfT/lzXIP9Q6inkBkWBbj1BqASHltlDvDMMeUOEVubIc
+        Eu/FD4qq341dHaNmy7eUBCBXWZC0ch2Q25C6xjoGiJZTnHk6tyYzW0QeaXPP9hr7wprqPO3QVxu
+        tu/69u8YYBpX5Q25gAANBWq4d
+X-Received: by 2002:adf:e908:: with SMTP id f8mr1064534wrm.3.1592905361581;
+        Tue, 23 Jun 2020 02:42:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwYpabjIXBcOB9eaiLhNkEzAaSPqokuBtil8iucj5gBxqX45bVu6WVMKG+2KSXPDnKUswgA9A==
+X-Received: by 2002:adf:e908:: with SMTP id f8mr1064490wrm.3.1592905361326;
+        Tue, 23 Jun 2020 02:42:41 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:fd64:dd90:5ad5:d2e1? ([2001:b07:6468:f312:fd64:dd90:5ad5:d2e1])
+        by smtp.gmail.com with ESMTPSA id 26sm1149131wmj.25.2020.06.23.02.42.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jun 2020 02:42:40 -0700 (PDT)
+Subject: Re: [PATCH v4 0/7] clean up redundant 'kvm_run' parameters
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>,
+        tsbogend@alpha.franken.de, paulus@ozlabs.org, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, borntraeger@de.ibm.com,
+        frankja@linux.ibm.com, david@redhat.com, cohuck@redhat.com,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        sean.j.christopherson@intel.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, maz@kernel.org, james.morse@arm.com,
+        julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com,
+        christoffer.dall@arm.com, peterx@redhat.com, thuth@redhat.com,
+        chenhuacai@gmail.com
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200427043514.16144-1-tianjia.zhang@linux.alibaba.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <fe463233-d094-fca5-b4e9-c1d97124fd69@redhat.com>
+Date:   Tue, 23 Jun 2020 11:42:37 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.22.394.2006230902210.2367@hadrien>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-X-Provags-ID: V03:K1:R1rTZTwCVRzznbsMQsIQbsQdJhxnVNlX5lqnP0G5vzbwXyYYM7k
- gDXdYBz8tTwavjHaaO0lx88s9A8DMolaIyo2Wli6yXP2Y5/eZBdCRSh/p9c15BUf64Co+Ju
- NLtaHp9kC9ld7Cu2AV9tmeBiq46k2PqwIIzWQL7Rew44Gd2vTHALc56MNnLnY/RoObRLtU1
- o4WKC+X1Txh7mDwER0xxw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:aHp7Q9qGsxM=:ZLSOw3ASD5UGnVYR3L85l0
- a/IcjvzbH+35VxIb1giDWq5e+uxMNlh9lT+auuKYRJ5Fx9Ev9OgTDOhIjfgfgCproyOPZlunE
- ItqinalIOUP0FMVg/dik1n/OuXb6ZF5oGC8Ws1uMCpfAGzzwWxKId/9ZCcsEFC1HYbMNqeH90
- GSGDyk7nEiVitrdT6w5pe470H3XRZRGaFJ5rnCFqCPK619RR0A819oitkcEAQEqgZ5pVuJccM
- dKPAF9QEdnW+Lpti/PTSzh4xrqRJOXbtCOkR2vghVoWRKFY2YP6kt+mS3dS+thPG27Afdcc49
- 7+uctYH7njcZ95GXB0oFIbnyUY/p7M7IqmBXgOYtyFxg5PjKv1NpF5w4+UoCawQZXwSlhb4Y8
- rvUQ5WVX9ky/MMsiv+KW+ODrFbap1yKCnXEy1/jZaLVGdtdwKcqfSDK7GzM2ljfxRInWYmT3w
- Vp0WVrYkjAAUIrJ2IZoX28CEJbX8ud0us2A1QdguNJWqczgjPQxTjBRjvr4p+w4Yry80pSMiD
- PCAkDcZHCbdVIFmS6AJYooFqjk6zPk9Ej9LokQXvS6mkxvBGHSIFO9YOzqM1AHfzo1OLFagg2
- b+q3TYjjvqh3X91PNnsnz4pWBbCzI/d1K9ZG2KIjsPYzG90TTNjNdzbAefv/kUxQQWWmuWUzQ
- dbVLz2SfIc0J29R43hRWHLEB5IDwFpG0aLgTaWdJJrLDYV//dZAXg2rbJCsrqEq7mGsesOncw
- i7rBLsajncPjk/IQt0d/hcpAkCWBS8/PfRO/CluAyjxH/sN07bHtg67R4ItIBWKzuR00AV2Aa
- d10f9svYrRK9rvGs/vFSTCU9VfIATLmILVzqZPCBCkUk04lOMGoUq4FRzTAfSi3szwnMNqhM1
- LxoUrZZpNa9lNXwzEXbouLHQInJ6N46xrTQ4P1Pl4uGtqtFDv6HSpYEuij32jco4m6Irs4Oiu
- WDjGRHZ2x6cp3s350YrYiSmKfP8JHm8xmTUR+GeKAVglsS7M2Oty7K9GyM/O2/yJdhwCaCIqR
- CgBDWqm3J5Q5Ti//V48It6AYiyFxbiIw+TLmGo/3kdNi4H6cb7GjuoQajFEIVsxMAwU1sIkvM
- q5OsJ8m/aWz4EmlcxQaUvwKFQkjsXEaTY5s1AWbBn2GrYHoKALHJ+xlOuoWoC6ZoU92MrIWJQ
- Qy7kzpAWRdQLl1KS78eNn79NgUb9ssRjWI5A4X9qfRpnysPk+wD5U2IIjF3Yax3Jq6MjzA6uQ
- XyJ6V7aRAnvdqL33e
+In-Reply-To: <20200427043514.16144-1-tianjia.zhang@linux.alibaba.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I don't agree with any of these comments.
+On 27/04/20 06:35, Tianjia Zhang wrote:
+> In the current kvm version, 'kvm_run' has been included in the 'kvm_vcpu'
+> structure. For historical reasons, many kvm-related function parameters
+> retain the 'kvm_run' and 'kvm_vcpu' parameters at the same time. This
+> patch does a unified cleanup of these remaining redundant parameters.
+> 
+> This series of patches has completely cleaned the architecture of
+> arm64, mips, ppc, and s390 (no such redundant code on x86). Due to
+> the large number of modified codes, a separate patch is made for each
+> platform. On the ppc platform, there is also a redundant structure
+> pointer of 'kvm_run' in 'vcpu_arch', which has also been cleaned
+> separately.
 
-Would we like to clarify each of the disagreements in more detail
-for a more constructive patch review?
+Tianjia, can you please refresh the patches so that each architecture
+maintainer can pick them up?  Thanks very much for this work!
 
-Regards,
-Markus
+Paolo
+
+> 
+> ---
+> v4 change:
+>   mips: fixes two errors in entry.c.
+> 
+> v3 change:
+>   Keep the existing `vcpu->run` in the function body unchanged.
+> 
+> v2 change:
+>   s390 retains the original variable name and minimizes modification.
+> 
+> Tianjia Zhang (7):
+>   KVM: s390: clean up redundant 'kvm_run' parameters
+>   KVM: arm64: clean up redundant 'kvm_run' parameters
+>   KVM: PPC: Remove redundant kvm_run from vcpu_arch
+>   KVM: PPC: clean up redundant 'kvm_run' parameters
+>   KVM: PPC: clean up redundant kvm_run parameters in assembly
+>   KVM: MIPS: clean up redundant 'kvm_run' parameters
+>   KVM: MIPS: clean up redundant kvm_run parameters in assembly
+> 
+>  arch/arm64/include/asm/kvm_coproc.h      |  12 +--
+>  arch/arm64/include/asm/kvm_host.h        |  11 +--
+>  arch/arm64/include/asm/kvm_mmu.h         |   2 +-
+>  arch/arm64/kvm/handle_exit.c             |  36 +++----
+>  arch/arm64/kvm/sys_regs.c                |  13 ++-
+>  arch/mips/include/asm/kvm_host.h         |  32 +------
+>  arch/mips/kvm/emulate.c                  |  59 ++++--------
+>  arch/mips/kvm/entry.c                    |  21 ++---
+>  arch/mips/kvm/mips.c                     |  14 +--
+>  arch/mips/kvm/trap_emul.c                | 114 ++++++++++-------------
+>  arch/mips/kvm/vz.c                       |  26 ++----
+>  arch/powerpc/include/asm/kvm_book3s.h    |  16 ++--
+>  arch/powerpc/include/asm/kvm_host.h      |   1 -
+>  arch/powerpc/include/asm/kvm_ppc.h       |  27 +++---
+>  arch/powerpc/kvm/book3s.c                |   4 +-
+>  arch/powerpc/kvm/book3s.h                |   2 +-
+>  arch/powerpc/kvm/book3s_64_mmu_hv.c      |  12 +--
+>  arch/powerpc/kvm/book3s_64_mmu_radix.c   |   4 +-
+>  arch/powerpc/kvm/book3s_emulate.c        |  10 +-
+>  arch/powerpc/kvm/book3s_hv.c             |  64 ++++++-------
+>  arch/powerpc/kvm/book3s_hv_nested.c      |  12 +--
+>  arch/powerpc/kvm/book3s_interrupts.S     |  17 ++--
+>  arch/powerpc/kvm/book3s_paired_singles.c |  72 +++++++-------
+>  arch/powerpc/kvm/book3s_pr.c             |  33 ++++---
+>  arch/powerpc/kvm/booke.c                 |  39 ++++----
+>  arch/powerpc/kvm/booke.h                 |   8 +-
+>  arch/powerpc/kvm/booke_emulate.c         |   2 +-
+>  arch/powerpc/kvm/booke_interrupts.S      |   9 +-
+>  arch/powerpc/kvm/bookehv_interrupts.S    |  10 +-
+>  arch/powerpc/kvm/e500_emulate.c          |  15 ++-
+>  arch/powerpc/kvm/emulate.c               |  10 +-
+>  arch/powerpc/kvm/emulate_loadstore.c     |  32 +++----
+>  arch/powerpc/kvm/powerpc.c               |  72 +++++++-------
+>  arch/powerpc/kvm/trace_hv.h              |   6 +-
+>  arch/s390/kvm/kvm-s390.c                 |  23 +++--
+>  virt/kvm/arm/arm.c                       |   6 +-
+>  virt/kvm/arm/mmio.c                      |  11 ++-
+>  virt/kvm/arm/mmu.c                       |   5 +-
+>  38 files changed, 392 insertions(+), 470 deletions(-)
+> 
+
