@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDE9206500
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C8D32064F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393595AbgFWVaR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:30:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56494 "EHLO mail.kernel.org"
+        id S2390110AbgFWVaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:30:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56598 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389160AbgFWUOI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:14:08 -0400
+        id S2389183AbgFWUOP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:14:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A50B3206C3;
-        Tue, 23 Jun 2020 20:14:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDBA02073E;
+        Tue, 23 Jun 2020 20:14:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943248;
-        bh=pIqGEiiYOAPthQ/PQLIKaUXsGbSSPmjyud+zQSSKwQY=;
+        s=default; t=1592943255;
+        bh=X1Fz7wCTOgVSWRvarBEikRrwLRPmf9rhqqpX0+S5nug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=y3fU2719ZJg+f70e5Ebl7HEay0SPx4f8hAoDZFpXxrkIOJGW4FWTo86G3ZvmVzp5J
-         ys8OR10TeMSCCyWweXol2PKrpzeEUL6a36zPaYjSDLYOEZtuBV6q7NeGRWZe2mLctF
-         CsdMvgcrY9HHnp7y85HhVfmK5jErRZGY6im1aCjI=
+        b=Lv2XQHnvbfuTftpL3jaZRiPr/nf0L4wEr1oI9GBMjFrHZAAbrc/XkVvM7s5y4lcO6
+         nJwhCrGxfwOrkDhyZKHeukE5X1otO1xWyhmSTOC3zhkmN2XDvlBjjzQ9P3PufIYdS8
+         Ds/7NXvPxuz18PdUYCfeoePnYygLVqVdH/daZH5Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Ka-Cheong Poon <ka-cheong.poon@oracle.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 318/477] pinctrl: freescale: imx: Use devm_of_iomap() to avoid a resource leak in case of error in imx_pinctrl_probe()
-Date:   Tue, 23 Jun 2020 21:55:15 +0200
-Message-Id: <20200623195422.561156018@linuxfoundation.org>
+Subject: [PATCH 5.7 320/477] RDMA/cm: Spurious WARNING triggered in cm_destroy_id()
+Date:   Tue, 23 Jun 2020 21:55:17 +0200
+Message-Id: <20200623195422.657923835@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -45,47 +44,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Ka-Cheong Poon <ka-cheong.poon@oracle.com>
 
-[ Upstream commit ba403242615c2c99e27af7984b1650771a2cc2c9 ]
+[ Upstream commit fba97dc7fc76b2c9a909fa0b3786d30a9899f5cf ]
 
-Use 'devm_of_iomap()' instead 'of_iomap()' to avoid a resource leak in
-case of error.
+If the cm_id state is IB_CM_REP_SENT when cm_destroy_id() is called, it
+calls cm_send_rej_locked().
 
-Update the error handling code accordingly.
+In cm_send_rej_locked(), it calls cm_enter_timewait() and the state is
+changed to IB_CM_TIMEWAIT.
 
-Fixes: 26d8cde5260b ("pinctrl: freescale: imx: add shared input select reg support")
-Suggested-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
-Link: https://lore.kernel.org/r/20200602200626.677981-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Now back to cm_destroy_id(), it breaks from the switch statement, and the
+next call is WARN_ON(cm_id->state != IB_CM_IDLE).
+
+This triggers a spurious warning. Instead, the code should goto retest
+after returning from cm_send_rej_locked() to move the state to IDLE.
+
+Fixes: 67b3c8dceac6 ("RDMA/cm: Make sure the cm_id is in the IB_CM_IDLE state in destroy")
+Link: https://lore.kernel.org/r/1591191218-9446-1-git-send-email-ka-cheong.poon@oracle.com
+Signed-off-by: Ka-Cheong Poon <ka-cheong.poon@oracle.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pinctrl/freescale/pinctrl-imx.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/infiniband/core/cm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/freescale/pinctrl-imx.c b/drivers/pinctrl/freescale/pinctrl-imx.c
-index 1f81569c7ae3b..cb7e0f08d2cf4 100644
---- a/drivers/pinctrl/freescale/pinctrl-imx.c
-+++ b/drivers/pinctrl/freescale/pinctrl-imx.c
-@@ -824,12 +824,13 @@ int imx_pinctrl_probe(struct platform_device *pdev,
- 				return -EINVAL;
- 			}
- 
--			ipctl->input_sel_base = of_iomap(np, 0);
-+			ipctl->input_sel_base = devm_of_iomap(&pdev->dev, np,
-+							      0, NULL);
- 			of_node_put(np);
--			if (!ipctl->input_sel_base) {
-+			if (IS_ERR(ipctl->input_sel_base)) {
- 				dev_err(&pdev->dev,
- 					"iomuxc input select base address not found\n");
--				return -ENOMEM;
-+				return PTR_ERR(ipctl->input_sel_base);
- 			}
- 		}
- 	}
+diff --git a/drivers/infiniband/core/cm.c b/drivers/infiniband/core/cm.c
+index 17f14e0eafe4d..1c2bf18cda9f6 100644
+--- a/drivers/infiniband/core/cm.c
++++ b/drivers/infiniband/core/cm.c
+@@ -1076,7 +1076,9 @@ retest:
+ 	case IB_CM_REP_SENT:
+ 	case IB_CM_MRA_REP_RCVD:
+ 		ib_cancel_mad(cm_id_priv->av.port->mad_agent, cm_id_priv->msg);
+-		/* Fall through */
++		cm_send_rej_locked(cm_id_priv, IB_CM_REJ_CONSUMER_DEFINED, NULL,
++				   0, NULL, 0);
++		goto retest;
+ 	case IB_CM_MRA_REQ_SENT:
+ 	case IB_CM_REP_RCVD:
+ 	case IB_CM_MRA_REP_SENT:
 -- 
 2.25.1
 
