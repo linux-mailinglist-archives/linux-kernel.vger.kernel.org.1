@@ -2,131 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD013204E6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1991A204E4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732205AbgFWJue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 05:50:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731996AbgFWJud (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:50:33 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57ED7C061573;
-        Tue, 23 Jun 2020 02:50:32 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id d4so9641498pgk.4;
-        Tue, 23 Jun 2020 02:50:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jl0lu1/umPSlDnwGccZKV/GaH2q8rWZ4EaouhX1DScY=;
-        b=iuBEuDbB1DHqwmV1vge/NENE3R99S9vwOVvQQ3fOdzTYmtKfD5Q9oGKhsbhtoHm2Jn
-         hN3HwwaJB9XvOJS6bQlY0IuAPiYK5IjWIYNoxAOpEvHhvxTuTGMacfHdpng2EutbJYDa
-         Ow3KeOimDcMBFKiZrxn4BfyXftS9n7Vozd+/z//XYW+IYDm16MDYopweSRVPfdKo8unx
-         7hceDHtMxqtxPip7Mmb/Kq6ZPhP+iDNWUPiAyBn1e2cnpFOgYABHaSfcBV6piAY35s/v
-         LmHAaRP1z2LULYrczM4+QafxEuRVoSLJFXryYfpaUKWw9WslIlzixR68iunjla7BQA2G
-         aoyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jl0lu1/umPSlDnwGccZKV/GaH2q8rWZ4EaouhX1DScY=;
-        b=fyQHCsIrnO45tc/v8MQMeo/FmYlwNfTudqQT5Vy05GB2ijlhumU3dGs+ENDcr9c2Zv
-         cwT7F3E6tN57ljgL4Vbbq7J5l47l23N5JTti0K2JyBZollanMi9aWjxwXESmy9TTmSdw
-         EH/qdQ9ycdx0Eg05M2/5W46Jsraika+V6e0o5h9Y1tCa4ttHNuVF1MiflTq76Caswtns
-         VNomhcAn1ur5kk4Tn6ZKsbe3OSvFAc7pOWeh8v6DOgPnKkBNmYwQMsDpwuA34rmZpNLt
-         y7Dh81UNu+uUkLVhg2r4MZOSRo37lcRA3f0kxhZ0e7NepqDitpo7boFe8QibCHkJJdnR
-         uIBQ==
-X-Gm-Message-State: AOAM532HGkfdcgbGmCPSa7BDTl0VIjPeiQBsdSR6HZ6KOrZTrU/06SMJ
-        yjNFWvk8dVpfucAn/UwxNMg=
-X-Google-Smtp-Source: ABdhPJzBdJYLuEq00Wou+a0GFVR6oS+94o32Fgj/lybeWbqQ8xQ+4sRLmQ4/0OHOgy/QoYkiZsv4GQ==
-X-Received: by 2002:a65:51c1:: with SMTP id i1mr16378293pgq.272.1592905831788;
-        Tue, 23 Jun 2020 02:50:31 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.153.57])
-        by smtp.gmail.com with ESMTPSA id x17sm1949293pjr.29.2020.06.23.02.50.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 02:50:31 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        skhan@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org
-Subject: [PATCH v1] rtl818x_pci: use generic power management
-Date:   Tue, 23 Jun 2020 15:14:55 +0530
-Message-Id: <20200623094454.12427-1-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S1732194AbgFWJpY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 05:45:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45664 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731921AbgFWJpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 05:45:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 07763AE8C;
+        Tue, 23 Jun 2020 09:45:22 +0000 (UTC)
+Date:   Tue, 23 Jun 2020 11:45:19 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        Mike Stunes <mstunes@vmware.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <JGross@suse.com>,
+        Jiri Slaby <jslaby@suse.cz>, Kees Cook <keescook@chromium.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>,
+        X86 ML <x86@kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andrew Cooper <andrew.cooper3@citrix.com>
+Subject: Re: Should SEV-ES #VC use IST? (Re: [PATCH] Allow RDTSC and RDTSCP
+ from userspace)
+Message-ID: <20200623094519.GF31822@suse.de>
+References: <20200425191032.GK21900@8bytes.org>
+ <910AE5B4-4522-4133-99F7-64850181FBF9@amacapital.net>
+ <20200425202316.GL21900@8bytes.org>
+ <CALCETrW2Y6UFC=zvGbXEYqpsDyBh0DSEM4NQ+L=_pp4aOd6Fuw@mail.gmail.com>
+ <CALCETrXGr+o1_bKbnre8cVY14c_76m8pEf3iB_i7h+zfgE5_jA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrXGr+o1_bKbnre8cVY14c_76m8pEf3iB_i7h+zfgE5_jA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Earlier, drivers had to manage the device's power states, and related
-operations, themselves. With the generic approach, these are done by PCI
-core.
+Hi Andy,
 
-The only driver-specific jobs, .suspend() and .resume() doing were invoking
-PCI helper functions pci_save/restore_state() and
-pci_set_power_state(). This is not recommeneded as PCI core takes care of
-that. Hence they became empty-body functions, thus define them NULL.
+On Mon, Apr 27, 2020 at 10:37:41AM -0700, Andy Lutomirski wrote:
+> 1. Use IST for #VC and deal with all the mess that entails.
 
-Compile-tested only.
+With the removal of IST shifting I wonder what you would suggest on how
+to best implement an NMI-safe IST handler with nesting support.
 
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- .../wireless/realtek/rtl818x/rtl8180/dev.c    | 23 ++++---------------
- 1 file changed, 4 insertions(+), 19 deletions(-)
+My current plan is to implement an IST handler which switches itself off
+the IST stack as soon as possible, freeing it for re-use.
 
-diff --git a/drivers/net/wireless/realtek/rtl818x/rtl8180/dev.c b/drivers/net/wireless/realtek/rtl818x/rtl8180/dev.c
-index d5f65372356b..ba3286f732cc 100644
---- a/drivers/net/wireless/realtek/rtl818x/rtl8180/dev.c
-+++ b/drivers/net/wireless/realtek/rtl818x/rtl8180/dev.c
-@@ -1966,32 +1966,17 @@ static void rtl8180_remove(struct pci_dev *pdev)
- 	ieee80211_free_hw(dev);
- }
- 
--#ifdef CONFIG_PM
--static int rtl8180_suspend(struct pci_dev *pdev, pm_message_t state)
--{
--	pci_save_state(pdev);
--	pci_set_power_state(pdev, pci_choose_state(pdev, state));
--	return 0;
--}
--
--static int rtl8180_resume(struct pci_dev *pdev)
--{
--	pci_set_power_state(pdev, PCI_D0);
--	pci_restore_state(pdev);
--	return 0;
--}
-+#define rtl8180_suspend NULL
-+#define rtl8180_resume NULL
- 
--#endif /* CONFIG_PM */
-+static SIMPLE_DEV_PM_OPS(rtl8180_pm_ops, rtl8180_suspend, rtl8180_resume);
- 
- static struct pci_driver rtl8180_driver = {
- 	.name		= KBUILD_MODNAME,
- 	.id_table	= rtl8180_table,
- 	.probe		= rtl8180_probe,
- 	.remove		= rtl8180_remove,
--#ifdef CONFIG_PM
--	.suspend	= rtl8180_suspend,
--	.resume		= rtl8180_resume,
--#endif /* CONFIG_PM */
-+	.driver.pm	= &rtl8180_pm_ops,
- };
- 
- module_pci_driver(rtl8180_driver);
--- 
-2.27.0
+The flow would be roughly like this upon entering the handler;
 
+	build_pt_regs();
+
+	RSP = pt_regs->sp;
+
+	if (RSP in VC_IST_stack)
+		error("unallowed nesting")
+
+	if (RSP in current_kernel_stack)
+		RSP = round_down_to_8(RSP)
+	else
+		RSP = current_top_of_stack() // non-ist kernel stack
+
+	copy_pt_regs(pt_regs, RSP);
+	switch_stack_to(RSP);
+
+To make this NMI safe, the NMI handler needs some logic too. Upon
+entering NMI, it needs to check the return RSP, and if it is in the #VC
+IST stack, it must do the above flow by itself and update the return RSP
+and RIP. It needs to take into account the case when PT_REGS is not
+fully populated on the return side.
+
+Alternativly the NMI handler could safe/restore the contents of the #VC
+IST stack or just switch to a special #VC-in-NMI IST stack.
+
+All in all it could get complicated, and imho shift_ist would have been
+simpler, but who am I anyway...
+
+Or maybe you have a better idea how to implement this, so I'd like to
+hear your opinion first before I spend too many days implementing
+something.
+
+Regards,
+
+	Joerg
