@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD238204568
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4D0204555
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731896AbgFWAb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:31:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55174 "EHLO mail.kernel.org"
+        id S1731797AbgFWAae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:30:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731693AbgFWAaT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:30:19 -0400
+        id S1731700AbgFWAaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:30:20 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7546D20C56;
+        by mail.kernel.org (Postfix) with ESMTPSA id A4C03208E4;
         Tue, 23 Jun 2020 00:30:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592872219;
-        bh=2MReE7tg93XK7F6VlsZb0HBX0126pFFv2a8PRqW+SfI=;
+        bh=1veGT3UQhfKYOYux03q+oos70fj1Q5bSyqp9pTfmx8M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gQWwDhXfgF5kKnk2R86QhLsyW8Hg/qgizlzB99udRv59rxm7u/xfFQeHDYKKRP52I
-         YH+rDQwGTgEc4O/Kj7HfQGMC9E3aCn+qClVaZJMMyvx7VCf4rzBI9ahcHcO+5LbQbQ
-         vxG1YnuyC7szbTqTHl+m4aGKq4NP9BsOGFdofM0g=
+        b=smdLsBMM4wYdtb1RNQqD2UdLdew6AuyAhJzFsw40C0S5QjlxVJ1bFyg6fzIwkT/GU
+         nmrN8PHhH1hFDKiM1uboqrqgJnxglNcfJ52uO915Di56VURpdNeUgyVRD2zFNKsYof
+         ii0QBguO2Xt4pbkoG8n7aTbgtafYQAF+zhuj3dAE=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 21/30] refperf: Adjust refperf.loop default value
-Date:   Mon, 22 Jun 2020 17:30:04 -0700
-Message-Id: <20200623003013.26252-21-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 22/30] doc: Document rcuperf's module parameters
+Date:   Mon, 22 Jun 2020 17:30:05 -0700
+Message-Id: <20200623003013.26252-22-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002941.GA26089@paulmck-ThinkPad-P72>
 References: <20200623002941.GA26089@paulmck-ThinkPad-P72>
@@ -45,28 +45,61 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-With the various measurement optimizations, 10,000 loops normally
-suffices.  This commit therefore reduces the refperf.loops default value
-from 10,000,000 to 10,000.
+This commit adds documentation for the rcuperf module parameters.
 
+Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/refperf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/admin-guide/kernel-parameters.txt | 36 +++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
 
-diff --git a/kernel/rcu/refperf.c b/kernel/rcu/refperf.c
-index 57a750b..063eeb0 100644
---- a/kernel/rcu/refperf.c
-+++ b/kernel/rcu/refperf.c
-@@ -61,7 +61,7 @@ torture_param(int, verbose, 0, "Enable verbose debugging printk()s");
- torture_param(int, holdoff, IS_BUILTIN(CONFIG_RCU_REF_PERF_TEST) ? 10 : 0,
- 	      "Holdoff time before test start (s)");
- // Number of loops per experiment, all readers execute operations concurrently.
--torture_param(long, loops, 10000000, "Number of loops per experiment.");
-+torture_param(long, loops, 10000, "Number of loops per experiment.");
- // Number of readers, with -1 defaulting to about 75% of the CPUs.
- torture_param(int, nreaders, -1, "Number of readers, -1 for 75% of CPUs.");
- // Number of runs.
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index fb95fad..20cd00b 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -4407,6 +4407,42 @@
+ 			      reboot_cpu is s[mp]#### with #### being the processor
+ 					to be used for rebooting.
+ 
++	refperf.holdoff= [KNL]
++			Set test-start holdoff period.  The purpose of
++			this parameter is to delay the start of the
++			test until boot completes in order to avoid
++			interference.
++
++	refperf.loops= [KNL]
++			Set the number of loops over the synchronization
++			primitive under test.  Increasing this number
++			reduces noise due to loop start/end overhead,
++			but the default has already reduced the per-pass
++			noise to a handful of picoseconds on ca. 2020
++			x86 laptops.
++
++	refperf.nreaders= [KNL]
++			Set number of readers.  The default value of -1
++			selects N, where N is roughly 75% of the number
++			of CPUs.  A value of zero is an interesting choice.
++
++	refperf.nruns= [KNL]
++			Set number of runs, each of which is dumped onto
++			the console log.
++
++	refperf.readdelay= [KNL]
++			Set the read-side critical-section duration,
++			measured in microseconds.
++
++	refperf.shutdown= [KNL]
++			Shut down the system at the end of the performance
++			test.  This defaults to 1 (shut it down) when
++			rcuperf is built into the kernel and to 0 (leave
++			it running) when rcuperf is built as a module.
++
++	refperf.verbose= [KNL]
++			Enable additional printk() statements.
++
+ 	relax_domain_level=
+ 			[KNL, SMP] Set scheduler's default relax_domain_level.
+ 			See Documentation/admin-guide/cgroup-v1/cpusets.rst.
 -- 
 2.9.5
 
