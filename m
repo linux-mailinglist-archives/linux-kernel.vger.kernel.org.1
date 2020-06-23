@@ -2,240 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E37C20646E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA83206474
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393500AbgFWVVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:21:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45780 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393496AbgFWVVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 17:21:31 -0400
-Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 26F3A20CC7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 21:21:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592947289;
-        bh=hH450/RCEFZpmzv12pi6XP8AlMHHFigiRqhVuBRK3vQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NKsUGmDEgFP/XhFVGEgWf9q+wyyIOyYhKszlw8YCyXWNOrGn6wuKdJ/Q0qPQEZYXZ
-         SRo13CfUN50jDI451+3ToeTE1bwDqtyh50e3NXjdn0OaAqnOX5SXCW7Z6b6BWd+OcQ
-         p6o3fsZJnxAs1WHGe6mkAY9RKdbDLlKA02Vhls/c=
-Received: by mail-ot1-f49.google.com with SMTP id 18so3516472otv.6
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:21:29 -0700 (PDT)
-X-Gm-Message-State: AOAM5335p5EIOe3myrUYCljT2SKdJbQ9xNyExqZYv1ONjZutflBmCgio
-        Lj/1kbaBMSoQUuKFRkAe1FWg8nNOCgEDHAVUd/o=
-X-Google-Smtp-Source: ABdhPJwJxqcQQndidUHcPikOzRx5QX75fQiYitSAp0bpPp974gs22vU4fz87C/VbdWakZaNNKllL9C/kZLRFXu/bJW4=
-X-Received: by 2002:a9d:42e:: with SMTP id 43mr19976618otc.108.1592947288306;
- Tue, 23 Jun 2020 14:21:28 -0700 (PDT)
+        id S2404250AbgFWVVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:21:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390204AbgFWVVr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 17:21:47 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E3BBC061573;
+        Tue, 23 Jun 2020 14:21:47 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id o38so42009qtf.6;
+        Tue, 23 Jun 2020 14:21:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ui8fQB3APJYaznUih7pNhgAm6LkfIND4txjh+hzkfLk=;
+        b=bDyAe3KmBqYUtOn2jpTaEUd551O0xWhnVDI2ujVJnTMzDhUkQreqigMEvR8vO50OaO
+         grFw6Kd/+8ECCnBPmdu6gHFtfta3+HsZ8klmci+sYF0qOBuesKpTEIB18DAtCOa7V5eL
+         C+H5t/lMImzwt3KHPKs7h4gUvsyPo1eYePHcp7xKB6vz5qadHTSl6wxL4VINcp/Uz/s8
+         dRXIaYLEM9hFnOXABJze5j99JEXvIZDMbuHus7IZhQgz7NpT34QaLpWyFFzeNrzasGK4
+         gW2cOmTY37WlE2ufcyOGG6+x/EdPQpYMinZ0VX+qmkjzp8/lBxiAQXIXfvlH0BfPNqkV
+         PrGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ui8fQB3APJYaznUih7pNhgAm6LkfIND4txjh+hzkfLk=;
+        b=K4VgBiY2HJ6u/FmNNektSev+4m0me83Mv2u4ecfAFb1NrnlseulG50wO2nl8HR1Bvw
+         JvEswEZ3MAofbQodRgZ8jNnca4rjlpkYIXqTPqJHl97Lopp5b3oE+xFov28UspCZKpZG
+         FFnmVYb/EtXUgXT+c6k+7CEBqZnt9t+XM9JF300dVatweFN6rMKeFmadmK++hmp0VhPX
+         jBBm7D5DXuIRzP+R2iQrud9zJCFrR4h5Q+5Y4fD0rZ1F6HPZi5OoVMK6uZqkMw4GnF+y
+         qwXzrT3DYNbcdgXv9/zTHAplxCnv25k5Uw0MFbv6vzpncoA+BB0Gfo6GGB4DSFd2Lqur
+         wTUw==
+X-Gm-Message-State: AOAM530c0V2fIiatlwq3aE2Mb4EPZLU5/lmtWyaliGg1CVAnP5mfTuk7
+        /3+vX9mq8+Qmye5jFuiMTSM=
+X-Google-Smtp-Source: ABdhPJyB8imk14WxcQe8ntL2dDRXMkBus0kLhyBHS8AjEL83uqP0tjqgyJfPcKN8hHt4hPwCa2x2xQ==
+X-Received: by 2002:aed:2b04:: with SMTP id p4mr11265085qtd.158.1592947306614;
+        Tue, 23 Jun 2020 14:21:46 -0700 (PDT)
+Received: from localhost.localdomain ([2001:1284:f016:65e9:974:aec1:b314:98ea])
+        by smtp.gmail.com with ESMTPSA id w45sm1835327qtj.51.2020.06.23.14.21.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 14:21:45 -0700 (PDT)
+Received: by localhost.localdomain (Postfix, from userid 1000)
+        id 5487BC1B81; Tue, 23 Jun 2020 18:21:43 -0300 (-03)
+Date:   Tue, 23 Jun 2020 18:21:43 -0300
+From:   'Marcelo Ricardo Leitner' <marcelo.leitner@gmail.com>
+To:     Corey Minyard <minyard@acm.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Michael Tuexen <Michael.Tuexen@lurchi.franken.de>,
+        Xin Long <lucien.xin@gmail.com>,
+        Vlad Yasevich <vyasevich@gmail.com>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        "linux-sctp@vger.kernel.org" <linux-sctp@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Strange problem with SCTP+IPv6
+Message-ID: <20200623212143.GR2491@localhost.localdomain>
+References: <20200621155604.GA23135@minyard.net>
+ <CADvbK_d9mV9rBg7oLC+9u4fg3d_5a_g8ukPe83vOAE8ZM3FhHA@mail.gmail.com>
+ <20200622165759.GA3235@minyard.net>
+ <4B68D06C-00F4-42C3-804A-B5531AABCE21@lurchi.franken.de>
+ <20200622183253.GQ2491@localhost.localdomain>
+ <c1121947c9a94703b4ab6dc434a7c3f8@AcuMS.aculab.com>
+ <20200623161756.GE3235@minyard.net>
 MIME-Version: 1.0
-References: <20200622205815.2988115-1-keescook@chromium.org>
- <20200622205815.2988115-3-keescook@chromium.org> <20200623145218.GC4336@willie-the-truck>
- <CAMj1kXEPe10EY1uE1vberVMXv9sx4ZRHgmssOypYm5ya5G9KoA@mail.gmail.com> <202006231208.F3DA600E18@keescook>
-In-Reply-To: <202006231208.F3DA600E18@keescook>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Tue, 23 Jun 2020 23:21:16 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGnm=uujNfNGJzQxd7BSF0qT2n6jPX1OqwnGov1nKC_cg@mail.gmail.com>
-Message-ID: <CAMj1kXGnm=uujNfNGJzQxd7BSF0qT2n6jPX1OqwnGov1nKC_cg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] arm64/build: Warn on orphan section placement
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200623161756.GE3235@minyard.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Jun 2020 at 23:06, Kees Cook <keescook@chromium.org> wrote:
->
-> On Tue, Jun 23, 2020 at 04:59:39PM +0200, Ard Biesheuvel wrote:
-> > On Tue, 23 Jun 2020 at 16:52, Will Deacon <will@kernel.org> wrote:
-> > >
-> > > On Mon, Jun 22, 2020 at 01:58:15PM -0700, Kees Cook wrote:
-> > > > We don't want to depend on the linker's orphan section placement
-> > > > heuristics as these can vary between linkers, and may change between
-> > > > versions. All sections need to be explicitly named in the linker
-> > > > script.
-> > > >
-> > > > Explicitly include debug sections when they're present. Add .eh_frame*
-> > > > to discard as it seems that these are still generated even though
-> > > > -fno-asynchronous-unwind-tables is being specified. Add .plt and
-> > > > .data.rel.ro to discards as they are not actually used. Add .got.plt
-> > > > to the image as it does appear to be mapped near .data. Finally enable
-> > > > orphan section warnings.
-> > >
-> > > Can you elaborate a bit on what .got.plt is being used for, please? I
-> > > wonder if there's an interaction with an erratum workaround in the linker
-> > > or something.
-> > >
-> >
-> > .got.plt is not used at all, but it has three magic entries at the
-> > start that the dynamic linker uses for lazy dispatch, so it turns up
-> > as a non-empty section of 0x18 bytes.
->
-> Is there a way to suppress the generation? I haven't found a way, so I'd
-> left it as-is.
->
+On Tue, Jun 23, 2020 at 11:17:56AM -0500, Corey Minyard wrote:
+> On Tue, Jun 23, 2020 at 01:17:28PM +0000, David Laight wrote:
+> > From: Marcelo Ricardo Leitner
+> > > Sent: 22 June 2020 19:33
+> > > On Mon, Jun 22, 2020 at 08:01:24PM +0200, Michael Tuexen wrote:
+> > > > > On 22. Jun 2020, at 18:57, Corey Minyard <minyard@acm.org> wrote:
+> > > > >
+> > > > > On Mon, Jun 22, 2020 at 08:01:23PM +0800, Xin Long wrote:
+> > > > >> On Sun, Jun 21, 2020 at 11:56 PM Corey Minyard <minyard@acm.org> wrote:
+> > > > >>>
+> > > > >>> I've stumbled upon a strange problem with SCTP and IPv6.  If I create an
+> > > > >>> sctp listening socket on :: and set the IPV6_V6ONLY socket option on it,
+> > > > >>> then I make a connection to it using ::1, the connection will drop after
+> > > > >>> 2.5 seconds with an ECONNRESET error.
+> > > > >>>
+> > > > >>> It only happens on SCTP, it doesn't have the issue if you connect to a
+> > > > >>> full IPv6 address instead of ::1, and it doesn't happen if you don't
+> > > > >>> set IPV6_V6ONLY.  I have verified current end of tree kernel.org.
+> > > > >>> I tried on an ARM system and x86_64.
+> > > > >>>
+> > > > >>> I haven't dug into the kernel to see if I could find anything yet, but I
+> > > > >>> thought I would go ahead and report it.  I am attaching a reproducer.
+> > > > >>> Basically, compile the following code:
+> > > > >> The code only set IPV6_V6ONLY on server side, so the client side will
+> > > > >> still bind all the local ipv4 addresses (as you didn't call bind() to
+> > > > >> bind any specific addresses ). Then after the connection is created,
+> > > > >> the client will send HB on the v4 paths to the server. The server
+> > > > >> will abort the connection, as it can't support v4.
+> > > > >>
+> > > > >> So you can work around it by either:
+> > > > >>
+> > > > >>  - set IPV6_V6ONLY on client side.
+> > > > >>
+> > > > >> or
+> > > > >>
+> > > > >>  - bind to the specific v6 addresses on the client side.
+> > > > >>
+> > > > >> I don't see RFC said something about this.
+> > > > >> So it may not be a good idea to change the current behaviour
+> > > > >> to not establish the connection in this case, which may cause regression.
+> > > > >
+> > > > > Ok, I understand this.  It's a little strange, but I see why it works
+> > > > > this way.
+> > > > I don't. I would expect it to work as I described in my email.
+> > > > Could someone explain me how and why it is behaving different from
+> > > > my expectation?
+> > > 
+> > > It looks like a bug to me. Testing with this test app here, I can see
+> > > the INIT_ACK being sent with a bunch of ipv4 addresses in it and
+> > > that's unexpected for a v6only socket. As is, it's the server saying
+> > > "I'm available at these other addresses too, but not."
+> > 
+> > Does it even make sense to mix IPv4 and IPv6 addresses on the same
+> > connection?
+> > I don't remember ever seeing both types of address in a message,
+> > but may not have looked.
+> 
+> That's an interesting question.  Do the RFCs say anything?  I would
+> assume it was ok unless ipv6only was set.
+> 
+> > 
+> > I also wonder whether the connection should be dropped for an error
+> > response on a path that has never been validated.
+> 
+> That actually bothered me a bit more.  Shouldn't it stay up if any path
+> is up?  That's kind of the whole point of multihoming.
 
-Not really. What we could do is assert that it is empty, and emit it
-as info, so the 24 bytes are not emitted into the image.
+Michael explained it on the other email. What he described is what I
+observed in my tests.
 
+> 
+> > 
+> > OTOH the whole 'multi-homing' part of SCTP sucks.
+> 
+> I don't think so.
+> 
+> > The IP addresses a server needs to bind to depend on where the
+> > incoming connection will come from.
+> > A local connection may be able to use a 192.168.x.x address
+> > but a remote connection must not - as it may be defined locally
+> > at the remote system.
+> > But both connections can come into the public (routable) address.
+> > We have to tell customers to explicitly configure the local IP
+> > addresses - which means the application has to know what they are.
+> > Fortunately these apps are pretty static - usually M3UA.
+> 
+> Umm, no,  If you have a private address, it better be behind a firewall,
+> and the firewall should handle rewriting the packet to fix the addresses.
+> 
+> It doesn't appear that Linux netfilter does this.  There is a TODO in
+> the code for this.  But that's how it *should* work.
 
-This change
+Right, we don't support SCTP aware NAT [1].
 
-diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-index 6827da7f3aa5..9e13b371559f 100644
---- a/arch/arm64/kernel/vmlinux.lds.S
-+++ b/arch/arm64/kernel/vmlinux.lds.S
-@@ -244,6 +244,9 @@ SECTIONS
-        __pecoff_data_size = ABSOLUTE(. - __initdata_begin);
-        _end = .;
+1.https://tools.ietf.org/html/draft-stewart-behave-sctpnat-04
 
-+       .got.plt (INFO) : { *(.got.plt) }
-+        ASSERT(SIZEOF(.got.plt) == 0 || SIZEOF(.got.plt) == 0x18,
-".got.plt not empty")
-+
-        STABS_DEBUG
+  Marcelo
 
-        HEAD_SYMBOLS
-
-results in
-
-  [28] .bss              NOBITS           ffff800010d71000  00d70200
-       0000000000084120  0000000000000000  WA       0     0     4096
-  [29] .got.plt          PROGBITS         ffff800010e00000  00d70200
-       0000000000000018  0000000000000008   W       0     0     8
-  [30] .comment          PROGBITS         0000000000000000  00d70218
-       000000000000001c  0000000000000001  MS       0     0     1
-
-in the ELF output, so it will be emitted from the image, unless it
-actually have any entries, in which case we fail the build.
-
-
-
-> > We should be able to discard it afaict, but given that it does not
-> > actually take up any space, it doesn't really matter either way.
->
-> I will add it to the discards then.
->
-
-That would prevent us from doing the assert on its size, so i think
-the above is more suitable in this case
-
-> > > > diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
-> > > > index a0d94d063fa8..3e628983445a 100644
-> > > > --- a/arch/arm64/Makefile
-> > > > +++ b/arch/arm64/Makefile
-> > > > @@ -29,6 +29,10 @@ LDFLAGS_vmlinux    += --fix-cortex-a53-843419
-> > > >    endif
-> > > >  endif
-> > > >
-> > > > +# We never want expected sections to be placed heuristically by the
-> > > > +# linker. All sections should be explicitly named in the linker script.
-> > > > +LDFLAGS_vmlinux += --orphan-handling=warn
-> > > > +
-> > > >  ifeq ($(CONFIG_ARM64_USE_LSE_ATOMICS), y)
-> > > >    ifneq ($(CONFIG_ARM64_LSE_ATOMICS), y)
-> > > >  $(warning LSE atomics not supported by binutils)
-> > > > diff --git a/arch/arm64/kernel/vmlinux.lds.S b/arch/arm64/kernel/vmlinux.lds.S
-> > > > index 5427f502c3a6..c9ecb3b2007d 100644
-> > > > --- a/arch/arm64/kernel/vmlinux.lds.S
-> > > > +++ b/arch/arm64/kernel/vmlinux.lds.S
-> > > > @@ -94,7 +94,8 @@ SECTIONS
-> > > >       /DISCARD/ : {
-> > > >               *(.interp .dynamic)
-> > > >               *(.dynsym .dynstr .hash .gnu.hash)
-> > > > -             *(.eh_frame)
-> > > > +             *(.plt) *(.data.rel.ro)
-> > > > +             *(.eh_frame) *(.init.eh_frame)
-> > >
-> > > Do we need to include .eh_frame_hdr here too?
-> >
-> > It would be better to build with -fno-unwind-tables, in which case
-> > these sections should not even exist.
->
-> Nothing seems to help with the .eh_frame issue
-> (even with -fno-asynchronous-unwind-tables and -fno-unwind-tables):
->
-> $ aarch64-linux-gnu-gcc -Wp,-MMD,arch/arm64/kernel/.smccc-call.o.d \
->   -nostdinc -isystem /usr/lib/gcc-cross/aarch64-linux-gnu/9/include \
->   -I./arch/arm64/include -I./arch/arm64/include/generated  -I./include \
->   -I./arch/arm64/include/uapi -I./arch/arm64/include/generated/uapi \
->   -I./include/uapi -I./include/generated/uapi -include \
->   ./include/linux/kconfig.h -D__KERNEL__ -mlittle-endian \
->   -DCC_USING_PATCHABLE_FUNCTION_ENTRY -DKASAN_SHADOW_SCALE_SHIFT=3 \
->   -D__ASSEMBLY__ -fno-PIE -mabi=lp64 -fno-asynchronous-unwind-tables \
->   -fno-unwind-tables -DKASAN_SHADOW_SCALE_SHIFT=3 -Wa,-gdwarf-2 -c -o \
->   arch/arm64/kernel/smccc-call.o arch/arm64/kernel/smccc-call.S
->
-> $ readelf -S arch/arm64/kernel/smccc-call.o | grep eh_frame
->   [17] .eh_frame         PROGBITS         0000000000000000  000001f0
->   [18] .rela.eh_frame    RELA             0000000000000000  00000618
->
-
-That is because that file has CFI annotations which it doesn't need
-(since we don't unwind data).
-
-The below should fix that - I guess this may have been inherited from
-32-bit ARM, where we do use unwind data in the kernel?
-
-diff --git a/arch/arm64/kernel/smccc-call.S b/arch/arm64/kernel/smccc-call.S
-index 1f93809528a4..d62447964ed9 100644
---- a/arch/arm64/kernel/smccc-call.S
-+++ b/arch/arm64/kernel/smccc-call.S
-@@ -9,7 +9,6 @@
- #include <asm/assembler.h>
-
-        .macro SMCCC instr
--       .cfi_startproc
-        \instr  #0
-        ldr     x4, [sp]
-        stp     x0, x1, [x4, #ARM_SMCCC_RES_X0_OFFS]
-@@ -21,7 +20,6 @@
-        b.ne    1f
-        str     x6, [x4, ARM_SMCCC_QUIRK_STATE_OFFS]
- 1:     ret
--       .cfi_endproc
-        .endm
-
- /*
-
-> > > >       }
-> > > >
-> > > >       . = KIMAGE_VADDR + TEXT_OFFSET;
-> > > > @@ -209,6 +210,7 @@ SECTIONS
-> > > >       _data = .;
-> > > >       _sdata = .;
-> > > >       RW_DATA(L1_CACHE_BYTES, PAGE_SIZE, THREAD_ALIGN)
-> > > > +     .got.plt : ALIGN(8) { *(.got.plt) }
-> > > >
-> > > >       /*
-> > > >        * Data written with the MMU off but read with the MMU on requires
-> > > > @@ -244,6 +246,7 @@ SECTIONS
-> > > >       _end = .;
-> > > >
-> > > >       STABS_DEBUG
-> > > > +     DWARF_DEBUG
-> > >
-> > > I know you didn't add it, but do we _really_ care about stabs debug? Who
-> > > generates that for arm64?
->
-> It's also where .comment and the .symtab ends up living. As a result,
-> I think it's correct to keep it. (If we wanted to split .stabs from
-> .comment/.symtab, we could do that, but I'd kind of like to avoid it for
-> this series, as it feels kind of unrelated.)
->
-> --
-> Kees Cook
+> 
+> -corey
+> 
+> > 
+> > 	David
+> > 
+> > -
+> > Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> > Registration No: 1397386 (Wales)
+> > 
