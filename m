@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678BB2063F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B4F206146
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393402AbgFWVNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:13:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50598 "EHLO mail.kernel.org"
+        id S2403828AbgFWUiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:38:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390340AbgFWUaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:30:20 -0400
+        id S2391927AbgFWUiL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:38:11 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCF4B20702;
-        Tue, 23 Jun 2020 20:30:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E458D21531;
+        Tue, 23 Jun 2020 20:38:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944220;
-        bh=N13XLNE2bgkIaTR6aWBY+/rvUzWnrqiUg9e4uFLz6Nk=;
+        s=default; t=1592944691;
+        bh=hdGBFCYcuW2mHMvmT1HAclvF/VBwBp9BitV8pAwPeWc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uo+ePY6Jpd+e9Mk+JWyOxT5LHKS2UIdDa2eIjosfl4i8UmVY516HGTDmHSTCa3q4k
-         MJjGjYbzylTuoaA8TFVOdVLQsdM8ZcAwN4C7QWITAN0GgvWQ70h7dGw2tSh6qp54tL
-         mi4lnNS+71Q7NmBlAeze088chEAPcCK4dKPEYC7s=
+        b=XUEb+8pdLeDbqV6ZUrk3Oc0TDcorbgCTq0i/F7/lJji+a0xdwR5VPYEgDek3GABKE
+         cp9dUVuZ703UPjlrUlFeVeyKt7oHwY9aU43Bo9YWr+PwJs37jZMINY9kI5IFYYQk0x
+         ND5chNPbYarjenJshfT2Ws5M+vJlxXXbc4INsJNQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Feng Tang <feng.tang@intel.com>,
+        Corey Minyard <cminyard@mvista.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 219/314] drm/amd/display: Revalidate bandwidth before commiting DC updates
-Date:   Tue, 23 Jun 2020 21:56:54 +0200
-Message-Id: <20200623195349.382104294@linuxfoundation.org>
+Subject: [PATCH 4.19 087/206] ipmi: use vzalloc instead of kmalloc for user creation
+Date:   Tue, 23 Jun 2020 21:56:55 +0200
+Message-Id: <20200623195321.230431462@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,59 +44,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+From: Feng Tang <feng.tang@intel.com>
 
-[ Upstream commit a24eaa5c51255b344d5a321f1eeb3205f2775498 ]
+[ Upstream commit 7c47a219b95d0e06b5ef5fcc7bad807895015eac ]
 
-[Why]
-Whenever we switch between tiled formats without also switching pixel
-formats or doing anything else that recreates the DC plane state we
-can run into underflow or hangs since we're not updating the
-DML parameters before committing to the hardware.
+We met mulitple times of failure of staring bmc-watchdog,
+due to the runtime memory allocation failure of order 4.
 
-[How]
-If the update type is FULL then call validate_bandwidth again to update
-the DML parmeters before committing the state.
+     bmc-watchdog: page allocation failure: order:4, mode:0x40cc0(GFP_KERNEL|__GFP_COMP), nodemask=(null),cpuset=/,mems_allowed=0-1
+     CPU: 1 PID: 2571 Comm: bmc-watchdog Not tainted 5.5.0-00045-g7d6bb61d6188c #1
+     Hardware name: Intel Corporation S2600WFT/S2600WFT, BIOS SE5C620.86B.00.01.0015.110720180833 11/07/2018
+     Call Trace:
+      dump_stack+0x66/0x8b
+      warn_alloc+0xfe/0x160
+      __alloc_pages_slowpath+0xd3e/0xd80
+      __alloc_pages_nodemask+0x2f0/0x340
+      kmalloc_order+0x18/0x70
+      kmalloc_order_trace+0x1d/0xb0
+      ipmi_create_user+0x55/0x2c0 [ipmi_msghandler]
+      ipmi_open+0x72/0x110 [ipmi_devintf]
+      chrdev_open+0xcb/0x1e0
+      do_dentry_open+0x1ce/0x380
+      path_openat+0x305/0x14f0
+      do_filp_open+0x9b/0x110
+      do_sys_open+0x1bd/0x250
+      do_syscall_64+0x5b/0x1f0
+      entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-This is basically just a workaround and protective measure against
-update types being added DC where we could run into this issue in
-the future.
+Using vzalloc/vfree for creating ipmi_user heals the
+problem
 
-We can only fully validate the state in advance before applying it to
-the hardware if we recreate all the plane and stream states since
-we can't modify what's currently in use.
+Thanks to Stephen Rothwell for finding the vmalloc.h
+inclusion issue.
 
-The next step is to update DM to ensure that we're creating the plane
-and stream states for whatever could potentially be a full update in
-DC to pre-emptively recreate the state for DC global validation.
-
-The workaround can stay until this has been fixed in DM.
-
-Signed-off-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
-Reviewed-by: Hersen Wu <hersenxs.wu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+Signed-off-by: Corey Minyard <cminyard@mvista.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/core/dc.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/char/ipmi/ipmi_msghandler.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/core/dc.c b/drivers/gpu/drm/amd/display/dc/core/dc.c
-index 2028dc017f7a0..b95a58aa82d91 100644
---- a/drivers/gpu/drm/amd/display/dc/core/dc.c
-+++ b/drivers/gpu/drm/amd/display/dc/core/dc.c
-@@ -2230,6 +2230,12 @@ void dc_commit_updates_for_stream(struct dc *dc,
+diff --git a/drivers/char/ipmi/ipmi_msghandler.c b/drivers/char/ipmi/ipmi_msghandler.c
+index 69734b1df7927..cb85516e1eb3c 100644
+--- a/drivers/char/ipmi/ipmi_msghandler.c
++++ b/drivers/char/ipmi/ipmi_msghandler.c
+@@ -30,6 +30,7 @@
+ #include <linux/workqueue.h>
+ #include <linux/uuid.h>
+ #include <linux/nospec.h>
++#include <linux/vmalloc.h>
  
- 	copy_stream_update_to_stream(dc, context, stream, stream_update);
+ #define PFX "IPMI message handler: "
  
-+	if (!dc->res_pool->funcs->validate_bandwidth(dc, context, false)) {
-+		DC_ERROR("Mode validation failed for stream update!\n");
-+		dc_release_state(context);
-+		return;
-+	}
-+
- 	commit_planes_for_stream(
- 				dc,
- 				srf_updates,
+@@ -1089,7 +1090,7 @@ static void free_user_work(struct work_struct *work)
+ 					      remove_work);
+ 
+ 	cleanup_srcu_struct(&user->release_barrier);
+-	kfree(user);
++	vfree(user);
+ }
+ 
+ int ipmi_create_user(unsigned int          if_num,
+@@ -1121,7 +1122,7 @@ int ipmi_create_user(unsigned int          if_num,
+ 	if (rv)
+ 		return rv;
+ 
+-	new_user = kmalloc(sizeof(*new_user), GFP_KERNEL);
++	new_user = vzalloc(sizeof(*new_user));
+ 	if (!new_user)
+ 		return -ENOMEM;
+ 
+@@ -1170,7 +1171,7 @@ int ipmi_create_user(unsigned int          if_num,
+ 
+ out_kfree:
+ 	srcu_read_unlock(&ipmi_interfaces_srcu, index);
+-	kfree(new_user);
++	vfree(new_user);
+ 	return rv;
+ }
+ EXPORT_SYMBOL(ipmi_create_user);
 -- 
 2.25.1
 
