@@ -2,113 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 655502055F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 17:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF1F2055FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 17:34:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733032AbgFWPc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 11:32:29 -0400
-Received: from esa3.hc3370-68.iphmx.com ([216.71.145.155]:36562 "EHLO
-        esa3.hc3370-68.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732781AbgFWPc3 (ORCPT
+        id S1732988AbgFWPeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 11:34:04 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:32931 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732738AbgFWPeD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 11:32:29 -0400
-Authentication-Results: esa3.hc3370-68.iphmx.com; dkim=none (message not signed) header.i=none
-IronPort-SDR: QP9Jx3H+HhvZhhEt4ggfsozV10N6bYVBVidEhPpOSKd2Kt2OP2Y8D1tWVy640iW+66S4ExUr29
- 3JB3pFSLJftaItQlzTtDyzPlpXNy/W/T9+L+ZFgV14wTPrvC6XS7AuiDPdi1jxIxAzVAbCfu5M
- Wi9kMDH32VcQn1yx3GawArowkMnTUV+a0Z+YTDF9aj3mgsowvLagbbd5j5V50TxYrIF/rlg3p1
- 7vyqf2bzbYlLiGxnmqC1s4QyuG9wzWCCA2OkMvKoLqQ9juszSl2yG5y7WK+owAQ4QX+oxC8Rpm
- kC4=
-X-SBRS: 2.7
-X-MesageID: 20733007
-X-Ironport-Server: esa3.hc3370-68.iphmx.com
-X-Remote-IP: 162.221.158.21
-X-Policy: $RELAYED
-X-IronPort-AV: E=Sophos;i="5.75,271,1589256000"; 
-   d="scan'208";a="20733007"
-Subject: Re: Should SEV-ES #VC use IST? (Re: [PATCH] Allow RDTSC and RDTSCP
- from userspace)
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>
-CC:     Andy Lutomirski <luto@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        "Dave Hansen" <dave.hansen@intel.com>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        "Mike Stunes" <mstunes@vmware.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Dave Hansen" <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <JGross@suse.com>,
-        Jiri Slaby <jslaby@suse.cz>, Kees Cook <keescook@chromium.org>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Linux Virtualization <virtualization@lists.linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <CALCETrXGr+o1_bKbnre8cVY14c_76m8pEf3iB_i7h+zfgE5_jA@mail.gmail.com>
- <20200623094519.GF31822@suse.de>
- <20200623104559.GA4817@hirez.programming.kicks-ass.net>
- <20200623111107.GG31822@suse.de>
- <20200623111443.GC4817@hirez.programming.kicks-ass.net>
- <20200623114324.GA14101@suse.de>
- <20200623115014.GE4817@hirez.programming.kicks-ass.net>
- <20200623121237.GC14101@suse.de>
- <20200623130322.GH4817@hirez.programming.kicks-ass.net>
- <20200623144940.GE14101@suse.de>
- <20200623151607.GJ4817@hirez.programming.kicks-ass.net>
-From:   Andrew Cooper <andrew.cooper3@citrix.com>
-Message-ID: <fe0af2c8-92c8-8d66-e9f3-5a50d64837e5@citrix.com>
-Date:   Tue, 23 Jun 2020 16:32:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 23 Jun 2020 11:34:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592926442;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=s4vipZzC2aXfqHyxgFFKgIRQV3lS7HzdSqHHonX0YJ8=;
+        b=ZaoN8QA7wuvFXHStbwhsxIc/NggX33O3FEQoiYRjeGEL57Uu0/djE1vLAeHfKHJi7q4nrM
+        tXJ8EtzuOaZtuFEvFKWcPXnSyE20sq2P3/YOyHjnkWegWpgtgLRv3QxywAuSQ6ihH7h6fT
+        XbeYox/SlzJMVpTfXSSqZgR50W7bxO8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-199-Fdj0HluaO2Wwf1FVUy9ZjQ-1; Tue, 23 Jun 2020 11:33:58 -0400
+X-MC-Unique: Fdj0HluaO2Wwf1FVUy9ZjQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D641019057A1;
+        Tue, 23 Jun 2020 15:33:56 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8B0597CCF9;
+        Tue, 23 Jun 2020 15:33:53 +0000 (UTC)
+Date:   Tue, 23 Jun 2020 11:33:52 -0400
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Ignat Korchagin <ignat@cloudflare.com>
+Cc:     Mikulas Patocka <mpatocka@redhat.com>,
+        Ignat Korchagin <ignat@cloudflare.com>,
+        "David S. Miller" <davem@davemloft.net>, agk@redhat.com,
+        dm-devel@redhat.com, dm-crypt@saout.de,
+        linux-kernel@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [RFC PATCH 0/1] dm-crypt excessive overhead
+Message-ID: <20200623153352.GA19783@redhat.com>
+References: <20200619164132.1648-1-ignat@cloudflare.com>
+ <20200619165548.GA24779@redhat.com>
+ <alpine.LRH.2.02.2006191429060.23991@file01.intranet.prod.int.rdu2.redhat.com>
+ <20200620012332.GA25340@gondor.apana.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20200623151607.GJ4817@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-ClientProxiedBy: AMSPEX02CAS01.citrite.net (10.69.22.112) To
- AMSPEX02CL02.citrite.net (10.69.22.126)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200620012332.GA25340@gondor.apana.org.au>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/06/2020 16:16, Peter Zijlstra wrote:
-> On Tue, Jun 23, 2020 at 04:49:40PM +0200, Joerg Roedel wrote:
->>> We're talking about the 3rd case where the only reason things 'work' is
->>> because we'll have to panic():
->>>
->>>  - #MC
->> Okay, #MC is special and can only be handled on a best-effort basis, as
->> #MC could happen anytime, also while already executing the #MC handler.
-> I think the hardware has a MCE-mask bit somewhere. Flaky though because
-> clearing it isn't 'atomic' with IRET, so there's a 'funny' window.
+On Fri, Jun 19 2020 at  9:23pm -0400,
+Herbert Xu <herbert@gondor.apana.org.au> wrote:
 
-MSR_MCG_STATUS.MCIP, and yes - any #MC before that point will
-immediately Shutdown.  Any #MC between that point and IRET will clobber
-its IST stack and end up sad.
+> On Fri, Jun 19, 2020 at 02:39:39PM -0400, Mikulas Patocka wrote:
+> >
+> > I'm looking at this and I'd like to know why does the crypto API fail in 
+> > hard-irq context and why does it work in tasklet context. What's the exact 
+> > reason behind this?
+> 
+> You're not supposed to do any real work in IRQ handlers.  All
+> the substantial work should be postponed to softirq context.
+> 
+> Why do you need to do work in hard IRQ context?
 
-> It also interacts really bad with the NMI handler. If we get an #MC
-> early in the NMI, where we hard-rely on the NMI-mask being set to set-up
-> the recursion stack, then the #MC IRET will clear the NMI-mask, and
-> we're toast.
->
-> Andy has wild and crazy ideas, but I don't think we need more crazy
-> here.
+Ignat, think you may have missed Herbert's question?
 
-Want, certainly not.  Need, maybe :-/
->>>  - #DB with BUS LOCK DEBUG EXCEPTION
->> If I understand the problem correctly, this can be solved by moving off
->> the IST stack to the current task stack in the #DB handler, like I plan
->> to do for #VC, no?
-> Hmm, probably. Would take a bit of care, but should be doable.
+My understanding is that you're doing work in hard IRQ context (via
+tasklet) precisely to avoid overhead of putting to a workqueue?  Did
+you try using a workqueue and it didn't work adequately?  If so, do you
+have a handle on why that is?  E.g. was it due to increased latency? or
+IO completion occurring on different cpus that submitted (are you
+leaning heavily on blk-mq's ability to pin IO completion to same cpu as
+IO was submitted?)
 
-Andy and I have spent some time considering this.
+I'm fishing here but I'd just like to tease out the details for _why_
+you need to do work from hard IRQ via tasklet so that I can potentially
+defend it if needed.
 
-Having exactly one vector move off IST and onto an in-use task-stack is
-doable, I think, so long as it can sort out self-recursion protections.
+Thanks,
+Mike
 
-Having more than one vector do this is very complicated.  You've got to
-take care to walk up the list of IST-nesting to see if any interrupted
-context is in the middle of trying to copy themselves onto the stack, so
-you don't clobber the frame they're in the middle of copying.
-
-~Andrew
