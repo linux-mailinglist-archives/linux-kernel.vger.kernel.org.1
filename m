@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 397BB206464
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8A2C206534
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390970AbgFWVUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:20:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43132 "EHLO mail.kernel.org"
+        id S2393628AbgFWVcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:32:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390425AbgFWUY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:24:29 -0400
+        id S2388486AbgFWUMi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:12:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 306E62064B;
-        Tue, 23 Jun 2020 20:24:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A4263206C3;
+        Tue, 23 Jun 2020 20:12:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943868;
-        bh=ZlApbjXxU37MYPbywtIA5qOjp2wk5ss4fkRX5GoBLOc=;
+        s=default; t=1592943157;
+        bh=PG+TUyNYYfqZu3IIU4lPjTC8VRqZMGf/AGQSmiHIdpw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xZEJx+7VV4wUHaIVLoQdnW+P3NG1zMAmnpHSr4X2ea4roi2JCXgchZTfZ9nqzHR5J
-         kPy1/zpxVz26fNbx93RdOKYobiEySE/X27e1yK2tElnqjlmYEPcyhZICoSNVFmlA4z
-         E5POIB3Wagl7OcNbDSC2MAYednADtcR5CxvHPodM=
+        b=ktnx/W5SEZq1N6b9ucKy7Jmcrt/F9t4/cu5PEEPO15nwWPi3+SYmMUtky1AUyz83V
+         au6TTu8llfqnFwbERHbTUb9XDxAPoUZem1L/i1p7K8yuCQYztP74Z0z9XgUK0Rvbwe
+         HByOs8oXOfEr9aQttyg1jX/IC3Y5Y/NMZ3cABzPo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        John Johansen <john.johansen@canonical.com>,
+        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
+        Paul Mackerras <paulus@ozlabs.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 082/314] apparmor: fix nnp subset test for unconfined
-Date:   Tue, 23 Jun 2020 21:54:37 +0200
-Message-Id: <20200623195342.780940895@linuxfoundation.org>
+Subject: [PATCH 5.7 282/477] KVM: PPC: Book3S HV: Ignore kmemleak false positives
+Date:   Tue, 23 Jun 2020 21:54:39 +0200
+Message-Id: <20200623195420.901258515@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
+References: <20200623195407.572062007@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,123 +44,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Johansen <john.johansen@canonical.com>
+From: Qian Cai <cai@lca.pw>
 
-[ Upstream commit 3ed4aaa94fc07db3cd0c91be95e3e1b9782a2710 ]
+[ Upstream commit 0aca8a5575544bd21b3363058afb8f1e81505150 ]
 
-The subset test is not taking into account the unconfined exception
-which will cause profile transitions in the stacked confinement
-case to fail when no_new_privs is applied.
+kvmppc_pmd_alloc() and kvmppc_pte_alloc() allocate some memory but then
+pud_populate() and pmd_populate() will use __pa() to reference the newly
+allocated memory.
 
-This fixes a regression introduced in the fix for
-https://bugs.launchpad.net/bugs/1839037
+Since kmemleak is unable to track the physical memory resulting in false
+positives, silence those by using kmemleak_ignore().
 
-BugLink: https://bugs.launchpad.net/bugs/1844186
-Signed-off-by: John Johansen <john.johansen@canonical.com>
+unreferenced object 0xc000201c382a1000 (size 4096):
+ comm "qemu-kvm", pid 124828, jiffies 4295733767 (age 341.250s)
+ hex dump (first 32 bytes):
+   c0 00 20 09 f4 60 03 87 c0 00 20 10 72 a0 03 87  .. ..`.... .r...
+   c0 00 20 0e 13 a0 03 87 c0 00 20 1b dc c0 03 87  .. ....... .....
+ backtrace:
+   [<000000004cc2790f>] kvmppc_create_pte+0x838/0xd20 [kvm_hv]
+   kvmppc_pmd_alloc at arch/powerpc/kvm/book3s_64_mmu_radix.c:366
+   (inlined by) kvmppc_create_pte at arch/powerpc/kvm/book3s_64_mmu_radix.c:590
+   [<00000000d123c49a>] kvmppc_book3s_instantiate_page+0x2e0/0x8c0 [kvm_hv]
+   [<00000000bb549087>] kvmppc_book3s_radix_page_fault+0x1b4/0x2b0 [kvm_hv]
+   [<0000000086dddc0e>] kvmppc_book3s_hv_page_fault+0x214/0x12a0 [kvm_hv]
+   [<000000005ae9ccc2>] kvmppc_vcpu_run_hv+0xc5c/0x15f0 [kvm_hv]
+   [<00000000d22162ff>] kvmppc_vcpu_run+0x34/0x48 [kvm]
+   [<00000000d6953bc4>] kvm_arch_vcpu_ioctl_run+0x314/0x420 [kvm]
+   [<000000002543dd54>] kvm_vcpu_ioctl+0x33c/0x950 [kvm]
+   [<0000000048155cd6>] ksys_ioctl+0xd8/0x130
+   [<0000000041ffeaa7>] sys_ioctl+0x28/0x40
+   [<000000004afc4310>] system_call_exception+0x114/0x1e0
+   [<00000000fb70a873>] system_call_common+0xf0/0x278
+unreferenced object 0xc0002001f0c03900 (size 256):
+ comm "qemu-kvm", pid 124830, jiffies 4295735235 (age 326.570s)
+ hex dump (first 32 bytes):
+   c0 00 20 10 fa a0 03 87 c0 00 20 10 fa a1 03 87  .. ....... .....
+   c0 00 20 10 fa a2 03 87 c0 00 20 10 fa a3 03 87  .. ....... .....
+ backtrace:
+   [<0000000023f675b8>] kvmppc_create_pte+0x854/0xd20 [kvm_hv]
+   kvmppc_pte_alloc at arch/powerpc/kvm/book3s_64_mmu_radix.c:356
+   (inlined by) kvmppc_create_pte at arch/powerpc/kvm/book3s_64_mmu_radix.c:593
+   [<00000000d123c49a>] kvmppc_book3s_instantiate_page+0x2e0/0x8c0 [kvm_hv]
+   [<00000000bb549087>] kvmppc_book3s_radix_page_fault+0x1b4/0x2b0 [kvm_hv]
+   [<0000000086dddc0e>] kvmppc_book3s_hv_page_fault+0x214/0x12a0 [kvm_hv]
+   [<000000005ae9ccc2>] kvmppc_vcpu_run_hv+0xc5c/0x15f0 [kvm_hv]
+   [<00000000d22162ff>] kvmppc_vcpu_run+0x34/0x48 [kvm]
+   [<00000000d6953bc4>] kvm_arch_vcpu_ioctl_run+0x314/0x420 [kvm]
+   [<000000002543dd54>] kvm_vcpu_ioctl+0x33c/0x950 [kvm]
+   [<0000000048155cd6>] ksys_ioctl+0xd8/0x130
+   [<0000000041ffeaa7>] sys_ioctl+0x28/0x40
+   [<000000004afc4310>] system_call_exception+0x114/0x1e0
+   [<00000000fb70a873>] system_call_common+0xf0/0x278
+
+Signed-off-by: Qian Cai <cai@lca.pw>
+Signed-off-by: Paul Mackerras <paulus@ozlabs.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/apparmor/domain.c        |  9 +++++----
- security/apparmor/include/label.h |  1 +
- security/apparmor/label.c         | 33 +++++++++++++++++++++++++++++++
- 3 files changed, 39 insertions(+), 4 deletions(-)
+ arch/powerpc/kvm/book3s_64_mmu_radix.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/security/apparmor/domain.c b/security/apparmor/domain.c
-index 5dedc0173b024..1a33f490e6670 100644
---- a/security/apparmor/domain.c
-+++ b/security/apparmor/domain.c
-@@ -935,7 +935,8 @@ int apparmor_bprm_set_creds(struct linux_binprm *bprm)
- 	 * aways results in a further reduction of permissions.
- 	 */
- 	if ((bprm->unsafe & LSM_UNSAFE_NO_NEW_PRIVS) &&
--	    !unconfined(label) && !aa_label_is_subset(new, ctx->nnp)) {
-+	    !unconfined(label) &&
-+	    !aa_label_is_unconfined_subset(new, ctx->nnp)) {
- 		error = -EPERM;
- 		info = "no new privs";
- 		goto audit;
-@@ -1213,7 +1214,7 @@ int aa_change_hat(const char *hats[], int count, u64 token, int flags)
- 		 * reduce restrictions.
- 		 */
- 		if (task_no_new_privs(current) && !unconfined(label) &&
--		    !aa_label_is_subset(new, ctx->nnp)) {
-+		    !aa_label_is_unconfined_subset(new, ctx->nnp)) {
- 			/* not an apparmor denial per se, so don't log it */
- 			AA_DEBUG("no_new_privs - change_hat denied");
- 			error = -EPERM;
-@@ -1234,7 +1235,7 @@ int aa_change_hat(const char *hats[], int count, u64 token, int flags)
- 		 * reduce restrictions.
- 		 */
- 		if (task_no_new_privs(current) && !unconfined(label) &&
--		    !aa_label_is_subset(previous, ctx->nnp)) {
-+		    !aa_label_is_unconfined_subset(previous, ctx->nnp)) {
- 			/* not an apparmor denial per se, so don't log it */
- 			AA_DEBUG("no_new_privs - change_hat denied");
- 			error = -EPERM;
-@@ -1429,7 +1430,7 @@ check:
- 		 * reduce restrictions.
- 		 */
- 		if (task_no_new_privs(current) && !unconfined(label) &&
--		    !aa_label_is_subset(new, ctx->nnp)) {
-+		    !aa_label_is_unconfined_subset(new, ctx->nnp)) {
- 			/* not an apparmor denial per se, so don't log it */
- 			AA_DEBUG("no_new_privs - change_hat denied");
- 			error = -EPERM;
-diff --git a/security/apparmor/include/label.h b/security/apparmor/include/label.h
-index 47942c4ba7ca7..255764ab06e2f 100644
---- a/security/apparmor/include/label.h
-+++ b/security/apparmor/include/label.h
-@@ -281,6 +281,7 @@ bool aa_label_init(struct aa_label *label, int size, gfp_t gfp);
- struct aa_label *aa_label_alloc(int size, struct aa_proxy *proxy, gfp_t gfp);
+diff --git a/arch/powerpc/kvm/book3s_64_mmu_radix.c b/arch/powerpc/kvm/book3s_64_mmu_radix.c
+index aa12cd4078b32..bc6c1aa3d0e92 100644
+--- a/arch/powerpc/kvm/book3s_64_mmu_radix.c
++++ b/arch/powerpc/kvm/book3s_64_mmu_radix.c
+@@ -353,7 +353,13 @@ static struct kmem_cache *kvm_pmd_cache;
  
- bool aa_label_is_subset(struct aa_label *set, struct aa_label *sub);
-+bool aa_label_is_unconfined_subset(struct aa_label *set, struct aa_label *sub);
- struct aa_profile *__aa_label_next_not_in_set(struct label_it *I,
- 					     struct aa_label *set,
- 					     struct aa_label *sub);
-diff --git a/security/apparmor/label.c b/security/apparmor/label.c
-index 6c3acae701efd..5f324d63ceaa3 100644
---- a/security/apparmor/label.c
-+++ b/security/apparmor/label.c
-@@ -550,6 +550,39 @@ bool aa_label_is_subset(struct aa_label *set, struct aa_label *sub)
- 	return __aa_label_next_not_in_set(&i, set, sub) == NULL;
+ static pte_t *kvmppc_pte_alloc(void)
+ {
+-	return kmem_cache_alloc(kvm_pte_cache, GFP_KERNEL);
++	pte_t *pte;
++
++	pte = kmem_cache_alloc(kvm_pte_cache, GFP_KERNEL);
++	/* pmd_populate() will only reference _pa(pte). */
++	kmemleak_ignore(pte);
++
++	return pte;
  }
  
-+/**
-+ * aa_label_is_unconfined_subset - test if @sub is a subset of @set
-+ * @set: label to test against
-+ * @sub: label to test if is subset of @set
-+ *
-+ * This checks for subset but taking into account unconfined. IF
-+ * @sub contains an unconfined profile that does not have a matching
-+ * unconfined in @set then this will not cause the test to fail.
-+ * Conversely we don't care about an unconfined in @set that is not in
-+ * @sub
-+ *
-+ * Returns: true if @sub is special_subset of @set
-+ *     else false
-+ */
-+bool aa_label_is_unconfined_subset(struct aa_label *set, struct aa_label *sub)
-+{
-+	struct label_it i = { };
-+	struct aa_profile *p;
-+
-+	AA_BUG(!set);
-+	AA_BUG(!sub);
-+
-+	if (sub == set)
-+		return true;
-+
-+	do {
-+		p = __aa_label_next_not_in_set(&i, set, sub);
-+		if (p && !profile_unconfined(p))
-+			break;
-+	} while (p);
-+
-+	return p == NULL;
-+}
+ static void kvmppc_pte_free(pte_t *ptep)
+@@ -363,7 +369,13 @@ static void kvmppc_pte_free(pte_t *ptep)
  
+ static pmd_t *kvmppc_pmd_alloc(void)
+ {
+-	return kmem_cache_alloc(kvm_pmd_cache, GFP_KERNEL);
++	pmd_t *pmd;
++
++	pmd = kmem_cache_alloc(kvm_pmd_cache, GFP_KERNEL);
++	/* pud_populate() will only reference _pa(pmd). */
++	kmemleak_ignore(pmd);
++
++	return pmd;
+ }
  
- /**
+ static void kvmppc_pmd_free(pmd_t *pmdp)
 -- 
 2.25.1
 
