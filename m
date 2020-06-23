@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA33206278
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91AA9206158
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392664AbgFWVCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:02:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34886 "EHLO mail.kernel.org"
+        id S2392113AbgFWUjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:39:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35500 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392033AbgFWUjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:39:15 -0400
+        id S2392085AbgFWUjo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:39:44 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45E8621531;
-        Tue, 23 Jun 2020 20:39:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B12B217D8;
+        Tue, 23 Jun 2020 20:39:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944755;
-        bh=PztwRYczYRwfHROx6XUC+yFNsBgijrYo2D/b8quBK+k=;
+        s=default; t=1592944783;
+        bh=0ucHMYDFft9f8l+yGC+JoPvteAuq9Z9BYn60Xkfsr+w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WtMIDl1z8gX+aILWhHyH6mm7YcJAid6toS5yWLyeKBb+VpEibGj7IDDYbYSKKqzLv
-         YUUY3jLOLpT+HF8lil7UDuT9BhdY1v+r/rTPVADhkGke93YA/Hgbzp6PgpNpz4ggOm
-         Ry57cA48fP0e/GKB5YU7l4gfobDDpU7HSjxCtOGQ=
+        b=YsyXPi1+Etho+8HgzjAcUvwUzoCveOQTIIr2xecRviHzJunqDjqf1LQXtqTUYnmLO
+         Litnq+cI/0yFWzt1Igj11dmSv3pL4bnZ6sgMuefYHK2vYX2fZlqea2TybtVpz3+XzV
+         C1deHRK8/G81RnxJgSc6O3KqPwfbgV6HJ7G2zhbU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        stable@vger.kernel.org, Souptick Joarder <jrdr.linux@gmail.com>,
+        Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 095/206] tty: n_gsm: Fix bogus i++ in gsm_data_kick
-Date:   Tue, 23 Jun 2020 21:57:03 +0200
-Message-Id: <20200623195321.613189596@linuxfoundation.org>
+Subject: [PATCH 4.19 096/206] fpga: dfl: afu: Corrected error handling levels
+Date:   Tue, 23 Jun 2020 21:57:04 +0200
+Message-Id: <20200623195321.662025579@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
 References: <20200623195316.864547658@linuxfoundation.org>
@@ -44,51 +44,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gregory CLEMENT <gregory.clement@bootlin.com>
+From: Souptick Joarder <jrdr.linux@gmail.com>
 
-[ Upstream commit 4dd31f1ffec6c370c3c2e0c605628bf5e16d5c46 ]
+[ Upstream commit c9d7e3da1f3c4cf5dddfc5d7ce4d76d013aba1cc ]
 
-When submitting the previous fix "tty: n_gsm: Fix waking up upper tty
-layer when room available". It was suggested to switch from a while to
-a for loop, but when doing it, there was a remaining bogus i++.
+Corrected error handling goto sequnece. Level put_pages should
+be called when pinned pages >= 0 && pinned != npages. Level
+free_pages should be called when pinned pages < 0.
 
-This patch removes this i++ and also reorganizes the code making it more
-compact.
-
-Fixes: e1eaea46bb40 ("tty: n_gsm line discipline")
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-Link: https://lore.kernel.org/r/20200518084517.2173242-3-gregory.clement@bootlin.com
+Fixes: fa8dda1edef9 ("fpga: dfl: afu: add DFL_FPGA_PORT_DMA_MAP/UNMAP ioctls support")
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Acked-by: Wu Hao <hao.wu@intel.com>
+Reviewed-by: Xu Yilun <yilun.xu@intel.com>
+Link: https://lore.kernel.org/r/1589825991-3545-1-git-send-email-jrdr.linux@gmail.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/n_gsm.c | 14 +++-----------
- 1 file changed, 3 insertions(+), 11 deletions(-)
+ drivers/fpga/dfl-afu-dma-region.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 166052002b79d..5e9457d199279 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -703,17 +703,9 @@ static void gsm_data_kick(struct gsm_mux *gsm, struct gsm_dlci *dlci)
- 		} else {
- 			int i = 0;
- 
--			for (i = 0; i < NUM_DLCI; i++) {
--				struct gsm_dlci *dlci;
--
--				dlci = gsm->dlci[i];
--				if (dlci == NULL) {
--					i++;
--					continue;
--				}
--
--				tty_port_tty_wakeup(&dlci->port);
--			}
-+			for (i = 0; i < NUM_DLCI; i++)
-+				if (gsm->dlci[i])
-+					tty_port_tty_wakeup(&gsm->dlci[i]->port);
- 		}
+diff --git a/drivers/fpga/dfl-afu-dma-region.c b/drivers/fpga/dfl-afu-dma-region.c
+index c9a613dc9eb7e..e056965ef97b3 100644
+--- a/drivers/fpga/dfl-afu-dma-region.c
++++ b/drivers/fpga/dfl-afu-dma-region.c
+@@ -106,10 +106,10 @@ static int afu_dma_pin_pages(struct dfl_feature_platform_data *pdata,
+ 				     region->pages);
+ 	if (pinned < 0) {
+ 		ret = pinned;
+-		goto put_pages;
++		goto free_pages;
+ 	} else if (pinned != npages) {
+ 		ret = -EFAULT;
+-		goto free_pages;
++		goto put_pages;
  	}
- }
+ 
+ 	dev_dbg(dev, "%d pages pinned\n", pinned);
 -- 
 2.25.1
 
