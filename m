@@ -2,155 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7021206888
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 01:38:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 469262068A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 01:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388094AbgFWXio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 19:38:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54776 "EHLO
+        id S2387717AbgFWXtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 19:49:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387598AbgFWXim (ORCPT
+        with ESMTP id S2387520AbgFWXtQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 19:38:42 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AD0DC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 16:38:42 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id x24so94922edi.4
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 16:38:42 -0700 (PDT)
+        Tue, 23 Jun 2020 19:49:16 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEDECC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 16:49:14 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id b4so208837qkn.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 16:49:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=n+5DEpU8MPUbZ6qwtbZiaceci+Pn8MEakpjQ5eTQOsI=;
-        b=BwUqHklfO/CutrJi4sSum+0Oq/aYqJfREtlUlYvFqbg7C2o95ZsY+aAXTx7fNIqRlM
-         Om074BwZAmcoci+DUnxoZzH3aUY868XxJQ3e+6JDyQEeC5iWZeGHiE70uuI/atB1cNom
-         xCXyVRlG/BG+Rk5xaw7GbqzulJ1j6coo4t2CZwbOL2cZm9+rBLrxB8B9p4DdnTG5jBOR
-         QOAJ0t25Rb7Yshr94RCpaZRQfmpGRLjm10NrzcoQauH2bK0ogXDlXycuJivzDLWf2kpl
-         Gn4kSiTKiGrLyb2dt9L3qvS4RYk5JmJUO1YPrBkKVpK/5pye8XDZdSTLgh373wVJZ+jb
-         d8fg==
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id;
+        bh=L91sjcIPUiXFRY3kZBjWIFZ3Rmo9m3IlVJuhftDX/3w=;
+        b=i1/AqsClIbSx/ctjq1bZpJG6zdCxn9EfKVGgjxOQjExpMbruBmfxThanjDNRBJsAcG
+         n8sktsqfXgwT3HTM0AD1P24RWhLsluhZORp5jZ94yCf+dlv2/zx5foTD4ogoRt7RP9e3
+         i0PAe6thRw3/CxVyV05qyJEZVCZmGceBfh9SgYurP9LcxVJS9xNtJWhD9iRo/tmTNnMu
+         5FzGuDcTxY231n181zAVXx51YTyxBdTkkLg/Fzdibj140NvMqKEka5uUJev+xJpxBetp
+         9LPzliMMSoxjIg4ypryvDjBgR2/GSrt6dsy+f5t5oWdqii/uZ9pve7ZcCZYuftbwwB7s
+         Auyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=n+5DEpU8MPUbZ6qwtbZiaceci+Pn8MEakpjQ5eTQOsI=;
-        b=dT5C8ViFx1gxi2u+ag7nYhIgScAqsU9lwEEKjpBNR4xw7PJiX7g7Rk4CFZi2lrJ+o3
-         oQiS3L5EnkBJJQnJGFjpP2j1nq9keYt4FxvI/1bVvgXv9OThpdnL/4loADObnCu/WSrE
-         euF5xFeMmZGLydyL/kp2Mmo7h2zpkE8cKBQKw6i+wEjD9gklUtbH6Pvru8Wxe70Jkhyn
-         vLRJUX2IfgzdjRaPvXrGM4raR9GV46m8uHX2gCbctrHxs64gDD74U8ZrEg4klaqNKJHW
-         Tf3KGYEF5achnSRmO0dCCjIjp5sGvgsljCXuhMJzJ7PxH5aMnCyx/KXo0n//iNXPc8MT
-         GSPA==
-X-Gm-Message-State: AOAM531hKBABCHNAeEytmjxrlb6ZZuz0IWXtpJbViY2Grx6h9RRBx3LB
-        Q/wHSG8NOt2wwV22be3fUNecDSffL1Qo/eSny0W3sw==
-X-Google-Smtp-Source: ABdhPJwasF7vLiirxOKWGUzsRqmUk8WOnFuNI5R6Wx/5Z8Z+01/3A8rY2PQo2WH9IbTfWRuQy6ZyR4TfT8v3+uoVWY4=
-X-Received: by 2002:a05:6402:459:: with SMTP id p25mr23770678edw.383.1592955520956;
- Tue, 23 Jun 2020 16:38:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <1503686.1591113304@warthog.procyon.org.uk> <23219b787ed1c20a63017ab53839a0d1c794ec53.camel@intel.com>
-In-Reply-To: <23219b787ed1c20a63017ab53839a0d1c794ec53.camel@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 23 Jun 2020 16:38:29 -0700
-Message-ID: <CAPcyv4g+T+GK4yVJs8bTT1q90SFDpFYUSL9Pk_u8WZROhREPkw@mail.gmail.com>
-Subject: Re: [GIT PULL] General notification queue and key notifications
-To:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "dhowells@redhat.com" <dhowells@redhat.com>
-Cc:     "raven@themaw.net" <raven@themaw.net>,
-        "kzak@redhat.com" <kzak@redhat.com>,
-        "jarkko.sakkinen@linux.intel.com" <jarkko.sakkinen@linux.intel.com>,
-        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
-        "dray@redhat.com" <dray@redhat.com>,
-        "swhiteho@redhat.com" <swhiteho@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "mszeredi@redhat.com" <mszeredi@redhat.com>,
-        "jlayton@redhat.com" <jlayton@redhat.com>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "andres@anarazel.de" <andres@anarazel.de>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "christian.brauner@ubuntu.com" <christian.brauner@ubuntu.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=L91sjcIPUiXFRY3kZBjWIFZ3Rmo9m3IlVJuhftDX/3w=;
+        b=ND9gs2djgZ/VtccoffBGvdqToZ21Qd3UjS78e44mK0wSKQCCGP5cgUtc1DZTDlJD6H
+         65IFyZlkkliuIF1AS+UarRIlXOMF+DbRuuFfk7qPztHgEm2/Dlr84+eTENAJ9cQd9RIp
+         0hb4aeg0L8FEjRiD8etPFnw7TmPWhsrmtdF2AAoV2Fm+rfxyZiivRco3CiZ4K+biz4iC
+         wMue+cPOjUWyQORlG6ljXzgiFOTKz45wBFVlWQSOidTq18beNNyg5nfBgG2yXaN/i2Ak
+         Jg5lreh0fXhOggW/h17UR2F42WJ37LmquyTmklTMDSMJfAuhEWGZfQ3tS/jz8NV98PIL
+         Qvfw==
+X-Gm-Message-State: AOAM533rYleX7ryD64E5NczsBGn/XvbzwMXVv7lu9UoM4NDUp1no61xG
+        CpddtqNnupbmgTV8c8rB5B4=
+X-Google-Smtp-Source: ABdhPJy3pmh6d9LoJ+ryJUzwvi0J7VoEI58swUxGudIUb6wlhWXIJFsscK3M1/p1p75aUZgdj94CfQ==
+X-Received: by 2002:a05:620a:219c:: with SMTP id g28mr23274619qka.227.1592956153999;
+        Tue, 23 Jun 2020 16:49:13 -0700 (PDT)
+Received: from linux.home ([2604:2000:1344:41d:596e:7d49:a74:946e])
+        by smtp.googlemail.com with ESMTPSA id o21sm2006501qtt.25.2020.06.23.16.49.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 16:49:13 -0700 (PDT)
+From:   Gaurav Singh <gaurav1086@gmail.com>
+To:     gaurav1086@gmail.com, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Ian Rogers <irogers@google.com>,
+        linux-kernel@vger.kernel.org (open list:PERFORMANCE EVENTS SUBSYSTEM)
+Subject: [PATCH] [perf] intel_pt_recording_options: Remove redundant intel_pt_evsel null check
+Date:   Tue, 23 Jun 2020 19:48:50 -0400
+Message-Id: <20200623234905.18608-1-gaurav1086@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 6:15 PM Williams, Dan J
-<dan.j.williams@intel.com> wrote:
->
-> Hi David,
->
-> On Tue, 2020-06-02 at 16:55 +0100, David Howells wrote:
-> > Date: Tue, 02 Jun 2020 16:51:44 +0100
-> >
-> > Hi Linus,
-> >
-> > Can you pull this, please?  It adds a general notification queue
-> > concept
-> > and adds an event source for keys/keyrings, such as linking and
-> > unlinking
-> > keys and changing their attributes.
-> [..]
->
-> This commit:
->
-> >       keys: Make the KEY_NEED_* perms an enum rather than a mask
->
-> ...upstream as:
->
->     8c0637e950d6 keys: Make the KEY_NEED_* perms an enum rather than a mask
->
-> ...triggers a regression in the libnvdimm unit test that exercises the
-> encrypted keys used to store nvdimm passphrases. It results in the
-> below warning.
+intel_pt_evsel cannot be NULL here since its already being
+dereferenced above. Remove this redundant check.
 
-This regression is still present in tip of tree. David, have you had a
-chance to take a look?
+Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+---
+ tools/perf/arch/x86/util/intel-pt.c | 24 +++++++++++-------------
+ 1 file changed, 11 insertions(+), 13 deletions(-)
 
+diff --git a/tools/perf/arch/x86/util/intel-pt.c b/tools/perf/arch/x86/util/intel-pt.c
+index 839ef52c1ac2..8cc87fd2dc6f 100644
+--- a/tools/perf/arch/x86/util/intel-pt.c
++++ b/tools/perf/arch/x86/util/intel-pt.c
+@@ -836,19 +836,17 @@ static int intel_pt_recording_options(struct auxtrace_record *itr,
+ 		}
+ 	}
+ 
+-	if (intel_pt_evsel) {
+-		/*
+-		 * To obtain the auxtrace buffer file descriptor, the auxtrace
+-		 * event must come first.
+-		 */
+-		perf_evlist__to_front(evlist, intel_pt_evsel);
+-		/*
+-		 * In the case of per-cpu mmaps, we need the CPU on the
+-		 * AUX event.
+-		 */
+-		if (!perf_cpu_map__empty(cpus))
+-			evsel__set_sample_bit(intel_pt_evsel, CPU);
+-	}
++	/*
++	 * To obtain the auxtrace buffer file descriptor, the auxtrace
++	 * event must come first.
++	 */
++	perf_evlist__to_front(evlist, intel_pt_evsel);
++	/*
++	 * In the case of per-cpu mmaps, we need the CPU on the
++	 * AUX event.
++	 */
++	if (!perf_cpu_map__empty(cpus))
++		evsel__set_sample_bit(intel_pt_evsel, CPU);
+ 
+ 	/* Add dummy event to keep tracking */
+ 	if (opts->full_auxtrace) {
+-- 
+2.17.1
 
-
->
-> ---
->
-> WARNING: CPU: 15 PID: 6276 at security/keys/permission.c:35 key_task_permission+0xd3/0x140
-> Modules linked in: nd_blk(OE) nfit_test(OE) device_dax(OE) ebtable_filter(E) ebtables(E) ip6table_filter(E) ip6_tables(E) kvm_intel(E) kvm(E) irqbypass(E) nd_pmem(OE) dax_pmem(OE) nd_btt(OE) dax_p
-> ct10dif_pclmul(E) nd_e820(OE) nfit(OE) crc32_pclmul(E) libnvdimm(OE) crc32c_intel(E) ghash_clmulni_intel(E) serio_raw(E) encrypted_keys(E) trusted(E) nfit_test_iomap(OE) tpm(E) drm(E)
-> CPU: 15 PID: 6276 Comm: lt-ndctl Tainted: G           OE     5.7.0-rc6+ #155
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.0.0 02/06/2015
-> RIP: 0010:key_task_permission+0xd3/0x140
-> Code: c8 21 d9 39 d9 75 25 48 83 c4 08 4c 89 e6 48 89 ef 5b 5d 41 5c 41 5d e9 1b a7 00 00 bb 01 00 00 00 83 fa 01 0f 84 68 ff ff ff <0f> 0b 48 83 c4 08 b8 f3 ff ff ff 5b 5d 41 5c 41 5d c3 83 fa 06
->
-> RSP: 0018:ffffaddc42db7c90 EFLAGS: 00010297
-> RAX: 0000000000000001 RBX: 0000000000000001 RCX: ffffaddc42db7c7c
-> RDX: 0000000000000000 RSI: ffff985e1c46e840 RDI: ffff985e3a03de01
-> RBP: ffff985e3a03de01 R08: 0000000000000000 R09: 5461e7bc000002a0
-> R10: 0000000000000004 R11: 0000000066666666 R12: ffff985e1c46e840
-> R13: 0000000000000000 R14: ffffaddc42db7cd8 R15: ffff985e248c6540
-> FS:  00007f863c18a780(0000) GS:ffff985e3bbc0000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00000000006d3708 CR3: 0000000125a1e006 CR4: 0000000000160ee0
-> Call Trace:
->  lookup_user_key+0xeb/0x6b0
->  ? vsscanf+0x3df/0x840
->  ? key_validate+0x50/0x50
->  ? key_default_cmp+0x20/0x20
->  nvdimm_get_user_key_payload.part.0+0x21/0x110 [libnvdimm]
->  nvdimm_security_store+0x67d/0xb20 [libnvdimm]
->  security_store+0x67/0x1a0 [libnvdimm]
->  kernfs_fop_write+0xcf/0x1c0
->  vfs_write+0xde/0x1d0
->  ksys_write+0x68/0xe0
->  do_syscall_64+0x5c/0xa0
->  entry_SYSCALL_64_after_hwframe+0x49/0xb3
-> RIP: 0033:0x7f863c624547
-> Code: 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
-> RSP: 002b:00007ffd61d8f5e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-> RAX: ffffffffffffffda RBX: 00007ffd61d8f640 RCX: 00007f863c624547
-> RDX: 0000000000000014 RSI: 00007ffd61d8f640 RDI: 0000000000000005
-> RBP: 0000000000000005 R08: 0000000000000014 R09: 00007ffd61d8f4a0
-> R10: fffffffffffff455 R11: 0000000000000246 R12: 00000000006dbbf0
-> R13: 00000000006cd710 R14: 00007f863c18a6a8 R15: 00007ffd61d8fae0
-> irq event stamp: 36976
-> hardirqs last  enabled at (36975): [<ffffffff9131fa40>] __slab_alloc+0x70/0x90
-> hardirqs last disabled at (36976): [<ffffffff910049c7>] trace_hardirqs_off_thunk+0x1a/0x1c
-> softirqs last  enabled at (35474): [<ffffffff91e00357>] __do_softirq+0x357/0x466
-> softirqs last disabled at (35467): [<ffffffff910eae96>] irq_exit+0xe6/0xf0
->
