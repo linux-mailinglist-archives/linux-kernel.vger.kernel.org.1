@@ -2,102 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146FA204B13
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E30204B06
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731578AbgFWH3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 03:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45688 "EHLO
+        id S1731292AbgFWH21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 03:28:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731547AbgFWH3X (ORCPT
+        with ESMTP id S1731054AbgFWH20 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 03:29:23 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE73C061797
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 00:29:23 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id d67so18011678oig.6
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 00:29:23 -0700 (PDT)
+        Tue, 23 Jun 2020 03:28:26 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69D67C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 00:28:25 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id n10so1205826qvp.17
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 00:28:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fWjmAOPbHTLJzpYz+sy+z31E1izVE1LPqGR/mFW6VFs=;
-        b=yAVFzV6PVBFAy2hY3vXcJzS1GczJUTFS5vZPzQh5LZcYNqiikW53hpz3rIe2XDPo8C
-         0hyeFHa2yN+Ye8/nXtjZtOhOL1j0LPwEJxWCN6qm0oH9pzbzqypUzz6M7LrVrIYlznYR
-         NhGdWbIxmcaBZFgmiZUGKeN1Y16cQJbhVGCnzhBcm10bHi2azAS2TcLflPfW4V501Ywm
-         hu5zz2nY5lDEAk4TY/YCQZUdvTHan+c876RDZsWeZvM4eHYGP7Ly34ba71vF1bae+e4m
-         ylnmMJ77TfoocM9VeWTlg7Qtt2Z6Yalq/jxUn9zZ3CHvUOVsRCncA6S4/4H4F/i1U49o
-         4NZg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=nTQWvepZzYSn4rQEU0+1xmqZl1OOXUog19hqREujmU4=;
+        b=e7XzSW9BiALiACWkVQb7mFB8mq6jtD10kFJCz/zBWeoYyHB4MjXZv5mb3HDvr1j71/
+         cgtALbncqtn6Z0+DsYEIBUPB3KG3dfumqLm0/4nvNRqwmDe//6bQQeEsAb4EuErIDHrC
+         F5KDujFk65s4f8WpCKGbF0Dz78AIJECom73qcL78UIZ6rRyPc+XmTX+uoaSgSOK2uipT
+         IUnqmSkwigP7MpQJjKOKMGyC3duuOp07Kl8UaBG91ONMvc0oCODHAg7iIrmqdISI7pXg
+         ibGwXhA9/6FTWCRR55quMDfGTB+Jv7KLEbaQ0vNx2FX6w5iBzvnoK5Gjq6ZqzQJPXj/q
+         WbnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fWjmAOPbHTLJzpYz+sy+z31E1izVE1LPqGR/mFW6VFs=;
-        b=H0iS+Yg98PKxkVOTRPMQc5V+Gr99Y6R/1+wKdejWnjisvj6a3d5ItCtWaW08OIPZJ/
-         57pVvCOmx0yJ0ApXS4JmhMO17zGG5LLDrg4ABaGumIIiawrzCoJnI/zyfPfkIafUAKCH
-         FgwD1zTyzaN2lXqWjnzLr48UD0MEGgy6WSWWYR93USSgK1H8SdZqsiae6l3Z8JFaSEEf
-         65Ipwepnf33kbNlZtgpgJ5XdDjwNUeVGdKGTZnM2QIcfcOp/F0W9/k7Og3aG/ZEMHpX1
-         D85vkP8Gjns8hs4rJGIs6MQ90DWlLjvB+IZEx3tBVBa5T5kGEAYhummJxzBuQnaXxVAe
-         IlpQ==
-X-Gm-Message-State: AOAM531ErlfBlC32YNRBxGpcDq5lhAY0c2UjmJZCB3DSDJjdOi8fLARR
-        RBN0txETzN0rZdbPo8xymsSjhA==
-X-Google-Smtp-Source: ABdhPJzP34B3Rwc4zxe2WgbBZFWKaQe90xa2tW61z475GjCUrbJCMHJrlaNe1KIzYpPZ5uM2CEUNCQ==
-X-Received: by 2002:a54:4495:: with SMTP id v21mr15211852oiv.35.1592897362777;
-        Tue, 23 Jun 2020 00:29:22 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id m3sm4040184oop.37.2020.06.23.00.29.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 00:29:22 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 00:26:38 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konradybcio@gmail.com>
-Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v3 2/7] Documentation: Document pm660(l) SPMI GPIOs
- compatible
-Message-ID: <20200623072638.GZ128451@builder.lan>
-References: <20200622192558.152828-1-konradybcio@gmail.com>
- <20200622192558.152828-3-konradybcio@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200622192558.152828-3-konradybcio@gmail.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=nTQWvepZzYSn4rQEU0+1xmqZl1OOXUog19hqREujmU4=;
+        b=cuR+8qSTPsJTazTTnsREMLhWvPAXFWFi5qGtzBsKCTSx/ZOf3ElgeswEqHRPYMSKne
+         BbpYPM8uAI5swMRzdbeLJLw7smfRphi0GphEU5hgMGBslfaC7vlL6ATNASnVsyy8MNmL
+         OHFNp9UPeiXh9FmahK/GGuMpyBlfclkAKx4rf4F2BKnwevR2NEtrFcbL3+vkTPfLdNXU
+         jEMnCHb6SmeyDr2AeCPQrR8OvVL3lXstLE6niUDUKPG4e+g6cxWlpAX4RTzXG9W386yk
+         ZSMeQWALIk9PBJcpls6JVmY7DsgJVhCBUTkACKV2vRcGaOc7r+11Pn2k2oJ6wLe3g4KS
+         m9HQ==
+X-Gm-Message-State: AOAM533z7okH80NF77QGlPG0TlCZLVA3dhckG+LR8Cv3faH10DOaEmSq
+        hUXYzi5Vx6kby8fHXozkrspABrTK7Q==
+X-Google-Smtp-Source: ABdhPJwj2i8o0If+UymYmvMwr9/d224DtNwbNKtKbk/yUkG5UMMHuHoay3TWBfoyY2g3OwYvH8W1ykEufQ==
+X-Received: by 2002:a05:6214:8d1:: with SMTP id da17mr5298435qvb.62.1592897304605;
+ Tue, 23 Jun 2020 00:28:24 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 09:26:54 +0200
+Message-Id: <20200623072653.114563-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
+Subject: [PATCH v2] mm, kcsan: Instrument SLAB/SLUB free with "ASSERT_EXCLUSIVE_ACCESS"
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, akpm@linux-foundation.org
+Cc:     paulmck@kernel.org, dvyukov@google.com, glider@google.com,
+        andreyknvl@google.com, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com, linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 22 Jun 12:25 PDT 2020, Konrad Dybcio wrote:
+Provide the necessary KCSAN checks to assist with debugging racy
+use-after-frees. While KASAN is more reliable at generally catching such
+use-after-frees (due to its use of a quarantine), it can be difficult to
+debug racy use-after-frees. If a reliable reproducer exists, KCSAN can
+assist in debugging such issues.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Note: ASSERT_EXCLUSIVE_ACCESS is a convenience wrapper if the size is
+simply sizeof(var). Instead, here we just use __kcsan_check_access()
+explicitly to pass the correct size.
 
-> Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
-> ---
->  Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-> index 7be5de8d253f..c3d1914381ae 100644
-> --- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-> @@ -23,6 +23,8 @@ PMIC's from Qualcomm.
->  		    "qcom,pmi8994-gpio"
->  		    "qcom,pmi8998-gpio"
->  		    "qcom,pms405-gpio"
-> +		    "qcom,pm660-gpio"
-> +		    "qcom,pm660l-gpio"
->  		    "qcom,pm8150-gpio"
->  		    "qcom,pm8150b-gpio"
->  		    "qcom,pm6150-gpio"
-> -- 
-> 2.27.0
-> 
+Signed-off-by: Marco Elver <elver@google.com>
+---
+v2:
+* SLAB_TYPESAFE_BY_RCU allows racy use after free within RCU grace
+  period. If slab is SLAB_TYPESAFE_BY_RCU do not check access.
+---
+ mm/slab.c | 5 +++++
+ mm/slub.c | 5 +++++
+ 2 files changed, 10 insertions(+)
+
+diff --git a/mm/slab.c b/mm/slab.c
+index 9350062ffc1a..cba71d88e89c 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -3426,6 +3426,11 @@ static __always_inline void __cache_free(struct kmem_cache *cachep, void *objp,
+ 	if (kasan_slab_free(cachep, objp, _RET_IP_))
+ 		return;
+ 
++	/* Use KCSAN to help debug racy use-after-free. */
++	if (!(cachep->flags & SLAB_TYPESAFE_BY_RCU))
++		__kcsan_check_access(objp, cachep->object_size,
++				     KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ASSERT);
++
+ 	___cache_free(cachep, objp, caller);
+ }
+ 
+diff --git a/mm/slub.c b/mm/slub.c
+index b8f798b50d44..4a9d43fda669 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -1470,6 +1470,11 @@ static __always_inline bool slab_free_hook(struct kmem_cache *s, void *x)
+ 	if (!(s->flags & SLAB_DEBUG_OBJECTS))
+ 		debug_check_no_obj_freed(x, s->object_size);
+ 
++	/* Use KCSAN to help debug racy use-after-free. */
++	if (!(s->flags & SLAB_TYPESAFE_BY_RCU))
++		__kcsan_check_access(x, s->object_size,
++				     KCSAN_ACCESS_WRITE | KCSAN_ACCESS_ASSERT);
++
+ 	/* KASAN might put x into memory quarantine, delaying its reuse */
+ 	return kasan_slab_free(s, x, _RET_IP_);
+ }
+-- 
+2.27.0.111.gc72c7da667-goog
+
