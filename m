@@ -2,72 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7312206884
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 01:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9083020688C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 01:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387874AbgFWXiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 19:38:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387532AbgFWXiG (ORCPT
+        id S2388104AbgFWXis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 19:38:48 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:43432 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387985AbgFWXio (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 19:38:06 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1737EC061573;
-        Tue, 23 Jun 2020 16:38:05 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id ga4so476904ejb.11;
-        Tue, 23 Jun 2020 16:38:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WAlGtflVitmJXuNlmDW6UOmiaJ2HTYTbPo7tYgORBNI=;
-        b=ZTEbyCt6/p3jSFT8nfBxXvUjHSMgVh1qfYNLNrYOZzqPXrTC9DKJ9A63vRxgF33PZ8
-         qWx5nk3/M/sCWoW0uqpgz9bT0JNDAC3r9DOy5VQB/C2yVLWQfgULAj9v2tLFuxPvoCEd
-         BdnvogcrHVJys21kq9EQbm/caWASnMzQpmoB0cX5sjABDL0fqMSP85b4FK6gzyGcGPg1
-         OpeYKjf2cws8K/13Gs5arGH7KzMd/3/uUIBi5b78PjBu2HnxujuGj4uw+8h2sHzRhTbm
-         vIAt9+LqRQ6CVEhuM3vrd50580m5DH49IIBmcyAmUl7AWFTNw8QxSeregJbYc26UMPij
-         DeCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WAlGtflVitmJXuNlmDW6UOmiaJ2HTYTbPo7tYgORBNI=;
-        b=O7xyBeqTF0Hz8A1I3WoqB+AEXHmkVOlH2qFmmuEmlypxgnEGzV6Azo13pOcLo1F962
-         DSxlB7Ku3qiB5iXJYek+UA0RtECmjeeR5FG2Kb8ZVF3+vyoKckyMTs49bhyvso4F3WIG
-         WIYpWaULV9a2CUyvQV9d/qxy7wh15RA0dktRbi95CEmBW+nBiZ+N4+x3AxcbrSyT+MaC
-         63wf4h8fvZmHMo3FjdEZXoKs/d1SqZyGeORY8aFJSTr8I6fLnnDqZKm/67BHMXK5AbdK
-         ptIUl0OCOPilYkXaZo3kURDsQml1HunVfel7OZNzE6DjxFovPmQIVRarb5BG0Er5eH5Y
-         NYsA==
-X-Gm-Message-State: AOAM533v0CzJGc2/ww2aJf0GByAU6/YXOGG7biVYbXZcXDxNkD9QZLRu
-        rsVuAMCvoMhQ/m5v7vfydKIWGrTp81As30MVB7s=
-X-Google-Smtp-Source: ABdhPJyNBbk6RsvVnJ127Hf8zhghQyoKS3AzX62P8JfPXQPWIoJCgq+NaviMpPRUa3h0YXZVC01WX0K7+vBm802j6Fs=
-X-Received: by 2002:a17:906:fa13:: with SMTP id lo19mr13899382ejb.213.1592955483750;
- Tue, 23 Jun 2020 16:38:03 -0700 (PDT)
+        Tue, 23 Jun 2020 19:38:44 -0400
+Received: from sequoia.work.tihix.com (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D777E20B7192;
+        Tue, 23 Jun 2020 16:38:42 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D777E20B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1592955523;
+        bh=hQwK1gRYRMLEuO0Gi1zguKsW5VTmFG8FYoY12ORsrOQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DUDXf0plUaNojGDZ23fU0oSPNmgLJL03VYNfdTRWB9pLofs/PPDcZXbuTP4f8yp4b
+         8sI+5Z+FMSaweeOMImg1yZV0lDLfnHkBZ6ngLuwsYzARXrn6ltrQq3mBi++UjnqXJ5
+         kJEleUxLEDIa9zBzsUZVnQZwPwWmqrxT9lyMSaCM=
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Matthew Garrett <mjg59@google.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH] ima: AppArmor satisfies the audit rule requirements
+Date:   Tue, 23 Jun 2020 18:38:23 -0500
+Message-Id: <20200623233823.904882-1-tyhicks@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20200531172804.256335-1-konradybcio@gmail.com>
- <20200531172804.256335-5-konradybcio@gmail.com> <CAOCOHw7ZhDPOxOG4dy91JEQ9U7y=3tabd60THj8NUcZE1fCgtQ@mail.gmail.com>
-In-Reply-To: <CAOCOHw7ZhDPOxOG4dy91JEQ9U7y=3tabd60THj8NUcZE1fCgtQ@mail.gmail.com>
-From:   Konrad Dybcio <konradybcio@gmail.com>
-Date:   Wed, 24 Jun 2020 01:37:28 +0200
-Message-ID: <CAMS8qEUNfeBs30GrjLvBmzpCgF6Zb6QQ4BhD1MxD_15Cwr90-w@mail.gmail.com>
-Subject: Re: [PATCH 04/14] firmware: qcom_scm: Add msm8992 compatible
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have in fact submitted a binding patch here: [1]
+AppArmor meets all the requirements for IMA in terms of audit rules
+since commit e79c26d04043 ("apparmor: Add support for audit rule
+filtering"). Update IMA's Kconfig section for CONFIG_IMA_LSM_RULES to
+reflect this.
 
-Perhaps I shouldn't have split it since it's just a one-liner.
+Fixes: e79c26d04043 ("apparmor: Add support for audit rule filtering")
+Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+---
+ security/integrity/ima/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[1] https://patchwork.kernel.org/patch/11580841/
+diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
+index edde88dbe576..794ebb5cbf74 100644
+--- a/security/integrity/ima/Kconfig
++++ b/security/integrity/ima/Kconfig
+@@ -54,7 +54,7 @@ config IMA_MEASURE_PCR_IDX
+ 
+ config IMA_LSM_RULES
+ 	bool
+-	depends on IMA && AUDIT && (SECURITY_SELINUX || SECURITY_SMACK)
++	depends on IMA && AUDIT && (SECURITY_SELINUX || SECURITY_SMACK || SECURITY_APPARMOR)
+ 	default y
+ 	help
+ 	  Disabling this option will disregard LSM based policy rules.
+-- 
+2.25.1
 
-Regards
-Konrad
