@@ -2,205 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6378B205ADA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 20:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20180205AB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 20:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387700AbgFWScQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 14:32:16 -0400
-Received: from lelv0143.ext.ti.com ([198.47.23.248]:58530 "EHLO
-        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733199AbgFWScO (ORCPT
+        id S1733253AbgFWSad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 14:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733125AbgFWSac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 14:32:14 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05NIW2ai085902;
-        Tue, 23 Jun 2020 13:32:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592937122;
-        bh=MUa2mABD6A4sTRDUceLSSsTwRoGhKHB3xPjHXwIQ78Y=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=ICzvkqn10zA/JrVeu5TwaNUG0fyj9MCxpsNLOOjD3+zsX7iIZbKRfGEbV5DpNtnGn
-         z/tAFTuuJeCdsdq+yhFq6RSChrbh+8V7L1ieYiyXyaJx1BgnqFME0V4CtlCNTX+ECR
-         bwXdbcDMD6TzvytTuRyIyGaPFmZ5oAkkMIOXhZUA=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05NIW2Sg040536
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 23 Jun 2020 13:32:02 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Tue, 23
- Jun 2020 13:32:02 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Tue, 23 Jun 2020 13:32:02 -0500
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05NIUVJV000942;
-        Tue, 23 Jun 2020 13:31:57 -0500
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Mark Brown <broonie@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Subject: [PATCH v10 17/17] mtd: spi-nor: micron-st: allow using MT35XU512ABA in Octal DTR mode
-Date:   Wed, 24 Jun 2020 00:00:30 +0530
-Message-ID: <20200623183030.26591-18-p.yadav@ti.com>
-X-Mailer: git-send-email 2.25.0
-In-Reply-To: <20200623183030.26591-1-p.yadav@ti.com>
-References: <20200623183030.26591-1-p.yadav@ti.com>
+        Tue, 23 Jun 2020 14:30:32 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA5BC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 11:30:32 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id h10so10229353pgq.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 11:30:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=posk.io; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=+P5hbPMUmXT8NqVfsDI2sZq2ADL9H7+yExXmEQ06I4g=;
+        b=Zx4efQN+JvGv49ozIOlYBL/YRz53C1jVMVwF+yRRA+PhXh2+0m25MW8kygpdXl4Lst
+         uM1MCB5x9dtmGL6F8C48EO3RqhLS6p+VZAmYrPqMBz8AK2QAfvzYYxQUPKICIsmtPsEs
+         KrPaBqe39FanuercxB44cyNTvC8OIcQWAajgnsabdQ4/kJsfej9hcsKpwk+a5WMp6Hvm
+         hTjZWnQPzI+m08yYz2E4MqNM0GD4xe4MRLddgsVoQJBaccsECu4SX/qSukw2kzS4Onyi
+         OT3hW42EWz3b4KxW90RrjYL6A++hAohFNKj+sALQpyRSAeInzGEX96zRP7v4svofDoty
+         BZTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=+P5hbPMUmXT8NqVfsDI2sZq2ADL9H7+yExXmEQ06I4g=;
+        b=i7fkGDlorSaWsXY+wcp1DIJ5LVjWYTeLQ5ii+u6XPGTxj+NSGEHCdIfWBsDjOUPQup
+         kr6tU3OKdyOU3zDhG7/VjtAeG6nOdMx02AHvepxprhUc2udwH/Fyayxhu1N/1nwTPvRo
+         sDzNvouqb4u8EXL1Q/m0mTPmVFXLxZUwbYIsqAtJYP40mjqJUKZNBUZ3ej8Gw095HMPW
+         fPJDrKjq3R7+pXPvb5U8+TMSx/3cofeN6Qkf3Iw7IOio1ak9vv5CrJTBCi3/yB9kWa6s
+         i0ZHgtQDv3RGsvqkn7o5XxSAfIdwDzpNl9muzidNy/u6OR5Ci4RJHKHoqYMIt5Fvt3B6
+         ooyA==
+X-Gm-Message-State: AOAM533V4Y9KcqQoMjMag9j9PIPKdkQqth0mI/4U8RXWMCNiCU9mHAow
+        /FW1HxI3yCVlwZqE7DjpmL9RnQ==
+X-Google-Smtp-Source: ABdhPJyFjuH5ETDzacP4EcbBwpnEIedoQXdN0d5gycLMOqHwXq7vcqRG9El9NWxfoeGRBWtUxA7tHw==
+X-Received: by 2002:aa7:8ad9:: with SMTP id b25mr26394294pfd.248.1592937032221;
+        Tue, 23 Jun 2020 11:30:32 -0700 (PDT)
+Received: from posk-x1c (c-73-202-129-89.hsd1.ca.comcast.net. [73.202.129.89])
+        by smtp.gmail.com with ESMTPSA id s194sm14650439pgs.24.2020.06.23.11.30.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 11:30:31 -0700 (PDT)
+Message-ID: <d29a2ba031ecd96f785a602e703d97e24980ef15.camel@posk.io>
+Subject: Re: [RFC PATCH 1/3 v2] futex: introduce FUTEX_SWAP operation
+From:   Peter Oskolkov <posk@posk.io>
+To:     Aaron Lu <aaron.lwe@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Peter Oskolkov <posk@google.com>, avagin@google.com,
+        "pjt@google.com" <pjt@google.com>, Ben Segall <bsegall@google.com>
+Date:   Tue, 23 Jun 2020 11:30:30 -0700
+In-Reply-To: <20200623132507.GA875@aaronlu-desktop>
+References: <cf7c83d0b58aa4912b465392ce8e40a974f250bb.camel@posk.io>
+         <20200623132507.GA875@aaronlu-desktop>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since this flash doesn't have a Profile 1.0 table, the Octal DTR
-capabilities are enabled in the post SFDP fixup, along with the 8D-8D-8D
-fast read settings.
+Hi Aaron,
 
-Enable Octal DTR mode with 20 dummy cycles to allow running at the
-maximum supported frequency of 200Mhz.
+thanks a lot for your tests and feedback! My comments below.
 
-The flash supports the soft reset sequence. So, add the flag in the
-flash's info.
+Thanks,
+Peter
 
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
----
- drivers/mtd/spi-nor/micron-st.c | 103 +++++++++++++++++++++++++++++++-
- 1 file changed, 102 insertions(+), 1 deletion(-)
+On Tue, 2020-06-23 at 21:25 +0800, Aaron Lu wrote:
+> On Tue, Jun 16, 2020 at 10:22:26AM -0700, Peter Oskolkov wrote:
+> >  static void futex_wait_queue_me(struct futex_hash_bucket *hb,
+> > struct futex_q *q,
+> > -				struct hrtimer_sleeper *timeout)
+> > +				struct hrtimer_sleeper *timeout,
+> > +				struct task_struct *next)
+> >  {
+> >  	/*
+> >  	 * The task state is guaranteed to be set before another task
+> > can
+> > @@ -2627,10 +2644,27 @@ static void futex_wait_queue_me(struct
+> > futex_hash_bucket *hb, struct futex_q *q,
+> >  		 * flagged for rescheduling. Only call schedule if
+> > there
+> >  		 * is no timeout, or if it has yet to expire.
+> >  		 */
+> > -		if (!timeout || timeout->task)
+> > +		if (!timeout || timeout->task) {
+> > +			if (next) {
+> > +				/*
+> > +				 * wake_up_process() below will be
+> > replaced
+> > +				 * in the next patch with
+> > +				 *
+> > wake_up_process_prefer_current_cpu().
+> > +				 */
+> > +				wake_up_process(next);
+> > +				put_task_struct(next);
+> > +				next = NULL;
+> > +			}
+> 
+> So in futex_swap case, the wake up occurs in futex_wait_queue_me(). I
+> personally think it's more natural to do the wakeup in futex_swap()
+> instead.
 
-diff --git a/drivers/mtd/spi-nor/micron-st.c b/drivers/mtd/spi-nor/micron-st.c
-index 3dca5b9af3b6..447b0166de2e 100644
---- a/drivers/mtd/spi-nor/micron-st.c
-+++ b/drivers/mtd/spi-nor/micron-st.c
-@@ -8,10 +8,111 @@
- 
- #include "core.h"
- 
-+#define SPINOR_OP_MT_DTR_RD	0xfd	/* Fast Read opcode in DTR mode */
-+#define SPINOR_OP_MT_RD_ANY_REG	0x85	/* Read volatile register */
-+#define SPINOR_OP_MT_WR_ANY_REG	0x81	/* Write volatile register */
-+#define SPINOR_REG_MT_CFR0V	0x00	/* For setting octal DTR mode */
-+#define SPINOR_REG_MT_CFR1V	0x01	/* For setting dummy cycles */
-+#define SPINOR_MT_DTR_NO_DQS	0xc7	/* Enable Octal DTR without DQS. */
-+#define SPINOR_MT_EXSPI		0xff	/* Enable Extended SPI (default) */
-+
-+static int spi_nor_micron_octal_dtr_enable(struct spi_nor *nor, bool enable)
-+{
-+	struct spi_mem_op op;
-+	u8 *buf = nor->bouncebuf;
-+	u8 addr_width;
-+	int ret;
-+
-+	if (enable)
-+		addr_width = 3;
-+	else
-+		addr_width = 4;
-+
-+	if (enable) {
-+		/* Use 20 dummy cycles for memory array reads. */
-+		ret = spi_nor_write_enable(nor);
-+		if (ret)
-+			return ret;
-+
-+		*buf = 20;
-+		op = (struct spi_mem_op)
-+			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MT_WR_ANY_REG, 1),
-+				   SPI_MEM_OP_ADDR(addr_width,
-+						   SPINOR_REG_MT_CFR1V, 1),
-+				   SPI_MEM_OP_NO_DUMMY,
-+				   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+		ret = spi_mem_exec_op(nor->spimem, &op);
-+		if (ret)
-+			return ret;
-+
-+		ret = spi_nor_wait_till_ready(nor);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	ret = spi_nor_write_enable(nor);
-+	if (ret)
-+		return ret;
-+
-+	if (enable)
-+		*buf = SPINOR_MT_DTR_NO_DQS;
-+	else
-+		*buf = SPINOR_MT_EXSPI;
-+	op = (struct spi_mem_op)
-+		SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_MT_WR_ANY_REG, 1),
-+			   SPI_MEM_OP_ADDR(addr_width, SPINOR_REG_MT_CFR0V, 1),
-+			   SPI_MEM_OP_NO_DUMMY,
-+			   SPI_MEM_OP_DATA_OUT(1, buf, 1));
-+
-+	if (!enable)
-+		spi_nor_spimem_setup_op(nor, &op, SNOR_PROTO_8_8_8_DTR);
-+
-+	ret = spi_mem_exec_op(nor->spimem, &op);
-+	if (ret) {
-+		dev_err(nor->dev, "Failed to enable octal DTR mode\n");
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static void mt35xu512aba_default_init(struct spi_nor *nor)
-+{
-+	nor->params->octal_dtr_enable = spi_nor_micron_octal_dtr_enable;
-+}
-+
-+static void mt35xu512aba_post_sfdp_fixup(struct spi_nor *nor)
-+{
-+	/* Set the Fast Read settings. */
-+	nor->params->hwcaps.mask |= SNOR_HWCAPS_READ_8_8_8_DTR;
-+	spi_nor_set_read_settings(&nor->params->reads[SNOR_CMD_READ_8_8_8_DTR],
-+				  0, 20, SPINOR_OP_MT_DTR_RD,
-+				  SNOR_PROTO_8_8_8_DTR);
-+
-+	nor->params->hwcaps.mask |= SNOR_HWCAPS_PP_8_8_8_DTR;
-+
-+	nor->cmd_ext_type = SPI_NOR_EXT_REPEAT;
-+	nor->params->rdsr_dummy = 8;
-+	nor->params->rdsr_addr_nbytes = 0;
-+
-+	/*
-+	 * The BFPT quad enable field is set to a reserved value so the quad
-+	 * enable function is ignored by spi_nor_parse_bfpt(). Make sure we
-+	 * disable it.
-+	 */
-+	nor->params->quad_enable = NULL;
-+}
-+
-+static struct spi_nor_fixups mt35xu512aba_fixups = {
-+	.default_init = mt35xu512aba_default_init,
-+	.post_sfdp = mt35xu512aba_post_sfdp_fixup,
-+};
-+
- static const struct flash_info micron_parts[] = {
- 	{ "mt35xu512aba", INFO(0x2c5b1a, 0, 128 * 1024, 512,
- 			       SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
--			       SPI_NOR_4B_OPCODES) },
-+			       SPI_NOR_4B_OPCODES | SPI_NOR_OCTAL_DTR_READ)
-+		.fixups = &mt35xu512aba_fixups},
- 	{ "mt35xu02g", INFO(0x2c5b1c, 0, 128 * 1024, 2048,
- 			    SECT_4K | USE_FSR | SPI_NOR_OCTAL_READ |
- 			    SPI_NOR_4B_OPCODES) },
--- 
-2.27.0
+I chose to do it the way I did so that
+wake_up_process_prefer_current_cpu() is called only
+when we are reasonably sure that the current task is
+going to block/wait, as otherwise it makes no sense
+to migrate the wakee/next to the current CPU. In addition, future
+optimizations may include actually doing a context switch into
+the wakee/next if the current task is going to block instead of
+just calling schedule(), which also points to benefits of
+having the waking/context-switching code
+reside here rather than in futex_swap.
+
+These reasons are somewhat hand-wavy, though, and I agree
+that logically it seems that waking in futex_swap() is
+easier to think through. Let's see what the maintainers say.
+
+> 
+> >  			freezable_schedule();
+> > +		}
+> >  	}
+> >  	__set_current_state(TASK_RUNNING);
+> > +
+> > +	if (next) {
+> > +		/* Maybe call wake_up_process_prefer_current_cpu()? */
+> > +		wake_up_process(next);
+> > +		put_task_struct(next);
+> > +	}
+> >  }
+> > 
+> >  /**
+> > +static int futex_swap(u32 __user *uaddr, unsigned int flags, u32
+> > val,
+> > +		      ktime_t *abs_time, u32 __user *uaddr2)
+> > +{
+> > +	u32 bitset = FUTEX_BITSET_MATCH_ANY;
+> > +	struct task_struct *next = NULL;
+> > +	DEFINE_WAKE_Q(wake_q);
+> > +	int ret;
+> > +
+> > +	ret = prepare_wake_q(uaddr2, flags, 1, bitset, &wake_q);
+> > +	if (!wake_q_empty(&wake_q)) {
+> > +		/* Pull the first wakee out of the queue to swap into.
+> > */
+> > +		next = container_of(wake_q.first, struct task_struct,
+> > wake_q);
+> > +		wake_q.first = wake_q.first->next;
+> > +		next->wake_q.next = NULL;
+> > +		/*
+> > +		 * Note that wake_up_q does not touch wake_q.last, so
+> > we
+> > +		 * do not bother with it here.
+> > +		 */
+> > +		wake_up_q(&wake_q);
+> 
+> wake_up_q() doesn't seem to serve any purpose in that the above
+> assignment of wake_q.first shall make it an empty queue now?
+> Also, I don't see a need to touch wake_q.first either so I think we
+> can
+> get rid of wake_q altogether here.
+
+The futex at uaddr2 may have more than one waiter, so we cannot assume
+that wake_q will be empty when we remove the first element.
+
+> 
+> > +	}
+> > +	if (ret < 0)
+> > +		return ret;
+> > +
+> > +	return futex_wait(uaddr, flags, val, abs_time, bitset, next);
+> > +}
+> 
+> I've cooked the below diff, on top of your patchset. It survived your
+> self test and schbench. Feel free to ignore it if you don't like it,
+> or
+> merge it into your patchset if you think it looks better.
+> 
+> do wake up in futex_swap()
+> 
+> ---
+>  kernel/futex.c | 43 +++++++++++--------------------------------
+>  1 file changed, 11 insertions(+), 32 deletions(-)
+> 
+> diff --git a/kernel/futex.c b/kernel/futex.c
+> index a426671e4bbb..995bc881059c 100644
+> --- a/kernel/futex.c
+> +++ b/kernel/futex.c
+> @@ -2618,8 +2618,7 @@ static int fixup_owner(u32 __user *uaddr,
+> struct futex_q *q, int locked)
+>   *		prefer to execute it locally.
+>   */
+>  static void futex_wait_queue_me(struct futex_hash_bucket *hb, struct
+> futex_q *q,
+> -				struct hrtimer_sleeper *timeout,
+> -				struct task_struct *next)
+> +				struct hrtimer_sleeper *timeout)
+>  {
+>  	/*
+>  	 * The task state is guaranteed to be set before another task
+> can
+> @@ -2644,22 +2643,11 @@ static void futex_wait_queue_me(struct
+> futex_hash_bucket *hb, struct futex_q *q,
+>  		 * flagged for rescheduling. Only call schedule if
+> there
+>  		 * is no timeout, or if it has yet to expire.
+>  		 */
+> -		if (!timeout || timeout->task) {
+> -			if (next) {
+> -				wake_up_process_prefer_current_cpu(next
+> );
+> -				put_task_struct(next);
+> -				next = NULL;
+> -			}
+> +		if (!timeout || timeout->task)
+>  			freezable_schedule();
+> -		}
+>  	}
+> -	__set_current_state(TASK_RUNNING);
+>  
+> -	if (next) {
+> -		/* Maybe call wake_up_process_prefer_current_cpu()? */
+> -		wake_up_process(next);
+> -		put_task_struct(next);
+> -	}
+> +	__set_current_state(TASK_RUNNING);
+>  }
+>  
+>  /**
+> @@ -2739,7 +2727,7 @@ static int futex_wait_setup(u32 __user *uaddr,
+> u32 val, unsigned int flags,
+>  }
+>  
+>  static int futex_wait(u32 __user *uaddr, unsigned int flags, u32
+> val,
+> -		      ktime_t *abs_time, u32 bitset, struct task_struct
+> *next)
+> +		      ktime_t *abs_time, u32 bitset)
+>  {
+>  	struct hrtimer_sleeper timeout, *to;
+>  	struct restart_block *restart;
+> @@ -2763,8 +2751,7 @@ static int futex_wait(u32 __user *uaddr,
+> unsigned int flags, u32 val,
+>  		goto out;
+>  
+>  	/* queue_me and wait for wakeup, timeout, or a signal. */
+> -	futex_wait_queue_me(hb, &q, to, next);
+> -	next = NULL;
+> +	futex_wait_queue_me(hb, &q, to);
+>  
+>  	/* If we were woken (and unqueued), we succeeded, whatever. */
+>  	ret = 0;
+> @@ -2797,10 +2784,6 @@ static int futex_wait(u32 __user *uaddr,
+> unsigned int flags, u32 val,
+>  	ret = -ERESTART_RESTARTBLOCK;
+>  
+>  out:
+> -	if (next) {
+> -		wake_up_process(next);
+> -		put_task_struct(next);
+> -	}
+>  	if (to) {
+>  		hrtimer_cancel(&to->timer);
+>  		destroy_hrtimer_on_stack(&to->timer);
+> @@ -2820,7 +2803,7 @@ static long futex_wait_restart(struct
+> restart_block *restart)
+>  	restart->fn = do_no_restart_syscall;
+>  
+>  	return (long)futex_wait(uaddr, restart->futex.flags, restart-
+> >futex.val,
+> -				tp, restart->futex.bitset, NULL);
+> +				tp, restart->futex.bitset);
+>  }
+>  
+>  static int futex_swap(u32 __user *uaddr, unsigned int flags, u32
+> val,
+> @@ -2835,18 +2818,14 @@ static int futex_swap(u32 __user *uaddr,
+> unsigned int flags, u32 val,
+>  	if (!wake_q_empty(&wake_q)) {
+>  		/* Pull the first wakee out of the queue to swap into.
+> */
+>  		next = container_of(wake_q.first, struct task_struct,
+> wake_q);
+> -		wake_q.first = wake_q.first->next;
+>  		next->wake_q.next = NULL;
+> -		/*
+> -		 * Note that wake_up_q does not touch wake_q.last, so
+> we
+> -		 * do not bother with it here.
+> -		 */
+> -		wake_up_q(&wake_q);
+> +		wake_up_process_prefer_current_cpu(next);
+> +		put_task_struct(next);
+>  	}
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	return futex_wait(uaddr, flags, val, abs_time, bitset, next);
+> +	return futex_wait(uaddr, flags, val, abs_time, bitset);
+>  }
+>  
+>  /*
+> @@ -3333,7 +3312,7 @@ static int futex_wait_requeue_pi(u32 __user
+> *uaddr, unsigned int flags,
+>  	}
+>  
+>  	/* Queue the futex_q, drop the hb lock, wait for wakeup. */
+> -	futex_wait_queue_me(hb, &q, to, NULL);
+> +	futex_wait_queue_me(hb, &q, to);
+>  
+>  	spin_lock(&hb->lock);
+>  	ret = handle_early_requeue_pi_wakeup(hb, &q, &key2, to);
+> @@ -3863,7 +3842,7 @@ long do_futex(u32 __user *uaddr, int op, u32
+> val, ktime_t *timeout,
+>  		val3 = FUTEX_BITSET_MATCH_ANY;
+>  		/* fall through */
+>  	case FUTEX_WAIT_BITSET:
+> -		return futex_wait(uaddr, flags, val, timeout, val3,
+> NULL);
+> +		return futex_wait(uaddr, flags, val, timeout, val3);
+>  	case FUTEX_WAKE:
+>  		val3 = FUTEX_BITSET_MATCH_ANY;
+>  		/* fall through */
 
