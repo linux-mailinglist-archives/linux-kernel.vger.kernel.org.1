@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32E56205F59
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A812F206023
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391274AbgFWUcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:32:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52562 "EHLO mail.kernel.org"
+        id S2392101AbgFWUjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:39:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390988AbgFWUbt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:31:49 -0400
+        id S2390650AbgFWUjk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:39:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37EFD207FF;
-        Tue, 23 Jun 2020 20:31:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CE08215A4;
+        Tue, 23 Jun 2020 20:39:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944309;
-        bh=M+0sSCRDZWoAPBliZcFqcaB+5cROYX2R/+ZG6JIW9iI=;
+        s=default; t=1592944781;
+        bh=7HRnQUlSIzXrXc23vfe19xkfrnz/fgB5igccBfMgwb0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=atsNorNoKDNbVS6ycQN6qNxywAX4VtGtWiqENl5nBDwJrsuckWen5N9lSzoVHgxDA
-         +M2mDbCW1gBwZI71djvP/BjWJGmDjx78JI9/2H7U6XMOo+P+UebH5wYoGQIiQmNfl8
-         qAE1Y9R8O1Z243WnUiB35d/HqPfg0xiKJt4EFe/w=
+        b=iXhuTlawiVYOdLAloMKHoc63+37R1SEX6Gm1dq0/cQmnFnDSmEuIX3eISMUtVWe8/
+         NFtvMm5wWK8c37wIeQ968wuREBXEWhbme4D+ck2ZNFBwWpvcT8hqqXUXLvWi0MDMZI
+         CiL804sNF5qhDkUZKsb2gVMtXxyD7FvvE04b6HzA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, YiFei Zhu <zhuyifei@google.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Stanislav Fomichev <sdf@google.com>,
+        stable@vger.kernel.org, huhai <huhai@tj.kylinos.cn>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 254/314] net/filter: Permit reading NET in load_bytes_relative when MAC not set
-Date:   Tue, 23 Jun 2020 21:57:29 +0200
-Message-Id: <20200623195351.079327441@linuxfoundation.org>
+Subject: [PATCH 4.19 122/206] powerpc/4xx: Dont unmap NULL mbase
+Date:   Tue, 23 Jun 2020 21:57:30 +0200
+Message-Id: <20200623195322.967122328@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,71 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: YiFei Zhu <zhuyifei1999@gmail.com>
+From: huhai <huhai@tj.kylinos.cn>
 
-[ Upstream commit 0f5d82f187e1beda3fe7295dfc500af266a5bd80 ]
+[ Upstream commit bcec081ecc940fc38730b29c743bbee661164161 ]
 
-Added a check in the switch case on start_header that checks for
-the existence of the header, and in the case that MAC is not set
-and the caller requests for MAC, -EFAULT. If the caller requests
-for NET then MAC's existence is completely ignored.
-
-There is no function to check NET header's existence and as far
-as cgroup_skb/egress is concerned it should always be set.
-
-Removed for ptr >= the start of header, considering offset is
-bounded unsigned and should always be true. len <= end - mac is
-redundant to ptr + len <= end.
-
-Fixes: 3eee1f75f2b9 ("bpf: fix bpf_skb_load_bytes_relative pkt length check")
-Signed-off-by: YiFei Zhu <zhuyifei@google.com>
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Reviewed-by: Stanislav Fomichev <sdf@google.com>
-Link: https://lore.kernel.org/bpf/76bb820ddb6a95f59a772ecbd8c8a336f646b362.1591812755.git.zhuyifei@google.com
+Signed-off-by: huhai <huhai@tj.kylinos.cn>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200521072648.1254699-1-mpe@ellerman.id.au
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/filter.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ arch/powerpc/platforms/4xx/pci.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/net/core/filter.c b/net/core/filter.c
-index f1f2304822e3b..a0a492f7cf9ce 100644
---- a/net/core/filter.c
-+++ b/net/core/filter.c
-@@ -1766,25 +1766,27 @@ BPF_CALL_5(bpf_skb_load_bytes_relative, const struct sk_buff *, skb,
- 	   u32, offset, void *, to, u32, len, u32, start_header)
- {
- 	u8 *end = skb_tail_pointer(skb);
--	u8 *net = skb_network_header(skb);
--	u8 *mac = skb_mac_header(skb);
--	u8 *ptr;
-+	u8 *start, *ptr;
- 
--	if (unlikely(offset > 0xffff || len > (end - mac)))
-+	if (unlikely(offset > 0xffff))
- 		goto err_clear;
- 
- 	switch (start_header) {
- 	case BPF_HDR_START_MAC:
--		ptr = mac + offset;
-+		if (unlikely(!skb_mac_header_was_set(skb)))
-+			goto err_clear;
-+		start = skb_mac_header(skb);
- 		break;
- 	case BPF_HDR_START_NET:
--		ptr = net + offset;
-+		start = skb_network_header(skb);
- 		break;
- 	default:
- 		goto err_clear;
+diff --git a/arch/powerpc/platforms/4xx/pci.c b/arch/powerpc/platforms/4xx/pci.c
+index 5aca523551aed..2f237027fdccf 100644
+--- a/arch/powerpc/platforms/4xx/pci.c
++++ b/arch/powerpc/platforms/4xx/pci.c
+@@ -1242,7 +1242,7 @@ static void __init ppc460sx_pciex_check_link(struct ppc4xx_pciex_port *port)
+ 	if (mbase == NULL) {
+ 		printk(KERN_ERR "%pOF: Can't map internal config space !",
+ 			port->node);
+-		goto done;
++		return;
  	}
  
--	if (likely(ptr >= mac && ptr + len <= end)) {
-+	ptr = start + offset;
-+
-+	if (likely(ptr + len <= end)) {
- 		memcpy(to, ptr, len);
- 		return 0;
+ 	while (attempt && (0 == (in_le32(mbase + PECFG_460SX_DLLSTA)
+@@ -1252,9 +1252,7 @@ static void __init ppc460sx_pciex_check_link(struct ppc4xx_pciex_port *port)
  	}
+ 	if (attempt)
+ 		port->link = 1;
+-done:
+ 	iounmap(mbase);
+-
+ }
+ 
+ static struct ppc4xx_pciex_hwops ppc460sx_pcie_hwops __initdata = {
 -- 
 2.25.1
 
