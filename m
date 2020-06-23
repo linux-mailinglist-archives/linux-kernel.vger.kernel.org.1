@@ -2,62 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962CF20450D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:13:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47322044EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:02:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731456AbgFWANE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:13:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44348 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731023AbgFWANE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:13:04 -0400
-Received: from localhost (173-25-40-8.client.mchsi.com [173.25.40.8])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77DB72082F;
-        Tue, 23 Jun 2020 00:13:03 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.14.185-rt85
-Date:   Mon, 22 Jun 2020 23:48:55 -0000
-Message-ID: <159286973535.448101.11527209475390456419@theseus.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>
+        id S1731396AbgFWACg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730774AbgFWACf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:02:35 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39565C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 17:02:34 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id d27so14128638qtg.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 17:02:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fL1wENgZCNwSv3s/JTNbtGHYfJcNOvZphPgobRgCX+0=;
+        b=jOiz5xhY4H9RrA31ewUoMb6lWoSEJluMNJ4pFLIyuL2C/PAw2cU4NhHZPSbOtneWmY
+         ozUMm9lxePnw9yOjxx4YXvXCK3kITgyY6VI+mhuSl9fkmcyIppyhy/Jz6vVv/4LKzuRn
+         Gb8qhMwxyR4RKm7f3IBCU6P9IiqbHgwNX0yoHpJ3PAkHDvus22DcgqWtCXRMKvuPd80+
+         GtMIE29iM9uSkrK/mkJM41mZz+r3jtg9ekirUsyx5erxi/e/W0HuUH+SRS8iBijVSbYY
+         gVUrM+bjvjO7k15tkl2NlzpoPMdsvYPWVTdqh0sfLGGUDdoylYfcONvUD2B6N+OO84GZ
+         lj3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fL1wENgZCNwSv3s/JTNbtGHYfJcNOvZphPgobRgCX+0=;
+        b=nLGqIomqBShQ0kO7uj+ybyHI8gXgvkDymYBuYVXDkE8yK0qJktB1ppa9KoUaKDOIdl
+         5Iu0mvQ7lr0dIwQfj6jJdNDc2HRqFAyJZUfiA/qG5oEMUc/3XECiifok1UIpwbx6OJkH
+         kxOqwFCq7SIP1iozr5eoe7B5N/E2oTrL7HwM+BRUnJZsMBHv0z0Nn9JpgevoRoishqjK
+         oGeZ4Pod1Ucr6oEaMhLovOEPIpjSzbZW8lApCPMAqwfp8UkcAOncAwKyGvuazi41PzED
+         o4iBtBXer75TBrDUId6oDn+fjqdRrM3G6lQPDp7ELpo9VZxy4CfY7opBvBncVH8NXeaw
+         ZeeQ==
+X-Gm-Message-State: AOAM531myBiA7AqNGRvWg0PineMbpbYaXd5SFBTtZDKUnmkKtnymvXVQ
+        S6C+xMAz5CxrQvQqKtRbHdIA3g==
+X-Google-Smtp-Source: ABdhPJyCyWWM03fNzzwWcrkorPAde8ZwkJyT1NwEy7u+QyW/bvUE+EE8dkCWV5n1HdRyI+PQxXYPRQ==
+X-Received: by 2002:ac8:70da:: with SMTP id g26mr17916678qtp.333.1592870553204;
+        Mon, 22 Jun 2020 17:02:33 -0700 (PDT)
+Received: from ziepe.ca ([206.223.160.26])
+        by smtp.gmail.com with ESMTPSA id d186sm6145604qkb.110.2020.06.22.17.02.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 17:02:32 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.93)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1jnWOV-00CHMM-GL; Mon, 22 Jun 2020 21:02:31 -0300
+Date:   Mon, 22 Jun 2020 21:02:31 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Jerome Glisse <jglisse@redhat.com>
+Cc:     Felix Kuehling <felix.kuehling@amd.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Thomas =?utf-8?B?SGVsbHN0csO2bSAoSW50ZWwp?= 
+        <thomas_os@shipmail.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Thomas Hellstrom <thomas.hellstrom@intel.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Mika Kuoppala <mika.kuoppala@intel.com>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [PATCH 04/18] dma-fence: prime lockdep
+ annotations
+Message-ID: <20200623000231.GW6578@ziepe.ca>
+References: <20200619151551.GP6578@ziepe.ca>
+ <CAKMK7uEvkshAM6KUYZu8_OCpF4+1Y_SM7cQ9nJWpagfke8s8LA@mail.gmail.com>
+ <20200619172308.GQ6578@ziepe.ca>
+ <20200619180935.GA10009@redhat.com>
+ <20200619181849.GR6578@ziepe.ca>
+ <56008d64-772d-5757-6136-f20591ef71d2@amd.com>
+ <20200619195538.GT6578@ziepe.ca>
+ <20200619203147.GC13117@redhat.com>
+ <20200622114617.GU6578@ziepe.ca>
+ <20200622201540.GB9708@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200622201540.GB9708@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+On Mon, Jun 22, 2020 at 04:15:40PM -0400, Jerome Glisse wrote:
+> On Mon, Jun 22, 2020 at 08:46:17AM -0300, Jason Gunthorpe wrote:
+> > On Fri, Jun 19, 2020 at 04:31:47PM -0400, Jerome Glisse wrote:
+> > > Not doable as page refcount can change for things unrelated to GUP, with
+> > > John changes we can identify GUP and we could potentialy copy GUPed page
+> > > instead of COW but this can potentialy slow down fork() and i am not sure
+> > > how acceptable this would be. Also this does not solve GUP against page
+> > > that are already in fork tree ie page P0 is in process A which forks,
+> > > we now have page P0 in process A and B. Now we have process A which forks
+> > > again and we have page P0 in A, B, and C. Here B and C are two branches
+> > > with root in A. B and/or C can keep forking and grow the fork tree.
+> > 
+> > For a long time now RDMA has broken COW pages when creating user DMA
+> > regions.
+> > 
+> > The problem has been that fork re-COW's regions that had their COW
+> > broken.
+> > 
+> > So, if you break the COW upon mapping and prevent fork (and others)
+> > from copying DMA pinned then you'd cover the cases.
+> 
+> I am not sure we want to prevent COW for pinned GUP pages, this would
+> change current semantic and potentialy break/slow down existing apps.
 
-I'm pleased to announce the 4.14.185-rt85 stable release.
+Isn't that basically exactly what 17839856fd588 does? It looks like it
+uses the same approach RDMA does by sticking FOLL_WRITE even though it
+is a read action.
 
-You can get this release via the git tree at:
+After that change the reamining bug is that fork can re-establish a
+COW./
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
+> Anyway i think we focus too much on fork/COW, it is just an unfixable
+> broken corner cases, mmu notifier allows you to avoid it. Forcing real
+> copy on fork would likely be seen as regression by most people.
 
-  branch: v4.14-rt
-  Head SHA1: 0997f0bdf9eb2aa24695fbd8a228cef4422cf1b6
+If you don't copy the there are data corruption bugs though. Real apps
+probably don't hit a problem here as they are not forking while GUP's
+are active (RDMA excluded, which does do this)
 
-Or to build 4.14.185-rt85 directly, the following patches should be applied:
+I think that implementing page pinning by blocking mmu notifiers for
+the duration of the pin is a particularly good idea either, that
+actually seems a lot worse than just having the pin in the first
+place.
 
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.14.tar.xz
+Particularly if it is only being done to avoid corner case bugs that
+already afflict other GUP cases :(
 
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.14.185.xz
+> > What do you mean 'GUP fast is still succeptible to this' ?
+> 
+> Not all GUP fast path are updated (intentionaly) __get_user_pages_fast()
 
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/patch-4.14.185-rt85.patch.xz
+Sure, that is is the 'raw' accessor
 
-
-You can also build from 4.14.184-rt84 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.14/incr/patch-4.14.184-rt84-rt85.patch.xz
-
-Enjoy!
-Clark
+Jason
