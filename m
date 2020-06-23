@@ -2,163 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4662049CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 08:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D69BF2049CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 08:22:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730684AbgFWGVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 02:21:55 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:24907 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730406AbgFWGVy (ORCPT
+        id S1730939AbgFWGW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 02:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730406AbgFWGW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 02:21:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1592893314; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=5ZAFSKQuOxtflxXUrt8WGXtwebbL5g0a4E24JJ4kqw8=; b=O1nSICvstKHhWb8qi8tYy4wP7Q5uYlzyWZUslwoisC9XzgzS45VPt2zx29bf3fToyxC4Ti4W
- D36uStuVYoR03bF2C8o6tJlt4x7qr3L4VIIHka3YaW25t2OJtegxPb/HT6sQFEZP5EP9An/i
- JcBWdhY8TLqTlJNgoYepAA83eUQ=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n12.prod.us-east-1.postgun.com with SMTP id
- 5ef19f81bfb34e631ca52f12 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Jun 2020 06:21:53
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C6900C43395; Tue, 23 Jun 2020 06:21:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from [192.168.0.100] (unknown [124.123.165.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: neeraju)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B4CADC433C6;
-        Tue, 23 Jun 2020 06:21:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B4CADC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=neeraju@codeaurora.org
-Subject: Re: [PATCH] rcu/tree: Remove CONFIG_PREMPT_RCU check in force_qs_rnp
-To:     paulmck@kernel.org
-Cc:     josh@joshtriplett.org, rostedt@goodmis.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1592849223-17774-1-git-send-email-neeraju@codeaurora.org>
- <20200622231829.GV9247@paulmck-ThinkPad-P72>
-From:   Neeraj Upadhyay <neeraju@codeaurora.org>
-Message-ID: <b30ee288-7a84-1ecd-b2dd-776f810b9ddc@codeaurora.org>
-Date:   Tue, 23 Jun 2020 11:51:47 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 23 Jun 2020 02:22:27 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87797C061573;
+        Mon, 22 Jun 2020 23:22:27 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id h22so1096558pjf.1;
+        Mon, 22 Jun 2020 23:22:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JqdXnjOTSYDDpPPJplHpLnDfQ3QmZFq8Qe/1BA+yRRc=;
+        b=njWd611Shn9oilZBlrtfevCvAa+D5bJCriFuIYOaE2EhlPpt86TFW+K5ll3a62Ws99
+         ZJmRYHBR8o9MKWlXMmPG2gJ7jgX6on7Yziu7RT8oMqJKzN/70zkbc6bgKpvIikqwtf3y
+         A5Hxf1Dr8EdDpWYS+ITIuLUaGSwvA6FzmikSBQ6jQxdHk/+F7pnoAeRCQwqVIPgihjLY
+         J2K9+tpBEp/LrLPCtvlLYCdqRCJTND1D2kVXknpee03ac4qsMIiCAQ1yvrdWqEIyycbb
+         xNp8Nz4Ix55H02VWByVZ7dk4FEneuP3TeovyZuKHHl/vlT8ZvhcGjQWN1jKfXe1SpaIn
+         8k4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JqdXnjOTSYDDpPPJplHpLnDfQ3QmZFq8Qe/1BA+yRRc=;
+        b=t3/JZJ4oN+N98Lnp2pBAJn9dWuL8nJC/gO+Tdp9AAQEJBYzUhB4hPFH+BJ4Dm3UCll
+         iM+GOvTCulHUDuXKKiaoK4Ob7phcE3WCtHjEtQx//Ud0+hUifk84FrAgf1S8p/rtYCRP
+         8hIEpLwckXgoJTeYZcT/621fYLMpP4LIEybvj6wwj5XrRHWuyyAoW1iTtirnCermcFeQ
+         W3H1UqMOCAxaOJjVRy3qO3pVoKt8d6l8keR20jn1DPWFweP/63TJD3n9k/8FiscL3ReJ
+         DV66fZrQ4aH1DxbjQvceshuZtuNmtiIHUV2m44Whnq2rvaY4pqolFq0Y1QRmue8jIFIc
+         ns5A==
+X-Gm-Message-State: AOAM530qlVP5Ukx7ZSYam9oxMBneo6gpIW5ZDZFQgGERwX23JNge5LYd
+        0HBUYOKpIx/NhdWrDJ6Pu2s=
+X-Google-Smtp-Source: ABdhPJwlHrhVW3Iqlh67brc+IJeHLCozs/uo71Rj5VLzU1+/Ou4KwjZaevfVL7FipceVqNvC/obtcA==
+X-Received: by 2002:a17:90a:20e9:: with SMTP id f96mr581806pjg.13.1592893346950;
+        Mon, 22 Jun 2020 23:22:26 -0700 (PDT)
+Received: from dc803.localdomain (FL1-125-199-162-203.hyg.mesh.ad.jp. [125.199.162.203])
+        by smtp.gmail.com with ESMTPSA id 207sm16163690pfw.190.2020.06.22.23.22.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 23:22:26 -0700 (PDT)
+From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
+To:     kohada.t2@gmail.com
+Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
+        mori.takahiro@ab.mitsubishielectric.co.jp,
+        motai.hirotaka@aj.mitsubishielectric.co.jp,
+        Namjae Jeon <namjae.jeon@samsung.com>,
+        Sungjong Seo <sj1557.seo@samsung.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2 v5] exfat: write multiple sectors at once
+Date:   Tue, 23 Jun 2020 15:22:19 +0900
+Message-Id: <20200623062219.7148-1-kohada.t2@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200622231829.GV9247@paulmck-ThinkPad-P72>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+Write multiple sectors at once when updating dir-entries.
+Add exfat_update_bhs() for that. It wait for write completion once
+instead of sector by sector.
+It's only effective if sync enabled.
 
-On 6/23/2020 4:48 AM, Paul E. McKenney wrote:
-> On Mon, Jun 22, 2020 at 11:37:03PM +0530, Neeraj Upadhyay wrote:
->> Remove CONFIG_PREMPT_RCU check in force_qs_rnp(). Originally,
->> this check was required to skip executing fqs failsafe
->> for rcu-sched, which was added in commit a77da14ce9af ("rcu:
->> Yet another fix for preemption and CPU hotplug"). However,
->> this failsafe has been removed, since then. So, cleanup the
->> code to avoid any confusion around the need for boosting,
->> for !CONFIG_PREMPT_RCU.
->>
->> Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
-> 
-> Good point, there is a !PREEMPT definition of the function
-> rcu_preempt_blocked_readers_cgp() that unconditionally returns zero.
-> And if !PREEMPT kernels, the same things happens in the "if"
-> body as after it, so behavior is not changed.
-> 
-> I have queued and pushed this with an upgraded commit log as
-> shown below.
-> 
-> 						Thanx, Paul
-> 
+Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
+---
+Changes in v2:
+ - Split into 'write multiple sectors at once'
+   and 'add error check when updating dir-entries'
+Changes in v3
+ - Rebase to latest exfat-dev
+Changes in v4
+ - Use if/else instead of conditional operator
+Changes in v5
+ - Remove Reviewed-by tag
 
-Thanks! patch looks good to me!
+ fs/exfat/dir.c      | 15 +++++++++------
+ fs/exfat/exfat_fs.h |  1 +
+ fs/exfat/misc.c     | 19 +++++++++++++++++++
+ 3 files changed, 29 insertions(+), 6 deletions(-)
 
-Thanks
-Neeraj
-
->> ---
->>   kernel/rcu/tree.c | 3 +--
->>   1 file changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> index 6226bfb..57c904b 100644
->> --- a/kernel/rcu/tree.c
->> +++ b/kernel/rcu/tree.c
->> @@ -2514,8 +2514,7 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
->>   		raw_spin_lock_irqsave_rcu_node(rnp, flags);
->>   		rcu_state.cbovldnext |= !!rnp->cbovldmask;
->>   		if (rnp->qsmask == 0) {
->> -			if (!IS_ENABLED(CONFIG_PREEMPT_RCU) ||
->> -			    rcu_preempt_blocked_readers_cgp(rnp)) {
->> +			if (rcu_preempt_blocked_readers_cgp(rnp)) {
->>   				/*
->>   				 * No point in scanning bits because they
->>   				 * are all zero.  But we might need to
->> -- 
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
->> a Linux Foundation Collaborative Project
-> 
-> ------------------------------------------------------------------------
-> 
-> commit a4600389c35010aef414b89e2817d4a527e751b5
-> Author: Neeraj Upadhyay <neeraju@codeaurora.org>
-> Date:   Mon Jun 22 23:37:03 2020 +0530
-> 
->      rcu/tree: Remove CONFIG_PREMPT_RCU check in force_qs_rnp()
->      
->      Originally, the call to rcu_preempt_blocked_readers_cgp() from
->      force_qs_rnp() had to be conditioned on CONFIG_PREEMPT_RCU=y, as in
->      commit a77da14ce9af ("rcu: Yet another fix for preemption and CPU
->      hotplug").  However, there is now a CONFIG_PREEMPT_RCU=n definition of
->      rcu_preempt_blocked_readers_cgp() that unconditionally returns zero, so
->      invoking it is now safe.  In addition, the CONFIG_PREEMPT_RCU=n definition
->      of rcu_initiate_boost() simply releases the rcu_node structure's ->lock,
->      which is what happens when the "if" condition evaluates to false.
->      
->      This commit therefore drops the IS_ENABLED(CONFIG_PREEMPT_RCU) check,
->      so that rcu_initiate_boost() is called only in CONFIG_PREEMPT_RCU=y
->      kernels when there are readers blocking the current grace period.
->      This does not change the behavior, but reduces code-reader confusion by
->      eliminating non-CONFIG_PREEMPT_RCU=y calls to rcu_initiate_boost().
->      
->      Signed-off-by: Neeraj Upadhyay <neeraju@codeaurora.org>
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 6226bfb..57c904b 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -2514,8 +2514,7 @@ static void force_qs_rnp(int (*f)(struct rcu_data *rdp))
->   		raw_spin_lock_irqsave_rcu_node(rnp, flags);
->   		rcu_state.cbovldnext |= !!rnp->cbovldmask;
->   		if (rnp->qsmask == 0) {
-> -			if (!IS_ENABLED(CONFIG_PREEMPT_RCU) ||
-> -			    rcu_preempt_blocked_readers_cgp(rnp)) {
-> +			if (rcu_preempt_blocked_readers_cgp(rnp)) {
->   				/*
->   				 * No point in scanning bits because they
->   				 * are all zero.  But we might need to
-> 
-
+diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c
+index 02acbb6ddf02..7c2e29632634 100644
+--- a/fs/exfat/dir.c
++++ b/fs/exfat/dir.c
+@@ -606,13 +606,16 @@ void exfat_update_dir_chksum_with_entry_set(struct exfat_entry_set_cache *es)
+ 
+ void exfat_free_dentry_set(struct exfat_entry_set_cache *es, int sync)
+ {
+-	int i;
++	int i, err = 0;
+ 
+-	for (i = 0; i < es->num_bh; i++) {
+-		if (es->modified)
+-			exfat_update_bh(es->bh[i], sync);
+-		brelse(es->bh[i]);
+-	}
++	if (es->modified)
++		err = exfat_update_bhs(es->bh, es->num_bh, sync);
++
++	for (i = 0; i < es->num_bh; i++)
++		if (err)
++			bforget(es->bh[i]);
++		else
++			brelse(es->bh[i]);
+ 	kfree(es);
+ }
+ 
+diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
+index 84664024e51e..cbb00ee97183 100644
+--- a/fs/exfat/exfat_fs.h
++++ b/fs/exfat/exfat_fs.h
+@@ -512,6 +512,7 @@ void exfat_set_entry_time(struct exfat_sb_info *sbi, struct timespec64 *ts,
+ u16 exfat_calc_chksum16(void *data, int len, u16 chksum, int type);
+ u32 exfat_calc_chksum32(void *data, int len, u32 chksum, int type);
+ void exfat_update_bh(struct buffer_head *bh, int sync);
++int exfat_update_bhs(struct buffer_head **bhs, int nr_bhs, int sync);
+ void exfat_chain_set(struct exfat_chain *ec, unsigned int dir,
+ 		unsigned int size, unsigned char flags);
+ void exfat_chain_dup(struct exfat_chain *dup, struct exfat_chain *ec);
+diff --git a/fs/exfat/misc.c b/fs/exfat/misc.c
+index 8a3dde59052b..564718747fb2 100644
+--- a/fs/exfat/misc.c
++++ b/fs/exfat/misc.c
+@@ -172,6 +172,25 @@ void exfat_update_bh(struct buffer_head *bh, int sync)
+ 		sync_dirty_buffer(bh);
+ }
+ 
++int exfat_update_bhs(struct buffer_head **bhs, int nr_bhs, int sync)
++{
++	int i, err = 0;
++
++	for (i = 0; i < nr_bhs; i++) {
++		set_buffer_uptodate(bhs[i]);
++		mark_buffer_dirty(bhs[i]);
++		if (sync)
++			write_dirty_buffer(bhs[i], 0);
++	}
++
++	for (i = 0; i < nr_bhs && sync; i++) {
++		wait_on_buffer(bhs[i]);
++		if (!buffer_uptodate(bhs[i]))
++			err = -EIO;
++	}
++	return err;
++}
++
+ void exfat_chain_set(struct exfat_chain *ec, unsigned int dir,
+ 		unsigned int size, unsigned char flags)
+ {
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member of the Code Aurora Forum, hosted by The Linux Foundation
+2.25.1
+
