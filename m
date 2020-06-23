@@ -2,42 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24D412061EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5930620622C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403923AbgFWUwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:52:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46140 "EHLO mail.kernel.org"
+        id S2393018AbgFWU4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:56:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40364 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392699AbgFWUrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:47:37 -0400
+        id S2392530AbgFWUn2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:43:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1A2C82098B;
-        Tue, 23 Jun 2020 20:47:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 750B721941;
+        Tue, 23 Jun 2020 20:43:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945257;
-        bh=uqj9LlV6wpnyksVFlwbmyPsNGWszrcyh1dI43T+emtY=;
+        s=default; t=1592945009;
+        bh=DKXlsBCTmi+G4g/W7Tcdy0td3xC/cjRZok4Bvjuy99g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wUJkMCPOkHFC/rVgOibuCxmw4WIs3KNaeJr8wq2kRdTuGxLovrOJPMjbk8FIuNQAc
-         1ovUL6TgCCAOpZQ4pNWhjqvXNJdogRdTgHNLFA+anIaFFT+1nE5WMHk5D6TPWNHR08
-         XYT8FiAI6PTyEtvROz7ZVBD/7B/mV0xrrF32VK18=
+        b=sj6gcohO1aO2rTY7s6NuMlvMPdp9L9qYCUbX+FbO0801+MN3BP3jQjodV2PBLUZW0
+         ifJiTWLezFKKIMkEE7Q1VV0C+ov+pHLRG7NgT5LVoKg/DMnoFu2M76lD1dDdeIrfwl
+         fHt/KbA2yakyTXSdDePgG49qdgO+YkV56K1F+YgE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 070/136] watchdog: da9062: No need to ping manually before setting timeout
+        stable@vger.kernel.org, Herbert Xu <herbert@gondor.apana.org.au>,
+        Stephan Mueller <smueller@chronox.de>
+Subject: [PATCH 4.19 198/206] crypto: algif_skcipher - Cap recv SG list at ctx->used
 Date:   Tue, 23 Jun 2020 21:58:46 +0200
-Message-Id: <20200623195307.202137941@linuxfoundation.org>
+Message-Id: <20200623195326.773395637@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
-References: <20200623195303.601828702@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,49 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Riedmueller <s.riedmueller@phytec.de>
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-[ Upstream commit a0948ddba65f4f6d3cfb5e2b84685485d0452966 ]
+commit 7cf81954705b7e5b057f7dc39a7ded54422ab6e1 upstream.
 
-There is actually no need to ping the watchdog before disabling it
-during timeout change. Disabling the watchdog already takes care of
-resetting the counter.
+Somewhere along the line the cap on the SG list length for receive
+was lost.  This patch restores it and removes the subsequent test
+which is now redundant.
 
-This fixes an issue during boot when the userspace watchdog handler takes
-over and the watchdog is already running. Opening the watchdog in this case
-leads to the first ping and directly after that without the required
-heartbeat delay a second ping issued by the set_timeout call. Due to the
-missing delay this resulted in a reset.
+Fixes: 2d97591ef43d ("crypto: af_alg - consolidation of...")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Reviewed-by: Stephan Mueller <smueller@chronox.de>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Signed-off-by: Stefan Riedmueller <s.riedmueller@phytec.de>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Link: https://lore.kernel.org/r/20200403130728.39260-3-s.riedmueller@phytec.de
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/watchdog/da9062_wdt.c | 5 -----
- 1 file changed, 5 deletions(-)
+ crypto/algif_skcipher.c |    6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/drivers/watchdog/da9062_wdt.c b/drivers/watchdog/da9062_wdt.c
-index 79383ff620199..1443386bb590b 100644
---- a/drivers/watchdog/da9062_wdt.c
-+++ b/drivers/watchdog/da9062_wdt.c
-@@ -94,11 +94,6 @@ static int da9062_wdt_update_timeout_register(struct da9062_watchdog *wdt,
- 					      unsigned int regval)
- {
- 	struct da9062 *chip = wdt->hw;
--	int ret;
--
--	ret = da9062_reset_watchdog_timer(wdt);
--	if (ret)
--		return ret;
+--- a/crypto/algif_skcipher.c
++++ b/crypto/algif_skcipher.c
+@@ -78,14 +78,10 @@ static int _skcipher_recvmsg(struct sock
+ 		return PTR_ERR(areq);
  
- 	return regmap_update_bits(chip->regmap,
- 				  DA9062AA_CONTROL_D,
--- 
-2.25.1
-
+ 	/* convert iovecs of output buffers into RX SGL */
+-	err = af_alg_get_rsgl(sk, msg, flags, areq, -1, &len);
++	err = af_alg_get_rsgl(sk, msg, flags, areq, ctx->used, &len);
+ 	if (err)
+ 		goto free;
+ 
+-	/* Process only as much RX buffers for which we have TX data */
+-	if (len > ctx->used)
+-		len = ctx->used;
+-
+ 	/*
+ 	 * If more buffers are to be expected to be processed, process only
+ 	 * full block size buffers.
 
 
