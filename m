@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB0720460E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:44:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D31204606
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732333AbgFWAoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:44:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40690 "EHLO mail.kernel.org"
+        id S1732240AbgFWAni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:43:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732151AbgFWAng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732152AbgFWAng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Jun 2020 20:43:36 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BD5C20780;
+        by mail.kernel.org (Postfix) with ESMTPSA id B3F2F20809;
         Tue, 23 Jun 2020 00:43:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592873015;
-        bh=VWjVUGNmFlVkvNEThVXbyf9Imml5f0wPVHRhk67aEU4=;
+        bh=aYy2UNwOd1hQi9e+H84dft4nx0pPPFXsEG7gx7BEz6Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rnEmpZkIHFrWoSSrNmjzXdITRuekXzwXZjqXSn0zi+oVujIagEpVoz0UEnCzmDUUO
-         0ORBoQDmBh+qMGzhVE9NEFDApmYqWf5ZmIqTRj+7fUhbSHC7VG9A36fhhYKBYSUbeL
-         JZv8ya+WgGkByFE0qdiGij8kc5SAFSUOBjz/Q1mw=
+        b=CjbevtBI7iv9n/N0+qX3Voe44iKDfv6UzfDzaWq6rHngfC64szQOWLm+xsBAmmV6M
+         SQ5rEdmZiRrk7lD3rqXY6eEhE6NX+bVCy3fi2OxGNPkrIoG/V78HUm3SjlEXKZ7Irj
+         aZJUZ9RSlZ1f2fsgRlhrqONaV7LpiCDguJ1m0GR8=
 From:   paulmck@kernel.org
 To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
         kernel-team@fb.com, mingo@kernel.org
 Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
         dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 02/10] x86/mm/pat: Mark an intentional data race
-Date:   Mon, 22 Jun 2020 17:43:25 -0700
-Message-Id: <20200623004333.27227-2-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 03/10] rculist: Add ASSERT_EXCLUSIVE_ACCESS() to __list_splice_init_rcu()
+Date:   Mon, 22 Jun 2020 17:43:26 -0700
+Message-Id: <20200623004333.27227-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623003731.GA26717@paulmck-ThinkPad-P72>
 References: <20200623003731.GA26717@paulmck-ThinkPad-P72>
@@ -40,55 +40,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <cai@lca.pw>
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-cpa_4k_install could be accessed concurrently as noticed by KCSAN,
+After the sync() in __list_splice_init_rcu(), there should be no
+readers traversing the old list.  This commit therefore enlists the
+help of KCSAN to verify this condition via a pair of calls to
+ASSERT_EXCLUSIVE_ACCESS().
 
-read to 0xffffffffaa59a000 of 8 bytes by interrupt on cpu 7:
-cpa_inc_4k_install arch/x86/mm/pat/set_memory.c:131 [inline]
-__change_page_attr+0x10cf/0x1840 arch/x86/mm/pat/set_memory.c:1514
-__change_page_attr_set_clr+0xce/0x490 arch/x86/mm/pat/set_memory.c:1636
-__set_pages_np+0xc4/0xf0 arch/x86/mm/pat/set_memory.c:2148
-__kernel_map_pages+0xb0/0xc8 arch/x86/mm/pat/set_memory.c:2178
-kernel_map_pages include/linux/mm.h:2719 [inline] <snip>
-
-write to 0xffffffffaa59a000 of 8 bytes by task 1 on cpu 6:
-cpa_inc_4k_install arch/x86/mm/pat/set_memory.c:131 [inline]
-__change_page_attr+0x10ea/0x1840 arch/x86/mm/pat/set_memory.c:1514
-__change_page_attr_set_clr+0xce/0x490 arch/x86/mm/pat/set_memory.c:1636
-__set_pages_p+0xc4/0xf0 arch/x86/mm/pat/set_memory.c:2129
-__kernel_map_pages+0x2e/0xc8 arch/x86/mm/pat/set_memory.c:2176
-kernel_map_pages include/linux/mm.h:2719 [inline] <snip>
-
-Both accesses are due to the same "cpa_4k_install++" in
-cpa_inc_4k_install. A data race here could be potentially undesirable:
-depending on compiler optimizations or how x86 executes a non-LOCK'd
-increment, it may lose increments, corrupt the counter, etc. Since this
-counter only seems to be used for printing some stats, this data race
-itself is unlikely to cause harm to the system though. Thus, mark this
-intentional data race using the data_race() marco.
-
-Suggested-by: Macro Elver <elver@google.com>
-Signed-off-by: Qian Cai <cai@lca.pw>
-Acked-by: Borislav Petkov <bp@suse.de>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Cc: Marco Elver <elver@google.com>
 ---
- arch/x86/mm/pat/set_memory.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/rculist.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-index 77e0430..d1b2a88 100644
---- a/arch/x86/mm/pat/set_memory.c
-+++ b/arch/x86/mm/pat/set_memory.c
-@@ -135,7 +135,7 @@ static inline void cpa_inc_2m_checked(void)
+diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+index df587d1..2ebd112 100644
+--- a/include/linux/rculist.h
++++ b/include/linux/rculist.h
+@@ -248,6 +248,8 @@ static inline void __list_splice_init_rcu(struct list_head *list,
+ 	 */
  
- static inline void cpa_inc_4k_install(void)
- {
--	cpa_4k_install++;
-+	data_race(cpa_4k_install++);
- }
+ 	sync();
++	ASSERT_EXCLUSIVE_ACCESS(*first);
++	ASSERT_EXCLUSIVE_ACCESS(*last);
  
- static inline void cpa_inc_lp_sameprot(int level)
+ 	/*
+ 	 * Readers are finished with the source list, so perform splice.
 -- 
 2.9.5
 
