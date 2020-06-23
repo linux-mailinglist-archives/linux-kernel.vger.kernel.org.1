@@ -2,96 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C6ED2053B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 15:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD302053BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 15:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732759AbgFWNnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 09:43:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59246 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732629AbgFWNnJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 09:43:09 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 391BF2070E;
-        Tue, 23 Jun 2020 13:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592919789;
-        bh=g6tRclVhtSAW5qi8EewP5Y8pul/IVob3dqrhPrm4VBY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=qcAuHWsDyGTkatCEmevMuVi9SvNOqHcICBUvMOANCoEUsupKwv/jFgfmcn5XwzurA
-         G803DE95LTHZxb2lY9lXcVsDOStklRdWseO7wE/h+KEz5A0mGBeK7O14jVXIZC6JzG
-         juIiXlkOSfkTvkppE/39/qST8cRxQp1WjwAbxiSE=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 1E5CE352265E; Tue, 23 Jun 2020 06:43:09 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 06:43:09 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, kernel-team@fb.com,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, Qian Cai <cai@lca.pw>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH kcsan 0/10] KCSAN updates for v5.9
-Message-ID: <20200623134309.GB9247@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200623004310.GA26995@paulmck-ThinkPad-P72>
- <CANpmjNOV=rGaDmvU+neSe8Pyz-Jezm6c45LS0-DJHADNU9H_QA@mail.gmail.com>
+        id S1732731AbgFWNov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 09:44:51 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:53717 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732689AbgFWNou (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 09:44:50 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 3AF2A9D9;
+        Tue, 23 Jun 2020 09:44:48 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Tue, 23 Jun 2020 09:44:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=O
+        0g8wXDhwaGH3wxJIDz/XxJs/BJnWAIK7T3LcqUUYKI=; b=LwF6LgBLm/H54i4bs
+        dTm6x54o7AV9PmvS799JVOsUUj/jDz5jgfUhEon/VKaiOhJ45jyzb7ysGmYhQifi
+        KnCy+ilEbWV7JYA4wQH4EZ0wqTH/jgURP/ji6Inf2qxxeqWqPSAjKQJjw8lQFh15
+        3Xq3W6F5nAXmtNEPsRxyPGBrG4ImmPx9rS9ywI/IME7sfEvV5xUl+rYd0rraEHhV
+        T4z/KL7VleSP+aIiCb9GUK/5+KtAvAdRmrg+Rx0dqbw+qRz643ZyCFG3pWEAWoW2
+        Zr7JiO7KJ7+7rhy9EOyJNhv+ieEdsUKDsBL7B4FOgZRMKOY4hixZMB5SgENm7lae
+        q1+qQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=O0g8wXDhwaGH3wxJIDz/XxJs/BJnWAIK7T3LcqUUY
+        KI=; b=aYj0nDqL3IMLwvTDMgHK7kpquV6TSZk2izgJcAuo2I2h4+rTiOSYgX1Dp
+        7f7KjPVrB2d1h0aIwe1tNFQ8NzjNCU8nPbd6cJWytmh1XxBVHUUPiDOvor3Os+TD
+        iv+jotApenT6d6KjvnbxyNn88aMrqcPrOck0pfJqceD8MueyfWOaHMDsv+HnT/WQ
+        n4rKSkV4fXK1Ts4UTyNefURCxUBpCifiPhmV2/JoVcSlWV4kaKRSZZVDJuNMgtq8
+        DpdEFFfOBqz0oma6V10ax1hIU7LS/JKP+SJDeoe9DQLXoxTojCeXioOtxB2w6Wrh
+        0PgkyOyFw04OqioCMRneQGV64J+qw==
+X-ME-Sender: <xms:TQfyXgoWPKtkyOMzdHBQU4SkM1vZnLRvyEp7LiLsuAw9EfXoGrMIIA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudekhedggedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtugfgjgesthhqredttddtjeenucfhrhhomhepofgrgihi
+    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
+    htthgvrhhnpefhueeggfdvieegjeeigeffudeuhfeuveeuieelgfffleelgedtiefgvdev
+    ieevvdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeeltddrkeelrdeike
+    drjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
+    mhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:TQfyXmp6kCnuarhDOFpKWBBiEDJCr6uq49ulhBBMIoLZxmMd5Zcvag>
+    <xmx:TQfyXlOzlz03GXkqCaoNFco4gwSPwQbXMKgd1Hhq5QcSpvh5gFMqIQ>
+    <xmx:TQfyXn5YGxSGoB_t0V0RPe5VDKph15fK0iJjW3HvPq1ELRhQ7iXMog>
+    <xmx:TwfyXnxxY0VIQfOKgYz-x0i5FYX_3WeZpJYYyWq7qFp7wOwcx4YPay1a4AU>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id B3A7E3280063;
+        Tue, 23 Jun 2020 09:44:44 -0400 (EDT)
+Date:   Tue, 23 Jun 2020 15:44:42 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+        Aditya Pakki <pakki001@umn.edu>,
+        Navid Emamdoost <emamd001@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
+        Qiushi Wu <wu000273@umn.edu>, linux-kernel@vger.kernel.org,
+        YueHaibing <yuehaibing@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [PATCH] crypto: sun8i-ce - Fix runtime PM imbalance in
+ sun8i_ce_cipher_init
+Message-ID: <20200623134442.wj4i3r3dlp6rtpaq@gilmour.lan>
+References: <265c3a75-f8ce-fb34-d559-39e58a4dfb4f@web.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CANpmjNOV=rGaDmvU+neSe8Pyz-Jezm6c45LS0-DJHADNU9H_QA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <265c3a75-f8ce-fb34-d559-39e58a4dfb4f@web.de>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 08:31:15AM +0200, Marco Elver wrote:
-> On Tue, 23 Jun 2020 at 02:43, Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > Hello!
-> >
-> > This series provides KCSAN updates:
-> >
-> > 1.      Annotate a data race in vm_area_dup(), courtesy of Qian Cai.
-> >
-> > 2.      x86/mm/pat: Mark an intentional data race, courtesy of Qian Cai.
-> >
-> > 3.      Add ASSERT_EXCLUSIVE_ACCESS() to __list_splice_init_rcu().
-> >
-> > 4.      Add test suite, courtesy of Marco Elver.
-> >
-> > 5.      locking/osq_lock: Annotate a data race in osq_lock.
-> >
-> > 6.      Prefer '__no_kcsan inline' in test, courtesy of Marco Elver.
-> >
-> > 7.      Silence -Wmissing-prototypes warning with W=1, courtesy of Qian Cai.
-> >
-> > 8.      Rename test.c to selftest.c, courtesy of Marco Elver.
-> >
-> > 9.      Remove existing special atomic rules, courtesy of Marco Elver.
-> >
-> > 10.     Add jiffies test to test suite, courtesy of Marco Elver.
-> 
-> Do we want GCC support back for 5.9?
-> 
->    https://lkml.kernel.org/r/20200618093118.247375-1-elver@google.com
-> 
-> I was hoping it could go into 5.9, because it makes a big difference
-> in terms of usability as it provides more compiler choice. The only
-> significant change for GCC support is the addition of the checking of
-> (CC_IS_GCC && (....)).
+On Mon, Jun 22, 2020 at 07:50:08PM +0200, Markus Elfring wrote:
+> > Fix this by =E2=80=A6
+>=20
+> Please replace the beginning of this sentence with the tag =E2=80=9CFixes=
+=E2=80=9D.
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/D=
+ocumentation/process/submitting-patches.rst?id=3D625d3449788f85569096780592=
+549d0340e9c0c7#n183
 
-Very good, I will rebase the following into the KCSAN branch for v5.9:
+No, not really. The comment you (partially) quoted explains how the
+issue is fixed, your suggestion explains what commit introduced the fix
+in the first place. They are both beneficial, but there's strictly no
+reason to remove the former for the latter.
 
-	3e490e3 kcsan: Re-add GCC as a supported compiler
-	03296de kcsan: Simplify compiler flags
-	d831090 kcsan: Disable branch tracing in core runtime
-
-Please let me know if any other adjustments are needed.
-
-							Thanx, Paul
+Maxime
