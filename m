@@ -2,40 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFFF205FE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43C33205F23
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391870AbgFWUhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:37:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60794 "EHLO mail.kernel.org"
+        id S2391024AbgFWU3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:29:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391845AbgFWUhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:37:22 -0400
+        id S2391002AbgFWU3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:29:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9F9862080C;
-        Tue, 23 Jun 2020 20:37:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EB91B206C3;
+        Tue, 23 Jun 2020 20:29:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944642;
-        bh=djA/OeVubFzdOM4XtK81Q1LOrasjYL79GbYkuCRyh+M=;
+        s=default; t=1592944176;
+        bh=0PBbNoMLgT/OjPeh5DapmIdaNhEuA8/SPN2ldUn2pTo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SWf9PiV7VpB2S0/adySm7KH96XVUlg05Yannon4IcxhpEAwBTQ9QwocnaR310nnQX
-         Pr2TwXyaaRXjWRlzaEfD6zx5qpdiQBOQ6LFttAoLp7U8sMWJ/zKNcT+/BGxEQ1Pxr7
-         gKATDh9bFg+PPDTMzNb26CY7axm2GzbcAnypxGFo=
+        b=0FbmZVfbouu+tHvTidLWoUCHDn6W9hMzkBlB8YvX4etHJLa0NVKguohks0mc2+ARU
+         AlUP5Wjq60CZRRCaWV0AWuORDC/aphx1AeoUtdGQN64UA7r/GXHqbIdv8H7zkRbxmJ
+         JXtaUXk+11ToamAa2kK7kw0vMO89US5y1xRlXK4Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        Andi Shyti <andi@etezian.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Derek Kiernan <derek.kiernan@xilinx.com>,
+        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-arm-kernel@lists.infradead.org,
+        John Hubbard <jhubbard@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 061/206] Input: mms114 - add extra compatible for mms345l
-Date:   Tue, 23 Jun 2020 21:56:29 +0200
-Message-Id: <20200623195319.967295572@linuxfoundation.org>
+Subject: [PATCH 5.4 195/314] misc: xilinx-sdfec: improve get_user_pages_fast() error handling
+Date:   Tue, 23 Jun 2020 21:56:30 +0200
+Message-Id: <20200623195348.226110468@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,86 +48,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephan Gerhold <stephan@gerhold.net>
+From: John Hubbard <jhubbard@nvidia.com>
 
-[ Upstream commit 7842087b0196d674ed877d768de8f2a34d7fdc53 ]
+[ Upstream commit 57343d51613227373759f5b0f2eede257fd4b82e ]
 
-MMS345L is another first generation touch screen from Melfas,
-which uses mostly the same registers as MMS152.
+This fixes the case of get_user_pages_fast() returning a -errno.
+The result needs to be stored in a signed integer. And for safe
+signed/unsigned comparisons, it's best to keep everything signed.
+And get_user_pages_fast() also expects a signed value for number
+of pages to pin.
 
-However, there is some garbage printed during initialization.
-Apparently MMS345L does not have the MMS152_COMPAT_GROUP register
-that is read+printed during initialization.
+Therefore, change most relevant variables, from u32 to int. Leave
+"n" unsigned, for convenience in checking for overflow. And provide
+a WARN_ON_ONCE() and early return, if overflow occurs.
 
-  TSP FW Rev: bootloader 0x6 / core 0x26 / config 0x26, Compat group: \x06
+Also, as long as we're tidying up: rename the page array from page,
+to pages, in order to match the conventions used in most other call
+sites.
 
-On earlier kernel versions the compat group was actually printed as
-an ASCII control character, seems like it gets escaped now.
-
-But we probably shouldn't print something from a random register.
-
-Add a separate "melfas,mms345l" compatible that avoids reading
-from the MMS152_COMPAT_GROUP register. This might also help in case
-there is some other device-specific quirk in the future.
-
-Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
-Reviewed-by: Andi Shyti <andi@etezian.org>
-Link: https://lore.kernel.org/r/20200423102431.2715-1-stephan@gerhold.net
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Fixes: 20ec628e8007e ("misc: xilinx_sdfec: Add ability to configure LDPC")
+Cc: Derek Kiernan <derek.kiernan@xilinx.com>
+Cc: Dragan Cvetic <dragan.cvetic@xilinx.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+Link: https://lore.kernel.org/r/20200527012628.1100649-2-jhubbard@nvidia.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/mms114.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ drivers/misc/xilinx_sdfec.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/input/touchscreen/mms114.c b/drivers/input/touchscreen/mms114.c
-index fca908ba4841f..fb28fd2d6f1c5 100644
---- a/drivers/input/touchscreen/mms114.c
-+++ b/drivers/input/touchscreen/mms114.c
-@@ -54,6 +54,7 @@
- enum mms_type {
- 	TYPE_MMS114	= 114,
- 	TYPE_MMS152	= 152,
-+	TYPE_MMS345L	= 345,
- };
+diff --git a/drivers/misc/xilinx_sdfec.c b/drivers/misc/xilinx_sdfec.c
+index 48ba7e02bed72..d4c14b617201e 100644
+--- a/drivers/misc/xilinx_sdfec.c
++++ b/drivers/misc/xilinx_sdfec.c
+@@ -602,10 +602,10 @@ static int xsdfec_table_write(struct xsdfec_dev *xsdfec, u32 offset,
+ 			      const u32 depth)
+ {
+ 	u32 reg = 0;
+-	u32 res;
+-	u32 n, i;
++	int res, i, nr_pages;
++	u32 n;
+ 	u32 *addr = NULL;
+-	struct page *page[MAX_NUM_PAGES];
++	struct page *pages[MAX_NUM_PAGES];
  
- struct mms114_data {
-@@ -250,6 +251,15 @@ static int mms114_get_version(struct mms114_data *data)
- 	int error;
+ 	/*
+ 	 * Writes that go beyond the length of
+@@ -622,15 +622,22 @@ static int xsdfec_table_write(struct xsdfec_dev *xsdfec, u32 offset,
+ 	if ((len * XSDFEC_REG_WIDTH_JUMP) % PAGE_SIZE)
+ 		n += 1;
  
- 	switch (data->type) {
-+	case TYPE_MMS345L:
-+		error = __mms114_read_reg(data, MMS152_FW_REV, 3, buf);
-+		if (error)
-+			return error;
+-	res = get_user_pages_fast((unsigned long)src_ptr, n, 0, page);
+-	if (res < n) {
+-		for (i = 0; i < res; i++)
+-			put_page(page[i]);
++	if (WARN_ON_ONCE(n > INT_MAX))
++		return -EINVAL;
 +
-+		dev_info(dev, "TSP FW Rev: bootloader 0x%x / core 0x%x / config 0x%x\n",
-+			 buf[0], buf[1], buf[2]);
-+		break;
++	nr_pages = n;
 +
- 	case TYPE_MMS152:
- 		error = __mms114_read_reg(data, MMS152_FW_REV, 3, buf);
- 		if (error)
-@@ -287,8 +297,8 @@ static int mms114_setup_regs(struct mms114_data *data)
- 	if (error < 0)
- 		return error;
++	res = get_user_pages_fast((unsigned long)src_ptr, nr_pages, 0, pages);
++	if (res < nr_pages) {
++		if (res > 0) {
++			for (i = 0; i < res; i++)
++				put_page(pages[i]);
++		}
+ 		return -EINVAL;
+ 	}
  
--	/* MMS152 has no configuration or power on registers */
--	if (data->type == TYPE_MMS152)
-+	/* Only MMS114 has configuration and power on registers */
-+	if (data->type != TYPE_MMS114)
- 		return 0;
- 
- 	error = mms114_set_active(data, true);
-@@ -598,6 +608,9 @@ static const struct of_device_id mms114_dt_match[] = {
- 	}, {
- 		.compatible = "melfas,mms152",
- 		.data = (void *)TYPE_MMS152,
-+	}, {
-+		.compatible = "melfas,mms345l",
-+		.data = (void *)TYPE_MMS345L,
- 	},
- 	{ }
- };
+-	for (i = 0; i < n; i++) {
+-		addr = kmap(page[i]);
++	for (i = 0; i < nr_pages; i++) {
++		addr = kmap(pages[i]);
+ 		do {
+ 			xsdfec_regwrite(xsdfec,
+ 					base_addr + ((offset + reg) *
+@@ -639,7 +646,7 @@ static int xsdfec_table_write(struct xsdfec_dev *xsdfec, u32 offset,
+ 			reg++;
+ 		} while ((reg < len) &&
+ 			 ((reg * XSDFEC_REG_WIDTH_JUMP) % PAGE_SIZE));
+-		put_page(page[i]);
++		put_page(pages[i]);
+ 	}
+ 	return reg;
+ }
 -- 
 2.25.1
 
