@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25E20205F46
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FCA920600C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388126AbgFWUbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:31:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51538 "EHLO mail.kernel.org"
+        id S2392015AbgFWUjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:39:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34584 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391187AbgFWUbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:31:06 -0400
+        id S2391697AbgFWUjA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:39:00 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BC94206C3;
-        Tue, 23 Jun 2020 20:31:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA9DD217BA;
+        Tue, 23 Jun 2020 20:38:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944266;
-        bh=zRJLePaQ3ENRoQlS1Yj61UK3T4FdMPdUtgqv3iygGH8=;
+        s=default; t=1592944740;
+        bh=HEzglXm+5tcsLluMZXsqOjSt5kj4dDPLcECP1cMixxs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ybGjK/xw879PfaoNQaUrf+jGpF+9tLA+ZqemMbQ3So9yw3qLl+BCjMUwxQXVl5nAK
-         ruHM5yTbTLEQ7+u0czUIipJQheQ3GDvoowQbMxuzmvTKc5Og8TkfdRVrxkCJ3+7wqb
-         zwDCaUxBtLf70L5bL+5TirFbKuoQTPWKRrDGR6K8=
+        b=aA07cUcNmctpOtPj+tgpCBWWdu0CYrwIF8awhFb8y2mCKBrSNMVv8MrUBtfc+UfZ8
+         AvYFpcnbt+Q+V6kZf5qcx2p4lTBStqvFZXPNuMI2HwiqM3CuVcCOdzvwKLzB9RWs6a
+         IQ7aJHoxEQUYM9YPMcX9AxDuh3Kkdzf0zgU9S/Rk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Max Staudt <max@enpas.org>, Wolfram Sang <wsa@kernel.org>,
+        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>,
+        kbuild test robot <lkp@intel.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 238/314] i2c: icy: Fix build with CONFIG_AMIGA_PCMCIA=n
-Date:   Tue, 23 Jun 2020 21:57:13 +0200
-Message-Id: <20200623195350.312495911@linuxfoundation.org>
+Subject: [PATCH 4.19 107/206] USB: gadget: udc: s3c2410_udc: Remove pointless NULL check in s3c2410_udc_nuke
+Date:   Tue, 23 Jun 2020 21:57:15 +0200
+Message-Id: <20200623195322.203197323@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,37 +46,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Max Staudt <max@enpas.org>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit cdb555397f438592bab00599037c347b700cf397 ]
+[ Upstream commit 7a0fbcf7c308920bc6116b3a5fb21c8cc5fec128 ]
 
-This has been found by the Kernel Test Robot:
-http://lkml.iu.edu/hypermail/linux/kernel/2006.0/06862.html
+Clang warns:
 
-With CONFIG_AMIGA_PCMCIA=n, io_mm.h does not pull in amigahw.h and
-ZTWO_VADDR is undefined. Add forgotten include to i2c-icy.c
+drivers/usb/gadget/udc/s3c2410_udc.c:255:11: warning: comparison of
+address of 'ep->queue' equal to a null pointer is always false
+[-Wtautological-pointer-compare]
+        if (&ep->queue == NULL)
+             ~~~~^~~~~    ~~~~
+1 warning generated.
 
-Fixes: 4768e90ecaec ("i2c: Add i2c-icy for I2C on m68k/Amiga")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Max Staudt <max@enpas.org>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+It is not wrong, queue is not a pointer so if ep is not NULL, the
+address of queue cannot be NULL. No other driver does a check like this
+and this check has been around since the driver was first introduced,
+presumably with no issues so it does not seem like this check should be
+something else. Just remove it.
+
+Commit afe956c577b2d ("kbuild: Enable -Wtautological-compare") exposed
+this but it is not the root cause of the warning.
+
+Fixes: 3fc154b6b8134 ("USB Gadget driver for Samsung s3c2410 ARM SoC")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1004
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-icy.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/gadget/udc/s3c2410_udc.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-icy.c b/drivers/i2c/busses/i2c-icy.c
-index 8382eb64b4241..d6c17506dba4a 100644
---- a/drivers/i2c/busses/i2c-icy.c
-+++ b/drivers/i2c/busses/i2c-icy.c
-@@ -43,6 +43,7 @@
- #include <linux/i2c.h>
- #include <linux/i2c-algo-pcf.h>
- 
-+#include <asm/amigahw.h>
- #include <asm/amigaints.h>
- #include <linux/zorro.h>
- 
+diff --git a/drivers/usb/gadget/udc/s3c2410_udc.c b/drivers/usb/gadget/udc/s3c2410_udc.c
+index 8bf5ad7a59add..6cc63e317aba5 100644
+--- a/drivers/usb/gadget/udc/s3c2410_udc.c
++++ b/drivers/usb/gadget/udc/s3c2410_udc.c
+@@ -264,10 +264,6 @@ static void s3c2410_udc_done(struct s3c2410_ep *ep,
+ static void s3c2410_udc_nuke(struct s3c2410_udc *udc,
+ 		struct s3c2410_ep *ep, int status)
+ {
+-	/* Sanity check */
+-	if (&ep->queue == NULL)
+-		return;
+-
+ 	while (!list_empty(&ep->queue)) {
+ 		struct s3c2410_request *req;
+ 		req = list_entry(ep->queue.next, struct s3c2410_request,
 -- 
 2.25.1
 
