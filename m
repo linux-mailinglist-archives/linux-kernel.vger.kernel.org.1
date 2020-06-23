@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B872063E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A83F206271
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392128AbgFWVMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:12:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52022 "EHLO mail.kernel.org"
+        id S2404264AbgFWVCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:02:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390622AbgFWUb1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:31:27 -0400
+        id S2392047AbgFWUjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:39:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A44512064B;
-        Tue, 23 Jun 2020 20:31:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C9BB21883;
+        Tue, 23 Jun 2020 20:39:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944287;
-        bh=t+zJLeSaHfnRj5yqJ/CtzKosmB9kT4tsuVOEK1J6zpw=;
+        s=default; t=1592944760;
+        bh=nka1z1JeJotYw4mRLwT1jWGnMFhFzOVKfzEffkT2o7g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vWjRukbK6Zvv4vqx1i87oEL4LFGKhqzYW2G8n9mz6V9Y7PpGPq25hHtdntNyO4F9D
-         jWSspE46mm9k3q1eYQkWxIFIPIItuSfzXCG+pZfS6kQXERJldOvWy6FbqcfzdmBdXC
-         hDN0MCzp8NwryWqbDy674/8rHa1YETLRRPPHM8Tc=
+        b=Dsa+qUdIi3+G6/6bg0bN1aGDzb0q+bVxA/TI/tTpKBeWhGUTHfe+sAKnzujFxxgWR
+         HFoHYhgsMiFjNCVj8yXlcwA5J4aun6UTjWpI7wirYc/gpHZUkWxyGrMT6DQ4BQqLmU
+         eP9Y9NI2aAA0yZyRqi76ytaFEIq1qPeHVFc0hWsk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Mike Christie <mchristi@redhat.com>,
+        David Disseldorp <ddiss@suse.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 246/314] ASoC: rt5645: Add platform-data for Asus T101HA
-Date:   Tue, 23 Jun 2020 21:57:21 +0200
-Message-Id: <20200623195350.680578900@linuxfoundation.org>
+Subject: [PATCH 4.19 114/206] scsi: target: tcmu: Fix a use after free in tcmu_check_expired_queue_cmd()
+Date:   Tue, 23 Jun 2020 21:57:22 +0200
+Message-Id: <20200623195322.553626574@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,58 +46,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 79d4f823a06796656289f97b922493da5690e46c ]
+[ Upstream commit 9d7464b18892332e35ff37f0b024429a1a9835e6 ]
 
-The Asus T101HA uses the default jack-detect mode 3, but instead of
-using an analog microphone it is using a DMIC on dmic-data-pin 1,
-like the Asus T100HA. Note unlike the T100HA its jack-detect is not
-inverted.
+The pr_debug() dereferences "cmd" after we already freed it by calling
+tcmu_free_cmd(cmd).  The debug printk needs to be done earlier.
 
-Add a DMI quirk with the correct settings for this model.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20200608204634.93407-2-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20200523101129.GB98132@mwanda
+Fixes: 61fb24822166 ("scsi: target: tcmu: Userspace must not complete queued commands")
+Reviewed-by: Mike Christie <mchristi@redhat.com>
+Reviewed-by: David Disseldorp <ddiss@suse.de>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5645.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/target/target_core_user.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 19662ee330d6b..c83f7f5da96b7 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3625,6 +3625,12 @@ static const struct rt5645_platform_data asus_t100ha_platform_data = {
- 	.inv_jd1_1 = true,
- };
+diff --git a/drivers/target/target_core_user.c b/drivers/target/target_core_user.c
+index ac523f247a9ca..8da89925a874d 100644
+--- a/drivers/target/target_core_user.c
++++ b/drivers/target/target_core_user.c
+@@ -1303,13 +1303,13 @@ static void tcmu_check_expired_queue_cmd(struct tcmu_cmd *cmd)
+ 	if (!time_after(jiffies, cmd->deadline))
+ 		return;
  
-+static const struct rt5645_platform_data asus_t101ha_platform_data = {
-+	.dmic1_data_pin = RT5645_DMIC_DATA_IN2N,
-+	.dmic2_data_pin = RT5645_DMIC2_DISABLE,
-+	.jd_mode = 3,
-+};
++	pr_debug("Timing out queued cmd %p on dev %s.\n",
++		  cmd, cmd->tcmu_dev->name);
 +
- static const struct rt5645_platform_data lenovo_ideapad_miix_310_pdata = {
- 	.jd_mode = 3,
- 	.in2_diff = true,
-@@ -3702,6 +3708,14 @@ static const struct dmi_system_id dmi_platform_data[] = {
- 		},
- 		.driver_data = (void *)&asus_t100ha_platform_data,
- 	},
-+	{
-+		.ident = "ASUS T101HA",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "T101HA"),
-+		},
-+		.driver_data = (void *)&asus_t101ha_platform_data,
-+	},
- 	{
- 		.ident = "MINIX Z83-4",
- 		.matches = {
+ 	list_del_init(&cmd->queue_entry);
+ 	se_cmd = cmd->se_cmd;
+ 	tcmu_free_cmd(cmd);
+ 
+-	pr_debug("Timing out queued cmd %p on dev %s.\n",
+-		  cmd, cmd->tcmu_dev->name);
+-
+ 	target_complete_cmd(se_cmd, SAM_STAT_TASK_SET_FULL);
+ }
+ 
 -- 
 2.25.1
 
