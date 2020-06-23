@@ -2,137 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8DBC20642B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F73206416
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393332AbgFWVRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:17:02 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:24317 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2389312AbgFWU1L (ORCPT
+        id S2393457AbgFWVP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390360AbgFWU2K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:27:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592944029;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tWgiqK629K1J6FFA3OHGCtK+IArht+OUbON7PWvIrTY=;
-        b=KO987pjcJLN4ugQqemc3F60O38eq/a6ptbIUwCgPG4RW+E1i3x7DD6ZO4WAxfQugphJ4qa
-        sd/ZY+s4gs+MNvRNtbF8yofYX9p/xNmbXZ8TDCKOOJeCvsE2Lo/iyxgQttR66ZXhCPhvDp
-        J0WHBEkXnQxgwP1v3irVQgE49SDLOtM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-176-qjWdDP3IPCikL0nDxWQPaQ-1; Tue, 23 Jun 2020 16:27:06 -0400
-X-MC-Unique: qjWdDP3IPCikL0nDxWQPaQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A4E2806BAA;
-        Tue, 23 Jun 2020 20:26:55 +0000 (UTC)
-Received: from localhost (ovpn-116-10.gru2.redhat.com [10.97.116.10])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C34962B6D4;
-        Tue, 23 Jun 2020 20:26:49 +0000 (UTC)
-From:   Bruno Meneguele <bmeneg@redhat.com>
-To:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     zohar@linux.ibm.com, erichte@linux.ibm.com, nayna@linux.ibm.com,
-        Bruno Meneguele <bmeneg@redhat.com>
-Subject: [PATCH v3 2/2] ima: move APPRAISE_BOOTPARAM dependency on ARCH_POLICY to runtime
-Date:   Tue, 23 Jun 2020 17:26:40 -0300
-Message-Id: <20200623202640.4936-3-bmeneg@redhat.com>
-In-Reply-To: <20200623202640.4936-1-bmeneg@redhat.com>
-References: <20200623202640.4936-1-bmeneg@redhat.com>
+        Tue, 23 Jun 2020 16:28:10 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DBE6C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:28:11 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id m81so25417066ioa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:28:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P5UNTUR/q9352l4Mlr6IfyTScpTOUF+qqIDl8m4Q5dI=;
+        b=pXBP0dYrp0aWb7reKttRpg7fCJP6uN8YEsLqzatG5AfZRlHt2wzho0utGEdiM74V9Q
+         gPei1v8ea5yzziraZW3573GE451dop8lq6t4TNAyjWVZmmH2ktSHjzTk50ivD0+8AJBG
+         7YY6MGutzQ7cv+ofQUhtxHi8d0/mILk9ALk6CheDXG9koxRmWYnTK5oswDM7wMKcV55v
+         V5XgDf8ektorep4GCw6hyLwBcm1VyAjbjood7QMOMgLPgAAlRD4+HOKZ7tB3pvkEq3zO
+         SfYvM/mrGa6UURTxJmBFNQ1GA7vJ8pV1gswC2Lw9gMWMKj0rGpngsPejkNnfpvqmckqo
+         TTjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P5UNTUR/q9352l4Mlr6IfyTScpTOUF+qqIDl8m4Q5dI=;
+        b=pBsfUG6jwf8PxLQd+mkaBIZHhJADmjF1/5eOHWhq04be+OYW47NR72nrP6y37U+SBS
+         UlYOX+a+TJ5l9yPv2pJSVff7PzDLGu3PcQJ96qEbPyIv7+PjU46TIJ77JyRq6g5WKlmB
+         kyLUENw4SNhgs8RCE9HkjW9qCdIahbQ4zzhA30aFMWuvlwfbruOYr7iNo9dytzJx57FR
+         vdcLNM9deSgfPZ6K5U2rm/YA9GCxQESEmnRxdqVVhoyl8+xtERxf2CjO2cAxJcG6z1vJ
+         wboxoXYGrfqxI9PgNfkhSFLbqLmt6KXDCmTkLudfE54MKAKj9+xzp1Fz6bVD0YvHyH6d
+         L0Sg==
+X-Gm-Message-State: AOAM531Mp2+xRtODBhWDGFfL0whw8kuFgD/dfn9UKaHdoSYRLWaXv28e
+        US+lgKumDV8fLhJIVjtdGNiGCpqSZpZ8MjPU8DbQ6A==
+X-Google-Smtp-Source: ABdhPJyUzmhsf+zkopxpmhKwOdEOcFwNtbjiy/Z3KOJz3Pm7R67RaWz/QszzzmeKnQ+WNMpxUHJ8y9OLysGUfzdwX/M=
+X-Received: by 2002:a02:cced:: with SMTP id l13mr24583703jaq.68.1592944090180;
+ Tue, 23 Jun 2020 13:28:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20200623194027.23135-1-sean.j.christopherson@intel.com> <20200623194027.23135-2-sean.j.christopherson@intel.com>
+In-Reply-To: <20200623194027.23135-2-sean.j.christopherson@intel.com>
+From:   Jon Cargille <jcargill@google.com>
+Date:   Tue, 23 Jun 2020 13:27:58 -0700
+Message-ID: <CANxmayj_08OsLst_oSczhYphQ3t4m+inf5-4k0_qfKUbzWU3fQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] KVM: x86/mmu: Avoid multiple hash lookups in kvm_get_mmu_page()
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Peter Feiner <pfeiner@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IMA_APPRAISE_BOOTPARAM has been marked as dependent on !IMA_ARCH_POLICY in
-compile time, enforcing the appraisal whenever the kernel had the arch
-policy option enabled.
+LGTM.
 
-However it breaks systems where the option is actually set but the system
-wasn't booted in a "secure boot" platform. In this scenario, anytime an
-appraisal policy (i.e. ima_policy=appraisal_tcb) is used it will be forced,
-giving no chance to the user set the 'fix' state (ima_appraise=fix) to
-actually measure system's files.
+Reviewed-By: Jon Cargille <jcargill@google.com>
 
-This patch remove this compile time dependency and move it to a runtime
-decision: all architecture that supports it so far (powerpc, x86 and s390)
-only enable such specific policies if the secure/trusted boot is actually
-enabled in the platform, thus the IMA_APPRAISE_ENFORCE flag is set whenever
-the secure/trusted boot state is met, otherwise the kernel paramenter value
-passed is used.
 
-Signed-off-by: Bruno Meneguele <bmeneg@redhat.com>
----
- arch/x86/kernel/ima_arch.c          |  3 +--
- security/integrity/ima/Kconfig      |  2 +-
- security/integrity/ima/ima_policy.c | 20 ++++++++++++++------
- 3 files changed, 16 insertions(+), 9 deletions(-)
-
-diff --git a/arch/x86/kernel/ima_arch.c b/arch/x86/kernel/ima_arch.c
-index 168393d399ba..78fb61b2e480 100644
---- a/arch/x86/kernel/ima_arch.c
-+++ b/arch/x86/kernel/ima_arch.c
-@@ -85,8 +85,7 @@ static const char * const sb_arch_rules[] = {
- 
- const char * const *arch_get_ima_policy(void)
- {
--	if (IS_ENABLED(CONFIG_IMA_ARCH_POLICY) &&
--	    arch_ima_secure_or_tusted_boot()) {
-+	if (IS_ENABLED(CONFIG_IMA_ARCH_POLICY)) {
- 		if (IS_ENABLED(CONFIG_MODULE_SIG))
- 			set_module_sig_enforced();
- 		return sb_arch_rules;
-diff --git a/security/integrity/ima/Kconfig b/security/integrity/ima/Kconfig
-index edde88dbe576..62dc11a5af01 100644
---- a/security/integrity/ima/Kconfig
-+++ b/security/integrity/ima/Kconfig
-@@ -232,7 +232,7 @@ config IMA_APPRAISE_REQUIRE_POLICY_SIGS
- 
- config IMA_APPRAISE_BOOTPARAM
- 	bool "ima_appraise boot parameter"
--	depends on IMA_APPRAISE && !IMA_ARCH_POLICY
-+	depends on IMA_APPRAISE
- 	default y
- 	help
- 	  This option enables the different "ima_appraise=" modes
-diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-index e493063a3c34..6742f86b6c60 100644
---- a/security/integrity/ima/ima_policy.c
-+++ b/security/integrity/ima/ima_policy.c
-@@ -732,12 +732,20 @@ void __init ima_init_policy(void)
- 	 * and custom policies, prior to other appraise rules.
- 	 * (Highest priority)
- 	 */
--	arch_entries = ima_init_arch_policy();
--	if (!arch_entries)
--		pr_info("No architecture policies found\n");
--	else
--		add_rules(arch_policy_entry, arch_entries,
--			  IMA_DEFAULT_POLICY | IMA_CUSTOM_POLICY);
-+	if (arch_ima_secure_or_trusted_boot()) {
-+		/* In secure and/or trusted boot the appraisal must be
-+		 * enforced, regardless kernel parameters, preventing
-+		 * runtime changes */
-+		pr_info("setting IMA appraisal to enforced\n");
-+		ima_appraise |= IMA_APPRAISE_ENFORCE;
-+
-+		arch_entries = ima_init_arch_policy();
-+		if (!arch_entries)
-+			pr_info("No architecture policies found\n");
-+		else
-+			add_rules(arch_policy_entry, arch_entries,
-+				  IMA_DEFAULT_POLICY | IMA_CUSTOM_POLICY);
-+	}
- 
- 	/*
- 	 * Insert the builtin "secure_boot" policy rules requiring file
--- 
-2.26.2
-
+On Tue, Jun 23, 2020 at 12:40 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> Refactor for_each_valid_sp() to take the list of shadow pages instead of
+> retrieving it from a gfn to avoid doing the gfn->list hash and lookup
+> multiple times during kvm_get_mmu_page().
+>
+> Cc: Peter Feiner <pfeiner@google.com>
+> Cc: Jon Cargille <jcargill@google.com>
+> Cc: Jim Mattson <jmattson@google.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/kvm/mmu/mmu.c | 17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
+>
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 3dd0af7e7515..67f8f82e9783 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -2258,15 +2258,14 @@ static bool kvm_mmu_prepare_zap_page(struct kvm *kvm, struct kvm_mmu_page *sp,
+>  static void kvm_mmu_commit_zap_page(struct kvm *kvm,
+>                                     struct list_head *invalid_list);
+>
+> -
+> -#define for_each_valid_sp(_kvm, _sp, _gfn)                             \
+> -       hlist_for_each_entry(_sp,                                       \
+> -         &(_kvm)->arch.mmu_page_hash[kvm_page_table_hashfn(_gfn)], hash_link) \
+> +#define for_each_valid_sp(_kvm, _sp, _list)                            \
+> +       hlist_for_each_entry(_sp, _list, hash_link)                     \
+>                 if (is_obsolete_sp((_kvm), (_sp))) {                    \
+>                 } else
+>
+>  #define for_each_gfn_indirect_valid_sp(_kvm, _sp, _gfn)                        \
+> -       for_each_valid_sp(_kvm, _sp, _gfn)                              \
+> +       for_each_valid_sp(_kvm, _sp,                                    \
+> +         &(_kvm)->arch.mmu_page_hash[kvm_page_table_hashfn(_gfn)])     \
+>                 if ((_sp)->gfn != (_gfn) || (_sp)->role.direct) {} else
+>
+>  static inline bool is_ept_sp(struct kvm_mmu_page *sp)
+> @@ -2477,6 +2476,7 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+>                                              unsigned int access)
+>  {
+>         union kvm_mmu_page_role role;
+> +       struct hlist_head *sp_list;
+>         unsigned quadrant;
+>         struct kvm_mmu_page *sp;
+>         bool need_sync = false;
+> @@ -2496,7 +2496,9 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+>                 quadrant &= (1 << ((PT32_PT_BITS - PT64_PT_BITS) * level)) - 1;
+>                 role.quadrant = quadrant;
+>         }
+> -       for_each_valid_sp(vcpu->kvm, sp, gfn) {
+> +
+> +       sp_list = &vcpu->kvm->arch.mmu_page_hash[kvm_page_table_hashfn(gfn)];
+> +       for_each_valid_sp(vcpu->kvm, sp, sp_list) {
+>                 if (sp->gfn != gfn) {
+>                         collisions++;
+>                         continue;
+> @@ -2533,8 +2535,7 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+>
+>         sp->gfn = gfn;
+>         sp->role = role;
+> -       hlist_add_head(&sp->hash_link,
+> -               &vcpu->kvm->arch.mmu_page_hash[kvm_page_table_hashfn(gfn)]);
+> +       hlist_add_head(&sp->hash_link, sp_list);
+>         if (!direct) {
+>                 /*
+>                  * we should do write protection before syncing pages
+> --
+> 2.26.0
+>
