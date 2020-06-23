@@ -2,82 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8179720452A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:22:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6447720453F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731653AbgFWAWK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:22:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48220 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731593AbgFWAVz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:21:55 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84CCD20890;
-        Tue, 23 Jun 2020 00:21:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592871714;
-        bh=0zcTLldr7M4Ceq2rVbYKJjCl+2rGwuuMCUQOFSYZW/A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DWcx9VLCY187INCxnUt3px5lN2WfsdCnG4qznyZwg59KcqSfEjeSbe0MuVYUT072x
-         SioYfgdSlk7aet6lLBneP4X5RRTKPZle+404U1yGPcBy/r93Ja30jJqa1AsKsTfzG6
-         qiwyJaCLLshmqZ7seKHXHVTGZy+cBXcPyh8L2MdE=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 26/26] rcu: Remove KCSAN stubs from update.c
-Date:   Mon, 22 Jun 2020 17:21:47 -0700
-Message-Id: <20200623002147.25750-26-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200623002128.GA25456@paulmck-ThinkPad-P72>
-References: <20200623002128.GA25456@paulmck-ThinkPad-P72>
+        id S1731675AbgFWAYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:24:01 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:49716 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730987AbgFWAYA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:24:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592871839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NahUiJQzDT4T5YVMvJMh+ukesK3KvitTEMq94zE6mM8=;
+        b=RXqewzIkpO9wLHq1oNOhj8kcqBFJVDy63fqHbkPH+jnIne+jkcADPMFklqfqCnGz23kD3h
+        Qv3CzxdM278sAPHaxLLDFcDXw2ggsdn+hlHmEfIM4rFqG6kGTJ3KG1Y8o7gLKIMapdwdL8
+        C3wqVM2w0yrva+9x6dA0zJMNL7Bli14=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-428-MPKLF5hKMXu7ClMOwVwYfQ-1; Mon, 22 Jun 2020 20:23:56 -0400
+X-MC-Unique: MPKLF5hKMXu7ClMOwVwYfQ-1
+Received: by mail-wr1-f72.google.com with SMTP id j5so10175357wro.6
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 17:23:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NahUiJQzDT4T5YVMvJMh+ukesK3KvitTEMq94zE6mM8=;
+        b=nppQpvCzJId3+J+X/ike7ZOjouMn1Gw1U4vez2OALC8kfgzWa24FB4ssrodlBb9QWX
+         H9uHEEyjPsNDQ9B0Y515UfuaHfAbmwMTtt7ATeopC3yJxm106URKovV4awncSwKGiBBg
+         tDm3Z1bXDo+aFGH+DUcD5U5LDmi3VY3myv242WpKnwxwH5NssKUe5HJwp/Jdxz+dxFVD
+         33nRPaXyDUL35I0V70kSIG5fGi55LtOgBVwwGx/YzItHfZIxhLo9QSDeQNaBiaSLR5YZ
+         3Hc6qquaQzRbSP+92j2L2c7ckPScsFXbZ0WfuZwiB7JjGzTr0CTP4azqSrAJU2pyLmMy
+         5Odg==
+X-Gm-Message-State: AOAM530RK7qxtHV1yhYINz/H3OaCD9ljujDgWxYg0SW240LKk6IleO7a
+        brKc9vgrOP8MVJdNyY6MW3ItgwjwvuLKQAUCUb6ml0RWw8ctk/5YJJ7DBSvGulFIouA2oS/UBXC
+        e7JUnBeqFbrecwyecjieO8mJC
+X-Received: by 2002:a1c:9d07:: with SMTP id g7mr9834357wme.160.1592871834868;
+        Mon, 22 Jun 2020 17:23:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy9X5tQCXeIJHnr5kL8QlKHGaaTuNECyqcOl4C6xBySPZ8QwnGYQom1PDI3LxchqhObFc9j0g==
+X-Received: by 2002:a1c:9d07:: with SMTP id g7mr9834332wme.160.1592871834573;
+        Mon, 22 Jun 2020 17:23:54 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:fd64:dd90:5ad5:d2e1? ([2001:b07:6468:f312:fd64:dd90:5ad5:d2e1])
+        by smtp.gmail.com with ESMTPSA id h14sm4124267wrt.36.2020.06.22.17.23.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jun 2020 17:23:54 -0700 (PDT)
+Subject: Re: [PATCH] KVM: x86/mmu: Don't put invalid SPs back on the list of
+ active pages
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20200622191850.8529-1-sean.j.christopherson@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <d1916978-6efb-2839-d45a-c39ff2f6dc1f@redhat.com>
+Date:   Tue, 23 Jun 2020 02:23:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200622191850.8529-1-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On 22/06/20 21:18, Sean Christopherson wrote:
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index fdd05c233308..fa5bd3f987dd 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -2757,10 +2757,13 @@ static bool __kvm_mmu_prepare_zap_page(struct kvm *kvm,
+>  	if (!sp->root_count) {
+>  		/* Count self */
+>  		(*nr_zapped)++;
+> -		list_move(&sp->link, invalid_list);
+> +		if (sp->role.invalid)
+> +			list_add(&sp->link, invalid_list);
+> +		else
+> +			list_move(&sp->link, invalid_list);
 
-KCSAN is now in mainline, so this commit removes the stubs for the
-data_race(), ASSERT_EXCLUSIVE_WRITER(), and ASSERT_EXCLUSIVE_ACCESS()
-macros.
+It's late here, but I think this part needs a comment anyway...
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/update.c | 13 -------------
- 1 file changed, 13 deletions(-)
-
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index a0ba885..f37cebf 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -52,19 +52,6 @@
- #endif
- #define MODULE_PARAM_PREFIX "rcupdate."
- 
--#ifndef data_race
--#define data_race(expr)							\
--	({								\
--		expr;							\
--	})
--#endif
--#ifndef ASSERT_EXCLUSIVE_WRITER
--#define ASSERT_EXCLUSIVE_WRITER(var) do { } while (0)
--#endif
--#ifndef ASSERT_EXCLUSIVE_ACCESS
--#define ASSERT_EXCLUSIVE_ACCESS(var) do { } while (0)
--#endif
--
- #ifndef CONFIG_TINY_RCU
- module_param(rcu_expedited, int, 0);
- module_param(rcu_normal, int, 0);
--- 
-2.9.5
+Paolo
 
