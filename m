@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F05B7205CC8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA524205CA4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:04:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388357AbgFWUF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:05:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44580 "EHLO mail.kernel.org"
+        id S2388126AbgFWUD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:03:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388333AbgFWUFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:05:16 -0400
+        id S2387509AbgFWUDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:03:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CD31620DD4;
-        Tue, 23 Jun 2020 20:05:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 31C1E20FC3;
+        Tue, 23 Jun 2020 20:03:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942716;
-        bh=bwz6D8FBQD9hPc5U0y0YPLANP4AYBqfGkOSytfzbCVc=;
+        s=default; t=1592942632;
+        bh=hGt5jvVshFXEzuKSCI0ypKNX8m8Q+hiYVHQAKRJQ80Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WokMzvlkfGt6c8KKdsqNBhAGo9iAgsyjFsTbFglqGwg14Lm7Km38z1cPxQGnrvKdU
-         MFksEvLOohv+pSBHxmaw0FPUhzrMyhoJbjhvSPjCD8to3A7YU4p4O0O8uSmh77UTIu
-         vxq0QWppT2FoyHQXdruk7+K0Il79pERaZ6iH/v/c=
+        b=cNI+32tBznJJTdbjwtcyFTWWtrKrANPJtz2lfYQ0SVRhIWwScTLn1M0PxyHfcL6yF
+         9J9yB9EdCS6nPf5jp6clE8/btM1O1ax8MFMH8DNKJfT11QjzjEx4Uf9dBzWkpFSerW
+         WwbUsUuHjyg3OCIzhT8ubkquwHZpmouFoKaUvsYE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
+        stable@vger.kernel.org, Omer Shpigelman <oshpigelman@habana.ai>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 066/477] m68k/PCI: Fix a memory leak in an error handling path
-Date:   Tue, 23 Jun 2020 21:51:03 +0200
-Message-Id: <20200623195410.740318987@linuxfoundation.org>
+Subject: [PATCH 5.7 067/477] habanalabs: dont allow hard reset with open processes
+Date:   Tue, 23 Jun 2020 21:51:04 +0200
+Message-Id: <20200623195410.788341159@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -46,37 +44,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Omer Shpigelman <oshpigelman@habana.ai>
 
-[ Upstream commit c3f4ec050f56eeab7c1f290321f9b762c95bd332 ]
+[ Upstream commit 36fafe87edd636292a4ed6a3af9608f2c7d0d0fb ]
 
-If 'ioremap' fails, we must free 'bridge', as done in other error handling
-path bellow.
+When the MMU is heavily used by the engines, unmapping might take a lot of
+time due to a full MMU cache invalidation done as part of the unmap flow.
+Hence we might not be able to kill all open processes before going to hard
+reset the device, as it involves unmapping of all user memory.
+In case of a failure in killing all open processes, we should stop the
+hard reset flow as it might lead to a kernel crash - one thread (killing
+of a process) is updating MMU structures that other thread (hard reset) is
+freeing.
+Stopping a hard reset flow leaves the device as nonoperational and the
+user can then initiate a hard reset via sysfs to reinitialize the device.
 
-Fixes: 19cc4c843f40 ("m68k/PCI: Replace pci_fixup_irqs() call with host bridge IRQ mapping hooks")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
+Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
+Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
+Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/m68k/coldfire/pci.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/misc/habanalabs/device.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/arch/m68k/coldfire/pci.c b/arch/m68k/coldfire/pci.c
-index 62b0eb6cf69a3..84eab0f5e00af 100644
---- a/arch/m68k/coldfire/pci.c
-+++ b/arch/m68k/coldfire/pci.c
-@@ -216,8 +216,10 @@ static int __init mcf_pci_init(void)
+diff --git a/drivers/misc/habanalabs/device.c b/drivers/misc/habanalabs/device.c
+index aef4de36b7aae..6d9c298e02c73 100644
+--- a/drivers/misc/habanalabs/device.c
++++ b/drivers/misc/habanalabs/device.c
+@@ -718,7 +718,7 @@ disable_device:
+ 	return rc;
+ }
  
- 	/* Keep a virtual mapping to IO/config space active */
- 	iospace = (unsigned long) ioremap(PCI_IO_PA, PCI_IO_SIZE);
--	if (iospace == 0)
-+	if (iospace == 0) {
-+		pci_free_host_bridge(bridge);
- 		return -ENODEV;
-+	}
- 	pr_info("Coldfire: PCI IO/config window mapped to 0x%x\n",
- 		(u32) iospace);
+-static void device_kill_open_processes(struct hl_device *hdev)
++static int device_kill_open_processes(struct hl_device *hdev)
+ {
+ 	u16 pending_total, pending_cnt;
+ 	struct hl_fpriv	*hpriv;
+@@ -771,9 +771,7 @@ static void device_kill_open_processes(struct hl_device *hdev)
+ 		ssleep(1);
+ 	}
+ 
+-	if (!list_empty(&hdev->fpriv_list))
+-		dev_crit(hdev->dev,
+-			"Going to hard reset with open user contexts\n");
++	return list_empty(&hdev->fpriv_list) ? 0 : -EBUSY;
+ }
+ 
+ static void device_hard_reset_pending(struct work_struct *work)
+@@ -894,7 +892,12 @@ again:
+ 		 * process can't really exit until all its CSs are done, which
+ 		 * is what we do in cs rollback
+ 		 */
+-		device_kill_open_processes(hdev);
++		rc = device_kill_open_processes(hdev);
++		if (rc) {
++			dev_crit(hdev->dev,
++				"Failed to kill all open processes, stopping hard reset\n");
++			goto out_err;
++		}
+ 
+ 		/* Flush the Event queue workers to make sure no other thread is
+ 		 * reading or writing to registers during the reset
+@@ -1375,7 +1378,9 @@ void hl_device_fini(struct hl_device *hdev)
+ 	 * can't really exit until all its CSs are done, which is what we
+ 	 * do in cs rollback
+ 	 */
+-	device_kill_open_processes(hdev);
++	rc = device_kill_open_processes(hdev);
++	if (rc)
++		dev_crit(hdev->dev, "Failed to kill all open processes\n");
+ 
+ 	hl_cb_pool_fini(hdev);
  
 -- 
 2.25.1
