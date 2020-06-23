@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF858206304
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EB17206169
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393286AbgFWVKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:10:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54388 "EHLO mail.kernel.org"
+        id S2392179AbgFWUlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:41:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389673AbgFWUdL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:33:11 -0400
+        id S2392167AbgFWUlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:41:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 802472064B;
-        Tue, 23 Jun 2020 20:33:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 22D112078A;
+        Tue, 23 Jun 2020 20:41:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944392;
-        bh=OvdgE5Y5rBORuUbfMDJbswl3DeGzsCcxccz0W59OSik=;
+        s=default; t=1592944866;
+        bh=DqrUCMVWllPlXdsxEyymM/y1sBAdLF5qy2xISe8LlrU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uB9o5hEpyAYdbcMW1rkXQokfbFduQ6I0WVksS9WrzFZX8Lmhq3gVU8N/JCHmW/KfZ
-         NTBMjXCl8vk2TfAxfLYK4bimR3hU3Y8SScmnt6f14Htcd4MXx27XfhO54m5HE082EX
-         tfKImTej0VBBixYXNtwC2VYpJAFzWCAql7z5/jHw=
+        b=e4KLz4VHPhmpQZWIbhNpWW/FvJQVk3TO4H67dJxc4x2S9ULNKTn41m+Yqz+XX5OtR
+         2kDCSFUtxiWxO5MmgaGf5JQqn2trR9Ne04nkhSzKyn6QsXQrhNyyufsO4JW4hXR0sA
+         ajJ1ON94/YS4vPRxkOTx6kLntgFtl9TG5MQqYei0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tom Rix <trix@redhat.com>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Paul Moore <paul@paul-moore.com>
-Subject: [PATCH 5.4 286/314] selinux: fix double free
-Date:   Tue, 23 Jun 2020 21:58:01 +0200
-Message-Id: <20200623195352.627009011@linuxfoundation.org>
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 155/206] ASoC: Intel: bytcr_rt5640: Add quirk for Toshiba Encore WT10-A tablet
+Date:   Tue, 23 Jun 2020 21:58:03 +0200
+Message-Id: <20200623195324.619315788@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-commit 65de50969a77509452ae590e9449b70a22b923bb upstream.
+[ Upstream commit 199a5e8fda54ab3c8c6f6bf980c004e97ebf5ccb ]
 
-Clang's static analysis tool reports these double free memory errors.
+The Toshiba Encore WT10-A tablet almost fully works with the default
+settings for Bay Trail CR devices. The only issue is that it uses a
+digital mic. connected the the DMIC1 input instead of an analog mic.
 
-security/selinux/ss/services.c:2987:4: warning: Attempt to free released memory [unix.Malloc]
-                        kfree(bnames[i]);
-                        ^~~~~~~~~~~~~~~~
-security/selinux/ss/services.c:2990:2: warning: Attempt to free released memory [unix.Malloc]
-        kfree(bvalues);
-        ^~~~~~~~~~~~~~
+Add a quirk for this model using the default settings with the input-map
+replaced with BYT_RT5640_DMIC1_MAP.
 
-So improve the security_get_bools error handling by freeing these variables
-and setting their return pointers to NULL and the return len to 0
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Tom Rix <trix@redhat.com>
-Acked-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20200608204634.93407-1-hdegoede@redhat.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/selinux/ss/services.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---- a/security/selinux/ss/services.c
-+++ b/security/selinux/ss/services.c
-@@ -2844,8 +2844,12 @@ err:
- 	if (*names) {
- 		for (i = 0; i < *len; i++)
- 			kfree((*names)[i]);
-+		kfree(*names);
- 	}
- 	kfree(*values);
-+	*len = 0;
-+	*names = NULL;
-+	*values = NULL;
- 	goto out;
- }
- 
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 5dfc17987b2b9..0dcd249877c55 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -724,6 +724,18 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_JD_NOT_INV |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{	/* Toshiba Encore WT10-A */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "TOSHIBA"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "TOSHIBA WT10-A-103"),
++		},
++		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP |
++					BYT_RT5640_JD_SRC_JD1_IN4P |
++					BYT_RT5640_OVCD_TH_2000UA |
++					BYT_RT5640_OVCD_SF_0P75 |
++					BYT_RT5640_SSP0_AIF2 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{	/* Catch-all for generic Insyde tablets, must be last */
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Insyde"),
+-- 
+2.25.1
+
 
 
