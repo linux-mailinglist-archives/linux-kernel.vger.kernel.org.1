@@ -2,157 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B27F204677
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 03:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF1420467F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 03:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731995AbgFWBDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 21:03:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42978 "EHLO
+        id S1732465AbgFWBFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 21:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731716AbgFWBDh (ORCPT
+        with ESMTP id S1731526AbgFWBFB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 21:03:37 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC8CC061573;
-        Mon, 22 Jun 2020 18:03:36 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49rShP2xR3z9sSJ;
-        Tue, 23 Jun 2020 11:03:32 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1592874214;
-        bh=nPtFPnBowS+xlR1gfPlLfOzlnplxG1MPkj4X8y+hHnY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=j6EwxJ5+LPwsRyljSgLkIGySR1H1743pRgnXqciAMudjbpyrSuGiLLMpGwg+Bu0M9
-         0qgPIUc3yT3H5cpQdNn+m/ze4IJmc+NRzB4UXGwoFSU2KYm34QUgKwrptows1It3iJ
-         WrhyGho6yoXzPj3dvGZDZC/nyqautxMeJvr/00Mc0wbktXp0ccQGz8ZR8T+dOsf5K3
-         fAflkeKdi19NGZ7eB9jPWUfDjxZmYLWQCs1pg9Ycla2Me9Y7df4a+F6Q90oc/nYSPk
-         wIegWy+SEX9Eqi5cm+LKuYevSRyJblrZzZc/FkVHoJllu0nsrrB3WSJwIHhYlHwQTz
-         uonkgFdvCKxXQ==
-Date:   Tue, 23 Jun 2020 11:03:31 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Huy Nguyen <huyn@mellanox.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Jarod Wilson <jarod@redhat.com>
-Subject: linux-next: manual merge of the net-next tree with the net tree
-Message-ID: <20200623110331.3f6349e1@canb.auug.org.au>
+        Mon, 22 Jun 2020 21:05:01 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A7AC061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 18:05:00 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id l63so181157oih.13
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 18:04:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6CfJ8Pc9YLqJXskuETsP85RAipKzoJPI0qElzgwT8aM=;
+        b=FWZ+7XaiqHMa4Q12NfmF5NoZFKlDHLyGxKbp5PLgnia7yxslU3AmjT/Tub3twO9gDe
+         JZNIHOvfwVBuymSj7SQheE1ekHMULPH3JEiw9Ug/zM2w+hA/V1+smCSPt3iUx4e27jgm
+         W6voYhCLJ38pJlnBoXJbyp+GYfWPxp3CTvliqZnHN4p+V5MyB2lTqlaArT+SxQXtIuLu
+         OwJpyBwxTt91GO3Q4WFHfjc3lkUliqPfhidG0B829V+rvohOyDbPReA0oFBFYOpZ9x6c
+         2NhQ6douaqGT2X7jkIEmK+d17RXs8fJEsFAr5f6DHJcMyusVryYdb4jRONe51aciTr7u
+         TrFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6CfJ8Pc9YLqJXskuETsP85RAipKzoJPI0qElzgwT8aM=;
+        b=rLny2s1YCFPmqkEgv9QnNXDymxpP4wb+5+ELOyLsVBd87sO7z+BWnVUSnDaU+6JJ0V
+         qSa1txFCB90Z0P7f4OEmus72ZGGLkiqcjm+MTjj1tBkO0xL1rLVJ2A6Gl1mrh+VX/JiT
+         lQBvJ90tniKobaqozqJbhW5krUGOjC7KxYGOIXZPPJFQ33tXj8V8ucdCNOIHy3s+6OJg
+         3fHDzYYKEX4FmYGTDs5JibVNnmC/wpfGUPXlMg2SRAU261kFZqsCN3Hs+sG3BTVkF34Z
+         eyaNw44OoB4l6xIAdwNdZ3PrvjqZaWiLEJoRR8JfvCpAwP4C0bqr2xvpprTPXq495LdW
+         wytQ==
+X-Gm-Message-State: AOAM53384qIwsVoz/yVURfE6jxyiRDmFOl4sHR4cpk8+dX5pqv8p0y7O
+        gHXJPmEc+hgpmeKhC5M2Vi0=
+X-Google-Smtp-Source: ABdhPJxXvXTYx0mxK9chxigSTiPWbhvGp8FLj5viZTi+p3AexRVBzIeK0hcCSQhjfng7kJbQZuiP2w==
+X-Received: by 2002:aca:aa4b:: with SMTP id t72mr13734421oie.99.1592874299402;
+        Mon, 22 Jun 2020 18:04:59 -0700 (PDT)
+Received: from localhost.localdomain ([2604:1380:4111:8b00::3])
+        by smtp.gmail.com with ESMTPSA id e17sm3614276oiy.21.2020.06.22.18.04.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 18:04:58 -0700 (PDT)
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Jassi Brar <jassisinghbrar@gmail.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Nathan Chancellor <natechancellor@gmail.com>
+Subject: [PATCH] mailbox: imx: Mark PM functions as __maybe_unused
+Date:   Mon, 22 Jun 2020 18:04:03 -0700
+Message-Id: <20200623010403.517691-1-natechancellor@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/O/wuqT+Xgl=.=MhUIjImgu9";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/O/wuqT+Xgl=.=MhUIjImgu9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+When CONFIG_PM and CONFIG_PM_SLEEP are unset, the following warnings
+occur:
 
-Hi all,
+drivers/mailbox/imx-mailbox.c:638:12: warning: 'imx_mu_runtime_resume'
+defined but not used [-Wunused-function]
+  638 | static int imx_mu_runtime_resume(struct device *dev)
+      |            ^~~~~~~~~~~~~~~~~~~~~
+drivers/mailbox/imx-mailbox.c:629:12: warning: 'imx_mu_runtime_suspend'
+defined but not used [-Wunused-function]
+  629 | static int imx_mu_runtime_suspend(struct device *dev)
+      |            ^~~~~~~~~~~~~~~~~~~~~~
+drivers/mailbox/imx-mailbox.c:611:12: warning: 'imx_mu_resume_noirq'
+defined but not used [-Wunused-function]
+  611 | static int imx_mu_resume_noirq(struct device *dev)
+      |            ^~~~~~~~~~~~~~~~~~~
+drivers/mailbox/imx-mailbox.c:601:12: warning: 'imx_mu_suspend_noirq'
+defined but not used [-Wunused-function]
+  601 | static int imx_mu_suspend_noirq(struct device *dev)
+      |            ^~~~~~~~~~~~~~~~~~~~
 
-Today's linux-next merge of the net-next tree got a conflict in:
+Mark these functions as __maybe_unused, which is the standard procedure
+for PM functions.
 
-  net/xfrm/xfrm_device.c
+Fixes: bb2b2624dbe2 ("mailbox: imx: Add runtime PM callback to handle MU clocks")
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+---
+ drivers/mailbox/imx-mailbox.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-between commit:
+diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
+index 7205b825c8b5..2543c7b6948b 100644
+--- a/drivers/mailbox/imx-mailbox.c
++++ b/drivers/mailbox/imx-mailbox.c
+@@ -598,7 +598,7 @@ static const struct of_device_id imx_mu_dt_ids[] = {
+ };
+ MODULE_DEVICE_TABLE(of, imx_mu_dt_ids);
+ 
+-static int imx_mu_suspend_noirq(struct device *dev)
++static int __maybe_unused imx_mu_suspend_noirq(struct device *dev)
+ {
+ 	struct imx_mu_priv *priv = dev_get_drvdata(dev);
+ 
+@@ -608,7 +608,7 @@ static int imx_mu_suspend_noirq(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int imx_mu_resume_noirq(struct device *dev)
++static int __maybe_unused imx_mu_resume_noirq(struct device *dev)
+ {
+ 	struct imx_mu_priv *priv = dev_get_drvdata(dev);
+ 
+@@ -626,7 +626,7 @@ static int imx_mu_resume_noirq(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int imx_mu_runtime_suspend(struct device *dev)
++static int __maybe_unused imx_mu_runtime_suspend(struct device *dev)
+ {
+ 	struct imx_mu_priv *priv = dev_get_drvdata(dev);
+ 
+@@ -635,7 +635,7 @@ static int imx_mu_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
+-static int imx_mu_runtime_resume(struct device *dev)
++static int __maybe_unused imx_mu_runtime_resume(struct device *dev)
+ {
+ 	struct imx_mu_priv *priv = dev_get_drvdata(dev);
+ 	int ret;
 
-  94579ac3f6d0 ("xfrm: Fix double ESP trailer insertion in IPsec crypto off=
-load.")
+base-commit: 27f11fea33608cbd321a97cbecfa2ef97dcc1821
+-- 
+2.27.0
 
-from the net tree and commit:
-
-  272c2330adc9 ("xfrm: bail early on slave pass over skb")
-
-from the net-next tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc net/xfrm/xfrm_device.c
-index 626096bd0d29,b8918fc5248b..000000000000
---- a/net/xfrm/xfrm_device.c
-+++ b/net/xfrm/xfrm_device.c
-@@@ -106,9 -106,10 +106,10 @@@ struct sk_buff *validate_xmit_xfrm(stru
-  	struct sk_buff *skb2, *nskb, *pskb =3D NULL;
-  	netdev_features_t esp_features =3D features;
-  	struct xfrm_offload *xo =3D xfrm_offload(skb);
-+ 	struct net_device *dev =3D skb->dev;
-  	struct sec_path *sp;
- =20
- -	if (!xo)
- +	if (!xo || (xo->flags & XFRM_XMIT))
-  		return skb;
- =20
-  	if (!(features & NETIF_F_HW_ESP))
-@@@ -129,27 -134,20 +134,22 @@@
-  		return skb;
-  	}
- =20
- +	xo->flags |=3D XFRM_XMIT;
- +
-- 	if (skb_is_gso(skb)) {
-- 		struct net_device *dev =3D skb->dev;
--=20
-- 		if (unlikely(x->xso.dev !=3D dev)) {
-- 			struct sk_buff *segs;
-+ 	if (skb_is_gso(skb) && unlikely(x->xso.dev !=3D dev)) {
-+ 		struct sk_buff *segs;
- =20
-- 			/* Packet got rerouted, fixup features and segment it. */
-- 			esp_features =3D esp_features & ~(NETIF_F_HW_ESP
-- 							| NETIF_F_GSO_ESP);
-+ 		/* Packet got rerouted, fixup features and segment it. */
-+ 		esp_features =3D esp_features & ~(NETIF_F_HW_ESP | NETIF_F_GSO_ESP);
- =20
-- 			segs =3D skb_gso_segment(skb, esp_features);
-- 			if (IS_ERR(segs)) {
-- 				kfree_skb(skb);
-- 				atomic_long_inc(&dev->tx_dropped);
-- 				return NULL;
-- 			} else {
-- 				consume_skb(skb);
-- 				skb =3D segs;
-- 			}
-+ 		segs =3D skb_gso_segment(skb, esp_features);
-+ 		if (IS_ERR(segs)) {
-+ 			kfree_skb(skb);
-+ 			atomic_long_inc(&dev->tx_dropped);
-+ 			return NULL;
-+ 		} else {
-+ 			consume_skb(skb);
-+ 			skb =3D segs;
-  		}
-  	}
- =20
-
---Sig_/O/wuqT+Xgl=.=MhUIjImgu9
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7xVOMACgkQAVBC80lX
-0GzM2gf8CpokgrCrdKSqihUmzzY4UWIHPsfI01o19cfy3KgOOjS3k3YdyAQiEQ8W
-QTDYXHJoNTZFnlOkqtQSBNDiCzwofxGWTL1foxXRR2KlGTgnHBFcJlRJXrIPDBC6
-k5oaphiyYpCMKvQPELYf6lD8RmaY4YZfjCIckEhSxiBwJI6h8BC8JODfMSLFzwuQ
-A7ySiV4uNlLQfAWiygW3ond/jmg9jqApGU47iCjBENpv4HmA9Ym9MpEyQswcpVaT
-JhY7VjNYWZaeZEcFmTgJZ2xpvHmA41/8RrvUNHlG7bsTPsAyLXEtNKrl9gDGNcTY
-NW2uPmNMmYn7huMeOD8hL0j5oMhqdg==
-=28VM
------END PGP SIGNATURE-----
-
---Sig_/O/wuqT+Xgl=.=MhUIjImgu9--
