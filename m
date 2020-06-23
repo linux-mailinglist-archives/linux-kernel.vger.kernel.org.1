@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB612205F20
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 230F9205FE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391007AbgFWU3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:29:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49518 "EHLO mail.kernel.org"
+        id S2391846AbgFWUhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:37:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390979AbgFWU32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:29:28 -0400
+        id S2388059AbgFWUhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:37:17 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 396D2206EB;
-        Tue, 23 Jun 2020 20:29:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F86520781;
+        Tue, 23 Jun 2020 20:37:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944168;
-        bh=/+iVkgbg7YnWofcIMORaVGvFwvXOMaHzu/f7qNOKlqU=;
+        s=default; t=1592944637;
+        bh=Px/RmD6PoW2/lQf1KrCMOqwHpKoKzZKXIVJCwhaDVMs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wp4TdiSP0dCeDdltEIjE17ys+U/ZnSp3s4pono3R52JStTrVi+3Y15+r+97q4cC6u
-         K6OZlJ4EP0RnJwagDoNhCEBrVkqR/yebX6tZA4rF0j/LJFlEd6pgKQAr2SbqDuqnAi
-         JnKTuzRRcbJiSlUsIXSWvSRyEODE8iUDfyoNHsGA=
+        b=YaE2yVokDL7aLoQosHYtAB9ZmYrPb1jeBUMZYP0cU5fliOv/JoqfH3v51T/JAkQQU
+         Q/bDZUryMKtmoKoTvBxH6u21FJXo8pSHoyhs+LVscJuWvzWGJWnrSp5On4U1UFznYL
+         +6sYO7H8lrswJnCqvS+CL69KJFijuBs2EduVUMy8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Mike Snitzer <snitzer@redhat.com>,
+        stable@vger.kernel.org,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 169/314] dm zoned: return NULL if dmz_get_zone_for_reclaim() fails to find a zone
+Subject: [PATCH 4.19 036/206] pwm: img: Call pm_runtime_put() in pm_runtime_get_sync() failed case
 Date:   Tue, 23 Jun 2020 21:56:04 +0200
-Message-Id: <20200623195346.943605131@linuxfoundation.org>
+Message-Id: <20200623195318.759455722@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,61 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hannes Reinecke <hare@suse.de>
+From: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-[ Upstream commit 489dc0f06a5837f87482c0ce61d830d24e17082e ]
+[ Upstream commit ca162ce98110b98e7d97b7157328d34dcfdd40a9 ]
 
-The only case where dmz_get_zone_for_reclaim() cannot return a zone is
-if the respective lists are empty. So we should just return a simple
-NULL value here as we really don't have an error code which would make
-sense.
+Even in failed case of pm_runtime_get_sync(), the usage_count is
+incremented. In order to keep the usage_count with correct value call
+appropriate pm_runtime_put().
 
-Signed-off-by: Hannes Reinecke <hare@suse.de>
-Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-zoned-metadata.c | 4 ++--
- drivers/md/dm-zoned-reclaim.c  | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/pwm/pwm-img.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/md/dm-zoned-metadata.c b/drivers/md/dm-zoned-metadata.c
-index e0a6cf9239f1c..e6b0039d07aa8 100644
---- a/drivers/md/dm-zoned-metadata.c
-+++ b/drivers/md/dm-zoned-metadata.c
-@@ -1589,7 +1589,7 @@ static struct dm_zone *dmz_get_rnd_zone_for_reclaim(struct dmz_metadata *zmd)
- 			return dzone;
- 	}
+diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
+index 815f5333bb8f9..da72b2866e88e 100644
+--- a/drivers/pwm/pwm-img.c
++++ b/drivers/pwm/pwm-img.c
+@@ -132,8 +132,10 @@ static int img_pwm_config(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	duty = DIV_ROUND_UP(timebase * duty_ns, period_ns);
  
--	return ERR_PTR(-EBUSY);
-+	return NULL;
- }
+ 	ret = pm_runtime_get_sync(chip->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put_autosuspend(chip->dev);
+ 		return ret;
++	}
  
- /*
-@@ -1609,7 +1609,7 @@ static struct dm_zone *dmz_get_seq_zone_for_reclaim(struct dmz_metadata *zmd)
- 			return zone;
- 	}
+ 	val = img_pwm_readl(pwm_chip, PWM_CTRL_CFG);
+ 	val &= ~(PWM_CTRL_CFG_DIV_MASK << PWM_CTRL_CFG_DIV_SHIFT(pwm->hwpwm));
+@@ -334,8 +336,10 @@ static int img_pwm_remove(struct platform_device *pdev)
+ 	int ret;
  
--	return ERR_PTR(-EBUSY);
-+	return NULL;
- }
+ 	ret = pm_runtime_get_sync(&pdev->dev);
+-	if (ret < 0)
++	if (ret < 0) {
++		pm_runtime_put(&pdev->dev);
+ 		return ret;
++	}
  
- /*
-diff --git a/drivers/md/dm-zoned-reclaim.c b/drivers/md/dm-zoned-reclaim.c
-index e7ace908a9b7d..d50817320e8e3 100644
---- a/drivers/md/dm-zoned-reclaim.c
-+++ b/drivers/md/dm-zoned-reclaim.c
-@@ -349,8 +349,8 @@ static int dmz_do_reclaim(struct dmz_reclaim *zrc)
- 
- 	/* Get a data zone */
- 	dzone = dmz_get_zone_for_reclaim(zmd);
--	if (IS_ERR(dzone))
--		return PTR_ERR(dzone);
-+	if (!dzone)
-+		return -EBUSY;
- 
- 	start = jiffies;
- 
+ 	for (i = 0; i < pwm_chip->chip.npwm; i++) {
+ 		val = img_pwm_readl(pwm_chip, PWM_CTRL_CFG);
 -- 
 2.25.1
 
