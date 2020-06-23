@@ -2,78 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A8822047C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 05:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8B32047C1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 05:01:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732031AbgFWDCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 23:02:43 -0400
-Received: from mail.tailoy.com.pe ([190.223.36.133]:44999 "EHLO
-        zmail.tailoy.com.pe" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731719AbgFWDCn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 23:02:43 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by zmail.tailoy.com.pe (Postfix) with ESMTP id 0C524A2AF0A9;
-        Mon, 22 Jun 2020 22:06:10 -0500 (PET)
-Received: from zmail.tailoy.com.pe ([127.0.0.1])
-        by localhost (zmail.tailoy.com.pe [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id LQlXoLDQwCCE; Mon, 22 Jun 2020 22:06:10 -0500 (PET)
-Received: from localhost (localhost [127.0.0.1])
-        by zmail.tailoy.com.pe (Postfix) with ESMTP id B8E08A3D1C99;
-        Mon, 22 Jun 2020 22:06:09 -0500 (PET)
-X-Virus-Scanned: amavisd-new at tailoy.com.pe
-Received: from zmail.tailoy.com.pe ([127.0.0.1])
-        by localhost (zmail.tailoy.com.pe [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id EBctYu8ICCh1; Mon, 22 Jun 2020 22:06:09 -0500 (PET)
-Received: from zmail.tailoy.com.pe (unknown [90.150.180.71])
-        by zmail.tailoy.com.pe (Postfix) with ESMTPSA id EA14AA3D4C38;
-        Mon, 22 Jun 2020 22:06:04 -0500 (PET)
-To:     "utf 8 B WmRlbsSbayBQb2zDoWNo" <zdenek@kaora.cz>,
-        "linux kernel" <linux-kernel@vger.kernel.org>,
-        "jepar" <jepar@hush.com>, "tdr" <tdr@hush.ai>,
-        "chickabomb" <chickabomb@pantiesparadise.de>
-From:   Bernd Weber <postmaster@tailoy.com.pe>
-Subject: =?UTF-8?Q?Re=3A=E2=9D=95_Mein_letztes_Hallo_?= =?UTF-8?Q?liegt_schon_Tage_zur=C3=BCck._Ist_?= =?UTF-8?Q?bei_dir_alles_ok=3F?=
-Message-ID: <894b6062-19ad-4a2d-bb4d-b98ecd5c79a5@tailoy.com.pe>
-Date:   Mon, 22 Jun 2020 17:54:11 -0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1731934AbgFWDBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 23:01:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731788AbgFWDBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 23:01:47 -0400
+Received: from dragon (unknown [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EA19F2076A;
+        Tue, 23 Jun 2020 03:01:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592881306;
+        bh=vDOuS8RpaAzFZqbGkD5xxV2WoIOlKdteQNq9eaFY3Cc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GeWCzUjgozzXMZGgptbtH8rlZG7589ImrXs+2uWhSXaIRH0bhufH9EENP3uMd+6iD
+         GiHtWejo6R1POtlEe8yhjw5K4Ra2AVDUkDRI6h87fZXfv+T3tB33uIdBpP51j86fkv
+         LYesaH7dN24jm+VBqOZdyx3IMp7qaQMY1JkWcBZQ=
+Date:   Tue, 23 Jun 2020 11:01:31 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, daniel.baluta@nxp.com, leonard.crestez@nxp.com,
+        peng.fan@nxp.com, aford173@gmail.com, jun.li@nxp.com,
+        shengjiu.wang@nxp.com, horia.geanta@nxp.com, aisheng.dong@nxp.com,
+        fugang.duan@nxp.com, agx@sigxcpu.org, l.stach@pengutronix.de,
+        andrew.smirnov@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux-imx@nxp.com
+Subject: Re: [PATCH 0/4] Change i.MX/MXS SoCs ocotp/iim node name to efuse
+Message-ID: <20200623030130.GH30139@dragon>
+References: <1590635570-8541-1-git-send-email-Anson.Huang@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1590635570-8541-1-git-send-email-Anson.Huang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Das ist deine Chance - https://frigraddschedbe1884.blogspot.co.il/
+On Thu, May 28, 2020 at 11:12:46AM +0800, Anson Huang wrote:
+> In the nvmem yaml schema, it requires the nodename to be one of
+> "eeprom|efuse|nvram", so need to change all i.MX/MXS SoCs ocotp/iim node
+> name to efuse:
+> 
+> MXS platforms: i.MX23/28;
+> i.MX platforms with IIM: i.MX25/27/31/35/51/53.
+> i.MX ARMv7 platforms with OCOTP: i.MX6QDL/6SL/6SX/6SLL/6UL/7S/7ULP.
+> i.MX ARMv8 platforms with OCOTP: i.MX8MQ/8MM/8MN/8MP.
+> 
+> Anson Huang (4):
+>   ARM: dts: imx: change ocotp node name on i.MX6/7 SoCs
+>   arm64: dts: imx8m: change ocotp node name on i.MX8M SoCs
+>   ARM: dts: imx: change ocotp node name on MXS SoCs
+>   ARM: dts: imx: change iim node name on i.MX SoCs
 
-
-
-
-
-
-Alles Gute und bis bald
-Bernd Weber
-
-
-
-
-
-
-
-
-
-
-
- =====================NEWS=====================
-
-Pulisic will be big for Chelsea - boss Lampard after 2-1 win at Villa
-Chelsea boss Frank Lampard backs Christian Pulisic to play a big part in the Blues' bid for a top-four finish after the forward scores in Sunday's 2-1 win at Aston Villa.
-
- 
-
-  
-
-==============================================
+Applied all, thanks.
