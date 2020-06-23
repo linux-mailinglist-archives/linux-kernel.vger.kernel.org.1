@@ -2,217 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E9520591C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D89D2059E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733069AbgFWRh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 13:37:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387712AbgFWRhB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 13:37:01 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 81DF020780;
-        Tue, 23 Jun 2020 17:36:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592933820;
-        bh=YysgsPNm2TWnOYKtFlFI4M81gTU4d5l7bYC5CbnM2ms=;
-        h=From:To:Cc:Subject:Date:From;
-        b=QYWAlCSk55BkLmh8IW4cdRBx7z51/fcXSTneSD4I9x0UAv9zYWFn0qxsFRcqkuJHU
-         iLU6L/crlAwFpMV0qThYxS0Slsq5k42xj2eqPe6X71OVfsIZ2hQmx7J6e8HO+0R1GB
-         gZEBYoB29GFo8bbeLXZb7j+1yw7S6uzfEe6yjRWo=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ye Bin <yebin10@huawei.com>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>, linux-ide@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 1/6] ata/libata: Fix usage of page address by page_address in ata_scsi_mode_select_xlat function
-Date:   Tue, 23 Jun 2020 13:36:53 -0400
-Message-Id: <20200623173658.1356241-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
+        id S2387841AbgFWRol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 13:44:41 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:31102 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733045AbgFWRfZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 13:35:25 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NHNT0G031499;
+        Tue, 23 Jun 2020 13:35:07 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 31uk3grq2h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Jun 2020 13:35:06 -0400
+Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 05NHZ56m001997
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 23 Jun 2020 13:35:05 -0400
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Tue, 23 Jun
+ 2020 10:35:03 -0700
+Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 23 Jun 2020 10:35:03 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 05NHYxMQ017521;
+        Tue, 23 Jun 2020 13:35:01 -0400
+From:   <alexandru.tachici@analog.com>
+To:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <robh+dt@kernel.org>, <linux@roeck-us.net>,
+        Alexandru Tachici <alexandru.tachici@analog.com>
+Subject: [PATCH v4 1/7] hwmon: pmbus: adm1266: add support
+Date:   Tue, 23 Jun 2020 20:36:53 +0300
+Message-ID: <20200623173659.41358-2-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200623173659.41358-1-alexandru.tachici@analog.com>
+References: <20200623173659.41358-1-alexandru.tachici@analog.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-23_11:2020-06-23,2020-06-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 impostorscore=0
+ bulkscore=0 spamscore=0 mlxscore=0 phishscore=0 malwarescore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006120000 definitions=main-2006230123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ye Bin <yebin10@huawei.com>
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-[ Upstream commit f650ef61e040bcb175dd8762164b00a5d627f20e ]
+Add pmbus probing driver for the adm1266 Cascadable
+Super Sequencer with Margin Control and Fault Recording.
+Driver is using the pmbus_core, creating sysfs files
+under hwmon for inputs: vh1->vh4 and vp1->vp13.
 
-BUG: KASAN: use-after-free in ata_scsi_mode_select_xlat+0x10bd/0x10f0
-drivers/ata/libata-scsi.c:4045
-Read of size 1 at addr ffff88803b8cd003 by task syz-executor.6/12621
-
-CPU: 1 PID: 12621 Comm: syz-executor.6 Not tainted 4.19.95 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-1.10.2-1ubuntu1 04/01/2014
-Call Trace:
-__dump_stack lib/dump_stack.c:77 [inline]
-dump_stack+0xac/0xee lib/dump_stack.c:118
-print_address_description+0x60/0x223 mm/kasan/report.c:253
-kasan_report_error mm/kasan/report.c:351 [inline]
-kasan_report mm/kasan/report.c:409 [inline]
-kasan_report.cold+0xae/0x2d8 mm/kasan/report.c:393
-ata_scsi_mode_select_xlat+0x10bd/0x10f0 drivers/ata/libata-scsi.c:4045
-ata_scsi_translate+0x2da/0x680 drivers/ata/libata-scsi.c:2035
-__ata_scsi_queuecmd drivers/ata/libata-scsi.c:4360 [inline]
-ata_scsi_queuecmd+0x2e4/0x790 drivers/ata/libata-scsi.c:4409
-scsi_dispatch_cmd+0x2ee/0x6c0 drivers/scsi/scsi_lib.c:1867
-scsi_queue_rq+0xfd7/0x1990 drivers/scsi/scsi_lib.c:2170
-blk_mq_dispatch_rq_list+0x1e1/0x19a0 block/blk-mq.c:1186
-blk_mq_do_dispatch_sched+0x147/0x3d0 block/blk-mq-sched.c:108
-blk_mq_sched_dispatch_requests+0x427/0x680 block/blk-mq-sched.c:204
-__blk_mq_run_hw_queue+0xbc/0x200 block/blk-mq.c:1308
-__blk_mq_delay_run_hw_queue+0x3c0/0x460 block/blk-mq.c:1376
-blk_mq_run_hw_queue+0x152/0x310 block/blk-mq.c:1413
-blk_mq_sched_insert_request+0x337/0x6c0 block/blk-mq-sched.c:397
-blk_execute_rq_nowait+0x124/0x320 block/blk-exec.c:64
-blk_execute_rq+0xc5/0x112 block/blk-exec.c:101
-sg_scsi_ioctl+0x3b0/0x6a0 block/scsi_ioctl.c:507
-sg_ioctl+0xd37/0x23f0 drivers/scsi/sg.c:1106
-vfs_ioctl fs/ioctl.c:46 [inline]
-file_ioctl fs/ioctl.c:501 [inline]
-do_vfs_ioctl+0xae6/0x1030 fs/ioctl.c:688
-ksys_ioctl+0x76/0xa0 fs/ioctl.c:705
-__do_sys_ioctl fs/ioctl.c:712 [inline]
-__se_sys_ioctl fs/ioctl.c:710 [inline]
-__x64_sys_ioctl+0x6f/0xb0 fs/ioctl.c:710
-do_syscall_64+0xa0/0x2e0 arch/x86/entry/common.c:293
-entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45c479
-Code: ad b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89
-f7 48
-89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff
-ff 0f
-83 7b b6 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fb0e9602c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007fb0e96036d4 RCX: 000000000045c479
-RDX: 0000000020000040 RSI: 0000000000000001 RDI: 0000000000000003
-RBP: 000000000076bfc0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000ffffffff
-R13: 000000000000046d R14: 00000000004c6e1a R15: 000000000076bfcc
-
-Allocated by task 12577:
-set_track mm/kasan/kasan.c:460 [inline]
-kasan_kmalloc mm/kasan/kasan.c:553 [inline]
-kasan_kmalloc+0xbf/0xe0 mm/kasan/kasan.c:531
-__kmalloc+0xf3/0x1e0 mm/slub.c:3749
-kmalloc include/linux/slab.h:520 [inline]
-load_elf_phdrs+0x118/0x1b0 fs/binfmt_elf.c:441
-load_elf_binary+0x2de/0x4610 fs/binfmt_elf.c:737
-search_binary_handler fs/exec.c:1654 [inline]
-search_binary_handler+0x15c/0x4e0 fs/exec.c:1632
-exec_binprm fs/exec.c:1696 [inline]
-__do_execve_file.isra.0+0xf52/0x1a90 fs/exec.c:1820
-do_execveat_common fs/exec.c:1866 [inline]
-do_execve fs/exec.c:1883 [inline]
-__do_sys_execve fs/exec.c:1964 [inline]
-__se_sys_execve fs/exec.c:1959 [inline]
-__x64_sys_execve+0x8a/0xb0 fs/exec.c:1959
-do_syscall_64+0xa0/0x2e0 arch/x86/entry/common.c:293
-entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 12577:
-set_track mm/kasan/kasan.c:460 [inline]
-__kasan_slab_free+0x129/0x170 mm/kasan/kasan.c:521
-slab_free_hook mm/slub.c:1370 [inline]
-slab_free_freelist_hook mm/slub.c:1397 [inline]
-slab_free mm/slub.c:2952 [inline]
-kfree+0x8b/0x1a0 mm/slub.c:3904
-load_elf_binary+0x1be7/0x4610 fs/binfmt_elf.c:1118
-search_binary_handler fs/exec.c:1654 [inline]
-search_binary_handler+0x15c/0x4e0 fs/exec.c:1632
-exec_binprm fs/exec.c:1696 [inline]
-__do_execve_file.isra.0+0xf52/0x1a90 fs/exec.c:1820
-do_execveat_common fs/exec.c:1866 [inline]
-do_execve fs/exec.c:1883 [inline]
-__do_sys_execve fs/exec.c:1964 [inline]
-__se_sys_execve fs/exec.c:1959 [inline]
-__x64_sys_execve+0x8a/0xb0 fs/exec.c:1959
-do_syscall_64+0xa0/0x2e0 arch/x86/entry/common.c:293
-entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-The buggy address belongs to the object at ffff88803b8ccf00
-which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 259 bytes inside of
-512-byte region [ffff88803b8ccf00, ffff88803b8cd100)
-The buggy address belongs to the page:
-page:ffffea0000ee3300 count:1 mapcount:0 mapping:ffff88806cc03080
-index:0xffff88803b8cc780 compound_mapcount: 0
-flags: 0x100000000008100(slab|head)
-raw: 0100000000008100 ffffea0001104080 0000000200000002 ffff88806cc03080
-raw: ffff88803b8cc780 00000000800c000b 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
-ffff88803b8ccf00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-ffff88803b8ccf80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88803b8cd000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-^
-ffff88803b8cd080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-ffff88803b8cd100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-
-You can refer to "https://www.lkml.org/lkml/2019/1/17/474" reproduce
-this error.
-
-The exception code is "bd_len = p[3];", "p" value is ffff88803b8cd000
-which belongs to the cache kmalloc-512 of size 512. The "page_address(sg_page(scsi_sglist(scmd)))"
-maybe from sg_scsi_ioctl function "buffer" which allocated by kzalloc, so "buffer"
-may not page aligned.
-This also looks completely buggy on highmem systems and really needs to use a
-kmap_atomic.      --Christoph Hellwig
-To address above bugs, Paolo Bonzini advise to simpler to just make a char array
-of size CACHE_MPAGE_LEN+8+8+4-2(or just 64 to make it easy), use sg_copy_to_buffer
-to copy from the sglist into the buffer, and workthere.
-
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
 ---
- drivers/ata/libata-scsi.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ Documentation/hwmon/adm1266.rst | 35 +++++++++++++++++++
+ drivers/hwmon/pmbus/Kconfig     |  9 +++++
+ drivers/hwmon/pmbus/Makefile    |  1 +
+ drivers/hwmon/pmbus/adm1266.c   | 62 +++++++++++++++++++++++++++++++++
+ 4 files changed, 107 insertions(+)
+ create mode 100644 Documentation/hwmon/adm1266.rst
+ create mode 100644 drivers/hwmon/pmbus/adm1266.c
 
-diff --git a/drivers/ata/libata-scsi.c b/drivers/ata/libata-scsi.c
-index c4f2b563c9f03..f4b38adb9d8a7 100644
---- a/drivers/ata/libata-scsi.c
-+++ b/drivers/ata/libata-scsi.c
-@@ -3967,12 +3967,13 @@ static unsigned int ata_scsi_mode_select_xlat(struct ata_queued_cmd *qc)
- {
- 	struct scsi_cmnd *scmd = qc->scsicmd;
- 	const u8 *cdb = scmd->cmnd;
--	const u8 *p;
- 	u8 pg, spg;
- 	unsigned six_byte, pg_len, hdr_len, bd_len;
- 	int len;
- 	u16 fp = (u16)-1;
- 	u8 bp = 0xff;
-+	u8 buffer[64];
-+	const u8 *p = buffer;
- 
- 	VPRINTK("ENTER\n");
- 
-@@ -4006,12 +4007,14 @@ static unsigned int ata_scsi_mode_select_xlat(struct ata_queued_cmd *qc)
- 	if (!scsi_sg_count(scmd) || scsi_sglist(scmd)->length < len)
- 		goto invalid_param_len;
- 
--	p = page_address(sg_page(scsi_sglist(scmd)));
--
- 	/* Move past header and block descriptors.  */
- 	if (len < hdr_len)
- 		goto invalid_param_len;
- 
-+	if (!sg_copy_to_buffer(scsi_sglist(scmd), scsi_sg_count(scmd),
-+			       buffer, sizeof(buffer)))
-+		goto invalid_param_len;
+diff --git a/Documentation/hwmon/adm1266.rst b/Documentation/hwmon/adm1266.rst
+new file mode 100644
+index 000000000000..65662115750c
+--- /dev/null
++++ b/Documentation/hwmon/adm1266.rst
+@@ -0,0 +1,35 @@
++Kernel driver adm1266
++=====================
 +
- 	if (six_byte)
- 		bd_len = p[3];
- 	else
++Supported chips:
++  * Analog Devices ADM1266
++    Prefix: 'adm1266'
++    Datasheet: https://www.analog.com/media/en/technical-documentation/data-sheets/ADM1266.pdf
++
++Author: Alexandru Tachici <alexandru.tachici@analog.com>
++
++
++Description
++-----------
++
++This driver supports hardware monitoring for Analog Devices ADM1266 sequencer.
++
++ADM1266 is a sequencer that features voltage readback from 17 channels via an
++integrated 12 bit SAR ADC, accessed using a PMBus interface.
++
++The driver is a client driver to the core PMBus driver. Please see
++Documentation/hwmon/pmbus for details on PMBus client drivers.
++
++
++Sysfs entries
++-------------
++
++The following attributes are supported. Limits are read-write, history reset
++attributes are write-only, all other attributes are read-only.
++
++inX_label		"voutx"
++inX_input		Measured voltage.
++inX_min			Minimum Voltage.
++inX_max			Maximum voltage.
++inX_min_alarm		Voltage low alarm.
++inX_max_alarm		Voltage high alarm.
+diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+index de12a565006d..6949483aa732 100644
+--- a/drivers/hwmon/pmbus/Kconfig
++++ b/drivers/hwmon/pmbus/Kconfig
+@@ -26,6 +26,15 @@ config SENSORS_PMBUS
+ 	  This driver can also be built as a module. If so, the module will
+ 	  be called pmbus.
+ 
++config SENSORS_ADM1266
++	tristate "Analog Devices ADM1266 Sequencer"
++	help
++	  If you say yes here you get hardware monitoring support for Analog
++	  Devices ADM1266 Cascadable Super Sequencer.
++
++	  This driver can also be built as a module. If so, the module will
++	  be called adm1266.
++
+ config SENSORS_ADM1275
+ 	tristate "Analog Devices ADM1275 and compatibles"
+ 	help
+diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+index 5feb45806123..ed38f6d6f845 100644
+--- a/drivers/hwmon/pmbus/Makefile
++++ b/drivers/hwmon/pmbus/Makefile
+@@ -5,6 +5,7 @@
+ 
+ obj-$(CONFIG_PMBUS)		+= pmbus_core.o
+ obj-$(CONFIG_SENSORS_PMBUS)	+= pmbus.o
++obj-$(CONFIG_SENSORS_ADM1266)	+= adm1266.o
+ obj-$(CONFIG_SENSORS_ADM1275)	+= adm1275.o
+ obj-$(CONFIG_SENSORS_BEL_PFE)	+= bel-pfe.o
+ obj-$(CONFIG_SENSORS_IBM_CFFPS)	+= ibm-cffps.o
+diff --git a/drivers/hwmon/pmbus/adm1266.c b/drivers/hwmon/pmbus/adm1266.c
+new file mode 100644
+index 000000000000..a7ef048a9a5c
+--- /dev/null
++++ b/drivers/hwmon/pmbus/adm1266.c
+@@ -0,0 +1,62 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * ADM1266 - Cascadable Super Sequencer with Margin
++ * Control and Fault Recording
++ *
++ * Copyright 2020 Analog Devices Inc.
++ */
++
++#include <linux/i2c.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/slab.h>
++
++#include "pmbus.h"
++
++static int adm1266_probe(struct i2c_client *client,
++			 const struct i2c_device_id *id)
++{
++	struct pmbus_driver_info *info;
++	u32 funcs;
++	int i;
++
++	info = devm_kzalloc(&client->dev, sizeof(struct pmbus_driver_info),
++			    GFP_KERNEL);
++
++	info->pages = 17;
++	info->format[PSC_VOLTAGE_OUT] = linear;
++	funcs = PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT;
++	for (i = 0; i < info->pages; i++)
++		info->func[i] = funcs;
++
++	return pmbus_do_probe(client, id, info);
++}
++
++static const struct of_device_id adm1266_of_match[] = {
++	{ .compatible = "adi,adm1266" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, adm1266_of_match);
++
++static const struct i2c_device_id adm1266_id[] = {
++	{ "adm1266", 0 },
++	{ }
++};
++MODULE_DEVICE_TABLE(i2c, adm1266_id);
++
++static struct i2c_driver adm1266_driver = {
++	.driver = {
++		   .name = "adm1266",
++		   .of_match_table = adm1266_of_match,
++		  },
++	.probe = adm1266_probe,
++	.remove = pmbus_do_remove,
++	.id_table = adm1266_id,
++};
++
++module_i2c_driver(adm1266_driver);
++
++MODULE_AUTHOR("Alexandru Tachici <alexandru.tachici@analog.com>");
++MODULE_DESCRIPTION("PMBus driver for Analog Devices ADM1266");
++MODULE_LICENSE("GPL v2");
 -- 
-2.25.1
+2.20.1
 
