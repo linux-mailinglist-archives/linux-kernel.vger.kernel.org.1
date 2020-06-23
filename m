@@ -2,133 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E7E204E57
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9AE204E60
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732230AbgFWJq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 05:46:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731976AbgFWJq1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:46:27 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B069C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 02:46:27 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id f18so18226298qkh.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 02:46:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=iKggRcdI7sNyyhDISy98npbymMoyRZSfT0QAAU3f0vQ=;
-        b=U17lT7CYSTuj99Giu1FBaV/h/RoCGn6W4PdXk6wPMyfnVLBaDjbbmbHfzEZiY7S4Vi
-         tnDzK+DKhIloPX6fpBJtIgaKmAcLfydO+MMim0fJuCA4BncKQxsg9Y+V14P1st5bRZXP
-         SHgrm+X4d72dYIhkZI1ZX5NSsaD7WNqCgKp5bQ34+ZjA8jHjmdT5pA4i9DRLtRL89VcE
-         dKrF4MGW180DAVJv3UTu9ezZ2Nrsa3PnypMstE9T7+fHxA7hW8VmhIDjBFdGXfoadKj6
-         /ITX/9TP3LTwlhbdBFb4EFZm5WM88wT7UDfA8AaqyGNCTR2dKJwF8lmUZs5xYIDLU35P
-         si0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=iKggRcdI7sNyyhDISy98npbymMoyRZSfT0QAAU3f0vQ=;
-        b=e5Hg9RsxRk/vSm0aaL9l4hBpNiMuUQDfVxihGdh/OoEwLWr26Yn10aWljRzrya6PlN
-         BaD3n7jlKUJ6CKUHubu3h9czSf/tu/yIl2JUwgQvfS4OcEXlskEPxk9DTr1Fo6EX8NCD
-         sbtVxFochMtxEVALWLjrKSfOtv+GbzReRzPX9urYK/nzjIQDsvGdCPeU0KM+21AjqFVK
-         IMxc/ML93uccrkBEN8Qt8LoWELe6seYu34edsyh/gPUmyBoyQfkjqy7+YlDqAwT5tBvh
-         TIG0AkpqoQ2qDq924JG3599gHSPPvgayp1xkyCq+5WmZNpnWW+ZEOQimUuYBw0rzPIck
-         HvKQ==
-X-Gm-Message-State: AOAM530fI0vGbht0vVDsHYGCQddivaBjvU3igr7eo3LFprLeEZpJryUd
-        QHwkqFeMaqtcJ2IZG0Ztf2Q/ahliEJ+S3ccW10P8Tg==
-X-Google-Smtp-Source: ABdhPJwyWdHZ4XdUvdS8ekiHqvBAN7BrvA8GjUgSArJnwIzAA7OWpuKEoaMTjixO0yB7ajA2SNSzKSwztsSa0ZQ4yK8=
-X-Received: by 2002:a37:aac4:: with SMTP id t187mr17690729qke.263.1592905586254;
- Tue, 23 Jun 2020 02:46:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200622093744.13685-1-brgl@bgdev.pl> <20200622093744.13685-15-brgl@bgdev.pl>
- <20200622132921.GI1551@shell.armlinux.org.uk> <CAMRc=Me1r3Mzfg3-gTsGk4rEtvB=P9ESkn9q=c7z0Q=YQDsw2A@mail.gmail.com>
- <20200623094252.GS1551@shell.armlinux.org.uk>
-In-Reply-To: <20200623094252.GS1551@shell.armlinux.org.uk>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 23 Jun 2020 11:46:15 +0200
-Message-ID: <CAMpxmJVP9db-4-AA4e1JkEfrajvJ4s0T6zo5+oFzpJHRBcuSsg@mail.gmail.com>
-Subject: Re: [PATCH 14/15] net: phy: add PHY regulator support
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>, Andrew Lunn <andrew@lunn.ch>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        id S1732261AbgFWJrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 05:47:24 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:37974 "EHLO inva021.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731921AbgFWJrX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 05:47:23 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 7E008200C9C;
+        Tue, 23 Jun 2020 11:47:21 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 717AF200086;
+        Tue, 23 Jun 2020 11:47:21 +0200 (CEST)
+Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 0ADA9203C3;
+        Tue, 23 Jun 2020 11:47:21 +0200 (CEST)
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Leonard Crestez <leonard.crestez@nxp.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     NXP Linux Team <linux-imx@nxp.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Fabien Parent <fparent@baylibre.com>,
-        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
-        Quan Nguyen <quan@os.amperecomputing.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Andrew Perepech <andrew.perepech@mediatek.com>,
-        Stephane Le Provost <stephane.leprovost@mediatek.com>,
-        Keyur Chudgar <keyur@os.amperecomputing.com>,
-        Jassi Brar <jaswinder.singh@linaro.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        Mark Brown <broonie@kernel.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        netdev <netdev@vger.kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Pedro Tsai <pedro.tsai@mediatek.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Abel Vesa <abel.vesa@nxp.com>
+Subject: [RESEND] arm64: dts: imx8m: Add NOC nodes
+Date:   Tue, 23 Jun 2020 12:47:01 +0300
+Message-Id: <1592905621-9689-1-git-send-email-abel.vesa@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-wt., 23 cze 2020 o 11:43 Russell King - ARM Linux admin
-<linux@armlinux.org.uk> napisa=C5=82(a):
->
-> On Tue, Jun 23, 2020 at 11:41:11AM +0200, Bartosz Golaszewski wrote:
-> > pon., 22 cze 2020 o 15:29 Russell King - ARM Linux admin
-> > <linux@armlinux.org.uk> napisa=C5=82(a):
-> > >
-> >
-> > [snip!]
-> >
-> > >
-> > > This is likely to cause issues for some PHY drivers.  Note that we ha=
-ve
-> > > some PHY drivers which register a temperature sensor in the probe
-> > > function, which means they can be accessed independently of the lifet=
-ime
-> > > of the PHY bound to the network driver (which may only be while the
-> > > network device is "up".)  We certainly do not want hwmon failing just
-> > > because the network device is down.
-> > >
-> > > That's kind of worked around for the reset stuff, because there are t=
-wo
-> > > layers to that: the mdio device layer reset support which knows nothi=
-ng
-> > > of the PHY binding state to the network driver, and the phylib reset
-> > > support, but it is not nice.
-> > >
-> >
-> > Regulators are reference counted so if the hwmon driver enables it
-> > using mdio_device_power_on() it will stay on even after the PHY driver
-> > calls phy_device_power_off(), right? Am I missing something?
->
-> If that is true, you will need to audit the PHY drivers to add that.
->
+From: Leonard Crestez <leonard.crestez@nxp.com>
 
-This change doesn't have any effect on devices which don't have a
-regulator assigned in DT though. The one I'm adding in the last patch
-is the first to use this.
+Add nodes for the main interconnect of the imx8m series chips.
 
-Bart
+These nodes are bound to by devfreq and interconnect drivers.
+
+Signed-off-by: Leonard Crestez <leonard.crestez@nxp.com>
+Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+Tested-by: Martin Kepplinger <martin.kepplinger@puri.sm>
+---
+
+This is part of the following patchset:
+
+https://www.spinics.net/lists/arm-kernel/msg797026.html
+
+All the patches are already in except this one.
+
+ arch/arm64/boot/dts/freescale/imx8mm.dtsi | 23 +++++++++++++++++++++++
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi | 23 +++++++++++++++++++++++
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi | 23 +++++++++++++++++++++++
+ 3 files changed, 69 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+index c6bf8ba..00b96da 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+@@ -869,6 +869,29 @@
+ 
+ 		};
+ 
++		noc: interconnect@32700000 {
++			compatible = "fsl,imx8mm-noc", "fsl,imx8m-noc";
++			reg = <0x32700000 0x100000>;
++			clocks = <&clk IMX8MM_CLK_NOC>;
++			fsl,ddrc = <&ddrc>;
++			#interconnect-cells = <1>;
++			operating-points-v2 = <&noc_opp_table>;
++
++			noc_opp_table: opp-table {
++				compatible = "operating-points-v2";
++
++				opp-150M {
++					opp-hz = /bits/ 64 <150000000>;
++				};
++				opp-375M {
++					opp-hz = /bits/ 64 <375000000>;
++				};
++				opp-750M {
++					opp-hz = /bits/ 64 <750000000>;
++				};
++			};
++		};
++
+ 		aips4: bus@32c00000 {
+ 			compatible = "fsl,aips-bus", "simple-bus";
+ 			reg = <0x32c00000 0x400000>;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index 9a4b65a..656fa9b 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -756,6 +756,29 @@
+ 
+ 		};
+ 
++		noc: interconnect@32700000 {
++			compatible = "fsl,imx8mn-noc", "fsl,imx8m-noc";
++			reg = <0x32700000 0x100000>;
++			clocks = <&clk IMX8MN_CLK_NOC>;
++			fsl,ddrc = <&ddrc>;
++			#interconnect-cells = <1>;
++			operating-points-v2 = <&noc_opp_table>;
++
++			noc_opp_table: opp-table {
++				compatible = "operating-points-v2";
++
++				opp-100M {
++					opp-hz = /bits/ 64 <100000000>;
++				};
++				opp-600M {
++					opp-hz = /bits/ 64 <600000000>;
++				};
++				opp-800M {
++					opp-hz = /bits/ 64 <800000000>;
++				};
++			};
++		};
++
+ 		aips4: bus@32c00000 {
+ 			compatible = "fsl,aips-bus", "simple-bus";
+ 			reg = <0x32c00000 0x400000>;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+index 54bed64..6c24ec1 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+@@ -1037,6 +1037,29 @@
+ 			};
+ 		};
+ 
++		noc: interconnect@32700000 {
++			compatible = "fsl,imx8mq-noc", "fsl,imx8m-noc";
++			reg = <0x32700000 0x100000>;
++			clocks = <&clk IMX8MQ_CLK_NOC>;
++			fsl,ddrc = <&ddrc>;
++			#interconnect-cells = <1>;
++			operating-points-v2 = <&noc_opp_table>;
++
++			noc_opp_table: opp-table {
++				compatible = "operating-points-v2";
++
++				opp-133M {
++					opp-hz = /bits/ 64 <133333333>;
++				};
++				opp-400M {
++					opp-hz = /bits/ 64 <400000000>;
++				};
++				opp-800M {
++					opp-hz = /bits/ 64 <800000000>;
++				};
++			};
++		};
++
+ 		bus@32c00000 { /* AIPS4 */
+ 			compatible = "fsl,aips-bus", "simple-bus";
+ 			reg = <0x32c00000 0x400000>;
+-- 
+2.7.4
+
