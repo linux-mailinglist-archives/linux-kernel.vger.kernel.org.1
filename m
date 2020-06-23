@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F0E205E0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 245D1205DF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389794AbgFWUTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:19:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36406 "EHLO mail.kernel.org"
+        id S2389642AbgFWUSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:18:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34654 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389494AbgFWUTT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:19:19 -0400
+        id S2389624AbgFWUSD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:18:03 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 00A402064B;
-        Tue, 23 Jun 2020 20:19:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 639882080C;
+        Tue, 23 Jun 2020 20:18:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943559;
-        bh=0f2O6LbU1riSEQ/9fx14VTUmUVmQU+Istl42Am8osvQ=;
+        s=default; t=1592943482;
+        bh=BArVR45chIw1X4upIIFTauSanWQ6flRGPdm8KKvSDbk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2RATIw7L2kCXjSr5ehfankNGINAUyn3wwiBrn4Okad4W9DTUyJva+QQxaJyFqDzI2
-         Aw9WR9IENEk4X5+IJWeDdih76KBDEhnX0wtyn0tmUDQFoGt/FmsaO0WiQRm2KCb1Ou
-         aML6Zh+h9vn2Ap1qqTfYCIstyVo+lNrHMOQbgxTE=
+        b=qWLQMZVxz0nMfdtr5zFUTWD36vtw5JRMED0Qvqr2nalSW0ZhZ17YU8GRnF2CtKc2K
+         YFh/M5LTjcu+XIredrVS41k2yWLVmbVuCffWOn4G7sUuKnbBzo8DqITHA/N/CE5VnZ
+         bPF+DCYmncA6JHkvanCwjDrv2tMSYnq5NnVHgJoo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ido Schimmel <idosch@mellanox.com>,
-        Jiri Pirko <jiri@mellanox.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 409/477] mlxsw: spectrum: Adjust headroom buffers for 8x ports
-Date:   Tue, 23 Jun 2020 21:56:46 +0200
-Message-Id: <20200623195426.868827076@linuxfoundation.org>
+        stable@vger.kernel.org, Barry Song <song.bao.hua@hisilicon.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Roman Gushchin <guro@fb.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Will Deacon <will@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 410/477] arm64: mm: reserve hugetlb CMA after numa_init
+Date:   Tue, 23 Jun 2020 21:56:47 +0200
+Message-Id: <20200623195426.909259529@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -45,95 +46,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ido Schimmel <idosch@mellanox.com>
+From: Barry Song <song.bao.hua@hisilicon.com>
 
-[ Upstream commit 60833d54d56c21e7538296eb2e00e104768fd047 ]
+[ Upstream commit 618e07865b7453d02410c1f3407c2d78a670eabb ]
 
-The port's headroom buffers are used to store packets while they
-traverse the device's pipeline and also to store packets that are egress
-mirrored.
+hugetlb_cma_reserve() is called at the wrong place. numa_init has not been
+done yet. so all reserved memory will be located at node0.
 
-On Spectrum-3, ports with eight lanes use two headroom buffers between
-which the configured headroom size is split.
-
-In order to prevent packet loss, multiply the calculated headroom size
-by two for 8x ports.
-
-Fixes: da382875c616 ("mlxsw: spectrum: Extend to support Spectrum-3 ASIC")
-Signed-off-by: Ido Schimmel <idosch@mellanox.com>
-Reviewed-by: Jiri Pirko <jiri@mellanox.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: cf11e85fc08c ("mm: hugetlb: optionally allocate gigantic hugepages using cma")
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Will Deacon <will@kernel.org>
+Link: https://lore.kernel.org/r/20200617215828.25296-1-song.bao.hua@hisilicon.com
+Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mellanox/mlxsw/spectrum.c      |  2 ++
- drivers/net/ethernet/mellanox/mlxsw/spectrum.h      | 13 +++++++++++++
- .../net/ethernet/mellanox/mlxsw/spectrum_buffers.c  |  1 +
- drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c |  1 +
- 4 files changed, 17 insertions(+)
+ arch/arm64/mm/init.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum.c
-index 6b39978acd078..3e4199246a18d 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum.c
-@@ -990,8 +990,10 @@ int __mlxsw_sp_port_headroom_set(struct mlxsw_sp_port *mlxsw_sp_port, int mtu,
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index e42727e3568ea..3f90101674687 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -458,11 +458,6 @@ void __init arm64_memblock_init(void)
+ 	high_memory = __va(memblock_end_of_DRAM() - 1) + 1;
  
- 		lossy = !(pfc || pause_en);
- 		thres_cells = mlxsw_sp_pg_buf_threshold_get(mlxsw_sp, mtu);
-+		mlxsw_sp_port_headroom_8x_adjust(mlxsw_sp_port, &thres_cells);
- 		delay_cells = mlxsw_sp_pg_buf_delay_get(mlxsw_sp, mtu, delay,
- 							pfc, pause_en);
-+		mlxsw_sp_port_headroom_8x_adjust(mlxsw_sp_port, &delay_cells);
- 		total_cells = thres_cells + delay_cells;
- 
- 		taken_headroom_cells += total_cells;
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum.h b/drivers/net/ethernet/mellanox/mlxsw/spectrum.h
-index ca56e72cb4b73..e28ecb84b8164 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum.h
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum.h
-@@ -395,6 +395,19 @@ mlxsw_sp_port_vlan_find_by_vid(const struct mlxsw_sp_port *mlxsw_sp_port,
- 	return NULL;
+ 	dma_contiguous_reserve(arm64_dma32_phys_limit);
+-
+-#ifdef CONFIG_ARM64_4K_PAGES
+-	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+-#endif
+-
  }
  
-+static inline void
-+mlxsw_sp_port_headroom_8x_adjust(const struct mlxsw_sp_port *mlxsw_sp_port,
-+				 u16 *p_size)
-+{
-+	/* Ports with eight lanes use two headroom buffers between which the
-+	 * configured headroom size is split. Therefore, multiply the calculated
-+	 * headroom size by two.
-+	 */
-+	if (mlxsw_sp_port->mapping.width != 8)
-+		return;
-+	*p_size *= 2;
-+}
+ void __init bootmem_init(void)
+@@ -478,6 +473,16 @@ void __init bootmem_init(void)
+ 	min_low_pfn = min;
+ 
+ 	arm64_numa_init();
 +
- enum mlxsw_sp_flood_type {
- 	MLXSW_SP_FLOOD_TYPE_UC,
- 	MLXSW_SP_FLOOD_TYPE_BC,
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_buffers.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_buffers.c
-index 968f0902e4fea..19bf0768ed788 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_buffers.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_buffers.c
-@@ -312,6 +312,7 @@ static int mlxsw_sp_port_pb_init(struct mlxsw_sp_port *mlxsw_sp_port)
- 
- 		if (i == MLXSW_SP_PB_UNUSED)
- 			continue;
-+		mlxsw_sp_port_headroom_8x_adjust(mlxsw_sp_port, &size);
- 		mlxsw_reg_pbmc_lossy_buffer_pack(pbmc_pl, i, size);
- 	}
- 	mlxsw_reg_pbmc_lossy_buffer_pack(pbmc_pl,
-diff --git a/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c b/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c
-index 9fb2e9d93929c..7c5032f9c8fff 100644
---- a/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c
-+++ b/drivers/net/ethernet/mellanox/mlxsw/spectrum_span.c
-@@ -776,6 +776,7 @@ mlxsw_sp_span_port_buffsize_update(struct mlxsw_sp_port *mlxsw_sp_port, u16 mtu)
- 		speed = 0;
- 
- 	buffsize = mlxsw_sp_span_buffsize_get(mlxsw_sp, speed, mtu);
-+	mlxsw_sp_port_headroom_8x_adjust(mlxsw_sp_port, (u16 *) &buffsize);
- 	mlxsw_reg_sbib_pack(sbib_pl, mlxsw_sp_port->local_port, buffsize);
- 	return mlxsw_reg_write(mlxsw_sp->core, MLXSW_REG(sbib), sbib_pl);
- }
++	/*
++	 * must be done after arm64_numa_init() which calls numa_init() to
++	 * initialize node_online_map that gets used in hugetlb_cma_reserve()
++	 * while allocating required CMA size across online nodes.
++	 */
++#ifdef CONFIG_ARM64_4K_PAGES
++	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
++#endif
++
+ 	/*
+ 	 * Sparsemem tries to allocate bootmem in memory_present(), so must be
+ 	 * done after the fixed reservations.
 -- 
 2.25.1
 
