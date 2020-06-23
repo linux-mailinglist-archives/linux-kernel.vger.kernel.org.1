@@ -2,91 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB7A72054B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 16:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9BD12054BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 16:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732913AbgFWO2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 10:28:25 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:57061 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732897AbgFWO2Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 10:28:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592922502;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kXSYCQku6hDUfwftTBuEyyKPUCg57oRe3/VJDnhv99o=;
-        b=GHq8U/6tbE8uZxlzssWSZMgUSq80I0gE5u+ckb4Vbobq9lhd5YbhVqHaD+AOm8SfDM29rL
-        7EqHVY8OCnlWaYYuvHojeS6Vn3wKnKptHGZif/T7dCKhECowPxxuprdiP0DzXgsvmtFEwS
-        1qtzflQmyto93ne6A/lfau0QvQGOFs0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-452-1GcWxE7mPYS6D9BrTNupIw-1; Tue, 23 Jun 2020 10:28:21 -0400
-X-MC-Unique: 1GcWxE7mPYS6D9BrTNupIw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 18175107ACF2;
-        Tue, 23 Jun 2020 14:28:20 +0000 (UTC)
-Received: from x1.localdomain.com (ovpn-114-58.ams2.redhat.com [10.36.114.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 995AF891DE;
-        Tue, 23 Jun 2020 14:28:18 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 8/8] virt: vbox: Fix some comments which talk about the "session spinlock"
-Date:   Tue, 23 Jun 2020 16:27:52 +0200
-Message-Id: <20200623142752.4331-9-hdegoede@redhat.com>
-In-Reply-To: <20200623142752.4331-8-hdegoede@redhat.com>
-References: <20200623142752.4331-1-hdegoede@redhat.com>
- <20200623142752.4331-2-hdegoede@redhat.com>
- <20200623142752.4331-3-hdegoede@redhat.com>
- <20200623142752.4331-4-hdegoede@redhat.com>
- <20200623142752.4331-5-hdegoede@redhat.com>
- <20200623142752.4331-6-hdegoede@redhat.com>
- <20200623142752.4331-7-hdegoede@redhat.com>
- <20200623142752.4331-8-hdegoede@redhat.com>
+        id S1732959AbgFWO3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 10:29:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55766 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732731AbgFWO3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 10:29:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 41652AF3D;
+        Tue, 23 Jun 2020 14:28:59 +0000 (UTC)
+Date:   Tue, 23 Jun 2020 16:28:58 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: linux-next: build failure after merge of the printk tree
+Message-ID: <20200623142858.GB8444@alley>
+References: <20200621131554.5a662afe@canb.auug.org.au>
+ <20200623102655.6d16e610@canb.auug.org.au>
+ <20200623121637.GA8444@alley>
+ <20200623121937.GA9671@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200623121937.GA9671@gondor.apana.org.au>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The session lock is a mutex, not a spinlock, fix the comments to match.
+On Tue 2020-06-23 22:19:37, Herbert Xu wrote:
+> On Tue, Jun 23, 2020 at 02:16:38PM +0200, Petr Mladek wrote:
+> >
+> > I have removed the problematic commit for now. It tried to remove
+> > some cyclic dependencies from heavily used include files. It clearly
+> > needs more love.
+> 
+> Hmm, the cyclic dependencies are there because you didn't pull in
+> the lockdep_types patch.  The printk patch must go on top of the
+> lockdep_types patch.  How about just putting this into the x86 tree
+> alongside the lockdep_types patch?
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- drivers/virt/vboxguest/vboxguest_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I see the problem with both patches.
 
-diff --git a/drivers/virt/vboxguest/vboxguest_core.c b/drivers/virt/vboxguest/vboxguest_core.c
-index c5dfcd42fd07..0b43efddea22 100644
---- a/drivers/virt/vboxguest/vboxguest_core.c
-+++ b/drivers/virt/vboxguest/vboxguest_core.c
-@@ -559,7 +559,7 @@ static int vbg_reset_host_event_filter(struct vbg_dev *gdev,
-  * Changes the event filter mask for the given session.
-  *
-  * This is called in response to VBG_IOCTL_CHANGE_FILTER_MASK as well as to
-- * do session cleanup. Takes the session spinlock.
-+ * do session cleanup. Takes the session mutex.
-  *
-  * Return: 0 or negative errno value.
-  * @gdev:			The Guest extension device.
-@@ -811,7 +811,7 @@ static int vbg_acquire_session_capabilities(struct vbg_dev *gdev,
- }
+> In file included from include/linux/printk.h:10,
+>                  from include/linux/kernel.h:15,
+>                  from include/linux/list.h:9,
+>                  from include/linux/lockdep.h:43,
+>                  from include/linux/spinlock_types.h:18,
+>                  from include/linux/genalloc.h:32,
+>                  from drivers/soc/fsl/qe/qe_common.c:16:
+> include/linux/ratelimit_types.h:16:2: error: unknown type name 'raw_spinlock_t'
+>    16 |  raw_spinlock_t lock;  /* protect the state */
+
+It is similar cycle:
+
+spinlock_types.h -> lockdep.h -> printk.h -> ratelimit.h -> spinlock_types.h
+
+But this time it happens via list.h -> kernel.h ->printk.h.
+Where list.h needs READ_ONCE() stuff from compiler.h.
+
+
+My "allmodconfig" build has successfully finished with the following extra
+ fix on top of the two patches:
+
+diff --git a/include/linux/list.h b/include/linux/list.h
+index aff44d34f4e4..6d606c4036ce 100644
+--- a/include/linux/list.h
++++ b/include/linux/list.h
+@@ -6,7 +6,7 @@
+ #include <linux/stddef.h>
+ #include <linux/poison.h>
+ #include <linux/const.h>
+-#include <linux/kernel.h>
++#include <linux/compiler.h>
  
- /**
-- * Sets the guest capabilities for a session. Takes the session spinlock.
-+ * Sets the guest capabilities for a session. Takes the session mutex.
-  * Return: 0 or negative errno value.
-  * @gdev:			The Guest extension device.
-  * @session:			The session.
--- 
-2.26.2
+ /*
+  * Simple doubly linked list implementation.
 
+I suggest to bundle this into the 2nd patch that makes linux/printk.h
+self-contained.
+
+Best Regards,
+Petr
+
+PS: And yes, it makes sense to push both patches via a single tree to
+make sure that the lockdep.h split is done first.
