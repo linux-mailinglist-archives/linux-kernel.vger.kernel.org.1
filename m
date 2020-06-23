@@ -2,106 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04F8F205BBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 21:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4289D205BC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 21:24:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387456AbgFWTYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 15:24:35 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22624 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2387428AbgFWTYd (ORCPT
+        id S2387500AbgFWTYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 15:24:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387440AbgFWTYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 15:24:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592940272;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:in-reply-to:in-reply-to:references:references;
-        bh=tVsDsAmElVtmSpleihdn/aqK002mWcZ5/rdoWS26sdI=;
-        b=LSXZe9jpOL+MuBiDl9Fr0uj5gKYFd7sH009l+/k+xD1+7xEb/owOarycKaWgATO9xT9WHT
-        E2t9pd5H8Y91FCJfXS/3wGTRfXbthSINz/7QEcn2OkwSudW7kIvFHdN3ck3G9G2aSM0yhb
-        yExZlY2rER84h3lT/wFCF5QEmn6fwWY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-395-tFqb6DVYPzynQ5ElJ40RHw-1; Tue, 23 Jun 2020 15:24:29 -0400
-X-MC-Unique: tFqb6DVYPzynQ5ElJ40RHw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B90868031D3;
-        Tue, 23 Jun 2020 19:24:27 +0000 (UTC)
-Received: from virtlab423.virt.lab.eng.bos.redhat.com (virtlab423.virt.lab.eng.bos.redhat.com [10.19.152.154])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 13CCE610F3;
-        Tue, 23 Jun 2020 19:24:25 +0000 (UTC)
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        frederic@kernel.org, mtosatti@redhat.com, juri.lelli@redhat.com,
-        abelits@marvell.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, rostedt@goodmis.org, mingo@kernel.org,
-        peterz@infradead.org, tglx@linutronix.de, davem@davemloft.net,
-        akpm@linux-foundation.org, sfr@canb.auug.org.au,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com
-Subject: [Patch v3 3/3] net: Restrict receive packets queuing to housekeeping CPUs
-Date:   Tue, 23 Jun 2020 15:23:31 -0400
-Message-Id: <20200623192331.215557-4-nitesh@redhat.com>
-In-Reply-To: <20200623192331.215557-1-nitesh@redhat.com>
-References: <20200623192331.215557-1-nitesh@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Tue, 23 Jun 2020 15:24:40 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AED92C061573;
+        Tue, 23 Jun 2020 12:24:39 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id c4so11572311iot.4;
+        Tue, 23 Jun 2020 12:24:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mf9Js1eSrEzYPANfjsLFha86P4LGEC3rg5oEXl/xm9w=;
+        b=HGr+xeOyIK71FoE7YCb/kzmOKUUhCDLYJthrKC3aiUZDFT5wx/bap624uYK89XKRRm
+         9GlMD8VT5jJNR6Xdgma1ORw39L3H+a5OQAqtEH8rLBgkJAGceey6c9WFhE7XARBYQF5T
+         ChUObGe0+rFZ3bRIXTZ8ydv8w9jC/1q2+MrW0RewOthJ1wfubrYQRDrriGh0dZA9rHlp
+         zH3MLtad1JCG2ETcnCyk6w1dUDv2WuU5ay0VHEg0aOTYceyUVqDLOM3NAtx8WgBbfhy7
+         wxA1o+E6HHRArd82AlkOCyCknPnU7iBgRIQci1awjbxzTdcDWXWTbXuOoXMJwNdLB4QL
+         qk8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=mf9Js1eSrEzYPANfjsLFha86P4LGEC3rg5oEXl/xm9w=;
+        b=o1BzoWnS6ZRRgBUrpsWfLPrqMxkrw7dlu3bwAsW3Xn8r9DFbfe5D01rZwn2Jdjemqx
+         9iv0FBCkpKnJY3bcAJfKI+joL4qYGXADE5fB+PoKbFMNFWBNkPDR0H2vXgUFQabx0Vmp
+         f9mky717mg440volZPLF5ZaPqIUja3vOsAObBOi12mWxMCJCG/rlxkZoypEA/ojdAaYf
+         bjdG/TagTNmEXRe3cfKXZzbi85QE4Tu7XTnSLjIy+g0E4zNxQQqi8U3nrFtYVqJOXVa/
+         RNEW2sjrEgiggf/sFXZMJQPdJ6fNZ7wsV4SpzbQkAbQSFWBxEAMBMHZbaM353mT1zRms
+         l4/w==
+X-Gm-Message-State: AOAM530OmAX+xOmbO0yVPN3Dv6qIIHEGMkstIgsX7+HrfyhKHT8Z//Sh
+        lAHDVVlQ91vmD2Cuk6ClHLbz3P4KB84=
+X-Google-Smtp-Source: ABdhPJyjDqi9F8LfgEW43E9XiO7T/3m70HaxQ8gyJDkhV98i5ZmfexmCwBAFjBTnl0ZqTfezCAhebA==
+X-Received: by 2002:a6b:1ce:: with SMTP id 197mr14735915iob.76.1592940278940;
+        Tue, 23 Jun 2020 12:24:38 -0700 (PDT)
+Received: from james-x399.localdomain (71-218-100-23.hlrn.qwest.net. [71.218.100.23])
+        by smtp.gmail.com with ESMTPSA id b21sm3901503ioc.36.2020.06.23.12.24.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 12:24:38 -0700 (PDT)
+From:   James Hilliard <james.hilliard1@gmail.com>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-usb@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Johan Hovold <johan@kernel.org>,
+        James Hilliard <james.hilliard1@gmail.com>,
+        stable <stable@vger.kernel.org>
+Subject: [PATCH] HID: quirks: Ignore Simply Automated UPB PIM
+Date:   Tue, 23 Jun 2020 13:24:15 -0600
+Message-Id: <20200623192415.2024242-1-james.hilliard1@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Belits <abelits@marvell.com>
+As this is a cypress HID->COM RS232 style device that is handled
+by the cypress_M8 driver we also need to add it to the ignore list
+in hid-quirks.
 
-With the existing implementation of store_rps_map(), packets are queued
-in the receive path on the backlog queues of other CPUs irrespective of
-whether they are isolated or not. This could add a latency overhead to
-any RT workload that is running on the same CPU.
-
-Ensure that store_rps_map() only uses available housekeeping CPUs for
-storing the rps_map.
-
-Signed-off-by: Alex Belits <abelits@marvell.com>
-Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: James Hilliard <james.hilliard1@gmail.com>
 ---
- net/core/net-sysfs.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/hid/hid-ids.h    | 2 ++
+ drivers/hid/hid-quirks.c | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
-index e353b822bb15..677868fea316 100644
---- a/net/core/net-sysfs.c
-+++ b/net/core/net-sysfs.c
-@@ -11,6 +11,7 @@
- #include <linux/if_arp.h>
- #include <linux/slab.h>
- #include <linux/sched/signal.h>
-+#include <linux/sched/isolation.h>
- #include <linux/nsproxy.h>
- #include <net/sock.h>
- #include <net/net_namespace.h>
-@@ -741,7 +742,7 @@ static ssize_t store_rps_map(struct netdev_rx_queue *queue,
- {
- 	struct rps_map *old_map, *map;
- 	cpumask_var_t mask;
--	int err, cpu, i;
-+	int err, cpu, i, hk_flags;
- 	static DEFINE_MUTEX(rps_map_mutex);
+diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
+index 1c71a1aa76b2..3261de0b6bde 100644
+--- a/drivers/hid/hid-ids.h
++++ b/drivers/hid/hid-ids.h
+@@ -1005,6 +1005,8 @@
+ #define USB_DEVICE_ID_ROCCAT_RYOS_MK_PRO	0x3232
+ #define USB_DEVICE_ID_ROCCAT_SAVU	0x2d5a
  
- 	if (!capable(CAP_NET_ADMIN))
-@@ -756,6 +757,13 @@ static ssize_t store_rps_map(struct netdev_rx_queue *queue,
- 		return err;
- 	}
- 
-+	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_WQ;
-+	cpumask_and(mask, mask, housekeeping_cpumask(hk_flags));
-+	if (cpumask_empty(mask)) {
-+		free_cpumask_var(mask);
-+		return -EINVAL;
-+	}
++#define USB_VENDOR_ID_SAI		0x17dd
 +
- 	map = kzalloc(max_t(unsigned int,
- 			    RPS_MAP_SIZE(cpumask_weight(mask)), L1_CACHE_BYTES),
- 		      GFP_KERNEL);
+ #define USB_VENDOR_ID_SAITEK		0x06a3
+ #define USB_DEVICE_ID_SAITEK_RUMBLEPAD	0xff17
+ #define USB_DEVICE_ID_SAITEK_PS1000	0x0621
+diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
+index e4cb543de0cd..b54fe18f1ed0 100644
+--- a/drivers/hid/hid-quirks.c
++++ b/drivers/hid/hid-quirks.c
+@@ -831,6 +831,7 @@ static const struct hid_device_id hid_ignore_list[] = {
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_PETZL, USB_DEVICE_ID_PETZL_HEADLAMP) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_PHILIPS, USB_DEVICE_ID_PHILIPS_IEEE802154_DONGLE) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_POWERCOM, USB_DEVICE_ID_POWERCOM_UPS) },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_SAI, USB_DEVICE_ID_CYPRESS_HIDCOM) },
+ #if IS_ENABLED(CONFIG_MOUSE_SYNAPTICS_USB)
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_SYNAPTICS, USB_DEVICE_ID_SYNAPTICS_TP) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_SYNAPTICS, USB_DEVICE_ID_SYNAPTICS_INT_TP) },
 -- 
-2.18.4
+2.25.1
 
