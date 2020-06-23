@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4CA206298
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AED62063FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393312AbgFWVFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:05:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60850 "EHLO mail.kernel.org"
+        id S2393411AbgFWVOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:14:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388059AbgFWUhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:37:25 -0400
+        id S2390123AbgFWU3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:29:41 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 08EC720781;
-        Tue, 23 Jun 2020 20:37:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F129B206C3;
+        Tue, 23 Jun 2020 20:29:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944644;
-        bh=nS06mZ5B46SFGy1KcimI9QKkFNbSEw+FhvquJBNQ2og=;
+        s=default; t=1592944181;
+        bh=lNJA7nv//edGCQyQ9N80yJt172gDaWi2vTsrUGsennQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PUVw5HkWu13ZTZGv+w9oqzQZz1XPb0Wk71ZZrg0RUIKZtX9aExnbePafEJPNaUv/x
-         cVXgP8n4pP54OqDUY3Uo652C+nNhMG6hCLUYnNhZvp2AY4UfacOBYak2puMAPv8y23
-         fY/RP6rF3hpHqPD/lNYl9ndOnwDmEH1u5ZLaQgsw=
+        b=HGja80e1fBjcf+my6QC/ZLZSCuNnGU7sGJKoNhN0TRZRDJJh4EOwzIEygah04gxxx
+         QdaTyJhBn06Oz9KnDBrFIHjk5o5+QUftXXwDF958/RJYKW4m3lUpVYSuyEaJ6kiyeM
+         qOfK4CSSgLIJ8bTLRPdnkygx4dvLA3sdY7zZURzw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 070/206] i2c: pxa: fix i2c_pxa_scream_blue_murder() debug output
-Date:   Tue, 23 Jun 2020 21:56:38 +0200
-Message-Id: <20200623195320.404869374@linuxfoundation.org>
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 205/314] rtc: rv3028: Add missed check for devm_regmap_init_i2c()
+Date:   Tue, 23 Jun 2020 21:56:40 +0200
+Message-Id: <20200623195348.696895702@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,52 +44,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Russell King <rmk+kernel@armlinux.org.uk>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit 88b73ee7ca4c90baf136ed5a8377fc5a9b73ac08 ]
+[ Upstream commit c3b29bf6f166f6ed5f04f9c125477358e0e25df8 ]
 
-The IRQ log output is supposed to appear on a single line.  However,
-commit 3a2dc1677b60 ("i2c: pxa: Update debug function to dump more info
-on error") resulted in it being printed one-entry-per-line, which is
-excessively long.
+rv3028_probe() misses a check for devm_regmap_init_i2c().
+Add the missed check to fix it.
 
-Fixing this is not a trivial matter; using pr_cont() doesn't work as
-the previous dev_dbg() may not have been compiled in, or may be
-dynamic.
-
-Since the rest of this function output is at error level, and is also
-debug output, promote this to error level as well to avoid this
-problem.
-
-Reduce the number of always zero prefix digits to save screen real-
-estate.
-
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: e6e7376cfd7b ("rtc: rv3028: add new driver")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20200528103950.912353-1-hslester96@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-pxa.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ drivers/rtc/rtc-rv3028.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/i2c/busses/i2c-pxa.c b/drivers/i2c/busses/i2c-pxa.c
-index 7248ba6763e45..c10ae4778d350 100644
---- a/drivers/i2c/busses/i2c-pxa.c
-+++ b/drivers/i2c/busses/i2c-pxa.c
-@@ -315,11 +315,10 @@ static void i2c_pxa_scream_blue_murder(struct pxa_i2c *i2c, const char *why)
- 	dev_err(dev, "IBMR: %08x IDBR: %08x ICR: %08x ISR: %08x\n",
- 		readl(_IBMR(i2c)), readl(_IDBR(i2c)), readl(_ICR(i2c)),
- 		readl(_ISR(i2c)));
--	dev_dbg(dev, "log: ");
-+	dev_err(dev, "log:");
- 	for (i = 0; i < i2c->irqlogidx; i++)
--		pr_debug("[%08x:%08x] ", i2c->isrlog[i], i2c->icrlog[i]);
--
--	pr_debug("\n");
-+		pr_cont(" [%03x:%05x]", i2c->isrlog[i], i2c->icrlog[i]);
-+	pr_cont("\n");
- }
+diff --git a/drivers/rtc/rtc-rv3028.c b/drivers/rtc/rtc-rv3028.c
+index 2b316661a5782..bbdfebd706442 100644
+--- a/drivers/rtc/rtc-rv3028.c
++++ b/drivers/rtc/rtc-rv3028.c
+@@ -625,6 +625,8 @@ static int rv3028_probe(struct i2c_client *client)
+ 		return -ENOMEM;
  
- #else /* ifdef DEBUG */
+ 	rv3028->regmap = devm_regmap_init_i2c(client, &regmap_config);
++	if (IS_ERR(rv3028->regmap))
++		return PTR_ERR(rv3028->regmap);
+ 
+ 	i2c_set_clientdata(client, rv3028);
+ 
 -- 
 2.25.1
 
