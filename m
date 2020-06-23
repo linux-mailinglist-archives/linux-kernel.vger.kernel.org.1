@@ -2,126 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B768204795
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 840EC2047B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732270AbgFWCwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 22:52:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59554 "EHLO
+        id S1732044AbgFWCyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 22:54:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732025AbgFWCvs (ORCPT
+        with ESMTP id S1731820AbgFWCyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 22:51:48 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8707C061795
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 19:51:47 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id d10so6590016pls.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 19:51:47 -0700 (PDT)
+        Mon, 22 Jun 2020 22:54:16 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3307C061795
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 19:54:16 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id r18so9173145pgk.11
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 19:54:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=Bkqe8eP6qav0NO7h7H0YnVgLuAUP47V9yLKohTYScP4=;
-        b=SacbG/sMALx094GrI3w7UgttPeQ0KM2G3AoODCvFQJGFJ5vln9En6Frb+o9dKibvSg
-         Okny/UMLQJ0rhbLGQCyBu5QdK9UVQ6bkIbPfzInNDmXXD1VDvL4Fk5eQnAF6Sj3p2w2Y
-         2+FdERPjM6wES4ug+qUdx3gg4X7vQHpHE8DiQ0xiITzjC2e4JMKiuenvvQityR3Vg9D9
-         PxSZHeUFisHW6YGR24OuLF+Fkp6WcuDGEoDhwAhouEVR26WTM7LJ9rRq9VWGfpMusq71
-         kp0t2+FGL7LqQPW3OOCbVJWMZ6bbxHBot6lBBdjtBD79Tw29zxpM1olGSTmWEhdi2TsC
-         cQsw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=cQ3SCOG8CEWcdo/tXLcomxA+Sv9DPM6c0TLHTvFTydo=;
+        b=pGl6N2G5ObJ6Flfwwb/LTlhcADw8HqeYPMPuDoiqlKFA00zySbJ+jVN0WUI2oK/9wp
+         i0U3Hw9lPj95YKs2ZnSpnLyiVg4XcJHZtNF+C4BzXk+2rBH9UPPu0ZjDxBW5s5Crz/IE
+         vjFgJxJMtUOD6xJh/+3PFbOW+LGi+N9lnp4yBRxMCJ7Nn2JZ3IT3f1gmjv3axxe6CqCe
+         EUJDaYHufbOYowmLLdm7QgQbw9RVN7Vg+mtxIGO8vLAyiK+ht8FyK3TwN2IT3IWAF640
+         3hYrR7VxT+gII/F6wHtBK6GhbJuCFg6NnNEMfI2IeL6/VzfOmNPVATRTS4RNSgP8q8H6
+         /4pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=Bkqe8eP6qav0NO7h7H0YnVgLuAUP47V9yLKohTYScP4=;
-        b=FSR1XHP5GotjSbUqyUZaTi3niBJqBfnMWLEyCq8IZie6sBXT5W13tXO/aYa6fcvj8N
-         fXiOCPyKMstWs3enQxn2Fc6IWHUYL7IYU1erLw6mqQB54jdFm39Hue8vcoQpDwqHjzTu
-         Ja8j+X0tKKu09SYBRQnN72AcBPClXmPRCrlufg/nCbzlnNvFan2HWcTp5nEmnTWA6kUE
-         Dnwr0SLgm1pLG0AgZYOHTrJJNVXnh5w560yqnAtDzB6Ofo5kxtTM2/vysN8pEwnuw2T1
-         d2I/7jb7QAunRKH++z314YvabECTHj5dmsnkpuzsPyYQX/DFCfq/jcGjqbSV4EjHMd3m
-         ZqKQ==
-X-Gm-Message-State: AOAM532oTwNaIieZR+h/NZAsuEpUYqSpzAvg87Dgk6mB7gmnu4xBSXx3
-        lylQPn84vi1OKxXbmsxbX7IoiT8C8S0=
-X-Google-Smtp-Source: ABdhPJwQKgj2PeBSrZqxgChMqadOaXI5DuaCAkwJY1oO+kXbbPkv3BV7iGHMfNyJ7tZr2wPjeTAnMQ==
-X-Received: by 2002:a17:902:ba83:: with SMTP id k3mr22973488pls.261.1592880707148;
-        Mon, 22 Jun 2020 19:51:47 -0700 (PDT)
-Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
-        by smtp.gmail.com with ESMTPSA id y7sm15807629pfq.43.2020.06.22.19.51.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Jun 2020 19:51:46 -0700 (PDT)
-From:   John Stultz <john.stultz@linaro.org>
-To:     lkml <linux-kernel@vger.kernel.org>
-Cc:     John Stultz <john.stultz@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org
-Subject: [PATCH] i2c: designware: Fix functionality in !CONFIG_ACPI case
-Date:   Tue, 23 Jun 2020 02:51:44 +0000
-Message-Id: <20200623025144.34246-1-john.stultz@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cQ3SCOG8CEWcdo/tXLcomxA+Sv9DPM6c0TLHTvFTydo=;
+        b=HnjSc5EkkOoNPmRQFWI7DtYLeD6qJsU5xauqa6J4/8/qHgikqYU9uKV+5HwnWkpw0A
+         Bo/or+83Mj+3FeRwGjJx/esFufMirnOKxxHHeP2uGfk3uBvdmr+RldwuXKNW4RZvGe5m
+         bWncum/9+2V5VHVH5IeER0AGvDeULGQxjTRk6kZFw0n/iHBPVz4iq4kBENd572OsRI5I
+         PbtYEgIfdiBH5k2P+BUB9kuC2G2t3CBa+Vg7PsjelOahwzp421McN3uazlVTTSh7D/Ey
+         BIihIeVkDnKgKEs+j9gnkLetXlkPAXg3YP9mDZp6WHw3o4dl0iHDA5IaTJc8/GwUFxEG
+         asBg==
+X-Gm-Message-State: AOAM530jsWkOlC2ZSTPN3HoJie+G4R3M97A5uNABYMKiRcDoZTxa33C0
+        4b5Gz9iSBsJH3/KayXX7L/gG
+X-Google-Smtp-Source: ABdhPJxohB33RWsPvmL6Y1OqwR64gc0rQ3g/GBld84r8b4FKj1LxmOejpV4ZoFtUuLS26GdmYNvhIw==
+X-Received: by 2002:a62:1c46:: with SMTP id c67mr22439884pfc.170.1592880856068;
+        Mon, 22 Jun 2020 19:54:16 -0700 (PDT)
+Received: from Mani-XPS-13-9360 ([2409:4072:609d:7d26:e4ff:f0b0:edd6:2484])
+        by smtp.gmail.com with ESMTPSA id i20sm15589173pfd.81.2020.06.22.19.54.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 22 Jun 2020 19:54:15 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 08:24:07 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 5/6] arm64: dts: qcom: sm8250: Add remoteprocs
+Message-ID: <20200623025407.GE11093@Mani-XPS-13-9360>
+References: <20200622222747.717306-1-bjorn.andersson@linaro.org>
+ <20200622222747.717306-6-bjorn.andersson@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200622222747.717306-6-bjorn.andersson@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the HiKey board, where CONFIG_ACPI is not set, we started
-to see a graphics regression where the adv7511 HDMI bridge driver
-wasn't probing. This was due to the i2c bus failing to start up.
+On Mon, Jun 22, 2020 at 03:27:46PM -0700, Bjorn Andersson wrote:
+> Add remoteproc nodes for the audio, compute and sensor cores, define
+> glink for each one and enable them on the MTP with appropriate firmware
+> defined.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-I bisected the problem down to commit f9288fcc5c615 ("i2c:
-designware: Move ACPI parts into common module") and after
-looking at it a bit, I realized that change moved some
-initialization into i2c_dw_acpi_adjust_bus_speed(). However,
-i2c_dw_acpi_adjust_bus_speed() is only functional if CONFIG_ACPI
-is set.
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-This patch pulls i2c_dw_acpi_adjust_bus_speed() out of the
-ifdef CONFIG_ACPI conditional, and gets the board working again.
+Thanks,
+Mani
 
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc: Wolfram Sang <wsa@kernel.org>
-Cc: linux-i2c@vger.kernel.org
-Fixes: f9288fcc5c615 ("i2c: designware: Move ACPI parts into common module")
-Signed-off-by: John Stultz <john.stultz@linaro.org>
----
- drivers/i2c/busses/i2c-designware-common.c | 4 ++--
- drivers/i2c/busses/i2c-designware-core.h   | 3 +--
- 2 files changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
-index e3a8640db7da..33de185e15f2 100644
---- a/drivers/i2c/busses/i2c-designware-common.c
-+++ b/drivers/i2c/busses/i2c-designware-common.c
-@@ -286,6 +286,8 @@ int i2c_dw_acpi_configure(struct device *device)
- }
- EXPORT_SYMBOL_GPL(i2c_dw_acpi_configure);
- 
-+#endif	/* CONFIG_ACPI */
-+
- void i2c_dw_acpi_adjust_bus_speed(struct device *device)
- {
- 	struct dw_i2c_dev *dev = dev_get_drvdata(device);
-@@ -317,8 +319,6 @@ void i2c_dw_acpi_adjust_bus_speed(struct device *device)
- }
- EXPORT_SYMBOL_GPL(i2c_dw_acpi_adjust_bus_speed);
- 
--#endif	/* CONFIG_ACPI */
--
- u32 i2c_dw_scl_hcnt(u32 ic_clk, u32 tSYMBOL, u32 tf, int cond, int offset)
- {
- 	/*
-diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
-index 556673a1f61b..ea2485872cab 100644
---- a/drivers/i2c/busses/i2c-designware-core.h
-+++ b/drivers/i2c/busses/i2c-designware-core.h
-@@ -364,8 +364,7 @@ int i2c_dw_validate_speed(struct dw_i2c_dev *dev);
- 
- #if IS_ENABLED(CONFIG_ACPI)
- int i2c_dw_acpi_configure(struct device *device);
--void i2c_dw_acpi_adjust_bus_speed(struct device *device);
- #else
- static inline int i2c_dw_acpi_configure(struct device *device) { return -ENODEV; }
--static inline void i2c_dw_acpi_adjust_bus_speed(struct device *device) {}
- #endif
-+void i2c_dw_acpi_adjust_bus_speed(struct device *device);
--- 
-2.17.1
-
+> ---
+>  arch/arm64/boot/dts/qcom/sm8250-mtp.dts |  15 +++
+>  arch/arm64/boot/dts/qcom/sm8250.dtsi    | 116 ++++++++++++++++++++++++
+>  2 files changed, 131 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8250-mtp.dts b/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
+> index 63d259931c4d..6894f8490dae 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
+> +++ b/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
+> @@ -55,6 +55,11 @@ vreg_s6c_0p88: smpc6-regulator {
+>  	};
+>  };
+>  
+> +&adsp {
+> +	status = "okay";
+> +	firmware-name = "qcom/sm8250/adsp.mbn";
+> +};
+> +
+>  &apps_rsc {
+>  	pm8150-rpmh-regulators {
+>  		compatible = "qcom,pm8150-rpmh-regulators";
+> @@ -348,10 +353,20 @@ vreg_l7f_1p8: ldo7 {
+>  	};
+>  };
+>  
+> +&cdsp {
+> +	status = "okay";
+> +	firmware-name = "qcom/sm8250/cdsp.mbn";
+> +};
+> +
+>  &qupv3_id_1 {
+>  	status = "okay";
+>  };
+>  
+> +&slpi {
+> +	status = "okay";
+> +	firmware-name = "qcom/sm8250/slpi.mbn";
+> +};
+> +
+>  &tlmm {
+>  	gpio-reserved-ranges = <28 4>, <40 4>;
+>  };
+> diff --git a/arch/arm64/boot/dts/qcom/sm8250.dtsi b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> index 364d9a798673..a21299b9c62f 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8250.dtsi
+> @@ -1052,6 +1052,83 @@ tcsr_mutex_regs: syscon@1f40000 {
+>  			reg = <0x0 0x01f40000 0x0 0x40000>;
+>  		};
+>  
+> +		slpi: remoteproc@5c00000 {
+> +			compatible = "qcom,sm8250-slpi-pas";
+> +			reg = <0 0x05c00000 0 0x4000>;
+> +
+> +			interrupts-extended = <&pdc 9 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&smp2p_slpi_in 0 IRQ_TYPE_EDGE_RISING>,
+> +					      <&smp2p_slpi_in 1 IRQ_TYPE_EDGE_RISING>,
+> +					      <&smp2p_slpi_in 2 IRQ_TYPE_EDGE_RISING>,
+> +					      <&smp2p_slpi_in 3 IRQ_TYPE_EDGE_RISING>;
+> +			interrupt-names = "wdog", "fatal", "ready",
+> +					  "handover", "stop-ack";
+> +
+> +			clocks = <&rpmhcc RPMH_CXO_CLK>;
+> +			clock-names = "xo";
+> +
+> +			power-domains = <&aoss_qmp AOSS_QMP_LS_SLPI>,
+> +					<&rpmhpd SM8250_LCX>,
+> +					<&rpmhpd SM8250_LMX>;
+> +			power-domain-names = "load_state", "lcx", "lmx";
+> +
+> +			memory-region = <&slpi_mem>;
+> +
+> +			qcom,smem-states = <&smp2p_slpi_out 0>;
+> +			qcom,smem-state-names = "stop";
+> +
+> +			status = "disabled";
+> +
+> +			glink-edge {
+> +				interrupts-extended = <&ipcc IPCC_CLIENT_SLPI
+> +							     IPCC_MPROC_SIGNAL_GLINK_QMP
+> +							     IRQ_TYPE_EDGE_RISING>;
+> +				mboxes = <&ipcc IPCC_CLIENT_SLPI
+> +						IPCC_MPROC_SIGNAL_GLINK_QMP>;
+> +
+> +				label = "lpass";
+> +				qcom,remote-pid = <3>;
+> +			};
+> +		};
+> +
+> +		cdsp: remoteproc@8300000 {
+> +			compatible = "qcom,sm8250-cdsp-pas";
+> +			reg = <0 0x08300000 0 0x10000>;
+> +
+> +			interrupts-extended = <&intc GIC_SPI 578 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&smp2p_cdsp_in 0 IRQ_TYPE_EDGE_RISING>,
+> +					      <&smp2p_cdsp_in 1 IRQ_TYPE_EDGE_RISING>,
+> +					      <&smp2p_cdsp_in 2 IRQ_TYPE_EDGE_RISING>,
+> +					      <&smp2p_cdsp_in 3 IRQ_TYPE_EDGE_RISING>;
+> +			interrupt-names = "wdog", "fatal", "ready",
+> +					  "handover", "stop-ack";
+> +
+> +			clocks = <&rpmhcc RPMH_CXO_CLK>;
+> +			clock-names = "xo";
+> +
+> +			power-domains = <&aoss_qmp AOSS_QMP_LS_CDSP>,
+> +					<&rpmhpd SM8250_CX>;
+> +			power-domain-names = "load_state", "cx";
+> +
+> +			memory-region = <&cdsp_mem>;
+> +
+> +			qcom,smem-states = <&smp2p_cdsp_out 0>;
+> +			qcom,smem-state-names = "stop";
+> +
+> +			status = "disabled";
+> +
+> +			glink-edge {
+> +				interrupts-extended = <&ipcc IPCC_CLIENT_CDSP
+> +							     IPCC_MPROC_SIGNAL_GLINK_QMP
+> +							     IRQ_TYPE_EDGE_RISING>;
+> +				mboxes = <&ipcc IPCC_CLIENT_CDSP
+> +						IPCC_MPROC_SIGNAL_GLINK_QMP>;
+> +
+> +				label = "lpass";
+> +				qcom,remote-pid = <5>;
+> +			};
+> +		};
+> +
+>  		pdc: interrupt-controller@b220000 {
+>  			compatible = "qcom,sm8250-pdc", "qcom,pdc";
+>  			reg = <0 0x0b220000 0 0x30000>, <0 0x17c000f0 0 0x60>;
+> @@ -1668,6 +1745,45 @@ config {
+>  			};
+>  		};
+>  
+> +		adsp: remoteproc@17300000 {
+> +			compatible = "qcom,sm8250-adsp-pas";
+> +			reg = <0 0x17300000 0 0x100>;
+> +
+> +			interrupts-extended = <&pdc 6 IRQ_TYPE_LEVEL_HIGH>,
+> +					      <&smp2p_adsp_in 0 IRQ_TYPE_EDGE_RISING>,
+> +					      <&smp2p_adsp_in 1 IRQ_TYPE_EDGE_RISING>,
+> +					      <&smp2p_adsp_in 2 IRQ_TYPE_EDGE_RISING>,
+> +					      <&smp2p_adsp_in 3 IRQ_TYPE_EDGE_RISING>;
+> +			interrupt-names = "wdog", "fatal", "ready",
+> +					  "handover", "stop-ack";
+> +
+> +			clocks = <&rpmhcc RPMH_CXO_CLK>;
+> +			clock-names = "xo";
+> +
+> +			power-domains = <&aoss_qmp AOSS_QMP_LS_LPASS>,
+> +					<&rpmhpd SM8250_LCX>,
+> +					<&rpmhpd SM8250_LMX>;
+> +			power-domain-names = "load_state", "lcx", "lmx";
+> +
+> +			memory-region = <&adsp_mem>;
+> +
+> +			qcom,smem-states = <&smp2p_adsp_out 0>;
+> +			qcom,smem-state-names = "stop";
+> +
+> +			status = "disabled";
+> +
+> +			glink-edge {
+> +				interrupts-extended = <&ipcc IPCC_CLIENT_LPASS
+> +							     IPCC_MPROC_SIGNAL_GLINK_QMP
+> +							     IRQ_TYPE_EDGE_RISING>;
+> +				mboxes = <&ipcc IPCC_CLIENT_LPASS
+> +						IPCC_MPROC_SIGNAL_GLINK_QMP>;
+> +
+> +				label = "lpass";
+> +				qcom,remote-pid = <2>;
+> +			};
+> +		};
+> +
+>  		intc: interrupt-controller@17a00000 {
+>  			compatible = "arm,gic-v3";
+>  			#interrupt-cells = <3>;
+> -- 
+> 2.26.2
+> 
