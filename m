@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BAFA206096
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0CA8205F82
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392586AbgFWUo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:44:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41504 "EHLO mail.kernel.org"
+        id S2391393AbgFWUdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:33:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54320 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392574AbgFWUoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:44:22 -0400
+        id S2391390AbgFWUdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:33:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17B3C21D6C;
-        Tue, 23 Jun 2020 20:44:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 011552072E;
+        Tue, 23 Jun 2020 20:33:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945062;
-        bh=3niqpMpn6w6Tkik35jaFf85x2SzD06y8my2fvQh26ao=;
+        s=default; t=1592944389;
+        bh=WVZRPf304XDTXTsxZtHmCIrnuF/WwjdfFiKYz5fD9Jk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mj7MBIuk91Z6MA4dXL4t0HTBhVhl6V6ALsPMweYYea29ia/LdF8qtIjYdA/eTmiJn
-         /7bO5/7TPw9i49xlYeb+We4uLrNMr2uJVKP9rK/bX/naMV/k/U5IHcHUxj0am+sHTt
-         tuI1SHvFPvwd4bWVziysAqlSImfKYpd4OwxrgOzE=
+        b=VncUxsEFqHePjn7f5dUKXLu2PLwUlSMsudJc2ZmEMMG8/XVrguEb1U28cV3R3oBP/
+         Ti+IhZpI/jf36JhltpGQmJUYH4iphHDNLRz1iHzvgpgGPhSquBNmSdjdYKtb1ERd3+
+         b5vDG+l1dZgYSYP+mUII6JsksCvSX8mnULQN5c0Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 024/136] mfd: wm8994: Fix driver operation if loaded as modules
+        stable@vger.kernel.org, Sandeep Raghuraman <sandy.8925@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.4 285/314] drm/amdgpu: Replace invalid device ID with a valid device ID
 Date:   Tue, 23 Jun 2020 21:58:00 +0200
-Message-Id: <20200623195304.851696307@linuxfoundation.org>
+Message-Id: <20200623195352.576945071@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
-References: <20200623195303.601828702@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,38 +43,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+From: Sandeep Raghuraman <sandy.8925@gmail.com>
 
-[ Upstream commit d4f9b5428b53dd67f49ee8deed8d4366ed6b1933 ]
+commit 790243d3bf78f9830a3b2ffbca1ed0f528295d48 upstream.
 
-WM8994 chip has built-in regulators, which might be used for chip
-operation. They are controlled by a separate wm8994-regulator driver,
-which should be loaded before this driver calls regulator_get(), because
-that driver also provides consumer-supply mapping for the them. If that
-driver is not yet loaded, regulator core substitute them with dummy
-regulator, what breaks chip operation, because the built-in regulators are
-never enabled. Fix this by annotating this driver with MODULE_SOFTDEP()
-"pre" dependency to "wm8994_regulator" module.
+Initializes Powertune data for a specific Hawaii card by fixing what
+looks like a typo in the code. The device ID 66B1 is not a supported
+device ID for this driver, and is not mentioned elsewhere. 67B1 is a
+valid device ID, and is a Hawaii Pro GPU.
 
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+I have tested on my R9 390 which has device ID 67B1, and it works
+fine without problems.
+
+Signed-off-by: Sandeep Raghuraman <sandy.8925@gmail.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/mfd/wm8994-core.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mfd/wm8994-core.c b/drivers/mfd/wm8994-core.c
-index 953d0790ffd56..3259fb82d3c46 100644
---- a/drivers/mfd/wm8994-core.c
-+++ b/drivers/mfd/wm8994-core.c
-@@ -696,3 +696,4 @@ module_i2c_driver(wm8994_i2c_driver);
- MODULE_DESCRIPTION("Core support for the WM8994 audio CODEC");
- MODULE_LICENSE("GPL");
- MODULE_AUTHOR("Mark Brown <broonie@opensource.wolfsonmicro.com>");
-+MODULE_SOFTDEP("pre: wm8994_regulator");
--- 
-2.25.1
-
+--- a/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
++++ b/drivers/gpu/drm/amd/powerplay/smumgr/ci_smumgr.c
+@@ -239,7 +239,7 @@ static void ci_initialize_power_tune_def
+ 
+ 	switch (dev_id) {
+ 	case 0x67BA:
+-	case 0x66B1:
++	case 0x67B1:
+ 		smu_data->power_tune_defaults = &defaults_hawaii_pro;
+ 		break;
+ 	case 0x67B8:
 
 
