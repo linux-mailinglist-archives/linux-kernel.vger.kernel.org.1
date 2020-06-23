@@ -2,103 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565992050AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2BA2050C9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732416AbgFWLaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 07:30:30 -0400
-Received: from foss.arm.com ([217.140.110.172]:58868 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732191AbgFWLaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 07:30:21 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 477CD1F1;
-        Tue, 23 Jun 2020 04:30:20 -0700 (PDT)
-Received: from [10.57.9.128] (unknown [10.57.9.128])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB48E3F6CF;
-        Tue, 23 Jun 2020 04:30:17 -0700 (PDT)
-Subject: Re: [PATCH v6 3/4] iommu/arm-smmu: Add global/context fault
- implementation hooks
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Krishna Reddy <vdumpa@nvidia.com>
-Cc:     snikam@nvidia.com, mperttunen@nvidia.com, bhuntsman@nvidia.com,
-        will@kernel.org, joro@8bytes.org, linux-kernel@vger.kernel.org,
-        praithatha@nvidia.com, talho@nvidia.com,
-        iommu@lists.linux-foundation.org, nicolinc@nvidia.com,
-        linux-tegra@vger.kernel.org, yhsu@nvidia.com, treding@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, bbiswas@nvidia.com
-References: <20200604234414.21912-1-vdumpa@nvidia.com>
- <20200604234414.21912-4-vdumpa@nvidia.com> <20200623083643.GB4098287@ulmo>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <2dda4530-39cc-d549-1124-26337dd9afbe@arm.com>
-Date:   Tue, 23 Jun 2020 12:30:16 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1732470AbgFWLdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 07:33:00 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:49940 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732328AbgFWLc4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 07:32:56 -0400
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 05NBWUe9027207;
+        Tue, 23 Jun 2020 20:32:30 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 05NBWUe9027207
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1592911951;
+        bh=/bby6eiaoafnsKasvD+44XkuZDUwzMZIHd9Yc7kyG3A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=yk9h8fxKWFn7hj6Cdl7Mx7QH4Jd6HPEDhWjMtLtp7s2NVOXrE+8yc7f3ZwqnfCbCa
+         ac/Op0VEg3quw+stSY22mCenxyJJbH1wgYKMdpdMRiH6tta2ptiX6hGsgQ2OQyPZxO
+         zXoNB19h7+sMP2F0k/hlWYdEiU8+9PH4aKrgNWbWDE3uRtMdRKBVSeBbRgidfBqFCj
+         7FbrCGYtkBgepwzBFLlACjhU2gbVWtX/gMc3NnnQ/wB+Ix+5Goy2iv8F+CuksLqt5q
+         9P82b/F8y/D10unfy6larAuWM0AVqIgNWjDLSSR6NpnfokMEqZAqHycUD+oXTwKdmH
+         9U7F9BKa38tpQ==
+X-Nifty-SrcIP: [209.85.222.52]
+Received: by mail-ua1-f52.google.com with SMTP id i8so6671588uak.9;
+        Tue, 23 Jun 2020 04:32:30 -0700 (PDT)
+X-Gm-Message-State: AOAM53066gMLIGwx09WvtMb++Cv+IJ2gyiiQTXC8U+P2K12RwUTas1Pl
+        knkTPtNRCrinuDDYP1nPXy9dmV7IE8PnwJr3lOY=
+X-Google-Smtp-Source: ABdhPJycnTrfA31vybeM0h39X3HSjsSRYxa5A9nDB0CSrKvTSk51+WjWwDYWqRwDacxbVagUuPP34EDE+eseNUUiHV0=
+X-Received: by 2002:ab0:156d:: with SMTP id p42mr14817199uae.121.1592911949417;
+ Tue, 23 Jun 2020 04:32:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200623083643.GB4098287@ulmo>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20200623062812.705264-1-yamada.masahiro@socionext.com>
+In-Reply-To: <20200623062812.705264-1-yamada.masahiro@socionext.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Tue, 23 Jun 2020 20:31:52 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS0GAUT-CYijWCetRgSXAaiHzwb_JE5RY0ECr68BDBk4Q@mail.gmail.com>
+Message-ID: <CAK7LNAS0GAUT-CYijWCetRgSXAaiHzwb_JE5RY0ECr68BDBk4Q@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: bus: uniphier-system-bus: fix warning in example
+To:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        DTML <devicetree@vger.kernel.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-23 09:36, Thierry Reding wrote:
-[...]
->> diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
->> index 243bc4cb2705b..d720e1e191176 100644
->> --- a/drivers/iommu/arm-smmu.c
->> +++ b/drivers/iommu/arm-smmu.c
->> @@ -673,6 +673,7 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
->>   	enum io_pgtable_fmt fmt;
->>   	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
->>   	struct arm_smmu_cfg *cfg = &smmu_domain->cfg;
->> +	irqreturn_t (*context_fault)(int irq, void *dev);
->>   
->>   	mutex_lock(&smmu_domain->init_mutex);
->>   	if (smmu_domain->smmu)
->> @@ -835,7 +836,9 @@ static int arm_smmu_init_domain_context(struct iommu_domain *domain,
->>   	 * handler seeing a half-initialised domain state.
->>   	 */
->>   	irq = smmu->irqs[smmu->num_global_irqs + cfg->irptndx];
->> -	ret = devm_request_irq(smmu->dev, irq, arm_smmu_context_fault,
->> +	context_fault = (smmu->impl && smmu->impl->context_fault) ?
->> +			 smmu->impl->context_fault : arm_smmu_context_fault;
-> 
-> A simpler way might have been to assign arm_smmu_context_fault to all
-> implementations. That way we wouldn't have to perform this check here
-> and instead just always using smmu->impl->context_fault.
+On Tue, Jun 23, 2020 at 3:29 PM Masahiro Yamada
+<yamada.masahiro@socionext.com> wrote:
+>
+> Since commit e69f5dc623f9 ("dt-bindings: serial: Convert 8250 to
+> json-schema"), the schema for "ns16550a" is checked.
+>
+> 'make dt_binding_check' emits the following warning:
+>
+>   uart@5,00200000: $nodename:0: 'uart@5,00200000' does not match '^serial(@[0-9a-f,]+)*$'
+>
+> Rename the node to follow the pattern defined in
+> Documentation/devicetree/bindings/serial/serial.yaml
+>
+> Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
+> ---
+>
+>  .../devicetree/bindings/bus/socionext,uniphier-system-bus.yaml  | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/bus/socionext,uniphier-system-bus.yaml b/Documentation/devicetree/bindings/bus/socionext,uniphier-system-bus.yaml
+> index c4c9119e4a20..9fa4f891fa00 100644
+> --- a/Documentation/devicetree/bindings/bus/socionext,uniphier-system-bus.yaml
+> +++ b/Documentation/devicetree/bindings/bus/socionext,uniphier-system-bus.yaml
+> @@ -87,7 +87,7 @@ examples:
+>              phy-mode = "mii";
+>          };
+>
+> -        uart@5,00200000 {
+> +        serial@5,00200000 {
 
-But smmu->impl can still be NULL...
 
-Everything in impl, including the presence of impl itself, is optional, 
-so the notion of overriding a default with the same default doesn't 
-really make much sense, and would go against the pattern everywhere else.
+I think '5,200000' is a better unit name.
 
-Robin.
+Will send v2.
 
->> +	ret = devm_request_irq(smmu->dev, irq, context_fault,
->>   			       IRQF_SHARED, "arm-smmu-context-fault", domain);
->>   	if (ret < 0) {
->>   		dev_err(smmu->dev, "failed to request context IRQ %d (%u)\n",
->> @@ -2107,6 +2110,7 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
->>   	struct arm_smmu_device *smmu;
->>   	struct device *dev = &pdev->dev;
->>   	int num_irqs, i, err;
->> +	irqreturn_t (*global_fault)(int irq, void *dev);
->>   
->>   	smmu = devm_kzalloc(dev, sizeof(*smmu), GFP_KERNEL);
->>   	if (!smmu) {
->> @@ -2193,9 +2197,12 @@ static int arm_smmu_device_probe(struct platform_device *pdev)
->>   		smmu->num_context_irqs = smmu->num_context_banks;
->>   	}
->>   
->> +	global_fault = (smmu->impl && smmu->impl->global_fault) ?
->> +			smmu->impl->global_fault : arm_smmu_global_fault;
->> +
-> 
-> Same as above.
-> 
-> Thierry
-> 
+
+
+>              compatible = "ns16550a";
+>              reg = <5 0x00200000 0x20>;
+>              interrupts = <0 49 4>;
+> --
+> 2.25.1
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
