@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91249205F5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DECAC206056
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390662AbgFWUcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:32:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52866 "EHLO mail.kernel.org"
+        id S2390186AbgFWUln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:41:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391260AbgFWUcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:32:05 -0400
+        id S2392342AbgFWUle (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:41:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CEF412072E;
-        Tue, 23 Jun 2020 20:32:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 91DEA2053B;
+        Tue, 23 Jun 2020 20:41:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944325;
-        bh=HyBWi6ZBAIlUUOfToCWd6cHLJVFRuzMfk3C+mFEBJCQ=;
+        s=default; t=1592944895;
+        bh=x2wbzz4CLa6clGyCMHuTUZGSWVbameuz+cruEF/5Ah0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iByxOxc2gsiVGiAFdPl5mlqMgSZuGHiYkZfuHYSzU1HEEdqwy4eWFKOc5wMSgG1ux
-         tf32MzfMPY2Px6oh4ScXLWe/1wF3h44T00RzgwjR6mLvyc6Q0VUm59Od5sL5/YxjyJ
-         H8H3Z26OUYJ0+DsumxGEhkfxWINDxDTI2qx1hHhg=
+        b=lsbeF4LzRf3wc8Po4FpQf2Qk/rz3Kz8A4cALhzbibUXlBeUgrLrDyuI3x+Dhges8B
+         tae3WZqXNhlKnejVs9AI4Tfy/SvX59+ZjODkjqCt+CfbhbcbqfUXktGnBe4yIoar28
+         cYuHCP8SAEp2LyYUVJ8kdHAai6ujj8EyjZmIpxEc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrey Ignatov <rdna@fb.com>,
-        Alexei Starovoitov <ast@kernel.org>,
+        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 259/314] bpf: Fix memlock accounting for sock_hash
+Subject: [PATCH 4.19 126/206] rxrpc: Adjust /proc/net/rxrpc/calls to display call->debug_id not user_ID
 Date:   Tue, 23 Jun 2020 21:57:34 +0200
-Message-Id: <20200623195351.327582508@linuxfoundation.org>
+Message-Id: <20200623195323.166323850@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,57 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrey Ignatov <rdna@fb.com>
+From: David Howells <dhowells@redhat.com>
 
-[ Upstream commit 60e5ca8a64bad8f3e2e20a1e57846e497361c700 ]
+[ Upstream commit 32f71aa497cfb23d37149c2ef16ad71fce2e45e2 ]
 
-Add missed bpf_map_charge_init() in sock_hash_alloc() and
-correspondingly bpf_map_charge_finish() on ENOMEM.
+The user ID value isn't actually much use - and leaks a kernel pointer or a
+userspace value - so replace it with the call debug ID, which appears in trace
+points.
 
-It was found accidentally while working on unrelated selftest that
-checks "map->memory.pages > 0" is true for all map types.
-
-Before:
-	# bpftool m l
-	...
-	3692: sockhash  name m_sockhash  flags 0x0
-		key 4B  value 4B  max_entries 8  memlock 0B
-
-After:
-	# bpftool m l
-	...
-	84: sockmap  name m_sockmap  flags 0x0
-		key 4B  value 4B  max_entries 8  memlock 4096B
-
-Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
-Signed-off-by: Andrey Ignatov <rdna@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Link: https://lore.kernel.org/bpf/20200612000857.2881453-1-rdna@fb.com
+Signed-off-by: David Howells <dhowells@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/sock_map.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ net/rxrpc/proc.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/net/core/sock_map.c b/net/core/sock_map.c
-index b22e9f1191803..6bbc118bf00e9 100644
---- a/net/core/sock_map.c
-+++ b/net/core/sock_map.c
-@@ -837,11 +837,15 @@ static struct bpf_map *sock_hash_alloc(union bpf_attr *attr)
- 		err = -EINVAL;
- 		goto free_htab;
+diff --git a/net/rxrpc/proc.c b/net/rxrpc/proc.c
+index 9805e3b85c361..81a765dd8c9be 100644
+--- a/net/rxrpc/proc.c
++++ b/net/rxrpc/proc.c
+@@ -72,7 +72,7 @@ static int rxrpc_call_seq_show(struct seq_file *seq, void *v)
+ 			 "Proto Local                                          "
+ 			 " Remote                                         "
+ 			 " SvID ConnID   CallID   End Use State    Abort   "
+-			 " UserID           TxSeq    TW RxSeq    RW RxSerial RxTimo\n");
++			 " DebugId  TxSeq    TW RxSeq    RW RxSerial RxTimo\n");
+ 		return 0;
  	}
-+	err = bpf_map_charge_init(&htab->map.memory, cost);
-+	if (err)
-+		goto free_htab;
  
- 	htab->buckets = bpf_map_area_alloc(htab->buckets_num *
- 					   sizeof(struct bpf_htab_bucket),
- 					   htab->map.numa_node);
- 	if (!htab->buckets) {
-+		bpf_map_charge_finish(&htab->map.memory);
- 		err = -ENOMEM;
- 		goto free_htab;
- 	}
+@@ -104,7 +104,7 @@ static int rxrpc_call_seq_show(struct seq_file *seq, void *v)
+ 	rx_hard_ack = READ_ONCE(call->rx_hard_ack);
+ 	seq_printf(seq,
+ 		   "UDP   %-47.47s %-47.47s %4x %08x %08x %s %3u"
+-		   " %-8.8s %08x %lx %08x %02x %08x %02x %08x %06lx\n",
++		   " %-8.8s %08x %08x %08x %02x %08x %02x %08x %06lx\n",
+ 		   lbuff,
+ 		   rbuff,
+ 		   call->service_id,
+@@ -114,7 +114,7 @@ static int rxrpc_call_seq_show(struct seq_file *seq, void *v)
+ 		   atomic_read(&call->usage),
+ 		   rxrpc_call_states[call->state],
+ 		   call->abort_code,
+-		   call->user_call_ID,
++		   call->debug_id,
+ 		   tx_hard_ack, READ_ONCE(call->tx_top) - tx_hard_ack,
+ 		   rx_hard_ack, READ_ONCE(call->rx_top) - rx_hard_ack,
+ 		   call->rx_serial,
 -- 
 2.25.1
 
