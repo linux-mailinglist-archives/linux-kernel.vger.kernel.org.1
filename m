@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A88D2061A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09DC4206251
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404021AbgFWUrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:47:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41876 "EHLO mail.kernel.org"
+        id S2393007AbgFWU7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:59:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403993AbgFWUoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:44:37 -0400
+        id S2392315AbgFWUlV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:41:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 070C7218AC;
-        Tue, 23 Jun 2020 20:44:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C7572084D;
+        Tue, 23 Jun 2020 20:41:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945077;
-        bh=8MP+yUbfzIAUWflXaZ1RhpaOEhTpWa47P/ZhgkUfhRg=;
+        s=default; t=1592944882;
+        bh=wTUcvyaRwTesXtGMVTDj6Mrz4YdVH1yLn+g2m1mDfGM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X918vuhG0Ja/vdl7CWw//Wn8U/AV2WM+1LYPEKgzFpbXS7rEYCe2QaRn7yOu/XX4p
-         lnOOZZkOvPda8rgD0tGftuaE9JY9IsalSRA0E8rLYL32L14Dq115cz/KGwSVYypuYe
-         vLSzGPJLZx1koJJAjx9WpB5fPaaMJx94Pk+XdMRM=
+        b=2dTTfpqyHSrE7EzkTc68+4+6IUz6Ip/eRGeAIABGkCIkikDV9aZNLPVzeclhyJd1u
+         EmHCIQdRyKerjUtwvGTeHV894JKqE0ZGM7114XirRWUgun+n3ZzoWI6bDVEeh+bGhK
+         Phx/55FjNP7h71gj1F7HP5s9Bw/uGX1S83c+3bPg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 003/136] power: supply: bq24257_charger: Replace depends on REGMAP_I2C with select
+Subject: [PATCH 4.19 131/206] pinctrl: imxl: Fix an error handling path in imx1_pinctrl_core_probe()
 Date:   Tue, 23 Jun 2020 21:57:39 +0200
-Message-Id: <20200623195303.785910695@linuxfoundation.org>
+Message-Id: <20200623195323.427282113@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
-References: <20200623195303.601828702@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 87c3d579c8ed0eaea6b1567d529a8daa85a2bc6c ]
+[ Upstream commit 9eb728321286c4b31e964d2377fca2368526d408 ]
 
-regmap is a library function that gets selected by drivers that need
-it. No driver modules should depend on it. Depending on REGMAP_I2C makes
-this driver only build if another driver already selected REGMAP_I2C,
-as the symbol can't be selected through the menu kernel configuration.
+When 'pinctrl_register()' has been turned into 'devm_pinctrl_register()',
+an error handling path has not been updated.
 
-Fixes: 2219a935963e ("power_supply: Add TI BQ24257 charger driver")
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Axe a now unneeded 'pinctrl_unregister()'.
+
+Fixes: e55e025d1687 ("pinctrl: imxl: Use devm_pinctrl_register() for pinctrl registration")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/20200530201952.585798-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/pinctrl/freescale/pinctrl-imx1-core.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index 5ab90c1f3f7c4..24163cf8612c5 100644
---- a/drivers/power/supply/Kconfig
-+++ b/drivers/power/supply/Kconfig
-@@ -530,7 +530,7 @@ config CHARGER_BQ24257
- 	tristate "TI BQ24250/24251/24257 battery charger driver"
- 	depends on I2C
- 	depends on GPIOLIB || COMPILE_TEST
--	depends on REGMAP_I2C
-+	select REGMAP_I2C
- 	help
- 	  Say Y to enable support for the TI BQ24250, BQ24251, and BQ24257 battery
- 	  chargers.
+diff --git a/drivers/pinctrl/freescale/pinctrl-imx1-core.c b/drivers/pinctrl/freescale/pinctrl-imx1-core.c
+index deb7870b3d1a6..961c24e0cc8fd 100644
+--- a/drivers/pinctrl/freescale/pinctrl-imx1-core.c
++++ b/drivers/pinctrl/freescale/pinctrl-imx1-core.c
+@@ -638,7 +638,6 @@ int imx1_pinctrl_core_probe(struct platform_device *pdev,
+ 
+ 	ret = of_platform_populate(pdev->dev.of_node, NULL, NULL, &pdev->dev);
+ 	if (ret) {
+-		pinctrl_unregister(ipctl->pctl);
+ 		dev_err(&pdev->dev, "Failed to populate subdevices\n");
+ 		return ret;
+ 	}
 -- 
 2.25.1
 
