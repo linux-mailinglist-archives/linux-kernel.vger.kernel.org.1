@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E941F2061DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B50C1206231
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388846AbgFWUvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:51:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46332 "EHLO mail.kernel.org"
+        id S2393084AbgFWU5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:57:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39934 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404071AbgFWUro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:47:44 -0400
+        id S2392484AbgFWUnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:43:10 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E79C21582;
-        Tue, 23 Jun 2020 20:47:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D44822070E;
+        Tue, 23 Jun 2020 20:43:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945265;
-        bh=yrvwbRjTMFsARZOs8NEqcI4fmeFNsMp7D37A1Kxzhng=;
+        s=default; t=1592944990;
+        bh=I6VnDk4BoSmtkRXVnFLIIrNS4DEqu4Z8iF3KWD9auXg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DtI+25/ZoO+2R1uucGSzkOjc0R3OKWMm6TbV21VWQz+2xTpy4dDWTXgloFYTGSjNa
-         aO/RL3+D2IbLMMtHsNyWzu/b1ZdIa8sBi1wnqrs+Wdjh0xLgrY8HMleXpGU7+GfzfM
-         V7qLG2aWVUNjNnuXmRGlcIYVYPQqHgkyEInkS2hI=
+        b=x1jk6kyFp/sfIVqV0wBAE4q3QQ5H6ZuAM85kofodYzJZWLcpUdqdXcV6lqbLJ8dKH
+         rM8YUKDrKRXzC7oRrt7nxafUv2TsXQONfxil0oh7mcGo8Az78InSKuCTwCle8N/BYf
+         zJwM0nStPb3ATdTP45ZHa5/coN7pOnKx3+2OW89Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 073/136] usb: gadget: lpc32xx_udc: dont dereference ep pointer before null check
-Date:   Tue, 23 Jun 2020 21:58:49 +0200
-Message-Id: <20200623195307.352041507@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>, netdev@vger.kernel.org,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 204/206] sched/rt, net: Use CONFIG_PREEMPTION.patch
+Date:   Tue, 23 Jun 2020 21:58:52 +0200
+Message-Id: <20200623195327.077871462@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
-References: <20200623195303.601828702@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,68 +47,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-[ Upstream commit eafa80041645cd7604c4357b1a0cd4a3c81f2227 ]
+[ Upstream commit 2da2b32fd9346009e9acdb68c570ca8d3966aba7 ]
 
-Currently pointer ep is being dereferenced before it is null checked
-leading to a null pointer dereference issue.  Fix this by only assigning
-pointer udc once ep is known to be not null.  Also remove a debug
-message that requires a valid udc which may not be possible at that
-point.
+CONFIG_PREEMPTION is selected by CONFIG_PREEMPT and by CONFIG_PREEMPT_RT.
+Both PREEMPT and PREEMPT_RT require the same functionality which today
+depends on CONFIG_PREEMPT.
 
-Addresses-Coverity: ("Dereference before null check")
-Fixes: 24a28e428351 ("USB: gadget driver for LPC32xx")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Update the comment to use CONFIG_PREEMPTION.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Acked-by: David S. Miller <davem@davemloft.net>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: netdev@vger.kernel.org
+Link: https://lore.kernel.org/r/20191015191821.11479-22-bigeasy@linutronix.de
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/udc/lpc32xx_udc.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ net/core/dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/udc/lpc32xx_udc.c b/drivers/usb/gadget/udc/lpc32xx_udc.c
-index ac2aa04ca6573..7107931617953 100644
---- a/drivers/usb/gadget/udc/lpc32xx_udc.c
-+++ b/drivers/usb/gadget/udc/lpc32xx_udc.c
-@@ -1615,17 +1615,17 @@ static int lpc32xx_ep_enable(struct usb_ep *_ep,
- 			     const struct usb_endpoint_descriptor *desc)
+diff --git a/net/core/dev.c b/net/core/dev.c
+index 50498a75c04bf..8db77e09387b8 100644
+--- a/net/core/dev.c
++++ b/net/core/dev.c
+@@ -902,7 +902,7 @@ EXPORT_SYMBOL(dev_get_by_napi_id);
+  *
+  *	The use of raw_seqcount_begin() and cond_resched() before
+  *	retrying is required as we want to give the writers a chance
+- *	to complete when CONFIG_PREEMPT is not set.
++ *	to complete when CONFIG_PREEMPTION is not set.
+  */
+ int netdev_get_name(struct net *net, char *name, int ifindex)
  {
- 	struct lpc32xx_ep *ep = container_of(_ep, struct lpc32xx_ep, ep);
--	struct lpc32xx_udc *udc = ep->udc;
-+	struct lpc32xx_udc *udc;
- 	u16 maxpacket;
- 	u32 tmp;
- 	unsigned long flags;
- 
- 	/* Verify EP data */
- 	if ((!_ep) || (!ep) || (!desc) ||
--	    (desc->bDescriptorType != USB_DT_ENDPOINT)) {
--		dev_dbg(udc->dev, "bad ep or descriptor\n");
-+	    (desc->bDescriptorType != USB_DT_ENDPOINT))
- 		return -EINVAL;
--	}
-+
-+	udc = ep->udc;
- 	maxpacket = usb_endpoint_maxp(desc);
- 	if ((maxpacket == 0) || (maxpacket > ep->maxpacket)) {
- 		dev_dbg(udc->dev, "bad ep descriptor's packet size\n");
-@@ -1873,7 +1873,7 @@ static int lpc32xx_ep_dequeue(struct usb_ep *_ep, struct usb_request *_req)
- static int lpc32xx_ep_set_halt(struct usb_ep *_ep, int value)
- {
- 	struct lpc32xx_ep *ep = container_of(_ep, struct lpc32xx_ep, ep);
--	struct lpc32xx_udc *udc = ep->udc;
-+	struct lpc32xx_udc *udc;
- 	unsigned long flags;
- 
- 	if ((!ep) || (ep->hwep_num <= 1))
-@@ -1883,6 +1883,7 @@ static int lpc32xx_ep_set_halt(struct usb_ep *_ep, int value)
- 	if (ep->is_in)
- 		return -EAGAIN;
- 
-+	udc = ep->udc;
- 	spin_lock_irqsave(&udc->lock, flags);
- 
- 	if (value == 1) {
 -- 
 2.25.1
 
