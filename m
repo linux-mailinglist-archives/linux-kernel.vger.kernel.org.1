@@ -2,90 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06FFB205A6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 20:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405E9205A6E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 20:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733138AbgFWSXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 14:23:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732549AbgFWSXH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 14:23:07 -0400
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69A0E2080C
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 18:23:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592936586;
-        bh=mMlwBfC/AOOA8JnRMj9iaiXiLFlpuJYlvC0Yf9g26Ik=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=xQrQjg6y/iqC5nV/7GeYlvU0lMwMI2kty3sk0InbiW5GIj4oyDPxFZx1T3cE4lmN2
-         nKVgQ/VlF7CPbMq9q9jOakGsVyc06wMm11Eiye6Vc3frgTVUyHYsZT5zAFdwuK96Q7
-         ao6H2go3xnCi7esJ5DZ9HtIqUr4OUle2ZdHk12oM=
-Received: by mail-wm1-f45.google.com with SMTP id a6so2797070wmm.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 11:23:06 -0700 (PDT)
-X-Gm-Message-State: AOAM530o2utKxDIhelIPedOYMXlcp2T0iz8RIxgRVj5aiCj0RI6P7k1P
-        L9/te0eH1WEXhtED7oMnQdC/5G2SUGRnjVu/6oQKyA==
-X-Google-Smtp-Source: ABdhPJyS1PbTOkEdceaB5phTsb9ndBNW3JTgHxChDtE/w1/bG95tI4QFkfi98PunLTLDyZgLYZL8XEJwJdLzizZzHKo=
-X-Received: by 2002:a1c:6202:: with SMTP id w2mr4504794wmb.176.1592936585053;
- Tue, 23 Jun 2020 11:23:05 -0700 (PDT)
+        id S1733176AbgFWSYr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 14:24:47 -0400
+Received: from outils.crapouillou.net ([89.234.176.41]:51528 "EHLO
+        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732549AbgFWSYr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 14:24:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1592936683; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:references; bh=Jo5zwpfouXsdEQg4LUVTZQR1ueuE0Fx3LvAue7M9EQ8=;
+        b=mqZMYW9VYrZe19z9Q+dxIxDGXqv6ddNt52vw1OzNL0gGmFCB08lL40OA3WN/MvKKbNCECI
+        qxGVz1hJX423gZJEdQOFoWmEN+IJGQ4KyaPT0yKU+9RuXeauS/a1J74UL1G386WqR8vYQN
+        +vyVWHGvm/OhQrutUvzOrdQAzc+xYUM=
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0?= <zhouyanjie@wanyeetech.com>,
+        od@zcrc.me, linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 1/7] dt-bindings: vendor-prefixes: Add YLM
+Date:   Tue, 23 Jun 2020 20:24:26 +0200
+Message-Id: <20200623182432.187843-1-paul@crapouillou.net>
 MIME-Version: 1.0
-References: <20200622190149.GL32200@zn.tnic> <B4D00859-000A-4F8C-8CFB-45B9BBCCA16D@amacapital.net>
- <20200623102831.GB32590@zn.tnic>
-In-Reply-To: <20200623102831.GB32590@zn.tnic>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Tue, 23 Jun 2020 11:22:53 -0700
-X-Gmail-Original-Message-ID: <CALCETrXfaEr9OGc5EDpxnhRZxFk5YZBBNVH-N32Eg8V8diwqXg@mail.gmail.com>
-Message-ID: <CALCETrXfaEr9OGc5EDpxnhRZxFk5YZBBNVH-N32Eg8V8diwqXg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] selftests/fpu: Add an FPU selftest
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        jpa@kernelbug.mail.kapsi.fi, Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 3:28 AM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Mon, Jun 22, 2020 at 12:37:12PM -0700, Andy Lutomirski wrote:
-> > It=E2=80=99s this whole mess:
-> >
-> > https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D53383
->
-> It really is a mess because our option detection doesn't really work. I d=
-id:
->
-> ifdef CONFIG_CC_IS_GCC
->   ifeq ($(call cc-option-yn,-mpreferred-stack-boundary=3D3),y)
->         dummy :=3D $(error "gcc supports -mpreferred-stack-boundary=3D3")
->   endif
->   ...
->
-> and doing:
->
-> $ make CC=3Dgcc-4.8 HOSTCC=3Dgcc-4.8 V=3D1 lib/test_fpu.ko
->
-> gives
->
-> lib/Makefile:110: *** "gcc supports -mpreferred-stack-boundary=3D3".  Sto=
-p.
->
-> That same compiler, however, says:
->
-> $ gcc-4.8 -mpreferred-stack-boundary=3D3 -c /tmp/foo.c
-> /tmp/foo.c:1:0: error: -mpreferred-stack-boundary=3D3 is not between 4 an=
-d 12
->
-> so I need to dig deep into cc-option* fun.
+Shenzhen Yangliming Electronic Technology Co., Ltd., abbreviated YLM or
+YLMChina, and known as Anbernic in the rest of the world, is a Chinese
+manufacturer of handheld game consoles, some of which are known to be
+running Linux.
 
-See that same atrocious bug report.  It's the insane interaction
-between -mno-sse2 and -mpreferred-stack-boundary.  So you need to
-cc-option them both?  Or just stick with a compiler version check, I
-guess.
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
---Andy
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 9aeab66be85f..d24ecc7614fa 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -1167,6 +1167,8 @@ patternProperties:
+     description: Shenzhen Xunlong Software CO.,Limited
+   "^xylon,.*":
+     description: Xylon
++  "^ylm,.*":
++    description: Shenzhen Yangliming Electronic Technology Co., Ltd.
+   "^yna,.*":
+     description: YSH & ATIL
+   "^yones-toptech,.*":
+-- 
+2.27.0
+
