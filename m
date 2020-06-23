@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917622063B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB54C2063DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391092AbgFWUcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:32:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52686 "EHLO mail.kernel.org"
+        id S2404127AbgFWVMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:12:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390959AbgFWUbz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:31:55 -0400
+        id S2390995AbgFWUb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:31:57 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D57AF20702;
-        Tue, 23 Jun 2020 20:31:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 607A9206C3;
+        Tue, 23 Jun 2020 20:31:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944315;
-        bh=hx8BGee8MJDNYt9B91ooy0vDGgvzquB2ThITlU8Mj7o=;
+        s=default; t=1592944317;
+        bh=rkZX3bav+4P9uCkgZwp0mQI+mbLg2e7iIaI1BqER1kU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qrh3NPJhwT/mogcEEqvM4hAJDILBuAdb87lYMgM6RWWM8GBMRqciMz4p2pCuyrLke
-         qp1aTqEZ/YmWMh4HTaMfDjbOy3rjNYwpVn4A6PxVB4V5E1wRsAIJFT9fXn1ruc9kZJ
-         EBC65akz7PfyA6rDNNzP1v9Za3p8KEM9brgoVc+g=
+        b=oBGWxG/HMDzKvrTYEwO0Zvsu3NH+BO/lJ5+F4nMOEquqIXa4+qsu5hvm+aEeYna3D
+         1M5a0uwN9D3kn6a0dl8407A7Z36dCls+mvkOV3CXwrqh+2v/E+K0eAGAY43mi2HnPa
+         u7TCapiWe6zmGjSzLQ5bTUIYez2e1aFYkdUlx3SE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zheng Bin <zhengbin13@huawei.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        stable@vger.kernel.org, Li RongQing <lirongqing@baidu.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn.topel@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 256/314] nfs: set invalid blocks after NFSv4 writes
-Date:   Tue, 23 Jun 2020 21:57:31 +0200
-Message-Id: <20200623195351.184939772@linuxfoundation.org>
+Subject: [PATCH 5.4 257/314] xdp: Fix xsk_generic_xmit errno
+Date:   Tue, 23 Jun 2020 21:57:32 +0200
+Message-Id: <20200623195351.232441183@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
 References: <20200623195338.770401005@linuxfoundation.org>
@@ -44,112 +45,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zheng Bin <zhengbin13@huawei.com>
+From: Li RongQing <lirongqing@baidu.com>
 
-[ Upstream commit 3a39e778690500066b31fe982d18e2e394d3bce2 ]
+[ Upstream commit aa2cad0600ed2ca6a0ab39948d4db1666b6c962b ]
 
-Use the following command to test nfsv4(size of file1M is 1MB):
-mount -t nfs -o vers=4.0,actimeo=60 127.0.0.1/dir1 /mnt
-cp file1M /mnt
-du -h /mnt/file1M  -->0 within 60s, then 1M
+Propagate sock_alloc_send_skb error code, not set it to
+EAGAIN unconditionally, when fail to allocate skb, which
+might cause that user space unnecessary loops.
 
-When write is done(cp file1M /mnt), will call this:
-nfs_writeback_done
-  nfs4_write_done
-    nfs4_write_done_cb
-      nfs_writeback_update_inode
-        nfs_post_op_update_inode_force_wcc_locked(change, ctime, mtime
-nfs_post_op_update_inode_force_wcc_locked
-   nfs_set_cache_invalid
-   nfs_refresh_inode_locked
-     nfs_update_inode
-
-nfsd write response contains change, ctime, mtime, the flag will be
-clear after nfs_update_inode. Howerver, write response does not contain
-space_used, previous open response contains space_used whose value is 0,
-so inode->i_blocks is still 0.
-
-nfs_getattr  -->called by "du -h"
-  do_update |= force_sync || nfs_attribute_cache_expired -->false in 60s
-  cache_validity = READ_ONCE(NFS_I(inode)->cache_validity)
-  do_update |= cache_validity & (NFS_INO_INVALID_ATTR    -->false
-  if (do_update) {
-        __nfs_revalidate_inode
-  }
-
-Within 60s, does not send getattr request to nfsd, thus "du -h /mnt/file1M"
-is 0.
-
-Add a NFS_INO_INVALID_BLOCKS flag, set it when nfsv4 write is done.
-
-Fixes: 16e143751727 ("NFS: More fine grained attribute tracking")
-Signed-off-by: Zheng Bin <zhengbin13@huawei.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Fixes: 35fcde7f8deb ("xsk: support for Tx")
+Signed-off-by: Li RongQing <lirongqing@baidu.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Acked-by: Björn Töpel <bjorn.topel@intel.com>
+Link: https://lore.kernel.org/bpf/1591852266-24017-1-git-send-email-lirongqing@baidu.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/inode.c         | 14 +++++++++++---
- include/linux/nfs_fs.h |  1 +
- 2 files changed, 12 insertions(+), 3 deletions(-)
+ net/xdp/xsk.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
-index 3802c88e83720..6de41f7412808 100644
---- a/fs/nfs/inode.c
-+++ b/fs/nfs/inode.c
-@@ -826,6 +826,8 @@ int nfs_getattr(const struct path *path, struct kstat *stat,
- 		do_update |= cache_validity & NFS_INO_INVALID_ATIME;
- 	if (request_mask & (STATX_CTIME|STATX_MTIME))
- 		do_update |= cache_validity & NFS_INO_REVAL_PAGECACHE;
-+	if (request_mask & STATX_BLOCKS)
-+		do_update |= cache_validity & NFS_INO_INVALID_BLOCKS;
- 	if (do_update) {
- 		/* Update the attribute cache */
- 		if (!(server->flags & NFS_MOUNT_NOAC))
-@@ -1750,7 +1752,8 @@ out_noforce:
- 	status = nfs_post_op_update_inode_locked(inode, fattr,
- 			NFS_INO_INVALID_CHANGE
- 			| NFS_INO_INVALID_CTIME
--			| NFS_INO_INVALID_MTIME);
-+			| NFS_INO_INVALID_MTIME
-+			| NFS_INO_INVALID_BLOCKS);
- 	return status;
- }
+diff --git a/net/xdp/xsk.c b/net/xdp/xsk.c
+index 7181a30666b4a..f9eb5efb237c7 100644
+--- a/net/xdp/xsk.c
++++ b/net/xdp/xsk.c
+@@ -362,10 +362,8 @@ static int xsk_generic_xmit(struct sock *sk)
  
-@@ -1857,7 +1860,8 @@ static int nfs_update_inode(struct inode *inode, struct nfs_fattr *fattr)
- 	nfsi->cache_validity &= ~(NFS_INO_INVALID_ATTR
- 			| NFS_INO_INVALID_ATIME
- 			| NFS_INO_REVAL_FORCED
--			| NFS_INO_REVAL_PAGECACHE);
-+			| NFS_INO_REVAL_PAGECACHE
-+			| NFS_INO_INVALID_BLOCKS);
+ 		len = desc.len;
+ 		skb = sock_alloc_send_skb(sk, len, 1, &err);
+-		if (unlikely(!skb)) {
+-			err = -EAGAIN;
++		if (unlikely(!skb))
+ 			goto out;
+-		}
  
- 	/* Do atomic weak cache consistency updates */
- 	nfs_wcc_update_inode(inode, fattr);
-@@ -2019,8 +2023,12 @@ static int nfs_update_inode(struct inode *inode, struct nfs_fattr *fattr)
- 		inode->i_blocks = nfs_calc_block_size(fattr->du.nfs3.used);
- 	} else if (fattr->valid & NFS_ATTR_FATTR_BLOCKS_USED)
- 		inode->i_blocks = fattr->du.nfs2.blocks;
--	else
-+	else {
-+		nfsi->cache_validity |= save_cache_validity &
-+				(NFS_INO_INVALID_BLOCKS
-+				| NFS_INO_REVAL_FORCED);
- 		cache_revalidated = false;
-+	}
- 
- 	/* Update attrtimeo value if we're out of the unstable period */
- 	if (attr_changed) {
-diff --git a/include/linux/nfs_fs.h b/include/linux/nfs_fs.h
-index 570a60c2f4f48..ad09c0cc54645 100644
---- a/include/linux/nfs_fs.h
-+++ b/include/linux/nfs_fs.h
-@@ -225,6 +225,7 @@ struct nfs4_copy_state {
- #define NFS_INO_INVALID_OTHER	BIT(12)		/* other attrs are invalid */
- #define NFS_INO_DATA_INVAL_DEFER	\
- 				BIT(13)		/* Deferred cache invalidation */
-+#define NFS_INO_INVALID_BLOCKS	BIT(14)         /* cached blocks are invalid */
- 
- #define NFS_INO_INVALID_ATTR	(NFS_INO_INVALID_CHANGE \
- 		| NFS_INO_INVALID_CTIME \
+ 		skb_put(skb, len);
+ 		addr = desc.addr;
 -- 
 2.25.1
 
