@@ -2,81 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34CA2204D60
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:05:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4DB5204D89
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732016AbgFWJFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 05:05:19 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:12525 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731894AbgFWJFS (ORCPT
+        id S1732047AbgFWJIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 05:08:38 -0400
+Received: from esa2.microchip.iphmx.com ([68.232.149.84]:49195 "EHLO
+        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731860AbgFWJIh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:05:18 -0400
-X-UUID: 476d30af18d14cd08b988024d5536bd0-20200623
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=KrSrGuuWaYdD1xn1WyvfP2hN+0NoJYvJhqKj27QkdiE=;
-        b=eUntoQE4VjF28P8VH9xdZRub0VHzYTYEd5Huq8Mm34YtPmJTH5JE0H015DJnqJQr9/nKeqlCmhmdA9VZXZU0W6BBMogD+QAQRNZX+OtxPDdH8SJ72AnLRJaQ+J984rzcfBSjqRk/7HSv3sUHn0owh6rhmA7S/guFGZ+LM1sSPAA=;
-X-UUID: 476d30af18d14cd08b988024d5536bd0-20200623
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1576730067; Tue, 23 Jun 2020 17:05:14 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 23 Jun 2020 17:05:06 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 23 Jun 2020 17:05:06 +0800
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     <linux-scsi@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <avri.altman@wdc.com>, <alim.akhtar@samsung.com>,
-        <jejb@linux.ibm.com>
-CC:     <beanhuo@micron.com>, <asutoshd@codeaurora.org>,
-        <cang@codeaurora.org>, <matthias.bgg@gmail.com>,
-        <bvanassche@acm.org>, <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <kuohong.wang@mediatek.com>,
-        <peter.wang@mediatek.com>, <chun-hung.wu@mediatek.com>,
-        <andy.teng@mediatek.com>, <chaotian.jing@mediatek.com>,
-        <cc.chou@mediatek.com>, Stanley Chu <stanley.chu@mediatek.com>
-Subject: [PATCH v1] scsi: ufs: Cleanup completed request without interrupt notification
-Date:   Tue, 23 Jun 2020 17:05:11 +0800
-Message-ID: <20200623090511.20085-1-stanley.chu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 23 Jun 2020 05:08:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1592903317; x=1624439317;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Hf1oiWAZW47J1FDqvjaGVKeQoXmDU3F9JmfEwLpOK8A=;
+  b=mNMCpDFQ/ZlUK35Xj75Q6McXc5Aua3ghekcAFyjU4ujMco7N9BfjX21m
+   m57kg8sOQB+wuj69QVrRQt6TmSDA+PXNF7U763w06rlP32ZG7P/ZVTzRz
+   zHrD5YhZztOpvb3NhbEJeXJu2BJ3DPmsNCwHHA2GaEx7pZWpHgEEqEIwh
+   JvQqSvCCaYdsqpJ1lZUz9jGIx/+gv1qw7MeahAU7d4w1/WkQucZJFh0VI
+   AzJwoxrGIxdJsq/x8SoSeeh0Ptc1Gpo9F2V3hHS3TeujlbGzVsse6jwAN
+   c3LAndnisSKSM5t6PLkypZITWFuFby5xG16Srr4RciCwLysdK5EiaNGZN
+   w==;
+IronPort-SDR: bAhNFfnu/8crGk787M99eNYA9w+l0xyHYdtsp5D4SrMsOMrq/6I365Ggvw21oPBRnpsk18eHbV
+ h7uaw5r7dckQA0mFLaG5GhkO5y+PPbGZI1mzvrxRPnficwBB/5ft8VT99ZeM47zoP6YlSoMP/A
+ iMvTosg9kA3WlDdRwzfe98tQSwhm1gJjg2ige+TVLOJdKw0AuPFiKeUTBmi22J0pxm9ksQYutN
+ N5OenKFSSdE5V4pcgKMbG8fxQPS9JbXfR/9L/cbYG6PckSB8CCrR8VlHd43k4eoRJwv9QJtZps
+ CaQ=
+X-IronPort-AV: E=Sophos;i="5.75,270,1589266800"; 
+   d="scan'208";a="79436702"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2020 02:08:36 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 23 Jun 2020 02:08:25 -0700
+Received: from soft-dev3.localdomain (10.10.115.15) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Tue, 23 Jun 2020 02:08:34 -0700
+From:   Horatiu Vultur <horatiu.vultur@microchip.com>
+To:     <nikolay@cumulusnetworks.com>, <roopa@cumulusnetworks.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
+        <UNGLinuxDriver@microchip.com>
+CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
+Subject: [PATCH net v2 0/2] bridge: mrp: Update MRP_PORT_ROLE
+Date:   Tue, 23 Jun 2020 11:05:39 +0200
+Message-ID: <20200623090541.2964760-1-horatiu.vultur@microchip.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SWYgc29tZWhvdyBubyBpbnRlcnJ1cHQgbm90aWZpY2F0aW9uIGlzIHJhaXNlZCBmb3IgYSBjb21w
-bGV0ZWQgcmVxdWVzdA0KYW5kIGl0cyBkb29yYmVsbCBiaXQgaXMgY2xlYXJlZCBieSBob3N0LCBV
-RlMgZHJpdmVyIG5lZWRzIHRvIGNsZWFudXANCml0cyBvdXRzdGFuZGluZyBiaXQgaW4gdWZzaGNk
-X2Fib3J0KCkuDQoNCk90aGVyd2lzZSwgc3lzdGVtIG1heSBjcmFzaCBieSBiZWxvdyBhYm5vcm1h
-bCBmbG93Og0KDQpBZnRlciB0aGlzIHJlcXVlc3QgaXMgcmVxdWV1ZWQgYnkgU0NTSSBsYXllciB3
-aXRoIGl0cw0Kb3V0c3RhbmRpbmcgYml0IHNldCwgdGhlIG5leHQgY29tcGxldGVkIHJlcXVlc3Qg
-d2lsbCB0cmlnZ2VyDQp1ZnNoY2RfdHJhbnNmZXJfcmVxX2NvbXBsKCkgdG8gaGFuZGxlIGFsbCAi
-Y29tcGxldGVkIG91dHN0YW5kaW5nDQpiaXRzIi4gSW4gdGhpcyB0aW1lLCB0aGUgImFibm9ybWFs
-IG91dHN0YW5kaW5nIGJpdCIgd2lsbCBiZSBkZXRlY3RlZA0KYW5kIHRoZSAicmVxdWV1ZWQgcmVx
-dWVzdCIgd2lsbCBiZSBjaG9zZW4gdG8gZXhlY3V0ZSByZXF1ZXN0DQpwb3N0LXByb2Nlc3Npbmcg
-Zmxvdy4gVGhpcyBpcyB3cm9uZyBhbmQgYmxrX2ZpbmlzaF9yZXF1ZXN0KCkgd2lsbA0KQlVHX09O
-IGJlY2F1c2UgdGhpcyByZXF1ZXN0IGlzIHN0aWxsIGluIHRoZSByZXF1ZXN0IHF1ZXVlLg0KDQpT
-aWduZWQtb2ZmLWJ5OiBTdGFubGV5IENodSA8c3RhbmxleS5jaHVAbWVkaWF0ZWsuY29tPg0KLS0t
-DQogZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYyB8IDMgKystDQogMSBmaWxlIGNoYW5nZWQsIDIg
-aW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9zY3Np
-L3Vmcy91ZnNoY2QuYyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzaGNkLmMNCmluZGV4IDUyYWJlODJh
-MTE2Ni4uZjE3M2FkMWJkNzlmIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2Qu
-Yw0KKysrIGIvZHJpdmVycy9zY3NpL3Vmcy91ZnNoY2QuYw0KQEAgLTY0NjIsNyArNjQ2Miw3IEBA
-IHN0YXRpYyBpbnQgdWZzaGNkX2Fib3J0KHN0cnVjdCBzY3NpX2NtbmQgKmNtZCkNCiAJCQkvKiBj
-b21tYW5kIGNvbXBsZXRlZCBhbHJlYWR5ICovDQogCQkJZGV2X2VycihoYmEtPmRldiwgIiVzOiBj
-bWQgYXQgdGFnICVkIHN1Y2Nlc3NmdWxseSBjbGVhcmVkIGZyb20gREIuXG4iLA0KIAkJCQlfX2Z1
-bmNfXywgdGFnKTsNCi0JCQlnb3RvIG91dDsNCisJCQlnb3RvIGNsZWFudXA7DQogCQl9IGVsc2Ug
-ew0KIAkJCWRldl9lcnIoaGJhLT5kZXYsDQogCQkJCSIlczogbm8gcmVzcG9uc2UgZnJvbSBkZXZp
-Y2UuIHRhZyA9ICVkLCBlcnIgJWRcbiIsDQpAQCAtNjQ5Niw2ICs2NDk2LDcgQEAgc3RhdGljIGlu
-dCB1ZnNoY2RfYWJvcnQoc3RydWN0IHNjc2lfY21uZCAqY21kKQ0KIAkJZ290byBvdXQ7DQogCX0N
-CiANCitjbGVhbnVwOg0KIAlzY3NpX2RtYV91bm1hcChjbWQpOw0KIA0KIAlzcGluX2xvY2tfaXJx
-c2F2ZShob3N0LT5ob3N0X2xvY2ssIGZsYWdzKTsNCi0tIA0KMi4xOC4wDQo=
+This patch series does the following:
+- fixes the enum br_mrp_port_role_type. It removes the port role none(0x2)
+  because this is in conflict with the standard. The standard defines the
+  interconnect port role as value 0x2.
+- adds checks regarding current defined port roles: primary(0x0) and
+  secondary(0x1).
+
+v2:
+ - add the validation code when setting the port role.
+
+Horatiu Vultur (2):
+  bridge: uapi: mrp: Fix MRP_PORT_ROLE
+  bridge: mrp: Validate when setting the port role
+
+ include/uapi/linux/mrp_bridge.h |  1 -
+ net/bridge/br_mrp.c             | 10 ++++++++--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+-- 
+2.26.2
 
