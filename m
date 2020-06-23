@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0775F206045
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E914206098
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392170AbgFWUlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:41:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37326 "EHLO mail.kernel.org"
+        id S2392594AbgFWUob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:44:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389939AbgFWUlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:41:00 -0400
+        id S2392578AbgFWUoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:44:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9D17920675;
-        Tue, 23 Jun 2020 20:41:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 847F421BE5;
+        Tue, 23 Jun 2020 20:44:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944861;
-        bh=M5b3VYofXKUdsZ3mPHAW68HmE9bw1kEkqwELp613G/k=;
+        s=default; t=1592945065;
+        bh=VEpwOoNAXrf0lY/sHuClb/G3dQizK8OAInVuRvISK4c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uUlMW/8ZjrXyGHhAx+VwSZLAnK2skmmr0UDuwjyD2yXiDJ1hnBPiYtudz7ZYCIlNZ
-         fKysQ7tIVDzD/smp6B3WwHCTY+zqahbzVtRYb1sLO0ANvfc7d2B6APzWjGGIKiiH3b
-         MfJVLtBRRdXx185YJPsNCFuQbGITtM2aM5cEHX/Q=
+        b=TWaAj8xi4bIYlS4D9NrsytCvowjXD0N3uE4jCzuLyp+6I6bP5KYr+CCDhwaFdpWg3
+         HL6zNjcyJ/qxC1rbKylLw+59ck4ICOy2LVIaOe++puhhTfpyAiktHH5G/rQo0Kn6U9
+         g6ciAkfjHcIENu2XxWPlEVIZ+vDdGz0goSLTOyEw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhihao Cheng <chengzhihao1@huawei.com>,
-        David Howells <dhowells@redhat.com>,
+        stable@vger.kernel.org, Daniel Wagner <dwagner@suse.de>,
+        James Smart <james.smart@broadcom.com>,
+        Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 153/206] afs: Fix memory leak in afs_put_sysnames()
+Subject: [PATCH 4.14 025/136] scsi: lpfc: Fix lpfc_nodelist leak when processing unsolicited event
 Date:   Tue, 23 Jun 2020 21:58:01 +0200
-Message-Id: <20200623195324.522836049@linuxfoundation.org>
+Message-Id: <20200623195304.907307648@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
+References: <20200623195303.601828702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,34 +47,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-[ Upstream commit 2ca068be09bf8e285036603823696140026dcbe7 ]
+[ Upstream commit 7217e6e694da3aae6d17db8a7f7460c8d4817ebf ]
 
-Fix afs_put_sysnames() to actually free the specified afs_sysnames
-object after its reference count has been decreased to zero and
-its contents have been released.
+In order to create or activate a new node, lpfc_els_unsol_buffer() invokes
+lpfc_nlp_init() or lpfc_enable_node() or lpfc_nlp_get(), all of them will
+return a reference of the specified lpfc_nodelist object to "ndlp" with
+increased refcnt.
 
-Fixes: 6f8880d8e681557 ("afs: Implement @sys substitution handling")
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
+When lpfc_els_unsol_buffer() returns, local variable "ndlp" becomes
+invalid, so the refcount should be decreased to keep refcount balanced.
+
+The reference counting issue happens in one exception handling path of
+lpfc_els_unsol_buffer(). When "ndlp" in DEV_LOSS, the function forgets to
+decrease the refcnt increased by lpfc_nlp_init() or lpfc_enable_node() or
+lpfc_nlp_get(), causing a refcnt leak.
+
+Fix this issue by calling lpfc_nlp_put() when "ndlp" in DEV_LOSS.
+
+Link: https://lore.kernel.org/r/1590416184-52592-1-git-send-email-xiyuyang19@fudan.edu.cn
+Reviewed-by: Daniel Wagner <dwagner@suse.de>
+Reviewed-by: James Smart <james.smart@broadcom.com>
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/afs/proc.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/lpfc/lpfc_els.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/afs/proc.c b/fs/afs/proc.c
-index 9101f62707af2..e445c02dea3df 100644
---- a/fs/afs/proc.c
-+++ b/fs/afs/proc.c
-@@ -512,6 +512,7 @@ void afs_put_sysnames(struct afs_sysnames *sysnames)
- 			if (sysnames->subs[i] != afs_init_sysname &&
- 			    sysnames->subs[i] != sysnames->blank)
- 				kfree(sysnames->subs[i]);
-+		kfree(sysnames);
+diff --git a/drivers/scsi/lpfc/lpfc_els.c b/drivers/scsi/lpfc/lpfc_els.c
+index 4c84c2ae1112d..db1111f7e85ae 100644
+--- a/drivers/scsi/lpfc/lpfc_els.c
++++ b/drivers/scsi/lpfc/lpfc_els.c
+@@ -7913,6 +7913,8 @@ lpfc_els_unsol_buffer(struct lpfc_hba *phba, struct lpfc_sli_ring *pring,
+ 	spin_lock_irq(shost->host_lock);
+ 	if (ndlp->nlp_flag & NLP_IN_DEV_LOSS) {
+ 		spin_unlock_irq(shost->host_lock);
++		if (newnode)
++			lpfc_nlp_put(ndlp);
+ 		goto dropit;
  	}
- }
- 
+ 	spin_unlock_irq(shost->host_lock);
 -- 
 2.25.1
 
