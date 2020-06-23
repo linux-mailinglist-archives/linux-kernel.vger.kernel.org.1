@@ -2,526 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 519F420598D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:42:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A798B205987
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387525AbgFWRmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 13:42:09 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:55864 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387919AbgFWRlC (ORCPT
+        id S2387849AbgFWRlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 13:41:50 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:41890 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733273AbgFWRls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 13:41:02 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NHePoP026264
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 10:40:59 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=pZpBYeXQCLFSUZiITxnPCalrcUCZr9g3rvT8VHJ14oE=;
- b=EZbNfGTTNTqE8QOYLrzGonnSUrtxyEHfZ3tEFQtNK1qhp4iTUEMb2fCXmNKeIGRUlElE
- dFAcNR8Rk+mvIr+jgUG6DKZbKqn/Y83hvSX3wf14h7kHsDqIloh8kBxueWj1Tny+W/uO
- IfxEteE/JTruy08J7Xbr4ewtoCH4SRkzRu0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31uk2uh5qn-20
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 10:40:59 -0700
-Received: from intmgw001.41.prn1.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Jun 2020 10:40:48 -0700
-Received: by devvm1291.vll0.facebook.com (Postfix, from userid 111017)
-        id ED314273E5F8; Tue, 23 Jun 2020 10:40:41 -0700 (PDT)
-Smtp-Origin-Hostprefix: devvm
-From:   Roman Gushchin <guro@fb.com>
-Smtp-Origin-Hostname: devvm1291.vll0.facebook.com
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>
-CC:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <kernel-team@fb.com>,
-        <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
-Smtp-Origin-Cluster: vll0c01
-Subject: [PATCH v7 18/19] kselftests: cgroup: add kernel memory accounting tests
-Date:   Tue, 23 Jun 2020 10:40:36 -0700
-Message-ID: <20200623174037.3951353-19-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200623174037.3951353-1-guro@fb.com>
-References: <20200623174037.3951353-1-guro@fb.com>
+        Tue, 23 Jun 2020 13:41:48 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05NHMZjH015017;
+        Tue, 23 Jun 2020 17:41:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=01fOHNPSwBjJzaf1P4ANrSZ8Ny4TlenXhzftmFd9g2g=;
+ b=bkVSOuX30qAbfW7g3HvLuMU7Ad7ZK3klyHd2us52MT9T7CqCn+Rcvu6UsYQWLHvmFfHc
+ NPSvyxic+lNg8dWMv2869qYiQsevVm9alH5rGdrL9NnvEQfB/rqPeGNvYOh3lHMxvCAR
+ 8Q0q6YqQLc0FRy0g+6JkpanL2OORvIgNpkq8mLNm6JTKBg4zm7Prq3EF9IRgFHqVR3Rw
+ WFiR5u/xuvUXvzR9h3UkmPL6WdpUSSifSc5wrsgc8UKsXjqDjKSf/9AIteBmin9VywLq
+ UW4DOGhPCCP49YRH2ZXKZMie6j3upeVh3om3I0/d49dvlCT/LxK7iVzB6FlIdGn+YTtm 5A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 31uk2rs9qv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 23 Jun 2020 17:41:39 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05NHNihx036985;
+        Tue, 23 Jun 2020 17:41:38 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 31uk3chd01-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Jun 2020 17:41:38 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05NHfaD7023654;
+        Tue, 23 Jun 2020 17:41:36 GMT
+Received: from [10.39.252.55] (/10.39.252.55)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 23 Jun 2020 17:41:36 +0000
+Subject: Re: [RFC PATCH v2] xen/privcmd: Convert get_user_pages*() to
+ pin_user_pages*()
+To:     Souptick Joarder <jrdr.linux@gmail.com>, jgross@suse.com,
+        sstabellini@kernel.org
+Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        John Hubbard <jhubbard@nvidia.com>
+References: <1592913499-15558-1-git-send-email-jrdr.linux@gmail.com>
+From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Autocrypt: addr=boris.ostrovsky@oracle.com; keydata=
+ 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
+ Jg6OxFYd01z+a+oL
+Message-ID: <c68a3805-080f-22c3-a4d3-f03be6b32176@oracle.com>
+Date:   Tue, 23 Jun 2020 13:41:33 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <1592913499-15558-1-git-send-email-jrdr.linux@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-23_11:2020-06-23,2020-06-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- bulkscore=0 priorityscore=1501 spamscore=0 malwarescore=0 suspectscore=2
- adultscore=0 clxscore=1015 phishscore=0 impostorscore=0 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006120000 definitions=main-2006230124
-X-FB-Internal: deliver
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9661 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 phishscore=0
+ suspectscore=0 bulkscore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006120000
+ definitions=main-2006230123
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9661 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
+ phishscore=0 mlxlogscore=999 impostorscore=0 lowpriorityscore=0
+ bulkscore=0 mlxscore=0 spamscore=0 clxscore=1015 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006120000 definitions=main-2006230123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add some tests to cover the kernel memory accounting functionality.  Thes=
-e
-are covering some issues (and changes) we had recently.
+On 6/23/20 7:58 AM, Souptick Joarder wrote:
+> In 2019, we introduced pin_user_pages*() and now we are converting
+> get_user_pages*() to the new API as appropriate. [1] & [2] could
+> be referred for more information. This is case 5 as per document [1].
+>
+> As discussed, pages need to be marked as dirty before unpinned it.
+>
+> Previously, if lock_pages() end up partially mapping pages, it used
+> to return -ERRNO due to which unlock_pages() have to go through
+> each pages[i] till *nr_pages* to validate them. This can be avoided
+> by passing correct number partially mapped pages & -ERRNO separately
+> while returning from lock_pages() due to error.
+> With this fix unlock_pages() doesn't need to validate pages[i] till
+> *nr_pages* for error scenario.
 
-1) A test which allocates a lot of negative dentries, checks memcg slab
-   statistics, creates memory pressure by setting memory.max to some low
-   value and checks that some number of slabs was reclaimed.
 
-2) A test which covers side effects of memcg destruction: it creates
-   and destroys a large number of sub-cgroups, each containing a
-   multi-threaded workload which allocates and releases some kernel
-   memory.  Then it checks that the charge ans memory.stats do add up on
-   the parent level.
+This should be split into two patches please. The first one will fix the
+return value bug (and will need to go to stable branches) and the second
+will use new routine to pin pages.
 
-3) A test which reads /proc/kpagecgroup and implicitly checks that it
-   doesn't crash the system.
 
-4) A test which spawns a large number of threads and checks that the
-   kernel stacks accounting works as expected.
+> @@ -580,25 +580,30 @@ static long privcmd_ioctl_mmap_batch(
+> =20
+>  static int lock_pages(
+>  	struct privcmd_dm_op_buf kbufs[], unsigned int num,
+> -	struct page *pages[], unsigned int nr_pages)
+> +	struct page *pages[], unsigned int nr_pages, int *errno)
 
-5) A test which checks that living charged slab objects are not
-   preventing the memory cgroup from being released after being deleted b=
-y
-   a user.
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
----
- tools/testing/selftests/cgroup/.gitignore  |   1 +
- tools/testing/selftests/cgroup/Makefile    |   2 +
- tools/testing/selftests/cgroup/test_kmem.c | 382 +++++++++++++++++++++
- 3 files changed, 385 insertions(+)
- create mode 100644 tools/testing/selftests/cgroup/test_kmem.c
+I'd prefer if you used more traditional way of returning error code by
+the function, and pass the number of pinned pages as an argument. This
+will also make call site simpler.
 
-diff --git a/tools/testing/selftests/cgroup/.gitignore b/tools/testing/se=
-lftests/cgroup/.gitignore
-index aa6de65b0838..84cfcabea838 100644
---- a/tools/testing/selftests/cgroup/.gitignore
-+++ b/tools/testing/selftests/cgroup/.gitignore
-@@ -2,3 +2,4 @@
- test_memcontrol
- test_core
- test_freezer
-+test_kmem
-\ No newline at end of file
-diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/self=
-tests/cgroup/Makefile
-index 967f268fde74..f027d933595b 100644
---- a/tools/testing/selftests/cgroup/Makefile
-+++ b/tools/testing/selftests/cgroup/Makefile
-@@ -6,11 +6,13 @@ all:
- TEST_FILES     :=3D with_stress.sh
- TEST_PROGS     :=3D test_stress.sh
- TEST_GEN_PROGS =3D test_memcontrol
-+TEST_GEN_PROGS +=3D test_kmem
- TEST_GEN_PROGS +=3D test_core
- TEST_GEN_PROGS +=3D test_freezer
-=20
- include ../lib.mk
-=20
- $(OUTPUT)/test_memcontrol: cgroup_util.c ../clone3/clone3_selftests.h
-+$(OUTPUT)/test_kmem: cgroup_util.c ../clone3/clone3_selftests.h
- $(OUTPUT)/test_core: cgroup_util.c ../clone3/clone3_selftests.h
- $(OUTPUT)/test_freezer: cgroup_util.c ../clone3/clone3_selftests.h
-diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/s=
-elftests/cgroup/test_kmem.c
-new file mode 100644
-index 000000000000..5224dae216e5
---- /dev/null
-+++ b/tools/testing/selftests/cgroup/test_kmem.c
-@@ -0,0 +1,382 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+
-+#include <linux/limits.h>
-+#include <fcntl.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <sys/wait.h>
-+#include <errno.h>
-+#include <sys/sysinfo.h>
-+#include <pthread.h>
-+
-+#include "../kselftest.h"
-+#include "cgroup_util.h"
-+
-+
-+static int alloc_dcache(const char *cgroup, void *arg)
-+{
-+	unsigned long i;
-+	struct stat st;
-+	char buf[128];
-+
-+	for (i =3D 0; i < (unsigned long)arg; i++) {
-+		snprintf(buf, sizeof(buf),
-+			"/something-non-existent-with-a-long-name-%64lu-%d",
-+			 i, getpid());
-+		stat(buf, &st);
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * This test allocates 100000 of negative dentries with long names.
-+ * Then it checks that "slab" in memory.stat is larger than 1M.
-+ * Then it sets memory.high to 1M and checks that at least 1/2
-+ * of slab memory has been reclaimed.
-+ */
-+static int test_kmem_basic(const char *root)
-+{
-+	int ret =3D KSFT_FAIL;
-+	char *cg =3D NULL;
-+	long slab0, slab1, current;
-+
-+	cg =3D cg_name(root, "kmem_basic_test");
-+	if (!cg)
-+		goto cleanup;
-+
-+	if (cg_create(cg))
-+		goto cleanup;
-+
-+	if (cg_run(cg, alloc_dcache, (void *)100000))
-+		goto cleanup;
-+
-+	slab0 =3D cg_read_key_long(cg, "memory.stat", "slab ");
-+	if (slab0 < (1 << 20))
-+		goto cleanup;
-+
-+	cg_write(cg, "memory.high", "1M");
-+	slab1 =3D cg_read_key_long(cg, "memory.stat", "slab ");
-+	if (slab1 <=3D 0)
-+		goto cleanup;
-+
-+	current =3D cg_read_long(cg, "memory.current");
-+	if (current <=3D 0)
-+		goto cleanup;
-+
-+	if (slab1 < slab0 / 2 && current < slab0 / 2)
-+		ret =3D KSFT_PASS;
-+cleanup:
-+	cg_destroy(cg);
-+	free(cg);
-+
-+	return ret;
-+}
-+
-+static void *alloc_kmem_fn(void *arg)
-+{
-+	alloc_dcache(NULL, (void *)100);
-+	return NULL;
-+}
-+
-+static int alloc_kmem_smp(const char *cgroup, void *arg)
-+{
-+	int nr_threads =3D 2 * get_nprocs();
-+	pthread_t *tinfo;
-+	unsigned long i;
-+	int ret =3D -1;
-+
-+	tinfo =3D calloc(nr_threads, sizeof(pthread_t));
-+	if (tinfo =3D=3D NULL)
-+		return -1;
-+
-+	for (i =3D 0; i < nr_threads; i++) {
-+		if (pthread_create(&tinfo[i], NULL, &alloc_kmem_fn,
-+				   (void *)i)) {
-+			free(tinfo);
-+			return -1;
-+		}
-+	}
-+
-+	for (i =3D 0; i < nr_threads; i++) {
-+		ret =3D pthread_join(tinfo[i], NULL);
-+		if (ret)
-+			break;
-+	}
-+
-+	free(tinfo);
-+	return ret;
-+}
-+
-+static int cg_run_in_subcgroups(const char *parent,
-+				int (*fn)(const char *cgroup, void *arg),
-+				void *arg, int times)
-+{
-+	char *child;
-+	int i;
-+
-+	for (i =3D 0; i < times; i++) {
-+		child =3D cg_name_indexed(parent, "child", i);
-+		if (!child)
-+			return -1;
-+
-+		if (cg_create(child)) {
-+			cg_destroy(child);
-+			free(child);
-+			return -1;
-+		}
-+
-+		if (cg_run(child, fn, NULL)) {
-+			cg_destroy(child);
-+			free(child);
-+			return -1;
-+		}
-+
-+		cg_destroy(child);
-+		free(child);
-+	}
-+
-+	return 0;
-+}
-+
-+/*
-+ * The test creates and destroys a large number of cgroups. In each cgro=
-up it
-+ * allocates some slab memory (mostly negative dentries) using 2 * NR_CP=
-US
-+ * threads. Then it checks the sanity of numbers on the parent level:
-+ * the total size of the cgroups should be roughly equal to
-+ * anon + file + slab + kernel_stack.
-+ */
-+static int test_kmem_memcg_deletion(const char *root)
-+{
-+	long current, slab, anon, file, kernel_stack, sum;
-+	int ret =3D KSFT_FAIL;
-+	char *parent;
-+
-+	parent =3D cg_name(root, "kmem_memcg_deletion_test");
-+	if (!parent)
-+		goto cleanup;
-+
-+	if (cg_create(parent))
-+		goto cleanup;
-+
-+	if (cg_write(parent, "cgroup.subtree_control", "+memory"))
-+		goto cleanup;
-+
-+	if (cg_run_in_subcgroups(parent, alloc_kmem_smp, NULL, 100))
-+		goto cleanup;
-+
-+	current =3D cg_read_long(parent, "memory.current");
-+	slab =3D cg_read_key_long(parent, "memory.stat", "slab ");
-+	anon =3D cg_read_key_long(parent, "memory.stat", "anon ");
-+	file =3D cg_read_key_long(parent, "memory.stat", "file ");
-+	kernel_stack =3D cg_read_key_long(parent, "memory.stat", "kernel_stack =
-");
-+	if (current < 0 || slab < 0 || anon < 0 || file < 0 ||
-+	    kernel_stack < 0)
-+		goto cleanup;
-+
-+	sum =3D slab + anon + file + kernel_stack;
-+	if (abs(sum - current) < 4096 * 32 * 2 * get_nprocs()) {
-+		ret =3D KSFT_PASS;
-+	} else {
-+		printf("memory.current =3D %ld\n", current);
-+		printf("slab + anon + file + kernel_stack =3D %ld\n", sum);
-+		printf("slab =3D %ld\n", slab);
-+		printf("anon =3D %ld\n", anon);
-+		printf("file =3D %ld\n", file);
-+		printf("kernel_stack =3D %ld\n", kernel_stack);
-+	}
-+
-+cleanup:
-+	cg_destroy(parent);
-+	free(parent);
-+
-+	return ret;
-+}
-+
-+/*
-+ * The test reads the entire /proc/kpagecgroup. If the operation went
-+ * successfully (and the kernel didn't panic), the test is treated as pa=
-ssed.
-+ */
-+static int test_kmem_proc_kpagecgroup(const char *root)
-+{
-+	unsigned long buf[128];
-+	int ret =3D KSFT_FAIL;
-+	ssize_t len;
-+	int fd;
-+
-+	fd =3D open("/proc/kpagecgroup", O_RDONLY);
-+	if (fd < 0)
-+		return ret;
-+
-+	do {
-+		len =3D read(fd, buf, sizeof(buf));
-+	} while (len > 0);
-+
-+	if (len =3D=3D 0)
-+		ret =3D KSFT_PASS;
-+
-+	close(fd);
-+	return ret;
-+}
-+
-+static void *pthread_wait_fn(void *arg)
-+{
-+	sleep(100);
-+	return NULL;
-+}
-+
-+static int spawn_1000_threads(const char *cgroup, void *arg)
-+{
-+	int nr_threads =3D 1000;
-+	pthread_t *tinfo;
-+	unsigned long i;
-+	long stack;
-+	int ret =3D -1;
-+
-+	tinfo =3D calloc(nr_threads, sizeof(pthread_t));
-+	if (tinfo =3D=3D NULL)
-+		return -1;
-+
-+	for (i =3D 0; i < nr_threads; i++) {
-+		if (pthread_create(&tinfo[i], NULL, &pthread_wait_fn,
-+				   (void *)i)) {
-+			free(tinfo);
-+			return(-1);
-+		}
-+	}
-+
-+	stack =3D cg_read_key_long(cgroup, "memory.stat", "kernel_stack ");
-+	if (stack >=3D 4096 * 1000)
-+		ret =3D 0;
-+
-+	free(tinfo);
-+	return ret;
-+}
-+
-+/*
-+ * The test spawns a process, which spawns 1000 threads. Then it checks
-+ * that memory.stat's kernel_stack is at least 1000 pages large.
-+ */
-+static int test_kmem_kernel_stacks(const char *root)
-+{
-+	int ret =3D KSFT_FAIL;
-+	char *cg =3D NULL;
-+
-+	cg =3D cg_name(root, "kmem_kernel_stacks_test");
-+	if (!cg)
-+		goto cleanup;
-+
-+	if (cg_create(cg))
-+		goto cleanup;
-+
-+	if (cg_run(cg, spawn_1000_threads, NULL))
-+		goto cleanup;
-+
-+	ret =3D KSFT_PASS;
-+cleanup:
-+	cg_destroy(cg);
-+	free(cg);
-+
-+	return ret;
-+}
-+
-+/*
-+ * This test sequentionally creates 30 child cgroups, allocates some
-+ * kernel memory in each of them, and deletes them. Then it checks
-+ * that the number of dying cgroups on the parent level is 0.
-+ */
-+static int test_kmem_dead_cgroups(const char *root)
-+{
-+	int ret =3D KSFT_FAIL;
-+	char *parent;
-+	long dead;
-+	int i;
-+
-+	parent =3D cg_name(root, "kmem_dead_cgroups_test");
-+	if (!parent)
-+		goto cleanup;
-+
-+	if (cg_create(parent))
-+		goto cleanup;
-+
-+	if (cg_write(parent, "cgroup.subtree_control", "+memory"))
-+		goto cleanup;
-+
-+	if (cg_run_in_subcgroups(parent, alloc_dcache, (void *)100, 30))
-+		goto cleanup;
-+
-+	for (i =3D 0; i < 5; i++) {
-+		dead =3D cg_read_key_long(parent, "cgroup.stat",
-+					"nr_dying_descendants ");
-+		if (dead =3D=3D 0) {
-+			ret =3D KSFT_PASS;
-+			break;
-+		}
-+		/*
-+		 * Reclaiming cgroups might take some time,
-+		 * let's wait a bit and repeat.
-+		 */
-+		sleep(1);
-+	}
-+
-+cleanup:
-+	cg_destroy(parent);
-+	free(parent);
-+
-+	return ret;
-+}
-+
-+#define T(x) { x, #x }
-+struct kmem_test {
-+	int (*fn)(const char *root);
-+	const char *name;
-+} tests[] =3D {
-+	T(test_kmem_basic),
-+	T(test_kmem_memcg_deletion),
-+	T(test_kmem_proc_kpagecgroup),
-+	T(test_kmem_kernel_stacks),
-+	T(test_kmem_dead_cgroups),
-+};
-+#undef T
-+
-+int main(int argc, char **argv)
-+{
-+	char root[PATH_MAX];
-+	int i, ret =3D EXIT_SUCCESS;
-+
-+	if (cg_find_unified_root(root, sizeof(root)))
-+		ksft_exit_skip("cgroup v2 isn't mounted\n");
-+
-+	/*
-+	 * Check that memory controller is available:
-+	 * memory is listed in cgroup.controllers
-+	 */
-+	if (cg_read_strstr(root, "cgroup.controllers", "memory"))
-+		ksft_exit_skip("memory controller isn't available\n");
-+
-+	if (cg_read_strstr(root, "cgroup.subtree_control", "memory"))
-+		if (cg_write(root, "cgroup.subtree_control", "+memory"))
-+			ksft_exit_skip("Failed to set memory controller\n");
-+
-+	for (i =3D 0; i < ARRAY_SIZE(tests); i++) {
-+		switch (tests[i].fn(root)) {
-+		case KSFT_PASS:
-+			ksft_test_result_pass("%s\n", tests[i].name);
-+			break;
-+		case KSFT_SKIP:
-+			ksft_test_result_skip("%s\n", tests[i].name);
-+			break;
-+		default:
-+			ret =3D EXIT_FAILURE;
-+			ksft_test_result_fail("%s\n", tests[i].name);
-+			break;
-+		}
-+	}
-+
-+	return ret;
-+}
---=20
-2.26.2
+
+-boris
 
