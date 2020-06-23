@@ -2,159 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6070204B64
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E428204B71
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731653AbgFWHkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 03:40:01 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:40914 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731588AbgFWHkA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 03:40:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592897999;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=bRQOtyl6lVhUbOXwbZ0j6gA48P7oZ6lHfj3tURdm+Qk=;
-        b=IrRgvi1FqQa6JaNlNuI4m4BstDE68ncGNsSdm/VHP3ae1XsvmIV4bJ27ZAPTqvvOIOwxV8
-        1zDOeCgglB6o+fFqpBWsw6lGCqD4L94Zt0iQPgwfbNxbzNAWjbRfHuZ/fEx2fxIIZ1A9yI
-        D86b9D68A2wKSHUrlcTVmB4lRZNn+g4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-152-GzDKbgbNOB2chCGTovowuA-1; Tue, 23 Jun 2020 03:39:57 -0400
-X-MC-Unique: GzDKbgbNOB2chCGTovowuA-1
-Received: by mail-wr1-f72.google.com with SMTP id r5so14477543wrt.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 00:39:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bRQOtyl6lVhUbOXwbZ0j6gA48P7oZ6lHfj3tURdm+Qk=;
-        b=oi+F12WBJLyeZb4N3M5wI3ADr3YJVVju2NGSsKfXQ9B/QAJD5Bkn+9w+6pnxevxegq
-         qxMFlvF9tVu/kRSQJh0VPjv+ZBR5uuz11VxIJMO3ZVjqKziY7uRqHCVDQUEl6sfSybol
-         8t8ASjOiMBgU6qaHr3jewXpF4QK1N1Aa6KLJC+r7coru63OJMF1y1izLIGv0S0/decwe
-         XPULqZyXewPClKR7tbd92PHyDI5k8a5kPSo6jMHNggGhtvRbBcBM/vNg8s0EnuaWWZT8
-         T4DXiFPL2VxUA6fttIB9f0gWRwd+f/bFaV2pEuHsBfKHhpyhmrPIPU4qvDqCf/damI8n
-         hI3A==
-X-Gm-Message-State: AOAM530cai8X9ZseflYk9J5QY+9BJcVftvlARi5t03RKyfbnagt7JNoM
-        DrYi9dtkpn8Z7O2YJ0HDsiX3AOB1wFpSM7kMqJUTdxz3wU8xSR+JkwcIZNezyLh9EtnJpOtu+uk
-        yhetZICG2CZtZdWnT98GGybzh
-X-Received: by 2002:adf:f68d:: with SMTP id v13mr22045557wrp.291.1592897996031;
-        Tue, 23 Jun 2020 00:39:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyROt/FdYOL7D3F3GIScbHmS1rmvcw9/x/W6kr1tp+rrM2/YM/ISk0VKoa0qpUQrUlimzfQsQ==
-X-Received: by 2002:adf:f68d:: with SMTP id v13mr22045539wrp.291.1592897995798;
-        Tue, 23 Jun 2020 00:39:55 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:24f5:23b:4085:b879? ([2001:b07:6468:f312:24f5:23b:4085:b879])
-        by smtp.gmail.com with ESMTPSA id d9sm21004342wre.28.2020.06.23.00.39.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jun 2020 00:39:55 -0700 (PDT)
-Subject: Re: [PATCH v2] kvm: Fix false positive RCU usage warning
-To:     madhuparnabhowmik10@gmail.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        tglx@linutronix.de, bp@alien8.de
-Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        joel@joelfernandes.org, paulmck@kernel.org, frextrite@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Paul McKenney <paulmck@linux.vnet.ibm.com>
-References: <20200516082227.22194-1-madhuparnabhowmik10@gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <9fff3c6b-1978-c647-16f7-563a1cdf62ff@redhat.com>
-Date:   Tue, 23 Jun 2020 09:39:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200516082227.22194-1-madhuparnabhowmik10@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S1731605AbgFWHnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 03:43:02 -0400
+Received: from mail-dm6nam11on2041.outbound.protection.outlook.com ([40.107.223.41]:61473
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731202AbgFWHnA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 03:43:00 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=niTRV8NdELmARNbfDdv/xdbSB0BIR/kZV+X+nIo+YWlq9MzuLfF7E0L1fRHrjNNUxrvq4T7zBTLwddtPeV0EEWqp2Z1alyAWnfm5seLuUu/Pt0str+eAWt0RcGU6aaMk+MuSTRTJGLi+eaZdLyWw5KEk4uB0wpsDa1tN4pZ6i+zeql/ffhntI0ElrDp9kAXgGn3hszA09L6l454FYnBojvg91u5JlyLfa6Kq7+pd/dmzuiMnfVgCfgmpZcAa8tWLiy00piaMcBfIlYum7OPEgEWGcabqYP2MK3M9TVNnsALargX0fR5cvl2iMUA8cJKxudrmgUIK3b4LmtjeBWmHNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E+6Aut4x5USxjqZpIM1tSTqyH+zSJWndUMIYTKAYafM=;
+ b=HuCfXNLEQipBDUGjKJPPh2mNraGIy0OO7O5D+OaqeHOvsiMxQQ0A7uhZUn3810GerD+3su9zfciG/HU/ACBJl1ScuCQguNoim5ne1xnLKKC7+u202W7a2NEUg9k5GKqQBCtr+j2hPYhb1tg6ky+g9xmbp9sNaSWApubzRrssC/Xf8bEILibwTrzKIgaHsAwP3R9k4glEuSyexR/eeqWVyJwrCEIaAFkkC4NBVfQ5jEelptESvUN3zBCLosu63pV6D/OXkImPbTlkadzEDAdmfzOQVFh5yzO5GG6NuM1KkzF+uUqk3jgRyCkS8tQYPFQQ4AspscAWz618PG6YRoWMJg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synaptics.com; dmarc=pass action=none
+ header.from=synaptics.com; dkim=pass header.d=synaptics.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Synaptics.onmicrosoft.com; s=selector2-Synaptics-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=E+6Aut4x5USxjqZpIM1tSTqyH+zSJWndUMIYTKAYafM=;
+ b=Yvdfst3Q0c78WY/5sXW84PCpFLXGYi9XTZMI+aausMiqArs3r6AXnStra9BO5Hunpm8O9AvE3HI8fgYhvtr4kOkvl1F5TyIydgSE+bySkip1tpaQRidsuLtX0zK+sfpI6iJ6IPc+D2idVGrUV6PqDmDrvcgFYPKC+YQjW3EEN5w=
+Authentication-Results: lunn.ch; dkim=none (message not signed)
+ header.d=none;lunn.ch; dmarc=none action=none header.from=synaptics.com;
+Received: from BYAPR03MB3573.namprd03.prod.outlook.com (2603:10b6:a02:ae::15)
+ by BY5PR03MB5141.namprd03.prod.outlook.com (2603:10b6:a03:1e9::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22; Tue, 23 Jun
+ 2020 07:42:56 +0000
+Received: from BYAPR03MB3573.namprd03.prod.outlook.com
+ ([fe80::d1ae:8ea7:ea:8998]) by BYAPR03MB3573.namprd03.prod.outlook.com
+ ([fe80::d1ae:8ea7:ea:8998%7]) with mapi id 15.20.3109.027; Tue, 23 Jun 2020
+ 07:42:56 +0000
+Date:   Tue, 23 Jun 2020 15:40:31 +0800
+From:   Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] net: phy: call phy_disable_interrupts() in
+ phy_init_hw()
+Message-ID: <20200623154031.736123a6@xhacker.debian>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: TYAPR01CA0205.jpnprd01.prod.outlook.com
+ (2603:1096:404:29::25) To BYAPR03MB3573.namprd03.prod.outlook.com
+ (2603:10b6:a02:ae::15)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from xhacker.debian (124.74.246.114) by TYAPR01CA0205.jpnprd01.prod.outlook.com (2603:1096:404:29::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.21 via Frontend Transport; Tue, 23 Jun 2020 07:42:53 +0000
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+X-Originating-IP: [124.74.246.114]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4fc45758-a606-4078-1be8-08d817490b28
+X-MS-TrafficTypeDiagnostic: BY5PR03MB5141:
+X-Microsoft-Antispam-PRVS: <BY5PR03MB51414D8E4FC430A31C2D3677ED940@BY5PR03MB5141.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 04433051BF
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oDxL2+NDkGAY9BzzpPqarjTGXjq0Mk8f6QDg+IyaWRUztSZsed8nIeIS80vjUujQyBwAErgkDlJcEI+fuKXzh6sixBOzn/HBPz72Ebdc9PzVis4y/PTFpxb4RJI12JTbGb75CNCA0sGfvkZavtSbzZ13ahjsnzqauv0Q1HyS86FcRlTpuShZADQNuR0aDFLFlK6pECB5WNxUaE9qeULfiaBoPBhmwI0UM5ZvDc2APlTstKva/MwR4iwM6hUOuIEQ31TaGpYP9SRTs3KiJFvuCZsBZtXMm7BdVyZwpjCUFDFB7EWsJ2owf3cuX7k+Ea5t
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR03MB3573.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(346002)(366004)(136003)(396003)(39860400002)(83380400001)(66476007)(66556008)(5660300002)(8676002)(55016002)(86362001)(6506007)(66946007)(9686003)(7696005)(52116002)(8936002)(316002)(2906002)(110136005)(478600001)(26005)(1076003)(186003)(4326008)(6666004)(16526019)(956004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: P1P1UHVcPp5dAV4FYAgppYKidSkUFERV3WauaU8eFVupEVKONQj2O85gTrFn71mG8tvx0dx3Zfa1YWRx7XIKRVLMQZZiauyAhzRuTphgzG9qRNlbPX9syk9EyBoWS5kPFPincP19QngcyzXUgkDL58XarMkknYRTdW9vrQAYaJbY8yzqqfHIlP3sMR0DURAvOnRJMck+NPMELtGEcWiKPjG+2oYuQo+4DWT8opIyi4H8FC077S5pwKTNancsm1+Gh/8v1WzEbK4OtCw0n3yxL6OMbLnFxfAGp/cp/CMCK0Ema/mET2WGbggrVdcYrm8/KjBJd6U3wSFgYNxFlzwu+78QemDwZKlTD27NNC3YroKUqy1Qd9YrNc+XQJakjvefStzb91eHkTaxAW/T3KfmPNwy6ufrNmW1DISU9FKzqYWoDMcfDsCtInR9Yz1uQo9fRQCTj4iLMn8AZxnkNmKnJwqnvKEoMGUpcPBk70LxVSo2sjTUUciiH25SgchBtZAi
+X-OriginatorOrg: synaptics.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4fc45758-a606-4078-1be8-08d817490b28
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2020 07:42:56.2952
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 335d1fbc-2124-4173-9863-17e7051a2a0e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: QrJvVCzE0wUYUQvqWYRJwk8QR9XZHii832S+HHEyBEv0EaWfaiAngkGMIp4yWMEHtryulVarQC3o9rhQyXr0BA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR03MB5141
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/05/20 10:22, madhuparnabhowmik10@gmail.com wrote:
-> From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-> 
-> Fix the following false positive warnings:
-> 
-> [ 9403.765413][T61744] =============================
-> [ 9403.786541][T61744] WARNING: suspicious RCU usage
-> [ 9403.807865][T61744] 5.7.0-rc1-next-20200417 #4 Tainted: G             L
-> [ 9403.838945][T61744] -----------------------------
-> [ 9403.860099][T61744] arch/x86/kvm/mmu/page_track.c:257 RCU-list traversed in non-reader section!!
-> 
-> and
-> 
-> [ 9405.859252][T61751] =============================
-> [ 9405.859258][T61751] WARNING: suspicious RCU usage
-> [ 9405.880867][T61755] -----------------------------
-> [ 9405.911936][T61751] 5.7.0-rc1-next-20200417 #4 Tainted: G             L
-> [ 9405.911942][T61751] -----------------------------
-> [ 9405.911950][T61751] arch/x86/kvm/mmu/page_track.c:232 RCU-list traversed in non-reader section!!
-> 
-> Since srcu read lock is held, these are false positive warnings.
-> Therefore, pass condition srcu_read_lock_held() to
-> list_for_each_entry_rcu().
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-> ---
-> v2:
-> -Rebase v5.7-rc5
-> 
->  arch/x86/kvm/mmu/page_track.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/page_track.c b/arch/x86/kvm/mmu/page_track.c
-> index ddc1ec3bdacd..1ad79c7aa05b 100644
-> --- a/arch/x86/kvm/mmu/page_track.c
-> +++ b/arch/x86/kvm/mmu/page_track.c
-> @@ -229,7 +229,8 @@ void kvm_page_track_write(struct kvm_vcpu *vcpu, gpa_t gpa, const u8 *new,
->  		return;
->  
->  	idx = srcu_read_lock(&head->track_srcu);
-> -	hlist_for_each_entry_rcu(n, &head->track_notifier_list, node)
-> +	hlist_for_each_entry_rcu(n, &head->track_notifier_list, node,
-> +				srcu_read_lock_held(&head->track_srcu))
->  		if (n->track_write)
->  			n->track_write(vcpu, gpa, new, bytes, n);
->  	srcu_read_unlock(&head->track_srcu, idx);
-> @@ -254,7 +255,8 @@ void kvm_page_track_flush_slot(struct kvm *kvm, struct kvm_memory_slot *slot)
->  		return;
->  
->  	idx = srcu_read_lock(&head->track_srcu);
-> -	hlist_for_each_entry_rcu(n, &head->track_notifier_list, node)
-> +	hlist_for_each_entry_rcu(n, &head->track_notifier_list, node,
-> +				srcu_read_lock_held(&head->track_srcu))
->  		if (n->track_flush_slot)
->  			n->track_flush_slot(kvm, slot, n);
->  	srcu_read_unlock(&head->track_srcu, idx);
-> 
+We face an issue with rtl8211f, a pin is shared between INTB and PMEB,
+and the PHY Register Accessible Interrupt is enabled by default, so
+the INTB/PMEB pin is always active in polling mode case.
 
-Hi, sorry for the delay in reviewing this patch.  I would like to ask
-Paul about it.
+As Heiner pointed out "I was thinking about calling
+phy_disable_interrupts() in phy_init_hw(), to have a defined init
+state as we don't know in which state the PHY is if the PHY driver is
+loaded. We shouldn't assume that it's the chip power-on defaults, BIOS
+or boot loader could have changed this. Or in case of dual-boot
+systems the other OS could leave the PHY in whatever state."
 
-While you're correctly fixing a false positive, hlist_for_each_entry_rcu
-would have a false _negative_ if you called it under
-rcu_read_lock/unlock and the data structure was protected by SRCU.  This
-is why for example srcu_dereference is used instead of
-rcu_dereference_check, and why srcu_dereference uses
-__rcu_dereference_check (with the two underscores) instead of
-rcu_dereference_check.  Using rcu_dereference_check would add an "||
-rcu_read_lock_held()" to the condition which is wrong.
+patch1 exports phy_disable_interrupts() so that it could be used in
+phy_init_hw() to have a defined init state.
 
-I think instead you should add hlist_for_each_srcu and
-hlist_for_each_entry_srcu macro to include/linux/rculist.h.
+patch2 calls phy_disable_interrupts() in phy_init_hw() to have a
+defined init state.
 
-There is no need for equivalents of hlist_for_each_entry_continue_rcu
-and hlist_for_each_entry_from_rcu, because they use rcu_dereference_raw.
- However, it's not documented why they do so.
+Since v1:
+  - EXPORT the correct symbol
 
-Paul, do you have any objections to the idea?  Thanks,
+Jisheng Zhang (2):
+  net: phy: export phy_disable_interrupts()
+  net: phy: call phy_disable_interrupts() in phy_init_hw()
 
-Paolo
+ drivers/net/phy/phy.c        | 3 ++-
+ drivers/net/phy/phy_device.c | 7 +++++--
+ include/linux/phy.h          | 1 +
+ 3 files changed, 8 insertions(+), 3 deletions(-)
+
+-- 
+2.27.0
 
