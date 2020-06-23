@@ -2,103 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB94B204609
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF0920460F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732309AbgFWAnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:43:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732206AbgFWAnh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:43:37 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8433208C9;
-        Tue, 23 Jun 2020 00:43:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592873017;
-        bh=W71h2ih2dtjuzTg+Q4WM3mdjGw4wMUnmlmQ3ZMNlS6s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iH5UN9HSyfdjQH6SXqCBDZCnZoQKDcw32BX0cdQGv/WanI05g+ULGJDRLwxHdczyg
-         BT2obQRx6Xvp/I2flg542w84BCfKjNejImof9h8jnDOocK+EnWc4mV58JaGRA3A6nc
-         y+mLeErq2LWSCBQBSVupAKiHmoCmHD5KQq2cGUdk=
-From:   paulmck@kernel.org
-To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        kernel-team@fb.com, mingo@kernel.org
-Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
-        dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 10/10] kcsan: Add jiffies test to test suite
-Date:   Mon, 22 Jun 2020 17:43:33 -0700
-Message-Id: <20200623004333.27227-10-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200623003731.GA26717@paulmck-ThinkPad-P72>
-References: <20200623003731.GA26717@paulmck-ThinkPad-P72>
+        id S1731954AbgFWAqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:46:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731729AbgFWAqU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:46:20 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9805C061795
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 17:45:26 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id l188so4339192qkf.10
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 17:45:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=FBwIr+e7jchXkt4H6NuRTDKCZPzK552qDXzcqbEDs6A=;
+        b=KvLMDgYyXyMPI7eTp85e3a/i4y9HPaeqg07wSFPssZfnEXEecckD/ppMG6XW2NJcHU
+         Xl/5cocxTIR91efDHjl/CCC//+USry2FvyNoKbQDRySIz1b1D+iawmDyxFkvH8lfGbNl
+         DngNEmdT7aFQtMxwvBTJQ5fNtJcCyTtCv71CztBmsJ2uw3Mkq+cp4dnHi6Y7J8OAsiKO
+         e3H/aHRoRVG/KAA8gP3B8BLARaoFHX4t+X7LUWRY2kk28c42kHbSNiP1q1GpwInNB5Gl
+         xGte3AsxjbBgHA7aHstHMeDHaaJbh7GvL4fFBzOPzKnvsCzFGfSClnwA0xGa8bd1A74W
+         QMRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=FBwIr+e7jchXkt4H6NuRTDKCZPzK552qDXzcqbEDs6A=;
+        b=h2LdC75nflPRzZbIYSyAoH+P99p34+Qxhs0yWOkFyzuvhmte/o2YEMO54km6xJhsuW
+         EdP0ArjfZlfJ2j4Zdxw+EWL8cOE2dfYGA54//Lp3/I2qMLE+pNZ3D1x55GVMqTpFHlDa
+         kp0Hc7m0/T8UmYnufjGBVm4V6CgfYbBSy4q7dn3wlDIcCjNKhresVyxDLyUBFF9YecLl
+         87nFLhpetJB7Gum9QjyAyhmb+eWh+59yzi0DvIyd8jvxRyawXthsp/25gYLqM4g53hh+
+         mKmuOrFGqY3AW0PA4Rb2AOlAcQMEsHT00rOX8VwZhuNjrpmJoo+ObN+iR8ZFr26vLdvP
+         GsfQ==
+X-Gm-Message-State: AOAM53387G94bW+Vb7tPVcDRiH660E79XLE9R1gRTVulLiCPK5TRQdA4
+        4HGnWGEa/5k3IoQr/OhE/WeBjFUc
+X-Google-Smtp-Source: ABdhPJyrvMyw/vRiwaIk+6bsDB49ocS0y4w+9Qel4O1jM1875NmTOtCphmQoLZMRBTctpPG4nrtiNA==
+X-Received: by 2002:a37:488c:: with SMTP id v134mr18322081qka.318.1592873125630;
+        Mon, 22 Jun 2020 17:45:25 -0700 (PDT)
+Received: from localhost.localdomain ([72.53.229.195])
+        by smtp.gmail.com with ESMTPSA id r2sm9493715qtn.27.2020.06.22.17.45.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 17:45:25 -0700 (PDT)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Deepa Dinamani <deepa.kernel@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Janos Farkas <chexum+dev@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH v1 0/2] address romfs performance regression
+Date:   Mon, 22 Jun 2020 20:45:18 -0400
+Message-Id: <20200623004520.26520-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Elver <elver@google.com>
+Tree: next-20200613
 
-Add a test that KCSAN nor the compiler gets confused about accesses to
-jiffies on different architectures.
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Deepa Dinamani <deepa.kernel@gmail.com>
+Cc: David Howells <dhowells@redhat.com>
+Cc: "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc: Janos Farkas <chexum+dev@gmail.com>
+Cc: Jeff Layton <jlayton@kernel.org>
+To: linux-kernel@vger.kernel.org
 
-Signed-off-by: Marco Elver <elver@google.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/kcsan/kcsan-test.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+Sven Van Asbroeck (2):
+  romfs: use s_blocksize(_bits) if CONFIG_BLOCK
+  romfs: address performance regression since v3.10
 
-diff --git a/kernel/kcsan/kcsan-test.c b/kernel/kcsan/kcsan-test.c
-index 3af420a..fed6fcb 100644
---- a/kernel/kcsan/kcsan-test.c
-+++ b/kernel/kcsan/kcsan-test.c
-@@ -366,6 +366,11 @@ static noinline void test_kernel_read_struct_zero_size(void)
- 	kcsan_check_read(&test_struct.val[3], 0);
- }
- 
-+static noinline void test_kernel_jiffies_reader(void)
-+{
-+	sink_value((long)jiffies);
-+}
-+
- static noinline void test_kernel_seqlock_reader(void)
- {
- 	unsigned int seq;
-@@ -817,6 +822,23 @@ static void test_assert_exclusive_access_scoped(struct kunit *test)
- 	KUNIT_EXPECT_TRUE(test, match_expect_inscope);
- }
- 
-+/*
-+ * jiffies is special (declared to be volatile) and its accesses are typically
-+ * not marked; this test ensures that the compiler nor KCSAN gets confused about
-+ * jiffies's declaration on different architectures.
-+ */
-+__no_kcsan
-+static void test_jiffies_noreport(struct kunit *test)
-+{
-+	bool match_never = false;
-+
-+	begin_test_checks(test_kernel_jiffies_reader, test_kernel_jiffies_reader);
-+	do {
-+		match_never = report_available();
-+	} while (!end_test_checks(match_never));
-+	KUNIT_EXPECT_FALSE(test, match_never);
-+}
-+
- /* Test that racing accesses in seqlock critical sections are not reported. */
- __no_kcsan
- static void test_seqlock_noreport(struct kunit *test)
-@@ -867,6 +889,7 @@ static struct kunit_case kcsan_test_cases[] = {
- 	KCSAN_KUNIT_CASE(test_assert_exclusive_bits_nochange),
- 	KCSAN_KUNIT_CASE(test_assert_exclusive_writer_scoped),
- 	KCSAN_KUNIT_CASE(test_assert_exclusive_access_scoped),
-+	KCSAN_KUNIT_CASE(test_jiffies_noreport),
- 	KCSAN_KUNIT_CASE(test_seqlock_noreport),
- 	{},
- };
+ fs/romfs/storage.c | 25 ++++++++--------
+ fs/romfs/super.c   | 71 ++++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 78 insertions(+), 18 deletions(-)
+
 -- 
-2.9.5
+2.17.1
 
