@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8CF6205F52
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680B9206029
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391244AbgFWUbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:31:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52148 "EHLO mail.kernel.org"
+        id S2392146AbgFWUkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:40:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391209AbgFWUbc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:31:32 -0400
+        id S2392199AbgFWUkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:40:02 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB11920702;
-        Tue, 23 Jun 2020 20:31:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E47021582;
+        Tue, 23 Jun 2020 20:40:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944292;
-        bh=pkncohXc3N1rYuk3wS5rxPgdh0vP0fbE21NXGVVukP4=;
+        s=default; t=1592944802;
+        bh=NzjNbYdWoDBkpJahk6tIwE3w4sDcdCjJ/9LtBlllqwA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=A1N2sMcAxwEvUuy6AW/ZhUn0/l97JzBCX35s49F9+l1f9NZYdxB5MPyIPA9GO85Fe
-         4LeSkU1pXdFMWMwtWwL68zeE4vDEGnZmq53/CwF8eRXuEmwWBqmxZM+LLZgoCkeumB
-         yDE81P7hGPAsfiDAvsDjcTRle1lUt24bQo8jRY/s=
+        b=lbBwMpaHrChc9D88qXlYE2oXAw5OCZUqcmZxviaacTX63MnLRIn+wnsxygUbfeTnj
+         +hqxUWdgUqW4rYLfRhUUZ1n2dbW56/HLlHPEEJT75VJaTSObpYDdeB3Yq/Qn9479m7
+         Ub19exNMYO0MKxMMmgcQB23PG09nCt5nv9Fw3FhQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>,
-        Sanjay R Mehta <sanju.mehta@amd.com>,
-        Arindam Nath <arindam.nath@amd.com>,
-        Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 230/314] ntb_perf: pass correct struct device to dma_alloc_coherent
-Date:   Tue, 23 Jun 2020 21:57:05 +0200
-Message-Id: <20200623195349.921527002@linuxfoundation.org>
+        stable@vger.kernel.org, Christophe Leroy <christophe.leroy@c-s.fr>,
+        Qian Cai <cai@lca.pw>, Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 100/206] powerpc/64s/pgtable: fix an undefined behaviour
+Date:   Tue, 23 Jun 2020 21:57:08 +0200
+Message-Id: <20200623195321.858826607@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,59 +44,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sanjay R Mehta <sanju.mehta@amd.com>
+From: Qian Cai <cai@lca.pw>
 
-[ Upstream commit 98f4e140264eeb52f22ff05be6b6dd48237255ac ]
+[ Upstream commit c2e929b18cea6cbf71364f22d742d9aad7f4677a ]
 
-Currently, ntb->dev is passed to dma_alloc_coherent
-and dma_free_coherent calls. The returned dma_addr_t
-is the CPU physical address. This works fine as long
-as IOMMU is disabled. But when IOMMU is enabled, we
-need to make sure that IOVA is returned for dma_addr_t.
-So the correct way to achieve this is by changing the
-first parameter of dma_alloc_coherent() as ntb->pdev->dev
-instead.
+Booting a power9 server with hash MMU could trigger an undefined
+behaviour because pud_offset(p4d, 0) will do,
 
-Fixes: 5648e56d03fa ("NTB: ntb_perf: Add full multi-port NTB API support")
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Signed-off-by: Sanjay R Mehta <sanju.mehta@amd.com>
-Signed-off-by: Arindam Nath <arindam.nath@amd.com>
-Signed-off-by: Jon Mason <jdmason@kudzu.us>
+0 >> (PAGE_SHIFT:16 + PTE_INDEX_SIZE:8 + H_PMD_INDEX_SIZE:10)
+
+Fix it by converting pud_index() and friends to static inline
+functions.
+
+UBSAN: shift-out-of-bounds in arch/powerpc/mm/ptdump/ptdump.c:282:15
+shift exponent 34 is too large for 32-bit type 'int'
+CPU: 6 PID: 1 Comm: swapper/0 Not tainted 5.6.0-rc4-next-20200303+ #13
+Call Trace:
+dump_stack+0xf4/0x164 (unreliable)
+ubsan_epilogue+0x18/0x78
+__ubsan_handle_shift_out_of_bounds+0x160/0x21c
+walk_pagetables+0x2cc/0x700
+walk_pud at arch/powerpc/mm/ptdump/ptdump.c:282
+(inlined by) walk_pagetables at arch/powerpc/mm/ptdump/ptdump.c:311
+ptdump_check_wx+0x8c/0xf0
+mark_rodata_ro+0x48/0x80
+kernel_init+0x74/0x194
+ret_from_kernel_thread+0x5c/0x74
+
+Suggested-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Signed-off-by: Qian Cai <cai@lca.pw>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Reviewed-by: Christophe Leroy <christophe.leroy@c-s.fr>
+Link: https://lore.kernel.org/r/20200306044852.3236-1-cai@lca.pw
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ntb/test/ntb_perf.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/powerpc/include/asm/book3s/64/pgtable.h | 23 ++++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/ntb/test/ntb_perf.c b/drivers/ntb/test/ntb_perf.c
-index e9b7c2dfc7301..52c29791fc02a 100644
---- a/drivers/ntb/test/ntb_perf.c
-+++ b/drivers/ntb/test/ntb_perf.c
-@@ -556,7 +556,7 @@ static void perf_free_inbuf(struct perf_peer *peer)
- 		return;
+diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
+index 2aea6efc2e63d..008eb63fa851d 100644
+--- a/arch/powerpc/include/asm/book3s/64/pgtable.h
++++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
+@@ -985,10 +985,25 @@ extern struct page *pgd_page(pgd_t pgd);
+ #define pud_page_vaddr(pud)	__va(pud_val(pud) & ~PUD_MASKED_BITS)
+ #define pgd_page_vaddr(pgd)	__va(pgd_val(pgd) & ~PGD_MASKED_BITS)
  
- 	(void)ntb_mw_clear_trans(peer->perf->ntb, peer->pidx, peer->gidx);
--	dma_free_coherent(&peer->perf->ntb->dev, peer->inbuf_size,
-+	dma_free_coherent(&peer->perf->ntb->pdev->dev, peer->inbuf_size,
- 			  peer->inbuf, peer->inbuf_xlat);
- 	peer->inbuf = NULL;
- }
-@@ -585,8 +585,9 @@ static int perf_setup_inbuf(struct perf_peer *peer)
+-#define pgd_index(address) (((address) >> (PGDIR_SHIFT)) & (PTRS_PER_PGD - 1))
+-#define pud_index(address) (((address) >> (PUD_SHIFT)) & (PTRS_PER_PUD - 1))
+-#define pmd_index(address) (((address) >> (PMD_SHIFT)) & (PTRS_PER_PMD - 1))
+-#define pte_index(address) (((address) >> (PAGE_SHIFT)) & (PTRS_PER_PTE - 1))
++static inline unsigned long pgd_index(unsigned long address)
++{
++	return (address >> PGDIR_SHIFT) & (PTRS_PER_PGD - 1);
++}
++
++static inline unsigned long pud_index(unsigned long address)
++{
++	return (address >> PUD_SHIFT) & (PTRS_PER_PUD - 1);
++}
++
++static inline unsigned long pmd_index(unsigned long address)
++{
++	return (address >> PMD_SHIFT) & (PTRS_PER_PMD - 1);
++}
++
++static inline unsigned long pte_index(unsigned long address)
++{
++	return (address >> PAGE_SHIFT) & (PTRS_PER_PTE - 1);
++}
  
- 	perf_free_inbuf(peer);
- 
--	peer->inbuf = dma_alloc_coherent(&perf->ntb->dev, peer->inbuf_size,
--					 &peer->inbuf_xlat, GFP_KERNEL);
-+	peer->inbuf = dma_alloc_coherent(&perf->ntb->pdev->dev,
-+					 peer->inbuf_size, &peer->inbuf_xlat,
-+					 GFP_KERNEL);
- 	if (!peer->inbuf) {
- 		dev_err(&perf->ntb->dev, "Failed to alloc inbuf of %pa\n",
- 			&peer->inbuf_size);
-@@ -1517,4 +1518,3 @@ static void __exit perf_exit(void)
- 	destroy_workqueue(perf_wq);
- }
- module_exit(perf_exit);
--
+ /*
+  * Find an entry in a page-table-directory.  We combine the address region
 -- 
 2.25.1
 
