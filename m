@@ -2,46 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E77204883
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 06:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68886204887
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 06:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732348AbgFWEJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 00:09:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43222 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732293AbgFWEJD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 00:09:03 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AAC3C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 21:09:03 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 799E4120F940C;
-        Mon, 22 Jun 2020 21:09:02 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 21:09:01 -0700 (PDT)
-Message-Id: <20200622.210901.99981901710126146.davem@davemloft.net>
-To:     likaige@loongson.cn
-Cc:     benve@cisco.com, _govind@gmx.com, yangtiezhu@loongson.cn,
-        lixuefeng@loongson.cn, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] net/cisco: Fix a sleep-in-atomic-context bug in
- enic_init_affinity_hint()
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <1592831473-21280-1-git-send-email-likaige@loongson.cn>
-References: <1592831473-21280-1-git-send-email-likaige@loongson.cn>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Mon, 22 Jun 2020 21:09:02 -0700 (PDT)
+        id S1732058AbgFWEJR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 00:09:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732100AbgFWEJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 00:09:14 -0400
+Received: from localhost (unknown [171.61.66.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FE95208A7;
+        Tue, 23 Jun 2020 04:09:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592885354;
+        bh=ZRJiyt96N9POXJVP7NHy1iE13kRK0Ty6Vm6e9HZ9pdc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GT81H/dR7h27MNGFDfBssIYh31YIzJ0kJgkvPdw3ZuIg8vEN+VBiNFzSUx/clnqV5
+         76i9o1tJgtjDMR2ioYpVIi2dBvy3ZTg3mirN4jIYKzIavI3R3W8rpyI21vi+QWnlAQ
+         0B9wtwCgZe+YGtvP+uiQwBuU3jgbe3eGPcaI+oac=
+Date:   Tue, 23 Jun 2020 09:39:10 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
+        linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] ALSA: compress: document the compress audio state
+ machine
+Message-ID: <20200623040910.GP2324254@vkoul-mobl>
+References: <20200622065811.221485-1-vkoul@kernel.org>
+ <20200622065811.221485-2-vkoul@kernel.org>
+ <800a2632-b263-500f-707e-c1ce94ce92d4@linux.intel.com>
+ <20200622151334.GW71940@ediswmail.ad.cirrus.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200622151334.GW71940@ediswmail.ad.cirrus.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 22-06-20, 15:13, Charles Keepax wrote:
+> On Mon, Jun 22, 2020 at 08:28:48AM -0500, Pierre-Louis Bossart wrote:
+> > On 6/22/20 1:58 AM, Vinod Koul wrote:
+                      +----------+
+> > a) can you clarify if we can go from running to free directly? is
+> > this really a legit transition? There's already the option of doing
+> > a stop and a a drain.
+> > 
+> 
+> This is allowed in the current code, the kernel sends the stop
+> internally in this case, so it kinda does go through the setup
+> state just not from the users view point. I am not sure I have a
+> good handle on if that makes sense or not.
 
-Networking changes must be submitted with netdev@vger.kernel.org
+The idea was to stop first so that we can handle dmas which might be
+setup (like running/paused/prepared). So we should stop first and then
+free up. But i think it was an overkill... :)
 
-Thank you.
+> > c) no way to stop a paused stream?
+> 
+> Currently the code does allow this and it certainly makes sense so
+> should probably be added.
+
+Yes will add
+
+-- 
+~Vinod
