@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7803206084
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1A8A2060E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:49:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390087AbgFWUnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:43:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40544 "EHLO mail.kernel.org"
+        id S2392915AbgFWUrx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:47:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46414 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392537AbgFWUng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:43:36 -0400
+        id S2404079AbgFWUrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:47:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4BE9621883;
-        Tue, 23 Jun 2020 20:43:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 482D121548;
+        Tue, 23 Jun 2020 20:47:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945016;
-        bh=aVQvAqoDRPXw5wPyTnBE2z3xocTyKQd+x9V86cnGcwc=;
+        s=default; t=1592945267;
+        bh=fo5IicuzVZcxkY15Ztxrcpm6Hb1BOiwqofyzoKjdMBk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oea1dc6GL7BfdxBe7DoMww25/9mDb6yY2tHIXcO5YyLjNJjeqeLjS4dzJq4Cos1Bg
-         v9JXkz9YqA/Fm7j2b/whHbrocErOmwIL5M/APMB5Molg9in7C3xo6rk932qGRhfjov
-         GtYnhnIPj7YHBICD/fhNcbVa4lUtT7p6CdxEaxBE=
+        b=Tmj/PCkygy6axZMSlYMLZSKWrzMyEV16JNCYu/Ok9wtsqRyh+M989nROtA2dBeYF2
+         4RnpPcLmcWTHqC2n2f4UxsBZLKd8dN57X9sARvrveuocfAJRRlDvpjLmZeswX7t5ci
+         E8J0YpV+YLl7ZwF5E+W21WSJ33BT9Q/3ClbQCM18=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stable@vger.kernel.org, Chen Yu <yu.c.chen@intel.com>,
-        Aaron Brown <aaron.f.brown@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Subject: [PATCH 4.19 201/206] e1000e: Do not wake up the system via WOL if device wakeup is disabled
-Date:   Tue, 23 Jun 2020 21:58:49 +0200
-Message-Id: <20200623195326.928100772@linuxfoundation.org>
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 074/136] usb: gadget: fix potential double-free in m66592_probe.
+Date:   Tue, 23 Jun 2020 21:58:50 +0200
+Message-Id: <20200623195307.401290675@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
+References: <20200623195303.601828702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,65 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Yu <yu.c.chen@intel.com>
+From: Qiushi Wu <wu000273@umn.edu>
 
-commit 6bf6be1127f7e6d4bf39f84d56854e944d045d74 upstream.
+[ Upstream commit 44734a594196bf1d474212f38fe3a0d37a73278b ]
 
-Currently the system will be woken up via WOL(Wake On LAN) even if the
-device wakeup ability has been disabled via sysfs:
- cat /sys/devices/pci0000:00/0000:00:1f.6/power/wakeup
- disabled
+m66592_free_request() is called under label "err_add_udc"
+and "clean_up", and m66592->ep0_req is not set to NULL after
+first free, leading to a double-free. Fix this issue by
+setting m66592->ep0_req to NULL after the first free.
 
-The system should not be woken up if the user has explicitly
-disabled the wake up ability for this device.
-
-This patch clears the WOL ability of this network device if the
-user has disabled the wake up ability in sysfs.
-
-Fixes: bc7f75fa9788 ("[E1000E]: New pci-express e1000 driver")
-Reported-by: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-Tested-by: Aaron Brown <aaron.f.brown@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 0f91349b89f3 ("usb: gadget: convert all users to the new udc infrastructure")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/intel/e1000e/netdev.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ drivers/usb/gadget/udc/m66592-udc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/intel/e1000e/netdev.c
-+++ b/drivers/net/ethernet/intel/e1000e/netdev.c
-@@ -6308,11 +6308,17 @@ static int __e1000_shutdown(struct pci_d
- 	struct net_device *netdev = pci_get_drvdata(pdev);
- 	struct e1000_adapter *adapter = netdev_priv(netdev);
- 	struct e1000_hw *hw = &adapter->hw;
--	u32 ctrl, ctrl_ext, rctl, status;
--	/* Runtime suspend should only enable wakeup for link changes */
--	u32 wufc = runtime ? E1000_WUFC_LNKC : adapter->wol;
-+	u32 ctrl, ctrl_ext, rctl, status, wufc;
- 	int retval = 0;
+diff --git a/drivers/usb/gadget/udc/m66592-udc.c b/drivers/usb/gadget/udc/m66592-udc.c
+index 46ce7bc15f2b0..53abad98af6d8 100644
+--- a/drivers/usb/gadget/udc/m66592-udc.c
++++ b/drivers/usb/gadget/udc/m66592-udc.c
+@@ -1672,7 +1672,7 @@ static int m66592_probe(struct platform_device *pdev)
  
-+	/* Runtime suspend should only enable wakeup for link changes */
-+	if (runtime)
-+		wufc = E1000_WUFC_LNKC;
-+	else if (device_may_wakeup(&pdev->dev))
-+		wufc = adapter->wol;
-+	else
-+		wufc = 0;
-+
- 	status = er32(STATUS);
- 	if (status & E1000_STATUS_LU)
- 		wufc &= ~E1000_WUFC_LNKC;
-@@ -6369,7 +6375,7 @@ static int __e1000_shutdown(struct pci_d
- 	if (adapter->hw.phy.type == e1000_phy_igp_3) {
- 		e1000e_igp3_phy_powerdown_workaround_ich8lan(&adapter->hw);
- 	} else if (hw->mac.type >= e1000_pch_lpt) {
--		if (!(wufc & (E1000_WUFC_EX | E1000_WUFC_MC | E1000_WUFC_BC)))
-+		if (wufc && !(wufc & (E1000_WUFC_EX | E1000_WUFC_MC | E1000_WUFC_BC)))
- 			/* ULP does not support wake from unicast, multicast
- 			 * or broadcast.
- 			 */
+ err_add_udc:
+ 	m66592_free_request(&m66592->ep[0].ep, m66592->ep0_req);
+-
++	m66592->ep0_req = NULL;
+ clean_up3:
+ 	if (m66592->pdata->on_chip) {
+ 		clk_disable(m66592->clk);
+-- 
+2.25.1
+
 
 
