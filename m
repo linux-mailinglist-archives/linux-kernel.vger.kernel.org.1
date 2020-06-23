@@ -2,512 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E5020491E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 07:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 431E7204924
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 07:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730635AbgFWFSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 01:18:35 -0400
-Received: from mail29.static.mailgun.info ([104.130.122.29]:46465 "EHLO
-        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730507AbgFWFSc (ORCPT
+        id S1730686AbgFWFTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 01:19:31 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:17588 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728729AbgFWFTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 01:18:32 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1592889511; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=fWOSD62PEEBNnIFjGuPL7z6OKLCNXuAB1dMfCYPmYoY=; b=D9Tv4A/VI8+g+oo4vl847TDn1K02VSjjrVqs+i95rMxGxuPp9kZxquF+FtuTw/BjP5uqgo77
- 2Ffjxx+SssxBK2M4FdqM/T7WpiiwcuUczBLuW6bulatdwFfI6xDwIxZDREnRCFfUmcjSnaZx
- zLC4+Bjk3cixb+hKSbYRQRDv6ZU=
-X-Mailgun-Sending-Ip: 104.130.122.29
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 5ef190a74c9690533a6c329e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Jun 2020 05:18:31
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id CED55C433CA; Tue, 23 Jun 2020 05:18:30 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from kathirav-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: kathirav)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F1044C433A0;
-        Tue, 23 Jun 2020 05:18:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F1044C433A0
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=kathirav@codeaurora.org
-From:   Kathiravan T <kathirav@codeaurora.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, kathirav@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Cc:     sivaprak@codeaurora.org
-Subject: [PATCH V2 6/6] dt-bindings: regulator: convert QCOM SMD-RPM regulator document to YAML schema
-Date:   Tue, 23 Jun 2020 10:47:52 +0530
-Message-Id: <1592889472-6843-7-git-send-email-kathirav@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1592889472-6843-1-git-send-email-kathirav@codeaurora.org>
-References: <1592889472-6843-1-git-send-email-kathirav@codeaurora.org>
+        Tue, 23 Jun 2020 01:19:30 -0400
+Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ef190b50000>; Mon, 22 Jun 2020 22:18:45 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate102.nvidia.com (PGP Universal service);
+  Mon, 22 Jun 2020 22:19:30 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate102.nvidia.com on Mon, 22 Jun 2020 22:19:30 -0700
+Received: from [10.24.37.103] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 23 Jun
+ 2020 05:19:21 +0000
+Subject: Re: [TEGRA194_CPUFREQ Patch v3 3/4] cpufreq: Add Tegra194 cpufreq
+ driver
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <rjw@rjwysocki.net>, <catalin.marinas@arm.com>, <will@kernel.org>,
+        <thierry.reding@gmail.com>, <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <jonathanh@nvidia.com>,
+        <talho@nvidia.com>, <linux-pm@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <bbasu@nvidia.com>,
+        <mperttunen@nvidia.com>, Sumit Gupta <sumitg@nvidia.com>
+References: <1592775274-27513-1-git-send-email-sumitg@nvidia.com>
+ <1592775274-27513-4-git-send-email-sumitg@nvidia.com>
+ <20200622072052.uryxo4hri6gzrkku@vireshk-i7>
+From:   Sumit Gupta <sumitg@nvidia.com>
+Message-ID: <ed6956a3-3f77-2943-6387-5affc25b59d2@nvidia.com>
+Date:   Tue, 23 Jun 2020 10:49:18 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200622072052.uryxo4hri6gzrkku@vireshk-i7>
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1592889525; bh=sEQVKKrqd5FMPr3hfJ8vm8kY/vg10WEobCiUip4lwic=;
+        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
+         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
+         X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=KpQV2mdYmRpvLg2foGEBLfVh+ae3LYgLH9O1y3SVjdRsSF42AVgJ6iJ4mc7UWIkb0
+         YguB/5fcQDhFQe/4tze3mZP6L3Bvt+c0fyYiBiorvTXLNHM6j4FIIBIevp8PSJO6Vt
+         7DaodlNWwW4INZDI22t/YOQw0MQ6n9hAEAxGGA2+xt4ChZT/4uqLPP+Q/BL9CwYluF
+         f0xAcIoEXswwEgRmCXe7lOTr0i39IazIY+sio2UdOvlgfdV5bnJwS86WSpx0oQxgnt
+         M58mY04ov63h0rZC/UX5OfBHD4QD/z8cRKkPQojeHG6/mAskT6hxFBQC3KO3YeKjtF
+         +7RiMHUaiijBg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert qcom,smd-rpm-regulator.txt document to YAML schema
+Hi Viresh,
 
-Signed-off-by: Kathiravan T <kathirav@codeaurora.org>
----
- .../bindings/regulator/qcom,smd-rpm-regulator.txt  | 321 ---------------------
- .../bindings/regulator/qcom,smd-rpm-regulator.yaml | 106 +++++++
- 2 files changed, 106 insertions(+), 321 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.txt
- create mode 100644 Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
+Thank you for the review. please find my reply inline.
 
-diff --git a/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.txt b/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.txt
-deleted file mode 100644
-index 728c001..00000000
---- a/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.txt
-+++ /dev/null
-@@ -1,321 +0,0 @@
--QCOM SMD RPM REGULATOR
--
--The Qualcomm RPM over SMD regulator is modelled as a subdevice of the RPM.
--Because SMD is used as the communication transport mechanism, the RPM resides as
--a subnode of the SMD.  As such, the SMD-RPM regulator requires that the SMD and
--RPM nodes be present.
--
--Please refer to Documentation/devicetree/bindings/soc/qcom/qcom,smd.txt for
--information pertaining to the SMD node.
--
--Please refer to Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.txt for
--information regarding the RPM node.
--
--== Regulator
--
--Regulator nodes are identified by their compatible:
--
--- compatible:
--	Usage: required
--	Value type: <string>
--	Definition: must be one of:
--		    "qcom,rpm-mp5496-regulators"
--		    "qcom,rpm-pm8841-regulators"
--		    "qcom,rpm-pm8916-regulators"
--		    "qcom,rpm-pm8941-regulators"
--		    "qcom,rpm-pm8950-regulators"
--		    "qcom,rpm-pm8994-regulators"
--		    "qcom,rpm-pm8998-regulators"
--		    "qcom,rpm-pma8084-regulators"
--		    "qcom,rpm-pmi8994-regulators"
--		    "qcom,rpm-pmi8998-regulators"
--		    "qcom,rpm-pms405-regulators"
--
--- vdd_s1-supply:
--- vdd_s2-supply:
--- vdd_s3-supply:
--- vdd_s4-supply:
--- vdd_s5-supply:
--- vdd_s6-supply:
--- vdd_s7-supply:
--- vdd_s8-supply:
--	Usage: optional (pm8841 only)
--	Value type: <phandle>
--	Definition: reference to regulator supplying the input pin, as
--		    described in the data sheet
--
--- vdd_s1-supply:
--- vdd_s2-supply:
--- vdd_s3-supply:
--- vdd_s4-supply:
--- vdd_l1_l2_l3-supply:
--- vdd_l4_l5_l6-supply:
--- vdd_l7-supply:
--- vdd_l8_l9_l10_l11_l12_l13_l14_l15_l16_l17_l18-supply:
--	Usage: optional (pm8916 only)
--	Value type: <phandle>
--	Definition: reference to regulator supplying the input pin, as
--		    described in the data sheet
--
--- vdd_s1-supply:
--- vdd_s2-supply:
--- vdd_s3-supply:
--- vdd_s4-supply:
--- vdd_s4-supply:
--- vdd_s5-supply:
--- vdd_s6-supply:
--- vdd_l1_l19-supply:
--- vdd_l2_l23-supply:
--- vdd_l3-supply:
--- vdd_l4_l5_l6_l7_l16-supply:
--- vdd_l8_l11_l12_l17_l22-supply:
--- vdd_l9_l10_l13_l14_l15_l18-supply:
--- vdd_l20-supply:
--- vdd_l21-supply:
--	Usage: optional (pm8950 only)
--	Value type: <phandle>
--	Definition: reference to regulator supplying the input pin, as
--		    described in the data sheet
--
--- vdd_s1-supply:
--- vdd_s2-supply:
--- vdd_s3-supply:
--- vdd_l1_l3-supply:
--- vdd_l2_lvs1_2_3-supply:
--- vdd_l4_l11-supply:
--- vdd_l5_l7-supply:
--- vdd_l6_l12_l14_l15-supply:
--- vdd_l8_l16_l18_l19-supply:
--- vdd_l9_l10_l17_l22-supply:
--- vdd_l13_l20_l23_l24-supply:
--- vdd_l21-supply:
--- vin_5vs-supply:
--	Usage: optional (pm8941 only)
--	Value type: <phandle>
--	Definition: reference to regulator supplying the input pin, as
--		    described in the data sheet
--
--- vdd_s1-supply:
--- vdd_s2-supply:
--- vdd_s3-supply:
--- vdd_s4-supply:
--- vdd_s5-supply:
--- vdd_s6-supply:
--- vdd_s7-supply:
--- vdd_s8-supply:
--- vdd_s9-supply:
--- vdd_s10-supply:
--- vdd_s11-supply:
--- vdd_s12-supply:
--- vdd_l1-supply:
--- vdd_l2_l26_l28-supply:
--- vdd_l3_l11-supply:
--- vdd_l4_l27_l31-supply:
--- vdd_l5_l7-supply:
--- vdd_l6_l12_l32-supply:
--- vdd_l5_l7-supply:
--- vdd_l8_l16_l30-supply:
--- vdd_l9_l10_l18_l22-supply:
--- vdd_l9_l10_l18_l22-supply:
--- vdd_l3_l11-supply:
--- vdd_l6_l12_l32-supply:
--- vdd_l13_l19_l23_l24-supply:
--- vdd_l14_l15-supply:
--- vdd_l14_l15-supply:
--- vdd_l8_l16_l30-supply:
--- vdd_l17_l29-supply:
--- vdd_l9_l10_l18_l22-supply:
--- vdd_l13_l19_l23_l24-supply:
--- vdd_l20_l21-supply:
--- vdd_l20_l21-supply:
--- vdd_l9_l10_l18_l22-supply:
--- vdd_l13_l19_l23_l24-supply:
--- vdd_l13_l19_l23_l24-supply:
--- vdd_l25-supply:
--- vdd_l2_l26_l28-supply:
--- vdd_l4_l27_l31-supply:
--- vdd_l2_l26_l28-supply:
--- vdd_l17_l29-supply:
--- vdd_l8_l16_l30-supply:
--- vdd_l4_l27_l31-supply:
--- vdd_l6_l12_l32-supply:
--- vdd_lvs1_2-supply:
--	Usage: optional (pm8994 only)
--	Value type: <phandle>
--	Definition: reference to regulator supplying the input pin, as
--		    described in the data sheet
--
--- vdd_s1-supply:
--- vdd_s2-supply:
--- vdd_s3-supply:
--- vdd_bst_byp-supply:
--	Usage: optional (pmi8994 only)
--	Value type: <phandle>
--	Definition: reference to regulator supplying the input pin, as
--		    described in the data sheet
--
--- vdd_s1-supply:
--- vdd_s2-supply:
--- vdd_s3-supply:
--- vdd_s4-supply:
--- vdd_s5-supply:
--- vdd_s6-supply:
--- vdd_s7-supply:
--- vdd_s8-supply:
--- vdd_s9-supply:
--- vdd_s10-supply:
--- vdd_s11-supply:
--- vdd_s12-supply:
--- vdd_s13-supply:
--- vdd_l1_l27-supply:
--- vdd_l20_l24-supply:
--- vdd_l26-supply:
--- vdd_l2_l8_l17-supply:
--- vdd_l3_l11-supply:
--- vdd_l4_l5-supply:
--- vdd_l6-supply:
--- vdd_l7_l12_l14_l15-supply:
--- vdd_l9-supply:
--- vdd_l10_l23_l25-supply:
--- vdd_l13_l19_l21-supply:
--- vdd_l16_l28-supply:
--- vdd_l18_l22-supply:
--- vdd_lvs1_lvs2-supply:
--	Usage: optional (pmi8998 only)
--	Value type: <phandle>
--	Definition: reference to regulator supplying the input pin, as
--		    described in the data sheet
--
--- vdd_s1-supply:
--- vdd_s2-supply:
--- vdd_s3-supply:
--- vdd_s4-supply:
--- vdd_s5-supply:
--- vdd_s6-supply:
--- vdd_s7-supply:
--- vdd_s8-supply:
--- vdd_s9-supply:
--- vdd_s10-supply:
--- vdd_s11-supply:
--- vdd_s12-supply:
--- vdd_l1_l11-supply:
--- vdd_l2_l3_l4_l27-supply:
--- vdd_l5_l7-supply:
--- vdd_l6_l12_l14_l15_l26-supply:
--- vdd_l8-supply:
--- vdd_l9_l10_l13_l20_l23_l24-supply:
--- vdd_l16_l25-supply:
--- vdd_l17-supply:
--- vdd_l18-supply:
--- vdd_l19-supply:
--- vdd_l21-supply:
--- vdd_l22-supply:
--	Usage: optional (pma8084 only)
--	Value type: <phandle>
--	Definition: reference to regulator supplying the input pin, as
--		    described in the data sheet
--
--- vdd_bob-supply:
--	Usage: optional (pmi8998 only)
--	Value type: <phandle>
--	Definition: reference to regulator supplying the input pin, as
--		    described in the data sheet
--
--- vdd_s1-supply:
--- vdd_s2-supply:
--- vdd_s3-supply:
--- vdd_s4-supply:
--- vdd_s5-supply:
--- vdd_l1_l2-supply:
--- vdd_l3_l8-supply:
--- vdd_l4-supply:
--- vdd_l5_l6-supply:
--- vdd_l7-supply:
--- vdd_l3_l8-supply:
--- vdd_l9-supply:
--- vdd_l10_l11_l12_l13-supply:
--	Usage: optional (pms405 only)
--	Value type: <phandle>
--	Definition: reference to regulator supplying the input pin, as
--		    described in the data sheet
--
--The regulator node houses sub-nodes for each regulator within the device. Each
--sub-node is identified using the node's name, with valid values listed for each
--of the pmics below.
--
--pm8841:
--	s1, s2, s3, s4, s5, s6, s7, s8
--
--pm8916:
--	s1, s2, s3, s4, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13,
--	l14, l15, l16, l17, l18
--
--pm8941:
--	s1, s2, s3, s4, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13,
--	l14, l15, l16, l17, l18, l19, l20, l21, l22, l23, l24, lvs1, lvs2,
--	lvs3, 5vs1, 5vs2
--
--pm8994:
--	s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, l1, l2, l3, l4, l5,
--	l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19, l20,
--	l21, l22, l23, l24, l25, l26, l27, l28, l29, l30, l31, l32, lvs1, lvs2
--
--pm8998:
--	s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, l1, l2, l3, l4,
--	l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19,
--	l20, l21, l22, l23, l24, l25, l26, l27, l28, lvs1, lvs2
--
--pma8084:
--	s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, l1, l2, l3, l4, l5,
--	l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19, l20,
--	l21, l22, l23, l24, l25, l26, l27, lvs1, lvs2, lvs3, lvs4, 5vs1
--
--pmi8994:
--	s1, s2, s3, boost-bypass
--
--pmi8998:
--	bob
--
--pms405:
--	s1, s2, s3, s4, s5, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12,
--	l13
--
--The content of each sub-node is defined by the standard binding for regulators -
--see regulator.txt.
--
--= EXAMPLE
--
--	smd {
--		compatible = "qcom,smd";
--
--		rpm {
--			interrupts = <0 168 1>;
--			qcom,ipc = <&apcs 8 0>;
--			qcom,smd-edge = <15>;
--
--			rpm_requests {
--				compatible = "qcom,rpm-msm8974";
--				qcom,smd-channels = "rpm_requests";
--
--				pm8941-regulators {
--					compatible = "qcom,rpm-pm8941-regulators";
--					vdd_l13_l20_l23_l24-supply = <&pm8941_boost>;
--
--					pm8941_s3: s3 {
--						regulator-min-microvolt = <1800000>;
--						regulator-max-microvolt = <1800000>;
--					};
--
--					pm8941_boost: s4 {
--						regulator-min-microvolt = <5000000>;
--						regulator-max-microvolt = <5000000>;
--					};
--
--					pm8941_l20: l20 {
--						regulator-min-microvolt = <2950000>;
--						regulator-max-microvolt = <2950000>;
--					};
--				};
--			};
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml b/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
-new file mode 100644
-index 00000000..8d212bd
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/qcom,smd-rpm-regulator.yaml
-@@ -0,0 +1,106 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/qcom,smd-rpm-regulator.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: QCOM SMD RPM REGULATOR
-+
-+description:
-+  The Qualcomm RPM over SMD regulator is modelled as a subdevice of the RPM.
-+  Because SMD is used as the communication transport mechanism, the RPM
-+  resides as a subnode of the SMD.  As such, the SMD-RPM regulator requires
-+  that the SMD and RPM nodes be present.
-+
-+  Please refer to Documentation/devicetree/bindings/soc/qcom/qcom,smd.txt for
-+  information pertaining to the SMD node.
-+
-+  Please refer to Documentation/devicetree/bindings/soc/qcom/qcom,smd-rpm.yaml
-+  for information regarding the RPM node.
-+
-+  The regulator node houses sub-nodes for each regulator within the device.
-+  Each sub-node is identified using the node's name, with valid values listed
-+  for each of the pmics below.
-+
-+  For pm8841, s1, s2, s3, s4, s5, s6, s7, s8
-+
-+  For pm8916, s1, s2, s3, s4, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11,
-+  l12, l13, l14, l15, l16, l17, l18
-+
-+  For pm8941, s1, s2, s3, s4, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11,
-+  l12, l13, l14, l15, l16, l17, l18, l19, l20, l21, l22, l23, l24, lvs1, lvs2,
-+  lvs3, 5vs1, 5vs2
-+
-+  For pm8994, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, l1, l2, l3,
-+  l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19,
-+  l20, l21, l22, l23, l24, l25, l26, l27, l28, l29, l30, l31, l32, lvs1, lvs2
-+
-+  For pm8998, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13, l1, l2,
-+  l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19,
-+  l20, l21, l22, l23, l24, l25, l26, l27, l28, lvs1, lvs2
-+
-+  For pma8084, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, l1, l2, l3,
-+  l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19,
-+  l20, l21, l22, l23, l24, l25, l26, l27, lvs1, lvs2, lvs3, lvs4, 5vs1
-+
-+  For pmi8994, s1, s2, s3, boost-bypass
-+
-+  For pmi8998, bob
-+
-+  For pms405, s1, s2, s3, s4, s5, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11,
-+  l12, l13
-+
-+maintainers:
-+  - Kathiravan T <kathirav@codeaurora.org>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - qcom,rpm-mp5496-regulators
-+      - qcom,rpm-pm8841-regulators
-+      - qcom,rpm-pm8916-regulators
-+      - qcom,rpm-pm8941-regulators
-+      - qcom,rpm-pm8950-regulators
-+      - qcom,rpm-pm8994-regulators
-+      - qcom,rpm-pm8998-regulators
-+      - qcom,rpm-pma8084-regulators
-+      - qcom,rpm-pmi8994-regulators
-+      - qcom,rpm-pmi8998-regulators
-+      - qcom,rpm-pms405-regulators
-+
-+patternProperties:
-+  ".*-supply$":
-+    description: Input supply phandle(s) for this node
-+
-+  "^((s|l|lvs|5vs)[0-9]*)|(boost-bypass)|(bob)$":
-+    description: List of regulators and its properties
-+    allOf:
-+     - $ref: regulator.yaml#
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+
-+examples:
-+  - |
-+    pm8941-regulators {
-+        compatible = "qcom,rpm-pm8941-regulators";
-+        vdd_l13_l20_l23_l24-supply = <&pm8941_boost>;
-+
-+        pm8941_s3: s3 {
-+            regulator-min-microvolt = <1800000>;
-+            regulator-max-microvolt = <1800000>;
-+        };
-+
-+        pm8941_boost: s4 {
-+            regulator-min-microvolt = <5000000>;
-+            regulator-max-microvolt = <5000000>;
-+        };
-+
-+        pm8941_l20: l20 {
-+            regulator-min-microvolt = <2950000>;
-+            regulator-max-microvolt = <2950000>;
-+        };
-+    };
-+...
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, hosted by The Linux Foundation
 
+>> +++ b/drivers/cpufreq/tegra194-cpufreq.c
+>> @@ -0,0 +1,403 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Copyright (c) 2019, NVIDIA CORPORATION. All rights reserved
+> 
+>                      2020
+> 
+>> + */
+>> +
+>> +#include <linux/cpu.h>
+>> +#include <linux/cpufreq.h>
+>> +#include <linux/delay.h>
+>> +#include <linux/dma-mapping.h>
+>> +#include <linux/module.h>
+>> +#include <linux/of.h>
+>> +#include <linux/of_platform.h>
+>> +#include <linux/platform_device.h>
+>> +#include <linux/slab.h>
+>> +
+>> +#include <asm/smp_plat.h>
+>> +
+>> +#include <soc/tegra/bpmp.h>
+>> +#include <soc/tegra/bpmp-abi.h>
+>> +
+>> +#define KHZ                     1000
+>> +#define REF_CLK_MHZ             408 /* 408 MHz */
+>> +#define US_DELAY                500
+>> +#define US_DELAY_MIN            2
+>> +#define CPUFREQ_TBL_STEP_HZ     (50 * KHZ * KHZ)
+>> +#define MAX_CNT                 ~0U
+>> +
+>> +/* cpufreq transisition latency */
+>> +#define TEGRA_CPUFREQ_TRANSITION_LATENCY (300 * 1000) /* unit in nanoseconds */
+>> +
+>> +#define LOOP_FOR_EACH_CPU_OF_CLUSTER(cl) for (cpu = (cl * 2); \
+>> +                                     cpu < ((cl + 1) * 2); cpu++)
+> 
+> Both latency and this loop are used only once in the code, maybe just open code
+> it. Also you should have passed cpu as a parameter to the macro, even if it
+> works fine without it, for better readability.
+> 
+Ok, i will open code the loop in next version. For latency value, i feel 
+named macro makes readability better. So, prefer keeping it.
+
+>> +
+>> +u16 map_freq_to_ndiv(struct mrq_cpu_ndiv_limits_response *nltbl, u32 freq)
+> 
+> Unused routine
+> 
+Sure, will remove it.
+
+>> +{
+>> +     return DIV_ROUND_UP(freq * nltbl->pdiv * nltbl->mdiv,
+>> +                         nltbl->ref_clk_hz / KHZ);
+>> +}
+> 
+>> +static int tegra194_cpufreq_init(struct cpufreq_policy *policy)
+>> +{
+>> +     struct tegra194_cpufreq_data *data = cpufreq_get_driver_data();
+>> +     int cl = get_cpu_cluster(policy->cpu);
+>> +     u32 cpu;
+>> +
+>> +     if (cl >= data->num_clusters)
+>> +             return -EINVAL;
+>> +
+>> +     policy->cur = tegra194_fast_get_speed(policy->cpu); /* boot freq */
+>> +
+>> +     /* set same policy for all cpus in a cluster */
+>> +     LOOP_FOR_EACH_CPU_OF_CLUSTER(cl)
+>> +             cpumask_set_cpu(cpu, policy->cpus);
+>> +
+>> +     policy->freq_table = data->tables[cl];
+>> +     policy->cpuinfo.transition_latency = TEGRA_CPUFREQ_TRANSITION_LATENCY;
+>> +
+>> +     return 0;
+>> +}
+> 
+>> +static int tegra194_cpufreq_set_target(struct cpufreq_policy *policy,
+>> +                                    unsigned int index)
+>> +{
+>> +     struct cpufreq_frequency_table *tbl = policy->freq_table + index;
+>> +
+>> +     on_each_cpu_mask(policy->cpus, set_cpu_ndiv, tbl, true);
+> 
+> I am still a bit confused. While setting the frequency you are calling this
+> routine for each CPU of the policy (cluster). Does that mean that CPUs within a
+> cluster can actually run at different frequencies at any given point of time ?
+> 
+> If cpufreq terms, a cpufreq policy represents a group of CPUs that change
+> frequency together, i.e. they share the clk line. If all CPUs in your system can
+> do DVFS separately, then you must have policy per CPU, instead of cluster.
+> 
+T194 supports four CPU clusters, each with two cores. Each CPU cluster 
+is capable of running at a specific frequency sourced by respective 
+NAFLL to provide cluster specific clocks. Individual cores within a 
+cluster write freq in per core register. Cluster h/w forwards the 
+max(core0, core1) request to per cluster NAFLL.
+
+>> +static void tegra194_cpufreq_free_resources(void)
+>> +{
+>> +     flush_workqueue(read_counters_wq);
+> 
+> Why is this required exactly? I see that you add the work request and
+> immediately flush it, then why would you need to do this separately ?
+> 
+Ya, will remove flush_workqueue().
+
+>> +     destroy_workqueue(read_counters_wq);
+>> +}
+>> +
+>> +static struct cpufreq_frequency_table *
+>> +init_freq_table(struct platform_device *pdev, struct tegra_bpmp *bpmp,
+>> +             unsigned int cluster_id)
+>> +{
+>> +     struct cpufreq_frequency_table *freq_table;
+>> +     struct mrq_cpu_ndiv_limits_response resp;
+>> +     unsigned int num_freqs, ndiv, delta_ndiv;
+>> +     struct mrq_cpu_ndiv_limits_request req;
+>> +     struct tegra_bpmp_message msg;
+>> +     u16 freq_table_step_size;
+>> +     int err, index;
+>> +
+>> +     memset(&req, 0, sizeof(req));
+>> +     req.cluster_id = cluster_id;
+>> +
+>> +     memset(&msg, 0, sizeof(msg));
+>> +     msg.mrq = MRQ_CPU_NDIV_LIMITS;
+>> +     msg.tx.data = &req;
+>> +     msg.tx.size = sizeof(req);
+>> +     msg.rx.data = &resp;
+>> +     msg.rx.size = sizeof(resp);
+>> +
+>> +     err = tegra_bpmp_transfer(bpmp, &msg);
+> 
+> So the firmware can actually return different frequency tables for the clusters,
+> right ? Else you could have received the table only once and used it for all the
+> CPUs.
+> 
+Yes, frequency tables are returned per cluster by BPMP firmware. In T194 
+SOC, currently same table values are used for all clusters. This might 
+change in future.
+
+>> +     if (err)
+>> +             return ERR_PTR(err);
+>> +
+>> +     /*
+>> +      * Make sure frequency table step is a multiple of mdiv to match
+>> +      * vhint table granularity.
+>> +      */
+>> +     freq_table_step_size = resp.mdiv *
+>> +                     DIV_ROUND_UP(CPUFREQ_TBL_STEP_HZ, resp.ref_clk_hz);
+>> +
+>> +     dev_dbg(&pdev->dev, "cluster %d: frequency table step size: %d\n",
+>> +             cluster_id, freq_table_step_size);
+>> +
+>> +     delta_ndiv = resp.ndiv_max - resp.ndiv_min;
+>> +
+>> +     if (unlikely(delta_ndiv == 0))
+>> +             num_freqs = 1;
+>> +     else
+>> +             /* We store both ndiv_min and ndiv_max hence the +1 */
+>> +             num_freqs = delta_ndiv / freq_table_step_size + 1;
+>> +
+>> +     num_freqs += (delta_ndiv % freq_table_step_size) ? 1 : 0;
+>> +
+>> +     freq_table = devm_kcalloc(&pdev->dev, num_freqs + 1,
+>> +                               sizeof(*freq_table), GFP_KERNEL);
+>> +     if (!freq_table)
+>> +             return ERR_PTR(-ENOMEM);
+>> +
+>> +     for (index = 0, ndiv = resp.ndiv_min;
+>> +                     ndiv < resp.ndiv_max;
+>> +                     index++, ndiv += freq_table_step_size) {
+>> +             freq_table[index].driver_data = ndiv;
+>> +             freq_table[index].frequency = map_ndiv_to_freq(&resp, ndiv);
+>> +     }
+>> +
+>> +     freq_table[index].driver_data = resp.ndiv_max;
+>> +     freq_table[index++].frequency = map_ndiv_to_freq(&resp, resp.ndiv_max);
+>> +     freq_table[index].frequency = CPUFREQ_TABLE_END;
+>> +
+>> +     return freq_table;
+>> +}
+> 
+> --
+> viresh
+> 
