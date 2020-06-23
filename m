@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00F5206596
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 873E3206660
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388499AbgFWUGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:06:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46588 "EHLO mail.kernel.org"
+        id S2393805AbgFWVk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:40:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388476AbgFWUG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:06:29 -0400
+        id S2388488AbgFWUGd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:06:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 188CA206C3;
-        Tue, 23 Jun 2020 20:06:27 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EED6820EDD;
+        Tue, 23 Jun 2020 20:06:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942788;
-        bh=s+4gzFFMMtKgWlqR3/VWmZuUw8gzZHkEdvH/rRAugQ8=;
+        s=default; t=1592942793;
+        bh=qQV8XaSV3qftiuUV2eui7l31ooADsetal0aMx7Owrbs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=agPLKTLwctxw6k+QKJYqAhZCsHB7kaD0dGsI70N1nngeDoy2yzf1AAShM6XSPJ6EH
-         GHNri52IaoIwJdsPsPkPxnfx4YMFsvmwBRvN3Qg6wuDdnEA0EsM8Q20hGHShuU95R5
-         x+FjCMevut8Q643ov+wS32xGk3bgEjUe7G6cX4vI=
+        b=pRxz3GjGEn821Lb+VlzLHHwD1mkQfoR0LDFtOkTxfe0fH1RcD4fjJ4OKGR2IV99Si
+         svWtdCdYsIZYY89hY6fR3TB/eZxbwrw9a6PCGqeJjWSy0sNTws3TRk2lJ6dFN1d8Df
+         J24/FNwF9p26Q6Mkry951Fk/+1fq48VDgG3F3UWw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Simon Arlott <simon@octiron.net>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 105/477] scsi: sr: Fix sr_probe() missing deallocate of device minor
-Date:   Tue, 23 Jun 2020 21:51:42 +0200
-Message-Id: <20200623195412.556728769@linuxfoundation.org>
+Subject: [PATCH 5.7 107/477] media: s5p-mfc: Properly handle dma_parms for the allocated devices
+Date:   Tue, 23 Jun 2020 21:51:44 +0200
+Message-Id: <20200623195412.652180204@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -44,45 +47,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon Arlott <simon@octiron.net>
+From: Marek Szyprowski <m.szyprowski@samsung.com>
 
-[ Upstream commit 6555781b3fdec5e94e6914511496144241df7dee ]
+[ Upstream commit cc8c0363ddce6308168d8223378ca884c213f280 ]
 
-If the cdrom fails to be registered then the device minor should be
-deallocated.
+Commit 9495b7e92f71 ("driver core: platform: Initialize dma_parms for
+platform devices") in v5.7-rc5 added allocation of dma_parms structure to
+all platform devices. Then vb2_dma_contig_set_max_seg_size() have been
+changed not to allocate dma_parms structure and rely on the one allocated
+by the device core. Lets allocate the needed structure also for the
+devices created for the 2 MFC device memory ports.
 
-Link: https://lore.kernel.org/r/072dac4b-8402-4de8-36bd-47e7588969cd@0882a8b5-c6c3-11e9-b005-00805fc181fe
-Signed-off-by: Simon Arlott <simon@octiron.net>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Reported-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Suggested-by: Ulf Hansson <ulf.hansson@linaro.org>
+Fixes: 9495b7e92f71 ("driver core: platform: Initialize dma_parms for platform devices")
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/sr.c | 6 +++++-
+ drivers/media/platform/s5p-mfc/s5p_mfc.c | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
-index 8d062d4f3ce0b..1e13c6a0f0caf 100644
---- a/drivers/scsi/sr.c
-+++ b/drivers/scsi/sr.c
-@@ -797,7 +797,7 @@ static int sr_probe(struct device *dev)
- 	cd->cdi.disk = disk;
- 
- 	if (register_cdrom(&cd->cdi))
--		goto fail_put;
-+		goto fail_minor;
+diff --git a/drivers/media/platform/s5p-mfc/s5p_mfc.c b/drivers/media/platform/s5p-mfc/s5p_mfc.c
+index 5c2a23b953a41..eba2b9f040df0 100644
+--- a/drivers/media/platform/s5p-mfc/s5p_mfc.c
++++ b/drivers/media/platform/s5p-mfc/s5p_mfc.c
+@@ -1089,6 +1089,10 @@ static struct device *s5p_mfc_alloc_memdev(struct device *dev,
+ 	child->coherent_dma_mask = dev->coherent_dma_mask;
+ 	child->dma_mask = dev->dma_mask;
+ 	child->release = s5p_mfc_memdev_release;
++	child->dma_parms = devm_kzalloc(dev, sizeof(*child->dma_parms),
++					GFP_KERNEL);
++	if (!child->dma_parms)
++		goto err;
  
  	/*
- 	 * Initialize block layer runtime PM stuffs before the
-@@ -815,6 +815,10 @@ static int sr_probe(struct device *dev)
- 
- 	return 0;
- 
-+fail_minor:
-+	spin_lock(&sr_index_lock);
-+	clear_bit(minor, sr_index_bits);
-+	spin_unlock(&sr_index_lock);
- fail_put:
- 	put_disk(disk);
- 	mutex_destroy(&cd->lock);
+ 	 * The memdevs are not proper OF platform devices, so in order for them
+@@ -1104,7 +1108,7 @@ static struct device *s5p_mfc_alloc_memdev(struct device *dev,
+ 			return child;
+ 		device_del(child);
+ 	}
+-
++err:
+ 	put_device(child);
+ 	return NULL;
+ }
 -- 
 2.25.1
 
