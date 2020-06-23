@@ -2,38 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C02920624D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8962820621B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392981AbgFWU6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:58:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38184 "EHLO mail.kernel.org"
+        id S2392441AbgFWUzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:55:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392358AbgFWUlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:41:39 -0400
+        id S2392715AbgFWUpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:45:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB20E20702;
-        Tue, 23 Jun 2020 20:41:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CB7CB21BE5;
+        Tue, 23 Jun 2020 20:45:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944900;
-        bh=EYfUsqhOZJT8+dBNddJKWqsHTg77cxZyUh/xaChIzeE=;
+        s=default; t=1592945105;
+        bh=UZAS9JmDAz7kGwfXP+WflYdOOxq7xdo2yFVAB6HGzOE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R1vL4UI/65HUJg40Q/Hln13rESiJZozUUV9LUzZcl/ijMq4dqGcyvhBjCHpnamZG2
-         Y1BYTCPEMiiZ31k6+cdTRt7CPDz17V5FYEjfhtKHt+WLHs0hj8h+3BPgjESvAinAk5
-         +Wmvh2DnyRVULylgqjUWoR9zhLdq2u2d+jVE2tXs=
+        b=Fvpa7NygYG5M18+a5BVJQ4BtDGDnn74X4kf9p0p4ISOf08DhrbxidD1ZDVPYlEXNo
+         eIs9NXoV/fs+7NyA3Jjg9Oi7Lpr2v7DJ19RHzyEzSxlx+SDDG+tZQmbS8mx5hpUXLR
+         NGWCWJNw9zfncNGXbLPNsewBG7Kaqu+y2S4eJdLg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        stable@vger.kernel.org,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 169/206] afs: afs_write_end() should change i_size under the right lock
-Date:   Tue, 23 Jun 2020 21:58:17 +0200
-Message-Id: <20200623195325.332439399@linuxfoundation.org>
+Subject: [PATCH 4.14 042/136] thermal/drivers/ti-soc-thermal: Avoid dereferencing ERR_PTR
+Date:   Tue, 23 Jun 2020 21:58:18 +0200
+Message-Id: <20200623195305.762445318@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
+References: <20200623195303.601828702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,42 +46,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 
-[ Upstream commit 1f32ef79897052ef7d3d154610d8d6af95abde83 ]
+[ Upstream commit 7440f518dad9d861d76c64956641eeddd3586f75 ]
 
-Fix afs_write_end() to change i_size under vnode->cb_lock rather than
-->wb_lock so that it doesn't race with afs_vnode_commit_status() and
-afs_getattr().
+On error the function ti_bandgap_get_sensor_data() returns the error
+code in ERR_PTR() but we only checked if the return value is NULL or
+not. And, so we can dereference an error code inside ERR_PTR.
+While at it, convert a check to IS_ERR_OR_NULL.
 
-The ->wb_lock is only meant to guard access to ->wb_keys which isn't
-accessed by that piece of code.
-
-Fixes: 4343d00872e1 ("afs: Get rid of the afs_writeback record")
-Signed-off-by: David Howells <dhowells@redhat.com>
+Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
+Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+Link: https://lore.kernel.org/r/20200424161944.6044-1-sudipm.mukherjee@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/afs/write.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/thermal/ti-soc-thermal/ti-thermal-common.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/afs/write.c b/fs/afs/write.c
-index 53f329f61cc37..ec8d27cf92a5c 100644
---- a/fs/afs/write.c
-+++ b/fs/afs/write.c
-@@ -188,11 +188,11 @@ int afs_write_end(struct file *file, struct address_space *mapping,
+diff --git a/drivers/thermal/ti-soc-thermal/ti-thermal-common.c b/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
+index c211a8e4a2105..fa98c398d70f3 100644
+--- a/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
++++ b/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
+@@ -183,7 +183,7 @@ int ti_thermal_expose_sensor(struct ti_bandgap *bgp, int id,
  
- 	i_size = i_size_read(&vnode->vfs_inode);
- 	if (maybe_i_size > i_size) {
--		spin_lock(&vnode->wb_lock);
-+		write_seqlock(&vnode->cb_lock);
- 		i_size = i_size_read(&vnode->vfs_inode);
- 		if (maybe_i_size > i_size)
- 			i_size_write(&vnode->vfs_inode, maybe_i_size);
--		spin_unlock(&vnode->wb_lock);
-+		write_sequnlock(&vnode->cb_lock);
+ 	data = ti_bandgap_get_sensor_data(bgp, id);
+ 
+-	if (!data || IS_ERR(data))
++	if (!IS_ERR_OR_NULL(data))
+ 		data = ti_thermal_build_data(bgp, id);
+ 
+ 	if (!data)
+@@ -210,7 +210,7 @@ int ti_thermal_remove_sensor(struct ti_bandgap *bgp, int id)
+ 
+ 	data = ti_bandgap_get_sensor_data(bgp, id);
+ 
+-	if (data && data->ti_thermal) {
++	if (!IS_ERR_OR_NULL(data) && data->ti_thermal) {
+ 		if (data->our_zone)
+ 			thermal_zone_device_unregister(data->ti_thermal);
  	}
+@@ -276,7 +276,7 @@ int ti_thermal_unregister_cpu_cooling(struct ti_bandgap *bgp, int id)
  
- 	if (!PageUptodate(page)) {
+ 	data = ti_bandgap_get_sensor_data(bgp, id);
+ 
+-	if (data) {
++	if (!IS_ERR_OR_NULL(data)) {
+ 		cpufreq_cooling_unregister(data->cool_dev);
+ 		cpufreq_cpu_put(data->policy);
+ 	}
 -- 
 2.25.1
 
