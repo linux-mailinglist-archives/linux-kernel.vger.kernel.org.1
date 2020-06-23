@@ -2,107 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E82A32067E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 01:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA7D2067E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 01:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388480AbgFWXE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 19:04:28 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:60658 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388020AbgFWXE1 (ORCPT
+        id S2388142AbgFWXHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 19:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49914 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387634AbgFWXHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 19:04:27 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 2887C20B7192;
-        Tue, 23 Jun 2020 16:04:26 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2887C20B7192
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1592953466;
-        bh=vzZAZrsVkwFhLFQvSrdEJZIr64CbwDvMPQLlWesUQc8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=L8dwrHDxQZ7xqGFZyuOfCYAgdkBdbnsFx24QnlxfM/vEoAAo/au6Yuk8UXxo3Wz+g
-         wbqxyBRbqs19GTUhUC0vaSTCBTmjqiyF8fYk0ol56lPKd7mxe65Z8OuD366qkNxIzw
-         CjRhspmaOgZXdZytBufsh8khs4bldncTpK6e6k74=
-Date:   Tue, 23 Jun 2020 18:04:24 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Prakhar Srivastava <prsriva02@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Janne Karhunen <janne.karhunen@gmail.com>
-Subject: Re: [PATCH 01/12] ima: Have the LSM free its audit rule
-Message-ID: <20200623230424.GB6048@sequoia>
-References: <20200623003236.830149-1-tyhicks@linux.microsoft.com>
- <20200623003236.830149-2-tyhicks@linux.microsoft.com>
+        Tue, 23 Jun 2020 19:07:32 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6119CC0613ED
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 16:07:32 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id d10so128342pls.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 16:07:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=H5tzGK8Ul6tfg3isVDLVBRlbu5v0xvfY4n3qpqbH1NI=;
+        b=S1bCy5X06OFaFFNIdeDnS6CSjZ0Kdws9KkQcI1YuKKPPow3kSalVMW4MVN0P19JhbB
+         AwyXcbyYpdsEM0IJwO0xPhelwzn2W7jASJZYkOexxveaAuXUaOQ7uOYC3epePjn9jltI
+         lQOHuHv2T0gtLYpuYpMD6zRC+9vwL20ElP5Wzq6u7sgW+9JZYRzA8J0252oDhAIqlTQV
+         YGRG+RAWmh862PZuA9ECrmEd/GEZgSIvuOXjdL/U4x/3CEVNmrgL4lE7cP9xCS4wPU+4
+         l/3Gd7jY+5Jwg2evxhfuSRirITpsFdi1WghwcFzvGhDy3v8kxAQYLm5j4qYs3m/BeTlR
+         POJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=H5tzGK8Ul6tfg3isVDLVBRlbu5v0xvfY4n3qpqbH1NI=;
+        b=YOoOyw/dWq+VjFDW3lO643rl4G0Tz9Y74djGGe4NKAFhhaTJ5zu0Y4NPPYtRYzJwy7
+         tZPj7TbHJiOLnW1A/njiU83ge2kVOU8kiwP8biylT7LQ5COKFgeUg+KGUB6ecC7QPk+m
+         ty67MK3Z8gFglPj7HeK39puPLUw4iYTQTUW7eGUB9hiO3Uzn7RX9rlPJYnwuQ/sC0xJU
+         B5stARDoTFrVBTtfQXbP3wakBsafd6hwt6hafSaxRN8h+jRT+hMPAnKCCOAvFfD/YirS
+         gv76tN/5v1wyNjiv1BCpgtJSEqwpdJqtVPNYwwqTxER/avgHTH9KINIhMabblN7Td3I3
+         Aniw==
+X-Gm-Message-State: AOAM5322/g0AGiqGWw01OIsSHU4hluHErfH/OH+W4W1FRMBAwinRXGip
+        /FVTTEKiZz3nSbI/tNv2U91puw==
+X-Google-Smtp-Source: ABdhPJyJrZ0h4pT6D7zRuXMtMqWbxZWmhLKSGmNzOwnfxEQyboY/eJWM4/LcweJZjH+HF/v0xL4zQw==
+X-Received: by 2002:a17:902:ac94:: with SMTP id h20mr2016739plr.197.1592953651691;
+        Tue, 23 Jun 2020 16:07:31 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id b5sm3307716pjz.34.2020.06.23.16.07.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 16:07:31 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 16:04:48 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Konrad Dybcio <konradybcio@gmail.com>
+Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/12] arm64: dts: qcom: msm8994: Modernize the DTS
+ style
+Message-ID: <20200623230448.GG128451@builder.lan>
+References: <20200623224813.297077-1-konradybcio@gmail.com>
+ <20200623224813.297077-2-konradybcio@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200623003236.830149-2-tyhicks@linux.microsoft.com>
+In-Reply-To: <20200623224813.297077-2-konradybcio@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-22 19:32:25, Tyler Hicks wrote:
-> Ask the LSM to free its audit rule rather than directly calling kfree().
-> Both AppArmor and SELinux do additional work in their audit_rule_free()
-> hooks. Fix memory leaks by allowing the LSMs to perform necessary work.
-> 
-> Fixes: b16942455193 ("ima: use the lsm policy update notifier")
-> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> Cc: Janne Karhunen <janne.karhunen@gmail.com>
-> ---
->  security/integrity/ima/ima.h        | 6 ++++++
->  security/integrity/ima/ima_policy.c | 2 +-
->  2 files changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-> index df93ac258e01..de05d7f1d3ec 100644
-> --- a/security/integrity/ima/ima.h
-> +++ b/security/integrity/ima/ima.h
-> @@ -404,6 +404,7 @@ static inline void ima_free_modsig(struct modsig *modsig)
->  #ifdef CONFIG_IMA_LSM_RULES
->  
->  #define security_filter_rule_init security_audit_rule_init
-> +#define security_filter_rule_free security_audit_rule_free
->  #define security_filter_rule_match security_audit_rule_match
->  
->  #else
-> @@ -414,6 +415,11 @@ static inline int security_filter_rule_init(u32 field, u32 op, char *rulestr,
->  	return -EINVAL;
->  }
->  
-> +static inline void security_filter_rule_free(void *lsmrule)
-> +{
-> +	return -EINVAL;
+On Tue 23 Jun 15:48 PDT 2020, Konrad Dybcio wrote:
+[..]
+> diff --git a/arch/arm64/boot/dts/qcom/msm8994.dtsi b/arch/arm64/boot/dts/qcom/msm8994.dtsi
+[..]
+> +	timer {
+> +		compatible = "arm,armv8-timer";
+> +		interrupts = <1 2 0xff08>,
+> +					<1 3 0xff08>,
+> +					<1 4 0xff08>,
+> +					<1 1 0xff08>;
 
-Bah, I introduced a build warning here when CONFIG_IMA_LSM_RULES is
-disabled. This function should return nothing. I'll wait for additional
-feedback before spinning a v2.
+Indentation is off here and these are supposed to be GIC_PPI. So I fixed
+this and applied the patch.
 
-Tyler
-
-> +}
-> +
->  static inline int security_filter_rule_match(u32 secid, u32 field, u32 op,
->  					     void *lsmrule)
->  {
-> diff --git a/security/integrity/ima/ima_policy.c b/security/integrity/ima/ima_policy.c
-> index e493063a3c34..236a731492d1 100644
-> --- a/security/integrity/ima/ima_policy.c
-> +++ b/security/integrity/ima/ima_policy.c
-> @@ -258,7 +258,7 @@ static void ima_lsm_free_rule(struct ima_rule_entry *entry)
->  	int i;
->  
->  	for (i = 0; i < MAX_LSM_RULES; i++) {
-> -		kfree(entry->lsm[i].rule);
-> +		security_filter_rule_free(entry->lsm[i].rule);
->  		kfree(entry->lsm[i].args_p);
->  	}
->  	kfree(entry);
-> -- 
-> 2.25.1
+Thanks,
+Bjorn
