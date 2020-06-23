@@ -2,133 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CED2058FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AE742058BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387752AbgFWRhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 13:37:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34568 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387698AbgFWRg6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 13:36:58 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9EF1520774;
-        Tue, 23 Jun 2020 17:36:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592933817;
-        bh=mtEzBYW7ovbuj3VT+6NLFy9+/Vj5amjNWGdz/r63+SA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R2uIGaV/jqJKHcsmbU1ZcsLmSVwVme5VUebZTNSXAdtq1H7G9FSaqi0ylrh/ma4en
-         Vv76xnV4HiKoZa2BDin9tGyuzEuxa8i4ZcW5XJCa71zBbAQc8383GZK0m4PizYLWNq
-         EEmiO27SNMDZ6oBe7W5HKu6gBbSdRmANm95TzNyQ=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, Jan Kara <jack@suse.cz>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>, linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 6/6] blktrace: break out of blktrace setup on concurrent calls
-Date:   Tue, 23 Jun 2020 13:36:49 -0400
-Message-Id: <20200623173649.1356142-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200623173649.1356142-1-sashal@kernel.org>
-References: <20200623173649.1356142-1-sashal@kernel.org>
+        id S1733152AbgFWRfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 13:35:23 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:23920 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1733045AbgFWRfV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 13:35:21 -0400
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NHNRKr031355;
+        Tue, 23 Jun 2020 13:35:04 -0400
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 31uk3grq2a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Jun 2020 13:35:03 -0400
+Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 05NHZ202031562
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 23 Jun 2020 13:35:02 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Tue, 23 Jun
+ 2020 13:35:01 -0400
+Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 23 Jun 2020 13:35:01 -0400
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 05NHYxMP017521;
+        Tue, 23 Jun 2020 13:34:59 -0400
+From:   <alexandru.tachici@analog.com>
+To:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <robh+dt@kernel.org>, <linux@roeck-us.net>,
+        Alexandru Tachici <alexandru.tachici@analog.com>
+Subject: [PATCH v4 0/7] hwmon: pmbus: adm1266: add support
+Date:   Tue, 23 Jun 2020 20:36:52 +0300
+Message-ID: <20200623173659.41358-1-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-23_11:2020-06-23,2020-06-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 impostorscore=0
+ bulkscore=0 spamscore=0 mlxscore=0 phishscore=0 malwarescore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006120000 definitions=main-2006230123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Chamberlain <mcgrof@kernel.org>
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-[ Upstream commit 1b0b283648163dae2a214ca28ed5a99f62a77319 ]
+Add PMBus probing driver for the adm1266 Cascadable
+Super Sequencer with Margin Control and Fault Recording.
+Driver is using the pmbus_core, creating sysfs files
+under hwmon for inputs: vh1->vh4 and vp1->vp13.
 
-We use one blktrace per request_queue, that means one per the entire
-disk.  So we cannot run one blktrace on say /dev/vda and then /dev/vda1,
-or just two calls on /dev/vda.
+1. Add PMBus probing driver for inputs vh1->vh4
+and vp1->vp13.
 
-We check for concurrent setup only at the very end of the blktrace setup though.
+2. Add Block Write-Read Process Call command.
+A PMBus specific implementation was required because
+block write with I2C_SMBUS_PROC_CALL flag allows a
+maximum of 32 bytes to be received.
 
-If we try to run two concurrent blktraces on the same block device the
-second one will fail, and the first one seems to go on. However when
-one tries to kill the first one one will see things like this:
+3. This makes adm1266 driver expose GPIOs
+to user-space. Currently are read only. Future
+developments on the firmware will allow
+them to be writable.
 
-The kernel will show these:
+4. Add two ioctl commands for issuing GO_COMMAND
+and reading the state of the adm1266 sequencer.
 
-```
-debugfs: File 'dropped' in directory 'nvme1n1' already present!
-debugfs: File 'msg' in directory 'nvme1n1' already present!
-debugfs: File 'trace0' in directory 'nvme1n1' already present!
-``
+5. Blackboxes are 64 bytes of chip state related data
+that is generated on faults. Use the nvmem kernel api
+to expose the blackbox chip functionality to userspace.
 
-And userspace just sees this error message for the second call:
+6. Expose BLACKBOX_INFO register through debugfs.
 
-```
-blktrace /dev/nvme1n1
-BLKTRACESETUP(2) /dev/nvme1n1 failed: 5/Input/output error
-```
+7. Device tree bindings for ADM1266.
 
-The first userspace process #1 will also claim that the files
-were taken underneath their nose as well. The files are taken
-away form the first process given that when the second blktrace
-fails, it will follow up with a BLKTRACESTOP and BLKTRACETEARDOWN.
-This means that even if go-happy process #1 is waiting for blktrace
-data, we *have* been asked to take teardown the blktrace.
+Alexandru Tachici (7):
+  hwmon: pmbus: adm1266: add support
+  hwmon: pmbus: adm1266: Add Block process call
+  hwmon: pmbus: adm1266: Add support for GPIOs
+  hwmon: pmbus: adm1266: Add ioctl commands
+  hwmon: pmbus: adm1266: read blackbox
+  hwmon: pmbus: adm1266: debugfs for blackbox info
+  dt-bindings: hwmon: Add bindings for ADM1266
 
-This can easily be reproduced with break-blktrace [0] run_0005.sh test.
+Changelog v3 -> v4:
+- moved pmbus_block_wr (pmbus process call) from pmbus_core.
+to adm1266.c and renamed to pmbus_block_xfer
+- in pmbus_block_xfer: fixed buffer size bug (from 255 to 257)
+- in adm1266_gpio_get_multiple: handle pdios and gpios one at a time
+to lower allocated space on stack
+- in adm1266_gpio_dbg_show: replaced write_buf with u8 write_cmd var
+- in adm1266_gpio_dbg_show: check number of bytes received from device
+returned by pmbus_block_xfer.
+- now use ioctl to send GO_COMMAND and retrieve current state of adm1266
+- split blackbox commit into blackbox nvmem implementation and debugfs
+blackbox info debugfs
+- create adm1266 debugfs dir under /sys/kernel/debug/pmbus/hwmon for
+blackbox_info
 
-Just break out early if we know we're already going to fail, this will
-prevent trying to create the files all over again, which we know still
-exist.
+ .../bindings/hwmon/adi,adm1266.yaml           |  56 ++
+ Documentation/hwmon/adm1266.rst               |  50 ++
+ .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+ drivers/hwmon/pmbus/Kconfig                   |  10 +
+ drivers/hwmon/pmbus/Makefile                  |   1 +
+ drivers/hwmon/pmbus/adm1266.c                 | 657 ++++++++++++++++++
+ include/uapi/linux/adm1266.h                  |  16 +
+ 7 files changed, 791 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/adi,adm1266.yaml
+ create mode 100644 Documentation/hwmon/adm1266.rst
+ create mode 100644 drivers/hwmon/pmbus/adm1266.c
+ create mode 100644 include/uapi/linux/adm1266.h
 
-[0] https://github.com/mcgrof/break-blktrace
-
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/trace/blktrace.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index a60c09e0bda87..52389be36f00f 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -15,6 +15,9 @@
-  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-  *
-  */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
- #include <linux/kernel.h>
- #include <linux/blkdev.h>
- #include <linux/blktrace_api.h>
-@@ -504,6 +507,16 @@ static int do_blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
- 	 */
- 	strreplace(buts->name, '/', '_');
- 
-+	/*
-+	 * bdev can be NULL, as with scsi-generic, this is a helpful as
-+	 * we can be.
-+	 */
-+	if (q->blk_trace) {
-+		pr_warn("Concurrent blktraces are not allowed on %s\n",
-+			buts->name);
-+		return -EBUSY;
-+	}
-+
- 	bt = kzalloc(sizeof(*bt), GFP_KERNEL);
- 	if (!bt)
- 		return -ENOMEM;
 -- 
-2.25.1
+2.20.1
 
