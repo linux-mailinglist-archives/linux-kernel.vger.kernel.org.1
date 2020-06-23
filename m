@@ -2,267 +2,595 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3447820576D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6DF20579B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732959AbgFWQmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 12:42:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732923AbgFWQmo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 12:42:44 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6968C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:42:42 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id t32so1464589qth.2
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:42:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=EYMTqcYPNSd1+dm5Nyu6dJjrXx/FGaIaL0ZjwplPIjQ=;
-        b=DyxplA2Cgjtr45kDeFCptHg1Qf0Sg76CvzdvQ6KAbg5YBNa4V11HEgZDqgW0Ppv6Yb
-         zzU1cxMT/3p2Dn3R3zPMWpYBDF3zzPRyQOz7f78kzeuUwnZrdD7yYXfw1WRjWVhBcPD6
-         s+L5Pk/e+tj/QBXqqMlM2LUGnrliz0WDjlUOhJeVtfMkVgy+t4j6u7KpoipSxQzOAqKM
-         SCdnP40EoROcurdIVdqQHArMDKvuQJ/D27gVglHgMmJISWlSPsAI1U3dJm0yT5Fd5h+t
-         3tp51cA8P4EGnlOpsf6ZY0niMuWVbmNLjHoEI39Bol5lvK8nD4TKblIHTW081ifgMWcm
-         2jvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=EYMTqcYPNSd1+dm5Nyu6dJjrXx/FGaIaL0ZjwplPIjQ=;
-        b=AINWhhgbaaMN/KZquADOVsSNQ+Rh16g41snJxlj0P5YcgAc50nsNjE/eiu2ACJp+CQ
-         JepHxFyBZcSYJ3mf8s2ek7azqdiaD06lBG/2EZh9KMvvFz2e6nXsk8gxqLIvttlJCbGz
-         l0K1/Q18JvkpgtEAGOCQqX8ipDpTXOyL52NKEl5c8E/nQf9SQlXzjF8tJ4OaVhmByqNk
-         IhQiB2nqZFL1hl/LjFexw4fCXQfBnR09+ne2Lj4sfjGhwRPgnzCOIuKYsUiGw3J/0D1W
-         ZZxgRmlAFWReTUkhL6x4HNfCBK0FKwgfA7Qo3MBmwhyE/zTV8dMrqEj2FAfCnB4iIrDJ
-         1n+A==
-X-Gm-Message-State: AOAM532ITBSVRCB84VjLNcYXp092czxkI47GBmrfuFf0AXl6a/h/ObPc
-        rZ0BLOWMxvjmBCxZ8zwMwVzBXV3hfBdg
-X-Google-Smtp-Source: ABdhPJwI0rz7XctpWpoJomIHLMbmlSHtKgRHge1DQRZjTH9SqlsVyP/eofzBm03RD4CgVx0ozYRERDM6Kl/W
-X-Received: by 2002:ad4:56ac:: with SMTP id bd12mr27566713qvb.139.1592930561924;
- Tue, 23 Jun 2020 09:42:41 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 09:42:32 -0700
-In-Reply-To: <20200623164232.175846-1-brianvv@google.com>
-Message-Id: <20200623164232.175846-2-brianvv@google.com>
-Mime-Version: 1.0
-References: <20200623164232.175846-1-brianvv@google.com>
-X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
-Subject: [PATCH v2 net-next 2/2] ipv6: fib6: avoid indirect calls from fib6_rule_lookup
-From:   Brian Vazquez <brianvv@google.com>
-To:     Brian Vazquez <brianvv.kernel@gmail.com>,
-        Brian Vazquez <brianvv@google.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S . Miller" <davem@davemloft.net>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Luigi Rizzo <lrizzo@google.com>,
-        Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1733197AbgFWQp5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 12:45:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40008 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733143AbgFWQph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 12:45:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 371B1AEB1;
+        Tue, 23 Jun 2020 16:45:34 +0000 (UTC)
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     gregkh@linuxfoundation.org
+Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Subject: [PATCH 46/50] staging: vchiq: Get rid of vchi
+Date:   Tue, 23 Jun 2020 18:42:32 +0200
+Message-Id: <20200623164235.29566-47-nsaenzjulienne@suse.de>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200623164235.29566-1-nsaenzjulienne@suse.de>
+References: <20200623164235.29566-1-nsaenzjulienne@suse.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It was reported that a considerable amount of cycles were spent on the
-expensive indirect calls on fib6_rule_lookup. This patch introduces an
-inline helper called pol_route_func that uses the indirect_call_wrappers
-to avoid the indirect calls.
+All the functions that vchi currently provides are a 1:1 mapping to its
+vchiq counterparts. Get rid of vchi altogether and use vchiq's on all
+services.
 
-This patch saves around 50ns per call.
+In the process also get rid of the vchi directory, as the only remaining
+file was a TODO file, which now lives in the parent directory.
 
-Performance was measured on the receiver by checking the amount of
-syncookies that server was able to generate under a synflood load.
-
-Traffic was generated using trafgen[1] which was pushing around 1Mpps on
-a single queue. Receiver was using only one rx queue which help to
-create a bottle neck and make the experiment rx-bounded.
-
-These are the syncookies generated over 10s from the different runs:
-
-Whithout the patch:
-TcpExtSyncookiesSent            3553749            0.0
-TcpExtSyncookiesSent            3550895            0.0
-TcpExtSyncookiesSent            3553845            0.0
-TcpExtSyncookiesSent            3541050            0.0
-TcpExtSyncookiesSent            3539921            0.0
-TcpExtSyncookiesSent            3557659            0.0
-TcpExtSyncookiesSent            3526812            0.0
-TcpExtSyncookiesSent            3536121            0.0
-TcpExtSyncookiesSent            3529963            0.0
-TcpExtSyncookiesSent            3536319            0.0
-
-With the patch:
-TcpExtSyncookiesSent            3611786            0.0
-TcpExtSyncookiesSent            3596682            0.0
-TcpExtSyncookiesSent            3606878            0.0
-TcpExtSyncookiesSent            3599564            0.0
-TcpExtSyncookiesSent            3601304            0.0
-TcpExtSyncookiesSent            3609249            0.0
-TcpExtSyncookiesSent            3617437            0.0
-TcpExtSyncookiesSent            3608765            0.0
-TcpExtSyncookiesSent            3620205            0.0
-TcpExtSyncookiesSent            3601895            0.0
-
-Without the patch the average is 354263 pkt/s or 2822 ns/pkt and with
-the patch the average is 360738 pkt/s or 2772 ns/pkt which gives an
-estimate of 50 ns per packet.
-
-[1] http://netsniff-ng.org/
-
-Changelog since v1:
- - Change ordering in the ICW (Paolo Abeni)
-
-Cc: Luigi Rizzo <lrizzo@google.com>
-Cc: Paolo Abeni <pabeni@redhat.com>
-Reported-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: Brian Vazquez <brianvv@google.com>
+Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 ---
- include/net/ip6_fib.h | 36 ++++++++++++++++++++++++++++++++++++
- net/ipv6/fib6_rules.c |  9 ++++++---
- net/ipv6/ip6_fib.c    |  3 ++-
- net/ipv6/route.c      |  8 ++++----
- 4 files changed, 48 insertions(+), 8 deletions(-)
+ drivers/staging/vc04_services/Makefile        |   1 -
+ .../bcm2835-audio/bcm2835-vchiq.c             |  24 +--
+ .../vc04_services/bcm2835-audio/bcm2835.h     |   1 -
+ .../vc04_services/interface/{vchi => }/TODO   |   0
+ .../vc04_services/interface/vchi/vchi.h       |  59 ------
+ .../interface/vchiq_arm/vchiq_arm.c           |   2 +
+ .../interface/vchiq_arm/vchiq_core.c          |   3 +
+ .../interface/vchiq_arm/vchiq_shim.c          | 179 ------------------
+ .../vc04_services/vchiq-mmal/mmal-vchiq.c     |  29 ++-
+ 9 files changed, 31 insertions(+), 267 deletions(-)
+ rename drivers/staging/vc04_services/interface/{vchi => }/TODO (100%)
+ delete mode 100644 drivers/staging/vc04_services/interface/vchi/vchi.h
+ delete mode 100644 drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
 
-diff --git a/include/net/ip6_fib.h b/include/net/ip6_fib.h
-index 3f615a29766e..cc8356fd927f 100644
---- a/include/net/ip6_fib.h
-+++ b/include/net/ip6_fib.h
-@@ -19,6 +19,7 @@
- #include <net/netlink.h>
- #include <net/inetpeer.h>
- #include <net/fib_notifier.h>
-+#include <linux/indirect_call_wrapper.h>
+diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/vc04_services/Makefile
+index 922990919c40..e02a9c2abf77 100644
+--- a/drivers/staging/vc04_services/Makefile
++++ b/drivers/staging/vc04_services/Makefile
+@@ -6,7 +6,6 @@ vchiq-objs := \
+    interface/vchiq_arm/vchiq_arm.o \
+    interface/vchiq_arm/vchiq_2835_arm.o \
+    interface/vchiq_arm/vchiq_debugfs.o \
+-   interface/vchiq_arm/vchiq_shim.o \
+    interface/vchiq_arm/vchiq_connected.o \
  
- #ifdef CONFIG_IPV6_MULTIPLE_TABLES
- #define FIB6_TABLE_HASHSZ 256
-@@ -552,6 +553,41 @@ struct bpf_iter__ipv6_route {
- };
- #endif
- 
-+INDIRECT_CALLABLE_DECLARE(struct rt6_info *ip6_pol_route_output(struct net *net,
-+					     struct fib6_table *table,
-+					     struct flowi6 *fl6,
-+					     const struct sk_buff *skb,
-+					     int flags));
-+INDIRECT_CALLABLE_DECLARE(struct rt6_info *ip6_pol_route_input(struct net *net,
-+					     struct fib6_table *table,
-+					     struct flowi6 *fl6,
-+					     const struct sk_buff *skb,
-+					     int flags));
-+INDIRECT_CALLABLE_DECLARE(struct rt6_info *__ip6_route_redirect(struct net *net,
-+					     struct fib6_table *table,
-+					     struct flowi6 *fl6,
-+					     const struct sk_buff *skb,
-+					     int flags));
-+INDIRECT_CALLABLE_DECLARE(struct rt6_info *ip6_pol_route_lookup(struct net *net,
-+					     struct fib6_table *table,
-+					     struct flowi6 *fl6,
-+					     const struct sk_buff *skb,
-+					     int flags));
-+static inline struct rt6_info *pol_lookup_func(pol_lookup_t lookup,
-+						struct net *net,
-+						struct fib6_table *table,
-+						struct flowi6 *fl6,
-+						const struct sk_buff *skb,
-+						int flags)
-+{
-+	return INDIRECT_CALL_4(lookup,
-+			       ip6_pol_route_output,
-+			       ip6_pol_route_input,
-+			       ip6_pol_route_lookup,
-+			       __ip6_route_redirect,
-+			       net, table, fl6, skb, flags);
-+}
-+
- #ifdef CONFIG_IPV6_MULTIPLE_TABLES
- static inline bool fib6_has_custom_rules(const struct net *net)
+ obj-$(CONFIG_SND_BCM2835)		+= bcm2835-audio/
+diff --git a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c
+index efaa2ae11f52..8c9ddd86fbbd 100644
+--- a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c
++++ b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c
+@@ -25,12 +25,12 @@ MODULE_PARM_DESC(force_bulk, "Force use of vchiq bulk for audio");
+ static void bcm2835_audio_lock(struct bcm2835_audio_instance *instance)
  {
-diff --git a/net/ipv6/fib6_rules.c b/net/ipv6/fib6_rules.c
-index fafe556d21e0..6053ef851555 100644
---- a/net/ipv6/fib6_rules.c
-+++ b/net/ipv6/fib6_rules.c
-@@ -111,11 +111,13 @@ struct dst_entry *fib6_rule_lookup(struct net *net, struct flowi6 *fl6,
- 	} else {
- 		struct rt6_info *rt;
+ 	mutex_lock(&instance->vchi_mutex);
+-	vchi_service_use(instance->service_handle);
++	vchiq_use_service(instance->service_handle);
+ }
  
--		rt = lookup(net, net->ipv6.fib6_local_tbl, fl6, skb, flags);
-+		rt = pol_lookup_func(lookup,
-+			     net, net->ipv6.fib6_local_tbl, fl6, skb, flags);
- 		if (rt != net->ipv6.ip6_null_entry && rt->dst.error != -EAGAIN)
- 			return &rt->dst;
- 		ip6_rt_put_flags(rt, flags);
--		rt = lookup(net, net->ipv6.fib6_main_tbl, fl6, skb, flags);
-+		rt = pol_lookup_func(lookup,
-+			     net, net->ipv6.fib6_main_tbl, fl6, skb, flags);
- 		if (rt->dst.error != -EAGAIN)
- 			return &rt->dst;
- 		ip6_rt_put_flags(rt, flags);
-@@ -226,7 +228,8 @@ static int __fib6_rule_action(struct fib_rule *rule, struct flowi *flp,
- 		goto out;
+ static void bcm2835_audio_unlock(struct bcm2835_audio_instance *instance)
+ {
+-	vchi_service_release(instance->service_handle);
++	vchiq_release_service(instance->service_handle);
+ 	mutex_unlock(&instance->vchi_mutex);
+ }
+ 
+@@ -132,8 +132,8 @@ vc_vchi_audio_init(struct vchiq_instance *vchiq_instance,
+ 	int status;
+ 
+ 	/* Open the VCHI service connections */
+-	status = vchi_service_open(vchiq_instance, &params,
+-				   &instance->service_handle);
++	status = vchiq_open_service(vchiq_instance, &params,
++				    &instance->service_handle);
+ 
+ 	if (status) {
+ 		dev_err(instance->dev,
+@@ -143,7 +143,7 @@ vc_vchi_audio_init(struct vchiq_instance *vchiq_instance,
  	}
  
--	rt = lookup(net, table, flp6, arg->lookup_data, flags);
-+	rt = pol_lookup_func(lookup,
-+			     net, table, flp6, arg->lookup_data, flags);
- 	if (rt != net->ipv6.ip6_null_entry) {
- 		err = fib6_rule_saddr(net, rule, flags, flp6,
- 				      ip6_dst_idev(&rt->dst)->dev);
-diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
-index 49ee89bbcba0..25a90f3f705c 100644
---- a/net/ipv6/ip6_fib.c
-+++ b/net/ipv6/ip6_fib.c
-@@ -314,7 +314,8 @@ struct dst_entry *fib6_rule_lookup(struct net *net, struct flowi6 *fl6,
+ 	/* Finished with the service for now */
+-	vchi_service_release(instance->service_handle);
++	vchiq_release_service(instance->service_handle);
+ 
+ 	return 0;
+ }
+@@ -153,10 +153,10 @@ static void vc_vchi_audio_deinit(struct bcm2835_audio_instance *instance)
+ 	int status;
+ 
+ 	mutex_lock(&instance->vchi_mutex);
+-	vchi_service_use(instance->service_handle);
++	vchiq_use_service(instance->service_handle);
+ 
+ 	/* Close all VCHI service connections */
+-	status = vchi_service_close(instance->service_handle);
++	status = vchiq_close_service(instance->service_handle);
+ 	if (status) {
+ 		dev_err(instance->dev,
+ 			"failed to close VCHI service connection (status=%d)\n",
+@@ -171,14 +171,14 @@ int bcm2835_new_vchi_ctx(struct device *dev, struct bcm2835_vchi_ctx *vchi_ctx)
+ 	int ret;
+ 
+ 	/* Initialize and create a VCHI connection */
+-	ret = vchi_initialise(&vchi_ctx->instance);
++	ret = vchiq_initialise(&vchi_ctx->instance);
+ 	if (ret) {
+ 		dev_err(dev, "failed to initialise VCHI instance (ret=%d)\n",
+ 			ret);
+ 		return -EIO;
+ 	}
+ 
+-	ret = vchi_connect(vchi_ctx->instance);
++	ret = vchiq_connect(vchi_ctx->instance);
+ 	if (ret) {
+ 		dev_dbg(dev, "failed to connect VCHI instance (ret=%d)\n",
+ 			ret);
+@@ -195,7 +195,7 @@ int bcm2835_new_vchi_ctx(struct device *dev, struct bcm2835_vchi_ctx *vchi_ctx)
+ void bcm2835_free_vchi_ctx(struct bcm2835_vchi_ctx *vchi_ctx)
  {
- 	struct rt6_info *rt;
+ 	/* Close the VCHI connection - it will also free vchi_ctx->instance */
+-	WARN_ON(vchi_disconnect(vchi_ctx->instance));
++	WARN_ON(vchiq_shutdown(vchi_ctx->instance));
  
--	rt = lookup(net, net->ipv6.fib6_main_tbl, fl6, skb, flags);
-+	rt = pol_lookup_func(lookup,
-+			net, net->ipv6.fib6_main_tbl, fl6, skb, flags);
- 	if (rt->dst.error == -EAGAIN) {
- 		ip6_rt_put_flags(rt, flags);
- 		rt = net->ipv6.ip6_null_entry;
-diff --git a/net/ipv6/route.c b/net/ipv6/route.c
-index 82cbb46a2a4f..5852039ca9cf 100644
---- a/net/ipv6/route.c
-+++ b/net/ipv6/route.c
-@@ -1207,7 +1207,7 @@ static struct rt6_info *ip6_create_rt_rcu(const struct fib6_result *res)
- 	return nrt;
+ 	vchi_ctx->instance = NULL;
  }
+@@ -226,8 +226,8 @@ int bcm2835_audio_open(struct bcm2835_alsa_stream *alsa_stream)
+ 		goto deinit;
  
--static struct rt6_info *ip6_pol_route_lookup(struct net *net,
-+INDIRECT_CALLABLE_SCOPE struct rt6_info *ip6_pol_route_lookup(struct net *net,
- 					     struct fib6_table *table,
- 					     struct flowi6 *fl6,
- 					     const struct sk_buff *skb,
-@@ -2274,7 +2274,7 @@ struct rt6_info *ip6_pol_route(struct net *net, struct fib6_table *table,
+ 	bcm2835_audio_lock(instance);
+-	vchi_get_peer_version(instance->service_handle,
+-			      &instance->peer_version);
++	vchiq_get_peer_version(instance->service_handle,
++			       &instance->peer_version);
+ 	bcm2835_audio_unlock(instance);
+ 	if (instance->peer_version < 2 || force_bulk)
+ 		instance->max_packet = 0; /* bulk transfer */
+diff --git a/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h b/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
+index 7a0e4ab50fc7..a15f251033ac 100644
+--- a/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
++++ b/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
+@@ -10,7 +10,6 @@
+ #include <sound/pcm.h>
+ #include <sound/pcm-indirect.h>
+ #include "interface/vchiq_arm/vchiq_if.h"
+-#include "interface/vchi/vchi.h"
+ 
+ #define MAX_SUBSTREAMS   (8)
+ #define AVAIL_SUBSTREAMS_MASK  (0xff)
+diff --git a/drivers/staging/vc04_services/interface/vchi/TODO b/drivers/staging/vc04_services/interface/TODO
+similarity index 100%
+rename from drivers/staging/vc04_services/interface/vchi/TODO
+rename to drivers/staging/vc04_services/interface/TODO
+diff --git a/drivers/staging/vc04_services/interface/vchi/vchi.h b/drivers/staging/vc04_services/interface/vchi/vchi.h
+deleted file mode 100644
+index 6de5df43cc29..000000000000
+--- a/drivers/staging/vc04_services/interface/vchi/vchi.h
++++ /dev/null
+@@ -1,59 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+-/* Copyright (c) 2010-2012 Broadcom. All rights reserved. */
+-
+-#ifndef VCHI_H_
+-#define VCHI_H_
+-
+-/******************************************************************************
+- * Global funcs - implementation is specific to which side you are on
+- * (local / remote)
+- *****************************************************************************/
+-
+-// Routine used to initialise the vchi on both local + remote connections
+-extern int32_t vchi_initialise(struct vchiq_instance **instance);
+-
+-extern int32_t vchi_connect(struct vchiq_instance *instance);
+-
+-//When this is called, ensure that all services have no data pending.
+-//Bulk transfers can remain 'queued'
+-extern int32_t vchi_disconnect(struct vchiq_instance *instance);
+-
+-/******************************************************************************
+- * Global service API
+- *****************************************************************************/
+-// Routine to open a named service
+-extern int vchi_service_open(struct vchiq_instance *instance,
+-			    struct vchiq_service_params *params,
+-			    unsigned *handle);
+-
+-extern int32_t vchi_get_peer_version(unsigned handle, short *peer_version);
+-
+-// Routine to close a named service
+-extern int32_t vchi_service_close(unsigned handle);
+-
+-// Routine to increment ref count on a named service
+-extern int32_t vchi_service_use(unsigned handle);
+-
+-// Routine to decrement ref count on a named service
+-extern int32_t vchi_service_release(unsigned handle);
+-
+-// Routine to look at a message in place.
+-// The message is dequeued, so the caller is left holding it; the descriptor is
+-// filled in and must be released when the user has finished with the message.
+-struct vchiq_header *vchi_msg_hold(unsigned handle);
+-
+-/*******************************************************************************
+- * Global service support API - operations on held messages
+- * and message iterators
+- ******************************************************************************/
+-
+-// Routine to release a held message after it has been processed
+-extern int32_t vchi_held_msg_release(unsigned handle, struct vchiq_header *message);
+-
+-/******************************************************************************
+- * Configuration plumbing
+- *****************************************************************************/
+-
+-#endif /* VCHI_H_ */
+-
+-/****************************** End of file **********************************/
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+index d25d1031ed96..c8ae752730fe 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+@@ -2571,6 +2571,7 @@ vchiq_use_service(unsigned int handle)
+ 	}
+ 	return ret;
  }
- EXPORT_SYMBOL_GPL(ip6_pol_route);
++EXPORT_SYMBOL(vchiq_use_service);
  
--static struct rt6_info *ip6_pol_route_input(struct net *net,
-+INDIRECT_CALLABLE_SCOPE struct rt6_info *ip6_pol_route_input(struct net *net,
- 					    struct fib6_table *table,
- 					    struct flowi6 *fl6,
- 					    const struct sk_buff *skb,
-@@ -2465,7 +2465,7 @@ void ip6_route_input(struct sk_buff *skb)
- 						      &fl6, skb, flags));
+ enum vchiq_status
+ vchiq_release_service(unsigned int handle)
+@@ -2584,6 +2585,7 @@ vchiq_release_service(unsigned int handle)
+ 	}
+ 	return ret;
  }
++EXPORT_SYMBOL(vchiq_release_service);
  
--static struct rt6_info *ip6_pol_route_output(struct net *net,
-+INDIRECT_CALLABLE_SCOPE struct rt6_info *ip6_pol_route_output(struct net *net,
- 					     struct fib6_table *table,
- 					     struct flowi6 *fl6,
- 					     const struct sk_buff *skb,
-@@ -2912,7 +2912,7 @@ struct ip6rd_flowi {
- 	struct in6_addr gateway;
- };
+ struct service_data_struct {
+ 	int fourcc;
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
+index ee11707b7476..a0525edc3093 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
+@@ -2946,6 +2946,7 @@ vchiq_close_service(unsigned int handle)
  
--static struct rt6_info *__ip6_route_redirect(struct net *net,
-+INDIRECT_CALLABLE_SCOPE struct rt6_info *__ip6_route_redirect(struct net *net,
- 					     struct fib6_table *table,
- 					     struct flowi6 *fl6,
- 					     const struct sk_buff *skb,
+ 	return status;
+ }
++EXPORT_SYMBOL(vchiq_close_service);
+ 
+ enum vchiq_status
+ vchiq_remove_service(unsigned int handle)
+@@ -3268,6 +3269,7 @@ vchiq_release_message(unsigned int handle,
+ 
+ 	unlock_service(service);
+ }
++EXPORT_SYMBOL(vchiq_release_message);
+ 
+ static void
+ release_message_sync(struct vchiq_state *state, struct vchiq_header *header)
+@@ -3294,6 +3296,7 @@ vchiq_get_peer_version(unsigned int handle, short *peer_version)
+ 		unlock_service(service);
+ 	return status;
+ }
++EXPORT_SYMBOL(vchiq_get_peer_version);
+ 
+ void vchiq_get_config(struct vchiq_config *config)
+ {
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
+deleted file mode 100644
+index 57ac6a289a08..000000000000
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
++++ /dev/null
+@@ -1,179 +0,0 @@
+-// SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+-/* Copyright (c) 2010-2012 Broadcom. All rights reserved. */
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/slab.h>
+-#include <linux/delay.h>
+-
+-#include "vchiq_if.h"
+-#include "../vchi/vchi.h"
+-#include "vchiq.h"
+-
+-/***********************************************************
+- * Name: vchi_held_msg_release
+- *
+- * Arguments:  unsgined handle
+- *	       struct vchiq_header *message
+- *
+- * Description: Routine to release a held message (after it has been read with
+- *              vchi_msg_hold)
+- *
+- * Returns: int - success == 0
+- *
+- ***********************************************************/
+-int vchi_held_msg_release(unsigned handle, struct vchiq_header *message)
+-{
+-	/*
+-	 * Convert the service field pointer back to an
+-	 * unsigned int which is an int.
+-	 * This pointer is opaque to everything except
+-	 * vchi_msg_hold which simply upcasted the int
+-	 * to a pointer.
+-	 */
+-
+-	vchiq_release_message(handle, message);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL(vchi_held_msg_release);
+-
+-/***********************************************************
+- * Name: vchi_msg_hold
+- *
+- * Arguments:  struct vchi_service *service,
+- *             void **data,
+- *             unsigned *msg_size,
+- *             struct vchiq_header **message
+- *
+- * Description: Routine to return a pointer to the current message (to allow
+- *              in place processing). The message is dequeued - don't forget
+- *              to release the message using vchi_held_msg_release when you're
+- *              finished.
+- *
+- * Returns: int - success == 0
+- *
+- ***********************************************************/
+-struct vchiq_header *vchi_msg_hold(unsigned handle)
+-{
+-	return vchiq_msg_hold(handle);
+-}
+-EXPORT_SYMBOL(vchi_msg_hold);
+-
+-/***********************************************************
+- * Name: vchi_initialise
+- *
+- * Arguments: struct vchiq_instance **instance
+- *
+- * Description: Initialises the hardware but does not transmit anything
+- *              When run as a Host App this will be called twice hence the need
+- *              to malloc the state information
+- *
+- * Returns: 0 if successful, failure otherwise
+- *
+- ***********************************************************/
+-
+-int vchi_initialise(struct vchiq_instance **instance)
+-{
+-	return vchiq_initialise(instance);
+-}
+-EXPORT_SYMBOL(vchi_initialise);
+-
+-/***********************************************************
+- * Name: vchi_connect
+- *
+- * Arguments: struct vchiq_instance *instance
+- *
+- * Description: Starts the command service on each connection,
+- *              causing INIT messages to be pinged back and forth
+- *
+- * Returns: 0 if successful, failure otherwise
+- *
+- ***********************************************************/
+-int vchi_connect(struct vchiq_instance *instance)
+-{
+-	return vchiq_connect(instance);
+-}
+-EXPORT_SYMBOL(vchi_connect);
+-
+-/***********************************************************
+- * Name: vchi_disconnect
+- *
+- * Arguments: struct vchiq_instance *instance
+- *
+- * Description: Stops the command service on each connection,
+- *              causing DE-INIT messages to be pinged back and forth
+- *
+- * Returns: 0 if successful, failure otherwise
+- *
+- ***********************************************************/
+-int vchi_disconnect(struct vchiq_instance *instance)
+-{
+-	return vchiq_shutdown(instance);
+-}
+-EXPORT_SYMBOL(vchi_disconnect);
+-
+-/***********************************************************
+- * Name: vchi_service_open
+- * Name: vchi_service_create
+- *
+- * Arguments: struct vchiq_instance *instance
+- *            struct service_creation *setup,
+- *            unsigned *handle
+- *
+- * Description: Routine to open a service
+- *
+- * Returns: int - success == 0
+- *
+- ***********************************************************/
+-
+-int vchi_service_open(struct vchiq_instance *instance,
+-		      struct vchiq_service_params *params,
+-		      unsigned *handle)
+-{
+-	return vchiq_open_service(instance, params, handle);
+-}
+-EXPORT_SYMBOL(vchi_service_open);
+-
+-int vchi_service_close(unsigned handle)
+-{
+-	return vchiq_close_service(handle);
+-}
+-EXPORT_SYMBOL(vchi_service_close);
+-
+-int vchi_get_peer_version(unsigned handle, short *peer_version)
+-{
+-	return vchiq_get_peer_version(handle, peer_version);
+-}
+-EXPORT_SYMBOL(vchi_get_peer_version);
+-
+-/***********************************************************
+- * Name: vchi_service_use
+- *
+- * Arguments: unsigned handle
+- *
+- * Description: Routine to increment refcount on a service
+- *
+- * Returns: void
+- *
+- ***********************************************************/
+-int vchi_service_use(unsigned handle)
+-{
+-	return vchiq_use_service(handle);
+-}
+-EXPORT_SYMBOL(vchi_service_use);
+-
+-/***********************************************************
+- * Name: vchi_service_release
+- *
+- * Arguments: unsigned handle
+- *
+- * Description: Routine to decrement refcount on a service
+- *
+- * Returns: void
+- *
+- ***********************************************************/
+-int vchi_service_release(unsigned handle)
+-{
+-	return vchiq_release_service(handle);
+-}
+-EXPORT_SYMBOL(vchi_service_release);
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+index 4cb0fdcc6750..f2a0341f6fc2 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+@@ -30,7 +30,6 @@
+ #include "mmal-msg.h"
+ 
+ #include "interface/vchiq_arm/vchiq_if.h"
+-#include "interface/vchi/vchi.h"
+ 
+ /*
+  * maximum number of components supported.
+@@ -294,7 +293,7 @@ static void buffer_to_host_work_cb(struct work_struct *work)
+ 		/* Dummy receive to ensure the buffers remain in order */
+ 		len = 8;
+ 	/* queue the bulk submission */
+-	vchi_service_use(instance->service_handle);
++	vchiq_use_service(instance->service_handle);
+ 	ret = vchiq_bulk_receive(instance->service_handle,
+ 				 msg_context->u.bulk.buffer->buffer,
+ 			         /* Actual receive needs to be a multiple
+@@ -304,7 +303,7 @@ static void buffer_to_host_work_cb(struct work_struct *work)
+ 			         msg_context,
+ 			         VCHIQ_BULK_MODE_CALLBACK);
+ 
+-	vchi_service_release(instance->service_handle);
++	vchiq_release_service(instance->service_handle);
+ 
+ 	if (ret != 0)
+ 		pr_err("%s: ctx: %p, vchiq_bulk_receive failed %d\n",
+@@ -438,13 +437,13 @@ buffer_from_host(struct vchiq_mmal_instance *instance,
+ 	/* no payload in message */
+ 	m.u.buffer_from_host.payload_in_message = 0;
+ 
+-	vchi_service_use(instance->service_handle);
++	vchiq_use_service(instance->service_handle);
+ 
+ 	ret = vchiq_queue_kernel_message(instance->service_handle, &m,
+ 					 sizeof(struct mmal_msg_header) +
+ 					 sizeof(m.u.buffer_from_host));
+ 
+-	vchi_service_release(instance->service_handle);
++	vchiq_release_service(instance->service_handle);
+ 
+ 	return ret;
+ }
+@@ -678,13 +677,13 @@ static int send_synchronous_mmal_msg(struct vchiq_mmal_instance *instance,
+ 	DBG_DUMP_MSG(msg, (sizeof(struct mmal_msg_header) + payload_len),
+ 		     ">>> sync message");
+ 
+-	vchi_service_use(instance->service_handle);
++	vchiq_use_service(instance->service_handle);
+ 
+ 	ret = vchiq_queue_kernel_message(instance->service_handle, msg,
+ 					 sizeof(struct mmal_msg_header) +
+ 					 payload_len);
+ 
+-	vchi_service_release(instance->service_handle);
++	vchiq_release_service(instance->service_handle);
+ 
+ 	if (ret) {
+ 		pr_err("error %d queuing message\n", ret);
+@@ -1832,9 +1831,9 @@ int vchiq_mmal_finalise(struct vchiq_mmal_instance *instance)
+ 	if (mutex_lock_interruptible(&instance->vchiq_mutex))
+ 		return -EINTR;
+ 
+-	vchi_service_use(instance->service_handle);
++	vchiq_use_service(instance->service_handle);
+ 
+-	status = vchi_service_close(instance->service_handle);
++	status = vchiq_close_service(instance->service_handle);
+ 	if (status != 0)
+ 		pr_err("mmal-vchiq: VCHIQ close failed\n");
+ 
+@@ -1880,14 +1879,14 @@ int vchiq_mmal_init(struct vchiq_mmal_instance **out_instance)
+ 	BUILD_BUG_ON(sizeof(struct mmal_port) != 64);
+ 
+ 	/* create a vchi instance */
+-	status = vchi_initialise(&vchiq_instance);
++	status = vchiq_initialise(&vchiq_instance);
+ 	if (status) {
+ 		pr_err("Failed to initialise VCHI instance (status=%d)\n",
+ 		       status);
+ 		return -EIO;
+ 	}
+ 
+-	status = vchi_connect(vchiq_instance);
++	status = vchiq_connect(vchiq_instance);
+ 	if (status) {
+ 		pr_err("Failed to connect VCHI instance (status=%d)\n", status);
+ 		return -EIO;
+@@ -1912,22 +1911,22 @@ int vchiq_mmal_init(struct vchiq_mmal_instance **out_instance)
+ 	if (!instance->bulk_wq)
+ 		goto err_free;
+ 
+-	status = vchi_service_open(vchiq_instance, &params,
+-				   &instance->service_handle);
++	status = vchiq_open_service(vchiq_instance, &params,
++				    &instance->service_handle);
+ 	if (status) {
+ 		pr_err("Failed to open VCHI service connection (status=%d)\n",
+ 		       status);
+ 		goto err_close_services;
+ 	}
+ 
+-	vchi_service_release(instance->service_handle);
++	vchiq_release_service(instance->service_handle);
+ 
+ 	*out_instance = instance;
+ 
+ 	return 0;
+ 
+ err_close_services:
+-	vchi_service_close(instance->service_handle);
++	vchiq_close_service(instance->service_handle);
+ 	destroy_workqueue(instance->bulk_wq);
+ err_free:
+ 	vfree(instance->bulk_scratch);
 -- 
-2.27.0.111.gc72c7da667-goog
+2.27.0
 
