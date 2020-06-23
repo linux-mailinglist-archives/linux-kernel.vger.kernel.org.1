@@ -2,211 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3003E20578A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3447820576D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732958AbgFWQpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 12:45:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39870 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733137AbgFWQpf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 12:45:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1F319B066;
-        Tue, 23 Jun 2020 16:45:33 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     gregkh@linuxfoundation.org
-Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [PATCH 45/50] staging: vchi: Move vchi_queue_kernel_message() into vchiq
-Date:   Tue, 23 Jun 2020 18:42:31 +0200
-Message-Id: <20200623164235.29566-46-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623164235.29566-1-nsaenzjulienne@suse.de>
-References: <20200623164235.29566-1-nsaenzjulienne@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1732959AbgFWQmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 12:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732923AbgFWQmo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 12:42:44 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6968C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:42:42 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id t32so1464589qth.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:42:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=EYMTqcYPNSd1+dm5Nyu6dJjrXx/FGaIaL0ZjwplPIjQ=;
+        b=DyxplA2Cgjtr45kDeFCptHg1Qf0Sg76CvzdvQ6KAbg5YBNa4V11HEgZDqgW0Ppv6Yb
+         zzU1cxMT/3p2Dn3R3zPMWpYBDF3zzPRyQOz7f78kzeuUwnZrdD7yYXfw1WRjWVhBcPD6
+         s+L5Pk/e+tj/QBXqqMlM2LUGnrliz0WDjlUOhJeVtfMkVgy+t4j6u7KpoipSxQzOAqKM
+         SCdnP40EoROcurdIVdqQHArMDKvuQJ/D27gVglHgMmJISWlSPsAI1U3dJm0yT5Fd5h+t
+         3tp51cA8P4EGnlOpsf6ZY0niMuWVbmNLjHoEI39Bol5lvK8nD4TKblIHTW081ifgMWcm
+         2jvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=EYMTqcYPNSd1+dm5Nyu6dJjrXx/FGaIaL0ZjwplPIjQ=;
+        b=AINWhhgbaaMN/KZquADOVsSNQ+Rh16g41snJxlj0P5YcgAc50nsNjE/eiu2ACJp+CQ
+         JepHxFyBZcSYJ3mf8s2ek7azqdiaD06lBG/2EZh9KMvvFz2e6nXsk8gxqLIvttlJCbGz
+         l0K1/Q18JvkpgtEAGOCQqX8ipDpTXOyL52NKEl5c8E/nQf9SQlXzjF8tJ4OaVhmByqNk
+         IhQiB2nqZFL1hl/LjFexw4fCXQfBnR09+ne2Lj4sfjGhwRPgnzCOIuKYsUiGw3J/0D1W
+         ZZxgRmlAFWReTUkhL6x4HNfCBK0FKwgfA7Qo3MBmwhyE/zTV8dMrqEj2FAfCnB4iIrDJ
+         1n+A==
+X-Gm-Message-State: AOAM532ITBSVRCB84VjLNcYXp092czxkI47GBmrfuFf0AXl6a/h/ObPc
+        rZ0BLOWMxvjmBCxZ8zwMwVzBXV3hfBdg
+X-Google-Smtp-Source: ABdhPJwI0rz7XctpWpoJomIHLMbmlSHtKgRHge1DQRZjTH9SqlsVyP/eofzBm03RD4CgVx0ozYRERDM6Kl/W
+X-Received: by 2002:ad4:56ac:: with SMTP id bd12mr27566713qvb.139.1592930561924;
+ Tue, 23 Jun 2020 09:42:41 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 09:42:32 -0700
+In-Reply-To: <20200623164232.175846-1-brianvv@google.com>
+Message-Id: <20200623164232.175846-2-brianvv@google.com>
+Mime-Version: 1.0
+References: <20200623164232.175846-1-brianvv@google.com>
+X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
+Subject: [PATCH v2 net-next 2/2] ipv6: fib6: avoid indirect calls from fib6_rule_lookup
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Luigi Rizzo <lrizzo@google.com>,
+        Paolo Abeni <pabeni@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We can't really merge it with vchiq_queue_message() as it has internal
-users that will not benefit from the retry mechanism
-vchiq_queue_kernel_message() uses. So, for the sake of getting rid of
-vchi, move it into vchiq.
+It was reported that a considerable amount of cycles were spent on the
+expensive indirect calls on fib6_rule_lookup. This patch introduces an
+inline helper called pol_route_func that uses the indirect_call_wrappers
+to avoid the indirect calls.
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+This patch saves around 50ns per call.
+
+Performance was measured on the receiver by checking the amount of
+syncookies that server was able to generate under a synflood load.
+
+Traffic was generated using trafgen[1] which was pushing around 1Mpps on
+a single queue. Receiver was using only one rx queue which help to
+create a bottle neck and make the experiment rx-bounded.
+
+These are the syncookies generated over 10s from the different runs:
+
+Whithout the patch:
+TcpExtSyncookiesSent            3553749            0.0
+TcpExtSyncookiesSent            3550895            0.0
+TcpExtSyncookiesSent            3553845            0.0
+TcpExtSyncookiesSent            3541050            0.0
+TcpExtSyncookiesSent            3539921            0.0
+TcpExtSyncookiesSent            3557659            0.0
+TcpExtSyncookiesSent            3526812            0.0
+TcpExtSyncookiesSent            3536121            0.0
+TcpExtSyncookiesSent            3529963            0.0
+TcpExtSyncookiesSent            3536319            0.0
+
+With the patch:
+TcpExtSyncookiesSent            3611786            0.0
+TcpExtSyncookiesSent            3596682            0.0
+TcpExtSyncookiesSent            3606878            0.0
+TcpExtSyncookiesSent            3599564            0.0
+TcpExtSyncookiesSent            3601304            0.0
+TcpExtSyncookiesSent            3609249            0.0
+TcpExtSyncookiesSent            3617437            0.0
+TcpExtSyncookiesSent            3608765            0.0
+TcpExtSyncookiesSent            3620205            0.0
+TcpExtSyncookiesSent            3601895            0.0
+
+Without the patch the average is 354263 pkt/s or 2822 ns/pkt and with
+the patch the average is 360738 pkt/s or 2772 ns/pkt which gives an
+estimate of 50 ns per packet.
+
+[1] http://netsniff-ng.org/
+
+Changelog since v1:
+ - Change ordering in the ICW (Paolo Abeni)
+
+Cc: Luigi Rizzo <lrizzo@google.com>
+Cc: Paolo Abeni <pabeni@redhat.com>
+Reported-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: Brian Vazquez <brianvv@google.com>
 ---
- .../bcm2835-audio/bcm2835-vchiq.c             |  8 +++----
- .../vc04_services/interface/vchi/vchi.h       |  4 ----
- .../interface/vchiq_arm/vchiq_core.c          | 23 ++++++++++++++++---
- .../interface/vchiq_arm/vchiq_if.h            |  4 ++--
- .../interface/vchiq_arm/vchiq_shim.c          | 22 ------------------
- .../vc04_services/vchiq-mmal/mmal-vchiq.c     | 14 +++++------
- 6 files changed, 32 insertions(+), 43 deletions(-)
+ include/net/ip6_fib.h | 36 ++++++++++++++++++++++++++++++++++++
+ net/ipv6/fib6_rules.c |  9 ++++++---
+ net/ipv6/ip6_fib.c    |  3 ++-
+ net/ipv6/route.c      |  8 ++++----
+ 4 files changed, 48 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c
-index 28d64bc895cd..efaa2ae11f52 100644
---- a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c
-+++ b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c
-@@ -44,8 +44,8 @@ static int bcm2835_audio_send_msg_locked(struct bcm2835_audio_instance *instance
- 		init_completion(&instance->msg_avail_comp);
+diff --git a/include/net/ip6_fib.h b/include/net/ip6_fib.h
+index 3f615a29766e..cc8356fd927f 100644
+--- a/include/net/ip6_fib.h
++++ b/include/net/ip6_fib.h
+@@ -19,6 +19,7 @@
+ #include <net/netlink.h>
+ #include <net/inetpeer.h>
+ #include <net/fib_notifier.h>
++#include <linux/indirect_call_wrapper.h>
+ 
+ #ifdef CONFIG_IPV6_MULTIPLE_TABLES
+ #define FIB6_TABLE_HASHSZ 256
+@@ -552,6 +553,41 @@ struct bpf_iter__ipv6_route {
+ };
+ #endif
+ 
++INDIRECT_CALLABLE_DECLARE(struct rt6_info *ip6_pol_route_output(struct net *net,
++					     struct fib6_table *table,
++					     struct flowi6 *fl6,
++					     const struct sk_buff *skb,
++					     int flags));
++INDIRECT_CALLABLE_DECLARE(struct rt6_info *ip6_pol_route_input(struct net *net,
++					     struct fib6_table *table,
++					     struct flowi6 *fl6,
++					     const struct sk_buff *skb,
++					     int flags));
++INDIRECT_CALLABLE_DECLARE(struct rt6_info *__ip6_route_redirect(struct net *net,
++					     struct fib6_table *table,
++					     struct flowi6 *fl6,
++					     const struct sk_buff *skb,
++					     int flags));
++INDIRECT_CALLABLE_DECLARE(struct rt6_info *ip6_pol_route_lookup(struct net *net,
++					     struct fib6_table *table,
++					     struct flowi6 *fl6,
++					     const struct sk_buff *skb,
++					     int flags));
++static inline struct rt6_info *pol_lookup_func(pol_lookup_t lookup,
++						struct net *net,
++						struct fib6_table *table,
++						struct flowi6 *fl6,
++						const struct sk_buff *skb,
++						int flags)
++{
++	return INDIRECT_CALL_4(lookup,
++			       ip6_pol_route_output,
++			       ip6_pol_route_input,
++			       ip6_pol_route_lookup,
++			       __ip6_route_redirect,
++			       net, table, fl6, skb, flags);
++}
++
+ #ifdef CONFIG_IPV6_MULTIPLE_TABLES
+ static inline bool fib6_has_custom_rules(const struct net *net)
+ {
+diff --git a/net/ipv6/fib6_rules.c b/net/ipv6/fib6_rules.c
+index fafe556d21e0..6053ef851555 100644
+--- a/net/ipv6/fib6_rules.c
++++ b/net/ipv6/fib6_rules.c
+@@ -111,11 +111,13 @@ struct dst_entry *fib6_rule_lookup(struct net *net, struct flowi6 *fl6,
+ 	} else {
+ 		struct rt6_info *rt;
+ 
+-		rt = lookup(net, net->ipv6.fib6_local_tbl, fl6, skb, flags);
++		rt = pol_lookup_func(lookup,
++			     net, net->ipv6.fib6_local_tbl, fl6, skb, flags);
+ 		if (rt != net->ipv6.ip6_null_entry && rt->dst.error != -EAGAIN)
+ 			return &rt->dst;
+ 		ip6_rt_put_flags(rt, flags);
+-		rt = lookup(net, net->ipv6.fib6_main_tbl, fl6, skb, flags);
++		rt = pol_lookup_func(lookup,
++			     net, net->ipv6.fib6_main_tbl, fl6, skb, flags);
+ 		if (rt->dst.error != -EAGAIN)
+ 			return &rt->dst;
+ 		ip6_rt_put_flags(rt, flags);
+@@ -226,7 +228,8 @@ static int __fib6_rule_action(struct fib_rule *rule, struct flowi *flp,
+ 		goto out;
  	}
  
--	status = vchi_queue_kernel_message(instance->service_handle,
--					   m, sizeof(*m));
-+	status = vchiq_queue_kernel_message(instance->service_handle,
-+					    m, sizeof(*m));
- 	if (status) {
- 		dev_err(instance->dev,
- 			"vchi message queue failed: %d, msg=%d\n",
-@@ -350,8 +350,8 @@ int bcm2835_audio_write(struct bcm2835_alsa_stream *alsa_stream,
- 		while (count > 0) {
- 			int bytes = min(instance->max_packet, count);
- 
--			status = vchi_queue_kernel_message(instance->service_handle,
--							   src, bytes);
-+			status = vchiq_queue_kernel_message(instance->service_handle,
-+							    src, bytes);
- 			src += bytes;
- 			count -= bytes;
- 		}
-diff --git a/drivers/staging/vc04_services/interface/vchi/vchi.h b/drivers/staging/vc04_services/interface/vchi/vchi.h
-index c800796f9986..6de5df43cc29 100644
---- a/drivers/staging/vc04_services/interface/vchi/vchi.h
-+++ b/drivers/staging/vc04_services/interface/vchi/vchi.h
-@@ -37,10 +37,6 @@ extern int32_t vchi_service_use(unsigned handle);
- // Routine to decrement ref count on a named service
- extern int32_t vchi_service_release(unsigned handle);
- 
--/* Routine to send a message from kernel memory across a service */
--extern int vchi_queue_kernel_message(unsigned handle, void *data,
--				     unsigned int size);
--
- // Routine to look at a message in place.
- // The message is dequeued, so the caller is left holding it; the descriptor is
- // filled in and must be released when the user has finished with the message.
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-index 01a9331dbff4..ee11707b7476 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.c
-@@ -3213,11 +3213,28 @@ vchiq_queue_message(unsigned int handle,
- 	return status;
- }
- 
--enum vchiq_status vchiq_queue_kernel_message(unsigned int handle, void *context,
--				      size_t size)
-+int vchiq_queue_kernel_message(unsigned handle, void *data, unsigned size)
+-	rt = lookup(net, table, flp6, arg->lookup_data, flags);
++	rt = pol_lookup_func(lookup,
++			     net, table, flp6, arg->lookup_data, flags);
+ 	if (rt != net->ipv6.ip6_null_entry) {
+ 		err = fib6_rule_saddr(net, rule, flags, flp6,
+ 				      ip6_dst_idev(&rt->dst)->dev);
+diff --git a/net/ipv6/ip6_fib.c b/net/ipv6/ip6_fib.c
+index 49ee89bbcba0..25a90f3f705c 100644
+--- a/net/ipv6/ip6_fib.c
++++ b/net/ipv6/ip6_fib.c
+@@ -314,7 +314,8 @@ struct dst_entry *fib6_rule_lookup(struct net *net, struct flowi6 *fl6,
  {
--	return vchiq_queue_message(handle, memcpy_copy_callback, context, size);
-+	enum vchiq_status status;
-+
-+	while (1) {
-+		status = vchiq_queue_message(handle, memcpy_copy_callback,
-+					     data, size);
-+
-+		/*
-+		 * vchiq_queue_message() may return VCHIQ_RETRY, so we need to
-+		 * implement a retry mechanism since this function is supposed
-+		 * to block until queued
-+		 */
-+		if (status != VCHIQ_RETRY)
-+			break;
-+
-+		msleep(1);
-+	}
-+
-+	return status;
+ 	struct rt6_info *rt;
+ 
+-	rt = lookup(net, net->ipv6.fib6_main_tbl, fl6, skb, flags);
++	rt = pol_lookup_func(lookup,
++			net, net->ipv6.fib6_main_tbl, fl6, skb, flags);
+ 	if (rt->dst.error == -EAGAIN) {
+ 		ip6_rt_put_flags(rt, flags);
+ 		rt = net->ipv6.ip6_null_entry;
+diff --git a/net/ipv6/route.c b/net/ipv6/route.c
+index 82cbb46a2a4f..5852039ca9cf 100644
+--- a/net/ipv6/route.c
++++ b/net/ipv6/route.c
+@@ -1207,7 +1207,7 @@ static struct rt6_info *ip6_create_rt_rcu(const struct fib6_result *res)
+ 	return nrt;
  }
-+EXPORT_SYMBOL(vchiq_queue_kernel_message);
  
- void
- vchiq_release_message(unsigned int handle,
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_if.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_if.h
-index 931debcd6492..6374eda4ea0c 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_if.h
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_if.h
-@@ -89,8 +89,8 @@ extern enum vchiq_status vchiq_open_service(struct vchiq_instance *instance,
- extern enum vchiq_status vchiq_close_service(unsigned int service);
- extern enum vchiq_status vchiq_use_service(unsigned int service);
- extern enum vchiq_status vchiq_release_service(unsigned int service);
--extern enum vchiq_status vchiq_queue_kernel_message(unsigned int handle,
--						    void *context, size_t size);
-+extern int vchiq_queue_kernel_message(unsigned handle, void *data,
-+				      unsigned size);
- extern void vchiq_msg_queue_push(unsigned handle, struct vchiq_header *header);
- extern void           vchiq_release_message(unsigned int service,
- 	struct vchiq_header *header);
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-index 33493643b5f8..57ac6a289a08 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-@@ -9,28 +9,6 @@
- #include "../vchi/vchi.h"
- #include "vchiq.h"
+-static struct rt6_info *ip6_pol_route_lookup(struct net *net,
++INDIRECT_CALLABLE_SCOPE struct rt6_info *ip6_pol_route_lookup(struct net *net,
+ 					     struct fib6_table *table,
+ 					     struct flowi6 *fl6,
+ 					     const struct sk_buff *skb,
+@@ -2274,7 +2274,7 @@ struct rt6_info *ip6_pol_route(struct net *net, struct fib6_table *table,
+ }
+ EXPORT_SYMBOL_GPL(ip6_pol_route);
  
--int vchi_queue_kernel_message(unsigned handle, void *data, unsigned int size)
--{
--	enum vchiq_status status;
--
--	while (1) {
--		status = vchiq_queue_kernel_message(handle, data, size);
--
--		/*
--		 * vchiq_queue_message() may return VCHIQ_RETRY, so we need to
--		 * implement a retry mechanism since this function is supposed
--		 * to block until queued
--		 */
--		if (status != VCHIQ_RETRY)
--			break;
--
--		msleep(1);
--	}
--
--	return status;
--}
--EXPORT_SYMBOL(vchi_queue_kernel_message);
--
- /***********************************************************
-  * Name: vchi_held_msg_release
-  *
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-index 34a1627754f3..4cb0fdcc6750 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-+++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-@@ -440,10 +440,9 @@ buffer_from_host(struct vchiq_mmal_instance *instance,
+-static struct rt6_info *ip6_pol_route_input(struct net *net,
++INDIRECT_CALLABLE_SCOPE struct rt6_info *ip6_pol_route_input(struct net *net,
+ 					    struct fib6_table *table,
+ 					    struct flowi6 *fl6,
+ 					    const struct sk_buff *skb,
+@@ -2465,7 +2465,7 @@ void ip6_route_input(struct sk_buff *skb)
+ 						      &fl6, skb, flags));
+ }
  
- 	vchi_service_use(instance->service_handle);
+-static struct rt6_info *ip6_pol_route_output(struct net *net,
++INDIRECT_CALLABLE_SCOPE struct rt6_info *ip6_pol_route_output(struct net *net,
+ 					     struct fib6_table *table,
+ 					     struct flowi6 *fl6,
+ 					     const struct sk_buff *skb,
+@@ -2912,7 +2912,7 @@ struct ip6rd_flowi {
+ 	struct in6_addr gateway;
+ };
  
--	ret = vchi_queue_kernel_message(instance->service_handle,
--					&m,
--					sizeof(struct mmal_msg_header) +
--					sizeof(m.u.buffer_from_host));
-+	ret = vchiq_queue_kernel_message(instance->service_handle, &m,
-+					 sizeof(struct mmal_msg_header) +
-+					 sizeof(m.u.buffer_from_host));
- 
- 	vchi_service_release(instance->service_handle);
- 
-@@ -681,10 +680,9 @@ static int send_synchronous_mmal_msg(struct vchiq_mmal_instance *instance,
- 
- 	vchi_service_use(instance->service_handle);
- 
--	ret = vchi_queue_kernel_message(instance->service_handle,
--					msg,
--					sizeof(struct mmal_msg_header) +
--					payload_len);
-+	ret = vchiq_queue_kernel_message(instance->service_handle, msg,
-+					 sizeof(struct mmal_msg_header) +
-+					 payload_len);
- 
- 	vchi_service_release(instance->service_handle);
- 
+-static struct rt6_info *__ip6_route_redirect(struct net *net,
++INDIRECT_CALLABLE_SCOPE struct rt6_info *__ip6_route_redirect(struct net *net,
+ 					     struct fib6_table *table,
+ 					     struct flowi6 *fl6,
+ 					     const struct sk_buff *skb,
 -- 
-2.27.0
+2.27.0.111.gc72c7da667-goog
 
