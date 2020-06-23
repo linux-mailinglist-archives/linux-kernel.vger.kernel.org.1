@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B48E3206178
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE42A20623E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392450AbgFWUmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:42:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39190 "EHLO mail.kernel.org"
+        id S2404152AbgFWU5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:57:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390561AbgFWUmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:42:37 -0400
+        id S2391727AbgFWUmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:42:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 55C1620767;
-        Tue, 23 Jun 2020 20:42:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 109A32070E;
+        Tue, 23 Jun 2020 20:42:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944956;
-        bh=gTriKvrD/UkzIHrdq373VTGptyXy8RxJVCpAOj9W5wc=;
+        s=default; t=1592944959;
+        bh=AbtKSSDXJJ7psYsWDTWBgkzCW4eFI1zmmmtpPytZzpI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IaA5//WMqW6e0DFwnsexkFNoRCnvnD0gSIHNBPwk0G9k0tkyO5WPqXaYnR38ayliZ
-         NvNkEu1+d7sba8fPLDLTxbKNsrHb1ssN+MuxoYRcj4rydzBzJWNYnCICX/jDB2ho36
-         kg5ezcVaC6U5Zr6nysCZGik9cwaxg8JPBmSrTvLM=
+        b=2k6TugW0aeokrgz3ZrQYORcXTUHQFtud1hAjtunPH9gXyOagDaiVW6ML9GGucKeLi
+         QDQFavzfyNASL5aB9uYWOMOQ0IAwzxekC4efTSnlpCDrK9VveItmSKDl6XFlRtj1zC
+         H/Pyd6s8GjnTI1X9sq0dsq0+gkeEjSAS9+5TbbwI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nishka Dasgupta <nishkadg.linux@gmail.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org, Miquel Raynal <miquel.raynal@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 189/206] mtd: rawnand: oxnas: Add of_node_put()
-Date:   Tue, 23 Jun 2020 21:58:37 +0200
-Message-Id: <20200623195326.327690176@linuxfoundation.org>
+Subject: [PATCH 4.19 190/206] mtd: rawnand: oxnas: Fix the probe error path
+Date:   Tue, 23 Jun 2020 21:58:38 +0200
+Message-Id: <20200623195326.373390811@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
 References: <20200623195316.864547658@linuxfoundation.org>
@@ -44,60 +43,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nishka Dasgupta <nishkadg.linux@gmail.com>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
 
-[ Upstream commit c436f68beeb20f2f92937677db1d9069b0dd2a3d ]
+[ Upstream commit 154298e2a3f6c9ce1d76cdb48d89fd5b107ea1a3 ]
 
-Each iteration of for_each_child_of_node puts the previous node, but in
-the case of a goto from the middle of the loop, there is no put, thus
-causing a memory leak. Hence add an of_node_put under a new goto to put
-the node at a loop exit.
-Issue found with Coccinelle.
+nand_release() is supposed be called after MTD device registration.
+Here, only nand_scan() happened, so use nand_cleanup() instead.
 
-Signed-off-by: Nishka Dasgupta <nishkadg.linux@gmail.com>
+While at it, be consistent and move the function call in the error
+path thanks to a goto statement.
+
+Fixes: 668592492409 ("mtd: nand: Add OX820 NAND Support")
 Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/linux-mtd/20200519130035.1883-37-miquel.raynal@bootlin.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/raw/oxnas_nand.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/mtd/nand/raw/oxnas_nand.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/mtd/nand/raw/oxnas_nand.c b/drivers/mtd/nand/raw/oxnas_nand.c
-index 5bc180536320d..7509bcd961351 100644
+index 7509bcd961351..d3f274b2e56d2 100644
 --- a/drivers/mtd/nand/raw/oxnas_nand.c
 +++ b/drivers/mtd/nand/raw/oxnas_nand.c
-@@ -123,7 +123,7 @@ static int oxnas_nand_probe(struct platform_device *pdev)
- 				    GFP_KERNEL);
- 		if (!chip) {
- 			err = -ENOMEM;
--			goto err_clk_unprepare;
-+			goto err_release_child;
- 		}
- 
- 		chip->controller = &oxnas->base;
-@@ -144,12 +144,12 @@ static int oxnas_nand_probe(struct platform_device *pdev)
- 		/* Scan to find existence of the device */
- 		err = nand_scan(chip, 1);
- 		if (err)
--			goto err_clk_unprepare;
-+			goto err_release_child;
+@@ -147,10 +147,8 @@ static int oxnas_nand_probe(struct platform_device *pdev)
+ 			goto err_release_child;
  
  		err = mtd_device_register(mtd, NULL, 0);
- 		if (err) {
- 			nand_release(chip);
--			goto err_clk_unprepare;
-+			goto err_release_child;
- 		}
+-		if (err) {
+-			nand_release(chip);
+-			goto err_release_child;
+-		}
++		if (err)
++			goto err_cleanup_nand;
  
  		oxnas->chips[nchips] = chip;
-@@ -166,6 +166,8 @@ static int oxnas_nand_probe(struct platform_device *pdev)
+ 		++nchips;
+@@ -166,6 +164,8 @@ static int oxnas_nand_probe(struct platform_device *pdev)
  
  	return 0;
  
-+err_release_child:
-+	of_node_put(nand_np);
++err_cleanup_nand:
++	nand_cleanup(chip);
+ err_release_child:
+ 	of_node_put(nand_np);
  err_clk_unprepare:
- 	clk_disable_unprepare(oxnas->clk);
- 	return err;
 -- 
 2.25.1
 
