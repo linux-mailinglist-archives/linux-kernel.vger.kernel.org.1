@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9454F205E85
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8193D205E87
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390313AbgFWUXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:23:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41636 "EHLO mail.kernel.org"
+        id S2390322AbgFWUXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:23:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41696 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390302AbgFWUX3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:23:29 -0400
+        id S2390315AbgFWUXc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:23:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9AD42070E;
-        Tue, 23 Jun 2020 20:23:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7F9E920723;
+        Tue, 23 Jun 2020 20:23:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943809;
-        bh=9kuNbOGof6XP3kbieERRm18pvp6cKSOGT10k0/ORLUg=;
+        s=default; t=1592943812;
+        bh=2MC5q5RSqVKgcx5B9gE5+mDpo3ta5TgsrmT7263qL1A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dn6eRc0fgNneUr6WjpUyXtdn8cGV53EjZfH/UYdnwocjcVX8WD3dfWclSdK5AAO8m
-         PPiekkB4RRMaN78ObwLFP09ZJDuJH7vT92KDRmeLKTs7jkARdRyJYriE7XlWzgNgfn
-         1WxF96pSn9Zjz9j7CUWMacazymG11YpcwTUp/IfU=
+        b=1PEBZ/WD8baVvRbNHvDK42ajztt0vixaRUt9RIJMtaO0VPlS86nMYhjVnktLWEjGM
+         5Sh05vnYjY9wBfmAKAHJVpLBEprvj9WAm1wMsz4T+X4GZ8qFl1T5Wy+Qm/SWx66pyI
+         iUxu+CRg6rNx+OBPfXTvSJ8f4HZ4gIZg+tguvjDY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Mike Christie <mchristi@redhat.com>,
-        Sudhakar Panneerselvam <sudhakar.panneerselvam@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Alain Volmat <avolmat@me.com>,
+        Patrice Chotard <patrice.chotard@st.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 058/314] scsi: vhost: Notify TCM about the maximum sg entries supported per command
-Date:   Tue, 23 Jun 2020 21:54:13 +0200
-Message-Id: <20200623195341.586644001@linuxfoundation.org>
+Subject: [PATCH 5.4 059/314] clk: clk-flexgen: fix clock-critical handling
+Date:   Tue, 23 Jun 2020 21:54:14 +0200
+Message-Id: <20200623195341.637769741@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
 References: <20200623195338.770401005@linuxfoundation.org>
@@ -49,44 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudhakar Panneerselvam <sudhakar.panneerselvam@oracle.com>
+From: Alain Volmat <avolmat@me.com>
 
-[ Upstream commit 5ae6a6a915033bfee79e76e0c374d4f927909edc ]
+[ Upstream commit a403bbab1a73d798728d76931cab3ff0399b9560 ]
 
-vhost-scsi pre-allocates the maximum sg entries per command and if a
-command requires more than VHOST_SCSI_PREALLOC_SGLS entries, then that
-command is failed by it. This patch lets vhost communicate the max sg limit
-when it registers vhost_scsi_ops with TCM. With this change, TCM would
-report the max sg entries through "Block Limits" VPD page which will be
-typically queried by the SCSI initiator during device discovery. By knowing
-this limit, the initiator could ensure the maximum transfer length is less
-than or equal to what is reported by vhost-scsi.
+Fixes an issue leading to having all clocks following a critical
+clocks marked as well as criticals.
 
-Link: https://lore.kernel.org/r/1590166317-953-1-git-send-email-sudhakar.panneerselvam@oracle.com
-Cc: Michael S. Tsirkin <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Stefan Hajnoczi <stefanha@redhat.com>
-Reviewed-by: Mike Christie <mchristi@redhat.com>
-Signed-off-by: Sudhakar Panneerselvam <sudhakar.panneerselvam@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: fa6415affe20 ("clk: st: clk-flexgen: Detect critical clocks")
+Signed-off-by: Alain Volmat <avolmat@me.com>
+Link: https://lkml.kernel.org/r/20200322140740.3970-1-avolmat@me.com
+Reviewed-by: Patrice Chotard <patrice.chotard@st.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vhost/scsi.c | 1 +
+ drivers/clk/st/clk-flexgen.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
-index a9caf1bc3c3ef..88ce114790d75 100644
---- a/drivers/vhost/scsi.c
-+++ b/drivers/vhost/scsi.c
-@@ -2290,6 +2290,7 @@ static struct configfs_attribute *vhost_scsi_wwn_attrs[] = {
- static const struct target_core_fabric_ops vhost_scsi_ops = {
- 	.module				= THIS_MODULE,
- 	.fabric_name			= "vhost",
-+	.max_data_sg_nents		= VHOST_SCSI_PREALLOC_SGLS,
- 	.tpg_get_wwn			= vhost_scsi_get_fabric_wwn,
- 	.tpg_get_tag			= vhost_scsi_get_tpgt,
- 	.tpg_check_demo_mode		= vhost_scsi_check_true,
+diff --git a/drivers/clk/st/clk-flexgen.c b/drivers/clk/st/clk-flexgen.c
+index 4413b6e04a8ec..55873d4b76032 100644
+--- a/drivers/clk/st/clk-flexgen.c
++++ b/drivers/clk/st/clk-flexgen.c
+@@ -375,6 +375,7 @@ static void __init st_of_flexgen_setup(struct device_node *np)
+ 			break;
+ 		}
+ 
++		flex_flags &= ~CLK_IS_CRITICAL;
+ 		of_clk_detect_critical(np, i, &flex_flags);
+ 
+ 		/*
 -- 
 2.25.1
 
