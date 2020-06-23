@@ -2,81 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16BEF204DBD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41718204DDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732043AbgFWJUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 05:20:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731971AbgFWJU3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:20:29 -0400
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AA86420738;
-        Tue, 23 Jun 2020 09:20:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592904029;
-        bh=Xs7k99TsOgu0hzE+yFGCz3P3zA7V/AxXkL+HCRV3E6Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gGzQytR7q9QIG6t6/Au7ZRQdVDc5oRMr4aY8NYa6nwhi4zMC06Gxu7KZf1BlhcYEQ
-         NGWO4ZPC+uVFQXdc7h7GtFWKbZO7dZ4mDrc2U/9y7Newo8Le3BgCGE+PEinTT9Ohz1
-         mw5i5FW1I0PfVQy+9qc1Vlqj4qAEdfy6V8uw3O6k=
-Received: by mail-lj1-f178.google.com with SMTP id s1so22629899ljo.0;
-        Tue, 23 Jun 2020 02:20:28 -0700 (PDT)
-X-Gm-Message-State: AOAM532+gEGgK45GcKUv9tSuAeCMXUYRKpg1wuxZkPluhbq9IsVvXtGh
-        a0OdL94CkKVDfrcOz8c3DIK3Z3tZ8uwoWDDug58=
-X-Google-Smtp-Source: ABdhPJyV3VmbaZQ13gtf4a6bK4ughLQLgVLF0ksu0UOJmt9DCx/22TnKAoKwGpKzy2WNreYJgun9j/SlLT0XuM5Re80=
-X-Received: by 2002:a2e:8651:: with SMTP id i17mr10751099ljj.45.1592904026921;
- Tue, 23 Jun 2020 02:20:26 -0700 (PDT)
+        id S1732224AbgFWJWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 05:22:44 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2355 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731912AbgFWJWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 05:22:43 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.108])
+        by Forcepoint Email with ESMTP id 06EDE80076BFC7DAFC81;
+        Tue, 23 Jun 2020 10:22:42 +0100 (IST)
+Received: from [127.0.0.1] (10.47.2.88) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1913.5; Tue, 23 Jun
+ 2020 10:22:40 +0100
+Subject: Re: [PATCH 4/4] iommu/arm-smmu-v3: Remove cmpxchg() in
+ arm_smmu_cmdq_issue_cmdlist()
+To:     kernel test robot <lkp@intel.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        <rikard.falkeborn@gmail.com>
+CC:     "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "trivial@kernel.org" <trivial@kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>, "maz@kernel.org" <maz@kernel.org>
+References: <1592846920-45338-5-git-send-email-john.garry@huawei.com>
+ <202006230905.3HpPgtSC%lkp@intel.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <5ba2e240-b324-d316-c00c-38c03ee49baa@huawei.com>
+Date:   Tue, 23 Jun 2020 10:21:12 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <20200623074637.756-1-linux.amoon@gmail.com>
-In-Reply-To: <20200623074637.756-1-linux.amoon@gmail.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Tue, 23 Jun 2020 11:20:15 +0200
-X-Gmail-Original-Message-ID: <CAJKOXPfU-1NF+MHnyCMoXkCD4BbOwqr3s+g+gUwDqRevO=L=sg@mail.gmail.com>
-Message-ID: <CAJKOXPfU-1NF+MHnyCMoXkCD4BbOwqr3s+g+gUwDqRevO=L=sg@mail.gmail.com>
-Subject: Re: [PATCH] Revert "usb: dwc3: exynos: Add support for Exynos5422
- suspend clk"
-To:     Anand Moon <linux.amoon@gmail.com>
-Cc:     linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <202006230905.3HpPgtSC%lkp@intel.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.2.88]
+X-ClientProxiedBy: lhreml730-chm.china.huawei.com (10.201.108.81) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Jun 2020 at 09:46, Anand Moon <linux.amoon@gmail.com> wrote:
->
-> This reverts commit 07f6842341abe978e6375078f84506ec3280ece5.
->
-> Since SCLK_SCLK_USBD300 suspend clock need to be configured
-> for phy module, I wrongly mapped this clock to DWC3 code.
->
-> Cc: Felipe Balbi <balbi@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Anand Moon <linux.amoon@gmail.com>
-> ---
->  drivers/usb/dwc3/dwc3-exynos.c | 9 ---------
->  1 file changed, 9 deletions(-)
+On 23/06/2020 02:07, kernel test robot wrote:
 
-But why was this patch applied in the first place? It did not pass the
-review. For the v3 I replied:
-"This patchset should not be applied. As of now, it is not needed and
-not justified."
-There were no acks and no positive reviews.
++ Rikard, as the GENMASK compile-time sanity checks were added recently
 
-My comments from previous versions of this patchset were not properly addressed.
+> Hi John,
+> 
+> I love your patch! Perhaps something to improve:
+> 
+> [auto build test WARNING on iommu/next]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use  as documented in
+> https://git-scm.com/docs/git-format-patch]
+> 
+> url:    https://github.com/0day-ci/linux/commits/John-Garry/iommu-arm-smmu-v3-Improve-cmdq-lock-efficiency/20200623-013438
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git next
+> config: arm64-randconfig-c024-20200622 (attached as .config)
+> compiler: aarch64-linux-gcc (GCC) 9.3.0
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>, old ones prefixed by <<):
+> 
+> In file included from include/linux/bits.h:23,
+> from include/linux/ioport.h:15,
+> from include/linux/acpi.h:12,
+> from drivers/iommu/arm-smmu-v3.c:12:
+> drivers/iommu/arm-smmu-v3.c: In function 'arm_smmu_cmdq_issue_cmdlist':
+> include/linux/bits.h:26:28: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
+> 26 |   __builtin_constant_p((l) > (h)), (l) > (h), 0)))
 
-So here - yes, makes sense to revert it as it should have never been applied.
+I'd say that GENMASK_INPUT_CHECK() should be able to handle a l=0 and 
+h=unsigned value, so I doubt this warn.
 
-Best regards,
-Krzysztof
+Using GENMASK((int)cmdq->q.llq.max_n_shift, 0) resolves it, but it looks 
+like GENMASK_INPUT_CHECK() could be improved.
+
+> |                            ^
+> include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
+> 16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+> |                                                              ^
+> include/linux/bits.h:39:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
+> 39 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+> |   ^~~~~~~~~~~~~~~~~~~
+>>> drivers/iommu/arm-smmu-v3.c:1404:18: note: in expansion of macro 'GENMASK'
+> 1404 |  u32 prod_mask = GENMASK(cmdq->q.llq.max_n_shift, 0);
+> |                  ^~~~~~~
+> include/linux/bits.h:26:40: warning: comparison of unsigned expression < 0 is always false [-Wtype-limits]
+> 26 |   __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+> |                                        ^
+> include/linux/build_bug.h:16:62: note: in definition of macro 'BUILD_BUG_ON_ZERO'
+> 16 | #define BUILD_BUG_ON_ZERO(e) ((int)(sizeof(struct { int:(-!!(e)); })))
+> |                                                              ^
+> include/linux/bits.h:39:3: note: in expansion of macro 'GENMASK_INPUT_CHECK'
+> 39 |  (GENMASK_INPUT_CHECK(h, l) + __GENMASK(h, l))
+> |   ^~~~~~~~~~~~~~~~~~~
+>>> drivers/iommu/arm-smmu-v3.c:1404:18: note: in expansion of macro 'GENMASK'
+> 1404 |  u32 prod_mask = GENMASK(cmdq->q.llq.max_n_shift, 0);
+> |                  ^~~~~~~
+> 
+> vim +/GENMASK +1404 drivers/iommu/arm-smmu-v3.c
+
+
