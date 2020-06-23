@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A58205F0C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DEB2205FD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390431AbgFWU2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:28:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48636 "EHLO mail.kernel.org"
+        id S2391808AbgFWUgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:36:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390688AbgFWU2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:28:45 -0400
+        id S2391792AbgFWUgg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:36:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EEF1E2064B;
-        Tue, 23 Jun 2020 20:28:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A618520781;
+        Tue, 23 Jun 2020 20:36:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944125;
-        bh=Zsy+g4e5SzT1SXRcyIrX2ICpAp8suagf0Xy5icjSuG8=;
+        s=default; t=1592944596;
+        bh=4mw6tCTGUvdW5K8+6xvz+CccS3vA60GTC/4lTa/HDhw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g6GGguy+PGSeOt8xWKjw1U2QqtYiKKqJkiT6P8fyXuFEzKSRyUxVKpsDe6/VzwGKR
-         Q2/mOIGoe1t+EJjQVul0rI1MDY/4bt3txOcEue+YC0XPJTMpMug5I1U1RoLLi9R4D5
-         HAf77oomGvgpO4XbEkj/hKtIH/HT/eGzYVUFnewo=
+        b=0P5vOFyUGlyF/0MDCiXyw4eVZaL8O9n2l6X3x6DBS9jzT+HAdS7SzhhImtfVQMzmO
+         bzx+vHl5E6aVNe6X8N7GsWjtVATi6gFdn2oGBJdY7ubLTENalJxhxNxdSp83nnysW8
+         WiWyjzLxP5go4LjcDDDFaKNyV2Q6E6Rlnx/QkBgA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        stable@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 182/314] x86/apic: Make TSC deadline timer detection message visible
-Date:   Tue, 23 Jun 2020 21:56:17 +0200
-Message-Id: <20200623195347.569101369@linuxfoundation.org>
+Subject: [PATCH 4.19 050/206] arm64: dts: mt8173: fix unit name warnings
+Date:   Tue, 23 Jun 2020 21:56:18 +0200
+Message-Id: <20200623195319.440364767@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,45 +44,127 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Borislav Petkov <bp@suse.de>
+From: Hsin-Yi Wang <hsinyi@chromium.org>
 
-[ Upstream commit de308d1815c9e8fe602a958c5c76142ff6501d75 ]
+[ Upstream commit 72b29215aced394d01ca25e432963b619daa0098 ]
 
-The commit
+Fixing several unit name warnings:
 
-  c84cb3735fd5 ("x86/apic: Move TSC deadline timer debug printk")
+Warning (unit_address_vs_reg): /oscillator@0: node has a unit name, but no reg property
+Warning (unit_address_vs_reg): /oscillator@1: node has a unit name, but no reg property
+Warning (unit_address_vs_reg): /oscillator@2: node has a unit name, but no reg property
+Warning (unit_address_vs_reg): /thermal-zones/cpu_thermal/trips/trip-point@0: node has a unit name, but no reg property
+Warning (unit_address_vs_reg): /thermal-zones/cpu_thermal/trips/trip-point@1: node has a unit name, but no reg property
+Warning (unit_address_vs_reg): /thermal-zones/cpu_thermal/trips/cpu_crit@0: node has a unit name, but no reg property
+Warning (unit_address_vs_reg): /thermal-zones/cpu_thermal/cooling-maps/map@0: node has a unit name, but no reg property
+Warning (unit_address_vs_reg): /thermal-zones/cpu_thermal/cooling-maps/map@1: node has a unit name, but no reg property
+Warning (unit_address_vs_reg): /reserved-memory/vpu_dma_mem_region: node has a reg or ranges property, but no unit name
+Warning (simple_bus_reg): /soc/pinctrl@10005000: simple-bus unit address format error, expected "1000b000"
+Warning (simple_bus_reg): /soc/interrupt-controller@10220000: simple-bus unit address format error, expected "10221000"
 
-removed the message which said that the deadline timer was enabled.
-It added a pr_debug() message which is issued when deadline timer
-validation succeeds.
-
-Well, issued only when CONFIG_DYNAMIC_DEBUG is enabled - otherwise
-pr_debug() calls get optimized away if DEBUG is not defined in the
-compilation unit.
-
-Therefore, make the above message pr_info() so that it is visible in
-dmesg.
-
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200525104218.27018-1-bp@alien8.de
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Link: https://lore.kernel.org/r/20200210063523.133333-4-hsinyi@chromium.org
+[mb: drop fixes for '_' in property name]
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/apic/apic.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 25b8c45467fcd..fce94c799f015 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2099,7 +2099,7 @@ void __init init_apic_mappings(void)
- 	unsigned int new_apicid;
+diff --git a/arch/arm64/boot/dts/mediatek/mt8173.dtsi b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+index abd2f15a544b2..bd9fc50ac1540 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+@@ -223,21 +223,21 @@
+ 		cpu_on	      = <0x84000003>;
+ 	};
  
- 	if (apic_validate_deadline_timer())
--		pr_debug("TSC deadline timer available\n");
-+		pr_info("TSC deadline timer available\n");
+-	clk26m: oscillator@0 {
++	clk26m: oscillator0 {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+ 		clock-frequency = <26000000>;
+ 		clock-output-names = "clk26m";
+ 	};
  
- 	if (x2apic_mode) {
- 		boot_cpu_physical_apicid = read_apic_id();
+-	clk32k: oscillator@1 {
++	clk32k: oscillator1 {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+ 		clock-frequency = <32000>;
+ 		clock-output-names = "clk32k";
+ 	};
+ 
+-	cpum_ck: oscillator@2 {
++	cpum_ck: oscillator2 {
+ 		compatible = "fixed-clock";
+ 		#clock-cells = <0>;
+ 		clock-frequency = <0>;
+@@ -253,19 +253,19 @@
+ 			sustainable-power = <1500>; /* milliwatts */
+ 
+ 			trips {
+-				threshold: trip-point@0 {
++				threshold: trip-point0 {
+ 					temperature = <68000>;
+ 					hysteresis = <2000>;
+ 					type = "passive";
+ 				};
+ 
+-				target: trip-point@1 {
++				target: trip-point1 {
+ 					temperature = <85000>;
+ 					hysteresis = <2000>;
+ 					type = "passive";
+ 				};
+ 
+-				cpu_crit: cpu_crit@0 {
++				cpu_crit: cpu_crit0 {
+ 					temperature = <115000>;
+ 					hysteresis = <2000>;
+ 					type = "critical";
+@@ -273,12 +273,12 @@
+ 			};
+ 
+ 			cooling-maps {
+-				map@0 {
++				map0 {
+ 					trip = <&target>;
+ 					cooling-device = <&cpu0 0 0>;
+ 					contribution = <3072>;
+ 				};
+-				map@1 {
++				map1 {
+ 					trip = <&target>;
+ 					cooling-device = <&cpu2 0 0>;
+ 					contribution = <1024>;
+@@ -291,7 +291,7 @@
+ 		#address-cells = <2>;
+ 		#size-cells = <2>;
+ 		ranges;
+-		vpu_dma_reserved: vpu_dma_mem_region {
++		vpu_dma_reserved: vpu_dma_mem_region@b7000000 {
+ 			compatible = "shared-dma-pool";
+ 			reg = <0 0xb7000000 0 0x500000>;
+ 			alignment = <0x1000>;
+@@ -343,7 +343,7 @@
+ 			reg = <0 0x10005000 0 0x1000>;
+ 		};
+ 
+-		pio: pinctrl@10005000 {
++		pio: pinctrl@1000b000 {
+ 			compatible = "mediatek,mt8173-pinctrl";
+ 			reg = <0 0x1000b000 0 0x1000>;
+ 			mediatek,pctl-regmap = <&syscfg_pctl_a>;
+@@ -541,7 +541,7 @@
+ 			status = "disabled";
+ 		};
+ 
+-		gic: interrupt-controller@10220000 {
++		gic: interrupt-controller@10221000 {
+ 			compatible = "arm,gic-400";
+ 			#interrupt-cells = <3>;
+ 			interrupt-parent = <&gic>;
 -- 
 2.25.1
 
