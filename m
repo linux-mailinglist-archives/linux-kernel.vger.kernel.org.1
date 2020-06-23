@@ -2,141 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2627F204F17
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 12:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1881C204F2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 12:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732254AbgFWKeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 06:34:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732076AbgFWKeE (ORCPT
+        id S1732261AbgFWKjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 06:39:09 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:58944 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732224AbgFWKjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 06:34:04 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC45C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 03:34:02 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id g21so2682416wmg.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 03:34:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=h62r6XS0jqYfIJmWVT9efAIcIqFr2bxw7xGquL+kTA0=;
-        b=PaAVGcq51bK0il7pnXFZVs9ta1DoWfsKr4m305qKiGMZEfpaknGGzwmWgA1i5KXEZ4
-         eUiOJ2qgAbaJotMouyqdb4KcXiQxHRCpyQPtaq1OHw8df+S/lEG1uaahFRHg/4Fzfsre
-         bBwR6d9BFmLMpv4MUVm7XaD2pSRsG2oQZDhFnhErSL6adK0P696KRKXkXUmEx9Si+jkn
-         VFjPH33a1UN+dEGxh/+A4/1SqKPsnm7z20xfSdaVnqWEJGaL7QqHHyoCWXcsEawxSkbO
-         OUe8vJ/kSCWfVUWmMMmlu7LfO3BY5hbPU5rQO1sKbXEU3URx1PulhVM6k1etrYYO3xfL
-         SqRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=h62r6XS0jqYfIJmWVT9efAIcIqFr2bxw7xGquL+kTA0=;
-        b=DjND2dpap+vVBw6jDiJPQqqEhDtjbd5kkQJKHm0Z9qEnpJGMsirWEA6e/n0BN17obp
-         dFKprJfcBGKscMkgyrREI03bqDRe7jdqY5rUJDrBKm6OGnsDivyY/MMu652QOwuG/QdZ
-         0WH620rQSMOBOc6FACxMr1846s7fv5qhj7p5NanuHTgnRUh5ViIfltm7UGhtqTUWuRNK
-         oCSykxMk07y/uh6/J97LVtnoIHFsN2X3RGgUu5A6yh3RuUGycK8/Kfgw0WRPwYATqAOA
-         z7uKC4DEBG60cRDS3w1hgRpAN3c43UAxROUy4R39alqmUXFCYim8PGp6nP83JWoGoCQt
-         1xEQ==
-X-Gm-Message-State: AOAM5332T4CwjmpR4FqDq4KPDKFY4kfg5o1wA5UsDz177DvYgNubwCwZ
-        Md6WagCE1yvULn77jJmkYA/izPeGRDz16A==
-X-Google-Smtp-Source: ABdhPJxxWuXAogfs3gT9CkzwfSYJDFqGwV3uikEKpo3dOm/EJjyT1TM/371js0JAAmJK8OzKLPoZOA==
-X-Received: by 2002:a1c:8192:: with SMTP id c140mr9620670wmd.108.1592908438033;
-        Tue, 23 Jun 2020 03:33:58 -0700 (PDT)
-Received: from [192.168.1.12] ([194.53.184.63])
-        by smtp.gmail.com with ESMTPSA id n8sm18676940wrj.44.2020.06.23.03.33.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jun 2020 03:33:57 -0700 (PDT)
-Subject: Re: [PATCH] checkpatch: fix CONST_STRUCT when
- const_structs.checkpatch is missing
-To:     Joe Perches <joe@perches.com>, Andy Whitcroft <apw@canonical.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20200622204844.21030-1-quentin@isovalent.com>
- <8a218fa14cc2e1690df32d278c82587c7507a820.camel@perches.com>
-From:   Quentin Monnet <quentin@isovalent.com>
-Message-ID: <d2193403-def1-d833-c9bc-0937afca636b@isovalent.com>
-Date:   Tue, 23 Jun 2020 11:33:50 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 23 Jun 2020 06:39:08 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05NAc0Rb070633;
+        Tue, 23 Jun 2020 10:39:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=n5XuAR9+O0ifIvp3nJRV9lwMwdmcqKft/1latpOpeYQ=;
+ b=LPrLU7KO0gkf8k23PUy0TAS0eZYp+yxfHXBAjkajr7TXfhheo7k/y9bKFyTr72LOP27z
+ qMwGSRjqavkOUpC2cZARjsWWlN/4uP5fbIE2I0J0ThuRlx0YsVsVf1QYCaDyrg4fMcOR
+ 2SmPrY/4Rav17QntGS4MifdDCcex1XlfVggOEDf7qQ2wqN1Hwfd4iOJFgeP2mhdzqMef
+ 2juKPhaDLe9NuYYAIsVTqp1tutooQ9mlWf3Siu6CNpFlebpI+/YVtIsy6PfpE12R0lTD
+ gnpZZjJh0cuFofpTUabw3L6WHbyd3z2x0C8ICmOgRQ3N7Np4vYJ2Juzi4WVhkzk6iOq+ Iw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 31sebbcgfm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 23 Jun 2020 10:39:01 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05NAS8CW154650;
+        Tue, 23 Jun 2020 10:37:00 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 31sv7rkm22-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Jun 2020 10:37:00 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05NAaw2K028133;
+        Tue, 23 Jun 2020 10:36:59 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 23 Jun 2020 10:36:57 +0000
+Date:   Tue, 23 Jun 2020 13:36:51 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Ran Wang <ran.wang_1@nxp.com>
+Cc:     "kbuild@lists.01.org" <kbuild@lists.01.org>,
+        "lkp@intel.com" <lkp@intel.com>,
+        "kbuild-all@lists.01.org" <kbuild-all@lists.01.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Felipe Balbi <felipe.balbi@linux.intel.com>,
+        Peter Chen <peter.chen@nxp.com>
+Subject: Re: [kbuild] drivers/usb/gadget/udc/fsl_udc_core.c:1055
+ fsl_ep_fifo_status() error: we previously assumed '_ep->desc' could be null
+ (see line 1055)
+Message-ID: <20200623103651.GZ4282@kadam>
+References: <20200622182023.GX4282@kadam>
+ <AM6PR04MB54138B87957CFB06EC9DF351F1940@AM6PR04MB5413.eurprd04.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <8a218fa14cc2e1690df32d278c82587c7507a820.camel@perches.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM6PR04MB54138B87957CFB06EC9DF351F1940@AM6PR04MB5413.eurprd04.prod.outlook.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9660 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 suspectscore=0 mlxlogscore=999
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006230083
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9660 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 cotscore=-2147483648
+ lowpriorityscore=0 phishscore=0 bulkscore=0 clxscore=1015 impostorscore=0
+ malwarescore=0 priorityscore=1501 spamscore=0 mlxscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006230084
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2020-06-22 14:24 UTC-0700 ~ Joe Perches <joe@perches.com>
-> On Mon, 2020-06-22 at 21:48 +0100, Quentin Monnet wrote:
->> Checkpatch reports warnings when some specific structs are not declared
->> as const in the code. The list of structs to consider was initially
->> defined in the checkpatch.pl script itself, but it was later moved to an
->> external file (scripts/const_structs.checkpatch). This introduced two
->> minor issues:
->>
->> - When file scripts/const_structs.checkpatch is not present (for
->>   example, if checkpatch is run outside of the kernel directory with the
->>   "--no-tree" option), a warning is printed to stderr to tell the user
->>   that "No structs that should be const will be found". This is fair,
->>   but the warning is printed unconditionally, even if the option
->>   "--ignore CONST_STRUCT" is passed. In the latter case, we explicitly
->>   ask checkpatch to skip this check, so no warning should be printed.
->>
->> - When scripts/const_structs.checkpatch is missing, or even when trying
->>   to silence the warning by adding an empty file, $const_structs is set
->>   to "", and the regex used for finding structs that should be const,
->>   "$line =~ /\bstruct\s+($const_structs)\b(?!\s*\{)/)", matches all
->>   structs found in the code, thus reporting a number of false positives.
->>
->> Let's fix the first item by skipping scripts/const_structs.checkpatch
->> processing if "CONST_STRUCT" checks are ignored, and the second one by
->> skipping the test if $const_structs is an empty string.
->>
->> Fixes: bf1fa1dae68e ("checkpatch: externalize the structs that should be const")
+On Tue, Jun 23, 2020 at 02:22:18AM +0000, Ran Wang wrote:
+> Hi Dan
 > 
-> Probably not worthy of a Fixes: line, as that's
-> generally used for backporting, but OK by me.
+> On Tuesday, June 23, 2020 2:20 AM, Dan Carpenter wrote:
+> 
+> <snip>
+> 
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> > 
+> > New smatch warnings:
+> > drivers/usb/gadget/udc/fsl_udc_core.c:1055 fsl_ep_fifo_status() error: we
+> > previously assumed '_ep->desc' could be null (see line 1055)
+> > 
+> 
+> <snip>
+> 
+> > 
+> > 2ea6698d7b9266 drivers/usb/gadget/fsl_udc_core.c     Anatolij Gustschin
+> > 2011-04-18  1047  static int fsl_ep_fifo_status(struct usb_ep *_ep)
+> > 2ea6698d7b9266 drivers/usb/gadget/fsl_udc_core.c     Anatolij Gustschin
+> > 2011-04-18  1048  {
+> > 2ea6698d7b9266 drivers/usb/gadget/fsl_udc_core.c     Anatolij Gustschin
+> > 2011-04-18  1049  	struct fsl_ep *ep;
+> > 2ea6698d7b9266 drivers/usb/gadget/fsl_udc_core.c     Anatolij Gustschin
+> > 2011-04-18  1050  	struct fsl_udc *udc;
+> > 2ea6698d7b9266 drivers/usb/gadget/fsl_udc_core.c     Anatolij Gustschin
+> > 2011-04-18  1051  	int size = 0;
+> > 2ea6698d7b9266 drivers/usb/gadget/fsl_udc_core.c     Anatolij Gustschin
+> > 2011-04-18  1052  	u32 bitmask;
+> > 6414e94c203d92 drivers/usb/gadget/fsl_udc_core.c     Li Yang
+> > 2011-11-23  1053  	struct ep_queue_head *qh;
+> > 2ea6698d7b9266 drivers/usb/gadget/fsl_udc_core.c     Anatolij Gustschin
+> > 2011-04-18  1054
+> > 75eaa498c99eeb drivers/usb/gadget/udc/fsl_udc_core.c Nikhil Badola
+> > 2019-10-21 @1055  	if (!_ep || _ep->desc || !(_ep->desc->bEndpointAddress&0xF))
+> >                                          ^^^^^^^^^ Reversed NULL test.  This will always return -ENODEV.  (Or possibly crash.  But I suspect it always returns -ENODEV instead of crashing).
+> 
+> So the kernel test reports warning in case of '_ep->desc is null', right? 
+> 
+> My understanding is that this judgement would return -ENODEV when
+> executing '... || _ep-desc ||..' and never execute '_ep->desc->bEndpointAddress' part,
+> so crash would not happen, am I right?
 
-Yeah I hesitated, I'll drop it for v2.
+Yeah.  I can't imagine how _ep->desc is NULL.  It gets set to non-NULL
+in fsl_ep_enable() and then set to NULL in fsl_ep_disable().
 
-> 
->> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> []
->> @@ -781,8 +781,10 @@ sub read_words {
->>  }
->>  
->>  my $const_structs = "";
-> 
-> This might be a tiny bit faster/less cpu using:
-> 
-> my $const_structs;
-> 
->> -read_words(\$const_structs, $conststructsfile)
->> -    or warn "No structs that should be const will be found - file '$conststructsfile': $!\n";
->> +if (show_type("CONST_STRUCT")) {
->> +	read_words(\$const_structs, $conststructsfile)
->> +	    or warn "No structs that should be const will be found - file '$conststructsfile': $!\n";
->> +}
->>  
->>  my $typeOtherTypedefs = "";
->>  if (length($typedefsfile)) {
->> @@ -6660,7 +6662,8 @@ sub process {
->>  
->>  # check for various structs that are normally const (ops, kgdb, device_tree)
->>  # and avoid what seem like struct definitions 'struct foo {'
->> -		if ($line !~ /\bconst\b/ &&
->> +		if ($const_structs ne "" &&
-> 
-> instead testing
-> 
-> 		if (defined($const_structs) &&
+regards,
+dan carpenter
 
-Sure, I will respin.
-
-Thank you for the review!
-Quentin
