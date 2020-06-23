@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18652205CBE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8129C205CC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388289AbgFWUFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:05:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43914 "EHLO mail.kernel.org"
+        id S2388352AbgFWUFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:05:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388268AbgFWUE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:04:57 -0400
+        id S2388341AbgFWUFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:05:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 94EF520DD4;
-        Tue, 23 Jun 2020 20:04:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52B8C206C3;
+        Tue, 23 Jun 2020 20:05:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942696;
-        bh=zEPhArf7Bibyzv1Cx7hX5ix69EQLDU8ENiyIWeeyXtM=;
+        s=default; t=1592942718;
+        bh=JMvlUhCjrGlUQV8cZmG5Jqmr1/kiIi4DV2YpJduhak4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i5O8fYUgRgB4ox+f53H7sfN4KcAgcEgyNRWxlcuJjekehN6g42KuKo8X36HZ+fsc3
-         JwXVWyQtDamb5/dcISGdQP4kn0z+cQSBh2vhGv67m4O7BFiDOUL0/IQEeugUeoVRKZ
-         78Us77r7OVBBtxVIoedvRz9sp7zNGbsqkWS211Jg=
+        b=e0UsKnSBvq4zPn39NDUOAQYDXiFsFfFa8cAuLLB6hP4p2ARUUTRgyGAFGUcHBneSx
+         vltCN+WWz73Hg+HrkHUYev2Zv3kGxyphAmrbgVPh7svUQASTRSwVpIgOE+S0/f5Ueh
+         yE3iYmehPRK6B6H64LDU8Du0aT0WA6/uUq9F8FNg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 098/477] net: dsa: lantiq_gswip: fix and improve the unsupported interface error
-Date:   Tue, 23 Jun 2020 21:51:35 +0200
-Message-Id: <20200623195412.234492730@linuxfoundation.org>
+Subject: [PATCH 5.7 101/477] xfs: Add the missed xfs_perag_put() for xfs_ifree_cluster()
+Date:   Tue, 23 Jun 2020 21:51:38 +0200
+Message-Id: <20200623195412.362739481@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -46,44 +44,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Chuhong Yuan <hslester96@gmail.com>
 
-[ Upstream commit 4d3da2d8d91f66988a829a18a0ce59945e8ae4fb ]
+[ Upstream commit 8cc0072469723459dc6bd7beff81b2b3149f4cf4 ]
 
-While trying to use the lantiq_gswip driver on one of my boards I made
-a mistake when specifying the phy-mode (because the out-of-tree driver
-wants phy-mode "gmii" or "mii" for the internal PHYs). In this case the
-following error is printed multiple times:
-  Unsupported interface: 3
+xfs_ifree_cluster() calls xfs_perag_get() at the beginning, but forgets to
+call xfs_perag_put() in one failed path.
+Add the missed function call to fix it.
 
-While it gives at least a hint at what may be wrong it is not very user
-friendly. Print the human readable phy-mode and also which port is
-configured incorrectly (this hardware supports ports 0..6) to improve
-the cases where someone made a mistake.
-
-Fixes: 14fceff4771e51 ("net: dsa: Add Lantiq / Intel DSA driver for vrx200")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: ce92464c180b ("xfs: make xfs_trans_get_buf return an error code")
+Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/dsa/lantiq_gswip.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/xfs/xfs_inode.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/dsa/lantiq_gswip.c b/drivers/net/dsa/lantiq_gswip.c
-index cf6fa8fede334..521ebc072903b 100644
---- a/drivers/net/dsa/lantiq_gswip.c
-+++ b/drivers/net/dsa/lantiq_gswip.c
-@@ -1452,7 +1452,8 @@ static void gswip_phylink_validate(struct dsa_switch *ds, int port,
+diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+index d1772786af29d..8845faa8161a9 100644
+--- a/fs/xfs/xfs_inode.c
++++ b/fs/xfs/xfs_inode.c
+@@ -2639,8 +2639,10 @@ xfs_ifree_cluster(
+ 		error = xfs_trans_get_buf(tp, mp->m_ddev_targp, blkno,
+ 				mp->m_bsize * igeo->blocks_per_cluster,
+ 				XBF_UNMAPPED, &bp);
+-		if (error)
++		if (error) {
++			xfs_perag_put(pag);
+ 			return error;
++		}
  
- unsupported:
- 	bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
--	dev_err(ds->dev, "Unsupported interface: %d\n", state->interface);
-+	dev_err(ds->dev, "Unsupported interface '%s' for port %d\n",
-+		phy_modes(state->interface), port);
- 	return;
- }
- 
+ 		/*
+ 		 * This buffer may not have been correctly initialised as we
 -- 
 2.25.1
 
