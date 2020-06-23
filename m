@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30107205FD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A58205F0C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391799AbgFWUgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:36:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59634 "EHLO mail.kernel.org"
+        id S2390431AbgFWU2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:28:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48636 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391778AbgFWUga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:36:30 -0400
+        id S2390688AbgFWU2p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:28:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B87B20781;
-        Tue, 23 Jun 2020 20:36:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEF1E2064B;
+        Tue, 23 Jun 2020 20:28:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944590;
-        bh=GQpq5PSM1CJd3KQdWyoslefYy7Sg5Ub3MKIpGf6V8mg=;
+        s=default; t=1592944125;
+        bh=Zsy+g4e5SzT1SXRcyIrX2ICpAp8suagf0Xy5icjSuG8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Uyq+NwgqAqSfVukNh+NSuH78Pbfs47wJkpHyhCULwkEsk5InxnYg9sBKDVFbOtYVf
-         18n8M1Mautg+sIUR0CJ+/Jl5N6KH/ErZr+0q1jezIcph1V102DducrPO7a0dc8OZTD
-         ltzufu2r5IF7phfL4+J/+SL3iZKIYCO5guJCzGMI=
+        b=g6GGguy+PGSeOt8xWKjw1U2QqtYiKKqJkiT6P8fyXuFEzKSRyUxVKpsDe6/VzwGKR
+         Q2/mOIGoe1t+EJjQVul0rI1MDY/4bt3txOcEue+YC0XPJTMpMug5I1U1RoLLi9R4D5
+         HAf77oomGvgpO4XbEkj/hKtIH/HT/eGzYVUFnewo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chen Zhou <chenzhou10@huawei.com>,
-        Rui Miguel Silva <rmfrfs@gmail.com>,
+        stable@vger.kernel.org, Borislav Petkov <bp@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 048/206] staging: greybus: fix a missing-check bug in gb_lights_light_config()
-Date:   Tue, 23 Jun 2020 21:56:16 +0200
-Message-Id: <20200623195319.346074031@linuxfoundation.org>
+Subject: [PATCH 5.4 182/314] x86/apic: Make TSC deadline timer detection message visible
+Date:   Tue, 23 Jun 2020 21:56:17 +0200
+Message-Id: <20200623195347.569101369@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,36 +43,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Zhou <chenzhou10@huawei.com>
+From: Borislav Petkov <bp@suse.de>
 
-[ Upstream commit 9bb086e5ba9495ac150fbbcc5c8c2bccc06261dd ]
+[ Upstream commit de308d1815c9e8fe602a958c5c76142ff6501d75 ]
 
-In gb_lights_light_config(), 'light->name' is allocated by kstrndup().
-It returns NULL when fails, add check for it.
+The commit
 
-Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
-Acked-by: Rui Miguel Silva <rmfrfs@gmail.com>
-Link: https://lore.kernel.org/r/20200401030017.100274-1-chenzhou10@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+  c84cb3735fd5 ("x86/apic: Move TSC deadline timer debug printk")
+
+removed the message which said that the deadline timer was enabled.
+It added a pr_debug() message which is issued when deadline timer
+validation succeeds.
+
+Well, issued only when CONFIG_DYNAMIC_DEBUG is enabled - otherwise
+pr_debug() calls get optimized away if DEBUG is not defined in the
+compilation unit.
+
+Therefore, make the above message pr_info() so that it is visible in
+dmesg.
+
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200525104218.27018-1-bp@alien8.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/greybus/light.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/kernel/apic/apic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/staging/greybus/light.c b/drivers/staging/greybus/light.c
-index 40680eaf3974f..db06cd544af58 100644
---- a/drivers/staging/greybus/light.c
-+++ b/drivers/staging/greybus/light.c
-@@ -1028,7 +1028,8 @@ static int gb_lights_light_config(struct gb_lights *glights, u8 id)
+diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
+index 25b8c45467fcd..fce94c799f015 100644
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -2099,7 +2099,7 @@ void __init init_apic_mappings(void)
+ 	unsigned int new_apicid;
  
- 	light->channels_count = conf.channel_count;
- 	light->name = kstrndup(conf.name, NAMES_MAX, GFP_KERNEL);
--
-+	if (!light->name)
-+		return -ENOMEM;
- 	light->channels = kcalloc(light->channels_count,
- 				  sizeof(struct gb_channel), GFP_KERNEL);
- 	if (!light->channels)
+ 	if (apic_validate_deadline_timer())
+-		pr_debug("TSC deadline timer available\n");
++		pr_info("TSC deadline timer available\n");
+ 
+ 	if (x2apic_mode) {
+ 		boot_cpu_physical_apicid = read_apic_id();
 -- 
 2.25.1
 
