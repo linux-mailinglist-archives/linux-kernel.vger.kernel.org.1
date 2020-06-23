@@ -2,110 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FD420610B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:49:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EE1205EA5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392984AbgFWUtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:49:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48898 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389240AbgFWUtT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:49:19 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B2F6721548;
-        Tue, 23 Jun 2020 20:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945359;
-        bh=YODy5P+xJJ8eXbvroM7ztyXK8tz1plvw8dxRsqkUtcg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FLSLBXJn/iqeUPmYkPq4bBPMQpWCXW8Nv9Nn79o0pd4dmWeBRale5tvRYpVDQNhAf
-         /0RU6659LxGJabK5yrnzDu3fSn9vMmBFXPdNuJx+KSDldZKtsdP3qOb4SZpCixNSV8
-         lQYQe2hPz0Zq4pGY2zov1SRplwX3J/DoT8IKUs2Q=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Stable@vger.kernel.org, Chen Yu <yu.c.chen@intel.com>,
-        Aaron Brown <aaron.f.brown@intel.com>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Subject: [PATCH 4.14 133/136] e1000e: Do not wake up the system via WOL if device wakeup is disabled
-Date:   Tue, 23 Jun 2020 21:59:49 +0200
-Message-Id: <20200623195310.515172910@linuxfoundation.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
-References: <20200623195303.601828702@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S2390126AbgFWUYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52892 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390440AbgFWUYc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:24:32 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18381C061573;
+        Tue, 23 Jun 2020 13:24:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=nqLuJpwpk0A53PmvRN23yoDtfY4/X7aPFQklmjH025U=; b=CbxaxDD6KGmoDKlE+iZHVS3Fdo
+        WX5rKGhFi9UifHi3fhpVS0c3n5ae+3i2Al4d3lCr5Ji04Spo9FmrZxodYVQjX87tiDFWzQrx3PI3I
+        NevvGJ2fT2SJF/sfTRCcx+V5LepSslMyZY/fBaQFFSFYMW3Ds6KLSk62JTmmgEstJ0GAnCI3YQrbA
+        oQX43gmPUSuGcEWq5WZvkMcKClyAU3eITCvusiMPH0bQqyzC/rfkbAk4QryNwCs7993kYRBifyp+h
+        285p4O1IIgAuQYXB0wrjE+7+M6vZiHzcyqAKwuKVqqEbDx8FaeBrF3IgpcgClmRCjf8NvQOcf0R2V
+        zRHPIfpg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jnpSe-0003Y5-I2; Tue, 23 Jun 2020 20:24:04 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 213A9983A87; Tue, 23 Jun 2020 22:24:04 +0200 (CEST)
+Date:   Tue, 23 Jun 2020 22:24:04 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Marco Elver <elver@google.com>
+Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>, mingo@kernel.org,
+        will@kernel.org, tglx@linutronix.de, x86@kernel.org,
+        linux-kernel@vger.kernel.org, rostedt@goodmis.org,
+        bigeasy@linutronix.de, davem@davemloft.net,
+        sparclinux@vger.kernel.org, mpe@ellerman.id.au,
+        linuxppc-dev@lists.ozlabs.org, heiko.carstens@de.ibm.com,
+        linux-s390@vger.kernel.org, linux@armlinux.org.uk
+Subject: Re: [PATCH v4 7/8] lockdep: Change hardirq{s_enabled,_context} to
+ per-cpu variables
+Message-ID: <20200623202404.GE2483@worktop.programming.kicks-ass.net>
+References: <20200623083645.277342609@infradead.org>
+ <20200623083721.512673481@infradead.org>
+ <20200623150031.GA2986783@debian-buster-darwi.lab.linutronix.de>
+ <20200623152450.GM4817@hirez.programming.kicks-ass.net>
+ <20200623161320.GA2996373@debian-buster-darwi.lab.linutronix.de>
+ <20200623163730.GA4800@hirez.programming.kicks-ass.net>
+ <20200623175957.GA106514@elver.google.com>
+ <20200623181232.GB4800@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200623181232.GB4800@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Yu <yu.c.chen@intel.com>
+On Tue, Jun 23, 2020 at 08:12:32PM +0200, Peter Zijlstra wrote:
+> Fair enough; I'll rip it all up and boot a KCSAN kernel, see what if
+> anything happens.
 
-commit 6bf6be1127f7e6d4bf39f84d56854e944d045d74 upstream.
+OK, so the below patch doesn't seem to have any nasty recursion issues
+here. The only 'problem' is that lockdep now sees report_lock can cause
+deadlocks.
 
-Currently the system will be woken up via WOL(Wake On LAN) even if the
-device wakeup ability has been disabled via sysfs:
- cat /sys/devices/pci0000:00/0000:00:1f.6/power/wakeup
- disabled
-
-The system should not be woken up if the user has explicitly
-disabled the wake up ability for this device.
-
-This patch clears the WOL ability of this network device if the
-user has disabled the wake up ability in sysfs.
-
-Fixes: bc7f75fa9788 ("[E1000E]: New pci-express e1000 driver")
-Reported-by: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-Tested-by: Aaron Brown <aaron.f.brown@intel.com>
-Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+It is completely right about it too, but I don't suspect there's much we
+can do about it, it's pretty much the standard printk() with scheduler
+locks held report.
 
 ---
- drivers/net/ethernet/intel/e1000e/netdev.c |   14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
-
---- a/drivers/net/ethernet/intel/e1000e/netdev.c
-+++ b/drivers/net/ethernet/intel/e1000e/netdev.c
-@@ -6328,11 +6328,17 @@ static int __e1000_shutdown(struct pci_d
- 	struct net_device *netdev = pci_get_drvdata(pdev);
- 	struct e1000_adapter *adapter = netdev_priv(netdev);
- 	struct e1000_hw *hw = &adapter->hw;
--	u32 ctrl, ctrl_ext, rctl, status;
--	/* Runtime suspend should only enable wakeup for link changes */
--	u32 wufc = runtime ? E1000_WUFC_LNKC : adapter->wol;
-+	u32 ctrl, ctrl_ext, rctl, status, wufc;
- 	int retval = 0;
+diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
+index 15f67949d11e..732623c30359 100644
+--- a/kernel/kcsan/core.c
++++ b/kernel/kcsan/core.c
+@@ -397,8 +397,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+ 	}
  
-+	/* Runtime suspend should only enable wakeup for link changes */
-+	if (runtime)
-+		wufc = E1000_WUFC_LNKC;
-+	else if (device_may_wakeup(&pdev->dev))
-+		wufc = adapter->wol;
-+	else
-+		wufc = 0;
-+
- 	status = er32(STATUS);
- 	if (status & E1000_STATUS_LU)
- 		wufc &= ~E1000_WUFC_LNKC;
-@@ -6389,7 +6395,7 @@ static int __e1000_shutdown(struct pci_d
- 	if (adapter->hw.phy.type == e1000_phy_igp_3) {
- 		e1000e_igp3_phy_powerdown_workaround_ich8lan(&adapter->hw);
- 	} else if (hw->mac.type >= e1000_pch_lpt) {
--		if (!(wufc & (E1000_WUFC_EX | E1000_WUFC_MC | E1000_WUFC_BC)))
-+		if (wufc && !(wufc & (E1000_WUFC_EX | E1000_WUFC_MC | E1000_WUFC_BC)))
- 			/* ULP does not support wake from unicast, multicast
- 			 * or broadcast.
- 			 */
-
+ 	if (!kcsan_interrupt_watcher)
+-		/* Use raw to avoid lockdep recursion via IRQ flags tracing. */
+-		raw_local_irq_save(irq_flags);
++		local_irq_save(irq_flags);
+ 
+ 	watchpoint = insert_watchpoint((unsigned long)ptr, size, is_write);
+ 	if (watchpoint == NULL) {
+@@ -539,7 +538,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
+ 	kcsan_counter_dec(KCSAN_COUNTER_USED_WATCHPOINTS);
+ out_unlock:
+ 	if (!kcsan_interrupt_watcher)
+-		raw_local_irq_restore(irq_flags);
++		local_irq_restore(irq_flags);
+ out:
+ 	user_access_restore(ua_flags);
+ }
+diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
+index ac5f8345bae9..ef31c1d2dac3 100644
+--- a/kernel/kcsan/report.c
++++ b/kernel/kcsan/report.c
+@@ -605,14 +605,6 @@ void kcsan_report(const volatile void *ptr, size_t size, int access_type,
+ 	if (WARN_ON(watchpoint_idx < 0 || watchpoint_idx >= ARRAY_SIZE(other_infos)))
+ 		goto out;
+ 
+-	/*
+-	 * With TRACE_IRQFLAGS, lockdep's IRQ trace state becomes corrupted if
+-	 * we do not turn off lockdep here; this could happen due to recursion
+-	 * into lockdep via KCSAN if we detect a race in utilities used by
+-	 * lockdep.
+-	 */
+-	lockdep_off();
+-
+ 	if (prepare_report(&flags, type, &ai, other_info)) {
+ 		/*
+ 		 * Never report if value_change is FALSE, only if we it is
+@@ -628,7 +620,6 @@ void kcsan_report(const volatile void *ptr, size_t size, int access_type,
+ 		release_report(&flags, other_info);
+ 	}
+ 
+-	lockdep_on();
+ out:
+ 	kcsan_enable_current();
+ }
 
