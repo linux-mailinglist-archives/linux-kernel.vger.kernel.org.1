@@ -2,148 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F82206447
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4158206478
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389879AbgFWVTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
+        id S2390560AbgFWVV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393445AbgFWVSt (ORCPT
+        with ESMTP id S2404249AbgFWVVv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 17:18:49 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C57C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:18:49 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id x11so9674809plo.7
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:18:49 -0700 (PDT)
+        Tue, 23 Jun 2020 17:21:51 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5BB1C061573;
+        Tue, 23 Jun 2020 14:21:50 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id l188so7235107qkf.10;
+        Tue, 23 Jun 2020 14:21:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mJWzvNZU1DMsijzcM8pSgSd+l6gBq4CZTTDgQGADwPk=;
-        b=d3UM5mS3Lwn1zCoUYBgL4MOdtaGDbpZ45FPQQmIiPWsUMcrblQ5pb3qHERiGLD+POo
-         npuxt5fXnoKsGH+DKJAJ+ul8Y6EIbNJlyhdRsgqhAJJVelU3+pcBdfBAZbEE0IALc384
-         HvWlGLE8Lxqn759AEnWNmPzbSamSO0pLN7FZSwLXeXqyRZnZlzI1T+dLxqjN669bHpfc
-         4PUyBqpVX/KHW0QckUDmH8mwi2foQLWmoCOCWIHp9tf3Vad3W1LL3blo7BhXrgl1U32a
-         ZjXCghkz45tieXrFU8exdMXC0j/7LeiqFZ1w/Xc8XlOUWq/TprLg9rEQAMqc44FXv3Xc
-         rFQQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JyKLP13MA3we/vWXo7vrVA6xMNeRPMkMoZjirv2W5f8=;
+        b=frQCVrMNN/+WhRNV+xlYiJ59hqptoPUZlFyQEi5Nxs1ZDTbZCHFzkP5Fy+KHZmFx42
+         4IJltfqqSa4cluvGdrB4QfYoiCddWuCbVEMiIL6FvU/Mjg/zWLLtqFYCq+HGrgRVQigm
+         e1zJzySEmJ7pSb7vKwaNOzU+CG88I+Vm5N2F6Vmg60ITcOh6RaK2G52nuUAqhRk7QpWT
+         jKGMiyN6PpnOOGPsPIukYvhMFkaarZQ4yeSa1wdJ1yDxyAA1MLvXSOCLVDnpBJN9yWq2
+         UzM3uNt2YbG7Sa4i5E79iwTPccj9Z6xjuyIg1TF4ioqpdc5bEslAT2EgP+LR4fpOBfKS
+         4KTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mJWzvNZU1DMsijzcM8pSgSd+l6gBq4CZTTDgQGADwPk=;
-        b=ED+ce+h2FL1cBUY4SAMFta5qdZcNx9QPC4RNCP+/ADSnkQjkMWJKWVdJv+T8Vi8csG
-         h0rQBbhB+txVRg1C+OETm21UUMrp6M/I9xWnbDV6owuYM7V7SkIh8+oLFW1dq/yyCjBU
-         MiV2HObC9WDUBkBPmO6VSV+LqJeo8gbgYU1aikd8MXQcV/FLcvuni8M3uG7BM6gHTXyi
-         2JfIaidu4GbDtGCjZt3H5qWK0u8nnly5djtQDKnPkILSWATeQe8U51tbV7vrM0YESk1B
-         piPTyqJFk7xlpexb1FsWxKtovffPuoHaruvdVORtBGe+1+FgwyiK/6xNkiKzRTcpJWDM
-         NAfw==
-X-Gm-Message-State: AOAM5338XhEkP6O0ri0m/d0lmvTQ9Lo76qcA1e7zMa65vTqrszsGcyGN
-        ykOvX/rlZC1z3EQobDlMWh/pDeSP4RTZNLPajzzqoA==
-X-Google-Smtp-Source: ABdhPJxLAk9Ot+Z5BtINKEITMd+CQ0dUpAGNCdMnfGs22621xhkUMbtlO0eW9G4/rU2unSlLcfsNUito8iq6hb4/NFI=
-X-Received: by 2002:a17:902:32d:: with SMTP id 42mr15721221pld.297.1592947128738;
- Tue, 23 Jun 2020 14:18:48 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=JyKLP13MA3we/vWXo7vrVA6xMNeRPMkMoZjirv2W5f8=;
+        b=szwbNOW340Hfr+2PwizwZwucn4EhqXN3WvNetSHsWvd0EmQRJQMJwPZ7PfB7L6K/fc
+         leaUW30hOyN/2hhKzTADZxtYIGim19JQv83Q8PAr1an7n2HQzzPC3XuM1+pUjGjjYsAy
+         FJuH8g92nrM1FIEUnQ0Kh5KAFb6zim+A5+K25gziMflTrrSl/dxesGBYAgoBeY+pz3De
+         L7LeEXZMIktE70JvEqKAZZW7sCTKiEtlRxGRyMfaUkZed+p9qx74L4OQOjJpQnFvYVFU
+         J2oDZtxNJoKP267s7RQ8wfMeoUuqpxfWh+tbz4A5IneSwHX1TwTSVGHrCgd269UAVN4F
+         uoEQ==
+X-Gm-Message-State: AOAM5306NgY4u3ftBcAGZ10cYHR5FQTPM3PiHqdHMm/cJfryz5QiwJ17
+        bCBZ4SmyKBzJm9a47rWhQEaYg2rMf7pjqg==
+X-Google-Smtp-Source: ABdhPJxPuHCjth4EvPORtZ3tcp/As6OSbqLCTv4lhJm6iUiMx7p+8K7lcbf/Vp1AKm6A+CrjKnFUXQ==
+X-Received: by 2002:a37:6fc6:: with SMTP id k189mr21800161qkc.289.1592947310034;
+        Tue, 23 Jun 2020 14:21:50 -0700 (PDT)
+Received: from DESKTOP-J6NUVB7.localdomain ([179.232.194.217])
+        by smtp.gmail.com with ESMTPSA id b4sm1459665qka.133.2020.06.23.14.21.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 14:21:49 -0700 (PDT)
+From:   =?UTF-8?q?Jo=C3=A3o=20H=2E=20Spies?= <jhlspies@gmail.com>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Jo=C3=A3o=20H=2E=20Spies?= <jhlspies@gmail.com>,
+        stable@vger.kernel.org
+Subject: [PATCH] MIPS: ingenic: gcw0: Fix HP detection GPIO.
+Date:   Tue, 23 Jun 2020 18:19:45 -0300
+Message-Id: <20200623211945.823-1-jhlspies@gmail.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <d38bf9f9-8a39-87a6-8ce7-d37e4a641675@gmail.com> <CABVgOSkwZUAEjxrqO46kqj=uY5HDzr-E_LR9i04yXEKqjp91Og@mail.gmail.com>
-In-Reply-To: <CABVgOSkwZUAEjxrqO46kqj=uY5HDzr-E_LR9i04yXEKqjp91Og@mail.gmail.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Tue, 23 Jun 2020 14:18:37 -0700
-Message-ID: <CAFd5g44+cUBhbHCx7dGk_dyn0Ph7U8dpaBzESWRi6L6qQizbFQ@mail.gmail.com>
-Subject: Re: RFC: KTAP documentation - expected messages
-To:     David Gow <davidgow@google.com>, Dmitry Vyukov <dvyukov@google.com>
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        "Bird, Tim" <Tim.Bird@sony.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 7:47 PM David Gow <davidgow@google.com> wrote:
->
-> On Mon, Jun 22, 2020 at 6:45 AM Frank Rowand <frowand.list@gmail.com> wrote:
-> >
-> > Tim Bird started a thread [1] proposing that he document the selftest result
-> > format used by Linux kernel tests.
-> >
-> > [1] https://lore.kernel.org/r/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com
-> >
-> > The issue of messages generated by the kernel being tested (that are not
-> > messages directly created by the tests, but are instead triggered as a
-> > side effect of the test) came up.  In this thread, I will call these
-> > messages "expected messages".  Instead of sidetracking that thread with
-> > a proposal to handle expected messages, I am starting this new thread.
->
-> Thanks for doing this: I think there are quite a few tests which could
-> benefit from something like this.
->
-> I think there were actually two separate questions: what do we do with
-> unexpected messages (most of which I expect are useless, but some of
-> which may end up being related to an unexpected test failure), and how
-> to have tests "expect" a particular message to appear. I'll stick to
-> talking about the latter for this thread, but even there there's two
-> possible interpretations of "expected messages" we probably want to
-> explicitly distinguish between: a message which must be present for
-> the test to pass (which I think best fits the "expected message"
-> name), and a message which the test is likely to produce, but which
-> shouldn't alter the result (an "ignored message"). I don't see much
-> use for the latter at present, but if we wanted to do more things with
-> messages and had some otherwise very verbose tests, it could
-> potentially be useful.
+Previously marked as active high, but is in reality active low.
 
-+Dmitry Vyukov, I think you were interested in this for KASAN before
-we went with the signalling approach. Any thoughts?
+Cc: stable@vger.kernel.org
+Fixes: b1bfdb660516 ("MIPS: ingenic: DTS: Update GCW0 support")
+Signed-off-by: João H. Spies <jhlspies@gmail.com>
+---
+ arch/mips/boot/dts/ingenic/gcw0.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> The other thing I'd note here is that this proposal seems to be doing
-> all of the actual message filtering in userspace, which makes a lot of
-> sense for kselftest tests, but does mean that the kernel can't know if
-> the test has passed or failed. There's definitely a tradeoff between
-> trying to put too much needless string parsing in the kernel and
-> having to have a userland tool determine the test results. The
-> proposed KCSAN test suite[1] is using tracepoints to do this in the
-> kernel. It's not the cleanest thing, but there's no reason KUnit or
-> similar couldn't implement a nicer API around it.
->
-> [1]: https://lkml.org/lkml/2020/6/22/1506
->
-> > I implemented an API for expected messages that are triggered by tests
-> > in the Devicetree unittest code, with the expectation that the specific
-> > details may change when the Devicetree unittest code adapts the KUnit
-> > API.  It seems appropriate to incorporate the concept of expected
-> > messages in Tim's documentation instead of waiting to address the
-> > subject when the Devicetree unittest code adapts the KUnit API, since
-> > Tim's document may become the kernel selftest standard.
->
-> Is having a nice way to handle expected messages the only thing
-> holding up porting this to KUnit?
->
-> > Instead of creating a very long email containing multiple objects,
-> > I will reply to this email with a separate reply for each of:
-> >
-> >   The "expected messages" API implemention and use can be from
-> >   drivers/of/unittest.c in the mainline kernel.
-> >
-> >   of_unittest_expect - A proof of concept perl program to filter console
-> >                        output containing expected messages output
-> >
-> >                        of_unittest_expect is also available by cloning
-> >                        https://github.com/frowand/dt_tools.git
-> >
-> >   An example raw console output with timestamps and expect messages.
-> >
-> >   An example of console output processed by filter program
-> >   of_unittest_expect to be more human readable.  The expected
-> >   messages are not removed, but are flagged.
-> >
-> >   An example of console output processed by filter program
-> >   of_unittest_expect to be more human readable.  The expected
-> >   messages are removed instead of being flagged.
->
-> Cheers,
-> -- David
+diff --git a/arch/mips/boot/dts/ingenic/gcw0.dts b/arch/mips/boot/dts/ingenic/gcw0.dts
+index 8d22828787d8..bc72304a2440 100644
+--- a/arch/mips/boot/dts/ingenic/gcw0.dts
++++ b/arch/mips/boot/dts/ingenic/gcw0.dts
+@@ -92,7 +92,7 @@
+ 			"MIC1N", "Built-in Mic";
+ 		simple-audio-card,pin-switches = "Speaker", "Headphones";
+ 
+-		simple-audio-card,hp-det-gpio = <&gpf 21 GPIO_ACTIVE_HIGH>;
++		simple-audio-card,hp-det-gpio = <&gpf 21 GPIO_ACTIVE_LOW>;
+ 		simple-audio-card,aux-devs = <&speaker_amp>, <&headphones_amp>;
+ 
+ 		simple-audio-card,bitclock-master = <&dai_codec>;
+-- 
+2.17.1
+
