@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22E320665E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C88E206671
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389443AbgFWVkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:40:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46770 "EHLO mail.kernel.org"
+        id S2388389AbgFWVmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:42:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44718 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388494AbgFWUGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:06:36 -0400
+        id S2388329AbgFWUFV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:05:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ADBED2078A;
-        Tue, 23 Jun 2020 20:06:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D10DF2078A;
+        Tue, 23 Jun 2020 20:05:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942796;
-        bh=Or7bgk3QY/n+v+HTyTA+PnHw8GsmRBL3MiCX0UeA+aw=;
+        s=default; t=1592942721;
+        bh=jYH2ofygeD+0zmgRGpm0zRKztlE5jlZuot/MKcHt1YY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tbDA+z35j3zt4XfApDS6RmcGWZIcaf8hNkzxSdDna/QYmUHVzdQgc1ywCaKItcCi7
-         +RvW01tern/pzNMt+16Foep0fAmX+tYb5Bax8q/jDh2GvIPd83Uqh0xKcU2Kh4M2UD
-         KwtE7nd85eYRHra3BBM5ADkgR1jxtXEaQlPPMtb0=
+        b=t/CcdlIn4dDIkMXlFKfLkFG299ILJrbxa2nK97bJQ7HBJupPaEaSj15TWU5OU3zkA
+         MMkMWk9P2NWCbsVX2Gs/tqwPiqj8ou2Gn1H8gks36nHv7ZBI6MFpEVLFNzNaa2rFbX
+         5hfjUW4XAsC+ryxLY4SZsndZalgQ4fyGADPDUKic=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonas Karlman <jonas@kwiboo.se>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Sabrina Dubroca <sd@queasysnail.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 108/477] media: v4l2-ctrls: Unset correct HEVC loop filter flag
-Date:   Tue, 23 Jun 2020 21:51:45 +0200
-Message-Id: <20200623195412.699364756@linuxfoundation.org>
+Subject: [PATCH 5.7 110/477] bpf: tcp: Recv() should return 0 when the peer socket is closed
+Date:   Tue, 23 Jun 2020 21:51:47 +0200
+Message-Id: <20200623195412.789436573@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -45,38 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonas Karlman <jonas@kwiboo.se>
+From: Sabrina Dubroca <sd@queasysnail.net>
 
-[ Upstream commit 88441917dc6cd995cb993df603e264f5b88be50c ]
+[ Upstream commit 2c7269b231194aae23fb90ab65842573a91acbc9 ]
 
-Wrong loop filter flag is unset when tiles enabled flag is not set,
-this cause HEVC decoding issues with Rockchip Video Decoder.
+If the peer is closed, we will never get more data, so
+tcp_bpf_wait_data will get stuck forever. In case we passed
+MSG_DONTWAIT to recv(), we get EAGAIN but we should actually get
+0.
 
-Fix this by unsetting the loop filter across tiles enabled flag instead of
-the pps loop filter across slices enabled flag when tiles are disabled.
+>From man 2 recv:
 
-Fixes: 256fa3920874 ("media: v4l: Add definitions for HEVC stateless decoding")
-Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
-Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+    RETURN VALUE
+
+    When a stream socket peer has performed an orderly shutdown, the
+    return value will be 0 (the traditional "end-of-file" return).
+
+This patch makes tcp_bpf_wait_data always return 1 when the peer
+socket has been shutdown. Either we have data available, and it would
+have returned 1 anyway, or there isn't, in which case we'll call
+tcp_recvmsg which does the right thing in this situation.
+
+Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+Signed-off-by: Sabrina Dubroca <sd@queasysnail.net>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Jakub Sitnicki <jakub@cloudflare.com>
+Link: https://lore.kernel.org/bpf/26038a28c21fea5d04d4bd4744c5686d3f2e5504.1591784177.git.sd@queasysnail.net
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/v4l2-core/v4l2-ctrls.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv4/tcp_bpf.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/media/v4l2-core/v4l2-ctrls.c b/drivers/media/v4l2-core/v4l2-ctrls.c
-index 452edd06d67d7..99fd377f9b81a 100644
---- a/drivers/media/v4l2-core/v4l2-ctrls.c
-+++ b/drivers/media/v4l2-core/v4l2-ctrls.c
-@@ -1825,7 +1825,7 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
- 			       sizeof(p_hevc_pps->row_height_minus1));
+diff --git a/net/ipv4/tcp_bpf.c b/net/ipv4/tcp_bpf.c
+index 629aaa9a1eb99..9c5540887fbe5 100644
+--- a/net/ipv4/tcp_bpf.c
++++ b/net/ipv4/tcp_bpf.c
+@@ -242,6 +242,9 @@ static int tcp_bpf_wait_data(struct sock *sk, struct sk_psock *psock,
+ 	DEFINE_WAIT_FUNC(wait, woken_wake_function);
+ 	int ret = 0;
  
- 			p_hevc_pps->flags &=
--				~V4L2_HEVC_PPS_FLAG_PPS_LOOP_FILTER_ACROSS_SLICES_ENABLED;
-+				~V4L2_HEVC_PPS_FLAG_LOOP_FILTER_ACROSS_TILES_ENABLED;
- 		}
++	if (sk->sk_shutdown & RCV_SHUTDOWN)
++		return 1;
++
+ 	if (!timeo)
+ 		return ret;
  
- 		if (p_hevc_pps->flags &
 -- 
 2.25.1
 
