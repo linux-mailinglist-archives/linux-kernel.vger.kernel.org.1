@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EE0205F09
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C63C205FD2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390909AbgFWU2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:28:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48440 "EHLO mail.kernel.org"
+        id S2391790AbgFWUgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:36:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59560 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390887AbgFWU2h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:28:37 -0400
+        id S2391233AbgFWUg2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:36:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6481F206EB;
-        Tue, 23 Jun 2020 20:28:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B21D42080C;
+        Tue, 23 Jun 2020 20:36:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944117;
-        bh=G5GnVQz8QaMHJqYu9A89J1iR3ueOD57gBZUxL7V3hS4=;
+        s=default; t=1592944588;
+        bh=g/yMneZRt9yTHKNV0jIo5/IB/jXZm+WZ7sIlY8B56d4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DiElVs9GCWjX4/fzn6FN9WTjGk0FDjwkZcJuGKegxJPjQekODIJZY2BVDN6lyUwYc
-         y80Cp834Mh3XT7cfL/UDTrMLVc3Ma7ZUdwwBPoPBaPR4FmVHr3860cGiiBD8Cup0uI
-         mMGeTm0yDz2LuK/BvIZ3J9XeoraJMQ7KdK23wz3M=
+        b=NCiQuB1u+6iJq9fVN3GMBqx9K+1cATgU/TCk/wK9hiT3ePVeM/UzQNqn8+eMnaYrl
+         6Lln7SF4BkpS3Q1wivEfRDIzR9jbZlARe7x+HbLtE1JIAmEEvl654L+WaEG+TAlSdO
+         jijU+alFFFdoE/Mm8uT7haQQaOU7beTiB/2O6Lhk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Siddharth Gupta <sidgup@codeaurora.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 180/314] scripts: headers_install: Exit with error on config leak
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 047/206] x86/purgatory: Disable various profiling and sanitizing options
 Date:   Tue, 23 Jun 2020 21:56:15 +0200
-Message-Id: <20200623195347.474678697@linuxfoundation.org>
+Message-Id: <20200623195319.295257819@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,59 +43,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Siddharth Gupta <sidgup@codeaurora.org>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 5967577231f9b19acd5a59485e9075964065bbe3 ]
+[ Upstream commit e2ac07c06058ae2d58b45bbf2a2a352771d76fcb ]
 
-Misuse of CONFIG_* in UAPI headers should result in an error. These config
-options can be set in userspace by the user application which includes
-these headers to control the APIs and structures being used in a kernel
-which supports multiple targets.
+Since the purgatory is a special stand-alone binary, various profiling
+and sanitizing options must be disabled. Having these options enabled
+typically will cause dependencies on various special symbols exported by
+special libs / stubs used by these frameworks. Since the purgatory is
+special, it is not linked against these stubs causing missing symbols in
+the purgatory if these options are not disabled.
 
-Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Sync the set of disabled profiling and sanitizing options with that from
+drivers/firmware/efi/libstub/Makefile, adding
+-DDISABLE_BRANCH_PROFILING to the CFLAGS and setting:
+
+  GCOV_PROFILE                    := n
+  UBSAN_SANITIZE                  := n
+
+This fixes broken references to ftrace_likely_update() when
+CONFIG_TRACE_BRANCH_PROFILING is enabled and to __gcov_init() and
+__gcov_exit() when CONFIG_GCOV_KERNEL is enabled.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20200317130841.290418-1-hdegoede@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- scripts/headers_install.sh | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ arch/x86/purgatory/Makefile | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/scripts/headers_install.sh b/scripts/headers_install.sh
-index a07668a5c36b1..94a833597a884 100755
---- a/scripts/headers_install.sh
-+++ b/scripts/headers_install.sh
-@@ -64,7 +64,7 @@ configs=$(sed -e '
- 	d
- ' $OUTFILE)
+diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
+index b81b5172cf994..2cfa0caef1336 100644
+--- a/arch/x86/purgatory/Makefile
++++ b/arch/x86/purgatory/Makefile
+@@ -15,7 +15,10 @@ $(obj)/sha256.o: $(srctree)/lib/sha256.c FORCE
+ LDFLAGS_purgatory.ro := -e purgatory_start -r --no-undefined -nostdlib -z nodefaultlib
+ targets += purgatory.ro
  
--# The entries in the following list are not warned.
-+# The entries in the following list do not result in an error.
- # Please do not add a new entry. This list is only for existing ones.
- # The list will be reduced gradually, and deleted eventually. (hopefully)
- #
-@@ -98,18 +98,19 @@ include/uapi/linux/raw.h:CONFIG_MAX_RAW_DEVS
++# Sanitizer, etc. runtimes are unavailable and cannot be linked here.
++GCOV_PROFILE	:= n
+ KASAN_SANITIZE	:= n
++UBSAN_SANITIZE	:= n
+ KCOV_INSTRUMENT := n
  
- for c in $configs
- do
--	warn=1
-+	leak_error=1
+ # These are adjustments to the compiler flags used for objects that
+@@ -23,7 +26,7 @@ KCOV_INSTRUMENT := n
  
- 	for ignore in $config_leak_ignores
- 	do
- 		if echo "$INFILE:$c" | grep -q "$ignore$"; then
--			warn=
-+			leak_error=
- 			break
- 		fi
- 	done
+ PURGATORY_CFLAGS_REMOVE := -mcmodel=kernel
+ PURGATORY_CFLAGS := -mcmodel=large -ffreestanding -fno-zero-initialized-in-bss
+-PURGATORY_CFLAGS += $(DISABLE_STACKLEAK_PLUGIN)
++PURGATORY_CFLAGS += $(DISABLE_STACKLEAK_PLUGIN) -DDISABLE_BRANCH_PROFILING
  
--	if [ "$warn" = 1 ]; then
--		echo "warning: $INFILE: leak $c to user-space" >&2
-+	if [ "$leak_error" = 1 ]; then
-+		echo "error: $INFILE: leak $c to user-space" >&2
-+		exit 1
- 	fi
- done
- 
+ # Default KBUILD_CFLAGS can have -pg option set when FTRACE is enabled. That
+ # in turn leaves some undefined symbols like __fentry__ in purgatory and not
 -- 
 2.25.1
 
