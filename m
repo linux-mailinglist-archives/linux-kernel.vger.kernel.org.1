@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DCBE20511D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:47:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD46205118
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732521AbgFWLr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 07:47:27 -0400
-Received: from conuserg-11.nifty.com ([210.131.2.78]:54294 "EHLO
+        id S1732501AbgFWLrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 07:47:19 -0400
+Received: from conuserg-11.nifty.com ([210.131.2.78]:54209 "EHLO
         conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732424AbgFWLrV (ORCPT
+        with ESMTP id S1732424AbgFWLrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 07:47:21 -0400
+        Tue, 23 Jun 2020 07:47:16 -0400
 Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 05NBkITu013767;
+        by conuserg-11.nifty.com with ESMTP id 05NBkITv013767;
         Tue, 23 Jun 2020 20:46:19 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 05NBkITu013767
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 05NBkITv013767
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1592912779;
-        bh=Vn2EUDBp5gJO41DcoLGASkIVbdjDKOMA+8pe5Lqfplw=;
+        s=dec2015msa; t=1592912780;
+        bh=CJ7xJNq8YhNLPWOGA/kPm5KL6uoxrz+Qf++mEvOnqZg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uwJ2jcIrSN+15RNjiH9k5BHgGkYkVKI/HKhcW/9nb4jKV7PuiYmXRxKVgWrggf5lO
-         Qr9Pp2eazKVpQnzw1erVgCCcJL+uIQBO6fLJiN9bK16U8I5hQt7SEtC7t4IRp4xGld
-         Llv8TpP+yqsgY3pGAVeEJloBBR7DNPH9s+lIBmsmdNeXvYYMsrbGp7OxK4Jqb7gSCe
-         DRtMVgnxMz6/WZv4kqd1mmjALuKXvrnN0oAZIw6+o3a+dMlowMQ+eVJePSbTa+798q
-         r3RF3MqO0hCF9Xqltiu2SKWA7eTUNkZYY3Qxo266vhzj7KRrOEoRZsHyar3TIxbfNs
-         KbF2zJ54Unpjw==
+        b=lS195I7FyGLI05cJtxANmHnbvT/1SFjMOAevI12V/gNPEk7EVcbav9x00Jz7LDm4I
+         Zq5uHgDRrxGoXj5HZ/18z0k2W+1gV9TIuOWUVweRuBSg0FLHPWWSQFjkvk/I5y66a4
+         ClmZfIti27iSEgtvy5DV3OkRXriIqOLS7smkG4bprkA30C4/I/8b3MmOteRkeim7SN
+         bGtyLd0e4WFPmf1QuIm4m/PyiA97p9XZycHypvYUu6XvQBenKze/cCDr0v6R1gyaIE
+         gmc5q9EySpapNwKr82iD5jMyacYELqU7tOnFFWpCCfpR8biJYQ53wVxCjaAdVNpHhK
+         QPfP67MSyBzug==
 X-Nifty-SrcIP: [126.90.202.47]
 From:   Masahiro Yamada <yamada.masahiro@socionext.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     Masahiro Yamada <yamada.masahiro@socionext.com>,
         Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 2/4] arm64: dts: uniphier: add interrupts to support card serial
-Date:   Tue, 23 Jun 2020 20:46:12 +0900
-Message-Id: <20200623114614.792648-2-yamada.masahiro@socionext.com>
+Subject: [PATCH 3/4] ARM: dts: uniphier: rename support card serial node to fix schema warning
+Date:   Tue, 23 Jun 2020 20:46:13 +0900
+Message-Id: <20200623114614.792648-3-yamada.masahiro@socionext.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200623114614.792648-1-yamada.masahiro@socionext.com>
 References: <20200623114614.792648-1-yamada.masahiro@socionext.com>
@@ -48,62 +48,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Since commit e69f5dc623f9 ("dt-bindings: serial: Convert 8250 to
 json-schema"), the schema for "ns16550a" is checked.
 
-Since then, 'make ARCH=arm64 dtbs_check' is so noisy because the
-required property 'interrupts' is missing.
+'make ARCH=arm dtbs_check' emits the following warning:
+
+  uart@b0000: $nodename:0: 'uart@b0000' does not match '^serial(@[0-9a-f,]+)*$'
+
+Rename the node to follow the pattern defined in
+Documentation/devicetree/bindings/serial/serial.yaml
 
 Signed-off-by: Masahiro Yamada <yamada.masahiro@socionext.com>
 ---
 
- arch/arm64/boot/dts/socionext/uniphier-ld11-ref.dts | 4 ++++
- arch/arm64/boot/dts/socionext/uniphier-ld20-ref.dts | 4 ++++
- arch/arm64/boot/dts/socionext/uniphier-pxs3-ref.dts | 4 ++++
- 3 files changed, 12 insertions(+)
+ arch/arm/boot/dts/uniphier-support-card.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld11-ref.dts b/arch/arm64/boot/dts/socionext/uniphier-ld11-ref.dts
-index 693171f82ff1..d07401fafffa 100644
---- a/arch/arm64/boot/dts/socionext/uniphier-ld11-ref.dts
-+++ b/arch/arm64/boot/dts/socionext/uniphier-ld11-ref.dts
-@@ -42,6 +42,10 @@ &ethsc {
- 	interrupts = <0 8>;
- };
+diff --git a/arch/arm/boot/dts/uniphier-support-card.dtsi b/arch/arm/boot/dts/uniphier-support-card.dtsi
+index bf441c2eff79..11e46e7de7c5 100644
+--- a/arch/arm/boot/dts/uniphier-support-card.dtsi
++++ b/arch/arm/boot/dts/uniphier-support-card.dtsi
+@@ -23,7 +23,7 @@ ethsc: ethernet@0 {
+ 			reg-io-width = <4>;
+ 		};
  
-+&serialsc {
-+	interrupts = <0 8>;
-+};
-+
- &serial0 {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/socionext/uniphier-ld20-ref.dts b/arch/arm64/boot/dts/socionext/uniphier-ld20-ref.dts
-index eeb976e7892d..709908d5812b 100644
---- a/arch/arm64/boot/dts/socionext/uniphier-ld20-ref.dts
-+++ b/arch/arm64/boot/dts/socionext/uniphier-ld20-ref.dts
-@@ -42,6 +42,10 @@ &ethsc {
- 	interrupts = <0 8>;
- };
- 
-+&serialsc {
-+	interrupts = <0 8>;
-+};
-+
- &serial0 {
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/socionext/uniphier-pxs3-ref.dts b/arch/arm64/boot/dts/socionext/uniphier-pxs3-ref.dts
-index 7c30c6b56b57..eca60e02e85a 100644
---- a/arch/arm64/boot/dts/socionext/uniphier-pxs3-ref.dts
-+++ b/arch/arm64/boot/dts/socionext/uniphier-pxs3-ref.dts
-@@ -43,6 +43,10 @@ &ethsc {
- 	interrupts = <4 8>;
- };
- 
-+&serialsc {
-+	interrupts = <4 8>;
-+};
-+
- &spi0 {
- 	status = "okay";
- };
+-		serialsc: uart@b0000 {
++		serialsc: serial@b0000 {
+ 			compatible = "ns16550a";
+ 			reg = <0x000b0000 0x20>;
+ 			clock-frequency = <12288000>;
 -- 
 2.25.1
 
