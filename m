@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC2A4204E92
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14E46204E7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:53:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732329AbgFWJxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 05:53:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33362 "EHLO mail.kernel.org"
+        id S1732253AbgFWJxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 05:53:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732158AbgFWJxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:53:07 -0400
+        id S1732159AbgFWJxG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 05:53:06 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E07520791;
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D0E4207BB;
         Tue, 23 Jun 2020 09:53:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592905986;
-        bh=bq8CoMqSMZ8uYUWvgHDvhKEDwfU1WGAh6kK39NUzLyw=;
+        bh=wN0P/QDy192u7/6MjOrYNxlOo/vHTCArMdyL+uoVyLo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kwV0w7+c+4KgVFSyQ6qfVc4+O2eNDLiQtVd0exq8jkJUQBMLarkIVYX10KXFYtISg
-         2AZI94v62JrtywFPNBEz8sUi4ppYYDXbBiYmk4MXSxoLrjTt8d54fhcbTaO+hUVOJw
-         xy4KH71V+mmR4/4/FNcal6JDlUqS0ryytOUpcpKA=
+        b=dmIEa/0pPyp7xDIhVh8Wqd2L3sWHJRza0P4YFVRNC4EF7LSSFM5q5CjXI9JqiGEl0
+         pYXoc0n5qrXpoJPYTCIMhdvTTTFfZxlcdA3KfwrDxR/5S9Zva86Ps7ndy5OaPZNxzw
+         1T20ps3huYb7y1pKXvPq0pOqtX8w9MDQAaRM7Ldc=
 Received: from mchehab by mail.kernel.org with local (Exim 4.93)
         (envelope-from <mchehab@kernel.org>)
-        id 1jnfc0-004C3Z-DG; Tue, 23 Jun 2020 11:53:04 +0200
+        id 1jnfc0-004C3d-EM; Tue, 23 Jun 2020 11:53:04 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v2 7/9] docs: move other kAPI documents to core-api
-Date:   Tue, 23 Jun 2020 11:53:00 +0200
-Message-Id: <d4ee2e60590b605eeba7c9d14fe75f28d17e4272.1592905407.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v2 8/9] docs: Add remaining Documentation/*.txt at staging/index.rst
+Date:   Tue, 23 Jun 2020 11:53:01 +0200
+Message-Id: <7db59daca912312ef750fd05359d801a7d80573e.1592905407.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1592905407.git.mchehab+huawei@kernel.org>
 References: <cover.1592905407.git.mchehab+huawei@kernel.org>
@@ -43,68 +43,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are a number of random documents that seem to be
-describing some aspects of the core-api. Move them to such
-directory, adding them at the core-api/index.rst file.
+There are a few text files that aren't yet at the docs building
+system.
+
+Add those to the staging/index.rst.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../bus-virt-phys-mapping.rst}                                 | 0
- Documentation/core-api/index.rst                               | 3 +++
- Documentation/{this_cpu_ops.txt => core-api/this_cpu_ops.rst}  | 0
- .../{process => core-api}/unaligned-memory-access.rst          | 0
- arch/Kconfig                                                   | 2 +-
- 5 files changed, 4 insertions(+), 1 deletion(-)
- rename Documentation/{bus-virt-phys-mapping.txt => core-api/bus-virt-phys-mapping.rst} (100%)
- rename Documentation/{this_cpu_ops.txt => core-api/this_cpu_ops.rst} (100%)
- rename Documentation/{process => core-api}/unaligned-memory-access.rst (100%)
+ Documentation/staging/index.rst | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/bus-virt-phys-mapping.txt b/Documentation/core-api/bus-virt-phys-mapping.rst
-similarity index 100%
-rename from Documentation/bus-virt-phys-mapping.txt
-rename to Documentation/core-api/bus-virt-phys-mapping.rst
-diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
-index 15ab86112627..69171b1799f2 100644
---- a/Documentation/core-api/index.rst
-+++ b/Documentation/core-api/index.rst
-@@ -39,6 +39,8 @@ Library functionality that is used throughout the kernel.
-    rbtree
-    generic-radix-tree
-    packing
-+   bus-virt-phys-mapping
-+   this_cpu_ops
-    timekeeping
-    errseq
+diff --git a/Documentation/staging/index.rst b/Documentation/staging/index.rst
+index 8cc9d94b0a13..8e98517675ca 100644
+--- a/Documentation/staging/index.rst
++++ b/Documentation/staging/index.rst
+@@ -19,17 +19,14 @@ Unsorted Documentation
+ Atomic Types
+ ============
  
-@@ -82,6 +84,7 @@ more memory-management documentation in :doc:`/vm/index`.
-    :maxdepth: 1
+-.. include:: ../atomic_t.txt
+-   :literal:
++.. literalinclude:: ../atomic_t.txt
  
-    memory-allocation
-+   unaligned-memory-access
-    dma-api
-    dma-api-howto
-    dma-attributes
-diff --git a/Documentation/this_cpu_ops.txt b/Documentation/core-api/this_cpu_ops.rst
-similarity index 100%
-rename from Documentation/this_cpu_ops.txt
-rename to Documentation/core-api/this_cpu_ops.rst
-diff --git a/Documentation/process/unaligned-memory-access.rst b/Documentation/core-api/unaligned-memory-access.rst
-similarity index 100%
-rename from Documentation/process/unaligned-memory-access.rst
-rename to Documentation/core-api/unaligned-memory-access.rst
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 8cc35dc556c7..2a439fb8069e 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -147,7 +147,7 @@ config HAVE_EFFICIENT_UNALIGNED_ACCESS
- 	  problems with received packets if doing so would not help
- 	  much.
+ Atomic bitops
+ =============
  
--	  See Documentation/unaligned-memory-access.txt for more
-+	  See Documentation/core-api/unaligned-memory-access.rst for more
- 	  information on the topic of unaligned memory accesses.
+-.. include:: ../atomic_bitops.txt
+-   :literal:
++.. literalinclude:: ../atomic_bitops.txt
  
- config ARCH_USE_BUILTIN_BSWAP
+ Memory Barriers
+ ===============
+ 
+-.. include:: ../memory-barriers.txt
+-   :literal:
++.. literalinclude:: ../memory-barriers.txt
 -- 
 2.26.2
 
