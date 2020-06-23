@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E114420579D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:46:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78C8B205792
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:45:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733205AbgFWQp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 12:45:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39870 "EHLO mx2.suse.de"
+        id S1733182AbgFWQpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 12:45:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40324 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733150AbgFWQpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 12:45:36 -0400
+        id S1733154AbgFWQpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 12:45:38 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ACC4AB053;
-        Tue, 23 Jun 2020 16:45:35 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 1EA8DAEBE;
+        Tue, 23 Jun 2020 16:45:36 +0000 (UTC)
 From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 To:     gregkh@linuxfoundation.org
 Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
@@ -22,9 +22,9 @@ Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         devel@driverdev.osuosl.org,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [PATCH 49/50] staging: vchiq: Move defines into core header
-Date:   Tue, 23 Jun 2020 18:42:35 +0200
-Message-Id: <20200623164235.29566-50-nsaenzjulienne@suse.de>
+Subject: [PATCH 50/50] staging: vchiq: Move vchiq.h into include directory
+Date:   Tue, 23 Jun 2020 18:42:36 +0200
+Message-Id: <20200623164235.29566-51-nsaenzjulienne@suse.de>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623164235.29566-1-nsaenzjulienne@suse.de>
 References: <20200623164235.29566-1-nsaenzjulienne@suse.de>
@@ -35,46 +35,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Those are only used in the core vchiq code, while present in vchiq's
-'public' API header. Move them into the right place.
+To make the separation clear between vchiq's header files and vchiq.h,
+which is to be used by services and is the 'public' API, move it into a
+dedicated includes directory.
 
 Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
 ---
- drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h    | 5 -----
- .../staging/vc04_services/interface/vchiq_arm/vchiq_core.h   | 4 ++++
- 2 files changed, 4 insertions(+), 5 deletions(-)
+ drivers/staging/vc04_services/Makefile                        | 2 +-
+ drivers/staging/vc04_services/bcm2835-audio/Makefile          | 2 +-
+ drivers/staging/vc04_services/bcm2835-audio/bcm2835.h         | 2 +-
+ .../vchiq_arm => include/linux/raspberrypi}/vchiq.h           | 0
+ .../staging/vc04_services/interface/vchiq_arm/vchiq_core.h    | 2 +-
+ .../staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h   | 2 +-
+ drivers/staging/vc04_services/vchiq-mmal/Makefile             | 1 +
+ drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c         | 4 ++--
+ 8 files changed, 8 insertions(+), 7 deletions(-)
+ rename drivers/staging/vc04_services/{interface/vchiq_arm => include/linux/raspberrypi}/vchiq.h (100%)
 
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h
-index 04b7ff41a025..cb9ef9a4150b 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h
-@@ -4,11 +4,6 @@
- #ifndef VCHIQ_H
- #define VCHIQ_H
+diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/vc04_services/Makefile
+index e02a9c2abf77..7546d70116a0 100644
+--- a/drivers/staging/vc04_services/Makefile
++++ b/drivers/staging/vc04_services/Makefile
+@@ -12,5 +12,5 @@ obj-$(CONFIG_SND_BCM2835)		+= bcm2835-audio/
+ obj-$(CONFIG_VIDEO_BCM2835)		+= bcm2835-camera/
+ obj-$(CONFIG_BCM2835_VCHIQ_MMAL)	+= vchiq-mmal/
  
--#define VCHIQ_SERVICE_HANDLE_INVALID 0
--
--#define VCHIQ_SLOT_SIZE     4096
--#define VCHIQ_MAX_MSG_SIZE  (VCHIQ_SLOT_SIZE - sizeof(struct vchiq_header))
--
- #define VCHIQ_MAKE_FOURCC(x0, x1, x2, x3) \
- 			(((x0) << 24) | ((x1) << 16) | ((x2) << 8) | (x3))
+-ccflags-y += -D__VCCOREVER__=0x04000000
++ccflags-y += -I $(srctree)/$(src)/include  -D__VCCOREVER__=0x04000000
  
+diff --git a/drivers/staging/vc04_services/bcm2835-audio/Makefile b/drivers/staging/vc04_services/bcm2835-audio/Makefile
+index 13fa6d7d9745..d59fe4dde615 100644
+--- a/drivers/staging/vc04_services/bcm2835-audio/Makefile
++++ b/drivers/staging/vc04_services/bcm2835-audio/Makefile
+@@ -2,4 +2,4 @@
+ obj-$(CONFIG_SND_BCM2835)	+= snd-bcm2835.o
+ snd-bcm2835-objs		:= bcm2835.o bcm2835-ctl.o bcm2835-pcm.o bcm2835-vchiq.o
+ 
+-ccflags-y += -I $(srctree)/$(src)/.. -D__VCCOREVER__=0x04000000
++ccflags-y += -I $(srctree)/$(src)/../include -D__VCCOREVER__=0x04000000
+diff --git a/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h b/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
+index ca220f5230ec..1b36475872d6 100644
+--- a/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
++++ b/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
+@@ -6,10 +6,10 @@
+ 
+ #include <linux/device.h>
+ #include <linux/wait.h>
++#include <linux/raspberrypi/vchiq.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm-indirect.h>
+-#include "interface/vchiq_arm/vchiq.h"
+ 
+ #define MAX_SUBSTREAMS   (8)
+ #define AVAIL_SUBSTREAMS_MASK  (0xff)
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h b/drivers/staging/vc04_services/include/linux/raspberrypi/vchiq.h
+similarity index 100%
+rename from drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h
+rename to drivers/staging/vc04_services/include/linux/raspberrypi/vchiq.h
 diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-index 15e9867f78f4..8a27f3d7217e 100644
+index 8a27f3d7217e..e67692879249 100644
 --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
 +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-@@ -26,6 +26,10 @@
+@@ -10,10 +10,10 @@
+ #include <linux/kref.h>
+ #include <linux/rcupdate.h>
+ #include <linux/wait.h>
++#include <linux/raspberrypi/vchiq.h>
  
- #endif	/* IS_ENABLED(CONFIG_RASPBERRYPI_FIRMWARE) */
+ #include "vchiq_cfg.h"
  
-+#define VCHIQ_SERVICE_HANDLE_INVALID 0
-+
-+#define VCHIQ_SLOT_SIZE     4096
-+#define VCHIQ_MAX_MSG_SIZE  (VCHIQ_SLOT_SIZE - sizeof(struct vchiq_header))
+-#include "vchiq.h"
  
- /* Run time control of log level, based on KERN_XXX level. */
- #define VCHIQ_LOG_DEFAULT  4
+ /* Do this so that we can test-build the code on non-rpi systems */
+ #if IS_ENABLED(CONFIG_RASPBERRYPI_FIRMWARE)
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h
+index f285d754ad28..3653fd99d8a1 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h
+@@ -5,7 +5,7 @@
+ #define VCHIQ_IOCTLS_H
+ 
+ #include <linux/ioctl.h>
+-#include "vchiq.h"
++#include <linux/raspberrypi/vchiq.h>
+ 
+ #define VCHIQ_IOC_MAGIC 0xc4
+ #define VCHIQ_INVALID_HANDLE (~0)
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/Makefile b/drivers/staging/vc04_services/vchiq-mmal/Makefile
+index f8164c33aec3..b2a830f48acc 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/Makefile
++++ b/drivers/staging/vc04_services/vchiq-mmal/Makefile
+@@ -5,4 +5,5 @@ obj-$(CONFIG_BCM2835_VCHIQ_MMAL) += bcm2835-mmal-vchiq.o
+ 
+ ccflags-y += \
+ 	-I$(srctree)/$(src)/.. \
++	-I$(srctree)/$(src)/../include \
+ 	-D__VCCOREVER__=0x04000000
+diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+index 72afa4319bd3..b99b7555a8fb 100644
+--- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
++++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
+@@ -23,14 +23,14 @@
+ #include <linux/slab.h>
+ #include <linux/completion.h>
+ #include <linux/vmalloc.h>
++#include <linux/raspberrypi/vchiq.h>
+ #include <media/videobuf2-vmalloc.h>
++#include <linux/raspberrypi/vchiq.h>
+ 
+ #include "mmal-common.h"
+ #include "mmal-vchiq.h"
+ #include "mmal-msg.h"
+ 
+-#include "interface/vchiq_arm/vchiq.h"
+-
+ /*
+  * maximum number of components supported.
+  * This matches the maximum permitted by default on the VPU
 -- 
 2.27.0
 
