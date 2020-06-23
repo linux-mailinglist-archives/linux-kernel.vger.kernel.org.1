@@ -2,93 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED80C205BDF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 21:36:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED54205BE2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 21:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387573AbgFWTf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 15:35:59 -0400
-Received: from mga11.intel.com ([192.55.52.93]:11007 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387505AbgFWTfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 15:35:45 -0400
-IronPort-SDR: iX/RIRyPcRQJQim+jrPafeWR8C/TAVHEn1Hnkayf3zZzwVeQL7jJhePfNYru3h8Rcvz6OaBrS2
- CwEXkxT9mvCA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="142430980"
-X-IronPort-AV: E=Sophos;i="5.75,272,1589266800"; 
-   d="scan'208";a="142430980"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2020 12:35:44 -0700
-IronPort-SDR: OOlI9c2EJF66vE1ak8KQJ1mxYF3k9rYe5Kz0ZWgNE/88d7eFDl9xLCxcKTUuja3Gk+TOu9IBBH
- nqyCGnbh/aUA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,272,1589266800"; 
-   d="scan'208";a="263428300"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.152])
-  by fmsmga007.fm.intel.com with ESMTP; 23 Jun 2020 12:35:44 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] KVM: x86/mmu: Exit to userspace on make_mmu_pages_available() error
-Date:   Tue, 23 Jun 2020 12:35:42 -0700
-Message-Id: <20200623193542.7554-5-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200623193542.7554-1-sean.j.christopherson@intel.com>
-References: <20200623193542.7554-1-sean.j.christopherson@intel.com>
+        id S2387474AbgFWThR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 15:37:17 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:44999 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733220AbgFWThR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 15:37:17 -0400
+Received: by mail-io1-f72.google.com with SMTP id h15so5369409ioj.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 12:37:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=LFs9FQwJPzjZsjyEnnKo03dPiOHsVYsyRFbI7NzHdGY=;
+        b=KpT6pRODrRAbj1wtrRAa9WC7tmwt5//DGDyLG8M2NdJ6BeZZPBdlkQ8sRIWRsFksoK
+         98GrmdIuKTeVCdCfZ0Eue/ItfsXv0M3OlCAkH2+4lXBaHiaqL9QVH9sFBmPhFjjPi5AX
+         ff9hdM39ZE9/gw0V2ameOi+1zxM510s07JE02Wxw+YlsK7OaBpj8X18Lx/+MtU8hIzTw
+         9wqvywlQiLef8u6k8GxUV6ULSiAXo67te+Y/NF+ftA8DpD3Gno5wi8B3ZM2cvZnb9VXD
+         K8sJjv/ZjVveCQAiaN4L2Nu8ajVBqDsaOh77/0zxXtrSNRzy2S0G905WPQFLGeSw4kPv
+         anwQ==
+X-Gm-Message-State: AOAM533g5RcEnr5hnCANqpJOPOIznw7cErIX6Qj2mzGPyKU5jpArP6G1
+        EepIauX6eTHFrX27FiHIW/XLO5gn7IOOCWqjh/pyBude4UKM
+X-Google-Smtp-Source: ABdhPJwxdrC6x0hoUScfPr1/tavnK5H+g8rGXHG32+HRw0zc5xkolu7hGrNUdJXkdsOV9CJz5MbcEseTO5h1+QVjMlzofA1upD6b
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a02:93ea:: with SMTP id z97mr21523141jah.40.1592941036070;
+ Tue, 23 Jun 2020 12:37:16 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 12:37:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009a6e9805a8c57c58@google.com>
+Subject: BUG: corrupted list in corrupted (3)
+From:   syzbot <syzbot+0b3de1d31a24da20947b@syzkaller.appspotmail.com>
+To:     akpm@osdl.org, andreyknvl@google.com, keescook@chromium.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        paulmck@kernel.org, riel@redhat.com, rostedt@goodmis.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Propagate any error returned by make_mmu_pages_available() out to
-userspace instead of resuming the guest if the error occurs while
-handling a page fault.  Now that zapping the oldest MMU pages skips
-active roots, i.e. fails if and only if there are no zappable pages,
-there is no chance for a false positive, i.e. no chance of returning a
-spurious error to userspace.
+Hello,
 
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+syzbot found the following crash on:
+
+HEAD commit:    f8f02d5c USB: OTG: rename product list of devices
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=11bfddf1100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fbe5dc26525767f1
+dashboard link: https://syzkaller.appspot.com/bug?extid=0b3de1d31a24da20947b
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11abf20d100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17ea5a11100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+0b3de1d31a24da20947b@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+kernel BUG at lib/list_debug.c:26!
+
+
 ---
- arch/x86/kvm/mmu/mmu.c         | 3 ++-
- arch/x86/kvm/mmu/paging_tmpl.h | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 4d40b21a67bd..82086d9eecb0 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -4157,7 +4157,8 @@ static int direct_page_fault(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 	spin_lock(&vcpu->kvm->mmu_lock);
- 	if (mmu_notifier_retry(vcpu->kvm, mmu_seq))
- 		goto out_unlock;
--	if (make_mmu_pages_available(vcpu) < 0)
-+	r = make_mmu_pages_available(vcpu);
-+	if (r)
- 		goto out_unlock;
- 	r = __direct_map(vcpu, gpa, write, map_writable, max_level, pfn,
- 			 prefault, is_tdp && lpage_disallowed);
-diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-index 58234bfaca07..a2db6971231d 100644
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -865,7 +865,8 @@ static int FNAME(page_fault)(struct kvm_vcpu *vcpu, gpa_t addr, u32 error_code,
- 		goto out_unlock;
- 
- 	kvm_mmu_audit(vcpu, AUDIT_PRE_PAGE_FAULT);
--	if (make_mmu_pages_available(vcpu) < 0)
-+	r = make_mmu_pages_available(vcpu);
-+	if (r)
- 		goto out_unlock;
- 	r = FNAME(fetch)(vcpu, addr, &walker, write_fault, max_level, pfn,
- 			 map_writable, prefault, lpage_disallowed);
--- 
-2.26.0
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
