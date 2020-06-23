@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2A3B206679
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:52:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D009206587
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:51:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393591AbgFWVmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:42:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43480 "EHLO mail.kernel.org"
+        id S2388290AbgFWUFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:05:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388250AbgFWUEo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:04:44 -0400
+        id S2388256AbgFWUEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:04:54 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2C4C206C3;
-        Tue, 23 Jun 2020 20:04:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 23A21206C3;
+        Tue, 23 Jun 2020 20:04:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942683;
-        bh=HQ2t6d3gCpOIFKAiS50mdeCP8+8IYXLjiZjOMSW8mA4=;
+        s=default; t=1592942693;
+        bh=J6BtOatp0H0xxIehNq/YeWWaCUMLlsM3bkSFCVQqYCQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dhOTi0bNi57PX4uAlOi/OWyS04anb813IW3fGgAOw+XuOlAmPPMlA2YdAiunMo7ao
-         2J+CSdCEBgJrxpV1A7cHpljLT+gnUuQnpWSylgTNmGZFDyKz6uiJAfFG2KeXqBWUv8
-         a+Q2CJfapCOI/Mr0e/MDqV8cwVCbg/Eoekg2EO2A=
+        b=p+wLJivNlnTPArmDEoGPtNIfG4kh7MVCV0rNuxe8Sm0n2BsOjfCS+fpcv3SJkriO7
+         BtwN1l0EbmMxYuKELZLyYjdh7vaeOr5g3rWM5XlFcLVGoVgUYycmHWIGgWMk7K+wU8
+         amOgqWoBZ82+91AEcwRyGcQ63Q1yfqgYqiW/1kFA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>,
-        Allen Hubbe <allenbh@gmail.com>,
-        Alexander Fomichev <fomichev.ru@gmail.com>,
-        Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 094/477] NTB: ntb_pingpong: Choose doorbells based on port number
-Date:   Tue, 23 Jun 2020 21:51:31 +0200
-Message-Id: <20200623195412.049779050@linuxfoundation.org>
+        stable@vger.kernel.org,
+        John Johansen <john.johansen@canonical.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 097/477] apparmor: fix introspection of of task mode for unconfined tasks
+Date:   Tue, 23 Jun 2020 21:51:34 +0200
+Message-Id: <20200623195412.187606278@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -45,69 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Logan Gunthorpe <logang@deltatee.com>
+From: John Johansen <john.johansen@canonical.com>
 
-[ Upstream commit ca93c45755da98302c93abdd788fc09113baf9e0 ]
+[ Upstream commit dd2569fbb053719f7df7ef8fdbb45cf47156a701 ]
 
-This commit fixes pingpong support for existing drivers that do not
-implement ntb_default_port_number() and ntb_default_peer_port_number().
-This is required for hardware (like the crosslink topology of
-switchtec) which cannot assign reasonable port numbers to each port due
-to its perfect symmetry.
+Fix two issues with introspecting the task mode.
 
-Instead of picking the doorbell to use based on the the index of the
-peer, we use the peer's port number. This is a bit clearer and easier
-to understand.
+1. If a task is attached to a unconfined profile that is not the
+   ns->unconfined profile then. Mode the mode is always reported
+   as -
 
-Fixes: c7aeb0afdcc2 ("NTB: ntb_pp: Add full multi-port NTB API support")
-Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Acked-by: Allen Hubbe <allenbh@gmail.com>
-Tested-by: Alexander Fomichev <fomichev.ru@gmail.com>
-Signed-off-by: Jon Mason <jdmason@kudzu.us>
+      $ ps -Z
+      LABEL                               PID TTY          TIME CMD
+      unconfined                         1287 pts/0    00:00:01 bash
+      test (-)                           1892 pts/0    00:00:00 ps
+
+   instead of the correct value of (unconfined) as shown below
+
+      $ ps -Z
+      LABEL                               PID TTY          TIME CMD
+      unconfined                         2483 pts/0    00:00:01 bash
+      test (unconfined)                  3591 pts/0    00:00:00 ps
+
+2. if a task is confined by a stack of profiles that are unconfined
+   the output of label mode is again the incorrect value of (-) like
+   above, instead of (unconfined). This is because the visibile
+   profile count increment is skipped by the special casing of
+   unconfined.
+
+Fixes: f1bd904175e8 ("apparmor: add the base fns() for domain labels")
+Signed-off-by: John Johansen <john.johansen@canonical.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ntb/test/ntb_pingpong.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ security/apparmor/label.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/ntb/test/ntb_pingpong.c b/drivers/ntb/test/ntb_pingpong.c
-index 04dd46647db36..2164e8492772d 100644
---- a/drivers/ntb/test/ntb_pingpong.c
-+++ b/drivers/ntb/test/ntb_pingpong.c
-@@ -121,15 +121,14 @@ static int pp_find_next_peer(struct pp_ctx *pp)
- 	link = ntb_link_is_up(pp->ntb, NULL, NULL);
+diff --git a/security/apparmor/label.c b/security/apparmor/label.c
+index 470693239e64f..6c3acae701efd 100644
+--- a/security/apparmor/label.c
++++ b/security/apparmor/label.c
+@@ -1531,13 +1531,13 @@ static const char *label_modename(struct aa_ns *ns, struct aa_label *label,
  
- 	/* Find next available peer */
--	if (link & pp->nmask) {
-+	if (link & pp->nmask)
- 		pidx = __ffs64(link & pp->nmask);
--		out_db = BIT_ULL(pidx + 1);
--	} else if (link & pp->pmask) {
-+	else if (link & pp->pmask)
- 		pidx = __ffs64(link & pp->pmask);
--		out_db = BIT_ULL(pidx);
--	} else {
-+	else
- 		return -ENODEV;
--	}
-+
-+	out_db = BIT_ULL(ntb_peer_port_number(pp->ntb, pidx));
- 
- 	spin_lock(&pp->lock);
- 	pp->out_pidx = pidx;
-@@ -303,7 +302,7 @@ static void pp_init_flds(struct pp_ctx *pp)
- 			break;
- 	}
- 
--	pp->in_db = BIT_ULL(pidx);
-+	pp->in_db = BIT_ULL(lport);
- 	pp->pmask = GENMASK_ULL(pidx, 0) >> 1;
- 	pp->nmask = GENMASK_ULL(pcnt - 1, pidx);
- 
-@@ -432,4 +431,3 @@ static void __exit pp_exit(void)
- 	debugfs_remove_recursive(pp_dbgfs_topdir);
- }
- module_exit(pp_exit);
--
+ 	label_for_each(i, label, profile) {
+ 		if (aa_ns_visible(ns, profile->ns, flags & FLAG_VIEW_SUBNS)) {
+-			if (profile->mode == APPARMOR_UNCONFINED)
++			count++;
++			if (profile == profile->ns->unconfined)
+ 				/* special case unconfined so stacks with
+ 				 * unconfined don't report as mixed. ie.
+ 				 * profile_foo//&:ns1:unconfined (mixed)
+ 				 */
+ 				continue;
+-			count++;
+ 			if (mode == -1)
+ 				mode = profile->mode;
+ 			else if (mode != profile->mode)
 -- 
 2.25.1
 
