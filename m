@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 032E9205284
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 14:32:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 856CB205283
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 14:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732624AbgFWMcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 08:32:08 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6824 "EHLO huawei.com"
+        id S1732615AbgFWMcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 08:32:05 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6823 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729611AbgFWMcE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 08:32:04 -0400
+        id S1732566AbgFWMcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 08:32:03 -0400
 Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 4991BC24F155409DC33C;
+        by Forcepoint Email with ESMTP id 3FA7A6E18D86B20D8779;
         Tue, 23 Jun 2020 20:32:02 +0800 (CST)
 Received: from euler.huawei.com (10.175.124.27) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 23 Jun 2020 20:31:58 +0800
+ 14.3.487.0; Tue, 23 Jun 2020 20:32:01 +0800
 From:   Wei Li <liwei391@huawei.com>
 To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
@@ -31,9 +31,9 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>
-Subject: [PATCH 1/2] perf tools: ARM SPE code cleanup
-Date:   Tue, 23 Jun 2020 20:31:40 +0800
-Message-ID: <20200623123141.27747-2-liwei391@huawei.com>
+Subject: [PATCH 2/2] perf tools: Fix record failure when mixed with ARM SPE event
+Date:   Tue, 23 Jun 2020 20:31:41 +0800
+Message-ID: <20200623123141.27747-3-liwei391@huawei.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200623123141.27747-1-liwei391@huawei.com>
 References: <20200623123141.27747-1-liwei391@huawei.com>
@@ -46,37 +46,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the useless check code to make it clear.
+When recording with cache-misses and arm_spe_x event, i found that
+it will just fail without showing any error info if i put cache-misses
+after arm_spe_x event.
 
+[root@localhost 0620]# perf record -e cache-misses -e \
+arm_spe_0/ts_enable=1,pct_enable=1,pa_enable=1,load_filter=1,\
+jitter=1,store_filter=1,min_latency=0/ sleep 1
+[ perf record: Woken up 1 times to write data ]
+[ perf record: Captured and wrote 0.067 MB perf.data ]
+[root@localhost 0620]# perf record -e \
+arm_spe_0/ts_enable=1,pct_enable=1,pa_enable=1,load_filter=1,jitter=1,\
+store_filter=1,min_latency=0/ -e cache-misses sleep 1
+[root@localhost 0620]#
+
+Finally, i found the reason is that the parameter 'arm_spe_pmu' passed to
+arm_spe_recording_init() in auxtrace_record__init() is wrong. When the
+arm_spe_x event is not the last event, 'arm_spe_pmus[i]' will be out of
+bounds.
+
+It seems that the code can't support concurrent multiple different
+arm_spe_x events currently. So add the code to check and record the
+found 'arm_spe_pmu' to fix this issue.
+
+In fact, we don't support concurrent multiple same arm_spe_x events either,
+that is checked in arm_spe_recording_options(), and it will show the
+relevant info.
+
+Fixes: ffd3d18c20b8d ("perf tools: Add ARM Statistical Profiling Extensions (SPE) support")
 Signed-off-by: Wei Li <liwei391@huawei.com>
 ---
- tools/perf/arch/arm/util/auxtrace.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ tools/perf/arch/arm/util/auxtrace.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
-index 0a6e75b8777a..62b7b03d691a 100644
+index 62b7b03d691a..7bb6f29e766c 100644
 --- a/tools/perf/arch/arm/util/auxtrace.c
 +++ b/tools/perf/arch/arm/util/auxtrace.c
-@@ -57,7 +57,7 @@ struct auxtrace_record
- 	struct evsel *evsel;
+@@ -58,6 +58,7 @@ struct auxtrace_record
  	bool found_etm = false;
  	bool found_spe = false;
--	static struct perf_pmu **arm_spe_pmus = NULL;
-+	static struct perf_pmu **arm_spe_pmus;
+ 	static struct perf_pmu **arm_spe_pmus;
++	static struct perf_pmu *arm_spe_pmu;
  	static int nr_spes = 0;
  	int i = 0;
  
-@@ -65,9 +65,7 @@ struct auxtrace_record
- 		return NULL;
+@@ -77,6 +78,13 @@ struct auxtrace_record
  
- 	cs_etm_pmu = perf_pmu__find(CORESIGHT_ETM_PMU_NAME);
--
--	if (!arm_spe_pmus)
--		arm_spe_pmus = find_all_arm_spe_pmus(&nr_spes, err);
-+	arm_spe_pmus = find_all_arm_spe_pmus(&nr_spes, err);
+ 		for (i = 0; i < nr_spes; i++) {
+ 			if (evsel->core.attr.type == arm_spe_pmus[i]->type) {
++				if (found_spe && (arm_spe_pmu != arm_spe_pmus[i])) {
++					pr_err("Concurrent multiple SPE operation not currently supported\n");
++					*err = -EOPNOTSUPP;
++					return NULL;
++				}
++
++				arm_spe_pmu = arm_spe_pmus[i];
+ 				found_spe = true;
+ 				break;
+ 			}
+@@ -94,7 +102,7 @@ struct auxtrace_record
  
- 	evlist__for_each_entry(evlist, evsel) {
- 		if (cs_etm_pmu &&
+ #if defined(__aarch64__)
+ 	if (found_spe)
+-		return arm_spe_recording_init(err, arm_spe_pmus[i]);
++		return arm_spe_recording_init(err, arm_spe_pmu);
+ #endif
+ 
+ 	/*
 -- 
 2.17.1
 
