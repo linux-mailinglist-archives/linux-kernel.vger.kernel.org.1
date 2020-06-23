@@ -2,128 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED4F204646
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ACBE204658
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732471AbgFWAxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:53:07 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:21159 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732460AbgFWAxE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:53:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592873583;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qp7Q2GIXEixRBimL7E9VvblHlm9CvwZes19fF7Y/7hI=;
-        b=ZvA8Z/nRhRUQID1oEGpXmEllUe5w753/EAc1HLdUbtfjdE1BPwG5bjAx6nW/iN1WUtCA/d
-        N73Pcucr8SdDAlSckgbRSmuN+DybrwVTD0mPrV86Nvlaw6ZgBhANgA/CO0XIE1wRlotJUy
-        jQKyCFiRnvmd5C3ipB4sF/I2y654XHI=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-507-D3OtTsFcNmm55oVsX2L50A-1; Mon, 22 Jun 2020 20:53:01 -0400
-X-MC-Unique: D3OtTsFcNmm55oVsX2L50A-1
-Received: by mail-wm1-f70.google.com with SMTP id t18so1586600wmj.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 17:53:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Qp7Q2GIXEixRBimL7E9VvblHlm9CvwZes19fF7Y/7hI=;
-        b=fL0sEPuaT3xsKVAGi0E+fX7HFfqV9JNlOFtq/7LSAkGw4zVgyOqYcQdSg9qj5a/FrM
-         5mQKj1ImbPqJbKQIyO0zzec6zTnSNJ1WUELVoDARe0TPLeKzx2yGQeuwo5l3ISgx1k3G
-         CVfAQ5oJ0Z5D1wFKTBMn7wHFL/1IbStjLx9MUL2uBGcufPdsRKmexnBc99utxSjfa2ZU
-         RXoCk5HcdmYgGBcBzq4dafXbJ4s2sFmNtnl1T8h3zIEeTrnCvi91rJtmDu+aZXMzsUxV
-         Kg1MoYCGtojEPgVQY7exH72jaPaA6B8uRpnRt4I6xiA01jWzDItv4wpGuIYuPwdptwDl
-         gRZA==
-X-Gm-Message-State: AOAM533YjVRWlDpELiqeupOA4KiJonn+GvjGA9bzIFqSAfoKf8Zfo3s5
-        Gf79FewFIBEHQhzGYevEGBbjcYPvAKy0Pm7C/D2rCphvDBzlLi2XLpJqp76JWXmPGRnFcvJbUvr
-        +Hn0FBM99o6eCOGBlfH+nHQPk
-X-Received: by 2002:a05:6000:10c4:: with SMTP id b4mr9573846wrx.50.1592873580742;
-        Mon, 22 Jun 2020 17:53:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyRM65nu3IaIw80ctmoGJZHcWszViI51kO24uJTmpp6hT6KbuSkgwjXSwFmD4MizZA8Cg4FPg==
-X-Received: by 2002:a05:6000:10c4:: with SMTP id b4mr9573825wrx.50.1592873580515;
-        Mon, 22 Jun 2020 17:53:00 -0700 (PDT)
-Received: from [192.168.10.150] ([93.56.170.5])
-        by smtp.gmail.com with ESMTPSA id d13sm6038408wrn.61.2020.06.22.17.52.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jun 2020 17:52:59 -0700 (PDT)
-Subject: Re: [PATCH v2 00/11] KVM: Support guest MAXPHYADDR < host MAXPHYADDR
-To:     Andy Lutomirski <luto@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Mohammed Gamal <mgamal@redhat.com>, kvm@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, vkuznets@redhat.com,
-        sean.j.christopherson@intel.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, babu.moger@amd.com
-References: <20200619153925.79106-1-mgamal@redhat.com>
- <5a52fd65-e1b2-ca87-e923-1d5ac167cfb9@amd.com>
- <52295811-f78a-46c5-ff9e-23709ba95a3d@redhat.com>
- <2bcdb1cb-c0c5-5447-eed5-6fb094ae7f19@kernel.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f019cc1f-daa8-869b-6c06-0e2586cdf0a8@redhat.com>
-Date:   Tue, 23 Jun 2020 02:52:58 +0200
+        id S1732529AbgFWAxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:53:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54132 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732331AbgFWAxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:53:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F20E0AD66;
+        Tue, 23 Jun 2020 00:53:42 +0000 (UTC)
+Subject: Re: [PATCH v4 3/3] arm64: dts: realtek: Add RTD1319 SoC and Realtek
+ Pym Particles EVB
+To:     James Tai <james.tai@realtek.com>
+Cc:     linux-realtek-soc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+References: <20200620233227.31585-1-afaerber@suse.de>
+ <20200620233227.31585-4-afaerber@suse.de>
+From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Organization: SUSE Software Solutions Germany GmbH
+Message-ID: <e2d87fdf-8be5-3496-b10d-d43ba3486508@suse.de>
+Date:   Tue, 23 Jun 2020 02:53:42 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <2bcdb1cb-c0c5-5447-eed5-6fb094ae7f19@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200620233227.31585-4-afaerber@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/06/20 01:47, Andy Lutomirski wrote:
-> I believe that Xen does this.  Linux does not.)  For a guest to
-> actually be functional in this case, the guest needs to make sure
-> that it is not setting bits that are not, in fact, reserved on the
-> CPU.  This means the guest needs to check MAXPHYADDR and do something
-> different on different CPUs.
-> 
-> Do such guests exist?
+Am 21.06.20 um 01:32 schrieb Andreas Färber:
+> diff --git a/arch/arm64/boot/dts/realtek/rtd13xx.dtsi b/arch/arm64/boot/dts/realtek/rtd13xx.dtsi
+> new file mode 100644
+> index 000000000000..8c5b6fc7b8eb
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/realtek/rtd13xx.dtsi
+[...]
+> +&iso {
+> +	uart0: serial0@800 {
 
-I don't know; at least KVM does it too when EPT is disabled, though.  It
-tries to minimize the effect of this issue by preferring bit 51, but
-this does not help if the host MAXPHYADDR is 52.
+Node name should be serial, not serial0.
 
-> As far as I know, Xen is busted on systems
-> with unusually large MAXPHYADDR regardless of any virtualization
-> issues, so, at best, this series would make Xen, running as a KVM
-> guest, work better on new hardware than it does running bare metal on
-> that hardware.  This seems like an insufficient justification for a
-> performance-eating series like this.
-> 
-> And, unless I've misunderstood, this will eat performance quite
-> badly. Linux guests [0] (and probably many other guests), in quite a
-> few workloads, is fairly sensitive to the performance of ordinary 
-> write-protect or not-present faults.  Promoting these to VM exits 
-> because you want to check for bits above the guest's MAXPHYADDR is
-> going to hurt.
+> +		compatible = "snps,dw-apb-uart";
+> +		reg = <0x800 0x400>;
+> +		reg-shift = <2>;
+> +		reg-io-width = <4>;
+> +		interrupts = <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>;
+> +		clock-frequency = <432000000>;
+> +		status = "disabled";
+> +	};
+> +};
+> +
+> +&misc {
+> +	uart1: serial1@200 {
 
-The series needs benchmarking indeed, however note that the vmexits do
-not occur for not-present faults.  QEMU sets a fixed MAXPHYADDR of 40
-but that is generally a bad idea and several distros change that to just
-use host MAXPHYADDR instead (which would disable the new code).
+Ditto, serial.
 
-> (Also, I'm confused.  Wouldn't faults like this be EPT/NPT
-> violations, not page faults?)
+> +		compatible = "snps,dw-apb-uart";
+> +		reg = <0x200 0x400>;
+> +		reg-shift = <2>;
+> +		reg-io-width = <4>;
+> +		interrupts = <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>;
+> +		clock-frequency = <432000000>;
+> +		status = "disabled";
+> +	};
+> +
+> +	uart2: serial2@400 {
 
-Only if the pages are actually accessible.  Otherwise, W/U/F faults
-would prevail over the RSVD fault.  Tom is saying that there's no
-architectural promise that RSVD faults prevail, either, so that would
-remove the need to trap #PF.
+Ditto.
 
-Paolo
+> +		compatible = "snps,dw-apb-uart";
+> +		reg = <0x400 0x400>;
+> +		reg-shift = <2>;
+> +		reg-io-width = <4>;
+> +		interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
+> +		clock-frequency = <432000000>;
+> +		status = "disabled";
+> +	};
+> +};
 
-> --Andy
-> 
-> 
-> [0] From rather out-of-date memory, Linux doesn't make as much use
-> as one might expect of the A bit.  Instead it uses minor faults.
-> Ouch.
+Regards,
+Andreas
 
+-- 
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer
+HRB 36809 (AG Nürnberg)
