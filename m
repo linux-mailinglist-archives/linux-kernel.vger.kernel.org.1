@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4F062066A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDCB206560
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388226AbgFWVq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:46:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38446 "EHLO mail.kernel.org"
+        id S2387749AbgFWUB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:01:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38764 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387682AbgFWUBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:01:44 -0400
+        id S2387714AbgFWUBw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:01:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 25F782082F;
-        Tue, 23 Jun 2020 20:01:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 92D0A2078A;
+        Tue, 23 Jun 2020 20:01:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942501;
-        bh=V07DFFFHmsC4ycN2bVuaQwk1nrZSd3p0f3VIdFl+lGc=;
+        s=default; t=1592942512;
+        bh=IJOs31q3U0GUA/Gt9yQ3tZenC2Ks1uwhy0P91NDVngA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jDer11hStzFD9M/D/QEOuoA5JJGLme4gK79DYfR7uiWBZJSylg5rndCw2bL/ok5FA
-         hoirc03I5nESsI1pydtLmUsC/P5Kz4yn0y5BOlqDA5bjDWhkZm7XiEZ86MxYO/p4GJ
-         2MySYvgYgDJ9n67vduArGqSL+dhfRwLmlHGe1Dzw=
+        b=HAZLwo6HbmiQ31pDlbWA2fsRZRi+opLWnwyZnWrz7Doa90CFKNK37gIwc6JsseJ/H
+         lj1yl3kuPla9KQHUdEWC3Ze9NZ6Vz5yd6V6CZC5h7LfBbVBoaMtnjNemguY+XXR+6z
+         Nk+AiKeZpYUPARpTGVaXTWR6FVx8FNJObjVL4TB4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Neil Armstrong <narmstrong@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
+        stable@vger.kernel.org,
+        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 023/477] arm64: dts: meson: fixup SCP sram nodes
-Date:   Tue, 23 Jun 2020 21:50:20 +0200
-Message-Id: <20200623195408.706385047@linuxfoundation.org>
+Subject: [PATCH 5.7 027/477] PCI: endpoint: functions/pci-epf-test: Fix DMA channel release
+Date:   Tue, 23 Jun 2020 21:50:24 +0200
+Message-Id: <20200623195408.891413807@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -44,83 +46,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Neil Armstrong <narmstrong@baylibre.com>
+From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 
-[ Upstream commit 9ecded10b4b6af238da0c86197b0418912e7513e ]
+[ Upstream commit 0e86d981f9b7252e9716c5137cd8e4d9ad8ef32f ]
 
-The GX and AXG SCP sram nodes were using invalid compatible and
-node names for the sram entries.
+When unbinding pci_epf_test, pci_epf_test_clean_dma_chan() is called in
+pci_epf_test_unbind() even though epf_test->dma_supported is false.
 
-Fixup the sram entries node names, and use proper compatible for them.
+As a result, dma_release_channel() will trigger a NULL pointer
+dereference because dma_chan is not set.
 
-It notably fixes:
-sram@c8000000: 'scp-shmem@0', 'scp-shmem@200' do not match any of the regexes: '^([a-z]*-)?sram(-section)?@[a-f0-9]+$', 'pinctrl-[0-9]+'
+Avoid calling dma_release_channel() if epf_test->dma_supported
+is false.
 
-Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Kevin Hilman <khilman@baylibre.com>
-Link: https://lore.kernel.org/r/20200326165958.19274-3-narmstrong@baylibre.com
+Link: https://lore.kernel.org/r/1587540287-10458-1-git-send-email-hayashi.kunihiko@socionext.com
+Fixes: 5ebf3fc59bd2 ("PCI: endpoint: functions/pci-epf-test: Add DMA support to transfer data")
+Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+[lorenzo.pieralisi@arm.com: commit log]
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Acked-by: Kishon Vijay Abraham I <kishon@ti.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/amlogic/meson-axg.dtsi |  6 +++---
- arch/arm64/boot/dts/amlogic/meson-gx.dtsi  | 10 +++++-----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/pci/endpoint/functions/pci-epf-test.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-index aace3d32a3df2..8e6281c685fad 100644
---- a/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-axg.dtsi
-@@ -1735,18 +1735,18 @@
- 		};
- 
- 		sram: sram@fffc0000 {
--			compatible = "amlogic,meson-axg-sram", "mmio-sram";
-+			compatible = "mmio-sram";
- 			reg = <0x0 0xfffc0000 0x0 0x20000>;
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 			ranges = <0 0x0 0xfffc0000 0x20000>;
- 
--			cpu_scp_lpri: scp-shmem@13000 {
-+			cpu_scp_lpri: scp-sram@13000 {
- 				compatible = "amlogic,meson-axg-scp-shmem";
- 				reg = <0x13000 0x400>;
- 			};
- 
--			cpu_scp_hpri: scp-shmem@13400 {
-+			cpu_scp_hpri: scp-sram@13400 {
- 				compatible = "amlogic,meson-axg-scp-shmem";
- 				reg = <0x13400 0x400>;
- 			};
-diff --git a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-index 03f79fe045b7f..e2bb68ec85025 100644
---- a/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-+++ b/arch/arm64/boot/dts/amlogic/meson-gx.dtsi
-@@ -398,20 +398,20 @@
- 		};
- 
- 		sram: sram@c8000000 {
--			compatible = "amlogic,meson-gx-sram", "amlogic,meson-gxbb-sram", "mmio-sram";
-+			compatible = "mmio-sram";
- 			reg = <0x0 0xc8000000 0x0 0x14000>;
- 
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 			ranges = <0 0x0 0xc8000000 0x14000>;
- 
--			cpu_scp_lpri: scp-shmem@0 {
--				compatible = "amlogic,meson-gx-scp-shmem", "amlogic,meson-gxbb-scp-shmem";
-+			cpu_scp_lpri: scp-sram@0 {
-+				compatible = "amlogic,meson-gxbb-scp-shmem";
- 				reg = <0x13000 0x400>;
- 			};
- 
--			cpu_scp_hpri: scp-shmem@200 {
--				compatible = "amlogic,meson-gx-scp-shmem", "amlogic,meson-gxbb-scp-shmem";
-+			cpu_scp_hpri: scp-sram@200 {
-+				compatible = "amlogic,meson-gxbb-scp-shmem";
- 				reg = <0x13400 0x400>;
- 			};
- 		};
+diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+index 60330f3e37516..c89a9561439f9 100644
+--- a/drivers/pci/endpoint/functions/pci-epf-test.c
++++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+@@ -187,6 +187,9 @@ static int pci_epf_test_init_dma_chan(struct pci_epf_test *epf_test)
+  */
+ static void pci_epf_test_clean_dma_chan(struct pci_epf_test *epf_test)
+ {
++	if (!epf_test->dma_supported)
++		return;
++
+ 	dma_release_channel(epf_test->dma_chan);
+ 	epf_test->dma_chan = NULL;
+ }
 -- 
 2.25.1
 
