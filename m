@@ -2,186 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF27A2066A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6232066A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:53:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390286AbgFWVqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37234 "EHLO
+        id S2387817AbgFWVsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388292AbgFWVqA (ORCPT
+        with ESMTP id S2387455AbgFWVsu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 17:46:00 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4415C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:46:00 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id h4so17922976ior.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:46:00 -0700 (PDT)
+        Tue, 23 Jun 2020 17:48:50 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F40FDC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:48:49 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id ga4so252846ejb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:48:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HZHJ+lW7xSmoSfHRie1OqWIcs5GILHV56xiQdBcP6dA=;
-        b=QMMrg5tm407Cx/Zn/FOuyZluu+7AZrT7m38I06iMLSPIVG9onoUXSdfOc2VJ2+lwul
-         TjtyN0Vn4UKtjhazoIQNzIi30yJ8ro9l5B2meWFnOiFSTBZFXyhsC8Mk1+JIxz10RbAe
-         L55t/JcBfT0TJHQTJixOekpAVQ6/nOVO+B35g=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:reply-to:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=gLCkBZXPIIeY1g45tslFWO+PD0hc5lFZOqXooZUlWH8=;
+        b=PEpjg0qAPuLDlm5VvuUC6vrEb+6MoF8l1ACkYkcY2HqZwuoRNJMD27wb3HnDkODjtD
+         7kFpHy0BcQB2/OzA0cK5kmQTwI7kcUCl0JmvygO04JK875rulDjnePGKwoj5JnrZnKb+
+         ZjBmoLLWlGIZk7e19y2EEYvnIAHeQytiV1c+mF86BQpgvi5Zof6n4b3a3XpWN1YujICF
+         TxQIIVKpvF/ldA5iEaPNRYG2kc84ZaWkO30cR9AOQ6GJcJ18KVDxU/sG006d4RdkMT2n
+         hxkuTMg9n5Xe+jCG6LDOJrK7mqgBbra0811UUw7LXPpYU1ESywqo+8/7QWdTOi9s07wT
+         5RJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HZHJ+lW7xSmoSfHRie1OqWIcs5GILHV56xiQdBcP6dA=;
-        b=d1/s+FG7W54TCI6enkL+veMSvIrb1xO6/6TJBv5GZ8CLkiI67M0lMAwF64AyfiACdl
-         LPeA2RcnGd5X1hA93gQuR5049DgevAtJF8eeSs0Ow07CiUc2WZ9gLvdi8ZdF20EsokPe
-         0nSMjkHM2ql7xBy6aRu8vJ/NcFA1Jt8us4aYswv2JTSSLflbZHm2AEPPZNyythN14qhO
-         AnTTKjNXaDSzDyflvBGKdlIlKyIXUY3zY9b96CGrMFaTEf3El3/1hTpwxbF1NaL/N4LH
-         +k/J0nnso+vpHPiLi3u36Gvs6RIrRnKLg3obXe/ktC3Vte2A/PybzGUO8MHGkw4zx6Be
-         ucgw==
-X-Gm-Message-State: AOAM532NGtp1rOGE8WdKdstRqTzG3wLNn+WRxNv4fL1enWpx35RZKJKt
-        s+V7pfKwCkzhnTiw2uC19EX+VGsIFF4=
-X-Google-Smtp-Source: ABdhPJyDgVbfGjzVCkL7thJ9DFCsTFLxiMAsmfeo15PsDTvQJ+7DBl5bd1oouz1k63rIQVLLtKxVAw==
-X-Received: by 2002:a02:6641:: with SMTP id l1mr26525746jaf.23.1592948760185;
-        Tue, 23 Jun 2020 14:46:00 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id t1sm10529100iob.16.2020.06.23.14.45.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jun 2020 14:45:59 -0700 (PDT)
-Subject: Re: [PATCH v5 2/2] remoteproc: qcom: Add notification types to SSR
-To:     Rishabh Bhatnagar <rishabhb@codeaurora.org>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     bjorn.andersson@linaro.org, tsoni@codeaurora.org,
-        psodagud@codeaurora.org, sidgup@codeaurora.org
-References: <1592874271-26697-1-git-send-email-rishabhb@codeaurora.org>
- <1592874271-26697-3-git-send-email-rishabhb@codeaurora.org>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <08c5deed-0ed5-0e75-2c2e-4a508515be0a@ieee.org>
-Date:   Tue, 23 Jun 2020 16:45:58 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gLCkBZXPIIeY1g45tslFWO+PD0hc5lFZOqXooZUlWH8=;
+        b=tPzx4ks+zhTutBe/khrEl0q+C3ysy/INopNYNQXyjEcEGIKhq84EFKNzUP7ZeOZdhe
+         6oa98hf+rSW39afcAcaEqWmjY93iZZvcOYLvhY6jhgGcTmJfeo0IIVK6sYOJqXYZDNf/
+         MFkJ/+2ZdQlMgiaBofRcFnDnWuQ285fZpRtEX2Z/vMqxHgAPwPkW/vEtccWtmSnRmjz4
+         WxMioGr6Y9OSeklgVrG7TSVeWJDkkCf9k9umc57dTSnwkQWbq+nxMJ7ETp8Jb5dH+xjd
+         mthkNLG1ItJQuMFdSnfKonAAtCT9ZIrgV0f8Cviv/vhsXPVW1vJEysPeMNwC4xXvLsea
+         PEZA==
+X-Gm-Message-State: AOAM530tdn6mE12ztLjnpXGM//OC0aBcgWMMJ3B0hZ3k+E8WiDKOLbOq
+        bDdfEdCegTx05oFL5xjAD/g=
+X-Google-Smtp-Source: ABdhPJw15qKPA9jiRqrXuvtFIf8OYknB0rJ/6/dEZugcibFXL/7u/an+N7nb53QagI73h87/pd0zIA==
+X-Received: by 2002:a17:906:4989:: with SMTP id p9mr23153743eju.417.1592948928712;
+        Tue, 23 Jun 2020 14:48:48 -0700 (PDT)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id j16sm15428301edp.35.2020.06.23.14.48.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 23 Jun 2020 14:48:47 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 21:48:47 +0000
+From:   Wei Yang <richard.weiyang@gmail.com>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>,
+        akpm@linux-foundation.org, osalvador@suse.de,
+        dan.j.williams@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, david@redhat.com
+Subject: Re: [PATCH] mm/spase: never partially remove memmap for early section
+Message-ID: <20200623214847.fggchont44kgmvs6@master>
+Reply-To: Wei Yang <richard.weiyang@gmail.com>
+References: <20200623094258.6705-1-richard.weiyang@linux.alibaba.com>
+ <20200623151828.GA31426@dhcp22.suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <1592874271-26697-3-git-send-email-rishabhb@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200623151828.GA31426@dhcp22.suse.cz>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/20 8:04 PM, Rishabh Bhatnagar wrote:
-> The SSR subdevice only adds callback for the unprepare event. Add callbacks
-> for prepare, start and prepare events. The client driver for a particular
-> remoteproc might be interested in knowing the status of the remoteproc
-> while undergoing SSR, not just when the remoteproc has finished shutting
-> down.
-> 
-> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
-> Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
+On Tue, Jun 23, 2020 at 05:18:28PM +0200, Michal Hocko wrote:
+>On Tue 23-06-20 17:42:58, Wei Yang wrote:
+>> For early sections, we assumes its memmap will never be partially
+>> removed. But current behavior breaks this.
+>> 
+>> Let's correct it.
+>> 
+>> Fixes: ba72b4c8cf60 ("mm/sparsemem: support sub-section hotplug")
+>> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+>
+>Can a user trigger this or is this a theoretical bug?
+>
 
-This looks good to me.
+I don't expect to have a non-section aligned system, so this is a theoretical
+bug to me.
 
-Reviewed-by: Alex Elder <elder@linaro.org>
+>> ---
+>>  mm/sparse.c | 6 +++---
+>>  1 file changed, 3 insertions(+), 3 deletions(-)
+>> 
+>> diff --git a/mm/sparse.c b/mm/sparse.c
+>> index b2b9a3e34696..1a0069f492f5 100644
+>> --- a/mm/sparse.c
+>> +++ b/mm/sparse.c
+>> @@ -825,10 +825,10 @@ static void section_deactivate(unsigned long pfn, unsigned long nr_pages,
+>>  		ms->section_mem_map &= ~SECTION_HAS_MEM_MAP;
+>>  	}
+>>  
+>> -	if (section_is_early && memmap)
+>> -		free_map_bootmem(memmap);
+>> -	else
+>> +	if (!section_is_early)
+>
+>This begs a comment.
+>
 
-> ---
->   drivers/remoteproc/qcom_common.c      | 44 ++++++++++++++++++++++++++++++++++-
->   include/linux/remoteproc/qcom_rproc.h | 16 +++++++++++++
->   2 files changed, 59 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/remoteproc/qcom_common.c b/drivers/remoteproc/qcom_common.c
-> index 658f2ca..0848bf1 100644
-> --- a/drivers/remoteproc/qcom_common.c
-> +++ b/drivers/remoteproc/qcom_common.c
-> @@ -262,6 +262,44 @@ int qcom_unregister_ssr_notifier(void *notify, struct notifier_block *nb)
->   }
->   EXPORT_SYMBOL_GPL(qcom_unregister_ssr_notifier);
->   
-> +static int ssr_notify_prepare(struct rproc_subdev *subdev)
-> +{
-> +	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-> +	struct qcom_ssr_notif_data data = {
-> +		.name = ssr->info->name,
-> +		.crashed = false,
-> +	};
-> +
-> +	srcu_notifier_call_chain(&ssr->info->notifier_list,
-> +				 QCOM_SSR_BEFORE_POWERUP, &data);
-> +	return 0;
-> +}
-> +
-> +static int ssr_notify_start(struct rproc_subdev *subdev)
-> +{
-> +	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-> +	struct qcom_ssr_notif_data data = {
-> +		.name = ssr->info->name,
-> +		.crashed = false,
-> +	};
-> +
-> +	srcu_notifier_call_chain(&ssr->info->notifier_list,
-> +				 QCOM_SSR_AFTER_POWERUP, &data);
-> +	return 0;
-> +}
-> +
-> +static void ssr_notify_stop(struct rproc_subdev *subdev, bool crashed)
-> +{
-> +	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-> +	struct qcom_ssr_notif_data data = {
-> +		.name = ssr->info->name,
-> +		.crashed = crashed,
-> +	};
-> +
-> +	srcu_notifier_call_chain(&ssr->info->notifier_list,
-> +				 QCOM_SSR_BEFORE_SHUTDOWN, &data);
-> +}
-> +
->   static void ssr_notify_unprepare(struct rproc_subdev *subdev)
->   {
->   	struct qcom_rproc_ssr *ssr = to_ssr_subdev(subdev);
-> @@ -270,7 +308,8 @@ static void ssr_notify_unprepare(struct rproc_subdev *subdev)
->   		.crashed = false,
->   	};
->   
-> -	srcu_notifier_call_chain(&ssr->info->notifier_list, 0, &data);
-> +	srcu_notifier_call_chain(&ssr->info->notifier_list,
-> +				 QCOM_SSR_AFTER_SHUTDOWN, &data);
->   }
->   
->   /**
-> @@ -294,6 +333,9 @@ void qcom_add_ssr_subdev(struct rproc *rproc, struct qcom_rproc_ssr *ssr,
->   	}
->   
->   	ssr->info = info;
-> +	ssr->subdev.prepare = ssr_notify_prepare;
-> +	ssr->subdev.start = ssr_notify_start;
-> +	ssr->subdev.stop = ssr_notify_stop;
->   	ssr->subdev.unprepare = ssr_notify_unprepare;
->   
->   	rproc_add_subdev(rproc, &ssr->subdev);
-> diff --git a/include/linux/remoteproc/qcom_rproc.h b/include/linux/remoteproc/qcom_rproc.h
-> index 58422b1..83ac8e8 100644
-> --- a/include/linux/remoteproc/qcom_rproc.h
-> +++ b/include/linux/remoteproc/qcom_rproc.h
-> @@ -5,6 +5,22 @@ struct notifier_block;
->   
->   #if IS_ENABLED(CONFIG_QCOM_RPROC_COMMON)
->   
-> +/**
-> + * enum qcom_ssr_notif_type - Startup/Shutdown events related to a remoteproc
-> + * processor.
-> + *
-> + * @QCOM_SSR_BEFORE_POWERUP:	Remoteproc about to start (prepare stage)
-> + * @QCOM_SSR_AFTER_POWERUP:	Remoteproc is running (start stage)
-> + * @QCOM_SSR_BEFORE_SHUTDOWN:	Remoteproc crashed or shutting down (stop stage)
-> + * @QCOM_SSR_AFTER_SHUTDOWN:	Remoteproc is down (unprepare stage)
-> + */
-> +enum qcom_ssr_notif_type {
-> +	QCOM_SSR_BEFORE_POWERUP,
-> +	QCOM_SSR_AFTER_POWERUP,
-> +	QCOM_SSR_BEFORE_SHUTDOWN,
-> +	QCOM_SSR_AFTER_SHUTDOWN,
-> +};
-> +
->   struct qcom_ssr_notif_data {
->   	const char *name;
->   	bool crashed;
-> 
+Like:
 
+    /* Only depopulate sub-section memmap for non early section. */
+
+Looks good to you?
+
+>>  		depopulate_section_memmap(pfn, nr_pages, altmap);
+>> +	else if (memmap)
+>> +		free_map_bootmem(memmap);
+>>  
+>>  	if (empty)
+>>  		ms->section_mem_map = (unsigned long)NULL;
+>> -- 
+>> 2.20.1 (Apple Git-117)
+>> 
+>
+>-- 
+>Michal Hocko
+>SUSE Labs
+
+-- 
+Wei Yang
+Help you, Help me
