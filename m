@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C169205FA8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D0F2060AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403793AbgFWUen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:34:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56696 "EHLO mail.kernel.org"
+        id S2392643AbgFWUpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:45:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391032AbgFWUei (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:34:38 -0400
+        id S2392722AbgFWUpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:45:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F9D3214DB;
-        Tue, 23 Jun 2020 20:34:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8725021D7D;
+        Tue, 23 Jun 2020 20:45:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944478;
-        bh=pFXEvju9z9D8rdyGtRTIXOPyC6GXMau4+AzkXnLzDUs=;
+        s=default; t=1592945108;
+        bh=6TnXu/4ikUu987yE7QjkHB2P4airQyW3VH0ewMd1Gh0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=paeLWQKA9h/jOWqcCOBh+XEXSl6+1e6KECG+SDG+gTBGOSVtD67cFdD0D0/ajCAUJ
-         yufeOQKWNLngPR1wT5m7Peb0C/HZdEyV93ckLgIK2K387Yii4WKwAlcHJopwE58X2e
-         QAyWehaBQLbWMdfP+psdaHKSm9vSZWLDxk1TTfOQ=
+        b=KvBGkw/2cz7dNS+6GoqIh/rgzE5HcFTN8qsWx6mNAMzVQdqOpeuCQExjkCTQncFFI
+         /tiP6NmZR48pQtG3zRjvv47fcmGAOLSZ7uLn5n5PRROlXiuCpFuJQUdGHHManIXbRw
+         6XMj6VKtDEFuJ8NOJcrOxcjL/MR44g5fiZ3HdF50=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Denis Efremov <efremov@linux.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 5.4 302/314] drm/amd/display: Use kvfree() to free coeff in build_regamma()
-Date:   Tue, 23 Jun 2020 21:58:17 +0200
-Message-Id: <20200623195353.402481021@linuxfoundation.org>
+        stable@vger.kernel.org, Matej Dujava <mdujava@kocurkovo.cz>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 043/136] staging: sm750fb: add missing case while setting FB_VISUAL
+Date:   Tue, 23 Jun 2020 21:58:19 +0200
+Message-Id: <20200623195305.813217102@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
+References: <20200623195303.601828702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,33 +43,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Denis Efremov <efremov@linux.com>
+From: Matej Dujava <mdujava@kocurkovo.cz>
 
-commit 81921a828b94ce2816932c19a5ec74d302972833 upstream.
+[ Upstream commit fa90133377f4a7f15a937df6ad55133bb57c5665 ]
 
-Use kvfree() instead of kfree() to free coeff in build_regamma()
-because the memory is allocated with kvzalloc().
+Switch statement does not contain all cases: 8, 16, 24, 32.
+This patch will add missing one (24)
 
-Fixes: e752058b8671 ("drm/amd/display: Optimize gamma calculations")
-Cc: stable@vger.kernel.org
-Signed-off-by: Denis Efremov <efremov@linux.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Fixes: 81dee67e215b ("staging: sm750fb: add sm750 to staging")
+Signed-off-by: Matej Dujava <mdujava@kocurkovo.cz>
+Link: https://lore.kernel.org/r/1588277366-19354-2-git-send-email-mdujava@kocurkovo.cz
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/modules/color/color_gamma.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/sm750fb/sm750.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/amd/display/modules/color/color_gamma.c
-+++ b/drivers/gpu/drm/amd/display/modules/color/color_gamma.c
-@@ -799,7 +799,7 @@ static bool build_regamma(struct pwl_flo
- 	pow_buffer_ptr = -1; // reset back to no optimize
- 	ret = true;
- release:
--	kfree(coeff);
-+	kvfree(coeff);
- 	return ret;
- }
- 
+diff --git a/drivers/staging/sm750fb/sm750.c b/drivers/staging/sm750fb/sm750.c
+index 67207b0554cd4..5d6f3686c0deb 100644
+--- a/drivers/staging/sm750fb/sm750.c
++++ b/drivers/staging/sm750fb/sm750.c
+@@ -899,6 +899,7 @@ static int lynxfb_set_fbinfo(struct fb_info *info, int index)
+ 		fix->visual = FB_VISUAL_PSEUDOCOLOR;
+ 		break;
+ 	case 16:
++	case 24:
+ 	case 32:
+ 		fix->visual = FB_VISUAL_TRUECOLOR;
+ 		break;
+-- 
+2.25.1
+
 
 
