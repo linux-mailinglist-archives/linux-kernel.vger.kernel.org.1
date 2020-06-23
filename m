@@ -2,45 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FCB205476
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 16:25:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 460ED20546D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 16:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732946AbgFWOYl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 10:24:41 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:43726 "EHLO
+        id S1732935AbgFWOYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 10:24:32 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:41485 "EHLO
         us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732895AbgFWOYW (ORCPT
+        by vger.kernel.org with ESMTP id S1732792AbgFWOY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 10:24:22 -0400
+        Tue, 23 Jun 2020 10:24:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592922260;
+        s=mimecast20190719; t=1592922267;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=YEWMgyOrOUVYfoYf3OoEWST90b9vqeJrWxOpfOm6MS8=;
-        b=TyBF7vjbwzcuDVEPaT0mAUshmvFJj0dJH/0/IKC2hihXAA8RmnZQgCX2wEfG4X2YqRE6F/
-        8Essv90f5/ifhVfHQSNfSk8fvHx6oXrHTz6ZbHEu5V1Nht23o4/S+0igQZnI9Nqirv7GD2
-        yrKGmxA/uiKCzo0g6+4bFu673J1H228=
+        bh=b0HSB2xwLqaVXxqbBGXRp8ndfIo45vyt9Y6aLnffm3U=;
+        b=GhEwsjJR5vC+Vy+ofvNOk/JOXkHXA6640zp6boNtZ+j3XAWG5bGylUO5ndsHiZTUl2qxu+
+        mr9eZyPzkvZ6ajKS1hBWLlMeIR0S0/BI4HWzHpfsjz+cZkNThyzjUGlryiz9mmfVRio4eO
+        IPbgm4+324jChMdQOcNNWczCte860xk=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-480-BtfkfH1lPAClAIibQYjuqw-1; Tue, 23 Jun 2020 10:24:19 -0400
-X-MC-Unique: BtfkfH1lPAClAIibQYjuqw-1
+ us-mta-507-B6ADwOlwMPihsTtsNbYITg-1; Tue, 23 Jun 2020 10:24:22 -0400
+X-MC-Unique: B6ADwOlwMPihsTtsNbYITg-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 11ED9EC1A2;
-        Tue, 23 Jun 2020 14:24:18 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 728A8188362F;
+        Tue, 23 Jun 2020 14:24:21 +0000 (UTC)
 Received: from x1.localdomain.com (ovpn-114-58.ams2.redhat.com [10.36.114.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7C6225D9DA;
-        Tue, 23 Jun 2020 14:24:15 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 587CF5D9DA;
+        Tue, 23 Jun 2020 14:24:18 +0000 (UTC)
 From:   Hans de Goede <hdegoede@redhat.com>
 To:     Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/8] virt: vbox: Add a few new vmmdev request types to the userspace whitelist
-Date:   Tue, 23 Jun 2020 16:23:59 +0200
-Message-Id: <20200623142401.3742-7-hdegoede@redhat.com>
+Subject: [PATCH v2 7/8] virt: vbox: Log unknown ioctl requests as error
+Date:   Tue, 23 Jun 2020 16:24:00 +0200
+Message-Id: <20200623142401.3742-8-hdegoede@redhat.com>
 In-Reply-To: <20200623142401.3742-1-hdegoede@redhat.com>
 References: <20200623142401.3742-1-hdegoede@redhat.com>
 MIME-Version: 1.0
@@ -51,54 +51,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Upstream VirtualBox has defined and is using a few new request types for
-vmmdev requests passed through /dev/vboxguest to the hypervisor.
+Every now and then upstream adds new ioctls without notifying us,
+log unknown ioctl requests as an error to catch these.
 
-Add the defines for these to vbox_vmmdev_types.h and add add them to the
-whitelists of vmmdev requests which userspace is allowed to make.
-
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1789545
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/virt/vboxguest/vboxguest_core.c | 2 ++
- include/uapi/linux/vbox_vmmdev_types.h  | 3 +++
- 2 files changed, 5 insertions(+)
+Changes in v2:
+- Rate-limit the error logging to avoid userspace potentially DOS-ing the log
+---
+ drivers/virt/vboxguest/vboxguest_core.c  | 2 +-
+ drivers/virt/vboxguest/vboxguest_utils.c | 1 +
+ include/linux/vbox_utils.h               | 1 +
+ 3 files changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/virt/vboxguest/vboxguest_core.c b/drivers/virt/vboxguest/vboxguest_core.c
-index 4f1addaa3f6f..ffd76b949276 100644
+index ffd76b949276..c5dfcd42fd07 100644
 --- a/drivers/virt/vboxguest/vboxguest_core.c
 +++ b/drivers/virt/vboxguest/vboxguest_core.c
-@@ -1299,7 +1299,9 @@ static int vbg_req_allowed(struct vbg_dev *gdev, struct vbg_session *session,
- 	case VMMDEVREQ_VIDEO_ACCEL_ENABLE:
- 	case VMMDEVREQ_VIDEO_ACCEL_FLUSH:
- 	case VMMDEVREQ_VIDEO_SET_VISIBLE_REGION:
-+	case VMMDEVREQ_VIDEO_UPDATE_MONITOR_POSITIONS:
- 	case VMMDEVREQ_GET_DISPLAY_CHANGE_REQEX:
-+	case VMMDEVREQ_GET_DISPLAY_CHANGE_REQ_MULTI:
- 	case VMMDEVREQ_GET_SEAMLESS_CHANGE_REQ:
- 	case VMMDEVREQ_GET_VRDPCHANGE_REQ:
- 	case VMMDEVREQ_LOG_STRING:
-diff --git a/include/uapi/linux/vbox_vmmdev_types.h b/include/uapi/linux/vbox_vmmdev_types.h
-index c27289fd619a..f8a8d6b3c521 100644
---- a/include/uapi/linux/vbox_vmmdev_types.h
-+++ b/include/uapi/linux/vbox_vmmdev_types.h
-@@ -63,6 +63,7 @@ enum vmmdev_request_type {
- 	VMMDEVREQ_SET_GUEST_CAPABILITIES       = 56,
- 	VMMDEVREQ_VIDEMODE_SUPPORTED2          = 57, /* since version 3.2.0 */
- 	VMMDEVREQ_GET_DISPLAY_CHANGE_REQEX     = 80, /* since version 4.2.4 */
-+	VMMDEVREQ_GET_DISPLAY_CHANGE_REQ_MULTI = 81,
- 	VMMDEVREQ_HGCM_CONNECT                 = 60,
- 	VMMDEVREQ_HGCM_DISCONNECT              = 61,
- 	VMMDEVREQ_HGCM_CALL32                  = 62,
-@@ -92,6 +93,8 @@ enum vmmdev_request_type {
- 	VMMDEVREQ_WRITE_COREDUMP               = 218,
- 	VMMDEVREQ_GUEST_HEARTBEAT              = 219,
- 	VMMDEVREQ_HEARTBEAT_CONFIGURE          = 220,
-+	VMMDEVREQ_NT_BUG_CHECK                 = 221,
-+	VMMDEVREQ_VIDEO_UPDATE_MONITOR_POSITIONS = 222,
- 	/* Ensure the enum is a 32 bit data-type */
- 	VMMDEVREQ_SIZEHACK                     = 0x7fffffff
- };
+@@ -1739,7 +1739,7 @@ int vbg_core_ioctl(struct vbg_session *session, unsigned int req, void *data)
+ 		return vbg_ioctl_log(data);
+ 	}
+ 
+-	vbg_debug("VGDrvCommonIoCtl: Unknown req %#08x\n", req);
++	vbg_err_ratelimited("Userspace made an unknown ioctl req %#08x\n", req);
+ 	return -ENOTTY;
+ }
+ 
+diff --git a/drivers/virt/vboxguest/vboxguest_utils.c b/drivers/virt/vboxguest/vboxguest_utils.c
+index 7396187ee32a..ea05af41ec69 100644
+--- a/drivers/virt/vboxguest/vboxguest_utils.c
++++ b/drivers/virt/vboxguest/vboxguest_utils.c
+@@ -59,6 +59,7 @@ EXPORT_SYMBOL(name)
+ VBG_LOG(vbg_info, pr_info);
+ VBG_LOG(vbg_warn, pr_warn);
+ VBG_LOG(vbg_err, pr_err);
++VBG_LOG(vbg_err_ratelimited, pr_err_ratelimited);
+ #if defined(DEBUG) && !defined(CONFIG_DYNAMIC_DEBUG)
+ VBG_LOG(vbg_debug, pr_debug);
+ #endif
+diff --git a/include/linux/vbox_utils.h b/include/linux/vbox_utils.h
+index ff56c443180c..db8a7d118093 100644
+--- a/include/linux/vbox_utils.h
++++ b/include/linux/vbox_utils.h
+@@ -16,6 +16,7 @@ struct vbg_dev;
+ __printf(1, 2) void vbg_info(const char *fmt, ...);
+ __printf(1, 2) void vbg_warn(const char *fmt, ...);
+ __printf(1, 2) void vbg_err(const char *fmt, ...);
++__printf(1, 2) void vbg_err_ratelimited(const char *fmt, ...);
+ 
+ /* Only use backdoor logging for non-dynamic debug builds */
+ #if defined(DEBUG) && !defined(CONFIG_DYNAMIC_DEBUG)
 -- 
 2.26.2
 
