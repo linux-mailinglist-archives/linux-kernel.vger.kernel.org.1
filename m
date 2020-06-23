@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97809205C7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E0B205C58
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387845AbgFWUC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:02:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39590 "EHLO mail.kernel.org"
+        id S2387573AbgFWUBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:01:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387826AbgFWUCX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:02:23 -0400
+        id S2387544AbgFWUBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:01:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6570120CC7;
-        Tue, 23 Jun 2020 20:02:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0EAED20706;
+        Tue, 23 Jun 2020 20:01:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942542;
-        bh=8sH1BuaxQA9HIDu/u76BZAglO65lE0+81cOQv5ttZ5o=;
+        s=default; t=1592942465;
+        bh=Xmddb0PGgjMb8z3kGUQmrF98teyc8qCD/2QReoPrssc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=J5vKB30JVYeBpNWtM8omEMXeI8ALY6kFbBN4ECnKkTnCEXi6PRwJdeMsMFM5UcxY8
-         nxC7SKb1jsnq7bIcyuEpJMRUJ5NIj7bv5F65MXVturLIr84f8SoIFM4iX5JYvA1uXn
-         s+PwKOz0yTTVYS9iVQmiNwhKKLG1kjRInbvIq5S0=
+        b=EqnI7KZugjcHW5mPR8aap2aDC9w0DEgtyphGYP3VBga5nNcOGhSoYPL2wWyGtDCw3
+         ctHFIjdRQqz/OSC0K1dAZoW00rsgHn6LspemIChtWnGcZOYLaXsD61tW0gsmVVTULA
+         +okqF5hdncWSQZBR2LFMQr/lKtM5TQfrkKEZv5NY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suman Anna <s-anna@ti.com>,
+        stable@vger.kernel.org, Georgi Djakov <georgi.djakov@linaro.org>,
+        Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Bryan ODonoghue <bryan.odonoghue@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 009/477] remoteproc: Fix IDR initialisation in rproc_alloc()
-Date:   Tue, 23 Jun 2020 21:50:06 +0200
-Message-Id: <20200623195408.032057787@linuxfoundation.org>
+Subject: [PATCH 5.7 010/477] clk: qcom: msm8916: Fix the address location of pll->config_reg
+Date:   Tue, 23 Jun 2020 21:50:07 +0200
+Message-Id: <20200623195408.081672672@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -46,58 +48,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
+From: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
 
-[ Upstream commit 6442df49400b466431979e7634849a464a5f1861 ]
+[ Upstream commit f47ab3c2f5338828a67e89d5f688d2cef9605245 ]
 
-If ida_simple_get() returns an error when called in rproc_alloc(),
-put_device() is called to clean things up.  By this time the rproc
-device type has been assigned, with rproc_type_release() as the
-release function.
+During the process of debugging a processor derived from the msm8916 which
+we found the new processor was not starting one of its PLLs.
 
-The first thing rproc_type_release() does is call:
-    idr_destroy(&rproc->notifyids);
+After tracing the addresses and writes that downstream was doing and
+comparing to upstream it became obvious that we were writing to a different
+register location than downstream when trying to configure the PLL.
 
-But at the time the ida_simple_get() call is made, the notifyids
-field in the remoteproc structure has not been initialized.
+This error is also present in upstream msm8916.
 
-I'm not actually sure this case causes an observable problem, but
-it's incorrect.  Fix this by initializing the notifyids field before
-calling ida_simple_get() in rproc_alloc().
+As an example clk-pll.c::clk_pll_recalc_rate wants to write to
+pll->config_reg updating the bit-field POST_DIV_RATIO. That bit-field is
+defined in PLL_USER_CTL not in PLL_CONFIG_CTL. Taking the BIMC PLL as an
+example
 
-Fixes: b5ab5e24e960 ("remoteproc: maintain a generic child device for each rproc")
-Signed-off-by: Alex Elder <elder@linaro.org>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-Reviewed-by: Suman Anna <s-anna@ti.com>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20200415204858.2448-2-mathieu.poirier@linaro.org
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+lm80-p0436-13_c_qc_snapdragon_410_processor_hrd.pdf
+
+0x01823010 GCC_BIMC_PLL_USER_CTL
+0x01823014 GCC_BIMC_PLL_CONFIG_CTL
+
+This pattern is repeated for gpll0, gpll1, gpll2 and bimc_pll.
+
+This error is likely not apparent since the bootloader will already have
+initialized these PLLs.
+
+This patch corrects the location of config_reg from PLL_CONFIG_CTL to
+PLL_USER_CTL for all relevant PLLs on msm8916.
+
+Fixes commit 3966fab8b6ab ("clk: qcom: Add MSM8916 Global Clock Controller support")
+
+Cc: Georgi Djakov <georgi.djakov@linaro.org>
+Cc: Andy Gross <agross@kernel.org>
+Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc: Michael Turquette <mturquette@baylibre.com>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Signed-off-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Link: https://lkml.kernel.org/r/20200329124116.4185447-1-bryan.odonoghue@linaro.org
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/remoteproc/remoteproc_core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/clk/qcom/gcc-msm8916.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-index be15aace9b3c8..8f79cfd2e4678 100644
---- a/drivers/remoteproc/remoteproc_core.c
-+++ b/drivers/remoteproc/remoteproc_core.c
-@@ -2053,6 +2053,7 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
- 	rproc->dev.type = &rproc_type;
- 	rproc->dev.class = &rproc_class;
- 	rproc->dev.driver_data = rproc;
-+	idr_init(&rproc->notifyids);
- 
- 	/* Assign a unique device index and name */
- 	rproc->index = ida_simple_get(&rproc_dev_index, 0, 0, GFP_KERNEL);
-@@ -2078,8 +2079,6 @@ struct rproc *rproc_alloc(struct device *dev, const char *name,
- 
- 	mutex_init(&rproc->lock);
- 
--	idr_init(&rproc->notifyids);
--
- 	INIT_LIST_HEAD(&rproc->carveouts);
- 	INIT_LIST_HEAD(&rproc->mappings);
- 	INIT_LIST_HEAD(&rproc->traces);
+diff --git a/drivers/clk/qcom/gcc-msm8916.c b/drivers/clk/qcom/gcc-msm8916.c
+index 4e329a7baf2ba..17e4a5a2a9fde 100644
+--- a/drivers/clk/qcom/gcc-msm8916.c
++++ b/drivers/clk/qcom/gcc-msm8916.c
+@@ -260,7 +260,7 @@ static struct clk_pll gpll0 = {
+ 	.l_reg = 0x21004,
+ 	.m_reg = 0x21008,
+ 	.n_reg = 0x2100c,
+-	.config_reg = 0x21014,
++	.config_reg = 0x21010,
+ 	.mode_reg = 0x21000,
+ 	.status_reg = 0x2101c,
+ 	.status_bit = 17,
+@@ -287,7 +287,7 @@ static struct clk_pll gpll1 = {
+ 	.l_reg = 0x20004,
+ 	.m_reg = 0x20008,
+ 	.n_reg = 0x2000c,
+-	.config_reg = 0x20014,
++	.config_reg = 0x20010,
+ 	.mode_reg = 0x20000,
+ 	.status_reg = 0x2001c,
+ 	.status_bit = 17,
+@@ -314,7 +314,7 @@ static struct clk_pll gpll2 = {
+ 	.l_reg = 0x4a004,
+ 	.m_reg = 0x4a008,
+ 	.n_reg = 0x4a00c,
+-	.config_reg = 0x4a014,
++	.config_reg = 0x4a010,
+ 	.mode_reg = 0x4a000,
+ 	.status_reg = 0x4a01c,
+ 	.status_bit = 17,
+@@ -341,7 +341,7 @@ static struct clk_pll bimc_pll = {
+ 	.l_reg = 0x23004,
+ 	.m_reg = 0x23008,
+ 	.n_reg = 0x2300c,
+-	.config_reg = 0x23014,
++	.config_reg = 0x23010,
+ 	.mode_reg = 0x23000,
+ 	.status_reg = 0x2301c,
+ 	.status_bit = 17,
 -- 
 2.25.1
 
