@@ -2,137 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DD9E2051CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 14:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60AD42051E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 14:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732560AbgFWMHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 08:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732333AbgFWMHF (ORCPT
+        id S1732654AbgFWMKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 08:10:13 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:52668 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732473AbgFWMKD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 08:07:05 -0400
-Received: from metanate.com (unknown [IPv6:2001:8b0:1628:5005::111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3FC9C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 05:07:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=metanate.com; s=stronger; h=Content-Transfer-Encoding:Message-Id:Date:
-        Subject:Cc:To:From:Content-Type:Reply-To:Content-ID:Content-Description:
-        In-Reply-To:References; bh=+9P0veH3bRYGxJ7OmCEI28itKeJb+ud/P1u+38Hw3vw=; b=BU
-        qM9YTd4A6jMTR+fYWxjEio83Td52s3AwjFA+pgwOG4cbbKMN3WOe5Ts6elr2p+bzBsSBJ1cc/cSMb
-        qCqmX4ygHfBT1EWIMLogJWxQprw8eTOOisrR2y43eX+29Qr6S39vxjU4hWqFFWQ/nElcYXbCBp0/d
-        B3veK2LWXZxFSRji4tLFOyFVZRCGmyK0du+w9DxLo2NvRiGnbYNMP0XTLmLyRrHotvy+mAzc810GS
-        dIKjUjOyby0NBkM/U77qqHp0OFBoi0xsGk6bT+APxSQ7knvtH3Fm9uNgoHX3LxEaMi0p15RxdRVje
-        XJhAxXGe/32W9A5yZITYFmCDTgqER+nw==;
-Received: from [81.174.171.191] (helo=donbot.metanate.com)
-        by email.metanate.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <john@metanate.com>)
-        id 1jnhhc-0005dX-06; Tue, 23 Jun 2020 13:07:00 +0100
-From:   John Keeping <john@metanate.com>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     John Keeping <john@metanate.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] i2c: rk3x: support master_xfer_atomic
-Date:   Tue, 23 Jun 2020 13:06:46 +0100
-Message-Id: <20200623120646.2175569-1-john@metanate.com>
-X-Mailer: git-send-email 2.27.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated: YES
+        Tue, 23 Jun 2020 08:10:03 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05NC6aww158298;
+        Tue, 23 Jun 2020 12:09:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id; s=corp-2020-01-29;
+ bh=f/xsUQECiXjvf0CYPN7o31bK0V0CX4KDVbZLm1R4vcs=;
+ b=0QkDyB4rJvkT8aS7uU6kkERC8iR3+Zb76luCKJytZHci8kYiVv24lnBs3JpRPzyHvuIV
+ ntgbUGGEfXiwqfXU5c0FnpmmHjWVlEkHuOau1WfLWhuYToyDrCxteQR2DbJn2sc4isy0
+ UavF3cVAl/9tRSJc/sca/z7ex/ph8nvRGv0SNkk1Nh0sqTVm1dZQqBHIh1mdHGHRg0Zb
+ IJnfxDjvaL3hgq67OyyGfbpd1fOr7pRQSp3M39CBvXbxzBRCSKtFQtJuwU05j0X/NIv5
+ EUDFMq3QYKM4NSqn46I1EI0JXoB87ZL8KIstIz8EGtM6HX8E+gAx6gzxjsgcLidiD1u6 SQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 31sebbmtxr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 23 Jun 2020 12:09:08 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05NC892R185957;
+        Tue, 23 Jun 2020 12:09:07 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 31sv7rq683-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Jun 2020 12:09:07 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05NC90VB022208;
+        Tue, 23 Jun 2020 12:09:00 GMT
+Received: from localhost.uk.oracle.com (/10.175.166.3)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 23 Jun 2020 12:08:59 +0000
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     ast@kernel.org, daniel@iogearbox.net, yhs@fb.com, andriin@fb.com,
+        arnaldo.melo@gmail.com
+Cc:     kafai@fb.com, songliubraving@fb.com, john.fastabend@gmail.com,
+        kpsingh@chromium.org, linux@rasmusvillemoes.dk, joe@perches.com,
+        pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, andriy.shevchenko@linux.intel.com,
+        corbet@lwn.net, bpf@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH v3 bpf-next 0/8] bpf, printk: add BTF-based type printing
+Date:   Tue, 23 Jun 2020 13:07:03 +0100
+Message-Id: <1592914031-31049-1-git-send-email-alan.maguire@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9660 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 suspectscore=0 mlxlogscore=999
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006230097
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9660 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 lowpriorityscore=0
+ mlxlogscore=999 cotscore=-2147483648 mlxscore=0 phishscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 suspectscore=0 clxscore=1011
+ impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006230097
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable i2c transactions in irq disabled contexts like poweroff where the
-PMIC is connected via i2c.
+The printk family of functions support printing specific pointer types
+using %p format specifiers (MAC addresses, IP addresses, etc).  For
+full details see Documentation/core-api/printk-formats.rst.
 
-Signed-off-by: John Keeping <john@metanate.com>
----
- drivers/i2c/busses/i2c-rk3x.c | 39 +++++++++++++++++++++++++++++++----
- 1 file changed, 35 insertions(+), 4 deletions(-)
+This patchset proposes introducing a "print typed pointer" format
+specifier "%pT"; the argument associated with the specifier is of
+form "struct btf_ptr *" which consists of a .ptr value and a .type
+value specifying a stringified type (e.g. "struct sk_buff") or
+an .id value specifying a BPF Type Format (BTF) id identifying
+the appropriate type it points to.
 
-diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
-index 15324bfbc6cb..8e3cc85d1921 100644
---- a/drivers/i2c/busses/i2c-rk3x.c
-+++ b/drivers/i2c/busses/i2c-rk3x.c
-@@ -10,6 +10,7 @@
- #include <linux/module.h>
- #include <linux/i2c.h>
- #include <linux/interrupt.h>
-+#include <linux/iopoll.h>
- #include <linux/errno.h>
- #include <linux/err.h>
- #include <linux/platform_device.h>
-@@ -1040,8 +1041,21 @@ static int rk3x_i2c_setup(struct rk3x_i2c *i2c, struct i2c_msg *msgs, int num)
- 	return ret;
- }
- 
--static int rk3x_i2c_xfer(struct i2c_adapter *adap,
--			 struct i2c_msg *msgs, int num)
-+static int rk3x_i2c_wait_xfer_poll(struct rk3x_i2c *i2c)
-+{
-+	ktime_t timeout = ktime_add_ms(ktime_get(), WAIT_TIMEOUT);
-+
-+	while (READ_ONCE(i2c->busy) &&
-+	       ktime_compare(ktime_get(), timeout) < 0) {
-+		udelay(5);
-+		rk3x_i2c_irq(0, i2c);
-+	}
-+
-+	return !i2c->busy;
-+}
-+
-+static int rk3x_i2c_xfer_common(struct i2c_adapter *adap,
-+				struct i2c_msg *msgs, int num, bool polling)
- {
- 	struct rk3x_i2c *i2c = (struct rk3x_i2c *)adap->algo_data;
- 	unsigned long timeout, flags;
-@@ -1075,8 +1089,12 @@ static int rk3x_i2c_xfer(struct i2c_adapter *adap,
- 
- 		rk3x_i2c_start(i2c);
- 
--		timeout = wait_event_timeout(i2c->wait, !i2c->busy,
--					     msecs_to_jiffies(WAIT_TIMEOUT));
-+		if (!polling) {
-+			timeout = wait_event_timeout(i2c->wait, !i2c->busy,
-+						     msecs_to_jiffies(WAIT_TIMEOUT));
-+		} else {
-+			timeout = rk3x_i2c_wait_xfer_poll(i2c);
-+		}
- 
- 		spin_lock_irqsave(&i2c->lock, flags);
- 
-@@ -1110,6 +1128,18 @@ static int rk3x_i2c_xfer(struct i2c_adapter *adap,
- 	return ret < 0 ? ret : num;
- }
- 
-+static int rk3x_i2c_xfer(struct i2c_adapter *adap,
-+			 struct i2c_msg *msgs, int num)
-+{
-+	return rk3x_i2c_xfer_common(adap, msgs, num, false);
-+}
-+
-+static int rk3x_i2c_xfer_polling(struct i2c_adapter *adap,
-+				 struct i2c_msg *msgs, int num)
-+{
-+	return rk3x_i2c_xfer_common(adap, msgs, num, true);
-+}
-+
- static __maybe_unused int rk3x_i2c_resume(struct device *dev)
- {
- 	struct rk3x_i2c *i2c = dev_get_drvdata(dev);
-@@ -1126,6 +1156,7 @@ static u32 rk3x_i2c_func(struct i2c_adapter *adap)
- 
- static const struct i2c_algorithm rk3x_i2c_algorithm = {
- 	.master_xfer		= rk3x_i2c_xfer,
-+	.master_xfer_atomic	= rk3x_i2c_xfer_polling,
- 	.functionality		= rk3x_i2c_func,
- };
- 
+There is already support in kernel/bpf/btf.c for "show" functionality;
+the changes here generalize that support from seq-file specific
+verifier display to the more generic case and add another specific
+use case; snprintf()-style rendering of type information to a
+provided buffer.  This support is then used to support printk
+rendering of types, but the intent is to provide a function
+that might be useful in other in-kernel scenarios; for example:
+
+- ftrace could possibly utilize the function to support typed
+  display of function arguments by cross-referencing BTF function
+  information to derive the types of arguments
+- oops/panic messaging could extend the information displayed to
+  dig into data structures associated with failing functions
+
+The above potential use cases hint at a potential reply to
+a reasonable objection that such typed display should be
+solved by tracing programs, where the in kernel tracing records
+data and the userspace program prints it out.  While this
+is certainly the recommended approach for most cases, I
+believe having an in-kernel mechanism would be valuable
+also.
+
+The function the printk() family of functions rely on
+could potentially be used directly for other use cases
+like ftrace where we might have the BTF ids of the
+pointers we wish to display; its signature is as follows:
+
+int btf_type_snprintf_show(const struct btf *btf, u32 type_id, void *obj,
+                           char *buf, int len, u64 flags);
+
+So if ftrace say had the BTF ids of the types of arguments,
+we see that the above would allow us to convert the
+pointer data into displayable form.
+
+To give a flavour for what the printed-out data looks like,
+here we use pr_info() to display a struct sk_buff *.
+
+  struct sk_buff *skb = alloc_skb(64, GFP_KERNEL);
+
+  pr_info("%pT", BTF_PTR_TYPE(skb, "struct sk_buff"));
+
+...gives us:
+
+(struct sk_buff){
+ .transport_header = (__u16)65535,
+ .mac_header = (__u16)65535,
+ .end = (sk_buff_data_t)192,
+ .head = (unsigned char *)000000007524fd8b,
+ .data = (unsigned char *)000000007524fd8b,
+ .truesize = (unsigned int)768,
+ .users = (refcount_t){
+  .refs = (atomic_t){
+   .counter = (int)1,
+  },
+ },
+}
+
+For bpf_trace_printk() a "struct __btf_ptr *" is used as
+argument; see tools/testing/selftests/bpf/progs/netif_receive_skb.c
+for example usage.
+
+The hope is that this functionality will be useful for debugging,
+and possibly help facilitate the cases mentioned above in the future.
+
+Changes since v2:
+
+- Alexei and Yonghong suggested it would be good to use
+  probe_kernel_read() on to-be-shown data to ensure safety
+  during operation.  Safe copy via probe_kernel_read() to a
+  buffer object in "struct btf_show" is used to support
+  this.  A few different approaches were explored
+  including dynamic allocation and per-cpu buffers. The
+  downside of dynamic allocation is that it would be done
+  during BPF program execution for bpf_trace_printk()s using
+  %pT format specifiers. The problem with per-cpu buffers
+  is we'd have to manage preemption and since the display
+  of an object occurs over an extended period and in printk
+  context where we'd rather not change preemption status,
+  it seemed tricky to manage buffer safety while considering
+  preemption.  The approach of utilizing stack buffer space
+  via the "struct btf_show" seemed like the simplest approach.
+  The stack size of the associated functions which have a
+  "struct btf_show" on their stack to support show operation
+  (btf_type_snprintf_show() and btf_type_seq_show()) stays
+  under 500 bytes. The compromise here is the safe buffer we
+  use is small - 256 bytes - and as a result multiple
+  probe_kernel_read()s are needed for larger objects. Most
+  objects of interest are smaller than this (e.g.
+  "struct sk_buff" is 224 bytes), and while task_struct is a
+  notable exception at ~8K, performance is not the priority for
+  BTF-based display. (Alexei and Yonghong, patch 2).
+- safe buffer use is the default behaviour (and is mandatory
+  for BPF) but unsafe display - meaning no safe copy is done
+  and we operate on the object itself - is supported via a
+  'u' option.
+- pointers are prefixed with 0x for clarity (Alexei, patch 2)
+- added additional comments and explanations around BTF show
+  code, especially around determining whether objects such
+  zeroed. Also tried to comment safe object scheme used. (Yonghong,
+  patch 2)
+- added late_initcall() to initialize vmlinux BTF so that it would
+  not have to be initialized during printk operation (Alexei,
+  patch 5)
+- removed CONFIG_BTF_PRINTF config option as it is not needed;
+  CONFIG_DEBUG_INFO_BTF can be used to gate test behaviour and
+  determining behaviour of type-based printk can be done via
+  retrieval of BTF data; if it's not there BTF was unavailable
+  or broken (Alexei, patches 4,6)
+- fix bpf_trace_printk test to use vmlinux.h and globals via
+  skeleton infrastructure, removing need for perf events
+  (Andrii, patch 8)
+
+Changes since v1:
+
+- changed format to be more drgn-like, rendering indented type info
+  along with type names by default (Alexei)
+- zeroed values are omitted (Arnaldo) by default unless the '0'
+  modifier is specified (Alexei)
+- added an option to print pointer values without obfuscation.
+  The reason to do this is the sysctls controlling pointer display
+  are likely to be irrelevant in many if not most tracing contexts.
+  Some questions on this in the outstanding questions section below...
+- reworked printk format specifer so that we no longer rely on format
+  %pT<type> but instead use a struct * which contains type information
+  (Rasmus). This simplifies the printk parsing, makes use more dynamic
+  and also allows specification by BTF id as well as name.
+- removed incorrect patch which tried to fix dereferencing of resolved
+  BTF info for vmlinux; instead we skip modifiers for the relevant
+  case (array element type determination) (Alexei).
+- fixed issues with negative snprintf format length (Rasmus)
+- added test cases for various data structure formats; base types,
+  typedefs, structs, etc.
+- tests now iterate through all typedef, enum, struct and unions
+  defined for vmlinux BTF and render a version of the target dummy
+  value which is either all zeros or all 0xff values; the idea is this
+  exercises the "skip if zero" and "print everything" cases.
+- added support in BPF for using the %pT format specifier in
+  bpf_trace_printk()
+- added BPF tests which ensure %pT format specifier use works (Alexei).
+
+Important note: if running test_printf.ko - the version in the bpf-next
+tree will induce a panic when running the fwnode_pointer() tests due
+to a kobject issue; applying the patch in
+
+https://lkml.org/lkml/2020/4/17/389
+
+...resolved this issue for me.
+
+Alan Maguire (8):
+  bpf: provide function to get vmlinux BTF information
+  bpf: move to generic BTF show support, apply it to seq files/strings
+  checkpatch: add new BTF pointer format specifier
+  printk: add type-printing %pT format specifier which uses BTF
+  printk: initialize vmlinux BTF outside of printk in late_initcall()
+  printk: extend test_printf to test %pT BTF-based format specifier
+  bpf: add support for %pT format specifier for bpf_trace_printk()
+    helper
+  bpf/selftests: add tests for %pT format specifier
+
+ Documentation/core-api/printk-formats.rst          |  17 +
+ include/linux/bpf.h                                |   2 +
+ include/linux/btf.h                                |  42 +-
+ include/linux/printk.h                             |  16 +
+ include/uapi/linux/bpf.h                           |  27 +-
+ kernel/bpf/btf.c                                   | 999 ++++++++++++++++++---
+ kernel/bpf/verifier.c                              |  18 +-
+ kernel/trace/bpf_trace.c                           |  24 +-
+ lib/test_printf.c                                  | 316 +++++++
+ lib/vsprintf.c                                     | 110 +++
+ scripts/checkpatch.pl                              |   2 +-
+ tools/include/uapi/linux/bpf.h                     |  27 +-
+ .../selftests/bpf/prog_tests/trace_printk_btf.c    |  45 +
+ .../selftests/bpf/progs/netif_receive_skb.c        |  47 +
+ 14 files changed, 1570 insertions(+), 122 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/trace_printk_btf.c
+ create mode 100644 tools/testing/selftests/bpf/progs/netif_receive_skb.c
+
 -- 
-2.27.0
+1.8.3.1
 
