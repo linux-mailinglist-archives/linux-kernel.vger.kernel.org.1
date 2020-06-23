@@ -2,105 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3A4204CF9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 10:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 258F4204D16
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 10:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731927AbgFWIuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 04:50:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731691AbgFWIug (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 04:50:36 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A199C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 01:50:36 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id e12so3902054qtr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 01:50:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=y/cIlmiQGFW7vkgx22yAxQ6q0R1TKH8fVp3Z9jLtHCE=;
-        b=WYg5PiNkGFNFNcFvVRGdTJteyILQn2nptS9bCOYMnwE+WtWJ007MM1aFQO5500+ZCf
-         k7XDFyKgKx4wc55k9QRa5D1IGH+MO2wZujCH0FfNqhPnIIn+Y524vvxGmjWsKiCdNPGl
-         gFkZ7Qx0TWQ3lZa89N4Iu0YJ+yEb1t0xAvS94np3zk16yFcxagwGXpPpIphYB+tnQfi9
-         VSYvT4mpIxHaJaibpUkPlRDBtR6Plnlb4w5zHz6/Z/4dH2lPohIrTnnfUe1bL081QhED
-         Ki8Od93dXAvzZQGRA4gGEL6oks9aSa7YJCZHc02GqNxgrBrC1kcJaGab9HgwUZbpc0wM
-         ezUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=y/cIlmiQGFW7vkgx22yAxQ6q0R1TKH8fVp3Z9jLtHCE=;
-        b=CeR2Nqw6BG9AGWW+lM5E2PMq8pLyHz81LP3g0h0MIQhjK34j/q+V7IQ2ffk2Goo4ln
-         lMFdYwrBnJ8w10dTsnJ9P9qiO2lqXKaiAEQ5LAWvvzcQoPFhlHkBmGheV94paekXGSf1
-         ozJAxKpphZy7/IuYw5sQ0yDCg6hdThEURzCiTxG7x+d7KyhnyhEsdaEHF5eVnPl5CvD1
-         cdQJeTvLSkYa6Xl7D80IxZeirPxUNRJQ15+yMoFcPCw4JGu5Bk+e3xdlE3JlX1luBxEm
-         eEhi1d+4IkO8W4sVj8qBKj/xCp2uo80ekelmbujPL7SAGELiHm+jIUtLC64ESO8K0NDd
-         WmXg==
-X-Gm-Message-State: AOAM530/TMvuiU6C4/4G8eZHPL4R4SgxgP3F+AphWgHbqdbWs+jgNljm
-        uKMZEaRJ/eC4T6ABRud+ZRpY5MRbDp9P8SYTMnSjaA==
-X-Google-Smtp-Source: ABdhPJw1r9LEA0YmrFF1idC8wdMqocEjVAPAvtCZnLuEUcAdEm/je/CsSdEV+zck3yFnkB/bicE7kTCPgWTMliYEBb8=
-X-Received: by 2002:aed:2a75:: with SMTP id k50mr4736033qtf.27.1592902235814;
- Tue, 23 Jun 2020 01:50:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200605024919.56177-1-navid.emamdoost@gmail.com>
-In-Reply-To: <20200605024919.56177-1-navid.emamdoost@gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Tue, 23 Jun 2020 10:50:24 +0200
-Message-ID: <CAMpxmJU3aivxkjpWQDExnnW_AOF4Unefrb6xgF2fqrzaw-hi0w@mail.gmail.com>
-Subject: Re: [PATCH] gpio: rcar: handle pm_runtime_get_sync failure case
-To:     Navid Emamdoost <navid.emamdoost@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Navid Emamdoost <emamd001@umn.edu>,
-        Qiushi Wu <wu000273@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
-        smccaman@umn.edu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1731914AbgFWIwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 04:52:36 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:41238 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731811AbgFWIwW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 04:52:22 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv2uFwvFecLBIAA--.12S2;
+        Tue, 23 Jun 2020 16:51:19 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     Guo Ren <guoren@kernel.org>, Baruch Siach <baruch@tkos.co.il>,
+        Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Michal Simek <michal.simek@xilinx.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mips@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-samsung-soc@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH 0/7] Fix potential resource leaks and do some code cleanups about irqchip
+Date:   Tue, 23 Jun 2020 16:51:09 +0800
+Message-Id: <1592902276-3969-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxv2uFwvFecLBIAA--.12S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7AFy5GF48uFy7WrWfGr1Utrb_yoW8CrWDpF
+        47A39Ivr1fCay3Zr1fAr40yry3A3Z5Kay7K3yxt3sxXr95G34DWF1UAa4kXr97JrWxG3Wj
+        9F1rWFWUG3WUCF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvF14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AK
+        xVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+        fUeApeUUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pt., 5 cze 2020 o 04:49 Navid Emamdoost <navid.emamdoost@gmail.com> napisa=
-=C5=82(a):
->
-> Calling pm_runtime_get_sync increments the counter even in case of
-> failure, causing incorrect ref count. Call pm_runtime_put if
-> pm_runtime_get_sync fails.
->
-> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
-> ---
->  drivers/gpio/gpio-rcar.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/gpio/gpio-rcar.c b/drivers/gpio/gpio-rcar.c
-> index 7284473c9fe3..eac1582c70da 100644
-> --- a/drivers/gpio/gpio-rcar.c
-> +++ b/drivers/gpio/gpio-rcar.c
-> @@ -250,8 +250,10 @@ static int gpio_rcar_request(struct gpio_chip *chip,=
- unsigned offset)
->         int error;
->
->         error =3D pm_runtime_get_sync(p->dev);
-> -       if (error < 0)
-> +       if (error < 0) {
-> +               pm_runtime_put(p->dev);
->                 return error;
-> +       }
->
->         error =3D pinctrl_gpio_request(chip->base + offset);
->         if (error)
-> --
-> 2.17.1
->
+When I test the irqchip code of Loongson, I read the related code of other
+chips in drivers/irqchip and I find some potential resource leaks in the
+error path, I think it is better to fix them. Additionally, do some code
+cleanups about Loongson to make it more clean and readable.
 
-Hi Navid!
+Tiezhu Yang (7):
+  irqchip: Fix potential resource leaks
+  irqchip/loongson-htpic: Remove redundant kfree operation
+  irqchip/loongson-htvec: Check return value of
+    irq_domain_translate_onecell()
+  irqchip/loongson-pch-pic: Check return value of
+    irq_domain_translate_twocell()
+  irqchip/loongson-pch-msi: Remove unneeded variable
+  irqchip/loongson-htpic: Remove unneeded select of I8259
+  dt-bindings: interrupt-controller: Fix typos in loongson,liointc.yaml
 
-This doesn't apply to current master. I think the previous version got
-applied. Could you please rebase?
+ .../interrupt-controller/loongson,liointc.yaml     |  4 ++--
+ drivers/irqchip/Kconfig                            |  1 -
+ drivers/irqchip/irq-ath79-misc.c                   |  3 +++
+ drivers/irqchip/irq-csky-apb-intc.c                |  3 +++
+ drivers/irqchip/irq-csky-mpintc.c                  | 26 +++++++++++++++++-----
+ drivers/irqchip/irq-davinci-aintc.c                | 17 ++++++++++----
+ drivers/irqchip/irq-davinci-cp-intc.c              | 17 +++++++++++---
+ drivers/irqchip/irq-digicolor.c                    |  4 ++++
+ drivers/irqchip/irq-dw-apb-ictl.c                  | 11 ++++++---
+ drivers/irqchip/irq-loongson-htpic.c               |  6 ++---
+ drivers/irqchip/irq-loongson-htvec.c               | 10 +++++++--
+ drivers/irqchip/irq-loongson-pch-msi.c             |  7 +-----
+ drivers/irqchip/irq-loongson-pch-pic.c             | 15 ++++++++-----
+ drivers/irqchip/irq-ls1x.c                         |  4 +++-
+ drivers/irqchip/irq-mscc-ocelot.c                  |  6 +++--
+ drivers/irqchip/irq-nvic.c                         |  2 ++
+ drivers/irqchip/irq-omap-intc.c                    |  4 +++-
+ drivers/irqchip/irq-riscv-intc.c                   |  1 +
+ drivers/irqchip/irq-s3c24xx.c                      | 20 ++++++++++++-----
+ drivers/irqchip/irq-xilinx-intc.c                  |  1 +
+ 20 files changed, 116 insertions(+), 46 deletions(-)
 
-Bart
+-- 
+2.1.0
+
