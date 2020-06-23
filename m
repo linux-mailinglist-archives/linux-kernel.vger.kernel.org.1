@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2953A20608F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C360F205F95
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403980AbgFWUoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:44:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41204 "EHLO mail.kernel.org"
+        id S2391460AbgFWUdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:33:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403968AbgFWUoJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:44:09 -0400
+        id S2391430AbgFWUde (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:33:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B992218AC;
-        Tue, 23 Jun 2020 20:44:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC56521473;
+        Tue, 23 Jun 2020 20:33:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945049;
-        bh=k6p8OcEuzK4UAhSHv16GJqWypDgF3hbJsp8dDXxMVwI=;
+        s=default; t=1592944414;
+        bh=mWRcGJcFpdspk9lG5U62Wl6ugJkfkAO+IylRgcep8NU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ll5GxhIsNx8hrHZoVYBZsZ8Hd5RAdtA8mM4rQKG7y6Tp9zgp2qY99KL+Z8k2f9KPR
-         cDNLyxaceeXLSEXuu/gApzDrJI/DDUQK4wV13ePjuD65Q/YHHJOheZ7xnQao+0TNRy
-         uOu5H9wh15dcBDU4tSfHyTQzCZh8yM73OUAmvDOU=
+        b=XiCEAAmhU8R6hodBh7E8dBMTQwvjEvINwcCamHrkldHjsWBQdQGbxwFgKYGgTPPuM
+         ALVrywTuRbzK0Nz3u5Z5K0uNlql1w9SO51VDma9KP1tsJkMHwJRkOHILfLguMR2uWV
+         jb6ebZC9kOlk6Bg7X6g8K7j9TFLg8R4J86mY7XM8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chris Wilson <chris@chris-wilson.co.uk>,
-        Mika Kuoppala <mika.kuoppala@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Subject: [PATCH 4.14 002/136] drm/i915: Whitelist context-local timestamp in the gen9 cmdparser
-Date:   Tue, 23 Jun 2020 21:57:38 +0200
-Message-Id: <20200623195303.734710487@linuxfoundation.org>
+        stable@vger.kernel.org, yangerkun <yangerkun@huawei.com>,
+        Jan Kara <jack@suse.cz>, Theodore Tso <tytso@mit.edu>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 265/314] ext4: stop overwrite the errcode in ext4_setup_super
+Date:   Tue, 23 Jun 2020 21:57:40 +0200
+Message-Id: <20200623195351.615450117@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
-References: <20200623195303.601828702@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,46 +44,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+From: yangerkun <yangerkun@huawei.com>
 
-commit 273500ae71711c040d258a7b3f4b6f44c368fff2 upstream.
+[ Upstream commit 5adaccac46ea79008d7b75f47913f1a00f91d0ce ]
 
-Allow batch buffers to read their own _local_ cumulative HW runtime of
-their logical context.
+Now the errcode from ext4_commit_super will overwrite EROFS exists in
+ext4_setup_super. Actually, no need to call ext4_commit_super since we
+will return EROFS. Fix it by goto done directly.
 
-Fixes: 0f2f39758341 ("drm/i915: Add gen9 BCS cmdparsing")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Mika Kuoppala <mika.kuoppala@linux.intel.com>
-Cc: <stable@vger.kernel.org> # v5.4+
-Reviewed-by: Mika Kuoppala <mika.kuoppala@linux.intel.com>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200601161942.30854-1-chris@chris-wilson.co.uk
-(cherry picked from commit f9496520df11de00fbafc3cbd693b9570d600ab3)
-Signed-off-by: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: c89128a00838 ("ext4: handle errors on ext4_commit_super")
+Signed-off-by: yangerkun <yangerkun@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20200601073404.3712492-1-yangerkun@huawei.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/i915/i915_cmd_parser.c |    4 ++++
- 1 file changed, 4 insertions(+)
+ fs/ext4/super.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/gpu/drm/i915/i915_cmd_parser.c
-+++ b/drivers/gpu/drm/i915/i915_cmd_parser.c
-@@ -570,6 +570,9 @@ struct drm_i915_reg_descriptor {
- #define REG32(_reg, ...) \
- 	{ .addr = (_reg), __VA_ARGS__ }
- 
-+#define REG32_IDX(_reg, idx) \
-+	{ .addr = _reg(idx) }
-+
- /*
-  * Convenience macro for adding 64-bit registers.
-  *
-@@ -667,6 +670,7 @@ static const struct drm_i915_reg_descrip
- 	REG64_IDX(RING_TIMESTAMP, BSD_RING_BASE),
- 	REG32(BCS_SWCTRL),
- 	REG64_IDX(RING_TIMESTAMP, BLT_RING_BASE),
-+	REG32_IDX(RING_CTX_TIMESTAMP, BLT_RING_BASE),
- 	REG64_IDX(BCS_GPR, 0),
- 	REG64_IDX(BCS_GPR, 1),
- 	REG64_IDX(BCS_GPR, 2),
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index d3500eaf900e2..830160ad07a63 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2294,6 +2294,7 @@ static int ext4_setup_super(struct super_block *sb, struct ext4_super_block *es,
+ 		ext4_msg(sb, KERN_ERR, "revision level too high, "
+ 			 "forcing read-only mode");
+ 		err = -EROFS;
++		goto done;
+ 	}
+ 	if (read_only)
+ 		goto done;
+-- 
+2.25.1
+
 
 
