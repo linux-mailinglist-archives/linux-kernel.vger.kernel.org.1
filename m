@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CAE5205C98
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05B7205CC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:05:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388058AbgFWUDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:03:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41162 "EHLO mail.kernel.org"
+        id S2388357AbgFWUF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:05:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44580 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388041AbgFWUD2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:03:28 -0400
+        id S2388333AbgFWUFQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:05:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D84BC206C3;
-        Tue, 23 Jun 2020 20:03:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CD31620DD4;
+        Tue, 23 Jun 2020 20:05:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942607;
-        bh=iFur/krslITuodOFdsok2QxAsRks4Xwnx4x364VXxRE=;
+        s=default; t=1592942716;
+        bh=bwz6D8FBQD9hPc5U0y0YPLANP4AYBqfGkOSytfzbCVc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VEX7p++VE7LUmQPM0xbAlBdwi/VW9XoxvvW9/ukKKD0/S2s0iiWIuBy/7kzWgxOg2
-         ni+Ye7Hnfnz6uRErGTk4oilH48odtEAGI4yYi16eBmXbDSGp4PWycvgBk9sDUu6Eay
-         nZWqf+sVZOrnq+hk8wDHdqUAc+Zx49y1QHCVvUeI=
+        b=WokMzvlkfGt6c8KKdsqNBhAGo9iAgsyjFsTbFglqGwg14Lm7Km38z1cPxQGnrvKdU
+         MFksEvLOohv+pSBHxmaw0FPUhzrMyhoJbjhvSPjCD8to3A7YU4p4O0O8uSmh77UTIu
+         vxq0QWppT2FoyHQXdruk7+K0Il79pERaZ6iH/v/c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Luo Jiaxing <luojiaxing@huawei.com>,
-        John Garry <john.garry@huawei.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 063/477] scsi: hisi_sas: Do not reset phy timer to wait for stray phy up
-Date:   Tue, 23 Jun 2020 21:51:00 +0200
-Message-Id: <20200623195410.596418806@linuxfoundation.org>
+Subject: [PATCH 5.7 066/477] m68k/PCI: Fix a memory leak in an error handling path
+Date:   Tue, 23 Jun 2020 21:51:03 +0200
+Message-Id: <20200623195410.740318987@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -45,45 +46,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luo Jiaxing <luojiaxing@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit e16b9ed61e078d836a0f24a82080cf29d7539c7e ]
+[ Upstream commit c3f4ec050f56eeab7c1f290321f9b762c95bd332 ]
 
-We found out that after phy up, the hardware reports another oob interrupt
-but did not follow a phy up interrupt:
+If 'ioremap' fails, we must free 'bridge', as done in other error handling
+path bellow.
 
-oob ready -> phy up -> DEV found -> oob read -> wait phy up -> timeout
-
-We run link reset when wait phy up timeout, and it send a normal disk into
-reset processing. So we made some circumvention action in the code, so that
-this abnormal oob interrupt will not start the timer to wait for phy up.
-
-Link: https://lore.kernel.org/r/1589552025-165012-2-git-send-email-john.garry@huawei.com
-Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
-Signed-off-by: John Garry <john.garry@huawei.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 19cc4c843f40 ("m68k/PCI: Replace pci_fixup_irqs() call with host bridge IRQ mapping hooks")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Greg Ungerer <gerg@linux-m68k.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/hisi_sas/hisi_sas_main.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/m68k/coldfire/pci.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
-index 9a6deb21fe4df..11caa4b0d7977 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_main.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
-@@ -898,8 +898,11 @@ void hisi_sas_phy_oob_ready(struct hisi_hba *hisi_hba, int phy_no)
- 	struct hisi_sas_phy *phy = &hisi_hba->phy[phy_no];
- 	struct device *dev = hisi_hba->dev;
+diff --git a/arch/m68k/coldfire/pci.c b/arch/m68k/coldfire/pci.c
+index 62b0eb6cf69a3..84eab0f5e00af 100644
+--- a/arch/m68k/coldfire/pci.c
++++ b/arch/m68k/coldfire/pci.c
+@@ -216,8 +216,10 @@ static int __init mcf_pci_init(void)
  
-+	dev_dbg(dev, "phy%d OOB ready\n", phy_no);
-+	if (phy->phy_attached)
-+		return;
-+
- 	if (!timer_pending(&phy->timer)) {
--		dev_dbg(dev, "phy%d OOB ready\n", phy_no);
- 		phy->timer.expires = jiffies + HISI_SAS_WAIT_PHYUP_TIMEOUT * HZ;
- 		add_timer(&phy->timer);
- 	}
+ 	/* Keep a virtual mapping to IO/config space active */
+ 	iospace = (unsigned long) ioremap(PCI_IO_PA, PCI_IO_SIZE);
+-	if (iospace == 0)
++	if (iospace == 0) {
++		pci_free_host_bridge(bridge);
+ 		return -ENODEV;
++	}
+ 	pr_info("Coldfire: PCI IO/config window mapped to 0x%x\n",
+ 		(u32) iospace);
+ 
 -- 
 2.25.1
 
