@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08BAD206467
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2012065DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:51:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393423AbgFWVVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:21:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41158 "EHLO mail.kernel.org"
+        id S2393723AbgFWVeM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:34:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389862AbgFWUXE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:23:04 -0400
+        id S2388873AbgFWULJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:11:09 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9F502064B;
-        Tue, 23 Jun 2020 20:23:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3C4EF206C3;
+        Tue, 23 Jun 2020 20:11:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943784;
-        bh=HZ2ifpDmMjjxo73WjnqemiqePyzHTWnCg2nXFzCRFc0=;
+        s=default; t=1592943068;
+        bh=0ZmAkqYIuedeSqA8JEMiukYaMWgn2ebFig6kY9j6FOs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rKZwtkdP/iv+gLSSOsRbKUDN78WGxwKfpTvzNzoLajKfNBn6J5dlGMo8askEWYB32
-         0LZ+D1f8/hgsk6sMNbbq/+34rhWUcXwbQuMCa9nE6LOvBzgWNj3vm0ETk3dDQpxpPW
-         n2yZ7Lf63D2K7nDQvBZgpcnd3NrzAx/PwZWJfZ4c=
+        b=mceSUnIP5lvs1/Dbr9suP4cDP3zwnipyf+WtnrJYZAlMkIYwHv7u6YwnAll5s8k3X
+         O7xDbspMtHokM7W45ZhEIt+60J59LmMFjob2k6RzwNsLzS6lifZ+7cDMGAg4KNynQY
+         +N7X+szJ99lMA1g8/ct56oZ9//8EzvzvuDBIl9fQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Derrick <jonathan.derrick@intel.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 049/314] PCI: pci-bridge-emul: Fix PCIe bit conflicts
-Date:   Tue, 23 Jun 2020 21:54:04 +0200
-Message-Id: <20200623195341.162137621@linuxfoundation.org>
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 248/477] dm zoned: return NULL if dmz_get_zone_for_reclaim() fails to find a zone
+Date:   Tue, 23 Jun 2020 21:54:05 +0200
+Message-Id: <20200623195419.292206722@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
+References: <20200623195407.572062007@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,53 +45,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jon Derrick <jonathan.derrick@intel.com>
+From: Hannes Reinecke <hare@suse.de>
 
-[ Upstream commit c88d19181771bd189147681ef38fc1533ebeff4c ]
+[ Upstream commit 489dc0f06a5837f87482c0ce61d830d24e17082e ]
 
-This patch fixes two bit conflicts in the pci-bridge-emul driver:
+The only case where dmz_get_zone_for_reclaim() cannot return a zone is
+if the respective lists are empty. So we should just return a simple
+NULL value here as we really don't have an error code which would make
+sense.
 
-1. Bit 3 of Device Status (19 of Device Control) is marked as both
-   Write-1-to-Clear and Read-Only. It should be Write-1-to-Clear.
-   The Read-Only and Reserved bitmasks are shifted by 1 bit due to this
-   error.
-
-2. Bit 12 of Slot Control is marked as both Read-Write and Reserved.
-   It should be Read-Write.
-
-Link: https://lore.kernel.org/r/20200511162117.6674-2-jonathan.derrick@intel.com
-Signed-off-by: Jon Derrick <jonathan.derrick@intel.com>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Hannes Reinecke <hare@suse.de>
+Reviewed-by: Damien Le Moal <damien.lemoal@wdc.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pci-bridge-emul.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/md/dm-zoned-metadata.c | 4 ++--
+ drivers/md/dm-zoned-reclaim.c  | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/pci/pci-bridge-emul.c b/drivers/pci/pci-bridge-emul.c
-index 5fd90105510d9..d3b6b9a056185 100644
---- a/drivers/pci/pci-bridge-emul.c
-+++ b/drivers/pci/pci-bridge-emul.c
-@@ -195,8 +195,8 @@ static const struct pci_bridge_reg_behavior pcie_cap_regs_behavior[] = {
- 		 * RO, the rest is reserved
- 		 */
- 		.w1c = GENMASK(19, 16),
--		.ro = GENMASK(20, 19),
--		.rsvd = GENMASK(31, 21),
-+		.ro = GENMASK(21, 20),
-+		.rsvd = GENMASK(31, 22),
- 	},
+diff --git a/drivers/md/dm-zoned-metadata.c b/drivers/md/dm-zoned-metadata.c
+index 369de15c4e80c..61b7d7b7e5a6b 100644
+--- a/drivers/md/dm-zoned-metadata.c
++++ b/drivers/md/dm-zoned-metadata.c
+@@ -1554,7 +1554,7 @@ static struct dm_zone *dmz_get_rnd_zone_for_reclaim(struct dmz_metadata *zmd)
+ 			return dzone;
+ 	}
  
- 	[PCI_EXP_LNKCAP / 4] = {
-@@ -236,7 +236,7 @@ static const struct pci_bridge_reg_behavior pcie_cap_regs_behavior[] = {
- 			PCI_EXP_SLTSTA_CC | PCI_EXP_SLTSTA_DLLSC) << 16,
- 		.ro = (PCI_EXP_SLTSTA_MRLSS | PCI_EXP_SLTSTA_PDS |
- 		       PCI_EXP_SLTSTA_EIS) << 16,
--		.rsvd = GENMASK(15, 12) | (GENMASK(15, 9) << 16),
-+		.rsvd = GENMASK(15, 13) | (GENMASK(15, 9) << 16),
- 	},
+-	return ERR_PTR(-EBUSY);
++	return NULL;
+ }
  
- 	[PCI_EXP_RTCTL / 4] = {
+ /*
+@@ -1574,7 +1574,7 @@ static struct dm_zone *dmz_get_seq_zone_for_reclaim(struct dmz_metadata *zmd)
+ 			return zone;
+ 	}
+ 
+-	return ERR_PTR(-EBUSY);
++	return NULL;
+ }
+ 
+ /*
+diff --git a/drivers/md/dm-zoned-reclaim.c b/drivers/md/dm-zoned-reclaim.c
+index e7ace908a9b7d..d50817320e8e3 100644
+--- a/drivers/md/dm-zoned-reclaim.c
++++ b/drivers/md/dm-zoned-reclaim.c
+@@ -349,8 +349,8 @@ static int dmz_do_reclaim(struct dmz_reclaim *zrc)
+ 
+ 	/* Get a data zone */
+ 	dzone = dmz_get_zone_for_reclaim(zmd);
+-	if (IS_ERR(dzone))
+-		return PTR_ERR(dzone);
++	if (!dzone)
++		return -EBUSY;
+ 
+ 	start = jiffies;
+ 
 -- 
 2.25.1
 
