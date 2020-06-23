@@ -2,40 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009462060E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F65206083
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392153AbgFWUrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:47:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46068 "EHLO mail.kernel.org"
+        id S2392539AbgFWUng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:43:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404057AbgFWUre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:47:34 -0400
+        id S2390295AbgFWUne (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:43:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A036820781;
-        Tue, 23 Jun 2020 20:47:34 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9272B2053B;
+        Tue, 23 Jun 2020 20:43:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945255;
-        bh=8fU3l5yIMm0+QfOPOLk1KC+nutzhw3BIfXEgK1zhcjA=;
+        s=default; t=1592945014;
+        bh=GRIRu4oi7R4HZL1Sk3KbRk/UGrE+bA7YOQThrJgVD64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cEXeKNNpxU4LUZTbnxj1fBrV7sq/+yN4IEnywdX5XhP5xPJ5/Kbsylh+eoffUoKW5
-         8TVCEETaHDNwuxFym1qjcYAGP5QLww6lnaTWCTT+4R6mkmXXM0YedEucnihmhtiHQ2
-         aDbOjh9xo4pJQURdzgtfb43YM1xvpto/pjP8Htj0=
+        b=IJs/9CBmtRp3GssVkb5dx0CD074pzSha7Qz/MSpEQwmiVU98AkMT1jqFw1VjFk2Gn
+         8cV0QYDZmbUYEBsOHoVZ/paG0HXsu0SKPjncglasuHz6bgUnYUvfwW9BPmeYHJ0xO1
+         Q85n7acUhMpeddJJ1mmfJjWdXXbzv3yj3DCGEmMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>,
-        Leon Romanovsky <leonro@mellanox.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 069/136] IB/cma: Fix ports memory leak in cma_configfs
-Date:   Tue, 23 Jun 2020 21:58:45 +0200
-Message-Id: <20200623195307.152650592@linuxfoundation.org>
+        stable@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        David Miller <davem@davemloft.net>,
+        Ingo Molnar <mingo@elte.hu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ziqian SUN <zsun@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 4.19 200/206] kprobes: Fix to protect kick_kprobe_optimizer() by kprobe_mutex
+Date:   Tue, 23 Jun 2020 21:58:48 +0200
+Message-Id: <20200623195326.880422767@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
-References: <20200623195303.601828702@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,54 +52,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maor Gottlieb <maorg@mellanox.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-[ Upstream commit 63a3345c2d42a9b29e1ce2d3a4043689b3995cea ]
+commit 1a0aa991a6274161c95a844c58cfb801d681eb59 upstream.
 
-The allocated ports structure in never freed. The free function should be
-called by release_cma_ports_group, but the group is never released since
-we don't remove its default group.
+In kprobe_optimizer() kick_kprobe_optimizer() is called
+without kprobe_mutex, but this can race with other caller
+which is protected by kprobe_mutex.
 
-Remove default groups when device group is deleted.
+To fix that, expand kprobe_mutex protected area to protect
+kick_kprobe_optimizer() call.
 
-Fixes: 045959db65c6 ("IB/cma: Add configfs for rdma_cm")
-Link: https://lore.kernel.org/r/20200521072650.567908-1-leon@kernel.org
-Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
-Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: http://lkml.kernel.org/r/158927057586.27680.5036330063955940456.stgit@devnote2
+
+Fixes: cd7ebe2298ff ("kprobes: Use text_poke_smp_batch for optimizing")
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: "Gustavo A . R . Silva" <gustavoars@kernel.org>
+Cc: Anders Roxell <anders.roxell@linaro.org>
+Cc: "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>
+Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
+Cc: David Miller <davem@davemloft.net>
+Cc: Ingo Molnar <mingo@elte.hu>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ziqian SUN <zsun@redhat.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/infiniband/core/cma_configfs.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ kernel/kprobes.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/core/cma_configfs.c b/drivers/infiniband/core/cma_configfs.c
-index 54076a3e80076..ac47e8a1dfbf4 100644
---- a/drivers/infiniband/core/cma_configfs.c
-+++ b/drivers/infiniband/core/cma_configfs.c
-@@ -319,8 +319,21 @@ fail:
- 	return ERR_PTR(err);
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -599,11 +599,12 @@ static void kprobe_optimizer(struct work
+ 	mutex_unlock(&module_mutex);
+ 	mutex_unlock(&text_mutex);
+ 	cpus_read_unlock();
+-	mutex_unlock(&kprobe_mutex);
+ 
+ 	/* Step 5: Kick optimizer again if needed */
+ 	if (!list_empty(&optimizing_list) || !list_empty(&unoptimizing_list))
+ 		kick_kprobe_optimizer();
++
++	mutex_unlock(&kprobe_mutex);
  }
  
-+static void drop_cma_dev(struct config_group *cgroup, struct config_item *item)
-+{
-+	struct config_group *group =
-+		container_of(item, struct config_group, cg_item);
-+	struct cma_dev_group *cma_dev_group =
-+		container_of(group, struct cma_dev_group, device_group);
-+
-+	configfs_remove_default_groups(&cma_dev_group->ports_group);
-+	configfs_remove_default_groups(&cma_dev_group->device_group);
-+	config_item_put(item);
-+}
-+
- static struct configfs_group_operations cma_subsys_group_ops = {
- 	.make_group	= make_cma_dev,
-+	.drop_item	= drop_cma_dev,
- };
- 
- static struct config_item_type cma_subsys_type = {
--- 
-2.25.1
-
+ /* Wait for completing optimization and unoptimization */
 
 
