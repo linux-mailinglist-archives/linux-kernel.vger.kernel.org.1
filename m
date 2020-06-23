@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42C9C2045DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB01E2045DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732266AbgFWAio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:38:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33658 "EHLO mail.kernel.org"
+        id S1732244AbgFWAih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:38:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33634 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732154AbgFWAh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732160AbgFWAh5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Jun 2020 20:37:57 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 29A902137B;
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C6E32145D;
         Tue, 23 Jun 2020 00:37:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592872677;
-        bh=p3AXeB+VOEIX1532PITIGWynvghXPAsUq+RRT6GbDv4=;
+        bh=9I5Y27ZTrQcqUy9STDR0VsTK0ZGdaJ7BMzoY/xb3kxY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mCf3ywLixTvLSK63to03mfAKo3/FFbl6Y4zOmoaBW10blwxnmXgdQXVvrg47lp2SG
-         qyP/Hpckp2dkriYdLNluw3pmvyl5UEDeHzy+X/CUYNzO9e73HP3FMcUJxfY/NTY9ri
-         SJifybKJVc/VjGBqQpaCtTu9hOw0Xoiz47M1ehjE=
+        b=q4Y/I3gbmY4zViJgTtXf10veRE6ew/UhIVsRqUgFvjAdj/74jNrsmF0S3jMN6S1UL
+         oJibePoDe52q01F/iTo34EuGxKQZjFgC0a1Lfzyshd+TvQY2FlTG7dDr1NMK/dgRWn
+         E5UF6zsv3HMnEPh5wqRaHBjAaHfm47gSFzcZ6NPg=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 16/23] torture: Correctly summarize build-only runs
-Date:   Mon, 22 Jun 2020 17:37:45 -0700
-Message-Id: <20200623003752.26872-16-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 17/23] torture: Improve diagnostic for KCSAN-incapable compilers
+Date:   Mon, 22 Jun 2020 17:37:46 -0700
+Message-Id: <20200623003752.26872-17-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623003731.GA26717@paulmck-ThinkPad-P72>
 References: <20200623003731.GA26717@paulmck-ThinkPad-P72>
@@ -45,42 +45,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Currently, kvm-recheck.sh complains that qemu failed for --buildonly
-runs, which is sort of true given that qemu can hardly succeed if not
-invoked in the first place.  Nevertheless, this commit swaps the order
-of checks in kvm-recheck.sh so that --buildonly runs will be summarized
-more straightforwardly.
+Using --kcsan when the compiler does not support KCSAN results in this:
 
+:CONFIG_KCSAN=y: improperly set
+:CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000: improperly set
+:CONFIG_KCSAN_VERBOSE=y: improperly set
+:CONFIG_KCSAN_INTERRUPT_WATCHER=y: improperly set
+Clean KCSAN run in /home/git/linux-rcu/tools/testing/selftests/rcutorture/res/2020.06.16-09.53.16
+
+This is a bit obtuse, so this commit adds checks resulting in this:
+
+:CONFIG_KCSAN=y: improperly set
+:CONFIG_KCSAN_REPORT_ONCE_IN_MS=100000: improperly set
+:CONFIG_KCSAN_VERBOSE=y: improperly set
+:CONFIG_KCSAN_INTERRUPT_WATCHER=y: improperly set
+Compiler or architecture does not support KCSAN!
+Did you forget to switch your compiler with --kmake-arg CC=<cc-that-supports-kcsan>?
+
+Suggested-by: Marco Elver <elver@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+Acked-by: Marco Elver <elver@google.com>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-recheck.sh | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm-recheck.sh | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
-index 2261aa6..357899c 100755
+index 357899c..840a467 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
-@@ -56,15 +56,15 @@ do
- 				cat $i/Warnings
- 			fi
- 		else
--			if test -f "$i/qemu-cmd"
--			then
--				print_bug qemu failed
--				echo "   $i"
--			elif test -f "$i/buildonly"
-+			if test -f "$i/buildonly"
+@@ -44,7 +44,8 @@ do
  			then
- 				echo Build-only run, no boot/test
- 				configcheck.sh $i/.config $i/ConfigFragment
- 				parse-build.sh $i/Make.out $configfile
-+			elif test -f "$i/qemu-cmd"
-+			then
-+				print_bug qemu failed
-+				echo "   $i"
- 			else
- 				print_bug Build failed
- 				echo "   $i"
+ 				echo QEMU killed
+ 			fi
+-			configcheck.sh $i/.config $i/ConfigFragment
++			configcheck.sh $i/.config $i/ConfigFragment > $T 2>&1
++			cat $T
+ 			if test -r $i/Make.oldconfig.err
+ 			then
+ 				cat $i/Make.oldconfig.err
+@@ -73,7 +74,11 @@ do
+ 	done
+ 	if test -f "$rd/kcsan.sum"
+ 	then
+-		if test -s "$rd/kcsan.sum"
++		if grep -q CONFIG_KCSAN=y $T
++		then
++			echo "Compiler or architecture does not support KCSAN!"
++			echo Did you forget to switch your compiler with '--kmake-arg CC=<cc-that-supports-kcsan>'?
++		elif test -s "$rd/kcsan.sum"
+ 		then
+ 			echo KCSAN summary in $rd/kcsan.sum
+ 		else
 -- 
 2.9.5
 
