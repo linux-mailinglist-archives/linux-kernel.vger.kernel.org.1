@@ -2,114 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7B0E205615
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 17:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFB320563F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 17:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733059AbgFWPhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 11:37:00 -0400
-Received: from mga17.intel.com ([192.55.52.151]:27325 "EHLO mga17.intel.com"
+        id S1733045AbgFWPoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 11:44:09 -0400
+Received: from foss.arm.com ([217.140.110.172]:56754 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733016AbgFWPgu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 11:36:50 -0400
-IronPort-SDR: /0Db1l110fmjMGVFGPn2mzsUas/qUvJqy76rII9/vprmq7Ylwj+qjWzXEnEa4vtpCnYFqaCi0K
- 3SJQyOB/TPjA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="124367622"
-X-IronPort-AV: E=Sophos;i="5.75,271,1589266800"; 
-   d="scan'208";a="124367622"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2020 08:36:47 -0700
-IronPort-SDR: FDabU8trmgNRQeplHAzCK2/4ZKTPyJ+wywngMYDo/DPQBWpRg4eG2gYCwuDr7DtGbo1spUHw9G
- klzULad/JzQw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,271,1589266800"; 
-   d="scan'208";a="452262650"
-Received: from jacob-builder.jf.intel.com ([10.7.199.155])
-  by orsmga005.jf.intel.com with ESMTP; 23 Jun 2020 08:36:47 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     iommu@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Lu Baolu" <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>
-Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH 7/7] iommu/vt-d: Disable multiple GPASID-dev bind
-Date:   Tue, 23 Jun 2020 08:43:16 -0700
-Message-Id: <1592926996-47914-8-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1592926996-47914-1-git-send-email-jacob.jun.pan@linux.intel.com>
-References: <1592926996-47914-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        id S1733016AbgFWPoI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 11:44:08 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C82AD1F1;
+        Tue, 23 Jun 2020 08:44:07 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5E8153F6CF;
+        Tue, 23 Jun 2020 08:44:05 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 16:44:03 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        linux-doc@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-fs <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] sched/uclamp: Add a new sysctl to control RT default
+ boost value
+Message-ID: <20200623154402.jfv5yhhrsbx7toes@e107158-lin.cambridge.arm.com>
+References: <edd80c0d-b7c8-4314-74da-08590170e6f5@arm.com>
+ <87v9k84knx.derkling@matbug.net>
+ <20200603101022.GG3070@suse.de>
+ <CAKfTPtAvMvPk5Ea2kaxXE8GzQ+Nc_PS+EKB1jAa03iJwQORSqA@mail.gmail.com>
+ <20200603165200.v2ypeagziht7kxdw@e107158-lin.cambridge.arm.com>
+ <CAKfTPtC6TvUL83VdWuGfbKm0CkXB85YQ5qkagK9aiDB8Hqrn_Q@mail.gmail.com>
+ <20200608123102.6sdhdhit7lac5cfl@e107158-lin.cambridge.arm.com>
+ <CAKfTPtCKS-2RoaMHhKGigjzc7dhXhx0z3dYNQLD3Q9aRC_tCnw@mail.gmail.com>
+ <20200611102407.vhy3zjexrhorx753@e107158-lin.cambridge.arm.com>
+ <CAKfTPtDnWuBOJxJP7ahX4Kzu+8jvPjAcE6XErMtG1SCJMdZZ-w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtDnWuBOJxJP7ahX4Kzu+8jvPjAcE6XErMtG1SCJMdZZ-w@mail.gmail.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For the unlikely use case where multiple aux domains from the same pdev
-are attached to a single guest and then bound to a single process
-(thus same PASID) within that guest, we cannot easily support this case
-by refcounting the number of users. As there is only one SL page table
-per PASID while we have multiple aux domains thus multiple SL page tables
-for the same PASID.
+Hi Vincent
 
-Extra unbinding guest PASID can happen due to race between normal and
-exception cases. Termination of one aux domain may affect others unless
-we actively track and switch aux domains to ensure the validity of SL
-page tables and TLB states in the shared PASID entry.
+On 06/11/20 14:01, Vincent Guittot wrote:
+> On Thu, 11 Jun 2020 at 12:24, Qais Yousef <qais.yousef@arm.com> wrote:
 
-Support for sharing second level PGDs across domains can reduce the
-complexity but this is not available due to the limitations on VFIO
-container architecture. We can revisit this decision once sharing PGDs
-are available.
+[...]
 
-Overall, the complexity and potential glitch do not warrant this unlikely
-use case thereby removed by this patch.
+> > > Strange because I have been able to trace them.
+> >
+> > On your arm platform? I can certainly see them on x86.
+> 
+> yes on my arm platform
 
-Cc: Kevin Tian <kevin.tian@intel.com>
-Cc: Lu Baolu <baolu.lu@linux.intel.com>
-Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
----
- drivers/iommu/intel/svm.c | 22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
+Sorry for not getting back to you earlier but I have tried several things and
+shared my results, which you were CCed into all of them.
 
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 6c87c807a0ab..d386853121a2 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -277,20 +277,16 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
- 			goto out;
- 		}
- 
-+		/*
-+		 * Do not allow multiple bindings of the same device-PASID since
-+		 * there is only one SL page tables per PASID. We may revisit
-+		 * once sharing PGD across domains are supported.
-+		 */
- 		for_each_svm_dev(sdev, svm, dev) {
--			/*
--			 * For devices with aux domains, we should allow
--			 * multiple bind calls with the same PASID and pdev.
--			 */
--			if (iommu_dev_feature_enabled(dev,
--						      IOMMU_DEV_FEAT_AUX)) {
--				sdev->users++;
--			} else {
--				dev_warn_ratelimited(dev,
--						     "Already bound with PASID %u\n",
--						     svm->pasid);
--				ret = -EBUSY;
--			}
-+			dev_warn_ratelimited(dev,
-+					     "Already bound with PASID %u\n",
-+					     svm->pasid);
-+			ret = -EBUSY;
- 			goto out;
- 		}
- 	} else {
--- 
-2.7.4
+I have posted a patch that protects uclamp with a static key, mind trying it on
+your platform to see if it helps you too?
 
+https://lore.kernel.org/lkml/20200619172011.5810-1-qais.yousef@arm.com/
+
+Thanks
+
+--
+Qais Yousef
