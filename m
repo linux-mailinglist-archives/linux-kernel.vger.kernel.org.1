@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937922060D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EB0A20607C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390880AbgFWUqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:46:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44626 "EHLO mail.kernel.org"
+        id S2392514AbgFWUnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:43:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390467AbgFWUqi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:46:38 -0400
+        id S2392478AbgFWUnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:43:15 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 378AC2098B;
-        Tue, 23 Jun 2020 20:46:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4317C21941;
+        Tue, 23 Jun 2020 20:43:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945198;
-        bh=59jA0oNncv0x0JQccgTKX289yT7ZzuYlpsORMXSLXkI=;
+        s=default; t=1592944995;
+        bh=0ncV6HTRfo/3u06mJYnRbHPw2o4yr/9wsxgVNim2oHg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fdpEcFKDMnWMjDkumBTZVPt/tNFuNSX/mudSCSM7VRUWuI9Se1eCM9MLIVIj2DJSm
-         e3nsH+8taKGwwKay0rpGlciMv5+lWUVvrI0VKXnHO1oLNOjsAR1Exgh59qONpWO5Mn
-         NesAORC06DsB+tqLIkkaRnZ6+acjtcR3wplh9heY=
+        b=LTyP/SGyyh8k5H+cjG1HOEbY4EKiuWw+ynGuHFAf8AmRu8/sz4zD4/kb6kuXoEc8R
+         xyyNdswpyxvNe45ItZIJrQQRTjcUpA0XXYLDtWNjkeg98+bBcMjYf8CGshs/IeQAUV
+         lJHnGngF2METcfifwL2W4pTP4xo0KFiWnnHxH/UY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Bean Huo <beanhuo@micron.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Jeffrey Hugo <jeffrey.l.hugo@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 078/136] scsi: ufs-qcom: Fix scheduling while atomic issue
+        stable@vger.kernel.org,
+        Joakim Tjernlund <joakim.tjernlund@infinera.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Subject: [PATCH 4.19 206/206] Revert "dpaa_eth: fix usage as DSA master, try 3"
 Date:   Tue, 23 Jun 2020 21:58:54 +0200
-Message-Id: <20200623195307.630309589@linuxfoundation.org>
+Message-Id: <20200623195327.188985616@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
-References: <20200623195303.601828702@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,54 +44,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
 
-[ Upstream commit 3be60b564de49875e47974c37fabced893cd0931 ]
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-ufs_qcom_dump_dbg_regs() uses usleep_range, a sleeping function, but can be
-called from atomic context in the following flow:
+This reverts commit b145710b69388aa4034d32b4a937f18f66b5538e which is
+commit 5d14c304bfc14b4fd052dc83d5224376b48f52f0 upstream.
 
-ufshcd_intr -> ufshcd_sl_intr -> ufshcd_check_errors ->
-ufshcd_print_host_regs -> ufshcd_vops_dbg_register_dump ->
-ufs_qcom_dump_dbg_regs
+The patch is not wrong, but the Fixes: tag is. It should have been:
 
-This causes a boot crash on the Lenovo Miix 630 when the interrupt is
-handled on the idle thread.
+	Fixes: 060ad66f9795 ("dpaa_eth: change DMA device")
 
-Fix the issue by switching to udelay().
+which means that it's fixing a commit which was introduced in:
 
-Link: https://lore.kernel.org/r/20200525204125.46171-1-jeffrey.l.hugo@gmail.com
-Fixes: 9c46b8676271 ("scsi: ufs-qcom: dump additional testbus registers")
-Reviewed-by: Bean Huo <beanhuo@micron.com>
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
-Signed-off-by: Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+git describe --tags 060ad66f97954
+v5.4-rc3-783-g060ad66f9795
+
+which then means it should have not been backported to linux-4.19.y,
+where things _were_ working and now they're not.
+
+Reported-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/ufs/ufs-qcom.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/net/ethernet/freescale/dpaa/dpaa_eth.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
-index f2b8de195d8af..ee3589ac64abf 100644
---- a/drivers/scsi/ufs/ufs-qcom.c
-+++ b/drivers/scsi/ufs/ufs-qcom.c
-@@ -1649,11 +1649,11 @@ static void ufs_qcom_dump_dbg_regs(struct ufs_hba *hba)
+--- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
++++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+@@ -2796,7 +2796,7 @@ static int dpaa_eth_probe(struct platfor
+ 	}
  
- 	/* sleep a bit intermittently as we are dumping too much data */
- 	ufs_qcom_print_hw_debug_reg_all(hba, NULL, ufs_qcom_dump_regs_wrapper);
--	usleep_range(1000, 1100);
-+	udelay(1000);
- 	ufs_qcom_testbus_read(hba);
--	usleep_range(1000, 1100);
-+	udelay(1000);
- 	ufs_qcom_print_unipro_testbus(hba);
--	usleep_range(1000, 1100);
-+	udelay(1000);
- }
+ 	/* Do this here, so we can be verbose early */
+-	SET_NETDEV_DEV(net_dev, dev->parent);
++	SET_NETDEV_DEV(net_dev, dev);
+ 	dev_set_drvdata(dev, net_dev);
  
- /**
--- 
-2.25.1
-
+ 	priv = netdev_priv(net_dev);
 
 
