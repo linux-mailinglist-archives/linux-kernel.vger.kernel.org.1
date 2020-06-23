@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02EFA206093
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4491205F80
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392570AbgFWUoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:44:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41388 "EHLO mail.kernel.org"
+        id S2391158AbgFWUdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:33:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54202 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403984AbgFWUoR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:44:17 -0400
+        id S2391380AbgFWUdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:33:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03E48218AC;
-        Tue, 23 Jun 2020 20:44:16 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B3D5820702;
+        Tue, 23 Jun 2020 20:33:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945057;
-        bh=/FvxPPIPe+dQTXQL6FxQuEEeAiwkRfiSX57QfrrFAq4=;
+        s=default; t=1592944384;
+        bh=R8g0zEbyqFw6D+ciYXIPii4CJ0lk9q9fkxWVCc92rdE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ABByXPlXZMHARrcyp1tq7Nj0bjRti3nwy7cbiy8Y1otR20y7hh2AjuNoysnq82kT2
-         3OfxfmwuYljXC3o5NxsGvj0kdZPgu5YMnQ0fKXoU5A/zTzTi5cvTiXfFjfbmkWdiEs
-         YTxhdhmWOw7d0xMJ2N4GUuNTeV4rJKcap5IlCqUI=
+        b=SPJ/NOMI9gd5XNcDhPtyZPCjBQhW8+AvCow8W1rKxHuM4wXGuYwC5CuY/NlK0ftRI
+         DtL1IUWKDQzwIq94tcqiP6MGNi9v0ScSJTC3GZfdhmETbVD1KwyKVTugjhOud4TuSN
+         wEyD9eJKOTHIbGU7btXh9ilS/3nJb72uZxN5zaYg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 022/136] vfio/pci: fix memory leaks in alloc_perm_bits()
+        stable@vger.kernel.org, Lyude Paul <lyude@redhat.com>,
+        Sean Paul <sean@poorly.run>
+Subject: [PATCH 5.4 283/314] drm/dp_mst: Reformat drm_dp_check_act_status() a bit
 Date:   Tue, 23 Jun 2020 21:57:58 +0200
-Message-Id: <20200623195304.747247165@linuxfoundation.org>
+Message-Id: <20200623195352.480467724@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
-References: <20200623195303.601828702@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,74 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <cai@lca.pw>
+From: Lyude Paul <lyude@redhat.com>
 
-[ Upstream commit 3e63b94b6274324ff2e7d8615df31586de827c4e ]
+commit a5cb5fa6c3a5c2cf492db667b8670ee7b044b79f upstream.
 
-vfio_pci_disable() calls vfio_config_free() but forgets to call
-free_perm_bits() resulting in memory leaks,
+Just add a bit more line wrapping, get rid of some extraneous
+whitespace, remove an unneeded goto label, and move around some variable
+declarations. No functional changes here.
 
-unreferenced object 0xc000000c4db2dee0 (size 16):
-  comm "qemu-kvm", pid 4305, jiffies 4295020272 (age 3463.780s)
-  hex dump (first 16 bytes):
-    00 00 ff 00 ff ff ff ff ff ff ff ff ff ff 00 00  ................
-  backtrace:
-    [<00000000a6a4552d>] alloc_perm_bits+0x58/0xe0 [vfio_pci]
-    [<00000000ac990549>] vfio_config_init+0xdf0/0x11b0 [vfio_pci]
-    init_pci_cap_msi_perm at drivers/vfio/pci/vfio_pci_config.c:1125
-    (inlined by) vfio_msi_cap_len at drivers/vfio/pci/vfio_pci_config.c:1180
-    (inlined by) vfio_cap_len at drivers/vfio/pci/vfio_pci_config.c:1241
-    (inlined by) vfio_cap_init at drivers/vfio/pci/vfio_pci_config.c:1468
-    (inlined by) vfio_config_init at drivers/vfio/pci/vfio_pci_config.c:1707
-    [<000000006db873a1>] vfio_pci_open+0x234/0x700 [vfio_pci]
-    [<00000000630e1906>] vfio_group_fops_unl_ioctl+0x8e0/0xb84 [vfio]
-    [<000000009e34c54f>] ksys_ioctl+0xd8/0x130
-    [<000000006577923d>] sys_ioctl+0x28/0x40
-    [<000000006d7b1cf2>] system_call_exception+0x114/0x1e0
-    [<0000000008ea7dd5>] system_call_common+0xf0/0x278
-unreferenced object 0xc000000c4db2e330 (size 16):
-  comm "qemu-kvm", pid 4305, jiffies 4295020272 (age 3463.780s)
-  hex dump (first 16 bytes):
-    00 ff ff 00 ff ff ff ff ff ff ff ff ff ff 00 00  ................
-  backtrace:
-    [<000000004c71914f>] alloc_perm_bits+0x44/0xe0 [vfio_pci]
-    [<00000000ac990549>] vfio_config_init+0xdf0/0x11b0 [vfio_pci]
-    [<000000006db873a1>] vfio_pci_open+0x234/0x700 [vfio_pci]
-    [<00000000630e1906>] vfio_group_fops_unl_ioctl+0x8e0/0xb84 [vfio]
-    [<000000009e34c54f>] ksys_ioctl+0xd8/0x130
-    [<000000006577923d>] sys_ioctl+0x28/0x40
-    [<000000006d7b1cf2>] system_call_exception+0x114/0x1e0
-    [<0000000008ea7dd5>] system_call_common+0xf0/0x278
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+[this isn't a fix, but it's needed for the fix that comes after this]
+Fixes: ad7f8a1f9ced ("drm/helper: add Displayport multi-stream helper (v0.6)")
+Cc: Sean Paul <sean@poorly.run>
+Cc: <stable@vger.kernel.org> # v3.17+
+Reviewed-by: Sean Paul <sean@poorly.run>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200406221253.1307209-3-lyude@redhat.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
-Signed-off-by: Qian Cai <cai@lca.pw>
-[aw: rolled in follow-up patch]
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/vfio_pci_config.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/drm_dp_mst_topology.c |   22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
-index 423ea1f98441a..c2d300bc37f64 100644
---- a/drivers/vfio/pci/vfio_pci_config.c
-+++ b/drivers/vfio/pci/vfio_pci_config.c
-@@ -1732,8 +1732,11 @@ void vfio_config_free(struct vfio_pci_device *vdev)
- 	vdev->vconfig = NULL;
- 	kfree(vdev->pci_config_map);
- 	vdev->pci_config_map = NULL;
--	kfree(vdev->msi_perm);
--	vdev->msi_perm = NULL;
-+	if (vdev->msi_perm) {
-+		free_perm_bits(vdev->msi_perm);
-+		kfree(vdev->msi_perm);
-+		vdev->msi_perm = NULL;
-+	}
- }
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -3507,33 +3507,31 @@ fail:
+  */
+ int drm_dp_check_act_status(struct drm_dp_mst_topology_mgr *mgr)
+ {
++	int count = 0, ret;
+ 	u8 status;
+-	int ret;
+-	int count = 0;
  
- /*
--- 
-2.25.1
-
+ 	do {
+-		ret = drm_dp_dpcd_readb(mgr->aux, DP_PAYLOAD_TABLE_UPDATE_STATUS, &status);
+-
++		ret = drm_dp_dpcd_readb(mgr->aux,
++					DP_PAYLOAD_TABLE_UPDATE_STATUS,
++					&status);
+ 		if (ret < 0) {
+-			DRM_DEBUG_KMS("failed to read payload table status %d\n", ret);
+-			goto fail;
++			DRM_DEBUG_KMS("failed to read payload table status %d\n",
++				      ret);
++			return ret;
+ 		}
+ 
+ 		if (status & DP_PAYLOAD_ACT_HANDLED)
+ 			break;
+ 		count++;
+ 		udelay(100);
+-
+ 	} while (count < 30);
+ 
+ 	if (!(status & DP_PAYLOAD_ACT_HANDLED)) {
+-		DRM_DEBUG_KMS("failed to get ACT bit %d after %d retries\n", status, count);
+-		ret = -EINVAL;
+-		goto fail;
++		DRM_DEBUG_KMS("failed to get ACT bit %d after %d retries\n",
++			      status, count);
++		return -EINVAL;
+ 	}
+ 	return 0;
+-fail:
+-	return ret;
+ }
+ EXPORT_SYMBOL(drm_dp_check_act_status);
+ 
 
 
