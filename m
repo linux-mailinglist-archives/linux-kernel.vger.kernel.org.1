@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A28920645A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 282A22065C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404237AbgFWVUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:20:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41876 "EHLO mail.kernel.org"
+        id S2388863AbgFWULA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:11:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51736 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390324AbgFWUXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:23:39 -0400
+        id S2388805AbgFWUKb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:10:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1845920780;
-        Tue, 23 Jun 2020 20:23:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E17EC20707;
+        Tue, 23 Jun 2020 20:10:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943819;
-        bh=Q0uGvxYBaSzETHk8r24Ts7/Bpe5C/cVPyFEOiuYfPts=;
+        s=default; t=1592943031;
+        bh=U41vo2J41mKdG0sSmbL4LAJnwKc8Gnby07k97bRSZCU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XMsxcJ4v0dSLgJFvS0pm3g/GAmNjh2uGuH/VLDE7pSnYeT5dcZrLNyNrftYZsroL9
-         MH2luBFUJgZ+4AndNng8g0842TeR6dX/bk6AJvYr7aahrxoHfKLIeqdYHHWISMTaSA
-         V4DB5aP73WZRiduAvszgEa5UGaMoKeuYueQVtvD8=
+        b=sG/HDnBqf224kNiji3bfJgMY6nfcgJdGWQ/RrVjsBSb339Ud/8Qdo4PbbBCWnJBoF
+         IX0DOjp0bdfg1yUzqCf4e9Rsq8P0kqln1oyDS87HIGe7SK9bIPLuOc/JchO6lpmkvx
+         cUzuM1gh73B/gidiS+QYFiZlKH09aV4aHMomhBj8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        stable@vger.kernel.org,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 033/314] misc: fastrpc: fix potential fastrpc_invoke_ctx leak
+Subject: [PATCH 5.7 231/477] tty: n_gsm: Fix bogus i++ in gsm_data_kick
 Date:   Tue, 23 Jun 2020 21:53:48 +0200
-Message-Id: <20200623195340.401181080@linuxfoundation.org>
+Message-Id: <20200623195418.500791401@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
+References: <20200623195407.572062007@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,57 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
 
-[ Upstream commit 74003385cf716f1b88cc7753ca282f5493f204a2 ]
+[ Upstream commit 4dd31f1ffec6c370c3c2e0c605628bf5e16d5c46 ]
 
-fastrpc_invoke_ctx can have refcount of 2 in error path where
-rpmsg_send() fails to send invoke message. decrement the refcount
-properly in the error path to fix this leak.
+When submitting the previous fix "tty: n_gsm: Fix waking up upper tty
+layer when room available". It was suggested to switch from a while to
+a for loop, but when doing it, there was a remaining bogus i++.
 
-This also fixes below static checker warning:
+This patch removes this i++ and also reorganizes the code making it more
+compact.
 
-drivers/misc/fastrpc.c:990 fastrpc_internal_invoke()
-warn: 'ctx->refcount.refcount.ref.counter' not decremented on lines: 990.
-
-Fixes: c68cfb718c8f ("misc: fastrpc: Add support for context")
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Link: https://lore.kernel.org/r/20200512110930.2550-1-srinivas.kandagatla@linaro.org
+Fixes: e1eaea46bb40 ("tty: n_gsm line discipline")
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Link: https://lore.kernel.org/r/20200518084517.2173242-3-gregory.clement@bootlin.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/fastrpc.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/tty/n_gsm.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index ee3291f7e6156..3a5d2890fe2aa 100644
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -886,6 +886,7 @@ static int fastrpc_invoke_send(struct fastrpc_session_ctx *sctx,
- 	struct fastrpc_channel_ctx *cctx;
- 	struct fastrpc_user *fl = ctx->fl;
- 	struct fastrpc_msg *msg = &ctx->msg;
-+	int ret;
+diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+index 0a8f241e537d9..f189579db7c4c 100644
+--- a/drivers/tty/n_gsm.c
++++ b/drivers/tty/n_gsm.c
+@@ -711,17 +711,9 @@ static void gsm_data_kick(struct gsm_mux *gsm, struct gsm_dlci *dlci)
+ 		} else {
+ 			int i = 0;
  
- 	cctx = fl->cctx;
- 	msg->pid = fl->tgid;
-@@ -901,7 +902,13 @@ static int fastrpc_invoke_send(struct fastrpc_session_ctx *sctx,
- 	msg->size = roundup(ctx->msg_sz, PAGE_SIZE);
- 	fastrpc_context_get(ctx);
- 
--	return rpmsg_send(cctx->rpdev->ept, (void *)msg, sizeof(*msg));
-+	ret = rpmsg_send(cctx->rpdev->ept, (void *)msg, sizeof(*msg));
-+
-+	if (ret)
-+		fastrpc_context_put(ctx);
-+
-+	return ret;
-+
+-			for (i = 0; i < NUM_DLCI; i++) {
+-				struct gsm_dlci *dlci;
+-
+-				dlci = gsm->dlci[i];
+-				if (dlci == NULL) {
+-					i++;
+-					continue;
+-				}
+-
+-				tty_port_tty_wakeup(&dlci->port);
+-			}
++			for (i = 0; i < NUM_DLCI; i++)
++				if (gsm->dlci[i])
++					tty_port_tty_wakeup(&gsm->dlci[i]->port);
+ 		}
+ 	}
  }
- 
- static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
 -- 
 2.25.1
 
