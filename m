@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43C33205F23
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9650C205FF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391024AbgFWU3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:29:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49680 "EHLO mail.kernel.org"
+        id S2391903AbgFWUh7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:37:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391002AbgFWU3g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:29:36 -0400
+        id S2391893AbgFWUhu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:37:50 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EB91B206C3;
-        Tue, 23 Jun 2020 20:29:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2CF1920781;
+        Tue, 23 Jun 2020 20:37:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944176;
-        bh=0PBbNoMLgT/OjPeh5DapmIdaNhEuA8/SPN2ldUn2pTo=;
+        s=default; t=1592944670;
+        bh=H+qK/b791Kqdtctz1JNS9iY5F0c7rR2HP/jVSlhx7Ow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0FbmZVfbouu+tHvTidLWoUCHDn6W9hMzkBlB8YvX4etHJLa0NVKguohks0mc2+ARU
-         AlUP5Wjq60CZRRCaWV0AWuORDC/aphx1AeoUtdGQN64UA7r/GXHqbIdv8H7zkRbxmJ
-         JXtaUXk+11ToamAa2kK7kw0vMO89US5y1xRlXK4Y=
+        b=Xm+L1c5mhAnKDF61Gs46ozXydRLGK66hRyRn6LWRYJl40VqfLLGvIhdoCfh0d259o
+         KicUIMbc6iXF91MbDXsRtI3eq7QOPEBj806Fa2GYqlSi7TFRXj+KC+QROm0i4hiGH9
+         NgZ2YuwCTl0kyrWS6d7m89UKMo1kNa5r0pb3LU+A=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-arm-kernel@lists.infradead.org,
-        John Hubbard <jhubbard@nvidia.com>,
+        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
+        Benjamin Block <bblock@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 195/314] misc: xilinx-sdfec: improve get_user_pages_fast() error handling
+Subject: [PATCH 4.19 062/206] s390/qdio: put thinint indicator after early error
 Date:   Tue, 23 Jun 2020 21:56:30 +0200
-Message-Id: <20200623195348.226110468@linuxfoundation.org>
+Message-Id: <20200623195320.016595188@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,95 +45,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Hubbard <jhubbard@nvidia.com>
+From: Julian Wiedmann <jwi@linux.ibm.com>
 
-[ Upstream commit 57343d51613227373759f5b0f2eede257fd4b82e ]
+[ Upstream commit 75e82bec6b2622c6f455b7a543fb5476a5d0eed7 ]
 
-This fixes the case of get_user_pages_fast() returning a -errno.
-The result needs to be stored in a signed integer. And for safe
-signed/unsigned comparisons, it's best to keep everything signed.
-And get_user_pages_fast() also expects a signed value for number
-of pages to pin.
+qdio_establish() calls qdio_setup_thinint() via qdio_setup_irq().
+If the subsequent qdio_establish_thinint() fails, we miss to put the
+DSCI again. Thus the DSCI isn't available for re-use. Given enough of
+such errors, we could end up with having only the shared DSCI available.
 
-Therefore, change most relevant variables, from u32 to int. Leave
-"n" unsigned, for convenience in checking for overflow. And provide
-a WARN_ON_ONCE() and early return, if overflow occurs.
+Merge qdio_setup_thinint() into qdio_establish_thinint(), and deal with
+such an error internally.
 
-Also, as long as we're tidying up: rename the page array from page,
-to pages, in order to match the conventions used in most other call
-sites.
-
-Fixes: 20ec628e8007e ("misc: xilinx_sdfec: Add ability to configure LDPC")
-Cc: Derek Kiernan <derek.kiernan@xilinx.com>
-Cc: Dragan Cvetic <dragan.cvetic@xilinx.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Michal Simek <michal.simek@xilinx.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Signed-off-by: John Hubbard <jhubbard@nvidia.com>
-Link: https://lore.kernel.org/r/20200527012628.1100649-2-jhubbard@nvidia.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 779e6e1c724d ("[S390] qdio: new qdio driver.")
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Reviewed-by: Benjamin Block <bblock@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/xilinx_sdfec.c | 27 +++++++++++++++++----------
- 1 file changed, 17 insertions(+), 10 deletions(-)
+ drivers/s390/cio/qdio.h         |  1 -
+ drivers/s390/cio/qdio_setup.c   |  1 -
+ drivers/s390/cio/qdio_thinint.c | 14 ++++++++------
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/misc/xilinx_sdfec.c b/drivers/misc/xilinx_sdfec.c
-index 48ba7e02bed72..d4c14b617201e 100644
---- a/drivers/misc/xilinx_sdfec.c
-+++ b/drivers/misc/xilinx_sdfec.c
-@@ -602,10 +602,10 @@ static int xsdfec_table_write(struct xsdfec_dev *xsdfec, u32 offset,
- 			      const u32 depth)
+diff --git a/drivers/s390/cio/qdio.h b/drivers/s390/cio/qdio.h
+index a6f7c2986b94f..ed60b8d4efe68 100644
+--- a/drivers/s390/cio/qdio.h
++++ b/drivers/s390/cio/qdio.h
+@@ -377,7 +377,6 @@ static inline int multicast_outbound(struct qdio_q *q)
+ extern u64 last_ai_time;
+ 
+ /* prototypes for thin interrupt */
+-void qdio_setup_thinint(struct qdio_irq *irq_ptr);
+ int qdio_establish_thinint(struct qdio_irq *irq_ptr);
+ void qdio_shutdown_thinint(struct qdio_irq *irq_ptr);
+ void tiqdio_add_input_queues(struct qdio_irq *irq_ptr);
+diff --git a/drivers/s390/cio/qdio_setup.c b/drivers/s390/cio/qdio_setup.c
+index d040c4920ee78..b8955e20f2469 100644
+--- a/drivers/s390/cio/qdio_setup.c
++++ b/drivers/s390/cio/qdio_setup.c
+@@ -480,7 +480,6 @@ int qdio_setup_irq(struct qdio_initialize *init_data)
+ 	setup_queues(irq_ptr, init_data);
+ 
+ 	setup_qib(irq_ptr, init_data);
+-	qdio_setup_thinint(irq_ptr);
+ 	set_impl_params(irq_ptr, init_data->qib_param_field_format,
+ 			init_data->qib_param_field,
+ 			init_data->input_slib_elements,
+diff --git a/drivers/s390/cio/qdio_thinint.c b/drivers/s390/cio/qdio_thinint.c
+index 6628e0c9e70e3..e6b22a58150ae 100644
+--- a/drivers/s390/cio/qdio_thinint.c
++++ b/drivers/s390/cio/qdio_thinint.c
+@@ -267,17 +267,19 @@ int __init tiqdio_register_thinints(void)
+ 
+ int qdio_establish_thinint(struct qdio_irq *irq_ptr)
  {
- 	u32 reg = 0;
--	u32 res;
--	u32 n, i;
-+	int res, i, nr_pages;
-+	u32 n;
- 	u32 *addr = NULL;
--	struct page *page[MAX_NUM_PAGES];
-+	struct page *pages[MAX_NUM_PAGES];
- 
- 	/*
- 	 * Writes that go beyond the length of
-@@ -622,15 +622,22 @@ static int xsdfec_table_write(struct xsdfec_dev *xsdfec, u32 offset,
- 	if ((len * XSDFEC_REG_WIDTH_JUMP) % PAGE_SIZE)
- 		n += 1;
- 
--	res = get_user_pages_fast((unsigned long)src_ptr, n, 0, page);
--	if (res < n) {
--		for (i = 0; i < res; i++)
--			put_page(page[i]);
-+	if (WARN_ON_ONCE(n > INT_MAX))
-+		return -EINVAL;
++	int rc;
 +
-+	nr_pages = n;
-+
-+	res = get_user_pages_fast((unsigned long)src_ptr, nr_pages, 0, pages);
-+	if (res < nr_pages) {
-+		if (res > 0) {
-+			for (i = 0; i < res; i++)
-+				put_page(pages[i]);
-+		}
- 		return -EINVAL;
- 	}
+ 	if (!is_thinint_irq(irq_ptr))
+ 		return 0;
+-	return set_subchannel_ind(irq_ptr, 0);
+-}
  
--	for (i = 0; i < n; i++) {
--		addr = kmap(page[i]);
-+	for (i = 0; i < nr_pages; i++) {
-+		addr = kmap(pages[i]);
- 		do {
- 			xsdfec_regwrite(xsdfec,
- 					base_addr + ((offset + reg) *
-@@ -639,7 +646,7 @@ static int xsdfec_table_write(struct xsdfec_dev *xsdfec, u32 offset,
- 			reg++;
- 		} while ((reg < len) &&
- 			 ((reg * XSDFEC_REG_WIDTH_JUMP) % PAGE_SIZE));
--		put_page(page[i]);
-+		put_page(pages[i]);
- 	}
- 	return reg;
+-void qdio_setup_thinint(struct qdio_irq *irq_ptr)
+-{
+-	if (!is_thinint_irq(irq_ptr))
+-		return;
+ 	irq_ptr->dsci = get_indicator();
+ 	DBF_HEX(&irq_ptr->dsci, sizeof(void *));
++
++	rc = set_subchannel_ind(irq_ptr, 0);
++	if (rc)
++		put_indicator(irq_ptr->dsci);
++
++	return rc;
  }
+ 
+ void qdio_shutdown_thinint(struct qdio_irq *irq_ptr)
 -- 
 2.25.1
 
