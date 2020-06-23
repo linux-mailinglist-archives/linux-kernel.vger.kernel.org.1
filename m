@@ -2,150 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1797E204938
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 07:28:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D3E204941
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 07:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbgFWF22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 01:28:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728615AbgFWF21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 01:28:27 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6592E20716;
-        Tue, 23 Jun 2020 05:28:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592890107;
-        bh=hXx1AoyMhAAH4V2F+L7ruURvcKfaPHtYRAUW+1pvx4k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Me1WQehU/cJKvXiO6fvSIbp3GZeSa46KS8e+Iz/R0XIc6/NN7kUn5QjG4/yWNtq/Y
-         qgnXvP8f8egr6ramEu2OiNtvbeAP5a0BS6isi4LJPytVu0xr8U7KelPcXwZdHU7lTS
-         K2oQp90JdsMj1P2xnnuEk3eqs4X4qFhnhkI36r9w=
-Date:   Tue, 23 Jun 2020 14:28:22 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ming Lei <ming.lei@redhat.com>,
-        Ming Lei <tom.leiming@gmail.com>,
-        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-block <linux-block@vger.kernel.org>
-Subject: Re: kprobe: __blkdev_put probe is missed
-Message-Id: <20200623142822.371012c66baf2cc7a631e6a3@kernel.org>
-In-Reply-To: <20200623093801.db9d2ca9c3bfef61ef6a2a58@kernel.org>
-References: <20200618125438.GA191266@T590>
-        <20200618225602.3f2cca3f0ed48427fc0a483b@kernel.org>
-        <20200618231901.GA196099@T590>
-        <20200619141239.56f6dda0976453b790190ff7@kernel.org>
-        <20200619072859.GA205278@T590>
-        <20200619081954.3d72a252@oasis.local.home>
-        <20200619133240.GA351476@T590>
-        <20200620003509.9521053fbd384f4f5d23408f@kernel.org>
-        <20200619232820.GE353853@T590>
-        <20200620103747.fb83f804083ef9956740acee@kernel.org>
-        <20200622002753.GC670933@T590>
-        <20200622090148.6e0f2ac9@oasis.local.home>
-        <20200623084706.e6e99e99d7da6690e7a6c199@kernel.org>
-        <20200623093801.db9d2ca9c3bfef61ef6a2a58@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730149AbgFWFeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 01:34:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56256 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728729AbgFWFeg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 01:34:36 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301F5C061573
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 22:34:35 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id j1so9567043pfe.4
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 22:34:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=yw0cFZLgC9JersHygrJb/SoVH5zyPcZOPd+eIbg7N9A=;
+        b=kkvvS8tA2dHGIqkqWVaFEbyD/nNUcyhtytbI92XDvjh1EWLg63eW6ZygliZfyJf6XN
+         VgkjmEX+uV7WJ0k5QMy8yMfCbspbNu8riS8kQ5Ozfe0EQ32v+MWp8p06G4tQJHIv9NSN
+         enVw/l57/iL1HzpcDMpHWv7y0lFBxEnLAa+lCssxe6ugKpeuvr1rkcDOdKXjBi1TSN3f
+         TvrekhC9W8CrfG/LOWuypaNCmK+7SKcYrFhLaLW4rg8zH5RMQAFXySUCUWBUh9K2/ufF
+         TO7OV4XuoX45rNFxXjbK+8qfmERsz3A/rJ/sZFxe3VL0NzBNifco3K9BpPz/a5Gz6beM
+         di8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=yw0cFZLgC9JersHygrJb/SoVH5zyPcZOPd+eIbg7N9A=;
+        b=Y9lFXMdODQ4eWaMvCdahDheIL8AbEef4pVPmXVbi/dYs6dkldRO3gapysi0WHcba4D
+         xBzp9fo89zmK8/qYacTasVvIOnu/qZglN45R8bogi+cPOQ7Z07H7b8tA8dpZV12dcGcm
+         EKhiqGf8N+r2Njcn3fDKEy2Pwq0DYOpljWmlK8ovlDRC0/hA8Y4Gogx3ZmVXYTt5gs5Y
+         kCQZdvu1NgVgCmaBBPjAYLryGXtGhRSRrLfVofxcWkRaagGg+/t9MrSlJKlBTzHJL5Kg
+         BEC+Po+VLoxqGQyZASaiUqdBs7EEjRE6kcynUnAJmAlOihiq2l16ppqjf+vtdDhm5vNK
+         5dvw==
+X-Gm-Message-State: AOAM531ewU1+Hdl2J5vBhlZ5heskzCxePaO8KQKWp2/2KmVjxIWPvuig
+        a9g5k6th3VoO14ncWFlhou4=
+X-Google-Smtp-Source: ABdhPJw1nFeLEWTr0Aixs6TirejroBAE2/O59QCNX1jBOTew5i1D81DQ/Sy2Lv436Bu4/2+08CPyhA==
+X-Received: by 2002:a62:ea0b:: with SMTP id t11mr10457134pfh.276.1592890474504;
+        Mon, 22 Jun 2020 22:34:34 -0700 (PDT)
+Received: from Asurada-Nvidia (searspoint.nvidia.com. [216.228.112.21])
+        by smtp.gmail.com with ESMTPSA id i125sm12458923pgd.21.2020.06.22.22.34.33
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 22 Jun 2020 22:34:34 -0700 (PDT)
+Date:   Mon, 22 Jun 2020 22:34:08 -0700
+From:   Nicolin Chen <nicoleotsuka@gmail.com>
+To:     Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc:     timur@kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        broonie@kernel.org, alsa-devel@alsa-project.org,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ASoC: fsl_easrc: Fix uninitialized scalar variable in
+ fsl_easrc_set_ctx_format
+Message-ID: <20200623053405.GA9039@Asurada-Nvidia>
+References: <1592816611-16297-1-git-send-email-shengjiu.wang@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1592816611-16297-1-git-send-email-shengjiu.wang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Jun 2020 09:38:01 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
-
-> On Tue, 23 Jun 2020 08:47:06 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Mon, Jun 22, 2020 at 05:03:31PM +0800, Shengjiu Wang wrote:
+> The "ret" in fsl_easrc_set_ctx_format is not initialized, then
+> the unknown value maybe returned by this function.
 > 
-> > On Mon, 22 Jun 2020 09:01:48 -0400
-> > Steven Rostedt <rostedt@goodmis.org> wrote:
-> > 
-> > > On Mon, 22 Jun 2020 08:27:53 +0800
-> > > Ming Lei <ming.lei@redhat.com> wrote:
-> > > 
-> > > > Can you kprobe guys improve the implementation for covering this case?
-> > > > For example, put probe on 3) in case the above situation is recognized.
-> > > 
-> > > To do so would require solving the halting problem.
-> > > 
-> > >   https://en.wikipedia.org/wiki/Halting_problem
-> > > 
-> > > Or perhaps reading the DWARF output of the compiler to determine if it
-> > > optimized the location you are looking for.
-> > 
-> > As far as I can see, gcc-9.3 doesn't generate this information :(
-> > Maybe the optimizer forgot to push the tail-call callsite information
-> > to dwarf generator when making a recursive tail-call to a loop.
-> > 
-> > > The first case is impossible to solve, the second would take a lot of
-> > > work, (are you going to fund it?)
-> > 
-> > What I can provide is "--skip-prologue" option for the perf-probe
-> > which will be similar to the "-P" option. If the compiler correctly
-> > generates the information, we can enable it automatically. But
-> > as far as I can see, it doesn't.
-> > 
-> > [OT] DWARF has its option(and GNU extension) but it seems not correctly
-> > implemented yet.
-> >  
-> > http://www.dwarfstd.org/ShowIssue.php?issue=100909.2
-> 
-> Oops, sorry, I missed the following sentences.
-> 
-> "Tail calls are jump-like instructions which transfer control to the start
-> of some subprogram, but the call site location address isn't visible in the
-> unwind information."
-> 
-> "Tail recursion is a call to the current function which is compiled as a
-> loop into the middle of the current function."
-> 
-> "The DW_TAG_call_site entries describe normal and tail calls."
-> 
-> This means, the gcc is correctly implemented and this __blkdev_put() case
-> is NOT covered by DT_TAG_call_site.
-> So we can not detect it from the debuginfo.
+> Fixes: 955ac624058f ("ASoC: fsl_easrc: Add EASRC ASoC CPU DAI drivers")
+> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-Hmm, BTW, if optimization is further advanced, it is possible that
-the loop start position is not always at the beginning of the function.
-It is easy to provide --skip-prologue to perf probe but it doesn't
-ensure that works always as you expected.
-
-For example,
-
-func()
-{
-1:
-	{ /* block which doesn't executed in tail-recursion call */
-	...
-	}
-2:
-	{ /* block which always executed in tail-recursion call */
-	...
-	}
-	func()
-}
-
-In this case, it is natural that the optimizer put a jump to 2 instead
-of 1. Moreover, if the number of recursion is fixed, the optimizer
-can unroll the loop. In that case there are no jumps. 
-
-So, as Steve pointed, strictly speaking, the developer needs to understand
-what the source code was compiled into, before tracing/debuging it.
-
-For the perf-probe case, I'm now thinking it is better user to
-choose the line in the function explicitly. I wish I had another flag
-that there was a tail-recursion, then I can warn users...
-
-Thank you,
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
