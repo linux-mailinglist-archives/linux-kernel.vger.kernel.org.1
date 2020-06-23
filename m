@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4739205282
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 14:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 032E9205284
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 14:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732600AbgFWMcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 08:32:01 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6310 "EHLO huawei.com"
+        id S1732624AbgFWMcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 08:32:08 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6824 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729611AbgFWMcB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 08:32:01 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 56B9ABB4034CE08A26FB;
-        Tue, 23 Jun 2020 20:31:57 +0800 (CST)
+        id S1729611AbgFWMcE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 08:32:04 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 4991BC24F155409DC33C;
+        Tue, 23 Jun 2020 20:32:02 +0800 (CST)
 Received: from euler.huawei.com (10.175.124.27) by
  DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 23 Jun 2020 20:31:53 +0800
+ 14.3.487.0; Tue, 23 Jun 2020 20:31:58 +0800
 From:   Wei Li <liwei391@huawei.com>
 To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
@@ -31,10 +31,12 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>
-Subject: [PATCH 0/2] perf tools: Fix record failure when mixed with ARM SPE event
-Date:   Tue, 23 Jun 2020 20:31:39 +0800
-Message-ID: <20200623123141.27747-1-liwei391@huawei.com>
+Subject: [PATCH 1/2] perf tools: ARM SPE code cleanup
+Date:   Tue, 23 Jun 2020 20:31:40 +0800
+Message-ID: <20200623123141.27747-2-liwei391@huawei.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200623123141.27747-1-liwei391@huawei.com>
+References: <20200623123141.27747-1-liwei391@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.175.124.27]
@@ -44,16 +46,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set fixes perf record failure when we mix arm_spe_x event with
-other events in specific order.
+Remove the useless check code to make it clear.
 
-Wei Li (2):
-  perf tools: ARM SPE code cleanup
-  perf tools: Fix record failure when mixed with ARM SPE event
+Signed-off-by: Wei Li <liwei391@huawei.com>
+---
+ tools/perf/arch/arm/util/auxtrace.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
- tools/perf/arch/arm/util/auxtrace.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
-
+diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
+index 0a6e75b8777a..62b7b03d691a 100644
+--- a/tools/perf/arch/arm/util/auxtrace.c
++++ b/tools/perf/arch/arm/util/auxtrace.c
+@@ -57,7 +57,7 @@ struct auxtrace_record
+ 	struct evsel *evsel;
+ 	bool found_etm = false;
+ 	bool found_spe = false;
+-	static struct perf_pmu **arm_spe_pmus = NULL;
++	static struct perf_pmu **arm_spe_pmus;
+ 	static int nr_spes = 0;
+ 	int i = 0;
+ 
+@@ -65,9 +65,7 @@ struct auxtrace_record
+ 		return NULL;
+ 
+ 	cs_etm_pmu = perf_pmu__find(CORESIGHT_ETM_PMU_NAME);
+-
+-	if (!arm_spe_pmus)
+-		arm_spe_pmus = find_all_arm_spe_pmus(&nr_spes, err);
++	arm_spe_pmus = find_all_arm_spe_pmus(&nr_spes, err);
+ 
+ 	evlist__for_each_entry(evlist, evsel) {
+ 		if (cs_etm_pmu &&
 -- 
 2.17.1
 
