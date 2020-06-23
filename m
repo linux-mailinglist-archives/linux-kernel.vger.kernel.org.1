@@ -2,88 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB563204794
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B768204795
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732255AbgFWCwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 22:52:30 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:46933 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731999AbgFWCvr (ORCPT
+        id S1732270AbgFWCwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 22:52:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59554 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732025AbgFWCvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 22:51:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592880706;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wItOOFxGoX9Yxy2T8076N6nMJmnVQApKKEzZUpOJV/A=;
-        b=YjKR+xLPScUNDNtu3QTm1IbdDcuNZ5kLh8osYq7H0H3bq5D3EjqkfW1AFCLRAuRYj7LH/j
-        TyNo5p1EvINfeT2zJ4P/MC8dfdneifYDnuvEjxt+GD2BOkt6aDae01Vu8aD4YbTWnMJOt7
-        HzQpb09lc0hfqLYRnNj3Dz/i3ukuvqQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-451-IKRKNpSxMJyEL-9nTh0cCA-1; Mon, 22 Jun 2020 22:51:42 -0400
-X-MC-Unique: IKRKNpSxMJyEL-9nTh0cCA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2315EBFC1;
-        Tue, 23 Jun 2020 02:51:41 +0000 (UTC)
-Received: from [10.72.12.144] (ovpn-12-144.pek2.redhat.com [10.72.12.144])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D2B9819D71;
-        Tue, 23 Jun 2020 02:51:35 +0000 (UTC)
-Subject: Re: [PATCH RFC v8 02/11] vhost: use batched get_vq_desc version
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        eperezma@redhat.com
-References: <20200611113404.17810-1-mst@redhat.com>
- <20200611113404.17810-3-mst@redhat.com>
- <0332b0cf-cf00-9216-042c-e870efa33626@redhat.com>
- <20200622115946-mutt-send-email-mst@kernel.org>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <c56cc86d-a420-79ca-8420-e99db91980fa@redhat.com>
-Date:   Tue, 23 Jun 2020 10:51:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200622115946-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+        Mon, 22 Jun 2020 22:51:48 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8707C061795
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 19:51:47 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id d10so6590016pls.5
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 19:51:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=Bkqe8eP6qav0NO7h7H0YnVgLuAUP47V9yLKohTYScP4=;
+        b=SacbG/sMALx094GrI3w7UgttPeQ0KM2G3AoODCvFQJGFJ5vln9En6Frb+o9dKibvSg
+         Okny/UMLQJ0rhbLGQCyBu5QdK9UVQ6bkIbPfzInNDmXXD1VDvL4Fk5eQnAF6Sj3p2w2Y
+         2+FdERPjM6wES4ug+qUdx3gg4X7vQHpHE8DiQ0xiITzjC2e4JMKiuenvvQityR3Vg9D9
+         PxSZHeUFisHW6YGR24OuLF+Fkp6WcuDGEoDhwAhouEVR26WTM7LJ9rRq9VWGfpMusq71
+         kp0t2+FGL7LqQPW3OOCbVJWMZ6bbxHBot6lBBdjtBD79Tw29zxpM1olGSTmWEhdi2TsC
+         cQsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Bkqe8eP6qav0NO7h7H0YnVgLuAUP47V9yLKohTYScP4=;
+        b=FSR1XHP5GotjSbUqyUZaTi3niBJqBfnMWLEyCq8IZie6sBXT5W13tXO/aYa6fcvj8N
+         fXiOCPyKMstWs3enQxn2Fc6IWHUYL7IYU1erLw6mqQB54jdFm39Hue8vcoQpDwqHjzTu
+         Ja8j+X0tKKu09SYBRQnN72AcBPClXmPRCrlufg/nCbzlnNvFan2HWcTp5nEmnTWA6kUE
+         Dnwr0SLgm1pLG0AgZYOHTrJJNVXnh5w560yqnAtDzB6Ofo5kxtTM2/vysN8pEwnuw2T1
+         d2I/7jb7QAunRKH++z314YvabECTHj5dmsnkpuzsPyYQX/DFCfq/jcGjqbSV4EjHMd3m
+         ZqKQ==
+X-Gm-Message-State: AOAM532oTwNaIieZR+h/NZAsuEpUYqSpzAvg87Dgk6mB7gmnu4xBSXx3
+        lylQPn84vi1OKxXbmsxbX7IoiT8C8S0=
+X-Google-Smtp-Source: ABdhPJwQKgj2PeBSrZqxgChMqadOaXI5DuaCAkwJY1oO+kXbbPkv3BV7iGHMfNyJ7tZr2wPjeTAnMQ==
+X-Received: by 2002:a17:902:ba83:: with SMTP id k3mr22973488pls.261.1592880707148;
+        Mon, 22 Jun 2020 19:51:47 -0700 (PDT)
+Received: from localhost.localdomain ([2601:1c2:680:1319:692:26ff:feda:3a81])
+        by smtp.gmail.com with ESMTPSA id y7sm15807629pfq.43.2020.06.22.19.51.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 19:51:46 -0700 (PDT)
+From:   John Stultz <john.stultz@linaro.org>
+To:     lkml <linux-kernel@vger.kernel.org>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org
+Subject: [PATCH] i2c: designware: Fix functionality in !CONFIG_ACPI case
+Date:   Tue, 23 Jun 2020 02:51:44 +0000
+Message-Id: <20200623025144.34246-1-john.stultz@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On the HiKey board, where CONFIG_ACPI is not set, we started
+to see a graphics regression where the adv7511 HDMI bridge driver
+wasn't probing. This was due to the i2c bus failing to start up.
 
-On 2020/6/23 上午12:00, Michael S. Tsirkin wrote:
-> On Wed, Jun 17, 2020 at 11:19:26AM +0800, Jason Wang wrote:
->> On 2020/6/11 下午7:34, Michael S. Tsirkin wrote:
->>>    static void vhost_vq_free_iovecs(struct vhost_virtqueue *vq)
->>>    {
->>>    	kfree(vq->descs);
->>> @@ -394,6 +400,9 @@ static long vhost_dev_alloc_iovecs(struct vhost_dev *dev)
->>>    	for (i = 0; i < dev->nvqs; ++i) {
->>>    		vq = dev->vqs[i];
->>>    		vq->max_descs = dev->iov_limit;
->>> +		if (vhost_vq_num_batch_descs(vq) < 0) {
->>> +			return -EINVAL;
->>> +		}
->> This check breaks vdpa which set iov_limit to zero. Consider iov_limit is
->> meaningless to vDPA, I wonder we can skip the test when device doesn't use
->> worker.
->>
->> Thanks
-> It doesn't need iovecs at all, right?
->
-> -- MST
+I bisected the problem down to commit f9288fcc5c615 ("i2c:
+designware: Move ACPI parts into common module") and after
+looking at it a bit, I realized that change moved some
+initialization into i2c_dw_acpi_adjust_bus_speed(). However,
+i2c_dw_acpi_adjust_bus_speed() is only functional if CONFIG_ACPI
+is set.
 
+This patch pulls i2c_dw_acpi_adjust_bus_speed() out of the
+ifdef CONFIG_ACPI conditional, and gets the board working again.
 
-Yes, so we may choose to bypass the iovecs as well.
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: Wolfram Sang <wsa@kernel.org>
+Cc: linux-i2c@vger.kernel.org
+Fixes: f9288fcc5c615 ("i2c: designware: Move ACPI parts into common module")
+Signed-off-by: John Stultz <john.stultz@linaro.org>
+---
+ drivers/i2c/busses/i2c-designware-common.c | 4 ++--
+ drivers/i2c/busses/i2c-designware-core.h   | 3 +--
+ 2 files changed, 3 insertions(+), 4 deletions(-)
 
-Thanks
+diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
+index e3a8640db7da..33de185e15f2 100644
+--- a/drivers/i2c/busses/i2c-designware-common.c
++++ b/drivers/i2c/busses/i2c-designware-common.c
+@@ -286,6 +286,8 @@ int i2c_dw_acpi_configure(struct device *device)
+ }
+ EXPORT_SYMBOL_GPL(i2c_dw_acpi_configure);
+ 
++#endif	/* CONFIG_ACPI */
++
+ void i2c_dw_acpi_adjust_bus_speed(struct device *device)
+ {
+ 	struct dw_i2c_dev *dev = dev_get_drvdata(device);
+@@ -317,8 +319,6 @@ void i2c_dw_acpi_adjust_bus_speed(struct device *device)
+ }
+ EXPORT_SYMBOL_GPL(i2c_dw_acpi_adjust_bus_speed);
+ 
+-#endif	/* CONFIG_ACPI */
+-
+ u32 i2c_dw_scl_hcnt(u32 ic_clk, u32 tSYMBOL, u32 tf, int cond, int offset)
+ {
+ 	/*
+diff --git a/drivers/i2c/busses/i2c-designware-core.h b/drivers/i2c/busses/i2c-designware-core.h
+index 556673a1f61b..ea2485872cab 100644
+--- a/drivers/i2c/busses/i2c-designware-core.h
++++ b/drivers/i2c/busses/i2c-designware-core.h
+@@ -364,8 +364,7 @@ int i2c_dw_validate_speed(struct dw_i2c_dev *dev);
+ 
+ #if IS_ENABLED(CONFIG_ACPI)
+ int i2c_dw_acpi_configure(struct device *device);
+-void i2c_dw_acpi_adjust_bus_speed(struct device *device);
+ #else
+ static inline int i2c_dw_acpi_configure(struct device *device) { return -ENODEV; }
+-static inline void i2c_dw_acpi_adjust_bus_speed(struct device *device) {}
+ #endif
++void i2c_dw_acpi_adjust_bus_speed(struct device *device);
+-- 
+2.17.1
 
