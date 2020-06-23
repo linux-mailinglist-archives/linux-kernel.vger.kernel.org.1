@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB8E72060D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:49:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5608D2060D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:49:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404044AbgFWUrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:47:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45082 "EHLO mail.kernel.org"
+        id S2392648AbgFWUrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:47:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45296 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392885AbgFWUqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:46:53 -0400
+        id S2392634AbgFWUrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:47:01 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9035821548;
-        Tue, 23 Jun 2020 20:46:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A11F214DB;
+        Tue, 23 Jun 2020 20:47:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945214;
-        bh=LVnmN5aZ0vxgsQR5Wy6w1OtuTrMtIj65si1oe4t5o84=;
+        s=default; t=1592945222;
+        bh=dgYiHx/8l9R33fw+vlvYho62cYUh2ayEQV1E/YH40C0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1UyGcd7Tdn19S8a3Z/tiUlMvpEoykGiO165H3NXSb+PJR2ayTK34ZKBjf7acsFYnP
-         Qm+zC1uvYNmC792dkAayUBqt2y2YIgyi82liUl9ythzmiLktVTsqC/g7/f/rehLrih
-         +3NV3GgGy7hpiPAtuj1W0IWDY5FMfb2HvFQ4Nx+g=
+        b=SXe30OdjiGTh9+yZz98WLTK3Um9OFS5kawpYj7hnZnbvsFEoP04vkYJwIeCQy0Orq
+         mIywH2ZqMB+D+R32Bn3SdWlSwh6xtyfYihgJ0fsFM8Bd0arllh48Ay7npu7rzGtYY+
+         BregfcgCduu6Q5XrYUBfVY1hPb93Smfg4zhqBBDs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        stable@vger.kernel.org, Bob Peterson <rpeterso@redhat.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 084/136] vfio/mdev: Fix reference count leak in add_mdev_supported_type
-Date:   Tue, 23 Jun 2020 21:59:00 +0200
-Message-Id: <20200623195307.916629785@linuxfoundation.org>
+Subject: [PATCH 4.14 086/136] gfs2: Allow lock_nolock mount to specify jid=X
+Date:   Tue, 23 Jun 2020 21:59:02 +0200
+Message-Id: <20200623195308.016767362@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
 References: <20200623195303.601828702@linuxfoundation.org>
@@ -46,38 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Bob Peterson <rpeterso@redhat.com>
 
-[ Upstream commit aa8ba13cae3134b8ef1c1b6879f66372531da738 ]
+[ Upstream commit ea22eee4e6027d8927099de344f7fff43c507ef9 ]
 
-kobject_init_and_add() takes reference even when it fails.
-If this function returns an error, kobject_put() must be called to
-properly clean up the memory associated with the object. Thus,
-replace kfree() by kobject_put() to fix this issue. Previous
-commit "b8eb718348b8" fixed a similar problem.
+Before this patch, a simple typo accidentally added \n to the jid=
+string for lock_nolock mounts. This made it impossible to mount a
+gfs2 file system with a journal other than journal0. Thus:
 
-Fixes: 7b96953bc640 ("vfio: Mediated device Core driver")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
-Reviewed-by: Kirti Wankhede <kwankhede@nvidia.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+mount -tgfs2 -o hostdata="jid=1" <device> <mount pt>
+
+Resulted in:
+mount: wrong fs type, bad option, bad superblock on <device>
+
+In most cases this is not a problem. However, for debugging and
+testing purposes we sometimes want to test the integrity of other
+journals. This patch removes the unnecessary \n and thus allows
+lock_nolock users to specify an alternate journal.
+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/mdev/mdev_sysfs.c | 2 +-
+ fs/gfs2/ops_fstype.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/vfio/mdev/mdev_sysfs.c b/drivers/vfio/mdev/mdev_sysfs.c
-index 802df210929ba..7e474e41c85e3 100644
---- a/drivers/vfio/mdev/mdev_sysfs.c
-+++ b/drivers/vfio/mdev/mdev_sysfs.c
-@@ -113,7 +113,7 @@ struct mdev_type *add_mdev_supported_type(struct mdev_parent *parent,
- 				   "%s-%s", dev_driver_string(parent->dev),
- 				   group->name);
- 	if (ret) {
--		kfree(type);
-+		kobject_put(&type->kobj);
- 		return ERR_PTR(ret);
- 	}
+diff --git a/fs/gfs2/ops_fstype.c b/fs/gfs2/ops_fstype.c
+index 057be88eb1b42..7ed0359ebac61 100644
+--- a/fs/gfs2/ops_fstype.c
++++ b/fs/gfs2/ops_fstype.c
+@@ -922,7 +922,7 @@ fail:
+ }
+ 
+ static const match_table_t nolock_tokens = {
+-	{ Opt_jid, "jid=%d\n", },
++	{ Opt_jid, "jid=%d", },
+ 	{ Opt_err, NULL },
+ };
  
 -- 
 2.25.1
