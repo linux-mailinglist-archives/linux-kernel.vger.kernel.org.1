@@ -2,118 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856CB205283
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 14:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C816F20528A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 14:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732615AbgFWMcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 08:32:05 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:6823 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732566AbgFWMcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 08:32:03 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 3FA7A6E18D86B20D8779;
-        Tue, 23 Jun 2020 20:32:02 +0800 (CST)
-Received: from euler.huawei.com (10.175.124.27) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 23 Jun 2020 20:32:01 +0800
-From:   Wei Li <liwei391@huawei.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        "Arnaldo Carvalho de Melo" <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Kim Phillips <kim.phillips@arm.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: [PATCH 2/2] perf tools: Fix record failure when mixed with ARM SPE event
-Date:   Tue, 23 Jun 2020 20:31:41 +0800
-Message-ID: <20200623123141.27747-3-liwei391@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200623123141.27747-1-liwei391@huawei.com>
-References: <20200623123141.27747-1-liwei391@huawei.com>
+        id S1732579AbgFWMdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 08:33:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729574AbgFWMdn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 08:33:43 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878C2C061573;
+        Tue, 23 Jun 2020 05:33:43 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id a1so7402733ejg.12;
+        Tue, 23 Jun 2020 05:33:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=30SAKFPQimrg7HfeM0k4d4h70bpCAoDQ381GiN74sfg=;
+        b=Km8eT+/N1jc92cnH+YZIZ6aDEoV1S3U7kSMdPsd/xGkisGOsDInQgjCTyAvnN3Kdgs
+         nJg9ogu5wXRKgqIMab77gh+9asX43rx3A/QlqRDBk85P46Z3EaxD+pB6adpD08r8KGjQ
+         q7g4xj/IdLkqm7NgldBzvTjIz6nQQdFC4eDEUrr7S2UJ9Itag/aWtwXWhfelIAiKp2cs
+         bHo901xTd/T/Q2uw/JtEJAJrLpOziIcyfHtJRLmLgoUZ5FBLCGEU2MBybyNjpqm3OR00
+         n+1f8GDYFnnKWAiTE4Nm1Ahn5Uno3/hlmQaJISnRv6sD6JsBXXsnCwywP8d1JWCZQlxP
+         2MBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=30SAKFPQimrg7HfeM0k4d4h70bpCAoDQ381GiN74sfg=;
+        b=qt+zVZMAOlgmcdkuGl/mfuznivkHVlYBjS/YfUSdZVrRN9a8+6ZOOLb/Rb/mq7ufjh
+         BTUz8JKRv7HFLwcLuQ4iWt96FzuapLJ+Lu6/5YN4MDIkH3VQ9LXY0mrxfN9LTsPq8JVo
+         r3riHk5omm4QxpRJbCs3wr1dduos2vCPdRwsJDsw09f+6UWS1hI+OP3mEgKaZTwAPAao
+         X4b/AWYyjS2AQyABFV7dR6jQ8myghl1jb/gLDORh9spVvt/yKvqt+a/CKnY3W7Ldi0Os
+         MG9Rt4c5V1j3DIeDxd8SIlKchF6mWuDaD70gMA/2M0ijVs2wQdN2R5zMtdL06Xk/NwP4
+         AeuQ==
+X-Gm-Message-State: AOAM530aBh6dOhqsYgfL36kFg4AI4HSghYya4p72Qv4tkN+b00opQ6pu
+        F+/iPkvi16CE1KnYm8iwO+s=
+X-Google-Smtp-Source: ABdhPJzwuKRc487tG9XzHN2VHGlbJ03At5WFM+NxaEuJoR2uuR0SVg6pjfA1LNVllF3OnwURr2VfvA==
+X-Received: by 2002:a17:907:abb:: with SMTP id bz27mr20983635ejc.170.1592915622280;
+        Tue, 23 Jun 2020 05:33:42 -0700 (PDT)
+Received: from localhost ([62.96.65.119])
+        by smtp.gmail.com with ESMTPSA id lw11sm13134042ejb.58.2020.06.23.05.33.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 05:33:40 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 14:33:39 +0200
+From:   Thierry Reding <thierry.reding@gmail.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Krishna Reddy <vdumpa@nvidia.com>, snikam@nvidia.com,
+        mperttunen@nvidia.com, bhuntsman@nvidia.com, will@kernel.org,
+        joro@8bytes.org, linux-kernel@vger.kernel.org,
+        praithatha@nvidia.com, talho@nvidia.com,
+        iommu@lists.linux-foundation.org, nicolinc@nvidia.com,
+        linux-tegra@vger.kernel.org, yhsu@nvidia.com, treding@nvidia.com,
+        linux-arm-kernel@lists.infradead.org, bbiswas@nvidia.com
+Subject: Re: [PATCH v6 3/4] iommu/arm-smmu: Add global/context fault
+ implementation hooks
+Message-ID: <20200623123339.GA696655@ulmo>
+References: <20200604234414.21912-1-vdumpa@nvidia.com>
+ <20200604234414.21912-4-vdumpa@nvidia.com>
+ <20200623083643.GB4098287@ulmo>
+ <2dda4530-39cc-d549-1124-26337dd9afbe@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.124.27]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="vkogqOf2sHV7VnPd"
+Content-Disposition: inline
+In-Reply-To: <2dda4530-39cc-d549-1124-26337dd9afbe@arm.com>
+User-Agent: Mutt/1.14.4 (2020-06-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When recording with cache-misses and arm_spe_x event, i found that
-it will just fail without showing any error info if i put cache-misses
-after arm_spe_x event.
 
-[root@localhost 0620]# perf record -e cache-misses -e \
-arm_spe_0/ts_enable=1,pct_enable=1,pa_enable=1,load_filter=1,\
-jitter=1,store_filter=1,min_latency=0/ sleep 1
-[ perf record: Woken up 1 times to write data ]
-[ perf record: Captured and wrote 0.067 MB perf.data ]
-[root@localhost 0620]# perf record -e \
-arm_spe_0/ts_enable=1,pct_enable=1,pa_enable=1,load_filter=1,jitter=1,\
-store_filter=1,min_latency=0/ -e cache-misses sleep 1
-[root@localhost 0620]#
+--vkogqOf2sHV7VnPd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Finally, i found the reason is that the parameter 'arm_spe_pmu' passed to
-arm_spe_recording_init() in auxtrace_record__init() is wrong. When the
-arm_spe_x event is not the last event, 'arm_spe_pmus[i]' will be out of
-bounds.
+On Tue, Jun 23, 2020 at 12:30:16PM +0100, Robin Murphy wrote:
+> On 2020-06-23 09:36, Thierry Reding wrote:
+> [...]
+> > > diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
+> > > index 243bc4cb2705b..d720e1e191176 100644
+> > > --- a/drivers/iommu/arm-smmu.c
+> > > +++ b/drivers/iommu/arm-smmu.c
+> > > @@ -673,6 +673,7 @@ static int arm_smmu_init_domain_context(struct io=
+mmu_domain *domain,
+> > >   	enum io_pgtable_fmt fmt;
+> > >   	struct arm_smmu_domain *smmu_domain =3D to_smmu_domain(domain);
+> > >   	struct arm_smmu_cfg *cfg =3D &smmu_domain->cfg;
+> > > +	irqreturn_t (*context_fault)(int irq, void *dev);
+> > >   	mutex_lock(&smmu_domain->init_mutex);
+> > >   	if (smmu_domain->smmu)
+> > > @@ -835,7 +836,9 @@ static int arm_smmu_init_domain_context(struct io=
+mmu_domain *domain,
+> > >   	 * handler seeing a half-initialised domain state.
+> > >   	 */
+> > >   	irq =3D smmu->irqs[smmu->num_global_irqs + cfg->irptndx];
+> > > -	ret =3D devm_request_irq(smmu->dev, irq, arm_smmu_context_fault,
+> > > +	context_fault =3D (smmu->impl && smmu->impl->context_fault) ?
+> > > +			 smmu->impl->context_fault : arm_smmu_context_fault;
+> >=20
+> > A simpler way might have been to assign arm_smmu_context_fault to all
+> > implementations. That way we wouldn't have to perform this check here
+> > and instead just always using smmu->impl->context_fault.
+>=20
+> But smmu->impl can still be NULL...
+>=20
+> Everything in impl, including the presence of impl itself, is optional, so
+> the notion of overriding a default with the same default doesn't really m=
+ake
+> much sense, and would go against the pattern everywhere else.
 
-It seems that the code can't support concurrent multiple different
-arm_spe_x events currently. So add the code to check and record the
-found 'arm_spe_pmu' to fix this issue.
+True. I had assumed that every implementation would set smmu->impl
+anyway, in which case there'd be little reason to use these default
+fallbacks since each implementation could simply directly refer to the
+exact implementation that it wants.
 
-In fact, we don't support concurrent multiple same arm_spe_x events either,
-that is checked in arm_spe_recording_options(), and it will show the
-relevant info.
+Perhaps the above could be made a bit more palatable by using a standard
+if/else rather than the ternary operator? That would also more closely
+match the pattern elsewhere.
 
-Fixes: ffd3d18c20b8d ("perf tools: Add ARM Statistical Profiling Extensions (SPE) support")
-Signed-off-by: Wei Li <liwei391@huawei.com>
----
- tools/perf/arch/arm/util/auxtrace.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+Thierry
 
-diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
-index 62b7b03d691a..7bb6f29e766c 100644
---- a/tools/perf/arch/arm/util/auxtrace.c
-+++ b/tools/perf/arch/arm/util/auxtrace.c
-@@ -58,6 +58,7 @@ struct auxtrace_record
- 	bool found_etm = false;
- 	bool found_spe = false;
- 	static struct perf_pmu **arm_spe_pmus;
-+	static struct perf_pmu *arm_spe_pmu;
- 	static int nr_spes = 0;
- 	int i = 0;
- 
-@@ -77,6 +78,13 @@ struct auxtrace_record
- 
- 		for (i = 0; i < nr_spes; i++) {
- 			if (evsel->core.attr.type == arm_spe_pmus[i]->type) {
-+				if (found_spe && (arm_spe_pmu != arm_spe_pmus[i])) {
-+					pr_err("Concurrent multiple SPE operation not currently supported\n");
-+					*err = -EOPNOTSUPP;
-+					return NULL;
-+				}
-+
-+				arm_spe_pmu = arm_spe_pmus[i];
- 				found_spe = true;
- 				break;
- 			}
-@@ -94,7 +102,7 @@ struct auxtrace_record
- 
- #if defined(__aarch64__)
- 	if (found_spe)
--		return arm_spe_recording_init(err, arm_spe_pmus[i]);
-+		return arm_spe_recording_init(err, arm_spe_pmu);
- #endif
- 
- 	/*
--- 
-2.17.1
+--vkogqOf2sHV7VnPd
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAl7x9p8ACgkQ3SOs138+
+s6FZPg/9HSAfgoaJNJaXTtNi/OEDZY+VElZLtUMvcQUqt0cbrIEJaGnYnsoTWi6K
+K6p9wrmkmVs6D4yT8I84B+Fe34KFdITXA8NPGPD3g2YFSVCGwr1YzW9gtEwYliG2
+c0q9TuA4tr1NF1F1Hy6B2vTgT22UIvXR38IXp9MP+Ti8EoM1VTcQL4S8ABruWT89
+rUxYHWxWTOiBx401M2oyQY/ToahL1V/tjnS/muOpqxbAEl41NnHXQfdUcfjytZgg
+uKMQZRvNCTufFFI3UWrW9vfimBnZWSTqtVtBC/0/c32e7sJvvf5HHXxaZ8+5roGw
+trzSaZg4qbK3jq6TZSO/fIcWqrzdhO9ERBHUZt2MgvzBKAIX6VkRMlyPvoYLrVwv
+Tto5T2vkq9XTMZB+vYqHMg54/3zntpoMA7BzHGXFItjebOXlkgCVGbJpDOCrxi2v
+YIGPkFmV+RwOjf5oEsBAkQZ82trHmpjXJlu6Qx2IDiQpo9Lg3+YCyDRkFLODlRli
+iS0jeeQzD0JoRjm7pnv8Yllop8VfPsYMA9WiURza8DQ6ccf8xFNpzlOB+CIa7zoA
+PLUnvNCTsfxN5QzClaQ9mkyKq0YB9WXWgmJ2vaKIWMJp/vJkh9k+ZBfMJd1AgrFo
+H12y1uz7qUlU94llCeiaLwgYnh02QiKDjLWT5+gDKhXuHMm5tcs=
+=8o7I
+-----END PGP SIGNATURE-----
+
+--vkogqOf2sHV7VnPd--
