@@ -2,108 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0B12050DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:36:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894CE2050E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732529AbgFWLgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 07:36:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732443AbgFWLev (ORCPT
+        id S1732358AbgFWLgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 07:36:23 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:52082 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732493AbgFWLez (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 07:34:51 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D51DC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 04:34:50 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id a127so9948045pfa.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 04:34:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=PkzrLJ8GQCeqvePUouDtyFlaPA55kJZCSe1ntjETQw4=;
-        b=nrQC4w3A1v0pfWioLgCVpCk7IFobcxPOzAB8rnpV50jIQn7WEYPuG+Ct2b/lsLccAO
-         Y/E+65Y+oCT70dsfdryHawG0zTIt8CImRu2p66n82EbutffVH0/JqEmQzSdepymPXtPV
-         /SiHFMfPcmRr2dtvpUI7eUUK2J2eooXYFcNeAbpCaqwV2ttevXk6fuDzVAKAaUsnYkEg
-         EokKiBopklKMnv9ml+h441QAOmfdnQr/EG5JQPFucdzCilPPY10ZaS6tQJQt0Y+9Ql3q
-         F2eWGmR0rumqwqA22JI+JQngr3Nd8+rzLXW9TS/CcuE3ipWdT5jXxjaC83v2i9DE7KP8
-         KMvQ==
+        Tue, 23 Jun 2020 07:34:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592912094;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+ZODIgcS19tFSBJajrqs8sj77Yz+AdpEOnLNxiRzpiI=;
+        b=OJaZY71+eQIJXJ2hEmA/F6eZm/VUD9SDfPEA4wVMAiSg0CoG8cmG/bj4OuT52y31GxzBrK
+        E4vwWlRS+NqsolWK9ACfOT2Tl9e/8kjPN7afWiYpldk+Pb1gUQkUsFsam8leTJZ9Vepx+y
+        4Vcl+q+gOTAEuKFwWsBiLvJX5T4epQw=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-473-p3X3Wuh2OUSXhJYEJEaVxQ-1; Tue, 23 Jun 2020 07:34:53 -0400
+X-MC-Unique: p3X3Wuh2OUSXhJYEJEaVxQ-1
+Received: by mail-wr1-f71.google.com with SMTP id b14so14805269wrp.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 04:34:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PkzrLJ8GQCeqvePUouDtyFlaPA55kJZCSe1ntjETQw4=;
-        b=r3wW3z+agCmsPqnXWYs89OrWew1gmt5YG98JDeU7OQLzO7NPrgRIlyZATiRQ4nwC96
-         dVY8x3oty+04WnB7NVigs23PAAEdbd1/sJCTS7HLALfxpro5Fr/RFN0dZptYoW96I50/
-         RMNFzXL4srPRDLSoUQFcfErUd+FuqCf91ZHyfzrzzjqA+A+FQjEQl+IdqJ/eXmHisrgX
-         mx0ylnYiXadux7UNbZioVme02a3qenpQrOVFlAXb/teeYbALH4YZ1OP8Qbz3B+1lp542
-         yUMMAwrx56zWXRUv9H53gGnESVgiaSoAenybXWfx6nl3wOW+1AWqqb64BJrtLd7xbLRU
-         vzbQ==
-X-Gm-Message-State: AOAM532b773uzZJFIdDOnVbBvJFcDbZGoe3gZhZcMEaBDyqjuXx3Gobc
-        /AJJ39rH6sRSV6WPnfLJGe7k
-X-Google-Smtp-Source: ABdhPJzoDy3xwrO38WKLoUceaihufyrOPObFSwULxYG51nVgdbmuMFL70euQsI1xMUNsz6xO5O7k5g==
-X-Received: by 2002:a62:7e8d:: with SMTP id z135mr23497708pfc.251.1592912088852;
-        Tue, 23 Jun 2020 04:34:48 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:609d:7d26:e4ff:f0b0:edd6:2484])
-        by smtp.gmail.com with ESMTPSA id m9sm16636166pfo.200.2020.06.23.04.34.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 23 Jun 2020 04:34:48 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 17:04:40 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/6] arm64: dts: qcom: sm8250-mtp: Drop PM8150 ldo11
-Message-ID: <20200623113440.GB13669@Mani-XPS-13-9360>
-References: <20200622222747.717306-1-bjorn.andersson@linaro.org>
- <20200622222747.717306-2-bjorn.andersson@linaro.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+ZODIgcS19tFSBJajrqs8sj77Yz+AdpEOnLNxiRzpiI=;
+        b=EJKEkAUayKctTog5J0Zg000+kR7lPerH3jwtqGCcsyyER/8ioaNbM6+EbfYcCcdIv9
+         A1IPax8E3OTv6CKchhjw4TpTY57E60LaktAFUsQwQSOIGdsdm6IhONHZVFsB9EP2a4bg
+         zAO6FfG21jCypTvPhN4asHBSI7sWpXI8s1eK2IBOyajNX7rir2BHQZ0Ozms6Mwfpxd4N
+         RE93FfF61yj+AaDRr5gFtQJOSE3dzBLvzz6YXqt+a2PaBxDKORIZWWxrg1CAUhpvjM+R
+         BeD5T3zEHUoE/cONxiHXOPTzsXs1evSdSJYEK8bk4E7wXo80yC4q5IlT5j5/oV42M3AS
+         dTVw==
+X-Gm-Message-State: AOAM5310JQ8MXABirM4YoXI0xGzyeLH7d7oWjDV05VfPzptP9OIC593Q
+        sCIfTdfnzZ5FX6urGQfMZllZ17wL8yzaiK8ucJLvkkRcVvcqSnMEkQd5sxejzqyrqJpCe+xu+SB
+        fXeSrBNT6QaEwRharGzDo5u8K
+X-Received: by 2002:a1c:8186:: with SMTP id c128mr24972074wmd.114.1592912091692;
+        Tue, 23 Jun 2020 04:34:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJynO7onTieU0CMyosFaYIQpTPTslvzmAYKwjyQbwn2Whk9jT8Rb16JfG2tl/W0NzUrq0KbaBg==
+X-Received: by 2002:a1c:8186:: with SMTP id c128mr24972060wmd.114.1592912091442;
+        Tue, 23 Jun 2020 04:34:51 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:24f5:23b:4085:b879? ([2001:b07:6468:f312:24f5:23b:4085:b879])
+        by smtp.gmail.com with ESMTPSA id f186sm3325254wmf.29.2020.06.23.04.34.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jun 2020 04:34:50 -0700 (PDT)
+Subject: Re: [PATCH] kvm: lapic: fix broken vcpu hotplug
+To:     Igor Mammedov <imammedo@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, sean.j.christopherson@intel.com,
+        vkuznets@redhat.com, kvm@vger.kernel.org, wanpengli@tencent.com
+References: <20200622160830.426022-1-imammedo@redhat.com>
+ <c00acf88-0655-686e-3b8c-7aad03791f20@redhat.com>
+ <20200623131343.01842ee5@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <1677b9af-fe23-242c-3160-9d9e6c1412c6@redhat.com>
+Date:   Tue, 23 Jun 2020 13:34:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200622222747.717306-2-bjorn.andersson@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200623131343.01842ee5@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 03:27:42PM -0700, Bjorn Andersson wrote:
-> PM8150 ldo11 on the MTP is wired to VDD_SSC_CX and controlled in levels,
-> rather than as a regulator. As such it's available from the rpmhpd as
-> the SM8250_LCX power domain.
+On 23/06/20 13:13, Igor Mammedov wrote:
+>>> +	apic->vcpu->kvm->arch.apic_map_dirty = true;
+>>>  	kvm_lapic_set_base(vcpu, vcpu->arch.apic_base);
+>>>  	/* set SPIV separately to get count of SW disabled APICs right */
+>>>  	apic_set_spiv(apic, *((u32 *)(s->regs + APIC_SPIV)));
+>>>   
+>> Queued, but it's better to set apic_map_dirty just before the call to
+>> kvm_recalculate_apic_map, or you can have a variant of the race that you
+>> pointed out.
+> Here I was worried about failure path as well that is just before normal
+> kvm_recalculate_apic_map(), and has its own kvm_recalculate_apic_map().
 > 
-> Fixes: ec13d5c23a33 ("arm64: dts: qcom: sm8250-mtp: Add pm8150, pm8150l and pm8009")
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-Thanks,
-Mani
-
-> ---
->  arch/arm64/boot/dts/qcom/sm8250-mtp.dts | 7 -------
->  1 file changed, 7 deletions(-)
+> but I'm not sure if we should force map update in that case.
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8250-mtp.dts b/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
-> index 2fc9e7ff0060..63d259931c4d 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sm8250-mtp.dts
-> @@ -140,13 +140,6 @@ vreg_l10a_1p8: ldo10 {
->  			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
->  		};
->  
-> -		vreg_l11a_0p75: ldo11 {
-> -			regulator-name = "vreg_l11a_0p75";
-> -			regulator-min-microvolt = <800000>;
-> -			regulator-max-microvolt = <800000>;
-> -			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> -		};
-> -
->  		vreg_l12a_1p8: ldo12 {
->  			regulator-name = "vreg_l12a_1p8";
->  			regulator-min-microvolt = <1800000>;
-> -- 
-> 2.26.2
-> 
+
+In that case kvm_lapic_set_base and apic_set_spiv will take care of it
+(and if it kvm_apic_state_fixup writes LDR, it succeeds and you go down
+the other path).
+
+Paolo
+
