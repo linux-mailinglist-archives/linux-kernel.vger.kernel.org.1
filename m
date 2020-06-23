@@ -2,43 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962AD20607A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EEC52060CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:49:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392504AbgFWUnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:43:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39994 "EHLO mail.kernel.org"
+        id S2392167AbgFWUql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:46:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392491AbgFWUnN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:43:13 -0400
+        id S2404017AbgFWUqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:46:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 95A5A21883;
-        Tue, 23 Jun 2020 20:43:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BBBDD2098B;
+        Tue, 23 Jun 2020 20:46:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944993;
-        bh=KoMH0rSMVEnUOmJIQ4+TiDlWsDKsNXFRvhsC87PjwDg=;
+        s=default; t=1592945196;
+        bh=fs6NZPTVT4r7HaTwBshEWiXyUm5Zz43u0ZEvW00evQ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UAkW0wezhnG8/z0lV6oZxCGFmOLUhQsnMaNBKLaORa27gg4j1st9cZwz6+cNqeqaY
-         uKHsnpP92Wm5lfrXr3VHFqDKbi3A/WLedAxx2pp1Fwm6qHsbzEC5GAJm1HSvRMxHnJ
-         1MdB89Je/GKBhapx7vz/1LtQeU9NGL+ACIt7EdVk=
+        b=u33YR0ws4rezO2ArfScOiizq4W7yyfw+ZNGiGmKg26dDVNBByy/2Fr6Ag2ESGsv0m
+         f81zQJD1V3Z23sigYvYDwgHZo5It4ayISM3YGsuUX4zeowcKWVzUNvioUjl6UOyrWB
+         mdjFxDMlELWg+CTEKxj+x2BjTd0smgx8WTHr9Pdo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>,
-        kbuild test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH 4.19 205/206] net: core: device_rename: Use rwsem instead of a seqcount
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 077/136] clk: bcm2835: Fix return type of bcm2835_register_gate
 Date:   Tue, 23 Jun 2020 21:58:53 +0200
-Message-Id: <20200623195327.129719456@linuxfoundation.org>
+Message-Id: <20200623195307.572785858@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
+References: <20200623195303.601828702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -48,158 +45,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ahmed S. Darwish <a.darwish@linutronix.de>
+From: Nathan Chancellor <natechancellor@gmail.com>
 
-[ Upstream commit 11d6011c2cf29f7c8181ebde6c8bc0c4d83adcd7 ]
+[ Upstream commit f376c43bec4f8ee8d1ba5c5c4cfbd6e84fb279cb ]
 
-Sequence counters write paths are critical sections that must never be
-preempted, and blocking, even for CONFIG_PREEMPTION=n, is not allowed.
+bcm2835_register_gate is used as a callback for the clk_register member
+of bcm2835_clk_desc, which expects a struct clk_hw * return type but
+bcm2835_register_gate returns a struct clk *.
 
-Commit 5dbe7c178d3f ("net: fix kernel deadlock with interface rename and
-netdev name retrieval.") handled a deadlock, observed with
-CONFIG_PREEMPTION=n, where the devnet_rename seqcount read side was
-infinitely spinning: it got scheduled after the seqcount write side
-blocked inside its own critical section.
+This discrepancy is hidden by the fact that bcm2835_register_gate is
+cast to the typedef bcm2835_clk_register by the _REGISTER macro. This
+turns out to be a control flow integrity violation, which is how this
+was noticed.
 
-To fix that deadlock, among other issues, the commit added a
-cond_resched() inside the read side section. While this will get the
-non-preemptible kernel eventually unstuck, the seqcount reader is fully
-exhausting its slice just spinning -- until TIF_NEED_RESCHED is set.
+Change the return type of bcm2835_register_gate to be struct clk_hw *
+and use clk_hw_register_gate to do so. This should be a non-functional
+change as clk_register_gate calls clk_hw_register_gate anyways but this
+is needed to avoid issues with further changes.
 
-The fix is also still broken: if the seqcount reader belongs to a
-real-time scheduling policy, it can spin forever and the kernel will
-livelock.
-
-Disabling preemption over the seqcount write side critical section will
-not work: inside it are a number of GFP_KERNEL allocations and mutex
-locking through the drivers/base/ :: device_rename() call chain.
-
->From all the above, replace the seqcount with a rwsem.
-
-Fixes: 5dbe7c178d3f (net: fix kernel deadlock with interface rename and netdev name retrieval.)
-Fixes: 30e6c9fa93cf (net: devnet_rename_seq should be a seqcount)
-Fixes: c91f6df2db49 (sockopt: Change getsockopt() of SO_BINDTODEVICE to return an interface name)
-Cc: <stable@vger.kernel.org>
-Reported-by: kbuild test robot <lkp@intel.com> [ v1 missing up_read() on error exit ]
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com> [ v1 missing up_read() on error exit ]
-Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: b19f009d4510 ("clk: bcm2835: Migrate to clk_hw based registration and OF APIs")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1028
+Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Link: https://lkml.kernel.org/r/20200516080806.1459784-1-natechancellor@gmail.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/core/dev.c | 40 ++++++++++++++++++----------------------
- 1 file changed, 18 insertions(+), 22 deletions(-)
+ drivers/clk/bcm/clk-bcm2835.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 8db77e09387b8..1618d5a676c47 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -83,6 +83,7 @@
- #include <linux/sched.h>
- #include <linux/sched/mm.h>
- #include <linux/mutex.h>
-+#include <linux/rwsem.h>
- #include <linux/string.h>
- #include <linux/mm.h>
- #include <linux/socket.h>
-@@ -195,7 +196,7 @@ static DEFINE_SPINLOCK(napi_hash_lock);
- static unsigned int napi_gen_id = NR_CPUS;
- static DEFINE_READ_MOSTLY_HASHTABLE(napi_hash, 8);
- 
--static seqcount_t devnet_rename_seq;
-+static DECLARE_RWSEM(devnet_rename_sem);
- 
- static inline void dev_base_seq_inc(struct net *net)
- {
-@@ -899,33 +900,28 @@ EXPORT_SYMBOL(dev_get_by_napi_id);
-  *	@net: network namespace
-  *	@name: a pointer to the buffer where the name will be stored.
-  *	@ifindex: the ifindex of the interface to get the name from.
-- *
-- *	The use of raw_seqcount_begin() and cond_resched() before
-- *	retrying is required as we want to give the writers a chance
-- *	to complete when CONFIG_PREEMPTION is not set.
-  */
- int netdev_get_name(struct net *net, char *name, int ifindex)
- {
- 	struct net_device *dev;
--	unsigned int seq;
-+	int ret;
- 
--retry:
--	seq = raw_seqcount_begin(&devnet_rename_seq);
-+	down_read(&devnet_rename_sem);
- 	rcu_read_lock();
-+
- 	dev = dev_get_by_index_rcu(net, ifindex);
- 	if (!dev) {
--		rcu_read_unlock();
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto out;
- 	}
- 
- 	strcpy(name, dev->name);
--	rcu_read_unlock();
--	if (read_seqcount_retry(&devnet_rename_seq, seq)) {
--		cond_resched();
--		goto retry;
--	}
- 
--	return 0;
-+	ret = 0;
-+out:
-+	rcu_read_unlock();
-+	up_read(&devnet_rename_sem);
-+	return ret;
+diff --git a/drivers/clk/bcm/clk-bcm2835.c b/drivers/clk/bcm/clk-bcm2835.c
+index 5f8082d891313..6db4204e5d5d5 100644
+--- a/drivers/clk/bcm/clk-bcm2835.c
++++ b/drivers/clk/bcm/clk-bcm2835.c
+@@ -1483,13 +1483,13 @@ static struct clk_hw *bcm2835_register_clock(struct bcm2835_cprman *cprman,
+ 	return &clock->hw;
  }
  
- /**
-@@ -1198,10 +1194,10 @@ int dev_change_name(struct net_device *dev, const char *newname)
- 	    likely(!(dev->priv_flags & IFF_LIVE_RENAME_OK)))
- 		return -EBUSY;
+-static struct clk *bcm2835_register_gate(struct bcm2835_cprman *cprman,
++static struct clk_hw *bcm2835_register_gate(struct bcm2835_cprman *cprman,
+ 					 const struct bcm2835_gate_data *data)
+ {
+-	return clk_register_gate(cprman->dev, data->name, data->parent,
+-				 CLK_IGNORE_UNUSED | CLK_SET_RATE_GATE,
+-				 cprman->regs + data->ctl_reg,
+-				 CM_GATE_BIT, 0, &cprman->regs_lock);
++	return clk_hw_register_gate(cprman->dev, data->name, data->parent,
++				    CLK_IGNORE_UNUSED | CLK_SET_RATE_GATE,
++				    cprman->regs + data->ctl_reg,
++				    CM_GATE_BIT, 0, &cprman->regs_lock);
+ }
  
--	write_seqcount_begin(&devnet_rename_seq);
-+	down_write(&devnet_rename_sem);
- 
- 	if (strncmp(newname, dev->name, IFNAMSIZ) == 0) {
--		write_seqcount_end(&devnet_rename_seq);
-+		up_write(&devnet_rename_sem);
- 		return 0;
- 	}
- 
-@@ -1209,7 +1205,7 @@ int dev_change_name(struct net_device *dev, const char *newname)
- 
- 	err = dev_get_valid_name(net, dev, newname);
- 	if (err < 0) {
--		write_seqcount_end(&devnet_rename_seq);
-+		up_write(&devnet_rename_sem);
- 		return err;
- 	}
- 
-@@ -1224,11 +1220,11 @@ rollback:
- 	if (ret) {
- 		memcpy(dev->name, oldname, IFNAMSIZ);
- 		dev->name_assign_type = old_assign_type;
--		write_seqcount_end(&devnet_rename_seq);
-+		up_write(&devnet_rename_sem);
- 		return ret;
- 	}
- 
--	write_seqcount_end(&devnet_rename_seq);
-+	up_write(&devnet_rename_sem);
- 
- 	netdev_adjacent_rename_links(dev, oldname);
- 
-@@ -1249,7 +1245,7 @@ rollback:
- 		/* err >= 0 after dev_alloc_name() or stores the first errno */
- 		if (err >= 0) {
- 			err = ret;
--			write_seqcount_begin(&devnet_rename_seq);
-+			down_write(&devnet_rename_sem);
- 			memcpy(dev->name, oldname, IFNAMSIZ);
- 			memcpy(oldname, newname, IFNAMSIZ);
- 			dev->name_assign_type = old_assign_type;
+ typedef struct clk_hw *(*bcm2835_clk_register)(struct bcm2835_cprman *cprman,
 -- 
 2.25.1
 
