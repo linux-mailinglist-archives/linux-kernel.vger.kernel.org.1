@@ -2,292 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F352D206255
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88CDD206267
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393104AbgFWU7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:59:14 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:42107 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2392305AbgFWUlS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:41:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592944876;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=LLF8LHEH8NJOMUcF1aLfYC033N+Bd+Ad/2TjfiGHZVA=;
-        b=bWcU6HlQW80BIDR7ITD8yj9BIF42G6tz2xmAz/vUiN6mWTMLl/590hm8dD1i3i1KQ1Iwv6
-        Kw1phBnaep98herNRNRxxAKUbYXh+VbJ2pw+3lmYs9wT7fhsh7vehn5gSo+kzV2wg0QoSB
-        klHI3QUAARLRtaVFp5FCONVcGspETKE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-339-4smYYUt9Mj6P7AM3k07XCg-1; Tue, 23 Jun 2020 16:41:12 -0400
-X-MC-Unique: 4smYYUt9Mj6P7AM3k07XCg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D839D1005512;
-        Tue, 23 Jun 2020 20:41:09 +0000 (UTC)
-Received: from hp-dl360pgen8-07.khw2.lab.eng.bos.redhat.com (hp-dl360pgen8-07.khw2.lab.eng.bos.redhat.com [10.16.210.135])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1FBE460CD3;
-        Tue, 23 Jun 2020 20:41:05 +0000 (UTC)
-From:   Jarod Wilson <jarod@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jarod Wilson <jarod@redhat.com>,
-        Boris Pismenny <borisp@mellanox.com>,
-        Saeed Mahameed <saeedm@mellanox.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jeff Kirsher <jeffrey.t.kirsher@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        netdev@vger.kernel.org
-Subject: [PATCH net-next] bonding/xfrm: use real_dev instead of slave_dev
-Date:   Tue, 23 Jun 2020 16:40:01 -0400
-Message-Id: <20200623204001.55030-1-jarod@redhat.com>
-MIME-Version: 1.0
+        id S2404232AbgFWVAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:00:38 -0400
+Received: from mail-eopbgr700056.outbound.protection.outlook.com ([40.107.70.56]:39137
+        "EHLO NAM04-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2392144AbgFWUkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:40:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TSb50AcM+VMJWs8bBxSPU62fbc6P4n6DbmTHidOeDiUapzV6i42a1KSx3SO01MtqPjnqlG8hk7vGO3yY7da587knZZerkWAJRdT7KYTt+WxMUtj1KFUfMksHDX3/nXx0Ip+3D9R4k2/hFzY52/gGv+ojPvF+cAmcmIiIQzRY1EQOpYB9xh3rfVYwOaCLyDYhDgoYrOlN+uX4v277LJ2fWZSHjQZG8wRDcBO72JCmDyYhJp5Se+oVF8fz9qXQM7IXhYWo3NWqd6vnPHBu8COZhO83exB0Vs/eqVnwBEDke1h9tjj0BUp3Z+13cOEqvA8Pj5l5HGgnyqIyLbmimewUFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+1nbJ2IyEeTDOYfPR3PSP4zkaz7uaxyFk3aPsK3t/Gs=;
+ b=KC5lGDHF+8BGWDvuszVoUZ8Q616uOhuKSQOLlX+PaZ/rtWFaA3c1BzybBQHotwUHzvOy+QPXOzPWqhY1/l6lmWwepsOZ9tdwnatzk9KHUjF+WCivuTpzDScrno16QBHeE875+l9vfWq/oUbnzKd7jyzx8hsbcJDRnnNUjxBWn+Rtvxak1C0Wqg8U3ET/mBP7Ry7DZw3vCOg6bCmYLhmKp2rEY1s71ANDUOS9EHvPhcNbYRmA/FWIsw83rLR4oUq39g1e+qWp3Qp1fp6it1JUcSlNVzfjF6gtktIGRSyiWJqqSI5OhwGW0ID2eT4Qp9NYpWjLTYOaWqy2VCNIzNokuw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+1nbJ2IyEeTDOYfPR3PSP4zkaz7uaxyFk3aPsK3t/Gs=;
+ b=X85CBh4lTkoJQfESJ2/v3bXi98IJscvUAUIBXVtVTYakMrIqe32xr8C2xVJHceNJtnUtezKIkG/914qvo63v1oaFQNNxkiZ+t3vNn11+uRNPZghuvTW+h+Foyo1RDRNYHKM9Ouu1ZdXSOcVYEP8A1ZyWvboyMs0nE/nob3msEtA=
+Authentication-Results: vivo.com; dkim=none (message not signed)
+ header.d=none;vivo.com; dmarc=none action=none header.from=amd.com;
+Received: from SN1PR12MB2414.namprd12.prod.outlook.com (2603:10b6:802:2e::31)
+ by SA0PR12MB4525.namprd12.prod.outlook.com (2603:10b6:806:92::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.23; Tue, 23 Jun
+ 2020 20:40:06 +0000
+Received: from SN1PR12MB2414.namprd12.prod.outlook.com
+ ([fe80::18d:97b:661f:9314]) by SN1PR12MB2414.namprd12.prod.outlook.com
+ ([fe80::18d:97b:661f:9314%7]) with mapi id 15.20.3109.021; Tue, 23 Jun 2020
+ 20:40:06 +0000
+Subject: Re: [PATCH v2] drm/amd: fix potential memleak in err branch
+To:     Bernard Zhao <bernard@vivo.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com
+References: <20200620085407.21922-1-bernard@vivo.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Message-ID: <44839e7c-2b97-a06f-b1c8-af3fa3d52e13@amd.com>
+Date:   Tue, 23 Jun 2020 16:40:02 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
+In-Reply-To: <20200620085407.21922-1-bernard@vivo.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Language: en-US
+X-ClientProxiedBy: YQXPR0101CA0043.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c00:14::20) To SN1PR12MB2414.namprd12.prod.outlook.com
+ (2603:10b6:802:2e::31)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.100] (142.116.63.128) by YQXPR0101CA0043.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c00:14::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20 via Frontend Transport; Tue, 23 Jun 2020 20:40:05 +0000
+X-Originating-IP: [142.116.63.128]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 6f314ea3-10f6-4950-fded-08d817b59caf
+X-MS-TrafficTypeDiagnostic: SA0PR12MB4525:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SA0PR12MB4525440A80C6C5F88A0B900D92940@SA0PR12MB4525.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Forefront-PRVS: 04433051BF
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Kd3QFKOIEN9imQwaa58gHZ0AfjaL3URfb6zwv3m01ZQaAlhc/z+5bhdEx33rpDW8aIxDOVDKJj6XsJ2LYq0PUWhzI/JRc84CSXKCjAiG2mOjHzoxWjbswYtUh8TgDucdBFI5XolYkQROEDz+DGd3IshK9cbSeNLNVW4/+8dvHlDC1r2PjNeKW/jZI7ryle5qhUucVGCGWGwB3SIEhyx2MRHJq2W1dHS0E1Tuwyx2eQkKn9Dw8hmVTpurC7558EtUk97pWZWssahK5GFQZDS6+JkjVdd/vk6QeVcdOVvtaeAqLKzIx8DfLVtBYznpg2z2uu8p1jS4sME0tbkYjVS963MLvj+RjASdRJB0KWFN6w+UvBH/RCfgQyaAa9kANJPJ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN1PR12MB2414.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(366004)(8936002)(498600001)(5660300002)(2906002)(6666004)(66946007)(66476007)(66556008)(8676002)(52116002)(44832011)(6486002)(31686004)(2616005)(956004)(36756003)(4326008)(31696002)(16526019)(186003)(16576012)(110136005)(86362001)(26005)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: sjraJlb8BXBWHSqEl3PnOsYt8Dt/lO2sjSONTjZjshcgSS4tmjQKRY4PUUNXoM5WGANw9M/0fkvGGQF9bxtRh5v+hGH0k8XU2ZWpZb9kjit/F17B6tRvFs/Ema+F+T56SCa3iRIBCqCQJSEb7xVq0S5/TJj8gcFMRF1fOH4/pFG32q5ZehYNPtWQVia+/FWdTaR1ko6fiE6GwypD2myTtnWgArDSVos4Ha8r60Rfpmf1FXUjZYepeRWy+9eMYVT+2K5aU79PzWTeXfymSkOPmaLkVRqdx3LBZqBrzG4UHXZDursKyOD7jwdBobKiS6VF6ZkIBYe8B2XDJ3rT6lZNqY+dc2bwtHQaX0PycP1ItxfNSE/xfROsgye5aLLzd+51mWYi3SDOO86WlnxyZ0sqOejV0J9RZxeffJVjjsXmd8Pu8fB3ZC1MXRiWjyQVRxMaq8IxZq4EUPuaHDy918y3mrTyq8nArFyt08RXBTjreGJtd4fCqn3PKb79jereBUM5
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6f314ea3-10f6-4950-fded-08d817b59caf
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Jun 2020 20:40:06.0702
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rykK2pa1oy7Bz0dGSdQew4DTENaDcyMgo4Y6RRloiFPcuZ/dNmFyYYPoJYEKzglqdir11eLLZMdfUHJz5yejdg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4525
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rather than requiring every hw crypto capable NIC driver to do a check for
-slave_dev being set, set real_dev in the xfrm layer and xso init time, and
-then override it in the bonding driver as needed. Then NIC drivers can
-always use real_dev, and at the same time, we eliminate the use of a
-variable name that probably shouldn't have been used in the first place,
-particularly given recent current events.
 
-CC: Boris Pismenny <borisp@mellanox.com>
-CC: Saeed Mahameed <saeedm@mellanox.com>
-CC: Leon Romanovsky <leon@kernel.org>
-CC: Jay Vosburgh <j.vosburgh@gmail.com>
-CC: Veaceslav Falico <vfalico@gmail.com>
-CC: Andy Gospodarek <andy@greyhouse.net>
-CC: "David S. Miller" <davem@davemloft.net>
-CC: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-CC: Jakub Kicinski <kuba@kernel.org>
-CC: Steffen Klassert <steffen.klassert@secunet.com>
-CC: Herbert Xu <herbert@gondor.apana.org.au>
-CC: netdev@vger.kernel.org
-Suggested-by: Saeed Mahameed <saeedm@mellanox.com>
-Signed-off-by: Jarod Wilson <jarod@redhat.com>
----
- drivers/net/bonding/bond_main.c               |  6 +--
- .../net/ethernet/intel/ixgbe/ixgbe_ipsec.c    | 47 +++++--------------
- .../mellanox/mlx5/core/en_accel/ipsec.c       | 10 +---
- include/net/xfrm.h                            |  2 +-
- net/xfrm/xfrm_device.c                        |  5 +-
- 5 files changed, 21 insertions(+), 49 deletions(-)
+Am 2020-06-20 um 4:54 a.m. schrieb Bernard Zhao:
+> The function kobject_init_and_add alloc memory like:
+> kobject_init_and_add->kobject_add_varg->kobject_set_name_vargs
+> ->kvasprintf_const->kstrdup_const->kstrdup->kmalloc_track_caller
+> ->kmalloc_slab, in err branch this memory not free. If use
+> kmemleak, this path maybe catched.
+> These changes are to add kobject_put in kobject_init_and_add
+> failed branch, fix potential memleak.
+>
+> Signed-off-by: Bernard Zhao <bernard@vivo.com>
 
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 90939ccf2a94..4ef99efc37f6 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -386,7 +386,7 @@ static int bond_ipsec_add_sa(struct xfrm_state *xs)
- 	struct bonding *bond = netdev_priv(bond_dev);
- 	struct slave *slave = rtnl_dereference(bond->curr_active_slave);
- 
--	xs->xso.slave_dev = slave->dev;
-+	xs->xso.real_dev = slave->dev;
- 	bond->xs = xs;
- 
- 	if (!(slave->dev->xfrmdev_ops
-@@ -411,7 +411,7 @@ static void bond_ipsec_del_sa(struct xfrm_state *xs)
- 	if (!slave)
- 		return;
- 
--	xs->xso.slave_dev = slave->dev;
-+	xs->xso.real_dev = slave->dev;
- 
- 	if (!(slave->dev->xfrmdev_ops
- 	      && slave->dev->xfrmdev_ops->xdo_dev_state_delete)) {
-@@ -440,7 +440,7 @@ static bool bond_ipsec_offload_ok(struct sk_buff *skb, struct xfrm_state *xs)
- 		return false;
- 	}
- 
--	xs->xso.slave_dev = slave_dev;
-+	xs->xso.real_dev = slave_dev;
- 	return slave_dev->xfrmdev_ops->xdo_dev_offload_ok(skb, xs);
- }
- 
-diff --git a/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c b/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
-index 26b0a58a064d..6516980965a2 100644
---- a/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
-+++ b/drivers/net/ethernet/intel/ixgbe/ixgbe_ipsec.c
-@@ -427,14 +427,11 @@ static struct xfrm_state *ixgbe_ipsec_find_rx_state(struct ixgbe_ipsec *ipsec,
- static int ixgbe_ipsec_parse_proto_keys(struct xfrm_state *xs,
- 					u32 *mykey, u32 *mysalt)
- {
--	struct net_device *dev = xs->xso.dev;
-+	struct net_device *dev = xs->xso.real_dev;
- 	unsigned char *key_data;
- 	char *alg_name = NULL;
- 	int key_len;
- 
--	if (xs->xso.slave_dev)
--		dev = xs->xso.slave_dev;
--
- 	if (!xs->aead) {
- 		netdev_err(dev, "Unsupported IPsec algorithm\n");
- 		return -EINVAL;
-@@ -480,9 +477,9 @@ static int ixgbe_ipsec_parse_proto_keys(struct xfrm_state *xs,
-  **/
- static int ixgbe_ipsec_check_mgmt_ip(struct xfrm_state *xs)
- {
--	struct net_device *dev = xs->xso.dev;
--	struct ixgbe_adapter *adapter;
--	struct ixgbe_hw *hw;
-+	struct net_device *dev = xs->xso.real_dev;
-+	struct ixgbe_adapter *adapter = netdev_priv(dev);
-+	struct ixgbe_hw *hw = &adapter->hw;
- 	u32 mfval, manc, reg;
- 	int num_filters = 4;
- 	bool manc_ipv4;
-@@ -500,12 +497,6 @@ static int ixgbe_ipsec_check_mgmt_ip(struct xfrm_state *xs)
- #define BMCIP_V6                 0x3
- #define BMCIP_MASK               0x3
- 
--	if (xs->xso.slave_dev)
--		dev = xs->xso.slave_dev;
--
--	adapter = netdev_priv(dev);
--	hw = &adapter->hw;
--
- 	manc = IXGBE_READ_REG(hw, IXGBE_MANC);
- 	manc_ipv4 = !!(manc & MANC_EN_IPV4_FILTER);
- 	mfval = IXGBE_READ_REG(hw, IXGBE_MFVAL);
-@@ -569,22 +560,15 @@ static int ixgbe_ipsec_check_mgmt_ip(struct xfrm_state *xs)
-  **/
- static int ixgbe_ipsec_add_sa(struct xfrm_state *xs)
- {
--	struct net_device *dev = xs->xso.dev;
--	struct ixgbe_adapter *adapter;
--	struct ixgbe_ipsec *ipsec;
--	struct ixgbe_hw *hw;
-+	struct net_device *dev = xs->xso.real_dev;
-+	struct ixgbe_adapter *adapter = netdev_priv(dev);
-+	struct ixgbe_ipsec *ipsec = adapter->ipsec;
-+	struct ixgbe_hw *hw = &adapter->hw;
- 	int checked, match, first;
- 	u16 sa_idx;
- 	int ret;
- 	int i;
- 
--	if (xs->xso.slave_dev)
--		dev = xs->xso.slave_dev;
--
--	adapter = netdev_priv(dev);
--	ipsec = adapter->ipsec;
--	hw = &adapter->hw;
--
- 	if (xs->id.proto != IPPROTO_ESP && xs->id.proto != IPPROTO_AH) {
- 		netdev_err(dev, "Unsupported protocol 0x%04x for ipsec offload\n",
- 			   xs->id.proto);
-@@ -761,20 +745,13 @@ static int ixgbe_ipsec_add_sa(struct xfrm_state *xs)
-  **/
- static void ixgbe_ipsec_del_sa(struct xfrm_state *xs)
- {
--	struct net_device *dev = xs->xso.dev;
--	struct ixgbe_adapter *adapter;
--	struct ixgbe_ipsec *ipsec;
--	struct ixgbe_hw *hw;
-+	struct net_device *dev = xs->xso.real_dev;
-+	struct ixgbe_adapter *adapter = netdev_priv(dev);
-+	struct ixgbe_ipsec *ipsec = adapter->ipsec;
-+	struct ixgbe_hw *hw = &adapter->hw;
- 	u32 zerobuf[4] = {0, 0, 0, 0};
- 	u16 sa_idx;
- 
--	if (xs->xso.slave_dev)
--		dev = xs->xso.slave_dev;
--
--	adapter = netdev_priv(dev);
--	ipsec = adapter->ipsec;
--	hw = &adapter->hw;
--
- 	if (xs->xso.flags & XFRM_OFFLOAD_INBOUND) {
- 		struct rx_sa *rsa;
- 		u8 ipi;
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
-index 72ad6664bd73..bc55c82b55ba 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/en_accel/ipsec.c
-@@ -207,12 +207,9 @@ mlx5e_ipsec_build_accel_xfrm_attrs(struct mlx5e_ipsec_sa_entry *sa_entry,
- 
- static inline int mlx5e_xfrm_validate_state(struct xfrm_state *x)
- {
--	struct net_device *netdev = x->xso.dev;
-+	struct net_device *netdev = x->xso.real_dev;
- 	struct mlx5e_priv *priv;
- 
--	if (x->xso.slave_dev)
--		netdev = x->xso.slave_dev;
--
- 	priv = netdev_priv(netdev);
- 
- 	if (x->props.aalgo != SADB_AALG_NONE) {
-@@ -288,15 +285,12 @@ static inline int mlx5e_xfrm_validate_state(struct xfrm_state *x)
- static int mlx5e_xfrm_add_state(struct xfrm_state *x)
- {
- 	struct mlx5e_ipsec_sa_entry *sa_entry = NULL;
--	struct net_device *netdev = x->xso.dev;
-+	struct net_device *netdev = x->xso.real_dev;
- 	struct mlx5_accel_esp_xfrm_attrs attrs;
- 	struct mlx5e_priv *priv;
- 	unsigned int sa_handle;
- 	int err;
- 
--	if (x->xso.slave_dev)
--		netdev = x->xso.slave_dev;
--
- 	priv = netdev_priv(netdev);
- 
- 	err = mlx5e_xfrm_validate_state(x);
-diff --git a/include/net/xfrm.h b/include/net/xfrm.h
-index e20b2b27ec48..e648c9e6c919 100644
---- a/include/net/xfrm.h
-+++ b/include/net/xfrm.h
-@@ -127,7 +127,7 @@ struct xfrm_state_walk {
- 
- struct xfrm_state_offload {
- 	struct net_device	*dev;
--	struct net_device	*slave_dev;
-+	struct net_device	*real_dev;
- 	unsigned long		offload_handle;
- 	unsigned int		num_exthdrs;
- 	u8			flags;
-diff --git a/net/xfrm/xfrm_device.c b/net/xfrm/xfrm_device.c
-index b8918fc5248b..7b64bb64c822 100644
---- a/net/xfrm/xfrm_device.c
-+++ b/net/xfrm/xfrm_device.c
-@@ -120,8 +120,8 @@ struct sk_buff *validate_xmit_xfrm(struct sk_buff *skb, netdev_features_t featur
- 	if (xo->flags & XFRM_GRO || x->xso.flags & XFRM_OFFLOAD_INBOUND)
- 		return skb;
- 
--	/* This skb was already validated on the master dev */
--	if ((x->xso.dev != dev) && (x->xso.slave_dev == dev))
-+	/* This skb was already validated on the upper/virtual dev */
-+	if ((x->xso.dev != dev) && (x->xso.real_dev == dev))
- 		return skb;
- 
- 	local_irq_save(flags);
-@@ -259,6 +259,7 @@ int xfrm_dev_state_add(struct net *net, struct xfrm_state *x,
- 	}
- 
- 	xso->dev = dev;
-+	xso->real_dev = dev;
- 	xso->num_exthdrs = 1;
- 	xso->flags = xuo->flags;
- 
--- 
-2.20.1
+The patch is
 
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+
+I'll apply it to amd-staging-drm-next.
+
+Thanks,
+  Felix
+
+> ---
+> Changes since V1:
+> *Remove duplicate changed file kfd_topology.c, this file`s fix
+> already applied to the main line.
+> ---
+>  drivers/gpu/drm/amd/amdkfd/kfd_process.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> index d27221ddcdeb..5ee4d6cfb16d 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> @@ -124,6 +124,7 @@ void kfd_procfs_init(void)
+>  	if (ret) {
+>  		pr_warn("Could not create procfs proc folder");
+>  		/* If we fail to create the procfs, clean up */
+> +		kobject_put(procfs.kobj);
+>  		kfd_procfs_shutdown();
+>  	}
+>  }
+> @@ -428,6 +429,7 @@ struct kfd_process *kfd_create_process(struct file *filep)
+>  					   (int)process->lead_thread->pid);
+>  		if (ret) {
+>  			pr_warn("Creating procfs pid directory failed");
+> +			kobject_put(process->kobj);
+>  			goto out;
+>  		}
+>  
