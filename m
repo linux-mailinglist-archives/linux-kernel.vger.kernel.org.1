@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF9E2063A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D55020628F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391074AbgFWUaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:30:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50212 "EHLO mail.kernel.org"
+        id S2393015AbgFWVEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:04:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391104AbgFWUaC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:30:02 -0400
+        id S2391549AbgFWUhx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:37:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A1835206C3;
-        Tue, 23 Jun 2020 20:30:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 95B542080C;
+        Tue, 23 Jun 2020 20:37:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944202;
-        bh=HxgZGib8B7jApfVRJLYV16Iqb0rLo81W0p/C/EOsT08=;
+        s=default; t=1592944673;
+        bh=DRFsV92GDkJasMMkP1EiCsfu8ldMUDEVDgx+9jRJSq0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xrrs/bqxrrrP4G6eypdvo0XSqIAmcUaO4tZysIOb2qcXLS+/aec/yFNdsOFcZEQ2L
-         EYxFCRA1A+N/Miu+1yEUCRZTeKp6oR00JrFt2SRyGCFXEIi8WJfwfsRplNwXIJOt1n
-         AcqAeI6rFKoDUtiNtM5vUI1ZdF7NiYO0l+YTKs4k=
+        b=GUpd8rwkvthF+p3IAcoKpkmQzUX2zBddqQdnBIfbndXD6C6e5s5Zc4E32zKk/L4Be
+         /cJNujD4By2A7shPZgAmCboYb7GY1MxaJLrujJF47CblJzKU+ReFp9wd2pV70Fo285
+         GHklqxTeJ+YXJ637jEm/FpwDTb+4oqc1uE9Socx8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lee Duncan <lduncan@suse.com>,
-        Qiushi Wu <wu000273@umn.edu>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        clang-built-linux@googlegroups.com, Arnd Bergmann <arnd@arndb.de>,
+        David Teigland <teigland@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 213/314] scsi: iscsi: Fix reference count leak in iscsi_boot_create_kobj
+Subject: [PATCH 4.19 080/206] dlm: remove BUG() before panic()
 Date:   Tue, 23 Jun 2020 21:56:48 +0200
-Message-Id: <20200623195349.078630022@linuxfoundation.org>
+Message-Id: <20200623195320.884128005@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,36 +45,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 0267ffce562c8bbf9b57ebe0e38445ad04972890 ]
+[ Upstream commit fe204591cc9480347af7d2d6029b24a62e449486 ]
 
-kobject_init_and_add() takes reference even when it fails. If this
-function returns an error, kobject_put() must be called to properly
-clean up the memory associated with the object.
+Building a kernel with clang sometimes fails with an objtool error in dlm:
 
-Link: https://lore.kernel.org/r/20200528201353.14849-1-wu000273@umn.edu
-Reviewed-by: Lee Duncan <lduncan@suse.com>
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+fs/dlm/lock.o: warning: objtool: revert_lock_pc()+0xbd: can't find jump dest instruction at .text+0xd7fc
+
+The problem is that BUG() never returns and the compiler knows
+that anything after it is unreachable, however the panic still
+emits some code that does not get fully eliminated.
+
+Having both BUG() and panic() is really pointless as the BUG()
+kills the current process and the subsequent panic() never hits.
+In most cases, we probably don't really want either and should
+replace the DLM_ASSERT() statements with WARN_ON(), as has
+been done for some of them.
+
+Remove the BUG() here so the user at least sees the panic message
+and we can reliably build randconfig kernels.
+
+Fixes: e7fd41792fc0 ("[DLM] The core of the DLM for GFS2/CLVM")
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: clang-built-linux@googlegroups.com
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: David Teigland <teigland@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/iscsi_boot_sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/dlm/dlm_internal.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/scsi/iscsi_boot_sysfs.c b/drivers/scsi/iscsi_boot_sysfs.c
-index e4857b7280338..a64abe38db2d4 100644
---- a/drivers/scsi/iscsi_boot_sysfs.c
-+++ b/drivers/scsi/iscsi_boot_sysfs.c
-@@ -352,7 +352,7 @@ iscsi_boot_create_kobj(struct iscsi_boot_kset *boot_kset,
- 	boot_kobj->kobj.kset = boot_kset->kset;
- 	if (kobject_init_and_add(&boot_kobj->kobj, &iscsi_boot_ktype,
- 				 NULL, name, index)) {
--		kfree(boot_kobj);
-+		kobject_put(&boot_kobj->kobj);
- 		return NULL;
- 	}
- 	boot_kobj->data = data;
+diff --git a/fs/dlm/dlm_internal.h b/fs/dlm/dlm_internal.h
+index 748e8d59e6111..cb287df13a7aa 100644
+--- a/fs/dlm/dlm_internal.h
++++ b/fs/dlm/dlm_internal.h
+@@ -99,7 +99,6 @@ do { \
+                __LINE__, __FILE__, #x, jiffies); \
+     {do} \
+     printk("\n"); \
+-    BUG(); \
+     panic("DLM:  Record message above and reboot.\n"); \
+   } \
+ }
 -- 
 2.25.1
 
