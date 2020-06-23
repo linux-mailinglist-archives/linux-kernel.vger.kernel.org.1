@@ -2,111 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A44206460
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD41020642F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390913AbgFWVUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:20:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52690 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390283AbgFWUXU (ORCPT
+        id S2404114AbgFWVRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:17:12 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:38404 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2390513AbgFWU1B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:23:20 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F491C061795
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:23:20 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id j4so9612243plk.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:23:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=8GtuMGPUaS390TqO5z4ppfXD7rQJ/F037h9evN14ygA=;
-        b=UeXA81lY2Dk/K6Xv/2qrjX76DJuWeAmT6jNVUMl2qas0bB4/Xq2A+K5qs7yXGrQ+XO
-         mwxD2EAVmkxFTRya/JYVHKi1xwtP25wHgkoYM4HMrUhXW7GS9mEQqjFAZyBl/iHLinb5
-         NBhuRbQiglGun9uYgKwuidd8G5uUNfRAKlWE8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=8GtuMGPUaS390TqO5z4ppfXD7rQJ/F037h9evN14ygA=;
-        b=bHEMY1BZTNNIN2Zk4d8c2uyYm825swqBm0JldgML9W9FJ5fEcMECnsAUC/Oy0BFIEq
-         uHvBFHHiKorOg2LhB8F6sYd0wgqne8XpLIeeeYDz/a5AZGiiL68qT+z0cHmqY7zRTZm4
-         WZKJLp/MkJelTGzxEjrjyyoVnVeGLqdP78vq+g8s42+fVG0EuiLYi+k0qgNYTc/gdRfN
-         2RBkkkkfwFQVePI7oLFoQTJdhWvEhxwFG4GVfWU9Vf3gLCBAb0FWi5GRKN9lNOqkr4Cn
-         QZYBfz60JENv3qgDqtRWH+R72GcX9xImxhCKvDHRNsBOXF8tx5MmRzI22xE4c6Vc/eub
-         BIxw==
-X-Gm-Message-State: AOAM532i9UjQ2qqJG082CnOyiAZ6UWGnZthgGr+swWP4C2TsN5TI8FOm
-        pfhQJRjdfUAhEyaxpYjxK1I3JctsDHs=
-X-Google-Smtp-Source: ABdhPJwaESgPCB1gfNvhANi+Yq++rrbVU7XmZhQA2VoJG+/oGv5jRcVJWUsh89tmByaVWl75PYdDHQ==
-X-Received: by 2002:a17:902:b60e:: with SMTP id b14mr25563736pls.81.1592943799964;
-        Tue, 23 Jun 2020 13:23:19 -0700 (PDT)
-Received: from [10.69.45.46] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id ev20sm3141936pjb.8.2020.06.23.13.23.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jun 2020 13:23:19 -0700 (PDT)
-Subject: Re: [PATCH] scsi: lpfc: Avoid another null dereference in
- lpfc_sli4_hba_unset()
-To:     SeongJae Park <sjpark@amazon.com>, jsmart2021@gmail.com,
-        dick.kennedy@broadcom.com
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        SeongJae Park <sjpark@amazon.de>
-References: <20200623084122.30633-1-sjpark@amazon.com>
-From:   James Smart <james.smart@broadcom.com>
-Message-ID: <470678bf-2e08-c75f-db14-7569cc4fe4c7@broadcom.com>
-Date:   Tue, 23 Jun 2020 13:23:17 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Tue, 23 Jun 2020 16:27:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592944020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=LsRPxMKdg3wg3/L+rwnuc4Avfs5K49uylfJOpJywC20=;
+        b=aqX51ZCYV3UDvqTsUUgO2awydbpLkONCAlaEZcuMKgl/OnC/RhP6KyWsMdc/WOaDRe1xGa
+        48syNEhRB17Eneg6MbCwyd+lM6mW90C4Y7h/tzYSq/OdzhyORf4seUy2E1/sWqGWkbyqKz
+        lEL5rmOCv25T27RLDoOLKDOXgRf1eKo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-84sBE2vBO8mcm2IjICeKGw-1; Tue, 23 Jun 2020 16:26:58 -0400
+X-MC-Unique: 84sBE2vBO8mcm2IjICeKGw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CDD86363F8;
+        Tue, 23 Jun 2020 20:26:46 +0000 (UTC)
+Received: from localhost (ovpn-116-10.gru2.redhat.com [10.97.116.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 10B7A70C37;
+        Tue, 23 Jun 2020 20:26:42 +0000 (UTC)
+From:   Bruno Meneguele <bmeneg@redhat.com>
+To:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     zohar@linux.ibm.com, erichte@linux.ibm.com, nayna@linux.ibm.com,
+        Bruno Meneguele <bmeneg@redhat.com>
+Subject: [PATCH v3 0/2] ima: make appraisal state runtime dependent on secure boot
+Date:   Tue, 23 Jun 2020 17:26:38 -0300
+Message-Id: <20200623202640.4936-1-bmeneg@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200623084122.30633-1-sjpark@amazon.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+To switch APPRAISE_BOOTPARAM and ARCH_POLICY dependency from compile time to
+run time the secure boot checking code (specific to each arch) had to be
+slightly modified to include, in the PowerPC arch, the Trusted Boot state,
+which is also relevant to the arch policy choice and also required the
+ima_appraise to be enforced. 
 
+With that I changed the checking order: instead of first check the
+arch_policy and then the secure/trusted boot state, now we first check the
+boot state, set ima_appraise to be enforced and then the existence of arch
+policy. In other words, whenever secure/trusted boot is enabled,
+(ima_appraise & IMA_APPRAISE_ENFORCE) == true.
 
-On 6/23/2020 1:41 AM, SeongJae Park wrote:
-> From: SeongJae Park <sjpark@amazon.de>
->
-> Commit cdb42becdd40 ("scsi: lpfc: Replace io_channels for nvme and fcp
-> with general hdw_queues per cpu") has introduced static checker warnings
-> for potential null dereferences in 'lpfc_sli4_hba_unset()' and
-> commit 1ffdd2c0440d ("scsi: lpfc: resolve static checker warning in
-> lpfc_sli4_hba_unset") has tried to fix it.  However, yet another
-> potential null dereference is remaining.  This commit fixes it.
->
-> This bug was discovered and resolved using Coverity Static Analysis
-> Security Testing (SAST) by Synopsys, Inc.
->
-> Fixes: 1ffdd2c0440d ("scsi: lpfc: resolve static checker warning inlpfc_sli4_hba_unset")
-> Fixes: cdb42becdd40 ("scsi: lpfc: Replace io_channels for nvme and fcp with general hdw_queues per cpu")
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> ---
->   drivers/scsi/lpfc/lpfc_init.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
-> index 69a5249e007a..6637f84a3d1b 100644
-> --- a/drivers/scsi/lpfc/lpfc_init.c
-> +++ b/drivers/scsi/lpfc/lpfc_init.c
-> @@ -11878,7 +11878,8 @@ lpfc_sli4_hba_unset(struct lpfc_hba *phba)
->   	lpfc_sli4_xri_exchange_busy_wait(phba);
->   
->   	/* per-phba callback de-registration for hotplug event */
-> -	lpfc_cpuhp_remove(phba);
-> +	if (phba->pport)
-> +		lpfc_cpuhp_remove(phba);
->   
->   	/* Disable PCI subsystem interrupt */
->   	lpfc_sli4_disable_intr(phba);
+I've tested these patches in a x86_64 platform with and without secure boot
+enabled and in a PowerPC without secure boot enabled:
 
-Reviewed-by: James Smart <james.smart@broadcom.com>
+1) with secure boot enabled (x86_64) and ima_policy=appraise_tcb, the
+ima_appraise= options were completly ignored and the boot always failed with
+"missing-hash" for /sbin/init, which is the expected result;
 
--- james
+2) with secure boot enabled (x86_64), but no ima_policy:
+
+[    1.396111] ima: Allocated hash algorithm: sha256
+[    1.424025] ima: setting IMA appraisal to enforced
+[    1.424039] audit: type=1807 audit(1592927955.557:2): action=measure func=KEXEC_KERNEL_CHECK res=1
+[    1.424040] audit: type=1807 audit(1592927955.557:3): action=measure func=MODULE_CHECK res=1
+
+3) with secure boot disabled (PowerPC and x86_64) and
+"ima_policy=appraise_tcb ima_appraise=fix", audit messages were triggered
+with "op=appraisal_data cause=missing-hash" but the system worked fine due
+to "fix".
+
+Bruno Meneguele (2):
+  arch/ima: extend secure boot check to include trusted boot
+  ima: move APPRAISE_BOOTPARAM dependency on ARCH_POLICY to runtime
+
+ arch/powerpc/kernel/ima_arch.c      |  5 +++--
+ arch/s390/kernel/ima_arch.c         |  2 +-
+ arch/x86/kernel/ima_arch.c          |  4 ++--
+ include/linux/ima.h                 |  4 ++--
+ security/integrity/ima/Kconfig      |  2 +-
+ security/integrity/ima/ima_main.c   |  2 +-
+ security/integrity/ima/ima_policy.c | 20 ++++++++++++++------
+ 7 files changed, 24 insertions(+), 15 deletions(-)
+
+-- 
+2.26.2
 
