@@ -2,40 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1988206364
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 933F7206373
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390297AbgFWUX1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:23:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41470 "EHLO mail.kernel.org"
+        id S2389462AbgFWUZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:25:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390289AbgFWUXX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:23:23 -0400
+        id S2390544AbgFWUZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:25:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3E73206C3;
-        Tue, 23 Jun 2020 20:23:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 913B720723;
+        Tue, 23 Jun 2020 20:25:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943802;
-        bh=5UhDKNh8znCGIjAhrpe7coxJM2kgo1ixKHQlWvB+EmA=;
+        s=default; t=1592943907;
+        bh=y4JIm9O8t1NffQaSICuLZzFDupMR1MBAVaXk2WFlsqI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RJk3tgaUUodvZB+onEEJDoDEErPZSCMGS2daLK6H2JSCYDqGrHsvw5ZnLJzw5XO+2
-         v3gsPVQ2y6ZMI26LeNjeQw0yGzZ2L2QRAa7BCQrJ0kOapzmkrKmCR+6uFCXWvj2aQn
-         dX5voOl3HeVOgfmCZ36QI20pU/+OAYbT6Y3ycDwE=
+        b=soAE7k4d9OlhgWyTrSWgsq4I2q7/qreWi7o8z3YP5HtJ7dJiRNmVgGEo4OsCAxmey
+         oy6Zfkymk2O+jeZSIetdzrAgEiT2a5FEdYbMGa0S+FCAuz7CLYCJsv6nmxrkhtTRic
+         cJXKPCdfk8b5LClk6mwda2EaSoBTENbXaW+tLFg8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Quanyang Wang <quanyang.wang@windriver.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Tejas Patel <tejas.patel@xilinx.com>,
-        Jolly Shah <jolly.shah@xilinx.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Pingfan Liu <kernelfans@gmail.com>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 056/314] clk: zynqmp: fix memory leak in zynqmp_register_clocks
-Date:   Tue, 23 Jun 2020 21:54:11 +0200
-Message-Id: <20200623195341.493295600@linuxfoundation.org>
+Subject: [PATCH 5.4 067/314] powerpc/crashkernel: Take "mem=" option into account
+Date:   Tue, 23 Jun 2020 21:54:22 +0200
+Message-Id: <20200623195342.040864298@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
 References: <20200623195338.770401005@linuxfoundation.org>
@@ -48,98 +45,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quanyang Wang <quanyang.wang@windriver.com>
+From: Pingfan Liu <kernelfans@gmail.com>
 
-[ Upstream commit 58b0fb86260063f86afecaebf4056c876fff2a19 ]
+[ Upstream commit be5470e0c285a68dc3afdea965032f5ddc8269d7 ]
 
-This is detected by kmemleak running on zcu102 board:
+'mem=" option is an easy way to put high pressure on memory during
+some test. Hence after applying the memory limit, instead of total
+mem, the actual usable memory should be considered when reserving mem
+for crashkernel. Otherwise the boot up may experience OOM issue.
 
-unreferenced object 0xffffffc877e48180 (size 128):
-comm "swapper/0", pid 1, jiffies 4294892909 (age 315.436s)
-hex dump (first 32 bytes):
-64 70 5f 76 69 64 65 6f 5f 72 65 66 5f 64 69 76 dp_video_ref_div
-31 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 1...............
-backtrace:
-[<00000000c9be883b>] __kmalloc_track_caller+0x200/0x380
-[<00000000f02c3809>] kvasprintf+0x7c/0x100
-[<00000000e51dde4d>] kasprintf+0x60/0x80
-[<0000000092298b05>] zynqmp_register_clocks+0x29c/0x398
-[<00000000faaff182>] zynqmp_clock_probe+0x3cc/0x4c0
-[<000000005f5986f0>] platform_drv_probe+0x58/0xa8
-[<00000000d5810136>] really_probe+0xd8/0x2a8
-[<00000000f5b671be>] driver_probe_device+0x5c/0x100
-[<0000000038f91fcf>] __device_attach_driver+0x98/0xb8
-[<000000008a3f2ac2>] bus_for_each_drv+0x74/0xd8
-[<000000001cb2783d>] __device_attach+0xe0/0x140
-[<00000000c268031b>] device_initial_probe+0x24/0x30
-[<000000006998de4b>] bus_probe_device+0x9c/0xa8
-[<00000000647ae6ff>] device_add+0x3c0/0x610
-[<0000000071c14bb8>] of_device_add+0x40/0x50
-[<000000004bb5d132>] of_platform_device_create_pdata+0xbc/0x138
+E.g. it would reserve 4G prior to the change and 512M afterward, if
+passing
+crashkernel="2G-4G:384M,4G-16G:512M,16G-64G:1G,64G-128G:2G,128G-:4G",
+and mem=5G on a 256G machine.
 
-This is because that when num_nodes is larger than 1, clk_out is
-allocated using kasprintf for these nodes but only the last node's
-clk_out is freed.
+This issue is powerpc specific because it puts higher priority on
+fadump and kdump reservation than on "mem=". Referring the following
+code:
+    if (fadump_reserve_mem() == 0)
+            reserve_crashkernel();
+    ...
+    /* Ensure that total memory size is page-aligned. */
+    limit = ALIGN(memory_limit ?: memblock_phys_mem_size(), PAGE_SIZE);
+    memblock_enforce_memory_limit(limit);
 
-Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
-Signed-off-by: Michal Simek <michal.simek@xilinx.com>
-Signed-off-by: Tejas Patel <tejas.patel@xilinx.com>
-Signed-off-by: Jolly Shah <jolly.shah@xilinx.com>
-Link: https://lkml.kernel.org/r/1583185843-20707-5-git-send-email-jolly.shah@xilinx.com
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+While on other arches, the effect of "mem=" takes a higher priority
+and pass through memblock_phys_mem_size() before calling
+reserve_crashkernel().
+
+Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
+Reviewed-by: Hari Bathini <hbathini@linux.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1585749644-4148-1-git-send-email-kernelfans@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/zynqmp/clkc.c | 15 +++++++++------
- 1 file changed, 9 insertions(+), 6 deletions(-)
+ arch/powerpc/kernel/machine_kexec.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/clk/zynqmp/clkc.c b/drivers/clk/zynqmp/clkc.c
-index a11f93ecbf34a..6f057ab9df03b 100644
---- a/drivers/clk/zynqmp/clkc.c
-+++ b/drivers/clk/zynqmp/clkc.c
-@@ -558,7 +558,7 @@ static struct clk_hw *zynqmp_register_clk_topology(int clk_id, char *clk_name,
+diff --git a/arch/powerpc/kernel/machine_kexec.c b/arch/powerpc/kernel/machine_kexec.c
+index c4ed328a7b963..7a1c11a7cba5a 100644
+--- a/arch/powerpc/kernel/machine_kexec.c
++++ b/arch/powerpc/kernel/machine_kexec.c
+@@ -114,11 +114,12 @@ void machine_kexec(struct kimage *image)
+ 
+ void __init reserve_crashkernel(void)
  {
- 	int j;
- 	u32 num_nodes, clk_dev_id;
--	char *clk_out = NULL;
-+	char *clk_out[MAX_NODES];
- 	struct clock_topology *nodes;
- 	struct clk_hw *hw = NULL;
+-	unsigned long long crash_size, crash_base;
++	unsigned long long crash_size, crash_base, total_mem_sz;
+ 	int ret;
  
-@@ -572,16 +572,16 @@ static struct clk_hw *zynqmp_register_clk_topology(int clk_id, char *clk_name,
- 		 * Intermediate clock names are postfixed with type of clock.
- 		 */
- 		if (j != (num_nodes - 1)) {
--			clk_out = kasprintf(GFP_KERNEL, "%s%s", clk_name,
-+			clk_out[j] = kasprintf(GFP_KERNEL, "%s%s", clk_name,
- 					    clk_type_postfix[nodes[j].type]);
- 		} else {
--			clk_out = kasprintf(GFP_KERNEL, "%s", clk_name);
-+			clk_out[j] = kasprintf(GFP_KERNEL, "%s", clk_name);
- 		}
- 
- 		if (!clk_topology[nodes[j].type])
- 			continue;
- 
--		hw = (*clk_topology[nodes[j].type])(clk_out, clk_dev_id,
-+		hw = (*clk_topology[nodes[j].type])(clk_out[j], clk_dev_id,
- 						    parent_names,
- 						    num_parents,
- 						    &nodes[j]);
-@@ -590,9 +590,12 @@ static struct clk_hw *zynqmp_register_clk_topology(int clk_id, char *clk_name,
- 				     __func__,  clk_dev_id, clk_name,
- 				     PTR_ERR(hw));
- 
--		parent_names[0] = clk_out;
-+		parent_names[0] = clk_out[j];
++	total_mem_sz = memory_limit ? memory_limit : memblock_phys_mem_size();
+ 	/* use common parsing */
+-	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
++	ret = parse_crashkernel(boot_command_line, total_mem_sz,
+ 			&crash_size, &crash_base);
+ 	if (ret == 0 && crash_size > 0) {
+ 		crashk_res.start = crash_base;
+@@ -177,6 +178,7 @@ void __init reserve_crashkernel(void)
+ 	/* Crash kernel trumps memory limit */
+ 	if (memory_limit && memory_limit <= crashk_res.end) {
+ 		memory_limit = crashk_res.end + 1;
++		total_mem_sz = memory_limit;
+ 		printk("Adjusted memory limit for crashkernel, now 0x%llx\n",
+ 		       memory_limit);
  	}
--	kfree(clk_out);
-+
-+	for (j = 0; j < num_nodes; j++)
-+		kfree(clk_out[j]);
-+
- 	return hw;
- }
+@@ -185,7 +187,7 @@ void __init reserve_crashkernel(void)
+ 			"for crashkernel (System RAM: %ldMB)\n",
+ 			(unsigned long)(crash_size >> 20),
+ 			(unsigned long)(crashk_res.start >> 20),
+-			(unsigned long)(memblock_phys_mem_size() >> 20));
++			(unsigned long)(total_mem_sz >> 20));
  
+ 	if (!memblock_is_region_memory(crashk_res.start, crash_size) ||
+ 	    memblock_reserve(crashk_res.start, crash_size)) {
 -- 
 2.25.1
 
