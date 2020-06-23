@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1BD4205EE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0069F205FB4
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390765AbgFWU1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:27:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46790 "EHLO mail.kernel.org"
+        id S2391658AbgFWUfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:35:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390262AbgFWU1S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:27:18 -0400
+        id S2391581AbgFWUfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:35:06 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97B052070E;
-        Tue, 23 Jun 2020 20:27:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DC7392064B;
+        Tue, 23 Jun 2020 20:35:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944038;
-        bh=iENsBIYNue1BIF4oRSfL2w2oEHOVH2Bds6D3/bWxBek=;
+        s=default; t=1592944506;
+        bh=H4g1p8Txj5EXRnPJ0ZgNnkJmqASI8EjsxqgyuYnyGyk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kvYoJYn11/JLhfIvmAsHSaIIxWAzWR23aBiSVyam6udcYEcLDXd0526uxkrFqkMzs
-         rY+e5MZlxfMzEWyNSTqmqPSvrQWNeAOtbPG+z2/zH/kjpWGONd73I2waTe3LQRoMZs
-         S7oEk44GyFlOG3AuaXvKVnetONVV14T8TXjVaTvs=
+        b=p02txnxUhZ1gYb40Y7QWprEdxYZNM7tao7K/sf2B7kp0zFYbQo3D7Gaycsvs7tsna
+         ObVG3Mp6Q2US5rXEmYp6t5HE5nSnVu3Al5v3fs4LJIGUhu3LK9t2RGjrTdYEuXzJcJ
+         p7w9TgkBMW6R+eThi6gD14R5Hzwbk9uqtFIabLY8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nicholas Piggin <npiggin@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 148/314] powerpc/64s/exception: Fix machine check no-loss idle wakeup
-Date:   Tue, 23 Jun 2020 21:55:43 +0200
-Message-Id: <20200623195345.918201663@linuxfoundation.org>
+Subject: [PATCH 4.19 017/206] f2fs: report delalloc reserve as non-free in statfs for project quota
+Date:   Tue, 23 Jun 2020 21:55:45 +0200
+Message-Id: <20200623195317.814547634@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,73 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 
-[ Upstream commit 8a5054d8cbbe03c68dcb0957c291c942132e4101 ]
+[ Upstream commit baaa7ebf25c78c5cb712fac16b7f549100beddd3 ]
 
-The architecture allows for machine check exceptions to cause idle
-wakeups which resume at the 0x200 address which has to return via
-the idle wakeup code, but the early machine check handler is run
-first.
+This reserved space isn't committed yet but cannot be used for
+allocations. For userspace it has no difference from used space.
 
-The case of a no state-loss sleep is broken because the early
-handler uses non-volatile register r1 , which is needed for the wakeup
-protocol, but it is not restored.
+See the same fix in ext4 commit f06925c73942 ("ext4: report delalloc
+reserve as non-free in statfs for project quota").
 
-Fix this by loading r1 from the MCE exception frame before returning
-to the idle wakeup code. Also update the comment which has become
-stale since the idle rewrite in C.
-
-This crash was found and fix confirmed with a machine check injection
-test in qemu powernv model (which is not upstream in qemu yet).
-
-Fixes: 10d91611f426d ("powerpc/64s: Reimplement book3s idle code in C")
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200508043408.886394-2-npiggin@gmail.com
+Fixes: ddc34e328d06 ("f2fs: introduce f2fs_statfs_project")
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/exceptions-64s.S | 14 ++++++++------
- 1 file changed, 8 insertions(+), 6 deletions(-)
+ fs/f2fs/super.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/exceptions-64s.S b/arch/powerpc/kernel/exceptions-64s.S
-index d0018dd17e0a6..70ac8a6ba0c18 100644
---- a/arch/powerpc/kernel/exceptions-64s.S
-+++ b/arch/powerpc/kernel/exceptions-64s.S
-@@ -1090,17 +1090,19 @@ EXC_COMMON_BEGIN(machine_check_idle_common)
- 	bl	machine_check_queue_event
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index 45f8f6ec22a55..9782250c98156 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -1154,7 +1154,8 @@ static int f2fs_statfs_project(struct super_block *sb,
+ 		limit >>= sb->s_blocksize_bits;
  
- 	/*
--	 * We have not used any non-volatile GPRs here, and as a rule
--	 * most exception code including machine check does not.
--	 * Therefore PACA_NAPSTATELOST does not need to be set. Idle
--	 * wakeup will restore volatile registers.
-+	 * GPR-loss wakeups are relatively straightforward, because the
-+	 * idle sleep code has saved all non-volatile registers on its
-+	 * own stack, and r1 in PACAR1.
- 	 *
--	 * Load the original SRR1 into r3 for pnv_powersave_wakeup_mce.
-+	 * For no-loss wakeups the r1 and lr registers used by the
-+	 * early machine check handler have to be restored first. r2 is
-+	 * the kernel TOC, so no need to restore it.
- 	 *
- 	 * Then decrement MCE nesting after finishing with the stack.
- 	 */
- 	ld	r3,_MSR(r1)
- 	ld	r4,_LINK(r1)
-+	ld	r1,GPR1(r1)
- 
- 	lhz	r11,PACA_IN_MCE(r13)
- 	subi	r11,r11,1
-@@ -1109,7 +1111,7 @@ EXC_COMMON_BEGIN(machine_check_idle_common)
- 	mtlr	r4
- 	rlwinm	r10,r3,47-31,30,31
- 	cmpwi	cr1,r10,2
--	bltlr	cr1	/* no state loss, return to idle caller */
-+	bltlr	cr1	/* no state loss, return to idle caller with r3=SRR1 */
- 	b	idle_return_gpr_loss
- #endif
- 
+ 	if (limit && buf->f_blocks > limit) {
+-		curblock = dquot->dq_dqb.dqb_curspace >> sb->s_blocksize_bits;
++		curblock = (dquot->dq_dqb.dqb_curspace +
++			    dquot->dq_dqb.dqb_rsvspace) >> sb->s_blocksize_bits;
+ 		buf->f_blocks = limit;
+ 		buf->f_bfree = buf->f_bavail =
+ 			(buf->f_blocks > curblock) ?
 -- 
 2.25.1
 
