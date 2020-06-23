@@ -2,120 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A172059E8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF832059EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733299AbgFWRpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 13:45:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41882 "EHLO mail.kernel.org"
+        id S1733242AbgFWRsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 13:48:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43030 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733075AbgFWRpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 13:45:02 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S1733050AbgFWRsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 13:48:13 -0400
+Received: from gaia (unknown [2.26.170.173])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9D9220780;
-        Tue, 23 Jun 2020 17:44:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592934301;
-        bh=rT4koIr7UtLX4GCIHsdvAcf7eYSMsgw4pKrRl6Cftnk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=l5UI7vjpirdxvGDLqNw/1mU19QdmERY4zDRkZsmsxsG7jkn0t8PYxKm9EyJfDNNX2
-         9Kf7qBWpGJnpqkRLW+9uZF0eZlwyFyuvQvy7hoFAOGQHizWjaLoEZm228bJGIQVSb6
-         8ug8T4uZ6cAHXLO4drT3YoUPzSkujvXYjcwYSfEI=
-Date:   Tue, 23 Jun 2020 18:44:56 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Jiping Ma <Jiping.Ma2@windriver.com>, zhe.he@windriver.com,
-        bruce.ashfield@gmail.com, yue.tao@windriver.com,
-        will.deacon@arm.com, linux-kernel@vger.kernel.org,
-        paul.gortmaker@windriver.com, catalin.marinas@arm.com,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH][V3] arm64: perf: Get the wrong PC value in REGS_ABI_32
- mode
-Message-ID: <20200623174456.GA5087@willie-the-truck>
-References: <1589165527-188401-1-git-send-email-jiping.ma2@windriver.com>
- <20200526102611.GA1363@C02TD0UTHF1T.local>
- <1e57ec27-1d54-c7cd-5e5b-6c0cc47f9891@windriver.com>
- <20200527151928.GC59947@C02TD0UTHF1T.local>
- <cd66a2e4-c953-8b09-b775-d982bb1be47a@windriver.com>
- <20200528075418.GB22156@willie-the-truck>
- <20200618130332.GA53391@C02TD0UTHF1T.local>
- <20200623171909.GC4819@willie-the-truck>
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E85D206D4;
+        Tue, 23 Jun 2020 17:48:10 +0000 (UTC)
+Date:   Tue, 23 Jun 2020 18:48:07 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Maydell <Peter.Maydell@linaro.org>
+Subject: Re: [RFC PATCH 0/2] MTE support for KVM guest
+Message-ID: <20200623174807.GD5180@gaia>
+References: <20200617123844.29960-1-steven.price@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200623171909.GC4819@willie-the-truck>
+In-Reply-To: <20200617123844.29960-1-steven.price@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 06:19:10PM +0100, Will Deacon wrote:
-> So, I think we should take this patch (which puts the PC where you'd expect
-> to find it for compat tasks) and then we could consider removing the current
-> lr/sp fudging as a separate patch, which we could revert if it causes a
-> problem. However, I'm not sure I want to open that up.
+Hi Steven,
 
-Patch below...
+On Wed, Jun 17, 2020 at 01:38:42PM +0100, Steven Price wrote:
+> These patches add support to KVM to enable MTE within a guest. It is
+> based on Catalin's v4 MTE user space series[1].
+> 
+> [1] http://lkml.kernel.org/r/20200515171612.1020-1-catalin.marinas%40arm.com
+> 
+> Posting as an RFC as I'd like feedback on the approach taken. First a
+> little background on how MTE fits within the architecture:
+> 
+> The stage 2 page tables have limited scope for controlling the
+> availability of MTE. If a page is mapped as Normal and cached in stage 2
+> then it's the stage 1 tables that get to choose whether the memory is
+> tagged or not. So the only way of forbidding tags on a page from the
+> hypervisor is to change the cacheability (or make it device memory)
+> which would cause other problems.  Note this restriction fits the
+> intention that a system should have all (general purpose) memory
+> supporting tags if it support MTE, so it's not too surprising.
+> 
+> However, the upshot of this is that to enable MTE within a guest all
+> pages of memory mapped into the guest as normal cached pages in stage 2
+> *must* support MTE (i.e. we must ensure the tags are appropriately
+> sanitised and save/restore the tags during swap etc).
+> 
+> My current approach is that KVM transparently upgrades any pages
+> provided by the VMM to be tag-enabled when they are faulted in (i.e.
+> sets the PG_mte_tagged flag on the page) which has the benefit of
+> requiring fewer changes in the VMM. However, save/restore of the VM
+> state still requires the VMM to have a PROT_MTE enabled mapping so that
+> it can access the tag values. A VMM which 'forgets' to enable PROT_MTE
+> would lose the tag values when saving/restoring (tags are RAZ/WI when
+> PROT_MTE isn't set).
+> 
+> An alternative approach would be to enforce the VMM provides PROT_MTE
+> memory in the first place. This seems appealing to prevent the above
+> potentially unexpected gotchas with save/restore, however this would
+> also extend to memory that you might not expect to have PROT_MTE (e.g. a
+> shared frame buffer for an emulated graphics card). 
 
-Will
+As you mentioned above, if memory is mapped as Normal Cacheable at Stage
+2 (whether we use FWB or not), the guest is allowed to turn MTE on via
+Stage 1. There is no way for KVM to prevent a guest from using MTE other
+than the big HCR_EL2.ATA knob.
 
---->8
+This causes potential issues since we can't guarantee that all the
+Cacheable memory slots allocated by the VMM support MTE. If they do not,
+the arch behaviour is "unpredictable". We also can't trust the guest to
+not enable MTE on such Cacheable mappings.
 
-From 7452148b87ed8c82826474366dbe536fd960d3a7 Mon Sep 17 00:00:00 2001
-From: Jiping Ma <jiping.ma2@windriver.com>
-Date: Mon, 11 May 2020 10:52:07 +0800
-Subject: [PATCH] arm64: perf: Report the PC value in REGS_ABI_32 mode
+On the host kernel, mmap'ing with PROT_MTE is only allowed for anonymous
+mappings and shmem. So requiring the VMM to always pass PROT_MTE mapped
+ranges to KVM, irrespective of whether it's guest RAM, emulated device,
+virtio etc. (as long as they are Cacheable), filters unsafe ranges that
+may be mapped into guest.
 
-A 32-bit perf querying the registers of a compat task using REGS_ABI_32
-will receive zeroes from w15, when it expects to find the PC.
+Note that in the next revision of the MTE patches I'll drop the DT
+memory nodes checking and rely only on the CPUID information (arch
+updated promised by the architects).
 
-Return the PC value for register dwarf register 15 when returning register
-values for a compat task to perf.
+I see two possible ways to handle this (there may be more):
 
-Signed-off-by: Jiping Ma <jiping.ma2@windriver.com>
-Link: https://lore.kernel.org/r/1589165527-188401-1-git-send-email-jiping.ma2@windriver.com
-[will: Shuffled code and added a comment]
-Signed-off-by: Will Deacon <will@kernel.org>
----
- arch/arm64/kernel/perf_regs.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+1. As in your current patches, assume any Cacheable at Stage 2 can have
+   MTE enabled at Stage 1. In addition, we need to check whether the
+   physical memory supports MTE and it could be something simple like
+   pfn_valid(). Is there a way to reject a memory slot passed by the
+   VMM?
 
-diff --git a/arch/arm64/kernel/perf_regs.c b/arch/arm64/kernel/perf_regs.c
-index 0bbac612146e..952b26a05d0f 100644
---- a/arch/arm64/kernel/perf_regs.c
-+++ b/arch/arm64/kernel/perf_regs.c
-@@ -15,15 +15,25 @@ u64 perf_reg_value(struct pt_regs *regs, int idx)
- 		return 0;
- 
- 	/*
--	 * Compat (i.e. 32 bit) mode:
--	 * - PC has been set in the pt_regs struct in kernel_entry,
--	 * - Handle SP and LR here.
-+	 * Our handling of compat tasks (PERF_SAMPLE_REGS_ABI_32) is weird. For
-+	 * a 32-bit perf inspecting a 32-bit task, then it will look at the
-+	 * first 16 registers. These correspond directly to the registers saved
-+	 * in our pt_regs structure, with the exception of the PC, so we copy
-+	 * that down (x15 corresponds to SP_hyp in the architecture). So far, so
-+	 * good. The oddity arises when a 64-bit perf looks at a 32-bit task and
-+	 * asks for registers beyond PERF_REG_ARM_MAX. In this case, we return
-+	 * SP_usr, LR_usr and PC in the positions where the AArch64 registers
-+	 * would normally live. The initial idea was to allow a 64-bit unwinder
-+	 * to unwinder a 32-bit task and, although it's not clear how well that
-+	 * works in practice, we're kind of stuck with this interface now.
- 	 */
- 	if (compat_user_mode(regs)) {
- 		if ((u32)idx == PERF_REG_ARM64_SP)
- 			return regs->compat_sp;
- 		if ((u32)idx == PERF_REG_ARM64_LR)
- 			return regs->compat_lr;
-+		if (idx == 15)
-+			return regs->pc;
- 	}
- 
- 	if ((u32)idx == PERF_REG_ARM64_SP)
+2. Similar to 1 but instead of checking whether the pfn supports MTE, we
+   require the VMM to only pass PROT_MTE ranges (filtering already done
+   by the host kernel). We need a way to reject the slot and return an
+   error to the VMM.
+
+I think rejecting a slot at the Stage 2 fault time is very late. You
+probably won't be able to do much other than killing the guest.
+
+Both 1 and 2 above risk breaking existing VMMs just because they happen
+to start on an MTE-capable machine. So, can we also require the VMM to
+explicitly opt in to MTE support in guests via some ioctl()? This in
+turn would enable the additional checks in KVM for the MTE capability of
+the memory slots (1 or 2 above).
+
+An alternative to an MTE enable ioctl(), if all the memory slots are set
+up prior to the VM starting, KVM could check 1 or 2 above and decide
+whether to expose MTE to guests (HCR_EL2.ATA).
+
+More questions than solutions above, mostly for the KVM and Qemu
+maintainers.
+
+Thanks.
+
 -- 
-2.27.0.111.gc72c7da667-goog
-
+Catalin
