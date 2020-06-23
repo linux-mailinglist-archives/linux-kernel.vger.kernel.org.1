@@ -2,154 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42DB020461F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24A7204623
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:48:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732312AbgFWArc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40474 "EHLO
+        id S1732342AbgFWAsZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:48:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731716AbgFWArc (ORCPT
+        with ESMTP id S1732235AbgFWAsU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:47:32 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D764C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 17:47:32 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id s9so1213471ljm.11
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 17:47:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wtdbOX5oThYTDJM/yZ7loxNE7l9NJR90MLvrHTPjroE=;
-        b=YkuJYpxXvdEL7yoEauC9MJGL4fib0h9/hPyEoQNua/x651UUThCLvRj/xjLWmZU6UO
-         YGPqNogOE8kx2yYabzpI88Lu955G6M0TmqFCJA0/Wl9BM870ahCsHhy4Ay2jWsvHxXPB
-         MTDDLu5EniwwcBR4EvOhPuD/cRvMfy/EsS/avB8xiZHBWD6oI6JoZWSQP2DFX5hTuTXa
-         1ek7r8D77SmBHJ0rrl7FN9hWh874kcm4hBaC/maBiGUwlfLbGsQ3TqGTWRJtGw/jh/ik
-         e04xUD5/povonUgqdwOL3arsqgMcTuITn93KR0jhV5JvYXIMmMygkFo9qhWslpOSKXjk
-         1LEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wtdbOX5oThYTDJM/yZ7loxNE7l9NJR90MLvrHTPjroE=;
-        b=TxiXB5geK0HxNQ4twzP+fT6tEq0N4/2qBdzcKKAPbMnyudbbRAt1dK1NzmwvAvl6nl
-         e3AXFsMqmP1pCMNHm4HyCqV4XsEqAn27xQEcA4LKlyS8bPrRP5xagPB3Y+f7jcWWQza4
-         MrjQigCrkC3XQG83TtnGhlkpNO3ogRvxFv7xTN+7sU+00ziAGaVa4KqnLeqFO/vjPLoH
-         q4aAoveR+YLr8aYhBNUwknV4hTkaOnx5KGTyL2eboKxogJLQVMxzbujDEcC8ACPbslWy
-         ENFsVhIycwsMivGd9BwnLm3d7yHZ3kT3DIUVqrcMKLrwky9LTaB0FPAqbUmRMDjBsy04
-         JCag==
-X-Gm-Message-State: AOAM533YX6mnK2cYZ3qDylViOLUayB1LtefflyBpYVIE3xawe7eGliBX
-        M97rOtgYzKt/OGqkxyYEuXew12SEE18pNqeDMsEgXw==
-X-Google-Smtp-Source: ABdhPJwd98jM9BRU2cXbE2BpTTuTTR91cyjV/GkqiL/DYfU/k2t4CLNN4nFu2jsYOQL7F3pAft5IhpPF7OzVZchP6R4=
-X-Received: by 2002:a2e:a58a:: with SMTP id m10mr10003481ljp.347.1592873250358;
- Mon, 22 Jun 2020 17:47:30 -0700 (PDT)
+        Mon, 22 Jun 2020 20:48:20 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA47EC061573;
+        Mon, 22 Jun 2020 17:48:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=xW7XautdzOxud38pqzUM3uCC+kw5dmatbyChhqw/vJc=; b=XZOsF4wq148/vLc7JZ7mHdlG/h
+        z9hXDq0z7ilaQccnLPANd6oz1/O0Fga5+UkO5lukzIIK2dB1/3sANlEtNeYOAkIY3LFg1TGlD4kfO
+        JwWGqAhPvsqKRoOx1KHsBpF8SgseJQPZWKoeUWv/YPSmx6e0wS2tBVcwYXrUf2hz9lydsPGQovjGi
+        uPH9f4d99anthkQ0G33tXrKSCafS6kyy+yA4BoojXhBsvE4y5xhJpQ857aOXJItLF0KvCV/qrej8A
+        RDkrROu6NFbkKrVWizoOh7K236jXiPQKOhJ8GxPPS1+q0EpocGhaYGt/RHH/f8E9fLygaptMF1h0Z
+        2kyT9/Fg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jnX6S-00014H-8H; Tue, 23 Jun 2020 00:47:56 +0000
+Date:   Tue, 23 Jun 2020 01:47:56 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Junxiao Bi <junxiao.bi@oracle.com>
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Matthew Wilcox <matthew.wilcox@oracle.com>,
+        Srinivas Eeda <SRINIVAS.EEDA@oracle.com>,
+        "joe.jin@oracle.com" <joe.jin@oracle.com>,
+        Wengang Wang <wen.gang.wang@oracle.com>
+Subject: Re: [PATCH] proc: Avoid a thundering herd of threads freeing proc
+ dentries
+Message-ID: <20200623004756.GE21350@casper.infradead.org>
+References: <20200618233958.GV8681@bombadil.infradead.org>
+ <877dw3apn8.fsf@x220.int.ebiederm.org>
+ <2cf6af59-e86b-f6cc-06d3-84309425bd1d@oracle.com>
+ <87bllf87ve.fsf_-_@x220.int.ebiederm.org>
+ <caa9adf6-e1bb-167b-6f59-d17fd587d4fa@oracle.com>
+ <87k1036k9y.fsf@x220.int.ebiederm.org>
+ <68a1f51b-50bf-0770-2367-c3e1b38be535@oracle.com>
+ <87blle4qze.fsf@x220.int.ebiederm.org>
+ <20200620162752.GF8681@bombadil.infradead.org>
+ <39e9f488-110c-588d-d977-413da3dc5dfa@oracle.com>
 MIME-Version: 1.0
-References: <20200623002128.GA25456@paulmck-ThinkPad-P72> <20200623002147.25750-2-paulmck@kernel.org>
-In-Reply-To: <20200623002147.25750-2-paulmck@kernel.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 22 Jun 2020 17:47:19 -0700
-Message-ID: <CALvZod4yjC5dDsVHLLhW405pBeMLCcq1b6FYq77ZAxUOtsNCFQ@mail.gmail.com>
-Subject: Re: [PATCH tip/core/rcu 02/26] mm/mmap.c: Add cond_resched() for
- exit_mmap() CPU stalls
-To:     paulmck@kernel.org, David Rientjes <rientjes@google.com>
-Cc:     rcu@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Ingo Molnar <mingo@kernel.org>, jiangshanlai@gmail.com,
-        dipankar@in.ibm.com, Andrew Morton <akpm@linux-foundation.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        josh@joshtriplett.org, Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Howells <dhowells@redhat.com>,
-        Eric Dumazet <edumazet@google.com>, fweisbec@gmail.com,
-        oleg@redhat.com, Joel Fernandes <joel@joelfernandes.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <39e9f488-110c-588d-d977-413da3dc5dfa@oracle.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 5:22 PM <paulmck@kernel.org> wrote:
->
-> From: "Paul E. McKenney" <paulmck@kernel.org>
->
-> A large process running on a heavily loaded system can encounter the
-> following RCU CPU stall warning:
->
->   rcu: INFO: rcu_sched self-detected stall on CPU
->   rcu: \x093-....: (20998 ticks this GP) idle=4ea/1/0x4000000000000002 softirq=556558/556558 fqs=5190
->   \x09(t=21013 jiffies g=1005461 q=132576)
->   NMI backtrace for cpu 3
->   CPU: 3 PID: 501900 Comm: aio-free-ring-w Kdump: loaded Not tainted 5.2.9-108_fbk12_rc3_3858_gb83b75af7909 #1
->   Hardware name: Wiwynn   HoneyBadger/PantherPlus, BIOS HBM6.71 02/03/2016
->   Call Trace:
->    <IRQ>
->    dump_stack+0x46/0x60
->    nmi_cpu_backtrace.cold.3+0x13/0x50
->    ? lapic_can_unplug_cpu.cold.27+0x34/0x34
->    nmi_trigger_cpumask_backtrace+0xba/0xca
->    rcu_dump_cpu_stacks+0x99/0xc7
->    rcu_sched_clock_irq.cold.87+0x1aa/0x397
->    ? tick_sched_do_timer+0x60/0x60
->    update_process_times+0x28/0x60
->    tick_sched_timer+0x37/0x70
->    __hrtimer_run_queues+0xfe/0x270
->    hrtimer_interrupt+0xf4/0x210
->    smp_apic_timer_interrupt+0x5e/0x120
->    apic_timer_interrupt+0xf/0x20
->    </IRQ>
->   RIP: 0010:kmem_cache_free+0x223/0x300
->   Code: 88 00 00 00 0f 85 ca 00 00 00 41 8b 55 18 31 f6 f7 da 41 f6 45 0a 02 40 0f 94 c6 83 c6 05 9c 41 5e fa e8 a0 a7 01 00 41 56 9d <49> 8b 47 08 a8 03 0f 85 87 00 00 00 65 48 ff 08 e9 3d fe ff ff 65
->   RSP: 0018:ffffc9000e8e3da8 EFLAGS: 00000206 ORIG_RAX: ffffffffffffff13
->   RAX: 0000000000020000 RBX: ffff88861b9de960 RCX: 0000000000000030
->   RDX: fffffffffffe41e8 RSI: 000060777fe3a100 RDI: 000000000001be18
->   RBP: ffffea00186e7780 R08: ffffffffffffffff R09: ffffffffffffffff
->   R10: ffff88861b9dea28 R11: ffff88887ffde000 R12: ffffffff81230a1f
->   R13: ffff888854684dc0 R14: 0000000000000206 R15: ffff8888547dbc00
->    ? remove_vma+0x4f/0x60
->    remove_vma+0x4f/0x60
->    exit_mmap+0xd6/0x160
->    mmput+0x4a/0x110
->    do_exit+0x278/0xae0
->    ? syscall_trace_enter+0x1d3/0x2b0
->    ? handle_mm_fault+0xaa/0x1c0
->    do_group_exit+0x3a/0xa0
->    __x64_sys_exit_group+0x14/0x20
->    do_syscall_64+0x42/0x100
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
->
-> And on a PREEMPT=n kernel, the "while (vma)" loop in exit_mmap() can run
-> for a very long time given a large process.  This commit therefore adds
-> a cond_resched() to this loop, providing RCU any needed quiescent states.
->
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: <linux-mm@kvack.org>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+On Sun, Jun 21, 2020 at 10:15:39PM -0700, Junxiao Bi wrote:
+> On 6/20/20 9:27 AM, Matthew Wilcox wrote:
+> > On Fri, Jun 19, 2020 at 05:42:45PM -0500, Eric W. Biederman wrote:
+> > > Junxiao Bi <junxiao.bi@oracle.com> writes:
+> > > > Still high lock contention. Collect the following hot path.
+> > > A different location this time.
+> > > 
+> > > I know of at least exit_signal and exit_notify that take thread wide
+> > > locks, and it looks like exit_mm is another.  Those don't use the same
+> > > locks as flushing proc.
+> > > 
+> > > 
+> > > So I think you are simply seeing a result of the thundering herd of
+> > > threads shutting down at once.  Given that thread shutdown is fundamentally
+> > > a slow path there is only so much that can be done.
+> > > 
+> > > If you are up for a project to working through this thundering herd I
+> > > expect I can help some.  It will be a long process of cleaning up
+> > > the entire thread exit process with an eye to performance.
+> > Wengang had some tests which produced wall-clock values for this problem,
+> > which I agree is more informative.
+> > 
+> > I'm not entirely sure what the customer workload is that requires a
+> > highly threaded workload to also shut down quickly.  To my mind, an
+> > overall workload is normally composed of highly-threaded tasks that run
+> > for a long time and only shut down rarely (thus performance of shutdown
+> > is not important) and single-threaded tasks that run for a short time.
+> 
+> The real workload is a Java application working in server-agent mode, issue
+> happened in agent side, all it do is waiting works dispatching from server
+> and execute. To execute one work, agent will start lots of short live
+> threads, there could be a lot of threads exit same time if there were a lots
+> of work to execute, the contention on the exit path caused a high %sys time
+> which impacted other workload.
 
-We have exactly the same change in our internal kernel since 2018. We
-mostly observed the need_resched warnings on the processes mapping the
-hugetlbfs.
+How about this for a micro?  Executes in about ten seconds on my laptop.
+You might need to tweak it a bit to get better timing on a server.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+// gcc -pthread -O2 -g -W -Wall
+#include <pthread.h>
+#include <unistd.h>
 
-> ---
->  mm/mmap.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index 59a4682..972f839 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -3159,6 +3159,7 @@ void exit_mmap(struct mm_struct *mm)
->                 if (vma->vm_flags & VM_ACCOUNT)
->                         nr_accounted += vma_pages(vma);
->                 vma = remove_vma(vma);
-> +               cond_resched();
->         }
->         vm_unacct_memory(nr_accounted);
->  }
-> --
-> 2.9.5
->
+void *worker(void *arg)
+{
+	int i = 0;
+	int *p = arg;
+
+	for (;;) {
+		while (i < 1000 * 1000) {
+			i += *p;
+		}
+		sleep(1);
+	}
+}
+
+int main(int argc, char **argv)
+{
+	pthread_t threads[20][100];
+	int i, j, one = 1;
+
+	for (i = 0; i < 1000; i++) {
+		for (j = 0; j < 100; j++)
+			pthread_create(&threads[i % 20][j], NULL, worker, &one);
+		if (i < 5)
+			continue;
+		for (j = 0; j < 100; j++)
+			pthread_cancel(threads[(i - 5) %20][j]);
+	}
+
+	return 0;
+}
