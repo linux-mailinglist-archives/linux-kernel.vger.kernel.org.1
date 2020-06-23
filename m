@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95046206350
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80015206352
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389422AbgFWUWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:22:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39868 "EHLO mail.kernel.org"
+        id S2389585AbgFWUWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:22:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390117AbgFWUWC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:22:02 -0400
+        id S2389561AbgFWUWE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:22:04 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 64C992070E;
-        Tue, 23 Jun 2020 20:22:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B8BF42064B;
+        Tue, 23 Jun 2020 20:22:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943721;
-        bh=YsAd++K2D9kAS2XJZYVl1Ca7YxKlSgM03ysJztGuk6k=;
+        s=default; t=1592943724;
+        bh=yOcyIKRlgo1XsxFKyqlJS8YrE8ueduBqHevWzvDAzRM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vyxEeB7YWVBrcWSF294Gtp8GGgJMWIaoOISRQPUQfrQmVuT0PwngcSNpnUL9Jim6C
-         4UuEZ6D+KelyHLnaKoMTODkEl71ZDbOs69lNlNW01SFBT0+EiIEV0o4rhxVqv8DqXE
-         DgTAB1hj4+NHXdhKFEvVtrQYAjOHDVU02rh6Kdb0=
+        b=tpkPvy4df7RqPajV1+wrF/q4HTHHwCJ/cPxex1vViJgb0uLCDHtpCtzigPqVKED0Q
+         b3pDHkC0qCPC3I46LxT0temiyyqk6TZeCU9PeXJuYF2ylCND2hxrjhCuj9MdgxSaPk
+         MbpSYiZnyi5qL1OPzDzawYeOXxocqyR+y8ExSJi4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org, Andreas Klinger <ak@it-klinger.de>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 024/314] rtc: mc13xxx: fix a double-unlock issue
-Date:   Tue, 23 Jun 2020 21:53:39 +0200
-Message-Id: <20200623195339.952495096@linuxfoundation.org>
+Subject: [PATCH 5.4 025/314] iio: bmp280: fix compensation of humidity
+Date:   Tue, 23 Jun 2020 21:53:40 +0200
+Message-Id: <20200623195340.000616154@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
 References: <20200623195338.770401005@linuxfoundation.org>
@@ -44,41 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiushi Wu <wu000273@umn.edu>
+From: Andreas Klinger <ak@it-klinger.de>
 
-[ Upstream commit 8816cd726a4fee197af2d851cbe25991ae19ea14 ]
+[ Upstream commit dee2dabc0e4115b80945fe2c91603e634f4b4686 ]
 
-In function mc13xxx_rtc_probe, the mc13xxx_unlock() is called
-before rtc_register_device(). But in the error path of
-rtc_register_device(), the mc13xxx_unlock() is called again,
-which causes a double-unlock problem. Thus add a call of the
-function “mc13xxx_lock” in an if branch for the completion
-of the exception handling.
+Limit the output of humidity compensation to the range between 0 and 100
+percent.
 
-Fixes: e4ae7023e182a ("rtc: mc13xxx: set range")
-Signed-off-by: Qiushi Wu <wu000273@umn.edu>
-Link: https://lore.kernel.org/r/20200503182235.1652-1-wu000273@umn.edu
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Depending on the calibration parameters of the individual sensor it
+happens, that a humidity above 100 percent or below 0 percent is
+calculated, which don't make sense in terms of relative humidity.
+
+Add a clamp to the compensation formula as described in the datasheet of
+the sensor in chapter 4.2.3.
+
+Although this clamp is documented, it was never in the driver of the
+kernel.
+
+It depends on the circumstances (calibration parameters, temperature,
+humidity) if one can see a value above 100 percent without the clamp.
+The writer of this patch was working with this type of sensor without
+noting this error. So it seems to be a rare event when this bug occures.
+
+Signed-off-by: Andreas Klinger <ak@it-klinger.de>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rtc/rtc-mc13xxx.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/iio/pressure/bmp280-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/rtc/rtc-mc13xxx.c b/drivers/rtc/rtc-mc13xxx.c
-index afce2c0b4bd67..d6802e6191cbe 100644
---- a/drivers/rtc/rtc-mc13xxx.c
-+++ b/drivers/rtc/rtc-mc13xxx.c
-@@ -308,8 +308,10 @@ static int __init mc13xxx_rtc_probe(struct platform_device *pdev)
- 	mc13xxx_unlock(mc13xxx);
+diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
+index 084a1d56cc2f0..0a95afaa48fe6 100644
+--- a/drivers/iio/pressure/bmp280-core.c
++++ b/drivers/iio/pressure/bmp280-core.c
+@@ -264,6 +264,8 @@ static u32 bmp280_compensate_humidity(struct bmp280_data *data,
+ 		+ (s32)2097152) * calib->H2 + 8192) >> 14);
+ 	var -= ((((var >> 15) * (var >> 15)) >> 7) * (s32)calib->H1) >> 4;
  
- 	ret = rtc_register_device(priv->rtc);
--	if (ret)
-+	if (ret) {
-+		mc13xxx_lock(mc13xxx);
- 		goto err_irq_request;
-+	}
- 
- 	return 0;
++	var = clamp_val(var, 0, 419430400);
++
+ 	return var >> 12;
+ };
  
 -- 
 2.25.1
