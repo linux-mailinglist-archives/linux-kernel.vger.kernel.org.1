@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FA66205EA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49EDA205EAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390449AbgFWUYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:24:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43194 "EHLO mail.kernel.org"
+        id S2390466AbgFWUYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:24:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43310 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390432AbgFWUYb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:24:31 -0400
+        id S2390180AbgFWUYg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:24:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9DAF22158C;
-        Tue, 23 Jun 2020 20:24:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B175D206C3;
+        Tue, 23 Jun 2020 20:24:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943871;
-        bh=4bFTiyTI+21Z9p8NR5i0JtG0TLkhfG+w1D0qOnIinuU=;
+        s=default; t=1592943876;
+        bh=P4si8H1SED+EKjaI6lFpz3kNayMuEC68QWo0fi1aWMA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lu8pEeTwwBMUgrNnFdkJu0jznhLP4KUaUFI3XBla+OB/KU+ukuIO63lyyRhRgH11l
-         F36VbHEg7UE5yal51RLAEb6D9I5sSZS9MylacYJD4srzELUrPPbUsEiJSb3jeQ6MVp
-         5tluh2BhYiVfZfQyQOJp3+z6yRiU/NohdhIlSb7M=
+        b=qLi4/2QMsRP4SoN4rpmSLHDWA+F1oyB1kEBNs0EHL5U5XcB7Nk9WZI0KuBTdRGQku
+         tX0AYdG9LR9KthOpgngR85kkHITQr5VVsOHed0xur1EXyfwcpTlKRXqxJxu324z8jW
+         /RfBN+ZIAVEsjv0lb66YSIsTo0IrPwGrTn9Y4K+E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Borislav Petkov <bp@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 083/314] x86/purgatory: Disable various profiling and sanitizing options
-Date:   Tue, 23 Jun 2020 21:54:38 +0200
-Message-Id: <20200623195342.828949467@linuxfoundation.org>
+        stable@vger.kernel.org, Aiman Najjar <aiman.najjar@hurranet.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 085/314] staging: rtl8712: fix multiline derefernce warnings
+Date:   Tue, 23 Jun 2020 21:54:40 +0200
+Message-Id: <20200623195342.928743926@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
 References: <20200623195338.770401005@linuxfoundation.org>
@@ -43,60 +44,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Aiman Najjar <aiman.najjar@hurranet.com>
 
-[ Upstream commit e2ac07c06058ae2d58b45bbf2a2a352771d76fcb ]
+[ Upstream commit 269da10b1477c31c660288633c8d613e421b131f ]
 
-Since the purgatory is a special stand-alone binary, various profiling
-and sanitizing options must be disabled. Having these options enabled
-typically will cause dependencies on various special symbols exported by
-special libs / stubs used by these frameworks. Since the purgatory is
-special, it is not linked against these stubs causing missing symbols in
-the purgatory if these options are not disabled.
+This patch fixes remaining checkpatch warnings
+in rtl871x_xmit.c:
 
-Sync the set of disabled profiling and sanitizing options with that from
-drivers/firmware/efi/libstub/Makefile, adding
--DDISABLE_BRANCH_PROFILING to the CFLAGS and setting:
+WARNING: Avoid multiple line dereference - prefer 'psecuritypriv->PrivacyKeyIndex'
+636: FILE: drivers/staging//rtl8712/rtl871x_xmit.c:636:
++					      (u8)psecuritypriv->
++					      PrivacyKeyIndex);
 
-  GCOV_PROFILE                    := n
-  UBSAN_SANITIZE                  := n
+WARNING: Avoid multiple line dereference - prefer 'psecuritypriv->XGrpKeyid'
+643: FILE: drivers/staging//rtl8712/rtl871x_xmit.c:643:
++						   (u8)psecuritypriv->
++						   XGrpKeyid);
 
-This fixes broken references to ftrace_likely_update() when
-CONFIG_TRACE_BRANCH_PROFILING is enabled and to __gcov_init() and
-__gcov_exit() when CONFIG_GCOV_KERNEL is enabled.
+WARNING: Avoid multiple line dereference - prefer 'psecuritypriv->XGrpKeyid'
+652: FILE: drivers/staging//rtl8712/rtl871x_xmit.c:652:
++						   (u8)psecuritypriv->
++						   XGrpKeyid);
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20200317130841.290418-1-hdegoede@redhat.com
+Signed-off-by: Aiman Najjar <aiman.najjar@hurranet.com>
+Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Link: https://lore.kernel.org/r/98805a72b92e9bbf933e05b827d27944663b7bc1.1585508171.git.aiman.najjar@hurranet.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/purgatory/Makefile | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/staging/rtl8712/rtl871x_xmit.c | 11 ++++-------
+ 1 file changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/purgatory/Makefile b/arch/x86/purgatory/Makefile
-index fb4ee54443799..9733d1cc791dd 100644
---- a/arch/x86/purgatory/Makefile
-+++ b/arch/x86/purgatory/Makefile
-@@ -17,7 +17,10 @@ CFLAGS_sha256.o := -D__DISABLE_EXPORTS
- LDFLAGS_purgatory.ro := -e purgatory_start -r --no-undefined -nostdlib -z nodefaultlib
- targets += purgatory.ro
- 
-+# Sanitizer, etc. runtimes are unavailable and cannot be linked here.
-+GCOV_PROFILE	:= n
- KASAN_SANITIZE	:= n
-+UBSAN_SANITIZE	:= n
- KCOV_INSTRUMENT := n
- 
- # These are adjustments to the compiler flags used for objects that
-@@ -25,7 +28,7 @@ KCOV_INSTRUMENT := n
- 
- PURGATORY_CFLAGS_REMOVE := -mcmodel=kernel
- PURGATORY_CFLAGS := -mcmodel=large -ffreestanding -fno-zero-initialized-in-bss
--PURGATORY_CFLAGS += $(DISABLE_STACKLEAK_PLUGIN)
-+PURGATORY_CFLAGS += $(DISABLE_STACKLEAK_PLUGIN) -DDISABLE_BRANCH_PROFILING
- 
- # Default KBUILD_CFLAGS can have -pg option set when FTRACE is enabled. That
- # in turn leaves some undefined symbols like __fentry__ in purgatory and not
+diff --git a/drivers/staging/rtl8712/rtl871x_xmit.c b/drivers/staging/rtl8712/rtl871x_xmit.c
+index cc5809e49e356..7a821921c0da1 100644
+--- a/drivers/staging/rtl8712/rtl871x_xmit.c
++++ b/drivers/staging/rtl8712/rtl871x_xmit.c
+@@ -590,7 +590,7 @@ sint r8712_xmitframe_coalesce(struct _adapter *padapter, _pkt *pkt,
+ 	addr_t addr;
+ 	u8 *pframe, *mem_start, *ptxdesc;
+ 	struct sta_info		*psta;
+-	struct security_priv	*psecuritypriv = &padapter->securitypriv;
++	struct security_priv	*psecpriv = &padapter->securitypriv;
+ 	struct mlme_priv	*pmlmepriv = &padapter->mlmepriv;
+ 	struct xmit_priv	*pxmitpriv = &padapter->xmitpriv;
+ 	struct pkt_attrib	*pattrib = &pxmitframe->attrib;
+@@ -633,15 +633,13 @@ sint r8712_xmitframe_coalesce(struct _adapter *padapter, _pkt *pkt,
+ 				case _WEP40_:
+ 				case _WEP104_:
+ 					WEP_IV(pattrib->iv, psta->txpn,
+-					       (u8)psecuritypriv->
+-					       PrivacyKeyIndex);
++					       (u8)psecpriv->PrivacyKeyIndex);
+ 					break;
+ 				case _TKIP_:
+ 					if (bmcst)
+ 						TKIP_IV(pattrib->iv,
+ 						    psta->txpn,
+-						    (u8)psecuritypriv->
+-						    XGrpKeyid);
++						    (u8)psecpriv->XGrpKeyid);
+ 					else
+ 						TKIP_IV(pattrib->iv, psta->txpn,
+ 							0);
+@@ -649,8 +647,7 @@ sint r8712_xmitframe_coalesce(struct _adapter *padapter, _pkt *pkt,
+ 				case _AES_:
+ 					if (bmcst)
+ 						AES_IV(pattrib->iv, psta->txpn,
+-						    (u8)psecuritypriv->
+-						    XGrpKeyid);
++						    (u8)psecpriv->XGrpKeyid);
+ 					else
+ 						AES_IV(pattrib->iv, psta->txpn,
+ 						       0);
 -- 
 2.25.1
 
