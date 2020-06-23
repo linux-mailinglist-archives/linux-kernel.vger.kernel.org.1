@@ -2,41 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E072063F9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EF620632C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393406AbgFWVNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:13:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50404 "EHLO mail.kernel.org"
+        id S2389677AbgFWUS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:18:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35074 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391069AbgFWUaM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:30:12 -0400
+        id S2389645AbgFWUSQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:18:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F47E206C3;
-        Tue, 23 Jun 2020 20:30:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19C562080C;
+        Tue, 23 Jun 2020 20:18:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944211;
-        bh=w3neRlGvV3RCtAXDWLv4hArf6yaqvfiLchBpIDVp1d4=;
+        s=default; t=1592943495;
+        bh=pPtavSiNSo2Uqk/jrzHoDkcuUBs+Eykn1agyCN82B/4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=X/jJI+SA4G6fiJMngynL3qvqofOhraYCPenCRXzyiSPKWu4mNZSFNSzWh5pvw2eiC
-         +Pxa1M5cN7SGViESmXfn4NY1nmHpQOKzTCKE7fAQEYmz7jk/R0Sa6yTAo9rZNaGsYl
-         yYuY64irJKxkBQ3sbXz//bcy3qkF85XqVJtygKZg=
+        b=r5+QkfYMQYnquw+Jp2eQ5+zCL8fNR5HRROnkLx6PSAYH54u0XqAiWDC/Fyv+5ayYF
+         qxbROmmvPHDEk98xLeleiSQyHu6kNSSmPlt8ffIgRbhGesLmQ4hGLUrv6UjpphSrUY
+         3ZpOW6ycYgUk0nSF/WN+y/eE+DIARAQy7KHxiorY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Dong Aisheng <aisheng.dong@nxp.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 216/314] pinctrl: freescale: imx: Fix an error handling path in imx_pinctrl_probe()
-Date:   Tue, 23 Jun 2020 21:56:51 +0200
-Message-Id: <20200623195349.230035126@linuxfoundation.org>
+        stable@vger.kernel.org, Jeffle Xu <jefflexu@linux.alibaba.com>,
+        Eric Whitney <enwlinux@gmail.com>,
+        Theodore Tso <tytso@mit.edu>, stable@kernel.org
+Subject: [PATCH 5.7 415/477] ext4: fix partial cluster initialization when splitting extent
+Date:   Tue, 23 Jun 2020 21:56:52 +0200
+Message-Id: <20200623195427.139050856@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
+References: <20200623195407.572062007@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,75 +44,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Jeffle Xu <jefflexu@linux.alibaba.com>
 
-[ Upstream commit 11d8da5cabf7c6c3263ba2cd9c00260395867048 ]
+commit cfb3c85a600c6aa25a2581b3c1c4db3460f14e46 upstream.
 
-'pinctrl_unregister()' should not be called to undo
-'devm_pinctrl_register_and_init()', it is already handled by the framework.
+Fix the bug when calculating the physical block number of the first
+block in the split extent.
 
-This simplifies the error handling paths of the probe function.
-The 'imx_free_resources()' can be removed as well.
+This bug will cause xfstests shared/298 failure on ext4 with bigalloc
+enabled occasionally. Ext4 error messages indicate that previously freed
+blocks are being freed again, and the following fsck will fail due to
+the inconsistency of block bitmap and bg descriptor.
 
-Fixes: a51c158bf0f7 ("pinctrl: imx: use radix trees for groups and functions")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
-Link: https://lore.kernel.org/r/20200530204955.588962-1-christophe.jaillet@wanadoo.fr
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+The following is an example case:
+
+1. First, Initialize a ext4 filesystem with cluster size '16K', block size
+'4K', in which case, one cluster contains four blocks.
+
+2. Create one file (e.g., xxx.img) on this ext4 filesystem. Now the extent
+tree of this file is like:
+
+...
+36864:[0]4:220160
+36868:[0]14332:145408
+51200:[0]2:231424
+...
+
+3. Then execute PUNCH_HOLE fallocate on this file. The hole range is
+like:
+
+..
+ext4_ext_remove_space: dev 254,16 ino 12 since 49506 end 49506 depth 1
+ext4_ext_remove_space: dev 254,16 ino 12 since 49544 end 49546 depth 1
+ext4_ext_remove_space: dev 254,16 ino 12 since 49605 end 49607 depth 1
+...
+
+4. Then the extent tree of this file after punching is like
+
+...
+49507:[0]37:158047
+49547:[0]58:158087
+...
+
+5. Detailed procedure of punching hole [49544, 49546]
+
+5.1. The block address space:
+```
+lblk        ~49505  49506   49507~49543     49544~49546    49547~
+	  ---------+------+-------------+----------------+--------
+	    extent | hole |   extent	|	hole	 | extent
+	  ---------+------+-------------+----------------+--------
+pblk       ~158045  158046  158047~158083  158084~158086   158087~
+```
+
+5.2. The detailed layout of cluster 39521:
+```
+		cluster 39521
+	<------------------------------->
+
+		hole		  extent
+	<----------------------><--------
+
+lblk      49544   49545   49546   49547
+	+-------+-------+-------+-------+
+	|	|	|	|	|
+	+-------+-------+-------+-------+
+pblk     158084  1580845  158086  158087
+```
+
+5.3. The ftrace output when punching hole [49544, 49546]:
+- ext4_ext_remove_space (start 49544, end 49546)
+  - ext4_ext_rm_leaf (start 49544, end 49546, last_extent [49507(158047), 40], partial [pclu 39522 lblk 0 state 2])
+    - ext4_remove_blocks (extent [49507(158047), 40], from 49544 to 49546, partial [pclu 39522 lblk 0 state 2]
+      - ext4_free_blocks: (block 158084 count 4)
+        - ext4_mballoc_free (extent 1/6753/1)
+
+5.4. Ext4 error message in dmesg:
+EXT4-fs error (device vdb): mb_free_blocks:1457: group 1, block 158084:freeing already freed block (bit 6753); block bitmap corrupt.
+EXT4-fs error (device vdb): ext4_mb_generate_buddy:747: group 1, block bitmap and bg descriptor inconsistent: 19550 vs 19551 free clusters
+
+In this case, the whole cluster 39521 is freed mistakenly when freeing
+pblock 158084~158086 (i.e., the first three blocks of this cluster),
+although pblock 158087 (the last remaining block of this cluster) has
+not been freed yet.
+
+The root cause of this isuue is that, the pclu of the partial cluster is
+calculated mistakenly in ext4_ext_remove_space(). The correct
+partial_cluster.pclu (i.e., the cluster number of the first block in the
+next extent, that is, lblock 49597 (pblock 158086)) should be 39521 rather
+than 39522.
+
+Fixes: f4226d9ea400 ("ext4: fix partial cluster initialization")
+Signed-off-by: Jeffle Xu <jefflexu@linux.alibaba.com>
+Reviewed-by: Eric Whitney <enwlinux@gmail.com>
+Cc: stable@kernel.org # v3.19+
+Link: https://lore.kernel.org/r/1590121124-37096-1-git-send-email-jefflexu@linux.alibaba.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/pinctrl/freescale/pinctrl-imx.c | 19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
+ fs/ext4/extents.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/freescale/pinctrl-imx.c b/drivers/pinctrl/freescale/pinctrl-imx.c
-index 9f42036c5fbb8..1f81569c7ae3b 100644
---- a/drivers/pinctrl/freescale/pinctrl-imx.c
-+++ b/drivers/pinctrl/freescale/pinctrl-imx.c
-@@ -774,16 +774,6 @@ static int imx_pinctrl_probe_dt(struct platform_device *pdev,
- 	return 0;
- }
- 
--/*
-- * imx_free_resources() - free memory used by this driver
-- * @info: info driver instance
-- */
--static void imx_free_resources(struct imx_pinctrl *ipctl)
--{
--	if (ipctl->pctl)
--		pinctrl_unregister(ipctl->pctl);
--}
--
- int imx_pinctrl_probe(struct platform_device *pdev,
- 		      const struct imx_pinctrl_soc_info *info)
- {
-@@ -874,23 +864,18 @@ int imx_pinctrl_probe(struct platform_device *pdev,
- 					     &ipctl->pctl);
- 	if (ret) {
- 		dev_err(&pdev->dev, "could not register IMX pinctrl driver\n");
--		goto free;
-+		return ret;
- 	}
- 
- 	ret = imx_pinctrl_probe_dt(pdev, ipctl);
- 	if (ret) {
- 		dev_err(&pdev->dev, "fail to probe dt properties\n");
--		goto free;
-+		return ret;
- 	}
- 
- 	dev_info(&pdev->dev, "initialized IMX pinctrl driver\n");
- 
- 	return pinctrl_enable(ipctl->pctl);
--
--free:
--	imx_free_resources(ipctl);
--
--	return ret;
- }
- 
- static int __maybe_unused imx_pinctrl_suspend(struct device *dev)
--- 
-2.25.1
-
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -2827,7 +2827,7 @@ again:
+ 			 * in use to avoid freeing it when removing blocks.
+ 			 */
+ 			if (sbi->s_cluster_ratio > 1) {
+-				pblk = ext4_ext_pblock(ex) + end - ee_block + 2;
++				pblk = ext4_ext_pblock(ex) + end - ee_block + 1;
+ 				partial.pclu = EXT4_B2C(sbi, pblk);
+ 				partial.state = nofree;
+ 			}
 
 
