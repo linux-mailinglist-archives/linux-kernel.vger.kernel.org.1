@@ -2,99 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 264B5204656
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4F66204634
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:52:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732520AbgFWAxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:53:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46432 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732334AbgFWAwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:52:33 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17EA220720;
-        Tue, 23 Jun 2020 00:52:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592873553;
-        bh=CbY2F3LfZp/8PhR4hXRU/7Ytt7h8LlhQM+094/Tri6g=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RsXxS/raW/VOpdiQ+ZPWiAiRIaBiUyjOhrtVcy1/bqJydX989Cd4Gn5tj8u4F9mcj
-         qLno+lFf0/GiDgjf+t2COBgdj/y1LIUHb3l+wE/VGctJNsgVzwLJUYjgPhJVXK+dJp
-         g4Vur3mMki3bo3Kf2BbI4fHa17nyxpy8eBnF1tAc=
-From:   paulmck@kernel.org
-To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org
-Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
-        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 01/14] tools/memory-model: Add recent references
-Date:   Mon, 22 Jun 2020 17:52:18 -0700
-Message-Id: <20200623005231.27712-1-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200623005152.GA27459@paulmck-ThinkPad-P72>
-References: <20200623005152.GA27459@paulmck-ThinkPad-P72>
+        id S1732363AbgFWAwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:52:23 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:35737 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731750AbgFWAwX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:52:23 -0400
+Received: from dread.disaster.area (pa49-180-124-177.pa.nsw.optusnet.com.au [49.180.124.177])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 45CB65AF5E4;
+        Tue, 23 Jun 2020 10:52:18 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1jnXAg-0001Y7-9C; Tue, 23 Jun 2020 10:52:18 +1000
+Date:   Tue, 23 Jun 2020 10:52:18 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Andreas Gruenbacher <agruenba@redhat.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] Bypass filesystems for reading cached pages
+Message-ID: <20200623005218.GF2040@dread.disaster.area>
+References: <20200619155036.GZ8681@bombadil.infradead.org>
+ <20200622003215.GC2040@dread.disaster.area>
+ <CAHc6FU4b_z+vhjVPmaU46VhqoD+Y7jLN3=BRDZPrS2v=_pVpfw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHc6FU4b_z+vhjVPmaU46VhqoD+Y7jLN3=BRDZPrS2v=_pVpfw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
+        a=k3aV/LVJup6ZGWgigO6cSA==:117 a=k3aV/LVJup6ZGWgigO6cSA==:17
+        a=kj9zAlcOel0A:10 a=nTHF0DUjJn0A:10 a=7-415B0cAAAA:8
+        a=8G3SpTuCT5XHdoEvo0oA:9 a=P48SZZe_48vTZzb1:21 a=B4xsomyZ1zPHdLA9:21
+        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+On Mon, Jun 22, 2020 at 04:35:05PM +0200, Andreas Gruenbacher wrote:
+> On Mon, Jun 22, 2020 at 2:32 AM Dave Chinner <david@fromorbit.com> wrote:
+> > On Fri, Jun 19, 2020 at 08:50:36AM -0700, Matthew Wilcox wrote:
+> > >
+> > > This patch lifts the IOCB_CACHED idea expressed by Andreas to the VFS.
+> > > The advantage of this patch is that we can avoid taking any filesystem
+> > > lock, as long as the pages being accessed are in the cache (and we don't
+> > > need to readahead any pages into the cache).  We also avoid an indirect
+> > > function call in these cases.
+> >
+> > What does this micro-optimisation actually gain us except for more
+> > complexity in the IO path?
+> >
+> > i.e. if a filesystem lock has such massive overhead that it slows
+> > down the cached readahead path in production workloads, then that's
+> > something the filesystem needs to address, not unconditionally
+> > bypass the filesystem before the IO gets anywhere near it.
+> 
+> I'm fine with not moving that functionality into the VFS. The problem
+> I have in gfs2 is that taking glocks is really expensive. Part of that
+> overhead is accidental, but we definitely won't be able to fix it in
+> the short term. So something like the IOCB_CACHED flag that prevents
+> generic_file_read_iter from issuing readahead I/O would save the day
+> for us. Does that idea stand a chance?
 
-This commit updates the list of LKMM-related publications in
-Documentation/references.txt.
+I have no problem with a "NOREADAHEAD" flag being passed to
+generic_file_read_iter(). It's not a "already cached" flag though,
+it's a "don't start any IO" directive, just like the NOWAIT flag is
+a "don't block on locks or IO in progress" directive and not an
+"already cached" flag. Readahead is something we should be doing,
+unless a filesystem has a very good reason not to, such as the gfs2
+locking case here...
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Acked-by: Andrea Parri <parri.andrea@gmail.com>
----
- tools/memory-model/Documentation/references.txt | 21 +++++++++++++++++++--
- 1 file changed, 19 insertions(+), 2 deletions(-)
+Cheers,
 
-diff --git a/tools/memory-model/Documentation/references.txt b/tools/memory-model/Documentation/references.txt
-index b177f3e..ecbbaa5 100644
---- a/tools/memory-model/Documentation/references.txt
-+++ b/tools/memory-model/Documentation/references.txt
-@@ -73,6 +73,18 @@ o	Christopher Pulte, Shaked Flur, Will Deacon, Jon French,
- Linux-kernel memory model
- =========================
- 
-+o	Jade Alglave, Will Deacon, Boqun Feng, David Howells, Daniel
-+	Lustig, Luc Maranget, Paul E. McKenney, Andrea Parri, Nicholas
-+	Piggin, Alan Stern, Akira Yokosawa, and Peter Zijlstra.
-+	2019. "Calibrating your fear of big bad optimizing compilers"
-+	Linux Weekly News.  https://lwn.net/Articles/799218/
-+
-+o	Jade Alglave, Will Deacon, Boqun Feng, David Howells, Daniel
-+	Lustig, Luc Maranget, Paul E. McKenney, Andrea Parri, Nicholas
-+	Piggin, Alan Stern, Akira Yokosawa, and Peter Zijlstra.
-+	2019. "Who's afraid of a big bad optimizing compiler?"
-+	Linux Weekly News.  https://lwn.net/Articles/793253/
-+
- o	Jade Alglave, Luc Maranget, Paul E. McKenney, Andrea Parri, and
- 	Alan Stern.  2018. "Frightening small children and disconcerting
- 	grown-ups: Concurrency in the Linux kernel". In Proceedings of
-@@ -88,6 +100,11 @@ o	Jade Alglave, Luc Maranget, Paul E. McKenney, Andrea Parri, and
- 	Alan Stern.  2017.  "A formal kernel memory-ordering model (part 2)"
- 	Linux Weekly News.  https://lwn.net/Articles/720550/
- 
-+o	Jade Alglave, Luc Maranget, Paul E. McKenney, Andrea Parri, and
-+	Alan Stern.  2017-2019.  "A Formal Model of Linux-Kernel Memory
-+	Ordering" (backup material for the LWN articles)
-+	https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/LWNLinuxMM/
-+
- 
- Memory-model tooling
- ====================
-@@ -110,5 +127,5 @@ Memory-model comparisons
- ========================
- 
- o	Paul E. McKenney, Ulrich Weigand, Andrea Parri, and Boqun
--	Feng. 2016. "Linux-Kernel Memory Model". (6 June 2016).
--	http://open-std.org/JTC1/SC22/WG21/docs/papers/2016/p0124r2.html.
-+	Feng. 2018. "Linux-Kernel Memory Model". (27 September 2018).
-+	http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p0124r6.html.
+Dave.
 -- 
-2.9.5
-
+Dave Chinner
+david@fromorbit.com
