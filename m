@@ -2,89 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C60CB205081
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:17:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41D41205050
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732546AbgFWLRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 07:17:20 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:49034 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732525AbgFWLQz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 07:16:55 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 193BF6F357166CCBA0C2;
-        Tue, 23 Jun 2020 19:16:52 +0800 (CST)
-Received: from huawei.com (10.67.174.156) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Tue, 23 Jun 2020
- 19:16:43 +0800
-From:   Chen Tao <chentao107@huawei.com>
-To:     <dhowells@redhat.com>
-CC:     <linux-afs@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <chentao107@huawei.com>
-Subject: [PATCH -next] afs: Fix the memory leak in afs_mkdir
-Date:   Tue, 23 Jun 2020 19:15:28 +0800
-Message-ID: <20200623111528.205681-1-chentao107@huawei.com>
-X-Mailer: git-send-email 2.22.0
+        id S1732485AbgFWLPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 07:15:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57072 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732444AbgFWLPl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 07:15:41 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 73EEF20768;
+        Tue, 23 Jun 2020 11:15:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592910940;
+        bh=sSEBg7BS4y97VRPaHvgWbcjFCc8lTAXrVTlmmCEIUkY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=QFGkKOfHyz681beKaAD5o5TugB8sHaSA6CJ3p3bIfbR79l0J8B6VPADlLkG37Vr0c
+         SsJcLxae+pp7HqEkUWkEPQtf5HExZBkoSRMvdJEZZExycIybnk8n/4iJ9Dmqfbd4WA
+         ntWBxw4B1EXkCBwvxaTtOWtbg7aimwCMi+XVf1eI=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@mellanox.com>
+Cc:     Leon Romanovsky <leonro@mellanox.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        Maor Gottlieb <maorg@mellanox.com>
+Subject: [PATCH rdma-next v1 0/2] Convert XRC to use xarray
+Date:   Tue, 23 Jun 2020 14:15:29 +0300
+Message-Id: <20200623111531.1227013-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.174.156]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the memory leak in afs_mkdir not freeing scb
-in error path.
+From: Leon Romanovsky <leonro@mellanox.com>
 
-Fixes: a58823ac45896 ("afs: Fix application of status and callback to be under same lock")
-Signed-off-by: Chen Tao <chentao107@huawei.com>
----
- fs/afs/dir.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Changelog:
+v1: Changed ib_dealloc_xrcd_user() do not iterate over tgt list, because
+it is expected to be empty.
+v0: https://lore.kernel.org/lkml/20200621104110.53509-1-leon@kernel.org
+Two small patches to simplify and improve XRC logic.
 
-diff --git a/fs/afs/dir.c b/fs/afs/dir.c
-index d1e1caa23c8b..ab5472ad1da8 100644
---- a/fs/afs/dir.c
-+++ b/fs/afs/dir.c
-@@ -1599,17 +1599,17 @@ static int afs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
- 	if (dentry->d_name.len >= AFSNAMEMAX)
- 		goto error;
- 
--	key = afs_request_key(dvnode->volume->cell);
--	if (IS_ERR(key)) {
--		ret = PTR_ERR(key);
--		goto error;
--	}
--
- 	ret = -ENOMEM;
- 	scb = kcalloc(2, sizeof(struct afs_status_cb), GFP_KERNEL);
- 	if (!scb)
- 		goto error_scb;
- 
-+	key = afs_request_key(dvnode->volume->cell);
-+	if (IS_ERR(key)) {
-+		ret = PTR_ERR(key);
-+		goto error_scb;
-+	}
-+
- 	ret = -ERESTARTSYS;
- 	if (afs_begin_vnode_operation(&fc, dvnode, key, true)) {
- 		data_version = dvnode->status.data_version + 1;
-@@ -1645,10 +1645,10 @@ static int afs_create(struct inode *dir, struct dentry *dentry, umode_t mode,
- 	_leave(" = 0");
- 	return 0;
- 
--error_scb:
--	kfree(scb);
- error_key:
- 	key_put(key);
-+error_scb:
-+	kfree(scb);
- error:
- 	d_drop(dentry);
- 	_leave(" = %d", ret);
--- 
-2.22.0
+Thanks
+
+Maor Gottlieb (2):
+  RDMA: Clean ib_alloc_xrcd() and reuse it to allocate XRC domain
+  RDMA/core: Optimize XRC target lookup
+
+ drivers/infiniband/core/uverbs_cmd.c | 12 ++---
+ drivers/infiniband/core/verbs.c      | 76 +++++++++++++---------------
+ drivers/infiniband/hw/mlx5/main.c    | 24 +++------
+ include/rdma/ib_verbs.h              | 27 +++++-----
+ 4 files changed, 59 insertions(+), 80 deletions(-)
+
+--
+2.26.2
 
