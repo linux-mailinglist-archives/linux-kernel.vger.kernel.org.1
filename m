@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79082204571
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5DE204570
 	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:32:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731983AbgFWAcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:32:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55258 "EHLO mail.kernel.org"
+        id S1731973AbgFWAcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:32:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731643AbgFWAaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731644AbgFWAaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Jun 2020 20:30:17 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F7132082F;
+        by mail.kernel.org (Postfix) with ESMTPSA id C2AA2206C1;
         Tue, 23 Jun 2020 00:30:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592872216;
-        bh=gFvVkuGayO5dIBUvKhLS305uE+ytbiCZERTAqgnColQ=;
+        bh=l+pOIyYggzjNshzyGc05k+ujOGvhTY4fPpmjwkalyqs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eO9eU8uDPhnYFubzvYvibEh2Y/qMrZby3wzNwkbYi438vSKkEgC1C8P/kc7UnJ2wW
-         1oXiQFjh/01qorFW0atN3cZhCTmsqEMY49ny9xZmC8vGwM5VTDN3usBapBawdxvXx3
-         64cSrWDjQpiZA1US1y/rv8uELZVdC0hVFC+x5LzM=
+        b=rBJ6yCi0QfxxSLnIADn12EBnaLr+xW+an+S8mk61BbEsLlli4tchro3iv75eQWVYP
+         g2h7k0g4V2AyJGIQvKx1uuOAARSpS/HhEX4iouzglgYPB683fBkHgrqVzv117JLP1f
+         yCfBnoS2lhx9qXTiQcY2yuqqBSln6/0OWv8nKtIU=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 07/30] refperf: Allow decimal nanoseconds
-Date:   Mon, 22 Jun 2020 17:29:50 -0700
-Message-Id: <20200623003013.26252-7-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 08/30] refperf: Convert nreaders to a module parameter
+Date:   Mon, 22 Jun 2020 17:29:51 -0700
+Message-Id: <20200623003013.26252-8-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002941.GA26089@paulmck-ThinkPad-P72>
 References: <20200623002941.GA26089@paulmck-ThinkPad-P72>
@@ -45,39 +45,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The CONFIG_PREEMPT=n rcu_read_lock()/rcu_read_unlock() pair's overhead,
-even including loop overhead, is far less than one nanosecond.
-Since logscale plots are not all that happy with zero values, provide
-picoseconds as decimals.
+This commit converts nreaders to a module parameter, with the default
+of -1 specifying the old behavior of using 75% of the readers.
 
 Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/refperf.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ kernel/rcu/refperf.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
 diff --git a/kernel/rcu/refperf.c b/kernel/rcu/refperf.c
-index 57c7b7a..e991d48 100644
+index e991d48..020e55a 100644
 --- a/kernel/rcu/refperf.c
 +++ b/kernel/rcu/refperf.c
-@@ -375,7 +375,7 @@ static int main_func(void *arg)
- 		if (torture_must_stop())
- 			goto end;
+@@ -62,6 +62,12 @@ torture_param(int, holdoff, IS_BUILTIN(CONFIG_RCU_REF_PERF_TEST) ? 10 : 0,
+ 	      "Holdoff time before test start (s)");
+ // Number of loops per experiment, all readers execute operations concurrently.
+ torture_param(long, loops, 10000000, "Number of loops per experiment.");
++// Number of readers, with -1 defaulting to about 75% of the CPUs.
++torture_param(int, nreaders, -1, "Number of readers, -1 for 75% of CPUs.");
++// Number of runs.
++torture_param(int, nruns, 30, "Number of experiments to run.");
++// Reader delay in nanoseconds, 0 for no delay.
++torture_param(int, readdelay, 0, "Read-side delay in nanoseconds.");
  
--		reader_tasks[exp].result_avg = process_durations(exp) / ((exp + 1) * loops);
-+		reader_tasks[exp].result_avg = 1000 * process_durations(exp) / ((exp + 1) * loops);
+ #ifdef MODULE
+ # define REFPERF_SHUTDOWN 0
+@@ -93,7 +99,6 @@ static wait_queue_head_t main_wq;
+ static int shutdown_start;
+ 
+ static struct reader_task *reader_tasks;
+-static int nreaders;
+ 
+ // Number of readers that are part of the current experiment.
+ static atomic_t nreaders_exp;
+@@ -411,8 +416,8 @@ static void
+ ref_perf_print_module_parms(struct ref_perf_ops *cur_ops, const char *tag)
+ {
+ 	pr_alert("%s" PERF_FLAG
+-		 "--- %s:  verbose=%d shutdown=%d holdoff=%d loops=%ld\n", perf_type, tag,
+-		 verbose, shutdown, holdoff, loops);
++		 "--- %s:  verbose=%d shutdown=%d holdoff=%d loops=%ld nreaders=%d\n", perf_type, tag,
++		 verbose, shutdown, holdoff, loops, nreaders);
+ }
+ 
+ static void
+@@ -501,8 +506,9 @@ ref_perf_init(void)
+ 		schedule_timeout_uninterruptible(1);
  	}
  
- 	// Print the average of all experiments
-@@ -386,7 +386,7 @@ static int main_func(void *arg)
- 	strcat(buf, "Threads\tTime(ns)\n");
- 
- 	for (exp = 0; exp < nreaders; exp++) {
--		sprintf(buf1, "%d\t%llu\n", exp + 1, reader_tasks[exp].result_avg);
-+		sprintf(buf1, "%d\t%llu.%03d\n", exp + 1, reader_tasks[exp].result_avg / 1000, (int)(reader_tasks[exp].result_avg % 1000));
- 		strcat(buf, buf1);
- 	}
- 
+-	// Reader tasks (~75% of online CPUs).
+-	nreaders = (num_online_cpus() >> 1) + (num_online_cpus() >> 2);
++	// Reader tasks (default to ~75% of online CPUs).
++	if (nreaders < 0)
++		nreaders = (num_online_cpus() >> 1) + (num_online_cpus() >> 2);
+ 	reader_tasks = kcalloc(nreaders, sizeof(reader_tasks[0]),
+ 			       GFP_KERNEL);
+ 	if (!reader_tasks) {
 -- 
 2.9.5
 
