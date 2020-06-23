@@ -2,126 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 234A1204A5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:01:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DD6204A65
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:02:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730956AbgFWHBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 03:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41332 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730914AbgFWHBK (ORCPT
+        id S1731335AbgFWHBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 03:01:42 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:29021 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731285AbgFWHBk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 03:01:10 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF52C061795
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 00:01:09 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id 190so11100604vsr.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 00:01:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=verdurent-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tNknlx6Ufr4DWfMISHSoJrnftbpeT1xGDs0QoxzhfH8=;
-        b=tGYEFKdSH7NsWOXZSNUaTeDlMRH6Ao1ZPvP5UMXJOQx9DQYGhFIAFQxX/aosulqAbz
-         4C0PqSIkyqGZT6ctFd8x7UOzH+u4nNtMV0ZjrD+XLGDW4FhivwknNOJQRNU2T4Mszv5B
-         u0hXJkhGy3FKNFlZzu1fMplnbkCT+ILr7rU7AfA3H0J8WkPJ7zEUaeR4WIJYaorC1Fbx
-         Rkn9rbGUUF/uMbo4/rbxR5h//Du6Z4TjMFAQ4/qjuFKHHwshccnSjTRxoyBGaa6mf6Mg
-         oS6D2SfX83tuAiiLxtsgqVyR8v5zYfr+nPibKDgLPuxN019gGiqbquPLl3ldA2e6Xpbw
-         LwFA==
+        Tue, 23 Jun 2020 03:01:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592895696;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zy58zDIczPqYbbCU2I0rBDICf2p/vJOkTqkK2TZ8PAQ=;
+        b=a/BcGEsJWnDpN1L/CQe/esfPC5/4bR7k18k//Ent0/sbaJDZbznMdGNBfmwfyzBkcDXFzy
+        hAC8r2x60nKqPUAqI+NpVvSmCztawiShnkCUoHqvQkq3SXvGiNXHh6PWvAosDzZ79xGswF
+        AnhjAuWOOTYyawEeKQNiE5zY/s947aA=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-5-m2WsfJ1lNIO4rCZPA7IJMw-1; Tue, 23 Jun 2020 03:01:35 -0400
+X-MC-Unique: m2WsfJ1lNIO4rCZPA7IJMw-1
+Received: by mail-qk1-f198.google.com with SMTP id x22so14630711qkj.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 00:01:34 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tNknlx6Ufr4DWfMISHSoJrnftbpeT1xGDs0QoxzhfH8=;
-        b=MEhKt1yRwQcKJfn5eeknNzdCGe3u9JffFoifzNXhUguoOXUjuiOkBaNvkw0PHpwW+u
-         X3ZU+i4/nV9CQpIRfOnWpoTRE3muZjRG88mMGJEr9bAAXvJY1lPAt6GirA02gKwOfkwi
-         +QF+edAlhyAT22lwpLJWRaa67Db+MZJXpETZI9qdpDyEssvmDFMnCSEnlt8poP477Ff0
-         bZYuoGhxAcf3Rt6skeq+54c7g8TQB/nydDpOZ76sFB4Nv4g9pQTsr6zhXMMhCrYMdPY5
-         +W2tcvHJxpL4VPvsr/d2mo+GHgOXIOMYXQ7TWOFmaMnGjOuKQGvBAWi0CA0HkShLnPtw
-         J1oQ==
-X-Gm-Message-State: AOAM531jEfqYKvB6Ucmbjj1mmkwXa06meLJD9AbsEsI2I4D+YfJs2DES
-        ckamil9y5taxm676EHg9EH5MOs5F7lC6H38nXL+F+g==
-X-Google-Smtp-Source: ABdhPJwe6XrRkaoRDtNEiWkt/nPkZaZjWPzOzO3TjxtVEN2Y18f0AL4LpVVA86UMbyEiGIAP/Q8wd7JmRpMUNg1ACFE=
-X-Received: by 2002:a67:e10d:: with SMTP id d13mr19083478vsl.27.1592895668303;
- Tue, 23 Jun 2020 00:01:08 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=zy58zDIczPqYbbCU2I0rBDICf2p/vJOkTqkK2TZ8PAQ=;
+        b=ss7kuKpjFNC6pU8gGFO9OXbLOnA3vhlIvAFWyPAZhO08Wx4ALhHvjSfrghAlXsMTEM
+         F6cKE8TNmhO1UJQA1TKTIHqR5fp+HJSKc1mAotCWvf7Fa1fpErH4AjRlQkIwld4mNiN7
+         WqtWMJ7pLqMCUAvLUpQDdUput4zgfK+9ICjko8DDPGkDAom186S2/gVI892AxmZkKGBx
+         mrGL/Gjucwh8IHCbDIvsF/6tUNzbdYdNcE6KM94VJKQ8zlv+amjysqmXWwzGq4zAo40N
+         K1dx+mlC+R8Ein9OKVVBjfr9d5AhUKOTO2JO0Tmp34ZEJ+Oj738Cc6UH95VnB6QhsKfT
+         IsFQ==
+X-Gm-Message-State: AOAM532jbTlo36i+5tZw6F6DwBOBthYsqg69EfJ67zgF46vZ9it1zR6g
+        NRaHr56i9CD4anxA3nQAxg7cgRkt82/6AE/621ilw76yY0HSZYSKqwI8uJnpL0war/5n8vNlXca
+        87KVS2ZUlYIPNg5REDmbHoFBYmIUdu3iqBl85pPnT
+X-Received: by 2002:ae9:e841:: with SMTP id a62mr19452231qkg.497.1592895694369;
+        Tue, 23 Jun 2020 00:01:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyOZBN3nbHPtHiWYdDSxBqd0YcCYWHIzJTjzaFifnLqnQv36MEZ0ptTmo2xbqy/ajLlIIBFDzPj3siE/rmhtiE=
+X-Received: by 2002:ae9:e841:: with SMTP id a62mr19452207qkg.497.1592895693904;
+ Tue, 23 Jun 2020 00:01:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200619090825.32747-1-finley.xiao@rock-chips.com>
-In-Reply-To: <20200619090825.32747-1-finley.xiao@rock-chips.com>
-From:   Amit Kucheria <amit.kucheria@verdurent.com>
-Date:   Tue, 23 Jun 2020 12:30:57 +0530
-Message-ID: <CAHLCerPpen0ckEnZPvmECVQixN=rBfneP4mK6rPAAu3vjSg_QQ@mail.gmail.com>
-Subject: Re: [PATCH] thermal/drivers/cpufreq_cooling: Fix wrong frequency
- converted from power
-To:     Finley Xiao <finley.xiao@rock-chips.com>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Javi Merino <javi.merino@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        linux-rockchip@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        stable@vger.kernel.org, huangtao@rock-chips.com,
-        tony.xie@rock-chips.com, cl@rock-chips.com
+References: <20200611113404.17810-1-mst@redhat.com> <20200611113404.17810-3-mst@redhat.com>
+ <0332b0cf-cf00-9216-042c-e870efa33626@redhat.com> <20200622115946-mutt-send-email-mst@kernel.org>
+ <c56cc86d-a420-79ca-8420-e99db91980fa@redhat.com>
+In-Reply-To: <c56cc86d-a420-79ca-8420-e99db91980fa@redhat.com>
+From:   Eugenio Perez Martin <eperezma@redhat.com>
+Date:   Tue, 23 Jun 2020 09:00:57 +0200
+Message-ID: <CAJaqyWc3C_Td_SpV97CuemkQH9vH+EL3sGgeWGE82E5gYxZNCA@mail.gmail.com>
+Subject: Re: [PATCH RFC v8 02/11] vhost: use batched get_vq_desc version
+To:     Jason Wang <jasowang@redhat.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm list <kvm@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Finley,
+On Tue, Jun 23, 2020 at 4:51 AM Jason Wang <jasowang@redhat.com> wrote:
+>
+>
+> On 2020/6/23 =E4=B8=8A=E5=8D=8812:00, Michael S. Tsirkin wrote:
+> > On Wed, Jun 17, 2020 at 11:19:26AM +0800, Jason Wang wrote:
+> >> On 2020/6/11 =E4=B8=8B=E5=8D=887:34, Michael S. Tsirkin wrote:
+> >>>    static void vhost_vq_free_iovecs(struct vhost_virtqueue *vq)
+> >>>    {
+> >>>     kfree(vq->descs);
+> >>> @@ -394,6 +400,9 @@ static long vhost_dev_alloc_iovecs(struct vhost_d=
+ev *dev)
+> >>>     for (i =3D 0; i < dev->nvqs; ++i) {
+> >>>             vq =3D dev->vqs[i];
+> >>>             vq->max_descs =3D dev->iov_limit;
+> >>> +           if (vhost_vq_num_batch_descs(vq) < 0) {
+> >>> +                   return -EINVAL;
+> >>> +           }
+> >> This check breaks vdpa which set iov_limit to zero. Consider iov_limit=
+ is
+> >> meaningless to vDPA, I wonder we can skip the test when device doesn't=
+ use
+> >> worker.
+> >>
+> >> Thanks
+> > It doesn't need iovecs at all, right?
+> >
+> > -- MST
+>
+>
+> Yes, so we may choose to bypass the iovecs as well.
+>
+> Thanks
+>
 
-Please use versioning (v2) when resending a patch.
+I think that the kmalloc_array returns ZERO_SIZE_PTR for all of them
+in that case, so I didn't bother to skip the kmalloc_array parts.
+Would you prefer to skip them all and let them NULL? Or have I
+misunderstood what you mean?
 
-On Fri, Jun 19, 2020 at 2:39 PM Finley Xiao <finley.xiao@rock-chips.com> wrote:
->
-> The function cpu_power_to_freq is used to find a frequency and set the
-> cooling device to consume at most the power to be converted. For example,
-> if the power to be converted is 80mW, and the em table is as follow.
-> struct em_cap_state table[] = {
->         /* KHz     mW */
->         { 1008000, 36, 0 },
->         { 1200000, 49, 0 },
->         { 1296000, 59, 0 },
->         { 1416000, 72, 0 },
->         { 1512000, 86, 0 },
-> };
-> The target frequency should be 1416000KHz, not 1512000KHz.
->
-> Fixes: 349d39dc5739 ("thermal: cpu_cooling: merge frequency and power tables")
-> Cc: <stable@vger.kernel.org> # v4.13+
-> Signed-off-by: Finley Xiao <finley.xiao@rock-chips.com>
-> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Thanks!
 
-Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
-
-> ---
->  drivers/thermal/cpufreq_cooling.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-> index 9e124020519f..6c0e1b053126 100644
-> --- a/drivers/thermal/cpufreq_cooling.c
-> +++ b/drivers/thermal/cpufreq_cooling.c
-> @@ -123,12 +123,12 @@ static u32 cpu_power_to_freq(struct cpufreq_cooling_device *cpufreq_cdev,
->  {
->         int i;
->
-> -       for (i = cpufreq_cdev->max_level - 1; i >= 0; i--) {
-> -               if (power > cpufreq_cdev->em->table[i].power)
-> +       for (i = cpufreq_cdev->max_level; i >= 0; i--) {
-> +               if (power >= cpufreq_cdev->em->table[i].power)
->                         break;
->         }
->
-> -       return cpufreq_cdev->em->table[i + 1].frequency;
-> +       return cpufreq_cdev->em->table[i].frequency;
->  }
->
->  /**
-> --
-> 2.11.0
->
->
->
