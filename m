@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E45E205E34
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:21:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D1D205E0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:21:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389980AbgFWUU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:20:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38306 "EHLO mail.kernel.org"
+        id S2389803AbgFWUT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:19:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389976AbgFWUUt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:20:49 -0400
+        id S2389502AbgFWUTY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:19:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 67C44206C3;
-        Tue, 23 Jun 2020 20:20:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F8102064B;
+        Tue, 23 Jun 2020 20:19:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943649;
-        bh=Iukx8MHBVWtcSwLg2WRSABdq1hB8fPEJiEsW6LJ67TM=;
+        s=default; t=1592943564;
+        bh=I6luucVQ/RvWKJMjcf6wsO+IqM0rK3XV7Z18eyF1nDE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YVqajGZu1kOAdy6YTtW1vJi5y5p2RPgpLmXAp2ecYxvnLTBUiviXqpn1KhvZutwGo
-         aVzkJvsza34wPa/8V9eTg9fYYGaDctKoxczCH9N1JEvt6PMTO9kHnEHK5oJQJ856Bf
-         s5p3evnDfALFkHjxD3dyPqKwRcJk10BlyKNusuzg=
+        b=nrBKps+Q8H5nQdgOu4UuPSnosqEDN9b/wKhGHTmIWbqaYohhgOiOa8dx6s6U6PtKl
+         CMtAttyZpzVIoxe+Buu5XUP0UjLd7gPUz32x3M+aK6hwpmSG/BI9tQ8hHvh5NgnRyf
+         6Yhl1z2gGq0GHCwjBkonD0JHUYi0WnRZSxu+txaU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 5.7 433/477] io_uring: acquire mm for task_work for SQPOLL
-Date:   Tue, 23 Jun 2020 21:57:10 +0200
-Message-Id: <20200623195427.997145830@linuxfoundation.org>
+Subject: [PATCH 5.7 434/477] io_uring: reap poll completions while waiting for refs to drop on exit
+Date:   Tue, 23 Jun 2020 21:57:11 +0200
+Message-Id: <20200623195428.044800115@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -44,101 +44,45 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jens Axboe <axboe@kernel.dk>
 
-[ Upstream commit 9d8426a09195e2dcf2aa249de2aaadd792d491c7 ]
+[ Upstream commit 56952e91acc93ed624fe9da840900defb75f1323 ]
 
-If we're unlucky with timing, we could be running task_work after
-having dropped the memory context in the sq thread. Since dropping
-the context requires a runnable task state, we cannot reliably drop
-it as part of our check-for-work loop in io_sq_thread(). Instead,
-abstract out the mm acquire for the sq thread into a helper, and call
-it from the async task work handler.
+If we're doing polled IO and end up having requests being submitted
+async, then completions can come in while we're waiting for refs to
+drop. We need to reap these manually, as nobody else will be looking
+for them.
 
-Cc: stable@vger.kernel.org # v5.7
+Break the wait into 1/20th of a second time waits, and check for done
+poll completions if we time out. Otherwise we can have done poll
+completions sitting in ctx->poll_list, which needs us to reap them but
+we're just waiting for them.
+
+Cc: stable@vger.kernel.org
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/io_uring.c |   44 +++++++++++++++++++++++++++++---------------
- 1 file changed, 29 insertions(+), 15 deletions(-)
+ fs/io_uring.c |   12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
 --- a/fs/io_uring.c
 +++ b/fs/io_uring.c
-@@ -4302,6 +4302,28 @@ static void io_async_queue_proc(struct f
- 	__io_queue_proc(&pt->req->apoll->poll, pt, head);
+@@ -7404,7 +7404,17 @@ static void io_ring_exit_work(struct wor
+ 	if (ctx->rings)
+ 		io_cqring_overflow_flush(ctx, true);
+ 
+-	wait_for_completion(&ctx->completions[0]);
++	/*
++	 * If we're doing polled IO and end up having requests being
++	 * submitted async (out-of-line), then completions can come in while
++	 * we're waiting for refs to drop. We need to reap these manually,
++	 * as nobody else will be looking for them.
++	 */
++	while (!wait_for_completion_timeout(&ctx->completions[0], HZ/20)) {
++		io_iopoll_reap_events(ctx);
++		if (ctx->rings)
++			io_cqring_overflow_flush(ctx, true);
++	}
+ 	io_ring_ctx_free(ctx);
  }
  
-+static void io_sq_thread_drop_mm(struct io_ring_ctx *ctx)
-+{
-+	struct mm_struct *mm = current->mm;
-+
-+	if (mm) {
-+		unuse_mm(mm);
-+		mmput(mm);
-+	}
-+}
-+
-+static int io_sq_thread_acquire_mm(struct io_ring_ctx *ctx,
-+				   struct io_kiocb *req)
-+{
-+	if (io_op_defs[req->opcode].needs_mm && !current->mm) {
-+		if (unlikely(!mmget_not_zero(ctx->sqo_mm)))
-+			return -EFAULT;
-+		use_mm(ctx->sqo_mm);
-+	}
-+
-+	return 0;
-+}
-+
- static void io_async_task_func(struct callback_head *cb)
- {
- 	struct io_kiocb *req = container_of(cb, struct io_kiocb, task_work);
-@@ -4333,12 +4355,17 @@ static void io_async_task_func(struct ca
- 	if (canceled) {
- 		kfree(apoll);
- 		io_cqring_ev_posted(ctx);
-+end_req:
- 		req_set_fail_links(req);
- 		io_double_put_req(req);
- 		return;
- 	}
- 
- 	__set_current_state(TASK_RUNNING);
-+	if (io_sq_thread_acquire_mm(ctx, req)) {
-+		io_cqring_add_event(req, -EFAULT);
-+		goto end_req;
-+	}
- 	mutex_lock(&ctx->uring_lock);
- 	__io_queue_sqe(req, NULL);
- 	mutex_unlock(&ctx->uring_lock);
-@@ -5897,11 +5924,8 @@ static int io_init_req(struct io_ring_ct
- 	if (unlikely(req->opcode >= IORING_OP_LAST))
- 		return -EINVAL;
- 
--	if (io_op_defs[req->opcode].needs_mm && !current->mm) {
--		if (unlikely(!mmget_not_zero(ctx->sqo_mm)))
--			return -EFAULT;
--		use_mm(ctx->sqo_mm);
--	}
-+	if (unlikely(io_sq_thread_acquire_mm(ctx, req)))
-+		return -EFAULT;
- 
- 	sqe_flags = READ_ONCE(sqe->flags);
- 	/* enforce forwards compatibility on users */
-@@ -6011,16 +6035,6 @@ fail_req:
- 	return submitted;
- }
- 
--static inline void io_sq_thread_drop_mm(struct io_ring_ctx *ctx)
--{
--	struct mm_struct *mm = current->mm;
--
--	if (mm) {
--		unuse_mm(mm);
--		mmput(mm);
--	}
--}
--
- static int io_sq_thread(void *data)
- {
- 	struct io_ring_ctx *ctx = data;
 
 
