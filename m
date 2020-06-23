@@ -2,62 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A31A204A77
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:04:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4808204A58
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731275AbgFWHEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 03:04:22 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:38068 "EHLO inva021.nxp.com"
+        id S1730852AbgFWHAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 03:00:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35404 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730854AbgFWHET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 03:04:19 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id A7531200079;
-        Tue, 23 Jun 2020 09:04:17 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 278F220007B;
-        Tue, 23 Jun 2020 09:04:13 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 90D31402B3;
-        Tue, 23 Jun 2020 15:04:07 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ASoC: bindings: fsl-asoc-card: Add compatible string for wm8524
-Date:   Tue, 23 Jun 2020 14:52:47 +0800
-Message-Id: <1592895167-30483-2-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1592895167-30483-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1592895167-30483-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1730694AbgFWHAu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 03:00:50 -0400
+Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 647D520724;
+        Tue, 23 Jun 2020 07:00:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592895650;
+        bh=NwzkhvLTdaiMVPiInrrB1GVy05m9nUU2QlCfp66VRNI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NaWIjmO44k0EzJmLo1BWA/+CqFZ1ov5yHwrdFmo6dLZgKf1X/rw1rmxoja8CZQ/5i
+         yHCza3p7c5yKWVi4ZecZQeCj9WWBvYn135gqhmiP9rqSwCZ7lLFuajdWg0gHxvKwlb
+         Q/m6NU66dDmnsHJDsfi8gQGq69IkZLA1QpGIEYp4=
+Date:   Tue, 23 Jun 2020 15:00:40 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Anson Huang <Anson.Huang@nxp.com>
+Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Linux-imx@nxp.com
+Subject: Re: [PATCH 1/3] ARM: dts: imx: Change sdhci node name on
+ i.MX27/i.MX31 SoCs
+Message-ID: <20200623070039.GS30139@dragon>
+References: <1591079092-18625-1-git-send-email-Anson.Huang@nxp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1591079092-18625-1-git-send-email-Anson.Huang@nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to support wm8524 codec with fsl-asoc-card machine
-driver, add compatible string "fsl,imx-audio-wm8524".
+On Tue, Jun 02, 2020 at 02:24:50PM +0800, Anson Huang wrote:
+> Change i.MX27/i.MX31 node name from sdhci to mmc to be compliant
+> with yaml schema, it requires the nodename to be "mmc".
+> 
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- Documentation/devicetree/bindings/sound/fsl-asoc-card.txt | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-index ca9a3a43adfd..133d7e14a4d0 100644
---- a/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-+++ b/Documentation/devicetree/bindings/sound/fsl-asoc-card.txt
-@@ -36,6 +36,8 @@ The compatible list for this generic sound card currently:
- 
-  "fsl,imx-audio-mqs"
- 
-+ "fsl,imx-audio-wm8524"
-+
- Required properties:
- 
-   - compatible		: Contains one of entries in the compatible list.
--- 
-2.21.0
-
+Applied all, thanks.
