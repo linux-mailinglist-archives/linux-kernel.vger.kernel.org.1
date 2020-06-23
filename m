@@ -2,138 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3737205FA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2EB2060A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389223AbgFWUej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:34:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391546AbgFWUeb (ORCPT
+        id S2392711AbgFWUo5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:44:57 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34879 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390082AbgFWUon (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:34:31 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2272C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:34:31 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id i25so25528713iog.0
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rUiCHEG4ixMC5q0G/sMhdsDeiOjcEJ6AH6URjseTZ2I=;
-        b=jS7aQ3o7RZ0sGf7Y6qNQMZ73+JgsgYaV6djG8um9Xh0EJx3rlZHQq9i1WM8uSYY7L7
-         3UuWr3RTyQQALhaPmjJFrCRQWjiA4oyuIkj4MrE8gCT+yjWOo4+QFz6XBPeWMRkjR0B6
-         S44OQf0pHhD2hYe/8iFO/qAepNbPD7AZjGmUFicmouMAuAB2eZPuMG0B5qTmXtU88viJ
-         d7nXJ1B8DACEohbJSj4vQuwC1qEnZH9y84RQSEguVuQw6/GIJ169SJKIppfkb4QCpRFT
-         fOLmxWuc5o4LyfCm3z6PgWlob05vqqzyCsxClnr3yIx+iOUf2zUAN9kR3ZTBtC+DN3lW
-         MGzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rUiCHEG4ixMC5q0G/sMhdsDeiOjcEJ6AH6URjseTZ2I=;
-        b=F1rgPxP8boZ5cZrtybVNjXhFO8OnELDeZxpj8FVvb+XIWYVclamIcfJwHK7uSOmj3O
-         P+uB0RYULJbjcitEFp3FbZ0+PsUIvwgAP9QBQQCkrC7DQyXsQYDnwbdMsXNEly+Dhcyk
-         Tv/8Gt1qebgAhv0/0UFy7E8+VRMS5t0mB/PdOrDIXAIf7B6551R25CFFrfiiHDsyGov3
-         MkIXN9uFYDfpa2Sgse4sKO9oKxSMPwh8jJyaTRcpOENbtkZCY2wL7Qb8ZB/qFIkP/VLh
-         zz49QXuxluM0JPCkXJqN+mCPvhO86N+btBYvme71d2RUE94i6je5ewYfJP62D0N8Bd2d
-         h8pg==
-X-Gm-Message-State: AOAM533jpcGdkozJRGOtRR2iujOidT7427QJUtAN1x1c4foNxJ3e2hlh
-        yRWeuzEuo6sALjjpLYRxMQyQj9H0hbEUKLRBsPxbCw==
-X-Google-Smtp-Source: ABdhPJwfm8XDqnBkXmZM+wEVnYTzuqs80hrvV6imIFZdo26vR5Av0UBgP+Vt1OTBs2oIXFx+rhbDdEZ6diDAEaWeESA=
-X-Received: by 2002:a05:6638:979:: with SMTP id o25mr24234722jaj.24.1592944471021;
- Tue, 23 Jun 2020 13:34:31 -0700 (PDT)
+        Tue, 23 Jun 2020 16:44:43 -0400
+Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jnpmb-0002XV-Ib; Tue, 23 Jun 2020 20:44:41 +0000
+Date:   Tue, 23 Jun 2020 22:44:41 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        linux-kselftest@vger.kernel.org, keescook@chromium.org
+Subject: Re: [PATCH v2 4/6] selftests: pidfd: do not use ksft_exit_skip after
+ ksft_set_plan
+Message-ID: <20200623204441.phngiwlj2idonpe6@wittgenstein>
+References: <20200623001547.22255-1-pbonzini@redhat.com>
+ <20200623001547.22255-5-pbonzini@redhat.com>
 MIME-Version: 1.0
-References: <20200623063530.81917-1-like.xu@linux.intel.com>
- <20200623182910.GA24107@linux.intel.com> <CALMp9eQPA40FWBEOiQ8T5JX2fv+uEfU_x6js8WhAguQ8TL6frA@mail.gmail.com>
- <20200623190504.GC24107@linux.intel.com>
-In-Reply-To: <20200623190504.GC24107@linux.intel.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 23 Jun 2020 13:34:19 -0700
-Message-ID: <CALMp9eTYKQ3LrWKu32mJKPzkWMcN5tGSFmj352TPCSrSp7jGxw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: X86: Emulate APERF/MPERF to report actual VCPU frequency
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Like Xu <like.xu@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, wei.huang2@amd.com,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Li RongQing <lirongqing@baidu.com>,
-        Chai Wen <chaiwen@baidu.com>, Jia Lina <jialina01@baidu.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200623001547.22255-5-pbonzini@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 12:05 PM Sean Christopherson
-<sean.j.christopherson@intel.com> wrote:
->
-> On Tue, Jun 23, 2020 at 11:39:16AM -0700, Jim Mattson wrote:
-> > On Tue, Jun 23, 2020 at 11:29 AM Sean Christopherson
-> > <sean.j.christopherson@intel.com> wrote:
-> > >
-> > > On Tue, Jun 23, 2020 at 02:35:30PM +0800, Like Xu wrote:
-> > > > The aperf/mperf are used to report current CPU frequency after 7d5905dc14a
-> > > > "x86 / CPU: Always show current CPU frequency in /proc/cpuinfo". But guest
-> > > > kernel always reports a fixed VCPU frequency in the /proc/cpuinfo, which
-> > > > may confuse users especially when turbo is enabled on the host.
-> > > >
-> > > > Emulate guest APERF/MPERF capability based their values on the host.
-> > > >
-> > > > Co-developed-by: Li RongQing <lirongqing@baidu.com>
-> > > > Signed-off-by: Li RongQing <lirongqing@baidu.com>
-> > > > Reviewed-by: Chai Wen <chaiwen@baidu.com>
-> > > > Reviewed-by: Jia Lina <jialina01@baidu.com>
-> > > > Signed-off-by: Like Xu <like.xu@linux.intel.com>
-> > > > ---
-> > >
-> > > ...
-> > >
-> > > > @@ -8312,7 +8376,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
-> > > >               dm_request_for_irq_injection(vcpu) &&
-> > > >               kvm_cpu_accept_dm_intr(vcpu);
-> > > >       fastpath_t exit_fastpath;
-> > > > -
-> > > > +     u64 enter_mperf = 0, enter_aperf = 0, exit_mperf = 0, exit_aperf = 0;
-> > > >       bool req_immediate_exit = false;
-> > > >
-> > > >       if (kvm_request_pending(vcpu)) {
-> > > > @@ -8516,8 +8580,17 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
-> > > >               vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_RELOAD;
-> > > >       }
-> > > >
-> > > > +     if (unlikely(vcpu->arch.hwp.hw_coord_fb_cap))
-> > > > +             get_host_amperf(&enter_mperf, &enter_aperf);
-> > > > +
-> > > >       exit_fastpath = kvm_x86_ops.run(vcpu);
-> > > >
-> > > > +     if (unlikely(vcpu->arch.hwp.hw_coord_fb_cap)) {
-> > > > +             get_host_amperf(&exit_mperf, &exit_aperf);
-> > > > +             vcpu_update_amperf(vcpu, get_amperf_delta(enter_aperf, exit_aperf),
-> > > > +                     get_amperf_delta(enter_mperf, exit_mperf));
-> > > > +     }
-> > > > +
-> > >
-> > > Is there an alternative approach that doesn't require 4 RDMSRs on every VMX
-> > > round trip?  That's literally more expensive than VM-Enter + VM-Exit
-> > > combined.
-> > >
-> > > E.g. what about adding KVM_X86_DISABLE_EXITS_APERF_MPERF and exposing the
-> > > MSRs for read when that capability is enabled?
-> >
-> > When would you load the hardware MSRs with the guest/host values?
->
-> Ugh, I was thinking the MSRs were read-only.
+On Mon, Jun 22, 2020 at 08:15:45PM -0400, Paolo Bonzini wrote:
+> Calling ksft_exit_skip after ksft_set_plan results in executing fewer tests
+> than planned.  Use ksft_test_result_skip instead.
+> 
+> The plan passed to ksft_set_plan was wrong, too, so fix it while at it.
+> 
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
 
-EVen if they were read-only, they should power on to zero, and they
-will most likely not be zero when a guest powers on.
+Thanks for the patch!
+Hm, this series misses a bunch of Cces for the maintainers of these files...
+(Also note that Kees has a/some series with most of us Cced that might
+conflict with some of these changes. But not sure rn.)
 
-> Doesn't this also interact with TSC scaling?
+A comment below.
 
-Yes, it should!
+>  tools/testing/selftests/pidfd/pidfd_test.c | 39 ++++++++++++++++++----
+>  1 file changed, 33 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/pidfd/pidfd_test.c b/tools/testing/selftests/pidfd/pidfd_test.c
+> index 7aff2d3b42c0..380c6314e6a2 100644
+> --- a/tools/testing/selftests/pidfd/pidfd_test.c
+> +++ b/tools/testing/selftests/pidfd/pidfd_test.c
+> @@ -8,6 +8,7 @@
+>  #include <sched.h>
+>  #include <signal.h>
+>  #include <stdio.h>
+> +#include <stdbool.h>
+>  #include <stdlib.h>
+>  #include <string.h>
+>  #include <syscall.h>
+> @@ -27,6 +28,8 @@
+>  
+>  #define MAX_EVENTS 5
+>  
+> +static bool have_pidfd_send_signal = false;
+> +
+>  static pid_t pidfd_clone(int flags, int *pidfd, int (*fn)(void *))
+>  {
+>  	size_t stack_size = 1024;
+> @@ -56,6 +59,13 @@ static int test_pidfd_send_signal_simple_success(void)
+>  	int pidfd, ret;
+>  	const char *test_name = "pidfd_send_signal send SIGUSR1";
+>  
+> +	if (!have_pidfd_send_signal) {
+> +		ksft_test_result_skip(
+> +			"%s test: pidfd_send_signal() syscall not supported\n",
+> +			test_name);
+> +		return 0;
+> +	}
+> +
+>  	pidfd = open("/proc/self", O_DIRECTORY | O_CLOEXEC);
+>  	if (pidfd < 0)
+>  		ksft_exit_fail_msg(
+> @@ -86,6 +96,13 @@ static int test_pidfd_send_signal_exited_fail(void)
+>  	pid_t pid;
+>  	const char *test_name = "pidfd_send_signal signal exited process";
+>  
+> +	if (!have_pidfd_send_signal) {
+> +		ksft_test_result_skip(
+> +			"%s test: pidfd_send_signal() syscall not supported\n",
+> +			test_name);
+> +		return 0;
+> +	}
+> +
+>  	pid = fork();
+>  	if (pid < 0)
+>  		ksft_exit_fail_msg("%s test: Failed to create new process\n",
+> @@ -137,6 +154,13 @@ static int test_pidfd_send_signal_recycled_pid_fail(void)
+>  	pid_t pid1;
+>  	const char *test_name = "pidfd_send_signal signal recycled pid";
+>  
+> +	if (!have_pidfd_send_signal) {
+> +		ksft_test_result_skip(
+> +			"%s test: pidfd_send_signal() syscall not supported\n",
+> +			test_name);
+> +		return 0;
+> +	}
+> +
+>  	ret = unshare(CLONE_NEWPID);
+>  	if (ret < 0)
+>  		ksft_exit_fail_msg("%s test: Failed to unshare pid namespace\n",
+> @@ -325,13 +349,16 @@ static int test_pidfd_send_signal_syscall_support(void)
+>  
+>  	ret = sys_pidfd_send_signal(pidfd, 0, NULL, 0);
+>  	if (ret < 0) {
+> -		if (errno == ENOSYS)
+> -			ksft_exit_skip(
+> +		if (errno == ENOSYS) {
+> +			ksft_test_result_skip(
+>  				"%s test: pidfd_send_signal() syscall not supported\n",
+>  				test_name);
+
+If pidfd_send_signal() is not supported, you're falling through and then
+you're reporting:
+
+ok 5 # SKIP pidfd_send_signal check for support test: pidfd_send_signal() syscall not supported
+ok 6 pidfd_send_signal check for support test: pidfd_send_signal() syscall is supported. Tests can be executed
+
+which seems wrong.
+
+> -
+> -		ksft_exit_fail_msg("%s test: Failed to send signal\n",
+> -				   test_name);
+> +		} else {
+> +			ksft_exit_fail_msg("%s test: Failed to send signal\n",
+> +					   test_name);
+> +		}
+> +	} else {
+> +		have_pidfd_send_signal = true;
+>  	}
+>  
+>  	close(pidfd);
+> @@ -521,7 +548,7 @@ static void test_pidfd_poll_leader_exit(int use_waitpid)
+>  int main(int argc, char **argv)
+>  {
+>  	ksft_print_header();
+> -	ksft_set_plan(4);
+> +	ksft_set_plan(8);
+>  
+>  	test_pidfd_poll_exec(0);
+>  	test_pidfd_poll_exec(1);
+> -- 
+> 2.26.2
+> 
+> 
