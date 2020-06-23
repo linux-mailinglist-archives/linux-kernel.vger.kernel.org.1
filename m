@@ -2,38 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B0CE2061B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B052061D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404099AbgFWUsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:48:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46900 "EHLO mail.kernel.org"
+        id S2392544AbgFWUvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:51:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392913AbgFWUsD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:48:03 -0400
+        id S2392922AbgFWUsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:48:05 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C5F3B21548;
-        Tue, 23 Jun 2020 20:48:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D9D72158C;
+        Tue, 23 Jun 2020 20:48:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945283;
-        bh=YkVoEorFSdIv9ryto11yZN9u8v2/IijlcqCT9u3qakE=;
+        s=default; t=1592945285;
+        bh=4aEGyMYEfri+pLZx0jnJQFReQiTzdeXOtg57hBlCeFc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Sa5X4un9T0HSlYyEgfCl+onktsfsUkHgk9sYJP+ecRa9T8xifwt67PDdM5nwzjaWE
-         O1YHghikuNQ5qooKvM0lAIVvMKjx4XqcB2VmW/+/BAK6dBU5Z+rHjppm3uv3W3f6Bw
-         HrvnYZ2V/Uq8QaWiCHN0TqdQsflR+dXRC0G2b8Tk=
+        b=KIU31ICo4/siLDHpuorivFCCx1gw2vlyERNNW8pWI+PQchxwHCdDeeDujd6Qw0CNs
+         djWuEkbD7gsgyY6VzTBKyzAzJLtzariFNQ2zSbaUXqVdoa5TOFZtYHHgwoiGKIZhys
+         N1UvX5BECClkNqMSqx0Ot+2SkDovO452yMyi8BdQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Emil Velikov <emil.l.velikov@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 111/136] drm: encoder_slave: fix refcouting error for modules
-Date:   Tue, 23 Jun 2020 21:59:27 +0200
-Message-Id: <20200623195309.255776475@linuxfoundation.org>
+        stable@vger.kernel.org, Lyude Paul <lyude@redhat.com>,
+        Sean Paul <sean@poorly.run>
+Subject: [PATCH 4.14 112/136] drm/dp_mst: Reformat drm_dp_check_act_status() a bit
+Date:   Tue, 23 Jun 2020 21:59:28 +0200
+Message-Id: <20200623195309.306288097@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
 References: <20200623195303.601828702@linuxfoundation.org>
@@ -46,50 +43,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+From: Lyude Paul <lyude@redhat.com>
 
-[ Upstream commit f78d4032de60f50fd4afaa0fb68ea03b985f820a ]
+commit a5cb5fa6c3a5c2cf492db667b8670ee7b044b79f upstream.
 
-module_put() balances try_module_get(), not request_module(). Fix the
-error path to match that.
+Just add a bit more line wrapping, get rid of some extraneous
+whitespace, remove an unneeded goto label, and move around some variable
+declarations. No functional changes here.
 
-Fixes: 2066facca4c7 ("drm/kms: slave encoder interface.")
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-Reviewed-by: Emil Velikov <emil.l.velikov@gmail.com>
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+[this isn't a fix, but it's needed for the fix that comes after this]
+Fixes: ad7f8a1f9ced ("drm/helper: add Displayport multi-stream helper (v0.6)")
+Cc: Sean Paul <sean@poorly.run>
+Cc: <stable@vger.kernel.org> # v3.17+
+Reviewed-by: Sean Paul <sean@poorly.run>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200406221253.1307209-3-lyude@redhat.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- drivers/gpu/drm/drm_encoder_slave.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/drm_dp_mst_topology.c |   22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_encoder_slave.c b/drivers/gpu/drm/drm_encoder_slave.c
-index cf804389f5eca..d50a7884e69e1 100644
---- a/drivers/gpu/drm/drm_encoder_slave.c
-+++ b/drivers/gpu/drm/drm_encoder_slave.c
-@@ -84,7 +84,7 @@ int drm_i2c_encoder_init(struct drm_device *dev,
+--- a/drivers/gpu/drm/drm_dp_mst_topology.c
++++ b/drivers/gpu/drm/drm_dp_mst_topology.c
+@@ -2760,33 +2760,31 @@ fail:
+  */
+ int drm_dp_check_act_status(struct drm_dp_mst_topology_mgr *mgr)
+ {
++	int count = 0, ret;
+ 	u8 status;
+-	int ret;
+-	int count = 0;
  
- 	err = encoder_drv->encoder_init(client, dev, encoder);
- 	if (err)
--		goto fail_unregister;
-+		goto fail_module_put;
+ 	do {
+-		ret = drm_dp_dpcd_readb(mgr->aux, DP_PAYLOAD_TABLE_UPDATE_STATUS, &status);
+-
++		ret = drm_dp_dpcd_readb(mgr->aux,
++					DP_PAYLOAD_TABLE_UPDATE_STATUS,
++					&status);
+ 		if (ret < 0) {
+-			DRM_DEBUG_KMS("failed to read payload table status %d\n", ret);
+-			goto fail;
++			DRM_DEBUG_KMS("failed to read payload table status %d\n",
++				      ret);
++			return ret;
+ 		}
  
- 	if (info->platform_data)
- 		encoder->slave_funcs->set_config(&encoder->base,
-@@ -92,9 +92,10 @@ int drm_i2c_encoder_init(struct drm_device *dev,
+ 		if (status & DP_PAYLOAD_ACT_HANDLED)
+ 			break;
+ 		count++;
+ 		udelay(100);
+-
+ 	} while (count < 30);
  
+ 	if (!(status & DP_PAYLOAD_ACT_HANDLED)) {
+-		DRM_DEBUG_KMS("failed to get ACT bit %d after %d retries\n", status, count);
+-		ret = -EINVAL;
+-		goto fail;
++		DRM_DEBUG_KMS("failed to get ACT bit %d after %d retries\n",
++			      status, count);
++		return -EINVAL;
+ 	}
  	return 0;
- 
-+fail_module_put:
-+	module_put(module);
- fail_unregister:
- 	i2c_unregister_device(client);
--	module_put(module);
- fail:
- 	return err;
+-fail:
+-	return ret;
  }
--- 
-2.25.1
-
+ EXPORT_SYMBOL(drm_dp_check_act_status);
+ 
 
 
