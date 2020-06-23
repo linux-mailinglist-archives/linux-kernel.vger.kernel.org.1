@@ -2,127 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD432066EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 00:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 710042066ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 00:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388886AbgFWWJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 18:09:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388033AbgFWWJG (ORCPT
+        id S2389036AbgFWWJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 18:09:16 -0400
+Received: from smtprelay0042.hostedemail.com ([216.40.44.42]:59076 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388033AbgFWWJO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 18:09:06 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E1FCC061573;
-        Tue, 23 Jun 2020 15:09:06 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id b5so233922pgm.8;
-        Tue, 23 Jun 2020 15:09:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xyA4lLNJRkTcM7jGcZx6caF2sIXBOMEy60Y5SBlTMAk=;
-        b=pcii6dySMmrvPeG2RJQSNs6/F1VyuS6miy4TO2rAbkFymvbpTfCdmkXbDlWERuww5i
-         PKmPBdPC0UAZBZz/BX2HOG7rD7NBVtASGs6XbNVSc/GNtEnBzn23WI18U8zPCCQWkC07
-         Y8ZFIlUVG4ODqxgfkgzoqIZYDnuEamAdzchiLwVxZzjiEaI+IWjHFD8Z7vXPep2cgw8s
-         3WAsz651pvQ9ijkTGDqI/FltIryiNyfRxv6YhYo8BY993nvzuE1CyPu26T6hBcC7WJZm
-         yDEAWvHlQEEwJjii/4NV0hJ3stwZYNT3i7FuMuuEdCviMLRHZCVVtJytjmXRZDHNHPkg
-         NDRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xyA4lLNJRkTcM7jGcZx6caF2sIXBOMEy60Y5SBlTMAk=;
-        b=plhXWMnOg9r7O0yVdLpataQzq8siC+KBL20lW164mBPgvKZj+vgYXKwT5bPSd/3J3T
-         6VdQPnh4V7KtJghrCJdbLILKUAaJtcYcPRhPdQqaMJnpQ/wZQcci3T1iMgHLCZ8raeeU
-         WdfU/8tQ4BVTOTFzLiSlvS9C52CG5b0HcMnxhlifktvGpdvzoDuBf10CF/c2klR47asx
-         k8ctDVRkDlHd+zxxEyflL27W1zuomYi74YkHdVy4dAxN9S6nIMYXe2GrsKOBp9rQtLIA
-         UKOKfcDSYDGWqLdCE3nr68ufU4Esxhc8UH6hMMgWcABkimJlf4eB/+9rfOoFzPdyZlF1
-         Z0Dg==
-X-Gm-Message-State: AOAM532d5M14OVA/y3jambqNC59dtd+XPKyg1bFYLxEvyVr6Y9gxAE9A
-        aSaaXgLn/fKU68/kNsq+eM4=
-X-Google-Smtp-Source: ABdhPJx2n72G0/vt5ZYqg2QYNMMl4G+WIn6kzvmddeg4hWo894IJe+i2qQlgKt3ltsCOLrS3twd45A==
-X-Received: by 2002:aa7:97bd:: with SMTP id d29mr25217184pfq.262.1592950146124;
-        Tue, 23 Jun 2020 15:09:06 -0700 (PDT)
-Received: from [192.168.11.3] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id b14sm17474956pft.23.2020.06.23.15.09.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jun 2020 15:09:05 -0700 (PDT)
-Subject: [PATCH 2/2] Documentation/litmus-tests: Add note on herd7 7.56 in
- atomic litmus test
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, stern@rowland.harvard.edu,
-        parri.andrea@gmail.com, will@kernel.org, peterz@infradead.org,
-        boqun.feng@gmail.com, npiggin@gmail.com, dhowells@redhat.com,
-        j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        Akira Yokosawa <akiyks@gmail.com>
-References: <20200623005152.GA27459@paulmck-ThinkPad-P72>
- <20200623005231.27712-13-paulmck@kernel.org>
- <e3693dec-213a-3f65-eb1c-284bf8ca6e13@gmail.com>
- <20200623155419.GI9247@paulmck-ThinkPad-P72>
- <b3433b44-29af-4ef4-d047-b0b0d51a9fbd@gmail.com>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <9e1d448a-cf3c-523d-e0a6-f46ac4706c48@gmail.com>
-Date:   Wed, 24 Jun 2020 07:09:01 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Tue, 23 Jun 2020 18:09:14 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 7D0FA837F24F;
+        Tue, 23 Jun 2020 22:09:12 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1543:1593:1594:1711:1730:1747:1777:1792:2393:2525:2560:2563:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3354:3622:3866:3867:3870:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4605:5007:7576:7875:8957:9025:10004:10400:10848:11232:11233:11658:11914:12043:12296:12297:12438:12555:12679:12740:12760:12895:12986:13439:13846:14096:14097:14181:14659:14721:21080:21433:21451:21627:21939:30054:30064:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: queen47_191478726e3f
+X-Filterd-Recvd-Size: 4112
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 23 Jun 2020 22:09:11 +0000 (UTC)
+Message-ID: <b3c1299c40cfb76ef46d4967763afed2f7ad2d3d.camel@perches.com>
+Subject: Re: [PATCH 4.19 049/206] staging: rtl8712: fix multiline derefernce
+ warnings
+From:   Joe Perches <joe@perches.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     stable@vger.kernel.org, Aiman Najjar <aiman.najjar@hurranet.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Date:   Tue, 23 Jun 2020 15:09:10 -0700
+In-Reply-To: <20200623195319.392375544@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
+         <20200623195319.392375544@linuxfoundation.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.2-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <b3433b44-29af-4ef4-d047-b0b0d51a9fbd@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From f808c371075d2f92b955da1a83ecb3828db1972e Mon Sep 17 00:00:00 2001
-From: Akira Yokosawa <akiyks@gmail.com>
-Date: Wed, 24 Jun 2020 06:59:26 +0900
-Subject: [PATCH 2/2] Documentation/litmus-tests: Add note on herd7 7.56 in atomic litmus test
+On Tue, 2020-06-23 at 21:56 +0200, Greg Kroah-Hartman wrote:
+> From: Aiman Najjar <aiman.najjar@hurranet.com>
+> 
+> [ Upstream commit 269da10b1477c31c660288633c8d613e421b131f ]
+> 
+> This patch fixes remaining checkpatch warnings
+> in rtl871x_xmit.c:
 
-herdtools 7.56 has enhanced herd7's C parser so that the "(void)expr"
-construct in Atomic-RMW-ops-are-atomic-WRT-atomic_set.litmus is
-accepted.
+IMO: unless necessary for another patch, these types
+of whitespace or renaming only conversions patches
+should not be applied to stable.
 
-This is independent of LKMM's cat model, so mention the required
-version in the header of the litmus test and its entry in README.
-
-CC: Boqun Feng <boqun.feng@gmail.com>
-Reported-by: Andrea Parri <parri.andrea@gmail.com>
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
----
- Documentation/litmus-tests/README                                | 1 +
- .../atomic/Atomic-RMW-ops-are-atomic-WRT-atomic_set.litmus       | 1 +
- 2 files changed, 2 insertions(+)
-
-diff --git a/Documentation/litmus-tests/README b/Documentation/litmus-tests/README
-index b79e640214b9..7f5c6c3ed6c3 100644
---- a/Documentation/litmus-tests/README
-+++ b/Documentation/litmus-tests/README
-@@ -19,6 +19,7 @@ Atomic-RMW+mb__after_atomic-is-stronger-than-acquire.litmus
- 
- Atomic-RMW-ops-are-atomic-WRT-atomic_set.litmus
-     Test that atomic_set() cannot break the atomicity of atomic RMWs.
-+    NOTE: Require herd7 7.56 or later which supports "(void)expr".
- 
- 
- RCU (/rcu directory)
-diff --git a/Documentation/litmus-tests/atomic/Atomic-RMW-ops-are-atomic-WRT-atomic_set.litmus b/Documentation/litmus-tests/atomic/Atomic-RMW-ops-are-atomic-WRT-atomic_set.litmus
-index 49385314d911..ffd4d3e79c4a 100644
---- a/Documentation/litmus-tests/atomic/Atomic-RMW-ops-are-atomic-WRT-atomic_set.litmus
-+++ b/Documentation/litmus-tests/atomic/Atomic-RMW-ops-are-atomic-WRT-atomic_set.litmus
-@@ -4,6 +4,7 @@ C Atomic-RMW-ops-are-atomic-WRT-atomic_set
-  * Result: Never
-  *
-  * Test that atomic_set() cannot break the atomicity of atomic RMWs.
-+ * NOTE: This requires herd7 7.56 or later which supports "(void)expr".
-  *)
- 
- {
--- 
-2.17.1
-
+> WARNING: Avoid multiple line dereference - prefer 'psecuritypriv->PrivacyKeyIndex'
+> 636: FILE: drivers/staging//rtl8712/rtl871x_xmit.c:636:
+> +					      (u8)psecuritypriv->
+> +					      PrivacyKeyIndex);
+> 
+> WARNING: Avoid multiple line dereference - prefer 'psecuritypriv->XGrpKeyid'
+> 643: FILE: drivers/staging//rtl8712/rtl871x_xmit.c:643:
+> +						   (u8)psecuritypriv->
+> +						   XGrpKeyid);
+> 
+> WARNING: Avoid multiple line dereference - prefer 'psecuritypriv->XGrpKeyid'
+> 652: FILE: drivers/staging//rtl8712/rtl871x_xmit.c:652:
+> +						   (u8)psecuritypriv->
+> +						   XGrpKeyid);
+> 
+> Signed-off-by: Aiman Najjar <aiman.najjar@hurranet.com>
+> Reviewed-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Link: https://lore.kernel.org/r/98805a72b92e9bbf933e05b827d27944663b7bc1.1585508171.git.aiman.najjar@hurranet.com
+> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/staging/rtl8712/rtl871x_xmit.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/staging/rtl8712/rtl871x_xmit.c b/drivers/staging/rtl8712/rtl871x_xmit.c
+> index a8ae14ce66139..95d5c050a8947 100644
+> --- a/drivers/staging/rtl8712/rtl871x_xmit.c
+> +++ b/drivers/staging/rtl8712/rtl871x_xmit.c
+> @@ -601,7 +601,7 @@ sint r8712_xmitframe_coalesce(struct _adapter *padapter, _pkt *pkt,
+>  	addr_t addr;
+>  	u8 *pframe, *mem_start, *ptxdesc;
+>  	struct sta_info		*psta;
+> -	struct security_priv	*psecuritypriv = &padapter->securitypriv;
+> +	struct security_priv	*psecpriv = &padapter->securitypriv;
+>  	struct mlme_priv	*pmlmepriv = &padapter->mlmepriv;
+>  	struct xmit_priv	*pxmitpriv = &padapter->xmitpriv;
+>  	struct pkt_attrib	*pattrib = &pxmitframe->attrib;
+> @@ -644,15 +644,13 @@ sint r8712_xmitframe_coalesce(struct _adapter *padapter, _pkt *pkt,
+>  				case _WEP40_:
+>  				case _WEP104_:
+>  					WEP_IV(pattrib->iv, psta->txpn,
+> -					       (u8)psecuritypriv->
+> -					       PrivacyKeyIndex);
+> +					       (u8)psecpriv->PrivacyKeyIndex);
+>  					break;
+>  				case _TKIP_:
+>  					if (bmcst)
+>  						TKIP_IV(pattrib->iv,
+>  						    psta->txpn,
+> -						    (u8)psecuritypriv->
+> -						    XGrpKeyid);
+> +						    (u8)psecpriv->XGrpKeyid);
+>  					else
+>  						TKIP_IV(pattrib->iv, psta->txpn,
+>  							0);
+> @@ -660,8 +658,7 @@ sint r8712_xmitframe_coalesce(struct _adapter *padapter, _pkt *pkt,
+>  				case _AES_:
+>  					if (bmcst)
+>  						AES_IV(pattrib->iv, psta->txpn,
+> -						    (u8)psecuritypriv->
+> -						    XGrpKeyid);
+> +						    (u8)psecpriv->XGrpKeyid);
+>  					else
+>  						AES_IV(pattrib->iv, psta->txpn,
+>  						       0);
 
