@@ -2,112 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948AD206868
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 01:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A71620686F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 01:30:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388036AbgFWXaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 19:30:22 -0400
-Received: from gloria.sntech.de ([185.11.138.130]:60778 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387710AbgFWXaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 19:30:21 -0400
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1jnsMp-0002Nq-Nd; Wed, 24 Jun 2020 01:30:15 +0200
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     jic23@kernel.org
-Cc:     knaack.h@gmx.de, lars@metafoo.de, pmeerw@pmeerw.net,
-        heiko@sntech.de, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        xxm@rock-chips.com,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
-Subject: [PATCH v6 2/3] iio: adc: rockchip_saradc: better prefix for channel constant
-Date:   Wed, 24 Jun 2020 01:30:10 +0200
-Message-Id: <20200623233011.2319035-2-heiko@sntech.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200623233011.2319035-1-heiko@sntech.de>
-References: <20200623233011.2319035-1-heiko@sntech.de>
+        id S2388248AbgFWXai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 19:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387779AbgFWXah (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 19:30:37 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85400C061573;
+        Tue, 23 Jun 2020 16:30:37 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id w16so495081ejj.5;
+        Tue, 23 Jun 2020 16:30:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qydbJUy2HOEAW8ox8dW2jzADQiWiDFET2z5DKZOc4lk=;
+        b=keKkgmsm3peohRXedinyra2qm/0qEiJyZVa3jsF+qzSgUCkKiWCLgu8tXNEDzl7wyZ
+         J2MLzqly+YgEthzYaAojyDSmT0JG+ZHOH3VZm+DIVROICIC1irJKnJmDBgihcGEvKKoq
+         BwOo/+Z3eWUD4cCUUd7S7KMfj9Ybgqj7jd79EtXQrwB564o3TBBuuVsqEVPFcwd/UM0t
+         cYneiC1qx+aU0x6D5zhKwBkKEN+ZmusFRVtbiLPIaHxhIewfLJQRuNVl8hXy7QtZRo4n
+         KGX8usLjP1XDTqeMW9dMfsxQxXliBsZUrFvYcfyJFFGsPYyF5n5T7MzwJ5MwJ8P/zZKF
+         qw/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qydbJUy2HOEAW8ox8dW2jzADQiWiDFET2z5DKZOc4lk=;
+        b=jeU9pT7wTFRJ4zy95/OQkTW7+luq6KNm/SwOFVpjm1i4u6CLtcIn3UlwQzflRLg+0y
+         RLFrBsOCVnkoD2PmsjP19u5rtGneLzzQB9t3x/AoF29UexwwPqqQy4Q1qkK+YkgkX9eI
+         BFP5iVRVRUhWbJTfOjrtQ89JipskO46PjP2sL8DAH5wr3xlYLxrB5RTmOrlMqnUDgqk/
+         ghLxR+P/fBbPTXJQ2OUGHxFkY1EnM+j7koyO/naY3D9zLluZSTcgtyKZiAwz5CCrMWNM
+         JBRLw5EU6w8ZHX/8CHPMQPnwrnYAiAH8e08O6GVvsdl2YJPZcsHV3/38gJtBqA9MdeA6
+         IuVw==
+X-Gm-Message-State: AOAM531FIT9hUFCEGyOki+OxDHNYD9+4sS0xgDIVOKZioqqDLd+0/eao
+        zdTJuLhrXGVL/UwthBfjK6I9JVQSKyZz165g0UE=
+X-Google-Smtp-Source: ABdhPJyl9OeCOL30EfuG+Fu9f5Q3c7QmhU1FtTXQe3JvnchNw08GN1s0oqNBJnkSlig6VanYILFNuSssIhBCc4YEvzk=
+X-Received: by 2002:a17:906:945:: with SMTP id j5mr22444075ejd.52.1592955036219;
+ Tue, 23 Jun 2020 16:30:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200623224813.297077-1-konradybcio@gmail.com>
+ <20200623224813.297077-7-konradybcio@gmail.com> <20200623231919.GL128451@builder.lan>
+In-Reply-To: <20200623231919.GL128451@builder.lan>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Wed, 24 Jun 2020 01:30:00 +0200
+Message-ID: <CAMS8qEXeFO0vNKHoJeDKKprdECFLVtXOWnphc6iRjOBigeFe1Q@mail.gmail.com>
+Subject: Re: [PATCH v2 06/12] arm64: dts: qcom: msm8994: Add SCM node
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
+>Shouldn't this be "qcom,scm-msm8992", "qcom,scm" ?
+>
+>(Or rather "qcom,scm-msm8994", "qcom,scm")
 
-As suggested give the current ADC_CHANNEL constant a distinct
-and consistent prefix.
+Some DTs only have the SoC-specific one, and some also
+have the generic one. But I can add the generic one if
+you wish.
 
-Suggested-by: Peter Meerwald-Stadler <pmeerw@pmeerw.net>
-Signed-off-by: Heiko Stuebner <heiko.stuebner@theobroma-systems.com>
----
-changes in v6:
-- none
-changes in v5:
-- new patch
+I went with 8992, as I added it in the 8992 series
+(gonna update that one soon, too, so we can get it merged)
+and I didn't want to needlessly duplicate it. Ideally maybe we
+could switch to just qcom,scm for clockless SCM compats?
 
- drivers/iio/adc/rockchip_saradc.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/iio/adc/rockchip_saradc.c b/drivers/iio/adc/rockchip_saradc.c
-index 1a7990d60f9f..5d2e07dc72fd 100644
---- a/drivers/iio/adc/rockchip_saradc.c
-+++ b/drivers/iio/adc/rockchip_saradc.c
-@@ -118,7 +118,7 @@ static const struct iio_info rockchip_saradc_iio_info = {
- 	.read_raw = rockchip_saradc_read_raw,
- };
- 
--#define ADC_CHANNEL(_index, _id) {				\
-+#define SARADC_CHANNEL(_index, _id) {				\
- 	.type = IIO_VOLTAGE,					\
- 	.indexed = 1,						\
- 	.channel = _index,					\
-@@ -128,9 +128,9 @@ static const struct iio_info rockchip_saradc_iio_info = {
- }
- 
- static const struct iio_chan_spec rockchip_saradc_iio_channels[] = {
--	ADC_CHANNEL(0, "adc0"),
--	ADC_CHANNEL(1, "adc1"),
--	ADC_CHANNEL(2, "adc2"),
-+	SARADC_CHANNEL(0, "adc0"),
-+	SARADC_CHANNEL(1, "adc1"),
-+	SARADC_CHANNEL(2, "adc2"),
- };
- 
- static const struct rockchip_saradc_data saradc_data = {
-@@ -141,8 +141,8 @@ static const struct rockchip_saradc_data saradc_data = {
- };
- 
- static const struct iio_chan_spec rockchip_rk3066_tsadc_iio_channels[] = {
--	ADC_CHANNEL(0, "adc0"),
--	ADC_CHANNEL(1, "adc1"),
-+	SARADC_CHANNEL(0, "adc0"),
-+	SARADC_CHANNEL(1, "adc1"),
- };
- 
- static const struct rockchip_saradc_data rk3066_tsadc_data = {
-@@ -153,12 +153,12 @@ static const struct rockchip_saradc_data rk3066_tsadc_data = {
- };
- 
- static const struct iio_chan_spec rockchip_rk3399_saradc_iio_channels[] = {
--	ADC_CHANNEL(0, "adc0"),
--	ADC_CHANNEL(1, "adc1"),
--	ADC_CHANNEL(2, "adc2"),
--	ADC_CHANNEL(3, "adc3"),
--	ADC_CHANNEL(4, "adc4"),
--	ADC_CHANNEL(5, "adc5"),
-+	SARADC_CHANNEL(0, "adc0"),
-+	SARADC_CHANNEL(1, "adc1"),
-+	SARADC_CHANNEL(2, "adc2"),
-+	SARADC_CHANNEL(3, "adc3"),
-+	SARADC_CHANNEL(4, "adc4"),
-+	SARADC_CHANNEL(5, "adc5"),
- };
- 
- static const struct rockchip_saradc_data rk3399_saradc_data = {
--- 
-2.26.2
-
+Regards
+Konrad
