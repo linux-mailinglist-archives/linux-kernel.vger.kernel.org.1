@@ -2,126 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06EE1205EA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:31:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3737205FA6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390126AbgFWUYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52892 "EHLO
+        id S2389223AbgFWUej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:34:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390440AbgFWUYc (ORCPT
+        with ESMTP id S2391546AbgFWUeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:24:32 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18381C061573;
-        Tue, 23 Jun 2020 13:24:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nqLuJpwpk0A53PmvRN23yoDtfY4/X7aPFQklmjH025U=; b=CbxaxDD6KGmoDKlE+iZHVS3Fdo
-        WX5rKGhFi9UifHi3fhpVS0c3n5ae+3i2Al4d3lCr5Ji04Spo9FmrZxodYVQjX87tiDFWzQrx3PI3I
-        NevvGJ2fT2SJF/sfTRCcx+V5LepSslMyZY/fBaQFFSFYMW3Ds6KLSk62JTmmgEstJ0GAnCI3YQrbA
-        oQX43gmPUSuGcEWq5WZvkMcKClyAU3eITCvusiMPH0bQqyzC/rfkbAk4QryNwCs7993kYRBifyp+h
-        285p4O1IIgAuQYXB0wrjE+7+M6vZiHzcyqAKwuKVqqEbDx8FaeBrF3IgpcgClmRCjf8NvQOcf0R2V
-        zRHPIfpg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jnpSe-0003Y5-I2; Tue, 23 Jun 2020 20:24:04 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 213A9983A87; Tue, 23 Jun 2020 22:24:04 +0200 (CEST)
-Date:   Tue, 23 Jun 2020 22:24:04 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>, mingo@kernel.org,
-        will@kernel.org, tglx@linutronix.de, x86@kernel.org,
-        linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        bigeasy@linutronix.de, davem@davemloft.net,
-        sparclinux@vger.kernel.org, mpe@ellerman.id.au,
-        linuxppc-dev@lists.ozlabs.org, heiko.carstens@de.ibm.com,
-        linux-s390@vger.kernel.org, linux@armlinux.org.uk
-Subject: Re: [PATCH v4 7/8] lockdep: Change hardirq{s_enabled,_context} to
- per-cpu variables
-Message-ID: <20200623202404.GE2483@worktop.programming.kicks-ass.net>
-References: <20200623083645.277342609@infradead.org>
- <20200623083721.512673481@infradead.org>
- <20200623150031.GA2986783@debian-buster-darwi.lab.linutronix.de>
- <20200623152450.GM4817@hirez.programming.kicks-ass.net>
- <20200623161320.GA2996373@debian-buster-darwi.lab.linutronix.de>
- <20200623163730.GA4800@hirez.programming.kicks-ass.net>
- <20200623175957.GA106514@elver.google.com>
- <20200623181232.GB4800@hirez.programming.kicks-ass.net>
+        Tue, 23 Jun 2020 16:34:31 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2272C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:34:31 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id i25so25528713iog.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:34:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rUiCHEG4ixMC5q0G/sMhdsDeiOjcEJ6AH6URjseTZ2I=;
+        b=jS7aQ3o7RZ0sGf7Y6qNQMZ73+JgsgYaV6djG8um9Xh0EJx3rlZHQq9i1WM8uSYY7L7
+         3UuWr3RTyQQALhaPmjJFrCRQWjiA4oyuIkj4MrE8gCT+yjWOo4+QFz6XBPeWMRkjR0B6
+         S44OQf0pHhD2hYe/8iFO/qAepNbPD7AZjGmUFicmouMAuAB2eZPuMG0B5qTmXtU88viJ
+         d7nXJ1B8DACEohbJSj4vQuwC1qEnZH9y84RQSEguVuQw6/GIJ169SJKIppfkb4QCpRFT
+         fOLmxWuc5o4LyfCm3z6PgWlob05vqqzyCsxClnr3yIx+iOUf2zUAN9kR3ZTBtC+DN3lW
+         MGzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rUiCHEG4ixMC5q0G/sMhdsDeiOjcEJ6AH6URjseTZ2I=;
+        b=F1rgPxP8boZ5cZrtybVNjXhFO8OnELDeZxpj8FVvb+XIWYVclamIcfJwHK7uSOmj3O
+         P+uB0RYULJbjcitEFp3FbZ0+PsUIvwgAP9QBQQCkrC7DQyXsQYDnwbdMsXNEly+Dhcyk
+         Tv/8Gt1qebgAhv0/0UFy7E8+VRMS5t0mB/PdOrDIXAIf7B6551R25CFFrfiiHDsyGov3
+         MkIXN9uFYDfpa2Sgse4sKO9oKxSMPwh8jJyaTRcpOENbtkZCY2wL7Qb8ZB/qFIkP/VLh
+         zz49QXuxluM0JPCkXJqN+mCPvhO86N+btBYvme71d2RUE94i6je5ewYfJP62D0N8Bd2d
+         h8pg==
+X-Gm-Message-State: AOAM533jpcGdkozJRGOtRR2iujOidT7427QJUtAN1x1c4foNxJ3e2hlh
+        yRWeuzEuo6sALjjpLYRxMQyQj9H0hbEUKLRBsPxbCw==
+X-Google-Smtp-Source: ABdhPJwfm8XDqnBkXmZM+wEVnYTzuqs80hrvV6imIFZdo26vR5Av0UBgP+Vt1OTBs2oIXFx+rhbDdEZ6diDAEaWeESA=
+X-Received: by 2002:a05:6638:979:: with SMTP id o25mr24234722jaj.24.1592944471021;
+ Tue, 23 Jun 2020 13:34:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200623181232.GB4800@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200623063530.81917-1-like.xu@linux.intel.com>
+ <20200623182910.GA24107@linux.intel.com> <CALMp9eQPA40FWBEOiQ8T5JX2fv+uEfU_x6js8WhAguQ8TL6frA@mail.gmail.com>
+ <20200623190504.GC24107@linux.intel.com>
+In-Reply-To: <20200623190504.GC24107@linux.intel.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 23 Jun 2020 13:34:19 -0700
+Message-ID: <CALMp9eTYKQ3LrWKu32mJKPzkWMcN5tGSFmj352TPCSrSp7jGxw@mail.gmail.com>
+Subject: Re: [PATCH] KVM: X86: Emulate APERF/MPERF to report actual VCPU frequency
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Like Xu <like.xu@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, wei.huang2@amd.com,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Li RongQing <lirongqing@baidu.com>,
+        Chai Wen <chaiwen@baidu.com>, Jia Lina <jialina01@baidu.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 08:12:32PM +0200, Peter Zijlstra wrote:
-> Fair enough; I'll rip it all up and boot a KCSAN kernel, see what if
-> anything happens.
+On Tue, Jun 23, 2020 at 12:05 PM Sean Christopherson
+<sean.j.christopherson@intel.com> wrote:
+>
+> On Tue, Jun 23, 2020 at 11:39:16AM -0700, Jim Mattson wrote:
+> > On Tue, Jun 23, 2020 at 11:29 AM Sean Christopherson
+> > <sean.j.christopherson@intel.com> wrote:
+> > >
+> > > On Tue, Jun 23, 2020 at 02:35:30PM +0800, Like Xu wrote:
+> > > > The aperf/mperf are used to report current CPU frequency after 7d5905dc14a
+> > > > "x86 / CPU: Always show current CPU frequency in /proc/cpuinfo". But guest
+> > > > kernel always reports a fixed VCPU frequency in the /proc/cpuinfo, which
+> > > > may confuse users especially when turbo is enabled on the host.
+> > > >
+> > > > Emulate guest APERF/MPERF capability based their values on the host.
+> > > >
+> > > > Co-developed-by: Li RongQing <lirongqing@baidu.com>
+> > > > Signed-off-by: Li RongQing <lirongqing@baidu.com>
+> > > > Reviewed-by: Chai Wen <chaiwen@baidu.com>
+> > > > Reviewed-by: Jia Lina <jialina01@baidu.com>
+> > > > Signed-off-by: Like Xu <like.xu@linux.intel.com>
+> > > > ---
+> > >
+> > > ...
+> > >
+> > > > @@ -8312,7 +8376,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+> > > >               dm_request_for_irq_injection(vcpu) &&
+> > > >               kvm_cpu_accept_dm_intr(vcpu);
+> > > >       fastpath_t exit_fastpath;
+> > > > -
+> > > > +     u64 enter_mperf = 0, enter_aperf = 0, exit_mperf = 0, exit_aperf = 0;
+> > > >       bool req_immediate_exit = false;
+> > > >
+> > > >       if (kvm_request_pending(vcpu)) {
+> > > > @@ -8516,8 +8580,17 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+> > > >               vcpu->arch.switch_db_regs &= ~KVM_DEBUGREG_RELOAD;
+> > > >       }
+> > > >
+> > > > +     if (unlikely(vcpu->arch.hwp.hw_coord_fb_cap))
+> > > > +             get_host_amperf(&enter_mperf, &enter_aperf);
+> > > > +
+> > > >       exit_fastpath = kvm_x86_ops.run(vcpu);
+> > > >
+> > > > +     if (unlikely(vcpu->arch.hwp.hw_coord_fb_cap)) {
+> > > > +             get_host_amperf(&exit_mperf, &exit_aperf);
+> > > > +             vcpu_update_amperf(vcpu, get_amperf_delta(enter_aperf, exit_aperf),
+> > > > +                     get_amperf_delta(enter_mperf, exit_mperf));
+> > > > +     }
+> > > > +
+> > >
+> > > Is there an alternative approach that doesn't require 4 RDMSRs on every VMX
+> > > round trip?  That's literally more expensive than VM-Enter + VM-Exit
+> > > combined.
+> > >
+> > > E.g. what about adding KVM_X86_DISABLE_EXITS_APERF_MPERF and exposing the
+> > > MSRs for read when that capability is enabled?
+> >
+> > When would you load the hardware MSRs with the guest/host values?
+>
+> Ugh, I was thinking the MSRs were read-only.
 
-OK, so the below patch doesn't seem to have any nasty recursion issues
-here. The only 'problem' is that lockdep now sees report_lock can cause
-deadlocks.
+EVen if they were read-only, they should power on to zero, and they
+will most likely not be zero when a guest powers on.
 
-It is completely right about it too, but I don't suspect there's much we
-can do about it, it's pretty much the standard printk() with scheduler
-locks held report.
+> Doesn't this also interact with TSC scaling?
 
----
-diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index 15f67949d11e..732623c30359 100644
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -397,8 +397,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
- 	}
- 
- 	if (!kcsan_interrupt_watcher)
--		/* Use raw to avoid lockdep recursion via IRQ flags tracing. */
--		raw_local_irq_save(irq_flags);
-+		local_irq_save(irq_flags);
- 
- 	watchpoint = insert_watchpoint((unsigned long)ptr, size, is_write);
- 	if (watchpoint == NULL) {
-@@ -539,7 +538,7 @@ kcsan_setup_watchpoint(const volatile void *ptr, size_t size, int type)
- 	kcsan_counter_dec(KCSAN_COUNTER_USED_WATCHPOINTS);
- out_unlock:
- 	if (!kcsan_interrupt_watcher)
--		raw_local_irq_restore(irq_flags);
-+		local_irq_restore(irq_flags);
- out:
- 	user_access_restore(ua_flags);
- }
-diff --git a/kernel/kcsan/report.c b/kernel/kcsan/report.c
-index ac5f8345bae9..ef31c1d2dac3 100644
---- a/kernel/kcsan/report.c
-+++ b/kernel/kcsan/report.c
-@@ -605,14 +605,6 @@ void kcsan_report(const volatile void *ptr, size_t size, int access_type,
- 	if (WARN_ON(watchpoint_idx < 0 || watchpoint_idx >= ARRAY_SIZE(other_infos)))
- 		goto out;
- 
--	/*
--	 * With TRACE_IRQFLAGS, lockdep's IRQ trace state becomes corrupted if
--	 * we do not turn off lockdep here; this could happen due to recursion
--	 * into lockdep via KCSAN if we detect a race in utilities used by
--	 * lockdep.
--	 */
--	lockdep_off();
--
- 	if (prepare_report(&flags, type, &ai, other_info)) {
- 		/*
- 		 * Never report if value_change is FALSE, only if we it is
-@@ -628,7 +620,6 @@ void kcsan_report(const volatile void *ptr, size_t size, int access_type,
- 		release_report(&flags, other_info);
- 	}
- 
--	lockdep_on();
- out:
- 	kcsan_enable_current();
- }
-
+Yes, it should!
