@@ -2,126 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F308B205A48
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 20:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE5C205A54
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 20:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387429AbgFWSJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 14:09:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60220 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733304AbgFWSI5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 14:08:57 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 580E3C061573;
-        Tue, 23 Jun 2020 11:08:56 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id o8so2065651wmh.4;
-        Tue, 23 Jun 2020 11:08:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ohValdVxRvvh6aqrpMpmYg4qV2+S9kNyoOWHWloB/ak=;
-        b=jTRxaysyBS8dV09lAA6JLpCZVZm391Lx/XTsiqjQ2xU7Hnbw0P8qTm9sOmTIcLZJPz
-         SGCxXr1HP4TnKP4CCV1E61JzYJz03egvyN05PxkGmbq8oYehVdQAQpgwVzPzBRdxD319
-         09Na+5NranAcO0JZs5n2ixMgvsoqxSQRBIjKCnVok+mDy/NjlG8MbSSfjmQVREF7gFLd
-         CmPz/oBJku8YQ9ZU4EDsCYYi7CuUIgofLlKejynssRpuHm6+kG05QNcpQf1iyRZ9+50+
-         tRZFqRhipOQi0+vYEQKr28knAfJu6OmUUkWNoDIc60gmNft09o4UDC916rJ3GOS1aryb
-         4OIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ohValdVxRvvh6aqrpMpmYg4qV2+S9kNyoOWHWloB/ak=;
-        b=VDVVI2itWNMS2Lnjjk/ZSeCpNe4lXlUqSalSMNiwr4noxFvDkZvNVE1+wgcYFEtlQX
-         wsTKE7CaUrBAJjSPZLwJS93GI0473zj9qDpLx2aZtwLi0i5syPHJXM+aCWn9BK4LP3Hb
-         eTh4/aSpXGdGMmiRxbTq8ZNcYXqmgxllD5LQXGZ5aflFY0tEA63O2YY8P8iptcCFJkHk
-         fc3Cks8fXISaMiTRub5LAx1LPLwhkn+MPHSwzHZI6+fUd8hB2wMFhSTRXQXW8k0tB7vV
-         4vEjIg1IGpg0Gq6aMoZOCfvC1EMqFSFBSLbnmvr37RXVg/81noYHZNXO06vGiFGpBU8b
-         OYRQ==
-X-Gm-Message-State: AOAM5313S1sE0SLuyfwIy5HgCHAr2G+JJ7bX3zUmhA/06W71N2UYASqJ
-        sw+llDwygxcTUU0TeAeiJDw=
-X-Google-Smtp-Source: ABdhPJzGMfxzv/fIS+kxcuoagxxxwWqFYU0tXuqxrUtS9uBEV0HnzHOIF2Z0EUHh2/p511fDG+BSUw==
-X-Received: by 2002:a1c:2901:: with SMTP id p1mr26351547wmp.144.1592935735115;
-        Tue, 23 Jun 2020 11:08:55 -0700 (PDT)
-Received: from localhost.localdomain (abag196.neoplus.adsl.tpnet.pl. [83.6.170.196])
-        by smtp.googlemail.com with ESMTPSA id c16sm4719529wml.45.2020.06.23.11.08.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 11:08:54 -0700 (PDT)
-From:   Konrad Dybcio <konradybcio@gmail.com>
-To:     skrzynka@konradybcio.pl
-Cc:     Konrad Dybcio <konradybcio@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH 8/8] arm64: dts: qcom: sdm630: ganges: Change addresses to phandles
-Date:   Tue, 23 Jun 2020 20:08:32 +0200
-Message-Id: <20200623180832.254163-9-konradybcio@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623180832.254163-1-konradybcio@gmail.com>
-References: <20200623180832.254163-1-konradybcio@gmail.com>
+        id S1733144AbgFWSNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 14:13:19 -0400
+Received: from mout.web.de ([212.227.15.14]:59015 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728916AbgFWSNS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 14:13:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1592935946;
+        bh=ta4B5U7NcnWlkKMrrXTDnwiIOLEapRNu6S62MdMg4MM=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=FcJRzYUsTn4yZBHwp8cofCKX7TR/HZWLQVjZ2s/HApmneq+dnb1k0Xg0SJe7O2jPa
+         QrOCEO1qJTDoz3xb5EKRv+jFZCoFiA46uMyfPj4YvYOemuMP5d9woXCuaoBq5R0SBv
+         jkf3W7EzSizLeKye5DM6Q48uX5NQ0DehqDwjobaY=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([78.49.105.198]) by smtp.web.de (mrweb002
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 0LqDHE-1jALzW0b44-00dkuC; Tue, 23
+ Jun 2020 20:12:26 +0200
+Subject: Re: [PATCH] crypto: sun8i-ce - Fix runtime PM imbalance in
+ sun8i_ce_cipher_init
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org
+Cc:     Aditya Pakki <pakki001@umn.edu>,
+        Navid Emamdoost <emamd001@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
+        Qiushi Wu <wu000273@umn.edu>, linux-kernel@vger.kernel.org,
+        YueHaibing <yuehaibing@huawei.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Eric Biggers <ebiggers@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Corentin Labbe <clabbe.montjoie@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>
+References: <265c3a75-f8ce-fb34-d559-39e58a4dfb4f@web.de>
+ <20200623134442.wj4i3r3dlp6rtpaq@gilmour.lan>
+ <16341716-aeb6-febc-441c-c1826da8c4d3@web.de>
+ <20200623165615.i7iphakzjeu2d3fq@gilmour.lan>
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+Message-ID: <b567ca26-17a2-2116-1cab-335a21c21be9@web.de>
+Date:   Tue, 23 Jun 2020 20:12:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200623165615.i7iphakzjeu2d3fq@gilmour.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:i2OKciW/q0yre7Qi0ZXqZg8dnUijUgxS0e8iCzrANnntusFQ15Y
+ q0m5rXDqAqjjxxtPVmX/Iq3LRcrOMffqov6eIHk4FEodx8tc+Slm6e9pOEV+Lf8MCI+ATBi
+ nIVeLSzVSfTkhbwpAdjkMa0CA1k+b7m3uptM0EDNiYBj6x4fIuRQVmNc4qdbdj0gbRgSVVv
+ NlRIVdkA4phpwpZIWZSgQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:oit216Wzny0=:1UEVGowrtz67JAcMmugdnF
+ W30gTJC9f30nzaMZMZFJ7I/CST5Bxtgt4XSzEKqwfC4Zp/Ot5MfaH3SACnAshOscB9RVldRsW
+ TRI5D3hY90N8lwV6DV+qKnMeqTjk4Cw50yrMLmxAV3+o0Pyjvc+A6PJExt03SwY7rkU3MB4OZ
+ 2Y4QDLXdnfPLu/8sU6EkGtoUNHfLEuQrbfYibpu7cc9Rw6z9e0Pls/PQQRe1//BWyPo43ECQW
+ D6zyIaDYw5L72+g5mTNlrZodhTfTp/9X4CVsK786d5zjYW73YfmRb3cuBuz37SFzWrjwHPG4C
+ GQUWI6OkeUr+RZ/5Uc18fqHwZzu9XxXYymj7zcu0AMGx0jKasz6kltbzJMAOys4KDRYKEAKm0
+ sqjn+NcLv+AEDZHMAmg5GwPW/r7y0rurE2+2nzkvmYgAirgR9xBSAPLXLFvfLvPTLhTvE42HU
+ V0D7S7X/QTp8oKfjEBiHY1Z5VQGY7LDe7OCPBNlP1ykwgRkhadMbJdp6uj4gmiNAXgRuA2Quy
+ kka8Age9zz2wGBXe8n8kVTRJnqaAJxCiixdTjhDHdQz/EwCaOcTeX8DNf1eBL6ZJmADdA7ExY
+ /dqPwYsEPOnDBeb/PBMeYYEHsvigalkUbPepuovD4AY9Rzg2J5GhDLRqGW3BaWTxqvgqr9ESC
+ pm52ofTf280yZD0Hki6a31ROmc/lFPdP0Un9xvMiV0rd4cLVZ5/B0/kUP00XyqsWl6jkuF+iQ
+ I8Scg938bftD2+lVNXoxfAiZXqzw8dcvMFWQnu5GtA58X5nIRgry4RptZSNx7tfympJYrid4Z
+ fJtz+lFBp7fsMpJJuEONyVq1NlF7/8v1sIF85DZxQb2c+ujKAOO23bcFXNnMqUuSmnQWx9Gfd
+ S826OeEyvDJT87yWG8CirKjVXPvh7Y0d0mnPoMtIPknSqH3Vyv97QHmsKt5vzCjLYRCQv680m
+ 8f2nimfC85zdmd/JJc9ReJZOuN2DbbT85r1KdJh22pKlBh2vE4QxK/78JUKDRK7GNkDGHqNow
+ ggnTVrH99WURxcHDyEFlo7epkYok6kjlz3RfkrfQWtjhDa8x5cj5EZxnQFiLsbBYO2DpKMWHv
+ jAA6a+hbQwVPELo0HjvURUq5PTx83w5sVTuM7xKgfds8nNZCilT20kLrm197/W1IVan01zHSd
+ ivFAyOrVxgdObQPZYA7nQUgH2Buk+ZD3T7B5QP/bSTEDx4KAdIsOIKVvbgtDfoIOA5gdWaZ0d
+ KtIFA5yxGTbtg8aB+
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This brings the DT in line with the style used
-in other device trees.
+>>>>> Fix this by =E2=80=A6
+>>>>
+>>>> Please replace the beginning of this sentence with the tag =E2=80=9CF=
+ixes=E2=80=9D.
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tr=
+ee/Documentation/process/submitting-patches.rst?id=3D625d3449788f855690967=
+80592549d0340e9c0c7#n183
+>>>
+>>> No, not really. The comment you (partially) quoted explains how the
+>>> issue is fixed, your suggestion explains what commit introduced the fi=
+x
+>>> in the first place. They are both beneficial, but there's strictly no
+>>> reason to remove the former for the latter.
+>>
+>> Do you care to improve this change description another bit?
+>
+> I'm not sure which change description you're talking about?
 
-Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
----
- .../dts/qcom/sdm630-sony-xperia-ganges.dtsi   | 22 +++++++------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+Repetition:
+https://lore.kernel.org/patchwork/patch/1260551/
+https://lore.kernel.org/linux-crypto/20200622024014.11347-1-dinghao.liu@zj=
+u.edu.cn/
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges.dtsi b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges.dtsi
-index cf2e8b5d60e8..12d4d1c25027 100644
---- a/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges.dtsi
-@@ -13,13 +13,6 @@
- #include "sdm630-sony-xperia-nile.dtsi"
- 
- / {
--	chosen {
--		framebuffer@9d400000 {
--			reg = <0 0x9d400000 0 (2520 * 1080 * 4)>;
--			height = <2520>;
--		};
--	};
--
- 	/* Yes, this is intentional.
- 	 * Ganges devices only use gpio-keys for
- 	 * Volume Down, but currently there's an
-@@ -27,14 +20,15 @@ framebuffer@9d400000 {
- 	 * Until then, let's not make the kernel panic
- 	 */
- 	/delete-node/ gpio-keys;
-+};
- 
--	soc {
--
--		i2c@c175000 {
--			status = "okay";
-+&framebuffer0 {
-+	reg = <0 0x9d400000 0 (2520 * 1080 * 4)>;
-+	height = <2520>;
-+};
- 
--			/* Novatek touchscreen */
--		};
--	};
-+&blsp_i2c1 {
-+	status = "okay";
- 
-+	/* Novatek touchscreen */
- };
--- 
-2.27.0
+pm_runtime_get_sync() increments the runtime PM usage counter even
+the call returns an error code. Thus a corresponding decrement is
+needed on the error handling path to keep the counter balanced.
 
+Fix this by adding the missed function call.
+
+
+
+How do you think about to avoid a wording weakness there (for example)
+besides other possible adjustments?
+
+Regards,
+Markus
