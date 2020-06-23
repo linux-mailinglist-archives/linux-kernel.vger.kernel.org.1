@@ -2,80 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EBFC204D6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E73D1204D82
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732174AbgFWJHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 05:07:01 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:44764 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732110AbgFWJGx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:06:53 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf2oexvFeJ7JIAA--.33S9;
-        Tue, 23 Jun 2020 17:06:45 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc:     Huacai Chen <chenhc@lemote.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: [PATCH 7/7 RESEND] dt-bindings: interrupt-controller: Fix typos in loongson,liointc.yaml
-Date:   Tue, 23 Jun 2020 17:06:38 +0800
-Message-Id: <1592903198-5505-8-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1592903198-5505-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1592903198-5505-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxf2oexvFeJ7JIAA--.33S9
-X-Coremail-Antispam: 1UD129KBjvJXoWruw45tw4fGw4kCF18AF1xGrg_yoW8JF48pa
-        yDC3ZFgF4jqr13C3yDta4vk3W3Zr98AwnrGFZ5ZrWxJFsxuw1jqr4agFn5A3W5GrWxJFWU
-        XryrKa10gayjyaUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUmF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
-        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
-        x0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8
-        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2
-        ka0xkIwI1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
-        6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
-        AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26ryj6F1UMIIF0xvE
-        2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
-        IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2
-        KfnxnUUI43ZEXa7VUj7KsUUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S1732204AbgFWJH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 05:07:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732109AbgFWJH2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 05:07:28 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C941EC061573;
+        Tue, 23 Jun 2020 02:07:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=ldF/aN/WggG+cvw07PS2qf0wY+Ysa/Xufqs3vIX/7fs=; b=CfNyO82vWkKTd5/tOSOB91ztt
+        gG2fiGzCuEWqnH3MABNjqRySpjdWdWACCUb0Swu7px6H/OceAZGBHBeAvpE520Qg6VezpvNCC6QyW
+        mMpdTLkn+H9snD1Xd2nXA88ixm/UIQY/q6/eLd3RselqnScIMFgB6/XSH0dFbH9Z+1UZZNsHBhPHA
+        8BOdfsY0Bq8vFoDHrkP01zbTs5qD0mF0B6j9MxLFXwiCHIWEcz13NcRYA52eHFcJEmX9kD8h1iqpT
+        1UoWct/v8vAsi7L7dEKMnJZDk7Rk8/JHPrWbRXHrfpNXA+APnehvlZ8Sfaj9icJpxB+f7LxFX7CiI
+        M3f376coQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:59008)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jnetn-0001XI-Dr; Tue, 23 Jun 2020 10:07:23 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jneti-0000tY-Fs; Tue, 23 Jun 2020 10:07:18 +0100
+Date:   Tue, 23 Jun 2020 10:07:18 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org
+Subject: Re: [PATCH v2 05/15] net: pylink.h: add kernel-doc descriptions for
+ new fields at phylink_config
+Message-ID: <20200623090718.GR1551@shell.armlinux.org.uk>
+References: <cover.1592895969.git.mchehab+huawei@kernel.org>
+ <34970f447ff86415a6cef10a785fbef81c2819a7.1592895969.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <34970f447ff86415a6cef10a785fbef81c2819a7.1592895969.git.mchehab+huawei@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following two typos in loongson,liointc.yaml:
-fron -> from
-it's -> its
+On Tue, Jun 23, 2020 at 09:09:01AM +0200, Mauro Carvalho Chehab wrote:
+> Some fields were moved from struct phylink into phylink_config.
+> Update the kernel-doc markups for the config struct accordingly
+> 
+> Fixes: 5c05c1dbb177 ("net: phylink, dsa: eliminate phylink_fixed_state_cb()")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- .../devicetree/bindings/interrupt-controller/loongson,liointc.yaml    | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Reviewed-by: Russell King <rmk+kernel@armlinux.org.uk>
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-index b1db21e..13908ca 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-+++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
-@@ -51,8 +51,8 @@ properties:
-     description: |
-       This property points how the children interrupts will be mapped into CPU
-       interrupt lines. Each cell refers to a parent interrupt line from 0 to 3
--      and each bit in the cell refers to a children interrupt fron 0 to 31.
--      If a CPU interrupt line didn't connected with liointc, then keep it's
-+      and each bit in the cell refers to a children interrupt from 0 to 31.
-+      If a CPU interrupt line didn't connected with liointc, then keep its
-       cell with zero.
-     $ref: /schemas/types.yaml#/definitions/uint32-array
-     minItems: 4
+Thanks.
+
+> ---
+>  include/linux/phylink.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/include/linux/phylink.h b/include/linux/phylink.h
+> index cc5b452a184e..02ff1419d4be 100644
+> --- a/include/linux/phylink.h
+> +++ b/include/linux/phylink.h
+> @@ -62,6 +62,10 @@ enum phylink_op_type {
+>   * @dev: a pointer to a struct device associated with the MAC
+>   * @type: operation type of PHYLINK instance
+>   * @pcs_poll: MAC PCS cannot provide link change interrupt
+> + * @poll_fixed_state: if true, starts link_poll,
+> + *		      if MAC link is at %MLO_AN_FIXED mode.
+> + * @get_fixed_state: callback to execute to determine the fixed link state,
+> + *		     if MAC link is at %MLO_AN_FIXED mode.
+>   */
+>  struct phylink_config {
+>  	struct device *dev;
+> -- 
+> 2.26.2
+> 
+> 
+
 -- 
-2.1.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
