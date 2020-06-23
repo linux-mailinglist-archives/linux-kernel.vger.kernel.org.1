@@ -2,181 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DB4020588C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AA88205899
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733200AbgFWRZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 13:25:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733191AbgFWRZg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 13:25:36 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA0EBC061755
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 10:25:35 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id i12so1756105pju.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 10:25:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cXLrIYCmsRYrUlW+MZ901zfNrzDQAzij3wzyORGTwhE=;
-        b=fDQ6U3X06ji/FJIFe6lJokBcNOZRlBEfjWGafMQm6Qbi9gxTJ5H1vc2I2GWd16eIkJ
-         RmEtQX9k8DEbANaUGqUT9v0Xmk9mqyYouzc/Y+foF9ugv4Sfmoi44X2C70UozewzySGy
-         aDXmjfIOJb+dIX9AcgqXxB2lVNHh+stJefoNfC35qLluth4GKRsyDxrGXURu8m5M09BD
-         mnsbUB3b20hiFZYeGy0PXeZWR1rhCvXSokyZqqVyYKuRwkwLAWkqu4InhbCBkAlPm9OL
-         Vj8eXq9sgpOAIdYDB64TrFafmGBM0XbonbjOZWpMF+/qFEyh9e9u4bfPqqKJTs7Z2M2O
-         XQqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cXLrIYCmsRYrUlW+MZ901zfNrzDQAzij3wzyORGTwhE=;
-        b=uAFLAnzNuM4bvN6H87l9I3qEsLmcQ9bUvrnkv3XjUcUFFEJY+XEJAmnmyzplu8Kx1D
-         YFC22vwwBkz73jn/POCr+F4PsjfYJtMPDL3pHeKe9ipMCVubSYzmihZjvU8SVzgLZH7k
-         WgHFQniTug/uMbEqoYBzhN6dTnmN/Mi+7zPPuR+zzjkoUrZOGwViCypoTSujXUs7KDmD
-         /r0vnIxFHxwYn2vDXnM19KKh1hmL0B9Eu58iJeB29BfcGflEi+AluLw8YNpuYnhIFdOQ
-         5tAXsmIFmIHFcsghaM6IK1AKbUn8IKz4Jf0Ko/3kBrQevhEv1PqkH8LRnktWeAxxcoYF
-         1uYg==
-X-Gm-Message-State: AOAM533T71Eurh8IGPOnxz5RH3sx0vvVmUTDB/K2XwOTFXhfPp0PEiTu
-        xnERZsUZc9MPbNLGKcELp7oTzA==
-X-Google-Smtp-Source: ABdhPJyXHN3Drl4LyciWoUA6XuU1ansdINyyc/nZRCLR43vV3CFcV4oAbuwbzz8KZgEd5VucBropBw==
-X-Received: by 2002:a17:90a:7504:: with SMTP id q4mr22739919pjk.44.1592933135144;
-        Tue, 23 Jun 2020 10:25:35 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id 3sm7935671pfv.156.2020.06.23.10.25.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 10:25:34 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 11:25:32 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>
-Subject: Re: [PATCHv3] coresight: tmc: Add shutdown callback for TMC ETR
-Message-ID: <20200623172532.GA1843779@xps15>
-References: <20200616045623.27549-1-saiprakash.ranjan@codeaurora.org>
+        id S1728916AbgFWR1E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 13:27:04 -0400
+Received: from mga03.intel.com ([134.134.136.65]:17255 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732961AbgFWR1C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 13:27:02 -0400
+IronPort-SDR: GFYQ7YSPjeYxhWokklsrMIaUddpka5Iniqp6dAqTi8QLIG+xX0N3s03LZGn86ejZ7TCZpmKcD/
+ DfXaiQ0mr2UA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="144171077"
+X-IronPort-AV: E=Sophos;i="5.75,272,1589266800"; 
+   d="scan'208";a="144171077"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2020 10:26:59 -0700
+IronPort-SDR: dFkTC0Q3VbYtMwEZFits5/7wHj7dRqejoXJIagA8vcDlFKA9TiqfEssKP0af/RV+QvSnY0a5QI
+ IIkrU34/15jg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,272,1589266800"; 
+   d="scan'208";a="478939562"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by fmsmga005.fm.intel.com with ESMTP; 23 Jun 2020 10:26:58 -0700
+Date:   Tue, 23 Jun 2020 10:26:58 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Marc Zyngier <maz@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ben Gardon <bgardon@google.com>,
+        Peter Feiner <pfeiner@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Christoffer Dall <christoffer.dall@arm.com>
+Subject: Re: [PATCH v2 00/21] KVM: Cleanup and unify kvm_mmu_memory_cache
+ usage
+Message-ID: <20200623172658.GF23842@linux.intel.com>
+References: <20200622200822.4426-1-sean.j.christopherson@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200616045623.27549-1-saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <20200622200822.4426-1-sean.j.christopherson@intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 16, 2020 at 10:26:23AM +0530, Sai Prakash Ranjan wrote:
-> Implement a shutdown callback to ensure ETR hardware is
-> properly shutdown in reboot/shutdown path. This is required
-> for ETR which has SMMU address translation enabled like on
-> SC7180 SoC and few others. If the hardware is still accessing
-> memory after SMMU translation is disabled as part of SMMU
-> shutdown callback in system reboot or shutdown path, then
-> IOVAs(I/O virtual address) which it was using will go on the
-> bus as the physical addresses which might result in unknown
-> crashes (NoC/interconnect errors). So we make sure from this
-> shutdown callback that the ETR is shutdown before SMMU translation
-> is disabled and device_link in SMMU driver will take care of
-> ordering of shutdown callbacks such that SMMU shutdown callback
-> is not called before any of its consumer shutdown callbacks.
-> 
-> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> ---
+On Mon, Jun 22, 2020 at 01:08:01PM -0700, Sean Christopherson wrote:
+> Note, patch 18 will conflict with the p4d rework in 5.8.  I originally
+> stated I would send v2 only after that got pulled into Paolo's tree, but
+> I got my timing wrong, i.e. I was thinking that would have already
+> happened.  I'll send v3 if necessary.  I wanted to get v2 out there now
+> that I actually compile tested other architectures.
 
-I have applied your patch.
-
-Thanks,
-Mathieu
-
-> 
-> Changes since v2:
->  * Remove ETF/ETB disable as suggested by Mathieu and Mike since they are
->    not really affected.
->  * Remove coresight and misc device unregister since it is not required
->    for shutdown callback unlike remove callback and userspace is long gone
->    by this time.
-> 
-> Changes since v1:
->  * Use mode flag and drop enable flag as Mike suggested.
->  * Use spinlock before tmc hw disable as Mike suggested.
-> 
-> ---
->  .../hwtracing/coresight/coresight-tmc-etr.c   |  2 +-
->  drivers/hwtracing/coresight/coresight-tmc.c   | 23 +++++++++++++++++++
->  drivers/hwtracing/coresight/coresight-tmc.h   |  1 +
->  3 files changed, 25 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etr.c b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> index 625882bc8b08..b29c2db94d96 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc-etr.c
-> @@ -1110,7 +1110,7 @@ static void __tmc_etr_disable_hw(struct tmc_drvdata *drvdata)
->  
->  }
->  
-> -static void tmc_etr_disable_hw(struct tmc_drvdata *drvdata)
-> +void tmc_etr_disable_hw(struct tmc_drvdata *drvdata)
->  {
->  	__tmc_etr_disable_hw(drvdata);
->  	/* Disable CATU device if this ETR is connected to one */
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc.c b/drivers/hwtracing/coresight/coresight-tmc.c
-> index 39fba1d16e6e..b13ce0daa572 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc.c
-> +++ b/drivers/hwtracing/coresight/coresight-tmc.c
-> @@ -538,6 +538,28 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
->  	return ret;
->  }
->  
-> +static void tmc_shutdown(struct amba_device *adev)
-> +{
-> +	unsigned long flags;
-> +	struct tmc_drvdata *drvdata = amba_get_drvdata(adev);
-> +
-> +	spin_lock_irqsave(&drvdata->spinlock, flags);
-> +
-> +	if (drvdata->mode == CS_MODE_DISABLED)
-> +		goto out;
-> +
-> +	if (drvdata->config_type == TMC_CONFIG_TYPE_ETR)
-> +		tmc_etr_disable_hw(drvdata);
-> +
-> +	/*
-> +	 * We do not care about coresight unregister here unlike remove
-> +	 * callback which is required for making coresight modular since
-> +	 * the system is going down after this.
-> +	 */
-> +out:
-> +	spin_unlock_irqrestore(&drvdata->spinlock, flags);
-> +}
-> +
->  static const struct amba_id tmc_ids[] = {
->  	CS_AMBA_ID(0x000bb961),
->  	/* Coresight SoC 600 TMC-ETR/ETS */
-> @@ -556,6 +578,7 @@ static struct amba_driver tmc_driver = {
->  		.suppress_bind_attrs = true,
->  	},
->  	.probe		= tmc_probe,
-> +	.shutdown	= tmc_shutdown,
->  	.id_table	= tmc_ids,
->  };
->  builtin_amba_driver(tmc_driver);
-> diff --git a/drivers/hwtracing/coresight/coresight-tmc.h b/drivers/hwtracing/coresight/coresight-tmc.h
-> index 71de978575f3..6e8d2dc33d17 100644
-> --- a/drivers/hwtracing/coresight/coresight-tmc.h
-> +++ b/drivers/hwtracing/coresight/coresight-tmc.h
-> @@ -268,6 +268,7 @@ ssize_t tmc_etb_get_sysfs_trace(struct tmc_drvdata *drvdata,
->  /* ETR functions */
->  int tmc_read_prepare_etr(struct tmc_drvdata *drvdata);
->  int tmc_read_unprepare_etr(struct tmc_drvdata *drvdata);
-> +void tmc_etr_disable_hw(struct tmc_drvdata *drvdata);
->  extern const struct coresight_ops tmc_etr_cs_ops;
->  ssize_t tmc_etr_get_sysfs_trace(struct tmc_drvdata *drvdata,
->  				loff_t pos, size_t len, char **bufpp);
-> 
-> base-commit: 059e38815950dbec65beafe03757bce9436e89a4
-> -- 
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-> of Code Aurora Forum, hosted by The Linux Foundation
-> 
+Gah, too impatient by one day :-)  I'll spin v3 later in the week.
