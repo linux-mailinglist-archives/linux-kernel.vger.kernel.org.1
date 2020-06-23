@@ -2,45 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BFA2063BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A88D2061A9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393317AbgFWVKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:10:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53998 "EHLO mail.kernel.org"
+        id S2404021AbgFWUrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:47:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41876 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390870AbgFWUc4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:32:56 -0400
+        id S2403993AbgFWUoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:44:37 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C690B20836;
-        Tue, 23 Jun 2020 20:32:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 070C7218AC;
+        Tue, 23 Jun 2020 20:44:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944376;
-        bh=vSHQ+YDY/gw7mpzO9YWRrdcHmIh6D564DwmdvkyEkC4=;
+        s=default; t=1592945077;
+        bh=8MP+yUbfzIAUWflXaZ1RhpaOEhTpWa47P/ZhgkUfhRg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YBtfNhfPGEzFK941kdYKnQ2O2oqljYNi0GmLpWO97bm1nFOCgWsmAgy5YFlL90QkM
-         8DsDfnhINrngprz7lk4MRLlQB5KFO9qrt+JH5dkiOfmZtaXTGENjTRpYeoxxgFgo/l
-         qpbRQnXsQuoFEgwqLiujHRoaN4HR4Fz9ecLPip4k=
+        b=X918vuhG0Ja/vdl7CWw//Wn8U/AV2WM+1LYPEKgzFpbXS7rEYCe2QaRn7yOu/XX4p
+         lnOOZZkOvPda8rgD0tGftuaE9JY9IsalSRA0E8rLYL32L14Dq115cz/KGwSVYypuYe
+         vLSzGPJLZx1koJJAjx9WpB5fPaaMJx94Pk+XdMRM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@kernel.org>,
-        Kan Liang <kan.liang@intel.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Gaurav Singh <gaurav1086@gmail.com>,
+        stable@vger.kernel.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 263/314] perf report: Fix NULL pointer dereference in hists__fprintf_nr_sample_events()
-Date:   Tue, 23 Jun 2020 21:57:38 +0200
-Message-Id: <20200623195351.518962999@linuxfoundation.org>
+Subject: [PATCH 4.14 003/136] power: supply: bq24257_charger: Replace depends on REGMAP_I2C with select
+Date:   Tue, 23 Jun 2020 21:57:39 +0200
+Message-Id: <20200623195303.785910695@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
+References: <20200623195303.601828702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,43 +45,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gaurav Singh <gaurav1086@gmail.com>
+From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 
-[ Upstream commit 11b6e5482e178055ec1f2444b55f2518713809d1 ]
+[ Upstream commit 87c3d579c8ed0eaea6b1567d529a8daa85a2bc6c ]
 
-The 'evname' variable can be NULL, as it is checked a few lines back,
-check it before using.
+regmap is a library function that gets selected by drivers that need
+it. No driver modules should depend on it. Depending on REGMAP_I2C makes
+this driver only build if another driver already selected REGMAP_I2C,
+as the symbol can't be selected through the menu kernel configuration.
 
-Fixes: 9e207ddfa207 ("perf report: Show call graph from reference events")
-Cc: Adrian Hunter <adrian.hunter@intel.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Jiri Olsa <jolsa@kernel.org>
-Cc: Kan Liang <kan.liang@intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+Fixes: 2219a935963e ("power_supply: Add TI BQ24257 charger driver")
+Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/builtin-report.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/power/supply/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index 4d8db41b949a4..d3c0b04e2e22b 100644
---- a/tools/perf/builtin-report.c
-+++ b/tools/perf/builtin-report.c
-@@ -462,8 +462,7 @@ static size_t hists__fprintf_nr_sample_events(struct hists *hists, struct report
- 	if (rep->time_str)
- 		ret += fprintf(fp, " (time slices: %s)", rep->time_str);
- 
--	if (symbol_conf.show_ref_callgraph &&
--	    strstr(evname, "call-graph=no")) {
-+	if (symbol_conf.show_ref_callgraph && evname && strstr(evname, "call-graph=no")) {
- 		ret += fprintf(fp, ", show reference callgraph");
- 	}
- 
+diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
+index 5ab90c1f3f7c4..24163cf8612c5 100644
+--- a/drivers/power/supply/Kconfig
++++ b/drivers/power/supply/Kconfig
+@@ -530,7 +530,7 @@ config CHARGER_BQ24257
+ 	tristate "TI BQ24250/24251/24257 battery charger driver"
+ 	depends on I2C
+ 	depends on GPIOLIB || COMPILE_TEST
+-	depends on REGMAP_I2C
++	select REGMAP_I2C
+ 	help
+ 	  Say Y to enable support for the TI BQ24250, BQ24251, and BQ24257 battery
+ 	  chargers.
 -- 
 2.25.1
 
