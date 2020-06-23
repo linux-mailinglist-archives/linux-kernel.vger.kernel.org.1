@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 120F72065E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 234362065E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:51:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393746AbgFWVes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:34:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52058 "EHLO mail.kernel.org"
+        id S2393594AbgFWVen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:34:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388647AbgFWUKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:10:49 -0400
+        id S2388839AbgFWUKv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:10:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA27F20707;
-        Tue, 23 Jun 2020 20:10:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4142020EDD;
+        Tue, 23 Jun 2020 20:10:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943048;
-        bh=OQdyMSderQPMGljseE23F2rXVOOB4kHobMP9HzAO6xw=;
+        s=default; t=1592943050;
+        bh=R8XjNxWpSIzEbas4dzwJWPRJLJ09C2aTBITyqFatshA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wy5bdKo8KAY2F2nrcHliSvedOBNID49K/wSjrkhlyyZzUlmHh9u7n/zt6BkodmRVG
-         x82QmNw2EB+2s5k29t006pOj5H5dEsqBCzQipeHJ7d4P5RByKKHpshRm3Mm7xshMGs
-         FWkD4A+L9lFWTEKXZS3smQavIf3a4RdZyJfQQ64g=
+        b=NwnVxf1rEifrXHOIN2+BMscapCmeB52gy99gqfzNerMb8wuYWZ4QCBtrjrmvgYSy+
+         /dK8Ny/eaEO23gBfxoI7fexNMyhnp+Pb9D17OxxwuPru1FB3Lo2wFidn3Ui/em3PEL
+         WC6WfS67OqjJAknq+ZNnF9nn+6cs8wamorttsVBc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Cristian Klein <cristian.klein@elastisys.com>,
-        Jiri Kosina <jkosina@suse.cz>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 208/477] HID: Add quirks for Trust Panora Graphic Tablet
-Date:   Tue, 23 Jun 2020 21:53:25 +0200
-Message-Id: <20200623195417.417068551@linuxfoundation.org>
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 209/477] PCI/PM: Assume ports without DLL Link Active train links in 100 ms
+Date:   Tue, 23 Jun 2020 21:53:26 +0200
+Message-Id: <20200623195417.459387347@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -44,73 +46,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Cristian Klein <cristian.klein@elastisys.com>
+From: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-[ Upstream commit fb68ada81e65d593b51544fa43c284322107a742 ]
+[ Upstream commit ec411e02b7a2e785a4ed9ed283207cd14f48699d ]
 
-The Trust Panora Graphic Tablet has two interfaces. Interface zero reports pen
-movement, pen pressure and pen buttons. Interface one reports tablet buttons
-and tablet scroll. Both use the mouse protocol.
+Kai-Heng Feng reported that it takes a long time (> 1 s) to resume
+Thunderbolt-connected devices from both runtime suspend and system sleep
+(s2idle).
 
-Without these quirks, libinput gets confused about what device it talks to.
+This was because some Downstream Ports that support > 5 GT/s do not also
+support Data Link Layer Link Active reporting.  Per PCIe r5.0 sec 6.6.1:
 
-For completeness, here is the usbhid-dump:
+  With a Downstream Port that supports Link speeds greater than 5.0 GT/s,
+  software must wait a minimum of 100 ms after Link training completes
+  before sending a Configuration Request to the device immediately below
+  that Port. Software can determine when Link training completes by polling
+  the Data Link Layer Link Active bit or by setting up an associated
+  interrupt (see Section 6.7.3.3).
 
-```
-$ sudo usbhid-dump -d 145f:0212
-003:013:001:DESCRIPTOR         1588949402.559961
- 05 0D 09 01 A1 01 85 07 A1 02 09 00 75 08 95 07
- 81 02 C0 C0 09 0E A1 01 85 05 09 23 A1 02 09 52
- 09 53 25 0A 75 08 95 02 B1 02 C0 C0 05 0C 09 36
- A1 00 85 06 05 09 19 01 29 20 15 00 25 01 95 20
- 75 01 81 02 C0
+Sec 7.5.3.6 requires such Ports to support DLL Link Active reporting, but
+at least the Intel JHL6240 Thunderbolt 3 Bridge [8086:15c0] and the Intel
+JHL7540 Thunderbolt 3 Bridge [8086:15ea] do not.
 
-003:013:000:DESCRIPTOR         1588949402.563942
- 05 01 09 02 A1 01 85 08 09 01 A1 00 05 09 19 01
- 29 03 15 00 25 01 95 03 75 01 81 02 95 05 81 01
- 05 01 09 30 09 31 09 38 09 00 15 81 25 7F 75 08
- 95 04 81 06 C0 C0 05 01 09 02 A1 01 85 09 09 01
- A1 00 05 09 19 01 29 03 15 00 25 01 95 03 75 01
- 81 02 95 05 81 01 05 01 09 30 09 31 26 FF 7F 95
- 02 75 10 81 02 05 0D 09 30 26 FF 03 95 01 75 10
- 81 02 C0 C0 05 01 09 00 A1 01 85 04 A1 00 26 FF
- 00 09 00 75 08 95 07 B1 02 C0 C0
-```
+Previously we tried to wait for Link training to complete, but since there
+was no DLL Link Active reporting, all we could do was wait the worst-case
+1000 ms, then another 100 ms.
 
-Signed-off-by: Cristian Klein <cristian.klein@elastisys.com>
-Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Instead of using the supported speeds to determine whether to wait for Link
+training, check whether the port supports DLL Link Active reporting.  The
+Ports in question do not, so we'll wait only the 100 ms required for Ports
+that support Link speeds <= 5 GT/s.
+
+This of course assumes these Ports always train the Link within 100 ms even
+if they are operating at > 5 GT/s, which is not required by the spec.
+
+[bhelgaas: commit log, comment]
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=206837
+Link: https://lore.kernel.org/r/20200514133043.27429-1-mika.westerberg@linux.intel.com
+Reported-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Tested-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hid/hid-ids.h    | 3 +++
- drivers/hid/hid-quirks.c | 1 +
- 2 files changed, 4 insertions(+)
+ drivers/pci/pci.c | 30 +++++++++++++++++++++---------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index 1c71a1aa76b22..f03f1cc913ce8 100644
---- a/drivers/hid/hid-ids.h
-+++ b/drivers/hid/hid-ids.h
-@@ -1157,6 +1157,9 @@
- #define USB_DEVICE_ID_TPV_OPTICAL_TOUCHSCREEN_8882	0x8882
- #define USB_DEVICE_ID_TPV_OPTICAL_TOUCHSCREEN_8883	0x8883
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 6d3234f756923..809f2584e3384 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -4660,7 +4660,8 @@ static int pci_pm_reset(struct pci_dev *dev, int probe)
+  * pcie_wait_for_link_delay - Wait until link is active or inactive
+  * @pdev: Bridge device
+  * @active: waiting for active or inactive?
+- * @delay: Delay to wait after link has become active (in ms)
++ * @delay: Delay to wait after link has become active (in ms). Specify %0
++ *	   for no delay.
+  *
+  * Use this to wait till link becomes active or inactive.
+  */
+@@ -4701,7 +4702,7 @@ static bool pcie_wait_for_link_delay(struct pci_dev *pdev, bool active,
+ 		msleep(10);
+ 		timeout -= 10;
+ 	}
+-	if (active && ret)
++	if (active && ret && delay)
+ 		msleep(delay);
+ 	else if (ret != active)
+ 		pci_info(pdev, "Data Link Layer Link Active not %s in 1000 msec\n",
+@@ -4822,17 +4823,28 @@ void pci_bridge_wait_for_secondary_bus(struct pci_dev *dev)
+ 	if (!pcie_downstream_port(dev))
+ 		return;
  
-+#define USB_VENDOR_ID_TRUST             0x145f
-+#define USB_DEVICE_ID_TRUST_PANORA_TABLET   0x0212
-+
- #define USB_VENDOR_ID_TURBOX		0x062a
- #define USB_DEVICE_ID_TURBOX_KEYBOARD	0x0201
- #define USB_DEVICE_ID_ASUS_MD_5110	0x5110
-diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-index e4cb543de0cdc..ca8b5c261c7ce 100644
---- a/drivers/hid/hid-quirks.c
-+++ b/drivers/hid/hid-quirks.c
-@@ -168,6 +168,7 @@ static const struct hid_device_id hid_quirks[] = {
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_TOUCHPACK, USB_DEVICE_ID_TOUCHPACK_RTS), HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_TPV, USB_DEVICE_ID_TPV_OPTICAL_TOUCHSCREEN_8882), HID_QUIRK_NOGET },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_TPV, USB_DEVICE_ID_TPV_OPTICAL_TOUCHSCREEN_8883), HID_QUIRK_NOGET },
-+	{ HID_USB_DEVICE(USB_VENDOR_ID_TRUST, USB_DEVICE_ID_TRUST_PANORA_TABLET), HID_QUIRK_MULTI_INPUT | HID_QUIRK_HIDINPUT_FORCE },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_TURBOX, USB_DEVICE_ID_TURBOX_KEYBOARD), HID_QUIRK_NOGET },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_UCLOGIC, USB_DEVICE_ID_UCLOGIC_TABLET_KNA5), HID_QUIRK_MULTI_INPUT },
- 	{ HID_USB_DEVICE(USB_VENDOR_ID_UCLOGIC, USB_DEVICE_ID_UCLOGIC_TABLET_TWA60), HID_QUIRK_MULTI_INPUT },
+-	if (pcie_get_speed_cap(dev) <= PCIE_SPEED_5_0GT) {
+-		pci_dbg(dev, "waiting %d ms for downstream link\n", delay);
+-		msleep(delay);
+-	} else {
+-		pci_dbg(dev, "waiting %d ms for downstream link, after activation\n",
+-			delay);
+-		if (!pcie_wait_for_link_delay(dev, true, delay)) {
++	/*
++	 * Per PCIe r5.0, sec 6.6.1, for downstream ports that support
++	 * speeds > 5 GT/s, we must wait for link training to complete
++	 * before the mandatory delay.
++	 *
++	 * We can only tell when link training completes via DLL Link
++	 * Active, which is required for downstream ports that support
++	 * speeds > 5 GT/s (sec 7.5.3.6).  Unfortunately some common
++	 * devices do not implement Link Active reporting even when it's
++	 * required, so we'll check for that directly instead of checking
++	 * the supported link speed.  We assume devices without Link Active
++	 * reporting can train in 100 ms regardless of speed.
++	 */
++	if (dev->link_active_reporting) {
++		pci_dbg(dev, "waiting for link to train\n");
++		if (!pcie_wait_for_link_delay(dev, true, 0)) {
+ 			/* Did not train, no need to wait any further */
+ 			return;
+ 		}
+ 	}
++	pci_dbg(child, "waiting %d ms to become accessible\n", delay);
++	msleep(delay);
+ 
+ 	if (!pci_device_is_present(child)) {
+ 		pci_dbg(child, "waiting additional %d ms to become accessible\n", delay);
 -- 
 2.25.1
 
