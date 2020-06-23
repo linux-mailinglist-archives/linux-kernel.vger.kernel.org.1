@@ -2,64 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2CF2061CA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F701206219
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393155AbgFWUu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:50:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49752 "EHLO mail.kernel.org"
+        id S2393199AbgFWUzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:55:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54998 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404143AbgFWUuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:50:10 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
+        id S2393193AbgFWUzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:55:09 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDDE72145D;
-        Tue, 23 Jun 2020 20:50:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CC39C20724;
+        Tue, 23 Jun 2020 20:55:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945409;
-        bh=n3Dwo2ucZ0JQxiocnRaLLDeGlCzh4hohybtbn2oJiMA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Crr6UFiwqsiN4Km8Ra7FSY/aeoxMjRRnq7id5zOD+eMKMaql6akRAtOOt5QX2UTAv
-         KdJMIh1VoOE4k+cS0H+bS2UZciGUE/7BM4xad87ywPxneYmMrAW0XBJXmYrh/HHWY4
-         tJSsYSktkna61XWn8xc2SL/wcKg62kgVvG7PT4uA=
-Date:   Tue, 23 Jun 2020 13:50:07 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Kaige Li <likaige@loongson.cn>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Christian Benvenuti <benve@cisco.com>,
-        Govindarajulu Varadarajan <_govind@gmx.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH RESEND] net/cisco: Fix a sleep-in-atomic-context bug in
- enic_init_affinity_hint()
-Message-ID: <20200623135007.3105d067@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1592899989-22049-1-git-send-email-likaige@loongson.cn>
-References: <1592899989-22049-1-git-send-email-likaige@loongson.cn>
+        s=default; t=1592945708;
+        bh=CBYptz/mW0JMY6jpOr323vU/Q/LCIMNfHGgbrx6jlrY=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=e0Xek1PPTiAKsOXiD1nxqbAeEEvFHXB5M9adObdaTmJxFnY6CT9IwHNIf678qadYd
+         Py6QXEos/NGxeTXuxxwkCQOIW/xxp/DU8TgiTByzGvrcfFZF4xQ5pnH+T/J65CS4zV
+         MaJduBQskOwMnb1DPt4/tg4+KYgK0sRjUoJrK764=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B10D53522657; Tue, 23 Jun 2020 13:55:08 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 13:55:08 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, linux-mm@kvack.org
+Subject: Re: [PATCH tip/core/rcu 02/26] mm/mmap.c: Add cond_resched() for
+ exit_mmap() CPU stalls
+Message-ID: <20200623205508.GS9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200623002128.GA25456@paulmck-ThinkPad-P72>
+ <20200623002147.25750-2-paulmck@kernel.org>
+ <20200623193431.GA68372@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200623193431.GA68372@google.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Jun 2020 16:13:09 +0800 Kaige Li wrote:
-> The kernel module may sleep with holding a spinlock.
+On Tue, Jun 23, 2020 at 03:34:31PM -0400, Joel Fernandes wrote:
+> On Mon, Jun 22, 2020 at 05:21:23PM -0700, paulmck@kernel.org wrote:
+> > From: "Paul E. McKenney" <paulmck@kernel.org>
+> > 
+> > A large process running on a heavily loaded system can encounter the
+> > following RCU CPU stall warning:
+> > 
+> >   rcu: INFO: rcu_sched self-detected stall on CPU
+> >   rcu: \x093-....: (20998 ticks this GP) idle=4ea/1/0x4000000000000002 softirq=556558/556558 fqs=5190
+> >   \x09(t=21013 jiffies g=1005461 q=132576)
+> >   NMI backtrace for cpu 3
+> >   CPU: 3 PID: 501900 Comm: aio-free-ring-w Kdump: loaded Not tainted 5.2.9-108_fbk12_rc3_3858_gb83b75af7909 #1
+> >   Hardware name: Wiwynn   HoneyBadger/PantherPlus, BIOS HBM6.71 02/03/2016
+> >   Call Trace:
+> >    <IRQ>
+> >    dump_stack+0x46/0x60
+> >    nmi_cpu_backtrace.cold.3+0x13/0x50
+> >    ? lapic_can_unplug_cpu.cold.27+0x34/0x34
+> >    nmi_trigger_cpumask_backtrace+0xba/0xca
+> >    rcu_dump_cpu_stacks+0x99/0xc7
+> >    rcu_sched_clock_irq.cold.87+0x1aa/0x397
+> >    ? tick_sched_do_timer+0x60/0x60
+> >    update_process_times+0x28/0x60
+> >    tick_sched_timer+0x37/0x70
+> >    __hrtimer_run_queues+0xfe/0x270
+> >    hrtimer_interrupt+0xf4/0x210
+> >    smp_apic_timer_interrupt+0x5e/0x120
+> >    apic_timer_interrupt+0xf/0x20
+> >    </IRQ>
+> >   RIP: 0010:kmem_cache_free+0x223/0x300
+> >   Code: 88 00 00 00 0f 85 ca 00 00 00 41 8b 55 18 31 f6 f7 da 41 f6 45 0a 02 40 0f 94 c6 83 c6 05 9c 41 5e fa e8 a0 a7 01 00 41 56 9d <49> 8b 47 08 a8 03 0f 85 87 00 00 00 65 48 ff 08 e9 3d fe ff ff 65
+> >   RSP: 0018:ffffc9000e8e3da8 EFLAGS: 00000206 ORIG_RAX: ffffffffffffff13
+> >   RAX: 0000000000020000 RBX: ffff88861b9de960 RCX: 0000000000000030
+> >   RDX: fffffffffffe41e8 RSI: 000060777fe3a100 RDI: 000000000001be18
+> >   RBP: ffffea00186e7780 R08: ffffffffffffffff R09: ffffffffffffffff
+> >   R10: ffff88861b9dea28 R11: ffff88887ffde000 R12: ffffffff81230a1f
+> >   R13: ffff888854684dc0 R14: 0000000000000206 R15: ffff8888547dbc00
+> >    ? remove_vma+0x4f/0x60
+> >    remove_vma+0x4f/0x60
+> >    exit_mmap+0xd6/0x160
+> >    mmput+0x4a/0x110
+> >    do_exit+0x278/0xae0
+> >    ? syscall_trace_enter+0x1d3/0x2b0
+> >    ? handle_mm_fault+0xaa/0x1c0
+> >    do_group_exit+0x3a/0xa0
+> >    __x64_sys_exit_group+0x14/0x20
+> >    do_syscall_64+0x42/0x100
+> >    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > 
+> > And on a PREEMPT=n kernel, the "while (vma)" loop in exit_mmap() can run
+> > for a very long time given a large process.  This commit therefore adds
+> > a cond_resched() to this loop, providing RCU any needed quiescent states.
+> > 
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Cc: <linux-mm@kvack.org>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > ---
+> >  mm/mmap.c | 1 +
+> >  1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/mm/mmap.c b/mm/mmap.c
+> > index 59a4682..972f839 100644
+> > --- a/mm/mmap.c
+> > +++ b/mm/mmap.c
+> > @@ -3159,6 +3159,7 @@ void exit_mmap(struct mm_struct *mm)
+> >  		if (vma->vm_flags & VM_ACCOUNT)
+> >  			nr_accounted += vma_pages(vma);
+> >  		vma = remove_vma(vma);
+> > +		cond_resched();
 > 
-> The function call paths (from bottom to top) are:
-> 
-> [FUNC] zalloc_cpumask_var(GFP_KERNEL)
-> drivers/net/ethernet/cisco/enic/enic_main.c, 125: zalloc_cpumask_var in enic_init_affinity_hint
-> drivers/net/ethernet/cisco/enic/enic_main.c, 1918: enic_init_affinity_hint in enic_open
-> drivers/net/ethernet/cisco/enic/enic_main.c, 2348: enic_open in enic_reset
-> drivers/net/ethernet/cisco/enic/enic_main.c, 2341: spin_lock in enic_reset
-> 
-> To fix this bug, GFP_KERNEL is replaced with GFP_ATOMIC.
-> 
-> Signed-off-by: Kaige Li <likaige@loongson.cn>
+> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 
-I don't think this is sufficient. Calling open with a spin lock held
-seems like a very bad idea. At a quick look the driver also calls
-request_irq() from open - request_irq() can sleep.
+Thank you!  I will apply this on my next rebase.
+
+> Just for my understanding, cond_resched_tasks_rcu_qs() may not help here
+> because preemption is not disabled right? Still I see no harm in using it
+> here either as it may give a slight speed up for tasks-RCU.
+
+The RCU-tasks stall-warning interval is ten minutes, and I have not yet
+seen evidence that we are getting close to that.  If we do, then yes,
+a cond_resched_tasks_rcu_qs() might be in this code's future.  But it
+does add overhead, so we need to see the evidence first.
+
+							Thanx, Paul
+
+> thanks,
+> 
+>  - Joel
+> 
+> >  	}
+> >  	vm_unacct_memory(nr_accounted);
+> >  }
+> > -- 
+> > 2.9.5
+> > 
