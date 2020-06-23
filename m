@@ -2,98 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 982EF206413
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F82206447
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393322AbgFWVPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60736 "EHLO
+        id S2389879AbgFWVTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392204AbgFWVPh (ORCPT
+        with ESMTP id S2393445AbgFWVSt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 17:15:37 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE485C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:15:36 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id cy7so10932270edb.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:15:36 -0700 (PDT)
+        Tue, 23 Jun 2020 17:18:49 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2C57C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:18:49 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id x11so9674809plo.7
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:18:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=P/a2gbmPrfzKZgrMWGCChbggZ0/wE/cGco+2jd4C/7s=;
-        b=YChY4/EGiQ5VTXFGUFGFmq3+lZnyPUCsCYVoDiosA6DmZ4LDu0KSLqZ8lh/myZbPG1
-         Gcy2pOZ/uWcYHHp6GhVeMbcosWZWUewRybYgMfBIkB/nWCe4rqWkfISZMYNBwApkMY8K
-         tVjYu7C+mO0AaAHthTof7bCmo+UHSpAoBcJxJIw2q4pFbLWrbOhRtT98Gx7Ou+67LP1q
-         XHFEep7YNSFk92GUEvkuF/2fg1SIoYXSzl8uVTOD9VrJOzsXuGuCyCizZQ7lM4WESxLw
-         eAzwxmpMRmQ9J20UgP9yFGiN6NNZzjv03JVJXdtyGO3eoIqDgavitctvTvVzBCBfjcVA
-         j9jg==
+        bh=mJWzvNZU1DMsijzcM8pSgSd+l6gBq4CZTTDgQGADwPk=;
+        b=d3UM5mS3Lwn1zCoUYBgL4MOdtaGDbpZ45FPQQmIiPWsUMcrblQ5pb3qHERiGLD+POo
+         npuxt5fXnoKsGH+DKJAJ+ul8Y6EIbNJlyhdRsgqhAJJVelU3+pcBdfBAZbEE0IALc384
+         HvWlGLE8Lxqn759AEnWNmPzbSamSO0pLN7FZSwLXeXqyRZnZlzI1T+dLxqjN669bHpfc
+         4PUyBqpVX/KHW0QckUDmH8mwi2foQLWmoCOCWIHp9tf3Vad3W1LL3blo7BhXrgl1U32a
+         ZjXCghkz45tieXrFU8exdMXC0j/7LeiqFZ1w/Xc8XlOUWq/TprLg9rEQAMqc44FXv3Xc
+         rFQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=P/a2gbmPrfzKZgrMWGCChbggZ0/wE/cGco+2jd4C/7s=;
-        b=obuVToN78MHKqy7C3HPPk5jqYZz3AnnN8l5FJ+YupFSKjeByGwcvoJjl0VAGTtTpn2
-         eE5vFnU9r9AjbD2lrOAk+WlKf90qugs9Qf86h0LtLqb1yRR8yydNCcQlszZEL3EZXoCY
-         qAeEhgNExgSI9yIhWkETVkjJyFNa8SB9wk6E5E2/ZJ900nd9MP8qV0M1x9eapJ4qTAf1
-         JKvHe31yWqZdXEnlhvw16bSESMn8RkvOhCltP1KZCxJwpZoDaJhb2ID13BicveatC4Nk
-         4TBwxMRliJOkXh5x7TQk8BoZHT7aV8kOJ5dLtWF27B4/lpgD7mGgG8/VLTOuiIzvdV94
-         RUeA==
-X-Gm-Message-State: AOAM533UJZHFPoCZ4HyWCVhrQYzIQXB2/9nsNS6oCIsTsW19hPxBDS51
-        pjSJ0WxqVzTce7kAiznL4XEG3K31PE4JKsjEEUV/9QOp
-X-Google-Smtp-Source: ABdhPJwiRU11aW7hp405eS+bX8JNNrfbrB8kWaMHZ4aLXoHOaSUyXemO4m/lQ99UWFKS/XGsXhj8LJhiJHxYahoYipU=
-X-Received: by 2002:a50:d9cb:: with SMTP id x11mr9031435edj.93.1592946935407;
- Tue, 23 Jun 2020 14:15:35 -0700 (PDT)
+        bh=mJWzvNZU1DMsijzcM8pSgSd+l6gBq4CZTTDgQGADwPk=;
+        b=ED+ce+h2FL1cBUY4SAMFta5qdZcNx9QPC4RNCP+/ADSnkQjkMWJKWVdJv+T8Vi8csG
+         h0rQBbhB+txVRg1C+OETm21UUMrp6M/I9xWnbDV6owuYM7V7SkIh8+oLFW1dq/yyCjBU
+         MiV2HObC9WDUBkBPmO6VSV+LqJeo8gbgYU1aikd8MXQcV/FLcvuni8M3uG7BM6gHTXyi
+         2JfIaidu4GbDtGCjZt3H5qWK0u8nnly5djtQDKnPkILSWATeQe8U51tbV7vrM0YESk1B
+         piPTyqJFk7xlpexb1FsWxKtovffPuoHaruvdVORtBGe+1+FgwyiK/6xNkiKzRTcpJWDM
+         NAfw==
+X-Gm-Message-State: AOAM5338XhEkP6O0ri0m/d0lmvTQ9Lo76qcA1e7zMa65vTqrszsGcyGN
+        ykOvX/rlZC1z3EQobDlMWh/pDeSP4RTZNLPajzzqoA==
+X-Google-Smtp-Source: ABdhPJxLAk9Ot+Z5BtINKEITMd+CQ0dUpAGNCdMnfGs22621xhkUMbtlO0eW9G4/rU2unSlLcfsNUito8iq6hb4/NFI=
+X-Received: by 2002:a17:902:32d:: with SMTP id 42mr15721221pld.297.1592947128738;
+ Tue, 23 Jun 2020 14:18:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200619125923.22602-1-david@redhat.com> <20200619125923.22602-3-david@redhat.com>
- <CAPcyv4hgHmnKd-isUbSy5PjohjhhCL03Y00x0NO8=JOvexvUtw@mail.gmail.com> <aac8e0db-1bd7-0991-e2e1-58a5580387c0@redhat.com>
-In-Reply-To: <aac8e0db-1bd7-0991-e2e1-58a5580387c0@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 23 Jun 2020 14:15:24 -0700
-Message-ID: <CAPcyv4j642Hs4N2rHFEuEON1kQMwf-D0hzROPVFhcaWAK6rpdw@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] mm/memory_hotplug: document why shuffle_zone() is relevant
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Michal Hocko <mhocko@suse.com>
+References: <d38bf9f9-8a39-87a6-8ce7-d37e4a641675@gmail.com> <CABVgOSkwZUAEjxrqO46kqj=uY5HDzr-E_LR9i04yXEKqjp91Og@mail.gmail.com>
+In-Reply-To: <CABVgOSkwZUAEjxrqO46kqj=uY5HDzr-E_LR9i04yXEKqjp91Og@mail.gmail.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Tue, 23 Jun 2020 14:18:37 -0700
+Message-ID: <CAFd5g44+cUBhbHCx7dGk_dyn0Ph7U8dpaBzESWRi6L6qQizbFQ@mail.gmail.com>
+Subject: Re: RFC: KTAP documentation - expected messages
+To:     David Gow <davidgow@google.com>, Dmitry Vyukov <dvyukov@google.com>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        "Bird, Tim" <Tim.Bird@sony.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 12:28 AM David Hildenbrand <david@redhat.com> wrote:
+On Mon, Jun 22, 2020 at 7:47 PM David Gow <davidgow@google.com> wrote:
 >
-> On 20.06.20 03:41, Dan Williams wrote:
-> > On Fri, Jun 19, 2020 at 6:00 AM David Hildenbrand <david@redhat.com> wrote:
-> >>
-> >> It's not completely obvious why we have to shuffle the complete zone, as
-> >> some sort of shuffling is already performed when onlining pages via
-> >> __free_one_page(), placing MAX_ORDER-1 pages either to the head or the tail
-> >> of the freelist. Let's document why we have to shuffle the complete zone
-> >> when exposing larger, contiguous physical memory areas to the buddy.
-> >>
+> On Mon, Jun 22, 2020 at 6:45 AM Frank Rowand <frowand.list@gmail.com> wrote:
 > >
-> > How about?
+> > Tim Bird started a thread [1] proposing that he document the selftest result
+> > format used by Linux kernel tests.
 > >
-> > Fixes: e900a918b098 ("mm: shuffle initial free memory to improve
-> > memory-side-cache utilization")
+> > [1] https://lore.kernel.org/r/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com
 > >
-> > ...just like Patch1 since that original commit was missing the proper
-> > commentary in the code?
+> > The issue of messages generated by the kernel being tested (that are not
+> > messages directly created by the tests, but are instead triggered as a
+> > side effect of the test) came up.  In this thread, I will call these
+> > messages "expected messages".  Instead of sidetracking that thread with
+> > a proposal to handle expected messages, I am starting this new thread.
 >
-> Hmm, mixed feelings. I (working for a distributor :) ) prefer fixes tags
-> for actual BUGs, as described in
+> Thanks for doing this: I think there are quite a few tests which could
+> benefit from something like this.
 >
-> Documentation/process/submitting-patches.rst: "If your patch fixes a bug
-> in a specific commit, e.g. you found an issue using ``git bisect``,
-> please use the 'Fixes:' tag with the first 12 characters" ...
->
-> So unless there are strong feelings, I'll not add a fixes tag (although
-> I agree, that it should have been contained in the original commit).
+> I think there were actually two separate questions: what do we do with
+> unexpected messages (most of which I expect are useless, but some of
+> which may end up being related to an unexpected test failure), and how
+> to have tests "expect" a particular message to appear. I'll stick to
+> talking about the latter for this thread, but even there there's two
+> possible interpretations of "expected messages" we probably want to
+> explicitly distinguish between: a message which must be present for
+> the test to pass (which I think best fits the "expected message"
+> name), and a message which the test is likely to produce, but which
+> shouldn't alter the result (an "ignored message"). I don't see much
+> use for the latter at present, but if we wanted to do more things with
+> messages and had some otherwise very verbose tests, it could
+> potentially be useful.
 
-It doesn't need to be "Fixes", but how about at least mentioning the
-original commit as a breadcrumb so that some future "git blame"
-archaeology effort is streamlined.
++Dmitry Vyukov, I think you were interested in this for KASAN before
+we went with the signalling approach. Any thoughts?
+
+> The other thing I'd note here is that this proposal seems to be doing
+> all of the actual message filtering in userspace, which makes a lot of
+> sense for kselftest tests, but does mean that the kernel can't know if
+> the test has passed or failed. There's definitely a tradeoff between
+> trying to put too much needless string parsing in the kernel and
+> having to have a userland tool determine the test results. The
+> proposed KCSAN test suite[1] is using tracepoints to do this in the
+> kernel. It's not the cleanest thing, but there's no reason KUnit or
+> similar couldn't implement a nicer API around it.
+>
+> [1]: https://lkml.org/lkml/2020/6/22/1506
+>
+> > I implemented an API for expected messages that are triggered by tests
+> > in the Devicetree unittest code, with the expectation that the specific
+> > details may change when the Devicetree unittest code adapts the KUnit
+> > API.  It seems appropriate to incorporate the concept of expected
+> > messages in Tim's documentation instead of waiting to address the
+> > subject when the Devicetree unittest code adapts the KUnit API, since
+> > Tim's document may become the kernel selftest standard.
+>
+> Is having a nice way to handle expected messages the only thing
+> holding up porting this to KUnit?
+>
+> > Instead of creating a very long email containing multiple objects,
+> > I will reply to this email with a separate reply for each of:
+> >
+> >   The "expected messages" API implemention and use can be from
+> >   drivers/of/unittest.c in the mainline kernel.
+> >
+> >   of_unittest_expect - A proof of concept perl program to filter console
+> >                        output containing expected messages output
+> >
+> >                        of_unittest_expect is also available by cloning
+> >                        https://github.com/frowand/dt_tools.git
+> >
+> >   An example raw console output with timestamps and expect messages.
+> >
+> >   An example of console output processed by filter program
+> >   of_unittest_expect to be more human readable.  The expected
+> >   messages are not removed, but are flagged.
+> >
+> >   An example of console output processed by filter program
+> >   of_unittest_expect to be more human readable.  The expected
+> >   messages are removed instead of being flagged.
+>
+> Cheers,
+> -- David
