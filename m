@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 051D7205E2C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:21:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7DCA205E30
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:21:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388433AbgFWUUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:20:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37948 "EHLO mail.kernel.org"
+        id S2389965AbgFWUUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:20:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38042 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389949AbgFWUUf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:20:35 -0400
+        id S2389431AbgFWUUj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:20:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D9CB62078A;
-        Tue, 23 Jun 2020 20:20:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F2A82206C3;
+        Tue, 23 Jun 2020 20:20:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943634;
-        bh=JesX2s7Bnr7ACQY9GYcngwLRoEMrjna5g0qrWyPQT78=;
+        s=default; t=1592943639;
+        bh=qtfhiFe0v18fNHPyxnSffZu9lTeMjDJR23OVn4vBBGQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vbWak4pbe7dwrBlRyvkZ9dqKGMDJv3vg0dUE8x2hW6DAeAUIDLTmM6dPVLQK02xwI
-         cNJVqFiW9zfGEBLJcAJMzTzUce7MyIQCe/KI2lQ1JX+8Ft8t2ZzNOULuVokMr2QbNu
-         +OEBAbtPrxHkyVoOwsZbDkKGTwGWGk4SHZ8V9GyM=
+        b=k5AucaT5Nqe5NN7ywni5k53t3jW4lpg70pnzRfbE+ksmhT8eF4HTdTMMejMf0TvSQ
+         NFY8I3FFQ0ad+/DD8iyGssXHcIFieuNAyy2ZA1N5Z8ukoUWQvJ2SGq4OhOSDbgsAtB
+         zAz5huuHBCyGhteRBh20rtx2Hg2l9E1KSmTCOwCI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lyude Paul <lyude@redhat.com>,
-        Sean Paul <sean@poorly.run>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 437/477] drm/dp_mst: Increase ACT retry timeout to 3s
-Date:   Tue, 23 Jun 2020 21:57:14 +0200
-Message-Id: <20200623195428.187058925@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Biggers <ebiggers@google.com>,
+        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 439/477] f2fs: split f2fs_d_compare() from f2fs_match_name()
+Date:   Tue, 23 Jun 2020 21:57:16 +0200
+Message-Id: <20200623195428.282330586@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -43,130 +44,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lyude Paul <lyude@redhat.com>
+From: Eric Biggers <ebiggers@google.com>
 
-[ Upstream commit 873a95e0d59ac06901ae261dda0b7165ffd002b8 ]
+[ Upstream commit f874fa1c7c7905c1744a2037a11516558ed00a81 ]
 
-Currently we only poll for an ACT up to 30 times, with a busy-wait delay
-of 100µs between each attempt - giving us a timeout of 2900µs. While
-this might seem sensible, it would appear that in certain scenarios it
-can take dramatically longer then that for us to receive an ACT. On one
-of the EVGA MST hubs that I have available, I observed said hub
-sometimes taking longer then a second before signalling the ACT. These
-delays mostly seem to occur when previous sideband messages we've sent
-are NAKd by the hub, however it wouldn't be particularly surprising if
-it's possible to reproduce times like this simply by introducing branch
-devices with large LCTs since payload allocations have to take effect on
-every downstream device up to the payload's target.
+Sharing f2fs_ci_compare() between comparing cached dentries
+(f2fs_d_compare()) and comparing on-disk dentries (f2fs_match_name())
+doesn't work as well as intended, as these actions fundamentally differ
+in several ways (e.g. whether the task may sleep, whether the directory
+is stable, whether the casefolded name was precomputed, whether the
+dentry will need to be decrypted once we allow casefold+encrypt, etc.)
 
-So, instead of just retrying 30 times we poll for the ACT for up to 3ms,
-and additionally use usleep_range() to avoid a very long and rude
-busy-wait. Note that the previous retry count of 30 appears to have been
-arbitrarily chosen, as I can't find any mention of a recommended timeout
-or retry count for ACTs in the DisplayPort 2.0 specification. This also
-goes for the range we were previously using for udelay(), although I
-suspect that was just copied from the recommended delay for link
-training on SST devices.
+Just make f2fs_d_compare() implement what it needs directly, and rework
+f2fs_ci_compare() to be specialized for f2fs_match_name().
 
-Changes since v1:
-* Use readx_poll_timeout() instead of open-coding timeout loop - Sean
-  Paul
-Changes since v2:
-* Increase poll interval to 200us - Sean Paul
-* Print status in hex when we timeout waiting for ACT - Sean Paul
-
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Fixes: ad7f8a1f9ced ("drm/helper: add Displayport multi-stream helper (v0.6)")
-Cc: Sean Paul <sean@poorly.run>
-Cc: <stable@vger.kernel.org> # v3.17+
-Reviewed-by: Sean Paul <sean@poorly.run>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200406221253.1307209-4-lyude@redhat.com
+Signed-off-by: Eric Biggers <ebiggers@google.com>
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c | 54 ++++++++++++++++-----------
- 1 file changed, 32 insertions(+), 22 deletions(-)
+ fs/f2fs/dir.c  | 70 +++++++++++++++++++++++++-------------------------
+ fs/f2fs/f2fs.h |  5 ----
+ 2 files changed, 35 insertions(+), 40 deletions(-)
 
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index b521f64172893..abb1f358ec6df 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -27,6 +27,7 @@
- #include <linux/kernel.h>
- #include <linux/sched.h>
- #include <linux/seq_file.h>
-+#include <linux/iopoll.h>
- 
- #if IS_ENABLED(CONFIG_DRM_DEBUG_DP_MST_TOPOLOGY_REFS)
- #include <linux/stacktrace.h>
-@@ -4448,6 +4449,17 @@ static int drm_dp_dpcd_write_payload(struct drm_dp_mst_topology_mgr *mgr,
- 	return ret;
- }
- 
-+static int do_get_act_status(struct drm_dp_aux *aux)
-+{
-+	int ret;
-+	u8 status;
-+
-+	ret = drm_dp_dpcd_readb(aux, DP_PAYLOAD_TABLE_UPDATE_STATUS, &status);
-+	if (ret < 0)
-+		return ret;
-+
-+	return status;
-+}
- 
- /**
-  * drm_dp_check_act_status() - Check ACT handled status.
-@@ -4457,30 +4469,28 @@ static int drm_dp_dpcd_write_payload(struct drm_dp_mst_topology_mgr *mgr,
+diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+index 44bfc464df787..44eb12a00cd0e 100644
+--- a/fs/f2fs/dir.c
++++ b/fs/f2fs/dir.c
+@@ -107,36 +107,28 @@ static struct f2fs_dir_entry *find_in_block(struct inode *dir,
+ /*
+  * Test whether a case-insensitive directory entry matches the filename
+  * being searched for.
+- *
+- * Returns: 0 if the directory entry matches, more than 0 if it
+- * doesn't match or less than zero on error.
   */
- int drm_dp_check_act_status(struct drm_dp_mst_topology_mgr *mgr)
+-int f2fs_ci_compare(const struct inode *parent, const struct qstr *name,
+-				const struct qstr *entry, bool quick)
++static bool f2fs_match_ci_name(const struct inode *dir, const struct qstr *name,
++			       const struct qstr *entry, bool quick)
  {
--	int count = 0, ret;
--	u8 status;
+-	const struct f2fs_sb_info *sbi = F2FS_SB(parent->i_sb);
++	const struct f2fs_sb_info *sbi = F2FS_SB(dir->i_sb);
+ 	const struct unicode_map *um = sbi->s_encoding;
+-	int ret;
++	int res;
+ 
+ 	if (quick)
+-		ret = utf8_strncasecmp_folded(um, name, entry);
++		res = utf8_strncasecmp_folded(um, name, entry);
+ 	else
+-		ret = utf8_strncasecmp(um, name, entry);
 -
--	do {
--		ret = drm_dp_dpcd_readb(mgr->aux,
--					DP_PAYLOAD_TABLE_UPDATE_STATUS,
--					&status);
--		if (ret < 0) {
--			DRM_DEBUG_KMS("failed to read payload table status %d\n",
--				      ret);
--			return ret;
--		}
+-	if (ret < 0) {
+-		/* Handle invalid character sequence as either an error
+-		 * or as an opaque byte sequence.
++		res = utf8_strncasecmp(um, name, entry);
++	if (res < 0) {
++		/*
++		 * In strict mode, ignore invalid names.  In non-strict mode,
++		 * fall back to treating them as opaque byte sequences.
+ 		 */
+-		if (f2fs_has_strict_mode(sbi))
+-			return -EINVAL;
 -
--		if (status & DP_PAYLOAD_ACT_HANDLED)
--			break;
--		count++;
--		udelay(100);
--	} while (count < 30);
+-		if (name->len != entry->len)
+-			return 1;
 -
--	if (!(status & DP_PAYLOAD_ACT_HANDLED)) {
--		DRM_DEBUG_KMS("failed to get ACT bit %d after %d retries\n",
--			      status, count);
-+	/*
-+	 * There doesn't seem to be any recommended retry count or timeout in
-+	 * the MST specification. Since some hubs have been observed to take
-+	 * over 1 second to update their payload allocations under certain
-+	 * conditions, we use a rather large timeout value.
-+	 */
-+	const int timeout_ms = 3000;
-+	int ret, status;
-+
-+	ret = readx_poll_timeout(do_get_act_status, mgr->aux, status,
-+				 status & DP_PAYLOAD_ACT_HANDLED || status < 0,
-+				 200, timeout_ms * USEC_PER_MSEC);
-+	if (ret < 0 && status >= 0) {
-+		DRM_DEBUG_KMS("Failed to get ACT after %dms, last status: %02x\n",
-+			      timeout_ms, status);
- 		return -EINVAL;
-+	} else if (status < 0) {
-+		DRM_DEBUG_KMS("Failed to read payload table status: %d\n",
-+			      status);
-+		return status;
+-		return !!memcmp(name->name, entry->name, name->len);
++		if (f2fs_has_strict_mode(sbi) || name->len != entry->len)
++			return false;
++		return !memcmp(name->name, entry->name, name->len);
  	}
-+
- 	return 0;
+-
+-	return ret;
++	return res == 0;
  }
- EXPORT_SYMBOL(drm_dp_check_act_status);
+ 
+ static void f2fs_fname_setup_ci_filename(struct inode *dir,
+@@ -188,10 +180,10 @@ static inline bool f2fs_match_name(struct f2fs_dentry_ptr *d,
+ 		if (cf_str->name) {
+ 			struct qstr cf = {.name = cf_str->name,
+ 					  .len = cf_str->len};
+-			return !f2fs_ci_compare(parent, &cf, &entry, true);
++			return f2fs_match_ci_name(parent, &cf, &entry, true);
+ 		}
+-		return !f2fs_ci_compare(parent, fname->usr_fname, &entry,
+-					false);
++		return f2fs_match_ci_name(parent, fname->usr_fname, &entry,
++					  false);
+ 	}
+ #endif
+ 	if (fscrypt_match_name(fname, d->filename[bit_pos],
+@@ -1080,17 +1072,25 @@ const struct file_operations f2fs_dir_operations = {
+ static int f2fs_d_compare(const struct dentry *dentry, unsigned int len,
+ 			  const char *str, const struct qstr *name)
+ {
+-	struct qstr qstr = {.name = str, .len = len };
+ 	const struct dentry *parent = READ_ONCE(dentry->d_parent);
+-	const struct inode *inode = READ_ONCE(parent->d_inode);
+-
+-	if (!inode || !IS_CASEFOLDED(inode)) {
+-		if (len != name->len)
+-			return -1;
+-		return memcmp(str, name->name, len);
+-	}
+-
+-	return f2fs_ci_compare(inode, name, &qstr, false);
++	const struct inode *dir = READ_ONCE(parent->d_inode);
++	const struct f2fs_sb_info *sbi = F2FS_SB(dentry->d_sb);
++	struct qstr entry = QSTR_INIT(str, len);
++	int res;
++
++	if (!dir || !IS_CASEFOLDED(dir))
++		goto fallback;
++
++	res = utf8_strncasecmp(sbi->s_encoding, name, &entry);
++	if (res >= 0)
++		return res;
++
++	if (f2fs_has_strict_mode(sbi))
++		return -EINVAL;
++fallback:
++	if (len != name->len)
++		return 1;
++	return !!memcmp(str, name->name, len);
+ }
+ 
+ static int f2fs_d_hash(const struct dentry *dentry, struct qstr *str)
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 555c84953ea81..5a0f95dfbac2b 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3101,11 +3101,6 @@ int f2fs_update_extension_list(struct f2fs_sb_info *sbi, const char *name,
+ 							bool hot, bool set);
+ struct dentry *f2fs_get_parent(struct dentry *child);
+ 
+-extern int f2fs_ci_compare(const struct inode *parent,
+-			   const struct qstr *name,
+-			   const struct qstr *entry,
+-			   bool quick);
+-
+ /*
+  * dir.c
+  */
 -- 
 2.25.1
 
