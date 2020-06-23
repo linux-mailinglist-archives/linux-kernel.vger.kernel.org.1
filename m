@@ -2,84 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4A620546C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 16:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE8F3205478
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 16:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732929AbgFWOY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 10:24:28 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:51390 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732888AbgFWOY1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 10:24:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592922265;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kXSYCQku6hDUfwftTBuEyyKPUCg57oRe3/VJDnhv99o=;
-        b=i5CFWnuZutE0gz9Q4wCKdhDW2Xi55mJYRKGctA71PgKJTqAUoMjBC/394+X6bwIlbFzP7J
-        86myFZiAzPJYfAjHxIfUXbdM5KkkQ4aRuppu4m45jiLhhyUHfPd6T8VpYsrZP05RA7DsBQ
-        is0QZAarKK9N+LlPCileikBFmNpky1Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-365-Ctmv8XYfOC6AWS9K2ahSOg-1; Tue, 23 Jun 2020 10:24:23 -0400
-X-MC-Unique: Ctmv8XYfOC6AWS9K2ahSOg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AEC601005512;
-        Tue, 23 Jun 2020 14:24:22 +0000 (UTC)
-Received: from x1.localdomain.com (ovpn-114-58.ams2.redhat.com [10.36.114.58])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id BC6855D9DA;
-        Tue, 23 Jun 2020 14:24:21 +0000 (UTC)
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 8/8] virt: vbox: Fix some comments which talk about the "session spinlock"
-Date:   Tue, 23 Jun 2020 16:24:01 +0200
-Message-Id: <20200623142401.3742-9-hdegoede@redhat.com>
-In-Reply-To: <20200623142401.3742-1-hdegoede@redhat.com>
-References: <20200623142401.3742-1-hdegoede@redhat.com>
+        id S1732981AbgFWOZG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 10:25:06 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:55696 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732781AbgFWOZE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 10:25:04 -0400
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 5DD246DA5F6241F8A474;
+        Tue, 23 Jun 2020 22:25:02 +0800 (CST)
+Received: from localhost.localdomain (10.175.118.36) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 23 Jun 2020 22:24:54 +0800
+From:   Luo bin <luobin9@huawei.com>
+To:     <davem@davemloft.net>
+CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <luoxianjun@huawei.com>, <yin.yinshi@huawei.com>,
+        <cloud.wangxiaoyun@huawei.com>
+Subject: [PATCH net-next v2 0/5] hinic: add some ethtool ops support
+Date:   Tue, 23 Jun 2020 22:24:04 +0800
+Message-ID: <20200623142409.19081-1-luobin9@huawei.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain
+X-Originating-IP: [10.175.118.36]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The session lock is a mutex, not a spinlock, fix the comments to match.
+patch #1: support to set and get pause params with
+          "ethtool -A/a" cmd
+patch #2: support to set and get irq coalesce params with
+          "ethtool -C/c" cmd
+patch #3: support to do self test with "ethtool -t" cmd
+patch #4: support to identify physical device with "ethtool -p" cmd
+patch #5: support to get eeprom information with "ethtool -m" cmd
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- drivers/virt/vboxguest/vboxguest_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Luo bin (5):
+  hinic: add support to set and get pause params
+  hinic: add support to set and get irq coalesce
+  hinic: add self test support
+  hinic: add support to identify physical device
+  hinic: add support to get eeprom information
 
-diff --git a/drivers/virt/vboxguest/vboxguest_core.c b/drivers/virt/vboxguest/vboxguest_core.c
-index c5dfcd42fd07..0b43efddea22 100644
---- a/drivers/virt/vboxguest/vboxguest_core.c
-+++ b/drivers/virt/vboxguest/vboxguest_core.c
-@@ -559,7 +559,7 @@ static int vbg_reset_host_event_filter(struct vbg_dev *gdev,
-  * Changes the event filter mask for the given session.
-  *
-  * This is called in response to VBG_IOCTL_CHANGE_FILTER_MASK as well as to
-- * do session cleanup. Takes the session spinlock.
-+ * do session cleanup. Takes the session mutex.
-  *
-  * Return: 0 or negative errno value.
-  * @gdev:			The Guest extension device.
-@@ -811,7 +811,7 @@ static int vbg_acquire_session_capabilities(struct vbg_dev *gdev,
- }
- 
- /**
-- * Sets the guest capabilities for a session. Takes the session spinlock.
-+ * Sets the guest capabilities for a session. Takes the session mutex.
-  * Return: 0 or negative errno value.
-  * @gdev:			The Guest extension device.
-  * @session:			The session.
+ drivers/net/ethernet/huawei/hinic/hinic_dev.h |  14 +
+ .../net/ethernet/huawei/hinic/hinic_ethtool.c | 678 +++++++++++++++++-
+ .../net/ethernet/huawei/hinic/hinic_hw_dev.c  |  66 ++
+ .../net/ethernet/huawei/hinic/hinic_hw_dev.h  |  31 +
+ .../net/ethernet/huawei/hinic/hinic_hw_io.h   |  10 +
+ .../net/ethernet/huawei/hinic/hinic_hw_mgmt.h |   7 +-
+ .../net/ethernet/huawei/hinic/hinic_main.c    | 104 ++-
+ .../net/ethernet/huawei/hinic/hinic_port.c    | 200 ++++++
+ .../net/ethernet/huawei/hinic/hinic_port.h    |  94 +++
+ drivers/net/ethernet/huawei/hinic/hinic_rx.c  |  58 +-
+ .../net/ethernet/huawei/hinic/hinic_sriov.c   |   4 +-
+ drivers/net/ethernet/huawei/hinic/hinic_tx.c  |  80 +++
+ drivers/net/ethernet/huawei/hinic/hinic_tx.h  |   2 +
+ 13 files changed, 1337 insertions(+), 11 deletions(-)
+
 -- 
-2.26.2
+2.17.1
 
