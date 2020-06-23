@@ -2,230 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94876204745
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:29:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25FF820474F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:33:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731547AbgFWC3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 22:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730456AbgFWC3X (ORCPT
+        id S1731577AbgFWCdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 22:33:06 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:17185 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728447AbgFWCdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 22:29:23 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A3AC061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 19:29:22 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id b16so9339584pfi.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 19:29:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=PKchlRj+mdFPNw3XAQqo8a20PkKl15g0U5UqcJUkAYY=;
-        b=ajcInOE142WEcW8AQt0D8++Ywg/GihaqjVoyx83TFxOnEvo8Iy3/KEmQ/cMzVVXWIO
-         g2nPboXK4Pl3PUsPKDFBGvm5u2U0SC9oM+MR23a5BTbNts+kxAl8MzaVIqmjcY2Ze4Sz
-         2a2g2A+DBgZORXqRY9evRBSKHsU98xb/gKB6gsKWLxHR8/QL3ogGSxFSSW+1jKjtlVXf
-         5oWE8JdxinKY4vy2BHBzXXrYRvSXR193yfcKroOMQ2R6G29tZrTjbZLsyl5cdQbnhHYQ
-         tYEZ8dSu21tx5ybUCaOKFxqxPTDLJAB7XDw6ZHSG0/8ddgk7mo2X7kI4n1F0/tc8Cpaq
-         388g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=PKchlRj+mdFPNw3XAQqo8a20PkKl15g0U5UqcJUkAYY=;
-        b=pzxKKI95H384qYK+1JGCQRhlyqCoTZ02l/Wl/A9Zho8HmpUzThuGk+i0fItZHN1MRe
-         R/ec4TLlrXUn7W2vfjn1P5usVKwa170dZDQWHB7YfBGfTcSTDRsKKBveczPZS88i3ORG
-         S3QlIkcoksOkzhLVT6JyBKUDXgHWX8Pbw5UT7dXmmOq+1S5kRUcxIbCA8fVTkAqdueIy
-         3MR6OVrl32jI6efJeXoYdjxWBKDgk4xxdCeXnlrV+ZWYsuzBrDR+iKtPlzrXeVgPwyMT
-         pzgWNKVAtE4isVGik7FJVBrRc3EHteJzu9f+VJ2uEsfxAHGlLzc+0LRPaFQyUTA9sW2c
-         mkMw==
-X-Gm-Message-State: AOAM5307pko2chEwaEivHHoZi+sVlvNMw0DYA50ZEyZVfp2eJgeDW+Z7
-        Nt0df6cuK2gec7PSBhqiS4giTqf1U9ExxA==
-X-Google-Smtp-Source: ABdhPJz69THXTzvZ7ChYtCta7E7TdXXWAVr/+IByi35I2bhcTlHJmjJtvqGIz146qmGdYqRDU7Bi/g==
-X-Received: by 2002:a63:9246:: with SMTP id s6mr15049908pgn.22.1592879361575;
-        Mon, 22 Jun 2020 19:29:21 -0700 (PDT)
-Received: from [192.168.10.94] (124-171-83-152.dyn.iinet.net.au. [124.171.83.152])
-        by smtp.gmail.com with ESMTPSA id i22sm15191430pfo.92.2020.06.22.19.29.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 22 Jun 2020 19:29:20 -0700 (PDT)
-Subject: Re: [PATCH 1/4] powerpc/pseries/iommu: Update call to
- ibm,query-pe-dma-windows
-To:     Leonardo Bras <leobras.c@gmail.com>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Ram Pai <linuxram@us.ibm.com>, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20200619050619.266888-1-leobras.c@gmail.com>
- <20200619050619.266888-2-leobras.c@gmail.com>
- <cfbcacde-ca7f-5fc7-2fcf-267f698f3d49@ozlabs.ru>
- <c15189a5c77752ea62022608dab28601965afaaa.camel@gmail.com>
- <4176ea2b-c778-2f59-ba57-7339b873ead5@ozlabs.ru>
- <c331742c9f7a3e3ccead5d9db99a66d3f268b95f.camel@gmail.com>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-Autocrypt: addr=aik@ozlabs.ru; keydata=
- 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
-Message-ID: <8b7482b4-ec5d-3c20-a5b7-3456e7592d6d@ozlabs.ru>
-Date:   Tue, 23 Jun 2020 12:29:15 +1000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <c331742c9f7a3e3ccead5d9db99a66d3f268b95f.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Mon, 22 Jun 2020 22:33:05 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20200623023302epoutp037149b268e4562d494554a5fc70f0654a~bC4qGLlHy1212612126epoutp034
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 02:33:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20200623023302epoutp037149b268e4562d494554a5fc70f0654a~bC4qGLlHy1212612126epoutp034
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1592879582;
+        bh=wKCmCJOcOvwgA68zVgbhHfs3xn5oNSf6Uwxw2j9YDPQ=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=GKXzwbNdXsXqf+yg/o2sXg4iD3q58G4KF7usrZiX/DZYaMjsAKoiLzyrSj6B/LM/4
+         j3vALOZFJE4wjYEGonKkEprIDxCgu1P45+Nxr6OBa+62R5zY0JwbZbrja9S6ry6DJH
+         A6RwNcji1XFms3LMtzVtZRuCacwv4krdeheh9Md8=
+Received: from epcpadp2 (unknown [182.195.40.12]) by epcas1p1.samsung.com
+        (KnoxPortal) with ESMTP id
+        20200623023302epcas1p1dda6a02ca3beff6db6154444822c0f04~bC4pdmYlc1583215832epcas1p1Q;
+        Tue, 23 Jun 2020 02:33:02 +0000 (GMT)
+Mime-Version: 1.0
+Subject: [RFC PATCH v3 0/5] scsi: ufs: Add Host Performance Booster Support
+Reply-To: daejun7.park@samsung.com
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     "avri.altman@wdc.com" <avri.altman@wdc.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "tomas.winkler@intel.com" <tomas.winkler@intel.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        Daejun Park <daejun7.park@samsung.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sang-yoon Oh <sangyoon.oh@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        yongmyung lee <ymhungry.lee@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Adel Choi <adel.choi@samsung.com>,
+        BoRam Shin <boram.shin@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <963815509.21592879582091.JavaMail.epsvc@epcpadp2>
+Date:   Tue, 23 Jun 2020 10:02:01 +0900
+X-CMS-MailID: 20200623010201epcms2p11aebdf1fbc719b409968cba997507114
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20200623010201epcms2p11aebdf1fbc719b409968cba997507114
+References: <CGME20200623010201epcms2p11aebdf1fbc719b409968cba997507114@epcms2p1>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+Changelog:
 
-On 23/06/2020 12:14, Leonardo Bras wrote:
-> On Tue, 2020-06-23 at 11:12 +1000, Alexey Kardashevskiy wrote:
-> [snip]
->>>>> +static int query_ddw_out_sz(struct device_node *par_dn)
->>>>
->>>> Can easily be folded into query_ddw().
->>>
->>> Sure, but it will get inlined by the compiler, and I think it reads
->>> better this way. 
->>> I mean, I understand you have a reason to think it's better to fold it
->>> in query_ddw(), and I would like to better understand that to improve
->>> my code in the future.
->>
->> You have numbers 5 and 6 (the number of parameters) twice in the file,
->> this is why I brought it up. query_ddw_out_sz() can potentially return
->> something else than 5 or 6 and you will have to change the callsite(s)
->> then, since these are not macros, this allows to think there may be more
->> places with 5 and 6. Dunno. A single function will simplify things imho.
-> 
-> That's a good point. Thanks!
-> 
->>
->>
->>>>> +{
->>>>> +	int ret;
->>>>> +	u32 ddw_ext[3];
->>>>> +
->>>>> +	ret = of_property_read_u32_array(par_dn, "ibm,ddw-extensions",
->>>>> +					 &ddw_ext[0], 3);
->>>>> +	if (ret || ddw_ext[0] < 2 || ddw_ext[2] != 1)
->>>>
->>>> Oh that PAPR thing again :-/
->>>>
->>>> ===
->>>> The “ibm,ddw-extensions” property value is a list of integers the first
->>>> integer indicates the number of extensions implemented and subsequent
->>>> integers, one per extension, provide a value associated with that
->>>> extension.
->>>> ===
->>>>
->>>> So ddw_ext[0] is length.
->>>> Listindex==2 is for "reset" says PAPR and
->>>> Listindex==3 is for this new 64bit "largest_available_block".
->>>>
->>>> So I'd expect ddw_ext[2] to have the "reset" token and ddw_ext[3] to
->>>> have "1" for this new feature but indexes are smaller. I am confused.
->>>> Either way these "2" and "3" needs to be defined in macros, "0" probably
->>>> too.
->>>
->>> Remember these indexes are not C-like 0-starting indexes, where the
->>> size would be Listindex==1.
->>
->> Yeah I can see that is the assumption but out of curiosity - is it
->> written anywhere? Across PAPR, they index bytes from 1 but bits from 0 :-/
-> 
-> From LoPAR: 
-> The “ibm,ddw-extensions” property value is a list of integers the first
-> integer indicates the number of extensions implemented and subsequent
-> integers, one per extension, provide a value associated with that
-> extension.
-> 
-> And the list/table then shows extensions from 2 on onwards:
-> List index 2 : Token of the ibm,reset-pe-dma-windows RTAS Call
-> (...)
+v2 -> v3
+1. Add checking input module parameter value.
+2. Change base commit from 5.8/scsi-queue to 5.9/scsi-queue.
+3. Cleanup for unused variables and label.
 
+v1 -> v2
+1. Change the full boilerplate text to SPDX style.
+2. Adopt dynamic allocation for sub-region data structure.
+3. Cleanup.
 
-I means a place saying "we number things starting from 1 and not from
-zero", this kind of thing. The code implementing the spec uses the C
-language so it would make sense to count from zero, otoh the writer
-probably did not write any code for ages :)
+NAND flash memory-based storage devices use Flash Translation Layer (FTL)
+to translate logical addresses of I/O requests to corresponding flash
+memory addresses. Mobile storage devices typically have RAM with
+constrained size, thus lack in memory to keep the whole mapping table.
+Therefore, mapping tables are partially retrieved from NAND flash on
+demand, causing random-read performance degradation.
 
+To improve random read performance, JESD220-3 (HPB v1.0) proposes HPB
+(Host Performance Booster) which uses host system memory as a cache for the
+FTL mapping table. By using HPB, FTL data can be read from host memory
+faster than from NAND flash memory. 
 
+The current version only supports the DCM (device control mode).
+This patch consists of 4 parts to support HPB feature.
 
--- 
-Alexey
+1) UFS-feature layer
+2) HPB probe and initialization process
+3) READ -> HPB READ using cached map information
+4) L2P (logical to physical) map management
+
+The UFS-feature is an additional layer to avoid the structure in which the
+UFS-core driver and the UFS-feature are entangled with each other in a 
+single module.
+By adding the layer, UFS-features composed of various combinations can be
+supported. Also, even if a new feature is added, modification of the 
+UFS-core driver can be minimized.
+
+In the HPB probe and init process, the device information of the UFS is
+queried. After checking supported features, the data structure for the HPB
+is initialized according to the device information.
+
+A read I/O in the active sub-region where the map is cached is changed to
+HPB READ by the HPB module.
+
+The HPB module manages the L2P map using information received from the
+device. For active sub-region, the HPB module caches through ufshpb_map
+request. For the in-active region, the HPB module discards the L2P map.
+When a write I/O occurs in an active sub-region area, associated dirty
+bitmap checked as dirty for preventing stale read.
+
+HPB is shown to have a performance improvement of 58 - 67% for random read
+workload. [1]
+
+This series patches are based on the 5.9/scsi-queue branch.
+
+[1]:
+https://www.usenix.org/conference/hotstorage17/program/presentation/jeong
+
+Daejun park (5):
+ scsi: ufs: Add UFS feature related parameter
+ scsi: ufs: Add UFS feature layer
+ scsi: ufs: Introduce HPB module
+ scsi: ufs: L2P map management for HPB read
+ scsi: ufs: Prepare HPB read for cached sub-region
+ 
+ drivers/scsi/ufs/Kconfig      |    9 +
+ drivers/scsi/ufs/Makefile     |    3 +-
+ drivers/scsi/ufs/ufs.h        |   12 +
+ drivers/scsi/ufs/ufsfeature.c |  148 +++
+ drivers/scsi/ufs/ufsfeature.h |   69 ++
+ drivers/scsi/ufs/ufshcd.c     |   23 +-
+ drivers/scsi/ufs/ufshcd.h     |    3 +
+ drivers/scsi/ufs/ufshpb.c     | 1996 ++++++++++++++++++++++++++++++++++++
+ drivers/scsi/ufs/ufshpb.h     |  234 +++++
+ 9 files changed, 2494 insertions(+), 3 deletions(-)
+ created mode 100644 drivers/scsi/ufs/ufsfeature.c
+ created mode 100644 drivers/scsi/ufs/ufsfeature.h
+ created mode 100644 drivers/scsi/ufs/ufshpb.c
+ created mode 100644 drivers/scsi/ufs/ufshpb.h
