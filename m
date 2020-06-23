@@ -2,191 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A234620465A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC1E20465F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:56:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732358AbgFWAyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:54:25 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:44007 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731716AbgFWAyZ (ORCPT
+        id S1732435AbgFWA4Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:56:24 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35273 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732415AbgFWA4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:54:25 -0400
-X-UUID: 2e9d2a6374814e77ae0f1fa196a145e9-20200623
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=pUOGn8kL8Ke7ijuL0FfLWBV3LoSmmUlsqh7iKh4FAnI=;
-        b=NhEduwSFomrmMlRJqUPZLEAwA1P0UUGhhz1+UZVDrDddLhdqXtY2z4ScBMb5Q+g0t62Rnq0bxTmJk6AIPpVNO8K6SpMlF27HaTIeWszIgqPl2GK4+m3Ol5rEBzStzzl14CRMw/ICDmgaVOhvnDk8VOtGieoY/lgFYVrge/QHnzs=;
-X-UUID: 2e9d2a6374814e77ae0f1fa196a145e9-20200623
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <dennis-yc.hsieh@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 1688874106; Tue, 23 Jun 2020 08:54:14 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Tue, 23 Jun 2020 08:54:07 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 23 Jun 2020 08:54:07 +0800
-Message-ID: <1592873653.28977.1.camel@mtkswgap22>
-Subject: Re: [PATCH v1 03/11] soc: mediatek: cmdq: add write_s function
-From:   Dennis-YC Hsieh <dennis-yc.hsieh@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>
-CC:     Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, CK Hu <ck.hu@mediatek.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Houlong Wei <houlong.wei@mediatek.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        HS Liao <hs.liao@mediatek.com>
-Date:   Tue, 23 Jun 2020 08:54:13 +0800
-In-Reply-To: <10c40f18-8620-6e9a-7bc1-3e192abbe170@gmail.com>
-References: <1592749115-24158-1-git-send-email-dennis-yc.hsieh@mediatek.com>
-         <1592749115-24158-4-git-send-email-dennis-yc.hsieh@mediatek.com>
-         <a9c6f28a-94d1-f92b-a017-935e80d0ec26@gmail.com>
-         <1592840183.1307.12.camel@mtkswgap22>
-         <8bdfff5f-9fa8-7a13-79d3-dcb63d587629@gmail.com>
-         <1592842372.3619.8.camel@mtkswgap22>
-         <10c40f18-8620-6e9a-7bc1-3e192abbe170@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Mon, 22 Jun 2020 20:56:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592873758;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RAaL/TiInavJGT4pUlGXjgnr3M46tWTz3b0cjG9HI10=;
+        b=gT3CJq3oZ6ObSrtFJA8I/fyYEa6ui+curV03qZTYJ99VtASabZQ5cW0Z9FeA86pXkBl7WE
+        9nwkJ9pb+NYWcNK07jS83ydrGkQQGCnjjUNk8tYTF/r+xLasoaqVsZAz6mg6qpCQRinTQy
+        DJsWWMmLrClwd9JDKnXqE882Nj3RqFg=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-468-2GO7YOjyNSyp2FOgpmU-Jg-1; Mon, 22 Jun 2020 20:55:56 -0400
+X-MC-Unique: 2GO7YOjyNSyp2FOgpmU-Jg-1
+Received: by mail-wm1-f69.google.com with SMTP id h25so1049765wmb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 17:55:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RAaL/TiInavJGT4pUlGXjgnr3M46tWTz3b0cjG9HI10=;
+        b=ZLq2w+AO2cTmt0P4pgXR4YXAgXKSORUEVdx27UPaYOAJNnu1t9TPSSUjw/ccGu5fTV
+         TvZdXYGdR3yOIRYq0j54r8PJpO6mkOU68c3ktupw9MzULy4/nLxlFJVxU0uPYN71GxID
+         5YVjV4Clw5Nak66v6OA4wCmH2rptoKK0yQdniG2Pv9WD1Z88SgSapQyGFTO8Y9cHRDOA
+         BjAzt5QnXNCn9+GrvZmwK25ti9BMrs1WLUr4BtiRSAUlKLY9LfNTA8ZkTEXhCkzuZhD1
+         Aj3ffWcRr7aenMaFxdtG6dx2BFcKUSbUhSDWCmV3TSmjoRP8P5rJdh4FFKsImF/fHK5s
+         AErQ==
+X-Gm-Message-State: AOAM533Hnt+2juWWHvtATG4KDaM7WQXfT0Sh0xi52NSBRQFmWNg7jTW7
+        jScTSirlKxUHc/cLcT2Z9x/b/KTxD2X6OglH3IE/J+rGR/ej/BPf3RCmw6rYsznNH8HmqkRqTEO
+        TI3zWWsWjxrVcsdH00dCndUPJ
+X-Received: by 2002:a1c:f616:: with SMTP id w22mr13688364wmc.155.1592873755259;
+        Mon, 22 Jun 2020 17:55:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzKKPZc3cey+KTGv80vrG9XaELyLC4ycXlTGGgKNLxMKJ0jRill91HRzNfzQTJIDGNiML7rjA==
+X-Received: by 2002:a1c:f616:: with SMTP id w22mr13688338wmc.155.1592873754989;
+        Mon, 22 Jun 2020 17:55:54 -0700 (PDT)
+Received: from [192.168.10.150] ([93.56.170.5])
+        by smtp.gmail.com with ESMTPSA id z9sm1381143wmi.41.2020.06.22.17.55.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 22 Jun 2020 17:55:54 -0700 (PDT)
+Subject: Re: [PATCH] KVM: VMX: Stop context switching MSR_IA32_UMWAIT_CONTROL
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jingqi Liu <jingqi.liu@intel.com>,
+        Tao Xu <tao3.xu@intel.com>
+References: <20200623005135.10414-1-sean.j.christopherson@intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <13d73fe4-5591-fd66-d46a-c09936205381@redhat.com>
+Date:   Tue, 23 Jun 2020 02:55:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20200623005135.10414-1-sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTWF0dGhpYXMsDQoNCg0KT24gTW9uLCAyMDIwLTA2LTIyIGF0IDE5OjA4ICswMjAwLCBNYXR0
-aGlhcyBCcnVnZ2VyIHdyb3RlOg0KPiANCj4gT24gMjIvMDYvMjAyMCAxODoxMiwgRGVubmlzLVlD
-IEhzaWVoIHdyb3RlOg0KPiA+IEhpIE1hdHRoaWFzLA0KPiA+IA0KPiA+IE9uIE1vbiwgMjAyMC0w
-Ni0yMiBhdCAxNzo1NCArMDIwMCwgTWF0dGhpYXMgQnJ1Z2dlciB3cm90ZToNCj4gPj4NCj4gPj4g
-T24gMjIvMDYvMjAyMCAxNzozNiwgRGVubmlzLVlDIEhzaWVoIHdyb3RlOg0KPiA+Pj4gSGkgTWF0
-dGhpYXMsDQo+ID4+Pg0KPiA+Pj4gdGhhbmtzIGZvciB5b3VyIGNvbW1lbnQuDQo+ID4+Pg0KPiA+
-Pj4gT24gTW9uLCAyMDIwLTA2LTIyIGF0IDEzOjA3ICswMjAwLCBNYXR0aGlhcyBCcnVnZ2VyIHdy
-b3RlOg0KPiA+Pj4+DQo+ID4+Pj4gT24gMjEvMDYvMjAyMCAxNjoxOCwgRGVubmlzIFlDIEhzaWVo
-IHdyb3RlOg0KPiA+Pj4+PiBhZGQgd3JpdGVfcyBmdW5jdGlvbiBpbiBjbWRxIGhlbHBlciBmdW5j
-dGlvbnMgd2hpY2gNCj4gPj4+Pj4gd3JpdGVzIHZhbHVlIGNvbnRhaW5zIGluIGludGVybmFsIHJl
-Z2lzdGVyIHRvIGFkZHJlc3MNCj4gPj4+Pj4gd2l0aCBsYXJnZSBkbWEgYWNjZXNzIHN1cHBvcnQu
-DQo+ID4+Pj4+DQo+ID4+Pj4+IFNpZ25lZC1vZmYtYnk6IERlbm5pcyBZQyBIc2llaCA8ZGVubmlz
-LXljLmhzaWVoQG1lZGlhdGVrLmNvbT4NCj4gPj4+Pj4gLS0tDQo+ID4+Pj4+ICBkcml2ZXJzL3Nv
-Yy9tZWRpYXRlay9tdGstY21kcS1oZWxwZXIuYyAgIHwgICAxOSArKysrKysrKysrKysrKysrKysr
-DQo+ID4+Pj4+ICBpbmNsdWRlL2xpbnV4L21haWxib3gvbXRrLWNtZHEtbWFpbGJveC5oIHwgICAg
-MSArDQo+ID4+Pj4+ICBpbmNsdWRlL2xpbnV4L3NvYy9tZWRpYXRlay9tdGstY21kcS5oICAgIHwg
-ICAxOSArKysrKysrKysrKysrKysrKysrDQo+ID4+Pj4+ICAzIGZpbGVzIGNoYW5nZWQsIDM5IGlu
-c2VydGlvbnMoKykNCj4gPj4+Pj4NCj4gPj4+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvc29jL21l
-ZGlhdGVrL210ay1jbWRxLWhlbHBlci5jIGIvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLWNtZHEt
-aGVscGVyLmMNCj4gPj4+Pj4gaW5kZXggYmYzMmUzYjJjYTZjLi44MTdhNWE5N2RiZTUgMTAwNjQ0
-DQo+ID4+Pj4+IC0tLSBhL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1jbWRxLWhlbHBlci5jDQo+
-ID4+Pj4+ICsrKyBiL2RyaXZlcnMvc29jL21lZGlhdGVrL210ay1jbWRxLWhlbHBlci5jDQo+ID4+
-Pj4+IEBAIC0xOCw2ICsxOCwxMCBAQCBzdHJ1Y3QgY21kcV9pbnN0cnVjdGlvbiB7DQo+ID4+Pj4+
-ICAJdW5pb24gew0KPiA+Pj4+PiAgCQl1MzIgdmFsdWU7DQo+ID4+Pj4+ICAJCXUzMiBtYXNrOw0K
-PiA+Pj4+PiArCQlzdHJ1Y3Qgew0KPiA+Pj4+PiArCQkJdTE2IGFyZ19jOw0KPiA+Pj4+PiArCQkJ
-dTE2IHNyY19yZWc7DQo+ID4+Pj4+ICsJCX07DQo+ID4+Pj4+ICAJfTsNCj4gPj4+Pj4gIAl1bmlv
-biB7DQo+ID4+Pj4+ICAJCXUxNiBvZmZzZXQ7DQo+ID4+Pj4+IEBAIC0yMjIsNiArMjI2LDIxIEBA
-IGludCBjbWRxX3BrdF93cml0ZV9tYXNrKHN0cnVjdCBjbWRxX3BrdCAqcGt0LCB1OCBzdWJzeXMs
-DQo+ID4+Pj4+ICB9DQo+ID4+Pj4+ICBFWFBPUlRfU1lNQk9MKGNtZHFfcGt0X3dyaXRlX21hc2sp
-Ow0KPiA+Pj4+PiAgDQo+ID4+Pj4+ICtpbnQgY21kcV9wa3Rfd3JpdGVfcyhzdHJ1Y3QgY21kcV9w
-a3QgKnBrdCwgdTE2IGhpZ2hfYWRkcl9yZWdfaWR4LA0KPiA+Pj4+PiArCQkgICAgIHUxNiBhZGRy
-X2xvdywgdTE2IHNyY19yZWdfaWR4KQ0KPiA+Pj4+PiArew0KPiA+Pj4+DQo+ID4+Pj4gRG8gSSB1
-bmRlcnN0YW5kIGNvcnJlY3RseSB0aGF0IHdlIHVzZSBDTURRX0FERFJfSElHSChhZGRyKSBhbmQN
-Cj4gPj4+PiBDTURRX0FERFJfTE9XKGFkZHIpIHRvIGNhbGN1bGF0ZSBpbiB0aGUgY2xpZW50IGhp
-Z2hfYWRkcl9yZWdfaWR4IGFuZCBhZGRyX2xvdw0KPiA+Pj4+IHJlc3BlY3RpdmVseT8NCj4gPj4+
-Pg0KPiA+Pj4+IEluIHRoYXQgY2FzZSBJIHRoaW5rIGEgYmV0dGVyIGludGVyZmFjZSB3b3VsZCBi
-ZSB0byBwYXNzIHRoZSBhZGRyZXNzIGFuZCBkbyB0aGUNCj4gPj4+PiBoaWdoL2xvdyBjYWxjdWxh
-dGlvbiBpbiB0aGUgY21kcV9wa3Rfd3JpdGVfcw0KPiA+Pj4NCj4gPj4+IE5vdCBleGFjdGx5LiBU
-aGUgaGlnaF9hZGRyX3JlZ19pZHggcGFyYW1ldGVyIGlzIGluZGV4IG9mIGludGVybmFsDQo+ID4+
-PiByZWdpc3RlciAod2hpY2ggc3RvcmUgYWRkcmVzcyBiaXRbNDc6MTZdKSwgbm90IHJlc3VsdCBv
-Zg0KPiA+Pj4gQ01EUV9BRERSX0hJR0goYWRkcikuIA0KPiA+Pj4NCj4gPj4+IFRoZSBDTURRX0FE
-RFJfSElHSCBtYWNybyB1c2UgaW4gcGF0Y2ggMDIvMTEgY21kcV9wa3RfYXNzaWduKCkgYXBpLiBU
-aGlzDQo+ID4+PiBhcGkgaGVscHMgYXNzaWduIGFkZHJlc3MgYml0WzQ3OjE2XSBpbnRvIG9uZSBv
-ZiBpbnRlcm5hbCByZWdpc3RlciBieQ0KPiA+Pj4gaW5kZXguIEFuZCBzYW1lIGluZGV4IGNvdWxk
-IGJlIHVzZSBpbiBjbWRxX3BrdF93cml0ZV9zKCkuIFRoZSBnY2UNCj4gPj4+IGNvbWJpbmUgYml0
-WzQ3OjE2XSBpbiBpbnRlcm5hbCByZWdpc3RlciBhbmQgYml0WzE1OjBdIGluIGFkZHJfbG93DQo+
-ID4+PiBwYXJhbWV0ZXIgdG8gZmluYWwgYWRkcmVzcy4gU28gaXQgaXMgYmV0dGVyIHRvIGtlZXAg
-aW50ZXJmYWNlIGluIHRoaXMNCj4gPj4+IHdheS4NCj4gPj4+DQo+ID4+DQo+ID4+IEdvdCBpdCwg
-YnV0IHRoZW4gd2h5IGRvbid0IHdlIGNhbGwgY21kcV9wa3RfYXNzaWduKCkgaW4gY21kcV9wa3Rf
-d3JpdGVfcygpPyBUaGlzDQo+ID4+IHdheSB3ZSB3b3VsZCBnZXQgYSBjbGVhbiBBUEkgZm9yIHdo
-YXQgd2Ugd2FudCB0byBkby4NCj4gPj4gRG8gd2UgZXhwZWN0IG90aGVyIHVzZXJzIG9mIGNtZHFf
-cGt0X2Fzc2lnbigpPyBPdGhlcndpc2Ugd2UgY291bGQga2VlcCBpdA0KPiA+PiBwcml2YXRlIHRo
-ZSB0aGlzIGZpbGUgYW5kIGRvbid0IGV4cG9ydCBpdC4NCj4gPiANCj4gPiBDb25zaWRlcmluZyB0
-aGlzIGNhc2U6IHdyaXRlIDIgcmVnaXN0ZXIgMHhhYWJiMDBjMCAweGFhYmIwMGQwLg0KPiA+IA0K
-PiA+IElmIHdlIGNhbGwgYXNzaWduIGluc2lkZSB3cml0ZV9zIGFwaSBpdCB3aWxsIGJlOg0KPiA+
-IGFzc2lnbiBhYWJiIHRvIGludGVybmFsIHJlZyAwDQo+ID4gd3JpdGUgcmVnIDAgKyAweDAwYzAN
-Cj4gPiBhc3NpZ24gYWFiYiB0byBpbnRlcm5hbCByZWcgMA0KPiA+IHdyaXRlIHJlZyAwICsgMHgw
-MGQwDQo+ID4gDQo+ID4gDQo+ID4gQnV0IGlmIHdlIGxldCBjbGllbnQgZGVjaWRlIHRpbWluZyB0
-byBjYWxsIGFzc2lnbiwgaXQgd2lsbCBiZSBsaWtlOg0KPiA+IGFzc2lnbiBhYWJiIHRvIGludGVy
-bmFsIHJlZyAwDQo+ID4gd3JpdGUgcmVnIDAgKyAweDAwYzANCj4gPiB3cml0ZSByZWcgMCArIDB4
-MDBkMA0KPiA+IA0KPiANCj4gT2ssIHRoYW5rcyBmb3IgY2xhcmlmaWNhdGlvbi4gSXMgdGhpcyBz
-b21ldGhpbmcgeW91IGV4ZXBlY3QgdG8gc2VlIGluIHRoZSBnY2UNCj4gY29uc3VtZXIgZHJpdmVy
-Pw0KPiANCg0KeWVzIGl0IGlzLCBsZXNzIGNvbW1hbmQgbWVhbnMgYmV0dGVyIHBlcmZvcm1hbmNl
-IGFuZCBzYXZlIG1lbW9yeSwgc28gaXQNCmlzIGEgZ29vZCBwcmFjdGljZSBmb3IgY29uc3VtZXIu
-DQoNCj4gPiANCj4gPiBUaGUgZmlyc3Qgd2F5IHVzZXMgNCBjb21tYW5kIGFuZCBzZWNvbmQgb25l
-IHVzZXMgb25seSAzIGNvbW1hbmQuDQo+ID4gVGh1cyBpdCBpcyBiZXR0ZXIgdG8gbGV0IGNsaWVu
-dCBjYWxsIGFzc2lnbiBleHBsaWNpdGx5Lg0KPiA+IA0KPiA+Pg0KPiA+PiBCeSB0aGUgd2F5LCB3
-aHkgZG8geW91IHBvc3RmaXggdGhlIF9zLCBJIHVuZGVyc3RhbmQgdGhhdCBpdCByZWZsZWN0cyB0
-aGUgbGFyZ2UNCj4gPj4gRE1BIGFjY2VzcyBidXQgSSB3b25kZXIgd2h5IHlvdSBjaG9vc2UgJ19z
-Jy4NCj4gPj4NCj4gPiANCj4gPiBUaGUgbmFtZSBvZiB0aGlzIGNvbW1hbmQgaXMgIndyaXRlX3Mi
-IHdoaWNoIGlzIGhhcmR3YXJlIHNwZWMuDQo+ID4gSSdtIGp1c3QgZm9sbG93aW5nIGl0IHNpbmNl
-IGl0IGlzIGEgY29tbW9uIGxhbmd1YWdlIGJldHdlZW4gZ2NlIHN3L2h3DQo+ID4gZGVzaWduZXJz
-Lg0KPiA+IA0KPiANCj4gT2ssIEkgd2lsbCBwcm9iYWJseSBoYXZlIHRvIGxvb2sgdGhhdCB1cCBl
-dmVyeSB0aW1lIGhhdmUgYSBsb29rIGF0IHRoZSBkcml2ZXIsDQo+IGJ1dCB0aGF0J3MgT0suDQo+
-IA0KDQpvayB0aGFua3MgZm9yIHlvdXIgY29tbWVudA0KDQoNCg0KUmVnYXJkcywNCkRlbm5pcw0K
-DQo+IFJlZ2FyZHMsDQo+IE1hdHRoaWFzDQo+IA0KPiA+IA0KPiA+IFJlZ2FyZHMsDQo+ID4gRGVu
-bmlzDQo+ID4gDQo+ID4+IFJlZ2FyZHMsDQo+ID4+IE1hdHRoaWFzDQo+ID4+DQo+ID4+Pg0KPiA+
-Pj4gUmVnYXJkcywNCj4gPj4+IERlbm5pcw0KPiA+Pj4NCj4gPj4+Pg0KPiA+Pj4+IFJlZ2FyZHMs
-DQo+ID4+Pj4gTWF0dGhpYXMNCj4gPj4+Pg0KPiA+Pj4+PiArCXN0cnVjdCBjbWRxX2luc3RydWN0
-aW9uIGluc3QgPSB7fTsNCj4gPj4+Pj4gKw0KPiA+Pj4+PiArCWluc3Qub3AgPSBDTURRX0NPREVf
-V1JJVEVfUzsNCj4gPj4+Pj4gKwlpbnN0LnNyY190ID0gQ01EUV9SRUdfVFlQRTsNCj4gPj4+Pj4g
-KwlpbnN0LnNvcCA9IGhpZ2hfYWRkcl9yZWdfaWR4Ow0KPiA+Pj4+PiArCWluc3Qub2Zmc2V0ID0g
-YWRkcl9sb3c7DQo+ID4+Pj4+ICsJaW5zdC5zcmNfcmVnID0gc3JjX3JlZ19pZHg7DQo+ID4+Pj4+
-ICsNCj4gPj4+Pj4gKwlyZXR1cm4gY21kcV9wa3RfYXBwZW5kX2NvbW1hbmQocGt0LCBpbnN0KTsN
-Cj4gPj4+Pj4gK30NCj4gPj4+Pj4gK0VYUE9SVF9TWU1CT0woY21kcV9wa3Rfd3JpdGVfcyk7DQo+
-ID4+Pj4+ICsNCj4gPj4+Pj4gIGludCBjbWRxX3BrdF93ZmUoc3RydWN0IGNtZHFfcGt0ICpwa3Qs
-IHUxNiBldmVudCkNCj4gPj4+Pj4gIHsNCj4gPj4+Pj4gIAlzdHJ1Y3QgY21kcV9pbnN0cnVjdGlv
-biBpbnN0ID0geyB7MH0gfTsNCj4gPj4+Pj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbWFp
-bGJveC9tdGstY21kcS1tYWlsYm94LmggYi9pbmNsdWRlL2xpbnV4L21haWxib3gvbXRrLWNtZHEt
-bWFpbGJveC5oDQo+ID4+Pj4+IGluZGV4IDEyMWMzYmI2ZDNkZS4uZWU2N2RkM2I4NmY1IDEwMDY0
-NA0KPiA+Pj4+PiAtLS0gYS9pbmNsdWRlL2xpbnV4L21haWxib3gvbXRrLWNtZHEtbWFpbGJveC5o
-DQo+ID4+Pj4+ICsrKyBiL2luY2x1ZGUvbGludXgvbWFpbGJveC9tdGstY21kcS1tYWlsYm94LmgN
-Cj4gPj4+Pj4gQEAgLTU5LDYgKzU5LDcgQEAgZW51bSBjbWRxX2NvZGUgew0KPiA+Pj4+PiAgCUNN
-RFFfQ09ERV9KVU1QID0gMHgxMCwNCj4gPj4+Pj4gIAlDTURRX0NPREVfV0ZFID0gMHgyMCwNCj4g
-Pj4+Pj4gIAlDTURRX0NPREVfRU9DID0gMHg0MCwNCj4gPj4+Pj4gKwlDTURRX0NPREVfV1JJVEVf
-UyA9IDB4OTAsDQo+ID4+Pj4+ICAJQ01EUV9DT0RFX0xPR0lDID0gMHhhMCwNCj4gPj4+Pj4gIH07
-DQo+ID4+Pj4+ICANCj4gPj4+Pj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvc29jL21lZGlh
-dGVrL210ay1jbWRxLmggYi9pbmNsdWRlL2xpbnV4L3NvYy9tZWRpYXRlay9tdGstY21kcS5oDQo+
-ID4+Pj4+IGluZGV4IDgzMzQwMjExZTFkMy4uZTFjNWE3NTQ5YjRmIDEwMDY0NA0KPiA+Pj4+PiAt
-LS0gYS9pbmNsdWRlL2xpbnV4L3NvYy9tZWRpYXRlay9tdGstY21kcS5oDQo+ID4+Pj4+ICsrKyBi
-L2luY2x1ZGUvbGludXgvc29jL21lZGlhdGVrL210ay1jbWRxLmgNCj4gPj4+Pj4gQEAgLTEyLDYg
-KzEyLDggQEANCj4gPj4+Pj4gICNpbmNsdWRlIDxsaW51eC90aW1lci5oPg0KPiA+Pj4+PiAgDQo+
-ID4+Pj4+ICAjZGVmaW5lIENNRFFfTk9fVElNRU9VVAkJMHhmZmZmZmZmZnUNCj4gPj4+Pj4gKyNk
-ZWZpbmUgQ01EUV9BRERSX0hJR0goYWRkcikJKCh1MzIpKCgoYWRkcikgPj4gMTYpICYgR0VOTUFT
-SygzMSwgMCkpKQ0KPiA+Pj4+PiArI2RlZmluZSBDTURRX0FERFJfTE9XKGFkZHIpCSgodTE2KShh
-ZGRyKSB8IEJJVCgxKSkNCj4gPj4+Pj4gIA0KPiA+Pj4+PiAgc3RydWN0IGNtZHFfcGt0Ow0KPiA+
-Pj4+PiAgDQo+ID4+Pj4+IEBAIC0xMDMsNiArMTA1LDIzIEBAIGludCBjbWRxX3BrdF93cml0ZV9t
-YXNrKHN0cnVjdCBjbWRxX3BrdCAqcGt0LCB1OCBzdWJzeXMsDQo+ID4+Pj4+ICAJCQl1MTYgb2Zm
-c2V0LCB1MzIgdmFsdWUsIHUzMiBtYXNrKTsNCj4gPj4+Pj4gIA0KPiA+Pj4+PiAgLyoqDQo+ID4+
-Pj4+ICsgKiBjbWRxX3BrdF93cml0ZV9zKCkgLSBhcHBlbmQgd3JpdGVfcyBjb21tYW5kIHRvIHRo
-ZSBDTURRIHBhY2tldA0KPiA+Pj4+PiArICogQHBrdDoJdGhlIENNRFEgcGFja2V0DQo+ID4+Pj4+
-ICsgKiBAaGlnaF9hZGRyX3JlZ19pZHg6CWludGVybmFsIHJlZ2lzdGVyIElEIHdoaWNoIGNvbnRh
-aW5zIGhpZ2ggYWRkcmVzcyBvZiBwYQ0KPiA+Pj4+PiArICogQGFkZHJfbG93Oglsb3cgYWRkcmVz
-cyBvZiBwYQ0KPiA+Pj4+PiArICogQHNyY19yZWdfaWR4Ogl0aGUgQ01EUSBpbnRlcm5hbCByZWdp
-c3RlciBJRCB3aGljaCBjYWNoZSBzb3VyY2UgdmFsdWUNCj4gPj4+Pj4gKyAqDQo+ID4+Pj4+ICsg
-KiBSZXR1cm46IDAgZm9yIHN1Y2Nlc3M7IGVsc2UgdGhlIGVycm9yIGNvZGUgaXMgcmV0dXJuZWQN
-Cj4gPj4+Pj4gKyAqDQo+ID4+Pj4+ICsgKiBTdXBwb3J0IHdyaXRlIHZhbHVlIHRvIHBoeXNpY2Fs
-IGFkZHJlc3Mgd2l0aG91dCBzdWJzeXMuIFVzZSBDTURRX0FERFJfSElHSCgpDQo+ID4+Pj4+ICsg
-KiB0byBnZXQgaGlnaCBhZGRyZXNzIGFuZCBjYWxsIGNtZHFfcGt0X2Fzc2lnbigpIHRvIGFzc2ln
-biB2YWx1ZSBpbnRvIGludGVybmFsDQo+ID4+Pj4+ICsgKiByZWcuIEFsc28gdXNlIENNRFFfQURE
-Ul9MT1coKSB0byBnZXQgbG93IGFkZHJlc3MgZm9yIGFkZHJfbG93IHBhcmFtZXRlciB3aGVuDQo+
-ID4+Pj4+ICsgKiBjYWxsIHRvIHRoaXMgZnVuY3Rpb24uDQo+ID4+Pj4+ICsgKi8NCj4gPj4+Pj4g
-K2ludCBjbWRxX3BrdF93cml0ZV9zKHN0cnVjdCBjbWRxX3BrdCAqcGt0LCB1MTYgaGlnaF9hZGRy
-X3JlZ19pZHgsDQo+ID4+Pj4+ICsJCSAgICAgdTE2IGFkZHJfbG93LCB1MTYgc3JjX3JlZ19pZHgp
-Ow0KPiA+Pj4+PiArDQo+ID4+Pj4+ICsvKioNCj4gPj4+Pj4gICAqIGNtZHFfcGt0X3dmZSgpIC0g
-YXBwZW5kIHdhaXQgZm9yIGV2ZW50IGNvbW1hbmQgdG8gdGhlIENNRFEgcGFja2V0DQo+ID4+Pj4+
-ICAgKiBAcGt0Ogl0aGUgQ01EUSBwYWNrZXQNCj4gPj4+Pj4gICAqIEBldmVudDoJdGhlIGRlc2ly
-ZWQgZXZlbnQgdHlwZSB0byAid2FpdCBhbmQgQ0xFQVIiDQo+ID4+Pj4+DQo+ID4+Pg0KPiA+IA0K
-DQo=
+On 23/06/20 02:51, Sean Christopherson wrote:
+> Remove support for context switching between the guest's and host's
+> desired UMWAIT_CONTROL.  Propagating the guest's value to hardware isn't
+> required for correct functionality, e.g. KVM intercepts reads and writes
+> to the MSR, and the latency effects of the settings controlled by the
+> MSR are not architecturally visible.
+> 
+> As a general rule, KVM should not allow the guest to control power
+> management settings unless explicitly enabled by userspace, e.g. see
+> KVM_CAP_X86_DISABLE_EXITS.  E.g. Intel's SDM explicitly states that C0.2
+> can improve the performance of SMT siblings.  A devious guest could
+> disable C0.2 so as to improve the performance of their workloads at the
+> detriment to workloads running in the host or on other VMs.
+> 
+> Wholesale removal of UMWAIT_CONTROL context switching also fixes a race
+> condition where updates from the host may cause KVM to enter the guest
+> with the incorrect value.  Because updates are are propagated to all
+> CPUs via IPI (SMP function callback), the value in hardware may be
+> stale with respect to the cached value and KVM could enter the guest
+> with the wrong value in hardware.  As above, the guest can't observe the
+> bad value, but it's a weird and confusing wart in the implementation.
+> 
+> Removal also fixes the unnecessary usage of VMX's atomic load/store MSR
+> lists.  Using the lists is only necessary for MSRs that are required for
+> correct functionality immediately upon VM-Enter/VM-Exit, e.g. EFER on
+> old hardware, or for MSRs that need to-the-uop precision, e.g. perf
+> related MSRs.  For UMWAIT_CONTROL, the effects are only visible in the
+> kernel via TPAUSE/delay(), and KVM doesn't do any form of delay in
+> vcpu_vmx_run().  Using the atomic lists is undesirable as they are more
+> expensive than direct RDMSR/WRMSR.
+> 
+> Furthermore, even if giving the guest control of the MSR is legitimate,
+> e.g. in pass-through scenarios, it's not clear that the benefits would
+> outweigh the overhead.  E.g. saving and restoring an MSR across a VMX
+> roundtrip costs ~250 cycles, and if the guest diverged from the host
+> that cost would be paid on every run of the guest.  In other words, if
+> there is a legitimate use case then it should be enabled by a new
+> per-VM capability.
+> 
+> Note, KVM still needs to emulate MSR_IA32_UMWAIT_CONTROL so that it can
+> correctly expose other WAITPKG features to the guest, e.g. TPAUSE,
+> UMWAIT and UMONITOR.
+> 
+> Fixes: 6e3ba4abcea56 ("KVM: vmx: Emulate MSR IA32_UMWAIT_CONTROL")
+> Cc: stable@vger.kernel.org
+> Cc: Jingqi Liu <jingqi.liu@intel.com>
+> Cc: Tao Xu <tao3.xu@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> ---
+>  arch/x86/include/asm/mwait.h |  2 --
+>  arch/x86/kernel/cpu/umwait.c |  6 ------
+>  arch/x86/kvm/vmx/vmx.c       | 18 ------------------
+>  3 files changed, 26 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/mwait.h b/arch/x86/include/asm/mwait.h
+> index 73d997aa2966..e039a933aca3 100644
+> --- a/arch/x86/include/asm/mwait.h
+> +++ b/arch/x86/include/asm/mwait.h
+> @@ -25,8 +25,6 @@
+>  #define TPAUSE_C01_STATE		1
+>  #define TPAUSE_C02_STATE		0
+>  
+> -u32 get_umwait_control_msr(void);
+> -
+>  static inline void __monitor(const void *eax, unsigned long ecx,
+>  			     unsigned long edx)
+>  {
+> diff --git a/arch/x86/kernel/cpu/umwait.c b/arch/x86/kernel/cpu/umwait.c
+> index 300e3fd5ade3..ec8064c0ae03 100644
+> --- a/arch/x86/kernel/cpu/umwait.c
+> +++ b/arch/x86/kernel/cpu/umwait.c
+> @@ -18,12 +18,6 @@
+>   */
+>  static u32 umwait_control_cached = UMWAIT_CTRL_VAL(100000, UMWAIT_C02_ENABLE);
+>  
+> -u32 get_umwait_control_msr(void)
+> -{
+> -	return umwait_control_cached;
+> -}
+> -EXPORT_SYMBOL_GPL(get_umwait_control_msr);
+> -
+>  /*
+>   * Cache the original IA32_UMWAIT_CONTROL MSR value which is configured by
+>   * hardware or BIOS before kernel boot.
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 08e26a9518c2..b2447c1ee362 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -6606,23 +6606,6 @@ static void atomic_switch_perf_msrs(struct vcpu_vmx *vmx)
+>  					msrs[i].host, false);
+>  }
+>  
+> -static void atomic_switch_umwait_control_msr(struct vcpu_vmx *vmx)
+> -{
+> -	u32 host_umwait_control;
+> -
+> -	if (!vmx_has_waitpkg(vmx))
+> -		return;
+> -
+> -	host_umwait_control = get_umwait_control_msr();
+> -
+> -	if (vmx->msr_ia32_umwait_control != host_umwait_control)
+> -		add_atomic_switch_msr(vmx, MSR_IA32_UMWAIT_CONTROL,
+> -			vmx->msr_ia32_umwait_control,
+> -			host_umwait_control, false);
+> -	else
+> -		clear_atomic_switch_msr(vmx, MSR_IA32_UMWAIT_CONTROL);
+> -}
+> -
+>  static void vmx_update_hv_timer(struct kvm_vcpu *vcpu)
+>  {
+>  	struct vcpu_vmx *vmx = to_vmx(vcpu);
+> @@ -6730,7 +6713,6 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
+>  
+>  	if (vcpu_to_pmu(vcpu)->version)
+>  		atomic_switch_perf_msrs(vmx);
+> -	atomic_switch_umwait_control_msr(vmx);
+>  
+>  	if (enable_preemption_timer)
+>  		vmx_update_hv_timer(vcpu);
+> 
+
+Queued, thanks.
+
+Paolo
 
