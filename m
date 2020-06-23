@@ -2,157 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78C8B205792
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E75002057B8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733182AbgFWQpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 12:45:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40324 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733154AbgFWQpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 12:45:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 1EA8DAEBE;
-        Tue, 23 Jun 2020 16:45:36 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     gregkh@linuxfoundation.org
-Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [PATCH 50/50] staging: vchiq: Move vchiq.h into include directory
-Date:   Tue, 23 Jun 2020 18:42:36 +0200
-Message-Id: <20200623164235.29566-51-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623164235.29566-1-nsaenzjulienne@suse.de>
-References: <20200623164235.29566-1-nsaenzjulienne@suse.de>
+        id S1733277AbgFWQqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 12:46:34 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:35599 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1733227AbgFWQqR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 12:46:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592930775;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xtESeAIlwwuuldGj0MjFCKFwVmKIYZPcQoRS/U4Z2AU=;
+        b=P0SssR4dQ6DX12Wo9TpPDS4mlr4SmZgyRmkA5L1oIFH1jolgx9657VZFiTnWBl9R1nkV/t
+        S1ez5lnj9ENG3wgSG3X60po2G2XNpiwg2Lixf7bT7Rdq60oPEFOozuEXzieZ7zrwnhHmNS
+        2dOpxXExxG5AHeLin20AhkkjDBsXZVg=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-113-R3GQxw-4N5aIin6YfxPFvw-1; Tue, 23 Jun 2020 12:46:13 -0400
+X-MC-Unique: R3GQxw-4N5aIin6YfxPFvw-1
+Received: by mail-qk1-f198.google.com with SMTP id 16so15684450qka.15
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:46:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xtESeAIlwwuuldGj0MjFCKFwVmKIYZPcQoRS/U4Z2AU=;
+        b=gnMoqaTnUWR5H/7EQ38FuzquhzrWCDlx/jL0pAuaZQ14qgkUORYK42nPFKiJL2qyy1
+         NPCkEIsDM0bMvyAJlAc2Fc1LRBQy6FiVPaMGmgNO0CPZ3pte0vfMCxZNDOnrIhBsTLTo
+         tmIh2D7Zd7kOUHOG7/p8A7BPI2aFlPgo/639yj+vFae287JXessw4SHJZYSvac99TVKy
+         x4aAHwKDHK33carsk/jq0hGlijBmEvmlPjudN5oD7zu+r1RR5bbSyn29j/r4ZvlBUGtc
+         Z4/UCLXIgo+gnUi/om/ac9NfEtLgstND8iBA3WUsx9LGGQT0poR5/VftMUO4I7POmjBR
+         HzhA==
+X-Gm-Message-State: AOAM532R40a4zEa9bMF8kSqaSAn1P/6Z5afzwPsnt249PNOU4SL+9xEl
+        vOCk/Vv9/0JzO0ZXQ5pCrX0YjC0+IDkyeu12DbKHk8PPD0lFLVQH477JLuLUnjDONyfU83q43k+
+        Qr7HYsdWAlBUiJBBRSfFfvIoZLNTky3xS5+VdLrH0
+X-Received: by 2002:a05:620a:348:: with SMTP id t8mr20976642qkm.203.1592930772839;
+        Tue, 23 Jun 2020 09:46:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzz/YK3q1LyztX9Y0BARpa7qb402eLsAUxVHw0c9TOmsYRIZiRnSKgf8Mmu2w5ZzLLOzR1QEUReYrD+dUL31gU=
+X-Received: by 2002:a05:620a:348:: with SMTP id t8mr20976616qkm.203.1592930772589;
+ Tue, 23 Jun 2020 09:46:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200619182302.850-1-eperezma@redhat.com> <20200619182302.850-3-eperezma@redhat.com>
+ <20200623103746-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20200623103746-mutt-send-email-mst@kernel.org>
+From:   Eugenio Perez Martin <eperezma@redhat.com>
+Date:   Tue, 23 Jun 2020 18:45:36 +0200
+Message-ID: <CAJaqyWefmaENcnr+qaY3ezE2LoPp3+S_rLby_h1dRn2-N_nWfQ@mail.gmail.com>
+Subject: Re: [RFC v9 02/11] vhost: use batched get_vq_desc version
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     kvm list <kvm@vger.kernel.org>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Jason Wang <jasowang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To make the separation clear between vchiq's header files and vchiq.h,
-which is to be used by services and is the 'public' API, move it into a
-dedicated includes directory.
+On Tue, Jun 23, 2020 at 4:42 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> On Fri, Jun 19, 2020 at 08:22:53PM +0200, Eugenio P=C3=83=C2=A9rez wrote:
+> > From: "Michael S. Tsirkin" <mst@redhat.com>
+> >
+> > As testing shows no performance change, switch to that now.
+> >
+> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> > Signed-off-by: Eugenio P=C3=83=C2=A9rez <eperezma@redhat.com>
+> > Link: https://lore.kernel.org/r/20200401183118.8334-3-eperezma@redhat.c=
+om
+> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+> > Signed-off-by: Eugenio P=C3=83=C2=A9rez <eperezma@redhat.com>
+> > ---
+> >  drivers/vhost/test.c  |   2 +-
+> >  drivers/vhost/vhost.c | 314 ++++++++----------------------------------
+> >  drivers/vhost/vhost.h |   7 +-
+> >  3 files changed, 61 insertions(+), 262 deletions(-)
+> >
+> > diff --git a/drivers/vhost/test.c b/drivers/vhost/test.c
+> > index a09dedc79f68..650e69261557 100644
+> > --- a/drivers/vhost/test.c
+> > +++ b/drivers/vhost/test.c
+> > @@ -119,7 +119,7 @@ static int vhost_test_open(struct inode *inode, str=
+uct file *f)
+> >       dev =3D &n->dev;
+> >       vqs[VHOST_TEST_VQ] =3D &n->vqs[VHOST_TEST_VQ];
+> >       n->vqs[VHOST_TEST_VQ].handle_kick =3D handle_vq_kick;
+> > -     vhost_dev_init(dev, vqs, VHOST_TEST_VQ_MAX, UIO_MAXIOV,
+> > +     vhost_dev_init(dev, vqs, VHOST_TEST_VQ_MAX, UIO_MAXIOV + 64,
+> >                      VHOST_TEST_PKT_WEIGHT, VHOST_TEST_WEIGHT, true, NU=
+LL);
+> >
+> >       f->private_data =3D n;
+> > diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+> > index 2d784681b0fa..13021d6986eb 100644
+> > --- a/drivers/vhost/vhost.c
+> > +++ b/drivers/vhost/vhost.c
+> > @@ -304,6 +304,7 @@ static void vhost_vq_reset(struct vhost_dev *dev,
+> >  {
+> >       vq->num =3D 1;
+> >       vq->ndescs =3D 0;
+> > +     vq->first_desc =3D 0;
+> >       vq->desc =3D NULL;
+> >       vq->avail =3D NULL;
+> >       vq->used =3D NULL;
+> > @@ -372,6 +373,11 @@ static int vhost_worker(void *data)
+> >       return 0;
+> >  }
+> >
+> > +static int vhost_vq_num_batch_descs(struct vhost_virtqueue *vq)
+> > +{
+> > +     return vq->max_descs - UIO_MAXIOV;
+> > +}
+> > +
+> >  static void vhost_vq_free_iovecs(struct vhost_virtqueue *vq)
+> >  {
+> >       kfree(vq->descs);
+>
+>
+> Batching is enabled if max_descs > UIO_MAXIOV.
+>
+> So this uses batching for test.
+>
+> But net is unchanged, so it is still not using the batched version.
+> Is that right?
+>
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
----
- drivers/staging/vc04_services/Makefile                        | 2 +-
- drivers/staging/vc04_services/bcm2835-audio/Makefile          | 2 +-
- drivers/staging/vc04_services/bcm2835-audio/bcm2835.h         | 2 +-
- .../vchiq_arm => include/linux/raspberrypi}/vchiq.h           | 0
- .../staging/vc04_services/interface/vchiq_arm/vchiq_core.h    | 2 +-
- .../staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h   | 2 +-
- drivers/staging/vc04_services/vchiq-mmal/Makefile             | 1 +
- drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c         | 4 ++--
- 8 files changed, 8 insertions(+), 7 deletions(-)
- rename drivers/staging/vc04_services/{interface/vchiq_arm => include/linux/raspberrypi}/vchiq.h (100%)
+vhost_net already called vhost_dev_init with +VHOST_NET_BATCH (64):
+vhost_dev_init(dev, vqs, VHOST_NET_VQ_MAX,
+               UIO_MAXIOV + VHOST_NET_BATCH,
+...
 
-diff --git a/drivers/staging/vc04_services/Makefile b/drivers/staging/vc04_services/Makefile
-index e02a9c2abf77..7546d70116a0 100644
---- a/drivers/staging/vc04_services/Makefile
-+++ b/drivers/staging/vc04_services/Makefile
-@@ -12,5 +12,5 @@ obj-$(CONFIG_SND_BCM2835)		+= bcm2835-audio/
- obj-$(CONFIG_VIDEO_BCM2835)		+= bcm2835-camera/
- obj-$(CONFIG_BCM2835_VCHIQ_MMAL)	+= vchiq-mmal/
- 
--ccflags-y += -D__VCCOREVER__=0x04000000
-+ccflags-y += -I $(srctree)/$(src)/include  -D__VCCOREVER__=0x04000000
- 
-diff --git a/drivers/staging/vc04_services/bcm2835-audio/Makefile b/drivers/staging/vc04_services/bcm2835-audio/Makefile
-index 13fa6d7d9745..d59fe4dde615 100644
---- a/drivers/staging/vc04_services/bcm2835-audio/Makefile
-+++ b/drivers/staging/vc04_services/bcm2835-audio/Makefile
-@@ -2,4 +2,4 @@
- obj-$(CONFIG_SND_BCM2835)	+= snd-bcm2835.o
- snd-bcm2835-objs		:= bcm2835.o bcm2835-ctl.o bcm2835-pcm.o bcm2835-vchiq.o
- 
--ccflags-y += -I $(srctree)/$(src)/.. -D__VCCOREVER__=0x04000000
-+ccflags-y += -I $(srctree)/$(src)/../include -D__VCCOREVER__=0x04000000
-diff --git a/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h b/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
-index ca220f5230ec..1b36475872d6 100644
---- a/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
-+++ b/drivers/staging/vc04_services/bcm2835-audio/bcm2835.h
-@@ -6,10 +6,10 @@
- 
- #include <linux/device.h>
- #include <linux/wait.h>
-+#include <linux/raspberrypi/vchiq.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm-indirect.h>
--#include "interface/vchiq_arm/vchiq.h"
- 
- #define MAX_SUBSTREAMS   (8)
- #define AVAIL_SUBSTREAMS_MASK  (0xff)
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h b/drivers/staging/vc04_services/include/linux/raspberrypi/vchiq.h
-similarity index 100%
-rename from drivers/staging/vc04_services/interface/vchiq_arm/vchiq.h
-rename to drivers/staging/vc04_services/include/linux/raspberrypi/vchiq.h
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-index 8a27f3d7217e..e67692879249 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_core.h
-@@ -10,10 +10,10 @@
- #include <linux/kref.h>
- #include <linux/rcupdate.h>
- #include <linux/wait.h>
-+#include <linux/raspberrypi/vchiq.h>
- 
- #include "vchiq_cfg.h"
- 
--#include "vchiq.h"
- 
- /* Do this so that we can test-build the code on non-rpi systems */
- #if IS_ENABLED(CONFIG_RASPBERRYPI_FIRMWARE)
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h
-index f285d754ad28..3653fd99d8a1 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_ioctl.h
-@@ -5,7 +5,7 @@
- #define VCHIQ_IOCTLS_H
- 
- #include <linux/ioctl.h>
--#include "vchiq.h"
-+#include <linux/raspberrypi/vchiq.h>
- 
- #define VCHIQ_IOC_MAGIC 0xc4
- #define VCHIQ_INVALID_HANDLE (~0)
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/Makefile b/drivers/staging/vc04_services/vchiq-mmal/Makefile
-index f8164c33aec3..b2a830f48acc 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/Makefile
-+++ b/drivers/staging/vc04_services/vchiq-mmal/Makefile
-@@ -5,4 +5,5 @@ obj-$(CONFIG_BCM2835_VCHIQ_MMAL) += bcm2835-mmal-vchiq.o
- 
- ccflags-y += \
- 	-I$(srctree)/$(src)/.. \
-+	-I$(srctree)/$(src)/../include \
- 	-D__VCCOREVER__=0x04000000
-diff --git a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-index 72afa4319bd3..b99b7555a8fb 100644
---- a/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-+++ b/drivers/staging/vc04_services/vchiq-mmal/mmal-vchiq.c
-@@ -23,14 +23,14 @@
- #include <linux/slab.h>
- #include <linux/completion.h>
- #include <linux/vmalloc.h>
-+#include <linux/raspberrypi/vchiq.h>
- #include <media/videobuf2-vmalloc.h>
-+#include <linux/raspberrypi/vchiq.h>
- 
- #include "mmal-common.h"
- #include "mmal-vchiq.h"
- #include "mmal-msg.h"
- 
--#include "interface/vchiq_arm/vchiq.h"
--
- /*
-  * maximum number of components supported.
-  * This matches the maximum permitted by default on the VPU
--- 
-2.27.0
+So it should be using batching in the same terms as vhost/test.
+However I will double check it.
+
+> I think a better subject would be "vhost/test: use batched get_vq_desc ve=
+rsion".
+>
+> And that explains which testing it refers to: the one executed by vhost t=
+est.
+>
+> I think there was a separate patch to enable that for net separately,
+> but it got lost - or did I miss it?
+>
+
+Kind of. In V5 there were two separate commits: One adding the batch
+version and another one making them the default.
+
+Both of them were squashed in V6 but the result got the wrong commit
+message. I will fix this in the next revisions.
+
+But I don't find any specific commit to enable explicitly in net.
+
+Thanks!
+
+
+
+
+> --
+> MST
+>
 
