@@ -2,298 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4E99205789
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:45:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8D520576A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733170AbgFWQpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 12:45:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39240 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733136AbgFWQpe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 12:45:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AB915B049;
-        Tue, 23 Jun 2020 16:45:32 +0000 (UTC)
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     gregkh@linuxfoundation.org
-Cc:     kernel-list@raspberrypi.com, laurent.pinchart@ideasonboard.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: [PATCH 44/50] staging: vchi: Get rid of vchi_bulk_queue_transmit()
-Date:   Tue, 23 Jun 2020 18:42:30 +0200
-Message-Id: <20200623164235.29566-45-nsaenzjulienne@suse.de>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623164235.29566-1-nsaenzjulienne@suse.de>
-References: <20200623164235.29566-1-nsaenzjulienne@suse.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1732532AbgFWQmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 12:42:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46928 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732174AbgFWQmi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 12:42:38 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2597DC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:42:38 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id z26so9882890qto.15
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:42:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=zl+PzJjccgQ/z2IEdEeYMiws9NGR4cJmTEy3MFLmC3o=;
+        b=Du2IZQVww527r+DkfvLwjzL1rLzDjXpQwn91wkmvUrKnk31COi3wf75uaCGRrhnnGT
+         cZtT9QEs5+WAsDy2Ws+B4BBRNf8YRXN+wx28A81PgSW5nfRRKHGEunysMDByIjthTpU1
+         EaG+wzyDLq6vv8QEQnsq9NFMy+Ermx4r6wlkGoIVUpdvXVYM35WHVewJAvwnDJayvvIJ
+         LNC+uYqFb6WOk68KVwUZMOQ47eUWbRT7EAHJLRpH8tFbqnw9UwX9DGe3NzzMS8hv6L01
+         SxMsXa5G4ntXvJFJlJn6ilR1MO/d8wM/CtsQIbsORt7+rG13EysINazUWFLS/0Y592H1
+         hRRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=zl+PzJjccgQ/z2IEdEeYMiws9NGR4cJmTEy3MFLmC3o=;
+        b=sXeD4NfzRnLAygcyg9j+UOD6g0JUvnLxltslfeR4XAxeET198gFsOpwfdXVvoNkKO+
+         2sx52ftUGgvKzmd58GegZR/zw8BVAUfM1lW1pgZg7OGufUPBQlHVjQgz2jyQdTKRO675
+         eMevJiCXO/kSKc2EEWsi+1t7RrkrRxwVH+kiFQR1BFJKOKRLtcqQ7WfAIi+WVYKjdwjd
+         8D15mhlRY47JBf45m/jxrMwLJNAfF+t4fdEteILpErSRrlrXpT4ooN7+2/USqGa98CXS
+         vOZPRs95251Qx8x+Tl+05Sk4+DZoivWD7Kzzpwshsad8C7dmFly3QkAuOPN7Dyh61z7H
+         Ru/g==
+X-Gm-Message-State: AOAM533ynRqfptepVblsVZ6+BKGLOD8ttjhldrTcV4PgvRwx8/+Kjf8b
+        qE1PlLgZZoJ7C431cvszyfXERzf3cmK9
+X-Google-Smtp-Source: ABdhPJwQGXprOfL8jqRrhCa93rf7sj1+uuw00sukDTOJcaV6twqdQ/5psZBymPf6HUwvw6+AZPA8V/mGl64c
+X-Received: by 2002:a0c:bd12:: with SMTP id m18mr16597999qvg.178.1592930557012;
+ Tue, 23 Jun 2020 09:42:37 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 09:42:31 -0700
+Message-Id: <20200623164232.175846-1-brianvv@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
+Subject: [PATCH v2 net-next 1/2] indirect_call_wrapper: extend indirect
+ wrapper to support up to 4 calls
+From:   Brian Vazquez <brianvv@google.com>
+To:     Brian Vazquez <brianvv.kernel@gmail.com>,
+        Brian Vazquez <brianvv@google.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Its vchiq counterpart, vchiq_bulk_transmit() is only used by vchi. We
-can then merge both functions by moving vchi_bulk_queue_transmit()'s
-retry mechanism into vchiq_bulk_transmit() and let services call the
-later.
+There are many places where 2 annotations are not enough. This patch
+adds INDIRECT_CALL_3 and INDIRECT_CALL_4 to cover such cases.
 
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Signed-off-by: Brian Vazquez <brianvv@google.com>
 ---
- .../bcm2835-audio/bcm2835-vchiq.c             |  7 +-
- .../vc04_services/interface/vchi/vchi.h       | 11 ----
- .../interface/vchiq_arm/vchiq_arm.c           | 38 +++++++----
- .../interface/vchiq_arm/vchiq_shim.c          | 66 ++++---------------
- 4 files changed, 41 insertions(+), 81 deletions(-)
+ include/linux/indirect_call_wrapper.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c
-index 55f1e684eef1..28d64bc895cd 100644
---- a/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c
-+++ b/drivers/staging/vc04_services/bcm2835-audio/bcm2835-vchiq.c
-@@ -343,10 +343,9 @@ int bcm2835_audio_write(struct bcm2835_alsa_stream *alsa_stream,
- 	count = size;
- 	if (!instance->max_packet) {
- 		/* Send the message to the videocore */
--		status = vchi_bulk_queue_transmit(instance->service_handle,
--						  src, count,
--						  VCHIQ_BULK_MODE_BLOCKING,
--						  NULL);
-+		status = vchiq_bulk_transmit(instance->service_handle, src,
-+					     count, NULL,
-+					     VCHIQ_BULK_MODE_BLOCKING);
- 	} else {
- 		while (count > 0) {
- 			int bytes = min(instance->max_packet, count);
-diff --git a/drivers/staging/vc04_services/interface/vchi/vchi.h b/drivers/staging/vc04_services/interface/vchi/vchi.h
-index ca20b99122f2..c800796f9986 100644
---- a/drivers/staging/vc04_services/interface/vchi/vchi.h
-+++ b/drivers/staging/vc04_services/interface/vchi/vchi.h
-@@ -54,17 +54,6 @@ struct vchiq_header *vchi_msg_hold(unsigned handle);
- // Routine to release a held message after it has been processed
- extern int32_t vchi_held_msg_release(unsigned handle, struct vchiq_header *message);
+diff --git a/include/linux/indirect_call_wrapper.h b/include/linux/indirect_call_wrapper.h
+index 00d7e8e919c6..54c02c84906a 100644
+--- a/include/linux/indirect_call_wrapper.h
++++ b/include/linux/indirect_call_wrapper.h
+@@ -23,6 +23,16 @@
+ 		likely(f == f2) ? f2(__VA_ARGS__) :			\
+ 				  INDIRECT_CALL_1(f, f1, __VA_ARGS__);	\
+ 	})
++#define INDIRECT_CALL_3(f, f3, f2, f1, ...)					\
++	({									\
++		likely(f == f3) ? f3(__VA_ARGS__) :				\
++				  INDIRECT_CALL_2(f, f2, f1, __VA_ARGS__);	\
++	})
++#define INDIRECT_CALL_4(f, f4, f3, f2, f1, ...)					\
++	({									\
++		likely(f == f4) ? f4(__VA_ARGS__) :				\
++				  INDIRECT_CALL_3(f, f3, f2, f1, __VA_ARGS__);	\
++	})
  
--/******************************************************************************
-- * Global bulk API
-- *****************************************************************************/
--
--// Routine to queue up data ready for transfer to the other (once they have signalled they are ready)
--extern int32_t vchi_bulk_queue_transmit(unsigned handle,
--					const void *data_src,
--					uint32_t data_size,
--				        enum vchiq_bulk_mode mode,
--					void *transfer_handle);
--
- /******************************************************************************
-  * Configuration plumbing
-  *****************************************************************************/
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-index 50294930ed27..d25d1031ed96 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-@@ -354,19 +354,31 @@ vchiq_bulk_transmit(unsigned int handle, const void *data,
- {
- 	enum vchiq_status status;
- 
--	switch (mode) {
--	case VCHIQ_BULK_MODE_NOCALLBACK:
--	case VCHIQ_BULK_MODE_CALLBACK:
--		status = vchiq_bulk_transfer(handle, (void *)data, size,
--					     userdata, mode,
--					     VCHIQ_BULK_TRANSMIT);
--		break;
--	case VCHIQ_BULK_MODE_BLOCKING:
--		status = vchiq_blocking_bulk_transfer(handle,
--			(void *)data, size, VCHIQ_BULK_TRANSMIT);
--		break;
--	default:
--		return VCHIQ_ERROR;
-+	while (1) {
-+		switch (mode) {
-+		case VCHIQ_BULK_MODE_NOCALLBACK:
-+		case VCHIQ_BULK_MODE_CALLBACK:
-+			status = vchiq_bulk_transfer(handle, (void *)data, size,
-+						     userdata, mode,
-+						     VCHIQ_BULK_TRANSMIT);
-+			break;
-+		case VCHIQ_BULK_MODE_BLOCKING:
-+			status = vchiq_blocking_bulk_transfer(handle,
-+				(void *)data, size, VCHIQ_BULK_TRANSMIT);
-+			break;
-+		default:
-+			return VCHIQ_ERROR;
-+		}
-+
-+		/*
-+		 * vchiq_*_bulk_transfer() may return VCHIQ_RETRY, so we need
-+		 * to implement a retry mechanism since this function is
-+		 * supposed to block until queued
-+		 */
-+		if (status != VCHIQ_RETRY)
-+			break;
-+
-+		msleep(1);
- 	}
- 
- 	return status;
-diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-index f69936a9eb29..33493643b5f8 100644
---- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-+++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_shim.c
-@@ -31,46 +31,6 @@ int vchi_queue_kernel_message(unsigned handle, void *data, unsigned int size)
- }
- EXPORT_SYMBOL(vchi_queue_kernel_message);
- 
--/***********************************************************
-- * Name: vchi_bulk_queue_transmit
-- *
-- * Arguments:  VCHI_BULK_HANDLE_T handle,
-- *             const void *data_src,
-- *             uint32_t data_size,
-- *             enum vchi_flags flags,
-- *             void *bulk_handle
-- *
-- * Description: Routine to transmit some data
-- *
-- * Returns: int32_t - success == 0
-- *
-- ***********************************************************/
--int32_t vchi_bulk_queue_transmit(unsigned handle, const void *data_src,
--				 uint32_t data_size, enum vchiq_bulk_mode mode,
--				 void *bulk_handle)
--{
--	enum vchiq_status status;
--
--	while (1) {
--		status = vchiq_bulk_transmit(handle, data_src, data_size,
--					     bulk_handle, mode);
--
--		/*
--		 * vchiq_bulk_transmit() may return VCHIQ_RETRY, so we need to
--		 * implement a retry mechanism since this function is supposed
--		 * to block until queued
--		 */
--		if (status != VCHIQ_RETRY)
--			break;
--
--		msleep(1);
--	}
--
--	return status;
--}
--EXPORT_SYMBOL(vchi_bulk_queue_transmit);
--
--
- /***********************************************************
-  * Name: vchi_held_msg_release
-  *
-@@ -80,10 +40,10 @@ EXPORT_SYMBOL(vchi_bulk_queue_transmit);
-  * Description: Routine to release a held message (after it has been read with
-  *              vchi_msg_hold)
-  *
-- * Returns: int32_t - success == 0
-+ * Returns: int - success == 0
-  *
-  ***********************************************************/
--int32_t vchi_held_msg_release(unsigned handle, struct vchiq_header *message)
-+int vchi_held_msg_release(unsigned handle, struct vchiq_header *message)
- {
- 	/*
- 	 * Convert the service field pointer back to an
-@@ -104,7 +64,7 @@ EXPORT_SYMBOL(vchi_held_msg_release);
-  *
-  * Arguments:  struct vchi_service *service,
-  *             void **data,
-- *             uint32_t *msg_size,
-+ *             unsigned *msg_size,
-  *             struct vchiq_header **message
-  *
-  * Description: Routine to return a pointer to the current message (to allow
-@@ -112,7 +72,7 @@ EXPORT_SYMBOL(vchi_held_msg_release);
-  *              to release the message using vchi_held_msg_release when you're
-  *              finished.
-  *
-- * Returns: int32_t - success == 0
-+ * Returns: int - success == 0
-  *
-  ***********************************************************/
- struct vchiq_header *vchi_msg_hold(unsigned handle)
-@@ -134,7 +94,7 @@ EXPORT_SYMBOL(vchi_msg_hold);
-  *
-  ***********************************************************/
- 
--int32_t vchi_initialise(struct vchiq_instance **instance)
-+int vchi_initialise(struct vchiq_instance **instance)
- {
- 	return vchiq_initialise(instance);
- }
-@@ -151,7 +111,7 @@ EXPORT_SYMBOL(vchi_initialise);
-  * Returns: 0 if successful, failure otherwise
-  *
-  ***********************************************************/
--int32_t vchi_connect(struct vchiq_instance *instance)
-+int vchi_connect(struct vchiq_instance *instance)
- {
- 	return vchiq_connect(instance);
- }
-@@ -168,7 +128,7 @@ EXPORT_SYMBOL(vchi_connect);
-  * Returns: 0 if successful, failure otherwise
-  *
-  ***********************************************************/
--int32_t vchi_disconnect(struct vchiq_instance *instance)
-+int vchi_disconnect(struct vchiq_instance *instance)
- {
- 	return vchiq_shutdown(instance);
- }
-@@ -184,11 +144,11 @@ EXPORT_SYMBOL(vchi_disconnect);
-  *
-  * Description: Routine to open a service
-  *
-- * Returns: int32_t - success == 0
-+ * Returns: int - success == 0
-  *
-  ***********************************************************/
- 
--int32_t vchi_service_open(struct vchiq_instance *instance,
-+int vchi_service_open(struct vchiq_instance *instance,
- 		      struct vchiq_service_params *params,
- 		      unsigned *handle)
- {
-@@ -196,13 +156,13 @@ int32_t vchi_service_open(struct vchiq_instance *instance,
- }
- EXPORT_SYMBOL(vchi_service_open);
- 
--int32_t vchi_service_close(unsigned handle)
-+int vchi_service_close(unsigned handle)
- {
- 	return vchiq_close_service(handle);
- }
- EXPORT_SYMBOL(vchi_service_close);
- 
--int32_t vchi_get_peer_version(unsigned handle, short *peer_version)
-+int vchi_get_peer_version(unsigned handle, short *peer_version)
- {
- 	return vchiq_get_peer_version(handle, peer_version);
- }
-@@ -218,7 +178,7 @@ EXPORT_SYMBOL(vchi_get_peer_version);
-  * Returns: void
-  *
-  ***********************************************************/
--int32_t vchi_service_use(unsigned handle)
-+int vchi_service_use(unsigned handle)
- {
- 	return vchiq_use_service(handle);
- }
-@@ -234,7 +194,7 @@ EXPORT_SYMBOL(vchi_service_use);
-  * Returns: void
-  *
-  ***********************************************************/
--int32_t vchi_service_release(unsigned handle)
-+int vchi_service_release(unsigned handle)
- {
- 	return vchiq_release_service(handle);
- }
+ #define INDIRECT_CALLABLE_DECLARE(f)	f
+ #define INDIRECT_CALLABLE_SCOPE
+@@ -30,6 +40,8 @@
+ #else
+ #define INDIRECT_CALL_1(f, f1, ...) f(__VA_ARGS__)
+ #define INDIRECT_CALL_2(f, f2, f1, ...) f(__VA_ARGS__)
++#define INDIRECT_CALL_3(f, f3, f2, f1, ...) f(__VA_ARGS__)
++#define INDIRECT_CALL_4(f, f4, f3, f2, f1, ...) f(__VA_ARGS__)
+ #define INDIRECT_CALLABLE_DECLARE(f)
+ #define INDIRECT_CALLABLE_SCOPE		static
+ #endif
 -- 
-2.27.0
+2.27.0.111.gc72c7da667-goog
 
