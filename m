@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D23F2065C5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A01FF20648B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388428AbgFWULN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:11:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52032 "EHLO mail.kernel.org"
+        id S2390025AbgFWVXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:23:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388574AbgFWUKr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:10:47 -0400
+        id S2389761AbgFWUVX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:21:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 267C72073E;
-        Tue, 23 Jun 2020 20:10:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C58152070E;
+        Tue, 23 Jun 2020 20:21:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943045;
-        bh=PS8aDV5u36tr3N2eA/8uUjgXacL3+WbPXHm5Gm3XgOk=;
+        s=default; t=1592943683;
+        bh=c6wWnKNJNBmujrBXxK8KmfRMqyXJho+X8EP3LvApjRM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Iq80Lch97aXYBQaEZrqRf1C2NLunXmq3SIu2953wtgGCJ5oK7FBwMDtY7pMxskl65
-         5pccCo5pXV3kuDPDSwlclZPxoO7AKkPA+fON5zBuJytLEw1v009N09pnVplB6oQOp4
-         ETFtj9nQycje77BO05nGd+ewtAYNST8JzoBFsbD0=
+        b=TUmGB1YK4HjIADce5Vnunr4VzUzirP3OHeD38HDly9FsW4kltnVMD3gocx/kiUCDV
+         apGrumJwbZPR+74DnLurezamCyDU29ZLmeiQpyuYfLP0NgDofXKq2k6WCZZGLAqM2X
+         tr7BPtDFUO3VNot2ryDY94TyqKFuqThLkHEBjUFY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Erwin Burema <e.burema@gmail.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 207/477] ALSA: usb-audio: Add duplex sound support for USB devices using implicit feedback
-Date:   Tue, 23 Jun 2020 21:53:24 +0200
-Message-Id: <20200623195417.369030099@linuxfoundation.org>
+        stable@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 010/314] backlight: lp855x: Ensure regulators are disabled on probe failure
+Date:   Tue, 23 Jun 2020 21:53:25 +0200
+Message-Id: <20200623195339.283479825@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
-References: <20200623195407.572062007@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,294 +45,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Erwin Burema <e.burema@gmail.com>
+From: Jon Hunter <jonathanh@nvidia.com>
 
-[ Upstream commit 10ce77e4817fef99e1166be7e6685a80c63bf77f ]
+[ Upstream commit d8207c155a7c6015eb7f43739baa7dfb1fa638af ]
 
-For USB sound devices using implicit feedback the endpoint used for
-this feedback should be able to be opened twice, once for required
-feedback and second time for audio data. This way these devices can be
-put in duplex audio mode. Since this only works if the settings of the
-endpoint don't change a check is included for this.
+If probing the LP885x backlight fails after the regulators have been
+enabled, then the following warning is seen when releasing the
+regulators ...
 
-This fixes bug 207023 ("MOTU M2 regression on duplex audio") and
-should also fix bug 103751 ("M-Audio Fast Track Ultra usb audio device
-will not operate full-duplex")
+ WARNING: CPU: 1 PID: 289 at drivers/regulator/core.c:2051 _regulator_put.part.28+0x158/0x160
+ Modules linked in: tegra_xudc lp855x_bl(+) host1x pwm_tegra ip_tables x_tables ipv6 nf_defrag_ipv6
+ CPU: 1 PID: 289 Comm: systemd-udevd Not tainted 5.6.0-rc2-next-20200224 #1
+ Hardware name: NVIDIA Jetson TX1 Developer Kit (DT)
 
-Fixes: c249177944b6 ("ALSA: usb-audio: add implicit fb quirk for MOTU M Series")
-Signed-off-by: Erwin Burema <e.burema@gmail.com>
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207023
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=103751
-Link: https://lore.kernel.org/r/2410739.SCZni40SNb@alpha-wolf
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+ ...
+
+ Call trace:
+  _regulator_put.part.28+0x158/0x160
+  regulator_put+0x34/0x50
+  devm_regulator_release+0x10/0x18
+  release_nodes+0x12c/0x230
+  devres_release_all+0x34/0x50
+  really_probe+0x1c0/0x370
+  driver_probe_device+0x58/0x100
+  device_driver_attach+0x6c/0x78
+  __driver_attach+0xb0/0xf0
+  bus_for_each_dev+0x68/0xc8
+  driver_attach+0x20/0x28
+  bus_add_driver+0x160/0x1f0
+  driver_register+0x60/0x110
+  i2c_register_driver+0x40/0x80
+  lp855x_driver_init+0x20/0x1000 [lp855x_bl]
+  do_one_initcall+0x58/0x1a0
+  do_init_module+0x54/0x1d0
+  load_module+0x1d80/0x21c8
+  __do_sys_finit_module+0xe8/0x100
+  __arm64_sys_finit_module+0x18/0x20
+  el0_svc_common.constprop.3+0xb0/0x168
+  do_el0_svc+0x20/0x98
+  el0_sync_handler+0xf4/0x1b0
+  el0_sync+0x140/0x180
+
+Fix this by ensuring that the regulators are disabled, if enabled, on
+probe failure.
+
+Finally, ensure that the vddio regulator is disabled in the driver
+remove handler.
+
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+Reviewed-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/usb/card.h     |   1 +
- sound/usb/endpoint.c | 195 ++++++++++++++++++++++++++++++++++++++++++-
- sound/usb/pcm.c      |   5 ++
- 3 files changed, 197 insertions(+), 4 deletions(-)
+ drivers/video/backlight/lp855x_bl.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-diff --git a/sound/usb/card.h b/sound/usb/card.h
-index 820e564656edf..d6219fba96995 100644
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -108,6 +108,7 @@ struct snd_usb_endpoint {
- 	int iface, altsetting;
- 	int skip_packets;		/* quirks for devices to ignore the first n packets
- 					   in a stream */
-+	bool is_implicit_feedback;      /* This endpoint is used as implicit feedback */
+diff --git a/drivers/video/backlight/lp855x_bl.c b/drivers/video/backlight/lp855x_bl.c
+index f68920131a4a8..e94932c69f540 100644
+--- a/drivers/video/backlight/lp855x_bl.c
++++ b/drivers/video/backlight/lp855x_bl.c
+@@ -456,7 +456,7 @@ static int lp855x_probe(struct i2c_client *cl, const struct i2c_device_id *id)
+ 		ret = regulator_enable(lp->enable);
+ 		if (ret < 0) {
+ 			dev_err(lp->dev, "failed to enable vddio: %d\n", ret);
+-			return ret;
++			goto disable_supply;
+ 		}
  
- 	spinlock_t lock;
- 	struct list_head list;
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 50104f658ed49..9bea7d3f99f88 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -522,6 +522,8 @@ struct snd_usb_endpoint *snd_usb_add_endpoint(struct snd_usb_audio *chip,
+ 		/*
+@@ -471,24 +471,34 @@ static int lp855x_probe(struct i2c_client *cl, const struct i2c_device_id *id)
+ 	ret = lp855x_configure(lp);
+ 	if (ret) {
+ 		dev_err(lp->dev, "device config err: %d", ret);
+-		return ret;
++		goto disable_vddio;
+ 	}
  
- 	list_add_tail(&ep->list, &chip->ep_list);
+ 	ret = lp855x_backlight_register(lp);
+ 	if (ret) {
+ 		dev_err(lp->dev,
+ 			"failed to register backlight. err: %d\n", ret);
+-		return ret;
++		goto disable_vddio;
+ 	}
  
-+	ep->is_implicit_feedback = 0;
-+
- __exit_unlock:
- 	mutex_unlock(&chip->mutex);
+ 	ret = sysfs_create_group(&lp->dev->kobj, &lp855x_attr_group);
+ 	if (ret) {
+ 		dev_err(lp->dev, "failed to register sysfs. err: %d\n", ret);
+-		return ret;
++		goto disable_vddio;
+ 	}
  
-@@ -621,6 +623,178 @@ static void release_urbs(struct snd_usb_endpoint *ep, int force)
- 	ep->nurbs = 0;
- }
- 
-+/*
-+ * Check data endpoint for format differences
-+ */
-+static bool check_ep_params(struct snd_usb_endpoint *ep,
-+			      snd_pcm_format_t pcm_format,
-+			      unsigned int channels,
-+			      unsigned int period_bytes,
-+			      unsigned int frames_per_period,
-+			      unsigned int periods_per_buffer,
-+			      struct audioformat *fmt,
-+			      struct snd_usb_endpoint *sync_ep)
-+{
-+	unsigned int maxsize, minsize, packs_per_ms, max_packs_per_urb;
-+	unsigned int max_packs_per_period, urbs_per_period, urb_packs;
-+	unsigned int max_urbs;
-+	int frame_bits = snd_pcm_format_physical_width(pcm_format) * channels;
-+	int tx_length_quirk = (ep->chip->tx_length_quirk &&
-+			       usb_pipeout(ep->pipe));
-+	bool ret = 1;
+ 	backlight_update_status(lp->bl);
 +
-+	if (pcm_format == SNDRV_PCM_FORMAT_DSD_U16_LE && fmt->dsd_dop) {
-+		/*
-+		 * When operating in DSD DOP mode, the size of a sample frame
-+		 * in hardware differs from the actual physical format width
-+		 * because we need to make room for the DOP markers.
-+		 */
-+		frame_bits += channels << 3;
-+	}
+ 	return 0;
 +
-+	ret = ret && (ep->datainterval == fmt->datainterval);
-+	ret = ret && (ep->stride == frame_bits >> 3);
-+
-+	switch (pcm_format) {
-+	case SNDRV_PCM_FORMAT_U8:
-+		ret = ret && (ep->silence_value == 0x80);
-+		break;
-+	case SNDRV_PCM_FORMAT_DSD_U8:
-+	case SNDRV_PCM_FORMAT_DSD_U16_LE:
-+	case SNDRV_PCM_FORMAT_DSD_U32_LE:
-+	case SNDRV_PCM_FORMAT_DSD_U16_BE:
-+	case SNDRV_PCM_FORMAT_DSD_U32_BE:
-+		ret = ret && (ep->silence_value == 0x69);
-+		break;
-+	default:
-+		ret = ret && (ep->silence_value == 0);
-+	}
-+
-+	/* assume max. frequency is 50% higher than nominal */
-+	ret = ret && (ep->freqmax == ep->freqn + (ep->freqn >> 1));
-+	/* Round up freqmax to nearest integer in order to calculate maximum
-+	 * packet size, which must represent a whole number of frames.
-+	 * This is accomplished by adding 0x0.ffff before converting the
-+	 * Q16.16 format into integer.
-+	 * In order to accurately calculate the maximum packet size when
-+	 * the data interval is more than 1 (i.e. ep->datainterval > 0),
-+	 * multiply by the data interval prior to rounding. For instance,
-+	 * a freqmax of 41 kHz will result in a max packet size of 6 (5.125)
-+	 * frames with a data interval of 1, but 11 (10.25) frames with a
-+	 * data interval of 2.
-+	 * (ep->freqmax << ep->datainterval overflows at 8.192 MHz for the
-+	 * maximum datainterval value of 3, at USB full speed, higher for
-+	 * USB high speed, noting that ep->freqmax is in units of
-+	 * frames per packet in Q16.16 format.)
-+	 */
-+	maxsize = (((ep->freqmax << ep->datainterval) + 0xffff) >> 16) *
-+			 (frame_bits >> 3);
-+	if (tx_length_quirk)
-+		maxsize += sizeof(__le32); /* Space for length descriptor */
-+	/* but wMaxPacketSize might reduce this */
-+	if (ep->maxpacksize && ep->maxpacksize < maxsize) {
-+		/* whatever fits into a max. size packet */
-+		unsigned int data_maxsize = maxsize = ep->maxpacksize;
-+
-+		if (tx_length_quirk)
-+			/* Need to remove the length descriptor to calc freq */
-+			data_maxsize -= sizeof(__le32);
-+		ret = ret && (ep->freqmax == (data_maxsize / (frame_bits >> 3))
-+				<< (16 - ep->datainterval));
-+	}
-+
-+	if (ep->fill_max)
-+		ret = ret && (ep->curpacksize == ep->maxpacksize);
-+	else
-+		ret = ret && (ep->curpacksize == maxsize);
-+
-+	if (snd_usb_get_speed(ep->chip->dev) != USB_SPEED_FULL) {
-+		packs_per_ms = 8 >> ep->datainterval;
-+		max_packs_per_urb = MAX_PACKS_HS;
-+	} else {
-+		packs_per_ms = 1;
-+		max_packs_per_urb = MAX_PACKS;
-+	}
-+	if (sync_ep && !snd_usb_endpoint_implicit_feedback_sink(ep))
-+		max_packs_per_urb = min(max_packs_per_urb,
-+					1U << sync_ep->syncinterval);
-+	max_packs_per_urb = max(1u, max_packs_per_urb >> ep->datainterval);
-+
-+	/*
-+	 * Capture endpoints need to use small URBs because there's no way
-+	 * to tell in advance where the next period will end, and we don't
-+	 * want the next URB to complete much after the period ends.
-+	 *
-+	 * Playback endpoints with implicit sync much use the same parameters
-+	 * as their corresponding capture endpoint.
-+	 */
-+	if (usb_pipein(ep->pipe) ||
-+			snd_usb_endpoint_implicit_feedback_sink(ep)) {
-+
-+		urb_packs = packs_per_ms;
-+		/*
-+		 * Wireless devices can poll at a max rate of once per 4ms.
-+		 * For dataintervals less than 5, increase the packet count to
-+		 * allow the host controller to use bursting to fill in the
-+		 * gaps.
-+		 */
-+		if (snd_usb_get_speed(ep->chip->dev) == USB_SPEED_WIRELESS) {
-+			int interval = ep->datainterval;
-+
-+			while (interval < 5) {
-+				urb_packs <<= 1;
-+				++interval;
-+			}
-+		}
-+		/* make capture URBs <= 1 ms and smaller than a period */
-+		urb_packs = min(max_packs_per_urb, urb_packs);
-+		while (urb_packs > 1 && urb_packs * maxsize >= period_bytes)
-+			urb_packs >>= 1;
-+		ret = ret && (ep->nurbs == MAX_URBS);
-+
-+	/*
-+	 * Playback endpoints without implicit sync are adjusted so that
-+	 * a period fits as evenly as possible in the smallest number of
-+	 * URBs.  The total number of URBs is adjusted to the size of the
-+	 * ALSA buffer, subject to the MAX_URBS and MAX_QUEUE limits.
-+	 */
-+	} else {
-+		/* determine how small a packet can be */
-+		minsize = (ep->freqn >> (16 - ep->datainterval)) *
-+				(frame_bits >> 3);
-+		/* with sync from device, assume it can be 12% lower */
-+		if (sync_ep)
-+			minsize -= minsize >> 3;
-+		minsize = max(minsize, 1u);
-+
-+		/* how many packets will contain an entire ALSA period? */
-+		max_packs_per_period = DIV_ROUND_UP(period_bytes, minsize);
-+
-+		/* how many URBs will contain a period? */
-+		urbs_per_period = DIV_ROUND_UP(max_packs_per_period,
-+				max_packs_per_urb);
-+		/* how many packets are needed in each URB? */
-+		urb_packs = DIV_ROUND_UP(max_packs_per_period, urbs_per_period);
-+
-+		/* limit the number of frames in a single URB */
-+		ret = ret && (ep->max_urb_frames ==
-+			DIV_ROUND_UP(frames_per_period, urbs_per_period));
-+
-+		/* try to use enough URBs to contain an entire ALSA buffer */
-+		max_urbs = min((unsigned) MAX_URBS,
-+				MAX_QUEUE * packs_per_ms / urb_packs);
-+		ret = ret && (ep->nurbs == min(max_urbs,
-+				urbs_per_period * periods_per_buffer));
-+	}
-+
-+	ret = ret && (ep->datainterval == fmt->datainterval);
-+	ret = ret && (ep->maxpacksize == fmt->maxpacksize);
-+	ret = ret &&
-+		(ep->fill_max == !!(fmt->attributes & UAC_EP_CS_ATTR_FILL_MAX));
++disable_vddio:
++	if (lp->enable)
++		regulator_disable(lp->enable);
++disable_supply:
++	if (lp->supply)
++		regulator_disable(lp->supply);
 +
 +	return ret;
-+}
-+
- /*
-  * configure a data endpoint
-  */
-@@ -886,10 +1060,23 @@ int snd_usb_endpoint_set_params(struct snd_usb_endpoint *ep,
- 	int err;
+ }
  
- 	if (ep->use_count != 0) {
--		usb_audio_warn(ep->chip,
--			 "Unable to change format on ep #%x: already in use\n",
--			 ep->ep_num);
--		return -EBUSY;
-+		bool check = ep->is_implicit_feedback &&
-+			check_ep_params(ep, pcm_format,
-+					     channels, period_bytes,
-+					     period_frames, buffer_periods,
-+					     fmt, sync_ep);
-+
-+		if (!check) {
-+			usb_audio_warn(ep->chip,
-+				"Unable to change format on ep #%x: already in use\n",
-+				ep->ep_num);
-+			return -EBUSY;
-+		}
-+
-+		usb_audio_dbg(ep->chip,
-+			      "Ep #%x already in use as implicit feedback but format not changed\n",
-+			      ep->ep_num);
-+		return 0;
- 	}
+ static int lp855x_remove(struct i2c_client *cl)
+@@ -497,6 +507,8 @@ static int lp855x_remove(struct i2c_client *cl)
  
- 	/* release old buffers, if any */
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index b50965ab3b3a3..d61c2f1095b5c 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -404,6 +404,8 @@ add_sync_ep:
- 	if (!subs->sync_endpoint)
- 		return -EINVAL;
- 
-+	subs->sync_endpoint->is_implicit_feedback = 1;
-+
- 	subs->data_endpoint->sync_master = subs->sync_endpoint;
- 
- 	return 1;
-@@ -502,12 +504,15 @@ static int set_sync_endpoint(struct snd_usb_substream *subs,
- 						   implicit_fb ?
- 							SND_USB_ENDPOINT_TYPE_DATA :
- 							SND_USB_ENDPOINT_TYPE_SYNC);
-+
- 	if (!subs->sync_endpoint) {
- 		if (is_playback && attr == USB_ENDPOINT_SYNC_NONE)
- 			return 0;
- 		return -EINVAL;
- 	}
- 
-+	subs->sync_endpoint->is_implicit_feedback = implicit_fb;
-+
- 	subs->data_endpoint->sync_master = subs->sync_endpoint;
- 
- 	return 0;
+ 	lp->bl->props.brightness = 0;
+ 	backlight_update_status(lp->bl);
++	if (lp->enable)
++		regulator_disable(lp->enable);
+ 	if (lp->supply)
+ 		regulator_disable(lp->supply);
+ 	sysfs_remove_group(&lp->dev->kobj, &lp855x_attr_group);
 -- 
 2.25.1
 
