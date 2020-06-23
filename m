@@ -2,48 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C85205CA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D18B205C81
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388116AbgFWUDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:03:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41708 "EHLO mail.kernel.org"
+        id S2387866AbgFWUCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:02:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39780 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388104AbgFWUDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:03:48 -0400
+        id S2387851AbgFWUCb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:02:31 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D64E2206C3;
-        Tue, 23 Jun 2020 20:03:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6F71D2080C;
+        Tue, 23 Jun 2020 20:02:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942627;
-        bh=97ur8RLnc6uZV2ZwBva1Z/GnkPnVj4yOtOwXI3V349k=;
+        s=default; t=1592942551;
+        bh=6KHaJGlTD33dc/Mhhdf5nkQEiRXizBWuNBH2O25zAj0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W3R8SorGbnp7S4FynSPjfO8zZdaFqqcj92WUvjGtXSGMoebZmQJ7wcTQEjOmZ9U0N
-         G/iQbCPjn4vXt2xJ5ftZ8Z8exxZA4ywM4tx5xPgYGcSB0hpTfyu4JJbje5tkXHjiJn
-         wfcNdLFd6gZ0Rn+wQ33ff1gkU/fbwC/dwC05F6QY=
+        b=NGER7u1HTaK+nMpFco01T8K0KiqhAHYD9LSdMtaD7kyRggEZknsV50aQd6MdFC6YZ
+         Ec2G8/aMvg7lJrepFG8H4LbHZsmMlngwimJDCneBx8Z/JZ04VEuFQ39P62wW8SVKeO
+         a9qIVoM7jggLn7DUnvSX2fICpWYHv0bkKgwjYS6o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Long Cheng <long.cheng@mediatek.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 042/477] serial: 8250: Fix max baud limit in generic 8250 port
-Date:   Tue, 23 Jun 2020 21:50:39 +0200
-Message-Id: <20200623195409.597252000@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Auchter <michael.auchter@ni.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 043/477] nvmem: ensure sysfs writes handle write-protect pin
+Date:   Tue, 23 Jun 2020 21:50:40 +0200
+Message-Id: <20200623195409.640278150@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -56,79 +44,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+From: Michael Auchter <michael.auchter@ni.com>
 
-[ Upstream commit 7b668c064ec33f3d687c3a413d05e355172e6c92 ]
+[ Upstream commit b96fc5416b099a0c2509ca07a80b140d34db2b9b ]
 
-Standard 8250 UART ports are designed in a way so they can communicate
-with baud rates up to 1/16 of a reference frequency. It's expected from
-most of the currently supported UART controllers. That's why the former
-version of serial8250_get_baud_rate() method called uart_get_baud_rate()
-with min and max baud rates passed as (port->uartclk / 16 / UART_DIV_MAX)
-and ((port->uartclk + tolerance) / 16) respectively. Doing otherwise, like
-it was suggested in commit ("serial: 8250_mtk: support big baud rate."),
-caused acceptance of bauds, which was higher than the normal UART
-controllers actually supported. As a result if some user-space program
-requested to set a baud greater than (uartclk / 16) it would have been
-permitted without truncation, but then serial8250_get_divisor(baud)
-(which calls uart_get_divisor() to get the reference clock divisor) would
-have returned a zero divisor. Setting zero divisor will cause an
-unpredictable effect varying from chip to chip. In case of DW APB UART the
-communications just stop.
+Commit 2a127da461a9 ("nvmem: add support for the write-protect pin")
+added support for handling write-protect pins to the nvmem core, and
+Commit 1c89074bf850 ("eeprom: at24: remove the write-protect pin support")
+retrofitted the at24 driver to use this support.
 
-Lets fix this problem by getting back the limitation of (uartclk +
-tolerance) / 16 maximum baud supported by the generic 8250 port. Mediatek
-8250 UART ports driver developer shouldn't have touched it in the first
-place  notably seeing he already provided a custom version of set_termios()
-callback in that glue-driver which took into account the extended baud
-rate values and accordingly updated the standard and vendor-specific
-divisor latch registers anyway.
+These changes broke write() on the nvmem sysfs attribute for eeproms
+which utilize a write-protect pin, as the write callback invokes the
+nvmem device's reg_write callback directly which no longer handles
+changing the state of the write-protect pin.
 
-Fixes: 81bb549fdf14 ("serial: 8250_mtk: support big baud rate.")
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Long Cheng <long.cheng@mediatek.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Maxime Ripard <mripard@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: linux-mips@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mediatek@lists.infradead.org
-Link: https://lore.kernel.org/r/20200506233136.11842-2-Sergey.Semin@baikalelectronics.ru
+Change the read and write callbacks for the sysfs attribute to invoke
+nvmme_reg_read/nvmem_reg_write helpers which handle this, rather than
+calling reg_read/reg_write directly.
+
+Fixes: 2a127da461a9 ("nvmem: add support for the write-protect pin")
+Signed-off-by: Michael Auchter <michael.auchter@ni.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20200511145042.31223-3-srinivas.kandagatla@linaro.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_port.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/nvmem/core.c | 52 ++++++++++++++++++++++----------------------
+ 1 file changed, 26 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
-index f77bf820b7a30..4d83c85a7389b 100644
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -2615,6 +2615,8 @@ static unsigned int serial8250_get_baud_rate(struct uart_port *port,
- 					     struct ktermios *termios,
- 					     struct ktermios *old)
- {
-+	unsigned int tolerance = port->uartclk / 100;
-+
- 	/*
- 	 * Ask the core to calculate the divisor for us.
- 	 * Allow 1% tolerance at the upper limit so uart clks marginally
-@@ -2623,7 +2625,7 @@ static unsigned int serial8250_get_baud_rate(struct uart_port *port,
- 	 */
- 	return uart_get_baud_rate(port, termios, old,
- 				  port->uartclk / 16 / UART_DIV_MAX,
--				  port->uartclk);
-+				  (port->uartclk + tolerance) / 16);
- }
+diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
+index 05c6ae4b0b973..a8300202a7fbb 100644
+--- a/drivers/nvmem/core.c
++++ b/drivers/nvmem/core.c
+@@ -66,6 +66,30 @@ static LIST_HEAD(nvmem_lookup_list);
  
- void
+ static BLOCKING_NOTIFIER_HEAD(nvmem_notifier);
+ 
++static int nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
++			  void *val, size_t bytes)
++{
++	if (nvmem->reg_read)
++		return nvmem->reg_read(nvmem->priv, offset, val, bytes);
++
++	return -EINVAL;
++}
++
++static int nvmem_reg_write(struct nvmem_device *nvmem, unsigned int offset,
++			   void *val, size_t bytes)
++{
++	int ret;
++
++	if (nvmem->reg_write) {
++		gpiod_set_value_cansleep(nvmem->wp_gpio, 0);
++		ret = nvmem->reg_write(nvmem->priv, offset, val, bytes);
++		gpiod_set_value_cansleep(nvmem->wp_gpio, 1);
++		return ret;
++	}
++
++	return -EINVAL;
++}
++
+ #ifdef CONFIG_NVMEM_SYSFS
+ static const char * const nvmem_type_str[] = {
+ 	[NVMEM_TYPE_UNKNOWN] = "Unknown",
+@@ -122,7 +146,7 @@ static ssize_t bin_attr_nvmem_read(struct file *filp, struct kobject *kobj,
+ 	if (!nvmem->reg_read)
+ 		return -EPERM;
+ 
+-	rc = nvmem->reg_read(nvmem->priv, pos, buf, count);
++	rc = nvmem_reg_read(nvmem, pos, buf, count);
+ 
+ 	if (rc)
+ 		return rc;
+@@ -159,7 +183,7 @@ static ssize_t bin_attr_nvmem_write(struct file *filp, struct kobject *kobj,
+ 	if (!nvmem->reg_write)
+ 		return -EPERM;
+ 
+-	rc = nvmem->reg_write(nvmem->priv, pos, buf, count);
++	rc = nvmem_reg_write(nvmem, pos, buf, count);
+ 
+ 	if (rc)
+ 		return rc;
+@@ -311,30 +335,6 @@ static void nvmem_sysfs_remove_compat(struct nvmem_device *nvmem,
+ 
+ #endif /* CONFIG_NVMEM_SYSFS */
+ 
+-static int nvmem_reg_read(struct nvmem_device *nvmem, unsigned int offset,
+-			  void *val, size_t bytes)
+-{
+-	if (nvmem->reg_read)
+-		return nvmem->reg_read(nvmem->priv, offset, val, bytes);
+-
+-	return -EINVAL;
+-}
+-
+-static int nvmem_reg_write(struct nvmem_device *nvmem, unsigned int offset,
+-			   void *val, size_t bytes)
+-{
+-	int ret;
+-
+-	if (nvmem->reg_write) {
+-		gpiod_set_value_cansleep(nvmem->wp_gpio, 0);
+-		ret = nvmem->reg_write(nvmem->priv, offset, val, bytes);
+-		gpiod_set_value_cansleep(nvmem->wp_gpio, 1);
+-		return ret;
+-	}
+-
+-	return -EINVAL;
+-}
+-
+ static void nvmem_release(struct device *dev)
+ {
+ 	struct nvmem_device *nvmem = to_nvmem_device(dev);
 -- 
 2.25.1
 
