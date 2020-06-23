@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C84A205E8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:31:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C42205E72
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389943AbgFWUXx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:23:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42118 "EHLO mail.kernel.org"
+        id S2389019AbgFWUWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:22:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390348AbgFWUXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:23:50 -0400
+        id S2389009AbgFWUWe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:22:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 53CAB20723;
-        Tue, 23 Jun 2020 20:23:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BDC982073E;
+        Tue, 23 Jun 2020 20:22:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943829;
-        bh=9ZBvvwumbqVmD4E7N8e1DZ4AV4BqvVsv4cpUi2t8YHU=;
+        s=default; t=1592943754;
+        bh=zHdIzfMLwkkB8F+ORviGrhtu7onRrDFKT25ro4B5dCg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZacpgP15JFA/lBNWfIqBmP9NsL/U5xvV/fKKdOH6KxpdGPnMmpyR/ObiEZn1QD8yU
-         FyqhZb6OO7A1J/XUcsYXOxQOWEhg5ug6nsG3cko+zrvaAd0hheY1k2spntOdZFaqyx
-         mCXHkN0ucYXqPN+KD3ASHfA+7dTAhLpaVzmwhcW0=
+        b=kYOkD6CWqhqxb7h+s4+s8PYGaNtXRZqZJimiyR6xjQ7BozKpjjHJav4SnWBjALdUA
+         8tNF3XpAin080qa6oQZyr4nP/9XrlQQbVf7jsSDHYzCDeE3ZTsHZe5UK7M2g/4Is9q
+         hev36aSU5QJ74W3BC3b5Py9LggoyVw9efspUhOuA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
+        stable@vger.kernel.org,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Lars Povlsen <lars.povlsen@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 037/314] arm64: dts: juno: Fix GIC child nodes
-Date:   Tue, 23 Jun 2020 21:53:52 +0200
-Message-Id: <20200623195340.576949501@linuxfoundation.org>
+Subject: [PATCH 5.4 038/314] pinctrl: ocelot: Fix GPIO interrupt decoding on Jaguar2
+Date:   Tue, 23 Jun 2020 21:53:53 +0200
+Message-Id: <20200623195340.625888089@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
 References: <20200623195338.770401005@linuxfoundation.org>
@@ -44,130 +46,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andre Przywara <andre.przywara@arm.com>
+From: Lars Povlsen <lars.povlsen@microchip.com>
 
-[ Upstream commit a78aee9e434932a500db36cc6d88daeff3745e9f ]
+[ Upstream commit 0b47afc65453a70bc521e251138418056f65793f ]
 
-The GIC DT nodes for the Juno boards were not fully compliant with
-the DT binding, which has certain expectations about child nodes and
-their size and address cells values.
+This fixes a problem with using the GPIO as an interrupt on Jaguar2
+(and similar), as the register layout of the platforms with 64 GPIO's
+are pairwise, such that the original offset must be multiplied with
+the platform stride.
 
-Use smaller #address-cells and #size-cells values, as the binding
-requests, and adjust the reg properties accordingly.
-This requires adjusting the interrupt nexus nodes as well, as one
-field of the interrupt-map property depends on the GIC's address-size.
-
-Link: https://lore.kernel.org/r/20200513103016.130417-10-andre.przywara@arm.com
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+Fixes: da801ab56ad8 pinctrl: ocelot: add MSCC Jaguar2 support.
+Reviewed-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Signed-off-by: Lars Povlsen <lars.povlsen@microchip.com>
+Link: https://lore.kernel.org/r/20200513125532.24585-4-lars.povlsen@microchip.com
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/arm/juno-base.dtsi | 50 +++++++++++++-------------
- 1 file changed, 25 insertions(+), 25 deletions(-)
+ drivers/pinctrl/pinctrl-ocelot.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/arm/juno-base.dtsi b/arch/arm64/boot/dts/arm/juno-base.dtsi
-index 8c11660bbe40c..c47f76b01c4b5 100644
---- a/arch/arm64/boot/dts/arm/juno-base.dtsi
-+++ b/arch/arm64/boot/dts/arm/juno-base.dtsi
-@@ -62,35 +62,35 @@
- 		      <0x0 0x2c02f000 0 0x2000>,
- 		      <0x0 0x2c04f000 0 0x2000>,
- 		      <0x0 0x2c06f000 0 0x2000>;
--		#address-cells = <2>;
-+		#address-cells = <1>;
- 		#interrupt-cells = <3>;
--		#size-cells = <2>;
-+		#size-cells = <1>;
- 		interrupt-controller;
- 		interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(6) | IRQ_TYPE_LEVEL_HIGH)>;
--		ranges = <0 0 0 0x2c1c0000 0 0x40000>;
-+		ranges = <0 0 0x2c1c0000 0x40000>;
+diff --git a/drivers/pinctrl/pinctrl-ocelot.c b/drivers/pinctrl/pinctrl-ocelot.c
+index fb76fb2e9ea54..0a951a75c82b3 100644
+--- a/drivers/pinctrl/pinctrl-ocelot.c
++++ b/drivers/pinctrl/pinctrl-ocelot.c
+@@ -711,11 +711,12 @@ static void ocelot_irq_handler(struct irq_desc *desc)
+ 	struct irq_chip *parent_chip = irq_desc_get_chip(desc);
+ 	struct gpio_chip *chip = irq_desc_get_handler_data(desc);
+ 	struct ocelot_pinctrl *info = gpiochip_get_data(chip);
++	unsigned int id_reg = OCELOT_GPIO_INTR_IDENT * info->stride;
+ 	unsigned int reg = 0, irq, i;
+ 	unsigned long irqs;
  
- 		v2m_0: v2m@0 {
- 			compatible = "arm,gic-v2m-frame";
- 			msi-controller;
--			reg = <0 0 0 0x10000>;
-+			reg = <0 0x10000>;
- 		};
+ 	for (i = 0; i < info->stride; i++) {
+-		regmap_read(info->map, OCELOT_GPIO_INTR_IDENT + 4 * i, &reg);
++		regmap_read(info->map, id_reg + 4 * i, &reg);
+ 		if (!reg)
+ 			continue;
  
- 		v2m@10000 {
- 			compatible = "arm,gic-v2m-frame";
- 			msi-controller;
--			reg = <0 0x10000 0 0x10000>;
-+			reg = <0x10000 0x10000>;
- 		};
- 
- 		v2m@20000 {
- 			compatible = "arm,gic-v2m-frame";
- 			msi-controller;
--			reg = <0 0x20000 0 0x10000>;
-+			reg = <0x20000 0x10000>;
- 		};
- 
- 		v2m@30000 {
- 			compatible = "arm,gic-v2m-frame";
- 			msi-controller;
--			reg = <0 0x30000 0 0x10000>;
-+			reg = <0x30000 0x10000>;
- 		};
- 	};
- 
-@@ -519,10 +519,10 @@
- 			 <0x42000000 0x40 0x00000000 0x40 0x00000000 0x1 0x00000000>;
- 		#interrupt-cells = <1>;
- 		interrupt-map-mask = <0 0 0 7>;
--		interrupt-map = <0 0 0 1 &gic 0 0 GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0 0 2 &gic 0 0 GIC_SPI 137 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0 0 3 &gic 0 0 GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0 0 4 &gic 0 0 GIC_SPI 139 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupt-map = <0 0 0 1 &gic 0 GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0 0 2 &gic 0 GIC_SPI 137 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0 0 3 &gic 0 GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0 0 4 &gic 0 GIC_SPI 139 IRQ_TYPE_LEVEL_HIGH>;
- 		msi-parent = <&v2m_0>;
- 		status = "disabled";
- 		iommu-map-mask = <0x0>;	/* RC has no means to output PCI RID */
-@@ -786,19 +786,19 @@
- 
- 		#interrupt-cells = <1>;
- 		interrupt-map-mask = <0 0 15>;
--		interrupt-map = <0 0  0 &gic 0 0 GIC_SPI  68 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0  1 &gic 0 0 GIC_SPI  69 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0  2 &gic 0 0 GIC_SPI  70 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0  3 &gic 0 0 GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0  4 &gic 0 0 GIC_SPI 161 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0  5 &gic 0 0 GIC_SPI 162 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0  6 &gic 0 0 GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0  7 &gic 0 0 GIC_SPI 164 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0  8 &gic 0 0 GIC_SPI 165 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0  9 &gic 0 0 GIC_SPI 166 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0 10 &gic 0 0 GIC_SPI 167 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0 11 &gic 0 0 GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>,
--				<0 0 12 &gic 0 0 GIC_SPI 169 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupt-map = <0 0  0 &gic 0 GIC_SPI  68 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0  1 &gic 0 GIC_SPI  69 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0  2 &gic 0 GIC_SPI  70 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0  3 &gic 0 GIC_SPI 160 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0  4 &gic 0 GIC_SPI 161 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0  5 &gic 0 GIC_SPI 162 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0  6 &gic 0 GIC_SPI 163 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0  7 &gic 0 GIC_SPI 164 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0  8 &gic 0 GIC_SPI 165 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0  9 &gic 0 GIC_SPI 166 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0 10 &gic 0 GIC_SPI 167 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0 11 &gic 0 GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>,
-+				<0 0 12 &gic 0 GIC_SPI 169 IRQ_TYPE_LEVEL_HIGH>;
- 	};
- 
- 	site2: tlx@60000000 {
-@@ -808,6 +808,6 @@
- 		ranges = <0 0 0x60000000 0x10000000>;
- 		#interrupt-cells = <1>;
- 		interrupt-map-mask = <0 0>;
--		interrupt-map = <0 0 &gic 0 0 GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>;
-+		interrupt-map = <0 0 &gic 0 GIC_SPI 168 IRQ_TYPE_LEVEL_HIGH>;
- 	};
- };
 -- 
 2.25.1
 
