@@ -2,41 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE9920650B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:32:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73D5A206435
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389081AbgFWUN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:13:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55432 "EHLO mail.kernel.org"
+        id S2393421AbgFWVRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:17:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389077AbgFWUNW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:13:22 -0400
+        id S2389149AbgFWU0e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:26:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9976F20707;
-        Tue, 23 Jun 2020 20:13:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 223DF20702;
+        Tue, 23 Jun 2020 20:26:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943202;
-        bh=Bv/vyaWA2VbHx5NcZWftjxFnx87M5TP/+lO8vxz4B+w=;
+        s=default; t=1592943994;
+        bh=7i/UUvq2ow8wHVnKokk+DClSu8XQ9EKsbnb7G8pQP90=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c2UUupfJsl1lsvM83KBjRZZk/ouvsyjLPYRAUVYQ4hH/RvGB2g187x4O4Pt2e/cKV
-         T28pylk5nMoALmEyHHKsuZk9w0VV+jhJDYNLFTCGPWE6cEqF7vUL2cXbvN9BFqxFoA
-         SuEZZ4INIPTkWmPl3kacBgr6PiE3yPGeyJc+Quos=
+        b=llNFSLyIHkCJVVPSjUM189Fg1BUCspCfQH9apj5GScBnJbLUoFWrfTEXjB2HoAjvh
+         WKKPE6/tSXG03xs+gFp02sT7gOwD6aCHzDWQqO49mYm/JN0URAXQUem6CNuG1iSstI
+         wlxfqtGOK3u1Y0Gr2Q3Ckymt/cfCDmz4GyLisXFI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Yue Wang <yue.wang@amlogic.com>,
-        Hanjie Lin <hanjie.lin@amlogic.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 298/477] usb: dwc3: meson-g12a: fix error path when fetching the reset line fails
+Subject: [PATCH 5.4 100/314] ALSA: usb-audio: Fix racy list management in output queue
 Date:   Tue, 23 Jun 2020 21:54:55 +0200
-Message-Id: <20200623195421.636373360@linuxfoundation.org>
+Message-Id: <20200623195343.630805044@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
-References: <20200623195407.572062007@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,39 +43,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit be8c1001a7e681e8813882a42ed51c8dbffd8800 ]
+[ Upstream commit 5b6cc38f3f3f37109ce72b60bda215a5f6892c0b ]
 
-Disable and unprepare the clocks when devm_reset_control_get_shared()
-fails. This fixes the error path as this must disable the clocks which
-were previously enabled.
+The linked list entry from FIFO is peeked at
+queue_pending_output_urbs() but the actual element pop-out is
+performed outside the spinlock, and it's potentially racy.
 
-Fixes: 1e355f21d3fb96 ("usb: dwc3: Add Amlogic A1 DWC3 glue")
-Cc: Yue Wang <yue.wang@amlogic.com>
-Cc: Hanjie Lin <hanjie.lin@amlogic.com>
-Acked-by: Neil Armstrong <narmstrong@baylibre.com>
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Link: https://lore.kernel.org/r/20200526202943.715220-2-martin.blumenstingl@googlemail.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Do delete the link at the right place inside the spinlock.
+
+Fixes: 8fdff6a319e7 ("ALSA: snd-usb: implement new endpoint streaming model")
+Link: https://lore.kernel.org/r/20200424074016.14301-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/dwc3-meson-g12a.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/usb/endpoint.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/dwc3/dwc3-meson-g12a.c b/drivers/usb/dwc3/dwc3-meson-g12a.c
-index 2d257bdfe8485..eabb3bb6fcaa1 100644
---- a/drivers/usb/dwc3/dwc3-meson-g12a.c
-+++ b/drivers/usb/dwc3/dwc3-meson-g12a.c
-@@ -505,7 +505,7 @@ static int dwc3_meson_g12a_probe(struct platform_device *pdev)
- 	if (IS_ERR(priv->reset)) {
- 		ret = PTR_ERR(priv->reset);
- 		dev_err(dev, "failed to get device reset, err=%d\n", ret);
--		return ret;
-+		goto err_disable_clks;
- 	}
+diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
+index d8dc7cb56d43c..50104f658ed49 100644
+--- a/sound/usb/endpoint.c
++++ b/sound/usb/endpoint.c
+@@ -346,17 +346,17 @@ static void queue_pending_output_urbs(struct snd_usb_endpoint *ep)
+ 			ep->next_packet_read_pos %= MAX_URBS;
  
- 	ret = reset_control_reset(priv->reset);
+ 			/* take URB out of FIFO */
+-			if (!list_empty(&ep->ready_playback_urbs))
++			if (!list_empty(&ep->ready_playback_urbs)) {
+ 				ctx = list_first_entry(&ep->ready_playback_urbs,
+ 					       struct snd_urb_ctx, ready_list);
++				list_del_init(&ctx->ready_list);
++			}
+ 		}
+ 		spin_unlock_irqrestore(&ep->lock, flags);
+ 
+ 		if (ctx == NULL)
+ 			return;
+ 
+-		list_del_init(&ctx->ready_list);
+-
+ 		/* copy over the length information */
+ 		for (i = 0; i < packet->packets; i++)
+ 			ctx->packet_size[i] = packet->packet_size[i];
 -- 
 2.25.1
 
