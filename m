@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C77204BDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 10:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71605204BDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 10:02:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731732AbgFWIDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 04:03:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50908 "EHLO
+        id S1731737AbgFWICn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 04:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731534AbgFWIDO (ORCPT
+        with ESMTP id S1731158AbgFWICn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 04:03:14 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE9CC061573;
-        Tue, 23 Jun 2020 01:03:14 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id h28so3445993edz.0;
-        Tue, 23 Jun 2020 01:03:14 -0700 (PDT)
+        Tue, 23 Jun 2020 04:02:43 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CD3C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 01:02:43 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id e9so9492553pgo.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 01:02:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2rPds0/G6EcL2nawpDhmBWpfMm0TyFqHBbBHy9o57w0=;
-        b=B2bNXSqLuEsu8gf7GVyhIgx9TT8yKSIML+JRlieMW/cGH0XYqBkF6Dxev7Ut9w8CDc
-         jTFmGd/3K4PaxRUDlYvMYqR1NpHxdHDxmToLFDI43BWiJPJB5syXRDmNhvt1+uRTQ+y/
-         PQVigefkF3mTwJ4TfKt4gs8m8npdbBzsFhJp6fMlaqteyfmGJ/YJCIeUcqdb+uhxMxqT
-         19bJKP7hJdrn4dTQ1BtdxaOnKGOyet/61UuMl8Q05HK2Hz9Ar++Z2Y0U8qd1WT+MyyDv
-         JxuT2wj1MwtgOtXLHEuhghLdD3TMNwGhr5vKLi6AgoxfKhpZQ6C4UPKCRflguDZkGe25
-         C0LA==
+        d=sifive.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ru8jPTPnBePyvGJchZOluuKt4Npgi7HZT0olX4LUWXA=;
+        b=TuCRazjmS40grkDqJhwcvAh8RwtyFqD92Ki4Rz3qIjFPjt58XSWg6p6In9ykDmJJXW
+         D3wx0UiR2A2t/JmpXXWckro9KUZ2IiR3myo9lPlRAzg4gewNK3N94Awjn2EkVJCNCO9Z
+         r5FiCzfabQxxs3j+1xsO5xTazRPMCoxqm0vB6VKJnpzF7cx+Tt049EbnFJqbF0BNcsi9
+         ghT/EtvEJ4WBCErg8YDKPlIwDOb1uMhaz4R2GveUKeYxGwq7bdN3d38NGbV4qEJaj7r6
+         jHg8Lu4FuJGVKC+P1s8KOBQKvGCJSW+R/CJKlSoKyRhKKrik1eA+N+aHIdkFVuNhpH6Y
+         FBTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2rPds0/G6EcL2nawpDhmBWpfMm0TyFqHBbBHy9o57w0=;
-        b=rflxtQBivgi2zWud7rpEVo4hAxF2L8p3MYeRGZIDkXV/f6snIfD43qTDSCIg4dSvAI
-         060avyEhpGXbkqXCw8FI7JgOEJOWOOQgblRPd5QODaf2IkNpcTzFsT56AluS3atimatf
-         NHnyXIlWqZidQVrdxZoQnsM/Ezmh46h7HC1TylTAOf/bEV0Np/znajwuDNZJI9f/oIVK
-         nxo2g7tABjQsaRsiaafzQxfZAzweGarcZmr2EYIzFu382eBsBb6KtjCuc45QV+B9t+sz
-         1NGEpE5v0kezqJRhS4OzdbnrbSTLhLGQ4g5BN3DWsbVsLZTt4X0oYQ4ucPFQtMWcB/pt
-         bXNQ==
-X-Gm-Message-State: AOAM5301OXq3WKybV5tndxyF0vVYTOF/3NSCRBpoRjPil2o1fTeMLKYm
-        /g3jXTXA1Tuoa7Edx/wWoJ6xnX9KEGyV8IPjTgA=
-X-Google-Smtp-Source: ABdhPJxnTEC/7IMkbPEIMk4DJSmNqD8oNigmUD2kQb5Tg7dzsWj+iVEI5HhsukquaXBoDUo3B64tHTOC9luNNG2CLmE=
-X-Received: by 2002:aa7:c756:: with SMTP id c22mr20940182eds.239.1592899393084;
- Tue, 23 Jun 2020 01:03:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ru8jPTPnBePyvGJchZOluuKt4Npgi7HZT0olX4LUWXA=;
+        b=WpSjRUv3bpcOCFO6EvWGZvsnGogSuaguypPYUPVSg9zA3HQPGrvYbHxtTpQ9volEw4
+         UR3GRhYP+Rc0Pks3k2bqVqvzErD8HFUorM8UfHOcPpPphqKTfaGUVBHkmxnkdgua9VHq
+         EUcsgi/0CeyNnQUPv6ZJfC4IJVBGNIhJLP42FsglGpTubaTpYe2bKDaMfiH2hSJ9IgrT
+         4Y524shLiQgyxE42UxeeV4Yf4bKFu7wLqae9fUxHiQ5IoahCWPto0ef5T05ipv5Jybdc
+         w5Ng4fMnFrgVSF8kHE7He1+px3lIR3+i7lc+tgZdypkdUIHsO+8afbArnNrAsvERbQnu
+         hTTw==
+X-Gm-Message-State: AOAM530VJ0pB3cNwoB3M22S5hQJlJbRkOCqjfyg4SDY4aqsZa3fza4xg
+        UoHia0GoujvCuNKXYZfqpT3KYA==
+X-Google-Smtp-Source: ABdhPJwNKGpmftqGSnIuinlv7FoUHRvottguTJgzZ8vYl3davjP/NHkvSa9jOZ1OJXxz90aZkipbfg==
+X-Received: by 2002:a05:6a00:7c8:: with SMTP id n8mr23161403pfu.116.1592899362851;
+        Tue, 23 Jun 2020 01:02:42 -0700 (PDT)
+Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
+        by smtp.gmail.com with ESMTPSA id x4sm15499868pfx.87.2020.06.23.01.02.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 01:02:42 -0700 (PDT)
+From:   Zong Li <zong.li@sifive.com>
+To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Zong Li <zong.li@sifive.com>
+Subject: [PATCH] riscv: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
+Date:   Tue, 23 Jun 2020 16:02:38 +0800
+Message-Id: <20200623080238.122973-1-zong.li@sifive.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-References: <20200622192558.152828-1-konradybcio@gmail.com>
- <20200622192558.152828-2-konradybcio@gmail.com> <20200623072624.GY128451@builder.lan>
-In-Reply-To: <20200623072624.GY128451@builder.lan>
-From:   Konrad Dybcio <konradybcio@gmail.com>
-Date:   Tue, 23 Jun 2020 10:02:37 +0200
-Message-ID: <CAMS8qEWZ6hg1-n737ZDop6qsL4k3aNLPt_pJJqTwStNtRKhTcA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/7] pinctrl: qcom: spmi-gpio: Add pm660(l) compatibility
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jassi Brar <jassisinghbrar@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-gpio@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, you did.
+AT_VECTOR_SIZE_ARCH should be defined with the maximum number of
+NEW_AUX_ENT entries that ARCH_DLINFO can contain, but it wasn't defined
+for RISC-V at all even though ARCH_DLINFO will contain one NEW_AUX_ENT
+for the VDSO address.
 
-This was a mistake on my end and I realized it
- after sending the v3, but I figured there's no
- point in sending it yet again exclusively for this reason.
-Hope you don't mind.
+Signed-off-by: Zong Li <zong.li@sifive.com>
+---
+ arch/riscv/include/uapi/asm/auxvec.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Regards
-Konrad
+diff --git a/arch/riscv/include/uapi/asm/auxvec.h b/arch/riscv/include/uapi/asm/auxvec.h
+index d86cb17bbabe..22e0ae888406 100644
+--- a/arch/riscv/include/uapi/asm/auxvec.h
++++ b/arch/riscv/include/uapi/asm/auxvec.h
+@@ -10,4 +10,7 @@
+ /* vDSO location */
+ #define AT_SYSINFO_EHDR 33
+ 
++/* entries in ARCH_DLINFO */
++#define AT_VECTOR_SIZE_ARCH	1
++
+ #endif /* _UAPI_ASM_RISCV_AUXVEC_H */
+-- 
+2.27.0
+
