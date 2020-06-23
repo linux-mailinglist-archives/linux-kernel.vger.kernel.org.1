@@ -2,89 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBBE206261
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B680A20626E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392691AbgFWVAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:00:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393255AbgFWVAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 17:00:01 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 04D1E20656;
-        Tue, 23 Jun 2020 21:00:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592946001;
-        bh=0+sqPYIrnIToZGbPtFiFzRGJOK0b5oISbBRphyPoK7E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MmUT4+E8fMaJQo2B2XWSgXXHXyf/y1I9JXYl+XOrW13XyLgGq9zJZ8+4OvL9ymc7y
-         2eVAKkCxxEgQUo0xi6yUI+IbnJtbKKgGWK3ggZXjgandMu0MzWR+hcPTZ9wGfSAvU6
-         3jnULkm/S4XKpbrgL3CvopvYxmN29iecmg2BPTnA=
-Date:   Tue, 23 Jun 2020 13:59:59 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Jonathan Lemon <jonathan.lemon@gmail.com>
-Cc:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <kernel-team@fb.com>
-Subject: Re: [PATCH] linux/log2.h: enclose macro arg in parens
-Message-ID: <20200623135959.5c4eda49@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200623170739.3151706-1-jonathan.lemon@gmail.com>
-References: <20200623170739.3151706-1-jonathan.lemon@gmail.com>
+        id S2404261AbgFWVBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:01:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58542 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391320AbgFWVBN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 17:01:13 -0400
+Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2072AC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:01:13 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id c139so2353887qkg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 14:01:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IJiEAsm35OSf4Kwkxjuxcv6ZYgsjC9KkGStnrzjC88Y=;
+        b=oVFWJM2bXi+g6I82oVYXQLlJ9lk1WSeyy3qQIY7hXM1+QNiyL941g9vTUMmMF2+NZj
+         jO57gJMY8YB4KiVWgfaxBYL5R7ILDVFDX5GoulqsBQvOIyBuNRFYDjD4Tl3g70DrkOVQ
+         FJDsY8GpK2/cuO9HayQAONyJQty6l81z3Zg5I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IJiEAsm35OSf4Kwkxjuxcv6ZYgsjC9KkGStnrzjC88Y=;
+        b=D8jitMye7x/uLF3jKsfB1rzBrBrxWJhBs6vnUUN8Z1GDJjVkDoc/xhUjNxSaD3rMhT
+         SIx9LRLCvyUnK6HymAu2tWPpYnz9Q4qfiIzxGJY6YP1aLNDmzGYntnWKPf8t+3CriDbm
+         MRDBe+wuQCpbIG45t/MMJfP059LtBP4oo+yO3tt5yBZI7QrZRdU5B7eCc/5NjroD/HbL
+         qIDcyb6f++S/omn4P/nFaR6mv/gyMUlJFWLDtRibaHAbQMNuVv0R9DHRoc6D+pH86hrP
+         D0wVRzo5AGRl3WDWWbApSquFfhs+Lpng6Xi6abZ9a8LBFf8v/x2iEJVaAKLIKxCXo2DP
+         kiLA==
+X-Gm-Message-State: AOAM530S9o64uSuL9rintKIeZISr5N02ORquSbq0gSe38B3Adzwx+2bZ
+        66r/2latBzrR+TpnG8FTDM0o7g==
+X-Google-Smtp-Source: ABdhPJyGfilx6CEztNReVMBgYC0n2g4vy+LYXCPCtYQvtlo+uVU0OgHhBU/jN8roRMjV0yw8NAAcyA==
+X-Received: by 2002:a37:9b04:: with SMTP id d4mr21002794qke.58.1592946072304;
+        Tue, 23 Jun 2020 14:01:12 -0700 (PDT)
+Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
+        by smtp.gmail.com with ESMTPSA id 185sm1595326qke.92.2020.06.23.14.01.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 14:01:11 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 17:01:11 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
+        dipankar@in.ibm.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, linux-mm@kvack.org
+Subject: Re: [PATCH tip/core/rcu 02/26] mm/mmap.c: Add cond_resched() for
+ exit_mmap() CPU stalls
+Message-ID: <20200623210111.GA117936@google.com>
+References: <20200623002128.GA25456@paulmck-ThinkPad-P72>
+ <20200623002147.25750-2-paulmck@kernel.org>
+ <20200623193431.GA68372@google.com>
+ <20200623205508.GS9247@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200623205508.GS9247@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Jun 2020 10:07:39 -0700 Jonathan Lemon wrote:
-> From: Jonathan Lemon <bsd@fb.com>
->=20
-> roundup_pow_of_two uses its arg without enclosing it in parens.
->=20
-> A call of the form:
->=20
->    roundup_pow_of_two(boolval ? PAGE_SIZE : frag_size)
->=20
-> resulted in an compile warning:
->=20
-> warning: ?: using integer constants in boolean context [-Wint-in-bool-con=
-text]
->               PAGE_SIZE :
-> ../include/linux/log2.h:176:4: note: in definition of macro =E2=80=98roun=
-dup_pow_of_two=E2=80=99
->    (n =3D=3D 1) ? 1 :  \
->     ^
-> And the resulting code used '1' as the result of the operation.
+On Tue, Jun 23, 2020 at 01:55:08PM -0700, Paul E. McKenney wrote:
+[..] 
+> > Just for my understanding, cond_resched_tasks_rcu_qs() may not help here
+> > because preemption is not disabled right? Still I see no harm in using it
+> > here either as it may give a slight speed up for tasks-RCU.
+> 
+> The RCU-tasks stall-warning interval is ten minutes, and I have not yet
+> seen evidence that we are getting close to that.  If we do, then yes,
+> a cond_resched_tasks_rcu_qs() might be in this code's future.  But it
+> does add overhead, so we need to see the evidence first.
 
-I'd have thought that this warning is harmless, since the expression
-clearly is not a constant, interesting.
+Yes, true about that overhead. Ok, this is fine with me too, thanks :)
 
-> Fixes: 312a0c170945 ("[PATCH] LOG2: Alter roundup_pow_of_two() so that it=
- can use a ilog2() on a constant")
->=20
-
-Please no empty line between fixes and other tags.
-
-> Signed-off-by: Jonathan Lemon <jonathan.lemon@gmail.com>
-> ---
->  include/linux/log2.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/include/linux/log2.h b/include/linux/log2.h
-> index 83a4a3ca3e8a..c619ec6eff4a 100644
-> --- a/include/linux/log2.h
-> +++ b/include/linux/log2.h
-> @@ -173,7 +173,7 @@ unsigned long __rounddown_pow_of_two(unsigned long n)
->  #define roundup_pow_of_two(n)			\
->  (						\
->  	__builtin_constant_p(n) ? (		\
-> -		(n =3D=3D 1) ? 1 :			\
-> +		((n) =3D=3D 1) ? 1 :		\
->  		(1UL << (ilog2((n) - 1) + 1))	\
->  				   ) :		\
->  	__roundup_pow_of_two(n)			\
+ - Joel
 
