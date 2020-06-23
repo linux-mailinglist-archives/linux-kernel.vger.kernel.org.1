@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00012204785
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DEC32047AF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:54:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732000AbgFWCvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 22:51:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33024 "EHLO mx2.suse.de"
+        id S1731833AbgFWCxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 22:53:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33028 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731858AbgFWCve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 22:51:34 -0400
+        id S1731863AbgFWCvd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 22:51:33 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C6987AE70;
-        Tue, 23 Jun 2020 02:51:31 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 3925CAE84;
+        Tue, 23 Jun 2020 02:51:32 +0000 (UTC)
 From:   =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>
 To:     linux-realtek-soc@lists.infradead.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -22,11 +22,10 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         <james.tai@realtek.com>,
         =?UTF-8?q?Stanley=20Chang=20=5B=E6=98=8C=E8=82=B2=E5=BE=B7=5D?= 
         <stanley_chang@realtek.com>, Edgar Lee <cylee12@realtek.com>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: [PATCH v2 05/29] dt-bindings: soc: realtek: rtd1195-chip: Add iso-syscon property
-Date:   Tue, 23 Jun 2020 04:50:42 +0200
-Message-Id: <20200623025106.31273-6-afaerber@suse.de>
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>
+Subject: [PATCH v2 06/29] soc: realtek: chip: Detect RTD1296
+Date:   Tue, 23 Jun 2020 04:50:43 +0200
+Message-Id: <20200623025106.31273-7-afaerber@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200623025106.31273-1-afaerber@suse.de>
 References: <20200623025106.31273-1-afaerber@suse.de>
@@ -38,55 +37,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow to optionally specify a phandle to iso syscon to identify the chip.
-RTD1295 family will want to check the ISO_CHIP_INFO1 register.
+Detection logic from downstream drivers/soc/realtek/rtd129x/rtk_chip.c.
 
+Acked-by: James Tai <james.tai@realtek.com>
 Signed-off-by: Andreas Färber <afaerber@suse.de>
 ---
- A SoC specific binding would defeat the purpose of the generic Linux driver
- detecting the SoC based on registers.
- Simply allowing it all for SoC families seems the most flexible.
+ TODO: Name the bit in ISO_CHIP_INFO1:bound_opts.
  
  v1 -> v2:
- * Instead of extending reg, allow optional iso-syscon property for RTD129x.
-   Iso syscon currently does not have a compatible, and it may need to differ
-   across SoC families.
+ * Instead of direct iso register access use the new syscon regmap
  
- .../bindings/soc/realtek/realtek,rtd1195-chip.yaml       | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/soc/realtek/chip.c | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/soc/realtek/realtek,rtd1195-chip.yaml b/Documentation/devicetree/bindings/soc/realtek/realtek,rtd1195-chip.yaml
-index 86a1de214782..dfe33c95f68d 100644
---- a/Documentation/devicetree/bindings/soc/realtek/realtek,rtd1195-chip.yaml
-+++ b/Documentation/devicetree/bindings/soc/realtek/realtek,rtd1195-chip.yaml
-@@ -11,6 +11,7 @@ maintainers:
+diff --git a/drivers/soc/realtek/chip.c b/drivers/soc/realtek/chip.c
+index c4650d512c91..103f564aad7f 100644
+--- a/drivers/soc/realtek/chip.c
++++ b/drivers/soc/realtek/chip.c
+@@ -23,6 +23,8 @@
  
- description: |
-   The Realtek DHC SoCs have some registers to identify the chip and revision.
-+  To identify the exact model within a family, further registers are needed.
+ #define SB2_CHIP_INFO_REVISE_ID		GENMASK(31, 16)
  
- properties:
-   compatible:
-@@ -19,6 +20,8 @@ properties:
-   reg:
-     maxItems: 1
- 
-+  iso-syscon: true
++#define REG_ISO_CHIP_INFO1	0x028
 +
- required:
-   - compatible
-   - reg
-@@ -31,4 +34,10 @@ examples:
-         compatible = "realtek,rtd1195-chip";
-         reg = <0x1801a200 0x8>;
-     };
-+  - |
-+    chip-info@9801a200 {
-+        compatible = "realtek,rtd1195-chip";
-+        reg = <0x9801a200 0x8>;
-+        iso-syscon = <&iso>;
-+    };
- ...
+ struct dhc_soc_revision {
+ 	const char *name;
+ 	u16 chip_rev;
+@@ -57,9 +59,32 @@ static const char *default_name(struct device *dev, const struct dhc_soc *s)
+ 	return s->family;
+ }
+ 
++static const char *rtd1295_name(struct device *dev, const struct dhc_soc *s)
++{
++	struct regmap *regmap;
++	unsigned int val;
++	int ret;
++
++	regmap = syscon_regmap_lookup_by_phandle(dev->of_node, "iso-syscon");
++	if (IS_ERR(regmap)) {
++		ret = PTR_ERR(regmap);
++		if (ret == -EPROBE_DEFER)
++			return ERR_PTR(ret);
++		dev_warn(dev, "Could not check iso (%d)\n", ret);
++	} else {
++		ret = regmap_read(regmap, REG_ISO_CHIP_INFO1, &val);
++		if (ret)
++			dev_warn(dev, "Could not read chip_info1 (%d)\n", ret);
++		else if (val & BIT(11))
++			return "RTD1296";
++	}
++
++	return "RTD1295";
++}
++
+ static const struct dhc_soc dhc_soc_families[] = {
+ 	{ 0x6329, "RTD1195", default_name, rtd1195_revisions, "Phoenix" },
+-	{ 0x6421, "RTD1295", default_name, rtd1295_revisions, "Kylin" },
++	{ 0x6421, "RTD1295", rtd1295_name, rtd1295_revisions, "Kylin" },
+ };
+ 
+ static const struct dhc_soc *dhc_soc_by_chip_id(u16 chip_id)
 -- 
 2.26.2
 
