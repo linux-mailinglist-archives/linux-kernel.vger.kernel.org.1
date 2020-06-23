@@ -2,173 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E75002057B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7257A2057A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733277AbgFWQqe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 12:46:34 -0400
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:35599 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1733227AbgFWQqR (ORCPT
+        id S1733222AbgFWQqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 12:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47478 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733145AbgFWQqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 12:46:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592930775;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xtESeAIlwwuuldGj0MjFCKFwVmKIYZPcQoRS/U4Z2AU=;
-        b=P0SssR4dQ6DX12Wo9TpPDS4mlr4SmZgyRmkA5L1oIFH1jolgx9657VZFiTnWBl9R1nkV/t
-        S1ez5lnj9ENG3wgSG3X60po2G2XNpiwg2Lixf7bT7Rdq60oPEFOozuEXzieZ7zrwnhHmNS
-        2dOpxXExxG5AHeLin20AhkkjDBsXZVg=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-113-R3GQxw-4N5aIin6YfxPFvw-1; Tue, 23 Jun 2020 12:46:13 -0400
-X-MC-Unique: R3GQxw-4N5aIin6YfxPFvw-1
-Received: by mail-qk1-f198.google.com with SMTP id 16so15684450qka.15
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:46:13 -0700 (PDT)
+        Tue, 23 Jun 2020 12:46:08 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5272C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:46:07 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id d7so12036579lfi.12
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:46:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+bSkao1fR/aZzYYv4AgeUsmuwtpx/y/7K+5PiaFCLy8=;
+        b=vAPFLYGu1TdA30k3D08MHCeAkwEDvRhNs6PPhjyJjuF+0UYCT9ld58PdBbl9mMkeG5
+         OaKeZnn9K3qfJSFl3Ve0o6TUQIlE/4mGqgscomjGr4wm1k1Fb0ha1jI1ct2a9w66B+Ug
+         bA8QOC5p/gjEu5cZIisWh4eQcCy5Q//aGLLlRmV9zaRlCGe6sXFl17zFIhblBNTDK/uv
+         DB7bSWFWD5Jvk88VgiGJHojELn8qUWBE4Ma00iKPUxVOq6EfaqIxw1tSh4j73A7I+rQM
+         Tfoy2Bf6YA09AkGwJuOvDlH18+GzqhmcgeMyYqBJ2At+nmhvQ+uHDDeZ1anVuZyUR6km
+         w/pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xtESeAIlwwuuldGj0MjFCKFwVmKIYZPcQoRS/U4Z2AU=;
-        b=gnMoqaTnUWR5H/7EQ38FuzquhzrWCDlx/jL0pAuaZQ14qgkUORYK42nPFKiJL2qyy1
-         NPCkEIsDM0bMvyAJlAc2Fc1LRBQy6FiVPaMGmgNO0CPZ3pte0vfMCxZNDOnrIhBsTLTo
-         tmIh2D7Zd7kOUHOG7/p8A7BPI2aFlPgo/639yj+vFae287JXessw4SHJZYSvac99TVKy
-         x4aAHwKDHK33carsk/jq0hGlijBmEvmlPjudN5oD7zu+r1RR5bbSyn29j/r4ZvlBUGtc
-         Z4/UCLXIgo+gnUi/om/ac9NfEtLgstND8iBA3WUsx9LGGQT0poR5/VftMUO4I7POmjBR
-         HzhA==
-X-Gm-Message-State: AOAM532R40a4zEa9bMF8kSqaSAn1P/6Z5afzwPsnt249PNOU4SL+9xEl
-        vOCk/Vv9/0JzO0ZXQ5pCrX0YjC0+IDkyeu12DbKHk8PPD0lFLVQH477JLuLUnjDONyfU83q43k+
-        Qr7HYsdWAlBUiJBBRSfFfvIoZLNTky3xS5+VdLrH0
-X-Received: by 2002:a05:620a:348:: with SMTP id t8mr20976642qkm.203.1592930772839;
-        Tue, 23 Jun 2020 09:46:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzz/YK3q1LyztX9Y0BARpa7qb402eLsAUxVHw0c9TOmsYRIZiRnSKgf8Mmu2w5ZzLLOzR1QEUReYrD+dUL31gU=
-X-Received: by 2002:a05:620a:348:: with SMTP id t8mr20976616qkm.203.1592930772589;
- Tue, 23 Jun 2020 09:46:12 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=+bSkao1fR/aZzYYv4AgeUsmuwtpx/y/7K+5PiaFCLy8=;
+        b=JXaw+D+iOJAWcQgTKCRGR0ZVISxNr7Mwa7LaVkqMoP2PKfTiUCqY+HEN5NCmw2U+fP
+         1i8bAyQfXn3pZq5XXaUqL12FPX4gUJgzsInODfhJndvc4oH7EZl610rp3W3RdBppPk/B
+         yjEv4+yCxI+VCoY/BudAa1peUjgUprr72xkDsNDz9qmKBPFReSB2jPrp1IQSS93KRxsv
+         R21g6YLQIvpDDrgwkJAoOfJDWCWLQ1zkDxQhcVxe1uAS79qwMIIt4IzlE40zoYnCV55d
+         IyNhjd3WWVNqps2jf9PdR+6Im8OCOgsD8lY5wPP2TAHx3imqFXhe+1N6rUFWRiMK9ove
+         4fKw==
+X-Gm-Message-State: AOAM53212PpZkzruND2+HdExnj8PW7AL5yNLHfoGv6FjR2TpfNJUN4eJ
+        k4ib5qeX3hPq2NwtoKOFzCKNseC0k3zbbUiIJealWQ==
+X-Google-Smtp-Source: ABdhPJyxYp3qmMEokG6vwqfhfNOtgNzGbZsd3cPd5dvqCf6z2xa0umo3bDc03vKMX148XTHkBGPB3IHs3rFkWwFJ66U=
+X-Received: by 2002:a19:be4b:: with SMTP id o72mr13004763lff.141.1592930764708;
+ Tue, 23 Jun 2020 09:46:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200619182302.850-1-eperezma@redhat.com> <20200619182302.850-3-eperezma@redhat.com>
- <20200623103746-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20200623103746-mutt-send-email-mst@kernel.org>
-From:   Eugenio Perez Martin <eperezma@redhat.com>
-Date:   Tue, 23 Jun 2020 18:45:36 +0200
-Message-ID: <CAJaqyWefmaENcnr+qaY3ezE2LoPp3+S_rLby_h1dRn2-N_nWfQ@mail.gmail.com>
-Subject: Re: [RFC v9 02/11] vhost: use batched get_vq_desc version
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     kvm list <kvm@vger.kernel.org>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jason Wang <jasowang@redhat.com>
+References: <20200623162958.331051-1-dima@arista.com> <20200623162958.331051-3-dima@arista.com>
+In-Reply-To: <20200623162958.331051-3-dima@arista.com>
+From:   Jann Horn <jannh@google.com>
+Date:   Tue, 23 Jun 2020 18:45:38 +0200
+Message-ID: <CAG48ez3v9dHq1+jvPmvQapFRji=4XhA8iNurTGZeC6xoy7Qc1w@mail.gmail.com>
+Subject: Re: [PATCH 2/3] x86/dumpstack: Add log_lvl to __show_regs()
+To:     Dmitry Safonov <dima@arista.com>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "the arch/x86 maintainers" <x86@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 4:42 PM Michael S. Tsirkin <mst@redhat.com> wrote:
+On Tue, Jun 23, 2020 at 6:30 PM Dmitry Safonov <dima@arista.com> wrote:
+> show_trace_log_lvl() provides x86 platform-specific way to unwind
+> backtrace with a given log level. Unfortunately, registers dump(s) are
+> not printed with the same log level - instead, KERN_DEFAULT is always
+> used.
 >
-> On Fri, Jun 19, 2020 at 08:22:53PM +0200, Eugenio P=C3=83=C2=A9rez wrote:
-> > From: "Michael S. Tsirkin" <mst@redhat.com>
-> >
-> > As testing shows no performance change, switch to that now.
-> >
-> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > Signed-off-by: Eugenio P=C3=83=C2=A9rez <eperezma@redhat.com>
-> > Link: https://lore.kernel.org/r/20200401183118.8334-3-eperezma@redhat.c=
-om
-> > Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-> > Signed-off-by: Eugenio P=C3=83=C2=A9rez <eperezma@redhat.com>
-> > ---
-> >  drivers/vhost/test.c  |   2 +-
-> >  drivers/vhost/vhost.c | 314 ++++++++----------------------------------
-> >  drivers/vhost/vhost.h |   7 +-
-> >  3 files changed, 61 insertions(+), 262 deletions(-)
-> >
-> > diff --git a/drivers/vhost/test.c b/drivers/vhost/test.c
-> > index a09dedc79f68..650e69261557 100644
-> > --- a/drivers/vhost/test.c
-> > +++ b/drivers/vhost/test.c
-> > @@ -119,7 +119,7 @@ static int vhost_test_open(struct inode *inode, str=
-uct file *f)
-> >       dev =3D &n->dev;
-> >       vqs[VHOST_TEST_VQ] =3D &n->vqs[VHOST_TEST_VQ];
-> >       n->vqs[VHOST_TEST_VQ].handle_kick =3D handle_vq_kick;
-> > -     vhost_dev_init(dev, vqs, VHOST_TEST_VQ_MAX, UIO_MAXIOV,
-> > +     vhost_dev_init(dev, vqs, VHOST_TEST_VQ_MAX, UIO_MAXIOV + 64,
-> >                      VHOST_TEST_PKT_WEIGHT, VHOST_TEST_WEIGHT, true, NU=
-LL);
-> >
-> >       f->private_data =3D n;
-> > diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
-> > index 2d784681b0fa..13021d6986eb 100644
-> > --- a/drivers/vhost/vhost.c
-> > +++ b/drivers/vhost/vhost.c
-> > @@ -304,6 +304,7 @@ static void vhost_vq_reset(struct vhost_dev *dev,
-> >  {
-> >       vq->num =3D 1;
-> >       vq->ndescs =3D 0;
-> > +     vq->first_desc =3D 0;
-> >       vq->desc =3D NULL;
-> >       vq->avail =3D NULL;
-> >       vq->used =3D NULL;
-> > @@ -372,6 +373,11 @@ static int vhost_worker(void *data)
-> >       return 0;
-> >  }
-> >
-> > +static int vhost_vq_num_batch_descs(struct vhost_virtqueue *vq)
-> > +{
-> > +     return vq->max_descs - UIO_MAXIOV;
-> > +}
-> > +
-> >  static void vhost_vq_free_iovecs(struct vhost_virtqueue *vq)
-> >  {
-> >       kfree(vq->descs);
+> Arista's switches uses quite common setup with rsyslog, where only
+> urgent messages goes to console (console_log_level=KERN_ERR), everything
+> else goes into /var/log/ as the console baud-rate often is indecently
+> slow (9600 bps).
 >
+> Backtrace dumps without registers printed have proven to be as useful as
+> morning standups. Furthermore, in order to introduce KERN_UNSUPPRESSED
+> (which I believe is still the most elegant way to fix raciness of sysrq[1])
+> the log level should be passed down the stack to register dumping
+> functions. Besides, I have a potential use-case for printing traces
+> with KERN_DEBUG level [2] (where registers dump shouldn't appear with
+> higher log level).
 >
-> Batching is enabled if max_descs > UIO_MAXIOV.
+> Add log_lvl parameter to __show_regs().
+> Keep the used log level intact to separate visible change.
+
+This change seems like a good idea to me; just one small nit:
+
+[...]
+>  void show_regs(struct pt_regs *regs)
+>  {
+> +       int print_kernel_regs;
+> +
+>         show_regs_print_info(KERN_DEFAULT);
 >
-> So this uses batching for test.
->
-> But net is unchanged, so it is still not using the batched version.
-> Is that right?
->
+> -       __show_regs(regs, user_mode(regs) ? SHOW_REGS_USER : SHOW_REGS_ALL);
+> +       print_kernel_regs = user_mode(regs) ? SHOW_REGS_USER : SHOW_REGS_ALL;
+> +       __show_regs(regs, print_kernel_regs, KERN_DEFAULT);
 
-vhost_net already called vhost_dev_init with +VHOST_NET_BATCH (64):
-vhost_dev_init(dev, vqs, VHOST_NET_VQ_MAX,
-               UIO_MAXIOV + VHOST_NET_BATCH,
-...
-
-So it should be using batching in the same terms as vhost/test.
-However I will double check it.
-
-> I think a better subject would be "vhost/test: use batched get_vq_desc ve=
-rsion".
->
-> And that explains which testing it refers to: the one executed by vhost t=
-est.
->
-> I think there was a separate patch to enable that for net separately,
-> but it got lost - or did I miss it?
->
-
-Kind of. In V5 there were two separate commits: One adding the batch
-version and another one making them the default.
-
-Both of them were squashed in V6 but the result got the wrong commit
-message. I will fix this in the next revisions.
-
-But I don't find any specific commit to enable explicitly in net.
-
-Thanks!
-
-
-
-
-> --
-> MST
->
-
+print_kernel_regs should probably have type "enum show_regs_mode"?
