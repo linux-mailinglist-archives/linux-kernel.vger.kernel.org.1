@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C038F20460B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAA0204604
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732330AbgFWAoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:44:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40730 "EHLO mail.kernel.org"
+        id S1732257AbgFWAnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:43:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732163AbgFWAng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1732171AbgFWAng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Jun 2020 20:43:36 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 252CC20874;
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D099207DD;
         Tue, 23 Jun 2020 00:43:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592873016;
-        bh=GR6ogSxmcukOgF4mhlKqOxxYURZEZlC7F/ht+xRgJQA=;
+        bh=wBAiO7bXcA3ok+x3Llo09qQpqbRCMVAmyrQ2t28M81M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O63hfk33Uc841mQwyHC0jVGfE+PsV/oqXYkheo6LyuglgqOb+vlT0cN35aMhSBQXB
-         RZgN/dHyveMlR9C9ZDSFS9jtQDjti0kin9/1sd8/gfnTx6VUNhFFRRIv8DvCUcU8cT
-         Kxbhf+2crGK0MNUHXZdtQI1d4ic1OLTYp6uwWn8c=
+        b=q5W+mGocvExqYAxhu7egXZBjSKdhT0Hl5thzACKyowwLGIb+Ef7fsvD5D1REoJ8sO
+         XG42WGmbBh4bd95bUvxZCqqClYyWGHSzMbTkNXb96A8UVyFWmcOVctqTJNwUhMZbqS
+         FCdLTweQSJABAqz8iWoUdNxMnZc4QRRZ+QiDayts=
 From:   paulmck@kernel.org
 To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
         kernel-team@fb.com, mingo@kernel.org
 Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
         dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 05/10] locking/osq_lock: Annotate a data race in osq_lock
-Date:   Mon, 22 Jun 2020 17:43:28 -0700
-Message-Id: <20200623004333.27227-5-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 06/10] kcsan: Prefer '__no_kcsan inline' in test
+Date:   Mon, 22 Jun 2020 17:43:29 -0700
+Message-Id: <20200623004333.27227-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623003731.GA26717@paulmck-ThinkPad-P72>
 References: <20200623003731.GA26717@paulmck-ThinkPad-P72>
@@ -40,51 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <cai@lca.pw>
+From: Marco Elver <elver@google.com>
 
-The prev->next pointer can be accessed concurrently as noticed by KCSAN:
+Instead of __no_kcsan_or_inline, prefer '__no_kcsan inline' in test --
+this is in case we decide to remove __no_kcsan_or_inline.
 
- write (marked) to 0xffff9d3370dbbe40 of 8 bytes by task 3294 on cpu 107:
-  osq_lock+0x25f/0x350
-  osq_wait_next at kernel/locking/osq_lock.c:79
-  (inlined by) osq_lock at kernel/locking/osq_lock.c:185
-  rwsem_optimistic_spin
-  <snip>
-
- read to 0xffff9d3370dbbe40 of 8 bytes by task 3398 on cpu 100:
-  osq_lock+0x196/0x350
-  osq_lock at kernel/locking/osq_lock.c:157
-  rwsem_optimistic_spin
-  <snip>
-
-Since the write only stores NULL to prev->next and the read tests if
-prev->next equals to this_cpu_ptr(&osq_node). Even if the value is
-shattered, the code is still working correctly. Thus, mark it as an
-intentional data race using the data_race() macro.
-
-Signed-off-by: Qian Cai <cai@lca.pw>
+Suggested-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Marco Elver <elver@google.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/locking/osq_lock.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/kcsan/kcsan-test.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/locking/osq_lock.c b/kernel/locking/osq_lock.c
-index 1f77349..1de006e 100644
---- a/kernel/locking/osq_lock.c
-+++ b/kernel/locking/osq_lock.c
-@@ -154,7 +154,11 @@ bool osq_lock(struct optimistic_spin_queue *lock)
- 	 */
+diff --git a/kernel/kcsan/kcsan-test.c b/kernel/kcsan/kcsan-test.c
+index a8c1150..3af420a 100644
+--- a/kernel/kcsan/kcsan-test.c
++++ b/kernel/kcsan/kcsan-test.c
+@@ -43,7 +43,7 @@ static struct {
+ };
  
- 	for (;;) {
--		if (prev->next == node &&
-+		/*
-+		 * cpu_relax() below implies a compiler barrier which would
-+		 * prevent this comparison being optimized away.
-+		 */
-+		if (data_race(prev->next) == node &&
- 		    cmpxchg(&prev->next, node, NULL) == node)
- 			break;
+ /* Setup test checking loop. */
+-static __no_kcsan_or_inline void
++static __no_kcsan inline void
+ begin_test_checks(void (*func1)(void), void (*func2)(void))
+ {
+ 	kcsan_disable_current();
+@@ -60,7 +60,7 @@ begin_test_checks(void (*func1)(void), void (*func2)(void))
+ }
  
+ /* End test checking loop. */
+-static __no_kcsan_or_inline bool
++static __no_kcsan inline bool
+ end_test_checks(bool stop)
+ {
+ 	if (!stop && time_before(jiffies, end_time)) {
 -- 
 2.9.5
 
