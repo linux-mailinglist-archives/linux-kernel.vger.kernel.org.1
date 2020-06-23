@@ -2,113 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B01BF204E68
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AA5B204E76
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732137AbgFWJuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 05:50:14 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:39397 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1732011AbgFWJuO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:50:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592905813;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YUWKpAA/Hhk4UI8s/nEYBc1/Nwq36zCGzOCK051Tg9w=;
-        b=Lb6jeYSkvpeUL2skWQyWgQ3AmbIgCM2pzyYm1OxtHOmuc6KMGZvpwWXLdkg4IHtbgA2Iac
-        o7MJ2MNAXfBDRt6JKQyKM/ZqKT2HTixhnqInpWBkFQB6/OahYSOxpi6WG5v7A98RkHquxv
-        nXc8sPt2mdAA8HidYt8IemuJZergvPc=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-508-WIJBnkEXMRCxnAS8lyXExg-1; Tue, 23 Jun 2020 05:50:12 -0400
-X-MC-Unique: WIJBnkEXMRCxnAS8lyXExg-1
-Received: by mail-wr1-f69.google.com with SMTP id p9so14683834wrx.10
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 02:50:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YUWKpAA/Hhk4UI8s/nEYBc1/Nwq36zCGzOCK051Tg9w=;
-        b=r5dQ6t4Wf1+DIAgNVaybJiGRihUFsQINQrXAjGhp9XVbfqc0yxjc8f5u2y2fNKBmQQ
-         otu+zG1KzpSjR1eXyAZYbeNNrAKf0IBzbzCD6sNfRWddi3SSKVfQ4RlfoSOb1zzjcJ5c
-         IOJqxY/Qpxoms7COIHE2r7BZkL/UlxZe3iedNm3bpMLAf8w3HocCcgvaLq8RvWTa2ZPy
-         QZoHfMcHp7TqnkBe9A4mQ3m34BlJZSvUq/tWs8CwG/yazPuF+wYNe4wmtOEKuwm6+tNE
-         Xj8bOxqtwmW4d4wWJiN/I3Nllm5ciCnks7LXzUvCKw7nxluUomky6pZPOn9ttRjXHFro
-         aKDg==
-X-Gm-Message-State: AOAM531dmBSrGErPkQjosTXH7ytEgmv3WbtUxU8g1PKlO90Oht2u47Ni
-        qcMGT0bFJQGuFBsj79aR31VVx1fYStG1/XFXufPS1GzmlLtLXIrTrzMaV14EQK3+IbWTZd355EQ
-        VGYelgRywaZZAlyalq+/lQP7i
-X-Received: by 2002:a05:6000:18c:: with SMTP id p12mr25626927wrx.66.1592905810046;
-        Tue, 23 Jun 2020 02:50:10 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxekMM2DbqF5WADhrGxqod6OIVEnPVOq+j2KwNGmFCSXAEV4K6MeVmfhgj8xr0dwyao5yUbmA==
-X-Received: by 2002:a05:6000:18c:: with SMTP id p12mr25626902wrx.66.1592905809756;
-        Tue, 23 Jun 2020 02:50:09 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:24f5:23b:4085:b879? ([2001:b07:6468:f312:24f5:23b:4085:b879])
-        by smtp.gmail.com with ESMTPSA id 67sm22498925wrk.49.2020.06.23.02.50.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jun 2020 02:50:09 -0700 (PDT)
-Subject: Re: [PATCH] KVM: X86: Fix MSR range of APIC registers in X2APIC mode
-To:     Xiaoyao Li <xiaoyao.li@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200616073307.16440-1-xiaoyao.li@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <daf1fe8b-dcaf-5008-aa3f-ab8b1b538414@redhat.com>
-Date:   Tue, 23 Jun 2020 11:50:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200616073307.16440-1-xiaoyao.li@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1732136AbgFWJwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 05:52:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33018 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731887AbgFWJwq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 05:52:46 -0400
+Received: from localhost.localdomain (unknown [42.120.72.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B8BC20738;
+        Tue, 23 Jun 2020 09:52:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592905965;
+        bh=hLBY3T7nrxUU7besxQDrdAZvKz6an4ijUXrWT9hqieo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=sDk1DoOI/7VYDn3LkluIEPHS44P568ZPmgO9GIGU81n+V4QvnBRRlgJ6KoGZ8np/1
+         nchuto7hxk3NglxADUoAeGQnS5USTefTWSgKHd1x/Q4tcAfSAsIqrH9xKhcbY7OoFt
+         gn+uynw8qwuyAqZLgExUUjh6+CjdddSVnBOzuQPw=
+From:   guoren@kernel.org
+To:     vincent.chen@sifive.com
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        paul.walmsley@sifive.com, aou@eecs.berkeley.edu,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Alan Kao <alankao@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>
+Subject: [PATCH] riscv: Fixup __vdso_gettimeofday broke dynamic ftrace
+Date:   Tue, 23 Jun 2020 09:50:54 +0000
+Message-Id: <1592905854-60833-1-git-send-email-guoren@kernel.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/06/20 09:33, Xiaoyao Li wrote:
-> Only MSR address range 0x800 through 0x8ff is architecturally reserved
-> and dedicated for accessing APIC registers in x2APIC mode.
-> 
-> Fixes: 0105d1a52640 ("KVM: x2apic interface to lapic")
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> ---
->  arch/x86/kvm/x86.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 00c88c2f34e4..29d9b078ce69 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -2856,7 +2856,7 @@ int kvm_set_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  		return kvm_mtrr_set_msr(vcpu, msr, data);
->  	case MSR_IA32_APICBASE:
->  		return kvm_set_apic_base(vcpu, msr_info);
-> -	case APIC_BASE_MSR ... APIC_BASE_MSR + 0x3ff:
-> +	case APIC_BASE_MSR ... APIC_BASE_MSR + 0xff:
->  		return kvm_x2apic_msr_write(vcpu, msr, data);
->  	case MSR_IA32_TSCDEADLINE:
->  		kvm_set_lapic_tscdeadline_msr(vcpu, data);
-> @@ -3196,7 +3196,7 @@ int kvm_get_msr_common(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
->  	case MSR_IA32_APICBASE:
->  		msr_info->data = kvm_get_apic_base(vcpu);
->  		break;
-> -	case APIC_BASE_MSR ... APIC_BASE_MSR + 0x3ff:
-> +	case APIC_BASE_MSR ... APIC_BASE_MSR + 0xff:
->  		return kvm_x2apic_msr_read(vcpu, msr_info->index, &msr_info->data);
->  	case MSR_IA32_TSCDEADLINE:
->  		msr_info->data = kvm_get_lapic_tscdeadline_msr(vcpu);
-> 
+From: Guo Ren <guoren@linux.alibaba.com>
 
-Queued, thanks (with Cc to stable).
+For linux-5.8-rc1, enable ftrace of riscv will cause boot panic:
 
-Paolo
+[    2.388980] Run /sbin/init as init process
+[    2.529938] init[39]: unhandled signal 4 code 0x1 at 0x0000003ff449e000
+[    2.531078] CPU: 0 PID: 39 Comm: init Not tainted 5.8.0-rc1-dirty #13
+[    2.532719] epc: 0000003ff449e000 ra : 0000003ff449e954 sp : 0000003fffedb900
+[    2.534005]  gp : 00000000000e8528 tp : 0000003ff449d800 t0 : 000000000000001e
+[    2.534965]  t1 : 000000000000000a t2 : 0000003fffedb89e s0 : 0000003fffedb920
+[    2.536279]  s1 : 0000003fffedb940 a0 : 0000003ff43d4b2c a1 : 0000000000000000
+[    2.537334]  a2 : 0000000000000001 a3 : 0000000000000000 a4 : fffffffffbad8000
+[    2.538466]  a5 : 0000003ff449e93a a6 : 0000000000000000 a7 : 0000000000000000
+[    2.539511]  s2 : 0000000000000000 s3 : 0000003ff448412c s4 : 0000000000000010
+[    2.541260]  s5 : 0000000000000016 s6 : 00000000000d0a30 s7 : 0000003fffedba70
+[    2.542152]  s8 : 0000000000000000 s9 : 0000000000000000 s10: 0000003fffedb960
+[    2.543335]  s11: 0000000000000000 t3 : 0000000000000000 t4 : 0000003fffedb8a0
+[    2.544471]  t5 : 0000000000000000 t6 : 0000000000000000
+[    2.545730] status: 0000000000004020 badaddr: 00000000464c457f cause: 0000000000000002
+[    2.549867] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000004
+[    2.551267] CPU: 0 PID: 1 Comm: init Not tainted 5.8.0-rc1-dirty #13
+[    2.552061] Call Trace:
+[    2.552626] [<ffffffe00020374a>] walk_stackframe+0x0/0xc4
+[    2.553486] [<ffffffe0002039f4>] show_stack+0x40/0x4c
+[    2.553995] [<ffffffe00054a6ae>] dump_stack+0x7a/0x98
+[    2.554615] [<ffffffe00020b9b8>] panic+0x114/0x2f4
+[    2.555395] [<ffffffe00020ebd6>] do_exit+0x89c/0x8c2
+[    2.555949] [<ffffffe00020f930>] do_group_exit+0x3a/0x90
+[    2.556715] [<ffffffe000219e08>] get_signal+0xe2/0x6e6
+[    2.557388] [<ffffffe000202d72>] do_notify_resume+0x6a/0x37a
+[    2.558089] [<ffffffe000201c16>] ret_from_exception+0x0/0xc
+
+"ra:0x3ff449e954" is the return address of "call _mcount" in the
+prologue of __vdso_gettimeofday(). Without proper relocate, pc jmp
+to 0x0000003ff449e000 (vdso map base) with a illegal instruction
+trap.
+
+The solution comes from arch/arm64/kernel/vdso/Makefile:
+
+CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os $(CC_FLAGS_SCS)
+
+ - CC_FLAGS_SCS is ShadowCallStack feature in Clang and only
+   implemented for arm64, no use for riscv.
+
+The bug comes from the following commit:
+
+ad5d1122b82f ("riscv: use vDSO common flow to reduce the latency of the time-related functions")
+
+Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+Cc: Vincent Chen <vincent.chen@sifive.com>
+Cc: Atish Patra <atish.patra@wdc.com>
+Cc: Palmer Dabbelt <palmerdabbelt@google.com>
+Cc: Alan Kao <alankao@andestech.com>
+Cc: Greentime Hu <green.hu@gmail.com>
+---
+ arch/riscv/kernel/vdso/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+index 38ba55b..3079935 100644
+--- a/arch/riscv/kernel/vdso/Makefile
++++ b/arch/riscv/kernel/vdso/Makefile
+@@ -27,6 +27,9 @@ obj-vdso := $(addprefix $(obj)/, $(obj-vdso))
+ obj-y += vdso.o vdso-syms.o
+ CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
+ 
++# Disable -pg to prevent insert call site
++CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os
++
+ # Disable gcov profiling for VDSO code
+ GCOV_PROFILE := n
+ 
+-- 
+2.7.4
 
