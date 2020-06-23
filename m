@@ -2,39 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68270206012
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 547DF205F4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392035AbgFWUjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:39:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34806 "EHLO mail.kernel.org"
+        id S2390748AbgFWUbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:31:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392021AbgFWUjK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:39:10 -0400
+        id S2388271AbgFWUbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:31:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C7A221531;
-        Tue, 23 Jun 2020 20:39:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FD292064B;
+        Tue, 23 Jun 2020 20:31:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944750;
-        bh=DrZu0NMmSZMIz0xH6G9+APbQxnDbr+G3aSdiLuebcDU=;
+        s=default; t=1592944282;
+        bh=mzXSjF9PmHePhcMtqcmwxBJma7XPfGGrCd/HZ0E53R8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BI6sI5BAbHyBFm8mQgkgsTaROoP36XosPZSzSCAJZihkos2qMNnSR4VTE+BQzDS0k
-         cV0H/g8GkuVWm1qzWyElTCHCJdAR6xNwdOPbSsvrmS4Z7fFj+tOPm1llmnEYZYPTUr
-         1lbn3x4YitZwER/K8wdSJ6P/zr7PwzqB4ISLwPmk=
+        b=iET5mRBSvSfhW0CsZnadkeGUG/EVUUwc4pIVhXNyyRqn0qnleKEk3S50bcQ0bQEB+
+         YR1wB6khXQTqFDBX7YP3ZuJRcN9VrXHcHspF0VHLeU+JZ/aAfVSr5wzmR3N9ORewgf
+         VZ7BTP6eSmLb6QRH5kZc6TEAevARNiQ3oRuslDtM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Potnuri Bharat Teja <bharat@chelsio.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+        stable@vger.kernel.org,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Daniel Baluta <daniel.baluta@gmail.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 111/206] RDMA/iw_cxgb4: cleanup device debugfs entries on ULD remove
+Subject: [PATCH 5.4 244/314] ASoC: SOF: nocodec: conditionally set dpcm_capture/dpcm_playback flags
 Date:   Tue, 23 Jun 2020 21:57:19 +0200
-Message-Id: <20200623195322.404205831@linuxfoundation.org>
+Message-Id: <20200623195350.584956802@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,33 +48,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Potnuri Bharat Teja <bharat@chelsio.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-[ Upstream commit 49ea0c036ede81f126f1a9389d377999fdf5c5a1 ]
+[ Upstream commit ba4e5abc6c4e173af7c941c03c067263b686665d ]
 
-Remove device specific debugfs entries immediately if LLD detaches a
-particular ULD device in case of fatal PCI errors.
+With additional checks on dailinks, we see errors such as
 
-Link: https://lore.kernel.org/r/20200524190814.17599-1-bharat@chelsio.com
-Signed-off-by: Potnuri Bharat Teja <bharat@chelsio.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+[ 3.000418] sof-nocodec sof-nocodec: CPU DAI DMIC01 Pin for rtd
+NoCodec-6 does not support playback
+
+It's not clear why we set the dpcm_playback and dpcm_capture flags
+unconditionally, add a check on number of channels for each direction
+to avoid invalid configurations.
+
+Fixes: 8017b8fd37bf5e ('ASoC: SOF: Add Nocodec machine driver support')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@gmail.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Link: https://lore.kernel.org/r/20200608194415.4663-5-pierre-louis.bossart@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/cxgb4/device.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/sof/nocodec.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/infiniband/hw/cxgb4/device.c b/drivers/infiniband/hw/cxgb4/device.c
-index c13c0ba30f63e..af974a2570862 100644
---- a/drivers/infiniband/hw/cxgb4/device.c
-+++ b/drivers/infiniband/hw/cxgb4/device.c
-@@ -945,6 +945,7 @@ void c4iw_dealloc(struct uld_ctx *ctx)
- static void c4iw_remove(struct uld_ctx *ctx)
- {
- 	pr_debug("c4iw_dev %p\n", ctx->dev);
-+	debugfs_remove_recursive(ctx->dev->debugfs_root);
- 	c4iw_unregister_device(ctx->dev);
- 	c4iw_dealloc(ctx);
- }
+diff --git a/sound/soc/sof/nocodec.c b/sound/soc/sof/nocodec.c
+index 3d128e5a132c0..ea0fe9a09f3f5 100644
+--- a/sound/soc/sof/nocodec.c
++++ b/sound/soc/sof/nocodec.c
+@@ -52,8 +52,10 @@ static int sof_nocodec_bes_setup(struct device *dev,
+ 		links[i].platforms->name = dev_name(dev);
+ 		links[i].codecs->dai_name = "snd-soc-dummy-dai";
+ 		links[i].codecs->name = "snd-soc-dummy";
+-		links[i].dpcm_playback = 1;
+-		links[i].dpcm_capture = 1;
++		if (ops->drv[i].playback.channels_min)
++			links[i].dpcm_playback = 1;
++		if (ops->drv[i].capture.channels_min)
++			links[i].dpcm_capture = 1;
+ 	}
+ 
+ 	card->dai_link = links;
 -- 
 2.25.1
 
