@@ -2,43 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0C23205E44
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84EE7205D45
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390057AbgFWUVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:21:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38988 "EHLO mail.kernel.org"
+        id S2388238AbgFWULR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:11:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52168 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389693AbgFWUVU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:21:20 -0400
+        id S2388850AbgFWUKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:10:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5481520780;
-        Tue, 23 Jun 2020 20:21:20 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E05EC20E65;
+        Tue, 23 Jun 2020 20:10:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943680;
-        bh=zBrIn/MzAW3cwxarvXWOuOO3A/8UoIoNEtHfB09phO0=;
+        s=default; t=1592943053;
+        bh=U5b0UBf7FMEr2zEPspBFgp7gEax7PArlSSw6xZKwkrc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DAfQqrMvbI9txyzRYooMziN6+F2IFgPfpNbT1g5RtjKyeOxx8+mk3bQ/Bw8Nv1qNE
-         m9ONJ15YL4Z5Kn1WUMq/az31Xlr55abRqVaQZ3F8hbbW65aEaYFrOfTutn/q7Fs1/I
-         /rcZ4W6Wa+cGxwGEjMqrnLTkTu7kDbrMhR4Qu00U=
+        b=svjegEs90Ldm74KvvflyBCax6pVlk8xP0lWNDH6UUzJBz7kRLrFGNp6uMPERRcGWB
+         VF/phc5HGXikesP6xZVa42UQhNDyqSsr0xIwMYrhn7XqFJM+/NJ5ZB+QFF6x++GhdD
+         yQT8/nQTVFNegYMbVVtSvUDMC5jhaU7nJCgESgVE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Tero Kristo <t-kristo@ti.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 001/314] power: supply: bq24257_charger: Replace depends on REGMAP_I2C with select
-Date:   Tue, 23 Jun 2020 21:53:16 +0200
-Message-Id: <20200623195338.848250499@linuxfoundation.org>
+Subject: [PATCH 5.7 200/477] clk: ti: composite: fix memory leak
+Date:   Tue, 23 Jun 2020 21:53:17 +0200
+Message-Id: <20200623195417.039611647@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
+References: <20200623195407.572062007@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -47,36 +46,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+From: Tero Kristo <t-kristo@ti.com>
 
-[ Upstream commit 87c3d579c8ed0eaea6b1567d529a8daa85a2bc6c ]
+[ Upstream commit c7c1cbbc9217ebb5601b88d138d4a5358548de9d ]
 
-regmap is a library function that gets selected by drivers that need
-it. No driver modules should depend on it. Depending on REGMAP_I2C makes
-this driver only build if another driver already selected REGMAP_I2C,
-as the symbol can't be selected through the menu kernel configuration.
+The parent_names is never released for a component clock definition,
+causing some memory leak. Fix by releasing it once it is no longer
+needed.
 
-Fixes: 2219a935963e ("power_supply: Add TI BQ24257 charger driver")
-Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Reported-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Signed-off-by: Tero Kristo <t-kristo@ti.com>
+Link: https://lkml.kernel.org/r/20200429131341.4697-2-t-kristo@ti.com
+Acked-by: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/clk/ti/composite.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/power/supply/Kconfig b/drivers/power/supply/Kconfig
-index c84a7b1caeb68..d6fdc10c29f0b 100644
---- a/drivers/power/supply/Kconfig
-+++ b/drivers/power/supply/Kconfig
-@@ -577,7 +577,7 @@ config CHARGER_BQ24257
- 	tristate "TI BQ24250/24251/24257 battery charger driver"
- 	depends on I2C
- 	depends on GPIOLIB || COMPILE_TEST
--	depends on REGMAP_I2C
-+	select REGMAP_I2C
- 	help
- 	  Say Y to enable support for the TI BQ24250, BQ24251, and BQ24257 battery
- 	  chargers.
+diff --git a/drivers/clk/ti/composite.c b/drivers/clk/ti/composite.c
+index 6a89936ba03af..eaa43575cfa5e 100644
+--- a/drivers/clk/ti/composite.c
++++ b/drivers/clk/ti/composite.c
+@@ -196,6 +196,7 @@ cleanup:
+ 		if (!cclk->comp_clks[i])
+ 			continue;
+ 		list_del(&cclk->comp_clks[i]->link);
++		kfree(cclk->comp_clks[i]->parent_names);
+ 		kfree(cclk->comp_clks[i]);
+ 	}
+ 
 -- 
 2.25.1
 
