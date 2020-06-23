@@ -2,132 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B04204B08
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BD48204B18
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731393AbgFWH2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 03:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731057AbgFWH2f (ORCPT
+        id S1731595AbgFWH3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 03:29:39 -0400
+Received: from mail-ej1-f68.google.com ([209.85.218.68]:46184 "EHLO
+        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731241AbgFWH3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 03:28:35 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58C72C061573;
-        Tue, 23 Jun 2020 00:28:35 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id t194so2061817wmt.4;
-        Tue, 23 Jun 2020 00:28:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eAOzaLEvri148C9yhZfXxhkQ6ShWPHEsBtHOhazXNYw=;
-        b=k/51c5fP79PIPvtCdg/zzQVAGamF8aZgZZitf+FsnsPgs4L+4fjxxcE00SkMX+0WzW
-         klVODQPpnEBqm1ZF8kyQacSFxCsrNU/2bNIbDPwdV2l3nyPc3Z7mGBxNbovGYGxd9W8U
-         b8Yp5e3hOKBwUPBrPrn0iSJl6tQ+jpA3xtmE6yxzTKPo8aUKjpixYGyUOPYOzBVTGvcf
-         AtcPOLanSux/ja1dFIArUpv4dWAzenGbBGwxxoClNJRvyp6r7htdfPcuIgcZjM05l6z6
-         HFQPVrvf/lLJmfWgL4NcoorNrlKFyL0c0oM7SChGvlZZP/j+L52eZlnb54arWnNoH0MD
-         mq1Q==
+        Tue, 23 Jun 2020 03:29:39 -0400
+Received: by mail-ej1-f68.google.com with SMTP id p20so20498092ejd.13
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 00:29:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=eAOzaLEvri148C9yhZfXxhkQ6ShWPHEsBtHOhazXNYw=;
-        b=VATVWVj0sbU7e42+pZrisTbneuxcXhzwTDyoRDUQAWf4UsQilhh/bKFbNzFWqXVE3A
-         J49cVOSBoS0k6+DXxmnTtP3ZJn/8GemsUFmUquDxGn3rV+nhWKK6Nm4mRJgubxoUXFXJ
-         EjOc7HBseI1phsp40rkJJGiYMlsmXmUls5qWZ9GGYA+xSuKBtJ3DFf9MfcqTYZjzA8yZ
-         Zww85TuMrvom+wcaOkpilOYmA4zosM12azvyA4qR7ulYkPyrLy1WACuRhLIkCVRNbfd/
-         JydEpUSvmD5LepZjO8VnKLqWiXTUajLM7juGtESLqEl5bZzF1JqrV2vXwEbw+1N8esdR
-         whJg==
-X-Gm-Message-State: AOAM533PHPI/0ODZm/7Rno05aJDTWHRXizglnmh9uILRkuGjaJM6xDzv
-        B3+gWJJuzofblxhxwpsaiwHgQsx+/8g=
-X-Google-Smtp-Source: ABdhPJzuz4+aXy0DOjxqXCya5QX3G7FXScweqlUDkFN+8wby91HADp2yldiuF1+TtlQwjLBQ2at4Ig==
-X-Received: by 2002:a1c:6102:: with SMTP id v2mr20964522wmb.6.1592897314040;
-        Tue, 23 Jun 2020 00:28:34 -0700 (PDT)
-Received: from [192.168.2.27] (39.35.broadband4.iol.cz. [85.71.35.39])
-        by smtp.gmail.com with ESMTPSA id 185sm2496882wmz.22.2020.06.23.00.28.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 23 Jun 2020 00:28:33 -0700 (PDT)
-Subject: Re: New mode DM-Verity error handling
-To:     JeongHyeon Lee <jhs2.lee@samsung.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Sami Tolvanen <samitolvanen@google.com>
-Cc:     dm-devel@redhat.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agk@redhat.com, corbet@lwn.net
-References: <CGME20200618070250epcas1p409eb2ddd19ecc5d55c219ac3dc884f25@epcas1p4.samsung.com>
- <98eac3fc-c399-625d-5730-29853b3a0771@samsung.com>
- <20200618154444.GB18007@redhat.com> <20200618165006.GA103290@google.com>
- <20200618170952.GA18057@redhat.com>
- <b7eaf4a7-6692-ffdf-2bbc-b622f93ef601@gmail.com>
- <250156a6-a2d6-dbfd-daa3-be9c36f0cf36@samsung.com>
-From:   Milan Broz <gmazyland@gmail.com>
-Message-ID: <2c3bf8c1-c742-b1e9-6ff6-91b2253638e1@gmail.com>
-Date:   Tue, 23 Jun 2020 09:28:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :message-id:date:mime-version;
+        bh=r6iBQ+a2psL8/1ILnpQrZHrTmcPpkjqZptSkXvzX8Eg=;
+        b=T9oFbPnWpGwSyRhsb/QenBP5D/C2Nx1b08qSV1qI0icMOVO1xV5iUiJcybBRq8sM6D
+         5nHoqpUltQA5Bke+wyM1IAEvDd4zYwxxuUar/lf2qVbnrBBkJAm88VRJQ2nhZf2NWgqJ
+         Om10SPL6ZqHPzmc/krglaDb3m8u5Mbcr1YzducPC46XN89KJb6i5Lih7gJNNE3yJfGjC
+         cBZtTkVbB1m6aA63WjGmy55C/rMs094AsjZI3UdIQeNfuBP/o0pNq7NYsicRQ4+s7Gbw
+         YUrA341zSfXeY/za+Ym9eI3yVYIBp5jhToF6kENr8cbrORd3vrwiwR7zzS8QgcmDrV/1
+         vSOQ==
+X-Gm-Message-State: AOAM533YjTDYDUlCo1iWxLe1BpaWLN7OgpUDMFZOVTFBOquOo0OA9xN7
+        5m59Rb5uhNJTRFuy/YNIEDk=
+X-Google-Smtp-Source: ABdhPJw14PEhroxBRn5Ky9cJUsdoVIXcoM1ev4h6Rn3pgF0r/zi0Uh3FgGUizQTYAZJGzKx9nefgFg==
+X-Received: by 2002:a17:906:b88c:: with SMTP id hb12mr18414146ejb.483.1592897376297;
+        Tue, 23 Jun 2020 00:29:36 -0700 (PDT)
+Received: from darkstar ([2a04:ee41:4:5025:8295:1d2:ca0d:985e])
+        by smtp.gmail.com with ESMTPSA id u3sm14601451edx.25.2020.06.23.00.29.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 00:29:35 -0700 (PDT)
+References: <87v9kv2545.derkling@matbug.com> <87h7wd15v2.derkling@matbug.net> <87imgrlrqi.derkling@matbug.net> <87mu5sqwkt.derkling@matbug.net> <87eer42clt.derkling@matbug.net>
+User-agent: mu4e 1.4.10; emacs 26.3
+From:   Patrick Bellasi <patrick.bellasi@matbug.net>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Josef Bacik <jbacik@fb.com>,
+        Chris Hyser <chris.hyser@oracle.com>,
+        Parth Shah <parth@linux.ibm.com>
+Subject: Scheduler wakeup path tuning surface: Use-Cases and Requirements
+Message-ID: <87imfi2qbk.derkling@matbug.net>
+Date:   Tue, 23 Jun 2020 09:29:03 +0200
 MIME-Version: 1.0
-In-Reply-To: <250156a6-a2d6-dbfd-daa3-be9c36f0cf36@samsung.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/06/2020 01:53, JeongHyeon Lee wrote:
-> 
-> For what reason isn't panic better?
 
-I did not say panic is better, I said that while we have restart already in mainline dm-verity code,
-panic() is almost the same, so I see no problem in merging this patch.
+Since last year's OSPM Summit we started conceiving the idea that task
+wakeup path could be better tuned for certain classes of workloads
+and usage scenarios. Various people showed interest for a possible
+tuning interface for the scheduler wakeup path.
 
-Stopping system this way could create more damage if it is not configured properly,
-but I think it is quite common to stop the system as fast as possible if data system integrity
-is violated...
 
-> If when i suggested new patch, i will send you a patch that increased 
-> minor version.
+.:: The Problem
+===============
 
-I think Mike can fold-in version increase, if the patch is accepted.
+The discussions we had so far [1] have not been effective in clearly
+identifying if a common tuning surface is possible. The last discussion
+at this year's OSPM Summit [2,3] was also kind of inconclusive and left
+us with the message: start by collecting the requirements and then see
+what interface fits them the best.
 
-But please include these version changes with every new feature.
+General consensus is that a unified interface can be challenging and
+maybe not feasible. However, generalisation is also a value
+and we should strive for it whenever it's possible.
 
-Actually I am tracking it here for dm-verity as part of veritysetup userspace documentation:
-  https://gitlab.com/cryptsetup/cryptsetup/-/wikis/DMVerity
+Someone might think that we did not put enough effort in the analysis of
+requirements. Perhaps what we missed so far is also a structured and
+organised way to collect requirements which also can help in factoring
+out the things they have in common.
 
-Thanks,
-Milan
 
-> On 22/06/2020 16:58, Milan Broz wrote:
->> On 18/06/2020 19:09, Mike Snitzer wrote:
->>> On Thu, Jun 18 2020 at 12:50pm -0400,
->>> Sami Tolvanen <samitolvanen@google.com> wrote:
->>>
->>>> On Thu, Jun 18, 2020 at 11:44:45AM -0400, Mike Snitzer wrote:
->>>>> I do not accept that panicing the system because of verity failure is
->>>>> reasonable.
->>>>>
->>>>> In fact, even rebooting (via DM_VERITY_MODE_RESTART) looks very wrong.
->>>>>
->>>>> The device should be put in a failed state and left for admin recovery.
->>>> That's exactly how the restart mode works on some Android devices. The
->>>> bootloader sees the verification error and puts the device in recovery
->>>> mode. Using the restart mode on systems without firmware support won't
->>>> make sense, obviously.
->>> OK, so I need further justification from Samsung why they are asking for
->>> this panic mode.
->> I think when we have reboot already, panic is not much better :-)
->>
->> Just please note that dm-verity is used not only in Android world (with own tooling)
->> but in normal Linux distributions, and I need to modify userspace (veritysetup) to support
->> and recognize this flag.
->>
->> Please *always* increase minor dm-verity target version when adding a new feature
->> - we can then provide some better hint if it is not supported.
->>
->> Thanks,
->> Milan
->>
->>
+.:: The Proposal
+================
+
+This thread aims at providing a guided template for the description of
+different task wakeup use-cases. It does that by setting a series of
+questions aimed at precisely describing what's "currently broken", what
+we would like to have instead and how we could achieve it.
+
+What we propose here is that, for each wakeup use-case, we start
+by replying to this email to provide the required details/comments for
+a predefined list of questions. This will generate independent
+discussion threads. Each thread will be free to focus on a specific
+proposal but still all the thread will be reasoning around a common set
+of fundamental concepts.
+
+The hope is that, by representing all the use-cases as sufficiently
+detailed responses to a common set of questions, once the discussion
+settles down, we can more easily verify if there are common things
+surfacing which then can be naturally wrapped into a unified user-space
+API.
+
+A first use-case description, following the template guidelines, will
+be posted shortly after this message. This also will provide an example
+for how to use the template.
+
+NOTE: Whenever required, pseudo-code or simplified C can be used.
+
+I hope this can drive a fruitful discussion in preparation for LPC!
+
+Best,
+Patrick
+
+
+---8<--- For templates submissions: reply only to the following ---8<---
+
+
+.:: Scheduler Wakeup Path Requirements Collection Template
+==========================================================
+
+A) Name: unique one-liner name for the proposed use-case
+
+B) Target behaviour: one paragraph to describe the wakeup path issue
+
+C) Existing control paths: reference to code paths to justify B)
+
+   Assuming v5.6 as the reference kernel, this section should provide
+   links to code paths such as, e.g.
+
+   fair.c:3917
+   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/sched/fair.c?h=v5.6#n3917
+
+   Alternatively code snippets can be added inline, e.g.
+
+        /*
+	 * The 'current' period is already promised to the current tasks,
+	 * however the extra weight of the new task will slow them down a
+	 * little, place the new task so that it fits in the slot that
+	 * stays open at the end.
+	 */
+	if (initial && sched_feat(START_DEBIT))
+		vruntime += sched_vslice(cfs_rq, se);
+
+   NOTE: if the use-case exists only outside the mainline Linux kernel
+         this section can stay empty
+
+D) Desired behaviour: one paragraph to describe the desired update
+
+   NOTE: the current mainline expression is assumed to be correct
+         for existing use-cases. Thus, here we are looking for run-time
+         tuning of those existing features.
+
+E) Existing knobs (if any): reference to whatever existing tunable
+
+   Some features can already be tuned, but perhaps only via compile time
+   knobs, SCHED_FEATs or system wide tunable.
+   If that's the case, we should document them here and explain how they
+   currently work and what are (if any) the implicit assumptions, e.g.
+   what is the currently implemented scheduling policy/heuristic.
+
+F) Existing knobs (if any): one paragraph description of the limitations
+
+   If the existing knobs are not up to the job for this use-case,
+   shortly explain here why. It could be because a tuning surface is
+   already there but it's hardcoded (e.g. compile time knob) or too
+   coarse grained (e.g. a SCHED_FEAT).
+
+G) Proportionality Analysis: check the nature of the target behavior
+
+   Goal here is to verify and discuss if the behaviour (B) has a
+   proportional nature: different values of the control knobs (E) are
+   expected to produce different effects for (B).
+   
+   Special care should be taken to check if the target behaviour has an
+   intrinsically "binary nature", i.e. only two values make really
+   sense. In this case it would be very useful to argument why a
+   generalisation towards a non-binary behaviours does NOT make sense.
+
+H) Range Analysis: identify meaningful ranges
+
+   If (G) was successfully, i.e. there is a proportional correlation
+   between (E) and (B), discuss here about a meaningful range for (E)
+   and (F).
+
+I) System-Wide tuning: which knobs are required
+
+   If required, list new additional tunables here, how they should be
+   exposed and (if required) which scheduling classes will be affected.
+
+J) Per-Task tuning: which knobs are required
+
+   Describe which knobs should be added and which task specific API
+   (e.g. sched_setscheduler(), prctl(), ...) they should be used.
+
+K) Task-Group tuning: which knobs are required
+
+   If the use-case can benefit from a task-group tuning, here it should
+   **briefly described** how the expected behaviour can be mapped on a
+   cgroup v2 unified hierarchy.
+
+   NOTE: implementation details are not required but we should be able
+         to hint at which cgroup v2 resource distribution model [5]
+         should be applied.
+
+
+---8<--- For templates submissions: exclude the following ---8<---
+
+
+.:: References
+==============
+
+[1] [Discussion v2] Usecases for the per-task latency-nice attribute
+    Message-ID: 2bd46086-43ff-f130-8720-8eec694eb55b@linux.ibm.com
+    https://lore.kernel.org/lkml/2bd46086-43ff-f130-8720-8eec694eb55b@linux.ibm.com
+
+[2] Latency Nice: Implementation and UseCases for Scheduler Optmizations
+    https://ospm.lwn.net/playback/presentation/2.0/playback.html?meetingId=380dd88f044f67ee4c94d0a2a4fb7c3f46cb6391-1589459486615&t=42m37s
+
+[3] LWN: The many faces of "latency nice"
+    https://lwn.net/Articles/820659
+
+[4] [PATCH v5 0/4] Introduce per-task latency_nice for scheduler hints
+    Message-ID: 20200228090755.22829-1-parth@linux.ibm.com
+    https://lore.kernel.org/lkml/20200228090755.22829-1-parth@linux.ibm.com
+
+[5] Control Group v2: Resource Distribution Models
+    https://www.kernel.org/doc/Documentation/admin-guide/cgroup-v2.rst
+
