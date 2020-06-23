@@ -2,45 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FAC2064F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DEA20641B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390868AbgFWV3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:29:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57134 "EHLO mail.kernel.org"
+        id S2390689AbgFWVQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:16:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388885AbgFWUOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:14:39 -0400
+        id S2390822AbgFWU17 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:27:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0DC82137B;
-        Tue, 23 Jun 2020 20:14:37 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 49B9B20702;
+        Tue, 23 Jun 2020 20:27:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943278;
-        bh=PA0/KPh9VXWbprDD8v41oKM2j8WmSDeOIfzwSNvXqko=;
+        s=default; t=1592944079;
+        bh=3UCPZR2zeAskPCWyEr5PkUxJorj5DnhR6MseG5q1/aI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tr60YAe4WVork3P5pdTNERdYGWgxtI2Ggm0w0xUM3KPvtEYbwkRo9N1g0rLnK9DSJ
-         SfGAjCwM7uItgaQeEuFZQdvYKyMMhLYumJucF40nDS/929Jwa2QenClzfhrgefx9Vd
-         O2LHVVVsEWaamrQgOvH5rGwI35tNDtrlM6FcAFQs=
+        b=OfNRIBghEAKo6PJLM9gN08K6RPjXZ9tvvDvqeGsK0cJRLg/KhhrfkAMvnMnuqTxET
+         y1+W96ituQ/070Z7C3ecKgwyZNcy1skiyxb+vbyVkTZDaDluXJroy88Mg3Y7pmic40
+         Z6wczTQwxcSYNCGzfhFb6vNtgno9YRa4X5D/egDU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Peter Ujfalusi <peter.ujflausi@ti.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 329/477] include/linux/bitops.h: avoid clang shift-count-overflow warnings
-Date:   Tue, 23 Jun 2020 21:55:26 +0200
-Message-Id: <20200623195423.088269827@linuxfoundation.org>
+Subject: [PATCH 5.4 134/314] ASoC: ti: omap-mcbsp: Fix an error handling path in asoc_mcbsp_probe()
+Date:   Tue, 23 Jun 2020 21:55:29 +0200
+Message-Id: <20200623195345.265310226@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
-References: <20200623195407.572062007@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -50,63 +46,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit bd93f003b7462ae39a43c531abca37fe7073b866 ]
+[ Upstream commit 03990fd58d2b7c8f7d53e514ba9b8749fac260f9 ]
 
-Clang normally does not warn about certain issues in inline functions when
-it only happens in an eliminated code path. However if something else
-goes wrong, it does tend to complain about the definition of hweight_long()
-on 32-bit targets:
+If an error occurs after the call to 'omap_mcbsp_init()', the reference to
+'mcbsp->fclk' must be decremented, as already done in the remove function.
 
-  include/linux/bitops.h:75:41: error: shift count >= width of type [-Werror,-Wshift-count-overflow]
-          return sizeof(w) == 4 ? hweight32(w) : hweight64(w);
-                                                 ^~~~~~~~~~~~
-  include/asm-generic/bitops/const_hweight.h:29:49: note: expanded from macro 'hweight64'
-   define hweight64(w) (__builtin_constant_p(w) ? __const_hweight64(w) : __arch_hweight64(w))
-                                                  ^~~~~~~~~~~~~~~~~~~~
-  include/asm-generic/bitops/const_hweight.h:21:76: note: expanded from macro '__const_hweight64'
-   define __const_hweight64(w) (__const_hweight32(w) + __const_hweight32((w) >> 32))
-                                                                             ^  ~~
-  include/asm-generic/bitops/const_hweight.h:20:49: note: expanded from macro '__const_hweight32'
-   define __const_hweight32(w) (__const_hweight16(w) + __const_hweight16((w) >> 16))
-                                                  ^
-  include/asm-generic/bitops/const_hweight.h:19:72: note: expanded from macro '__const_hweight16'
-   define __const_hweight16(w) (__const_hweight8(w)  + __const_hweight8((w)  >> 8 ))
-                                                                         ^
-  include/asm-generic/bitops/const_hweight.h:12:9: note: expanded from macro '__const_hweight8'
-            (!!((w) & (1ULL << 2))) +     \
+This can be achieved easily by using the devm_ variant of 'clk_get()'
+when the reference is taken in 'omap_mcbsp_init()'
 
-Adding an explicit cast to __u64 avoids that warning and makes it easier
-to read other output.
+This fixes the leak in the probe and has the side effect to simplify both
+the error handling path of 'omap_mcbsp_init()' and the remove function.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: Nick Desaulniers <ndesaulniers@google.com>
-Link: http://lkml.kernel.org/r/20200505135513.65265-1-arnd@arndb.de
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Acked-by: Peter Ujfalusi <peter.ujflausi@ti.com>
+Link: https://lore.kernel.org/r/20200512134325.252073-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/bitops.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/ti/omap-mcbsp.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/bitops.h b/include/linux/bitops.h
-index 9acf654f0b191..99f2ac30b1d9b 100644
---- a/include/linux/bitops.h
-+++ b/include/linux/bitops.h
-@@ -72,7 +72,7 @@ static inline int get_bitmask_order(unsigned int count)
+diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
+index 26b503bbdb5fe..3273b317fa3b9 100644
+--- a/sound/soc/ti/omap-mcbsp.c
++++ b/sound/soc/ti/omap-mcbsp.c
+@@ -686,7 +686,7 @@ static int omap_mcbsp_init(struct platform_device *pdev)
+ 	mcbsp->dma_data[1].addr = omap_mcbsp_dma_reg_params(mcbsp,
+ 						SNDRV_PCM_STREAM_CAPTURE);
  
- static __always_inline unsigned long hweight_long(unsigned long w)
- {
--	return sizeof(w) == 4 ? hweight32(w) : hweight64(w);
-+	return sizeof(w) == 4 ? hweight32(w) : hweight64((__u64)w);
+-	mcbsp->fclk = clk_get(&pdev->dev, "fck");
++	mcbsp->fclk = devm_clk_get(&pdev->dev, "fck");
+ 	if (IS_ERR(mcbsp->fclk)) {
+ 		ret = PTR_ERR(mcbsp->fclk);
+ 		dev_err(mcbsp->dev, "unable to get fck: %d\n", ret);
+@@ -711,7 +711,7 @@ static int omap_mcbsp_init(struct platform_device *pdev)
+ 		if (ret) {
+ 			dev_err(mcbsp->dev,
+ 				"Unable to create additional controls\n");
+-			goto err_thres;
++			return ret;
+ 		}
+ 	}
+ 
+@@ -724,8 +724,6 @@ static int omap_mcbsp_init(struct platform_device *pdev)
+ err_st:
+ 	if (mcbsp->pdata->buffer_size)
+ 		sysfs_remove_group(&mcbsp->dev->kobj, &additional_attr_group);
+-err_thres:
+-	clk_put(mcbsp->fclk);
+ 	return ret;
  }
  
- /**
+@@ -1442,8 +1440,6 @@ static int asoc_mcbsp_remove(struct platform_device *pdev)
+ 
+ 	omap_mcbsp_st_cleanup(pdev);
+ 
+-	clk_put(mcbsp->fclk);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.25.1
 
