@@ -2,95 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D08032056D5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6DA2056DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732510AbgFWQNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 12:13:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42464 "EHLO
+        id S1732662AbgFWQOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 12:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728916AbgFWQNm (ORCPT
+        with ESMTP id S1732253AbgFWQOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 12:13:42 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8AEC061573;
-        Tue, 23 Jun 2020 09:13:41 -0700 (PDT)
-Received: from [5.158.153.53] (helo=debian-buster-darwi.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:RSA_AES_256_CBC_SHA1:256)
-        (Exim 4.80)
-        (envelope-from <a.darwish@linutronix.de>)
-        id 1jnlY2-0005Ko-Kg; Tue, 23 Jun 2020 18:13:22 +0200
-Date:   Tue, 23 Jun 2020 18:13:21 +0200
-From:   "Ahmed S. Darwish" <a.darwish@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@kernel.org, will@kernel.org, tglx@linutronix.de,
-        x86@kernel.org, linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        bigeasy@linutronix.de, davem@davemloft.net,
-        sparclinux@vger.kernel.org, mpe@ellerman.id.au,
-        linuxppc-dev@lists.ozlabs.org, heiko.carstens@de.ibm.com,
-        linux-s390@vger.kernel.org, linux@armlinux.org.uk
-Subject: Re: [PATCH v4 7/8] lockdep: Change hardirq{s_enabled,_context} to
- per-cpu variables
-Message-ID: <20200623161320.GA2996373@debian-buster-darwi.lab.linutronix.de>
-References: <20200623083645.277342609@infradead.org>
- <20200623083721.512673481@infradead.org>
- <20200623150031.GA2986783@debian-buster-darwi.lab.linutronix.de>
- <20200623152450.GM4817@hirez.programming.kicks-ass.net>
+        Tue, 23 Jun 2020 12:14:12 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B63FC061573;
+        Tue, 23 Jun 2020 09:14:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2ZeuviZXPtyZ/aF+IWZIvBCFWEao8ngk72TsRFpdUlQ=; b=ATjsWIR5mScsdXgmjIWTkFg1Wk
+        j3PvAh/3jFwmTPn+cKufy4YfwEAVTB5Q+YDKJxIFA/YBf8QnuKGZB6iBvijGNLqsyu010C+STY8WW
+        LAB3d9puouEtlsYWgQtJ+x3DVKMIoh/RG/cNY63fcTwbR+z6FfaHoyxaXbpm9V+Gsr6kNlqXZaL0H
+        Ea0iQWyFLSV4klNOb2ksXlD1PlNyImPPRPhFq5Tv2I6Q3BeNur0uGK7mHwgDTiWh9oUuj3yijj6Sy
+        VY7TJOMc0JboU8lVaX9JX8xVVicMeVSgx92/mx8HMv+xWWnNs0kZMIoGwIGEnFy0KFzU+Hif8FPzi
+        gviDAAUA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jnlYR-0006db-JS; Tue, 23 Jun 2020 16:13:47 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D6622306E5C;
+        Tue, 23 Jun 2020 18:13:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C4847234EBA51; Tue, 23 Jun 2020 18:13:45 +0200 (CEST)
+Date:   Tue, 23 Jun 2020 18:13:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Tom Lendacky <Thomas.Lendacky@amd.com>,
+        Mike Stunes <mstunes@vmware.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <JGross@suse.com>,
+        Jiri Slaby <jslaby@suse.cz>, Kees Cook <keescook@chromium.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Hellstrom <thellstrom@vmware.com>,
+        Linux Virtualization <virtualization@lists.linux-foundation.org>,
+        X86 ML <x86@kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: Re: Should SEV-ES #VC use IST? (Re: [PATCH] Allow RDTSC and RDTSCP
+ from userspace)
+Message-ID: <20200623161345.GQ4817@hirez.programming.kicks-ass.net>
+References: <20200623120433.GB14101@suse.de>
+ <20200623125201.GG4817@hirez.programming.kicks-ass.net>
+ <20200623134003.GD14101@suse.de>
+ <20200623135916.GI4817@hirez.programming.kicks-ass.net>
+ <20200623145344.GA117543@hirez.programming.kicks-ass.net>
+ <20200623145914.GF14101@suse.de>
+ <20200623152326.GL4817@hirez.programming.kicks-ass.net>
+ <56af2f70-a1c6-aa64-006e-23f2f3880887@citrix.com>
+ <20200623155204.GO4817@hirez.programming.kicks-ass.net>
+ <dae40b7b-e584-1ab4-2ebe-13526cdec946@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200623152450.GM4817@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+In-Reply-To: <dae40b7b-e584-1ab4-2ebe-13526cdec946@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 05:24:50PM +0200, Peter Zijlstra wrote:
-> On Tue, Jun 23, 2020 at 05:00:31PM +0200, Ahmed S. Darwish wrote:
-> > On Tue, Jun 23, 2020 at 10:36:52AM +0200, Peter Zijlstra wrote:
-> > ...
-> > > -#define lockdep_assert_irqs_disabled()	do {				\
-> > > -		WARN_ONCE(debug_locks && !current->lockdep_recursion &&	\
-> > > -			  current->hardirqs_enabled,			\
-> > > -			  "IRQs not disabled as expected\n");		\
-> > > -	} while (0)
-> > > +#define lockdep_assert_irqs_enabled()					\
-> > > +do {									\
-> > > +	WARN_ON_ONCE(debug_locks && !this_cpu_read(hardirqs_enabled));	\
-> > > +} while (0)
-> > >
-> >
-> > Can we add a small comment on top of lockdep_off(), stating that lockdep
-> > IRQ tracking will still be kept after a lockdep_off call?
->
-> That would only legitimize lockdep_off(). The only comment I want to put
-> on that is: "if you use this, you're doing it wrong'.
->
+On Tue, Jun 23, 2020 at 09:03:56AM -0700, Dave Hansen wrote:
+> On 6/23/20 8:52 AM, Peter Zijlstra wrote:
+> > Isn't current #MC unconditionally fatal from kernel? But yes, I was
+> > sorta aware people want that changed.
+> 
+> Not unconditionally.  copy_to_iter_mcsafe() is a good example of one
+> thing we _can_ handle.
 
-Well, freshly merged code is using it. For example, KCSAN:
+Urgh, I thought that stuff was still pending.
 
-    => f1bc96210c6a ("kcsan: Make KCSAN compatible with lockdep")
-    => kernel/kcsan/report.c:
-
-    void kcsan_report(...)
-    {
-	...
-        /*
-         * With TRACE_IRQFLAGS, lockdep's IRQ trace state becomes corrupted if
-         * we do not turn off lockdep here; this could happen due to recursion
-         * into lockdep via KCSAN if we detect a race in utilities used by
-         * lockdep.
-         */
-        lockdep_off();
-	...
-    }
-
-thanks,
-
---
-Ahmed S. Darwish
-Linutronix GmbH
+Anyway, the important thing is that it is fatal if we hit early NMI.
+Which I think still holds.
