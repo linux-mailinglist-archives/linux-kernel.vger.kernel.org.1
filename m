@@ -2,130 +2,270 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83524204973
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 08:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ED3A204985
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 08:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730502AbgFWGCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 02:02:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57298 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728800AbgFWGCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 02:02:43 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1730662AbgFWGFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 02:05:47 -0400
+Received: from mout-p-202.mailbox.org ([80.241.56.172]:42516 "EHLO
+        mout-p-202.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730149AbgFWGFr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 02:05:47 -0400
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
+        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF14520738;
-        Tue, 23 Jun 2020 06:02:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592892162;
-        bh=x3bd9T22dLZovGnPn6q+wbS6I/RZshP+fVHKJEby0w4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pY+2PLfuJR0CNNlu0VkLooa8HwaGUnpA6E73k1IKCI66P+z3Q/qeq4j4OnsM76pfs
-         BeCTfcSh22YxTRw9e8A2ZDplEHT+CIwNqLQVR5Q0ZM5WmaqDsDByJ8BGz345mTCnL/
-         cJLJ42FiTD4Gihi4ldIYl13BkYgKkE76Aeqsn3m0=
-Date:   Tue, 23 Jun 2020 08:02:36 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Ian Kent <raven@themaw.net>
-Cc:     Tejun Heo <tj@kernel.org>,
-        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/6] kernfs: proposed locking and concurrency
- improvement
-Message-ID: <20200623060236.GA3818201@kroah.com>
-References: <159237905950.89469.6559073274338175600.stgit@mickey.themaw.net>
- <20200619153833.GA5749@mtj.thefacebook.com>
- <16d9d5aa-a996-d41d-cbff-9a5937863893@linux.vnet.ibm.com>
- <20200619222356.GA13061@mtj.duckdns.org>
- <429696e9fa0957279a7065f7d8503cb965842f58.camel@themaw.net>
- <20200622174845.GB13061@mtj.duckdns.org>
- <20200622180306.GA1917323@kroah.com>
- <2ead27912e2a852bffb1477e8720bdadb591628d.camel@themaw.net>
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 49rbP45ZXszQlHP;
+        Tue, 23 Jun 2020 08:05:44 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gorani.run; s=MBO0001;
+        t=1592892342;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=lTNZHuO/TmpST/Jzny6UT1j5tHlNcdY+OWOLAISK3qo=;
+        b=TUkc/3kU+rs4oNJiGKDE1BPQa1vidgRhNhTX8EZHtkGEICYulbQ37vThOOv6CE/2hVYxxL
+        HIcxPyJ2fjMsp+CML9DQW01ltj/oib9g4XtnAtXkHzIrwXaGPbRxJEiLfF5r6vd/6ZvKlf
+        h3wB40GX5+6unjlDporEtCzLi8NZmwaaqX6srY/ddIW39odftXWNO2x4egUtWWH3tvCVKS
+        n+eGlt+HQ8nY1ut75SFLQqUlpn7qiKYAZQ5AqLhVmEHMhwRDK526TtFjFud0CoLrQ8jawm
+        LKBL68d63MU+HINQpU2ZRmCuypqTcM4lFQdwVdwS7D7/inEVyGk2GyZLfc1K/w==
+Received: from smtp1.mailbox.org ([80.241.60.240])
+        by spamfilter05.heinlein-hosting.de (spamfilter05.heinlein-hosting.de [80.241.56.123]) (amavisd-new, port 10030)
+        with ESMTP id LFybZml-4YEm; Tue, 23 Jun 2020 08:05:40 +0200 (CEST)
+From:   Sungbo Eo <mans0n@gorani.run>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org
+Cc:     Sungbo Eo <mans0n@gorani.run>
+Subject: [PATCH] gpio: add GPO driver for PCA9570
+Date:   Tue, 23 Jun 2020 15:05:26 +0900
+Message-Id: <20200623060526.29922-1-mans0n@gorani.run>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2ead27912e2a852bffb1477e8720bdadb591628d.camel@themaw.net>
+Content-Transfer-Encoding: 8bit
+X-MBO-SPAM-Probability: 11
+X-Rspamd-Score: 1.79 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 484B11758
+X-Rspamd-UID: 595c8a
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 01:09:08PM +0800, Ian Kent wrote:
-> On Mon, 2020-06-22 at 20:03 +0200, Greg Kroah-Hartman wrote:
-> > On Mon, Jun 22, 2020 at 01:48:45PM -0400, Tejun Heo wrote:
-> > > Hello, Ian.
-> > > 
-> > > On Sun, Jun 21, 2020 at 12:55:33PM +0800, Ian Kent wrote:
-> > > > > > They are used for hotplugging and partitioning memory. The
-> > > > > > size of
-> > > > > > the
-> > > > > > segments (and thus the number of them) is dictated by the
-> > > > > > underlying
-> > > > > > hardware.
-> > > > > 
-> > > > > This sounds so bad. There gotta be a better interface for that,
-> > > > > right?
-> > > > 
-> > > > I'm still struggling a bit to grasp what your getting at but ...
-> > > 
-> > > I was more trying to say that the sysfs device interface with per-
-> > > object
-> > > directory isn't the right interface for this sort of usage at all.
-> > > Are these
-> > > even real hardware pieces which can be plugged in and out? While
-> > > being a
-> > > discrete piece of hardware isn't a requirement to be a device model
-> > > device,
-> > > the whole thing is designed with such use cases on mind. It
-> > > definitely isn't
-> > > the right design for representing six digit number of logical
-> > > entities.
-> > > 
-> > > It should be obvious that representing each consecutive memory
-> > > range with a
-> > > separate directory entry is far from an optimal way of representing
-> > > something like this. It's outright silly.
-> > 
-> > I agree.  And again, Ian, you are just "kicking the problem down the
-> > road" if we accept these patches.  Please fix this up properly so
-> > that
-> > this interface is correctly fixed to not do looney things like this.
-> 
-> Fine, mitigating this problem isn't the end of the story, and you
-> don't want to do accept a change to mitigate it because that could
-> mean no further discussion on it and no further work toward solving
-> it.
-> 
-> But it seems to me a "proper" solution to this will cross a number
-> of areas so this isn't just "my" problem and, as you point out, it's
-> likely to become increasingly problematic over time.
-> 
-> So what are your ideas and recommendations on how to handle hotplug
-> memory at this granularity for this much RAM (and larger amounts)?
+This patch adds support for the PCA9570 I2C GPO expander.
 
-First off, this is not my platform, and not my problem, so it's funny
-you ask me :)
+Signed-off-by: Sungbo Eo <mans0n@gorani.run>
+---
+Tested in kernel 5.4 on an ipq40xx platform.
 
-Anyway, as I have said before, my first guesses would be:
-	- increase the granularity size of the "memory chunks", reducing
-	  the number of devices you create.
-	- delay creating the devices until way after booting, or do it
-	  on a totally different path/thread/workqueue/whatever to
-	  prevent delay at booting
+This is my first time submitting a whole driver patch, and I'm not really familiar with this PCA expander series.
+Please let me know how I can improve this patch further. (Do I also need to document the DT compatible string?)
 
-And then there's always:
-	- don't create them at all, only only do so if userspace asks
-	  you to.
+FYI there's an unmerged patch for this chip.
+http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/2017-May/105602.html
+I don't have PCA9571 either so I didn't add support for it.
+---
+ drivers/gpio/Kconfig        |   8 ++
+ drivers/gpio/Makefile       |   1 +
+ drivers/gpio/gpio-pca9570.c | 159 ++++++++++++++++++++++++++++++++++++
+ 3 files changed, 168 insertions(+)
+ create mode 100644 drivers/gpio/gpio-pca9570.c
 
-You all have the userspace tools/users for this interface and know it
-best to know what will work for them.  If you don't, then hey, let's
-just delete the whole thing and see who screams :)
+diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+index c6b5c65c8405..d10dcb81b841 100644
+--- a/drivers/gpio/Kconfig
++++ b/drivers/gpio/Kconfig
+@@ -962,6 +962,14 @@ config GPIO_PCA953X_IRQ
+ 	  Say yes here to enable the pca953x to be used as an interrupt
+ 	  controller. It requires the driver to be built in the kernel.
+ 
++config GPIO_PCA9570
++	tristate "PCA9570 4-Bit I2C GPO expander"
++	help
++	  Say yes here to enable the GPO driver for the NXP PCA9570 chip.
++
++	  To compile this driver as a module, choose M here: the module will
++	  be called gpio-pca9570.
++
+ config GPIO_PCF857X
+ 	tristate "PCF857x, PCA{85,96}7x, and MAX732[89] I2C GPIO expanders"
+ 	select GPIOLIB_IRQCHIP
+diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
+index 1e4894e0bf0f..33cb40c28a61 100644
+--- a/drivers/gpio/Makefile
++++ b/drivers/gpio/Makefile
+@@ -110,6 +110,7 @@ obj-$(CONFIG_GPIO_OCTEON)		+= gpio-octeon.o
+ obj-$(CONFIG_GPIO_OMAP)			+= gpio-omap.o
+ obj-$(CONFIG_GPIO_PALMAS)		+= gpio-palmas.o
+ obj-$(CONFIG_GPIO_PCA953X)		+= gpio-pca953x.o
++obj-$(CONFIG_GPIO_PCA9570)		+= gpio-pca9570.o
+ obj-$(CONFIG_GPIO_PCF857X)		+= gpio-pcf857x.o
+ obj-$(CONFIG_GPIO_PCH)			+= gpio-pch.o
+ obj-$(CONFIG_GPIO_PCIE_IDIO_24)		+= gpio-pcie-idio-24.o
+diff --git a/drivers/gpio/gpio-pca9570.c b/drivers/gpio/gpio-pca9570.c
+new file mode 100644
+index 000000000000..9ed01554f5df
+--- /dev/null
++++ b/drivers/gpio/gpio-pca9570.c
+@@ -0,0 +1,159 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Driver for PCA9570 I2C GPO expander
++ *
++ * Copyright (C) 2020 Sungbo Eo <mans0n@gorani.run>
++ *
++ * Based on gpio-tpic2810.c
++ * Copyright (C) 2015 Texas Instruments Incorporated - http://www.ti.com/
++ *	Andrew F. Davis <afd@ti.com>
++ */
++
++#include <linux/gpio/driver.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++
++/**
++ * struct pca9570 - GPIO driver data
++ * @chip: GPIO controller chip
++ * @client: I2C device pointer
++ * @buffer: Buffer for device register
++ * @lock: Protects write sequences
++ */
++struct pca9570 {
++	struct gpio_chip chip;
++	struct i2c_client *client;
++	u8 buffer;
++	struct mutex lock;
++};
++
++static void pca9570_set(struct gpio_chip *chip, unsigned offset, int value);
++
++static int pca9570_get_direction(struct gpio_chip *chip,
++				 unsigned offset)
++{
++	/* This device always output */
++	return GPIO_LINE_DIRECTION_OUT;
++}
++
++static int pca9570_direction_input(struct gpio_chip *chip,
++				   unsigned offset)
++{
++	/* This device is output only */
++	return -EINVAL;
++}
++
++static int pca9570_direction_output(struct gpio_chip *chip,
++				    unsigned offset, int value)
++{
++	/* This device always output */
++	pca9570_set(chip, offset, value);
++	return 0;
++}
++
++static void pca9570_set_mask_bits(struct gpio_chip *chip, u8 mask, u8 bits)
++{
++	struct pca9570 *gpio = gpiochip_get_data(chip);
++	u8 buffer;
++	int err;
++
++	mutex_lock(&gpio->lock);
++
++	buffer = gpio->buffer & ~mask;
++	buffer |= (mask & bits);
++
++	err = i2c_smbus_write_byte(gpio->client, buffer);
++	if (!err)
++		gpio->buffer = buffer;
++
++	mutex_unlock(&gpio->lock);
++}
++
++static void pca9570_set(struct gpio_chip *chip, unsigned offset, int value)
++{
++	pca9570_set_mask_bits(chip, BIT(offset), value ? BIT(offset) : 0);
++}
++
++static void pca9570_set_multiple(struct gpio_chip *chip, unsigned long *mask,
++				 unsigned long *bits)
++{
++	pca9570_set_mask_bits(chip, *mask, *bits);
++}
++
++static const struct gpio_chip template_chip = {
++	.label			= "pca9570",
++	.owner			= THIS_MODULE,
++	.get_direction		= pca9570_get_direction,
++	.direction_input	= pca9570_direction_input,
++	.direction_output	= pca9570_direction_output,
++	.set			= pca9570_set,
++	.set_multiple		= pca9570_set_multiple,
++	.base			= -1,
++	.ngpio			= 4,
++	.can_sleep		= true,
++};
++
++static const struct of_device_id pca9570_of_match_table[] = {
++	{ .compatible = "nxp,pca9570" },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, pca9570_of_match_table);
++
++static int pca9570_probe(struct i2c_client *client,
++			 const struct i2c_device_id *id)
++{
++	struct pca9570 *gpio;
++	int ret;
++
++	gpio = devm_kzalloc(&client->dev, sizeof(*gpio), GFP_KERNEL);
++	if (!gpio)
++		return -ENOMEM;
++
++	i2c_set_clientdata(client, gpio);
++
++	gpio->chip = template_chip;
++	gpio->chip.parent = &client->dev;
++
++	gpio->client = client;
++
++	mutex_init(&gpio->lock);
++
++	ret = gpiochip_add_data(&gpio->chip, gpio);
++	if (ret < 0) {
++		dev_err(&client->dev, "Unable to register gpiochip\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++static int pca9570_remove(struct i2c_client *client)
++{
++	struct pca9570 *gpio = i2c_get_clientdata(client);
++
++	gpiochip_remove(&gpio->chip);
++
++	return 0;
++}
++
++static const struct i2c_device_id pca9570_id_table[] = {
++	{ "pca9570", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(i2c, pca9570_id_table);
++
++static struct i2c_driver pca9570_driver = {
++	.driver = {
++		.name = "pca9570",
++		.of_match_table = pca9570_of_match_table,
++	},
++	.probe = pca9570_probe,
++	.remove = pca9570_remove,
++	.id_table = pca9570_id_table,
++};
++module_i2c_driver(pca9570_driver);
++
++MODULE_AUTHOR("Sungbo Eo <mans0n@gorani.run>");
++MODULE_DESCRIPTION("GPIO expander driver for PCA9570");
++MODULE_LICENSE("GPL v2");
+-- 
+2.27.0
 
-thanks,
-
-greg k-h
