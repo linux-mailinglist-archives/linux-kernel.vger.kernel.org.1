@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3DA820600A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9164205F41
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392002AbgFWUix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:38:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34204 "EHLO mail.kernel.org"
+        id S2391180AbgFWUbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:31:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390619AbgFWUil (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:38:41 -0400
+        id S2391057AbgFWUa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:30:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A0AF217D9;
-        Tue, 23 Jun 2020 20:38:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 610782070E;
+        Tue, 23 Jun 2020 20:30:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944721;
-        bh=LqXoPAKS6pHMH0wXYUQDjax07COwK/Y2Q/NCHGyioSQ=;
+        s=default; t=1592944259;
+        bh=ib/vrE2IBF7zJHsPZU9AqPkZOhsF5BhRE1Eu4q8KiUo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mVT2FVT7PAz6dEJ+BLP/pmC+aG65kVZ18SmdddLnxLLpGh71+iU2+qSQGsZyejf8+
-         Ys5e2tJDu0Uj+WkAsn5UOTc/tIGLQO7XKMsQ6pXhJaeqnZvm9ie95W8fPksp+NO2Oy
-         oy+0kFI+W5Ee2azMyLiNTBqSxBcBImPj4XE3IEUU=
+        b=fcbWnLZHpoiBIcJqhIeQSSHz4I9ndE3gwi0P2cqvHuWxHYuzSU33TnQm/BQ5I0aSl
+         /sfeagVmLmo19vgmiPqjNH370ZcZFtLmqlv7nlvNHh9bb3SeBJ/4oalt33Sp+fvmQL
+         1APunOh7gmMiOM6i8yaVrbN96xvoYMWHmIYDcIMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
+        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
+        Xin Tan <tanxin.ctf@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 069/206] PCI: v3-semi: Fix a memory leak in v3_pci_probe() error handling paths
-Date:   Tue, 23 Jun 2020 21:56:37 +0200
-Message-Id: <20200623195320.356521394@linuxfoundation.org>
+Subject: [PATCH 5.4 203/314] ASoC: fsl_asrc_dma: Fix dma_chan leak when config DMA channel failed
+Date:   Tue, 23 Jun 2020 21:56:38 +0200
+Message-Id: <20200623195348.606822595@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,38 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
 
-[ Upstream commit bca718988b9008d0d5f504e2d318178fc84958c1 ]
+[ Upstream commit 36124fb19f1ae68a500cd76a76d40c6e81bee346 ]
 
-If we fails somewhere in 'v3_pci_probe()', we need to free 'host'.
+fsl_asrc_dma_hw_params() invokes dma_request_channel() or
+fsl_asrc_get_dma_channel(), which returns a reference of the specified
+dma_chan object to "pair->dma_chan[dir]" with increased refcnt.
 
-Use the managed version of 'pci_alloc_host_bridge()' to do that easily.
-The use of managed resources is already widely used in this driver.
+The reference counting issue happens in one exception handling path of
+fsl_asrc_dma_hw_params(). When config DMA channel failed for Back-End,
+the function forgets to decrease the refcnt increased by
+dma_request_channel() or fsl_asrc_get_dma_channel(), causing a refcnt
+leak.
 
-Link: https://lore.kernel.org/r/20200418081637.1585-1-christophe.jaillet@wanadoo.fr
-Fixes: 68a15eb7bd0c ("PCI: v3-semi: Add V3 Semiconductor PCI host driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-[lorenzo.pieralisi@arm.com: commit log]
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Fix this issue by calling dma_release_channel() when config DMA channel
+failed.
+
+Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
+Link: https://lore.kernel.org/r/1590415966-52416-1-git-send-email-xiyuyang19@fudan.edu.cn
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-v3-semi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/fsl/fsl_asrc_dma.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/controller/pci-v3-semi.c b/drivers/pci/controller/pci-v3-semi.c
-index d219404bad92b..9a86bb7448acf 100644
---- a/drivers/pci/controller/pci-v3-semi.c
-+++ b/drivers/pci/controller/pci-v3-semi.c
-@@ -743,7 +743,7 @@ static int v3_pci_probe(struct platform_device *pdev)
- 	int ret;
- 	LIST_HEAD(res);
- 
--	host = pci_alloc_host_bridge(sizeof(*v3));
-+	host = devm_pci_alloc_host_bridge(dev, sizeof(*v3));
- 	if (!host)
- 		return -ENOMEM;
+diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
+index 01052a0808b0b..5aee6b8366d27 100644
+--- a/sound/soc/fsl/fsl_asrc_dma.c
++++ b/sound/soc/fsl/fsl_asrc_dma.c
+@@ -241,6 +241,7 @@ static int fsl_asrc_dma_hw_params(struct snd_pcm_substream *substream,
+ 	ret = dmaengine_slave_config(pair->dma_chan[dir], &config_be);
+ 	if (ret) {
+ 		dev_err(dev, "failed to config DMA channel for Back-End\n");
++		dma_release_channel(pair->dma_chan[dir]);
+ 		return ret;
+ 	}
  
 -- 
 2.25.1
