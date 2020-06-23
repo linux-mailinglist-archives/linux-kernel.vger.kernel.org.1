@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D04E7206461
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C3762065CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391919AbgFWVUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:20:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41436 "EHLO mail.kernel.org"
+        id S2388928AbgFWVde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:33:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390279AbgFWUXT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:23:19 -0400
+        id S2388255AbgFWULa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:11:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3745420723;
-        Tue, 23 Jun 2020 20:23:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6087420707;
+        Tue, 23 Jun 2020 20:11:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943799;
-        bh=BW4hUOlgDi92v/7VDicIK2kFtHix7gDg68Er10dW5JA=;
+        s=default; t=1592943089;
+        bh=HLzOiefQ1tuFa6TaGJxdnT/uOr7JEOvkaTFTsiAOlH0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bqXophpCnLrLEDckTNDnwoaVSiOGHlmPiiUoQbgpNIMCdm9fXNdvROXHhMyawxUXs
-         nfHzGBJKFPTEM/Sg0sTcLEeyU3WvbJtk1ZtA7RerGu+2Mtag4/ZZq7D5TdAnMSHSg7
-         D/wFBYCb9d7ywwCFRrUVy9p1z4UcF1FwUxPdSwRY=
+        b=LCmuUS844cZ11uPsdqetEQPs33qaCHx10tPRonFxw2wc7MtY5oDUAAXx7Ko7JPaHP
+         MBvVR3SWX6PyXgDK2ohlw1iQ7y1+sj8Kw5Vwa+pT89NBzDjHO0MCHfK+pbLvUkcS2a
+         AUHrX5z/r8OVR1/CIU1rOinDfwyemG+qN+TMNjWE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 055/314] scsi: cxgb3i: Fix some leaks in init_act_open()
-Date:   Tue, 23 Jun 2020 21:54:10 +0200
-Message-Id: <20200623195341.438333798@linuxfoundation.org>
+        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 255/477] PCI: amlogic: meson: Dont use FAST_LINK_MODE to set up link
+Date:   Tue, 23 Jun 2020 21:54:12 +0200
+Message-Id: <20200623195419.626428173@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
+References: <20200623195407.572062007@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,71 +45,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Marc Zyngier <maz@kernel.org>
 
-[ Upstream commit b6170a49c59c27a10efed26c5a2969403e69aaba ]
+[ Upstream commit 87dccf09323fc363bd0d072fcc12b96622ab8c69 ]
 
-There wasn't any clean up done if cxgb3_alloc_atid() failed and also the
-original code didn't release "csk->l2t".
+The vim3l board does not work with a standard PCIe switch (ASM1184e),
+spitting all kind of errors - hinting at HW misconfiguration (no link,
+port enumeration issues, etc).
 
-Link: https://lore.kernel.org/r/20200521121221.GA247492@mwanda
-Fixes: 6f7efaabefeb ("[SCSI] cxgb3i: change cxgb3i to use libcxgbi")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+According to the the Synopsys DWC PCIe Reference Manual, in the section
+dedicated to the PLCR register, bit 7 is described (FAST_LINK_MODE) as:
+
+"Sets all internal timers to fast mode for simulation purposes."
+
+it is sound to set this bit from a simulation perspective, but on actual
+silicon, which expects timers to have a nominal value, it is not.
+
+Make sure the FAST_LINK_MODE bit is cleared when configuring the RC
+to solve this problem.
+
+Link: https://lore.kernel.org/r/20200429164230.309922-1-maz@kernel.org
+Fixes: 9c0ef6d34fdb ("PCI: amlogic: Add the Amlogic Meson PCIe controller driver")
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+[lorenzo.pieralisi@arm.com: commit log]
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/cxgbi/cxgb3i/cxgb3i.c | 18 ++++++++++++++----
- 1 file changed, 14 insertions(+), 4 deletions(-)
+ drivers/pci/controller/dwc/pci-meson.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c b/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
-index 524cdbcd29aa4..ec7d01f6e2d58 100644
---- a/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
-+++ b/drivers/scsi/cxgbi/cxgb3i/cxgb3i.c
-@@ -959,6 +959,7 @@ static int init_act_open(struct cxgbi_sock *csk)
- 	struct net_device *ndev = cdev->ports[csk->port_id];
- 	struct cxgbi_hba *chba = cdev->hbas[csk->port_id];
- 	struct sk_buff *skb = NULL;
-+	int ret;
+diff --git a/drivers/pci/controller/dwc/pci-meson.c b/drivers/pci/controller/dwc/pci-meson.c
+index 3715dceca1bfa..ca59ba9e0ecd3 100644
+--- a/drivers/pci/controller/dwc/pci-meson.c
++++ b/drivers/pci/controller/dwc/pci-meson.c
+@@ -289,11 +289,11 @@ static void meson_pcie_init_dw(struct meson_pcie *mp)
+ 	meson_cfg_writel(mp, val, PCIE_CFG0);
  
- 	log_debug(1 << CXGBI_DBG_TOE | 1 << CXGBI_DBG_SOCK,
- 		"csk 0x%p,%u,0x%lx.\n", csk, csk->state, csk->flags);
-@@ -979,16 +980,16 @@ static int init_act_open(struct cxgbi_sock *csk)
- 	csk->atid = cxgb3_alloc_atid(t3dev, &t3_client, csk);
- 	if (csk->atid < 0) {
- 		pr_err("NO atid available.\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto put_sock;
- 	}
- 	cxgbi_sock_set_flag(csk, CTPF_HAS_ATID);
- 	cxgbi_sock_get(csk);
+ 	val = meson_elb_readl(mp, PCIE_PORT_LINK_CTRL_OFF);
+-	val &= ~LINK_CAPABLE_MASK;
++	val &= ~(LINK_CAPABLE_MASK | FAST_LINK_MODE);
+ 	meson_elb_writel(mp, val, PCIE_PORT_LINK_CTRL_OFF);
  
- 	skb = alloc_wr(sizeof(struct cpl_act_open_req), 0, GFP_KERNEL);
- 	if (!skb) {
--		cxgb3_free_atid(t3dev, csk->atid);
--		cxgbi_sock_put(csk);
--		return -ENOMEM;
-+		ret = -ENOMEM;
-+		goto free_atid;
- 	}
- 	skb->sk = (struct sock *)csk;
- 	set_arp_failure_handler(skb, act_open_arp_failure);
-@@ -1010,6 +1011,15 @@ static int init_act_open(struct cxgbi_sock *csk)
- 	cxgbi_sock_set_state(csk, CTP_ACTIVE_OPEN);
- 	send_act_open_req(csk, skb, csk->l2t);
- 	return 0;
-+
-+free_atid:
-+	cxgb3_free_atid(t3dev, csk->atid);
-+put_sock:
-+	cxgbi_sock_put(csk);
-+	l2t_release(t3dev, csk->l2t);
-+	csk->l2t = NULL;
-+
-+	return ret;
- }
+ 	val = meson_elb_readl(mp, PCIE_PORT_LINK_CTRL_OFF);
+-	val |= LINK_CAPABLE_X1 | FAST_LINK_MODE;
++	val |= LINK_CAPABLE_X1;
+ 	meson_elb_writel(mp, val, PCIE_PORT_LINK_CTRL_OFF);
  
- cxgb3_cpl_handler_func cxgb3i_cpl_handlers[NUM_CPL_CMDS] = {
+ 	val = meson_elb_readl(mp, PCIE_GEN2_CTRL_OFF);
 -- 
 2.25.1
 
