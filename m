@@ -2,141 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090E3204D18
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 10:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3A4204CF9
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 10:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732055AbgFWIwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 04:52:46 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:60216 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732038AbgFWIwj (ORCPT
+        id S1731927AbgFWIuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 04:50:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731691AbgFWIug (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 04:52:39 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05N8mQVB154055;
-        Tue, 23 Jun 2020 08:52:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=DknXJEjmrv/iWODdk0nOVJV/xbrcH754lN0Ce8dlBpk=;
- b=pJbNgxbhE0t1w6PQu+tfm3NrsebQFcUxYYlmc3kPF+XLNBm13DFmKlcVFJePvYql8lD6
- ptOZtD8Vv0zSFQIJ3Qhn00mLXbCO7ckyCtVVSC/8dybGI1yhz4Ld+XQs5nXydQeS23eT
- xJhtXeWxrBWIXlMmWJs5sHsGrv/mJxtdJQNXjKWbanMNUMH+MPLAAecv0wb7NNEa0HGg
- fyul7kcNgPL5YkNVLdUmRtXo1mBM6c+1pzJszua6cRZhab0I875ZMYOEn1L9Mc5Nnpof
- GH5Wx/Z8+8bAqHu3FESaGqkyVVuYKO/Ad9+NjkVYv08Zi3j4RIw6tKfnE8X/LbYzolmf yg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 31sebbm089-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 23 Jun 2020 08:52:32 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05N8lfHK095488;
-        Tue, 23 Jun 2020 08:50:31 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 31sv1n0fqs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Jun 2020 08:50:31 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05N8oTTG030899;
-        Tue, 23 Jun 2020 08:50:30 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 23 Jun 2020 08:50:28 +0000
-Date:   Tue, 23 Jun 2020 11:50:21 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Todd Kjos <tkjos@google.com>
-Cc:     gregkh@linuxfoundation.org, christian@brauner.io, arve@android.com,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        maco@google.com, joel@joelfernandes.org, kernel-team@android.com
-Subject: Re: [PATCH] binder: fix null deref of proc->context
-Message-ID: <20200623085021.GG4151@kadam>
-References: <20200622200715.114382-1-tkjos@google.com>
+        Tue, 23 Jun 2020 04:50:36 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A199C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 01:50:36 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id e12so3902054qtr.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 01:50:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=y/cIlmiQGFW7vkgx22yAxQ6q0R1TKH8fVp3Z9jLtHCE=;
+        b=WYg5PiNkGFNFNcFvVRGdTJteyILQn2nptS9bCOYMnwE+WtWJ007MM1aFQO5500+ZCf
+         k7XDFyKgKx4wc55k9QRa5D1IGH+MO2wZujCH0FfNqhPnIIn+Y524vvxGmjWsKiCdNPGl
+         gFkZ7Qx0TWQ3lZa89N4Iu0YJ+yEb1t0xAvS94np3zk16yFcxagwGXpPpIphYB+tnQfi9
+         VSYvT4mpIxHaJaibpUkPlRDBtR6Plnlb4w5zHz6/Z/4dH2lPohIrTnnfUe1bL081QhED
+         Ki8Od93dXAvzZQGRA4gGEL6oks9aSa7YJCZHc02GqNxgrBrC1kcJaGab9HgwUZbpc0wM
+         ezUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=y/cIlmiQGFW7vkgx22yAxQ6q0R1TKH8fVp3Z9jLtHCE=;
+        b=CeR2Nqw6BG9AGWW+lM5E2PMq8pLyHz81LP3g0h0MIQhjK34j/q+V7IQ2ffk2Goo4ln
+         lMFdYwrBnJ8w10dTsnJ9P9qiO2lqXKaiAEQ5LAWvvzcQoPFhlHkBmGheV94paekXGSf1
+         ozJAxKpphZy7/IuYw5sQ0yDCg6hdThEURzCiTxG7x+d7KyhnyhEsdaEHF5eVnPl5CvD1
+         cdQJeTvLSkYa6Xl7D80IxZeirPxUNRJQ15+yMoFcPCw4JGu5Bk+e3xdlE3JlX1luBxEm
+         eEhi1d+4IkO8W4sVj8qBKj/xCp2uo80ekelmbujPL7SAGELiHm+jIUtLC64ESO8K0NDd
+         WmXg==
+X-Gm-Message-State: AOAM530/TMvuiU6C4/4G8eZHPL4R4SgxgP3F+AphWgHbqdbWs+jgNljm
+        uKMZEaRJ/eC4T6ABRud+ZRpY5MRbDp9P8SYTMnSjaA==
+X-Google-Smtp-Source: ABdhPJw1r9LEA0YmrFF1idC8wdMqocEjVAPAvtCZnLuEUcAdEm/je/CsSdEV+zck3yFnkB/bicE7kTCPgWTMliYEBb8=
+X-Received: by 2002:aed:2a75:: with SMTP id k50mr4736033qtf.27.1592902235814;
+ Tue, 23 Jun 2020 01:50:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200622200715.114382-1-tkjos@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9660 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=999
- adultscore=0 phishscore=0 bulkscore=0 suspectscore=2 malwarescore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006230070
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9660 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 lowpriorityscore=0
- mlxlogscore=999 cotscore=-2147483648 mlxscore=0 phishscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 suspectscore=2 clxscore=1011
- impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006230070
+References: <20200605024919.56177-1-navid.emamdoost@gmail.com>
+In-Reply-To: <20200605024919.56177-1-navid.emamdoost@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Tue, 23 Jun 2020 10:50:24 +0200
+Message-ID: <CAMpxmJU3aivxkjpWQDExnnW_AOF4Unefrb6xgF2fqrzaw-hi0w@mail.gmail.com>
+Subject: Re: [PATCH] gpio: rcar: handle pm_runtime_get_sync failure case
+To:     Navid Emamdoost <navid.emamdoost@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Navid Emamdoost <emamd001@umn.edu>,
+        Qiushi Wu <wu000273@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
+        smccaman@umn.edu
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 01:07:15PM -0700, Todd Kjos wrote:
-> The binder driver makes the assumption proc->context pointer is invariant after
-> initialization (as documented in the kerneldoc header for struct proc).
-> However, in commit f0fe2c0f050d ("binder: prevent UAF for binderfs devices II")
-> proc->context is set to NULL during binder_deferred_release().
-> 
-> Another proc was in the middle of setting up a transaction to the dying
-> process and crashed on a NULL pointer deref on "context" which is a local
-> set to &proc->context:
-> 
->     new_ref->data.desc = (node == context->binder_context_mgr_node) ? 0 : 1;
-> 
-> Here's the stack:
-> 
-> [ 5237.855435] Call trace:
-> [ 5237.855441] binder_get_ref_for_node_olocked+0x100/0x2ec
-> [ 5237.855446] binder_inc_ref_for_node+0x140/0x280
-> [ 5237.855451] binder_translate_binder+0x1d0/0x388
-> [ 5237.855456] binder_transaction+0x2228/0x3730
-> [ 5237.855461] binder_thread_write+0x640/0x25bc
-> [ 5237.855466] binder_ioctl_write_read+0xb0/0x464
-> [ 5237.855471] binder_ioctl+0x30c/0x96c
-> [ 5237.855477] do_vfs_ioctl+0x3e0/0x700
-> [ 5237.855482] __arm64_sys_ioctl+0x78/0xa4
-> [ 5237.855488] el0_svc_common+0xb4/0x194
-> [ 5237.855493] el0_svc_handler+0x74/0x98
-> [ 5237.855497] el0_svc+0x8/0xc
-> 
-> The fix is to move the kfree of the binder_device to binder_free_proc()
-> so the binder_device is freed when we know there are no references
-> remaining on the binder_proc.
-> 
-> Fixes: f0fe2c0f050d ("binder: prevent UAF for binderfs devices II")
-> Signed-off-by: Todd Kjos <tkjos@google.com>
+pt., 5 cze 2020 o 04:49 Navid Emamdoost <navid.emamdoost@gmail.com> napisa=
+=C5=82(a):
+>
+> Calling pm_runtime_get_sync increments the counter even in case of
+> failure, causing incorrect ref count. Call pm_runtime_put if
+> pm_runtime_get_sync fails.
+>
+> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
 > ---
->  drivers/android/binder.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-> index e47c8a4c83db..f50c5f182bb5 100644
-> --- a/drivers/android/binder.c
-> +++ b/drivers/android/binder.c
-> @@ -4686,8 +4686,15 @@ static struct binder_thread *binder_get_thread(struct binder_proc *proc)
->  
->  static void binder_free_proc(struct binder_proc *proc)
->  {
-> +	struct binder_device *device;
-> +
->  	BUG_ON(!list_empty(&proc->todo));
->  	BUG_ON(!list_empty(&proc->delivered_death));
-> +	device = container_of(proc->context, struct binder_device, context);
-> +	if (refcount_dec_and_test(&device->ref)) {
-> +		kfree(proc->context->name);
-> +		kfree(device);
-> +	}
+>  drivers/gpio/gpio-rcar.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpio/gpio-rcar.c b/drivers/gpio/gpio-rcar.c
+> index 7284473c9fe3..eac1582c70da 100644
+> --- a/drivers/gpio/gpio-rcar.c
+> +++ b/drivers/gpio/gpio-rcar.c
+> @@ -250,8 +250,10 @@ static int gpio_rcar_request(struct gpio_chip *chip,=
+ unsigned offset)
+>         int error;
+>
+>         error =3D pm_runtime_get_sync(p->dev);
+> -       if (error < 0)
+> +       if (error < 0) {
+> +               pm_runtime_put(p->dev);
+>                 return error;
+> +       }
+>
+>         error =3D pinctrl_gpio_request(chip->base + offset);
+>         if (error)
+> --
+> 2.17.1
+>
 
-Where is device allocated?
+Hi Navid!
 
-It looks to me like they are allocated in init_binder_device().  So why
-are calling misc_deregister?  And it looks like the kfree(proc->context->name);
-is wrong as well because that's from the
-"device_names = kstrdup(binder_devices_param, GFP_KERNEL);" in
-binder_init().
+This doesn't apply to current master. I think the previous version got
+applied. Could you please rebase?
 
-To be honest, I'm a bit confused why we're not doing this in module_exit().
-
-regards,
-dan carpenter
-
+Bart
