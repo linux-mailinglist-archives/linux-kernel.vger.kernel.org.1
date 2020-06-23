@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C945B20627E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024DF20614E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:07:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404293AbgFWVDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:03:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34374 "EHLO mail.kernel.org"
+        id S2403842AbgFWUjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:39:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391992AbgFWUit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:38:49 -0400
+        id S2391998AbgFWUiw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:38:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 527C0215A4;
-        Tue, 23 Jun 2020 20:38:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DAE2821531;
+        Tue, 23 Jun 2020 20:38:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944729;
-        bh=49qIr2bme5VHBwoOnXrXG2s0Ld5QHMRUkftv5Yy7fkQ=;
+        s=default; t=1592944732;
+        bh=tpk1lI+xUhmj9x8UVeBpdgPE5A7IUMhonMn75/qTPS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GKOOYh7sG8ziYVCWdlBb6vd38csc5JnkK4m2fwGQP6Gw3atY9f5o56J6qt6iia7lT
-         QDBCKRessjcUXXhFtol8fVWTT7fUGqx6F8A5nz1liURIEUVwjEYNQabeZMRqS6f2vJ
-         cPqZcXv2u8r042QqjSQJwXBgipZbrhgq0JcyXvGs=
+        b=Cn1cnE4zTOct53AK9/TBOBb5siCrlRNffFQhNYkzlHP+RxbV1e6UwhUR9dfRIQ1+V
+         +lptd5dggB/AeelYkVX9vbLLmCrzgsZoDD1ycHrPfBoijOwtju8kwwgbybK1uovwHo
+         Ur84Jo4xYRdeWQDOg8pJq6lrm3LAgpMcvmnjTe+Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
+        stable@vger.kernel.org, Maor Gottlieb <maorg@mellanox.com>,
+        Leon Romanovsky <leonro@mellanox.com>,
+        Jason Gunthorpe <jgg@mellanox.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 103/206] PCI: dwc: Fix inner MSI IRQ domain registration
-Date:   Tue, 23 Jun 2020 21:57:11 +0200
-Message-Id: <20200623195322.005718151@linuxfoundation.org>
+Subject: [PATCH 4.19 104/206] IB/cma: Fix ports memory leak in cma_configfs
+Date:   Tue, 23 Jun 2020 21:57:12 +0200
+Message-Id: <20200623195322.059007984@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
 References: <20200623195316.864547658@linuxfoundation.org>
@@ -45,46 +45,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Zyngier <maz@kernel.org>
+From: Maor Gottlieb <maorg@mellanox.com>
 
-[ Upstream commit 0414b93e78d87ecc24ae1a7e61fe97deb29fa2f4 ]
+[ Upstream commit 63a3345c2d42a9b29e1ce2d3a4043689b3995cea ]
 
-On a system that uses the internal DWC MSI widget, I get this
-warning from debugfs when CONFIG_GENERIC_IRQ_DEBUGFS is selected:
+The allocated ports structure in never freed. The free function should be
+called by release_cma_ports_group, but the group is never released since
+we don't remove its default group.
 
-  debugfs: File ':soc:pcie@fc000000' in directory 'domains' already present!
+Remove default groups when device group is deleted.
 
-This is due to the fact that the DWC MSI code tries to register two
-IRQ domains for the same firmware node, without telling the low
-level code how to distinguish them (by setting a bus token). This
-further confuses debugfs which tries to create corresponding
-files for each domain.
-
-Fix it by tagging the inner domain as DOMAIN_BUS_NEXUS, which is
-the closest thing we have as to "generic MSI".
-
-Link: https://lore.kernel.org/r/20200501113921.366597-1-maz@kernel.org
-Signed-off-by: Marc Zyngier <maz@kernel.org>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Jingoo Han <jingoohan1@gmail.com>
+Fixes: 045959db65c6 ("IB/cma: Add configfs for rdma_cm")
+Link: https://lore.kernel.org/r/20200521072650.567908-1-leon@kernel.org
+Signed-off-by: Maor Gottlieb <maorg@mellanox.com>
+Signed-off-by: Leon Romanovsky <leonro@mellanox.com>
+Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/dwc/pcie-designware-host.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/infiniband/core/cma_configfs.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-index 6d4ef0101ef68..be62f654c8eb7 100644
---- a/drivers/pci/controller/dwc/pcie-designware-host.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-@@ -285,6 +285,8 @@ int dw_pcie_allocate_domains(struct pcie_port *pp)
- 		return -ENOMEM;
- 	}
+diff --git a/drivers/infiniband/core/cma_configfs.c b/drivers/infiniband/core/cma_configfs.c
+index eee38b40be990..ce183d0547852 100644
+--- a/drivers/infiniband/core/cma_configfs.c
++++ b/drivers/infiniband/core/cma_configfs.c
+@@ -319,8 +319,21 @@ fail:
+ 	return ERR_PTR(err);
+ }
  
-+	irq_domain_update_bus_token(pp->irq_domain, DOMAIN_BUS_NEXUS);
++static void drop_cma_dev(struct config_group *cgroup, struct config_item *item)
++{
++	struct config_group *group =
++		container_of(item, struct config_group, cg_item);
++	struct cma_dev_group *cma_dev_group =
++		container_of(group, struct cma_dev_group, device_group);
 +
- 	pp->msi_domain = pci_msi_create_irq_domain(fwnode,
- 						   &dw_pcie_msi_domain_info,
- 						   pp->irq_domain);
++	configfs_remove_default_groups(&cma_dev_group->ports_group);
++	configfs_remove_default_groups(&cma_dev_group->device_group);
++	config_item_put(item);
++}
++
+ static struct configfs_group_operations cma_subsys_group_ops = {
+ 	.make_group	= make_cma_dev,
++	.drop_item	= drop_cma_dev,
+ };
+ 
+ static const struct config_item_type cma_subsys_type = {
 -- 
 2.25.1
 
