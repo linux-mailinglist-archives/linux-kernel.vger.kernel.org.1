@@ -2,39 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4525D205FD0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044D1205F08
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391782AbgFWUgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:36:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59434 "EHLO mail.kernel.org"
+        id S2390420AbgFWU2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:28:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391210AbgFWUgX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:36:23 -0400
+        id S2390883AbgFWU2f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:28:35 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9176E2080C;
-        Tue, 23 Jun 2020 20:36:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66D05206EB;
+        Tue, 23 Jun 2020 20:28:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944583;
-        bh=fIBfyEzt853Mv0htINfmpJZz7B+EacMJXTw/nFqBD+4=;
+        s=default; t=1592944114;
+        bh=7ItRNRnJEgv9KKgwFthtaIjaQ/IrjBT197aSlgnlRXw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XyM545meY8GXCLodxOZCZejwxEI0GS9juKedMV9K4ivJ8w5B0iYCl2m1/ekAf3ilr
-         /3D35iCKIcQOPDsaslYXiepUqcWRuW6TNjeAlkICx7tQQuXu4h6AZvCIw8N08WdO7y
-         PdQBFt9SergzXHO6nsnBahclJElatLZXZiqs3/I0=
+        b=HkbWH6XkD3VtfoG4g91xnHymbWdbpCW5IIIvx7qBdVGLdzLJ3lbTsU+l4DgBbR1I1
+         0btpq2a1OdyT/CPsqYOFwKdYGbE3nqSS6BtrJHw/KLyKGNffDy08uMnGojU/FTlGLV
+         T6/X9eCILQVVqF/Hw5HnF0gDSlPbSCURh7qvruXc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        John Johansen <john.johansen@canonical.com>,
+        stable@vger.kernel.org, Jayshri Pawar <jpawar@cadence.com>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 046/206] apparmor: fix nnp subset test for unconfined
+Subject: [PATCH 5.4 179/314] usb: gadget: Fix issue with config_ep_by_speed function
 Date:   Tue, 23 Jun 2020 21:56:14 +0200
-Message-Id: <20200623195319.245624425@linuxfoundation.org>
+Message-Id: <20200623195347.428680463@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,123 +45,224 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Johansen <john.johansen@canonical.com>
+From: Pawel Laszczak <pawell@cadence.com>
 
-[ Upstream commit 3ed4aaa94fc07db3cd0c91be95e3e1b9782a2710 ]
+[ Upstream commit 5d363120aa548ba52d58907a295eee25f8207ed2 ]
 
-The subset test is not taking into account the unconfined exception
-which will cause profile transitions in the stacked confinement
-case to fail when no_new_privs is applied.
+This patch adds new config_ep_by_speed_and_alt function which
+extends the config_ep_by_speed about alt parameter.
+This additional parameter allows to find proper usb_ss_ep_comp_descriptor.
 
-This fixes a regression introduced in the fix for
-https://bugs.launchpad.net/bugs/1839037
+Problem has appeared during testing f_tcm (BOT/UAS) driver function.
 
-BugLink: https://bugs.launchpad.net/bugs/1844186
-Signed-off-by: John Johansen <john.johansen@canonical.com>
+f_tcm function for SS use array of headers for both  BOT/UAS alternate
+setting:
+
+static struct usb_descriptor_header *uasp_ss_function_desc[] = {
+        (struct usb_descriptor_header *) &bot_intf_desc,
+        (struct usb_descriptor_header *) &uasp_ss_bi_desc,
+        (struct usb_descriptor_header *) &bot_bi_ep_comp_desc,
+        (struct usb_descriptor_header *) &uasp_ss_bo_desc,
+        (struct usb_descriptor_header *) &bot_bo_ep_comp_desc,
+
+        (struct usb_descriptor_header *) &uasp_intf_desc,
+        (struct usb_descriptor_header *) &uasp_ss_bi_desc,
+        (struct usb_descriptor_header *) &uasp_bi_ep_comp_desc,
+        (struct usb_descriptor_header *) &uasp_bi_pipe_desc,
+        (struct usb_descriptor_header *) &uasp_ss_bo_desc,
+        (struct usb_descriptor_header *) &uasp_bo_ep_comp_desc,
+        (struct usb_descriptor_header *) &uasp_bo_pipe_desc,
+        (struct usb_descriptor_header *) &uasp_ss_status_desc,
+        (struct usb_descriptor_header *) &uasp_status_in_ep_comp_desc,
+        (struct usb_descriptor_header *) &uasp_status_pipe_desc,
+        (struct usb_descriptor_header *) &uasp_ss_cmd_desc,
+        (struct usb_descriptor_header *) &uasp_cmd_comp_desc,
+        (struct usb_descriptor_header *) &uasp_cmd_pipe_desc,
+        NULL,
+};
+
+The first 5 descriptors are associated with BOT alternate setting,
+and others are associated with UAS.
+
+During handling UAS alternate setting f_tcm driver invokes
+config_ep_by_speed and this function sets incorrect companion endpoint
+descriptor in usb_ep object.
+
+Instead setting ep->comp_desc to uasp_bi_ep_comp_desc function in this
+case set ep->comp_desc to uasp_ss_bi_desc.
+
+This is due to the fact that it searches endpoint based on endpoint
+address:
+
+        for_each_ep_desc(speed_desc, d_spd) {
+                chosen_desc = (struct usb_endpoint_descriptor *)*d_spd;
+                if (chosen_desc->bEndpoitAddress == _ep->address)
+                        goto ep_found;
+        }
+
+And in result it uses the descriptor from BOT alternate setting
+instead UAS.
+
+Finally, it causes that controller driver during enabling endpoints
+detect that just enabled endpoint for bot.
+
+Signed-off-by: Jayshri Pawar <jpawar@cadence.com>
+Signed-off-by: Pawel Laszczak <pawell@cadence.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/apparmor/domain.c        |  9 +++++----
- security/apparmor/include/label.h |  1 +
- security/apparmor/label.c         | 33 +++++++++++++++++++++++++++++++
- 3 files changed, 39 insertions(+), 4 deletions(-)
+ drivers/usb/gadget/composite.c | 78 ++++++++++++++++++++++++++--------
+ include/linux/usb/composite.h  |  3 ++
+ 2 files changed, 64 insertions(+), 17 deletions(-)
 
-diff --git a/security/apparmor/domain.c b/security/apparmor/domain.c
-index b9d5b3459705b..13b33490e0792 100644
---- a/security/apparmor/domain.c
-+++ b/security/apparmor/domain.c
-@@ -939,7 +939,8 @@ int apparmor_bprm_set_creds(struct linux_binprm *bprm)
- 	 * aways results in a further reduction of permissions.
- 	 */
- 	if ((bprm->unsafe & LSM_UNSAFE_NO_NEW_PRIVS) &&
--	    !unconfined(label) && !aa_label_is_subset(new, ctx->nnp)) {
-+	    !unconfined(label) &&
-+	    !aa_label_is_unconfined_subset(new, ctx->nnp)) {
- 		error = -EPERM;
- 		info = "no new privs";
- 		goto audit;
-@@ -1217,7 +1218,7 @@ int aa_change_hat(const char *hats[], int count, u64 token, int flags)
- 		 * reduce restrictions.
- 		 */
- 		if (task_no_new_privs(current) && !unconfined(label) &&
--		    !aa_label_is_subset(new, ctx->nnp)) {
-+		    !aa_label_is_unconfined_subset(new, ctx->nnp)) {
- 			/* not an apparmor denial per se, so don't log it */
- 			AA_DEBUG("no_new_privs - change_hat denied");
- 			error = -EPERM;
-@@ -1238,7 +1239,7 @@ int aa_change_hat(const char *hats[], int count, u64 token, int flags)
- 		 * reduce restrictions.
- 		 */
- 		if (task_no_new_privs(current) && !unconfined(label) &&
--		    !aa_label_is_subset(previous, ctx->nnp)) {
-+		    !aa_label_is_unconfined_subset(previous, ctx->nnp)) {
- 			/* not an apparmor denial per se, so don't log it */
- 			AA_DEBUG("no_new_privs - change_hat denied");
- 			error = -EPERM;
-@@ -1433,7 +1434,7 @@ check:
- 		 * reduce restrictions.
- 		 */
- 		if (task_no_new_privs(current) && !unconfined(label) &&
--		    !aa_label_is_subset(new, ctx->nnp)) {
-+		    !aa_label_is_unconfined_subset(new, ctx->nnp)) {
- 			/* not an apparmor denial per se, so don't log it */
- 			AA_DEBUG("no_new_privs - change_hat denied");
- 			error = -EPERM;
-diff --git a/security/apparmor/include/label.h b/security/apparmor/include/label.h
-index 7ce5fe73ae7f5..cecbd3f5429c6 100644
---- a/security/apparmor/include/label.h
-+++ b/security/apparmor/include/label.h
-@@ -285,6 +285,7 @@ bool aa_label_init(struct aa_label *label, int size, gfp_t gfp);
- struct aa_label *aa_label_alloc(int size, struct aa_proxy *proxy, gfp_t gfp);
- 
- bool aa_label_is_subset(struct aa_label *set, struct aa_label *sub);
-+bool aa_label_is_unconfined_subset(struct aa_label *set, struct aa_label *sub);
- struct aa_profile *__aa_label_next_not_in_set(struct label_it *I,
- 					     struct aa_label *set,
- 					     struct aa_label *sub);
-diff --git a/security/apparmor/label.c b/security/apparmor/label.c
-index 6e7aa2ef8ee0f..6727e6fb69df2 100644
---- a/security/apparmor/label.c
-+++ b/security/apparmor/label.c
-@@ -554,6 +554,39 @@ bool aa_label_is_subset(struct aa_label *set, struct aa_label *sub)
- 	return __aa_label_next_not_in_set(&i, set, sub) == NULL;
+diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
+index d98ca1566e95d..f75ff1a75dc45 100644
+--- a/drivers/usb/gadget/composite.c
++++ b/drivers/usb/gadget/composite.c
+@@ -96,40 +96,43 @@ function_descriptors(struct usb_function *f,
  }
  
-+/**
-+ * aa_label_is_unconfined_subset - test if @sub is a subset of @set
-+ * @set: label to test against
-+ * @sub: label to test if is subset of @set
-+ *
-+ * This checks for subset but taking into account unconfined. IF
-+ * @sub contains an unconfined profile that does not have a matching
-+ * unconfined in @set then this will not cause the test to fail.
-+ * Conversely we don't care about an unconfined in @set that is not in
-+ * @sub
-+ *
-+ * Returns: true if @sub is special_subset of @set
-+ *     else false
-+ */
-+bool aa_label_is_unconfined_subset(struct aa_label *set, struct aa_label *sub)
-+{
-+	struct label_it i = { };
-+	struct aa_profile *p;
-+
-+	AA_BUG(!set);
-+	AA_BUG(!sub);
-+
-+	if (sub == set)
-+		return true;
-+
-+	do {
-+		p = __aa_label_next_not_in_set(&i, set, sub);
-+		if (p && !profile_unconfined(p))
-+			break;
-+	} while (p);
-+
-+	return p == NULL;
-+}
+ /**
+- * next_ep_desc() - advance to the next EP descriptor
++ * next_desc() - advance to the next desc_type descriptor
+  * @t: currect pointer within descriptor array
++ * @desc_type: descriptor type
+  *
+- * Return: next EP descriptor or NULL
++ * Return: next desc_type descriptor or NULL
+  *
+- * Iterate over @t until either EP descriptor found or
++ * Iterate over @t until either desc_type descriptor found or
+  * NULL (that indicates end of list) encountered
+  */
+ static struct usb_descriptor_header**
+-next_ep_desc(struct usb_descriptor_header **t)
++next_desc(struct usb_descriptor_header **t, u8 desc_type)
+ {
+ 	for (; *t; t++) {
+-		if ((*t)->bDescriptorType == USB_DT_ENDPOINT)
++		if ((*t)->bDescriptorType == desc_type)
+ 			return t;
+ 	}
+ 	return NULL;
+ }
  
+ /*
+- * for_each_ep_desc()- iterate over endpoint descriptors in the
+- *		descriptors list
+- * @start:	pointer within descriptor array.
+- * @ep_desc:	endpoint descriptor to use as the loop cursor
++ * for_each_desc() - iterate over desc_type descriptors in the
++ * descriptors list
++ * @start: pointer within descriptor array.
++ * @iter_desc: desc_type descriptor to use as the loop cursor
++ * @desc_type: wanted descriptr type
+  */
+-#define for_each_ep_desc(start, ep_desc) \
+-	for (ep_desc = next_ep_desc(start); \
+-	      ep_desc; ep_desc = next_ep_desc(ep_desc+1))
++#define for_each_desc(start, iter_desc, desc_type) \
++	for (iter_desc = next_desc(start, desc_type); \
++	     iter_desc; iter_desc = next_desc(iter_desc + 1, desc_type))
  
  /**
+- * config_ep_by_speed() - configures the given endpoint
++ * config_ep_by_speed_and_alt() - configures the given endpoint
+  * according to gadget speed.
+  * @g: pointer to the gadget
+  * @f: usb function
+  * @_ep: the endpoint to configure
++ * @alt: alternate setting number
+  *
+  * Return: error code, 0 on success
+  *
+@@ -142,11 +145,13 @@ next_ep_desc(struct usb_descriptor_header **t)
+  * Note: the supplied function should hold all the descriptors
+  * for supported speeds
+  */
+-int config_ep_by_speed(struct usb_gadget *g,
+-			struct usb_function *f,
+-			struct usb_ep *_ep)
++int config_ep_by_speed_and_alt(struct usb_gadget *g,
++				struct usb_function *f,
++				struct usb_ep *_ep,
++				u8 alt)
+ {
+ 	struct usb_endpoint_descriptor *chosen_desc = NULL;
++	struct usb_interface_descriptor *int_desc = NULL;
+ 	struct usb_descriptor_header **speed_desc = NULL;
+ 
+ 	struct usb_ss_ep_comp_descriptor *comp_desc = NULL;
+@@ -182,8 +187,21 @@ int config_ep_by_speed(struct usb_gadget *g,
+ 	default:
+ 		speed_desc = f->fs_descriptors;
+ 	}
++
++	/* find correct alternate setting descriptor */
++	for_each_desc(speed_desc, d_spd, USB_DT_INTERFACE) {
++		int_desc = (struct usb_interface_descriptor *)*d_spd;
++
++		if (int_desc->bAlternateSetting == alt) {
++			speed_desc = d_spd;
++			goto intf_found;
++		}
++	}
++	return -EIO;
++
++intf_found:
+ 	/* find descriptors */
+-	for_each_ep_desc(speed_desc, d_spd) {
++	for_each_desc(speed_desc, d_spd, USB_DT_ENDPOINT) {
+ 		chosen_desc = (struct usb_endpoint_descriptor *)*d_spd;
+ 		if (chosen_desc->bEndpointAddress == _ep->address)
+ 			goto ep_found;
+@@ -237,6 +255,32 @@ ep_found:
+ 	}
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(config_ep_by_speed_and_alt);
++
++/**
++ * config_ep_by_speed() - configures the given endpoint
++ * according to gadget speed.
++ * @g: pointer to the gadget
++ * @f: usb function
++ * @_ep: the endpoint to configure
++ *
++ * Return: error code, 0 on success
++ *
++ * This function chooses the right descriptors for a given
++ * endpoint according to gadget speed and saves it in the
++ * endpoint desc field. If the endpoint already has a descriptor
++ * assigned to it - overwrites it with currently corresponding
++ * descriptor. The endpoint maxpacket field is updated according
++ * to the chosen descriptor.
++ * Note: the supplied function should hold all the descriptors
++ * for supported speeds
++ */
++int config_ep_by_speed(struct usb_gadget *g,
++			struct usb_function *f,
++			struct usb_ep *_ep)
++{
++	return config_ep_by_speed_and_alt(g, f, _ep, 0);
++}
+ EXPORT_SYMBOL_GPL(config_ep_by_speed);
+ 
+ /**
+diff --git a/include/linux/usb/composite.h b/include/linux/usb/composite.h
+index 8675e145ea8b3..2040696d75b6e 100644
+--- a/include/linux/usb/composite.h
++++ b/include/linux/usb/composite.h
+@@ -249,6 +249,9 @@ int usb_function_activate(struct usb_function *);
+ 
+ int usb_interface_id(struct usb_configuration *, struct usb_function *);
+ 
++int config_ep_by_speed_and_alt(struct usb_gadget *g, struct usb_function *f,
++				struct usb_ep *_ep, u8 alt);
++
+ int config_ep_by_speed(struct usb_gadget *g, struct usb_function *f,
+ 			struct usb_ep *_ep);
+ 
 -- 
 2.25.1
 
