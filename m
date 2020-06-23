@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D9B4204CE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 10:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8A6204CF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 10:49:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731950AbgFWIsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 04:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731923AbgFWIsd (ORCPT
+        id S1732043AbgFWItU convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 23 Jun 2020 04:49:20 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:40762 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731775AbgFWItT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 04:48:33 -0400
-Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C076C061573;
-        Tue, 23 Jun 2020 01:48:33 -0700 (PDT)
-Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
-        by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
-        (Exim 4.80)
-        (envelope-from <tip-bot2@linutronix.de>)
-        id 1jnebS-0005Sc-P3; Tue, 23 Jun 2020 10:48:26 +0200
-Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 427671C0244;
-        Tue, 23 Jun 2020 10:48:26 +0200 (CEST)
-Date:   Tue, 23 Jun 2020 08:48:26 -0000
-From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched/core: Fix CONFIG_GCC_PLUGIN_RANDSTRUCT build fail
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+        Tue, 23 Jun 2020 04:49:19 -0400
+Received: by mail-oi1-f194.google.com with SMTP id t25so18183221oij.7;
+        Tue, 23 Jun 2020 01:49:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=KYYkTy+n5vlKKt6FVVpIMkxXIMyGrQIro4YFJXSFp/Q=;
+        b=Z49XcmnkJkCrXdxkwm0MB1QNxW2yEqKzNkNDq6y+FQyWJRqPBgQGJ49auccg2qeWKp
+         6jV32/Rnz2DqXY1q/cRcsvFEcSZ1OOQEkhFLfi/99EAUykfXP/SVTaWJsz8XoxO7a0kX
+         lEnRhd7I9LqG1miK831CZJKtywoCJBMgmw0B7D088LYHFBRdCFEThh/Lvdoug87UeDqs
+         tQn7PxtlYQce/jndNXC8xkGqkqWsKfmBEnSls9pBDcMzz4jRW1q7k4daOK+ryZuMc23B
+         5YI4L7KYJ0Ffoy5YZ0bFaYs8lWa+Ima76HAwrOTNGi3H3tS4kSHXOz/GFkXRXaDvaIFP
+         L3Uw==
+X-Gm-Message-State: AOAM5311R4Cvjv7XN7bJLmCSXU6DYgEuWShQCzbAKYN8xeKGjuo6u4sO
+        Li0UN164yoaPDa7/ySttL/z8n/61WvaGvjGu3nVvwQ==
+X-Google-Smtp-Source: ABdhPJyZuQJULxx3zeAGfh1M7qa212mqMA6kl+nmL+q8rj5M2TP5jMtfN8t8iYl5v54dJMOwofhHC5BjrzV1nV2gUFY=
+X-Received: by 2002:a54:4006:: with SMTP id x6mr14938101oie.148.1592902158608;
+ Tue, 23 Jun 2020 01:49:18 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <159290210605.16989.8416808471996833605.tip-bot2@tip-bot2>
-X-Mailer: tip-git-log-daemon
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Linutronix-Spam-Score: -1.0
-X-Linutronix-Spam-Level: -
-X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+References: <20200212101651.9010-1-geert+renesas@glider.be>
+ <CAEbi=3fMRq++Eot+BEtCedeyhM65kTc+nS7=inCTR8MkT5srww@mail.gmail.com> <CAMuHMdU+VLpg5Yezo2Ea9v2vmvbA=nEcKObBgZYwjSV10OkY=A@mail.gmail.com>
+In-Reply-To: <CAMuHMdU+VLpg5Yezo2Ea9v2vmvbA=nEcKObBgZYwjSV10OkY=A@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 23 Jun 2020 10:49:07 +0200
+Message-ID: <CAMuHMdWaRw+61y4Ykk4niagPOtY3dL28fhtB=3jdR16ZODGgfg@mail.gmail.com>
+Subject: Re: [PATCH] nds32: Replace <linux/clk-provider.h> by <linux/of_clk.h>
+To:     Greentime Hu <green.hu@gmail.com>
+Cc:     Nick Hu <nickhu@andestech.com>, Vincent Chen <deanbo422@gmail.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+Hi Greentime,
 
-Commit-ID:     bc2d9d93ad336edce50ee4a52229076addb8fcdc
-Gitweb:        https://git.kernel.org/tip/bc2d9d93ad336edce50ee4a52229076addb8fcdc
-Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 10 Jun 2020 12:14:09 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 23 Jun 2020 10:30:57 +02:00
+On Wed, Feb 12, 2020 at 1:25 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> On Wed, Feb 12, 2020 at 11:52 AM Greentime Hu <green.hu@gmail.com> wrote:
+> > Geert Uytterhoeven <geert+renesas@glider.be> 於 2020年2月12日 週三 下午6:16寫道：
+> > > The Andes platform code is not a clock provider, and just needs to call
+> > > of_clk_init().
+> > >
+> > > Hence it can include <linux/of_clk.h> instead of <linux/clk-provider.h>.
+> > >
+> > > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > > ---
+> > >  arch/nds32/kernel/time.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/arch/nds32/kernel/time.c b/arch/nds32/kernel/time.c
+> > > index ac9d78ce3a818926..574a3d0a853980a9 100644
+> > > --- a/arch/nds32/kernel/time.c
+> > > +++ b/arch/nds32/kernel/time.c
+> > > @@ -2,7 +2,7 @@
+> > >  // Copyright (C) 2005-2017 Andes Technology Corporation
+> > >
+> > >  #include <linux/clocksource.h>
+> > > -#include <linux/clk-provider.h>
+> > > +#include <linux/of_clk.h>
+> > >
+> > >  void __init time_init(void)
+> > >  {
+> >
+> > Thank you, Geert.
+> >
+> > Let me know if you like to put in your tree or nds32's.
+> > Acked-by: Greentime Hu <green.hu@gmail.com>
+>
+> Please take it in the nds32 tree.
+> Thanks!
 
-sched/core: Fix CONFIG_GCC_PLUGIN_RANDSTRUCT build fail
+And so you did. But it disappeared after June 12, when the nds32 tree
+was reset to v5.7, losing the following 2 commits:
 
-As a temporary build fix, the proper cleanup needs more work.
+de9a5650b611014c52b1ad994f63253593d8eddf nds32: Replace
+<linux/clk-provider.h> by <linux/of_clk.h>
+d785c5a324cd8812720a409dc85050558281a567 nds32: configs: Cleanup
+CONFIG_CROSS_COMPILE
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Reported-by: Eric Biggers <ebiggers@kernel.org>
-Suggested-by: Eric Biggers <ebiggers@kernel.org>
-Suggested-by: Kees Cook <keescook@chromium.org>
-Fixes: a148866489fb ("sched: Replace rq::wake_list")
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
----
- include/linux/sched.h | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Gr{oetje,eeting}s,
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index b62e6aa..224b5de 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -654,8 +654,10 @@ struct task_struct {
- 	unsigned int			ptrace;
- 
- #ifdef CONFIG_SMP
--	struct llist_node		wake_entry;
--	unsigned int			wake_entry_type;
-+	struct {
-+		struct llist_node		wake_entry;
-+		unsigned int			wake_entry_type;
-+	};
- 	int				on_cpu;
- #ifdef CONFIG_THREAD_INFO_IN_TASK
- 	/* Current CPU: */
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
