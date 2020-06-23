@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9164205F41
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8A5205F24
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391180AbgFWUbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:31:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51394 "EHLO mail.kernel.org"
+        id S2391040AbgFWU3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:29:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49724 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391057AbgFWUa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:30:58 -0400
+        id S2391009AbgFWU3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:29:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 610782070E;
-        Tue, 23 Jun 2020 20:30:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 800C02064B;
+        Tue, 23 Jun 2020 20:29:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944259;
-        bh=ib/vrE2IBF7zJHsPZU9AqPkZOhsF5BhRE1Eu4q8KiUo=;
+        s=default; t=1592944179;
+        bh=nYC6zV5cB3CqsqUoi8Se6DDAWTT7b6VGwCCfLbThw9k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fcbWnLZHpoiBIcJqhIeQSSHz4I9ndE3gwi0P2cqvHuWxHYuzSU33TnQm/BQ5I0aSl
-         /sfeagVmLmo19vgmiPqjNH370ZcZFtLmqlv7nlvNHh9bb3SeBJ/4oalt33Sp+fvmQL
-         1APunOh7gmMiOM6i8yaVrbN96xvoYMWHmIYDcIMI=
+        b=xB0lZqfRrd7ukt9Ufz8Cd4/mBQjc05e50pSMm9ra1221DZy3Zi1IOVSrqMi6eZ28m
+         36+9W/qfjgz/1CwH7wsyZNCNIWUz+n1bEo6gkMVvRLIzxBupqrgGPuv7cjD6e8FZV1
+         w+eS7Cv7r/2Ib6LaqIxrWXA8IwNGh9KArABUQnY4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 203/314] ASoC: fsl_asrc_dma: Fix dma_chan leak when config DMA channel failed
-Date:   Tue, 23 Jun 2020 21:56:38 +0200
-Message-Id: <20200623195348.606822595@linuxfoundation.org>
+Subject: [PATCH 5.4 204/314] vfio/mdev: Fix reference count leak in add_mdev_supported_type
+Date:   Tue, 23 Jun 2020 21:56:39 +0200
+Message-Id: <20200623195348.653071300@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
 References: <20200623195338.770401005@linuxfoundation.org>
@@ -45,42 +46,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Qiushi Wu <wu000273@umn.edu>
 
-[ Upstream commit 36124fb19f1ae68a500cd76a76d40c6e81bee346 ]
+[ Upstream commit aa8ba13cae3134b8ef1c1b6879f66372531da738 ]
 
-fsl_asrc_dma_hw_params() invokes dma_request_channel() or
-fsl_asrc_get_dma_channel(), which returns a reference of the specified
-dma_chan object to "pair->dma_chan[dir]" with increased refcnt.
+kobject_init_and_add() takes reference even when it fails.
+If this function returns an error, kobject_put() must be called to
+properly clean up the memory associated with the object. Thus,
+replace kfree() by kobject_put() to fix this issue. Previous
+commit "b8eb718348b8" fixed a similar problem.
 
-The reference counting issue happens in one exception handling path of
-fsl_asrc_dma_hw_params(). When config DMA channel failed for Back-End,
-the function forgets to decrease the refcnt increased by
-dma_request_channel() or fsl_asrc_get_dma_channel(), causing a refcnt
-leak.
-
-Fix this issue by calling dma_release_channel() when config DMA channel
-failed.
-
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Link: https://lore.kernel.org/r/1590415966-52416-1-git-send-email-xiyuyang19@fudan.edu.cn
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Fixes: 7b96953bc640 ("vfio: Mediated device Core driver")
+Signed-off-by: Qiushi Wu <wu000273@umn.edu>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Reviewed-by: Kirti Wankhede <kwankhede@nvidia.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/fsl/fsl_asrc_dma.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/vfio/mdev/mdev_sysfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
-index 01052a0808b0b..5aee6b8366d27 100644
---- a/sound/soc/fsl/fsl_asrc_dma.c
-+++ b/sound/soc/fsl/fsl_asrc_dma.c
-@@ -241,6 +241,7 @@ static int fsl_asrc_dma_hw_params(struct snd_pcm_substream *substream,
- 	ret = dmaengine_slave_config(pair->dma_chan[dir], &config_be);
+diff --git a/drivers/vfio/mdev/mdev_sysfs.c b/drivers/vfio/mdev/mdev_sysfs.c
+index 7570c7602ab40..f32c582611eb6 100644
+--- a/drivers/vfio/mdev/mdev_sysfs.c
++++ b/drivers/vfio/mdev/mdev_sysfs.c
+@@ -110,7 +110,7 @@ static struct mdev_type *add_mdev_supported_type(struct mdev_parent *parent,
+ 				   "%s-%s", dev_driver_string(parent->dev),
+ 				   group->name);
  	if (ret) {
- 		dev_err(dev, "failed to config DMA channel for Back-End\n");
-+		dma_release_channel(pair->dma_chan[dir]);
- 		return ret;
+-		kfree(type);
++		kobject_put(&type->kobj);
+ 		return ERR_PTR(ret);
  	}
  
 -- 
