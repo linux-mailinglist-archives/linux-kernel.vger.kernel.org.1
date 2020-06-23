@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 389BC20616B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:07:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9CF2061A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392346AbgFWUlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:41:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37940 "EHLO mail.kernel.org"
+        id S2392869AbgFWUrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:47:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42062 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391752AbgFWUl3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:41:29 -0400
+        id S2391022AbgFWUor (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:44:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 45F6620675;
-        Tue, 23 Jun 2020 20:41:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2450521941;
+        Tue, 23 Jun 2020 20:44:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944889;
-        bh=Zrkd90XIeYcq/L6/nGLmzEjKpTrECOfIxGK+vdaPT9U=;
+        s=default; t=1592945087;
+        bh=P/xQFApdL9TuihnLUerhnPMfJWlHfPpcFKHFkh6WFKw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vUGekb5EX3+9m+k3p023183xW40y5YpBiDp+Muzelaq2MRhZOZmQ9bufNRL3gxKWX
-         LQjXpJhEDS0AyO6vemPvRgzKeiGU8c6sIgmAMBmP8fyu8g9wVr6ezwL9eYQ9c91dDD
-         K4EpLcBS1r8mnlSHSa0r9TTFKfLHz9rL5SrYsJH0=
+        b=10khhRQDasRY7vbq5To2gXIXyraetx2ZQD8tGfc7qJSXh7YRMz4bRZgpoXcRX7Q/O
+         AkjmCpZYeLgZMSqTPU29UKD2xezOFAnZ3hPdb5vue+kyRJXHGca5wWrCbEd/GEPjI9
+         uUdvAnbee/AO8zdiBVhJ58eFSA4Tz4Op/R2tYrG8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 134/206] geneve: change from tx_error to tx_dropped on missing metadata
+Subject: [PATCH 4.14 006/136] iio: pressure: bmp280: Tolerate IRQ before registering
 Date:   Tue, 23 Jun 2020 21:57:42 +0200
-Message-Id: <20200623195323.574174336@linuxfoundation.org>
+Message-Id: <20200623195303.933983517@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
+References: <20200623195303.601828702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,62 +46,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiri Benc <jbenc@redhat.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 9d149045b3c0e44c049cdbce8a64e19415290017 ]
+[ Upstream commit 97b31a6f5fb95b1ec6575b78a7240baddba34384 ]
 
-If the geneve interface is in collect_md (external) mode, it can't send any
-packets submitted directly to its net interface, as such packets won't have
-metadata attached. This is expected.
+With DEBUG_SHIRQ enabled we have a kernel crash
 
-However, the kernel itself sends some packets to the interface, most
-notably, IPv6 DAD, IPv6 multicast listener reports, etc. This is not wrong,
-as tunnel metadata can be specified in routing table (although technically,
-that has never worked for IPv6, but hopefully will be fixed eventually) and
-then the interface must correctly participate in IPv6 housekeeping.
+[  116.482696] BUG: kernel NULL pointer dereference, address: 0000000000000000
 
-The problem is that any such attempt increases the tx_error counter. Just
-bringing up a geneve interface with IPv6 enabled is enough to see a number
-of tx_errors. That causes confusion among users, prompting them to find
-a network error where there is none.
+...
 
-Change the counter used to tx_dropped. That better conveys the meaning
-(there's nothing wrong going on, just some packets are getting dropped) and
-hopefully will make admins panic less.
+[  116.606571] Call Trace:
+[  116.609023]  <IRQ>
+[  116.611047]  complete+0x34/0x50
+[  116.614206]  bmp085_eoc_irq+0x9/0x10 [bmp280]
 
-Signed-off-by: Jiri Benc <jbenc@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+because DEBUG_SHIRQ mechanism fires an IRQ before registration and drivers
+ought to be able to handle an interrupt happening before request_irq() returns.
+
+Fixes: aae953949651 ("iio: pressure: bmp280: add support for BMP085 EOC interrupt")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/geneve.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/iio/pressure/bmp280-core.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
-index 36444de701cd9..817c290b78cd9 100644
---- a/drivers/net/geneve.c
-+++ b/drivers/net/geneve.c
-@@ -911,9 +911,10 @@ static netdev_tx_t geneve_xmit(struct sk_buff *skb, struct net_device *dev)
- 	if (geneve->collect_md) {
- 		info = skb_tunnel_info(skb);
- 		if (unlikely(!info || !(info->mode & IP_TUNNEL_INFO_TX))) {
--			err = -EINVAL;
- 			netdev_dbg(dev, "no tunnel metadata\n");
--			goto tx_error;
-+			dev_kfree_skb(skb);
-+			dev->stats.tx_dropped++;
-+			return NETDEV_TX_OK;
- 		}
- 	} else {
- 		info = &geneve->info;
-@@ -930,7 +931,7 @@ static netdev_tx_t geneve_xmit(struct sk_buff *skb, struct net_device *dev)
+diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
+index 5f625ffa2a88d..3204dff34e0ad 100644
+--- a/drivers/iio/pressure/bmp280-core.c
++++ b/drivers/iio/pressure/bmp280-core.c
+@@ -651,7 +651,7 @@ static int bmp180_measure(struct bmp280_data *data, u8 ctrl_meas)
+ 	unsigned int ctrl;
  
- 	if (likely(!err))
- 		return NETDEV_TX_OK;
--tx_error:
+ 	if (data->use_eoc)
+-		init_completion(&data->done);
++		reinit_completion(&data->done);
+ 
+ 	ret = regmap_write(data->regmap, BMP280_REG_CTRL_MEAS, ctrl_meas);
+ 	if (ret)
+@@ -907,6 +907,9 @@ static int bmp085_fetch_eoc_irq(struct device *dev,
+ 			"trying to enforce it\n");
+ 		irq_trig = IRQF_TRIGGER_RISING;
+ 	}
 +
- 	dev_kfree_skb(skb);
- 
- 	if (err == -ELOOP)
++	init_completion(&data->done);
++
+ 	ret = devm_request_threaded_irq(dev,
+ 			irq,
+ 			bmp085_eoc_irq,
 -- 
 2.25.1
 
