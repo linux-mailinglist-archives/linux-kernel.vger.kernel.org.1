@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F74E205F21
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66D0205FC5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390733AbgFWU3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:29:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49580 "EHLO mail.kernel.org"
+        id S2391764AbgFWUgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:36:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58846 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390986AbgFWU3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:29:31 -0400
+        id S2391754AbgFWUf7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:35:59 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C05E7206C3;
-        Tue, 23 Jun 2020 20:29:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCD7920836;
+        Tue, 23 Jun 2020 20:35:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944171;
-        bh=41H/wvNFxvhfOqdL+8lXTBqmmzwHHM+hgN6cXXnzqzA=;
+        s=default; t=1592944559;
+        bh=+YPoB9eHkOMFYGLz+Lv8xbqdACT5IpHWZ4XdKQJ1088=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Hx6EtpDhJx8wZnX3HpRmmg0maYsqYMPX6803uUO40d3vMH2so7IQ6PczUu0X47BUO
-         wjQ2Yl9Diprqq/R4+l/v6gfU9O+Xld4cjTnGxRcriG40ABPAvWy+ldsBw2v7Odgjgg
-         D1mFgDXUAPfFdUc3sj71RxpwmRIVhhyYRlsuKd/s=
+        b=KDmySFafKbt6iMN7cg/jATAB6h8r1nUP3qn4Liwjj2xQgt6Iz+z/CaEy6h+hY+Lv5
+         KbwvTe8vcyS8fuIV78EmUqLzQEAdDPTM2ZhicJ3CDa9fogP53KD2Atw0Wz4hwLWUHX
+         xmTcMen0T8o+SIUfsuTV+RX2YBPwdwlzLCBiS2tE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Aditya Paluri <Venkata.AdityaPaluri@synopsys.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 170/314] PCI/PTM: Inherit Switch Downstream Port PTM settings from Upstream Port
+Subject: [PATCH 4.19 037/206] yam: fix possible memory leak in yam_init_driver
 Date:   Tue, 23 Jun 2020 21:56:05 +0200
-Message-Id: <20200623195346.992129114@linuxfoundation.org>
+Message-Id: <20200623195318.806435031@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,75 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bjorn Helgaas <bhelgaas@google.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit 7b38fd9760f51cc83d80eed2cfbde8b5ead9e93a ]
+[ Upstream commit 98749b7188affbf2900c2aab704a8853901d1139 ]
 
-Except for Endpoints, we enable PTM at enumeration-time.  Previously we did
-not account for the fact that Switch Downstream Ports are not permitted to
-have a PTM capability; their PTM behavior is controlled by the Upstream
-Port (PCIe r5.0, sec 7.9.16).  Since Downstream Ports don't have a PTM
-capability, we did not mark them as "ptm_enabled", which meant that
-pci_enable_ptm() on an Endpoint failed because there was no PTM path to it.
+If register_netdev(dev) fails, free_netdev(dev) needs
+to be called, otherwise a memory leak will occur.
 
-Mark Downstream Ports as "ptm_enabled" if their Upstream Port has PTM
-enabled.
-
-Fixes: eec097d43100 ("PCI: Add pci_enable_ptm() for drivers to enable PTM on endpoints")
-Reported-by: Aditya Paluri <Venkata.AdityaPaluri@synopsys.com>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/pcie/ptm.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+ drivers/net/hamradio/yam.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/pcie/ptm.c b/drivers/pci/pcie/ptm.c
-index 9361f3aa26ab8..357a454cafa07 100644
---- a/drivers/pci/pcie/ptm.c
-+++ b/drivers/pci/pcie/ptm.c
-@@ -39,10 +39,6 @@ void pci_ptm_init(struct pci_dev *dev)
- 	if (!pci_is_pcie(dev))
- 		return;
- 
--	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_PTM);
--	if (!pos)
--		return;
--
- 	/*
- 	 * Enable PTM only on interior devices (root ports, switch ports,
- 	 * etc.) on the assumption that it causes no link traffic until an
-@@ -52,6 +48,23 @@ void pci_ptm_init(struct pci_dev *dev)
- 	     pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END))
- 		return;
- 
-+	/*
-+	 * Switch Downstream Ports are not permitted to have a PTM
-+	 * capability; their PTM behavior is controlled by the Upstream
-+	 * Port (PCIe r5.0, sec 7.9.16).
-+	 */
-+	ups = pci_upstream_bridge(dev);
-+	if (pci_pcie_type(dev) == PCI_EXP_TYPE_DOWNSTREAM &&
-+	    ups && ups->ptm_enabled) {
-+		dev->ptm_granularity = ups->ptm_granularity;
-+		dev->ptm_enabled = 1;
-+		return;
-+	}
-+
-+	pos = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_PTM);
-+	if (!pos)
-+		return;
-+
- 	pci_read_config_dword(dev, pos + PCI_PTM_CAP, &cap);
- 	local_clock = (cap & PCI_PTM_GRANULARITY_MASK) >> 8;
- 
-@@ -61,7 +74,6 @@ void pci_ptm_init(struct pci_dev *dev)
- 	 * the spec recommendation (PCIe r3.1, sec 7.32.3), select the
- 	 * furthest upstream Time Source as the PTM Root.
- 	 */
--	ups = pci_upstream_bridge(dev);
- 	if (ups && ups->ptm_enabled) {
- 		ctrl = PCI_PTM_CTRL_ENABLE;
- 		if (ups->ptm_granularity == 0)
+diff --git a/drivers/net/hamradio/yam.c b/drivers/net/hamradio/yam.c
+index ba9df430fca6e..fdab498725878 100644
+--- a/drivers/net/hamradio/yam.c
++++ b/drivers/net/hamradio/yam.c
+@@ -1148,6 +1148,7 @@ static int __init yam_init_driver(void)
+ 		err = register_netdev(dev);
+ 		if (err) {
+ 			printk(KERN_WARNING "yam: cannot register net device %s\n", dev->name);
++			free_netdev(dev);
+ 			goto error;
+ 		}
+ 		yam_devs[i] = dev;
 -- 
 2.25.1
 
