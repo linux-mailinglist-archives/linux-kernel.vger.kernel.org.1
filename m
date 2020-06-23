@@ -2,695 +2,846 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1801204E7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B01D3204E87
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:53:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732011AbgFWJxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 05:53:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33340 "EHLO mail.kernel.org"
+        id S1732314AbgFWJxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 05:53:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33452 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731887AbgFWJxH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:53:07 -0400
+        id S1732163AbgFWJxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 05:53:10 -0400
 Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1C4D20738;
+        by mail.kernel.org (Postfix) with ESMTPSA id F0D5D20724;
         Tue, 23 Jun 2020 09:53:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592905986;
-        bh=Hqyy7ujXEgNcz+CfIub8oI+E19TZ58vdz7XwApLbxg8=;
+        bh=xjn3jG+kS366rbFYfTPmp78l9ouAQm2gccTj6T27eyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=09o6Q7I5R94bs2NtW/UpFS9W8eUGWTzZQB8MKXha4b2MiKfDCF1qHduD/0sYav6lS
-         3hWGrdXh/TvBeu1hGJTJ0nSvcrSZepfFEaKbiAYgyS+PhOq+Vl1UKi7AKynxoeIRRL
-         1uaccXqwtcfSx1bDZavhthCU9MR6OqA2bFI4Bdog=
+        b=Ael0TpIT9RxwpRMEKOVsWKKrj8CqPJJVNJdgwyn2AaYSkJrhF+oZ0BuE7Ge4vOdmU
+         igTxcQuwXN1cTNAqFmZm+oBQ4XLFqZwyI6//g2YNjmMKJ59fnIMO866HpqYgp08e39
+         5FU3epHY/6DL+9yVzgJS8qlH5vlYb/pARQB5xgXI=
 Received: from mchehab by mail.kernel.org with local (Exim 4.93)
         (envelope-from <mchehab@kernel.org>)
-        id 1jnfbz-004C35-Rn; Tue, 23 Jun 2020 11:53:03 +0200
+        id 1jnfbz-004C3A-TN; Tue, 23 Jun 2020 11:53:03 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Harry Wei <harryxiyou@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        devicetree@vger.kernel.org
-Subject: [PATCH v2 1/9] docs: dt: convert booting-without-of.txt to ReST format
-Date:   Tue, 23 Jun 2020 11:52:54 +0200
-Message-Id: <8dce14af13f66cb8393c21b58f0693e667a7045f.1592905407.git.mchehab+huawei@kernel.org>
+        Thomas Gleixner <tglx@linutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-spdx@vger.kernel.org
+Subject: [PATCH v2 2/9] LICENSES: add GFDL licenses
+Date:   Tue, 23 Jun 2020 11:52:55 +0200
+Message-Id: <188d0b510cb8c989348955e48997e7fa96e8fdb2.1592905407.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1592905407.git.mchehab+huawei@kernel.org>
 References: <cover.1592905407.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-- Add a SPDX header;
-- Adjust document title;
-- Adjust document and section titles;
-- Some whitespace fixes and new line breaks;
-- Mark literal blocks as such;
-- Add table markups;
-- Add it to devicetree/index.rst.
+Those are used on some documentation texts.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- Documentation/arm/booting.rst                 |   2 +-
- ...-without-of.txt => booting-without-of.rst} | 298 ++++++++++--------
- Documentation/devicetree/index.rst            |   1 +
- Documentation/translations/zh_CN/arm/Booting  |   2 +-
- 4 files changed, 168 insertions(+), 135 deletions(-)
- rename Documentation/devicetree/{booting-without-of.txt => booting-without-of.rst} (90%)
+ LICENSES/deprecated/GFDL-1.1+ | 366 ++++++++++++++++++++++++++++++
+ LICENSES/deprecated/GFDL-1.2  | 408 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 774 insertions(+)
+ create mode 100644 LICENSES/deprecated/GFDL-1.1+
+ create mode 100644 LICENSES/deprecated/GFDL-1.2
 
-diff --git a/Documentation/arm/booting.rst b/Documentation/arm/booting.rst
-index 4babb6c6ae1e..a2263451dc2c 100644
---- a/Documentation/arm/booting.rst
-+++ b/Documentation/arm/booting.rst
-@@ -128,7 +128,7 @@ it.  The recommended placement is in the first 16KiB of RAM.
- 
- The boot loader must load a device tree image (dtb) into system ram
- at a 64bit aligned address and initialize it with the boot data.  The
--dtb format is documented in Documentation/devicetree/booting-without-of.txt.
-+dtb format is documented in Documentation/devicetree/booting-without-of.rst.
- The kernel will look for the dtb magic value of 0xd00dfeed at the dtb
- physical address to determine if a dtb has been passed instead of a
- tagged list.
-diff --git a/Documentation/devicetree/booting-without-of.txt b/Documentation/devicetree/booting-without-of.rst
-similarity index 90%
-rename from Documentation/devicetree/booting-without-of.txt
-rename to Documentation/devicetree/booting-without-of.rst
-index 4660ccee35a3..e9433350a20f 100644
---- a/Documentation/devicetree/booting-without-of.txt
-+++ b/Documentation/devicetree/booting-without-of.rst
-@@ -1,15 +1,19 @@
--           Booting the Linux/ppc kernel without Open Firmware
--           --------------------------------------------------
--
--(c) 2005 Benjamin Herrenschmidt <benh at kernel.crashing.org>,
--    IBM Corp.
--(c) 2005 Becky Bruce <becky.bruce at freescale.com>,
--    Freescale Semiconductor, FSL SOC and 32-bit additions
--(c) 2006 MontaVista Software, Inc.
--    Flash chip node definition
--
--Table of Contents
--=================
-+.. SPDX-License-Identifier: GPL-2.0
+diff --git a/LICENSES/deprecated/GFDL-1.1+ b/LICENSES/deprecated/GFDL-1.1+
+new file mode 100644
+index 000000000000..f65e4fcdc520
+--- /dev/null
++++ b/LICENSES/deprecated/GFDL-1.1+
+@@ -0,0 +1,366 @@
++Valid-License-Identifier: GFDL-1.1-or-later-no-invariants
++SPDX-URL: https://github.com/spdx/license-list-XML/pull/1048/commits/f695d2ac65230d0f4161ba58fff2f9d87bb5a053#diff-b948674e5c5cf6341e44e76b2565e80c
++Usage-Guide:
++  The GNU Free Documentation License with no Invariant Sections,
++  no Front-Cover Texts, and no Back-Cover Texts should not be used in new
++  code, except when dual-licensed with GPLv2.
++  To use the license in source code, put the following SPDX tag/value pair
++  into a comment according to the placement guidelines in the licensing
++  rules documentation:
++    SPDX-License-Identifier: GFDL-1.1-or-later-no-invariants
++License-Text:
++                GNU Free Documentation License
++                   Version 1.1, March 2000
 +
-+==================================================
-+Booting the Linux/ppc kernel without Open Firmware
-+==================================================
++ Copyright (C) 2000  Free Software Foundation, Inc.
++     51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ Everyone is permitted to copy and distribute verbatim copies
++ of this license document, but changing it is not allowed.
 +
-+Copyright (c) 2005 Benjamin Herrenschmidt <benh at kernel.crashing.org>,
-+IBM Corp.
 +
-+Copyright (c) 2005 Becky Bruce <becky.bruce at freescale.com>,
-+Freescale Semiconductor, FSL SOC and 32-bit additions
++0. PREAMBLE
 +
-+Copyright (c) 2006 MontaVista Software, Inc.
-+Flash chip node definition
++The purpose of this License is to make a manual, textbook, or other
++written document "free" in the sense of freedom: to assure everyone
++the effective freedom to copy and redistribute it, with or without
++modifying it, either commercially or noncommercially.  Secondarily,
++this License preserves for the author and publisher a way to get
++credit for their work, while not being considered responsible for
++modifications made by others.
 +
-+.. Table of Contents
- 
-   I - Introduction
-     1) Entry point for arch/arm
-@@ -61,15 +65,18 @@ Table of Contents
- Revision Information
- ====================
- 
--   May 18, 2005: Rev 0.1 - Initial draft, no chapter III yet.
-+   May 18, 2005: Rev 0.1
-+			 - Initial draft, no chapter III yet.
- 
--   May 19, 2005: Rev 0.2 - Add chapter III and bits & pieces here or
-+   May 19, 2005: Rev 0.2
-+			 - Add chapter III and bits & pieces here or
-                            clarifies the fact that a lot of things are
-                            optional, the kernel only requires a very
-                            small device tree, though it is encouraged
-                            to provide an as complete one as possible.
- 
--   May 24, 2005: Rev 0.3 - Precise that DT block has to be in RAM
-+   May 24, 2005: Rev 0.3
-+			 - Precise that DT block has to be in RAM
- 			 - Misc fixes
- 			 - Define version 3 and new format version 16
- 			   for the DT block (version 16 needs kernel
-@@ -82,7 +89,8 @@ Revision Information
- 			   "name" property is now automatically
- 			   deduced from the unit name
- 
--   June 1, 2005: Rev 0.4 - Correct confusion between OF_DT_END and
-+   June 1, 2005: Rev 0.4
-+			 - Correct confusion between OF_DT_END and
-                            OF_DT_END_NODE in structure definition.
-                          - Change version 16 format to always align
-                            property data to 4 bytes. Since tokens are
-@@ -115,7 +123,7 @@ Revision Information
- 	- Compare FSL SOC use of PCI to standard and make sure no new
- 	  node definition required.
- 	- Add more information about node definitions for SOC devices
--  	  that currently have no standard, like the FSL CPM.
-+	  that currently have no standard, like the FSL CPM.
- 
- 
- I - Introduction
-@@ -260,7 +268,7 @@ it with special cases.
- 
-         b) create your main platform file as
-         "arch/powerpc/platforms/myplatform/myboard_setup.c" and add it
--        to the Makefile under the condition of your CONFIG_
-+        to the Makefile under the condition of your ``CONFIG_``
-         option. This file will define a structure of type "ppc_md"
-         containing the various callbacks that the generic code will
-         use to get to your platform specific code
-@@ -271,7 +279,7 @@ it with special cases.
-   with classic Powerpc architectures.
- 
- 3) Entry point for arch/x86
---------------------------------
-+---------------------------
- 
-   There is one single 32bit entry point to the kernel at code32_start,
-   the decompressor (the real mode entry point goes to the same  32bit
-@@ -280,9 +288,9 @@ it with special cases.
-   Documentation/x86/boot.rst
-   The physical pointer to the device-tree block (defined in chapter II)
-   is passed via setup_data which requires at least boot protocol 2.09.
--  The type filed is defined as
-+  The type filed is defined as::
- 
--  #define SETUP_DTB                      2
-+    #define SETUP_DTB                      2
- 
-   This device-tree is used as an extension to the "boot page". As such it
-   does not parse / consider data which is already covered by the boot
-@@ -354,9 +362,9 @@ the block to RAM before passing it to the kernel.
- 
-    The kernel is passed the physical address pointing to an area of memory
-    that is roughly described in include/linux/of_fdt.h by the structure
--   boot_param_header:
-+   boot_param_header:::
- 
--struct boot_param_header {
-+      struct boot_param_header {
-         u32     magic;                  /* magic word OF_DT_HEADER */
-         u32     totalsize;              /* total size of DT block */
-         u32     off_dt_struct;          /* offset to structure */
-@@ -374,19 +382,19 @@ struct boot_param_header {
- 
-         /* version 17 fields below */
-         u32	size_dt_struct;		/* size of the DT structure block */
--};
-+      };
- 
--   Along with the constants:
-+   Along with the constants::
- 
--/* Definitions used by the flattened device tree */
--#define OF_DT_HEADER            0xd00dfeed      /* 4: version,
--						   4: total size */
--#define OF_DT_BEGIN_NODE        0x1             /* Start node: full name
--						   */
--#define OF_DT_END_NODE          0x2             /* End node */
--#define OF_DT_PROP              0x3             /* Property: name off,
--                                                   size, content */
--#define OF_DT_END               0x9
-+    /* Definitions used by the flattened device tree */
-+    #define OF_DT_HEADER            0xd00dfeed      /* 4: version,
-+						    4: total size */
-+    #define OF_DT_BEGIN_NODE        0x1             /* Start node: full name
-+						    */
-+    #define OF_DT_END_NODE          0x2             /* End node */
-+    #define OF_DT_PROP              0x3             /* Property: name off,
-+						    size, content */
-+    #define OF_DT_END               0x9
- 
-    All values in this header are in big endian format, the various
-    fields in this header are defined more precisely below. All
-@@ -430,7 +438,7 @@ struct boot_param_header {
-      way to avoid overriding critical things like, on Open Firmware
-      capable machines, the RTAS instance, or on some pSeries, the TCE
-      tables used for the iommu. Typically, the reserve map should
--     contain _at least_ this DT block itself (header,total_size). If
-+     contain **at least** this DT block itself (header,total_size). If
-      you are passing an initrd to the kernel, you should reserve it as
-      well. You do not need to reserve the kernel image itself. The map
-      should be 64-bit aligned.
-@@ -485,7 +493,7 @@ struct boot_param_header {
- 
-    So the typical layout of a DT block (though the various parts don't
-    need to be in that order) looks like this (addresses go from top to
--   bottom):
-+   bottom)::
- 
- 
-              ------------------------------
-@@ -511,9 +519,9 @@ struct boot_param_header {
-       |
-       --- (base + totalsize)
- 
--  (*) The alignment gaps are not necessarily present; their presence
--      and size are dependent on the various alignment requirements of
--      the individual data blocks.
-+     (*) The alignment gaps are not necessarily present; their presence
-+         and size are dependent on the various alignment requirements of
-+         the individual data blocks.
- 
- 
- 2) Device tree generalities
-@@ -600,7 +608,7 @@ discussed in a later chapter. At this point, it is only meant to give
- you a idea of what a device-tree looks like. I have purposefully kept
- the "name" and "linux,phandle" properties which aren't necessary in
- order to give you a better idea of what the tree looks like in
--practice.
-+practice::
- 
-   / o device-tree
-       |- name = "device-tree"
-@@ -650,6 +658,7 @@ properties and their content.
- 
- 
- 3) Device tree "structure" block
-+--------------------------------
- 
- The structure of the device tree is a linearized tree structure. The
- "OF_DT_BEGIN_NODE" token starts a new node, and the "OF_DT_END_NODE"
-@@ -666,12 +675,14 @@ Here's the basic structure of a single node:
-        root node)
-      * [align gap to next 4 bytes boundary]
-      * for each property:
++This License is a kind of "copyleft", which means that derivative
++works of the document must themselves be free in the same sense.  It
++complements the GNU General Public License, which is a copyleft
++license designed for free software.
 +
-         * token OF_DT_PROP (that is 0x00000003)
-         * 32-bit value of property value size in bytes (or 0 if no
-           value)
-         * 32-bit value of offset in string block of property name
-         * property value data if any
-         * [align gap to next 4 bytes boundary]
++We have designed this License in order to use it for manuals for free
++software, because free software needs free documentation: a free
++program should come with manuals providing the same freedoms that the
++software does.  But this License is not limited to software manuals;
++it can be used for any textual work, regardless of subject matter or
++whether it is published as a printed book.  We recommend this License
++principally for works whose purpose is instruction or reference.
 +
-      * [child nodes if any]
-      * token OF_DT_END_NODE (that is 0x00000002)
- 
-@@ -688,6 +699,7 @@ manipulating a flattened tree must take care to preserve this
- constraint.
- 
- 4) Device tree "strings" block
-+------------------------------
- 
- In order to save space, property names, which are generally redundant,
- are stored separately in the "strings" block. This block is simply the
-@@ -700,15 +712,17 @@ strings block.
- III - Required content of the device tree
- =========================================
- 
--WARNING: All "linux,*" properties defined in this document apply only
--to a flattened device-tree. If your platform uses a real
--implementation of Open Firmware or an implementation compatible with
--the Open Firmware client interface, those properties will be created
--by the trampoline code in the kernel's prom_init() file. For example,
--that's where you'll have to add code to detect your board model and
--set the platform number. However, when using the flattened device-tree
--entry point, there is no prom_init() pass, and thus you have to
--provide those properties yourself.
-+.. Warning::
 +
-+   All ``linux,*`` properties defined in this document apply only
-+   to a flattened device-tree. If your platform uses a real
-+   implementation of Open Firmware or an implementation compatible with
-+   the Open Firmware client interface, those properties will be created
-+   by the trampoline code in the kernel's prom_init() file. For example,
-+   that's where you'll have to add code to detect your board model and
-+   set the platform number. However, when using the flattened device-tree
-+   entry point, there is no prom_init() pass, and thus you have to
-+   provide those properties yourself.
- 
- 
- 1) Note about cells and address representation
-@@ -769,7 +783,7 @@ addresses), all buses must contain a "ranges" property. If the
- "ranges" property is missing at a given level, it's assumed that
- translation isn't possible, i.e., the registers are not visible on the
- parent bus.  The format of the "ranges" property for a bus is a list
--of:
-+of::
- 
- 	bus address, parent bus address, size
- 
-@@ -877,7 +891,7 @@ address which can extend beyond that limit.
- 
-   This node is the parent of all individual CPU nodes. It doesn't
-   have any specific requirements, though it's generally good practice
--  to have at least:
-+  to have at least::
- 
-                #address-cells = <00000001>
-                #size-cells    = <00000000>
-@@ -887,7 +901,7 @@ address which can extend beyond that limit.
-   that format when reading the "reg" properties of a CPU node, see
-   below
- 
--  c) The /cpus/* nodes
-+  c) The ``/cpus/*`` nodes
- 
-   So under /cpus, you are supposed to create a node for every CPU on
-   the machine. There is no specific restriction on the name of the
-@@ -903,21 +917,23 @@ address which can extend beyond that limit.
-     - reg : This is the physical CPU number, it's a single 32-bit cell
-       and is also used as-is as the unit number for constructing the
-       unit name in the full path. For example, with 2 CPUs, you would
--      have the full path:
-+      have the full path::
++1. APPLICABILITY AND DEFINITIONS
 +
-         /cpus/PowerPC,970FX@0
-         /cpus/PowerPC,970FX@1
++This License applies to any manual or other work that contains a
++notice placed by the copyright holder saying it can be distributed
++under the terms of this License.  The "Document", below, refers to any
++such manual or work.  Any member of the public is a licensee, and is
++addressed as "you".
 +
-       (unit addresses do not require leading zeroes)
--    - d-cache-block-size : one cell, L1 data cache block size in bytes (*)
-+    - d-cache-block-size : one cell, L1 data cache block size in bytes [#]_
-     - i-cache-block-size : one cell, L1 instruction cache block size in
-       bytes
-     - d-cache-size : one cell, size of L1 data cache in bytes
-     - i-cache-size : one cell, size of L1 instruction cache in bytes
- 
--(*) The cache "block" size is the size on which the cache management
--instructions operate. Historically, this document used the cache
--"line" size here which is incorrect. The kernel will prefer the cache
--block size and will fallback to cache line size for backward
--compatibility.
-+    .. [#] The cache "block" size is the size on which the cache management
-+	   instructions operate. Historically, this document used the cache
-+	   "line" size here which is incorrect. The kernel will prefer the cache
-+	   block size and will fallback to cache line size for backward
-+	   compatibility.
- 
-   Recommended properties:
- 
-@@ -963,10 +979,10 @@ compatibility.
-       #address-cells and #size-cells of the root node. For example,
-       with both of these properties being 2 like in the example given
-       earlier, a 970 based machine with 6Gb of RAM could typically
--      have a "reg" property here that looks like:
-+      have a "reg" property here that looks like::
- 
--      00000000 00000000 00000000 80000000
--      00000001 00000000 00000001 00000000
-+        00000000 00000000 00000000 80000000
-+        00000001 00000000 00000001 00000000
- 
-       That is a range starting at 0 of 0x80000000 bytes and a range
-       starting at 0x100000000 and of 0x100000000 bytes. You can see
-@@ -1047,18 +1063,18 @@ compatibility.
-       See 1) above for more details on defining #address-cells.
-     - #size-cells : Size representation for "soc" devices
-     - #interrupt-cells : Defines the width of cells used to represent
--       interrupts.  Typically this value is <2>, which includes a
--       32-bit number that represents the interrupt number, and a
--       32-bit number that represents the interrupt sense and level.
--       This field is only needed if the SOC contains an interrupt
--       controller.
-+      interrupts.  Typically this value is <2>, which includes a
-+      32-bit number that represents the interrupt number, and a
-+      32-bit number that represents the interrupt sense and level.
-+      This field is only needed if the SOC contains an interrupt
-+      controller.
- 
-   The SOC node may contain child nodes for each SOC device that the
-   platform uses.  Nodes should not be created for devices which exist
-   on the SOC but are not used by a particular platform. See chapter VI
-   for more information on how to specify devices that are part of a SOC.
- 
--  Example SOC node for the MPC8540:
-+  Example SOC node for the MPC8540::
- 
- 	soc8540@e0000000 {
- 		#address-cells = <1>;
-@@ -1079,31 +1095,33 @@ IV - "dtc", the device tree compiler
- dtc source code can be found at
- <http://git.jdl.com/gitweb/?p=dtc.git>
- 
--WARNING: This version is still in early development stage; the
--resulting device-tree "blobs" have not yet been validated with the
--kernel. The current generated block lacks a useful reserve map (it will
--be fixed to generate an empty one, it's up to the bootloader to fill
--it up) among others. The error handling needs work, bugs are lurking,
--etc...
-+.. Warning::
++A "Modified Version" of the Document means any work containing the
++Document or a portion of it, either copied verbatim, or with
++modifications and/or translated into another language.
 +
-+   This version is still in early development stage; the
-+   resulting device-tree "blobs" have not yet been validated with the
-+   kernel. The current generated block lacks a useful reserve map (it will
-+   be fixed to generate an empty one, it's up to the bootloader to fill
-+   it up) among others. The error handling needs work, bugs are lurking,
-+   etc...
- 
- dtc basically takes a device-tree in a given format and outputs a
- device-tree in another format. The currently supported formats are:
- 
--  Input formats:
--  -------------
-+Input formats
-+-------------
- 
-      - "dtb": "blob" format, that is a flattened device-tree block
-        with
--        header all in a binary blob.
-+       header all in a binary blob.
-      - "dts": "source" format. This is a text file containing a
-        "source" for a device-tree. The format is defined later in this
--        chapter.
-+       chapter.
-      - "fs" format. This is a representation equivalent to the
--        output of /proc/device-tree, that is nodes are directories and
--	properties are files
-+       output of /proc/device-tree, that is nodes are directories and
-+       properties are files
- 
-- Output formats:
-- ---------------
-+Output formats
-+--------------
- 
-      - "dtb": "blob" format
-      - "dts": "source" format
-@@ -1113,7 +1131,7 @@ device-tree in another format. The currently supported formats are:
-        assembly file exports some symbols that can be used.
- 
- 
--The syntax of the dtc tool is
-+The syntax of the dtc tool is::
- 
-     dtc [-I <input-format>] [-O <output-format>]
-         [-o output-filename] [-V output_version] input_filename
-@@ -1127,43 +1145,45 @@ Additionally, dtc performs various sanity checks on the tree, like the
- uniqueness of linux, phandle properties, validity of strings, etc...
- 
- The format of the .dts "source" file is "C" like, supports C and C++
--style comments.
-+style comments::
- 
--/ {
--}
-+    / {
-+    }
- 
- The above is the "device-tree" definition. It's the only statement
- supported currently at the toplevel.
- 
--/ {
--  property1 = "string_value";	/* define a property containing a 0
--                                 * terminated string
--				 */
-+::
- 
--  property2 = <0x1234abcd>;	/* define a property containing a
--                                 * numerical 32-bit value (hexadecimal)
--				 */
-+  / {
-+    property1 = "string_value";	   /* define a property containing a 0
-+				    * terminated string
-+				    */
- 
--  property3 = <0x12345678 0x12345678 0xdeadbeef>;
--                                /* define a property containing 3
--                                 * numerical 32-bit values (cells) in
--                                 * hexadecimal
--				 */
--  property4 = [0x0a 0x0b 0x0c 0x0d 0xde 0xea 0xad 0xbe 0xef];
--                                /* define a property whose content is
--                                 * an arbitrary array of bytes
--                                 */
-+    property2 = <0x1234abcd>;	   /* define a property containing a
-+				    * numerical 32-bit value (hexadecimal)
-+				    */
- 
--  childnode@address {	/* define a child node named "childnode"
--                                 * whose unit name is "childnode at
--				 * address"
--                                 */
-+    property3 = <0x12345678 0x12345678 0xdeadbeef>;
-+				   /* define a property containing 3
-+				    * numerical 32-bit values (cells) in
-+				    * hexadecimal
-+				    */
-+    property4 = [0x0a 0x0b 0x0c 0x0d 0xde 0xea 0xad 0xbe 0xef];
-+				   /* define a property whose content is
-+				    * an arbitrary array of bytes
-+				    */
- 
--    childprop = "hello\n";      /* define a property "childprop" of
--                                 * childnode (in this case, a string)
--                                 */
--  };
--};
-+    childnode@address {		   /* define a child node named "childnode"
-+				    * whose unit name is "childnode at
-+				    * address"
-+				    */
++A "Secondary Section" is a named appendix or a front-matter section of
++the Document that deals exclusively with the relationship of the
++publishers or authors of the Document to the Document's overall subject
++(or to related matters) and contains nothing that could fall directly
++within that overall subject.  (For example, if the Document is in part a
++textbook of mathematics, a Secondary Section may not explain any
++mathematics.)  The relationship could be a matter of historical
++connection with the subject or with related matters, or of legal,
++commercial, philosophical, ethical or political position regarding
++them.
 +
-+	childprop = "hello\n";	       /* define a property "childprop" of
-+					* childnode (in this case, a string)
-+					*/
-+	};
-+    };
- 
- Nodes can contain other nodes etc... thus defining the hierarchical
- structure of the tree.
-@@ -1322,7 +1342,7 @@ phandle of the parent node.
- 
- If the interrupt-parent property is not defined for a node, its
- interrupt parent is assumed to be an ancestor in the node's
--_device tree_ hierarchy.
-+*device tree* hierarchy.
- 
- 3) OpenPIC Interrupt Controllers
- --------------------------------
-@@ -1334,10 +1354,12 @@ information.
- 
- Sense and level information should be encoded as follows:
- 
--	0 = low to high edge sensitive type enabled
--	1 = active low level sensitive type enabled
--	2 = active high level sensitive type enabled
--	3 = high to low edge sensitive type enabled
-+	==  ========================================
-+	0   low to high edge sensitive type enabled
-+	1   active low level sensitive type enabled
-+	2   active high level sensitive type enabled
-+	3   high to low edge sensitive type enabled
-+	==  ========================================
- 
- 4) ISA Interrupt Controllers
- ----------------------------
-@@ -1350,13 +1372,15 @@ information.
- ISA PIC interrupt controllers should adhere to the ISA PIC
- encodings listed below:
- 
--	0 =  active low level sensitive type enabled
--	1 =  active high level sensitive type enabled
--	2 =  high to low edge sensitive type enabled
--	3 =  low to high edge sensitive type enabled
-+	==  ========================================
-+	0   active low level sensitive type enabled
-+	1   active high level sensitive type enabled
-+	2   high to low edge sensitive type enabled
-+	3   low to high edge sensitive type enabled
-+	==  ========================================
- 
- VIII - Specifying Device Power Management Information (sleep property)
--===================================================================
-+======================================================================
- 
- Devices on SOCs often have mechanisms for placing devices into low-power
- states that are decoupled from the devices' own register blocks.  Sometimes,
-@@ -1387,6 +1411,7 @@ reasonably grouped in this manner, then create a virtual sleep controller
- sleep-map should wait until its necessity is demonstrated).
- 
- IX - Specifying dma bus information
-+===================================
- 
- Some devices may have DMA memory range shifted relatively to the beginning of
- RAM, or even placed outside of kernel RAM. For example, the Keystone 2 SoC
-@@ -1404,25 +1429,30 @@ coherent DMA operations. The "dma-coherent" property is intended to be used
- for identifying devices supported coherent DMA operations in DT.
- 
- * DMA Bus master
++The "Invariant Sections" are certain Secondary Sections whose titles
++are designated, as being those of Invariant Sections, in the notice
++that says that the Document is released under this License.
 +
- Optional property:
++The "Cover Texts" are certain short passages of text that are listed,
++as Front-Cover Texts or Back-Cover Texts, in the notice that says that
++the Document is released under this License.
 +
- - dma-ranges: <prop-encoded-array> encoded as arbitrary number of triplets of
--	(child-bus-address, parent-bus-address, length). Each triplet specified
--	describes a contiguous DMA address range.
--	The dma-ranges property is used to describe the direct memory access (DMA)
--	structure of a memory-mapped bus whose device tree parent can be accessed
--	from DMA operations originating from the bus. It provides a means of
--	defining a mapping or translation between the physical address space of
--	the bus and the physical address space of the parent of the bus.
--	(for more information see the Devicetree Specification)
-+  (child-bus-address, parent-bus-address, length). Each triplet specified
-+  describes a contiguous DMA address range.
-+  The dma-ranges property is used to describe the direct memory access (DMA)
-+  structure of a memory-mapped bus whose device tree parent can be accessed
-+  from DMA operations originating from the bus. It provides a means of
-+  defining a mapping or translation between the physical address space of
-+  the bus and the physical address space of the parent of the bus.
-+  (for more information see the Devicetree Specification)
- 
- * DMA Bus child
++A "Transparent" copy of the Document means a machine-readable copy,
++represented in a format whose specification is available to the
++general public, whose contents can be viewed and edited directly and
++straightforwardly with generic text editors or (for images composed of
++pixels) generic paint programs or (for drawings) some widely available
++drawing editor, and that is suitable for input to text formatters or
++for automatic translation to a variety of formats suitable for input
++to text formatters.  A copy made in an otherwise Transparent file
++format whose markup has been designed to thwart or discourage
++subsequent modification by readers is not Transparent.  A copy that is
++not "Transparent" is called "Opaque".
 +
- Optional property:
++Examples of suitable formats for Transparent copies include plain
++ASCII without markup, Texinfo input format, LaTeX input format, SGML
++or XML using a publicly available DTD, and standard-conforming simple
++HTML designed for human modification.  Opaque formats include
++PostScript, PDF, proprietary formats that can be read and edited only
++by proprietary word processors, SGML or XML for which the DTD and/or
++processing tools are not generally available, and the
++machine-generated HTML produced by some word processors for output
++purposes only.
 +
- - dma-ranges: <empty> value. if present - It means that DMA addresses
--	translation has to be enabled for this device.
-+  translation has to be enabled for this device.
- - dma-coherent: Present if dma operations are coherent
- 
--Example:
--soc {
-+Example::
++The "Title Page" means, for a printed book, the title page itself,
++plus such following pages as are needed to hold, legibly, the material
++this License requires to appear in the title page.  For works in
++formats which do not have any title page as such, "Title Page" means
++the text near the most prominent appearance of the work's title,
++preceding the beginning of the body of the text.
 +
-+	soc {
- 		compatible = "ti,keystone","simple-bus";
- 		ranges = <0x0 0x0 0x0 0xc0000000>;
- 		dma-ranges = <0x80000000 0x8 0x00000000 0x80000000>;
-@@ -1435,11 +1465,13 @@ soc {
- 			[...]
- 			dma-coherent;
- 		};
--};
-+	};
- 
- Appendix A - Sample SOC node for MPC8540
- ========================================
- 
-+::
 +
- 	soc@e0000000 {
- 		#address-cells = <1>;
- 		#size-cells = <1>;
-diff --git a/Documentation/devicetree/index.rst b/Documentation/devicetree/index.rst
-index 54026763916d..d2a96e1af23e 100644
---- a/Documentation/devicetree/index.rst
-+++ b/Documentation/devicetree/index.rst
-@@ -15,3 +15,4 @@ Open Firmware and Device Tree
-    overlay-notes
- 
-    bindings/index
-+   booting-without-of
-diff --git a/Documentation/translations/zh_CN/arm/Booting b/Documentation/translations/zh_CN/arm/Booting
-index 562e9a2957e6..c3d26ce5f6de 100644
---- a/Documentation/translations/zh_CN/arm/Booting
-+++ b/Documentation/translations/zh_CN/arm/Booting
-@@ -124,7 +124,7 @@ bootloader 必须传递一个系统内存的位置和最小值，以及根文件
- 
- bootloader 必须以 64bit 地址对齐的形式加载一个设备树映像(dtb)到系统
- RAM 中，并用启动数据初始化它。dtb 格式在文档
--Documentation/devicetree/booting-without-of.txt 中。内核将会在
-+Documentation/devicetree/booting-without-of.rst 中。内核将会在
- dtb 物理地址处查找 dtb 魔数值（0xd00dfeed），以确定 dtb 是否已经代替
- 标签列表被传递进来。
- 
++2. VERBATIM COPYING
++
++You may copy and distribute the Document in any medium, either
++commercially or noncommercially, provided that this License, the
++copyright notices, and the license notice saying this License applies
++to the Document are reproduced in all copies, and that you add no other
++conditions whatsoever to those of this License.  You may not use
++technical measures to obstruct or control the reading or further
++copying of the copies you make or distribute.  However, you may accept
++compensation in exchange for copies.  If you distribute a large enough
++number of copies you must also follow the conditions in section 3.
++
++You may also lend copies, under the same conditions stated above, and
++you may publicly display copies.
++
++
++3. COPYING IN QUANTITY
++
++If you publish printed copies of the Document numbering more than 100,
++and the Document's license notice requires Cover Texts, you must enclose
++the copies in covers that carry, clearly and legibly, all these Cover
++Texts: Front-Cover Texts on the front cover, and Back-Cover Texts on
++the back cover.  Both covers must also clearly and legibly identify
++you as the publisher of these copies.  The front cover must present
++the full title with all words of the title equally prominent and
++visible.  You may add other material on the covers in addition.
++Copying with changes limited to the covers, as long as they preserve
++the title of the Document and satisfy these conditions, can be treated
++as verbatim copying in other respects.
++
++If the required texts for either cover are too voluminous to fit
++legibly, you should put the first ones listed (as many as fit
++reasonably) on the actual cover, and continue the rest onto adjacent
++pages.
++
++If you publish or distribute Opaque copies of the Document numbering
++more than 100, you must either include a machine-readable Transparent
++copy along with each Opaque copy, or state in or with each Opaque copy
++a publicly-accessible computer-network location containing a complete
++Transparent copy of the Document, free of added material, which the
++general network-using public has access to download anonymously at no
++charge using public-standard network protocols.  If you use the latter
++option, you must take reasonably prudent steps, when you begin
++distribution of Opaque copies in quantity, to ensure that this
++Transparent copy will remain thus accessible at the stated location
++until at least one year after the last time you distribute an Opaque
++copy (directly or through your agents or retailers) of that edition to
++the public.
++
++It is requested, but not required, that you contact the authors of the
++Document well before redistributing any large number of copies, to give
++them a chance to provide you with an updated version of the Document.
++
++
++4. MODIFICATIONS
++
++You may copy and distribute a Modified Version of the Document under
++the conditions of sections 2 and 3 above, provided that you release
++the Modified Version under precisely this License, with the Modified
++Version filling the role of the Document, thus licensing distribution
++and modification of the Modified Version to whoever possesses a copy
++of it.  In addition, you must do these things in the Modified Version:
++
++A. Use in the Title Page (and on the covers, if any) a title distinct
++   from that of the Document, and from those of previous versions
++   (which should, if there were any, be listed in the History section
++   of the Document).  You may use the same title as a previous version
++   if the original publisher of that version gives permission.
++B. List on the Title Page, as authors, one or more persons or entities
++   responsible for authorship of the modifications in the Modified
++   Version, together with at least five of the principal authors of the
++   Document (all of its principal authors, if it has less than five).
++C. State on the Title page the name of the publisher of the
++   Modified Version, as the publisher.
++D. Preserve all the copyright notices of the Document.
++E. Add an appropriate copyright notice for your modifications
++   adjacent to the other copyright notices.
++F. Include, immediately after the copyright notices, a license notice
++   giving the public permission to use the Modified Version under the
++   terms of this License, in the form shown in the Addendum below.
++G. Preserve in that license notice the full lists of Invariant Sections
++   and required Cover Texts given in the Document's license notice.
++H. Include an unaltered copy of this License.
++I. Preserve the section entitled "History", and its title, and add to
++   it an item stating at least the title, year, new authors, and
++   publisher of the Modified Version as given on the Title Page.  If
++   there is no section entitled "History" in the Document, create one
++   stating the title, year, authors, and publisher of the Document as
++   given on its Title Page, then add an item describing the Modified
++   Version as stated in the previous sentence.
++J. Preserve the network location, if any, given in the Document for
++   public access to a Transparent copy of the Document, and likewise
++   the network locations given in the Document for previous versions
++   it was based on.  These may be placed in the "History" section.
++   You may omit a network location for a work that was published at
++   least four years before the Document itself, or if the original
++   publisher of the version it refers to gives permission.
++K. In any section entitled "Acknowledgements" or "Dedications",
++   preserve the section's title, and preserve in the section all the
++   substance and tone of each of the contributor acknowledgements
++   and/or dedications given therein.
++L. Preserve all the Invariant Sections of the Document,
++   unaltered in their text and in their titles.  Section numbers
++   or the equivalent are not considered part of the section titles.
++M. Delete any section entitled "Endorsements".  Such a section
++   may not be included in the Modified Version.
++N. Do not retitle any existing section as "Endorsements"
++   or to conflict in title with any Invariant Section.
++
++If the Modified Version includes new front-matter sections or
++appendices that qualify as Secondary Sections and contain no material
++copied from the Document, you may at your option designate some or all
++of these sections as invariant.  To do this, add their titles to the
++list of Invariant Sections in the Modified Version's license notice.
++These titles must be distinct from any other section titles.
++
++You may add a section entitled "Endorsements", provided it contains
++nothing but endorsements of your Modified Version by various
++parties--for example, statements of peer review or that the text has
++been approved by an organization as the authoritative definition of a
++standard.
++
++You may add a passage of up to five words as a Front-Cover Text, and a
++passage of up to 25 words as a Back-Cover Text, to the end of the list
++of Cover Texts in the Modified Version.  Only one passage of
++Front-Cover Text and one of Back-Cover Text may be added by (or
++through arrangements made by) any one entity.  If the Document already
++includes a cover text for the same cover, previously added by you or
++by arrangement made by the same entity you are acting on behalf of,
++you may not add another; but you may replace the old one, on explicit
++permission from the previous publisher that added the old one.
++
++The author(s) and publisher(s) of the Document do not by this License
++give permission to use their names for publicity for or to assert or
++imply endorsement of any Modified Version.
++
++
++5. COMBINING DOCUMENTS
++
++You may combine the Document with other documents released under this
++License, under the terms defined in section 4 above for modified
++versions, provided that you include in the combination all of the
++Invariant Sections of all of the original documents, unmodified, and
++list them all as Invariant Sections of your combined work in its
++license notice.
++
++The combined work need only contain one copy of this License, and
++multiple identical Invariant Sections may be replaced with a single
++copy.  If there are multiple Invariant Sections with the same name but
++different contents, make the title of each such section unique by
++adding at the end of it, in parentheses, the name of the original
++author or publisher of that section if known, or else a unique number.
++Make the same adjustment to the section titles in the list of
++Invariant Sections in the license notice of the combined work.
++
++In the combination, you must combine any sections entitled "History"
++in the various original documents, forming one section entitled
++"History"; likewise combine any sections entitled "Acknowledgements",
++and any sections entitled "Dedications".  You must delete all sections
++entitled "Endorsements."
++
++
++6. COLLECTIONS OF DOCUMENTS
++
++You may make a collection consisting of the Document and other documents
++released under this License, and replace the individual copies of this
++License in the various documents with a single copy that is included in
++the collection, provided that you follow the rules of this License for
++verbatim copying of each of the documents in all other respects.
++
++You may extract a single document from such a collection, and distribute
++it individually under this License, provided you insert a copy of this
++License into the extracted document, and follow this License in all
++other respects regarding verbatim copying of that document.
++
++
++7. AGGREGATION WITH INDEPENDENT WORKS
++
++A compilation of the Document or its derivatives with other separate
++and independent documents or works, in or on a volume of a storage or
++distribution medium, does not as a whole count as a Modified Version
++of the Document, provided no compilation copyright is claimed for the
++compilation.  Such a compilation is called an "aggregate", and this
++License does not apply to the other self-contained works thus compiled
++with the Document, on account of their being thus compiled, if they
++are not themselves derivative works of the Document.
++
++If the Cover Text requirement of section 3 is applicable to these
++copies of the Document, then if the Document is less than one quarter
++of the entire aggregate, the Document's Cover Texts may be placed on
++covers that surround only the Document within the aggregate.
++Otherwise they must appear on covers around the whole aggregate.
++
++
++8. TRANSLATION
++
++Translation is considered a kind of modification, so you may
++distribute translations of the Document under the terms of section 4.
++Replacing Invariant Sections with translations requires special
++permission from their copyright holders, but you may include
++translations of some or all Invariant Sections in addition to the
++original versions of these Invariant Sections.  You may include a
++translation of this License provided that you also include the
++original English version of this License.  In case of a disagreement
++between the translation and the original English version of this
++License, the original English version will prevail.
++
++
++9. TERMINATION
++
++You may not copy, modify, sublicense, or distribute the Document except
++as expressly provided for under this License.  Any other attempt to
++copy, modify, sublicense or distribute the Document is void, and will
++automatically terminate your rights under this License.  However,
++parties who have received copies, or rights, from you under this
++License will not have their licenses terminated so long as such
++parties remain in full compliance.
++
++
++10. FUTURE REVISIONS OF THIS LICENSE
++
++The Free Software Foundation may publish new, revised versions
++of the GNU Free Documentation License from time to time.  Such new
++versions will be similar in spirit to the present version, but may
++differ in detail to address new problems or concerns.  See
++https://www.gnu.org/licenses/.
++
++Each version of the License is given a distinguishing version number.
++If the Document specifies that a particular numbered version of this
++License "or any later version" applies to it, you have the option of
++following the terms and conditions either of that specified version or
++of any later version that has been published (not as a draft) by the
++Free Software Foundation.  If the Document does not specify a version
++number of this License, you may choose any version ever published (not
++as a draft) by the Free Software Foundation.
++
++
++ADDENDUM: How to use this License for your documents
++
++To use this License in a document you have written, include a copy of
++the License in the document and put the following copyright and
++license notices just after the title page:
++
++      Copyright (c)  YEAR  YOUR NAME.
++      Permission is granted to copy, distribute and/or modify this document
++      under the terms of the GNU Free Documentation License, Version 1.1
++      or any later version published by the Free Software Foundation;
++      with the Invariant Sections being LIST THEIR TITLES, with the
++      Front-Cover Texts being LIST, and with the Back-Cover Texts being LIST.
++      A copy of the license is included in the section entitled "GNU
++      Free Documentation License".
++
++If you have no Invariant Sections, write "with no Invariant Sections"
++instead of saying which ones are invariant.  If you have no
++Front-Cover Texts, write "no Front-Cover Texts" instead of
++"Front-Cover Texts being LIST"; likewise for Back-Cover Texts.
++
++If your document contains nontrivial examples of program code, we
++recommend releasing these examples in parallel under your choice of
++free software license, such as the GNU General Public License,
++to permit their use in free software.
+diff --git a/LICENSES/deprecated/GFDL-1.2 b/LICENSES/deprecated/GFDL-1.2
+new file mode 100644
+index 000000000000..760b2568fde5
+--- /dev/null
++++ b/LICENSES/deprecated/GFDL-1.2
+@@ -0,0 +1,408 @@
++Valid-License-Identifier: GFDL-1.2-only-no-invariants
++SPDX-URL: https://github.com/spdx/license-list-XML/pull/1048/commits/f695d2ac65230d0f4161ba58fff2f9d87bb5a053#diff-b948674e5c5cf6341e44e76b2565e80c
++Usage-Guide:
++  The GNU Free Documentation License with no Invariant Sections,
++  no Front-Cover Texts, and no Back-Cover Texts should not be used in new
++  code, except when dual-licensed with GPLv2.
++  To use the license in source code, put the following SPDX tag/value pair
++  into a comment according to the placement guidelines in the licensing
++  rules documentation:
++    SPDX-License-Identifier: GFDL-1.2-only-no-invariants
++License-Text:
++                GNU Free Documentation License
++                  Version 1.2, November 2002
++
++
++ Copyright (C) 2000,2001,2002  Free Software Foundation, Inc.
++     51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ Everyone is permitted to copy and distribute verbatim copies
++ of this license document, but changing it is not allowed.
++
++
++0. PREAMBLE
++
++The purpose of this License is to make a manual, textbook, or other
++functional and useful document "free" in the sense of freedom: to
++assure everyone the effective freedom to copy and redistribute it,
++with or without modifying it, either commercially or noncommercially.
++Secondarily, this License preserves for the author and publisher a way
++to get credit for their work, while not being considered responsible
++for modifications made by others.
++
++This License is a kind of "copyleft", which means that derivative
++works of the document must themselves be free in the same sense.  It
++complements the GNU General Public License, which is a copyleft
++license designed for free software.
++
++We have designed this License in order to use it for manuals for free
++software, because free software needs free documentation: a free
++program should come with manuals providing the same freedoms that the
++software does.  But this License is not limited to software manuals;
++it can be used for any textual work, regardless of subject matter or
++whether it is published as a printed book.  We recommend this License
++principally for works whose purpose is instruction or reference.
++
++
++1. APPLICABILITY AND DEFINITIONS
++
++This License applies to any manual or other work, in any medium, that
++contains a notice placed by the copyright holder saying it can be
++distributed under the terms of this License.  Such a notice grants a
++world-wide, royalty-free license, unlimited in duration, to use that
++work under the conditions stated herein.  The "Document", below,
++refers to any such manual or work.  Any member of the public is a
++licensee, and is addressed as "you".  You accept the license if you
++copy, modify or distribute the work in a way requiring permission
++under copyright law.
++
++A "Modified Version" of the Document means any work containing the
++Document or a portion of it, either copied verbatim, or with
++modifications and/or translated into another language.
++
++A "Secondary Section" is a named appendix or a front-matter section of
++the Document that deals exclusively with the relationship of the
++publishers or authors of the Document to the Document's overall subject
++(or to related matters) and contains nothing that could fall directly
++within that overall subject.  (Thus, if the Document is in part a
++textbook of mathematics, a Secondary Section may not explain any
++mathematics.)  The relationship could be a matter of historical
++connection with the subject or with related matters, or of legal,
++commercial, philosophical, ethical or political position regarding
++them.
++
++The "Invariant Sections" are certain Secondary Sections whose titles
++are designated, as being those of Invariant Sections, in the notice
++that says that the Document is released under this License.  If a
++section does not fit the above definition of Secondary then it is not
++allowed to be designated as Invariant.  The Document may contain zero
++Invariant Sections.  If the Document does not identify any Invariant
++Sections then there are none.
++
++The "Cover Texts" are certain short passages of text that are listed,
++as Front-Cover Texts or Back-Cover Texts, in the notice that says that
++the Document is released under this License.  A Front-Cover Text may
++be at most 5 words, and a Back-Cover Text may be at most 25 words.
++
++A "Transparent" copy of the Document means a machine-readable copy,
++represented in a format whose specification is available to the
++general public, that is suitable for revising the document
++straightforwardly with generic text editors or (for images composed of
++pixels) generic paint programs or (for drawings) some widely available
++drawing editor, and that is suitable for input to text formatters or
++for automatic translation to a variety of formats suitable for input
++to text formatters.  A copy made in an otherwise Transparent file
++format whose markup, or absence of markup, has been arranged to thwart
++or discourage subsequent modification by readers is not Transparent.
++An image format is not Transparent if used for any substantial amount
++of text.  A copy that is not "Transparent" is called "Opaque".
++
++Examples of suitable formats for Transparent copies include plain
++ASCII without markup, Texinfo input format, LaTeX input format, SGML
++or XML using a publicly available DTD, and standard-conforming simple
++HTML, PostScript or PDF designed for human modification.  Examples of
++transparent image formats include PNG, XCF and JPG.  Opaque formats
++include proprietary formats that can be read and edited only by
++proprietary word processors, SGML or XML for which the DTD and/or
++processing tools are not generally available, and the
++machine-generated HTML, PostScript or PDF produced by some word
++processors for output purposes only.
++
++The "Title Page" means, for a printed book, the title page itself,
++plus such following pages as are needed to hold, legibly, the material
++this License requires to appear in the title page.  For works in
++formats which do not have any title page as such, "Title Page" means
++the text near the most prominent appearance of the work's title,
++preceding the beginning of the body of the text.
++
++A section "Entitled XYZ" means a named subunit of the Document whose
++title either is precisely XYZ or contains XYZ in parentheses following
++text that translates XYZ in another language.  (Here XYZ stands for a
++specific section name mentioned below, such as "Acknowledgements",
++"Dedications", "Endorsements", or "History".)  To "Preserve the Title"
++of such a section when you modify the Document means that it remains a
++section "Entitled XYZ" according to this definition.
++
++The Document may include Warranty Disclaimers next to the notice which
++states that this License applies to the Document.  These Warranty
++Disclaimers are considered to be included by reference in this
++License, but only as regards disclaiming warranties: any other
++implication that these Warranty Disclaimers may have is void and has
++no effect on the meaning of this License.
++
++
++2. VERBATIM COPYING
++
++You may copy and distribute the Document in any medium, either
++commercially or noncommercially, provided that this License, the
++copyright notices, and the license notice saying this License applies
++to the Document are reproduced in all copies, and that you add no other
++conditions whatsoever to those of this License.  You may not use
++technical measures to obstruct or control the reading or further
++copying of the copies you make or distribute.  However, you may accept
++compensation in exchange for copies.  If you distribute a large enough
++number of copies you must also follow the conditions in section 3.
++
++You may also lend copies, under the same conditions stated above, and
++you may publicly display copies.
++
++
++3. COPYING IN QUANTITY
++
++If you publish printed copies (or copies in media that commonly have
++printed covers) of the Document, numbering more than 100, and the
++Document's license notice requires Cover Texts, you must enclose the
++copies in covers that carry, clearly and legibly, all these Cover
++Texts: Front-Cover Texts on the front cover, and Back-Cover Texts on
++the back cover.  Both covers must also clearly and legibly identify
++you as the publisher of these copies.  The front cover must present
++the full title with all words of the title equally prominent and
++visible.  You may add other material on the covers in addition.
++Copying with changes limited to the covers, as long as they preserve
++the title of the Document and satisfy these conditions, can be treated
++as verbatim copying in other respects.
++
++If the required texts for either cover are too voluminous to fit
++legibly, you should put the first ones listed (as many as fit
++reasonably) on the actual cover, and continue the rest onto adjacent
++pages.
++
++If you publish or distribute Opaque copies of the Document numbering
++more than 100, you must either include a machine-readable Transparent
++copy along with each Opaque copy, or state in or with each Opaque copy
++a computer-network location from which the general network-using
++public has access to download using public-standard network protocols
++a complete Transparent copy of the Document, free of added material.
++If you use the latter option, you must take reasonably prudent steps,
++when you begin distribution of Opaque copies in quantity, to ensure
++that this Transparent copy will remain thus accessible at the stated
++location until at least one year after the last time you distribute an
++Opaque copy (directly or through your agents or retailers) of that
++edition to the public.
++
++It is requested, but not required, that you contact the authors of the
++Document well before redistributing any large number of copies, to give
++them a chance to provide you with an updated version of the Document.
++
++
++4. MODIFICATIONS
++
++You may copy and distribute a Modified Version of the Document under
++the conditions of sections 2 and 3 above, provided that you release
++the Modified Version under precisely this License, with the Modified
++Version filling the role of the Document, thus licensing distribution
++and modification of the Modified Version to whoever possesses a copy
++of it.  In addition, you must do these things in the Modified Version:
++
++A. Use in the Title Page (and on the covers, if any) a title distinct
++   from that of the Document, and from those of previous versions
++   (which should, if there were any, be listed in the History section
++   of the Document).  You may use the same title as a previous version
++   if the original publisher of that version gives permission.
++B. List on the Title Page, as authors, one or more persons or entities
++   responsible for authorship of the modifications in the Modified
++   Version, together with at least five of the principal authors of the
++   Document (all of its principal authors, if it has fewer than five),
++   unless they release you from this requirement.
++C. State on the Title page the name of the publisher of the
++   Modified Version, as the publisher.
++D. Preserve all the copyright notices of the Document.
++E. Add an appropriate copyright notice for your modifications
++   adjacent to the other copyright notices.
++F. Include, immediately after the copyright notices, a license notice
++   giving the public permission to use the Modified Version under the
++   terms of this License, in the form shown in the Addendum below.
++G. Preserve in that license notice the full lists of Invariant Sections
++   and required Cover Texts given in the Document's license notice.
++H. Include an unaltered copy of this License.
++I. Preserve the section Entitled "History", Preserve its Title, and add
++   to it an item stating at least the title, year, new authors, and
++   publisher of the Modified Version as given on the Title Page.  If
++   there is no section Entitled "History" in the Document, create one
++   stating the title, year, authors, and publisher of the Document as
++   given on its Title Page, then add an item describing the Modified
++   Version as stated in the previous sentence.
++J. Preserve the network location, if any, given in the Document for
++   public access to a Transparent copy of the Document, and likewise
++   the network locations given in the Document for previous versions
++   it was based on.  These may be placed in the "History" section.
++   You may omit a network location for a work that was published at
++   least four years before the Document itself, or if the original
++   publisher of the version it refers to gives permission.
++K. For any section Entitled "Acknowledgements" or "Dedications",
++   Preserve the Title of the section, and preserve in the section all
++   the substance and tone of each of the contributor acknowledgements
++   and/or dedications given therein.
++L. Preserve all the Invariant Sections of the Document,
++   unaltered in their text and in their titles.  Section numbers
++   or the equivalent are not considered part of the section titles.
++M. Delete any section Entitled "Endorsements".  Such a section
++   may not be included in the Modified Version.
++N. Do not retitle any existing section to be Entitled "Endorsements"
++   or to conflict in title with any Invariant Section.
++O. Preserve any Warranty Disclaimers.
++
++If the Modified Version includes new front-matter sections or
++appendices that qualify as Secondary Sections and contain no material
++copied from the Document, you may at your option designate some or all
++of these sections as invariant.  To do this, add their titles to the
++list of Invariant Sections in the Modified Version's license notice.
++These titles must be distinct from any other section titles.
++
++You may add a section Entitled "Endorsements", provided it contains
++nothing but endorsements of your Modified Version by various
++parties--for example, statements of peer review or that the text has
++been approved by an organization as the authoritative definition of a
++standard.
++
++You may add a passage of up to five words as a Front-Cover Text, and a
++passage of up to 25 words as a Back-Cover Text, to the end of the list
++of Cover Texts in the Modified Version.  Only one passage of
++Front-Cover Text and one of Back-Cover Text may be added by (or
++through arrangements made by) any one entity.  If the Document already
++includes a cover text for the same cover, previously added by you or
++by arrangement made by the same entity you are acting on behalf of,
++you may not add another; but you may replace the old one, on explicit
++permission from the previous publisher that added the old one.
++
++The author(s) and publisher(s) of the Document do not by this License
++give permission to use their names for publicity for or to assert or
++imply endorsement of any Modified Version.
++
++
++5. COMBINING DOCUMENTS
++
++You may combine the Document with other documents released under this
++License, under the terms defined in section 4 above for modified
++versions, provided that you include in the combination all of the
++Invariant Sections of all of the original documents, unmodified, and
++list them all as Invariant Sections of your combined work in its
++license notice, and that you preserve all their Warranty Disclaimers.
++
++The combined work need only contain one copy of this License, and
++multiple identical Invariant Sections may be replaced with a single
++copy.  If there are multiple Invariant Sections with the same name but
++different contents, make the title of each such section unique by
++adding at the end of it, in parentheses, the name of the original
++author or publisher of that section if known, or else a unique number.
++Make the same adjustment to the section titles in the list of
++Invariant Sections in the license notice of the combined work.
++
++In the combination, you must combine any sections Entitled "History"
++in the various original documents, forming one section Entitled
++"History"; likewise combine any sections Entitled "Acknowledgements",
++and any sections Entitled "Dedications".  You must delete all sections
++Entitled "Endorsements".
++
++
++6. COLLECTIONS OF DOCUMENTS
++
++You may make a collection consisting of the Document and other documents
++released under this License, and replace the individual copies of this
++License in the various documents with a single copy that is included in
++the collection, provided that you follow the rules of this License for
++verbatim copying of each of the documents in all other respects.
++
++You may extract a single document from such a collection, and distribute
++it individually under this License, provided you insert a copy of this
++License into the extracted document, and follow this License in all
++other respects regarding verbatim copying of that document.
++
++
++7. AGGREGATION WITH INDEPENDENT WORKS
++
++A compilation of the Document or its derivatives with other separate
++and independent documents or works, in or on a volume of a storage or
++distribution medium, is called an "aggregate" if the copyright
++resulting from the compilation is not used to limit the legal rights
++of the compilation's users beyond what the individual works permit.
++When the Document is included in an aggregate, this License does not
++apply to the other works in the aggregate which are not themselves
++derivative works of the Document.
++
++If the Cover Text requirement of section 3 is applicable to these
++copies of the Document, then if the Document is less than one half of
++the entire aggregate, the Document's Cover Texts may be placed on
++covers that bracket the Document within the aggregate, or the
++electronic equivalent of covers if the Document is in electronic form.
++Otherwise they must appear on printed covers that bracket the whole
++aggregate.
++
++
++8. TRANSLATION
++
++Translation is considered a kind of modification, so you may
++distribute translations of the Document under the terms of section 4.
++Replacing Invariant Sections with translations requires special
++permission from their copyright holders, but you may include
++translations of some or all Invariant Sections in addition to the
++original versions of these Invariant Sections.  You may include a
++translation of this License, and all the license notices in the
++Document, and any Warranty Disclaimers, provided that you also include
++the original English version of this License and the original versions
++of those notices and disclaimers.  In case of a disagreement between
++the translation and the original version of this License or a notice
++or disclaimer, the original version will prevail.
++
++If a section in the Document is Entitled "Acknowledgements",
++"Dedications", or "History", the requirement (section 4) to Preserve
++its Title (section 1) will typically require changing the actual
++title.
++
++
++9. TERMINATION
++
++You may not copy, modify, sublicense, or distribute the Document except
++as expressly provided for under this License.  Any other attempt to
++copy, modify, sublicense or distribute the Document is void, and will
++automatically terminate your rights under this License.  However,
++parties who have received copies, or rights, from you under this
++License will not have their licenses terminated so long as such
++parties remain in full compliance.
++
++
++10. FUTURE REVISIONS OF THIS LICENSE
++
++The Free Software Foundation may publish new, revised versions
++of the GNU Free Documentation License from time to time.  Such new
++versions will be similar in spirit to the present version, but may
++differ in detail to address new problems or concerns.  See
++https://www.gnu.org/licenses/.
++
++Each version of the License is given a distinguishing version number.
++If the Document specifies that a particular numbered version of this
++License "or any later version" applies to it, you have the option of
++following the terms and conditions either of that specified version or
++of any later version that has been published (not as a draft) by the
++Free Software Foundation.  If the Document does not specify a version
++number of this License, you may choose any version ever published (not
++as a draft) by the Free Software Foundation.
++
++
++ADDENDUM: How to use this License for your documents
++
++To use this License in a document you have written, include a copy of
++the License in the document and put the following copyright and
++license notices just after the title page:
++
++    Copyright (c)  YEAR  YOUR NAME.
++    Permission is granted to copy, distribute and/or modify this document
++    under the terms of the GNU Free Documentation License, Version 1.2
++    or any later version published by the Free Software Foundation;
++    with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
++    A copy of the license is included in the section entitled "GNU
++    Free Documentation License".
++
++If you have Invariant Sections, Front-Cover Texts and Back-Cover Texts,
++replace the "with...Texts." line with this:
++
++    with the Invariant Sections being LIST THEIR TITLES, with the
++    Front-Cover Texts being LIST, and with the Back-Cover Texts being LIST.
++
++If you have Invariant Sections without Cover Texts, or some other
++combination of the three, merge those two alternatives to suit the
++situation.
++
++If your document contains nontrivial examples of program code, we
++recommend releasing these examples in parallel under your choice of
++free software license, such as the GNU General Public License,
++to permit their use in free software.
 -- 
 2.26.2
 
