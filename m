@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2659C204561
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34FA720455D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:31:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731630AbgFWAbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:31:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55780 "EHLO mail.kernel.org"
+        id S1731850AbgFWAa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:30:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731716AbgFWAaU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:30:20 -0400
+        id S1731717AbgFWAaV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:30:21 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 734892100A;
+        by mail.kernel.org (Postfix) with ESMTPSA id A8A1320DD4;
         Tue, 23 Jun 2020 00:30:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592872220;
-        bh=kYiQhMrNluGmJ/gH/lJElNvisMeCFkHWqBFYmA0RsSw=;
+        bh=ZnfhGx5U6A8JH7MyaM8fTjw6ysA6x6Vvaxq31qKSurw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KUd852T7roU9GgtDSLSmezRpfvEPxLihZ7g2DqSsaukAztKX4/YoxgwCSKw0mtp8t
-         mCzEMKcL5+qlzuYD3JsCGsq8OWdhOW7n1B8WI1c9nDz8BJKccXcaUairBuLJLk4miR
-         ESsi4+xBwAZgfchQf+BR/zlegUp/TWngip5eA7Zk=
+        b=2XQ5dIPkX4LJFwIoydcGNNZn/mzT6mYv0oOZXfN2jbVAJDArpWGVnJWBq64u7vGdF
+         eQo/yP6g4QFsLm+wmjKCgAJaua8dI6SA9xstsJ63ctrmU3tkA+lJr0RqDDFtgVFyhb
+         e+QExg75zR+31DAkMFih+xbVXYqQAWSyL9zr7r7I=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 26/30] refperf: Add test for RCU Tasks readers
-Date:   Mon, 22 Jun 2020 17:30:09 -0700
-Message-Id: <20200623003013.26252-26-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 27/30] rcu-tasks: Fix synchronize_rcu_tasks_trace() header comment
+Date:   Mon, 22 Jun 2020 17:30:10 -0700
+Message-Id: <20200623003013.26252-27-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002941.GA26089@paulmck-ThinkPad-P72>
 References: <20200623002941.GA26089@paulmck-ThinkPad-P72>
@@ -45,61 +45,54 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds testing for RCU Tasks readers to the refperf module.
-This also applies to RCU Rude readers, as both flavors have empty
-(as in non-existent) read-side markers.
+The synchronize_rcu_tasks_trace() header comment incorrectly claims that
+any number of things delimit RCU Tasks Trace read-side critical sections,
+when in fact only rcu_read_lock_trace() and rcu_read_unlock_trace() do so.
+This commit therefore fixes this comment, and, while in the area, fixes
+a typo in the rcu_read_lock_trace() header comment.
 
+Reported-by: Alexei Starovoitov <alexei.starovoitov@gmail.com>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/refperf.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+ include/linux/rcupdate_trace.h | 4 ++--
+ kernel/rcu/tasks.h             | 9 ++++-----
+ 2 files changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/rcu/refperf.c b/kernel/rcu/refperf.c
-index da7de9a..2bfdcdc 100644
---- a/kernel/rcu/refperf.c
-+++ b/kernel/rcu/refperf.c
-@@ -192,6 +192,31 @@ static struct ref_perf_ops srcu_ops = {
- 	.name		= "srcu"
- };
- 
-+// Definitions for RCU Tasks ref perf testing: Empty read markers.
-+// These definitions also work for RCU Rude readers.
-+static void rcu_tasks_ref_perf_read_section(const int nloops)
-+{
-+	int i;
-+
-+	for (i = nloops; i >= 0; i--)
-+		continue;
-+}
-+
-+static void rcu_tasks_ref_perf_delay_section(const int nloops, const int udl, const int ndl)
-+{
-+	int i;
-+
-+	for (i = nloops; i >= 0; i--)
-+		un_delay(udl, ndl);
-+}
-+
-+static struct ref_perf_ops rcu_tasks_ops = {
-+	.init		= rcu_sync_perf_init,
-+	.readsection	= rcu_tasks_ref_perf_read_section,
-+	.delaysection	= rcu_tasks_ref_perf_delay_section,
-+	.name		= "rcu-tasks"
-+};
-+
- // Definitions for RCU Tasks Trace ref perf testing.
- static void rcu_trace_ref_perf_read_section(const int nloops)
- {
-@@ -613,7 +638,8 @@ ref_perf_init(void)
- 	long i;
- 	int firsterr = 0;
- 	static struct ref_perf_ops *perf_ops[] = {
--		&rcu_ops, &srcu_ops, &rcu_trace_ops, &refcnt_ops, &rwlock_ops, &rwsem_ops,
-+		&rcu_ops, &srcu_ops, &rcu_trace_ops, &rcu_tasks_ops,
-+		&refcnt_ops, &rwlock_ops, &rwsem_ops,
- 	};
- 
- 	if (!torture_init_begin(perf_type, verbose))
+diff --git a/include/linux/rcupdate_trace.h b/include/linux/rcupdate_trace.h
+index 4c25a41..d9015aa 100644
+--- a/include/linux/rcupdate_trace.h
++++ b/include/linux/rcupdate_trace.h
+@@ -36,8 +36,8 @@ void rcu_read_unlock_trace_special(struct task_struct *t, int nesting);
+ /**
+  * rcu_read_lock_trace - mark beginning of RCU-trace read-side critical section
+  *
+- * When synchronize_rcu_trace() is invoked by one task, then that task
+- * is guaranteed to block until all other tasks exit their read-side
++ * When synchronize_rcu_tasks_trace() is invoked by one task, then that
++ * task is guaranteed to block until all other tasks exit their read-side
+  * critical sections.  Similarly, if call_rcu_trace() is invoked on one
+  * task while other tasks are within RCU read-side critical sections,
+  * invocation of the corresponding RCU callback is deferred until after
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index ce23f6c..a77298c 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1118,11 +1118,10 @@ EXPORT_SYMBOL_GPL(call_rcu_tasks_trace);
+  * synchronize_rcu_tasks_trace - wait for a trace rcu-tasks grace period
+  *
+  * Control will return to the caller some time after a trace rcu-tasks
+- * grace period has elapsed, in other words after all currently
+- * executing rcu-tasks read-side critical sections have elapsed.  These
+- * read-side critical sections are delimited by calls to schedule(),
+- * cond_resched_tasks_rcu_qs(), userspace execution, and (in theory,
+- * anyway) cond_resched().
++ * grace period has elapsed, in other words after all currently executing
++ * rcu-tasks read-side critical sections have elapsed.  These read-side
++ * critical sections are delimited by calls to rcu_read_lock_trace()
++ * and rcu_read_unlock_trace().
+  *
+  * This is a very specialized primitive, intended only for a few uses in
+  * tracing and other situations requiring manipulation of function preambles
 -- 
 2.9.5
 
