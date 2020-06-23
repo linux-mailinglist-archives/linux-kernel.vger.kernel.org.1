@@ -2,60 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51984204BDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 10:03:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4C1204BE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 10:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731758AbgFWIC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 04:02:57 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:59550 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731158AbgFWIC4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 04:02:56 -0400
-Received: from [10.130.0.66] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT2slt_FeE6xIAA--.10936S3;
-        Tue, 23 Jun 2020 16:02:46 +0800 (CST)
-Subject: Re: [PATCH RESEND] net/cisco: Fix a sleep-in-atomic-context bug in
- enic_init_affinity_hint()
-To:     David Miller <davem@davemloft.net>
-References: <1592831473-21280-1-git-send-email-likaige@loongson.cn>
- <20200622.210901.99981901710126146.davem@davemloft.net>
-Cc:     benve@cisco.com, _govind@gmx.com, yangtiezhu@loongson.cn,
-        lixuefeng@loongson.cn, linux-kernel@vger.kernel.org
-From:   Kaige Li <likaige@loongson.cn>
-Message-ID: <2588c2cd-1777-6bcb-b140-d2e05eadef45@loongson.cn>
-Date:   Tue, 23 Jun 2020 16:02:45 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S1731783AbgFWIDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 04:03:21 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:28359 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1731534AbgFWIDT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 04:03:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592899397;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=l6YBkvu4NKIVRvb0+R6NtCtLkpIDbKvQHwDRTDMavYs=;
+        b=X2PXDCmMiJaHYm5nL8CmOMMh6V/iGcnVNZGYpfnYuQs+zXcPTXVHT0ED10GXfNwgKs0yl4
+        wdsvQHKS9Y4KeZ2ceSwTs4StxVin6wAptQFXOXAi/6JhLNza541jh8/PFzl9SzvH0z6uC8
+        8vaQj8lRA/b3Y0QNUhWvcgd7wUg4+Fs=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-163-BWOTNlfBO2auqO6176yD1g-1; Tue, 23 Jun 2020 04:03:15 -0400
+X-MC-Unique: BWOTNlfBO2auqO6176yD1g-1
+Received: by mail-ej1-f69.google.com with SMTP id b24so7847055ejb.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 01:03:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l6YBkvu4NKIVRvb0+R6NtCtLkpIDbKvQHwDRTDMavYs=;
+        b=ORMOJX2pxxb1go38z/4VnKEJms7EmzzOa4gE1UVqccPdw5p8UQn7wsK6plAvLJslkp
+         VIJYiPDkiPrxSKCfhzjaapehRTSMI+a2i3jpNPFWs7NKrhcU8BAZ1I8QBk+f5NSJ0IhR
+         7Lg6XdNGwvEbeT1uwma1JD/4SSjlGeogzkQ/RU5OLo8jR3GMVSD/wy4N8Q++GZyurxIL
+         JTGxAk1zsVbJx3RkcjsaQwOgp0dstRCYNMabuhS6Y4qgSdVLMavIvC+ZR/vfuDWKUUbk
+         Ol/iclEShVB2wa5Rh2U/7hLIn6lbcj7nyWB7AeD4kEH60gdpWfWi3sxl/odYGlPK/PDe
+         UBLQ==
+X-Gm-Message-State: AOAM5301zmX13bxdVDbBs12QjAeAZw1FFbkUeSEmCOBO1oxb15DJKTew
+        JIvdwyxtB4sbUtNLixm9km2nQBzxzNW+cbLOouZ0TAP+h8PemEzV3tJiuQD7TkAOmhJ4kGiPOHb
+        glDuod/7iahxtytU2RGwswxle
+X-Received: by 2002:a50:d6dd:: with SMTP id l29mr4423991edj.345.1592899393650;
+        Tue, 23 Jun 2020 01:03:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxUO01hrtBJeja7UCvnapxRDA0N13a8vbDxVvxvfNDa9KjTKO3iua7zztinJD+WlgufIZAdhA==
+X-Received: by 2002:a50:d6dd:: with SMTP id l29mr4423970edj.345.1592899393410;
+        Tue, 23 Jun 2020 01:03:13 -0700 (PDT)
+Received: from localhost ([2001:470:5b39:29:79fc:ff4e:48ab:b845])
+        by smtp.gmail.com with ESMTPSA id x11sm13035250ejv.81.2020.06.23.01.03.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 01:03:12 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 10:03:11 +0200
+From:   Oleksandr Natalenko <oleksandr@redhat.com>
+To:     "R.F. Burns" <burnsrf@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: PC speaker
+Message-ID: <20200623080311.7ljhyo3zymfbtnbl@butterfly.localdomain>
+References: <CABG1boOyDJheyNFuxhB0amA3_NH_DtvtZb2BBUtUOCQ01jeCEw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20200622.210901.99981901710126146.davem@davemloft.net>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9DxT2slt_FeE6xIAA--.10936S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYr7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2js
-        IEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
-        5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMcvjeV
-        CFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2
-        V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2
-        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73Uj
-        IFyTuYvjfU5sjjDUUUU
-X-CM-SenderInfo: 5olntxtjh6z05rqj20fqof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABG1boOyDJheyNFuxhB0amA3_NH_DtvtZb2BBUtUOCQ01jeCEw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/23/2020 12:09 PM, David Miller wrote:
-> Networking changes must be submitted with netdev@vger.kernel.org
+Hello.
 
-Thanks for your reply, sorry for that. I will resend this patch.
+On Thu, Jun 18, 2020 at 01:49:37PM -0400, R.F. Burns wrote:
+> Is it possible to write a kernel module which, when loaded, will blow
+> the PC speaker?
 
->
-> Thank you.
+1) where have you been starting from 2011 till 2015?
+2) why does the posting date of this letter varies a little bit?
+3) why June (but July in 2008)?
+4) are you a robot?
+5) if you are a robot, what's your setup?
+6) if you are not a robot, blink.
+
+I'm eagerly waiting for this email each year, but it's a shame you
+neither reveal any details nor respond to questions. We are intrigued!
+
+Please uncover this great LKML mystery. We'd like to know you closer.
+
+Thanks.
+
+-- 
+  Best regards,
+    Oleksandr Natalenko (post-factum)
+    Principal Software Maintenance Engineer
 
