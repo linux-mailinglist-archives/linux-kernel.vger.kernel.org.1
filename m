@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8129C205CC7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2523205CD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:07:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388352AbgFWUFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:05:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44672 "EHLO mail.kernel.org"
+        id S2388409AbgFWUF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:05:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45430 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388341AbgFWUFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:05:19 -0400
+        id S2388382AbgFWUFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:05:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 52B8C206C3;
-        Tue, 23 Jun 2020 20:05:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C3E92078A;
+        Tue, 23 Jun 2020 20:05:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942718;
-        bh=JMvlUhCjrGlUQV8cZmG5Jqmr1/kiIi4DV2YpJduhak4=;
+        s=default; t=1592942746;
+        bh=Qq2YUB6UbFuTjB9tvvUMGK3L9h5ULnUYz8sdOpbnuow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e0UsKnSBvq4zPn39NDUOAQYDXiFsFfFa8cAuLLB6hP4p2ARUUTRgyGAFGUcHBneSx
-         vltCN+WWz73Hg+HrkHUYev2Zv3kGxyphAmrbgVPh7svUQASTRSwVpIgOE+S0/f5Ueh
-         yE3iYmehPRK6B6H64LDU8Du0aT0WA6/uUq9F8FNg=
+        b=yk96xY2WFZR8SPPUBwJESim+DY2hL/IAGe5rHwLTWdexHKHs3uZP95hFbDFy5pWO3
+         gXpTQwAU2y6xRMyUG+HNr++y3nBGHpCubuRC5mHI9qaSsY1PIvwUVZ25gEFWEOVS78
+         iQfZyLtgqD0g8NceQCNIZ9gLIe1G7M1q4Edcm+OY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 101/477] xfs: Add the missed xfs_perag_put() for xfs_ifree_cluster()
-Date:   Tue, 23 Jun 2020 21:51:38 +0200
-Message-Id: <20200623195412.362739481@linuxfoundation.org>
+Subject: [PATCH 5.7 102/477] ASoC: meson: add missing free_irq() in error path
+Date:   Tue, 23 Jun 2020 21:51:39 +0200
+Message-Id: <20200623195412.410103496@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -44,39 +45,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuhong Yuan <hslester96@gmail.com>
+From: Pavel Machek (CIP) <pavel@denx.de>
 
-[ Upstream commit 8cc0072469723459dc6bd7beff81b2b3149f4cf4 ]
+[ Upstream commit 3b8a299a58b2afce464ae11324b59dcf0f1d10a7 ]
 
-xfs_ifree_cluster() calls xfs_perag_get() at the beginning, but forgets to
-call xfs_perag_put() in one failed path.
-Add the missed function call to fix it.
+free_irq() is missing in case of error, fix that.
 
-Fixes: ce92464c180b ("xfs: make xfs_trans_get_buf return an error code")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
+Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
+
+Link: https://lore.kernel.org/r/20200606153103.GA17905@amd
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_inode.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ sound/soc/meson/axg-fifo.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-index d1772786af29d..8845faa8161a9 100644
---- a/fs/xfs/xfs_inode.c
-+++ b/fs/xfs/xfs_inode.c
-@@ -2639,8 +2639,10 @@ xfs_ifree_cluster(
- 		error = xfs_trans_get_buf(tp, mp->m_ddev_targp, blkno,
- 				mp->m_bsize * igeo->blocks_per_cluster,
- 				XBF_UNMAPPED, &bp);
--		if (error)
-+		if (error) {
-+			xfs_perag_put(pag);
- 			return error;
-+		}
+diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
+index 2e9b56b29d313..b2e867113226b 100644
+--- a/sound/soc/meson/axg-fifo.c
++++ b/sound/soc/meson/axg-fifo.c
+@@ -249,7 +249,7 @@ int axg_fifo_pcm_open(struct snd_soc_component *component,
+ 	/* Enable pclk to access registers and clock the fifo ip */
+ 	ret = clk_prepare_enable(fifo->pclk);
+ 	if (ret)
+-		return ret;
++		goto free_irq;
  
- 		/*
- 		 * This buffer may not have been correctly initialised as we
+ 	/* Setup status2 so it reports the memory pointer */
+ 	regmap_update_bits(fifo->map, FIFO_CTRL1,
+@@ -269,8 +269,14 @@ int axg_fifo_pcm_open(struct snd_soc_component *component,
+ 	/* Take memory arbitror out of reset */
+ 	ret = reset_control_deassert(fifo->arb);
+ 	if (ret)
+-		clk_disable_unprepare(fifo->pclk);
++		goto free_clk;
++
++	return 0;
+ 
++free_clk:
++	clk_disable_unprepare(fifo->pclk);
++free_irq:
++	free_irq(fifo->irq, ss);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(axg_fifo_pcm_open);
 -- 
 2.25.1
 
