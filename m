@@ -2,125 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61DAF206249
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56DA206258
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392370AbgFWU6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
+        id S2393116AbgFWU7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403922AbgFWU61 (ORCPT
+        with ESMTP id S2391418AbgFWU7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:58:27 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6B1C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:58:27 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id bh7so9636993plb.11
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:58:27 -0700 (PDT)
+        Tue, 23 Jun 2020 16:59:34 -0400
+Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89FF9C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:59:34 -0700 (PDT)
+Received: by mail-ot1-x343.google.com with SMTP id 18so3454003otv.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:59:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5A6ggZJSYhmKqxXi023++ALz1/yxx4OWOUKivzMyp6s=;
-        b=DxseotXcNXTsPoLCoiUOchZ8vWlYjgGlc5pJin8Funwm38e58S6Vs6ThS0VnHsLy3Y
-         G0+5J+bDcwdJalGvujwkKECF8YwFaH/FF7FhtDjsOxRFZHQQ7a41EdMkoLkY3Q/D1yMF
-         7R28udbe5Dmic+dlNUyg5g4kf7ON9BKKw2sag4zZAK8GzzcK/muIUpTEpZEKr3NAqVTi
-         SLpDICS+0pte5QbdVXgDNuZhB7dW+ReGJfUDg0Jw1w1mMwLbOlRbTCcq07F2rtqXLtko
-         4FwF5xJqsJgpaSs0VDlgA65QSo2M1Tk1RVRgylpEpJIy2KezrwhmMN8lfsdpQqRn0+4X
-         hv1w==
+        bh=MMK5qVAbSt1rK51R9btGsARYaJbNedHeaCPVNS4QMh0=;
+        b=iyeMTBPEtKOQUdZksy9A2LphrJXXdLKwANILu0UWPQPF+YBcKyR676TocMuovRULka
+         S6GfGaka/7SOVuzQGvTVhj8e7ZKf/i0r7sQPog6f8FYszAIQ5NLlZVyTk6RBdnF6+uic
+         4CU4tjvcwG4yY1Wzzkd7ehtkqi/21o2D1nwqBxVTjLkpCYbqbQYQDSIL3TIhNeh6ydrr
+         eHgPcbAZqrYjSPraev/Ip7rwuOU2xeMs96G2jiDEWSV/prNfIeZeolWMgDUon7tczct7
+         hEG74eT2y8VoOTFVPso5xd7Kcuh3TBEw9OyvUzd98MAueq7T27CRQmbDu8+VQGaxOxer
+         Ub8w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5A6ggZJSYhmKqxXi023++ALz1/yxx4OWOUKivzMyp6s=;
-        b=YAXyoAsB1s9r3RXOp4uIxqQmNnfYurXE1ka3zX6ZyroE23BJeyYeiFzMmP8Ehy+Op1
-         D/S/l3rWlujO+mzCfT7Ja9AID4aj4gQBvXbE1gWa0bzhvlP3YKXbXQyhV9DHxa5fvaBD
-         4NRYrFQ7luKqmiIAAvrDA65Gq2dRt4oeTpDbGxivbl4H8jRp3yEo7CIknIUzx4pdyeh3
-         Mwo09FG5m5Lx/VQ/vKSXo4QK4HTFIPKR/zumH82yx6PvVuj9wZrZvGvDltySO+7sMKRC
-         e7i5dIxF47wuw9x8MDZFoyEoq7TxBFsRkMCVvut1KIoyigIM7UJoafrT3eV+U6xolhnT
-         MK+w==
-X-Gm-Message-State: AOAM530+YD3sLtGmkXROzKohLm6Ecu8RHlr14sVH2ky8p+tlICHwDpYn
-        inZP72W+G/94b1nrgyAbo0VvdZHqJa1x5tkhNmH5Sg==
-X-Google-Smtp-Source: ABdhPJwgNQt/BzJGgIgW1Z6IWYFFQo4/opMM9ra7kx2PUquYyLheC2bO97mcDzSHs3i/leVIx9Lzg4MfUrXy2lkHeRw=
-X-Received: by 2002:a17:90a:21ef:: with SMTP id q102mr3895pjc.101.1592945906532;
- Tue, 23 Jun 2020 13:58:26 -0700 (PDT)
+        bh=MMK5qVAbSt1rK51R9btGsARYaJbNedHeaCPVNS4QMh0=;
+        b=Q0X+doqSZORyrXmjXBKasMWzTRAnPgins9xFtIJoay7j3SO2wU8bAcY9AXX1DhL51N
+         6NPafwkW/m9WRgWRKSsh2TMLEXuqHe52mQDkk2E5m489qPHLHvkxl2iw5BprAtvaI8TM
+         MvBEDIjbDw0ebo/YP/BLxixjDOGF45y7mvLnHTQeTEH3eoVz/Y8PjNto3dqsiQsz5ooN
+         ahMV36fcXH5xRNls61v0MIKynTU0h4ux2Vh5fcl9zqXJVM/doZH75LjYzhJMJ3A0P9I9
+         zGTPViBtM8xSclDYDjZgZKWqfNaDMe6gdluBGEHOYDRMzoVL65vgLy1B/5iGs6EnN9AH
+         Os1w==
+X-Gm-Message-State: AOAM533J1K5qiAIWQnWxQqnJKKtTvV4nrN59SmkZfzPbhgEMyenWO2sa
+        YfFM8OmyhYgeazPemLjwIZOZb9eAU/UpLlhT29oTDQ==
+X-Google-Smtp-Source: ABdhPJyHuNZxBjdsvKwLfr+iff/2GdI2ai1mugVC+vZAzM5Srohzqfwls5UvX5BiAG+czjXrWmLupnGITM07tg6B1O8=
+X-Received: by 2002:a4a:e702:: with SMTP id y2mr10264640oou.36.1592945973716;
+ Tue, 23 Jun 2020 13:59:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200622190149.GL32200@zn.tnic> <B4D00859-000A-4F8C-8CFB-45B9BBCCA16D@amacapital.net>
- <20200623102831.GB32590@zn.tnic> <CALCETrXfaEr9OGc5EDpxnhRZxFk5YZBBNVH-N32Eg8V8diwqXg@mail.gmail.com>
- <20200623184726.GI32590@zn.tnic> <CAKwvOdnt+8RR=1JPjDNaVY8T1K7wmqFjSGM7XNUUGRb=t1hiWQ@mail.gmail.com>
- <20200623191336.GK32590@zn.tnic>
-In-Reply-To: <20200623191336.GK32590@zn.tnic>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Tue, 23 Jun 2020 13:58:15 -0700
-Message-ID: <CAKwvOdkTYqpphqr2cvL2pDuK33aYzxXsLDQ6+_PSUk6qxUuQ7A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] selftests/fpu: Add an FPU selftest
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        jpa@kernelbug.mail.kapsi.fi, Dave Hansen <dave.hansen@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <cf7c83d0b58aa4912b465392ce8e40a974f250bb.camel@posk.io>
+ <20200623132507.GA875@aaronlu-desktop> <d29a2ba031ecd96f785a602e703d97e24980ef15.camel@posk.io>
+ <20200623194529.GA71413@gmail.com>
+In-Reply-To: <20200623194529.GA71413@gmail.com>
+From:   Peter Oskolkov <posk@google.com>
+Date:   Tue, 23 Jun 2020 13:59:22 -0700
+Message-ID: <CAPNVh5eNJfe6yBhXeOikdBRyjKJc_p3PJRzK4kX0rRGUswZa0A@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/3 v2] futex: introduce FUTEX_SWAP operation
+To:     Andrei Vagin <avagin@gmail.com>
+Cc:     Peter Oskolkov <posk@posk.io>, Aaron Lu <aaron.lwe@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Andrei Vagin <avagin@google.com>,
+        "pjt@google.com" <pjt@google.com>, Ben Segall <bsegall@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 12:13 PM Borislav Petkov <bp@alien8.de> wrote:
+On Tue, Jun 23, 2020 at 12:45 PM Andrei Vagin <avagin@gmail.com> wrote:
 >
-> On Tue, Jun 23, 2020 at 12:07:13PM -0700, Nick Desaulniers wrote:
-> > You already have a conditional below for CC_IS_GCC; just add an else
-> > and unconditionally add -msse2.  You *should* use -msse2 for GCC 7.1+
-> > IMO.
+> On Tue, Jun 23, 2020 at 11:30:30AM -0700, Peter Oskolkov wrote:
+> ...
+> > > >  /**
+> > > > +static int futex_swap(u32 __user *uaddr, unsigned int flags, u32
+> > > > val,
+> > > > +               ktime_t *abs_time, u32 __user *uaddr2)
+> > > > +{
+> > > > + u32 bitset = FUTEX_BITSET_MATCH_ANY;
+> > > > + struct task_struct *next = NULL;
+> > > > + DEFINE_WAKE_Q(wake_q);
+> > > > + int ret;
+> > > > +
+> > > > + ret = prepare_wake_q(uaddr2, flags, 1, bitset, &wake_q);
+> > > > + if (!wake_q_empty(&wake_q)) {
+> > > > +         /* Pull the first wakee out of the queue to swap into.
+> > > > */
+> > > > +         next = container_of(wake_q.first, struct task_struct,
+> > > > wake_q);
+> > > > +         wake_q.first = wake_q.first->next;
+> > > > +         next->wake_q.next = NULL;
+> > > > +         /*
+> > > > +          * Note that wake_up_q does not touch wake_q.last, so
+> > > > we
+> > > > +          * do not bother with it here.
+> > > > +          */
+> > > > +         wake_up_q(&wake_q);
+> > >
+> > > wake_up_q() doesn't seem to serve any purpose in that the above
+> > > assignment of wake_q.first shall make it an empty queue now?
+> > > Also, I don't see a need to touch wake_q.first either so I think we
+> > > can
+> > > get rid of wake_q altogether here.
+> >
+> > The futex at uaddr2 may have more than one waiter, so we cannot assume
+> > that wake_q will be empty when we remove the first element.
 >
-> Why if one can write it more compact with cc-option?
->
-> FPU_CFLAGS += $(call cc-option,-msse2,)
+> The third argument of prepare_wake_q is nr_wake which is one in this
+> case, so we can be sure that wake_q will be empty, can't we?
 
-This will always be true though, right? For both compilers.  So why
-test for it via cc-option when you can just do:
-
-FPU_CFLAGS += -msse2
-
-Though we might only want -msse2 if CC_IS_CLAG...I don't remember now
-if GCC will select SSE instructions that require 16B operands at
--msse2, which will be problematic for the -mpreferred-stack-boundary=4
-case.
-
-My point was more so about avoiding needless cc-option checks when
-they're tautological.
-
-> > I recommend a version check for GCC < 7.1, or simply disabling the
-> > self test if the version of GCC used is older than 7.1.
->
-> See Andy's suggestion upthread.
-
-Thread for other travelers:
-https://lore.kernel.org/lkml/CALCETrXXzt8WZMs3dsReCJ5wdF3zhxFmUtGnmdCgV7_exFUKKQ@mail.gmail.com/
-
-When Andy says "consider dropping the problematic GCC version" I
-wonder if it was meant *just for this selftest* as I suggested, or
-outright (which is untenable IMO, as it's a large jump to GCC 7.1+).
-
-> And I agree too that using cc-option is better than simply tying it to a
-> compiler version.
-
-I agree that will differentiate better than a version check; but it's
-still dangerous IMO to mix and match stack alignments.
-
-> Who knows what compiler has what backported. In such
-> cases a version number means nothing.
-
-I'm not sure I agree, but I'll take feature detection any day over
-version detection.
+Right, sorry. In an early draft it was possible to wake more than one waiter,
+and the code carried over from then/there in this form. I'll remove wake_up_q()
+if/when the API will be deemed acceptable by the maintainers.
 
 >
-> > ^ looks familiar ;)
->
-> It has been pasted around the kernel, I came to realize today. :-)
-
-Guilty, your honor. :P
-
-Maybe the feature test should be copy+pasta'd to those other places in
-the kernel, rather than the version check?
--- 
-Thanks,
-~Nick Desaulniers
+> >
+> > >
+> > > > + }
+> > > > + if (ret < 0)
+> > > > +         return ret;
+> > > > +
+> > > > + return futex_wait(uaddr, flags, val, abs_time, bitset, next);
+> > > > +}
+> > >
