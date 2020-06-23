@@ -2,105 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B043205087
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B4A1205097
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:25:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732548AbgFWLRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 07:17:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
+        id S1732328AbgFWLY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 07:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732458AbgFWLRN (ORCPT
+        with ESMTP id S1732189AbgFWLY5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 07:17:13 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53A5C06179A
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 04:17:07 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id o11so12380301wrv.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 04:17:07 -0700 (PDT)
+        Tue, 23 Jun 2020 07:24:57 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E3C4C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 04:24:56 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id l10so20124957wrr.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 04:24:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
-        b=A0CZIOBsOGprBP2yx9wdvIjerDxw8tVV1HACYa5+nrVohGuvJ8u/zR7WW2a1A6cQUy
-         1AU4k/VWL4JGQLMlQyiVq5RgAnvjpZg35G5jBXEhx6d3/H1U4Mg1D0SvSiHZC+UOmhvB
-         f6A5Sa065A7+vMvl4B1SG9nwfLKh1maAKj/zDLeWq8NzPzhRGeobXLBo3sqo2xAtr4CH
-         JtrhE0csmsX5PdN9odHGuowLP24o3rKymki1JHvU9h75Cz45x0n/VtCQXnwAUHB+YJ6O
-         a+e26mSeLIL4uTprG4gzR2RSOj7iNDdGfY8fcozJ79xzxT8edEbFBIxsga/e8JKVpjOv
-         78HQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=LISOo0uegZi3am5M7TOWf7OzM2rHxLFNz15tOWhpgHY=;
+        b=OYr9flTkc67fJMXrndR42JOdtI/v8Gh6pi/3xD5WK4OjwlkH2dyWXZKS2UHVvxdPDg
+         JotNaQttXi2ukOKmAWJlT8e4pRgnQhbjJvJmklJTAQuhS5QuT9f8pUug3+WKjXges8Ab
+         gHQQQOMJxaFVRFQ3bs8NUd+gl4TxHdglSpzvmKs6BoPaOKAi+9AlmnQCx3P9f2qEA+g6
+         VardcbztghtjzkqwQjJZ71VOGA+aIkfvPWnCyiey7hPNBW6sc/qyWTDL7o4/XMLO6tHI
+         WrGJ78xYaksF2YPzb/IHalGIOKQG/vN0Z82hf9wmv3XvLJNetKqSAvYI2Z7GA/9ehSUf
+         Va6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
-        b=XebU7e+2N8bFeyBIFFI3bUhsOscstT8oE4CvZKEiZ0h2KpzdyYD+y9chlW0XWOVBoa
-         MW6ggPNswxA9BCXaJ1GGt2ePLzcBqTm7QHp4Iq8WAFfBAsBc2XqSJM1jhh9/4LwWJdqf
-         6Mu5Zv92azLDPMGuXq1sA+jlE0G+8PwT76K8VL9QuDM6CdNiqFZSeuFF+bBDXJU/M087
-         YyndyiHpJJPXTnT5wRxpIWTeyr5f88eBHNLkDVBofGjdkiVEvmuERQo02pvJz/9SHKOu
-         gVObelO8C1z8k7TNCFjs/L26EIJYh8VAMin9UuZNT33K85DiC73naHm+PnwIDmiQys/4
-         ttxw==
-X-Gm-Message-State: AOAM532H9YYG7q2/QwgPK+SCIsR3tzzOaQymA9Beq0VvcHsD/JIQyhO/
-        PtptKx/EBDMTFGaWndGZDm1yqQHRcJ04etI6Smk=
-X-Google-Smtp-Source: ABdhPJw2cCXejzjPEQ0OifmpQqadROGKfTe6EoFnU99e9+vhZITKDpt//4vw2qLuPBd5O5PdU+u/YBx5ZZxe8Kdl98s=
-X-Received: by 2002:a5d:55c2:: with SMTP id i2mr24786050wrw.225.1592911026528;
- Tue, 23 Jun 2020 04:17:06 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=LISOo0uegZi3am5M7TOWf7OzM2rHxLFNz15tOWhpgHY=;
+        b=tb8aL1I4eW6KSPwPQ3e/Vvrb4QBxFW+1Jw8QrbWHho7R2SRYYsxBDcc0E1dGbDxj7b
+         2molbVCaFohbHwGoZEHQxRgCfCbI6yqBXEJPbPZhVw+0tK++zRmOKh6Jw6boXXN1j5T2
+         rgG0gNWNRFEdCipoUfbh24s+M5VqdTjEv3Rpg9ZOEz1kgoaNT24siP7zC7B+KSbuhdFy
+         0cSHAnjSjLX4uqLy5RRUY462N98fhuIMkLpvfgXelFCBrIRnB0OXYmN7Gb6rMAHN/Oxr
+         2GMDi7ndu7ZP79D5FjUr18LxuZOnxhUVz+F4/GRiCzk1BAeJ+7YVsv0u98BwkW1pmp3t
+         5S6g==
+X-Gm-Message-State: AOAM5319u6fSfVVFD0furK4k76DKg74oAlvQIY/wCYNXyvbKWOgL79e3
+        gbP8EIf1ZscepWrkfdaB9C7+eA==
+X-Google-Smtp-Source: ABdhPJytDIeaxmPu6ekWJ4tCMSlDCsjdYYX0RSg8oGW12mCaAKj/1NHCrq4BCADMHZL/uI1G/DCbDw==
+X-Received: by 2002:a5d:40cb:: with SMTP id b11mr12984601wrq.263.1592911495061;
+        Tue, 23 Jun 2020 04:24:55 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id v20sm22540379wrb.51.2020.06.23.04.24.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 04:24:54 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 13:24:48 +0200
+From:   Marco Elver <elver@google.com>
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     syzbot <syzbot+dbf8cf3717c8ef4a90a0@syzkaller.appspotmail.com>,
+        bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-next@vger.kernel.org, mingo@redhat.com, pbonzini@redhat.com,
+        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
+        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
+        x86@kernel.org
+Subject: Re: linux-next build error (9)
+Message-ID: <20200623112448.GA208112@elver.google.com>
+References: <000000000000c25ce105a8a8fcd9@google.com>
+ <20200622094923.GP576888@hirez.programming.kicks-ass.net>
+ <20200623124413.08b2bd65@canb.auug.org.au>
+ <20200623093230.GD4781@hirez.programming.kicks-ass.net>
+ <20200623201730.6c085687@canb.auug.org.au>
 MIME-Version: 1.0
-Received: by 2002:a1c:f002:0:0:0:0:0 with HTTP; Tue, 23 Jun 2020 04:17:04
- -0700 (PDT)
-Reply-To: sarahkoffi389@yahoo.co.jp
-From:   Sarah Koffi <paulwiliam782@gmail.com>
-Date:   Tue, 23 Jun 2020 12:17:04 +0100
-Message-ID: <CAHqcnY0yFMGfeQoQRzUbXEXCiVHerbN_kWyNgCaOjbF_RcY3Bg@mail.gmail.com>
-Subject: Greetings From Mrs. Sarah Koffi
-To:     sarahkoffi389@yahoo.co.jp
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200623201730.6c085687@canb.auug.org.au>
+User-Agent: Mutt/1.13.2 (2019-12-18)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Greetings From Mrs. Sarah Koffi
+On Tue, Jun 23, 2020 at 08:17PM +1000, Stephen Rothwell wrote:
+> Hi Peter,
+>=20
+> On Tue, 23 Jun 2020 11:32:30 +0200 Peter Zijlstra <peterz@infradead.org> =
+wrote:
+> >
+> > I suppose the next quest is finding a s390 compiler version that works
+> > and then bumping the version test in the aforementioned commit.
+>=20
+> Not a lot of help, but my Debian cross compiler seems to work:
+>=20
+> $ s390x-linux-gnu-gcc --version
+> s390x-linux-gnu-gcc (Debian 9.3.0-13) 9.3.0
 
-I'm contacting you based on your good profiles I read and for a good
-reasons, I am in search of a property to buy in your country as I
-intended to come over to your
-country for investment, Though I have not meet with you before but I
-believe that one has to risk confiding in someone to succeed sometimes
-in life.
+Rummaging through changelogs led me to 8.3.0 as the first good GCC. Also
+confirmed by building that version and compiling a file that breaks with
+older versions. It seems the first major version to fix it was 9, but
+backported to 8.3. This is for all architectures.
 
-My name is Mrs. Sarah Koffi. My late husband deals on Crude Oil with
-Federal Government of Sudan and he has a personal Oil firm in Bentiu
-Oil zone town and Upper
-Nile city. What I have experience physically, I don't wish to
-experience it again in my life due to the recent civil Ethnic war
-cause by our President Mr. Salva Kiir
-and the rebel leader Mr Riek Machar, I have been Under United Nation
-refuge camp in chad to save my life and that of my little daughter.
+Suggested patch below.
 
-Though, I do not know how you will feel to my proposal, but the truth
-is that I sneaked into Chad our neighboring country where I am living
-now as a refugee.
-I escaped with my little daughter when the rebels bust into our house
-and killed my husband as one of the big oil dealers in the country,
-ever since then, I have being on the run.
+Thanks,
+-- Marco
 
-I left my country and move to Chad our neighboring country with the
-little ceasefire we had, due to the face to face peace meeting accord
-coordinated by the US Secretary of State, Mr John Kerry and United
-Nations in Ethiopia (Addis Ababa) between our President Mr Salva Kiir
-and the rebel leader Mr Riek Machar to stop this war.
+------ >8 ------
 
-I want to solicit for your partnership with trust to invest the $8
-million dollars deposited by my late husband in Bank because my life
-is no longer safe in our country, since the rebels are looking for the
-families of all the oil business men in the country to kill, saying
-that they are they one that is milking the country dry.
+=46rom: Marco Elver <elver@google.com>
+Date: Tue, 23 Jun 2020 12:57:42 +0200
+Subject: [PATCH] kasan: Fix required compiler version
 
-I will offer you 20% of the total fund for your help while I will
-partner with you for the investment in your country.
-If I get your reply.
+The first working GCC version to satisfy
+CC_HAS_WORKING_NOSANITIZE_ADDRESS is GCC 8.3.0.
 
-I will wait to hear from you so as to give you details.With love from
+Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=3D89124
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Marco Elver <elver@google.com>
+---
+ lib/Kconfig.kasan | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- i need you to contact me here sarahkoffi389@yahoo.co.jp
+diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+index 7a496b885f46..19fba15e99c6 100644
+--- a/lib/Kconfig.kasan
++++ b/lib/Kconfig.kasan
+@@ -16,7 +16,7 @@ config CC_HAS_KASAN_SW_TAGS
+ 	def_bool $(cc-option, -fsanitize=3Dkernel-hwaddress)
+=20
+ config CC_HAS_WORKING_NOSANITIZE_ADDRESS
+-	def_bool !CC_IS_GCC || GCC_VERSION >=3D 80000
++	def_bool !CC_IS_GCC || GCC_VERSION >=3D 80300
+=20
+ config KASAN
+ 	bool "KASAN: runtime memory debugger"
+--=20
+2.27.0.111.gc72c7da667-goog
 
-Mrs. Sarah Koffi
