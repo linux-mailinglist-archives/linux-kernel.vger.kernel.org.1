@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933F7206373
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA07E206376
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389462AbgFWUZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:25:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43996 "EHLO mail.kernel.org"
+        id S2389561AbgFWUZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:25:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390544AbgFWUZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:25:07 -0400
+        id S2390497AbgFWUZO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:25:14 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 913B720723;
-        Tue, 23 Jun 2020 20:25:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5130420723;
+        Tue, 23 Jun 2020 20:25:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943907;
-        bh=y4JIm9O8t1NffQaSICuLZzFDupMR1MBAVaXk2WFlsqI=;
+        s=default; t=1592943914;
+        bh=MUfnL6/sr/TawQi32RX12iNttQvk7p08cXinlCl/o7o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=soAE7k4d9OlhgWyTrSWgsq4I2q7/qreWi7o8z3YP5HtJ7dJiRNmVgGEo4OsCAxmey
-         oy6Zfkymk2O+jeZSIetdzrAgEiT2a5FEdYbMGa0S+FCAuz7CLYCJsv6nmxrkhtTRic
-         cJXKPCdfk8b5LClk6mwda2EaSoBTENbXaW+tLFg8=
+        b=jGy5CcPpXff94/pLIjQJACmv7XCSwMg5Gc6aVVTzXboi+jnD8swfv1T0JKFHHTVnn
+         UvHlrc9jysqwBChXw/TmrbVNXluzv4HNXy1sbdrKk5wdoezLdbnvnyuoPDTgXAFyFj
+         ibs5mw8t6/azpQ7QLupt9qqEMebtN8+YpOk42VTQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pingfan Liu <kernelfans@gmail.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Hai <wanghai38@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 067/314] powerpc/crashkernel: Take "mem=" option into account
-Date:   Tue, 23 Jun 2020 21:54:22 +0200
-Message-Id: <20200623195342.040864298@linuxfoundation.org>
+Subject: [PATCH 5.4 070/314] yam: fix possible memory leak in yam_init_driver
+Date:   Tue, 23 Jun 2020 21:54:25 +0200
+Message-Id: <20200623195342.181990267@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
 References: <20200623195338.770401005@linuxfoundation.org>
@@ -45,79 +45,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pingfan Liu <kernelfans@gmail.com>
+From: Wang Hai <wanghai38@huawei.com>
 
-[ Upstream commit be5470e0c285a68dc3afdea965032f5ddc8269d7 ]
+[ Upstream commit 98749b7188affbf2900c2aab704a8853901d1139 ]
 
-'mem=" option is an easy way to put high pressure on memory during
-some test. Hence after applying the memory limit, instead of total
-mem, the actual usable memory should be considered when reserving mem
-for crashkernel. Otherwise the boot up may experience OOM issue.
+If register_netdev(dev) fails, free_netdev(dev) needs
+to be called, otherwise a memory leak will occur.
 
-E.g. it would reserve 4G prior to the change and 512M afterward, if
-passing
-crashkernel="2G-4G:384M,4G-16G:512M,16G-64G:1G,64G-128G:2G,128G-:4G",
-and mem=5G on a 256G machine.
-
-This issue is powerpc specific because it puts higher priority on
-fadump and kdump reservation than on "mem=". Referring the following
-code:
-    if (fadump_reserve_mem() == 0)
-            reserve_crashkernel();
-    ...
-    /* Ensure that total memory size is page-aligned. */
-    limit = ALIGN(memory_limit ?: memblock_phys_mem_size(), PAGE_SIZE);
-    memblock_enforce_memory_limit(limit);
-
-While on other arches, the effect of "mem=" takes a higher priority
-and pass through memblock_phys_mem_size() before calling
-reserve_crashkernel().
-
-Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
-Reviewed-by: Hari Bathini <hbathini@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/1585749644-4148-1-git-send-email-kernelfans@gmail.com
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Hai <wanghai38@huawei.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/machine_kexec.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ drivers/net/hamradio/yam.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/powerpc/kernel/machine_kexec.c b/arch/powerpc/kernel/machine_kexec.c
-index c4ed328a7b963..7a1c11a7cba5a 100644
---- a/arch/powerpc/kernel/machine_kexec.c
-+++ b/arch/powerpc/kernel/machine_kexec.c
-@@ -114,11 +114,12 @@ void machine_kexec(struct kimage *image)
- 
- void __init reserve_crashkernel(void)
- {
--	unsigned long long crash_size, crash_base;
-+	unsigned long long crash_size, crash_base, total_mem_sz;
- 	int ret;
- 
-+	total_mem_sz = memory_limit ? memory_limit : memblock_phys_mem_size();
- 	/* use common parsing */
--	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
-+	ret = parse_crashkernel(boot_command_line, total_mem_sz,
- 			&crash_size, &crash_base);
- 	if (ret == 0 && crash_size > 0) {
- 		crashk_res.start = crash_base;
-@@ -177,6 +178,7 @@ void __init reserve_crashkernel(void)
- 	/* Crash kernel trumps memory limit */
- 	if (memory_limit && memory_limit <= crashk_res.end) {
- 		memory_limit = crashk_res.end + 1;
-+		total_mem_sz = memory_limit;
- 		printk("Adjusted memory limit for crashkernel, now 0x%llx\n",
- 		       memory_limit);
- 	}
-@@ -185,7 +187,7 @@ void __init reserve_crashkernel(void)
- 			"for crashkernel (System RAM: %ldMB)\n",
- 			(unsigned long)(crash_size >> 20),
- 			(unsigned long)(crashk_res.start >> 20),
--			(unsigned long)(memblock_phys_mem_size() >> 20));
-+			(unsigned long)(total_mem_sz >> 20));
- 
- 	if (!memblock_is_region_memory(crashk_res.start, crash_size) ||
- 	    memblock_reserve(crashk_res.start, crash_size)) {
+diff --git a/drivers/net/hamradio/yam.c b/drivers/net/hamradio/yam.c
+index 71cdef9fb56bc..5ab53e9942f30 100644
+--- a/drivers/net/hamradio/yam.c
++++ b/drivers/net/hamradio/yam.c
+@@ -1133,6 +1133,7 @@ static int __init yam_init_driver(void)
+ 		err = register_netdev(dev);
+ 		if (err) {
+ 			printk(KERN_WARNING "yam: cannot register net device %s\n", dev->name);
++			free_netdev(dev);
+ 			goto error;
+ 		}
+ 		yam_devs[i] = dev;
 -- 
 2.25.1
 
