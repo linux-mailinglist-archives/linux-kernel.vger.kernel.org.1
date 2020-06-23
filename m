@@ -2,148 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F701206219
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61DAF206249
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393199AbgFWUzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:55:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393193AbgFWUzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:55:09 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CC39C20724;
-        Tue, 23 Jun 2020 20:55:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945708;
-        bh=CBYptz/mW0JMY6jpOr323vU/Q/LCIMNfHGgbrx6jlrY=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=e0Xek1PPTiAKsOXiD1nxqbAeEEvFHXB5M9adObdaTmJxFnY6CT9IwHNIf678qadYd
-         Py6QXEos/NGxeTXuxxwkCQOIW/xxp/DU8TgiTByzGvrcfFZF4xQ5pnH+T/J65CS4zV
-         MaJduBQskOwMnb1DPt4/tg4+KYgK0sRjUoJrK764=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B10D53522657; Tue, 23 Jun 2020 13:55:08 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 13:55:08 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org, jiangshanlai@gmail.com,
-        dipankar@in.ibm.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, linux-mm@kvack.org
-Subject: Re: [PATCH tip/core/rcu 02/26] mm/mmap.c: Add cond_resched() for
- exit_mmap() CPU stalls
-Message-ID: <20200623205508.GS9247@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20200623002128.GA25456@paulmck-ThinkPad-P72>
- <20200623002147.25750-2-paulmck@kernel.org>
- <20200623193431.GA68372@google.com>
+        id S2392370AbgFWU6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403922AbgFWU61 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:58:27 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6B1C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:58:27 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id bh7so9636993plb.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:58:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5A6ggZJSYhmKqxXi023++ALz1/yxx4OWOUKivzMyp6s=;
+        b=DxseotXcNXTsPoLCoiUOchZ8vWlYjgGlc5pJin8Funwm38e58S6Vs6ThS0VnHsLy3Y
+         G0+5J+bDcwdJalGvujwkKECF8YwFaH/FF7FhtDjsOxRFZHQQ7a41EdMkoLkY3Q/D1yMF
+         7R28udbe5Dmic+dlNUyg5g4kf7ON9BKKw2sag4zZAK8GzzcK/muIUpTEpZEKr3NAqVTi
+         SLpDICS+0pte5QbdVXgDNuZhB7dW+ReGJfUDg0Jw1w1mMwLbOlRbTCcq07F2rtqXLtko
+         4FwF5xJqsJgpaSs0VDlgA65QSo2M1Tk1RVRgylpEpJIy2KezrwhmMN8lfsdpQqRn0+4X
+         hv1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5A6ggZJSYhmKqxXi023++ALz1/yxx4OWOUKivzMyp6s=;
+        b=YAXyoAsB1s9r3RXOp4uIxqQmNnfYurXE1ka3zX6ZyroE23BJeyYeiFzMmP8Ehy+Op1
+         D/S/l3rWlujO+mzCfT7Ja9AID4aj4gQBvXbE1gWa0bzhvlP3YKXbXQyhV9DHxa5fvaBD
+         4NRYrFQ7luKqmiIAAvrDA65Gq2dRt4oeTpDbGxivbl4H8jRp3yEo7CIknIUzx4pdyeh3
+         Mwo09FG5m5Lx/VQ/vKSXo4QK4HTFIPKR/zumH82yx6PvVuj9wZrZvGvDltySO+7sMKRC
+         e7i5dIxF47wuw9x8MDZFoyEoq7TxBFsRkMCVvut1KIoyigIM7UJoafrT3eV+U6xolhnT
+         MK+w==
+X-Gm-Message-State: AOAM530+YD3sLtGmkXROzKohLm6Ecu8RHlr14sVH2ky8p+tlICHwDpYn
+        inZP72W+G/94b1nrgyAbo0VvdZHqJa1x5tkhNmH5Sg==
+X-Google-Smtp-Source: ABdhPJwgNQt/BzJGgIgW1Z6IWYFFQo4/opMM9ra7kx2PUquYyLheC2bO97mcDzSHs3i/leVIx9Lzg4MfUrXy2lkHeRw=
+X-Received: by 2002:a17:90a:21ef:: with SMTP id q102mr3895pjc.101.1592945906532;
+ Tue, 23 Jun 2020 13:58:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200623193431.GA68372@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20200622190149.GL32200@zn.tnic> <B4D00859-000A-4F8C-8CFB-45B9BBCCA16D@amacapital.net>
+ <20200623102831.GB32590@zn.tnic> <CALCETrXfaEr9OGc5EDpxnhRZxFk5YZBBNVH-N32Eg8V8diwqXg@mail.gmail.com>
+ <20200623184726.GI32590@zn.tnic> <CAKwvOdnt+8RR=1JPjDNaVY8T1K7wmqFjSGM7XNUUGRb=t1hiWQ@mail.gmail.com>
+ <20200623191336.GK32590@zn.tnic>
+In-Reply-To: <20200623191336.GK32590@zn.tnic>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 23 Jun 2020 13:58:15 -0700
+Message-ID: <CAKwvOdkTYqpphqr2cvL2pDuK33aYzxXsLDQ6+_PSUk6qxUuQ7A@mail.gmail.com>
+Subject: Re: [PATCH 2/2] selftests/fpu: Add an FPU selftest
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
+        jpa@kernelbug.mail.kapsi.fi, Dave Hansen <dave.hansen@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 03:34:31PM -0400, Joel Fernandes wrote:
-> On Mon, Jun 22, 2020 at 05:21:23PM -0700, paulmck@kernel.org wrote:
-> > From: "Paul E. McKenney" <paulmck@kernel.org>
-> > 
-> > A large process running on a heavily loaded system can encounter the
-> > following RCU CPU stall warning:
-> > 
-> >   rcu: INFO: rcu_sched self-detected stall on CPU
-> >   rcu: \x093-....: (20998 ticks this GP) idle=4ea/1/0x4000000000000002 softirq=556558/556558 fqs=5190
-> >   \x09(t=21013 jiffies g=1005461 q=132576)
-> >   NMI backtrace for cpu 3
-> >   CPU: 3 PID: 501900 Comm: aio-free-ring-w Kdump: loaded Not tainted 5.2.9-108_fbk12_rc3_3858_gb83b75af7909 #1
-> >   Hardware name: Wiwynn   HoneyBadger/PantherPlus, BIOS HBM6.71 02/03/2016
-> >   Call Trace:
-> >    <IRQ>
-> >    dump_stack+0x46/0x60
-> >    nmi_cpu_backtrace.cold.3+0x13/0x50
-> >    ? lapic_can_unplug_cpu.cold.27+0x34/0x34
-> >    nmi_trigger_cpumask_backtrace+0xba/0xca
-> >    rcu_dump_cpu_stacks+0x99/0xc7
-> >    rcu_sched_clock_irq.cold.87+0x1aa/0x397
-> >    ? tick_sched_do_timer+0x60/0x60
-> >    update_process_times+0x28/0x60
-> >    tick_sched_timer+0x37/0x70
-> >    __hrtimer_run_queues+0xfe/0x270
-> >    hrtimer_interrupt+0xf4/0x210
-> >    smp_apic_timer_interrupt+0x5e/0x120
-> >    apic_timer_interrupt+0xf/0x20
-> >    </IRQ>
-> >   RIP: 0010:kmem_cache_free+0x223/0x300
-> >   Code: 88 00 00 00 0f 85 ca 00 00 00 41 8b 55 18 31 f6 f7 da 41 f6 45 0a 02 40 0f 94 c6 83 c6 05 9c 41 5e fa e8 a0 a7 01 00 41 56 9d <49> 8b 47 08 a8 03 0f 85 87 00 00 00 65 48 ff 08 e9 3d fe ff ff 65
-> >   RSP: 0018:ffffc9000e8e3da8 EFLAGS: 00000206 ORIG_RAX: ffffffffffffff13
-> >   RAX: 0000000000020000 RBX: ffff88861b9de960 RCX: 0000000000000030
-> >   RDX: fffffffffffe41e8 RSI: 000060777fe3a100 RDI: 000000000001be18
-> >   RBP: ffffea00186e7780 R08: ffffffffffffffff R09: ffffffffffffffff
-> >   R10: ffff88861b9dea28 R11: ffff88887ffde000 R12: ffffffff81230a1f
-> >   R13: ffff888854684dc0 R14: 0000000000000206 R15: ffff8888547dbc00
-> >    ? remove_vma+0x4f/0x60
-> >    remove_vma+0x4f/0x60
-> >    exit_mmap+0xd6/0x160
-> >    mmput+0x4a/0x110
-> >    do_exit+0x278/0xae0
-> >    ? syscall_trace_enter+0x1d3/0x2b0
-> >    ? handle_mm_fault+0xaa/0x1c0
-> >    do_group_exit+0x3a/0xa0
-> >    __x64_sys_exit_group+0x14/0x20
-> >    do_syscall_64+0x42/0x100
-> >    entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> > 
-> > And on a PREEMPT=n kernel, the "while (vma)" loop in exit_mmap() can run
-> > for a very long time given a large process.  This commit therefore adds
-> > a cond_resched() to this loop, providing RCU any needed quiescent states.
-> > 
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: <linux-mm@kvack.org>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > ---
-> >  mm/mmap.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/mm/mmap.c b/mm/mmap.c
-> > index 59a4682..972f839 100644
-> > --- a/mm/mmap.c
-> > +++ b/mm/mmap.c
-> > @@ -3159,6 +3159,7 @@ void exit_mmap(struct mm_struct *mm)
-> >  		if (vma->vm_flags & VM_ACCOUNT)
-> >  			nr_accounted += vma_pages(vma);
-> >  		vma = remove_vma(vma);
-> > +		cond_resched();
-> 
-> Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+On Tue, Jun 23, 2020 at 12:13 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Tue, Jun 23, 2020 at 12:07:13PM -0700, Nick Desaulniers wrote:
+> > You already have a conditional below for CC_IS_GCC; just add an else
+> > and unconditionally add -msse2.  You *should* use -msse2 for GCC 7.1+
+> > IMO.
+>
+> Why if one can write it more compact with cc-option?
+>
+> FPU_CFLAGS += $(call cc-option,-msse2,)
 
-Thank you!  I will apply this on my next rebase.
+This will always be true though, right? For both compilers.  So why
+test for it via cc-option when you can just do:
 
-> Just for my understanding, cond_resched_tasks_rcu_qs() may not help here
-> because preemption is not disabled right? Still I see no harm in using it
-> here either as it may give a slight speed up for tasks-RCU.
+FPU_CFLAGS += -msse2
 
-The RCU-tasks stall-warning interval is ten minutes, and I have not yet
-seen evidence that we are getting close to that.  If we do, then yes,
-a cond_resched_tasks_rcu_qs() might be in this code's future.  But it
-does add overhead, so we need to see the evidence first.
+Though we might only want -msse2 if CC_IS_CLAG...I don't remember now
+if GCC will select SSE instructions that require 16B operands at
+-msse2, which will be problematic for the -mpreferred-stack-boundary=4
+case.
 
-							Thanx, Paul
+My point was more so about avoiding needless cc-option checks when
+they're tautological.
 
-> thanks,
-> 
->  - Joel
-> 
-> >  	}
-> >  	vm_unacct_memory(nr_accounted);
-> >  }
-> > -- 
-> > 2.9.5
-> > 
+> > I recommend a version check for GCC < 7.1, or simply disabling the
+> > self test if the version of GCC used is older than 7.1.
+>
+> See Andy's suggestion upthread.
+
+Thread for other travelers:
+https://lore.kernel.org/lkml/CALCETrXXzt8WZMs3dsReCJ5wdF3zhxFmUtGnmdCgV7_exFUKKQ@mail.gmail.com/
+
+When Andy says "consider dropping the problematic GCC version" I
+wonder if it was meant *just for this selftest* as I suggested, or
+outright (which is untenable IMO, as it's a large jump to GCC 7.1+).
+
+> And I agree too that using cc-option is better than simply tying it to a
+> compiler version.
+
+I agree that will differentiate better than a version check; but it's
+still dangerous IMO to mix and match stack alignments.
+
+> Who knows what compiler has what backported. In such
+> cases a version number means nothing.
+
+I'm not sure I agree, but I'll take feature detection any day over
+version detection.
+
+>
+> > ^ looks familiar ;)
+>
+> It has been pasted around the kernel, I came to realize today. :-)
+
+Guilty, your honor. :P
+
+Maybe the feature test should be copy+pasta'd to those other places in
+the kernel, rather than the version check?
+-- 
+Thanks,
+~Nick Desaulniers
