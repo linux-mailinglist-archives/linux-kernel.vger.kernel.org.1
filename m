@@ -2,124 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D15205ADB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 20:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAA86205AE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 20:35:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387465AbgFWScs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 14:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733102AbgFWScr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 14:32:47 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2EDC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 11:32:47 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id g17so289240plq.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 11:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zM9UJPmqH/uivaDuT+boW9jaBhqjP7MlOqWA/nUW2MY=;
-        b=AENfaNVEdXr6w72rhyrdTL92lkyid8j6xhmJvbaCRkkHMG4QPB3bQq4xfUY/nk/anr
-         UdAcmEUJDpXWI3sgCow99B1wadOUIbh9mS9fNzEYwnAvq8zMt00iIOwEtiUgR15swyi8
-         NP0C4RRE0Mt1BNbSZOiDpAxCi/owmZYLr38nQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zM9UJPmqH/uivaDuT+boW9jaBhqjP7MlOqWA/nUW2MY=;
-        b=Pgi91ZvG9n1M9Bq+TnChccackELGzl200PDIddoxjnXXOcu/9I7PtMZgLxpQGsnB6w
-         Zs6ZuYB5X7dDb7gywIaFURSdx2Hg8Hn/g2sO+or5efBfzpqhE80YlEjBINBqVg9fKsaf
-         7yN4+FLjF5lEh5x54XDiLqgrF/+Zt8rRYWrfGJXrIuW0V/ZQN5nasSHJw/1qw1f0pNMG
-         sz+LIlNzL1yn8V1DPu4PzlILLkqDx/nENZLzzkRtJaMCi716A6W1VquEQlYzRsH8gXTz
-         kg+Q5ygjyyKvplKrLhsLFCd1DJ4DvpJnd757WM4UE5vwI3iNn1+H/L0pFJIhG4WsE55c
-         lKfg==
-X-Gm-Message-State: AOAM531+bqvMKKDnFQl/D8AeS+MoMwlTs3MkS9pnTBCL/ZVPUUXZnCxO
-        V1QRXn1CWrhyFXqUHEjvexQsASZO5Fc=
-X-Google-Smtp-Source: ABdhPJwFoB/YxOk0T5aBZrS21QE4Ipj9CPW5ymqQpNkMl7IDi1V8efyNWyYzYc1WaOkTPZ5g9OQghA==
-X-Received: by 2002:a17:90b:234f:: with SMTP id ms15mr546488pjb.7.1592937166889;
-        Tue, 23 Jun 2020 11:32:46 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v9sm17578308pfe.198.2020.06.23.11.32.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 11:32:46 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 11:32:44 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Christian Kujau <lists@nerdbynature.de>
-Cc:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Willy Tarreau <w@1wt.eu>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: process '/usr/bin/rsync' started with executable stack
-Message-ID: <202006231131.AD0A7F5F@keescook>
-References: <alpine.DEB.2.22.1.446.2006231023390.3892@trent.utfs.org>
+        id S2387452AbgFWSfX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 14:35:23 -0400
+Received: from mga09.intel.com ([134.134.136.24]:30245 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387410AbgFWSfW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 14:35:22 -0400
+IronPort-SDR: /J8oXjFUuYg14SHni1jNsX34JN1GpociWlrye5qYrPnecgUpX6iJHXzyCvVP9QOGQoJIHTEQNE
+ D7tHF9KcmB8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="145660538"
+X-IronPort-AV: E=Sophos;i="5.75,272,1589266800"; 
+   d="scan'208";a="145660538"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2020 11:35:22 -0700
+IronPort-SDR: T65E5eaxzGHXaK84hqmSkk0tXIzJkESRZm7y3qoUL43S8YwxQHAKvC+h9pJlterwG4fKDYlEaq
+ f4nFl2Ixal0Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,272,1589266800"; 
+   d="scan'208";a="452332344"
+Received: from lkp-server01.sh.intel.com (HELO 538b5e3c8319) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 23 Jun 2020 11:35:20 -0700
+Received: from kbuild by 538b5e3c8319 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1jnnlP-0000Tv-Sj; Tue, 23 Jun 2020 18:35:19 +0000
+Date:   Wed, 24 Jun 2020 02:34:16 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Tero Kristo <t-kristo@ti.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH] soc: ti: k3: fix semicolon.cocci warnings
+Message-ID: <20200623183416.GA6477@aae0707f33c9>
+References: <202006240236.elBrFwVx%lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.1.446.2006231023390.3892@trent.utfs.org>
+In-Reply-To: <202006240236.elBrFwVx%lkp@intel.com>
+X-Patchwork-Hint: ignore
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 10:39:26AM -0700, Christian Kujau wrote:
-> Hi,
-> 
-> exactly this[0] happened today, on a 5.6.5 kernel:
-> 
->   process '/usr/bin/rsync' started with executable stack
-> 
-> But I can't reproduce this message, and rsync (v3.2.0, not exactly 
-> abandonware) runs several times a day, so to repeat Andrew's questions[0] 
-> from last year:
-> 
->   > What are poor users supposed to do if this message comes out? 
->   > Hopefully google the message and end up at this thread.  What do you
->   > want to tell them?
-> 
-> Also, the PID is missing from that message. I had some long running rsync 
-> processes running earlier, maybe the RWE status would have been visible in 
-> /proc/$PID/map, or somewhere else maybe?
-> 
-> Please advise? :-)
-> 
-> Thanks,
-> Christian.
-> 
-> [0] https://lore.kernel.org/patchwork/patch/1164047/#1362722
-> 
-> 
-> $ checksec --format=json --extended --file=`which rsync` | jq
-> {
->   "/usr/bin/rsync": {
->     "relro": "full",
->     "canary": "yes",
->     "nx": "no",
-^^^^^^^^^^^^^^^^^^
+From: kernel test robot <lkp@intel.com>
 
-It is, indeed, marked executable, it seems. What distro is this?
+drivers/soc/ti/k3-ringacc.c:616:2-3: Unneeded semicolon
 
--Kees
 
->     "pie": "yes",
->     "clangcfi": "no",
->     "safestack": "no",
->     "rpath": "no",
->     "runpath": "no",
->     "symbols": "no",
->     "fortify_source": "yes",
->     "fortified": "10",
->     "fortify-able": "19"
->   }
-> }
-> 
-> -- 
-> BOFH excuse #244:
-> 
-> Your cat tried to eat the mouse.
+ Remove unneeded semicolon.
 
--- 
-Kees Cook
+Generated by: scripts/coccinelle/misc/semicolon.cocci
+
+Fixes: 3277e8aa2504 ("soc: ti: k3: add navss ringacc driver")
+CC: Grygorii Strashko <grygorii.strashko@ti.com>
+Signed-off-by: kernel test robot <lkp@intel.com>
+---
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3e08a95294a4fb3702bb3d35ed08028433c37fe6
+commit: 3277e8aa2504d97e022ecb9777d784ac1a439d36 soc: ti: k3: add navss ringacc driver
+
+ k3-ringacc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/drivers/soc/ti/k3-ringacc.c
++++ b/drivers/soc/ti/k3-ringacc.c
+@@ -613,7 +613,7 @@ int k3_ringacc_ring_cfg(struct k3_ring *
+ 		ring->ops = NULL;
+ 		ret = -EINVAL;
+ 		goto err_free_proxy;
+-	};
++	}
+ 
+ 	ring->ring_mem_virt = dma_alloc_coherent(ringacc->dev,
+ 					ring->size * (4 << ring->elm_size),
