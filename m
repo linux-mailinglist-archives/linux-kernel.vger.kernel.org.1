@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CA7204BD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 10:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C77204BDE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 10:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731705AbgFWICZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 04:02:25 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:43000 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731158AbgFWICX (ORCPT
+        id S1731732AbgFWIDP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 04:03:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50908 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731534AbgFWIDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 04:02:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1592899342; x=1624435342;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0ogUMEimjCKkrZVTOaTS0pbyYgrTcwl/8QxbW1JRQZo=;
-  b=s72LzhP5Xsvag/48itoOU6FY1eJEIOaUgS07NRmNvYT5kEp2C7SF8jSf
-   puZqBsr9IEz+v40oJvWlkhhSNRPtLZjxfVUYVPTfhETK9Z+1/Ze5LOqLh
-   qPKUoHVfaJxj8NKpG0rRcxyMGACQWZheYgoe2IqBXNzcQ8oN/6zrpJsxD
-   fHW+8Icp26T1RawhlXChbEmjzJipR2JAa2VmTHsV88Zek4lTxrNZoO8TU
-   ybliO8XJNebycwY4hGkvnuDcRUgpMYAclDt5Jc3np58ou2mGDCrInkeEE
-   7nVTXsjTBCcr/oP+07UFqHJ36SzUjPqLbsMo4NM8WfJz6WS7ccyuPe/Wn
-   Q==;
-IronPort-SDR: J6ZvwGuNaoSpKwnAaAeypTuXdyhRSVceuVIKH3RwYh4QvdmJKHXJ4aGW2lIpkllfCBG+EVA8Pt
- MTFoy6rg2fjQ8W/plsDPPdAIq0cpH+KcuBOSqG3s1XC0DpeTLFPt6Q6t9WzJTQ78I/LjLD8gGb
- 45Bs37LWResoGb9gue8JkjT+jMpzEA8fQG6VO00SuLgw8sIYf0SE3DutOirS0ie+RdISpZmDxF
- UcPZC+ensF3o14pj0qxf9JcYn54yRi1SUaUwO2Qu+jQfJppfqKXMZGWDOmRXly33imKYIWmark
- hFs=
-X-IronPort-AV: E=Sophos;i="5.75,270,1589266800"; 
-   d="scan'208";a="79430541"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2020 01:02:22 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Jun 2020 01:02:10 -0700
-Received: from localhost (10.10.115.15) by chn-vm-ex04.mchp-main.com
- (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Tue, 23 Jun 2020 01:02:21 -0700
-Date:   Tue, 23 Jun 2020 10:02:17 +0200
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     David Miller <davem@davemloft.net>
-CC:     <nikolay@cumulusnetworks.com>, <UNGLinuxDriver@microchip.com>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [Resend PATCH net] bridge: uapi: mrp: Fix MRP_PORT_ROLE
-Message-ID: <20200623080217.bjsml4jmrvrq6eev@soft-dev3.localdomain>
-References: <20200620131403.2680293-1-horatiu.vultur@microchip.com>
- <20200622.160712.2300967026610181117.davem@davemloft.net>
+        Tue, 23 Jun 2020 04:03:14 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AE9CC061573;
+        Tue, 23 Jun 2020 01:03:14 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id h28so3445993edz.0;
+        Tue, 23 Jun 2020 01:03:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2rPds0/G6EcL2nawpDhmBWpfMm0TyFqHBbBHy9o57w0=;
+        b=B2bNXSqLuEsu8gf7GVyhIgx9TT8yKSIML+JRlieMW/cGH0XYqBkF6Dxev7Ut9w8CDc
+         jTFmGd/3K4PaxRUDlYvMYqR1NpHxdHDxmToLFDI43BWiJPJB5syXRDmNhvt1+uRTQ+y/
+         PQVigefkF3mTwJ4TfKt4gs8m8npdbBzsFhJp6fMlaqteyfmGJ/YJCIeUcqdb+uhxMxqT
+         19bJKP7hJdrn4dTQ1BtdxaOnKGOyet/61UuMl8Q05HK2Hz9Ar++Z2Y0U8qd1WT+MyyDv
+         JxuT2wj1MwtgOtXLHEuhghLdD3TMNwGhr5vKLi6AgoxfKhpZQ6C4UPKCRflguDZkGe25
+         C0LA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2rPds0/G6EcL2nawpDhmBWpfMm0TyFqHBbBHy9o57w0=;
+        b=rflxtQBivgi2zWud7rpEVo4hAxF2L8p3MYeRGZIDkXV/f6snIfD43qTDSCIg4dSvAI
+         060avyEhpGXbkqXCw8FI7JgOEJOWOOQgblRPd5QODaf2IkNpcTzFsT56AluS3atimatf
+         NHnyXIlWqZidQVrdxZoQnsM/Ezmh46h7HC1TylTAOf/bEV0Np/znajwuDNZJI9f/oIVK
+         nxo2g7tABjQsaRsiaafzQxfZAzweGarcZmr2EYIzFu382eBsBb6KtjCuc45QV+B9t+sz
+         1NGEpE5v0kezqJRhS4OzdbnrbSTLhLGQ4g5BN3DWsbVsLZTt4X0oYQ4ucPFQtMWcB/pt
+         bXNQ==
+X-Gm-Message-State: AOAM5301OXq3WKybV5tndxyF0vVYTOF/3NSCRBpoRjPil2o1fTeMLKYm
+        /g3jXTXA1Tuoa7Edx/wWoJ6xnX9KEGyV8IPjTgA=
+X-Google-Smtp-Source: ABdhPJxnTEC/7IMkbPEIMk4DJSmNqD8oNigmUD2kQb5Tg7dzsWj+iVEI5HhsukquaXBoDUo3B64tHTOC9luNNG2CLmE=
+X-Received: by 2002:aa7:c756:: with SMTP id c22mr20940182eds.239.1592899393084;
+ Tue, 23 Jun 2020 01:03:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20200622.160712.2300967026610181117.davem@davemloft.net>
+References: <20200622192558.152828-1-konradybcio@gmail.com>
+ <20200622192558.152828-2-konradybcio@gmail.com> <20200623072624.GY128451@builder.lan>
+In-Reply-To: <20200623072624.GY128451@builder.lan>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Tue, 23 Jun 2020 10:02:37 +0200
+Message-ID: <CAMS8qEWZ6hg1-n737ZDop6qsL4k3aNLPt_pJJqTwStNtRKhTcA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/7] pinctrl: qcom: spmi-gpio: Add pm660(l) compatibility
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jassi Brar <jassisinghbrar@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-gpio@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 06/22/2020 16:07, David Miller wrote:
-> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> 
-> From: Horatiu Vultur <horatiu.vultur@microchip.com>
-> Date: Sat, 20 Jun 2020 15:14:03 +0200
-> 
-> > Currently the MRP_PORT_ROLE_NONE has the value 0x2 but this is in conflict
-> > with the IEC 62439-2 standard. The standard defines the following port
-> > roles: primary (0x0), secondary(0x1), interconnect(0x2).
-> > Therefore remove the port role none.
-> >
-> > Fixes: 4714d13791f831 ("bridge: uapi: mrp: Add mrp attributes.")
-> > Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
-> 
-> The code accepts arbitrary 32-bit values for the role in a configuration
-> but only PRIMARY and SECONDARY seem to be valid.
-> 
-> There is no validation that the value used makes sense.
-> 
-> In the future if we handle type interconnect, and we add checks, it will
-> break any existing applications.  Because they can validly pass any
-> non-zero valid and the code treats that as SECONDARY currently.
-> 
-> So you really can't just remove NONE, you have to add validation code
-> too so we don't run into problem in the future.
+Yes, you did.
 
-Thanks for the explanation. I will add some code that checks
-specifically for primary(0x0) and secondary(0x1) values and for any
-other value to return -EINVAL.
-Then in the future when we handle the type interconnect(0x2), we will
-just extend this code to check for this value.
+This was a mistake on my end and I realized it
+ after sending the v3, but I figured there's no
+ point in sending it yet again exclusively for this reason.
+Hope you don't mind.
 
-> 
-> Thanks.
-
--- 
-/Horatiu
+Regards
+Konrad
