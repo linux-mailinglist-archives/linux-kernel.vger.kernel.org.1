@@ -2,79 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7B5204995
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 08:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83524204973
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 08:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730720AbgFWGMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 02:12:45 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:39166 "EHLO inva020.nxp.com"
+        id S1730502AbgFWGCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 02:02:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730149AbgFWGMl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 02:12:41 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D437B1A0E20;
-        Tue, 23 Jun 2020 08:12:39 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id A238C1A0090;
-        Tue, 23 Jun 2020 08:12:35 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 2C7D9402DB;
-        Tue, 23 Jun 2020 14:12:30 +0800 (SGT)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] ASoC: fsl_mqs: Fix unchecked return value for clk_prepare_enable
-Date:   Tue, 23 Jun 2020 14:01:12 +0800
-Message-Id: <5edd68d03def367d96268f1a9a00bd528ea5aaf2.1592888591.git.shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1592888591.git.shengjiu.wang@nxp.com>
-References: <cover.1592888591.git.shengjiu.wang@nxp.com>
-In-Reply-To: <cover.1592888591.git.shengjiu.wang@nxp.com>
-References: <cover.1592888591.git.shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S1728800AbgFWGCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 02:02:43 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AF14520738;
+        Tue, 23 Jun 2020 06:02:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592892162;
+        bh=x3bd9T22dLZovGnPn6q+wbS6I/RZshP+fVHKJEby0w4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pY+2PLfuJR0CNNlu0VkLooa8HwaGUnpA6E73k1IKCI66P+z3Q/qeq4j4OnsM76pfs
+         BeCTfcSh22YxTRw9e8A2ZDplEHT+CIwNqLQVR5Q0ZM5WmaqDsDByJ8BGz345mTCnL/
+         cJLJ42FiTD4Gihi4ldIYl13BkYgKkE76Aeqsn3m0=
+Date:   Tue, 23 Jun 2020 08:02:36 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ian Kent <raven@themaw.net>
+Cc:     Tejun Heo <tj@kernel.org>,
+        Rick Lindsley <ricklind@linux.vnet.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/6] kernfs: proposed locking and concurrency
+ improvement
+Message-ID: <20200623060236.GA3818201@kroah.com>
+References: <159237905950.89469.6559073274338175600.stgit@mickey.themaw.net>
+ <20200619153833.GA5749@mtj.thefacebook.com>
+ <16d9d5aa-a996-d41d-cbff-9a5937863893@linux.vnet.ibm.com>
+ <20200619222356.GA13061@mtj.duckdns.org>
+ <429696e9fa0957279a7065f7d8503cb965842f58.camel@themaw.net>
+ <20200622174845.GB13061@mtj.duckdns.org>
+ <20200622180306.GA1917323@kroah.com>
+ <2ead27912e2a852bffb1477e8720bdadb591628d.camel@themaw.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2ead27912e2a852bffb1477e8720bdadb591628d.camel@themaw.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix unchecked return value for clk_prepare_enable, add error
-handler in fsl_mqs_runtime_resume.
+On Tue, Jun 23, 2020 at 01:09:08PM +0800, Ian Kent wrote:
+> On Mon, 2020-06-22 at 20:03 +0200, Greg Kroah-Hartman wrote:
+> > On Mon, Jun 22, 2020 at 01:48:45PM -0400, Tejun Heo wrote:
+> > > Hello, Ian.
+> > > 
+> > > On Sun, Jun 21, 2020 at 12:55:33PM +0800, Ian Kent wrote:
+> > > > > > They are used for hotplugging and partitioning memory. The
+> > > > > > size of
+> > > > > > the
+> > > > > > segments (and thus the number of them) is dictated by the
+> > > > > > underlying
+> > > > > > hardware.
+> > > > > 
+> > > > > This sounds so bad. There gotta be a better interface for that,
+> > > > > right?
+> > > > 
+> > > > I'm still struggling a bit to grasp what your getting at but ...
+> > > 
+> > > I was more trying to say that the sysfs device interface with per-
+> > > object
+> > > directory isn't the right interface for this sort of usage at all.
+> > > Are these
+> > > even real hardware pieces which can be plugged in and out? While
+> > > being a
+> > > discrete piece of hardware isn't a requirement to be a device model
+> > > device,
+> > > the whole thing is designed with such use cases on mind. It
+> > > definitely isn't
+> > > the right design for representing six digit number of logical
+> > > entities.
+> > > 
+> > > It should be obvious that representing each consecutive memory
+> > > range with a
+> > > separate directory entry is far from an optimal way of representing
+> > > something like this. It's outright silly.
+> > 
+> > I agree.  And again, Ian, you are just "kicking the problem down the
+> > road" if we accept these patches.  Please fix this up properly so
+> > that
+> > this interface is correctly fixed to not do looney things like this.
+> 
+> Fine, mitigating this problem isn't the end of the story, and you
+> don't want to do accept a change to mitigate it because that could
+> mean no further discussion on it and no further work toward solving
+> it.
+> 
+> But it seems to me a "proper" solution to this will cross a number
+> of areas so this isn't just "my" problem and, as you point out, it's
+> likely to become increasingly problematic over time.
+> 
+> So what are your ideas and recommendations on how to handle hotplug
+> memory at this granularity for this much RAM (and larger amounts)?
 
-Fixes: 9e28f6532c61 ("ASoC: fsl_mqs: Add MQS component driver")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/fsl_mqs.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+First off, this is not my platform, and not my problem, so it's funny
+you ask me :)
 
-diff --git a/sound/soc/fsl/fsl_mqs.c b/sound/soc/fsl/fsl_mqs.c
-index b44b134390a3..69aeb0e71844 100644
---- a/sound/soc/fsl/fsl_mqs.c
-+++ b/sound/soc/fsl/fsl_mqs.c
-@@ -265,10 +265,20 @@ static int fsl_mqs_remove(struct platform_device *pdev)
- static int fsl_mqs_runtime_resume(struct device *dev)
- {
- 	struct fsl_mqs *mqs_priv = dev_get_drvdata(dev);
-+	int ret;
- 
--	clk_prepare_enable(mqs_priv->ipg);
-+	ret = clk_prepare_enable(mqs_priv->ipg);
-+	if (ret) {
-+		dev_err(dev, "failed to enable ipg clock\n");
-+		return ret;
-+	}
- 
--	clk_prepare_enable(mqs_priv->mclk);
-+	ret = clk_prepare_enable(mqs_priv->mclk);
-+	if (ret) {
-+		dev_err(dev, "failed to enable mclk clock\n");
-+		clk_disable_unprepare(mqs_priv->ipg);
-+		return ret;
-+	}
- 
- 	if (mqs_priv->use_gpr)
- 		regmap_write(mqs_priv->regmap, IOMUXC_GPR2,
--- 
-2.21.0
+Anyway, as I have said before, my first guesses would be:
+	- increase the granularity size of the "memory chunks", reducing
+	  the number of devices you create.
+	- delay creating the devices until way after booting, or do it
+	  on a totally different path/thread/workqueue/whatever to
+	  prevent delay at booting
 
+And then there's always:
+	- don't create them at all, only only do so if userspace asks
+	  you to.
+
+You all have the userspace tools/users for this interface and know it
+best to know what will work for them.  If you don't, then hey, let's
+just delete the whole thing and see who screams :)
+
+thanks,
+
+greg k-h
