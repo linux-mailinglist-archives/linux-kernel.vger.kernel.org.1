@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B38AC2062FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 389BC20616B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393383AbgFWVKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:10:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55142 "EHLO mail.kernel.org"
+        id S2392346AbgFWUlf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:41:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391440AbgFWUdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:33:39 -0400
+        id S2391752AbgFWUl3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:41:29 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA90D2098B;
-        Tue, 23 Jun 2020 20:33:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45F6620675;
+        Tue, 23 Jun 2020 20:41:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944419;
-        bh=oInHpdmlWN717wx6ubP5AP8bxJAce1oMzk4419RoyAM=;
+        s=default; t=1592944889;
+        bh=Zrkd90XIeYcq/L6/nGLmzEjKpTrECOfIxGK+vdaPT9U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F1fOQqy0S3bhaxwHeiGczTHvfzmnO2HVJyREOU68q7McqU0XZVP7d+ipKAjdE90Zg
-         NqDrFibMTZjAA5LPbdmPkPA9RPbXKN2IU3GRheoW2ahyx2/muRUxeZZDeLoVT+LnP4
-         yRCGjwKbgOFoAFdM+8X6kj8dyDDe254gLA1va+VA=
+        b=vUGekb5EX3+9m+k3p023183xW40y5YpBiDp+Muzelaq2MRhZOZmQ9bufNRL3gxKWX
+         LQjXpJhEDS0AyO6vemPvRgzKeiGU8c6sIgmAMBmP8fyu8g9wVr6ezwL9eYQ9c91dDD
+         K4EpLcBS1r8mnlSHSa0r9TTFKfLHz9rL5SrYsJH0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Jiri Benc <jbenc@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 267/314] powerpc: Fix kernel crash in show_instructions() w/DEBUG_VIRTUAL
+Subject: [PATCH 4.19 134/206] geneve: change from tx_error to tx_dropped on missing metadata
 Date:   Tue, 23 Jun 2020 21:57:42 +0200
-Message-Id: <20200623195351.711020987@linuxfoundation.org>
+Message-Id: <20200623195323.574174336@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,84 +44,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+From: Jiri Benc <jbenc@redhat.com>
 
-[ Upstream commit a6e2c226c3d51fd93636320e47cabc8a8f0824c5 ]
+[ Upstream commit 9d149045b3c0e44c049cdbce8a64e19415290017 ]
 
-With CONFIG_DEBUG_VIRTUAL=y, we can hit a BUG() if we take a hard
-lockup watchdog interrupt when in OPAL mode.
+If the geneve interface is in collect_md (external) mode, it can't send any
+packets submitted directly to its net interface, as such packets won't have
+metadata attached. This is expected.
 
-This happens in show_instructions() if the kernel takes the watchdog
-NMI IPI, or any other interrupt, with MSR_IR == 0. show_instructions()
-updates the variable pc in the loop and the second iteration will
-result in BUG().
+However, the kernel itself sends some packets to the interface, most
+notably, IPv6 DAD, IPv6 multicast listener reports, etc. This is not wrong,
+as tunnel metadata can be specified in routing table (although technically,
+that has never worked for IPv6, but hopefully will be fixed eventually) and
+then the interface must correctly participate in IPv6 housekeeping.
 
-We hit the BUG_ON due the below check in  __va()
+The problem is that any such attempt increases the tx_error counter. Just
+bringing up a geneve interface with IPv6 enabled is enough to see a number
+of tx_errors. That causes confusion among users, prompting them to find
+a network error where there is none.
 
-  #define __va(x)
-  ({
-  	VIRTUAL_BUG_ON((unsigned long)(x) >= PAGE_OFFSET);
-  	(void *)(unsigned long)((phys_addr_t)(x) | PAGE_OFFSET);
-  })
+Change the counter used to tx_dropped. That better conveys the meaning
+(there's nothing wrong going on, just some packets are getting dropped) and
+hopefully will make admins panic less.
 
-Fix it by moving the check out of the loop. Also update nip so that
-the nip == pc check still matches.
-
-Fixes: 4dd7554a6456 ("powerpc/64: Add VIRTUAL_BUG_ON checks for __va and __pa addresses")
-Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-[mpe: Use IS_ENABLED(), massage change log]
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200524093822.423487-1-aneesh.kumar@linux.ibm.com
+Signed-off-by: Jiri Benc <jbenc@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/process.c | 20 +++++++++++---------
- 1 file changed, 11 insertions(+), 9 deletions(-)
+ drivers/net/geneve.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/powerpc/kernel/process.c b/arch/powerpc/kernel/process.c
-index 639ceae7da9d8..bd0c258a1d5dd 100644
---- a/arch/powerpc/kernel/process.c
-+++ b/arch/powerpc/kernel/process.c
-@@ -1218,29 +1218,31 @@ struct task_struct *__switch_to(struct task_struct *prev,
- static void show_instructions(struct pt_regs *regs)
- {
- 	int i;
-+	unsigned long nip = regs->nip;
- 	unsigned long pc = regs->nip - (NR_INSN_TO_PRINT * 3 / 4 * sizeof(int));
+diff --git a/drivers/net/geneve.c b/drivers/net/geneve.c
+index 36444de701cd9..817c290b78cd9 100644
+--- a/drivers/net/geneve.c
++++ b/drivers/net/geneve.c
+@@ -911,9 +911,10 @@ static netdev_tx_t geneve_xmit(struct sk_buff *skb, struct net_device *dev)
+ 	if (geneve->collect_md) {
+ 		info = skb_tunnel_info(skb);
+ 		if (unlikely(!info || !(info->mode & IP_TUNNEL_INFO_TX))) {
+-			err = -EINVAL;
+ 			netdev_dbg(dev, "no tunnel metadata\n");
+-			goto tx_error;
++			dev_kfree_skb(skb);
++			dev->stats.tx_dropped++;
++			return NETDEV_TX_OK;
+ 		}
+ 	} else {
+ 		info = &geneve->info;
+@@ -930,7 +931,7 @@ static netdev_tx_t geneve_xmit(struct sk_buff *skb, struct net_device *dev)
  
- 	printk("Instruction dump:");
- 
-+	/*
-+	 * If we were executing with the MMU off for instructions, adjust pc
-+	 * rather than printing XXXXXXXX.
-+	 */
-+	if (!IS_ENABLED(CONFIG_BOOKE) && !(regs->msr & MSR_IR)) {
-+		pc = (unsigned long)phys_to_virt(pc);
-+		nip = (unsigned long)phys_to_virt(regs->nip);
-+	}
+ 	if (likely(!err))
+ 		return NETDEV_TX_OK;
+-tx_error:
 +
- 	for (i = 0; i < NR_INSN_TO_PRINT; i++) {
- 		int instr;
+ 	dev_kfree_skb(skb);
  
- 		if (!(i % 8))
- 			pr_cont("\n");
- 
--#if !defined(CONFIG_BOOKE)
--		/* If executing with the IMMU off, adjust pc rather
--		 * than print XXXXXXXX.
--		 */
--		if (!(regs->msr & MSR_IR))
--			pc = (unsigned long)phys_to_virt(pc);
--#endif
--
- 		if (!__kernel_text_address(pc) ||
- 		    probe_kernel_address((const void *)pc, instr)) {
- 			pr_cont("XXXXXXXX ");
- 		} else {
--			if (regs->nip == pc)
-+			if (nip == pc)
- 				pr_cont("<%08x> ", instr);
- 			else
- 				pr_cont("%08x ", instr);
+ 	if (err == -ELOOP)
 -- 
 2.25.1
 
