@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8EF8206006
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFAD8205F36
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391980AbgFWUio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:38:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33976 "EHLO mail.kernel.org"
+        id S2391148AbgFWUah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:30:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391961AbgFWUi3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:38:29 -0400
+        id S2391138AbgFWUac (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:30:32 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E9B9C21556;
-        Tue, 23 Jun 2020 20:38:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7767E20723;
+        Tue, 23 Jun 2020 20:30:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944709;
-        bh=tvk3lkQAhBulXXvXBScmOgBTACOXiX/TZWI2NS9OV30=;
+        s=default; t=1592944233;
+        bh=eJs28hZF4bpr/WA/e/9lWBCpigJo+1IXR2t6AefAoJo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DhOeuClCWnNVVu/ndv3dbo0D+gbY2LLPLHlMMUxYwWT8xElNuZGzNT4yBW6022ah3
-         yydKwoVSMPtjbDet289F9RN0AaHVWYiIQxEfNLnLeOYCaa3xuldZSSFIcwdxHbVo1+
-         FhsByWn99wR/U/j6xPfSHa7U68RoJ5Dm4IGjOfpI=
+        b=ejtn5bMzWBU2NP6qKTu8iL0eRsVdtxPa0f9u0UVnj/fWeU7FuEe3EEjgaOAB1ZIzx
+         bvxyP44zEzMwElz4A5IW3B0rZR51bLJAUCB7meXxnVgyNx4ii0251+IURb2Ed7ahPL
+         VCo+9M0H3fQ18V0sZWNRamFG/uwmy2F6JypZyRf4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        stable@vger.kernel.org, Fedor Tokarev <ftokarev@gmail.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 064/206] slimbus: ngd: get drvdata from correct device
+Subject: [PATCH 5.4 197/314] net: sunrpc: Fix off-by-one issues in rpc_ntop6
 Date:   Tue, 23 Jun 2020 21:56:32 +0200
-Message-Id: <20200623195320.115096893@linuxfoundation.org>
+Message-Id: <20200623195348.322558108@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,48 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Fedor Tokarev <ftokarev@gmail.com>
 
-[ Upstream commit b58c663059b484f7ff547d076a34cf6d7a302e56 ]
+[ Upstream commit 118917d696dc59fd3e1741012c2f9db2294bed6f ]
 
-Get drvdata directly from parent instead of ngd dev, as ngd
-dev can probe defer and previously set drvdata will become null.
+Fix off-by-one issues in 'rpc_ntop6':
+ - 'snprintf' returns the number of characters which would have been
+   written if enough space had been available, excluding the terminating
+   null byte. Thus, a return value of 'sizeof(scopebuf)' means that the
+   last character was dropped.
+ - 'strcat' adds a terminating null byte to the string, thus if len ==
+   buflen, the null byte is written past the end of the buffer.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Link: https://lore.kernel.org/r/20200417093618.7929-1-srinivas.kandagatla@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Fedor Tokarev <ftokarev@gmail.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/slimbus/qcom-ngd-ctrl.c | 4 ++--
+ net/sunrpc/addr.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index 9221ba7b78637..f40ac8dcb0817 100644
---- a/drivers/slimbus/qcom-ngd-ctrl.c
-+++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -1350,7 +1350,6 @@ static int of_qcom_slim_ngd_register(struct device *parent,
- 		ngd->pdev->driver_override = QCOM_SLIM_NGD_DRV_NAME;
- 		ngd->pdev->dev.of_node = node;
- 		ctrl->ngd = ngd;
--		platform_set_drvdata(ngd->pdev, ctrl);
+diff --git a/net/sunrpc/addr.c b/net/sunrpc/addr.c
+index d024af4be85e8..105d17af4abcc 100644
+--- a/net/sunrpc/addr.c
++++ b/net/sunrpc/addr.c
+@@ -82,11 +82,11 @@ static size_t rpc_ntop6(const struct sockaddr *sap,
  
- 		platform_device_add(ngd->pdev);
- 		ngd->base = ctrl->base + ngd->id * data->offset +
-@@ -1365,12 +1364,13 @@ static int of_qcom_slim_ngd_register(struct device *parent,
+ 	rc = snprintf(scopebuf, sizeof(scopebuf), "%c%u",
+ 			IPV6_SCOPE_DELIMITER, sin6->sin6_scope_id);
+-	if (unlikely((size_t)rc > sizeof(scopebuf)))
++	if (unlikely((size_t)rc >= sizeof(scopebuf)))
+ 		return 0;
  
- static int qcom_slim_ngd_probe(struct platform_device *pdev)
- {
--	struct qcom_slim_ngd_ctrl *ctrl = platform_get_drvdata(pdev);
- 	struct device *dev = &pdev->dev;
-+	struct qcom_slim_ngd_ctrl *ctrl = dev_get_drvdata(dev->parent);
- 	int ret;
+ 	len += rc;
+-	if (unlikely(len > buflen))
++	if (unlikely(len >= buflen))
+ 		return 0;
  
- 	ctrl->ctrl.dev = dev;
- 
-+	platform_set_drvdata(pdev, ctrl);
- 	pm_runtime_use_autosuspend(dev);
- 	pm_runtime_set_autosuspend_delay(dev, QCOM_SLIM_NGD_AUTOSUSPEND);
- 	pm_runtime_set_suspended(dev);
+ 	strcat(buf, scopebuf);
 -- 
 2.25.1
 
