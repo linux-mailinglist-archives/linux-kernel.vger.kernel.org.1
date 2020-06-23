@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6684206105
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:49:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB8912060E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392959AbgFWUtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:49:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48620 "EHLO mail.kernel.org"
+        id S2403846AbgFWUr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:47:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404156AbgFWUtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:49:12 -0400
+        id S2392913AbgFWUrx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:47:53 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 346192158C;
-        Tue, 23 Jun 2020 20:49:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B82F21548;
+        Tue, 23 Jun 2020 20:47:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945351;
-        bh=Ex0/W/v9bN/S3mPQARBcJjC0ZIxez4cZhJSNmHeGqYc=;
+        s=default; t=1592945273;
+        bh=JBYVL5o5bVXPE4C5POhCw8ThF92awKsuMPbXRCMMuGI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F8thMp1EngUsNyC/EYgITskmUkDuUir0eLzHskOPjjtu9b58a19XHarGIV9xXMsoG
-         PZLvJ4HwltoWJ75Z9Y2EwHC5E4qUIrlAdSUdgNm3Xi1QujKfBbyXho2R0z5hAolQ4z
-         YaktaxtQxaq/Sg1RMfqcjeS3pxv060UnjybANoZo=
+        b=zVk9iS1pvo5FTbvAoUkwb54oQ/Nio/D6oioSLy8Neq/MOyCrTFiTwxCBXbPyeN8Wx
+         6FyfhhQBu/rQbO+dfpypLkrI3IlF58N+v33/oSVYnNleBMyOyvf1cAvxCbxXWCkXfh
+         do1LJzCQR4nypdSoJPC78leX3feMuQ25/5wkNPAU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>,
         Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 098/136] blktrace: fix endianness in get_pdu_int()
-Date:   Tue, 23 Jun 2020 21:59:14 +0200
-Message-Id: <20200623195308.601428339@linuxfoundation.org>
+Subject: [PATCH 4.14 099/136] blktrace: fix endianness for blk_log_remap()
+Date:   Tue, 23 Jun 2020 21:59:15 +0200
+Message-Id: <20200623195308.649449252@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
 References: <20200623195303.601828702@linuxfoundation.org>
@@ -46,31 +46,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 
-[ Upstream commit 71df3fd82e7cccec7b749a8607a4662d9f7febdd ]
+[ Upstream commit 5aec598c456fe3c1b71a1202cbb42bdc2a643277 ]
 
-In function get_pdu_len() replace variable type from __u64 to
-__be64. This fixes sparse warning.
+The function blk_log_remap() can be simplified by removing the
+call to get_pdu_remap() that copies the values into extra variable to
+print the data, which also fixes the endiannness warning reported by
+sparse.
 
 Signed-off-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/trace/blktrace.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/trace/blktrace.c | 19 ++++---------------
+ 1 file changed, 4 insertions(+), 15 deletions(-)
 
 diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index 30a98156f4743..be97e0b4ae7dc 100644
+index be97e0b4ae7dc..304a164f5e7e7 100644
 --- a/kernel/trace/blktrace.c
 +++ b/kernel/trace/blktrace.c
-@@ -1285,7 +1285,7 @@ static inline __u16 t_error(const struct trace_entry *ent)
- 
- static __u64 get_pdu_int(const struct trace_entry *ent, bool has_cg)
- {
--	const __u64 *val = pdu_start(ent, has_cg);
-+	const __be64 *val = pdu_start(ent, has_cg);
+@@ -1289,17 +1289,6 @@ static __u64 get_pdu_int(const struct trace_entry *ent, bool has_cg)
  	return be64_to_cpu(*val);
  }
  
+-static void get_pdu_remap(const struct trace_entry *ent,
+-			  struct blk_io_trace_remap *r, bool has_cg)
+-{
+-	const struct blk_io_trace_remap *__r = pdu_start(ent, has_cg);
+-	__u64 sector_from = __r->sector_from;
+-
+-	r->device_from = be32_to_cpu(__r->device_from);
+-	r->device_to   = be32_to_cpu(__r->device_to);
+-	r->sector_from = be64_to_cpu(sector_from);
+-}
+-
+ typedef void (blk_log_action_t) (struct trace_iterator *iter, const char *act,
+ 	bool has_cg);
+ 
+@@ -1425,13 +1414,13 @@ static void blk_log_with_error(struct trace_seq *s,
+ 
+ static void blk_log_remap(struct trace_seq *s, const struct trace_entry *ent, bool has_cg)
+ {
+-	struct blk_io_trace_remap r = { .device_from = 0, };
++	const struct blk_io_trace_remap *__r = pdu_start(ent, has_cg);
+ 
+-	get_pdu_remap(ent, &r, has_cg);
+ 	trace_seq_printf(s, "%llu + %u <- (%d,%d) %llu\n",
+ 			 t_sector(ent), t_sec(ent),
+-			 MAJOR(r.device_from), MINOR(r.device_from),
+-			 (unsigned long long)r.sector_from);
++			 MAJOR(be32_to_cpu(__r->device_from)),
++			 MINOR(be32_to_cpu(__r->device_from)),
++			 be64_to_cpu(__r->sector_from));
+ }
+ 
+ static void blk_log_plug(struct trace_seq *s, const struct trace_entry *ent, bool has_cg)
 -- 
 2.25.1
 
