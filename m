@@ -2,143 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DB9205675
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 17:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9994F20568B
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 17:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733028AbgFWP5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 11:57:50 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:52904 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731616AbgFWP5t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 11:57:49 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NFX7DJ076972;
-        Tue, 23 Jun 2020 11:57:41 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31uk60uwnr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Jun 2020 11:57:41 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05NFXOUG078594;
-        Tue, 23 Jun 2020 11:57:40 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31uk60uwnb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Jun 2020 11:57:40 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05NFdlNl004195;
-        Tue, 23 Jun 2020 15:57:39 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma02dal.us.ibm.com with ESMTP id 31uk480ve1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Jun 2020 15:57:39 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05NFvcUh52887958
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Jun 2020 15:57:38 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0229978066;
-        Tue, 23 Jun 2020 15:57:38 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CB7187805C;
-        Tue, 23 Jun 2020 15:57:36 +0000 (GMT)
-Received: from DESKTOP-AV6EVPG.localdomain (unknown [9.160.30.158])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue, 23 Jun 2020 15:57:36 +0000 (GMT)
-From:   Maurizio Drocco <maurizio.drocco@ibm.com>
-To:     zohar@linux.ibm.com
-Cc:     Silviu.Vlasceanu@huawei.com, dmitry.kasatkin@gmail.com,
-        jejb@linux.ibm.com, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, maurizio.drocco@ibm.com,
-        mdrocco@linux.vnet.ibm.com, roberto.sassu@huawei.com,
-        serge@hallyn.com
-Subject: [PATCH v4] ima: extend boot_aggregate with kernel measurements
-Date:   Tue, 23 Jun 2020 11:57:32 -0400
-Message-Id: <20200623155732.105-1-maurizio.drocco@ibm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <1592920990.5437.15.camel@linux.ibm.com>
-References: <1592920990.5437.15.camel@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-23_07:2020-06-23,2020-06-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- mlxscore=0 bulkscore=0 mlxlogscore=999 adultscore=0 lowpriorityscore=0
- priorityscore=1501 impostorscore=0 clxscore=1015 suspectscore=1
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006120000 definitions=main-2006230118
+        id S1733052AbgFWP71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 11:59:27 -0400
+Received: from mga07.intel.com ([134.134.136.100]:31599 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731616AbgFWP70 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 11:59:26 -0400
+IronPort-SDR: JLvwQvHAfJ24nOt7c4x1dL7A7H+/aMZnYu6O3btioplnOvwzRMNyz5slbB22fKC9lf/DlG0sfs
+ g2GhNQv5r0Pw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="209307529"
+X-IronPort-AV: E=Sophos;i="5.75,271,1589266800"; 
+   d="scan'208";a="209307529"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2020 08:59:22 -0700
+IronPort-SDR: iq26dOLKgX3H15tBFZLuja+vdDxalzbD2WF/C0QK3i/G9gmZaftr40VuZiXDtyitN0nWawvHvG
+ 0hDSMJ3QZjKQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,271,1589266800"; 
+   d="scan'208";a="301299965"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by fmsmga004.fm.intel.com with ESMTP; 23 Jun 2020 08:59:19 -0700
+Date:   Tue, 23 Jun 2020 08:59:18 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Peter Feiner <pfeiner@google.com>
+Cc:     Jon Cargille <jcargill@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] kvm: x86 mmu: avoid mmu_page_hash lookup for
+ direct_map-only VM
+Message-ID: <20200623155918.GC23842@linux.intel.com>
+References: <20200508182425.69249-1-jcargill@google.com>
+ <20200508201355.GS27052@linux.intel.com>
+ <CAM3pwhEw+KYq9AD+z8wPGyG10Bex7xLKaPM=yVV-H+W_eHTW4w@mail.gmail.com>
+ <20200623065348.GA23054@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200623065348.GA23054@linux.intel.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Registers 8-9 are used to store measurements of the kernel and its
-command line (e.g., grub2 bootloader with tpm module enabled). IMA
-should include them in the boot aggregate. Registers 8-9 should be
-only included in non-SHA1 digests to avoid ambiguity.
+On Mon, Jun 22, 2020 at 11:53:48PM -0700, Sean Christopherson wrote:
+> If we do get agressive and zap all children (or if my analysis is wrong),
+> and prevent the mixed level insansity, then a simpler approach would be to
+> skip the lookup if the MMU is direct.  I.e. no need for the per-VM toggle.
+> Direct vs. indirect MMUs are guaranteed to have different roles and so the
+> direct MMU's pages can't be reused/shared.
 
-Signed-off-by: Maurizio Drocco <maurizio.drocco@ibm.com>
----
-Changelog:
-v4:
-- Reworded comments: PCRs 8 & 9 are always included in non-sha1 digests
-v3:
-- Limit including PCRs 8 & 9 to non-sha1 hashes
-v2:
-- Minor comment improvements
-v1:
-- Include non zero PCRs 8 & 9 in the boot_aggregate
-
- security/integrity/ima/ima.h        |  2 +-
- security/integrity/ima/ima_crypto.c | 15 ++++++++++++++-
- 2 files changed, 15 insertions(+), 2 deletions(-)
-
-diff --git a/security/integrity/ima/ima.h b/security/integrity/ima/ima.h
-index df93ac258e01..9d94080bdad8 100644
---- a/security/integrity/ima/ima.h
-+++ b/security/integrity/ima/ima.h
-@@ -30,7 +30,7 @@
- 
- enum ima_show_type { IMA_SHOW_BINARY, IMA_SHOW_BINARY_NO_FIELD_LEN,
- 		     IMA_SHOW_BINARY_OLD_STRING_FMT, IMA_SHOW_ASCII };
--enum tpm_pcrs { TPM_PCR0 = 0, TPM_PCR8 = 8 };
-+enum tpm_pcrs { TPM_PCR0 = 0, TPM_PCR8 = 8, TPM_PCR10 = 10 };
- 
- /* digest size for IMA, fits SHA1 or MD5 */
- #define IMA_DIGEST_SIZE		SHA1_DIGEST_SIZE
-diff --git a/security/integrity/ima/ima_crypto.c b/security/integrity/ima/ima_crypto.c
-index 220b14920c37..011c3c76af86 100644
---- a/security/integrity/ima/ima_crypto.c
-+++ b/security/integrity/ima/ima_crypto.c
-@@ -823,13 +823,26 @@ static int ima_calc_boot_aggregate_tfm(char *digest, u16 alg_id,
- 	if (rc != 0)
- 		return rc;
- 
--	/* cumulative sha1 over tpm registers 0-7 */
-+	/* cumulative digest over TPM registers 0-7 */
- 	for (i = TPM_PCR0; i < TPM_PCR8; i++) {
- 		ima_pcrread(i, &d);
- 		/* now accumulate with current aggregate */
- 		rc = crypto_shash_update(shash, d.digest,
- 					 crypto_shash_digestsize(tfm));
- 	}
-+	/*
-+	 * Extend cumulative digest over TPM registers 8-9, which contain
-+	 * measurement for the kernel command line (reg. 8) and image (reg. 9)
-+	 * in a typical PCR allocation. Registers 8-9 are only included in
-+	 * non-SHA1 boot_aggregate digests to avoid ambiguity.
-+	 */
-+	if (alg_id != TPM_ALG_SHA1) {
-+		for (i = TPM_PCR8; i < TPM_PCR10; i++) {
-+			ima_pcrread(i, &d);
-+			rc = crypto_shash_update(shash, d.digest,
-+						crypto_shash_digestsize(tfm));
-+		}
-+	}
- 	if (!rc)
- 		crypto_shash_final(shash, digest);
- 	return rc;
--- 
-2.17.1
-
+Clarification on the above.  Direct and not-guaranteed-to-be-direct MMUs for
+a given VM are guaranteed to have different roles, even for nested NPT vs.
+NPT, as nested MMUs will have role.guest_mode=1.
