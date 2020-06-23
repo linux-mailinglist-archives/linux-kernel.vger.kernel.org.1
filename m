@@ -2,165 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C12820592B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D809D205940
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387851AbgFWRid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 13:38:33 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:38842 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387659AbgFWRi3 (ORCPT
+        id S2387869AbgFWRjJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 13:39:09 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:39823 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387491AbgFWRjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 13:38:29 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05NHMfSd015056;
-        Tue, 23 Jun 2020 17:38:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=nflC2fPKqz65v971/J4lWndyYO3MG6PAmjsjYWn0c5g=;
- b=P2ELtpHFmem51Lif4W4MkVlNXOGyZCWxRcuT+FGSSPkfzikv2wLhKuht5ki5rCC4qj+4
- s2NUA6vsfJW676wDIs7W1iwHypIqQo2ScwK2YD6Len1nEd6K7HqXLyFgylwAj5QRGw4r
- z7M4oA6rgbzdUacn0mmtbO/nWKx5AO5RK9mOZO+TfSr4GDhPj97W/HsCmi5vUnb+QdbQ
- OKFLnWGPAgqDiwX2HuTaoPiLoBJ93tEiiJ9uJctd7ezcI7tApiig76B3cTAE3h9B/KwA
- B9nVUyb2k1SrqZ67CNr8/EHkYq7z02OWLnIH8ul8NGB+ayLxi0N7DLLzPrGSfBHagFgF Qg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 31uk2rs960-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 23 Jun 2020 17:38:15 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05NHO3f3128912;
-        Tue, 23 Jun 2020 17:38:14 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 31uk3h0pnx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Jun 2020 17:38:14 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05NHc8GT021769;
-        Tue, 23 Jun 2020 17:38:08 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 23 Jun 2020 17:38:08 +0000
-Subject: Re: [PATCH v2 10/15] docs: hugetlbpage.rst: fix some warnings
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Gerald Schaefer <gerald.schaefer@de.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>, linux-mm@kvack.org
-References: <cover.1592895969.git.mchehab+huawei@kernel.org>
- <86b6796b1a84e18b24314ecd29318951c1479ca2.1592895969.git.mchehab+huawei@kernel.org>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <5ca27419-7496-8799-aeed-3042c9770ba8@oracle.com>
-Date:   Tue, 23 Jun 2020 10:38:06 -0700
+        Tue, 23 Jun 2020 13:39:05 -0400
+Received: by mail-pf1-f194.google.com with SMTP id d66so10425577pfd.6
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 10:39:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kAIQAxiLnbAZ5BAFIcJMeyR0JdJvLnsFgfO/0/AmLPA=;
+        b=cx1GisF/S+zyWvzKWzvrL5zD1LiKxcrmoRXhlE66mviJVf7yXyokTkD/uQ9NUta1yG
+         f/MZjD/KH8X7rHUDEVMvA3Otj0hACO1tl31nVgpab55GZWzR3v16PkXx7VunIj7+h/Rb
+         XKmOPkyMJOfU4IwspVFJ1xNwtJIonVw+Wv61+JgkjFtIZ08Ly60FrPuUrwIIuZq0TLbW
+         C2z0AqRtoxNzn6alSXkV8hxqlavfCD0GSDJVSAPkrcZBkzn2jqOJTCbe5fEakffUuLXd
+         0DnU/zvWhf1Och+K7v5mp94GoVLyI8bf4dkGDKs1kNHBMv346oASVBeTN7PtT9xYpx+C
+         mvtQ==
+X-Gm-Message-State: AOAM531EGCzgZkce6Cpj3FNOaaONJQ7+MKgP0m+XpHzJGuEwKkhgVtYY
+        +sjj3CcjME/FbmkYVtQiQB+3b/7g
+X-Google-Smtp-Source: ABdhPJwP+kfIPptinn90SJZmapQDZ/xaZKvE4G/xUSfG1p1yiK8fszEV/rJ0jnK8F52BozCNCteXDg==
+X-Received: by 2002:a62:31c6:: with SMTP id x189mr27591959pfx.79.1592933943273;
+        Tue, 23 Jun 2020 10:39:03 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:acd7:a900:b9f:8b8b? ([2601:647:4802:9070:acd7:a900:b9f:8b8b])
+        by smtp.gmail.com with ESMTPSA id m1sm2880457pjr.56.2020.06.23.10.39.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jun 2020 10:39:02 -0700 (PDT)
+Subject: Re: [PATCH 1/3] nvme: Add Arbitration Burst support
+To:     Keith Busch <kbusch@kernel.org>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     axboe@fb.com, hch@lst.de, baolin.wang7@gmail.com,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <cover.1592916850.git.baolin.wang@linux.alibaba.com>
+ <bf3f47ba50f72d0b775ca4bd098f183056d964ba.1592916850.git.baolin.wang@linux.alibaba.com>
+ <20200623144014.GB1288900@dhcp-10-100-145-180.wdl.wdc.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <38482b1b-b1c7-bb41-b086-6ce00f6a9d1d@grimberg.me>
+Date:   Tue, 23 Jun 2020 10:39:01 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <86b6796b1a84e18b24314ecd29318951c1479ca2.1592895969.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200623144014.GB1288900@dhcp-10-100-145-180.wdl.wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9661 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 bulkscore=0
- suspectscore=0 malwarescore=0 adultscore=0 mlxlogscore=999 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006120000
- definitions=main-2006230123
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9661 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0
- phishscore=0 mlxlogscore=999 impostorscore=0 lowpriorityscore=0
- bulkscore=0 mlxscore=0 spamscore=0 clxscore=1011 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2006120000 definitions=main-2006230123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/20 12:09 AM, Mauro Carvalho Chehab wrote:
-> Some new command line parameters were added at hugetlbpage.rst.
-> Adjust them in order to properly parse that part of the file,
-> avoiding those warnings:
-> 
->     Documentation/admin-guide/mm/hugetlbpage.rst:105: WARNING: Unexpected indentation.
->     Documentation/admin-guide/mm/hugetlbpage.rst:108: WARNING: Unexpected indentation.
->     Documentation/admin-guide/mm/hugetlbpage.rst:109: WARNING: Block quote ends without a blank line; unexpected unindent.
->     Documentation/admin-guide/mm/hugetlbpage.rst:112: WARNING: Block quote ends without a blank line; unexpected unindent.
->     Documentation/admin-guide/mm/hugetlbpage.rst:120: WARNING: Unexpected indentation.
->     Documentation/admin-guide/mm/hugetlbpage.rst:121: WARNING: Block quote ends without a blank line; unexpected unindent.
->     Documentation/admin-guide/mm/hugetlbpage.rst:132: WARNING: Unexpected indentation.
->     Documentation/admin-guide/mm/hugetlbpage.rst:135: WARNING: Block quote ends without a blank line; unexpected unindent.
-> 
-> Fixes: cd9fa28b5351 ("hugetlbfs: clean up command line processing")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  Documentation/admin-guide/mm/hugetlbpage.rst | 23 +++++++++++++++-----
->  1 file changed, 17 insertions(+), 6 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
-> index 5026e58826e2..015a5f7d7854 100644
-> --- a/Documentation/admin-guide/mm/hugetlbpage.rst
-> +++ b/Documentation/admin-guide/mm/hugetlbpage.rst
-> @@ -101,37 +101,48 @@ be specified in bytes with optional scale suffix [kKmMgG].  The default huge
->  page size may be selected with the "default_hugepagesz=<size>" boot parameter.
->  
->  Hugetlb boot command line parameter semantics
-> -hugepagesz - Specify a huge page size.  Used in conjunction with hugepages
-> +
-> +hugepagesz
-> +	Specify a huge page size.  Used in conjunction with hugepages
->  	parameter to preallocate a number of huge pages of the specified
->  	size.  Hence, hugepagesz and hugepages are typically specified in
-> -	pairs such as:
-> +	pairs such as::
-> +
->  		hugepagesz=2M hugepages=512
-> +
->  	hugepagesz can only be specified once on the command line for a
->  	specific huge page size.  Valid huge page sizes are architecture
->  	dependent.
-> -hugepages - Specify the number of huge pages to preallocate.  This typically
-> +hugepages
-> +	Specify the number of huge pages to preallocate.  This typically
->  	follows a valid hugepagesz or default_hugepagesz parameter.  However,
->  	if hugepages is the first or only hugetlb command line parameter it
->  	implicitly specifies the number of huge pages of default size to
->  	allocate.  If the number of huge pages of default size is implicitly
->  	specified, it can not be overwritten by a hugepagesz,hugepages
->  	parameter pair for the default size.
-> -	For example, on an architecture with 2M default huge page size:
-> +
-> +	For example, on an architecture with 2M default huge page size::
-> +
->  		hugepages=256 hugepagesz=2M hugepages=512
-> +
->  	will result in 256 2M huge pages being allocated and a warning message
->  	indicating that the hugepages=512 parameter is ignored.  If a hugepages
->  	parameter is preceded by an invalid hugepagesz parameter, it will
->  	be ignored.
-> -default_hugepagesz - Specify the default huge page size.  This parameter can
-> +default_hugepagesz
-> +	pecify the default huge page size.  This parameter can
 
-Oops, should be 'Specify' not 'pecify'
-
-Other than that, this looks good.  Thanks!
--- 
-Mike Kravetz
-
->  	only be specified once on the command line.  default_hugepagesz can
->  	optionally be followed by the hugepages parameter to preallocate a
->  	specific number of huge pages of default size.  The number of default
->  	sized huge pages to preallocate can also be implicitly specified as
->  	mentioned in the hugepages section above.  Therefore, on an
-> -	architecture with 2M default huge page size:
-> +	architecture with 2M default huge page size::
-> +
->  		hugepages=256
->  		default_hugepagesz=2M hugepages=256
->  		hugepages=256 default_hugepagesz=2M
-> +
->  	will all result in 256 2M huge pages being allocated.  Valid default
->  	huge page size is architecture dependent.
->  
+>>  From the NVMe spec, "In order to make efficient use of the non-volatile
+>> memory, it is often advantageous to execute multiple commands from a
+>> Submission Queue in parallel. For Submission Queues that are using
+>> weighted round robin with urgent priority class or round robin
+>> arbitration, host software may configure an Arbitration Burst setting".
+>> Thus add Arbitration Burst setting support.
 > 
+> But if the user changed it to something else that better matches how
+> they want to use queues, the driver is just going to undo that setting
+> on the next reset.
+
+Where do we do priority class arbitration? no one sets it
