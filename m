@@ -2,141 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F158120623A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 232DA2061CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393088AbgFWU5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:57:34 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:37163 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2390565AbgFWUmm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:42:42 -0400
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id DBA919C0;
-        Tue, 23 Jun 2020 16:42:40 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Tue, 23 Jun 2020 16:42:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hmh.eng.br; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=vrxA/FSkZCHAfFyeVNWgnBioSC9
-        BNFdUmNULPJc7l+s=; b=tIFfEnSH0ux8hs3mBttZhNV/H7Tp3TmuoALl+TSfHMn
-        llrOlKQVwfQAZqCEfEMTsu52DnOFzpAxvM4JbBVl2cHNEEkjBX81uTdVPwH5Z5sc
-        kY44YfkgsKvPV8ao+5qPKZPdK0JfNA7ohBc8P11SlojcAmQ/m+L1GRGcc0u+ZtWr
-        lSwzpRgDzpWxoq83DaOi4QvtU4B90QNnplKJLyTqj83WjVD6eBYfoLSh5FP8jycQ
-        MK8M7Efkttb5tYTCkivm+ok+Q+bJNMKs8acZUj/iALcxtzl00wMpdCECL7eFjMk4
-        JKKUkgU76lmUWpap4+TNQ8JwgOn8ecBtyRjA0PFHoJQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=vrxA/F
-        SkZCHAfFyeVNWgnBioSC9BNFdUmNULPJc7l+s=; b=Wbzgfng60nrVvHeYrxCYLB
-        OTPbQdXCMlK0K6IkgencEN1GUguzmGHfqf5ibhalM7lgubN1DPcXg0GfrPqGqJEI
-        fFPAsjbMv9Yb3SjARNvecNPRahL0zMobbGrhvYxp2bSJBZAJxbPmJ1X5hYnyn2cU
-        89VWYwP4MhRk0wIMlDrTAObVg9XUkIH/IWF9/RAlHNFJPoWc3hGFBjJvYTcnnPsq
-        oaGzMg6mLRLot4y8Q98lhqiHRANivbUNDtHms0fOQZRHV/xPZLe9Z7N13Yriskco
-        t/JBFR2g8paGgmlb4Qn43EiirDx4khBAP7fR51kEZrZfrPWzEuMLWIzzheVDfuzw
-        ==
-X-ME-Sender: <xms:P2nyXpZfhuVA-rtlpQmjeIKkkUWk0vaPF-p5CpZ1MnnD_Cg_2KtYGg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudekhedguddviecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujggfsehttddttddtredvnecuhfhrohhmpefjvghn
-    rhhiqhhuvgcuuggvucfoohhrrggvshcujfholhhstghhuhhhuceohhhmhheshhhmhhdrvg
-    hnghdrsghrqeenucggtffrrghtthgvrhhnpedtfeefvdffkeevjeeuffdvvdevveetjefg
-    vdfhffeuteefvdevgeeuueejtddutdenucffohhmrghinheplhhkmhhlrdhorhhgnecukf
-    hppedujeejrdduleegrdejrdefvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgr
-    mhepmhgrihhlfhhrohhmpehhmhhhsehhmhhhrdgvnhhgrdgsrh
-X-ME-Proxy: <xmx:P2nyXgaTVe7lgaOYLMJ5TCvw3rOKBQXfgT_Hs1NOv8zR06bZS8tgQg>
-    <xmx:P2nyXr9VbxH5uIew4iuHlNZ3K3D4dOI1zE8sIkNTZpJOHvmDeZb2Zg>
-    <xmx:P2nyXnqIaGal6PHvEwtnSVqnBOXQKIt4q1PhoMtuMoPJFeUg3EsQ_w>
-    <xmx:QGnyXvWPipUrpgRFO-LUEZHJt8qMJBIAX21kOM4Sp71v_uRgaOgX_g>
-Received: from khazad-dum.debian.net (unknown [177.194.7.32])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7C812328005A;
-        Tue, 23 Jun 2020 16:42:39 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by localhost.khazad-dum.debian.net (Postfix) with ESMTP id CE85F340321E;
-        Tue, 23 Jun 2020 17:42:36 -0300 (-03)
-X-Virus-Scanned: Debian amavisd-new at khazad-dum.debian.net
-Received: from khazad-dum.debian.net ([127.0.0.1])
-        by localhost (khazad-dum2.khazad-dum.debian.net [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id 0ml-J_XkXns1; Tue, 23 Jun 2020 17:42:34 -0300 (-03)
-Received: by khazad-dum.debian.net (Postfix, from userid 1000)
-        id 4B208340321D; Tue, 23 Jun 2020 17:42:34 -0300 (-03)
-Date:   Tue, 23 Jun 2020 17:42:34 -0300
-From:   Henrique de Moraes Holschuh <hmh@hmh.eng.br>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     Simon Arlott <simon@octiron.net>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH] scsi: sd: stop SSD (non-rotational) disks before reboot
-Message-ID: <20200623204234.GA16156@khazad-dum.debian.net>
-References: <499138c8-b6d5-ef4a-2780-4f750ed337d3@0882a8b5-c6c3-11e9-b005-00805fc181fe>
- <CY4PR04MB37511505492E9EC6A245CFB1E79B0@CY4PR04MB3751.namprd04.prod.outlook.com>
+        id S2393159AbgFWUuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:50:37 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:54833 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388016AbgFWUub (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:50:31 -0400
+Received: from [IPv6:2601:646:8600:3281:793b:110b:9a95:572b] ([IPv6:2601:646:8600:3281:793b:110b:9a95:572b])
+        (authenticated bits=0)
+        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 05NKnsMA2994193
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Tue, 23 Jun 2020 13:49:59 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 05NKnsMA2994193
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2020052301; t=1592945401;
+        bh=ZPhdAYw0DZqPh39NH3i9vcQbK+fMod7/4PWe2cDAUow=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=tK0NSCo5lz87kwexbz8w4k4xxP53yygNw6yw50FeH8gxO7t6R24X8Sudq073jIXrR
+         Cv2EAMR4/nESFO8mhlNay1uPywCxbHWaKCMWcpmJNi2wgL5RnozFeIfcD1krRv8YTq
+         UeYy6VuTu8pu+4UxCE33YGkSCI7+ts8j3EMRkLixnRn2303bvLYUL1fFQ+Bdqhv7D2
+         oOfrqtNMGrsjaypDOT5Eq2ZVSFJFVY+PvkcyjYG4Y8Ijh5QakFbo7v8SafiDPgWWye
+         8p8WyMlTiHPtj9CEDC4wO43Hm9UC9JhBffHILIEkfYIxTSmgbOrmfyAVVZQyJwnlRi
+         bsghPTlPA3nLA==
+Date:   Tue, 23 Jun 2020 13:49:47 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAMzpN2jA3rdfCA-UYGEtRPrYCChK1wzHfVUhbrHiqGL3iL4PBA@mail.gmail.com>
+References: <20200616142315.375918-1-brgerst@gmail.com> <20200616142315.375918-2-brgerst@gmail.com> <CALCETrXUjM9g2e5v7chFXWoadvUO_7cqhGvuFn2s7YVpyff__Q@mail.gmail.com> <CAMzpN2jA3rdfCA-UYGEtRPrYCChK1wzHfVUhbrHiqGL3iL4PBA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CY4PR04MB37511505492E9EC6A245CFB1E79B0@CY4PR04MB3751.namprd04.prod.outlook.com>
-X-GPG-Fingerprint1: 4096R/0x0BD9E81139CB4807: C467 A717 507B BAFE D3C1  6092
- 0BD9 E811 39CB 4807
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 1/2] x86/x32: Use __x64 prefix for X32 compat syscalls
+To:     Brian Gerst <brgerst@gmail.com>, Andy Lutomirski <luto@kernel.org>
+CC:     LKML <linux-kernel@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Christoph Hellwig <hch@lst.de>, Arnd Bergmann <arnd@arndb.de>
+From:   hpa@zytor.com
+Message-ID: <6D37758F-E61F-4DF9-9D86-C02DF91B4BDE@zytor.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 18 Jun 2020, Damien Le Moal wrote:
-> Are you experiencing data loss or corruption ? If yes, since a clean reboot or
-> shutdown issues a synchronize cache to all devices, a corruption would mean that
-> your SSD is probably not correctly processing flush cache commands.
+On June 16, 2020 10:17:29 AM PDT, Brian Gerst <brgerst@gmail=2Ecom> wrote:
+>On Tue, Jun 16, 2020 at 12:49 PM Andy Lutomirski <luto@kernel=2Eorg>
+>wrote:
+>>
+>> On Tue, Jun 16, 2020 at 7:23 AM Brian Gerst <brgerst@gmail=2Ecom>
+>wrote:
+>> >
+>> > The ABI prefix for syscalls specifies the argument register
+>mapping, so
+>> > there is no specific reason to continue using the __x32 prefix for
+>the
+>> > compat syscalls=2E  This change will allow using native syscalls in
+>the X32
+>> > specific portion of the syscall table=2E
+>>
+>> Okay, I realize that the x86 syscall machinery is held together by
+>> duct tape and a lot of luck, but:
+>>
+>> >
+>> > Signed-off-by: Brian Gerst <brgerst@gmail=2Ecom>
+>> > ---
+>> >  arch/x86/entry/syscall_x32=2Ec           |  8 +++-----
+>> >  arch/x86/include/asm/syscall_wrapper=2Eh | 10 +++++-----
+>> >  2 files changed, 8 insertions(+), 10 deletions(-)
+>> >
+>> > diff --git a/arch/x86/entry/syscall_x32=2Ec
+>b/arch/x86/entry/syscall_x32=2Ec
+>> > index 3d8d70d3896c=2E=2Ef993e6254043 100644
+>> > --- a/arch/x86/entry/syscall_x32=2Ec
+>> > +++ b/arch/x86/entry/syscall_x32=2Ec
+>> > @@ -9,15 +9,13 @@
+>> >  #include <asm/syscall=2Eh>
+>> >
+>> >  #define __SYSCALL_64(nr, sym)
+>> > +#define __SYSCALL_COMMON(nr, sym) __SYSCALL_X32(nr, sym)
+>> >
+>> > -#define __SYSCALL_X32(nr, sym) extern long __x32_##sym(const
+>struct pt_regs *);
+>> > -#define __SYSCALL_COMMON(nr, sym) extern long __x64_##sym(const
+>struct pt_regs *);
+>> > +#define __SYSCALL_X32(nr, sym) extern long __x64_##sym(const
+>struct pt_regs *);
+>> >  #include <asm/syscalls_64=2Eh>
+>> >  #undef __SYSCALL_X32
+>> > -#undef __SYSCALL_COMMON
+>> >
+>> > -#define __SYSCALL_X32(nr, sym) [nr] =3D __x32_##sym,
+>> > -#define __SYSCALL_COMMON(nr, sym) [nr] =3D __x64_##sym,
+>> > +#define __SYSCALL_X32(nr, sym) [nr] =3D __x64_##sym,
+>> >
+>> >  asmlinkage const sys_call_ptr_t
+>x32_sys_call_table[__NR_x32_syscall_max+1] =3D {
+>> >         /*
+>> > diff --git a/arch/x86/include/asm/syscall_wrapper=2Eh
+>b/arch/x86/include/asm/syscall_wrapper=2Eh
+>> > index a84333adeef2=2E=2E267fae9904ff 100644
+>> > --- a/arch/x86/include/asm/syscall_wrapper=2Eh
+>> > +++ b/arch/x86/include/asm/syscall_wrapper=2Eh
+>> > @@ -17,7 +17,7 @@ extern long __ia32_sys_ni_syscall(const struct
+>pt_regs *regs);
+>> >   * __x64_sys_*()         - 64-bit native syscall
+>> >   * __ia32_sys_*()        - 32-bit native syscall or common compat
+>syscall
+>> >   * __ia32_compat_sys_*() - 32-bit compat syscall
+>>
+>> On a 64-bit kernel, an "ia32" compat syscall is __ia32_compat_sys_*,
+>but=2E=2E=2E
+>>
+>> > - * __x32_compat_sys_*()  - 64-bit X32 compat syscall
+>> > + * __x64_compat_sys_*()  - 64-bit X32 compat syscall
+>>
+>> Now an x32 compat syscall is __x64_compat?  This seems nonsensical=2E
+>
+>Again, think of it as how the registers are mapped, not which syscall
+>table it belongs to=2E  X32 and X64 are identical in that regard=2E
+>
+>> I'm also a bit confused as to how this is even necessary for your
+>> other patch=2E
+>
+>This came out of discussion on Cristoph's patch to combine compat
+>execve*() into the native version:
+>https://lore=2Ekernel=2Eorg/lkml/20200615141239=2EGA12951@lst=2Ede/
+>
+>The bottom line is that marking a syscall as X32-only in the syscall
+>table forces an __x32 prefix even if it's not a "compat" syscall=2E
+>This causes a link failure=2E  This is just another quirk caused by how
+>X32 was designed=2E  The solution is to make the prefix consistent for
+>the whole table=2E  The other alternative is to use __x32 for all the
+>common syscalls=2E
+>
+>The second patch isn't really necessary, but it makes more sense to
+>not have a compat syscall with no corresponding native version=2E
+>
+>--
+>Brian Gerst
 
-Cache flushes do not matter that much when SSDs and sudden power cuts
-are involved.  Power cuts at the wrong time harm the FLASH itself, it is
-not about still-in-flight data.
-
-Keep in mind that SSDs do a _lot_ of background writing, and power cuts
-during a FLASH write or erase can cause from weakened cells, to much
-larger damage.  It is possible to harden the chip or the design against
-this, but it is *expensive*.  And even if warded off by hardening and no
-FLASH damage happens, an erase/program cycle must be done on the whole
-erase block to clean up the incomplete program cycle.
-
-Due to this background activity, an unexpected power cut could damage
-data *anywhere* in an SSD: it could hit some filesystem area that was
-being scrubbed in background by the SSD, or internal SSD metadata.
-
-So, you want that SSD to know it must be quiescent-for-poweroff for
-*real* before you allow the system to do anything that could power it
-off.
-
-And, as I have found out the hard way years ago, you also want to give
-the SSD enough *extra* time to actually quiesce, even if it claims to be
-already prepared for poweroff [1].
-
-When you do not follow these rules, well, excellent datacenter-class
-SSDs have super-capacitor power banks that actually work.  Most SSDs do
-not, although they hopefully came a long way and hopefully modern SSDs
-are not as easily to brick as they were reported to be three or four
-years ago.
-
-
-[1] I have long lost the will and energy to pursue this, so *this* is a
-throw-away anecdote for anyone that cares: I reported here a few years
-ago that many models of *SATA* based SSDs from Crucial/Micron, Samsung
-and Intel were complaining (through their SMART attributes) that Linux
-was causing unsafe shutdowns.
-
-https://lkml.org/lkml/2017/4/10/1181
-
-TL;DR: wait one *extra* second after the SSD acknowleged the STOP
-command as complete before you trust the SSD device is safe to be
-powered down (i.e. before reboot, suspend, poweroff/shutdown, and device
-removal/detach).  This worked around the issue for every vendor and
-model of SSD we tested.
-
--- 
-  Henrique Holschuh
+Please don't use "x64" to mean anything other than x86-64, as some, ahem, =
+other OSes use those as synonyms=2E
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
