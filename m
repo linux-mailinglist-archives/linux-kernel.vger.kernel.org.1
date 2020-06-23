@@ -2,103 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B80CC204DFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:32:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7072B204E0F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732168AbgFWJc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 05:32:29 -0400
-Received: from mx07-00178001.pphosted.com ([62.209.51.94]:26186 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731921AbgFWJc1 (ORCPT
+        id S1732076AbgFWJet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 05:34:49 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:39658 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731947AbgFWJes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:32:27 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05N9NoaL028773;
-        Tue, 23 Jun 2020 11:31:14 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=STMicroelectronics;
- bh=Weg0RcL/DVf4Oy73jsoOhA5zRr02V3dL56h1oGO0waY=;
- b=h3ztPvbNJRqBmRFmjJqzjCtiE/9dI0oL6hVSPD6oB4RtwFuhkGto2DZU1wL9/yxNOtwr
- uqNsmRbkq6+d5EyOClF0kV0RtRVcIaxWZwJyv3gyJe2MhGmy6Q0gsm9gyoLbuEXjYAst
- /k2czctZimUvv5IUzXxeXhDum0ydDfvzK0lN6ddLZr4lgbbILzvzjWU8Q4msz7e+QsiI
- nYyzxQjYyDTwTNgi0/PQUyo0J26PKh1q8VQWX5scoVHrvPDk16SamnHL7XensjbaXKAb
- 934YNq4bZrhCTBtYzPEci0FT/vsamf5o24GazsRj5NLkxTEpDpEQ7E43OqnnicPnUUCo +w== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 31s87vecn2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 23 Jun 2020 11:31:14 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7A46210002A;
-        Tue, 23 Jun 2020 11:31:13 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 699602B64A7;
-        Tue, 23 Jun 2020 11:31:13 +0200 (CEST)
-Received: from localhost (10.75.127.48) by SFHDAG3NODE2.st.com (10.75.127.8)
- with Microsoft SMTP Server (TLS) id 15.0.1347.2; Tue, 23 Jun 2020 11:31:12
- +0200
-From:   Alain Volmat <alain.volmat@st.com>
-To:     <wsa@kernel.org>, <robh+dt@kernel.org>
-CC:     <mark.rutland@arm.com>, <pierre-yves.mordret@st.com>,
-        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@st.com>,
-        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@st.com>,
-        <alain.volmat@st.com>
-Subject: [PATCH] ARM: dts: stm32: configure i2c5 support on stm32mp15xx-dkx
-Date:   Tue, 23 Jun 2020 11:31:12 +0200
-Message-ID: <1592904672-12781-1-git-send-email-alain.volmat@st.com>
-X-Mailer: git-send-email 2.7.4
+        Tue, 23 Jun 2020 05:34:48 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05N9GQYR018709;
+        Tue, 23 Jun 2020 09:34:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=4GZ+lAHaQT1ZwUI8rD/MMNRHeM2iw7kQTbeUV+DTFfc=;
+ b=uCJ+3MMMjtAzIAKPVHM4tivjv0fWPilltvMkeN0HCWauR4EToFJm9s91W8zURFu7uSCg
+ d8VDLP9fnFewVOGNFmVBidfcuQLObrVoykYCDMD7Mihe1QcrERe9s4cocpORqBCbBZGX
+ dM7GH35qalQC0c/f4e4pzUNyBrlEi6+UPNUZ8Ti3wH2EeSYkYeTdV4lBTZsoiutfEMSr
+ JztWBfnQYbXT8dWMo9KZtIcbqWdJhvCTaFhpUD28GBA5+FBFBpH9VNB6CZ8gXBi5T1PZ
+ cdAyFHu+ZZMilsqVU2u88qH/4gO9adlqSXy7ju2/G64S3vqNJtHaZRY1qDSQmM2xy+Mz 4g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 31sebbm72b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 23 Jun 2020 09:34:37 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05N9I0qZ034859;
+        Tue, 23 Jun 2020 09:32:37 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 31svc3nj4p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Jun 2020 09:32:37 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05N9WZbN021581;
+        Tue, 23 Jun 2020 09:32:36 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 23 Jun 2020 09:32:35 +0000
+Date:   Tue, 23 Jun 2020 12:32:28 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Joe Perches <joe@perches.com>, trivial@kernel.org,
+        kernel-janitors@vger.kernel.org, corbet@lwn.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] trivial: fix kerneldoc comments
+Message-ID: <20200623093228.GI4151@kadam>
+References: <1592854669-20606-1-git-send-email-Julia.Lawall@inria.fr>
+ <6b0649c53e853fd2a35e9996f13e702daa0d7e2f.camel@perches.com>
+ <alpine.DEB.2.22.394.2006230954560.2367@hadrien>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG6NODE1.st.com (10.75.127.16) To SFHDAG3NODE2.st.com
- (10.75.127.8)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-23_05:2020-06-22,2020-06-23 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.22.394.2006230954560.2367@hadrien>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9660 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 bulkscore=0
+ spamscore=0 suspectscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006230074
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9660 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 lowpriorityscore=0
+ mlxlogscore=999 cotscore=-2147483648 mlxscore=0 phishscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 suspectscore=0 clxscore=1011
+ impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006230074
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fabrice Gasnier <fabrice.gasnier@st.com>
+On Tue, Jun 23, 2020 at 09:59:57AM +0200, Julia Lawall wrote:
+> > > diff --git a/drivers/crypto/bcm/spu.c b/drivers/crypto/bcm/spu.c
+> > []
+> > > @@ -519,7 +519,7 @@ u32 spum_assoc_resp_len(enum spu_cipher_mode cipher_mode,
+> > >   * spu_aead_ivlen() - Calculate the length of the AEAD IV to be included
+> > >   * in a SPU request after the AAD and before the payload.
+> > >   * @cipher_mode:  cipher mode
+> > > - * @iv_ctr_len:   initialization vector length in bytes
+> > > + * @iv_len:   initialization vector length in bytes
+> > >   *
+> > >   * In Linux ~4.2 and later, the assoc_data sg includes the IV. So no need
+> > >   * to include the IV as a separate field in the SPU request msg.
+> > > @@ -917,7 +917,7 @@ u16 spum_cipher_req_init(u8 *spu_hdr, struct spu_cipher_parms *cipher_parms)
+> > >   * setkey() time in spu_cipher_req_init().
+> > >   * @spu_hdr:         Start of the request message header (MH field)
+> > >   * @spu_req_hdr_len: Length in bytes of the SPU request header
+> > > - * @isInbound:       0 encrypt, 1 decrypt
+> > > + * @is_inbound:       0 encrypt, 1 decrypt
+> >
+> > odd alignments
+> 
+> Sorry to have missed these.
+> 
+> > etc...
+> 
+> Are there a lot of other such problems?  I did look through the whole
+> patch several times by hand, but perhaps it is just too big to see
+> everything.
 
-Configure I2C5 on stm32mp15 DK boards. It's available and can be used on:
-- Arduino connector
-- GPIO expansion connector
-Keep it disabled by default, so the pins are kept in their initial state to
-lower power consumption. This way they can also be used as GPIO.
+Probably the comments for spum_assoc_resp_len() could be tweaked.
 
-Signed-off-by: Fabrice Gasnier <fabrice.gasnier@st.com>
-Signed-off-by: Alain Volmat <alain.volmat@st.com>
----
- arch/arm/boot/dts/stm32mp15xx-dkx.dtsi | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+I had written an email about this one that Joe mentioned and
+spum_assoc_resp_len() but then I decided that it wasn't enough to worry
+about so I deleted the email instead of sending it.
 
-diff --git a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-index fcf50131e5fe..e69aba9830b3 100644
---- a/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-+++ b/arch/arm/boot/dts/stm32mp15xx-dkx.dtsi
-@@ -361,6 +361,19 @@
- 	};
- };
- 
-+&i2c5 {
-+	pinctrl-names = "default", "sleep";
-+	pinctrl-0 = <&i2c5_pins_a>;
-+	pinctrl-1 = <&i2c5_sleep_pins_a>;
-+	i2c-scl-rising-time-ns = <185>;
-+	i2c-scl-falling-time-ns = <20>;
-+	clock-frequency = <400000>;
-+	/* spare dmas for other usage */
-+	/delete-property/dmas;
-+	/delete-property/dma-names;
-+	status = "disabled";
-+};
-+
- &i2s2 {
- 	clocks = <&rcc SPI2>, <&rcc SPI2_K>, <&rcc PLL3_Q>, <&rcc PLL3_R>;
- 	clock-names = "pclk", "i2sclk", "x8k", "x11k";
--- 
-2.17.1
+regards,
+dan carpenter
 
