@@ -2,89 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32B0D2046AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 03:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD112046AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 03:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731879AbgFWBVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 21:21:36 -0400
-Received: from mga14.intel.com ([192.55.52.115]:46212 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731572AbgFWBVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 21:21:36 -0400
-IronPort-SDR: IbRy4fJK4+YNZ70Y9w7GpQ6wQpsHZDZlGMCAdMRWxMxX1qn7faro/jFlaQ/fMYyqf6o/PwyPhC
- uU/Qr4L5jIqA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9660"; a="142981585"
-X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="142981585"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 18:21:33 -0700
-IronPort-SDR: NJCoHCZ+AMJML+u+hGRiDYyfdvwTNoPe1ZJ4e13d6brq6k3Yk1liOi0KKov6DaPssxFSQpxlwQ
- nwwB8i83hJQQ==
-X-IronPort-AV: E=Sophos;i="5.75,268,1589266800"; 
-   d="scan'208";a="452039604"
-Received: from unknown (HELO [10.239.13.99]) ([10.239.13.99])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 18:21:30 -0700
-Subject: Re: [PATCH] KVM: VMX: Stop context switching MSR_IA32_UMWAIT_CONTROL
-To:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jingqi Liu <jingqi.liu@intel.com>,
-        Tao Xu <tao3.xu@intel.com>
-References: <20200623005135.10414-1-sean.j.christopherson@intel.com>
-From:   Xiaoyao Li <xiaoyao.li@intel.com>
-Message-ID: <7e840f1c-d8e2-3374-5009-f2ab41a87386@intel.com>
-Date:   Tue, 23 Jun 2020 09:21:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1731925AbgFWBWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 21:22:49 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:35673 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731765AbgFWBWt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 21:22:49 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0U0SetIO_1592875365;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U0SetIO_1592875365)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 23 Jun 2020 09:22:46 +0800
+Date:   Tue, 23 Jun 2020 09:22:45 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Huang Ying <ying.huang@intel.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Dan Williams <dan.j.williams@intel.com>
+Subject: Re: [PATCH v2 3/3] mm/shuffle: remove dynamic reconfiguration
+Message-ID: <20200623012245.GA99806@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20200619125923.22602-1-david@redhat.com>
+ <20200619125923.22602-4-david@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200623005135.10414-1-sean.j.christopherson@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200619125923.22602-4-david@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/2020 8:51 AM, Sean Christopherson wrote:
-> Remove support for context switching between the guest's and host's
-> desired UMWAIT_CONTROL.  Propagating the guest's value to hardware isn't
-> required for correct functionality, e.g. KVM intercepts reads and writes
-> to the MSR, and the latency effects of the settings controlled by the
-> MSR are not architecturally visible.
-> 
-> As a general rule, KVM should not allow the guest to control power
-> management settings unless explicitly enabled by userspace, e.g. see
-> KVM_CAP_X86_DISABLE_EXITS.  E.g. Intel's SDM explicitly states that C0.2
-> can improve the performance of SMT siblings.  A devious guest could
-> disable C0.2 so as to improve the performance of their workloads at the
-> detriment to workloads running in the host or on other VMs.
-> 
-> Wholesale removal of UMWAIT_CONTROL context switching also fixes a race
-> condition where updates from the host may cause KVM to enter the guest
-> with the incorrect value.  Because updates are are propagated to all
-> CPUs via IPI (SMP function callback), the value in hardware may be
-> stale with respect to the cached value and KVM could enter the guest
-> with the wrong value in hardware.  As above, the guest can't observe the
-> bad value, but it's a weird and confusing wart in the implementation.
-> 
-> Removal also fixes the unnecessary usage of VMX's atomic load/store MSR
-> lists.  Using the lists is only necessary for MSRs that are required for
-> correct functionality immediately upon VM-Enter/VM-Exit, e.g. EFER on
-> old hardware, or for MSRs that need to-the-uop precision, e.g. perf
-> related MSRs.  For UMWAIT_CONTROL, the effects are only visible in the
-> kernel via TPAUSE/delay(), and KVM doesn't do any form of delay in
-> vcpu_vmx_run(). 
+On Fri, Jun 19, 2020 at 02:59:22PM +0200, David Hildenbrand wrote:
+>Commit e900a918b098 ("mm: shuffle initial free memory to improve
+>memory-side-cache utilization") promised "autodetection of a
+>memory-side-cache (to be added in a follow-on patch)" over a year ago.
+>
+>The original series included patches [1], however, they were dropped
+>during review [2] to be followed-up later.
+>
+>Due to lack of platforms that publish an HMAT, autodetection is currently
+>not implemented. However, manual activation is actively used [3]. Let's
+>simplify for now and re-add when really (ever?) needed.
+>
+>[1] https://lkml.kernel.org/r/154510700291.1941238.817190985966612531.stgit@dwillia2-desk3.amr.corp.intel.com
+>[2] https://lkml.kernel.org/r/154690326478.676627.103843791978176914.stgit@dwillia2-desk3.amr.corp.intel.com
+>[3] https://lkml.kernel.org/r/CAPcyv4irwGUU2x+c6b4L=KbB1dnasNKaaZd6oSpYjL9kfsnROQ@mail.gmail.com
+>
+>Cc: Andrew Morton <akpm@linux-foundation.org>
+>Cc: Johannes Weiner <hannes@cmpxchg.org>
+>Cc: Michal Hocko <mhocko@suse.com>
+>Cc: Minchan Kim <minchan@kernel.org>
+>Cc: Huang Ying <ying.huang@intel.com>
+>Cc: Wei Yang <richard.weiyang@gmail.com>
+>Cc: Mel Gorman <mgorman@techsingularity.net>
+>Cc: Dan Williams <dan.j.williams@intel.com>
+>Signed-off-by: David Hildenbrand <david@redhat.com>
 
->Using the atomic lists is undesirable as they are more
-> expensive than direct RDMSR/WRMSR.
+Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 
-Do you mean the extra handling of atomic list facility in kvm? Or just 
-mean vm-exit/-entry MSR-load/save in VMX hardware is expensive than 
-direct RDMSR/WRMSR instruction?
-
+-- 
+Wei Yang
+Help you, Help me
