@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661BF205233
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 14:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D89C020523E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 14:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732539AbgFWMQl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 08:16:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49116 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732458AbgFWMQk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 08:16:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9D3BCAD5D;
-        Tue, 23 Jun 2020 12:16:38 +0000 (UTC)
-Date:   Tue, 23 Jun 2020 14:16:38 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        Heiko Carstens <heiko.carstens@de.ibm.com>
-Subject: Re: linux-next: build failure after merge of the printk tree
-Message-ID: <20200623121637.GA8444@alley>
-References: <20200621131554.5a662afe@canb.auug.org.au>
- <20200623102655.6d16e610@canb.auug.org.au>
+        id S1732607AbgFWMRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 08:17:48 -0400
+Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:33782 "EHLO
+        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732396AbgFWMRs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 08:17:48 -0400
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+        by mx0b-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NCFFxI028535;
+        Tue, 23 Jun 2020 05:17:43 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=pfpt0818;
+ bh=w46+JEbvwbBqOW98veqVwXnnBMl+yKzcoiOAE6Vbm/g=;
+ b=htCkGGHgnrHHae6V635l0aWbZHM9JnCGRDnxpTVLywsM3nj75uD6qOruGXmFTwvCua+I
+ J8/HJHTonor04u63nxzWHRN3PECKpMUHg2K4NGpgAjXEoBOlUwS1FBM6yxQZm8Tvt1oM
+ P1YR+JpU6vySJcC70sdbvVyhq4ICvWiLAl3B9IdZTpQOuacWa9VlSF+gDI2Ubw4ROqh9
+ TKgixdQv+29Vp2MyhZk4QDwfNFj/6B7kGfFAUNkH8LdLeG7l5EZaByO9g7MLkzd6vdvO
+ RIv5+izDtMUuxzienmORRhjmMKk2bUCrPeg5MhajRy/ZXepq4ZPxdgGanzmHrrxSG8ZZ XA== 
+Received: from sc-exch04.marvell.com ([199.233.58.184])
+        by mx0b-0016f401.pphosted.com with ESMTP id 31shynw6ed-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 23 Jun 2020 05:17:43 -0700
+Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH04.marvell.com
+ (10.93.176.84) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 23 Jun
+ 2020 05:17:41 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
+ (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Tue, 23 Jun 2020 05:17:41 -0700
+Received: from NN-LT0049.marvell.com (NN-LT0049.marvell.com [10.193.39.36])
+        by maili.marvell.com (Postfix) with ESMTP id A32173F7040;
+        Tue, 23 Jun 2020 05:17:37 -0700 (PDT)
+From:   Alexander Lobakin <alobakin@marvell.com>
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     Alexander Lobakin <alobakin@marvell.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Igor Russkikh <irusskikh@marvell.com>,
+        Michal Kalderon <michal.kalderon@marvell.com>,
+        Ariel Elior <aelior@marvell.com>,
+        Yuval Mintz <yuval.mintz@marvell.com>,
+        Denis Bolotin <denis.bolotin@marvell.com>,
+        "Ram Amrani" <ram.amrani@marvell.com>,
+        Tomer Tayar <tomer.tayar@marvell.com>,
+        <GR-everest-linux-l2@marvell.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net 9/9] net: qed: fix "maybe uninitialized" warning
+Date:   Tue, 23 Jun 2020 15:16:53 +0300
+Message-ID: <20200623121652.2511-1-alobakin@marvell.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200622144437.770e09e0@kicinski-fedora-PC1C0HJN>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200623102655.6d16e610@canb.auug.org.au>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-23_06:2020-06-23,2020-06-23 signatures=0
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2020-06-23 10:26:55, Stephen Rothwell wrote:
-> Hi Stephen,
+From: Jakub Kicinski <kuba@kernel.org>
+Date: Mon, 22 Jun 2020 14:44:37 -0700
+
+> On Mon, 22 Jun 2020 14:14:13 +0300 Alexander Lobakin wrote:
+> > Variable 'abs_ppfid' in qed_dev.c:qed_llh_add_mac_filter() always gets
+> > printed, but is initialized only under 'ref_cnt == 1' condition. This
+> > results in:
+> > 
+> > In file included from ./include/linux/kernel.h:15:0,
+> >                  from ./include/asm-generic/bug.h:19,
+> >                  from ./arch/x86/include/asm/bug.h:86,
+> >                  from ./include/linux/bug.h:5,
+> >                  from ./include/linux/io.h:11,
+> >                  from drivers/net/ethernet/qlogic/qed/qed_dev.c:35:
+> > drivers/net/ethernet/qlogic/qed/qed_dev.c: In function 'qed_llh_add_mac_filter':
+> > ./include/linux/printk.h:358:2: warning: 'abs_ppfid' may be used uninitialized
+> > in this function [-Wmaybe-uninitialized]
+> >   printk(KERN_NOTICE pr_fmt(fmt), ##__VA_ARGS__)
+> >   ^~~~~~
+> > drivers/net/ethernet/qlogic/qed/qed_dev.c:983:17: note: 'abs_ppfid' was declared
+> > here
+> >   u8 filter_idx, abs_ppfid;
+> >                  ^~~~~~~~~
+> > 
+> > ...under W=1+.
+> > 
+> > Fix this by initializing it with zero.
+> > 
+> > Fixes: 79284adeb99e ("qed: Add llh ppfid interface and 100g support for
+> > offload protocols")
+> > Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
+> > Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
+> > Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
 > 
-> On Sun, 21 Jun 2020 13:15:54 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> >
-> > Hi all,
-> > 
-> > After merging the printk tree, today's linux-next build (x86_64
-> > allmodconfig) failed like this:
-> > 
-> > In file included from include/linux/printk.h:10,
-> >                  from include/linux/kernel.h:15,
-> >                  from include/linux/list.h:9,
-> >                  from include/linux/lockdep.h:43,
-> >                  from include/linux/spinlock_types.h:18,
-> >                  from include/linux/genalloc.h:32,
-> >                  from drivers/soc/fsl/qe/qe_common.c:16:
-> > include/linux/ratelimit_types.h:16:2: error: unknown type name 'raw_spinlock_t'
-> >    16 |  raw_spinlock_t lock;  /* protect the state */
-> >       |  ^~~~~~~~~~~~~~
-> > In file included from include/linux/wait.h:9,
-> >                  from include/linux/pid.h:6,
-> >                  from include/linux/sched.h:14,
-> >                  from include/linux/ratelimit.h:6,
-> >                  from include/linux/dev_printk.h:16,
-> >                  from include/linux/device.h:15,
-> >                  from include/linux/node.h:18,
-> >                  from include/linux/cpu.h:17,
-> >                  from include/linux/of_device.h:5,
-> >                  from drivers/soc/fsl/qe/qe_common.c:19:
-> > include/linux/ratelimit.h: In function 'ratelimit_state_init':
-> > include/linux/ratelimit.h:14:21: error: passing argument 1 of '__raw_spin_lock_init' from incompatible pointer type [-Werror=incompatible-pointer-types]
-> >    14 |  raw_spin_lock_init(&rs->lock);
-> > include/linux/spinlock.h:102:24: note: in definition of macro 'raw_spin_lock_init'
-> >   102 |  __raw_spin_lock_init((lock), #lock, &__key, LD_WAIT_SPIN); \
-> >       |                        ^~~~
-> > include/linux/spinlock.h:95:52: note: expected 'raw_spinlock_t *' {aka 'struct raw_spinlock *'} but argument is of type 'int *'
-> >    95 |   extern void __raw_spin_lock_init(raw_spinlock_t *lock, const char *name,
-> >       |                                    ~~~~~~~~~~~~~~~~^~~~
-> > 
-> > Caused by commit
-> > 
-> >   494c8512c90e ("printk: Make linux/printk.h self-contained")
-> > 
-> > changing include files is hadrer than it loooks :-(
-> > 
-> > I have used the printk tree from next-20200618 for today.
-> 
-> I am still getting this failure.
+> Please don't wrap Fixes tags:
 
-I have removed the problematic commit for now. It tried to remove
-some cyclic dependencies from heavily used include files. It clearly
-needs more love.
+Aww, second time in a row I fail on this. Sorry, will send v2
+soon.
 
-I am sorry for the late reaction. I have semi-lost mails from last 4 days.
-I am still trying to recover them.
+> Fixes tag: Fixes: 79284adeb99e ("qed: Add llh ppfid interface and 100g support for
+> Has these problem(s):
+> 	- Subject has leading but no trailing parentheses
+> 	- Subject has leading but no trailing quotes
 
-Best Regards,
-Petr
+Al
