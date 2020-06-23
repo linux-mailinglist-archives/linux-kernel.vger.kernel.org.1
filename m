@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F8F1204704
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:02:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DC2204700
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732416AbgFWCAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 22:00:12 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:59882 "EHLO
+        id S1732343AbgFWB74 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 21:59:56 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21138 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730888AbgFWB6y (ORCPT
+        by vger.kernel.org with ESMTP id S1732070AbgFWB66 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 21:58:54 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05N1rubR021811
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 18:58:52 -0700
+        Mon, 22 Jun 2020 21:58:58 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05N1uF9H029127
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 18:58:58 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=ydqxigM5yYic4GW9s4HzcT/umAZiOYZgw69ZMmKmh3U=;
- b=nQquhVTm1DIEEkcO8DJGiaHnswxNUE6U1uOojE8LTi1IMCyB8slDYnz0fyEILyVjnalA
- GDhHwKZB1XqM16fhrHMb25YcZN5b/xxxPM3vcRrWyMkbTNi8NacHYxiNnRr7m2dmfGR2
- SqOAHeaemsxvqz4vmCImOia+/jM2BE1kLXk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 31t2e8rphs-6
+ bh=lgIPlQEXQMl2FRknlz4CSxRj2aZBHfbCY7YgfC2TDXk=;
+ b=JxwtWvrclMX8/QJ6LPmFLkad/pvZOFRKHpCY3HrTEsukV8Py+pkjcwVH0Q+83PU1z5Nq
+ Vx2zu9HFtQPnKrbnAtIlfJWaLwp77HVE0X/WMqGMU7iVKsv2WfAl2sg4Fc2wCgmbs1C8
+ M/jYjhM+hY2hbKUHX1Ir+F0UiQPu0V3HboY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 31t2qq0m7j-8
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 18:58:52 -0700
-Received: from intmgw002.41.prn1.facebook.com (2620:10d:c085:208::11) by
- mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 18:58:58 -0700
+Received: from intmgw003.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 22 Jun 2020 18:58:51 -0700
+ 15.1.1979.3; Mon, 22 Jun 2020 18:58:53 -0700
 Received: by devvm1291.vll0.facebook.com (Postfix, from userid 111017)
-        id 6A0C726DD026; Mon, 22 Jun 2020 18:58:48 -0700 (PDT)
+        id 87B0826DD02C; Mon, 22 Jun 2020 18:58:48 -0700 (PDT)
 Smtp-Origin-Hostprefix: devvm
 From:   Roman Gushchin <guro@fb.com>
 Smtp-Origin-Hostname: devvm1291.vll0.facebook.com
@@ -43,9 +43,9 @@ CC:     Johannes Weiner <hannes@cmpxchg.org>,
         Vlastimil Babka <vbabka@suse.cz>, <kernel-team@fb.com>,
         <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
 Smtp-Origin-Cluster: vll0c01
-Subject: [PATCH v7 06/19] mm: memcg/slab: obj_cgroup API
-Date:   Mon, 22 Jun 2020 18:58:33 -0700
-Message-ID: <20200623015846.1141975-7-guro@fb.com>
+Subject: [PATCH v7 09/19] mm: memcg/slab: charge individual slab objects instead of pages
+Date:   Mon, 22 Jun 2020 18:58:36 -0700
+Message-ID: <20200623015846.1141975-10-guro@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200623015846.1141975-1-guro@fb.com>
 References: <20200623015846.1141975-1-guro@fb.com>
@@ -55,545 +55,303 @@ X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-06-22_16:2020-06-22,2020-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 spamscore=0
- impostorscore=0 mlxscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
- suspectscore=2 bulkscore=0 cotscore=-2147483648 lowpriorityscore=0
- mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006230012
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ priorityscore=1501 spamscore=0 cotscore=-2147483648 adultscore=0
+ malwarescore=0 clxscore=1015 impostorscore=0 phishscore=0 mlxscore=0
+ bulkscore=0 mlxlogscore=999 suspectscore=2 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006230012
 X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Obj_cgroup API provides an ability to account sub-page sized kernel
-objects, which potentially outlive the original memory cgroup.
+Switch to per-object accounting of non-root slab objects.
 
-The top-level API consists of the following functions:
-  bool obj_cgroup_tryget(struct obj_cgroup *objcg);
-  void obj_cgroup_get(struct obj_cgroup *objcg);
-  void obj_cgroup_put(struct obj_cgroup *objcg);
+Charging is performed using obj_cgroup API in the pre_alloc hook.
+Obj_cgroup is charged with the size of the object and the size of
+metadata: as now it's the size of an obj_cgroup pointer.  If the amount o=
+f
+memory has been charged successfully, the actual allocation code is
+executed.  Otherwise, -ENOMEM is returned.
 
-  int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)=
-;
-  void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size);
+In the post_alloc hook if the actual allocation succeeded, corresponding
+vmstats are bumped and the obj_cgroup pointer is saved.  Otherwise, the
+charge is canceled.
 
-  struct mem_cgroup *obj_cgroup_memcg(struct obj_cgroup *objcg);
-  struct obj_cgroup *get_obj_cgroup_from_current(void);
+On the free path obj_cgroup pointer is obtained and used to uncharge the
+size of the releasing object.
 
-Object cgroup is basically a pointer to a memory cgroup with a per-cpu
-reference counter.  It substitutes a memory cgroup in places where it's
-necessary to charge a custom amount of bytes instead of pages.
+Memcg and lruvec counters are now representing only memory used by active
+slab objects and do not include the free space.  The free space is shared
+and doesn't belong to any specific cgroup.
 
-All charged memory rounded down to pages is charged to the corresponding
-memory cgroup using __memcg_kmem_charge().
+Global per-node slab vmstats are still modified from
+(un)charge_slab_page() functions.  The idea is to keep all slab pages
+accounted as slab pages on system level.
 
-It implements reparenting: on memcg offlining it's getting reattached to
-the parent memory cgroup.  Each online memory cgroup has an associated
-active object cgroup to handle new allocations and the list of all
-attached object cgroups.  On offlining of a cgroup this list is reparente=
-d
-and for each object cgroup in the list the memcg pointer is swapped to th=
-e
-parent memory cgroup.  It prevents long-living objects from pinning the
-original memory cgroup in the memory.
-
-The implementation is based on byte-sized per-cpu stocks.  A sub-page
-sized leftover is stored in an atomic field, which is a part of obj_cgrou=
-p
-object.  So on cgroup offlining the leftover is automatically reparented.
-
-memcg->objcg is rcu protected.  objcg->memcg is a raw pointer, which is
-always pointing at a memory cgroup, but can be atomically swapped to the
-parent memory cgroup.  So a user must ensure the lifetime of the
-cgroup, e.g.  grab rcu_read_lock or css_set_lock.
-
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
 Signed-off-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 ---
- include/linux/memcontrol.h |  51 +++++++
- mm/memcontrol.c            | 288 ++++++++++++++++++++++++++++++++++++-
- 2 files changed, 338 insertions(+), 1 deletion(-)
+ mm/slab.h | 173 ++++++++++++++++++++++++------------------------------
+ 1 file changed, 77 insertions(+), 96 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index b250f8197710..f2f9d5d6b7d1 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -23,6 +23,7 @@
- #include <linux/page-flags.h>
-=20
- struct mem_cgroup;
-+struct obj_cgroup;
- struct page;
- struct mm_struct;
- struct kmem_cache;
-@@ -192,6 +193,22 @@ struct memcg_cgwb_frn {
- 	struct wb_completion done;	/* tracks in-flight foreign writebacks */
- };
-=20
-+/*
-+ * Bucket for arbitrarily byte-sized objects charged to a memory
-+ * cgroup. The bucket can be reparented in one piece when the cgroup
-+ * is destroyed, without having to round up the individual references
-+ * of all live memory objects in the wild.
-+ */
-+struct obj_cgroup {
-+	struct percpu_ref refcnt;
-+	struct mem_cgroup *memcg;
-+	atomic_t nr_charged_bytes;
-+	union {
-+		struct list_head list;
-+		struct rcu_head rcu;
-+	};
-+};
-+
- /*
-  * The memory controller data structure. The memory controller controls =
-both
-  * page cache and RSS per cgroup. We would eventually like to provide
-@@ -301,6 +318,8 @@ struct mem_cgroup {
- 	int kmemcg_id;
- 	enum memcg_kmem_state kmem_state;
- 	struct list_head kmem_caches;
-+	struct obj_cgroup __rcu *objcg;
-+	struct list_head objcg_list; /* list of inherited objcgs */
- #endif
-=20
- #ifdef CONFIG_CGROUP_WRITEBACK
-@@ -416,6 +435,33 @@ struct mem_cgroup *mem_cgroup_from_css(struct cgroup=
-_subsys_state *css){
- 	return css ? container_of(css, struct mem_cgroup, css) : NULL;
+diff --git a/mm/slab.h b/mm/slab.h
+index c37a50f26e41..09d2c659cb68 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -381,72 +381,6 @@ static inline struct mem_cgroup *memcg_from_slab_pag=
+e(struct page *page)
+ 	return NULL;
  }
 =20
-+static inline bool obj_cgroup_tryget(struct obj_cgroup *objcg)
-+{
-+	return percpu_ref_tryget(&objcg->refcnt);
-+}
-+
-+static inline void obj_cgroup_get(struct obj_cgroup *objcg)
-+{
-+	percpu_ref_get(&objcg->refcnt);
-+}
-+
-+static inline void obj_cgroup_put(struct obj_cgroup *objcg)
-+{
-+	percpu_ref_put(&objcg->refcnt);
-+}
-+
-+/*
-+ * After the initialization objcg->memcg is always pointing at
-+ * a valid memcg, but can be atomically swapped to the parent memcg.
-+ *
-+ * The caller must ensure that the returned memcg won't be released:
-+ * e.g. acquire the rcu_read_lock or css_set_lock.
-+ */
-+static inline struct mem_cgroup *obj_cgroup_memcg(struct obj_cgroup *obj=
-cg)
-+{
-+	return READ_ONCE(objcg->memcg);
-+}
-+
- static inline void mem_cgroup_put(struct mem_cgroup *memcg)
+-/*
+- * Charge the slab page belonging to the non-root kmem_cache.
+- * Can be called for non-root kmem_caches only.
+- */
+-static __always_inline int memcg_charge_slab(struct page *page,
+-					     gfp_t gfp, int order,
+-					     struct kmem_cache *s)
+-{
+-	int nr_pages =3D 1 << order;
+-	struct mem_cgroup *memcg;
+-	struct lruvec *lruvec;
+-	int ret;
+-
+-	rcu_read_lock();
+-	memcg =3D READ_ONCE(s->memcg_params.memcg);
+-	while (memcg && !css_tryget_online(&memcg->css))
+-		memcg =3D parent_mem_cgroup(memcg);
+-	rcu_read_unlock();
+-
+-	if (unlikely(!memcg || mem_cgroup_is_root(memcg))) {
+-		mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
+-				    nr_pages << PAGE_SHIFT);
+-		percpu_ref_get_many(&s->memcg_params.refcnt, nr_pages);
+-		return 0;
+-	}
+-
+-	ret =3D memcg_kmem_charge(memcg, gfp, nr_pages);
+-	if (ret)
+-		goto out;
+-
+-	lruvec =3D mem_cgroup_lruvec(memcg, page_pgdat(page));
+-	mod_lruvec_state(lruvec, cache_vmstat_idx(s), nr_pages << PAGE_SHIFT);
+-
+-	percpu_ref_get_many(&s->memcg_params.refcnt, nr_pages);
+-out:
+-	css_put(&memcg->css);
+-	return ret;
+-}
+-
+-/*
+- * Uncharge a slab page belonging to a non-root kmem_cache.
+- * Can be called for non-root kmem_caches only.
+- */
+-static __always_inline void memcg_uncharge_slab(struct page *page, int o=
+rder,
+-						struct kmem_cache *s)
+-{
+-	int nr_pages =3D 1 << order;
+-	struct mem_cgroup *memcg;
+-	struct lruvec *lruvec;
+-
+-	rcu_read_lock();
+-	memcg =3D READ_ONCE(s->memcg_params.memcg);
+-	if (likely(!mem_cgroup_is_root(memcg))) {
+-		lruvec =3D mem_cgroup_lruvec(memcg, page_pgdat(page));
+-		mod_lruvec_state(lruvec, cache_vmstat_idx(s),
+-				 -(nr_pages << PAGE_SHIFT));
+-		memcg_kmem_uncharge(memcg, nr_pages);
+-	} else {
+-		mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
+-				    -(nr_pages << PAGE_SHIFT));
+-	}
+-	rcu_read_unlock();
+-
+-	percpu_ref_put_many(&s->memcg_params.refcnt, nr_pages);
+-}
+-
+ static inline int memcg_alloc_page_obj_cgroups(struct page *page,
+ 					       struct kmem_cache *s, gfp_t gfp)
  {
- 	if (memcg)
-@@ -1368,6 +1414,11 @@ void __memcg_kmem_uncharge(struct mem_cgroup *memc=
-g, unsigned int nr_pages);
- int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
- void __memcg_kmem_uncharge_page(struct page *page, int order);
-=20
-+struct obj_cgroup *get_obj_cgroup_from_current(void);
-+
-+int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size);
-+void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size);
-+
- extern struct static_key_false memcg_kmem_enabled_key;
- extern struct workqueue_struct *memcg_kmem_cache_wq;
-=20
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 3e5597f8dec5..407f90f7a2f7 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -257,6 +257,98 @@ struct cgroup_subsys_state *vmpressure_to_css(struct=
- vmpressure *vmpr)
+@@ -469,6 +403,47 @@ static inline void memcg_free_page_obj_cgroups(struc=
+t page *page)
+ 	page->obj_cgroups =3D NULL;
  }
 =20
- #ifdef CONFIG_MEMCG_KMEM
-+extern spinlock_t css_set_lock;
-+
-+static void obj_cgroup_release(struct percpu_ref *ref)
++static inline size_t obj_full_size(struct kmem_cache *s)
 +{
-+	struct obj_cgroup *objcg =3D container_of(ref, struct obj_cgroup, refcn=
-t);
-+	struct mem_cgroup *memcg;
-+	unsigned int nr_bytes;
-+	unsigned int nr_pages;
-+	unsigned long flags;
-+
 +	/*
-+	 * At this point all allocated objects are freed, and
-+	 * objcg->nr_charged_bytes can't have an arbitrary byte value.
-+	 * However, it can be PAGE_SIZE or (x * PAGE_SIZE).
-+	 *
-+	 * The following sequence can lead to it:
-+	 * 1) CPU0: objcg =3D=3D stock->cached_objcg
-+	 * 2) CPU1: we do a small allocation (e.g. 92 bytes),
-+	 *          PAGE_SIZE bytes are charged
-+	 * 3) CPU1: a process from another memcg is allocating something,
-+	 *          the stock if flushed,
-+	 *          objcg->nr_charged_bytes =3D PAGE_SIZE - 92
-+	 * 5) CPU0: we do release this object,
-+	 *          92 bytes are added to stock->nr_bytes
-+	 * 6) CPU0: stock is flushed,
-+	 *          92 bytes are added to objcg->nr_charged_bytes
-+	 *
-+	 * In the result, nr_charged_bytes =3D=3D PAGE_SIZE.
-+	 * This page will be uncharged in obj_cgroup_release().
++	 * For each accounted object there is an extra space which is used
++	 * to store obj_cgroup membership. Charge it too.
 +	 */
-+	nr_bytes =3D atomic_read(&objcg->nr_charged_bytes);
-+	WARN_ON_ONCE(nr_bytes & (PAGE_SIZE - 1));
-+	nr_pages =3D nr_bytes >> PAGE_SHIFT;
-+
-+	spin_lock_irqsave(&css_set_lock, flags);
-+	memcg =3D obj_cgroup_memcg(objcg);
-+	if (nr_pages)
-+		__memcg_kmem_uncharge(memcg, nr_pages);
-+	list_del(&objcg->list);
-+	mem_cgroup_put(memcg);
-+	spin_unlock_irqrestore(&css_set_lock, flags);
-+
-+	percpu_ref_exit(ref);
-+	kfree_rcu(objcg, rcu);
++	return s->size + sizeof(struct obj_cgroup *);
 +}
 +
-+static struct obj_cgroup *obj_cgroup_alloc(void)
++static inline struct kmem_cache *memcg_slab_pre_alloc_hook(struct kmem_c=
+ache *s,
++						struct obj_cgroup **objcgp,
++						size_t objects, gfp_t flags)
 +{
-+	struct obj_cgroup *objcg;
-+	int ret;
++	struct kmem_cache *cachep;
 +
-+	objcg =3D kzalloc(sizeof(struct obj_cgroup), GFP_KERNEL);
-+	if (!objcg)
-+		return NULL;
++	cachep =3D memcg_kmem_get_cache(s, objcgp);
++	if (is_root_cache(cachep))
++		return s;
 +
-+	ret =3D percpu_ref_init(&objcg->refcnt, obj_cgroup_release, 0,
-+			      GFP_KERNEL);
-+	if (ret) {
-+		kfree(objcg);
-+		return NULL;
++	if (obj_cgroup_charge(*objcgp, flags, objects * obj_full_size(s))) {
++		memcg_kmem_put_cache(cachep);
++		cachep =3D NULL;
 +	}
-+	INIT_LIST_HEAD(&objcg->list);
-+	return objcg;
++
++	return cachep;
 +}
 +
-+static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
-+				  struct mem_cgroup *parent)
++static inline void mod_objcg_state(struct obj_cgroup *objcg,
++				   struct pglist_data *pgdat,
++				   int idx, int nr)
 +{
-+	struct obj_cgroup *objcg, *iter;
-+
-+	objcg =3D rcu_replace_pointer(memcg->objcg, NULL, true);
-+
-+	spin_lock_irq(&css_set_lock);
-+
-+	/* Move active objcg to the parent's list */
-+	xchg(&objcg->memcg, parent);
-+	css_get(&parent->css);
-+	list_add(&objcg->list, &parent->objcg_list);
-+
-+	/* Move already reparented objcgs to the parent's list */
-+	list_for_each_entry(iter, &memcg->objcg_list, list) {
-+		css_get(&parent->css);
-+		xchg(&iter->memcg, parent);
-+		css_put(&memcg->css);
-+	}
-+	list_splice(&memcg->objcg_list, &parent->objcg_list);
-+
-+	spin_unlock_irq(&css_set_lock);
-+
-+	percpu_ref_kill(&objcg->refcnt);
-+}
-+
- /*
-  * This will be the memcg's index in each cache's ->memcg_params.memcg_c=
-aches.
-  * The main reason for not using cgroup id for this:
-@@ -2047,6 +2139,12 @@ EXPORT_SYMBOL(unlock_page_memcg);
- struct memcg_stock_pcp {
- 	struct mem_cgroup *cached; /* this never be root cgroup */
- 	unsigned int nr_pages;
-+
-+#ifdef CONFIG_MEMCG_KMEM
-+	struct obj_cgroup *cached_objcg;
-+	unsigned int nr_bytes;
-+#endif
-+
- 	struct work_struct work;
- 	unsigned long flags;
- #define FLUSHING_CACHED_CHARGE	0
-@@ -2054,6 +2152,22 @@ struct memcg_stock_pcp {
- static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock);
- static DEFINE_MUTEX(percpu_charge_mutex);
-=20
-+#ifdef CONFIG_MEMCG_KMEM
-+static void drain_obj_stock(struct memcg_stock_pcp *stock);
-+static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
-+				     struct mem_cgroup *root_memcg);
-+
-+#else
-+static inline void drain_obj_stock(struct memcg_stock_pcp *stock)
-+{
-+}
-+static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
-+				     struct mem_cgroup *root_memcg)
-+{
-+	return false;
-+}
-+#endif
-+
- /**
-  * consume_stock: Try to consume stocked charge on this cpu.
-  * @memcg: memcg to consume from.
-@@ -2120,6 +2234,7 @@ static void drain_local_stock(struct work_struct *d=
-ummy)
- 	local_irq_save(flags);
-=20
- 	stock =3D this_cpu_ptr(&memcg_stock);
-+	drain_obj_stock(stock);
- 	drain_stock(stock);
- 	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
-=20
-@@ -2179,6 +2294,8 @@ static void drain_all_stock(struct mem_cgroup *root=
-_memcg)
- 		if (memcg && stock->nr_pages &&
- 		    mem_cgroup_is_descendant(memcg, root_memcg))
- 			flush =3D true;
-+		if (obj_stock_flush_required(stock, root_memcg))
-+			flush =3D true;
- 		rcu_read_unlock();
-=20
- 		if (flush &&
-@@ -2705,6 +2822,30 @@ struct mem_cgroup *mem_cgroup_from_obj(void *p)
- 	return page->mem_cgroup;
- }
-=20
-+__always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
-+{
-+	struct obj_cgroup *objcg =3D NULL;
 +	struct mem_cgroup *memcg;
-+
-+	if (unlikely(!current->mm && !current->active_memcg))
-+		return NULL;
++	struct lruvec *lruvec;
 +
 +	rcu_read_lock();
-+	if (unlikely(current->active_memcg))
-+		memcg =3D rcu_dereference(current->active_memcg);
-+	else
-+		memcg =3D mem_cgroup_from_task(current);
-+
-+	for (; memcg !=3D root_mem_cgroup; memcg =3D parent_mem_cgroup(memcg)) =
-{
-+		objcg =3D rcu_dereference(memcg->objcg);
-+		if (objcg && obj_cgroup_tryget(objcg))
-+			break;
-+	}
-+	rcu_read_unlock();
-+
-+	return objcg;
-+}
-+
- static int memcg_alloc_cache_id(void)
- {
- 	int id, size;
-@@ -2996,6 +3137,140 @@ void __memcg_kmem_uncharge_page(struct page *page=
-, int order)
- 	if (PageKmemcg(page))
- 		__ClearPageKmemcg(page);
- }
-+
-+static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_=
-bytes)
-+{
-+	struct memcg_stock_pcp *stock;
-+	unsigned long flags;
-+	bool ret =3D false;
-+
-+	local_irq_save(flags);
-+
-+	stock =3D this_cpu_ptr(&memcg_stock);
-+	if (objcg =3D=3D stock->cached_objcg && stock->nr_bytes >=3D nr_bytes) =
-{
-+		stock->nr_bytes -=3D nr_bytes;
-+		ret =3D true;
-+	}
-+
-+	local_irq_restore(flags);
-+
-+	return ret;
-+}
-+
-+static void drain_obj_stock(struct memcg_stock_pcp *stock)
-+{
-+	struct obj_cgroup *old =3D stock->cached_objcg;
-+
-+	if (!old)
-+		return;
-+
-+	if (stock->nr_bytes) {
-+		unsigned int nr_pages =3D stock->nr_bytes >> PAGE_SHIFT;
-+		unsigned int nr_bytes =3D stock->nr_bytes & (PAGE_SIZE - 1);
-+
-+		if (nr_pages) {
-+			rcu_read_lock();
-+			__memcg_kmem_uncharge(obj_cgroup_memcg(old), nr_pages);
-+			rcu_read_unlock();
-+		}
-+
-+		/*
-+		 * The leftover is flushed to the centralized per-memcg value.
-+		 * On the next attempt to refill obj stock it will be moved
-+		 * to a per-cpu stock (probably, on an other CPU), see
-+		 * refill_obj_stock().
-+		 *
-+		 * How often it's flushed is a trade-off between the memory
-+		 * limit enforcement accuracy and potential CPU contention,
-+		 * so it might be changed in the future.
-+		 */
-+		atomic_add(nr_bytes, &old->nr_charged_bytes);
-+		stock->nr_bytes =3D 0;
-+	}
-+
-+	obj_cgroup_put(old);
-+	stock->cached_objcg =3D NULL;
-+}
-+
-+static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
-+				     struct mem_cgroup *root_memcg)
-+{
-+	struct mem_cgroup *memcg;
-+
-+	if (stock->cached_objcg) {
-+		memcg =3D obj_cgroup_memcg(stock->cached_objcg);
-+		if (memcg && mem_cgroup_is_descendant(memcg, root_memcg))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
-+static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_b=
-ytes)
-+{
-+	struct memcg_stock_pcp *stock;
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+
-+	stock =3D this_cpu_ptr(&memcg_stock);
-+	if (stock->cached_objcg !=3D objcg) { /* reset if necessary */
-+		drain_obj_stock(stock);
-+		obj_cgroup_get(objcg);
-+		stock->cached_objcg =3D objcg;
-+		stock->nr_bytes =3D atomic_xchg(&objcg->nr_charged_bytes, 0);
-+	}
-+	stock->nr_bytes +=3D nr_bytes;
-+
-+	if (stock->nr_bytes > PAGE_SIZE)
-+		drain_obj_stock(stock);
-+
-+	local_irq_restore(flags);
-+}
-+
-+int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
-+{
-+	struct mem_cgroup *memcg;
-+	unsigned int nr_pages, nr_bytes;
-+	int ret;
-+
-+	if (consume_obj_stock(objcg, size))
-+		return 0;
-+
-+	/*
-+	 * In theory, memcg->nr_charged_bytes can have enough
-+	 * pre-charged bytes to satisfy the allocation. However,
-+	 * flushing memcg->nr_charged_bytes requires two atomic
-+	 * operations, and memcg->nr_charged_bytes can't be big,
-+	 * so it's better to ignore it and try grab some new pages.
-+	 * memcg->nr_charged_bytes will be flushed in
-+	 * refill_obj_stock(), called from this function or
-+	 * independently later.
-+	 */
-+	rcu_read_lock();
 +	memcg =3D obj_cgroup_memcg(objcg);
-+	css_get(&memcg->css);
++	lruvec =3D mem_cgroup_lruvec(memcg, pgdat);
++	mod_memcg_lruvec_state(lruvec, idx, nr);
 +	rcu_read_unlock();
-+
-+	nr_pages =3D size >> PAGE_SHIFT;
-+	nr_bytes =3D size & (PAGE_SIZE - 1);
-+
-+	if (nr_bytes)
-+		nr_pages +=3D 1;
-+
-+	ret =3D __memcg_kmem_charge(memcg, gfp, nr_pages);
-+	if (!ret && nr_bytes)
-+		refill_obj_stock(objcg, PAGE_SIZE - nr_bytes);
-+
-+	css_put(&memcg->css);
-+	return ret;
 +}
 +
-+void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
-+{
-+	refill_obj_stock(objcg, size);
-+}
+ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+ 					      struct obj_cgroup *objcg,
+ 					      size_t size, void **p)
+@@ -483,6 +458,10 @@ static inline void memcg_slab_post_alloc_hook(struct=
+ kmem_cache *s,
+ 			off =3D obj_to_index(s, page, p[i]);
+ 			obj_cgroup_get(objcg);
+ 			page_obj_cgroups(page)[off] =3D objcg;
++			mod_objcg_state(objcg, page_pgdat(page),
++					cache_vmstat_idx(s), obj_full_size(s));
++		} else {
++			obj_cgroup_uncharge(objcg, obj_full_size(s));
+ 		}
+ 	}
+ 	obj_cgroup_put(objcg);
+@@ -501,6 +480,11 @@ static inline void memcg_slab_free_hook(struct kmem_=
+cache *s, struct page *page,
+ 	off =3D obj_to_index(s, page, p);
+ 	objcg =3D page_obj_cgroups(page)[off];
+ 	page_obj_cgroups(page)[off] =3D NULL;
 +
- #endif /* CONFIG_MEMCG_KMEM */
++	obj_cgroup_uncharge(objcg, obj_full_size(s));
++	mod_objcg_state(objcg, page_pgdat(page), cache_vmstat_idx(s),
++			-obj_full_size(s));
++
+ 	obj_cgroup_put(objcg);
+ }
 =20
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-@@ -3416,6 +3691,7 @@ static void memcg_flush_percpu_vmevents(struct mem_=
-cgroup *memcg)
- #ifdef CONFIG_MEMCG_KMEM
- static int memcg_online_kmem(struct mem_cgroup *memcg)
+@@ -542,17 +526,6 @@ static inline struct mem_cgroup *memcg_from_slab_pag=
+e(struct page *page)
+ 	return NULL;
+ }
+=20
+-static inline int memcg_charge_slab(struct page *page, gfp_t gfp, int or=
+der,
+-				    struct kmem_cache *s)
+-{
+-	return 0;
+-}
+-
+-static inline void memcg_uncharge_slab(struct page *page, int order,
+-				       struct kmem_cache *s)
+-{
+-}
+-
+ static inline int memcg_alloc_page_obj_cgroups(struct page *page,
+ 					       struct kmem_cache *s, gfp_t gfp)
  {
-+	struct obj_cgroup *objcg;
- 	int memcg_id;
+@@ -563,6 +536,13 @@ static inline void memcg_free_page_obj_cgroups(struc=
+t page *page)
+ {
+ }
 =20
- 	if (cgroup_memory_nokmem)
-@@ -3428,6 +3704,14 @@ static int memcg_online_kmem(struct mem_cgroup *me=
-mcg)
- 	if (memcg_id < 0)
- 		return memcg_id;
-=20
-+	objcg =3D obj_cgroup_alloc();
-+	if (!objcg) {
-+		memcg_free_cache_id(memcg_id);
-+		return -ENOMEM;
-+	}
-+	objcg->memcg =3D memcg;
-+	rcu_assign_pointer(memcg->objcg, objcg);
++static inline struct kmem_cache *memcg_slab_pre_alloc_hook(struct kmem_c=
+ache *s,
++						struct obj_cgroup **objcgp,
++						size_t objects, gfp_t flags)
++{
++	return NULL;
++}
 +
- 	static_branch_inc(&memcg_kmem_enabled_key);
- 	/*
- 	 * A memory cgroup is considered kmem-online as soon as it gets
-@@ -3463,9 +3747,10 @@ static void memcg_offline_kmem(struct mem_cgroup *=
-memcg)
- 		parent =3D root_mem_cgroup;
+ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+ 					      struct obj_cgroup *objcg,
+ 					      size_t size, void **p)
+@@ -600,32 +580,33 @@ static __always_inline int charge_slab_page(struct =
+page *page,
+ 					    gfp_t gfp, int order,
+ 					    struct kmem_cache *s)
+ {
+-	int ret;
+-
+-	if (is_root_cache(s)) {
+-		mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
+-				    PAGE_SIZE << order);
+-		return 0;
+-	}
++#ifdef CONFIG_MEMCG_KMEM
++	if (memcg_kmem_enabled() && !is_root_cache(s)) {
++		int ret;
 =20
- 	/*
--	 * Deactivate and reparent kmem_caches.
-+	 * Deactivate and reparent kmem_caches and objcgs.
- 	 */
- 	memcg_deactivate_kmem_caches(memcg, parent);
-+	memcg_reparent_objcgs(memcg, parent);
+-	ret =3D memcg_alloc_page_obj_cgroups(page, s, gfp);
+-	if (ret)
+-		return ret;
++		ret =3D memcg_alloc_page_obj_cgroups(page, s, gfp);
++		if (ret)
++			return ret;
 =20
- 	kmemcg_id =3D memcg->kmemcg_id;
- 	BUG_ON(kmemcg_id < 0);
-@@ -5034,6 +5319,7 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
- 	memcg->socket_pressure =3D jiffies;
- #ifdef CONFIG_MEMCG_KMEM
- 	memcg->kmemcg_id =3D -1;
-+	INIT_LIST_HEAD(&memcg->objcg_list);
- #endif
- #ifdef CONFIG_CGROUP_WRITEBACK
- 	INIT_LIST_HEAD(&memcg->cgwb_list);
+-	return memcg_charge_slab(page, gfp, order, s);
++		percpu_ref_get_many(&s->memcg_params.refcnt, 1 << order);
++	}
++#endif
++	mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
++			    PAGE_SIZE << order);
++	return 0;
+ }
+=20
+ static __always_inline void uncharge_slab_page(struct page *page, int or=
+der,
+ 					       struct kmem_cache *s)
+ {
+-	if (is_root_cache(s)) {
+-		mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
+-				    -(PAGE_SIZE << order));
+-		return;
++#ifdef CONFIG_MEMCG_KMEM
++	if (memcg_kmem_enabled() && !is_root_cache(s)) {
++		memcg_free_page_obj_cgroups(page);
++		percpu_ref_put_many(&s->memcg_params.refcnt, 1 << order);
+ 	}
+-
+-	memcg_free_page_obj_cgroups(page);
+-	memcg_uncharge_slab(page, order, s);
++#endif
++	mod_node_page_state(page_pgdat(page), cache_vmstat_idx(s),
++			    -(PAGE_SIZE << order));
+ }
+=20
+ static inline struct kmem_cache *cache_from_obj(struct kmem_cache *s, vo=
+id *x)
+@@ -691,7 +672,7 @@ static inline struct kmem_cache *slab_pre_alloc_hook(=
+struct kmem_cache *s,
+=20
+ 	if (memcg_kmem_enabled() &&
+ 	    ((flags & __GFP_ACCOUNT) || (s->flags & SLAB_ACCOUNT)))
+-		return memcg_kmem_get_cache(s, objcgp);
++		return memcg_slab_pre_alloc_hook(s, objcgp, size, flags);
+=20
+ 	return s;
+ }
 --=20
 2.26.2
 
