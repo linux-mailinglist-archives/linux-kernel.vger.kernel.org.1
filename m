@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4491205F80
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15AD5206043
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391158AbgFWUdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:33:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54202 "EHLO mail.kernel.org"
+        id S2403859AbgFWUk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:40:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37190 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391380AbgFWUdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:33:04 -0400
+        id S2392284AbgFWUkz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:40:55 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B3D5820702;
-        Tue, 23 Jun 2020 20:33:03 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14D5F2053B;
+        Tue, 23 Jun 2020 20:40:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944384;
-        bh=R8g0zEbyqFw6D+ciYXIPii4CJ0lk9q9fkxWVCc92rdE=;
+        s=default; t=1592944855;
+        bh=rzvja3UF3NYTTw7BxVOgNjPDOe6GvHtvLbfBgJcCI2o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SPJ/NOMI9gd5XNcDhPtyZPCjBQhW8+AvCow8W1rKxHuM4wXGuYwC5CuY/NlK0ftRI
-         DtL1IUWKDQzwIq94tcqiP6MGNi9v0ScSJTC3GZfdhmETbVD1KwyKVTugjhOud4TuSN
-         wEyD9eJKOTHIbGU7btXh9ilS/3nJb72uZxN5zaYg=
+        b=xE4EK4jm6dyppYMzJ/qm7nTkF07LwsjBL9KZvAZzrGpLTWRZR0doH0ZSEGxB5wswu
+         rLgdjqWI8T/OG2Ye4WEo4exTVM6EzySEQiSMJoIoIbSvlKelStFsNCMtqhB0BcfUYx
+         4ZkE1trKEUmp9sVn6vClUJuOlMq6Rv5h9c3GGORs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lyude Paul <lyude@redhat.com>,
-        Sean Paul <sean@poorly.run>
-Subject: [PATCH 5.4 283/314] drm/dp_mst: Reformat drm_dp_check_act_status() a bit
-Date:   Tue, 23 Jun 2020 21:57:58 +0200
-Message-Id: <20200623195352.480467724@linuxfoundation.org>
+        stable@vger.kernel.org, Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 151/206] drivers/perf: hisi: Fix wrong value for all counters enable
+Date:   Tue, 23 Jun 2020 21:57:59 +0200
+Message-Id: <20200623195324.417084094@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,72 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lyude Paul <lyude@redhat.com>
+From: Shaokun Zhang <zhangshaokun@hisilicon.com>
 
-commit a5cb5fa6c3a5c2cf492db667b8670ee7b044b79f upstream.
+[ Upstream commit 961abd78adcb4c72c343fcd9f9dc5e2ebbe9b448 ]
 
-Just add a bit more line wrapping, get rid of some extraneous
-whitespace, remove an unneeded goto label, and move around some variable
-declarations. No functional changes here.
+In L3C uncore PMU drivers, bit16 is used to control all counters enable &
+disable. Wrong value is given in the driver and its default value is 1'b1,
+it can work because each PMU counter has its own control bits too.
+Let's fix the wrong value.
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-[this isn't a fix, but it's needed for the fix that comes after this]
-Fixes: ad7f8a1f9ced ("drm/helper: add Displayport multi-stream helper (v0.6)")
-Cc: Sean Paul <sean@poorly.run>
-Cc: <stable@vger.kernel.org> # v3.17+
-Reviewed-by: Sean Paul <sean@poorly.run>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200406221253.1307209-3-lyude@redhat.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 2940bc433370 ("perf: hisi: Add support for HiSilicon SoC L3C PMU driver")
+Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Link: https://lore.kernel.org/r/1591350221-32275-1-git-send-email-zhangshaokun@hisilicon.com
+Signed-off-by: Will Deacon <will@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/drm_dp_mst_topology.c |   22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
+ drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -3507,33 +3507,31 @@ fail:
-  */
- int drm_dp_check_act_status(struct drm_dp_mst_topology_mgr *mgr)
- {
-+	int count = 0, ret;
- 	u8 status;
--	int ret;
--	int count = 0;
+diff --git a/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c b/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c
+index 0bde5d919b2eb..4aff69cbb9032 100644
+--- a/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c
++++ b/drivers/perf/hisilicon/hisi_uncore_l3c_pmu.c
+@@ -38,7 +38,7 @@
+ /* L3C has 8-counters */
+ #define L3C_NR_COUNTERS		0x8
  
- 	do {
--		ret = drm_dp_dpcd_readb(mgr->aux, DP_PAYLOAD_TABLE_UPDATE_STATUS, &status);
--
-+		ret = drm_dp_dpcd_readb(mgr->aux,
-+					DP_PAYLOAD_TABLE_UPDATE_STATUS,
-+					&status);
- 		if (ret < 0) {
--			DRM_DEBUG_KMS("failed to read payload table status %d\n", ret);
--			goto fail;
-+			DRM_DEBUG_KMS("failed to read payload table status %d\n",
-+				      ret);
-+			return ret;
- 		}
+-#define L3C_PERF_CTRL_EN	0x20000
++#define L3C_PERF_CTRL_EN	0x10000
+ #define L3C_EVTYPE_NONE		0xff
  
- 		if (status & DP_PAYLOAD_ACT_HANDLED)
- 			break;
- 		count++;
- 		udelay(100);
--
- 	} while (count < 30);
- 
- 	if (!(status & DP_PAYLOAD_ACT_HANDLED)) {
--		DRM_DEBUG_KMS("failed to get ACT bit %d after %d retries\n", status, count);
--		ret = -EINVAL;
--		goto fail;
-+		DRM_DEBUG_KMS("failed to get ACT bit %d after %d retries\n",
-+			      status, count);
-+		return -EINVAL;
- 	}
- 	return 0;
--fail:
--	return ret;
- }
- EXPORT_SYMBOL(drm_dp_check_act_status);
- 
+ /*
+-- 
+2.25.1
+
 
 
