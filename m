@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CA7205F6A
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:33:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFC1820608A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391351AbgFWUcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:32:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53516 "EHLO mail.kernel.org"
+        id S2403943AbgFWUn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:43:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391332AbgFWUcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:32:36 -0400
+        id S2392556AbgFWUnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:43:49 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 507F220702;
-        Tue, 23 Jun 2020 20:32:35 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2802521883;
+        Tue, 23 Jun 2020 20:43:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944355;
-        bh=Qrr1m8gojHbUX+fhFTpH2yIQvrlfbVIgli/PbtQG+OU=;
+        s=default; t=1592945029;
+        bh=gHBYt0rtO8XiuzadhP1xVHGHbMVIBh7cuuvOqycPJRM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hY11oDHlecZVKj7OhHMGIM4kzzedh3736QmZuHDIvAybt4myDuth3XAKilj//UEZG
-         21xQisl1+5b288D3lNFnAhra4w8Cn1S5lseMlD6WqALVESaIztHjEYKKXx/b1QjBUW
-         3J5L1ykDESPMR4BmpH9XosriKuEaodFsKZ2IABag=
+        b=WfCEoMEV75x07gbd2/+dVGMLxwhjzJRaSKvWtKUrIqy7u9tfD9KvJAvqaGSFPteUM
+         bcFtzjQDKWMQzbuCysPiX9MpkW86oG18SvSEqZx1hrBuIptAyoU8WzyR65aeipklsQ
+         kV3NUQnd8RDDQ/9jaVSdbyUDXYWrJ9zSINIekPpk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        stable@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 273/314] afs: Fix the mapping of the UAEOVERFLOW abort code
+Subject: [PATCH 4.14 012/136] scsi: qedi: Check for buffer overflow in qedi_set_path()
 Date:   Tue, 23 Jun 2020 21:57:48 +0200
-Message-Id: <20200623195352.007615514@linuxfoundation.org>
+Message-Id: <20200623195304.236781281@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
+References: <20200623195303.601828702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,37 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 4ec89596d06bd481ba827f3b409b938d63914157 ]
+[ Upstream commit 4a4c0cfb4be74e216dd4446b254594707455bfc6 ]
 
-Abort code UAEOVERFLOW is returned when we try and set a time that's out of
-range, but it's currently mapped to EREMOTEIO by the default case.
+Smatch complains that the "path_data->handle" variable is user controlled.
+It comes from iscsi_set_path() so that seems possible.  It's harmless to
+add a limit check.
 
-Fix UAEOVERFLOW to map instead to EOVERFLOW.
+The qedi->ep_tbl[] array has qedi->max_active_conns elements (which is
+always ISCSI_MAX_SESS_PER_HBA (4096) elements).  The array is allocated in
+the qedi_cm_alloc_mem() function.
 
-Found with the generic/258 xfstest.  Note that the test is wrong as it
-assumes that the filesystem will support a pre-UNIX-epoch date.
-
-Fixes: 1eda8bab70ca ("afs: Add support for the UAE error table")
-Signed-off-by: David Howells <dhowells@redhat.com>
+Link: https://lore.kernel.org/r/20200428131939.GA696531@mwanda
+Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
+Acked-by: Manish Rangankar <mrangankar@marvell.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/afs/misc.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/scsi/qedi/qedi_iscsi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/afs/misc.c b/fs/afs/misc.c
-index 52b19e9c15351..5334f1bd2bca7 100644
---- a/fs/afs/misc.c
-+++ b/fs/afs/misc.c
-@@ -83,6 +83,7 @@ int afs_abort_to_error(u32 abort_code)
- 	case UAENOLCK:			return -ENOLCK;
- 	case UAENOTEMPTY:		return -ENOTEMPTY;
- 	case UAELOOP:			return -ELOOP;
-+	case UAEOVERFLOW:		return -EOVERFLOW;
- 	case UAENOMEDIUM:		return -ENOMEDIUM;
- 	case UAEDQUOT:			return -EDQUOT;
+diff --git a/drivers/scsi/qedi/qedi_iscsi.c b/drivers/scsi/qedi/qedi_iscsi.c
+index 94f3829b1974a..1effac1111d5e 100644
+--- a/drivers/scsi/qedi/qedi_iscsi.c
++++ b/drivers/scsi/qedi/qedi_iscsi.c
+@@ -1224,6 +1224,10 @@ static int qedi_set_path(struct Scsi_Host *shost, struct iscsi_path *path_data)
+ 	}
  
+ 	iscsi_cid = (u32)path_data->handle;
++	if (iscsi_cid >= qedi->max_active_conns) {
++		ret = -EINVAL;
++		goto set_path_exit;
++	}
+ 	qedi_ep = qedi->ep_tbl[iscsi_cid];
+ 	QEDI_INFO(&qedi->dbg_ctx, QEDI_LOG_INFO,
+ 		  "iscsi_cid=0x%x, qedi_ep=%p\n", iscsi_cid, qedi_ep);
 -- 
 2.25.1
 
