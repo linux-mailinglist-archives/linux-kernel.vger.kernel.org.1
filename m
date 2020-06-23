@@ -2,42 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7569A205F7F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D42A206044
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391385AbgFWUdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:33:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54156 "EHLO mail.kernel.org"
+        id S2392284AbgFWUlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:41:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37138 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391370AbgFWUdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:33:01 -0400
+        id S2392293AbgFWUkw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:40:52 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1957E206C3;
-        Tue, 23 Jun 2020 20:33:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8190A20675;
+        Tue, 23 Jun 2020 20:40:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944381;
-        bh=378uOhPw4trf/EYBvinGEcHsXnmJkRgo2SeAskqxB0c=;
+        s=default; t=1592944853;
+        bh=N3ZWL4UiTTyYZz4LzXGUi9NbMV0Ja4Bw/xleC7UnU5A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=z40so3pc4HWYzB2CVLjVepYaKOaoQnjpKzqzU5BXUVrTT+V8sJb9Anu6DI3d0Tm29
-         lbJQzCMY0LAigDq3FGwRteiKEVpzByC2Z1s2MnyJ5KMHj2QRYnp13McYifCttH+TQk
-         KJh3AMwrJwaUfMQmHyXRuEhZyY70iC1udqwvlkFc=
+        b=b8dhxV6InezACFXZuwqD5R3Wgw8Xh+E8QKZkirXwKAk2bXbNn6039EHagfsjAlXF6
+         lGbrTWJuiwnnbCUWIB7Y5GbEqDDbSyAbRjuNrukETt4DK7AXyddjRchxae2gOwBwHW
+         f8Um97qXjH/ZyiG/k2tWEfjj1tiwawVtSY+wkqMM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Daniel Rosenberg <drosen@google.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.co.uk>,
-        Eric Biggers <ebiggers@google.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 5.4 282/314] ext4: avoid utf8_strncasecmp() with unstable name
-Date:   Tue, 23 Jun 2020 21:57:57 +0200
-Message-Id: <20200623195352.429875944@linuxfoundation.org>
+        stable@vger.kernel.org, Logan Gunthorpe <logang@deltatee.com>,
+        Allen Hubbe <allenbh@gmail.com>,
+        Alexander Fomichev <fomichev.ru@gmail.com>,
+        Jon Mason <jdmason@kudzu.us>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 150/206] NTB: ntb_test: Fix bug when counting remote files
+Date:   Tue, 23 Jun 2020 21:57:58 +0200
+Message-Id: <20200623195324.376329532@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,65 +45,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Logan Gunthorpe <logang@deltatee.com>
 
-commit 2ce3ee931a097e9720310db3f09c01c825a4580c upstream.
+[ Upstream commit 2130c0ba69d69bb21f5c52787f2587db00d13d8a ]
 
-If the dentry name passed to ->d_compare() fits in dentry::d_iname, then
-it may be concurrently modified by a rename.  This can cause undefined
-behavior (possibly out-of-bounds memory accesses or crashes) in
-utf8_strncasecmp(), since fs/unicode/ isn't written to handle strings
-that may be concurrently modified.
+When remote files are counted in get_files_count, without using SSH,
+the code returns 0 because there is a colon prepended to $LOC. $VPATH
+should have been used instead of $LOC.
 
-Fix this by first copying the filename to a stack buffer if needed.
-This way we get a stable snapshot of the filename.
-
-Fixes: b886ee3e778e ("ext4: Support case-insensitive file name lookups")
-Cc: <stable@vger.kernel.org> # v5.2+
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Daniel Rosenberg <drosen@google.com>
-Cc: Gabriel Krisman Bertazi <krisman@collabora.co.uk>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Link: https://lore.kernel.org/r/20200601200543.59417-1-ebiggers@kernel.org
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
+Fixes: 06bd0407d06c ("NTB: ntb_test: Update ntb_tool Scratchpad tests")
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Acked-by: Allen Hubbe <allenbh@gmail.com>
+Tested-by: Alexander Fomichev <fomichev.ru@gmail.com>
+Signed-off-by: Jon Mason <jdmason@kudzu.us>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/dir.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ tools/testing/selftests/ntb/ntb_test.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -677,6 +677,7 @@ static int ext4_d_compare(const struct d
- 	struct qstr qstr = {.name = str, .len = len };
- 	const struct dentry *parent = READ_ONCE(dentry->d_parent);
- 	const struct inode *inode = READ_ONCE(parent->d_inode);
-+	char strbuf[DNAME_INLINE_LEN];
+diff --git a/tools/testing/selftests/ntb/ntb_test.sh b/tools/testing/selftests/ntb/ntb_test.sh
+index 08cbfbbc70291..17ca36403d04c 100755
+--- a/tools/testing/selftests/ntb/ntb_test.sh
++++ b/tools/testing/selftests/ntb/ntb_test.sh
+@@ -250,7 +250,7 @@ function get_files_count()
+ 	split_remote $LOC
  
- 	if (!inode || !IS_CASEFOLDED(inode) ||
- 	    !EXT4_SB(inode->i_sb)->s_encoding) {
-@@ -685,6 +686,21 @@ static int ext4_d_compare(const struct d
- 		return memcmp(str, name->name, len);
- 	}
- 
-+	/*
-+	 * If the dentry name is stored in-line, then it may be concurrently
-+	 * modified by a rename.  If this happens, the VFS will eventually retry
-+	 * the lookup, so it doesn't matter what ->d_compare() returns.
-+	 * However, it's unsafe to call utf8_strncasecmp() with an unstable
-+	 * string.  Therefore, we have to copy the name into a temporary buffer.
-+	 */
-+	if (len <= DNAME_INLINE_LEN - 1) {
-+		memcpy(strbuf, str, len);
-+		strbuf[len] = 0;
-+		qstr.name = strbuf;
-+		/* prevent compiler from optimizing out the temporary buffer */
-+		barrier();
-+	}
-+
- 	return ext4_ci_compare(inode, name, &qstr, false);
- }
- 
+ 	if [[ "$REMOTE" == "" ]]; then
+-		echo $(ls -1 "$LOC"/${NAME}* 2>/dev/null | wc -l)
++		echo $(ls -1 "$VPATH"/${NAME}* 2>/dev/null | wc -l)
+ 	else
+ 		echo $(ssh "$REMOTE" "ls -1 \"$VPATH\"/${NAME}* | \
+ 		       wc -l" 2> /dev/null)
+-- 
+2.25.1
+
 
 
