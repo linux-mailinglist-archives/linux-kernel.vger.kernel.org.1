@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76F62063E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4CA206298
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392004AbgFWVMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:12:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51356 "EHLO mail.kernel.org"
+        id S2393312AbgFWVFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:05:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60850 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391088AbgFWUa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:30:56 -0400
+        id S2388059AbgFWUhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:37:25 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D8A7A206C3;
-        Tue, 23 Jun 2020 20:30:55 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08EC720781;
+        Tue, 23 Jun 2020 20:37:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944256;
-        bh=/44GbRVFyzkusa5BAVSVz2mQoKHA5iPo6BBEtM4Gp6E=;
+        s=default; t=1592944644;
+        bh=nS06mZ5B46SFGy1KcimI9QKkFNbSEw+FhvquJBNQ2og=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TSAyTzqXWu4G2gl9G4zNypzMRVMWENsu3pwmWrxyIyqWc8iO9TZ/udCzlrdy0MnM6
-         bWWFWQX7OJOdCnmRwK1hi5bQZNuMHNu/9HMYKaac1dkUjzhWS5ReKqYxhorvNX6tu/
-         eBbBdjHvhjEaFnKYWfffzWZmOeEE47awINjqshds=
+        b=PUVw5HkWu13ZTZGv+w9oqzQZz1XPb0Wk71ZZrg0RUIKZtX9aExnbePafEJPNaUv/x
+         cVXgP8n4pP54OqDUY3Uo652C+nNhMG6hCLUYnNhZvp2AY4UfacOBYak2puMAPv8y23
+         fY/RP6rF3hpHqPD/lNYl9ndOnwDmEH1u5ZLaQgsw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 202/314] extcon: adc-jack: Fix an error handling path in adc_jack_probe()
-Date:   Tue, 23 Jun 2020 21:56:37 +0200
-Message-Id: <20200623195348.559816218@linuxfoundation.org>
+        stable@vger.kernel.org, Russell King <rmk+kernel@armlinux.org.uk>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 070/206] i2c: pxa: fix i2c_pxa_scream_blue_murder() debug output
+Date:   Tue, 23 Jun 2020 21:56:38 +0200
+Message-Id: <20200623195320.404869374@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,47 +43,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Russell King <rmk+kernel@armlinux.org.uk>
 
-[ Upstream commit bc84cff2c92ae5ccb2c37da73756e7174b1b430f ]
+[ Upstream commit 88b73ee7ca4c90baf136ed5a8377fc5a9b73ac08 ]
 
-In some error handling paths, a call to 'iio_channel_get()' is not balanced
-by a corresponding call to 'iio_channel_release()'.
+The IRQ log output is supposed to appear on a single line.  However,
+commit 3a2dc1677b60 ("i2c: pxa: Update debug function to dump more info
+on error") resulted in it being printed one-entry-per-line, which is
+excessively long.
 
-This can be achieved easily by using the devm_ variant of
-'iio_channel_get()'.
+Fixing this is not a trivial matter; using pr_cont() doesn't work as
+the previous dev_dbg() may not have been compiled in, or may be
+dynamic.
 
-This has the extra benefit to simplify the remove function.
+Since the rest of this function output is at error level, and is also
+debug output, promote this to error level as well to avoid this
+problem.
 
-Fixes: 19939860dcae ("extcon: adc_jack: adc-jack driver to support 3.5 pi or simliar devices")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+Reduce the number of always zero prefix digits to save screen real-
+estate.
+
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/extcon/extcon-adc-jack.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/i2c/busses/i2c-pxa.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/extcon/extcon-adc-jack.c b/drivers/extcon/extcon-adc-jack.c
-index ad02dc6747a43..0317b614b6805 100644
---- a/drivers/extcon/extcon-adc-jack.c
-+++ b/drivers/extcon/extcon-adc-jack.c
-@@ -124,7 +124,7 @@ static int adc_jack_probe(struct platform_device *pdev)
- 	for (i = 0; data->adc_conditions[i].id != EXTCON_NONE; i++);
- 	data->num_conditions = i;
- 
--	data->chan = iio_channel_get(&pdev->dev, pdata->consumer_channel);
-+	data->chan = devm_iio_channel_get(&pdev->dev, pdata->consumer_channel);
- 	if (IS_ERR(data->chan))
- 		return PTR_ERR(data->chan);
- 
-@@ -164,7 +164,6 @@ static int adc_jack_remove(struct platform_device *pdev)
- 
- 	free_irq(data->irq, data);
- 	cancel_work_sync(&data->handler.work);
--	iio_channel_release(data->chan);
- 
- 	return 0;
+diff --git a/drivers/i2c/busses/i2c-pxa.c b/drivers/i2c/busses/i2c-pxa.c
+index 7248ba6763e45..c10ae4778d350 100644
+--- a/drivers/i2c/busses/i2c-pxa.c
++++ b/drivers/i2c/busses/i2c-pxa.c
+@@ -315,11 +315,10 @@ static void i2c_pxa_scream_blue_murder(struct pxa_i2c *i2c, const char *why)
+ 	dev_err(dev, "IBMR: %08x IDBR: %08x ICR: %08x ISR: %08x\n",
+ 		readl(_IBMR(i2c)), readl(_IDBR(i2c)), readl(_ICR(i2c)),
+ 		readl(_ISR(i2c)));
+-	dev_dbg(dev, "log: ");
++	dev_err(dev, "log:");
+ 	for (i = 0; i < i2c->irqlogidx; i++)
+-		pr_debug("[%08x:%08x] ", i2c->isrlog[i], i2c->icrlog[i]);
+-
+-	pr_debug("\n");
++		pr_cont(" [%03x:%05x]", i2c->isrlog[i], i2c->icrlog[i]);
++	pr_cont("\n");
  }
+ 
+ #else /* ifdef DEBUG */
 -- 
 2.25.1
 
