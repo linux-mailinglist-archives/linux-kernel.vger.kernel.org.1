@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED129205F91
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F32220604E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391442AbgFWUdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:33:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54778 "EHLO mail.kernel.org"
+        id S2392320AbgFWUl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:41:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391419AbgFWUd0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:33:26 -0400
+        id S2392306AbgFWUlQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:41:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1BE852072E;
-        Tue, 23 Jun 2020 20:33:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2B96320702;
+        Tue, 23 Jun 2020 20:41:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944406;
-        bh=kGRmZLItnQkLpbUnjXCwaWJEJgShGAHtqXcmb9eupoo=;
+        s=default; t=1592944876;
+        bh=R8poT/WfSWU1GfxheMUoZ/FdITa3vE/XmE9Ej5fNV9g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YaI0PkBehFJj2cMyO/up2ZB2ylwBjIkRjBLI2VAGxaIEFaxBmodIP0Ur2nuQGNyxD
-         yc3ZxbrltP5vXDcCrswBeRLfLYcA+R5lOWY73odE335ULtEUyusQW1/1yQT3y9P9hA
-         tCA1Nt1iT263oWHuJIQbqhvF6F9Texmy8N3pSZ+M=
+        b=k+pt+wo7DN1fcGPmCyLd0IKfbRBz1QTMcwELouziBSmAbx/gqrxO9z6r3i17wIob/
+         +Z3exulofq41RdqGi9/e/fLeaxPWstFSY3S9cd2QcMI/hKZYZttrR0+rPR4RnZAPK6
+         3eBpgKITdxc7gJjdsGva3aHW1T5oHNmFnojtqXfk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 291/314] x86/boot/compressed: Relax sed symbol type regex for LLVM ld.lld
+Subject: [PATCH 4.19 158/206] scsi: acornscsi: Fix an error handling path in acornscsi_probe()
 Date:   Tue, 23 Jun 2020 21:58:06 +0200
-Message-Id: <20200623195352.856096802@linuxfoundation.org>
+Message-Id: <20200623195324.763291266@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,67 +45,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit bc310baf2ba381c648983c7f4748327f17324562 upstream.
+[ Upstream commit 42c76c9848e13dbe0538d7ae0147a269dfa859cb ]
 
-The final build stage of the x86 kernel captures some symbol
-addresses from the decompressor binary and copies them into zoffset.h.
-It uses sed with a regular expression that matches the address, symbol
-type and symbol name, and mangles the captured addresses and the names
-of symbols of interest into #define directives that are added to
-zoffset.h
+'ret' is known to be 0 at this point.  Explicitly return -ENOMEM if one of
+the 'ecardm_iomap()' calls fail.
 
-The symbol type is indicated by a single letter, which we match
-strictly: only letters in the set 'ABCDGRSTVW' are matched, even
-though the actual symbol type is relevant and therefore ignored.
-
-Commit bc7c9d620 ("efi/libstub/x86: Force 'hidden' visibility for
-extern declarations") made a change to the way external symbol
-references are classified, resulting in 'startup_32' now being
-emitted as a hidden symbol. This prevents the use of GOT entries to
-refer to this symbol via its absolute address, which recent toolchains
-(including Clang based ones) already avoid by default, making this
-change a no-op in the majority of cases.
-
-However, as it turns out, the LLVM linker classifies such hidden
-symbols as symbols with static linkage in fully linked ELF binaries,
-causing tools such as NM to output a lowercase 't' rather than an upper
-case 'T' for the type of such symbols. Since our sed expression only
-matches upper case letters for the symbol type, the line describing
-startup_32 is disregarded, resulting in a build error like the following
-
-  arch/x86/boot/header.S:568:18: error: symbol 'ZO_startup_32' can not be
-                                        undefined in a subtraction expression
-  init_size: .long (0x00000000008fd000 - ZO_startup_32 +
-                    (((0x0000000001f6361c + ((0x0000000001f6361c >> 8) + 65536)
-                     - 0x00000000008c32e5) + 4095) & ~4095)) # kernel initialization size
-
-Given that we are only interested in the value of the symbol, let's match
-any character in the set 'a-zA-Z' instead.
-
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Tested-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+Link: https://lore.kernel.org/r/20200530081622.577888-1-christophe.jaillet@wanadoo.fr
+Fixes: e95a1b656a98 ("[ARM] rpc: acornscsi: update to new style ecard driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/boot/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/arm/acornscsi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/boot/Makefile b/arch/x86/boot/Makefile
-index e2839b5c246c2..6539c50fb9aae 100644
---- a/arch/x86/boot/Makefile
-+++ b/arch/x86/boot/Makefile
-@@ -87,7 +87,7 @@ $(obj)/vmlinux.bin: $(obj)/compressed/vmlinux FORCE
+diff --git a/drivers/scsi/arm/acornscsi.c b/drivers/scsi/arm/acornscsi.c
+index 421fe869a11ef..ef9d907f2df5c 100644
+--- a/drivers/scsi/arm/acornscsi.c
++++ b/drivers/scsi/arm/acornscsi.c
+@@ -2914,8 +2914,10 @@ static int acornscsi_probe(struct expansion_card *ec, const struct ecard_id *id)
  
- SETUP_OBJS = $(addprefix $(obj)/,$(setup-y))
+ 	ashost->base = ecardm_iomap(ec, ECARD_RES_MEMC, 0, 0);
+ 	ashost->fast = ecardm_iomap(ec, ECARD_RES_IOCFAST, 0, 0);
+-	if (!ashost->base || !ashost->fast)
++	if (!ashost->base || !ashost->fast) {
++		ret = -ENOMEM;
+ 		goto out_put;
++	}
  
--sed-zoffset := -e 's/^\([0-9a-fA-F]*\) [ABCDGRSTVW] \(startup_32\|startup_64\|efi32_stub_entry\|efi64_stub_entry\|efi_pe_entry\|input_data\|_end\|_ehead\|_text\|z_.*\)$$/\#define ZO_\2 0x\1/p'
-+sed-zoffset := -e 's/^\([0-9a-fA-F]*\) [a-zA-Z] \(startup_32\|startup_64\|efi32_stub_entry\|efi64_stub_entry\|efi_pe_entry\|input_data\|_end\|_ehead\|_text\|z_.*\)$$/\#define ZO_\2 0x\1/p'
- 
- quiet_cmd_zoffset = ZOFFSET $@
-       cmd_zoffset = $(NM) $< | sed -n $(sed-zoffset) > $@
+ 	host->irq = ec->irq;
+ 	ashost->host = host;
 -- 
 2.25.1
 
