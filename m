@@ -2,313 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D3D2047AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8B7204777
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732462AbgFWCxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 22:53:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32948 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730456AbgFWCve (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 22:51:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6AA97AE71;
-        Tue, 23 Jun 2020 02:51:30 +0000 (UTC)
-From:   =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>
-To:     linux-realtek-soc@lists.infradead.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?James=20Tai=20=5B=E6=88=B4=E5=BF=97=E5=B3=B0=5D?= 
-        <james.tai@realtek.com>,
-        =?UTF-8?q?Stanley=20Chang=20=5B=E6=98=8C=E8=82=B2=E5=BE=B7=5D?= 
-        <stanley_chang@realtek.com>, Edgar Lee <cylee12@realtek.com>,
-        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>
-Subject: [PATCH v2 02/29] soc: Add Realtek DHC chip info driver for RTD1195 and RTD1295
-Date:   Tue, 23 Jun 2020 04:50:39 +0200
-Message-Id: <20200623025106.31273-3-afaerber@suse.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200623025106.31273-1-afaerber@suse.de>
-References: <20200623025106.31273-1-afaerber@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1731816AbgFWCvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 22:51:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731434AbgFWCvM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 22:51:12 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE6B1C061573;
+        Mon, 22 Jun 2020 19:51:10 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id d12so9024847qvn.0;
+        Mon, 22 Jun 2020 19:51:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:in-reply-to:references;
+        bh=K1NdNwivojm00tbD3TZ+M3WB1qk+zryixny/eiXVT2U=;
+        b=gUr2V660lI3zkXJIGZ8oGhul7oVjZ1zm+u7Ll8qL29EO+vGhfp9Qmc9I9IA0KddVZQ
+         lfJXXIzps+vBMQmaMMjCstZYUsumZ05tNYgZESSZW0I6EXy0KI2skraR2idFNhxne9NP
+         ymzIoLb4ttVkJgPA1/wstWth9RLPsXzziJIs3L8huaiuVJMnxFw4DK5foJV9qJALbUp3
+         J5c6QHOHlY9AFr/y6ZcwTrA1/9YBiW4Ebuj+Poh4RFR4BRhXNzMCwafg17aUlxkJdtw2
+         6p9haOuCapqjAsrmsXDtNqrRIShbhah4YnJ7gnMlH4his1tlv773/yVCDqvvS3GXc9vl
+         ho0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references;
+        bh=K1NdNwivojm00tbD3TZ+M3WB1qk+zryixny/eiXVT2U=;
+        b=o1jDpEHuVYYWgcvrxeKpgQCcvwmRA0jbzO9X5naxuZjrgn5hoQI7HxeeN2lNDzt0ax
+         FD/ZIXV7wCh59sNlRmwLUj3mwM+mv8XJ27Zd3H0QLUgS5hd3koMbgDh2gV5+0NFQxTRg
+         P1K9/9Fq7L0OucmpDuG7HR25AAGbIYk4b+H4BAC29WIgeZDCDJD9K4Y4v8rddPAGn9E/
+         LF3aKW32yGx/OZ+qbGMNCjtFFwIR4fYtgYnEgGGI4PnRNnxbIWkCbDxIS3J2CwvKHW/Z
+         7MASIHKgc9LFMb8abwy9ENHto0qTWGuyfnLW2CoHgtqyByoYWb6RELDJZn38wnNHZ50E
+         E3Ng==
+X-Gm-Message-State: AOAM532+coMryXK2541j3Q37dTDM64p/vATcpJ1jyHerAOwWaIEBIioT
+        0lHSuoc1/GqiBSqUMylURPA=
+X-Google-Smtp-Source: ABdhPJy79/acBhQH3Gz5PEAvTUYTQcr4dblMkJ909SGn4aG595IUOShVjWRF/+IgEvukX1bcuWBgAQ==
+X-Received: by 2002:a05:6214:848:: with SMTP id dg8mr23044701qvb.152.1592880670025;
+        Mon, 22 Jun 2020 19:51:10 -0700 (PDT)
+Received: from linux.home ([2604:2000:1344:41d:316f:dfd5:1aaf:37b3])
+        by smtp.googlemail.com with ESMTPSA id p22sm17121176qtc.7.2020.06.22.19.51.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jun 2020 19:51:09 -0700 (PDT)
+From:   Gaurav Singh <gaurav1086@gmail.com>
+To:     gaurav1086@gmail.com, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] [net] dcb_doit: remove redundant skb check
+Date:   Mon, 22 Jun 2020 22:50:39 -0400
+Message-Id: <20200623025057.20348-1-gaurav1086@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200621165657.9814-1-gaurav1086@gmail.com>
+References: <20200621165657.9814-1-gaurav1086@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a soc bus driver to print chip model and revision details.
+skb cannot be NULL here since its already being accessed
+before: sock_net(skb->sk). Remove the redundant null check.
 
-Revisions from downstream drivers/soc/realtek/rtd{119x,129x}/rtk_chip.c.
-
-Signed-off-by: Andreas Färber <afaerber@suse.de>
+Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
 ---
- v1 -> v2:
- * Added entry to MAINTAINERS
- * Changed chip_id and chip_rev from u32 to u16, based on reg field definitions
- * Added error return path for get_name for deferred probing, reordered code
- 
- MAINTAINERS                  |   1 +
- drivers/soc/Kconfig          |   1 +
- drivers/soc/Makefile         |   1 +
- drivers/soc/realtek/Kconfig  |  13 +++
- drivers/soc/realtek/Makefile |   2 +
- drivers/soc/realtek/chip.c   | 181 +++++++++++++++++++++++++++++++++++
- 6 files changed, 199 insertions(+)
- create mode 100644 drivers/soc/realtek/Kconfig
- create mode 100644 drivers/soc/realtek/Makefile
- create mode 100644 drivers/soc/realtek/chip.c
+ net/dcb/dcbnl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 78adbc3cc101..ff0ee48fee6f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -2311,6 +2311,7 @@ F:	Documentation/devicetree/bindings/soc/realtek/
- F:	arch/arm/boot/dts/rtd*
- F:	arch/arm/mach-realtek/
- F:	arch/arm64/boot/dts/realtek/
-+F:	drivers/soc/realtek/
- 
- ARM/RENESAS ARM64 ARCHITECTURE
- M:	Geert Uytterhoeven <geert+renesas@glider.be>
-diff --git a/drivers/soc/Kconfig b/drivers/soc/Kconfig
-index 425ab6f7e375..925647993119 100644
---- a/drivers/soc/Kconfig
-+++ b/drivers/soc/Kconfig
-@@ -11,6 +11,7 @@ source "drivers/soc/imx/Kconfig"
- source "drivers/soc/ixp4xx/Kconfig"
- source "drivers/soc/mediatek/Kconfig"
- source "drivers/soc/qcom/Kconfig"
-+source "drivers/soc/realtek/Kconfig"
- source "drivers/soc/renesas/Kconfig"
- source "drivers/soc/rockchip/Kconfig"
- source "drivers/soc/samsung/Kconfig"
-diff --git a/drivers/soc/Makefile b/drivers/soc/Makefile
-index 36452bed86ef..cdcf00bbad10 100644
---- a/drivers/soc/Makefile
-+++ b/drivers/soc/Makefile
-@@ -17,6 +17,7 @@ obj-$(CONFIG_SOC_XWAY)		+= lantiq/
- obj-y				+= mediatek/
- obj-y				+= amlogic/
- obj-y				+= qcom/
-+obj-y				+= realtek/
- obj-y				+= renesas/
- obj-$(CONFIG_ARCH_ROCKCHIP)	+= rockchip/
- obj-$(CONFIG_SOC_SAMSUNG)	+= samsung/
-diff --git a/drivers/soc/realtek/Kconfig b/drivers/soc/realtek/Kconfig
-new file mode 100644
-index 000000000000..be75c1889c61
---- /dev/null
-+++ b/drivers/soc/realtek/Kconfig
-@@ -0,0 +1,13 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+if ARCH_REALTEK || COMPILE_TEST
-+
-+config REALTEK_SOC
-+	tristate "Realtek chip info"
-+	default ARCH_REALTEK
-+	select SOC_BUS
-+	help
-+	  Say 'y' here to enable support for SoC info on Realtek RTD1195 and
-+	  RTD1295 SoC families.
-+	  If unsure, say 'n'.
-+
-+endif
-diff --git a/drivers/soc/realtek/Makefile b/drivers/soc/realtek/Makefile
-new file mode 100644
-index 000000000000..49900273905b
---- /dev/null
-+++ b/drivers/soc/realtek/Makefile
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+obj-$(CONFIG_REALTEK_SOC) += chip.o
-diff --git a/drivers/soc/realtek/chip.c b/drivers/soc/realtek/chip.c
-new file mode 100644
-index 000000000000..c4650d512c91
---- /dev/null
-+++ b/drivers/soc/realtek/chip.c
-@@ -0,0 +1,181 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Realtek Digital Home Center System-on-Chip info
-+ *
-+ * Copyright (c) 2017-2020 Andreas Färber
-+ */
-+
-+#include <linux/bitfield.h>
-+#include <linux/io.h>
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+#include <linux/sys_soc.h>
-+
-+#define REG_SB2_CHIP_ID		0x200
-+#define REG_SB2_CHIP_INFO	0x204
-+
-+#define SB2_CHIP_ID_CHIP_ID		GENMASK(15, 0)
-+
-+#define SB2_CHIP_INFO_REVISE_ID		GENMASK(31, 16)
-+
-+struct dhc_soc_revision {
-+	const char *name;
-+	u16 chip_rev;
-+};
-+
-+static const struct dhc_soc_revision rtd1195_revisions[] = {
-+	{ "A", 0x0000 },
-+	{ "B", 0x0001 },
-+	{ "C", 0x0002 },
-+	{ "D", 0x0003 },
-+	{ }
-+};
-+
-+static const struct dhc_soc_revision rtd1295_revisions[] = {
-+	{ "A00", 0x0000 },
-+	{ "A01", 0x0001 },
-+	{ "B00", 0x0002 },
-+	{ "B01", 0x0003 },
-+	{ }
-+};
-+
-+struct dhc_soc {
-+	u16 chip_id;
-+	const char *family;
-+	const char *(*get_name)(struct device *dev, const struct dhc_soc *s);
-+	const struct dhc_soc_revision *revisions;
-+	const char *codename;
-+};
-+
-+static const char *default_name(struct device *dev, const struct dhc_soc *s)
-+{
-+	return s->family;
-+}
-+
-+static const struct dhc_soc dhc_soc_families[] = {
-+	{ 0x6329, "RTD1195", default_name, rtd1195_revisions, "Phoenix" },
-+	{ 0x6421, "RTD1295", default_name, rtd1295_revisions, "Kylin" },
-+};
-+
-+static const struct dhc_soc *dhc_soc_by_chip_id(u16 chip_id)
-+{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(dhc_soc_families); i++) {
-+		const struct dhc_soc *family = &dhc_soc_families[i];
-+
-+		if (family->chip_id == chip_id)
-+			return family;
-+	}
-+	return NULL;
-+}
-+
-+static const char *dhc_soc_rev(const struct dhc_soc *family, u16 chip_rev)
-+{
-+	if (family) {
-+		const struct dhc_soc_revision *rev = family->revisions;
-+
-+		while (rev && rev->name) {
-+			if (rev->chip_rev == chip_rev)
-+				return rev->name;
-+			rev++;
-+		}
-+	}
-+	return "unknown";
-+}
-+
-+static int dhc_soc_probe(struct platform_device *pdev)
-+{
-+	const struct dhc_soc *s;
-+	struct soc_device_attribute *soc_dev_attr;
-+	struct soc_device *soc_dev;
-+	struct device_node *node;
-+	struct regmap *regmap;
-+	u16 chip_id, chip_rev;
-+	unsigned int val;
-+	int ret;
-+
-+	regmap = syscon_node_to_regmap(pdev->dev.of_node->parent);
-+	if (IS_ERR(regmap))
-+		return PTR_ERR(regmap);
-+
-+	ret = regmap_read(regmap, REG_SB2_CHIP_ID, &val);
-+	if (ret)
-+		return ret;
-+	chip_id = FIELD_GET(SB2_CHIP_ID_CHIP_ID, val);
-+
-+	ret = regmap_read(regmap, REG_SB2_CHIP_INFO, &val);
-+	if (ret)
-+		return ret;
-+	chip_rev = FIELD_GET(SB2_CHIP_INFO_REVISE_ID, val);
-+
-+	soc_dev_attr = kzalloc(sizeof(*soc_dev_attr), GFP_KERNEL);
-+	if (!soc_dev_attr)
-+		return -ENOMEM;
-+
-+	node = of_find_node_by_path("/");
-+	of_property_read_string(node, "model", &soc_dev_attr->machine);
-+	of_node_put(node);
-+
-+	s = dhc_soc_by_chip_id(chip_id);
-+
-+	if (likely(s && s->get_name)) {
-+		soc_dev_attr->soc_id = s->get_name(&pdev->dev, s);
-+		if (IS_ERR(soc_dev_attr->soc_id))
-+			return PTR_ERR(soc_dev_attr->soc_id);
-+	} else
-+		soc_dev_attr->soc_id = "unknown";
-+
-+	soc_dev_attr->revision = dhc_soc_rev(s, chip_rev);
-+
-+	soc_dev_attr->family = kasprintf(GFP_KERNEL, "Realtek %s",
-+		(s && s->codename) ? s->codename :
-+		((s && s->family) ? s->family : "Digital Home Center"));
-+
-+	soc_dev = soc_device_register(soc_dev_attr);
-+	if (IS_ERR(soc_dev)) {
-+		kfree(soc_dev_attr->family);
-+		kfree(soc_dev_attr);
-+		return PTR_ERR(soc_dev);
-+	}
-+
-+	platform_set_drvdata(pdev, soc_dev);
-+
-+	pr_info("%s %s (0x%04x) rev %s (0x%04x) detected\n",
-+		soc_dev_attr->family, soc_dev_attr->soc_id, (u32)chip_id,
-+		soc_dev_attr->revision, (u32)chip_rev);
-+
-+	return 0;
-+}
-+
-+static int dhc_soc_remove(struct platform_device *pdev)
-+{
-+	struct soc_device *soc_dev = platform_get_drvdata(pdev);
-+
-+	soc_device_unregister(soc_dev);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id dhc_soc_dt_ids[] = {
-+	 { .compatible = "realtek,rtd1195-chip" },
-+	 { }
-+};
-+
-+static struct platform_driver dhc_soc_driver = {
-+	.probe = dhc_soc_probe,
-+	.remove = dhc_soc_remove,
-+	.driver = {
-+		.name = "dhc-soc",
-+		.of_match_table	= dhc_soc_dt_ids,
-+	},
-+};
-+module_platform_driver(dhc_soc_driver);
-+
-+MODULE_DESCRIPTION("Realtek DHC SoC identification driver");
-+MODULE_LICENSE("GPL");
+diff --git a/net/dcb/dcbnl.c b/net/dcb/dcbnl.c
+index d2a4553bcf39..84dde5a2066e 100644
+--- a/net/dcb/dcbnl.c
++++ b/net/dcb/dcbnl.c
+@@ -1736,7 +1736,7 @@ static int dcb_doit(struct sk_buff *skb, struct nlmsghdr *nlh,
+ 	struct net_device *netdev;
+ 	struct dcbmsg *dcb = nlmsg_data(nlh);
+ 	struct nlattr *tb[DCB_ATTR_MAX + 1];
+-	u32 portid = skb ? NETLINK_CB(skb).portid : 0;
++	u32 portid = NETLINK_CB(skb).portid;
+ 	int ret = -EINVAL;
+ 	struct sk_buff *reply_skb;
+ 	struct nlmsghdr *reply_nlh = NULL;
 -- 
-2.26.2
+2.17.1
 
