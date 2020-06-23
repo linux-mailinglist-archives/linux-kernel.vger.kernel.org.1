@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C747B204703
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8F1204704
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732400AbgFWCAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 22:00:03 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:58912 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732018AbgFWB64 (ORCPT
+        id S1732416AbgFWCAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 22:00:12 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:59882 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730888AbgFWB6y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 21:58:56 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05N1spPD021121
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 18:58:54 -0700
+        Mon, 22 Jun 2020 21:58:54 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05N1rubR021811
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 18:58:52 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=Z8fjT4S4wjtFortWf0+6HRdk4+QXFUoIiy7YV+Z7XS0=;
- b=qM84U8FVwdt5+yD35I+psxvq7OWydGkKH2YdtcyBS+gFGAVr5nXaSPv+GbMKNVQyBEoC
- 9c02bOT+zraeO3Q4tuO+EjdFSyKkhEYx5LhfTLzuRsQXT5DkCD8cOS/rPBfB8vem+PkR
- ZTjsAzuVrV9E7r+Qgh0K6Zt6r9g8bRXG7go= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 31sg9fk9r8-3
+ bh=ydqxigM5yYic4GW9s4HzcT/umAZiOYZgw69ZMmKmh3U=;
+ b=nQquhVTm1DIEEkcO8DJGiaHnswxNUE6U1uOojE8LTi1IMCyB8slDYnz0fyEILyVjnalA
+ GDhHwKZB1XqM16fhrHMb25YcZN5b/xxxPM3vcRrWyMkbTNi8NacHYxiNnRr7m2dmfGR2
+ SqOAHeaemsxvqz4vmCImOia+/jM2BE1kLXk= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31t2e8rphs-6
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 18:58:54 -0700
-Received: from intmgw003.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 18:58:52 -0700
+Received: from intmgw002.41.prn1.facebook.com (2620:10d:c085:208::11) by
+ mail.thefacebook.com (2620:10d:c085:11d::6) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 22 Jun 2020 18:58:53 -0700
+ 15.1.1979.3; Mon, 22 Jun 2020 18:58:51 -0700
 Received: by devvm1291.vll0.facebook.com (Postfix, from userid 111017)
-        id 3552926DD01C; Mon, 22 Jun 2020 18:58:48 -0700 (PDT)
+        id 6A0C726DD026; Mon, 22 Jun 2020 18:58:48 -0700 (PDT)
 Smtp-Origin-Hostprefix: devvm
 From:   Roman Gushchin <guro@fb.com>
 Smtp-Origin-Hostname: devvm1291.vll0.facebook.com
@@ -43,9 +43,9 @@ CC:     Johannes Weiner <hannes@cmpxchg.org>,
         Vlastimil Babka <vbabka@suse.cz>, <kernel-team@fb.com>,
         <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
 Smtp-Origin-Cluster: vll0c01
-Subject: [PATCH v7 02/19] mm: memcg: prepare for byte-sized vmstat items
-Date:   Mon, 22 Jun 2020 18:58:29 -0700
-Message-ID: <20200623015846.1141975-3-guro@fb.com>
+Subject: [PATCH v7 06/19] mm: memcg/slab: obj_cgroup API
+Date:   Mon, 22 Jun 2020 18:58:33 -0700
+Message-ID: <20200623015846.1141975-7-guro@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200623015846.1141975-1-guro@fb.com>
 References: <20200623015846.1141975-1-guro@fb.com>
@@ -55,297 +55,545 @@ X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-06-22_16:2020-06-22,2020-06-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 clxscore=1015
- phishscore=0 priorityscore=1501 lowpriorityscore=0 adultscore=0
- cotscore=-2147483648 suspectscore=0 mlxlogscore=999 mlxscore=0
- malwarescore=0 impostorscore=0 bulkscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006230012
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 spamscore=0
+ impostorscore=0 mlxscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
+ suspectscore=2 bulkscore=0 cotscore=-2147483648 lowpriorityscore=0
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006230012
 X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To implement per-object slab memory accounting, we need to convert slab
-vmstat counters to bytes.  Actually, out of 4 levels of counters: global,
-per-node, per-memcg and per-lruvec only two last levels will require
-byte-sized counters.  It's because global and per-node counters will be
-counting the number of slab pages, and per-memcg and per-lruvec will be
-counting the amount of memory taken by charged slab objects.
+Obj_cgroup API provides an ability to account sub-page sized kernel
+objects, which potentially outlive the original memory cgroup.
 
-Converting all vmstat counters to bytes or even all slab counters to byte=
-s
-would introduce an additional overhead.  So instead let's store global an=
+The top-level API consists of the following functions:
+  bool obj_cgroup_tryget(struct obj_cgroup *objcg);
+  void obj_cgroup_get(struct obj_cgroup *objcg);
+  void obj_cgroup_put(struct obj_cgroup *objcg);
+
+  int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)=
+;
+  void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size);
+
+  struct mem_cgroup *obj_cgroup_memcg(struct obj_cgroup *objcg);
+  struct obj_cgroup *get_obj_cgroup_from_current(void);
+
+Object cgroup is basically a pointer to a memory cgroup with a per-cpu
+reference counter.  It substitutes a memory cgroup in places where it's
+necessary to charge a custom amount of bytes instead of pages.
+
+All charged memory rounded down to pages is charged to the corresponding
+memory cgroup using __memcg_kmem_charge().
+
+It implements reparenting: on memcg offlining it's getting reattached to
+the parent memory cgroup.  Each online memory cgroup has an associated
+active object cgroup to handle new allocations and the list of all
+attached object cgroups.  On offlining of a cgroup this list is reparente=
 d
-per-node counters in pages, and memcg and lruvec counters in bytes.
+and for each object cgroup in the list the memcg pointer is swapped to th=
+e
+parent memory cgroup.  It prevents long-living objects from pinning the
+original memory cgroup in the memory.
 
-To make the API clean all access helpers (both on the read and write
-sides) are dealing with bytes.
-
-To avoid back-and-forth conversions a new flavor of read-side helpers is
-introduced, which always returns values in pages: node_page_state_pages()
-and global_node_page_state_pages().
-
-Actually new helpers are just reading raw values.  Old helpers are simple
-wrappers, which will complain on an attempt to read byte value, because a=
-t
-the moment no one actually needs bytes.
-
-Thanks to Johannes Weiner for the idea of having the byte-sized API on to=
+The implementation is based on byte-sized per-cpu stocks.  A sub-page
+sized leftover is stored in an atomic field, which is a part of obj_cgrou=
 p
-of the page-sized internal storage.
+object.  So on cgroup offlining the leftover is automatically reparented.
 
+memcg->objcg is rcu protected.  objcg->memcg is a raw pointer, which is
+always pointing at a memory cgroup, but can be atomically swapped to the
+parent memory cgroup.  So a user must ensure the lifetime of the
+cgroup, e.g.  grab rcu_read_lock or css_set_lock.
+
+Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
 Signed-off-by: Roman Gushchin <guro@fb.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
 ---
- drivers/base/node.c    |  2 +-
- include/linux/mmzone.h | 10 ++++++++++
- include/linux/vmstat.h | 14 +++++++++++++-
- mm/memcontrol.c        | 14 ++++++++++----
- mm/vmstat.c            | 30 ++++++++++++++++++++++++++----
- 5 files changed, 60 insertions(+), 10 deletions(-)
+ include/linux/memcontrol.h |  51 +++++++
+ mm/memcontrol.c            | 288 ++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 338 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index 5b02f69769e8..e21e31359297 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -513,7 +513,7 @@ static ssize_t node_read_vmstat(struct device *dev,
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index b250f8197710..f2f9d5d6b7d1 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -23,6 +23,7 @@
+ #include <linux/page-flags.h>
 =20
- 	for (i =3D 0; i < NR_VM_NODE_STAT_ITEMS; i++)
- 		n +=3D sprintf(buf+n, "%s %lu\n", node_stat_name(i),
--			     node_page_state(pgdat, i));
-+			     node_page_state_pages(pgdat, i));
-=20
- 	return n;
- }
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index f6f884970511..f16306e15b98 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -206,6 +206,16 @@ enum node_stat_item {
- 	NR_VM_NODE_STAT_ITEMS
+ struct mem_cgroup;
++struct obj_cgroup;
+ struct page;
+ struct mm_struct;
+ struct kmem_cache;
+@@ -192,6 +193,22 @@ struct memcg_cgwb_frn {
+ 	struct wb_completion done;	/* tracks in-flight foreign writebacks */
  };
 =20
 +/*
-+ * Returns true if the value is measured in bytes (most vmstat values ar=
-e
-+ * measured in pages). This defines the API part, the internal represent=
-ation
-+ * might be different.
++ * Bucket for arbitrarily byte-sized objects charged to a memory
++ * cgroup. The bucket can be reparented in one piece when the cgroup
++ * is destroyed, without having to round up the individual references
++ * of all live memory objects in the wild.
 + */
-+static __always_inline bool vmstat_item_in_bytes(int idx)
++struct obj_cgroup {
++	struct percpu_ref refcnt;
++	struct mem_cgroup *memcg;
++	atomic_t nr_charged_bytes;
++	union {
++		struct list_head list;
++		struct rcu_head rcu;
++	};
++};
++
+ /*
+  * The memory controller data structure. The memory controller controls =
+both
+  * page cache and RSS per cgroup. We would eventually like to provide
+@@ -301,6 +318,8 @@ struct mem_cgroup {
+ 	int kmemcg_id;
+ 	enum memcg_kmem_state kmem_state;
+ 	struct list_head kmem_caches;
++	struct obj_cgroup __rcu *objcg;
++	struct list_head objcg_list; /* list of inherited objcgs */
+ #endif
+=20
+ #ifdef CONFIG_CGROUP_WRITEBACK
+@@ -416,6 +435,33 @@ struct mem_cgroup *mem_cgroup_from_css(struct cgroup=
+_subsys_state *css){
+ 	return css ? container_of(css, struct mem_cgroup, css) : NULL;
+ }
+=20
++static inline bool obj_cgroup_tryget(struct obj_cgroup *objcg)
++{
++	return percpu_ref_tryget(&objcg->refcnt);
++}
++
++static inline void obj_cgroup_get(struct obj_cgroup *objcg)
++{
++	percpu_ref_get(&objcg->refcnt);
++}
++
++static inline void obj_cgroup_put(struct obj_cgroup *objcg)
++{
++	percpu_ref_put(&objcg->refcnt);
++}
++
++/*
++ * After the initialization objcg->memcg is always pointing at
++ * a valid memcg, but can be atomically swapped to the parent memcg.
++ *
++ * The caller must ensure that the returned memcg won't be released:
++ * e.g. acquire the rcu_read_lock or css_set_lock.
++ */
++static inline struct mem_cgroup *obj_cgroup_memcg(struct obj_cgroup *obj=
+cg)
++{
++	return READ_ONCE(objcg->memcg);
++}
++
+ static inline void mem_cgroup_put(struct mem_cgroup *memcg)
+ {
+ 	if (memcg)
+@@ -1368,6 +1414,11 @@ void __memcg_kmem_uncharge(struct mem_cgroup *memc=
+g, unsigned int nr_pages);
+ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
+ void __memcg_kmem_uncharge_page(struct page *page, int order);
+=20
++struct obj_cgroup *get_obj_cgroup_from_current(void);
++
++int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size);
++void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size);
++
+ extern struct static_key_false memcg_kmem_enabled_key;
+ extern struct workqueue_struct *memcg_kmem_cache_wq;
+=20
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 3e5597f8dec5..407f90f7a2f7 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -257,6 +257,98 @@ struct cgroup_subsys_state *vmpressure_to_css(struct=
+ vmpressure *vmpr)
+ }
+=20
+ #ifdef CONFIG_MEMCG_KMEM
++extern spinlock_t css_set_lock;
++
++static void obj_cgroup_release(struct percpu_ref *ref)
++{
++	struct obj_cgroup *objcg =3D container_of(ref, struct obj_cgroup, refcn=
+t);
++	struct mem_cgroup *memcg;
++	unsigned int nr_bytes;
++	unsigned int nr_pages;
++	unsigned long flags;
++
++	/*
++	 * At this point all allocated objects are freed, and
++	 * objcg->nr_charged_bytes can't have an arbitrary byte value.
++	 * However, it can be PAGE_SIZE or (x * PAGE_SIZE).
++	 *
++	 * The following sequence can lead to it:
++	 * 1) CPU0: objcg =3D=3D stock->cached_objcg
++	 * 2) CPU1: we do a small allocation (e.g. 92 bytes),
++	 *          PAGE_SIZE bytes are charged
++	 * 3) CPU1: a process from another memcg is allocating something,
++	 *          the stock if flushed,
++	 *          objcg->nr_charged_bytes =3D PAGE_SIZE - 92
++	 * 5) CPU0: we do release this object,
++	 *          92 bytes are added to stock->nr_bytes
++	 * 6) CPU0: stock is flushed,
++	 *          92 bytes are added to objcg->nr_charged_bytes
++	 *
++	 * In the result, nr_charged_bytes =3D=3D PAGE_SIZE.
++	 * This page will be uncharged in obj_cgroup_release().
++	 */
++	nr_bytes =3D atomic_read(&objcg->nr_charged_bytes);
++	WARN_ON_ONCE(nr_bytes & (PAGE_SIZE - 1));
++	nr_pages =3D nr_bytes >> PAGE_SHIFT;
++
++	spin_lock_irqsave(&css_set_lock, flags);
++	memcg =3D obj_cgroup_memcg(objcg);
++	if (nr_pages)
++		__memcg_kmem_uncharge(memcg, nr_pages);
++	list_del(&objcg->list);
++	mem_cgroup_put(memcg);
++	spin_unlock_irqrestore(&css_set_lock, flags);
++
++	percpu_ref_exit(ref);
++	kfree_rcu(objcg, rcu);
++}
++
++static struct obj_cgroup *obj_cgroup_alloc(void)
++{
++	struct obj_cgroup *objcg;
++	int ret;
++
++	objcg =3D kzalloc(sizeof(struct obj_cgroup), GFP_KERNEL);
++	if (!objcg)
++		return NULL;
++
++	ret =3D percpu_ref_init(&objcg->refcnt, obj_cgroup_release, 0,
++			      GFP_KERNEL);
++	if (ret) {
++		kfree(objcg);
++		return NULL;
++	}
++	INIT_LIST_HEAD(&objcg->list);
++	return objcg;
++}
++
++static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
++				  struct mem_cgroup *parent)
++{
++	struct obj_cgroup *objcg, *iter;
++
++	objcg =3D rcu_replace_pointer(memcg->objcg, NULL, true);
++
++	spin_lock_irq(&css_set_lock);
++
++	/* Move active objcg to the parent's list */
++	xchg(&objcg->memcg, parent);
++	css_get(&parent->css);
++	list_add(&objcg->list, &parent->objcg_list);
++
++	/* Move already reparented objcgs to the parent's list */
++	list_for_each_entry(iter, &memcg->objcg_list, list) {
++		css_get(&parent->css);
++		xchg(&iter->memcg, parent);
++		css_put(&memcg->css);
++	}
++	list_splice(&memcg->objcg_list, &parent->objcg_list);
++
++	spin_unlock_irq(&css_set_lock);
++
++	percpu_ref_kill(&objcg->refcnt);
++}
++
+ /*
+  * This will be the memcg's index in each cache's ->memcg_params.memcg_c=
+aches.
+  * The main reason for not using cgroup id for this:
+@@ -2047,6 +2139,12 @@ EXPORT_SYMBOL(unlock_page_memcg);
+ struct memcg_stock_pcp {
+ 	struct mem_cgroup *cached; /* this never be root cgroup */
+ 	unsigned int nr_pages;
++
++#ifdef CONFIG_MEMCG_KMEM
++	struct obj_cgroup *cached_objcg;
++	unsigned int nr_bytes;
++#endif
++
+ 	struct work_struct work;
+ 	unsigned long flags;
+ #define FLUSHING_CACHED_CHARGE	0
+@@ -2054,6 +2152,22 @@ struct memcg_stock_pcp {
+ static DEFINE_PER_CPU(struct memcg_stock_pcp, memcg_stock);
+ static DEFINE_MUTEX(percpu_charge_mutex);
+=20
++#ifdef CONFIG_MEMCG_KMEM
++static void drain_obj_stock(struct memcg_stock_pcp *stock);
++static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
++				     struct mem_cgroup *root_memcg);
++
++#else
++static inline void drain_obj_stock(struct memcg_stock_pcp *stock)
++{
++}
++static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
++				     struct mem_cgroup *root_memcg)
 +{
 +	return false;
 +}
++#endif
 +
- /*
-  * We do arithmetic on the LRU lists in various places in the code,
-  * so it is important to keep the active lists LRU_ACTIVE higher in
-diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-index aa961088c551..91220ace31da 100644
---- a/include/linux/vmstat.h
-+++ b/include/linux/vmstat.h
-@@ -8,6 +8,7 @@
- #include <linux/vm_event_item.h>
- #include <linux/atomic.h>
- #include <linux/static_key.h>
-+#include <linux/mmdebug.h>
+ /**
+  * consume_stock: Try to consume stocked charge on this cpu.
+  * @memcg: memcg to consume from.
+@@ -2120,6 +2234,7 @@ static void drain_local_stock(struct work_struct *d=
+ummy)
+ 	local_irq_save(flags);
 =20
- extern int sysctl_stat_interval;
+ 	stock =3D this_cpu_ptr(&memcg_stock);
++	drain_obj_stock(stock);
+ 	drain_stock(stock);
+ 	clear_bit(FLUSHING_CACHED_CHARGE, &stock->flags);
 =20
-@@ -192,7 +193,8 @@ static inline unsigned long global_zone_page_state(en=
-um zone_stat_item item)
- 	return x;
+@@ -2179,6 +2294,8 @@ static void drain_all_stock(struct mem_cgroup *root=
+_memcg)
+ 		if (memcg && stock->nr_pages &&
+ 		    mem_cgroup_is_descendant(memcg, root_memcg))
+ 			flush =3D true;
++		if (obj_stock_flush_required(stock, root_memcg))
++			flush =3D true;
+ 		rcu_read_unlock();
+=20
+ 		if (flush &&
+@@ -2705,6 +2822,30 @@ struct mem_cgroup *mem_cgroup_from_obj(void *p)
+ 	return page->mem_cgroup;
  }
 =20
--static inline unsigned long global_node_page_state(enum node_stat_item i=
-tem)
-+static inline
-+unsigned long global_node_page_state_pages(enum node_stat_item item)
- {
- 	long x =3D atomic_long_read(&vm_node_stat[item]);
- #ifdef CONFIG_SMP
-@@ -202,6 +204,13 @@ static inline unsigned long global_node_page_state(e=
-num node_stat_item item)
- 	return x;
- }
-=20
-+static inline unsigned long global_node_page_state(enum node_stat_item i=
-tem)
++__always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
 +{
-+	VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
++	struct obj_cgroup *objcg =3D NULL;
++	struct mem_cgroup *memcg;
 +
-+	return global_node_page_state_pages(item);
++	if (unlikely(!current->mm && !current->active_memcg))
++		return NULL;
++
++	rcu_read_lock();
++	if (unlikely(current->active_memcg))
++		memcg =3D rcu_dereference(current->active_memcg);
++	else
++		memcg =3D mem_cgroup_from_task(current);
++
++	for (; memcg !=3D root_mem_cgroup; memcg =3D parent_mem_cgroup(memcg)) =
+{
++		objcg =3D rcu_dereference(memcg->objcg);
++		if (objcg && obj_cgroup_tryget(objcg))
++			break;
++	}
++	rcu_read_unlock();
++
++	return objcg;
 +}
 +
- static inline unsigned long zone_page_state(struct zone *zone,
- 					enum zone_stat_item item)
+ static int memcg_alloc_cache_id(void)
  {
-@@ -242,9 +251,12 @@ extern unsigned long sum_zone_node_page_state(int no=
-de,
- extern unsigned long sum_zone_numa_state(int node, enum numa_stat_item i=
-tem);
- extern unsigned long node_page_state(struct pglist_data *pgdat,
- 						enum node_stat_item item);
-+extern unsigned long node_page_state_pages(struct pglist_data *pgdat,
-+					   enum node_stat_item item);
- #else
- #define sum_zone_node_page_state(node, item) global_zone_page_state(item=
-)
- #define node_page_state(node, item) global_node_page_state(item)
-+#define node_page_state_pages(node, item) global_node_page_state_pages(i=
-tem)
- #endif /* CONFIG_NUMA */
-=20
- #ifdef CONFIG_SMP
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 13ab84c7e4ac..246f9c70118c 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -681,13 +681,16 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgrou=
-p_tree_per_node *mctz)
-  */
- void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
- {
--	long x;
-+	long x, threshold =3D MEMCG_CHARGE_BATCH;
-=20
- 	if (mem_cgroup_disabled())
- 		return;
-=20
-+	if (vmstat_item_in_bytes(idx))
-+		threshold <<=3D PAGE_SHIFT;
-+
- 	x =3D val + __this_cpu_read(memcg->vmstats_percpu->stat[idx]);
--	if (unlikely(abs(x) > MEMCG_CHARGE_BATCH)) {
-+	if (unlikely(abs(x) > threshold)) {
- 		struct mem_cgroup *mi;
-=20
- 		/*
-@@ -718,7 +721,7 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, =
-enum node_stat_item idx,
- {
- 	struct mem_cgroup_per_node *pn;
- 	struct mem_cgroup *memcg;
--	long x;
-+	long x, threshold =3D MEMCG_CHARGE_BATCH;
-=20
- 	pn =3D container_of(lruvec, struct mem_cgroup_per_node, lruvec);
- 	memcg =3D pn->memcg;
-@@ -729,8 +732,11 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec,=
- enum node_stat_item idx,
- 	/* Update lruvec */
- 	__this_cpu_add(pn->lruvec_stat_local->count[idx], val);
-=20
-+	if (vmstat_item_in_bytes(idx))
-+		threshold <<=3D PAGE_SHIFT;
-+
- 	x =3D val + __this_cpu_read(pn->lruvec_stat_cpu->count[idx]);
--	if (unlikely(abs(x) > MEMCG_CHARGE_BATCH)) {
-+	if (unlikely(abs(x) > threshold)) {
- 		pg_data_t *pgdat =3D lruvec_pgdat(lruvec);
- 		struct mem_cgroup_per_node *pi;
-=20
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 3fb23a21f6dd..b171a76bfe83 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -341,6 +341,11 @@ void __mod_node_page_state(struct pglist_data *pgdat=
-, enum node_stat_item item,
- 	long x;
- 	long t;
-=20
-+	if (vmstat_item_in_bytes(item)) {
-+		VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
-+		delta >>=3D PAGE_SHIFT;
-+	}
-+
- 	x =3D delta + __this_cpu_read(*p);
-=20
- 	t =3D __this_cpu_read(pcp->stat_threshold);
-@@ -398,6 +403,8 @@ void __inc_node_state(struct pglist_data *pgdat, enum=
- node_stat_item item)
- 	s8 __percpu *p =3D pcp->vm_node_stat_diff + item;
- 	s8 v, t;
-=20
-+	VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
-+
- 	v =3D __this_cpu_inc_return(*p);
- 	t =3D __this_cpu_read(pcp->stat_threshold);
- 	if (unlikely(v > t)) {
-@@ -442,6 +449,8 @@ void __dec_node_state(struct pglist_data *pgdat, enum=
- node_stat_item item)
- 	s8 __percpu *p =3D pcp->vm_node_stat_diff + item;
- 	s8 v, t;
-=20
-+	VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
-+
- 	v =3D __this_cpu_dec_return(*p);
- 	t =3D __this_cpu_read(pcp->stat_threshold);
- 	if (unlikely(v < - t)) {
-@@ -541,6 +550,11 @@ static inline void mod_node_state(struct pglist_data=
- *pgdat,
- 	s8 __percpu *p =3D pcp->vm_node_stat_diff + item;
- 	long o, n, t, z;
-=20
-+	if (vmstat_item_in_bytes(item)) {
-+		VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
-+		delta >>=3D PAGE_SHIFT;
-+	}
-+
- 	do {
- 		z =3D 0;  /* overflow to node counters */
-=20
-@@ -989,8 +1003,8 @@ unsigned long sum_zone_numa_state(int node,
- /*
-  * Determine the per node value of a stat item.
-  */
--unsigned long node_page_state(struct pglist_data *pgdat,
--				enum node_stat_item item)
-+unsigned long node_page_state_pages(struct pglist_data *pgdat,
-+				    enum node_stat_item item)
- {
- 	long x =3D atomic_long_read(&pgdat->vm_stat[item]);
- #ifdef CONFIG_SMP
-@@ -999,6 +1013,14 @@ unsigned long node_page_state(struct pglist_data *p=
-gdat,
- #endif
- 	return x;
+ 	int id, size;
+@@ -2996,6 +3137,140 @@ void __memcg_kmem_uncharge_page(struct page *page=
+, int order)
+ 	if (PageKmemcg(page))
+ 		__ClearPageKmemcg(page);
  }
 +
-+unsigned long node_page_state(struct pglist_data *pgdat,
-+			      enum node_stat_item item)
++static bool consume_obj_stock(struct obj_cgroup *objcg, unsigned int nr_=
+bytes)
 +{
-+	VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
++	struct memcg_stock_pcp *stock;
++	unsigned long flags;
++	bool ret =3D false;
 +
-+	return node_page_state_pages(pgdat, item);
++	local_irq_save(flags);
++
++	stock =3D this_cpu_ptr(&memcg_stock);
++	if (objcg =3D=3D stock->cached_objcg && stock->nr_bytes >=3D nr_bytes) =
+{
++		stock->nr_bytes -=3D nr_bytes;
++		ret =3D true;
++	}
++
++	local_irq_restore(flags);
++
++	return ret;
 +}
++
++static void drain_obj_stock(struct memcg_stock_pcp *stock)
++{
++	struct obj_cgroup *old =3D stock->cached_objcg;
++
++	if (!old)
++		return;
++
++	if (stock->nr_bytes) {
++		unsigned int nr_pages =3D stock->nr_bytes >> PAGE_SHIFT;
++		unsigned int nr_bytes =3D stock->nr_bytes & (PAGE_SIZE - 1);
++
++		if (nr_pages) {
++			rcu_read_lock();
++			__memcg_kmem_uncharge(obj_cgroup_memcg(old), nr_pages);
++			rcu_read_unlock();
++		}
++
++		/*
++		 * The leftover is flushed to the centralized per-memcg value.
++		 * On the next attempt to refill obj stock it will be moved
++		 * to a per-cpu stock (probably, on an other CPU), see
++		 * refill_obj_stock().
++		 *
++		 * How often it's flushed is a trade-off between the memory
++		 * limit enforcement accuracy and potential CPU contention,
++		 * so it might be changed in the future.
++		 */
++		atomic_add(nr_bytes, &old->nr_charged_bytes);
++		stock->nr_bytes =3D 0;
++	}
++
++	obj_cgroup_put(old);
++	stock->cached_objcg =3D NULL;
++}
++
++static bool obj_stock_flush_required(struct memcg_stock_pcp *stock,
++				     struct mem_cgroup *root_memcg)
++{
++	struct mem_cgroup *memcg;
++
++	if (stock->cached_objcg) {
++		memcg =3D obj_cgroup_memcg(stock->cached_objcg);
++		if (memcg && mem_cgroup_is_descendant(memcg, root_memcg))
++			return true;
++	}
++
++	return false;
++}
++
++static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_b=
+ytes)
++{
++	struct memcg_stock_pcp *stock;
++	unsigned long flags;
++
++	local_irq_save(flags);
++
++	stock =3D this_cpu_ptr(&memcg_stock);
++	if (stock->cached_objcg !=3D objcg) { /* reset if necessary */
++		drain_obj_stock(stock);
++		obj_cgroup_get(objcg);
++		stock->cached_objcg =3D objcg;
++		stock->nr_bytes =3D atomic_xchg(&objcg->nr_charged_bytes, 0);
++	}
++	stock->nr_bytes +=3D nr_bytes;
++
++	if (stock->nr_bytes > PAGE_SIZE)
++		drain_obj_stock(stock);
++
++	local_irq_restore(flags);
++}
++
++int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
++{
++	struct mem_cgroup *memcg;
++	unsigned int nr_pages, nr_bytes;
++	int ret;
++
++	if (consume_obj_stock(objcg, size))
++		return 0;
++
++	/*
++	 * In theory, memcg->nr_charged_bytes can have enough
++	 * pre-charged bytes to satisfy the allocation. However,
++	 * flushing memcg->nr_charged_bytes requires two atomic
++	 * operations, and memcg->nr_charged_bytes can't be big,
++	 * so it's better to ignore it and try grab some new pages.
++	 * memcg->nr_charged_bytes will be flushed in
++	 * refill_obj_stock(), called from this function or
++	 * independently later.
++	 */
++	rcu_read_lock();
++	memcg =3D obj_cgroup_memcg(objcg);
++	css_get(&memcg->css);
++	rcu_read_unlock();
++
++	nr_pages =3D size >> PAGE_SHIFT;
++	nr_bytes =3D size & (PAGE_SIZE - 1);
++
++	if (nr_bytes)
++		nr_pages +=3D 1;
++
++	ret =3D __memcg_kmem_charge(memcg, gfp, nr_pages);
++	if (!ret && nr_bytes)
++		refill_obj_stock(objcg, PAGE_SIZE - nr_bytes);
++
++	css_put(&memcg->css);
++	return ret;
++}
++
++void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
++{
++	refill_obj_stock(objcg, size);
++}
++
+ #endif /* CONFIG_MEMCG_KMEM */
+=20
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+@@ -3416,6 +3691,7 @@ static void memcg_flush_percpu_vmevents(struct mem_=
+cgroup *memcg)
+ #ifdef CONFIG_MEMCG_KMEM
+ static int memcg_online_kmem(struct mem_cgroup *memcg)
+ {
++	struct obj_cgroup *objcg;
+ 	int memcg_id;
+=20
+ 	if (cgroup_memory_nokmem)
+@@ -3428,6 +3704,14 @@ static int memcg_online_kmem(struct mem_cgroup *me=
+mcg)
+ 	if (memcg_id < 0)
+ 		return memcg_id;
+=20
++	objcg =3D obj_cgroup_alloc();
++	if (!objcg) {
++		memcg_free_cache_id(memcg_id);
++		return -ENOMEM;
++	}
++	objcg->memcg =3D memcg;
++	rcu_assign_pointer(memcg->objcg, objcg);
++
+ 	static_branch_inc(&memcg_kmem_enabled_key);
+ 	/*
+ 	 * A memory cgroup is considered kmem-online as soon as it gets
+@@ -3463,9 +3747,10 @@ static void memcg_offline_kmem(struct mem_cgroup *=
+memcg)
+ 		parent =3D root_mem_cgroup;
+=20
+ 	/*
+-	 * Deactivate and reparent kmem_caches.
++	 * Deactivate and reparent kmem_caches and objcgs.
+ 	 */
+ 	memcg_deactivate_kmem_caches(memcg, parent);
++	memcg_reparent_objcgs(memcg, parent);
+=20
+ 	kmemcg_id =3D memcg->kmemcg_id;
+ 	BUG_ON(kmemcg_id < 0);
+@@ -5034,6 +5319,7 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
+ 	memcg->socket_pressure =3D jiffies;
+ #ifdef CONFIG_MEMCG_KMEM
+ 	memcg->kmemcg_id =3D -1;
++	INIT_LIST_HEAD(&memcg->objcg_list);
  #endif
-=20
- #ifdef CONFIG_COMPACTION
-@@ -1577,7 +1599,7 @@ static void zoneinfo_show_print(struct seq_file *m,=
- pg_data_t *pgdat,
- 		seq_printf(m, "\n  per-node stats");
- 		for (i =3D 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
- 			seq_printf(m, "\n      %-12s %lu", node_stat_name(i),
--				   node_page_state(pgdat, i));
-+				   node_page_state_pages(pgdat, i));
- 		}
- 	}
- 	seq_printf(m,
-@@ -1698,7 +1720,7 @@ static void *vmstat_start(struct seq_file *m, loff_=
-t *pos)
- #endif
-=20
- 	for (i =3D 0; i < NR_VM_NODE_STAT_ITEMS; i++)
--		v[i] =3D global_node_page_state(i);
-+		v[i] =3D global_node_page_state_pages(i);
- 	v +=3D NR_VM_NODE_STAT_ITEMS;
-=20
- 	global_dirty_limits(v + NR_DIRTY_BG_THRESHOLD,
+ #ifdef CONFIG_CGROUP_WRITEBACK
+ 	INIT_LIST_HEAD(&memcg->cgwb_list);
 --=20
 2.26.2
 
