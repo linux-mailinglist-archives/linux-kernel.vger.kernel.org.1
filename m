@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BFE7206540
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21EF3206472
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388744AbgFWUMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:12:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53394 "EHLO mail.kernel.org"
+        id S2393438AbgFWVVr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:21:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40682 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388723AbgFWULy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:11:54 -0400
+        id S2390204AbgFWUWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:22:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C0D50206C3;
-        Tue, 23 Jun 2020 20:11:52 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 236622064B;
+        Tue, 23 Jun 2020 20:22:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943113;
-        bh=+ZcY/aEUVu0+i/O/libCrzYtlt1Fm0M0Wu1MynLpqeI=;
+        s=default; t=1592943761;
+        bh=dZ7VARjuqmS34PNeGWoBrIfqC9yCV3egqsQoeWvlIAI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xzZIW5LgCUWUlE9DXgXifoCbKUZbBXCkLiHb/qAZ+8Px3HkaHvrItAAVk356KmWyw
-         reDE0mrld5zM/+U4C90KjrueELtBfS7G3kQZwlJK9rtdqnE6rwEIltH1Dcn1Nscvsp
-         HW5HY/BsCja66IFBP5CGQB9x4/+OV75ADQfZM9L8=
+        b=ufz15JrsG3sv8YQrrVnLVKJw/3B+91+lGLhs/2JB3uowobp1j96h8f3usNiLe46xv
+         DFJg+I7T9TtQQLqE6JXmkzBMAe3MQozisySzyAyzOVoKtnmUS/wVFrJzG3mpSJ2b1l
+         koX3CZp7qmOYLAP/QAb+oqiguBvHL7TG83/a2DzI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lang Cheng <chenglang@huawei.com>,
-        Weihang Li <liweihang@huawei.com>,
-        Jason Gunthorpe <jgg@mellanox.com>,
+        stable@vger.kernel.org, Andre Przywara <andre.przywara@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 237/477] RDMA/hns: Fix cmdq parameter of querying pf timer resource
-Date:   Tue, 23 Jun 2020 21:53:54 +0200
-Message-Id: <20200623195418.777875456@linuxfoundation.org>
+Subject: [PATCH 5.4 041/314] arm64: dts: fvp: Fix GIC child nodes
+Date:   Tue, 23 Jun 2020 21:53:56 +0200
+Message-Id: <20200623195340.768711619@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
-References: <20200623195407.572062007@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,75 +44,169 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lang Cheng <chenglang@huawei.com>
+From: Andre Przywara <andre.przywara@arm.com>
 
-[ Upstream commit 441c88d5b3ff80108ff536c6cf80591187015403 ]
+[ Upstream commit 78631aecc52c4b2adcf611769df2ff9c67ac16d0 ]
 
-The firmware has reduced the number of descriptions of command
-HNS_ROCE_OPC_QUERY_PF_TIMER_RES to 1. The driver needs to adapt, otherwise
-the hardware will report error 4(CMD_NEXT_ERR).
+The GIC DT nodes for the fastmodels were not fully compliant with the
+DT binding, which has certain expectations about child nodes and their
+size and address cells values.
 
-Fixes: 0e40dc2f70cd ("RDMA/hns: Add timer allocation support for hip08")
-Link: https://lore.kernel.org/r/1588931159-56875-3-git-send-email-liweihang@huawei.com
-Signed-off-by: Lang Cheng <chenglang@huawei.com>
-Signed-off-by: Weihang Li <liweihang@huawei.com>
-Signed-off-by: Jason Gunthorpe <jgg@mellanox.com>
+Use smaller #address-cells and #size-cells values, as the binding
+requests, and adjust the reg properties accordingly.
+This requires adjusting the interrupt nexus nodes as well, as one
+field of the interrupt-map property depends on the GIC's address-size.
+
+Since the .dts files share interrupt nexus nodes across different
+interrupt controllers (GICv2 vs. GICv3), we need to use the only
+commonly allowed #address-size value of <1> for both.
+
+Link: https://lore.kernel.org/r/20200513103016.130417-11-andre.przywara@arm.com
+Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hns/hns_roce_hw_v2.c | 32 ++++++++--------------
- 1 file changed, 12 insertions(+), 20 deletions(-)
+ .../boot/dts/arm/foundation-v8-gicv2.dtsi     |  2 +-
+ .../boot/dts/arm/foundation-v8-gicv3.dtsi     |  8 +-
+ arch/arm64/boot/dts/arm/foundation-v8.dtsi    | 86 +++++++++----------
+ 3 files changed, 48 insertions(+), 48 deletions(-)
 
-diff --git a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-index 96ff610bbdc4e..f9fa80ae55603 100644
---- a/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-+++ b/drivers/infiniband/hw/hns/hns_roce_hw_v2.c
-@@ -1349,34 +1349,26 @@ static int hns_roce_query_pf_resource(struct hns_roce_dev *hr_dev)
- static int hns_roce_query_pf_timer_resource(struct hns_roce_dev *hr_dev)
- {
- 	struct hns_roce_pf_timer_res_a *req_a;
--	struct hns_roce_cmq_desc desc[2];
--	int ret, i;
-+	struct hns_roce_cmq_desc desc;
-+	int ret;
+diff --git a/arch/arm64/boot/dts/arm/foundation-v8-gicv2.dtsi b/arch/arm64/boot/dts/arm/foundation-v8-gicv2.dtsi
+index 15fe81738e94d..dfb23dfc0b0fb 100644
+--- a/arch/arm64/boot/dts/arm/foundation-v8-gicv2.dtsi
++++ b/arch/arm64/boot/dts/arm/foundation-v8-gicv2.dtsi
+@@ -8,7 +8,7 @@
+ 	gic: interrupt-controller@2c001000 {
+ 		compatible = "arm,cortex-a15-gic", "arm,cortex-a9-gic";
+ 		#interrupt-cells = <3>;
+-		#address-cells = <2>;
++		#address-cells = <1>;
+ 		interrupt-controller;
+ 		reg = <0x0 0x2c001000 0 0x1000>,
+ 		      <0x0 0x2c002000 0 0x2000>,
+diff --git a/arch/arm64/boot/dts/arm/foundation-v8-gicv3.dtsi b/arch/arm64/boot/dts/arm/foundation-v8-gicv3.dtsi
+index f2c75c756039c..906f51935b362 100644
+--- a/arch/arm64/boot/dts/arm/foundation-v8-gicv3.dtsi
++++ b/arch/arm64/boot/dts/arm/foundation-v8-gicv3.dtsi
+@@ -8,9 +8,9 @@
+ 	gic: interrupt-controller@2f000000 {
+ 		compatible = "arm,gic-v3";
+ 		#interrupt-cells = <3>;
+-		#address-cells = <2>;
+-		#size-cells = <2>;
+-		ranges;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		ranges = <0x0 0x0 0x2f000000 0x100000>;
+ 		interrupt-controller;
+ 		reg =	<0x0 0x2f000000 0x0 0x10000>,
+ 			<0x0 0x2f100000 0x0 0x200000>,
+@@ -22,7 +22,7 @@
+ 		its: its@2f020000 {
+ 			compatible = "arm,gic-v3-its";
+ 			msi-controller;
+-			reg = <0x0 0x2f020000 0x0 0x20000>;
++			reg = <0x20000 0x20000>;
+ 		};
+ 	};
+ };
+diff --git a/arch/arm64/boot/dts/arm/foundation-v8.dtsi b/arch/arm64/boot/dts/arm/foundation-v8.dtsi
+index 3f78373f708a2..2a6aa43241b3b 100644
+--- a/arch/arm64/boot/dts/arm/foundation-v8.dtsi
++++ b/arch/arm64/boot/dts/arm/foundation-v8.dtsi
+@@ -107,49 +107,49 @@
  
--	for (i = 0; i < 2; i++) {
--		hns_roce_cmq_setup_basic_desc(&desc[i],
--					      HNS_ROCE_OPC_QUERY_PF_TIMER_RES,
--					      true);
-+	hns_roce_cmq_setup_basic_desc(&desc, HNS_ROCE_OPC_QUERY_PF_TIMER_RES,
-+				      true);
+ 		#interrupt-cells = <1>;
+ 		interrupt-map-mask = <0 0 63>;
+-		interrupt-map = <0 0  0 &gic 0 0 GIC_SPI  0 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0  1 &gic 0 0 GIC_SPI  1 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0  2 &gic 0 0 GIC_SPI  2 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0  3 &gic 0 0 GIC_SPI  3 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0  4 &gic 0 0 GIC_SPI  4 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0  5 &gic 0 0 GIC_SPI  5 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0  6 &gic 0 0 GIC_SPI  6 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0  7 &gic 0 0 GIC_SPI  7 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0  8 &gic 0 0 GIC_SPI  8 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0  9 &gic 0 0 GIC_SPI  9 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 10 &gic 0 0 GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 11 &gic 0 0 GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 12 &gic 0 0 GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 13 &gic 0 0 GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 14 &gic 0 0 GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 15 &gic 0 0 GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 16 &gic 0 0 GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 17 &gic 0 0 GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 18 &gic 0 0 GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 19 &gic 0 0 GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 20 &gic 0 0 GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 21 &gic 0 0 GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 22 &gic 0 0 GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 23 &gic 0 0 GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 24 &gic 0 0 GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 25 &gic 0 0 GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 26 &gic 0 0 GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 27 &gic 0 0 GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 28 &gic 0 0 GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 29 &gic 0 0 GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 30 &gic 0 0 GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 31 &gic 0 0 GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 32 &gic 0 0 GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 33 &gic 0 0 GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 34 &gic 0 0 GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 35 &gic 0 0 GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 36 &gic 0 0 GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 37 &gic 0 0 GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 38 &gic 0 0 GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 39 &gic 0 0 GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 40 &gic 0 0 GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 41 &gic 0 0 GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>,
+-				<0 0 42 &gic 0 0 GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
++		interrupt-map = <0 0  0 &gic 0 GIC_SPI  0 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0  1 &gic 0 GIC_SPI  1 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0  2 &gic 0 GIC_SPI  2 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0  3 &gic 0 GIC_SPI  3 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0  4 &gic 0 GIC_SPI  4 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0  5 &gic 0 GIC_SPI  5 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0  6 &gic 0 GIC_SPI  6 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0  7 &gic 0 GIC_SPI  7 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0  8 &gic 0 GIC_SPI  8 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0  9 &gic 0 GIC_SPI  9 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 10 &gic 0 GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 11 &gic 0 GIC_SPI 11 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 12 &gic 0 GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 13 &gic 0 GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 14 &gic 0 GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 15 &gic 0 GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 16 &gic 0 GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 17 &gic 0 GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 18 &gic 0 GIC_SPI 18 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 19 &gic 0 GIC_SPI 19 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 20 &gic 0 GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 21 &gic 0 GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 22 &gic 0 GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 23 &gic 0 GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 24 &gic 0 GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 25 &gic 0 GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 26 &gic 0 GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 27 &gic 0 GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 28 &gic 0 GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 29 &gic 0 GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 30 &gic 0 GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 31 &gic 0 GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 32 &gic 0 GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 33 &gic 0 GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 34 &gic 0 GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 35 &gic 0 GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 36 &gic 0 GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 37 &gic 0 GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 38 &gic 0 GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 39 &gic 0 GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 40 &gic 0 GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 41 &gic 0 GIC_SPI 41 IRQ_TYPE_LEVEL_HIGH>,
++				<0 0 42 &gic 0 GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
  
--		if (i == 0)
--			desc[i].flag |= cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
--		else
--			desc[i].flag &= ~cpu_to_le16(HNS_ROCE_CMD_FLAG_NEXT);
--	}
--
--	ret = hns_roce_cmq_send(hr_dev, desc, 2);
-+	ret = hns_roce_cmq_send(hr_dev, &desc, 1);
- 	if (ret)
- 		return ret;
- 
--	req_a = (struct hns_roce_pf_timer_res_a *)desc[0].data;
-+	req_a = (struct hns_roce_pf_timer_res_a *)desc.data;
- 
- 	hr_dev->caps.qpc_timer_bt_num =
--				roce_get_field(req_a->qpc_timer_bt_idx_num,
--					PF_RES_DATA_1_PF_QPC_TIMER_BT_NUM_M,
--					PF_RES_DATA_1_PF_QPC_TIMER_BT_NUM_S);
-+		roce_get_field(req_a->qpc_timer_bt_idx_num,
-+			       PF_RES_DATA_1_PF_QPC_TIMER_BT_NUM_M,
-+			       PF_RES_DATA_1_PF_QPC_TIMER_BT_NUM_S);
- 	hr_dev->caps.cqc_timer_bt_num =
--				roce_get_field(req_a->cqc_timer_bt_idx_num,
--					PF_RES_DATA_2_PF_CQC_TIMER_BT_NUM_M,
--					PF_RES_DATA_2_PF_CQC_TIMER_BT_NUM_S);
-+		roce_get_field(req_a->cqc_timer_bt_idx_num,
-+			       PF_RES_DATA_2_PF_CQC_TIMER_BT_NUM_M,
-+			       PF_RES_DATA_2_PF_CQC_TIMER_BT_NUM_S);
- 
- 	return 0;
- }
+ 		ethernet@2,02000000 {
+ 			compatible = "smsc,lan91c111";
 -- 
 2.25.1
 
