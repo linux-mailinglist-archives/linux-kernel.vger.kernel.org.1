@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 777ED2063C3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9046F206250
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393342AbgFWVLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:11:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54728 "EHLO mail.kernel.org"
+        id S2403994AbgFWU66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:58:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389684AbgFWUdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:33:24 -0400
+        id S2388315AbgFWUlY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:41:24 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B00FA206C3;
-        Tue, 23 Jun 2020 20:33:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4154420675;
+        Tue, 23 Jun 2020 20:41:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944404;
-        bh=4Xicm35odI0DIe2upMQXW0PefIjA4OgLuPkTJlGjGRo=;
+        s=default; t=1592944884;
+        bh=DdeM3ZpabKSxL178gInYFG9o/1ytqfpbP4udhnBgMxM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=moHj+cRb8A/C3sAcGYA6Mgqa9U1i4alefucsWkM85PGSeaPiyOvkzP+hYVz3/dG1d
-         WYNSMes1r8LGqJaEb08+EZrNrlOreCSjiwxm+jiYh/ERSNmYVAkfDUfd2OnS9Lu7WY
-         II4hRv5F5RsNLZ+BAIxyfgwRTxZvx2F4hu+etljE=
+        b=w7LqLGyzlFqDrcnwjdaLvPgxeMyIksngv9FKQEt2lFM6Rp9qpqpfbHezPLITpvVFi
+         KsWbzivLhOiyRM6SrAj6zuqUcbUuxCcdd1hMH8HRsUjL8x2ylXYkVfV1ybcyXW1MYX
+         DGIjeQYRY7J52AGwGVgycjtBI2DbzQbXUS5SSU0Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hongbo Yao <yaohongbo@huawei.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 264/314] perf stat: Fix NULL pointer dereference
-Date:   Tue, 23 Jun 2020 21:57:39 +0200
-Message-Id: <20200623195351.567147685@linuxfoundation.org>
+Subject: [PATCH 4.19 132/206] pinctrl: freescale: imx: Fix an error handling path in imx_pinctrl_probe()
+Date:   Tue, 23 Jun 2020 21:57:40 +0200
+Message-Id: <20200623195323.477086110@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,50 +46,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hongbo Yao <yaohongbo@huawei.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit c0c652fc705de75f4ba52e93053acc1ed3933e74 ]
+[ Upstream commit 11d8da5cabf7c6c3263ba2cd9c00260395867048 ]
 
-If config->aggr_map is NULL and config->aggr_get_id is not NULL,
-the function print_aggr() will still calling arrg_update_shadow(),
-which can result in accessing the invalid pointer.
+'pinctrl_unregister()' should not be called to undo
+'devm_pinctrl_register_and_init()', it is already handled by the framework.
 
-Fixes: 088519f318be ("perf stat: Move the display functions to stat-display.c")
-Signed-off-by: Hongbo Yao <yaohongbo@huawei.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Wei Li <liwei391@huawei.com>
-Link: https://lore.kernel.org/lkml/20200608163625.GC3073@kernel.org
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+This simplifies the error handling paths of the probe function.
+The 'imx_free_resources()' can be removed as well.
+
+Fixes: a51c158bf0f7 ("pinctrl: imx: use radix trees for groups and functions")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Dong Aisheng <aisheng.dong@nxp.com>
+Link: https://lore.kernel.org/r/20200530204955.588962-1-christophe.jaillet@wanadoo.fr
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- tools/perf/util/stat-display.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/pinctrl/freescale/pinctrl-imx.c | 19 ++-----------------
+ 1 file changed, 2 insertions(+), 17 deletions(-)
 
-diff --git a/tools/perf/util/stat-display.c b/tools/perf/util/stat-display.c
-index ed3b0ac2f7850..373e399e57d28 100644
---- a/tools/perf/util/stat-display.c
-+++ b/tools/perf/util/stat-display.c
-@@ -661,7 +661,7 @@ static void print_aggr(struct perf_stat_config *config,
- 	int s;
- 	bool first;
+diff --git a/drivers/pinctrl/freescale/pinctrl-imx.c b/drivers/pinctrl/freescale/pinctrl-imx.c
+index b04edc22dad76..90d414dd792cb 100644
+--- a/drivers/pinctrl/freescale/pinctrl-imx.c
++++ b/drivers/pinctrl/freescale/pinctrl-imx.c
+@@ -662,16 +662,6 @@ static int imx_pinctrl_probe_dt(struct platform_device *pdev,
+ 	return 0;
+ }
  
--	if (!(config->aggr_map || config->aggr_get_id))
-+	if (!config->aggr_map || !config->aggr_get_id)
- 		return;
+-/*
+- * imx_free_resources() - free memory used by this driver
+- * @info: info driver instance
+- */
+-static void imx_free_resources(struct imx_pinctrl *ipctl)
+-{
+-	if (ipctl->pctl)
+-		pinctrl_unregister(ipctl->pctl);
+-}
+-
+ int imx_pinctrl_probe(struct platform_device *pdev,
+ 		      const struct imx_pinctrl_soc_info *info)
+ {
+@@ -762,21 +752,16 @@ int imx_pinctrl_probe(struct platform_device *pdev,
+ 					     &ipctl->pctl);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "could not register IMX pinctrl driver\n");
+-		goto free;
++		return ret;
+ 	}
  
- 	aggr_update_shadow(config, evlist);
-@@ -1140,7 +1140,7 @@ static void print_percore(struct perf_stat_config *config,
- 	int s;
- 	bool first = true;
+ 	ret = imx_pinctrl_probe_dt(pdev, ipctl);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "fail to probe dt properties\n");
+-		goto free;
++		return ret;
+ 	}
  
--	if (!(config->aggr_map || config->aggr_get_id))
-+	if (!config->aggr_map || !config->aggr_get_id)
- 		return;
+ 	dev_info(&pdev->dev, "initialized IMX pinctrl driver\n");
  
- 	for (s = 0; s < config->aggr_map->nr; s++) {
+ 	return pinctrl_enable(ipctl->pctl);
+-
+-free:
+-	imx_free_resources(ipctl);
+-
+-	return ret;
+ }
 -- 
 2.25.1
 
