@@ -2,103 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86F752049F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 08:31:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5015E2049EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 08:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730926AbgFWGb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 02:31:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730395AbgFWGb3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 02:31:29 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45EF7C061573
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 23:31:28 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id g7so15432325oti.13
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 23:31:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qmek8AIjwhUpjq4ifIiYp8uzWRuQrceKBuTssA8WgU4=;
-        b=wUBnFpb1XedTOZz49F9n4D4PIuVtPX5VkJUtaqtxGg7UGknVrrLk60Zx9naVjTQYpL
-         BDk1zi2t7tZIMJb82rFEjfZajaMsFAfhbh9FZYYZ8BPu11D1WPwD9JSuUJ53USXF3eJ3
-         BDU3eMbwMLCMH35owR629KtTdFBa8up4bL/K/aTED/GVZ2rNWXzFwMf14rzHMKdQ2C3r
-         umREKoXA6uXgJsA82lEpOsHQmCxGoWNtM7q/swcZNx7OoszdTF5+N14EIm40e92Pf/JV
-         wzWzcuqAgcF7UZnbQzN/BW9eedX0VYOZJfbh77b/t64+lrEITy0RMQKRGi5EmJSyHFl3
-         k/3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qmek8AIjwhUpjq4ifIiYp8uzWRuQrceKBuTssA8WgU4=;
-        b=qtDQ2tSvZfupUFPiFvsnL89UsWMaaToyeZPxLRUMu8c3NicoVXVmSLKyZzJxe+iUpR
-         0LG5ULM2p44jaeiso3PMcXGYd1LLAETejhxoi4DVCsgB2Oo4gRZ3hLfZjWV9VN+N1waR
-         Bm0GlVS6/HaCrhU+atNJO+2sklVAFuq2to6MW5lUAKyWchRugZgwYpp9iP/MJIPXIYr3
-         59rqsuBWOa0v0goVXvTitE5Ee0p01EuH+uQ2+CVhPagWMCr/EfxUiqEWM8RNmP9Ypz7o
-         70NEZ+ng5h0hhgkCvj67PM0/WCmSiVySVO3t0B4nNi7AzqliIrT+hDxc8Bv208JLPrRb
-         Vdkw==
-X-Gm-Message-State: AOAM5319G9dMgPfILDjikpzVqpsaMiXec2KZiGItXZmnCoK43LdANBsz
-        nNXPprmJH8Mr6bewQxT/8tPB5/gt0OdHlENTk/WrNg==
-X-Google-Smtp-Source: ABdhPJyIrpltllyO77WrCyCR79bPdhL1fhSudnjvKpS3olL4BruEarN+UIc2fZLLpjqe+SOyDu+d76xm40Uv44HIab4=
-X-Received: by 2002:a9d:58c9:: with SMTP id s9mr18209710oth.233.1592893887231;
- Mon, 22 Jun 2020 23:31:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200623004310.GA26995@paulmck-ThinkPad-P72>
-In-Reply-To: <20200623004310.GA26995@paulmck-ThinkPad-P72>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 23 Jun 2020 08:31:15 +0200
-Message-ID: <CANpmjNOV=rGaDmvU+neSe8Pyz-Jezm6c45LS0-DJHADNU9H_QA@mail.gmail.com>
-Subject: Re: [PATCH kcsan 0/10] KCSAN updates for v5.9
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>, kernel-team@fb.com,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, Qian Cai <cai@lca.pw>,
-        Boqun Feng <boqun.feng@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1731053AbgFWGao (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 02:30:44 -0400
+Received: from mga12.intel.com ([192.55.52.136]:21452 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730708AbgFWGan (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 02:30:43 -0400
+IronPort-SDR: dLiEMUWawMGH8i41DCab/iLjZidrLC8G6LBfXvgN3xD8e9wcSh0TpaR20p+wmgM14is9JHNldn
+ ABQhsmtaMu3Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9660"; a="123650428"
+X-IronPort-AV: E=Sophos;i="5.75,270,1589266800"; 
+   d="scan'208";a="123650428"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Jun 2020 23:30:43 -0700
+IronPort-SDR: W8NKYYcgp++Sp08vRstab/P6xSPfzuvhS4KS78Lq1LK6adkFBxCId0atgy/7XzBvBdXvlynAX/
+ UMx0VJu89Vwg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,270,1589266800"; 
+   d="scan'208";a="279007642"
+Received: from chenyu-office.sh.intel.com ([10.239.158.173])
+  by orsmga006.jf.intel.com with ESMTP; 22 Jun 2020 23:30:40 -0700
+From:   Chen Yu <yu.c.chen@intel.com>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Len Brown <len.brown@intel.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Chen Yu <yu.c.chen@intel.com>,
+        Len Brown <lenb@kernel.org>
+Subject: [PATCH 1/2][v3] PM / s2idle: Clear _TIF_POLLING_NRFLAG before suspend to idle
+Date:   Tue, 23 Jun 2020 14:31:31 +0800
+Message-Id: <55caab9c03a0d6c3c0a1f45294d6c274b73c954b.1592892767.git.yu.c.chen@intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cover.1592892767.git.yu.c.chen@intel.com>
+References: <cover.1592892767.git.yu.c.chen@intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Jun 2020 at 02:43, Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> Hello!
->
-> This series provides KCSAN updates:
->
-> 1.      Annotate a data race in vm_area_dup(), courtesy of Qian Cai.
->
-> 2.      x86/mm/pat: Mark an intentional data race, courtesy of Qian Cai.
->
-> 3.      Add ASSERT_EXCLUSIVE_ACCESS() to __list_splice_init_rcu().
->
-> 4.      Add test suite, courtesy of Marco Elver.
->
-> 5.      locking/osq_lock: Annotate a data race in osq_lock.
->
-> 6.      Prefer '__no_kcsan inline' in test, courtesy of Marco Elver.
->
-> 7.      Silence -Wmissing-prototypes warning with W=1, courtesy of Qian Cai.
->
-> 8.      Rename test.c to selftest.c, courtesy of Marco Elver.
->
-> 9.      Remove existing special atomic rules, courtesy of Marco Elver.
->
-> 10.     Add jiffies test to test suite, courtesy of Marco Elver.
+Suspend to idle was found to not work on Goldmont CPU recently.
+And the issue was triggered due to:
 
-Do we want GCC support back for 5.9?
+1. On Goldmont the CPU in idle can only be woken up via IPIs,
+   not POLLING mode:
+   Commit 08e237fa56a1 ("x86/cpu: Add workaround for MONITOR
+   instruction erratum on Goldmont based CPUs")
+2. When the CPU is entering suspend to idle process, the
+   _TIF_POLLING_NRFLAG is kept on, due to cpuidle_enter_s2idle()
+   doesn't properly match call_cpuidle().
+3. Commit b2a02fc43a1f ("smp: Optimize send_call_function_single_ipi()")
+   makes use of _TIF_POLLING_NRFLAG to avoid sending IPIs to
+   idle CPUs.
+4. As a result, some IPIs related functions might not work
+   well during suspend to idle on Goldmont. For example, one
+   suspected victim:
+   tick_unfreeze() -> timekeeping_resume() -> hrtimers_resume()
+   -> clock_was_set() -> on_each_cpu() might wait forever,
+   because the IPIs will not be sent to the CPUs which are
+   sleeping with _TIF_POLLING_NRFLAG set, and Goldmont CPU
+   could not be woken up by only setting _TIF_NEED_RESCHED
+   on the monitor address.
 
-   https://lkml.kernel.org/r/20200618093118.247375-1-elver@google.com
+Clear the _TIF_POLLING_NRFLAG flag before entering suspend to idle,
+and let the driver's enter_s2idle() to decide whether to set
+_TIF_POLLING_NRFLAG or not. So that to avoid the scenario described
+above and keep the context consistent with before.
 
-I was hoping it could go into 5.9, because it makes a big difference
-in terms of usability as it provides more compiler choice. The only
-significant change for GCC support is the addition of the checking of
-(CC_IS_GCC && (....)).
+Fixes: b2a02fc43a1f ("smp: Optimize send_call_function_single_ipi()")
+Reported-by: kbuild test robot <lkp@intel.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Len Brown <lenb@kernel.org>
+Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+---
+v2: According to Peter's review, v1 is racy, if someone already
+    set TIF_NEED_RESCHED this patch just clear POLLING and go to sleep.
+    Check TIF_NEED_RESCHED before entering suspend to idle and
+    adjust the naming to be consistent with call_cpuidle().
 
-Thanks,
--- Marco
+v3: According to Rafael, it would be better to do the simplest fix
+   first and then do the cleanup on top of it.
+---
+ drivers/cpuidle/cpuidle.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/cpuidle/cpuidle.c b/drivers/cpuidle/cpuidle.c
+index c149d9e20dfd..e092789187c6 100644
+--- a/drivers/cpuidle/cpuidle.c
++++ b/drivers/cpuidle/cpuidle.c
+@@ -13,6 +13,7 @@
+ #include <linux/mutex.h>
+ #include <linux/sched.h>
+ #include <linux/sched/clock.h>
++#include <linux/sched/idle.h>
+ #include <linux/notifier.h>
+ #include <linux/pm_qos.h>
+ #include <linux/cpu.h>
+@@ -186,7 +187,7 @@ int cpuidle_enter_s2idle(struct cpuidle_driver *drv, struct cpuidle_device *dev)
+ 	 * be frozen safely.
+ 	 */
+ 	index = find_deepest_state(drv, dev, U64_MAX, 0, true);
+-	if (index > 0)
++	if (index > 0 && !current_clr_polling_and_test())
+ 		enter_s2idle_proper(drv, dev, index);
+ 
+ 	return index;
+-- 
+2.17.1
+
