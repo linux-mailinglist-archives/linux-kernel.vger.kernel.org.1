@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 621CD205F2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC942205FF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389451AbgFWUaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:30:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50302 "EHLO mail.kernel.org"
+        id S2391530AbgFWUiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:38:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391044AbgFWUaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:30:06 -0400
+        id S2391881AbgFWUh6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:37:58 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8DFFC206C3;
-        Tue, 23 Jun 2020 20:30:06 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 08AA121556;
+        Tue, 23 Jun 2020 20:37:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944207;
-        bh=V/s8NPxg6JfdnXjqV+GFshr1cIzxmfG5AaSgnm8hZIY=;
+        s=default; t=1592944678;
+        bh=TW+fwH5eDjkKr/FeicQZHbilUnViwTBcA5+u9OldS88=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YjFTDyoEwpAyGKFJluu7Zz21bnWSVkdQP6c5Tor+G2NG/1DrlGYUutqA7h5f9XF5g
-         c3oVJJVYKhNcpFUnkfXW3WFwhvqRWJJKHp+apCr0lRy14JpCxGV/Yo/m/ESRoyVBRo
-         MH5u8a0M8q0s22+3Bhbt6ndmHjXZt5pE8fZ7PklA=
+        b=acYGGrPTffimu0VgidBqHJXoAe/LRJrSYjPui+Xj/ZFEGuiWTzzELGC0rIs19ruHG
+         2N0U9EfW9F5mLvF/SNe3rW1vTNPCLY5F+69lwyZk8njFJfowSs5ts78jJzXpo/PLgn
+         agEHMOboU2pp/CSZ5Lr5m4YUvtDxmqX9HKkK8sYw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stanley Chu <stanley.chu@mediatek.com>,
-        Can Guo <cang@codeaurora.org>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 214/314] scsi: ufs: Dont update urgent bkops level when toggling auto bkops
-Date:   Tue, 23 Jun 2020 21:56:49 +0200
-Message-Id: <20200623195349.126633596@linuxfoundation.org>
+        stable@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 082/206] PCI: Fix pci_register_host_bridge() device_register() error handling
+Date:   Tue, 23 Jun 2020 21:56:50 +0200
+Message-Id: <20200623195320.972725045@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Can Guo <cang@codeaurora.org>
+From: Rob Herring <robh@kernel.org>
 
-[ Upstream commit be32acff43800c87dc5c707f5d47cc607b76b653 ]
+[ Upstream commit 1b54ae8327a4d630111c8d88ba7906483ec6010b ]
 
-Urgent bkops level is used to compare against actual bkops status read from
-UFS device. Urgent bkops level is set during initialization and might be
-updated in exception event handler during runtime. But it should not be
-updated to the actual bkops status every time when auto bkops is toggled.
-Otherwise, if urgent bkops level is updated to 0, auto bkops shall always
-be kept enabled.
+If device_register() has an error, we should bail out of
+pci_register_host_bridge() rather than continuing on.
 
-Link: https://lore.kernel.org/r/1590632686-17866-1-git-send-email-cang@codeaurora.org
-Fixes: 24366c2afbb0 ("scsi: ufs: Recheck bkops level if bkops is disabled")
-Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
-Signed-off-by: Can Guo <cang@codeaurora.org>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 37d6a0a6f470 ("PCI: Add pci_register_host_bridge() interface")
+Link: https://lore.kernel.org/r/20200513223859.11295-1-robh@kernel.org
+Signed-off-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/pci/probe.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index bc73181b0405a..2b6853c7375c9 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -5101,7 +5101,6 @@ static int ufshcd_bkops_ctrl(struct ufs_hba *hba,
- 		err = ufshcd_enable_auto_bkops(hba);
- 	else
- 		err = ufshcd_disable_auto_bkops(hba);
--	hba->urgent_bkops_lvl = curr_status;
- out:
- 	return err;
- }
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 243b65f3c282c..cbc0d8da7483c 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -818,9 +818,10 @@ static int pci_register_host_bridge(struct pci_host_bridge *bridge)
+ 		goto free;
+ 
+ 	err = device_register(&bridge->dev);
+-	if (err)
++	if (err) {
+ 		put_device(&bridge->dev);
+-
++		goto free;
++	}
+ 	bus->bridge = get_device(&bridge->dev);
+ 	device_enable_async_suspend(bus->bridge);
+ 	pci_set_bus_of_node(bus);
 -- 
 2.25.1
 
