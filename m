@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C947920601D
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3509205F56
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392070AbgFWUjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:39:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35214 "EHLO mail.kernel.org"
+        id S2391010AbgFWUcB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:32:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52392 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392053AbgFWUjb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:39:31 -0400
+        id S2391227AbgFWUbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:31:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AAFE621531;
-        Tue, 23 Jun 2020 20:39:30 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C716120723;
+        Tue, 23 Jun 2020 20:31:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944771;
-        bh=gq5ObQNE4e1Wgot0BPPIi7/5Q016PqRJyq9xK54erqw=;
+        s=default; t=1592944302;
+        bh=05fQ7hKQmDihBqA8in3S2FObPU4aIxjbEFrVpaTkUsE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dB2PXhkRNbCU8Fbc82wXCC95woEMCVxc9Hbiq9EF4Pa9Cd5VKR4rM9cTOHWvG5vHm
-         yVzJqr+Ky8TlgJAJJB6syFnfj6MCsjGOgbFOoS6igcezC2T115I+R0t+YGSQ8Ij9D1
-         Dbhxg3hm8ItaK0FrmLen407U9UveaB1dWZNIjKEw=
+        b=MKslvNTc6+uNkPQsmekdjufGLsWgPTJGi/JKA9MToLqQ85McI/+36oDClsvBxmtRE
+         ATvM9QJlM9ofg3+ZQQ7aROOPISHH9yNS8z5LHclVIn495lz685bJzCFnbgwqpwRveK
+         H/EzSp+/Q640X14J8uG/7MJGw5/siSwypPTIX7dw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chunyan Zhang <chunyan.zhang@unisoc.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Andrii Nakryiko <andriin@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 118/206] clk: sprd: return correct type of value for _sprd_pll_recalc_rate
+Subject: [PATCH 5.4 251/314] libbpf: Handle GCC noreturn-turned-volatile quirk
 Date:   Tue, 23 Jun 2020 21:57:26 +0200
-Message-Id: <20200623195322.751174636@linuxfoundation.org>
+Message-Id: <20200623195350.932411438@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,39 +46,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+From: Andrii Nakryiko <andriin@fb.com>
 
-[ Upstream commit c2f30986d418f26abefc2eec90ebf06716c970d2 ]
+[ Upstream commit 32022fd97ed34f6812802bf1288db27c313576f4 ]
 
-The function _sprd_pll_recalc_rate() defines return value to unsigned
-long, but it would return a negative value when malloc fail, changing
-to return its parent_rate makes more sense, since if the callback
-.recalc_rate() is not set, the framework returns the parent_rate as
-well.
+Handle a GCC quirk of emitting extra volatile modifier in DWARF (and
+subsequently preserved in BTF by pahole) for function pointers marked as
+__attribute__((noreturn)). This was the way to mark such functions before GCC
+2.5 added noreturn attribute. Drop such func_proto modifiers, similarly to how
+it's done for array (also to handle GCC quirk/bug).
 
-Fixes: 3e37b005580b ("clk: sprd: add adjustable pll support")
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-Link: https://lkml.kernel.org/r/20200519030036.1785-2-zhang.lyra@gmail.com
-Reviewed-by: Baolin Wang <baolin.wang7@gmail.com>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Such volatile attribute is emitted by GCC only, so existing selftests can't
+express such test. Simple repro is like this (compiled with GCC + BTF
+generated by pahole):
+
+  struct my_struct {
+      void __attribute__((noreturn)) (*fn)(int);
+  };
+  struct my_struct a;
+
+Without this fix, output will be:
+
+struct my_struct {
+    voidvolatile  (*fn)(int);
+};
+
+With the fix:
+
+struct my_struct {
+    void (*fn)(int);
+};
+
+Fixes: 351131b51c7a ("libbpf: add btf_dump API for BTF-to-C conversion")
+Reported-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Signed-off-by: Andrii Nakryiko <andriin@fb.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+Link: https://lore.kernel.org/bpf/20200610052335.2862559-1-andriin@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/sprd/pll.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/lib/bpf/btf_dump.c | 33 ++++++++++++++++++++++++---------
+ 1 file changed, 24 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/clk/sprd/pll.c b/drivers/clk/sprd/pll.c
-index 640270f51aa56..eb8862752c2b2 100644
---- a/drivers/clk/sprd/pll.c
-+++ b/drivers/clk/sprd/pll.c
-@@ -105,7 +105,7 @@ static unsigned long _sprd_pll_recalc_rate(const struct sprd_pll *pll,
+diff --git a/tools/lib/bpf/btf_dump.c b/tools/lib/bpf/btf_dump.c
+index 87f27e2664c5d..d9e386b8f47ed 100644
+--- a/tools/lib/bpf/btf_dump.c
++++ b/tools/lib/bpf/btf_dump.c
+@@ -1141,6 +1141,20 @@ static void btf_dump_emit_mods(struct btf_dump *d, struct id_stack *decl_stack)
+ 	}
+ }
  
- 	cfg = kcalloc(regs_num, sizeof(*cfg), GFP_KERNEL);
- 	if (!cfg)
--		return -ENOMEM;
-+		return parent_rate;
++static void btf_dump_drop_mods(struct btf_dump *d, struct id_stack *decl_stack)
++{
++	const struct btf_type *t;
++	__u32 id;
++
++	while (decl_stack->cnt) {
++		id = decl_stack->ids[decl_stack->cnt - 1];
++		t = btf__type_by_id(d->btf, id);
++		if (!btf_is_mod(t))
++			return;
++		decl_stack->cnt--;
++	}
++}
++
+ static void btf_dump_emit_name(const struct btf_dump *d,
+ 			       const char *name, bool last_was_ptr)
+ {
+@@ -1239,14 +1253,7 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
+ 			 * a const/volatile modifier for array, so we are
+ 			 * going to silently skip them here.
+ 			 */
+-			while (decls->cnt) {
+-				next_id = decls->ids[decls->cnt - 1];
+-				next_t = btf__type_by_id(d->btf, next_id);
+-				if (btf_is_mod(next_t))
+-					decls->cnt--;
+-				else
+-					break;
+-			}
++			btf_dump_drop_mods(d, decls);
  
- 	for (i = 0; i < regs_num; i++)
- 		cfg[i] = sprd_pll_read(pll, i);
+ 			if (decls->cnt == 0) {
+ 				btf_dump_emit_name(d, fname, last_was_ptr);
+@@ -1274,7 +1281,15 @@ static void btf_dump_emit_type_chain(struct btf_dump *d,
+ 			__u16 vlen = btf_vlen(t);
+ 			int i;
+ 
+-			btf_dump_emit_mods(d, decls);
++			/*
++			 * GCC emits extra volatile qualifier for
++			 * __attribute__((noreturn)) function pointers. Clang
++			 * doesn't do it. It's a GCC quirk for backwards
++			 * compatibility with code written for GCC <2.5. So,
++			 * similarly to extra qualifiers for array, just drop
++			 * them, instead of handling them.
++			 */
++			btf_dump_drop_mods(d, decls);
+ 			if (decls->cnt) {
+ 				btf_dump_printf(d, " (");
+ 				btf_dump_emit_type_chain(d, decls, fname, lvl);
 -- 
 2.25.1
 
