@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B9B20598B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:42:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6426205983
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387620AbgFWRl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 13:41:57 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:22582 "EHLO
+        id S2387975AbgFWRle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 13:41:34 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:26322 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387924AbgFWRlE (ORCPT
+        by vger.kernel.org with ESMTP id S1733260AbgFWRlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 13:41:04 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NHf0te010526
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 10:41:04 -0700
+        Tue, 23 Jun 2020 13:41:18 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NHfCoD026400
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 10:41:17 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=facebook;
- bh=JXUspudHQGAsG6wbk4FnMPo8oy0xBT01USd2Q25R2f8=;
- b=EygI/43MNI2vZfC73t/E4aKzBS/bd/rJsZ+FzHt4zpuvQz1lt960V7nf+l2dMUlE/Dg1
- xGEPEuN/EaYtu2I6EUeJVPignHDyMzGFEgGwDwXgfntatjhacP1slM7CLZvKupKAMYVT
- ulMW4pfm5Ckmyb0I9C+EnAuTMbE/R4X4964= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 31uk3ch4x4-5
+ bh=e2fXapnYHXX7RWAashrUDymK5xV4NycFqBGAYpMBYVs=;
+ b=NNXU94GLZikJB+sWUsS+Z1MgjRsFIBZBxT/3QJDUHuM4it/NnIXAML2rED1VLlqkKFv2
+ +JWeY70bIbEhazugfQcwBf8whytgT05p3QMw7jlURp1zGc9aCzxvz8hGE4OM1q5F6vNf
+ lENRuZX5l2xz4ok1LgpvCaPWl+C+2bx+LW0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 31uk2cs65x-14
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 10:41:03 -0700
-Received: from intmgw003.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 10:41:17 -0700
+Received: from intmgw002.06.prn3.facebook.com (2620:10d:c085:208::f) by
+ mail.thefacebook.com (2620:10d:c085:11d::5) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Jun 2020 10:40:46 -0700
+ 15.1.1979.3; Tue, 23 Jun 2020 10:40:48 -0700
 Received: by devvm1291.vll0.facebook.com (Postfix, from userid 111017)
-        id D8986273E5F0; Tue, 23 Jun 2020 10:40:41 -0700 (PDT)
+        id DD62D273E5F2; Tue, 23 Jun 2020 10:40:41 -0700 (PDT)
 Smtp-Origin-Hostprefix: devvm
 From:   Roman Gushchin <guro@fb.com>
 Smtp-Origin-Hostname: devvm1291.vll0.facebook.com
@@ -43,9 +43,9 @@ CC:     Johannes Weiner <hannes@cmpxchg.org>,
         Vlastimil Babka <vbabka@suse.cz>, <kernel-team@fb.com>,
         <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
 Smtp-Origin-Cluster: vll0c01
-Subject: [PATCH v7 14/19] mm: memcg/slab: remove memcg_kmem_get_cache()
-Date:   Tue, 23 Jun 2020 10:40:32 -0700
-Message-ID: <20200623174037.3951353-15-guro@fb.com>
+Subject: [PATCH v7 15/19] mm: memcg/slab: deprecate slab_root_caches
+Date:   Tue, 23 Jun 2020 10:40:33 -0700
+Message-ID: <20200623174037.3951353-16-guro@fb.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200623174037.3951353-1-guro@fb.com>
 References: <20200623174037.3951353-1-guro@fb.com>
@@ -55,10 +55,10 @@ X-FB-Internal: Safe
 Content-Type: text/plain
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-06-23_11:2020-06-23,2020-06-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- impostorscore=0 suspectscore=2 phishscore=0 mlxlogscore=658
- priorityscore=1501 mlxscore=0 lowpriorityscore=0 adultscore=0 spamscore=0
- malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ lowpriorityscore=0 impostorscore=0 spamscore=0 clxscore=1015 phishscore=0
+ malwarescore=0 priorityscore=1501 adultscore=0 mlxlogscore=733 bulkscore=0
+ suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2006120000 definitions=main-2006230124
 X-FB-Internal: deliver
 Sender: linux-kernel-owner@vger.kernel.org
@@ -66,122 +66,244 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The memcg_kmem_get_cache() function became really trivial, so let's just
-inline it into the single call point: memcg_slab_pre_alloc_hook().
+Currently there are two lists of kmem_caches:
+1) slab_caches, which contains all kmem_caches,
+2) slab_root_caches, which contains only root kmem_caches.
 
-It will make the code less bulky and can also help the compiler to
-generate a better code.
+And there is some preprocessor magic to have a single list if
+CONFIG_MEMCG_KMEM isn't enabled.
+
+It was required earlier because the number of non-root kmem_caches was
+proportional to the number of memory cgroups and could reach really big
+values.  Now, when it cannot exceed the number of root kmem_caches, there
+is really no reason to maintain two lists.
+
+We never iterate over the slab_root_caches list on any hot paths, so it's
+perfectly fine to iterate over slab_caches and filter out non-root
+kmem_caches.
+
+It allows to remove a lot of config-dependent code and two pointers from
+the kmem_cache structure.
 
 Signed-off-by: Roman Gushchin <guro@fb.com>
 Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
 ---
- include/linux/memcontrol.h |  2 --
- mm/memcontrol.c            | 25 +------------------------
- mm/slab.h                  | 11 +++++++++--
- mm/slab_common.c           |  2 +-
- 4 files changed, 11 insertions(+), 29 deletions(-)
+ mm/slab.c        |  1 -
+ mm/slab.h        | 17 -----------------
+ mm/slab_common.c | 37 ++++++++-----------------------------
+ mm/slub.c        |  1 -
+ 4 files changed, 8 insertions(+), 48 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 2ac84dcfc9e5..5a8b62d075e6 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1403,8 +1403,6 @@ static inline void memcg_set_shrinker_bit(struct me=
-m_cgroup *memcg,
- }
- #endif
-=20
--struct kmem_cache *memcg_kmem_get_cache(struct kmem_cache *cachep);
--
- #ifdef CONFIG_MEMCG_KMEM
- int __memcg_kmem_charge(struct mem_cgroup *memcg, gfp_t gfp,
- 			unsigned int nr_pages);
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d23c2bdeea66..c910fe326ca6 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -393,7 +393,7 @@ void memcg_put_cache_ids(void)
-=20
- /*
-  * A lot of the calls to the cache allocation functions are expected to =
-be
-- * inlined by the compiler. Since the calls to memcg_kmem_get_cache are
-+ * inlined by the compiler. Since the calls to memcg_slab_pre_alloc_hook=
-() are
-  * conditional to this static branch, we'll have to allow modules that d=
-oes
-  * kmem_cache_alloc and the such to see this symbol as well
-  */
-@@ -2900,29 +2900,6 @@ static void memcg_free_cache_id(int id)
- 	ida_simple_remove(&memcg_cache_ida, id);
- }
-=20
--/**
-- * memcg_kmem_get_cache: select memcg or root cache for allocation
-- * @cachep: the original global kmem cache
-- *
-- * Return the kmem_cache we're supposed to use for a slab allocation.
-- *
-- * If the cache does not exist yet, if we are the first user of it, we
-- * create it asynchronously in a workqueue and let the current allocatio=
-n
-- * go through with the original cache.
-- */
--struct kmem_cache *memcg_kmem_get_cache(struct kmem_cache *cachep)
--{
--	struct kmem_cache *memcg_cachep;
--
--	memcg_cachep =3D READ_ONCE(cachep->memcg_params.memcg_cache);
--	if (unlikely(!memcg_cachep)) {
--		queue_work(system_wq, &cachep->memcg_params.work);
--		return cachep;
--	}
--
--	return memcg_cachep;
--}
--
- /**
-  * __memcg_kmem_charge: charge a number of kernel pages to a memcg
-  * @memcg: memory cgroup to charge
-diff --git a/mm/slab.h b/mm/slab.h
-index 66482f8467e7..d47430e97ff1 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -364,9 +364,16 @@ static inline struct kmem_cache *memcg_slab_pre_allo=
-c_hook(struct kmem_cache *s,
- 	if (memcg_kmem_bypass())
- 		return s;
-=20
--	cachep =3D memcg_kmem_get_cache(s);
--	if (is_root_cache(cachep))
-+	cachep =3D READ_ONCE(s->memcg_params.memcg_cache);
-+	if (unlikely(!cachep)) {
-+		/*
-+		 * If memcg cache does not exist yet, we schedule it's
-+		 * asynchronous creation and let the current allocation
-+		 * go through with the root cache.
-+		 */
-+		queue_work(system_wq, &s->memcg_params.work);
- 		return s;
-+	}
-=20
- 	objcg =3D get_obj_cgroup_from_current();
- 	if (!objcg)
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index fe4f5be0e51f..e0a2a904fdd9 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -568,7 +568,7 @@ void memcg_create_kmem_cache(struct kmem_cache *root_=
-cache)
- 	}
+diff --git a/mm/slab.c b/mm/slab.c
+index 84e218fd0bcf..23f0376f66ba 100644
+--- a/mm/slab.c
++++ b/mm/slab.c
+@@ -1239,7 +1239,6 @@ void __init kmem_cache_init(void)
+ 				  nr_node_ids * sizeof(struct kmem_cache_node *),
+ 				  SLAB_HWCACHE_ALIGN, 0, 0);
+ 	list_add(&kmem_cache->list, &slab_caches);
+-	memcg_link_cache(kmem_cache);
+ 	slab_state =3D PARTIAL;
 =20
  	/*
--	 * Since readers won't lock (see memcg_kmem_get_cache()), we need a
-+	 * Since readers won't lock (see memcg_slab_pre_alloc_hook()), we need =
-a
- 	 * barrier here to ensure nobody will see the kmem_cache partially
- 	 * initialized.
- 	 */
+diff --git a/mm/slab.h b/mm/slab.h
+index d47430e97ff1..46ac1de9a0b7 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -44,14 +44,12 @@ struct kmem_cache {
+  *
+  * @memcg_cache: pointer to memcg kmem cache, used by all non-root memor=
+y
+  *		cgroups.
+- * @root_caches_node: list node for slab_root_caches list.
+  * @work: work struct used to create the non-root cache.
+  */
+ struct memcg_cache_params {
+ 	struct kmem_cache *root_cache;
+=20
+ 	struct kmem_cache *memcg_cache;
+-	struct list_head __root_caches_node;
+ 	struct work_struct work;
+ };
+ #endif /* CONFIG_SLOB */
+@@ -264,11 +262,6 @@ static inline bool kmem_cache_debug_flags(struct kme=
+m_cache *s, slab_flags_t fla
+ }
+=20
+ #ifdef CONFIG_MEMCG_KMEM
+-
+-/* List of all root caches. */
+-extern struct list_head		slab_root_caches;
+-#define root_caches_node	memcg_params.__root_caches_node
+-
+ static inline bool is_root_cache(struct kmem_cache *s)
+ {
+ 	return !s->memcg_params.root_cache;
+@@ -446,14 +439,8 @@ static inline void memcg_slab_free_hook(struct kmem_=
+cache *s, struct page *page,
+ }
+=20
+ extern void slab_init_memcg_params(struct kmem_cache *);
+-extern void memcg_link_cache(struct kmem_cache *s);
+=20
+ #else /* CONFIG_MEMCG_KMEM */
+-
+-/* If !memcg, all caches are root. */
+-#define slab_root_caches	slab_caches
+-#define root_caches_node	list
+-
+ static inline bool is_root_cache(struct kmem_cache *s)
+ {
+ 	return true;
+@@ -522,10 +509,6 @@ static inline void slab_init_memcg_params(struct kme=
+m_cache *s)
+ {
+ }
+=20
+-static inline void memcg_link_cache(struct kmem_cache *s)
+-{
+-}
+-
+ #endif /* CONFIG_MEMCG_KMEM */
+=20
+ static inline struct kmem_cache *virt_to_cache(const void *obj)
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index e0a2a904fdd9..0618d3595c08 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -129,9 +129,6 @@ int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp=
+_t flags, size_t nr,
+ }
+=20
+ #ifdef CONFIG_MEMCG_KMEM
+-
+-LIST_HEAD(slab_root_caches);
+-
+ static void memcg_kmem_cache_create_func(struct work_struct *work)
+ {
+ 	struct kmem_cache *cachep =3D container_of(work, struct kmem_cache,
+@@ -154,27 +151,11 @@ static void init_memcg_params(struct kmem_cache *s,
+ 	else
+ 		slab_init_memcg_params(s);
+ }
+-
+-void memcg_link_cache(struct kmem_cache *s)
+-{
+-	if (is_root_cache(s))
+-		list_add(&s->root_caches_node, &slab_root_caches);
+-}
+-
+-static void memcg_unlink_cache(struct kmem_cache *s)
+-{
+-	if (is_root_cache(s))
+-		list_del(&s->root_caches_node);
+-}
+ #else
+ static inline void init_memcg_params(struct kmem_cache *s,
+ 				     struct kmem_cache *root_cache)
+ {
+ }
+-
+-static inline void memcg_unlink_cache(struct kmem_cache *s)
+-{
+-}
+ #endif /* CONFIG_MEMCG_KMEM */
+=20
+ /*
+@@ -251,7 +232,7 @@ struct kmem_cache *find_mergeable(unsigned int size, =
+unsigned int align,
+ 	if (flags & SLAB_NEVER_MERGE)
+ 		return NULL;
+=20
+-	list_for_each_entry_reverse(s, &slab_root_caches, root_caches_node) {
++	list_for_each_entry_reverse(s, &slab_caches, list) {
+ 		if (slab_unmergeable(s))
+ 			continue;
+=20
+@@ -310,7 +291,6 @@ static struct kmem_cache *create_cache(const char *na=
+me,
+=20
+ 	s->refcount =3D 1;
+ 	list_add(&s->list, &slab_caches);
+-	memcg_link_cache(s);
+ out:
+ 	if (err)
+ 		return ERR_PTR(err);
+@@ -505,7 +485,6 @@ static int shutdown_cache(struct kmem_cache *s)
+ 	if (__kmem_cache_shutdown(s) !=3D 0)
+ 		return -EBUSY;
+=20
+-	memcg_unlink_cache(s);
+ 	list_del(&s->list);
+=20
+ 	if (s->flags & SLAB_TYPESAFE_BY_RCU) {
+@@ -749,7 +728,6 @@ struct kmem_cache *__init create_kmalloc_cache(const =
+char *name,
+=20
+ 	create_boot_cache(s, name, size, flags, useroffset, usersize);
+ 	list_add(&s->list, &slab_caches);
+-	memcg_link_cache(s);
+ 	s->refcount =3D 1;
+ 	return s;
+ }
+@@ -1090,12 +1068,12 @@ static void print_slabinfo_header(struct seq_file=
+ *m)
+ void *slab_start(struct seq_file *m, loff_t *pos)
+ {
+ 	mutex_lock(&slab_mutex);
+-	return seq_list_start(&slab_root_caches, *pos);
++	return seq_list_start(&slab_caches, *pos);
+ }
+=20
+ void *slab_next(struct seq_file *m, void *p, loff_t *pos)
+ {
+-	return seq_list_next(p, &slab_root_caches, pos);
++	return seq_list_next(p, &slab_caches, pos);
+ }
+=20
+ void slab_stop(struct seq_file *m, void *p)
+@@ -1148,11 +1126,12 @@ static void cache_show(struct kmem_cache *s, stru=
+ct seq_file *m)
+=20
+ static int slab_show(struct seq_file *m, void *p)
+ {
+-	struct kmem_cache *s =3D list_entry(p, struct kmem_cache, root_caches_n=
+ode);
++	struct kmem_cache *s =3D list_entry(p, struct kmem_cache, list);
+=20
+-	if (p =3D=3D slab_root_caches.next)
++	if (p =3D=3D slab_caches.next)
+ 		print_slabinfo_header(m);
+-	cache_show(s, m);
++	if (is_root_cache(s))
++		cache_show(s, m);
+ 	return 0;
+ }
+=20
+@@ -1254,7 +1233,7 @@ static int memcg_slabinfo_show(struct seq_file *m, =
+void *unused)
+ 	mutex_lock(&slab_mutex);
+ 	seq_puts(m, "# <name> <css_id[:dead|deact]> <active_objs> <num_objs>");
+ 	seq_puts(m, " <active_slabs> <num_slabs>\n");
+-	list_for_each_entry(s, &slab_root_caches, root_caches_node) {
++	list_for_each_entry(s, &slab_caches, list) {
+ 		/*
+ 		 * Skip kmem caches that don't have the memcg cache.
+ 		 */
+diff --git a/mm/slub.c b/mm/slub.c
+index 91a1dce932e9..7a5d6861b088 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -4364,7 +4364,6 @@ static struct kmem_cache * __init bootstrap(struct =
+kmem_cache *static_cache)
+ 	}
+ 	slab_init_memcg_params(s);
+ 	list_add(&s->list, &slab_caches);
+-	memcg_link_cache(s);
+ 	return s;
+ }
+=20
 --=20
 2.26.2
 
