@@ -2,106 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69372049C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 08:20:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF11A2049CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 08:22:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730852AbgFWGUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 02:20:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40346 "EHLO mail.kernel.org"
+        id S1730837AbgFWGWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 02:22:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:54270 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730510AbgFWGUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 02:20:32 -0400
-Received: from coco.lan (unknown [95.90.213.197])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6FBF820720;
-        Tue, 23 Jun 2020 06:20:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592893231;
-        bh=Dxxtu9JejAl8IVsxWoK8TC+TGSvvbQrjHiwpR/3/1ng=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=xiCNweWMDBrmlOdtr3Nz9fvmudwtUf8FgnWO/KvRuTdTH19r5jFz+kQpF36lfcser
-         cGjqt1Bp/vRd6H0Z5ucCAY9GXYq40M/kagvXhXqUlCzblYYr6a1H17k0eL2yKBCTYj
-         AT5TBqE+0uRB6svC2t1jX72L8GY5w7UANmpx/olQ=
-Date:   Tue, 23 Jun 2020 08:20:26 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Arnd Bergmann <arnd@arndb.de>, Christoph Hellwig <hch@lst.de>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH 1/2] media: omap3isp: Remove cacheflush.h
-Message-ID: <20200623082026.055d361a@coco.lan>
-In-Reply-To: <20200622234740.72825-2-natechancellor@gmail.com>
-References: <20200622234740.72825-1-natechancellor@gmail.com>
-        <20200622234740.72825-2-natechancellor@gmail.com>
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1730406AbgFWGWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 02:22:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A01A31B;
+        Mon, 22 Jun 2020 23:22:07 -0700 (PDT)
+Received: from p8cg001049571a15.arm.com (unknown [10.163.81.204])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 6B77E3F71E;
+        Mon, 22 Jun 2020 23:22:03 -0700 (PDT)
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+To:     linux-mm@kvack.org
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64/hugetlb: Reserve CMA areas for gigantic pages on 16K and 64K configs
+Date:   Tue, 23 Jun 2020 11:51:36 +0530
+Message-Id: <1592893296-22040-1-git-send-email-anshuman.khandual@arm.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 22 Jun 2020 16:47:39 -0700
-Nathan Chancellor <natechancellor@gmail.com> escreveu:
+Currently 'hugetlb_cma=' command line argument does not create CMA area on
+ARM64_16K_PAGES and ARM64_64K_PAGES based platforms. Instead, it just ends
+up with the following warning message. Reason being, hugetlb_cma_reserve()
+never gets called for these huge page sizes.
 
-> After mm.h was removed from the asm-generic version of cacheflush.h,
-> s390 allyesconfig shows several warnings of the following nature:
-> 
-> In file included from ./arch/s390/include/generated/asm/cacheflush.h:1,
->                  from drivers/media/platform/omap3isp/isp.c:42:
-> ./include/asm-generic/cacheflush.h:16:42: warning: 'struct mm_struct'
-> declared inside parameter list will not be visible outside of this
-> definition or declaration
-> 
-> As Geert and Laurent point out, this driver does not need this header in
-> the two files that include it. Remove it so there are no warnings.
-> 
-> Fixes: e0cf615d725c ("asm-generic: don't include <linux/mm.h> in cacheflush.h")
-> Suggested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Suggested-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+[   64.255669] hugetlb_cma: the option isn't supported by current arch
 
-Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+This enables CMA areas reservation on ARM64_16K_PAGES and ARM64_64K_PAGES
+configs by defining an unified arm64_hugetlb_cma_reseve() that is wrapped
+in CONFIG_CMA.
 
-> ---
->  drivers/media/platform/omap3isp/isp.c      | 2 --
->  drivers/media/platform/omap3isp/ispvideo.c | 1 -
->  2 files changed, 3 deletions(-)
-> 
-> diff --git a/drivers/media/platform/omap3isp/isp.c b/drivers/media/platform/omap3isp/isp.c
-> index a4ee6b86663e..b91e472ee764 100644
-> --- a/drivers/media/platform/omap3isp/isp.c
-> +++ b/drivers/media/platform/omap3isp/isp.c
-> @@ -39,8 +39,6 @@
->   *	Troy Laramy <t-laramy@ti.com>
->   */
->  
-> -#include <asm/cacheflush.h>
-> -
->  #include <linux/clk.h>
->  #include <linux/clkdev.h>
->  #include <linux/delay.h>
-> diff --git a/drivers/media/platform/omap3isp/ispvideo.c b/drivers/media/platform/omap3isp/ispvideo.c
-> index 10c214bd0903..1ac9aef70dff 100644
-> --- a/drivers/media/platform/omap3isp/ispvideo.c
-> +++ b/drivers/media/platform/omap3isp/ispvideo.c
-> @@ -18,7 +18,6 @@
->  #include <linux/sched.h>
->  #include <linux/slab.h>
->  #include <linux/vmalloc.h>
-> -#include <asm/cacheflush.h>
->  
->  #include <media/v4l2-dev.h>
->  #include <media/v4l2-ioctl.h>
-> 
-> base-commit: 27f11fea33608cbd321a97cbecfa2ef97dcc1821
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Barry Song <song.bao.hua@hisilicon.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+---
+Applies on 5.8-rc2.
 
+ arch/arm64/include/asm/hugetlb.h |  8 ++++++++
+ arch/arm64/mm/hugetlbpage.c      | 38 ++++++++++++++++++++++++++++++++++++++
+ arch/arm64/mm/init.c             |  4 +---
+ 3 files changed, 47 insertions(+), 3 deletions(-)
 
+diff --git a/arch/arm64/include/asm/hugetlb.h b/arch/arm64/include/asm/hugetlb.h
+index 94ba0c5..8eea0e0 100644
+--- a/arch/arm64/include/asm/hugetlb.h
++++ b/arch/arm64/include/asm/hugetlb.h
+@@ -17,6 +17,14 @@
+ extern bool arch_hugetlb_migration_supported(struct hstate *h);
+ #endif
+ 
++#ifdef CONFIG_CMA
++void arm64_hugetlb_cma_reserve(void);
++#else
++static inline void arm64_hugetlb_cma_reserve(void)
++{
++}
++#endif
++
+ static inline void arch_clear_hugepage_flags(struct page *page)
+ {
+ 	clear_bit(PG_dcache_clean, &page->flags);
+diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
+index 0a52ce4..ea7fb48 100644
+--- a/arch/arm64/mm/hugetlbpage.c
++++ b/arch/arm64/mm/hugetlbpage.c
+@@ -19,6 +19,44 @@
+ #include <asm/tlbflush.h>
+ #include <asm/pgalloc.h>
+ 
++/*
++ * HugeTLB Support Matrix
++ *
++ * ---------------------------------------------------
++ * | Page Size | CONT PTE |  PMD  | CONT PMD |  PUD  |
++ * ---------------------------------------------------
++ * |     4K    |   64K    |   2M  |    32M   |   1G  |
++ * |    16K    |    2M    |  32M  |     1G   |       |
++ * |    64K    |    2M    | 512M  |    16G   |       |
++ * ---------------------------------------------------
++ */
++
++/*
++ * Reserve CMA areas for the largest supported gigantic
++ * huge page when requested. Any other smaller gigantic
++ * huge pages could still be served from those areas.
++ */
++#ifdef CONFIG_CMA
++void __init arm64_hugetlb_cma_reserve(void)
++{
++	int order;
++
++#ifdef CONFIG_ARM64_4K_PAGES
++	order = PUD_SHIFT - PAGE_SHIFT;
++#else
++	order = CONT_PMD_SHIFT + PMD_SHIFT - PAGE_SHIFT;
++#endif
++	/*
++	 * HugeTLB CMA reservation is required for gigantic
++	 * huge pages which could not be allocated via the
++	 * page allocator. Just warn if there is any change
++	 * breaking this assumption.
++	 */
++	WARN_ON(order <= MAX_ORDER);
++	hugetlb_cma_reserve(order);
++}
++#endif /* CONFIG_CMA */
++
+ #ifdef CONFIG_ARCH_ENABLE_HUGEPAGE_MIGRATION
+ bool arch_hugetlb_migration_supported(struct hstate *h)
+ {
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index 1e93cfc..fabf8b0 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -425,9 +425,7 @@ void __init bootmem_init(void)
+ 	 * initialize node_online_map that gets used in hugetlb_cma_reserve()
+ 	 * while allocating required CMA size across online nodes.
+ 	 */
+-#ifdef CONFIG_ARM64_4K_PAGES
+-	hugetlb_cma_reserve(PUD_SHIFT - PAGE_SHIFT);
+-#endif
++	arm64_hugetlb_cma_reserve();
+ 
+ 	/*
+ 	 * Sparsemem tries to allocate bootmem in memory_present(), so must be
+-- 
+2.7.4
 
-Thanks,
-Mauro
