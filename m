@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB35205D86
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:14:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAB0205D8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388034AbgFWUOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:14:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56576 "EHLO mail.kernel.org"
+        id S2389227AbgFWUOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:14:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389173AbgFWUON (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:14:13 -0400
+        id S2389217AbgFWUOk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:14:40 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E7B0206C3;
-        Tue, 23 Jun 2020 20:14:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5C6E121473;
+        Tue, 23 Jun 2020 20:14:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943253;
-        bh=CI/oGavi/bq5wi1BOBYdG88726vRh1bRqOK1/ZmRX0s=;
+        s=default; t=1592943280;
+        bh=v/vu0Mt0t8AGEPAQQro23PRx3LUfvzfkNaHAULRUE+I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N4/C/pJrt2p8MRBxiQr7aZhvNI8vKBJFOkrF4mYEQUUL4WCy6cnEERRkjKPgN4yti
-         IBR/oTg0PeZ7lChitK7epvJ6O7Ljf7vQ91kgH4wYTiXsvzbToaLxZSEkVbxF6MVCtF
-         C22+t8pAQvUX75VBc+890eZwZGGJmCBk22nSrDSU=
+        b=JeURaZPnWlV5BrvlDmm1BMZN6rSY+iydPBbWocDIsR6HYJnW7ZyGg3yyrdCL3FHur
+         5Nw80iCVQ4xjYESXj1cYrU/qxFYEvfaZhhcqX0OIDTPl3kl/5Swex0zq5NdVUgW4Ha
+         0H+41QD2gFU+iAT/g9GOEHDC+xIGXvmm9LVSN3eU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 302/477] rtc: rv3028: Add missed check for devm_regmap_init_i2c()
-Date:   Tue, 23 Jun 2020 21:54:59 +0200
-Message-Id: <20200623195421.824837236@linuxfoundation.org>
+Subject: [PATCH 5.7 303/477] mailbox: imx: Fix return in imx_mu_scu_xlate()
+Date:   Tue, 23 Jun 2020 21:55:00 +0200
+Message-Id: <20200623195421.869765709@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -44,35 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuhong Yuan <hslester96@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit c3b29bf6f166f6ed5f04f9c125477358e0e25df8 ]
+[ Upstream commit 1b3a347b7d56aa637157da1b7df225071af1421f ]
 
-rv3028_probe() misses a check for devm_regmap_init_i2c().
-Add the missed check to fix it.
+This called from mbox_request_channel().  The caller is  expecting error
+pointers and not NULL so this "return NULL;" will lead to an Oops.
 
-Fixes: e6e7376cfd7b ("rtc: rv3028: add new driver")
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
-Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Link: https://lore.kernel.org/r/20200528103950.912353-1-hslester96@gmail.com
+Fixes: 0a67003b1985 ("mailbox: imx: add SCU MU support")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Jassi Brar <jaswinder.singh@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/rtc/rtc-rv3028.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mailbox/imx-mailbox.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/rtc/rtc-rv3028.c b/drivers/rtc/rtc-rv3028.c
-index a0ddc86c975a4..ec84db0b3d7ab 100644
---- a/drivers/rtc/rtc-rv3028.c
-+++ b/drivers/rtc/rtc-rv3028.c
-@@ -755,6 +755,8 @@ static int rv3028_probe(struct i2c_client *client)
- 		return -ENOMEM;
+diff --git a/drivers/mailbox/imx-mailbox.c b/drivers/mailbox/imx-mailbox.c
+index 7906624a731c1..9d6f0217077b2 100644
+--- a/drivers/mailbox/imx-mailbox.c
++++ b/drivers/mailbox/imx-mailbox.c
+@@ -374,7 +374,7 @@ static struct mbox_chan *imx_mu_scu_xlate(struct mbox_controller *mbox,
+ 		break;
+ 	default:
+ 		dev_err(mbox->dev, "Invalid chan type: %d\n", type);
+-		return NULL;
++		return ERR_PTR(-EINVAL);
+ 	}
  
- 	rv3028->regmap = devm_regmap_init_i2c(client, &regmap_config);
-+	if (IS_ERR(rv3028->regmap))
-+		return PTR_ERR(rv3028->regmap);
- 
- 	i2c_set_clientdata(client, rv3028);
- 
+ 	if (chan >= mbox->num_chans) {
 -- 
 2.25.1
 
