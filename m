@@ -2,77 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0949A20451C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892C9204524
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:21:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731600AbgFWAQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:16:04 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:53416 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1731555AbgFWAP5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:15:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592871356;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KTIfD+5tCBwAWNOi72btfXnK7DLTQdOMYtdNacQ/2Bg=;
-        b=iz6RD/qw2xUGiYgZ2LL6zkwOk/ikNHOisgKK4eWb/DmL7EF3craTpRso8vTYwmB0LLE6OT
-        NpFzcb6tAXeLnWrrPLRk7XVxqfrUIvIB/nqVmauYSiVxVQhiFEWLlU+9ImkD3DbtrMv6sY
-        QtdJbEkE+UljQNp6ll2G4qOxm2c8EaA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-102-t4J6rWs7PQmwDy_Rf_LD3Q-1; Mon, 22 Jun 2020 20:15:53 -0400
-X-MC-Unique: t4J6rWs7PQmwDy_Rf_LD3Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1731467AbgFWAVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:21:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730309AbgFWAVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:21:50 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 325041005513;
-        Tue, 23 Jun 2020 00:15:52 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B8E8D60BEC;
-        Tue, 23 Jun 2020 00:15:51 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 6/6] selftests: sync_test: do not use ksft_exit_skip after ksft_set_plan
-Date:   Mon, 22 Jun 2020 20:15:47 -0400
-Message-Id: <20200623001547.22255-7-pbonzini@redhat.com>
-In-Reply-To: <20200623001547.22255-1-pbonzini@redhat.com>
-References: <20200623001547.22255-1-pbonzini@redhat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        by mail.kernel.org (Postfix) with ESMTPSA id 6759F20720;
+        Tue, 23 Jun 2020 00:21:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592871709;
+        bh=JWeEvxY1czQrY61YbGMme47ATcktCscWlySH9PAuJx8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=TXfDUHGRwuP4kp7TtjbOR9fftgnIgYmmDwobs5wuU23smBfmfpIoi/7reD0VHi8EN
+         arMdotaPsa4GT/pwxTCnKaUxrqT+JJlCg6Vji6bGiiy0Z8DScRor2pxrhbR9jeNVhH
+         RRMP7xB7rcI4H5Hp4E+v0ZyKeLuxUjyIYocsDXyo=
+From:   paulmck@kernel.org
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 01/26] rcu: Initialize and destroy rcu_synchronize only when necessary
+Date:   Mon, 22 Jun 2020 17:21:22 -0700
+Message-Id: <20200623002147.25750-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20200623002128.GA25456@paulmck-ThinkPad-P72>
+References: <20200623002128.GA25456@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Calling ksft_exit_skip after ksft_set_plan results in executing fewer tests
-than planned.  Move it before.
+From: Wei Yang <richard.weiyang@gmail.com>
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+The __wait_rcu_gp() function unconditionally initializes and cleans up
+each element of rs_array[], whether used or not.  This is slightly
+wasteful and rather confusing, so this commit skips both initialization
+and cleanup for duplicate callback functions.
+
+Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/sync/sync_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/rcu/update.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/tools/testing/selftests/sync/sync_test.c b/tools/testing/selftests/sync/sync_test.c
-index 3824b66f41a0..414a617db993 100644
---- a/tools/testing/selftests/sync/sync_test.c
-+++ b/tools/testing/selftests/sync/sync_test.c
-@@ -86,9 +86,9 @@ int main(void)
- 	int err;
+diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
+index 84843ad..f5a82e1 100644
+--- a/kernel/rcu/update.c
++++ b/kernel/rcu/update.c
+@@ -390,13 +390,14 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
+ 			might_sleep();
+ 			continue;
+ 		}
+-		init_rcu_head_on_stack(&rs_array[i].head);
+-		init_completion(&rs_array[i].completion);
+ 		for (j = 0; j < i; j++)
+ 			if (crcu_array[j] == crcu_array[i])
+ 				break;
+-		if (j == i)
++		if (j == i) {
++			init_rcu_head_on_stack(&rs_array[i].head);
++			init_completion(&rs_array[i].completion);
+ 			(crcu_array[i])(&rs_array[i].head, wakeme_after_rcu);
++		}
+ 	}
  
- 	ksft_print_header();
--	ksft_set_plan(3 + 7);
- 
- 	sync_api_supported();
-+	ksft_set_plan(3 + 7);
- 
- 	ksft_print_msg("[RUN]\tTesting sync framework\n");
- 
+ 	/* Wait for all callbacks to be invoked. */
+@@ -407,9 +408,10 @@ void __wait_rcu_gp(bool checktiny, int n, call_rcu_func_t *crcu_array,
+ 		for (j = 0; j < i; j++)
+ 			if (crcu_array[j] == crcu_array[i])
+ 				break;
+-		if (j == i)
++		if (j == i) {
+ 			wait_for_completion(&rs_array[i].completion);
+-		destroy_rcu_head_on_stack(&rs_array[i].head);
++			destroy_rcu_head_on_stack(&rs_array[i].head);
++		}
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(__wait_rcu_gp);
 -- 
-2.26.2
+2.9.5
 
