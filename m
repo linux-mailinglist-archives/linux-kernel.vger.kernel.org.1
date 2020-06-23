@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5AF205FC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95786205FAF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391242AbgFWUf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:35:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58564 "EHLO mail.kernel.org"
+        id S2391649AbgFWUfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:35:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391255AbgFWUfu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:35:50 -0400
+        id S2391592AbgFWUev (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:34:51 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7725D2100A;
-        Tue, 23 Jun 2020 20:35:50 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A87D02064B;
+        Tue, 23 Jun 2020 20:34:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944550;
-        bh=yufBh9n1g6XdIH7woUsF7qADsGEisJUELN/kXY+bExc=;
+        s=default; t=1592944491;
+        bh=GAJeauoa1zLQsyxO5oNDFWtvbmAjJnSHFpZIDSage3Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XlPOkZDe+KNO8sC8v0X8lN1wIhwYMhaL1W+MaCVzLhahlO0dk1bnhOYeJuSdHaVVX
-         i6IgtTwtobOE4E/BQaJorFjiG6Dweiri71xtdeDHly8K36az1l6xeShnLg+ssqPXnh
-         t6GeV4QDB+7GbO0MT1gFCP/M2NraQ++oewPrbq/8=
+        b=dqquZV5VOZoLCkgcx9Z8+DEBzCBhs+03Tc76uOklJ1/3u+hVDeAuvlifQiiVGT6Ap
+         CZpFDkh7sMNfXiLXkWMCzgVTE6Q/OwR6lz9PHaJpFzVc5fyAgvwCzqavnSf3N8XeOH
+         tA0Kihiyti2qEYktclTvMIDJNspuRY2TIMAFmar0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xiyu Yang <xiyuyang19@fudan.edu.cn>,
-        Xin Tan <tanxin.ctf@gmail.com>,
-        Peter Ujfalusi <peter.ujfalusi@ti.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 009/206] ASoC: davinci-mcasp: Fix dma_chan refcnt leak when getting dma type
-Date:   Tue, 23 Jun 2020 21:55:37 +0200
-Message-Id: <20200623195317.398790851@linuxfoundation.org>
+Subject: [PATCH 4.19 011/206] scsi: qedi: Check for buffer overflow in qedi_set_path()
+Date:   Tue, 23 Jun 2020 21:55:39 +0200
+Message-Id: <20200623195317.513213936@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
 References: <20200623195316.864547658@linuxfoundation.org>
@@ -46,51 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiyu Yang <xiyuyang19@fudan.edu.cn>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit a697ae6ea56e23397341b027098c1b11d9ab13da ]
+[ Upstream commit 4a4c0cfb4be74e216dd4446b254594707455bfc6 ]
 
-davinci_mcasp_get_dma_type() invokes dma_request_chan(), which returns a
-reference of the specified dma_chan object to "chan" with increased
-refcnt.
+Smatch complains that the "path_data->handle" variable is user controlled.
+It comes from iscsi_set_path() so that seems possible.  It's harmless to
+add a limit check.
 
-When davinci_mcasp_get_dma_type() returns, local variable "chan" becomes
-invalid, so the refcount should be decreased to keep refcount balanced.
+The qedi->ep_tbl[] array has qedi->max_active_conns elements (which is
+always ISCSI_MAX_SESS_PER_HBA (4096) elements).  The array is allocated in
+the qedi_cm_alloc_mem() function.
 
-The reference counting issue happens in one exception handling path of
-davinci_mcasp_get_dma_type(). When chan device is NULL, the function
-forgets to decrease the refcnt increased by dma_request_chan(), causing
-a refcnt leak.
-
-Fix this issue by calling dma_release_channel() when chan device is
-NULL.
-
-Signed-off-by: Xiyu Yang <xiyuyang19@fudan.edu.cn>
-Signed-off-by: Xin Tan <tanxin.ctf@gmail.com>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Link: https://lore.kernel.org/r/1587818916-38730-1-git-send-email-xiyuyang19@fudan.edu.cn
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20200428131939.GA696531@mwanda
+Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
+Acked-by: Manish Rangankar <mrangankar@marvell.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/davinci/davinci-mcasp.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/scsi/qedi/qedi_iscsi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 14ab16e1369f8..1203de8aab990 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -1758,8 +1758,10 @@ static int davinci_mcasp_get_dma_type(struct davinci_mcasp *mcasp)
- 				PTR_ERR(chan));
- 		return PTR_ERR(chan);
+diff --git a/drivers/scsi/qedi/qedi_iscsi.c b/drivers/scsi/qedi/qedi_iscsi.c
+index 1b7049dce1699..d59473d1679fb 100644
+--- a/drivers/scsi/qedi/qedi_iscsi.c
++++ b/drivers/scsi/qedi/qedi_iscsi.c
+@@ -1217,6 +1217,10 @@ static int qedi_set_path(struct Scsi_Host *shost, struct iscsi_path *path_data)
  	}
--	if (WARN_ON(!chan->device || !chan->device->dev))
-+	if (WARN_ON(!chan->device || !chan->device->dev)) {
-+		dma_release_channel(chan);
- 		return -EINVAL;
-+	}
  
- 	if (chan->device->dev->of_node)
- 		ret = of_property_read_string(chan->device->dev->of_node,
+ 	iscsi_cid = (u32)path_data->handle;
++	if (iscsi_cid >= qedi->max_active_conns) {
++		ret = -EINVAL;
++		goto set_path_exit;
++	}
+ 	qedi_ep = qedi->ep_tbl[iscsi_cid];
+ 	QEDI_INFO(&qedi->dbg_ctx, QEDI_LOG_INFO,
+ 		  "iscsi_cid=0x%x, qedi_ep=%p\n", iscsi_cid, qedi_ep);
 -- 
 2.25.1
 
