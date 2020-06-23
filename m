@@ -2,119 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22EA020455F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:31:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0913204580
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731860AbgFWAbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:31:05 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:2467 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731717AbgFWAa7 (ORCPT
+        id S1731781AbgFWAeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:34:06 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:47316 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731467AbgFWAeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:30:59 -0400
-Received: from hqpgpgate102.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ef14ce70000>; Mon, 22 Jun 2020 17:29:27 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate102.nvidia.com (PGP Universal service);
-  Mon, 22 Jun 2020 17:30:58 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate102.nvidia.com on Mon, 22 Jun 2020 17:30:58 -0700
-Received: from [10.2.59.206] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 23 Jun
- 2020 00:30:50 +0000
-Subject: Re: [RESEND PATCH 2/3] nouveau: fix mixed normal and device private
- page migration
-To:     Ralph Campbell <rcampbell@nvidia.com>,
-        <nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-CC:     Jerome Glisse <jglisse@redhat.com>, Christoph Hellwig <hch@lst.de>,
-        "Jason Gunthorpe" <jgg@mellanox.com>,
-        Ben Skeggs <bskeggs@redhat.com>
-References: <20200622233854.10889-1-rcampbell@nvidia.com>
- <20200622233854.10889-3-rcampbell@nvidia.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <f2bf81df-8faa-0f51-3f74-cb3b31d96aad@nvidia.com>
-Date:   Mon, 22 Jun 2020 17:30:50 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Mon, 22 Jun 2020 20:34:04 -0400
+Received: from sequoia.work.tihix.com (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 3690520B7192;
+        Mon, 22 Jun 2020 17:34:02 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 3690520B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1592872443;
+        bh=5SUV1Yb368pVxUvao6vZUdFkJ4ebo8QZjbCUMhuzizE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=o4Hmh6p1DIStUoojjTzdpaNqn8kVFzYIQ4+6unQbTrE52s0v0rA4BrMM3kaZE3Htn
+         5eYTkXweSirwCJnuG8gC6OlPQKapvZGgp3napsAKOTVHqg9AMp8H0L9Mk80sKuMj3n
+         re3DYgBWSwNAddSW9SliDwN1qCp1gjcus2zF3A0o=
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
+Cc:     James Morris <jmorris@namei.org>,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
+        Prakhar Srivastava <prsriva02@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Janne Karhunen <janne.karhunen@gmail.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        kexec@lists.infradead.org
+Subject: [PATCH 00/12] ima: Fix rule parsing bugs and extend KEXEC_CMDLINE rule support
+Date:   Mon, 22 Jun 2020 19:32:24 -0500
+Message-Id: <20200623003236.830149-1-tyhicks@linux.microsoft.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200622233854.10889-3-rcampbell@nvidia.com>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1592872167; bh=2WrAbqXV4DGqxlrZm0+ZDSPDtMkQaV6QGvn6pSPJL84=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=GUxJV+C/xcw2X+UKzYR0HO4lSwOnk4RAsKDmxnyBhUc/ZDOpq7i1TBhtNI0IuxO8t
-         Vk3aU9aLCeDYez3x/H43zWX4DVKc7QreC8NXnlEDeI6R1j2f10oqs644W1dGmzh+vp
-         3d1+XPUn3Qt0Y8dyGN1pG/18VShsrDIK+uZxaMdNQuaTdUoZaTkcoesEazRT376OJS
-         KNAxa2LzMt6rAmVPucNTn5Lpahf5/zF5vaRa1HPQ5H2GLNV/WaMzoduLSJnX2PwT6x
-         8cGJ8f8oRxHYkmU9TDnVvOT9Fv+gWry9WmY8iIA/L2UlSqnNZtiwHjomp3maYRYPB+
-         h7QmH3p7gxbzA==
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-22 16:38, Ralph Campbell wrote:
-> The OpenCL function clEnqueueSVMMigrateMem(), without any flags, will
-> migrate memory in the given address range to device private memory. The
-> source pages might already have been migrated to device private memory.
-> In that case, the source struct page is not checked to see if it is
-> a device private page and incorrectly computes the GPU's physical
-> address of local memory leading to data corruption.
-> Fix this by checking the source struct page and computing the correct
-> physical address.
-> 
-> Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
-> ---
->   drivers/gpu/drm/nouveau/nouveau_dmem.c | 8 ++++++++
->   1 file changed, 8 insertions(+)
-> 
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_dmem.c b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-> index cc9993837508..f6a806ba3caa 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_dmem.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_dmem.c
-> @@ -540,6 +540,12 @@ static unsigned long nouveau_dmem_migrate_copy_one(struct nouveau_drm *drm,
->   	if (!(src & MIGRATE_PFN_MIGRATE))
->   		goto out;
->   
-> +	if (spage && is_device_private_page(spage)) {
-> +		paddr = nouveau_dmem_page_addr(spage);
-> +		*dma_addr = DMA_MAPPING_ERROR;
-> +		goto done;
-> +	}
-> +
->   	dpage = nouveau_dmem_page_alloc_locked(drm);
->   	if (!dpage)
->   		goto out;
-> @@ -560,6 +566,7 @@ static unsigned long nouveau_dmem_migrate_copy_one(struct nouveau_drm *drm,
->   			goto out_free_page;
->   	}
->   
-> +done:
->   	*pfn = NVIF_VMM_PFNMAP_V0_V | NVIF_VMM_PFNMAP_V0_VRAM |
->   		((paddr >> PAGE_SHIFT) << NVIF_VMM_PFNMAP_V0_ADDR_SHIFT);
->   	if (src & MIGRATE_PFN_WRITE)
-> @@ -615,6 +622,7 @@ nouveau_dmem_migrate_vma(struct nouveau_drm *drm,
->   	struct migrate_vma args = {
->   		.vma		= vma,
->   		.start		= start,
-> +		.src_owner	= drm->dev,
+This series ultimately extends the supported IMA rule conditionals for
+the KEXEC_CMDLINE hook function. As of today, there's an imbalance in
+IMA language conditional support for KEXEC_CMDLINE rules in comparison
+to KEXEC_KERNEL_CHECK and KEXEC_INITRAMFS_CHECK rules. The KEXEC_CMDLINE
+rules do not support *any* conditionals so you cannot have a sequence of
+rules like this:
 
-Hi Ralph,
+ dont_measure func=KEXEC_KERNEL_CHECK obj_type=foo_t
+ dont_measure func=KEXEC_INITRAMFS_CHECK obj_type=foo_t
+ dont_measure func=KEXEC_CMDLINE obj_type=foo_t
+ measure func=KEXEC_KERNEL_CHECK
+ measure func=KEXEC_INITRAMFS_CHECK
+ measure func=KEXEC_CMDLINE
 
-This .src_owner setting does look like a required fix, but it seems like
-a completely separate fix from what is listed in this patch's commit
-description, right? (It feels like a casualty of rearranging the patches.)
+Instead, KEXEC_CMDLINE rules can only be measured or not measured and
+there's no additional flexibility in today's implementation of the
+KEXEC_CMDLINE hook function.
 
+With this series, the above sequence of rules becomes valid and any
+calls to kexec_file_load() with a kernel and initramfs inode type of
+foo_t will not be measured (that includes the kernel cmdline buffer)
+while all other objects given to a kexec_file_load() syscall will be
+measured. There's obviously not an inode directly associated with the
+kernel cmdline buffer but this patch series ties the inode based
+decision making for KEXEC_CMDLINE to the kernel's inode. I think this
+will be intuitive to policy authors.
 
-thanks,
+While reading IMA code and preparing to make this change, I realized
+that the buffer based hook functions (KEXEC_CMDLINE and KEY_CHECK) are
+quite special in comparison to longer standing hook functions. These
+buffer based hook functions can only support measure actions and there
+are some restrictions on the conditionals that they support. However,
+the rule parser isn't enforcing any of those restrictions and IMA policy
+authors wouldn't have any immediate way of knowing that the policy that
+they wrote is invalid. For example, the sequence of rules above parses
+successfully in today's kernel but the
+"dont_measure func=KEXEC_CMDLINE ..." rule is incorrectly handled in
+ima_match_rules(). The dont_measure rule is *always* considered to be a
+match so, surprisingly, no KEXEC_CMDLINE measurements are made.
+
+While making the rule parser more strict, I realized that the parser
+does not correctly free all of the allocated memory associated with an
+ima_rule_entry when going down some error paths. Invalid policy loaded
+by the policy administrator could result in small memory leaks.
+
+I envision patches 1-7 going to stable. The series is ordered in a way
+that has all the fixes up front, followed by cleanups, followed by the
+feature patch. The breakdown of patches looks like so:
+
+ Memory leak fixes: 1-4
+ Parser strictness fixes: 5-7
+ Code cleanups made possible by the fixes: 8-11
+ Extend KEXEC_CMDLINE rule support: 12
+
+Perhaps the most logical ordering for code review is:
+
+ 1, 2, 3, 4, 8, 9, 5, 6, 7, 10, 11, 12
+
+If you'd like me to re-order or split up the series, just let me know.
+Thanks for considering these patches!
+
+Tyler
+
+Tyler Hicks (12):
+  ima: Have the LSM free its audit rule
+  ima: Create a function to free a rule entry
+  ima: Free the entire rule when deleting a list of rules
+  ima: Free the entire rule if it fails to parse
+  ima: Fail rule parsing when buffer hook functions have an invalid
+    action
+  ima: Fail rule parsing when the KEXEC_CMDLINE hook is combined with an
+    invalid cond
+  ima: Fail rule parsing when the KEY_CHECK hook is combined with an
+    invalid cond
+  ima: Shallow copy the args_p member of ima_rule_entry.lsm elements
+  ima: Use correct type for the args_p member of ima_rule_entry.lsm
+    elements
+  ima: Move validation of the keyrings conditional into
+    ima_validate_rule()
+  ima: Use the common function to detect LSM conditionals in a rule
+  ima: Support additional conditionals in the KEXEC_CMDLINE hook
+    function
+
+ include/linux/ima.h                          |   4 +-
+ kernel/kexec_file.c                          |   2 +-
+ security/integrity/ima/ima.h                 |   9 +-
+ security/integrity/ima/ima_api.c             |   2 +-
+ security/integrity/ima/ima_appraise.c        |   2 +-
+ security/integrity/ima/ima_asymmetric_keys.c |   2 +-
+ security/integrity/ima/ima_main.c            |  24 ++-
+ security/integrity/ima/ima_policy.c          | 159 ++++++++++++++-----
+ security/integrity/ima/ima_queue_keys.c      |   2 +-
+ 9 files changed, 148 insertions(+), 58 deletions(-)
+
 -- 
-John Hubbard
-NVIDIA
+2.25.1
+
