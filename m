@@ -2,169 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ADD5205614
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 17:37:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DD11205618
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 17:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733009AbgFWPg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 11:36:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733019AbgFWPgv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 11:36:51 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7708C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 08:36:50 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1jnkyd-0001RE-Rv; Tue, 23 Jun 2020 17:36:47 +0200
-Received: from sha by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1jnkyd-000675-7i; Tue, 23 Jun 2020 17:36:47 +0200
-Date:   Tue, 23 Jun 2020 17:36:47 +0200
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        kernel@pengutronix.de
-Subject: Re: [PATCH 1/2] net: ethernet: mvneta: Fix Serdes configuration for
- SoCs without comphy
-Message-ID: <20200623153647.GF11869@pengutronix.de>
-References: <20200616083140.8498-1-s.hauer@pengutronix.de>
- <20200622235340.GQ1551@shell.armlinux.org.uk>
+        id S1733066AbgFWPhF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 11:37:05 -0400
+Received: from mail.cock.li ([37.120.193.124]:45232 "EHLO mail.cock.li"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733034AbgFWPgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 11:36:54 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200622235340.GQ1551@shell.armlinux.org.uk>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 17:36:02 up 124 days, 23:06, 121 users,  load average: 0.22, 0.26,
- 0.27
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=firemail.cc; s=mail;
+        t=1592926611; bh=t9vXHu8nfW1kHDpTQh72tu2e6dfRNNJLUjum428JyaA=;
+        h=Date:From:To:Subject:From;
+        b=MHNvtizMxxCMf3hUVTmasdwrD1hX0BxmYnuAoR0bRv+kHPA3xbt4MmuScVtb5nn29
+         U9TI9MlzXW4hyRgvpsTEXtbIzB9lmU4e1Ep1UqDic8htZ9NvFnUW+CeZJg7p547uPz
+         1+U39a7hJ99Zsp1bb3ujuISzwj+DI6lOeiU/x08pqBOunrE/Ky5QTLmrPnK7zX7lQA
+         CgOxgJmwrhKslWdUMD73yhvSUJB6gJB0F/SvM/JE/CvJwYzMU5TwnvvDK8xoI5VFsD
+         1t1ElpBoJAmKXPADer6c1559YUR0h/dFMqEK6Z3bns/xp39oyeQ+6oLADzfDMb5M/8
+         A7iNtvNJeMBGw==
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 23 Jun 2020 15:36:51 +0000
+From:   nipponmail@firemail.cc
+To:     linux-kernel@vger.kernel.org, torvalds@osdl.org, esr@thyrsus.com
+Subject: I'm being accused of "killing foss", how do I respond?
+Message-ID: <986afee43e6dcf11a812a595f1d55c77@firemail.cc>
+X-Sender: nipponmail@firemail.cc
+User-Agent: Roundcube Webmail/1.3.10
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 12:53:40AM +0100, Russell King - ARM Linux admin wrote:
-> On Tue, Jun 16, 2020 at 10:31:39AM +0200, Sascha Hauer wrote:
-> > The MVNETA_SERDES_CFG register is only available on older SoCs like the
-> > Armada XP. On newer SoCs like the Armada 38x the fields are moved to
-> > comphy. This patch moves the writes to this register next to the comphy
-> > initialization, so that depending on the SoC either comphy or
-> > MVNETA_SERDES_CFG is configured.
-> > With this we no longer write to the MVNETA_SERDES_CFG on SoCs where it
-> > doesn't exist.
-> > 
-> > Suggested-by: Russell King <rmk+kernel@armlinux.org.uk>
-> > Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> > ---
-> >  drivers/net/ethernet/marvell/mvneta.c | 80 +++++++++++++++------------
-> >  1 file changed, 44 insertions(+), 36 deletions(-)
-> > 
-> > diff --git a/drivers/net/ethernet/marvell/mvneta.c b/drivers/net/ethernet/marvell/mvneta.c
-> > index 51889770958d8..9933eb4577d43 100644
-> > --- a/drivers/net/ethernet/marvell/mvneta.c
-> > +++ b/drivers/net/ethernet/marvell/mvneta.c
-> > @@ -106,6 +106,7 @@
-> >  #define      MVNETA_TX_IN_PRGRS                  BIT(1)
-> >  #define      MVNETA_TX_FIFO_EMPTY                BIT(8)
-> >  #define MVNETA_RX_MIN_FRAME_SIZE                 0x247c
-> > +/* Only exists on Armada XP and Armada 370 */
-> >  #define MVNETA_SERDES_CFG			 0x24A0
-> >  #define      MVNETA_SGMII_SERDES_PROTO		 0x0cc7
-> >  #define      MVNETA_QSGMII_SERDES_PROTO		 0x0667
-> > @@ -3514,26 +3515,55 @@ static int mvneta_setup_txqs(struct mvneta_port *pp)
-> >  	return 0;
-> >  }
-> >  
-> > -static int mvneta_comphy_init(struct mvneta_port *pp)
-> > +static int mvneta_comphy_init(struct mvneta_port *pp, phy_interface_t interface)
-> >  {
-> >  	int ret;
-> >  
-> > -	if (!pp->comphy)
-> > -		return 0;
-> > -
-> > -	ret = phy_set_mode_ext(pp->comphy, PHY_MODE_ETHERNET,
-> > -			       pp->phy_interface);
-> > +	ret = phy_set_mode_ext(pp->comphy, PHY_MODE_ETHERNET, interface);
-> >  	if (ret)
-> >  		return ret;
-> >  
-> >  	return phy_power_on(pp->comphy);
-> >  }
-> >  
-> > +static int mvneta_config_interface(struct mvneta_port *pp,
-> > +				   phy_interface_t interface)
-> > +{
-> > +	int ret = 0;
-> > +
-> > +	if (pp->comphy) {
-> > +		if (interface == PHY_INTERFACE_MODE_SGMII ||
-> > +		    interface == PHY_INTERFACE_MODE_1000BASEX ||
-> > +		    interface == PHY_INTERFACE_MODE_2500BASEX) {
-> > +			ret = mvneta_comphy_init(pp, interface);
-> > +		}
-> > +	} else {
-> > +		switch (interface) {
-> > +		case PHY_INTERFACE_MODE_QSGMII:
-> > +			mvreg_write(pp, MVNETA_SERDES_CFG,
-> > +				    MVNETA_QSGMII_SERDES_PROTO);
-> > +			break;
-> > +
-> > +		case PHY_INTERFACE_MODE_SGMII:
-> > +		case PHY_INTERFACE_MODE_1000BASEX:
-> > +			mvreg_write(pp, MVNETA_SERDES_CFG,
-> > +				    MVNETA_SGMII_SERDES_PROTO);
-> > +			break;
-> > +		default:
-> > +			return -EINVAL;
-> 
-> I've just noticed that you made changes to the patch I sent, such as
-> adding this default case that errors out, and by doing so, you have
-> caused a regression by causing a WARN_ON() splat.
-> 
-> It was not accidental that my patch had "break;" here instead of an
-> error return, and I left the interface mode checking in
-> mvneta_port_power_up() that you also removed.
-> 
-> mvneta supports RGMII, and since RGMII doesn't use the serdes, there
-> is no need to write to MVNETA_SGMII_SERDES_PROTO, and so we want to
-> ignore those, not return -EINVAL.
-> 
-> Since the interface type was already validated both by phylink when
-> the interface is brought up, and also by the driver at probe time
-> through mvneta_port_power_up(), which performs early validation of
-> the mode given in DT this was not a problem... there is no need to
-> consider anything but the RGMII case in the "default" case here.
-> 
-> So, please fix this... at minimum fixing this switch() statement not
-> to error out in the RGMII cases.  However, I think actually following
-> what was in my patch (which was there for good reason) rather than
-> randomly changing it would have been better.
-> 
-> This will have made the kernel on the SolidRun Clearfog platform
-> trigger the WARN_ON()s for the dedicated gigabit port, which uses
-> RGMII, and doesn't have a comphy specified in DT... and having
-> waited for the compile to finish and the resulting kernel to boot...
+Dear RMS, a commentator is now accusing me of being the executioner of 
+"foss" :
 
-I'll send a fixup shortly
+> oh it's you, the schizo who killed foss by trying to defend it and 
+> thinks he's a lawyer
 
-Sascha
+Later the commentator clarifies :
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> You went on a mailing list for some foss project with the intention of 
+> exposing a patent violation by some
+> other project using the code, but instead of talking about that, you 
+> just ranted for a few days about how much
+> you want to fuck little girls.
+> Then RMS got labeled a pedophile and eaten up by cancel culture.
+> I'm flabbergasted you're honestly too stupid to see the connection.
+
+
+The issue is copyright, not patent, and there was nothing wrong with 
+your past statements.
+
+I would think that the fact that the GPL is effectively toothless is 
+what would "kill free and opensource software" by causing would-be 
+contributors to now lack faith in the "share and share alike" promise of 
+the GPL. The FSF won't enforce it's GCC copyrights, nor will the linux 
+kernel contributors (both regarding GRSecurity linux kernel patches and 
+GCC plugins (and their no-redistribution attached clauses))
+
+I also wonder about this
+> for a few days
+invective.
+Are days suddenly a euphemism such as is imagined regarding various 
+creation stories?
+
+How should I respond and set the record straight? And when did "FOSS" 
+die? I remember when that term was coined, early 2000s, has it now 
+fallen out of favor? Why is it my fault? I never really liked that term 
+to begin with: it's a corporate conflation of two specific idea sets: A 
+gloss. If said term is gone what is the injury?
+
+
