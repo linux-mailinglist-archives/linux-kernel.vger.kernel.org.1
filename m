@@ -2,113 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6EF2053EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 15:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20A42053DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 15:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732876AbgFWNx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 09:53:58 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:16786 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732839AbgFWNxx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 09:53:53 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NDjF1e024287;
-        Tue, 23 Jun 2020 06:53:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0818;
- bh=iVD95T4xNQcfYDJCC94cFP8qzLDBa4oYxpm8YvPU2tk=;
- b=mlsaLnX2BaWYxggR74V2tVdi1B28D8eo/1WyN9CHCR1buFaCEVV9HHvEIlJeaD6M/pso
- 44rTWaNMDVFtECi7d3DlXSFlzPuIu/oUEtbzkP1aX2OSSVQuxCP6qfGpcYxqesG7RGFx
- jMEygClE1Ow5vInI54GGO9xg2Ri4Z7aUl1k5uvF4ws3FnYPogL4rTeBucFnV7YZZQBV8
- rOs3w/7jrchndQc6FPSwUiyODkod/neM+ek2XXMYneZRwtnjtnEt6+rqvNwpq6az3tzj
- S42zjUyw1cgIQ75qUVfd0JTW8XZy/yqheKOD6BPrQoKVzFv/4lXbywR80pGlvAgyEiz3 sQ== 
-Received: from sc-exch03.marvell.com ([199.233.58.183])
-        by mx0a-0016f401.pphosted.com with ESMTP id 31ujw9r10g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Tue, 23 Jun 2020 06:53:52 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH03.marvell.com
- (10.93.176.83) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 23 Jun
- 2020 06:53:51 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Tue, 23 Jun 2020 06:53:51 -0700
-Received: from NN-LT0049.marvell.com (NN-LT0049.marvell.com [10.193.39.36])
-        by maili.marvell.com (Postfix) with ESMTP id 039BF3F703F;
-        Tue, 23 Jun 2020 06:53:47 -0700 (PDT)
-From:   Alexander Lobakin <alobakin@marvell.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-CC:     Igor Russkikh <irusskikh@marvell.com>,
-        Michal Kalderon <michal.kalderon@marvell.com>,
-        Ariel Elior <aelior@marvell.com>,
-        "Denis Bolotin" <denis.bolotin@marvell.com>,
-        Tomer Tayar <tomer.tayar@marvell.com>,
-        Alexander Lobakin <alobakin@marvell.com>,
-        <GR-everest-linux-l2@marvell.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 net 9/9] net: qed: fix "maybe uninitialized" warning
-Date:   Tue, 23 Jun 2020 16:51:37 +0300
-Message-ID: <20200623135136.3185-10-alobakin@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200623135136.3185-1-alobakin@marvell.com>
-References: <20200623135136.3185-1-alobakin@marvell.com>
+        id S1732702AbgFWNxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 09:53:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39176 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732633AbgFWNxI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 09:53:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 03814AD4A;
+        Tue, 23 Jun 2020 13:53:06 +0000 (UTC)
+Subject: Re: [PATCH v7 00/19] The new cgroup slab memory controller
+To:     Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+References: <20200623015846.1141975-1-guro@fb.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <cd62f7ee-0851-69cd-14e1-e926ecdfd490@suse.cz>
+Date:   Tue, 23 Jun 2020 15:53:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-23_06:2020-06-23,2020-06-23 signatures=0
+In-Reply-To: <20200623015846.1141975-1-guro@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable 'abs_ppfid' in qed_dev.c:qed_llh_add_mac_filter() always gets
-printed, but is initialized only under 'ref_cnt == 1' condition. This
-results in:
+On 6/23/20 3:58 AM, Roman Gushchin wrote:
+> This is v7 of the slab cgroup controller rework.
 
-In file included from ./include/linux/kernel.h:15:0,
-                 from ./include/asm-generic/bug.h:19,
-                 from ./arch/x86/include/asm/bug.h:86,
-                 from ./include/linux/bug.h:5,
-                 from ./include/linux/io.h:11,
-                 from drivers/net/ethernet/qlogic/qed/qed_dev.c:35:
-drivers/net/ethernet/qlogic/qed/qed_dev.c: In function 'qed_llh_add_mac_filter':
-./include/linux/printk.h:358:2: warning: 'abs_ppfid' may be used uninitialized
-in this function [-Wmaybe-uninitialized]
-  printk(KERN_NOTICE pr_fmt(fmt), ##__VA_ARGS__)
-  ^~~~~~
-drivers/net/ethernet/qlogic/qed/qed_dev.c:983:17: note: 'abs_ppfid' was declared
-here
-  u8 filter_idx, abs_ppfid;
-                 ^~~~~~~~~
+Hi,
 
-...under W=1+.
+As you and Jesper did those measurements on v6, and are sending v7, it would be
+great to put some summary in the cover letter?
 
-Fix this by initializing it with zero.
+Thanks,
+Vlastimil
 
-Fixes: 79284adeb99e ("qed: Add llh ppfid interface and 100g support for offload protocols")
-Signed-off-by: Alexander Lobakin <alobakin@marvell.com>
-Signed-off-by: Igor Russkikh <irusskikh@marvell.com>
-Signed-off-by: Michal Kalderon <michal.kalderon@marvell.com>
----
- drivers/net/ethernet/qlogic/qed/qed_dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/qlogic/qed/qed_dev.c b/drivers/net/ethernet/qlogic/qed/qed_dev.c
-index b41ada668948..3aa51374e727 100644
---- a/drivers/net/ethernet/qlogic/qed/qed_dev.c
-+++ b/drivers/net/ethernet/qlogic/qed/qed_dev.c
-@@ -980,7 +980,7 @@ int qed_llh_add_mac_filter(struct qed_dev *cdev,
- 	struct qed_hwfn *p_hwfn = QED_LEADING_HWFN(cdev);
- 	struct qed_ptt *p_ptt = qed_ptt_acquire(p_hwfn);
- 	union qed_llh_filter filter = {};
--	u8 filter_idx, abs_ppfid;
-+	u8 filter_idx, abs_ppfid = 0;
- 	u32 high, low, ref_cnt;
- 	int rc = 0;
- 
--- 
-2.25.1
+> The patchset moves the accounting from the page level to the object
+> level. It allows to share slab pages between memory cgroups.
+> This leads to a significant win in the slab utilization (up to 45%)
+> and the corresponding drop in the total kernel memory footprint.
+> The reduced number of unmovable slab pages should also have a positive
+> effect on the memory fragmentation.
+> 
+> The patchset makes the slab accounting code simpler: there is no more
+> need in the complicated dynamic creation and destruction of per-cgroup
+> slab caches, all memory cgroups use a global set of shared slab caches.
+> The lifetime of slab caches is not more connected to the lifetime
+> of memory cgroups.
+> 
+> The more precise accounting does require more CPU, however in practice
+> the difference seems to be negligible. We've been using the new slab
+> controller in Facebook production for several months with different
+> workloads and haven't seen any noticeable regressions. What we've seen
+> were memory savings in order of 1 GB per host (it varied heavily depending
+> on the actual workload, size of RAM, number of CPUs, memory pressure, etc).
+> 
+> The third version of the patchset added yet another step towards
+> the simplification of the code: sharing of slab caches between
+> accounted and non-accounted allocations. It comes with significant
+> upsides (most noticeable, a complete elimination of dynamic slab caches
+> creation) but not without some regression risks, so this change sits
+> on top of the patchset and is not completely merged in. So in the unlikely
+> event of a noticeable performance regression it can be reverted separately.
+> 
+> The slab memory accounting works in exactly the same way for SLAB and SLUB.
+> With both allocators the new controller shows significant memory savings,
+> with SLUB the difference is bigger. On my 16-core desktop machine running
+> Fedora 32 the size of the slab memory measured after the start of the system
+> was lower by 58% and 38% with SLUB and SLAB correspondingly.
+> 
+> v7:
+>   1) rebased on top of Vlastimil's slub improvements, by Andrew
+>   2) page->obj_cgroups is allocated from the same node, by Shakeel
+>   3) perf optimization in get_obj_cgroup_from_current(), by Shakeel
+>   4) added synchronization around allocation of page->obj_cgroups,
+>      by Shakeel
+>   5) fixed kmemleak false positives, by Qian Cai
+>   6) fixed a compiler warning on clang, by Nathan
+>   7) other minor fixes
+> 
+> v6:
+>   1) rebased on top of the mm tree
+>   2) removed a redundant check from cache_from_obj(), suggested by Vlastimil
+> 
+> v5:
+>   1) fixed a build error, spotted by Vlastimil
+>   2) added a comment about memcg->nr_charged_bytes, asked by Johannes
+>   3) added missed acks and reviews
+> 
+> v4:
+>   1) rebased on top of the mm tree, some fixes here and there
+>   2) merged obj_to_index() with slab_index(), suggested by Vlastimil
+>   3) changed objects_per_slab() to a better objects_per_slab_page(),
+>      suggested by Vlastimil
+>   4) other minor fixes and changes
+> 
+> v3:
+>   1) added a patch that switches to a global single set of kmem_caches
+>   2) kmem API clean up dropped, because if has been already merged
+>   3) byte-sized slab vmstat API over page-sized global counters and
+>      bytes-sized memcg/lruvec counters
+>   3) obj_cgroup refcounting simplifications and other minor fixes
+>   4) other minor changes
+> 
+> v2:
+>   1) implemented re-layering and renaming suggested by Johannes,
+>      added his patch to the set. Thanks!
+>   2) fixed the issue discovered by Bharata B Rao. Thanks!
+>   3) added kmem API clean up part
+>   4) added slab/memcg follow-up clean up part
+>   5) fixed a couple of issues discovered by internal testing on FB fleet.
+>   6) added kselftests
+>   7) included metadata into the charge calculation
+>   8) refreshed commit logs, regrouped patches, rebased onto mm tree, etc
+> 
+> v1:
+>   1) fixed a bug in zoneinfo_show_print()
+>   2) added some comments to the subpage charging API, a minor fix
+>   3) separated memory.kmem.slabinfo deprecation into a separate patch,
+>      provided a drgn-based replacement
+>   4) rebased on top of the current mm tree
+> 
+> RFC:
+>   https://lwn.net/Articles/798605/
+> 
+> 
+> Johannes Weiner (1):
+>   mm: memcontrol: decouple reference counting from page accounting
+> 
+> Roman Gushchin (18):
+>   mm: memcg: factor out memcg- and lruvec-level changes out of
+>     __mod_lruvec_state()
+>   mm: memcg: prepare for byte-sized vmstat items
+>   mm: memcg: convert vmstat slab counters to bytes
+>   mm: slub: implement SLUB version of obj_to_index()
+>   mm: memcg/slab: obj_cgroup API
+>   mm: memcg/slab: allocate obj_cgroups for non-root slab pages
+>   mm: memcg/slab: save obj_cgroup for non-root slab objects
+>   mm: memcg/slab: charge individual slab objects instead of pages
+>   mm: memcg/slab: deprecate memory.kmem.slabinfo
+>   mm: memcg/slab: move memcg_kmem_bypass() to memcontrol.h
+>   mm: memcg/slab: use a single set of kmem_caches for all accounted
+>     allocations
+>   mm: memcg/slab: simplify memcg cache creation
+>   mm: memcg/slab: remove memcg_kmem_get_cache()
+>   mm: memcg/slab: deprecate slab_root_caches
+>   mm: memcg/slab: remove redundant check in memcg_accumulate_slabinfo()
+>   mm: memcg/slab: use a single set of kmem_caches for all allocations
+>   kselftests: cgroup: add kernel memory accounting tests
+>   tools/cgroup: add memcg_slabinfo.py tool
+> 
+>  drivers/base/node.c                        |   6 +-
+>  fs/proc/meminfo.c                          |   4 +-
+>  include/linux/memcontrol.h                 |  85 ++-
+>  include/linux/mm_types.h                   |   5 +-
+>  include/linux/mmzone.h                     |  24 +-
+>  include/linux/slab.h                       |   5 -
+>  include/linux/slab_def.h                   |   9 +-
+>  include/linux/slub_def.h                   |  31 +-
+>  include/linux/vmstat.h                     |  14 +-
+>  kernel/power/snapshot.c                    |   2 +-
+>  mm/memcontrol.c                            | 610 +++++++++++--------
+>  mm/oom_kill.c                              |   2 +-
+>  mm/page_alloc.c                            |   8 +-
+>  mm/slab.c                                  |  70 +--
+>  mm/slab.h                                  | 370 +++++-------
+>  mm/slab_common.c                           | 643 +--------------------
+>  mm/slob.c                                  |  12 +-
+>  mm/slub.c                                  | 229 +-------
+>  mm/vmscan.c                                |   3 +-
+>  mm/vmstat.c                                |  30 +-
+>  mm/workingset.c                            |   6 +-
+>  tools/cgroup/memcg_slabinfo.py             | 226 ++++++++
+>  tools/testing/selftests/cgroup/.gitignore  |   1 +
+>  tools/testing/selftests/cgroup/Makefile    |   2 +
+>  tools/testing/selftests/cgroup/test_kmem.c | 382 ++++++++++++
+>  25 files changed, 1380 insertions(+), 1399 deletions(-)
+>  create mode 100644 tools/cgroup/memcg_slabinfo.py
+>  create mode 100644 tools/testing/selftests/cgroup/test_kmem.c
+> 
 
