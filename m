@@ -2,40 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014742060B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64956205F9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392710AbgFWUpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:45:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42690 "EHLO mail.kernel.org"
+        id S2391515AbgFWUeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:34:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392628AbgFWUpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:45:16 -0400
+        id S2391493AbgFWUeH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:34:07 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB37320656;
-        Tue, 23 Jun 2020 20:45:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ADC682085B;
+        Tue, 23 Jun 2020 20:34:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945116;
-        bh=o4PHRK78AEjEwD8SHYfozcVWsNFhfNTt6rbCYn+7N7Q=;
+        s=default; t=1592944447;
+        bh=c05FWqPt6F+q4V82NOoJQu8NcLtJOe6Ox1hjJVAlF6M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PAoWmeFlvx7B5ON0neqA/qxrKcKSW8FmgwfmH1dKEzBMSBrmRHvoboLEbQjtOarl8
-         d5dwC1garln74OHjQQukZEk6GPNUTpOnzvvkqtKjHCczHBuUviAA/QXFj878Wu0Tw+
-         3SuUQ/Mqt1Juz1rlDVE/IMoea7csVQhH03Km+RWk=
+        b=VXofEaVHI87OlGicaBUeDMh7K5uRVh24gybRAg6uexCKpWfGMax9TUM99Mc9bM05h
+         H2Qx1crLY17gufFSIZd1+N7vopCisnuoWRBTdL+bWmv3eolyCedQuxQNh+M3Op1woX
+         fMkQNxI1A9uokjUBxbbc5Cqy8D+X9Hq0wyV6Ovb4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 046/136] drivers: base: Fix NULL pointer exception in __platform_driver_probe() if a driver developer is foolish
-Date:   Tue, 23 Jun 2020 21:58:22 +0200
-Message-Id: <20200623195305.957093812@linuxfoundation.org>
+        stable@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        David Miller <davem@davemloft.net>,
+        Ingo Molnar <mingo@elte.hu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Ziqian SUN (Zamir)" <zsun@redhat.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Subject: [PATCH 5.4 309/314] kretprobe: Prevent triggering kretprobe from within kprobe_flush_task
+Date:   Tue, 23 Jun 2020 21:58:24 +0200
+Message-Id: <20200623195353.738476598@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
-References: <20200623195303.601828702@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,84 +53,238 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+From: Jiri Olsa <jolsa@redhat.com>
 
-[ Upstream commit 388bcc6ecc609fca1b4920de7dc3806c98ec535e ]
+commit 9b38cc704e844e41d9cf74e647bff1d249512cb3 upstream.
 
-If platform bus driver registration is failed then, accessing
-platform bus spin lock (&drv->driver.bus->p->klist_drivers.k_lock)
-in __platform_driver_probe() without verifying the return value
-__platform_driver_register() can lead to NULL pointer exception.
+Ziqian reported lockup when adding retprobe on _raw_spin_lock_irqsave.
+My test was also able to trigger lockdep output:
 
-So check the return value before attempting the spin lock.
+ ============================================
+ WARNING: possible recursive locking detected
+ 5.6.0-rc6+ #6 Not tainted
+ --------------------------------------------
+ sched-messaging/2767 is trying to acquire lock:
+ ffffffff9a492798 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_hash_lock+0x52/0xa0
 
-One such example is below:
+ but task is already holding lock:
+ ffffffff9a491a18 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_trampoline+0x0/0x50
 
-For a custom usecase, I have intentionally failed the platform bus
-registration and I expected all the platform device/driver
-registrations to fail gracefully. But I came across this panic
-issue.
+ other info that might help us debug this:
+  Possible unsafe locking scenario:
 
-[    1.331067] BUG: kernel NULL pointer dereference, address: 00000000000000c8
-[    1.331118] #PF: supervisor write access in kernel mode
-[    1.331163] #PF: error_code(0x0002) - not-present page
-[    1.331208] PGD 0 P4D 0
-[    1.331233] Oops: 0002 [#1] PREEMPT SMP
-[    1.331268] CPU: 3 PID: 1 Comm: swapper/0 Tainted: G        W         5.6.0-00049-g670d35fb0144 #165
-[    1.331341] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
-[    1.331406] RIP: 0010:_raw_spin_lock+0x15/0x30
-[    1.331588] RSP: 0000:ffffc9000001be70 EFLAGS: 00010246
-[    1.331632] RAX: 0000000000000000 RBX: 00000000000000c8 RCX: 0000000000000001
-[    1.331696] RDX: 0000000000000001 RSI: 0000000000000092 RDI: 0000000000000000
-[    1.331754] RBP: 00000000ffffffed R08: 0000000000000501 R09: 0000000000000001
-[    1.331817] R10: ffff88817abcc520 R11: 0000000000000670 R12: 00000000ffffffed
-[    1.331881] R13: ffffffff82dbc268 R14: ffffffff832f070a R15: 0000000000000000
-[    1.331945] FS:  0000000000000000(0000) GS:ffff88817bd80000(0000) knlGS:0000000000000000
-[    1.332008] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    1.332062] CR2: 00000000000000c8 CR3: 000000000681e001 CR4: 00000000003606e0
-[    1.332126] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[    1.332189] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[    1.332252] Call Trace:
-[    1.332281]  __platform_driver_probe+0x92/0xee
-[    1.332323]  ? rtc_dev_init+0x2b/0x2b
-[    1.332358]  cmos_init+0x37/0x67
-[    1.332396]  do_one_initcall+0x7d/0x168
-[    1.332428]  kernel_init_freeable+0x16c/0x1c9
-[    1.332473]  ? rest_init+0xc0/0xc0
-[    1.332508]  kernel_init+0x5/0x100
-[    1.332543]  ret_from_fork+0x1f/0x30
-[    1.332579] CR2: 00000000000000c8
-[    1.332616] ---[ end trace 3bd87f12e9010b87 ]---
-[    1.333549] note: swapper/0[1] exited with preempt_count 1
-[    1.333592] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000009
-[    1.333736] Kernel Offset: disabled
+        CPU0
+        ----
+   lock(&(kretprobe_table_locks[i].lock));
+   lock(&(kretprobe_table_locks[i].lock));
 
-Note, this can only be triggered if a driver errors out from this call,
-which should never happen.  If it does, the driver needs to be fixed.
+  *** DEADLOCK ***
 
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Link: https://lore.kernel.org/r/20200408214003.3356-1-sathyanarayanan.kuppuswamy@linux.intel.com
+  May be due to missing lock nesting notation
+
+ 1 lock held by sched-messaging/2767:
+  #0: ffffffff9a491a18 (&(kretprobe_table_locks[i].lock)){-.-.}, at: kretprobe_trampoline+0x0/0x50
+
+ stack backtrace:
+ CPU: 3 PID: 2767 Comm: sched-messaging Not tainted 5.6.0-rc6+ #6
+ Call Trace:
+  dump_stack+0x96/0xe0
+  __lock_acquire.cold.57+0x173/0x2b7
+  ? native_queued_spin_lock_slowpath+0x42b/0x9e0
+  ? lockdep_hardirqs_on+0x590/0x590
+  ? __lock_acquire+0xf63/0x4030
+  lock_acquire+0x15a/0x3d0
+  ? kretprobe_hash_lock+0x52/0xa0
+  _raw_spin_lock_irqsave+0x36/0x70
+  ? kretprobe_hash_lock+0x52/0xa0
+  kretprobe_hash_lock+0x52/0xa0
+  trampoline_handler+0xf8/0x940
+  ? kprobe_fault_handler+0x380/0x380
+  ? find_held_lock+0x3a/0x1c0
+  kretprobe_trampoline+0x25/0x50
+  ? lock_acquired+0x392/0xbc0
+  ? _raw_spin_lock_irqsave+0x50/0x70
+  ? __get_valid_kprobe+0x1f0/0x1f0
+  ? _raw_spin_unlock_irqrestore+0x3b/0x40
+  ? finish_task_switch+0x4b9/0x6d0
+  ? __switch_to_asm+0x34/0x70
+  ? __switch_to_asm+0x40/0x70
+
+The code within the kretprobe handler checks for probe reentrancy,
+so we won't trigger any _raw_spin_lock_irqsave probe in there.
+
+The problem is in outside kprobe_flush_task, where we call:
+
+  kprobe_flush_task
+    kretprobe_table_lock
+      raw_spin_lock_irqsave
+        _raw_spin_lock_irqsave
+
+where _raw_spin_lock_irqsave triggers the kretprobe and installs
+kretprobe_trampoline handler on _raw_spin_lock_irqsave return.
+
+The kretprobe_trampoline handler is then executed with already
+locked kretprobe_table_locks, and first thing it does is to
+lock kretprobe_table_locks ;-) the whole lockup path like:
+
+  kprobe_flush_task
+    kretprobe_table_lock
+      raw_spin_lock_irqsave
+        _raw_spin_lock_irqsave ---> probe triggered, kretprobe_trampoline installed
+
+        ---> kretprobe_table_locks locked
+
+        kretprobe_trampoline
+          trampoline_handler
+            kretprobe_hash_lock(current, &head, &flags);  <--- deadlock
+
+Adding kprobe_busy_begin/end helpers that mark code with fake
+probe installed to prevent triggering of another kprobe within
+this code.
+
+Using these helpers in kprobe_flush_task, so the probe recursion
+protection check is hit and the probe is never set to prevent
+above lockup.
+
+Link: http://lkml.kernel.org/r/158927059835.27680.7011202830041561604.stgit@devnote2
+
+Fixes: ef53d9c5e4da ("kprobes: improve kretprobe scalability with hashed locking")
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: "Gustavo A . R . Silva" <gustavoars@kernel.org>
+Cc: Anders Roxell <anders.roxell@linaro.org>
+Cc: "Naveen N . Rao" <naveen.n.rao@linux.ibm.com>
+Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
+Cc: David Miller <davem@davemloft.net>
+Cc: Ingo Molnar <mingo@elte.hu>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: stable@vger.kernel.org
+Reported-by: "Ziqian SUN (Zamir)" <zsun@redhat.com>
+Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/base/platform.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/x86/kernel/kprobes/core.c |   16 +++-------------
+ include/linux/kprobes.h        |    4 ++++
+ kernel/kprobes.c               |   24 ++++++++++++++++++++++++
+ 3 files changed, 31 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/base/platform.c b/drivers/base/platform.c
-index bcb6519fe2113..0ee3cab88f70f 100644
---- a/drivers/base/platform.c
-+++ b/drivers/base/platform.c
-@@ -702,6 +702,8 @@ int __init_or_module __platform_driver_probe(struct platform_driver *drv,
- 	/* temporary section violation during probe() */
- 	drv->probe = probe;
- 	retval = code = __platform_driver_register(drv, module);
-+	if (retval)
-+		return retval;
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -746,16 +746,11 @@ asm(
+ NOKPROBE_SYMBOL(kretprobe_trampoline);
+ STACK_FRAME_NON_STANDARD(kretprobe_trampoline);
  
+-static struct kprobe kretprobe_kprobe = {
+-	.addr = (void *)kretprobe_trampoline,
+-};
+-
+ /*
+  * Called from kretprobe_trampoline
+  */
+ __used __visible void *trampoline_handler(struct pt_regs *regs)
+ {
+-	struct kprobe_ctlblk *kcb;
+ 	struct kretprobe_instance *ri = NULL;
+ 	struct hlist_head *head, empty_rp;
+ 	struct hlist_node *tmp;
+@@ -765,16 +760,12 @@ __used __visible void *trampoline_handle
+ 	void *frame_pointer;
+ 	bool skipped = false;
+ 
+-	preempt_disable();
+-
  	/*
- 	 * Fixup that section violation, being paranoid about code scanning
--- 
-2.25.1
-
+ 	 * Set a dummy kprobe for avoiding kretprobe recursion.
+ 	 * Since kretprobe never run in kprobe handler, kprobe must not
+ 	 * be running at this point.
+ 	 */
+-	kcb = get_kprobe_ctlblk();
+-	__this_cpu_write(current_kprobe, &kretprobe_kprobe);
+-	kcb->kprobe_status = KPROBE_HIT_ACTIVE;
++	kprobe_busy_begin();
+ 
+ 	INIT_HLIST_HEAD(&empty_rp);
+ 	kretprobe_hash_lock(current, &head, &flags);
+@@ -850,7 +841,7 @@ __used __visible void *trampoline_handle
+ 			__this_cpu_write(current_kprobe, &ri->rp->kp);
+ 			ri->ret_addr = correct_ret_addr;
+ 			ri->rp->handler(ri, regs);
+-			__this_cpu_write(current_kprobe, &kretprobe_kprobe);
++			__this_cpu_write(current_kprobe, &kprobe_busy);
+ 		}
+ 
+ 		recycle_rp_inst(ri, &empty_rp);
+@@ -866,8 +857,7 @@ __used __visible void *trampoline_handle
+ 
+ 	kretprobe_hash_unlock(current, &flags);
+ 
+-	__this_cpu_write(current_kprobe, NULL);
+-	preempt_enable();
++	kprobe_busy_end();
+ 
+ 	hlist_for_each_entry_safe(ri, tmp, &empty_rp, hlist) {
+ 		hlist_del(&ri->hlist);
+--- a/include/linux/kprobes.h
++++ b/include/linux/kprobes.h
+@@ -350,6 +350,10 @@ static inline struct kprobe_ctlblk *get_
+ 	return this_cpu_ptr(&kprobe_ctlblk);
+ }
+ 
++extern struct kprobe kprobe_busy;
++void kprobe_busy_begin(void);
++void kprobe_busy_end(void);
++
+ kprobe_opcode_t *kprobe_lookup_name(const char *name, unsigned int offset);
+ int register_kprobe(struct kprobe *p);
+ void unregister_kprobe(struct kprobe *p);
+--- a/kernel/kprobes.c
++++ b/kernel/kprobes.c
+@@ -1237,6 +1237,26 @@ __releases(hlist_lock)
+ }
+ NOKPROBE_SYMBOL(kretprobe_table_unlock);
+ 
++struct kprobe kprobe_busy = {
++	.addr = (void *) get_kprobe,
++};
++
++void kprobe_busy_begin(void)
++{
++	struct kprobe_ctlblk *kcb;
++
++	preempt_disable();
++	__this_cpu_write(current_kprobe, &kprobe_busy);
++	kcb = get_kprobe_ctlblk();
++	kcb->kprobe_status = KPROBE_HIT_ACTIVE;
++}
++
++void kprobe_busy_end(void)
++{
++	__this_cpu_write(current_kprobe, NULL);
++	preempt_enable();
++}
++
+ /*
+  * This function is called from finish_task_switch when task tk becomes dead,
+  * so that we can recycle any function-return probe instances associated
+@@ -1254,6 +1274,8 @@ void kprobe_flush_task(struct task_struc
+ 		/* Early boot.  kretprobe_table_locks not yet initialized. */
+ 		return;
+ 
++	kprobe_busy_begin();
++
+ 	INIT_HLIST_HEAD(&empty_rp);
+ 	hash = hash_ptr(tk, KPROBE_HASH_BITS);
+ 	head = &kretprobe_inst_table[hash];
+@@ -1267,6 +1289,8 @@ void kprobe_flush_task(struct task_struc
+ 		hlist_del(&ri->hlist);
+ 		kfree(ri);
+ 	}
++
++	kprobe_busy_end();
+ }
+ NOKPROBE_SYMBOL(kprobe_flush_task);
+ 
 
 
