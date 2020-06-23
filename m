@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AEA205DEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35CB7205DCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388871AbgFWUR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:17:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34450 "EHLO mail.kernel.org"
+        id S2389458AbgFWUQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:16:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60402 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389608AbgFWURz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:17:55 -0400
+        id S2388703AbgFWUQm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:16:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B1B822064B;
-        Tue, 23 Jun 2020 20:17:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 63A4C2080C;
+        Tue, 23 Jun 2020 20:16:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943475;
-        bh=tWflFMXlPV/4i3zVv13EFFvXyfx9GgbxDS6WuLXF5YQ=;
+        s=default; t=1592943401;
+        bh=P5F2rZemRLTnANMPkKWHcAJrGkkcoo6QKlbcVU9KaQY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gmftUoK1nrEi9/NZbcGb/j+KUfb8SDPc+Pqsbg6vaQuG+8cfzBWSYitcyxVAHASO/
-         te1XkmjcNuKF+hdgOUIwSLDugQPhCzIJbZ46NyTeR5hBTtLVLHUabyZzcoBfepOnYn
-         lGKzaFq11fey6/N7hODJIzOCAeXFO7D7AO10LlNw=
+        b=zKdT1yZCHw6HkBecEQRRhFU2QVC5zWAD5A3Wzkxtj8loTqXvd9Ibac/C07sj26VKn
+         axsXhuRppBekmayeI/IoEED/CTrH3CGZ3kv6TqgknzzijKb7ctEZZ7jS5A3D6NRKSv
+         lRgfsWJP52yeuuzlorUlz6E+3V4afydY8AzsUWMI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alex Elder <elder@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Andrey Ignatov <rdna@fb.com>,
+        Alexei Starovoitov <ast@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 376/477] net: ipa: program upper nibbles of sequencer type
-Date:   Tue, 23 Jun 2020 21:56:13 +0200
-Message-Id: <20200623195425.303413691@linuxfoundation.org>
+Subject: [PATCH 5.7 378/477] bpf: Fix memlock accounting for sock_hash
+Date:   Tue, 23 Jun 2020 21:56:15 +0200
+Message-Id: <20200623195425.399940958@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -44,57 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Elder <elder@linaro.org>
+From: Andrey Ignatov <rdna@fb.com>
 
-[ Upstream commit 636edeaad5577b6023f0de2b98a010d1cea73607 ]
+[ Upstream commit 60e5ca8a64bad8f3e2e20a1e57846e497361c700 ]
 
-The upper two nibbles of the sequencer type were not used for
-SDM845, and were assumed to be 0.  But for SC7180 they are used, and
-so they must be programmed by ipa_endpoint_init_seq().  Fix this bug.
+Add missed bpf_map_charge_init() in sock_hash_alloc() and
+correspondingly bpf_map_charge_finish() on ENOMEM.
 
-IPA_SEQ_PKT_PROCESS_NO_DEC_NO_UCP_DMAP doesn't have a descriptive
-comment, so add one.
+It was found accidentally while working on unrelated selftest that
+checks "map->memory.pages > 0" is true for all map types.
 
-Signed-off-by: Alex Elder <elder@linaro.org>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Before:
+	# bpftool m l
+	...
+	3692: sockhash  name m_sockhash  flags 0x0
+		key 4B  value 4B  max_entries 8  memlock 0B
+
+After:
+	# bpftool m l
+	...
+	84: sockmap  name m_sockmap  flags 0x0
+		key 4B  value 4B  max_entries 8  memlock 4096B
+
+Fixes: 604326b41a6f ("bpf, sockmap: convert to generic sk_msg interface")
+Signed-off-by: Andrey Ignatov <rdna@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Link: https://lore.kernel.org/bpf/20200612000857.2881453-1-rdna@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ipa/ipa_endpoint.c | 6 ++++--
- drivers/net/ipa/ipa_reg.h      | 2 ++
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ net/core/sock_map.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/net/ipa/ipa_endpoint.c b/drivers/net/ipa/ipa_endpoint.c
-index a21534f1462fa..1d823ac0f6d61 100644
---- a/drivers/net/ipa/ipa_endpoint.c
-+++ b/drivers/net/ipa/ipa_endpoint.c
-@@ -669,10 +669,12 @@ static void ipa_endpoint_init_seq(struct ipa_endpoint *endpoint)
- 	u32 seq_type = endpoint->seq_type;
- 	u32 val = 0;
+diff --git a/net/core/sock_map.c b/net/core/sock_map.c
+index 7e858c1dd7113..591457fcbd028 100644
+--- a/net/core/sock_map.c
++++ b/net/core/sock_map.c
+@@ -984,11 +984,15 @@ static struct bpf_map *sock_hash_alloc(union bpf_attr *attr)
+ 		err = -EINVAL;
+ 		goto free_htab;
+ 	}
++	err = bpf_map_charge_init(&htab->map.memory, cost);
++	if (err)
++		goto free_htab;
  
-+	/* Sequencer type is made up of four nibbles */
- 	val |= u32_encode_bits(seq_type & 0xf, HPS_SEQ_TYPE_FMASK);
- 	val |= u32_encode_bits((seq_type >> 4) & 0xf, DPS_SEQ_TYPE_FMASK);
--	/* HPS_REP_SEQ_TYPE is 0 */
--	/* DPS_REP_SEQ_TYPE is 0 */
-+	/* The second two apply to replicated packets */
-+	val |= u32_encode_bits((seq_type >> 8) & 0xf, HPS_REP_SEQ_TYPE_FMASK);
-+	val |= u32_encode_bits((seq_type >> 12) & 0xf, DPS_REP_SEQ_TYPE_FMASK);
- 
- 	iowrite32(val, endpoint->ipa->reg_virt + offset);
- }
-diff --git a/drivers/net/ipa/ipa_reg.h b/drivers/net/ipa/ipa_reg.h
-index 3b8106aa277a0..0a688d8c1d7cf 100644
---- a/drivers/net/ipa/ipa_reg.h
-+++ b/drivers/net/ipa/ipa_reg.h
-@@ -455,6 +455,8 @@ enum ipa_mode {
-  *	second packet processing pass + no decipher + microcontroller
-  * @IPA_SEQ_DMA_DEC:		DMA + cipher/decipher
-  * @IPA_SEQ_DMA_COMP_DECOMP:	DMA + compression/decompression
-+ * @IPA_SEQ_PKT_PROCESS_NO_DEC_NO_UCP_DMAP:
-+ *	packet processing + no decipher + no uCP + HPS REP DMA parser
-  * @IPA_SEQ_INVALID:		invalid sequencer type
-  *
-  * The values defined here are broken into 4-bit nibbles that are written
+ 	htab->buckets = bpf_map_area_alloc(htab->buckets_num *
+ 					   sizeof(struct bpf_htab_bucket),
+ 					   htab->map.numa_node);
+ 	if (!htab->buckets) {
++		bpf_map_charge_finish(&htab->map.memory);
+ 		err = -ENOMEM;
+ 		goto free_htab;
+ 	}
 -- 
 2.25.1
 
