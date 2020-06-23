@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA524205CA4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA85205CB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388126AbgFWUD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:03:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41864 "EHLO mail.kernel.org"
+        id S2388206AbgFWUE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:04:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387509AbgFWUDx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:03:53 -0400
+        id S2388150AbgFWUEU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:04:20 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31C1E20FC3;
-        Tue, 23 Jun 2020 20:03:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BEF1220FC3;
+        Tue, 23 Jun 2020 20:04:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942632;
-        bh=hGt5jvVshFXEzuKSCI0ypKNX8m8Q+hiYVHQAKRJQ80Q=;
+        s=default; t=1592942660;
+        bh=HPm53k8FD/4n/cpDgK8Tp6aZZf85ELf3u1yD4iOjm+s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cNI+32tBznJJTdbjwtcyFTWWtrKrANPJtz2lfYQ0SVRhIWwScTLn1M0PxyHfcL6yF
-         9J9yB9EdCS6nPf5jp6clE8/btM1O1ax8MFMH8DNKJfT11QjzjEx4Uf9dBzWkpFSerW
-         WwbUsUuHjyg3OCIzhT8ubkquwHZpmouFoKaUvsYE=
+        b=O29LtnL5VpAeOmTO3w2sRFb3e0c/lx0wskCmmWniq8Vad7bKTfHi670wU8KfRt0eD
+         k+Oj4I8sRg0Sx2UelmX8toUMEOse+18PAotUFcbx5R6AFy8iQciEf1LysZ8XCu78Ql
+         4G5Nturi0G6uZfPHcx/Xlg24Gm8OWfFQe+Bp253g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Omer Shpigelman <oshpigelman@habana.ai>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
+        stable@vger.kernel.org, Peter Chen <peter.chen@nxp.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Felipe Balbi <balbi@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 067/477] habanalabs: dont allow hard reset with open processes
-Date:   Tue, 23 Jun 2020 21:51:04 +0200
-Message-Id: <20200623195410.788341159@linuxfoundation.org>
+Subject: [PATCH 5.7 068/477] usb: cdns3: Fix runtime PM imbalance on error
+Date:   Tue, 23 Jun 2020 21:51:05 +0200
+Message-Id: <20200623195410.836686698@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -44,78 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Omer Shpigelman <oshpigelman@habana.ai>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-[ Upstream commit 36fafe87edd636292a4ed6a3af9608f2c7d0d0fb ]
+[ Upstream commit e5b913496099527abe46e175e5e2c844367bded0 ]
 
-When the MMU is heavily used by the engines, unmapping might take a lot of
-time due to a full MMU cache invalidation done as part of the unmap flow.
-Hence we might not be able to kill all open processes before going to hard
-reset the device, as it involves unmapping of all user memory.
-In case of a failure in killing all open processes, we should stop the
-hard reset flow as it might lead to a kernel crash - one thread (killing
-of a process) is updating MMU structures that other thread (hard reset) is
-freeing.
-Stopping a hard reset flow leaves the device as nonoperational and the
-user can then initiate a hard reset via sysfs to reinitialize the device.
+pm_runtime_get_sync() increments the runtime PM usage counter even
+when it returns an error code. Thus a pairing decrement is needed on
+the error handling path to keep the counter balanced.
 
-Signed-off-by: Omer Shpigelman <oshpigelman@habana.ai>
-Reviewed-by: Oded Gabbay <oded.gabbay@gmail.com>
-Signed-off-by: Oded Gabbay <oded.gabbay@gmail.com>
+Reviewed-by: Peter Chen <peter.chen@nxp.com>
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/misc/habanalabs/device.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ drivers/usb/cdns3/cdns3-ti.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/misc/habanalabs/device.c b/drivers/misc/habanalabs/device.c
-index aef4de36b7aae..6d9c298e02c73 100644
---- a/drivers/misc/habanalabs/device.c
-+++ b/drivers/misc/habanalabs/device.c
-@@ -718,7 +718,7 @@ disable_device:
- 	return rc;
- }
- 
--static void device_kill_open_processes(struct hl_device *hdev)
-+static int device_kill_open_processes(struct hl_device *hdev)
- {
- 	u16 pending_total, pending_cnt;
- 	struct hl_fpriv	*hpriv;
-@@ -771,9 +771,7 @@ static void device_kill_open_processes(struct hl_device *hdev)
- 		ssleep(1);
+diff --git a/drivers/usb/cdns3/cdns3-ti.c b/drivers/usb/cdns3/cdns3-ti.c
+index 5685ba11480bd..e701ab56b0a76 100644
+--- a/drivers/usb/cdns3/cdns3-ti.c
++++ b/drivers/usb/cdns3/cdns3-ti.c
+@@ -138,7 +138,7 @@ static int cdns_ti_probe(struct platform_device *pdev)
+ 	error = pm_runtime_get_sync(dev);
+ 	if (error < 0) {
+ 		dev_err(dev, "pm_runtime_get_sync failed: %d\n", error);
+-		goto err_get;
++		goto err;
  	}
  
--	if (!list_empty(&hdev->fpriv_list))
--		dev_crit(hdev->dev,
--			"Going to hard reset with open user contexts\n");
-+	return list_empty(&hdev->fpriv_list) ? 0 : -EBUSY;
- }
+ 	/* assert RESET */
+@@ -185,7 +185,6 @@ static int cdns_ti_probe(struct platform_device *pdev)
  
- static void device_hard_reset_pending(struct work_struct *work)
-@@ -894,7 +892,12 @@ again:
- 		 * process can't really exit until all its CSs are done, which
- 		 * is what we do in cs rollback
- 		 */
--		device_kill_open_processes(hdev);
-+		rc = device_kill_open_processes(hdev);
-+		if (rc) {
-+			dev_crit(hdev->dev,
-+				"Failed to kill all open processes, stopping hard reset\n");
-+			goto out_err;
-+		}
+ err:
+ 	pm_runtime_put_sync(data->dev);
+-err_get:
+ 	pm_runtime_disable(data->dev);
  
- 		/* Flush the Event queue workers to make sure no other thread is
- 		 * reading or writing to registers during the reset
-@@ -1375,7 +1378,9 @@ void hl_device_fini(struct hl_device *hdev)
- 	 * can't really exit until all its CSs are done, which is what we
- 	 * do in cs rollback
- 	 */
--	device_kill_open_processes(hdev);
-+	rc = device_kill_open_processes(hdev);
-+	if (rc)
-+		dev_crit(hdev->dev, "Failed to kill all open processes\n");
- 
- 	hl_cb_pool_fini(hdev);
- 
+ 	return error;
 -- 
 2.25.1
 
