@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D25A206233
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7F2206198
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393094AbgFWU5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:57:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39720 "EHLO mail.kernel.org"
+        id S2392764AbgFWUpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:45:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43018 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392469AbgFWUm7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:42:59 -0400
+        id S2392685AbgFWUp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:45:28 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5471C218AC;
-        Tue, 23 Jun 2020 20:42:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AA13120781;
+        Tue, 23 Jun 2020 20:45:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944979;
-        bh=eCIISwX8b9C15X9TqAuD6sELfLxLdfmbumORZ1Z8M3g=;
+        s=default; t=1592945129;
+        bh=08kRE9xJpAdoX2wEKMab3pugKkKAumuZV7XRl7t29kA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=biNzA4/5iNKtLq/mTrEcIqrrBezllO1QUHhcu82qp6j0beJzrotfzbbOnkNjEXVeU
-         5a1SnF/DJ1x2FsdwofTWFQ7XexiMkvkh1bwTiWyorbQg4lESNEPi+piUsUe8siZUSf
-         mIXti0z4BPt9Dzs3v/tiKnqAHIXIRumOa3qZpOtE=
+        b=OkTyD2vx19fjPPwgchpbD3MjxPcfxE8t/OKYi4LAD5oNyfMdqh5Jbd6An7xSPm1d9
+         ZTNuNcAp8tRg7EjFYcc139818z61JVDgUFj3fVbftlUbb3/d5wjSVzpEy6dJC2/con
+         AsctDGmCtSJ5DeYPeoLmMTzTWOXOsbwtbT24/KE8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
+        stable@vger.kernel.org,
+        John Johansen <john.johansen@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 159/206] x86/idt: Keep spurious entries unset in system_vectors
-Date:   Tue, 23 Jun 2020 21:58:07 +0200
-Message-Id: <20200623195324.811460432@linuxfoundation.org>
+Subject: [PATCH 4.14 033/136] apparmor: fix introspection of of task mode for unconfined tasks
+Date:   Tue, 23 Jun 2020 21:58:09 +0200
+Message-Id: <20200623195305.315757092@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
+References: <20200623195303.601828702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,50 +44,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vitaly Kuznetsov <vkuznets@redhat.com>
+From: John Johansen <john.johansen@canonical.com>
 
-[ Upstream commit 1f1fbc70c10e81f70e9fbe2102d439c883269811 ]
+[ Upstream commit dd2569fbb053719f7df7ef8fdbb45cf47156a701 ]
 
-With commit dc20b2d52653 ("x86/idt: Move interrupt gate initialization to
-IDT code") non assigned system vectors are also marked as used in
-'used_vectors' (now 'system_vectors') bitmap. This makes checks in
-arch_show_interrupts() whether a particular system vector is allocated to
-always pass and e.g. 'Hyper-V reenlightenment interrupts' entry always
-shows up in /proc/interrupts.
+Fix two issues with introspecting the task mode.
 
-Another side effect of having all unassigned system vectors marked as used
-is that irq_matrix_debug_show() will wrongly count them among 'System'
-vectors.
+1. If a task is attached to a unconfined profile that is not the
+   ns->unconfined profile then. Mode the mode is always reported
+   as -
 
-As it is now ensured that alloc_intr_gate() is not called after init, it is
-possible to leave unused entries in 'system_vectors' unset to fix these
-issues.
+      $ ps -Z
+      LABEL                               PID TTY          TIME CMD
+      unconfined                         1287 pts/0    00:00:01 bash
+      test (-)                           1892 pts/0    00:00:00 ps
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lkml.kernel.org/r/20200428093824.1451532-4-vkuznets@redhat.com
+   instead of the correct value of (unconfined) as shown below
+
+      $ ps -Z
+      LABEL                               PID TTY          TIME CMD
+      unconfined                         2483 pts/0    00:00:01 bash
+      test (unconfined)                  3591 pts/0    00:00:00 ps
+
+2. if a task is confined by a stack of profiles that are unconfined
+   the output of label mode is again the incorrect value of (-) like
+   above, instead of (unconfined). This is because the visibile
+   profile count increment is skipped by the special casing of
+   unconfined.
+
+Fixes: f1bd904175e8 ("apparmor: add the base fns() for domain labels")
+Signed-off-by: John Johansen <john.johansen@canonical.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/idt.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ security/apparmor/label.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
-index a7e0e975043fd..e1f9355307b81 100644
---- a/arch/x86/kernel/idt.c
-+++ b/arch/x86/kernel/idt.c
-@@ -320,7 +320,11 @@ void __init idt_setup_apic_and_irq_gates(void)
+diff --git a/security/apparmor/label.c b/security/apparmor/label.c
+index ea63710442ae5..212a0f39ddae8 100644
+--- a/security/apparmor/label.c
++++ b/security/apparmor/label.c
+@@ -1536,13 +1536,13 @@ static const char *label_modename(struct aa_ns *ns, struct aa_label *label,
  
- #ifdef CONFIG_X86_LOCAL_APIC
- 	for_each_clear_bit_from(i, system_vectors, NR_VECTORS) {
--		set_bit(i, system_vectors);
-+		/*
-+		 * Don't set the non assigned system vectors in the
-+		 * system_vectors bitmap. Otherwise they show up in
-+		 * /proc/interrupts.
-+		 */
- 		entry = spurious_entries_start + 8 * (i - FIRST_SYSTEM_VECTOR);
- 		set_intr_gate(i, entry);
- 	}
+ 	label_for_each(i, label, profile) {
+ 		if (aa_ns_visible(ns, profile->ns, flags & FLAG_VIEW_SUBNS)) {
+-			if (profile->mode == APPARMOR_UNCONFINED)
++			count++;
++			if (profile == profile->ns->unconfined)
+ 				/* special case unconfined so stacks with
+ 				 * unconfined don't report as mixed. ie.
+ 				 * profile_foo//&:ns1:unconfined (mixed)
+ 				 */
+ 				continue;
+-			count++;
+ 			if (mode == -1)
+ 				mode = profile->mode;
+ 			else if (mode != profile->mode)
 -- 
 2.25.1
 
