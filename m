@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF96F205D15
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43B7205D2C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:10:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387816AbgFWUIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:08:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49118 "EHLO mail.kernel.org"
+        id S2388780AbgFWUKB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:10:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50408 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387878AbgFWUIK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:08:10 -0400
+        id S2387464AbgFWUJW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:09:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1836B20E65;
-        Tue, 23 Jun 2020 20:08:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 98D3A206C3;
+        Tue, 23 Jun 2020 20:09:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942889;
-        bh=/CPyaLLZRU4Fh2P4fIpFjAZgAOMq5TubLnUNK5hB58U=;
+        s=default; t=1592942961;
+        bh=jVjffcSOIbJYK+zbCM3/dVavuvMb866W3gt3yZzkCaE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MtrV1Mf5FfummDYTrM7EmhqBQ2xcetaUmE9u2/X6G7qHE2xMTwnUlg+2s/m1Z5BCq
-         cL5tFnz6e2+f5k7fc+Htm0JvZcdfilL8abdppgjYPnsI7C4KTFXroc25HFJbhdFgpy
-         8tDOru7TaXWGDhaX9R9AFzl7ZWbg5q7k9+g78fxw=
+        b=vxobtJPqXNWVK8z8zv477bSTV8yWctKuErRbFVtNQHRcZJi8/qoH0Xrp9Ppam0iVA
+         Ot7P17ffSIpARLLLF+IQ1Ze65DFfCLBrU4KYgsjG8BtnexT1iq6VF1XYMYu6u4mCI0
+         Huc6WJ+cFZdze2vUkNtAAwvPu4dZDDVD2hWCNWoc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Matej Dujava <mdujava@kocurkovo.cz>,
+        stable@vger.kernel.org,
+        Marek Vasut <marek.vasut+renesas@gmail.com>,
+        Andrew Murray <andrew.murray@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 168/477] staging: sm750fb: add missing case while setting FB_VISUAL
-Date:   Tue, 23 Jun 2020 21:52:45 +0200
-Message-Id: <20200623195415.526484292@linuxfoundation.org>
+Subject: [PATCH 5.7 173/477] PCI: rcar: Fix incorrect programming of OB windows
+Date:   Tue, 23 Jun 2020 21:52:50 +0200
+Message-Id: <20200623195415.761293840@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -43,34 +46,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Matej Dujava <mdujava@kocurkovo.cz>
+From: Andrew Murray <andrew.murray@arm.com>
 
-[ Upstream commit fa90133377f4a7f15a937df6ad55133bb57c5665 ]
+[ Upstream commit 2b9f217433e31d125fb697ca7974d3de3ecc3e92 ]
 
-Switch statement does not contain all cases: 8, 16, 24, 32.
-This patch will add missing one (24)
+The outbound windows (PCIEPAUR(x), PCIEPALR(x)) describe a mapping between
+a CPU address (which is determined by the window number 'x') and a
+programmed PCI address - Thus allowing the controller to translate CPU
+accesses into PCI accesses.
 
-Fixes: 81dee67e215b ("staging: sm750fb: add sm750 to staging")
-Signed-off-by: Matej Dujava <mdujava@kocurkovo.cz>
-Link: https://lore.kernel.org/r/1588277366-19354-2-git-send-email-mdujava@kocurkovo.cz
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+However the existing code incorrectly writes the CPU address - lets fix
+this by writing the PCI address instead.
+
+For memory transactions, existing DT users describe a 1:1 identity mapping
+and thus this change should have no effect. However the same isn't true for
+I/O.
+
+Link: https://lore.kernel.org/r/20191004132941.6660-1-andrew.murray@arm.com
+Fixes: c25da4778803 ("PCI: rcar: Add Renesas R-Car PCIe driver")
+Tested-by: Marek Vasut <marek.vasut+renesas@gmail.com>
+Signed-off-by: Andrew Murray <andrew.murray@arm.com>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Marek Vasut <marek.vasut+renesas@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/sm750fb/sm750.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/pci/controller/pcie-rcar.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/staging/sm750fb/sm750.c b/drivers/staging/sm750fb/sm750.c
-index 59568d18ce230..5b72aa81d94c1 100644
---- a/drivers/staging/sm750fb/sm750.c
-+++ b/drivers/staging/sm750fb/sm750.c
-@@ -898,6 +898,7 @@ static int lynxfb_set_fbinfo(struct fb_info *info, int index)
- 		fix->visual = FB_VISUAL_PSEUDOCOLOR;
- 		break;
- 	case 16:
-+	case 24:
- 	case 32:
- 		fix->visual = FB_VISUAL_TRUECOLOR;
- 		break;
+diff --git a/drivers/pci/controller/pcie-rcar.c b/drivers/pci/controller/pcie-rcar.c
+index 759c6542c5c80..1bae6a4abaaeb 100644
+--- a/drivers/pci/controller/pcie-rcar.c
++++ b/drivers/pci/controller/pcie-rcar.c
+@@ -333,11 +333,12 @@ static struct pci_ops rcar_pcie_ops = {
+ };
+ 
+ static void rcar_pcie_setup_window(int win, struct rcar_pcie *pcie,
+-				   struct resource *res)
++				   struct resource_entry *window)
+ {
+ 	/* Setup PCIe address space mappings for each resource */
+ 	resource_size_t size;
+ 	resource_size_t res_start;
++	struct resource *res = window->res;
+ 	u32 mask;
+ 
+ 	rcar_pci_write_reg(pcie, 0x00000000, PCIEPTCTLR(win));
+@@ -351,9 +352,9 @@ static void rcar_pcie_setup_window(int win, struct rcar_pcie *pcie,
+ 	rcar_pci_write_reg(pcie, mask << 7, PCIEPAMR(win));
+ 
+ 	if (res->flags & IORESOURCE_IO)
+-		res_start = pci_pio_to_address(res->start);
++		res_start = pci_pio_to_address(res->start) - window->offset;
+ 	else
+-		res_start = res->start;
++		res_start = res->start - window->offset;
+ 
+ 	rcar_pci_write_reg(pcie, upper_32_bits(res_start), PCIEPAUR(win));
+ 	rcar_pci_write_reg(pcie, lower_32_bits(res_start) & ~0x7F,
+@@ -382,7 +383,7 @@ static int rcar_pcie_setup(struct list_head *resource, struct rcar_pcie *pci)
+ 		switch (resource_type(res)) {
+ 		case IORESOURCE_IO:
+ 		case IORESOURCE_MEM:
+-			rcar_pcie_setup_window(i, pci, res);
++			rcar_pcie_setup_window(i, pci, win);
+ 			i++;
+ 			break;
+ 		case IORESOURCE_BUS:
 -- 
 2.25.1
 
