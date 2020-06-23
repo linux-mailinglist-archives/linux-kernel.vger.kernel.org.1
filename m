@@ -2,57 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95525204A75
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A32AC204A73
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731057AbgFWHEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 03:04:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730854AbgFWHEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 03:04:14 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54F9C20724;
-        Tue, 23 Jun 2020 07:04:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592895854;
-        bh=dPvfCWFShgcNQ8ZHwNO6ankWGEu47Wr+NvSNZcPK7fQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=z8lWmtQ/X8MxUYf/jPoPB8o1uw/EiKLrDK98FMYHkqFbAImzFcToA8G0rufRvFRkY
-         j0Tiuen2QOBZpgzGab7oYTcxh5yhy3S+ySSuqC40lNAwrntfp1/ovg9nMTSvxDBWFA
-         VjlSUkb6PxtZmNIYcWmUzV9DrrgHFDoQAERXTu5M=
-Date:   Tue, 23 Jun 2020 15:03:49 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>
-Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: dts: imx6sll: Make ssi node name same as other
- platforms
-Message-ID: <20200623070158.GT30139@dragon>
-References: <1591094690-30514-1-git-send-email-shengjiu.wang@nxp.com>
+        id S1730989AbgFWHEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 03:04:07 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6386 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730765AbgFWHEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 03:04:07 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 14EE8C2AE916BDDE6F2F;
+        Tue, 23 Jun 2020 15:04:05 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.101) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.487.0; Tue, 23 Jun 2020
+ 15:03:59 +0800
+Subject: Re: [PATCH] cpufreq: cppc: Reorder code and remove
+ apply_hisi_workaround variable
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>
+CC:     <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        <linux-kernel@vger.kernel.org>
+References: <b217dc843935e3f86584a73893d330fd99a4e472.1592889188.git.viresh.kumar@linaro.org>
+From:   Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Message-ID: <eeb00973-3333-747b-b75a-72360db67042@huawei.com>
+Date:   Tue, 23 Jun 2020 15:03:59 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1591094690-30514-1-git-send-email-shengjiu.wang@nxp.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <b217dc843935e3f86584a73893d330fd99a4e472.1592889188.git.viresh.kumar@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.215.101]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 02, 2020 at 06:44:50PM +0800, Shengjiu Wang wrote:
-> In imx6sll.dtsi, the ssi node name is different with other
-> platforms (imx6qdl, imx6sl, imx6sx), but the
-> sound/soc/fsl/fsl-asoc-card.c machine driver needs to check
-> ssi node name for audmux configuration, then different ssi
-> node name causes issue on imx6sll platform.
-> 
-> So we change ssi node name to make all platforms have same
-> name.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Hi Viresh,
 
-Applied, thanks.
+On 2020/6/23 13:15, Viresh Kumar wrote:
+> With the current approach we have an extra check in the
+> cppc_cpufreq_get_rate() callback, which checks if hisilicon's get rate
+> implementation should be used instead. While it works fine, the approach
+> isn't very straight forward, over that we have an extra check in the
+> routine.
+> 
+> Rearrange code and update the cpufreq driver's get() callback pointer
+> directly for the hisilicon case. This gets the extra variable is removed
+> and the extra check isn't required anymore as well.
+> 
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+> Xiongfeng Wang, will it be possible for you to give this a try as I
+> can't really test it locally.
+
+I have tested it on D05. It works well.
+
+Tested-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+
+
+Thanks,
+Xiongfeng
+
+> 
+>  drivers/cpufreq/cppc_cpufreq.c | 91 ++++++++++++++++------------------
+>  1 file changed, 42 insertions(+), 49 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
+> index 257d726a4456..03a21daddbec 100644
+> --- a/drivers/cpufreq/cppc_cpufreq.c
+> +++ b/drivers/cpufreq/cppc_cpufreq.c
+> @@ -45,8 +45,6 @@ struct cppc_workaround_oem_info {
+>  	u32 oem_revision;
+>  };
+>  
+> -static bool apply_hisi_workaround;
+> -
+>  static struct cppc_workaround_oem_info wa_info[] = {
+>  	{
+>  		.oem_id		= "HISI  ",
+> @@ -59,50 +57,6 @@ static struct cppc_workaround_oem_info wa_info[] = {
+>  	}
+>  };
+>  
+> -static unsigned int cppc_cpufreq_perf_to_khz(struct cppc_cpudata *cpu,
+> -					unsigned int perf);
+> -
+> -/*
+> - * HISI platform does not support delivered performance counter and
+> - * reference performance counter. It can calculate the performance using the
+> - * platform specific mechanism. We reuse the desired performance register to
+> - * store the real performance calculated by the platform.
+> - */
+> -static unsigned int hisi_cppc_cpufreq_get_rate(unsigned int cpunum)
+> -{
+> -	struct cppc_cpudata *cpudata = all_cpu_data[cpunum];
+> -	u64 desired_perf;
+> -	int ret;
+> -
+> -	ret = cppc_get_desired_perf(cpunum, &desired_perf);
+> -	if (ret < 0)
+> -		return -EIO;
+> -
+> -	return cppc_cpufreq_perf_to_khz(cpudata, desired_perf);
+> -}
+> -
+> -static void cppc_check_hisi_workaround(void)
+> -{
+> -	struct acpi_table_header *tbl;
+> -	acpi_status status = AE_OK;
+> -	int i;
+> -
+> -	status = acpi_get_table(ACPI_SIG_PCCT, 0, &tbl);
+> -	if (ACPI_FAILURE(status) || !tbl)
+> -		return;
+> -
+> -	for (i = 0; i < ARRAY_SIZE(wa_info); i++) {
+> -		if (!memcmp(wa_info[i].oem_id, tbl->oem_id, ACPI_OEM_ID_SIZE) &&
+> -		    !memcmp(wa_info[i].oem_table_id, tbl->oem_table_id, ACPI_OEM_TABLE_ID_SIZE) &&
+> -		    wa_info[i].oem_revision == tbl->oem_revision) {
+> -			apply_hisi_workaround = true;
+> -			break;
+> -		}
+> -	}
+> -
+> -	acpi_put_table(tbl);
+> -}
+> -
+>  /* Callback function used to retrieve the max frequency from DMI */
+>  static void cppc_find_dmi_mhz(const struct dmi_header *dm, void *private)
+>  {
+> @@ -402,9 +356,6 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpunum)
+>  	struct cppc_cpudata *cpu = all_cpu_data[cpunum];
+>  	int ret;
+>  
+> -	if (apply_hisi_workaround)
+> -		return hisi_cppc_cpufreq_get_rate(cpunum);
+> -
+>  	ret = cppc_get_perf_ctrs(cpunum, &fb_ctrs_t0);
+>  	if (ret)
+>  		return ret;
+> @@ -455,6 +406,48 @@ static struct cpufreq_driver cppc_cpufreq_driver = {
+>  	.name = "cppc_cpufreq",
+>  };
+>  
+> +/*
+> + * HISI platform does not support delivered performance counter and
+> + * reference performance counter. It can calculate the performance using the
+> + * platform specific mechanism. We reuse the desired performance register to
+> + * store the real performance calculated by the platform.
+> + */
+> +static unsigned int hisi_cppc_cpufreq_get_rate(unsigned int cpunum)
+> +{
+> +	struct cppc_cpudata *cpudata = all_cpu_data[cpunum];
+> +	u64 desired_perf;
+> +	int ret;
+> +
+> +	ret = cppc_get_desired_perf(cpunum, &desired_perf);
+> +	if (ret < 0)
+> +		return -EIO;
+> +
+> +	return cppc_cpufreq_perf_to_khz(cpudata, desired_perf);
+> +}
+> +
+> +static void cppc_check_hisi_workaround(void)
+> +{
+> +	struct acpi_table_header *tbl;
+> +	acpi_status status = AE_OK;
+> +	int i;
+> +
+> +	status = acpi_get_table(ACPI_SIG_PCCT, 0, &tbl);
+> +	if (ACPI_FAILURE(status) || !tbl)
+> +		return;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(wa_info); i++) {
+> +		if (!memcmp(wa_info[i].oem_id, tbl->oem_id, ACPI_OEM_ID_SIZE) &&
+> +		    !memcmp(wa_info[i].oem_table_id, tbl->oem_table_id, ACPI_OEM_TABLE_ID_SIZE) &&
+> +		    wa_info[i].oem_revision == tbl->oem_revision) {
+> +			/* Overwrite the get() callback */
+> +			cppc_cpufreq_driver.get = hisi_cppc_cpufreq_get_rate;
+> +			break;
+> +		}
+> +	}
+> +
+> +	acpi_put_table(tbl);
+> +}
+> +
+>  static int __init cppc_cpufreq_init(void)
+>  {
+>  	int i, ret = 0;
+> 
+
