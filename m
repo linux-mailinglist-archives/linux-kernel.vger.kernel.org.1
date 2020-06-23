@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F631205F3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E14205FEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390155AbgFWUay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:30:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49928 "EHLO mail.kernel.org"
+        id S2391895AbgFWUhv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:37:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32946 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391026AbgFWU3t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:29:49 -0400
+        id S2389931AbgFWUhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:37:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3A93206C3;
-        Tue, 23 Jun 2020 20:29:48 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 52AD720781;
+        Tue, 23 Jun 2020 20:37:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944189;
-        bh=Z4g01D/Ys5Kk7CGpGOkwVsmgrOaLnGIqNdtXtrjgml0=;
+        s=default; t=1592944659;
+        bh=ZIL0HgmfwPJtXldmiev5Ked/x3oNohzoKFZIzXOlS4w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a2JAQYpwSJQ+vAC+LWouILwMWQele0H1QINmez3DgfBgQbtD6ItNrcEAd1lQtQbz7
-         JsMa2MjrdlVbXwTli3AKrjohGok22rftJJQpXVYDkR0gmGXsTQQ5o3KugjWA7XVlWr
-         CO9rb+T1N56x+L5XGtwExJ6jX/RYds4nOhC1ylAI=
+        b=xKs+hT36ro6RAiUHNSNsu9z4pfjFM6i7iXOGGDUhsZww9uGlNCQCt/J0eIsGJsbYy
+         XJ1gEaGtLFh1K7iN8jhi+ZytZ9hBFtlIv5sOTOMaUFROrjyAjdw1pgdiA2+DYp3DMF
+         gb6XPM2uaZCNKFlCk3f6HUL1Q1ouN04W0NII/aFw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Stafford Horne <shorne@gmail.com>,
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 208/314] openrisc: Fix issue with argument clobbering for clone/fork
-Date:   Tue, 23 Jun 2020 21:56:43 +0200
-Message-Id: <20200623195348.840241833@linuxfoundation.org>
+Subject: [PATCH 4.19 076/206] power: supply: lp8788: Fix an error handling path in lp8788_charger_probe()
+Date:   Tue, 23 Jun 2020 21:56:44 +0200
+Message-Id: <20200623195320.685021999@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,46 +45,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stafford Horne <shorne@gmail.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-[ Upstream commit 6bd140e14d9aaa734ec37985b8b20a96c0ece948 ]
+[ Upstream commit 934ed3847a4ebc75b655659c4d2349ba4337941c ]
 
-Working on the OpenRISC glibc port I found that sometimes clone was
-working strange.  That the tls data argument sent in r7 was always
-wrong.  Further investigation revealed that the arguments were getting
-clobbered in the entry code.  This patch removes the code that writes to
-the argument registers.  This was likely due to some old code hanging
-around.
+In the probe function, in case of error, resources allocated in
+'lp8788_setup_adc_channel()' must be released.
 
-This patch fixes this up for clone and fork.  This fork clobber is
-harmless but also useless so remove.
+This can be achieved easily by using the devm_ variant of
+'iio_channel_get()'.
+This has the extra benefit to simplify the remove function and to axe the
+'lp8788_release_adc_channel()' function which is now useless.
 
-Signed-off-by: Stafford Horne <shorne@gmail.com>
+Fixes: 98a276649358 ("power_supply: Add new lp8788 charger driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/openrisc/kernel/entry.S | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/power/supply/lp8788-charger.c | 18 ++----------------
+ 1 file changed, 2 insertions(+), 16 deletions(-)
 
-diff --git a/arch/openrisc/kernel/entry.S b/arch/openrisc/kernel/entry.S
-index e4a78571f8833..c6481cfc5220f 100644
---- a/arch/openrisc/kernel/entry.S
-+++ b/arch/openrisc/kernel/entry.S
-@@ -1166,13 +1166,13 @@ ENTRY(__sys_clone)
- 	l.movhi	r29,hi(sys_clone)
- 	l.ori	r29,r29,lo(sys_clone)
- 	l.j	_fork_save_extra_regs_and_call
--	 l.addi	r7,r1,0
-+	 l.nop
+diff --git a/drivers/power/supply/lp8788-charger.c b/drivers/power/supply/lp8788-charger.c
+index 0f3432795f3c2..b8f7dac7ac3fe 100644
+--- a/drivers/power/supply/lp8788-charger.c
++++ b/drivers/power/supply/lp8788-charger.c
+@@ -600,27 +600,14 @@ static void lp8788_setup_adc_channel(struct device *dev,
+ 		return;
  
- ENTRY(__sys_fork)
- 	l.movhi	r29,hi(sys_fork)
- 	l.ori	r29,r29,lo(sys_fork)
- 	l.j	_fork_save_extra_regs_and_call
--	 l.addi	r3,r1,0
-+	 l.nop
+ 	/* ADC channel for battery voltage */
+-	chan = iio_channel_get(dev, pdata->adc_vbatt);
++	chan = devm_iio_channel_get(dev, pdata->adc_vbatt);
+ 	pchg->chan[LP8788_VBATT] = IS_ERR(chan) ? NULL : chan;
  
- ENTRY(sys_rt_sigreturn)
- 	l.jal	_sys_rt_sigreturn
+ 	/* ADC channel for battery temperature */
+-	chan = iio_channel_get(dev, pdata->adc_batt_temp);
++	chan = devm_iio_channel_get(dev, pdata->adc_batt_temp);
+ 	pchg->chan[LP8788_BATT_TEMP] = IS_ERR(chan) ? NULL : chan;
+ }
+ 
+-static void lp8788_release_adc_channel(struct lp8788_charger *pchg)
+-{
+-	int i;
+-
+-	for (i = 0; i < LP8788_NUM_CHG_ADC; i++) {
+-		if (!pchg->chan[i])
+-			continue;
+-
+-		iio_channel_release(pchg->chan[i]);
+-		pchg->chan[i] = NULL;
+-	}
+-}
+-
+ static ssize_t lp8788_show_charger_status(struct device *dev,
+ 				struct device_attribute *attr, char *buf)
+ {
+@@ -747,7 +734,6 @@ static int lp8788_charger_remove(struct platform_device *pdev)
+ 	lp8788_irq_unregister(pdev, pchg);
+ 	sysfs_remove_group(&pdev->dev.kobj, &lp8788_attr_group);
+ 	lp8788_psy_unregister(pchg);
+-	lp8788_release_adc_channel(pchg);
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
