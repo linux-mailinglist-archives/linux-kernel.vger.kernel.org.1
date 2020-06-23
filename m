@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 732B5206696
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:53:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96D57206576
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:50:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393905AbgFWVo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:44:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38828 "EHLO mail.kernel.org"
+        id S2388088AbgFWUDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:03:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387721AbgFWUBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:01:55 -0400
+        id S2388067AbgFWUDi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:03:38 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1ACB42082F;
-        Tue, 23 Jun 2020 20:01:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E030A20EDD;
+        Tue, 23 Jun 2020 20:03:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942514;
-        bh=c9yhaVZFte8aBxpo53S69FcOzc9qCJlyf9/NVLNDsxU=;
+        s=default; t=1592942617;
+        bh=y+hdL9e6h+jVf+mXjOQ4AGF2MWv20bPcWichUI1CHMk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VFlZNJeQWrVxF+mrLQIgiO7F0egdpHRWuThkqIHtWTlaJDpWzVu5inuzOoegjSAqq
-         3zL/uJ7KFbvV+dvwF+SDkONdx4iv0pdj4vL4wbR3OTLbiMfHc3WZ2TnPrxnlZ3koA6
-         eE5xfNzmEOuDNPyffG2px2aAql/smoRKNSdj7aFo=
+        b=gEKIh7wzEYIGoz5Io7EiUto8cEcpGoPogDjJ7i2c2gDuW122S/kGS3eI6LMOI6SL0
+         MkbKSVjkZinczt8+MfJAwxkznaNHBTJ7wFf73DwW/CBH5xzLISgkgSUNNkePErsq4G
+         RuyDrggttirME58RsbxPuRtjNfIIi2S1eipNZGwE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Roman Bolshakov <r.bolshakov@yadro.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Viacheslav Dubeyko <v.dubeiko@yadro.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 028/477] scsi: qla2xxx: Fix issue with adapters stopping state
-Date:   Tue, 23 Jun 2020 21:50:25 +0200
-Message-Id: <20200623195408.933391595@linuxfoundation.org>
+Subject: [PATCH 5.7 038/477] clk: samsung: Mark top ISP and CAM clocks on Exynos542x as critical
+Date:   Tue, 23 Jun 2020 21:50:35 +0200
+Message-Id: <20200623195409.401629319@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -46,89 +46,90 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Viacheslav Dubeyko <v.dubeiko@yadro.com>
+From: Marek Szyprowski <m.szyprowski@samsung.com>
 
-[ Upstream commit 803e45550b11c8e43d89812356fe6f105adebdf9 ]
+[ Upstream commit e47bd937e602bb4379546095d1bd0b9871fa60c2 ]
 
-The goal of the following command sequence is to restart the adapter.
-However, the tgt_stop flag remains set, indicating that the adapter is
-still in stopping state even after re-enabling it.
+The TOP 'aclk*_isp', 'aclk550_cam', 'gscl_wa' and 'gscl_wb' clocks must
+be kept enabled all the time to allow proper access to power management
+control for the ISP and CAM power domains. The last two clocks, although
+related to GScaler device and GSCL power domain, provides also the
+I_WRAP_CLK signal to MIPI CSIS0/1 devices, which are a part of CAM power
+domain and are needed for proper power on/off sequence.
 
-echo 0x7fffffff > /sys/module/qla2xxx/parameters/logging
-modprobe target_core_mod
-modprobe tcm_qla2xxx
-mkdir /sys/kernel/config/target/qla2xxx
-mkdir /sys/kernel/config/target/qla2xxx/<port-name>
-mkdir /sys/kernel/config/target/qla2xxx/<port-name>/tpgt_1
-echo 1 > /sys/kernel/config/target/qla2xxx/<port-name>/tpgt_1/enable
-echo 0 > /sys/kernel/config/target/qla2xxx/<port-name>/tpgt_1/enable
-echo 1 > /sys/kernel/config/target/qla2xxx/<port-name>/tpgt_1/enable
+Currently there are no drivers for the devices, which are part of CAM and
+ISP power domains yet. This patch only fixes the race between disabling
+the unused power domains and disabling unused clocks, which randomly
+resulted in the following error during boot:
 
-kernel: PID 1396:qla_target.c:1555 qlt_stop_phase1(): tgt_stop 0x0, tgt_stopped 0x0
-kernel: qla2xxx [0001:00:02.0]-e803:1: PID 1396:qla_target.c:1567: Stopping target for host 1(c0000000033557e8)
-kernel: PID 1396:qla_target.c:1579 qlt_stop_phase1(): tgt_stop 0x1, tgt_stopped 0x0
-kernel: PID 1396:qla_target.c:1266 qlt_schedule_sess_for_deletion(): tgt_stop 0x1, tgt_stopped 0x0
-kernel: qla2xxx [0001:00:02.0]-e801:1: PID 1396:qla_target.c:1316: Scheduling sess c00000002d5cd800 for deletion 21:00:00:24:ff:7f:35:c7
-<skipped>
-kernel: qla2xxx [0001:00:02.0]-290a:1: PID 340:qla_target.c:1187: qlt_unreg_sess sess c00000002d5cd800 for deletion 21:00:00:24:ff:7f:35:c7
-<skipped>
-kernel: qla2xxx [0001:00:02.0]-f801:1: PID 340:qla_target.c:1145: Unregistration of sess c00000002d5cd800 21:00:00:24:ff:7f:35:c7 finished fcp_cnt 0
-kernel: PID 340:qla_target.c:1155 qlt_free_session_done(): tgt_stop 0x1, tgt_stopped 0x0
-kernel: qla2xxx [0001:00:02.0]-4807:1: PID 346:qla_os.c:6329: ISP abort scheduled.
-<skipped>
-kernel: qla2xxx [0001:00:02.0]-28f1:1: PID 346:qla_os.c:3956: Mark all dev lost
-kernel: PID 346:qla_target.c:1266 qlt_schedule_sess_for_deletion(): tgt_stop 0x1, tgt_stopped 0x0
-kernel: qla2xxx [0001:00:02.0]-4808:1: PID 346:qla_os.c:6338: ISP abort end.
-<skipped>
-kernel: PID 1396:qla_target.c:6812 qlt_enable_vha(): tgt_stop 0x1, tgt_stopped 0x0
-<skipped>
-kernel: qla2xxx [0001:00:02.0]-4807:1: PID 346:qla_os.c:6329: ISP abort scheduled.
-<skipped>
-kernel: qla2xxx [0001:00:02.0]-4808:1: PID 346:qla_os.c:6338: ISP abort end.
+Power domain CAM disable failed
+Power domain ISP disable failed
 
-qlt_handle_cmd_for_atio() rejects the request to send commands because the
-adapter is in the stopping state:
-
-kernel: PID 0:qla_target.c:4442 qlt_handle_cmd_for_atio(): tgt_stop 0x1, tgt_stopped 0x0
-kernel: qla2xxx [0001:00:02.0]-3861:1: PID 0:qla_target.c:4447: New command while device c000000005314600 is shutting down
-kernel: qla2xxx [0001:00:02.0]-e85f:1: PID 0:qla_target.c:5728: qla_target: Unable to send command to target
-
-This patch calls qla_stop_phase2() in addition to qlt_stop_phase1() in
-tcm_qla2xxx_tpg_enable_store() and tcm_qla2xxx_npiv_tpg_enable_store(). The
-qlt_stop_phase1() marks adapter as stopping (tgt_stop == 0x1, tgt_stopped
-== 0x0) but qlt_stop_phase2() marks adapter as stopped (tgt_stop == 0x0,
-tgt_stopped == 0x1).
-
-Link: https://lore.kernel.org/r/52be1e8a3537f6c5407eae3edd4c8e08a9545ea5.camel@yadro.com
-Reviewed-by: Roman Bolshakov <r.bolshakov@yadro.com>
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Viacheslav Dubeyko <v.dubeiko@yadro.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Fixes: 318fa46cc60d ("clk/samsung: exynos542x: mark some clocks as critical")
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+Signed-off-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/tcm_qla2xxx.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/clk/samsung/clk-exynos5420.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/tcm_qla2xxx.c b/drivers/scsi/qla2xxx/tcm_qla2xxx.c
-index 1f0a185b2a957..bf00ae16b4873 100644
---- a/drivers/scsi/qla2xxx/tcm_qla2xxx.c
-+++ b/drivers/scsi/qla2xxx/tcm_qla2xxx.c
-@@ -949,6 +949,7 @@ static ssize_t tcm_qla2xxx_tpg_enable_store(struct config_item *item,
+diff --git a/drivers/clk/samsung/clk-exynos5420.c b/drivers/clk/samsung/clk-exynos5420.c
+index c9e5a1fb66539..edb2363c735af 100644
+--- a/drivers/clk/samsung/clk-exynos5420.c
++++ b/drivers/clk/samsung/clk-exynos5420.c
+@@ -540,7 +540,7 @@ static const struct samsung_div_clock exynos5800_div_clks[] __initconst = {
  
- 		atomic_set(&tpg->lport_tpg_enabled, 0);
- 		qlt_stop_phase1(vha->vha_tgt.qla_tgt);
-+		qlt_stop_phase2(vha->vha_tgt.qla_tgt);
- 	}
- 
- 	return count;
-@@ -1111,6 +1112,7 @@ static ssize_t tcm_qla2xxx_npiv_tpg_enable_store(struct config_item *item,
- 
- 		atomic_set(&tpg->lport_tpg_enabled, 0);
- 		qlt_stop_phase1(vha->vha_tgt.qla_tgt);
-+		qlt_stop_phase2(vha->vha_tgt.qla_tgt);
- 	}
- 
- 	return count;
+ static const struct samsung_gate_clock exynos5800_gate_clks[] __initconst = {
+ 	GATE(CLK_ACLK550_CAM, "aclk550_cam", "mout_user_aclk550_cam",
+-				GATE_BUS_TOP, 24, 0, 0),
++				GATE_BUS_TOP, 24, CLK_IS_CRITICAL, 0),
+ 	GATE(CLK_ACLK432_SCALER, "aclk432_scaler", "mout_user_aclk432_scaler",
+ 				GATE_BUS_TOP, 27, CLK_IS_CRITICAL, 0),
+ };
+@@ -943,25 +943,25 @@ static const struct samsung_gate_clock exynos5x_gate_clks[] __initconst = {
+ 	GATE(0, "aclk300_jpeg", "mout_user_aclk300_jpeg",
+ 			GATE_BUS_TOP, 4, CLK_IGNORE_UNUSED, 0),
+ 	GATE(0, "aclk333_432_isp0", "mout_user_aclk333_432_isp0",
+-			GATE_BUS_TOP, 5, 0, 0),
++			GATE_BUS_TOP, 5, CLK_IS_CRITICAL, 0),
+ 	GATE(0, "aclk300_gscl", "mout_user_aclk300_gscl",
+ 			GATE_BUS_TOP, 6, CLK_IS_CRITICAL, 0),
+ 	GATE(0, "aclk333_432_gscl", "mout_user_aclk333_432_gscl",
+ 			GATE_BUS_TOP, 7, CLK_IGNORE_UNUSED, 0),
+ 	GATE(0, "aclk333_432_isp", "mout_user_aclk333_432_isp",
+-			GATE_BUS_TOP, 8, 0, 0),
++			GATE_BUS_TOP, 8, CLK_IS_CRITICAL, 0),
+ 	GATE(CLK_PCLK66_GPIO, "pclk66_gpio", "mout_user_pclk66_gpio",
+ 			GATE_BUS_TOP, 9, CLK_IGNORE_UNUSED, 0),
+ 	GATE(0, "aclk66_psgen", "mout_user_aclk66_psgen",
+ 			GATE_BUS_TOP, 10, CLK_IGNORE_UNUSED, 0),
+ 	GATE(0, "aclk266_isp", "mout_user_aclk266_isp",
+-			GATE_BUS_TOP, 13, 0, 0),
++			GATE_BUS_TOP, 13, CLK_IS_CRITICAL, 0),
+ 	GATE(0, "aclk166", "mout_user_aclk166",
+ 			GATE_BUS_TOP, 14, CLK_IGNORE_UNUSED, 0),
+ 	GATE(CLK_ACLK333, "aclk333", "mout_user_aclk333",
+ 			GATE_BUS_TOP, 15, CLK_IS_CRITICAL, 0),
+ 	GATE(0, "aclk400_isp", "mout_user_aclk400_isp",
+-			GATE_BUS_TOP, 16, 0, 0),
++			GATE_BUS_TOP, 16, CLK_IS_CRITICAL, 0),
+ 	GATE(0, "aclk400_mscl", "mout_user_aclk400_mscl",
+ 			GATE_BUS_TOP, 17, CLK_IS_CRITICAL, 0),
+ 	GATE(0, "aclk200_disp1", "mout_user_aclk200_disp1",
+@@ -1161,8 +1161,10 @@ static const struct samsung_gate_clock exynos5x_gate_clks[] __initconst = {
+ 			GATE_IP_GSCL1, 3, 0, 0),
+ 	GATE(CLK_SMMU_FIMCL1, "smmu_fimcl1", "dout_gscl_blk_333",
+ 			GATE_IP_GSCL1, 4, 0, 0),
+-	GATE(CLK_GSCL_WA, "gscl_wa", "sclk_gscl_wa", GATE_IP_GSCL1, 12, 0, 0),
+-	GATE(CLK_GSCL_WB, "gscl_wb", "sclk_gscl_wb", GATE_IP_GSCL1, 13, 0, 0),
++	GATE(CLK_GSCL_WA, "gscl_wa", "sclk_gscl_wa", GATE_IP_GSCL1, 12,
++			CLK_IS_CRITICAL, 0),
++	GATE(CLK_GSCL_WB, "gscl_wb", "sclk_gscl_wb", GATE_IP_GSCL1, 13,
++			CLK_IS_CRITICAL, 0),
+ 	GATE(CLK_SMMU_FIMCL3, "smmu_fimcl3,", "dout_gscl_blk_333",
+ 			GATE_IP_GSCL1, 16, 0, 0),
+ 	GATE(CLK_FIMC_LITE3, "fimc_lite3", "aclk333_432_gscl",
 -- 
 2.25.1
 
