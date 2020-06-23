@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F9342045E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9E02045CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:37:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732293AbgFWAjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:39:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33634 "EHLO mail.kernel.org"
+        id S1732054AbgFWAhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:37:39 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:56403 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731995AbgFWAhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:37:55 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1731561AbgFWAhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:37:39 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2497D20936;
-        Tue, 23 Jun 2020 00:37:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592872675;
-        bh=PxYsx88Gz1U3tOSWgsTPU520MKLsJbobf53NrQp8E0A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1Bn8IkRHkpOZqVE2Equ7vDng7mjVUuFEWHkF1bmhkNpOPsFb4FFrkOo3nBB6Fz74J
-         VPzFRnpX4fkkiMIm1s82oQN2TlR8BrYf7yhTu6RZyENdpULaIDXyR8zonF8US0MoJZ
-         b8ZGn/jZw3KdMoL5h4UV7yoM71wBnAd7rsUypIwM=
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, dipankar@in.ibm.com,
-        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
-        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
-        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 06/23] rcutorture: Handle non-statistic bang-string error messages
-Date:   Mon, 22 Jun 2020 17:37:35 -0700
-Message-Id: <20200623003752.26872-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20200623003731.GA26717@paulmck-ThinkPad-P72>
-References: <20200623003731.GA26717@paulmck-ThinkPad-P72>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 49rS6T0qbfz9sSt;
+        Tue, 23 Jun 2020 10:37:36 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1592872657;
+        bh=NZqT5bS2Rh6HY0CP0buqQsJbSrojqYPVMmdLrrrsScU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gjWQI/elsOZdMHXyz52dnNsBmx51USIVGMHGeGxcyszyHPzn2kSqBd9CBZfsTlrBZ
+         6L3Ucbv+pZt4xwDpaMVc8K5VjqN+F8WH1rbYMAWOXqav0JUdz9HYbfthUhEQQMab/Q
+         /gg3tEgLBWOuEzzG8JNXudVU8WMXsDWKf0xMJeufrRh4mHKVyCOAESiUm12TVSeU10
+         qCoyxVzkFZRTUYYdP9occweENytPToynmGZd8Gyp96sMtIMcUakndKfUy7PJ+htDCx
+         k3JZ+ItYDIiClUppwWALLq+uySt/QottphhrSNHyfiv6pICSiLG7hKl+xKVw+dltae
+         +CqFUAGXwdcQQ==
+Date:   Tue, 23 Jun 2020 10:37:36 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: linux-next: build failures after merge of the hid tree
+Message-ID: <20200623103736.25f67de5@canb.auug.org.au>
+In-Reply-To: <20200621140421.7f4552df@canb.auug.org.au>
+References: <20200621140421.7f4552df@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/r0BhmJh8XwjSmoAN4kUieic";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+--Sig_/r0BhmJh8XwjSmoAN4kUieic
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The current console parsing assumes that console lines containing "!!!"
-are statistics lines from which it can parse the number of rcutorture
-too-short grace-period failures.  This prints confusing output for
-other problems, including memory exhaustion.  This commit therefore
-differentiates between these cases and prints an appropriate error string.
+Hi all,
 
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- .../testing/selftests/rcutorture/bin/parse-console.sh  | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+On Sun, 21 Jun 2020 14:04:21 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> After merging the hid tree, today's linux-next build (x86_64 allmodconfig)
+> failed like this:
+>=20
+> drivers/hid/intel-ish-hid/ipc/ipc.c:12:10: fatal error: client.h: No such=
+ file or directory
+>    12 | #include "client.h"
+>       |          ^~~~~~~~~~
+> drivers/hid/intel-ish-hid/ipc/pci-ish.c:22:10: fatal error: ishtp-dev.h: =
+No such file or directory
+>    22 | #include "ishtp-dev.h"
+>       |          ^~~~~~~~~~~~~
+>=20
+> I don't know what caused it, but commit
+>=20
+>   470376737e88 ("HID: allow building hid.ko as an external module")
+>=20
+> did not fix it.  BTW, I build with "make O=3D...".
+>=20
+> I have used the hid tree from next-20200618 for today.
+>=20
+> BTW, the hid tree really needs cleaning up, it contains merge commits dat=
+ing
+> back to April 2018 :-(
+>=20
+> $ git rev-list --count origin/master..hid/for-next
+> 301
+> $ git rev-list --no-merges --count origin/master..hid/for-next
+> 12
 
-diff --git a/tools/testing/selftests/rcutorture/bin/parse-console.sh b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-index 4bf62d7..1c64ca8 100755
---- a/tools/testing/selftests/rcutorture/bin/parse-console.sh
-+++ b/tools/testing/selftests/rcutorture/bin/parse-console.sh
-@@ -44,11 +44,23 @@ then
- 		tail -1 |
- 		awk '
- 		{
--			for (i=NF-8;i<=NF;i++)
-+			normalexit = 1;
-+			for (i=NF-8;i<=NF;i++) {
-+				if (i <= 0 || i !~ /^[0-9]*$/) {
-+					bangstring = $0;
-+					gsub(/^\[[^]]*] /, "", bangstring);
-+					print bangstring;
-+					normalexit = 0;
-+					exit 0;
-+				}
- 				sum+=$i;
-+			}
- 		}
--		END { print sum }'`
--		print_bug $title FAILURE, $nerrs instances
-+		END {
-+			if (normalexit)
-+				print sum " instances"
-+		}'`
-+		print_bug $title FAILURE, $nerrs
- 		exit
- 	fi
- 
--- 
-2.9.5
+I am still getting this failure.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/r0BhmJh8XwjSmoAN4kUieic
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7xTtAACgkQAVBC80lX
+0Gx9NQf9HttFKOyGy4QqOOa7kopotlmlyjk9LD8gJTmMnWMAg5iyTQbOqM0bRCwp
+ia3LydeeeO+M9bP6/+4O1qfLX4iqc+ETS8m/Av+kXePEE9abyTGzn1sxnCKuHK+P
++xgkAyxiTPgOPVYerFDwIaDKqgJ5WWO813wCIZk3z6ymik+iPBEnbJvolT3dVLJl
+1DeNYc2YhBaXW8ppzkz5IGpuYrb7CAF2QdaoTdLImPgow3exw4rCp595awDzk/i1
++jETcnzQZYkDtvCI7KwF/HjQS4S/NYUzadhHAI10dNHMJOVmHgzleR6qMWR5ULBO
+lJAIpiQrObSMx8zyoqOjGVHaNimoMg==
+=uACl
+-----END PGP SIGNATURE-----
+
+--Sig_/r0BhmJh8XwjSmoAN4kUieic--
