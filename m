@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBAD12060B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABD9206064
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392775AbgFWUpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:45:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43150 "EHLO mail.kernel.org"
+        id S2392419AbgFWUmZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:42:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390937AbgFWUpg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:45:36 -0400
+        id S2392401AbgFWUmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:42:16 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2B21520836;
-        Tue, 23 Jun 2020 20:45:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D90572070E;
+        Tue, 23 Jun 2020 20:42:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592945136;
-        bh=DRFsV92GDkJasMMkP1EiCsfu8ldMUDEVDgx+9jRJSq0=;
+        s=default; t=1592944936;
+        bh=ijW5Yi1DY4mGRUjFUUIM04zNiRTEubsYkWTWBhKw7Xg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vAk4yWbubVfYRMObBPE7pvSJHHSmh2+hfvLdX4jYWmLfsSd9bY7S4+ZuBN5RP1rqK
-         gEfjF3R5YHlMMjMJ9gFf4UrCtGZcNF5yGCAZZkc9gHVeQa3eqmUmhFoV1hUOQmUu5t
-         5l15eaA8bfJGLYP2dvkJbfh+Z8lXDtZ6fccjOVr4=
+        b=05S58+p/4dO1CR8eznfBhMrDjsBW6jz0Oy/ToDqAS4OiqKo4O3fDixG7gxuG8Ow7G
+         YJpSRPG4auZT4FViAKCjHNQnzxnWDARfwUcvJEli7vY42q1saIyPRrTrTfop9HYn/k
+         5E8ivPhScqNw9iz+a0GSCiVdb3P0mJi48nX/1R2o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
-        clang-built-linux@googlegroups.com, Arnd Bergmann <arnd@arndb.de>,
-        David Teigland <teigland@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 053/136] dlm: remove BUG() before panic()
-Date:   Tue, 23 Jun 2020 21:58:29 +0200
-Message-Id: <20200623195306.347715455@linuxfoundation.org>
+        stable@vger.kernel.org,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 182/206] block: nr_sects_write(): Disable preemption on seqcount write
+Date:   Tue, 23 Jun 2020 21:58:30 +0200
+Message-Id: <20200623195325.989328764@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
-References: <20200623195303.601828702@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +45,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Ahmed S. Darwish <a.darwish@linutronix.de>
 
-[ Upstream commit fe204591cc9480347af7d2d6029b24a62e449486 ]
+[ Upstream commit 15b81ce5abdc4b502aa31dff2d415b79d2349d2f ]
 
-Building a kernel with clang sometimes fails with an objtool error in dlm:
+For optimized block readers not holding a mutex, the "number of sectors"
+64-bit value is protected from tearing on 32-bit architectures by a
+sequence counter.
 
-fs/dlm/lock.o: warning: objtool: revert_lock_pc()+0xbd: can't find jump dest instruction at .text+0xd7fc
+Disable preemption before entering that sequence counter's write side
+critical section. Otherwise, the read side can preempt the write side
+section and spin for the entire scheduler tick. If the reader belongs to
+a real-time scheduling class, it can spin forever and the kernel will
+livelock.
 
-The problem is that BUG() never returns and the compiler knows
-that anything after it is unreachable, however the panic still
-emits some code that does not get fully eliminated.
-
-Having both BUG() and panic() is really pointless as the BUG()
-kills the current process and the subsequent panic() never hits.
-In most cases, we probably don't really want either and should
-replace the DLM_ASSERT() statements with WARN_ON(), as has
-been done for some of them.
-
-Remove the BUG() here so the user at least sees the panic message
-and we can reliably build randconfig kernels.
-
-Fixes: e7fd41792fc0 ("[DLM] The core of the DLM for GFS2/CLVM")
-Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-Cc: clang-built-linux@googlegroups.com
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: David Teigland <teigland@redhat.com>
+Fixes: c83f6bf98dc1 ("block: add partition resize function to blkpg ioctl")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/dlm/dlm_internal.h | 1 -
- 1 file changed, 1 deletion(-)
+ include/linux/genhd.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/dlm/dlm_internal.h b/fs/dlm/dlm_internal.h
-index 748e8d59e6111..cb287df13a7aa 100644
---- a/fs/dlm/dlm_internal.h
-+++ b/fs/dlm/dlm_internal.h
-@@ -99,7 +99,6 @@ do { \
-                __LINE__, __FILE__, #x, jiffies); \
-     {do} \
-     printk("\n"); \
--    BUG(); \
-     panic("DLM:  Record message above and reboot.\n"); \
-   } \
- }
+diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+index f13272d843320..f993bc86f3bac 100644
+--- a/include/linux/genhd.h
++++ b/include/linux/genhd.h
+@@ -729,9 +729,11 @@ static inline sector_t part_nr_sects_read(struct hd_struct *part)
+ static inline void part_nr_sects_write(struct hd_struct *part, sector_t size)
+ {
+ #if BITS_PER_LONG==32 && defined(CONFIG_LBDAF) && defined(CONFIG_SMP)
++	preempt_disable();
+ 	write_seqcount_begin(&part->nr_sects_seq);
+ 	part->nr_sects = size;
+ 	write_seqcount_end(&part->nr_sects_seq);
++	preempt_enable();
+ #elif BITS_PER_LONG==32 && defined(CONFIG_LBDAF) && defined(CONFIG_PREEMPT)
+ 	preempt_disable();
+ 	part->nr_sects = size;
 -- 
 2.25.1
 
