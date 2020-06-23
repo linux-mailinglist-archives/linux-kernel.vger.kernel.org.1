@@ -2,106 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7257A2057A5
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4BF2057CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733222AbgFWQqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 12:46:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47478 "EHLO
+        id S2387460AbgFWQri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 12:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733145AbgFWQqI (ORCPT
+        with ESMTP id S1733052AbgFWQrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 12:46:08 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5272C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:46:07 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id d7so12036579lfi.12
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:46:07 -0700 (PDT)
+        Tue, 23 Jun 2020 12:47:36 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47383C061755;
+        Tue, 23 Jun 2020 09:47:36 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id g21so4001237wmg.0;
+        Tue, 23 Jun 2020 09:47:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+bSkao1fR/aZzYYv4AgeUsmuwtpx/y/7K+5PiaFCLy8=;
-        b=vAPFLYGu1TdA30k3D08MHCeAkwEDvRhNs6PPhjyJjuF+0UYCT9ld58PdBbl9mMkeG5
-         OaKeZnn9K3qfJSFl3Ve0o6TUQIlE/4mGqgscomjGr4wm1k1Fb0ha1jI1ct2a9w66B+Ug
-         bA8QOC5p/gjEu5cZIisWh4eQcCy5Q//aGLLlRmV9zaRlCGe6sXFl17zFIhblBNTDK/uv
-         DB7bSWFWD5Jvk88VgiGJHojELn8qUWBE4Ma00iKPUxVOq6EfaqIxw1tSh4j73A7I+rQM
-         Tfoy2Bf6YA09AkGwJuOvDlH18+GzqhmcgeMyYqBJ2At+nmhvQ+uHDDeZ1anVuZyUR6km
-         w/pA==
+        d=gmail.com; s=20161025;
+        h=date:from:to:subject:message-id:mime-version:content-disposition;
+        bh=2a8A3SZ7tBOcfEqWak8yyvM0vR1xvbK/AAfn7XUHse8=;
+        b=XaG5IS7m1eA+gI4FIsCp1abY5EaS5J4F++5cxdUwUG2r6Oj46qpLOXkCiesfyQ+75z
+         5e1kVESZ1WPd+WbF1ptJigMflNi8z0SqXlT85/Jy2hBzcQKK56SkP6qFr77pZHnkTVHU
+         og9a64+MImwd6LMEHElbEuslUPh57AbB7GqvCWjqbdwrAXyD/tMgKzx2DTeu64K4cUjJ
+         Ab295T4L4df3dCYNjJNyGD2Bnz58dIMwlJemGRZLq668ic4/wmCEsew/Di9V5GbP0z7T
+         bR7srReGDI5xCZ0am81PqoKq18wXCcaE/d9u27k0n0AMwjBJhcxh88BWphAs7Yz5thUe
+         IbsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+bSkao1fR/aZzYYv4AgeUsmuwtpx/y/7K+5PiaFCLy8=;
-        b=JXaw+D+iOJAWcQgTKCRGR0ZVISxNr7Mwa7LaVkqMoP2PKfTiUCqY+HEN5NCmw2U+fP
-         1i8bAyQfXn3pZq5XXaUqL12FPX4gUJgzsInODfhJndvc4oH7EZl610rp3W3RdBppPk/B
-         yjEv4+yCxI+VCoY/BudAa1peUjgUprr72xkDsNDz9qmKBPFReSB2jPrp1IQSS93KRxsv
-         R21g6YLQIvpDDrgwkJAoOfJDWCWLQ1zkDxQhcVxe1uAS79qwMIIt4IzlE40zoYnCV55d
-         IyNhjd3WWVNqps2jf9PdR+6Im8OCOgsD8lY5wPP2TAHx3imqFXhe+1N6rUFWRiMK9ove
-         4fKw==
-X-Gm-Message-State: AOAM53212PpZkzruND2+HdExnj8PW7AL5yNLHfoGv6FjR2TpfNJUN4eJ
-        k4ib5qeX3hPq2NwtoKOFzCKNseC0k3zbbUiIJealWQ==
-X-Google-Smtp-Source: ABdhPJyxYp3qmMEokG6vwqfhfNOtgNzGbZsd3cPd5dvqCf6z2xa0umo3bDc03vKMX148XTHkBGPB3IHs3rFkWwFJ66U=
-X-Received: by 2002:a19:be4b:: with SMTP id o72mr13004763lff.141.1592930764708;
- Tue, 23 Jun 2020 09:46:04 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
+         :content-disposition;
+        bh=2a8A3SZ7tBOcfEqWak8yyvM0vR1xvbK/AAfn7XUHse8=;
+        b=LvvCRSC9gllARgeK+p+oKgKnVhyD8YD1d3dGDidQp8/eSyh24GW9lMqHJ0ICcz9Tlr
+         TI/7VI6/GW9e8vJxukmjEiAMTpygDmofls2vD67ew5+1ZDBgjLyU+HlWaS3unrAcJ4rn
+         WvBFFFihgZ3VDbug0l9BBLhA/rE7WI8Pjb81RjP1D4TTJffZanOX6i8x71NuCpMfnk18
+         XS14vRqH4eDuqFGhgyIjRiaNf//+szsFCtnZ6xDchiEsDzUP5zFFiI8Epr+FlUSwZqDH
+         /mVA4UREh5GTACjdLDL/OLHlllLIflq8bZ2B7rvu6fNW7re9VBmYfRw4qlG3rPafwiNk
+         1dSA==
+X-Gm-Message-State: AOAM5300vQpqnPa9XAOgN5nGXCW57x+cm37upcPCbxvc/TXJL13Ex/tV
+        Z5TtMJENEV90PH+CX/3Z5YE=
+X-Google-Smtp-Source: ABdhPJxSuhZVggr1/EQ+Jrz7f0zu6OuFXAZICwjiL3Xfp9K7vXfwNBCxLQtiBy6U5aX7CEwNsEZHRQ==
+X-Received: by 2002:a1c:2485:: with SMTP id k127mr22257875wmk.138.1592930855034;
+        Tue, 23 Jun 2020 09:47:35 -0700 (PDT)
+Received: from macmini.local (181.4.199.77.rev.sfr.net. [77.199.4.181])
+        by smtp.gmail.com with ESMTPSA id d28sm25319430wrc.50.2020.06.23.09.47.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 09:47:34 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 18:47:33 +0200
+From:   Willy Wolff <willy.mh.wolff.ml@gmail.com>
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: brocken devfreq simple_ondemand for Odroid XU3/4?
+Message-ID: <20200623164733.qbhua7b6cg2umafj@macmini.local>
 MIME-Version: 1.0
-References: <20200623162958.331051-1-dima@arista.com> <20200623162958.331051-3-dima@arista.com>
-In-Reply-To: <20200623162958.331051-3-dima@arista.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Tue, 23 Jun 2020 18:45:38 +0200
-Message-ID: <CAG48ez3v9dHq1+jvPmvQapFRji=4XhA8iNurTGZeC6xoy7Qc1w@mail.gmail.com>
-Subject: Re: [PATCH 2/3] x86/dumpstack: Add log_lvl to __show_regs()
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     kernel list <linux-kernel@vger.kernel.org>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 6:30 PM Dmitry Safonov <dima@arista.com> wrote:
-> show_trace_log_lvl() provides x86 platform-specific way to unwind
-> backtrace with a given log level. Unfortunately, registers dump(s) are
-> not printed with the same log level - instead, KERN_DEFAULT is always
-> used.
->
-> Arista's switches uses quite common setup with rsyslog, where only
-> urgent messages goes to console (console_log_level=KERN_ERR), everything
-> else goes into /var/log/ as the console baud-rate often is indecently
-> slow (9600 bps).
->
-> Backtrace dumps without registers printed have proven to be as useful as
-> morning standups. Furthermore, in order to introduce KERN_UNSUPPRESSED
-> (which I believe is still the most elegant way to fix raciness of sysrq[1])
-> the log level should be passed down the stack to register dumping
-> functions. Besides, I have a potential use-case for printing traces
-> with KERN_DEBUG level [2] (where registers dump shouldn't appear with
-> higher log level).
->
-> Add log_lvl parameter to __show_regs().
-> Keep the used log level intact to separate visible change.
+Hi everybody,
 
-This change seems like a good idea to me; just one small nit:
+Is DVFS for memory bus really working on Odroid XU3/4 board?
+Using a simple microbenchmark that is doing only memory accesses, memory DVFS
+seems to not working properly:
 
-[...]
->  void show_regs(struct pt_regs *regs)
->  {
-> +       int print_kernel_regs;
-> +
->         show_regs_print_info(KERN_DEFAULT);
->
-> -       __show_regs(regs, user_mode(regs) ? SHOW_REGS_USER : SHOW_REGS_ALL);
-> +       print_kernel_regs = user_mode(regs) ? SHOW_REGS_USER : SHOW_REGS_ALL;
-> +       __show_regs(regs, print_kernel_regs, KERN_DEFAULT);
+The microbenchmark is doing pointer chasing by following index in an array.
+Indices in the array are set to follow a random pattern (cutting prefetcher),
+and forcing RAM access.
 
-print_kernel_regs should probably have type "enum show_regs_mode"?
+git clone https://github.com/wwilly/benchmark.git \
+  && cd benchmark \
+  && source env.sh \
+  && ./bench_build.sh \
+  && bash source/scripts/test_dvfs_mem.sh
+
+Python 3, cmake and sudo rights are required.
+
+Results:
+DVFS CPU with performance governor
+mem_gov = simple_ondemand at 165000000 Hz in idle, should be bumped when the
+benchmark is running.
+- on the LITTLE cluster it takes 4.74308 s to run (683.004 c per memory access),
+- on the big cluster it takes 4.76556 s to run (980.343 c per moemory access).
+
+While forcing DVFS memory bus to use performance governor,
+mem_gov = performance at 825000000 Hz in idle,
+- on the LITTLE cluster it takes 1.1451 s to run (164.894 c per memory access),
+- on the big cluster it takes 1.18448 s to run (243.664 c per memory access).
+
+The kernel used is the last 5.7.5 stable with default exynos_defconfig.
+
+Cheers,
+Willy
