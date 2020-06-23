@@ -2,107 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C0620683A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 01:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 516AF206832
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 01:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388004AbgFWXWF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 19:22:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52166 "EHLO
+        id S2387914AbgFWXUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 19:20:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387713AbgFWXWE (ORCPT
+        with ESMTP id S2387495AbgFWXUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 19:22:04 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13422C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 16:22:03 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id g12so136201pll.10
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 16:22:03 -0700 (PDT)
+        Tue, 23 Jun 2020 19:20:04 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBADC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 16:20:04 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b16so139298pfi.13
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 16:20:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=CuB8LyKWU3gQTO8KTHP4chGB4nHsVZRexxd8DJQlhT4=;
-        b=RdFfuEeBS/PDR2M6Vg8ybL7SXg24nMU7l0WJ9uLHmp+KqG8z51R72UWFRIZNk4J0gs
-         f8ko8Zir2Wai94W3DHoFg9LiKrKzWpqC07baNkPSxTXV17wW1Jcqf4E/dJ2x+lqPAEEa
-         SiPQhg2ZTI5r3jjpJsH/aQyLLsLMydKItNVxpNoigHSu/oeqGAtd2p7WxxXGb7KzTgGo
-         QbTL+yEu2CeEGnmet0gGQO7rCFWnf8UcRoQtCTTBKL4gCFoS9K74THN26JtRRvlBRCpm
-         A11gWfspW9Z49mLEnHJCOR5k+YWBYSPdxn5N2j8zuIvLJFakw0WlbF4XvZUUgfiiqYju
-         jZAg==
+        bh=7tx/9GfFI7meR7LlrVVqfR+HUCYTsfN81Kg3AevbFnU=;
+        b=Ymp3VmY/jWQoNF1OijqrwQWLfqZZJQEhU9+l6gNLrtWBGVoAMI7RQcQRFuauEjc99x
+         aE/ExujAIxh+aXho7etdyLRSbGqmtb9LKfqArgPdy5VNfWk66rfi0j6sDEzCu7AXgBwF
+         0BfAKQfyhyoQ/uH9W4TLvi7RU/V8V4eZwdaQA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=CuB8LyKWU3gQTO8KTHP4chGB4nHsVZRexxd8DJQlhT4=;
-        b=JAqFtVCpS+pTj01hcEf6sF/LpXEv65NcxrydHygLCWeTifGDf+YvwFMkuVGMUjcvpd
-         WkW/AfdtRi2am20WTCCRcY15lJdBgf/F/XYP57YHY7a5cFzdYq+WaCDKLm+JbvWIOPYB
-         RMHYbcKvuGXs/P5rIX3BgHkV9Av3VEp+BWfxxxmHav/a1H/LtEfcrAn8tCw9jkreXiFR
-         wNdA+TQ5wu/MQgEI72Lv4cxf528ztwaDQ1az3TSUAyr994nHWVvnj6Nb1ia1M+5KQsv3
-         x248n0tlz3oOZ2SeUioLCVFUzoJi25XT7q0cpmdesArXs3yd01duDo2GXBZeMxDeuIiW
-         f7Nw==
-X-Gm-Message-State: AOAM533BglhTOVzAqmxd/rsfB3T7DUwEfm5y4zaZbeH8K+Q3gpALih8v
-        3llVrHthRwIVwvyDFh7LJx73zg==
-X-Google-Smtp-Source: ABdhPJx3gGUWnUZGIMU7UpWpvBUlSg0qBFeDf43EeDNUB7n4gVumN6S9IsR3biHWhJK/YAd1aX1H0w==
-X-Received: by 2002:a17:90a:1d46:: with SMTP id u6mr26949001pju.146.1592954522548;
-        Tue, 23 Jun 2020 16:22:02 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id s23sm3357374pju.35.2020.06.23.16.22.01
+        bh=7tx/9GfFI7meR7LlrVVqfR+HUCYTsfN81Kg3AevbFnU=;
+        b=bqSO3ZNFHn7cx9WAGQiXzOP5poFVc1lFfCjv4uRa2QjPxPBeV+XDCAedw8WPIXVR3R
+         068JzKI3GHKD6UnXGzk1h6Hpt7aYcbuiBS9TxkJWaxSIkAQKuHWBTCksC+5f2Tco0n44
+         RFSjJn3BGbPO/63IdhjcjBrUzVUC4p3Wl7ASHFsy9KqPNnfu0M3F1lb2M+h+ZievenF8
+         QoyWyHlQHGe2f6R9v+kBVSDgMUzBSIbxpOsz6+qqhsFPiYGlx6LsVIeqL7+6FOz1fj2N
+         +/LAeobv8nQyWmWGgazWVxQF3XC50y7e3GnZ1lWrVQNDzJ/FnHuMgrTkDqte8xCQRPto
+         P1Vg==
+X-Gm-Message-State: AOAM531l/ZWhBEoh6AXX/EakZI9yRve+LWl+QnW1b1Vu1kYS9npO5w5y
+        EaoYmFq7GMP1rZ1W4KYOrrngMp/t+FA=
+X-Google-Smtp-Source: ABdhPJwPp+16UaiUVkCfWRk1ekgUARx1LFpsqLdVptkXkbAzNFecuQARo/2yMu73ITI6t5pNE6Reyw==
+X-Received: by 2002:a63:525a:: with SMTP id s26mr16757277pgl.155.1592954403813;
+        Tue, 23 Jun 2020 16:20:03 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id g18sm9617pfk.40.2020.06.23.16.20.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 16:22:01 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 16:19:19 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konradybcio@gmail.com>
-Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 06/12] arm64: dts: qcom: msm8994: Add SCM node
-Message-ID: <20200623231919.GL128451@builder.lan>
-References: <20200623224813.297077-1-konradybcio@gmail.com>
- <20200623224813.297077-7-konradybcio@gmail.com>
+        Tue, 23 Jun 2020 16:20:03 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 16:20:01 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexey Dobriyan <adobriyan@gmail.com>
+Cc:     Christian Kujau <lists@nerdbynature.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Willy Tarreau <w@1wt.eu>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: process '/usr/bin/rsync' started with executable stack
+Message-ID: <202006231619.38108DE0@keescook>
+References: <alpine.DEB.2.22.1.446.2006231023390.3892@trent.utfs.org>
+ <20200623211218.GA40110@localhost.localdomain>
+ <20200623212214.GA41702@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200623224813.297077-7-konradybcio@gmail.com>
+In-Reply-To: <20200623212214.GA41702@localhost.localdomain>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 23 Jun 15:48 PDT 2020, Konrad Dybcio wrote:
-
-> Signed-off-by: Konrad Dybcio <konradybcio@gmail.com>
-> ---
->  arch/arm64/boot/dts/qcom/msm8994.dtsi | 6 ++++++
->  1 file changed, 6 insertions(+)
+On Wed, Jun 24, 2020 at 12:22:14AM +0300, Alexey Dobriyan wrote:
+> On Wed, Jun 24, 2020 at 12:12:18AM +0300, Alexey Dobriyan wrote:
+> > On Tue, Jun 23, 2020 at 10:39:26AM -0700, Christian Kujau wrote:
+> > > Hi,
+> > > 
+> > > exactly this[0] happened today, on a 5.6.5 kernel:
+> > > 
+> > >   process '/usr/bin/rsync' started with executable stack
+> > > 
+> > > But I can't reproduce this message,
 > 
-> diff --git a/arch/arm64/boot/dts/qcom/msm8994.dtsi b/arch/arm64/boot/dts/qcom/msm8994.dtsi
-> index f989530ffa90..838ffc0d9c16 100644
-> --- a/arch/arm64/boot/dts/qcom/msm8994.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/msm8994.dtsi
-> @@ -142,6 +142,12 @@ core3 {
->  		};
->  	};
->  
-> +	firmware {
-> +		scm {
-> +			compatible = "qcom,scm-msm8992";
-
-Shouldn't this be "qcom,scm-msm8992", "qcom,scm" ?
-
-(Or rather "qcom,scm-msm8994", "qcom,scm")
-
-Regards,
-Bjorn
-
-> +		};
-> +	};
-> +
->  	memory {
->  		device_type = "memory";
->  		/* We expect the bootloader to fill in the reg */
-> -- 
-> 2.27.0
+> This message is once-per-reboot.
 > 
+> If you run something with exec stack after the message
+> you shouldn't get it second time.
+
+If you want to reset this flag, you can do:
+
+ # echo 1 > /sys/kernel/debug/clear_warn_once
+
+-- 
+Kees Cook
