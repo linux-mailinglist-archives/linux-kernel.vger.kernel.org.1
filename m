@@ -2,108 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E09F12049D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 08:24:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1318F2049E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 08:27:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730862AbgFWGX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 02:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730695AbgFWGX5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 02:23:57 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A55C061797
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 23:23:56 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 9so22039388ljv.5
-        for <linux-kernel@vger.kernel.org>; Mon, 22 Jun 2020 23:23:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dPmL4ji10DM23gXnHiUP2NWgp6rzRT93lGyytV/WtJM=;
-        b=BIdVinktvLNiMk2nDRyH/DIePkv0Y76ENlOPbiD73uhrPmAMWpcQr0GXrq31J7UWKy
-         nx8cSiBDNUNtKhgqbuWTj5/yrtE899FP1q+Kbv9b1V1z5MhHcAfoTPmKUBPRNv4O93xb
-         8ErCN2zCByMbG4NDklpkORi7nxFQvRFTmI7j6WCrrT6j3vugRvMD4MvqbAJez/VIbSj4
-         F0L1wnWSrbrCCkBdJrgEi6penn3FCPOtrKz5WHjQOZua3SlwQcChthsVjDiMoQ/6X8iE
-         H9FMLmhcj3Z+bPDhmvjDT6yMPl5j3w0NhSrNdNuLf8wDntXMPLPLJ4sFqphnVX3TlWyV
-         A/8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dPmL4ji10DM23gXnHiUP2NWgp6rzRT93lGyytV/WtJM=;
-        b=YKj6jCmj8aGgv75FlV6VHpp/YFTpUB/1SlMuJcAY3nBFstjfe9480TdrR7SqDv9Fce
-         4ObCXyk+WCwGNG7geFxNIIrcwwbcIMUavplM/ynbQD3tQl0OvNgoeqs52mOu0VGRZdf9
-         TaLTzmVQVfYd7M015HnuoMBj5W9aMjWLh6o7OF5FG0NY6p5BYKcX4STqffO6GYDnn4PE
-         vdF66VBi6DWasSr05BqNeLfrhN6cXHDFDrJxvVeAXgnH0wUEkU6cT/aGJ+IK2risHpSA
-         8Olsc3uljK6+Sn/JWmA6sZmAASwjHUOoJ9Gswm+k9lh2iFZgvVFyTJUkm/MKZ8h1qRbr
-         pQBQ==
-X-Gm-Message-State: AOAM530bvUd6v7uJQcZ5q+i2P5yyOsamY+2xoBsMDu9Ju4gU5avLpCZQ
-        PHFkCId7BHvop3NJ+lGfHh+6sdTgIO+sz0X+sIMG1g==
-X-Google-Smtp-Source: ABdhPJwyfBDDErbrS4GjTK/D+t1eKZ96j9X/dUhypMGUwehTdQFYmoz856g75PfnLqD8QeqGESPEHLqWG864TNrkBCI=
-X-Received: by 2002:a2e:b88c:: with SMTP id r12mr10241919ljp.266.1592893434808;
- Mon, 22 Jun 2020 23:23:54 -0700 (PDT)
+        id S1730914AbgFWG1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 02:27:48 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:40904 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730447AbgFWG1r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 02:27:47 -0400
+Received: from [10.20.42.25] (unknown [10.20.42.25])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Axlum8oPFe+6JIAA--.11077S3;
+        Tue, 23 Jun 2020 14:27:08 +0800 (CST)
+Subject: Re: [PATCH] MIPS: Do not flush tlb when setting pmd entry
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <1591177333-17833-1-git-send-email-maobibo@loongson.cn>
+ <20200615101443.GA10075@alpha.franken.de>
+ <4bef403d-baba-ddf8-c25c-3d6968897a53@loongson.cn>
+ <20200617111403.GC9940@alpha.franken.de>
+ <ea914a82-70c1-b9a3-f6f0-f92a6d6c6e7f@loongson.cn>
+ <20200622154855.GC17294@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   maobibo <maobibo@loongson.cn>
+Message-ID: <a121b9c0-2c35-a895-6874-bdea3a6b0452@loongson.cn>
+Date:   Tue, 23 Jun 2020 14:27:08 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-References: <CA+G9fYvHFs5Yx8TnT6VavtfjMN8QLPuXg6us-dXVJqUUt68adA@mail.gmail.com>
- <20200622224920.GA4332@42.do-not-panic.com>
-In-Reply-To: <20200622224920.GA4332@42.do-not-panic.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 23 Jun 2020 11:53:43 +0530
-Message-ID: <CA+G9fYsXDZUspc5OyfqrGZn=k=2uRiGzWY_aPePK2C_kZ+dYGQ@mail.gmail.com>
-Subject: Re: LTP: crypto: af_alg02 regression on linux-next 20200621 tag
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     LTP List <ltp@lists.linux.it>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        lkft-triage@lists.linaro.org, linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jan Stancek <jstancek@redhat.com>, chrubis <chrubis@suse.cz>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        James Morris <jmorris@namei.org>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        David Howells <dhowells@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Biggers <ebiggers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200622154855.GC17294@alpha.franken.de>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Axlum8oPFe+6JIAA--.11077S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7CryrXFykuF4rGw1rZFWfAFb_yoW8AFy7pa
+        sFka1vyF1DJw40yr1Ivw1rtr1aq34UtrW3Wr98GrW5Aas0grn7Kr43Kw4YkasrurWfCw42
+        va10gFya934DA3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvFb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l
+        c2xSY4AK6svPMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWU
+        AwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+        0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AK
+        xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+        xUcVWlDUUUU
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Jun 2020 at 04:19, Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> On Tue, Jun 23, 2020 at 12:04:06AM +0530, Naresh Kamboju wrote:
-> > LTP crypto regressions noticed on linux next 20200621.
-> >
-> > The common case for all tests is timeout after 15 minutes which
-> > means tests got hung and LTP timers killed those test runs after
-> > timeout.
-> > The root cause of the failure is under investigation.
-> >
-> >   ltp-crypto-tests:
-> >     * af_alg02 - failed
-> >     * af_alg05 - failed
-> >   ltp-syscalls-tests:
-> >     * keyctl07 - failed
-> >     * request_key03 - failed
-<trim>
->
-> Can you try reverting:
->
-> d13ef8e10756873b0a8b7cc8f230a2d1026710ea
->
-> The patch is titled "umh: fix processed error when UMH_WAIT_PROC is used"
 
-Thanks for the investigation.
-After reverting, two test cases got PASS out of four reported failure cases.
- ltp-crypto-tests:
-     * af_alg02 - still failing - Hung and time out
-     * af_alg05 - still failing - Hung and time out
-  ltp-syscalls-tests:
-     * keyctl07 - PASS
-     * request_key03 - PASS
 
-Please suggest the way to debug / fix the af_alg02 and af_alg05 failures.
+On 06/22/2020 11:48 PM, Thomas Bogendoerfer wrote:
+> On Sat, Jun 20, 2020 at 11:47:35AM +0800, maobibo wrote:
+>>
+>>
+>> On 06/17/2020 07:14 PM, Thomas Bogendoerfer wrote:
+>>> On Tue, Jun 16, 2020 at 06:34:21PM +0800, maobibo wrote:
+>>>>
+>>>>
+>>>> On 06/15/2020 06:14 PM, Thomas Bogendoerfer wrote:
+>>>>> On Wed, Jun 03, 2020 at 05:42:13PM +0800, Bibo Mao wrote:
+>>>>>> Function set_pmd_at is to set pmd entry, if tlb entry need to
+>>>>>> be flushed, there exists pmdp_huge_clear_flush alike function
+>>>>>> before set_pmd_at is called. So it is not necessary to call
+>>>>>> flush_tlb_all in this function.
+>>>>>
+>>>>> have you checked all set_pmd_at() calls ? I found a few case where
+>>>>> it's not clear to me, if tlb flushing is done... If you think this
+>>>>> is still the right thing to do, please change arch/mips/mm/pgtable-32.c
+>>>>> as well.
+>>>> well, I will double check this and do more testing about thp and hugepage.
+>>>
+>>> I was more concerned about
+>>>
+>>> fs/dax.c
+>>> fs/proc/task_mmu.c
+>>> mm/rmap.c
+>>
+>> I think that flush_tlb_all should not be called in function set_pmd_at
+>> on mips platform. However update_mmu_cache_pmd() should be called __after__
+>> set_pmd_at() function to update tlb entry at some places, it is another issue.
+>> Here is my analysis in the three files where set_pmd_at is called.
+>> [..]
+> 
+> thank you for confirming that we are good with removing flush_tlb_all().
+Sorry, there is something wrong if remove flush_tlb_all(). If pmd_none is true,
+pmd points to invalid_pte_table, maybe there exists pte entry with normal page size
+for fault address. And we need invalidate this pte entry like it is done in function build_huge_handler_tail in file arch/mips/mm/tlbex.c
 
-- Naresh
+I will send another patch.
+> 
+> Thomas.
+> 
+
