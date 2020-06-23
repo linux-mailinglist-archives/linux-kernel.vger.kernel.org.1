@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93CF0204D91
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BFE8204D6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732252AbgFWJIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 05:08:46 -0400
-Received: from esa2.microchip.iphmx.com ([68.232.149.84]:49195 "EHLO
-        esa2.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731860AbgFWJIn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:08:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1592903323; x=1624439323;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Vab59iB18cUXfZdY2UKkw5U/rizieclL7eIH6pZwzYE=;
-  b=hAg3TKcxMgMtv6DFI+R0/Cpr52TsR2tJcnKylFGme43BmX16OMNRNoYa
-   bDuYT/NQyg8BslBtfPipgjyIeqh0tZlnadXM3nMVYThNPf/ihcA8QQVbX
-   7/QAPA7RsDXZHHblujxAGysdeiWERtc74E3qdozhkHrG+lbxCsDN0cZi9
-   BdTVvWnNHYzmi3EMHsZIFaGsLYh0iS0PL2yjAR4XnExagnKKx2hNG6osC
-   3mp5igljac3FvjoQow5rA/SrcuBbJDae/41DwrSYuVf//Zjhf2nRUttuS
-   tikSc7TsosxF5/Mg46kajiWzppWBckBEjx8teDabzeg9E4D9VvlPVqp1e
-   w==;
-IronPort-SDR: At4OI2cnKjuQjIQHDaHNMhMYRBKgl5PtZezd8g1/i78LKxmOMm5XU3JW9P1KkqZdpvtsqjANK+
- IRy5ZsEhUkMeRf+NNSaeV2iZUoETw1Yj7fsCfpFwxfY20st4c4K6KkQKbfBWeSEyec4QOxhQzO
- NI9JkgLQCWogzuxwfeAGHsQiIhFkyvzkFTY1+wn9iMTfpQ2MsDRBzMBggM9k4R8CAtd18M/H4S
- oTpeNYe/wgcAIQAopoDKhsn10yVXPsnZhB+ab42jP3eJFnSHUVAT4HNGGXxkc+SYTS7POjdg/l
- A7A=
-X-IronPort-AV: E=Sophos;i="5.75,270,1589266800"; 
-   d="scan'208";a="79436711"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 23 Jun 2020 02:08:42 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Jun 2020 02:08:31 -0700
-Received: from soft-dev3.localdomain (10.10.115.15) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Tue, 23 Jun 2020 02:08:40 -0700
-From:   Horatiu Vultur <horatiu.vultur@microchip.com>
-To:     <nikolay@cumulusnetworks.com>, <roopa@cumulusnetworks.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
-        <UNGLinuxDriver@microchip.com>
-CC:     Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net v2 2/2] bridge: mrp: Validate when setting the port role
-Date:   Tue, 23 Jun 2020 11:05:41 +0200
-Message-ID: <20200623090541.2964760-3-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200623090541.2964760-1-horatiu.vultur@microchip.com>
-References: <20200623090541.2964760-1-horatiu.vultur@microchip.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+        id S1732075AbgFWJGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 05:06:49 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:44702 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731912AbgFWJGt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 05:06:49 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxf2oexvFeJ7JIAA--.33S2;
+        Tue, 23 Jun 2020 17:06:40 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH 0/7 RESEND] Fix potential resource leaks and do some code cleanups about irqchip
+Date:   Tue, 23 Jun 2020 17:06:31 +0800
+Message-Id: <1592903198-5505-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxf2oexvFeJ7JIAA--.33S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tr43CFWDZrWrXF13Gry3Jwb_yoW8ZrWfpF
+        47A39Ivr1fCa43Ar1fAr40yFy3AFn5Kay7K3yxt3sxXr95G34DWF1UAa4kXr97JrWxG3Wj
+        9F4rWFWUG3WUCF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+        8cxan2IY04v7MxkIecxEwVAFwVW8uwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+        WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+        67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42
+        IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Zr0_Wr1U
+        MIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCT
+        nIWIevJa73UjIFyTuYvjfU09NVDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds specific checks for primary(0x0) and secondary(0x1) when
-setting the port role. For any other value the function
-'br_mrp_set_port_role' will return -EINVAL.
+[git send-email failed due to too many commands,
+ so only cc the major related email and resend it,
+ sorry for that again]
 
-Fixes: 20f6a05ef63594 ("bridge: mrp: Rework the MRP netlink interface")
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
----
- net/bridge/br_mrp.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+When I test the irqchip code of Loongson, I read the related code of other
+chips in drivers/irqchip and I find some potential resource leaks in the
+error path, I think it is better to fix them. Additionally, do some code
+cleanups about Loongson to make it more clean and readable.
 
-diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
-index 24986ec7d38cc..779e1eb754430 100644
---- a/net/bridge/br_mrp.c
-+++ b/net/bridge/br_mrp.c
-@@ -411,10 +411,16 @@ int br_mrp_set_port_role(struct net_bridge_port *p,
- 	if (!mrp)
- 		return -EINVAL;
- 
--	if (role == BR_MRP_PORT_ROLE_PRIMARY)
-+	switch (role) {
-+	case BR_MRP_PORT_ROLE_PRIMARY:
- 		rcu_assign_pointer(mrp->p_port, p);
--	else
-+		break;
-+	case BR_MRP_PORT_ROLE_SECONDARY:
- 		rcu_assign_pointer(mrp->s_port, p);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
- 
- 	br_mrp_port_switchdev_set_role(p, role);
- 
+Tiezhu Yang (7):
+  irqchip: Fix potential resource leaks
+  irqchip/loongson-htpic: Remove redundant kfree operation
+  irqchip/loongson-htvec: Check return value of
+    irq_domain_translate_onecell()
+  irqchip/loongson-pch-pic: Check return value of
+    irq_domain_translate_twocell()
+  irqchip/loongson-pch-msi: Remove unneeded variable
+  irqchip/loongson-htpic: Remove unneeded select of I8259
+  dt-bindings: interrupt-controller: Fix typos in loongson,liointc.yaml
+
+ .../interrupt-controller/loongson,liointc.yaml     |  4 ++--
+ drivers/irqchip/Kconfig                            |  1 -
+ drivers/irqchip/irq-ath79-misc.c                   |  3 +++
+ drivers/irqchip/irq-csky-apb-intc.c                |  3 +++
+ drivers/irqchip/irq-csky-mpintc.c                  | 26 +++++++++++++++++-----
+ drivers/irqchip/irq-davinci-aintc.c                | 17 ++++++++++----
+ drivers/irqchip/irq-davinci-cp-intc.c              | 17 +++++++++++---
+ drivers/irqchip/irq-digicolor.c                    |  4 ++++
+ drivers/irqchip/irq-dw-apb-ictl.c                  | 11 ++++++---
+ drivers/irqchip/irq-loongson-htpic.c               |  6 ++---
+ drivers/irqchip/irq-loongson-htvec.c               | 10 +++++++--
+ drivers/irqchip/irq-loongson-pch-msi.c             |  7 +-----
+ drivers/irqchip/irq-loongson-pch-pic.c             | 15 ++++++++-----
+ drivers/irqchip/irq-ls1x.c                         |  4 +++-
+ drivers/irqchip/irq-mscc-ocelot.c                  |  6 +++--
+ drivers/irqchip/irq-nvic.c                         |  2 ++
+ drivers/irqchip/irq-omap-intc.c                    |  4 +++-
+ drivers/irqchip/irq-riscv-intc.c                   |  1 +
+ drivers/irqchip/irq-s3c24xx.c                      | 20 ++++++++++++-----
+ drivers/irqchip/irq-xilinx-intc.c                  |  1 +
+ 20 files changed, 116 insertions(+), 46 deletions(-)
+
 -- 
-2.26.2
+2.1.0
 
