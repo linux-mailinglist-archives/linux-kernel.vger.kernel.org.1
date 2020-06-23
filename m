@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DCE206595
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE8C206662
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388475AbgFWUG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:06:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46338 "EHLO mail.kernel.org"
+        id S2393861AbgFWVlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:41:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46400 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388450AbgFWUGS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:06:18 -0400
+        id S2388457AbgFWUGV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:06:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C08812064B;
-        Tue, 23 Jun 2020 20:06:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E7F82064B;
+        Tue, 23 Jun 2020 20:06:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942778;
-        bh=NUV7KWqtjBx+rwaxIhAbNyWL2HuwPznETRhWqAOl53E=;
+        s=default; t=1592942780;
+        bh=lmLHg0cGesE3FgSe7bSUX6bN99oLY+825ZeXT/FLT/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ep3CgSYPW26WRSZvM/4i3vbmbch0XMSOjAhmODW++Xx3g6ZL7WuuPjAen2rVIjUOq
-         z+M36lzCRcgwdhs8dw//3CCK66szSM2f2BUi+sS2lRwleMW0rFTddQFZEc5jRuFw5g
-         WfgaahTMMGy8FG2tmJYFZXgqt/EAfStXIjN1LFU0=
+        b=bQ1+om0psmO0/6ksc4GxYxXXQSWngI8nbdmsF/BmSrDNKkgBXed2+QOnqtYLLfSfT
+         6Ad4crKMJ6lAqKL7TZPg9uzL1vI4mB3TnBJTEF5Muru9XoR/rW+ji01TVqJ/4VysPY
+         EAXFkIun4KK+XqfNI0frxhS/jGa8LgvA/fVYZstk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 130/477] arm64: dts: qcom: fix pm8150 gpio interrupts
-Date:   Tue, 23 Jun 2020 21:52:07 +0200
-Message-Id: <20200623195413.751145369@linuxfoundation.org>
+        Christoph Hellwig <hch@lst.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 131/477] firmware: qcom_scm: fix bogous abuse of dma-direct internals
+Date:   Tue, 23 Jun 2020 21:52:08 +0200
+Message-Id: <20200623195413.798055671@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -45,105 +44,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Marek <jonathan@marek.ca>
+From: Christoph Hellwig <hch@lst.de>
 
-[ Upstream commit 61d2ca503d0b55d2849fd656ce51d8e1e9ba0b6c ]
+[ Upstream commit 459b1f86f1cba7de813fbc335df476c111feec22 ]
 
-This was mistakenly copied from the downstream dts, however the upstream
-driver works differently.
+As far as the device is concerned the dma address is the physical
+address.  There is no need to convert it to a physical address,
+especially not using dma-direct internals that are not available
+to drivers and which will interact badly with IOMMUs.  Last but not
+least the commit introducing it claimed to just fix a type issue,
+but actually changed behavior.
 
-I only tested this with the pm8150_gpios node (used with volume button),
-but the 2 others should be the same.
-
-Fixes: e92b61c8e775 ("arm64: dts: qcom: pm8150l: Add base dts file")
-Fixes: 229d5bcad0d0 ("arm64: dts: qcom: pm8150b: Add base dts file")
-Fixes: 5101f22a5c37 ("arm64: dts: qcom: pm8150: Add base dts file")
+Fixes: 6e37ccf78a532 ("firmware: qcom_scm: Use proper types for dma mappings")
 Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-Link: https://lore.kernel.org/r/20200420153543.14512-1-jonathan@marek.ca
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Link: https://lore.kernel.org/r/20200414123136.441454-1-hch@lst.de
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm64/boot/dts/qcom/pm8150.dtsi  | 14 ++------------
- arch/arm64/boot/dts/qcom/pm8150b.dtsi | 14 ++------------
- arch/arm64/boot/dts/qcom/pm8150l.dtsi | 14 ++------------
- 3 files changed, 6 insertions(+), 36 deletions(-)
+ drivers/firmware/qcom_scm.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/pm8150.dtsi b/arch/arm64/boot/dts/qcom/pm8150.dtsi
-index b6e304748a576..c0b197458665d 100644
---- a/arch/arm64/boot/dts/qcom/pm8150.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm8150.dtsi
-@@ -73,18 +73,8 @@
- 			reg = <0xc000>;
- 			gpio-controller;
- 			#gpio-cells = <2>;
--			interrupts = <0x0 0xc0 0x0 IRQ_TYPE_NONE>,
--				     <0x0 0xc1 0x0 IRQ_TYPE_NONE>,
--				     <0x0 0xc2 0x0 IRQ_TYPE_NONE>,
--				     <0x0 0xc3 0x0 IRQ_TYPE_NONE>,
--				     <0x0 0xc4 0x0 IRQ_TYPE_NONE>,
--				     <0x0 0xc5 0x0 IRQ_TYPE_NONE>,
--				     <0x0 0xc6 0x0 IRQ_TYPE_NONE>,
--				     <0x0 0xc7 0x0 IRQ_TYPE_NONE>,
--				     <0x0 0xc8 0x0 IRQ_TYPE_NONE>,
--				     <0x0 0xc9 0x0 IRQ_TYPE_NONE>,
--				     <0x0 0xca 0x0 IRQ_TYPE_NONE>,
--				     <0x0 0xcb 0x0 IRQ_TYPE_NONE>;
-+			interrupt-controller;
-+			#interrupt-cells = <2>;
- 		};
- 	};
+diff --git a/drivers/firmware/qcom_scm.c b/drivers/firmware/qcom_scm.c
+index 059bb0fbae9e5..4701487573f7b 100644
+--- a/drivers/firmware/qcom_scm.c
++++ b/drivers/firmware/qcom_scm.c
+@@ -6,7 +6,6 @@
+ #include <linux/init.h>
+ #include <linux/cpumask.h>
+ #include <linux/export.h>
+-#include <linux/dma-direct.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/module.h>
+ #include <linux/types.h>
+@@ -806,8 +805,7 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+ 	struct qcom_scm_mem_map_info *mem_to_map;
+ 	phys_addr_t mem_to_map_phys;
+ 	phys_addr_t dest_phys;
+-	phys_addr_t ptr_phys;
+-	dma_addr_t ptr_dma;
++	dma_addr_t ptr_phys;
+ 	size_t mem_to_map_sz;
+ 	size_t dest_sz;
+ 	size_t src_sz;
+@@ -824,10 +822,9 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
+ 	ptr_sz = ALIGN(src_sz, SZ_64) + ALIGN(mem_to_map_sz, SZ_64) +
+ 			ALIGN(dest_sz, SZ_64);
  
-diff --git a/arch/arm64/boot/dts/qcom/pm8150b.dtsi b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-index 322379d5c31f9..40b5d75a4a1dc 100644
---- a/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm8150b.dtsi
-@@ -62,18 +62,8 @@
- 			reg = <0xc000>;
- 			gpio-controller;
- 			#gpio-cells = <2>;
--			interrupts = <0x2 0xc0 0x0 IRQ_TYPE_NONE>,
--				     <0x2 0xc1 0x0 IRQ_TYPE_NONE>,
--				     <0x2 0xc2 0x0 IRQ_TYPE_NONE>,
--				     <0x2 0xc3 0x0 IRQ_TYPE_NONE>,
--				     <0x2 0xc4 0x0 IRQ_TYPE_NONE>,
--				     <0x2 0xc5 0x0 IRQ_TYPE_NONE>,
--				     <0x2 0xc6 0x0 IRQ_TYPE_NONE>,
--				     <0x2 0xc7 0x0 IRQ_TYPE_NONE>,
--				     <0x2 0xc8 0x0 IRQ_TYPE_NONE>,
--				     <0x2 0xc9 0x0 IRQ_TYPE_NONE>,
--				     <0x2 0xca 0x0 IRQ_TYPE_NONE>,
--				     <0x2 0xcb 0x0 IRQ_TYPE_NONE>;
-+			interrupt-controller;
-+			#interrupt-cells = <2>;
- 		};
- 	};
+-	ptr = dma_alloc_coherent(__scm->dev, ptr_sz, &ptr_dma, GFP_KERNEL);
++	ptr = dma_alloc_coherent(__scm->dev, ptr_sz, &ptr_phys, GFP_KERNEL);
+ 	if (!ptr)
+ 		return -ENOMEM;
+-	ptr_phys = dma_to_phys(__scm->dev, ptr_dma);
  
-diff --git a/arch/arm64/boot/dts/qcom/pm8150l.dtsi b/arch/arm64/boot/dts/qcom/pm8150l.dtsi
-index eb0e9a090e420..cf05e0685d101 100644
---- a/arch/arm64/boot/dts/qcom/pm8150l.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pm8150l.dtsi
-@@ -56,18 +56,8 @@
- 			reg = <0xc000>;
- 			gpio-controller;
- 			#gpio-cells = <2>;
--			interrupts = <0x4 0xc0 0x0 IRQ_TYPE_NONE>,
--				     <0x4 0xc1 0x0 IRQ_TYPE_NONE>,
--				     <0x4 0xc2 0x0 IRQ_TYPE_NONE>,
--				     <0x4 0xc3 0x0 IRQ_TYPE_NONE>,
--				     <0x4 0xc4 0x0 IRQ_TYPE_NONE>,
--				     <0x4 0xc5 0x0 IRQ_TYPE_NONE>,
--				     <0x4 0xc6 0x0 IRQ_TYPE_NONE>,
--				     <0x4 0xc7 0x0 IRQ_TYPE_NONE>,
--				     <0x4 0xc8 0x0 IRQ_TYPE_NONE>,
--				     <0x4 0xc9 0x0 IRQ_TYPE_NONE>,
--				     <0x4 0xca 0x0 IRQ_TYPE_NONE>,
--				     <0x4 0xcb 0x0 IRQ_TYPE_NONE>;
-+			interrupt-controller;
-+			#interrupt-cells = <2>;
- 		};
- 	};
+ 	/* Fill source vmid detail */
+ 	src = ptr;
+@@ -855,7 +852,7 @@ int qcom_scm_assign_mem(phys_addr_t mem_addr, size_t mem_sz,
  
+ 	ret = __qcom_scm_assign_mem(__scm->dev, mem_to_map_phys, mem_to_map_sz,
+ 				    ptr_phys, src_sz, dest_phys, dest_sz);
+-	dma_free_coherent(__scm->dev, ptr_sz, ptr, ptr_dma);
++	dma_free_coherent(__scm->dev, ptr_sz, ptr, ptr_phys);
+ 	if (ret) {
+ 		dev_err(__scm->dev,
+ 			"Assign memory protection call failed %d\n", ret);
 -- 
 2.25.1
 
