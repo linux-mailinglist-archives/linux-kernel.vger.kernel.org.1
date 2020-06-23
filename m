@@ -2,315 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33F9204EBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 12:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D3D204EE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 12:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732158AbgFWKEi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 06:04:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732005AbgFWKEh (ORCPT
+        id S1732229AbgFWKN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 06:13:58 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:45200 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731158AbgFWKN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 06:04:37 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FE21C061573;
-        Tue, 23 Jun 2020 03:04:37 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id h5so19886953wrc.7;
-        Tue, 23 Jun 2020 03:04:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=z9iZ53HE98jIxj16iTgxPZ/MDpRlNPMhNdthLzxHHeY=;
-        b=Dzy1UUj6IJQkEPKqWKg4Gr9A4EIxsSjtktIGEXCX5WU/KU8JTPJcnQZ1FjvFugd9iu
-         97XS5fRj1Ys/AX/LGsJc/CwEWQeGn8Wun2p28h0gekvTvuVqT/ySFw1jx/W/0wb9m+7o
-         62XwAEanMfEChlWGmYw5MRxjtPYml/ftzJc2EbPsDKE5aSl31dldJ5rgoHRpnTbpSpB6
-         1rrm81M73jfga/rLnhFRzdSW42lw0q6WY7OiU7PYPx11T9NTBYh0TJVjhWBdnLVhg9YX
-         X5ID6uVlDU4abfBUbQjyqiD9BtJHGZjMCIdSflysp1YMy79uSI+C/iZDYtwqARyQyogw
-         VyIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=z9iZ53HE98jIxj16iTgxPZ/MDpRlNPMhNdthLzxHHeY=;
-        b=ElqXLdXpAog0QaCeRSeUPBJdRLoe7Mo0TMoxIzbA9mYrwZrGG9x2NWelJJ28d6hH49
-         icCCoANELrXGqNON9TQd0QNIwDrleNhi5AdlHQFk7Qg2f4l/WtzSydXlZe71DkKYTkTl
-         yvCMFHMyLzJOMWyZwF430yLGukEpUxqeGGipkP4gMaCVbQTZ0zSvo/AIM8GhMGTd7dg2
-         V9JJCdKSyzuLC2GrSsXianrg3PCByiYzpZVafX/nirZe2gIDmtptJ6Go+BvTO+UlXh/4
-         vV1kXtszYJJW/uSjQj2PO/2y7XXT7vi7QT+Dh0zZa1PN80vJl0kldmvAoU9ukjRa6rY6
-         7mwQ==
-X-Gm-Message-State: AOAM5316lQuoFw+DqbzDU1G757S7zzB7JNHpqvEZ6ZB2y5UTu2TdvQlR
-        6PXsSksnBzfchrbDznwaOr+7k6c7UOPPk6mwtGU=
-X-Google-Smtp-Source: ABdhPJypjCL2IwaVPL46bWQsQdrRdGqUaXSy6QHMr0n7tpmXeiC+0uVzsCIouvJprzx6MPCFo6mPoxc9ijpAu6Tgxew=
-X-Received: by 2002:adf:f34e:: with SMTP id e14mr24096924wrp.299.1592906675929;
- Tue, 23 Jun 2020 03:04:35 -0700 (PDT)
+        Tue, 23 Jun 2020 06:13:58 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05NACiMw130688;
+        Tue, 23 Jun 2020 10:13:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=d9NXvGnI7jfjN88haka+dzhwSaM03rsBzPrLxMg67vo=;
+ b=urOaUG/8b35647aq3cv3VPoLcXIJurE04jXs92+KMevJ2zgMbdC5SZuZWbjyzD1Kczxh
+ BeZIFQohc2rLVOzlZsIgsZmiyWVxTg07pjIGT25NL/BTHy0hjkSWNIPKwNCx11JbcHI1
+ Zi8+tByNVIaqcaftIov+ZD23cF+KdRbtSxE2uRdWaHOudKqkiJ8zlbmZDQ1XglqHjcLe
+ v/zYeV2T0rJsvJj4EZ6gu0OxOpldrPvv+ZNQHWyRVTBE0nOFHqqs66Fb0lBhS+HGIFCf
+ 9SYoK21jU7GdNOJK9Z7jMh9J1fBAI4LFD2wBqYPydnE82Wrzp/Qn326NOxTuj4s1C7Dh bw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 31sebbmcc3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 23 Jun 2020 10:13:49 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05NA48r3042169;
+        Tue, 23 Jun 2020 10:13:49 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 31sv7rjtfg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Jun 2020 10:13:49 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 05NADlVr025573;
+        Tue, 23 Jun 2020 10:13:47 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 23 Jun 2020 10:13:46 +0000
+Date:   Tue, 23 Jun 2020 13:13:39 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, arve@android.com, maco@google.com,
+        joel@joelfernandes.org, kernel-team@android.com,
+        christian@brauner.io, Todd Kjos <tkjos@google.com>
+Subject: Re: [PATCH] binder: fix null deref of proc->context
+Message-ID: <20200623101339.GJ4151@kadam>
+References: <20200622200715.114382-1-tkjos@google.com>
+ <20200623085021.GG4151@kadam>
+ <20200623090404.xwuhdec6c7p4lnd2@wittgenstein>
 MIME-Version: 1.0
-References: <20200621155604.GA23135@minyard.net> <CADvbK_d9mV9rBg7oLC+9u4fg3d_5a_g8ukPe83vOAE8ZM3FhHA@mail.gmail.com>
- <20200622165759.GA3235@minyard.net> <4B68D06C-00F4-42C3-804A-B5531AABCE21@lurchi.franken.de>
- <20200622183253.GQ2491@localhost.localdomain> <E5F42909-3AB4-47FE-98B7-DEFB63968696@lurchi.franken.de>
-In-Reply-To: <E5F42909-3AB4-47FE-98B7-DEFB63968696@lurchi.franken.de>
-From:   Xin Long <lucien.xin@gmail.com>
-Date:   Tue, 23 Jun 2020 18:13:30 +0800
-Message-ID: <CADvbK_fddQiOJUVJNkJuxkzQ9V-tpk_ATBP4NpZ2rZketHEFcg@mail.gmail.com>
-Subject: Re: Strange problem with SCTP+IPv6
-To:     Michael Tuexen <Michael.Tuexen@lurchi.franken.de>
-Cc:     Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>,
-        minyard@acm.org, Vlad Yasevich <vyasevich@gmail.com>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        linux-sctp@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200623090404.xwuhdec6c7p4lnd2@wittgenstein>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9660 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 suspectscore=2 mlxlogscore=999
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006230079
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9660 signatures=668680
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 lowpriorityscore=0
+ mlxlogscore=999 cotscore=-2147483648 mlxscore=0 phishscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 suspectscore=2 clxscore=1011
+ impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006230080
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 2:34 AM Michael Tuexen
-<Michael.Tuexen@lurchi.franken.de> wrote:
->
-> > On 22. Jun 2020, at 20:32, Marcelo Ricardo Leitner <marcelo.leitner@gmail.com> wrote:
-> >
-> > On Mon, Jun 22, 2020 at 08:01:24PM +0200, Michael Tuexen wrote:
-> >>> On 22. Jun 2020, at 18:57, Corey Minyard <minyard@acm.org> wrote:
-> >>>
-> >>> On Mon, Jun 22, 2020 at 08:01:23PM +0800, Xin Long wrote:
-> >>>> On Sun, Jun 21, 2020 at 11:56 PM Corey Minyard <minyard@acm.org> wrote:
-> >>>>>
-> >>>>> I've stumbled upon a strange problem with SCTP and IPv6.  If I create an
-> >>>>> sctp listening socket on :: and set the IPV6_V6ONLY socket option on it,
-> >>>>> then I make a connection to it using ::1, the connection will drop after
-> >>>>> 2.5 seconds with an ECONNRESET error.
-> >>>>>
-> >>>>> It only happens on SCTP, it doesn't have the issue if you connect to a
-> >>>>> full IPv6 address instead of ::1, and it doesn't happen if you don't
-> >>>>> set IPV6_V6ONLY.  I have verified current end of tree kernel.org.
-> >>>>> I tried on an ARM system and x86_64.
-> >>>>>
-> >>>>> I haven't dug into the kernel to see if I could find anything yet, but I
-> >>>>> thought I would go ahead and report it.  I am attaching a reproducer.
-> >>>>> Basically, compile the following code:
-> >>>> The code only set IPV6_V6ONLY on server side, so the client side will
-> >>>> still bind all the local ipv4 addresses (as you didn't call bind() to
-> >>>> bind any specific addresses ). Then after the connection is created,
-> >>>> the client will send HB on the v4 paths to the server. The server
-> >>>> will abort the connection, as it can't support v4.
-> >>>>
-> >>>> So you can work around it by either:
-> >>>>
-> >>>> - set IPV6_V6ONLY on client side.
-> >>>>
-> >>>> or
-> >>>>
-> >>>> - bind to the specific v6 addresses on the client side.
-> >>>>
-> >>>> I don't see RFC said something about this.
-> >>>> So it may not be a good idea to change the current behaviour
-> >>>> to not establish the connection in this case, which may cause regression.
-> >>>
-> >>> Ok, I understand this.  It's a little strange, but I see why it works
-> >>> this way.
-> >> I don't. I would expect it to work as I described in my email.
-> >> Could someone explain me how and why it is behaving different from
-> >> my expectation?
-> >
-> > It looks like a bug to me. Testing with this test app here, I can see
-> > the INIT_ACK being sent with a bunch of ipv4 addresses in it and
-> > that's unexpected for a v6only socket. As is, it's the server saying
-> > "I'm available at these other addresses too, but not."
-> I agree.
-Then we need a fix in sctp_bind_addrs_to_raw():
+On Tue, Jun 23, 2020 at 11:04:04AM +0200, Christian Brauner wrote:
+> On Tue, Jun 23, 2020 at 11:50:21AM +0300, Dan Carpenter wrote:
+> > On Mon, Jun 22, 2020 at 01:07:15PM -0700, Todd Kjos wrote:
+> > > The binder driver makes the assumption proc->context pointer is invariant after
+> > > initialization (as documented in the kerneldoc header for struct proc).
+> > > However, in commit f0fe2c0f050d ("binder: prevent UAF for binderfs devices II")
+> > > proc->context is set to NULL during binder_deferred_release().
+> > > 
+> > > Another proc was in the middle of setting up a transaction to the dying
+> > > process and crashed on a NULL pointer deref on "context" which is a local
+> > > set to &proc->context:
+> > > 
+> > >     new_ref->data.desc = (node == context->binder_context_mgr_node) ? 0 : 1;
+> > > 
+> > > Here's the stack:
+> > > 
+> > > [ 5237.855435] Call trace:
+> > > [ 5237.855441] binder_get_ref_for_node_olocked+0x100/0x2ec
+> > > [ 5237.855446] binder_inc_ref_for_node+0x140/0x280
+> > > [ 5237.855451] binder_translate_binder+0x1d0/0x388
+> > > [ 5237.855456] binder_transaction+0x2228/0x3730
+> > > [ 5237.855461] binder_thread_write+0x640/0x25bc
+> > > [ 5237.855466] binder_ioctl_write_read+0xb0/0x464
+> > > [ 5237.855471] binder_ioctl+0x30c/0x96c
+> > > [ 5237.855477] do_vfs_ioctl+0x3e0/0x700
+> > > [ 5237.855482] __arm64_sys_ioctl+0x78/0xa4
+> > > [ 5237.855488] el0_svc_common+0xb4/0x194
+> > > [ 5237.855493] el0_svc_handler+0x74/0x98
+> > > [ 5237.855497] el0_svc+0x8/0xc
+> > > 
+> > > The fix is to move the kfree of the binder_device to binder_free_proc()
+> > > so the binder_device is freed when we know there are no references
+> > > remaining on the binder_proc.
+> > > 
+> > > Fixes: f0fe2c0f050d ("binder: prevent UAF for binderfs devices II")
+> > > Signed-off-by: Todd Kjos <tkjos@google.com>
+> > > ---
+> > >  drivers/android/binder.c | 14 +++++++-------
+> > >  1 file changed, 7 insertions(+), 7 deletions(-)
+> > > 
+> > > diff --git a/drivers/android/binder.c b/drivers/android/binder.c
+> > > index e47c8a4c83db..f50c5f182bb5 100644
+> > > --- a/drivers/android/binder.c
+> > > +++ b/drivers/android/binder.c
+> > > @@ -4686,8 +4686,15 @@ static struct binder_thread *binder_get_thread(struct binder_proc *proc)
+> > >  
+> > >  static void binder_free_proc(struct binder_proc *proc)
+> > >  {
+> > > +	struct binder_device *device;
+> > > +
+> > >  	BUG_ON(!list_empty(&proc->todo));
+> > >  	BUG_ON(!list_empty(&proc->delivered_death));
+> > > +	device = container_of(proc->context, struct binder_device, context);
+> > > +	if (refcount_dec_and_test(&device->ref)) {
+> > > +		kfree(proc->context->name);
+> > > +		kfree(device);
+> > > +	}
+> > 
+> > Where is device allocated?
+> > 
+> > It looks to me like they are allocated in init_binder_device().  So why
+> > are calling misc_deregister?  And it looks like the kfree(proc->context->name);
+> > is wrong as well because that's from the
+> > "device_names = kstrdup(binder_devices_param, GFP_KERNEL);" in
+> > binder_init().
+> 
+> This whole codepath is only hit for binderfs binder devices which are
+> allocated in binderfs.c.
 
-@@ -238,6 +240,9 @@ union sctp_params sctp_bind_addrs_to_raw(const
-struct sctp_bind_addr *bp,
-        addrparms = retval;
+Ah.  I see that now.  Thanks!
 
-        list_for_each_entry(addr, &bp->address_list, list) {
-+               if ((PF_INET6 == sk->sk_family) && inet_v6_ipv6only(sk) &&
-+                   (AF_INET == addr->a.sa.sa_family))
-+                       continue;
-                af = sctp_get_af_specific(addr->a.v4.sin_family);
-                len = af->to_addr_param(&addr->a, &rawaddr);
-                memcpy(addrparms.v, &rawaddr, len);
+regards,
+dan carpenter
 
->
-> Best regards
-> Michael
-> >
-> > Thanks,
-> > Marcelo
-> >
-> >>
-> >> Best regards
-> >> Michael
-> >>>
-> >>> Thanks,
-> >>>
-> >>> -corey
-> >>>
-> >>>>
-> >>>>>
-> >>>>> gcc -g -o sctptest -Wall sctptest.c
-> >>>>>
-> >>>>> and run it in one window as a server:
-> >>>>>
-> >>>>> ./sctptest a
-> >>>>>
-> >>>>> (Pass in any option to be the server) and run the following in another
-> >>>>> window as the client:
-> >>>>>
-> >>>>> ./sctptest
-> >>>>>
-> >>>>> It disconnects after about 2.5 seconds.  If it works, it should just sit
-> >>>>> there forever.
-> >>>>>
-> >>>>> -corey
-> >>>>>
-> >>>>>
-> >>>>> #include <stdio.h>
-> >>>>> #include <stdbool.h>
-> >>>>> #include <string.h>
-> >>>>> #include <unistd.h>
-> >>>>> #include <fcntl.h>
-> >>>>> #include <sys/select.h>
-> >>>>> #include <arpa/inet.h>
-> >>>>> #include <netinet/sctp.h>
-> >>>>> #include <sys/types.h>
-> >>>>> #include <sys/socket.h>
-> >>>>> #include <netdb.h>
-> >>>>>
-> >>>>> static int
-> >>>>> getaddr(const char *addr, const char *port, bool listen,
-> >>>>>       struct addrinfo **rai)
-> >>>>> {
-> >>>>>   struct addrinfo *ai, hints;
-> >>>>>
-> >>>>>   memset(&hints, 0, sizeof(hints));
-> >>>>>   hints.ai_flags = AI_ADDRCONFIG;
-> >>>>>   if (listen)
-> >>>>>       hints.ai_flags |= AI_PASSIVE;
-> >>>>>   hints.ai_family = AF_UNSPEC;
-> >>>>>   hints.ai_socktype = SOCK_STREAM;
-> >>>>>   hints.ai_protocol = IPPROTO_SCTP;
-> >>>>>   if (getaddrinfo(addr, port, &hints, &ai)) {
-> >>>>>       perror("getaddrinfo");
-> >>>>>       return -1;
-> >>>>>   }
-> >>>>>
-> >>>>>   *rai = ai;
-> >>>>>   return 0;
-> >>>>> }
-> >>>>>
-> >>>>> static int
-> >>>>> waitread(int s)
-> >>>>> {
-> >>>>>   char data[1];
-> >>>>>   ssize_t rv;
-> >>>>>
-> >>>>>   rv = read(s, data, sizeof(data));
-> >>>>>   if (rv == -1) {
-> >>>>>       perror("read");
-> >>>>>       return -1;
-> >>>>>   }
-> >>>>>   printf("Read %d bytes\n", (int) rv);
-> >>>>>   return 0;
-> >>>>> }
-> >>>>>
-> >>>>> static int
-> >>>>> do_server(void)
-> >>>>> {
-> >>>>>   int err, ls, s, optval;
-> >>>>>   struct addrinfo *ai;
-> >>>>>
-> >>>>>   printf("Server\n");
-> >>>>>
-> >>>>>   err = getaddr("::", "3023", true, &ai);
-> >>>>>   if (err)
-> >>>>>       return err;
-> >>>>>
-> >>>>>   ls = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
-> >>>>>   if (ls == -1) {
-> >>>>>       perror("socket");
-> >>>>>       return -1;
-> >>>>>   }
-> >>>>>
-> >>>>>   optval = 1;
-> >>>>>   if (setsockopt(ls, SOL_SOCKET, SO_REUSEADDR,
-> >>>>>                  (void *)&optval, sizeof(optval)) == -1) {
-> >>>>>       perror("setsockopt reuseaddr");
-> >>>>>       return -1;
-> >>>>>   }
-> >>>>>
-> >>>>>   /* Comment this out and it will work. */
-> >>>>>   if (setsockopt(ls, IPPROTO_IPV6, IPV6_V6ONLY, &optval,
-> >>>>>                  sizeof(optval)) == -1) {
-> >>>>>       perror("setsockopt ipv6 only");
-> >>>>>       return -1;
-> >>>>>   }
-> >>>>>
-> >>>>>   err = bind(ls, ai->ai_addr, ai->ai_addrlen);
-> >>>>>   if (err == -1) {
-> >>>>>       perror("bind");
-> >>>>>       return -1;
-> >>>>>   }
-> >>>>>
-> >>>>>   err = listen(ls, 5);
-> >>>>>   if (err == -1) {
-> >>>>>       perror("listen");
-> >>>>>       return -1;
-> >>>>>   }
-> >>>>>
-> >>>>>   s = accept(ls, NULL, NULL);
-> >>>>>   if (s == -1) {
-> >>>>>       perror("accept");
-> >>>>>       return -1;
-> >>>>>   }
-> >>>>>
-> >>>>>   close(ls);
-> >>>>>
-> >>>>>   err = waitread(s);
-> >>>>>   close(s);
-> >>>>>   return err;
-> >>>>> }
-> >>>>>
-> >>>>> static int
-> >>>>> do_client(void)
-> >>>>> {
-> >>>>>   int err, s;
-> >>>>>   struct addrinfo *ai;
-> >>>>>
-> >>>>>   printf("Client\n");
-> >>>>>
-> >>>>>   err = getaddr("::1", "3023", false, &ai);
-> >>>>>   if (err)
-> >>>>>       return err;
-> >>>>>
-> >>>>>   s = socket(ai->ai_family, ai->ai_socktype, ai->ai_protocol);
-> >>>>>   if (s == -1) {
-> >>>>>       perror("socket");
-> >>>>>       return -1;
-> >>>>>   }
-> >>>>>
-> >>>>>   err = connect(s, ai->ai_addr, ai->ai_addrlen);
-> >>>>>   if (err == -1) {
-> >>>>>       perror("connect");
-> >>>>>       return -1;
-> >>>>>   }
-> >>>>>
-> >>>>>   err = waitread(s);
-> >>>>>   close(s);
-> >>>>>   return err;
-> >>>>> }
-> >>>>>
-> >>>>> int
-> >>>>> main(int argc, char *argv[])
-> >>>>> {
-> >>>>>   int err;
-> >>>>>
-> >>>>>   if (argc > 1)
-> >>>>>       err = do_server();
-> >>>>>   else
-> >>>>>       err = do_client();
-> >>>>>   return !!err;
-> >>>>> }
-> >>>>>
-> >>
->
