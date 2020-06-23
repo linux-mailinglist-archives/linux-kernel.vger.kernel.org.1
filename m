@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2523205CD7
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B58D205CE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:07:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388409AbgFWUF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:05:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45430 "EHLO mail.kernel.org"
+        id S2388053AbgFWUGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:06:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388382AbgFWUFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:05:47 -0400
+        id S2388469AbgFWUG0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:06:26 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5C3E92078A;
-        Tue, 23 Jun 2020 20:05:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D2412064B;
+        Tue, 23 Jun 2020 20:06:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942746;
-        bh=Qq2YUB6UbFuTjB9tvvUMGK3L9h5ULnUYz8sdOpbnuow=;
+        s=default; t=1592942786;
+        bh=gHUQKhBCFvh/IqKiVujYxJZeiQ18wAyVeBlVfzXE9jk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yk96xY2WFZR8SPPUBwJESim+DY2hL/IAGe5rHwLTWdexHKHs3uZP95hFbDFy5pWO3
-         gXpTQwAU2y6xRMyUG+HNr++y3nBGHpCubuRC5mHI9qaSsY1PIvwUVZ25gEFWEOVS78
-         iQfZyLtgqD0g8NceQCNIZ9gLIe1G7M1q4Edcm+OY=
+        b=Cd7p4GuZBtCXCVRaBzCz0mfb+dVFP5hDYFdeX357dEcpuR7zK9c9Vf6977r3M7UzL
+         Ystzk7iPQIPHwm7d2Hzk5w54/jx2eKXBbpGYYZRpAKblXoYWoRpNAk1T+DzEX5iIb1
+         o26JozFQhAn7KXvfjlKonihY7EbqS+6wbWSiLc2Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Pavel Machek (CIP)" <pavel@denx.de>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Simon Arlott <simon@octiron.net>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 102/477] ASoC: meson: add missing free_irq() in error path
-Date:   Tue, 23 Jun 2020 21:51:39 +0200
-Message-Id: <20200623195412.410103496@linuxfoundation.org>
+Subject: [PATCH 5.7 104/477] scsi: sr: Fix sr_probe() missing mutex_destroy
+Date:   Tue, 23 Jun 2020 21:51:41 +0200
+Message-Id: <20200623195412.508440198@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -45,51 +44,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Machek (CIP) <pavel@denx.de>
+From: Simon Arlott <simon@octiron.net>
 
-[ Upstream commit 3b8a299a58b2afce464ae11324b59dcf0f1d10a7 ]
+[ Upstream commit a247e07f8dadba5da9f188aaf4f96db0302146d9 ]
 
-free_irq() is missing in case of error, fix that.
+If the device minor cannot be allocated or the cdrom fails to be registered
+then the mutex should be destroyed.
 
-Signed-off-by: Pavel Machek (CIP) <pavel@denx.de>
-Reviewed-by: Jerome Brunet <jbrunet@baylibre.com>
-
-Link: https://lore.kernel.org/r/20200606153103.GA17905@amd
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/06e9de38-eeed-1cab-5e08-e889288935b3@0882a8b5-c6c3-11e9-b005-00805fc181fe
+Fixes: 51a858817dcd ("scsi: sr: get rid of sr global mutex")
+Signed-off-by: Simon Arlott <simon@octiron.net>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/meson/axg-fifo.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ drivers/scsi/sr.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/meson/axg-fifo.c b/sound/soc/meson/axg-fifo.c
-index 2e9b56b29d313..b2e867113226b 100644
---- a/sound/soc/meson/axg-fifo.c
-+++ b/sound/soc/meson/axg-fifo.c
-@@ -249,7 +249,7 @@ int axg_fifo_pcm_open(struct snd_soc_component *component,
- 	/* Enable pclk to access registers and clock the fifo ip */
- 	ret = clk_prepare_enable(fifo->pclk);
- 	if (ret)
--		return ret;
-+		goto free_irq;
+diff --git a/drivers/scsi/sr.c b/drivers/scsi/sr.c
+index d2fe3fa470f95..8d062d4f3ce0b 100644
+--- a/drivers/scsi/sr.c
++++ b/drivers/scsi/sr.c
+@@ -817,6 +817,7 @@ static int sr_probe(struct device *dev)
  
- 	/* Setup status2 so it reports the memory pointer */
- 	regmap_update_bits(fifo->map, FIFO_CTRL1,
-@@ -269,8 +269,14 @@ int axg_fifo_pcm_open(struct snd_soc_component *component,
- 	/* Take memory arbitror out of reset */
- 	ret = reset_control_deassert(fifo->arb);
- 	if (ret)
--		clk_disable_unprepare(fifo->pclk);
-+		goto free_clk;
-+
-+	return 0;
- 
-+free_clk:
-+	clk_disable_unprepare(fifo->pclk);
-+free_irq:
-+	free_irq(fifo->irq, ss);
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(axg_fifo_pcm_open);
+ fail_put:
+ 	put_disk(disk);
++	mutex_destroy(&cd->lock);
+ fail_free:
+ 	kfree(cd);
+ fail:
 -- 
 2.25.1
 
