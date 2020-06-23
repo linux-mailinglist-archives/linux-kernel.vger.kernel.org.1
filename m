@@ -2,106 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAC752057FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F66C2057FA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733073AbgFWQ4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 12:56:30 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:35861 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732416AbgFWQ4W (ORCPT
+        id S1732985AbgFWQ4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 12:56:21 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:36165 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732416AbgFWQ4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 12:56:22 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id 7F2B69DE;
-        Tue, 23 Jun 2020 12:56:20 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 23 Jun 2020 12:56:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=r
-        XOFys0881hoPtvQddDik70Gqk7ZL4a631nWuDDDZ1I=; b=PFqYvF3/V3fw9s6Ec
-        8T68pPe2E60vme/LzpymHABo3wbSz/2S8vgWG0lweh28Vky31d7BFDnq4FV9KeYa
-        C7Kz/ZlYO2yBy8WauJpnWACbeXq64l2Hg7lZaoT4xUyxfNRVkRuITcVVmGAVs0Tn
-        WpawogUpkpeUGeyejBKcYQ2K54T7nxHjMaHDomMsCwo48ZgzO1BvUWLl2SFj18nt
-        jnS+bedhN2GCgE2cEXO+5zfyQnzLEP+t1OeYSHGOFvCm2JbnIN2Cn7OrRkHbUCKT
-        gzP7DENEnOVsQS4VowrD7Dc0ThWZDsJlb7mYgrAsvJoGKvD0r0ncfExPXgYQxyxj
-        F2Hfw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=rXOFys0881hoPtvQddDik70Gqk7ZL4a631nWuDDDZ
-        1I=; b=tBPnBtyFsmPfvutqSmQpxLJ9ooE+78MAjXS0FF5aEPgpEakX4/TUdFgBp
-        UJhfzpjoHcerxVVobqO1FqmXpEEVHqr9ZE5nK7Sh72TUosBHZE9gsy9CqrqlDa1V
-        1jQcIqTlVxOM2878UGeFbXPlaRhTBHuAW2VeKLVUYLzX1PPTrQ3PNRQ65nZqbdHa
-        ulLfIHAM5RnJFV663hQz1Cd6Hhv5Er6diLdCc7/CmSliDXQMW/a/AvIk035hjtYG
-        WPNF2CSYj54RwA7HHS3I5MYZiGRiWOY6ozT8Cb/j6G6Jlk3uAhub7Y/WPam6Fmlo
-        0XG23Pm4yIS6KdwR2lF5bdO0EUD5w==
-X-ME-Sender: <xms:MTTyXgzhD2oLsWAO__gBdGAUmkEU9buPzYFego_AB0XV6q0ZQMQfIg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudekhedgkedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthhqredttddtjeenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpefhueeggfdvieegjeeigeffudeuhfeuveeuieelgfffleelgedtiefgvdev
-    ieevvdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppeeltddrkeelrdeike
-    drjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
-    mhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:MTTyXkS2-ZPryP7_3pCY0SgEKGmnEp7E6Shv1poj5LgtASWsyxM95A>
-    <xmx:MTTyXiULJFFtGvsjB4nIKOB3QHqGFPgBehWrCS5vOAwfsuiIb9dc1g>
-    <xmx:MTTyXuhoW49IbOwmvyfGT1PSRVarzdvuBcXzDMcL0XvHATi-ulFXqg>
-    <xmx:NDTyXu7UwjM8LGGqhYTjcH2uyHUIikJk-RnTCClKuAIgrS3Cdol8TzqklRg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 63CA0328005A;
-        Tue, 23 Jun 2020 12:56:17 -0400 (EDT)
-Date:   Tue, 23 Jun 2020 18:56:15 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        Aditya Pakki <pakki001@umn.edu>,
-        Navid Emamdoost <emamd001@umn.edu>, Kangjie Lu <kjlu@umn.edu>,
-        Qiushi Wu <wu000273@umn.edu>, linux-kernel@vger.kernel.org,
-        YueHaibing <yuehaibing@huawei.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Eric Biggers <ebiggers@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Corentin Labbe <clabbe.montjoie@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH] crypto: sun8i-ce - Fix runtime PM imbalance in
- sun8i_ce_cipher_init
-Message-ID: <20200623165615.i7iphakzjeu2d3fq@gilmour.lan>
-References: <265c3a75-f8ce-fb34-d559-39e58a4dfb4f@web.de>
- <20200623134442.wj4i3r3dlp6rtpaq@gilmour.lan>
- <16341716-aeb6-febc-441c-c1826da8c4d3@web.de>
+        Tue, 23 Jun 2020 12:56:19 -0400
+Received: by mail-io1-f72.google.com with SMTP id g17so6744360iob.3
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:56:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ROU0lx5jL4suhlbFQVzskyt8m5jF4lI6Zi/ObrujOXE=;
+        b=gqSelUMqPngNXlqAcfD33zKDs0OP/2P/K04KnYOXli3CtX5bKOLWgFUrqyfV8sOw0D
+         VewX0Gt1E8sx+2omtMvR1crqljNdt7ErZix7oWxKnp/PbXksqM8Gt4X8Wby2yffwFqAK
+         3D6JZgWUA95HL8Qw8tclSCzz/pY3RfquAaVJRIDlUKpxTParPND/ygMhXTOlSrg8XxCR
+         t/maTQyPKSBFAdxbAwnXVsiJdCFO2ppkmDx4u1gVNy714a4RtBPJLht7cDK7bqark+04
+         PGIj8f7FlzpaWdIH5OlwTDhdGmAPBVPwBfPhItM1QsutYitX4oTvcIt/Jr1Ut6w+nFPp
+         l/dQ==
+X-Gm-Message-State: AOAM532TjMTfmfVMX5hJm91KMHsPgloBfOt+d2MB0oo/M5TzIZx2Grwq
+        0u1hxaygfBTv5nXkMxQSGndMqXIUR/YVZMAW9qHA/ehnqL/Z
+X-Google-Smtp-Source: ABdhPJy0mXObbN07j+2xhO4/4c/cJ+P4vMTRDDOu/lmXTaPquN5P+yd4PnYAVvBO9vyZnpsOY6+lAIAfRx09DBDrLtsdLrjAXI8W
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <16341716-aeb6-febc-441c-c1826da8c4d3@web.de>
+X-Received: by 2002:a05:6e02:128c:: with SMTP id y12mr19351210ilq.45.1592931378517;
+ Tue, 23 Jun 2020 09:56:18 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 09:56:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f7e03b05a8c33c97@google.com>
+Subject: KASAN: vmalloc-out-of-bounds Read in nl8NUM_dump_wpan_phy
+From:   syzbot <syzbot+736bcbcb11b60d0c0792@syzkaller.appspotmail.com>
+To:     alex.aring@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wpan@vger.kernel.org,
+        netdev@vger.kernel.org, stefan@datenfreihafen.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 05:00:32PM +0200, Markus Elfring wrote:
-> >>> Fix this by =E2=80=A6
-> >>
-> >> Please replace the beginning of this sentence with the tag =E2=80=9CFi=
-xes=E2=80=9D.
-> >> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tre=
-e/Documentation/process/submitting-patches.rst?id=3D625d3449788f85569096780=
-592549d0340e9c0c7#n183
-> >
-> > No, not really. The comment you (partially) quoted explains how the
-> > issue is fixed, your suggestion explains what commit introduced the fix
-> > in the first place. They are both beneficial, but there's strictly no
-> > reason to remove the former for the latter.
->=20
-> Do you care to improve this change description another bit?
+Hello,
 
-I'm not sure which change description you're talking about?
+syzbot found the following crash on:
 
-Maxime
+HEAD commit:    b835a71e usbnet: smsc95xx: Fix use-after-free after removal
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=12e7fa19100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dcc6334acae363d4
+dashboard link: https://syzkaller.appspot.com/bug?extid=736bcbcb11b60d0c0792
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=106b4909100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11a1bf8d100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+736bcbcb11b60d0c0792@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: vmalloc-out-of-bounds in nla_get_u32 include/net/netlink.h:1541 [inline]
+BUG: KASAN: vmalloc-out-of-bounds in nl802154_dump_wpan_phy_parse net/ieee802154/nl802154.c:563 [inline]
+BUG: KASAN: vmalloc-out-of-bounds in nl802154_dump_wpan_phy+0x98e/0x9c0 net/ieee802154/nl802154.c:593
+Read of size 4 at addr ffffc90005ea1018 by task syz-executor118/6820
+
+CPU: 1 PID: 6820 Comm: syz-executor118 Not tainted 5.8.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ print_address_description.constprop.0.cold+0x5/0x436 mm/kasan/report.c:383
+ __kasan_report mm/kasan/report.c:513 [inline]
+ kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
+ nla_get_u32 include/net/netlink.h:1541 [inline]
+ nl802154_dump_wpan_phy_parse net/ieee802154/nl802154.c:563 [inline]
+ nl802154_dump_wpan_phy+0x98e/0x9c0 net/ieee802154/nl802154.c:593
+ genl_lock_dumpit+0x7f/0xb0 net/netlink/genetlink.c:575
+ netlink_dump+0x4cd/0xf60 net/netlink/af_netlink.c:2245
+ __netlink_dump_start+0x643/0x900 net/netlink/af_netlink.c:2353
+ genl_family_rcv_msg_dumpit+0x2ac/0x310 net/netlink/genetlink.c:638
+ genl_family_rcv_msg net/netlink/genetlink.c:733 [inline]
+ genl_rcv_msg+0x797/0x9e0 net/netlink/genetlink.c:753
+ netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2469
+ genl_rcv+0x24/0x40 net/netlink/genetlink.c:764
+ netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1329
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
+ do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x441319
+Code: Bad RIP value.
+RSP: 002b:00007fff95574ae8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000441319
+RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 00000000006cb018 R08: 00000000004002c8 R09: 00000000004002c8
+R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000402090
+R13: 0000000000402120 R14: 0000000000000000 R15: 0000000000000000
+
+
+Memory state around the buggy address:
+ ffffc90005ea0f00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+ ffffc90005ea0f80: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+>ffffc90005ea1000: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+                            ^
+ ffffc90005ea1080: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+ ffffc90005ea1100: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
+==================================================================
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
