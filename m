@@ -2,111 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E163206622
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF38206544
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:33:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390679AbgFWVhy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:37:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50438 "EHLO
+        id S2393681AbgFWVcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:32:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388188AbgFWUIi (ORCPT
+        with ESMTP id S2388925AbgFWUMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:08:38 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA4DC061573;
-        Tue, 23 Jun 2020 13:08:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IAo6LZgftQ+WfJhPV9ZsiUspETli4pnTXogO2KOnqZw=; b=WSIkYB191UtTcRJW24x6NoATDT
-        B1Pi94FgzTqQDr/rc+wtAw9pa6UWZp4fn7FYq7hdxNdlCMDTW6Ein61oTWBH64bwRHAQcJBmKD1/8
-        gZatC1EWYDVnQgTbBjACdaW6b3Xz5cyUiXquBDMC6IB6A5JRARMMD+4xQLKbVuVbFju2vPmjujzwF
-        Vzv7UGyJ02a6M7SWgurAq0oDJum+G5oj235k0ai4FLqtwb2uNmCLl26gARqoiOOPweLucCKnlZPy8
-        KRtwBq/tXGA4G1yN+YBjfR2DlDHdtEcBEzVw1TJrcqFd8yAIOl2Qe71DUGKqeXJo/LPe8Xxc1rBWZ
-        U8EMfpkQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jnpD7-0001p5-BH; Tue, 23 Jun 2020 20:08:01 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5CA2B983A87; Tue, 23 Jun 2020 22:08:00 +0200 (CEST)
-Date:   Tue, 23 Jun 2020 22:08:00 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, bigeasy@linutronix.de,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, heiko.carstens@de.ibm.com,
-        linux-s390@vger.kernel.org, linux@armlinux.org.uk,
-        Qian Cai <cai@lca.pw>
-Subject: Re: [PATCH v4 7/8] lockdep: Change hardirq{s_enabled,_context} to
- per-cpu variables
-Message-ID: <20200623200800.GD2483@worktop.programming.kicks-ass.net>
-References: <20200623083645.277342609@infradead.org>
- <20200623083721.512673481@infradead.org>
- <20200623150031.GA2986783@debian-buster-darwi.lab.linutronix.de>
- <20200623152450.GM4817@hirez.programming.kicks-ass.net>
- <20200623161320.GA2996373@debian-buster-darwi.lab.linutronix.de>
- <20200623163730.GA4800@hirez.programming.kicks-ass.net>
- <20200623175957.GA106514@elver.google.com>
- <20200623181232.GB4800@hirez.programming.kicks-ass.net>
- <CANpmjNMmYYa-mVo_Ao_n+9KzwxhGYcb6B6C72yCHyD9sZudDfA@mail.gmail.com>
- <20200623191335.GA86296@elver.google.com>
+        Tue, 23 Jun 2020 16:12:02 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 002B4C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:12:01 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id 64so7040420oti.5
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:12:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XIF/78/oz3AALSTMCdkQl40XEyXtQL+RlWZw1uAr9zg=;
+        b=tdKjXBvP63QvKoBudz2TiD3q5385th1hMT4YyYbkpfKPZCL8IJ+Ea/zWDdJaupAjUS
+         /kBIO05NYoTtOQi7v+pjbbkLZ1Qb9T7/MilL7zxh96EEB+oGsCYT8rg0T6sgm+CnEPhR
+         +yt2Ka2mZtXXNQGsmzR+xNKA93lfLcZkspz5RGQFiC44WauvAIf2kirLnhG4wUU1JjSY
+         BUxdlSB0YrLdRk8T5A33yaoB5ZnoqGwr/HzmfalqHKKvqYB2VGE1uX3r4zpciuDSElnH
+         sLKa76Di6HbMOjthg7U7OzD66Fl2B87tt+fZWbYrygveTZYkAZahP7rWsV4oaxrX7b0U
+         tlMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XIF/78/oz3AALSTMCdkQl40XEyXtQL+RlWZw1uAr9zg=;
+        b=ORJ8XJi1B4oBaFQy7dASsgOU9UDpQTlVGwhuAblaMdjXBqi/2bmrkQMa1R86zAv4m+
+         9kcxEeeDHQYn34QZI6dYy7vJQfKSaEtBaCv6KKgUdlSDqSZj2hQL2QYb9QhzsGGijIjo
+         sMVvcnjzIVZTmsl9nrXitGl38huRUwb1vauGvrH41LLZ/fwWaA+0dmAVMbvQ0+oOtHQT
+         sK4E1qAngkLmAiPWib4+lYmzKQ5JRfto1nXz4N9W3f4APxesa1Nson4CxGuIVMyPl2dN
+         UNxFn+MZrUHAhE9dmiAUqPl4b8if/N65fA1To5aasYQt3D+xD0cClsWrNt7WoVDrFTq8
+         lmww==
+X-Gm-Message-State: AOAM533MNKVhILzLYobK0BHrLHCrKdPRHatbwBztwMlzky/te8TsMGMV
+        H/1ztuHuQUnMCwSLGnGZH8NIwg==
+X-Google-Smtp-Source: ABdhPJxzH8gIlLIF2g+bTSsjHv193lX+0hnB105m8aM4ZVMB52dgPURejz1TiABTEcdU/ErrOhXIlQ==
+X-Received: by 2002:a9d:53c3:: with SMTP id i3mr20384120oth.300.1592943121239;
+        Tue, 23 Jun 2020 13:12:01 -0700 (PDT)
+Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
+        by smtp.gmail.com with ESMTPSA id s17sm249054oog.33.2020.06.23.13.12.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 13:12:00 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 13:09:18 -0700
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     ohad@wizery.com, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, loic.pallardy@st.com,
+        arnaud.pouliquen@st.com, s-anna@ti.com
+Subject: Re: [PATCH v4 9/9] remoteproc: Properly handle firmware name when
+ attaching
+Message-ID: <20200623200918.GA407764@builder.lan>
+References: <20200601175139.22097-1-mathieu.poirier@linaro.org>
+ <20200601175139.22097-10-mathieu.poirier@linaro.org>
+ <20200622073319.GK149351@builder.lan>
+ <20200623194849.GC1908098@xps15>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200623191335.GA86296@elver.google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200623194849.GC1908098@xps15>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 09:13:35PM +0200, Marco Elver wrote:
-> [   10.182354] ------------[ cut here ]------------
-> [   10.183058] WARNING: CPU: 7 PID: 136 at kernel/locking/lockdep.c:398 lockdep_hardirqs_on_prepare+0x1c6/0x270
-> [   10.184347] Modules linked in:
-> [   10.184771] CPU: 7 PID: 136 Comm: systemd-journal Not tainted 5.8.0-rc1+ #3
-> [   10.185706] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1 04/01/2014
-> [   10.186821] RIP: 0010:lockdep_hardirqs_on_prepare+0x1c6/0x270
-> [   10.187594] Code: 75 28 65 48 8b 04 25 28 00 00 00 48 3b 44 24 08 0f 85 b9 00 00 00 48 83 c4 10 5b 41 5e 41 5f c3 65 48 ff 05 d4 24 4e 75 eb d8 <0f> 0b 90 41 c7 86 c4 08 00 00 00 00 00 00 eb c8 e8 65 09 71 01 85
-> [   10.190203] RSP: 0018:ffffa7ee802b7848 EFLAGS: 00010017
-> [   10.190989] RAX: 0000000000000001 RBX: ffff955e92a34ab0 RCX: 0000000000000001
-> [   10.192053] RDX: 0000000000000006 RSI: ffff955e92a34a88 RDI: ffff955e92a341c0
-> [   10.193117] RBP: ffffa7ee802b7be8 R08: 0000000000000000 R09: 0000ffffffffffff
-> [   10.194186] R10: 0000ffffffffffff R11: 0000ffff8d07e268 R12: 0000000000000001
-> [   10.195249] R13: ffffffff8e41bb10 R14: ffff955e92a341c0 R15: 0000000000000001
-> [   10.196312] FS:  00007fd6862aa8c0(0000) GS:ffff955e9fd80000(0000) knlGS:0000000000000000
-> [   10.197513] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   10.198373] CR2: 00007fd6837dd000 CR3: 0000000812acc001 CR4: 0000000000760ee0
-> [   10.199436] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [   10.200494] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [   10.201554] PKRU: 55555554
-> [   10.201967] Call Trace:
-> [   10.202348]  ? _raw_spin_unlock_irqrestore+0x40/0x70
-> [   10.203093]  trace_hardirqs_on+0x56/0x60			<----- enter IRQ flags tracing code?
-> [   10.203686]  _raw_spin_unlock_irqrestore+0x40/0x70  		<----- take report_lock
-> [   10.204406]  prepare_report+0x11f/0x150
-> [   10.204986]  kcsan_report+0xca/0x6c0 			<----- generating a KCSAN report
+On Tue 23 Jun 12:48 PDT 2020, Mathieu Poirier wrote:
 
-Oh, duh.. that's because lockdep_off() ;-)
+> On Mon, Jun 22, 2020 at 12:33:19AM -0700, Bjorn Andersson wrote:
+> > On Mon 01 Jun 10:51 PDT 2020, Mathieu Poirier wrote:
+> > 
+> > > This patch prevents the firmware image name from being displayed when
+> > > the remoteproc core is attaching to a remote processor. This is needed
+> > > needed since there is no guarantee about the nature of the firmware
+> > > image that is loaded by the external entity.
+> > > 
+> > > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> > 
+> > How about renaming the bool "firmware_unknown"?
+> 
+> My hope was to use the same variable, i.e "autonomous", for the RUNNING ->
+> DETACHED and CRASHED -> DETACHED scenarios to reduce the amount of
+> variables we need to keep track of when the functionality is implemented in
+> upcoming pachsets.
+> 
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index ab7571c1a1f5..c9ea05edce25 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -395,7 +395,7 @@ void lockdep_init_task(struct task_struct *task)
- 
- static __always_inline void lockdep_recursion_finish(void)
- {
--	if (WARN_ON_ONCE(--current->lockdep_recursion))
-+	if (WARN_ON_ONCE((--current->lockdep_recursion) & LOCKDEP_RECURSION_MASK))
- 		current->lockdep_recursion = 0;
- }
- 
+Sounds like a good goal, let's keep it as is for now!
 
+Thanks,
+Bjorn
+
+> Thanks for the review,
+> Mathieu
+> 
+> > 
+> > Apart from that, I think this looks good.
+> > 
+> > Regards,
+> > Bjorn
+> > 
+> > > ---
+> > >  drivers/remoteproc/remoteproc_core.c  | 18 ++++++++++++++++++
+> > >  drivers/remoteproc/remoteproc_sysfs.c | 16 ++++++++++++++--
+> > >  include/linux/remoteproc.h            |  2 ++
+> > >  3 files changed, 34 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
+> > > index 0e23284fbd25..a8adc712e7f6 100644
+> > > --- a/drivers/remoteproc/remoteproc_core.c
+> > > +++ b/drivers/remoteproc/remoteproc_core.c
+> > > @@ -1642,6 +1642,14 @@ static int rproc_stop(struct rproc *rproc, bool crashed)
+> > >  
+> > >  	rproc->state = RPROC_OFFLINE;
+> > >  
+> > > +	/*
+> > > +	 * The remote processor has been stopped and is now offline, which means
+> > > +	 * that the next time it is brought back online the remoteproc core will
+> > > +	 * be responsible to load its firmware.  As such it is no longer
+> > > +	 * autonomous.
+> > > +	 */
+> > > +	rproc->autonomous = false;
+> > > +
+> > >  	dev_info(dev, "stopped remote processor %s\n", rproc->name);
+> > >  
+> > >  	return 0;
+> > > @@ -2166,6 +2174,16 @@ int rproc_add(struct rproc *rproc)
+> > >  	/* create debugfs entries */
+> > >  	rproc_create_debug_dir(rproc);
+> > >  
+> > > +	/*
+> > > +	 * Remind ourselves the remote processor has been attached to rather
+> > > +	 * than booted by the remoteproc core.  This is important because the
+> > > +	 * RPROC_DETACHED state will be lost as soon as the remote processor
+> > > +	 * has been attached to.  Used in firmware_show() and reset in
+> > > +	 * rproc_stop().
+> > > +	 */
+> > > +	if (rproc->state == RPROC_DETACHED)
+> > > +		rproc->autonomous = true;
+> > > +
+> > >  	/* if rproc is marked always-on, request it to boot */
+> > >  	if (rproc->auto_boot) {
+> > >  		ret = rproc_trigger_auto_boot(rproc);
+> > > diff --git a/drivers/remoteproc/remoteproc_sysfs.c b/drivers/remoteproc/remoteproc_sysfs.c
+> > > index 8b462c501465..4ee158431f67 100644
+> > > --- a/drivers/remoteproc/remoteproc_sysfs.c
+> > > +++ b/drivers/remoteproc/remoteproc_sysfs.c
+> > > @@ -14,8 +14,20 @@ static ssize_t firmware_show(struct device *dev, struct device_attribute *attr,
+> > >  			  char *buf)
+> > >  {
+> > >  	struct rproc *rproc = to_rproc(dev);
+> > > -
+> > > -	return sprintf(buf, "%s\n", rproc->firmware);
+> > > +	const char *firmware = rproc->firmware;
+> > > +
+> > > +	/*
+> > > +	 * If the remote processor has been started by an external
+> > > +	 * entity we have no idea of what image it is running.  As such
+> > > +	 * simply display a generic string rather then rproc->firmware.
+> > > +	 *
+> > > +	 * Here we rely on the autonomous flag because a remote processor
+> > > +	 * may have been attached to and currently in a running state.
+> > > +	 */
+> > > +	if (rproc->autonomous)
+> > > +		firmware = "unknown";
+> > > +
+> > > +	return sprintf(buf, "%s\n", firmware);
+> > >  }
+> > >  
+> > >  /* Change firmware name via sysfs */
+> > > diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h
+> > > index bf6a310ba870..cf5e31556780 100644
+> > > --- a/include/linux/remoteproc.h
+> > > +++ b/include/linux/remoteproc.h
+> > > @@ -491,6 +491,7 @@ struct rproc_dump_segment {
+> > >   * @table_sz: size of @cached_table
+> > >   * @has_iommu: flag to indicate if remote processor is behind an MMU
+> > >   * @auto_boot: flag to indicate if remote processor should be auto-started
+> > > + * @autonomous: true if an external entity has booted the remote processor
+> > >   * @dump_segments: list of segments in the firmware
+> > >   * @nb_vdev: number of vdev currently handled by rproc
+> > >   */
+> > > @@ -524,6 +525,7 @@ struct rproc {
+> > >  	size_t table_sz;
+> > >  	bool has_iommu;
+> > >  	bool auto_boot;
+> > > +	bool autonomous;
+> > >  	struct list_head dump_segments;
+> > >  	int nb_vdev;
+> > >  	u8 elf_class;
+> > > -- 
+> > > 2.20.1
+> > > 
