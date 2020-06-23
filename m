@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A05D205CF6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3C94205CFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388590AbgFWUHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:07:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47718 "EHLO mail.kernel.org"
+        id S2388602AbgFWUH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:07:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47838 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388564AbgFWUHP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:07:15 -0400
+        id S2388083AbgFWUHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:07:19 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E837B2064B;
-        Tue, 23 Jun 2020 20:07:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 115C72064B;
+        Tue, 23 Jun 2020 20:07:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942834;
-        bh=T+rGk9RKgviyHEvJnT1d21Zz2X+wqeEWgR9AJEDewr0=;
+        s=default; t=1592942839;
+        bh=X5ktFJ+870ztA+q6ttQZcLSPA2kkELTxjLUBASEF5aw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=inE1CD1yzKcJqKmOc0vPu4dfwaaSDzATzFRxrGsVLFJWIl0yb091RGSETPhY3eW5j
-         8kgu3Lb/sdHFOY4UMUFRiXeXWp50vwPSrPgMNMehj93ytO/Nv1I2cKr/0Vykj76BoQ
-         HoQOr+whjES34ipE4H31zIMBbXIMQ+WsBhZotI2U=
+        b=lPCTMzvbufH6kFGXDsmJ/vsUCJMptH1Ovf3tCRbL+dU3Iu6+bnyPW4aAAkaRt1qKX
+         PYob/GhK4H4zxGEzPa0qUpq7qSi139qYv/KidHqLs8C7RKB/Kq0mFvHCR0qbcrmfmC
+         vy/j/qwhOrDc2pV4i4LrbMbkQGsEdit2XBMqixIU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        stable@vger.kernel.org, Neil Armstrong <narmstrong@baylibre.com>,
+        Kevin Hilman <khilman@baylibre.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 153/477] thermal/drivers/ti-soc-thermal: Avoid dereferencing ERR_PTR
-Date:   Tue, 23 Jun 2020 21:52:30 +0200
-Message-Id: <20200623195414.829037889@linuxfoundation.org>
+Subject: [PATCH 5.7 155/477] arm64: dts: meson-g12b-ugoos-am6: fix board compatible
+Date:   Tue, 23 Jun 2020 21:52:32 +0200
+Message-Id: <20200623195414.928054316@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -46,55 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+From: Neil Armstrong <narmstrong@baylibre.com>
 
-[ Upstream commit 7440f518dad9d861d76c64956641eeddd3586f75 ]
+[ Upstream commit 5c28dcbb3a1be167c07784b5f710ec602a57bea2 ]
 
-On error the function ti_bandgap_get_sensor_data() returns the error
-code in ERR_PTR() but we only checked if the return value is NULL or
-not. And, so we can dereference an error code inside ERR_PTR.
-While at it, convert a check to IS_ERR_OR_NULL.
+Add missing amlogic,s922x in the board compatible list.
 
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Reviewed-by: Amit Kucheria <amit.kucheria@linaro.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20200424161944.6044-1-sudipm.mukherjee@gmail.com
+It fixes:
+meson-g12b-ugoos-am6.dt.yaml: /: compatible: ['ugoos,am6', 'amlogic,g12b'] is not valid under any of the given schemas
+
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Kevin Hilman <khilman@baylibre.com>
+Link: https://lore.kernel.org/r/20200326165958.19274-4-narmstrong@baylibre.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/thermal/ti-soc-thermal/ti-thermal-common.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/thermal/ti-soc-thermal/ti-thermal-common.c b/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-index d3e959d01606c..85776db4bf346 100644
---- a/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-+++ b/drivers/thermal/ti-soc-thermal/ti-thermal-common.c
-@@ -169,7 +169,7 @@ int ti_thermal_expose_sensor(struct ti_bandgap *bgp, int id,
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts
+index 06c5430eb92d1..fdaacfd96b97f 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-g12b-ugoos-am6.dts
+@@ -14,7 +14,7 @@
+ #include <dt-bindings/sound/meson-g12a-tohdmitx.h>
  
- 	data = ti_bandgap_get_sensor_data(bgp, id);
+ / {
+-	compatible = "ugoos,am6", "amlogic,g12b";
++	compatible = "ugoos,am6", "amlogic,s922x", "amlogic,g12b";
+ 	model = "Ugoos AM6";
  
--	if (!data || IS_ERR(data))
-+	if (!IS_ERR_OR_NULL(data))
- 		data = ti_thermal_build_data(bgp, id);
- 
- 	if (!data)
-@@ -196,7 +196,7 @@ int ti_thermal_remove_sensor(struct ti_bandgap *bgp, int id)
- 
- 	data = ti_bandgap_get_sensor_data(bgp, id);
- 
--	if (data && data->ti_thermal) {
-+	if (!IS_ERR_OR_NULL(data) && data->ti_thermal) {
- 		if (data->our_zone)
- 			thermal_zone_device_unregister(data->ti_thermal);
- 	}
-@@ -262,7 +262,7 @@ int ti_thermal_unregister_cpu_cooling(struct ti_bandgap *bgp, int id)
- 
- 	data = ti_bandgap_get_sensor_data(bgp, id);
- 
--	if (data) {
-+	if (!IS_ERR_OR_NULL(data)) {
- 		cpufreq_cooling_unregister(data->cool_dev);
- 		if (data->policy)
- 			cpufreq_cpu_put(data->policy);
+ 	aliases {
 -- 
 2.25.1
 
