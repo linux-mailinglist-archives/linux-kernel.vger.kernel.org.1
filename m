@@ -2,133 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 370FC205905
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:37:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E56A2058B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387788AbgFWRhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 13:37:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387740AbgFWRhH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 13:37:07 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2F77E20706;
-        Tue, 23 Jun 2020 17:37:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592933826;
-        bh=pF3pWv/GOcDxOoaEshP3nh+jd3va/7b8gr2M0p5wcCY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yU+ZncpjrKRCNfILpNzw+Fe6/Yp0Elzd74GXV1aGshpF05xSuALgzghPk8b9mj/ko
-         wQnaGO3X+BgJpDbN6+q1hkYcnLC4uIfCqbTCFwWVuq9/pCLDQwbPVBQhuVwFTZA0EB
-         crZMliUgX3J10p2x8Qn5gtA/8FD67AUAO5kaE618=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, Jan Kara <jack@suse.cz>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>, linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 6/6] blktrace: break out of blktrace setup on concurrent calls
-Date:   Tue, 23 Jun 2020 13:36:58 -0400
-Message-Id: <20200623173658.1356241-6-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200623173658.1356241-1-sashal@kernel.org>
-References: <20200623173658.1356241-1-sashal@kernel.org>
+        id S1733085AbgFWRfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 13:35:14 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:11850 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732408AbgFWRfO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 13:35:14 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NHOqaD009632;
+        Tue, 23 Jun 2020 13:35:12 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 31uk23gr7q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Jun 2020 13:35:12 -0400
+Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 05NHZABW002025
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Tue, 23 Jun 2020 13:35:11 -0400
+Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Tue, 23 Jun
+ 2020 10:35:09 -0700
+Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
+ (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Tue, 23 Jun 2020 10:35:09 -0700
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 05NHYxMV017521;
+        Tue, 23 Jun 2020 13:35:07 -0400
+From:   <alexandru.tachici@analog.com>
+To:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+CC:     <robh+dt@kernel.org>, <linux@roeck-us.net>,
+        Alexandru Tachici <alexandru.tachici@analog.com>
+Subject: [PATCH v4 6/7] hwmon: pmbus: adm1266: debugfs for blackbox info
+Date:   Tue, 23 Jun 2020 20:36:58 +0300
+Message-ID: <20200623173659.41358-7-alexandru.tachici@analog.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200623173659.41358-1-alexandru.tachici@analog.com>
+References: <20200623173659.41358-1-alexandru.tachici@analog.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-23_11:2020-06-23,2020-06-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 adultscore=0 mlxlogscore=999 phishscore=0 clxscore=1015
+ priorityscore=1501 suspectscore=0 bulkscore=0 mlxscore=0
+ lowpriorityscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006120000 definitions=main-2006230123
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Luis Chamberlain <mcgrof@kernel.org>
+From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-[ Upstream commit 1b0b283648163dae2a214ca28ed5a99f62a77319 ]
+Add a debugfs file to print information in the
+BLACKBOX_INFORMATION register. Contains information
+about the number of stored records, logic index and id
+of the latest record.
 
-We use one blktrace per request_queue, that means one per the entire
-disk.  So we cannot run one blktrace on say /dev/vda and then /dev/vda1,
-or just two calls on /dev/vda.
-
-We check for concurrent setup only at the very end of the blktrace setup though.
-
-If we try to run two concurrent blktraces on the same block device the
-second one will fail, and the first one seems to go on. However when
-one tries to kill the first one one will see things like this:
-
-The kernel will show these:
-
-```
-debugfs: File 'dropped' in directory 'nvme1n1' already present!
-debugfs: File 'msg' in directory 'nvme1n1' already present!
-debugfs: File 'trace0' in directory 'nvme1n1' already present!
-``
-
-And userspace just sees this error message for the second call:
-
-```
-blktrace /dev/nvme1n1
-BLKTRACESETUP(2) /dev/nvme1n1 failed: 5/Input/output error
-```
-
-The first userspace process #1 will also claim that the files
-were taken underneath their nose as well. The files are taken
-away form the first process given that when the second blktrace
-fails, it will follow up with a BLKTRACESTOP and BLKTRACETEARDOWN.
-This means that even if go-happy process #1 is waiting for blktrace
-data, we *have* been asked to take teardown the blktrace.
-
-This can easily be reproduced with break-blktrace [0] run_0005.sh test.
-
-Just break out early if we know we're already going to fail, this will
-prevent trying to create the files all over again, which we know still
-exist.
-
-[0] https://github.com/mcgrof/break-blktrace
-
-Signed-off-by: Luis Chamberlain <mcgrof@kernel.org>
-Signed-off-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
 ---
- kernel/trace/blktrace.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+ drivers/hwmon/pmbus/adm1266.c | 56 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 55 insertions(+), 1 deletion(-)
 
-diff --git a/kernel/trace/blktrace.c b/kernel/trace/blktrace.c
-index 6d3b432a748a6..88eb9261c7b5c 100644
---- a/kernel/trace/blktrace.c
-+++ b/kernel/trace/blktrace.c
-@@ -15,6 +15,9 @@
-  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-  *
-  */
-+
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
- #include <linux/kernel.h>
- #include <linux/blkdev.h>
- #include <linux/blktrace_api.h>
-@@ -481,6 +484,16 @@ int do_blk_trace_setup(struct request_queue *q, char *name, dev_t dev,
- 	 */
- 	strreplace(buts->name, '/', '_');
+diff --git a/drivers/hwmon/pmbus/adm1266.c b/drivers/hwmon/pmbus/adm1266.c
+index b9e92ab1e39a..ea2dc481094b 100644
+--- a/drivers/hwmon/pmbus/adm1266.c
++++ b/drivers/hwmon/pmbus/adm1266.c
+@@ -60,6 +60,7 @@ struct adm1266_data {
+ 	const char *gpio_names[ADM1266_GPIO_NR + ADM1266_PDIO_NR];
+ 	struct i2c_client *client;
+ 	struct mutex ioctl_mutex; /* lock ioctl access */
++	struct dentry *debugfs_dir;
+ 	struct nvmem_config nvmem_config;
+ 	struct nvmem_device *nvmem;
+ 	u8 *dev_mem;
+@@ -406,6 +407,28 @@ static const struct proc_ops adm1266_proc_ops = {
+ 	.proc_ioctl	= adm1266_ioctl,
+ };
  
-+	/*
-+	 * bdev can be NULL, as with scsi-generic, this is a helpful as
-+	 * we can be.
-+	 */
-+	if (q->blk_trace) {
-+		pr_warn("Concurrent blktraces are not allowed on %s\n",
-+			buts->name);
-+		return -EBUSY;
-+	}
++static int adm1266_blackbox_information_read(struct seq_file *s, void *pdata)
++{
++	struct device *dev = s->private;
++	struct i2c_client *client = to_i2c_client(dev);
++	u8 read_buf[5];
++	unsigned int latest_id;
++	int ret;
 +
- 	bt = kzalloc(sizeof(*bt), GFP_KERNEL);
- 	if (!bt)
- 		return -ENOMEM;
++	ret = i2c_smbus_read_block_data(client, ADM1266_BLACKBOX_INFO,
++					read_buf);
++	if (ret < 0)
++		return ret;
++
++	seq_puts(s, "BLACKBOX_INFORMATION:\n");
++	latest_id = read_buf[0] + (read_buf[1] << 8);
++	seq_printf(s, "Black box ID: %u\n", latest_id);
++	seq_printf(s, "Logic index: %u\n", read_buf[2]);
++	seq_printf(s, "Record count: %u\n", read_buf[3]);
++
++	return 0;
++}
++
+ static int adm1266_init_procfs(struct adm1266_data *data)
+ {
+ 	struct proc_dir_entry *proc_dir;
+@@ -423,6 +446,29 @@ static int adm1266_init_procfs(struct adm1266_data *data)
+ 	return 0;
+ }
+ 
++static int adm1266_init_debugfs(struct adm1266_data *data)
++{
++	struct dentry *entry;
++	struct dentry *root;
++
++	root = pmbus_get_debugfs_dir(data->client);
++	if (!root)
++		return -ENOENT;
++
++	data->debugfs_dir = debugfs_create_dir(data->client->name, root);
++	if (!data->debugfs_dir)
++		return -ENOENT;
++
++	entry = debugfs_create_devm_seqfile(&data->client->dev,
++					    "blackbox_information",
++					    data->debugfs_dir,
++					    adm1266_blackbox_information_read);
++	if (!entry)
++		return -ENOENT;
++
++	return 0;
++}
++
+ static int adm1266_nvmem_read_blackbox(struct adm1266_data *data, u8 *buf)
+ {
+ 	u8 read_buf[5];
+@@ -571,7 +617,15 @@ static int adm1266_probe(struct i2c_client *client,
+ 	for (i = 0; i < info->pages; i++)
+ 		info->func[i] = funcs;
+ 
+-	return pmbus_do_probe(client, id, info);
++	ret = pmbus_do_probe(client, id, info);
++	if (ret)
++		return ret;
++
++	ret = adm1266_init_debugfs(data);
++	if (ret)
++		dev_warn(&client->dev, "Failed to register debugfs: %d\n", ret);
++
++	return 0;
+ }
+ 
+ static const struct of_device_id adm1266_of_match[] = {
 -- 
-2.25.1
+2.20.1
 
