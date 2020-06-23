@@ -2,88 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6024C204F6B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 12:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF766204F70
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 12:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732258AbgFWKn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 06:43:56 -0400
-Received: from mail1.protonmail.ch ([185.70.40.18]:63313 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732172AbgFWKn4 (ORCPT
+        id S1732296AbgFWKor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 06:44:47 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:41168 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732135AbgFWKoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 06:43:56 -0400
-Date:   Tue, 23 Jun 2020 10:43:48 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1592909033; bh=LxhQtbSeiWbbxxDfDbRt6BCldu7riEbst4uIy5bgtvo=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=ASLJ3jgXPTW7SmAkk5DGVSQF06v5Jfbn/94tmeiVBG79evb2cbehX7P43it5BQXny
-         UeU17AYKJ2xvLGrUIOuMd9Pm9Tq6BOW0r5CbVNcT+K0k3abCSUJeXiPuRJsYGBZz+c
-         F3mCYMXDC+eZ96ipEA2MCbRLKwu89IjAV3L393JrLLKq8MhIb+8wu6T6XAHNpds6Ot
-         WTWi44Pb6sWcoY409ybfHvrkaN8ReJn3ORpFbUqDMs/ZpyPHo/7dS9IhOeJNPDAw5K
-         BfLHVxLldqLf/ZHsyYyQfqIWX2WugQaHz8Ge+gI6ye0Ho1e8RNCFMnuoJ9T7qopvLM
-         oPqLzljrjcK1Q==
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Michal Kubecek <mkubecek@suse.cz>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>, Jiri Pirko <jiri@mellanox.com>,
-        Antoine Tenart <antoine.tenart@bootlin.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Aya Levin <ayal@mellanox.com>,
-        Tom Herbert <therbert@google.com>,
-        Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v3 net] net: ethtool: add missing string for NETIF_F_GSO_TUNNEL_REMCSUM
-Message-ID: <C_D5pdWhThP15fmS3ndY6GxGStCPm5YVuBeR2FoVIEv4_kEoTSW-8gQ7W04kSxy0WCoIAvtjyeF_PERcT6IGj8KAmOn3EY7jrXVxVC0Wqhs=@pm.me>
+        Tue, 23 Jun 2020 06:44:46 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NAXAXJ098070;
+        Tue, 23 Jun 2020 06:44:38 -0400
+Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 31ufmyruwj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Jun 2020 06:44:38 -0400
+Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
+        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05NAfv4U011201;
+        Tue, 23 Jun 2020 10:44:36 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03fra.de.ibm.com with ESMTP id 31sa381yp8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Jun 2020 10:44:36 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05NAiX6H60293182
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Jun 2020 10:44:33 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 40494AE05F;
+        Tue, 23 Jun 2020 10:44:33 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2C7F7AE055;
+        Tue, 23 Jun 2020 10:44:33 +0000 (GMT)
+Received: from t480-pf1aa2c2 (unknown [9.145.42.240])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue, 23 Jun 2020 10:44:33 +0000 (GMT)
+Received: from bblock by t480-pf1aa2c2 with local (Exim 4.94)
+        (envelope-from <bblock@linux.ibm.com>)
+        id 1jngPn-002vYU-Vw; Tue, 23 Jun 2020 12:44:32 +0200
+Date:   Tue, 23 Jun 2020 12:44:31 +0200
+From:   Benjamin Block <bblock@linux.ibm.com>
+To:     Mike Christie <michael.christie@oracle.com>
+Cc:     Bob Liu <bob.liu@oracle.com>, linux-kernel@vger.kernel.org,
+        tj@kernel.org, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, open-iscsi@googlegroups.com,
+        lduncan@suse.com, maier@linux.ibm.com
+Subject: Re: [PATCH 2/2] scsi: register sysfs for scsi/iscsi workqueues
+Message-ID: <20200623104431.GE9340@t480-pf1aa2c2>
+References: <20200611100717.27506-1-bob.liu@oracle.com>
+ <20200611100717.27506-2-bob.liu@oracle.com>
+ <cf9ae940-87b2-c8a1-3dba-4d2b57ebe9dd@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on mail.protonmail.ch
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cf9ae940-87b2-c8a1-3dba-4d2b57ebe9dd@oracle.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-23_05:2020-06-23,2020-06-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ suspectscore=0 priorityscore=1501 phishscore=0 spamscore=0 clxscore=1011
+ cotscore=-2147483648 mlxlogscore=999 adultscore=0 impostorscore=0
+ lowpriorityscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006230079
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e585f2363637 ("udp: Changes to udp_offload to support remote
-checksum offload") added new GSO type and a corresponding netdev
-feature, but missed Ethtool's 'netdev_features_strings' table.
-Give it a name so it will be exposed to userspace and become available
-for manual configuration.
+On Mon, Jun 22, 2020 at 10:40:09AM -0500, Mike Christie wrote:
+> On 6/11/20 5:07 AM, Bob Liu wrote:
+> > This patch enable setting cpu affinity through "cpumask" for below
+> > scsi/iscsi workqueues, so as to get better isolation.
+> > - scsi_wq_*
+> > - scsi_tmf_*
+> > - iscsi_q_xx
+> > - iscsi_eh
+> > 
+> > Signed-off-by: Bob Liu <bob.liu@oracle.com>
+> > ---
+> >   drivers/scsi/hosts.c                | 4 ++--
+> >   drivers/scsi/libiscsi.c             | 2 +-
+> >   drivers/scsi/scsi_transport_iscsi.c | 2 +-
+> >   3 files changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/drivers/scsi/hosts.c b/drivers/scsi/hosts.c
+> > index 1d669e4..4b9f80d 100644
+> > --- a/drivers/scsi/hosts.c
+> > +++ b/drivers/scsi/hosts.c
+> > @@ -272,7 +272,7 @@ int scsi_add_host_with_dma(struct Scsi_Host *shost, struct device *dev,
+> >   	if (shost->transportt->create_work_queue) {
+> >   		snprintf(shost->work_q_name, sizeof(shost->work_q_name),
+> >   			 "scsi_wq_%d", shost->host_no);
+> > -		shost->work_q = create_singlethread_workqueue(
+> > +		shost->work_q = create_singlethread_workqueue_noorder(
+> >   					shost->work_q_name);
+> >   		if (!shost->work_q) {
+> >   			error = -EINVAL;
+> 
+> This patch seems ok for the iscsi, fc, tmf, and non transport class scan
+> uses. We are either heavy handed with flushes or did not need ordering.
+> 
+> I don't know about the zfcp use though, so I cc'd  the developers listed as
+> maintainers. It looks like for zfcp we can do:
 
-v3:
- - decouple from "netdev_features_strings[] cleanup" series;
- - no functional changes.
+Thx for the notice.
 
-v2:
- - don't split the "Fixes:" tag across lines;
- - no functional changes.
+> 
+> zfcp_scsi_rport_register->fc_remote_port_add->fc_remote_port_create->scsi_queue_work
+> to scan the scsi target on the rport.
+> 
+> and then zfcp_scsi_rport_register can call zfcp_unit_queue_scsi_scan->
+> scsi_queue_work which will scan for a specific lun.
+> 
+> It looks ok if those are not ordered, but I would get their review to make
+> sure.
 
-Fixes: e585f2363637 ("udp: Changes to udp_offload to support remote checksu=
-m offload")
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
----
- net/ethtool/common.c | 1 +
- 1 file changed, 1 insertion(+)
+I am not aware of any temporal requirements of those LUN-scans, so I
+think making them not explicitly ordered shouldn't hurt us.
 
-diff --git a/net/ethtool/common.c b/net/ethtool/common.c
-index 47f63526818e..aaecfc916a4d 100644
---- a/net/ethtool/common.c
-+++ b/net/ethtool/common.c
-@@ -40,6 +40,7 @@ const char netdev_features_strings[NETDEV_FEATURE_COUNT][=
-ETH_GSTRING_LEN] =3D {
- =09[NETIF_F_GSO_UDP_TUNNEL_BIT] =3D=09 "tx-udp_tnl-segmentation",
- =09[NETIF_F_GSO_UDP_TUNNEL_CSUM_BIT] =3D "tx-udp_tnl-csum-segmentation",
- =09[NETIF_F_GSO_PARTIAL_BIT] =3D=09 "tx-gso-partial",
-+=09[NETIF_F_GSO_TUNNEL_REMCSUM_BIT] =3D "tx-tunnel-remcsum-segmentation",
- =09[NETIF_F_GSO_SCTP_BIT] =3D=09 "tx-sctp-segmentation",
- =09[NETIF_F_GSO_ESP_BIT] =3D=09=09 "tx-esp-segmentation",
- =09[NETIF_F_GSO_UDP_L4_BIT] =3D=09 "tx-udp-segmentation",
---=20
-2.27.0
+The target scan itself is protected again by `shost->scan_mutex`.. so
+all fine I think.
 
-
+-- 
+Best Regards, Benjamin Block  / Linux on IBM Z Kernel Development / IBM Systems
+IBM Deutschland Research & Development GmbH    /    https://www.ibm.com/privacy
+Vorsitz. AufsR.: Gregor Pillen         /        Geschäftsführung: Dirk Wittkopp
+Sitz der Gesellschaft: Böblingen / Registergericht: AmtsG Stuttgart, HRB 243294
