@@ -2,66 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C33752060D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:49:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BFFE20634D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392676AbgFWUrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403862AbgFWUrH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:47:07 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2310AC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 13:47:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Sa3zU/E2E+o3LzbXQSq1d8ASG89gLQ+b6CLyD1I/MBY=; b=seG8hXT4NqAZvw/1mnzbkZNPAg
-        RbtlmqHk+oTwn+iwx73W/h9Mc05VwHyX2korERXw+rexNiXWOzvUtrf9xoYxyD6IicUnx00dz138V
-        iaz9EfQr+20tBly7oOdlyKehpuMx1IZ4wcEzP8w3rQcUQseHxLMB5wz6uB7VXWomf7G75xGsMuaeK
-        U7VHynYSoh9fu15LMnbS3LLPTL8lPd6T4Via4rut0twAmfqk+iNSj8iKM9fy0eUCthmsP9s1dmKya
-        xfo5fkndq5OT3VXrru+MajbGau+vqTKREmb1Oyn4s1jMK4FXcydu/ZiPPsqmjWkygCK+0wHji6tn2
-        yczndSpg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jnpod-0004zR-4d; Tue, 23 Jun 2020 20:46:47 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 450AD983A87; Tue, 23 Jun 2020 22:46:46 +0200 (CEST)
-Date:   Tue, 23 Jun 2020 22:46:46 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     tglx@linutronix.de, x86@kernel.org, elver@google.com,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        will@kernel.org, dvyukov@google.com, glider@google.com,
-        andreyknvl@google.com
-Subject: Re: [PATCH 2/9] rcu: Fixup noinstr warnings
-Message-ID: <20200623204646.GF2483@worktop.programming.kicks-ass.net>
-References: <20200603114014.152292216@infradead.org>
- <20200603114051.896465666@infradead.org>
- <20200615154905.GZ2531@hirez.programming.kicks-ass.net>
- <20200615155513.GG2554@hirez.programming.kicks-ass.net>
- <20200615162427.GI2554@hirez.programming.kicks-ass.net>
- <20200615171404.GI2723@paulmck-ThinkPad-P72>
- <20200619221555.GA12280@paulmck-ThinkPad-P72>
+        id S2390070AbgFWUVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:21:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390042AbgFWUVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:21:31 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B28942070E;
+        Tue, 23 Jun 2020 20:21:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592943691;
+        bh=Su3a4FMJKqxjEDGcxDd9SXYLpEOQqK4yUuCllM+3hWg=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JqM+8rhv644yXnOB1pNJVx+RtBuKcg3FUWQaRfYsMUHtSeaXajAptCHI8jvkAbzDn
+         PPIo9zYO9nD0EdDjxp38qNAFfClv1MsjrdnSD00oc4kBSNUthnf/4BdRfmp7iB4w07
+         jJb0fkSe3FMTRJTUTBZ3Wc19Hgz3HP/faOJCS2pk=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.4 013/314] ARM: integrator: Add some Kconfig selections
+Date:   Tue, 23 Jun 2020 21:53:28 +0200
+Message-Id: <20200623195339.420762343@linuxfoundation.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200619221555.GA12280@paulmck-ThinkPad-P72>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 03:15:55PM -0700, Paul E. McKenney wrote:
+From: Linus Walleij <linus.walleij@linaro.org>
 
-> Just following up because I don't see this anywhere.  If I am supposed
-> to take this (which is more plausible now that v5.8-rc1 is out), please
-> let me know.
+[ Upstream commit d2854bbe5f5c4b4bec8061caf4f2e603d8819446 ]
 
-Sorry, I got distracted by that NULL ptr thing, but that seems sorted
-now. If you don't mind taking it through your rcu/urgent tree for -rc3
-or so that would be awesome.
+The CMA and DMA_CMA Kconfig options need to be selected
+by the Integrator in order to produce boot console on some
+Integrator systems.
+
+The REGULATOR and REGULATOR_FIXED_VOLTAGE need to be
+selected in order to boot the system from an external
+MMC card when using MMCI/PL181 from the device tree
+probe path.
+
+Select these things directly from the Kconfig so we are
+sure to be able to bring the systems up with console
+from any device tree.
+
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/arm/mach-integrator/Kconfig | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-integrator/Kconfig b/arch/arm/mach-integrator/Kconfig
+index 982eabc361635..2406cab73835a 100644
+--- a/arch/arm/mach-integrator/Kconfig
++++ b/arch/arm/mach-integrator/Kconfig
+@@ -4,6 +4,8 @@ menuconfig ARCH_INTEGRATOR
+ 	depends on ARCH_MULTI_V4T || ARCH_MULTI_V5 || ARCH_MULTI_V6
+ 	select ARM_AMBA
+ 	select COMMON_CLK_VERSATILE
++	select CMA
++	select DMA_CMA
+ 	select HAVE_TCM
+ 	select ICST
+ 	select MFD_SYSCON
+@@ -35,14 +37,13 @@ config INTEGRATOR_IMPD1
+ 	select ARM_VIC
+ 	select GPIO_PL061
+ 	select GPIOLIB
++	select REGULATOR
++	select REGULATOR_FIXED_VOLTAGE
+ 	help
+ 	  The IM-PD1 is an add-on logic module for the Integrator which
+ 	  allows ARM(R) Ltd PrimeCells to be developed and evaluated.
+ 	  The IM-PD1 can be found on the Integrator/PP2 platform.
+ 
+-	  To compile this driver as a module, choose M here: the
+-	  module will be called impd1.
+-
+ config INTEGRATOR_CM7TDMI
+ 	bool "Integrator/CM7TDMI core module"
+ 	depends on ARCH_INTEGRATOR_AP
+-- 
+2.25.1
+
+
+
