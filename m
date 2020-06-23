@@ -2,84 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3285420594F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 729C9205969
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387886AbgFWRjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 13:39:35 -0400
-Received: from trent.utfs.org ([94.185.90.103]:44768 "EHLO trent.utfs.org"
+        id S2387899AbgFWRkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 13:40:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:41562 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387586AbgFWRjc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 13:39:32 -0400
-Received: from localhost (localhost [IPv6:::1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by trent.utfs.org (Postfix) with ESMTPS id A730F5FA38;
-        Tue, 23 Jun 2020 19:39:26 +0200 (CEST)
-Date:   Tue, 23 Jun 2020 10:39:26 -0700 (PDT)
-From:   Christian Kujau <lists@nerdbynature.de>
-To:     Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Willy Tarreau <w@1wt.eu>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Kees Kook <keescook@chromium.org>
-cc:     linux-kernel@vger.kernel.org
-Subject: process '/usr/bin/rsync' started with executable stack
-Message-ID: <alpine.DEB.2.22.1.446.2006231023390.3892@trent.utfs.org>
-User-Agent: Alpine 2.22.1 (DEB 446 2020-06-13)
+        id S2387757AbgFWRkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 13:40:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D3B6A31B;
+        Tue, 23 Jun 2020 10:40:09 -0700 (PDT)
+Received: from [192.168.0.7] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4A2763F73C;
+        Tue, 23 Jun 2020 10:40:07 -0700 (PDT)
+Subject: Re: [PATCH v2 0/2] sched: Optionally skip uclamp logic in fast path
+To:     Qais Yousef <qais.yousef@arm.com>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Chris Redpath <chris.redpath@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+References: <20200619172011.5810-1-qais.yousef@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <6c1a6003-8f51-dadc-53e4-a2fa034dbe36@arm.com>
+Date:   Tue, 23 Jun 2020 19:39:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200619172011.5810-1-qais.yousef@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 19/06/2020 19:20, Qais Yousef wrote> This series attempts to address the report that uclamp logic could be expensive
+> sometimes and shows a regression in netperf UDP_STREAM under certain
+> conditions.
+> 
+> The first patch is a fix for how struct uclamp_rq is initialized which is
+> required by the 2nd patch which contains the real 'fix'.
+> 
+> Worth noting that the root cause of the overhead is believed to be system
+> specific or related to potential certain code/data layout issues, leading to
+> worse I/D $ performance.
+> 
+> Different systems exhibited different behaviors and the regression did
+> disappear in certain kernel version while attempting to reporoduce.
+> 
+> More info can be found here:
+> 
+> https://lore.kernel.org/lkml/20200616110824.dgkkbyapn3io6wik@e107158-lin/
+> 
+> Having the static key seemed the best thing to do to ensure the effect of
+> uclamp is minimized for kernels that compile it in but don't have a userspace
+> that uses it, which will allow distros to distribute uclamp capable kernels by
+> default without having to compromise on performance for some systems that could
+> be affected.
 
-exactly this[0] happened today, on a 5.6.5 kernel:
+My test data indicates that the static key w/o any uclamp users (3)
+brings the performance number for the 'perf bench sched pipe'
+workload back (i.e. from w/ !CONFIG_UCLAMP_TASK) (1).
 
-  process '/usr/bin/rsync' started with executable stack
+platform:
 
-But I can't reproduce this message, and rsync (v3.2.0, not exactly 
-abandonware) runs several times a day, so to repeat Andrew's questions[0] 
-from last year:
+    Arm64 Hikey960 (only little CPUs [0-3]), no CPUidle,
+    performance CPUfreq governor
 
-  > What are poor users supposed to do if this message comes out? 
-  > Hopefully google the message and end up at this thread.  What do you
-  > want to tell them?
+workload:
 
-Also, the PID is missing from that message. I had some long running rsync 
-processes running earlier, maybe the RWE status would have been visible in 
-/proc/$PID/map, or somewhere else maybe?
-
-Please advise? :-)
-
-Thanks,
-Christian.
-
-[0] https://lore.kernel.org/patchwork/patch/1164047/#1362722
+    perf stat -n -r 20 -- perf bench sched pipe -T -l 100000
 
 
-$ checksec --format=json --extended --file=`which rsync` | jq
-{
-  "/usr/bin/rsync": {
-    "relro": "full",
-    "canary": "yes",
-    "nx": "no",
-    "pie": "yes",
-    "clangcfi": "no",
-    "safestack": "no",
-    "rpath": "no",
-    "runpath": "no",
-    "symbols": "no",
-    "fortify_source": "yes",
-    "fortified": "10",
-    "fortify-able": "19"
-  }
-}
+(A) *** Performance results ***
 
--- 
-BOFH excuse #244:
+(1) tip/sched/core
+    # CONFIG_UCLAMP_TASK is not set
 
-Your cat tried to eat the mouse.
+    *1.39285* +- 0.00191 seconds time elapsed  ( +-  0.14% )
+
+(2) tip/sched/core
+    CONFIG_UCLAMP_TASK=y
+
+    *1.42877* +- 0.00181 seconds time elapsed  ( +-  0.13% )
+
+(3) tip/sched/core + opt_skip_uclamp_v2
+    CONFIG_UCLAMP_TASK=y
+
+    *1.38833* +- 0.00291 seconds time elapsed  ( +-  0.21% )
+
+(4) tip/sched/core + opt_skip_uclamp_v2
+    CONFIG_UCLAMP_TASK=y
+    echo 512 > /proc/sys/kernel/sched_util_clamp_min (enable uclamp)
+
+    *1.42062* +- 0.00238 seconds time elapsed  ( +-  0.17% )
+
+
+(B) *** Profiling on CPU0 and CPU1  ***
+
+    (further hp'ing out CPU2 and CPU3 to get consistent hit numbers)
+
+(1)
+
+CPU0:  Function             Hit    Time            Avg             s^2
+       --------             ---    ----            ---             ---
+       deactivate_task  1997346    2207642 us      *1.105* us      0.033 us
+       activate_task    1997391    1840057 us      *0.921* us      0.054 us
+
+CPU1:  Function             Hit    Time            Avg             s^2
+       --------             ---    ----            ---             ---
+       deactivate_task  1997455    2225960 us      1.114 us        0.034 us
+       activate_task    1997410    1842603 us      0.922 us        0.052 us
+
+(2)
+
+CPU0:  Function             Hit    Time            Avg             s^2
+       --------             ---    ----            ---             ---
+       deactivate_task  1998538    2419719 us      *1.210* us      0.061 us
+       activate_task    1997119    1960401 us      *0.981* us      0.034 us
+
+CPU1:  Function             Hit    Time            Avg             s^2
+       --------             ---    ----            ---             ---
+       deactivate_task  1996597    2400760 us      1.202 us        0.059 us
+       activate_task    1998016    1985013 us      0.993 us        0.028 us
+
+(3)
+
+CPU0:  Function             Hit    Time            Avg             s^2
+       --------             ---    ----            ---             ---
+       deactivate_task  1997525    2155416 us      *1.079* us      0.020 us
+       activate_task    1997874    1899002 us      *0.950* us      0.044 us
+
+CPU1:  Function             Hit    Time            Avg             s^2
+       --------             ---    ----            ---             ---
+       deactivate_task  1997935    2118648 us      1.060 us        0.017 us
+       activate_task    1997586    1895162 us      0.948 us        0.044 us
+
+(4)
+
+CPU0:  Function             Hit    Time            Avg             s^2
+       --------             ---    ----            ---             ---
+       deactivate_task  1998246    2428121 us      *1.215* us      0.062 us
+       activate_task    1998252    2132141 us      *1.067* us      0.020 us
+
+CPU1:  Function             Hit    Time            Avg             s^2
+       --------             ---    ----            ---             ---
+       deactivate_task  1996154    2414194 us      1.209 us        0.060 us
+       activate_task    1996148    2140667 us      1.072 us        0.021 us
