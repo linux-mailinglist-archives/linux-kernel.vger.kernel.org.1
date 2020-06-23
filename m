@@ -2,42 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208A52063D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECCF206341
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391270AbgFWVLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:11:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52934 "EHLO mail.kernel.org"
+        id S2389885AbgFWUUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:20:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391012AbgFWUcH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:32:07 -0400
+        id S2389316AbgFWUUI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:20:08 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5681B20723;
-        Tue, 23 Jun 2020 20:32:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C21DD21473;
+        Tue, 23 Jun 2020 20:20:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944327;
-        bh=76AYprGS4xOcYibcpWPdXZ7BtMA5jqXnRLPjojXgwGA=;
+        s=default; t=1592943608;
+        bh=50r7EeLU58sGZGul3qGU5kJ0It9yv31mvgDrhWhfr6s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tz0Nj0QfZmLkq+imlnwDTN83wXq8cjhgmLbZfspgdzR5cemAEpzKrhImrUn1XkIKv
-         eSzexjja14uuQEgsqaRg3W61yTLKb9ORkfMnb1QW80P75/Mzu2FODAmfjA9nTG0iGR
-         EfUh6dY1g3gNDyaAeMX138j7pAgWYzvK9ePLFLh0=
+        b=vsSvsuhKt80vWd4+jqR9nPDMlN6+WIzorTJ7rSgg6zjpfnId/gqyEdWzWee9G68Wy
+         f1acgXTCJa0+UHXrwFkvoYoOHsc9FbCyEygy1dpcYP1ZWHCG/xQkbxj0zon8TBB7fq
+         p8Mxan0Tm8siB7VVcGQQaI02lW1BtLI13XVeaMTc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>,
-        Tony Prisk <linux@prisktech.co.nz>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Oliver Neukum <oneukum@suse.de>,
-        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 260/314] usb/xhci-plat: Set PM runtime as active on resume
+        stable@vger.kernel.org, Alexander Monakov <amonakov@ispras.ru>,
+        Hersen Wu <hersenxs.wu@amd.com>,
+        Anthony Koo <Anthony.Koo@amd.com>,
+        Michael Chiu <Michael.Chiu@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Subject: [PATCH 5.7 458/477] Revert "drm/amd/display: disable dcn20 abm feature for bring up"
 Date:   Tue, 23 Jun 2020 21:57:35 +0200
-Message-Id: <20200623195351.375876600@linuxfoundation.org>
+Message-Id: <20200623195429.199288714@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
+References: <20200623195407.572062007@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,56 +48,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qais Yousef <qais.yousef@arm.com>
+From: Harry Wentland <harry.wentland@amd.com>
 
-[ Upstream commit 79112cc3c29f4a8c73a21428fbcbcb0afb005e3e ]
+commit 14ed1c908a7a623cc0cbf0203f8201d1b7d31d16 upstream.
 
-Follow suit of ohci-platform.c and perform pm_runtime_set_active() on
-resume.
+This reverts commit 96cb7cf13d8530099c256c053648ad576588c387.
 
-ohci-platform.c had a warning reported due to the missing
-pm_runtime_set_active() [1].
+This change was used for DCN2 bringup and is no longer desired.
+In fact it breaks backlight on DCN2 systems.
 
-[1] https://lore.kernel.org/lkml/20200323143857.db5zphxhq4hz3hmd@e107158-lin.cambridge.arm.com/
-
-Signed-off-by: Qais Yousef <qais.yousef@arm.com>
-CC: Tony Prisk <linux@prisktech.co.nz>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: Mathias Nyman <mathias.nyman@intel.com>
-CC: Oliver Neukum <oneukum@suse.de>
-CC: linux-arm-kernel@lists.infradead.org
-CC: linux-usb@vger.kernel.org
-CC: linux-kernel@vger.kernel.org
-Link: https://lore.kernel.org/r/20200518154931.6144-2-qais.yousef@arm.com
+Cc: Alexander Monakov <amonakov@ispras.ru>
+Cc: Hersen Wu <hersenxs.wu@amd.com>
+Cc: Anthony Koo <Anthony.Koo@amd.com>
+Cc: Michael Chiu <Michael.Chiu@amd.com>
+Signed-off-by: Harry Wentland <harry.wentland@amd.com>
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Reported-and-tested-by: Alexander Monakov <amonakov@ispras.ru>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+
 ---
- drivers/usb/host/xhci-plat.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |   13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-index 52c625c023410..60d06e9b600f8 100644
---- a/drivers/usb/host/xhci-plat.c
-+++ b/drivers/usb/host/xhci-plat.c
-@@ -410,7 +410,15 @@ static int __maybe_unused xhci_plat_resume(struct device *dev)
- 	if (ret)
- 		return ret;
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -1334,7 +1334,7 @@ static int dm_late_init(void *handle)
+ 	unsigned int linear_lut[16];
+ 	int i;
+ 	struct dmcu *dmcu = adev->dm.dc->res_pool->dmcu;
+-	bool ret = false;
++	bool ret;
  
--	return xhci_resume(xhci, 0);
-+	ret = xhci_resume(xhci, 0);
-+	if (ret)
-+		return ret;
+ 	for (i = 0; i < 16; i++)
+ 		linear_lut[i] = 0xFFFF * i / 15;
+@@ -1350,13 +1350,10 @@ static int dm_late_init(void *handle)
+ 	 */
+ 	params.min_abm_backlight = 0x28F;
+ 
+-	/* todo will enable for navi10 */
+-	if (adev->asic_type <= CHIP_RAVEN) {
+-		ret = dmcu_load_iram(dmcu, params);
+-
+-		if (!ret)
+-			return -EINVAL;
+-	}
++	ret = dmcu_load_iram(dmcu, params);
 +
-+	pm_runtime_disable(dev);
-+	pm_runtime_set_active(dev);
-+	pm_runtime_enable(dev);
-+
-+	return 0;
++	if (!ret)
++		return -EINVAL;
+ 
+ 	return detect_mst_link_for_all_connectors(adev->ddev);
  }
- 
- static int __maybe_unused xhci_plat_runtime_suspend(struct device *dev)
--- 
-2.25.1
-
 
 
