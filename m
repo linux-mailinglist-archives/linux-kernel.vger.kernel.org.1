@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 128FB204527
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13BC020453C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731623AbgFWAV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:21:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48132 "EHLO mail.kernel.org"
+        id S1731803AbgFWAXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:23:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48154 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731479AbgFWAVu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:21:50 -0400
+        id S1730309AbgFWAVv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:21:51 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 43C1A2082F;
+        by mail.kernel.org (Postfix) with ESMTPSA id 753AD2083B;
         Tue, 23 Jun 2020 00:21:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592871710;
-        bh=l/5OxXTJUaadxs5ujpcQB3Tr8YHob3UxwmULMGrr83k=;
+        bh=f4PXroet3kk9dCV8EekSuydwLuif35P7Fjo5XqU/DcI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xPTGQVb6yr3I+9W7K0uCD4WJah4Bz7UQCd6b4XB2tTZe0Pa4+uOH7ONbQnqSszbxj
-         RGM1XukcgVomK/xwfm94OXelj96gGk/QpAUv/xox5sgLvc5U9E/NE8Q6OItso9ff4m
-         j6Dx+i4AJEqrwtoBdHuxymjEjt6k53r03jPTamAY=
+        b=tXbe1t1pgutHiniEPFQnC68ybenwwIK7wkHrIgWdUU2Vj8WCmfLzEUsn2dgFJgPKm
+         75bcFCBqssuKSbe78GDMuQja6ir4v6+MO4yK69hEouYIAt82JPC878b+ZlNqdVWZ1b
+         3DR1rl4Dsd2NYxf0r+L4mGn7kuLNC4GkenEEH8ig=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,10 +31,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 05/26] rcu: Add comment documenting rcu_callback_map's purpose
-Date:   Mon, 22 Jun 2020 17:21:26 -0700
-Message-Id: <20200623002147.25750-5-paulmck@kernel.org>
+        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 06/26] trace: events: rcu: Change description of rcu_dyntick trace event
+Date:   Mon, 22 Jun 2020 17:21:27 -0700
+Message-Id: <20200623002147.25750-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200623002128.GA25456@paulmck-ThinkPad-P72>
 References: <20200623002128.GA25456@paulmck-ThinkPad-P72>
@@ -43,32 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-The rcu_callback_map lockdep_map structure was added back in 2013, but
-its purpose has become obscure.  This commit therefore documments that the
-purpose of rcu_callback map is, in the words of commit 24ef659a857 ("rcu:
-Provide better diagnostics for blocking in RCU callback functions"),
-to help lockdep to tie an "inappropriate voluntary context switch back
-to the fact that the function is being invoked from within a callback."
+The different strings used for describing the polarity are
+Start, End and StillNonIdle. Since StillIdle is not used in any trace
+point for rcu_dyntick, it can be removed and StillNonIdle can be added
+in the description. Because StillNonIdle is used in a few tracepoints for
+rcu_dyntick.
 
+Similarly, USER, IDLE and IRQ are used for describing context in
+the rcu_dyntick tracepoints. Since, "KERNEL" is not used for any
+of the rcu_dyntick tracepoints, remove it from the description.
+
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/update.c | 1 +
- 1 file changed, 1 insertion(+)
+ include/trace/events/rcu.h | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/kernel/rcu/update.c b/kernel/rcu/update.c
-index f5a82e1..ca17b77 100644
---- a/kernel/rcu/update.c
-+++ b/kernel/rcu/update.c
-@@ -279,6 +279,7 @@ struct lockdep_map rcu_sched_lock_map = {
- };
- EXPORT_SYMBOL_GPL(rcu_sched_lock_map);
+diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
+index f9a7811..af274d1 100644
+--- a/include/trace/events/rcu.h
++++ b/include/trace/events/rcu.h
+@@ -435,11 +435,12 @@ TRACE_EVENT_RCU(rcu_fqs,
+ #endif /* #if defined(CONFIG_TREE_RCU) */
  
-+// Tell lockdep when RCU callbacks are being invoked.
- static struct lock_class_key rcu_callback_key;
- struct lockdep_map rcu_callback_map =
- 	STATIC_LOCKDEP_MAP_INIT("rcu_callback", &rcu_callback_key);
+ /*
+- * Tracepoint for dyntick-idle entry/exit events.  These take a string
+- * as argument: "Start" for entering dyntick-idle mode, "Startirq" for
+- * entering it from irq/NMI, "End" for leaving it, "Endirq" for leaving it
+- * to irq/NMI, "--=" for events moving towards idle, and "++=" for events
+- * moving away from idle.
++ * Tracepoint for dyntick-idle entry/exit events.  These take 2 strings
++ * as argument:
++ * polarity: "Start", "End", "StillNonIdle" for entering, exiting or still not
++ *            being in dyntick-idle mode.
++ * context: "USER" or "IDLE" or "IRQ".
++ * NMIs nested in IRQs are inferred with dynticks_nesting > 1 in IRQ context.
+  *
+  * These events also take a pair of numbers, which indicate the nesting
+  * depth before and after the event of interest, and a third number that is
 -- 
 2.9.5
 
