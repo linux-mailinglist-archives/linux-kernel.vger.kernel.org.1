@@ -2,44 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B30A2065BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDE45206483
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388624AbgFWUKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:10:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50920 "EHLO mail.kernel.org"
+        id S2392064AbgFWVWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:22:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388753AbgFWUJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:09:45 -0400
+        id S2390064AbgFWUVj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:21:39 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9E1A4206C3;
-        Tue, 23 Jun 2020 20:09:44 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FC8C2073E;
+        Tue, 23 Jun 2020 20:21:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942985;
-        bh=OyisKOes58HM8UbcROpprrTjWCiGFqxSY88huNCNfAk=;
+        s=default; t=1592943699;
+        bh=sp0TDNXO9/Ln/mO5zcG+iRknxXvXUQSn3EWDYj5QmRc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FghXY2EA1TEtLyiM+9sX4AatmXCTdadSshqzAwd8b7stMD5Z11lv7DPSGPBHQPU4K
-         hffZVucvEN4+E1zN6FFNtszYet/uf5YNERlDwQee0FlSgGMdsJh7DXE3GNgmqRwVmK
-         +jznPA/s5SZnVKkq7F9MVETA8lp+vZffJdP/BHKU=
+        b=vIK610/oDZgP5wLD0OqmONpcXaCcAGVT5WpQSCw+S2j97ZmWZUsMNJzsq4TaktAKY
+         DRHc0dvActV9LkRagIaqlt3CFD4yGuLCckiZqsZdl/riLx/LpK8wqO0H8sH8iIzHS6
+         V/Eo70zdlz4wMAafaeO2+10IKeyXjkWF+ODhRmZE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Oder Chiou <oder_chiou@realtek.com>,
-        Shuming Fan <shumingf@realtek.com>,
-        Jack Yu <jack.yu@realtek.com>, Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Manish Rangankar <mrangankar@marvell.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 214/477] ASoC: codecs: rt*-sdw: fix memory leak in set_sdw_stream()
+Subject: [PATCH 5.4 016/314] scsi: qedi: Check for buffer overflow in qedi_set_path()
 Date:   Tue, 23 Jun 2020 21:53:31 +0200
-Message-Id: <20200623195417.700777729@linuxfoundation.org>
+Message-Id: <20200623195339.561427930@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
-References: <20200623195407.572062007@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,106 +45,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 07b542fe831cbefce163ad1b3aa7292c8a6332b8 ]
+[ Upstream commit 4a4c0cfb4be74e216dd4446b254594707455bfc6 ]
 
-Now that the sdw_stream is allocated in machine driver,
-set_sdw_stream() is also called with a NULL argument during the
-dailink shutdown.
+Smatch complains that the "path_data->handle" variable is user controlled.
+It comes from iscsi_set_path() so that seems possible.  It's harmless to
+add a limit check.
 
-In this case, the drivers should not allocate any memory, and just
-return.
+The qedi->ep_tbl[] array has qedi->max_active_conns elements (which is
+always ISCSI_MAX_SESS_PER_HBA (4096) elements).  The array is allocated in
+the qedi_cm_alloc_mem() function.
 
-Detected with KASAN/kmemleak.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Reviewed-by: Rander Wang <rander.wang@intel.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>
-Cc: Shuming Fan <shumingf@realtek.com>
-Cc: Jack Yu <jack.yu@realtek.com>
-Link: https://lore.kernel.org/r/20200515211531.11416-3-pierre-louis.bossart@linux.intel.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20200428131939.GA696531@mwanda
+Fixes: ace7f46ba5fd ("scsi: qedi: Add QLogic FastLinQ offload iSCSI driver framework.")
+Acked-by: Manish Rangankar <mrangankar@marvell.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt1308-sdw.c | 3 +++
- sound/soc/codecs/rt5682.c     | 3 +++
- sound/soc/codecs/rt700.c      | 3 +++
- sound/soc/codecs/rt711.c      | 3 +++
- sound/soc/codecs/rt715.c      | 3 +++
- 5 files changed, 15 insertions(+)
+ drivers/scsi/qedi/qedi_iscsi.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/codecs/rt1308-sdw.c b/sound/soc/codecs/rt1308-sdw.c
-index a5a7e46de246a..a7f45191364d7 100644
---- a/sound/soc/codecs/rt1308-sdw.c
-+++ b/sound/soc/codecs/rt1308-sdw.c
-@@ -482,6 +482,9 @@ static int rt1308_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
- {
- 	struct sdw_stream_data *stream;
+diff --git a/drivers/scsi/qedi/qedi_iscsi.c b/drivers/scsi/qedi/qedi_iscsi.c
+index 8829880a54c38..84a639698343c 100644
+--- a/drivers/scsi/qedi/qedi_iscsi.c
++++ b/drivers/scsi/qedi/qedi_iscsi.c
+@@ -1214,6 +1214,10 @@ static int qedi_set_path(struct Scsi_Host *shost, struct iscsi_path *path_data)
+ 	}
  
-+	if (!sdw_stream)
-+		return 0;
-+
- 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
- 	if (!stream)
- 		return -ENOMEM;
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index d36f560ad7a85..c4892af14850d 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -2958,6 +2958,9 @@ static int rt5682_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
- {
- 	struct sdw_stream_data *stream;
- 
-+	if (!sdw_stream)
-+		return 0;
-+
- 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
- 	if (!stream)
- 		return -ENOMEM;
-diff --git a/sound/soc/codecs/rt700.c b/sound/soc/codecs/rt700.c
-index ff68f0e4f629d..687ac2153666b 100644
---- a/sound/soc/codecs/rt700.c
-+++ b/sound/soc/codecs/rt700.c
-@@ -860,6 +860,9 @@ static int rt700_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
- {
- 	struct sdw_stream_data *stream;
- 
-+	if (!sdw_stream)
-+		return 0;
-+
- 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
- 	if (!stream)
- 		return -ENOMEM;
-diff --git a/sound/soc/codecs/rt711.c b/sound/soc/codecs/rt711.c
-index 2daed7692a3b7..65b59dbfb43c8 100644
---- a/sound/soc/codecs/rt711.c
-+++ b/sound/soc/codecs/rt711.c
-@@ -906,6 +906,9 @@ static int rt711_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
- {
- 	struct sdw_stream_data *stream;
- 
-+	if (!sdw_stream)
-+		return 0;
-+
- 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
- 	if (!stream)
- 		return -ENOMEM;
-diff --git a/sound/soc/codecs/rt715.c b/sound/soc/codecs/rt715.c
-index 2cbc57b16b136..099c8bd200062 100644
---- a/sound/soc/codecs/rt715.c
-+++ b/sound/soc/codecs/rt715.c
-@@ -530,6 +530,9 @@ static int rt715_set_sdw_stream(struct snd_soc_dai *dai, void *sdw_stream,
- 
- 	struct sdw_stream_data *stream;
- 
-+	if (!sdw_stream)
-+		return 0;
-+
- 	stream = kzalloc(sizeof(*stream), GFP_KERNEL);
- 	if (!stream)
- 		return -ENOMEM;
+ 	iscsi_cid = (u32)path_data->handle;
++	if (iscsi_cid >= qedi->max_active_conns) {
++		ret = -EINVAL;
++		goto set_path_exit;
++	}
+ 	qedi_ep = qedi->ep_tbl[iscsi_cid];
+ 	QEDI_INFO(&qedi->dbg_ctx, QEDI_LOG_INFO,
+ 		  "iscsi_cid=0x%x, qedi_ep=%p\n", iscsi_cid, qedi_ep);
 -- 
 2.25.1
 
