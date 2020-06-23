@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D53A205CFE
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0934A205D03
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:08:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388643AbgFWUHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:07:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48276 "EHLO mail.kernel.org"
+        id S2388665AbgFWUHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:07:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388632AbgFWUHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:07:37 -0400
+        id S2388650AbgFWUHp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:07:45 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84D0D2064B;
-        Tue, 23 Jun 2020 20:07:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 66EF5206C3;
+        Tue, 23 Jun 2020 20:07:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942857;
-        bh=0PpaNu8RzlsGxRiYtA+vUROVRH+FvdwpXWuaVUo73VA=;
+        s=default; t=1592942864;
+        bh=4b7pSvFY5F3c9kS5ZhzsLgjKFeSxAsCKKVwB2CjpAjs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ncPgxVi50Y9jHJb34m3lxeuR9pEpo2Yv8K5WHkWM5Cih3STjQOzsS8j9WudihxBc8
-         9gZiNxqh9TP1pU8YRq6RUzLAdYpbrvk/4IM0GZr808et+iAABGErUXKOcJgdUAB+Vt
-         yT63zwH332rDNn/fnzuQwV+H4tMjUL/4k+aTvG48=
+        b=FQli0xSfs/4sBQlvoYlti14JuO9XJABeSgMbkGT1UdceMeRqERoL1DFh0Z1z8IKVh
+         e04FxY1FvhCWP6AWGnsj9cgRgFFVwrR5pjbFrboOHjxcmL4GNlke5NOYj8iGDp033J
+         hkVkeUYvjLsO7vJ1CITV8EvabWshu/VUh1ZD63m0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Andrew Jeffery <andrew@aj.id.au>,
-        Joel Stanley <joel@jms.id.au>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 162/477] ARM: dts: aspeed: Change KCS nodes to v2 binding
-Date:   Tue, 23 Jun 2020 21:52:39 +0200
-Message-Id: <20200623195415.253127044@linuxfoundation.org>
+        stable@vger.kernel.org, Thinh Nguyen <thinhn@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.7 164/477] usb: dwc3: gadget: Properly handle ClearFeature(halt)
+Date:   Tue, 23 Jun 2020 21:52:41 +0200
+Message-Id: <20200623195415.339589309@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -43,145 +44,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrew Jeffery <andrew@aj.id.au>
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-[ Upstream commit fa4c8ec6feaa3237f5d44cb8c6d0aa0dff6e1bcc ]
+[ Upstream commit cb11ea56f37a36288cdd0a4799a983ee3aa437dd ]
 
-Fixes the following warnings for both g5 and g6 SoCs:
+DWC3 must not issue CLEAR_STALL command to control endpoints. The
+controller automatically clears the STALL when it receives the SETUP
+token. Also, when the driver receives ClearFeature(halt_ep), DWC3 must
+stop any active transfer from the endpoint and give back all the
+requests to the function drivers.
 
-    arch/arm/boot/dts/aspeed-g5.dtsi:376.19-381.8: Warning
-    (unit_address_vs_reg): /ahb/apb/lpc@1e789000/lpc-bmc@0/kcs1@0: node
-    has a unit name, but no reg property
-
-Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-Signed-off-by: Joel Stanley <joel@jms.id.au>
+Fixes: 72246da40f37 ("usb: Introduce DesignWare USB3 DRD Driver")
+Signed-off-by: Thinh Nguyen <thinhn@synopsys.com>
+Signed-off-by: Felipe Balbi <balbi@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../dts/aspeed-bmc-facebook-tiogapass.dts     |  4 ++--
- arch/arm/boot/dts/aspeed-g5.dtsi              | 24 +++++++++----------
- arch/arm/boot/dts/aspeed-g6.dtsi              | 23 +++++++++---------
- 3 files changed, 26 insertions(+), 25 deletions(-)
+ drivers/usb/dwc3/gadget.c | 36 +++++++++++++++++++++++++++++++++---
+ 1 file changed, 33 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts b/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
-index 5d7cbd9164d41..669980c690f92 100644
---- a/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
-+++ b/arch/arm/boot/dts/aspeed-bmc-facebook-tiogapass.dts
-@@ -112,13 +112,13 @@
- &kcs2 {
- 	// BMC KCS channel 2
- 	status = "okay";
--	kcs_addr = <0xca8>;
-+	aspeed,lpc-io-reg = <0xca8>;
- };
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index 585cb3deea7ad..ab6562c5b9279 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -1508,6 +1508,10 @@ static void dwc3_gadget_ep_skip_trbs(struct dwc3_ep *dep, struct dwc3_request *r
+ {
+ 	int i;
  
- &kcs3 {
- 	// BMC KCS channel 3
- 	status = "okay";
--	kcs_addr = <0xca2>;
-+	aspeed,lpc-io-reg = <0xca2>;
- };
++	/* If req->trb is not set, then the request has not started */
++	if (!req->trb)
++		return;
++
+ 	/*
+ 	 * If request was already started, this means we had to
+ 	 * stop the transfer. With that we also need to ignore
+@@ -1598,6 +1602,8 @@ int __dwc3_gadget_ep_set_halt(struct dwc3_ep *dep, int value, int protocol)
+ {
+ 	struct dwc3_gadget_ep_cmd_params	params;
+ 	struct dwc3				*dwc = dep->dwc;
++	struct dwc3_request			*req;
++	struct dwc3_request			*tmp;
+ 	int					ret;
  
- &mac0 {
-diff --git a/arch/arm/boot/dts/aspeed-g5.dtsi b/arch/arm/boot/dts/aspeed-g5.dtsi
-index f12ec04d3cbca..bc92d3db7b786 100644
---- a/arch/arm/boot/dts/aspeed-g5.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g5.dtsi
-@@ -426,22 +426,22 @@
- 					#size-cells = <1>;
- 					ranges = <0x0 0x0 0x80>;
+ 	if (usb_endpoint_xfer_isoc(dep->endpoint.desc)) {
+@@ -1634,13 +1640,37 @@ int __dwc3_gadget_ep_set_halt(struct dwc3_ep *dep, int value, int protocol)
+ 		else
+ 			dep->flags |= DWC3_EP_STALL;
+ 	} else {
++		/*
++		 * Don't issue CLEAR_STALL command to control endpoints. The
++		 * controller automatically clears the STALL when it receives
++		 * the SETUP token.
++		 */
++		if (dep->number <= 1) {
++			dep->flags &= ~(DWC3_EP_STALL | DWC3_EP_WEDGE);
++			return 0;
++		}
  
--					kcs1: kcs1@0 {
--						compatible = "aspeed,ast2500-kcs-bmc";
-+					kcs1: kcs@24 {
-+						compatible = "aspeed,ast2500-kcs-bmc-v2";
-+						reg = <0x24 0x1>, <0x30 0x1>, <0x3c 0x1>;
- 						interrupts = <8>;
--						kcs_chan = <1>;
- 						status = "disabled";
- 					};
--					kcs2: kcs2@0 {
--						compatible = "aspeed,ast2500-kcs-bmc";
-+					kcs2: kcs@28 {
-+						compatible = "aspeed,ast2500-kcs-bmc-v2";
-+						reg = <0x28 0x1>, <0x34 0x1>, <0x40 0x1>;
- 						interrupts = <8>;
--						kcs_chan = <2>;
- 						status = "disabled";
- 					};
--					kcs3: kcs3@0 {
--						compatible = "aspeed,ast2500-kcs-bmc";
-+					kcs3: kcs@2c {
-+						compatible = "aspeed,ast2500-kcs-bmc-v2";
-+						reg = <0x2c 0x1>, <0x38 0x1>, <0x44 0x1>;
- 						interrupts = <8>;
--						kcs_chan = <3>;
- 						status = "disabled";
- 					};
- 				};
-@@ -455,10 +455,10 @@
- 					#size-cells = <1>;
- 					ranges = <0x0 0x80 0x1e0>;
+ 		ret = dwc3_send_clear_stall_ep_cmd(dep);
+-		if (ret)
++		if (ret) {
+ 			dev_err(dwc->dev, "failed to clear STALL on %s\n",
+ 					dep->name);
+-		else
+-			dep->flags &= ~(DWC3_EP_STALL | DWC3_EP_WEDGE);
++			return ret;
++		}
++
++		dep->flags &= ~(DWC3_EP_STALL | DWC3_EP_WEDGE);
++
++		dwc3_stop_active_transfer(dep, true, true);
++
++		list_for_each_entry_safe(req, tmp, &dep->started_list, list)
++			dwc3_gadget_move_cancelled_request(req);
++
++		list_for_each_entry_safe(req, tmp, &dep->pending_list, list)
++			dwc3_gadget_move_cancelled_request(req);
++
++		if (!(dep->flags & DWC3_EP_END_TRANSFER_PENDING)) {
++			dep->flags &= ~DWC3_EP_DELAY_START;
++			dwc3_gadget_ep_cleanup_cancelled_requests(dep);
++		}
+ 	}
  
--					kcs4: kcs4@0 {
--						compatible = "aspeed,ast2500-kcs-bmc";
-+					kcs4: kcs@94 {
-+						compatible = "aspeed,ast2500-kcs-bmc-v2";
-+						reg = <0x94 0x1>, <0x98 0x1>, <0x9c 0x1>;
- 						interrupts = <8>;
--						kcs_chan = <4>;
- 						status = "disabled";
- 					};
- 
-diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-index fd0e483737a0f..a2d2ac720a511 100644
---- a/arch/arm/boot/dts/aspeed-g6.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-@@ -435,22 +435,23 @@
- 					#size-cells = <1>;
- 					ranges = <0x0 0x0 0x80>;
- 
--					kcs1: kcs1@0 {
--						compatible = "aspeed,ast2600-kcs-bmc";
-+					kcs1: kcs@24 {
-+						compatible = "aspeed,ast2500-kcs-bmc-v2";
-+						reg = <0x24 0x1>, <0x30 0x1>, <0x3c 0x1>;
- 						interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
- 						kcs_chan = <1>;
- 						status = "disabled";
- 					};
--					kcs2: kcs2@0 {
--						compatible = "aspeed,ast2600-kcs-bmc";
-+					kcs2: kcs@28 {
-+						compatible = "aspeed,ast2500-kcs-bmc-v2";
-+						reg = <0x28 0x1>, <0x34 0x1>, <0x40 0x1>;
- 						interrupts = <GIC_SPI 139 IRQ_TYPE_LEVEL_HIGH>;
--						kcs_chan = <2>;
- 						status = "disabled";
- 					};
--					kcs3: kcs3@0 {
--						compatible = "aspeed,ast2600-kcs-bmc";
-+					kcs3: kcs@2c {
-+						compatible = "aspeed,ast2500-kcs-bmc-v2";
-+						reg = <0x2c 0x1>, <0x38 0x1>, <0x44 0x1>;
- 						interrupts = <GIC_SPI 140 IRQ_TYPE_LEVEL_HIGH>;
--						kcs_chan = <3>;
- 						status = "disabled";
- 					};
- 				};
-@@ -464,10 +465,10 @@
- 					#size-cells = <1>;
- 					ranges = <0x0 0x80 0x1e0>;
- 
--					kcs4: kcs4@0 {
--						compatible = "aspeed,ast2600-kcs-bmc";
-+					kcs4: kcs@94 {
-+						compatible = "aspeed,ast2500-kcs-bmc-v2";
-+						reg = <0x94 0x1>, <0x98 0x1>, <0x9c 0x1>;
- 						interrupts = <GIC_SPI 141 IRQ_TYPE_LEVEL_HIGH>;
--						kcs_chan = <4>;
- 						status = "disabled";
- 					};
- 
+ 	return ret;
 -- 
 2.25.1
 
