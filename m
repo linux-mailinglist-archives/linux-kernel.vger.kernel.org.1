@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067522062B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:10:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 838E220638D
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:29:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391686AbgFWUfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:35:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57746 "EHLO mail.kernel.org"
+        id S2390793AbgFWU1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:27:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47322 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391670AbgFWUfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:35:21 -0400
+        id S2390790AbgFWU1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:27:42 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 63DA52080C;
-        Tue, 23 Jun 2020 20:35:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id A15C4206EB;
+        Tue, 23 Jun 2020 20:27:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944521;
-        bh=LpdBqfnHy9Us/Raz3M4gjLPdYu6w6ISBSDI2DIDW4Lc=;
+        s=default; t=1592944062;
+        bh=TEKMVOR1p2eSDRp9ak6+WhSLEE9whw5E4A4wzwpAE9k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RxyNKOVTSSfl77aArEx3FBprilnEL5PN9buHyFX0UEh8AC9q8jmTedOgSlXsAN80S
-         /B78JclOgSwk3XQzRdmj1NsFHrlN8ps2zEHDgXooXPwNAwkglcGoWuc4a3Cpr44yo1
-         42meP75AP1xIM5GYwvgeFciQ2i9FgUOlPhhAqm7s=
+        b=vHajVJS7ldyLSTLqP0xqi57q/ZE9vqRzmcgRP6zjpKFJ+nJYPb+bRqQDnXTNMnxFU
+         YoKCvv5zDWbcQa+ngXnHFUsLGDkxiXglIT7dErPlfXWMF/AkSvTsuFoi/Bz4AmGTJ1
+         pnycu+20H80eT5IvmbNg/NWporiUMOIxr6rxj5pQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Martin Wilck <mwilck@suse.com>,
-        Hannes Reinecke <hare@suse.de>,
-        Mike Snitzer <snitzer@redhat.com>,
+        stable@vger.kernel.org,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 022/206] dm mpath: switch paths in dm_blk_ioctl() code path
-Date:   Tue, 23 Jun 2020 21:55:50 +0200
-Message-Id: <20200623195318.068661931@linuxfoundation.org>
+Subject: [PATCH 5.4 157/314] tty: n_gsm: Fix bogus i++ in gsm_data_kick
+Date:   Tue, 23 Jun 2020 21:55:52 +0200
+Message-Id: <20200623195346.348815475@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
+References: <20200623195338.770401005@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,47 +44,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Wilck <mwilck@suse.com>
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
 
-[ Upstream commit 2361ae595352dec015d14292f1b539242d8446d6 ]
+[ Upstream commit 4dd31f1ffec6c370c3c2e0c605628bf5e16d5c46 ]
 
-SCSI LUN passthrough code such as qemu's "scsi-block" device model
-pass every IO to the host via SG_IO ioctls. Currently, dm-multipath
-calls choose_pgpath() only in the block IO code path, not in the ioctl
-code path (unless current_pgpath is NULL). This has the effect that no
-path switching and thus no load balancing is done for SCSI-passthrough
-IO, unless the active path fails.
+When submitting the previous fix "tty: n_gsm: Fix waking up upper tty
+layer when room available". It was suggested to switch from a while to
+a for loop, but when doing it, there was a remaining bogus i++.
 
-Fix this by using the same logic in multipath_prepare_ioctl() as in
-multipath_clone_and_map().
+This patch removes this i++ and also reorganizes the code making it more
+compact.
 
-Note: The allegedly best path selection algorithm, service-time,
-still wouldn't work perfectly, because the io size of the current
-request is always set to 0. Changing that for the IO passthrough
-case would require the ioctl cmd and arg to be passed to dm's
-prepare_ioctl() method.
-
-Signed-off-by: Martin Wilck <mwilck@suse.com>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Fixes: e1eaea46bb40 ("tty: n_gsm line discipline")
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Link: https://lore.kernel.org/r/20200518084517.2173242-3-gregory.clement@bootlin.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/md/dm-mpath.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/n_gsm.c | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/md/dm-mpath.c b/drivers/md/dm-mpath.c
-index 207ca0ad0b59d..c1ad84f3414cd 100644
---- a/drivers/md/dm-mpath.c
-+++ b/drivers/md/dm-mpath.c
-@@ -1868,7 +1868,7 @@ static int multipath_prepare_ioctl(struct dm_target *ti,
- 	int r;
+diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+index 8a0d66a05af59..75408b9f232da 100644
+--- a/drivers/tty/n_gsm.c
++++ b/drivers/tty/n_gsm.c
+@@ -703,17 +703,9 @@ static void gsm_data_kick(struct gsm_mux *gsm, struct gsm_dlci *dlci)
+ 		} else {
+ 			int i = 0;
  
- 	current_pgpath = READ_ONCE(m->current_pgpath);
--	if (!current_pgpath)
-+	if (!current_pgpath || !test_bit(MPATHF_QUEUE_IO, &m->flags))
- 		current_pgpath = choose_pgpath(m, 0);
- 
- 	if (current_pgpath) {
+-			for (i = 0; i < NUM_DLCI; i++) {
+-				struct gsm_dlci *dlci;
+-
+-				dlci = gsm->dlci[i];
+-				if (dlci == NULL) {
+-					i++;
+-					continue;
+-				}
+-
+-				tty_port_tty_wakeup(&dlci->port);
+-			}
++			for (i = 0; i < NUM_DLCI; i++)
++				if (gsm->dlci[i])
++					tty_port_tty_wakeup(&gsm->dlci[i]->port);
+ 		}
+ 	}
+ }
 -- 
 2.25.1
 
