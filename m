@@ -2,39 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFEA204AB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7CEF204AAA
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 09:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731833AbgFWHKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 03:10:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39830 "EHLO mail.kernel.org"
+        id S1731739AbgFWHKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 03:10:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730998AbgFWHJP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 03:09:15 -0400
+        id S1731306AbgFWHJQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 03:09:16 -0400
 Received: from mail.kernel.org (unknown [95.90.213.197])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B0EB20774;
+        by mail.kernel.org (Postfix) with ESMTPSA id 69B58207D8;
         Tue, 23 Jun 2020 07:09:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1592896155;
-        bh=qEGJr5QDKWsCILpk5nSvbtWGYk438RJ2eoAVE6k9gr0=;
+        bh=sTFjDVFNxvaxYL1XIBkVBYNkDxJgnmCW7W2tRtvvhLM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=egMU6jAhlJDCoNWAUbozx5KHdM0Fwma76H+2+eIk0+tXkycp1OHSwfyx3Us58QxO6
-         V0YMC4Yl2HecP2OoBssCCXWpRYHVsCdTpRe9ltdaApZz6qUmXFiYb9rA6pg1Y53wl0
-         FySy1zIxnLeKm1FxHcbcL3RRiGVNLKAS8ni6jpyQ=
+        b=m++TRjfKXjCGKujF4infLuDUtr+4rY07SzmgNgJUzP0lIpre7KbvVx9a/U1bmWWsX
+         zqdDkcgPvulkmmoqmK0NhqQwz75nvw2JhXeSg22823VDBErEq9pzNCTVzCAX6afbjH
+         LzqNoOqBlBdah9HYIbo/FYSpvWpydFHL5KqUsQFQ=
 Received: from mchehab by mail.kernel.org with local (Exim 4.93)
         (envelope-from <mchehab@kernel.org>)
-        id 1jnd3R-003qjC-6o; Tue, 23 Jun 2020 09:09:13 +0200
+        id 1jnd3R-003qjG-8Q; Tue, 23 Jun 2020 09:09:13 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com
-Subject: [PATCH v2 08/15] kcsan: fix a kernel-doc warning
-Date:   Tue, 23 Jun 2020 09:09:04 +0200
-Message-Id: <20f7995fab2ba85ce723203e9a7c822a55cca2af.1592895969.git.mchehab+huawei@kernel.org>
+        Shuah Khan <shuah@kernel.org>,
+        Sandipan Das <sandipan@linux.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Ram Pai <linuxram@us.ibm.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH v2 09/15] selftests/vm/keys: fix a broken reference at protection_keys.c
+Date:   Tue, 23 Jun 2020 09:09:05 +0200
+Message-Id: <cf65aa052669f55b9dc976a5c8026aef5840741d.1592895969.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1592895969.git.mchehab+huawei@kernel.org>
 References: <cover.1592895969.git.mchehab+huawei@kernel.org>
@@ -45,42 +50,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One of the kernel-doc markups there have two "note" sections:
+Changeset 1eecbcdca2bd ("docs: move protection-keys.rst to the core-api book")
+from Jun 7, 2019 converted protection-keys.txt file to ReST.
 
-	./include/linux/kcsan-checks.h:346: warning: duplicate section name 'Note'
+A recent change at protection_keys.c partially reverted such
+changeset, causing it to point to a non-existing file:
 
-While this is not the case here, duplicated sections can cause
-build issues on Sphinx. So, let's change the notes section
-to use, instead, a list for those 2 notes at the same function.
+	- * Tests x86 Memory Protection Keys (see Documentation/core-api/protection-keys.rst)
+	+ * Tests Memory Protection Keys (see Documentation/vm/protection-keys.txt)
 
+It sounds to me that the changeset that introduced such change
+4645e3563673 ("selftests/vm/pkeys: rename all references to pkru to a generic name")
+could also have other side effects, as it sounds that it was not
+generated against uptream code, but, instead, against a version
+older than Jun 7, 2019.
+
+Fixes: 4645e3563673 ("selftests/vm/pkeys: rename all references to pkru to a generic name")
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Acked-by: Marco Elver <elver@google.com>
 ---
- include/linux/kcsan-checks.h | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ tools/testing/selftests/vm/protection_keys.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/kcsan-checks.h b/include/linux/kcsan-checks.h
-index 7b0b9c44f5f3..c5f6c1dcf7e3 100644
---- a/include/linux/kcsan-checks.h
-+++ b/include/linux/kcsan-checks.h
-@@ -337,11 +337,13 @@ static inline void __kcsan_disable_current(void) { }
-  *		release_for_reuse(obj);
-  *	}
+diff --git a/tools/testing/selftests/vm/protection_keys.c b/tools/testing/selftests/vm/protection_keys.c
+index fc19addcb5c8..fdbb602ecf32 100644
+--- a/tools/testing/selftests/vm/protection_keys.c
++++ b/tools/testing/selftests/vm/protection_keys.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * Tests Memory Protection Keys (see Documentation/vm/protection-keys.txt)
++ * Tests Memory Protection Keys (see Documentation/core-api/protection-keys.rst)
   *
-- * Note: ASSERT_EXCLUSIVE_ACCESS_SCOPED(), if applicable, performs more thorough
-- * checking if a clear scope where no concurrent accesses are expected exists.
-+ * Note:
-  *
-- * Note: For cases where the object is freed, `KASAN <kasan.html>`_ is a better
-- * fit to detect use-after-free bugs.
-+ * 1. ASSERT_EXCLUSIVE_ACCESS_SCOPED(), if applicable, performs more thorough
-+ *    checking if a clear scope where no concurrent accesses are expected exists.
-+ *
-+ * 2. For cases where the object is freed, `KASAN <kasan.html>`_ is a better
-+ *    fit to detect use-after-free bugs.
-  *
-  * @var: variable to assert on
-  */
+  * There are examples in here of:
+  *  * how to set protection keys on memory
 -- 
 2.26.2
 
