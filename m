@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DABE720507B
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B043205087
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732533AbgFWLRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 07:17:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:57500 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732458AbgFWLRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 07:17:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BAB441F1;
-        Tue, 23 Jun 2020 04:16:58 -0700 (PDT)
-Received: from [10.57.9.128] (unknown [10.57.9.128])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3BD7E3F6CF;
-        Tue, 23 Jun 2020 04:16:56 -0700 (PDT)
-Subject: Re: [PATCH v6 1/4] iommu/arm-smmu: add NVIDIA implementation for dual
- ARM MMU-500 usage
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Krishna Reddy <vdumpa@nvidia.com>
-Cc:     treding@nvidia.com, bhuntsman@nvidia.com,
-        linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        mperttunen@nvidia.com, talho@nvidia.com, snikam@nvidia.com,
-        nicolinc@nvidia.com, linux-tegra@vger.kernel.org, yhsu@nvidia.com,
-        praithatha@nvidia.com, will@kernel.org,
-        linux-arm-kernel@lists.infradead.org, bbiswas@nvidia.com
-References: <20200604234414.21912-1-vdumpa@nvidia.com>
- <20200604234414.21912-2-vdumpa@nvidia.com> <20200623102927.GD4098287@ulmo>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <5f29c794-406a-db13-d6d0-75dcb0d0b0cc@arm.com>
-Date:   Tue, 23 Jun 2020 12:16:55 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S1732548AbgFWLRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 07:17:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732458AbgFWLRN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 07:17:13 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53A5C06179A
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 04:17:07 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id o11so12380301wrv.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 04:17:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
+        b=A0CZIOBsOGprBP2yx9wdvIjerDxw8tVV1HACYa5+nrVohGuvJ8u/zR7WW2a1A6cQUy
+         1AU4k/VWL4JGQLMlQyiVq5RgAnvjpZg35G5jBXEhx6d3/H1U4Mg1D0SvSiHZC+UOmhvB
+         f6A5Sa065A7+vMvl4B1SG9nwfLKh1maAKj/zDLeWq8NzPzhRGeobXLBo3sqo2xAtr4CH
+         JtrhE0csmsX5PdN9odHGuowLP24o3rKymki1JHvU9h75Cz45x0n/VtCQXnwAUHB+YJ6O
+         a+e26mSeLIL4uTprG4gzR2RSOj7iNDdGfY8fcozJ79xzxT8edEbFBIxsga/e8JKVpjOv
+         78HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=D7l/Y2nU4ivOXB3kYNarWKNDy1SUWuawPt7q4q/Bhv4=;
+        b=XebU7e+2N8bFeyBIFFI3bUhsOscstT8oE4CvZKEiZ0h2KpzdyYD+y9chlW0XWOVBoa
+         MW6ggPNswxA9BCXaJ1GGt2ePLzcBqTm7QHp4Iq8WAFfBAsBc2XqSJM1jhh9/4LwWJdqf
+         6Mu5Zv92azLDPMGuXq1sA+jlE0G+8PwT76K8VL9QuDM6CdNiqFZSeuFF+bBDXJU/M087
+         YyndyiHpJJPXTnT5wRxpIWTeyr5f88eBHNLkDVBofGjdkiVEvmuERQo02pvJz/9SHKOu
+         gVObelO8C1z8k7TNCFjs/L26EIJYh8VAMin9UuZNT33K85DiC73naHm+PnwIDmiQys/4
+         ttxw==
+X-Gm-Message-State: AOAM532H9YYG7q2/QwgPK+SCIsR3tzzOaQymA9Beq0VvcHsD/JIQyhO/
+        PtptKx/EBDMTFGaWndGZDm1yqQHRcJ04etI6Smk=
+X-Google-Smtp-Source: ABdhPJw2cCXejzjPEQ0OifmpQqadROGKfTe6EoFnU99e9+vhZITKDpt//4vw2qLuPBd5O5PdU+u/YBx5ZZxe8Kdl98s=
+X-Received: by 2002:a5d:55c2:: with SMTP id i2mr24786050wrw.225.1592911026528;
+ Tue, 23 Jun 2020 04:17:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200623102927.GD4098287@ulmo>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a1c:f002:0:0:0:0:0 with HTTP; Tue, 23 Jun 2020 04:17:04
+ -0700 (PDT)
+Reply-To: sarahkoffi389@yahoo.co.jp
+From:   Sarah Koffi <paulwiliam782@gmail.com>
+Date:   Tue, 23 Jun 2020 12:17:04 +0100
+Message-ID: <CAHqcnY0yFMGfeQoQRzUbXEXCiVHerbN_kWyNgCaOjbF_RcY3Bg@mail.gmail.com>
+Subject: Greetings From Mrs. Sarah Koffi
+To:     sarahkoffi389@yahoo.co.jp
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-23 11:29, Thierry Reding wrote:
-[...]
->> diff --git a/drivers/iommu/arm-smmu-impl.c b/drivers/iommu/arm-smmu-impl.c
->> index c75b9d957b702..52c84c30f83e4 100644
->> --- a/drivers/iommu/arm-smmu-impl.c
->> +++ b/drivers/iommu/arm-smmu-impl.c
->> @@ -160,6 +160,9 @@ struct arm_smmu_device *arm_smmu_impl_init(struct arm_smmu_device *smmu)
->>   	 */
->>   	switch (smmu->model) {
->>   	case ARM_MMU500:
->> +		if (of_device_is_compatible(smmu->dev->of_node,
->> +					    "nvidia,tegra194-smmu-500"))
->> +			return nvidia_smmu_impl_init(smmu);
-> 
-> Should NVIDIA_TEGRA194_SMMU be a separate value for smmu->model,
-> perhaps? That way we avoid this somewhat odd check here.
+Greetings From Mrs. Sarah Koffi
 
-No, this is simply in the wrong place. The design here is that we pick 
-up anything related to the basic SMMU IP (model) first, then make any 
-platform-specific integration checks. That way a platform-specific init 
-function can see the model impl set and subclass it if necessary 
-(although nobody's actually done that yet). The setup for Cavium is just 
-a short-cut since their model is unique to their integration, so the 
-lines get a bit blurred and there's little benefit to trying to separate 
-it out.
+I'm contacting you based on your good profiles I read and for a good
+reasons, I am in search of a property to buy in your country as I
+intended to come over to your
+country for investment, Though I have not meet with you before but I
+believe that one has to risk confiding in someone to succeed sometimes
+in life.
 
-In short, put this down below with the other of_device_is_compatible() 
-checks.
+My name is Mrs. Sarah Koffi. My late husband deals on Crude Oil with
+Federal Government of Sudan and he has a personal Oil firm in Bentiu
+Oil zone town and Upper
+Nile city. What I have experience physically, I don't wish to
+experience it again in my life due to the recent civil Ethnic war
+cause by our President Mr. Salva Kiir
+and the rebel leader Mr Riek Machar, I have been Under United Nation
+refuge camp in chad to save my life and that of my little daughter.
 
->>   		smmu->impl = &arm_mmu500_impl;
->>   		break;
->>   	case CAVIUM_SMMUV2:
->> diff --git a/drivers/iommu/arm-smmu-nvidia.c b/drivers/iommu/arm-smmu-nvidia.c
-> 
-> I wonder if it would be better to name this arm-smmu-tegra.c to make it
-> clearer that this is for a Tegra chip. We do have regular expressions in
-> MAINTAINERS that catch anything with "tegra" in it to make this easier.
+Though, I do not know how you will feel to my proposal, but the truth
+is that I sneaked into Chad our neighboring country where I am living
+now as a refugee.
+I escaped with my little daughter when the rebels bust into our house
+and killed my husband as one of the big oil dealers in the country,
+ever since then, I have being on the run.
 
-There was a notion that these would be grouped by vendor, but if there's 
-a strong preference for all NVIDIA-SoC-related stuff to be named "Tegra" 
-then I'm not going to complain too much.
+I left my country and move to Chad our neighboring country with the
+little ceasefire we had, due to the face to face peace meeting accord
+coordinated by the US Secretary of State, Mr John Kerry and United
+Nations in Ethiopia (Addis Ababa) between our President Mr Salva Kiir
+and the rebel leader Mr Riek Machar to stop this war.
 
->> new file mode 100644
->> index 0000000000000..dafc293a45217
->> --- /dev/null
->> +++ b/drivers/iommu/arm-smmu-nvidia.c
->> @@ -0,0 +1,161 @@
->> +// SPDX-License-Identifier: GPL-2.0-only
->> +// Nvidia ARM SMMU v2 implementation quirks
-> 
-> s/Nvidia/NVIDIA/
-> 
->> +// Copyright (C) 2019 NVIDIA CORPORATION.  All rights reserved.
-> 
-> I suppose this should now also include 2020.
-> 
->> +
->> +#define pr_fmt(fmt) "nvidia-smmu: " fmt
-> 
-> Same here. Might be worth making this "tegra-smmu: " for consistency.
+I want to solicit for your partnership with trust to invest the $8
+million dollars deposited by my late husband in Bank because my life
+is no longer safe in our country, since the rebels are looking for the
+families of all the oil business men in the country to kill, saying
+that they are they one that is milking the country dry.
 
-On the other hand, a log prefix that is literally the name of a 
-completely unrelated driver seems more confusing to users than useful. 
-Same for the function naming - the tegra_smmu_* namespace is already 
-owned by that driver.
+I will offer you 20% of the total fund for your help while I will
+partner with you for the investment in your country.
+If I get your reply.
 
-Robin.
+I will wait to hear from you so as to give you details.With love from
+
+ i need you to contact me here sarahkoffi389@yahoo.co.jp
+
+Mrs. Sarah Koffi
