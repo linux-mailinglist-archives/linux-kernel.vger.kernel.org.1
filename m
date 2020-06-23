@@ -2,40 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 729C9205969
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:40:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78F2420595A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 19:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387899AbgFWRkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 13:40:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:41562 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387757AbgFWRkK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 13:40:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D3B6A31B;
-        Tue, 23 Jun 2020 10:40:09 -0700 (PDT)
-Received: from [192.168.0.7] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4A2763F73C;
-        Tue, 23 Jun 2020 10:40:07 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] sched: Optionally skip uclamp logic in fast path
-To:     Qais Yousef <qais.yousef@arm.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Chris Redpath <chris.redpath@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
-References: <20200619172011.5810-1-qais.yousef@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <6c1a6003-8f51-dadc-53e4-a2fa034dbe36@arm.com>
-Date:   Tue, 23 Jun 2020 19:39:32 +0200
+        id S2387636AbgFWRkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 13:40:01 -0400
+Received: from mail-pj1-f47.google.com ([209.85.216.47]:51130 "EHLO
+        mail-pj1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387564AbgFWRj6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 13:39:58 -0400
+Received: by mail-pj1-f47.google.com with SMTP id jz3so1786436pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 10:39:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nWpDQmZNg8zKVk12QskQ7NNS05C4fI/JmZBKLdKyu8Q=;
+        b=LHpHDH2BJksLP+jVFyWOvoHv2TwTTN8u7YtsUCr6dRFypiwHg//jToVZBYRIlRAfEk
+         gJXm2PW+dZxkQPG96/WRQaDlKvgR8paWZHLINAKkfmxv17b2kMeuLS7O1qIKwnVls0+e
+         gOglO65g8TqtPSvWp8yAy1RW7ph43XS02UbhiLlm9ZXKDOJYxFkNqGGpdBFPDulS3snQ
+         rtGt+VGVnHxLO33gvupMyek6tHFxhFlJphOzhixhZVfUuwGsvWisVWSbvwyC7RD1skz6
+         rufgrJtSFrgysd0p11DrdxyOaR72Pfi1KrnhFdvO4mjNRuSQ10xM8ZMg9bSthjfS1NwU
+         o1cg==
+X-Gm-Message-State: AOAM531aVmEOeB4BNbeW30EJjogZsukd90N/8rL4FANClSsYuABvVNCA
+        iyuwV8drf8HkSdpLPiSK2XumCwTq
+X-Google-Smtp-Source: ABdhPJy5yNa9YCh5UqfALz8PSpQpHx/uLWc0fOou3IMn1j8a8eVkY6oZe4ui356rmDdzLOrCbq0HBQ==
+X-Received: by 2002:a17:90b:1a86:: with SMTP id ng6mr9447871pjb.88.1592933996847;
+        Tue, 23 Jun 2020 10:39:56 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:acd7:a900:b9f:8b8b? ([2601:647:4802:9070:acd7:a900:b9f:8b8b])
+        by smtp.gmail.com with ESMTPSA id b24sm17087560pfo.112.2020.06.23.10.39.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jun 2020 10:39:56 -0700 (PDT)
+Subject: Re: [PATCH 3/3] nvme: Use USEC_PER_SEC instead of magic numbers
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>, kbusch@kernel.org,
+        axboe@fb.com, hch@lst.de
+Cc:     baolin.wang7@gmail.com, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1592916850.git.baolin.wang@linux.alibaba.com>
+ <a64d35465b8d91ab11f37d814ac10003da7804b8.1592916850.git.baolin.wang@linux.alibaba.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <c2b796ae-a00e-7368-e60d-1fea473cbee9@grimberg.me>
+Date:   Tue, 23 Jun 2020 10:39:55 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.8.0
 MIME-Version: 1.0
-In-Reply-To: <20200619172011.5810-1-qais.yousef@arm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <a64d35465b8d91ab11f37d814ac10003da7804b8.1592916850.git.baolin.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -43,116 +57,4 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/06/2020 19:20, Qais Yousef wrote> This series attempts to address the report that uclamp logic could be expensive
-> sometimes and shows a regression in netperf UDP_STREAM under certain
-> conditions.
-> 
-> The first patch is a fix for how struct uclamp_rq is initialized which is
-> required by the 2nd patch which contains the real 'fix'.
-> 
-> Worth noting that the root cause of the overhead is believed to be system
-> specific or related to potential certain code/data layout issues, leading to
-> worse I/D $ performance.
-> 
-> Different systems exhibited different behaviors and the regression did
-> disappear in certain kernel version while attempting to reporoduce.
-> 
-> More info can be found here:
-> 
-> https://lore.kernel.org/lkml/20200616110824.dgkkbyapn3io6wik@e107158-lin/
-> 
-> Having the static key seemed the best thing to do to ensure the effect of
-> uclamp is minimized for kernels that compile it in but don't have a userspace
-> that uses it, which will allow distros to distribute uclamp capable kernels by
-> default without having to compromise on performance for some systems that could
-> be affected.
-
-My test data indicates that the static key w/o any uclamp users (3)
-brings the performance number for the 'perf bench sched pipe'
-workload back (i.e. from w/ !CONFIG_UCLAMP_TASK) (1).
-
-platform:
-
-    Arm64 Hikey960 (only little CPUs [0-3]), no CPUidle,
-    performance CPUfreq governor
-
-workload:
-
-    perf stat -n -r 20 -- perf bench sched pipe -T -l 100000
-
-
-(A) *** Performance results ***
-
-(1) tip/sched/core
-    # CONFIG_UCLAMP_TASK is not set
-
-    *1.39285* +- 0.00191 seconds time elapsed  ( +-  0.14% )
-
-(2) tip/sched/core
-    CONFIG_UCLAMP_TASK=y
-
-    *1.42877* +- 0.00181 seconds time elapsed  ( +-  0.13% )
-
-(3) tip/sched/core + opt_skip_uclamp_v2
-    CONFIG_UCLAMP_TASK=y
-
-    *1.38833* +- 0.00291 seconds time elapsed  ( +-  0.21% )
-
-(4) tip/sched/core + opt_skip_uclamp_v2
-    CONFIG_UCLAMP_TASK=y
-    echo 512 > /proc/sys/kernel/sched_util_clamp_min (enable uclamp)
-
-    *1.42062* +- 0.00238 seconds time elapsed  ( +-  0.17% )
-
-
-(B) *** Profiling on CPU0 and CPU1  ***
-
-    (further hp'ing out CPU2 and CPU3 to get consistent hit numbers)
-
-(1)
-
-CPU0:  Function             Hit    Time            Avg             s^2
-       --------             ---    ----            ---             ---
-       deactivate_task  1997346    2207642 us      *1.105* us      0.033 us
-       activate_task    1997391    1840057 us      *0.921* us      0.054 us
-
-CPU1:  Function             Hit    Time            Avg             s^2
-       --------             ---    ----            ---             ---
-       deactivate_task  1997455    2225960 us      1.114 us        0.034 us
-       activate_task    1997410    1842603 us      0.922 us        0.052 us
-
-(2)
-
-CPU0:  Function             Hit    Time            Avg             s^2
-       --------             ---    ----            ---             ---
-       deactivate_task  1998538    2419719 us      *1.210* us      0.061 us
-       activate_task    1997119    1960401 us      *0.981* us      0.034 us
-
-CPU1:  Function             Hit    Time            Avg             s^2
-       --------             ---    ----            ---             ---
-       deactivate_task  1996597    2400760 us      1.202 us        0.059 us
-       activate_task    1998016    1985013 us      0.993 us        0.028 us
-
-(3)
-
-CPU0:  Function             Hit    Time            Avg             s^2
-       --------             ---    ----            ---             ---
-       deactivate_task  1997525    2155416 us      *1.079* us      0.020 us
-       activate_task    1997874    1899002 us      *0.950* us      0.044 us
-
-CPU1:  Function             Hit    Time            Avg             s^2
-       --------             ---    ----            ---             ---
-       deactivate_task  1997935    2118648 us      1.060 us        0.017 us
-       activate_task    1997586    1895162 us      0.948 us        0.044 us
-
-(4)
-
-CPU0:  Function             Hit    Time            Avg             s^2
-       --------             ---    ----            ---             ---
-       deactivate_task  1998246    2428121 us      *1.215* us      0.062 us
-       activate_task    1998252    2132141 us      *1.067* us      0.020 us
-
-CPU1:  Function             Hit    Time            Avg             s^2
-       --------             ---    ----            ---             ---
-       deactivate_task  1996154    2414194 us      1.209 us        0.060 us
-       activate_task    1996148    2140667 us      1.072 us        0.021 us
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
