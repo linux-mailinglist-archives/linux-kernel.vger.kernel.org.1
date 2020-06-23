@@ -2,40 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 342532063DF
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CBA6206155
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404175AbgFWVMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:12:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52322 "EHLO mail.kernel.org"
+        id S2392077AbgFWUjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:39:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390958AbgFWUbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:31:40 -0400
+        id S2390002AbgFWUjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:39:33 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5798820702;
-        Tue, 23 Jun 2020 20:31:39 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4143F215A4;
+        Tue, 23 Jun 2020 20:39:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944299;
-        bh=woCUbQ/CU003x4IIGmTMDxsREkOwxaUvumKf9HEwUKg=;
+        s=default; t=1592944773;
+        bh=zs1Fsnj+WxD8z7ioOPR4f0U8x/ABY56oKNjP/7rKsb4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wBzL2TJty46Og7QpB0+W8BGJFPizGVqu+iTiMQhtQlnu3Ox6GWGrG7FAQKNdebDf5
-         niJPd8UH+99VATTlu7v3uOsU6Xi0TFcAulsE7Jk1UhY1ev14HBrSibtQ0hiRgl2kCG
-         8MTYv69Ga+lmbTQVduCLvUFdTSBAgdKK9hfcMVf8=
+        b=ymgtCk+tBQR39jkAD1dB7ui/eN6sW8aMkdrq5upwVJqZZNd/8d1T0WuWgzUVjAzP/
+         h/GSVbk2fxgeR3QStgM4Am3RVUx1/A931UPKQs8JBnjCTRbWU66wDIp95faSqdtoaM
+         8E8oBtm8GGkPz1rW1GGXx+GXmwxaB7tItG7Qwy5I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jernej Skrabec <jernej.skrabec@siol.net>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <maxime@cerno.tech>,
+        stable@vger.kernel.org, Fedor Tokarev <ftokarev@gmail.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 250/314] drm/sun4i: hdmi ddc clk: Fix size of m divider
-Date:   Tue, 23 Jun 2020 21:57:25 +0200
-Message-Id: <20200623195350.884914938@linuxfoundation.org>
+Subject: [PATCH 4.19 119/206] net: sunrpc: Fix off-by-one issues in rpc_ntop6
+Date:   Tue, 23 Jun 2020 21:57:27 +0200
+Message-Id: <20200623195322.807795119@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -45,49 +44,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jernej Skrabec <jernej.skrabec@siol.net>
+From: Fedor Tokarev <ftokarev@gmail.com>
 
-[ Upstream commit 54e1e06bcf1cf6e7ac3f86daa5f7454add24b494 ]
+[ Upstream commit 118917d696dc59fd3e1741012c2f9db2294bed6f ]
 
-m divider in DDC clock register is 4 bits wide. Fix that.
+Fix off-by-one issues in 'rpc_ntop6':
+ - 'snprintf' returns the number of characters which would have been
+   written if enough space had been available, excluding the terminating
+   null byte. Thus, a return value of 'sizeof(scopebuf)' means that the
+   last character was dropped.
+ - 'strcat' adds a terminating null byte to the string, thus if len ==
+   buflen, the null byte is written past the end of the buffer.
 
-Fixes: 9c5681011a0c ("drm/sun4i: Add HDMI support")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200413095457.1176754-1-jernej.skrabec@siol.net
+Signed-off-by: Fedor Tokarev <ftokarev@gmail.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/sun4i/sun4i_hdmi.h         | 2 +-
- drivers/gpu/drm/sun4i/sun4i_hdmi_ddc_clk.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ net/sunrpc/addr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi.h b/drivers/gpu/drm/sun4i/sun4i_hdmi.h
-index 7ad3f06c127e7..00ca35f07ba5b 100644
---- a/drivers/gpu/drm/sun4i/sun4i_hdmi.h
-+++ b/drivers/gpu/drm/sun4i/sun4i_hdmi.h
-@@ -148,7 +148,7 @@
- #define SUN4I_HDMI_DDC_CMD_IMPLICIT_WRITE	3
+diff --git a/net/sunrpc/addr.c b/net/sunrpc/addr.c
+index 2e0a6f92e563d..8391c27855501 100644
+--- a/net/sunrpc/addr.c
++++ b/net/sunrpc/addr.c
+@@ -81,11 +81,11 @@ static size_t rpc_ntop6(const struct sockaddr *sap,
  
- #define SUN4I_HDMI_DDC_CLK_REG		0x528
--#define SUN4I_HDMI_DDC_CLK_M(m)			(((m) & 0x7) << 3)
-+#define SUN4I_HDMI_DDC_CLK_M(m)			(((m) & 0xf) << 3)
- #define SUN4I_HDMI_DDC_CLK_N(n)			((n) & 0x7)
+ 	rc = snprintf(scopebuf, sizeof(scopebuf), "%c%u",
+ 			IPV6_SCOPE_DELIMITER, sin6->sin6_scope_id);
+-	if (unlikely((size_t)rc > sizeof(scopebuf)))
++	if (unlikely((size_t)rc >= sizeof(scopebuf)))
+ 		return 0;
  
- #define SUN4I_HDMI_DDC_LINE_CTRL_REG	0x540
-diff --git a/drivers/gpu/drm/sun4i/sun4i_hdmi_ddc_clk.c b/drivers/gpu/drm/sun4i/sun4i_hdmi_ddc_clk.c
-index 2ff780114106c..12430b9d4e930 100644
---- a/drivers/gpu/drm/sun4i/sun4i_hdmi_ddc_clk.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_hdmi_ddc_clk.c
-@@ -33,7 +33,7 @@ static unsigned long sun4i_ddc_calc_divider(unsigned long rate,
- 	unsigned long best_rate = 0;
- 	u8 best_m = 0, best_n = 0, _m, _n;
+ 	len += rc;
+-	if (unlikely(len > buflen))
++	if (unlikely(len >= buflen))
+ 		return 0;
  
--	for (_m = 0; _m < 8; _m++) {
-+	for (_m = 0; _m < 16; _m++) {
- 		for (_n = 0; _n < 8; _n++) {
- 			unsigned long tmp_rate;
- 
+ 	strcat(buf, scopebuf);
 -- 
 2.25.1
 
