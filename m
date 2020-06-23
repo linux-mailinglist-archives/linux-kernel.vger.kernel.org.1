@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF02206433
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8EC2206449
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390714AbgFWVRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:17:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45918 "EHLO mail.kernel.org"
+        id S2393470AbgFWVTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:19:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390674AbgFWU0j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:26:39 -0400
+        id S2390004AbgFWUZW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:25:22 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1CB5E20702;
-        Tue, 23 Jun 2020 20:26:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C50EB2064B;
+        Tue, 23 Jun 2020 20:25:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943999;
-        bh=kHTISQR4EnsLR+y15Tcb8QedL3M6QpAjkrPEMouBTes=;
+        s=default; t=1592943922;
+        bh=M86fOLiCQkK9k6YYz0e5I3FGzgfHy4XRhEqm5QpA51c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EgZmYxlBJAJezpKAX5lXKMf5TMKPjQGG39kq/sE4mbl75lu/2LigWz2L00x9bucDk
-         Oz1kqk6e51Myo9wsmAmq/po0bLVnWl1jVkhMyRGovl86Z4mLAZAyAdn+L+ux9UpBol
-         GyxbSiUi65V9oxMQEVRS1rvNwUJwPrKEd2IcxoXA=
+        b=Q/5sb38dIN4mFnikJ2EFpNmnHLZyYT6kG2Ryqlp6q00FGybvPO7cew9UYeQDAOaeI
+         VIjPQjvxmDGl3fgen/aresLv2z79JCoXN16Tvv9Avmg8kBCuoroNZ8QOr5KGdZy4LA
+         hrRiqZjkjYrCd185s+xkLuYqknY2XoCXf4DTxFNg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Julian Wiedmann <jwi@linux.ibm.com>,
-        Benjamin Block <bblock@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
+        stable@vger.kernel.org,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 102/314] s390/qdio: put thinint indicator after early error
-Date:   Tue, 23 Jun 2020 21:54:57 +0200
-Message-Id: <20200623195343.726017627@linuxfoundation.org>
+Subject: [PATCH 5.4 104/314] slimbus: ngd: get drvdata from correct device
+Date:   Tue, 23 Jun 2020 21:54:59 +0200
+Message-Id: <20200623195343.812290910@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
 References: <20200623195338.770401005@linuxfoundation.org>
@@ -45,83 +44,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julian Wiedmann <jwi@linux.ibm.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-[ Upstream commit 75e82bec6b2622c6f455b7a543fb5476a5d0eed7 ]
+[ Upstream commit b58c663059b484f7ff547d076a34cf6d7a302e56 ]
 
-qdio_establish() calls qdio_setup_thinint() via qdio_setup_irq().
-If the subsequent qdio_establish_thinint() fails, we miss to put the
-DSCI again. Thus the DSCI isn't available for re-use. Given enough of
-such errors, we could end up with having only the shared DSCI available.
+Get drvdata directly from parent instead of ngd dev, as ngd
+dev can probe defer and previously set drvdata will become null.
 
-Merge qdio_setup_thinint() into qdio_establish_thinint(), and deal with
-such an error internally.
-
-Fixes: 779e6e1c724d ("[S390] qdio: new qdio driver.")
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-Reviewed-by: Benjamin Block <bblock@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Link: https://lore.kernel.org/r/20200417093618.7929-1-srinivas.kandagatla@linaro.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/cio/qdio.h         |  1 -
- drivers/s390/cio/qdio_setup.c   |  1 -
- drivers/s390/cio/qdio_thinint.c | 14 ++++++++------
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/slimbus/qcom-ngd-ctrl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/s390/cio/qdio.h b/drivers/s390/cio/qdio.h
-index a58b45df95d7e..3b0a4483a2520 100644
---- a/drivers/s390/cio/qdio.h
-+++ b/drivers/s390/cio/qdio.h
-@@ -372,7 +372,6 @@ static inline int multicast_outbound(struct qdio_q *q)
- extern u64 last_ai_time;
+diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
+index 29fbab55c3b38..01a17d84b6064 100644
+--- a/drivers/slimbus/qcom-ngd-ctrl.c
++++ b/drivers/slimbus/qcom-ngd-ctrl.c
+@@ -1354,7 +1354,6 @@ static int of_qcom_slim_ngd_register(struct device *parent,
+ 		ngd->pdev->driver_override = QCOM_SLIM_NGD_DRV_NAME;
+ 		ngd->pdev->dev.of_node = node;
+ 		ctrl->ngd = ngd;
+-		platform_set_drvdata(ngd->pdev, ctrl);
  
- /* prototypes for thin interrupt */
--void qdio_setup_thinint(struct qdio_irq *irq_ptr);
- int qdio_establish_thinint(struct qdio_irq *irq_ptr);
- void qdio_shutdown_thinint(struct qdio_irq *irq_ptr);
- void tiqdio_add_input_queues(struct qdio_irq *irq_ptr);
-diff --git a/drivers/s390/cio/qdio_setup.c b/drivers/s390/cio/qdio_setup.c
-index ee0b3c5862110..9dc56aa3ae559 100644
---- a/drivers/s390/cio/qdio_setup.c
-+++ b/drivers/s390/cio/qdio_setup.c
-@@ -479,7 +479,6 @@ int qdio_setup_irq(struct qdio_initialize *init_data)
- 	setup_queues(irq_ptr, init_data);
+ 		platform_device_add(ngd->pdev);
+ 		ngd->base = ctrl->base + ngd->id * data->offset +
+@@ -1369,12 +1368,13 @@ static int of_qcom_slim_ngd_register(struct device *parent,
  
- 	setup_qib(irq_ptr, init_data);
--	qdio_setup_thinint(irq_ptr);
- 	set_impl_params(irq_ptr, init_data->qib_param_field_format,
- 			init_data->qib_param_field,
- 			init_data->input_slib_elements,
-diff --git a/drivers/s390/cio/qdio_thinint.c b/drivers/s390/cio/qdio_thinint.c
-index 93ee067c10cab..ddf780b12d408 100644
---- a/drivers/s390/cio/qdio_thinint.c
-+++ b/drivers/s390/cio/qdio_thinint.c
-@@ -268,17 +268,19 @@ int __init tiqdio_register_thinints(void)
- 
- int qdio_establish_thinint(struct qdio_irq *irq_ptr)
+ static int qcom_slim_ngd_probe(struct platform_device *pdev)
  {
-+	int rc;
-+
- 	if (!is_thinint_irq(irq_ptr))
- 		return 0;
--	return set_subchannel_ind(irq_ptr, 0);
--}
+-	struct qcom_slim_ngd_ctrl *ctrl = platform_get_drvdata(pdev);
+ 	struct device *dev = &pdev->dev;
++	struct qcom_slim_ngd_ctrl *ctrl = dev_get_drvdata(dev->parent);
+ 	int ret;
  
--void qdio_setup_thinint(struct qdio_irq *irq_ptr)
--{
--	if (!is_thinint_irq(irq_ptr))
--		return;
- 	irq_ptr->dsci = get_indicator();
- 	DBF_HEX(&irq_ptr->dsci, sizeof(void *));
-+
-+	rc = set_subchannel_ind(irq_ptr, 0);
-+	if (rc)
-+		put_indicator(irq_ptr->dsci);
-+
-+	return rc;
- }
+ 	ctrl->ctrl.dev = dev;
  
- void qdio_shutdown_thinint(struct qdio_irq *irq_ptr)
++	platform_set_drvdata(pdev, ctrl);
+ 	pm_runtime_use_autosuspend(dev);
+ 	pm_runtime_set_autosuspend_delay(dev, QCOM_SLIM_NGD_AUTOSUSPEND);
+ 	pm_runtime_set_suspended(dev);
 -- 
 2.25.1
 
