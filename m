@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5C53205F99
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F9A20606A
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389148AbgFWUeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:34:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55438 "EHLO mail.kernel.org"
+        id S2390509AbgFWUmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:42:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387641AbgFWUdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:33:51 -0400
+        id S2392429AbgFWUme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:42:34 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6059320836;
-        Tue, 23 Jun 2020 20:33:51 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C9282070E;
+        Tue, 23 Jun 2020 20:42:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944431;
-        bh=XwauqFNRoODA/WZXCoHKKjOuoIsjFMp1p3aBUa8Ss2o=;
+        s=default; t=1592944954;
+        bh=gh7RpAJRcF/sRToPeU4ABUwmSyg1KQq2V94mmWi2za0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c7F01gtIngVthzuYlq3kijI+xvbz0XtpmHWHh+4HK0gSZd+Z/WCL8Tzkj6o/gPEX+
-         5mGuFD58xzcTgmGB833G5feEBI23mxh0haspPrSrjkyNTVfvN6zlrN+S8SL/1wr6f6
-         hM0qvrNYCEWyXVmbbo5tPQ4I2pGxnOFAz1OBj+/Q=
+        b=BoVobA1gku1zIAlFUQzwhFcDmucQk9qMH34HeFQiHeGbWsqeIY+kOLb5msMgqNReo
+         5qADwau4A/VhJ10ConYhpp6oqXlbEkISMjQ0kc2rUitNWOLBoJGaCmwAQlUaI3huZX
+         dbBydJAufWGJzF+kNP/p0PjOgj8H4ORUsq7gI+lk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>,
-        Daniel Rosenberg <drosen@google.com>,
-        Gabriel Krisman Bertazi <krisman@collabora.co.uk>,
-        Eric Biggers <ebiggers@google.com>,
-        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>,
+        Tony Prisk <linux@prisktech.co.nz>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Oliver Neukum <oneukum@suse.de>,
+        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 295/314] f2fs: avoid utf8_strncasecmp() with unstable name
+Subject: [PATCH 4.19 162/206] usb/xhci-plat: Set PM runtime as active on resume
 Date:   Tue, 23 Jun 2020 21:58:10 +0200
-Message-Id: <20200623195353.041110423@linuxfoundation.org>
+Message-Id: <20200623195324.971022523@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
+References: <20200623195316.864547658@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,64 +47,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
+From: Qais Yousef <qais.yousef@arm.com>
 
-[ Upstream commit fc3bb095ab02b9e7d89a069ade2cead15c64c504 ]
+[ Upstream commit 79112cc3c29f4a8c73a21428fbcbcb0afb005e3e ]
 
-If the dentry name passed to ->d_compare() fits in dentry::d_iname, then
-it may be concurrently modified by a rename.  This can cause undefined
-behavior (possibly out-of-bounds memory accesses or crashes) in
-utf8_strncasecmp(), since fs/unicode/ isn't written to handle strings
-that may be concurrently modified.
+Follow suit of ohci-platform.c and perform pm_runtime_set_active() on
+resume.
 
-Fix this by first copying the filename to a stack buffer if needed.
-This way we get a stable snapshot of the filename.
+ohci-platform.c had a warning reported due to the missing
+pm_runtime_set_active() [1].
 
-Fixes: 2c2eb7a300cd ("f2fs: Support case-insensitive file name lookups")
-Cc: <stable@vger.kernel.org> # v5.4+
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Daniel Rosenberg <drosen@google.com>
-Cc: Gabriel Krisman Bertazi <krisman@collabora.co.uk>
-Signed-off-by: Eric Biggers <ebiggers@google.com>
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+[1] https://lore.kernel.org/lkml/20200323143857.db5zphxhq4hz3hmd@e107158-lin.cambridge.arm.com/
+
+Signed-off-by: Qais Yousef <qais.yousef@arm.com>
+CC: Tony Prisk <linux@prisktech.co.nz>
+CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Mathias Nyman <mathias.nyman@intel.com>
+CC: Oliver Neukum <oneukum@suse.de>
+CC: linux-arm-kernel@lists.infradead.org
+CC: linux-usb@vger.kernel.org
+CC: linux-kernel@vger.kernel.org
+Link: https://lore.kernel.org/r/20200518154931.6144-2-qais.yousef@arm.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/dir.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ drivers/usb/host/xhci-plat.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
-index 594c9ad774d23..e9af46dc06f72 100644
---- a/fs/f2fs/dir.c
-+++ b/fs/f2fs/dir.c
-@@ -1063,11 +1063,27 @@ static int f2fs_d_compare(const struct dentry *dentry, unsigned int len,
- 	const struct inode *dir = READ_ONCE(parent->d_inode);
- 	const struct f2fs_sb_info *sbi = F2FS_SB(dentry->d_sb);
- 	struct qstr entry = QSTR_INIT(str, len);
-+	char strbuf[DNAME_INLINE_LEN];
- 	int res;
+diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
+index adc437ca83b88..65972c186c641 100644
+--- a/drivers/usb/host/xhci-plat.c
++++ b/drivers/usb/host/xhci-plat.c
+@@ -408,7 +408,15 @@ static int __maybe_unused xhci_plat_resume(struct device *dev)
+ 	if (ret)
+ 		return ret;
  
- 	if (!dir || !IS_CASEFOLDED(dir))
- 		goto fallback;
- 
-+	/*
-+	 * If the dentry name is stored in-line, then it may be concurrently
-+	 * modified by a rename.  If this happens, the VFS will eventually retry
-+	 * the lookup, so it doesn't matter what ->d_compare() returns.
-+	 * However, it's unsafe to call utf8_strncasecmp() with an unstable
-+	 * string.  Therefore, we have to copy the name into a temporary buffer.
-+	 */
-+	if (len <= DNAME_INLINE_LEN - 1) {
-+		memcpy(strbuf, str, len);
-+		strbuf[len] = 0;
-+		entry.name = strbuf;
-+		/* prevent compiler from optimizing out the temporary buffer */
-+		barrier();
-+	}
+-	return xhci_resume(xhci, 0);
++	ret = xhci_resume(xhci, 0);
++	if (ret)
++		return ret;
 +
- 	res = utf8_strncasecmp(sbi->s_encoding, name, &entry);
- 	if (res >= 0)
- 		return res;
++	pm_runtime_disable(dev);
++	pm_runtime_set_active(dev);
++	pm_runtime_enable(dev);
++
++	return 0;
+ }
+ 
+ static int __maybe_unused xhci_plat_runtime_suspend(struct device *dev)
 -- 
 2.25.1
 
