@@ -2,295 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197B920547E
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 16:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5876205477
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 16:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733020AbgFWOZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 10:25:17 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:6311 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732993AbgFWOZL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 10:25:11 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 6444B347C528EBEE661A;
-        Tue, 23 Jun 2020 22:25:07 +0800 (CST)
-Received: from localhost.localdomain (10.175.118.36) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Tue, 23 Jun 2020 22:24:56 +0800
-From:   Luo bin <luobin9@huawei.com>
-To:     <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <luoxianjun@huawei.com>, <yin.yinshi@huawei.com>,
-        <cloud.wangxiaoyun@huawei.com>
-Subject: [PATCH net-next v2 5/5] hinic: add support to get eeprom information
-Date:   Tue, 23 Jun 2020 22:24:09 +0800
-Message-ID: <20200623142409.19081-6-luobin9@huawei.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200623142409.19081-1-luobin9@huawei.com>
-References: <20200623142409.19081-1-luobin9@huawei.com>
+        id S1732954AbgFWOYn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 10:24:43 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:35073 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732938AbgFWOYi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 10:24:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1592922277;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RR1B9NfF9KKeLN7WfaVCil2nbXJzIf96KglwlOXnZyY=;
+        b=jNI5197dkiHez57eAIBLEKZ76uTPjczUXdmX7Xmyk1z2YSUcaEZwck/EATsn6F5Q0zg0ku
+        XVmygqE1mfL1NedtW6RTTjWffbgojDqyDRxsxJjWkG6LR6B+eUlCY9efQ+UHCuG5R9+SVI
+        qiHijx2JGECKWkHzwQTEK1sXYbhmeC8=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-246-coSQZCeXOyiW-DXRfbjkPQ-1; Tue, 23 Jun 2020 10:24:33 -0400
+X-MC-Unique: coSQZCeXOyiW-DXRfbjkPQ-1
+Received: by mail-qk1-f200.google.com with SMTP id l6so15405721qkk.14
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 07:24:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RR1B9NfF9KKeLN7WfaVCil2nbXJzIf96KglwlOXnZyY=;
+        b=hTW3b21DzcYrPGT+4WcStXlQ7eIQ6NkVzI5wLxCsGFQymCDtevR+5VQpp7g4ZP+ath
+         p2tUWaQJAXh7ocp0HaN3J2RwS9WNm72XORiDNcGSyFbR45cyQTBWVbiRJor722hczxK5
+         oYbGER1MCy2bm/SYzxRLtAR/gaevbS//j0Puc7F++EcQa0jzYbejhjQAZ7tEgPtzYNlY
+         YQJH0A8KB7Qll5TKHrU4IQB/iIC2SyudDAYi4MCRUXitzVqQW7Ho0FWfa5v8kIU+o+mC
+         7gU9gJ3r8K5GzVhWmiJtkCcoVdqwBS3xlJvDGUgyXCF9KTXN7e/6xKFHXwUvFKeaPrQJ
+         Kkvw==
+X-Gm-Message-State: AOAM530FzEp3lGc/UHfYs7mQc9mciULF1CG1o4ZSESIITaUKSfGWHvrN
+        LK1GpKSZgwlHOqsPmWLr0ysM6w8YtN20NpJrG/tfru950qqpkNW+2NM1tEAV4FhGksP86DWYUbt
+        bHiMVtHOqKfV6317FqFDAArGDyl4GD/YdJo8B3cCx
+X-Received: by 2002:a37:27c2:: with SMTP id n185mr7033798qkn.459.1592922272586;
+        Tue, 23 Jun 2020 07:24:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxN9dNsQ1OTmPnyWwgxxe4CrufeTopFTwlk33LGRccCWckEmFGROVsT77uvggNbgbCLqsfatkBEIbv2KAIR71o=
+X-Received: by 2002:a37:27c2:: with SMTP id n185mr7033772qkn.459.1592922272185;
+ Tue, 23 Jun 2020 07:24:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.118.36]
-X-CFilter-Loop: Reflected
+References: <20200621140421.7f4552df@canb.auug.org.au> <20200623103736.25f67de5@canb.auug.org.au>
+In-Reply-To: <20200623103736.25f67de5@canb.auug.org.au>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Tue, 23 Jun 2020 16:24:21 +0200
+Message-ID: <CAO-hwJKX_bdgv=ZOx+KmSEZ1PkAzw-+NUPRBUOH_F8D+P4=XCw@mail.gmail.com>
+Subject: Re: linux-next: build failures after merge of the hid tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Cristian Klein <cristian.klein@elastisys.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-add support to get eeprom information from the plug-in module
-with ethtool -m cmd.
+[adding Cristian, the author of the patch]
 
-Signed-off-by: Luo bin <luobin9@huawei.com>
----
- .../net/ethernet/huawei/hinic/hinic_ethtool.c | 69 +++++++++++++++++
- .../net/ethernet/huawei/hinic/hinic_hw_dev.h  |  4 +
- .../net/ethernet/huawei/hinic/hinic_port.c    | 75 +++++++++++++++++++
- .../net/ethernet/huawei/hinic/hinic_port.h    | 30 ++++++++
- 4 files changed, 178 insertions(+)
 
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-index 770d548d0f99..66538e0c15eb 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_ethtool.c
-@@ -25,6 +25,7 @@
- #include <linux/if_vlan.h>
- #include <linux/ethtool.h>
- #include <linux/vmalloc.h>
-+#include <linux/sfp.h>
- 
- #include "hinic_hw_qp.h"
- #include "hinic_hw_dev.h"
-@@ -1795,6 +1796,72 @@ static int hinic_set_phys_id(struct net_device *netdev,
- 	return err;
- }
- 
-+static int hinic_get_module_info(struct net_device *netdev,
-+				 struct ethtool_modinfo *modinfo)
-+{
-+	struct hinic_dev *nic_dev = netdev_priv(netdev);
-+	u8 sfp_type_ext;
-+	u8 sfp_type;
-+	int err;
-+
-+	err = hinic_get_sfp_type(nic_dev->hwdev, &sfp_type, &sfp_type_ext);
-+	if (err)
-+		return err;
-+
-+	switch (sfp_type) {
-+	case SFF8024_ID_SFP:
-+		modinfo->type = ETH_MODULE_SFF_8472;
-+		modinfo->eeprom_len = ETH_MODULE_SFF_8472_LEN;
-+		break;
-+	case SFF8024_ID_QSFP_8438:
-+		modinfo->type = ETH_MODULE_SFF_8436;
-+		modinfo->eeprom_len = ETH_MODULE_SFF_8436_MAX_LEN;
-+		break;
-+	case SFF8024_ID_QSFP_8436_8636:
-+		if (sfp_type_ext >= 0x3) {
-+			modinfo->type = ETH_MODULE_SFF_8636;
-+			modinfo->eeprom_len = ETH_MODULE_SFF_8636_MAX_LEN;
-+
-+		} else {
-+			modinfo->type = ETH_MODULE_SFF_8436;
-+			modinfo->eeprom_len = ETH_MODULE_SFF_8436_MAX_LEN;
-+		}
-+		break;
-+	case SFF8024_ID_QSFP28_8636:
-+		modinfo->type = ETH_MODULE_SFF_8636;
-+		modinfo->eeprom_len = ETH_MODULE_SFF_8636_MAX_LEN;
-+		break;
-+	default:
-+		netif_warn(nic_dev, drv, netdev,
-+			   "Optical module unknown: 0x%x\n", sfp_type);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+static int hinic_get_module_eeprom(struct net_device *netdev,
-+				   struct ethtool_eeprom *ee, u8 *data)
-+{
-+	struct hinic_dev *nic_dev = netdev_priv(netdev);
-+	u8 sfp_data[STD_SFP_INFO_MAX_SIZE];
-+	u16 len;
-+	int err;
-+
-+	if (!ee->len || ((ee->len + ee->offset) > STD_SFP_INFO_MAX_SIZE))
-+		return -EINVAL;
-+
-+	memset(data, 0, ee->len);
-+
-+	err = hinic_get_sfp_eeprom(nic_dev->hwdev, sfp_data, &len);
-+	if (err)
-+		return err;
-+
-+	memcpy(data, sfp_data + ee->offset, ee->len);
-+
-+	return 0;
-+}
-+
- static const struct ethtool_ops hinic_ethtool_ops = {
- 	.supported_coalesce_params = ETHTOOL_COALESCE_RX_USECS |
- 				     ETHTOOL_COALESCE_RX_MAX_FRAMES |
-@@ -1826,6 +1893,8 @@ static const struct ethtool_ops hinic_ethtool_ops = {
- 	.get_strings = hinic_get_strings,
- 	.self_test = hinic_diag_test,
- 	.set_phys_id = hinic_set_phys_id,
-+	.get_module_info = hinic_get_module_info,
-+	.get_module_eeprom = hinic_get_module_eeprom,
- };
- 
- static const struct ethtool_ops hinicvf_ethtool_ops = {
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h
-index 01fe94f2d4bc..958ea1a6a60d 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_hw_dev.h
-@@ -130,9 +130,13 @@ enum hinic_port_cmd {
- 
- 	HINIC_PORT_CMD_SET_AUTONEG	= 219,
- 
-+	HINIC_PORT_CMD_GET_STD_SFP_INFO = 240,
-+
- 	HINIC_PORT_CMD_SET_LRO_TIMER	= 244,
- 
- 	HINIC_PORT_CMD_SET_VF_MAX_MIN_RATE = 249,
-+
-+	HINIC_PORT_CMD_GET_SFP_ABS	= 251,
- };
- 
- /* cmd of mgmt CPU message for HILINK module */
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.c b/drivers/net/ethernet/huawei/hinic/hinic_port.c
-index fc99d9f6799a..428d186956f3 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_port.c
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_port.c
-@@ -1326,3 +1326,78 @@ int hinic_reset_led_status(struct hinic_hwdev *hwdev, u8 port)
- 
- 	return err;
- }
-+
-+static bool hinic_if_sfp_absent(struct hinic_hwdev *hwdev)
-+{
-+	struct hinic_cmd_get_light_module_abs sfp_abs = {0};
-+	u16 out_size = sizeof(sfp_abs);
-+	u8 port_id = hwdev->port_id;
-+	int err;
-+
-+	sfp_abs.port_id = port_id;
-+	err = hinic_port_msg_cmd(hwdev, HINIC_PORT_CMD_GET_SFP_ABS,
-+				 &sfp_abs, sizeof(sfp_abs), &sfp_abs,
-+				 &out_size);
-+	if (sfp_abs.status || err || !out_size) {
-+		dev_err(&hwdev->hwif->pdev->dev,
-+			"Failed to get port%d sfp absent status, err: %d, status: 0x%x, out size: 0x%x\n",
-+			port_id, err, sfp_abs.status, out_size);
-+		return true;
-+	}
-+
-+	return ((sfp_abs.abs_status == 0) ? false : true);
-+}
-+
-+int hinic_get_sfp_eeprom(struct hinic_hwdev *hwdev, u8 *data, u16 *len)
-+{
-+	struct hinic_cmd_get_std_sfp_info sfp_info = {0};
-+	u16 out_size = sizeof(sfp_info);
-+	u8 port_id;
-+	int err;
-+
-+	if (!hwdev || !data || !len)
-+		return -EINVAL;
-+
-+	port_id = hwdev->port_id;
-+
-+	if (hinic_if_sfp_absent(hwdev))
-+		return -ENXIO;
-+
-+	sfp_info.port_id = port_id;
-+	err = hinic_port_msg_cmd(hwdev, HINIC_PORT_CMD_GET_STD_SFP_INFO,
-+				 &sfp_info, sizeof(sfp_info), &sfp_info,
-+				 &out_size);
-+	if (sfp_info.status || err || !out_size) {
-+		dev_err(&hwdev->hwif->pdev->dev,
-+			"Failed to get port%d sfp eeprom information, err: %d, status: 0x%x, out size: 0x%x\n",
-+			port_id, err, sfp_info.status, out_size);
-+		return -EIO;
-+	}
-+
-+	*len = min_t(u16, sfp_info.eeprom_len, STD_SFP_INFO_MAX_SIZE);
-+	memcpy(data, sfp_info.sfp_info, STD_SFP_INFO_MAX_SIZE);
-+
-+	return  0;
-+}
-+
-+int hinic_get_sfp_type(struct hinic_hwdev *hwdev, u8 *data0, u8 *data1)
-+{
-+	u8 sfp_data[STD_SFP_INFO_MAX_SIZE];
-+	u16 len;
-+	int err;
-+
-+	if (!hwdev || !data0 || !data1)
-+		return -EINVAL;
-+
-+	if (hinic_if_sfp_absent(hwdev))
-+		return -ENXIO;
-+
-+	err = hinic_get_sfp_eeprom(hwdev, sfp_data, &len);
-+	if (err)
-+		return err;
-+
-+	*data0 = sfp_data[0];
-+	*data1 = sfp_data[1];
-+
-+	return 0;
-+}
-diff --git a/drivers/net/ethernet/huawei/hinic/hinic_port.h b/drivers/net/ethernet/huawei/hinic/hinic_port.h
-index 5c916875f295..0e444d2c02bb 100644
---- a/drivers/net/ethernet/huawei/hinic/hinic_port.h
-+++ b/drivers/net/ethernet/huawei/hinic/hinic_port.h
-@@ -677,6 +677,32 @@ struct hinic_led_info {
- 	u8	reset;
- };
- 
-+#define STD_SFP_INFO_MAX_SIZE	640
-+
-+struct hinic_cmd_get_light_module_abs {
-+	u8 status;
-+	u8 version;
-+	u8 rsvd0[6];
-+
-+	u8 port_id;
-+	u8 abs_status; /* 0:present, 1:absent */
-+	u8 rsv[2];
-+};
-+
-+#define STD_SFP_INFO_MAX_SIZE	640
-+
-+struct hinic_cmd_get_std_sfp_info {
-+	u8 status;
-+	u8 version;
-+	u8 rsvd0[6];
-+
-+	u8 port_id;
-+	u8 wire_type;
-+	u16 eeprom_len;
-+	u32 rsvd;
-+	u8 sfp_info[STD_SFP_INFO_MAX_SIZE];
-+};
-+
- int hinic_port_add_mac(struct hinic_dev *nic_dev, const u8 *addr,
- 		       u16 vlan_id);
- 
-@@ -800,6 +826,10 @@ int hinic_reset_led_status(struct hinic_hwdev *hwdev, u8 port);
- int hinic_set_led_status(struct hinic_hwdev *hwdev, u8 port,
- 			 enum hinic_led_type type, enum hinic_led_mode mode);
- 
-+int hinic_get_sfp_type(struct hinic_hwdev *hwdev, u8 *data0, u8 *data1);
-+
-+int hinic_get_sfp_eeprom(struct hinic_hwdev *hwdev, u8 *data, u16 *len);
-+
- int hinic_open(struct net_device *netdev);
- 
- int hinic_close(struct net_device *netdev);
--- 
-2.17.1
+On Tue, Jun 23, 2020 at 2:37 AM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+>
+> Hi all,
+>
+> On Sun, 21 Jun 2020 14:04:21 +1000 Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> >
+> > After merging the hid tree, today's linux-next build (x86_64 allmodconfig)
+> > failed like this:
+> >
+> > drivers/hid/intel-ish-hid/ipc/ipc.c:12:10: fatal error: client.h: No such file or directory
+> >    12 | #include "client.h"
+> >       |          ^~~~~~~~~~
+> > drivers/hid/intel-ish-hid/ipc/pci-ish.c:22:10: fatal error: ishtp-dev.h: No such file or directory
+> >    22 | #include "ishtp-dev.h"
+> >       |          ^~~~~~~~~~~~~
+> >
+> > I don't know what caused it, but commit
+> >
+> >   470376737e88 ("HID: allow building hid.ko as an external module")
+
+I am under the impression that this patch is causing the issue.
+
+I am tempted to revert it (and force push the branch hid/for-5.9/core)
+given that the 0-day bot also complained.
+
+> >
+> > did not fix it.  BTW, I build with "make O=...".
+> >
+> > I have used the hid tree from next-20200618 for today.
+> >
+> > BTW, the hid tree really needs cleaning up, it contains merge commits dating
+> > back to April 2018 :-(
+
+We are carefully not force pushing the hid/for-next branch, and all
+the merges you are seeing there are the various merges we do after
+including a patch that will be sent to linus later. Our for-next
+branch never gets merged into for-linus, we handle that separately.
+
+I always thought you prefer not having forced push on the for-next
+branch. But if you rather us overwriting the tip of the branch at
+every commit, we can do it for sure.
+
+For reference, the way we handle branches are:
+- master branch follows Linus' when there is an upstream merge of the
+hid/for-linus branch
+- every single commit goes into a branch named
+for-<kernel_version>/<feature_name>
+- those branches are created on top of current master and are never rebased
+- every time we add a patch (series) on top of a feature branch, we
+merge that into hid/for-next
+- when we need to send a pull request to Linus, we merge the matching
+"for-<kernel_version>/*" branches into hid/for-linus
+
+This allows to keep a clear view of what is scheduled to be sent. But
+the counterpart is that the hid/for-next branch never gets merged back
+into hid/for-linus.
+
+Cheers,
+Benjamin
+
+> >
+> > $ git rev-list --count origin/master..hid/for-next
+> > 301
+> > $ git rev-list --no-merges --count origin/master..hid/for-next
+> > 12
+>
+> I am still getting this failure.
+>
+> --
+> Cheers,
+> Stephen Rothwell
 
