@@ -2,118 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C37C205165
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:55:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE7C5205115
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 13:47:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732489AbgFWLz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 07:55:27 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:46796 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732400AbgFWLz1 (ORCPT
+        id S1732483AbgFWLrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 07:47:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732245AbgFWLrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 07:55:27 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jnhWN-00018K-3o; Tue, 23 Jun 2020 11:55:23 +0000
-Date:   Tue, 23 Jun 2020 13:55:21 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Dmitry Safonov <dima@arista.com>,
-        Andrei Vagin <avagin@gmail.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Serge Hallyn <serge@hallyn.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>, adrian@lisas.de
-Subject: Re: [PATCH 3/3] nsproxy: support CLONE_NEWTIME with setns()
-Message-ID: <20200623115521.hk3xlhixrt2zrgkn@wittgenstein>
-References: <20200619153559.724863-1-christian.brauner@ubuntu.com>
- <20200619153559.724863-4-christian.brauner@ubuntu.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200619153559.724863-4-christian.brauner@ubuntu.com>
+        Tue, 23 Jun 2020 07:47:15 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 271A2C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 04:47:15 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id b5so9747558pgm.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 04:47:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=pDMz4GEEd1HrNqab3SFEgh4HTzshHqZlUT8h2DVo/0o=;
+        b=O0f174T9zxECMIrMcBnJlVgKJZ6AF1eadIxgibscZl51LZvB8RJvrqMkRvOifJ1CI8
+         /NW27eFVBws4khf4Q2qK+/MggUcJwyAOfD1inExGIsaCdqPgaVcQI/lpgDRKhxW6DZ4c
+         vHpAdYOFKt4Tw7nffVPHnQteL/omtnCI9D+PU6xJ/l+qW4gpxQVfVzLKgBp51y/iJeLb
+         BhsNyPZiZimDHSuuF9JYkugBfFBkWTtmpsgF/s45n0Xfpkd5lBZaZNND2x/AZ06mD0dl
+         fYUJBBGM0VrP/I2mSStcI2uddjS2oYMSuuaGhwQ3LJS5m1Stcz2Fnc79koTI+ITuoj4q
+         Wxow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=pDMz4GEEd1HrNqab3SFEgh4HTzshHqZlUT8h2DVo/0o=;
+        b=Wd9/KfgvmXSGwsPf+bjrGaTU+a/gKjqBjfPEUxRrDyGN1OYFRupunHm4M0vmJyr4Ph
+         wfs5CD7mD+il1gprfWRnt3mhyP9QNKVPHdBlPxGBJxsLkBz19pFAzFTiScwdzInTh1Og
+         LJIUcv8SCtVzFSJfaCcm8vRcp3onzlS35Vt7oYKNbZXxoRQgDNYK7thqHlV0x+03Eftx
+         GC3dYKEX6QEZ5MpP888W0J9YCfrqn8of2g43SyYy6ujLE/QKbvK8RavNwoA7osPqHR7p
+         z6MMUqxzNwIgTjVETK3zYqytR2F5hh74y5cscDvIaJqQdDlN8MCh7pGznoi6LPrrqr9H
+         wt+Q==
+X-Gm-Message-State: AOAM5322sjQZgiyWae9elkMHustrqULbW2niwpS9QS5ig2TI8JBYYXw9
+        3c2vXqbVHMCddPKhF/+8npU=
+X-Google-Smtp-Source: ABdhPJyoqH2qE0gyMJuzujXPkfwbJMIuJEyJhbRiulWkylIrNAE8lewKA/I7Fqiq7o7Uu7FIu8YohA==
+X-Received: by 2002:a63:6643:: with SMTP id a64mr14118116pgc.246.1592912834633;
+        Tue, 23 Jun 2020 04:47:14 -0700 (PDT)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.179.62.127])
+        by smtp.gmail.com with ESMTPSA id w203sm6828258pfc.128.2020.06.23.04.47.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Jun 2020 04:47:13 -0700 (PDT)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     jgross@suse.com, boris.ostrovsky@oracle.com, sstabellini@kernel.org
+Cc:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Subject: [RFC PATCH v2] xen/privcmd: Convert get_user_pages*() to pin_user_pages*()
+Date:   Tue, 23 Jun 2020 17:25:28 +0530
+Message-Id: <1592913328-15486-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 19, 2020 at 05:35:59PM +0200, Christian Brauner wrote:
-> So far setns() was missing time namespace support. This was partially due
-> to it simply not being implemented but also because vdso_join_timens()
-> could still fail which made switching to multiple namespaces atomically
-> problematic. This is now fixed so support CLONE_NEWTIME with setns()
-> 
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Michael Kerrisk <mtk.manpages@gmail.com>
-> Cc: Serge Hallyn <serge@hallyn.com>
-> Cc: Dmitry Safonov <dima@arista.com>
-> Cc: Andrei Vagin <avagin@gmail.com>
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> ---
+In 2019, we introduced pin_user_pages*() and now we are converting
+get_user_pages*() to the new API as appropriate. [1] & [2] could
+be referred for more information. This is case 5 as per document [1].
 
-Andrei,
-Dmitry,
+As discussed, pages need to be marked as dirty before unpinned it.
 
-A little off-topic since its not related to the patch here but I've been
-going through the current time namespace semantics and i just want to
-confirm something with you:
+Previously, if lock_pages() end up partially mapping pages, it used
+to return -ERRNO due to which unlock_pages() have to go through
+each pages[i] till *nr_pages* to validate them. This can be avoided
+by passing correct number partially mapped pages & -ERRNO separately
+while returning from lock_pages() due to error.
+With this fix unlock_pages() doesn't need to validate pages[i] till
+*nr_pages* for error scenario.
 
-Afaict, unshare(CLONE_NEWTIME) currently works similar to
-unshare(CLONE_NEWPID) in that it only changes {pid,time}_for_children
-but does _not_ change the {pid, time} namespace of the caller itself.
-For pid namespaces that makes a lot of sense but I'm not completely
-clear why you're doing this for time namespaces, especially since the
-setns() behavior for CLONE_NEWPID and CLONE_NEWTIME is very different:
-Similar to unshare(CLONE_NEWPID), setns(CLONE_NEWPID) doesn't change the
-pid namespace of the caller itself, it only changes it for it's
-children by setting up pid_for_children. _But_ for setns(CLONE_NEWTIME)
-both the caller's and the children's time namespace is changed, i.e.
-unshare(CLONE_NEWTIME) behaves different from setns(CLONE_NEWTIME). Why?
+[1] Documentation/core-api/pin_user_pages.rst
 
-This also has the consequence that the unshare(CLONE_NEWTIME) +
-setns(CLONE_NEWTIME) sequence can be used to change the callers pid
-namespace. Is this intended?
-Here's some code where you can verify this (please excuse the aweful
-code I'm using to illustrate this):
+[2] "Explicit pinning of user-space pages":
+        https://lwn.net/Articles/807108/
 
-int main(int argc, char *argv[])
-{
-	char buf1[4096], buf2[4096];
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
+Cc: John Hubbard <jhubbard@nvidia.com>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+---
+ drivers/xen/privcmd.c | 33 +++++++++++++++++++--------------
+ 1 file changed, 19 insertions(+), 14 deletions(-)
 
-	if (unshare(0x00000080))
-		exit(1);
+diff --git a/drivers/xen/privcmd.c b/drivers/xen/privcmd.c
+index a250d11..eea90cd 100644
+--- a/drivers/xen/privcmd.c
++++ b/drivers/xen/privcmd.c
+@@ -580,25 +580,30 @@ static long privcmd_ioctl_mmap_batch(
+ 
+ static int lock_pages(
+ 	struct privcmd_dm_op_buf kbufs[], unsigned int num,
+-	struct page *pages[], unsigned int nr_pages)
++	struct page *pages[], unsigned int nr_pages, int *errno)
+ {
+ 	unsigned int i;
++	int pinned = 0, rc = 0;
+ 
+ 	for (i = 0; i < num; i++) {
+ 		unsigned int requested;
+-		int pinned;
+ 
++		rc += pinned;
+ 		requested = DIV_ROUND_UP(
+ 			offset_in_page(kbufs[i].uptr) + kbufs[i].size,
+ 			PAGE_SIZE);
+-		if (requested > nr_pages)
+-			return -ENOSPC;
++		if (requested > nr_pages) {
++			*errno = -ENOSPC;
++			return rc;
++		}
+ 
+-		pinned = get_user_pages_fast(
++		pinned = pin_user_pages_fast(
+ 			(unsigned long) kbufs[i].uptr,
+ 			requested, FOLL_WRITE, pages);
+-		if (pinned < 0)
+-			return pinned;
++		if (pinned < 0) {
++			*errno = pinned;
++			return rc;
++		}
+ 
+ 		nr_pages -= pinned;
+ 		pages += pinned;
+@@ -613,11 +618,7 @@ static void unlock_pages(struct page *pages[], unsigned int nr_pages)
+ 
+ 	if (!pages)
+ 		return;
+-
+-	for (i = 0; i < nr_pages; i++) {
+-		if (pages[i])
+-			put_page(pages[i]);
+-	}
++	unpin_user_pages_dirty_lock(pages, nr_pages, 1);
+ }
+ 
+ static long privcmd_ioctl_dm_op(struct file *file, void __user *udata)
+@@ -630,6 +631,7 @@ static long privcmd_ioctl_dm_op(struct file *file, void __user *udata)
+ 	struct xen_dm_op_buf *xbufs = NULL;
+ 	unsigned int i;
+ 	long rc;
++	int errno = 0;
+ 
+ 	if (copy_from_user(&kdata, udata, sizeof(kdata)))
+ 		return -EFAULT;
+@@ -683,9 +685,12 @@ static long privcmd_ioctl_dm_op(struct file *file, void __user *udata)
+ 		goto out;
+ 	}
+ 
+-	rc = lock_pages(kbufs, kdata.num, pages, nr_pages);
+-	if (rc)
++	rc = lock_pages(kbufs, kdata.num, pages, nr_pages, &errno);
++	if (errno < 0) {
++		nr_pages = rc;
++		rc = errno;
+ 		goto out;
++	}
+ 
+ 	for (i = 0; i < kdata.num; i++) {
+ 		set_xen_guest_handle(xbufs[i].h, kbufs[i].uptr);
+-- 
+1.9.1
 
-	int fd = open("/proc/self/ns/time", O_RDONLY);
-	if (fd < 0)
-		exit(2);
-
-	readlink("/proc/self/ns/time", buf1, sizeof(buf1));
-	readlink("/proc/self/ns/time_for_children", buf2, sizeof(buf2));
-	printf("unshare(CLONE_NEWTIME):		time(%s) ~= time_for_children(%s)\n", buf1, buf2);
-
-	if (setns(fd, 0x00000080))
-		exit(3);
-
-	readlink("/proc/self/ns/time", buf1, sizeof(buf1));
-	readlink("/proc/self/ns/time_for_children", buf2, sizeof(buf2));
-	printf("setns(self, CLONE_NEWTIME):	time(%s) == time_for_children(%s)\n", buf1, buf2);
-
-	exit(EXIT_SUCCESS);
-}
-
-which gives:
-
-root@f2-vm:/# ./test
-unshare(CLONE_NEWTIME):		time(time:[4026531834]) ~= time_for_children(time:[4026532366])
-setns(self, CLONE_NEWTIME):	time(time:[4026531834]) == time_for_children(time:[4026531834])
-
-why is unshare(CLONE_NEWTIME) blocked from changing the callers pid
-namespace when setns(CLONE_NEWTIME) is allowed to do this?
-
-Christian
