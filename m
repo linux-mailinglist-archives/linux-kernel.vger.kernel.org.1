@@ -2,107 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB9E02045CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13E862045E3
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:40:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732054AbgFWAhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:37:39 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:56403 "EHLO ozlabs.org"
+        id S1732284AbgFWAjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:39:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33658 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731561AbgFWAhj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:37:39 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1732024AbgFWAhz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:37:55 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49rS6T0qbfz9sSt;
-        Tue, 23 Jun 2020 10:37:36 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1592872657;
-        bh=NZqT5bS2Rh6HY0CP0buqQsJbSrojqYPVMmdLrrrsScU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gjWQI/elsOZdMHXyz52dnNsBmx51USIVGMHGeGxcyszyHPzn2kSqBd9CBZfsTlrBZ
-         6L3Ucbv+pZt4xwDpaMVc8K5VjqN+F8WH1rbYMAWOXqav0JUdz9HYbfthUhEQQMab/Q
-         /gg3tEgLBWOuEzzG8JNXudVU8WMXsDWKf0xMJeufrRh4mHKVyCOAESiUm12TVSeU10
-         qCoyxVzkFZRTUYYdP9occweENytPToynmGZd8Gyp96sMtIMcUakndKfUy7PJ+htDCx
-         k3JZ+ItYDIiClUppwWALLq+uySt/QottphhrSNHyfiv6pICSiLG7hKl+xKVw+dltae
-         +CqFUAGXwdcQQ==
-Date:   Tue, 23 Jun 2020 10:37:36 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: linux-next: build failures after merge of the hid tree
-Message-ID: <20200623103736.25f67de5@canb.auug.org.au>
-In-Reply-To: <20200621140421.7f4552df@canb.auug.org.au>
-References: <20200621140421.7f4552df@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/r0BhmJh8XwjSmoAN4kUieic";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        by mail.kernel.org (Postfix) with ESMTPSA id 5853E20B80;
+        Tue, 23 Jun 2020 00:37:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592872675;
+        bh=59g/82BSlaIY56f9P3jZTbbeHHZU54Rs4Q/8tqRRM1I=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=v4cxGF3DvowyXFJbsJUsP7YdCgPUg03IC627MVC08/MMYV3P1oeoX6BdYO8xd3Dbk
+         lCw+dvzLUiBjaYKYRTlXZkRJB960lrY9cCKKSeifp2m901RrIUOYaBJWQsg6o/KmzN
+         yyF7QJdUrnNNTunFeZydG/Jj4FEAV3z5r9I5ZxDY=
+From:   paulmck@kernel.org
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, dipankar@in.ibm.com,
+        akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
+        josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
+        rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 07/23] rcutorture: NULL rcu_torture_current earlier in cleanup code
+Date:   Mon, 22 Jun 2020 17:37:36 -0700
+Message-Id: <20200623003752.26872-7-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20200623003731.GA26717@paulmck-ThinkPad-P72>
+References: <20200623003731.GA26717@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/r0BhmJh8XwjSmoAN4kUieic
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Hi all,
+Currently, the rcu_torture_current variable remains non-NULL until after
+all readers have stopped.  During this time, rcu_torture_stats_print()
+will think that the test is still ongoing, which can result in confusing
+dmesg output.  This commit therefore NULLs rcu_torture_current immediately
+after the rcu_torture_writer() kthread has decided to stop, thus informing
+rcu_torture_stats_print() much sooner.
 
-On Sun, 21 Jun 2020 14:04:21 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> After merging the hid tree, today's linux-next build (x86_64 allmodconfig)
-> failed like this:
->=20
-> drivers/hid/intel-ish-hid/ipc/ipc.c:12:10: fatal error: client.h: No such=
- file or directory
->    12 | #include "client.h"
->       |          ^~~~~~~~~~
-> drivers/hid/intel-ish-hid/ipc/pci-ish.c:22:10: fatal error: ishtp-dev.h: =
-No such file or directory
->    22 | #include "ishtp-dev.h"
->       |          ^~~~~~~~~~~~~
->=20
-> I don't know what caused it, but commit
->=20
->   470376737e88 ("HID: allow building hid.ko as an external module")
->=20
-> did not fix it.  BTW, I build with "make O=3D...".
->=20
-> I have used the hid tree from next-20200618 for today.
->=20
-> BTW, the hid tree really needs cleaning up, it contains merge commits dat=
-ing
-> back to April 2018 :-(
->=20
-> $ git rev-list --count origin/master..hid/for-next
-> 301
-> $ git rev-list --no-merges --count origin/master..hid/for-next
-> 12
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/rcutorture.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I am still getting this failure.
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 2621a33..5911207 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1172,6 +1172,7 @@ rcu_torture_writer(void *arg)
+ 					WARN(1, "%s: rtort_pipe_count: %d\n", __func__, rcu_tortures[i].rtort_pipe_count);
+ 				}
+ 	} while (!torture_must_stop());
++	rcu_torture_current = NULL;  // Let stats task know that we are done.
+ 	/* Reset expediting back to unexpedited. */
+ 	if (expediting > 0)
+ 		expediting = -expediting;
+@@ -2473,7 +2474,6 @@ rcu_torture_cleanup(void)
+ 					     reader_tasks[i]);
+ 		kfree(reader_tasks);
+ 	}
+-	rcu_torture_current = NULL;
+ 
+ 	if (fakewriter_tasks) {
+ 		for (i = 0; i < nfakewriters; i++) {
+-- 
+2.9.5
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/r0BhmJh8XwjSmoAN4kUieic
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7xTtAACgkQAVBC80lX
-0Gx9NQf9HttFKOyGy4QqOOa7kopotlmlyjk9LD8gJTmMnWMAg5iyTQbOqM0bRCwp
-ia3LydeeeO+M9bP6/+4O1qfLX4iqc+ETS8m/Av+kXePEE9abyTGzn1sxnCKuHK+P
-+xgkAyxiTPgOPVYerFDwIaDKqgJ5WWO813wCIZk3z6ymik+iPBEnbJvolT3dVLJl
-1DeNYc2YhBaXW8ppzkz5IGpuYrb7CAF2QdaoTdLImPgow3exw4rCp595awDzk/i1
-+jETcnzQZYkDtvCI7KwF/HjQS4S/NYUzadhHAI10dNHMJOVmHgzleR6qMWR5ULBO
-lJAIpiQrObSMx8zyoqOjGVHaNimoMg==
-=uACl
------END PGP SIGNATURE-----
-
---Sig_/r0BhmJh8XwjSmoAN4kUieic--
