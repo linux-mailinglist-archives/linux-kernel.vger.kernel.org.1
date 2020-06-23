@@ -2,161 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 991CC205BEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 21:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BFB205BF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 21:39:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387465AbgFWTie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 15:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45826 "EHLO
+        id S2387543AbgFWTju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 15:39:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733248AbgFWTid (ORCPT
+        with ESMTP id S1733248AbgFWTjt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 15:38:33 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD94C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 12:38:33 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id i12so1911667pju.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 12:38:33 -0700 (PDT)
+        Tue, 23 Jun 2020 15:39:49 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A69EC061573;
+        Tue, 23 Jun 2020 12:39:49 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id y2so7411927ioy.3;
+        Tue, 23 Jun 2020 12:39:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wLUdK2O+Oo0igXjG1Jlq/+/VUzxX/d3DK9ShPndvY8g=;
-        b=x15EKl3F5E8SKPmuVouUwJC4Riv2JoQmDBUPRWtKf8Jr0OI8g2BtI0CnP+ac30/DqZ
-         kjZrwvi6LPTZZN4xd7/CyibC0GGEmUMKOBJr55vWJAmvJRgNRBK13e6fxsqWGhPkaqo+
-         GxE0pI8rnfai2y18sx45ejhGEeIGJTng3MF0VIATw3F+CereOWE0BkdaiVQ6n+Ot2jpE
-         ZvcvNe/J5XM/WZ/qD2+I6DNMf1/qkFw+z8hHzFAdDw07CqERzhsRRm3MSgP59y+L44Rw
-         o06rVZ7/BvxjNnkBXkwNXiwtR+UsFSNDvvtkKcPrXt4veiJV+3PkFaSypFr3m7qOGzvi
-         0t+w==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ON8R5IT5kpw4UiCSOW1nl5up36r+tL2wFW0z/curnEc=;
+        b=UinVkuo1YR7kJFYxyDUhOHD+YXCS+9X2TqEs9x+IDax1d/3WcgLjPE6LEQ86FHvP2E
+         j19p5Cj9X4Ip2DRABsYsfocfyJd7ziKfmFfrgf8UZ4uAYH3nDTmsyhmbkV3LfWwE6lGY
+         FR21FfizxwWp0I9w79ogkdoSQb+vWe+4T9XXyZByzsZACePbEDp8Xdtrrz+djWOjFo7t
+         hxr3gjKmrY7EigC2OOJVFfXszDifccUSYKb9x4UeK26nCh06oLXjb8mgvfnsjGl8vwd7
+         C5oIqpCvjX9AymC5VXHi9Tf+cDVi5/k7LqCd0PMluaxyJaX79NaVuJnPEnqQsIFZiv7l
+         X6yQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wLUdK2O+Oo0igXjG1Jlq/+/VUzxX/d3DK9ShPndvY8g=;
-        b=NhhmpkdcQt+FUOtfM8TVdbEZA/0HIc+ZPuH3cuxSafHAbr3i9eKJ0nADdmQOqbZLEu
-         lAEmbqap5jP3n7oD3iTpWEtosMt+NAij72bFZi6LcKkBhDu49E5ZOfFI4NtGtpwnbnEG
-         AwqZv+5QloeeG2/7wt5GNXW38IV50uq5sbTwOedguZnzy5JMjavD/MhuinKsPnuV23gn
-         uV8xH+Yq1MalXmES86ZkZXh2HozMVYVpa6OBna7ANqwkBgUJ85MLZJe3CIRK+jvSf0PS
-         xQ1DKD9gWIY5LDH8DTgeMkdYMfE2u2cTZ+3zgWtQxCR1eZC3CKABUJqnlekeewP55B/D
-         XIZQ==
-X-Gm-Message-State: AOAM533zOg8EudwbbgfA3RUs6B3wQeqcq9Hth4HJnweTUcS0X19ktEdF
-        HSrl4Md5mMPpzUEzV+c3VvBLUQ==
-X-Google-Smtp-Source: ABdhPJwuj4j82sIFTCrbLbdcgs9pvm/7pHq7I60LicHHsHHDcyTcH4VpyR4UXwx5Lpk2bWYwjo6Hbg==
-X-Received: by 2002:a17:902:8204:: with SMTP id x4mr24719824pln.153.1592941112375;
-        Tue, 23 Jun 2020 12:38:32 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id r77sm155749pfc.87.2020.06.23.12.38.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 12:38:31 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 13:38:30 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     ohad@wizery.com, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, loic.pallardy@st.com,
-        arnaud.pouliquen@st.com, s-anna@ti.com
-Subject: Re: [PATCH v4 5/9] remoteproc: Introducing function rproc_validate()
-Message-ID: <20200623193830.GB1908098@xps15>
-References: <20200601175139.22097-1-mathieu.poirier@linaro.org>
- <20200601175139.22097-6-mathieu.poirier@linaro.org>
- <20200622072502.GG149351@builder.lan>
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=ON8R5IT5kpw4UiCSOW1nl5up36r+tL2wFW0z/curnEc=;
+        b=k8PvaZJ0CPQ13cVLlbB7xKJ8RXlJu8Wkvw7PoHb5KqsbfJPRMbbaZWCbvTWGs+RIhc
+         EFpfzfnDE3e5Zl3AM7K5EOhiz3Y3Jb/gN4laRtJmDkaYsK68wI8GS6npQYHPhA6fGi2P
+         IRDO+VOOuNuk/xP/Q6wGDsA5QOra/H/8JGZo2LKLK5nzO5ncpTBOd9qwgo6Y+GlhH1ze
+         D9jVyiy/HMn6NHsum4nsazinazAyBNjy/OKQzmXQ+fQLpgprLrWxFcDCVnRltDfir/Qp
+         89+jA0lmBa2eP7mmmo1QxS7GoT3mbmvLIXlk+wqmaokjq3NKhopwGFLTi9z9XNqwjjYQ
+         rAWw==
+X-Gm-Message-State: AOAM532Hw/qBZLGkcEBpVvvUPuJ4ppUTdyjuKmSa2W7nSAlSPUf6C5aB
+        vf+0oPKrU44erf3SCM/rBg0=
+X-Google-Smtp-Source: ABdhPJzpbYG2AxrKYqBD/+gTiqDb38cJZpoiLygkaCCJpgCpWyQc52XVMfaH+Uq4mhUTojXyy0tnBg==
+X-Received: by 2002:a6b:91c5:: with SMTP id t188mr14071991iod.61.1592941188540;
+        Tue, 23 Jun 2020 12:39:48 -0700 (PDT)
+Received: from [10.67.50.75] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id m2sm2999896iln.1.2020.06.23.12.39.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jun 2020 12:39:47 -0700 (PDT)
+Subject: Re: [PATCH 12/15] dt-bindings: mdio: add phy-supply property to
+ ethernet phy node
+To:     Bartosz Golaszewski <brgl@bgdev.pl>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+        Keyur Chudgar <keyur@os.amperecomputing.com>,
+        Quan Nguyen <quan@os.amperecomputing.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Fabien Parent <fparent@baylibre.com>,
+        Stephane Le Provost <stephane.leprovost@mediatek.com>,
+        Pedro Tsai <pedro.tsai@mediatek.com>,
+        Andrew Perepech <andrew.perepech@mediatek.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+References: <20200622093744.13685-1-brgl@bgdev.pl>
+ <20200622093744.13685-13-brgl@bgdev.pl>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ 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
+ G10n8gCguORqNGMsVRxrlLs7/himep7MrCc=
+Message-ID: <5e5194be-0e5c-5945-4c39-06692a557cb7@gmail.com>
+Date:   Tue, 23 Jun 2020 12:39:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200622072502.GG149351@builder.lan>
+In-Reply-To: <20200622093744.13685-13-brgl@bgdev.pl>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jun 22, 2020 at 12:25:02AM -0700, Bjorn Andersson wrote:
-> On Mon 01 Jun 10:51 PDT 2020, Mathieu Poirier wrote:
+On 6/22/20 2:37 AM, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 > 
-> > Add a new function to assert the general health of the remote
-> > processor before handing it to the remoteproc core.
-> > 
-> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > ---
-> >  drivers/remoteproc/remoteproc_core.c | 45 ++++++++++++++++++++++++++++
-> >  1 file changed, 45 insertions(+)
-> > 
-> > diff --git a/drivers/remoteproc/remoteproc_core.c b/drivers/remoteproc/remoteproc_core.c
-> > index c70fa0372d07..0be8343dd851 100644
-> > --- a/drivers/remoteproc/remoteproc_core.c
-> > +++ b/drivers/remoteproc/remoteproc_core.c
-> > @@ -2060,6 +2060,47 @@ struct rproc *rproc_get_by_phandle(phandle phandle)
-> >  #endif
-> >  EXPORT_SYMBOL(rproc_get_by_phandle);
-> >  
-> > +static int rproc_validate(struct rproc *rproc)
-> > +{
-> > +	/*
-> > +	 * When adding a remote processor, the state of the device
-> > +	 * can be offline or detached, nothing else.
-> > +	 */
-> > +	if (rproc->state != RPROC_OFFLINE &&
-> > +	    rproc->state != RPROC_DETACHED)
-> > +		goto inval;
+> The phy-supply property is often added to MAC nodes but this is wrong
+> conceptually. These supplies should be part of the PHY node on the
+> MDIO bus. Add phy-supply property at PHY level to mdio.yaml.
 > 
-> I would prefer that you just return -EINVAL; directly.
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  Documentation/devicetree/bindings/net/mdio.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> Overall I think this would be better represented as a switch on
-> rproc->state though.
-> 
+> diff --git a/Documentation/devicetree/bindings/net/mdio.yaml b/Documentation/devicetree/bindings/net/mdio.yaml
+> index d6a3bf8550eb..9c10012c2093 100644
+> --- a/Documentation/devicetree/bindings/net/mdio.yaml
+> +++ b/Documentation/devicetree/bindings/net/mdio.yaml
+> @@ -90,6 +90,10 @@ patternProperties:
+>            Delay after the reset was deasserted in microseconds. If
+>            this property is missing the delay will be skipped.
+>  
+> +      phy-supply:
+> +        description:
+> +          Phandle to the regulator that provides the supply voltage to the PHY.
 
-Sure thing.
-
-> 
-> I think the logic is sound though.
-> 
-> Regards,
-> Bjorn
-> 
-> > +
-> > +	if (rproc->state == RPROC_OFFLINE) {
-> > +		/*
-> > +		 * An offline processor without a start()
-> > +		 * function makes no sense.
-> > +		 */
-> > +		if (!rproc->ops->start)
-> > +			goto inval;
-> > +	}
-> > +
-> > +	if (rproc->state == RPROC_DETACHED) {
-> > +		/*
-> > +		 * A remote processor in a detached state without an
-> > +		 * attach() function makes not sense.
-> > +		 */
-> > +		if (!rproc->ops->attach)
-> > +			goto inval;
-> > +		/*
-> > +		 * When attaching to a remote processor the device memory
-> > +		 * is already available and as such there is no need to have a
-> > +		 * cached table.
-> > +		 */
-> > +		if (rproc->cached_table)
-> > +			goto inval;
-> > +	}
-> > +
-> > +	return 0;
-> > +
-> > +inval:
-> > +	return -EINVAL;
-> > +}
-> > +
-> >  /**
-> >   * rproc_add() - register a remote processor
-> >   * @rproc: the remote processor handle to register
-> > @@ -2089,6 +2130,10 @@ int rproc_add(struct rproc *rproc)
-> >  	if (ret < 0)
-> >  		return ret;
-> >  
-> > +	ret = rproc_validate(rproc);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> >  	dev_info(dev, "%s is available\n", rproc->name);
-> >  
-> >  	/* create debugfs entries */
-> > -- 
-> > 2.20.1
-> > 
+I do not see how you can come up with a generic name here, there could
+be PHYs supporting different voltages (3.3V, 1.8V, 1.5V) depending on
+their operation mode/strapping, there can also be different parts of the
+PHY being powered by different regulators, the analog part could be on
+an always-on island such that Wake-on-LAN from the PHY could be done,
+and the digital part could be on a complete different island.
+-- 
+Florian
