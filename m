@@ -2,87 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03222051DD
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 14:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB81205210
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 14:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732517AbgFWMJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 08:09:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49620 "EHLO mail.kernel.org"
+        id S1732591AbgFWMLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 08:11:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732333AbgFWMJ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 08:09:26 -0400
+        id S1732436AbgFWMLs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 08:11:48 -0400
 Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E5D42072E;
-        Tue, 23 Jun 2020 12:09:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CF22020707;
+        Tue, 23 Jun 2020 12:11:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592914166;
-        bh=haSQooFduqRyz9/+2LYejvi7M3QhqKKO0sIdFNibuWM=;
+        s=default; t=1592914308;
+        bh=6BN7g5jJCssRGX2S9z3ev/5v0Y37/NR5A61wQAxoP+A=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Rzq1klcmTchLWDMT0jwDWd2NktAnGleEVTa1toh+z6VhUqsTEQ5k8th3jeERJJ0+a
-         Ilkz8SBUzXQhi2Fqa+cV4t/f5fyp9yyMiyvkZIEXxp7dw8XDZPuPl3TmQloDzaYguM
-         IDYJRqWjS+HHLltHhOdG5tbddTOVPhjK5cdHqjNs=
-Date:   Tue, 23 Jun 2020 20:09:20 +0800
+        b=udpYUjIrumm28qJ7y3GLHBglJEcaJ9F9+3X1aHuIEAP61Th/Ck+vLGddXpI9Lx4Rh
+         r2eDWO9hlh5iEKH0TfKcBN6WVLth0zyQL/H7bk2YZL2knjIVLtF/TIU/ACk6fJlf4J
+         t6F0pFB0ZFPHzcw/+OCXo/P+q51Bi8bMJDwCRTLs=
+Date:   Tue, 23 Jun 2020 20:11:43 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     kernel@pengutronix.de, linux-arm-kernel@lists.infradead.org,
-        linux-imx@nxp.com, Yu Kuai <yukuai3@huawei.com>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Fabio Estevam <festevam@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Yi Zhang <yi.zhang@huawei.com>,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: ARM: imx6: add missing put_device() call in imx6q_suspend_init()
-Message-ID: <20200623120919.GE30139@dragon>
-References: <cf810c93-297c-c02c-9bba-8c3d097b8e31@web.de>
- <2ab2cc9f-c720-75ca-e20c-0e4236ff45fd@huawei.com>
- <1542979d-f7f6-bcf1-53c3-22b7c076ddc7@web.de>
- <20200623073220.GV30139@dragon>
- <5300cb30-2243-9bfe-125c-96e720cd1f29@web.de>
- <20200623110222.GX30139@dragon>
- <9f429c51-0fa9-16dc-4d62-d456551c5376@web.de>
+To:     yu kuai <yukuai3@huawei.com>
+Cc:     linux@armlinux.org.uk, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        Anson.Huang@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
+Subject: Re: [PATCH] ARM: imx6: add missing put_device() call in
+ imx6q_suspend_init()
+Message-ID: <20200623121143.GF30139@dragon>
+References: <20200604125449.3917164-1-yukuai3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9f429c51-0fa9-16dc-4d62-d456551c5376@web.de>
+In-Reply-To: <20200604125449.3917164-1-yukuai3@huawei.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 02:00:09PM +0200, Markus Elfring wrote:
-> >>>>>> Do you find a previous update suggestion useful?
-> >>>>>>
-> >>>>>> ARM: imx6: Add missing put_device() call in imx6q_suspend_init()
-> >>>>>> https://lore.kernel.org/linux-arm-kernel/5acd7308-f6e1-4b1e-c744-bb2e5fdca1be@web.de/
-> >>>>>> https://lore.kernel.org/patchwork/patch/1151158/
-> >>>>>> https://lkml.org/lkml/2019/11/9/125
-> …
-> >> You can get relevant information from the referenced message archive interfaces,
-> >> can't you?
-> >
-> > Well, I'm asking you to resend to make sure the following:
-> >
-> >  - Use correct maintainer mailbox address.
+On Thu, Jun 04, 2020 at 08:54:49PM +0800, yu kuai wrote:
+> if of_find_device_by_node() succeed, imx6q_suspend_init() doesn't have a
+> corresponding put_device(). Thus add a jump target to fix the exception
+> handling for this function implementation.
 > 
-> Were the selected message recipients appropriate at 2019-11-09?
+> Signed-off-by: yu kuai <yukuai3@huawei.com>
 
-At least, my mailbox was not.
-
-> 
-> 
-> >  - You still care about the patch.
-> 
-> Partly, yes.
-> 
-> 
-> >  - The patch applies to v5.8-rc.
-> 
-> Would you like to try it out if my proposal is still valid?
-> 
-> Does the change approach by Yu Kuai supersede it?
+Applied, thanks.
