@@ -2,127 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E322057FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7401B205801
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733055AbgFWQ40 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 12:56:26 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:48165 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732576AbgFWQ4V (ORCPT
+        id S1733079AbgFWQ4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 12:56:48 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:34568 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732292AbgFWQ4r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 12:56:21 -0400
-Received: by mail-il1-f197.google.com with SMTP id o4so14923862ilc.15
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 09:56:19 -0700 (PDT)
+        Tue, 23 Jun 2020 12:56:47 -0400
+Received: by mail-pl1-f193.google.com with SMTP id d12so3375945ply.1;
+        Tue, 23 Jun 2020 09:56:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=JshClNTAlS3z2QGUcLPz9c4kM4qXO8CMuBvsuSHGHcM=;
-        b=IbdfZpjxjEbGZkWU2erKzNuDTiYCEiZ5FEnFgFzZIPkqRWswg+4WbWt4OvVkx8nKrf
-         E/6eocNb8M3lDwDgDai6IkLFB1pNNmNYUmu1LpDt30OXA2nYiCqx1enXBzqHv8B8DgIA
-         UzSOuzUc/ab0qYrZUGRbzQiwQuMw9U7F1Dtd4ucXPmpOiT5ewvJKG2tqrSZz6w7oKhve
-         RxhJ58fDnTR3xEQgB+ra58A8XZdnn8FZJANsIuEDccl8p5L3Xe2FYmypl7Nkz3lErZdE
-         GcnB7M0GF0z3CxzOH7qDG5+zfH48au8V9Iaq5jVdlbikn928OkUhnXvnUoBHHdR/jSOF
-         mgMQ==
-X-Gm-Message-State: AOAM530CIebzjz5Q6Apd7RqNJ44yMLH45wN4K46LmDZh/IECCa7Phvry
-        SV0oClLTPfoSrRyJCbHaomS5f9xSRZSWyaF8lBN8xsaFNiyV
-X-Google-Smtp-Source: ABdhPJzr23dc+NwpOLI07qgaM1Kky9DbwM87Tvp7h3jgisjlayHd4sQ5bE0KEGmtw1rDUaTS5g8r8gKb9YGLCb6Hets7766dYliI
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=JDvdZbZLgDkFFSdCv0TnjjXgUyD2AB2yEimWstVnawg=;
+        b=uKhk2r5TqBmH0iwKPP5O1OBLcS3/eEY194eSg9VcRszPOEy9mlcPIQ6W1sgWFHaMVa
+         5S3LEiLsszIzLBkqYxpBY5YEpBC5KOlrnGE0ZKS5oBkdqc1rHISk865P7VL6G+hjIOcJ
+         PRrp7zjuMf2VSEugGTJ94yJz0rZYzN0oi6PyZr6ztuOtcbB/iZ7C/eM4wPDzr8oaHNTH
+         WSphVDOxArvWXhfuK0IG5KcX6P9zHr/VCeR7c2Jdsbh7PqJHdxd4NK29ScsAhvottX8O
+         gMVL37MtOoiZuoyHLNNclCxF0W+twbsoE3O6f+HmTxO1MGxVv8I2p1pG1PHNG0kwjvn8
+         qREQ==
+X-Gm-Message-State: AOAM530D00WVK1pSyRN9N/XpGqcFekBIfHu0LTxuqiAAGSPGrTW1HAcv
+        a7HSc3c6r9PWFy6J83tpo1U=
+X-Google-Smtp-Source: ABdhPJzCFTSHbh94OELz47L0BiNYIconLJwPLhznXY2yEus6l/oUG0gykNuFRS7NKmtbjU+o5z156w==
+X-Received: by 2002:a17:902:7045:: with SMTP id h5mr24682778plt.151.1592931407230;
+        Tue, 23 Jun 2020 09:56:47 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id t22sm2801970pjy.32.2020.06.23.09.56.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 09:56:45 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 9E0F240430; Tue, 23 Jun 2020 16:56:44 +0000 (UTC)
+Date:   Tue, 23 Jun 2020 16:56:44 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk,
+        gregkh@linuxfoundation.org, rostedt@goodmis.org, mingo@redhat.com,
+        jack@suse.cz, ming.lei@redhat.com, nstange@suse.de,
+        akpm@linux-foundation.org, mhocko@suse.com, yukuai3@huawei.com,
+        martin.petersen@oracle.com, jejb@linux.ibm.com,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v7 5/8] loop: be paranoid on exit and prevent new
+ additions / removals
+Message-ID: <20200623165644.GB4332@42.do-not-panic.com>
+References: <20200619204730.26124-1-mcgrof@kernel.org>
+ <20200619204730.26124-6-mcgrof@kernel.org>
+ <7e76d892-b5fd-18ec-c96e-cf4537379eba@acm.org>
+ <20200622122742.GU11244@42.do-not-panic.com>
+ <14dc9294-fa99-cad0-871b-b69f138e8ac9@acm.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:aa92:: with SMTP id p18mr5067484ill.199.1592931379091;
- Tue, 23 Jun 2020 09:56:19 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 09:56:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000009e7b05a8c33d11@google.com>
-Subject: KASAN: vmalloc-out-of-bounds Read in tipc_nl_node_dump_monitor_peer
-From:   syzbot <syzbot+80cad1e3cb4c41cde6ff@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jmaloy@redhat.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com,
-        tipc-discussion@lists.sourceforge.net, ying.xue@windriver.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <14dc9294-fa99-cad0-871b-b69f138e8ac9@acm.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Jun 22, 2020 at 07:16:15PM -0700, Bart Van Assche wrote:
+> On 2020-06-22 05:27, Luis Chamberlain wrote:
+> > Note: this will bring you sanity if you try to figure out *why* we still
+> > get:
+> > 
+> > [235530.144343] debugfs: Directory 'loop0' with parent 'block' already present!
+> > [235530.149477] blktrace: debugfs_dir not present for loop0 so skipping
+> > [235530.232328] debugfs: Directory 'loop0' with parent 'block' already present!
+> > [235530.238962] blktrace: debugfs_dir not present for loop0 so skipping
+> > 
+> > If you run run_0004.sh from break-blktrace [0]. Even with all my patches
+> > merged we still run into this. And so the bug lies within the block
+> > layer or on the driver. I haven't been able to find the issue yet.
+> > 
+> > [0] https://github.com/mcgrof/break-blktrace
+> 
+> Thanks Luis for having shared this information. If I can find the time I
+> will have a look into this myself.
 
-syzbot found the following crash on:
+Let's keep track of it:
 
-HEAD commit:    4e15507f libbpf: Forward-declare bpf_stats_type for system..
-git tree:       bpf
-console output: https://syzkaller.appspot.com/x/log.txt?x=1227a0ad100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dcc6334acae363d4
-dashboard link: https://syzkaller.appspot.com/bug?extid=80cad1e3cb4c41cde6ff
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=155fef15100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=127acae9100000
+https://bugzilla.kernel.org/show_bug.cgi?id=208301
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+80cad1e3cb4c41cde6ff@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: vmalloc-out-of-bounds in nla_len include/net/netlink.h:1135 [inline]
-BUG: KASAN: vmalloc-out-of-bounds in nla_parse_nested_deprecated include/net/netlink.h:1218 [inline]
-BUG: KASAN: vmalloc-out-of-bounds in tipc_nl_node_dump_monitor_peer+0x4da/0x590 net/tipc/node.c:2788
-Read of size 2 at addr ffffc90004959024 by task syz-executor857/7189
-
-CPU: 1 PID: 7189 Comm: syz-executor857 Not tainted 5.8.0-rc1-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x18f/0x20d lib/dump_stack.c:118
- print_address_description.constprop.0.cold+0x5/0x436 mm/kasan/report.c:383
- __kasan_report mm/kasan/report.c:513 [inline]
- kasan_report.cold+0x1f/0x37 mm/kasan/report.c:530
- nla_len include/net/netlink.h:1135 [inline]
- nla_parse_nested_deprecated include/net/netlink.h:1218 [inline]
- tipc_nl_node_dump_monitor_peer+0x4da/0x590 net/tipc/node.c:2788
- genl_lock_dumpit+0x7f/0xb0 net/netlink/genetlink.c:575
- netlink_dump+0x4cd/0xf60 net/netlink/af_netlink.c:2245
- __netlink_dump_start+0x643/0x900 net/netlink/af_netlink.c:2353
- genl_family_rcv_msg_dumpit+0x2ac/0x310 net/netlink/genetlink.c:638
- genl_family_rcv_msg net/netlink/genetlink.c:733 [inline]
- genl_rcv_msg+0x797/0x9e0 net/netlink/genetlink.c:753
- netlink_rcv_skb+0x15a/0x430 net/netlink/af_netlink.c:2469
- genl_rcv+0x24/0x40 net/netlink/genetlink.c:764
- netlink_unicast_kernel net/netlink/af_netlink.c:1303 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1329
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1918
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2352
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2406
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2439
- do_syscall_64+0x60/0xe0 arch/x86/entry/common.c:359
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x446859
-Code: Bad RIP value.
-RSP: 002b:00007f102ce25d98 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 00000000006dbc28 RCX: 0000000000446859
-RDX: 0000000000000000 RSI: 0000000020000000 RDI: 0000000000000003
-RBP: 00000000006dbc20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00000000006dbc2c
-R13: 4002001060fc2413 R14: 0d94638c64805ad2 R15: 0f05002d0000022e
-
-
-Memory state around the buggy address:
- ffffc90004958f00: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
- ffffc90004958f80: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
->ffffc90004959000: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
-                               ^
- ffffc90004959080: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
- ffffc90004959100: f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9 f9
-==================================================================
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+  Luis
