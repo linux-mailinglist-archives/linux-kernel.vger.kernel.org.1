@@ -2,112 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7072B204E0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B47A4204E01
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 11:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732076AbgFWJet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 05:34:49 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:39658 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731947AbgFWJes (ORCPT
+        id S1732210AbgFWJce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 05:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731921AbgFWJcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 05:34:48 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05N9GQYR018709;
-        Tue, 23 Jun 2020 09:34:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=4GZ+lAHaQT1ZwUI8rD/MMNRHeM2iw7kQTbeUV+DTFfc=;
- b=uCJ+3MMMjtAzIAKPVHM4tivjv0fWPilltvMkeN0HCWauR4EToFJm9s91W8zURFu7uSCg
- d8VDLP9fnFewVOGNFmVBidfcuQLObrVoykYCDMD7Mihe1QcrERe9s4cocpORqBCbBZGX
- dM7GH35qalQC0c/f4e4pzUNyBrlEi6+UPNUZ8Ti3wH2EeSYkYeTdV4lBTZsoiutfEMSr
- JztWBfnQYbXT8dWMo9KZtIcbqWdJhvCTaFhpUD28GBA5+FBFBpH9VNB6CZ8gXBi5T1PZ
- cdAyFHu+ZZMilsqVU2u88qH/4gO9adlqSXy7ju2/G64S3vqNJtHaZRY1qDSQmM2xy+Mz 4g== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 31sebbm72b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 23 Jun 2020 09:34:37 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05N9I0qZ034859;
-        Tue, 23 Jun 2020 09:32:37 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 31svc3nj4p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 23 Jun 2020 09:32:37 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05N9WZbN021581;
-        Tue, 23 Jun 2020 09:32:36 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 23 Jun 2020 09:32:35 +0000
-Date:   Tue, 23 Jun 2020 12:32:28 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Joe Perches <joe@perches.com>, trivial@kernel.org,
-        kernel-janitors@vger.kernel.org, corbet@lwn.net,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] trivial: fix kerneldoc comments
-Message-ID: <20200623093228.GI4151@kadam>
-References: <1592854669-20606-1-git-send-email-Julia.Lawall@inria.fr>
- <6b0649c53e853fd2a35e9996f13e702daa0d7e2f.camel@perches.com>
- <alpine.DEB.2.22.394.2006230954560.2367@hadrien>
+        Tue, 23 Jun 2020 05:32:33 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C74AC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 02:32:32 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id h5so19780514wrc.7
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 02:32:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eejVzaxAAyht+9QkvwHXTBq5Ku51Lr5rfWRqulZX9B4=;
+        b=KHBfyhBHITTcnmU8+oRI2dAStF+rvJs2Qwk9Rw+gFbpNJqiEaYUsEGjOb2T4CzJgE0
+         XsKnLoZmYw3tJGs83mK1XSfG1COkBJnnyNElGqoHSCIMBv5/3tUUSfFk3toRnvIt1I68
+         yi1XIHiykMTnd3u9eGNoZNklW+nTD6UsItTYcUYpEgLN1B6172bR1KWLVUGvxISOQJpp
+         yskSUncxKWFVfKzz0xW+KMVKXLriCTaBggr62HErhZXzYllOKWsRATESTBx2wajWHR72
+         AtWibwKlnC5JLiT9pzTFy4IEV9JCbVmtGfCbxP2jiJC9TmellLs0uIZ8PGYA+AM/upYZ
+         WgAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eejVzaxAAyht+9QkvwHXTBq5Ku51Lr5rfWRqulZX9B4=;
+        b=fzuvEG14UUEiKgEvblCh1RYb+FBpwcFlhshX/J1s/wwngMvA/nGqETZym8/AIICz0H
+         j6IrX5ZFmFlh828PqtZddm5LmGpsIAUQZ3Ymx939+LSPh0YrW7uaSEWqjdg0wOI/18Ov
+         eG+dPM2/TPCYilupcktA7UMyIL8vuDHT7kwCpqq3JUGNnADN2yx6Z0ztHRXFgrwRYysh
+         jGP6U9h6ar7emzF8F6bZEPAnTxhuNl/Ct+EFc4feJLZuyfOyxKsTUDC7EVWmSiJG+bBc
+         9GHL46sekIlx/Jt3VfIIiarrZ7yFpKG9VcoA3dSVmfZAKGBM8KnAEZvjEkj7NFdPxJ6l
+         Ag5A==
+X-Gm-Message-State: AOAM530qZBrINP6x/khuIAUsqUyCFDgjP3KwdRiSO4M4kFYL4nDPCACF
+        ebhcPDIb6nRfrJVTJWxnz3vPqw==
+X-Google-Smtp-Source: ABdhPJxAny/BHJIXm5/7o+fRpzayetIpJLo9v5nsF0ymmWZ5Az4/r/ciLsmkqWlf29Pk5WxLFeE4Rw==
+X-Received: by 2002:a5d:56d0:: with SMTP id m16mr23333687wrw.194.1592904751256;
+        Tue, 23 Jun 2020 02:32:31 -0700 (PDT)
+Received: from [192.168.86.34] (cpc89974-aztw32-2-0-cust43.18-1.cable.virginm.net. [86.30.250.44])
+        by smtp.googlemail.com with ESMTPSA id c201sm3094727wmd.4.2020.06.23.02.32.30
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 23 Jun 2020 02:32:30 -0700 (PDT)
+Subject: Re: [PATCH v2 18/29] nvmem: Add Realtek DHC eFuse driver
+To:     =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
+        linux-realtek-soc@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?B?SmFtZXMgVGFpIFvmiLTlv5fls7Bd?= <james.tai@realtek.com>,
+        =?UTF-8?B?U3RhbmxleSBDaGFuZyBb5piM6IKy5b63XQ==?= 
+        <stanley_chang@realtek.com>, Edgar Lee <cylee12@realtek.com>
+References: <20200623025106.31273-1-afaerber@suse.de>
+ <20200623025106.31273-19-afaerber@suse.de>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Message-ID: <4c137c33-bd46-2da0-01d0-5f52747be48a@linaro.org>
+Date:   Tue, 23 Jun 2020 10:32:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2006230954560.2367@hadrien>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9660 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 bulkscore=0
- spamscore=0 suspectscore=0 mlxlogscore=999 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006230074
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9660 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 lowpriorityscore=0
- mlxlogscore=999 cotscore=-2147483648 mlxscore=0 phishscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 suspectscore=0 clxscore=1011
- impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006230074
+In-Reply-To: <20200623025106.31273-19-afaerber@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 09:59:57AM +0200, Julia Lawall wrote:
-> > > diff --git a/drivers/crypto/bcm/spu.c b/drivers/crypto/bcm/spu.c
-> > []
-> > > @@ -519,7 +519,7 @@ u32 spum_assoc_resp_len(enum spu_cipher_mode cipher_mode,
-> > >   * spu_aead_ivlen() - Calculate the length of the AEAD IV to be included
-> > >   * in a SPU request after the AAD and before the payload.
-> > >   * @cipher_mode:  cipher mode
-> > > - * @iv_ctr_len:   initialization vector length in bytes
-> > > + * @iv_len:   initialization vector length in bytes
-> > >   *
-> > >   * In Linux ~4.2 and later, the assoc_data sg includes the IV. So no need
-> > >   * to include the IV as a separate field in the SPU request msg.
-> > > @@ -917,7 +917,7 @@ u16 spum_cipher_req_init(u8 *spu_hdr, struct spu_cipher_parms *cipher_parms)
-> > >   * setkey() time in spu_cipher_req_init().
-> > >   * @spu_hdr:         Start of the request message header (MH field)
-> > >   * @spu_req_hdr_len: Length in bytes of the SPU request header
-> > > - * @isInbound:       0 encrypt, 1 decrypt
-> > > + * @is_inbound:       0 encrypt, 1 decrypt
-> >
-> > odd alignments
+
+
+On 23/06/2020 03:50, Andreas Färber wrote:
+> Implement enough of a read-only nvmem driver to easily read efuse cells.
 > 
-> Sorry to have missed these.
+> Cc: Cheng-Yu Lee <cylee12@realtek.com>
+> Signed-off-by: Andreas Färber <afaerber@suse.de>
+> ---
+
+This patch itself looks okay to me, I will apply this once DT patches 
+are Reviewed/applied by DT maintainers!
+
+--srini
+>   v2: New
+>   
+>   MAINTAINERS                   |  1 +
+>   drivers/nvmem/Kconfig         |  9 ++++
+>   drivers/nvmem/Makefile        |  2 +
+>   drivers/nvmem/rtk-dhc-efuse.c | 86 +++++++++++++++++++++++++++++++++++
+>   4 files changed, 98 insertions(+)
+>   create mode 100644 drivers/nvmem/rtk-dhc-efuse.c
 > 
-> > etc...
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 1d0d6ab20451..02117fbf0e57 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2312,6 +2312,7 @@ F:	Documentation/devicetree/bindings/soc/realtek/
+>   F:	arch/arm/boot/dts/rtd*
+>   F:	arch/arm/mach-realtek/
+>   F:	arch/arm64/boot/dts/realtek/
+> +F:	drivers/nvmem/rtk-dhc-efuse.c
+>   F:	drivers/soc/realtek/
+>   
+>   ARM/RENESAS ARM64 ARCHITECTURE
+> diff --git a/drivers/nvmem/Kconfig b/drivers/nvmem/Kconfig
+> index d7b7f6d688e7..75cf43b16cf9 100644
+> --- a/drivers/nvmem/Kconfig
+> +++ b/drivers/nvmem/Kconfig
+> @@ -129,6 +129,15 @@ config NVMEM_SPMI_SDAM
+>   	  Qualcomm Technologies, Inc. PMICs. It provides the clients
+>   	  an interface to read/write to the SDAM module's shared memory.
+>   
+> +config REALTEK_DHC_EFUSE
+> +	tristate "Realtek DHC eFuse Support"
+> +	depends on ARCH_REALTEK || COMPILE_TEST
+> +	depends on HAS_IOMEM
+> +	help
+> +	  Say y here to enable read-only access to the Realtek Digital Home
+> +	  This driver can also be built as a module. If so, the module
+> +	  will be called nvmem-rtk-dhc-efuse.
+> +
+>   config ROCKCHIP_EFUSE
+>   	tristate "Rockchip eFuse Support"
+>   	depends on ARCH_ROCKCHIP || COMPILE_TEST
+> diff --git a/drivers/nvmem/Makefile b/drivers/nvmem/Makefile
+> index a7c377218341..67cefdfa44e6 100644
+> --- a/drivers/nvmem/Makefile
+> +++ b/drivers/nvmem/Makefile
+> @@ -33,6 +33,8 @@ obj-$(CONFIG_ROCKCHIP_EFUSE)	+= nvmem_rockchip_efuse.o
+>   nvmem_rockchip_efuse-y		:= rockchip-efuse.o
+>   obj-$(CONFIG_ROCKCHIP_OTP)	+= nvmem-rockchip-otp.o
+>   nvmem-rockchip-otp-y		:= rockchip-otp.o
+> +obj-$(CONFIG_REALTEK_DHC_EFUSE)	+= nvmem-rtk-dhc-efuse.o
+> +nvmem-rtk-dhc-efuse-y		:= rtk-dhc-efuse.o
+>   obj-$(CONFIG_NVMEM_SUNXI_SID)	+= nvmem_sunxi_sid.o
+>   nvmem_stm32_romem-y 		:= stm32-romem.o
+>   obj-$(CONFIG_NVMEM_STM32_ROMEM) += nvmem_stm32_romem.o
+> diff --git a/drivers/nvmem/rtk-dhc-efuse.c b/drivers/nvmem/rtk-dhc-efuse.c
+> new file mode 100644
+> index 000000000000..4672db2c2619
+> --- /dev/null
+> +++ b/drivers/nvmem/rtk-dhc-efuse.c
+> @@ -0,0 +1,86 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Realtek Digital Home Center eFuse
+> + *
+> + * Copyright (c) 2020 Andreas Färber
+> + */
+> +
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/nvmem-provider.h>
+> +#include <linux/of.h>
+> +#include <linux/of_address.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +
+> +struct dhc_efuse {
+> +	struct device *dev;
+> +	void __iomem *base;
+> +	struct nvmem_device *nvmem;
+> +};
+> +
+> +static int dhc_efuse_reg_read(void *priv, unsigned int offset, void *val,
+> +	size_t bytes)
+> +{
+> +	struct dhc_efuse *efuse = priv;
+> +	u8 *buf = val;
+> +
+> +	while (bytes--)
+> +		*buf++ = readb_relaxed(efuse->base + offset++);
+> +
+> +	return 0;
+> +}
+> +
+> +static int dhc_efuse_probe(struct platform_device *pdev)
+> +{
+> +	struct dhc_efuse *efuse;
+> +	struct nvmem_config config = {};
+> +	struct resource *res;
+> +
+> +	efuse = devm_kzalloc(&pdev->dev, sizeof(*efuse), GFP_KERNEL);
+> +	if (!efuse)
+> +		return -ENOMEM;
+> +
+> +	efuse->base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+> +	if (IS_ERR(efuse->base))
+> +		return PTR_ERR(efuse->base);
+> +
+> +	efuse->dev = &pdev->dev;
+> +
+> +	config.dev = &pdev->dev;
+> +	config.name = "dhc-efuse";
+> +	config.owner = THIS_MODULE;
+> +	config.type = NVMEM_TYPE_OTP;
+> +	config.read_only = true,
+> +	config.word_size = 4;
+> +	config.stride = 1;
+> +	config.size = resource_size(res);
+> +	config.reg_read = dhc_efuse_reg_read;
+> +	config.priv = efuse;
+> +
+> +	efuse->nvmem = devm_nvmem_register(&pdev->dev, &config);
+> +	if (IS_ERR(efuse->nvmem)) {
+> +		dev_err(&pdev->dev, "failed to register nvmem (%ld)\n",
+> +			PTR_ERR(efuse->nvmem));
+> +		return PTR_ERR(efuse->nvmem);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct of_device_id dhc_efuse_dt_ids[] = {
+> +	 { .compatible = "realtek,rtd1195-efuse" },
+> +	 { }
+> +};
+> +
+> +static struct platform_driver dhc_efuse_driver = {
+> +	.probe = dhc_efuse_probe,
+> +	.driver = {
+> +		.name = "rtk-dhc-efuse",
+> +		.of_match_table	= dhc_efuse_dt_ids,
+> +	},
+> +};
+> +module_platform_driver(dhc_efuse_driver);
+> +
+> +MODULE_DESCRIPTION("Realtek DHC eFuse driver");
+> +MODULE_LICENSE("GPL");
 > 
-> Are there a lot of other such problems?  I did look through the whole
-> patch several times by hand, but perhaps it is just too big to see
-> everything.
-
-Probably the comments for spum_assoc_resp_len() could be tweaked.
-
-I had written an email about this one that Joe mentioned and
-spum_assoc_resp_len() but then I decided that it wasn't enough to worry
-about so I deleted the email instead of sending it.
-
-regards,
-dan carpenter
-
