@@ -2,120 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E70205236
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 14:17:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8BC8205240
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 14:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732556AbgFWMRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 08:17:18 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:38865 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732421AbgFWMRR (ORCPT
+        id S1732629AbgFWMRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 08:17:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732614AbgFWMRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 08:17:17 -0400
-Received: by mail-il1-f197.google.com with SMTP id c8so14363893ilm.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 05:17:16 -0700 (PDT)
+        Tue, 23 Jun 2020 08:17:53 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD97C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 05:17:52 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id j10so6548943qtq.11
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 05:17:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rnJX8R4/u0bul7jK+J0G603qpNM/gE9eTBblQOsKzWY=;
+        b=I1Gjq66+zBAiX58YdWGXeVVqtkndN9vNMW3N/NugBnOkOFotrNHfQAvhHSSgF8aNr4
+         uvRJ+7V4SPcgZd6i+fY+Sr4rLWpA/TPwYf7zzUAmJHaGuZOhBsbjU2MkY8t9AhvzGTJ3
+         V2DJwWjYWL814+jeqAAqkG9HqBIAg4NXguiVswxQprtG6pdV4DubpiXaAYuEyTFgZ+vw
+         lm2OPmXw8dwvZ0BVwZ/75brpcb4NhczvJyaPbxwFR/ro2wt7mX7AmEW3nShYi3giToiH
+         Y7TXQ2uBDq9+rWkZyNeSzvG+iOUQswSnehzycdXUKJ2k9ltq6qQVhYKAK6DHDDMJIz6h
+         akSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=wlhuLVD4u+XXQ7HeSYAD3cLeISlYbuyy5YsqjwGO8Ac=;
-        b=niS8U/jLHjNirXf1K+0gFbNgaCtOg4VFFTl9W4Ruf5+FJJL3EEpBAU1AcZQiKnRmWT
-         ALU8MQa6BnA57TN1Wztl3N4opnwLRxlB3kidzBENSkJd5fsH9RgI+JsBtqoHs1O5+5hj
-         knBuFhhRDu3GijFSfYrSXrrL8iTbyg1s1S5oJ0mE976S9WT68QWt93whL3eoqG4JpY4a
-         jZ8s6LMAKsFIt/Kals7aUalnQulbP6P98xaNYSUQrYuWoSEopSPm8c8bsI3HOatLOgQD
-         vqw6AjqJZWBfq9pFJkx0Ef3m7EFXJSmPHU8KM+0gxPr9iDrCHvrADKmXRqdynlegGDJW
-         V/kw==
-X-Gm-Message-State: AOAM531erzbXsNIb2LJZlj8G7chZJ+tTKAttrQwy4xfTRC9njBgCXZFr
-        6OWOZ8a+UJD04KcKtuMjgbzzERzmF8SbTGhM0/63MPdLO1Td
-X-Google-Smtp-Source: ABdhPJyU4beGPn+n5GTW5K+FfN41A3Vtb/0AYshbsOeC1yWAFc6mdL777MAvP/4VCkWzyTUfevSP1uF075zX0wT6JKuF/ak8WPuo
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rnJX8R4/u0bul7jK+J0G603qpNM/gE9eTBblQOsKzWY=;
+        b=PzboWxX6gn1k2p+JWPeuvNL5PH6lXH97HZad8p1crJjioe6V+ZyMUKmLF8K66ZY17x
+         +t/0IYsNW/QBocNSfDTZZDYeHLl4aCqt1zRULBo6K0yHI7lp0Buo6/Y4TsTzaHJ57q4+
+         bdVorzLb1EHGBBz2EdYB+1t03Ybkm7lKBvol5Eh0eHU6gT+Jk72pHrMUc5zzOr5vAVzG
+         7oW8OUpN460HiPMFs6i4BoE9K5hvLAUuV79r/I7bBfR/s2JSnP7qyEFDwoniyLsKwjEU
+         HWBGj6og0dgjJDBCqaFfSLpHSC+RYS+e6Sp+gUw/Kz0VgqEC/qU94gOVfX2GHT3MkPLe
+         dDfw==
+X-Gm-Message-State: AOAM530JSThK2xlsNQEGpL0GGH2zw4/zv+E6DakCBhEYEel5+n4gxitG
+        e8ix9c6JRLxBHR5G9DntbMRKHg==
+X-Google-Smtp-Source: ABdhPJw/o04cwm75ceLorlpG3HUxbpqG1Y1BDalbZRqu2xwFfhg/LL70R/ci3xqMynyzdv/RM08grw==
+X-Received: by 2002:ac8:3129:: with SMTP id g38mr13445444qtb.92.1592914671416;
+        Tue, 23 Jun 2020 05:17:51 -0700 (PDT)
+Received: from [192.168.1.117] (23-233-27-60.cpe.pppoe.ca. [23.233.27.60])
+        by smtp.googlemail.com with ESMTPSA id l3sm398979qtn.69.2020.06.23.05.17.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Jun 2020 05:17:50 -0700 (PDT)
+Subject: Re: [v1,net-next 3/4] net: qos: police action add index for tc flower
+ offloading
+To:     Po Liu <po.liu@nxp.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "idosch@idosch.org" <idosch@idosch.org>
+Cc:     "jiri@resnulli.us" <jiri@resnulli.us>,
+        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
+        "vlad@buslov.dev" <vlad@buslov.dev>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Alexandru Marginean <alexandru.marginean@nxp.com>,
+        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
+        "vishal@chelsio.com" <vishal@chelsio.com>,
+        "saeedm@mellanox.com" <saeedm@mellanox.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
+        "simon.horman@netronome.com" <simon.horman@netronome.com>,
+        "pablo@netfilter.org" <pablo@netfilter.org>,
+        "moshe@mellanox.com" <moshe@mellanox.com>,
+        "m-karicheri2@ti.com" <m-karicheri2@ti.com>,
+        "andre.guedes@linux.intel.com" <andre.guedes@linux.intel.com>,
+        "stephen@networkplumber.org" <stephen@networkplumber.org>,
+        Edward Cree <ecree@solarflare.com>
+References: <VE1PR04MB64965F4F28439370BC53539A92940@VE1PR04MB6496.eurprd04.prod.outlook.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <a8afb955-b3c3-eabb-7f48-319220e85240@mojatatu.com>
+Date:   Tue, 23 Jun 2020 08:17:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-X-Received: by 2002:a6b:b984:: with SMTP id j126mr24459783iof.114.1592914635879;
- Tue, 23 Jun 2020 05:17:15 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 05:17:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000077a6505a8bf57b2@google.com>
-Subject: KASAN: null-ptr-deref Read in kvm_arch_check_processor_compat
-From:   syzbot <syzbot+a99874f5323ce6088e53@syzkaller.appspotmail.com>
-To:     bp@alien8.de, hpa@zytor.com, jmattson@google.com, joro@8bytes.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, pbonzini@redhat.com,
-        sean.j.christopherson@intel.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, vkuznets@redhat.com, wanpengli@tencent.com,
-        x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <VE1PR04MB64965F4F28439370BC53539A92940@VE1PR04MB6496.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following crash on:
-
-HEAD commit:    7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=135e7235100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d195fe572fb15312
-dashboard link: https://syzkaller.appspot.com/bug?extid=a99874f5323ce6088e53
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14d001be100000
-
-Bisection is inconclusive: the bug happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13a8e549100000
-final crash:    https://syzkaller.appspot.com/x/report.txt?x=1068e549100000
-console output: https://syzkaller.appspot.com/x/log.txt?x=17a8e549100000
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+a99874f5323ce6088e53@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: null-ptr-deref in test_bit include/asm-generic/bitops/instrumented-non-atomic.h:110 [inline]
-BUG: KASAN: null-ptr-deref in kvm_arch_check_processor_compat+0x1f8/0x750 arch/x86/kvm/x86.c:9818
-Read of size 8 at addr 0000000000000060 by task syz-executor.2/8085
-
-CPU: 1 PID: 8085 Comm: syz-executor.2 Not tainted 5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- __kasan_report mm/kasan/report.c:517 [inline]
- kasan_report.cold+0x5/0x37 mm/kasan/report.c:530
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x141/0x190 mm/kasan/generic.c:192
- test_bit include/asm-generic/bitops/instrumented-non-atomic.h:110 [inline]
- kvm_arch_check_processor_compat+0x1f8/0x750 arch/x86/kvm/x86.c:9818
- </IRQ>
-==================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 1 PID: 8085 Comm: syz-executor.2 Tainted: G    B             5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- <IRQ>
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- panic+0x2e3/0x75c kernel/panic.c:221
- end_report+0x4d/0x53 mm/kasan/report.c:104
- __kasan_report mm/kasan/report.c:520 [inline]
- kasan_report.cold+0xd/0x37 mm/kasan/report.c:530
- check_memory_region_inline mm/kasan/generic.c:186 [inline]
- check_memory_region+0x141/0x190 mm/kasan/generic.c:192
- test_bit include/asm-generic/bitops/instrumented-non-atomic.h:110 [inline]
- kvm_arch_check_processor_compat+0x1f8/0x750 arch/x86/kvm/x86.c:9818
- </IRQ>
-Shutting down cpus with NMI
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+On 2020-06-23 7:55 a.m., Po Liu wrote:
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+[..]
+>> My question: Is this any different from how stats are structured?
+> 
+> I don't know I fully catch the question. Are you trying to get how many frames for each filter chain passing one index policing action?
+> If one index police action bind to multiple tc filter(they should have differnt chain index ). All those filter should get same index police action stats value since they are sharing the same hardware entry. But I don't think this is the problem.
+>
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+This is a good thing. What is nice is i can use the same index for
+s/w and h/w (and no need for a translation/remapping).
+
+> With index provide to device driver(map the s/w action index to a h/w table index ), user could list the police actions list by command:
+> # tc actions show action police
+> Shows the police action table by index.
+
+This is also nice.
+
+My question: Why cant you apply the same semantics for the counters?
+Does your hardware have an indexed counter/stats table? If yes
+then you should be able to do similar thing for counters
+as you do for policer (i.e use an index and share counters across
+actions). So when i say:
+tc action drop index 5
+and
+tc action ok index 5
+infact they use the same counter.
+
+
+cheers,
+jamal
+
