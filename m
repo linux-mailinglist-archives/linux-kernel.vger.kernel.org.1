@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24D1204792
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D0C204798
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 04:53:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732220AbgFWCwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 22:52:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33028 "EHLO mx2.suse.de"
+        id S1732293AbgFWCwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 22:52:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33040 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731847AbgFWCvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1731985AbgFWCvo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 22 Jun 2020 22:51:44 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ED2EFB1A8;
-        Tue, 23 Jun 2020 02:51:42 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 62E89B1A7;
+        Tue, 23 Jun 2020 02:51:43 +0000 (UTC)
 From:   =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>
 To:     linux-realtek-soc@lists.infradead.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
@@ -24,9 +24,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         <stanley_chang@realtek.com>, Edgar Lee <cylee12@realtek.com>,
         =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 28/29] nvmem: core: Add nvmem_cell_read_u8()
-Date:   Tue, 23 Jun 2020 04:51:05 +0200
-Message-Id: <20200623025106.31273-29-afaerber@suse.de>
+Subject: [PATCH v2 29/29] soc: realtek: chip: Adopt nvmem_cell_read_u8() helper
+Date:   Tue, 23 Jun 2020 04:51:06 +0200
+Message-Id: <20200623025106.31273-30-afaerber@suse.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200623025106.31273-1-afaerber@suse.de>
 References: <20200623025106.31273-1-afaerber@suse.de>
@@ -38,58 +38,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Complement the u16, u32 and u64 helpers with a u8 variant to ease
-accessing byte-sized values.
+Replace the local helper with the newly introduced official one.
 
-This helper will be useful for Realtek Digital Home Center platforms,
-which store some byte and sub-byte sized values in non-volatile memory.
-
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Andreas Färber <afaerber@suse.de>
 ---
+ This could be squashed if the new API and this commit were to get merged in
+ subsequent merge windows or with the help of a topic branch.
+ 
  v2: New
  
- drivers/nvmem/core.c           | 15 +++++++++++++++
- include/linux/nvmem-consumer.h |  1 +
- 2 files changed, 16 insertions(+)
+ drivers/soc/realtek/chip.c | 29 +----------------------------
+ 1 file changed, 1 insertion(+), 28 deletions(-)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index 95bed31391cd..d6bacc878500 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -1374,6 +1374,21 @@ static int nvmem_cell_read_common(struct device *dev, const char *cell_id,
- 	return 0;
- }
+diff --git a/drivers/soc/realtek/chip.c b/drivers/soc/realtek/chip.c
+index bed028ce1b16..46e0d9063b5d 100644
+--- a/drivers/soc/realtek/chip.c
++++ b/drivers/soc/realtek/chip.c
+@@ -79,33 +79,6 @@ struct dhc_soc {
+ 	const char *codename;
+ };
  
-+/**
-+ * nvmem_cell_read_u8() - Read a cell value as a u8
-+ *
-+ * @dev: Device that requests the nvmem cell.
-+ * @cell_id: Name of nvmem cell to read.
-+ * @val: pointer to output value.
-+ *
-+ * Return: 0 on success or negative errno.
-+ */
-+int nvmem_cell_read_u8(struct device *dev, const char *cell_id, u8 *val)
-+{
-+	return nvmem_cell_read_common(dev, cell_id, val, sizeof(*val));
-+}
-+EXPORT_SYMBOL_GPL(nvmem_cell_read_u8);
-+
- /**
-  * nvmem_cell_read_u16() - Read a cell value as a u16
-  *
-diff --git a/include/linux/nvmem-consumer.h b/include/linux/nvmem-consumer.h
-index 1b311d27c9b8..052293f4cbdb 100644
---- a/include/linux/nvmem-consumer.h
-+++ b/include/linux/nvmem-consumer.h
-@@ -61,6 +61,7 @@ void nvmem_cell_put(struct nvmem_cell *cell);
- void devm_nvmem_cell_put(struct device *dev, struct nvmem_cell *cell);
- void *nvmem_cell_read(struct nvmem_cell *cell, size_t *len);
- int nvmem_cell_write(struct nvmem_cell *cell, void *buf, size_t len);
-+int nvmem_cell_read_u8(struct device *dev, const char *cell_id, u8 *val);
- int nvmem_cell_read_u16(struct device *dev, const char *cell_id, u16 *val);
- int nvmem_cell_read_u32(struct device *dev, const char *cell_id, u32 *val);
- int nvmem_cell_read_u64(struct device *dev, const char *cell_id, u64 *val);
+-static int dhc_efuse_read_u8(struct device *dev, const char *cell_id, u8 *val)
+-{
+-	struct nvmem_cell *cell;
+-	void *buf;
+-	size_t len;
+-
+-	cell = nvmem_cell_get(dev, cell_id);
+-	if (IS_ERR(cell))
+-		return PTR_ERR(cell);
+-
+-	buf = nvmem_cell_read(cell, &len);
+-	if (IS_ERR(buf)) {
+-		nvmem_cell_put(cell);
+-		return PTR_ERR(buf);
+-	}
+-	if (len != sizeof(*val)) {
+-		kfree(buf);
+-		nvmem_cell_put(cell);
+-		return -EINVAL;
+-	}
+-	memcpy(val, buf, 1);
+-	kfree(buf);
+-	nvmem_cell_put(cell);
+-
+-	return 0;
+-}
+-
+ static const char *default_name(struct device *dev, const struct dhc_soc *s)
+ {
+ 	return s->family;
+@@ -118,7 +91,7 @@ static const char *rtd1295_name(struct device *dev, const struct dhc_soc *s)
+ 	int ret;
+ 	u8 b;
+ 
+-	ret = dhc_efuse_read_u8(dev, "efuse_package_id", &b);
++	ret = nvmem_cell_read_u8(dev, "efuse_package_id", &b);
+ 	if (ret == -EPROBE_DEFER)
+ 		return ERR_PTR(ret);
+ 	else if (ret)
 -- 
 2.26.2
 
