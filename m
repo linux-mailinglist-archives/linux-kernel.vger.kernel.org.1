@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABB6206688
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:52:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A6CD206685
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:52:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392459AbgFWVnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 17:43:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40802 "EHLO mail.kernel.org"
+        id S2389580AbgFWVni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:43:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387999AbgFWUDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:03:15 -0400
+        id S2388046AbgFWUDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:03:30 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B28A92078A;
-        Tue, 23 Jun 2020 20:03:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E7122078A;
+        Tue, 23 Jun 2020 20:03:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942594;
-        bh=8Mg5iclHO//7TZ7v/uSPnMsXEqV+zo87RlczKHrocKA=;
+        s=default; t=1592942610;
+        bh=qlTTFYshQ7DBmBTg+fQe79WObOFPLuIlr88AUawQXrI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=G0gAU0ZEcycmqpjVfFI6uENGrz/goBXzVa8mo3HiYGHAuhgsFpkElPW054sUA8Dhp
-         u8ZzxusF8TVuhSFikhJ2Phcpu1zFnSz3OY75UI5ez2zLhD387I5xSKSF5lobMkUK08
-         11xspoLNFcNQC26aRREoP+uH98n8rN/f/aH7lTWI=
+        b=DqXIfmEZeKWb8EkE/SYtVvDF1p0GUZbngvW2G7OSOvsAezvShS+G7PUb8VwBLQYGq
+         JU6WPhGobAebfHRSucpy3ZLNoRSclKhArn4n1+jkzav7K+RBSFFh9r8KkqktyiHiF5
+         gOWTYWKoGsKN5rU4wxzxIxKQINpSpBvf0lsFAxy4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Qian Cai <cai@lca.pw>,
-        Alex Williamson <alex.williamson@redhat.com>,
+        stable@vger.kernel.org, Bharata B Rao <bharata@linux.ibm.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 059/477] vfio/pci: fix memory leaks in alloc_perm_bits()
-Date:   Tue, 23 Jun 2020 21:50:56 +0200
-Message-Id: <20200623195410.404107128@linuxfoundation.org>
+Subject: [PATCH 5.7 064/477] powerpc/book3s64/radix/tlb: Determine hugepage flush correctly
+Date:   Tue, 23 Jun 2020 21:51:01 +0200
+Message-Id: <20200623195410.644046112@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -44,72 +46,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qian Cai <cai@lca.pw>
+From: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
 
-[ Upstream commit 3e63b94b6274324ff2e7d8615df31586de827c4e ]
+[ Upstream commit 8f53f9c0f68ab2168f637494b9e24034899c1310 ]
 
-vfio_pci_disable() calls vfio_config_free() but forgets to call
-free_perm_bits() resulting in memory leaks,
+With a 64K page size flush with start and end:
 
-unreferenced object 0xc000000c4db2dee0 (size 16):
-  comm "qemu-kvm", pid 4305, jiffies 4295020272 (age 3463.780s)
-  hex dump (first 16 bytes):
-    00 00 ff 00 ff ff ff ff ff ff ff ff ff ff 00 00  ................
-  backtrace:
-    [<00000000a6a4552d>] alloc_perm_bits+0x58/0xe0 [vfio_pci]
-    [<00000000ac990549>] vfio_config_init+0xdf0/0x11b0 [vfio_pci]
-    init_pci_cap_msi_perm at drivers/vfio/pci/vfio_pci_config.c:1125
-    (inlined by) vfio_msi_cap_len at drivers/vfio/pci/vfio_pci_config.c:1180
-    (inlined by) vfio_cap_len at drivers/vfio/pci/vfio_pci_config.c:1241
-    (inlined by) vfio_cap_init at drivers/vfio/pci/vfio_pci_config.c:1468
-    (inlined by) vfio_config_init at drivers/vfio/pci/vfio_pci_config.c:1707
-    [<000000006db873a1>] vfio_pci_open+0x234/0x700 [vfio_pci]
-    [<00000000630e1906>] vfio_group_fops_unl_ioctl+0x8e0/0xb84 [vfio]
-    [<000000009e34c54f>] ksys_ioctl+0xd8/0x130
-    [<000000006577923d>] sys_ioctl+0x28/0x40
-    [<000000006d7b1cf2>] system_call_exception+0x114/0x1e0
-    [<0000000008ea7dd5>] system_call_common+0xf0/0x278
-unreferenced object 0xc000000c4db2e330 (size 16):
-  comm "qemu-kvm", pid 4305, jiffies 4295020272 (age 3463.780s)
-  hex dump (first 16 bytes):
-    00 ff ff 00 ff ff ff ff ff ff ff ff ff ff 00 00  ................
-  backtrace:
-    [<000000004c71914f>] alloc_perm_bits+0x44/0xe0 [vfio_pci]
-    [<00000000ac990549>] vfio_config_init+0xdf0/0x11b0 [vfio_pci]
-    [<000000006db873a1>] vfio_pci_open+0x234/0x700 [vfio_pci]
-    [<00000000630e1906>] vfio_group_fops_unl_ioctl+0x8e0/0xb84 [vfio]
-    [<000000009e34c54f>] ksys_ioctl+0xd8/0x130
-    [<000000006577923d>] sys_ioctl+0x28/0x40
-    [<000000006d7b1cf2>] system_call_exception+0x114/0x1e0
-    [<0000000008ea7dd5>] system_call_common+0xf0/0x278
+  (start, end) = (721f680d0000, 721f680e0000)
 
-Fixes: 89e1f7d4c66d ("vfio: Add PCI device driver")
-Signed-off-by: Qian Cai <cai@lca.pw>
-[aw: rolled in follow-up patch]
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+results in:
+
+  (hstart, hend) = (721f68200000, 721f68000000)
+
+ie. hstart is above hend, which indicates no huge page flush is
+needed.
+
+However the current logic incorrectly sets hflush = true in this case,
+because hstart != hend.
+
+That causes us to call __tlbie_va_range() passing hstart/hend, to do a
+huge page flush even though we don't need to. __tlbie_va_range() will
+skip the actual tlbie operation for start > end. But it will still end
+up calling fixup_tlbie_va_range() and doing the TLB fixups in there,
+which is harmless but unnecessary work.
+
+Reported-by: Bharata B Rao <bharata@linux.ibm.com>
+Signed-off-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+[mpe: Drop else case, hflush is already false, flesh out change log]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20200513030616.152288-1-aneesh.kumar@linux.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/vfio/pci/vfio_pci_config.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/powerpc/mm/book3s64/radix_tlb.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/vfio/pci/vfio_pci_config.c b/drivers/vfio/pci/vfio_pci_config.c
-index 90c0b80f8acf9..43b95f9cdaf7b 100644
---- a/drivers/vfio/pci/vfio_pci_config.c
-+++ b/drivers/vfio/pci/vfio_pci_config.c
-@@ -1728,8 +1728,11 @@ void vfio_config_free(struct vfio_pci_device *vdev)
- 	vdev->vconfig = NULL;
- 	kfree(vdev->pci_config_map);
- 	vdev->pci_config_map = NULL;
--	kfree(vdev->msi_perm);
--	vdev->msi_perm = NULL;
-+	if (vdev->msi_perm) {
-+		free_perm_bits(vdev->msi_perm);
-+		kfree(vdev->msi_perm);
-+		vdev->msi_perm = NULL;
-+	}
- }
+diff --git a/arch/powerpc/mm/book3s64/radix_tlb.c b/arch/powerpc/mm/book3s64/radix_tlb.c
+index 758ade2c2b6ed..b5cc9b23cf024 100644
+--- a/arch/powerpc/mm/book3s64/radix_tlb.c
++++ b/arch/powerpc/mm/book3s64/radix_tlb.c
+@@ -884,9 +884,7 @@ is_local:
+ 		if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
+ 			hstart = (start + PMD_SIZE - 1) & PMD_MASK;
+ 			hend = end & PMD_MASK;
+-			if (hstart == hend)
+-				hflush = false;
+-			else
++			if (hstart < hend)
+ 				hflush = true;
+ 		}
  
- /*
 -- 
 2.25.1
 
