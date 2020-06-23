@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 472DD205F98
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605DD206089
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389549AbgFWUd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:33:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55298 "EHLO mail.kernel.org"
+        id S2392219AbgFWUnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:43:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390930AbgFWUdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:33:47 -0400
+        id S2392553AbgFWUnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:43:47 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 432CE21473;
-        Tue, 23 Jun 2020 20:33:46 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D126221927;
+        Tue, 23 Jun 2020 20:43:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944426;
-        bh=b1LMwzWgnToHNsHu4GCbq7IDfPyY3D1u3I1WSG/sckg=;
+        s=default; t=1592945027;
+        bh=3ALKqSb//yNIIQlkl8NRcrYMmxqeQWP1nF4+ZNgu8uA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CgFwfHHrkQPWiygesQTV/fXI+NXtl339iU4zmM6Wod+qed+qVMd27Ggd9voM8r1ip
-         7pwjWvuyUrqdU2qhJth2GyNq+xGLVqygtQ/6Z9cmKS6x6oMHHFJkw3QSXyVwO2xBVz
-         O6rrS5o668ix01Bk1YOjjDFvkojJgEDToBjg3Gko=
+        b=zpRdtL2i8Jam4sD/N2J9W+HKDM9snfZYyI150HJIpfxLQ9cETzF66XABSRBCSckNT
+         YhQZP6tnSby4tP2F98KBf9uNhMVFp5Z+70IErCcpRWie6IUfF0Cq/PhQg/k+J8HKu3
+         Nl9sia2SJURYBSlHZmpwhAcllL+w2KqPsmRyinKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        stable@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 270/314] afs: Fix EOF corruption
-Date:   Tue, 23 Jun 2020 21:57:45 +0200
-Message-Id: <20200623195351.865288807@linuxfoundation.org>
+Subject: [PATCH 4.14 011/136] ARM: integrator: Add some Kconfig selections
+Date:   Tue, 23 Jun 2020 21:57:47 +0200
+Message-Id: <20200623195304.178784277@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
-References: <20200623195338.770401005@linuxfoundation.org>
+In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
+References: <20200623195303.601828702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,101 +43,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Howells <dhowells@redhat.com>
+From: Linus Walleij <linus.walleij@linaro.org>
 
-[ Upstream commit 3f4aa981816368fe6b1d13c2bfbe76df9687e787 ]
+[ Upstream commit d2854bbe5f5c4b4bec8061caf4f2e603d8819446 ]
 
-When doing a partial writeback, afs_write_back_from_locked_page() may
-generate an FS.StoreData RPC request that writes out part of a file when a
-file has been constructed from pieces by doing seek, write, seek, write,
-... as is done by ld.
+The CMA and DMA_CMA Kconfig options need to be selected
+by the Integrator in order to produce boot console on some
+Integrator systems.
 
-The FS.StoreData RPC is given the current i_size as the file length, but
-the server basically ignores it unless the data length is 0 (in which case
-it's just a truncate operation).  The revised file length returned in the
-result of the RPC may then not reflect what we suggested - and this leads
-to i_size getting moved backwards - which causes issues later.
+The REGULATOR and REGULATOR_FIXED_VOLTAGE need to be
+selected in order to boot the system from an external
+MMC card when using MMCI/PL181 from the device tree
+probe path.
 
-Fix the client to take account of this by ignoring the returned file size
-unless the data version number jumped unexpectedly - in which case we're
-going to have to clear the pagecache and reload anyway.
+Select these things directly from the Kconfig so we are
+sure to be able to bring the systems up with console
+from any device tree.
 
-This can be observed when doing a kernel build on an AFS mount.  The
-following pair of commands produce the issue:
-
-  ld -m elf_x86_64 -z max-page-size=0x200000 --emit-relocs \
-      -T arch/x86/realmode/rm/realmode.lds \
-      arch/x86/realmode/rm/header.o \
-      arch/x86/realmode/rm/trampoline_64.o \
-      arch/x86/realmode/rm/stack.o \
-      arch/x86/realmode/rm/reboot.o \
-      -o arch/x86/realmode/rm/realmode.elf
-  arch/x86/tools/relocs --realmode \
-      arch/x86/realmode/rm/realmode.elf \
-      >arch/x86/realmode/rm/realmode.relocs
-
-This results in the latter giving:
-
-	Cannot read ELF section headers 0/18: Success
-
-as the realmode.elf file got corrupted.
-
-The sequence of events can also be driven with:
-
-	xfs_io -t -f \
-		-c "pwrite -S 0x58 0 0x58" \
-		-c "pwrite -S 0x59 10000 1000" \
-		-c "close" \
-		/afs/example.com/scratch/a
-
-Fixes: 31143d5d515e ("AFS: implement basic file write support")
-Signed-off-by: David Howells <dhowells@redhat.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/afs/inode.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ arch/arm/mach-integrator/Kconfig | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/fs/afs/inode.c b/fs/afs/inode.c
-index 46d2d7cb461da..a74e8e209454b 100644
---- a/fs/afs/inode.c
-+++ b/fs/afs/inode.c
-@@ -171,6 +171,7 @@ static void afs_apply_status(struct afs_fs_cursor *fc,
- 	struct timespec64 t;
- 	umode_t mode;
- 	bool data_changed = false;
-+	bool change_size = false;
+diff --git a/arch/arm/mach-integrator/Kconfig b/arch/arm/mach-integrator/Kconfig
+index cefe44f6889bd..ba124f8704fac 100644
+--- a/arch/arm/mach-integrator/Kconfig
++++ b/arch/arm/mach-integrator/Kconfig
+@@ -3,6 +3,8 @@ menuconfig ARCH_INTEGRATOR
+ 	depends on ARCH_MULTI_V4T || ARCH_MULTI_V5 || ARCH_MULTI_V6
+ 	select ARM_AMBA
+ 	select COMMON_CLK_VERSATILE
++	select CMA
++	select DMA_CMA
+ 	select HAVE_TCM
+ 	select ICST
+ 	select MFD_SYSCON
+@@ -34,14 +36,13 @@ config INTEGRATOR_IMPD1
+ 	select ARM_VIC
+ 	select GPIO_PL061
+ 	select GPIOLIB
++	select REGULATOR
++	select REGULATOR_FIXED_VOLTAGE
+ 	help
+ 	  The IM-PD1 is an add-on logic module for the Integrator which
+ 	  allows ARM(R) Ltd PrimeCells to be developed and evaluated.
+ 	  The IM-PD1 can be found on the Integrator/PP2 platform.
  
- 	BUG_ON(test_bit(AFS_VNODE_UNSET, &vnode->flags));
- 
-@@ -226,6 +227,7 @@ static void afs_apply_status(struct afs_fs_cursor *fc,
- 		} else {
- 			set_bit(AFS_VNODE_ZAP_DATA, &vnode->flags);
- 		}
-+		change_size = true;
- 	} else if (vnode->status.type == AFS_FTYPE_DIR) {
- 		/* Expected directory change is handled elsewhere so
- 		 * that we can locally edit the directory and save on a
-@@ -233,11 +235,19 @@ static void afs_apply_status(struct afs_fs_cursor *fc,
- 		 */
- 		if (test_bit(AFS_VNODE_DIR_VALID, &vnode->flags))
- 			data_changed = false;
-+		change_size = true;
- 	}
- 
- 	if (data_changed) {
- 		inode_set_iversion_raw(&vnode->vfs_inode, status->data_version);
--		afs_set_i_size(vnode, status->size);
-+
-+		/* Only update the size if the data version jumped.  If the
-+		 * file is being modified locally, then we might have our own
-+		 * idea of what the size should be that's not the same as
-+		 * what's on the server.
-+		 */
-+		if (change_size)
-+			afs_set_i_size(vnode, status->size);
- 	}
- }
- 
+-	  To compile this driver as a module, choose M here: the
+-	  module will be called impd1.
+-
+ config INTEGRATOR_CM7TDMI
+ 	bool "Integrator/CM7TDMI core module"
+ 	depends on ARCH_INTEGRATOR_AP
 -- 
 2.25.1
 
