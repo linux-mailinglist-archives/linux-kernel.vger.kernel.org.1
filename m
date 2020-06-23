@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EB0A20607C
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:48:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D072060CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392514AbgFWUnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:43:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40064 "EHLO mail.kernel.org"
+        id S2392868AbgFWUqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:46:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44770 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392478AbgFWUnP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:43:15 -0400
+        id S2392861AbgFWUqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:46:43 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4317C21941;
-        Tue, 23 Jun 2020 20:43:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 54B062098B;
+        Tue, 23 Jun 2020 20:46:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592944995;
-        bh=0ncV6HTRfo/3u06mJYnRbHPw2o4yr/9wsxgVNim2oHg=;
+        s=default; t=1592945203;
+        bh=U41RN4aeAcRu4k1KoSP9ilUKUcb4Ucgo2yRc6G7pc2A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LTyP/SGyyh8k5H+cjG1HOEbY4EKiuWw+ynGuHFAf8AmRu8/sz4zD4/kb6kuXoEc8R
-         xyyNdswpyxvNe45ItZIJrQQRTjcUpA0XXYLDtWNjkeg98+bBcMjYf8CGshs/IeQAUV
-         lJHnGngF2METcfifwL2W4pTP4xo0KFiWnnHxH/UY=
+        b=TntuBSjXGB7bDWux/pAhZ1IdHKt6uHY34+cVVwcdBSIU6zMDIHJmsB9Io/ByIwr8I
+         AM0DQPhiw2ZA88TZd2+re5NKSmtokjDCOYITmpQKxU5W1hGdRX29SMETIBpe/uiDNV
+         AiGJeV3o94dBskvuSpkJQcepedfTfud2T1G6BDSY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Joakim Tjernlund <joakim.tjernlund@infinera.com>,
-        Vladimir Oltean <vladimir.oltean@nxp.com>
-Subject: [PATCH 4.19 206/206] Revert "dpaa_eth: fix usage as DSA master, try 3"
-Date:   Tue, 23 Jun 2020 21:58:54 +0200
-Message-Id: <20200623195327.188985616@linuxfoundation.org>
+        stable@vger.kernel.org, Olga Kornievskaia <kolga@netapp.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 080/136] NFSv4.1 fix rpc_call_done assignment for BIND_CONN_TO_SESSION
+Date:   Tue, 23 Jun 2020 21:58:56 +0200
+Message-Id: <20200623195307.726001886@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200623195316.864547658@linuxfoundation.org>
-References: <20200623195316.864547658@linuxfoundation.org>
+In-Reply-To: <20200623195303.601828702@linuxfoundation.org>
+References: <20200623195303.601828702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,41 +44,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Olga Kornievskaia <olga.kornievskaia@gmail.com>
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+[ Upstream commit 1c709b766e73e54d64b1dde1b7cfbcf25bcb15b9 ]
 
-This reverts commit b145710b69388aa4034d32b4a937f18f66b5538e which is
-commit 5d14c304bfc14b4fd052dc83d5224376b48f52f0 upstream.
-
-The patch is not wrong, but the Fixes: tag is. It should have been:
-
-	Fixes: 060ad66f9795 ("dpaa_eth: change DMA device")
-
-which means that it's fixing a commit which was introduced in:
-
-git describe --tags 060ad66f97954
-v5.4-rc3-783-g060ad66f9795
-
-which then means it should have not been backported to linux-4.19.y,
-where things _were_ working and now they're not.
-
-Reported-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 02a95dee8cf0 ("NFS add callback_ops to nfs4_proc_bind_conn_to_session_callback")
+Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/freescale/dpaa/dpaa_eth.c |    2 +-
+ fs/nfs/nfs4proc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-+++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
-@@ -2796,7 +2796,7 @@ static int dpaa_eth_probe(struct platfor
- 	}
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index 4d45786738ab4..a19bbcfab7c5e 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -7309,7 +7309,7 @@ nfs4_bind_one_conn_to_session_done(struct rpc_task *task, void *calldata)
+ }
  
- 	/* Do this here, so we can be verbose early */
--	SET_NETDEV_DEV(net_dev, dev->parent);
-+	SET_NETDEV_DEV(net_dev, dev);
- 	dev_set_drvdata(dev, net_dev);
+ static const struct rpc_call_ops nfs4_bind_one_conn_to_session_ops = {
+-	.rpc_call_done =  &nfs4_bind_one_conn_to_session_done,
++	.rpc_call_done =  nfs4_bind_one_conn_to_session_done,
+ };
  
- 	priv = netdev_priv(net_dev);
+ /*
+-- 
+2.25.1
+
 
 
