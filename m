@@ -2,37 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 618BB205E71
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:31:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08949205E5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 22:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390193AbgFWUWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:22:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40364 "EHLO mail.kernel.org"
+        id S2388986AbgFWUVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 16:21:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390172AbgFWUW1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:22:27 -0400
+        id S2390054AbgFWUVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:21:36 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C544E2064B;
-        Tue, 23 Jun 2020 20:22:26 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9DF522070E;
+        Tue, 23 Jun 2020 20:21:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592943747;
-        bh=gyxZKGmYpcSubDwX2gLuJPlr8ZhheA/wFX1fIONie/0=;
+        s=default; t=1592943696;
+        bh=0Fb7EP+pKmYTFIeqqOxu3NP+meod2WPdfsqrmM6rM1I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eC5B+bSw0A/FGYs0e36D0Tk+5k2I+w2TeJCUzmZ0Pmi+X6rqn27VYuOAtWgMLyCSa
-         xnBgGpt9rGzRKBc9OHtyrfFDPO9YPTlltN47FsHWzxmYhyoh+x9xfGCpcL1yBbW3+l
-         wgVJIsQF+Pk/yL6bHyqT/+sZOzvsyv0tDnJaCKis=
+        b=pHAULZK8f/JiwTocEjq0dyiztbCO3a0Y3loIsXIeFzO4s1Wdjh9435Pz0au/K1jbm
+         WJrCA8XQn9Qm41xGVlWvQ2u1OYc7X5uUW7m08mofLZtJS1XKTWR7TGAGwG4i0XVByf
+         ui42R7DTxAbNclJg80cFIdH90dNoLwFQG2qzFe2w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Daniel Wagner <dwagner@suse.de>,
+        Hannes Reinecke <hare@suse.de>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 009/314] ASoC: fsl_esai: Disable exception interrupt before scheduling tasklet
-Date:   Tue, 23 Jun 2020 21:53:24 +0200
-Message-Id: <20200623195339.237612207@linuxfoundation.org>
+Subject: [PATCH 5.4 015/314] scsi: core: free sgtables in case command setup fails
+Date:   Tue, 23 Jun 2020 21:53:30 +0200
+Message-Id: <20200623195339.513491985@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195338.770401005@linuxfoundation.org>
 References: <20200623195338.770401005@linuxfoundation.org>
@@ -45,39 +47,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shengjiu Wang <shengjiu.wang@nxp.com>
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-[ Upstream commit 1fecbb71fe0e46b886f84e3b6decca6643c3af6d ]
+[ Upstream commit 20a66f2bf280277ab5bb22e27445153b4eb0ac88 ]
 
-Disable exception interrupt before scheduling tasklet, otherwise if
-the tasklet isn't handled immediately, there will be endless xrun
-interrupt.
+In case scsi_setup_fs_cmnd() fails we're not freeing the sgtables allocated
+by scsi_init_io(), thus we leak the allocated memory.
 
-Fixes: 7ccafa2b3879 ("ASoC: fsl_esai: recover the channel swap after xrun")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
-Link: https://lore.kernel.org/r/a8f2ad955aac9e52587beedc1133b3efbe746895.1587968824.git.shengjiu.wang@nxp.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Free the sgtables allocated by scsi_init_io() in case scsi_setup_fs_cmnd()
+fails.
+
+Technically scsi_setup_scsi_cmnd() does not suffer from this problem as it
+can only fail if scsi_init_io() fails, so it does not have sgtables
+allocated. But to maintain symmetry and as a measure of defensive
+programming, free the sgtables on scsi_setup_scsi_cmnd() failure as well.
+scsi_mq_free_sgtables() has safeguards against double-freeing of memory so
+this is safe to do.
+
+While we're at it, rename scsi_mq_free_sgtables() to scsi_free_sgtables().
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=205595
+Link: https://lore.kernel.org/r/20200428104605.8143-2-johannes.thumshirn@wdc.com
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Daniel Wagner <dwagner@suse.de>
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/fsl/fsl_esai.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/scsi/scsi_lib.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index c7a49d03463a7..84290be778f0e 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -87,6 +87,10 @@ static irqreturn_t esai_isr(int irq, void *devid)
- 	if ((saisr & (ESAI_SAISR_TUE | ESAI_SAISR_ROE)) &&
- 	    esai_priv->reset_at_xrun) {
- 		dev_dbg(&pdev->dev, "reset module for xrun\n");
-+		regmap_update_bits(esai_priv->regmap, REG_ESAI_TCR,
-+				   ESAI_xCR_xEIE_MASK, 0);
-+		regmap_update_bits(esai_priv->regmap, REG_ESAI_RCR,
-+				   ESAI_xCR_xEIE_MASK, 0);
- 		tasklet_schedule(&esai_priv->task);
+diff --git a/drivers/scsi/scsi_lib.c b/drivers/scsi/scsi_lib.c
+index 91c007d26c1ef..206c9f53e9e7a 100644
+--- a/drivers/scsi/scsi_lib.c
++++ b/drivers/scsi/scsi_lib.c
+@@ -551,7 +551,7 @@ static void scsi_uninit_cmd(struct scsi_cmnd *cmd)
  	}
+ }
  
+-static void scsi_mq_free_sgtables(struct scsi_cmnd *cmd)
++static void scsi_free_sgtables(struct scsi_cmnd *cmd)
+ {
+ 	if (cmd->sdb.table.nents)
+ 		sg_free_table_chained(&cmd->sdb.table,
+@@ -563,7 +563,7 @@ static void scsi_mq_free_sgtables(struct scsi_cmnd *cmd)
+ 
+ static void scsi_mq_uninit_cmd(struct scsi_cmnd *cmd)
+ {
+-	scsi_mq_free_sgtables(cmd);
++	scsi_free_sgtables(cmd);
+ 	scsi_uninit_cmd(cmd);
+ 	scsi_del_cmd_from_list(cmd);
+ }
+@@ -1063,7 +1063,7 @@ blk_status_t scsi_init_io(struct scsi_cmnd *cmd)
+ 
+ 	return BLK_STS_OK;
+ out_free_sgtables:
+-	scsi_mq_free_sgtables(cmd);
++	scsi_free_sgtables(cmd);
+ 	return ret;
+ }
+ EXPORT_SYMBOL(scsi_init_io);
+@@ -1214,6 +1214,7 @@ static blk_status_t scsi_setup_cmnd(struct scsi_device *sdev,
+ 		struct request *req)
+ {
+ 	struct scsi_cmnd *cmd = blk_mq_rq_to_pdu(req);
++	blk_status_t ret;
+ 
+ 	if (!blk_rq_bytes(req))
+ 		cmd->sc_data_direction = DMA_NONE;
+@@ -1223,9 +1224,14 @@ static blk_status_t scsi_setup_cmnd(struct scsi_device *sdev,
+ 		cmd->sc_data_direction = DMA_FROM_DEVICE;
+ 
+ 	if (blk_rq_is_scsi(req))
+-		return scsi_setup_scsi_cmnd(sdev, req);
++		ret = scsi_setup_scsi_cmnd(sdev, req);
+ 	else
+-		return scsi_setup_fs_cmnd(sdev, req);
++		ret = scsi_setup_fs_cmnd(sdev, req);
++
++	if (ret != BLK_STS_OK)
++		scsi_free_sgtables(cmd);
++
++	return ret;
+ }
+ 
+ static blk_status_t
 -- 
 2.25.1
 
