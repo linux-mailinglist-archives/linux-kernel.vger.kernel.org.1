@@ -2,86 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2122056D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED182056DE
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 18:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732565AbgFWQOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 12:14:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42514 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728916AbgFWQOA (ORCPT
+        id S1732686AbgFWQOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 12:14:53 -0400
+Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:21754 "EHLO
+        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732182AbgFWQOx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 12:14:00 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB55CC061573;
-        Tue, 23 Jun 2020 09:13:59 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0d47007938aef930b6c4fb.dip0.t-ipconnect.de [IPv6:2003:ec:2f0d:4700:7938:aef9:30b6:c4fb])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 768C01EC0318;
-        Tue, 23 Jun 2020 18:13:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1592928838;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=3hydVVgqDlrgbEgBTFy7VUDI9fCz0nmR1nF+TA1bYQw=;
-        b=AR8Cmxfvj2g5TZiJF22qVNjyxrjEzi3qfokFyvjRPZq+FHX1ONnQ12Y6ioP86xvNIHjtpg
-        gOafUnBClkDXUL9gFcNJbChJb5NJxzTl5Zu/LFrlT4AOc2DvxW0JNlKjsJmB/sKD0V4kPs
-        hmqNU/N1ePn0BbF1IV0jxu/Bj1GQ9R0=
-Date:   Tue, 23 Jun 2020 18:13:55 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Andrew Cooper <andrew.cooper3@citrix.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tom Lendacky <Thomas.Lendacky@amd.com>,
-        Mike Stunes <mstunes@vmware.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Juergen Gross <JGross@suse.com>,
-        Jiri Slaby <jslaby@suse.cz>, Kees Cook <keescook@chromium.org>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Hellstrom <thellstrom@vmware.com>,
-        Linux Virtualization <virtualization@lists.linux-foundation.org>,
-        X86 ML <x86@kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-Subject: Re: Should SEV-ES #VC use IST? (Re: [PATCH] Allow RDTSC and RDTSCP
- from userspace)
-Message-ID: <20200623161355.GF32590@zn.tnic>
-References: <20200623113007.GH31822@suse.de>
- <20200623114818.GD4817@hirez.programming.kicks-ass.net>
- <20200623120433.GB14101@suse.de>
- <20200623125201.GG4817@hirez.programming.kicks-ass.net>
- <20200623134003.GD14101@suse.de>
- <20200623135916.GI4817@hirez.programming.kicks-ass.net>
- <20200623145344.GA117543@hirez.programming.kicks-ass.net>
- <20200623145914.GF14101@suse.de>
- <20200623152326.GL4817@hirez.programming.kicks-ass.net>
- <56af2f70-a1c6-aa64-006e-23f2f3880887@citrix.com>
+        Tue, 23 Jun 2020 12:14:53 -0400
+Received: from pps.filterd (m0170395.ppops.net [127.0.0.1])
+        by mx0b-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NGBaXO013073;
+        Tue, 23 Jun 2020 12:14:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=smtpout1; bh=Fv+Pog/9CSf2u7nGXJo8lLetagBewZlyF3mcN1ukZUM=;
+ b=XRbcY4GhzLJkW60C70tG3twDoMURNQumuLiYpXaBWVA8IWcgIax/QmFe9dPueS5n/Olj
+ VYjqsQjoYly7SVp8uSrSc6me6HzR/yd9jrgxfLh7ALZSRhSl4O4FVdldVcXLM0qqFCDO
+ uhMfOi9Sn20vSbjr2ri+lAQSgyDn7Z/NhsiDEbbC3XqfAGv0HwbXQZOG26IYIH30UbQL
+ 1rVZGMartGKSaXlBiuxPU7LJXkIQLOjUemQe/4Z46cuxajZ3weXiFyAiixnE30QgO9fX
+ CBzXAei0mL2BE05bvPdV7WBcBaO9YspY+xXwKxLn1JXvkQFte49IvWzrCHphr+MUpYWc WQ== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0b-00154904.pphosted.com with ESMTP id 31uk5dgjkc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 23 Jun 2020 12:14:51 -0400
+Received: from pps.filterd (m0142693.ppops.net [127.0.0.1])
+        by mx0a-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05NG5V5D109532;
+        Tue, 23 Jun 2020 12:14:51 -0400
+Received: from ausc60pc101.us.dell.com (ausc60pc101.us.dell.com [143.166.85.206])
+        by mx0a-00154901.pphosted.com with ESMTP id 31uk2ejqd2-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 23 Jun 2020 12:14:50 -0400
+X-LoopCount0: from 10.173.37.130
+X-PREM-Routing: D-Outbound
+X-IronPort-AV: E=Sophos;i="5.60,349,1549951200"; 
+   d="scan'208";a="1568825312"
+From:   Mario Limonciello <mario.limonciello@dell.com>
+To:     Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        perry.yuan@dell.com, Mario Limonciello <mario.limonciello@dell.com>
+Subject: [PATCH v3 0/2] Allow breaking up Thunderbolt/USB4 updates
+Date:   Tue, 23 Jun 2020 11:14:27 -0500
+Message-Id: <20200623161429.24214-1-mario.limonciello@dell.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <56af2f70-a1c6-aa64-006e-23f2f3880887@citrix.com>
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-23_10:2020-06-23,2020-06-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 clxscore=1015 mlxscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=725 lowpriorityscore=0 adultscore=0 priorityscore=1501
+ spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006120000 definitions=main-2006230120
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0 spamscore=0
+ bulkscore=0 mlxlogscore=778 adultscore=0 malwarescore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006120000
+ definitions=main-2006230120
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 04:39:26PM +0100, Andrew Cooper wrote:
-> P.S. did you also hear that with Rowhammer, userspace has a nonzero
-> quantity of control over generating #MC, depending on how ECC is
-> configured on the platform.
+Currently updates to Thunderbolt and USB4 controllers are fully atomic
+actions. When writing into the non-active NVM nothing gets flushed to
+the hardware until authenticate is sent.
 
-Where does that #MC point to? Can it control for which address to flip
-the bits for, i.e., make the #MC appear it has been generated for an
-address in kernel space?
+There has been some desire to improve the perceived performance of these
+updates, particularly for userland that may perform the update upon
+a performance sensitive time like logging out.
 
--- 
-Regards/Gruss,
-    Boris.
+So allow userland to flush the image to hardware at runtime, and then
+allow authenticating the image at another time.
 
-https://people.kernel.org/tglx/notes-about-netiquette
+For the Dell WD19TB some specific hardware capability exists that allows
+extending this to automatically complete the update when unplugged.
+Export that functionality to userspace as well.
+
+Changes from v2 to v3:
+ - Correct some whitespace and kernel-doc comments
+ - Add another missing 'const'
+ - For a quirk: (1<<1) -> BIT(0) 
+
+Changes from v1 to v2:
+ - Improve documentation
+ - Drop tb-quirks.h
+ - Adjust function and parameter names to Mika's preferences
+ - Rebase onto thunderbolt.git/bleeding-edge to move on top of retimer work
+
+Mario Limonciello (2):
+  thunderbolt: Add support for separating the flush to SPI and
+    authenticate
+  thunderbolt: Add support for authenticate on disconnect
+
+ .../ABI/testing/sysfs-bus-thunderbolt         | 24 +++++-
+ drivers/thunderbolt/Makefile                  |  1 +
+ drivers/thunderbolt/eeprom.c                  |  2 +
+ drivers/thunderbolt/lc.c                      | 14 ++++
+ drivers/thunderbolt/quirks.c                  | 38 +++++++++
+ drivers/thunderbolt/switch.c                  | 81 +++++++++++++++----
+ drivers/thunderbolt/tb-quirks.h               | 16 ++++
+ drivers/thunderbolt/tb.h                      |  4 +
+ drivers/thunderbolt/tb_regs.h                 |  1 +
+ 9 files changed, 162 insertions(+), 19 deletions(-)
+ create mode 100644 drivers/thunderbolt/quirks.c
+ create mode 100644 drivers/thunderbolt/tb-quirks.h
+
+--
+2.25.1
+
