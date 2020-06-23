@@ -2,140 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01349204F28
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 12:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41A64204F34
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 12:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732231AbgFWKhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 06:37:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731968AbgFWKhw (ORCPT
+        id S1732294AbgFWKjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 06:39:33 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:27427 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732282AbgFWKjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 06:37:52 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB34C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 03:37:52 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id g75so2482597wme.5
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 03:37:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=isovalent-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jSGtAZ68yCQRuX8DMTsJCURecPrk2ld6B92Ys0IUNTE=;
-        b=oCy6VBPqVEM/fni40MjgDpQuwDrfvIWlZwyOUm7dmIn1XueTNAsWg/6lk7kNFZ3D0G
-         K/BM4yxM+R7/HvzxfHGDimmafXrWFo4mAnlu2PpXym9fbw2/3sHkK25EO6jgYkMS0nfO
-         dYE7gSqXJnc80DeEi/tA8vVQAqWhP6eFKaCDS/9qKzEDU9M28WE4SxDlsfU4Gtu3/fsW
-         dH9TVX1pckgTBnaBT+KRRAj9KnEKdO6e0SdSkO2TggHPfQ9TAg5jiwrB9HFqILIZhddc
-         +9y0G6tK2KM9tN5wtvLx6IaMUhbquQyXFfMocuY8HEeoMlka8nO0WEL0wZtJlHeDa31X
-         /mSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jSGtAZ68yCQRuX8DMTsJCURecPrk2ld6B92Ys0IUNTE=;
-        b=H5J2Jw3ca426yb/CmOUP5hnIq5M8NFlrTsxT+AqzUZoZ/OhOjQUp+zikNE6KLo1NU8
-         S7Wk4IFb7kuf+0FQYjlZM6fxBHL60vKvMpEBrus5uWpfVUiu1TUMXbtvBriD6ZZupBBd
-         sqnvIKHtunnpnWnXy9RYE/SF2kVsSCYj0FD59wIcD7PAN+5tKugQFPbVsuQjxdRzlMT3
-         m4K+i6Du6m04DWdySX7gIEy2ZbnoJQkxHarBCJs1Tc6hStKSmG85N2pfGhbOPjbnYuWH
-         AYG91cP6zoiJZbgBgttva7RYLFd+7hgaXtBhZGsosO9srWIjxUnBV46TQ4AbUI9iHgOQ
-         I0RA==
-X-Gm-Message-State: AOAM5331/ZKW2E+6SwREhc9Kh8iiZVWtLV5UEgwAMkCPN6PpOKx2o8Ao
-        nEkfeZ8YOENdQ7Uz39SCxGPK0Q==
-X-Google-Smtp-Source: ABdhPJyCrbz+c+edm5/R/wpbi6N2oOSNa+mNEgbsuVjzATzIQzBhjJZoTRpbU6ViepS/iD/HL8DSNw==
-X-Received: by 2002:a1c:4b0f:: with SMTP id y15mr24551390wma.83.1592908670822;
-        Tue, 23 Jun 2020 03:37:50 -0700 (PDT)
-Received: from localhost.localdomain ([194.53.184.63])
-        by smtp.gmail.com with ESMTPSA id r10sm5283544wrm.17.2020.06.23.03.37.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 03:37:49 -0700 (PDT)
-From:   Quentin Monnet <quentin@isovalent.com>
-To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Quentin Monnet <quentin@isovalent.com>
-Subject: [PATCH v2] checkpatch: fix CONST_STRUCT when const_structs.checkpatch is missing
-Date:   Tue, 23 Jun 2020 11:37:40 +0100
-Message-Id: <20200623103740.25876-1-quentin@isovalent.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Tue, 23 Jun 2020 06:39:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592908772; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=esn7X43G7mNsMRJd3b7wtdHbdJWoKncwWeZZkt7o5Ws=; b=nZ40RikWfQvpTPm0BApvyb/pKZttL8/xPEXLj9VaLHBBCmC2JQRGiicHQlVp5j8UjShMQpek
+ 3bYLp4fHMzuHVyK1/EpGX/NUfSlNLq7ffvlQZgWQ5zTXhBxL2MxZHPITT9uIpq9fFW7ikFqu
+ wwuxPAItZRByyYWezuIXOsBFiP8=
+X-Mailgun-Sending-Ip: 104.130.122.29
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5ef1dbd2567385e8e70b7eba (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 23 Jun 2020 10:39:14
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C5299C43391; Tue, 23 Jun 2020 10:39:13 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from akashast-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akashast)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 32B24C433C6;
+        Tue, 23 Jun 2020 10:39:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 32B24C433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=akashast@codeaurora.org
+From:   Akash Asthana <akashast@codeaurora.org>
+To:     gregkh@linuxfoundation.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, wsa@the-dreams.de, broonie@kernel.org
+Cc:     linux-i2c@vger.kernel.org, linux-spi@vger.kernel.org,
+        devicetree@vger.kernel.org, swboyd@chromium.org,
+        mgautam@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-serial@vger.kernel.org, mka@chromium.org,
+        dianders@chromium.org, evgreen@codeaurora.org,
+        linux-kernel@vger.kernel.org,
+        Akash Asthana <akashast@codeaurora.org>
+Subject: [PATCH V8 0/8] Add interconnect support to QSPI and QUP drivers
+Date:   Tue, 23 Jun 2020 16:08:49 +0530
+Message-Id: <1592908737-7068-1-git-send-email-akashast@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Checkpatch reports warnings when some specific structs are not declared
-as const in the code. The list of structs to consider was initially
-defined in the checkpatch.pl script itself, but it was later moved to an
-external file (scripts/const_structs.checkpatch), in commit bf1fa1dae68e
-("checkpatch: externalize the structs that should be const"). This
-introduced two minor issues:
+This patch series is based on tag "next-20200622" of linux-next tree.
 
-- When file scripts/const_structs.checkpatch is not present (for
-  example, if checkpatch is run outside of the kernel directory with the
-  "--no-tree" option), a warning is printed to stderr to tell the user
-  that "No structs that should be const will be found". This is fair,
-  but the warning is printed unconditionally, even if the option
-  "--ignore CONST_STRUCT" is passed. In the latter case, we explicitly
-  ask checkpatch to skip this check, so no warning should be printed.
+High level design:
+ - QUP wrapper/common driver.
+   Vote for QUP core on behalf of earlycon from probe.
+   Remove BW vote during earlycon exit call
 
-- When scripts/const_structs.checkpatch is missing, or even when trying
-  to silence the warning by adding an empty file, $const_structs is set
-  to "", and the regex used for finding structs that should be const,
-  "$line =~ /\bstruct\s+($const_structs)\b(?!\s*\{)/)", matches all
-  structs found in the code, thus reporting a number of false positives.
+ - SERIAL driver.
+   Vote only for CPU/CORE path because driver is in FIFO mode only
+   Vote/unvote from qcom_geni_serial_pm func.
+   Bump up the CPU vote from set_termios call based on real time need
 
-Let's fix the first item by skipping scripts/const_structs.checkpatch
-processing if "CONST_STRUCT" checks are ignored, and the second one by
-skipping the test if $const_structs is not defined.
+ - I2C driver.
+   Vote for CORE/CPU/DDR path
+   Vote/unvote from runtime resume/suspend callback
+   As bus speed for I2C is fixed from probe itself no need for bump up.
 
-Signed-off-by: Quentin Monnet <quentin@isovalent.com>
----
-v2:
-- Check if $const_structs is defined instead of non-empty.
-- Remove "Fixes" tag.
----
- scripts/checkpatch.pl | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ - SPI QUP driver.
+   Vote only for CPU/CORE path because driver is in FIFO mode only
+   Vote/unvote from runtime resume/suspend callback
+   Bump up CPU vote based on real time need per transfer.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index db9d94f90431..3b14bf3e4d4e 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -770,7 +770,7 @@ sub read_words {
- 				next;
- 			}
- 
--			$$wordsRef .= '|' if ($$wordsRef ne "");
-+			$$wordsRef .= '|' if (defined($$wordsRef) && $$wordsRef ne "");
- 			$$wordsRef .= $line;
- 		}
- 		close($file);
-@@ -780,9 +780,11 @@ sub read_words {
- 	return 0;
- }
- 
--my $const_structs = "";
--read_words(\$const_structs, $conststructsfile)
--    or warn "No structs that should be const will be found - file '$conststructsfile': $!\n";
-+my $const_structs;
-+if (show_type("CONST_STRUCT")) {
-+	read_words(\$const_structs, $conststructsfile)
-+	    or warn "No structs that should be const will be found - file '$conststructsfile': $!\n";
-+}
- 
- my $typeOtherTypedefs = "";
- if (length($typedefsfile)) {
-@@ -6656,7 +6658,8 @@ sub process {
- 
- # check for various structs that are normally const (ops, kgdb, device_tree)
- # and avoid what seem like struct definitions 'struct foo {'
--		if ($line !~ /\bconst\b/ &&
-+		if (defined($const_structs) &&
-+		    $line !~ /\bconst\b/ &&
- 		    $line =~ /\bstruct\s+($const_structs)\b(?!\s*\{)/) {
- 			WARN("CONST_STRUCT",
- 			     "struct $1 should normally be const\n" . $herecurr);
+ - QSPI driver.
+   Vote only for CPU path
+   Vote/unvote from runtime resume/suspend callback
+   Bump up CPU vote based on real time need per transfer.
+
+Changes in V2:
+ - Add devm_of_icc_get() API interconnect core.
+ - Add ICC support to common driver to fix earlyconsole crash.
+
+Changes in V3:
+ - Define common ICC APIs in geni-se driver and use it across geni based
+   I2C,SPI and UART driver.
+
+Changes in V4:
+ - Add a patch to ICC core to scale peak requirement
+   as twice of average if it is not mentioned explicilty.
+
+Changes in V5:
+ - As per Georgi's suggestion removed patch from ICC core for assuming
+   peak_bw as twice of average when it's not mentioned, instead assume it
+   equall to avg_bw and keep this assumption in ICC client itself.
+ - As per Matthias suggestion use enum for GENI QUP ICC paths.
+
+Changes in V6:
+ - No Major change
+
+Changes in V7:
+ - As per Matthias's comment removed usage of peak_bw variable because we don't
+   have explicit peak requirement, we were voting peak = avg and this can be
+   tracked using single variable for avg bw.
+ - As per Matthias's comment improved print log.
+
+Changes in V8:
+ - Add [PATCH V8 5/8] to factor out common code for clock setting.
+ - Combine ICC voting and clock setting to single API. [PATCH V8 6/8]
+ - Add ICC voting per transfer because in case of multi message,
+   transfer frequency can vary for each message/transfer.[PATCH V8 6/8]
+
+Akash Asthana (7):
+  soc: qcom: geni: Support for ICC voting
+  soc: qcom-geni-se: Add interconnect support to fix earlycon crash
+  i2c: i2c-qcom-geni: Add interconnect support
+  tty: serial: qcom_geni_serial: Add interconnect support
+  spi: spi-geni-qcom: Add interconnect support
+  spi: spi-qcom-qspi: Add interconnect support
+  arm64: dts: sc7180: Add interconnect for QUP and QSPI
+
+Douglas Anderson (1):
+  spi: spi-geni-qcom: Combine the clock setting code
+
+ arch/arm64/boot/dts/qcom/sc7180.dtsi  | 127 ++++++++++++++++++++++++++++
+ drivers/i2c/busses/i2c-qcom-geni.c    |  26 +++++-
+ drivers/soc/qcom/qcom-geni-se.c       | 150 ++++++++++++++++++++++++++++++++++
+ drivers/spi/spi-geni-qcom.c           | 100 +++++++++++++++--------
+ drivers/spi/spi-qcom-qspi.c           |  56 ++++++++++++-
+ drivers/tty/serial/qcom_geni_serial.c |  38 ++++++++-
+ include/linux/qcom-geni-se.h          |  40 +++++++++
+ 7 files changed, 496 insertions(+), 41 deletions(-)
+
 -- 
-2.20.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,\na Linux Foundation Collaborative Project
 
