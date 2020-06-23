@@ -2,137 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6DD320454F
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6780204551
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 02:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731572AbgFWA3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 22 Jun 2020 20:29:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54698 "EHLO mail.kernel.org"
+        id S1731638AbgFWAaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 22 Jun 2020 20:30:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731222AbgFWA3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 22 Jun 2020 20:29:42 -0400
+        id S1731222AbgFWAaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 22 Jun 2020 20:30:15 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6822020706;
-        Tue, 23 Jun 2020 00:29:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3FA15204EC;
+        Tue, 23 Jun 2020 00:30:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592872181;
-        bh=e0daXwQDRMHOr/Ja0nG7+V2OLepHHXHl2Ifwn/PsucU=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=QU4WumCWneSt7f+bd1mWloEKUB89tYLAPt5UFUjuTgta4ZxAEBnIL5QNo54j6Q7WE
-         zuFadmMSCDt43IKhWXMNou+SLwnEs+pR9kOk5NCpo/A/OjjUb7wY0pZv9jycbyO3ro
-         S9aC8rHK5+yXZ70E8e2015EPyKVRhZCVK5dJ1j+Y=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 48E23352306A; Mon, 22 Jun 2020 17:29:41 -0700 (PDT)
-Date:   Mon, 22 Jun 2020 17:29:41 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=default; t=1592872215;
+        bh=aN1NgEvLJWwek4oA/17xzB8fUK3W9nCdyXsLPv1nRqM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=EmhObBc7tBHn9ElGasTidcvMd9n2iGHPEHpbwflwbpyZ+oD7+40aXml3fqRmQD1nP
+         o62vdlZOX6ZtDaQRT8KJoGKrle5Z/H20IIkk5EWwvpzBoQm3qMy1Ol1If7mkfC/cll
+         /W+C7Nzf1Bxt4ZcIGJegaSXUnqE7J/fHKLiXzJiU=
+From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, dipankar@in.ibm.com,
         akpm@linux-foundation.org, mathieu.desnoyers@efficios.com,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
-        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH tip/core/rcu 0/30] Add read-side scalability tests for v5.9
-Message-ID: <20200623002941.GA26089@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 01/30] rcuperf: Remove useless while loops around wait_event
+Date:   Mon, 22 Jun 2020 17:29:44 -0700
+Message-Id: <20200623003013.26252-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20200623002941.GA26089@paulmck-ThinkPad-P72>
+References: <20200623002941.GA26089@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-This series adds a refscale set of read-side scalability tests for
-reference counting, reader-writer locking, and RCU.
+wait_event() already retries if the condition for the wake up is not
+satisifed after wake up. Remove them from the rcuperf test.
 
-1.	Remove useless while loops around wait_event, courtesy of
-	Joel Fernandes.
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/rcuperf.c | 14 ++++----------
+ 1 file changed, 4 insertions(+), 10 deletions(-)
 
-2.	Add a test to measure performance of read-side synchronization,
-	courtesy of Joel Fernandes.
+diff --git a/kernel/rcu/rcuperf.c b/kernel/rcu/rcuperf.c
+index 16dd1e6..246da8f 100644
+--- a/kernel/rcu/rcuperf.c
++++ b/kernel/rcu/rcuperf.c
+@@ -576,11 +576,8 @@ static int compute_real(int n)
+ static int
+ rcu_perf_shutdown(void *arg)
+ {
+-	do {
+-		wait_event(shutdown_wq,
+-			   atomic_read(&n_rcu_perf_writer_finished) >=
+-			   nrealwriters);
+-	} while (atomic_read(&n_rcu_perf_writer_finished) < nrealwriters);
++	wait_event(shutdown_wq,
++		   atomic_read(&n_rcu_perf_writer_finished) >= nrealwriters);
+ 	smp_mb(); /* Wake before output. */
+ 	rcu_perf_cleanup();
+ 	kernel_power_off();
+@@ -693,11 +690,8 @@ kfree_perf_cleanup(void)
+ static int
+ kfree_perf_shutdown(void *arg)
+ {
+-	do {
+-		wait_event(shutdown_wq,
+-			   atomic_read(&n_kfree_perf_thread_ended) >=
+-			   kfree_nrealthreads);
+-	} while (atomic_read(&n_kfree_perf_thread_ended) < kfree_nrealthreads);
++	wait_event(shutdown_wq,
++		   atomic_read(&n_kfree_perf_thread_ended) >= kfree_nrealthreads);
+ 
+ 	smp_mb(); /* Wake before output. */
+ 
+-- 
+2.9.5
 
-3.	Add comments explaining the high reader overhead.
-
-4.	Add refperf to the rcutorture scripting.
-
-5.	Add holdoff parameter to allow CPUs to come online.
-
-6.	Hoist function-pointer calls out of the loop.
-
-7.	Allow decimal nanoseconds.
-
-8.	Convert nreaders to a module parameter.
-
-9.	Provide module parameter to specify number of experiments.
-
-10.	Dynamically allocate experiment-summary output buffer.
-
-11.	Dynamically allocate thread-summary output buffer.
-
-12.	Make functions static.
-
-13.	Tune reader measurement interval.
-
-14.	Convert reader_task structure's "start" field to int.
-
-15.	More closely synchronize reader start times.
-
-16.	Add warmup and cooldown processing phases.
-
-17.	Label experiment-number column "Runs".
-
-18.	Output per-experiment data points.
-
-19.	Simplify initialization-time wakeup protocol.
-
-20.	Add read-side delay module parameter.
-
-21.	Adjust refperf.loop default value.
-
-22.	Document rcuperf's module parameters.
-
-23.	Work around 64-bit division, courtesy of Arnd Bergmann.
-
-24.	Change readdelay module parameter to nanoseconds.
-
-25.	Add test for RCU Tasks Trace readers..
-
-26.	Add test for RCU Tasks readers.
-
-27.	rcu-tasks: Fix synchronize_rcu_tasks_trace() header comment.
-
-28.	Rename RCU_REF_PERF_TEST to RCU_REF_SCALE_TEST.
-
-29.	Rename refperf.c to refscale.c and change internal names.
-
-30.	Change --torture type from refperf to refscale.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/admin-guide/kernel-parameters.txt                      |   53 
- include/linux/rcupdate_trace.h                                       |    4 
- kernel/rcu/Kconfig.debug                                             |   23 
- kernel/rcu/Makefile                                                  |    5 
- kernel/rcu/rcuperf.c                                                 |   25 
- kernel/rcu/refperf.c                                                 | 1037 ++++++++--
- kernel/rcu/refscale.c                                                |  182 -
- kernel/rcu/tasks.h                                                   |    9 
- tools/testing/selftests/rcutorture/bin/kvm-recheck-refperf.sh        |   73 
- tools/testing/selftests/rcutorture/bin/kvm-recheck-refscale.sh       |    8 
- tools/testing/selftests/rcutorture/bin/kvm.sh                        |   17 
- tools/testing/selftests/rcutorture/bin/parse-console.sh              |    8 
- tools/testing/selftests/rcutorture/configs/refperf/CFLIST            |    2 
- tools/testing/selftests/rcutorture/configs/refperf/CFcommon          |    4 
- tools/testing/selftests/rcutorture/configs/refperf/NOPREEMPT         |   18 
- tools/testing/selftests/rcutorture/configs/refperf/PREEMPT           |   18 
- tools/testing/selftests/rcutorture/configs/refperf/ver_functions.sh  |   20 
- tools/testing/selftests/rcutorture/configs/refscale/ver_functions.sh |    1 
- 18 files changed, 1205 insertions(+), 302 deletions(-)
