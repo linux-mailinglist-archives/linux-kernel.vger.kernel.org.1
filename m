@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97762065B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:51:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A631C20662C
+	for <lists+linux-kernel@lfdr.de>; Tue, 23 Jun 2020 23:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388312AbgFWUJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 16:09:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49324 "EHLO mail.kernel.org"
+        id S2393498AbgFWViV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 17:38:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387940AbgFWUIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 16:08:18 -0400
+        id S2387945AbgFWUIV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 16:08:21 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 54C1B2078A;
-        Tue, 23 Jun 2020 20:08:17 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id F34D82080C;
+        Tue, 23 Jun 2020 20:08:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592942897;
-        bh=eifDWVPFldsD+PyNHHITs1T5QKTW3hVGnwp/JVTCbCQ=;
+        s=default; t=1592942900;
+        bh=SYI8L8UXp3utrE/Mql5+0mceAEsW4wnfH/JOJyjihK0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bB9rmNvez3ktTfRUFmAITvXXWo/R5KPM4SM46KQY4aWz3xd588PeCwULXJ3XjhFzR
-         p6H3ysTw5pXcVD82hLJyQdWm93cUJqoGpZMc8UQ2+pjbELXwwe0GL1H/1KZkuW+xtP
-         V2lTdtD8Fp28Tbi54C1XfuivNsZVhKR/pNX8g1PA=
+        b=rCW2K1sDue8jFIx82KlaNWWhRTlgA2gIV8hZ+6HiqmkiUMlVZVb1EU6aRMtfaZONn
+         O61Y79kPLwJiXmvkaHbcz9ZUmAj/2RNShRZH5WCOemY2oBjFfDnGley/OwZ2LDyG3u
+         6WOXkDWqlmk2eK+iwOxlmZTS0d5kJsio8XD0fYh4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.7 179/477] PCI: brcmstb: Assert fundamental reset on initialization
-Date:   Tue, 23 Jun 2020 21:52:56 +0200
-Message-Id: <20200623195416.044902331@linuxfoundation.org>
+Subject: [PATCH 5.7 180/477] ASoC: SOF: core: fix error return code in sof_probe_continue()
+Date:   Tue, 23 Jun 2020 21:52:57 +0200
+Message-Id: <20200623195416.092361693@linuxfoundation.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
 References: <20200623195407.572062007@linuxfoundation.org>
@@ -46,38 +45,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+From: Wei Yongjun <weiyongjun1@huawei.com>
 
-[ Upstream commit 22e21e51ce755399fd42055a3f668ee4af370881 ]
+[ Upstream commit 7d8785bc7adbb4dc5ba8ee06994107637848ded8 ]
 
-While preparing the driver for upstream this detail was missed.
+Fix to return negative error code -ENOMEM from the IPC init error
+handling case instead of 0, as done elsewhere in this function.
 
-If not asserted during the initialization process, devices connected on
-the bus will not be made aware of the internal reset happening. This,
-potentially resulting in unexpected behavior.
-
-Link: https://lore.kernel.org/r/20200507172020.18000-1-nsaenzjulienne@suse.de
-Fixes: c0452137034b ("PCI: brcmstb: Add Broadcom STB PCIe host controller driver")
-Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Fixes: c16211d6226d ("ASoC: SOF: Add Sound Open Firmware driver core")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Link: https://lore.kernel.org/r/20200509093337.78897-1-weiyongjun1@huawei.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pcie-brcmstb.c | 1 +
+ sound/soc/sof/core.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index c9ecc4d639c19..2297910bf6e47 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -697,6 +697,7 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
- 
- 	/* Reset the bridge */
- 	brcm_pcie_bridge_sw_init_set(pcie, 1);
-+	brcm_pcie_perst_set(pcie, 1);
- 
- 	usleep_range(100, 200);
- 
+diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+index 91acfae7935c9..74b4382162167 100644
+--- a/sound/soc/sof/core.c
++++ b/sound/soc/sof/core.c
+@@ -176,6 +176,7 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+ 	/* init the IPC */
+ 	sdev->ipc = snd_sof_ipc_init(sdev);
+ 	if (!sdev->ipc) {
++		ret = -ENOMEM;
+ 		dev_err(sdev->dev, "error: failed to init DSP IPC %d\n", ret);
+ 		goto ipc_err;
+ 	}
 -- 
 2.25.1
 
