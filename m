@@ -2,79 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9580920733A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62042207311
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:16:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390533AbgFXMWg convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Jun 2020 08:22:36 -0400
-Received: from mail2.magna.com ([213.150.228.40]:49983 "EHLO mail2.magna.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388696AbgFXMWf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 08:22:35 -0400
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Jun 2020 08:22:34 EDT
-IronPort-SDR: HZa38QNvGkOh/luUEX7kSjfADWrgNVRaDq6RdD1ogzUmTBmu1gS1S82zGkad66bsHxLtpJm2aF
- kAMCbTz+wFvQ==
-X-IronPort-AV: E=Sophos;i="5.75,275,1589241600"; 
-   d="scan'208";a="1349816866"
-From:   Roman Fietze <roman.fietze@magna.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH] print_hex_dump: use %px when using DUMP_PREFIX_ADDRESS
-Date:   Wed, 24 Jun 2020 14:15:24 +0200
-Message-ID: <1946561.0luHp2vXsY@rfietze>
-Organization: Telemotive AG
+        id S2390440AbgFXMQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 08:16:21 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:38782 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388296AbgFXMQT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 08:16:19 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05OCGCSd066061;
+        Wed, 24 Jun 2020 07:16:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593000972;
+        bh=4i/GtgXzaE4o8MhETtpPJ0dJbtJx23GHh6y7ROguMRQ=;
+        h=From:To:CC:Subject:Date;
+        b=CWrjYWYX/N1SyHgIiR1pmw62HelnV9IN414lBxYHxfT3qeDsjnJm7Y01UHAZ8yX//
+         LmGPU1Z2ur0xMqTHicN2noYcmP1BQpNvg0IY6TGw4wPZf/xHNl6pCh+IzT/PhP/teW
+         BzPWj9MJ2gR5sWDmYcNhVk1+qZaueOLV39gqurdQ=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05OCGCov068786
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 24 Jun 2020 07:16:12 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 24
+ Jun 2020 07:16:12 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 24 Jun 2020 07:16:12 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OCGC3o070089;
+        Wed, 24 Jun 2020 07:16:12 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <andrew@lunn.ch>, <f.fainelli@gmail.com>, <hkallweit1@gmail.com>,
+        <davem@davemloft.net>, <robh@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH net-next v11 0/5] RGMII Internal delay common property
+Date:   Wed, 24 Jun 2020 07:16:00 -0500
+Message-ID: <20200624121605.18259-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-X-MIMETrack: Itemize by SMTP Server on MSIFRAHUB01DS/SVR/MSI-HUB(Release 9.0.1FP4|June
-  07, 2015) at 24.06.2020 14:15:25,
-        Serialize by Router on MSIFRAHUB01DS/SVR/MSI-HUB(Release 9.0.1FP4|June  07, 2015) at
- 24.06.2020 14:15:25,
-        Serialize complete at 24.06.2020 14:15:25
-X-TNEFEvaluated: 1
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This function is mainly used for debugging. But for that purpose the
-hashed memory address of the dumped data provides no useful
-information at all.
+Hello
 
-Note: There are only very few locations in the kernel, where
-print_hex_dump is not used with KERN_DEBUG and DUMP_PREFIX_ADDRESS.
+The RGMII internal delay is a common setting found in most RGMII capable PHY
+devices.  It was found that many vendor specific device tree properties exist
+to do the same function. This creates a common property to be used for PHY's
+that have internal delays for the Rx and Tx paths.
 
-Signed-off-by: Roman Fietze <roman.fietze@magna.com>
----
- lib/hexdump.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+If the internal delay is tunable then the caller needs to pass the internal
+delay array and the return will be the index in the array that was found in
+the firmware node.
 
-diff --git a/lib/hexdump.c b/lib/hexdump.c
-index 147133f8eb2f..52dd2fc1c8b4 100644
---- a/lib/hexdump.c
-+++ b/lib/hexdump.c
-@@ -256,7 +256,7 @@ void print_hex_dump(const char *level, const char 
-*prefix_str, int prefix_type,
- 
-                switch (prefix_type) {
-                case DUMP_PREFIX_ADDRESS:
--                       printk("%s%s%p: %s\n",
-+                       printk("%s%s%px: %s\n",
-                               level, prefix_str, ptr + i, linebuf);
-                        break;
-                case DUMP_PREFIX_OFFSET:
+If the internal delay is fixed then the caller only needs to indicate which
+delay to return.  There is no need for a fixed delay to add device properties
+since the value is not configurable. Per the ethernet-controller.yaml the
+interface type indicates that the PHY should provide the delay.
+
+This series contains examples of both a configurable delay and a fixed delay.
+
+Dan Murphy (5):
+  dt-bindings: net: Add tx and rx internal delays
+  net: phy: Add a helper to return the index for of the internal delay
+  dt-bindings: net: Add RGMII internal delay for DP83869
+  net: dp83869: Add RGMII internal delay configuration
+  net: phy: DP83822: Add setting the fixed internal delay
+
+ .../devicetree/bindings/net/ethernet-phy.yaml | 12 +++
+ .../devicetree/bindings/net/ti,dp83869.yaml   | 16 ++-
+ drivers/net/phy/dp83822.c                     | 79 +++++++++++++--
+ drivers/net/phy/dp83869.c                     | 53 +++++++++-
+ drivers/net/phy/phy_device.c                  | 99 +++++++++++++++++++
+ include/linux/phy.h                           |  4 +
+ 6 files changed, 249 insertions(+), 14 deletions(-)
+
 -- 
 2.26.2
-
-
--- 
-
-Roman Fietze
-Entwicklungsingenieur
-MAGNA Telemotive GmbH
-Breitwiesen
-73347 Mühlhausen
-Tel.: +49 7335 18493-45
-
-
 
