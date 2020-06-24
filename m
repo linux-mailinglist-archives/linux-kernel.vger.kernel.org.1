@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CCA0207539
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D49620753F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:05:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403982AbgFXOFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 10:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403979AbgFXOFQ (ORCPT
+        id S2404110AbgFXOF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 10:05:28 -0400
+Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:47155 "EHLO
+        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2403979AbgFXOF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 10:05:16 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A005C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 07:05:16 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id r22so1847774qke.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 07:05:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=FRVORTjqa/+9DcZnDp26I3NHb37aWoGaEMjOHVlHQMg=;
-        b=jbyBL2rWyxn8MXrza0tPa/CArnHR7kI4gNj29oS2jJr50BwyZkRsKZjA3JMDZvPVrq
-         EoDD6Ef0I4VD1SmtYGbL4oNs+SGiSJZg/sPg8SpmHI6x9gNGNSsy4Ux3kS9QJLmZZ6CQ
-         nfvGXvaNrzcTZiyo/HR6ym7yyvQwvz5dNdqCykSehIGEm7CkLbPE/xWU5FrtnNlgvmfz
-         SS05v1SdEH+dX8Y3s8m48NrJfl3mpy+Ul2Fvbem04v4G5IALaUTfM1qiCIs6UEuECrQU
-         zJbN3MI2+dPwrKkhS+hepHxhJD9y0xfbuglxXK7nOAnGKxJl7M93UiodT4fW2IY2tEgD
-         b42g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=FRVORTjqa/+9DcZnDp26I3NHb37aWoGaEMjOHVlHQMg=;
-        b=MnlJxHxI7M5kVMS6nqcdvoQ1q75/eaP7bb2spsgwTGaFKWu9VguxO7fPKt3WA4+ta6
-         qpqIVH6HUB69Tzn+TgTCQDbkUldl2NHq1251gCvKCiaJgYtCRG3fu87ZybtteAmNTXti
-         KhqdG23RGKZl1DiP+6Qwc2tERHljNUDqw2jyrMo6fUnU5fbRzKcs4FhdW6a+ggWxlp/b
-         QYI7VPKexm5ppsJabeaIiAEtxM1z/2PRVORauLYQa7oDd5ShjqG/RtnGNSvjxET1OBOg
-         gkPk6CqJtN+iLIj0hLbT0LyVZbALmeyon9xnWGjD1IvsT9h9NFuml3rdP48SFCE8L7a2
-         VJXw==
-X-Gm-Message-State: AOAM533Nr5R6hHbw1y3k4JRKWMevIa2OlbH5GcAihuVlCTWCSUAWDZuk
-        sDxFzu7vRNBV29gCXqQRBKdMo4LczOac+nrVXSzP+REE2Z4=
-X-Google-Smtp-Source: ABdhPJyCdrudEswTFhDtUcrXSG3JdheRsImFD5tg333cqdp5wa4NI3anAkORe0gFYYWQRnfzVWqcTR6XI7sOpHo0IZA=
-X-Received: by 2002:a37:9c81:: with SMTP id f123mr1967271qke.21.1593007515407;
- Wed, 24 Jun 2020 07:05:15 -0700 (PDT)
+        Wed, 24 Jun 2020 10:05:26 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud8.xs4all.net with ESMTPA
+        id o61YjhdaJNb6lo61bjteBB; Wed, 24 Jun 2020 16:05:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1593007524; bh=dw3Eb9DNrn57rtG9YdOCtS050/pWz57l02vO/UovmfM=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=LOIhf43fUMhLbbRFlljdl6k2ddPrRuEx8zOI6fC07B0RkDPz3q2sZpy9CeZae0nDP
+         lJY2lJMpiqgKwGLhaH9teNe2J/6eorrbDl5FG266QptduYUAFOJMeufHV65U0+v9Am
+         9XHnJqtJl+oin6i0IvXf7qaAKHZdmZq4ja7alnFS7LLne/iuOIsl+3ulz2bGWSHa8F
+         H4HVCSkkS2QjewDyaRZ/AGwPSby/vlKFlYjf3uObB0nesdeHwsTg/Wgr2T3cK89SrZ
+         vH4YGR+sH3EreslOvdBdhRCgPJlTnMdlQCxTz6DTuAm/kYu87L5h5DdT44HlpqSCCr
+         k4HaYg0bJtYHA==
+Subject: Re: [PATCH v2 0/2] Refactor MDP driver and add dummy component driver
+To:     Eizan Miyamoto <eizan@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Minghsiu Tsai <minghsiu.tsai@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>
+References: <20200506084039.249977-1-eizan@chromium.org>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <25cbac25-035f-9c2b-24ec-f59403b56424@xs4all.nl>
+Date:   Wed, 24 Jun 2020 16:05:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <20200623040107.22270-1-warthog618@gmail.com> <20200623040107.22270-11-warthog618@gmail.com>
-In-Reply-To: <20200623040107.22270-11-warthog618@gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Wed, 24 Jun 2020 16:05:04 +0200
-Message-ID: <CAMpxmJXajkf2F5KsWj2MpRsLjiuAdGT=XnLY_Ka3YN_WLsviiw@mail.gmail.com>
-Subject: Re: [PATCH 10/22] gpiolib: cdev: fix minor race in GET_LINEINFO_WATCH
-To:     Kent Gibson <warthog618@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200506084039.249977-1-eizan@chromium.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfI225FoZyJey/ygju+xVYRSghI0nrxerTOVe6pw6CA6Aj2ZwDjSKkpi553ekjV882HSZNRgfLZ01pfpNqq/GzcSW1xcR1hxASBW6Rqb4jE5ZN46TcJp+
+ nEvWRCOOFwRv2AlgO9D+Tvlmmu2bFwCI+lzTxBnWzyTCs2ct8Zg+iTGbu6XNyTgLsDBOITING/HQzv2nk8CQN1yoG2hjeRMzSEPhNha4OeIcbkFNV6Hp1yv1
+ o5Nd8iz1OEfV2NsmegRcuFA0c/QWM9t/E4Y+j1JRvwYRU1oQdChFKwn1TTp29JVQcwLoEhwlstAJyyMr1zE1IecGx4WdD7oW0zRpExcP60fpJvQBTkR3P4Bq
+ mz9hGk32U25EguUQ7Oz5X/2iM29lafXL3nc0vcXE6njTHtobOl+Re1kC/74M5pwr+CMRuRIBMOsRcW+pvSPMWCxalKG1QFWZrE5OXsdskH8ap2eD+aQXYj7T
+ nrH4s37tPQnk8T5WjHkL52/d5y0Y4u/dCf6aWlTRxpH6IzjYxAFm3/6Xi21uHKzHIe58eigD9KJbkVLAukXcjJiC6IF/rlDg7wjOlvQNaZHOmhsyNyyz1nOK
+ nkY=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-wt., 23 cze 2020 o 06:02 Kent Gibson <warthog618@gmail.com> napisa=C5=82(a)=
-:
->
-> Merge separate usage of test_bit/set_bit into test_and_set_bit to remove
-> the possibility of a race between the test and set.
->
-> Similarly test_bit and clear_bit.
->
-> In the existing code it is possible for two threads to race past the
-> test_bit and then set or clear the watch bit, and neither return EBUSY.
->
-> Signed-off-by: Kent Gibson <warthog618@gmail.com>
->
+On 06/05/2020 10:40, Eizan Miyamoto wrote:
+> 
+> This series depends on all changes in the series:
+> https://patchwork.kernel.org/patch/11530275/
 
-Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+I plan on merging the v3 of this series.
+
+> 
+> We are adding a dummy MDP component driver so that all the components
+> are properly configured with IOMMUs and LARBs. This is required for
+> us to get hardware video decode working in 4.19, and possibly newer
+> kernels.
+
+What is the status of this series?
+
+There was some discussion with Enric, but that didn't come to a conclusion,
+I think.
+
+Regards,
+
+	Hans
+
+> 
+> Changes in v2:
+> - remove empty mtk_mdp_comp_init
+> - update documentation for enum mtk_mdp_comp_type
+> - remove comma after last element of mtk_mdp_comp_driver_dt_match
+> 
+> Eizan Miyamoto (2):
+>   [media] mtk-mdp: add driver to probe mdp components
+>   [media] mtk-mdp: use pm_runtime in MDP component driver
+> 
+>  drivers/media/platform/mtk-mdp/mtk_mdp_comp.c | 172 ++++++++++++++---
+>  drivers/media/platform/mtk-mdp/mtk_mdp_comp.h |  32 +--
+>  drivers/media/platform/mtk-mdp/mtk_mdp_core.c | 182 ++++++++++++------
+>  drivers/media/platform/mtk-mdp/mtk_mdp_core.h |   1 +
+>  4 files changed, 286 insertions(+), 101 deletions(-)
+> 
+
