@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB633206D08
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 08:51:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D833206D0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 08:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389504AbgFXGvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 02:51:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57428 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389400AbgFXGvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 02:51:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9307BAD11;
-        Wed, 24 Jun 2020 06:50:58 +0000 (UTC)
-Date:   Wed, 24 Jun 2020 08:50:54 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Dmitry Safonov <dima@arista.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Jann Horn <jannh@google.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-Subject: Re: [PATCH 0/3] x86/dumpstack: Print registers with the same log
- level as the backtrace
-Message-ID: <20200624065054.GC8444@alley>
-References: <20200623162958.331051-1-dima@arista.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200623162958.331051-1-dima@arista.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2389519AbgFXGxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 02:53:10 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:50552 "EHLO cstnet.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388972AbgFXGxJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 02:53:09 -0400
+Received: from ubuntu.localdomain (unknown [124.16.136.99])
+        by APP-01 (Coremail) with SMTP id qwCowAAHwjBJ+PJeTHU5AA--.30479S2;
+        Wed, 24 Jun 2020 14:52:58 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     colyli@suse.de, kent.overstreet@gmail.com
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] bcache: journel: use for_each_clear_bit() to simplify the  code
+Date:   Wed, 24 Jun 2020 14:52:57 +0800
+Message-Id: <20200624065257.4051-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: qwCowAAHwjBJ+PJeTHU5AA--.30479S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jw4kGw18Cr4rKw15AF1DZFb_yoW3trcEkF
+        12qF4Svr43Jr17Zw48Cry8urZIv3sxur1kZF4xt39IkF98Xas3Gr40vryUtr48Zry0yFyD
+        J34UtrWFy3s0yjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb7AYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
+        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GF1l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU0YXdUUUUUU==
+X-Originating-IP: [124.16.136.99]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBwIRA102YjeFPwAAsT
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 2020-06-23 17:29:55, Dmitry Safonov wrote:
-> show_trace_log_lvl() provides x86 platform-specific way to unwind
-> backtrace with a given log level. Unfortunately, registers dump(s) are
-> not printed with the same log level - instead, KERN_DEFAULT is always
-> used.
-> 
-> Arista's switches uses quite common setup with rsyslog, where only
-> urgent messages goes to console (console_log_level=KERN_ERR), everything
-> else goes into /var/log/ as the console baud-rate often is indecently
-> slow (9600 bps).
-> 
-> Backtrace dumps without registers printed have proven to be as useful as
-> morning standups. Furthermore, in order to introduce KERN_UNSUPPRESSED
-> (which I believe is still the most elegant way to fix raciness of sysrq[1])
-> the log level should be passed down the stack to register dumping
-> functions. Besides, I have a potential use-case for printing traces
-> with KERN_DEBUG level [2] (where registers dump shouldn't appear with
-> higher log level than the backtrace).
-> 
-> Dmitry Safonov (3):
->   x86/dumpstack: Add log_lvl to show_iret_regs()
->   x86/dumpstack: Add log_lvl to __show_regs()
->   x86/dumpstack: Show registers dump with trace's log level
+Using for_each_clear_bit() to simplify the code.
 
-The change makes sense. It is natural next step after adding log_lvl
-parameter for printing stack traces. For the entire patchset:
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/md/bcache/journal.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Acked-by: Petr Mladek <pmladek@suse.com>
+diff --git a/drivers/md/bcache/journal.c b/drivers/md/bcache/journal.c
+index 90aac4e2333f..b01c953e214c 100644
+--- a/drivers/md/bcache/journal.c
++++ b/drivers/md/bcache/journal.c
+@@ -217,10 +217,7 @@ int bch_journal_read(struct cache_set *c, struct list_head *list)
+ 		 */
+ 		pr_debug("falling back to linear search\n");
+ 
+-		for (l = find_first_zero_bit(bitmap, ca->sb.njournal_buckets);
+-		     l < ca->sb.njournal_buckets;
+-		     l = find_next_zero_bit(bitmap, ca->sb.njournal_buckets,
+-					    l + 1))
++		for_each_clear_bit(l, bitmap, ca->sb.njournal_buckets)
+ 			if (read_bucket(l))
+ 				goto bsearch;
+ 
+-- 
+2.17.1
 
-Are there any plans to add this also for other architectures, please?
-
-Best Regards,
-Petr
