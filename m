@@ -2,182 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AD1F207021
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 11:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B44A4207018
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 11:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389802AbgFXJgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 05:36:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:53316 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389647AbgFXJgW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 05:36:22 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C6B961FB;
-        Wed, 24 Jun 2020 02:36:20 -0700 (PDT)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 719873F73C;
-        Wed, 24 Jun 2020 02:36:19 -0700 (PDT)
-Subject: Re: [PATCH v4 02/10] dmaengine: Actions: Add support for S700 DMA
- engine
-To:     Vinod Koul <vkoul@kernel.org>,
-        Amit Singh Tomar <amittomer25@gmail.com>
-Cc:     afaerber@suse.de, manivannan.sadhasivam@linaro.org,
-        dan.j.williams@intel.com, cristian.ciocaltea@gmail.com,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org
-References: <1591697830-16311-1-git-send-email-amittomer25@gmail.com>
- <1591697830-16311-3-git-send-email-amittomer25@gmail.com>
- <20200624061529.GF2324254@vkoul-mobl>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
- 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
- i4aIXCH3Wv6K
-Organization: ARM Ltd.
-Message-ID: <75d154d0-2962-99e6-a7c7-bf0928ec8b2a@arm.com>
-Date:   Wed, 24 Jun 2020 10:35:07 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S2389091AbgFXJfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 05:35:11 -0400
+Received: from mail-db8eur05on2073.outbound.protection.outlook.com ([40.107.20.73]:6021
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387717AbgFXJfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 05:35:10 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YQPG+/QsiRPgnq8K7otIGUuvkJltnn8I52bURhhf0thlyeGIJVndULOQB7RM/yh7Bl75c7QbekIXF4+DIA/bbVkV4tDdaGxfC6zWvKAZQcWOAlvIN8mi4zYmCzzhpDc2eW4SWcXw6ZhN+Ur+0IcrWJeeYDPp5q7kiN5yggRXel2eNWowchiSNcPZaFwFzGR8NGEEe/uJyuUTReTFIGLuGjS6zGaXwx9to23liNMLiGegfp5iCWRDdkO3AIAU9w5TlTOLgGi73UrO9qzPVJBOFqgl69fTP+RDK67+jOzuNh0wv7XarX08efKnCVMyTI8vmKieJi4ZXVTC1HIAKyRV+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Wk/7yK/NJ+kHw1t46DYadciZuuqj3JuMjhqot8ry/ko=;
+ b=eQQnaeRXMMcw6yapj5y050gT9bFy2Mp+GFxl0UiFkBpVJuEWSu6+gJxXexVOkkfoVmhxZyB2qReUyWYYVo2LbMM7U7QsG5p4B2J5XAK6w4M7SsluDuwfdAYRN2hAHy/rIeFy89EyFXuXXP93sW7wMisddbglf+mqzLktJL0taa7wmP19MzPAAoe2cj2UxtXJre/1NpEw6+v+qkFTJQe4uYxs/pf3MITa8i0Hi2/oyfqpWhjbzCQBeervvwPskLKbGwIagMIl3ZezdN9DfpQMCiVq2SG+h7d7/T5Scjfh6GSGXb/2WQWuKTEHPar8qSFtK1s6nmy3S+EeSI86okKVWA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Wk/7yK/NJ+kHw1t46DYadciZuuqj3JuMjhqot8ry/ko=;
+ b=BaRAnn0TCD7IjPomjgBsrX+6fAh9bBrbYUiOIQAIWJQtYGenIGNkPNDnDllo+Fj655cfWlQpxk2gZh7tBqzjwsUgyktpAcarmBbywki4rFTdJXzb01FjjOdSWCwUpj3JCEjQuFM0deYEHf8a4ypMby82uRCXB61MXROyaIq4rMU=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
+Received: from VE1PR04MB6496.eurprd04.prod.outlook.com (2603:10a6:803:11c::29)
+ by VE1PR04MB6606.eurprd04.prod.outlook.com (2603:10a6:803:127::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22; Wed, 24 Jun
+ 2020 09:35:07 +0000
+Received: from VE1PR04MB6496.eurprd04.prod.outlook.com
+ ([fe80::c1ea:5943:40e8:58f1]) by VE1PR04MB6496.eurprd04.prod.outlook.com
+ ([fe80::c1ea:5943:40e8:58f1%3]) with mapi id 15.20.3109.027; Wed, 24 Jun 2020
+ 09:35:07 +0000
+From:   Po Liu <po.liu@nxp.com>
+To:     davem@davemloft.net, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, idosch@idosch.org
+Cc:     jiri@resnulli.us, vinicius.gomes@intel.com, vlad@buslov.dev,
+        claudiu.manoil@nxp.com, vladimir.oltean@nxp.com,
+        alexandru.marginean@nxp.com, michael.chan@broadcom.com,
+        vishal@chelsio.com, saeedm@mellanox.com, leon@kernel.org,
+        jiri@mellanox.com, idosch@mellanox.com,
+        alexandre.belloni@bootlin.com, UNGLinuxDriver@microchip.com,
+        kuba@kernel.org, jhs@mojatatu.com, xiyou.wangcong@gmail.com,
+        simon.horman@netronome.com, pablo@netfilter.org,
+        moshe@mellanox.com, m-karicheri2@ti.com,
+        andre.guedes@linux.intel.com, stephen@networkplumber.org,
+        Po Liu <Po.Liu@nxp.com>
+Subject: [v2,net-next 1/4] net: qos: add tc police offloading action with max frame size limit
+Date:   Wed, 24 Jun 2020 17:36:28 +0800
+Message-Id: <20200624093631.13719-1-po.liu@nxp.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200623063412.19180-4-po.liu@nxp.com>
+References: <20200623063412.19180-4-po.liu@nxp.com>
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR06CA0119.apcprd06.prod.outlook.com
+ (2603:1096:1:1d::21) To VE1PR04MB6496.eurprd04.prod.outlook.com
+ (2603:10a6:803:11c::29)
 MIME-Version: 1.0
-In-Reply-To: <20200624061529.GF2324254@vkoul-mobl>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from tsn.ap.freescale.net (119.31.174.73) by SG2PR06CA0119.apcprd06.prod.outlook.com (2603:1096:1:1d::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20 via Frontend Transport; Wed, 24 Jun 2020 09:34:59 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [119.31.174.73]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 3aa4d165-68ef-4728-5808-08d81821e1b7
+X-MS-TrafficTypeDiagnostic: VE1PR04MB6606:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VE1PR04MB6606A6FAFFBAEB95619463E492950@VE1PR04MB6606.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-Forefront-PRVS: 0444EB1997
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: rvYECHEAW1AM7c3eQGzMKQQuT3GNvjvZleKqCyAS/IJKTGIAFOkj3abYxBMkymARebve+SLF2SwxhBVvrXMjCI/vwa/Pue9mmLaoV1brHTQhADaBXjL5nucYMUKiiPuSveHnA0VnEZTL7RMAwL6ZFg3Bo+/MCHbmXObaTUM6k9qFpu6KIA7wCC1DTWJYQbcDjTmqO4/2kX+WdGYjGRLwBkMYZU8AHuvVc/EQBC9sqdLdNy8xlNwZ0o2SRBWH14nnKxMRVuAmYm9NzVQlIFup8J5WRaTZfr+8CisewvBuByK4EipODiY6wZ8xpHM2kw6Z
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VE1PR04MB6496.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(346002)(376002)(136003)(366004)(39860400002)(396003)(6512007)(6666004)(4326008)(1076003)(6506007)(186003)(52116002)(26005)(83380400001)(2906002)(36756003)(8936002)(16526019)(8676002)(5660300002)(2616005)(44832011)(86362001)(7416002)(478600001)(956004)(6486002)(66476007)(66946007)(66556008)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: u3U7T+w2g7XKEuVo2OOWiDfM3M3oqhezGsQnZj+Hc3Yai3Blfzi/iqNM1DJVYeHa5W2gzuL6vssU7mkJCBnc+K0Uwa0dnwvhFN297OVa17A645jN7W4nhkTdG/j2I29AnOHVV8g83pP2njmhmSIWxtx6hNochFR65oLFUSPCrvNOmIf607719G6a9aYjhRTFRRIIW2Cu5yzh4560pWGXiwLObYxMZyDK4ExBVyO8E02QjwByEhkkbFybosFp8vT/ZEJ1/r1Jeba7RMAk18L0LorlHbat/i+xFQieLfdFqvsBaKZXiMTvhQIq7CcNItIH5HM7ybCZJ17gLAR0FjrRyAv+2WNbVfh4dDjh4oqBLFUO1ZkD5cqDynGFHlYv9BPMGovS5/wo2wKFJUVKW+vYCPW9uRBAyMqPEYrojp4iVjqmz/mAR0sogsKeNvdOwzmH/QU5U4H4j1ZqV4/itTg3Eyn5ajbYyCqdYItEiM0ffug=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3aa4d165-68ef-4728-5808-08d81821e1b7
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2020 09:35:07.6909
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: TGfYf2V+RQHGg+WDchft4w4yBWQbAmtzQ0W//DwNRNoPQeKu/PMfkLDouZWeLVOX
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB6606
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/06/2020 07:15, Vinod Koul wrote:
+From: Po Liu <Po.Liu@nxp.com>
 
-Hi,
+Current police offloading support the 'burst'' and 'rate_bytes_ps'. Some
+hardware own the capability to limit the frame size. If the frame size
+larger than the setting, the frame would be dropped. For the police
+action itself already accept the 'mtu' parameter in tc command. But not
+extend to tc flower offloading. So extend 'mtu' to tc flower offloading.
 
-> On 09-06-20, 15:47, Amit Singh Tomar wrote:
-> 
->> @@ -372,6 +383,7 @@ static inline int owl_dma_cfg_lli(struct owl_dma_vchan *vchan,
->>  				  struct dma_slave_config *sconfig,
->>  				  bool is_cyclic)
->>  {
->> +	struct owl_dma *od = to_owl_dma(vchan->vc.chan.device);
->>  	u32 mode, ctrlb;
->>  
->>  	mode = OWL_DMA_MODE_PW(0);
->> @@ -427,14 +439,26 @@ static inline int owl_dma_cfg_lli(struct owl_dma_vchan *vchan,
->>  	lli->hw[OWL_DMADESC_DADDR] = dst;
->>  	lli->hw[OWL_DMADESC_SRC_STRIDE] = 0;
->>  	lli->hw[OWL_DMADESC_DST_STRIDE] = 0;
->> -	/*
->> -	 * Word starts from offset 0xC is shared between frame length
->> -	 * (max frame length is 1MB) and frame count, where first 20
->> -	 * bits are for frame length and rest of 12 bits are for frame
->> -	 * count.
->> -	 */
->> -	lli->hw[OWL_DMADESC_FLEN] = len | FCNT_VAL << 20;
->> -	lli->hw[OWL_DMADESC_CTRLB] = ctrlb;
->> +
->> +	if (od->devid == S700_DMA) {
->> +		/* Max frame length is 1MB */
->> +		lli->hw[OWL_DMADESC_FLEN] = len;
->> +		/*
->> +		 * On S700, word starts from offset 0x1C is shared between
->> +		 * frame count and ctrlb, where first 12 bits are for frame
->> +		 * count and rest of 20 bits are for ctrlb.
->> +		 */
->> +		lli->hw[OWL_DMADESC_CTRLB] = FCNT_VAL | ctrlb;
->> +	} else {
->> +		/*
->> +		 * On S900, word starts from offset 0xC is shared between
->> +		 * frame length (max frame length is 1MB) and frame count,
->> +		 * where first 20 bits are for frame length and rest of
->> +		 * 12 bits are for frame count.
->> +		 */
->> +		lli->hw[OWL_DMADESC_FLEN] = len | FCNT_VAL << 20;
->> +		lli->hw[OWL_DMADESC_CTRLB] = ctrlb;
-> 
-> Unfortunately this wont scale, we will keep adding new conditions for
-> newer SoC's! So rather than this why not encode max frame length in
-> driver_data rather than S900_DMA/S700_DMA.. In future one can add values
-> for newer SoC and not code above logic again.
+Signed-off-by: Po Liu <Po.Liu@nxp.com>
+---
+v2:
+-- No update.
 
-What newer SoCs? I don't think we should try to guess the future here.
-We can always introduce further abstractions later, once we actually
-*know* what we are looking at.
+ include/net/flow_offload.h     |  1 +
+ include/net/tc_act/tc_police.h | 10 ++++++++++
+ net/sched/cls_api.c            |  1 +
+ 3 files changed, 12 insertions(+)
 
-Besides, I don't understand what you are after. The max frame length is
-1MB in both cases, it's just a matter of where to put FCNT_VAL, either
-in FLEN or in CTRLB. And having an extra flag for that in driver data
-sounds a bit over the top at the moment.
-
-Cheers,
-Andre.
-
-> 
->> +static const struct of_device_id owl_dma_match[] = {
->> +	{ .compatible = "actions,s900-dma", .data = (void *)S900_DMA,},
->> +	{ .compatible = "actions,s700-dma", .data = (void *)S700_DMA,},
-> 
-> Is the .compatible documented, Documentation patch should come before
-> the driver use patch in a series
-> 
->>  static int owl_dma_probe(struct platform_device *pdev)
->>  {
->>  	struct device_node *np = pdev->dev.of_node;
->>  	struct owl_dma *od;
->>  	int ret, i, nr_channels, nr_requests;
->> +	const struct of_device_id *of_id =
->> +				of_match_device(owl_dma_match, &pdev->dev);
-> 
-> You care about driver_data rather than of_id, so using
-> of_device_get_match_data() would be better..
-> 
->>  	od = devm_kzalloc(&pdev->dev, sizeof(*od), GFP_KERNEL);
->>  	if (!od)
->> @@ -1083,6 +1116,8 @@ static int owl_dma_probe(struct platform_device *pdev)
->>  	dev_info(&pdev->dev, "dma-channels %d, dma-requests %d\n",
->>  		 nr_channels, nr_requests);
->>  
->> +	od->devid = (enum owl_dma_id)(uintptr_t)of_id->data;
-> 
-> Funny casts, I dont think you need uintptr_t!
-> 
+diff --git a/include/net/flow_offload.h b/include/net/flow_offload.h
+index 00c15f14c434..c2ef19c6b27d 100644
+--- a/include/net/flow_offload.h
++++ b/include/net/flow_offload.h
+@@ -234,6 +234,7 @@ struct flow_action_entry {
+ 		struct {				/* FLOW_ACTION_POLICE */
+ 			s64			burst;
+ 			u64			rate_bytes_ps;
++			u32			mtu;
+ 		} police;
+ 		struct {				/* FLOW_ACTION_CT */
+ 			int action;
+diff --git a/include/net/tc_act/tc_police.h b/include/net/tc_act/tc_police.h
+index f098ad4424be..cd973b10ae8c 100644
+--- a/include/net/tc_act/tc_police.h
++++ b/include/net/tc_act/tc_police.h
+@@ -69,4 +69,14 @@ static inline s64 tcf_police_tcfp_burst(const struct tc_action *act)
+ 	return params->tcfp_burst;
+ }
+ 
++static inline u32 tcf_police_tcfp_mtu(const struct tc_action *act)
++{
++	struct tcf_police *police = to_police(act);
++	struct tcf_police_params *params;
++
++	params = rcu_dereference_protected(police->params,
++					   lockdep_is_held(&police->tcf_lock));
++	return params->tcfp_mtu;
++}
++
+ #endif /* __NET_TC_POLICE_H */
+diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
+index a00a203b2ef5..6aba7d5ba1ec 100644
+--- a/net/sched/cls_api.c
++++ b/net/sched/cls_api.c
+@@ -3658,6 +3658,7 @@ int tc_setup_flow_action(struct flow_action *flow_action,
+ 			entry->police.burst = tcf_police_tcfp_burst(act);
+ 			entry->police.rate_bytes_ps =
+ 				tcf_police_rate_bytes_ps(act);
++			entry->police.mtu = tcf_police_tcfp_mtu(act);
+ 		} else if (is_tcf_ct(act)) {
+ 			entry->id = FLOW_ACTION_CT;
+ 			entry->ct.action = tcf_ct_action(act);
+-- 
+2.17.1
 
