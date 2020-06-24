@@ -2,59 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA58520698D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 03:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73823206992
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 03:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388417AbgFXBfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 21:35:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387804AbgFXBfQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 21:35:16 -0400
-Received: from dragon (80.251.214.228.16clouds.com [80.251.214.228])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 199EA20B80;
-        Wed, 24 Jun 2020 01:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592962515;
-        bh=+0IMWoLpUbRuRbVf5D/mZM7pi+csF164DDVQ5/21ijc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Je25Ck+IVbWhGA5rgeBNGfNTjsElY9C0utY+XA2gGxRjEgnwcKt5gxcn2bU8kh+9s
-         m05zfSDHQ7P4+IUF34P1Rgc+Hju2E2OQFY5Ym34cRhcgGW8/ZZ58rdtkSaJSAoa9EA
-         7b21S+Oa8BSmqfETGe2mNHDx2ZrE0j92T8Vw3268=
-Date:   Wed, 24 Jun 2020 09:35:06 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Tim Harvey <tharvey@gateworks.com>
-Subject: Re: linux-next: build warnings after merge of the imx-mxs tree
-Message-ID: <20200624011800.GA31961@dragon>
-References: <20200624095007.141f0357@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200624095007.141f0357@canb.auug.org.au>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S2388479AbgFXBfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 21:35:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387804AbgFXBfe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 21:35:34 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07504C061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 18:35:33 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id dm12so339432qvb.9
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 18:35:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id;
+        bh=TqReVHnhod4CGtUTTe7lNXyrQSlqJcDme46q9bN7OuI=;
+        b=d/oz4MDQJGr5mV4CIQqGnXLaXd79fCAfN+CrAt3YjNYFXWnK1lPtNAlqGzC+T+WYqw
+         TXe2Ccq6IlgN0g7IpMVH2H1ewkzPKdwJC+GUShrl+t4PsZTAmL+zYAb213Kilihp97fv
+         RBEM5pZeyrjUyg0XpRAPLDI8g7wRMyr4GQGNsqq36S9kvzuZ3/A07/mJXD9rHWmahc9R
+         rk1F4xazJf5+t/+JWj/emeu23tgXCBDUUDY87uuo2ert2gjlV7wn18YckP2WqNbAcJOH
+         5pGmF3WR6PmZQDBsAOJS4rmai41CkqS7PaQfE+eqwEa37Lh5XJ/D6G4UcAtEPsGMeifW
+         4OXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=TqReVHnhod4CGtUTTe7lNXyrQSlqJcDme46q9bN7OuI=;
+        b=j5hp/tw9ty3nBTSqNAnUhBRo4J20c3sSnGYN75qJNaI1E0gt/pn67sA64F2/ZyNLFO
+         xErCPKx7A6/vk2Ox6qEKnWi0AhxYsAMtWhzpz8ghJWO63h5nsoFKtE1RUUDHbUtT3+U3
+         fmRsmPsT9Po0DT/FvlzgIxXQE7Zln5EtP1xFlumtDDI7GQJshEvl+8r9eZUO28ONXo8q
+         JC39rB9jX4klAurgQY7It+u8EyDhWJUmtPuPUk6RFryAezW55F9WFKcsjgSSXhzc5ZOR
+         vttxy9Nk9sVCMgYfhbmu8lHi898scK0o1vF/MjJ1+C2G4hLj+ttm0UKDVcqKW8BCpZm2
+         /vEw==
+X-Gm-Message-State: AOAM530FLxPO3NICJ6Nke+gIPAtmqfJQXu6fMSKTugJddL7ChaiPCVxF
+        z82jIpXIhhMHJaQq72n4oJk=
+X-Google-Smtp-Source: ABdhPJxINudWbymKcfDEGryCkOw0uXhO4SHM27YrGgngnUSKDoFYZXBd9yhBbqxfTMm6FWWpJTDocQ==
+X-Received: by 2002:a0c:a993:: with SMTP id a19mr4030626qvb.34.1592962532275;
+        Tue, 23 Jun 2020 18:35:32 -0700 (PDT)
+Received: from linux.home ([2604:2000:1344:41d:596e:7d49:a74:946e])
+        by smtp.googlemail.com with ESMTPSA id h4sm2102136qtd.43.2020.06.23.18.35.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 18:35:31 -0700 (PDT)
+From:   Gaurav Singh <gaurav1086@gmail.com>
+To:     gaurav1086@gmail.com, Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        linux-kernel@vger.kernel.org (open list:PERFORMANCE EVENTS SUBSYSTEM)
+Subject: [PATCH] [perf] lsdir_bid_tail_filter: fix index check
+Date:   Tue, 23 Jun 2020 21:35:22 -0400
+Message-Id: <20200624013524.10836-1-gaurav1086@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 09:50:07AM +1000, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the imx-mxs tree, today's linux-next build (arm
-> multi_v7_defconfig) produced these warnings:
+Check bounds before accessing d->d_name[].
 
-...
+Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
+---
+ tools/perf/util/build-id.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> Introduced by commits
-> 
->   26d7c769d460 ("ARM: dts: imx6qdl-gw53xx: allow boot firmware to set eth1 MAC")
->   48d799918adf ("ARM: dts: imx6qdl-gw54xx: allow boot firmware to set eth1 MAC")
+diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
+index c076fc7fe025..8c35cbe93f10 100644
+--- a/tools/perf/util/build-id.c
++++ b/tools/perf/util/build-id.c
+@@ -431,7 +431,7 @@ static bool lsdir_bid_tail_filter(const char *name __maybe_unused,
+ 				  struct dirent *d)
+ {
+ 	int i = 0;
+-	while (isxdigit(d->d_name[i]) && i < SBUILD_ID_SIZE - 3)
++	while (i < SBUILD_ID_SIZE - 3 && isxdigit(d->d_name[i]))
+ 		i++;
+ 	return (i == SBUILD_ID_SIZE - 3) && (d->d_name[i] == '\0');
+ }
+-- 
+2.17.1
 
-Sorry, Stephen.  I have just taken them out.
-
-Shawn
