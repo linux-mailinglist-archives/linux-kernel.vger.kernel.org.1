@@ -2,142 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B9A20740F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 15:13:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5571D20740A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 15:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390953AbgFXNNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 09:13:09 -0400
-Received: from mout.web.de ([217.72.192.78]:37983 "EHLO mout.web.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387747AbgFXNNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2390924AbgFXNNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 24 Jun 2020 09:13:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1593004360;
-        bh=zAuqcv5c3pQC472cThqMqd6o0JE7uGZhrYFFqHnzpD8=;
-        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
-        b=c+9zBn6OyF/rpjb+YDc5rw+SBM7IvLd5lGQPuoH5DrOICqy5pcwfXOp7+icjc9/Pd
-         8EKEdetSa+AhQeFrYEoQqkr8/9agn2lTlnEVNaqVxhbJy/vk8MNZeq9WUQiKFnJ8Md
-         DMkZ9N05ayEagCWiqaT5YElLlWbHvTegoHcr3S9g=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.132.175.204]) by smtp.web.de (mrweb103
- [213.165.67.124]) with ESMTPSA (Nemesis) id 0MJCWU-1jpkA6120A-002oqa; Wed, 24
- Jun 2020 15:12:40 +0200
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v3 04/14] irqchip/davinci-aintc: Fix potential resource
- leaks
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org
-Message-ID: <0e39761c-4673-d116-fc62-5573c2abae06@web.de>
-Date:   Wed, 24 Jun 2020 15:12:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+Received: from mailout2.w1.samsung.com ([210.118.77.12]:37375 "EHLO
+        mailout2.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728843AbgFXNM7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 09:12:59 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20200624131258euoutp02333677375303e36d7fa2d1eb2df3fb34~bfQqtwsvp1201712017euoutp027
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:12:58 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20200624131258euoutp02333677375303e36d7fa2d1eb2df3fb34~bfQqtwsvp1201712017euoutp027
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1593004378;
+        bh=y3U3Roh4wtM015Hhvwh1SxdfYjN0DfIAfBQvm4ZhhAs=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=A/MsUxfEr4VeT/BQMpGsGrhDK1xOSTZuIogWzuKIShaJwAkjDdekbtnS7KNBNwRjo
+         4Ls4bLqXrRZtvL0lThN1Ud7nT1oH1NpgNyqq4hlUBRLnEVJf1HDwnRCqlmPiSExnen
+         CJAGDIPxn757X00m3ht3dEYP0nQ2I2xzLrFoxvPc=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20200624131257eucas1p1906930dbe495bb181294a73d7c1240ec~bfQqXnmF_0191901919eucas1p1F;
+        Wed, 24 Jun 2020 13:12:57 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id 0B.09.06318.95153FE5; Wed, 24
+        Jun 2020 14:12:57 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20200624131257eucas1p2475b00b53ea2cd0c5320ead2235d7a57~bfQp9TFjt2736227362eucas1p2Y;
+        Wed, 24 Jun 2020 13:12:57 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20200624131257eusmtrp2ced7c8555a4c4e095ad495582b33025f~bfQp8hPnJ2228022280eusmtrp2T;
+        Wed, 24 Jun 2020 13:12:57 +0000 (GMT)
+X-AuditID: cbfec7f5-371ff700000018ae-4e-5ef35159d8ca
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id 83.41.06017.95153FE5; Wed, 24
+        Jun 2020 14:12:57 +0100 (BST)
+Received: from [106.210.85.205] (unknown [106.210.85.205]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20200624131256eusmtip22bb7c84c92bec2b591b43fc10bf7425b~bfQpDKhvo2118321183eusmtip2s;
+        Wed, 24 Jun 2020 13:12:56 +0000 (GMT)
+Subject: Re: [RESEND PATCH v5 3/5] drivers core: allow probe_err accept
+ integer and pointer types
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Mark Brown <broonie@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+From:   Andrzej Hajda <a.hajda@samsung.com>
+Message-ID: <bbc5ad3e-0e0a-83e1-ed64-e5275b605174@samsung.com>
+Date:   Wed, 24 Jun 2020 15:12:55 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+        Thunderbird/68.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAHp75Vf5ANVRb8ghzdWa1F5U3JaRv9J2mVF8AQ+WwBahQM9Y5A@mail.gmail.com>
+Content-Transfer-Encoding: 7bit
 Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:iW2saXIEBgXpQgxGEEEAAuU/UAEMLXSGs8QPxotSdz4VN/pt8gG
- bUe+HrEuJe5IJ9frdJFu9HcKU8xsUSsN1pto+heV5fgeXLLrlT255RC/mWyKwUGbPe25/yj
- t7XA5VnqvEK6Psog2HZORolEhl1IBMQhjJ0fKt1XHf0hEqiu0MdOb6pVNI5Oiyl9ZS2waLq
- D0pxe38/f91vHg4dwa+/Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:NoYiJ7pL76Y=:cFgWgkXpeqrUwtzfhxgtW6
- jHGJuVXqtkyzFDumiWeF11aX1y5BiUlxG1wbukz44LL42qBsFv+ybDvx/EU0O0MqlKr5kK2nn
- Y5q86y8m1MugsiNPdGpG0wr/ZMRmaxBO2QxupLeGKQLZis/4RBmJEltkwCGrCE/k9j+37LG7f
- KFsDtMxeLg6Z0qREVLGZZg3d61wMzXNsztW6DigVjH0O/Zl7a1TR+bOrp4IpA1sj2jWORi/5X
- DTbioo15gGkaEsXqee2JXQONRVzqlcYWro1s+OKfy5Ugk2nEojo9lzWXm63wox2C67+RGawKv
- FiFyVDfT1aFsa6Qcgzj5KF/Gd0pcRfDpQ9H+jUIJ43roQlAn0bU0HKs51NeHs/QizXURkEqv9
- lB1m5qvEfv3pF271/qpKA/k0dvJ5t07S52UrnTxrnt3mxbbqTfnLaj3UMl7EcRQ+f2D/ayn+/
- kA+GK/wnVP5PP0H58GBiy0Zo6yWUG+Nppz0TLBK2wovJ3K4ps1xQZ54eBHQg1tstSeWfN+2Gq
- v2DxWNof+WYxcdaKeu5pD7P+W8twApWXPH0u8Ibmio9Ok2+ktJGsD6hsV0c/qbD7YPiPbOaks
- x4wgAonmysZSG+MJKjj2r6VsCdHBuf9NM9CMyv0s8+FxSP8iLOBQ9Jivc4lRDT4hIdRNvObnL
- s/pEeHOKRFyj34fvr9MjvtSzUtJyvUs/fos4TcrhqWqmsFEe+cYv0dl/i7hhOxfm/hRSaBumQ
- ImDMIiU3ECCFDcemPG2oDgRkUUEoHbWXOUvuFT/bDgI42MlhsqSLQLzut3EGLJy96iQujKKjb
- Nq77Gy1SKz+YBcwYkAtm7kSOQ315DgfLn3jotMIapu25RsnRL6NnZYM7MjOOpmTmWl1iV9O1A
- jGsN/D6mzvJgaS7hCjDNcVHPCLhhRs8Ni4/YFFaZfloS5pkpeDQkgmQag9eolpQAEEp124XVy
- n9K1vhAch2iDJeG3lUbbKxVj5i9j3LBhffENGOJToVfvUmLa/HjpFCN5IQqvl+5otxqOvayHN
- W6qVfGS/wYBeKaNqapzEpn11/rv8EZJmtd2MrHbylHj/O3Wd5RjfgxPhlUxgQCS6PSTyt/BO0
- r/qyr+X6+aKgW1kxhox6UehIjCTN7t46pmw12lraXOr+MSW5Lmv6TaiXZav1X3I8SXEp+/5Lo
- H7YDhWhiREKxk+ASQ/PvjbM+QY43jZP3E2qmRdr0yMo4f7E8/4iz0fBP8emkQ2UwTu3hnYZW4
- v+pSpLK9snYD7dESI
+X-Brightmail-Tracker: H4sIAAAAAAAAA02SWUwTURSGvZ3pzNC0OBa0J2g0NtEEDeD2MHEhbtGJUWPjg1FjseAEiS1g
+        Cwhq0Agqi2DRVKWIiIIsEdmXYhRbFUSsglBEhFSjJoBio5TgBsowGHn7zvaf/9xcCpP3iX2o
+        sPAoTh+u0SoJCV7T+OOF327VkHpJS4KS6Tc+REz5lVIxY3r3gWA6hl0Ek3CzlGAcI/0Y0/zZ
+        gTPJGXkkU/G+U8y0118lGJvpHmJKHvWSjC19L5PtNmFrPdn2zjaMdXWdJlmLuZdks5IyxWxF
+        cTLBPjG+FLEN2bdJ1pnaJGIr806w6VXFiH2QdhFnhyrm7pDukaw+wGnDYjh9QOB+yUHnW7/I
+        b5LY7Nxu8iTKoVIQRQG9AtxFO1OQByWnCxG8qfNPQZJxdiPoyS0SC8EQguTHJQTfxQ80nMmY
+        LBQgGBkewYXAheDaHyfiZb3oELCkLUtBJOVNB0BDDN+B0Qli+J3fIeZ1CNoXRitfE3y3jA4E
+        YyrFp3F6AdzKf0HyPJPeB+ecAxjPMnoGNGd+wHn2oFXQ8/H8BGP0PKgdvIoJrIBTbsEz0CYK
+        Pg08m/S8Ea6l5ooE9oKBpipS4Dnwx5IzmT8BzsJETBhOQlBdZsGEwiroef5zwig2brq0PkB4
+        uHVgsW4R0BO6BmcIFjzhQs1lTEjLIOmMXNCYD0579aSeAvJbhwkjUpqnHGaecox5yjHm/2uv
+        I7wYKbhogy6UMywP5474GzQ6Q3R4qH9IhK4Cjf+/lrGm4Tp0/3ewDdEUUkplZW+/quViTYwh
+        TmdDQGFKb9l6e4taLjugiTvK6SOC9NFazmBDsylcqZAtv9G/T06HaqK4QxwXyen/VUWUh89J
+        tHP7WatUdT/Q5L2rvnmlzn3snSmuIWdJ1sDdr/bpO1LnOAv6+6yBqujO2g05EduC8+j0KMWa
+        7wtw6xt12yyj77R4nTTDHuRCrbFhHZscdkedVFQw5jh86VXivKJbXPnTzMat57ziYy/+GtSW
+        JHX3qpI9qr9pFh7v2rz4+p3RrC8mJW44qFm6CNMbNH8BiT5GYHsDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHIsWRmVeSWpSXmKPExsVy+t/xe7qRgZ/jDHbcZ7N4OeEwo8XGGetZ
+        LaY+fMJmceXrezaL5sXr2Syufn/JbHHyzVUWi86JS9gtNj2+xmpxedccNotDU/cyWqw9cpfd
+        4lBftMXcL1OZHfg8Ll+7yOzx/kYru8fOWXfZPWZ3zGT12LSqk83jxIRLTB77565h97jffZzJ
+        Y/OSeo++LasYPQ70Tmbx+LxJLoAnSs+mKL+0JFUhI7+4xFYp2tDCSM/Q0kLPyMRSz9DYPNbK
+        yFRJ384mJTUnsyy1SN8uQS/j/gPdgk9cFXMX3mJvYJzP0cXIySEhYCKxv20iaxcjF4eQwFJG
+        icPLTrFDJMQlds9/ywxhC0v8udbFBlH0llHiZ/t0IIeDQ1ggWWJnr1EXIzuHiIC+xP4ykApm
+        gXZWiTcH1jNDlDcwSZzb3cgEModNQFPi7+abYK28AnYSE7rBbmARUJVYtvQ82FpRgViJ7sU/
+        wGxeAUGJkzOfsIDYnAKBEnee9oPZzAJmEvM2P2SGsOUltr+dA2WLSzR9Wck6gVFoFpL2WUha
+        ZiFpmYWkZQEjyypGkdTS4tz03GIjveLE3OLSvHS95PzcTYzAuN927OeWHYxd74IPMQpwMCrx
+        8G548DFOiDWxrLgy9xCjBAezkgiv09nTcUK8KYmVValF+fFFpTmpxYcYTYGem8gsJZqcD0xJ
+        eSXxhqaG5haWhubG5sZmFkrivB0CB2OEBNITS1KzU1MLUotg+pg4OKUaGP2+1n13+vCyof87
+        +0rBVSz1dbxLTkzmDp5umzLptaRzVXqr3vtNzPyf3iVLLZmhoMhruzHRzepi6c75ThMY7k58
+        M4XFieGu+TT/iq3nm93mxF8131ly/u4lT40XubMkM9yOFIV+m7/8894LJfXXopUYhII3WGdN
+        yFydp8Pa77muod1kn8FnGSWW4oxEQy3mouJEABSPGSARAwAA
+X-CMS-MailID: 20200624131257eucas1p2475b00b53ea2cd0c5320ead2235d7a57
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20200624114136eucas1p1c84f81b1d78e2dbad7ac1b762f0a4b4f
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20200624114136eucas1p1c84f81b1d78e2dbad7ac1b762f0a4b4f
+References: <CGME20200624114136eucas1p1c84f81b1d78e2dbad7ac1b762f0a4b4f@eucas1p1.samsung.com>
+        <20200624114127.3016-1-a.hajda@samsung.com>
+        <20200624114127.3016-4-a.hajda@samsung.com>
+        <CAHp75Vf5ANVRb8ghzdWa1F5U3JaRv9J2mVF8AQ+WwBahQM9Y5A@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> There exists potential resource leaks in the error path, fix them.
 
-Would you like to reconsider this change description?
-https://lore.kernel.org/linux-mips/be3acb13-2963-ddf1-a867-7e30fd23a0b4@lo=
-ongson.cn/
-https://lkml.org/lkml/2020/6/24/498
-
-
-=E2=80=A6
-> +++ b/drivers/irqchip/irq-davinci-aintc.c
-=E2=80=A6
-> @@ -160,4 +160,13 @@ void __init davinci_aintc_init(const struct davinci=
-_aintc_config *config)
->  				       irq_base + irq_off, 32);
+On 24.06.2020 14:53, Andy Shevchenko wrote:
+> On Wed, Jun 24, 2020 at 2:41 PM Andrzej Hajda <a.hajda@samsung.com> wrote:
+>> Many resource acquisition functions return error value encapsulated in
+>> pointer instead of integer value. To simplify coding we can use macro
+>> which will accept both types of error.
+>> With this patch user can use:
+>>          probe_err(dev, ptr, ...)
+>> instead of:
+>>          probe_err(dev, PTR_ERR(ptr), ...)
+>> Without loosing old functionality:
+>>          probe_err(dev, err, ...)
+> ...
 >
->  	set_handle_irq(davinci_aintc_handle_irq);
-> +
-> +err_domain_remove:
-=E2=80=A6
+>> + * This helper implements common pattern present in probe functions for error
+>> + * checking: print message if the error is not -EPROBE_DEFER and propagate it.
+>> + * In case of -EPROBE_DEFER it sets defer probe reason, which can be checked
+>> + * later by reading devices_deferred debugfs attribute.
+>> + * It replaces code sequence:
+>> + *     if (err != -EPROBE_DEFER)
+>> + *             dev_err(dev, ...);
+> Btw, we have now %pe. Can you consider to use it?
 
-Are you sure that you would to like to release the allocated system resour=
-ces
-always in this function implementation?
 
-Otherwise, I suggest to add a return statement before the source code sect=
-ion
-for the desired exception handling.
+OK, I haven't noticed it finally appeared.
 
-Regards,
-Markus
+
+>
+>> + *     return err;
+>> + * with
+>> + *     return probe_err(dev, err, ...);
+>> + *
+>> + * Returns @err.
+>> + *
+>> + */
+>> +#define probe_err(dev, err, args...) __probe_err(dev, (long)(err), args)
+> Can't we use PTR_ERR() here?
+
+
+Nope, I want to accept both types: int and pointer.
+
+
+Regards
+
+Andrzej
+
+
+>
