@@ -2,113 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBC042077C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7DEB2077D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404539AbgFXPlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:41:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33502 "EHLO
+        id S2404350AbgFXPn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:43:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404508AbgFXPlL (ORCPT
+        with ESMTP id S2404253AbgFXPnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:41:11 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B6EAC061573;
-        Wed, 24 Jun 2020 08:41:11 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id x8so301476plm.10;
-        Wed, 24 Jun 2020 08:41:11 -0700 (PDT)
+        Wed, 24 Jun 2020 11:43:25 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C832C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:43:25 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id u26so4783667wmn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:43:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Ly1TDzAEx8vRao/mqsmJUAAYy7jcqmMxO/HEea7Av6A=;
-        b=pT1lDwxeGf1ZL1WDYZhRIsulBFmJl83sDoFHdazqASaBZVOm1HCyGs373KF9U3FGXw
-         8fiCa8hrNCfHQ60kR2Q908SL1kmBPgtXUw6JMgrx7BNSLzLaxPPsVMgiEP37Q6Ep/3KV
-         mQ7Ir5vwQ0gaVOZE6eSFfzzGumTrBoMz7auwUvj/jn+4uKTHZyc4e5M1eleZ3bKID314
-         5ikyJrd1Gwr7UpJd6zFty4Q5JAKUPbOGOa8zvMd0lMB47YxgOzhNPoBO3eSGlM3L/scs
-         itSyAEkl1QeSXf3Sq3qBpArKgTXTYysF35McTTMhqptBVFkL5c7bcysm+PZSneppZ6xX
-         cXSQ==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=QM8WHNX4JVzp1tT3alZnq1KeTZs+/wuqZ6hsAIKxcMA=;
+        b=Olmv6gOFR6NbOAqgFzCBJx/sCYV/IREx2uVFDnyNUpwSY/mDxH4RQEaIIqwkxB4ICw
+         OmlyLQtUPS7BKq9rjxqW7PsmSayRlxNsp3CBwqOphzrTJesmqsd/9oNQrA3IlpYUW0PZ
+         fudSy31IumvzQrnLbUbjZSN5JGU9DP5XWjcMbAryKvmqsYifSefNVUqu2Su8OXQvPMVE
+         dsVZolchYV5cK7gk0/DRSho+Ia0WuTzYBvKGvhRhtgPUURP4Ndkk9KgCqzQ81nwD7C0z
+         CNpkJgEMvLNJ4qfZ1RFZnaKXBpWwSTDYACp0W4/tSjgSY9pUvicATh27hnBP4HKau3Ho
+         XwDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Ly1TDzAEx8vRao/mqsmJUAAYy7jcqmMxO/HEea7Av6A=;
-        b=IJKSTqm4CJyiC+d6V8hZiKK6bKz7THoHwDxp4NqnRvV1PN93Cu/zrdnqXn5Qxh/jNK
-         uM5H/bBc7M+f0RYw3NqguoqXe7ecuyeWxreJ94PUKoZ1wjb8KyAi+MulMvRJOxcbpGJc
-         nhAtAnjYr6AxhOy/rpldkdSmcBAd9jApC9SbPbNa7YC5apsaXLltl7qwyr3xdivt0BL5
-         PyC0LvckDsKFbbOm8+niX/ONv7pN/42IJnQRW+srB88MYc4kNXcidyAvn/WjcV92gHyU
-         DPVkPzZsvA/dJ5V7/aMVlro2eatrNrlbTC0qhKzZpS+p37b4S4RAq1GILHwmPHca4L5Q
-         Uyrw==
-X-Gm-Message-State: AOAM53355PJlnfQh2Rx4iIYwR/UlUBo0XYRK6VcczCWxm/xGU7ewaQaw
-        kvzJAGHi9HP07PN3WYl7O/UGwmMP
-X-Google-Smtp-Source: ABdhPJwjJvWss3nf1yZq/iKmUT8dWFX2W1k4dETLwsNyvHC7n3w0ua0Pqn3ngFYp/kPAu7UiQLIkXQ==
-X-Received: by 2002:a17:902:8c89:: with SMTP id t9mr18616817plo.306.1593013270406;
-        Wed, 24 Jun 2020 08:41:10 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-111-84-250.oc.oc.cox.net. [68.111.84.250])
-        by smtp.gmail.com with ESMTPSA id m20sm21981737pfk.52.2020.06.24.08.41.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jun 2020 08:41:09 -0700 (PDT)
-Subject: Re: [PATCH stable 4.9 00/21] Unbreak 32-bit DVB applications on
- 64-bit kernels
-To:     Greg KH <greg@kroah.com>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Michael Krufky <mkrufky@linuxtv.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>,
-        Jaedon Shin <jaedon.shin@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>,
-        Satendra Singh Thakur <satendra.t@samsung.com>,
-        "open list:MEDIA INPUT INFRASTRUCTURE (V4L/DVB)" 
-        <linux-media@vger.kernel.org>,
-        "open list:FILESYSTEMS (VFS and infrastructure)" 
-        <linux-fsdevel@vger.kernel.org>
-References: <20200605162518.28099-1-florian.fainelli@broadcom.com>
- <20200623191334.GA279616@kroah.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <99a35736-6539-4a83-b0f0-74a8cf28d85d@gmail.com>
-Date:   Wed, 24 Jun 2020 08:41:06 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Firefox/68.0 Thunderbird/68.9.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=QM8WHNX4JVzp1tT3alZnq1KeTZs+/wuqZ6hsAIKxcMA=;
+        b=LjfApev1z5DupqBGM8J56w48c3mO4Y9maMPS9/Rt5Lo54P8gQAiM0kKrocJlU31SPh
+         ClvNVj8o+mZRv2oiXpz2UYoObWXeklVqU7Q/nTNaxczz027DuOqBXJBU+e4Nthzd0Kyz
+         TGEZgOqEySWR0i+obwz7rpWBKky48X7kAJP+NP71v6XGgs9DyLLkQ2Mq3nTC87F1TJ5i
+         UTeAkHT86XIaxPEYpTX190sSdFtq2pyeCaucLXilOeWbJykMcZknV0Xq9pAeoK0z55Ts
+         Y2qM48Ckpng3LZxjDGN8J87OA7XAvHJHqRo2mFSevMPK1yCHHAn4SDfQHvAKdAJiHfHU
+         DEZg==
+X-Gm-Message-State: AOAM530byGlGtvkmyig3/CgvuTdmbD9c6N2tJxibVCdBpPB8fwJ/a28b
+        eJb6zOBuPdAVelPJE4Q8wCFDeQ==
+X-Google-Smtp-Source: ABdhPJwj67zlK538LD9M3+i8IFmwRhOZYaUWn/TQagj8Vmc62JySmFUQKYtWcbTLacIAWDoe1q9dnA==
+X-Received: by 2002:a7b:c345:: with SMTP id l5mr32069049wmj.31.1593013403867;
+        Wed, 24 Jun 2020 08:43:23 -0700 (PDT)
+Received: from dell ([2.27.35.144])
+        by smtp.gmail.com with ESMTPSA id c143sm8597840wmd.1.2020.06.24.08.43.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 08:43:23 -0700 (PDT)
+Date:   Wed, 24 Jun 2020 16:43:21 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     daniel.thompson@linaro.org, jingoohan1@gmail.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/8] Fix a bunch of W=1 warnings in Backlight
+Message-ID: <20200624154321.GH954398@dell>
+References: <20200624145721.2590327-1-lee.jones@linaro.org>
+ <20200624153216.GA1814806@ravnborg.org>
 MIME-Version: 1.0
-In-Reply-To: <20200623191334.GA279616@kroah.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200624153216.GA1814806@ravnborg.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 24 Jun 2020, Sam Ravnborg wrote:
 
-
-On 6/23/2020 12:13 PM, Greg KH wrote:
-> On Fri, Jun 05, 2020 at 09:24:57AM -0700, Florian Fainelli wrote:
->> Hi all,
->>
->> This long patch series was motivated by backporting Jaedon's changes
->> which add a proper ioctl compatibility layer for 32-bit applications
->> running on 64-bit kernels. We have a number of Android TV-based products
->> currently running on the 4.9 kernel and this was broken for them.
->>
->> Thanks to Robert McConnell for identifying and providing the patches in
->> their initial format.
->>
->> In order for Jaedon's patches to apply cleanly a number of changes were
->> applied to support those changes. If you deem the patch series too big
->> please let me know.
+> Hi Lee.
 > 
-> Now queued up,t hanks.
-
-Thanks a lot, I did not get an email about "[PATCH stable 4.9 02/21]
-media: dvb_frontend: initialize variable s with FE_NONE instead of 0"
-being applied, not that it is a very important change,
-
+> On Wed, Jun 24, 2020 at 03:57:13PM +0100, Lee Jones wrote:
+> > Attempting to clean-up W=1 kernel builds, which are currently
+> > overwhelmingly riddled with niggly little warnings.
+> > 
+> > Lee Jones (8):
+> >   backlight: lms501kf03: Remove unused const variables
+> >   backlight: lcd: Add missing kerneldoc entry for 'struct device parent'
 > 
-> greg k-h
 > 
+> >   backlight: ili922x: Add missing kerneldoc descriptions for
+> >     CHECK_FREQ_REG() args
+> >   backlight: ili922x: Remove invalid use of kerneldoc syntax
+> >   backlight: ili922x: Add missing kerneldoc description for
+> >     ili922x_reg_dump()'s arg
+> I wonder why these warnings show up as nothing pulls in this .c file.
+> Anyway I would suggest to drop using kerneldoc syntax for single drivers
+> like this - and the benefit here is low.
+> Now they are typed, otherwise this ahd been fine in a single patch.
+
+What do you mean by 'nothing pulls it in'?
+
+> >   backlight: backlight: Supply description for function args in existing
+> >     Kerneldocs
+> >   backlight: lm3630a_bl: Remove invalid checks for unsigned int < 0
+> >   backlight: qcom-wled: Remove unused configs for LED3 and LED4
+> 
+> The other fixes looks good.
+> They are all:
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+
+Thanks (although this should be Reviewed-by).
+
+> >  drivers/video/backlight/backlight.c  | 2 ++
+> >  drivers/video/backlight/ili922x.c    | 8 ++++++--
+> >  drivers/video/backlight/lcd.c        | 1 +
+> >  drivers/video/backlight/lm3630a_bl.c | 4 ++--
+> >  drivers/video/backlight/lms501kf03.c | 8 --------
+> >  drivers/video/backlight/qcom-wled.c  | 8 --------
+> >  6 files changed, 11 insertions(+), 20 deletions(-)
+> > 
 
 -- 
-Florian
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
