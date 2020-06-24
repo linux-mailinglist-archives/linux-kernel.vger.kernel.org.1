@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5036206F9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 11:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2964206F9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 11:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389014AbgFXJD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 05:03:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
+        id S2389078AbgFXJDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 05:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730725AbgFXJD0 (ORCPT
+        with ESMTP id S1730725AbgFXJD1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 05:03:26 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27303C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 02:03:26 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id u8so920499pje.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 02:03:26 -0700 (PDT)
+        Wed, 24 Jun 2020 05:03:27 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E50C7C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 02:03:27 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id d12so825092ply.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 02:03:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=CuwWstH+orWzdN5oonIi/uqi9D7RHwuB3qVndAM1Epk=;
-        b=P4gDQnvBO2gxkNqub6xwOgqwcXxARtbIzm7b8wZjCIIM50ofSjoZcUL+YDs6Q2yC2o
-         T9a7lH1XTR93IqWxiFNrQxuYCwt+OfkvxgYNYyc5eD2Ffnp86DWVYmNZaXEWpC/afU+8
-         WvVkNlbNd06nIrWRdRDBisUl0QIHUUQMg0MnLr+CW+WyqnRm7yFEVwAzxUUq5ydrP43H
-         1bMT5evN3KEu/UftsI4VIJbrk6iq3GpVBzS3iz/SYLbDFlHiTvLGQWKRM6o1MkzSJeXi
-         DxcxXgPSgCLUgRy+6EdLglMcCS57Vf26741bEBEQ6VPWwkdi/Hu0k2bIUSIFqYpTiVb0
-         RZwg==
+        bh=gKNJSJH3SZ7s7ZY0q11chWiPCztbqXJoTwSFOWOwg0g=;
+        b=CNSsQcuuIGwLhEkgYiQPdmaAFo4ZfVKGzVEe55xFjnpR71t/Ywd+JdQugR3swayRFC
+         l0/kz1bAJPcmDeLj7WdLn+GBQsdAZMKk7gRyI0jtDuPz+xhu3C8R3LS873Vgq058Ma/A
+         wWcEW6AvJEaxoSMN8KmRcYaGS94pnex6fxRLM26qUp5cQHXiY5NOCX27COlnH+Tar202
+         NmVaiwxJh+bimEHBDyQmwiaZnlwaYpwMKHU6aHCpMzxtKgAqyUr2Ha+ChMWO3elTS3wx
+         HAnu7cFJ9A2qSHnx88eZfUlbPxaFXRAGzWODgN3sEPcDe6y7YEZ/9APZRwPmIAOKY3dw
+         Duug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CuwWstH+orWzdN5oonIi/uqi9D7RHwuB3qVndAM1Epk=;
-        b=AUpuwGEMLlBSq9EUOQIN510YAhnXFRgult8E6KdXgKLHGebBP++ZkpQBMho/sfKGKf
-         pMEGE5ZdU4IhRcz4vBSmV6gvaWlrDHXzOw920L4muCHPHhQNCHCs3fd/TyjdbTY7dZwx
-         6B+Hq84ZzqluOlGDO6g8Hhty5bE1yFirUFYohmVtfrZDS1eowAX70xiGB0EnlQ0OGi94
-         4wHaE5z09tud2r2YlbwPL637xPRpaR02oMzw/qS/8I0go60vsaqpEffPd5Uy7OMuObve
-         gofCPUhVU1l8Br+OLnm+1t7H3ERrbs4bTDDExOmMAb4vsbWhkXXo9DWLbJIGU9CxLRjV
-         mDCQ==
-X-Gm-Message-State: AOAM532N9a6PFu+89ruVVRGrj0ymbLMPKOmgXM5mpRapr8VDtE93x0X3
-        Weim6KFoh+njPF8SAOYByza9iA==
-X-Google-Smtp-Source: ABdhPJyYFhg10tCLwL1zdRl/wp1/ko3wN8cohqAyOUivtPimeEG0zDICG05j8PKiDtkss3C/NmHFYA==
-X-Received: by 2002:a17:902:e989:: with SMTP id f9mr28719637plb.268.1592989405525;
-        Wed, 24 Jun 2020 02:03:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gKNJSJH3SZ7s7ZY0q11chWiPCztbqXJoTwSFOWOwg0g=;
+        b=Yi/bnih2Uqbh92v8xe+n2xcMnmEae1OVXlIKOBWcRp8Csf86/ZnvFk8RVrCgwT8QJm
+         yGWwP9qq/0B7Aa1DsDq0n8lR0kDG+9zNlWXC83FS9QsSYYeTzYy8e/k4FkU6J11XCrmR
+         a8J73urC4PVV2rrJ79EZOnzDnQSnWuTsS8FAB579dzoJfNvztYOAU/NR86J9cdzACTS0
+         o2w53HPkvNs0IidWtlSb9rfWvttQZSSH0OjffIwjhUSPq5nJwwiYB4q/i2fr3Gk8q0XR
+         JrjlyxIMfVMPFS93UA/4GLSTaACcu60Xl0VSnM+ywe8uR7Ie79smt9VsXrkpOGSOt2v3
+         /6/A==
+X-Gm-Message-State: AOAM53216X7U32mTQ4wjZatxHGravl0RpvdBfqt5lHWw5JC8XGevhh8m
+        LSFm7TOumoER77ITRPflHosoDg==
+X-Google-Smtp-Source: ABdhPJylRi6vyu5/NoCH/pS0CM/oiFPlDLXN/6Yq2cgajLPQtbKymDeDQJfnp2CmE9t6NMDnFvtNRA==
+X-Received: by 2002:a17:902:fe8b:: with SMTP id x11mr27271421plm.179.1592989407445;
+        Wed, 24 Jun 2020 02:03:27 -0700 (PDT)
 Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id v1sm8062046pfn.210.2020.06.24.02.03.23
+        by smtp.gmail.com with ESMTPSA id v1sm8062046pfn.210.2020.06.24.02.03.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 02:03:25 -0700 (PDT)
+        Wed, 24 Jun 2020 02:03:26 -0700 (PDT)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     greentime.hu@sifive.com, linux-riscv@lists.infradead.org,
         linux-kernel@vger.kernel.org, aou@eecs.berkeley.edu,
         palmer@dabbelt.com, paul.walmsley@sifive.com,
         guoren@linux.alibaba.com
-Subject: [PATCH v2 0/2] riscv: Add context tracker suppor
-Date:   Wed, 24 Jun 2020 17:03:14 +0800
-Message-Id: <cover.1592989082.git.greentime.hu@sifive.com>
+Subject: [PATCH v2 1/2] riscv: Support irq_work via self IPIs
+Date:   Wed, 24 Jun 2020 17:03:15 +0800
+Message-Id: <283e048d23d124f390fbe9087addef1a7dce0027.1592989082.git.greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.27.0
+In-Reply-To: <cover.1592989082.git.greentime.hu@sifive.com>
+References: <cover.1592989082.git.greentime.hu@sifive.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
@@ -64,25 +66,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset adds support for irq_work via self IPI and context tracking.
-It is tested in qemu-system-riscv64 and SiFive HiFive Unleashed board based
-on v5.8-rc2.
+Support for arch_irq_work_raise() and arch_irq_work_has_interrupt() was
+missing from riscv (a prerequisite for FULL_NOHZ).
 
+Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
 ---
-Changes in v2
- - Fix the compiling warning
-
-Greentime Hu (2):
-  riscv: Support irq_work via self IPIs
-  riscv: Enable context tracking
-
- arch/riscv/Kconfig                |  1 +
  arch/riscv/include/asm/irq_work.h | 10 ++++++++++
- arch/riscv/kernel/entry.S         | 23 +++++++++++++++++++++++
  arch/riscv/kernel/smp.c           | 15 +++++++++++++++
- 4 files changed, 49 insertions(+)
+ 2 files changed, 25 insertions(+)
  create mode 100644 arch/riscv/include/asm/irq_work.h
 
+diff --git a/arch/riscv/include/asm/irq_work.h b/arch/riscv/include/asm/irq_work.h
+new file mode 100644
+index 000000000000..d6c277992f76
+--- /dev/null
++++ b/arch/riscv/include/asm/irq_work.h
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_RISCV_IRQ_WORK_H
++#define _ASM_RISCV_IRQ_WORK_H
++
++static inline bool arch_irq_work_has_interrupt(void)
++{
++	return true;
++}
++extern void arch_irq_work_raise(void);
++#endif /* _ASM_RISCV_IRQ_WORK_H */
+diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
+index b1d4f452f843..554b0fb47060 100644
+--- a/arch/riscv/kernel/smp.c
++++ b/arch/riscv/kernel/smp.c
+@@ -16,6 +16,7 @@
+ #include <linux/sched.h>
+ #include <linux/seq_file.h>
+ #include <linux/delay.h>
++#include <linux/irq_work.h>
+ 
+ #include <asm/clint.h>
+ #include <asm/sbi.h>
+@@ -26,6 +27,7 @@ enum ipi_message_type {
+ 	IPI_RESCHEDULE,
+ 	IPI_CALL_FUNC,
+ 	IPI_CPU_STOP,
++	IPI_IRQ_WORK,
+ 	IPI_MAX
+ };
+ 
+@@ -123,6 +125,13 @@ static inline void clear_ipi(void)
+ 		clint_clear_ipi(cpuid_to_hartid_map(smp_processor_id()));
+ }
+ 
++#ifdef CONFIG_IRQ_WORK
++void arch_irq_work_raise(void)
++{
++	send_ipi_single(smp_processor_id(), IPI_IRQ_WORK);
++}
++#endif
++
+ void handle_IPI(struct pt_regs *regs)
+ {
+ 	struct pt_regs *old_regs = set_irq_regs(regs);
+@@ -158,6 +167,11 @@ void handle_IPI(struct pt_regs *regs)
+ 			ipi_stop();
+ 		}
+ 
++		if (ops & (1 << IPI_IRQ_WORK)) {
++			stats[IPI_IRQ_WORK]++;
++			irq_work_run();
++		}
++
+ 		BUG_ON((ops >> IPI_MAX) != 0);
+ 
+ 		/* Order data access and bit testing. */
+@@ -173,6 +187,7 @@ static const char * const ipi_names[] = {
+ 	[IPI_RESCHEDULE]	= "Rescheduling interrupts",
+ 	[IPI_CALL_FUNC]		= "Function call interrupts",
+ 	[IPI_CPU_STOP]		= "CPU stop interrupts",
++	[IPI_IRQ_WORK]		= "IRQ work interrupts",
+ };
+ 
+ void show_ipi_stats(struct seq_file *p, int prec)
 -- 
 2.27.0
 
