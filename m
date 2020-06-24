@@ -2,131 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2120F206E31
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 09:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6594206E4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 09:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390076AbgFXHtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 03:49:49 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:34891 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390013AbgFXHtq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 03:49:46 -0400
-X-Originating-IP: 93.34.118.233
-Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
-        (Authenticated sender: jacopo@jmondi.org)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 3E14E1BF210;
-        Wed, 24 Jun 2020 07:49:39 +0000 (UTC)
-Date:   Wed, 24 Jun 2020 09:53:07 +0200
-From:   Jacopo Mondi <jacopo@jmondi.org>
-To:     Ramzi BEN MEFTAH <rbmeftah@de.adit-jv.com>,
-        niklas soderlund <niklas.soderlund@ragnatech.se>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
-        Steve Longerbeam <steve_longerbeam@mentor.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Michael Rodin <mrodin@de.adit-jv.com>,
-        efriedrich@de.adit-jv.com, erosca@de.adit-jv.com
-Subject: Re: [PATCH 1/3] v4l2-subdev: Add subdev ioctl support for
- ENUM/GET/SET INPUT
-Message-ID: <20200624075307.hl6wew7vr5ue225t@uno.localdomain>
-References: <1592301619-17631-1-git-send-email-rbmeftah@de.adit-jv.com>
+        id S2390143AbgFXHym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 03:54:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53082 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388655AbgFXHym (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 03:54:42 -0400
+Received: from localhost (unknown [171.61.66.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A6D0E2085B;
+        Wed, 24 Jun 2020 07:54:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592985281;
+        bh=u5bGPxHpfck/MVpaAVun2T5RtLrj3PWfCkxiaVjC2tE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jUbxlwf7G39+dXkwsQB9wAmXBVX/OxV4FMeuXH3pSxehhaFfL6ituJFd22m2SfM7M
+         kRNaK0kf1iLgAqLaX7GPsuQyJ0p3YY/4TWG69FbrQcfSOIPU9VXYI0pgt5cz86VfB0
+         14aLRMW8mG2ApfRAs08FVZyiLKjDvj769xv+UN2M=
+Date:   Wed, 24 Jun 2020 13:24:37 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Sugar Zhang <sugar.zhang@rock-chips.com>
+Cc:     Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org,
+        Dan Williams <dan.j.williams@intel.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 01/13] dmaengine: pl330: Remove the burst limit for
+ quirk 'NO-FLUSHP'
+Message-ID: <20200624075437.GT2324254@vkoul-mobl>
+References: <1591665267-37713-1-git-send-email-sugar.zhang@rock-chips.com>
+ <1591665267-37713-2-git-send-email-sugar.zhang@rock-chips.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1592301619-17631-1-git-send-email-rbmeftah@de.adit-jv.com>
+In-Reply-To: <1591665267-37713-2-git-send-email-sugar.zhang@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello
+On 09-06-20, 09:14, Sugar Zhang wrote:
+> There is no reason to limit the performance on the 'NO-FLUSHP' SoCs,
+> cuz these platforms are just that the 'FLUSHP' instruction is broken.
 
-On Tue, Jun 16, 2020 at 12:00:15PM +0200, Ramzi BEN MEFTAH wrote:
-> From: Steve Longerbeam <steve_longerbeam@mentor.com>
->
+Lets not use terms like cuz... 'because' is perfect term :)
 
- +Niklas, +Laurent
+It can rephrased to:
+There is no reason to limit the performance on the 'NO-FLUSHP' SoCs
+beacuse 'FLUSHP' instruction is broken on these platforms, so remove the
+limit to improve the efficiency
 
-Niklas, Laurent, how does this play with CAP_IO_MC ?
 
-Thanks
-  j
-
-> This commit enables VIDIOC_ENUMINPUT, VIDIOC_G_INPUT, and VIDIOC_S_INPUT
-> ioctls for use via v4l2 subdevice node.
->
-> This commit should probably not be pushed upstream, because the (old)
-> idea of video inputs conflicts with the newer concept of establishing
-> media links between src->sink pads.
->
-> However it might make sense for some subdevices to support enum/get/set
-> inputs. One example would be the analog front end subdevice for the
-> ADV748x. By providing these ioctls, selecting the ADV748x analog inputs
-> can be done without requiring the implementation of media entities that
-> would define the analog source for which to establish a media link.
->
-> Signed-off-by: Steve Longerbeam <steve_longerbeam@mentor.com>
+> so, remove the limit to improve the efficiency.
+> 
+> Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
 > ---
->  drivers/media/v4l2-core/v4l2-subdev.c |  9 +++++++++
->  include/media/v4l2-subdev.h           | 11 +++++++++++
->  2 files changed, 20 insertions(+)
->
-> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-> index 6b989fe..73fbfe9 100644
-> --- a/drivers/media/v4l2-core/v4l2-subdev.c
-> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-> @@ -378,6 +378,15 @@ static long subdev_do_ioctl(struct file *file, unsigned int cmd, void *arg)
->  			return -ENOTTY;
->  		return v4l2_querymenu(vfh->ctrl_handler, arg);
->
-> +	case VIDIOC_ENUMINPUT:
-> +		return v4l2_subdev_call(sd, video, enuminput, arg);
-> +
-> +	case VIDIOC_G_INPUT:
-> +		return v4l2_subdev_call(sd, video, g_input, arg);
-> +
-> +	case VIDIOC_S_INPUT:
-> +		return v4l2_subdev_call(sd, video, s_input, *(u32 *)arg);
-> +
->  	case VIDIOC_G_CTRL:
->  		if (!vfh->ctrl_handler)
->  			return -ENOTTY;
-> diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-> index f7fe78a..6e1a9cd 100644
-> --- a/include/media/v4l2-subdev.h
-> +++ b/include/media/v4l2-subdev.h
-> @@ -383,6 +383,14 @@ struct v4l2_mbus_frame_desc {
->   * @g_input_status: get input status. Same as the status field in the
->   *	&struct &v4l2_input
->   *
-> + * @enuminput: enumerate inputs. Should return the same input status as
-> + *      @g_input_status if the passed input index is the currently active
-> + *      input.
-> + *
-> + * @g_input: returns the currently active input index.
-> + *
-> + * @s_input: set the active input.
-> + *
->   * @s_stream: used to notify the driver that a video stream will start or has
->   *	stopped.
->   *
-> @@ -423,6 +431,9 @@ struct v4l2_subdev_video_ops {
->  	int (*g_tvnorms)(struct v4l2_subdev *sd, v4l2_std_id *std);
->  	int (*g_tvnorms_output)(struct v4l2_subdev *sd, v4l2_std_id *std);
->  	int (*g_input_status)(struct v4l2_subdev *sd, u32 *status);
-> +	int (*enuminput)(struct v4l2_subdev *sd, struct v4l2_input *input);
-> +	int (*g_input)(struct v4l2_subdev *sd, u32 *index);
-> +	int (*s_input)(struct v4l2_subdev *sd, u32 index);
->  	int (*s_stream)(struct v4l2_subdev *sd, int enable);
->  	int (*g_pixelaspect)(struct v4l2_subdev *sd, struct v4l2_fract *aspect);
->  	int (*g_frame_interval)(struct v4l2_subdev *sd,
-> --
+> 
+> Changes in v2: None
+> 
+>  drivers/dma/pl330.c | 34 ++++++++++++++++++++++------------
+>  1 file changed, 22 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
+> index 6a158ee..ff0a91f 100644
+> --- a/drivers/dma/pl330.c
+> +++ b/drivers/dma/pl330.c
+> @@ -1183,9 +1183,6 @@ static inline int _ldst_peripheral(struct pl330_dmac *pl330,
+>  {
+>  	int off = 0;
+>  
+> -	if (pl330->quirks & PL330_QUIRK_BROKEN_NO_FLUSHP)
+> -		cond = BURST;
+> -
+>  	/*
+>  	 * do FLUSHP at beginning to clear any stale dma requests before the
+>  	 * first WFP.
+> @@ -1231,8 +1228,9 @@ static int _bursts(struct pl330_dmac *pl330, unsigned dry_run, u8 buf[],
+>  }
+>  
+>  /*
+> - * transfer dregs with single transfers to peripheral, or a reduced size burst
+> - * for mem-to-mem.
+> + * only the unaligned bursts transfers have the dregs.
+> + * transfer dregs with a reduced size burst to peripheral,
+> + * or a reduced size burst for mem-to-mem.
+
+This is not related to broken flush and should be a different patch
+explaining why this changes were done
+
+>   */
+>  static int _dregs(struct pl330_dmac *pl330, unsigned int dry_run, u8 buf[],
+>  		const struct _xfer_spec *pxs, int transfer_length)
+> @@ -1247,8 +1245,23 @@ static int _dregs(struct pl330_dmac *pl330, unsigned int dry_run, u8 buf[],
+>  	case DMA_MEM_TO_DEV:
+>  		/* fall through */
+>  	case DMA_DEV_TO_MEM:
+> -		off += _ldst_peripheral(pl330, dry_run, &buf[off], pxs,
+> -			transfer_length, SINGLE);
+> +		/*
+> +		 * dregs_len = (total bytes - BURST_TO_BYTE(bursts, ccr)) /
+> +		 *             BRST_SIZE(ccr)
+> +		 * the dregs len must be smaller than burst len,
+> +		 * so, for higher efficiency, we can modify CCR
+> +		 * to use a reduced size burst len for the dregs.
+> +		 */
+> +		dregs_ccr = pxs->ccr;
+> +		dregs_ccr &= ~((0xf << CC_SRCBRSTLEN_SHFT) |
+> +			(0xf << CC_DSTBRSTLEN_SHFT));
+> +		dregs_ccr |= (((transfer_length - 1) & 0xf) <<
+> +			CC_SRCBRSTLEN_SHFT);
+> +		dregs_ccr |= (((transfer_length - 1) & 0xf) <<
+> +			CC_DSTBRSTLEN_SHFT);
+> +		off += _emit_MOV(dry_run, &buf[off], CCR, dregs_ccr);
+> +		off += _ldst_peripheral(pl330, dry_run, &buf[off], pxs, 1,
+> +					BURST);
+>  		break;
+>  
+>  	case DMA_MEM_TO_MEM:
+> @@ -2221,9 +2234,7 @@ static bool pl330_prep_slave_fifo(struct dma_pl330_chan *pch,
+>  
+>  static int fixup_burst_len(int max_burst_len, int quirks)
+>  {
+> -	if (quirks & PL330_QUIRK_BROKEN_NO_FLUSHP)
+> -		return 1;
+> -	else if (max_burst_len > PL330_MAX_BURST)
+> +	if (max_burst_len > PL330_MAX_BURST)
+>  		return PL330_MAX_BURST;
+>  	else if (max_burst_len < 1)
+>  		return 1;
+> @@ -3128,8 +3139,7 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
+>  	pd->dst_addr_widths = PL330_DMA_BUSWIDTHS;
+>  	pd->directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+>  	pd->residue_granularity = DMA_RESIDUE_GRANULARITY_BURST;
+> -	pd->max_burst = ((pl330->quirks & PL330_QUIRK_BROKEN_NO_FLUSHP) ?
+> -			 1 : PL330_MAX_BURST);
+> +	pd->max_burst = PL330_MAX_BURST;
+>  
+>  	ret = dma_async_device_register(pd);
+>  	if (ret) {
+> -- 
 > 2.7.4
->
+> 
+> 
+
+-- 
+~Vinod
