@@ -2,102 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7EBF206A23
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 04:27:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2EE9206A2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 04:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388176AbgFXC1o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 22:27:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387719AbgFXC1n (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 22:27:43 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 327B2C061573;
-        Tue, 23 Jun 2020 19:27:43 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id 18so497803otv.6;
-        Tue, 23 Jun 2020 19:27:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gZQnvXpknW+rN20YHdcJ+Ylfzfin7eHSMN5K0zI8wKM=;
-        b=Lu853MjaeLGiuwcz+/VJ4vCOPidwiJ0QXUFF8p8giMtX6IQJi95CCn7a/nGfNLYt9P
-         RGpDPgW9qHlT+ZzC4HhwKfD0aRUqkmDMpxrYzUHgwQhJE7eOgk5Cp1CY/osP5xpWJsFg
-         2+htiESAWiebk1C57ehAJijBgA3LWDr8P+4GvuzefWIFFV7aBMP79mw+S1ahFDC1+HJC
-         fwIqjRRp6yS/W+YhNrKhViHvacTr/WOmUFCpeyeuiXMx7xov/Z0ER8VsVtYI5QbvJODX
-         MH6SIyz4GXWAOoO4UND2zJo+B4kWYD/cF2TqVkI+2qU41IHWEbzLO85Wo3O09ow1E19x
-         lVGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gZQnvXpknW+rN20YHdcJ+Ylfzfin7eHSMN5K0zI8wKM=;
-        b=HU/+quPlPAC/XdxTxCDw/yCPcyW/mOCQiUrWvsvgS53iSsAe+awv9J/MayfgOki0Mu
-         mKn0C6WmGeJ3rePJieGlJfvyYbI5pCFNE7O1NIgi9Y6g+O1RAKERY9+8jg/BQmx+s+1L
-         oFAp0Z5eT7Br8hds4o2j/eO8g6789nUf6K2cFtny/UKpdygF3EhroTlDnPQukeQdAX3b
-         CvC+OW14UwV6tq2/Dx5iVYFtalzXxF5hyJnRd0jh4M4uf9tLkZNw2o6Mbz/81RzHJJFL
-         9Pdr+/A+NYavDBc43uPvIdoOHLNebpTDRSyamwknWXUcSP7mDWl437DdCKiI7CeOI0v3
-         gXBQ==
-X-Gm-Message-State: AOAM5303tonGdSOxl2Q307ab2SSuQgF0JBgh1V3LaxenXmW/gObmOiij
-        Z4/mAiSL6yVM5WRfiukIC2A=
-X-Google-Smtp-Source: ABdhPJySA6GoUbHOYfx6fZOfJBu0OnsW+/ao6svZyzlL6ta5ow0SJTi5nhpXZ+Dsav1Qep4vroZROw==
-X-Received: by 2002:a9d:38a:: with SMTP id f10mr22049923otf.230.1592965662408;
-        Tue, 23 Jun 2020 19:27:42 -0700 (PDT)
-Received: from ubuntu-n2-xlarge-x86 ([2604:1380:4111:8b00::3])
-        by smtp.gmail.com with ESMTPSA id b2sm4740084ooe.13.2020.06.23.19.27.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 19:27:41 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 19:27:40 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Cristian Klein <cristian.klein@elastisys.com>
-Subject: Re: linux-next: build failures after merge of the hid tree
-Message-ID: <20200624022740.GA199301@ubuntu-n2-xlarge-x86>
-References: <20200621140421.7f4552df@canb.auug.org.au>
- <20200623103736.25f67de5@canb.auug.org.au>
- <nycvar.YFH.7.76.2006240012170.13242@cbobk.fhfr.pm>
+        id S2388341AbgFXC3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 22:29:09 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:28414 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388147AbgFXC3G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 22:29:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1592965746; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=UFyHj+W9ynWlJQRUY/i2VctFzcjjSc1Tu2WiBup8M1o=; b=Ipo+lNK5dvb4aSotrczIq8yZWRect5vZ6MD+cvEt6QhZ2M/ZDqAYGSaB5Umxnr9K8ccbCev4
+ lJ7lnpoCfGiLu8HStWisjYqyDoZy8nZltzJGFxxUZ56+XkNheE+C4utvj+Op58sogCWudcwR
+ NSmeaaz75SUysfzCbOYD5SLR9hM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n11.prod.us-west-2.postgun.com with SMTP id
+ 5ef2ba686f2ee827daeecfeb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Jun 2020 02:28:56
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B1E55C43395; Wed, 24 Jun 2020 02:28:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7CE4BC43391;
+        Wed, 24 Jun 2020 02:28:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7CE4BC43391
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, balbi@kernel.org,
+        gregkh@linuxfoundation.org, robh+dt@kernel.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
+Subject: [RFC v4 0/3] Re-introduce TX FIFO resize for larger EP bursting
+Date:   Tue, 23 Jun 2020 19:28:45 -0700
+Message-Id: <20200624022848.7765-1-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <nycvar.YFH.7.76.2006240012170.13242@cbobk.fhfr.pm>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri and Cristian,
+Changes in V4:
+ - Removed struct dwc3* as an argument for dwc3_gadget_resize_tx_fifos()
+ - Removed WARN_ON(1) in case we run out of fifo space
+ 
+Changes in V3:
+ - Removed "Reviewed-by" tags
+ - Renamed series back to RFC
+ - Modified logic to ensure that fifo_size is reset if we pass the minimum
+   threshold.  Tested with binding multiple FDs requesting 6 FIFOs.
 
-On Wed, Jun 24, 2020 at 12:13:57AM +0200, Jiri Kosina wrote:
-> On Tue, 23 Jun 2020, Stephen Rothwell wrote:
-> 
-> > > I don't know what caused it, but commit
-> > > 
-> > >   470376737e88 ("HID: allow building hid.ko as an external module")
-> > > 
-> > > did not fix it.  BTW, I build with "make O=...".
-> 
-> That's actually the patch that almost certainly broke it.
-> 
-> CCing Cristian (author of that patch) and Nathan, who apparently sent a 
-> fixup patch for this, but I haven't seen it, as our corporate mailserver 
-> had severe issues yesterday.
-> 
-> If there is no resolution by tomorrow, we'll just drop it.
-> 
-> -- 
-> Jiri Kosina
-> SUSE Labs
-> 
+Changes in V2:
+ - Modified TXFIFO resizing logic to ensure that each EP is reserved a
+   FIFO.
+ - Removed dev_dbg() prints and fixed typos from patches
+ - Added some more description on the dt-bindings commit message
 
-Sorry, I was not clear in my message about what I was "fixing", which
-was the fact that Cristian's initial reply was top posted, which I moved
-to the bottom. I thought that would have been apparent in a mail client,
-my bad :( I have not sent a fix for this issue.
+Currently, there is no functionality to allow for resizing the TXFIFOs, and
+relying on the HW default setting for the TXFIFO depth.  In most cases, the
+HW default is probably sufficient, but for USB compositions that contain
+multiple functions that require EP bursting, the default settings
+might not be enough.  Also to note, the current SW will assign an EP to a
+function driver w/o checking to see if the TXFIFO size for that particular
+EP is large enough. (this is a problem if there are multiple HW defined
+values for the TXFIFO size)
 
-Cheers,
-Nathan
+It is mentioned in the SNPS databook that a minimum of TX FIFO depth = 3
+is required for an EP that supports bursting.  Otherwise, there may be
+frequent occurences of bursts ending.  For high bandwidth functions,
+such as data tethering (protocols that support data aggregation), mass
+storage, and media transfer protocol (over FFS), the bMaxBurst value can be
+large, and a bigger TXFIFO depth may prove to be beneficial in terms of USB
+throughput. (which can be associated to system access latency, etc...)  It
+allows for a more consistent burst of traffic, w/o any interruptions, as
+data is readily available in the FIFO.
+
+With testing done using the mass storage function driver, the results show
+that with a larger TXFIFO depth, the bandwidth increased significantly.
+
+Test Parameters:
+ - Platform: Qualcomm SM8150
+ - bMaxBurst = 6
+ - USB req size = 256kB
+ - Num of USB reqs = 16
+ - USB Speed = Super-Speed
+ - Function Driver: Mass Storage (w/ ramdisk)
+ - Test Application: CrystalDiskMark
+
+Results:
+
+TXFIFO Depth = 3 max packets
+
+Test Case | Data Size | AVG tput (in MB/s)
+-------------------------------------------
+Sequential|1 GB x     | 
+Read      |9 loops    | 193.60
+	  |           | 195.86
+          |           | 184.77
+          |           | 193.60
+-------------------------------------------
+
+TXFIFO Depth = 6 max packets
+
+Test Case | Data Size | AVG tput (in MB/s)
+-------------------------------------------
+Sequential|1 GB x     | 
+Read      |9 loops    | 287.35
+	  |           | 304.94
+          |           | 289.64
+          |           | 293.61
+-------------------------------------------
+
+Wesley Cheng (3):
+  usb: dwc3: Resize TX FIFOs to meet EP bursting requirements
+  arm64: boot: dts: qcom: sm8150: Enable dynamic TX FIFO resize logic
+  dt-bindings: usb: dwc3: Add entry for tx-fifo-resize
+
+ .../devicetree/bindings/usb/dwc3.txt          |   2 +-
+ arch/arm64/boot/dts/qcom/sm8150.dtsi          |   1 +
+ drivers/usb/dwc3/core.c                       |   2 +
+ drivers/usb/dwc3/core.h                       |   8 ++
+ drivers/usb/dwc3/ep0.c                        |  37 +++++-
+ drivers/usb/dwc3/gadget.c                     | 115 ++++++++++++++++++
+ 6 files changed, 163 insertions(+), 2 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
