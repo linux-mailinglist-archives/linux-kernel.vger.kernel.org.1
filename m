@@ -2,119 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD9CC2075E1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35C52075F3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391097AbgFXOlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 10:41:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52248 "EHLO
+        id S2391239AbgFXOoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 10:44:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389836AbgFXOlT (ORCPT
+        with ESMTP id S2389836AbgFXOoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 10:41:19 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19457C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 07:41:19 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d12so1150259ply.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 07:41:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Fbp7umasnXh+ke7N+beUAyOfPReUM2Tp6A+dzgB7eMs=;
-        b=LdqUQaQQ73lvg2EH4zB5b0fAHY6pDsTgO5VkTlBIIFPTWFDt6KEfeGjsb0w6+bZ9Ow
-         NITWE6F0NiNBcydTH1X5G5v/4LVNjJl2xkptnKSgFVRZwIBSdg7/4DIa9E/LMGsAb6fD
-         enidR4CvnWPaAtnjb4zwOOo4tT4QsgRPZnifk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Fbp7umasnXh+ke7N+beUAyOfPReUM2Tp6A+dzgB7eMs=;
-        b=YRxNt/O6/dKTAetJjwWlcRe+IsnX8+2QCs3/P9eLKkH7Yx/lcfqNyHVXi8RRzEns7R
-         IgRS4d/I4vs9b4geEE1Jf/lNRSDKHSCXvb5RhEIfJo93CtBKBqgOB/lWeROBWKzJemJK
-         C84deZpQehzxwsfndKdIHcnxUUbG51WTPsehiTv1epcFu7yCTwGiUO+hHEutABKQGzPj
-         tUg1AlF/PYLW9CXqLfyG/9bpMRsnto1flseflu0og3Kq3Zf6HYY6w8qPlyFKBG95y4fF
-         +BoWS7mSbtgson9O13iblMbm06haI34Ia5N4qL59fC88I76dDTaQOLwoyXQd6ME98mk1
-         rZgA==
-X-Gm-Message-State: AOAM532iEixbcgt3tVcMalZh2jGaYUZ6g0jcBrtqEZhGeEAexlEcCv67
-        Eg2RvkGIerTBeZ/qFuVC37K+dg==
-X-Google-Smtp-Source: ABdhPJyLzb6qwq/8MBqHXf8uzinIy/tV8mWrOCrHPE7Fwn5qlWt9b5nzHsWE+x0soPiCSmy2JH0LLA==
-X-Received: by 2002:a17:90a:7185:: with SMTP id i5mr2257473pjk.175.1593009678562;
-        Wed, 24 Jun 2020 07:41:18 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s23sm15899769pfs.157.2020.06.24.07.41.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 07:41:17 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 07:41:16 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexander Popov <alex.popov@linux.com>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>, Jann Horn <jannh@google.com>,
-        Emese Revfy <re.emese@gmail.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Jessica Yu <jeyu@kernel.org>,
-        Sven Schnelle <svens@stackframe.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Alexander Monakov <amonakov@ispras.ru>,
-        Mathias Krause <minipli@googlemail.com>,
-        PaX Team <pageexec@freemail.hu>,
-        Brad Spengler <spender@grsecurity.net>,
-        Laura Abbott <labbott@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        kernel-hardening@lists.openwall.com, linux-kbuild@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, gcc@gcc.gnu.org, notify@kernel.org
-Subject: Re: [PATCH v2 5/5] gcc-plugins/stackleak: Add 'verbose' plugin
- parameter
-Message-ID: <202006240740.5AF6369E53@keescook>
-References: <20200624123330.83226-1-alex.popov@linux.com>
- <20200624123330.83226-6-alex.popov@linux.com>
- <20200624125305.GG4332@42.do-not-panic.com>
- <d7b118c1-0369-9aef-bd34-afc9bafc7e7b@linux.com>
+        Wed, 24 Jun 2020 10:44:12 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2292C061573;
+        Wed, 24 Jun 2020 07:44:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=MmxB8m2YTQX4GpqX+DS37OeRO131e4ndrA9Pl7MwAgc=; b=IOKw7hTcqP1QeelKxku2fGErUp
+        y+gPHThYulPLcw9ZipHA3WEiY0WwtrldwMIjz3I7xFlS4UrXh0IrgE+Nr+g3IVn/C5NubV4TtA66n
+        mLCdiZe84XJ5gE3144uUmasV1evosCnueCmLRk8e5igFHS/jiN+zd4BOILHYYRSu5tnwTTHYczGNM
+        1jNp5/TmBH3r+Cd233b/d63zVr4Nez7dPM6LjZYPehQuohr79GeKnvEyrBvDcVSHQMeCupwKnSb4b
+        k2SF0UgTWsWjSf1WxnC6wYcLs8KKkTGGpdaa+3jajs+y6awdDlv2/jH3uD+C53erVvC46axMeuEel
+        iaiP6SWQ==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jo6cJ-0001Xw-5j; Wed, 24 Jun 2020 14:43:11 +0000
+Date:   Wed, 24 Jun 2020 15:43:11 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Christian Borntraeger <borntraeger@de.ibm.com>
+Cc:     mcgrof@kernel.org, ast@kernel.org, axboe@kernel.dk,
+        bfields@fieldses.org, bridge@lists.linux-foundation.org,
+        chainsaw@gentoo.org, christian.brauner@ubuntu.com,
+        chuck.lever@oracle.com, davem@davemloft.net, dhowells@redhat.com,
+        gregkh@linuxfoundation.org, jarkko.sakkinen@linux.intel.com,
+        jmorris@namei.org, josh@joshtriplett.org, keescook@chromium.org,
+        keyrings@vger.kernel.org, kuba@kernel.org,
+        lars.ellenberg@linbit.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-security-module@vger.kernel.org, nikolay@cumulusnetworks.com,
+        philipp.reisner@linbit.com, ravenexp@gmail.com,
+        roopa@cumulusnetworks.com, serge@hallyn.com, slyfox@gentoo.org,
+        viro@zeniv.linux.org.uk, yangtiezhu@loongson.cn,
+        netdev@vger.kernel.org, markward@linux.ibm.com,
+        linux-s390 <linux-s390@vger.kernel.org>
+Subject: Re: linux-next: umh: fix processed error when UMH_WAIT_PROC is used
+ seems to break linux bridge on s390x (bisected)
+Message-ID: <20200624144311.GA5839@infradead.org>
+References: <20200610154923.27510-5-mcgrof@kernel.org>
+ <20200623141157.5409-1-borntraeger@de.ibm.com>
+ <b7d658b9-606a-feb1-61f9-b58e3420d711@de.ibm.com>
+ <3118dc0d-a3af-9337-c897-2380062a8644@de.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d7b118c1-0369-9aef-bd34-afc9bafc7e7b@linux.com>
+In-Reply-To: <3118dc0d-a3af-9337-c897-2380062a8644@de.ibm.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 04:09:20PM +0300, Alexander Popov wrote:
-> On 24.06.2020 15:53, Luis Chamberlain wrote:
-> > On Wed, Jun 24, 2020 at 03:33:30PM +0300, Alexander Popov wrote:
-> >> Add 'verbose' plugin parameter for stackleak gcc plugin.
-> >> It can be used for printing additional info about the kernel code
-> >> instrumentation.
-> >>
-> >> For using it add the following to scripts/Makefile.gcc-plugins:
-> >>   gcc-plugin-cflags-$(CONFIG_GCC_PLUGIN_STACKLEAK) \
-> >>     += -fplugin-arg-stackleak_plugin-verbose
-> > 
-> > Would be nice if we instead could pass an argument to make which lets
-> > us enable this.
-> 
-> This feature is useful only for debugging stackleak gcc plugin.
-> 
-> The cflag that enables it is similar to -fplugin-arg-structleak_plugin-verbose,
-> which is used for debugging the structleak plugin.
-> 
-> This debugging feature clutters the kernel build output, I don't think that many
-> people will use it. So IMO creating a separate argument for make is not really
-> needed.
+On Wed, Jun 24, 2020 at 01:11:54PM +0200, Christian Borntraeger wrote:
+> Does anyone have an idea why "umh: fix processed error when UMH_WAIT_PROC is used" breaks the
+> linux-bridge on s390?
 
-Yup, agreed. The precedent for plugin verbosity is via CONFIGs. They're
-not really general purpose enough to justify a "make" argument.
-
--- 
-Kees Cook
+Are we even sure this is s390 specific and doesn't happen on other
+architectures with the same bridge setup?
