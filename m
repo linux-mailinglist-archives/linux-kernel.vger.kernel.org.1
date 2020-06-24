@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6092077F1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:53:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DFA2077F9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404612AbgFXPvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35156 "EHLO
+        id S2404683AbgFXPwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404583AbgFXPvu (ORCPT
+        with ESMTP id S2404620AbgFXPv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:51:50 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28246C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:51:50 -0700 (PDT)
+        Wed, 24 Jun 2020 11:51:56 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E89A5C061798
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:51:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=6ytk5toi7ed/P8/QssHvJfGQ5q0+1cUdkvB+sfDzJjE=; b=QQqrMWRUwxio04nMt9S/t2meEV
-        KFidREbqAqMpGuQVShugtU5alC55oRHt36+jS6llso300/6AR/DQ27BjAjIy/aVvkOylluK6rMxgn
-        FXk9o2Ulu+saIOoqwqapzznXrE42AMljddbgegTWm8nAkRZG1g65C9Z2dM59MKluGwXem0qsUZJyy
-        vRxihbR7533zuShw2p4jTpO2sLUa23NQxqbPyQzOCOT5+p99onod41er0RsxJdo1GC/FU6rda2UOW
-        CA7qFTboi2gYdAw0O9KeVgzmfOeV6A10d7mkWJvsafZ3iHv+oPlFeUnu5WQOaFx07p03d9W3FvekV
-        ZFfKNa2w==;
+        bh=fcdJT8N8GdztKJah2wyn17vwCuhVL8UOOyzx90UFUnM=; b=Y9gMf5pjFRw97t0yTu9a0pHz0a
+        x3iwwYUqz5bXdgsU7zG92rxxnolPDdqYh57yh3VUMh5wt5ONMAFqviPSmlPfnNdtrRikRo72EUwFu
+        5BvfguFWU0Kcl9/C+ESZGw4+ZqQTUEWgX3qNPs1cN9Wewpi+B0sga3f02GtQsQ10bHTuLOfLIHAoW
+        QkJiVkzYCy23CSvXR8dwybsDkjaaVztrMd4nIJkFU6nJoZU/MeWVn9fxEQEj3Tw1p62j46H8weI8D
+        8CZyes1SRqu6nqd4h3EDwiQFyBFGf8iOKZZKaYdof0a3JBcnH9gk/YDdLzTLpBcbHdxH+KipC3bCE
+        e2++hoLg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jo7gB-0004rL-QH; Wed, 24 Jun 2020 15:51:16 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jo7gD-0001e7-Qu; Wed, 24 Jun 2020 15:51:18 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B6BCB3079BB;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B6B6E3079A1;
         Wed, 24 Jun 2020 17:51:14 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id EFEAC236E7761; Wed, 24 Jun 2020 17:51:13 +0200 (CEST)
-Message-ID: <20200624154157.387987088@infradead.org>
+        id F3590236E7762; Wed, 24 Jun 2020 17:51:13 +0200 (CEST)
+Message-ID: <20200624154157.449643778@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 24 Jun 2020 17:30:35 +0200
+Date:   Wed, 24 Jun 2020 17:30:36 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
@@ -47,7 +47,7 @@ Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
         hpa@zytor.com, luto@kernel.org, ard.biesheuvel@linaro.org,
         jpoimboe@redhat.com, pbonzini@redhat.com,
         mathieu.desnoyers@efficios.com, linux@rasmusvillemoes.dk
-Subject: [PATCH v5 11/17] static_call: Simple self-test
+Subject: [PATCH v5 12/17] x86/alternatives: Teach text_poke_bp() to emulate RET
 References: <20200624153024.794671356@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,61 +56,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Future patches will need to poke a RET instruction, provide the
+infrastructure required for this.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/Kconfig         |    6 ++++++
- kernel/static_call.c |   28 ++++++++++++++++++++++++++++
- 2 files changed, 34 insertions(+)
+ arch/x86/include/asm/text-patching.h |   19 +++++++++++++++++++
+ arch/x86/kernel/alternative.c        |    5 +++++
+ 2 files changed, 24 insertions(+)
 
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -103,6 +103,12 @@ config STATIC_KEYS_SELFTEST
- 	help
- 	  Boot time self-test of the branch patching code.
+--- a/arch/x86/include/asm/text-patching.h
++++ b/arch/x86/include/asm/text-patching.h
+@@ -53,6 +53,9 @@ extern void text_poke_finish(void);
+ #define INT3_INSN_SIZE		1
+ #define INT3_INSN_OPCODE	0xCC
  
-+config STATIC_CALL_SELFTEST
-+	bool "Static call selftest"
-+	depends on HAVE_STATIC_CALL
-+	help
-+	  Boot time self-test of the call patching code.
++#define RET_INSN_SIZE		1
++#define RET_INSN_OPCODE		0xC3
 +
- config OPTPROBES
- 	def_bool y
- 	depends on KPROBES && HAVE_OPTPROBES
---- a/kernel/static_call.c
-+++ b/kernel/static_call.c
-@@ -364,3 +364,31 @@ static void __init static_call_init(void
- #endif
+ #define CALL_INSN_SIZE		5
+ #define CALL_INSN_OPCODE	0xE8
+ 
+@@ -73,6 +76,7 @@ static __always_inline int text_opcode_s
+ 
+ 	switch(opcode) {
+ 	__CASE(INT3);
++	__CASE(RET);
+ 	__CASE(CALL);
+ 	__CASE(JMP32);
+ 	__CASE(JMP8);
+@@ -141,11 +145,26 @@ void int3_emulate_push(struct pt_regs *r
  }
- early_initcall(static_call_init);
-+
-+#ifdef CONFIG_STATIC_CALL_SELFTEST
-+
-+static int func_a(int x)
+ 
+ static __always_inline
++unsigned long int3_emulate_pop(struct pt_regs *regs)
 +{
-+	return x+1;
++	unsigned long val = *(unsigned long *)regs->sp;
++	regs->sp += sizeof(unsigned long);
++	return val;
 +}
 +
-+static int func_b(int x)
++static __always_inline
+ void int3_emulate_call(struct pt_regs *regs, unsigned long func)
+ {
+ 	int3_emulate_push(regs, regs->ip - INT3_INSN_SIZE + CALL_INSN_SIZE);
+ 	int3_emulate_jmp(regs, func);
+ }
++
++static __always_inline
++void int3_emulate_ret(struct pt_regs *regs)
 +{
-+	return x+2;
++	unsigned long ip = int3_emulate_pop(regs);
++	int3_emulate_jmp(regs, ip);
 +}
+ #endif /* !CONFIG_UML_X86 */
+ 
+ #endif /* _ASM_X86_TEXT_PATCHING_H */
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -1099,6 +1099,10 @@ int noinstr poke_int3_handler(struct pt_
+ 		 */
+ 		goto out_put;
+ 
++	case RET_INSN_OPCODE:
++		int3_emulate_ret(regs);
++		break;
 +
-+DEFINE_STATIC_CALL(sc_selftest, func_a);
-+
-+static int __init test_static_call_init(void)
-+{
-+	WARN_ON(static_call(sc_selftest)(2) != 3);
-+	static_call_update(sc_selftest, &func_b);
-+	WARN_ON(static_call(sc_selftest)(2) != 4);
-+	static_call_update(sc_selftest, &func_a);
-+	WARN_ON(static_call(sc_selftest)(2) != 3);
-+
-+	return 0;
-+}
-+early_initcall(test_static_call_init);
-+
-+#endif /* CONFIG_STATIC_CALL_SELFTEST */
+ 	case CALL_INSN_OPCODE:
+ 		int3_emulate_call(regs, (long)ip + tp->rel32);
+ 		break;
+@@ -1240,6 +1244,7 @@ static void text_poke_loc_init(struct te
+ 
+ 	switch (tp->opcode) {
+ 	case INT3_INSN_OPCODE:
++	case RET_INSN_OPCODE:
+ 		break;
+ 
+ 	case CALL_INSN_OPCODE:
 
 
