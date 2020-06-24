@@ -2,136 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D566A2078A8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B88D2078AB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404925AbgFXQOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 12:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38696 "EHLO
+        id S2404943AbgFXQOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 12:14:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404843AbgFXQOO (ORCPT
+        with ESMTP id S2404928AbgFXQOj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 12:14:14 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8C7CC0613ED;
-        Wed, 24 Jun 2020 09:14:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=2SizYORAzETdBPOXQ0bh10vOYVYerECcQapfjW0L0UI=; b=I82Djkmixse3CInvkiL3x75jlg
-        TQANtf+xq0FUXln1hgh+v86mlIOiHnz5Fgz4xS+esrrdS+6jFM3urx7ev7uFGq5ClXHb8a4H4HV+W
-        bM7b9mFOP1HW+N0P1uAt944L9pPSeVoaTFyF8RTe1VG4pgwqXunuGoRIzDNouzWdxfRST11ovSM8i
-        rhqgqwUEwbwflT4qdidDhV3b63zaGYWsTfY5MFMpxOdYsuACFBrlWCbHexJuYmsg6L0sSBt6SHvxc
-        Ha6DLT8L7L4sEtD+02BbllCNDVN9pgfNBqNy0LUIrJJtJgrAxccT+sNEW+e8dcptybilQIm6fK6OX
-        kchfD5aA==;
-Received: from [2001:4bb8:180:a3:5c7c:8955:539d:955b] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jo826-0005zV-FQ; Wed, 24 Jun 2020 16:13:54 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Ian Kent <raven@themaw.net>,
-        David Howells <dhowells@redhat.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        netfilter-devel@vger.kernel.org
-Subject: [PATCH 14/14] fs: don't change the address limit for ->read_iter in __kernel_read
-Date:   Wed, 24 Jun 2020 18:13:35 +0200
-Message-Id: <20200624161335.1810359-15-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200624161335.1810359-1-hch@lst.de>
-References: <20200624161335.1810359-1-hch@lst.de>
+        Wed, 24 Jun 2020 12:14:39 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8661AC0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 09:14:39 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id u26so4840445wmn.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 09:14:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=JZwW5G5yWDQn7isXOxX6OgeleecRbTC9nCsi8uj1JNQ=;
+        b=vvkd1UY91KCarieRskOqn4JPNlnOQzqs9UCV25dgPU4GhdYxZhq6iQFStm/crcaxZ1
+         SaqYy5hyEwv6QKqfAAPLeJbGf/0B1SnbEeLVk/VMLhX4kIdYeVB2OImuZvbdcUcr1mMX
+         YeZTk3pgZHj7OpVZtQKE8Dr33AZ8kek8YYU+ib4PNri/SvMiyoYMiixaBBTLqb1HAArs
+         tlH7+e+JuVvGychuZMxj1QThYw1Ruf5BZERGQz8bdAA99pfmM/KJrtZFVkWU/t8B2vHv
+         1stmNq0PgDpRWSd6JG2kcwPdMzLuoD4seA09IgNmk5ZvsUppndK1TT1CLrqxX7ZHD6mQ
+         PDEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=JZwW5G5yWDQn7isXOxX6OgeleecRbTC9nCsi8uj1JNQ=;
+        b=oc0fZmQAbYGX3F7n0RqXjaPpH9T7HgX+eGaPnKYSIYy74TfLGOG3JX5v19uGV6Btw+
+         d2bu/d34U/BIVYVbUGehGt2YnR+mQJvCtWvJ3maKLaYlLEgn3bgrB/6na5Y6NromM4sH
+         1eXgsvdaZ7xAxl6bcf22XPtri9A2y1srhxJmLiKqySLq/rc0Pi4o/iqTGGg0HJItyncy
+         wz1aCuYLq54VJr0wsB9SPGL4qrZR8xNt4E9lbLuqjynAwok0ESagb0q2KAZ8bgXPnLaE
+         biNGJautuw+66r2OJCakOVcBAVK3LWfyG8HZAeFcnzFoBtrZx8dEdj762HVZr38bomyV
+         di/A==
+X-Gm-Message-State: AOAM530YfgGSnib+l2g1F2d77F69FGwRe0DmezRIwdPIYKQ6VdWudDzy
+        XQLuCMlu7VrVxns8zpza+Zp8Bg==
+X-Google-Smtp-Source: ABdhPJwLF8n1RB43kspzHdY8WTuv/0NWaBJLIc+6JrYaIAS9KX1GtgIjzTREB/louHC0/laR7dJR6Q==
+X-Received: by 2002:a05:600c:204d:: with SMTP id p13mr30158147wmg.88.1593015278202;
+        Wed, 24 Jun 2020 09:14:38 -0700 (PDT)
+Received: from dell ([2.27.35.144])
+        by smtp.gmail.com with ESMTPSA id f186sm8428843wmf.29.2020.06.24.09.14.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 09:14:37 -0700 (PDT)
+Date:   Wed, 24 Jun 2020 17:14:35 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Frank Rowand <frowand.list@gmail.com>
+Cc:     andy.shevchenko@gmail.com, michael@walle.cc, robh+dt@kernel.org,
+        broonie@kernel.org, devicetree@vger.kernel.org,
+        linus.walleij@linaro.org, linux@roeck-us.net,
+        andriy.shevchenko@linux.intel.com, robin.murphy@arm.com,
+        gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] mfd: core: Make a best effort attempt to match
+ devices with the correct of_nodes
+Message-ID: <20200624161435.GI954398@dell>
+References: <20200622151054.GW954398@dell>
+ <037c0fd2-df35-5981-7ef2-c6199841650d@gmail.com>
+ <20200622191133.GY954398@dell>
+ <dc893ce4-8a4d-b7d9-8591-18a8b9b2ea2b@gmail.com>
+ <20200623064723.GZ954398@dell>
+ <83f2be78-1548-fa2b-199a-2391b2eceb47@gmail.com>
+ <20200623195905.GB954398@dell>
+ <6684101d-1013-2964-c247-394f9b12a194@gmail.com>
+ <20200624074631.GE954398@dell>
+ <d7774c42-fd41-9fab-2ea0-cd6bc7d35383@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <d7774c42-fd41-9fab-2ea0-cd6bc7d35383@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we read to a file that implements ->read_iter there is no need
-to change the address limit if we send a kvec down.
+On Wed, 24 Jun 2020, Frank Rowand wrote:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/read_write.c | 40 +++++++++++++++++++++++++---------------
- 1 file changed, 25 insertions(+), 15 deletions(-)
+> On 2020-06-24 02:46, Lee Jones wrote:
+> > On Tue, 23 Jun 2020, Frank Rowand wrote:
+> > 
+> >> On 2020-06-23 14:59, Lee Jones wrote:
+> 
+> < big snip >
+> 
+> Thanks for the replies in the above portion.
 
-diff --git a/fs/read_write.c b/fs/read_write.c
-index 1c41c25e548d8c..e7f36b15683049 100644
---- a/fs/read_write.c
-+++ b/fs/read_write.c
-@@ -421,7 +421,6 @@ static ssize_t new_sync_read(struct file *filp, char __user *buf, size_t len, lo
- 
- ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
- {
--	mm_segment_t old_fs = get_fs();
- 	ssize_t ret;
- 
- 	if (WARN_ON_ONCE(!(file->f_mode & FMODE_READ)))
-@@ -431,14 +430,25 @@ ssize_t __kernel_read(struct file *file, void *buf, size_t count, loff_t *pos)
- 
- 	if (count > MAX_RW_COUNT)
- 		count =  MAX_RW_COUNT;
--	set_fs(KERNEL_DS);
--	if (file->f_op->read)
-+	if (file->f_op->read) {
-+		mm_segment_t old_fs = get_fs();
-+
-+		set_fs(KERNEL_DS);
- 		ret = file->f_op->read(file, (void __user *)buf, count, pos);
--	else if (file->f_op->read_iter)
--		ret = new_sync_read(file, (void __user *)buf, count, pos);
--	else
-+		set_fs(old_fs);
-+	} else if (file->f_op->read_iter) {
-+		struct kvec iov = { .iov_base = buf, .iov_len = count };
-+		struct kiocb kiocb;
-+		struct iov_iter iter;
-+
-+		init_sync_kiocb(&kiocb, file);
-+		kiocb.ki_pos = *pos;
-+		iov_iter_kvec(&iter, READ, &iov, 1, count);
-+		ret = file->f_op->read_iter(&kiocb, &iter);
-+		*pos = kiocb.ki_pos;
-+	} else {
- 		ret = -EINVAL;
--	set_fs(old_fs);
-+	}
- 	if (ret > 0) {
- 		fsnotify_access(file);
- 		add_rchar(current, ret);
-@@ -520,7 +530,14 @@ ssize_t __kernel_write(struct file *file, const void *buf, size_t count,
- 
- 	if (count > MAX_RW_COUNT)
- 		count =  MAX_RW_COUNT;
--	if (file->f_op->write_iter) {
-+	if (file->f_op->write) {
-+		mm_segment_t old_fs = get_fs();
-+
-+		set_fs(KERNEL_DS);
-+		ret = file->f_op->write(file, (__force const char __user *)buf,
-+				count, pos);
-+		set_fs(old_fs);
-+	} else if (file->f_op->write_iter) {
- 		struct kvec iov = { .iov_base = (void *)buf, .iov_len = count };
- 		struct kiocb kiocb;
- 		struct iov_iter iter;
-@@ -531,13 +548,6 @@ ssize_t __kernel_write(struct file *file, const void *buf, size_t count,
- 		ret = file->f_op->write_iter(&kiocb, &iter);
- 		if (ret > 0)
- 			*pos = kiocb.ki_pos;
--	} else if (file->f_op->write) {
--		mm_segment_t old_fs = get_fs();
--
--		set_fs(KERNEL_DS);
--		ret = file->f_op->write(file, (__force const char __user *)buf,
--				count, pos);
--		set_fs(old_fs);
- 	} else {
- 		ret = -EINVAL;
- 	}
+NP.
+
+> >>>> But yes or no to my solution #2 (with some slight changes to
+> >>>> make it better (more gracious handling of the detected error) as
+> >>>> discussed elsewhere in the email thread)?
+> >>>
+> >>> Please see "[0]" above!
+> >>>
+> >>> AFAICT your solution #2 involves bombing out *all* devices if there is
+> >>> a duplicate compatible with no 'reg' property value.  This is a)
+> >>> over-kill and b) not an error, as I mentioned:
+> >>
+> >> As I mentioned above, I set you up to have this misunderstanding by
+> >> a mistake in one of my earlier emails.  So now that I have pointed
+> >> out what I meant here by "more gracious handling of the detected
+> >> error", what do you think of my amended solution #2?
+> > 
+> > Explained above, but the LT;DR is that it's not correct.
+> 
+> I don't agree with you, I think my solution is better.  Even if I
+> prefer my solution, I find your solution to be good enough.
+
+I still don't see how it could work, but please feel free to submit a
+subsequent patch and we can discuss it on its own merits.
+
+> So I am dropping my specific objection to returning -EAGAIN from
+> mfd_match_of_node_to_dev() when the node has previously been
+> allocated to a device.
+
+Great.  Thanks for taking an interest.
+
+Does this mean I can apply your Reviewed-by?
+
 -- 
-2.26.2
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
