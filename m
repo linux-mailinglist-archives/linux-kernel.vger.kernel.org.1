@@ -2,180 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C522D206978
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 03:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D13D20697B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 03:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388436AbgFXBY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 21:24:56 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:21190 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388373AbgFXBYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 21:24:49 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1592961887; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=r5Ps0ckSVMP7RdDIdPCozlpA1Q6xNvrvfOb891tsolA=; b=Ku2nceJm/2NN/ptFZ78UAzTxr7Q4vxANSasjyXWAciJKY+jxH2aWDwH7QkR/vfPKTZbK93Lo
- 7FJvY+YwchWjJslBx6rChuGqYSD+jhKG5zL4YSrPzW2WPZRW5erqOHKnRvajHXGbPXw4kM3r
- OjstA8P/pAZ8SHs9f+SSZ8tJf2M=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5ef2ab5f0206ad41d1e7e802 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Jun 2020 01:24:47
- GMT
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 469A4C4339C; Wed, 24 Jun 2020 01:24:46 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from rishabhb-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: rishabhb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 684B9C433C8;
-        Wed, 24 Jun 2020 01:24:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 684B9C433C8
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=rishabhb@codeaurora.org
-From:   Rishabh Bhatnagar <rishabhb@codeaurora.org>
-To:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     bjorn.andersson@linaro.org, mathieu.poirier@linaro.org,
-        tsoni@codeaurora.org, psodagud@codeaurora.org,
-        sidgup@codeaurora.org, Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Subject: [PATCH v5 3/3] remoteproc: Add coredump debugfs entry
-Date:   Tue, 23 Jun 2020 18:24:14 -0700
-Message-Id: <1592961854-634-4-git-send-email-rishabhb@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1592961854-634-1-git-send-email-rishabhb@codeaurora.org>
-References: <1592961854-634-1-git-send-email-rishabhb@codeaurora.org>
+        id S2388455AbgFXBZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 21:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387842AbgFXBZd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 21:25:33 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65FDC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 18:25:30 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id q19so731253lji.2
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 18:25:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9ym1pbvhecpjgkqBUHdG2jngAamnO8ZMTgtaxvGC8kU=;
+        b=JXNAQn0JgEi7NOj8FqP/q4K0S7NkS/7ef+DDatTkE/hHyxYAHbsVnDE9mzYrDs+hkX
+         9mShn9ffdkCCu8/U3QYDZ+AkPv/hOUT7dkhFN+JNrX65Y3wgHYGxm9j3jfBnnzUviybW
+         Qbd44IEqMk4ZbczoGYdgIRY7AKtpbZwFEwNBsU5KGhdAPtEEq4JpdZvun7UaUALWah7K
+         dviUIzGiwghBvkwszBPYodKzZwZ2MVz4LtcTxn82VoX6li+iuQ8nzjiwuVW8U1Ki+jRG
+         BUZxhJQdzxCHoJW1sCDSuKGmOxKI0EJiEUeCJZRjk4mDCR4iC5G34i8WC//S/aIqzdde
+         y1FQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9ym1pbvhecpjgkqBUHdG2jngAamnO8ZMTgtaxvGC8kU=;
+        b=J35uILOdkOSHBPSL090KQbEy3lxD+Zc95xKcE5sPW+svzsx5YPdsgrRf6qK8CHyU+N
+         EznbmBmKFnLtz/ZXyP1et2JUyUaweK5TI54kQ4tLgnUrmnya5mm+DOL2nF1tNoBmU5Pv
+         rq2FsC8Qn1CuZX2pe1U1gM5lGOxR+NP1bX+p6O8gglP+e3eFvEj6fkbViT+8KyJoOQ3Q
+         kd2KSZ793pl2ytBAJBSUY5potujZJtXhNkWiEzoDu3pL30zTEcr9IbLx4U0/TK0j7ZpR
+         l6/KGTY7da8HypiY8Meb4uWDWkfpKBwtrWLQ2gSwFOa/B/26osML3SJHYWfGeic/ARK4
+         vrnQ==
+X-Gm-Message-State: AOAM5318tRV2p59wCjU6614WIvzBqdCx+85rrW8XYeEFPxcyAjRezJ3W
+        EEBEP0fUtHCb3JzeJsLosb5ThnK5mCEqv94tSnEOcw==
+X-Google-Smtp-Source: ABdhPJyiAww+T1xHD4MOi+PiWUrYgooq+GRv77kONhLFxcRkhWS52y+8FVIf38NqpOBPsQVKcRktXBbVVST6VNDh0MM=
+X-Received: by 2002:a2e:960b:: with SMTP id v11mr12741935ljh.77.1592961928783;
+ Tue, 23 Jun 2020 18:25:28 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200623184515.4132564-1-guro@fb.com> <20200623184515.4132564-3-guro@fb.com>
+In-Reply-To: <20200623184515.4132564-3-guro@fb.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 23 Jun 2020 18:25:17 -0700
+Message-ID: <CALvZod4HuMHuSP9m=HW5cDTmCfpZ5he_2n4kDctF21WNwJwEpQ@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] mm: memcg/percpu: account percpu memory to memory cgroups
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Kernel Team <kernel-team@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add coredump debugfs entry to configure the type of dump that will
-be collected during recovery. User can select between default or
-inline coredump functionality. Also coredump collection can be
-disabled through this interface.
-This functionality can be configured differently for different
-remote processors.
+On Tue, Jun 23, 2020 at 11:47 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> Percpu memory is becoming more and more widely used by various subsystems,
+> and the total amount of memory controlled by the percpu allocator can make
+> a good part of the total memory.
+>
+> As an example, bpf maps can consume a lot of percpu memory, and they are
+> created by a user.  Also, some cgroup internals (e.g.  memory controller
+> statistics) can be quite large.  On a machine with many CPUs and big
+> number of cgroups they can consume hundreds of megabytes.
+>
+> So the lack of memcg accounting is creating a breach in the memory
+> isolation.  Similar to the slab memory, percpu memory should be accounted
+> by default.
+>
+> To implement the perpcu accounting it's possible to take the slab memory
+> accounting as a model to follow.  Let's introduce two types of percpu
+> chunks: root and memcg.  What makes memcg chunks different is an
+> additional space allocated to store memcg membership information.  If
+> __GFP_ACCOUNT is passed on allocation, a memcg chunk should be be used.
+> If it's possible to charge the corresponding size to the target memory
+> cgroup, allocation is performed, and the memcg ownership data is recorded.
+> System-wide allocations are performed using root chunks, so there is no
+> additional memory overhead.
+>
+> To implement a fast reparenting of percpu memory on memcg removal, we
+> don't store mem_cgroup pointers directly: instead we use obj_cgroup API,
+> introduced for slab accounting.
+>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Acked-by: Dennis Zhou <dennis@kernel.org>
 
-Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
- drivers/remoteproc/remoteproc_debugfs.c | 86 +++++++++++++++++++++++++++++++++
- 1 file changed, 86 insertions(+)
-
-diff --git a/drivers/remoteproc/remoteproc_debugfs.c b/drivers/remoteproc/remoteproc_debugfs.c
-index 732770e..cca0a91 100644
---- a/drivers/remoteproc/remoteproc_debugfs.c
-+++ b/drivers/remoteproc/remoteproc_debugfs.c
-@@ -28,6 +28,90 @@
- static struct dentry *rproc_dbg;
- 
- /*
-+ * A coredump-configuration-to-string lookup table, for exposing a
-+ * human readable configuration via debugfs. Always keep in sync with
-+ * enum rproc_coredump_mechanism
-+ */
-+static const char * const rproc_coredump_str[] = {
-+	[RPROC_COREDUMP_DEFAULT]	= "default",
-+	[RPROC_COREDUMP_INLINE]	= "inline",
-+	[RPROC_COREDUMP_DISABLED]	= "disabled",
-+};
-+
-+/* Expose the current coredump configuration via debugfs */
-+static ssize_t rproc_coredump_read(struct file *filp, char __user *userbuf,
-+				   size_t count, loff_t *ppos)
-+{
-+	struct rproc *rproc = filp->private_data;
-+	const char *buf = rproc_coredump_str[rproc->dump_conf];
-+
-+	return simple_read_from_buffer(userbuf, count, ppos, buf, strlen(buf));
-+}
-+
-+/*
-+ * By writing to the 'coredump' debugfs entry, we control the behavior of the
-+ * coredump mechanism dynamically. The default value of this entry is "default".
-+ *
-+ * The 'coredump' debugfs entry supports these commands:
-+ *
-+ * default:	This is the default coredump mechanism. When the remoteproc
-+ *		crashes the entire coredump will be copied to a separate buffer
-+ *		and exposed to userspace.
-+ *
-+ * inline:	The coredump will not be copied to a separate buffer and the
-+ *		recovery process will have to wait until data is read by
-+ *		userspace. But this avoid usage of extra memory.
-+ *
-+ * disabled:	This will disable coredump. Recovery will proceed without
-+ *		collecting any dump.
-+ */
-+static ssize_t rproc_coredump_write(struct file *filp,
-+				    const char __user *user_buf, size_t count,
-+				    loff_t *ppos)
-+{
-+	struct rproc *rproc = filp->private_data;
-+	int ret, err = 0;
-+	char buf[20];
-+
-+	if (count > sizeof(buf))
-+		return -EINVAL;
-+
-+	ret = copy_from_user(buf, user_buf, count);
-+	if (ret)
-+		return -EFAULT;
-+
-+	/* remove end of line */
-+	if (buf[count - 1] == '\n')
-+		buf[count - 1] = '\0';
-+
-+	if (rproc->state == RPROC_CRASHED) {
-+		dev_err(&rproc->dev, "can't change coredump configuration\n");
-+		err = -EBUSY;
-+		goto out;
-+	}
-+
-+	if (!strncmp(buf, "disable", count)) {
-+		rproc->dump_conf = RPROC_COREDUMP_DISABLED;
-+	} else if (!strncmp(buf, "inline", count)) {
-+		rproc->dump_conf = RPROC_COREDUMP_INLINE;
-+	} else if (!strncmp(buf, "default", count)) {
-+		rproc->dump_conf = RPROC_COREDUMP_DEFAULT;
-+	} else {
-+		dev_err(&rproc->dev, "Invalid coredump configuration\n");
-+		err = -EINVAL;
-+	}
-+out:
-+	return err ? err : count;
-+}
-+
-+static const struct file_operations rproc_coredump_fops = {
-+	.read = rproc_coredump_read,
-+	.write = rproc_coredump_write,
-+	.open = simple_open,
-+	.llseek = generic_file_llseek,
-+};
-+
-+/*
-  * Some remote processors may support dumping trace logs into a shared
-  * memory buffer. We expose this trace buffer using debugfs, so users
-  * can easily tell what's going on remotely.
-@@ -337,6 +421,8 @@ void rproc_create_debug_dir(struct rproc *rproc)
- 			    rproc, &rproc_rsc_table_fops);
- 	debugfs_create_file("carveout_memories", 0400, rproc->dbg_dir,
- 			    rproc, &rproc_carveouts_fops);
-+	debugfs_create_file("coredump", 0600, rproc->dbg_dir,
-+			    rproc, &rproc_coredump_fops);
- }
- 
- void __init rproc_init_debugfs(void)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
