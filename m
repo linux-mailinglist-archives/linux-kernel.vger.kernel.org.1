@@ -2,121 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5029207124
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 12:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF79207130
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 12:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390427AbgFXK3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 06:29:44 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:59142 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388377AbgFXK3n (ORCPT
+        id S2390455AbgFXKbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 06:31:16 -0400
+Received: from mail.codeweavers.com ([50.203.203.244]:45050 "EHLO
+        mail.codeweavers.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387962AbgFXKbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 06:29:43 -0400
-Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05OA3Xe3086323;
-        Wed, 24 Jun 2020 06:29:28 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31uwyrv06c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Jun 2020 06:29:28 -0400
-Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05OAS12d040149;
-        Wed, 24 Jun 2020 06:29:28 -0400
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31uwyrv05m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Jun 2020 06:29:28 -0400
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05OAKPvX032124;
-        Wed, 24 Jun 2020 10:29:26 GMT
-Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
-        by ppma02wdc.us.ibm.com with ESMTP id 31uus3k5h1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Jun 2020 10:29:26 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05OATQaw54395248
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Jun 2020 10:29:26 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5F242112066;
-        Wed, 24 Jun 2020 10:29:26 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1186E112062;
-        Wed, 24 Jun 2020 10:29:26 +0000 (GMT)
-Received: from sofia.ibm.com (unknown [9.85.91.248])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 24 Jun 2020 10:29:26 +0000 (GMT)
-Received: by sofia.ibm.com (Postfix, from userid 1000)
-        id 2227A2E4AAE; Wed, 24 Jun 2020 15:59:21 +0530 (IST)
-Date:   Wed, 24 Jun 2020 15:59:21 +0530
-From:   Gautham R Shenoy <ego@linux.vnet.ibm.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-        Mel Gorman <mgorman@suse.de>, Vlastimil Babka <vbabka@suse.cz>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Christopher Lameter <cl@linux.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>,
-        David Hildenbrand <david@redhat.com>
-Subject: Re: [PATCH v5 2/3] powerpc/numa: Prefer node id queried from vphn
-Message-ID: <20200624102920.GB31972@in.ibm.com>
-Reply-To: ego@linux.vnet.ibm.com
-References: <20200624092846.9194-1-srikar@linux.vnet.ibm.com>
- <20200624092846.9194-3-srikar@linux.vnet.ibm.com>
+        Wed, 24 Jun 2020 06:31:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=codeweavers.com; s=6377696661; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=8KetnYH1ctebfjbdRXdQEyAgS9HTWZVO1zqVlNtPXiQ=; b=a/SjBuw6aJpw/OiPJul+arL5GR
+        zy/ERa2YO73oyfm1qi+c0+MFEfioqBKcKRgFBFFpGvcxS+OTDLS2lBNfhAPQAWmLk3YyHNmFdi4/a
+        u4nZat9+cxEatmOTUu/IN1cQqtlu/agFuIbz1YVyCwk+hTqjOq+Bk6W/OlVOFjDz8H68=;
+Received: from lfbn-mar-1-578-97.w109-208.abo.wanadoo.fr ([109.208.124.97] helo=xps9380.mn.codeweavers.com)
+        by mail.codeweavers.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <rbernon@codeweavers.com>)
+        id 1jo2gP-0007lh-68; Wed, 24 Jun 2020 05:31:11 -0500
+From:   Remi Bernon <rbernon@codeweavers.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Remi Bernon <rbernon@codeweavers.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jacek Caban <jacek@codeweavers.com>
+Subject: [PATCH 1/3] perf dso: Use libbfd to read build_id and .gnu_debuglink section
+Date:   Wed, 24 Jun 2020 12:30:39 +0200
+Message-Id: <20200624103041.825746-1-rbernon@codeweavers.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200624092846.9194-3-srikar@linux.vnet.ibm.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-24_05:2020-06-24,2020-06-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- cotscore=-2147483648 mlxscore=0 phishscore=0 clxscore=1015
- lowpriorityscore=0 adultscore=0 impostorscore=0 bulkscore=0
- mlxlogscore=999 priorityscore=1501 malwarescore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006240070
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -25.4
+X-Spam-Report: Spam detection software, running on the system "mail.codeweavers.com",
+ has NOT identified this incoming email as spam.  The original
+ message has been attached to this so you can view it or label
+ similar future email.  If you have any questions, see
+ the administrator of that system for details.
+ Content preview:  Wine generates PE binaries for most of its modules and perf
+    is unable to parse these files to get build_id or .gnu_debuglink section.
+    Using libbfd when available, instead of libelf, makes it possible to resolve
+    debug file location regardless of the dso binary format. 
+ Content analysis details:   (-25.4 points, 5.0 required)
+  pts rule name              description
+ ---- ---------------------- --------------------------------------------------
+  -20 USER_IN_WHITELIST      From: address is in the user's white-list
+ -6.0 ALL_TRUSTED            Passed through trusted hosts only via SMTP
+ -0.5 BAYES_00               BODY: Bayes spam probability is 0 to 1%
+                             [score: 0.0000]
+  1.1 AWL                    AWL: Adjusted score from AWL reputation of From: address
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Srikar,
+Wine generates PE binaries for most of its modules and perf is unable
+to parse these files to get build_id or .gnu_debuglink section.
 
+Using libbfd when available, instead of libelf, makes it possible to
+resolve debug file location regardless of the dso binary format.
 
-On Wed, Jun 24, 2020 at 02:58:45PM +0530, Srikar Dronamraju wrote:
-> Node id queried from the static device tree may not
-> be correct. For example: it may always show 0 on a shared processor.
-> Hence prefer the node id queried from vphn and fallback on the device tree
-> based node id if vphn query fails.
-> 
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Mel Gorman <mgorman@suse.de>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
-> Cc: Christopher Lameter <cl@linux.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-> Cc: Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-> Cc: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Signed-off-by: Remi Bernon <rbernon@codeweavers.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Jacek Caban <jacek@codeweavers.com>
+---
 
+As a follow up to https://lkml.org/lkml/2020/6/1/402, I believe the 5.8
+merge window is about to close (or is closed?), so I felt like it was
+maybe the right time for an update.
 
-This patch looks good to me.
+This new version includes:
+* a few style changes that were previously requested,
+* a regression fix where the bfd filename__read_build_id did not return
+  the correct size on success,
+* a small test case with sample PE file and separate debug file.
 
-Reviewed-by: Gautham R. Shenoy <ego@linux.vnet.ibm.com>
+Cheers,
+Remi
 
+ tools/perf/util/symbol-elf.c | 80 ++++++++++++++++++++++++++++++++++--
+ 1 file changed, 77 insertions(+), 3 deletions(-)
 
---
-Thanks and Regards
-gautham.
+diff --git a/tools/perf/util/symbol-elf.c b/tools/perf/util/symbol-elf.c
+index 5e43054bffea..2489ca5a2284 100644
+--- a/tools/perf/util/symbol-elf.c
++++ b/tools/perf/util/symbol-elf.c
+@@ -50,6 +50,10 @@ typedef Elf64_Nhdr GElf_Nhdr;
+ #define DMGL_ANSI        (1 << 1)       /* Include const, volatile, etc */
+ #endif
+ 
++#ifdef HAVE_LIBBFD_SUPPORT
++#define PACKAGE 'perf'
++#include <bfd.h>
++#else
+ #ifdef HAVE_CPLUS_DEMANGLE_SUPPORT
+ extern char *cplus_demangle(const char *, int);
+ 
+@@ -65,9 +69,7 @@ static inline char *bfd_demangle(void __maybe_unused *v,
+ {
+ 	return NULL;
+ }
+-#else
+-#define PACKAGE 'perf'
+-#include <bfd.h>
++#endif
+ #endif
+ #endif
+ 
+@@ -530,6 +532,36 @@ static int elf_read_build_id(Elf *elf, void *bf, size_t size)
+ 	return err;
+ }
+ 
++#ifdef HAVE_LIBBFD_SUPPORT
++
++int filename__read_build_id(const char *filename, void *bf, size_t size)
++{
++	int err = -1;
++	bfd *abfd;
++
++	abfd = bfd_openr(filename, NULL);
++	if (!abfd)
++		return -1;
++
++	if (!bfd_check_format(abfd, bfd_object)) {
++		pr_debug2("%s: cannot read %s bfd file.\n", __func__, filename);
++		goto out_close;
++	}
++
++	if (!abfd->build_id || abfd->build_id->size > size)
++		goto out_close;
++
++	memcpy(bf, abfd->build_id->data, abfd->build_id->size);
++	memset(bf + abfd->build_id->size, 0, size - abfd->build_id->size);
++	err = abfd->build_id->size;
++
++out_close:
++	bfd_close(abfd);
++	return err;
++}
++
++#else
++
+ int filename__read_build_id(const char *filename, void *bf, size_t size)
+ {
+ 	int fd, err = -1;
+@@ -557,6 +589,8 @@ int filename__read_build_id(const char *filename, void *bf, size_t size)
+ 	return err;
+ }
+ 
++#endif
++
+ int sysfs__read_build_id(const char *filename, void *build_id, size_t size)
+ {
+ 	int fd, err = -1;
+@@ -608,6 +642,44 @@ int sysfs__read_build_id(const char *filename, void *build_id, size_t size)
+ 	return err;
+ }
+ 
++#ifdef HAVE_LIBBFD_SUPPORT
++
++int filename__read_debuglink(const char *filename, char *debuglink,
++			     size_t size)
++{
++	int err = -1;
++	asection *section;
++	bfd *abfd;
++
++	abfd = bfd_openr(filename, NULL);
++	if (!abfd)
++		return -1;
++
++	if (!bfd_check_format(abfd, bfd_object)) {
++		pr_debug2("%s: cannot read %s bfd file.\n", __func__, filename);
++		goto out_close;
++	}
++
++	section = bfd_get_section_by_name(abfd, ".gnu_debuglink");
++	if (!section)
++		goto out_close;
++
++	if (section->size > size)
++		goto out_close;
++
++	if (!bfd_get_section_contents(abfd, section, debuglink, 0,
++				      section->size))
++		goto out_close;
++
++	err = 0;
++
++out_close:
++	bfd_close(abfd);
++	return err;
++}
++
++#else
++
+ int filename__read_debuglink(const char *filename, char *debuglink,
+ 			     size_t size)
+ {
+@@ -660,6 +732,8 @@ int filename__read_debuglink(const char *filename, char *debuglink,
+ 	return err;
+ }
+ 
++#endif
++
+ static int dso__swap_init(struct dso *dso, unsigned char eidata)
+ {
+ 	static unsigned int const endian = 1;
+-- 
+2.27.0
+
