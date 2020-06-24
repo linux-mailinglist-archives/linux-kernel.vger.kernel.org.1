@@ -2,154 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86503207238
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 13:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E24207249
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 13:40:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390689AbgFXLfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 07:35:46 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:20004 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388925AbgFXLfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 07:35:45 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 49sLgL05fdz78;
-        Wed, 24 Jun 2020 13:35:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1592998543; bh=wjpWIWEP1hkY8svUlhleFLTk7ObRZTWAWpqhbdFBczc=;
-        h=Date:From:Subject:To:Cc:From;
-        b=hXopi1yH9bPrHFT2dyLe9HH7FVO6vzTRw2ya/Qizr5b8TonRsWBiLeosVkYkJfBwR
-         x1rd4DJ+MsejoEUpPyRoMKheaaSf8nHJZKkwhPj3e+Bxwnmez82RxBu2dUeSor8ZY5
-         yZZTgrPfCNxKyvDprOUFHQsRxMbBZbhK16aKmBhefHwTWpwg3NFsB2EmdYMZ2DDtTp
-         4QxxG/myoy2A4IwtizKLU2iGHVIuLVcBCkRdOXwhJBqjIl28dCVwAMvTpxIWNmQWcU
-         IEHTDlz5SXnRHCXIJxmXbkhImJIUSQNJSxkAusgv16xQWccYTOJMYYnnt7gTXmZBpX
-         L2FxOFgF8LiZg==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.3 at mail
-Date:   Wed, 24 Jun 2020 13:35:41 +0200
-Message-Id: <50f0d7fa107f318296afb49477c3571e4d6978c5.1592998403.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [PATCH v2] misc: atmel-ssc: lock with mutex instead of spinlock
+        id S2389241AbgFXLkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 07:40:06 -0400
+Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:35683 "EHLO
+        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388226AbgFXLkE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 07:40:04 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id o3ksjttD0x3Ajo3kwjjE8i; Wed, 24 Jun 2020 13:40:01 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
+        t=1592998802; bh=M4pU4U03MaYJwcvRFJNv8nTld2vvriNqiHmYpFeqiHo=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=Y9PBhRygZJH8v1qTk6GeENyM1/HdGazWDB7Ff3TkRYW/JneSWne/pb8QisIu+lvxX
+         s6wIPSx6k2Jpf5JxscBCdHeUYP3D/pBt3ZXJ8fhnpWq4+o4WKK5ajoQUs5vDOcaMTc
+         4tltD5Vnoges6WBpw3pR0Rnmdtg5ruTXmUqNrgoHV7eSzXZe4tiQYrEBvIunPBOpwa
+         7yvPzB3Ailhp+89o/svrDEUzpkLv7nF/FIJtDxuM7QI/3x6xg3KURVEfE8gvOmh88d
+         Z1RcjC8xxnJ9kmGSi34l/OeHaAde9ETswOIDRjHPAuBrMYQ5dXGXy17heEixMLfxEo
+         11PxwfetmBLfQ==
+Subject: Re: [PATCH 00/11] media: exynos4-is: Improve support for s5pv210 and
+ parallel ports
+To:     Jonathan Bakker <xc-racer2@live.ca>, kyungmin.park@samsung.com,
+        s.nawrocki@samsung.com, mchehab@kernel.org, kgene@kernel.org,
+        krzk@kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tomasz Figa <tfiga@chromium.org>
+References: <BN6PR04MB06602E7221CC7455F3142540A3AE0@BN6PR04MB0660.namprd04.prod.outlook.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <07fb9000-ae00-efcd-e91a-48765ff3d4bf@xs4all.nl>
+Date:   Wed, 24 Jun 2020 13:39:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-To:     Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <BN6PR04MB06602E7221CC7455F3142540A3AE0@BN6PR04MB0660.namprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfBEJKAd4Mb8tPxX9RLS4ybX9o3HV73/5KTa134SPVtKW/YYaw5qOt+O5gwi6sopzKQ2i3FKcPWxMmrPVijbeohlLU6MqYP15cTTMJuig6vtLZ9x7apez
+ 9kSPT+EtAWTSmnzGpP+sTg9wML3vMgoanWQ+iRRwd8F+gGyV7gxJBpEqIwPaxvESqlQLJKwNc8J5MF3XAguRDC+iwrJDI1E5GBW08Gm3FDVznr6dzN+LytN/
+ KjcfwoZ4M0Qjsu0D2orcwn3K5LcgHx5COin6vjUM9X/3TjPAwylQNgbnU4bLrmWCYIb40MTDkCpVjnJuFuBGYiw+uySwNog80v/qSgjGqfw07+Rd/tGV3D5t
+ O14m+MGSIyeUWCY4X8qWEFKrQ/PS4n+K1WW80FHtT8a4BRk9QOrqmIpQk9bhmmM5sdI5bKzdwGOOWd8HxvWTKVRtrh0SakR3+36L7RyXR80QLDAbDqcxn5K8
+ eVE8xlcO6NnAo3/TljJTbZCK0GgttXCQgmo+tVswlRz13tC/dXuS+TDgZTg=
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Uninterruptible context is not needed in the driver and causes lockdep
-warning because of mutex taken in of_alias_get_id(). Convert the lock to
-mutex to avoid the issue.
+Can someone from Samsung or someone who knows this SoC take a look at this series?
 
-Cc: stable@vger.kernel.org
-Fixes: 099343c64e16 ("ARM: at91: atmel-ssc: add device tree support")
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
----
- v2: rebased onto v5.7.5, added Fixes tag
----
- drivers/misc/atmel-ssc.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+This series looks sane to me, so I'll probably merge this if nobody replies
+in the next two weeks or so.
 
-diff --git a/drivers/misc/atmel-ssc.c b/drivers/misc/atmel-ssc.c
-index ab4144ea1f11..d6cd5537126c 100644
---- a/drivers/misc/atmel-ssc.c
-+++ b/drivers/misc/atmel-ssc.c
-@@ -10,7 +10,7 @@
- #include <linux/clk.h>
- #include <linux/err.h>
- #include <linux/io.h>
--#include <linux/spinlock.h>
-+#include <linux/mutex.h>
- #include <linux/atmel-ssc.h>
- #include <linux/slab.h>
- #include <linux/module.h>
-@@ -20,7 +20,7 @@
- #include "../../sound/soc/atmel/atmel_ssc_dai.h"
- 
- /* Serialize access to ssc_list and user count */
--static DEFINE_SPINLOCK(user_lock);
-+static DEFINE_MUTEX(user_lock);
- static LIST_HEAD(ssc_list);
- 
- struct ssc_device *ssc_request(unsigned int ssc_num)
-@@ -28,7 +28,7 @@ struct ssc_device *ssc_request(unsigned int ssc_num)
- 	int ssc_valid = 0;
- 	struct ssc_device *ssc;
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	list_for_each_entry(ssc, &ssc_list, list) {
- 		if (ssc->pdev->dev.of_node) {
- 			if (of_alias_get_id(ssc->pdev->dev.of_node, "ssc")
-@@ -44,18 +44,18 @@ struct ssc_device *ssc_request(unsigned int ssc_num)
- 	}
- 
- 	if (!ssc_valid) {
--		spin_unlock(&user_lock);
-+		mutex_unlock(&user_lock);
- 		pr_err("ssc: ssc%d platform device is missing\n", ssc_num);
- 		return ERR_PTR(-ENODEV);
- 	}
- 
- 	if (ssc->user) {
--		spin_unlock(&user_lock);
-+		mutex_unlock(&user_lock);
- 		dev_dbg(&ssc->pdev->dev, "module busy\n");
- 		return ERR_PTR(-EBUSY);
- 	}
- 	ssc->user++;
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	clk_prepare(ssc->clk);
- 
-@@ -67,14 +67,14 @@ void ssc_free(struct ssc_device *ssc)
- {
- 	bool disable_clk = true;
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	if (ssc->user)
- 		ssc->user--;
- 	else {
- 		disable_clk = false;
- 		dev_dbg(&ssc->pdev->dev, "device already free\n");
- 	}
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	if (disable_clk)
- 		clk_unprepare(ssc->clk);
-@@ -237,9 +237,9 @@ static int ssc_probe(struct platform_device *pdev)
- 		return -ENXIO;
- 	}
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	list_add_tail(&ssc->list, &ssc_list);
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	platform_set_drvdata(pdev, ssc);
- 
-@@ -258,9 +258,9 @@ static int ssc_remove(struct platform_device *pdev)
- 
- 	ssc_sound_dai_remove(ssc);
- 
--	spin_lock(&user_lock);
-+	mutex_lock(&user_lock);
- 	list_del(&ssc->list);
--	spin_unlock(&user_lock);
-+	mutex_unlock(&user_lock);
- 
- 	return 0;
- }
--- 
-2.20.1
+Regards,
+
+	Hans
+
+On 26/04/2020 04:26, Jonathan Bakker wrote:
+> This patchset improves support in the exynos4-is driver for s5pv210
+> platforms as well as for sensors connected to the parallel ports
+> and not using the CSIS device.
+> 
+> Fixes range from nullptr exceptions to probe fixes to JPEG fixes.
+> 
+> Notably, it also changes the fwnode probing of parallel port sensors
+> to match the binding doc.  The binding doc said port A = reg 0 and
+> port B = reg 1 but the driver implemented A=1 and B=2.  The only in-tree
+> user of parallel ports is currently Goni, which notes that it uses port
+> A but has reg = 1.  Also note that the sensor driver is not mainlined
+> despite being present.  I have left the DTS as-is.
+> 
+> Some patches cleaning up non-DT support are also included.
+> 
+> The patches have been tested on a first-gen Galaxy S GT-i900M device based
+> on S5PV210.  Two sensors (CE147 and S5KA3DFX, both with non-mainline
+> drivers), both attached to port A, were succesfully used.
+> 
+> Jonathan Bakker (10):
+>   media: exynos4-is: Remove static driver data for S5PV210 FIMC variants
+>   media: exynos4-is: Fix nullptr when no CSIS device present
+>   media: exynos4-is: Correct missing entity function initialization
+>   media: exynos4-is: Improve support for sensors with multiple pads
+>   media: exynos4-is: Properly set JPEG options when not using CSIS
+>   media: exynos4-is: Add support for multiple sensors on one port
+>   media: exynos4-is: Remove inh_sensor_ctrls
+>   media: exynos4-is: Remove unused struct member input_index
+>   media: exynos4-is: Prevent duplicate call to media_pipeline_stop
+>   media: exynos4-is: Correct parallel port probing
+> 
+> Tomasz Figa (1):
+>   media: exynos4-is: Request syscon only if ISP writeback is present
+> 
+>  .../media/platform/exynos4-is/fimc-capture.c  | 22 ++----
+>  drivers/media/platform/exynos4-is/fimc-core.c | 67 ++----------------
+>  drivers/media/platform/exynos4-is/fimc-core.h |  5 --
+>  drivers/media/platform/exynos4-is/fimc-reg.c  |  7 ++
+>  drivers/media/platform/exynos4-is/media-dev.c | 68 ++++++++++++++-----
+>  drivers/media/platform/exynos4-is/media-dev.h |  1 +
+>  include/media/drv-intf/exynos-fimc.h          |  2 +-
+>  7 files changed, 72 insertions(+), 100 deletions(-)
+> 
 
