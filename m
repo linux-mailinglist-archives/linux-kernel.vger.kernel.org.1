@@ -2,115 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45C0E207F20
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 00:06:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A025F207F26
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 00:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390052AbgFXWG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 18:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36910 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389453AbgFXWGX (ORCPT
+        id S2389997AbgFXWJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 18:09:31 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39380 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387853AbgFXWJ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 18:06:23 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AB9FC061573;
-        Wed, 24 Jun 2020 15:06:22 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id y18so2094523lfh.11;
-        Wed, 24 Jun 2020 15:06:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UgyMArw4CzkOtjq5ORhsXeOYAj7kLhbHa9ROjF5N1ZA=;
-        b=brcPr/qdwolNKlQ2seNrW+NR5dn3F8qzG/5QSrP5Uvzqyojcl+GZUA33WwbzgAcUpQ
-         J4HFOf5CWTkwIKQOAvIi7Nl3+3d+D5CPJ9s+e3POhZZbTliBmMb5a4mjKqR/Ncj93rm8
-         OKxUFVvEAFTjS/MH3GX1V3tHhI6eKR8ieKjHheZ3zU54uVGBQLwNvX6cB2waHX29T7H0
-         w4CJ6AuMuIsb6NvZipexg3gLOsXnZrMMxyt0fEa04d5oIfxPT1kfrTVh9Fvix4wV+ZyT
-         VPvcaCGITS2n9Wl0i2hPkqumA2s6XPuw5PvSLeuCjRis6U6u988o1lDIBTVTmk39pUTk
-         S6bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UgyMArw4CzkOtjq5ORhsXeOYAj7kLhbHa9ROjF5N1ZA=;
-        b=ky8ZCwh51IFDSyyYzmAoCEQEYukKuCwdew17fXZWd5KF4KoRKcAzPQw+R7rNZ3u+29
-         MrTroFR0/UStoNMSKqD1XWDIH3Okr/uqM08fwhTFxDtVG0NHFEaOLJlX3e3YbkpZQHkk
-         1fd9mcNMVrHZdjvff9KxPPVTnlM0B8XojbvL3MDEm+aDm571vgZTdce7LArQpHit5ezF
-         noAMFO67BbcGHLw3ugnAz3eM79ZF5akWoOdPU+3iN87s2z5hUWUx/wA2PH5GpBueD4dc
-         670Ir84E2UrxV9cWc2oJAXdWsmU/VSRZOrGFHx7FWPB2AyGNxbH0JNdMYnbOaSgH8Atb
-         X0kA==
-X-Gm-Message-State: AOAM532mCloLUOfIrc/5a6UYxs2+L4R+ev1SUySrurIwRjzJk4BDSvce
-        uZ9KClJIGAyvTBKxRjsujkGRcn0L1ST5wtjp3A==
-X-Google-Smtp-Source: ABdhPJziBSIPd70JafmfjsSZBN5adlm7ZLw/+u52IOWV9W91ao6QMegxNcu8vWfFtx2lhET9gfIAJ60yhX40DrLEejc=
-X-Received: by 2002:ac2:5c09:: with SMTP id r9mr16809657lfp.176.1593036380605;
- Wed, 24 Jun 2020 15:06:20 -0700 (PDT)
+        Wed, 24 Jun 2020 18:09:29 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05OM8bQG066351;
+        Wed, 24 Jun 2020 17:08:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593036517;
+        bh=8pxGcSuDGHL5/biPmNuRMj2l3xMNTG6V1WBrzq8DbV8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=dew2+X+xSol3YYZIrkXvLmNttcwE1ukDAiVHz+Vo+ZzGEQpzssCP2gBtVQcMplq3b
+         ky9x5liGGAsvAOJtzc+3uop7JlYH0bsBpkeOe/thg+jtwRzT9POJVMmKAj/HQsf+M0
+         5l06R3bRbEpFuvwwt1xYrGfe4dKfkyKAgFpWJWkY=
+Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05OM8bUj052317
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 24 Jun 2020 17:08:37 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE102.ent.ti.com
+ (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 24
+ Jun 2020 17:08:37 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 24 Jun 2020 17:08:37 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OM8bgi092136;
+        Wed, 24 Jun 2020 17:08:37 -0500
+Subject: Re: [PATCH v6 4/7] ASoC: tas2562: Add rx and tx slot programming
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <robh@kernel.org>, <devicetree@vger.kernel.org>
+References: <20200624174932.9604-1-dmurphy@ti.com>
+ <20200624174932.9604-5-dmurphy@ti.com>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <c3c86e7f-de5e-dea1-98de-045bdd564fbc@ti.com>
+Date:   Wed, 24 Jun 2020 17:08:32 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <1592410366125160@kroah.com>
-In-Reply-To: <1592410366125160@kroah.com>
-From:   Gabriel C <nix.or.die@googlemail.com>
-Date:   Thu, 25 Jun 2020 00:05:54 +0200
-Message-ID: <CAEJqkgjV8p6LtBV8YUGbNb0vYzKOQt4-AMAvYw5mzFr3eicyTg@mail.gmail.com>
-Subject: Re: Linux 5.7.3
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        stable <stable@vger.kernel.org>, lwn@lwn.net,
-        Jiri Slaby <jslaby@suse.cz>, angrypenguinpoland@gmail.com,
-        Qiujun Huang <hqjagain@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200624174932.9604-5-dmurphy@ti.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mi., 17. Juni 2020 um 18:13 Uhr schrieb Greg Kroah-Hartman
-<gregkh@linuxfoundation.org>:
+Hello
+
+On 6/24/20 12:49 PM, Dan Murphy wrote:
+> Add programming for the tdm slots for both tx and rx offsets.
 >
-> I'm announcing the release of the 5.7.3 kernel.
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+>   sound/soc/codecs/tas2562.c | 17 ++++++++++++++++-
+>   sound/soc/codecs/tas2562.h |  4 ++++
+>   2 files changed, 20 insertions(+), 1 deletion(-)
 >
+> diff --git a/sound/soc/codecs/tas2562.c b/sound/soc/codecs/tas2562.c
+> index d26e30a2948c..2f1d4b697f01 100644
+> --- a/sound/soc/codecs/tas2562.c
+> +++ b/sound/soc/codecs/tas2562.c
+> @@ -208,6 +208,22 @@ static int tas2562_set_dai_tdm_slot(struct snd_soc_dai *dai,
+>   	if (ret < 0)
+>   		return ret;
+>   
+> +	if (tx_mask > TAS2562_TX_OFF_MAX) {
+> +		dev_err(tas2562->dev, "TX slot is larger then %d",
+> +			TAS2562_TX_OFF_MAX);
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret = snd_soc_component_update_bits(component, TAS2562_TDM_CFG1,
+> +					    TAS2562_RX_OFF_MASK, rx_mask << 1);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	ret = snd_soc_component_update_bits(component, TAS2562_TDM_CFG4,
+> +					    TAS2562_TX_OFF_MASK, tx_mask << 1);
+> +	if (ret < 0)
+> +		return ret;
+> +
 
-Hello Greg,
+I need to fix this patch to remove the slot programming during dai_fmt 
+as the code is not correct and resets the slots
 
-> Qiujun Huang (5):
->       ath9k: Fix use-after-free Read in htc_connect_service
->       ath9k: Fix use-after-free Read in ath9k_wmi_ctrl_rx
->       ath9k: Fix use-after-free Write in ath9k_htc_rx_msg
->       ath9x: Fix stack-out-of-bounds Write in ath9k_hif_usb_rx_cb
->       ath9k: Fix general protection fault in ath9k_hif_usb_rx_cb
->
-
-We got a report on IRC about 5.7.3+ breaking a USB ath9k Wifi Dongle,
-while working fine on <5.7.3.
-
-I don't have myself such HW, and the reported doesn't have any experience
-in bisecting the kernel, so we build kernels, each with one of the
-above commits reverted,
-to find the bad commit.
-
-The winner is:
-
-commit 6602f080cb28745259e2fab1a4cf55eeb5894f93
-Author: Qiujun Huang <hqjagain@gmail.com>
-Date:   Sat Apr 4 12:18:38 2020 +0800
-
-    ath9k: Fix general protection fault in ath9k_hif_usb_rx_cb
-
-    commit 2bbcaaee1fcbd83272e29f31e2bb7e70d8c49e05 upstream.
-...
-
-Reverting this one fixed his problem.
-
-I don't have so much info about the HW, besides a dmesg showing the
-phy breaking.
-I also added the reporter to CC too.
-
-https://gist.github.com/AngryPenguinPL/1e545f0da3c2339e443b9e5044fcccea
-
-If you need more info, please let me know and I'll try my best to get
-it as fast as possible for you.
+Dan
 
 
-Best Regards,
-
-Gabriel C
