@@ -2,96 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184EF206FC5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 11:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36122206FC8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 11:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388903AbgFXJMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 05:12:45 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:33840 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387614AbgFXJMo (ORCPT
+        id S2389018AbgFXJOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 05:14:18 -0400
+Received: from sonic301-2.consmr.mail.bf2.yahoo.com ([74.6.129.41]:34108 "EHLO
+        sonic301-2.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387614AbgFXJOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 05:12:44 -0400
-Received: by mail-ej1-f66.google.com with SMTP id y10so1737382eje.1;
-        Wed, 24 Jun 2020 02:12:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YdWYqCcMRr77s7ONOlycpXkNOF5ibDahUUAFISahTZ8=;
-        b=rPyKw2iNt+MTqobRya2IA59wOB0kW2fPybRkeBN3EmjBzaGBk/j6Y7zrGS+TlZu1rK
-         fvHnBWpSZc0jp7aFKMerC3VbFgc+fvyo328Nh5omIr3we0wmB6OVIOcti8k5emV7PfRv
-         Ve2nTpLMwgxAQ1jczDtisSIErjv2yU+mbvgRjQBboBZ/Y622m0oyxVoyfhwH05ex1K/2
-         Kt6bUtWgbvTjIcJVKNxjxXn/LupfinVJWugGEeZ9PGWQQNW9oASqwhaDRuNI068JQTOc
-         gVq2LWj1F8dHavy6nOEgd5hzbEriaeubfFRxslW5193k45zsUnEA3y9G0/BMvKCP60ki
-         k8gw==
-X-Gm-Message-State: AOAM533j86JTTNYid2gDlz+SzXiRYwxNmcvfKzJC9K3PfJQNOEF+RlYu
-        FddUqiRJgGxR1dc2bNSkpC4=
-X-Google-Smtp-Source: ABdhPJw+6nm3RPauYFejP5pE6TcOmJh0UYlB9uSK8bOa6dCg7F66bo2p5kNrBvg9wZ4p/DNKLHBPhg==
-X-Received: by 2002:a17:906:4c81:: with SMTP id q1mr24499860eju.273.1592989962320;
-        Wed, 24 Jun 2020 02:12:42 -0700 (PDT)
-Received: from neopili.qtec.com (cpe.xe-3-0-1-778.vbrnqe10.dk.customer.tdc.net. [80.197.57.18])
-        by smtp.gmail.com with ESMTPSA id 36sm16585162edl.31.2020.06.24.02.12.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 02:12:41 -0700 (PDT)
-From:   Ricardo Ribalda <ribalda@kernel.org>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ricardo Ribalda <ribalda@kernel.org>
-Subject: [PATCH] i2c: designware: platdrv: Set class based on dmi
-Date:   Wed, 24 Jun 2020 11:12:39 +0200
-Message-Id: <20200624091239.802218-1-ribalda@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        Wed, 24 Jun 2020 05:14:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1592990055; bh=0E9pdvweBu0fKCrAxtCtL115Ja1OOUibmQSYp1tYkKY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=hbj289La78DcG7/dx56YOklLwDbg/Db6pPyeylusQPOvPBLOinc6zIoFfNihz9CShU+1gms6SbN1utytN3Yopx0x7ltZz68ZjG2xJ/hagANq5y1dwJBLaRjES8I7yJ+XPtcOv7DVQxNBSTqtb4bqWQsuiellP7qSL6SCX5OltylORXinDuZ7cubpm2WyA6UxnAnJjo7scjUYhCP277phsk8rTvqmzsCXHHPVFjesGQ/CmUvf9NzXa+H22RvQQEkZ8oJ6DUieXDpMPse5JkYGaZZ7kyPGazsLAzU3Ek+SRkndrMxQX5WupsLRgJjj+RLoTi2seWQ4sBMG1Kjq2XXIZQ==
+X-YMail-OSG: JR8mqfgVM1l7aPUmvZ7Du8.IfTAjRklB63I4wCoHCNtAoaMVNIoFiV3rtkfB7zA
+ joR1utDn12U0VMHVSjU7zYD3loe1uZNRgHaS.bHecxxfWpMZcrd9z0eF.1BTyyghJGjBll4YJtc8
+ c78.Je9UoqEJuQ360CkSINtNi1EIgP_peqBqrdHnXKwjRnGgTASIoZDbgS5y9LEJ__77EvbLECq2
+ uWc8SKtLn_BuIxHgjerWtfF3u5.9RY9YTyQlVWVSpj9payjFyfnnfQUEDxaUlF5InWU4DlaWQKnx
+ WmrI03fkItTRJYMfQ2i2lybnpYUsxYzVQT.Zcd.yBG0plEEaNz5aVx.OX.TF7moBdPiLiQkvrLsm
+ vcXe46AOZYD0yz3FSMx3pYQDt2FI74ZiZ6Nx9vc1sZftZ049XhSOWn7_ZdHD3pUKbUgka1E7UKiK
+ aGYZfiSyA103ZN.HKtcLkQHQ5BWH82oJqaP4VmQWIyR1y0evz7r5YvuTQA3A05o6a7JCu6ra8ndO
+ FSk_WDofGnyzAMxVsHtWLZG3jHPa044o41UOfOVQiDOuBUSNaypOIrAk0d2lDS4lkLDm3MSc1fJU
+ REAcFElVKKjBVL5mhsK_g37RsY_FmSHvW6TMNUo15jEEETguAdLQiVGyFppq8cXfCNwWiOBicYOP
+ a33eYr4wd7p8zcaUlRw65rJtjMv4kIJobRWpcgcJysnzRkJFPoMzmIMhy8aWDtZoEUjmi5UrY9tJ
+ WJRXI8t1J17kYMxqyrYOv2k5RD38kobFn29YaszlkiUo_rvH5_FDbzY9NM_MA5J2itGpLB_PkqI0
+ HqekpGbLSnVeqS2wHv8LlJ1J9MQZW5ndHhapjzCsr9Og.hTquPSLvWQO5SuOsHZupFaY4e0xMeIr
+ el.E8bnZJMkrQ5U_5DsTrWx99OrPw6sif1SsVCME6rRu3RUruiJKsi0y8RlAt_VZWHKMAlRPHkqH
+ SRl2tkxajvT2heRwwHgA4I0_O7xMNtpevpix4_I2NqWOyEMok1t8CaWL0Qrb30tUtSHf2DqPFfWp
+ x1Vy3l1q89gKCAHsktoEiuRiG95xUs2RpTcu96hsaaVRRFWyEMw3PJgCSAPF4.1IbQqzeZroxHTt
+ m83E7EpugBMx7WH.6r2VWqViv1gL_Rpw.h265l9LD4yu9enKlUmJZGwkRj7y9X0pj6Kargcs1XAu
+ 56VJy60phQwEHuzh3OSbi5ZEeCN22m3MFkj8_svskQfNHbcYWvZ0dXhC7JS1yqNA2SGv7IR9V0GH
+ mbTMuMFKvePRFdjyw_5ndmSxED75DfYJqqX.JDQSlAD7kS7DCAoRD6K11Lg.A104xoVoaUTU-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic301.consmr.mail.bf2.yahoo.com with HTTP; Wed, 24 Jun 2020 09:14:15 +0000
+Date:   Wed, 24 Jun 2020 09:14:14 +0000 (UTC)
+From:   Mrs Sonia Wegari <davidbyrne1@frontier.com>
+Reply-To: wegarisonia86@gmail.com
+Message-ID: <194544754.2046048.1592990054998@mail.yahoo.com>
+Subject: ..K...
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <194544754.2046048.1592990054998.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16138 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:77.0) Gecko/20100101 Firefox/77.0
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current AMD's zen-based APUs use this core for some of its i2c-buses.
 
-With this patch we re-enable autodetection of hwmon-alike devices, so
-lm-sensors will be able to work automatically.
 
-It does not affect the boot-time of embedded devices, as the class is
-set based on the dmi information.
+Attention: Beneficiary,
+Be informed that we have verified your payment file as
 
-Signed-off-by: Ricardo Ribalda <ribalda@kernel.org>
----
- drivers/i2c/busses/i2c-designware-platdrv.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+directed to us and your name is next on the list of our outstanding fund
+beneficiaries to receive their payment.
+To facilitate with the process of this transaction,
 
-diff --git a/drivers/i2c/busses/i2c-designware-platdrv.c b/drivers/i2c/busses/i2c-designware-platdrv.c
-index c2efaaaac252..f0a02fc3c135 100644
---- a/drivers/i2c/busses/i2c-designware-platdrv.c
-+++ b/drivers/i2c/busses/i2c-designware-platdrv.c
-@@ -191,6 +191,13 @@ static int dw_i2c_plat_request_regs(struct dw_i2c_dev *dev)
- 	return ret;
- }
- 
-+static bool dw_i2c_hwmon_bus(void)
-+{
-+	if (strstr(dmi_get_system_info(DMI_PRODUCT_NAME), "QT5222"))
-+		return true;
-+	return false;
-+}
-+
- static int dw_i2c_plat_probe(struct platform_device *pdev)
- {
- 	struct dw_i2c_platform_data *pdata = dev_get_platdata(&pdev->dev);
-@@ -267,7 +274,8 @@ static int dw_i2c_plat_probe(struct platform_device *pdev)
- 
- 	adap = &dev->adapter;
- 	adap->owner = THIS_MODULE;
--	adap->class = I2C_CLASS_DEPRECATED;
-+	adap->class = dw_i2c_hwmon_bus() ? I2C_CLASS_HWMON
-+					 : I2C_CLASS_DEPRECATED;
- 	ACPI_COMPANION_SET(&adap->dev, ACPI_COMPANION(&pdev->dev));
- 	adap->dev.of_node = pdev->dev.of_node;
- 	adap->nr = -1;
--- 
-2.27.0
+please kindly re-confirm the following information below
+1) Your Full Name
+2) Your Full Address
+3) Your Contact Telephone and Fax
+4) Your Profession, Age and Marital Status
+5) Any Valid Form of Your Identification/Driven License:
+As soon as we receive
+the above mentioned information, your payment will be processed and released
+to you without any further delay.
 
+This notification email should be your
+confidential property to avoid impersonators claiming your fund. You are
+required to provide the above information for your transfer to take place
+through bank to bank transfer directly from Citibank.
+We Look Forward To
+Serving You Better.
+
+Mrs Sonia Wegari
