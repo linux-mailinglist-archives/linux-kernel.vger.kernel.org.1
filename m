@@ -2,100 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E03207614
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:52:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAFD7207619
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:52:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403814AbgFXOwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 10:52:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53954 "EHLO
+        id S2403976AbgFXOwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 10:52:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389400AbgFXOwJ (ORCPT
+        with ESMTP id S2390843AbgFXOwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 10:52:09 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 814F8C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 07:52:08 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id p3so1539268pgh.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 07:52:08 -0700 (PDT)
+        Wed, 24 Jun 2020 10:52:31 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B96FBC061573;
+        Wed, 24 Jun 2020 07:52:31 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id x8so250729plm.10;
+        Wed, 24 Jun 2020 07:52:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+LYpavnNuYqsfOkUttYqicpUlIfIv5Cp3lganI3VZyY=;
-        b=oOpZTa5+wogd5Zo5i06YBiLJFA99TNpd/R+dpAjxia0I1HX72p/pYJ8+r7FI6VpwER
-         kzA4slLqc797d9hmoYdf7UkLvHZBonG0ASsGwrh3JEmkqkxa0R9ukdqOi+fcffkssEzd
-         F5YHRwr3LVOa1RW5jvA3hKVCIR9zUCv3CwZ08=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2F6v8JQ44zNL7WDKYUMFQlmy+yKvwRWWXRmkHnYvxmA=;
+        b=gRUizZgUZKJgrY28tFVUUKrshLf1ohUdM2a/kBaeYieCFRiCLgbbjU1ge2bruKIutR
+         V6Vq/gbn23RrhxS8uz0RdLNdxKXJgKxUb/P2jzTyzkPeEiZEqtive/TQmvdY7db82F2z
+         nkyztsrdb/4ABnUdqEbzt4uD6KAHLG12Atc+VlkG9JQNk8j+4+QUCnisiEyCLq3v77Vr
+         MU+57Ipex43nlk65fQFgmUj4Y9jiN7M9/VlO8KgcrB0not2N7yk4NdfhV5hZNzqIVu8N
+         Zujc1IZGoRexNUX7mD7+mDwoqfzlfgAu+dBu6KjE5CuxPDIP9mX3WT6ybTXsqe/q7U/A
+         BE6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+LYpavnNuYqsfOkUttYqicpUlIfIv5Cp3lganI3VZyY=;
-        b=qR3MGL2PdQbR1jmltsX7fZPikDv7G34lUtQ2f8coDrlIdchlHE1wQVb4HsUOmBfcpF
-         PGQfsl4b2v5IrUEuHDRTzZf0xU8wQw5wbiV7gYb2uojvbJu56y+8RbI9IoQ2LlFJITVQ
-         axsR4JULkkPp0traxQrJ/++/1bbzB5JSZZdFBagHeYqgQnpYsLTGcGHO24HwxrASkTpV
-         gaTd4Cmq1hCs+d3hyoNaowDTL0lOAnvjjSZNMx1JwpU95kCMceicKizNNq3ZCvlacNel
-         K/4nLA95ilnikFrtEWmy/pqDPioI6tVGviWIK1NEXD9ndzBbxOGX4MiA2j5mFhV4DeAe
-         9h4g==
-X-Gm-Message-State: AOAM533Bq+TCfenR77Zk9xEIwxNX5AqNNK4Hf5IDvGNYpzFRMI/nTi/4
-        d2EBkJiPCVXzxaUngnqTsG89ig==
-X-Google-Smtp-Source: ABdhPJwjhADjsZkiUiV63C7UdjS0kr8znYCOvlhuYeRyXXM/eucbfSwVQB3WasGrTPrLaBRSEotjoQ==
-X-Received: by 2002:a63:8b42:: with SMTP id j63mr22776554pge.131.1593010327982;
-        Wed, 24 Jun 2020 07:52:07 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id cm13sm5609737pjb.5.2020.06.24.07.52.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 07:52:07 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 07:52:06 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Alexander Popov <alex.popov@linux.com>
-Cc:     Jann Horn <jannh@google.com>, Emese Revfy <re.emese@gmail.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Jessica Yu <jeyu@kernel.org>,
-        Sven Schnelle <svens@stackframe.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Alexander Monakov <amonakov@ispras.ru>,
-        Mathias Krause <minipli@googlemail.com>,
-        PaX Team <pageexec@freemail.hu>,
-        Brad Spengler <spender@grsecurity.net>,
-        Laura Abbott <labbott@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        kernel-hardening@lists.openwall.com, linux-kbuild@vger.kernel.org,
-        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, gcc@gcc.gnu.org, notify@kernel.org
-Subject: Re: [PATCH v2 1/5] gcc-plugins/stackleak: Don't instrument itself
-Message-ID: <202006240751.30293A1@keescook>
-References: <20200624123330.83226-1-alex.popov@linux.com>
- <20200624123330.83226-2-alex.popov@linux.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2F6v8JQ44zNL7WDKYUMFQlmy+yKvwRWWXRmkHnYvxmA=;
+        b=LTNDBslrdxPYAb/R/vA6RFE8bkLZaX2DZ/bY+NlNb2+Tf2ERWmZ78TzeR87JqdEKd7
+         pUgSEIMMVeC2Bl90fQqIfWphgYDIYaO+aVsyoWnvKBmza17OaYKQngaD0fZFeUKImFbu
+         qj1/StkfU9X8GgRSH4fVusuUB8OCzo/Hq/3fhkBC78+8Ev2rzVAIjWVpvnOq/lhf/Uk4
+         i5CuNC+tPb/fBxn4DRNDbOlEOQ32CPL6J76nL2iCj2q0Wwh/EU+Zjwtvt6bM66gFrytx
+         Log2+fjA2ieZxZpDVUe5HQCnS2JR90b2LKe/SNiWLLRFWr9DK1UcYMUYen7SQtEfpojX
+         xiXA==
+X-Gm-Message-State: AOAM532gDvML1rv20wgJuL+pHLO0DQ/Zig5yfPhxjFHjnLSdStM3NTVG
+        sQDHImp6xQpQgCC0MCh7c3Pze11Z2ZwjZyQj234=
+X-Google-Smtp-Source: ABdhPJxQZvDtc8fb5eM/H4YrRoZb6YlPQLvmpsPekPIdTz2fOpy0OiUqkuAzib92figajBbrmwyLUdH6I08AfVHRyag=
+X-Received: by 2002:a17:90a:b30d:: with SMTP id d13mr28499822pjr.181.1593010351239;
+ Wed, 24 Jun 2020 07:52:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200624123330.83226-2-alex.popov@linux.com>
+References: <20200623060526.29922-1-mans0n@gorani.run> <80bbca9a625b2a0feb9b816906549b7c@walle.cc>
+ <2291c01d-30df-518e-a952-644bd955f1f3@gorani.run> <69f5d1a1970838b8c4bd8d6e8dba6cac@walle.cc>
+ <CAHp75Vfc2udv2mLLJCFO6P+n8_kcO7OZKhH_XkOy7Cf4fnxgtA@mail.gmail.com> <9956439a3c887dde7b2b8fa48de20db2@walle.cc>
+In-Reply-To: <9956439a3c887dde7b2b8fa48de20db2@walle.cc>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 24 Jun 2020 17:52:18 +0300
+Message-ID: <CAHp75VciJmV1wTB0AWvbjyOZzzk1A1KC70+dtr0jNziAvQ2tHw@mail.gmail.com>
+Subject: Re: [PATCH] gpio: add GPO driver for PCA9570
+To:     Michael Walle <michael@walle.cc>
+Cc:     Sungbo Eo <mans0n@gorani.run>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 03:33:26PM +0300, Alexander Popov wrote:
-> There is no need to try instrumenting functions in kernel/stackleak.c.
-> Otherwise that can cause issues if the cleanup pass of stackleak gcc plugin
-> is disabled.
-> 
-> Signed-off-by: Alexander Popov <alex.popov@linux.com>
-> Acked-by: Kees Cook <keescook@chromium.org>
+On Wed, Jun 24, 2020 at 4:46 PM Michael Walle <michael@walle.cc> wrote:
+> Am 2020-06-24 15:33, schrieb Andy Shevchenko:
+> > On Tue, Jun 23, 2020 at 3:48 PM Michael Walle <michael@walle.cc> wrote:
+> >> Am 2020-06-23 14:22, schrieb Sungbo Eo:
+> >> > On 2020-06-23 17:31, Michael Walle wrote:
+> >> >> Am 2020-06-23 08:05, schrieb Sungbo Eo:
 
-Thanks! Applied to for-next/gcc-plugins.
+...
+
+> >> That won't work because the underlying regmap expects the address bits
+> >> to be either 8 or 16. In this case I'd guess gpio-regmap, doesn't make
+> >> sense, because there is actually no real gain.
+> >
+> > From the DS:
+> > "The device acknowledges and the master sends the data byte for P7 to
+> > P0 and is acknowledged by the device. Writes to P7 to P4 are ignored
+> > in the PCA9570 as only P3 through P0 are available. The 4-bit data is
+> > presented on the port lines after it has been acknowledged by the
+> > device. The number of data bytes that can be sent successively is not
+> > limited. The previous data is overwritten every time a data byte has
+> > been sent."
+> >
+> > So, basically writing to the register the value of register can
+> > simulate register map, but the question is do we gain anything from
+> > that abstraction because it means that all 256 (or 16 for 4-bit
+> > variant) registers are possible?
+>
+> Mh? I can't follow you. Port means a physical I/O port, if I
+> read the datasheet correctly. And because that is a 4 port IO
+> expander only the lower four bits are used. I'd guess if it is
+> a 8 port IO expander all bits would be used. (Actually, its
+> output only.)
+>
+> So you just write one byte of data (or you might repeat it, but
+> that is just as if you start a new i2c transaction, just that
+> you save the i2c addressing).
+
+You can write the same value twice.
+It means that the first byte can represent the register address. But
+it's still too volatile.
+Perhaps regmap can gain something like register-less communication.
 
 -- 
-Kees Cook
+With Best Regards,
+Andy Shevchenko
