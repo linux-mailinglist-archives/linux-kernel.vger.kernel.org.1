@@ -2,99 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71874207724
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E3FC20772B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404571AbgFXPQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:16:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404243AbgFXPQj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:16:39 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8F4CC061796
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:16:38 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id n2so1158361pld.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:16:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=TVX/MV1cRkugdklQX2owAo6W7k+5NFqvXnOlDA4kvRY=;
-        b=yGzNNUiU0zB4ia/e/BRLyub6jOMkcwxNBtVbxa2YAtqv9bXPxUetSHNyXmsHenrYHt
-         cjkFgPmkRZp/X2yNr2u9mju+xed5eYUhQk4Kpx+jH0CGmR61y8a9ouWVJug5DZ7A+Qlv
-         DJD/L8PQC/W42O0m9N96kcj4qg7p6UcD14f7MiBpKvVmmzYFuDReGBcXd8RNy518wKPV
-         wNXnls0RdYt9lZQO/MEmeg8HOax7edYnC7etow2AGG1sgeWTIFjKemddtFXoz8u+vQRr
-         Ma2eSMXnN6YljqXWa7Q+47mtbUe6tyaeYSy4XLkUoOPj471841XsJUywEBTvACE5vQ1m
-         8c/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=TVX/MV1cRkugdklQX2owAo6W7k+5NFqvXnOlDA4kvRY=;
-        b=COoLSQdoZqY6VLKxb215toepBueXjU2D9uuoN/SlNv2vjglDSKZJSF+4j2pZPbSpxJ
-         20/mJcBC3KGSsPp3axqQyVMW8vHDPfbyobFJfmG29y5eu1E4vJF8udJlbYYsZYWG9ycM
-         jKtkOJ80WVUdjyQ5kFULYkK+aCYk2Us0wIO+GvdUNQTl51xCvyVaU/+nBqwhO/+y+Vpd
-         6LetPmVhceGdiylw43tvhjrKnOyKoS0myAyWCP6pMHR850obdHHdKvVcCz6+WZOMJG48
-         PcF3ZDXZew1JNmp5pGZBsbAnUxborQRHY8WvekvGsF3zIG39J/BFBq2bHnGTndsY2EAs
-         ysCA==
-X-Gm-Message-State: AOAM530BDd5eKjkxCLDX1OqYAcNEb2j+EfCfXC+zFj1tMUgZjUJSs6nv
-        XiD/1L0+QqMVBLgb3EUwJCaTSUDxLx8=
-X-Google-Smtp-Source: ABdhPJycIgQsbIB02Wur2mBRtNGc1PyURqcruMtrpODXrvsCtMYEKd4KNUN/T13UfMqBLSg/gfKfEQ==
-X-Received: by 2002:a17:902:8d98:: with SMTP id v24mr17314674plo.276.1593011798114;
-        Wed, 24 Jun 2020 08:16:38 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id n15sm3158702pgs.25.2020.06.24.08.16.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jun 2020 08:16:37 -0700 (PDT)
-Subject: Re: move block bits out of fs.h
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        id S2404587AbgFXPQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:16:54 -0400
+Received: from foss.arm.com ([217.140.110.172]:32964 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404564AbgFXPQx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 11:16:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3EECF1FB;
+        Wed, 24 Jun 2020 08:16:52 -0700 (PDT)
+Received: from [10.57.9.128] (unknown [10.57.9.128])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DDDE13F73C;
+        Wed, 24 Jun 2020 08:16:49 -0700 (PDT)
+Subject: Re: [RESEND PATCH v5 3/5] drivers core: allow probe_err accept
+ integer and pointer types
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jslaby@suse.com>, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200620071644.463185-1-hch@lst.de>
- <c2fba635-b2ce-a2b5-772b-4bfcb9b43453@kernel.dk>
- <20200624151211.GA17344@lst.de>
- <216bcea4-a38d-8a64-bc0f-be61b2f26e79@kernel.dk>
- <20200624151454.GB17344@lst.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <989cafe3-ddfd-8b0c-2bad-412eb3a20ee0@kernel.dk>
-Date:   Wed, 24 Jun 2020 09:16:36 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20200624114127.3016-1-a.hajda@samsung.com>
+ <CGME20200624114136eucas1p1c84f81b1d78e2dbad7ac1b762f0a4b4f@eucas1p1.samsung.com>
+ <20200624114127.3016-4-a.hajda@samsung.com>
+ <2203e0c2-016b-4dbe-452d-63c857f06dd1@arm.com>
+ <CAHp75VfpP1cGK3FvTL0hBudRY2N_7GpXYRuUHUCipz7X2sMLmQ@mail.gmail.com>
+ <be755825-b413-e5c1-7ea4-06506b20d1f0@arm.com>
+ <20200624150434.GH5472@sirena.org.uk>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <381de683-df5e-4112-5690-13dd9272ae22@arm.com>
+Date:   Wed, 24 Jun 2020 16:16:48 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <20200624151454.GB17344@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20200624150434.GH5472@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/24/20 9:14 AM, Christoph Hellwig wrote:
-> On Wed, Jun 24, 2020 at 09:14:11AM -0600, Jens Axboe wrote:
->> On 6/24/20 9:12 AM, Christoph Hellwig wrote:
->>> On Wed, Jun 24, 2020 at 09:09:42AM -0600, Jens Axboe wrote:
->>>> Applied for 5.9 - I kept this in a separate topic branch, fwiw. There's the
->>>> potential for some annoying issues with this, so would rather have it in
->>>> a branch we can modify easily, if we need to.
->>>
->>> Hmm, I have a bunch of things building on top of this pending, so that
->>> branch split will be interesting to handle.
->>
->> We can stuff it in for-5.9/block, but then I'd rather just rebase that
->> on 5.8-rc2 now since it's still early days. If we don't, we already
->> have conflicts...
+On 2020-06-24 16:04, Mark Brown wrote:
+> On Wed, Jun 24, 2020 at 03:25:33PM +0100, Robin Murphy wrote:
 > 
-> I'll happily rebase.  rc1 also has funny ext4 warnings which are
-> pretty annoying.
+>> And yeah, anyone who pipes up suggesting that places where an ERR_PTR value
+>> could be passed to probe_err() could simply refactor IS_ERR() checks with
+>> more uses of the god-awful PTR_ERR_OR_ZERO() obfuscator gets a long stare of
+>> disapproval...
+> 
+> We could also have a probe_err_ptr() or something that took an ERR_PTR()
+> instead if there really were an issue with explicitly doing this.
 
-Done, pushed it out.
+Yeah, for all my lyrical objection, a static inline <blah>_ptr_err() 
+helper to wrap <blah>_err() with sensible type checking might actually 
+be an OK compromise if people really feel strongly for having that utility.
 
--- 
-Jens Axboe
+(and then we can debate whether it should also convert NULL to -ENOMEM 
+and !IS_ERR to 0... :D)
 
+Robin.
