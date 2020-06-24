@@ -2,139 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B233207E41
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 23:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9D15207E4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 23:16:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390238AbgFXVPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 17:15:02 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:35394 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389905AbgFXVPB (ORCPT
+        id S2390379AbgFXVQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 17:16:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390317AbgFXVQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 17:15:01 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 59C3B2A8;
-        Wed, 24 Jun 2020 23:14:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1593033299;
-        bh=O456LASQn9kO/3hkrQBpyo1bbr1iLz/VwItz+lFwffU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f0fHUh57lgRqR9IpMOjXoZK3Twxsd/ZWfJQm+2hA0sVIRWeRIZO2MX/jELjW3RNyB
-         48IdhD2OXlfK0afif8c8zY3u1PFxQqTpmuh4UmFp5AcXqSCujRE6aH5TSRlMhQAE45
-         eYSABfTxAZhVCiHfU3S95gmqFKjCyWcVj3buK2/M=
-Date:   Thu, 25 Jun 2020 00:14:58 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Anurag Kumar Vulisha <anurag.kumar.vulisha@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH v8 2/3] phy: zynqmp: Add PHY driver for the Xilinx ZynqMP
- Gigabit Transceiver
-Message-ID: <20200624211458.GA29023@pendragon.ideasonboard.com>
-References: <20200513172239.26444-1-laurent.pinchart@ideasonboard.com>
- <20200513172239.26444-3-laurent.pinchart@ideasonboard.com>
- <20200624151121.GF2324254@vkoul-mobl>
- <20200624163927.GF5980@pendragon.ideasonboard.com>
- <20200624172635.GI2324254@vkoul-mobl>
+        Wed, 24 Jun 2020 17:16:05 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEDC1C061573;
+        Wed, 24 Jun 2020 14:16:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=CYAOBdXXwk5atGG1OkexemEOJEg2uOXvmf8MxtMHkzA=; b=lvI0AvNCOyQRFPEBPSO732MCmS
+        priyMdaeyT9DlHRLc/z9qWhkeCY/G37ozS6HciR55B+xdk3sRO+bn4RdzWVJS4FDFf++roys12UFi
+        2Xn0aJcu82shXhcuPUJaxr0NiofjiM9cS72P+0UyExr/CWjZItZDE4OZMDMLf4RBiQ+3eGs0RrR20
+        QerCqnR4yK+D/eqXSR/BaYzSzLfSMZBayOvuxe0uMIgumCmxbS4aKn+HlmJxHDAjxC7KlQlu9/mMK
+        D//TxmU24AKwnTz6mvW3vYpxg3iJ7ar26Kv6tNzbCv4aRAJOYWk+gjYHLWLDLC4v2if3/bM+oS2fR
+        WOLeUYeg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1joCkB-0004Ne-TF; Wed, 24 Jun 2020 21:15:44 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1283B304B6D;
+        Wed, 24 Jun 2020 23:15:41 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 05648203CDC3F; Wed, 24 Jun 2020 23:15:41 +0200 (CEST)
+Date:   Wed, 24 Jun 2020 23:15:40 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH 00/22] add support for Clang LTO
+Message-ID: <20200624211540.GS4817@hirez.programming.kicks-ass.net>
+References: <20200624203200.78870-1-samitolvanen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200624172635.GI2324254@vkoul-mobl>
+In-Reply-To: <20200624203200.78870-1-samitolvanen@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vinod,
+On Wed, Jun 24, 2020 at 01:31:38PM -0700, Sami Tolvanen wrote:
+> This patch series adds support for building x86_64 and arm64 kernels
+> with Clang's Link Time Optimization (LTO).
+> 
+> In addition to performance, the primary motivation for LTO is to allow
+> Clang's Control-Flow Integrity (CFI) to be used in the kernel. Google's
+> Pixel devices have shipped with LTO+CFI kernels since 2018.
+> 
+> Most of the patches are build system changes for handling LLVM bitcode,
+> which Clang produces with LTO instead of ELF object files, postponing
+> ELF processing until a later stage, and ensuring initcall ordering.
+> 
+> Note that first objtool patch in the series is already in linux-next,
+> but as it's needed with LTO, I'm including it also here to make testing
+> easier.
 
-On Wed, Jun 24, 2020 at 10:56:35PM +0530, Vinod Koul wrote:
-> On 24-06-20, 19:39, Laurent Pinchart wrote:
-> 
-> > > > +/* Number of GT lanes */
-> > > > +#define NUM_LANES			4
-> > > 
-> > > Should this be coded in driver like this? Maybe future versions of
-> > > hardware will have more lanes..? Why not describe this in DT?
-> > 
-> > This macro is used to avoid hardcoding 4 in the driver, to make sure
-> > that all the code that deal with the number of lanes use a consistent
-> > value and is readable. There's no foreseen new version of the IP that
-> > would have more lane, so I don't think this should go in DT. Otherwise
-> > we'd have to encode there pretty much any parameter that could one day
-> > possibly change in a different universe :-)
-> > 
-> > Let's also note that even when parameters change between IP versions, it
-> > doesn't always make sense to specify them explicitly in DT. It's totally
-> > fine to have a table of parameter values in the driver, indexed by
-> > compatible string. Whether to set a parameter explicitly in DT or handle
-> > it in the driver usually depends on how frequently that parameter can
-> > change, if it can vary between different integrations of the same IP
-> > version, ...
-> > 
-> > In this specific case, as there's no foreseen change, we can't really
-> > tell how it would change if it did one day. I thus think hardcoding the
-> > parameter in the driver is fine, and in the worst case, we can add a
-> > parameter in DT later and default to 4 if not specified. Same reasoning
-> > for CONTROLLERS_PER_LANE.
-> 
-> yeah not every parameter can be coded and we should use compatible as
-> well, but I would disagree with no future revision planned. It will
-> happen not now, but sometime in year or so :) Been around devices has
-> taught me that only constant thing is change in hardware!
-
-I don't dispute it will not happen, my point is that, without a new
-revision planned, we don't have enough information to tell which option
-would be best to support future revisions. As I know we won't be blocked
-(both compat string matching and adding new optional properties with
-appropriate defaults will be viable options), I'm not concerned.
-
-> Yes but this is not a deal breaker atm, will leave upto you
-> 
-> > > > +
-> > > > +/* SIOU SATA control register */
-> > > > +#define SATA_CONTROL_OFFSET		0x0100
-> > > > +
-> > > > +/* Total number of controllers */
-> > > > +#define CONTROLLERS_PER_LANE		5
-> > > 
-> > > Same question for this as well..
-> > > 
-> > > > +/*
-> > > > + * I/O Accessors
-> > > > + */
-> > > > +
-> > > > +static inline u32 xpsgtr_read(struct xpsgtr_dev *gtr_dev, u32 reg)
-> > > > +{
-> > > > +	return readl(gtr_dev->serdes + reg);
-> > > > +}
-> > > > +
-> > > > +static inline void xpsgtr_write(struct xpsgtr_dev *gtr_dev, u32 reg, u32 value)
-> > > > +{
-> > > > +	writel(value, gtr_dev->serdes + reg);
-> > > > +}
-> > > > +
-> > > > +static inline void xpsgtr_clr_set(struct xpsgtr_dev *gtr_dev, u32 reg,
-> > > > +				  u32 clr, u32 set)
-> > > 
-> > > wouldn't it be apt to rename this to xpsgtr_modify() and with args as
-> > > value and mask, somehow I find that more simpler...
-> > 
-> > "modify" sounds more vague to me. I've also kept xpsgtr_clr_set() as
-> > that's what the original author used.
-> 
-> yeah maybe that was a wrong choice of term, I guess update looks best.
-> We really are missing update api in kernel! I see regmap does provide
-> _update_bits() api
-> 
-> > > Also, please align second line with opening brace of preceding line
-> > 
-> > It is aligned, the first line is affected by the + and > in the mail,
-> > while the second line uses tabs and thus isn't.
-> 
-> ok
-
--- 
-Regards,
-
-Laurent Pinchart
+I'm very sad that yet again, memory ordering isn't addressed. LTO vastly
+increases the range of the optimizer to wreck things.
