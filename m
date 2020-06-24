@@ -2,141 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5D97207672
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44E10207665
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404288AbgFXPCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:02:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55624 "EHLO
+        id S2404270AbgFXPCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:02:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404241AbgFXPC3 (ORCPT
+        with ESMTP id S2404255AbgFXPC1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:02:29 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB85C061795
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:02:29 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id s14so1158118plq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:02:29 -0700 (PDT)
+        Wed, 24 Jun 2020 11:02:27 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C85BC0613ED;
+        Wed, 24 Jun 2020 08:02:27 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id e15so1744084edr.2;
+        Wed, 24 Jun 2020 08:02:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=JWnneQzXfI0UCqfkUaeoAs3ig549rm/MnU8+no9mpQ8=;
-        b=Rl9izeasMTckdt53HqfGTVXn8hAB7zTLsVPwhL7+DoOPgmHJ1jZcR0+vO+ug/jMR8p
-         25vwgeyf8U4dsLT36Ix4duFc4Xdof7G2CRr2xeT6SLQ1oW7b3xgbKjJjK7xoJ3qDsRa1
-         7adwN/K8ocUYxYMT4i34qZew5jTojr2t2rUUEaIEoWhNQwbDjENmYFLC0iOTJH4cz2Au
-         YQHtwNAqlbccLU3Q//01FIhA8ZaSS8xKarSyfsautTo8m90ExIUerNO1evzIH70Da7Bu
-         nXjpAuFY81AEyUX+MZ9NgJg/EE5HUVE3UYUSi1XMQFXN6jgozXTKUO4QpslpVQoXoKzc
-         8Log==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=joaqSzO9YrunPdmQExA2g6tAJBLWEu7X/4bAmZ8Um/4=;
+        b=fGLKEPfmpfyDVfYFXgXYsN+ra45eqMzfoxlE5fEQq2E/nJlHkb3aLLEjASyTdxD0Jh
+         +azO0HVFjVl2/2A/s38XUzjfiLxD9o7Nlu0Mw+VBWhW6rymHPfENV5SXmIstGF3ITmL5
+         lpiHMvnjinZehwBoLMIs4FZv2qc6PRH5il+rtve0m8NIj/csmPfzKCyMnuV2PaWONWJt
+         uvZM4HPJ4IPqUXK7qJA5fRfSKYpcoTO44cEXFLc30/fnJpzKaLiXjo7QQ+Y97+D5I+RA
+         pQWfrIqsaosnoRb470LdJUW7z15by2RA49MHwX/B8AidCSBEDUPfUTb6E6T/QWxNkcVQ
+         FTBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=JWnneQzXfI0UCqfkUaeoAs3ig549rm/MnU8+no9mpQ8=;
-        b=Z1NwpLUsG2lCuxVA3wBIIpEr4tHKy/o9X1L5ghNuSJr4/dhxmediIJc6u4XWgZYxqi
-         re45Lm/1WTtGSRDAkkRNDA5uad+ThTqX5HB5uZGx3uXyhZT/8V0TQ1ivjqnTCSA/tEAi
-         Aw3FsYXQbX4vcFSwkgY5SXznh16ZQUhRIqpQzoMM5Gl6CEcYAkHgzGEan87FRRV2MXSv
-         CffVDf1thOPD04ao+4sqSOevdRM0YEyHPjXJCaArTP7/8E/6xc5W9NDtzE8qnuCUmrJ+
-         fTFNcUVAq6lM5QaWlVzRWa79VZkqaTnl/ZRY8xwqMwqnvFYBxuQbSWuB3P70EHak+tjW
-         wfjQ==
-X-Gm-Message-State: AOAM532Kzv7BCiNWwIEeZWiLd24xyqvIzTHQtSmh30kZ7dDwh+zlfcCB
-        XTmaa/YTsV7SOdejJu3PaQ==
-X-Google-Smtp-Source: ABdhPJxl1PHw4LkPk6lT5aYG/XIcClNITVvyBSM5EkGGToos6HlxyHE06skpVZArpn/F/RPE11cC0A==
-X-Received: by 2002:a17:90a:3608:: with SMTP id s8mr29753490pjb.86.1593010948525;
-        Wed, 24 Jun 2020 08:02:28 -0700 (PDT)
-Received: from ip-172-31-41-194.ap-northeast-1.compute.internal (ec2-52-199-21-241.ap-northeast-1.compute.amazonaws.com. [52.199.21.241])
-        by smtp.gmail.com with ESMTPSA id i125sm17013705pgd.21.2020.06.24.08.02.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 08:02:28 -0700 (PDT)
-From:   nao.horiguchi@gmail.com
-To:     linux-mm@kvack.org
-Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
-        mike.kravetz@oracle.com, osalvador@suse.de, tony.luck@intel.com,
-        david@redhat.com, aneesh.kumar@linux.vnet.ibm.com,
-        zeil@yandex-team.ru, naoya.horiguchi@nec.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 15/15] mm,hwpoison: introduce MF_MSG_UNSPLIT_THP
-Date:   Wed, 24 Jun 2020 15:01:37 +0000
-Message-Id: <20200624150137.7052-16-nao.horiguchi@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200624150137.7052-1-nao.horiguchi@gmail.com>
-References: <20200624150137.7052-1-nao.horiguchi@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=joaqSzO9YrunPdmQExA2g6tAJBLWEu7X/4bAmZ8Um/4=;
+        b=LJgFstwVId7Gj1PEa9S0JUX669uDIiMYeZGsAdJ8yrTh0rHYpCn0DIYgY8pkbGCNyD
+         Lf7I7l9DMs1jxKQm/tK3/v/hUfdQASLUylPC8K1rC4QVCYW/hpNFL/XjjtMaUWCTTJTZ
+         BCSzW1PYP8fpv/EG7BAyTBOjkhsleTRHTvUUB+29ViaAMrnudibv95mTF34SI9Bu95Bw
+         AZjrRXPuXjUZ7DOmueWZo4x/TPewboC/VscsPY8sctsYdKhFnLPYpgSadLy+MYpANYt0
+         1drfeZMM7FyASo68FyTsnD6JFsBmRToIi8D8i24IVrLq5YUyoip1XbKgmkRz7ZIhpBCt
+         UogA==
+X-Gm-Message-State: AOAM530iLMyTtY+HSvYnzrjQ4E9VO27dEmcBpjr1d4gz1OnQYT7H7Rdx
+        bVkDtoM7BkXrucb8esFrPk9TRqTiB/Fj5ZEBd1UV3V10
+X-Google-Smtp-Source: ABdhPJybRDss19kJA/nU6b6NvS3HVIs6RZo/E76NGJSVeOzB8R3k6aWf/LXpQbE9UooKYCG8cGulykoWdAXpdAGvXJ0=
+X-Received: by 2002:aa7:c756:: with SMTP id c22mr27583864eds.239.1593010946270;
+ Wed, 24 Jun 2020 08:02:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200623180832.254163-1-konradybcio@gmail.com>
+ <20200623180832.254163-4-konradybcio@gmail.com> <CAHLCerOAM5j+gZWP9MUuGZ+TQfBg4Z=GoEdUfxBTwtEs5TqUuw@mail.gmail.com>
+In-Reply-To: <CAHLCerOAM5j+gZWP9MUuGZ+TQfBg4Z=GoEdUfxBTwtEs5TqUuw@mail.gmail.com>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Wed, 24 Jun 2020 17:01:50 +0200
+Message-ID: <CAMS8qEUT+Kdq-gqZn25X7W2V8HacuXFbeoTDz=N7C7MNpSfOHA@mail.gmail.com>
+Subject: Re: [PATCH 3/8] arm64: dts: qcom: sdm630: Add tsens node
+To:     Amit Kucheria <amit.kucheria@linaro.org>
+Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Interesting, the downstream DTS only mentions the 0x010AD one..
+Are you sure you're not looking at 636/660?
 
-memory_failure() is supposed to call action_result() when it handles
-a memory error event, but there's one missing case. So let's add it.
-
-I find that include/ras/ras_event.h has some other MF_MSG_* undefined,
-so this patch also adds them.
-
-Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
----
- include/linux/mm.h      | 1 +
- include/ras/ras_event.h | 3 +++
- mm/memory-failure.c     | 5 ++++-
- 3 files changed, 8 insertions(+), 1 deletion(-)
-
-diff --git v5.8-rc1-mmots-2020-06-20-21-44/include/linux/mm.h v5.8-rc1-mmots-2020-06-20-21-44_patched/include/linux/mm.h
-index d708033c50c0..10ee48f05f68 100644
---- v5.8-rc1-mmots-2020-06-20-21-44/include/linux/mm.h
-+++ v5.8-rc1-mmots-2020-06-20-21-44_patched/include/linux/mm.h
-@@ -3033,6 +3033,7 @@ enum mf_action_page_type {
- 	MF_MSG_BUDDY,
- 	MF_MSG_BUDDY_2ND,
- 	MF_MSG_DAX,
-+	MF_MSG_UNSPLIT_THP,
- 	MF_MSG_UNKNOWN,
- };
- 
-diff --git v5.8-rc1-mmots-2020-06-20-21-44/include/ras/ras_event.h v5.8-rc1-mmots-2020-06-20-21-44_patched/include/ras/ras_event.h
-index 36c5c5e38c1d..0bdbc0d17d2f 100644
---- v5.8-rc1-mmots-2020-06-20-21-44/include/ras/ras_event.h
-+++ v5.8-rc1-mmots-2020-06-20-21-44_patched/include/ras/ras_event.h
-@@ -361,6 +361,7 @@ TRACE_EVENT(aer_event,
- 	EM ( MF_MSG_POISONED_HUGE, "huge page already hardware poisoned" )	\
- 	EM ( MF_MSG_HUGE, "huge page" )					\
- 	EM ( MF_MSG_FREE_HUGE, "free huge page" )			\
-+	EM ( MF_MSG_NON_PMD_HUGE, "non-pmd-sized huge page" )		\
- 	EM ( MF_MSG_UNMAP_FAILED, "unmapping failed page" )		\
- 	EM ( MF_MSG_DIRTY_SWAPCACHE, "dirty swapcache page" )		\
- 	EM ( MF_MSG_CLEAN_SWAPCACHE, "clean swapcache page" )		\
-@@ -373,6 +374,8 @@ TRACE_EVENT(aer_event,
- 	EM ( MF_MSG_TRUNCATED_LRU, "already truncated LRU page" )	\
- 	EM ( MF_MSG_BUDDY, "free buddy page" )				\
- 	EM ( MF_MSG_BUDDY_2ND, "free buddy page (2nd try)" )		\
-+	EM ( MF_MSG_DAX, "dax page" )					\
-+	EM ( MF_MSG_UNSPLIT_THP, "unsplit thp" )			\
- 	EMe ( MF_MSG_UNKNOWN, "unknown page" )
- 
- /*
-diff --git v5.8-rc1-mmots-2020-06-20-21-44/mm/memory-failure.c v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/memory-failure.c
-index 9ad3198a3954..e57cfe0606f5 100644
---- v5.8-rc1-mmots-2020-06-20-21-44/mm/memory-failure.c
-+++ v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/memory-failure.c
-@@ -586,6 +586,7 @@ static const char * const action_page_types[] = {
- 	[MF_MSG_BUDDY]			= "free buddy page",
- 	[MF_MSG_BUDDY_2ND]		= "free buddy page (2nd try)",
- 	[MF_MSG_DAX]			= "dax page",
-+	[MF_MSG_UNSPLIT_THP]		= "unsplit thp",
- 	[MF_MSG_UNKNOWN]		= "unknown page",
- };
- 
-@@ -1376,8 +1377,10 @@ int memory_failure(unsigned long pfn, int flags)
- 	}
- 
- 	if (PageTransHuge(hpage)) {
--		if (try_to_split_thp_page(p, "Memory Failure") < 0)
-+		if (try_to_split_thp_page(p, "Memory Failure") < 0) {
-+			action_result(pfn, MF_MSG_UNSPLIT_THP, MF_IGNORED);
- 			return -EBUSY;
-+		}
- 		VM_BUG_ON_PAGE(!page_count(p), p);
- 	}
- 
--- 
-2.17.1
-
+Regards
+Konrad
