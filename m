@@ -2,94 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9956207551
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC28207557
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390913AbgFXOKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 10:10:15 -0400
-Received: from mga18.intel.com ([134.134.136.126]:55876 "EHLO mga18.intel.com"
+        id S2391165AbgFXOLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 10:11:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388395AbgFXOKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 10:10:14 -0400
-IronPort-SDR: 1Ac6gNhkTP1hrlbKTsO2jEMV9KXo+Tq+IZe0J5+VkfgGTd+B7mlgCuBBGfSnrFKBVozm6Vgsci
- VVF1K5pOLEOA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="131908188"
-X-IronPort-AV: E=Sophos;i="5.75,275,1589266800"; 
-   d="scan'208";a="131908188"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2020 07:10:14 -0700
-IronPort-SDR: t0uIJzxyP/VfGpmEe3QbKxoaX0aTTRDE3lTL/THB5tOhy1M2k4/mqmTIlLz3TOXdGG34AHGUPd
- 0/eGk/BTOT+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,275,1589266800"; 
-   d="scan'208";a="479272410"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga005.fm.intel.com with ESMTP; 24 Jun 2020 07:10:13 -0700
-Received: from [10.249.228.248] (abudanko-mobl.ccr.corp.intel.com [10.249.228.248])
-        by linux.intel.com (Postfix) with ESMTP id A3AC65804D6;
-        Wed, 24 Jun 2020 07:10:11 -0700 (PDT)
-Subject: Re: [PATCH v8 09/13] perf stat: implement control commands handling
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <0781a077-aa82-5b4a-273e-c17372a72b93@linux.intel.com>
- <5ed69a1e-052a-9790-7642-cb9c9a53d786@linux.intel.com>
- <20200623145442.GE2619137@krava>
-From:   Alexey Budankov <alexey.budankov@linux.intel.com>
-Organization: Intel Corp.
-Message-ID: <5d6bab4b-d743-609e-e08c-8eabcb9adfef@linux.intel.com>
-Date:   Wed, 24 Jun 2020 17:10:10 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S2388395AbgFXOLm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 10:11:42 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A54DE2076E;
+        Wed, 24 Jun 2020 14:11:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593007902;
+        bh=dZNin8SmpQq7p18Ft1Jea35GMdNCC7HEuuzLiyxrh8Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fJWXKwa+oiCswSJrlk0nUsRRcjJZTvJbk1QUt2J19HQvSy75D3MM8h43yhNwhFks+
+         RIIlbLOH6u0VB+IZN5vCizuHwbxa9qK+DYorhJgtXwA3RjuB9v8fCFEozXI2fzF+Lo
+         v2Mm7zxAjso+NP/P8KcDJ6PRqpvyjUOHLo7BsDL0=
+Date:   Wed, 24 Jun 2020 15:11:39 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        linux-kernel@vger.kernel.org,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jonas Karlman <jonas@kwiboo.se>, andy.shevchenko@gmail.com,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Subject: Re: [RESEND PATCH v5 4/5] drm/bridge/sii8620: fix resource
+ acquisition error handling
+Message-ID: <20200624141139.GF5472@sirena.org.uk>
+References: <20200624114127.3016-1-a.hajda@samsung.com>
+ <CGME20200624114137eucas1p13599d33a0c4a9abf7708bf8c8e77264b@eucas1p1.samsung.com>
+ <20200624114127.3016-5-a.hajda@samsung.com>
+ <20200624132532.GC5472@sirena.org.uk>
+ <cf95aac3-fef5-29d0-d94e-ce6cce4ccdb4@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20200623145442.GE2619137@krava>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="27ZtN5FSuKKSZcBU"
+Content-Disposition: inline
+In-Reply-To: <cf95aac3-fef5-29d0-d94e-ce6cce4ccdb4@samsung.com>
+X-Cookie: So this is it.  We're going to die.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 23.06.2020 17:54, Jiri Olsa wrote:
-> On Wed, Jun 17, 2020 at 11:41:30AM +0300, Alexey Budankov wrote:
-> 
-> SNIP
-> 
->>  
->>  	while (1) {
->>  		if (forks)
->> @@ -581,8 +617,17 @@ static int dispatch_events(bool forks, int timeout, int interval, int *times, st
->>  		if (done || stop || child)
->>  			break;
->>  
->> -		nanosleep(ts, NULL);
->> -		stop = process_timeout(timeout, interval, times);
->> +		clock_gettime(CLOCK_MONOTONIC, &time_start);
->> +		if (!(evlist__poll(evsel_list, time_to_sleep) > 0)) { /* poll timeout or EINTR */
->> +			stop = process_timeout(timeout, interval, times);
->> +			time_to_sleep = sleep_time;
->> +		} else { /* fd revent */
->> +			stop = process_evlist(evsel_list, interval, times);
->> +			clock_gettime(CLOCK_MONOTONIC, &time_stop);
->> +			diff_timespec(&time_diff, &time_stop, &time_start);
->> +			time_to_sleep -= time_diff.tv_sec * MSEC_PER_SEC +
->> +					time_diff.tv_nsec / NSEC_PER_MSEC;
-> 
-> should we check time_to_sleep > time_diff first?
+--27ZtN5FSuKKSZcBU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Probably and if time_diff > time_to_sleep then time_to_sleep = 0 ?
+On Wed, Jun 24, 2020 at 03:43:10PM +0200, Andrzej Hajda wrote:
+>=20
+> On 24.06.2020 15:25, Mark Brown wrote:
 
-~Alexey
+> > If we silently ignore all deferred probe errors we make it hard for
+> > anyone who is experiencing issues with deferred probe to figure out what
+> > they're missing.  We should at least be logging problems at debug level
+> > so there's something for people to go on without having to hack the
+> > kernel source.
 
-> 
-> jirka
-> 
+> But you can always do:
+
+> cat /sys/kernel/debug/devices_deferred
+
+> And you will find there deferred probe reason (thanks to patch 2/5).
+
+Right, my point is more that we shouldn't be promoting discarding the
+diagnostics entirely but rather saying that we want to redirect those
+somewhere else.
+
+> Eventually if you want it in dmesg anyway, one can adjust probe_err funct=
+ion
+> to log probe error on debug level as well.
+
+That would most likely be very useful as a boot option for problems that
+occur before we get a console up.
+
+--27ZtN5FSuKKSZcBU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7zXxsACgkQJNaLcl1U
+h9C/2wf/YBbKSbShg3LyXqrQ3TXwZGSL43JPPExpduhQPiAEn9LJIa1bgE640xzI
+0v5GUg3chRw9YilP9SA5RZ9ODZNo1fw9TwXaIhTVJgbeqc8PVadTm96IOEJj9Tgg
+VSxnkPB4Az6RoG1462+Aov9q7/CaAfRmedwIECmapT16oJx+yh1cwzEkxez8koQM
+QyQHrYH4IrDb8W160DbdiDuW2hYQia+4BybDU5MJ6B85QmAq++aqb77ocgfL2mIs
+GYbKKyBTaPKw8VukABV8X5ZEBOM6xh5yGRJ8KIQmBQQi8cCM6HdEq0eOvwe30FaX
+nVihsz6PcEAZZwx/wBTXKxgmzZv3hQ==
+=iEvE
+-----END PGP SIGNATURE-----
+
+--27ZtN5FSuKKSZcBU--
