@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7D6207C9E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95675207C9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406325AbgFXUDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 16:03:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48016 "EHLO mail.kernel.org"
+        id S2406285AbgFXUDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 16:03:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48064 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391427AbgFXUDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 16:03:32 -0400
+        id S2391438AbgFXUDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 16:03:34 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 148A2206C0;
-        Wed, 24 Jun 2020 20:03:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CCA7D2080C;
+        Wed, 24 Jun 2020 20:03:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593029011;
-        bh=9yLINjPSos82hFGzf/cR8Ml9M2B8nrGP/wY7LDOCtxQ=;
+        s=default; t=1593029012;
+        bh=lScSvcyhxhG6TFbVfAEZW208PC7sJRJ25m1WrXEq9Ko=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w1pAgB5Uyx76DmUYkTPYaoqNM4/EVXGJDWsCuoxYcuQ+l2GtsCs8O6xzrKLZ8BX+d
-         4mUcMB0F8qGJwNMq5pvg4UpIlervpHpjS0VIdfw/ilmfwx8rytPuAr1tZ+CjYpTjkz
-         C4U1wBhiRB6Yvw/PR8FGYlNFb3IcwRfyYFj7uFO0=
+        b=hkWYNhS0H6u7uxegwdt4pcI1cAORuoZCoVMU7p0diWeySss/WPFaujjPo+32/0Cmm
+         S2GfzHw88kVorIc0OKZFJ+P12u3SkEvzQtrbq9OdUJqyYPid6uRRF9wAidq0YSMJS6
+         lmlkvQT43hYoQ1FmvmyWZ96JTCWZlAwaDSAHoTOQ=
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <maz@kernel.org>)
-        id 1joBXN-006ABu-DX; Wed, 24 Jun 2020 20:58:25 +0100
+        id 1joBXO-006ABu-3E; Wed, 24 Jun 2020 20:58:26 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Will Deacon <will@kernel.org>,
@@ -40,9 +40,9 @@ Cc:     Will Deacon <will@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Gregory Clement <gregory.clement@bootlin.com>,
         Andrew Lunn <andrew@lunn.ch>, kernel-team@android.com
-Subject: [PATCH v2 13/17] irqchip/armada-370-xp: Configure IPIs as standard interrupts
-Date:   Wed, 24 Jun 2020 20:58:07 +0100
-Message-Id: <20200624195811.435857-14-maz@kernel.org>
+Subject: [PATCH v2 14/17] arm64: Kill __smp_cross_call and co
+Date:   Wed, 24 Jun 2020 20:58:08 +0100
+Message-Id: <20200624195811.435857-15-maz@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200624195811.435857-1-maz@kernel.org>
 References: <20200624195811.435857-1-maz@kernel.org>
@@ -57,356 +57,131 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To introduce IPIs as standard interrupts to the Armada 370-XP
-driver, let's allocate a completely separate irqdomain and
-irqchip combo that lives parallel to the "standard" one.
-
-This effectively should be modelled as a chained interrupt
-controller, but the code is in such a state that it is
-pretty hard to shoehorn, as it would require the rewrite
-of the MSI layer as well.
+The old IPI registration interface is now unused on arm64, so let's
+get rid of it.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- drivers/irqchip/irq-armada-370-xp.c | 262 +++++++++++++++++++---------
- 1 file changed, 178 insertions(+), 84 deletions(-)
+ arch/arm64/include/asm/irq_work.h |  4 +---
+ arch/arm64/include/asm/smp.h      |  7 -------
+ arch/arm64/kernel/smp.c           | 34 +++++--------------------------
+ 3 files changed, 6 insertions(+), 39 deletions(-)
 
-diff --git a/drivers/irqchip/irq-armada-370-xp.c b/drivers/irqchip/irq-armada-370-xp.c
-index c9bdc5221b82..d7eb2e93db8f 100644
---- a/drivers/irqchip/irq-armada-370-xp.c
-+++ b/drivers/irqchip/irq-armada-370-xp.c
-@@ -310,7 +310,134 @@ static inline int armada_370_xp_msi_init(struct device_node *node,
- }
- #endif
+diff --git a/arch/arm64/include/asm/irq_work.h b/arch/arm64/include/asm/irq_work.h
+index 8a1ef1907760..a1020285ea75 100644
+--- a/arch/arm64/include/asm/irq_work.h
++++ b/arch/arm64/include/asm/irq_work.h
+@@ -2,11 +2,9 @@
+ #ifndef __ASM_IRQ_WORK_H
+ #define __ASM_IRQ_WORK_H
  
-+static void armada_xp_mpic_perf_init(void)
-+{
-+	unsigned long cpuid = cpu_logical_map(smp_processor_id());
-+
-+	/* Enable Performance Counter Overflow interrupts */
-+	writel(ARMADA_370_XP_INT_CAUSE_PERF(cpuid),
-+	       per_cpu_int_base + ARMADA_370_XP_INT_FABRIC_MASK_OFFS);
-+}
-+
- #ifdef CONFIG_SMP
-+static struct irq_domain *ipi_domain;
-+
-+static void armada_370_xp_ipi_mask(struct irq_data *d)
-+{
-+	u32 reg;
-+	reg = readl(per_cpu_int_base + ARMADA_370_XP_IN_DRBEL_MSK_OFFS);
-+	reg &= ~BIT(d->hwirq);
-+	writel(reg, per_cpu_int_base + ARMADA_370_XP_IN_DRBEL_MSK_OFFS);
-+}
-+
-+static void armada_370_xp_ipi_unmask(struct irq_data *d)
-+{
-+	u32 reg;
-+	reg = readl(per_cpu_int_base + ARMADA_370_XP_IN_DRBEL_MSK_OFFS);
-+	reg |= BIT(d->hwirq);
-+	writel(reg, per_cpu_int_base + ARMADA_370_XP_IN_DRBEL_MSK_OFFS);
-+}
-+
-+static void armada_370_xp_ipi_send_mask(struct irq_data *d,
-+					const struct cpumask *mask)
-+{
-+	unsigned long map = 0;
-+	int cpu;
-+
-+	/* Convert our logical CPU mask into a physical one. */
-+	for_each_cpu(cpu, mask)
-+		map |= 1 << cpu_logical_map(cpu);
-+
-+	/*
-+	 * Ensure that stores to Normal memory are visible to the
-+	 * other CPUs before issuing the IPI.
-+	 */
-+	dsb();
-+
-+	/* submit softirq */
-+	writel((map << 8) | d->hwirq, main_int_base +
-+		ARMADA_370_XP_SW_TRIG_INT_OFFS);
-+}
-+
-+static void armada_370_xp_ipi_eoi(struct irq_data *d)
-+{
-+	writel(~BIT(d->hwirq), per_cpu_int_base + ARMADA_370_XP_IN_DRBEL_CAUSE_OFFS);
-+}
-+
-+static struct irq_chip ipi_irqchip = {
-+	.name		= "IPI",
-+	.irq_mask	= armada_370_xp_ipi_mask,
-+	.irq_unmask	= armada_370_xp_ipi_unmask,
-+	.irq_eoi	= armada_370_xp_ipi_eoi,
-+	.ipi_send_mask	= armada_370_xp_ipi_send_mask,
-+};
-+
-+static int armada_370_xp_ipi_alloc(struct irq_domain *d,
-+					 unsigned int virq,
-+					 unsigned int nr_irqs, void *args)
-+{
-+	int i;
-+
-+	for (i = 0; i < nr_irqs; i++) {
-+		irq_set_percpu_devid(virq + i);
-+		irq_domain_set_info(d, virq + i, i, &ipi_irqchip,
-+				    d->host_data,
-+				    handle_percpu_devid_fasteoi_ipi,
-+				    NULL, NULL);
-+	}
-+
-+	return 0;
-+}
-+
-+static void armada_370_xp_ipi_free(struct irq_domain *d,
-+					 unsigned int virq,
-+					 unsigned int nr_irqs)
-+{
-+	/* Not freeing IPIs */
-+}
-+
-+static const struct irq_domain_ops ipi_domain_ops = {
-+	.alloc	= armada_370_xp_ipi_alloc,
-+	.free	= armada_370_xp_ipi_free,
-+};
-+
-+static void ipi_resume(void)
-+{
-+	int i;
-+
-+	for (i = 0; i < IPI_DOORBELL_END; i++) {
-+		int irq;
-+
-+		irq = irq_find_mapping(ipi_domain, i);
-+		if (irq <= 0)
-+			continue;
-+		if (irq_percpu_is_enabled(irq)) {
-+			struct irq_data *d;
-+			d = irq_domain_get_irq_data(ipi_domain, irq);
-+			armada_370_xp_ipi_unmask(d);
-+		}
-+	}
-+}
-+
-+static __init void armada_xp_ipi_init(struct device_node *node)
-+{
-+	int base_ipi;
-+
-+	ipi_domain = irq_domain_create_linear(of_node_to_fwnode(node),
-+					      IPI_DOORBELL_END,
-+					      &ipi_domain_ops, NULL);
-+	if (WARN_ON(!ipi_domain))
-+		return;
-+
-+	irq_domain_update_bus_token(ipi_domain, DOMAIN_BUS_IPI);
-+	base_ipi = __irq_domain_alloc_irqs(ipi_domain, -1, IPI_DOORBELL_END,
-+					   NUMA_NO_NODE, NULL, false, NULL);
-+	if (WARN_ON(!base_ipi))
-+		return;
-+
-+	set_smp_ipi_range(base_ipi, IPI_DOORBELL_END);
-+}
-+
- static DEFINE_RAW_SPINLOCK(irq_controller_lock);
- 
- static int armada_xp_set_affinity(struct irq_data *d,
-@@ -334,43 +461,6 @@ static int armada_xp_set_affinity(struct irq_data *d,
- 
- 	return IRQ_SET_MASK_OK;
- }
--#endif
+-#include <asm/smp.h>
 -
--static struct irq_chip armada_370_xp_irq_chip = {
--	.name		= "MPIC",
--	.irq_mask       = armada_370_xp_irq_mask,
--	.irq_mask_ack   = armada_370_xp_irq_mask,
--	.irq_unmask     = armada_370_xp_irq_unmask,
--#ifdef CONFIG_SMP
--	.irq_set_affinity = armada_xp_set_affinity,
--#endif
--	.flags		= IRQCHIP_SKIP_SET_WAKE | IRQCHIP_MASK_ON_SUSPEND,
--};
--
--static int armada_370_xp_mpic_irq_map(struct irq_domain *h,
--				      unsigned int virq, irq_hw_number_t hw)
--{
--	armada_370_xp_irq_mask(irq_get_irq_data(virq));
--	if (!is_percpu_irq(hw))
--		writel(hw, per_cpu_int_base +
--			ARMADA_370_XP_INT_CLEAR_MASK_OFFS);
--	else
--		writel(hw, main_int_base + ARMADA_370_XP_INT_SET_ENABLE_OFFS);
--	irq_set_status_flags(virq, IRQ_LEVEL);
--
--	if (is_percpu_irq(hw)) {
--		irq_set_percpu_devid(virq);
--		irq_set_chip_and_handler(virq, &armada_370_xp_irq_chip,
--					handle_percpu_devid_irq);
--	} else {
--		irq_set_chip_and_handler(virq, &armada_370_xp_irq_chip,
--					handle_level_irq);
--		irqd_set_single_target(irq_desc_get_irq_data(irq_to_desc(virq)));
--	}
--	irq_set_probe(virq);
--
--	return 0;
--}
- 
- static void armada_xp_mpic_smp_cpu_init(void)
+ static inline bool arch_irq_work_has_interrupt(void)
  {
-@@ -383,48 +473,16 @@ static void armada_xp_mpic_smp_cpu_init(void)
- 	for (i = 0; i < nr_irqs; i++)
- 		writel(i, per_cpu_int_base + ARMADA_370_XP_INT_SET_MASK_OFFS);
- 
-+	/* Disable all IPIs */
-+	writel(0, per_cpu_int_base + ARMADA_370_XP_IN_DRBEL_MSK_OFFS);
-+
- 	/* Clear pending IPIs */
- 	writel(0, per_cpu_int_base + ARMADA_370_XP_IN_DRBEL_CAUSE_OFFS);
- 
--	/* Enable first 8 IPIs */
--	writel(IPI_DOORBELL_MASK, per_cpu_int_base +
--		ARMADA_370_XP_IN_DRBEL_MSK_OFFS);
--
- 	/* Unmask IPI interrupt */
- 	writel(0, per_cpu_int_base + ARMADA_370_XP_INT_CLEAR_MASK_OFFS);
+-	return !!__smp_cross_call;
++	return true;
  }
  
--static void armada_xp_mpic_perf_init(void)
--{
--	unsigned long cpuid = cpu_logical_map(smp_processor_id());
--
--	/* Enable Performance Counter Overflow interrupts */
--	writel(ARMADA_370_XP_INT_CAUSE_PERF(cpuid),
--	       per_cpu_int_base + ARMADA_370_XP_INT_FABRIC_MASK_OFFS);
--}
--
--#ifdef CONFIG_SMP
--static void armada_mpic_send_doorbell(const struct cpumask *mask,
--				      unsigned int irq)
--{
--	int cpu;
--	unsigned long map = 0;
--
--	/* Convert our logical CPU mask into a physical one. */
--	for_each_cpu(cpu, mask)
--		map |= 1 << cpu_logical_map(cpu);
--
--	/*
--	 * Ensure that stores to Normal memory are visible to the
--	 * other CPUs before issuing the IPI.
--	 */
--	dsb();
--
--	/* submit softirq */
--	writel((map << 8) | irq, main_int_base +
--		ARMADA_370_XP_SW_TRIG_INT_OFFS);
--}
--
- static void armada_xp_mpic_reenable_percpu(void)
- {
- 	unsigned int irq;
-@@ -445,6 +503,8 @@ static void armada_xp_mpic_reenable_percpu(void)
+ #endif /* __ASM_IRQ_WORK_H */
+diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
+index 4537a4620e3d..dd3f68ed9ac9 100644
+--- a/arch/arm64/include/asm/smp.h
++++ b/arch/arm64/include/asm/smp.h
+@@ -67,13 +67,6 @@ extern void handle_IPI(int ipinr, struct pt_regs *regs);
+  */
+ extern void smp_init_cpus(void);
  
- 		armada_370_xp_irq_unmask(data);
+-/*
+- * Provide a function to raise an IPI cross call on CPUs in callmap.
+- */
+-extern void set_smp_cross_call(void (*)(const struct cpumask *, unsigned int));
+-
+-extern void (*__smp_cross_call)(const struct cpumask *, unsigned int);
+-
+ /*
+  * Register IPI interrupts with the arch SMP code
+  */
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index c08950cc09cc..ed8a8184e3b6 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -783,13 +783,6 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
  	}
-+
-+	ipi_resume();
  }
  
- static int armada_xp_mpic_starting_cpu(unsigned int cpu)
-@@ -462,7 +522,46 @@ static int mpic_cascaded_starting_cpu(unsigned int cpu)
- 	enable_percpu_irq(parent_irq, IRQ_TYPE_NONE);
- 	return 0;
- }
-+#else
-+static void armada_xp_mpic_smp_cpu_init(void) {}
-+static void ipi_resume(void) {}
-+#endif
-+
-+static struct irq_chip armada_370_xp_irq_chip = {
-+	.name		= "MPIC",
-+	.irq_mask       = armada_370_xp_irq_mask,
-+	.irq_mask_ack   = armada_370_xp_irq_mask,
-+	.irq_unmask     = armada_370_xp_irq_unmask,
-+#ifdef CONFIG_SMP
-+	.irq_set_affinity = armada_xp_set_affinity,
- #endif
-+	.flags		= IRQCHIP_SKIP_SET_WAKE | IRQCHIP_MASK_ON_SUSPEND,
-+};
-+
-+static int armada_370_xp_mpic_irq_map(struct irq_domain *h,
-+				      unsigned int virq, irq_hw_number_t hw)
-+{
-+	armada_370_xp_irq_mask(irq_get_irq_data(virq));
-+	if (!is_percpu_irq(hw))
-+		writel(hw, per_cpu_int_base +
-+			ARMADA_370_XP_INT_CLEAR_MASK_OFFS);
-+	else
-+		writel(hw, main_int_base + ARMADA_370_XP_INT_SET_ENABLE_OFFS);
-+	irq_set_status_flags(virq, IRQ_LEVEL);
-+
-+	if (is_percpu_irq(hw)) {
-+		irq_set_percpu_devid(virq);
-+		irq_set_chip_and_handler(virq, &armada_370_xp_irq_chip,
-+					handle_percpu_devid_irq);
-+	} else {
-+		irq_set_chip_and_handler(virq, &armada_370_xp_irq_chip,
-+					handle_level_irq);
-+		irqd_set_single_target(irq_desc_get_irq_data(irq_to_desc(virq)));
-+	}
-+	irq_set_probe(virq);
-+
-+	return 0;
-+}
- 
- static const struct irq_domain_ops armada_370_xp_mpic_irq_ops = {
- 	.map = armada_370_xp_mpic_irq_map,
-@@ -562,22 +661,15 @@ armada_370_xp_handle_irq(struct pt_regs *regs)
- #ifdef CONFIG_SMP
- 		/* IPI Handling */
- 		if (irqnr == 0) {
--			u32 ipimask, ipinr;
-+			unsigned long ipimask;
-+			int ipi;
- 
- 			ipimask = readl_relaxed(per_cpu_int_base +
- 						ARMADA_370_XP_IN_DRBEL_CAUSE_OFFS)
- 				& IPI_DOORBELL_MASK;
- 
--			writel(~ipimask, per_cpu_int_base +
--				ARMADA_370_XP_IN_DRBEL_CAUSE_OFFS);
+-void (*__smp_cross_call)(const struct cpumask *, unsigned int);
 -
--			/* Handle all pending doorbells */
--			for (ipinr = IPI_DOORBELL_START;
--			     ipinr < IPI_DOORBELL_END; ipinr++) {
--				if (ipimask & (0x1 << ipinr))
--					handle_IPI(ipinr, regs);
--			}
--			continue;
-+			for_each_set_bit(ipi, &ipimask, IPI_DOORBELL_END)
-+				handle_domain_irq(ipi_domain, ipi, regs);
- 		}
+-void __init set_smp_cross_call(void (*fn)(const struct cpumask *, unsigned int))
+-{
+-	__smp_cross_call = fn;
+-}
+-
+ static const char *ipi_types[NR_IPI] __tracepoint_string = {
+ #define S(x,s)	[x] = s
+ 	S(IPI_RESCHEDULE, "Rescheduling interrupts"),
+@@ -801,11 +794,7 @@ static const char *ipi_types[NR_IPI] __tracepoint_string = {
+ 	S(IPI_WAKEUP, "CPU wake-up interrupts"),
+ };
+ 
+-static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
+-{
+-	trace_ipi_raise(target, ipi_types[ipinr]);
+-	__smp_cross_call(target, ipinr);
+-}
++static void smp_cross_call(const struct cpumask *target, unsigned int ipinr);
+ 
+ void show_ipi_list(struct seq_file *p, int prec)
+ {
+@@ -852,8 +841,7 @@ void arch_send_wakeup_ipi_mask(const struct cpumask *mask)
+ #ifdef CONFIG_IRQ_WORK
+ void arch_irq_work_raise(void)
+ {
+-	if (__smp_cross_call)
+-		smp_cross_call(cpumask_of(smp_processor_id()), IPI_IRQ_WORK);
++	smp_cross_call(cpumask_of(smp_processor_id()), IPI_IRQ_WORK);
+ }
  #endif
  
-@@ -636,6 +728,8 @@ static void armada_370_xp_mpic_resume(void)
- 		writel(0, per_cpu_int_base + ARMADA_370_XP_INT_CLEAR_MASK_OFFS);
- 	if (doorbell_mask_reg & PCI_MSI_DOORBELL_MASK)
- 		writel(1, per_cpu_int_base + ARMADA_370_XP_INT_CLEAR_MASK_OFFS);
-+
-+	ipi_resume();
+@@ -960,27 +948,16 @@ static void do_handle_IPI(int ipinr)
+ 		trace_ipi_exit_rcuidle(ipi_types[ipinr]);
  }
  
- static struct syscore_ops armada_370_xp_mpic_syscore_ops = {
-@@ -691,7 +785,7 @@ static int __init armada_370_xp_mpic_of_init(struct device_node *node,
- 		irq_set_default_host(armada_370_xp_mpic_domain);
- 		set_handle_irq(armada_370_xp_handle_irq);
- #ifdef CONFIG_SMP
--		set_smp_cross_call(armada_mpic_send_doorbell);
-+		armada_xp_ipi_init(node);
- 		cpuhp_setup_state_nocalls(CPUHP_AP_IRQ_ARMADA_XP_STARTING,
- 					  "irqchip/armada/ipi:starting",
- 					  armada_xp_mpic_starting_cpu, NULL);
+-/* Legacy version, should go away once all irqchips have been converted */
+-void handle_IPI(int ipinr, struct pt_regs *regs)
+-{
+-	struct pt_regs *old_regs = set_irq_regs(regs);
+-
+-	irq_enter();
+-	do_handle_IPI(ipinr);
+-	irq_exit();
+-
+-	set_irq_regs(old_regs);
+-}
+-
+ static irqreturn_t ipi_handler(int irq, void *data)
+ {
+ 	do_handle_IPI(irq - ipi_irq_base);
+ 	return IRQ_HANDLED;
+ }
+ 
+-static void ipi_send(const struct cpumask *target, unsigned int ipi)
++static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
+ {
+-	__ipi_send_mask(ipi_desc[ipi], target);
++	trace_ipi_raise(target, ipi_types[ipinr]);
++	__ipi_send_mask(ipi_desc[ipinr], target);
+ }
+ 
+ static void ipi_setup(int cpu)
+@@ -1022,7 +999,6 @@ void __init set_smp_ipi_range(int ipi_base, int n)
+ 	}
+ 
+ 	ipi_irq_base = ipi_base;
+-	__smp_cross_call = ipi_send;
+ 
+ 	/* Setup the boot CPU immediately */
+ 	ipi_setup(smp_processor_id());
 -- 
 2.27.0
 
