@@ -2,133 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F4DF209722
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 01:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B15F209729
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 01:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388962AbgFXXXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 19:23:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58384 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728791AbgFXXXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 19:23:12 -0400
-Received: from localhost (mobile-166-170-222-206.mycingular.net [166.170.222.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B10B207DD;
-        Wed, 24 Jun 2020 23:23:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593040991;
-        bh=kQtCitqr90TElMj046frbD0bFP3tilXjxP7DsKE96eY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=W0YhXIv6Sel9qkgqzk7nPOroaDvZ2GyrwhShx5egKLCxayIgxxxKnsovyywQzJilG
-         vgEeEV9BBfgg5XasU0tF6taNfy4FtXF5w339fQ7Vv/aiBiOquHDBdlhjMCLJW/C/tg
-         I8kf28/ehtHXkSJKebCqOGEYkDvbdHhWsLkDydGs=
-Date:   Wed, 24 Jun 2020 18:23:09 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Xiang Zheng <zhengxiang9@huawei.com>
-Cc:     bhelgaas@google.com, willy@infradead.org,
-        wangxiongfeng2@huawei.com, wanghaibin.wang@huawei.com,
-        guoheyi@huawei.com, yebiaoxiang@huawei.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rjw@rjwysocki.net, tglx@linutronix.de, guohanjun@huawei.com,
-        yangyingliang@huawei.com
-Subject: Re: [PATCH v3] PCI: Lock the pci_cfg_wait queue for the consistency
- of data
-Message-ID: <20200624232309.GA2601999@bjorn-Precision-5520>
+        id S2388718AbgFXXYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 19:24:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729587AbgFXXYL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 19:24:11 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF993C061573;
+        Wed, 24 Jun 2020 16:24:10 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id z17so2746645edr.9;
+        Wed, 24 Jun 2020 16:24:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MjT9jACDegh8i3/ldIssewU7scETwe65AzJWUVQFVO4=;
+        b=l8h9jCUE+bZzZMyYcjgcio25dx7uVJNJRuIhNeauHNsnDfb5u4QxxzhxSkvI91E3GR
+         YAeFRp8BmdzTAOYKQcVS8HQrY4xOVWMZbIVZ/IYcm6U+FV59rwH1iWuqZ8oaq3dw5SKY
+         Kkoy0emu4qmSdIwlRK/W/jga+Py23jwSARfPu18nL+VaUNHWLBY2B75xDYdSq0inAIwX
+         AbQDq0NVAemB+nsQPSCb0yWdIN/+Y3t6HaDpMoUB0dgAyI6fM1QLCinDReftAgCSyPdz
+         S8sgtixPEagpvnz7gdJWRZ6F0OSWHzo0LXYRujrRyHLZ5Td8K9M2W4Vl/jloE8HzXrk3
+         eeEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MjT9jACDegh8i3/ldIssewU7scETwe65AzJWUVQFVO4=;
+        b=nlyJx756zbgBHPQT9NJYCwYw4++07Hgx6WkijMERCOzIXnusfcGrJ6Qf8/sQcX6CR6
+         zIskLoqyLg4k1LyimpSvpUOFuwqKSq9rCn7eJ/TK0h2wTx5G//alY+yMG5kLZszQqt7n
+         lBmTUEm9cuQx5g5Ag50bMUHkEDsVYLgVgMg0skVwJ9368ggSd4EJnigLhIZDIQtT4zg8
+         gKoEA9L5J1CITV6KbsQP6vvOIsfS8Q99Xvbt04Zu5CDnBIcFkgGNDzp1WDzbAFmspTWN
+         UpoMqLEcL2mGGTTF/rSSGkm29bQbFr90F1RUUxJ01Yeu/wZmwM/1taGnPbmkDw2/aXVY
+         tsCg==
+X-Gm-Message-State: AOAM5332gdKHtbPOZhLTac4GkTVTvFG9tbvEJqrANIAs9hOImKLjwkUC
+        VsU5VxmEcHfzL/0QEmx6W/wFFCQybE32clTk
+X-Google-Smtp-Source: ABdhPJyLwHe+moQvFoRN9ZnTrDZ2zOH8S6VomM1fTNTwZtIHtwT6W0bunDPDMYGO+XnvxkGUsIYF4w==
+X-Received: by 2002:a05:6402:3048:: with SMTP id bu8mr5833355edb.367.1593041049384;
+        Wed, 24 Jun 2020 16:24:09 -0700 (PDT)
+Received: from andrea (ip-213-220-210-175.net.upcbroadband.cz. [213.220.210.175])
+        by smtp.gmail.com with ESMTPSA id o8sm7951828ejj.102.2020.06.24.16.24.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 16:24:08 -0700 (PDT)
+Date:   Thu, 25 Jun 2020 01:24:02 +0200
+From:   Andrea Parri <parri.andrea@gmail.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org, stern@rowland.harvard.edu,
+        will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
+        npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
+        luc.maranget@inria.fr, akiyks@gmail.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: LKMM patches for next merge window
+Message-ID: <20200624232402.GA465543@andrea>
+References: <20200624185400.GA13594@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191210031527.40136-1-zhengxiang9@huawei.com>
+In-Reply-To: <20200624185400.GA13594@paulmck-ThinkPad-P72>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 10, 2019 at 11:15:27AM +0800, Xiang Zheng wrote:
-> 7ea7e98fd8d0 ("PCI: Block on access to temporarily unavailable pci
-> device") suggests that the "pci_lock" is sufficient, and all the
-> callers of pci_wait_cfg() are wrapped with the "pci_lock".
+On Wed, Jun 24, 2020 at 11:54:00AM -0700, Paul E. McKenney wrote:
+> Hello!
 > 
-> However, since the commit cdcb33f98244 ("PCI: Avoid possible deadlock on
-> pci_lock and p->pi_lock") merged, the accesses to the pci_cfg_wait queue
-> are not safe anymore. This would cause kernel panic in a very low chance
-> (See more detailed information from the below link). A "pci_lock" is
-> insufficient and we need to hold an additional queue lock while read/write
-> the wait queue.
+> Here is the list of LKMM patches I am considering for the next merge
+> window and the status of each.  Any I am missing or any that need to
+> wait or be modified?
 > 
-> So let's use the add_wait_queue()/remove_wait_queue() instead of
-> __add_wait_queue()/__remove_wait_queue(). Also move the wait queue
-> functionality around the "schedule()" function to avoid reintroducing
-> the deadlock addressed by "cdcb33f98244".
-
-I see that add_wait_queue() acquires the wq_head->lock, while
-__add_wait_queue() does not.
-
-But I don't understand why the existing pci_lock is insufficient.  
-pci_cfg_wait is only used in pci_wait_cfg() and
-pci_cfg_access_unlock().
-
-In pci_wait_cfg(), both __add_wait_queue() and __remove_wait_queue()
-are called while holding pci_lock, so that doesn't seem like the
-problem.
-
-In pci_cfg_access_unlock(), we have:
-
-  pci_cfg_access_unlock
-    wake_up_all(&pci_cfg_wait)
-      __wake_up(&pci_cfg_wait, ...)
-        __wake_up_common_lock(&pci_cfg_wait, ...)
-	  spin_lock(&pci_cfg_wait->lock)
-	  __wake_up_common(&pci_cfg_wait, ...)
-	    list_for_each_entry_safe_from(...)
-	      list_add_tail(...)                <-- problem?
-	  spin_unlock(&pci_cfg_wait->lock)
-
-Is the problem that the wake_up_all() modifies the pci_cfg_wait list
-without holding pci_lock?
-
-If so, I don't quite see how the patch below fixes it.  Oh, wait,
-maybe I do ... by using add_wait_queue(), we protect the list using
-the *same* lock used by __wake_up_common_lock.  Is that it?
-
-> Signed-off-by: Xiang Zheng <zhengxiang9@huawei.com>
-> Cc: Heyi Guo <guoheyi@huawei.com>
-> Cc: Biaoxiang Ye <yebiaoxiang@huawei.com>
-> Link: https://lore.kernel.org/linux-pci/79827f2f-9b43-4411-1376-b9063b67aee3@huawei.com/
-> ---
+> 						Thanx, Paul
 > 
-> v3:
->   Improve the commit subject and message.
+> ------------------------------------------------------------------------
 > 
-> v2:
->   Move the wait queue functionality around the "schedule()".
+> 3ce5d69 docs: fix references for DMA*.txt files
+> 	Could someone please provide an ack?
+
+Fixing the N-th commit "move docs without updating in-tree references".
+;-/
+
+Most importantly there appears to be some on-going discussion about it,
+cf.
+
+  https://lkml.kernel.org/r/20200623072240.GA974@lst.de
+
+(could you please sort this out?)
+
+  Andrea
+
+
 > 
-> ---
->  drivers/pci/access.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pci/access.c b/drivers/pci/access.c
-> index 2fccb5762c76..09342a74e5ea 100644
-> --- a/drivers/pci/access.c
-> +++ b/drivers/pci/access.c
-> @@ -207,14 +207,14 @@ static noinline void pci_wait_cfg(struct pci_dev *dev)
->  {
->  	DECLARE_WAITQUEUE(wait, current);
->  
-> -	__add_wait_queue(&pci_cfg_wait, &wait);
->  	do {
->  		set_current_state(TASK_UNINTERRUPTIBLE);
->  		raw_spin_unlock_irq(&pci_lock);
-> +		add_wait_queue(&pci_cfg_wait, &wait);
->  		schedule();
-> +		remove_wait_queue(&pci_cfg_wait, &wait);
->  		raw_spin_lock_irq(&pci_lock);
->  	} while (dev->block_cfg_access);
-> -	__remove_wait_queue(&pci_cfg_wait, &wait);
->  }
->  
->  /* Returns 0 on success, negative values indicate error. */
-> -- 
-> 2.19.1
-> 
-> 
+> ac1a749 tools/memory-model: Add recent references
+> be1ce3e tools/memory-model: Fix "conflict" definition
+> 24dca63 Documentation: LKMM: Add litmus test for RCU GP guarantee where updater frees object
+> 47ec95b Documentation: LKMM: Add litmus test for RCU GP guarantee where reader stores
+> bb2c938 MAINTAINERS: Update maintainers for new Documentation/litmus-tests
+> 05bee9a tools/memory-model: Add an exception for limitations on _unless() family
+> dc76257 Documentation/litmus-tests: Introduce atomic directory
+> d059e50 Documentation/litmus-tests/atomic: Add a test for atomic_set()
+> 7eecf76 Documentation/litmus-tests/atomic: Add a test for smp_mb__after_atomic()
+> 116f054 tools/memory-model: Fix reference to litmus test in recipes.txt
+> ffd32d4 Documentation/litmus-tests: Merge atomic's README into top-level one
+> a08ae99 Documentation/litmus-tests: Cite an RCU litmus test
+> 843285eb tools/memory-model/README: Expand dependency of klitmus7
+> 0296c57 tools/memory-model/README: Mention herdtools7 7.56 in compatibility table
+> 47e4f0a Documentation/litmus-tests: Add note on herd7 7.56 in atomic litmus test
+> 	All ready to go.
