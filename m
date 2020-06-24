@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F62207C80
+	by mail.lfdr.de (Postfix) with ESMTP id 4547C207C7F
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 21:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406344AbgFXT6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 15:58:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44176 "EHLO mail.kernel.org"
+        id S2406336AbgFXT6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 15:58:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391355AbgFXT6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 15:58:20 -0400
+        id S2406233AbgFXT6V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 15:58:21 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7032220836;
-        Wed, 24 Jun 2020 19:58:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 221EC2084D;
+        Wed, 24 Jun 2020 19:58:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593028699;
-        bh=M9NRXO72hRLueLb3+tUV2tBXTBBaqVnsITuxk5lmAuM=;
+        s=default; t=1593028700;
+        bh=g4g7Be/7qkvvbC1GDQoBFv9ejglBBih542Chh5Bvqac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MyhL+3CM1veMzSz8bAcYkGs02h67k9iPDChQ7QOiv6dZFU3ncR94+PS2rjIVFaESQ
-         R1rapEy/X735y6eWQi2FDNEz15NI/VMkYD7inV5irzFjliSLnFYyqBP458BnnqWSGI
-         Y8FLgT/42vcf9Wq8mKhWlSiXrLorMj1R/mlY7rsk=
+        b=qOSp2COxAr/gCayi7yog1NM9GANknHo4lfonPoHiXPKG3qVDsZwjSqCELQ2Ap4RAQ
+         xfZpjuhcuOcTC9EZ7y9tqcoftZOqvowvTb/ON9kDjeBDB1M3RAeePp6RcmothdYW4L
+         vgQxucpsZKHQZJUuzWhigxfFG9IzV9zahv7rhrNU=
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <maz@kernel.org>)
-        id 1joBXF-006ABu-V4; Wed, 24 Jun 2020 20:58:18 +0100
+        id 1joBXG-006ABu-KT; Wed, 24 Jun 2020 20:58:18 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Will Deacon <will@kernel.org>,
@@ -40,9 +40,9 @@ Cc:     Will Deacon <will@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Gregory Clement <gregory.clement@bootlin.com>,
         Andrew Lunn <andrew@lunn.ch>, kernel-team@android.com
-Subject: [PATCH v2 03/17] arm64: Allow IPIs to be handled as normal interrupts
-Date:   Wed, 24 Jun 2020 20:57:57 +0100
-Message-Id: <20200624195811.435857-4-maz@kernel.org>
+Subject: [PATCH v2 04/17] ARM: Allow IPIs to be handled as normal interrupts
+Date:   Wed, 24 Jun 2020 20:57:58 +0100
+Message-Id: <20200624195811.435857-5-maz@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200624195811.435857-1-maz@kernel.org>
 References: <20200624195811.435857-1-maz@kernel.org>
@@ -82,30 +82,30 @@ correctly, and the accounting shouldn't be off).
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- arch/arm64/Kconfig           |  1 +
- arch/arm64/include/asm/smp.h |  5 ++
- arch/arm64/kernel/smp.c      | 91 +++++++++++++++++++++++++++++++-----
- 3 files changed, 85 insertions(+), 12 deletions(-)
+ arch/arm/Kconfig           |  1 +
+ arch/arm/include/asm/smp.h |  5 ++
+ arch/arm/kernel/smp.c      | 99 ++++++++++++++++++++++++++++++++------
+ 3 files changed, 89 insertions(+), 16 deletions(-)
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index a4a094bedcb2..fe88d28bb985 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -106,6 +106,7 @@ config ARM64
- 	select GENERIC_CPU_VULNERABILITIES
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 2ac74904a3ce..27c26d3c06f2 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -48,6 +48,7 @@ config ARM
+ 	select GENERIC_ARCH_TOPOLOGY if ARM_CPU_TOPOLOGY
+ 	select GENERIC_ATOMIC64 if CPU_V7M || CPU_V6 || !CPU_32v6K || !AEABI
+ 	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
++	select GENERIC_IRQ_IPI if SMP
+ 	select GENERIC_CPU_AUTOPROBE
  	select GENERIC_EARLY_IOREMAP
  	select GENERIC_IDLE_POLL_SETUP
-+	select GENERIC_IRQ_IPI
- 	select GENERIC_IRQ_MULTI_HANDLER
- 	select GENERIC_IRQ_PROBE
- 	select GENERIC_IRQ_SHOW
-diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
-index ea268d88b6f7..4537a4620e3d 100644
---- a/arch/arm64/include/asm/smp.h
-+++ b/arch/arm64/include/asm/smp.h
-@@ -74,6 +74,11 @@ extern void set_smp_cross_call(void (*)(const struct cpumask *, unsigned int));
- 
- extern void (*__smp_cross_call)(const struct cpumask *, unsigned int);
+diff --git a/arch/arm/include/asm/smp.h b/arch/arm/include/asm/smp.h
+index a91f21e3c5b5..0e29730295ca 100644
+--- a/arch/arm/include/asm/smp.h
++++ b/arch/arm/include/asm/smp.h
+@@ -45,6 +45,11 @@ extern void smp_init_cpus(void);
+  */
+ extern void set_smp_cross_call(void (*)(const struct cpumask *, unsigned int));
  
 +/*
 + * Register IPI interrupts with the arch SMP code
@@ -113,36 +113,43 @@ index ea268d88b6f7..4537a4620e3d 100644
 +extern void set_smp_ipi_range(int ipi_base, int nr_ipi);
 +
  /*
-  * Called from the secondary holding pen, this is the secondary CPU entry point.
-  */
-diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index e43a8ff19f0f..c08950cc09cc 100644
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -76,6 +76,13 @@ enum ipi_msg_type {
- 	IPI_WAKEUP
+  * Called from platform specific assembly code, this is the
+  * secondary CPU entry point.
+diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
+index 9a6432557871..269639b14259 100644
+--- a/arch/arm/kernel/smp.c
++++ b/arch/arm/kernel/smp.c
+@@ -70,18 +70,28 @@ enum ipi_msg_type {
+ 	 * CPU_BACKTRACE is special and not included in NR_IPI
+ 	 * or tracable with trace_ipi_*
+ 	 */
+-	IPI_CPU_BACKTRACE,
++	IPI_CPU_BACKTRACE = NR_IPI,
+ 	/*
+ 	 * SGI8-15 can be reserved by secure firmware, and thus may
+ 	 * not be usable by the kernel. Please keep the above limited
+ 	 * to at most 8 entries.
+ 	 */
++	MAX_IPI
  };
  
 +static int ipi_irq_base;
-+static int nr_ipi = NR_IPI;
-+static struct irq_desc *ipi_desc[NR_IPI];
++static int nr_ipi = MAX_IPI;
++static struct irq_desc *ipi_desc[MAX_IPI];
 +
 +static void ipi_setup(int cpu);
 +static void ipi_teardown(int cpu);
 +
- #ifdef CONFIG_HOTPLUG_CPU
- static int op_cpu_kill(unsigned int cpu);
- #else
-@@ -238,6 +245,8 @@ asmlinkage notrace void secondary_start_kernel(void)
- 	 */
- 	notify_cpu_starting(cpu);
+ static DECLARE_COMPLETION(cpu_running);
  
-+	ipi_setup(cpu);
+ static struct smp_operations smp_ops __ro_after_init;
+ 
++static void ipi_setup(int cpu);
 +
- 	store_cpu_topology(cpu);
- 	numa_add_cpu(cpu);
- 
-@@ -303,6 +312,7 @@ int __cpu_disable(void)
+ void __init smp_set_ops(const struct smp_operations *ops)
+ {
+ 	if (ops)
+@@ -248,6 +258,7 @@ int __cpu_disable(void)
  	 * and we must not schedule until we're ready to give up the cpu.
  	 */
  	set_cpu_online(cpu, false);
@@ -150,10 +157,19 @@ index e43a8ff19f0f..c08950cc09cc 100644
  
  	/*
  	 * OK - migrate IRQs away from this CPU
-@@ -891,10 +901,9 @@ static void ipi_cpu_crash_stop(unsigned int cpu, struct pt_regs *regs)
- /*
-  * Main handler for inter-processor interrupts
-  */
+@@ -423,6 +434,8 @@ asmlinkage void secondary_start_kernel(void)
+ 
+ 	notify_cpu_starting(cpu);
+ 
++	ipi_setup(cpu);
++
+ 	calibrate_delay();
+ 
+ 	smp_store_cpu_info(cpu);
+@@ -628,10 +641,9 @@ asmlinkage void __exception_irq_entry do_IPI(int ipinr, struct pt_regs *regs)
+ 	handle_IPI(ipinr, regs);
+ }
+ 
 -void handle_IPI(int ipinr, struct pt_regs *regs)
 +static void do_handle_IPI(int ipinr)
  {
@@ -162,7 +178,17 @@ index e43a8ff19f0f..c08950cc09cc 100644
  
  	if ((unsigned)ipinr < NR_IPI) {
  		trace_ipi_entry_rcuidle(ipi_types[ipinr]);
-@@ -907,21 +916,16 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
+@@ -644,9 +656,7 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
+ 
+ #ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
+ 	case IPI_TIMER:
+-		irq_enter();
+ 		tick_receive_broadcast();
+-		irq_exit();
+ 		break;
+ #endif
+ 
+@@ -655,36 +665,26 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
  		break;
  
  	case IPI_CALL_FUNC:
@@ -173,27 +199,9 @@ index e43a8ff19f0f..c08950cc09cc 100644
  
  	case IPI_CPU_STOP:
 -		irq_enter();
- 		local_cpu_stop();
+ 		ipi_cpu_stop(cpu);
 -		irq_exit();
  		break;
- 
- 	case IPI_CPU_CRASH_STOP:
- 		if (IS_ENABLED(CONFIG_KEXEC_CORE)) {
--			irq_enter();
--			ipi_cpu_crash_stop(cpu, regs);
-+			ipi_cpu_crash_stop(cpu, get_irq_regs());
- 
- 			unreachable();
- 		}
-@@ -929,17 +933,13 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
- 
- #ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
- 	case IPI_TIMER:
--		irq_enter();
- 		tick_receive_broadcast();
--		irq_exit();
- 		break;
- #endif
  
  #ifdef CONFIG_IRQ_WORK
  	case IPI_IRQ_WORK:
@@ -203,7 +211,22 @@ index e43a8ff19f0f..c08950cc09cc 100644
  		break;
  #endif
  
-@@ -958,9 +958,76 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
+ 	case IPI_COMPLETION:
+-		irq_enter();
+ 		ipi_complete(cpu);
+-		irq_exit();
+ 		break;
+ 
+ 	case IPI_CPU_BACKTRACE:
+ 		printk_nmi_enter();
+-		irq_enter();
+-		nmi_cpu_backtrace(regs);
+-		irq_exit();
++		nmi_cpu_backtrace(get_irq_regs());
+ 		printk_nmi_exit();
+ 		break;
+ 
+@@ -696,9 +696,76 @@ void handle_IPI(int ipinr, struct pt_regs *regs)
  
  	if ((unsigned)ipinr < NR_IPI)
  		trace_ipi_exit_rcuidle(ipi_types[ipinr]);
@@ -256,8 +279,8 @@ index e43a8ff19f0f..c08950cc09cc 100644
 +{
 +	int i;
 +
-+	WARN_ON(n < NR_IPI);
-+	nr_ipi = min(n, NR_IPI);
++	WARN_ON(n < MAX_IPI);
++	nr_ipi = min(n, MAX_IPI);
 +
 +	for (i = 0; i < nr_ipi; i++) {
 +		int err;
@@ -271,7 +294,7 @@ index e43a8ff19f0f..c08950cc09cc 100644
 +	}
 +
 +	ipi_irq_base = ipi_base;
-+	__smp_cross_call = ipi_send;
++	set_smp_cross_call(ipi_send);
 +
 +	/* Setup the boot CPU immediately */
 +	ipi_setup(smp_processor_id());
