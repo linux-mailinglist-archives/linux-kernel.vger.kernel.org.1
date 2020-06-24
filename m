@@ -2,79 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52535207A75
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94910207A81
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405610AbgFXRnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 13:43:45 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:40125 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2405567AbgFXRnp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:43:45 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=yang.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0U0cU66h_1593020612;
-Received: from localhost(mailfrom:yang.shi@linux.alibaba.com fp:SMTPD_---0U0cU66h_1593020612)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 25 Jun 2020 01:43:41 +0800
-From:   Yang Shi <yang.shi@linux.alibaba.com>
-To:     hannes@cmpxchg.org, riel@surriel.com, shakeelb@google.com,
-        gavin.dg@linux.alibaba.com, akpm@linux-foundation.org
-Cc:     yang.shi@linux.alibaba.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: filemap: clear idle flag for writes
-Date:   Thu, 25 Jun 2020 01:43:32 +0800
-Message-Id: <1593020612-13051-1-git-send-email-yang.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S2405649AbgFXRoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 13:44:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49202 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405639AbgFXRoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 13:44:20 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DC0320738;
+        Wed, 24 Jun 2020 17:44:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593020659;
+        bh=bvusmCWIESHEAj0e+z3a1cGAYmpjANA+c6koHZdoHoE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AyXen/QaFox7J1zFBnpVX4/PK81hmX8JLHCM155tV/YRT6FXQSmg57opeqx8XsYvd
+         kErfA2rh5Kyyz5kFbezKJwIbmVPB06thKUmi5X6rkoBf4s4yIJmWeeS26kZiKU8LfY
+         KQPY6dLasmXWkgkkGWjVMbv8EmjyZGlxfXeg4qac=
+Date:   Wed, 24 Jun 2020 18:44:17 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Matthias Kaehlcke <mka@chromium.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>, bjorn.andersson@linaro.org,
+        agross@kernel.org, robdclark@gmail.com, robdclark@chromium.org,
+        stanimir.varbanov@linaro.org, viresh.kumar@linaro.org,
+        sboyd@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Alok Chauhan <alokc@codeaurora.org>,
+        Akash Asthana <akashast@codeaurora.org>,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH v6 6/6] spi: spi-qcom-qspi: Use OPP API to set clk/perf
+ state
+Message-ID: <20200624174417.GM5472@sirena.org.uk>
+References: <1592222564-13556-1-git-send-email-rnayak@codeaurora.org>
+ <1592222564-13556-7-git-send-email-rnayak@codeaurora.org>
+ <20200624170933.GB39073@google.com>
+ <20200624171537.GL5472@sirena.org.uk>
+ <20200624173948.GC39073@google.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="I4g3zIzscEHdx6fd"
+Content-Disposition: inline
+In-Reply-To: <20200624173948.GC39073@google.com>
+X-Cookie: So this is it.  We're going to die.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit bbddabe2e436aa7869b3ac5248df5c14ddde0cbf ("mm: filemap:
-only do access activations on reads"), mark_page_accessed() is called
-for reads only.  But the idle flag is cleared by mark_page_accessed() so
-the idle flag won't get cleared if the page is write accessed only.
 
-Basically idle page tracking is used to estimate workingset size of
-workload, noticeable size of workingset might be missed if the idle flag
-is not maintained correctly.
+--I4g3zIzscEHdx6fd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It seems good enough to just clear idle flag for write operations.
+On Wed, Jun 24, 2020 at 10:39:48AM -0700, Matthias Kaehlcke wrote:
+> On Wed, Jun 24, 2020 at 06:15:37PM +0100, Mark Brown wrote:
 
-Fixes: bbddabe2e436 ("mm: filemap: only do access activations on reads")
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Reported-by: Gang Deng <gavin.dg@linux.alibaba.com>
-Signed-off-by: Yang Shi <yang.shi@linux.alibaba.com>
----
- mm/filemap.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+> > Aren't there dependencies on earlier patches in the series?
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index f0ae9a6..0589aef 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -41,6 +41,7 @@
- #include <linux/delayacct.h>
- #include <linux/psi.h>
- #include <linux/ramfs.h>
-+#include <linux/page_idle.h>
- #include "internal.h"
- 
- #define CREATE_TRACE_POINTS
-@@ -1630,6 +1631,11 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- 
- 	if (fgp_flags & FGP_ACCESSED)
- 		mark_page_accessed(page);
-+	else if (fgp_flags & FGP_WRITE) {
-+		/* Clear idle flag for buffer write */
-+		if (page_is_idle(page))
-+			clear_page_idle(page);
-+	}
- 
- no_page:
- 	if (!page && (fgp_flags & FGP_CREAT)) {
--- 
-1.8.3.1
+> Not to my knowledge. Patch "[2/6] spi: spi-geni-qcom: Use OPP API to set
+> clk/perf state" depends on a change in 'include/linux/qcom-geni-se.h' made
+> by "1/6] tty: serial: qcom_geni_serial: Use OPP API to set clk/perf state",
+> however that's not true for this patch.
 
+Wait, so *some* of the series should go together but not other bits?
+But you want them split up for some reason?
+
+> I wonder if it would have been better to split this series into individual
+> patches/mini-series, to avoid this kind of confusion.
+
+Yes, if there's no dependencies then bundling things up into a series
+just causes confusion.
+
+--I4g3zIzscEHdx6fd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7zkPEACgkQJNaLcl1U
+h9C5Ygf/eV7zcb0/VTGIuud8txsdBua20mrq0v0NJgg3eJsuQ6dIRslZTDgvayp7
+gusdaqd6gG5MVof8R2japp1a5S2XU7GNEBKnkSQIJK2ytFdcr+9Jbm+6AIisDg47
+UsRnOxCxuMvpC/P7J8+n9tnENxfQ8eN0vlrw3j+YH0DiQqrqFfxxR9qLlA4ccAAH
+dbpKrCr7Y/dz4W9JL8j1l0xiXvoDjgdH4JW9y/BfdU3F71N7SfQkQhWHe6Zc+EMZ
+TCMhZUE1b08cL+joxAxkE1Jn6V8i667Cy/VzKYDY63+18FKBGi/MzzvPwvxxuxUM
+jQLWU2TmIsu1hxy6fDy4xvidDxmxUw==
+=eBq2
+-----END PGP SIGNATURE-----
+
+--I4g3zIzscEHdx6fd--
