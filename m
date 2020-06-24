@@ -2,99 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484B620713D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 12:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BBD207142
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 12:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390506AbgFXKcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 06:32:47 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:6517 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388197AbgFXKcp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 06:32:45 -0400
-Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
-        id <B5ef32b700001>; Wed, 24 Jun 2020 03:31:13 -0700
-Received: from hqmail.nvidia.com ([172.20.161.6])
-  by hqpgpgate101.nvidia.com (PGP Universal service);
-  Wed, 24 Jun 2020 03:32:45 -0700
-X-PGP-Universal: processed;
-        by hqpgpgate101.nvidia.com on Wed, 24 Jun 2020 03:32:45 -0700
-Received: from [10.26.73.205] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 24 Jun
- 2020 10:32:42 +0000
-Subject: Re: [PATCH 5.7 000/474] 5.7.6-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <ben.hutchings@codethink.co.uk>, <lkft-triage@lists.linaro.org>,
-        <stable@vger.kernel.org>, linux-tegra <linux-tegra@vger.kernel.org>
-References: <20200624055938.609070954@linuxfoundation.org>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <f21cfef6-78a6-af8b-86a0-f278f5e5eda8@nvidia.com>
-Date:   Wed, 24 Jun 2020 11:32:40 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2390529AbgFXKdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 06:33:22 -0400
+Received: from mail-eopbgr50074.outbound.protection.outlook.com ([40.107.5.74]:27279
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388421AbgFXKdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 06:33:21 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AItJK/QIImiQIEmEebSjvqvFNZrVLq6ygidos+QPZS2E7tVZl/kKIZaR4WX6m57/HvUzRwpbRK0PyH1wAJvhhH2+zrehH2JTtxVsegy8zBukGNQc6XaVNgBfFKHCsCCV2wp6G0MRgfvHioBH6DYZN1TBoIAXOH2PEK4hJHje4ji9HYZuy+nPo+NQwNy2rlwvWVrsC+/BxWOeFg+lLpNwcznzKG9IfDO6j6YVnyE+ewCtX/pUq0p25CHg9vHOzHoZbq6V1jB4RK/L+TL37ZPcwbn+71QRvuglJPSFIcNDwdIgp1eDKw++ZJVB+9J0j2oFJ7Z7blglYw4UgQiqv3bdnw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KsZNQeeSGRqslaYBepsd0cplnO0TsApo56aASIlqJ8c=;
+ b=iszz8kxL0b0v7okgujbjmfHkAYjwGiFeR2Fv9pGwl/AOgSx+HHYzD3SW5IXYVP3ownNY0F67vUhvae4UlYvgG0sGM2NCBGNnJeRec80YzSyEjtKVWSZGFeR6jFSfA+Safnt5Rb11i7DWyRMRZA5OMwaH1mTCXmFXLbZGOzah4bt0+iboo+t1yYJEd5oQlRA5JSGPoGtk2hEhqbrkU81Wjh+aSbQz+XwVe+fcX3QQW7o0BHpBwlU4cD9Xa6ty3Be6unt9Wjxek8DfxLkvUSIC+nqdDxS+Y1eTA9BdPXPHiNdMKiV19JTEopAqC0a7zEmsGlKGkGLvnBugrsRAtPgCFA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KsZNQeeSGRqslaYBepsd0cplnO0TsApo56aASIlqJ8c=;
+ b=Lrmi4cFW7/GQQ8DM06DEIxFTLHV0wcZSMKiNgOLOEdV5Pij3/TAtF0cve6xSX/ljcVOuThF3VwiMrEuDu1JQlqMwsATkRUIgqGxYBxXUQeMiscEouF3XlrxzfI78hs8fOeki58Sula2PwiAk8fwa+ZJzORGN0zCmrRTeCzIkelA=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
+ (2603:10a6:800:2e::19) by VI1PR0401MB2445.eurprd04.prod.outlook.com
+ (2603:10a6:800:55::12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20; Wed, 24 Jun
+ 2020 10:33:16 +0000
+Received: from VI1PR0401MB2287.eurprd04.prod.outlook.com
+ ([fe80::9d5c:685e:4b51:fa60]) by VI1PR0401MB2287.eurprd04.prod.outlook.com
+ ([fe80::9d5c:685e:4b51:fa60%3]) with mapi id 15.20.3109.027; Wed, 24 Jun 2020
+ 10:33:16 +0000
+From:   Daniel Baluta <daniel.baluta@oss.nxp.com>
+To:     khilman@kernel.org, ulf.hansson@linaro.org,
+        linux-pm@vger.kernel.org, rjw@rjwysocki.net
+Cc:     linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        alsa-devel@alsa-project.org, linux-imx@nxp.com
+Subject: [PATCH v3 0/2] Introduce multi PM domains helpers
+Date:   Wed, 24 Jun 2020 13:32:45 +0300
+Message-Id: <20200624103247.7115-1-daniel.baluta@oss.nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain; charset=a
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AM0PR01CA0100.eurprd01.prod.exchangelabs.com
+ (2603:10a6:208:10e::41) To VI1PR0401MB2287.eurprd04.prod.outlook.com
+ (2603:10a6:800:2e::19)
 MIME-Version: 1.0
-In-Reply-To: <20200624055938.609070954@linuxfoundation.org>
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1592994673; bh=6SOW3e6F9RBJc2po22It4UbR0HX7qirZ5HxdbpqRQJI=;
-        h=X-PGP-Universal:Subject:To:CC:References:From:Message-ID:Date:
-         User-Agent:MIME-Version:In-Reply-To:X-Originating-IP:
-         X-ClientProxiedBy:Content-Type:Content-Language:
-         Content-Transfer-Encoding;
-        b=qUfTbbXKRLXKhTaw0BhkU+3LopRFQfDcjufLeEn4Yi7hCjC73kEEjMzvaUaW195gH
-         7LiYTZBeoDv0uQN4dmxR+/XtxnNqtHtdQ3+eyX7G0QtME/7Jg2vJ8bVjbXXJbNcOp9
-         Dd520hXGbWlk6lvYkbOrnJJz+6g8kKy6Fta1+BxNLWdY07B4P+jLiF1dkyvQFWc5vX
-         eH7tgGAyYLl+oxvsrG+562EfE0AS9liLAXQVH608aRbZe/GNHCuG5CVKN54e6rwDr8
-         Us9/I8du8gxjswPK2zUK9b63hHKdV/C68fQZnh7EVP5ozMggaapkTXaf0+yKgnwFal
-         TwLa7ymACT95w==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from fsr-ub1864-103.ro-buh02.nxp.com (83.217.231.2) by AM0PR01CA0100.eurprd01.prod.exchangelabs.com (2603:10a6:208:10e::41) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Wed, 24 Jun 2020 10:33:15 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [83.217.231.2]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 10905119-2311-42eb-4723-08d8182a011b
+X-MS-TrafficTypeDiagnostic: VI1PR0401MB2445:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0401MB2445B423B9D7ABF7AD19B66AB8950@VI1PR0401MB2445.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-Forefront-PRVS: 0444EB1997
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6ZIHkiDLxCQA/Qxqe8UBeX38gE5FhHG55SQr0PUlPQYlhyeTH88f3oUXn/ZVkP6Bx/s8Ks1P8g7I3PXI0qjOAK/IWvG/w4xLZkE2jyzfQ3lunpCId9XuysXhcXfLTSaNgoK1vuGEMi6dBABCKXn7RputBru6jBDazgGQ5N4KRHMlOUfC6AEC6c2CD3AX4eDifgXFPwDDFayhri5ZQQPho8Jq1Xsj/xRh6ErOMiq81spgmM0ND8r2+JapXxsK1/evvenhxcUM9Pm+Osqu4VOkaHu5dDv3tquK0/p6CKP/aObde7KvBby+2f2RevhhVmyI
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0401MB2287.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(346002)(376002)(366004)(39860400002)(396003)(86362001)(8676002)(186003)(16526019)(1076003)(8936002)(6512007)(66946007)(2616005)(83380400001)(66556008)(5660300002)(66476007)(316002)(956004)(26005)(6486002)(44832011)(4326008)(6506007)(2906002)(52116002)(478600001)(6666004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 5Okqs5mep7iRnApeBT98GH0CtWsmpu63SC4stu1AYlZd1L1PSh2UWekYFQe3quF5aPyBlZ+sUj6dt10j7hcZvk15av2Q7rNIaaVOeSIby9Oiaid0KKjm7siTWTzzM3kgpf/omzO4MYWOlgLaQdYMT8Y2Nuk+agDHSHczss4ZSlNeXBgCyZ1Pw4QUzpmJpLQs7FBnBjXhrD9sIb1j15paUoL26QLd1Ny2RuxsTaPEEZ5GnCZjSvgToE2JYshWsd76lK8wkxFzY07dVTAHu2wtKDBsjJKQwr/kXwMfzsoWMsx5gcOpcCyccJxZB6BlGegVLwc3ORtc4KBqdY9ziwpOd2ZDXaeqYYd4BIw09kP0d9KLXXmuo7kFYEs+GgLMc1ChQXBVbsd1cIDKSrG5rDekJlkR8mW0X8tf9Sr+ymCh9PXhmvUPGV/Pb0dRjYBWOq08SI/YIF8WIgfW78fxWuTHexeBqcE7lOMRThzdVkVhUjg=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10905119-2311-42eb-4723-08d8182a011b
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR0401MB2287.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2020 10:33:16.2171
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: RqBbVskbPPdkdD0X/2SwltmF4yrp/fVzWdReUCS22LSnPpTwqcqNT2ltYAw40dxeaqppFcK9ggR3Ss4WeADihg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0401MB2445
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Daniel Baluta <daniel.baluta@nxp.com>
 
-On 24/06/2020 07:10, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.7.6 release.
-> There are 474 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 26 Jun 2020 05:58:09 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.6-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+i.MX8QXP/i.MX8QM has IPs that need multiple power domains to be up
+in order to work. In order to help drivers, we introduce multi PM
+domains helpers that are able to activate/deactivate multi PM domains.
 
-All tests are passing for Tegra ...
+First patch introduces the helpers and second patch demonstrates how
+a driver can use them instead of hardcoding the PM domains handling.
 
-Test results for stable-v5.7:
-    11 builds:	11 pass, 0 fail
-    26 boots:	26 pass, 0 fail
-    56 tests:	56 pass, 0 fail
+Changes since v2:
+»       - fix kernel test robot reported issues (missing static inline
+	for newly introduced functions in headers and arguments
+	swapped for devm_kzalloc).
 
-Linux version:	5.7.6-rc2-ga5e7ca280376
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra20-ventana,
-                tegra210-p2371-2180, tegra210-p3450-0000,
-                tegra30-cardhu-a04
+Changes since v1: (addressed Ranjani's comments)
+»       - enhanced description for dev_multi_pm_attach return value
+»       - renamed exit_unroll_pm label to exit_detach_pm
 
-Cheers
-Jon
+Ideally would be to have patch 1/2 merged via power tree and then I
+will submit again patch 2/2 on sound tree.
+
+Daniel Baluta (2):
+  PM / domains: Introduce multi PM domains helpers
+  ASoC: SOF: Use multi PM domains helpers
+
+ drivers/base/power/common.c | 93 +++++++++++++++++++++++++++++++++++++
+ include/linux/pm_domain.h   | 19 ++++++++
+ sound/soc/sof/imx/imx8.c    | 60 ++++--------------------
+ 3 files changed, 121 insertions(+), 51 deletions(-)
 
 -- 
-nvpublic
+2.17.1
+
