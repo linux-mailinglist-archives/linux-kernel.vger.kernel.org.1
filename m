@@ -2,92 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3BC20735C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:32:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7099B207360
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390625AbgFXMcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 08:32:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388181AbgFXMcb (ORCPT
+        id S2390552AbgFXMd7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 08:33:59 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:43251 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388761AbgFXMdz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 08:32:31 -0400
-Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 829FDC061573;
-        Wed, 24 Jun 2020 05:32:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=it9VsGosZwW2AP+pfNnE7lbVlyMIxAC0ndaAV7moVK0=; b=PP2H5yDL6sw2rzJ9wwDgYU5npx
-        DegwUhHRBC74l2k/7QgLFXzQ5D+rkWEwAvKbR1I5BlI3E3ORsNoJvAslgybSzD5AK5rhJzXFD9sm3
-        mt64QM+6t3xLhYJDfrIEQpnM0hDmOYoIVcwI8VD8r0PDAcNUZuwgBIVdbWNDkDXIJQOxE1FsInSLv
-        Sf+tHA7qRjaCnJTY/+JKlEIEsbrcHXeyfpbpuBdU/2wzslLrG1aUsGLBJWajvVmeAXZX600RE+BpO
-        OFaoNN3K7C/ocakwoK8OLA1wyT8a/7ZWsuYQfmNbVvXBJzgiVQ1+T+wiZ9xpB65R7HiUVOMsvyoCB
-        Z12SiQnw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jo4ZB-000677-UW; Wed, 24 Jun 2020 12:31:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 51910301A7A;
-        Wed, 24 Jun 2020 14:31:47 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3D90821211CCA; Wed, 24 Jun 2020 14:31:47 +0200 (CEST)
-Date:   Wed, 24 Jun 2020 14:31:47 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Marco Elver <elver@google.com>
-Cc:     "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Will Deacon <will@kernel.org>,
+        Wed, 24 Jun 2020 08:33:55 -0400
+Received: by mail-qt1-f196.google.com with SMTP id v19so1464870qtq.10;
+        Wed, 24 Jun 2020 05:33:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8sHQzOYVDYH3ZNMAFgn6qFPgIIglqtoHHBWYdYcv8aA=;
+        b=syuE55D0mXEdb/fxaAmKcNrq0ep91sscASWL5UeF055ScIwGCOWrHKh0oBZjhqqPgI
+         WlSsuDqxkM5y9Z1Q9GXxD38eHuNDOGHncTvW+ZoEFXakXdM/j0/0LyvuXJoJHFk472cu
+         iwmA6dJI9WChsd2TzgeQZKEAi+3rn4x4zNBFbSnZziFnoVvde/Vlgds60tFIKsS3/oUh
+         H/H3lurQElJ0Qvtl5t/9LgM8XPD2e/AfcHR8KB3rOnd66GuyiyxsFjQTMv/7DQIEjilf
+         jJy4hhDyqz6C82vqQa38ZeuwGFvK8/Lfnonmk50XMd1Zp0yebpbZAQf8qJ1PJZYCwQmU
+         7aPw==
+X-Gm-Message-State: AOAM531XMax1JvIBWITwoI+h5642Tvk1AIKqU/Jh6B33FYoKXITQChAd
+        r74x4zZamnkg7xc1gSC7Cew=
+X-Google-Smtp-Source: ABdhPJxblUCjOrDANsgZy0tfdbktunxAZXJLdRpPPWkvHCUo+/qzdIkUPYVzbM2mylESz5Zexu9MIA==
+X-Received: by 2002:ac8:22e5:: with SMTP id g34mr27227271qta.227.1593002033880;
+        Wed, 24 Jun 2020 05:33:53 -0700 (PDT)
+Received: from localhost.localdomain ([185.248.161.177])
+        by smtp.gmail.com with ESMTPSA id x26sm3354512qtr.4.2020.06.24.05.33.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 05:33:53 -0700 (PDT)
+From:   Alexander Popov <alex.popov@linux.com>
+To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        Emese Revfy <re.emese@gmail.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Thiago Jung Bauermann <bauerman@linux.ibm.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Sven Schnelle <svens@stackframe.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>, bigeasy@linutronix.de,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>,
-        linuxppc-dev@lists.ozlabs.org, heiko.carstens@de.ibm.com,
-        linux-s390@vger.kernel.org, linux@armlinux.org.uk,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH v4 7/8] lockdep: Change hardirq{s_enabled,_context} to
- per-cpu variables
-Message-ID: <20200624123147.GH4781@hirez.programming.kicks-ass.net>
-References: <20200623083721.512673481@infradead.org>
- <20200623150031.GA2986783@debian-buster-darwi.lab.linutronix.de>
- <20200623152450.GM4817@hirez.programming.kicks-ass.net>
- <20200623161320.GA2996373@debian-buster-darwi.lab.linutronix.de>
- <20200623163730.GA4800@hirez.programming.kicks-ass.net>
- <20200623175957.GA106514@elver.google.com>
- <20200623181232.GB4800@hirez.programming.kicks-ass.net>
- <20200623202404.GE2483@worktop.programming.kicks-ass.net>
- <20200624090033.GD4800@hirez.programming.kicks-ass.net>
- <CANpmjNMj8FZuBrZsH62V3bZEhFvT2zXwLusVOLwNuH_-kLhp2g@mail.gmail.com>
+        Peter Collingbourne <pcc@google.com>,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Alexander Monakov <amonakov@ispras.ru>,
+        Mathias Krause <minipli@googlemail.com>,
+        PaX Team <pageexec@freemail.hu>,
+        Brad Spengler <spender@grsecurity.net>,
+        Laura Abbott <labbott@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        kernel-hardening@lists.openwall.com, linux-kbuild@vger.kernel.org,
+        x86@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, gcc@gcc.gnu.org
+Cc:     notify@kernel.org
+Subject: [PATCH v2 0/5] Improvements of the stackleak gcc plugin
+Date:   Wed, 24 Jun 2020 15:33:25 +0300
+Message-Id: <20200624123330.83226-1-alex.popov@linux.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANpmjNMj8FZuBrZsH62V3bZEhFvT2zXwLusVOLwNuH_-kLhp2g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 12:17:56PM +0200, Marco Elver wrote:
-> On Wed, 24 Jun 2020 at 11:01, Peter Zijlstra <peterz@infradead.org> wrote:
+This is the v2 of the patch series with various improvements of the
+stackleak gcc plugin.
 
-> > And I figured a quick way to get rid of that would be something like the
-> > below, seeing how volatile gets auto annotated... but that doesn't seem
-> > to actually work.
-> >
-> > What am I missing?
-> 
-> There's one more in include/linux/rcupdate.h. I suggested this at some point:
-> 
->     https://lore.kernel.org/lkml/20200220213317.GA35033@google.com/
-> 
-> To avoid volatiles as I don't think they are needed here.
+The first three patches disable unneeded gcc plugin instrumentation for
+some files.
 
-Urgghh.. local_t is very expensive for this. The current code is
-actually fine, even on load-store architectures. Using local_t will only
-result in it being more expensive for no gain.
+The fourth patch is the main improvement. It eliminates an unwanted
+side-effect of kernel code instrumentation performed by stackleak gcc
+plugin. This patch is a deep reengineering of the idea described on
+grsecurity blog:
+  https://grsecurity.net/resolving_an_unfortunate_stackleak_interaction
 
-I'll go put data_race() around it.
+The final patch adds 'verbose' stackleak parameter for printing additional
+info about the kernel code instrumentation during kernel building.
+
+I would like to thank Alexander Monakov <amonakov@ispras.ru> for his
+advisory on gcc internals.
+
+This patch series was tested for gcc version 4.8, 5, 6, 7, 8, 9, and 10
+on x86_64, i386 and arm64.
+That was done using the project 'kernel-build-containers':
+  https://github.com/a13xp0p0v/kernel-build-containers
+
+Changes from v1:
+ - rebase onto 5.8.0-rc2;
+ - don't exclude alloca() from the instrumentation logic, because it
+   will be used in kernel stack offset randomization;
+ - reorder patches in the series;
+ - don't use gcc plugins for building vgettimeofday.c in arm and
+   arm64 vDSO;
+ - follow alphabetic order in include/linux/compiler_attributes.h.
+
+Link to v1:
+ https://lore.kernel.org/lkml/20200604134957.505389-1-alex.popov@linux.com/
+
+
+Alexander Popov (5):
+  gcc-plugins/stackleak: Don't instrument itself
+  ARM: vdso: Don't use gcc plugins for building vgettimeofday.c
+  arm64: vdso: Don't use gcc plugins for building vgettimeofday.c
+  gcc-plugins/stackleak: Use asm instrumentation to avoid useless
+    register saving
+  gcc-plugins/stackleak: Add 'verbose' plugin parameter
+
+ arch/arm/vdso/Makefile                 |   2 +-
+ arch/arm64/kernel/vdso/Makefile        |   2 +-
+ include/linux/compiler_attributes.h    |  13 ++
+ kernel/Makefile                        |   1 +
+ kernel/stackleak.c                     |  16 +-
+ scripts/Makefile.gcc-plugins           |   2 +
+ scripts/gcc-plugins/stackleak_plugin.c | 248 +++++++++++++++++++++----
+ 7 files changed, 239 insertions(+), 45 deletions(-)
+
+-- 
+2.25.4
+
