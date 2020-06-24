@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1583E207C91
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80334207CA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406364AbgFXUA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 16:00:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406231AbgFXUA0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 16:00:26 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D9AC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:00:26 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id i4so1657410pjd.0
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:00:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=Ic2rSOyLLU92IxsDQa40KxAfIh3emFoAg8+8Z9zBZLk=;
-        b=kU5gpx3Y6OC13BtuXk0HauEe4SnRRBl9UregNtADzr/gVODMa3X+K78kj9+PkS/hgo
-         4kiLZcX362HZgzyKxa66ffF8DDThk+b3gALh3jMr8IeI1YmbuV2rqwc48cbGqgyZZY+Z
-         Q11nijFgASra09QWSE4BfN8jWLfrmQKArbA+DY3BGeGaN9dHWNnifssKvCb/CLSaAEYw
-         TDYKfzaTgGyYnjGj1ShJs/1psqC1fMCA5UWy7fhY5mezCojoQUUI35z0z6HIgKv6q8Ks
-         F+4+zS9d6UXUNmMq3qeN0motW+18QfUJSU9wgFyzXIk1ht2AWohuQfZqlYCC7l6xiVh0
-         qimA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=Ic2rSOyLLU92IxsDQa40KxAfIh3emFoAg8+8Z9zBZLk=;
-        b=FRggcAwDHLanSuzoH+zuNHWhM0S3gAdpZQNel0gCU3JxQdne4OaXt+SdvbLIl+IPlk
-         wNaG8vnkeOoBC1KxEZQkOJ80Gvarp/NAWMd6hHxBg2kPs5y6xyu7bhShrVd1yoAJnwrS
-         p0kHbOwP3a4KuxgeSaCrcJ7kv1IxVOdgaG224NVotziuhTJz2HfpB0BizpcjcD5c3jC4
-         r7fHS8kSBUx28Jfj85DOmP61iDobEf6FrPbtEmKk5ASDD8bag+fyYX9QUYpZr2E3nbqg
-         1J+FDK2XPmYIeduRa0t66FpXcAGfR1YCb5cJb5v8ycwKsMOTnWf0QWes270S2k2boTKF
-         qYBQ==
-X-Gm-Message-State: AOAM533wlZtUpkhbe2EReL4EEz6ilISzComZEwyuG0JF6L2u1yQFm91G
-        j3X0fxh929Gy4/lV3sHWk6YCKuYGIzw=
-X-Google-Smtp-Source: ABdhPJzDSRznzss3ODVL/uvo/3wIGFCth9XaDcjSZv7/h6ukRYzF+vCyOEh7wiGXl5K6d9IXb13qjQ==
-X-Received: by 2002:a17:90a:62ca:: with SMTP id k10mr31534169pjs.87.1593028825742;
-        Wed, 24 Jun 2020 13:00:25 -0700 (PDT)
-Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id fa13sm5948256pjb.39.2020.06.24.13.00.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 13:00:25 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 13:00:24 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Minchan Kim <minchan@kernel.org>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-mm <linux-mm@kvack.org>, linux-api@vger.kernel.org,
-        oleksandr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
-        Tim Murray <timmurray@google.com>,
-        Sandeep Patil <sspatil@google.com>,
-        Sonny Rao <sonnyrao@google.com>,
-        Brian Geffon <bgeffon@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        John Dias <joaodias@google.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jann Horn <jannh@google.com>,
-        alexander.h.duyck@linux.intel.com, sj38.park@gmail.com,
-        Arjun Roy <arjunroy@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        Daniel Colascione <dancol@google.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        SeongJae Park <sjpark@amazon.de>, linux-man@vger.kernel.org
-Subject: Re: [PATCH v8 2/4] pid: move pidfd_get_pid() to pid.c
-In-Reply-To: <20200622192900.22757-3-minchan@kernel.org>
-Message-ID: <alpine.DEB.2.22.394.2006241253190.35388@chino.kir.corp.google.com>
-References: <20200622192900.22757-1-minchan@kernel.org> <20200622192900.22757-3-minchan@kernel.org>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S2406296AbgFXUIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 16:08:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50344 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2406231AbgFXUIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 16:08:11 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69AE92081A;
+        Wed, 24 Jun 2020 20:08:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593029290;
+        bh=5VMnJWMtE5isWf+Zw3fFeVBkUtPM9jnG1y56l1rB6r8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=UXDlpgROI12F5NDqgoOzG0SobMYX9Nk3wVTaoZZ18QP+SHsTUfrQ0DTWyUg4X1gxy
+         vODil8B8gvJCr4EEF3WDH7s/Ded0qAtOHW3XkT7WGBJEvEk2GyOBQTzGl8VXHiZFAf
+         FuYx353wTI5ZuzKO9SpomxDWj0U1uIiRGkZJiCDs=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 4EEEC35228BC; Wed, 24 Jun 2020 13:08:10 -0700 (PDT)
+Date:   Wed, 24 Jun 2020 13:08:10 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        kernel-team@fb.com, mingo@kernel.org
+Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
+        dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com
+Subject: Re: [PATCH kcsan 0/10] KCSAN updates for v5.9
+Message-ID: <20200624200810.GA20999@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200623004310.GA26995@paulmck-ThinkPad-P72>
+ <20200624190236.GA6603@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200624190236.GA6603@paulmck-ThinkPad-P72>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Jun 2020, Minchan Kim wrote:
-
-> process_madvise syscall needs pidfd_get_pid function to translate pidfd to
-> pid so this patch move the function to kernel/pid.c.
+On Wed, Jun 24, 2020 at 12:02:36PM -0700, Paul E. McKenney wrote:
+> On Mon, Jun 22, 2020 at 05:43:10PM -0700, Paul E. McKenney wrote:
+> > Hello!
+> > 
+> > This series provides KCSAN updates:
 > 
-> Link: http://lkml.kernel.org/r/20200302193630.68771-5-minchan@kernel.org
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> Reviewed-by: Suren Baghdasaryan <surenb@google.com>
-> Suggested-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Reviewed-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Jann Horn <jannh@google.com>
-> Cc: Brian Geffon <bgeffon@google.com>
-> Cc: Daniel Colascione <dancol@google.com>
-> Cc: Joel Fernandes <joel@joelfernandes.org>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: John Dias <joaodias@google.com>
-> Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Oleksandr Natalenko <oleksandr@redhat.com>
-> Cc: Sandeep Patil <sspatil@google.com>
-> Cc: SeongJae Park <sj38.park@gmail.com>
-> Cc: SeongJae Park <sjpark@amazon.de>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Sonny Rao <sonnyrao@google.com>
-> Cc: Tim Murray <timmurray@google.com>
-> Cc: Christian Brauner <christian.brauner@ubuntu.com>
-> Cc: <linux-man@vger.kernel.org>
+> And three more, so that GCC can join Clang in the KCSAN fun.
+> 
+> > 1.	Annotate a data race in vm_area_dup(), courtesy of Qian Cai.
+> > 
+> > 2.	x86/mm/pat: Mark an intentional data race, courtesy of Qian Cai.
+> > 
+> > 3.	Add ASSERT_EXCLUSIVE_ACCESS() to __list_splice_init_rcu().
+> > 
+> > 4.	Add test suite, courtesy of Marco Elver.
+> > 
+> > 5.	locking/osq_lock: Annotate a data race in osq_lock.
+> > 
+> > 6.	Prefer '__no_kcsan inline' in test, courtesy of Marco Elver.
+> > 
+> > 7.	Silence -Wmissing-prototypes warning with W=1, courtesy of Qian Cai.
+> > 
+> > 8.	Rename test.c to selftest.c, courtesy of Marco Elver.
+> > 
+> > 9.	Remove existing special atomic rules, courtesy of Marco Elver.
+> > 
+> > 10.	Add jiffies test to test suite, courtesy of Marco Elver.
+> 
+> 11.	Re-add GCC as a supported compiler.
+> 
+> 12.	Simplify compiler flags.
+> 
+> 13.	Disable branch tracing in core runtime.
 
-Acked-by: David Rientjes <rientjes@google.com>
+All three of which, I should hasten to add, are courtesy of Marco Elver.
+
+> Please note that using GCC for KCSAN requires building your own compiler
+> from recent mainline.
+
+							Thanx, Paul
+
+> ------------------------------------------------------------------------
+> The added three (#11-#13) only:
+> ------------------------------------------------------------------------
+> 
+>  Documentation/dev-tools/kcsan.rst |    3 ++-
+>  kernel/kcsan/Makefile             |    6 +++---
+>  lib/Kconfig.kcsan                 |    3 ++-
+>  scripts/Makefile.kcsan            |    2 +-
+>  4 files changed, 8 insertions(+), 6 deletions(-)
