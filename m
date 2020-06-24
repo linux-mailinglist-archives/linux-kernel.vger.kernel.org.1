@@ -2,87 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDC72207273
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 13:47:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16D48207286
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 13:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390748AbgFXLrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 07:47:06 -0400
-Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:38299 "EHLO
-        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388491AbgFXLrE (ORCPT
+        id S2389393AbgFXLtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 07:49:11 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38180 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2403784AbgFXLtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 07:47:04 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id o3rljtvnKx3Ajo3rojjFim; Wed, 24 Jun 2020 13:47:02 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1592999222; bh=0N5Pf8Y/JNRKBG/KjHTyL7Jl316+lteapCAvH0k5IAU=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=wcDBGubuJirFwVCybDoTMNCTSSYLIqvHwwUt3h9tHhIDSKZ3o/yS7ZERA52WfwVXk
-         wK9wnOfqaVrhrxssHMtaXBei++8oHpmCkE+t0+wnyZIpcP856qVZRs3Z+G2HTv6b75
-         SPtqPMW9BtMJPDJNaI2bMTUF5hfh4u+vNXuILysSJ5/7BFzzg7xrnwFSNan9/I1iDx
-         60QWgNfFq8KeRtbpI2HFiYQ79Wv2mzULwQudHWGb8AbH8lTPdwIryU/A1VVRBimQao
-         z4YPDXcT+pRe/jbZ0e9cUYHzTnZO1jnzIVkvecbXAY42AiERx55SwopC0sZV/nCQuw
-         uS/2n10J391Lg==
-Subject: Re: [PATCH] staging: media: soc_camera: Enclose macro with
- parentheses
-To:     Guilherme Ricioli <guilherme.riciolic@gmail.com>,
-        linux-media@vger.kernel.org
-Cc:     lkcamp@lists.libreplanetbr.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, mchehab@kernel.org,
-        gregkh@linuxfoundation.org
-References: <1587758184-17867-1-git-send-email-guilherme.riciolic@gmail.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <be40fdf1-b75d-bca0-f1eb-798f234df7ac@xs4all.nl>
-Date:   Wed, 24 Jun 2020 13:46:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Wed, 24 Jun 2020 07:49:10 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05OBXQxR137219;
+        Wed, 24 Jun 2020 07:48:18 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ux02d77g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 07:48:18 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05OBXWRp137775;
+        Wed, 24 Jun 2020 07:48:16 -0400
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ux02d75v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 07:48:16 -0400
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05OBkbc2026374;
+        Wed, 24 Jun 2020 11:48:13 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma01fra.de.ibm.com with ESMTP id 31uururavg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 11:48:13 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05OBmAwx61079580
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Jun 2020 11:48:10 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6AFA3A405C;
+        Wed, 24 Jun 2020 11:48:10 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 45497A4054;
+        Wed, 24 Jun 2020 11:48:09 +0000 (GMT)
+Received: from thinkpad (unknown [9.171.4.225])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Wed, 24 Jun 2020 11:48:09 +0000 (GMT)
+Date:   Wed, 24 Jun 2020 13:48:08 +0200
+From:   Gerald Schaefer <gerald.schaefer@de.ibm.com>
+To:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, christophe.leroy@c-s.fr, ziy@nvidia.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org,
+        linux-doc@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH V3 0/4] mm/debug_vm_pgtable: Add some more tests
+Message-ID: <20200624134808.0c460862@thinkpad>
+In-Reply-To: <20200624110539.GC24934@oc3871087118.ibm.com>
+References: <1592192277-8421-1-git-send-email-anshuman.khandual@arm.com>
+        <70ddc7dd-b688-b73e-642a-6363178c8cdd@arm.com>
+        <20200624110539.GC24934@oc3871087118.ibm.com>
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <1587758184-17867-1-git-send-email-guilherme.riciolic@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfAItO1RfSTL7qNqv6XXo3S3PnTFX5rVX8z5QJbSqlin67t3YYsAb6H8ofboI785WCy0Xvkpk1g3fknj5W7vDUzTgYA3ik86mkMHsn3vhnjxeWIA263+q
- u5CSl5mTXhgJCTXndmJh4FDSkcdkIIwJgFnbwy5W7fDQALrFQOpYQBhRrZg3J7EOLbk5JwWmQPXcI/6jPyV4hoOZVn8n+K1ebvncHCMxexOKoiF89FyP5Q+w
- 4BhyzF/NsWsvFYDF3YvoO4itHNZMWvAPUcF/j3Jj6XAnhc2DnykLluy25ryB6WTCXgWkrfHwRruReKiD/nBsS8FHzxXkEtejkarjoQKjMp3P74HpTihxiJ1L
- C73lC3jBA3afnCjFr78wZkFf30s9VfCEYVEeWy+XpOOffeHjnH9/kDxfJ158S8FQca9VdKhy
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-24_06:2020-06-24,2020-06-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1011
+ lowpriorityscore=0 phishscore=0 impostorscore=0 cotscore=-2147483648
+ bulkscore=0 adultscore=0 mlxlogscore=663 mlxscore=0 priorityscore=1501
+ spamscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006240085
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/04/2020 21:56, Guilherme Ricioli wrote:
-> Fix checkpatch error "ERROR: Macros with complex values should be
-> enclosed in parentheses" in soc_camera.c:241.
+On Wed, 24 Jun 2020 13:05:39 +0200
+Alexander Gordeev <agordeev@linux.ibm.com> wrote:
+
+> On Wed, Jun 24, 2020 at 08:43:10AM +0530, Anshuman Khandual wrote:
 > 
-> Signed-off-by: Guilherme Ricioli <guilherme.riciolic@gmail.com>
-> ---
->  drivers/staging/media/soc_camera/soc_camera.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> [...]
 > 
-> diff --git a/drivers/staging/media/soc_camera/soc_camera.c b/drivers/staging/media/soc_camera/soc_camera.c
-> index 39f513f..c2f96ea 100644
-> --- a/drivers/staging/media/soc_camera/soc_camera.c
-> +++ b/drivers/staging/media/soc_camera/soc_camera.c
-> @@ -238,8 +238,8 @@ unsigned long soc_camera_apply_board_flags(struct soc_camera_subdev_desc *ssdd,
->  }
->  EXPORT_SYMBOL(soc_camera_apply_board_flags);
->  
-> -#define pixfmtstr(x) (x) & 0xff, ((x) >> 8) & 0xff, ((x) >> 16) & 0xff, \
-> -	((x) >> 24) & 0xff
-> +#define pixfmtstr(x) ((x) & 0xff, ((x) >> 8) & 0xff, ((x) >> 16) & 0xff, \
-> +	((x) >> 24) & 0xff)
->  
->  static int soc_camera_try_fmt(struct soc_camera_device *icd,
->  			      struct v4l2_format *f)
+> > Hello Gerald/Christophe/Vineet,
+> > 
+> > It would be really great if you could give this series a quick test
+> > on s390/ppc/arc platforms respectively. Thank you.
 > 
+> That worked for me with the default and debug s390 configurations.
+> Would you like to try with some particular options or combinations
+> of the options?
 
-Thank you for the patch, but this driver is deprecated and in fact depends on BROKEN
-(so it is never build).
+It will be enabled automatically on all archs that set
+ARCH_HAS_DEBUG_VM_PGTABLE, which we do for s390 unconditionally.
+Also, DEBUG_VM has to be set, which we have only in the debug config.
+So only the s390 debug config will have it enabled, you can check
+dmesg for "debug_vm_pgtable" to see when / where it was run, and if it
+triggered any warnings.
 
-Because of that I'll drop this patch.
-
-Regards,
-
-	Hans
+I also checked with the v3 series, and it works fine for s390.
