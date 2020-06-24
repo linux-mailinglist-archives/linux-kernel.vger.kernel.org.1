@@ -2,94 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A039C20774D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65762207755
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404256AbgFXPYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:24:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404017AbgFXPYE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:24:04 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844FCC061573;
-        Wed, 24 Jun 2020 08:24:03 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id y13so1483594lfe.9;
-        Wed, 24 Jun 2020 08:24:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=7ouKIzv9lcqviAIR01eC0zUDPcbdP0WKdUxuCP9SSpw=;
-        b=E27hEDFRxtZsQruEYVPTKunSsgJg6aALuxPxpQbSwxDRgiJZXbVdVQJKazLD8M5Wjo
-         om0KM0Faci6ftvWbxcquMgWXyDdqtOfBWWlErm0YTPMPTa03xNpBHyYwVibyb2Zzo0M2
-         lLUKMh7OyfZEu106pZZ0RNyuGDGS/S4uk2L6AOrXY+Jh1/LOzcsft59VuVdAXRCw8/UI
-         tcjTk82W9LuJXvGO7esKypzBLAlzPsyTJqqSq9tTMUXUgl0I+StFKkE/jGlxVfZXHQng
-         5tBnnQZgaSockOreNNvEUaLFcdjWc5LD4DodWFz7Xw5DP5j7+DI7/+krFCr1JuaAiZiq
-         yuPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7ouKIzv9lcqviAIR01eC0zUDPcbdP0WKdUxuCP9SSpw=;
-        b=a1xGszQOqrl8mVakOWEcsD5EL4zA6M+a1lBNRSGDlhN1ZtNEn7J977PGFWdWNEcChy
-         C2H0RyfbGx4IBD+TwwLSbCHqIMcuZV36tDQqO8DlKka3/2UcGuh/07+8KbqFdt5HcHF7
-         yQ10H08cHyPhkHu059btIIlVEvYygF5GIuON7ZFkm3i14PD6PxuGjx8tm0qhBQiDnMCX
-         cjgUmaGzlg6Daq9gU2cChTBomW3yIR4G6UBPjNtdkhh/WdzoidstvG8tFu8t5wW4Mact
-         ktoqEnv1LxUiEgP7HiGWl3w6GnAfmk5G6vUBiEENC94efQioC8L7Nf+7fsrI7VkfGs/W
-         d9zQ==
-X-Gm-Message-State: AOAM5327AR6hfLXbl9hAnX0jWL9kYGAODVL0L7lKM5YPdhbVfG4rp61m
-        R9zSX2HVNWY8ezznqESNhbOKFnuY
-X-Google-Smtp-Source: ABdhPJw5CK19plm3sDVgaQZ/FaKkfb0UTJA6gbhs1PnwT7h7YAvOtoMlEmVpoVoZxpLFP0oqUejuXQ==
-X-Received: by 2002:ac2:47e7:: with SMTP id b7mr15661708lfp.68.1593012241393;
-        Wed, 24 Jun 2020 08:24:01 -0700 (PDT)
-Received: from [192.168.2.145] (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.googlemail.com with ESMTPSA id d20sm5262732lfi.22.2020.06.24.08.24.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jun 2020 08:24:00 -0700 (PDT)
-Subject: Re: [PATCH v2 0/4] Tegra Video Decoder driver power management
- corrections
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-References: <20200624150847.22672-1-digetx@gmail.com>
- <90323aa6-38b5-0a45-69a7-ccf380690a78@xs4all.nl>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <23cbaa18-9461-8f72-3d43-aa14cd0c1095@gmail.com>
-Date:   Wed, 24 Jun 2020 18:23:59 +0300
+        id S2404407AbgFXPYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:24:30 -0400
+Received: from lizzard.sbs.de ([194.138.37.39]:39144 "EHLO lizzard.sbs.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404017AbgFXPY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 11:24:29 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by lizzard.sbs.de (8.15.2/8.15.2) with ESMTPS id 05OFO7aH004305
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Jun 2020 17:24:07 +0200
+Received: from [167.87.59.49] ([167.87.59.49])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 05OFO5fK027922;
+        Wed, 24 Jun 2020 17:24:06 +0200
+Subject: Re: [PATCH 2/2] watchdog: rti: tweak min_hw_heartbeat_ms to match
+ initial allowed window
+To:     Tero Kristo <t-kristo@ti.com>, wim@linux-watchdog.org,
+        linux@roeck-us.net, linux-watchdog@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20200624114534.1362-1-t-kristo@ti.com>
+ <20200624114534.1362-3-t-kristo@ti.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <289c6104-a885-d3c1-c670-a081ebaaf782@siemens.com>
+Date:   Wed, 24 Jun 2020 17:24:05 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <90323aa6-38b5-0a45-69a7-ccf380690a78@xs4all.nl>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200624114534.1362-3-t-kristo@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-24.06.2020 18:16, Hans Verkuil пишет:
-> On 24/06/2020 17:08, Dmitry Osipenko wrote:
->> Hello,
->>
->> This small series addresses a Runtime PM issue that was discovered during
->> of Tegra VI driver reviewing by balancing RPM usage count on RPM resume
->> failure. Secondly it fixes reboot on some Tegra devices due to bootloader
->> expecting VDE power partition to be ON at the boot time, which wasn't
->> happening in case of a warm re-booting (i.e. by PMC resetting).
+On 24.06.20 13:45, Tero Kristo wrote:
+> If the RTI watchdog has been started by someone (like bootloader) when
+> the driver probes, we must adjust the initial ping timeout to match the
+> currently running watchdog window to avoid generating watchdog reset.
 > 
-> Can you rebase this on top of the media_tree master branch? I think a variant
-> of patch 1 has already been applied. I found a mail today where you mentioned
-> that you preferred your version (it looks like I missed that) so you'll need to
-> rework patch 1.
+> Signed-off-by: Tero Kristo <t-kristo@ti.com>
+> ---
+>   drivers/watchdog/rti_wdt.c | 25 +++++++++++++++++++++++++
+>   1 file changed, 25 insertions(+)
+> 
+> diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
+> index d456dd72d99a..02ea2b2435f5 100644
+> --- a/drivers/watchdog/rti_wdt.c
+> +++ b/drivers/watchdog/rti_wdt.c
+> @@ -55,11 +55,13 @@ static int heartbeat;
+>    * @base - base io address of WD device
+>    * @freq - source clock frequency of WDT
+>    * @wdd  - hold watchdog device as is in WDT core
+> + * @min_hw_heartbeat_save - save of the min hw heartbeat value
+>    */
+>   struct rti_wdt_device {
+>   	void __iomem		*base;
+>   	unsigned long		freq;
+>   	struct watchdog_device	wdd;
+> +	unsigned int		min_hw_heartbeat_save;
+>   };
+>   
+>   static int rti_wdt_start(struct watchdog_device *wdd)
+> @@ -107,6 +109,11 @@ static int rti_wdt_ping(struct watchdog_device *wdd)
+>   	/* put watchdog in active state */
+>   	writel_relaxed(WDKEY_SEQ1, wdt->base + RTIWDKEY);
+>   
+> +	if (wdt->min_hw_heartbeat_save) {
+> +		wdd->min_hw_heartbeat_ms = wdt->min_hw_heartbeat_save;
+> +		wdt->min_hw_heartbeat_save = 0;
+> +	}
+> +
+>   	return 0;
+>   }
+>   
+> @@ -201,6 +208,24 @@ static int rti_wdt_probe(struct platform_device *pdev)
+>   		goto err_iomap;
+>   	}
+>   
+> +	if (readl(wdt->base + RTIDWDCTRL) == WDENABLE_KEY) {
+> +		u32 time_left;
+> +		u32 heartbeat;
+> +
+> +		set_bit(WDOG_HW_RUNNING, &wdd->status);
+> +		time_left = rti_wdt_get_timeleft(wdd);
+> +		heartbeat = readl(wdt->base + RTIDWDPRLD);
+> +		heartbeat <<= WDT_PRELOAD_SHIFT;
+> +		heartbeat /= wdt->freq;
+> +		if (time_left < heartbeat / 2)
+> +			wdd->min_hw_heartbeat_ms = 0;
+> +		else
+> +			wdd->min_hw_heartbeat_ms =
+> +				(time_left - heartbeat / 2 + 1) * 1000;
+> +
+> +		wdt->min_hw_heartbeat_save = 11 * heartbeat * 1000 / 20;
+> +	}
+> +
+>   	ret = watchdog_register_device(wdd);
+>   	if (ret) {
+>   		dev_err(dev, "cannot register watchdog device\n");
+> 
 
-Hello Hans,
+This assumes that the bootloader also programmed a 50% window, right? 
+The pending U-Boot patch will do that, but what if that may chance or 
+someone uses a different setup?
 
-I'll take a look at what patches has been applied, my bad for sending
-the v2 too late. Thank you for the heads up!
+Jan
+
+-- 
+Siemens AG, Corporate Technology, CT RDA IOT SES-DE
+Corporate Competence Center Embedded Linux
