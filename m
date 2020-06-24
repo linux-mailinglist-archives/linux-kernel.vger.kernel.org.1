@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E16207663
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD18C207666
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404256AbgFXPC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55600 "EHLO
+        id S2404278AbgFXPCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404241AbgFXPCX (ORCPT
+        with ESMTP id S2404249AbgFXPC0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:02:23 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19748C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:02:23 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id p3so1552936pgh.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:02:23 -0700 (PDT)
+        Wed, 24 Jun 2020 11:02:26 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1346AC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:02:26 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id jz3so1280171pjb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:02:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=kHsJMTyrzGs/lMla3mx1ITOEfxJev53X7nb3oA+rEkM=;
-        b=CLG1GV1DsEigRZMeWoVq0PQGyE0P9pnkkp16DsSuPJjTZ88qosmUXKaw/UshA2rUin
-         JjGRjRUDlBDaoZTCkWmQsQWwD+h2so/vHqeeBb2uFauv+K6JOl2EQDewJK83Af5xy3Mt
-         WzyidjOLhJW72hE82Ikbsi9mbzF7uQ9xtWwJgO/CQySQcZ99GGTL+IdtzmFR039pZbxq
-         8gJhvt+A0agagm2CqrO92jbJwhhgPLExL8dR0XEpUkcZe9JfIgYFTKELV3m4i4hi8/ng
-         oH20Mg5hMUp4HcVl6yP0pCV3yHtqWSxj4izzU3s0uX8mbYoOPSt0Q9tnGRYMN50vtRwS
-         y6oQ==
+        bh=J0Xeovjt/xfdRY3CY7rSgO7sQOzE+w1RTWn+OXKgogk=;
+        b=mPAONOoOMCz3IzPvpOtPAvFkSpNOWWK64tYeTcGp6deJ7CGiQdTIbJCV2Oq5KqScuO
+         ADRvQ4+VVqQBfUd0xqxLtL5HOjaJKhJGpU/WYe8APPid8XYqspwYo1OuZqTS7Nm22CiQ
+         dmociYAaoYOUH0EqVKScWSV8fzliM2Gt2mSfUAFL8rSsvHv1vAxPpTXX6XhyMO0wgIz0
+         2QmyCW3M3bAByYly33meuPj7eq64fO2j+tSP7MDEmaZ76LbcUiEIDIcU4llqohRiD/QA
+         O54Zk7e6ZJyVtnWggGSBqR1lqlmXON+xERUiXIGJU73FIak4foWAfIvj0FdlrHopRmji
+         Z0GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=kHsJMTyrzGs/lMla3mx1ITOEfxJev53X7nb3oA+rEkM=;
-        b=m4PHie/aHREWk8uYIHGcRSHnGDXTubyYAlbsYEd64gmdxoik8wIsRrvMnViLNZhvUr
-         n/RYgZ1MAa9+5o5HEiI60zo39Lp9VasZlDw1ZWSyW8d1w/R0NwXSlpE1YRJNh+bVjrDZ
-         06mX2/OH3srRSUdw8DjY0hLRgb1nh1DBqaSdPG78VNzyh5Kh7Bh8jRMScgZnU/MhM7K2
-         mMIV5I5GQaDz7fYGVog2kZcNwXBJEgztR8/sGkQAMUxorqzOQR5Or1D24gyeLEh0Pbzw
-         BnM4mkCEJpkhyiLFcswYu24DObpO/bPUC7EjWqyV8c980X3HudDijfybZ8LqCUtEVB14
-         dccg==
-X-Gm-Message-State: AOAM530e+v2cTvSz2ykGiWVeiDFuremts1fps/6sU4saJ47qfKcW3OMF
-        9hkoL7cnKt/8B/pLSN+ejw==
-X-Google-Smtp-Source: ABdhPJyVcH1CLgJOJlA115WQq27melIISXx96Q/p3lqjSymZwNPjBcIAe1+YUVrGwwbNsRcL4r3PXg==
-X-Received: by 2002:a65:4807:: with SMTP id h7mr22759246pgs.123.1593010942497;
-        Wed, 24 Jun 2020 08:02:22 -0700 (PDT)
+        bh=J0Xeovjt/xfdRY3CY7rSgO7sQOzE+w1RTWn+OXKgogk=;
+        b=f+/Hxni5UC826jt/WwT1s4tV9k+gq6E5/05OV0rcqRznxDoi7TjLbJPLr9yIRQ9Vol
+         gOMte74wSNFSFLnILH/UeAdTqIbgLSWCSDqMszoflQsQPmumtO3ImoEkSzJPL5JfPYcc
+         nubrzdjwFUbPAAWmjMo/d1ImWhaC8TD4x+PtkUHpm/CbNVwgbnFtgibShjYN0/R+EH5d
+         AmwHJr1KABT3jIKyoT1tQLketbOHw7S+uDFGo/Z1NHu5PYel5nleLX7/FMMCN7ZUBj51
+         NX5WZzGJ+bXJXGJDbdormk4FQIRTPWIgJTujf4cFwZwKYqWg5OTCOLzMUi1C6UCBzqXO
+         UNDg==
+X-Gm-Message-State: AOAM533IgeW+KW58pbLcwvjq64NYRGNLA1dOsqpn+9ZqNJyE1AwrVv4O
+        bKekvHP4dMKULKPsRY9cxg==
+X-Google-Smtp-Source: ABdhPJw6MfmyFpw8wUaLuJ/Vb231TF9GIf25hqGNAuaS+lTOsKaFPSQMkwSVd0NnleNPPJ4y5vKcQg==
+X-Received: by 2002:a17:90a:e801:: with SMTP id i1mr28012066pjy.79.1593010945548;
+        Wed, 24 Jun 2020 08:02:25 -0700 (PDT)
 Received: from ip-172-31-41-194.ap-northeast-1.compute.internal (ec2-52-199-21-241.ap-northeast-1.compute.amazonaws.com. [52.199.21.241])
-        by smtp.gmail.com with ESMTPSA id i125sm17013705pgd.21.2020.06.24.08.02.19
+        by smtp.gmail.com with ESMTPSA id i125sm17013705pgd.21.2020.06.24.08.02.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 08:02:22 -0700 (PDT)
+        Wed, 24 Jun 2020 08:02:25 -0700 (PDT)
 From:   nao.horiguchi@gmail.com
 To:     linux-mm@kvack.org
 Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
@@ -54,9 +54,9 @@ Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
         david@redhat.com, aneesh.kumar@linux.vnet.ibm.com,
         zeil@yandex-team.ru, naoya.horiguchi@nec.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 13/15] mm,hwpoison: Refactor soft_offline_huge_page and __soft_offline_page
-Date:   Wed, 24 Jun 2020 15:01:35 +0000
-Message-Id: <20200624150137.7052-14-nao.horiguchi@gmail.com>
+Subject: [PATCH v3 14/15] mm,hwpoison: Return 0 if the page is already poisoned in soft-offline
+Date:   Wed, 24 Jun 2020 15:01:36 +0000
+Message-Id: <20200624150137.7052-15-nao.horiguchi@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200624150137.7052-1-nao.horiguchi@gmail.com>
 References: <20200624150137.7052-1-nao.horiguchi@gmail.com>
@@ -67,294 +67,72 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Oscar Salvador <osalvador@suse.de>
 
-Merging soft_offline_huge_page and __soft_offline_page let us get rid of
-quite some duplicated code, and makes the code much easier to follow.
+Currently, there is an inconsistency when calling soft-offline from
+different paths on a page that is already poisoned.
 
-Now, __soft_offline_page will handle both normal and hugetlb pages.
+1) madvise:
 
-Note that move put_page() block to the beginning of page_handle_poison()
-with drain_all_pages() in order to make sure that the target page is
-freed and sent into free list to make take_page_off_buddy() work properly.
+        madvise_inject_error skips any poisoned page and continues
+        the loop.
+        If that was the only page to madvise, it returns 0.
+
+2) /sys/devices/system/memory/:
+
+        When calling soft_offline_page_store()->soft_offline_page(),
+        we return -EBUSY in case the page is already poisoned.
+        This is inconsistent with a) the above example and b)
+        memory_failure, where we return 0 if the page was poisoned.
+
+Fix this by dropping the PageHWPoison() check in madvise_inject_error,
+and let soft_offline_page return 0 if it finds the page already poisoned.
+
+Please, note that this represents a user-api change, since now the
+return error when calling soft_offline_page_store()->soft_offline_page()
+will be different.
 
 Signed-off-by: Oscar Salvador <osalvador@suse.de>
 Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 ---
-ChangeLog v2 -> v3:
-- use page_is_file_lru() instead of page_is_file_cache(),
-- add description about put_page() and drain_all_pages().
-- fix coding style warnings by checkpatch.pl
----
- mm/memory-failure.c | 185 ++++++++++++++++++++------------------------
- 1 file changed, 86 insertions(+), 99 deletions(-)
+ mm/madvise.c        | 3 ---
+ mm/memory-failure.c | 4 ++--
+ 2 files changed, 2 insertions(+), 5 deletions(-)
 
+diff --git v5.8-rc1-mmots-2020-06-20-21-44/mm/madvise.c v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/madvise.c
+index 2b5080253406..b59bbd6c9982 100644
+--- v5.8-rc1-mmots-2020-06-20-21-44/mm/madvise.c
++++ v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/madvise.c
+@@ -902,9 +902,6 @@ static int madvise_inject_error(int behavior,
+ 		 */
+ 		put_page(page);
+ 
+-		if (PageHWPoison(page))
+-			continue;
+-
+ 		if (behavior == MADV_SOFT_OFFLINE) {
+ 			pr_info("Soft offlining pfn %#lx at process virtual address %#lx\n",
+ 				pfn, start);
 diff --git v5.8-rc1-mmots-2020-06-20-21-44/mm/memory-failure.c v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/memory-failure.c
-index f744eb90c15c..22c904f6d17a 100644
+index 22c904f6d17a..9ad3198a3954 100644
 --- v5.8-rc1-mmots-2020-06-20-21-44/mm/memory-failure.c
 +++ v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/memory-failure.c
-@@ -78,14 +78,36 @@ EXPORT_SYMBOL_GPL(hwpoison_filter_dev_minor);
- EXPORT_SYMBOL_GPL(hwpoison_filter_flags_mask);
- EXPORT_SYMBOL_GPL(hwpoison_filter_flags_value);
- 
--static void page_handle_poison(struct page *page, bool release)
-+static bool page_handle_poison(struct page *page, bool hugepage_or_freepage, bool release)
- {
-+	if (release) {
-+		put_page(page);
-+		drain_all_pages(page_zone(page));
-+	}
-+
-+	if (hugepage_or_freepage) {
-+		/*
-+		 * Doing this check for free pages is also fine since dissolve_free_huge_page
-+		 * returns 0 for non-hugetlb pages as well.
-+		 */
-+		if (dissolve_free_huge_page(page) || !take_page_off_buddy(page))
-+		/*
-+		 * The hugetlb page can end up being enqueued back into
-+		 * the freelists by means of:
-+		 * unmap_and_move_huge_page
-+		 *  putback_active_hugepage
-+		 *   put_page->free_huge_page
-+		 *    enqueue_huge_page
-+		 * If this happens, we might lose the race against an allocation.
-+		 */
-+			return false;
-+	}
- 
- 	SetPageHWPoison(page);
--	if (release)
--		put_page(page);
- 	page_ref_inc(page);
- 	num_poisoned_pages_inc();
-+
-+	return true;
- }
- 
- static int hwpoison_filter_dev(struct page *p)
-@@ -1718,63 +1740,52 @@ static int get_any_page(struct page *page, unsigned long pfn)
- 	return ret;
- }
- 
--static int soft_offline_huge_page(struct page *page)
-+static bool isolate_page(struct page *page, struct list_head *pagelist)
- {
--	int ret;
--	unsigned long pfn = page_to_pfn(page);
--	struct page *hpage = compound_head(page);
--	LIST_HEAD(pagelist);
-+	bool isolated = false;
-+	bool lru = PageLRU(page);
-+
-+	if (PageHuge(page)) {
-+		isolated = isolate_huge_page(page, pagelist);
-+	} else {
-+		if (lru)
-+			isolated = !isolate_lru_page(page);
-+		else
-+			isolated = !isolate_movable_page(page, ISOLATE_UNEVICTABLE);
-+
-+		if (isolated)
-+			list_add(&page->lru, pagelist);
- 
--	/*
--	 * This double-check of PageHWPoison is to avoid the race with
--	 * memory_failure(). See also comment in __soft_offline_page().
--	 */
--	lock_page(hpage);
--	if (PageHWPoison(hpage)) {
--		unlock_page(hpage);
--		put_page(hpage);
--		pr_info("soft offline: %#lx hugepage already poisoned\n", pfn);
--		return -EBUSY;
- 	}
--	unlock_page(hpage);
- 
--	ret = isolate_huge_page(hpage, &pagelist);
-+	if (isolated && lru)
-+		inc_node_page_state(page, NR_ISOLATED_ANON +
-+				    page_is_file_lru(page));
-+
- 	/*
--	 * get_any_page() and isolate_huge_page() takes a refcount each,
--	 * so need to drop one here.
-+	 * If we succeed to isolate the page, we grabbed another refcount on
-+	 * the page, so we can safely drop the one we got from get_any_pages().
-+	 * If we failed to isolate the page, it means that we cannot go further
-+	 * and we will return an error, so drop the reference we got from
-+	 * get_any_pages() as well.
- 	 */
--	put_page(hpage);
--	if (!ret) {
--		pr_info("soft offline: %#lx hugepage failed to isolate\n", pfn);
--		return -EBUSY;
--	}
--
--	ret = migrate_pages(&pagelist, new_page, NULL, MPOL_MF_MOVE_ALL,
--				MIGRATE_SYNC, MR_MEMORY_FAILURE);
--	if (ret) {
--		pr_info("soft offline: %#lx: hugepage migration failed %d, type %lx (%pGp)\n",
--			pfn, ret, page->flags, &page->flags);
--		if (!list_empty(&pagelist))
--			putback_movable_pages(&pagelist);
--		if (ret > 0)
--			ret = -EIO;
--	} else {
--		/*
--		 * We set PG_hwpoison only when we were able to take the page
--		 * off the buddy.
--		 */
--		if (!dissolve_free_huge_page(page) && take_page_off_buddy(page))
--			page_handle_poison(page, false);
--		else
--			ret = -EBUSY;
--	}
--	return ret;
-+	put_page(page);
-+	return isolated;
- }
- 
-+/*
-+ * __soft_offline_page handles hugetlb-pages and non-hugetlb pages.
-+ * If the page is a non-dirty unmapped page-cache page, it simply invalidates.
-+ * If the page is mapped, it migrates the contents over.
-+ */
- static int __soft_offline_page(struct page *page)
- {
--	int ret;
-+	int ret = 0;
- 	unsigned long pfn = page_to_pfn(page);
-+	struct page *hpage = compound_head(page);
-+	const char *msg_page[] = {"page", "hugepage"};
-+	bool huge = PageHuge(page);
-+	LIST_HEAD(pagelist);
- 
- 	/*
- 	 * Check PageHWPoison again inside page lock because PageHWPoison
-@@ -1783,98 +1794,74 @@ static int __soft_offline_page(struct page *page)
- 	 * so there's no race between soft_offline_page() and memory_failure().
- 	 */
- 	lock_page(page);
--	wait_on_page_writeback(page);
-+	if (!PageHuge(page))
-+		wait_on_page_writeback(page);
- 	if (PageHWPoison(page)) {
+@@ -1800,7 +1800,7 @@ static int __soft_offline_page(struct page *page)
  		unlock_page(page);
  		put_page(page);
  		pr_info("soft offline: %#lx page already poisoned\n", pfn);
- 		return -EBUSY;
- 	}
--	/*
--	 * Try to invalidate first. This should work for
--	 * non dirty unmapped page cache pages.
--	 */
--	ret = invalidate_inode_page(page);
-+
-+	if (!PageHuge(page))
-+		/*
-+		 * Try to invalidate first. This should work for
-+		 * non dirty unmapped page cache pages.
-+		 */
-+		ret = invalidate_inode_page(page);
- 	unlock_page(page);
-+
- 	/*
- 	 * RED-PEN would be better to keep it isolated here, but we
- 	 * would need to fix isolation locking first.
- 	 */
--	if (ret == 1) {
-+	if (ret) {
- 		pr_info("soft_offline: %#lx: invalidated\n", pfn);
--		page_handle_poison(page, true);
-+		page_handle_poison(page, false, true);
- 		return 0;
+-		return -EBUSY;
++		return 0;
  	}
  
--	/*
--	 * Simple invalidation didn't work.
--	 * Try to migrate to a new page instead. migrate.c
--	 * handles a large number of cases for us.
--	 */
--	if (PageLRU(page))
--		ret = isolate_lru_page(page);
--	else
--		ret = isolate_movable_page(page, ISOLATE_UNEVICTABLE);
--	/*
--	 * Drop page reference which is came from get_any_page()
--	 * successful isolate_lru_page() already took another one.
--	 */
--	put_page(page);
--	if (!ret) {
--		LIST_HEAD(pagelist);
--		/*
--		 * After isolated lru page, the PageLRU will be cleared,
--		 * so use !__PageMovable instead for LRU page's mapping
--		 * cannot have PAGE_MAPPING_MOVABLE.
--		 */
--		if (!__PageMovable(page))
--			inc_node_page_state(page, NR_ISOLATED_ANON +
--						page_is_file_lru(page));
--		list_add(&page->lru, &pagelist);
-+	if (isolate_page(hpage, &pagelist)) {
- 		ret = migrate_pages(&pagelist, new_page, NULL, MPOL_MF_MOVE_ALL,
- 					MIGRATE_SYNC, MR_MEMORY_FAILURE);
- 		if (!ret) {
--			page_handle_poison(page, true);
-+			bool release = !huge;
-+
-+			if (!page_handle_poison(page, true, release))
-+				ret = -EBUSY;
- 		} else {
- 			if (!list_empty(&pagelist))
- 				putback_movable_pages(&pagelist);
+ 	if (!PageHuge(page))
+@@ -1901,7 +1901,7 @@ int soft_offline_page(unsigned long pfn)
  
--			pr_info("soft offline: %#lx: migration failed %d, type %lx (%pGp)\n",
--				pfn, ret, page->flags, &page->flags);
-+
-+			pr_info("soft offline: %#lx: %s migration failed %d, type %lx (%pGp)\n",
-+				pfn, msg_page[huge], ret, page->flags, &page->flags);
- 			if (ret > 0)
- 				ret = -EIO;
- 		}
- 	} else {
--		pr_info("soft offline: %#lx: isolation failed: %d, page count %d, type %lx (%pGp)\n",
--			pfn, ret, page_count(page), page->flags, &page->flags);
-+		pr_info("soft offline: %#lx: %s isolation failed: %d, page count %d, type %lx (%pGp)\n",
-+			pfn, msg_page[huge], ret, page_count(page), page->flags, &page->flags);
+ 	if (PageHWPoison(page)) {
+ 		pr_info("soft offline: %#lx page already poisoned\n", pfn);
+-		return -EBUSY;
++		return 0;
  	}
- 	return ret;
- }
  
- static int soft_offline_in_use_page(struct page *page)
- {
--	int ret;
- 	struct page *hpage = compound_head(page);
- 
- 	if (!PageHuge(page) && PageTransHuge(hpage))
- 		if (try_to_split_thp_page(page, "soft offline") < 0)
- 			return -EBUSY;
--
--	if (PageHuge(page))
--		ret = soft_offline_huge_page(page);
--	else
--		ret = __soft_offline_page(page);
--	return ret;
-+	return __soft_offline_page(page);
- }
- 
- static int soft_offline_free_page(struct page *page)
- {
--	int rc = -EBUSY;
-+	int rc = 0;
- 
--	if (!dissolve_free_huge_page(page) && take_page_off_buddy(page)) {
--		page_handle_poison(page, false);
--		rc = 0;
--	}
-+	if (!page_handle_poison(page, true, false))
-+		rc = -EBUSY;
- 
- 	return rc;
- }
+ 	get_online_mems();
 -- 
 2.17.1
 
