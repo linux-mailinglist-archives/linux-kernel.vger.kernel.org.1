@@ -2,94 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55778207684
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDDA2076A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404107AbgFXPEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:04:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46814 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403833AbgFXPEh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:04:37 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F352C2070A;
-        Wed, 24 Jun 2020 15:04:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593011076;
-        bh=sjyWN89n2WVn1nir58rJre28qTxK1Z7LKlW6WPjB498=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OuktBilcZV/yDm2z+dLzle3X5u04XthtuHlAreC1y/MG37F7osJCt8BQdho0fFtnr
-         Zbqy05zYZlwITMtBKJjdgZIWp5dN5nafQF6fts3sxdifBfIuD3LxBGLbx0T8m0No9r
-         Vs25zXTH+3WgSZPmxueQywLc30VHf7n177WG8R10=
-Date:   Wed, 24 Jun 2020 16:04:34 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [RESEND PATCH v5 3/5] drivers core: allow probe_err accept
- integer and pointer types
-Message-ID: <20200624150434.GH5472@sirena.org.uk>
-References: <20200624114127.3016-1-a.hajda@samsung.com>
- <CGME20200624114136eucas1p1c84f81b1d78e2dbad7ac1b762f0a4b4f@eucas1p1.samsung.com>
- <20200624114127.3016-4-a.hajda@samsung.com>
- <2203e0c2-016b-4dbe-452d-63c857f06dd1@arm.com>
- <CAHp75VfpP1cGK3FvTL0hBudRY2N_7GpXYRuUHUCipz7X2sMLmQ@mail.gmail.com>
- <be755825-b413-e5c1-7ea4-06506b20d1f0@arm.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4C6bbPZ6c/S1npyF"
-Content-Disposition: inline
-In-Reply-To: <be755825-b413-e5c1-7ea4-06506b20d1f0@arm.com>
-X-Cookie: So this is it.  We're going to die.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S2404407AbgFXPF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404251AbgFXPF0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 11:05:26 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3452C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:05:26 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id e12so1905452qtr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:05:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=E2QT93q4mAHQ58Ta5MG1RGkPeXgSEsXRWz8vivK18vY=;
+        b=rUWJCnEUxL1RvWBYcZKsFagVzZ6RLMKVyhk5QTpU9kLslfZjSvrNUZE7PdQ5RxDD0P
+         YgOA8IDgoRJYQ6doK+Kmn4wJp1BUCsL2EvsAClcifu7NGqOxL4Wna4A65LbMbA/zXSAo
+         YJLyTiyHw84/1y/mS7tD0H5gncGOuqiBBsXp8Ct5eSWGJHG5bzSXFOjSCFwL0oTKYJ1I
+         9/25K65Q8GS3GQ3p6O9TuDf7hVhGfAxNsgt2gchdNg/3g9rn5kUSP7uLZhi0pqgz+Peh
+         poW+m/N88G7lC+jUnELmccQkQ3SkgUV8Kl9SA9BGzDH5TFV1Q5dbR+qdk+oW/j4sR4hB
+         1i8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=E2QT93q4mAHQ58Ta5MG1RGkPeXgSEsXRWz8vivK18vY=;
+        b=RvVDQ6RF5G+IXhiunKLLo/gCTrsCc8iZoVAyUCdz/mss70TH8Oo0kPJRAgsfAxXRTV
+         /r4hN1NMLsgpY3iP8XZ0YWZg4m1HgqyxRorkR95zodu47HmNCIZwkNf6aobanu1M1IqS
+         m6787FSCDQoC4crJd05z0MnhG9I42YqunrnDVzQNUmxk2eueDiXfYvMpvu8ildP1vJL1
+         /M9fpaS4QNbhgsDEb9UunNGtRQAYId4l5GZCXVT3CUJM54LzWkSuqcbyf1zmykXUQ/Tb
+         3ylXDPNYogWpODDN+EJW8ptbEF3RSGeviAlMB72EuBCAVZvzW/UO4djZ0CPW/jIjyCsR
+         w6Wg==
+X-Gm-Message-State: AOAM530bjSgSOL8mFpoK+GwBOFHKTHfSZgfgTOyQNcGePBTfIQk/1x6q
+        oGGL88DBwvDIs2gsMdcewDILYtbb
+X-Google-Smtp-Source: ABdhPJw5x001LVdx99+WaRNGHXQcZtR3Mby0dQmiZDxwN8hW4lPaEGLzCbnZ64vJmPdEZnBwKRDplw==
+X-Received: by 2002:aed:25fd:: with SMTP id y58mr21018796qtc.310.1593011125659;
+        Wed, 24 Jun 2020 08:05:25 -0700 (PDT)
+Received: from localhost.localdomain ([72.53.229.195])
+        by smtp.gmail.com with ESMTPSA id x26sm3434088qtp.54.2020.06.24.08.05.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 08:05:25 -0700 (PDT)
+From:   Sven Van Asbroeck <thesven73@gmail.com>
+X-Google-Original-From: Sven Van Asbroeck <TheSven73@gmail.com>
+To:     shawnguo@kernel.org, fugang.duan@nxp.com
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] ARM: imx6plus: enable internal routing of clk_enet_ref where possible
+Date:   Wed, 24 Jun 2020 11:05:21 -0400
+Message-Id: <20200624150521.12196-1-TheSven73@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On imx6, the ethernet reference clock (clk_enet_ref) can be generated
+by either the imx6, or an external source (e.g. an oscillator or the
+PHY). When generated by the imx6, the clock source (from ANATOP)
+must be routed to the input of clk_enet_ref via two pads on the SoC,
+typically via a dedicated track on the PCB.
 
---4C6bbPZ6c/S1npyF
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On an imx6 plus however, there is a new setting which enables this
+clock to be routed internally on the SoC, from its ANATOP clock
+source, straight to clk_enet_ref, without having to go through
+the SoC pads.
 
-On Wed, Jun 24, 2020 at 03:25:33PM +0100, Robin Murphy wrote:
+Board designs where the clock is generated by the imx6 should not
+be affected by routing the clock internally. Therefore on a plus,
+we can enable internal routing by default.
 
-> And yeah, anyone who pipes up suggesting that places where an ERR_PTR value
-> could be passed to probe_err() could simply refactor IS_ERR() checks with
-> more uses of the god-awful PTR_ERR_OR_ZERO() obfuscator gets a long stare of
-> disapproval...
+Signed-off-by: Sven Van Asbroeck <TheSven73@gmail.com>
+---
 
-We could also have a probe_err_ptr() or something that took an ERR_PTR()
-instead if there really were an issue with explicitly doing this.
+v1 -> v2:
+  - Fabio Estevam: use of_machine_is_compatible() to determine if we
+    are running on an imx6 plus.
 
---4C6bbPZ6c/S1npyF
-Content-Type: application/pgp-signature; name="signature.asc"
+To: Shawn Guo <shawnguo@kernel.org>
+To: Andy Duan <fugang.duan@nxp.com>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 
------BEGIN PGP SIGNATURE-----
+ arch/arm/mach-imx/mach-imx6q.c              | 18 ++++++++++++++++++
+ include/linux/mfd/syscon/imx6q-iomuxc-gpr.h |  1 +
+ 2 files changed, 19 insertions(+)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7za4EACgkQJNaLcl1U
-h9ADKQf/bUGsVZLtJzgP2M/GIXNWTFrshhTPYFVHuKWmwRJL79fSW758BKdmbzdF
-fYDZdgI3NMUnfpBaL7MmdmAlazwJ97Mci7lVIckChwBKZWo7QT/oe8RZlp+mGlbr
-6kSNJDIQgTdBEtx1T6VYHhEnZgjn5KRgZHTp2SVd1SaJ6StGr2w29XvLABxfekXl
-OLdDcSIHN0eUWZoLx/fjDrB3Wic9JzbEzj7rFZ6Zfr5py3VxUseRexpXikjW9YEa
-VejUE8Z0brYa021cZqMymq0G++v+JeATDEzCsYMJ3VGsHgBfSVJrIHfxtx9dJHv+
-dHEFhwK7rmIkGPziGlBbph8Bncxuhg==
-=wsw7
------END PGP SIGNATURE-----
+diff --git a/arch/arm/mach-imx/mach-imx6q.c b/arch/arm/mach-imx/mach-imx6q.c
+index 85c084a716ab..2380329ed0b2 100644
+--- a/arch/arm/mach-imx/mach-imx6q.c
++++ b/arch/arm/mach-imx/mach-imx6q.c
+@@ -203,6 +203,24 @@ static void __init imx6q_1588_init(void)
+ 	else
+ 		pr_err("failed to find fsl,imx6q-iomuxc-gpr regmap\n");
+ 
++	/*
++	 * On imx6 plus, enet_ref from ANATOP/CCM can be internally routed to
++	 * be the PTP clock source, instead of having to be routed through
++	 * pads.
++	 * Board designs which route the ANATOP/CCM clock through pads are
++	 * unaffected when routing happens internally. So on these designs,
++	 * route internally by default.
++	 */
++	if (clksel == IMX6Q_GPR1_ENET_CLK_SEL_ANATOP && cpu_is_imx6q() &&
++			of_machine_is_compatible("fsl,imx6qp")) {
++		if (!IS_ERR(gpr))
++			regmap_update_bits(gpr, IOMUXC_GPR5,
++					IMX6Q_GPR5_ENET_TXCLK_SEL,
++					IMX6Q_GPR5_ENET_TXCLK_SEL);
++		else
++			pr_err("failed to find fsl,imx6q-iomuxc-gpr regmap\n");
++		}
++
+ 	clk_put(enet_ref);
+ put_ptp_clk:
+ 	clk_put(ptp_clk);
+diff --git a/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h b/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h
+index d4b5e527a7a3..eb65d48da0df 100644
+--- a/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h
++++ b/include/linux/mfd/syscon/imx6q-iomuxc-gpr.h
+@@ -240,6 +240,7 @@
+ #define IMX6Q_GPR4_IPU_RD_CACHE_CTL		BIT(0)
+ 
+ #define IMX6Q_GPR5_L2_CLK_STOP			BIT(8)
++#define IMX6Q_GPR5_ENET_TXCLK_SEL		BIT(9)
+ #define IMX6Q_GPR5_SATA_SW_PD			BIT(10)
+ #define IMX6Q_GPR5_SATA_SW_RST			BIT(11)
+ 
+-- 
+2.17.1
 
---4C6bbPZ6c/S1npyF--
