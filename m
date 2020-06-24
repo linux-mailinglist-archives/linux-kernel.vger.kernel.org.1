@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7076207CBF
+	by mail.lfdr.de (Postfix) with ESMTP id 5994A207CBE
 	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:14:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406543AbgFXUNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 16:13:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52478 "EHLO mail.kernel.org"
+        id S2406535AbgFXUN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 16:13:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52516 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406378AbgFXUM3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 16:12:29 -0400
+        id S2406380AbgFXUMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 16:12:30 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE6F32137B;
-        Wed, 24 Jun 2020 20:12:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 054D720B80;
+        Wed, 24 Jun 2020 20:12:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593029548;
-        bh=qZiGFZJ7CbgHMHQDzAwiU/MwuJbSwOc7xfMxb2POM70=;
+        s=default; t=1593029549;
+        bh=R9LbkAo9jKwjkjclV3oodsP6eF1VffMzNtlLMYCzz44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XRtnN15DHCLVpUxcpepum/t4ehq5kOCp9+gqEP0sZDHsfH4Be6YMnZ+vsiYb8iPTU
-         KOUm2MT0YRADhRVhluZ/fhAw3Uhk8RbrtQsMD8Qh7/0Vdc+Ji6GTK+AWX9b861Cjoi
-         mFk4qYeY8pQG3FL1RRc0IvigdyFHMv7bjY5QfOBo=
+        b=anWb0gy5nSKcvywWwZc1+oR8+w6JhPwt8Um1eMNDIfx7BymseDl7zLdh5E7a7rAFI
+         Ct0PDG4YgcnMgNhbO8OU8tRVYXz41YSCBdBjBiuhqAZpz+llOqA70eC1cKnCOPoScF
+         vVNqOcyylPbvCjPO21+SsrorTn7c71J5h6dhPclc=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,11 +31,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         josh@joshtriplett.org, tglx@linutronix.de, peterz@infradead.org,
         rostedt@goodmis.org, dhowells@redhat.com, edumazet@google.com,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        Uladzislau Rezki <urezki@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 04/17] rcu/tree: Repeat the monitor if any free channel is busy
-Date:   Wed, 24 Jun 2020 13:12:13 -0700
-Message-Id: <20200624201226.21197-4-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 05/17] rcu/tree: Make debug_objects logic independent of rcu_head
+Date:   Wed, 24 Jun 2020 13:12:14 -0700
+Message-Id: <20200624201226.21197-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200624201200.GA28901@paulmck-ThinkPad-P72>
 References: <20200624201200.GA28901@paulmck-ThinkPad-P72>
@@ -44,55 +44,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-It is possible that one of the channels cannot be detached
-because its free channel is busy and previously queued data
-has not been processed yet. On the other hand, another
-channel can be successfully detached causing the monitor
-work to stop.
+kfree_rcu()'s debug_objects logic uses the address of the object's
+embedded rcu_head to queue/unqueue. Instead of this, make use of the
+object's address itself as preparation for future headless kfree_rcu()
+support.
 
-Prevent that by rescheduling the monitor work if there are
-any channels in the pending state after a detach attempt.
-
-Fixes: 34c881745549e ("rcu: Support kfree_bulk() interface in kfree_rcu()")
-Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Reviewed-by: Uladzislau Rezki <urezki@gmail.com>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ kernel/rcu/tree.c | 29 +++++++++++++----------------
+ 1 file changed, 13 insertions(+), 16 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index dbdd509..31d3b2c 100644
+index 31d3b2c..dc5369a 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -3087,7 +3087,7 @@ static void kfree_rcu_work(struct work_struct *work)
- static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+@@ -2952,13 +2952,11 @@ EXPORT_SYMBOL_GPL(call_rcu);
+  * @nr_records: Number of active pointers in the array
+  * @records: Array of the kfree_rcu() pointers
+  * @next: Next bulk object in the block chain
+- * @head_free_debug: For debug, when CONFIG_DEBUG_OBJECTS_RCU_HEAD is set
+  */
+ struct kfree_rcu_bulk_data {
+ 	unsigned long nr_records;
+ 	void *records[KFREE_BULK_MAX_ENTR];
+ 	struct kfree_rcu_bulk_data *next;
+-	struct rcu_head *head_free_debug;
+ };
+ 
+ /**
+@@ -3008,11 +3006,13 @@ struct kfree_rcu_cpu {
+ static DEFINE_PER_CPU(struct kfree_rcu_cpu, krc);
+ 
+ static __always_inline void
+-debug_rcu_head_unqueue_bulk(struct rcu_head *head)
++debug_rcu_bhead_unqueue(struct kfree_rcu_bulk_data *bhead)
  {
- 	struct kfree_rcu_cpu_work *krwp;
--	bool queued = false;
-+	bool repeat = false;
- 	int i;
- 
- 	lockdep_assert_held(&krcp->lock);
-@@ -3125,11 +3125,14 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
- 			 * been detached following each other, one by one.
- 			 */
- 			queue_rcu_work(system_wq, &krwp->rcu_work);
--			queued = true;
- 		}
+ #ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
+-	for (; head; head = head->next)
+-		debug_rcu_head_unqueue(head);
++	int i;
 +
-+		/* Repeat if any "free" corresponding channel is still busy. */
-+		if (krcp->bhead || krcp->head)
-+			repeat = true;
- 	}
- 
--	return queued;
-+	return !repeat;
++	for (i = 0; i < bhead->nr_records; i++)
++		debug_rcu_head_unqueue((struct rcu_head *)(bhead->records[i]));
+ #endif
  }
  
- static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+@@ -3042,7 +3042,7 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	for (; bhead; bhead = bnext) {
+ 		bnext = bhead->next;
+ 
+-		debug_rcu_head_unqueue_bulk(bhead->head_free_debug);
++		debug_rcu_bhead_unqueue(bhead);
+ 
+ 		rcu_lock_acquire(&rcu_callback_map);
+ 		trace_rcu_invoke_kfree_bulk_callback(rcu_state.name,
+@@ -3064,14 +3064,15 @@ static void kfree_rcu_work(struct work_struct *work)
+ 	 */
+ 	for (; head; head = next) {
+ 		unsigned long offset = (unsigned long)head->func;
++		void *ptr = (void *)head - offset;
+ 
+ 		next = head->next;
+-		debug_rcu_head_unqueue(head);
++		debug_rcu_head_unqueue((struct rcu_head *)ptr);
+ 		rcu_lock_acquire(&rcu_callback_map);
+ 		trace_rcu_invoke_kfree_callback(rcu_state.name, head, offset);
+ 
+ 		if (!WARN_ON_ONCE(!__is_kfree_rcu_offset(offset)))
+-			kfree((void *)head - offset);
++			kfree(ptr);
+ 
+ 		rcu_lock_release(&rcu_callback_map);
+ 		cond_resched_tasks_rcu_qs();
+@@ -3210,18 +3211,11 @@ kfree_call_rcu_add_ptr_to_bulk(struct kfree_rcu_cpu *krcp,
+ 		/* Initialize the new block. */
+ 		bnode->nr_records = 0;
+ 		bnode->next = krcp->bhead;
+-		bnode->head_free_debug = NULL;
+ 
+ 		/* Attach it to the head. */
+ 		krcp->bhead = bnode;
+ 	}
+ 
+-#ifdef CONFIG_DEBUG_OBJECTS_RCU_HEAD
+-	head->func = func;
+-	head->next = krcp->bhead->head_free_debug;
+-	krcp->bhead->head_free_debug = head;
+-#endif
+-
+ 	/* Finally insert. */
+ 	krcp->bhead->records[krcp->bhead->nr_records++] =
+ 		(void *) head - (unsigned long) func;
+@@ -3245,14 +3239,17 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ {
+ 	unsigned long flags;
+ 	struct kfree_rcu_cpu *krcp;
++	void *ptr;
+ 
+ 	local_irq_save(flags);	// For safely calling this_cpu_ptr().
+ 	krcp = this_cpu_ptr(&krc);
+ 	if (krcp->initialized)
+ 		raw_spin_lock(&krcp->lock);
+ 
++	ptr = (void *)head - (unsigned long)func;
++
+ 	// Queue the object but don't yet schedule the batch.
+-	if (debug_rcu_head_queue(head)) {
++	if (debug_rcu_head_queue(ptr)) {
+ 		// Probable double kfree_rcu(), just leak.
+ 		WARN_ONCE(1, "%s(): Double-freed call. rcu_head %p\n",
+ 			  __func__, head);
 -- 
 2.9.5
 
