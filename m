@@ -2,113 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DC0207429
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 15:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B9A20740F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 15:13:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391050AbgFXNO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 09:14:58 -0400
-Received: from relmlor1.renesas.com ([210.160.252.171]:22023 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2391026AbgFXNOw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 09:14:52 -0400
-X-IronPort-AV: E=Sophos;i="5.75,275,1589209200"; 
-   d="scan'208";a="50489704"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 24 Jun 2020 22:14:50 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 68AE540062A1;
-        Wed, 24 Jun 2020 22:14:48 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2 11/11] arm64: dts: renesas: Add HiHope RZ/G2N Rev2.0/3.0/4.0 board with idk-1110wr display
-Date:   Wed, 24 Jun 2020 14:12:10 +0100
-Message-Id: <1593004330-5039-12-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593004330-5039-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <1593004330-5039-1-git-send-email-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        id S2390953AbgFXNNJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 09:13:09 -0400
+Received: from mout.web.de ([217.72.192.78]:37983 "EHLO mout.web.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387747AbgFXNNA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 09:13:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
+        s=dbaedf251592; t=1593004360;
+        bh=zAuqcv5c3pQC472cThqMqd6o0JE7uGZhrYFFqHnzpD8=;
+        h=X-UI-Sender-Class:Cc:Subject:From:To:Date;
+        b=c+9zBn6OyF/rpjb+YDc5rw+SBM7IvLd5lGQPuoH5DrOICqy5pcwfXOp7+icjc9/Pd
+         8EKEdetSa+AhQeFrYEoQqkr8/9agn2lTlnEVNaqVxhbJy/vk8MNZeq9WUQiKFnJ8Md
+         DMkZ9N05ayEagCWiqaT5YElLlWbHvTegoHcr3S9g=
+X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
+Received: from [192.168.1.2] ([93.132.175.204]) by smtp.web.de (mrweb103
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 0MJCWU-1jpkA6120A-002oqa; Wed, 24
+ Jun 2020 15:12:40 +0200
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v3 04/14] irqchip/davinci-aintc: Fix potential resource
+ leaks
+From:   Markus Elfring <Markus.Elfring@web.de>
+Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
+ 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 FEE=
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org
+Message-ID: <0e39761c-4673-d116-fc62-5573c2abae06@web.de>
+Date:   Wed, 24 Jun 2020 15:12:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:iW2saXIEBgXpQgxGEEEAAuU/UAEMLXSGs8QPxotSdz4VN/pt8gG
+ bUe+HrEuJe5IJ9frdJFu9HcKU8xsUSsN1pto+heV5fgeXLLrlT255RC/mWyKwUGbPe25/yj
+ t7XA5VnqvEK6Psog2HZORolEhl1IBMQhjJ0fKt1XHf0hEqiu0MdOb6pVNI5Oiyl9ZS2waLq
+ D0pxe38/f91vHg4dwa+/Q==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:NoYiJ7pL76Y=:cFgWgkXpeqrUwtzfhxgtW6
+ jHGJuVXqtkyzFDumiWeF11aX1y5BiUlxG1wbukz44LL42qBsFv+ybDvx/EU0O0MqlKr5kK2nn
+ Y5q86y8m1MugsiNPdGpG0wr/ZMRmaxBO2QxupLeGKQLZis/4RBmJEltkwCGrCE/k9j+37LG7f
+ KFsDtMxeLg6Z0qREVLGZZg3d61wMzXNsztW6DigVjH0O/Zl7a1TR+bOrp4IpA1sj2jWORi/5X
+ DTbioo15gGkaEsXqee2JXQONRVzqlcYWro1s+OKfy5Ugk2nEojo9lzWXm63wox2C67+RGawKv
+ FiFyVDfT1aFsa6Qcgzj5KF/Gd0pcRfDpQ9H+jUIJ43roQlAn0bU0HKs51NeHs/QizXURkEqv9
+ lB1m5qvEfv3pF271/qpKA/k0dvJ5t07S52UrnTxrnt3mxbbqTfnLaj3UMl7EcRQ+f2D/ayn+/
+ kA+GK/wnVP5PP0H58GBiy0Zo6yWUG+Nppz0TLBK2wovJ3K4ps1xQZ54eBHQg1tstSeWfN+2Gq
+ v2DxWNof+WYxcdaKeu5pD7P+W8twApWXPH0u8Ibmio9Ok2+ktJGsD6hsV0c/qbD7YPiPbOaks
+ x4wgAonmysZSG+MJKjj2r6VsCdHBuf9NM9CMyv0s8+FxSP8iLOBQ9Jivc4lRDT4hIdRNvObnL
+ s/pEeHOKRFyj34fvr9MjvtSzUtJyvUs/fos4TcrhqWqmsFEe+cYv0dl/i7hhOxfm/hRSaBumQ
+ ImDMIiU3ECCFDcemPG2oDgRkUUEoHbWXOUvuFT/bDgI42MlhsqSLQLzut3EGLJy96iQujKKjb
+ Nq77Gy1SKz+YBcwYkAtm7kSOQ315DgfLn3jotMIapu25RsnRL6NnZYM7MjOOpmTmWl1iV9O1A
+ jGsN/D6mzvJgaS7hCjDNcVHPCLhhRs8Ni4/YFFaZfloS5pkpeDQkgmQag9eolpQAEEp124XVy
+ n9K1vhAch2iDJeG3lUbbKxVj5i9j3LBhffENGOJToVfvUmLa/HjpFCN5IQqvl+5otxqOvayHN
+ W6qVfGS/wYBeKaNqapzEpn11/rv8EZJmtd2MrHbylHj/O3Wd5RjfgxPhlUxgQCS6PSTyt/BO0
+ r/qyr+X6+aKgW1kxhox6UehIjCTN7t46pmw12lraXOr+MSW5Lmv6TaiXZav1X3I8SXEp+/5Lo
+ H7YDhWhiREKxk+ASQ/PvjbM+QY43jZP3E2qmRdr0yMo4f7E8/4iz0fBP8emkQ2UwTu3hnYZW4
+ v+pSpLK9snYD7dESI
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The HiHope RZ/G2N variants are advertised as compatible with panel
-idk-1110wr from Advantech, however the panel isn't sold alongside the
-board. New dts's, enabling the lvds node to get the panel to work with
-all the HiHope RZ/G2N variants.
+> There exists potential resource leaks in the error path, fix them.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Reviewed-by: Marian-Cristian Rotariu <marian-cristian.rotariu.rb@bp.renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- arch/arm64/boot/dts/renesas/Makefile              |  2 ++
- .../r8a774b1-hihope-rzg2n-ex-idk-1110wr.dts       | 15 +++++++++++++++
- .../r8a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dts  | 15 +++++++++++++++
- 3 files changed, 32 insertions(+)
- create mode 100644 arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex-idk-1110wr.dts
- create mode 100644 arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dts
+Would you like to reconsider this change description?
+https://lore.kernel.org/linux-mips/be3acb13-2963-ddf1-a867-7e30fd23a0b4@lo=
+ongson.cn/
+https://lkml.org/lkml/2020/6/24/498
 
-diff --git a/arch/arm64/boot/dts/renesas/Makefile b/arch/arm64/boot/dts/renesas/Makefile
-index 6ac2a197e06e..21cc63469082 100644
---- a/arch/arm64/boot/dts/renesas/Makefile
-+++ b/arch/arm64/boot/dts/renesas/Makefile
-@@ -9,6 +9,8 @@ dtb-$(CONFIG_ARCH_R8A774B1) += r8a774b1-hihope-rzg2n.dtb \
- 			       r8a774b1-hihope-rzg2n-rev2.dtb
- dtb-$(CONFIG_ARCH_R8A774B1) += r8a774b1-hihope-rzg2n-ex.dtb \
- 			       r8a774b1-hihope-rzg2n-rev2-ex.dtb
-+dtb-$(CONFIG_ARCH_R8A774B1) += r8a774b1-hihope-rzg2n-ex-idk-1110wr.dtb \
-+			       r8a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dtb
- dtb-$(CONFIG_ARCH_R8A774C0) += r8a774c0-cat874.dtb r8a774c0-ek874.dtb \
- 			       r8a774c0-ek874-idk-2121wr.dtb \
- 			       r8a774c0-ek874-mipi-2.1.dtb
-diff --git a/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex-idk-1110wr.dts b/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex-idk-1110wr.dts
-new file mode 100644
-index 000000000000..4b5154f029a5
---- /dev/null
-+++ b/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-ex-idk-1110wr.dts
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Device Tree Source for the HiHope RZ/G2N Rev.3.0/4.0 with sub board connected
-+ * to an Advantech IDK-1110WR 10.1" LVDS panel
-+ *
-+ * Copyright (C) 2020 Renesas Electronics Corp.
-+ */
-+
-+#include "r8a774b1-hihope-rzg2n-ex.dts"
-+#include "hihope-rzg2-ex-lvds.dtsi"
-+#include "rzg2-advantech-idk-1110wr-panel.dtsi"
-+
-+&lvds0 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dts b/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dts
-new file mode 100644
-index 000000000000..e730b3b25dbe
---- /dev/null
-+++ b/arch/arm64/boot/dts/renesas/r8a774b1-hihope-rzg2n-rev2-ex-idk-1110wr.dts
-@@ -0,0 +1,15 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Device Tree Source for the HiHope RZ/G2N Rev.2.0 with sub board connected
-+ * to an Advantech IDK-1110WR 10.1" LVDS panel
-+ *
-+ * Copyright (C) 2020 Renesas Electronics Corp.
-+ */
-+
-+#include "r8a774b1-hihope-rzg2n-rev2-ex.dts"
-+#include "hihope-rzg2-ex-lvds.dtsi"
-+#include "rzg2-advantech-idk-1110wr-panel.dtsi"
-+
-+&lvds0 {
-+	status = "okay";
-+};
--- 
-2.17.1
 
+=E2=80=A6
+> +++ b/drivers/irqchip/irq-davinci-aintc.c
+=E2=80=A6
+> @@ -160,4 +160,13 @@ void __init davinci_aintc_init(const struct davinci=
+_aintc_config *config)
+>  				       irq_base + irq_off, 32);
+>
+>  	set_handle_irq(davinci_aintc_handle_irq);
+> +
+> +err_domain_remove:
+=E2=80=A6
+
+Are you sure that you would to like to release the allocated system resour=
+ces
+always in this function implementation?
+
+Otherwise, I suggest to add a return statement before the source code sect=
+ion
+for the desired exception handling.
+
+Regards,
+Markus
