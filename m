@@ -2,136 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B645207269
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 13:45:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B170220727A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 13:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389327AbgFXLop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 07:44:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39432 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388844AbgFXLop (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 07:44:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 892C4AF63;
-        Wed, 24 Jun 2020 11:44:42 +0000 (UTC)
-Date:   Wed, 24 Jun 2020 13:44:37 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?iso-8859-1?Q?St=E9phane?= Graber <stgraber@ubuntu.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Serge Hallyn <serge@hallyn.com>, Jann Horn <jannh@google.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
-        systemd-devel@lists.freedesktop.org
-Subject: Re: [PATCH v4 2/3] nsproxy: attach to namespaces via pidfds
-Message-ID: <20200624114437.GA117125@blackbook>
-References: <20200505140432.181565-1-christian.brauner@ubuntu.com>
- <20200505140432.181565-3-christian.brauner@ubuntu.com>
+        id S2390788AbgFXLrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 07:47:40 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:39542 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388491AbgFXLrj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 07:47:39 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05OBjmMx091834;
+        Wed, 24 Jun 2020 06:45:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1592999148;
+        bh=GdDYXEnLUp3xK095tSlGwb9jb3L8Np+OV0SWafxxFts=;
+        h=From:To:CC:Subject:Date;
+        b=hLDjAVrD/3W+5SK64apSNKcfX9nWGAYML4eiXpKWOpUVA8CkQalIPIRJaVbt8SrYx
+         LwBwkN/cy6V06TTBwBFKHqxU4uPPkBc025ucb7VHAkb2RVuqgS3bwrmw7y7I46ZuxO
+         9UZbDhdQc8zl8eKYbwt80f8Rk5+AlH7FgRz+H+UI=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05OBjmeS026495
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 24 Jun 2020 06:45:48 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 24
+ Jun 2020 06:45:48 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 24 Jun 2020 06:45:48 -0500
+Received: from sokoban.bb.dnainternet.fi (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OBjkCL118804;
+        Wed, 24 Jun 2020 06:45:46 -0500
+From:   Tero Kristo <t-kristo@ti.com>
+To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
+        <linux-watchdog@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <jan.kiszka@siemens.com>
+Subject: [PATCH 0/2] watchdog: rti: adjust initial ping for attach
+Date:   Wed, 24 Jun 2020 14:45:32 +0300
+Message-ID: <20200624114534.1362-1-t-kristo@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
-Content-Disposition: inline
-In-Reply-To: <20200505140432.181565-3-christian.brauner@ubuntu.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---WIyZ46R2i8wDzkSu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series fixes attaching the RTI watchdog driver to an already
+running timer; it can be started by boot loader for example. In this
+case, we must read the current remaining timeout, and adjust the
+min_hw_heartbeat based on that so that we don't attempt to either pet
+the watchdog too early, or too late.
 
-Hi.
+The reason for all this is because the K3 RTI watchdog runs in windowed
+mode only, petting it either too early, or too late causes a watchdog
+reset.
 
-On Tue, May 05, 2020 at 04:04:31PM +0200, Christian Brauner <christian.brau=
-ner@ubuntu.com> wrote:
-> -SYSCALL_DEFINE2(setns, int, fd, int, nstype)
-> +SYSCALL_DEFINE2(setns, int, fd, int, flags)
-> [...]
-> -	file =3D proc_ns_fget(fd);
-> -	if (IS_ERR(file))
-> -		return PTR_ERR(file);
-> +	int err =3D 0;
-> =20
-> -	err =3D -EINVAL;
-> -	ns =3D get_proc_ns(file_inode(file));
-> -	if (nstype && (ns->ops->type !=3D nstype))
-> +	file =3D fget(fd);
-> +	if (!file)
-> +		return -EBADF;
-> +
-> +	if (proc_ns_file(file)) {
-> +		ns =3D get_proc_ns(file_inode(file));
-> +		if (flags && (ns->ops->type !=3D flags))
-> +			err =3D -EINVAL;
-> +		flags =3D ns->ops->type;
-> +	} else if (pidfd_pid(file)) {
-> +		err =3D check_setns_flags(flags);
-> +	} else {
-> +		err =3D -EBADF;
-> +	}
-> +	if (err)
->  		goto out;
-> =20
-> -	err =3D prepare_nsset(ns->ops->type, &nsset);
-> +	err =3D prepare_nsset(flags, &nsset);
->  	if (err)
->  		goto out;
-This modification changed the returned error when a valid file
-descriptor is passed but it doesn't represent a namespace (nor pidfd).
-The error is now EBADF although originally and per man page it
-was/should be EINVAL.
-
-A change like below would restore it, however, I see it may be less
-consistent with other pidfd calls(?), then I'd suggest updating the
-manpage to capture this.
-
---- a/kernel/nsproxy.c
-+++ b/kernel/nsproxy.c
-@@ -531,7 +531,7 @@ SYSCALL_DEFINE2(setns, int, fd, int, flags)
-        } else if (!IS_ERR(pidfd_pid(file))) {
-                err =3D check_setns_flags(flags);
-        } else {
--               err =3D -EBADF;
-+               err =3D -EINVAL;
-        }
-        if (err)
-                goto out;
-
-I noticed this breaks systemd self tests [1].
-
-Regards,
-Michal
+-Tero
 
 
-[1] https://github.com/systemd/systemd/blob/a1ba8c5b71164665ccb53c9cec384e5=
-eef7d3689/src/test/test-seccomp.c#L246
-
---WIyZ46R2i8wDzkSu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl7zPKAACgkQia1+riC5
-qShOGhAAhxWTA7xASA29DshSor6gE8MSsisAOLrbdcAJxcTpEjK7SGBfiIAzRSqM
-ojDNJab5BA7AplrWQMI5dTvNC5OsdObhRe6HCzXeK/DL4st5WCHkGv084jGVtJkF
-t3uUc5yphr7K7Wyv5pTydMDYbPgVdtMLCMAJCzSSAm464cXc7yFUtLiuJTx4dWMS
-wj+dRMYjxqo8PMTo78lAOeo0Xga2sWunsc2RrvmCde1HAqEfX26xko2at3AhxJWI
-mA1qK4gYl0/0kRBKKbVH/Vc9cE3hVTwAKgLxm9JUJJoV/7zs61XPfGZZ1i1NUBJ5
-ES1ybt5h1C5rtmpBGiH1Dd+D7i1ckdqEPupwJNzYze5y2QiEVVoF7csegk30Vdq7
-0SQ9SAXOtRmfQC8VQXkWDOoqZarxPSgktRBfMZ3h18neURCFlmU0xcAY52mJODSf
-lyJPQmYUfCehLasPJJ3eUG9fhdSNuFH3Z6V2KfIjo2qKPbbEJONxb24OthyQzr6v
-kt3B/m7aseGZCxRu21SkkRIMa9aIngbkaOOiEwUd66wJtHKWJIn/D7sdcQvUGYpg
-e8J5uFPR7A0wJey2TZltEDF9nuuZarORd7BNREmm4nG1w3X3vsgUXXLfk9x8HQtg
-EG/+7T4HFcQXgeR/UBieyk0FQ98KRnJaSK6RJiShfEM2HIyvrZU=
-=zb4j
------END PGP SIGNATURE-----
-
---WIyZ46R2i8wDzkSu--
+--
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
