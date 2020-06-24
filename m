@@ -2,188 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 720AD206F76
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 10:52:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74236206F71
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 10:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388922AbgFXIwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 04:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728732AbgFXIwU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 04:52:20 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B906FC061573;
-        Wed, 24 Jun 2020 01:52:20 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 22so1561016wmg.1;
-        Wed, 24 Jun 2020 01:52:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lVApUt3i/7AFtwyD3Ki0a35tHO53vnjzikpdpWE5FJs=;
-        b=nWxfbOrH2lbT0UWHSbjppQTiIjOfKj5zMlQq5Aj3dFFYMGWrUFtYGxKEQpua8lGeG7
-         BYPJLI9nLyJZnF+VMvul1Ya9nnO2OoP/E2XxIEpbuVltTlU/2HNK+fTd8aSCIhm1WUUp
-         pqLlGJCyzTWO+8AzohbesMgB0/NepympE2oK7EtXXQvbbvqDN2lxSmmpB+WJ0OX1a2sX
-         YUBayu9Russ/U2lCKcSAWD9YsC0s4KbOSXDT56uWf+Ib0qDAM84FkEAYLjIXlp7gP42d
-         16MIFwwdCOMOFRxGnFaXRs9/rtrTlpi8FlkSdnCz77QGPLLq4RbraWBQPmXu7SA7nKTR
-         TRgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lVApUt3i/7AFtwyD3Ki0a35tHO53vnjzikpdpWE5FJs=;
-        b=s3jfA0OLnaVSJNBSvoOpGEYfJzkmMn4mXCOvizsv9kk34o8h2+75hBXJbFZwyBEs4E
-         UH//Umi9osmM3ZNaKvuU5NkuxG9SnE4fRpK+GN50zMQ00Y+HL7+rc0CYGiX0opfdeewN
-         x7w0BlVhY0V70dqkB9R6m7cy4z4rwOzJSpG3VVbZOE7nRt/73V9oBTOYWbrpgqKsJ1ay
-         5/HO4GPFZBc0BDkEm6Uy5UQAgSf9aLK4AzG1jAbq2LPFqHCMU3ezBNp3x5hXOX9xth+7
-         ieUlWiV4PFW96d9/nDL0hCyN6gtX0f1diACTfAVOF9aVncjiFDwb9+DMxjKv3LM3hM97
-         9+NA==
-X-Gm-Message-State: AOAM531vAbhSRIjnB2dzk5phxWcA+0URhCJsjReqaIATRcpxsipl6WAy
-        NvfJsA3Wyb5XxUjOBx9h7bo=
-X-Google-Smtp-Source: ABdhPJxEoDCK2NSYlVqZ8jHDnIBfhX/cA9jnzCKLxs1yjbdQAquYvO37dsRjlB2gsrPuj1Ijj4bjoQ==
-X-Received: by 2002:a1c:6308:: with SMTP id x8mr1289926wmb.92.1592988739418;
-        Wed, 24 Jun 2020 01:52:19 -0700 (PDT)
-Received: from macmini.local (181.4.199.77.rev.sfr.net. [77.199.4.181])
-        by smtp.gmail.com with ESMTPSA id c20sm22140185wrb.65.2020.06.24.01.52.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 01:52:18 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 10:52:17 +0200
-From:   Willy Wolff <willy.mh.wolff.ml@gmail.com>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Chanwoo Choi <cw00.choi@samsung.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Kukjin Kim <kgene@kernel.org>, linux-pm@vger.kernel.org,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Subject: Re: brocken devfreq simple_ondemand for Odroid XU3/4?
-Message-ID: <20200624085217.5km2iexitfgclsev@macmini.local>
-References: <20200623164733.qbhua7b6cg2umafj@macmini.local>
- <CAJKOXPeLuq81NC2xZh3y32EB-_APbDAchZD4OW_eCgQKKO+p8w@mail.gmail.com>
- <20200623191129.GA4171@kozik-lap>
- <20200624080117.fzgowkpgyhs6tbzx@macmini.local>
- <20200624081438.GA20603@pi3>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200624081438.GA20603@pi3>
+        id S2389677AbgFXIur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 04:50:47 -0400
+Received: from mga01.intel.com ([192.55.52.88]:1309 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387796AbgFXIs6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 04:48:58 -0400
+IronPort-SDR: dof78PE56RueGZuaA/IkzjRmMN5qmqtInXwqzspmx5gul6ERErijfWmgRrfUMqwX9GlyQDsbTO
+ yEgEt9AqXhxg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="162484865"
+X-IronPort-AV: E=Sophos;i="5.75,274,1589266800"; 
+   d="scan'208";a="162484865"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2020 01:48:56 -0700
+IronPort-SDR: 3wjsszL64qt/U6/qcUJlWSGelCbu9HW5E0/evm5z894kj3Dtspdpx+1+N9J8/5oAYE3DaDplnU
+ Sg64TNcC6g2g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,274,1589266800"; 
+   d="scan'208";a="275624490"
+Received: from jacob-builder.jf.intel.com ([10.7.199.155])
+  by orsmga003.jf.intel.com with ESMTP; 24 Jun 2020 01:48:55 -0700
+From:   Liu Yi L <yi.l.liu@intel.com>
+To:     alex.williamson@redhat.com, eric.auger@redhat.com,
+        baolu.lu@linux.intel.com, joro@8bytes.org
+Cc:     kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
+        ashok.raj@intel.com, yi.l.liu@intel.com, jun.j.tian@intel.com,
+        yi.y.sun@intel.com, jean-philippe@linaro.org, peterx@redhat.com,
+        hao.wu@intel.com, iommu@lists.linux-foundation.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 00/14] vfio: expose virtual Shared Virtual Addressing to VMs
+Date:   Wed, 24 Jun 2020 01:55:13 -0700
+Message-Id: <1592988927-48009-1-git-send-email-yi.l.liu@intel.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-24-10-14-38, Krzysztof Kozlowski wrote:
-> On Wed, Jun 24, 2020 at 10:01:17AM +0200, Willy Wolff wrote:
-> > Hi Krzysztof,
-> > Thanks to look at it.
-> > 
-> > mem_gov is /sys/class/devfreq/10c20000.memory-controller/governor
-> > 
-> > Here some numbers after increasing the running time:
-> > 
-> > Running using simple_ondemand:
-> > Before:
-> >      From  :   To                                                                                     
-> >            : 165000000 206000000 275000000 413000000 543000000 633000000 728000000 825000000   time(ms)
-> > * 165000000:         0         0         0         0         0         0         0         4   4528600
-> >   206000000:         5         0         0         0         0         0         0         0     57780
-> >   275000000:         0         5         0         0         0         0         0         0     50060
-> >   413000000:         0         0         5         0         0         0         0         0     46240
-> >   543000000:         0         0         0         5         0         0         0         0     48970
-> >   633000000:         0         0         0         0         5         0         0         0     47330
-> >   728000000:         0         0         0         0         0         0         0         0         0
-> >   825000000:         0         0         0         0         0         5         0         0    331300
-> > Total transition : 34
-> > 
-> > 
-> > After:
-> >      From  :   To
-> >            : 165000000 206000000 275000000 413000000 543000000 633000000 728000000 825000000   time(ms)
-> > * 165000000:         0         0         0         0         0         0         0         4   5098890
-> >   206000000:         5         0         0         0         0         0         0         0     57780
-> >   275000000:         0         5         0         0         0         0         0         0     50060
-> >   413000000:         0         0         5         0         0         0         0         0     46240
-> >   543000000:         0         0         0         5         0         0         0         0     48970
-> >   633000000:         0         0         0         0         5         0         0         0     47330
-> >   728000000:         0         0         0         0         0         0         0         0         0
-> >   825000000:         0         0         0         0         0         5         0         0    331300
-> > Total transition : 34
-> > 
-> > With a running time of:
-> > LITTLE => 283.699 s (680.877 c per mem access)
-> > big => 284.47 s (975.327 c per mem access)
-> 
-> I see there were no transitions during your memory test.
-> 
-> > 
-> > And when I set to the performance governor:
-> > Before:
-> >      From  :   To
-> >            : 165000000 206000000 275000000 413000000 543000000 633000000 728000000 825000000   time(ms)
-> >   165000000:         0         0         0         0         0         0         0         5   5099040
-> >   206000000:         5         0         0         0         0         0         0         0     57780
-> >   275000000:         0         5         0         0         0         0         0         0     50060
-> >   413000000:         0         0         5         0         0         0         0         0     46240
-> >   543000000:         0         0         0         5         0         0         0         0     48970
-> >   633000000:         0         0         0         0         5         0         0         0     47330
-> >   728000000:         0         0         0         0         0         0         0         0         0
-> > * 825000000:         0         0         0         0         0         5         0         0    331350
-> > Total transition : 35
-> > 
-> > After:
-> >      From  :   To
-> >            : 165000000 206000000 275000000 413000000 543000000 633000000 728000000 825000000   time(ms)
-> >   165000000:         0         0         0         0         0         0         0         5   5099040
-> >   206000000:         5         0         0         0         0         0         0         0     57780
-> >   275000000:         0         5         0         0         0         0         0         0     50060
-> >   413000000:         0         0         5         0         0         0         0         0     46240
-> >   543000000:         0         0         0         5         0         0         0         0     48970
-> >   633000000:         0         0         0         0         5         0         0         0     47330
-> >   728000000:         0         0         0         0         0         0         0         0         0
-> > * 825000000:         0         0         0         0         0         5         0         0    472980
-> > Total transition : 35
-> > 
-> > With a running time of:
-> > LITTLE: 68.8428 s (165.223 c per mem access)
-> > big: 71.3268 s (244.549 c per mem access)
-> > 
-> > 
-> > I see some transition, but not occuring during the benchmark.
-> > I haven't dive into the code, but maybe it is the heuristic behind that is not
-> > well defined? If you know how it's working that would be helpfull before I dive
-> > in it.
-> 
-> Sorry, don't know that much. It seems it counts time between overflow of
-> DMC perf events and based on this bumps up the frequency.
-> 
-> Maybe your test does not fit well in current formula? Maybe the formula
-> has some drawbacks...
+Shared Virtual Addressing (SVA), a.k.a, Shared Virtual Memory (SVM) on
+Intel platforms allows address space sharing between device DMA and
+applications. SVA can reduce programming complexity and enhance security.
 
-OK, I will read the code then.
+This VFIO series is intended to expose SVA usage to VMs. i.e. Sharing
+guest application address space with passthru devices. This is called
+vSVA in this series. The whole vSVA enabling requires QEMU/VFIO/IOMMU
+changes. For IOMMU and QEMU changes, they are in separate series (listed
+in the "Related series").
 
-> 
-> > 
-> > I run your test as well, and indeed, it seems to work for large bunch of memory,
-> > and there is some delay before making a transition (seems to be around 10s).
-> > When you kill memtester, it reduces the freq stepwisely every ~10s.
-> > 
-> > Note that the timing shown above account for the critical path, and the code is
-> > looping on reading only, there is no write in the critical path.
-> > Maybe memtester is doing writes and devfreq heuristic uses only write info?
-> >
-> You mentioned that you want to cut the prefetcher to have direct access
-> to RAM. But prefetcher also accesses the RAM. He does not get the
-> contents from the air.  Although this is unrelated to the problem
-> because your pattern should kick ondemand as well.
+The high-level architecture for SVA virtualization is as below, the key
+design of vSVA support is to utilize the dual-stage IOMMU translation (
+also known as IOMMU nesting translation) capability in host IOMMU.
 
-Yes obvisouly. I was just describing a bit the microbenchmark and the memory pattern
-access. I was suggesting that a random pattern will break the effectiveness of the
-prefetcher, and as such we have a worst case situation on the memory bus.
 
-> 
-> Best regards,
-> Krzysztof
+    .-------------.  .---------------------------.
+    |   vIOMMU    |  | Guest process CR3, FL only|
+    |             |  '---------------------------'
+    .----------------/
+    | PASID Entry |--- PASID cache flush -
+    '-------------'                       |
+    |             |                       V
+    |             |                CR3 in GPA
+    '-------------'
+Guest
+------| Shadow |--------------------------|--------
+      v        v                          v
+Host
+    .-------------.  .----------------------.
+    |   pIOMMU    |  | Bind FL for GVA-GPA  |
+    |             |  '----------------------'
+    .----------------/  |
+    | PASID Entry |     V (Nested xlate)
+    '----------------\.------------------------------.
+    |             |   |SL for GPA-HPA, default domain|
+    |             |   '------------------------------'
+    '-------------'
+Where:
+ - FL = First level/stage one page tables
+ - SL = Second level/stage two page tables
+
+Patch Overview:
+ 1. a refactor to vfio_iommu_type1 ioctl (patch 0001)
+ 2. reports IOMMU nesting info to userspace ( patch 0002, 0003 and 0014)
+ 3. vfio support for PASID allocation and free for VMs (patch 0004, 0005, 0006)
+ 4. vfio support for binding guest page table to host (patch 0007, 0008, 0009)
+ 5. vfio support for IOMMU cache invalidation from VMs (patch 0010)
+ 6. vfio support for vSVA usage on IOMMU-backed mdevs (patch 0011)
+ 7. expose PASID capability to VM (patch 0012)
+ 8. add doc for VFIO dual stage control (patch 0013)
+
+The complete vSVA kernel upstream patches are divided into three phases:
+    1. Common APIs and PCI device direct assignment
+    2. IOMMU-backed Mediated Device assignment
+    3. Page Request Services (PRS) support
+
+This patchset is aiming for the phase 1 and phase 2, and based on Jacob's
+below series.
+[PATCH v3 0/5] IOMMU user API enhancement - wip
+https://lore.kernel.org/linux-iommu/1592931837-58223-1-git-send-email-jacob.jun.pan@linux.intel.com/
+
+[PATCH 00/10] IOASID extensions for guest SVA - wip
+https://lkml.org/lkml/2020/3/25/874
+
+The latest IOASID code added below new interface for itertate all PASIDs of an
+ioasid_set. The implementation is not sent out yet as Jacob needs some cleanup,
+it can be found in branch vsva-linux-5.8-rc1-v3
+ int ioasid_set_for_each_ioasid(int sid, void (*fn)(ioasid_t id, void *data), void *data);
+
+Complete set for current vSVA can be found in below branch.
+This branch also includes some extra modifications to IOASID core code and
+vt-d iommu driver cleanup patches.
+https://github.com/luxis1999/linux-vsva.git:vsva-linux-5.8-rc1-v3
+
+The corresponding QEMU patch series is included in below branch:
+https://github.com/luxis1999/qemu.git:vsva_5.8_rc1_qemu_rfcv6
+
+
+Regards,
+Yi Liu
+
+Changelog:
+	- Patch v2 -> Patch v3:
+	  a) Rebase on top of Jacob's v3 iommu uapi patchset
+	  b) Address comments from Kevin and Stefan Hajnoczi
+	  c) Reuse DOMAIN_ATTR_NESTING to get iommu nesting info
+	  d) Drop [PATCH v2 07/15] iommu/uapi: Add iommu_gpasid_unbind_data
+	  https://lore.kernel.org/linux-iommu/1591877734-66527-1-git-send-email-yi.l.liu@intel.com/#r
+
+	- Patch v1 -> Patch v2:
+	  a) Refactor vfio_iommu_type1_ioctl() per suggestion from Christoph
+	     Hellwig.
+	  b) Re-sequence the patch series for better bisect support.
+	  c) Report IOMMU nesting cap info in detail instead of a format in
+	     v1.
+	  d) Enforce one group per nesting type container for vfio iommu type1
+	     driver.
+	  e) Build the vfio_mm related code from vfio.c to be a separate
+	     vfio_pasid.ko.
+	  f) Add PASID ownership check in IOMMU driver.
+	  g) Adopted to latest IOMMU UAPI design. Removed IOMMU UAPI version
+	     check. Added iommu_gpasid_unbind_data for unbind requests from
+	     userspace.
+	  h) Define a single ioctl:VFIO_IOMMU_NESTING_OP for bind/unbind_gtbl
+	     and cahce_invld.
+	  i) Document dual stage control in vfio.rst.
+	  Patch v1: https://lore.kernel.org/linux-iommu/1584880325-10561-1-git-send-email-yi.l.liu@intel.com/
+
+	- RFC v3 -> Patch v1:
+	  a) Address comments to the PASID request(alloc/free) path
+	  b) Report PASID alloc/free availabitiy to user-space
+	  c) Add a vfio_iommu_type1 parameter to support pasid quota tuning
+	  d) Adjusted to latest ioasid code implementation. e.g. remove the
+	     code for tracking the allocated PASIDs as latest ioasid code
+	     will track it, VFIO could use ioasid_free_set() to free all
+	     PASIDs.
+	  RFC v3: https://lore.kernel.org/linux-iommu/1580299912-86084-1-git-send-email-yi.l.liu@intel.com/
+
+	- RFC v2 -> v3:
+	  a) Refine the whole patchset to fit the roughly parts in this series
+	  b) Adds complete vfio PASID management framework. e.g. pasid alloc,
+	  free, reclaim in VM crash/down and per-VM PASID quota to prevent
+	  PASID abuse.
+	  c) Adds IOMMU uAPI version check and page table format check to ensure
+	  version compatibility and hardware compatibility.
+	  d) Adds vSVA vfio support for IOMMU-backed mdevs.
+	  RFC v2: https://lore.kernel.org/linux-iommu/1571919983-3231-1-git-send-email-yi.l.liu@intel.com/
+
+	- RFC v1 -> v2:
+	  Dropped vfio: VFIO_IOMMU_ATTACH/DETACH_PASID_TABLE.
+	  RFC v1: https://lore.kernel.org/linux-iommu/1562324772-3084-1-git-send-email-yi.l.liu@intel.com/
+
+---
+Eric Auger (1):
+  vfio: Document dual stage control
+
+Liu Yi L (12):
+  vfio/type1: Refactor vfio_iommu_type1_ioctl()
+  iommu: Report domain nesting info
+  vfio/type1: Report iommu nesting info to userspace
+  vfio: Add PASID allocation/free support
+  iommu/vt-d: Support setting ioasid set to domain
+  vfio/type1: Add VFIO_IOMMU_PASID_REQUEST (alloc/free)
+  iommu/vt-d: Check ownership for PASIDs from user-space
+  vfio/type1: Support binding guest page tables to PASID
+  vfio/type1: Allow invalidating first-level/stage IOMMU cache
+  vfio/type1: Add vSVA support for IOMMU-backed mdevs
+  vfio/pci: Expose PCIe PASID capability to guest
+  iommu/vt-d: Support reporting nesting capability info
+
+Yi Sun (1):
+  iommu: Pass domain to sva_unbind_gpasid()
+
+ Documentation/driver-api/vfio.rst  |  67 ++++
+ drivers/iommu/arm-smmu-v3.c        |  29 +-
+ drivers/iommu/arm-smmu.c           |  29 +-
+ drivers/iommu/intel/iommu.c        | 105 ++++-
+ drivers/iommu/intel/svm.c          |  10 +-
+ drivers/iommu/iommu.c              |   2 +-
+ drivers/vfio/Kconfig               |   6 +
+ drivers/vfio/Makefile              |   1 +
+ drivers/vfio/pci/vfio_pci_config.c |   2 +-
+ drivers/vfio/vfio_iommu_type1.c    | 800 +++++++++++++++++++++++++++++--------
+ drivers/vfio/vfio_pasid.c          | 191 +++++++++
+ include/linux/intel-iommu.h        |  23 +-
+ include/linux/iommu.h              |   4 +-
+ include/linux/vfio.h               |  54 +++
+ include/uapi/linux/iommu.h         |  59 +++
+ include/uapi/linux/vfio.h          |  78 ++++
+ 16 files changed, 1273 insertions(+), 187 deletions(-)
+ create mode 100644 drivers/vfio/vfio_pasid.c
+
+-- 
+2.7.4
+
