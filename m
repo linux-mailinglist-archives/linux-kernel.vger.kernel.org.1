@@ -2,139 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9F43206D95
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 09:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C279206D9A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 09:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389693AbgFXH0n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 03:26:43 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:33037 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728858AbgFXH0l (ORCPT
+        id S2389778AbgFXH1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 03:27:11 -0400
+Received: from esa3.microchip.iphmx.com ([68.232.153.233]:22094 "EHLO
+        esa3.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728858AbgFXH1K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 03:26:41 -0400
+        Wed, 24 Jun 2020 03:27:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1592983600; x=1624519600;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=CKuAjE01mBcfGVD6h3MR9FNw6R+dRSoaL/Xr9p2/tIo=;
-  b=dsOGLUac+9ToeSHnib9kTHKFNJ2TgPrg+RjKJfbdDIUbAvIBwiWMvpXb
-   ENfKV2ySVGSHtHIAFfVFhzCwRfAR+N2Rr3WvuezJzsukcSBIH5DLM0b81
-   HJH/qtBmRIbOA1jq97gK8eLCT3rIvMDq3kJ5dQPzE6rKPm7Nomq6hBaqg
-   AcFcr1aHc5MxQzD0uDi4GsFq46khKoOfH4r9DurUh2WfyW0CfJ4JETixK
-   LteCVTVKF3LlOl2T5KkxDeFv4whtcSPBOeFpBRa/Fi8CJLlFSUJ84GHrU
-   uEFK7FfxY17c0SD/rSbhLRanoWhkzJZ7pKJDdzntRiFirRjZS0BpVM/hL
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1592983629; x=1624519629;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=RfHl3RZzpqMqVj1MJ+mYi1DQEoWb6jQu7hXLM/jKtXU=;
+  b=Ut9sPa9RNquJgsMtxObDTKHXMPfpCd54EjfL2WTtKfz78zA27BinmOGd
+   PhqPRXk4luUUM10SAxnoW8JFvCKuvyNbO1boer5rZkWYHa5ct2I3FhkPw
+   UyvikukoZAZVuN5h/RcuFRafeKL5Pie9bpT2uiZTVC3ofcH29PQ7yyMnB
+   CAQApU3JSI+l5G1k2Vm9XOKS0F0sqlex8uGd1bLLGaPthJvm1+CuBZZFc
+   txKpAJQJtbgm4GLmD19uGK9/C/4SwC7N+BwaRrDXVm9hnn2g6PSaOIguU
+   BJ8tFQ2Ecs+tGEKsv7ajRMV06RDMTRZyRxgHrh8Au4/K/vQuwkgsUutIy
    w==;
-IronPort-SDR: D8wMO0OW8lYYeeNc857GpGktbj2ns5YEtIr7Gf8Jqgd+vLd3ooUH+1IpJbnm3s6dJofem2qcvr
- xCZaNjWYbLHyJP7N5dH+I2pAUlBpUXY3d7Gp8gS1efKc3BwBMgA6EPRzmySmCstNZOgL5Geu3B
- ktItjvsOBRaUD65ZUSWLLGUpqDDVbYMXeQGZR8EtVBGWdG/vUlSbHXfNTacnfx/r+w3OI+RJNl
- eMk8PAJvtibJcC0ncoocit5r3OfcXfNvtaGbnnjRmaifFjwL/RH/aTCQF/Ga2pdbQ0rFCr0gfs
- iqA=
-X-IronPort-AV: E=Sophos;i="5.75,274,1589212800"; 
-   d="scan'208";a="145102726"
-Received: from mail-bn8nam12lp2174.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.174])
-  by ob1.hgst.iphmx.com with ESMTP; 24 Jun 2020 15:26:38 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SLEz+wiINV8UZ1uhObNx602dS8doeEs/kbJsSoYac4qcs+bz4Vajv2e37uRcMQOCNBc0BZ7T3XOzwDt51HPOtrILNqAgcPei5obrqPMXfX223hIBmSBNEIa+BIs14gRWlkcz59qqY0x7fPbzZCwYvAijGcdFyJ0aIO0abWgj+DdUlSq8abE3gZHMuFJ2xKPyyCCg4AjL9VE5hazt3+xhWv2NrsP0ElwvLnLeuq7Z3lPuWU5oL10NnGkMgK+l/HPzRa+YOCGYE9jcRpTEzkXCsS6M9uDVkOeD2LMJ/rUH19NiPWs+3IpOMZkuq8h/y77bPEcSl5PwQsaokr2/k3lyPA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CKuAjE01mBcfGVD6h3MR9FNw6R+dRSoaL/Xr9p2/tIo=;
- b=n5MaTcMxphtUXk4aUtQptbuCmee4FNKoXPLmskhJzG6+ywa+76fWrw9wI1tbHIyyIqTXGeevjSM19lvyuxYlsLCEfVh4K8vHcHXm/wJydK8UM+INaWky71o7iIdffcHqeH2cS7FhFgSF15nBHY3vkiYt97cDuxtPyUsoFXyM5ZGNfLgif4bOrZ4W4jSnsLtr/b356aeAEVoq4604zYYFMRGJzGps0AJpSWw+Qqtf7pFIGKszajPR0/XRU5km75gYbbcR1Q5fqmA7YAR/YwdOkfhEx2VCR9FWLNbbNICs7tZHzLMq3HfwsI2X97ZfeCgTrt1dQmevekk1h1CqFgpC4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=CKuAjE01mBcfGVD6h3MR9FNw6R+dRSoaL/Xr9p2/tIo=;
- b=WPQ2iyxIooAe+uqBpmnJ4yX89XL3DZFi+FHMnjdfSjd8Sz8jvHe/xu3hnAB6XCQ5TxxREgZGLdW0VvoO0sPgeQoeS2tmetV6U96yra6tZkmo4l6fH1pj2aJPsKkh6nPaRaQ2s+nBmMnxSdaxhNdG/A10M42HgvTGCXEVMkATPCs=
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com (2603:10b6:805:a4::19)
- by SN6PR04MB4078.namprd04.prod.outlook.com (2603:10b6:805:49::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22; Wed, 24 Jun
- 2020 07:26:37 +0000
-Received: from SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::9cbe:995f:c25f:d288]) by SN6PR04MB4640.namprd04.prod.outlook.com
- ([fe80::9cbe:995f:c25f:d288%6]) with mapi id 15.20.3131.020; Wed, 24 Jun 2020
- 07:26:37 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Stanley Chu <stanley.chu@mediatek.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>
-CC:     "beanhuo@micron.com" <beanhuo@micron.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
-        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
-        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
-        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
-        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
-        "cc.chou@mediatek.com" <cc.chou@mediatek.com>
-Subject: RE: [PATCH v1] scsi: ufs: Disable WriteBooster capability in
- non-supported UFS device
-Thread-Topic: [PATCH v1] scsi: ufs: Disable WriteBooster capability in
- non-supported UFS device
-Thread-Index: AQHWSdJarpjPY1IvO06jKu22T8rTZqjnXcig
-Date:   Wed, 24 Jun 2020 07:26:37 +0000
-Message-ID: <SN6PR04MB4640974695F782566A83F2EFFC950@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <20200624025119.6509-1-stanley.chu@mediatek.com>
-In-Reply-To: <20200624025119.6509-1-stanley.chu@mediatek.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: mediatek.com; dkim=none (message not signed)
- header.d=none;mediatek.com; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 4a5c3b51-4774-4051-a848-08d8180fee34
-x-ms-traffictypediagnostic: SN6PR04MB4078:
-x-microsoft-antispam-prvs: <SN6PR04MB40780EADD30E232E23BBB4B3FC950@SN6PR04MB4078.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:6790;
-x-forefront-prvs: 0444EB1997
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: jxKxufRLe421Nbe4vumV7/l7qwT/HMoTKko6tLXx2dujGdhLaNYCMPJ2tnQBsYh5SYssLZivMjn6ZOAgkpcV2iJko2JyWCcMKaF2ej6IuSRbPjqhB5Gvrzpo7JYKu3+Fo6IazqMYHZZcq+lQsgbJwNU8qOUk0lMhBhLF47NxheB+O9N5DKaudPQlsfP+HQPNnvdadXHOagbcQy5youvux5gC6CHa+3XeIpFAcGRi4vY/suJ6bzdUukkTBT4EOppR+z6pV+oDRL+Tl7TK/HYg/Lbs0pfkWfnLAFAHhwpeHomauDmVWdjq8g3OhT7TBEPFIrucamlscAbBPX7gaJYklQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR04MB4640.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(396003)(39860400002)(366004)(346002)(136003)(76116006)(33656002)(66556008)(66446008)(7696005)(66946007)(64756008)(5660300002)(110136005)(316002)(66476007)(7416002)(52536014)(54906003)(71200400001)(86362001)(83380400001)(8676002)(8936002)(9686003)(26005)(2906002)(6506007)(478600001)(4326008)(55016002)(558084003)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 2daC3YpjQoAPd/MQppwTgFqyiVOoXRdQjL5czFX+XyVHqf3tbadK4H6ZcnPtpbe7Y5vK+vlZ05tTPSeMQ+lUnszGBO/CFij7wB9aK6hOoe7vLG3neKiTjbQuU8TKS6C7oFtYs7AOfOhqavp0qjk74rXhRvbu610WYxtwhEOpHo5WzDq6WkwnaBwPscRf0lm9Gajl+jiOOUwxeJLO1cwo4xHNTY58nfSLeb1YGpul1iTnuZbBBRs0IXKfYnPju5L0vHq50uskrfoVi5rXVMgRMj7nQ5nnhR9XpenB6m5kfQrx0nW8rtAyUMldkAlVKM/5eYCi/bZfCKBk0PK1OSjosc7sTuB2nWQIQiSjOQCmgxEF+YZiEZX3Ml77RK03byzuvGEYIrD25hwEIwv7yFqVs235bxqgPjXn4sVwnJbM3Z9lRSs59LBiOkotXVgmfgvVKZ9F8Fopy6CqHY2G5HqAb2X1aZberLG8rxZfsbCT86o=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+IronPort-SDR: hyVLhBhfdaWkThUZp2dsDp/IIFBSVCskelv8BSUcBgavOiX5vJfggrLY/w6srmGMjT8HUC3lxB
+ 8YM5pmgqqzuInZPRPWTyVMLD/s0Jq5fSMutV7t6lhuSk7e6B9EFPRXswW1ThQLZL0CyMO32mkB
+ 9WlxKI+N3f21Br4+9kFhP/Z2RwzV2naQZ2q1oxc+9cDfAR9Nio4fv33vHUbbf8WVpPuMnEGWEb
+ jzlWR+qTkiMAzHVkN7X1RuxGqrTgZsdUPg1/3CyO4UJo3IQtxTAqAyCnjtP1Oo9NlzU0Hlz+O9
+ 0Uw=
+X-IronPort-AV: E=Sophos;i="5.75,274,1589266800"; 
+   d="scan'208";a="81363822"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 24 Jun 2020 00:27:09 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 24 Jun 2020 00:26:57 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Wed, 24 Jun 2020 00:26:53 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <nicolas.ferre@microchip.com>, <davem@davemloft.net>,
+        <kuba@kernel.org>
+CC:     <antoine.tenart@bootlin.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH] net: macb: free resources on failure path of at91ether_open()
+Date:   Wed, 24 Jun 2020 10:26:54 +0300
+Message-ID: <1592983614-31485-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a5c3b51-4774-4051-a848-08d8180fee34
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2020 07:26:37.1920
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 1OHhz8ODJixp16CqFHvZ9m8YPgM3UNgByNhF82OV8Yw0hFgygLgHjazomkmK/Oozjc2VCvqCjv+ckQwGiLULFg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4078
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->=20
->=20
-> If UFS device is not qualified to enter the detection of WriteBooster
-> probing by disallowed UFS version or device quirks, then WriteBooster
-> capability in host shall be disabled to prevent any WriteBooster
-> operations in the future.
+DMA buffers were not freed on failure path of at91ether_open().
+Along with changes for freeing the DMA buffers the enable/disable
+interrupt instructions were moved to at91ether_start()/at91ether_stop()
+functions and the operations on at91ether_stop() were done in
+their reverse order (compared with how is done in at91ether_start()):
+before this patch the operation order on interface open path
+was as follows:
+1/ alloc DMA buffers
+2/ enable tx, rx
+3/ enable interrupts
+and the order on interface close path was as follows:
+1/ disable tx, rx
+2/ disable interrupts
+3/ free dma buffers.
 
-Fixes: ?
->=20
-> Signed-off-by: Stanley Chu <stanley.chu@mediatek.com>
-> ---
+Fixes: 7897b071ac3b ("net: macb: convert to phylink")
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ drivers/net/ethernet/cadence/macb_main.c | 116 +++++++++++++++++++------------
+ 1 file changed, 73 insertions(+), 43 deletions(-)
+
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index 5705359a3612..52582e8ed90e 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -3762,15 +3762,9 @@ static int macb_init(struct platform_device *pdev)
+ 
+ static struct sifive_fu540_macb_mgmt *mgmt;
+ 
+-/* Initialize and start the Receiver and Transmit subsystems */
+-static int at91ether_start(struct net_device *dev)
++static int at91ether_alloc_coherent(struct macb *lp)
+ {
+-	struct macb *lp = netdev_priv(dev);
+ 	struct macb_queue *q = &lp->queues[0];
+-	struct macb_dma_desc *desc;
+-	dma_addr_t addr;
+-	u32 ctl;
+-	int i;
+ 
+ 	q->rx_ring = dma_alloc_coherent(&lp->pdev->dev,
+ 					 (AT91ETHER_MAX_RX_DESCR *
+@@ -3792,6 +3786,43 @@ static int at91ether_start(struct net_device *dev)
+ 		return -ENOMEM;
+ 	}
+ 
++	return 0;
++}
++
++static void at91ether_free_coherent(struct macb *lp)
++{
++	struct macb_queue *q = &lp->queues[0];
++
++	if (q->rx_ring) {
++		dma_free_coherent(&lp->pdev->dev,
++				  AT91ETHER_MAX_RX_DESCR *
++				  macb_dma_desc_get_size(lp),
++				  q->rx_ring, q->rx_ring_dma);
++		q->rx_ring = NULL;
++	}
++
++	if (q->rx_buffers) {
++		dma_free_coherent(&lp->pdev->dev,
++				  AT91ETHER_MAX_RX_DESCR *
++				  AT91ETHER_MAX_RBUFF_SZ,
++				  q->rx_buffers, q->rx_buffers_dma);
++		q->rx_buffers = NULL;
++	}
++}
++
++/* Initialize and start the Receiver and Transmit subsystems */
++static int at91ether_start(struct macb *lp)
++{
++	struct macb_queue *q = &lp->queues[0];
++	struct macb_dma_desc *desc;
++	dma_addr_t addr;
++	u32 ctl;
++	int i, ret;
++
++	ret = at91ether_alloc_coherent(lp);
++	if (ret)
++		return ret;
++
+ 	addr = q->rx_buffers_dma;
+ 	for (i = 0; i < AT91ETHER_MAX_RX_DESCR; i++) {
+ 		desc = macb_rx_desc(q, i);
+@@ -3813,9 +3844,39 @@ static int at91ether_start(struct net_device *dev)
+ 	ctl = macb_readl(lp, NCR);
+ 	macb_writel(lp, NCR, ctl | MACB_BIT(RE) | MACB_BIT(TE));
+ 
++	/* Enable MAC interrupts */
++	macb_writel(lp, IER, MACB_BIT(RCOMP)	|
++			     MACB_BIT(RXUBR)	|
++			     MACB_BIT(ISR_TUND)	|
++			     MACB_BIT(ISR_RLE)	|
++			     MACB_BIT(TCOMP)	|
++			     MACB_BIT(ISR_ROVR)	|
++			     MACB_BIT(HRESP));
++
+ 	return 0;
+ }
+ 
++static void at91ether_stop(struct macb *lp)
++{
++	u32 ctl;
++
++	/* Disable MAC interrupts */
++	macb_writel(lp, IDR, MACB_BIT(RCOMP)	|
++			     MACB_BIT(RXUBR)	|
++			     MACB_BIT(ISR_TUND)	|
++			     MACB_BIT(ISR_RLE)	|
++			     MACB_BIT(TCOMP)	|
++			     MACB_BIT(ISR_ROVR) |
++			     MACB_BIT(HRESP));
++
++	/* Disable Receiver and Transmitter */
++	ctl = macb_readl(lp, NCR);
++	macb_writel(lp, NCR, ctl & ~(MACB_BIT(TE) | MACB_BIT(RE)));
++
++	/* Free resources. */
++	at91ether_free_coherent(lp);
++}
++
+ /* Open the ethernet interface */
+ static int at91ether_open(struct net_device *dev)
+ {
+@@ -3835,27 +3896,20 @@ static int at91ether_open(struct net_device *dev)
+ 
+ 	macb_set_hwaddr(lp);
+ 
+-	ret = at91ether_start(dev);
++	ret = at91ether_start(lp);
+ 	if (ret)
+ 		goto pm_exit;
+ 
+-	/* Enable MAC interrupts */
+-	macb_writel(lp, IER, MACB_BIT(RCOMP)	|
+-			     MACB_BIT(RXUBR)	|
+-			     MACB_BIT(ISR_TUND)	|
+-			     MACB_BIT(ISR_RLE)	|
+-			     MACB_BIT(TCOMP)	|
+-			     MACB_BIT(ISR_ROVR)	|
+-			     MACB_BIT(HRESP));
+-
+ 	ret = macb_phylink_connect(lp);
+ 	if (ret)
+-		goto pm_exit;
++		goto stop;
+ 
+ 	netif_start_queue(dev);
+ 
+ 	return 0;
+ 
++stop:
++	at91ether_stop(lp);
+ pm_exit:
+ 	pm_runtime_put_sync(&lp->pdev->dev);
+ 	return ret;
+@@ -3865,37 +3919,13 @@ static int at91ether_open(struct net_device *dev)
+ static int at91ether_close(struct net_device *dev)
+ {
+ 	struct macb *lp = netdev_priv(dev);
+-	struct macb_queue *q = &lp->queues[0];
+-	u32 ctl;
+-
+-	/* Disable Receiver and Transmitter */
+-	ctl = macb_readl(lp, NCR);
+-	macb_writel(lp, NCR, ctl & ~(MACB_BIT(TE) | MACB_BIT(RE)));
+-
+-	/* Disable MAC interrupts */
+-	macb_writel(lp, IDR, MACB_BIT(RCOMP)	|
+-			     MACB_BIT(RXUBR)	|
+-			     MACB_BIT(ISR_TUND)	|
+-			     MACB_BIT(ISR_RLE)	|
+-			     MACB_BIT(TCOMP)	|
+-			     MACB_BIT(ISR_ROVR) |
+-			     MACB_BIT(HRESP));
+ 
+ 	netif_stop_queue(dev);
+ 
+ 	phylink_stop(lp->phylink);
+ 	phylink_disconnect_phy(lp->phylink);
+ 
+-	dma_free_coherent(&lp->pdev->dev,
+-			  AT91ETHER_MAX_RX_DESCR *
+-			  macb_dma_desc_get_size(lp),
+-			  q->rx_ring, q->rx_ring_dma);
+-	q->rx_ring = NULL;
+-
+-	dma_free_coherent(&lp->pdev->dev,
+-			  AT91ETHER_MAX_RX_DESCR * AT91ETHER_MAX_RBUFF_SZ,
+-			  q->rx_buffers, q->rx_buffers_dma);
+-	q->rx_buffers = NULL;
++	at91ether_stop(lp);
+ 
+ 	return pm_runtime_put(&lp->pdev->dev);
+ }
+-- 
+2.7.4
+
