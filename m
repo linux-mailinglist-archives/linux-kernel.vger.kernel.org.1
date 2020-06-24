@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD28207D59
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB256207D62
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:36:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406620AbgFXUdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 16:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50676 "EHLO
+        id S2406635AbgFXUdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 16:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406594AbgFXUdf (ORCPT
+        with ESMTP id S2406608AbgFXUdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 16:33:35 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DADAC061798
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:33:35 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id c26so2434600qtq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:33:35 -0700 (PDT)
+        Wed, 24 Jun 2020 16:33:38 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130E5C061798
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:33:37 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id j3so3539847yba.14
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:33:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=39oSk63TLcybcU14SgKvCDK3H6XzHtEtduXPCr/44ss=;
-        b=ZOpDZdrGdHh1ZJonf0E/5dDbHERSe6TbCFmdB2U6jPIiwcNANMbLkyJvmpov2k2xOy
-         UVWsqBFfeytL+Hgc/oR6FsAd9G11hUgAXJsCWawlND5MVBWd0mWD5Dc0EmC9ABVsRrwk
-         SuNrnMuN7GhuqelKUl2otkPK4jEY0L0Bm6whau77q3fZbpcyNGO1mB7+EOqkQJEsefdW
-         zLLLl7cpOUj8LxrFN5V51O7w7SPh0uXELCQRumvXzfHQsZ4xwEEn1hGOm5BLrbAhkADT
-         mOeNJdhYt+ZgbwtN0PEW0MGrw4iretwo3Lq6tyaoaAFryjr8t8wGNBEOp88gmFSQ4dk6
-         T0OA==
+        bh=vVvCAj3rXahkiTyB3fdf4JdbPFhKMTMNyBg/koJzOHM=;
+        b=A1OVxmohREiIQE9uWobns3DZjU2BjnF5/uRv4vfcaF2sodOxkh4sxle+6JGl3ADtOZ
+         3fmTbkzX8W7ahG1bTGpXMMU9CdKC8UZUye2VucpEx7325i3QESTUcI83ndSOc6E8Kmzu
+         N5PlhLkCWO4j4sIvQEk9eacQtD+bX2UY3Y5a4I1dsdat2Jm3e0YTj4ppvoCyl2YlPdbY
+         ZyEZAXO2uSqBN9R05BjPoqjam4RsnD1PfD+i8NAuT2L+OMarD3RxLispCXwkir37c5B5
+         L+Lu+ZWTjo7NmJwPgVCLx0NgAf7Qq1Qws+DG9FZOXnsn8vOlmmibTipSbU4GNNmhC8bb
+         0u7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=39oSk63TLcybcU14SgKvCDK3H6XzHtEtduXPCr/44ss=;
-        b=OBRlqatUuILhAO6T9tCRmEuiB9l1hSrZo39n/jnbjX8gLANOWoujxTenQcndm+XOew
-         sCERYA6cn4uqf7xOxPZVCpsqqWPI4IXWWbDPDPub5KjK9myg0irgTBV1AFx9u5sCz5e7
-         /N1ARp8W85Hc6lAM05HrVOqQY6N2WFXwnL+0D1pgoYGAgcDuH+vrvc0v+b/jnvbNynrv
-         Y+DzHvcN9NM+QrsY6w1x86x3XCG6Oh/wxd08xA7Q96ISm5HHKKST642YxtQVgm93+plD
-         TyOlEuj4xmFk9Jm3Uq651cv6yPKDG/ZF+hYNLaGwbwG2Upga8nbiKXHv+AnQsHpZe8b0
-         QKzg==
-X-Gm-Message-State: AOAM531oYyp36ni6XC8sjQP0gwllOOJSD7y1aMHGQ5fpiUKm3XGF1FSa
-        n6Tzbkrn4MFnrIHz/lqhcQa50Vwym1sGtEXKkqg=
-X-Google-Smtp-Source: ABdhPJzI2BesdcUkxRPNmsNayE+wa07nV1TDxi5hKxZeEiEV2jo0nWBCJ/1Nmj0kWHXA23yigO5wL2sAexNblZcBJws=
-X-Received: by 2002:ad4:52e2:: with SMTP id p2mr33679309qvu.100.1593030814530;
- Wed, 24 Jun 2020 13:33:34 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 13:31:58 -0700
+        bh=vVvCAj3rXahkiTyB3fdf4JdbPFhKMTMNyBg/koJzOHM=;
+        b=mV5NhelQlSDKLBaF/Ncy0o3g0+MGdfrEG8AX/tW/1TEUXDK3B3KWl6rVrjQSQSlLcn
+         YNi0cW0o1vGi4ATCd2srbCf3ah1iEXjPKbojXzw0tQ2TYW+DkyaGWuE9FRb8W+E79Miu
+         2EJjA1djWBsAzaimmiJ41b8WDoxPHRWLoBAzoVmxwnpOuRZgkij3ioktNa3TG607yENv
+         Zi5B2edJyUXwWa5m+LkId3JveqPW/5taIK3lDxdV1kIhxjNzjSNK2yvJwbOeWyVGb4Sg
+         iFRAEWm7Mw7MWJJMbYRuQI6ON4D59pSnBuqFkfm0AWg+PjI8kWWISwivlKP0smkqUcRv
+         2ZAg==
+X-Gm-Message-State: AOAM531iuZmbbT/9XvfGH3p14EiIx18tOSP7rSksBK+Tf9Xxxs1ZpNhu
+        HsyoKM7VfCrW/N/6qmUf9dEx95rR63uyiwatbDc=
+X-Google-Smtp-Source: ABdhPJxFwd5sYHcpKP7HH5wq1l18/N0yS86uUmxUS0eTeAHpLUaXB5pBxjwc02CZmZmfKSgokc5xwqXiDOu/w8PP8nk=
+X-Received: by 2002:a25:7450:: with SMTP id p77mr23380392ybc.155.1593030816256;
+ Wed, 24 Jun 2020 13:33:36 -0700 (PDT)
+Date:   Wed, 24 Jun 2020 13:31:59 -0700
 In-Reply-To: <20200624203200.78870-1-samitolvanen@google.com>
-Message-Id: <20200624203200.78870-21-samitolvanen@google.com>
+Message-Id: <20200624203200.78870-22-samitolvanen@google.com>
 Mime-Version: 1.0
 References: <20200624203200.78870-1-samitolvanen@google.com>
 X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
-Subject: [PATCH 20/22] x86, ftrace: disable recordmcount for ftrace_make_nop
+Subject: [PATCH 21/22] x86, relocs: Ignore L4_PAGE_OFFSET relocations
 From:   Sami Tolvanen <samitolvanen@google.com>
 To:     Masahiro Yamada <masahiroy@kernel.org>,
         Will Deacon <will@kernel.org>
@@ -69,25 +69,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ignore mcount relocations in ftrace_make_nop.
+L4_PAGE_OFFSET is a constant value, so don't warn about absolute
+relocations.
 
 Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 ---
- arch/x86/kernel/ftrace.c | 1 +
+ arch/x86/tools/relocs.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/arch/x86/kernel/ftrace.c b/arch/x86/kernel/ftrace.c
-index 51504566b3a6..c3b28b81277b 100644
---- a/arch/x86/kernel/ftrace.c
-+++ b/arch/x86/kernel/ftrace.c
-@@ -121,6 +121,7 @@ ftrace_modify_code_direct(unsigned long ip, const char *old_code,
- 	return 0;
- }
+diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
+index ce7188cbdae5..8f3bf34840ce 100644
+--- a/arch/x86/tools/relocs.c
++++ b/arch/x86/tools/relocs.c
+@@ -47,6 +47,7 @@ static const char * const sym_regex_kernel[S_NSYMTYPES] = {
+ 	[S_ABS] =
+ 	"^(xen_irq_disable_direct_reloc$|"
+ 	"xen_save_fl_direct_reloc$|"
++	"L4_PAGE_OFFSET|"
+ 	"VDSO|"
+ 	"__crc_)",
  
-+__nomcount
- int ftrace_make_nop(struct module *mod, struct dyn_ftrace *rec, unsigned long addr)
- {
- 	unsigned long ip = rec->ip;
 -- 
 2.27.0.212.ge8ba1cc988-goog
 
