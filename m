@@ -2,194 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 419A3206EB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 10:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BF8206EBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 10:13:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390367AbgFXIJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 04:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388818AbgFXIJr (ORCPT
+        id S2390317AbgFXIN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 04:13:28 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:50868 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387732AbgFXIN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 04:09:47 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B60C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 01:09:47 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id f3so1066183pgr.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 01:09:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=lx3+rjSQbLbRJPU2K3t48ZInyGLE+ZxpuayNrn61Xdw=;
-        b=OAfQzlHdtGcAdYG+BtkF6ilyGgwXF3ojFfUp2Dz7zHhHddqSyieZaeC8Lg727lcRRt
-         xdGhSB6dAPxNw+r181i4E2wpmmhVMJxXz4bqeLJ+N+chgeK8qoyZBTnwmKrW24HmeLcF
-         7gtP3RJw2HO5NZU5ZCiSz230WzT8bgD2O2O+0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=lx3+rjSQbLbRJPU2K3t48ZInyGLE+ZxpuayNrn61Xdw=;
-        b=k1R8ckMFpDs8scKFwFL1ldcyFqR9nKnvgIhsXhxtF3+qyz5pAS6IYdlBeV5L+gUtqo
-         xglYpb5MW8OrzLco+9WunkxkxYMAAmfIVmUzfj6BBvYAV1g1iYbD2zvgNJROMI+YVCoE
-         2knWajJoHJNu39S91RZ0TyS3P0BqITA9fVgS6jA1/3eWzcK8ESRcNHXBuBE9H0+Q/KSm
-         AOHsYaMpXE9kI1y0QKXbsyVs0alFsrhH6KN+zlx2J2EUXiCt7ZPnxXXYtofCbp0DVV2u
-         cPQNSf1cbnKtx7+gadgKha7cPen6ZMFzFbdQhG8vYNwJbrYTAjmh9C0svDVlU7dPVtlV
-         d61A==
-X-Gm-Message-State: AOAM532kOe8AGstXBQ6VcNpjLh5Al0xkLMmdkBke5vjaHWy1M9/5bj1o
-        t+Ejf7cY/khhI8Qfbr9bhEaHR2PGn3M=
-X-Google-Smtp-Source: ABdhPJwUoL/Yfyg4P84ucl0lZGitaZNZEFC/juD9lSdSZjf0UcmkDbGcjvavUJ4bAgIbYMxto36WVQ==
-X-Received: by 2002:a62:a20e:: with SMTP id m14mr27300666pff.249.1592986186674;
-        Wed, 24 Jun 2020 01:09:46 -0700 (PDT)
-Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:476b:691:abc3:38db])
-        by smtp.gmail.com with ESMTPSA id r1sm4421684pjd.47.2020.06.24.01.09.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 01:09:46 -0700 (PDT)
-From:   Prashant Malani <pmalani@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     heikki.krogerus@linux.intel.com,
-        Prashant Malani <pmalani@chromium.org>,
-        Azhar Shaikh <azhar.shaikh@intel.com>,
-        Casey Bowman <casey.g.bowman@intel.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Tzung-Bi Shih <tzungbi@google.com>,
-        Yicheng Li <yichengli@chromium.org>
-Subject: [PATCH 2/2] platform/chrome: cros_ec_typec: Add TBT compat support
-Date:   Wed, 24 Jun 2020 01:09:24 -0700
-Message-Id: <20200624080926.165107-2-pmalani@chromium.org>
-X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
-In-Reply-To: <20200624080926.165107-1-pmalani@chromium.org>
-References: <20200624080926.165107-1-pmalani@chromium.org>
+        Wed, 24 Jun 2020 04:13:28 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0U0aKfqF_1592986404;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U0aKfqF_1592986404)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 24 Jun 2020 16:13:24 +0800
+Date:   Wed, 24 Jun 2020 16:13:24 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        akpm@linux-foundation.org, osalvador@suse.de,
+        dan.j.williams@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/spase: never partially remove memmap for early section
+Message-ID: <20200624081324.GA12461@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20200623094258.6705-1-richard.weiyang@linux.alibaba.com>
+ <20200623151828.GA31426@dhcp22.suse.cz>
+ <57d8a558-dcb3-b318-8e38-6c016b050414@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <57d8a558-dcb3-b318-8e38-6c016b050414@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add mux control support for Thunderbolt compatibility mode.
+On Wed, Jun 24, 2020 at 09:48:43AM +0200, David Hildenbrand wrote:
+>On 23.06.20 17:18, Michal Hocko wrote:
+>> On Tue 23-06-20 17:42:58, Wei Yang wrote:
+>>> For early sections, we assumes its memmap will never be partially
+>>> removed. But current behavior breaks this.
+>>>
+>>> Let's correct it.
+>>>
+>>> Fixes: ba72b4c8cf60 ("mm/sparsemem: support sub-section hotplug")
+>>> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+>> 
+>> Can a user trigger this or is this a theoretical bug?
+>
+>I tried to reproduce it, but somehow I get unexpected behavior.
+>With a hacked QEMU I can get
 
-Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Co-developed-by: Azhar Shaikh <azhar.shaikh@intel.com>
-Co-developed-by: Casey Bowman <casey.g.bowman@intel.com>
-Signed-off-by: Prashant Malani <pmalani@chromium.org>
----
- drivers/platform/chrome/cros_ec_typec.c | 70 ++++++++++++++++++++++++-
- 1 file changed, 69 insertions(+), 1 deletion(-)
+David,
 
-diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
-index 1df1386f32e4..0c041b79cbba 100644
---- a/drivers/platform/chrome/cros_ec_typec.c
-+++ b/drivers/platform/chrome/cros_ec_typec.c
-@@ -17,6 +17,7 @@
- #include <linux/usb/typec_altmode.h>
- #include <linux/usb/typec_dp.h>
- #include <linux/usb/typec_mux.h>
-+#include <linux/usb/typec_tbt.h>
- #include <linux/usb/role.h>
- 
- #define DRV_NAME "cros-ec-typec"
-@@ -24,6 +25,7 @@
- /* Supported alt modes. */
- enum {
- 	CROS_EC_ALTMODE_DP = 0,
-+	CROS_EC_ALTMODE_TBT,
- 	CROS_EC_ALTMODE_MAX,
- };
- 
-@@ -165,6 +167,14 @@ static void cros_typec_register_port_altmodes(struct cros_typec_data *typec,
- 	port->p_altmode[CROS_EC_ALTMODE_DP].svid = USB_TYPEC_DP_SID;
- 	port->p_altmode[CROS_EC_ALTMODE_DP].mode = USB_TYPEC_DP_MODE;
- 
-+	/*
-+	 * Register TBT compatibility alt mode. The EC will not enter the mode
-+	 * if it doesn't support it, so it's safe to register it unconditionally
-+	 * here for now.
-+	 */
-+	port->p_altmode[CROS_EC_ALTMODE_TBT].svid = USB_TYPEC_TBT_SID;
-+	port->p_altmode[CROS_EC_ALTMODE_TBT].mode = TYPEC_ANY_MODE;
-+
- 	port->state.alt = NULL;
- 	port->state.mode = TYPEC_STATE_USB;
- 	port->state.data = NULL;
-@@ -391,6 +401,62 @@ static int cros_typec_usb_safe_state(struct cros_typec_port *port)
- 	return typec_mux_set(port->mux, &port->state);
- }
- 
-+/*
-+ * Spoof the VDOs that were likely communicated by the partner for TBT alt
-+ * mode.
-+ */
-+static int cros_typec_enable_tbt(struct cros_typec_data *typec,
-+				 int port_num,
-+				 struct ec_response_usb_pd_control_v2 *pd_ctrl)
-+{
-+	struct cros_typec_port *port = typec->ports[port_num];
-+	struct typec_thunderbolt_data data;
-+	int ret;
-+
-+	if (typec->pd_ctrl_ver < 2) {
-+		dev_err(typec->dev,
-+			"PD_CTRL version too old: %d\n", typec->pd_ctrl_ver);
-+		return -ENOTSUPP;
-+	}
-+
-+	/* Device Discover Mode VDO */
-+	data.device_mode = TBT_MODE;
-+
-+	if (pd_ctrl->control_flags & USB_PD_CTRL_TBT_LEGACY_ADAPTER)
-+		data.device_mode = TBT_SET_ADAPTER(TBT_ADAPTER_TBT3);
-+
-+	/* Cable Discover Mode VDO */
-+	data.cable_mode = TBT_MODE;
-+	data.cable_mode |= TBT_SET_CABLE_SPEED(pd_ctrl->cable_speed);
-+
-+	if (pd_ctrl->control_flags & USB_PD_CTRL_OPTICAL_CABLE)
-+		data.cable_mode |= TBT_CABLE_OPTICAL;
-+
-+	if (pd_ctrl->control_flags & USB_PD_CTRL_ACTIVE_LINK_UNIDIR)
-+		data.cable_mode |= TBT_CABLE_LINK_TRAINING;
-+
-+	if (pd_ctrl->cable_gen)
-+		data.cable_mode |= TBT_CABLE_ROUNDED;
-+
-+	/* Enter Mode VDO */
-+	data.enter_vdo = TBT_SET_CABLE_SPEED(pd_ctrl->cable_speed);
-+
-+	if (pd_ctrl->control_flags & USB_PD_CTRL_ACTIVE_CABLE)
-+		data.enter_vdo |= TBT_ENTER_MODE_ACTIVE_CABLE;
-+
-+	if (!port->state.alt) {
-+		port->state.alt = &port->p_altmode[CROS_EC_ALTMODE_TBT];
-+		ret = cros_typec_usb_safe_state(port);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	port->state.data = &data;
-+	port->state.mode = TYPEC_TBT_MODE;
-+
-+	return typec_mux_set(port->mux, &port->state);
-+}
-+
- /* Spoof the VDOs that were likely communicated by the partner. */
- static int cros_typec_enable_dp(struct cros_typec_data *typec,
- 				int port_num,
-@@ -448,7 +514,9 @@ static int cros_typec_configure_mux(struct cros_typec_data *typec, int port_num,
- 	if (ret)
- 		return ret;
- 
--	if (mux_flags & USB_PD_MUX_DP_ENABLED) {
-+	if (mux_flags & USB_PD_MUX_TBT_COMPAT_ENABLED) {
-+		ret = cros_typec_enable_tbt(typec, port_num, pd_ctrl);
-+	} else if (mux_flags & USB_PD_MUX_DP_ENABLED) {
- 		ret = cros_typec_enable_dp(typec, port_num, pd_ctrl);
- 	} else if (mux_flags & USB_PD_MUX_SAFE_MODE) {
- 		ret = cros_typec_usb_safe_state(port);
+Thanks for your effort. Would you mind sharing your qemu command line, so that
+I can have a try at my side?
+
+>
+>$ cat /proc/iomem
+>[...]
+>100000000-143ffffff : System RAM
+>144000000-343dfffff : Persistent Memory
+>  144000000-1441fffff : namespace0.0
+>  144200000-144ffffff : dax0.0
+>
+>After
+>$ ndctl create-namespace --force --reconfig=namespace0.0 --mode=devdax --size=16M
+>
+>I get
+>
+>$ cat /proc/iomem
+>[...]
+>100000000-143ffffff : System RAM
+>144000000-343dfffff : Persistent Memory
+>  144000000-1441fffff : namespace0.0
+>  144200000-144ffffff : dax0.0
+>
+
+The memory layout seems not changed.
+
+>I can trigger remove+re-add via 
+>$ ndctl create-namespace --force --reconfig=namespace0.0 --mode=devdax --size=16M
+
+Do we need to change the mode to force the reconfig?
+
+>
+>So we clearly have an overlap between System RAM and dax0.0 within a section.
+>However, I never get early_section() to trigger in
+>section_activate()/section_deactivate() ? That's unexpected
+>
+>
+>Definitely something seems to go wrong after the first "ndctl create-namespace".
+>Using a random page walker:
+>
+>[root@localhost ~]# ./page-types 
+
+What is this page-types?
+
+>[  387.019229] general protection fault, probably for non-canonical address 0xfdfdfdfdfdfdfdfc: 0000 [#1] SMP NOPTI
+>[  387.020172] CPU: 17 PID: 1314 Comm: page-types Kdump: loaded Tainted: G        W         5.8.0-rc2 #20
+>[  387.021015] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.4
+>[  387.022056] RIP: 0010:stable_page_flags+0x27/0x3f0
+>[  387.022519] Code: 00 00 00 66 66 66 66 90 48 85 ff 0f 84 d2 03 00 00 41 54 55 48 89 fd 53 48 8b 57 08 48 8b 1f 48f
+>[  387.024291] RSP: 0018:ffff9f8781057e58 EFLAGS: 00010202
+>[  387.024775] RAX: fdfdfdfdfdfdfdfc RBX: fdfdfdfdfdfdfdfd RCX: 00007ffc4f4f1f78
+>[  387.025423] RDX: 0000000000000001 RSI: 0000002000000000 RDI: ffffc590c5100000
+>[  387.026052] RBP: ffffc590c5100000 R08: 0000000000000001 R09: 0000000000000000
+>[  387.026696] R10: 0000000000000000 R11: 0000000000000000 R12: 00007ffc4f4f1f80
+>[  387.027324] R13: 0000000000040000 R14: 00007ffc4f4d1f80 R15: ffffffffa1577ee0
+>[  387.027974] FS:  00007f91a0f9c580(0000) GS:ffff888b3f7c0000(0000) knlGS:0000000000000000
+>[  387.028699] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>[  387.029223] CR2: 0000000000449b00 CR3: 000000007a7fc000 CR4: 00000000000006e0
+>[  387.029864] Call Trace:
+>[  387.030108]  kpageflags_read+0xcc/0x160
+>[  387.030473]  proc_reg_read+0x53/0x80
+>[  387.030809]  vfs_read+0x9d/0x150
+>[  387.031114]  ksys_pread64+0x65/0xa0
+>[  387.031449]  do_syscall_64+0x4d/0x90
+>[  387.031783]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+>
+>-- 
+>Thanks,
+>
+>David / dhildenb
+
 -- 
-2.27.0.111.gc72c7da667-goog
-
+Wei Yang
+Help you, Help me
