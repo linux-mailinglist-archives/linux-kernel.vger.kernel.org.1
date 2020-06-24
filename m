@@ -2,133 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85C6A207338
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A78620733D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390505AbgFXMWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 08:22:00 -0400
-Received: from mout.web.de ([212.227.17.11]:34607 "EHLO mout.web.de"
+        id S2390581AbgFXMWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 08:22:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388548AbgFXMV5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 08:21:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de;
-        s=dbaedf251592; t=1593001301;
-        bh=WisVhBCfz0SP6h3EvjFjZ/eWWqjYUw1MSCnTssHoI7k=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=kwI8dij2+4KdZag4R1yewxbyuOKWUlyYtWdlMSl5Lrj/F2VujlK/J+PAvv5m0pr0X
-         eGr+/8r7NJYEFvEjfMBPWb2TVZif9nZpw6rrYa4vGA9cnf4tyFVbKO0/3Z0gEl7K09
-         WLEZlXOOUumIhBMI2xqcZgF83biw8WVaxAr8OjJY=
-X-UI-Sender-Class: c548c8c5-30a9-4db5-a2e7-cb6cb037b8f9
-Received: from [192.168.1.2] ([93.132.175.204]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MWzCt-1jLBfA1UT3-00XMEZ; Wed, 24
- Jun 2020 14:21:41 +0200
-Subject: Re: [v3 03/14] irqchip/csky-mpintc: Fix potential resource leaks
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>, linux-mips@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Xuefeng Li <lixuefeng@loongson.cn>
-References: <a0ace7a8-5c26-ee20-fe76-7dff57a18ca3@web.de>
- <be3acb13-2963-ddf1-a867-7e30fd23a0b4@loongson.cn>
-From:   Markus Elfring <Markus.Elfring@web.de>
-Autocrypt: addr=Markus.Elfring@web.de; prefer-encrypt=mutual; keydata=
- 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 FEE=
-Message-ID: <4470b5f0-31ec-e43c-b841-5f8f3a3157b1@web.de>
-Date:   Wed, 24 Jun 2020 14:21:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S2390537AbgFXMWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 08:22:47 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D78DE20707;
+        Wed, 24 Jun 2020 12:22:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593001367;
+        bh=llsEnXOBdDldUYmEyO0zoXemSr+7CRN/czVZ0wtPt98=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vq8pa5speUnvVEor4+UxiuzoF0QDSc88FgivHmWNqRFNYftWS8EVzdyvfXRcVHSfq
+         rkiU9Q0jRaitl6/pPya2DCCkV29BuUICj7LboiTxyoK1wm/VgjqmNbdeWytFFuIeeQ
+         nTxkwhmLIxlrIEENeizswb7Q37sY1PE+GtYeJ8oY=
+Date:   Wed, 24 Jun 2020 13:22:42 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Subject: Re: linux-next: Tree for Jun 24 [build failure on arm64]
+Message-ID: <20200624122242.GA6270@willie-the-truck>
+References: <20200624165323.3dffcde5@canb.auug.org.au>
+ <7a7e31a8-9a7b-2428-ad83-2264f20bdc2d@hisilicon.com>
+ <20200624105528.GB6134@willie-the-truck>
+ <b561e663-a9aa-d600-e23b-09793199141e@nvidia.com>
 MIME-Version: 1.0
-In-Reply-To: <be3acb13-2963-ddf1-a867-7e30fd23a0b4@loongson.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:2YKmand55G8WKMJxv2NEmWfeMbkEz8+hAS4KETdeEKtfLrv05w6
- ZwyVSXqcJ1I7WJ6S86FVZ0yFEkY9qj57NeImy3TdoWNAE3oZL41TXwdyhT8fSh4h/XG131n
- S7FyCcqrpB8jfHCtQ5MjmHYCQ7v1TRWOs5e4s4Mkh+qAUgBRn8W2n4memnY9zC7ccwd/ae/
- 7gf4QlJ+m8w8p91ediWtQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:rKduGn9r5l4=:rnwiWHPdFVi7JhvvmsJgPy
- U7ftwDTv4IXy1FzM+5DMdsG5quAuHOOCw4S94+7ZLxShE4NkfOmdsuGhfZz525GBQnAjE8FaW
- HM0byRJWcvRDlKejn33v7Bj62ID6wQPjOOFKATu++pzYsvm6W6PFCav4mrgeMd03jxkNAh0eY
- Jdl3PBs997KR1c0O4vdmwWlZZ1BFgItkaOa7sA8QAp9UBjZC/BTUfZoM+zs0qQXQAS1N41QzG
- 64cZGiLvKh1T7poJ9Ep1Hk81SVhdwjHeyNR/FBTxfkuNgLEgDWjKXLA0T4E3uDvw6K2Qih8S6
- tKPj+yb/caeyiSDQAHIHCcprjE3Id5Ni+P1upbVFxG/R9Fq81Qy+/qkGB/4X/kDkXhIWXPLh5
- igSQGzF63fOLYJLv0afOwMHYqubpev+hH4b/ga8bn982s1jkWd0a2TFKbxeFQOPdpjHmRnpUc
- yiZBe5v7SsYMBW6gwZW38jgodyXoa1zDJgMAYv4oRIWmtZ/TxAleRFPunLM19VKxuoYraviIq
- POKiUAJBHrbmGeVy5M77irejrCQg1+OQ2C49pj0nPVhLEbzKEFirKLbqLdRdZoVHEDfYrKOIy
- M2lLiEgIgQ/cKqB/Hz7rbLE1ApjIGKEopCgOtlKoQtBKBg6nesMj1YRyhZiPLZl2ceccD0F8e
- LLFKVR3Z4+v6EXWdtRMxwURiSkCszp3+O4ACeywfYuMLGrlX3sVNYljT0QjC+5lhR2CrCjapZ
- 7w2VUTQ5BXq1YM15K5nbv/XpigI5kVg51j1KurVVz+pS7CA6SX3zYOMQrl1Y6MKUd+laEZyj9
- 08fiZC0rq/wuncDovA23ACTBFlh4WK+STwzXMp18c/SbKDt/cAoX/WRaujTWLXo+THx6j/T6B
- KiP33g6GZsVvoHz7+lIfBghB7CEDZ6U8ou9N9mY6YxprG6KwmLFD7EY4EBuSaIYWmwQYszhOC
- opj0CAroPZElpuwj1eRanWh6rUo9zDwQnKmvVfDbxeABmwEVnjekw3OUdY+kmTNRxDOIibj8s
- FVY4O/iqkg0pGvc2lw84bbv2XJlPS6fBFvybEd3LFLxsKTFAve5JsCDzMzjrltDvEEeGAeu6p
- YfppsglP/4vtt3uqpzYfmrK3LMF9nt1dzXKPn2pCoy8xt5I7Aer5xWiDTrVqC6Hk9rXcbcS9b
- I9NQvJBqs+0KfcpERzYSnZixeC+8qP13Gp4otLwHvTVZYR+XzCrgx2jJNDodFWloq4GEXIA7g
- opyCDcustv3E7YmQL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b561e663-a9aa-d600-e23b-09793199141e@nvidia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> How do you think about another wording variant?
->>
->> =C2=A0=C2=A0=C2=A0 Specific system resources were not released in a few=
- error cases.
->> =C2=A0=C2=A0=C2=A0 Thus add jump targets for the completion of the desi=
-red exception handling.
->
-> OK, thank you, it looks good to me.
+On Wed, Jun 24, 2020 at 12:57:23PM +0100, Jon Hunter wrote:
+> On 24/06/2020 11:55, Will Deacon wrote:
+> > diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
+> > index 1e5a940532da..97d3d3632093 100644
+> > --- a/arch/arm64/kernel/vdso/Makefile
+> > +++ b/arch/arm64/kernel/vdso/Makefile
+> > @@ -23,8 +23,9 @@ btildflags-$(CONFIG_ARM64_BTI_KERNEL) += -z force-bti
+> >  # potential future proofing if we end up with internal calls to the exported
+> >  # routines, as x86 does (see 6f121e548f83 ("x86, vdso: Reimplement vdso.so
+> >  # preparation in build-time C")).
+> > -ldflags-y := -shared -nostdlib -soname=linux-vdso.so.1 --hash-style=sysv \
+> > -               -Bsymbolic --no-eh-frame-hdr --build-id -n $(btildflags-y) -T
+> > +ldflags-y := -shared -nostdlib -soname=linux-vdso.so.1 --hash-style=sysv       \
+> > +            -Bsymbolic $(call ld-option, --no-eh-frame-hdr) --build-id -n      \
+> > +            $(btildflags-y) -T
+> >  
+> >  ccflags-y := -fno-common -fno-builtin -fno-stack-protector -ffixed-x18
+> >  ccflags-y += -DDISABLE_BRANCH_PROFILING
+> > 
+> 
+> 
+> I am seeing the same build failure and the above does fix it for me.
 
-Thanks for your positive feedback.
+Cheers, Jon. I'll get this into -next with your Tested-by.
 
-
-> Maybe I can use this description for other patches of this series.
-
-Would you like to make any of the affected commit messages more =E2=80=9Cs=
-pecific=E2=80=9D?
-
-Regards,
-Markus
+Will
