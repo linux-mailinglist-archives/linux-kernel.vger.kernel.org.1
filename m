@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B19A20765A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA1D20765C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404157AbgFXPBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:01:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
+        id S2404177AbgFXPCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:02:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404142AbgFXPBq (ORCPT
+        with ESMTP id S2404156AbgFXPBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:01:46 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A1EC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:01:45 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id s14so1157298plq.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:01:45 -0700 (PDT)
+        Wed, 24 Jun 2020 11:01:49 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EB18C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:01:49 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id m2so1268279pjv.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:01:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=lCfhSpDjLg0oQm41kWMqoMza5V2vl2PVe0Cy2zdpUs4=;
-        b=UwaotPoi71Q37vlpe0idrCVUeedFZnNJi7hm4BN/zg+fqUR/nfv8+x/cMKGbRswW6K
-         nDRh8yun2BNbgOmjhg2BmgGXGsFf5M2ZAr4Kl9dTIAVodNCsqmTIEXtEURu/4SURPh14
-         vqVq7YW5Ctj0JIxt6FtaNcx5DQp9AmkIHpEXWmAX7iZZ9fxUbVkfo9ptpLZS1+zqe5z0
-         FUvFEpMYMtvuni7uuKF2E7BLXluQ8BAoYlp02MLUDRykv138y8b9a+Q234TNYXVq20NG
-         n7utb0dCNuvTssYtKNY2gC5CCPvqqsCksE3B0/Lj80ocPbu+XsGOH/sWKJ7rrlim8cFS
-         62Kw==
+        bh=44MI/Xaebogle3byf0K/hbjxI15crYL5kj8QhCCzmQA=;
+        b=EQ5vFoRhF+Dxmx9u/l3YuFN2NQ/we8WRaTM7Lbb+HasxiRQIshvNWwzDn2TRo6H5h8
+         NJFxR9veJODp4lBLCyrYVN+Cya1oe+8ppdH1N2LYrhOVXuXbQgNH/UIampBwrC1S9jrw
+         kbjWyxO0XJ7ocBMiWBt5cFImGcAQYU/yrdeqzbGPidbceWfEdNLUzOPJh9wXOiTTzi/I
+         OQ89WCvmCYd9I7AxgSoVLgcBrLyFXjBV0LSD2/M7uyCz3zZa/mrnn7tZPekS5UT2JXU0
+         3diAQnd8ZB5E0ZhFmPYz8tDI8Utwg3ZPtvYhtZkcq8Kfu8viHjXwsgai4ic7ZyG4y9xe
+         P6/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=lCfhSpDjLg0oQm41kWMqoMza5V2vl2PVe0Cy2zdpUs4=;
-        b=Gu2Lky/D3iHA2PvryO8lQgaPhJwizm80cSTK6FFlYK4DKyLPJ79WbZvhr9/NdF2ST3
-         NEa2T0xXLMSG0mM/L4NmcKTZy+y+jQCvGpAStm5QjpekXxrz88YHlj1RHfqz0o29tNUV
-         5jeIg16w5LU+ctfKBjYCLYmtpDvO3dnwM20PLhEiuZ+RyBKUy67wi5YByL92WQw6KlqX
-         beJqyTwKII0KjtnqrGhmirNAX8Vfl5irM97zLsfaHzVRIJPu/70NqvRILINc728O0QI4
-         CRyIjsbSR174gEBfhh8srR5i3a0qS729MDB7HlRq9yDjk1biktl5TE0N+oKycxwRjG0r
-         yFyg==
-X-Gm-Message-State: AOAM532yhOiA4VtZtqQG1wUDCTtanydkbCDrPuDhZ/vV4rVRpEstH1my
-        wI0tCoUPb01ha5j9vWhNxw==
-X-Google-Smtp-Source: ABdhPJw1QP92/ouJDzFZIrN4onjqHXS1nPeUFAid6e2y7e70YPrRcwv0Aq6U4DIjcbRurGP8vn/3eA==
-X-Received: by 2002:a17:902:d207:: with SMTP id t7mr12891961ply.251.1593010905510;
-        Wed, 24 Jun 2020 08:01:45 -0700 (PDT)
+        bh=44MI/Xaebogle3byf0K/hbjxI15crYL5kj8QhCCzmQA=;
+        b=TUSIquZtJesi2W3jdC96CQC9Vwq33sCjf1PXF9tBfiyghUb4ACJ0/2MjqSxV7q1vnF
+         pzByqCc4NCcaWzSzJV5JdK9qb+aqXBT2Ty/XTDKuqavBewo+CIlYjrkf0JVaaSRyzNOd
+         jhQufkSr8okq5XUyh4fpsv8J4P59ifkDE7enDt6/SaSAM7ELGkM+8M+wZBmf2WAS7lrl
+         jF6mQ8Ujau4foCSrX8BoORfVG42LSmHhm9+urVRkgRUqrOIbm3QXXd8Jz8CE04jta4Uc
+         xHCR8RgPLkAeia3ag1tnogY1nuDulP+rQdKwYtlluAFKOqO9eQZtBg+0lRGbjtF1Z6iM
+         57OQ==
+X-Gm-Message-State: AOAM530gZJSwoC4FhQCicTtncLOpkHZxsqGaMx4/Uqyhuxyccd6B4m/j
+        FIIxoqHPdITe5eq48bNTFQ==
+X-Google-Smtp-Source: ABdhPJyHPrGdh1QNyO3qvNQ7njQOvx6xQmbxOT6KvZfUmzZ8Kl5sDHMCYDfiH2fKVFHMhvkmzWiBQA==
+X-Received: by 2002:a17:90a:fd90:: with SMTP id cx16mr2508625pjb.42.1593010908500;
+        Wed, 24 Jun 2020 08:01:48 -0700 (PDT)
 Received: from ip-172-31-41-194.ap-northeast-1.compute.internal (ec2-52-199-21-241.ap-northeast-1.compute.amazonaws.com. [52.199.21.241])
-        by smtp.gmail.com with ESMTPSA id i125sm17013705pgd.21.2020.06.24.08.01.42
+        by smtp.gmail.com with ESMTPSA id i125sm17013705pgd.21.2020.06.24.08.01.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 08:01:45 -0700 (PDT)
+        Wed, 24 Jun 2020 08:01:48 -0700 (PDT)
 From:   nao.horiguchi@gmail.com
 To:     linux-mm@kvack.org
 Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
@@ -54,9 +54,9 @@ Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
         david@redhat.com, aneesh.kumar@linux.vnet.ibm.com,
         zeil@yandex-team.ru, naoya.horiguchi@nec.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 01/15] mm,hwpoison: cleanup unused PageHuge() check
-Date:   Wed, 24 Jun 2020 15:01:23 +0000
-Message-Id: <20200624150137.7052-2-nao.horiguchi@gmail.com>
+Subject: [PATCH v3 02/15] mm, hwpoison: remove recalculating hpage
+Date:   Wed, 24 Jun 2020 15:01:24 +0000
+Message-Id: <20200624150137.7052-3-nao.horiguchi@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200624150137.7052-1-nao.horiguchi@gmail.com>
 References: <20200624150137.7052-1-nao.horiguchi@gmail.com>
@@ -67,38 +67,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Naoya Horiguchi <naoya.horiguchi@nec.com>
 
-Drop the PageHuge check, which is dead code since memory_failure() forks
-into memory_failure_hugetlb() for hugetlb pages.
+hpage is never used after try_to_split_thp_page() in memory_failure(),
+so we don't have to update hpage.  So let's not recalculate/use hpage.
 
-memory_failure() and memory_failure_hugetlb() shares some functions like
-hwpoison_user_mappings() and identify_page_state(), so they should properly
-handle 4kB page, thp, and hugetlb.
-
+Suggested-by: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
 Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
 ---
-changelog v2 -> v3:
-- add description about shared logic b/w hugetlb and non-hugetlb path.
----
- mm/memory-failure.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ mm/memory-failure.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
 diff --git v5.8-rc1-mmots-2020-06-20-21-44/mm/memory-failure.c v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/memory-failure.c
-index 47b8ccb1fb9b..e5d0c14c2332 100644
+index e5d0c14c2332..d2d6010764e7 100644
 --- v5.8-rc1-mmots-2020-06-20-21-44/mm/memory-failure.c
 +++ v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/memory-failure.c
-@@ -1382,10 +1382,7 @@ int memory_failure(unsigned long pfn, int flags)
- 	 * page_remove_rmap() in try_to_unmap_one(). So to determine page status
- 	 * correctly, we save a copy of the page flags at this time.
- 	 */
--	if (PageHuge(p))
--		page_flags = hpage->flags;
--	else
--		page_flags = p->flags;
-+	page_flags = p->flags;
+@@ -1342,7 +1342,6 @@ int memory_failure(unsigned long pfn, int flags)
+ 		}
+ 		unlock_page(p);
+ 		VM_BUG_ON_PAGE(!page_count(p), p);
+-		hpage = compound_head(p);
+ 	}
  
  	/*
- 	 * unpoison always clear PG_hwpoison inside page lock
+@@ -1414,11 +1413,8 @@ int memory_failure(unsigned long pfn, int flags)
+ 	/*
+ 	 * Now take care of user space mappings.
+ 	 * Abort on fail: __delete_from_page_cache() assumes unmapped page.
+-	 *
+-	 * When the raw error page is thp tail page, hpage points to the raw
+-	 * page after thp split.
+ 	 */
+-	if (!hwpoison_user_mappings(p, pfn, flags, &hpage)) {
++	if (!hwpoison_user_mappings(p, pfn, flags, &p)) {
+ 		action_result(pfn, MF_MSG_UNMAP_FAILED, MF_IGNORED);
+ 		res = -EBUSY;
+ 		goto out;
 -- 
 2.17.1
 
