@@ -2,202 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64EF6206F8E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 11:00:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A988C206F7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 10:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388847AbgFXJAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 05:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56270 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387491AbgFXJAT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 05:00:19 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64266C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 02:00:19 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id q19so1737434lji.2
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 02:00:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bEq8aoWf7DDgO6yWt+tqmsLUbeY8nM58bRX+rO+CdzU=;
-        b=M/VMdU+/Rwv6tpDepjVbdIbBpTq9QQDMbSHjVa1lOlkkglEW6NWrYNDEeOt9UWfop7
-         /OvWaOLZjvJvTEuEOdIOMQBJcCGNq6BOs8AVCpjl84aeBTiSrNP350e9UTCPa43+C0Z8
-         Lu7KS0nWmQTb9yawScRbIQl/0yb25FjWGhA+jg4MOkC1JRsq1ksQO69DM9cTnai9yp0U
-         jN8URtdNssz562PIg4VG3ADMqJ59HXXanPFeqbXFd84/QSmzJXDq7BSel15Th0AIHXXz
-         88y8Z19BbVWw4gG6r454wTH5gyVVy5Svfj+xFO7oZn+LM8IE/DWspWc7b3CrTdvbMKid
-         kFkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bEq8aoWf7DDgO6yWt+tqmsLUbeY8nM58bRX+rO+CdzU=;
-        b=mYMF6lYMo0285xzaaRXAB+Vyyvvq/WNAW69W9oA1MAncRhYU44RWhAbaHYeI+WM9a+
-         shtzdLc+CwIo9CAE7nt0GUVMHoF2+zLohXKqC3Gxdxfkd5JvJ0QXOV8kVbh934u6W67D
-         QwpyQW0n4H/+8G9hp8NXeE68pPPL2QBfavv9A0gfkKThrxWQ0jA3W3LuuUboNbm2bgse
-         unBPZstYd7HZLAecE3Lw1VJHDbFCF+65KJa5i5ELj7nUkVqwxKP43t/BqQt5IdeuuEXi
-         yh43oCRE32VrZmEd8MesM7huDw/zO/8w2y9cA+J9kLFBCUqaj/DF1QyFjiKv17ixkZGO
-         GeWw==
-X-Gm-Message-State: AOAM530q794IST8/pzRH4cFCyWM2Hoe/mudliP6iRDll/fgyrztN9krt
-        qcyxk2eZIZ2vWhqN87zNCqz9attQ/NODy53J4TOCog==
-X-Google-Smtp-Source: ABdhPJwEjSQsdLSGPIUG69d3EmaZG4MOJKHJMEGYJK8XrgLZPA22eRuqQCd9nkS0WncngUQkIvm1CM5G/g+bmdyvXsM=
-X-Received: by 2002:a05:651c:512:: with SMTP id o18mr14254641ljp.226.1592989217706;
- Wed, 24 Jun 2020 02:00:17 -0700 (PDT)
+        id S2388942AbgFXIxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 04:53:35 -0400
+Received: from mail-eopbgr70055.outbound.protection.outlook.com ([40.107.7.55]:38158
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728732AbgFXIxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 04:53:34 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mhBCJlFL0qCYPofSqUZjCuASsIY8SNhmxd0XoBAGdPXScd8pybfZAZgWBdjNbb6kBnDCIoOnB4fgP/JXNJIraRuVQdEDZbO6BlxQeKwpo/ztlNIXNpB4xnT2gwSYy35be+np8/Ky9UzapjMPHY6/4tI850YiKkdUI45pSYaQqM9YV74z+7aWGZYlHobIlxmZnsQvQfKksNZ05rRiHocRmI5h0WbhBmGarXCyb+UKh0dJpQ5sVJC8gkXoOjJlfpClPFkzUyvQwETLO/qZGCkBsFFcyWstFBkC4nWxiKhdQVRVI9A2SaEDgjlQEiW3qc9NZs5tJD/mq865VWlnXGpmLw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3P0H34ZpXj3sa+FcMN/vj5YDCEarbvC4lpBt0odIAMc=;
+ b=aBHplI/p8ECd7vw/0CR2lGXkSXPd/K2Pi/OfYdbK+b60WCIgYBQmbZN8NQ/UKyMmhYHOpwpMKDLViUsQ7Q0iLq/gcr3UiXGqPFKafO6ypjLSVv09NUD6VzUC+F2dEw/AT1b0X9mfuWmbhyuSS0snN3JIbYQ3QucUSQuUPeasysQWAEpd+3E27QH/Vc1i7o3G6BQP4TFaGuXcMp87tKJPzj5CnCUuW8T7YUmdt646F10EWryTnEK/JVw5b/F6/HcRV89FWhoGgIr99afKeKiXJiy9+S2juXflzDfNKWLXVoL/gbzitJQJe2TWIFqQKDdVGYnyuWw0i0/Bc7ClCCdqaw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3P0H34ZpXj3sa+FcMN/vj5YDCEarbvC4lpBt0odIAMc=;
+ b=Y8FEFl+xC3Vd+34xiqj3CGCsjpoqTWfFYnpZX34Sjy+fJa2jaEguECPvWREM6rWNn0XyfaxeE0D2cofLpWHP0mcmbllQG84DLZ2BaumeYa9g0kZLjQtmsw7TuOayD3OE+Jfz2zrPopJXq/KCTt1UG0qdQ6/uA/psHixhIIBNd5U=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB6PR0402MB2712.eurprd04.prod.outlook.com (2603:10a6:4:99::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.23; Wed, 24 Jun
+ 2020 08:53:29 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::2d36:b569:17c:7701]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::2d36:b569:17c:7701%4]) with mapi id 15.20.3109.027; Wed, 24 Jun 2020
+ 08:53:29 +0000
+From:   Peng Fan <peng.fan@nxp.com>
+To:     sstabellini@kernel.org, boris.ostrovsky@oracle.com,
+        jgross@suse.com, konrad.wilk@oracle.com, mst@redhat.com,
+        jasowang@redhat.com
+Cc:     x86@kernel.org, xen-devel@lists.xenproject.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org, linux-imx@nxp.com,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH] xen: introduce xen_vring_use_dma
+Date:   Wed, 24 Jun 2020 17:17:32 +0800
+Message-Id: <20200624091732.23944-1-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.16.4
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR06CA0246.apcprd06.prod.outlook.com
+ (2603:1096:4:ac::30) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-References: <20200619172011.5810-1-qais.yousef@arm.com> <6c1a6003-8f51-dadc-53e4-a2fa034dbe36@arm.com>
-In-Reply-To: <6c1a6003-8f51-dadc-53e4-a2fa034dbe36@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 24 Jun 2020 11:00:06 +0200
-Message-ID: <CAKfTPtDh+D9AdzcsjYuv8LmtWag2MaHx7Ysrxb7JQittKa_K0A@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] sched: Optionally skip uclamp logic in fast path
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Patrick Bellasi <patrick.bellasi@matbug.net>,
-        Chris Redpath <chris.redpath@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2PR06CA0246.apcprd06.prod.outlook.com (2603:1096:4:ac::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21 via Frontend Transport; Wed, 24 Jun 2020 08:53:25 +0000
+X-Mailer: git-send-email 2.16.4
+X-Originating-IP: [119.31.174.71]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: b1363182-65a2-4f59-943f-08d8181c10b1
+X-MS-TrafficTypeDiagnostic: DB6PR0402MB2712:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR0402MB271252F24E2615C533F09A9388950@DB6PR0402MB2712.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-Forefront-PRVS: 0444EB1997
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9mpAvUN3MAvpE2dBNOq1hIK19nSFJtezhFUd0V3Z/4upNlCblRi6Wl0e+TsYY+0bcpel05AhPBC40biYbeksMfGUZ7ylBlnVj/+dwpz+mw1yIsyVE+JV5Q6e/wcqqMBaSHtpXuEAxSuy87MNi/vUXcoL6B69Xeo08zkDX/vPaUTEKDZxxpnYueXjkPI5scjccjkMgso8/h34PDNQdE+voqiSduplvtLrrt03kI8pepZn9ZXUGBK1YDzjv038Z2SI95EYzxWguf14NoJbXQ0g6HlLQhl/AkHtmkbiXWOec9GUDUkArn5wSmWik8cMsoJu5Q5fIM6NpnFZp8ynJ5YVHMPCHnrbBasCbfsI5CwmXpB2a5dkGw67yD6QB1fpC4IMw7CCZYeaNmpzyl1MHm7ZcmUWqia3ltq1nFXhLt5XNpJfAEQV8SB/UMmToq2JMaF9jdhpL7vlkebimVzk22Z85w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(39860400002)(136003)(376002)(396003)(366004)(346002)(6506007)(8936002)(26005)(6486002)(956004)(1076003)(6666004)(478600001)(5660300002)(4326008)(186003)(316002)(16526019)(52116002)(66946007)(6512007)(7416002)(2616005)(2906002)(83380400001)(66476007)(66556008)(86362001)(44832011)(36756003)(8676002)(966005)(309714004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: OG8lcvpOfKsePRZSpoqPiKfOjSlfZR+WMFE/egKtYI2yfBBl+8ol0HEjayqHDHtp+KkCYMoGVThhpiOL3IfBJIY6oA2IH6mFpajCzEFm2q5Lhr3MyEw4EL3V5qGE0y2tBMh6eXqc/20VXATJ8R6HoRM9yubs4tsuDB17UfcFKNBE5pSAhXR7+rYw79VOkUFVs+FeeWRnheHkvvDYffaWxm3/ROFVmM2G802KEITO2U8dK27em+C6QX8o1W4te8lKcZ3nfFB+L0si/9u6oQRHHx0eSgUE/8zRumRyNlc9dIXjeDDxqceDTTZb1QuhbDEx5/fSBKjgZJdtYuveMNif3uIZxwD4kp3uxquQUYxhPqfQuwrU3rGIo7iiwR9ADrJRZ1xV42hf5seolGQPXIyEGMYLn5j9ZbW203l6Q0My3YSLJS5lcYZzrjdWxtIl2+HgbHMPP/nfqQN57SoV+uY2U5DcEk290bT9B2kpif/8je8Xj/hpsS2jEe4oF8BC9Hpr
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b1363182-65a2-4f59-943f-08d8181c10b1
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2020 08:53:29.3458
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: brJo6ak5M+QkoxRVepy34lWLh9fsrJGapTz3/dUz1YVi14IcgHD4cB3AmBsLTLXbtydlTOyte1wX94/BlqOoFw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0402MB2712
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Jun 2020 at 19:40, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
->
-> On 19/06/2020 19:20, Qais Yousef wrote> This series attempts to address the report that uclamp logic could be expensive
-> > sometimes and shows a regression in netperf UDP_STREAM under certain
-> > conditions.
-> >
-> > The first patch is a fix for how struct uclamp_rq is initialized which is
-> > required by the 2nd patch which contains the real 'fix'.
-> >
-> > Worth noting that the root cause of the overhead is believed to be system
-> > specific or related to potential certain code/data layout issues, leading to
-> > worse I/D $ performance.
-> >
-> > Different systems exhibited different behaviors and the regression did
-> > disappear in certain kernel version while attempting to reporoduce.
-> >
-> > More info can be found here:
-> >
-> > https://lore.kernel.org/lkml/20200616110824.dgkkbyapn3io6wik@e107158-lin/
-> >
-> > Having the static key seemed the best thing to do to ensure the effect of
-> > uclamp is minimized for kernels that compile it in but don't have a userspace
-> > that uses it, which will allow distros to distribute uclamp capable kernels by
-> > default without having to compromise on performance for some systems that could
-> > be affected.
->
-> My test data indicates that the static key w/o any uclamp users (3)
-> brings the performance number for the 'perf bench sched pipe'
-> workload back (i.e. from w/ !CONFIG_UCLAMP_TASK) (1).
->
-> platform:
->
->     Arm64 Hikey960 (only little CPUs [0-3]), no CPUidle,
->     performance CPUfreq governor
->
-> workload:
->
->     perf stat -n -r 20 -- perf bench sched pipe -T -l 100000
->
->
-> (A) *** Performance results ***
->
-> (1) tip/sched/core
->     # CONFIG_UCLAMP_TASK is not set
->
->     *1.39285* +- 0.00191 seconds time elapsed  ( +-  0.14% )
->
-> (2) tip/sched/core
->     CONFIG_UCLAMP_TASK=y
->
->     *1.42877* +- 0.00181 seconds time elapsed  ( +-  0.13% )
->
-> (3) tip/sched/core + opt_skip_uclamp_v2
->     CONFIG_UCLAMP_TASK=y
->
->     *1.38833* +- 0.00291 seconds time elapsed  ( +-  0.21% )
->
-> (4) tip/sched/core + opt_skip_uclamp_v2
->     CONFIG_UCLAMP_TASK=y
->     echo 512 > /proc/sys/kernel/sched_util_clamp_min (enable uclamp)
->
->     *1.42062* +- 0.00238 seconds time elapsed  ( +-  0.17% )
->
->
-> (B) *** Profiling on CPU0 and CPU1  ***
->
->     (further hp'ing out CPU2 and CPU3 to get consistent hit numbers)
->
-> (1)
->
-> CPU0:  Function             Hit    Time            Avg             s^2
->        --------             ---    ----            ---             ---
->        deactivate_task  1997346    2207642 us      *1.105* us      0.033 us
->        activate_task    1997391    1840057 us      *0.921* us      0.054 us
->
-> CPU1:  Function             Hit    Time            Avg             s^2
->        --------             ---    ----            ---             ---
->        deactivate_task  1997455    2225960 us      1.114 us        0.034 us
->        activate_task    1997410    1842603 us      0.922 us        0.052 us
->
-> (2)
->
-> CPU0:  Function             Hit    Time            Avg             s^2
->        --------             ---    ----            ---             ---
->        deactivate_task  1998538    2419719 us      *1.210* us      0.061 us
->        activate_task    1997119    1960401 us      *0.981* us      0.034 us
->
-> CPU1:  Function             Hit    Time            Avg             s^2
->        --------             ---    ----            ---             ---
->        deactivate_task  1996597    2400760 us      1.202 us        0.059 us
->        activate_task    1998016    1985013 us      0.993 us        0.028 us
->
-> (3)
->
-> CPU0:  Function             Hit    Time            Avg             s^2
->        --------             ---    ----            ---             ---
->        deactivate_task  1997525    2155416 us      *1.079* us      0.020 us
->        activate_task    1997874    1899002 us      *0.950* us      0.044 us
->
-> CPU1:  Function             Hit    Time            Avg             s^2
->        --------             ---    ----            ---             ---
->        deactivate_task  1997935    2118648 us      1.060 us        0.017 us
->        activate_task    1997586    1895162 us      0.948 us        0.044 us
->
-> (4)
->
-> CPU0:  Function             Hit    Time            Avg             s^2
->        --------             ---    ----            ---             ---
->        deactivate_task  1998246    2428121 us      *1.215* us      0.062 us
->        activate_task    1998252    2132141 us      *1.067* us      0.020 us
->
-> CPU1:  Function             Hit    Time            Avg             s^2
->        --------             ---    ----            ---             ---
->        deactivate_task  1996154    2414194 us      1.209 us        0.060 us
->        activate_task    1996148    2140667 us      1.072 us        0.021 us
+Export xen_swiotlb for all platforms using xen swiotlb
 
-I have rerun the tests that I ran previously on my octo core arm64 (hikey):
-20 iteration of perf bench sched pipe -T -l 50000
-tip stands for tip/sched/core
-uclamp enabled means both uclamp task and uclamp cgroup
-the stdev is around 0.25% for all tests
+Use xen_swiotlb to determine when vring should use dma APIs to map the
+ring: when xen_swiotlb is enabled the dma API is required. When it is
+disabled, it is not required.
 
-                           root           level 1       level 2       level 3
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
 
-tip uclamp disabled        50653          47188         44568         41925
-tip uclamp enabled         48800(-3.66%)  45600(-3.37%) 42822(-3.92%)
-40257(-3.98%)
-/w patch uclamp disabled   50615(-0.08%)  47198(+0.02%) 44609(+0.09%)
-41735(-0.45%)
-/w patch uclamp enabled    49661(-1.96%)  46611(-1.22%) 43803(-1.72%)
-41243(-1.63%)
+V2:
+ This is a modified version from Stefano's patch
+ https://lore.kernel.org/patchwork/patch/1033801/#1222404
+ Note: This is not to address rpmsg virtio issue, this is
+ to let DomU virtio not using xen swiotlb could use non dma vring
+ on ARM64 platforms.
 
-Results are better with your patch
+ arch/arm/xen/mm.c                      | 1 +
+ arch/x86/include/asm/xen/swiotlb-xen.h | 2 --
+ arch/x86/xen/pci-swiotlb-xen.c         | 2 --
+ drivers/virtio/virtio_ring.c           | 2 +-
+ drivers/xen/swiotlb-xen.c              | 3 +++
+ include/xen/swiotlb-xen.h              | 6 ++++++
+ include/xen/xen.h                      | 6 ++++++
+ 7 files changed, 17 insertions(+), 5 deletions(-)
+
+diff --git a/arch/arm/xen/mm.c b/arch/arm/xen/mm.c
+index d40e9e5fc52b..6a493ea087f0 100644
+--- a/arch/arm/xen/mm.c
++++ b/arch/arm/xen/mm.c
+@@ -139,6 +139,7 @@ static int __init xen_mm_init(void)
+ 	struct gnttab_cache_flush cflush;
+ 	if (!xen_initial_domain())
+ 		return 0;
++	xen_swiotlb = 1;
+ 	xen_swiotlb_init(1, false);
+ 
+ 	cflush.op = 0;
+diff --git a/arch/x86/include/asm/xen/swiotlb-xen.h b/arch/x86/include/asm/xen/swiotlb-xen.h
+index 6b56d0d45d15..bb5ce02b4e20 100644
+--- a/arch/x86/include/asm/xen/swiotlb-xen.h
++++ b/arch/x86/include/asm/xen/swiotlb-xen.h
+@@ -3,12 +3,10 @@
+ #define _ASM_X86_SWIOTLB_XEN_H
+ 
+ #ifdef CONFIG_SWIOTLB_XEN
+-extern int xen_swiotlb;
+ extern int __init pci_xen_swiotlb_detect(void);
+ extern void __init pci_xen_swiotlb_init(void);
+ extern int pci_xen_swiotlb_init_late(void);
+ #else
+-#define xen_swiotlb (0)
+ static inline int __init pci_xen_swiotlb_detect(void) { return 0; }
+ static inline void __init pci_xen_swiotlb_init(void) { }
+ static inline int pci_xen_swiotlb_init_late(void) { return -ENXIO; }
+diff --git a/arch/x86/xen/pci-swiotlb-xen.c b/arch/x86/xen/pci-swiotlb-xen.c
+index 33293ce01d8d..071fbe0e1a91 100644
+--- a/arch/x86/xen/pci-swiotlb-xen.c
++++ b/arch/x86/xen/pci-swiotlb-xen.c
+@@ -18,8 +18,6 @@
+ #endif
+ #include <linux/export.h>
+ 
+-int xen_swiotlb __read_mostly;
+-
+ /*
+  * pci_xen_swiotlb_detect - set xen_swiotlb to 1 if necessary
+  *
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index a2de775801af..768afd79f67a 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -252,7 +252,7 @@ static bool vring_use_dma_api(struct virtio_device *vdev)
+ 	 * the DMA API if we're a Xen guest, which at least allows
+ 	 * all of the sensible Xen configurations to work correctly.
+ 	 */
+-	if (xen_domain())
++	if (xen_vring_use_dma())
+ 		return true;
+ 
+ 	return false;
+diff --git a/drivers/xen/swiotlb-xen.c b/drivers/xen/swiotlb-xen.c
+index b6d27762c6f8..25747e72e6fe 100644
+--- a/drivers/xen/swiotlb-xen.c
++++ b/drivers/xen/swiotlb-xen.c
+@@ -40,6 +40,9 @@
+ 
+ #include <trace/events/swiotlb.h>
+ #define MAX_DMA_BITS 32
++
++int xen_swiotlb __read_mostly;
++
+ /*
+  * Used to do a quick range check in swiotlb_tbl_unmap_single and
+  * swiotlb_tbl_sync_single_*, to see if the memory was in fact allocated by this
+diff --git a/include/xen/swiotlb-xen.h b/include/xen/swiotlb-xen.h
+index ffc0d3902b71..235babcde848 100644
+--- a/include/xen/swiotlb-xen.h
++++ b/include/xen/swiotlb-xen.h
+@@ -12,4 +12,10 @@ void xen_dma_sync_for_device(dma_addr_t handle, phys_addr_t paddr, size_t size,
+ extern int xen_swiotlb_init(int verbose, bool early);
+ extern const struct dma_map_ops xen_swiotlb_dma_ops;
+ 
++#ifdef CONFIG_SWIOTLB_XEN
++extern int xen_swiotlb;
++#else
++#define xen_swiotlb (0)
++#endif
++
+ #endif /* __LINUX_SWIOTLB_XEN_H */
+diff --git a/include/xen/xen.h b/include/xen/xen.h
+index 19a72f591e2b..c51c46f5d739 100644
+--- a/include/xen/xen.h
++++ b/include/xen/xen.h
+@@ -52,4 +52,10 @@ bool xen_biovec_phys_mergeable(const struct bio_vec *vec1,
+ extern u64 xen_saved_max_mem_size;
+ #endif
+ 
++#include <xen/swiotlb-xen.h>
++static inline int xen_vring_use_dma(void)
++{
++	return !!xen_swiotlb;
++}
++
+ #endif	/* _XEN_XEN_H */
+-- 
+2.16.4
+
