@@ -2,123 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F02D20717C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 12:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D67B42071D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 13:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390438AbgFXKtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 06:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388652AbgFXKti (ORCPT
+        id S2390580AbgFXLK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 07:10:56 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:31553 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728656AbgFXLKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 06:49:38 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386D4C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 03:49:37 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id h15so1785877wrq.8
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 03:49:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=rm0PzYfDEfLIeFLqk84KmWVx+T9Uvb0Z9B/KLyoR+xk=;
-        b=fCvT6A2SQZcvbsuT8IlpxFsEyCsT7qcpfdGp/lxH0Au6T/L8g5NKG9GUmsPRDJTzEO
-         EKXkRIuGoPWVZxG3ZbEnigA5eURvQK4kD+OxkNxNLUxkI99SbQRsLKtgEiGfohu3VUrv
-         HcyZsaeJemc0E7aSFybXT6nUaVhyACN2nzYe71v34n/IebKLgPO/yf8/By5NlGKI6x9D
-         WcH4dfB0xNTLIH+X1OX/MbOVUgQxDLHJ+faau0cR62PlE+fE4+aAFrwt/RxfuO+YJ2hT
-         uJ8oHlKh9CcreOCxa6TnYqsg9U75PWyufqurZEz21DT8YuNmwR9XpxPny0YmGoyoHQya
-         aUdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=rm0PzYfDEfLIeFLqk84KmWVx+T9Uvb0Z9B/KLyoR+xk=;
-        b=hSEGvHgHBwRS8/ChaDZG1Atwra2zy6vQGuM2FHqH0Q8Gqc1N38cSTt6XFAKEnuefmA
-         FA2U09FxoBaNDF9cJpS9OeZi9clApVAxQn2Zv1HE4tLNQD4b4IJkR0k57TQWI3/hWDD1
-         VW6XxlctagoCrWU8kn40Q0h/m4hYv4G5ABprpijk42GGh5PgazTIxqpWhbpCFKVyE+g9
-         2mhnHRRel55ttRkosxVh1XUGlXCDzJa1nPrkKHzDXYjoLbm8yUc31eGKZQ15HUiTdtxt
-         RoCMT4ovr2WN2YcxD1zVki8z5CZ86LxIOhHDj03Y5WHFlk3L1Cxzal1Kg/YuBltiNtaR
-         kZxg==
-X-Gm-Message-State: AOAM5328yaYJokRAlBS2F9ATer937hYVviI+1S6VYdp7XsnjGTSi09Tj
-        VGpAOCo4eImjxP8j/dDiTjENjVxq
-X-Google-Smtp-Source: ABdhPJy9/sOk8ex2jB6ikHmIqrwwBPJDvnSj8Utt90j4s5qZ/jYvlBiEyOVSeUGYQKgDJhpGuo2vlA==
-X-Received: by 2002:adf:9062:: with SMTP id h89mr3190210wrh.285.1592995775777;
-        Wed, 24 Jun 2020 03:49:35 -0700 (PDT)
-Received: from ogabbay-VM ([213.57.90.10])
-        by smtp.gmail.com with ESMTPSA id w17sm27932095wra.42.2020.06.24.03.49.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 24 Jun 2020 03:49:34 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 14:55:39 +0300
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [git pull] habanalabs fixes pull request for kernel 5.8-rc2
-Message-ID: <20200624115539.GA8680@ogabbay-VM>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        Wed, 24 Jun 2020 07:10:55 -0400
+Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20200624111052epoutp02b4dac943201350653bf768cb0d05fa9c~bdmEoUKEj1942119421epoutp02Y
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 11:10:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20200624111052epoutp02b4dac943201350653bf768cb0d05fa9c~bdmEoUKEj1942119421epoutp02Y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1592997052;
+        bh=GXE5Ev/ANiwwas6mD2jNrpygy/hRdwB5x3t6IyL9T0k=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ct9KFZUtgMFof9JSmotNW3onJZRLLviyXhU9SwMkdRU8EOOTYpNO31wqCxDkgOz7W
+         7RGxeWeuFRt/MWAHiTI1cqWFJ+N15DyZpN32vJ+6ZOFBJV6a8pBJpEbMoiIfNdcTWZ
+         6fg5WqfgBXZUl+ylndQowQJkL79ZEs/VAEYXOMMo=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20200624111051epcas5p3fd3a4fedcf34699356a4c3a35e76580e~bdmDzGG481682616826epcas5p3L;
+        Wed, 24 Jun 2020 11:10:51 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        20.E1.09703.BB433FE5; Wed, 24 Jun 2020 20:10:51 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20200624104045epcas5p43d47f01a4536d794c1d1e7c2ca78cb6e~bdLxUGWSe0398903989epcas5p4q;
+        Wed, 24 Jun 2020 10:40:45 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20200624104045epsmtrp1e2acc66794694d800334b8e74baa5255~bdLxTfVHn2582425824epsmtrp1G;
+        Wed, 24 Jun 2020 10:40:45 +0000 (GMT)
+X-AuditID: b6c32a4a-4b5ff700000025e7-3f-5ef334bba565
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        00.08.08382.DAD23FE5; Wed, 24 Jun 2020 19:40:45 +0900 (KST)
+Received: from localhost.localdomain (unknown [107.108.92.210]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20200624104044epsmtip14286e1704a27383342feef501a81df54~bdLwZqGt91497614976epsmtip1M;
+        Wed, 24 Jun 2020 10:40:44 +0000 (GMT)
+From:   Vishal Goel <vishal.goel@samsung.com>
+To:     rusty@rustcorp.com.au, linux-kernel@vger.kernel.org
+Cc:     Vishal Goel <vishal.goel@samsung.com>,
+        Amit Sahrawat <a.sahrawat@samsung.com>
+Subject: [PATCH 1/1] Module:- Do not store unnecessary symbols for kernel
+ modules
+Date:   Wed, 24 Jun 2020 15:48:18 +0530
+Message-Id: <1592993898-14307-1-git-send-email-vishal.goel@samsung.com>
+X-Mailer: git-send-email 1.9.1
+In-Reply-To: <Do not store unnecessary symbols for kernel modules>
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLIsWRmVeSWpSXmKPExsWy7bCmpu5uk89xBq97zS0u7k61uLxrDpvF
+        zWkXWCzW3T7N6MDisWLDCWaPvi2rGD0+b5ILYI7isklJzcksSy3St0vgyni+7xd7wRuJim2t
+        pxkbGD8LdzFyckgImEg8O3uVpYuRi0NIYDejxLUJh6CcT4wSy443MkE43xglrjZMYoFpWf/m
+        GzNEYi+jxOSHh1khnC+MEu1n+9lAqtgEtCV6590FaufgEBEwl5g9rRQkzCwQLLHxwxWwQcJA
+        9pp/H8DKWQRUJfr7f4PZvALuEl3frjJDLJOTOHlsMiuIzSngJHFkw12wiyQElrFLPLx/gA2i
+        yEWibdZPqAZhiVfHt7BD2FISL/vb2CEa2hkljs7aCOVMYZT4t+8GVJW9xOvmBrBLmQU0Jdbv
+        0ocIy0pMPbWOCeJqPone30+YIOK8EjvmwdiqElMndUONkZY4fOMMNIg8JA6d/gQNu6mMEqt+
+        LGKdwCg3C2HFAkbGVYySqQXFuempxaYFRnmp5XrFibnFpXnpesn5uZsYwTGu5bWD8eGDD3qH
+        GJk4GA8xSnAwK4nwhrh9ihPiTUmsrEotyo8vKs1JLT7EKM3BoiTOq/TjTJyQQHpiSWp2ampB
+        ahFMlomDU6qBqdh31vUqpRnh9/UWXWtcoCOqPHX5zgjPidHCB9K0hA8aOTO8Mvzpei5YLzrp
+        oM/GO7v4nytOrCl33HVzAaNV8bxLlWYLExoytyS57FSyTe//KW/glpTDz/jrE09jaZ6a5oZ2
+        kV0iDenzl/TudJ6mUKCd/6xt9fuuvo+Xn8codRtdLLx/XFZkzZHrZ7uS5qb6/+N7+4rTUsHl
+        ZH+aCb/CTtczYU8OaIrf9p27dpXX0yOmgtOAAXL9Wt7Sis8KkWZ/4/4URnqrOL3/nlHHFHdD
+        Pmp/zryb7tvkt/kuF70m3B2/Z0W2q09R3ZPKHTFRawuvLMxf8zb4v7c2y6Ufxfoh0jYWzick
+        5n1qqLDmSFNiKc5INNRiLipOBACZHLIHYAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLJMWRmVeSWpSXmKPExsWy7bCSnO5a3c9xBq/ni1pc3J1qcXnXHDaL
+        m9MusFisu32a0YHFY8WGE8wefVtWMXp83iQXwBzFZZOSmpNZllqkb5fAlfF83y/2gjcSFdta
+        TzM2MH4W7mLk5JAQMJFY/+YbcxcjF4eQwG5GiYPb9rNAJKQllnS+YYewhSVW/nvODlH0iVGi
+        //YeRpAEm4C2RO+8u0wgtoiApcSkk7OYQWxmgWCJ0z07wQYJCwRKzJ92nBXEZhFQlejv/80G
+        YvMKuEt0fbvKDLFATuLksclgNZwCThJHNkDMFBJwlHhydDXLBEa+BYwMqxglUwuKc9Nziw0L
+        DPNSy/WKE3OLS/PS9ZLzczcxgkNIS3MH4/ZVH/QOMTJxMB5ilOBgVhLhDXH7FCfEm5JYWZVa
+        lB9fVJqTWnyIUZqDRUmc90bhwjghgfTEktTs1NSC1CKYLBMHp1QDk6+vtfvmhpubNCa5ty73
+        V5cPtaoMbKpZJnibZUthlNYyk5yI3SYNHA33AoImp29YvcwubaXxlw8XE1fcLtqgMmUuh1yQ
+        +8rYWyv9v9wP2rG6z1fu++s1tmbhrr5+bUv3B5QmnfJuWv3jRXjCpaWPPHaIlr79XWLFcOKk
+        9OxLrUsbowU1zy5k/vOHJU7DdmvoAz6T39vVYvzDDu8wX1CwVEzEQrLATeWfYaD06U9ruZ8s
+        2LmT6+7s2OVdp7jNu5l2HLtcyMT6s9BqvXOMiYGDmcZXSZPDebe1boR+Kj0j8GVJ+f9ZZ3/N
+        11z9a+/1E5qv7ux89myrWPuEKUu5FbVmfnr/53rXo0+pr8N9n8l+PqbEUpyRaKjFXFScCADE
+        nGJDkAIAAA==
+X-CMS-MailID: 20200624104045epcas5p43d47f01a4536d794c1d1e7c2ca78cb6e
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20200624104045epcas5p43d47f01a4536d794c1d1e7c2ca78cb6e
+References: <Do not store unnecessary symbols for kernel modules>
+        <CGME20200624104045epcas5p43d47f01a4536d794c1d1e7c2ca78cb6e@epcas5p4.samsung.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Greg,
+While loading modules, ignores the mapping symbols found in ARM
+ELF files: $a, $t and $d.
+Also ignores symbols starting with .L found in rodata.str sections
+It will help in saving memory allocated for modules using
+vmalloc.
 
-This pull request contains important bug fixes for the GAUDI code that was
-just merged. Details are in the tag message below.
+It can save around 500KB - 1000KB depending on the number of
+modules and number of symbols present in them
 
-Thanks,
-Oded
+Signed-off-by: Vishal Goel <vishal.goel@samsung.com>
+Signed-off-by: Amit Sahrawat <a.sahrawat@samsung.com>
+---
+ kernel/module.c | 35 ++++++++++++++++++++---------------
+ 1 file changed, 20 insertions(+), 15 deletions(-)
 
-The following changes since commit 8c289ea064165237891a7b4be77b74d5cba8fa99:
+diff --git a/kernel/module.c b/kernel/module.c
+index 646f1e2..d5b7b0a 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -2550,6 +2550,20 @@ static void free_modinfo(struct module *mod)
+ 
+ #ifdef CONFIG_KALLSYMS
+ 
++/*
++ * This ignores the intensely annoying "mapping symbols" found
++ * in ARM ELF files: $a, $t and $d.
++ * It also ignores symbols starting with .L found in rodata.str sections
++ */
++static inline int is_arm_mapping_symbol(const char *str)
++{
++	if (str[0] == '.' && str[1] == 'L')
++		return true;
++	return str[0] == '$' && strchr("axtd", str[1])
++		&& (str[2] == '\0' || str[2] == '.');
++}
++
++
+ /* Lookup exported symbol in given range of kernel_symbols */
+ static const struct kernel_symbol *lookup_exported_symbol(const char *name,
+ 							  const struct kernel_symbol *start,
+@@ -2664,8 +2678,9 @@ static void layout_symtab(struct module *mod, struct load_info *info)
+ 	/* Compute total space required for the core symbols' strtab. */
+ 	for (ndst = i = 0; i < nsrc; i++) {
+ 		if (i == 0 || is_livepatch_module(mod) ||
+-		    is_core_symbol(src+i, info->sechdrs, info->hdr->e_shnum,
+-				   info->index.pcpu)) {
++		    (is_core_symbol(src+i, info->sechdrs, info->hdr->e_shnum,
++				   info->index.pcpu) &&
++		     !is_arm_mapping_symbol(&info->strtab[src[i].st_name]))) {
+ 			strtab_size += strlen(&info->strtab[src[i].st_name])+1;
+ 			ndst++;
+ 		}
+@@ -2728,8 +2743,9 @@ static void add_kallsyms(struct module *mod, const struct load_info *info)
+ 	for (ndst = i = 0; i < mod->kallsyms->num_symtab; i++) {
+ 		mod->kallsyms->typetab[i] = elf_type(src + i, info);
+ 		if (i == 0 || is_livepatch_module(mod) ||
+-		    is_core_symbol(src+i, info->sechdrs, info->hdr->e_shnum,
+-				   info->index.pcpu)) {
++		    (is_core_symbol(src+i, info->sechdrs, info->hdr->e_shnum,
++				   info->index.pcpu) &&
++		     !is_arm_mapping_symbol(&info->strtab[src[i].st_name]))) {
+ 			mod->core_kallsyms.typetab[ndst] =
+ 			    mod->kallsyms->typetab[i];
+ 			dst[ndst] = src[i];
+@@ -3986,17 +4002,6 @@ static inline int within(unsigned long addr, void *start, unsigned long size)
+ }
+ 
+ #ifdef CONFIG_KALLSYMS
+-/*
+- * This ignores the intensely annoying "mapping symbols" found
+- * in ARM ELF files: $a, $t and $d.
+- */
+-static inline int is_arm_mapping_symbol(const char *str)
+-{
+-	if (str[0] == '.' && str[1] == 'L')
+-		return true;
+-	return str[0] == '$' && strchr("axtd", str[1])
+-	       && (str[2] == '\0' || str[2] == '.');
+-}
+ 
+ static const char *kallsyms_symbol_name(struct mod_kallsyms *kallsyms, unsigned int symnum)
+ {
+-- 
+1.9.1
 
-  mei: me: add tiger lake point device ids for H platforms. (2020-06-23 07:55:47 +0200)
-
-are available in the Git repository at:
-
-  git://people.freedesktop.org/~gabbayo/linux tags/misc-habanalabs-fixes-2020-06-24
-
-for you to fetch changes up to ce04326edd59d7902d7ef3a9d853864096e0cd1a:
-
-  habanalabs: increase h/w timer when checking idle (2020-06-24 12:35:23 +0300)
-
-----------------------------------------------------------------
-This tag contains the following fixes for kernel 5.8-rc2:
-
-- close security hole in GAUDI command buffer parsing by blocking an
-  instruction that might allow user to run command buffer that wasn't
-  parsed on a secured engine.
-
-- Fix bug in GAUDI MMU cache invalidation code.
-
-- Rename a function to resolve conflict with a static inline function in
-  arch/m68k/include/asm/mcfmmu.h
-
-- Increase watchdog timeout of GAUDI QMAN arbitration H/W to prevent false
-  reports on timeouts
-
-- Fix bug of dereferencing NULL pointer when an error occurs during command
-  submission
-
-- Increase H/W timer for checking if PDMA engine is IDLE in GAUDI.
-
-----------------------------------------------------------------
-Oded Gabbay (3):
-      habanalabs: block scalar load_and_exe on external queue
-      habanalabs: rename mmu_write() to mmu_asid_va_write()
-      habanalabs: increase GAUDI QMAN ARB WDT timeout
-
-Ofir Bitton (1):
-      habanalabs: Correct handling when failing to enqueue CB
-
-Omer Shpigelman (2):
-      habanalabs: use PI in MMU cache invalidation
-      habanalabs: increase h/w timer when checking idle
-
- drivers/misc/habanalabs/command_submission.c       | 13 ++++++++
- drivers/misc/habanalabs/debugfs.c                  |  4 +--
- drivers/misc/habanalabs/gaudi/gaudi.c              | 37 ++++++++++++++++++++--
- drivers/misc/habanalabs/gaudi/gaudiP.h             |  3 ++
- .../misc/habanalabs/include/gaudi/gaudi_packets.h  |  3 ++
- 5 files changed, 56 insertions(+), 4 deletions(-)
