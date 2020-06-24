@@ -2,132 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE15420749F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 15:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 967B12074A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 15:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403931AbgFXNdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 09:33:22 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:43725 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388896AbgFXNdV (ORCPT
+        id S2390962AbgFXNeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 09:34:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388896AbgFXNeK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 09:33:21 -0400
-Received: by mail-pg1-f194.google.com with SMTP id w2so628977pgg.10;
-        Wed, 24 Jun 2020 06:33:20 -0700 (PDT)
+        Wed, 24 Jun 2020 09:34:10 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC748C061573;
+        Wed, 24 Jun 2020 06:34:10 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id b7so2320959pju.0;
+        Wed, 24 Jun 2020 06:34:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o2BDas5hPmBEDguTVlPQc/PXdhVs9KoBO9DKMp79/t8=;
+        b=dOiY63xNlCtO6ROQwhWxekDmNHRcu81tw9rgW8ErlqUMS3bJVQwyM9WT/XzBbXbs/c
+         fSZluzQB9tQsVN/+WHJW/yyc6kSKLB2eIvpXsZnAuuA3gHAkq6GGuDMA5fFFKOe1iPzd
+         Z7QOmN/HO3l299Gmkev2X5d1Q0SJpkomAKN26FwBUw4pf1HXI/EpsXRUpeOfRR9kCf9Z
+         1cgCYwSq9t1x47cBOIz901HtbuOmAAeMt2yvA+dJPZHdoRhLoGETux31qxGfYN73zc7F
+         q+TJeie2XdbU663c7a9+8lIxIDvVBCHNk+pCEiiBOfnznp/HKNx3WfPvlPpf4PcYKqY5
+         y4tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=M9l6txOTKX6NW4WDDCYiUemnZ4OCGm3jGi3nT3lueA8=;
-        b=cNJmu1KWcUatEyL0b5OdGr4/eAUq9pZTFa4h2Joi0ATIT6jPCKOAe7lsYt76cU7eaN
-         agymxF2lwl11j5JFGHm+IwyRIX5xRtbAdI2u9Qb1TuoWzTxT+Ii50h8JqsmPWQ37C2X+
-         3GG16Lev3az0OEY5/l6sQIU+5B4wsfXwWLVLMli1JvwCYvrB+E5yu+Wls/1dQFCzLnKA
-         Cyc4zXS/CVXos//EP2OCdq00sbRY+0onrcRQBEtZqI2Ph0WJGcT4gG6poSqn6DZNBAU6
-         D0vzBLXFhvz7VA/ijZoW5oeMAmGzPWa0D09Bw4TKMGQ/8+ahb8A9ekwbvfdeNWSoKC4i
-         WZJA==
-X-Gm-Message-State: AOAM5307jLnf3VI06zgm8NQWdRfabptKIRb+lrbMq6NAj4KXtAyov1VG
-        VgcAat9o+nxusg1XfM88U4I=
-X-Google-Smtp-Source: ABdhPJy84ZYwI8uYwYLoAXr770aOJpQHyK6PLjP0ow9VARewgz8PHOTpgz8nyMy49jOSJZ8muGQyNg==
-X-Received: by 2002:a65:63d4:: with SMTP id n20mr718566pgv.213.1593005600062;
-        Wed, 24 Jun 2020 06:33:20 -0700 (PDT)
-Received: from [192.168.50.147] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id 199sm11480185pgc.79.2020.06.24.06.33.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jun 2020 06:33:19 -0700 (PDT)
-Subject: Re: [PATCH] scsi: sd: add runtime pm to open / release
-To:     Martin Kepplinger <martin.kepplinger@puri.sm>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@puri.sm
-References: <20200623111018.31954-1-martin.kepplinger@puri.sm>
-From:   Bart Van Assche <bvanassche@acm.org>
-Autocrypt: addr=bvanassche@acm.org; prefer-encrypt=mutual; keydata=
- mQENBFSOu4oBCADcRWxVUvkkvRmmwTwIjIJvZOu6wNm+dz5AF4z0FHW2KNZL3oheO3P8UZWr
- LQOrCfRcK8e/sIs2Y2D3Lg/SL7qqbMehGEYcJptu6mKkywBfoYbtBkVoJ/jQsi2H0vBiiCOy
- fmxMHIPcYxaJdXxrOG2UO4B60Y/BzE6OrPDT44w4cZA9DH5xialliWU447Bts8TJNa3lZKS1
- AvW1ZklbvJfAJJAwzDih35LxU2fcWbmhPa7EO2DCv/LM1B10GBB/oQB5kvlq4aA2PSIWkqz4
- 3SI5kCPSsygD6wKnbRsvNn2mIACva6VHdm62A7xel5dJRfpQjXj2snd1F/YNoNc66UUTABEB
- AAG0JEJhcnQgVmFuIEFzc2NoZSA8YnZhbmFzc2NoZUBhY20ub3JnPokBOQQTAQIAIwUCVI67
- igIbAwcLCQgHAwIBBhUIAgkKCwQWAgMBAh4BAheAAAoJEHFcPTXFzhAJ8QkH/1AdXblKL65M
- Y1Zk1bYKnkAb4a98LxCPm/pJBilvci6boefwlBDZ2NZuuYWYgyrehMB5H+q+Kq4P0IBbTqTa
- jTPAANn62A6jwJ0FnCn6YaM9TZQjM1F7LoDX3v+oAkaoXuq0dQ4hnxQNu792bi6QyVdZUvKc
- macVFVgfK9n04mL7RzjO3f+X4midKt/s+G+IPr4DGlrq+WH27eDbpUR3aYRk8EgbgGKvQFdD
- CEBFJi+5ZKOArmJVBSk21RHDpqyz6Vit3rjep7c1SN8s7NhVi9cjkKmMDM7KYhXkWc10lKx2
- RTkFI30rkDm4U+JpdAd2+tP3tjGf9AyGGinpzE2XY1K5AQ0EVI67igEIAKiSyd0nECrgz+H5
- PcFDGYQpGDMTl8MOPCKw/F3diXPuj2eql4xSbAdbUCJzk2ETif5s3twT2ER8cUTEVOaCEUY3
- eOiaFgQ+nGLx4BXqqGewikPJCe+UBjFnH1m2/IFn4T9jPZkV8xlkKmDUqMK5EV9n3eQLkn5g
- lco+FepTtmbkSCCjd91EfThVbNYpVQ5ZjdBCXN66CKyJDMJ85HVr5rmXG/nqriTh6cv1l1Js
- T7AFvvPjUPknS6d+BETMhTkbGzoyS+sywEsQAgA+BMCxBH4LvUmHYhpS+W6CiZ3ZMxjO8Hgc
- ++w1mLeRUvda3i4/U8wDT3SWuHcB3DWlcppECLkAEQEAAYkBHwQYAQIACQUCVI67igIbDAAK
- CRBxXD01xc4QCZ4dB/0QrnEasxjM0PGeXK5hcZMT9Eo998alUfn5XU0RQDYdwp6/kMEXMdmT
- oH0F0xB3SQ8WVSXA9rrc4EBvZruWQ+5/zjVrhhfUAx12CzL4oQ9Ro2k45daYaonKTANYG22y
- //x8dLe2Fv1By4SKGhmzwH87uXxbTJAUxiWIi1np0z3/RDnoVyfmfbbL1DY7zf2hYXLLzsJR
- mSsED/1nlJ9Oq5fALdNEPgDyPUerqHxcmIub+pF0AzJoYHK5punqpqfGmqPbjxrJLPJfHVKy
- goMj5DlBMoYqEgpbwdUYkH6QdizJJCur4icy8GUNbisFYABeoJ91pnD4IGei3MTdvINSZI5e
-Message-ID: <ed9ae198-4c68-f82b-04fc-2299ab16df96@acm.org>
-Date:   Wed, 24 Jun 2020 06:33:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o2BDas5hPmBEDguTVlPQc/PXdhVs9KoBO9DKMp79/t8=;
+        b=nAFU/AqniABPJuG+eak+fec7vWcxXt50LWQByMQKBGyWl5bXZs6j/wDzbIh1XS7hi7
+         m3Lq9dvxSjAohIuHxkjZ25wmEuDE2nJzQCrGhdQaeN+GHuGNeC6yHDgfhUmc9vuEfdXs
+         rKWdgylPd0Oc4nPGtB4LtE0II6IP2lDkBDahjNlV/2STRJZbPbWdTx/kofoxO6CdyKTk
+         CMPaXsmL8htevEf4CeXoE95XsZYgbleOuyXYH6M9j2eL44eNl78UtKMqXB+546Ps9S1q
+         0puWbnRUYDaqiPeceY/ANw5jgHJF4IHUv1Ta1qJV05+sIdbde1jtTWqokkRhAehcLNCE
+         ys2g==
+X-Gm-Message-State: AOAM532SUQXCZBZAFNkrRTBD2xignNc3eVhDU6i3dl+Ia2WgD9ZtcbYH
+        TOGI+omgqrmHV5VKZzF4EySbZ0jq8kXsjlJViyE=
+X-Google-Smtp-Source: ABdhPJxO8lO9U9avc+ALq1eRKS741/9RjAwHrIKzMzoMF6efsYE758//OT2ZAZ2BFZRrCvJAOlQXVT+6z5l2RF0e7mE=
+X-Received: by 2002:a17:902:7288:: with SMTP id d8mr29144476pll.18.1593005650232;
+ Wed, 24 Jun 2020 06:34:10 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200623111018.31954-1-martin.kepplinger@puri.sm>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200623060526.29922-1-mans0n@gorani.run> <80bbca9a625b2a0feb9b816906549b7c@walle.cc>
+ <2291c01d-30df-518e-a952-644bd955f1f3@gorani.run> <69f5d1a1970838b8c4bd8d6e8dba6cac@walle.cc>
+In-Reply-To: <69f5d1a1970838b8c4bd8d6e8dba6cac@walle.cc>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 24 Jun 2020 16:33:57 +0300
+Message-ID: <CAHp75Vfc2udv2mLLJCFO6P+n8_kcO7OZKhH_XkOy7Cf4fnxgtA@mail.gmail.com>
+Subject: Re: [PATCH] gpio: add GPO driver for PCA9570
+To:     Michael Walle <michael@walle.cc>
+Cc:     Sungbo Eo <mans0n@gorani.run>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-23 04:10, Martin Kepplinger wrote:
-> This add a very conservative but simple implementation for runtime PM
-> to the sd scsi driver:
-> Resume when opened (mounted) and suspend when released (unmounted).
-> 
-> Improvements that allow suspending while a device is "open" can
-> be added later, but now we save power when no filesystem is mounted
-> and runtime PM is enabled.
-> 
-> Signed-off-by: Martin Kepplinger <martin.kepplinger@puri.sm>
-> ---
->  drivers/scsi/sd.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-> index d90fefffe31b..fe4cb7c50ec1 100644
-> --- a/drivers/scsi/sd.c
-> +++ b/drivers/scsi/sd.c
-> @@ -1372,6 +1372,7 @@ static int sd_open(struct block_device *bdev, fmode_t mode)
->  	SCSI_LOG_HLQUEUE(3, sd_printk(KERN_INFO, sdkp, "sd_open\n"));
->  
->  	sdev = sdkp->device;
-> +	scsi_autopm_get_device(sdev);
->  
->  	/*
->  	 * If the device is in error recovery, wait until it is done.
-> @@ -1418,6 +1419,9 @@ static int sd_open(struct block_device *bdev, fmode_t mode)
->  
->  error_out:
->  	scsi_disk_put(sdkp);
-> +
-> +	scsi_autopm_put_device(sdev);
-> +
->  	return retval;	
->  }
->  
-> @@ -1441,6 +1445,8 @@ static void sd_release(struct gendisk *disk, fmode_t mode)
->  
->  	SCSI_LOG_HLQUEUE(3, sd_printk(KERN_INFO, sdkp, "sd_release\n"));
->  
-> +	scsi_autopm_put_device(sdev);
-> +
->  	if (atomic_dec_return(&sdkp->openers) == 0 && sdev->removable) {
->  		if (scsi_block_when_processing_errors(sdev))
->  			scsi_set_medium_removal(sdev, SCSI_REMOVAL_ALLOW);
+On Tue, Jun 23, 2020 at 3:48 PM Michael Walle <michael@walle.cc> wrote:
+> Am 2020-06-23 14:22, schrieb Sungbo Eo:
+> > On 2020-06-23 17:31, Michael Walle wrote:
+> >> Am 2020-06-23 08:05, schrieb Sungbo Eo:
 
-My understanding of the above patch is that it introduces a regression,
-namely by disabling runtime suspend as long as an sd device is held open.
+...
 
-Bart.
+> >> Did you have a look at drivers/gpio/gpio-regmap.c ? Your driver seems
+> >> to be simple enough to be easily integrated with that. If you need a
+> >> blueprint; because at the moment there is no driver in the kernel
+> >> using that, you could have a look at:
+> >> https://lore.kernel.org/linux-gpio/20200604211039.12689-7-michael@walle.cc/
+> >
+> > Thanks for your advice. I didn't really know what regmap is for...
+> > It seems gpio-regmap is for gpio controllers having val/dir registers.
+> > But pca9570 does not use port registers. The master only sends a data
+> > byte without reg address.
+>
+> Ahh I missed that :(
+>
+> > I'm not sure how to apply gpio-regmap or
+> > regmap-i2c here.
+> > I'll try to investigate if setting reg_size or reg_bits to zero is
+> > possible.
+> >
+> > Please correct me if I'm in the wrong direction.
+>
+> That won't work because the underlying regmap expects the address bits
+> to be either 8 or 16. In this case I'd guess gpio-regmap, doesn't make
+> sense, because there is actually no real gain.
+
+From the DS:
+"The device acknowledges and the master sends the data byte for P7 to
+P0 and is acknowledged by the device. Writes to P7 to P4 are ignored
+in the PCA9570 as only P3 through P0 are available. The 4-bit data is
+presented on the port lines after it has been acknowledged by the
+device. The number of data bytes that can be sent successively is not
+limited. The previous data is overwritten every time a data byte has
+been sent."
+
+So, basically writing to the register the value of register can
+simulate register map, but the question is do we gain anything from
+that abstraction because it means that all 256 (or 16 for 4-bit
+variant) registers are possible?
 
 
+--
+With Best Regards,
+Andy Shevchenko
