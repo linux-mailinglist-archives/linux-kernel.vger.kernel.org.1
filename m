@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8070420796D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B1D220796F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405146AbgFXQq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 12:46:28 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:61914 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404358AbgFXQq2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 12:46:28 -0400
+        id S2405178AbgFXQqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 12:46:33 -0400
+Received: from mail29.static.mailgun.info ([104.130.122.29]:50647 "EHLO
+        mail29.static.mailgun.info" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404851AbgFXQqa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 12:46:30 -0400
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1593017187; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1593017189; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=FQW6R/Y5yszDbWH3tFWr/9C27YRcinGb1+LS8Db7YDE=; b=WXU83cuBEJUUe035OdH6Q6KW8CeLBkcWiyJ7C+B+1wb9rS79ZEaq94YIMaS/FV1F35aI+xur
- rpGYzj8g5Mq7qbASdzhEEE65mOhBrdejXzYKluUNyQHMelg81CVmekTxeUgUhVvNUvY94jrT
- d7bOWYqU8bI8il6Uw/FvMEUnI9w=
-X-Mailgun-Sending-Ip: 69.72.43.7
+ bh=EdiC6FJ57QhZAxbTBAm1mCvHU67ixuu71bwq/KDiuQk=; b=dTV43H5MEaa+H8z7kav7UA4vtDfTCIZ5TyLpvepTJGRtdA0rvsOV9HayAVpFpieJHads5fmL
+ TzhuYCA+N8J4AZV3Og7RXccrNeXX7BNMsEh5KA5DEq1wmKBY0P3xEltH6jr0AQ5rNm5vffsX
+ NgYFvM7H0D6XHIIQMla9cyfnGQ0=
+X-Mailgun-Sending-Ip: 104.130.122.29
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n17.prod.us-east-1.postgun.com with SMTP id
- 5ef38350567385e8e74b8104 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Jun 2020 16:46:08
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5ef38354567385e8e74b8bc9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Jun 2020 16:46:12
  GMT
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 67C9CC433C6; Wed, 24 Jun 2020 16:46:07 +0000 (UTC)
+        id 5231CC433CB; Wed, 24 Jun 2020 16:46:11 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.0
+        autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from deesin-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2248AC433CB;
-        Wed, 24 Jun 2020 16:46:03 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2248AC433CB
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CD3A7C433A0;
+        Wed, 24 Jun 2020 16:46:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CD3A7C433A0
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=deesin@codeaurora.org
 From:   Deepak Kumar Singh <deesin@codeaurora.org>
@@ -46,14 +47,12 @@ To:     bjorn.andersson@linaro.org, clew@codeaurora.org,
         mathieu.poirier@linaro.org
 Cc:     Deepak Kumar Singh <deesin@codeaurora.org>,
         Arun Kumar Neelakantam <aneela@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
         Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-arm-msm@vger.kernel.org (open list:ARM/QUALCOMM SUPPORT),
         linux-remoteproc@vger.kernel.org (open list:REMOTE PROCESSOR MESSAGING
         (RPMSG) SUBSYSTEM), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH V7 1/4] rpmsg: glink: Use complete_all for open states
-Date:   Wed, 24 Jun 2020 22:15:18 +0530
-Message-Id: <1593017121-7953-2-git-send-email-deesin@codeaurora.org>
+Subject: [PATCH V7 2/4] rpmsg: Guard against null endpoint ops in destroy
+Date:   Wed, 24 Jun 2020 22:15:19 +0530
+Message-Id: <1593017121-7953-3-git-send-email-deesin@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1593017121-7953-1-git-send-email-deesin@codeaurora.org>
 References: <1593017121-7953-1-git-send-email-deesin@codeaurora.org>
@@ -64,48 +63,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Chris Lew <clew@codeaurora.org>
 
-The open_req and open_ack completion variables are the state variables
-to represet a remote channel as open. Use complete_all so there are no
-races with waiters and using completion_done.
+In RPMSG GLINK the chrdev device will allocate an ept as part of the
+rpdev creation. This device will not register endpoint ops even though
+it has an allocated ept. Protect against the case where the device is
+being destroyed.
 
 Signed-off-by: Chris Lew <clew@codeaurora.org>
 Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
 Signed-off-by: Arun Kumar Neelakantam <aneela@codeaurora.org>
 ---
- drivers/rpmsg/qcom_glink_native.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/rpmsg/rpmsg_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
-index 1995f5b..d5114ab 100644
---- a/drivers/rpmsg/qcom_glink_native.c
-+++ b/drivers/rpmsg/qcom_glink_native.c
-@@ -970,7 +970,7 @@ static int qcom_glink_rx_open_ack(struct qcom_glink *glink, unsigned int lcid)
- 		return -EINVAL;
- 	}
- 
--	complete(&channel->open_ack);
-+	complete_all(&channel->open_ack);
- 
- 	return 0;
+diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+index a6361ca..91de940 100644
+--- a/drivers/rpmsg/rpmsg_core.c
++++ b/drivers/rpmsg/rpmsg_core.c
+@@ -81,7 +81,7 @@ EXPORT_SYMBOL(rpmsg_create_ept);
+  */
+ void rpmsg_destroy_ept(struct rpmsg_endpoint *ept)
+ {
+-	if (ept)
++	if (ept && ept->ops)
+ 		ept->ops->destroy_ept(ept);
  }
-@@ -1178,7 +1178,7 @@ static int qcom_glink_announce_create(struct rpmsg_device *rpdev)
- 	__be32 *val = defaults;
- 	int size;
- 
--	if (glink->intentless)
-+	if (glink->intentless || !completion_done(&channel->open_ack))
- 		return 0;
- 
- 	prop = of_find_property(np, "qcom,intents", NULL);
-@@ -1413,7 +1413,7 @@ static int qcom_glink_rx_open(struct qcom_glink *glink, unsigned int rcid,
- 	channel->rcid = ret;
- 	spin_unlock_irqrestore(&glink->idr_lock, flags);
- 
--	complete(&channel->open_req);
-+	complete_all(&channel->open_req);
- 
- 	if (create_device) {
- 		rpdev = kzalloc(sizeof(*rpdev), GFP_KERNEL);
+ EXPORT_SYMBOL(rpmsg_destroy_ept);
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
 a Linux Foundation Collaborative Project
