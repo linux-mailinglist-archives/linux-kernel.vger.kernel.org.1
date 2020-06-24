@@ -2,102 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A99C5207527
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 945B8207532
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404056AbgFXOCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 10:02:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44510 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403987AbgFXOCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 10:02:09 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12E0D20724;
-        Wed, 24 Jun 2020 14:02:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593007329;
-        bh=s+1HAUIY2ezRPN9ikTWdmNZ/f74VfGJEUMykCgxzPp8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LvMqMbMXnzntY2cbHHv2NFh1lurxHqBVMlX/8+FwpGRUFpWvaKkUbEXVtSuxRIWqj
-         X1BBeGLwPjStyj1wpXUaK8X0g5WEx5EGLpryhfdCCj+x6QMdLSqX2kNkvHr1N5rEP6
-         WizhFksWnAeJfSPjiqQ5CqrQI74m++Ml7fv0wO8s=
-Date:   Wed, 24 Jun 2020 15:02:07 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
-Subject: Re: [RESEND PATCH v5 1/5] driver core: add probe_err log helper
-Message-ID: <20200624140207.GE5472@sirena.org.uk>
-References: <20200624114127.3016-1-a.hajda@samsung.com>
- <CGME20200624114135eucas1p26e2e4683d60cebdce7acd55177013992@eucas1p2.samsung.com>
- <20200624114127.3016-2-a.hajda@samsung.com>
- <20200624132714.GD5472@sirena.org.uk>
- <CAHp75Ve9V1Vyxe3bEeHJ9H2J900wUXHMmXFJt-dn9sO5OMejHA@mail.gmail.com>
+        id S2404070AbgFXODw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 10:03:52 -0400
+Received: from smtp-fw-33001.amazon.com ([207.171.190.10]:9758 "EHLO
+        smtp-fw-33001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403922AbgFXODv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 10:03:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1593007431; x=1624543431;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=lSjmdvPtvlSp5tbNUOnf3T8VMVMZvTCAfVnI9cmGGJw=;
+  b=PjPN7dP5CqE61TSulrOUPZwt0WuNCGpHNbOYmM5VkTmit1WNjLMUJvJT
+   SeLlprXGuxDWX5RZlmMsj3VZChrXgCbdfmUE2VuJOqrJ8JZBWvuIboxhP
+   asRnf2TVbQUzp7grwXTYDcJXn52v1JnsHGfQ71IOcSsJYcLjGu2qDw8mq
+   U=;
+IronPort-SDR: IGYKflQzaECzMSe0GJOS74JOQqVJ73I9rQzk2te8N80PLfQt5ec0ns2qcHgM2MeFAr4tTi1pxc
+ zMyCkE58mXJg==
+X-IronPort-AV: E=Sophos;i="5.75,275,1589241600"; 
+   d="scan'208";a="53534094"
+Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1e-27fb8269.us-east-1.amazon.com) ([10.47.23.38])
+  by smtp-border-fw-out-33001.sea14.amazon.com with ESMTP; 24 Jun 2020 14:03:14 +0000
+Received: from EX13MTAUEA002.ant.amazon.com (iad55-ws-svc-p15-lb9-vlan3.iad.amazon.com [10.40.159.166])
+        by email-inbound-relay-1e-27fb8269.us-east-1.amazon.com (Postfix) with ESMTPS id BA307A1ADB;
+        Wed, 24 Jun 2020 14:03:12 +0000 (UTC)
+Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
+ EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 24 Jun 2020 14:03:11 +0000
+Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.248) by
+ EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Wed, 24 Jun 2020 14:03:03 +0000
+Subject: Re: [PATCH v4 01/18] nitro_enclaves: Add ioctl interface definition
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        Anthony Liguori <aliguori@amazon.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        "Alexander Graf" <graf@amazon.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
+        <ne-devel-upstream@amazon.com>
+References: <20200622200329.52996-1-andraprs@amazon.com>
+ <20200622200329.52996-2-andraprs@amazon.com>
+ <20200623085617.GE32718@stefanha-x1.localdomain>
+From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Message-ID: <60d7d8be-7c8c-964a-a339-8ef7f5bd2fef@amazon.com>
+Date:   Wed, 24 Jun 2020 17:02:54 +0300
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zjcmjzIkjQU2rmur"
-Content-Disposition: inline
-In-Reply-To: <CAHp75Ve9V1Vyxe3bEeHJ9H2J900wUXHMmXFJt-dn9sO5OMejHA@mail.gmail.com>
-X-Cookie: So this is it.  We're going to die.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200623085617.GE32718@stefanha-x1.localdomain>
+Content-Language: en-US
+X-Originating-IP: [10.43.162.248]
+X-ClientProxiedBy: EX13D36UWA001.ant.amazon.com (10.43.160.71) To
+ EX13D16EUB003.ant.amazon.com (10.43.166.99)
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---zjcmjzIkjQU2rmur
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Jun 24, 2020 at 04:45:28PM +0300, Andy Shevchenko wrote:
-> On Wed, Jun 24, 2020 at 4:27 PM Mark Brown <broonie@kernel.org> wrote:
+On 23/06/2020 11:56, Stefan Hajnoczi wrote:
+> On Mon, Jun 22, 2020 at 11:03:12PM +0300, Andra Paraschiv wrote:
+>> diff --git a/include/uapi/linux/nitro_enclaves.h b/include/uapi/linux/ni=
+tro_enclaves.h
+>> new file mode 100644
+>> index 000000000000..3270eb939a97
+>> --- /dev/null
+>> +++ b/include/uapi/linux/nitro_enclaves.h
+>> @@ -0,0 +1,137 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+>> +/*
+>> + * Copyright 2020 Amazon.com, Inc. or its affiliates. All Rights Reserv=
+ed.
+>> + */
+>> +
+>> +#ifndef _UAPI_LINUX_NITRO_ENCLAVES_H_
+>> +#define _UAPI_LINUX_NITRO_ENCLAVES_H_
+>> +
+>> +#include <linux/types.h>
+>> +
+>> +/* Nitro Enclaves (NE) Kernel Driver Interface */
+>> +
+>> +#define NE_API_VERSION (1)
+>> +
+>> +/**
+>> + * The command is used to get the version of the NE API. This way the u=
+ser space
+>> + * processes can be aware of the feature sets provided by the NE kernel=
+ driver.
+>> + *
+>> + * The NE API version is returned as result of this ioctl call.
+>> + */
+>> +#define NE_GET_API_VERSION _IO(0xAE, 0x20)
+>> +
+>> +/**
+>> + * The command is used to create a slot that is associated with an encl=
+ave VM.
+>> + *
+>> + * The generated unique slot id is a read parameter of this command. An=
+ enclave
+>> + * file descriptor is returned as result of this ioctl call. The enclav=
+e fd can
+>> + * be further used with ioctl calls to set vCPUs and memory regions, th=
+en start
+>> + * the enclave.
+>> + */
+>> +#define NE_CREATE_VM _IOR(0xAE, 0x21, __u64)
+> Information that would be useful for the ioctls:
+>
+> 1. Which fd the ioctl must be invoked on (/dev/nitro-enclaves, enclave fd=
+, vCPU fd)
+>
+> 2. Errnos and their meanings
+>
+> 3. Which state(s) the ioctls may be invoked in (e.g. enclave created/star=
+ted/etc)
 
-> > As I said down the thread that's not a great pattern since it means that
-> > probe deferral errors never get displayed and users have a hard time
-> > figuring out why their driver isn't instantiating.
+I'll include this info in v5. Indeed, that's useful for the user space =
 
-> Don't we have a file in the debugfs to list deferred drivers?
+tooling that interacts with the kernel driver, in addition to the code =
 
-Part of what this patch series aims to solve is that that list is not
-very useful since it doesn't provide any information on how things got
-deferred which means it's of no use in trying to figure out any
-problems.
+review itself and future refs, to understand how it works.
 
-> In the case of deferred probes the errors out of it makes users more
-> miserable in order to look through tons of spam and lose really useful
-> data in the logs.
+>
+>> +/* User memory region flags */
+>> +
+>> +/* Memory region for enclave general usage. */
+>> +#define NE_DEFAULT_MEMORY_REGION (0x00)
+>> +
+>> +/* Memory region to be set for an enclave (write). */
+>> +struct ne_user_memory_region {
+>> +	/**
+>> +	 * Flags to determine the usage for the memory region (write).
+>> +	 */
+>> +	__u64 flags;
+> Where is the write flag defined?
+>
+> I guess it's supposed to be:
+>
+>    #define NE_USER_MEMORY_REGION_FLAG_WRITE (0x01)
 
-I seem to never manage to end up using any of the systems which generate
-excessive deferrals.
+For now, the flags field is included in the NE ioctl interface for =
 
---zjcmjzIkjQU2rmur
-Content-Type: application/pgp-signature; name="signature.asc"
+extensions, it is not part of the NE PCI device interface yet.
 
------BEGIN PGP SIGNATURE-----
+The enclave image is copied into enclave memory before the enclave =
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7zXN4ACgkQJNaLcl1U
-h9CyQwf9GPTQ3AWT49MYS86gakGp3fOn+3DWHi2eBTCNBr7+ZbT6K2LjaeEZdWbq
-LZqNijKZemXRSHuHANCslwlM29eVG8h/SpYsVVQxdK5k5OlqTDhTkuyfEsEnoF26
-AaLhYtMt2MJjbZjxgu2TbKlC+jIwYA9nluB7r2HCm2hOydqWvtd3OR+l74EUwRWn
-4CQdokPv6h315Sym12/8bwVOeYExOZcc4HvB0D1XqwzniNUqHI9Bp9q4d1vidjmS
-AE2vI8rQoD+nKnKUD1BvHzHlJLdyeBuxMbnHypqIFEDeCc4Zvfm60U68qq5umxSe
-0CPvHqLPG05cUToWTXrruMFr2Otvjg==
-=96Vi
------END PGP SIGNATURE-----
+memory is carved out of the primary / parent VM. After carving it out =
 
---zjcmjzIkjQU2rmur--
+(when the command request to add memory is sent to the PCI device and it =
+
+is successfully completed), there will be faults if the enclave memory =
+
+is written from the primary / parent VM.
+
+Ah, and just as a note, that "read" / "write" in parentheses means that =
+
+a certain data structure / field is read / written by user space. I =
+
+updated to use "in" / "out" instead of "read" / "write" in v5.
+
+Thank you.
+
+Andra
+
+
+
+
+Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar=
+ Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in R=
+omania. Registration number J22/2621/2005.
+
