@@ -2,81 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE95207A45
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 461AC207A4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405498AbgFXRaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 13:30:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43930 "EHLO mail.kernel.org"
+        id S2405567AbgFXRaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 13:30:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44124 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405429AbgFXRaF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:30:05 -0400
-Received: from localhost (unknown [171.61.66.58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 156A52078D;
-        Wed, 24 Jun 2020 17:30:03 +0000 (UTC)
+        id S2405427AbgFXRaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 13:30:18 -0400
+Subject: Re: [GIT PULL] KVM fixes for Linux 5.8-rc3
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593019805;
-        bh=h33gmGGByy2GPZrJ7tjNqx/Etm0E51dsYTshtyz2YhE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yuRiI+ina71wDNranb8AwW9LaPmZDEbmUmZmhXR8uZXZAbrCJrZUhNi9Pyx1X52N0
-         ghUVH4l5ovbj/9oXbBaYRo7phEtcC8FTCj04Fzn7IfiHYfB6T5tYG+/e12h0P/+G6B
-         MbKo17ZfsjVqPDeyfD+FqWt6ycK4fecC5fGAzXcw=
-Date:   Wed, 24 Jun 2020 23:00:00 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Alim Akhtar <alim.akhtar@samsung.com>
-Cc:     'Kishon Vijay Abraham I' <kishon@ti.com>, robh@kernel.org,
-        krzk@kernel.org, linux-samsung-soc@vger.kernel.org,
-        avri.altman@wdc.com, stanley.chu@mediatek.com,
-        linux-scsi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        cang@codeaurora.org, devicetree@vger.kernel.org,
-        kwmad.kim@samsung.com, linux-kernel@vger.kernel.org,
-        "'Martin K. Petersen'" <martin.petersen@oracle.com>
-Subject: Re: [PATCH v10 00/10] exynos-ufs: Add support for UFS HCI
-Message-ID: <20200624173000.GJ2324254@vkoul-mobl>
-References: <CGME20200528013223epcas5p2be85fa8803326b49a905fb7225992cad@epcas5p2.samsung.com>
- <20200528011658.71590-1-alim.akhtar@samsung.com>
- <159114947915.26776.12485309894552696104.b4-ty@oracle.com>
- <013a01d63d3e$ecf404d0$c6dc0e70$@samsung.com>
- <89b96bd0-a9a3-cdd8-dc67-1f9f49eef264@ti.com>
- <000001d646a6$6cb5fd70$4621f850$@samsung.com>
- <20200624102112.GX2324254@vkoul-mobl>
- <004b01d64a48$8bb87270$a3295750$@samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <004b01d64a48$8bb87270$a3295750$@samsung.com>
+        s=default; t=1593019818;
+        bh=oxPIjg4Y7WtOZI+S9vhkTY+465B5ALE8m4DMhounppY=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=ySQXhDLqBjhg+F8lAocq3TViw/g7mrEkkHRRyl1ZFze65Df7fZSWpfRU+UpGXl3xP
+         AtSsK15e2AzHgYtBo+fB+ZAWjMW47nygKSPDoAMC1jpWguQwXUlnGhXuWvly4ZoJiG
+         nwj8VieFuXzhWhHIl2KQIia1vQ3dBm9ESRPw3JGo=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200623171117.326222-1-pbonzini@redhat.com>
+References: <20200623171117.326222-1-pbonzini@redhat.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200623171117.326222-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git
+ tags/for-linus
+X-PR-Tracked-Commit-Id: e4553b4976d1178c13da295cb5c7b21f55baf8f9
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 26e122e97a3d0390ebec389347f64f3730fdf48f
+Message-Id: <159301981836.18191.11209681669909428701.pr-tracker-bot@kernel.org>
+Date:   Wed, 24 Jun 2020 17:30:18 +0000
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alim,
+The pull request you sent on Tue, 23 Jun 2020 13:11:17 -0400:
 
-On 24-06-20, 22:27, Alim Akhtar wrote:
-> > > > Sure, will re-send this series.
-> > 
-> > But patches have not been sent right, pls send and me/Kishon will review
-> > 
-> Thanks for your kind attention on this series. As per [0] comment from
-> Kishon, patch 7/10 [1] and probably 6/10 [2] should have been Applied after
-> 5.8-rc1 was tagged.
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
-And that is something I am trying atm, but I dont have patches in my
-mailbox, so would you be kind enough to resend me these patches after
-rebasing to phy-next, also do add acks/reviews collected in previous
-posts.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/26e122e97a3d0390ebec389347f64f3730fdf48f
 
-I dont think I have seen resend, or maybe I wasnt cced
-
-> I have already send and re-send V10 of this series. Kishon has already
-> reviewed and provided comments and I have addressed them as well. These
-> patches already have and Reviewed-by, Tested-by tags.
-> Let me know if something more needs to be done from my side.
-> [0] https://lkml.org/lkml/2020/6/7/410
-> [1] https://lkml.org/lkml/2020/5/27/1705
-> [2] https://lkml.org/lkml/2020/5/27/1701
+Thank you!
 
 -- 
-~Vinod
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
