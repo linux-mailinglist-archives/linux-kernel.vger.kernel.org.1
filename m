@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4DDA206DCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 09:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B0A4206DC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 09:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389867AbgFXHcN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 03:32:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388375AbgFXHcM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 03:32:12 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50873C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 00:32:11 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id bh7so701387plb.11
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 00:32:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=XiffTKYWfkRx2OuMiP/252mjsVT01Skep/qWi8vbGWk=;
-        b=Ope4PDxZMKqo33DrekdQIdllBSDMkIlNiHCxw3yYG5stm7pwHar0QsGYxUv1ivqW1Z
-         SRN16VM0aa5Mc9iKJyZnIz0LvX4yjs+p4eJ3aQeOtnZOvdchEvfZpHiutoDpAlcQwMug
-         OSmVWqM98/0yw7XUkxvFRykp2Q2gCAgkNvEe7k+WplncMKqzuaatAWOXW+/8cGV1DBRP
-         LjeBl/8cO8V89B5ICJpFG3VSGMgKkIIAuiJ3yfS5KGpv9inZK1+xFpgLIUzbieNES2lS
-         NXgVHWc7cn5EjOaUNf3CDQumo78W0+VhABf/oM3A5Fb7M4cME54HpW8KUiEGo4oeauq3
-         jMDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=XiffTKYWfkRx2OuMiP/252mjsVT01Skep/qWi8vbGWk=;
-        b=EtTR/ZoB7eKN+5NsmJmD2ldA/mnlM6iDaKB4s4vLlLMNCILaiS5tZ8hgawA2LXJvu+
-         XIQK5n+mShe1OqgT7FUzsn4Vjy1g2safz7xyrGCeU5r35ouf+9fshuviLInQBwqGsrWb
-         N5sZ+eLs6bvCWr1SDPwy5gb5irLrY2tsOlmifZZny50+tKtyo7e51X15h02goOtBY0N0
-         EpbwFL6ykCeYpSXy9M5BuvZOI0uuG3C0CnDNlAJ27MRP/eURBs9EImq7rJkCsCVqQLQr
-         uLOx83haUgWrj4QFRfkj/6oVau0tBCkJMiyxbg1nDl3qxAwXR0joWnt6I/RthYlQmlKM
-         G62A==
-X-Gm-Message-State: AOAM533XKYz3jy8snVyR/AJFEl35HgT5C3b2+IVD3nzkdxSnqX5WXSXy
-        g4VAECkQM+cZI1ouBB4ycpW1WQ==
-X-Google-Smtp-Source: ABdhPJzmmQR87baMbd/6VHklCBu0rFXvmKlmotKOEGTSQbtK8VLZjuez9jqsDKFhQIepFUxhRZLPwQ==
-X-Received: by 2002:a17:90a:5c82:: with SMTP id r2mr16853142pji.161.1592983930591;
-        Wed, 24 Jun 2020 00:32:10 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id g21sm18765157pfh.134.2020.06.24.00.32.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 00:32:09 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 00:29:27 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Konrad Dybcio <konradybcio@gmail.com>
-Cc:     skrzynka@konradybcio.pl, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 06/12] arm64: dts: qcom: msm8994: Add SCM node
-Message-ID: <20200624072927.GT128451@builder.lan>
-References: <20200623224813.297077-1-konradybcio@gmail.com>
- <20200623224813.297077-7-konradybcio@gmail.com>
- <20200623231919.GL128451@builder.lan>
- <CAMS8qEXeFO0vNKHoJeDKKprdECFLVtXOWnphc6iRjOBigeFe1Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMS8qEXeFO0vNKHoJeDKKprdECFLVtXOWnphc6iRjOBigeFe1Q@mail.gmail.com>
+        id S2389891AbgFXHa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 03:30:28 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:59676 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389334AbgFXH3z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 03:29:55 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_93mAPNezSRJAA--.399S3;
+        Wed, 24 Jun 2020 15:29:43 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v3 01/14] irqchip/ath79-misc: Fix potential resource leaks
+Date:   Wed, 24 Jun 2020 15:29:29 +0800
+Message-Id: <1592983782-8842-2-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1592983782-8842-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1592983782-8842-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9Dx_93mAPNezSRJAA--.399S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw47trWfCFW5ZF4kXw17Awb_yoW8GF1DpF
+        WUW39avrWfJr47XrsxCFWDXryavFyFkay293y3C3WxZrn8G3909F1rAa4jvF12krW3X3WU
+        CF4fJa45uF4jkFUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUQ014x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+        A2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1l
+        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
+        8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
+        jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0x
+        kIwI1lc7CjxVAaw2AFwI0_JF0_Jw1lc2xSY4AK67AK6r4xMxAIw28IcxkI7VAKI48JMxC2
+        0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
+        0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
+        14v26r4j6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20x
+        vaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr1j6F4UJwCI42IY6I8E87Iv6xkF7I0E14v2
+        6F4UJVW0obIYCTnIWIevJa73UjIFyTuYvjfU0D73DUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 23 Jun 16:30 PDT 2020, Konrad Dybcio wrote:
+There exists potential resource leaks in the error path, fix them.
 
-> >Shouldn't this be "qcom,scm-msm8992", "qcom,scm" ?
-> >
-> >(Or rather "qcom,scm-msm8994", "qcom,scm")
-> 
-> Some DTs only have the SoC-specific one, and some also
-> have the generic one. But I can add the generic one if
-> you wish.
-> 
-> I went with 8992, as I added it in the 8992 series
-> (gonna update that one soon, too, so we can get it merged)
-> and I didn't want to needlessly duplicate it. Ideally maybe we
-> could switch to just qcom,scm for clockless SCM compats?
-> 
+Fixes: 07ba4b061a79 ("irqchip/ath79-misc: Move the MISC driver from arch/mips/ath79/")
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ drivers/irqchip/irq-ath79-misc.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-It's fairly common practice to specify both a specific and a generic
-compatible, this would allow us to in the driver do special handling of
-the specific in the future if we need to - without having to update the
-devicetree.
+diff --git a/drivers/irqchip/irq-ath79-misc.c b/drivers/irqchip/irq-ath79-misc.c
+index 3d641bb..53e0c50 100644
+--- a/drivers/irqchip/irq-ath79-misc.c
++++ b/drivers/irqchip/irq-ath79-misc.c
+@@ -133,7 +133,7 @@ static int __init ath79_misc_intc_of_init(
+ {
+ 	struct irq_domain *domain;
+ 	void __iomem *base;
+-	int irq;
++	int irq, ret;
+ 
+ 	irq = irq_of_parse_and_map(node, 0);
+ 	if (!irq) {
+@@ -144,18 +144,26 @@ static int __init ath79_misc_intc_of_init(
+ 	base = of_iomap(node, 0);
+ 	if (!base) {
+ 		pr_err("Failed to get MISC IRQ registers\n");
+-		return -ENOMEM;
++		ret = -ENOMEM;
++		goto err_irq_dispose;
+ 	}
+ 
+ 	domain = irq_domain_add_linear(node, ATH79_MISC_IRQ_COUNT,
+ 				&misc_irq_domain_ops, base);
+ 	if (!domain) {
+ 		pr_err("Failed to add MISC irqdomain\n");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto err_iounmap;
+ 	}
+ 
+ 	ath79_misc_intc_domain_init(domain, irq);
+ 	return 0;
++
++err_iounmap:
++	iounmap(base);
++err_irq_dispose:
++	irq_dispose_mapping(irq);
++	return ret;
+ }
+ 
+ static int __init ar7100_misc_intc_of_init(
+-- 
+2.1.0
 
-Regards,
-Bjorn
