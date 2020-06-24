@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73823206992
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 03:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE5E7206996
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 03:36:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388479AbgFXBfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 21:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44534 "EHLO
+        id S2388533AbgFXBgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 21:36:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387804AbgFXBfe (ORCPT
+        with ESMTP id S2388228AbgFXBgG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 21:35:34 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07504C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 18:35:33 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id dm12so339432qvb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 18:35:32 -0700 (PDT)
+        Tue, 23 Jun 2020 21:36:06 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6144EC061573
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 18:36:05 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id n24so707655lji.10
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 18:36:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id;
-        bh=TqReVHnhod4CGtUTTe7lNXyrQSlqJcDme46q9bN7OuI=;
-        b=d/oz4MDQJGr5mV4CIQqGnXLaXd79fCAfN+CrAt3YjNYFXWnK1lPtNAlqGzC+T+WYqw
-         TXe2Ccq6IlgN0g7IpMVH2H1ewkzPKdwJC+GUShrl+t4PsZTAmL+zYAb213Kilihp97fv
-         RBEM5pZeyrjUyg0XpRAPLDI8g7wRMyr4GQGNsqq36S9kvzuZ3/A07/mJXD9rHWmahc9R
-         rk1F4xazJf5+t/+JWj/emeu23tgXCBDUUDY87uuo2ert2gjlV7wn18YckP2WqNbAcJOH
-         5pGmF3WR6PmZQDBsAOJS4rmai41CkqS7PaQfE+eqwEa37Lh5XJ/D6G4UcAtEPsGMeifW
-         4OXA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7pIjJ2I8CWHvSXRl5P0nw8Gdno7bPM7de/tvxRqaCFg=;
+        b=Gq7KSZM381qbz0Jl+qP97fH800pxovHxWOnBpx1iufZGWbLoRKOjcozMUvJtqM+su/
+         W2721W4kzQuK5yyfLxMtbvTi/uPJU39TMmSiqYJWbPmdZyeXBaPjxDSnZF6QrPYn4UqS
+         YYBSmjmnZU0pambP/0j27dtj3ivrt2l6jNoApO/6mxarXJ56iV4Cxu+dFQucHzlDWw3k
+         /Y/OsKJJZC8c0A3sqKAneGqGwV4Z3qxgV72+4XLPZXuDr3Y9N8IrfX5V+yB/E1tnV0DD
+         U9R9/7/ckT/5oa0aLN+AO6APOmPbQVus8sgCjIijuyu2pM74TAT8Y8WFSlO3j9txsFF1
+         TRIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id;
-        bh=TqReVHnhod4CGtUTTe7lNXyrQSlqJcDme46q9bN7OuI=;
-        b=j5hp/tw9ty3nBTSqNAnUhBRo4J20c3sSnGYN75qJNaI1E0gt/pn67sA64F2/ZyNLFO
-         xErCPKx7A6/vk2Ox6qEKnWi0AhxYsAMtWhzpz8ghJWO63h5nsoFKtE1RUUDHbUtT3+U3
-         fmRsmPsT9Po0DT/FvlzgIxXQE7Zln5EtP1xFlumtDDI7GQJshEvl+8r9eZUO28ONXo8q
-         JC39rB9jX4klAurgQY7It+u8EyDhWJUmtPuPUk6RFryAezW55F9WFKcsjgSSXhzc5ZOR
-         vttxy9Nk9sVCMgYfhbmu8lHi898scK0o1vF/MjJ1+C2G4hLj+ttm0UKDVcqKW8BCpZm2
-         /vEw==
-X-Gm-Message-State: AOAM530FLxPO3NICJ6Nke+gIPAtmqfJQXu6fMSKTugJddL7ChaiPCVxF
-        z82jIpXIhhMHJaQq72n4oJk=
-X-Google-Smtp-Source: ABdhPJxINudWbymKcfDEGryCkOw0uXhO4SHM27YrGgngnUSKDoFYZXBd9yhBbqxfTMm6FWWpJTDocQ==
-X-Received: by 2002:a0c:a993:: with SMTP id a19mr4030626qvb.34.1592962532275;
-        Tue, 23 Jun 2020 18:35:32 -0700 (PDT)
-Received: from linux.home ([2604:2000:1344:41d:596e:7d49:a74:946e])
-        by smtp.googlemail.com with ESMTPSA id h4sm2102136qtd.43.2020.06.23.18.35.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 18:35:31 -0700 (PDT)
-From:   Gaurav Singh <gaurav1086@gmail.com>
-To:     gaurav1086@gmail.com, Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-kernel@vger.kernel.org (open list:PERFORMANCE EVENTS SUBSYSTEM)
-Subject: [PATCH] [perf] lsdir_bid_tail_filter: fix index check
-Date:   Tue, 23 Jun 2020 21:35:22 -0400
-Message-Id: <20200624013524.10836-1-gaurav1086@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7pIjJ2I8CWHvSXRl5P0nw8Gdno7bPM7de/tvxRqaCFg=;
+        b=RjJSy4Tip65FvtzUeGFPs/Rbw8HNADLsZqd9mWBnRRLRl34wYrGyjUNOjarvloLcHP
+         sv9R2WLaJHgDvglPNOCoPf2Hxkk+/FChwnbz6SgbNREtt9Tfouc/qIT6S3W03ZemsX48
+         4U+5KcA7b7cAi+LwHAaDvBtEZKD0C0q37Yo37SgDQz41rfk9htnF5kXLwozRX/1TfXo+
+         0xseJn55f2k9lPUcO5zcZBGRCgWiurlvaYoRKll960UzXD0i9BfMsSei887ozZ2aEnJk
+         ivKWnB2dafk/0LdAhbfMG59Wl4VIHy9nD0irUr1ngjOIke/onlXKe9e91OcNvaPVi6qJ
+         AoQA==
+X-Gm-Message-State: AOAM5330DvQLUgzHj5txzUuhpPKz2DUNRZF2S9btl/yVCxwqWAE60/zP
+        mwb0936J4rk1YJIhpNGC5KnUsAIDWMddyRAi+LepCQ==
+X-Google-Smtp-Source: ABdhPJyX/XZZ07bjXY9YxEuQSJag1qcS/Wpx/76xl21f5ldw4T6ZWTcEtT5g+hMU8xIso2qD2sPVP4AO57c3Qyr347k=
+X-Received: by 2002:a2e:9395:: with SMTP id g21mr11389976ljh.58.1592962563653;
+ Tue, 23 Jun 2020 18:36:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200623184515.4132564-1-guro@fb.com> <20200623184515.4132564-4-guro@fb.com>
+In-Reply-To: <20200623184515.4132564-4-guro@fb.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 23 Jun 2020 18:35:52 -0700
+Message-ID: <CALvZod5NWqfdCq07mPBVUG1ZVzjaDDEnCzz3+sH2O3nMf0Zrzg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/5] mm: memcg/percpu: per-memcg percpu memory statistics
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Kernel Team <kernel-team@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check bounds before accessing d->d_name[].
+On Tue, Jun 23, 2020 at 11:47 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> Percpu memory can represent a noticeable chunk of the total memory
+> consumption, especially on big machines with many CPUs.  Let's track
+> percpu memory usage for each memcg and display it in memory.stat.
+>
+> A percpu allocation is usually scattered over multiple pages (and nodes),
+> and can be significantly smaller than a page.  So let's add a byte-sized
+> counter on the memcg level: MEMCG_PERCPU_B.  Byte-sized vmstat infra
+> created for slabs can be perfectly reused for percpu case.
+>
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Acked-by: Dennis Zhou <dennis@kernel.org>
 
-Signed-off-by: Gaurav Singh <gaurav1086@gmail.com>
----
- tools/perf/util/build-id.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/build-id.c b/tools/perf/util/build-id.c
-index c076fc7fe025..8c35cbe93f10 100644
---- a/tools/perf/util/build-id.c
-+++ b/tools/perf/util/build-id.c
-@@ -431,7 +431,7 @@ static bool lsdir_bid_tail_filter(const char *name __maybe_unused,
- 				  struct dirent *d)
- {
- 	int i = 0;
--	while (isxdigit(d->d_name[i]) && i < SBUILD_ID_SIZE - 3)
-+	while (i < SBUILD_ID_SIZE - 3 && isxdigit(d->d_name[i]))
- 		i++;
- 	return (i == SBUILD_ID_SIZE - 3) && (d->d_name[i] == '\0');
- }
--- 
-2.17.1
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
