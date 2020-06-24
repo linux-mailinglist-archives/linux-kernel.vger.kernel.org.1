@@ -2,82 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C537207A77
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78850207A74
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:42:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405620AbgFXRoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 13:44:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52662 "EHLO
+        id S2405598AbgFXRmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 13:42:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405567AbgFXRoA (ORCPT
+        with ESMTP id S2404017AbgFXRmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:44:00 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F72C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 10:44:00 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id f2so1323226plr.8
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 10:44:00 -0700 (PDT)
+        Wed, 24 Jun 2020 13:42:06 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A29C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 10:42:06 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id l63so1725202pge.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 10:42:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=blPOdTajVn4OJWy527Nm/cJEP9dim0oSKgwxjjYh5Yk=;
-        b=Wca+aKs6OCeCLlQZHE2jtvWB9Igz6JI4h9CAPSmdajSZfhp2ZUPUCRDHujdfiLw847
-         RY+1k9HzrWuintQ1IOg0AvP8qZaBBwDF4rut0xOtMGygpnJK8PHQskMf03hSw+HiPVN1
-         oxn1UkEEkBskJoSBUGnoEZcMTz1dNz834ktawILifAj0yQ4aUyK9pBs6xHm+h0Ljrf+y
-         rFbYYzWRA5j14xgc5ygP+TrFiJ3HazqFe2tZLTx5XJ8stS8GbnLwxdSUQj0nGIGycoYP
-         ZeXu3B8KwzSYDlcjgCzItlFn+A2QCmb5X4lC1VIJd3pDehc2NmqWTjMxU68j3EGSHcex
-         Gr5A==
+        bh=JXr+4obL6y+4i4RBwA/iY67vvlxQ00x3l5smzh2eGTQ=;
+        b=ZRRVGCU841hW9rRpB82+Xbh7lmRIZ84opZop/DioDsLCGra+0kOgb9uWZZnKgXoEFF
+         cKicNFOz9UQNY17R6Wn6ztfL8uBRey1Zcs4F2Uu7lV+oxc5uNLQWE92qJD4bx6qg6vzo
+         BA7x9dS9P4YdkdJ6Vng68neUk8FbCvzyfzgWM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=blPOdTajVn4OJWy527Nm/cJEP9dim0oSKgwxjjYh5Yk=;
-        b=TGQBBr4yHJmXatEEejZ6fspLXxNAiJYTZNzez5xWbwKFaH7YQV0wsTGNif6A1tbF5Z
-         nNQulDwKK1hNb+wYPfkFRLkkZ3hlNeJzeDyGXLRg1HKQGEvbeh5rpv/5wanZJw0FVRUO
-         Afr+8zhs30RWnnTGKcemfhxFDucqlx1XS7u3d/2oqLgLGnEV8G8I3VMBC24X8QfGsiM2
-         Yjcb0nXpz+TRsV1srT8Q2hBEiUMxvoX8Mjt+Vm+U40h389hYYDnZf5Qh6upoHZuZXcq7
-         FTKngjfS1wr3eMOrMu6q/E+pF7/aznF0PbAXVXh66uZdwi4yH/XY/VZLWVJrGr5B2iEJ
-         uyhQ==
-X-Gm-Message-State: AOAM533+sC0dPXJl5f3KqIJyc8uCFR3esgm73LVkFmf6eIwn/NynGJHZ
-        11VR9oxQJKjJMx4lGtxP+1NrYw==
-X-Google-Smtp-Source: ABdhPJyNVz7Caxp0j/OEjoO/h6oiEfmM/aIeAAklNOAuzgysJYahbgohTEF9YUzi6hvucALYQ5uqlg==
-X-Received: by 2002:a17:90b:238d:: with SMTP id mr13mr30519050pjb.19.1593020639461;
-        Wed, 24 Jun 2020 10:43:59 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id h13sm20588371pfk.25.2020.06.24.10.43.58
+        bh=JXr+4obL6y+4i4RBwA/iY67vvlxQ00x3l5smzh2eGTQ=;
+        b=AG7yujGHWAR/Fmv8hSs0gjVtqSevvdQma/iK/l5u6JxhMd4fwoI8+1AkTiEBNgTkV4
+         d2wC7yzUb3um+17i4iX/AV1vaoyzSi0KogLd08VnBGYq+sjB164zow2/KKCq9fvIBsg7
+         1ZIay82Hm7rqSFiyQu156iStGsG3Rq+KeLSiZoXuRJfagAs73FMvJwuuYYj5M+tOvrne
+         vgvKQoF0APm2UWr/aBu2S78/rlEt4JxRr4WoK5mYn1yE4hRqtpn8IYQdRm2JbXJH+yOV
+         usbLYlD7iVB7Cw/19vHd9uuxwiyrJziD8huYV5x7ZKF7rug+jFlvrfUMQ3kLSRdCKDW5
+         Vjng==
+X-Gm-Message-State: AOAM530WYx41zSZd9JtcaESWyAlHonk+31ofoZYlwuDde2yltUbGsqiU
+        XBI36wsXLAP5v0v+T4U3QYljISKvUhg=
+X-Google-Smtp-Source: ABdhPJyavFovjn6UaEvHwnVOz/g3p0xCaL0L5e6PX27geSJVDOcaKfI42x1ilysgD0JoHoDQrf9sfQ==
+X-Received: by 2002:a63:9d45:: with SMTP id i66mr23278986pgd.25.1593020525758;
+        Wed, 24 Jun 2020 10:42:05 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:476b:691:abc3:38db])
+        by smtp.gmail.com with ESMTPSA id y5sm17945322pgl.85.2020.06.24.10.42.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 10:43:58 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 10:41:17 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Sivaprakash Murugesan <sivaprak@codeaurora.org>, agross@kernel.org,
-        kishon@ti.com, robh+dt@kernel.org, mgautam@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH V3 0/5] Enable USB support in IPQ8074
-Message-ID: <20200624174117.GU128451@builder.lan>
-References: <1591625479-4483-1-git-send-email-sivaprak@codeaurora.org>
- <20200624171834.GH2324254@vkoul-mobl>
+        Wed, 24 Jun 2020 10:42:05 -0700 (PDT)
+Date:   Wed, 24 Jun 2020 10:42:04 -0700
+From:   Prashant Malani <pmalani@chromium.org>
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Azhar Shaikh <azhar.shaikh@intel.com>,
+        Casey Bowman <casey.g.bowman@intel.com>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Yicheng Li <yichengli@chromium.org>
+Subject: Re: [PATCH 2/2] platform/chrome: cros_ec_typec: Add TBT compat
+ support
+Message-ID: <20200624174204.GB151731@google.com>
+References: <20200624080926.165107-1-pmalani@chromium.org>
+ <20200624080926.165107-2-pmalani@chromium.org>
+ <20200624091520.GA1487@kuha.fi.intel.com>
+ <20200624092040.GB1487@kuha.fi.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200624171834.GH2324254@vkoul-mobl>
+In-Reply-To: <20200624092040.GB1487@kuha.fi.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 24 Jun 10:18 PDT 2020, Vinod Koul wrote:
+Hi Heikki,
 
-> On 08-06-20, 19:41, Sivaprakash Murugesan wrote:
-> > IPQ8074 has two super speed USB ports, with QMP and QUSB2 PHYs.
-> > This patch set enables the USB PHYs and USB dwc3 in IPQ8074.
+On Wed, Jun 24, 2020 at 12:20:40PM +0300, Heikki Krogerus wrote:
+> On Wed, Jun 24, 2020 at 12:15:20PM +0300, Heikki Krogerus wrote:
+> > On Wed, Jun 24, 2020 at 01:09:24AM -0700, Prashant Malani wrote:
+> > > Add mux control support for Thunderbolt compatibility mode.
+> > > 
+> > > Suggested-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > > Co-developed-by: Azhar Shaikh <azhar.shaikh@intel.com>
+> > > Co-developed-by: Casey Bowman <casey.g.bowman@intel.com>
+> > > Signed-off-by: Prashant Malani <pmalani@chromium.org>
+> > > ---
+> > >  drivers/platform/chrome/cros_ec_typec.c | 70 ++++++++++++++++++++++++-
+> > >  1 file changed, 69 insertions(+), 1 deletion(-)
+> > 
+> > Cool! Can you guys test also USB4 with the attached patch (still work
+> > in progress)? It should apply on top of these.
+> > 
+> > The mux driver is still missing USB4 support, but I'll send the
+> > patches needed for that right now...
 > 
-> Applied 1 thru 4. Bjorn can take the 5th one, thanks
+> Actually, I'll just attach that one here as well. Let me know if you
+> guys can test these.
+
+Thanks for the patches. Will try them out today and compare the PMC IPC
+buffers against what extcon is doing.
+
+Best regards,
+
+-Prashant
+> 
+> thanks,
+> 
+> -- 
+> heikki
+
+> From 396bd399ac815165ec4992739d45d52ecf234acc Mon Sep 17 00:00:00 2001
+> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Date: Wed, 3 Jun 2020 17:00:14 +0300
+> Subject: [PATCH] usb: typec: intel_pmc_mux: Add support for USB4
+> 
+> The PMC mux-agent can be used also when Enter_USB is used in
+> order to enter USB4 mode. The mux-agent does not have USB4
+> specific message, but instead needs to be put into TBT
+> alternate mode also with USB4. That is OK as the controller
+> is in any case the same with TBT3 and USB4.
+> 
+> Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> ---
+>  drivers/usb/typec/mux/intel_pmc_mux.c | 65 +++++++++++++++++++++++----
+>  1 file changed, 56 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/mux/intel_pmc_mux.c b/drivers/usb/typec/mux/intel_pmc_mux.c
+> index 70ddc9d6d49e4..6d223bd360b8e 100644
+> --- a/drivers/usb/typec/mux/intel_pmc_mux.c
+> +++ b/drivers/usb/typec/mux/intel_pmc_mux.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/property.h>
+> +#include <linux/usb/pd.h>
+>  #include <linux/usb/role.h>
+>  #include <linux/usb/typec_mux.h>
+>  #include <linux/usb/typec_dp.h>
+> @@ -227,6 +228,41 @@ pmc_usb_mux_tbt(struct pmc_usb_port *port, struct typec_mux_state *state)
+>  	return pmc_usb_command(port, (void *)&req, sizeof(req));
+>  }
+>  
+> +static int
+> +pmc_usb_mux_usb4(struct pmc_usb_port *port, struct typec_mux_state *state)
+> +{
+> +	u32 eudo = *(u32 *)state->data;
+> +	struct altmode_req req = { };
+> +	u8 cable_speed;
+> +
+> +	req.usage = PMC_USB_ALT_MODE;
+> +	req.usage |= port->usb3_port << PMC_USB_MSG_USB3_PORT_SHIFT;
+> +	req.mode_type = PMC_USB_MODE_TYPE_TBT << PMC_USB_MODE_TYPE_SHIFT;
+> +
+> +	/* USB4 Mode */
+> +	req.mode_data = PMC_USB_ALTMODE_FORCE_LSR;
+> +	req.mode_data |= PMC_USB_ALTMODE_ACTIVE_LINK;
+> +
+> +	req.mode_data |= (port->orientation - 1) << PMC_USB_ALTMODE_ORI_SHIFT;
+> +	req.mode_data |= (port->role - 1) << PMC_USB_ALTMODE_UFP_SHIFT;
+> +
+> +	switch ((eudo & EUDO_CABLE_TYPE_MASK) >> EUDO_CABLE_TYPE_SHIFT) {
+> +	case EUDO_CABLE_TYPE_PASSIVE:
+> +		break;
+> +	case EUDO_CABLE_TYPE_OPTICAL:
+> +		req.mode_data |= PMC_USB_ALTMODE_CABLE_TYPE;
+> +		/* fall through */
+> +	default:
+> +		req.mode_data |= PMC_USB_ALTMODE_ACTIVE_CABLE;
+> +		break;
+> +	}
+> +
+> +	cable_speed = (eudo & EUDO_CABLE_SPEED_MASK) >> EUDO_CABLE_SPEED_SHIFT;
+> +	req.mode_data |= PMC_USB_ALTMODE_CABLE_SPD(cable_speed);
+> +
+> +	return pmc_usb_command(port, (void *)&req, sizeof(req));
+> +}
+> +
+>  static int pmc_usb_mux_safe_state(struct pmc_usb_port *port)
+>  {
+>  	u8 msg;
+> @@ -268,17 +304,28 @@ pmc_usb_mux_set(struct typec_mux *mux, struct typec_mux_state *state)
+>  {
+>  	struct pmc_usb_port *port = typec_mux_get_drvdata(mux);
+>  
+> -	if (!state->alt)
+> -		return 0;
+> -
+>  	if (state->mode == TYPEC_STATE_SAFE)
+>  		return pmc_usb_mux_safe_state(port);
+> -
+> -	switch (state->alt->svid) {
+> -	case USB_TYPEC_TBT_SID:
+> -		return pmc_usb_mux_tbt(port, state);
+> -	case USB_TYPEC_DP_SID:
+> -		return pmc_usb_mux_dp(port, state);
+> +	if (state->mode == TYPEC_STATE_USB)
+> +		return pmc_usb_connect(port);
+> +
+> +	if (state->alt) {
+> +		switch (state->alt->svid) {
+> +		case USB_TYPEC_TBT_SID:
+> +			return pmc_usb_mux_tbt(port, state);
+> +		case USB_TYPEC_DP_SID:
+> +			return pmc_usb_mux_dp(port, state);
+> +		}
+> +	} else {
+> +		switch (state->mode) {
+> +		case TYPEC_MODE_USB2:
+> +			/* REVISIT: Try with usb3_port set to 0? */
+> +			break;
+> +		case TYPEC_MODE_USB3:
+> +			return pmc_usb_connect(port);
+> +		case TYPEC_MODE_USB4:
+> +			return pmc_usb_mux_usb4(port, state);
+> +		}
+>  	}
+>  
+>  	return -EOPNOTSUPP;
+> -- 
+> 2.27.0
 > 
 
-Thanks Vinod, I've applied and pushed out patch 5.
-
-Regards,
-Bjorn
