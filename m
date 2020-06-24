@@ -2,99 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5FD4206F37
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 10:47:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9118A206F5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 10:50:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388621AbgFXIrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 04:47:48 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:35980 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728732AbgFXIrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 04:47:48 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 5AA6310B2CB85E73627C;
-        Wed, 24 Jun 2020 16:47:45 +0800 (CST)
-Received: from [127.0.0.1] (10.166.215.204) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Wed, 24 Jun 2020
- 16:47:42 +0800
-Subject: Re: [PATCH] ARM: socfpga: add missing put_device() call in
- socfpga_setup_ocram_self_refresh()
-To:     <dinguyen@kernel.org>, <linux@armlinux.org.uk>,
-        <khilman@linaro.org>, <atull@opensource.altera.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20200604131042.3926006-1-yukuai3@huawei.com>
-From:   "yukuai (C)" <yukuai3@huawei.com>
-Message-ID: <c5a504d7-db2b-914b-89cd-2b46602bd93e@huawei.com>
-Date:   Wed, 24 Jun 2020 16:47:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200604131042.3926006-1-yukuai3@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.166.215.204]
-X-CFilter-Loop: Reflected
+        id S2389197AbgFXItc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 04:49:32 -0400
+Received: from cmccmta3.chinamobile.com ([221.176.66.81]:5596 "EHLO
+        cmccmta3.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388830AbgFXItZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 04:49:25 -0400
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.1]) by rmmx-syy-dmz-app12-12012 (RichMail) with SMTP id 2eec5ef31384808-51d08; Wed, 24 Jun 2020 16:49:08 +0800 (CST)
+X-RM-TRANSID: 2eec5ef31384808-51d08
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[223.105.0.242])
+        by rmsmtp-syy-appsvr01-12001 (RichMail) with SMTP id 2ee15ef31383538-2ae1e;
+        Wed, 24 Jun 2020 16:49:08 +0800 (CST)
+X-RM-TRANSID: 2ee15ef31383538-2ae1e
+From:   Ding Xiang <dingxiang@cmss.chinamobile.com>
+To:     axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] loop: fix passing zero to 'PTR_ERR' warning
+Date:   Wed, 24 Jun 2020 16:48:42 +0800
+Message-Id: <1592988522-4350-1-git-send-email-dingxiang@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.7.4
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping?
+Fix a static code checker warning:
+    drivers/block/loop.c:798 loop_attr_backing_file_show()
+    warn: passing zero to 'PTR_ERR'
 
-On 2020/6/4 21:10, yu kuai wrote:
-> if of_find_device_by_node() succeed, socfpga_setup_ocram_self_refresh()
-> doesn't have a corresponding put_device(). Thus add a jump target to fix
-> the exception handling for this function implementation.
-> 
-> Fixes: 44fd8c7d4005 ("ARM: socfpga: support suspend to ram")
-> Signed-off-by: yu kuai <yukuai3@huawei.com>
-> ---
->   arch/arm/mach-socfpga/pm.c | 11 ++++++++---
->   1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm/mach-socfpga/pm.c b/arch/arm/mach-socfpga/pm.c
-> index 6ed887cf8dc9..7267f5da15a4 100644
-> --- a/arch/arm/mach-socfpga/pm.c
-> +++ b/arch/arm/mach-socfpga/pm.c
-> @@ -49,14 +49,14 @@ static int socfpga_setup_ocram_self_refresh(void)
->   	if (!ocram_pool) {
->   		pr_warn("%s: ocram pool unavailable!\n", __func__);
->   		ret = -ENODEV;
-> -		goto put_node;
-> +		goto put_device;
->   	}
->   
->   	ocram_base = gen_pool_alloc(ocram_pool, socfpga_sdram_self_refresh_sz);
->   	if (!ocram_base) {
->   		pr_warn("%s: unable to alloc ocram!\n", __func__);
->   		ret = -ENOMEM;
-> -		goto put_node;
-> +		goto put_device;
->   	}
->   
->   	ocram_pbase = gen_pool_virt_to_phys(ocram_pool, ocram_base);
-> @@ -67,7 +67,7 @@ static int socfpga_setup_ocram_self_refresh(void)
->   	if (!suspend_ocram_base) {
->   		pr_warn("%s: __arm_ioremap_exec failed!\n", __func__);
->   		ret = -ENOMEM;
-> -		goto put_node;
-> +		goto put_device;
->   	}
->   
->   	/* Copy the code that puts DDR in self refresh to ocram */
-> @@ -80,7 +80,12 @@ static int socfpga_setup_ocram_self_refresh(void)
->   	     "could not copy function to ocram");
->   	if (!socfpga_sdram_self_refresh_in_ocram)
->   		ret = -EFAULT;
-> +
-> +	if (!ret)
-> +		goto put_node;
->   
-> +put_device:
-> +	put_device(&pdev->dev);
->   put_node:
->   	of_node_put(np);
->   
-> 
+Signed-off-by: Ding Xiang <dingxiang@cmss.chinamobile.com>
+---
+ drivers/block/loop.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/block/loop.c b/drivers/block/loop.c
+index 475e1a7..bcada87 100644
+--- a/drivers/block/loop.c
++++ b/drivers/block/loop.c
+@@ -795,7 +795,7 @@ static ssize_t loop_attr_backing_file_show(struct loop_device *lo, char *buf)
+ 	spin_unlock_irq(&lo->lo_lock);
+ 
+ 	if (IS_ERR_OR_NULL(p))
+-		ret = PTR_ERR(p);
++		ret = PTR_ERR_OR_ZERO(p);
+ 	else {
+ 		ret = strlen(p);
+ 		memmove(buf, p, ret);
+-- 
+2.7.4
+
+
 
