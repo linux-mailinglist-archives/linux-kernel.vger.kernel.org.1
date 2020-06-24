@@ -2,154 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795D1207A53
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D20207A5E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405601AbgFXRam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 13:30:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50612 "EHLO
+        id S2405519AbgFXRfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 13:35:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405412AbgFXRaj (ORCPT
+        with ESMTP id S2404908AbgFXRfN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:30:39 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0339AC061573;
-        Wed, 24 Jun 2020 10:30:38 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id u128so1711871pgu.13;
-        Wed, 24 Jun 2020 10:30:37 -0700 (PDT)
+        Wed, 24 Jun 2020 13:35:13 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C775EC061573;
+        Wed, 24 Jun 2020 10:35:12 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id o38so2354005qtf.6;
+        Wed, 24 Jun 2020 10:35:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0HVSIsIhF4vtA9M97P2wIfI+PdikMXEfJ9b+6szRz+k=;
-        b=Fq3jmg6viJhUzrrzBnM9gPXNXEbFgCrImbOXtH5xts6XpWmb5+BtyusDL897IoSNec
-         lFUL8GGVo1w3QxzTvfSCtZzMUdLsbEWhDFx/E4HB2gvvDevXaiSsvOoRuPG+5h3/gKxM
-         9PrOLyO2GK8J1RvN/hxg3skw4+gxo7l6WOC/A7WG/YtXU0xHHYLcZJITERyAz4EjN+Iu
-         jiO6e6quoM8/pncGxDhnQRworCqCW+HxYcJtpF6TVV9AReReCoIXy+j+EUX428i7LwuE
-         jXw+18WBbqUcIK5PIMkDtvie35lmCH3YQxPbfVtSOqN0YQrKqNllMGqUIQcEtiq+1mL+
-         UOZw==
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=u71VLQWbO5DL23Y8K+qb6PrSXQwJENiQAs1O7511XBM=;
+        b=GKxzqjwIPzBqXbWSXbHl7RH/IyLS+yYlLaFyGMcmoEkNl2geelNInX2hhzjL00Z7HG
+         yGQV2zZSIRnXkEtNd8DyUVJiIkQ1jH+a5C8kmQ77/qsL7LLYtUg0m8nE/M0nCjfx8zho
+         eawIgP2Jik4cO0z6IWfLm6aGp5C8ZiSRQDq+R9gxF7Xrg4Wu+L7o1Cjhcv0QTmZuI7Ny
+         YiAI9Tvuzjf8kjOJYxFkof/jsj3qf2gamIyMO6Ak9Y22ItX4nzIm3fNmXAnazGsqZVp3
+         5doNYOpwD8Mp4iQbMItGvcv5PPLdcfQNa4VOdw0HHpvow7TXhAoteneD/7r5ZRRjszzT
+         R1Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0HVSIsIhF4vtA9M97P2wIfI+PdikMXEfJ9b+6szRz+k=;
-        b=rsncTgCDls1P7cgLCQr7dTrNGRIqQ4kBfcCjDkDNq0lbuOebnD8QTt9VDP6g7aLJdk
-         6ORys04EgK5xHHmIzWFavICGfxQ9wJvv3O9/YkUHG6at+gAXju+xweIRVRBNG6wYiACa
-         r2Ab9/rtTbo4KlopmFo3UqWn57MiTXMWj/A6m9kuZhqa5kk/EGU1gEYm7OQN7p5iludK
-         FGEmV9/QRvdZ8grU2kGpnuvVv8bwEFQPzn1hbB1eE8PLkVV3LK5Ytt806XIL9h7Gu+10
-         KDbekR+bXgWiuvloPexVvDAt1Q8SCB2xGCWMqD+4OAbevhdawgUY91lZI4VwxpdDs5dt
-         0QSA==
-X-Gm-Message-State: AOAM531K5RSHB+7q6VcEomcUYS+s07VuXOF896EToOy7uRoyu7pC8KRE
-        yUR4r9caSvUNdjqs6hlDleFFbZuMqermeA==
-X-Google-Smtp-Source: ABdhPJyr353InAhP3GPBTsaACmUaSmfDnL6l6uOv9TYFVlWaY/FPStDKebr2lqV4JJ/wMB7HUYyE0g==
-X-Received: by 2002:a63:c58:: with SMTP id 24mr12305638pgm.343.1593019837527;
-        Wed, 24 Jun 2020 10:30:37 -0700 (PDT)
-Received: from varodek.iballbatonwifi.com ([103.105.153.57])
-        by smtp.gmail.com with ESMTPSA id z11sm21187215pfk.141.2020.06.24.10.30.34
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=u71VLQWbO5DL23Y8K+qb6PrSXQwJENiQAs1O7511XBM=;
+        b=a6QOk1DWBKkbukjYDPUjFulyyNvSEjXyBZPJQ6FngNn4XPijvdedBHc4o5vvoMgCqs
+         3TrNVsLhuObwn/3pOih4843C1mMtWJCMoW7ogBPSM9yvg4YlilAZqF8Zzu064nORCUNv
+         1RbbAadINesdMs7sJ6SzismTgasVkRSh7rpj5SinT8FzxRaX8uyCG3Kql59aKzJtUI96
+         PUy3ZO4k3TfFe+iJt7YZ7LI91Oo+IUFzcP0QnCYeacyOb4LRzumrL+9wq3nHkJobV6l7
+         3DbjDv5Qk3joKdCG8RaIanCI03RWbdulm3kQ4Dr4EgCz5b4HCPmZJlRFQ9B5KMzsynmn
+         /wNQ==
+X-Gm-Message-State: AOAM5327p+zNshOLNiYTMze49Yu/p/gMrhVSI1eJFbAvKUPDJlZeuaaX
+        PD9fQuGYrmuSaXjwmB049ng=
+X-Google-Smtp-Source: ABdhPJwbxrJtgWRCE11IF50EeMFqChIYm2W1jo8Xv+ODfidD8yDrf4K4eJF8mxRsbCJyvFUCCDnWUg==
+X-Received: by 2002:ac8:691:: with SMTP id f17mr7816140qth.60.1593020111983;
+        Wed, 24 Jun 2020 10:35:11 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id c191sm3620105qke.114.2020.06.24.10.35.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 10:30:37 -0700 (PDT)
-From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
-To:     Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
-        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org, linux-ide@vger.kernel.org
-Subject: [PATCH v1 4/4] ide: delkin_cb: use generic power management
-Date:   Wed, 24 Jun 2020 22:58:57 +0530
-Message-Id: <20200624172857.60915-5-vaibhavgupta40@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200624172857.60915-1-vaibhavgupta40@gmail.com>
-References: <20200624172857.60915-1-vaibhavgupta40@gmail.com>
+        Wed, 24 Jun 2020 10:35:11 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Wed, 24 Jun 2020 13:35:09 -0400
+To:     Fangrui Song <maskray@google.com>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/9] vmlinux.lds.h: Add .symtab, .strtab, and
+ .shstrtab to STABS_DEBUG
+Message-ID: <20200624173509.GA1460341@rani.riverdale.lan>
+References: <20200624014940.1204448-1-keescook@chromium.org>
+ <20200624014940.1204448-3-keescook@chromium.org>
+ <20200624153930.GA1337895@rani.riverdale.lan>
+ <20200624161643.73x6navnwryckuit@google.com>
+ <20200624171121.GA1377921@rani.riverdale.lan>
+ <20200624172620.654hhjetiyzpgoxw@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200624172620.654hhjetiyzpgoxw@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the support of generic PM callbacks, drivers no longer need to use
-legacy .suspend() and .resume() in which they had to maintain PCI states
-changes and device's power state themselves. All required operations are
-done by PCI core.
+On Wed, Jun 24, 2020 at 10:26:20AM -0700, Fangrui Song wrote:
+> 
+> On 2020-06-24, Arvind Sankar wrote:
+> >On Wed, Jun 24, 2020 at 09:16:43AM -0700, Fangrui Song wrote:
+> >>
+> >> On 2020-06-24, Arvind Sankar wrote:
+> >> >On Tue, Jun 23, 2020 at 06:49:33PM -0700, Kees Cook wrote:
+> >> >> When linking vmlinux with LLD, the synthetic sections .symtab, .strtab,
+> >> >> and .shstrtab are listed as orphaned. Add them to the STABS_DEBUG section
+> >> >> so there will be no warnings when --orphan-handling=warn is used more
+> >> >> widely. (They are added above comment as it is the more common
+> >> >
+> >> >Nit 1: is "after .comment" better than "above comment"? It's above in the
+> >> >sense of higher file offset, but it's below in readelf output.
+> >>
+> >> I mean this order:)
+> >>
+> >>    .comment
+> >>    .symtab
+> >>    .shstrtab
+> >>    .strtab
+> >>
+> >> This is the case in the absence of a linker script if at least one object file has .comment (mostly for GCC/clang version information) or the linker is LLD which adds a .comment
+> >>
+> >> >Nit 2: These aren't actually debugging sections, no? Is it better to add
+> >> >a new macro for it, and is there any plan to stop LLD from warning about
+> >> >them?
+> >>
+> >> https://reviews.llvm.org/D75149 "[ELF] --orphan-handling=: don't warn/error for unused synthesized sections"
+> >> described that .symtab .shstrtab .strtab are different in GNU ld.
+> >> Since many other GNU ld synthesized sections (.rela.dyn .plt ...) can be renamed or dropped
+> >> via output section descriptions, I don't understand why the 3 sections
+> >> can't be customized.
+> >
+> >So IIUC, lld will now warn about .rela.dyn etc only if they're non-empty?
+> 
+> HEAD and future 11.0.0 will not warn about unused synthesized sections
+> like .rela.dyn
+> 
+> For most synthesized sections, empty = unused.
+> 
+> >>
+> >> I created a feature request: https://sourceware.org/bugzilla/show_bug.cgi?id=26168
+> >> (If this is supported, it is a consistent behavior to warn for orphan
+> >> .symtab/.strtab/.shstrtab
+> >>
+> >> There may be 50% chance that the maintainer decides that "LLD diverges"
+> >> I would disagree: there is no fundamental problems with .symtab/.strtab/.shstrtab which make them special in output section descriptions or orphan handling.)
+> >>
+> >
+> >.shstrtab is a little special in that it can't be discarded if the ELF
+> >file contains any sections at all. But yeah, there's no reason they
+> >can't be renamed or placed in a custom location in the file.
+> 
+> https://sourceware.org/pipermail/binutils/2020-March/000179.html
+> proposes -z nosectionheader. With this option, I believe .shstrtab is
+> not needed. /DISCARD/ : { *(.shstrtab) }  should achieve a similar effect.
 
-After converting it into generic model, suspend() became an empty function.
-Hence, it is defined as NULL.
-
-Compile-tested only.
-
-Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
----
- drivers/ide/delkin_cb.c | 35 +++++++----------------------------
- 1 file changed, 7 insertions(+), 28 deletions(-)
-
-diff --git a/drivers/ide/delkin_cb.c b/drivers/ide/delkin_cb.c
-index 300daabaa575..8a3dc4dd6e66 100644
---- a/drivers/ide/delkin_cb.c
-+++ b/drivers/ide/delkin_cb.c
-@@ -123,39 +123,17 @@ delkin_cb_remove (struct pci_dev *dev)
- 	pci_disable_device(dev);
- }
- 
--#ifdef CONFIG_PM
--static int delkin_cb_suspend(struct pci_dev *dev, pm_message_t state)
--{
--	pci_save_state(dev);
--	pci_disable_device(dev);
--	pci_set_power_state(dev, pci_choose_state(dev, state));
--
--	return 0;
--}
-+#define delkin_cb_suspend NULL
- 
--static int delkin_cb_resume(struct pci_dev *dev)
-+static int __maybe_unused delkin_cb_resume(struct device *dev_d)
- {
--	struct ide_host *host = pci_get_drvdata(dev);
--	int rc;
--
--	pci_set_power_state(dev, PCI_D0);
--
--	rc = pci_enable_device(dev);
--	if (rc)
--		return rc;
--
--	pci_restore_state(dev);
--	pci_set_master(dev);
-+	struct ide_host *host = dev_get_drvdata(dev_d);
- 
- 	if (host->init_chipset)
--		host->init_chipset(dev);
-+		host->init_chipset(to_pci_dev(dev_d));
- 
- 	return 0;
- }
--#else
--#define delkin_cb_suspend NULL
--#define delkin_cb_resume NULL
--#endif
- 
- static struct pci_device_id delkin_cb_pci_tbl[] = {
- 	{ 0x1145, 0xf021, PCI_ANY_ID, PCI_ANY_ID, 0, 0, 0},
-@@ -164,13 +142,14 @@ static struct pci_device_id delkin_cb_pci_tbl[] = {
- };
- MODULE_DEVICE_TABLE(pci, delkin_cb_pci_tbl);
- 
-+static SIMPLE_DEV_PM_OPS(delkin_cb_pm_ops, delkin_cb_suspend, delkin_cb_resume);
-+
- static struct pci_driver delkin_cb_pci_driver = {
- 	.name		= "Delkin-ASKA-Workbit Cardbus IDE",
- 	.id_table	= delkin_cb_pci_tbl,
- 	.probe		= delkin_cb_probe,
- 	.remove		= delkin_cb_remove,
--	.suspend	= delkin_cb_suspend,
--	.resume		= delkin_cb_resume,
-+	.driver.pm	= &delkin_cb_pm_ops,
- };
- 
- module_pci_driver(delkin_cb_pci_driver);
--- 
-2.27.0
-
+oh wow.
