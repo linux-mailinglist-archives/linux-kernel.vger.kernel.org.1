@@ -2,95 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A9D207F00
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 23:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8E9207F01
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 23:58:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388739AbgFXV5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 17:57:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35536 "EHLO
+        id S2390759AbgFXV55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 17:57:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729463AbgFXV5n (ORCPT
+        with ESMTP id S1729463AbgFXV54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 17:57:43 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4525FC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 14:57:42 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id p82so3211321oif.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 14:57:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=F5AhL2bw/AOtKqc03G2nDI16ZsoZh1UsNskRAYtbaNU=;
-        b=Ub0IvynTicp+ncO5uesCo41hnMa6SGFTx+Rk5RUhRB/bX8HEyqVyOlI3jviU/nKKuT
-         SEMLWUKenW8w6jKxISbDptqFASkR0dY3ANVGFobTFLVmo4yvCJnQv7OJIaLz9Psv2xbd
-         1NeV3vpx7icM7V2WMXYqzLl0MGcOwIzwZg8t0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=F5AhL2bw/AOtKqc03G2nDI16ZsoZh1UsNskRAYtbaNU=;
-        b=TiKxkxjt6fVrtl4+/Dr28/VopqGsRV+eJxPT+k3Z5wEZTEJT0bdEBdbTYluY/71Ri9
-         b9uel89MCqXhZ5t2yyYtHE5PUY1flnAjppy9USgDHmDoP4VeVXUmEE1zesAv/H3RGp8R
-         XRc+kvIa2J7OTUXaGIO/bkIwxsARE/KIBnQcVP9NnwfXyTRQS/CIjisjU8J1NbtgGUJX
-         OpDmSNfXhHje8UecMG7YSpohY51uxROZZ39RlReUnhONpNcrscsesVJGUKGqMk+G+c7r
-         T1XQHEy0irVY8yn8TRqerhx++QW5HkGD9cbMt62qpIVggSRBluHvlpvrYus3QSBgEeCf
-         Gvbw==
-X-Gm-Message-State: AOAM530w3whIKwJd1pU7G7cv282FFggrSWAdDa4h6DFDcTHTmI1Aglm1
-        83+5XK/Leo8jOhmI/P8dbxBM8r0mv0U=
-X-Google-Smtp-Source: ABdhPJyyEtqUlR6E8hzeOtso0lOe7AZ2Fmexq6+l1Rhftt9AFPvFyjXqyH+anZEIkaCgIM7dcfKe5A==
-X-Received: by 2002:a05:6808:99c:: with SMTP id a28mr22100205oic.162.1593035861670;
-        Wed, 24 Jun 2020 14:57:41 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id g51sm5070186otg.17.2020.06.24.14.57.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jun 2020 14:57:41 -0700 (PDT)
-Subject: Re: [PATCH 5.7 000/477] 5.7.6-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wed, 24 Jun 2020 17:57:56 -0400
+Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B148FC061573;
+        Wed, 24 Jun 2020 14:57:56 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        (using TLSv1 with cipher AES256-SHA (256/256 bits))
+        (Client did not present a certificate)
+        (Authenticated sender: davem-davemloft)
+        by shards.monkeyblade.net (Postfix) with ESMTPSA id 378511273DEC1;
+        Wed, 24 Jun 2020 14:57:56 -0700 (PDT)
+Date:   Wed, 24 Jun 2020 14:57:55 -0700 (PDT)
+Message-Id: <20200624.145755.1271879668840297330.davem@davemloft.net>
+To:     colin.king@canonical.com
+Cc:     aelior@marvell.com, GR-everest-linux-l2@marvell.com,
+        kuba@kernel.org, michal.kalderon@marvell.com,
+        netdev@vger.kernel.org, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        ben.hutchings@codethink.co.uk, lkft-triage@lists.linaro.org,
-        stable@vger.kernel.org, skhan@linuxfoundation.org
-References: <20200623195407.572062007@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <86d738fd-5f5d-9328-6d7b-6f5148bc3e72@linuxfoundation.org>
-Date:   Wed, 24 Jun 2020 15:57:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200623195407.572062007@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Subject: Re: [PATCH] qed: add missing error test for
+ DBG_STATUS_NO_MATCHING_FRAMING_MODE
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20200624101302.8316-1-colin.king@canonical.com>
+References: <20200624101302.8316-1-colin.king@canonical.com>
+X-Mailer: Mew version 6.8 on Emacs 26.3
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Wed, 24 Jun 2020 14:57:56 -0700 (PDT)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/20 1:49 PM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.7.6 release.
-> There are 477 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Thu, 25 Jun 2020 19:52:30 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.7.6-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.7.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+From: Colin King <colin.king@canonical.com>
+Date: Wed, 24 Jun 2020 11:13:02 +0100
 
-Compiled and booted on my test system. No dmesg regressions.
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The error DBG_STATUS_NO_MATCHING_FRAMING_MODE was added to the enum
+> enum dbg_status however there is a missing corresponding entry for
+> this in the array s_status_str. This causes an out-of-bounds read when
+> indexing into the last entry of s_status_str.  Fix this by adding in
+> the missing entry.
+> 
+> Addresses-Coverity: ("Out-of-bounds read").
+> Fixes: 2d22bc8354b1 ("qed: FW 8.42.2.0 debug features")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-thanks,
--- Shuah
-
+Applied, thank you.
