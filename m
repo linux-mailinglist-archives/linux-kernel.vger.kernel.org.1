@@ -2,152 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68FC206AC1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 05:48:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 569A2206AC6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 05:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388753AbgFXDsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 23:48:50 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:31385 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388572AbgFXDsu (ORCPT
+        id S2388803AbgFXDve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 23:51:34 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:31285 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388665AbgFXDvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 23:48:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1592970528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d9mmmSYUQts29pccjkqtdI3xyAW6oFJFtioXZrdF2dE=;
-        b=e6hzjuDfT8K6mw4lrgDetWM+RdAPZ4GjHouZLZ8LDHAj1nnHckj1th2N4POuajfNA1CQCE
-        1/FxkoL1XSr6+jhGqBCvECp6seZ+6uocZ9fDAOx3WtieQ+s916ADAg0Fa4bhcsVmiCIlDM
-        tBsna+yPFD5Mb0ObdqD/5ktoj9QE0OQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-6d5_5QTQNo-JDVy78zrAaA-1; Tue, 23 Jun 2020 23:48:40 -0400
-X-MC-Unique: 6d5_5QTQNo-JDVy78zrAaA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DE6DB805EE3;
-        Wed, 24 Jun 2020 03:48:38 +0000 (UTC)
-Received: from [10.10.112.56] (ovpn-112-56.rdu2.redhat.com [10.10.112.56])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3BD2B10013C1;
-        Wed, 24 Jun 2020 03:48:37 +0000 (UTC)
-Subject: Re: [PATCH 1/2] selftests/lkdtm: Don't clear dmesg when running tests
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        =?UTF-8?Q?Daniel_D=c3=adaz?= <daniel.diaz@linaro.org>,
-        Justin Cook <justin.cook@linaro.org>,
-        lkft-triage@lists.linaro.org, Miroslav Benes <mbenes@suse.cz>,
-        Petr Mladek <pmladek@suse.com>, Shuah Khan <shuah@kernel.org>
-References: <20200508065356.2493343-1-mpe@ellerman.id.au>
- <CA+G9fYtHP+Gg+BrR_GkBMxu2oOi-_e9pATtpb6TVRswv1G1r1Q@mail.gmail.com>
-From:   Joe Lawrence <joe.lawrence@redhat.com>
-Message-ID: <c5b77970-ecaf-24ad-c34d-134acc1a6063@redhat.com>
-Date:   Tue, 23 Jun 2020 23:48:36 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+        Tue, 23 Jun 2020 23:51:33 -0400
+X-UUID: ab9f33d4d1164f7d944f2ceff272d664-20200624
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=2Dog3+Nae8JVLbPa7qMUki8StCUSkZ7vDzgUmgL8nCI=;
+        b=LHkJg7YgjU04Nt6u/wwESrQfe1U61/PUIjrTRHJUv06I7DJZjtziIHvpHoLxkWhAx9lvbfpTF4Keg1+3VJdyWy6SBG469XasDS1heAPhFAWVwlxSqWZa06uP/h/DawRL9PPvA4KV2jmqmvNuLtO8kUBkKLyvWcG3M1jVwF7zGgw=;
+X-UUID: ab9f33d4d1164f7d944f2ceff272d664-20200624
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <neal.liu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
+        with ESMTP id 1208736638; Wed, 24 Jun 2020 11:51:30 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Wed, 24 Jun 2020 11:51:20 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Wed, 24 Jun 2020 11:51:20 +0800
+Message-ID: <1592970682.14160.6.camel@mtkswgap22>
+Subject: Re: Add MediaTek MT6873 devapc driver
+From:   Neal Liu <neal.liu@mediatek.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     Neal Liu <neal.liu@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>
+Date:   Wed, 24 Jun 2020 11:51:22 +0800
+In-Reply-To: <20200609173204.GB1107294@bogus>
+References: <1591698261-22639-1-git-send-email-neal.liu@mediatek.com>
+         <20200609173204.GB1107294@bogus>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-In-Reply-To: <CA+G9fYtHP+Gg+BrR_GkBMxu2oOi-_e9pATtpb6TVRswv1G1r1Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-TM-SNTS-SMTP: 94B690576371ABB4BE2991BDACDFB8DE814464701461FFE7D00C600E775A57D32000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/22/20 4:51 AM, Naresh Kamboju wrote:
-> On Fri, 8 May 2020 at 12:23, Michael Ellerman <mpe@ellerman.id.au> wrote:
->>
->> It is Very Rude to clear dmesg in test scripts. That's because the
->> script may be part of a larger test run, and clearing dmesg
->> potentially destroys the output of other tests.
->>
->> We can avoid using dmesg -c by saving the content of dmesg before the
->> test, and then using diff to compare that to the dmesg afterward,
->> producing a log with just the added lines.
->>
->> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
->> ---
->>   tools/testing/selftests/lkdtm/run.sh | 14 ++++++++------
->>   1 file changed, 8 insertions(+), 6 deletions(-)
->>
->> diff --git a/tools/testing/selftests/lkdtm/run.sh b/tools/testing/selftests/lkdtm/run.sh
->> index dadf819148a4..0b409e187c7b 100755
->> --- a/tools/testing/selftests/lkdtm/run.sh
->> +++ b/tools/testing/selftests/lkdtm/run.sh
->> @@ -59,23 +59,25 @@ if [ -z "$expect" ]; then
->>          expect="call trace:"
->>   fi
->>
->> -# Clear out dmesg for output reporting
->> -dmesg -c >/dev/null
->> -
->>   # Prepare log for report checking
->> -LOG=$(mktemp --tmpdir -t lkdtm-XXXXXX)
->> +LOG=$(mktemp --tmpdir -t lkdtm-log-XXXXXX)
->> +DMESG=$(mktemp --tmpdir -t lkdtm-dmesg-XXXXXX)
->>   cleanup() {
->> -       rm -f "$LOG"
->> +       rm -f "$LOG" "$DMESG"
->>   }
->>   trap cleanup EXIT
->>
->> +# Save existing dmesg so we can detect new content below
->> +dmesg > "$DMESG"
->> +
->>   # Most shells yell about signals and we're expecting the "cat" process
->>   # to usually be killed by the kernel. So we have to run it in a sub-shell
->>   # and silence errors.
->>   ($SHELL -c 'cat <(echo '"$test"') >'"$TRIGGER" 2>/dev/null) || true
->>
->>   # Record and dump the results
->> -dmesg -c >"$LOG"
->> +dmesg | diff --changed-group-format='%>' --unchanged-group-format='' "$DMESG" - > "$LOG" || true
-> 
-> We are facing problems with the diff `=%>` part of the option.
-> This report is from the OpenEmbedded environment.
-> We have the same problem from livepatch_testcases.
-> 
-> # selftests lkdtm BUG.sh
-> lkdtm: BUG.sh_ #
-> # diff unrecognized option '--changed-group-format=%>'
-> unrecognized: option_'--changed-group-format=%>' #
-> # BusyBox v1.27.2 (2020-03-30 164108 UTC) multi-call binary.
-> v1.27.2: (2020-03-30_164108 #
-> #
-> : _ #
-> # Usage diff [-abBdiNqrTstw] [-L LABEL] [-S FILE] [-U LINES] FILE1 FILE2
-> diff: [-abBdiNqrTstw]_[-L #
-> # BUG missing 'kernel BUG at' [FAIL]
-> 
-> Full test output log,
-> https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20200621/testrun/2850083/suite/kselftest/test/lkdtm_BUG.sh/log
-> 
-
-D'oh!  Using diff's changed/unchanged group format was a nice trick to 
-easily fetch the new kernel log messages.
-
-I can't think of any simple alternative off the top of my head, so 
-here's a kludgy tested-once awk script:
-
-  SAVED_DMESG="$(dmesg | tail -n1)"
-  ... tests ...
-  NEW_DMESG=$(dmesg | awk -v last="$SAVED_DMESG" 'p; $0 == last{p=1}')
-
-I think timestamps should make each log line unique, but this probably 
-won't handle kernel log buffer overflow.
-
-Maybe it would be easier to log a known unique test delimiter msg and 
-then fetch all new messages after that?
-
--- Joe
+T24gVHVlLCAyMDIwLTA2LTA5IGF0IDExOjMyIC0wNjAwLCBSb2IgSGVycmluZyB3cm90ZToNCj4g
+T24gVHVlLCBKdW4gMDksIDIwMjAgYXQgMDY6MjQ6MTlQTSArMDgwMCwgTmVhbCBMaXUgd3JvdGU6
+DQo+ID4gVGhlc2UgcGF0Y2ggc2VyaWVzIGludHJvZHVjZSBhIE1lZGlhVGVrIE1UNjg3MyBkZXZh
+cGMgZHJpdmVyLg0KPiA+IA0KPiA+IE1UNjg3MyBidXMgZnJhYnJpYyBwcm92aWRlcyBUcnVzdFpv
+bmUgc2VjdXJpdHkgc3VwcG9ydCBhbmQgZGF0YQ0KPiA+IHByb3RlY3Rpb24gdG8gcHJldmVudCBz
+bGF2ZXMgZnJvbSBiZWluZyBhY2Nlc3NlZCBieSB1bmV4cGVjdGVkDQo+ID4gbWFzdGVycy4NCj4g
+PiBUaGUgc2VjdXJpdHkgdmlvbGF0aW9ucyBhcmUgbG9nZ2VkIGFuZCBzZW50IHRvIHRoZSBwcm9j
+ZXNzb3IgZm9yDQo+ID4gZnVydGhlciBhbmFseXNpcyBvciBjb3VudGVybWVhc3VyZXMuDQo+ID4g
+DQo+ID4gQW55IG9jY3VycmVuY2Ugb2Ygc2VjdXJpdHkgdmlvbGF0aW9uIHdvdWxkIHJhaXNlIGFu
+IGludGVycnVwdCwgYW5kDQo+ID4gaXQgd2lsbCBiZSBoYW5kbGVkIGJ5IGRldmFwYy1tdDY4NzMg
+ZHJpdmVyLiBUaGUgdmlvbGF0aW9uDQo+ID4gaW5mb3JtYXRpb24gaXMgcHJpbnRlZCBpbiBvcmRl
+ciB0byBmaW5kIHRoZSBtdXJkZXJlci4NCj4gDQo+IFRoZXJlJ3MgYWxzbyBhIHByb3Bvc2VkIGRy
+aXZlciB3aXRoIHNpbWlsYXIgZnVuY3Rpb25hbGl0eVsxXS4gQ29tZSB1cCANCj4gd2l0aCBhIGNv
+bW1vbiBzb2x1dGlvbi4NCj4gDQo+IFJvYg0KPiANCj4gWzFdIGh0dHBzOi8vbG9yZS5rZXJuZWwu
+b3JnL2xpbnV4LWFybS1rZXJuZWwvMjAyMDAxMjgxNTM4MDYuNzc4MC0xLWJlbmphbWluLmdhaWdu
+YXJkQHN0LmNvbS8NCg0KQWN0dWFsbHksIE1lZGlhdGVrIGRldmFwYyBIVyBkbyB0aGUgc2ltaWxh
+ciB0aGluZ3MuIEJ1dCB0aGUgcmVhbA0KImZpcmV3YWxsIiBmdW5jdGlvbmFsaXR5IGlzIGltcGxl
+bWVudGVkIGluIFRydXN0Wm9uZSBpbnN0cmVhZCBvZiBSRUUuDQpUaGlzIGRldmFwYy1tdDY4NzMg
+ZHJpdmVyIGlzIG1haW5seSBoYW5kbGVkIHRoZSB2aW9sYXRpb24uDQoNCkJ1cyBmaXJld2FsbCBm
+cmFtZXdvcmsgc2VlbXMgbm90IGNvdmVyIHRoaXMgcGFydHMuDQo=
 
