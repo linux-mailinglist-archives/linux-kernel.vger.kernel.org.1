@@ -2,118 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC81207F23
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 00:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C6D9207F2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 00:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390147AbgFXWIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 18:08:53 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:35821 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387718AbgFXWIx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 18:08:53 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0U0dBAHt_1593036529;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U0dBAHt_1593036529)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 25 Jun 2020 06:08:49 +0800
-Date:   Thu, 25 Jun 2020 06:08:49 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>,
-        Baoquan He <bhe@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Linux MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm/spase: never partially remove memmap for early section
-Message-ID: <20200624220849.GB15016@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
-References: <20200623094258.6705-1-richard.weiyang@linux.alibaba.com>
- <CAPcyv4ipnZ2jXd-obBk4KMGPNz4DMu0jGXFEEPCnST+A2zR+Uw@mail.gmail.com>
- <20200624014737.GG3346@MiWiFi-R3L-srv>
- <20200624034638.GA10687@L-31X9LVDL-1304.local>
- <20200624035236.GI3346@MiWiFi-R3L-srv>
- <20200624035622.GA10774@L-31X9LVDL-1304.local>
- <53f7f04e-9c77-a987-8206-bd572268522b@redhat.com>
+        id S2390330AbgFXWJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 18:09:36 -0400
+Received: from mga01.intel.com ([192.55.52.88]:16343 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389122AbgFXWJf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 18:09:35 -0400
+IronPort-SDR: 4T8PccjApL1cNbva2EUMF28Y4n1ovlQ507NipKF0AqQcStfwmZDvTHB5bjvvZPTjKOb0OWi8IP
+ icwbj9dAjtzQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="162743991"
+X-IronPort-AV: E=Sophos;i="5.75,276,1589266800"; 
+   d="scan'208";a="162743991"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2020 15:09:33 -0700
+IronPort-SDR: 2SVh1mImTky8qw5v7uYe5jrIaRPakYHkCi8Im1bR39HTfEeR3VgDSbz4g1c+CN5zo5qWIASHQL
+ HnQ1YZlUUXvA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,276,1589266800"; 
+   d="scan'208";a="275836573"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga003.jf.intel.com with ESMTP; 24 Jun 2020 15:09:33 -0700
+Received: from debox1-desk1.jf.intel.com (debox1-desk1.jf.intel.com [10.7.201.137])
+        by linux.intel.com (Postfix) with ESMTP id 8C58C5804D6;
+        Wed, 24 Jun 2020 15:09:33 -0700 (PDT)
+Message-ID: <e980bc2959b5a959bddfa63adb35aeae8261ab06.camel@linux.intel.com>
+Subject: Re: [PATCH V2 1/2] PCI: Add ACPI StorageD3Enable _DSD support
+From:   "David E. Box" <david.e.box@linux.intel.com>
+Reply-To: david.e.box@linux.intel.com
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     shyjumon.n@intel.com, rjw@rjwysocki.net, lenb@kernel.org,
+        bhelgaas@google.com, dan.j.williams@intel.com, kbusch@kernel.org,
+        axboe@fb.com, hch@lst.de, sagi@grimberg.me,
+        linux-acpi@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Date:   Wed, 24 Jun 2020 15:09:33 -0700
+In-Reply-To: <20200624213757.GA2591059@bjorn-Precision-5520>
+References: <20200624213757.GA2591059@bjorn-Precision-5520>
+Organization: David E. Box
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.3 (3.34.3-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <53f7f04e-9c77-a987-8206-bd572268522b@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 10:51:08AM +0200, David Hildenbrand wrote:
->On 24.06.20 05:56, Wei Yang wrote:
->> On Wed, Jun 24, 2020 at 11:52:36AM +0800, Baoquan He wrote:
->>> On 06/24/20 at 11:46am, Wei Yang wrote:
->>>> On Wed, Jun 24, 2020 at 09:47:37AM +0800, Baoquan He wrote:
->>>>> On 06/23/20 at 05:21pm, Dan Williams wrote:
->>>>>> On Tue, Jun 23, 2020 at 2:43 AM Wei Yang
->>>>>> <richard.weiyang@linux.alibaba.com> wrote:
->>>>>>>
->>>>>>> For early sections, we assumes its memmap will never be partially
->>>>>>> removed. But current behavior breaks this.
->>>>>>
->>>>>> Where do we assume that?
->>>>>>
->>>>>> The primary use case for this was mapping pmem that collides with
->>>>>> System-RAM in the same 128MB section. That collision will certainly be
->>>>>> depopulated on-demand depending on the state of the pmem device. So,
->>>>>> I'm not understanding the problem or the benefit of this change.
->>>>>
->>>>> I was also confused when review this patch, the patch log is a little
->>>>> short and simple. From the current code, with SPARSE_VMEMMAP enabled, we
->>>>> do build memmap for the whole memory section during boot, even though
->>>>> some of them may be partially populated. We just mark the subsection map
->>>>> for present pages. 
->>>>>
->>>>> Later, if pmem device is mapped into the partially boot memory section,
->>>>> we just fill the relevant subsection map, do return directly, w/o building
->>>>> the memmap for it, in section_activate(). Because the memmap for the
->>>>> unpresent RAM part have been there. I guess this is what Wei is trying to 
->>>>> do to keep the behaviour be consistent for pmem device adding, or
->>>>> pmem device removing and later adding again.
->>>>>
->>>>> Please correct me if I am wrong.
->>>>
->>>> You are right here.
->>>>
->>>>>
->>>>> To me, fixing it looks good. But a clear doc or code comment is
->>>>> necessary so that people can understand the code with less time.
->>>>> Leaving it as is doesn't cause harm. I personally tend to choose
->>>>> the former.
->>>>>
->>>>
->>>> The former is to add a clear doc?
->>>
->>> Sorry for the confusion. The former means the fix in your patch. Maybe a
->>> improved log and some code comment adding can make it more perfect.
->>>
->> 
->> Sure, I would try to add more log and comments, in case you have some good
->> suggestion, just let me know :)
->> 
->
->We have documented this is section_activate() and pfn_valid()
->sufficiently. Maybe add a pointer like
->
->/*
-> * The memmap of early sections is always fully populated. See
-> * section_activate() and pfn_valid() .
-> */
+On Wed, 2020-06-24 at 16:37 -0500, Bjorn Helgaas wrote:
+> On Fri, Jun 12, 2020 at 01:48:19PM -0700, David E. Box wrote:
+> > StorageD3Enable is a boolean property that indicates that the
+> > platform
+> > wants to use D3 for PCIe storage drives during suspend-to-idle. 
+> 
+> Is this something that should apply to plug-in drives, or does this
+> only apply to soldered-in things?
+> 
+> > It is a
+> > BIOS work around that is currently in use on shipping systems like
+> > some
+> > Intel Comet Lake platforms. 
+> 
+> What is this BIOS work around?  Is there a defect here that's being
+> worked around?  What's the defect?
 
-Thanks, I have added this above the "if" check.
+> 
+> > It is meant to change default driver policy for
+> > suspend that may cause higher power consumption.
+> 
+> I guess this means that by changing the driver policy from the
+> default, we can save some power?
 
->
->-- 
->Thanks,
->
->David / dhildenb
+Yes. Maybe 'work around' was a poor choice of words. 'Getting around
+default driver policy' is the issue. There is no hardware defect. One
+of the uses of the suspend-to-idle flow is to support compliance with
+increasingly tighter energy regulations. One of the ways to do this on
+desktop systems is to power off the ATX power supply during s2idle and
+use the 5V standby rail for self refresh and other low power needs. But
+the platforms that support this can't shutdown the PS unless PCI ports
+are placed in D3. On Linux this won't happen with NVMe drives because
+the default driver policy is to use ASPM (NVMe APST) during s2idle.
+Windows has a related concern. So to 'get around' the driver choosing a
+policy that will result in higher power consumption, they implemented
+this _DSD to inform the OS of its preference for D3 on the PCI port.
 
--- 
-Wei Yang
-Help you, Help me
+David
+
