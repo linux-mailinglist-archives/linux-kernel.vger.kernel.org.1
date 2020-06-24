@@ -2,166 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7A9F2079AA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2468D2079BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:58:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405168AbgFXQ4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 12:56:37 -0400
-Received: from mail-eopbgr40086.outbound.protection.outlook.com ([40.107.4.86]:48537
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404124AbgFXQ4h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 12:56:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XOrQZTKp2PzToUSVlSdRoM1CyRuYqD/A6PeDkPfp4MYpZkMBhYh3CP8D7ONajfsiP6TZt7kRunaytZzh4GcfXea7iC4Imgkef54PCVFTwaCXUPiWwL1igRChwvPgyA2AobQjP1KrR6d5hqKe39ZCVx7mpcgf3RQd8ieVM19RgrAbQtZEjRiWN3II5wEQyN1mu+fLbX0T2dA3BDx3NnN/jqQluy/R7DsfBm9fUYLIQAVco8TMRAa9MCaGSybnjGNM2fUj56RcQK9wDDBXHoVAsPhGxbFa1FooGImZxvPzGWkV5cdFPjQMGi5QbezW2BDUvt+X6r3wN6TWMfaFYTKQIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oG+twrj78r7kIbG+AHcuDRJtBDUIYS1DHHPV9XwBvzQ=;
- b=AsGZ3X56FSqNBmfBXaRW84/s4CQWbFugCH7mWwroZXWUMzdJ0pPH2hX9uHeqWhyaSKNS8Bttd+20Rm+8we51WGkpUekyCjRAGXGrsz2zn6XFdDmWHnB1ULtR3hWKDQpNOIRf04mWdPFvgzKc+eDSia/txe0fHZSkK8q4QqhH2l33ZFBTsi3pUcAzZQvfHWGosL5habj5+D9yel5arcXz65w6idez2W+aN/9iCiXxn/rEMxgml1sVoocv0xR5Zzse4kYl/QNPzaRdOM4tky3FxVtUrGydiJeAcXAuQiVYvu20woI+yheZbVhvAoa4jls1SETXwIvCG2c4eoRxNizE/g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=diasemi.com; dmarc=pass action=none header.from=diasemi.com;
- dkim=pass header.d=diasemi.com; arc=none
+        id S2405309AbgFXQ6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 12:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404796AbgFXQ6e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 12:58:34 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075B4C061573;
+        Wed, 24 Jun 2020 09:58:34 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id f18so3210967wml.3;
+        Wed, 24 Jun 2020 09:58:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=dialogsemiconductor.onmicrosoft.com;
- s=selector1-dialogsemiconductor-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=oG+twrj78r7kIbG+AHcuDRJtBDUIYS1DHHPV9XwBvzQ=;
- b=W6Apbzyu8CbApelejTVgGDGkls8G2ekV6et8+IYiRbThUAUQxunxoxtfjqX0qK7JupZE5JBo6EhBLDDux7okLBxipm54hhpcAOtTjQx704KmSj4Kzjm27zJGBfVTPuWbINLzH5xytd5EoHB9tIov+LbvqVCCfh6THW0usr4r/Ls=
-Received: from DB8PR10MB3356.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:11c::13)
- by DB8PR10MB2892.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:e2::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21; Wed, 24 Jun
- 2020 16:56:32 +0000
-Received: from DB8PR10MB3356.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::843a:1bdd:adc4:3a56]) by DB8PR10MB3356.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::843a:1bdd:adc4:3a56%8]) with mapi id 15.20.3109.027; Wed, 24 Jun 2020
- 16:56:32 +0000
-From:   Roy Im <roy.im.opensource@diasemi.com>
-To:     =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Roy Im <roy.im.opensource@diasemi.com>
-CC:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Brian Masney <masneyb@onstation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>, Luca Weiss <luca@z3ntu.xyz>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Pascal PAILLET-LME <p.paillet@st.com>,
-        Rob Herring <robh@kernel.org>,
-        Samuel Ortiz <sameo@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Support Opensource <Support.Opensource@diasemi.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>
-Subject: RE: [RESEND PATCH V13 3/3] Input: new da7280 haptic driver
-Thread-Topic: [RESEND PATCH V13 3/3] Input: new da7280 haptic driver
-Thread-Index: AQHWQwzBfFR7uhdm1kyQ3q9kXzA/B6jmUoyAgAFmjgCAABn+AIAAIjUAgAANiACAAAQ98A==
-Date:   Wed, 24 Jun 2020 16:56:31 +0000
-Message-ID: <DB8PR10MB3356FB869A14EA88AFB40F4885950@DB8PR10MB3356.EURPRD10.PROD.OUTLOOK.COM>
-References: <cover.1592221223.git.Roy.Im@diasemi.com>
- <135761fd309eb9424faeb631b6e6c66147b57666.1592221223.git.Roy.Im@diasemi.com>
- <20200623144105.mxhcrtezbghjb2vb@taurus.defre.kleine-koenig.org>
- <DB8PR10MB3356697B41C0FB97F5FD330185950@DB8PR10MB3356.EURPRD10.PROD.OUTLOOK.COM>
- <20200624133726.en7q52rpdtzvhajz@taurus.defre.kleine-koenig.org>
- <DB8PR10MB3356AFC38358881B471E76A285950@DB8PR10MB3356.EURPRD10.PROD.OUTLOOK.COM>
- <20200624162818.zjdtdlocxxndbsld@taurus.defre.kleine-koenig.org>
-In-Reply-To: <20200624162818.zjdtdlocxxndbsld@taurus.defre.kleine-koenig.org>
-Accept-Language: ko-KR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: pengutronix.de; dkim=none (message not signed)
- header.d=none;pengutronix.de; dmarc=none action=none header.from=diasemi.com;
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [1.234.57.66]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5bc84590-6738-4aff-304d-08d8185f8c33
-x-ms-traffictypediagnostic: DB8PR10MB2892:
-x-ms-exchange-sharedmailbox-routingagent-processed: True
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DB8PR10MB28928C69223DE0D67C6DA179A2950@DB8PR10MB2892.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:3968;
-x-forefront-prvs: 0444EB1997
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fmbBzVBMgMEJi/MjE6uazOflatvKEUta82DyXdEFu+lDW4evANxjz1tuRLOBASB91RJoFvcpE9scqwhBvemCJDPftr9KqiOPa0YL1okv9AXPFJZOZI/1x2zfPUVLbASncPCfdTwXJ4xmRFh/9IBgKY9ohH2gOKq7UbbdXhDJuJWjMhxCNfyOJHS1AFVlnA7UChShH3Acu0xMOQNbwYSOn8xdpgMwtN7YLoyPXose/dojwXRwcJmOdCzMpnr/LdPbcZzNn8wNtVzwL5DwBnnAtuVRcZCmG7FnnPsTQAuV3dJ8tKBhg8tqhPLs3mTrUGyLCR/Oh0ydFi8aD8z0uPxdo1V8Sf9dhmCysAtU7CYXBdfPIXXNglTsFPNwJ/GW0cp7FF4Az9YXHGMHgIIYRQjDyQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR10MB3356.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(136003)(396003)(39860400002)(366004)(376002)(346002)(186003)(86362001)(110136005)(26005)(7416002)(66574015)(5660300002)(8936002)(54906003)(33656002)(4326008)(66476007)(66556008)(64756008)(66446008)(7696005)(83080400001)(76116006)(66946007)(83380400001)(71200400001)(966005)(316002)(478600001)(9686003)(2906002)(52536014)(55016002)(8676002)(6506007)(53546011);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: B9olAMvYfuU6hqSNntU4x/Tc/IPjJQB1a0EKepBPt8L2ypp/N6WHf3mXQ6cOvjx7WfF6d5gZjqAc1vTLJTKMNuVyNs8DdoZASkXeEMu7XRSRM+QAJNbM0wyuUEzzc9hVxybJnZh/Mvn/V+qntVui4kPYn+u3O0WKPKEHRFMDFsGAQ88UlNGO1NpauhJ1KYqb0MTAfzYBYCsB84u+bZE6VQMgD/iUDEHtcuP2ztaJ/oKmQC1ALc2/ttCkmGG8nFOxfk2bZlp7Moe+UXgUV4jN8nDEcqbD4wYIrVZQwjoa3ioKfwW18UPo2HoKv+biiQR3leMTr2czQRwSQnELRtExGDR0kL5QnUKQ1ytB3HxamGxGWjPY1dGxJtJpmYg+WjkZ0NcDNP6KICM6W9/nnqyNBClr75bUtt7asUDqpC5boAFg1KMM+rcr82V12pLm8mrrmYKE5OGjTGs+JrKHx3awslU7/wj5WImGUynDwlv90L4=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=to:references:from:autocrypt:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2UyvtHsqWot1NDK5U0I1dkujPWgBcNc0l066O4UC3WU=;
+        b=QzQGKKjB2zrV1FB2V51Yt3V22mpPXhweNha+MvQDlcRbOsJNRG2Wk5JGhuUSwoFMPf
+         DMmfAgxK2J0WXI7xlIxNxBY4S3yc44P2r9rWd/qJfYQn8LUqKC2UhetZzphiN+wSTq/z
+         6ren5y5oTJDNaeFLuuHF8KofYYRiGpYMbhH4YHU9dce90/+rJpiBd1AGApLJ8ooRS79O
+         SPTZpgWUZrOWoQcdo/arhUnhNh4z0yJyLzcOD7XQVdzyBITgkefeIs9X/h/Om0MgCwbS
+         yvG4FAgEZ5qX1y30outPkQRsI5foQm1NeRsPgD73ku64d6GmGzzMFO+a63/btb/U/C2Q
+         9wDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:references:from:autocrypt:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2UyvtHsqWot1NDK5U0I1dkujPWgBcNc0l066O4UC3WU=;
+        b=eHnO7lEASsN2tjjZ3gpCi/A81tMn25EjCKeS6uSFvDioKAGhQGwvftHGcoQxe99A3R
+         4NKoW5y1zpSoMUj7XOjiuKCjCAWFm7lA/QqQGTEvORS1jd8sK4L9pFgQZd9PAiXP67Z8
+         usaDC3pfJcH0BKytx5izFzPeu7TfF0bezzJmEH4ECP/1dl30eWcKMoBDSyHFKdd6mRAm
+         mdb78C35OgvwsVtc4w1AgAyX5ySK2pCisK0/gGxyRQJIvBZpg3k5CUTe39Y5g4qE3KNC
+         0l3xXWDcPCvdha41EbV7BmnVglDXGIORRrEQFKGYLLGYUHnCBEZyqJtDQki1SAl/RzX1
+         dEkg==
+X-Gm-Message-State: AOAM532QGoP3RLvDXnS8VRKdRqaNVMITLwq8JBVGyyCcW+J0JrrICRAk
+        wSfCUHy8OA1AaO1K4WUxQWPjT8y8
+X-Google-Smtp-Source: ABdhPJzSwdqI/juqSfmw/8tO7p/3CHHnLcGUqCMfYg6R08O0A5vsCG9H3wPtUmsNQncTgAzC1zhEHQ==
+X-Received: by 2002:a05:600c:204d:: with SMTP id p13mr30334237wmg.88.1593017912508;
+        Wed, 24 Jun 2020 09:58:32 -0700 (PDT)
+Received: from [192.168.43.31] ([5.100.193.85])
+        by smtp.gmail.com with ESMTPSA id f186sm8569839wmf.29.2020.06.24.09.58.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jun 2020 09:58:32 -0700 (PDT)
+To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1592863245.git.asml.silence@gmail.com>
+ <0301f35644823a01cbae87e440df7d58ebcf2279.1592863245.git.asml.silence@gmail.com>
+ <95b720a6-926c-a208-e929-1d0203fa8701@kernel.dk>
+ <e05fc48b-684d-2980-3986-47a77af403e0@kernel.dk>
+ <6714cb8f-894c-9ff1-7b3a-4f86d7dbe52a@gmail.com>
+ <d33e9006-b7ef-4925-ff3f-332ab655f2ae@kernel.dk>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 bA==
+Subject: Re: [PATCH 1/4] io_uring: fix hanging iopoll in case of -EAGAIN
+Message-ID: <9488620d-3dec-700d-b211-cd192b4060b0@gmail.com>
+Date:   Wed, 24 Jun 2020 19:56:58 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.0
 MIME-Version: 1.0
-X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR10MB3356.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5bc84590-6738-4aff-304d-08d8185f8c33
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2020 16:56:32.1499
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: DgPozEXh/06tL61Kr5eKW4PYwUfcNjyv28kr+M2GsOqUYnT64rH9O0UBR70WCt2D87y1ZcQI2R1lQfaXDGK7bA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB2892
+In-Reply-To: <d33e9006-b7ef-4925-ff3f-332ab655f2ae@kernel.dk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, June 25, 2020 1:28 AM, Uwe Kleine-K=F6nig
-> On Wed, Jun 24, 2020 at 03:39:52PM +0000, Roy Im wrote:
-> > On Wed, Jun 24, 2020 at 10:37 PM, Uwe Kleine-K=F6nig wrote:
-> > > On Wed, Jun 24, 2020 at 12:04:24PM +0900, Roy Im wrote:
-> > > > 		period2freq =3D 1000000 / state.period;
-> > > > 		if (period2freq < DA7280_MIN_PWM_FREQ_KHZ ||
-> > > > 		    period2freq > DA7280_MAX_PWM_FREQ_KHZ) {
-> > > > 			dev_err(dev, "Unsupported PWM frequency (%u)\n",
-> > > > 				period2freq);
-> > > > 			return -EINVAL;
-> > > > 		}
-> > > > If you look ok, let me update this so.
-> > >
-> > > looks fine.
-> > >
-> > > Note that you don't need the division if you check for:
-> > >
-> > > 	if (state.period > 100000 || state.period < 4000) {
-> > > 		...
-> > >
-> > > (maybe the compiler is already clever enough to get rid of the divisi=
-on for you, but then the check is:
-> > >
-> > > 	if (state.period > 100000 || state.period < 3985) {
-> > >
-> > > because of rounding errors.)
-> >
-> > OK, you are right, that will be better. So let me change that as below
-> > if you look fine.
->=20
-> I look fine, the code however is wrong. :-)
->=20
-> > 	/* Check PWM period, PWM freq =3D 1000000 / state.period.
-> > 	 * The valid PWM freq range: 10k ~ 250kHz.
-> > 	 */
-> > 	if (state.period > 100000 || state.period < 3985) {
->=20
-> You want 4000 here ---------------------------------^^^^, don't you?
+On 23/06/2020 22:01, Jens Axboe wrote:
+> On 6/23/20 5:57 AM, Pavel Begunkov wrote:
+>> On 23/06/2020 05:18, Jens Axboe wrote:
+>>> On 6/22/20 8:07 PM, Jens Axboe wrote:
+>>>> On 6/22/20 4:16 PM, Pavel Begunkov wrote:
+>>>>> io_do_iopoll() won't do anything with a request unless
+>>>>> req->iopoll_completed is set. So io_complete_rw_iopoll() has to set
+>>>>> it, otherwise io_do_iopoll() will poll a file again and again even
+>>>>> though the request of interest was completed long ago.
+>>>>
+>>>> I need to look at this again, because with this change, I previously
+>>>> got various use-after-free. I haven't seen any issues with it, but
+>>>> I agree, from a quick look that I'm not quite sure how it's currently
+>>>> not causing hangs. Yet I haven't seen any, with targeted -EAGAIN
+>>>> testing.
+>>
+>> Can io_complete_rw_iopoll() get -EAGAIN after being successfully enqueued
+>> (i.e. EIOCBQUEUED)? It's reliably fails for me, because my hacked nullblk
+>> _can_ (i.e. probabilistically returns BLK_STS_AGAIN from ->iopoll()).
+> 
+> Yes it can. The primary example would be a polled bio that gets split, into
+> let's say 4 bio's. First one queues fine, but one of the subsequent ones
+> run into request allocation failures and it gets marked as -EAGAIN.
 
-Yes, it is now based on period, not frequency. You are right.
-4000 is correct now. Thanks.
+Right, thanks for the explanation. And that's the case where io_uring fails.
+Now I tested all kinds of -EAGAIN to be sure.
 
->=20
-> > 		dev_err(dev, "Unsupported PWM period (%u)\n",
-> > 			state.period);
-> > 		return -EINVAL;
-> > 	}
->=20
-> Best regards
-> Uwe
->=20
-> --
-> Pengutronix e.K.                           | Uwe Kleine-K=F6nig          =
-  |
-> Industrial Linux Solutions                 | https://www.pengutronix.de/ =
-|
+-- 
+Pavel Begunkov
