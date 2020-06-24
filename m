@@ -2,444 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56B3C207340
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40A452072F5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390639AbgFXMXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 08:23:14 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:54532 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388548AbgFXMXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 08:23:12 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 2D3452001CF;
-        Wed, 24 Jun 2020 14:23:09 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 961792001C2;
-        Wed, 24 Jun 2020 14:22:58 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 15129402A6;
-        Wed, 24 Jun 2020 20:22:46 +0800 (SGT)
-From:   Anson Huang <Anson.Huang@nxp.com>
-To:     catalin.marinas@arm.com, will@kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        bjorn.andersson@linaro.org, leoyang.li@nxp.com, vkoul@kernel.org,
-        geert+renesas@glider.be, olof@lixom.net, leonard.crestez@nxp.com,
-        aisheng.dong@nxp.com, peng.fan@nxp.com, franck.lenormand@nxp.com,
-        arnd@arndb.de, krzk@kernel.org, daniel.baluta@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Linux-imx@nxp.com
-Subject: [PATCH] firmware: imx: Move i.MX SCU soc driver into SCU firmware driver
-Date:   Wed, 24 Jun 2020 20:11:27 +0800
-Message-Id: <1593000687-12213-1-git-send-email-Anson.Huang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2390300AbgFXMLp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 08:11:45 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:35302 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389662AbgFXMLm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 08:11:42 -0400
+Received: by mail-ot1-f68.google.com with SMTP id d4so1683191otk.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 05:11:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IVKi7y8ESI3KMbXeBIkQdAvJ3a0cM5qUFA8J1Uc5Dz0=;
+        b=IdxFGSd0pgRmiLMUcaHnuMTPCdxlA0YSvdga5+Ql53w8+dSK40sulqsj3dyntuJAhe
+         yLI3T8ekB7f+kxjEl382JZ9Dquzx6op3LzoiR0rP9+ZSB/AjPH/XD9dP9zP4NjgauD72
+         qiMncoZ0gF7kKFhrqgm26cRfofDmDC/fZdj5qBiFPzx5TekUkTzyqCWFGfaA+Pm+6SfO
+         kzoro2F8PKADbcdPuXbDZs7ZduB7plo1S/bLY6mdiq0wmRQF1eSpRZa8hDFwgqYp7W+b
+         4ViuEZThMYEuRurbmQMkVIoh//dvke/AjovJykTq7p30tWPwHMfNz5NvHL+7+8EKzAO8
+         hZGA==
+X-Gm-Message-State: AOAM531tGSEWcwOhL2DaYoTthPo6VrzNIH5/jRYse+rFoNXbNYza5yHo
+        kOtW+fcsIzGSNm9oasiqvUXBRoX0WDgT1CXpqBM=
+X-Google-Smtp-Source: ABdhPJwRO4c/Eg8V5sSsMvFUiIy7kmOS/UHTN+u6H/Zr5xzVGJdr+Iq4WuCtAeHV5U/wdkCKENgkqrcCIN+kZXI5UfU=
+X-Received: by 2002:a9d:7d15:: with SMTP id v21mr21621638otn.118.1593000701065;
+ Wed, 24 Jun 2020 05:11:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <CGME20200624114136eucas1p1a3a31d95d86754201c7965f26ccd5de0@eucas1p1.samsung.com>
+ <20200624114127.3016-1-a.hajda@samsung.com> <20200624114127.3016-3-a.hajda@samsung.com>
+In-Reply-To: <20200624114127.3016-3-a.hajda@samsung.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 24 Jun 2020 14:11:28 +0200
+Message-ID: <CAJZ5v0hv-jKSegVtNQ2uMde5A6hQ0_ksK0m1CBapqaXZWmV_zg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v5 2/5] driver core: add deferring probe reason to
+ devices_deferred property
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The i.MX SCU soc driver depends on SCU firmware driver, so it has to
-use platform driver model for proper defer probe operation, since
-it has no device binding in DT file, a simple platform device is
-created together inside the platform driver. To make it more clean,
-we can just move the entire SCU soc driver into SCU firmware driver.
+On Wed, Jun 24, 2020 at 1:41 PM Andrzej Hajda <a.hajda@samsung.com> wrote:
+>
+> /sys/kernel/debug/devices_deferred property contains list of deferred devices.
+> This list does not contain reason why the driver deferred probe, the patch
+> improves it.
+> The natural place to set the reason is probe_err function introduced recently,
+> ie. if probe_err will be called with -EPROBE_DEFER instead of printk the message
+> will be attached to deferred device and printed when user read devices_deferred
+> property.
+>
+> Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
+> Reviewed-by: Mark Brown <broonie@kernel.org>
+> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> ---
+>  drivers/base/base.h |  3 +++
+>  drivers/base/core.c | 10 ++++++----
+>  drivers/base/dd.c   | 21 ++++++++++++++++++++-
+>  3 files changed, 29 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/base/base.h b/drivers/base/base.h
+> index 95c22c0f9036..93ef1c2f4c1f 100644
+> --- a/drivers/base/base.h
+> +++ b/drivers/base/base.h
+> @@ -93,6 +93,7 @@ struct device_private {
+>         struct klist_node knode_class;
+>         struct list_head deferred_probe;
+>         struct device_driver *async_driver;
+> +       char *deferred_probe_msg;
 
-Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
----
- arch/arm64/configs/defconfig   |   1 -
- drivers/firmware/imx/imx-scu.c | 127 ++++++++++++++++++++++++++++++
- drivers/soc/imx/Kconfig        |   9 ---
- drivers/soc/imx/Makefile       |   1 -
- drivers/soc/imx/soc-imx-scu.c  | 172 -----------------------------------------
- 5 files changed, 127 insertions(+), 183 deletions(-)
- delete mode 100644 drivers/soc/imx/soc-imx-scu.c
+What about calling this deferred_probe_reason?
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index ae76fae..35f037f 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -854,7 +854,6 @@ CONFIG_OWL_PM_DOMAINS=y
- CONFIG_RASPBERRYPI_POWER=y
- CONFIG_FSL_DPAA=y
- CONFIG_FSL_MC_DPIO=y
--CONFIG_IMX_SCU_SOC=y
- CONFIG_QCOM_AOSS_QMP=y
- CONFIG_QCOM_GENI_SE=y
- CONFIG_QCOM_RMTFS_MEM=m
-diff --git a/drivers/firmware/imx/imx-scu.c b/drivers/firmware/imx/imx-scu.c
-index 2ab0482..2719487 100644
---- a/drivers/firmware/imx/imx-scu.c
-+++ b/drivers/firmware/imx/imx-scu.c
-@@ -7,6 +7,7 @@
-  *
-  */
- 
-+#include <dt-bindings/firmware/imx/rsrc.h>
- #include <linux/err.h>
- #include <linux/firmware/imx/ipc.h>
- #include <linux/firmware/imx/sci.h>
-@@ -18,6 +19,7 @@
- #include <linux/mutex.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
-+#include <linux/sys_soc.h>
- 
- #define SCU_MU_CHAN_NUM		8
- #define MAX_RX_TIMEOUT		(msecs_to_jiffies(30))
-@@ -45,6 +47,25 @@ struct imx_sc_ipc {
- 	u8 count;
- };
- 
-+struct imx_sc_msg_misc_get_soc_id {
-+	struct imx_sc_rpc_msg hdr;
-+	union {
-+		struct {
-+			u32 control;
-+			u16 resource;
-+		} __packed req;
-+		struct {
-+			u32 id;
-+		} resp;
-+	} data;
-+} __packed __aligned(4);
-+
-+struct imx_sc_msg_misc_get_soc_uid {
-+	struct imx_sc_rpc_msg hdr;
-+	u32 uid_low;
-+	u32 uid_high;
-+} __packed;
-+
- /*
-  * This type is used to indicate error response for most functions.
-  */
-@@ -257,6 +278,108 @@ int imx_scu_call_rpc(struct imx_sc_ipc *sc_ipc, void *msg, bool have_resp)
- }
- EXPORT_SYMBOL(imx_scu_call_rpc);
- 
-+static int imx_scu_soc_uid(u64 *soc_uid)
-+{
-+	struct imx_sc_msg_misc_get_soc_uid msg;
-+	struct imx_sc_rpc_msg *hdr = &msg.hdr;
-+	int ret;
-+
-+	hdr->ver = IMX_SC_RPC_VERSION;
-+	hdr->svc = IMX_SC_RPC_SVC_MISC;
-+	hdr->func = IMX_SC_MISC_FUNC_UNIQUE_ID;
-+	hdr->size = 1;
-+
-+	ret = imx_scu_call_rpc(imx_sc_ipc_handle, &msg, true);
-+	if (ret) {
-+		pr_err("%s: get soc uid failed, ret %d\n", __func__, ret);
-+		return ret;
-+	}
-+
-+	*soc_uid = msg.uid_high;
-+	*soc_uid <<= 32;
-+	*soc_uid |= msg.uid_low;
-+
-+	return 0;
-+}
-+
-+static int imx_scu_soc_id(void)
-+{
-+	struct imx_sc_msg_misc_get_soc_id msg;
-+	struct imx_sc_rpc_msg *hdr = &msg.hdr;
-+	int ret;
-+
-+	hdr->ver = IMX_SC_RPC_VERSION;
-+	hdr->svc = IMX_SC_RPC_SVC_MISC;
-+	hdr->func = IMX_SC_MISC_FUNC_GET_CONTROL;
-+	hdr->size = 3;
-+
-+	msg.data.req.control = IMX_SC_C_ID;
-+	msg.data.req.resource = IMX_SC_R_SYSTEM;
-+
-+	ret = imx_scu_call_rpc(imx_sc_ipc_handle, &msg, true);
-+	if (ret) {
-+		pr_err("%s: get soc info failed, ret %d\n", __func__, ret);
-+		return ret;
-+	}
-+
-+	return msg.data.resp.id;
-+}
-+
-+static int imx_scu_soc_init(struct device *dev)
-+{
-+	struct soc_device_attribute *soc_dev_attr;
-+	struct soc_device *soc_dev;
-+	int id, ret;
-+	u64 uid = 0;
-+	u32 val;
-+
-+	soc_dev_attr = devm_kzalloc(dev, sizeof(*soc_dev_attr),
-+				    GFP_KERNEL);
-+	if (!soc_dev_attr)
-+		return -ENOMEM;
-+
-+	soc_dev_attr->family = "Freescale i.MX";
-+
-+	ret = of_property_read_string(of_root,
-+				      "model",
-+				      &soc_dev_attr->machine);
-+	if (ret)
-+		return ret;
-+
-+	id = imx_scu_soc_id();
-+	if (id < 0)
-+		return -EINVAL;
-+
-+	ret = imx_scu_soc_uid(&uid);
-+	if (ret < 0)
-+		return -EINVAL;
-+
-+	/* format soc_id value passed from SCU firmware */
-+	val = id & 0x1f;
-+	soc_dev_attr->soc_id = devm_kasprintf(dev, GFP_KERNEL, "0x%x", val);
-+	if (!soc_dev_attr->soc_id)
-+		return -ENOMEM;
-+
-+	/* format revision value passed from SCU firmware */
-+	val = (id >> 5) & 0xf;
-+	val = (((val >> 2) + 1) << 4) | (val & 0x3);
-+	soc_dev_attr->revision = devm_kasprintf(dev, GFP_KERNEL, "%d.%d",
-+						(val >> 4) & 0xf, val & 0xf);
-+	if (!soc_dev_attr->revision)
-+		return -ENOMEM;
-+
-+	soc_dev_attr->serial_number = devm_kasprintf(dev, GFP_KERNEL,
-+						     "%016llX", uid);
-+	if (!soc_dev_attr->serial_number)
-+		return -ENOMEM;
-+
-+	soc_dev = soc_device_register(soc_dev_attr);
-+	if (IS_ERR(soc_dev))
-+		return PTR_ERR(soc_dev);
-+
-+	return 0;
-+}
-+
- static int imx_scu_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -328,6 +451,10 @@ static int imx_scu_probe(struct platform_device *pdev)
- 
- 	imx_sc_ipc_handle = sc_ipc;
- 
-+	ret = imx_scu_soc_init(dev);
-+	if (ret)
-+		dev_warn(dev, "failed to initialize SoC info: %d\n", ret);
-+
- 	ret = imx_scu_enable_general_irq_channel(dev);
- 	if (ret)
- 		dev_warn(dev,
-diff --git a/drivers/soc/imx/Kconfig b/drivers/soc/imx/Kconfig
-index d515d2c..d49fa63 100644
---- a/drivers/soc/imx/Kconfig
-+++ b/drivers/soc/imx/Kconfig
-@@ -8,15 +8,6 @@ config IMX_GPCV2_PM_DOMAINS
- 	select PM_GENERIC_DOMAINS
- 	default y if SOC_IMX7D
- 
--config IMX_SCU_SOC
--	bool "i.MX System Controller Unit SoC info support"
--	depends on IMX_SCU
--	select SOC_BUS
--	help
--	  If you say yes here you get support for the NXP i.MX System
--	  Controller Unit SoC info module, it will provide the SoC info
--	  like SoC family, ID and revision etc.
--
- config SOC_IMX8M
- 	bool "i.MX8M SoC family support"
- 	depends on ARCH_MXC || COMPILE_TEST
-diff --git a/drivers/soc/imx/Makefile b/drivers/soc/imx/Makefile
-index 4461432..078dc91 100644
---- a/drivers/soc/imx/Makefile
-+++ b/drivers/soc/imx/Makefile
-@@ -5,4 +5,3 @@ endif
- obj-$(CONFIG_HAVE_IMX_GPC) += gpc.o
- obj-$(CONFIG_IMX_GPCV2_PM_DOMAINS) += gpcv2.o
- obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o
--obj-$(CONFIG_IMX_SCU_SOC) += soc-imx-scu.o
-diff --git a/drivers/soc/imx/soc-imx-scu.c b/drivers/soc/imx/soc-imx-scu.c
-deleted file mode 100644
-index 92448ca..0000000
---- a/drivers/soc/imx/soc-imx-scu.c
-+++ /dev/null
-@@ -1,172 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Copyright 2019 NXP.
-- */
--
--#include <dt-bindings/firmware/imx/rsrc.h>
--#include <linux/firmware/imx/sci.h>
--#include <linux/slab.h>
--#include <linux/sys_soc.h>
--#include <linux/platform_device.h>
--#include <linux/of.h>
--
--#define IMX_SCU_SOC_DRIVER_NAME		"imx-scu-soc"
--
--static struct imx_sc_ipc *soc_ipc_handle;
--
--struct imx_sc_msg_misc_get_soc_id {
--	struct imx_sc_rpc_msg hdr;
--	union {
--		struct {
--			u32 control;
--			u16 resource;
--		} __packed req;
--		struct {
--			u32 id;
--		} resp;
--	} data;
--} __packed __aligned(4);
--
--struct imx_sc_msg_misc_get_soc_uid {
--	struct imx_sc_rpc_msg hdr;
--	u32 uid_low;
--	u32 uid_high;
--} __packed;
--
--static int imx_scu_soc_uid(u64 *soc_uid)
--{
--	struct imx_sc_msg_misc_get_soc_uid msg;
--	struct imx_sc_rpc_msg *hdr = &msg.hdr;
--	int ret;
--
--	hdr->ver = IMX_SC_RPC_VERSION;
--	hdr->svc = IMX_SC_RPC_SVC_MISC;
--	hdr->func = IMX_SC_MISC_FUNC_UNIQUE_ID;
--	hdr->size = 1;
--
--	ret = imx_scu_call_rpc(soc_ipc_handle, &msg, true);
--	if (ret) {
--		pr_err("%s: get soc uid failed, ret %d\n", __func__, ret);
--		return ret;
--	}
--
--	*soc_uid = msg.uid_high;
--	*soc_uid <<= 32;
--	*soc_uid |= msg.uid_low;
--
--	return 0;
--}
--
--static int imx_scu_soc_id(void)
--{
--	struct imx_sc_msg_misc_get_soc_id msg;
--	struct imx_sc_rpc_msg *hdr = &msg.hdr;
--	int ret;
--
--	hdr->ver = IMX_SC_RPC_VERSION;
--	hdr->svc = IMX_SC_RPC_SVC_MISC;
--	hdr->func = IMX_SC_MISC_FUNC_GET_CONTROL;
--	hdr->size = 3;
--
--	msg.data.req.control = IMX_SC_C_ID;
--	msg.data.req.resource = IMX_SC_R_SYSTEM;
--
--	ret = imx_scu_call_rpc(soc_ipc_handle, &msg, true);
--	if (ret) {
--		pr_err("%s: get soc info failed, ret %d\n", __func__, ret);
--		return ret;
--	}
--
--	return msg.data.resp.id;
--}
--
--static int imx_scu_soc_probe(struct platform_device *pdev)
--{
--	struct soc_device_attribute *soc_dev_attr;
--	struct soc_device *soc_dev;
--	int id, ret;
--	u64 uid = 0;
--	u32 val;
--
--	ret = imx_scu_get_handle(&soc_ipc_handle);
--	if (ret)
--		return ret;
--
--	soc_dev_attr = devm_kzalloc(&pdev->dev, sizeof(*soc_dev_attr),
--				    GFP_KERNEL);
--	if (!soc_dev_attr)
--		return -ENOMEM;
--
--	soc_dev_attr->family = "Freescale i.MX";
--
--	ret = of_property_read_string(of_root,
--				      "model",
--				      &soc_dev_attr->machine);
--	if (ret)
--		return ret;
--
--	id = imx_scu_soc_id();
--	if (id < 0)
--		return -EINVAL;
--
--	ret = imx_scu_soc_uid(&uid);
--	if (ret < 0)
--		return -EINVAL;
--
--	/* format soc_id value passed from SCU firmware */
--	val = id & 0x1f;
--	soc_dev_attr->soc_id = devm_kasprintf(&pdev->dev, GFP_KERNEL, "0x%x", val);
--	if (!soc_dev_attr->soc_id)
--		return -ENOMEM;
--
--	/* format revision value passed from SCU firmware */
--	val = (id >> 5) & 0xf;
--	val = (((val >> 2) + 1) << 4) | (val & 0x3);
--	soc_dev_attr->revision = devm_kasprintf(&pdev->dev, GFP_KERNEL, "%d.%d",
--						(val >> 4) & 0xf, val & 0xf);
--	if (!soc_dev_attr->revision)
--		return -ENOMEM;
--
--	soc_dev_attr->serial_number = devm_kasprintf(&pdev->dev, GFP_KERNEL,
--						     "%016llX", uid);
--	if (!soc_dev_attr->serial_number)
--		return -ENOMEM;
--
--	soc_dev = soc_device_register(soc_dev_attr);
--	if (IS_ERR(soc_dev))
--		return PTR_ERR(soc_dev);
--
--	return 0;
--}
--
--static struct platform_driver imx_scu_soc_driver = {
--	.driver = {
--		.name = IMX_SCU_SOC_DRIVER_NAME,
--	},
--	.probe = imx_scu_soc_probe,
--};
--
--static int __init imx_scu_soc_init(void)
--{
--	struct platform_device *pdev;
--	struct device_node *np;
--	int ret;
--
--	np = of_find_compatible_node(NULL, NULL, "fsl,imx-scu");
--	if (!np)
--		return -ENODEV;
--
--	of_node_put(np);
--
--	ret = platform_driver_register(&imx_scu_soc_driver);
--	if (ret)
--		return ret;
--
--	pdev = platform_device_register_simple(IMX_SCU_SOC_DRIVER_NAME,
--					       -1, NULL, 0);
--	if (IS_ERR(pdev))
--		platform_driver_unregister(&imx_scu_soc_driver);
--
--	return PTR_ERR_OR_ZERO(pdev);
--}
--device_initcall(imx_scu_soc_init);
--- 
-2.7.4
+>         struct device *device;
+>         u8 dead:1;
+>  };
+> @@ -134,6 +135,8 @@ extern void device_release_driver_internal(struct device *dev,
+>  extern void driver_detach(struct device_driver *drv);
+>  extern int driver_probe_device(struct device_driver *drv, struct device *dev);
+>  extern void driver_deferred_probe_del(struct device *dev);
+> +extern void __deferred_probe_set_msg(const struct device *dev,
+> +                                    struct va_format *vaf);
 
+I'd call this device_set_deferred_probe_reson() to follow the naming
+convention for the function names in this header file.
+
+>  static inline int driver_match_device(struct device_driver *drv,
+>                                       struct device *dev)
+>  {
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index ee9da66bff1b..2a96954d5460 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -3962,6 +3962,8 @@ define_dev_printk_level(_dev_info, KERN_INFO);
+>   *
+>   * This helper implements common pattern present in probe functions for error
+>   * checking: print message if the error is not -EPROBE_DEFER and propagate it.
+> + * In case of -EPROBE_DEFER it sets defer probe reason, which can be checked
+> + * later by reading devices_deferred debugfs attribute.
+>   * It replaces code sequence:
+>   *     if (err != -EPROBE_DEFER)
+>   *             dev_err(dev, ...);
+> @@ -3977,14 +3979,14 @@ int probe_err(const struct device *dev, int err, const char *fmt, ...)
+>         struct va_format vaf;
+>         va_list args;
+>
+> -       if (err == -EPROBE_DEFER)
+> -               return err;
+> -
+>         va_start(args, fmt);
+>         vaf.fmt = fmt;
+>         vaf.va = &args;
+>
+> -       dev_err(dev, "error %d: %pV", err, &vaf);
+> +       if (err == -EPROBE_DEFER)
+> +               __deferred_probe_set_msg(dev, &vaf);
+> +       else
+> +               dev_err(dev, "error %d: %pV", err, &vaf);
+>
+>         va_end(args);
+>
+> diff --git a/drivers/base/dd.c b/drivers/base/dd.c
+> index 9a1d940342ac..f44d26454b6a 100644
+> --- a/drivers/base/dd.c
+> +++ b/drivers/base/dd.c
+> @@ -27,6 +27,7 @@
+>  #include <linux/async.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/pinctrl/devinfo.h>
+> +#include <linux/slab.h>
+>
+>  #include "base.h"
+>  #include "power/power.h"
+> @@ -136,6 +137,8 @@ void driver_deferred_probe_del(struct device *dev)
+>         if (!list_empty(&dev->p->deferred_probe)) {
+>                 dev_dbg(dev, "Removed from deferred list\n");
+>                 list_del_init(&dev->p->deferred_probe);
+> +               kfree(dev->p->deferred_probe_msg);
+> +               dev->p->deferred_probe_msg = NULL;
+>         }
+>         mutex_unlock(&deferred_probe_mutex);
+>  }
+> @@ -211,6 +214,21 @@ void device_unblock_probing(void)
+>         driver_deferred_probe_trigger();
+>  }
+>
+> +/*
+> + * __deferred_probe_set_msg() - Set defer probe reason message for device
+
+I'd change this into a full kerneldoc comment.
+
+> + */
+> +void __deferred_probe_set_msg(const struct device *dev, struct va_format *vaf)
+> +{
+> +       const char *drv = dev_driver_string(dev);
+> +
+> +       mutex_lock(&deferred_probe_mutex);
+> +
+> +       kfree(dev->p->deferred_probe_msg);
+> +       dev->p->deferred_probe_msg = kasprintf(GFP_KERNEL, "%s: %pV", drv, vaf);
+> +
+> +       mutex_unlock(&deferred_probe_mutex);
+> +}
+> +
+>  /*
+>   * deferred_devs_show() - Show the devices in the deferred probe pending list.
+>   */
+> @@ -221,7 +239,8 @@ static int deferred_devs_show(struct seq_file *s, void *data)
+>         mutex_lock(&deferred_probe_mutex);
+>
+>         list_for_each_entry(curr, &deferred_probe_pending_list, deferred_probe)
+> -               seq_printf(s, "%s\n", dev_name(curr->device));
+> +               seq_printf(s, "%s\t%s", dev_name(curr->device),
+> +                          curr->device->p->deferred_probe_msg ?: "\n");
+>
+>         mutex_unlock(&deferred_probe_mutex);
+>
+> --
+> 2.17.1
+>
