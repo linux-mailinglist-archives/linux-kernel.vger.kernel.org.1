@@ -2,79 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B5EB2072B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 740772072C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:03:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390795AbgFXMBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 08:01:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49312 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389396AbgFXMBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 08:01:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0EC52AED7;
-        Wed, 24 Jun 2020 12:01:04 +0000 (UTC)
-Date:   Wed, 24 Jun 2020 14:01:02 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        =?iso-8859-1?Q?St=E9phane?= Graber <stgraber@ubuntu.com>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Serge Hallyn <serge@hallyn.com>, Jann Horn <jannh@google.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-api@vger.kernel.org,
-        systemd-devel@lists.freedesktop.org
-Subject: Re: [PATCH v4 2/3] nsproxy: attach to namespaces via pidfds
-Message-ID: <20200624120102.GD23220@blackbook>
-References: <20200505140432.181565-1-christian.brauner@ubuntu.com>
- <20200505140432.181565-3-christian.brauner@ubuntu.com>
- <20200624114437.GA117125@blackbook>
- <20200624115456.rvzlgn77jol2a2oc@wittgenstein>
+        id S2390826AbgFXMDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 08:03:17 -0400
+Received: from outils.crapouillou.net ([89.234.176.41]:51308 "EHLO
+        crapouillou.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389387AbgFXMDR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 08:03:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1593000193; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VA2AWcxxad/sxNKV1aRnPWhyI//Gmywy6le15GSXRt4=;
+        b=hc72frU2egBndDOCOeCljM0eVw5CN6qs/b557/6Bpn7sfHFvTV3MSjWlyDEiHrYNskqXhG
+        5pp4x/UYkJyptxDkK2u8hJ4leDYJL2o27l+L8iXhye9dWe6RTb9XVDTvbZafiON91Ucs56
+        vrnLR96J/6OJVxl91EOGWKaQs6PmMww=
+Date:   Wed, 24 Jun 2020 14:03:03 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] MIPS: ingenic: gcw0: Fix HP detection GPIO.
+To:     =?iso-8859-1?b?Sm/jbw==?= "H. Spies" <jhlspies@gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Message-Id: <3TIFCQ.1ZGWWD0PTNQ03@crapouillou.net>
+In-Reply-To: <20200623211945.823-1-jhlspies@gmail.com>
+References: <20200623211945.823-1-jhlspies@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="EY/WZ/HvNxOox07X"
-Content-Disposition: inline
-In-Reply-To: <20200624115456.rvzlgn77jol2a2oc@wittgenstein>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Jo=E3o,
 
---EY/WZ/HvNxOox07X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Le mar. 23 juin 2020 =E0 18:19, Jo=E3o H. Spies <jhlspies@gmail.com> a=20
+=E9crit :
+> Previously marked as active high, but is in reality active low.
+>=20
+> Cc: stable@vger.kernel.org
+> Fixes: b1bfdb660516 ("MIPS: ingenic: DTS: Update GCW0 support")
+> Signed-off-by: Jo=E3o H. Spies <jhlspies@gmail.com>
 
-On Wed, Jun 24, 2020 at 01:54:56PM +0200, Christian Brauner <christian.brauner@ubuntu.com> wrote:
-> Yep, I already have a fix for this in my tree based on a previous
-> report from LTP.
-Perfect. (Sorry for the noise then.)
+Good catch.
 
-Thanks,
-Michal
+Tested-by: Paul Cercueil <paul@crapouillou.net>
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
 
---EY/WZ/HvNxOox07X
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Cheers,
+-Paul
 
------BEGIN PGP SIGNATURE-----
+> ---
+>  arch/mips/boot/dts/ingenic/gcw0.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/arch/mips/boot/dts/ingenic/gcw0.dts=20
+> b/arch/mips/boot/dts/ingenic/gcw0.dts
+> index 8d22828787d8..bc72304a2440 100644
+> --- a/arch/mips/boot/dts/ingenic/gcw0.dts
+> +++ b/arch/mips/boot/dts/ingenic/gcw0.dts
+> @@ -92,7 +92,7 @@
+>  			"MIC1N", "Built-in Mic";
+>  		simple-audio-card,pin-switches =3D "Speaker", "Headphones";
+>=20
+> -		simple-audio-card,hp-det-gpio =3D <&gpf 21 GPIO_ACTIVE_HIGH>;
+> +		simple-audio-card,hp-det-gpio =3D <&gpf 21 GPIO_ACTIVE_LOW>;
+>  		simple-audio-card,aux-devs =3D <&speaker_amp>, <&headphones_amp>;
+>=20
+>  		simple-audio-card,bitclock-master =3D <&dai_codec>;
+> --
+> 2.17.1
+>=20
 
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl7zQHQACgkQia1+riC5
-qSjp+hAAhpLLgI1sSq8gt/a4kkCyQdU72Rlx8DCV2a1CQsMKKvxVinCcvmU4I+IA
-EPhBiLuVoohS6h+qJtovzPBEWaMeLuqcRxlusj+vimpQffvTSXoYZ35lce2W5xKd
-mKT9G6LnGaij3LIS7B4JqyHKns43zQapO8yzlgOZ/5oGtAMlmnzOxzO2jsuWQa89
-5+GrYFGoT30Fx2yXB3znSyMi66O+aYuxdZW94te+t9cv94yPriCSfogpJsmxJUv/
-XANi72AZi9ECNdTSxcZOg+5CxVryO7p01R5Lqjk6jQIo5EWHOfPjnambU6i3YoFb
-2Sbbg18klQ99nN9rQBRlR0ybYTkfaY+kebsxlug07nwNwdaznIIkVROz40hG5CRe
-7A09DcETbH9NaKfJEPudw/UaXZ0YkW9OCRl5K4MVkn5f8T7yOuk3jg2hJnYUkiIW
-cpnBNczHwyYt4ES3os0DOcMl/BoQvBh6RU4R8snzGQLCmB6G01RFTqLhC+NhCy83
-wF6IdRoWu+HP2OsxYOjQwDfYj0lwk39sEhAOQ0XIZvkb2Sls+sMB4zk6qbbarpaG
-sBeLQN+xECle5yvlcOHNzZyuF5JP/ER2BwTawPMwhd5s1Mn0FDUiGp1T23WKiINP
-k7dthyuXOb668yeKULDASwvuCSvvCZpftxTI0AmGGeUIHsfb1c0=
-=Vo8b
------END PGP SIGNATURE-----
 
---EY/WZ/HvNxOox07X--
