@@ -2,123 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF241206BB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 07:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC55206BC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 07:33:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389030AbgFXFaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 01:30:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
+        id S2388947AbgFXFdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 01:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389021AbgFXFap (ORCPT
+        with ESMTP id S2388470AbgFXFdm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 01:30:45 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA92AC061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 22:30:44 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id k6so561227pll.9
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 22:30:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AblS5WrjyJMgnznkFBkF2GKSBo5MmuL1G6F8BwHXeHU=;
-        b=oqtEbpKemfXPO2FVCAZvOcjGa868wColw/w7N0/yn1PF29yObXn8tzs3OSrkgXiLpi
-         LcPeGnm4YkEzRAFbHhKXwuU3ULzEVIicC/I+gMx0QzQ6amybRVLjmTgycXMnj1rFx3o7
-         LQ/DPmnuFeIwg4eTFAsMbrfmc7Oj3NjYk0K5qMkebCw838Eaz8Ba5GkENK87fJTZmm8x
-         Y456j7fT9fg1TOA8hbMMBjcxXrjWa0C+n93sWs5LI9rk7UceWECyEGWoqDoWtADzHVjV
-         r0IpBYbuuoUKn76+TBnwvw5OxXNXelrJaddFFC8T342w/At3WuVGLzu9tOgPX+zBXbr0
-         2a0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AblS5WrjyJMgnznkFBkF2GKSBo5MmuL1G6F8BwHXeHU=;
-        b=fgdpPreZcwcXPXS+1WO55F5PGBoX3AwThkGMKYYWVNTdzK1KrwZOkoe8DwVdEE6/mr
-         K8zqzMxMgA++KnoXN/N2C+l/ZDMMt8CChwjSceAWugJWg33spsq5fBLyx6xZy53XfXvZ
-         I2rpJumLiKi6KoXDPCMERNrocElQIp3WI1BFufIQT6L2lzg+h8H0lcQsVTFNO6kOHTJ8
-         xHTOdCmj4hAY8RAq2hBMMLBzZKG8atnlt57CxG7aDJKMXRl1kYsaNwBj7cgLPD9JpRo/
-         E9N+sxNRY7WJM6n2xmhe99QL5jIjAPq87cRAJjXIKbD7mvPBCEN0sDAFTmjYt9CPXy1A
-         u/pQ==
-X-Gm-Message-State: AOAM532DM0ChnPoEM2DHEKHvet2glqUH6qOOY3OkOnUeUwJhyRHRP7el
-        jl3AD8jTNiTZBa9ZbQNg3zdjgg==
-X-Google-Smtp-Source: ABdhPJwUa5UccNgom3SX6tJgM3PGNd4oZV4WMtpb21CaWdbbeGvZlwQm1FwLDDx0gewj6Zuz8U+RzQ==
-X-Received: by 2002:a17:90b:23c8:: with SMTP id md8mr28079444pjb.72.1592976644282;
-        Tue, 23 Jun 2020 22:30:44 -0700 (PDT)
-Received: from builder.lan (104-188-17-28.lightspeed.sndgca.sbcglobal.net. [104.188.17.28])
-        by smtp.gmail.com with ESMTPSA id d25sm15203124pgn.2.2020.06.23.22.30.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 22:30:43 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 22:28:01 -0700
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     rishabhb@codeaurora.org
-Cc:     Alex Elder <elder@ieee.org>, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, tsoni@codeaurora.org,
-        psodagud@codeaurora.org, sidgup@codeaurora.org,
-        linux-remoteproc-owner@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] remoteproc: qcom: Add per subsystem SSR
- notification
-Message-ID: <20200624052801.GB407764@builder.lan>
-References: <1592874271-26697-1-git-send-email-rishabhb@codeaurora.org>
- <1592874271-26697-2-git-send-email-rishabhb@codeaurora.org>
- <8ed72321-6f6a-1083-9af9-a80aa945edeb@ieee.org>
- <cb31dfb50079a1377cf27807a7b2eb3e@codeaurora.org>
+        Wed, 24 Jun 2020 01:33:42 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D10DFC061573;
+        Tue, 23 Jun 2020 22:33:41 -0700 (PDT)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: krisman)
+        with ESMTPSA id B24E02A384C
+From:   Gabriel Krisman Bertazi <krisman@collabora.com>
+To:     Daniel Rosenberg <drosen@google.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v9 2/4] fs: Add standard casefolding support
+Organization: Collabora
+References: <20200624043341.33364-1-drosen@google.com>
+        <20200624043341.33364-3-drosen@google.com>
+Date:   Wed, 24 Jun 2020 01:33:36 -0400
+In-Reply-To: <20200624043341.33364-3-drosen@google.com> (Daniel Rosenberg's
+        message of "Tue, 23 Jun 2020 21:33:39 -0700")
+Message-ID: <87bll9gh8v.fsf@collabora.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cb31dfb50079a1377cf27807a7b2eb3e@codeaurora.org>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 23 Jun 18:41 PDT 2020, rishabhb@codeaurora.org wrote:
+Daniel Rosenberg <drosen@google.com> writes:
 
-> On 2020-06-23 14:45, Alex Elder wrote:
-> > On 6/22/20 8:04 PM, Rishabh Bhatnagar wrote:
-> > > Currently there is a single notification chain which is called
-> > > whenever any
-> > > remoteproc shuts down. This leads to all the listeners being
-> > > notified, and
-> > > is not an optimal design as kernel drivers might only be interested in
-> > > listening to notifications from a particular remoteproc. Create a
-> > > global
-> > > list of remoteproc notification info data structures. This will hold
-> > > the
-> > > name and notifier_list information for a particular remoteproc. The
-> > > API
-> > > to register for notifications will use name argument to retrieve the
-> > > notification info data structure and the notifier block will be
-> > > added to
-> > > that data structure's notification chain. Also move from blocking
-> > > notifier
-> > > to srcu notifer based implementation to support dynamic notifier head
-> > > creation.
-> > > 
-> > > Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
-> > > Signed-off-by: Rishabh Bhatnagar <rishabhb@codeaurora.org>
-> > 
-> > Sorry, a few more comments, but I think your next one will
-> > likely be fine.
-> > 
-> > General:
-> > - SSR subsystems are added but never removed.  Note that
-> >   "qcom_common.o" can be built as a module, and if that
-> >   module were ever removed, memory allocated for these
-> >   subsystems would be leaked.
-> Hi Alex,
-> Thank you for reviewing this patchset quickly. This point was
-> brought up by Bjorn and it was decided that I will push another patch on
-> top in which I'll do the cleanup during module exit.
-> > - Will a remoteproc subdev (and in particular, an SSR subdev)
-> >   ever be removed?  What happens to entities that have
-> >   registered for SSR notifications in that case?
-> In practice it should never be removed. If it is clients will
-> never get notification about subsystem shutdown/powerup.
+> This adds general supporting functions for filesystems that use
+> utf8 casefolding. It provides standard dentry_operations and adds the
+> necessary structures in struct super_block to allow this standardization.
+>
+> Ext4 and F2fs will switch to these common implementations.
+>
+> Signed-off-by: Daniel Rosenberg <drosen@google.com>
+> ---
+>  fs/libfs.c         | 101 +++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/fs.h |  22 ++++++++++
+>  2 files changed, 123 insertions(+)
+>
+> diff --git a/fs/libfs.c b/fs/libfs.c
+> index 4d08edf19c782..f7345a5ed562f 100644
+> --- a/fs/libfs.c
+> +++ b/fs/libfs.c
+> @@ -20,6 +20,8 @@
+>  #include <linux/fs_context.h>
+>  #include <linux/pseudo_fs.h>
+>  #include <linux/fsnotify.h>
+> +#include <linux/unicode.h>
+> +#include <linux/fscrypt.h>
+>  
+>  #include <linux/uaccess.h>
+>  
+> @@ -1363,3 +1365,102 @@ bool is_empty_dir_inode(struct inode *inode)
+>  	return (inode->i_fop == &empty_dir_operations) &&
+>  		(inode->i_op == &empty_dir_inode_operations);
+>  }
+> +
+> +#ifdef CONFIG_UNICODE
+> +/**
+> + * needs_casefold - generic helper to determine if a filename should be casefolded
+> + * @dir: Parent directory
+> + *
+> + * Generic helper for filesystems to use to determine if the name of a dentry
+> + * should be casefolded. It does not make sense to casefold the no-key token of
+> + * an encrypted filename.
+> + *
+> + * Return: if names will need casefolding
+> + */
+> +bool needs_casefold(const struct inode *dir)
+> +{
+> +	return IS_CASEFOLDED(dir) && dir->i_sb->s_encoding &&
+> +			(!IS_ENCRYPTED(dir) || fscrypt_has_encryption_key(dir));
+> +}
+> +EXPORT_SYMBOL(needs_casefold);
+> +
+> +/**
+> + * generic_ci_d_compare - generic d_compare implementation for casefolding filesystems
+> + * @dentry:	dentry whose name we are checking against
+> + * @len:	len of name of dentry
+> + * @str:	str pointer to name of dentry
+> + * @name:	Name to compare against
+> + *
+> + * Return: 0 if names match, 1 if mismatch, or -ERRNO
+> + */
+> +int generic_ci_d_compare(const struct dentry *dentry, unsigned int len,
+> +			  const char *str, const struct qstr *name)
+> +{
+> +	const struct dentry *parent = READ_ONCE(dentry->d_parent);
+> +	const struct inode *inode = READ_ONCE(parent->d_inode);
+> +	const struct super_block *sb = dentry->d_sb;
+> +	const struct unicode_map *um = sb->s_encoding;
+> +	struct qstr qstr = QSTR_INIT(str, len);
+> +	char strbuf[DNAME_INLINE_LEN];
+> +	int ret;
+> +
+> +	if (!inode || !needs_casefold(inode))
+> +		goto fallback;
+> +	/*
+> +	 * If the dentry name is stored in-line, then it may be concurrently
+> +	 * modified by a rename.  If this happens, the VFS will eventually retry
+> +	 * the lookup, so it doesn't matter what ->d_compare() returns.
+> +	 * However, it's unsafe to call utf8_strncasecmp() with an unstable
+> +	 * string.  Therefore, we have to copy the name into a temporary buffer.
+> +	 */
+> +	if (len <= DNAME_INLINE_LEN - 1) {
+> +		memcpy(strbuf, str, len);
+> +		strbuf[len] = 0;
+> +		qstr.name = strbuf;
+> +		/* prevent compiler from optimizing out the temporary buffer */
+> +		barrier();
+> +	}
+> +	ret = utf8_strncasecmp(um, name, &qstr);
+> +	if (ret >= 0)
+> +		return ret;
+> +
+> +	if (sb_has_enc_strict_mode(sb))
+> +		return -EINVAL;
+> +fallback:
+> +	if (len != name->len)
+> +		return 1;
+> +	return !!memcmp(str, name->name, len);
+> +}
+> +EXPORT_SYMBOL(generic_ci_d_compare);
+> +
+> +/**
+> + * generic_ci_d_hash - generic d_hash implementation for casefolding filesystems
+> + * @dentry:	dentry whose name we are hashing
+> + * @str:	qstr of name whose hash we should fill in
+> + *
+> + * Return: 0 if hash was successful, or -ERRNO
+> + */
+> +int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str)
+> +{
+> +	const struct inode *inode = READ_ONCE(dentry->d_inode);
+> +	struct super_block *sb = dentry->d_sb;
+> +	const struct unicode_map *um = sb->s_encoding;
+> +	int ret = 0;
+> +
+> +	if (!inode || !needs_casefold(inode))
+> +		return 0;
+> +
+> +	ret = utf8_casefold_hash(um, dentry, str);
+> +	if (ret < 0)
+> +		goto err;
+> +
+> +	return 0;
+> +err:
+> +	if (sb_has_enc_strict_mode(sb))
+> +		ret = -EINVAL;
+> +	else
+> +		ret = 0;
+> +	return ret;
+> +}
 
-Given that clients make direct function calls into qcom_common.ko,
-qcom_common.ko would not be possible to rmmod until all clients has been
-rmmod'ed. As such there shouldn't be any remaining listeners, or
-subdevices, when this happens.
+Maybe drop the err label and simplify:
 
-Regards,
-Bjorn
+  ret = utf8_casefold_hash(um, dentry, str);
+  if (ret < 0 && sb_has_enc_strict_mode(sb))
+     return -EINVAL;
+  return 0;
+
+
+> +EXPORT_SYMBOL(generic_ci_d_hash);
+> +#endif
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 3f881a892ea74..261904e06873b 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1392,6 +1392,12 @@ extern int send_sigurg(struct fown_struct *fown);
+>  #define SB_ACTIVE	(1<<30)
+>  #define SB_NOUSER	(1<<31)
+>  
+> +/* These flags relate to encoding and casefolding */
+> +#define SB_ENC_STRICT_MODE_FL	(1 << 0)
+> +
+> +#define sb_has_enc_strict_mode(sb) \
+> +	(sb->s_encoding_flags & SB_ENC_STRICT_MODE_FL)
+> +
+>  /*
+>   *	Umount options
+>   */
+> @@ -1461,6 +1467,10 @@ struct super_block {
+>  #endif
+>  #ifdef CONFIG_FS_VERITY
+>  	const struct fsverity_operations *s_vop;
+> +#endif
+> +#ifdef CONFIG_UNICODE
+> +	struct unicode_map *s_encoding;
+> +	__u16 s_encoding_flags;
+>  #endif
+>  	struct hlist_bl_head	s_roots;	/* alternate root dentries for NFS */
+>  	struct list_head	s_mounts;	/* list of mounts; _not_ for fs use */
+> @@ -3385,6 +3395,18 @@ extern int generic_file_fsync(struct file *, loff_t, loff_t, int);
+>  
+>  extern int generic_check_addressable(unsigned, u64);
+>  
+> +#ifdef CONFIG_UNICODE
+> +extern int generic_ci_d_hash(const struct dentry *dentry, struct qstr *str);
+> +extern int generic_ci_d_compare(const struct dentry *dentry, unsigned int len,
+> +				const char *str, const struct qstr *name);
+> +extern bool needs_casefold(const struct inode *dir);
+> +#else
+> +static inline bool needs_casefold(const struct inode *dir)
+> +{
+> +	return 0;
+> +}
+> +#endif
+> +
+>  #ifdef CONFIG_MIGRATION
+>  extern int buffer_migrate_page(struct address_space *,
+>  				struct page *, struct page *,
+
+-- 
+Gabriel Krisman Bertazi
