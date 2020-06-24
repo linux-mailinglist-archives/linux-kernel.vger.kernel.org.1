@@ -2,76 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4801206E1B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 09:47:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15FC206E1F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 09:47:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390122AbgFXHqA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 03:46:00 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:11222 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2387849AbgFXHp6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 03:45:58 -0400
-X-UUID: e46efcd3d1fc4c74a44b55eddf7cc0b1-20200624
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=SPetk4kZUoYNJi6rJL6mv4fVDX9vdX+a9jDyyxj20yw=;
-        b=aSJxMgcMtN8F8I+4arR4F7BvEYd4C2BgczA9tYtDqBdfozggctRSh30qH8JshLIBSf6m/iX6Cn/y27CrkHl1Z18YUJsuRlvlJnjV9ZQawwwTkyQVOGzFiZt87zGQkXb0ffizOyP25f7i4Uz5nMWl3N5jGO54YisPrCvqbz4wkuw=;
-X-UUID: e46efcd3d1fc4c74a44b55eddf7cc0b1-20200624
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
-        (envelope-from <stanley.chu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.10 Build 0809 with TLS)
-        with ESMTP id 889084295; Wed, 24 Jun 2020 15:45:55 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 24 Jun 2020 15:45:45 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 24 Jun 2020 15:45:45 +0800
-Message-ID: <1592984747.3278.3.camel@mtkswgap22>
-Subject: RE: [PATCH v1] scsi: ufs: Disable WriteBooster capability in
- non-supported UFS device
-From:   Stanley Chu <stanley.chu@mediatek.com>
-To:     Avri Altman <Avri.Altman@wdc.com>
-CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kuohong.wang@mediatek.com" <kuohong.wang@mediatek.com>,
-        "peter.wang@mediatek.com" <peter.wang@mediatek.com>,
-        "chun-hung.wu@mediatek.com" <chun-hung.wu@mediatek.com>,
-        "andy.teng@mediatek.com" <andy.teng@mediatek.com>,
-        "chaotian.jing@mediatek.com" <chaotian.jing@mediatek.com>,
-        "cc.chou@mediatek.com" <cc.chou@mediatek.com>
-Date:   Wed, 24 Jun 2020 15:45:47 +0800
-In-Reply-To: <SN6PR04MB4640974695F782566A83F2EFFC950@SN6PR04MB4640.namprd04.prod.outlook.com>
-References: <20200624025119.6509-1-stanley.chu@mediatek.com>
-         <SN6PR04MB4640974695F782566A83F2EFFC950@SN6PR04MB4640.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S2390146AbgFXHqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 03:46:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389948AbgFXHqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 03:46:17 -0400
+Received: from localhost (unknown [171.61.66.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6DFFF20874;
+        Wed, 24 Jun 2020 07:46:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592984777;
+        bh=Pqvog+kc4WzGeG+jHR1QQdfOtKiGAH+Ios6F59XvbQY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TZsT3ySZDW0LMtJpGzvg+4Fl8S+NyPsoQC/i70Ntirwdan/z//IH8ph1ANhyMctlG
+         NFo04JeMLcMP2Apt1SAHCWUy2OdGFs8rlqcWmhqJoHvQVQGU46XpUdWwA36LzEfyBQ
+         ANtdxTKJU7fH9TZ99SaTNnEg2mBG52JQIggjrgSI=
+Date:   Wed, 24 Jun 2020 13:16:13 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Navid Emamdoost <navid.emamdoost@gmail.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        dmaengine@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        emamd001@umn.edu, wu000273@umn.edu, kjlu@umn.edu, smccaman@umn.edu
+Subject: Re: [PATCH] dmaengine: stm32-mdma: call pm_runtime_put if
+ pm_runtime_get_sync fails
+Message-ID: <20200624074613.GS2324254@vkoul-mobl>
+References: <20200603182850.66692-1-navid.emamdoost@gmail.com>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 890E395327D2A2AB1231F6866800CD93D5D3E8BD799D6CB9814E4EB784F355C92000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200603182850.66692-1-navid.emamdoost@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgQXZyaSwNCg0KT24gV2VkLCAyMDIwLTA2LTI0IGF0IDA3OjI2ICswMDAwLCBBdnJpIEFsdG1h
-biB3cm90ZToNCj4gPiANCj4gPiANCj4gPiBJZiBVRlMgZGV2aWNlIGlzIG5vdCBxdWFsaWZpZWQg
-dG8gZW50ZXIgdGhlIGRldGVjdGlvbiBvZiBXcml0ZUJvb3N0ZXINCj4gPiBwcm9iaW5nIGJ5IGRp
-c2FsbG93ZWQgVUZTIHZlcnNpb24gb3IgZGV2aWNlIHF1aXJrcywgdGhlbiBXcml0ZUJvb3N0ZXIN
-Cj4gPiBjYXBhYmlsaXR5IGluIGhvc3Qgc2hhbGwgYmUgZGlzYWJsZWQgdG8gcHJldmVudCBhbnkg
-V3JpdGVCb29zdGVyDQo+ID4gb3BlcmF0aW9ucyBpbiB0aGUgZnV0dXJlLg0KPiANCj4gRml4ZXM6
-ID8NCg0KSSdsbCBhZGQgaXQgaW4gdjIsIHRoYW5rcyENCg0KU3RhbmxleSBDaHUNCg0KDQo=
+On 03-06-20, 13:28, Navid Emamdoost wrote:
+> Calling pm_runtime_get_sync increments the counter even in case of
+> failure, causing incorrect ref count. Call pm_runtime_put if
+> pm_runtime_get_sync fails.
+> 
+> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+> ---
+>  drivers/dma/stm32-mdma.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/dma/stm32-mdma.c b/drivers/dma/stm32-mdma.c
+> index 5469563703d1..79bee1bb73f6 100644
+> --- a/drivers/dma/stm32-mdma.c
+> +++ b/drivers/dma/stm32-mdma.c
+> @@ -1449,8 +1449,10 @@ static int stm32_mdma_alloc_chan_resources(struct dma_chan *c)
+>  	}
+>  
+>  	ret = pm_runtime_get_sync(dmadev->ddev.dev);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+> +		pm_runtime_put(dmadev->ddev.dev);
+>  		return ret;
+> +	}
+>  
+>  	ret = stm32_mdma_disable_chan(chan);
+>  	if (ret < 0)
+> @@ -1718,8 +1720,10 @@ static int stm32_mdma_pm_suspend(struct device *dev)
+>  	int ret;
+>  
+>  	ret = pm_runtime_get_sync(dev);
+> -	if (ret < 0)
+> +	if (ret < 0) {
+> +		pm_runtime_put_sync(dev);
 
+Not put_sync()...
+
+>  		return ret;
+> +	}
+>  
+>  	for (id = 0; id < dmadev->nr_channels; id++) {
+>  		ccr = stm32_mdma_read(dmadev, STM32_MDMA_CCR(id));
+> -- 
+> 2.17.1
+
+-- 
+~Vinod
