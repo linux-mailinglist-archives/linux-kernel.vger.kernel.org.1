@@ -2,61 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D970206B24
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 06:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F31206B35
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 06:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388499AbgFXEbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 00:31:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33314 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726131AbgFXEbp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 00:31:45 -0400
-Received: from localhost (unknown [171.61.66.58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 65F9C2078E;
-        Wed, 24 Jun 2020 04:31:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592973105;
-        bh=oQnXr08CGndc73IX/A4pSEREBYvnWmC22/rMYyM49nU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=v6nsjNE8SjHU+G/T7ceIi41MNXut32pBjBHFHpC627rk7wtsOrBVEbACIsScRL5Zp
-         YpZMNJSpCKjsHmpoupwf/oRiYYYX9Q+Lcw04GXbr15Y67+JJEBbDmh9xGKepMcjScX
-         5tBqhHs+wgTbfjZK7UV5GsBWIARXQpDomdH7IUWI=
-Date:   Wed, 24 Jun 2020 10:01:39 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: Switching dmaengine tree to kernel.org
-Message-ID: <20200624043139.GT2324254@vkoul-mobl>
-References: <20200623144313.GS2324254@vkoul-mobl>
- <20200624080952.093d562c@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200624080952.093d562c@canb.auug.org.au>
+        id S1728734AbgFXEeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 00:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728831AbgFXEd6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 00:33:58 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADE9FC061755
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 21:33:56 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id o140so989327yba.16
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 21:33:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=VIhRPUc686EfpzyL1ZkpMu0h/tTzQnqLcgbnZ2tSukA=;
+        b=ATg4ot7iQfZhD7VJCToYCJEq0+HHgex7Fu5otS5NIVKN8IP1NunyBFhinY6vJQmpWp
+         4Ij36w/kSxOzIDs1lg4m4ranBcUkYgjgGqDBqZtXEgUF/A6viuow4yzNYWkxxGRvlpWC
+         mmIuA8xMCysfmJgO6z/8XuIDppG81o+uGO/b1g0+chDgAnIrr/7wD3ZVV8Vz040+E4+Z
+         OdVyjEqMLwNTcMPpg5aX3GyMmWgYDsyC79JWjtqgCg9JBAfM0b3dFkEJ4zIsj8DZBgV0
+         XSQbXGyBLB4NyxkGBW2KMLsu3Za4MN22eTnqS9Z/oFfinJGodSjpc65NAWPD+W0KoXtQ
+         L6Pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=VIhRPUc686EfpzyL1ZkpMu0h/tTzQnqLcgbnZ2tSukA=;
+        b=NesPVM7js5NLV2L/sNmteKU58+QARC2JbfKZqipMMtnNFqgRFAcU/9jS4EiXSmNIuw
+         0bthk6Ac4r0MTZzP3getal+S2FXat7nSXfwpGGvmFjj9BUOvm5VtwIBj0q+MUvI2WLnF
+         yEmNF79ZJOC5xWttJN0ZDpIVNB56weTMfcZyKf2HdnjSRRIK+5qbvz2wPGl6EH2zyIfI
+         scG+f+J3SrkvKv+AIyC0PLakZFoC0LzHazYvkFTD+nt4spf3gnFN7e07KAp2qHu/Fspi
+         YsbdIOROHVmSRRqszSSO0cfLi763qYtgTFp9TKUgZ399xnrIDDk1gIalGaDJNZH9jCKw
+         DOSg==
+X-Gm-Message-State: AOAM531Lg2b35Kp79T2zpKRVOUNZ+gDs2WAF0fJo8XbDEe+enCw1f30m
+        3TYDd/oWab/NyBwhzgfVfaxhNVQGc1U=
+X-Google-Smtp-Source: ABdhPJzqZudoyjfwmOnuXUVebSWSY1PkS5+3B30QL46yfijJWtmCuoeOhxK7BwlRH7FbBAlVw+Pj75yPbZ4=
+X-Received: by 2002:a25:b8b:: with SMTP id 133mr42829755ybl.373.1592973235828;
+ Tue, 23 Jun 2020 21:33:55 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 21:33:37 -0700
+Message-Id: <20200624043341.33364-1-drosen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
+Subject: [PATCH v9 0/4] Prepare for upcoming Casefolding/Encryption patches
+From:   Daniel Rosenberg <drosen@google.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Eric Biggers <ebiggers@kernel.org>,
+        linux-fscrypt@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Richard Weinberger <richard@nod.at>
+Cc:     linux-mtd@lists.infradead.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Gabriel Krisman Bertazi <krisman@collabora.com>,
+        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+This lays the ground work for enabling casefolding and encryption at the
+same time for ext4 and f2fs. A future set of patches will enable that
+functionality. These unify the highly similar dentry_operations that ext4
+and f2fs both use for casefolding.
 
-On 24-06-20, 08:09, Stephen Rothwell wrote:
-> Hi Vinod,
-> 
-> On Tue, 23 Jun 2020 20:13:13 +0530 Vinod Koul <vkoul@kernel.org> wrote:
-> >
-> > I have switched dmaengine tree to kernel.org [1], please update your
-> > database to new tree which can be found at [2]
-> > 
-> > [1]: https://lore.kernel.org/dmaengine/20200623143729.781403-1-vkoul@kernel.org/
-> > [2]: git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git
-> 
-> OK, done.  I also renamed them from slave-dma{,-fixes} to dmaengine{,-fixes).
+Daniel Rosenberg (4):
+  unicode: Add utf8_casefold_hash
+  fs: Add standard casefolding support
+  f2fs: Use generic casefolding support
+  ext4: Use generic casefolding support
 
-Thank you, rename makes sense.
+ fs/ext4/dir.c           |  64 +------------------------
+ fs/ext4/ext4.h          |  12 -----
+ fs/ext4/hash.c          |   2 +-
+ fs/ext4/namei.c         |  20 ++++----
+ fs/ext4/super.c         |  12 ++---
+ fs/f2fs/dir.c           |  84 ++++-----------------------------
+ fs/f2fs/f2fs.h          |   4 --
+ fs/f2fs/super.c         |  10 ++--
+ fs/f2fs/sysfs.c         |  10 ++--
+ fs/libfs.c              | 101 ++++++++++++++++++++++++++++++++++++++++
+ fs/unicode/utf8-core.c  |  23 ++++++++-
+ include/linux/f2fs_fs.h |   3 --
+ include/linux/fs.h      |  22 +++++++++
+ include/linux/unicode.h |   3 ++
+ 14 files changed, 186 insertions(+), 184 deletions(-)
 
 -- 
-~Vinod
+2.27.0.111.gc72c7da667-goog
+
