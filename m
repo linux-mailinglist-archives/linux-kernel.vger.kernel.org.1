@@ -2,49 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2369E2096C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 01:04:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F9682096C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 01:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388989AbgFXXDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 19:03:47 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:29050 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388947AbgFXXDq (ORCPT
+        id S2389150AbgFXXD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 19:03:59 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:20037 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388140AbgFXXDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 19:03:46 -0400
+        Wed, 24 Jun 2020 19:03:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593039825;
+        s=mimecast20190719; t=1593039833;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2CIqn4trdXaLo6esz2Y3GWcQ2dIBeOVeLn2zbN8dxlA=;
-        b=I83lYF7LtDVKRbfg2uf60R8VVv6du437eJhIDYbawSPzM513CrXED8w/c4MUBh4Bvr8sbS
-        +X7SrsjfXkj0FTEmvUt3vx6a2xGq7GVQObmjhODAaDEPSVf1rhLIBfASbyj3inlP9dCYn9
-        tH+dpWunZDQEM56t1SQARb6vZSyPM1M=
+        bh=X8VYE8zT0ZZk/gQDPSYsv+TzjOnRAhnxP4MI/7fpLnk=;
+        b=FwNZ5fcJw+aMPOknGjbocRurCX8ok0Pd0ioI3pE4qz7L7QC3pfaEQOt3OjP3CyD0bhOJ5M
+        hvVHqARDTA3FkoDdGujQqma5pmrW2uygjkezF+WBa0Fhd08Wpj3sdiZPIRZMv8YkQUFxYi
+        V9FlcRtfUpQmRzKCjBSgQN4m678G1Tc=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-44-kXhtDDO3MJ6LiRE9qHf8HQ-1; Wed, 24 Jun 2020 19:03:41 -0400
-X-MC-Unique: kXhtDDO3MJ6LiRE9qHf8HQ-1
+ us-mta-305-sjw2w1K5MTq6NdJsVYDP2w-1; Wed, 24 Jun 2020 19:03:45 -0400
+X-MC-Unique: sjw2w1K5MTq6NdJsVYDP2w-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3D4F0107ACCD;
-        Wed, 24 Jun 2020 23:03:40 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA967802ED4;
+        Wed, 24 Jun 2020 23:03:43 +0000 (UTC)
 Received: from Whitewolf.redhat.com (ovpn-115-214.rdu2.redhat.com [10.10.115.214])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EC76C1001B07;
-        Wed, 24 Jun 2020 23:03:38 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B925F1001B07;
+        Wed, 24 Jun 2020 23:03:42 +0000 (UTC)
 From:   Lyude Paul <lyude@redhat.com>
 To:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org
 Cc:     Ben Skeggs <bskeggs@redhat.com>, David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
         Ilia Mirkin <imirkin@alum.mit.edu>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Alex Deucher <alexander.deucher@amd.com>,
         linux-kernel@vger.kernel.org (open list)
-Subject: [RFC v7 04/11] drm/nouveau/kms/nv50-: Unroll error cleanup in nv50_head_create()
-Date:   Wed, 24 Jun 2020 19:03:11 -0400
-Message-Id: <20200624230318.126256-5-lyude@redhat.com>
+Subject: [RFC v7 05/11] drm/nouveau/kms/nv140-: Don't modify depth in state during atomic commit
+Date:   Wed, 24 Jun 2020 19:03:12 -0400
+Message-Id: <20200624230318.126256-6-lyude@redhat.com>
 In-Reply-To: <20200624230318.126256-1-lyude@redhat.com>
 References: <20200624230318.126256-1-lyude@redhat.com>
 MIME-Version: 1.0
@@ -55,75 +53,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We'll be rolling back more things in this function, and the way it's
-structured is a bit confusing. So, let's clean this up a bit and just
-unroll in the event of failure.
+Currently, we modify the depth value stored in the atomic state when
+performing a commit in order to workaround the fact we haven't
+implemented support for depths higher then 10 yet. This isn't idempotent
+though, as it will happen every atomic commit where we modify the OR
+state even if the head's depth in the atomic state hasn't been modified.
+
+Normally this wouldn't matter, since we don't modify OR state outside of
+modesets, but since the CRC capture region is implemented as part of the
+OR state in hardware we'll want to make sure all commits modifying OR
+state are idempotent so as to avoid changing the depth unexpectedly.
+
+So, fix this by simply not writing the reduced depth value we come up
+with to the atomic state.
 
 Signed-off-by: Lyude Paul <lyude@redhat.com>
 ---
- drivers/gpu/drm/nouveau/dispnv50/head.c | 33 +++++++++++++++++--------
- 1 file changed, 23 insertions(+), 10 deletions(-)
+ drivers/gpu/drm/nouveau/dispnv50/headc37d.c | 11 +++++++----
+ drivers/gpu/drm/nouveau/dispnv50/headc57d.c | 11 +++++++----
+ 2 files changed, 14 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/nouveau/dispnv50/head.c b/drivers/gpu/drm/nouveau/dispnv50/head.c
-index 8f6455697ba72..e29ea40e7c334 100644
---- a/drivers/gpu/drm/nouveau/dispnv50/head.c
-+++ b/drivers/gpu/drm/nouveau/dispnv50/head.c
-@@ -507,20 +507,28 @@ nv50_head_create(struct drm_device *dev, int index)
- 
- 	if (disp->disp->object.oclass < GV100_DISP) {
- 		ret = nv50_base_new(drm, head->base.index, &base);
-+		if (ret)
-+			goto fail_free;
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/headc37d.c b/drivers/gpu/drm/nouveau/dispnv50/headc37d.c
+index 4a9a32b89f746..9ef3c603fc43e 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/headc37d.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/headc37d.c
+@@ -27,17 +27,20 @@ static void
+ headc37d_or(struct nv50_head *head, struct nv50_head_atom *asyh)
+ {
+ 	struct nv50_dmac *core = &nv50_disp(head->base.base.dev)->core->chan;
++	u8 depth;
+ 	u32 *push;
 +
- 		ret = nv50_ovly_new(drm, head->base.index, &ovly);
-+		if (ret)
-+			goto fail_free;
- 	} else {
- 		ret = nv50_wndw_new(drm, DRM_PLANE_TYPE_PRIMARY,
- 				    head->base.index * 2 + 0, &base);
-+		if (ret)
-+			goto fail_free;
+ 	if ((push = evo_wait(core, 2))) {
+ 		/*XXX: This is a dirty hack until OR depth handling is
+ 		 *     improved later for deep colour etc.
+ 		 */
+ 		switch (asyh->or.depth) {
+-		case 6: asyh->or.depth = 5; break;
+-		case 5: asyh->or.depth = 4; break;
+-		case 2: asyh->or.depth = 1; break;
+-		case 0:	asyh->or.depth = 4; break;
++		case 6: depth = 5; break;
++		case 5: depth = 4; break;
++		case 2: depth = 1; break;
++		case 0:	depth = 4; break;
+ 		default:
++			depth = asyh->or.depth;
+ 			WARN_ON(1);
+ 			break;
+ 		}
+diff --git a/drivers/gpu/drm/nouveau/dispnv50/headc57d.c b/drivers/gpu/drm/nouveau/dispnv50/headc57d.c
+index 859131a8bc3c8..97141eb8e75ab 100644
+--- a/drivers/gpu/drm/nouveau/dispnv50/headc57d.c
++++ b/drivers/gpu/drm/nouveau/dispnv50/headc57d.c
+@@ -27,17 +27,20 @@ static void
+ headc57d_or(struct nv50_head *head, struct nv50_head_atom *asyh)
+ {
+ 	struct nv50_dmac *core = &nv50_disp(head->base.base.dev)->core->chan;
++	u8 depth;
+ 	u32 *push;
 +
- 		ret = nv50_wndw_new(drm, DRM_PLANE_TYPE_OVERLAY,
- 				    head->base.index * 2 + 1, &ovly);
--	}
--	if (ret == 0)
--		ret = nv50_curs_new(drm, head->base.index, &curs);
--	if (ret) {
--		kfree(head);
--		return ERR_PTR(ret);
-+		if (ret)
-+			goto fail_free;
- 	}
- 
-+	ret = nv50_curs_new(drm, head->base.index, &curs);
-+	if (ret)
-+		goto fail_free;
-+
- 	crtc = &head->base.base;
- 	drm_crtc_init_with_planes(dev, crtc, &base->plane, &curs->plane,
- 				  &nv50_head_func, "head-%d", head->base.index);
-@@ -533,11 +541,16 @@ nv50_head_create(struct drm_device *dev, int index)
- 
- 	if (head->func->olut_set) {
- 		ret = nv50_lut_init(disp, &drm->client.mmu, &head->olut);
--		if (ret) {
--			nv50_head_destroy(crtc);
--			return ERR_PTR(ret);
--		}
-+		if (ret)
-+			goto fail_crtc_cleanup;
- 	}
- 
- 	return head;
-+
-+fail_crtc_cleanup:
-+	drm_crtc_cleanup(crtc);
-+fail_free:
-+	kfree(head);
-+
-+	return ERR_PTR(ret);
- }
+ 	if ((push = evo_wait(core, 2))) {
+ 		/*XXX: This is a dirty hack until OR depth handling is
+ 		 *     improved later for deep colour etc.
+ 		 */
+ 		switch (asyh->or.depth) {
+-		case 6: asyh->or.depth = 5; break;
+-		case 5: asyh->or.depth = 4; break;
+-		case 2: asyh->or.depth = 1; break;
+-		case 0:	asyh->or.depth = 4; break;
++		case 6: depth = 5; break;
++		case 5: depth = 4; break;
++		case 2: depth = 1; break;
++		case 0:	depth = 4; break;
+ 		default:
++			depth = asyh->or.depth;
+ 			WARN_ON(1);
+ 			break;
+ 		}
 -- 
 2.26.2
 
