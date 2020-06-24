@@ -2,125 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87130206CBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 08:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 336F7206CC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 08:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389161AbgFXGlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 02:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388360AbgFXGlt (ORCPT
+        id S2389319AbgFXGoc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Jun 2020 02:44:32 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:38944 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389102AbgFXGoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 02:41:49 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E014C061755
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 23:41:49 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id f18so1368288wml.3
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 23:41:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=w1X7TJT+/NZGp2t1UBcnbW7TryORo1uDGLtiSLF2dX0=;
-        b=F4Y63FKJ0cwNYtuBYuYFD1B6IQvmC0jQveupwHMhBrEzsAnXu0x/XQF0xp02M5Kb/R
-         CAvgMujEExgWFUbK/o0mkv3Umjwp+GunX+r3ArbVP9whHFM6+F352dVdcqcGGFPD9W6x
-         3zcNl8gc0XQ0obe0wywYkBtMgZlt+oDQ0PQkNzqHUby4hIXM4JkzWFINsYObXDlmblzH
-         d1IlV+fJArOOwHCcrgSlePJru0KeizSTypNVzd5JZEMNmfbjlZWx6Dl8gRNLFq9HDc9I
-         SlMcxJnFQvkiRKGOd/+G/3D3mNNXbUC96HfOk4HdarpWLIhRu4OTSIky/PO0jZxi7J+j
-         dKUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=w1X7TJT+/NZGp2t1UBcnbW7TryORo1uDGLtiSLF2dX0=;
-        b=hzOyirgxzOU01jUlJLdeQqt9otymG0QWasAnglpEShEhrGYOUDx6OIPyL0SoGE6wMi
-         qp5NuCPjCKZfGY8jGkW90dHgsDy06uDNdjnFC1mxoOnBI6AX/08Joa5UqZgVWOEqXA5f
-         Tr/Z2coyn4gGIahG6rJIT6tf6AsvoOwml9mhMHsZqyjsv/j8shMTJNGBokZFHGqg5l98
-         apoc6rsxM6S6X/rNlyAK4htcej3QWA5s4sF9hYF0j5XMygHJwkhgbxqVZspauBjldIy7
-         Wb8+Ux/UD9b9enWheag89F1hTKExt0KOnqvA2w6JN9aS4cxiBKNIayXEE6Gcuj9O5SLI
-         Nwpg==
-X-Gm-Message-State: AOAM531v/7xU91Or+dE7ZWqGQYavCdjHzPAh0PPXA26x8+4vtwATbxwL
-        mCht2chDx562pYmtAw+VBSUWWw==
-X-Google-Smtp-Source: ABdhPJxxesv3DV42KX9DFPvWgoXognYEeA7BPVgHrFM5XpvKgLlqY6E6cmhuf8i1uDbBZ3dy3VUIng==
-X-Received: by 2002:a1c:cc03:: with SMTP id h3mr27931892wmb.87.1592980907725;
-        Tue, 23 Jun 2020 23:41:47 -0700 (PDT)
-Received: from dell ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id b18sm25196379wrn.88.2020.06.23.23.41.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jun 2020 23:41:46 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 07:41:45 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     andy.shevchenko@gmail.com, michael@walle.cc, robh+dt@kernel.org,
-        broonie@kernel.org, devicetree@vger.kernel.org,
-        linus.walleij@linaro.org, linux@roeck-us.net,
-        andriy.shevchenko@linux.intel.com, robin.murphy@arm.com,
-        gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] mfd: core: Make a best effort attempt to match
- devices with the correct of_nodes
-Message-ID: <20200624064145.GC954398@dell>
-References: <20200611191002.2256570-1-lee.jones@linaro.org>
- <30f03734-61fd-1b6b-bf11-21b6423a7c50@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <30f03734-61fd-1b6b-bf11-21b6423a7c50@gmail.com>
+        Wed, 24 Jun 2020 02:44:32 -0400
+Received: from marcel-macpro.fritz.box (p5b3d2638.dip0.t-ipconnect.de [91.61.38.56])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 42D4CCECD1;
+        Wed, 24 Jun 2020 08:54:23 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: next-20200623: oops in btusb_disconnect() at boot on thinkpad x60
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20200623194533.GA3815@amd>
+Date:   Wed, 24 Jun 2020 08:44:29 +0200
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        BlueZ <linux-bluetooth@vger.kernel.org>,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        Miao-chen Chou <mcchou@chromium.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <8C887FD6-DDC0-4FD6-8994-00939EFCB0F9@holtmann.org>
+References: <20200623194533.GA3815@amd>
+To:     Pavel Machek <pavel@ucw.cz>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Jun 2020, Frank Rowand wrote:
+Hi Pavel,
 
-> On 2020-06-11 14:10, Lee Jones wrote:
-> > Currently, when a child platform device (sometimes referred to as a
-> > sub-device) is registered via the Multi-Functional Device (MFD) API,
-> > the framework attempts to match the newly registered platform device
-> > with its associated Device Tree (OF) node.  Until now, the device has
-> > been allocated the first node found with an identical OF compatible
-> > string.  Unfortunately, if there are, say for example '3' devices
-> > which are to be handled by the same driver and therefore have the same
-> > compatible string, each of them will be allocated a pointer to the
-> > *first* node.
+> I'm getting this at boot:
 > 
-> As you mentioned elsewhere in this thread, this series "fixes" the
-> problem related to the "stericsson,ab8500-pwm" compatible.
-> 
-> I know, I said I would drop discussion of that compatible, but bear
-> with me for a second.  :-)
-> 
-> The "problem" is that the devices for multiple mfd child nodes with
-> the same compatible value of "stericsson,ab8500-pwm" will all have
-> a pointer to the first child node.  At the moment the same child
-> of_node being used by more than one device does not cause any
-> incorrect behavior.
-> 
-> Just in case the driver for "stericsson,ab8500-pwm" is modified
-> in a way that the child of_node needs to be distinct for each
-> device, and that changes gets back ported, it would be useful
-> to have Fixes: tags for this patch series.
-> 
-> So, at your discretion (and I'll let you worry about the correct
-> Fixes: tag format), this series fixes:
-> 
-> bad76991d7847b7877ae797cc79745d82ffd9120 mfd: Register ab8500 devices using the newly DT:ed MFD API
+> [    7.984584] *pdpt = 0000000033a31001 *pde = 0000000000000000
+> [    7.984584] Oops: 0000 [#1] PREEMPT SMP PTI
+> [    7.984584] CPU: 1 PID: 2532 Comm: systemd-udevd Not tainted
+> 5.8.0-rc2-next-20200623+ #126
+> [    7.998580] Hardware name: LENOVO 17097HU/17097HU, BIOS 7BETD8WW
+> (2.19 ) 03/31/2011
+> [    8.000592] EIP: __queue_work+0x139/0x320
+> [    8.000592] Code: 90 83 7d f0 08 0f 84 b6 00 00 00 8b 45 ec 8b 9f
+> 04 01 00 00 03 1c 85 40 63 1f c5 89 f0 e8 df f8 ff ff 85 c0 0f 85 4f
+> ff ff ff <8b> 03 e9 50 ff ff ff 89 45 e4 e8 48 0a cb 00 8b 4d e8 8b 45
+> e4 8b
+> [    8.007883] EAX: 00000000 EBX: 00000000 ECX: 47d88848 EDX: 03ffffff
+> [    8.007883] ESI: f4a348bc EDI: f492a600 EBP: f3b1dd0c ESP: f3b1dcf0
+> [    8.019981] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS:
+> 00010046
+> [    8.023156] CR0: 80050033 CR2: 00000000 CR3: 33b1e000 CR4: 000006b0
+> [    8.028892] Call Trace:
+> [    8.034199]  queue_work_on+0x1d/0x30
+> [    8.034199]  hci_adv_monitors_clear+0x5c/0x80
+> [    8.042158]  hci_unregister_dev+0x161/0x2f0
+> [    8.042158]  ? usb_disable_endpoint+0x94/0xa0
+> [    8.042158]  btusb_disconnect+0x4b/0x120
+> [    8.057018]  usb_unbind_interface+0x64/0x230
+> [    8.057018]  device_release_driver_internal+0xc1/0x180
+> [    8.065196]  device_release_driver+0xc/0x10
+> [    8.068040]  bus_remove_device+0xa8/0x110
+> [    8.071767]  device_del+0x126/0x370
+> [    8.071767]  ? usb_remove_ep_devs+0x15/0x20
+> [    8.079199]  ? remove_intf_ep_devs+0x30/0x50
+> [    8.081371]  usb_disable_device+0x8e/0x240
+> [    8.087478]  usb_set_configuration+0x47c/0x800
+> [    8.087478]  usb_deauthorize_device+0x36/0x50
+> [    8.092662]  authorized_store+0x5d/0x70
+> [    8.096608]  ? authorized_default_store+0x60/0x60
+> [    8.096608]  dev_attr_store+0x13/0x20
+> [    8.096608]  ? component_bind_all.cold+0x52/0x52
+> [    8.106151]  sysfs_kf_write+0x2f/0x50
+> [    8.106151]  ? sysfs_file_ops+0x50/0x50
+> [    8.106151]  kernfs_fop_write+0x105/0x1a0
+> [    8.106151]  ? kernfs_fop_open+0x3c0/0x3c0
+> [    8.106151]  __vfs_write+0x2b/0x1e0
+> [    8.106151]  ? lock_acquire+0x3f/0x70
+> [    8.106151]  ? vfs_write+0x12a/0x180
+> [    8.106151]  ? __sb_start_write+0xd6/0x180
+> [    8.106151]  ? vfs_write+0x12a/0x180
+> [    8.106151]  vfs_write+0xa1/0x180
+> [    8.106151]  ksys_write+0x5c/0xd0
+> [    8.106151]  __ia32_sys_write+0x10/0x20
+> [    8.106151]  do_syscall_32_irqs_on+0x3a/0xf0
+> [    8.106151]  do_int80_syscall_32+0x9/0x20
+> [    8.106151]  entry_INT80_32+0x116/0x116
+> [    8.106151] EIP: 0xb7f45092
+> [    8.106151] Code: Bad RIP value.
+> [    8.146079] EAX: ffffffda EBX: 00000007 ECX: 004fb760 EDX: 00000001
+> [    8.146079] ESI: 004fb760 EDI: 00000001 EBP: 004c79f0 ESP: bfabc48c
+> [    8.146079] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS:
+> 00000246
+> [    8.150364] Modules linked in:
+> [    8.150364] CR2: 0000000000000000
+> [    8.150364] ---[ end trace 468d097aaf220284 ]---
 
-This patch isn't actually broken.
+I assume this is caused by commit e5e1e7fd470ccf2eb38ab7fb5a3ab0fc4792fe53 and mainly because it triggers the background scan workqueue. I think we need to distinguish clearing the monitors when removing the controller compared to clearing the controllers from bluetoothd as a runtime operation.
 
-The issue is the DTB, which [0] addresses.
+Regards
 
-[0]
-https://lkml.kernel.org/lkml/20200622083432.1491715-1-lee.jones@linaro.org/
+Marcel
 
-> c94bb233a9fee3314dc5d9c7de9fa702e91283f2 mfd: Make MFD core code Device Tree and IRQ domain aware
-
-It sounds reasonable to list this one, thanks.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
