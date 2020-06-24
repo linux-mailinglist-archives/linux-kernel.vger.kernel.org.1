@@ -2,86 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A665207BCA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 20:53:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 595F8207BCF
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 20:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406174AbgFXSxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 14:53:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50124 "EHLO mail.kernel.org"
+        id S2406201AbgFXSyB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 14:54:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406139AbgFXSxT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 14:53:19 -0400
-Received: from X1 (nat-ab2241.sltdut.senawave.net [162.218.216.4])
+        id S2406033AbgFXSyB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 14:54:01 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 22FA520823;
-        Wed, 24 Jun 2020 18:53:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0E6CB20702;
+        Wed, 24 Jun 2020 18:54:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593024798;
-        bh=HKslfhNl7tpZaCgmctNjhn1V/l+XNf4uwEwavirR290=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=HlnPOjetBcFqHdrq8LMZASzOmK8BPv6UmpdDbgMfkmZtg+ksWMcnQ5XEcWc7fnBRG
-         bt/Qk+sTWwmhAjgam/0aNcgNVhbN7y2g8QIUyqCK2AHUu/Xel7zJ5oPEexSEc/9hpY
-         WbHIcirhJNSFY2E02EGTcBZl2CyWIC39PCD6y3f0=
-Date:   Wed, 24 Jun 2020 11:53:17 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Yang Shi <yang.shi@linux.alibaba.com>
-Cc:     hannes@cmpxchg.org, riel@surriel.com, shakeelb@google.com,
-        gavin.dg@linux.alibaba.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: filemap: clear idle flag for writes
-Message-Id: <20200624115317.792d8fc6369d421d2898ab2f@linux-foundation.org>
-In-Reply-To: <1593020612-13051-1-git-send-email-yang.shi@linux.alibaba.com>
-References: <1593020612-13051-1-git-send-email-yang.shi@linux.alibaba.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        s=default; t=1593024841;
+        bh=9aeM0ykXHtgDA3GqA6iQnzG2q1WxV6iB9AZlbM12N6M=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=JgPpHaUeHThKOfHkHRFEq65iiz9rOqFlI99toCVLZkSWYlptPGeiueQhQtQ+H3Wa0
+         jekyxpju13HRaN6diayh7I9sMp3ZdiMbxC/GwFddNL+jVVmD0xAsm7v7+lYb7qqcE4
+         45MoABjJ4gHkbjZEWmMrzz0QkC3k9nFsn4itbUTQ=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id ED4B135228BC; Wed, 24 Jun 2020 11:54:00 -0700 (PDT)
+Date:   Wed, 24 Jun 2020 11:54:00 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        kernel-team@fb.com, mingo@kernel.org
+Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
+        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com
+Subject: LKMM patches for next merge window
+Message-ID: <20200624185400.GA13594@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Jun 2020 01:43:32 +0800 Yang Shi <yang.shi@linux.alibaba.com> wrote:
+Hello!
 
-> Since commit bbddabe2e436aa7869b3ac5248df5c14ddde0cbf ("mm: filemap:
-> only do access activations on reads"), mark_page_accessed() is called
-> for reads only.  But the idle flag is cleared by mark_page_accessed() so
-> the idle flag won't get cleared if the page is write accessed only.
-> 
-> Basically idle page tracking is used to estimate workingset size of
-> workload, noticeable size of workingset might be missed if the idle flag
-> is not maintained correctly.
-> 
-> It seems good enough to just clear idle flag for write operations.
-> 
-> ...
->
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -41,6 +41,7 @@
->  #include <linux/delayacct.h>
->  #include <linux/psi.h>
->  #include <linux/ramfs.h>
-> +#include <linux/page_idle.h>
->  #include "internal.h"
->  
->  #define CREATE_TRACE_POINTS
-> @@ -1630,6 +1631,11 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
->  
->  	if (fgp_flags & FGP_ACCESSED)
->  		mark_page_accessed(page);
-> +	else if (fgp_flags & FGP_WRITE) {
-> +		/* Clear idle flag for buffer write */
-> +		if (page_is_idle(page))
-> +			clear_page_idle(page);
-> +	}
->  
->  no_page:
->  	if (!page && (fgp_flags & FGP_CREAT)) {
+Here is the list of LKMM patches I am considering for the next merge
+window and the status of each.  Any I am missing or any that need to
+wait or be modified?
 
-The kerneldoc comment for pagecache_get_page() could do with some
-updating - it fails to mention FGP_WRITE, FGP_NOFS and FGP_NOWAIT.
+						Thanx, Paul
 
-This change seems correct but also will have runtime effects.  What are
-they?
+------------------------------------------------------------------------
+
+3ce5d69 docs: fix references for DMA*.txt files
+	Could someone please provide an ack?
+
+ac1a749 tools/memory-model: Add recent references
+be1ce3e tools/memory-model: Fix "conflict" definition
+24dca63 Documentation: LKMM: Add litmus test for RCU GP guarantee where updater frees object
+47ec95b Documentation: LKMM: Add litmus test for RCU GP guarantee where reader stores
+bb2c938 MAINTAINERS: Update maintainers for new Documentation/litmus-tests
+05bee9a tools/memory-model: Add an exception for limitations on _unless() family
+dc76257 Documentation/litmus-tests: Introduce atomic directory
+d059e50 Documentation/litmus-tests/atomic: Add a test for atomic_set()
+7eecf76 Documentation/litmus-tests/atomic: Add a test for smp_mb__after_atomic()
+116f054 tools/memory-model: Fix reference to litmus test in recipes.txt
+ffd32d4 Documentation/litmus-tests: Merge atomic's README into top-level one
+a08ae99 Documentation/litmus-tests: Cite an RCU litmus test
+843285eb tools/memory-model/README: Expand dependency of klitmus7
+0296c57 tools/memory-model/README: Mention herdtools7 7.56 in compatibility table
+47e4f0a Documentation/litmus-tests: Add note on herd7 7.56 in atomic litmus test
+	All ready to go.
