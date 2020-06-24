@@ -2,117 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 485CD2072D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:07:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548182072DE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389647AbgFXMHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 08:07:12 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:37458 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388522AbgFXMHL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 08:07:11 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05OC73Xq063657;
-        Wed, 24 Jun 2020 07:07:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1593000423;
-        bh=urADYeKqD191XbG4nfUX5KHD6LogFmSovqRvKmsIO18=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=iIbatgUS7IW5fQZvMehX7SX46NCWkYwOWiljDTn4DchTpDRXRMMpBPH1Thtiucws/
-         gRCbHrruSyMvXNSrpxuMbGRcu8xQ78W6FmIhCk2mDsxg/XpJ3w+f/nZo0IQ8SeknY8
-         oDoGHtL0pVjv13YnHiUjdM8H/+CerqsI75siF1xM=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05OC72LE055309
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 24 Jun 2020 07:07:02 -0500
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 24
- Jun 2020 07:07:02 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 24 Jun 2020 07:07:02 -0500
-Received: from [192.168.2.10] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OC6xjD039705;
-        Wed, 24 Jun 2020 07:07:00 -0500
-Subject: Re: DMA Engine: Transfer From Userspace
-To:     Vinod Koul <vkoul@kernel.org>, Thomas Ruf <freelancer@rufusul.de>
-CC:     Federico Vaga <federico.vaga@cern.ch>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <5614531.lOV4Wx5bFT@harkonnen>
- <fe199e18-be45-cadc-8bad-4a83ed87bfba@intel.com>
- <20200621072457.GA2324254@vkoul-mobl>
- <20200621203634.y3tejmh6j4knf5iz@cwe-513-vol689.cern.ch>
- <20200622044733.GB2324254@vkoul-mobl>
- <419762761.402939.1592827272368@mailbusiness.ionos.de>
- <20200622155440.GM2324254@vkoul-mobl>
- <1835214773.354594.1592843644540@mailbusiness.ionos.de>
- <2077253476.601371.1592991035969@mailbusiness.ionos.de>
- <20200624093800.GV2324254@vkoul-mobl>
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-X-Pep-Version: 2.0
-Message-ID: <3a4b1b55-7bce-2c48-b897-51e23e850127@ti.com>
-Date:   Wed, 24 Jun 2020 15:07:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S2390086AbgFXMIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 08:08:07 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:60866 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388522AbgFXMIG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 08:08:06 -0400
+Received: from [10.130.0.52] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_2obQvNeQ0FJAA--.12766S3;
+        Wed, 24 Jun 2020 20:07:57 +0800 (CST)
+Subject: Re: [PATCH v3 03/14] irqchip/csky-mpintc: Fix potential resource
+ leaks
+To:     Markus Elfring <Markus.Elfring@web.de>, linux-mips@vger.kernel.org
+References: <a0ace7a8-5c26-ee20-fe76-7dff57a18ca3@web.de>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Xuefeng Li <lixuefeng@loongson.cn>
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+Message-ID: <be3acb13-2963-ddf1-a867-7e30fd23a0b4@loongson.cn>
+Date:   Wed, 24 Jun 2020 20:07:55 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-In-Reply-To: <20200624093800.GV2324254@vkoul-mobl>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <a0ace7a8-5c26-ee20-fe76-7dff57a18ca3@web.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dx_2obQvNeQ0FJAA--.12766S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7tFykXw13tr13Wr45XryxXwb_yoW8Ar18pF
+        4UurWrGrWkGr1UWrs7uw18ZFyfKayfJrW2g3s3Krn5urn0vr9YyFWF9rs8uasFkw15Aayx
+        Zrs2yry5uw1DAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+        0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+        jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
+        Y487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Gr1j
+        6F4UJwCI42IY6I8E87Iv6xkF7I0E14v26rxl6s0DYxBIdaVFxhVjvjDU0xZFpf9x0JUu5l
+        8UUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 06/24/2020 07:43 PM, Markus Elfring wrote:
+>> There exists potential resource leaks in the error path, fix them.
+> I suggest to improve this change description.
+> How do you think about another wording variant?
+>
+>     Specific system resources were not released in a few error cases.
+>     Thus add jump targets for the completion of the desired exception handling.
 
+OK, thank you, it looks good to me.
+Maybe I can use this description for other patches of this series.
 
-On 24/06/2020 12.38, Vinod Koul wrote:
-> On 24-06-20, 11:30, Thomas Ruf wrote:
->=20
->> To make it short - i have two questions:
->> - what are the chances to revive DMA_SG?
->=20
-> 100%, if we have a in-kernel user
+>
+>
+> …
+> +++ b/drivers/irqchip/irq-csky-mpintc.c
+> @@ -247,8 +247,10 @@ csky_mpintc_init(struct device_node *node, struct device_node *parent)
+> …
+>   		INTCG_base = ioremap(mfcr("cr<31, 14>"),
+>   				     INTCL_SIZE*nr_cpu_ids + INTCG_SIZE);
+>
+> See also:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/coding-style.rst?id=3e08a95294a4fb3702bb3d35ed08028433c37fe6#n257
+>
+>
+> …
+> +		if (INTCG_base == NULL) {
+>
+>
+> Would you like to use the following code variant?
+>
+> See also:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/scripts/checkpatch.pl?id=3e08a95294a4fb3702bb3d35ed08028433c37fe6#n5756
+>
+> +		if (!INTCG_base) {
+>
+>
+> …
+>> @@ -270,12 +274,22 @@ csky_mpintc_init(struct device_node *node, struct device_node *parent)
+>>
+>>   #ifdef CONFIG_SMP
+>>   	ipi_irq = irq_create_mapping(root_domain, IPI_IRQ);
+> …
+>> +	if (!ipi_irq) {
+>> +		ret = -EIO;
+>> +		goto err_domain_remove;
+>> +	}
+> …
+>
+> Can the function call “irq_domain_remove(root_domain)” become relevant
+> only if the preprocessor symbol “CONFIG_SMP” was defined?
 
-Most DMAs can not handle differently provisioned sg_list for src and dst.=
+OK, I will do it in the next version.
 
-Even if they could handle non symmetric SG setup it requires entirely
-different setup (two independent channels sending the data to each
-other, one reads, the other writes?).
-
->> - what are the chances to get my driver for memcpy like transfers from=
-
->> user space using DMA_SG upstream? ("dma-sg-proxy")
->=20
-> pretty bleak IMHO.
-
-fwiw, I also get requests time-to-time to DMA memcpy support from user
-space from companies trying to move from bare-metal code to Linux.
-
-What could be plausible is a generic dmabuf-to-dmabuf copy driver (V4L2
-can provide dma-buf, DRM can also).
-If there is a DMA memcpy channel available, use that, otherwise use some
-method to do the copy, user space should not care how it is done.
-
-Where things are going to get a bit more trickier is when the copy needs
-to be triggered by other DMA channel (completion of a frame reception
-triggering an interleaved sub-frame extraction copy).
-You don't want to extract from a buffer which can be modified while the
-other channel is writing to it.
-
-In Linux the DMA is used for kernel and user space can only use it
-implicitly via standard subsystems.
-Misused DMA can be very dangerous and giving full access to program a
-transfer can open a can of worms.
-
-- P=C3=A9ter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+>
+> Regards,
+> Markus
 
