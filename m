@@ -2,84 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCE3207915
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:29:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67859207935
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:32:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404959AbgFXQ3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 12:29:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404911AbgFXQ3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 12:29:20 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 71AEF20836;
-        Wed, 24 Jun 2020 16:29:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593016160;
-        bh=TfdmMZFoMamba9hAZ73wEPB7qlys4If0NBVI+1NG/UU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VpzJJgus9+zyY0l2n1ruLm646dBuDmHvNsXlWYco19nCDNYZBoo/Y2FIsJ8yxZ0yw
-         e/kpOYqkVyEmfUOIJ1FREsJxtHZtkYjlj24ce5uRir7ho2s0bU2nB2GHb4jqgFyk0z
-         zZ04nY8eZz1feeBtXSteZCyt2CnBll2ZaTigowIs=
-Date:   Wed, 24 Jun 2020 17:29:17 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        robh@kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 3/7] ASoC: tas2562: Fix format issue for extra space
- before a comma
-Message-ID: <20200624162917.GK5472@sirena.org.uk>
-References: <20200624161459.19248-1-dmurphy@ti.com>
- <20200624161459.19248-4-dmurphy@ti.com>
+        id S2405002AbgFXQcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 12:32:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404692AbgFXQ3Z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 12:29:25 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA41EC0613ED;
+        Wed, 24 Jun 2020 09:29:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=CNk/aSiWmmbV6EV6DanHCszvKlV+254CO/X+KDTk2bo=; b=RutPLeiKe6pB5IbiaUm72jhFLG
+        MlClnq7utWReRPV633zRff0I6qSvq7hy2NV+KiIFdwOX7vs9hc22h8j78nNavOr9ReVGnpHq8NIeG
+        6uMnXtaN/XLoo0dV/lYr7h+nScNlmiG6oqCu5H6fYe/kxh1FlJ3PR6wJaJsa+Jtp65dRtnvN8FlvF
+        QD73Vg1VIUcEdqDcTtjhbtZ+bhxo7EOpuxfOAL1ZY6qRXg484Rt9tYHGmUdleVvrFxPlykR/EkR7x
+        SRHsZDWGW6hKoBmooVTYu4tqYvvVTlGxy9rxPV0Ef97df46BEGuKKiswVMB3Lvaza2B2OeSqpiNo5
+        bhM/du8A==;
+Received: from [2001:4bb8:180:a3:5c7c:8955:539d:955b] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jo8Gn-0006nz-0a; Wed, 24 Jun 2020 16:29:05 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH 02/11] fs: factor out a set_fmode_can_read_write helper
+Date:   Wed, 24 Jun 2020 18:28:52 +0200
+Message-Id: <20200624162901.1814136-3-hch@lst.de>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200624162901.1814136-1-hch@lst.de>
+References: <20200624162901.1814136-1-hch@lst.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="tKtFalx5NIx0HZ72"
-Content-Disposition: inline
-In-Reply-To: <20200624161459.19248-4-dmurphy@ti.com>
-X-Cookie: So this is it.  We're going to die.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add a helper to set the FMODE_CAN_READ and FMODE_CAN_WRITE logic
+instead of duplicating it in two places.
 
---tKtFalx5NIx0HZ72
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ fs/file_table.c |  7 +------
+ fs/internal.h   | 10 ++++++++++
+ fs/open.c       |  8 +-------
+ 3 files changed, 12 insertions(+), 13 deletions(-)
 
-On Wed, Jun 24, 2020 at 11:14:55AM -0500, Dan Murphy wrote:
-> Fix the issue found that there is an extra space before a comma in the
-> volume control.
->=20
-> Fixes: bf726b1c86f2c ("ASoC: tas2562: Add support for digital volume cont=
-rol")
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
-> ---
->  arch/arm/boot/compressed/fdt.h             |   66 +
->  arch/arm/boot/compressed/libfdt.h          | 2072 ++++++++++++++++++++
->  arch/arm/boot/compressed/libfdt_internal.h |  173 ++
->  sound/soc/codecs/tas2562.c                 |    2 +-
+diff --git a/fs/file_table.c b/fs/file_table.c
+index 656647f9575a7c..646b83f07a9589 100644
+--- a/fs/file_table.c
++++ b/fs/file_table.c
+@@ -199,16 +199,11 @@ static struct file *alloc_file(const struct path *path, int flags,
+ 	file->f_mapping = path->dentry->d_inode->i_mapping;
+ 	file->f_wb_err = filemap_sample_wb_err(file->f_mapping);
+ 	file->f_sb_err = file_sample_sb_err(file);
+-	if ((file->f_mode & FMODE_READ) &&
+-	     likely(fop->read || fop->read_iter))
+-		file->f_mode |= FMODE_CAN_READ;
+-	if ((file->f_mode & FMODE_WRITE) &&
+-	     likely(fop->write || fop->write_iter))
+-		file->f_mode |= FMODE_CAN_WRITE;
+ 	file->f_mode |= FMODE_OPENED;
+ 	file->f_op = fop;
+ 	if ((file->f_mode & (FMODE_READ | FMODE_WRITE)) == FMODE_READ)
+ 		i_readcount_inc(path->dentry->d_inode);
++	set_fmode_can_read_write(file);
+ 	return file;
+ }
+ 
+diff --git a/fs/internal.h b/fs/internal.h
+index 9b863a7bd70892..242f2845b3428b 100644
+--- a/fs/internal.h
++++ b/fs/internal.h
+@@ -185,3 +185,13 @@ int sb_init_dio_done_wq(struct super_block *sb);
+  */
+ int do_statx(int dfd, const char __user *filename, unsigned flags,
+ 	     unsigned int mask, struct statx __user *buffer);
++
++static inline void set_fmode_can_read_write(struct file *f)
++{
++	if ((f->f_mode & FMODE_READ) &&
++	    (f->f_op->read || f->f_op->read_iter))
++		f->f_mode |= FMODE_CAN_READ;
++	if ((f->f_mode & FMODE_WRITE) &&
++	    (f->f_op->write || f->f_op->write_iter))
++		f->f_mode |= FMODE_CAN_WRITE;
++}
+diff --git a/fs/open.c b/fs/open.c
+index 6cd48a61cda3b9..01f2de93c91710 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -832,13 +832,7 @@ static int do_dentry_open(struct file *f,
+ 	f->f_mode |= FMODE_OPENED;
+ 	if ((f->f_mode & (FMODE_READ | FMODE_WRITE)) == FMODE_READ)
+ 		i_readcount_inc(inode);
+-	if ((f->f_mode & FMODE_READ) &&
+-	     likely(f->f_op->read || f->f_op->read_iter))
+-		f->f_mode |= FMODE_CAN_READ;
+-	if ((f->f_mode & FMODE_WRITE) &&
+-	     likely(f->f_op->write || f->f_op->write_iter))
+-		f->f_mode |= FMODE_CAN_WRITE;
+-
++	set_fmode_can_read_write(f);
+ 	f->f_write_hint = WRITE_LIFE_NOT_SET;
+ 	f->f_flags &= ~(O_CREAT | O_EXCL | O_NOCTTY | O_TRUNC);
+ 
+-- 
+2.26.2
 
-I'm guessing those libfdt changes weren't supposed to be here?
-
---tKtFalx5NIx0HZ72
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7zf10ACgkQJNaLcl1U
-h9An2Qf6AzD1t9C2zhCAOdLfYVN/RaS8w3Mi6hZd+l5rIvL+gYEHsaqTQDYsy8mv
-aeAZNN3FPKsxBnXLssuA63iBaQIhE3M8SI1V3OFPBK1MZEGAQVAe4KYMseQVLEdk
-6hj4jLd4u7hGvRfx4boqmYZmVKoCOGUlawS7CcdyS1tFq9LEi3yLSEqdH76eNVcm
-mMd4zhO731rZl5kIWeOVGEDxfsVKDfn3BLFQUcTa6BwvW6xd9LKQi9xgjDPql3Qp
-GomCINoovcB4wglAXd7EoiNTErfgcW1m5gUCKPF4oxeWURzEKozYFON6csZcWh9+
-lsKqk6ykjHMXZfC2OngiLTPe4zE3Rg==
-=jWX5
------END PGP SIGNATURE-----
-
---tKtFalx5NIx0HZ72--
