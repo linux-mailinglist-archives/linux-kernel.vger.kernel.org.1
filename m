@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95675207C9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA161207C9F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406285AbgFXUDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 16:03:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48064 "EHLO mail.kernel.org"
+        id S2406355AbgFXUDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 16:03:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47824 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391438AbgFXUDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 16:03:34 -0400
+        id S2391394AbgFXUD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 16:03:26 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CCA7D2080C;
-        Wed, 24 Jun 2020 20:03:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BD7492082F;
+        Wed, 24 Jun 2020 20:03:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593029012;
-        bh=lScSvcyhxhG6TFbVfAEZW208PC7sJRJ25m1WrXEq9Ko=;
+        s=default; t=1593029005;
+        bh=q3NBhWznOklZp8y1ZAAiFjP7oc+/YvDPC39TNuv+H2E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hkWYNhS0H6u7uxegwdt4pcI1cAORuoZCoVMU7p0diWeySss/WPFaujjPo+32/0Cmm
-         S2GfzHw88kVorIc0OKZFJ+P12u3SkEvzQtrbq9OdUJqyYPid6uRRF9wAidq0YSMJS6
-         lmlkvQT43hYoQ1FmvmyWZ96JTCWZlAwaDSAHoTOQ=
+        b=xs50eHIQjFdmmPhgqqruvFaCISuBsV+jQCQhaQk2ve0hK07XJCTbn3vIMmlybHreL
+         vjsuARldLglij5pb7Z6O22NPtb+kP2Gbz0DTajVBVcJYGajfcKnhmw7YKK7NWhsNI4
+         bLw7Nl3sy+9sPi5kpPa8sjuLJNPCDKdp2Zd+QqRk=
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <maz@kernel.org>)
-        id 1joBXO-006ABu-3E; Wed, 24 Jun 2020 20:58:26 +0100
+        id 1joBXO-006ABu-WB; Wed, 24 Jun 2020 20:58:27 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Will Deacon <will@kernel.org>,
@@ -40,9 +40,9 @@ Cc:     Will Deacon <will@kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Gregory Clement <gregory.clement@bootlin.com>,
         Andrew Lunn <andrew@lunn.ch>, kernel-team@android.com
-Subject: [PATCH v2 14/17] arm64: Kill __smp_cross_call and co
-Date:   Wed, 24 Jun 2020 20:58:08 +0100
-Message-Id: <20200624195811.435857-15-maz@kernel.org>
+Subject: [PATCH v2 15/17] arm64: Remove custom IRQ stat accounting
+Date:   Wed, 24 Jun 2020 20:58:09 +0100
+Message-Id: <20200624195811.435857-16-maz@kernel.org>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20200624195811.435857-1-maz@kernel.org>
 References: <20200624195811.435857-1-maz@kernel.org>
@@ -57,131 +57,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The old IPI registration interface is now unused on arm64, so let's
-get rid of it.
+Let's switch the arm64 code to the core accounting, which already
+does everything we need.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- arch/arm64/include/asm/irq_work.h |  4 +---
- arch/arm64/include/asm/smp.h      |  7 -------
- arch/arm64/kernel/smp.c           | 34 +++++--------------------------
- 3 files changed, 6 insertions(+), 39 deletions(-)
+ arch/arm64/include/asm/hardirq.h |  9 ---------
+ arch/arm64/kernel/smp.c          | 24 ++++++------------------
+ 2 files changed, 6 insertions(+), 27 deletions(-)
 
-diff --git a/arch/arm64/include/asm/irq_work.h b/arch/arm64/include/asm/irq_work.h
-index 8a1ef1907760..a1020285ea75 100644
---- a/arch/arm64/include/asm/irq_work.h
-+++ b/arch/arm64/include/asm/irq_work.h
-@@ -2,11 +2,9 @@
- #ifndef __ASM_IRQ_WORK_H
- #define __ASM_IRQ_WORK_H
+diff --git a/arch/arm64/include/asm/hardirq.h b/arch/arm64/include/asm/hardirq.h
+index 985493af704b..5ffa4bacdad3 100644
+--- a/arch/arm64/include/asm/hardirq.h
++++ b/arch/arm64/include/asm/hardirq.h
+@@ -13,21 +13,12 @@
+ #include <asm/kvm_arm.h>
+ #include <asm/sysreg.h>
  
--#include <asm/smp.h>
+-#define NR_IPI	7
 -
- static inline bool arch_irq_work_has_interrupt(void)
- {
--	return !!__smp_cross_call;
-+	return true;
- }
+ typedef struct {
+ 	unsigned int __softirq_pending;
+-	unsigned int ipi_irqs[NR_IPI];
+ } ____cacheline_aligned irq_cpustat_t;
  
- #endif /* __ASM_IRQ_WORK_H */
-diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
-index 4537a4620e3d..dd3f68ed9ac9 100644
---- a/arch/arm64/include/asm/smp.h
-+++ b/arch/arm64/include/asm/smp.h
-@@ -67,13 +67,6 @@ extern void handle_IPI(int ipinr, struct pt_regs *regs);
-  */
- extern void smp_init_cpus(void);
+ #include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
  
--/*
-- * Provide a function to raise an IPI cross call on CPUs in callmap.
-- */
--extern void set_smp_cross_call(void (*)(const struct cpumask *, unsigned int));
+-#define __inc_irq_stat(cpu, member)	__IRQ_STAT(cpu, member)++
+-#define __get_irq_stat(cpu, member)	__IRQ_STAT(cpu, member)
 -
--extern void (*__smp_cross_call)(const struct cpumask *, unsigned int);
+-u64 smp_irq_stat_cpu(unsigned int cpu);
+-#define arch_irq_stat_cpu	smp_irq_stat_cpu
 -
- /*
-  * Register IPI interrupts with the arch SMP code
-  */
+ #define __ARCH_IRQ_EXIT_IRQS_DISABLED	1
+ 
+ struct nmi_ctx {
 diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
-index c08950cc09cc..ed8a8184e3b6 100644
+index ed8a8184e3b6..8b903ceef2be 100644
 --- a/arch/arm64/kernel/smp.c
 +++ b/arch/arm64/kernel/smp.c
-@@ -783,13 +783,6 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
- 	}
- }
- 
--void (*__smp_cross_call)(const struct cpumask *, unsigned int);
--
--void __init set_smp_cross_call(void (*fn)(const struct cpumask *, unsigned int))
--{
--	__smp_cross_call = fn;
--}
--
- static const char *ipi_types[NR_IPI] __tracepoint_string = {
- #define S(x,s)	[x] = s
- 	S(IPI_RESCHEDULE, "Rescheduling interrupts"),
-@@ -801,11 +794,7 @@ static const char *ipi_types[NR_IPI] __tracepoint_string = {
- 	S(IPI_WAKEUP, "CPU wake-up interrupts"),
+@@ -73,7 +73,8 @@ enum ipi_msg_type {
+ 	IPI_CPU_CRASH_STOP,
+ 	IPI_TIMER,
+ 	IPI_IRQ_WORK,
+-	IPI_WAKEUP
++	IPI_WAKEUP,
++	NR_IPI
  };
  
--static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
--{
--	trace_ipi_raise(target, ipi_types[ipinr]);
--	__smp_cross_call(target, ipinr);
--}
-+static void smp_cross_call(const struct cpumask *target, unsigned int ipinr);
+ static int ipi_irq_base;
+@@ -801,26 +802,15 @@ void show_ipi_list(struct seq_file *p, int prec)
+ 	unsigned int cpu, i;
  
- void show_ipi_list(struct seq_file *p, int prec)
- {
-@@ -852,8 +841,7 @@ void arch_send_wakeup_ipi_mask(const struct cpumask *mask)
- #ifdef CONFIG_IRQ_WORK
- void arch_irq_work_raise(void)
- {
--	if (__smp_cross_call)
--		smp_cross_call(cpumask_of(smp_processor_id()), IPI_IRQ_WORK);
-+	smp_cross_call(cpumask_of(smp_processor_id()), IPI_IRQ_WORK);
- }
- #endif
- 
-@@ -960,27 +948,16 @@ static void do_handle_IPI(int ipinr)
- 		trace_ipi_exit_rcuidle(ipi_types[ipinr]);
- }
- 
--/* Legacy version, should go away once all irqchips have been converted */
--void handle_IPI(int ipinr, struct pt_regs *regs)
--{
--	struct pt_regs *old_regs = set_irq_regs(regs);
--
--	irq_enter();
--	do_handle_IPI(ipinr);
--	irq_exit();
--
--	set_irq_regs(old_regs);
--}
--
- static irqreturn_t ipi_handler(int irq, void *data)
- {
- 	do_handle_IPI(irq - ipi_irq_base);
- 	return IRQ_HANDLED;
- }
- 
--static void ipi_send(const struct cpumask *target, unsigned int ipi)
-+static void smp_cross_call(const struct cpumask *target, unsigned int ipinr)
- {
--	__ipi_send_mask(ipi_desc[ipi], target);
-+	trace_ipi_raise(target, ipi_types[ipinr]);
-+	__ipi_send_mask(ipi_desc[ipinr], target);
- }
- 
- static void ipi_setup(int cpu)
-@@ -1022,7 +999,6 @@ void __init set_smp_ipi_range(int ipi_base, int n)
+ 	for (i = 0; i < NR_IPI; i++) {
++		unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
+ 		seq_printf(p, "%*s%u:%s", prec - 1, "IPI", i,
+ 			   prec >= 4 ? " " : "");
+ 		for_each_online_cpu(cpu)
+-			seq_printf(p, "%10u ",
+-				   __get_irq_stat(cpu, ipi_irqs[i]));
++			seq_printf(p, "%10u ", kstat_irqs_cpu(irq, cpu));
+ 		seq_printf(p, "      %s\n", ipi_types[i]);
  	}
+ }
  
- 	ipi_irq_base = ipi_base;
--	__smp_cross_call = ipi_send;
+-u64 smp_irq_stat_cpu(unsigned int cpu)
+-{
+-	u64 sum = 0;
+-	int i;
+-
+-	for (i = 0; i < NR_IPI; i++)
+-		sum += __get_irq_stat(cpu, ipi_irqs[i]);
+-
+-	return sum;
+-}
+-
+ void arch_send_call_function_ipi_mask(const struct cpumask *mask)
+ {
+ 	smp_cross_call(mask, IPI_CALL_FUNC);
+@@ -893,10 +883,8 @@ static void do_handle_IPI(int ipinr)
+ {
+ 	unsigned int cpu = smp_processor_id();
  
- 	/* Setup the boot CPU immediately */
- 	ipi_setup(smp_processor_id());
+-	if ((unsigned)ipinr < NR_IPI) {
++	if ((unsigned)ipinr < NR_IPI)
+ 		trace_ipi_entry_rcuidle(ipi_types[ipinr]);
+-		__inc_irq_stat(cpu, ipi_irqs[ipinr]);
+-	}
+ 
+ 	switch (ipinr) {
+ 	case IPI_RESCHEDULE:
+@@ -991,7 +979,7 @@ void __init set_smp_ipi_range(int ipi_base, int n)
+ 		int err;
+ 
+ 		err = request_percpu_irq(ipi_base + i, ipi_handler,
+-					 "IPI", &irq_stat);
++					 "IPI", &cpu_number);
+ 		WARN_ON(err);
+ 
+ 		ipi_desc[i] = irq_to_desc(ipi_base + i);
 -- 
 2.27.0
 
