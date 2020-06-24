@@ -2,108 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1CFB207DF5
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4014207E04
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 23:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391446AbgFXU7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 16:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
+        id S2388694AbgFXVBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 17:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391610AbgFXU7L (ORCPT
+        with ESMTP id S1728352AbgFXVBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 16:59:11 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8675C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:59:10 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id u8so1710607pje.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:59:10 -0700 (PDT)
+        Wed, 24 Jun 2020 17:01:46 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD5BC061573;
+        Wed, 24 Jun 2020 14:01:45 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id q198so3308996qka.2;
+        Wed, 24 Jun 2020 14:01:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zWM/30Wl1IsQgoPaDiN0rPEEBtrHBKt/BJnnp0eLWds=;
-        b=pd1+e0uXRIvGNNQgZ7G0+2YkwsDFhSclmocO1GbaT5UM3c6xBTX7UYJjCsai0aiyT7
-         fIoijSJoU+eUl8voyiO0IOyBsavQt6eREqkk3whDlDlHejxDQRKECAFiVGUe/CKDHaTc
-         EpZ2md8ULTkAVVBJ6O72PRwIcg/GiVClV1rha8JNSiYzT4/v2ecYsi++FLxwW19Hw/Gd
-         Fr/Z+ikfp69sRAivcJnbajJT1/5/Qn2W6vWHskjofe5p2ZJr6Cthm+UKTVG2rZslsDkG
-         xO7mHbrOSScz4BsI8HgHuMYhqH42CQPx5Ip80xrwiQdph3TwAg+m578XBSL3rfWRIGQZ
-         ATEA==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=n0fUs+whXgml4Oa4jYkaqimzsvOOOchJfB6d9dlWGNE=;
+        b=Wi0oUU+PzfqMxbyBYMNnpEVWwbG1p7vOkC7dz5h9BxDjDtR3yPACUoxFjQvIzRAFBM
+         cA0VEYehZnHft94KN9UvKKmbesgtwr2FZ5Si63kc7flju1fd/Ld+QSgrl1DRTmNeUikp
+         I1KO4q1iU3XFYHpP12lAOTT21zZLa4RoTGw9ZbbAWG4wnwgCcB7vaZKGoYp+aU799adN
+         VGCRSrcS6AdZg81+yxw5JJ3K1hj+wQDJvz3fdMagzOT8ZR0HPoYUlcQZOsAZqFXGJOSs
+         sgZ7J4TWrda0C/givZRqr6HKx4MRyOuKlb/pIGipWLbBomFazTbPoKAorlygNgdeRj0m
+         +ovQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zWM/30Wl1IsQgoPaDiN0rPEEBtrHBKt/BJnnp0eLWds=;
-        b=uNySgrnGviazDIi3IS0SuhNLHG4hoaKy2tTKRufxFkIzLo0EiM2SrP8Cke2fK8w40J
-         N8BjY8YWcNkqgHF6QvfujMZ+4Dl9qMS/2KFjScWODf1nJRvedPt2u6czsRouwSMh7IkJ
-         y/GKhjlokESwWeCE7kOSvH7rQPKwJoh27zLoUJ1axr8gQ7Na36zTflvpgrRO/+9cF6wJ
-         v1yspvAi56YZaOHFaWEgbuFkgtnPnDG4cPB1vcnoTs6zokwjCB1QAHY+SfsKABu8dugY
-         Qt7PBMiEir0N5zFdtPpChhav8TQwpX0O0K3M3/NEW10W/tlc7rk5RmjoAnSH4BXdr/hE
-         M3Sg==
-X-Gm-Message-State: AOAM533sVlr28Dexe3Lbj3uGIpsq5m3xDAxAy+Vdbx19MRIkTDDuiGLP
-        HMA1NQg9OXhVkjz3YVWT8yewWWeNfufnZbEydTVSzw==
-X-Google-Smtp-Source: ABdhPJxCHHL5VXpLPing5E72KwPslmx5t7evOEk09T9ji09mKT6bSRCDPTi/AxhdrzEhszh9gGm6vbYGZSEoMtti7/U=
-X-Received: by 2002:a17:90a:21ef:: with SMTP id q102mr5252324pjc.101.1593032350091;
- Wed, 24 Jun 2020 13:59:10 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n0fUs+whXgml4Oa4jYkaqimzsvOOOchJfB6d9dlWGNE=;
+        b=Ur1nv/uvld/iIyxLIsf0LJq/tDg6D6jbSxLNVCHMjT8K7XXWsi+LRYxqePlZ8ZlvZw
+         xzc3fwjyGTtYIB6Q3IQOMj1RTvnvE9tN6CZdpbOTWo7v7msjicSqY4VujqKFs1F6vTG3
+         2LKXDFeTDfdJ9UizUJ9k7jQaApGQEIUnwMJ3V/0L0uzlAUPB9iYyToAq9HT8rFcVfoAM
+         JQPsokgZP+1CtJKRs+v7MTu9noH7WGzhxmNRWVDJnOVRKI6ZtfJ0lQEq7V4y6qOJBHCg
+         vTVtm2y1bROznO3uXBqNiCG1xmQXjqToHM26gce8b3+hJfWKHUxprdQCbJE0Vp9Vj2UZ
+         vPUA==
+X-Gm-Message-State: AOAM533H1OpM0cyMzZ+kS8LS1cWZ8jSuTFnA3RIgmbF9H4e/RrK1miw0
+        7AOpS2LAovjsqliBCRJx5Wk=
+X-Google-Smtp-Source: ABdhPJyWQXlRS0vi88ECx5uld8ijPMkmBPpmyu3PCcToPqeeac3vSf/64hrkPmn3S84XzLt9ew7tdg==
+X-Received: by 2002:a37:a8ca:: with SMTP id r193mr6391145qke.118.1593032505008;
+        Wed, 24 Jun 2020 14:01:45 -0700 (PDT)
+Received: from [192.168.1.46] (c-73-88-245-53.hsd1.tn.comcast.net. [73.88.245.53])
+        by smtp.gmail.com with ESMTPSA id z77sm4254479qka.59.2020.06.24.14.01.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jun 2020 14:01:44 -0700 (PDT)
+Subject: Re: [RFC] MFD's relationship with Device Tree (OF)
+To:     Michael Walle <michael@walle.cc>, Rob Herring <robh+dt@kernel.org>
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        GregKroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>
+References: <20200609110136.GJ4106@dell>
+ <CAL_JsqK1BfYa2WfHFUwm9MB+aZVF5zehDSTZj0MhjuhJyYXdTA@mail.gmail.com>
+ <0709f20bc61afb6656bc57312eb69f56@walle.cc>
+ <970bf15b1106df3355b13e06e8dc6f01@walle.cc>
+From:   Frank Rowand <frowand.list@gmail.com>
+Message-ID: <0e9e25cc-b3f2-926a-31dd-c6fafa7d581b@gmail.com>
+Date:   Wed, 24 Jun 2020 16:01:42 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200624203200.78870-1-samitolvanen@google.com> <20200624203200.78870-18-samitolvanen@google.com>
-In-Reply-To: <20200624203200.78870-18-samitolvanen@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 24 Jun 2020 13:58:57 -0700
-Message-ID: <CAKwvOdnEbCfYZ9o=OF51oswyqDvN4iP-9syWUDhxfueq4q0xcw@mail.gmail.com>
-Subject: Re: [PATCH 17/22] arm64: vdso: disable LTO
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <970bf15b1106df3355b13e06e8dc6f01@walle.cc>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 1:33 PM Sami Tolvanen <samitolvanen@google.com> wrote:
->
-> Filter out CC_FLAGS_LTO for the vDSO.
++Frank (me)
 
-Just curious about this patch (and the following one for x86's vdso),
-do you happen to recall specifically what the issues with the vdso's
-are?
+On 2020-06-22 16:03, Michael Walle wrote:
+> Am 2020-06-14 12:26, schrieb Michael Walle:
+>> Hi Rob,
+>>
+>> Am 2020-06-10 00:03, schrieb Rob Herring:
+>> [..]
+>>> Yes, we should use 'reg' whenever possible. If we don't have 'reg',
+>>> then you shouldn't have a unit-address either and you can simply match
+>>> on the node name (standard DT driver matching is with compatible,
+>>> device_type, and node name (w/o unit-address)). We've generally been
+>>> doing 'classname-N' when there's no 'reg' to do 'classname@N'.
+>>> Matching on 'classname-N' would work with node name matching as only
+>>> unit-addresses are stripped.
+>>
+>> This still keeps me thinking. Shouldn't we allow the (MFD!) device
+>> driver creator to choose between "classname@N" and "classname-N".
+>> In most cases N might not be made up, but it is arbitrarily chosen;
+>> for example you've chosen the bank for the ab8500 reg. It is not
+>> a defined entity, like an I2C address if your parent is an I2C bus,
+>> or a SPI chip select, or the memory address in case of MMIO. Instead
+>> the device driver creator just chooses some "random" property from
+>> the datasheet; another device creator might have chosen another
+>> property. Wouldn't it make more sense, to just say this MFD provides
+>> N pwm devices and the subnodes are matching based on pwm-{0,1..N-1}?
+>> That would also be the logical consequence of the current MFD sub
+>> device to OF node matching code, which just supports N=1.
+>>
+> 
+> Rob? Lee?
+> 
+> -michael
 
->
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> ---
->  arch/arm64/kernel/vdso/Makefile | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
-> index 556d424c6f52..cfad4c296ca1 100644
-> --- a/arch/arm64/kernel/vdso/Makefile
-> +++ b/arch/arm64/kernel/vdso/Makefile
-> @@ -29,8 +29,8 @@ ldflags-y := -shared -nostdlib -soname=linux-vdso.so.1 --hash-style=sysv \
->  ccflags-y := -fno-common -fno-builtin -fno-stack-protector -ffixed-x18
->  ccflags-y += -DDISABLE_BRANCH_PROFILING
->
-> -CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os $(CC_FLAGS_SCS)
-> -KBUILD_CFLAGS                  += $(DISABLE_LTO)
-> +CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os $(CC_FLAGS_SCS) \
-> +                               $(CC_FLAGS_LTO)
->  KASAN_SANITIZE                 := n
->  UBSAN_SANITIZE                 := n
->  OBJECT_FILES_NON_STANDARD      := y
-> --
-> 2.27.0.212.ge8ba1cc988-goog
->
-
-
--- 
-Thanks,
-~Nick Desaulniers
