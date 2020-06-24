@@ -2,88 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E251207AD1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07D24207AF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405844AbgFXRwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 13:52:44 -0400
-Received: from foss.arm.com ([217.140.110.172]:49038 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405615AbgFXRwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:52:43 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 38DD91FB;
-        Wed, 24 Jun 2020 10:52:42 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A0FE63F71E;
-        Wed, 24 Jun 2020 10:52:40 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 18:52:38 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Joel Fernandes <joelaf@google.com>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        hsinyi@chromium.org, Nicolas Boichat <drinkcat@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Quentin Perret <qperret@google.com>, ctheegal@codeaurora.org,
-        Guenter Roeck <groeck@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cros_ec_spi: Even though we're RT priority, don't bump
- cpu freq
-Message-ID: <20200624175236.nblndmg6dfq2vr2u@e107158-lin.cambridge.arm.com>
-References: <20200610151818.1.I666ecd9c6f3c6405bd75831a21001b8109b6438c@changeid>
- <20200612125250.7bwjfnxhurdf5bwj@e107158-lin.cambridge.arm.com>
- <CAD=FV=WuYZRO=sv4ODr0SFk0gTtvCW0dNQXbFGrBDqRgjYv-jA@mail.gmail.com>
- <20200619153851.vigshoae3ahiy63x@e107158-lin.cambridge.arm.com>
- <CAD=FV=XursDFUWL=aGUwFgXc4BugUMdT5e+Fwwo5w2gReCjUaQ@mail.gmail.com>
- <20200623164021.lcrnwpli7wdlsn5i@e107158-lin.cambridge.arm.com>
- <CAJWu+ooXdgqSGisZXnHBtYLo9oQBiaNR=HhKseBN+YFGz-L6Xg@mail.gmail.com>
- <20200624165500.idrugfgplqgi654v@e107158-lin.cambridge.arm.com>
- <CAJWu+oqHUq6fvkfRgAx4qx8x1dm-J-h6moeVskCU3gkRybCPqQ@mail.gmail.com>
+        id S2405880AbgFXRzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 13:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405677AbgFXRzE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 13:55:04 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC50C061573;
+        Wed, 24 Jun 2020 10:55:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ITI+6nMfT1OTxjvFBXS8SqWS++zlFeNEzUYzivsKdN8=; b=ta0+ik8IcGl2bYYyUFC54uqCk6
+        +qqjbp4JGa3fmCsMN/1XR64QetGWyQS7cOPLkZ8Sd7seu27n2ZU99DG+4ZKeiqVLFi2Rd7wtO2UQL
+        GW1uJnydKQdPJ+UYCtnZqxOq3N+MMH4ujD7+ifq6lXpdKwBallQxHrfd/GFtCJ50BRlw/CGboN9pc
+        McgLZcB/OlZcMCQsulJ8euQOvryCEFjsKTzMp3VAhwXyIV2SrxsERi8YF8lKPZ3whCYUpdG9ydSSy
+        8mm8SW6N3uO4HWb9t4VOVM4mMwpHKHwfG2gwyqBetkNwHqtzniEsgU9+gFIcvhEFRolCmsw5lTQoG
+        QoEIkerQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jo9aM-0002ji-Rj; Wed, 24 Jun 2020 17:53:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6C7B1307966;
+        Wed, 24 Jun 2020 19:53:20 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5D2E321AD36DB; Wed, 24 Jun 2020 19:53:20 +0200 (CEST)
+Date:   Wed, 24 Jun 2020 19:53:20 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     mingo@kernel.org, tglx@linutronix.de, x86@kernel.org,
+        linux-kernel@vger.kernel.org, a.darwish@linutronix.de,
+        rostedt@goodmis.org, bigeasy@linutronix.de, davem@davemloft.net,
+        sparclinux@vger.kernel.org, mpe@ellerman.id.au,
+        linuxppc-dev@lists.ozlabs.org, heiko.carstens@de.ibm.com,
+        linux-s390@vger.kernel.org, linux@armlinux.org.uk
+Subject: Re: [PATCH v4 6/8] arm: Break cyclic percpu include
+Message-ID: <20200624175320.GN4781@hirez.programming.kicks-ass.net>
+References: <20200623083645.277342609@infradead.org>
+ <20200623083721.454517573@infradead.org>
+ <20200623090257.GA3743@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJWu+oqHUq6fvkfRgAx4qx8x1dm-J-h6moeVskCU3gkRybCPqQ@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20200623090257.GA3743@willie-the-truck>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/24/20 13:35, Joel Fernandes wrote:
-
-[...]
-
-> > Doing the in-kernel opt-out via API should be fine, I think. But this will
-> > need to be discussed in the wider circle. It will already clash with this for
-> > example
-> >
-> > https://lore.kernel.org/lkml/20200619172011.5810-1-qais.yousef@arm.com/
+On Tue, Jun 23, 2020 at 10:02:57AM +0100, Will Deacon wrote:
+> On Tue, Jun 23, 2020 at 10:36:51AM +0200, Peter Zijlstra wrote:
+> > In order to use <asm/percpu.h> in irqflags.h, we need to make sure
+> > asm/percpu.h does not itself depend on irqflags.h.
+> > 
+> > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > ---
+> >  arch/arm/include/asm/percpu.h |    2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > --- a/arch/arm/include/asm/percpu.h
+> > +++ b/arch/arm/include/asm/percpu.h
+> > @@ -10,6 +10,8 @@
+> >   * in the TPIDRPRW. TPIDRPRW only exists on V6K and V7
+> >   */
+> >  #if defined(CONFIG_SMP) && !defined(CONFIG_CPU_V6)
+> > +register unsigned long current_stack_pointer asm ("sp");
 > 
-> Have not yet looked closer at that patch, but are you saying this
-> patch clashes with that work? Sorry I am operating on 2 hours of sleep
-> here.
+> If you define this unconditionally, then we can probably get rid of the
+> copy in asm/thread_info.h, rather than duplicate the same #define.
 
-The series is an optimization to remove the uclamp overhead from the scheduler
-fastpath until the userspace uses it. It introduces a static key that is
-disabled by default and will cause uclamp logic not to execute in the fast
-path. Once the userspace starts using util clamp, which we detect by either
+The below delta seems to build arm-allnoconfig, arm-defconfig and
+arm-allmodconfig.
 
-	1. Changing uclamp value of a task with sched_setattr()
-	2. Modifying the default sysctl_sched_util_clamp_{min, max}
-	3. Modifying the default cpu.uclamp.{min, max} value in cgroup
+Although please don't ask me how asm/thread_info.h includes asm/percpu.h
 
-If we start having in-kernel users changing uclamp value this means drivers
-will cause the system to opt-in into uclamp automatically even if the
-userspace doesn't actually use it.
+Does that work for you?
 
-I think we can solve this by providing a special API to opt-out safely. Which
-is the right thing to do anyway even if we didn't have this clash.
-
-Hope this makes sense.
-
-Cheers
-
---
-Qais Yousef
+diff --git a/arch/arm/include/asm/percpu.h b/arch/arm/include/asm/percpu.h
+index e86e47486b6b1..e2fcb3cfd3de5 100644
+--- a/arch/arm/include/asm/percpu.h
++++ b/arch/arm/include/asm/percpu.h
+@@ -5,13 +5,13 @@
+ #ifndef _ASM_ARM_PERCPU_H_
+ #define _ASM_ARM_PERCPU_H_
+ 
++register unsigned long current_stack_pointer asm ("sp");
++
+ /*
+  * Same as asm-generic/percpu.h, except that we store the per cpu offset
+  * in the TPIDRPRW. TPIDRPRW only exists on V6K and V7
+  */
+ #if defined(CONFIG_SMP) && !defined(CONFIG_CPU_V6)
+-register unsigned long current_stack_pointer asm ("sp");
+-
+ static inline void set_my_cpu_offset(unsigned long off)
+ {
+ 	/* Set TPIDRPRW */
+diff --git a/arch/arm/include/asm/thread_info.h b/arch/arm/include/asm/thread_info.h
+index 3609a6980c342..536b6b979f634 100644
+--- a/arch/arm/include/asm/thread_info.h
++++ b/arch/arm/include/asm/thread_info.h
+@@ -75,11 +75,6 @@ struct thread_info {
+ 	.addr_limit	= KERNEL_DS,					\
+ }
+ 
+-/*
+- * how to get the current stack pointer in C
+- */
+-register unsigned long current_stack_pointer asm ("sp");
+-
+ /*
+  * how to get the thread information struct from C
+  */
