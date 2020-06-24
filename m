@@ -2,150 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ABD720719E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 12:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F02D20717C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 12:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390553AbgFXK5P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 06:57:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
+        id S2390438AbgFXKtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 06:49:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728714AbgFXK5N (ORCPT
+        with ESMTP id S2388652AbgFXKti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 06:57:13 -0400
-Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B8BC061795
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 03:57:12 -0700 (PDT)
-Received: by mail-vs1-xe44.google.com with SMTP id v1so1115359vsb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 03:57:12 -0700 (PDT)
+        Wed, 24 Jun 2020 06:49:38 -0400
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 386D4C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 03:49:37 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id h15so1785877wrq.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 03:49:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Vn4droilz5xGM4KfZXgTLDdDZ7pkVwg0FkXdJSTh6us=;
-        b=jsrHEYsjYaln2VseebXDq9KSHpUlVCIp31IbwlZNiLEWvQQUW3jOQYJyYJ7ilWsi8t
-         N4yIdR3YaRGUPVNKe7i4mRT46gYHqXTnBpAYFx6g326/StBM1zMIZgqE/Il1qOv3STOn
-         fxiahpFUpRclnlN6ofiAe89/gsyxluoR8eawmKIV9o+dvNVy1/F0Jl2dJ7hK2dxOREOc
-         YXbt1vQ34xDe+W0KAHfmGph3WghyiCvx0EDecfobr2KxmbamtlyrwfbCgjpWvdza+gsD
-         BGzm8TnsM3OhMG8PgIzFCF995Q9nxS7OXOXKBdJQhWQ7HGO4f0RZSlTPw1OZeUPe4Fex
-         JV0A==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=rm0PzYfDEfLIeFLqk84KmWVx+T9Uvb0Z9B/KLyoR+xk=;
+        b=fCvT6A2SQZcvbsuT8IlpxFsEyCsT7qcpfdGp/lxH0Au6T/L8g5NKG9GUmsPRDJTzEO
+         EKXkRIuGoPWVZxG3ZbEnigA5eURvQK4kD+OxkNxNLUxkI99SbQRsLKtgEiGfohu3VUrv
+         HcyZsaeJemc0E7aSFybXT6nUaVhyACN2nzYe71v34n/IebKLgPO/yf8/By5NlGKI6x9D
+         WcH4dfB0xNTLIH+X1OX/MbOVUgQxDLHJ+faau0cR62PlE+fE4+aAFrwt/RxfuO+YJ2hT
+         uJ8oHlKh9CcreOCxa6TnYqsg9U75PWyufqurZEz21DT8YuNmwR9XpxPny0YmGoyoHQya
+         aUdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Vn4droilz5xGM4KfZXgTLDdDZ7pkVwg0FkXdJSTh6us=;
-        b=rlr8JTN2hKeH+3vEB7708dZnr69naRC+h7Y/3KEi1f/rvuff8l/01mPXUDSs7dqANH
-         jx19HLC0l2qNBOmumwirDurTdYmsMvgGbHdy1GbWfIlNiplPzz6jLFSTClqBcywXAalz
-         usRJINtyxrOZ0ihHHThErQMbC2GVD2UzCkVI0TA3246eRNSfNQT7uIVF5QuRjsrVcY4t
-         ofhk1hiT56R0W3X8ibpjCbYtAfyXThs3yvEpe0KdGo2fiaw8B1qLk2YSbR8fznBeDSr4
-         UVycKs9ISfWSUg/GJDMea7j6d9oLXdGVEb9AvRzqxFMRHzcI5eNt397Zrv7BFz7Z7ufB
-         lpUg==
-X-Gm-Message-State: AOAM530kw1pjEQmWsUkrBK5HB++rv9beZUWjhqurFz9Q2KzFgCgmudWM
-        yeAL9387gHMC7gUfxjVq/zMF+rMML2qbeSrqU6/81VjZiNE=
-X-Google-Smtp-Source: ABdhPJwsxJpI/X+t50qo0pfoptqsNIIaJYL0e6gqFMktW+4P7dgIwXfmwMKeXKnC5Tvh/SK00ZCwC18Bi+FEfhZtYJ4=
-X-Received: by 2002:a67:e10d:: with SMTP id d13mr23383320vsl.27.1592996231712;
- Wed, 24 Jun 2020 03:57:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=rm0PzYfDEfLIeFLqk84KmWVx+T9Uvb0Z9B/KLyoR+xk=;
+        b=hSEGvHgHBwRS8/ChaDZG1Atwra2zy6vQGuM2FHqH0Q8Gqc1N38cSTt6XFAKEnuefmA
+         FA2U09FxoBaNDF9cJpS9OeZi9clApVAxQn2Zv1HE4tLNQD4b4IJkR0k57TQWI3/hWDD1
+         VW6XxlctagoCrWU8kn40Q0h/m4hYv4G5ABprpijk42GGh5PgazTIxqpWhbpCFKVyE+g9
+         2mhnHRRel55ttRkosxVh1XUGlXCDzJa1nPrkKHzDXYjoLbm8yUc31eGKZQ15HUiTdtxt
+         RoCMT4ovr2WN2YcxD1zVki8z5CZ86LxIOhHDj03Y5WHFlk3L1Cxzal1Kg/YuBltiNtaR
+         kZxg==
+X-Gm-Message-State: AOAM5328yaYJokRAlBS2F9ATer937hYVviI+1S6VYdp7XsnjGTSi09Tj
+        VGpAOCo4eImjxP8j/dDiTjENjVxq
+X-Google-Smtp-Source: ABdhPJy9/sOk8ex2jB6ikHmIqrwwBPJDvnSj8Utt90j4s5qZ/jYvlBiEyOVSeUGYQKgDJhpGuo2vlA==
+X-Received: by 2002:adf:9062:: with SMTP id h89mr3190210wrh.285.1592995775777;
+        Wed, 24 Jun 2020 03:49:35 -0700 (PDT)
+Received: from ogabbay-VM ([213.57.90.10])
+        by smtp.gmail.com with ESMTPSA id w17sm27932095wra.42.2020.06.24.03.49.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 24 Jun 2020 03:49:34 -0700 (PDT)
+Date:   Wed, 24 Jun 2020 14:55:39 +0300
+From:   Oded Gabbay <oded.gabbay@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: [git pull] habanalabs fixes pull request for kernel 5.8-rc2
+Message-ID: <20200624115539.GA8680@ogabbay-VM>
 MIME-Version: 1.0
-References: <cbd70c2f0f5ddae0d8e418fcb1e03101e408f6c2.1585753313.git.amit.kucheria@linaro.org>
- <20200414164357.GA11178@bogus>
-In-Reply-To: <20200414164357.GA11178@bogus>
-From:   Amit Kucheria <amit.kucheria@linaro.org>
-Date:   Wed, 24 Jun 2020 16:27:00 +0530
-Message-ID: <CAHLCerM7hwKS=jNtMLnoCXr6z9ckOo1879e-MR-BnOC0JO=adA@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: thermal: Get rid of thermal.txt and replace references
-To:     Rob Herring <robh@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Yangtao Li <tiny.windzz@gmail.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>, Talel Shenhar <talel@amazon.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        "maintainer:BROADCOM STB AVS TMON DRIVER" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Mans Rullgard <mans@mansr.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        lakml <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-tegra@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 14, 2020 at 10:14 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed,  1 Apr 2020 20:35:50 +0530, Amit Kucheria wrote:
-> > Now that we have yaml bindings for the thermal subsystem, get rid of the
-> > old bindings (thermal.txt).
-> >
-> > Replace all references to thermal.txt in the Documentation with a link
-> > to the appropriate YAML bindings using the following search and replace
-> > pattern:
-> >  - If the reference is specific to the thermal-sensor-cells property,
-> >  replace with a pointer to thermal-sensor.yaml
-> >  - If the reference is to the cooling-cells property, replace with a
-> >  pointer to thermal-cooling-devices.yaml
-> >  - If the reference is generic thermal bindings, replace with a
-> >  reference to thermal*.yaml.
-> >
-> > Signed-off-by: Amit Kucheria <amit.kucheria@linaro.org>
-> > ---
-> >  .../devicetree/bindings/arm/arm,scmi.txt      |   2 +-
-> >  .../devicetree/bindings/arm/arm,scpi.txt      |   2 +-
-> >  .../arm/marvell/ap80x-system-controller.txt   |   2 +-
-> >  .../arm/marvell/cp110-system-controller.txt   |   2 +-
-> >  .../bindings/cpufreq/cpufreq-dt.txt           |   3 +-
-> >  .../bindings/cpufreq/cpufreq-mediatek.txt     |   4 +-
-> >  .../devicetree/bindings/hwmon/gpio-fan.txt    |   3 +-
-> >  .../devicetree/bindings/hwmon/lm90.txt        |   4 +-
-> >  .../thermal/allwinner,sun8i-a83t-ths.yaml     |   2 +-
-> >  .../bindings/thermal/amazon,al-thermal.txt    |   2 +-
-> >  .../bindings/thermal/brcm,avs-ro-thermal.yaml |   2 +-
-> >  .../bindings/thermal/brcm,bcm2835-thermal.txt |   2 +-
-> >  .../bindings/thermal/hisilicon-thermal.txt    |   2 +-
-> >  .../bindings/thermal/max77620_thermal.txt     |   6 +-
-> >  .../bindings/thermal/mediatek-thermal.txt     |   2 +-
-> >  .../thermal/nvidia,tegra124-soctherm.txt      |  10 +-
-> >  .../thermal/nvidia,tegra186-bpmp-thermal.txt  |   2 +-
-> >  .../bindings/thermal/qcom-spmi-temp-alarm.txt |   2 +-
-> >  .../bindings/thermal/rockchip-thermal.txt     |   2 +-
-> >  .../bindings/thermal/tango-thermal.txt        |   2 +-
-> >  .../bindings/thermal/thermal-generic-adc.txt  |   2 +-
-> >  .../devicetree/bindings/thermal/thermal.txt   | 586 ------------------
-> >  .../bindings/thermal/uniphier-thermal.txt     |   2 +-
-> >  23 files changed, 33 insertions(+), 615 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/thermal/thermal.txt
-> >
->
-> Reviewed-by: Rob Herring <robh@kernel.org>
+Hello Greg,
 
-Daniel, Rob,
+This pull request contains important bug fixes for the GAUDI code that was
+just merged. Details are in the tag message below.
 
-This seems to have been missed in the 5.8 merge window. I suspect this
-should go in through the thermal tree.
+Thanks,
+Oded
 
-Regards,
-Amit
+The following changes since commit 8c289ea064165237891a7b4be77b74d5cba8fa99:
+
+  mei: me: add tiger lake point device ids for H platforms. (2020-06-23 07:55:47 +0200)
+
+are available in the Git repository at:
+
+  git://people.freedesktop.org/~gabbayo/linux tags/misc-habanalabs-fixes-2020-06-24
+
+for you to fetch changes up to ce04326edd59d7902d7ef3a9d853864096e0cd1a:
+
+  habanalabs: increase h/w timer when checking idle (2020-06-24 12:35:23 +0300)
+
+----------------------------------------------------------------
+This tag contains the following fixes for kernel 5.8-rc2:
+
+- close security hole in GAUDI command buffer parsing by blocking an
+  instruction that might allow user to run command buffer that wasn't
+  parsed on a secured engine.
+
+- Fix bug in GAUDI MMU cache invalidation code.
+
+- Rename a function to resolve conflict with a static inline function in
+  arch/m68k/include/asm/mcfmmu.h
+
+- Increase watchdog timeout of GAUDI QMAN arbitration H/W to prevent false
+  reports on timeouts
+
+- Fix bug of dereferencing NULL pointer when an error occurs during command
+  submission
+
+- Increase H/W timer for checking if PDMA engine is IDLE in GAUDI.
+
+----------------------------------------------------------------
+Oded Gabbay (3):
+      habanalabs: block scalar load_and_exe on external queue
+      habanalabs: rename mmu_write() to mmu_asid_va_write()
+      habanalabs: increase GAUDI QMAN ARB WDT timeout
+
+Ofir Bitton (1):
+      habanalabs: Correct handling when failing to enqueue CB
+
+Omer Shpigelman (2):
+      habanalabs: use PI in MMU cache invalidation
+      habanalabs: increase h/w timer when checking idle
+
+ drivers/misc/habanalabs/command_submission.c       | 13 ++++++++
+ drivers/misc/habanalabs/debugfs.c                  |  4 +--
+ drivers/misc/habanalabs/gaudi/gaudi.c              | 37 ++++++++++++++++++++--
+ drivers/misc/habanalabs/gaudi/gaudiP.h             |  3 ++
+ .../misc/habanalabs/include/gaudi/gaudi_packets.h  |  3 ++
+ 5 files changed, 56 insertions(+), 4 deletions(-)
