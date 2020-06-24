@@ -2,141 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 983F6207468
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 15:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F0A20746C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 15:26:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403881AbgFXN0G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 09:26:06 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:57976 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2389946AbgFXNZz (ORCPT
+        id S2390774AbgFXN0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 09:26:37 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:27394 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2390427AbgFXN0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 09:25:55 -0400
+        Wed, 24 Jun 2020 09:26:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593005153;
+        s=mimecast20190719; t=1593005194;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=hHBmr1gsipGNSeXyE8IuMQZe3fmcyM9AV9J06Evv2m4=;
-        b=jBt5RuJAB3Hd0zgZ6KBot2D2cy39EkrO8ZBQLmJX5OdQsAVE+qYQ6GY6RXapyMP+Ze+CXv
-        PMmbA2/WVZCrP5RJcFvcy6y95IDegNYAeQ1vRuPj+ZbPYoeAdIVL6sewPRHdSvKCBE2ctX
-        N32rjBJiu8wUHEQxnPSq06mW4pY9jKI=
+        bh=wIjlutJVnQ4JyLVWV0SJbJ1KwaR2ltVhkWmEFPhP4jw=;
+        b=fy389RdIZsXarqCUb0wtdNG+u/OYt45OzOo3r7c2LtHgZ/bMk+VIUkAuIevVMI7Os9dpvj
+        tMn8AuGNkTvZ/xDdzOujheP09RbM0NIVWZ8S7ltKKaIanX+NhH992tkl7YZ9x2BipcyAIR
+        35prSJpe5d41HjaP4vVbNiaghufRBc4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-379-j1bCL0XkMLeXnwnmIp6YPg-1; Wed, 24 Jun 2020 09:25:49 -0400
-X-MC-Unique: j1bCL0XkMLeXnwnmIp6YPg-1
+ us-mta-71-5o7VNEWsOf6D9biLQcYOvg-1; Wed, 24 Jun 2020 09:26:30 -0400
+X-MC-Unique: 5o7VNEWsOf6D9biLQcYOvg-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 757D7804015;
-        Wed, 24 Jun 2020 13:25:48 +0000 (UTC)
-Received: from krava (unknown [10.40.193.204])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 733D86106A;
-        Wed, 24 Jun 2020 13:25:46 +0000 (UTC)
-Date:   Wed, 24 Jun 2020 15:25:45 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Remi Bernon <rbernon@codeweavers.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jacek Caban <jacek@codeweavers.com>
-Subject: Re: [PATCH 2/3] perf symbols: Try reading the symbol table with
- libbfd
-Message-ID: <20200624132545.GD2719003@krava>
-References: <20200624103041.825746-1-rbernon@codeweavers.com>
- <20200624103041.825746-2-rbernon@codeweavers.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 229B6EC1A3;
+        Wed, 24 Jun 2020 13:26:29 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.28])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3CF5060C80;
+        Wed, 24 Jun 2020 13:26:15 +0000 (UTC)
+Date:   Wed, 24 Jun 2020 09:26:12 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
+        sgrubb@redhat.com, omosnace@redhat.com, fw@strlen.de,
+        twoerner@redhat.com, eparis@parisplace.org, tgraf@infradead.org
+Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change
+ events
+Message-ID: <20200624132612.fj36hwgom7qryvn7@madcap2.tricolour.ca>
+References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
+ <20200624100346.GA11986@salvia>
+ <20200624123423.r2gypsdii6xgiywy@madcap2.tricolour.ca>
+ <20200624130304.GA549@salvia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200624103041.825746-2-rbernon@codeweavers.com>
+In-Reply-To: <20200624130304.GA549@salvia>
+User-Agent: NeoMutt/20180716
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 12:30:40PM +0200, Remi Bernon wrote:
-
-SNIP
-
-> +
-> +		symbols__insert(&dso->symbols, symbol);
-> +	}
-> +#ifdef bfd_get_section
-> +#undef bfd_asymbol_section
-> +#endif
-> +
-> +	symbols__fixup_end(&dso->symbols);
-> +	symbols__fixup_duplicate(&dso->symbols);
-> +	dso->adjust_symbols = 1;
-> +
-> +	err = 0;
-> +out_free:
-> +	free(symbols);
-> +out_close:
-> +	bfd_close(abfd);
-> +	return err;
-> +}
-> +#endif
-> +
->  static bool dso__is_compatible_symtab_type(struct dso *dso, bool kmod,
->  					   enum dso_binary_type type)
->  {
-> @@ -1695,6 +1816,7 @@ int dso__load(struct dso *dso, struct map *map)
->  		bool next_slot = false;
->  		bool is_reg;
->  		bool nsexit;
-> +		int bfdrc = -1;
->  		int sirc = -1;
->  
->  		enum dso_binary_type symtab_type = binary_type_symtab[i];
-> @@ -1713,12 +1835,19 @@ int dso__load(struct dso *dso, struct map *map)
->  			nsinfo__mountns_exit(&nsc);
->  
->  		is_reg = is_regular_file(name);
-> +#ifdef HAVE_LIBBFD_SUPPORT
->  		if (is_reg)
-> +			bfdrc = dso__load_bfd_symbols(dso, name);
-> +#endif
-
-so the comment says that we try bfd when the libelf fails,
-but the code seems to do the oposite.. starts with bfd
-and skip libelf if it's ok
-
-jirka
-
-> +		if (is_reg && bfdrc < 0)
->  			sirc = symsrc__init(ss, dso, name, symtab_type);
->  
->  		if (nsexit)
->  			nsinfo__mountns_enter(dso->nsinfo, &nsc);
->  
-> +		if (bfdrc == 0)
-> +			break;
-> +
->  		if (!is_reg || sirc < 0)
->  			continue;
->  
-> diff --git a/tools/perf/util/symbol.h b/tools/perf/util/symbol.h
-> index ff4f4c47e148..11fe71f46d14 100644
-> --- a/tools/perf/util/symbol.h
-> +++ b/tools/perf/util/symbol.h
-> @@ -175,6 +175,10 @@ int symbol__config_symfs(const struct option *opt __maybe_unused,
->  
->  struct symsrc;
->  
-> +#ifdef HAVE_LIBBFD_SUPPORT
-> +int dso__load_bfd_symbols(struct dso *dso, const char *debugfile);
-> +#endif
-> +
->  int dso__load_sym(struct dso *dso, struct map *map, struct symsrc *syms_ss,
->  		  struct symsrc *runtime_ss, int kmodule);
->  int dso__synthesize_plt_symbols(struct dso *dso, struct symsrc *ss);
-> -- 
-> 2.27.0
+On 2020-06-24 15:03, Pablo Neira Ayuso wrote:
+> On Wed, Jun 24, 2020 at 08:34:23AM -0400, Richard Guy Briggs wrote:
+> > On 2020-06-24 12:03, Pablo Neira Ayuso wrote:
+> > > On Thu, Jun 04, 2020 at 09:20:49AM -0400, Richard Guy Briggs wrote:
+> [...]
+> > > > diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+> > > > index 3558e76e2733..b9e7440cc87d 100644
+> > > > --- a/net/netfilter/nf_tables_api.c
+> > > > +++ b/net/netfilter/nf_tables_api.c
+> > > > @@ -12,6 +12,7 @@
+> > > >  #include <linux/netlink.h>
+> > > >  #include <linux/vmalloc.h>
+> > > >  #include <linux/rhashtable.h>
+> > > > +#include <linux/audit.h>
+> > > >  #include <linux/netfilter.h>
+> > > >  #include <linux/netfilter/nfnetlink.h>
+> > > >  #include <linux/netfilter/nf_tables.h>
+> > > > @@ -693,6 +694,16 @@ static void nf_tables_table_notify(const struct nft_ctx *ctx, int event)
+> > > >  {
+> > > >  	struct sk_buff *skb;
+> > > >  	int err;
+> > > > +	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;?:0",
+> > > > +			      ctx->table->name, ctx->table->handle);
+> > > > +
+> > > > +	audit_log_nfcfg(buf,
+> > > > +			ctx->family,
+> > > > +			ctx->table->use,
+> > > > +			event == NFT_MSG_NEWTABLE ?
+> > > > +				AUDIT_NFT_OP_TABLE_REGISTER :
+> > > > +				AUDIT_NFT_OP_TABLE_UNREGISTER);
+> > > > +	kfree(buf);
+> > > 
+> > > As a follow up: Would you wrap this code into a function?
+> > > 
+> > >         nft_table_audit()
+> > > 
+> > > Same thing for other pieces of code below.
+> > 
+> > If I'm guessing right, you are asking for a supplementary follow-up
+> > cleanup patch to this one (or are you nacking this patch)?
 > 
+> No nack, it's just that I'd prefer to see this wrapped in a function.
+> I think your patch is already in the audit tree.
+> 
+> > Also, I gather you would like to see the kasprintf and kfree hidden in
+> > nft_table_audit(), handing this function at least 8 parameters?  This
+> > sounds pretty messy given the format of the table field.
+> 
+> I think you can pass ctx and the specific object, e.g. table, in most
+> cases? There is also event and the gfp_flags. That counts 4 here, but
+> maybe I'm overlooking something.
+
+Since every event is sufficiently different, it isn't as simple as
+passing ctx, unfortunately, and the table field I've overloaded with 4
+bits of information for tracking the chain as well, some of which are ?
+that would need an in-band representation (such as -1? that might
+already be valid).  So 4 right there, family, nentries, event, gfp for 8.
+
+I did try in the first patch to make it just one call keyed on event,
+but there was enough variety of information available for each message
+type that it became necessary to break it out.
+
+> Thanks.
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
