@@ -2,72 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 802A1207377
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:35:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D671920737B
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:36:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403940AbgFXMfL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Jun 2020 08:35:11 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:57843 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403894AbgFXMes (ORCPT
+        id S2403956AbgFXMf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 08:35:59 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:53576 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2390574AbgFXMf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 08:34:48 -0400
-Received: from sogo3.sd4.0x35.net (sogo3.sd4.0x35.net [10.200.201.53])
-        (Authenticated sender: kerneldev@karsmulder.nl)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPA id 0FA45C0009;
-        Wed, 24 Jun 2020 12:34:45 +0000 (UTC)
-From:   "Kars Mulder" <kerneldev@karsmulder.nl>
-In-Reply-To: <20200623195520.GA24965@duo.ucw.cz>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-Date:   Wed, 24 Jun 2020 14:34:45 +0200
-Cc:     linux-kernel@vger.kernel.org,
-        "Kai-Heng Feng" <kai.heng.feng@canonical.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-To:     "Pavel Machek" <pavel@ucw.cz>
+        Wed, 24 Jun 2020 08:35:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593002156;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KXOd3FWsgxfpuN6FCKX2ClEKNWirNYpN+5hpadr6Dd4=;
+        b=CdGnKZRSdyTYjv7f0Cd78D9P0h0GtR23W+E2QxOmYEsQXDmVLerUhweEXqVP3ITF3D+zcp
+        w6yBzUEZLT+hShXpLZWTbTnlY4H3U4l3W99RF28nHlcSjXY/CYRV5+g70gvneI2J0tJHbh
+        zHi+LV0Fiv4DU+FkV/Gw6QQLDt18h20=
+Received: from mail-oi1-f197.google.com (mail-oi1-f197.google.com
+ [209.85.167.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-410-BsO6dWbZNxS9SGZIG3nQFQ-1; Wed, 24 Jun 2020 08:35:52 -0400
+X-MC-Unique: BsO6dWbZNxS9SGZIG3nQFQ-1
+Received: by mail-oi1-f197.google.com with SMTP id r186so1427737oih.1
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 05:35:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KXOd3FWsgxfpuN6FCKX2ClEKNWirNYpN+5hpadr6Dd4=;
+        b=YgioO3SvRvtUAdIsfbsuGr7757WEfSGbCrv3WlRv7bFt70ILzFN3CERYKEiqUFZg4+
+         PHv0Xf3MJzVo+i3KcIpX4E+htFlMdioYKH6Rhf6YD94VhrShhfh+NTJy/Cj80w8rFQgy
+         i2BY3JokFwtzr0A6RmRRK/oNZB7lvGaqHnfc44BNnvnb6FREbzAen/J2ideaQAR5vrCd
+         cazRD08Gi0p6d4Q8v9XaOlH+Xk+tFN7/XKPF6t0e/4t5q70kxxLTT0au7EYafzkDagsA
+         2turtFygt6vLCoZHaNuuXem7vpDU6C8LZX20euawLCTV0HuGyWDWzH3m6gcYvPrBtscR
+         a0/Q==
+X-Gm-Message-State: AOAM533xUjGlZVHuJ+D77ha+a0Ep7rqZ2f1uxqGPstq3ajJsyzPPep6V
+        RVzf79eSaWzbbCoya/uI+sghDq/0gnQefJTdT0FBqmLXmnGdpEN/vAr4q98p6fnAUM0i/zMgEoc
+        ravd0fl9AlY82uLyMi2RhgAjjSUSk/b+YCEA7jkL0
+X-Received: by 2002:a05:6830:10c8:: with SMTP id z8mr20797118oto.95.1593002151758;
+        Wed, 24 Jun 2020 05:35:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxX1TWYnFwEpwDI3Wr6NaU8l9Igwlb4//wePGQRtnuC7RPWRAmd3PhYKW23yN302Duu4KI+Bsz7H4/6MJejzh8=
+X-Received: by 2002:a05:6830:10c8:: with SMTP id z8mr20797107oto.95.1593002151523;
+ Wed, 24 Jun 2020 05:35:51 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <db0-5ef34880-ab-10c623c0@12577330>
-Subject: =?utf-8?q?Re=3A?= Writing to a const =?utf-8?q?pointer=3A?= is this 
- supposed to =?utf-8?q?happen=3F?=
-User-Agent: SOGoMail 4.3.0
-Content-Transfer-Encoding: 8BIT
+References: <20200619155036.GZ8681@bombadil.infradead.org> <20200622003215.GC2040@dread.disaster.area>
+ <CAHc6FU4b_z+vhjVPmaU46VhqoD+Y7jLN3=BRDZPrS2v=_pVpfw@mail.gmail.com> <20200622181338.GA21350@casper.infradead.org>
+In-Reply-To: <20200622181338.GA21350@casper.infradead.org>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Wed, 24 Jun 2020 14:35:40 +0200
+Message-ID: <CAHc6FU7R2vMZ9+aXLsQ+ubECbfrBTR+yh03b_T++PRxd479vsQ@mail.gmail.com>
+Subject: Re: [RFC] Bypass filesystems for reading cached pages
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, June 23, 2020 21:55 CEST, Pavel Machek wrote: 
-> Odd, indeed... but not likely to cause immediate problems.
-> 
-> You may want to cc relevant maintainers, or even run git
-> blame and contact author.
-
-Thank you for your response.
-
-The code was written by Kai-Heng Feng, whom I shall CC. The code is
-part of the usbcore module, which does not have a maintainer listed in
-MAINTAINERS, but the patch and most other recent patches to usbcore
-were signed off exclusively by Greg Kroah-Hartman, so I guess that
-makes him the de facto maintainer? I'll CC him as well.
-
-I'm not sure whether it is easy to read the previous messages of this
-thread if you got CC'ed just now, so I'll repeat/paraphrase the
-important part of my initial mail for your convenience:
-
-> In the file drivers/usb/core/quirks.c, I noticed that the function
-> quirks_param_set writes to a const pointer, and would like to check
-> whether this is ok with the kernel programming practices. Here are
-> the relevant lines from the function (several lines omitted):
-> 
-> 	static int quirks_param_set(const char *val, const struct kernel_param *kp) {
-> 		char *p, *field;
-> 		for (i = 0, p = (char *)val; p && *p;) {
-> 			field = strsep(&p, ":");
+On Mon, Jun 22, 2020 at 8:13 PM Matthew Wilcox <willy@infradead.org> wrote:
+> On Mon, Jun 22, 2020 at 04:35:05PM +0200, Andreas Gruenbacher wrote:
+> > I'm fine with not moving that functionality into the VFS. The problem
+> > I have in gfs2 is that taking glocks is really expensive. Part of that
+> > overhead is accidental, but we definitely won't be able to fix it in
+> > the short term. So something like the IOCB_CACHED flag that prevents
+> > generic_file_read_iter from issuing readahead I/O would save the day
+> > for us. Does that idea stand a chance?
 >
-> In here a const pointer *val is cast into a non-const pointer and
-> then written to by the function strsep, which replaces the first
-> occurrence of the ':' token with a null-byte. Is this allowed?
+> For the short-term fix, is switching to a trylock in gfs2_readahead()
+> acceptable?
 
-CC: Kai-Heng Feng <kai.heng.feng@canonical.com>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Well, it's the only thing we can do for now, right?
+
+> diff --git a/fs/gfs2/aops.c b/fs/gfs2/aops.c
+> index 72c9560f4467..6ccd478c81ff 100644
+> --- a/fs/gfs2/aops.c
+> +++ b/fs/gfs2/aops.c
+> @@ -600,7 +600,7 @@ static void gfs2_readahead(struct readahead_control *rac)
+>         struct gfs2_inode *ip = GFS2_I(inode);
+>         struct gfs2_holder gh;
+>
+> -       gfs2_holder_init(ip->i_gl, LM_ST_SHARED, 0, &gh);
+> +       gfs2_holder_init(ip->i_gl, LM_ST_SHARED, LM_FLAG_TRY, &gh);
+>         if (gfs2_glock_nq(&gh))
+>                 goto out_uninit;
+>         if (!gfs2_is_stuffed(ip))
+
+Thanks,
+Andreas
 
