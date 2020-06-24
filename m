@@ -2,135 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3E52206FA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 11:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD88D206FAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 11:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388836AbgFXJE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 05:04:28 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:41800 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728463AbgFXJE1 (ORCPT
+        id S2388115AbgFXJG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 05:06:27 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60550 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728732AbgFXJG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 05:04:27 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05O8ueHj171497;
+        Wed, 24 Jun 2020 05:06:27 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05O965RB123852;
+        Wed, 24 Jun 2020 05:06:17 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ux06hph1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 05:06:16 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05O96Gos128689;
+        Wed, 24 Jun 2020 05:06:16 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ux06hp4f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 05:06:13 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05O8ndH3022644;
+        Wed, 24 Jun 2020 09:04:18 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma02dal.us.ibm.com with ESMTP id 31uursucyq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 09:04:18 +0000
+Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05O94HUB44630278
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
         Wed, 24 Jun 2020 09:04:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=corp-2020-01-29;
- bh=ZYQ2xCkDc27HNFzn89I9CQa/ymQsML6ht09SlJYJgJE=;
- b=t1xUB6mnXyrnfTu6YBtn1eobBVCaBWBiZPLUGGYC4VDjZvr1AP6tr3zuxQROYA0zXbxG
- z8GnBvbVb/wUEWlH9HZdVmuY4GoEG0x1glJ7xRYGzGdhahkkQsR5XZerFW3zU673dIXj
- wDkgcMOpdFTSbehO3PsKC2z7vvGsaO523XziDQAsa2AQl6+95Xjo4JDIWcrlZic5ycED
- z74P5zt0WLgBmgmYWrEb/2PSTKylC8AG0Ak1e+Un+g/1beAJ2RNUFA8wb5RiyAss9XG/
- VWt7dHBXHQpwvx+N8LRM/wCXtWFYuciiDYZl0DYwWVW95RGw51pWwFcGMRJQE5CdvNCo Tg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 31uut5hrnj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 24 Jun 2020 09:04:17 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05O93HHq066120;
-        Wed, 24 Jun 2020 09:04:16 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 31uurqgms8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Jun 2020 09:04:16 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05O94EIe006865;
-        Wed, 24 Jun 2020 09:04:14 GMT
-Received: from dhcp-10-175-205-73.vpn.oracle.com (/10.175.205.73)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 24 Jun 2020 09:04:13 +0000
-Date:   Wed, 24 Jun 2020 10:04:05 +0100 (BST)
-From:   Alan Maguire <alan.maguire@oracle.com>
-X-X-Sender: alan@localhost
-To:     David Gow <davidgow@google.com>
-cc:     Frank Rowand <frowand.list@gmail.com>,
-        "Bird, Tim" <Tim.Bird@sony.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: RFC: KTAP documentation - expected messages
-In-Reply-To: <CABVgOSkwZUAEjxrqO46kqj=uY5HDzr-E_LR9i04yXEKqjp91Og@mail.gmail.com>
-Message-ID: <alpine.LRH.2.21.2006240954590.25863@localhost>
-References: <d38bf9f9-8a39-87a6-8ce7-d37e4a641675@gmail.com> <CABVgOSkwZUAEjxrqO46kqj=uY5HDzr-E_LR9i04yXEKqjp91Og@mail.gmail.com>
-User-Agent: Alpine 2.21 (LRH 202 2017-01-01)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F3F536A058;
+        Wed, 24 Jun 2020 09:04:16 +0000 (GMT)
+Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 403606A047;
+        Wed, 24 Jun 2020 09:04:16 +0000 (GMT)
+Received: from [9.211.67.55] (unknown [9.211.67.55])
+        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 24 Jun 2020 09:04:16 +0000 (GMT)
+Subject: Re: [PATCH v2 0/6] kernfs: proposed locking and concurrency
+ improvement
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Ian Kent <raven@themaw.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <159237905950.89469.6559073274338175600.stgit@mickey.themaw.net>
+ <20200619153833.GA5749@mtj.thefacebook.com>
+ <16d9d5aa-a996-d41d-cbff-9a5937863893@linux.vnet.ibm.com>
+ <20200619222356.GA13061@mtj.duckdns.org>
+ <fa22c563-73b7-5e45-2120-71108ca8d1a0@linux.vnet.ibm.com>
+ <20200622175343.GC13061@mtj.duckdns.org>
+ <82b2379e-36d0-22c2-41eb-71571e992b37@linux.vnet.ibm.com>
+ <20200623231348.GD13061@mtj.duckdns.org>
+From:   Rick Lindsley <ricklind@linux.vnet.ibm.com>
+Message-ID: <a3e9414e-4740-3013-947d-e1839a20227c@linux.vnet.ibm.com>
+Date:   Wed, 24 Jun 2020 02:04:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9661 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
- spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006240067
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9661 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 clxscore=1011
- lowpriorityscore=0 bulkscore=0 adultscore=0 spamscore=0 suspectscore=0
- phishscore=0 impostorscore=0 cotscore=-2147483648 priorityscore=1501
- mlxscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2004280000 definitions=main-2006240066
+In-Reply-To: <20200623231348.GD13061@mtj.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-24_04:2020-06-24,2020-06-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ impostorscore=0 cotscore=-2147483648 mlxlogscore=999 bulkscore=0
+ lowpriorityscore=0 adultscore=0 malwarescore=0 phishscore=0 clxscore=1015
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006240063
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Jun 2020, David Gow wrote:
+Thanks, Tejun, appreciate the feedback.
 
-> On Mon, Jun 22, 2020 at 6:45 AM Frank Rowand <frowand.list@gmail.com> wrote:
-> >
-> > Tim Bird started a thread [1] proposing that he document the selftest result
-> > format used by Linux kernel tests.
-> >
-> > [1] https://lore.kernel.org/r/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com
-> >
-> > The issue of messages generated by the kernel being tested (that are not
-> > messages directly created by the tests, but are instead triggered as a
-> > side effect of the test) came up.  In this thread, I will call these
-> > messages "expected messages".  Instead of sidetracking that thread with
-> > a proposal to handle expected messages, I am starting this new thread.
-> 
-> Thanks for doing this: I think there are quite a few tests which could
-> benefit from something like this.
-> 
-> I think there were actually two separate questions: what do we do with
-> unexpected messages (most of which I expect are useless, but some of
-> which may end up being related to an unexpected test failure), and how
-> to have tests "expect" a particular message to appear. I'll stick to
-> talking about the latter for this thread, but even there there's two
-> possible interpretations of "expected messages" we probably want to
-> explicitly distinguish between: a message which must be present for
-> the test to pass (which I think best fits the "expected message"
-> name), and a message which the test is likely to produce, but which
-> shouldn't alter the result (an "ignored message"). I don't see much
-> use for the latter at present, but if we wanted to do more things with
-> messages and had some otherwise very verbose tests, it could
-> potentially be useful.
-> 
-> The other thing I'd note here is that this proposal seems to be doing
-> all of the actual message filtering in userspace, which makes a lot of
-> sense for kselftest tests, but does mean that the kernel can't know if
-> the test has passed or failed. There's definitely a tradeoff between
-> trying to put too much needless string parsing in the kernel and
-> having to have a userland tool determine the test results. The
-> proposed KCSAN test suite[1] is using tracepoints to do this in the
-> kernel. It's not the cleanest thing, but there's no reason KUnit or
-> similar couldn't implement a nicer API around it.
-> 
-> [1]: https://lkml.org/lkml/2020/6/22/1506
->
+On 6/23/20 4:13 PM, Tejun Heo wrote:
 
-For KTF the way we handled this was to use the APIs for catching
-function entry and return (via kprobes), specifying printk as the
-function to catch, and checking its argument string to verify
-the expected message was seen. That allows you to verify
-that messages appear in kernel testing context, but it's
-not ideal as printk() has not yet filled in the arguments in
-the buffer for display (there may be a better place to trace).
-If it seems like it could be useful I  could have a go at 
-porting the kprobe stuff to KUnit, as it helps expand the vocabulary 
-for what can be tested in kernel context; for example we can 
-also override return values for kernel functions to simulate errors.
+> The problem is fitting that into an interface which wholly doesn't fit that
+> particular requirement. It's not that difficult to imagine different ways to
+> represent however many memory slots, right? 
 
-Alan
+Perhaps we have different views of how this is showing up.  systemd is 
+the primary instigator of the boot issues.
+
+Systemd runs
+
+     /usr/lib/systemd/system/systemd-udev-trigger.service
+
+which does a udev trigger, specifically
+
+     /usr/bin/udevadm trigger --type=devices --action=add
+
+as part of its post-initramfs coldplug.  It then waits for that to 
+finish, under the watch of a timer.
+
+So, the kernel itself is reporting these devices to systemd. It gets 
+that information from talking to the hardware.  That means, then, that 
+the obfuscation must either start in the kernel itself (it lies to 
+systemd), or start in systemd when it handles the devices it got from 
+the kernel.  If the kernel lies, then the actual granularity is not 
+available to any user utilities.
+
+Unless you're suggesting a new interface be created that would allow 
+utilities to determine the "real" memory addresses available for 
+manipulation.  But the changes you describe cannot be limited to the 
+unknown number of auxiliary utilities.
+
+Having one subsystem lie to another seems like the start of a bad idea, 
+anyway.  When the hardware management console, separate from Linux, 
+reports a memory error, or adds or deletes memory in a guest system, 
+it's not going to be manipulating spoofed addresses that are only a 
+Linux construct.
+
+In contrast, the provided patch fixes the observed problem with no 
+ripple effect to other subsystems or utilities.
+
+Greg had suggested
+     Treat the system as a whole please, don't go for a short-term
+     fix that we all know is not solving the real problem here.
+
+Your solution affects multiple subsystems; this one affects one.  Which 
+is the whole system approach in terms of risk?  You mentioned you 
+support 30k scsi disks but only because they are slow so the 
+inefficiencies of kernfs don't show.  That doesn't bother you?
+
+Rick
