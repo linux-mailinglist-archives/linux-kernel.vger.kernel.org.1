@@ -2,131 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03948207702
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:15:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 314C720772A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:17:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404489AbgFXPPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:15:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57708 "EHLO
+        id S2404580AbgFXPQr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:16:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404271AbgFXPPT (ORCPT
+        with ESMTP id S2404564AbgFXPQk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:15:19 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1F20C061795
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:15:18 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id r8so2126946oij.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:15:18 -0700 (PDT)
+        Wed, 24 Jun 2020 11:16:40 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BE6C061573;
+        Wed, 24 Jun 2020 08:16:40 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id 17so2902824wmo.1;
+        Wed, 24 Jun 2020 08:16:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gateworks-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=kyLX8XtKSQSzf1u6tUVRGJzXgpczRRSln3I+Nwk++to=;
-        b=Vj1AKSYSjNfcC1ZEGsOotC3bvnMg/g3G6pdJ1ezAjge4evUCcp6G54UVl+P0pl2XZ9
-         D5PYHPbigj3NQsF43eqvZMOMXqnHeLeqmbwUWm5N4ZXQ+iaC9sLoGXyOwfQBaN/xdGxF
-         EX9STuY8CFF+v0Roz73C7FMcFUfGJuvS+ppHUZc6jzJwhekuT3NkkyzQQsgpiq95a89f
-         sMSbPPC9pem/c0dzqukXGni1r3DXchx1qsDuoXeJ8V6ZXR/Yw/0XxhhlW0ONpsDNdyPq
-         m0oiQrwmvjNBFHhU9los18X9rXQNu4pOPm2EZCzgbGK7VOZZGektkzCEBs/Z3B/iprcG
-         bvNw==
+        bh=34hmditf+vhlxJcmEFkZgWoC7pJeDEW0sX6340LuRHw=;
+        b=QAVF2FGrKfQudyBRkn3UEh/QzSSNVI0DOwlhIyVt7j4OWP0Q1EKpaZB7h08BZ34SL5
+         xOPUwta5fN7soRtWRKATYZPdLsezxlnLx3C0yP1njOkEOzi5vwQ1wVWsSFYl46UQmRhx
+         zTRbOaYgkfnwfMea/9aKyEZMcMEW3De25mZvgPzrdK5mCyi9yvuFwNz7toArk1ExXQGr
+         vqzqH9txAcCm0C96sFblR42GmoxJWnINnyVmRpWtXXZ0fR2wTjyAkgdvpiYyxX6KbeWp
+         9Y5MzCGn0FT1gQPQ1kvcOhDRGpeAcA5WLfAy9ClOcUCzgBrD76MCrjQM1IcW5VIxPfCx
+         GAbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=kyLX8XtKSQSzf1u6tUVRGJzXgpczRRSln3I+Nwk++to=;
-        b=POurC9tfpXxZ4RfOmJ5MeWrmpI8ST3IwCuEhcqLpZEsjNq5b4vZxXg+H8AqK+R1oqC
-         Mxd9VdhhATFswLt+uRq6XPfNKolAg/Vzt1QWnpn3rf9P+68WFOMLpTSB6myCra9JU1Ul
-         P9eRF92syiVmRkE/cSSkhfKLMFXbtXqLuIYAuIBlUcIXOYX7r0LGm/6Uh0fgegoa+DU2
-         tMEv7DYaMwY0fajaj7IhC2snmKEqOfTfNgXgq3x3VQOXm6gUAv+oO73hobgOzjeiz2tq
-         1t6cm5WSEuRHfFiYEDLhK62UbbeVykxbVJPu3e6q4jup+VuA9b9Hy12jDE0AJ0IJunQU
-         948w==
-X-Gm-Message-State: AOAM532knFFvYLIaG5cJEjyl9Zjwn9Q0qyUw68JAA5P4o3wdiSEsfqrv
-        xcg97k1hPQ4v+v/AfwSQ/fvc0VR209nJCj5hlVNDiQ==
-X-Google-Smtp-Source: ABdhPJzCR3yd5XHXF9590lIiwlLynD3w2IpHXEDDTWn+2h5TtW5v8YCR6G6I4/aCJNPxCV49xX4Wa8O69i9VV7cQUtI=
-X-Received: by 2002:aca:554c:: with SMTP id j73mr21109662oib.172.1593011717984;
- Wed, 24 Jun 2020 08:15:17 -0700 (PDT)
+        bh=34hmditf+vhlxJcmEFkZgWoC7pJeDEW0sX6340LuRHw=;
+        b=TLvLBEQKDQ+eq9uzxR4g4k0zNNmff9WKShE3uaNIafUYlvswyqnQDyy748fTR3lk0C
+         iGIJnCdYA2lqn+jAnEqvojbcYCbN68L9OWbrTrrxmJFAYrZ9Xm9TdMq/V/D7kf0g+cWY
+         /0C58wij8T9tUbRgDzp96GNly6Iana6WvNopmYznSKPm/mRB3+aIw1utfc0Mb8zv/IDi
+         JkU/8A7AAoFDu1KJUZacykhJJag6l8amOmnZgDFza4aiiP6kkzSxBTe3L75ehl2vjMpm
+         IXPQoBQKOqXYHOVzB89sTePBDgMdVzZYKn1wD5Ryi7U6gtISFGYBHIFl7gqV0CwTvSsO
+         mjFw==
+X-Gm-Message-State: AOAM533g+OnCgh+z7pl/KXPAasg4heBgqj8f8Vq5MI6vyv2B9RrIq9od
+        3E+YJmRY/H1VTfRZ79Eydda22vzPzaC4USUWMpE=
+X-Google-Smtp-Source: ABdhPJy1qPZlkbkex+2mcQ3H0P1rh2BMF6aNpxBKJx6viXiD5LP/TMlDpplYwy2FDejjx7BYrjXNvarY9HUElDbSf5M=
+X-Received: by 2002:a1c:32c4:: with SMTP id y187mr30880941wmy.79.1593011798868;
+ Wed, 24 Jun 2020 08:16:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200624095007.141f0357@canb.auug.org.au>
-In-Reply-To: <20200624095007.141f0357@canb.auug.org.au>
-From:   Tim Harvey <tharvey@gateworks.com>
-Date:   Wed, 24 Jun 2020 08:15:06 -0700
-Message-ID: <CAJ+vNU25ycoSGros7_SbHfZ4ShP5=oT2RMM74OtCsk6B3k2Bhg@mail.gmail.com>
-Subject: Re: linux-next: build warnings after merge of the imx-mxs tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20200624145418.7794-1-colin.king@canonical.com>
+In-Reply-To: <20200624145418.7794-1-colin.king@canonical.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Wed, 24 Jun 2020 11:16:27 -0400
+Message-ID: <CADnq5_PySz6YWOMM4kosC_B83i+jsPKmf0puMt3sw2C-hExa3Q@mail.gmail.com>
+Subject: Re: [PATCH][next] drm/amdgpu: ensure 0 is returned for success in jpeg_v2_5_wait_for_idle
+To:     Colin King <colin.king@canonical.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>, Leo Liu <leo.liu@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 4:50 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+On Wed, Jun 24, 2020 at 10:54 AM Colin King <colin.king@canonical.com> wrote:
 >
-> Hi all,
+> From: Colin Ian King <colin.king@canonical.com>
 >
-> After merging the imx-mxs tree, today's linux-next build (arm
-> multi_v7_defconfig) produced these warnings:
->
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:350.4-27: Warning (reg_format): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0:reg: property has invalid length (20 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:353.5-28: Warning (reg_format): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,4,0:reg: property has invalid length (20 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:356.6-29: Warning (reg_format): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,4,0/pcie@4,0,0:reg: property has invalid length (20 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/arm/boot/dts/imx6dl-gw53xx.dtb: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-> arch/arm/boot/dts/imx6dl-gw53xx.dtb: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-> arch/arm/boot/dts/imx6dl-gw53xx.dtb: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:349.14-360.5: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0: Relying on default #address-cells value
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:349.14-360.5: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0: Relying on default #size-cells value
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:352.15-359.6: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,4,0: Relying on default #address-cells value
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:352.15-359.6: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,4,0: Relying on default #size-cells value
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:355.22-358.7: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,4,0/pcie@4,0,0: Relying on default #address-cells value
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:355.22-358.7: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,4,0/pcie@4,0,0: Relying on default #size-cells value
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:407.4-27: Warning (reg_format): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0:reg: property has invalid length (20 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:410.5-28: Warning (reg_format): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,8,0:reg: property has invalid length (20 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:413.6-29: Warning (reg_format): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,8,0/pcie@8,0,0:reg: property has invalid length (20 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/arm/boot/dts/imx6dl-gw54xx.dtb: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-> arch/arm/boot/dts/imx6dl-gw54xx.dtb: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-> arch/arm/boot/dts/imx6dl-gw54xx.dtb: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:406.14-417.5: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0: Relying on default #address-cells value
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:406.14-417.5: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0: Relying on default #size-cells value
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:409.15-416.6: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,8,0: Relying on default #address-cells value
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:409.15-416.6: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,8,0: Relying on default #size-cells value
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:412.22-415.7: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,8,0/pcie@8,0,0: Relying on default #address-cells value
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:412.22-415.7: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,8,0/pcie@8,0,0: Relying on default #size-cells value
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:350.4-27: Warning (reg_format): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0:reg: property has invalid length (20 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:353.5-28: Warning (reg_format): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,4,0:reg: property has invalid length (20 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:356.6-29: Warning (reg_format): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,4,0/pcie@4,0,0:reg: property has invalid length (20 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/arm/boot/dts/imx6q-gw53xx.dtb: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-> arch/arm/boot/dts/imx6q-gw53xx.dtb: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-> arch/arm/boot/dts/imx6q-gw53xx.dtb: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:349.14-360.5: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0: Relying on default #address-cells value
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:349.14-360.5: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0: Relying on default #size-cells value
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:352.15-359.6: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,4,0: Relying on default #address-cells value
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:352.15-359.6: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,4,0: Relying on default #size-cells value
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:355.22-358.7: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,4,0/pcie@4,0,0: Relying on default #address-cells value
-> arch/arm/boot/dts/imx6qdl-gw53xx.dtsi:355.22-358.7: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,4,0/pcie@4,0,0: Relying on default #size-cells value
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:407.4-27: Warning (reg_format): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0:reg: property has invalid length (20 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:410.5-28: Warning (reg_format): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,8,0:reg: property has invalid length (20 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:413.6-29: Warning (reg_format): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,8,0/pcie@8,0,0:reg: property has invalid length (20 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/arm/boot/dts/imx6q-gw54xx.dtb: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-> arch/arm/boot/dts/imx6q-gw54xx.dtb: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-> arch/arm/boot/dts/imx6q-gw54xx.dtb: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:406.14-417.5: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0: Relying on default #address-cells value
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:406.14-417.5: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0: Relying on default #size-cells value
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:409.15-416.6: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,8,0: Relying on default #address-cells value
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:409.15-416.6: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,8,0: Relying on default #size-cells value
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:412.22-415.7: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,8,0/pcie@8,0,0: Relying on default #address-cells value
-> arch/arm/boot/dts/imx6qdl-gw54xx.dtsi:412.22-415.7: Warning (avoid_default_addr_size): /soc/pcie@1ffc000/pcie@0,0,0/pcie@1,0,0/pcie@2,8,0/pcie@8,0,0: Relying on default #size-cells value
->
-> Introduced by commits
->
->   26d7c769d460 ("ARM: dts: imx6qdl-gw53xx: allow boot firmware to set eth1 MAC")
->   48d799918adf ("ARM: dts: imx6qdl-gw54xx: allow boot firmware to set eth1 MAC")
->
+> In the cases where adev->jpeg.num_jpeg_inst is zero or the condition
+> adev->jpeg.harvest_config & (1 << i) is always non-zero the variable
+> ret is never set to an error condition and the function returns
+> an uninitialized value in ret.  Since the only exit condition at
+> the end if the function is a success then explicitly return
+> 0 rather than a potentially uninitialized value in ret.
 
-Stephen,
+We should actually never hit this condition in practice because the
+driver won't initialize this module if all of the instances are
+harvested, but better safe than sorry.  Applied.
 
-Thanks for the catch - sorry about that. I will submit a new version
-of those that have the missing #address-cells and #size-cells that
-caused the warnings.
+Thanks,
 
-Tim
+Alex
+
+>
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: 14f43e8f88c5 ("drm/amdgpu: move JPEG2.5 out from VCN2.5")
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c b/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c
+> index f74262a22a16..7a51c615d22d 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/jpeg_v2_5.c
+> @@ -462,7 +462,7 @@ static int jpeg_v2_5_wait_for_idle(void *handle)
+>                         return ret;
+>         }
+>
+> -       return ret;
+> +       return 0;
+>  }
+>
+>  static int jpeg_v2_5_set_clockgating_state(void *handle,
+> --
+> 2.27.0
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
