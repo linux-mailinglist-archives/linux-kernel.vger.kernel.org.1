@@ -2,131 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B88D2078AB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 328012078C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404943AbgFXQOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 12:14:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404928AbgFXQOj (ORCPT
+        id S2405021AbgFXQPs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 12:15:48 -0400
+Received: from lelv0143.ext.ti.com ([198.47.23.248]:50402 "EHLO
+        lelv0143.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404802AbgFXQPq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 12:14:39 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8661AC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 09:14:39 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id u26so4840445wmn.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 09:14:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=JZwW5G5yWDQn7isXOxX6OgeleecRbTC9nCsi8uj1JNQ=;
-        b=vvkd1UY91KCarieRskOqn4JPNlnOQzqs9UCV25dgPU4GhdYxZhq6iQFStm/crcaxZ1
-         SaqYy5hyEwv6QKqfAAPLeJbGf/0B1SnbEeLVk/VMLhX4kIdYeVB2OImuZvbdcUcr1mMX
-         YeZTk3pgZHj7OpVZtQKE8Dr33AZ8kek8YYU+ib4PNri/SvMiyoYMiixaBBTLqb1HAArs
-         tlH7+e+JuVvGychuZMxj1QThYw1Ruf5BZERGQz8bdAA99pfmM/KJrtZFVkWU/t8B2vHv
-         1stmNq0PgDpRWSd6JG2kcwPdMzLuoD4seA09IgNmk5ZvsUppndK1TT1CLrqxX7ZHD6mQ
-         PDEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=JZwW5G5yWDQn7isXOxX6OgeleecRbTC9nCsi8uj1JNQ=;
-        b=oc0fZmQAbYGX3F7n0RqXjaPpH9T7HgX+eGaPnKYSIYy74TfLGOG3JX5v19uGV6Btw+
-         d2bu/d34U/BIVYVbUGehGt2YnR+mQJvCtWvJ3maKLaYlLEgn3bgrB/6na5Y6NromM4sH
-         1eXgsvdaZ7xAxl6bcf22XPtri9A2y1srhxJmLiKqySLq/rc0Pi4o/iqTGGg0HJItyncy
-         wz1aCuYLq54VJr0wsB9SPGL4qrZR8xNt4E9lbLuqjynAwok0ESagb0q2KAZ8bgXPnLaE
-         biNGJautuw+66r2OJCakOVcBAVK3LWfyG8HZAeFcnzFoBtrZx8dEdj762HVZr38bomyV
-         di/A==
-X-Gm-Message-State: AOAM530YfgGSnib+l2g1F2d77F69FGwRe0DmezRIwdPIYKQ6VdWudDzy
-        XQLuCMlu7VrVxns8zpza+Zp8Bg==
-X-Google-Smtp-Source: ABdhPJwLF8n1RB43kspzHdY8WTuv/0NWaBJLIc+6JrYaIAS9KX1GtgIjzTREB/louHC0/laR7dJR6Q==
-X-Received: by 2002:a05:600c:204d:: with SMTP id p13mr30158147wmg.88.1593015278202;
-        Wed, 24 Jun 2020 09:14:38 -0700 (PDT)
-Received: from dell ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id f186sm8428843wmf.29.2020.06.24.09.14.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 09:14:37 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 17:14:35 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Frank Rowand <frowand.list@gmail.com>
-Cc:     andy.shevchenko@gmail.com, michael@walle.cc, robh+dt@kernel.org,
-        broonie@kernel.org, devicetree@vger.kernel.org,
-        linus.walleij@linaro.org, linux@roeck-us.net,
-        andriy.shevchenko@linux.intel.com, robin.murphy@arm.com,
-        gregkh@linuxfoundation.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] mfd: core: Make a best effort attempt to match
- devices with the correct of_nodes
-Message-ID: <20200624161435.GI954398@dell>
-References: <20200622151054.GW954398@dell>
- <037c0fd2-df35-5981-7ef2-c6199841650d@gmail.com>
- <20200622191133.GY954398@dell>
- <dc893ce4-8a4d-b7d9-8591-18a8b9b2ea2b@gmail.com>
- <20200623064723.GZ954398@dell>
- <83f2be78-1548-fa2b-199a-2391b2eceb47@gmail.com>
- <20200623195905.GB954398@dell>
- <6684101d-1013-2964-c247-394f9b12a194@gmail.com>
- <20200624074631.GE954398@dell>
- <d7774c42-fd41-9fab-2ea0-cd6bc7d35383@gmail.com>
+        Wed, 24 Jun 2020 12:15:46 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05OGF1cl038472;
+        Wed, 24 Jun 2020 11:15:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593015301;
+        bh=PERrQrRfdmam6H0p9AISJ5uvgazKR0B7qBwzzHc92JA=;
+        h=From:To:CC:Subject:Date;
+        b=O9+Xgjp1yiFV1ez/tC5FJaYDrH7dzhajKNpZbiK31kD8bvPAqFwo3n721Ww7l2lhT
+         3onjWEhL7U2JN3QYoO27m/SaNPniSKNqaGJwqH0OqpXi979pGI3r8pL1VTRCQYzKLN
+         p0NBdi0LROr/Bi3KAxnUkJGY0XdK+1zP3/aSPyIo=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OGF120079293;
+        Wed, 24 Jun 2020 11:15:01 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 24
+ Jun 2020 11:15:00 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 24 Jun 2020 11:15:00 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OGF0de112577;
+        Wed, 24 Jun 2020 11:15:00 -0500
+From:   Dan Murphy <dmurphy@ti.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <robh@kernel.org>, <devicetree@vger.kernel.org>,
+        Dan Murphy <dmurphy@ti.com>
+Subject: [PATCH v5 0/7] TAS2562 issue fixes and slot programming 
+Date:   Wed, 24 Jun 2020 11:14:52 -0500
+Message-ID: <20200624161459.19248-1-dmurphy@ti.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <d7774c42-fd41-9fab-2ea0-cd6bc7d35383@gmail.com>
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Jun 2020, Frank Rowand wrote:
+Hello
 
-> On 2020-06-24 02:46, Lee Jones wrote:
-> > On Tue, 23 Jun 2020, Frank Rowand wrote:
-> > 
-> >> On 2020-06-23 14:59, Lee Jones wrote:
-> 
-> < big snip >
-> 
-> Thanks for the replies in the above portion.
+This series fixes issues tih the shut-down gpio device tree allocation and a
+code format issue found.
 
-NP.
+While working on a project slot programming for the tx and rx paths needed to be
+enabled.  In addition the vsense slot programming needed to be configurable and
+not directly a simpler adder to the isense slot.
 
-> >>>> But yes or no to my solution #2 (with some slight changes to
-> >>>> make it better (more gracious handling of the detected error) as
-> >>>> discussed elsewhere in the email thread)?
-> >>>
-> >>> Please see "[0]" above!
-> >>>
-> >>> AFAICT your solution #2 involves bombing out *all* devices if there is
-> >>> a duplicate compatible with no 'reg' property value.  This is a)
-> >>> over-kill and b) not an error, as I mentioned:
-> >>
-> >> As I mentioned above, I set you up to have this misunderstanding by
-> >> a mistake in one of my earlier emails.  So now that I have pointed
-> >> out what I meant here by "more gracious handling of the detected
-> >> error", what do you think of my amended solution #2?
-> > 
-> > Explained above, but the LT;DR is that it's not correct.
-> 
-> I don't agree with you, I think my solution is better.  Even if I
-> prefer my solution, I find your solution to be good enough.
+Finally the yaml conversion patch was moved to be the last patch in the series
+so that the fixes can be applied and the yaml can be reviewed appropriately
+and does not hold up the rest of the fixes.
 
-I still don't see how it could work, but please feel free to submit a
-subsequent patch and we can discuss it on its own merits.
+Dan
 
-> So I am dropping my specific objection to returning -EAGAIN from
-> mfd_match_of_node_to_dev() when the node has previously been
-> allocated to a device.
 
-Great.  Thanks for taking an interest.
+Dan Murphy (7):
+  dt-bindings: tas2562: Fix shut-down gpio property
+  ASoC: tas2562: Update shutdown GPIO property
+  ASoC: tas2562: Fix format issue for extra space before a comma
+  ASoC: tas2562: Add rx and tx slot programming
+  dt-bindings: tas2562: Add voltage sense slot property
+  ASoC: tas2562: Add voltage sense slot configuration
+  dt-bindings: tas2562: Convert the tas2562 binding to yaml
 
-Does this mean I can apply your Reviewed-by?
+ .../devicetree/bindings/sound/tas2562.txt     |   34 -
+ .../devicetree/bindings/sound/tas2562.yaml    |   77 +
+ arch/arm/boot/compressed/fdt.h                |   66 +
+ arch/arm/boot/compressed/libfdt.h             | 2072 +++++++++++++++++
+ arch/arm/boot/compressed/libfdt_internal.h    |  173 ++
+ sound/soc/codecs/tas2562.c                    |   88 +-
+ sound/soc/codecs/tas2562.h                    |    4 +
+ 7 files changed, 2462 insertions(+), 52 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/tas2562.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/tas2562.yaml
+ create mode 100644 arch/arm/boot/compressed/fdt.h
+ create mode 100644 arch/arm/boot/compressed/libfdt.h
+ create mode 100644 arch/arm/boot/compressed/libfdt_internal.h
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+2.26.2
+
