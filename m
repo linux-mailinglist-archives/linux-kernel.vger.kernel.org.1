@@ -2,141 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06BC72074DA
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 15:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5283B2074E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 15:49:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391097AbgFXNrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 09:47:33 -0400
-Received: from lb3-smtp-cloud8.xs4all.net ([194.109.24.29]:46019 "EHLO
-        lb3-smtp-cloud8.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389590AbgFXNrc (ORCPT
+        id S2391121AbgFXNtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 09:49:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44166 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391102AbgFXNtB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 09:47:32 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud8.xs4all.net with ESMTPA
-        id o5kKjhYOHNb6lo5kOjtb27; Wed, 24 Jun 2020 15:47:29 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s1;
-        t=1593006450; bh=JAfq/32k3tkEWMaQptV/OjgB7hA+rl6xijjyAZW6YWU=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=vZbPyq5ZTeBsbO+i+HXYzvUtE47hJxYsNnNI28Ffi1SYRacsqRjhDR+N4Cs1pvMuN
-         TxcJbQwqHOoL5bre/mFIorJdzL3d80K+aiFPK/Mf/JdK0db9oluMOg3Ju3Cwu37FZz
-         evg6ebpXEmXEWxhpFSL3igpMOK5GABOCHmI+D/EtZUInhb1x3TQk0Udszu3Ml3ZEbf
-         Oi4ta93ENQwL4hDkUUErFA8X0F0JelYBTtYChDx/5BcmBp4xDdKQ4dMHVKi4nnVq5Z
-         DpA0VDyaFWgXtWKxwSaKpSAQjOZNC02lR2LOsdFoHzUSRkcKKS8zP0NKiS0r+wSb8T
-         F1dXrqulhIprQ==
-Subject: Re: [PATCH v5 2/3] media: tpg: Add function to return colors' order
- of test image
-To:     Kaaira Gupta <kgupta@es.iitr.ac.in>,
-        Helen Koike <helen.koike@collabora.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>
-References: <20200624134354.7023-1-kgupta@es.iitr.ac.in>
- <20200624134354.7023-3-kgupta@es.iitr.ac.in>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Message-ID: <c3e047f2-84eb-e697-3a69-fd930f67339d@xs4all.nl>
-Date:   Wed, 24 Jun 2020 15:47:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Wed, 24 Jun 2020 09:49:01 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A19A8C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 06:49:01 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id z2so2136896ilq.0
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 06:49:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=HMgVoQ0NH17cOLvd+EMrZ4qMVzF5NeVckkBSBDB5GLs=;
+        b=0jvmCkm1uxOa1uyi4BAYlDRMMqRDa38wgi9E8/XIDdGrA9oQ5L4spIW2A1eGA4BtF2
+         S8zElmWx4UIeuMFNfhPYYnWZuScbEVueJuWuV4FXywiqce4LL2run2a4ymvcOzIu/C/+
+         6Fe7gIuaYQNI6sGKgF4WgNb2BUsmVdRrHfRKrtAsfldLg5IvcbHl6PWauCZhmFQojQhm
+         9a7Q5RrPl/lbr4+33xEC9+RPw7xZD15uxySVT5i1FJFwQookYTDkrFsYT0wH0jVU3Rlu
+         L9Tp3z1r1c62MEmeG50kWokbFvxn6cOtU/lGUbjrNM0wFfDadl3nZISJG+6IalJfMcDf
+         33mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=HMgVoQ0NH17cOLvd+EMrZ4qMVzF5NeVckkBSBDB5GLs=;
+        b=UhQOk5MbUGWm3JtRytqindywQIGmjd2xlqya67ROJQgRfumpGmFWe8GFCaC/0jkWcd
+         kBSLhwF6Ss1dkt6zcPRNi4tYi9vt90RBob7Kgy44oiUrXsdbBt9E+7evS1MaKeGa53eZ
+         UK7IxnH2gqKbtWEtRsC1orDKG6B3DVFVoKaaskpN+POEjo6qR1lnMShlQOz2CIX2642h
+         u7C1djOUWxsOuzC037ZR3U0C0CtfKWQfuLtLcqqUUG7SMD5And8NgH+ZE1cQIPPc3Wa+
+         2SuqLqd16bQCRuIODorsXsWuVE7s8RWxmPEvyKS5E7XmIA2HDiCsIG8Nc6tamwlmJUbV
+         g6Qg==
+X-Gm-Message-State: AOAM533+UCmECAAuQrkmJemMHThhF8qfhyvMbTfi1lZlWD0MTODPna18
+        0F4bMEzZVOkBdN1uYSFVaBQ7uyCpFMv9BkjLnHy6SQ==
+X-Google-Smtp-Source: ABdhPJxdX8ruFrJVm8CZiU93LA3RvFI3WisGoVFQmLOi9T6/smGz8KDwDETgwAqF6p43r34eXBRDqfcPxFBj5bX92S8=
+X-Received: by 2002:a92:de10:: with SMTP id x16mr29799293ilm.6.1593006540971;
+ Wed, 24 Jun 2020 06:49:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200624134354.7023-3-kgupta@es.iitr.ac.in>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfEwKybCLDMwepSzmhWYyrrC8+AiV1Vwf8zoe5kRfofIWt2BcktSgQGYFE4uhiTgt7LuYlF2GLoCYhmzi9J4jSHdlgYelrbpLdfAtCsrZHvYIDxXPniRu
- cUgQ2aKGNbULvLrhGDaIB0OM5693jzz8XQB4qyu12kqRzTOcIHKKouc5RkJvZ4zNt5l4EVG9ZqsxOTa5LpntE0uY7ImRuNpgcAgQ2eRGmQ6hwuCVvU5cxfeS
- aP/FNCSByHBrRk3/OQXyMVUQIVwAuV/Ld09Ss5FSZJtBNNsRv0ViWlcJZ5ngP4l24vp386EAKotbcZ6L+OLkTODBxfrpIKAxILzV+mqEYtPFMJYamAnRxHNe
- zWz5uQoSftA0rA78QUM5eq4jLvGSyDqmKw/sKLHhi/xZVTHzBCQ=
+References: <20200622093744.13685-1-brgl@bgdev.pl> <20200622093744.13685-10-brgl@bgdev.pl>
+ <20200622133940.GL338481@lunn.ch> <20200622135106.GK4560@sirena.org.uk>
+ <dca54c57-a3bd-1147-63b2-4631194963f0@gmail.com> <20200624094302.GA5472@sirena.org.uk>
+In-Reply-To: <20200624094302.GA5472@sirena.org.uk>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 24 Jun 2020 15:48:50 +0200
+Message-ID: <CAMRc=McBxJdujCyjQF3NA=bCWHF1dx8xJ1Nc2snmqukvJ_VyoQ@mail.gmail.com>
+Subject: Re: [PATCH 09/15] net: phy: delay PHY driver probe until PHY registration
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+        Keyur Chudgar <keyur@os.amperecomputing.com>,
+        Quan Nguyen <quan@os.amperecomputing.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Stephane Le Provost <stephane.leprovost@mediatek.com>,
+        Pedro Tsai <pedro.tsai@mediatek.com>,
+        Andrew Perepech <andrew.perepech@mediatek.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/06/2020 15:43, Kaaira Gupta wrote:
-> Currently there is no method to know the correct order of the colors for
-> a test image generated by tpg. Write a function that returns a string of
-> colors' order given a tpg. It returns a NULL pointer in case of test
-> patterns which do not have a well defined colors' order. Hence add a
-> NULL check for text in tpg_gen_text().
-> 
-> Signed-off-by: Kaaira Gupta <kgupta@es.iitr.ac.in>
-> Reviewed-by: Kieran Bingham <kieran.bingham@ideasonboard.com>
-> ---
->  drivers/media/common/v4l2-tpg/v4l2-tpg-core.c | 29 +++++++++++++++++--
->  include/media/tpg/v4l2-tpg.h                  |  1 +
->  2 files changed, 28 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-> index dde22a4cbd6c..a052b656fa6a 100644
-> --- a/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-> +++ b/drivers/media/common/v4l2-tpg/v4l2-tpg-core.c
-> @@ -1959,12 +1959,14 @@ void tpg_gen_text(const struct tpg_data *tpg, u8 *basep[TPG_MAX_PLANES][2],
->  	unsigned step = V4L2_FIELD_HAS_T_OR_B(tpg->field) ? 2 : 1;
->  	unsigned div = step;
->  	unsigned first = 0;
-> -	unsigned len = strlen(text);
-> +	unsigned len;
->  	unsigned p;
->  
-> -	if (font8x16 == NULL || basep == NULL)
-> +	if (font8x16 == NULL || basep == NULL || text == NULL)
->  		return;
->  
-> +	len = strlen(text);
-> +
->  	/* Checks if it is possible to show string */
->  	if (y + 16 >= tpg->compose.height || x + 8 >= tpg->compose.width)
->  		return;
-> @@ -2006,6 +2008,29 @@ void tpg_gen_text(const struct tpg_data *tpg, u8 *basep[TPG_MAX_PLANES][2],
->  }
->  EXPORT_SYMBOL_GPL(tpg_gen_text);
->  
-> +const char *tpg_g_color_order(const struct tpg_data *tpg)
-> +{
-> +	switch (tpg->pattern) {
-> +	case TPG_PAT_75_COLORBAR:
-> +	case TPG_PAT_100_COLORBAR:
-> +	case TPG_PAT_CSC_COLORBAR:
-> +	case TPG_PAT_100_HCOLORBAR:
-> +		return "white, yellow, cyan, green, magenta, red, blue, black";
-> +	case TPG_PAT_BLACK:
-> +		return "Black";
-> +	case TPG_PAT_WHITE:
-> +		return "White";
-> +	case TPG_PAT_RED:
-> +		return "Red";
-> +	case TPG_PAT_GREEN:
-> +		return "Green";
-> +	case TPG_PAT_BLUE:
-> +		return "Blue";
-> +	default:
-> +		return NULL;
-> +	}
-> +}
+=C5=9Br., 24 cze 2020 o 11:43 Mark Brown <broonie@kernel.org> napisa=C5=82(=
+a):
+>
+> On Tue, Jun 23, 2020 at 12:49:15PM -0700, Florian Fainelli wrote:
+> > On 6/22/20 6:51 AM, Mark Brown wrote:
+>
+> > > If the bus includes power management for the devices on the bus the
+> > > controller is generally responsible for that rather than the devices,
+> > > the devices access this via facilities provided by the bus if needed.
+> > > If the device is enumerated by firmware prior to being physically
+> > > enumerable then the bus will generally instantiate the device model
+> > > device and then arrange to wait for the physical device to appear and
+> > > get joined up with the device model device, typically in such situati=
+ons
+> > > the physical device might appear and disappear dynamically at runtime
+> > > based on what the driver is doing anyway.
+>
+> > In premise there is nothing that prevents the MDIO bus from taking care
+> > of the regulators, resets, prior to probing the PHY driver, what is
+> > complicated here is that we do need to issue a read of the actual PHY t=
+o
+> > know its 32-bit unique identifier and match it with an appropriate
+> > driver. The way that we have worked around this with if you do not wish
+> > such a hardware access to be made, is to provide an Ethernet PHY node
+> > compatible string that encodes that 32-bit OUI directly. In premise the
+> > same challenges exist with PCI devices/endpoints as well as USB, would
+> > they have reset or regulator typically attached to them.
+>
+> That all sounds very normal and is covered by both cases I describe?
+>
+> > > We could use a pre-probe stage in the device model for hotpluggable
+> > > buses in embedded contexts where you might need to bring things out o=
+f
+> > > reset or power them up before they'll appear on the bus for enumerati=
+on
+> > > but buses have mostly handled that at their level.
+>
+> > That sounds like a better solution, are there any subsystems currently
+> > implementing that, or would this be a generic Linux device driver model
+> > addition that needs to be done?
+>
+> Like I say I'm suggesting doing something at the device model level.
 
-Missing EXPORT_SYMBOL_GPL().
+I didn't expect to open such a can of worms...
 
-Regards,
+This has evolved into several new concepts being proposed vs my
+use-case which is relatively simple. The former will probably take
+several months of development, reviews and discussions and it will
+block supporting the phy supply on pumpkin boards upstream. I would
+prefer not to redo what other MAC drivers do (phy-supply property on
+the MAC node, controlling it from the MAC driver itself) if we've
+already established it's wrong.
 
-	Hans
+Is there any compromise we could reach to add support for a basic,
+common use-case of a single regulator supplying a PHY that needs
+enabling before reading its ID short-term (just like we currently
+support a single reset or reset-gpios property for PHYs) and
+introducing a whole new concept to the device model for more advanced
+(but currently mostly hypothetical) cases long-term?
 
-> +
->  void tpg_update_mv_step(struct tpg_data *tpg)
->  {
->  	int factor = tpg->mv_hor_mode > TPG_MOVE_NONE ? -1 : 1;
-> diff --git a/include/media/tpg/v4l2-tpg.h b/include/media/tpg/v4l2-tpg.h
-> index 9749ed409856..0b0ddb87380e 100644
-> --- a/include/media/tpg/v4l2-tpg.h
-> +++ b/include/media/tpg/v4l2-tpg.h
-> @@ -252,6 +252,7 @@ void tpg_fillbuffer(struct tpg_data *tpg, v4l2_std_id std,
->  bool tpg_s_fourcc(struct tpg_data *tpg, u32 fourcc);
->  void tpg_s_crop_compose(struct tpg_data *tpg, const struct v4l2_rect *crop,
->  		const struct v4l2_rect *compose);
-> +const char *tpg_g_color_order(const struct tpg_data *tpg);
->  
->  static inline void tpg_s_pattern(struct tpg_data *tpg, enum tpg_pattern pattern)
->  {
-> 
-
+Bart
