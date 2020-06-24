@@ -2,198 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB35207F16
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 00:05:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FDD207F28
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 00:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388763AbgFXWFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 18:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36796 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388383AbgFXWFj (ORCPT
+        id S2390242AbgFXWJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 18:09:35 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:33229 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387853AbgFXWJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 18:05:39 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CAB7C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 15:05:39 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id u8so1808469pje.4
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 15:05:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xltSa+pOLgf6vSXNCg3Iy8gwRMudEIRX75C87X2gOqg=;
-        b=MgAD5KdkoqXJfDMbYByeG9yy1WHD48fSG3E81h/9u2g6EmmOWXUynVOutBJ7t4vwAB
-         psHe+EScWfsNCT5NBNrD4GqWZP9tUl+Kpp9FOICNYptFXA/r3FSM00oRybctU7BcYLkc
-         xYuC/5NF2tPShhkqyHcGrMMH1bG1eOdc5yVDaWWtA6Pacgr2HqQK7HSqkFcx8JuPz7+l
-         Bh6GmKIzyu2FWzCTSTFxVBAp3kMrEdSubXvgyg8U9SuaeGoSsA+M/E/Cs06190t4Npt5
-         nJfTobePwPdZokQYEfx1V+EhA02ju497XZgaKKA3UcFgUsazmRzB5B+R1GtnDyuhmE5I
-         0efw==
+        Wed, 24 Jun 2020 18:09:34 -0400
+Received: by mail-qt1-f193.google.com with SMTP id h23so3115369qtr.0;
+        Wed, 24 Jun 2020 15:09:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xltSa+pOLgf6vSXNCg3Iy8gwRMudEIRX75C87X2gOqg=;
-        b=sekJd05k2YkRATjxi/H0wA2zXj2YdQNb1G/f2A4HD3gKqYZhMZDBH5KCZCdP4zQGae
-         QV6QdFN8eqtPSnj8OfphrYQqHFWAyyKYiTBqYycEIsNG50g6BJ4ixCwW+lAxpbAIYFxa
-         Xot9jLg/zOgvO8CrMADyWln5hTp2tzHU+3urdPfoCYrjcmFF5tjz1hTfBcyY17vXLj9B
-         mB/VITgOKELqa+zDux7G2F0cSHwZy+M8OtTS7fQUEVAgiSeM1S5estndawIoymJbKe4e
-         qis7WDA5g8dVkI9CfiBJ/mj5vQTppNP0/yr0dZYMxADjjZFI7SXmkmnjKmkB+bcyM6LS
-         Qr+A==
-X-Gm-Message-State: AOAM530VP3cmgXoVdBQ2gfWYRY4wLNUXaQxI5j1OmtmcjwwrNfXXL9A7
-        ApU8mX5fQwena1TvhVwxXyMU29II+T5xZsuKoWbJTQ==
-X-Google-Smtp-Source: ABdhPJyHAGRnDa0sY6/O0q6u9SsVNEVG0+Kq/qe9woI291mBi0WzcIUCyrpkoCKrtdGX8Zo26zOr7JzSk6uu8KVpUDY=
-X-Received: by 2002:a17:902:ab8d:: with SMTP id f13mr19785027plr.119.1593036338270;
- Wed, 24 Jun 2020 15:05:38 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version;
+        bh=H/RysOR6N0zpE6c3ebPBn7+IKDXpPNRcb77mnWUMTFM=;
+        b=Ny5odRbKAi5LzNa43J7hHBhF3MbPRmVRjrmvnz+U/Xkv7pV53PZdPxZik4xpgllf7s
+         FC5izVUC/R3feViW1nLbeywuguz5V+rWlgU4558Z44CSgYkI/2UTFXL+qkUnTS7ydzCx
+         S96ktNXHp9PnsvgaG6+XqhVbaOs+al+DvsimulCoTDpMwGoedqGOgfnK6jq9YoCGzUeH
+         6a4FWCvgJr+yOZWIaWHelGodQemu8JVAjPMC20PK7o6T4ccNXyD2BgY9wtuVlnlvEc+o
+         E8PHgVha5ayseyYLn38dl413xKgKdr4yMAp31YnjJvY7qHod8byMIYyDELD335ZTLFNr
+         4KZA==
+X-Gm-Message-State: AOAM533aRnfjifDmXiT4fDcwbNvbjXjHcnltk8kPa3D/0uoQ3tKIo0/X
+        6FXnkgaKo37/xCOL54voaiU=
+X-Google-Smtp-Source: ABdhPJys6wWsK6KiL7nbAlGhSwPps/gASOoCedqRYHgNRnuTH+wOUARmK+jnpjYf0Tr5DAogt1xdjQ==
+X-Received: by 2002:aed:3386:: with SMTP id v6mr29626444qtd.187.1593036572579;
+        Wed, 24 Jun 2020 15:09:32 -0700 (PDT)
+Received: from dek-x230.localnet (pool-108-24-134-99.cmdnnj.fios.verizon.net. [108.24.134.99])
+        by smtp.gmail.com with ESMTPSA id p128sm2705938qka.47.2020.06.24.15.09.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 15:09:31 -0700 (PDT)
+From:   David Korth <gerbilsoft@gerbilsoft.com>
+To:     David Rheinsberg <david.rheinsberg@gmail.com>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] HID: wiimote: Initialize the controller LEDs with a device ID value
+Date:   Wed, 24 Jun 2020 18:05:38 -0400
+Message-ID: <2498150.lGaqSPkdTl@dek-x230>
+In-Reply-To: <CANq1E4T_SNUrewDQ59bonr7tTKFa=wRYwXLWHMCiNA0KN0H9Aw@mail.gmail.com>
+References: <20200622225728.330-1-gerbilsoft@gerbilsoft.com> <CANq1E4T_SNUrewDQ59bonr7tTKFa=wRYwXLWHMCiNA0KN0H9Aw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20200624203200.78870-1-samitolvanen@google.com> <20200624203200.78870-13-samitolvanen@google.com>
-In-Reply-To: <20200624203200.78870-13-samitolvanen@google.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 24 Jun 2020 15:05:26 -0700
-Message-ID: <CAKwvOdkgXpxyV6UOpwh1O-_miu4O7pMDaSys=7BYg6jDZ-ox-A@mail.gmail.com>
-Subject: Re: [PATCH 12/22] modpost: lto: strip .lto from module names
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Bill Wendling <morbo@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="nextPart2327861.XAFRqVoOGU"; micalg="pgp-sha256"; protocol="application/pgp-signature"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 1:33 PM Sami Tolvanen <samitolvanen@google.com> wrote:
->
-> With LTO, everything is compiled into LLVM bitcode, so we have to link
-> each module into native code before modpost. Kbuild uses the .lto.o
-> suffix for these files, which also ends up in module information. This
-> change strips the unnecessary .lto suffix from the module name.
->
-> Suggested-by: Bill Wendling <morbo@google.com>
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-> ---
->  scripts/mod/modpost.c    | 16 +++++++---------
->  scripts/mod/modpost.h    |  9 +++++++++
->  scripts/mod/sumversion.c |  6 +++++-
->  3 files changed, 21 insertions(+), 10 deletions(-)
->
-> diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
-> index 6aea65c65745..8352f8a1a138 100644
-> --- a/scripts/mod/modpost.c
-> +++ b/scripts/mod/modpost.c
-> @@ -17,7 +17,6 @@
->  #include <ctype.h>
->  #include <string.h>
->  #include <limits.h>
-> -#include <stdbool.h>
+--nextPart2327861.XAFRqVoOGU
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-It looks like `bool` is used in the function signatures of other
-functions in this TU, I'm not the biggest fan of hoisting the includes
-out of the .c source into the header (I'd keep it in both), but I
-don't feel strongly enough to NACK.
+On Wednesday, June 24, 2020 6:04:55 AM EDT David Rheinsberg wrote:
+> Hi
+> 
+> On Tue, Jun 23, 2020 at 12:57 AM David Korth <gerbilsoft@gerbilsoft.com> 
+wrote:
+> > Based on a similar commit for Sony Sixaxis and DualShock 4 controllers:
+> > HID: sony: Initialize the controller LEDs with a device ID value
+> > 
+> > Wii remotes have the same player LED layout as Sixaxis controllers,
+> > so the wiimote setup is based on the Sixaxis code.
+> 
+> Please include a description of the patch in the commit-message. It
+> took me quite a while to understand what the intention of this patch
+> is.
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Will do.
 
->  #include <errno.h>
->  #include "modpost.h"
->  #include "../../include/linux/license.h"
-> @@ -80,14 +79,6 @@ modpost_log(enum loglevel loglevel, const char *fmt, ...)
->                 exit(1);
->  }
->
-> -static inline bool strends(const char *str, const char *postfix)
-> -{
-> -       if (strlen(str) < strlen(postfix))
-> -               return false;
-> -
-> -       return strcmp(str + strlen(str) - strlen(postfix), postfix) == 0;
-> -}
-> -
->  void *do_nofail(void *ptr, const char *expr)
->  {
->         if (!ptr)
-> @@ -1975,6 +1966,10 @@ static char *remove_dot(char *s)
->                 size_t m = strspn(s + n + 1, "0123456789");
->                 if (m && (s[n + m] == '.' || s[n + m] == 0))
->                         s[n] = 0;
-> +
-> +               /* strip trailing .lto */
-> +               if (strends(s, ".lto"))
-> +                       s[strlen(s) - 4] = '\0';
->         }
->         return s;
->  }
-> @@ -1998,6 +1993,9 @@ static void read_symbols(const char *modname)
->                 /* strip trailing .o */
->                 tmp = NOFAIL(strdup(modname));
->                 tmp[strlen(tmp) - 2] = '\0';
-> +               /* strip trailing .lto */
-> +               if (strends(tmp, ".lto"))
-> +                       tmp[strlen(tmp) - 4] = '\0';
->                 mod = new_module(tmp);
->                 free(tmp);
->         }
-> diff --git a/scripts/mod/modpost.h b/scripts/mod/modpost.h
-> index 3aa052722233..fab30d201f9e 100644
-> --- a/scripts/mod/modpost.h
-> +++ b/scripts/mod/modpost.h
-> @@ -2,6 +2,7 @@
->  #include <stdio.h>
->  #include <stdlib.h>
->  #include <stdarg.h>
-> +#include <stdbool.h>
->  #include <string.h>
->  #include <sys/types.h>
->  #include <sys/stat.h>
-> @@ -180,6 +181,14 @@ static inline unsigned int get_secindex(const struct elf_info *info,
->         return info->symtab_shndx_start[sym - info->symtab_start];
->  }
->
-> +static inline bool strends(const char *str, const char *postfix)
-> +{
-> +       if (strlen(str) < strlen(postfix))
-> +               return false;
-> +
-> +       return strcmp(str + strlen(str) - strlen(postfix), postfix) == 0;
-> +}
-> +
->  /* file2alias.c */
->  extern unsigned int cross_build;
->  void handle_moddevtable(struct module *mod, struct elf_info *info,
-> diff --git a/scripts/mod/sumversion.c b/scripts/mod/sumversion.c
-> index d587f40f1117..760e6baa7eda 100644
-> --- a/scripts/mod/sumversion.c
-> +++ b/scripts/mod/sumversion.c
-> @@ -391,10 +391,14 @@ void get_src_version(const char *modname, char sum[], unsigned sumlen)
->         struct md4_ctx md;
->         char *fname;
->         char filelist[PATH_MAX + 1];
-> +       int postfix_len = 1;
-> +
-> +       if (strends(modname, ".lto.o"))
-> +               postfix_len = 5;
->
->         /* objects for a module are listed in the first line of *.mod file. */
->         snprintf(filelist, sizeof(filelist), "%.*smod",
-> -                (int)strlen(modname) - 1, modname);
-> +                (int)strlen(modname) - postfix_len, modname);
->
->         buf = read_text_file(filelist);
->
-> --
-> 2.27.0.212.ge8ba1cc988-goog
->
+> So what you are trying is to allocate a unique ID to each connected
+> wiimote, so they automatically display unique IDs, right?
+> 
+> Can you explain why this has to be done in the kernel driver? Why
+> isn't user-space assigning the right ID? User-space needs to attach
+> controllers to their respective engine anyway, in which case the IDs
+> the kernel assigns would be wrong, right? How does user-space display
+> the matching ID in their UI (e.g., for configuration use-cases)? The
+> way you set them does not allow user-space to query the ID, does it?
+> Lastly, wouldn't a device-reconnect want the same ID to be assigned
+> again? With the logic you apply, user-space would have to override
+> every ID for that to work.
+> 
+> Is there an actual use-case for this? Or is this just to align the
+> driver with the other gamepads?
+
+Most userspace programs aren't aware of controller LEDs. The only one I know 
+of that is, Steam, has its own input layer and bypasses the HID drivers 
+entirely.
+
+As far as I know, there's no simple "set player ID" API that could be used to 
+set a device-independent player number, so every program would need to support 
+each type of controller in order to set the LEDs.
+
+I've been manually setting the player IDs on Wii controllers when running 
+multiplayer games by writing to the /sys/class/leds/ directory. Having the 
+hid-wiimote driver do this itself significantly reduces setup time.
+
+> 
+> Thanks
+> David
+> 
+
+--nextPart2327861.XAFRqVoOGU
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEBKTd2QxoniMIp2ejTC/4LR6byCgFAl7zzjIACgkQTC/4LR6b
+yChVzg//X26Y6hKZxQy4cDA1rgOX4e105gYsE80z9Qwwsm4anXZNgXsZXYfhLaW0
+hfgKIvM08EXszBIkVDXrKW7gO+irRmZfbZGVqMP4QTC6vr6FO3eFnGyH/NGX6QCI
+/SzB0Wl23BlIujOXGNCj2I/Gs7gJ1lJ2XpMcOQQpdJwWas1DWOGhSQ36hMw0D3iF
+9swjyU0HR++xg7H0B26wFgJ1ZGjC1dOvYNh8uPKPKB/Un/lN9kuSOSIowcFK17En
+Wl5TN41gIKr8IoG2EZ0EKaDLM5tdrmcdrcmQV7Qg+U/fLRZPdrrHslO8tHZhy9pc
+ldnIYbCEJ5mFBdkCDl9zaUTKXhx4dwSTqpLcFNVjnYEk8roxgk+Ur6tVwbiZs8Xd
+TOUfzuvzyIE7yaRiUXVDQo+zgtKVj7wcLHMhPkhngMYmYWSq3Jrpw3zePxDtitdd
+kE6mWZmNgnrnJFjjAVp5gnTxdSQeT3bz5PH8PTEwXW6jSE+6dbuIoPQu6ONW2PRi
+LlntfKBuqaDOU0Jbqrw/HxQsdupLNNHSi1l9SoGt3C8ET5sW9cd1SuBzDM8uaLK1
+AxhObrHrSWa0iIj64bB1QCEvghVYAg+Xqe6V1hMfdoDdg8EF3QmQFM7j0VEbXkdx
+/Cn53xTl4GkSWxnJPD3essXj4VnBSLRJKYouZkG15l5MsSZPMDQ=
+=F17s
+-----END PGP SIGNATURE-----
+
+--nextPart2327861.XAFRqVoOGU--
 
 
--- 
-Thanks,
-~Nick Desaulniers
+
