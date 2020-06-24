@@ -2,128 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81E2E207EB2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 23:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D918C207EBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 23:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404425AbgFXVgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 17:36:13 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27062 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2403996AbgFXVgM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 17:36:12 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05OLV6Gb011486;
-        Wed, 24 Jun 2020 17:36:03 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31uwys03jx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Jun 2020 17:36:03 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05OLV6L8011493;
-        Wed, 24 Jun 2020 17:36:02 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31uwys03jd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Jun 2020 17:36:02 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05OLFeKG018178;
-        Wed, 24 Jun 2020 21:36:02 GMT
-Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
-        by ppma02dal.us.ibm.com with ESMTP id 31uurt0n2k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Jun 2020 21:36:02 +0000
-Received: from b01ledav003.gho.pok.ibm.com (b01ledav003.gho.pok.ibm.com [9.57.199.108])
-        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05OLa1ZA36634894
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Jun 2020 21:36:01 GMT
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4F6B8B2064;
-        Wed, 24 Jun 2020 21:36:01 +0000 (GMT)
-Received: from b01ledav003.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 801EFB205F;
-        Wed, 24 Jun 2020 21:36:00 +0000 (GMT)
-Received: from DESKTOP-AV6EVPG.localdomain (unknown [9.160.33.216])
-        by b01ledav003.gho.pok.ibm.com (Postfix) with ESMTP;
-        Wed, 24 Jun 2020 21:36:00 +0000 (GMT)
-From:   Maurizio Drocco <maurizio.drocco@ibm.com>
-To:     bmeneg@redhat.com
-Cc:     Silviu.Vlasceanu@huawei.com, dmitry.kasatkin@gmail.com,
-        jejb@linux.ibm.com, jmorris@namei.org,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, maurizio.drocco@ibm.com,
-        mdrocco@linux.vnet.ibm.com, roberto.sassu@huawei.com,
-        serge@hallyn.com, stefanb@linux.ibm.com, zohar@linux.ibm.com
-Subject: [PATCH v3] ima_evm_utils: extended calc_bootaggr to PCRs 8 - 9
-Date:   Wed, 24 Jun 2020 17:35:58 -0400
-Message-Id: <20200624213558.4265-1-maurizio.drocco@ibm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200624213345.GB2639@glitch>
-References: <20200624213345.GB2639@glitch>
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-24_16:2020-06-24,2020-06-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 cotscore=-2147483648
- lowpriorityscore=0 priorityscore=1501 bulkscore=0 mlxlogscore=918
- adultscore=0 suspectscore=1 mlxscore=0 malwarescore=0 clxscore=1015
- spamscore=0 phishscore=0 impostorscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006240137
+        id S2404486AbgFXViA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 17:38:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403996AbgFXVh7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 17:37:59 -0400
+Received: from localhost (mobile-166-170-222-206.mycingular.net [166.170.222.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B668D207E8;
+        Wed, 24 Jun 2020 21:37:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593034679;
+        bh=DwNy4a1dTP0cML/NqcYH/mc0n8ghiF4jwJVglyBIYl0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=ba9s7rmGgoLzByJn2FUikabBHUIk7ZVOD7zfHBPMMZBzqYC2iWKiTfku4gKCdXAEk
+         Ep15zWtBl7na1pM4n1ksy6It7Sw2shsTNoYfL+d9riHKVqXlk0wTot4m0V5e/fZV3K
+         FrYi8MBZSK0nSIUKaclGUgr+R5RV4kMYQxfQa9cg=
+Date:   Wed, 24 Jun 2020 16:37:57 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     "David E. Box" <david.e.box@linux.intel.com>
+Cc:     shyjumon.n@intel.com, rjw@rjwysocki.net, lenb@kernel.org,
+        bhelgaas@google.com, dan.j.williams@intel.com, kbusch@kernel.org,
+        axboe@fb.com, hch@lst.de, sagi@grimberg.me,
+        linux-acpi@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH V2 1/2] PCI: Add ACPI StorageD3Enable _DSD support
+Message-ID: <20200624213757.GA2591059@bjorn-Precision-5520>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200612204820.20111-2-david.e.box@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Maurizio <maurizio.drocco@ibm.com>
+On Fri, Jun 12, 2020 at 01:48:19PM -0700, David E. Box wrote:
+> StorageD3Enable is a boolean property that indicates that the platform
+> wants to use D3 for PCIe storage drives during suspend-to-idle. 
 
-cal_bootaggr should include PCRs 8-9 in non-SHA1 digests.
+Is this something that should apply to plug-in drives, or does this
+only apply to soldered-in things?
 
-Signed-off-by: Maurizio Drocco <maurizio.drocco@ibm.com>
----
-Changelog:
-v3:
-- Fixed patch description
-v2:
-- Always include PCRs 8 & 9 to non-sha1 hashes
-v1:
-- Include non-zero PCRs 8 & 9 to boot aggregates
+> It is a
+> BIOS work around that is currently in use on shipping systems like some
+> Intel Comet Lake platforms. 
 
- src/evmctl.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+What is this BIOS work around?  Is there a defect here that's being
+worked around?  What's the defect?
 
-diff --git a/src/evmctl.c b/src/evmctl.c
-index 1d065ce..46b7092 100644
---- a/src/evmctl.c
-+++ b/src/evmctl.c
-@@ -1930,6 +1930,16 @@ static void calc_bootaggr(struct tpm_bank_info *bank)
- 		}
- 	}
- 
-+	if (strcmp(bank->algo_name, "sha1") != 0) {
-+		for (i = 8; i < 10; i++) {
-+			err = EVP_DigestUpdate(pctx, bank->pcr[i], bank->digest_size);
-+			if (!err) {
-+				log_err("EVP_DigestUpdate() failed\n");
-+				return;
-+			}
-+		}
-+	}
-+
- 	err = EVP_DigestFinal(pctx, bank->digest, &mdlen);
- 	if (!err) {
- 		log_err("EVP_DigestFinal() failed\n");
-@@ -1972,8 +1982,9 @@ static int append_bootaggr(char *bootaggr, struct tpm_bank_info *tpm_banks)
- /*
-  * The IMA measurement list boot_aggregate is the link between the preboot
-  * event log and the IMA measurement list.  Read and calculate all the
-- * possible per TPM bank boot_aggregate digests based on the existing
-- * PCRs 0 - 7 to validate against the IMA boot_aggregate record.
-+ * possible per TPM bank boot_aggregate digests based on the existing PCRs
-+ * 0 - 9 to validate against the IMA boot_aggregate record. If the digest
-+ * algorithm is SHA1, only PCRs 0 - 7 are considered to avoid ambiguity.
-  */
- static int cmd_ima_bootaggr(struct command *cmd)
- {
--- 
-2.17.1
+> It is meant to change default driver policy for
+> suspend that may cause higher power consumption.
 
+I guess this means that by changing the driver policy from the
+default, we can save some power?
+
+> Add the DSD property for recognition by fwnode calls and provide an
+> exported symbol for device drivers to use to read the property as needed.
+> 
+> Link: https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/power-management-for-storage-hardware-devices-intro
+
+There is surprisingly little information in this intro.  The whole
+paragraph under "Modern Standby Power Management" is duplicated
+immediately below in "D3 Support".  Maybe that's a copyediting error
+that displaced useful information.
+
+It says "drivers should go to the deepest appropriate state" so
+"function drivers don't have to manage implementation details".  No
+doubt "drivers" and "function drivers" is a meaningful distinction to
+Windows cognoscenti, but it's not to me.
+
+It talks about "enabling D3" without specifying D3hot or D3cold.
+
+It talks about "D3 support for storage devices."  All PCI devices are
+required to support both D3hot and D3cold, so this must be talking
+about some other sort of support; I suppose maybe it's a hint about
+whether a driver should *use* D3hot (or D3cold, I can't tell).
+
+It says nothing about where to look for the _DSD: on a Root Port or on
+the NVMe endpoint.
+
+Bjorn
