@@ -2,45 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E94CA20771E
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:16:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A302620770A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:16:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404561AbgFXPQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:16:33 -0400
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:5408 "EHLO
+        id S2404508AbgFXPP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:15:59 -0400
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:51082 "EHLO
         mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404511AbgFXPQH (ORCPT
+        by vger.kernel.org with ESMTP id S2404144AbgFXPP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:16:07 -0400
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05OEvnKD023504;
-        Wed, 24 Jun 2020 11:15:49 -0400
+        Wed, 24 Jun 2020 11:15:57 -0400
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05OEtUxk019718;
+        Wed, 24 Jun 2020 11:15:56 -0400
 Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 31uuqvjesq-1
+        by mx0a-00128a01.pphosted.com with ESMTP id 31uurjjgc1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Jun 2020 11:15:49 -0400
-Received: from SCSQMBX10.ad.analog.com (scsqmbx10.ad.analog.com [10.77.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 05OFFlr0044789
+        Wed, 24 Jun 2020 11:15:56 -0400
+Received: from ASHBMBX9.ad.analog.com (ashbmbx9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 05OFFtIR044839
         (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Wed, 24 Jun 2020 11:15:48 -0400
-Received: from SCSQMBX10.ad.analog.com (10.77.17.5) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1779.2; Wed, 24 Jun
- 2020 08:15:46 -0700
-Received: from zeus.spd.analog.com (10.64.82.11) by SCSQMBX10.ad.analog.com
- (10.77.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Wed, 24 Jun 2020 08:15:46 -0700
+        Wed, 24 Jun 2020 11:15:55 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 24 Jun 2020 11:15:54 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Wed, 24 Jun 2020 11:15:53 -0400
+Received: from zeus.spd.analog.com (10.64.82.11) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Wed, 24 Jun 2020 11:15:47 -0400
 Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 05OFFdRt023607;
-        Wed, 24 Jun 2020 11:15:44 -0400
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 05OFFdRu023607;
+        Wed, 24 Jun 2020 11:15:46 -0400
 From:   <alexandru.tachici@analog.com>
 To:     <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <devicetree@vger.kernel.org>
 CC:     <robh+dt@kernel.org>, <linux@roeck-us.net>,
         Alexandru Tachici <alexandru.tachici@analog.com>
-Subject: [PATCH v5 4/7] hwmon: pmbus: adm1266: Add ioctl commands
-Date:   Wed, 24 Jun 2020 18:17:33 +0300
-Message-ID: <20200624151736.95785-5-alexandru.tachici@analog.com>
+Subject: [PATCH v5 5/7] hwmon: pmbus: adm1266: read blackbox
+Date:   Wed, 24 Jun 2020 18:17:34 +0300
+Message-ID: <20200624151736.95785-6-alexandru.tachici@analog.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200624151736.95785-1-alexandru.tachici@analog.com>
 References: <20200624151736.95785-1-alexandru.tachici@analog.com>
@@ -49,12 +53,11 @@ Content-Type: text/plain
 X-ADIRoutedOnPrem: True
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
  definitions=2020-06-24_08:2020-06-24,2020-06-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 lowpriorityscore=0
- clxscore=1015 cotscore=-2147483648 priorityscore=1501 mlxscore=0
- bulkscore=0 adultscore=0 phishscore=0 suspectscore=0 classifier=spam
- adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006240107
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ clxscore=1015 lowpriorityscore=0 suspectscore=0 adultscore=0 mlxscore=0
+ spamscore=0 priorityscore=1501 cotscore=-2147483648 bulkscore=0
+ impostorscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006240107
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -62,169 +65,180 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexandru Tachici <alexandru.tachici@analog.com>
 
-Add two ioctl commands for reading the current state
-of the adm1266 sequencer and sending commands.
+Use the nvmem kernel api to expose the black box
+chip functionality to userspace.
 
 Signed-off-by: Alexandru Tachici <alexandru.tachici@analog.com>
 ---
- Documentation/hwmon/adm1266.rst               | 15 +++
- .../userspace-api/ioctl/ioctl-number.rst      |  1 +
- drivers/hwmon/pmbus/adm1266.c                 | 97 +++++++++++++++++++
- include/uapi/linux/adm1266.h                  | 16 +++
- 4 files changed, 129 insertions(+)
- create mode 100644 include/uapi/linux/adm1266.h
+ drivers/hwmon/pmbus/adm1266.c | 134 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 134 insertions(+)
 
-diff --git a/Documentation/hwmon/adm1266.rst b/Documentation/hwmon/adm1266.rst
-index 65662115750c..5dc05808db60 100644
---- a/Documentation/hwmon/adm1266.rst
-+++ b/Documentation/hwmon/adm1266.rst
-@@ -33,3 +33,18 @@ inX_min			Minimum Voltage.
- inX_max			Maximum voltage.
- inX_min_alarm		Voltage low alarm.
- inX_max_alarm		Voltage high alarm.
-+
-+
-+User API
-+========
-+
-+ioctls
-+------
-+
-+ADM1266_SET_GO_COMMAND:
-+
-+  Issue a GO_COMMAND to the device.
-+
-+ADM1266_GET_STATUS:
-+
-+  Returns state of the sequencer.
-diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-index 59472cd6a11d..df92ca274622 100644
---- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-+++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-@@ -348,6 +348,7 @@ Code  Seq#    Include File                                           Comments
- 0xCC  00-0F  drivers/misc/ibmvmc.h                                   pseries VMC driver
- 0xCD  01     linux/reiserfs_fs.h
- 0xCF  02     fs/cifs/ioctl.c
-+0xD1  00-0F  linux/adm1266.h
- 0xDB  00-0F  drivers/char/mwave/mwavepub.h
- 0xDD  00-3F                                                          ZFCP device driver see drivers/s390/scsi/
-                                                                      <mailto:aherrman@de.ibm.com>
 diff --git a/drivers/hwmon/pmbus/adm1266.c b/drivers/hwmon/pmbus/adm1266.c
-index 76bf2c78e737..0960ead8d96a 100644
+index 0960ead8d96a..b9e92ab1e39a 100644
 --- a/drivers/hwmon/pmbus/adm1266.c
 +++ b/drivers/hwmon/pmbus/adm1266.c
-@@ -15,11 +15,16 @@
+@@ -15,6 +15,8 @@
  #include <linux/init.h>
  #include <linux/kernel.h>
  #include <linux/module.h>
-+#include <linux/proc_fs.h>
++#include <linux/nvmem-consumer.h>
++#include <linux/nvmem-provider.h>
+ #include <linux/proc_fs.h>
  #include <linux/slab.h>
-+#include <linux/uaccess.h>
- 
-+#include <linux/adm1266.h>
+ #include <linux/uaccess.h>
+@@ -22,10 +24,13 @@
+ #include <linux/adm1266.h>
  #include "pmbus.h"
  
++#define ADM1266_BLACKBOX_CONFIG	0xD3
  #define ADM1266_PDIO_CONFIG	0xD4
-+#define ADM1266_GO_COMMAND	0xD8
-+#define ADM1266_READ_STATE	0xD9
+ #define ADM1266_GO_COMMAND	0xD8
+ #define ADM1266_READ_STATE	0xD9
++#define ADM1266_READ_BLACKBOX	0xDE
  #define ADM1266_GPIO_CONFIG	0xE1
++#define ADM1266_BLACKBOX_INFO	0xE6
  #define ADM1266_PDIO_STATUS	0xE9
  #define ADM1266_GPIO_STATUS	0xEA
-@@ -46,6 +51,7 @@ struct adm1266_data {
- 	struct gpio_chip gc;
+ 
+@@ -42,6 +47,9 @@
+ #define ADM1266_PDIO_GLITCH_FILT(x)	FIELD_GET(GENMASK(12, 9), x)
+ #define ADM1266_PDIO_OUT_CFG(x)		FIELD_GET(GENMASK(2, 0), x)
+ 
++#define ADM1266_BLACKBOX_OFFSET		0x7F700
++#define ADM1266_BLACKBOX_SIZE		64
++
+ #define ADM1266_PMBUS_BLOCK_MAX		255
+ 
+ DECLARE_CRC8_TABLE(pmbus_crc_table);
+@@ -52,6 +60,17 @@ struct adm1266_data {
  	const char *gpio_names[ADM1266_GPIO_NR + ADM1266_PDIO_NR];
  	struct i2c_client *client;
-+	struct mutex ioctl_mutex; /* lock ioctl access */
+ 	struct mutex ioctl_mutex; /* lock ioctl access */
++	struct nvmem_config nvmem_config;
++	struct nvmem_device *nvmem;
++	u8 *dev_mem;
++};
++
++static const struct nvmem_cell_info adm1266_nvmem_cells[] = {
++	{
++		.name           = "blackbox",
++		.offset         = ADM1266_BLACKBOX_OFFSET,
++		.bytes          = 2048,
++	},
  };
  
  /* Different from Block Read as it sends data and waits for the slave to
-@@ -311,6 +317,93 @@ static int adm1266_config_gpio(struct adm1266_data *data)
+@@ -404,6 +423,117 @@ static int adm1266_init_procfs(struct adm1266_data *data)
+ 	return 0;
  }
- #endif
  
-+static int adm1266_set_go_command_op(struct adm1266_data *data, u8 val)
++static int adm1266_nvmem_read_blackbox(struct adm1266_data *data, u8 *buf)
 +{
-+	val = FIELD_GET(GENMASK(4, 0), val);
-+
-+	return i2c_smbus_write_word_data(data->client, ADM1266_GO_COMMAND, val);
-+}
-+
-+static int adm1266_ioctl_unlocked(struct file *fp, unsigned int cmd,
-+				  unsigned long arg)
-+{
-+	int __user *argp = (int __user *)arg;
-+	struct adm1266_data *data;
-+	int val;
++	u8 read_buf[5];
++	char index;
++	int record_count;
 +	int ret;
 +
-+	data = fp->private_data;
++	ret = i2c_smbus_read_block_data(data->client, ADM1266_BLACKBOX_INFO,
++					read_buf);
++	if (ret < 0)
++		return ret;
 +
-+	if (!argp)
-+		return -EINVAL;
++	record_count = read_buf[3];
 +
-+	switch (cmd) {
-+	case ADM1266_SET_GO_COMMAND:
-+		if (copy_from_user(&val, argp, sizeof(int)))
-+			return -EFAULT;
-+
-+		return adm1266_set_go_command_op(data, val);
-+	case ADM1266_GET_STATUS:
-+		ret = i2c_smbus_read_word_data(data->client,
-+					       ADM1266_READ_STATE);
-+
++	for (index = 0; index < record_count; index++) {
++		ret = pmbus_block_xfer(data->client, ADM1266_READ_BLACKBOX, 1,
++				       &index, buf);
 +		if (ret < 0)
 +			return ret;
 +
-+		if (copy_to_user(argp, &ret, sizeof(int)))
-+			return -EFAULT;
-+
-+		break;
-+	default:
-+		return -ENOTTY;
++		buf += ADM1266_BLACKBOX_SIZE;
 +	}
 +
 +	return 0;
 +}
 +
-+static long adm1266_ioctl(struct file *fp, unsigned int cmd, unsigned long arg)
++static bool adm1266_cell_is_accessed(const struct nvmem_cell_info *mem_cell,
++				     unsigned int offset, size_t bytes)
 +{
-+	struct adm1266_data *data;
-+	long ret;
++	unsigned int start_addr = offset;
++	unsigned int end_addr = offset + bytes;
++	unsigned int cell_start = mem_cell->offset;
++	unsigned int cell_end = mem_cell->offset + mem_cell->bytes;
 +
-+	data = fp->private_data;
++	if (start_addr <= cell_end && cell_start <= end_addr)
++		return true;
 +
-+	mutex_lock(&data->ioctl_mutex);
-+	ret = adm1266_ioctl_unlocked(fp, cmd, arg);
-+	mutex_unlock(&data->ioctl_mutex);
-+
-+	return ret;
++	return false;
 +}
 +
-+static int adm1266_open(struct inode *inode, struct file *filp)
++static int adm1266_read_mem_cell(struct adm1266_data *data,
++				 const struct nvmem_cell_info *mem_cell)
 +{
-+	filp->private_data = PDE_DATA(inode);
++	u8 *mem_offset;
++	int ret;
++
++	switch (mem_cell->offset) {
++	case ADM1266_BLACKBOX_OFFSET:
++		mem_offset = data->dev_mem + mem_cell->offset;
++		ret = adm1266_nvmem_read_blackbox(data, mem_offset);
++		if (ret)
++			dev_err(&data->client->dev, "Could not read blackbox!");
++		return ret;
++	default:
++		return -EINVAL;
++	}
++}
++
++static int adm1266_nvmem_read(void *priv, unsigned int offset, void *val,
++			      size_t bytes)
++{
++	const struct nvmem_cell_info *mem_cell;
++	struct adm1266_data *data = priv;
++	int ret;
++	int i;
++
++	for (i = 0; i < data->nvmem_config.ncells; i++) {
++		mem_cell = &adm1266_nvmem_cells[i];
++		if (!adm1266_cell_is_accessed(mem_cell, offset, bytes))
++			continue;
++
++		ret = adm1266_read_mem_cell(data, mem_cell);
++		if (ret < 0)
++			return ret;
++	}
++
++	memcpy(val, data->dev_mem + offset, bytes);
 +
 +	return 0;
 +}
 +
-+static const struct proc_ops adm1266_proc_ops = {
-+	.proc_open	= adm1266_open,
-+	.proc_ioctl	= adm1266_ioctl,
-+};
-+
-+static int adm1266_init_procfs(struct adm1266_data *data)
++static int adm1266_config_nvmem(struct adm1266_data *data)
 +{
-+	struct proc_dir_entry *proc_dir;
-+	u8 proc_fs_name[32];
++	data->nvmem_config.name = dev_name(&data->client->dev);
++	data->nvmem_config.dev = &data->client->dev;
++	data->nvmem_config.root_only = true;
++	data->nvmem_config.read_only = true;
++	data->nvmem_config.owner = THIS_MODULE;
++	data->nvmem_config.reg_read = adm1266_nvmem_read;
++	data->nvmem_config.cells = adm1266_nvmem_cells;
++	data->nvmem_config.ncells = ARRAY_SIZE(adm1266_nvmem_cells);
++	data->nvmem_config.priv = data;
++	data->nvmem_config.stride = 1;
++	data->nvmem_config.word_size = 1;
++	data->nvmem_config.size = 0x80000;
 +
-+	mutex_init(&data->ioctl_mutex);
++	data->nvmem = nvmem_register(&data->nvmem_config);
++	if (IS_ERR(data->nvmem)) {
++		dev_err(&data->client->dev, "Could not register nvmem!");
++		return PTR_ERR(data->nvmem);
++	}
 +
-+	snprintf(proc_fs_name, 32, "adm1266-%x", data->client->addr);
-+	proc_dir = proc_create_data(proc_fs_name, 0, NULL, &adm1266_proc_ops,
-+				    data);
-+
-+	if (!proc_dir)
-+		return -EINVAL;
++	data->dev_mem = devm_kzalloc(&data->client->dev,
++				     data->nvmem_config.size,
++				     GFP_KERNEL);
++	if (!data->dev_mem)
++		return -ENOMEM;
 +
 +	return 0;
 +}
@@ -232,39 +246,17 @@ index 76bf2c78e737..0960ead8d96a 100644
  static int adm1266_probe(struct i2c_client *client,
  			 const struct i2c_device_id *id)
  {
-@@ -333,6 +426,10 @@ static int adm1266_probe(struct i2c_client *client,
+@@ -430,6 +560,10 @@ static int adm1266_probe(struct i2c_client *client,
+ 	if (ret < 0)
+ 		return ret;
  
- 	crc8_populate_msb(pmbus_crc_table, 0x7);
- 
-+	ret = adm1266_init_procfs(data);
++	ret = adm1266_config_nvmem(data);
 +	if (ret < 0)
 +		return ret;
 +
  	info = &data->info;
  	info->pages = 17;
  	info->format[PSC_VOLTAGE_OUT] = linear;
-diff --git a/include/uapi/linux/adm1266.h b/include/uapi/linux/adm1266.h
-new file mode 100644
-index 000000000000..535d270ee8c5
---- /dev/null
-+++ b/include/uapi/linux/adm1266.h
-@@ -0,0 +1,16 @@
-+/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-+/*
-+ * ADM1266 - Cascadable Super Sequencer with Margin
-+ * Control and Fault Recording
-+ *
-+ * Copyright 2020 Analog Devices Inc.
-+ */
-+
-+#ifndef _LINUX_ADM1266_H
-+#define _LINUX_ADM1266_H
-+
-+/* ADM1266 ioctl commands */
-+#define ADM1266_SET_GO_COMMAND		_IOW(0xD1, 0x00, int)
-+#define ADM1266_GET_STATUS		_IOR(0xD1, 0x01, int)
-+
-+#endif
 -- 
 2.20.1
 
