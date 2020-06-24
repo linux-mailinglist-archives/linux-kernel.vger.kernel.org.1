@@ -2,143 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD88D206FAC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 11:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E98B206FA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 11:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388115AbgFXJG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 05:06:27 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60550 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728732AbgFXJG1 (ORCPT
+        id S2389043AbgFXJEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 05:04:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728463AbgFXJEs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 05:06:27 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05O965RB123852;
-        Wed, 24 Jun 2020 05:06:17 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31ux06hph1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Jun 2020 05:06:16 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05O96Gos128689;
-        Wed, 24 Jun 2020 05:06:16 -0400
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31ux06hp4f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Jun 2020 05:06:13 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05O8ndH3022644;
-        Wed, 24 Jun 2020 09:04:18 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma02dal.us.ibm.com with ESMTP id 31uursucyq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 24 Jun 2020 09:04:18 +0000
-Received: from b03ledav003.gho.boulder.ibm.com (b03ledav003.gho.boulder.ibm.com [9.17.130.234])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05O94HUB44630278
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 24 Jun 2020 09:04:17 GMT
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F3F536A058;
-        Wed, 24 Jun 2020 09:04:16 +0000 (GMT)
-Received: from b03ledav003.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 403606A047;
-        Wed, 24 Jun 2020 09:04:16 +0000 (GMT)
-Received: from [9.211.67.55] (unknown [9.211.67.55])
-        by b03ledav003.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed, 24 Jun 2020 09:04:16 +0000 (GMT)
-Subject: Re: [PATCH v2 0/6] kernfs: proposed locking and concurrency
- improvement
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Ian Kent <raven@themaw.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <159237905950.89469.6559073274338175600.stgit@mickey.themaw.net>
- <20200619153833.GA5749@mtj.thefacebook.com>
- <16d9d5aa-a996-d41d-cbff-9a5937863893@linux.vnet.ibm.com>
- <20200619222356.GA13061@mtj.duckdns.org>
- <fa22c563-73b7-5e45-2120-71108ca8d1a0@linux.vnet.ibm.com>
- <20200622175343.GC13061@mtj.duckdns.org>
- <82b2379e-36d0-22c2-41eb-71571e992b37@linux.vnet.ibm.com>
- <20200623231348.GD13061@mtj.duckdns.org>
-From:   Rick Lindsley <ricklind@linux.vnet.ibm.com>
-Message-ID: <a3e9414e-4740-3013-947d-e1839a20227c@linux.vnet.ibm.com>
-Date:   Wed, 24 Jun 2020 02:04:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        Wed, 24 Jun 2020 05:04:48 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755F1C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 02:04:48 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id n24so1709248lji.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 02:04:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=W75Vyxutbx3kUBYjxcYLfUDoT9Gq5ndxaYo4aaQYbA8=;
+        b=f/TMaPATghI6Y8C+kjh7zI0RupMMLaAD6+NPBHo+CirJoIHPWV3brfOtAz3LMyS0K2
+         XG1Az7BYSTHcS3KZUMGwl26JQCu4RcZ4BZsz10thydmZri1ka70xg4Ywsm3c57IIWhI/
+         6LpqqXuzHNNejjdk1l6Rn+/xsSH7DgtkaRvlEDXR9OxX/ChlIqQjdalYnChZp1JFBN/4
+         3eUMcvfBV0rRz5HpZJMggbSGRyqkqoAcsTM8PldUgpCDRuMxgI1GFnCKAzH+q6rEzuFN
+         dUrFOfJytbW9nXWjdpbNBGWoEPqpuJ/VCkDHGZVoXg1tNNRGOWwwbXPN2u+NQc5sbWF8
+         rRAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=W75Vyxutbx3kUBYjxcYLfUDoT9Gq5ndxaYo4aaQYbA8=;
+        b=dKD1v9rejjmq9jNE1ZiWfbaDBErf02FYBUQv94dY+/CadjVf5wtCInu5CIgZl5TY+H
+         9IS4nGZmAM0IR+e8fThI/z+rkyfE+VyCx6OZdrUGprWbRfTEr3QbVs7CNjLl01ZZ8NtJ
+         ouheHFO07XOwAQOBbAXiZ0B8QgXKYULh4WQuu7gAU8trKrExavyPQxeZxQmx8pGNJgw7
+         qqit4Bf5dcJVYuxr0fv5QkXbFh+osd+GI0vUGHiO4hodUb2QXmz5spGSj03gPfY2+abU
+         TlTkaW6C10mrMv+ZxxlkapU0YOJpIIeYEuuSbn6XAGWKPmYi7CAaA6GprLMF5Xjwt1Hg
+         5g/g==
+X-Gm-Message-State: AOAM530v5bJAbRlVXjVt24n/ptRNlio7udtY2NK+9SLpWUIU+8mBd/yk
+        7TX9eEhnIuEt3WIbGKtAXGuvlpvKpKDzmQzubWc4Yw==
+X-Google-Smtp-Source: ABdhPJzUsGWNLAWqDlwrozMpTeRmx1S40/m5sNUP0zYDWflbtU5BH6oXjgtsX+CrWeDEbbQVhS1ZuhImSMk7/Oq1fX0=
+X-Received: by 2002:a2e:b8d4:: with SMTP id s20mr13839910ljp.177.1592989486852;
+ Wed, 24 Jun 2020 02:04:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200623231348.GD13061@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-24_04:2020-06-24,2020-06-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
- impostorscore=0 cotscore=-2147483648 mlxlogscore=999 bulkscore=0
- lowpriorityscore=0 adultscore=0 malwarescore=0 phishscore=0 clxscore=1015
- priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006240063
+References: <20200319023819.GO11705@shao2-debian> <20200612110616.20264-1-hdanton@sina.com>
+ <90f4036d-bb16-af67-8776-a2cbe67dfe7f@linux.intel.com> <20200615081041.GA16990@vingu-book>
+ <d60343e9-b3a0-bdc7-84f4-e8c912f92c46@linux.intel.com> <20200616065432.GA18401@vingu-book>
+ <3de4937b-1dcd-6d2e-836f-fed1c295dd7c@linux.intel.com> <20200617145725.GA12524@vingu-book>
+ <987fd281-cf22-c17f-b156-4b6f904c5a5b@linux.intel.com> <CAKfTPtB3ay_q2XuAegszyt5gFdSVTz9ndGDemKkZ0iFihDXsPQ@mail.gmail.com>
+In-Reply-To: <CAKfTPtB3ay_q2XuAegszyt5gFdSVTz9ndGDemKkZ0iFihDXsPQ@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 24 Jun 2020 11:04:35 +0200
+Message-ID: <CAKfTPtA-7c+=3q-V6wG+tDp=0q+tm=kCqfAVERbvK5r-EazN8g@mail.gmail.com>
+Subject: Re: [LKP] [sched/fair] 070f5e860e: reaim.jobs_per_min -10.5% regression
+To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Cc:     Hillf Danton <hdanton@sina.com>,
+        kernel test robot <rong.a.chen@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Phil Auld <pauld@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks, Tejun, appreciate the feedback.
+On Fri, 19 Jun 2020 at 09:15, Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> On Fri, 19 Jun 2020 at 06:55, Xing Zhengjun
+> <zhengjun.xing@linux.intel.com> wrote:
+> > On 6/17/2020 10:57 PM, Vincent Guittot wrote:
+> > > Le mercredi 17 juin 2020 =C3=A0 08:30:21 (+0800), Xing Zhengjun a =C3=
+=A9crit :
+>
+> ...
+>
+> > > OK. So the regression disappears when the conditions on runnable_avg =
+are removed.
+> > >
+> > > In the meantime, I have been able to understand more deeply what was =
+happeningi
+> > > for this bench and how it is impacted by
+> > >    commit: 070f5e860ee2 ("sched/fair: Take into account runnable_avg =
+to classify group")
+> > >
+> > > This bench forks a new thread for each and every new step. But a newl=
+y forked
+> > > threads start with a load_avg and a runnable_avg set to max whereas t=
+he threads
+> > > are running shortly before exiting. This makes the CPU to be set over=
+loaded in
+> > > some case whereas it isn't.
+> > >
+> > > Could you try the patch below ?
+> > > It fixes the problem on my setup (I have finally been able to reprodu=
+ce the problem)
+> > >
+> > > ---
+> > >   kernel/sched/fair.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > > index 0aeffff62807..b33a4a9e1491 100644
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -807,7 +807,7 @@ void post_init_entity_util_avg(struct task_struct=
+ *p)
+> > >               }
+> > >       }
+> > >
+> > > -     sa->runnable_avg =3D cpu_scale;
+> > > +     sa->runnable_avg =3D sa->util_avg;
+> > >
+> > >       if (p->sched_class !=3D &fair_sched_class) {
+> > >               /*
+> > >
+> >
+> > I apply the patch above based on v5.7, the test result is as the follow=
+ing:
+>
+> Thanks for the tests.
+>
+> This patch fixes the regression on the test. I'm going to run more
+> tests to make sure that it doesn't regress others benchmarks. I
+> remember that some were slightly better with the original behavior but
+> others patches and fixes have been added in the meantime that might
+> change the results.
 
-On 6/23/20 4:13 PM, Tejun Heo wrote:
+I have run more test on large and small system and the results are
+balanced. I might see a small regression on some hackbenchs results on
+large system but it's in the range of the stdev and might not be
+significant
 
-> The problem is fitting that into an interface which wholly doesn't fit that
-> particular requirement. It's not that difficult to imagine different ways to
-> represent however many memory slots, right? 
+I'm going to send  a clean patch with a commit message.
 
-Perhaps we have different views of how this is showing up.  systemd is 
-the primary instigator of the boot issues.
+Thanks for your help
+Vincent
 
-Systemd runs
-
-     /usr/lib/systemd/system/systemd-udev-trigger.service
-
-which does a udev trigger, specifically
-
-     /usr/bin/udevadm trigger --type=devices --action=add
-
-as part of its post-initramfs coldplug.  It then waits for that to 
-finish, under the watch of a timer.
-
-So, the kernel itself is reporting these devices to systemd. It gets 
-that information from talking to the hardware.  That means, then, that 
-the obfuscation must either start in the kernel itself (it lies to 
-systemd), or start in systemd when it handles the devices it got from 
-the kernel.  If the kernel lies, then the actual granularity is not 
-available to any user utilities.
-
-Unless you're suggesting a new interface be created that would allow 
-utilities to determine the "real" memory addresses available for 
-manipulation.  But the changes you describe cannot be limited to the 
-unknown number of auxiliary utilities.
-
-Having one subsystem lie to another seems like the start of a bad idea, 
-anyway.  When the hardware management console, separate from Linux, 
-reports a memory error, or adds or deletes memory in a guest system, 
-it's not going to be manipulating spoofed addresses that are only a 
-Linux construct.
-
-In contrast, the provided patch fixes the observed problem with no 
-ripple effect to other subsystems or utilities.
-
-Greg had suggested
-     Treat the system as a whole please, don't go for a short-term
-     fix that we all know is not solving the real problem here.
-
-Your solution affects multiple subsystems; this one affects one.  Which 
-is the whole system approach in terms of risk?  You mentioned you 
-support 30k scsi disks but only because they are slow so the 
-inefficiencies of kernfs don't show.  That doesn't bother you?
-
-Rick
+>
+> >
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > tbox_group/testcase/rootfs/kconfig/compiler/runtime/nr_task/debug-setup=
+/test/cpufreq_governor/ucode:
+> >
+> > lkp-ivb-d04/reaim/debian-x86_64-20191114.cgz/x86_64-rhel-7.6/gcc-7/300s=
+/100%/test/five_sec/performance/0x21
+> >
+> > commit:
+> >    9f68395333ad7f5bfe2f83473fed363d4229f11c
+> >    070f5e860ee2bf588c99ef7b4c202451faa48236
+> >    v5.7
+> >    cbb4d668e7431479a7978fa79d64c2271adefab0 ( the test patch which modi=
+fy
+> > post_init_entity_util_avg())
+> >
+> > 9f68395333ad7f5b 070f5e860ee2bf588c99ef7b4c2                        v5.=
+7
+> > cbb4d668e7431479a7978fa79d6
+> > ---------------- --------------------------- --------------------------=
+-
+> > ---------------------------
+> >           %stddev     %change         %stddev     %change
+> > %stddev     %change         %stddev
+> >               \          |                \          |                \
+> >          |                \
+> >        0.69           -10.3%       0.62            -9.1%       0.62
+> >        +0.6%       0.69        reaim.child_systime
+> >        0.62            -1.0%       0.61            +0.5%       0.62
+> >        -0.3%       0.62        reaim.child_utime
+> >       66870           -10.0%      60187            -7.6%      61787
+> >        +0.7%      67335        reaim.jobs_per_min
+>
+>
+>
+> >       16717           -10.0%      15046            -7.6%      15446
+> >        +0.7%      16833        reaim.jobs_per_min_child
+> >       97.84            -1.1%      96.75            -0.4%      97.43
+> >        +0.2%      98.05        reaim.jti
+> >       72000           -10.8%      64216            -8.3%      66000
+> >        +0.0%      72000        reaim.max_jobs_per_min
+> >        0.36           +10.6%       0.40            +7.8%       0.39
+> >        -0.6%       0.36        reaim.parent_time
+> >        1.58 =C2=B1  2%     +71.0%       2.70 =C2=B1  2%     +26.9%     =
+  2.01 =C2=B1
+> > 2%      -8.8%       1.44 =C2=B1  2%  reaim.std_dev_percent
+> >        0.00 =C2=B1  5%    +110.4%       0.01 =C2=B1  3%     +48.8%     =
+  0.01 =C2=B1
+> > 7%     -24.6%       0.00 =C2=B1  7%  reaim.std_dev_time
+> >       50800            -2.4%      49600            -1.6%      50000
+> >        +0.0%      50800        reaim.workload
+> >
+> >
+> > --
+> > Zhengjun Xing
