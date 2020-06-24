@@ -2,81 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44A2207936
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:32:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3944F207942
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405168AbgFXQcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 12:32:23 -0400
-Received: from foss.arm.com ([217.140.110.172]:41130 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404692AbgFXQcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 12:32:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DFEA81FB;
-        Wed, 24 Jun 2020 09:32:18 -0700 (PDT)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5932F3F73C;
-        Wed, 24 Jun 2020 09:32:17 -0700 (PDT)
-References: <20200624154422.29166-1-vincent.guittot@linaro.org>
-User-agent: mu4e 0.9.17; emacs 26.3
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, linux-kernel@vger.kernel.org,
-        rong.a.chen@intel.com, pauld@redhat.com, hdanton@sina.com
-Subject: Re: [PATCH] sched/cfs: change initial value of runnable_avg
-In-reply-to: <20200624154422.29166-1-vincent.guittot@linaro.org>
-Date:   Wed, 24 Jun 2020 17:32:12 +0100
-Message-ID: <jhj8sgcs9v7.mognet@arm.com>
+        id S2404943AbgFXQfF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 12:35:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404535AbgFXQfF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 12:35:05 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED792C061573;
+        Wed, 24 Jun 2020 09:35:04 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id z2so2686221ilq.0;
+        Wed, 24 Jun 2020 09:35:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+I6y3pNtuMWnbkqUpxbZvfr8752FW4gM6Qr1fXSaUd0=;
+        b=NqqTFVJxUER0fAvaPENWhsQbrhd+xhCRvVEPR29e58YecyfMxJEOioJioJJLa7UswL
+         ttuFSXvuIRR2BdbqtXI3BT1kOGF6cnyFO9VX5yZBJzqllS9+g7pI5YAvn273rL8IdVa9
+         nqsa9/XCaMmS4s+hrAXa+QkOjmLKV2gsq9i3Z3WFctGZ+KLGpKNxoRQW3zpplmSo2l2K
+         WnqLW/FyaVBTmqGofjKkj8OMTwQJsMuLuo6Mfn1sqT/pGfQtI57dipiDIyIJ6f9yrnB8
+         bW1YjDY1VBL881IjAWqTlhRsz36C4qU2XW7yDzDCmqKoLZoL0aFVXpO/BI20DfPlwIeK
+         gHXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+I6y3pNtuMWnbkqUpxbZvfr8752FW4gM6Qr1fXSaUd0=;
+        b=NkJhlZN9Ts+E9CfY47oU6AhIRBdJ1wCLtZ6zXlu/3ZAXpYJsm+sMBV2UizsueKHWt4
+         M7VUFsyJCYx5tG6afS7hWEXwJTwCY9JHrPi3zh0r18bNPsZ876PqTJn9VE/fXqDdZjy8
+         L4lMYSl4zFHHlzs5nysPj8n5t1+Z/hduj5bghBb5CaBrLF38jB01gOv9H4oWOqJNMZ+5
+         OBTEFXfXjBKF0TYJiy9A5Ksgtt2maCEfXSOU8gGmvyT4Thn+qvzJKulLY+fopF+dIKKR
+         6VwMi/CU0ZW60jJIbTJTQ64HQh87rwWfay5igmeXswSivhRiMIZ5SoM8+C4rGtX0H6Mo
+         YQQw==
+X-Gm-Message-State: AOAM53009rLsNNYxCDQxtUb5NRjROnTc5FugFwX7OmvLEqJRllzef32k
+        /3tB3kjwEZR9gPCpUGFyHQBTvvF7A1bXJuF39IY=
+X-Google-Smtp-Source: ABdhPJzLDUekT+GvWZk7aV7tM9rY3U1EqQBwUoHTgmVZz36JFNQs3+g2dME/8Tm7Ik21rOrCpUjvuaHZecG9XEwnmcY=
+X-Received: by 2002:a92:4a04:: with SMTP id m4mr31018680ilf.228.1593016504266;
+ Wed, 24 Jun 2020 09:35:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20200622111400.55956-1-vaibhavgupta40@gmail.com> <20200623.203131.1093463627031337018.davem@davemloft.net>
+In-Reply-To: <20200623.203131.1093463627031337018.davem@davemloft.net>
+From:   Vaibhav Gupta <vaibhav.varodek@gmail.com>
+Date:   Wed, 24 Jun 2020 22:03:30 +0530
+Message-ID: <CAPBsFfBCd9+JWji1DeHHtOrpTMTeN5Zk4iQXWM6MRrRJ40ns9w@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] ethernet: amd: Convert to generic power management
+To:     David Miller <davem@davemloft.net>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        Jakub Kicinski <kuba@kernel.org>, pcnet32@frontier.com,
+        thomas.lendacky@amd.com, netdev@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 24/06/20 16:44, Vincent Guittot wrote:
-> Some performance regression on reaim benchmark have been raised with
->   commit 070f5e860ee2 ("sched/fair: Take into account runnable_avg to classify group")
+On Wed, 24 Jun 2020 at 09:01, David Miller <davem@davemloft.net> wrote:
 >
-> The problem comes from the init value of runnable_avg which is initialized
-> with max value. This can be a problem if the newly forked task is finally
-> a short task because the group of CPUs is wrongly set to overloaded and
-> tasks are pulled less agressively.
+> From: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> Date: Mon, 22 Jun 2020 16:43:57 +0530
 >
-> Set initial value of runnable_avg equals to util_avg to reflect that there
-> is no waiting time so far.
+> > Linux Kernel Mentee: Remove Legacy Power Management.
+> >
+> > The purpose of this patch series is to remove legacy power management callbacks
+> > from amd ethernet drivers.
+> >
+> > The callbacks performing suspend() and resume() operations are still calling
+> > pci_save_state(), pci_set_power_state(), etc. and handling the power management
+> > themselves, which is not recommended.
+> >
+> > The conversion requires the removal of the those function calls and change the
+> > callback definition accordingly and make use of dev_pm_ops structure.
+> >
+> > All patches are compile-tested only.
 >
-> Fixes: 070f5e860ee2 ("sched/fair: Take into account runnable_avg to classify group")
-> Reported-by: kernel test robot <rong.a.chen@intel.com>
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->  kernel/sched/fair.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 0424a0af5f87..45e467bf42fc 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -806,7 +806,7 @@ void post_init_entity_util_avg(struct task_struct *p)
->  		}
->  	}
->  
-> -	sa->runnable_avg = cpu_scale;
-> +	sa->runnable_avg = sa->util_avg;
-
-IIRC we didn't go for this initially because hackbench behaved slightly
-worse with it. Did we end up re-evaluating this? Also, how does this reaim
-benchmark behave with it? I *think* the table from that regression thread
-says it behaves better, but I had a hard time parsing it (seems like it got
-damaged by line wrapping)
-
-Conceptually I'm all for it, so as long as the tests back it up:
-Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
-
->  
->  	if (p->sched_class != &fair_sched_class) {
->  		/*
-
+> Series applied
+Thank You !
+-- Vaibhav Gupta
+> , thanks.
