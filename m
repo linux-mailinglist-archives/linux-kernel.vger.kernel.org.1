@@ -2,109 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BAC3207A6F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:39:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13ED1207A7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405588AbgFXRjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 13:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52018 "EHLO
+        id S2405636AbgFXRoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 13:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405427AbgFXRju (ORCPT
+        with ESMTP id S2405567AbgFXRoF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:39:50 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9B2C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 10:39:50 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id x11so1320232plo.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 10:39:50 -0700 (PDT)
+        Wed, 24 Jun 2020 13:44:05 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08553C061573;
+        Wed, 24 Jun 2020 10:44:05 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id d6so1443484pjs.3;
+        Wed, 24 Jun 2020 10:44:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=icPG8hObHg8yafPJKwf2o4eaI571GeN/laooKjhqnGA=;
-        b=ccU9fEXoNSEIM7OOQ/yadogIOyX0u9hfrmr0o3aOPCOthUpjuoBld3sSt+PdY3i0Qr
-         XrYjEd28vcqX+7L5zyThYAz5CZMd1Rx4YAfvSNHxP8Vf+rBZyFqtdiKeuZ67i/ak9icd
-         O3ksW4NGLZpdaE9RP9XJC3jE75u/oa2nEAAJI=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q66XZq5tVZm4QZtVyx5dc+LjQt4l89O1YXK816M5JxU=;
+        b=YIcfSoxuvmqeZqXnEhrXfx8fYBfSN0iMclikZiiCR5tBm9HHdSFD5NRwBxD7MXShRC
+         cr3NgoGcbi4Ej15eKzuVdIvJLODfLC1QSwxQK0qIsmbp5gTPZE5NAKYv/JhyvGA8Y7SI
+         qJr/L+gTb5nv0ENifRNbg9tb1geqMfATxqBPw/btSLsnB7zp0xRzdpOT9AkXlw7gbq5k
+         z17ITLqdTALlvqdpIP3lHIv62ifAxvAzlk35pZHvc4xdiIcA0geGw+6bEnElErTDiW8j
+         Xnq0ekf1vYiA2Zlw5LltLYPk6cqo7a6m8hX5XPTZtYo42RrAWo03FR7ILKdNlSjmZ1CY
+         qlog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=icPG8hObHg8yafPJKwf2o4eaI571GeN/laooKjhqnGA=;
-        b=pbTF5UjQ0PV0UZ+7ej3JZcpYtkuWVf3zp7YyYJYYV7slCphzjghjSCyYhU9LHBWyJ3
-         DywMIgz+v7vqJNpgc8/e/ZMFfyvPBSMY2sLGc2pgk8LLHkG7x5AAriw3aqldL3Cepu7a
-         w7hFgmvBvHJuyTvt5i3s45dzu/JfOzEaRZQfQKsnxkpPeF3cRAas5Yi6jMTkdfyBK/S4
-         qW7xxqTXwWum7U3So4mrb4vwlqEkR7A087RxeJS//JDWVlX0i3cYBvz9G20d76kC0eao
-         J4M3ChieTGQkVPoy6lrwvRix9waz8egRpngHrnBvMt5m76/EyKXX/L7ShTrzDf/8XVcs
-         Wq/A==
-X-Gm-Message-State: AOAM532SXH1lJfn3nHcV4fD9kNuGvAXmZN63Kbtcn3UBbeU2fg/IbcfF
-        3oQb5qyVdQaIKlIhfNE1RiWq5w==
-X-Google-Smtp-Source: ABdhPJxEB785qbfd6S3Vxd6Ma7a0jVEjXIBDvEs8LRmaTNVuKN6yFPJfwMEa04arCunvtaU7Med6og==
-X-Received: by 2002:a17:902:b60f:: with SMTP id b15mr29521587pls.248.1593020389993;
-        Wed, 24 Jun 2020 10:39:49 -0700 (PDT)
-Received: from localhost ([2620:15c:202:1:4fff:7a6b:a335:8fde])
-        by smtp.gmail.com with ESMTPSA id z5sm501869pfb.1.2020.06.24.10.39.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jun 2020 10:39:49 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 10:39:48 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>, bjorn.andersson@linaro.org,
-        agross@kernel.org, robdclark@gmail.com, robdclark@chromium.org,
-        stanimir.varbanov@linaro.org, viresh.kumar@linaro.org,
-        sboyd@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alok Chauhan <alokc@codeaurora.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH v6 6/6] spi: spi-qcom-qspi: Use OPP API to set clk/perf
- state
-Message-ID: <20200624173948.GC39073@google.com>
-References: <1592222564-13556-1-git-send-email-rnayak@codeaurora.org>
- <1592222564-13556-7-git-send-email-rnayak@codeaurora.org>
- <20200624170933.GB39073@google.com>
- <20200624171537.GL5472@sirena.org.uk>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q66XZq5tVZm4QZtVyx5dc+LjQt4l89O1YXK816M5JxU=;
+        b=sz/AGABnG9tQIK4rPen5LPlFhPRcDc6lMsrrY4SeU3j5h/l4KWT8HN+Pyq/9anmQAc
+         FwFqytdtQ8jQL+dLkwQLr028eF2QNyb1iFCfWYgAN2/TQJD7RKwBgzkhg2OUGr9fL4LE
+         Ko6vFdHvVYQB7I2t60IuPFcYc+Yl0CqYrOyc8TrTZUg4Yep9YNIq8Hdec47gZigfWWWY
+         5iEqooXjdsMcAQcwQKM145JxiqqB5uu1NXRzFwmXdcdfeg5G/vgQyNQ1tQ8LxfqJ6zPW
+         3IT7FQLXRkFqZsC5QLLsQ80X33fotEWfLBX8UwmSNKaXWoONqMhMSFT1Y3dkoTyVmudB
+         Y7rw==
+X-Gm-Message-State: AOAM532KHkPeKF+DRdBKD4r3O7QggsrPyq/tJ2p8GQvTnPDej3CHlYCo
+        idc06luBqpjUUe2F/rWOPUU=
+X-Google-Smtp-Source: ABdhPJzpC59BuAnXFlgkDpWoDCbUH8H2Ug5AMUQQO3WqUefsyf5wUAv8yEorWyaV4YgvzGvawPvwPQ==
+X-Received: by 2002:a17:902:7896:: with SMTP id q22mr29894001pll.237.1593020644480;
+        Wed, 24 Jun 2020 10:44:04 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.153.57])
+        by smtp.gmail.com with ESMTPSA id b71sm11079297pfb.125.2020.06.24.10.44.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 10:44:03 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org, netdev@vger.kernel.org,
+        linux-wireless@vger.kernel.org
+Subject: [PATCH v1] orinoco: use generic power management
+Date:   Wed, 24 Jun 2020 23:10:49 +0530
+Message-Id: <20200624174048.64754-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200624171537.GL5472@sirena.org.uk>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 06:15:37PM +0100, Mark Brown wrote:
-> On Wed, Jun 24, 2020 at 10:09:33AM -0700, Matthias Kaehlcke wrote:
-> > Hi Mark,
-> > 
-> > do you plan to land this in your tree?
-> > 
-> > I know you hate contentless pings, but since you acked this patch and
-> > usually don't seem to do that when patches go through your tree I want
-> > to make sure we aren't in a situation where everybody thinks that the
-> > patch will go through someone else's tree.
-> 
-> Aren't there dependencies on earlier patches in the series?
+With the support of generic PM callbacks, drivers no longer need to use
+legacy .suspend() and .resume() in which they had to maintain PCI states
+changes and device's power state themselves. The required operations are
+done by PCI core.
 
-Not to my knowledge. Patch "[2/6] spi: spi-geni-qcom: Use OPP API to set
-clk/perf state" depends on a change in 'include/linux/qcom-geni-se.h' made
-by "1/6] tty: serial: qcom_geni_serial: Use OPP API to set clk/perf state",
-however that's not true for this patch.
+PCI drivers are not expected to invoke PCI helper functions like
+pci_save/restore_state(), pci_enable/disable_device(),
+pci_set_power_state(), etc. Their tasks are completed by PCI core itself.
 
-I wonder if it would have been better to split this series into individual
-patches/mini-series, to avoid this kind of confusion.
+Compile-tested only.
 
-> In general if someone acks something for their tree that means they don't
-> expect to apply it themselves.
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ .../intersil/orinoco/orinoco_nortel.c         |  3 +-
+ .../wireless/intersil/orinoco/orinoco_pci.c   |  3 +-
+ .../wireless/intersil/orinoco/orinoco_pci.h   | 32 ++++++-------------
+ .../wireless/intersil/orinoco/orinoco_plx.c   |  3 +-
+ .../wireless/intersil/orinoco/orinoco_tmd.c   |  3 +-
+ 5 files changed, 13 insertions(+), 31 deletions(-)
 
-Yes, that was my understanding and prompted me to clarify this with you.
+diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_nortel.c b/drivers/net/wireless/intersil/orinoco/orinoco_nortel.c
+index 048693b6c6c2..96a03d10a080 100644
+--- a/drivers/net/wireless/intersil/orinoco/orinoco_nortel.c
++++ b/drivers/net/wireless/intersil/orinoco/orinoco_nortel.c
+@@ -290,8 +290,7 @@ static struct pci_driver orinoco_nortel_driver = {
+ 	.id_table	= orinoco_nortel_id_table,
+ 	.probe		= orinoco_nortel_init_one,
+ 	.remove		= orinoco_nortel_remove_one,
+-	.suspend	= orinoco_pci_suspend,
+-	.resume		= orinoco_pci_resume,
++	.driver.pm	= &orinoco_pci_pm_ops,
+ };
+ 
+ static char version[] __initdata = DRIVER_NAME " " DRIVER_VERSION
+diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_pci.c b/drivers/net/wireless/intersil/orinoco/orinoco_pci.c
+index 4938a2208a37..f3c86b07b1b9 100644
+--- a/drivers/net/wireless/intersil/orinoco/orinoco_pci.c
++++ b/drivers/net/wireless/intersil/orinoco/orinoco_pci.c
+@@ -230,8 +230,7 @@ static struct pci_driver orinoco_pci_driver = {
+ 	.id_table	= orinoco_pci_id_table,
+ 	.probe		= orinoco_pci_init_one,
+ 	.remove		= orinoco_pci_remove_one,
+-	.suspend	= orinoco_pci_suspend,
+-	.resume		= orinoco_pci_resume,
++	.driver.pm	= &orinoco_pci_pm_ops,
+ };
+ 
+ static char version[] __initdata = DRIVER_NAME " " DRIVER_VERSION
+diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_pci.h b/drivers/net/wireless/intersil/orinoco/orinoco_pci.h
+index 43f5b9f5a0b0..d49d940864b4 100644
+--- a/drivers/net/wireless/intersil/orinoco/orinoco_pci.h
++++ b/drivers/net/wireless/intersil/orinoco/orinoco_pci.h
+@@ -18,51 +18,37 @@ struct orinoco_pci_card {
+ 	void __iomem *attr_io;
+ };
+ 
+-#ifdef CONFIG_PM
+-static int orinoco_pci_suspend(struct pci_dev *pdev, pm_message_t state)
++static int __maybe_unused orinoco_pci_suspend(struct device *dev_d)
+ {
++	struct pci_dev *pdev = to_pci_dev(dev_d);
+ 	struct orinoco_private *priv = pci_get_drvdata(pdev);
+ 
+ 	orinoco_down(priv);
+ 	free_irq(pdev->irq, priv);
+-	pci_save_state(pdev);
+-	pci_disable_device(pdev);
+-	pci_set_power_state(pdev, PCI_D3hot);
+ 
+ 	return 0;
+ }
+ 
+-static int orinoco_pci_resume(struct pci_dev *pdev)
++static int __maybe_unused orinoco_pci_resume(struct device *dev_d)
+ {
++	struct pci_dev *pdev = to_pci_dev(dev_d);
+ 	struct orinoco_private *priv = pci_get_drvdata(pdev);
+ 	struct net_device *dev = priv->ndev;
+ 	int err;
+ 
+-	pci_set_power_state(pdev, PCI_D0);
+-	err = pci_enable_device(pdev);
+-	if (err) {
+-		printk(KERN_ERR "%s: pci_enable_device failed on resume\n",
+-		       dev->name);
+-		return err;
+-	}
+-	pci_restore_state(pdev);
+-
+ 	err = request_irq(pdev->irq, orinoco_interrupt, IRQF_SHARED,
+ 			  dev->name, priv);
+ 	if (err) {
+ 		printk(KERN_ERR "%s: cannot re-allocate IRQ on resume\n",
+ 		       dev->name);
+-		pci_disable_device(pdev);
+ 		return -EBUSY;
+ 	}
+ 
+-	err = orinoco_up(priv);
+-
+-	return err;
++	return orinoco_up(priv);
+ }
+-#else
+-#define orinoco_pci_suspend NULL
+-#define orinoco_pci_resume NULL
+-#endif
++
++static SIMPLE_DEV_PM_OPS(orinoco_pci_pm_ops,
++			 orinoco_pci_suspend,
++			 orinoco_pci_resume);
+ 
+ #endif /* _ORINOCO_PCI_H */
+diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_plx.c b/drivers/net/wireless/intersil/orinoco/orinoco_plx.c
+index 221352027779..16dada94c774 100644
+--- a/drivers/net/wireless/intersil/orinoco/orinoco_plx.c
++++ b/drivers/net/wireless/intersil/orinoco/orinoco_plx.c
+@@ -336,8 +336,7 @@ static struct pci_driver orinoco_plx_driver = {
+ 	.id_table	= orinoco_plx_id_table,
+ 	.probe		= orinoco_plx_init_one,
+ 	.remove		= orinoco_plx_remove_one,
+-	.suspend	= orinoco_pci_suspend,
+-	.resume		= orinoco_pci_resume,
++	.driver.pm	= &orinoco_pci_pm_ops,
+ };
+ 
+ static char version[] __initdata = DRIVER_NAME " " DRIVER_VERSION
+diff --git a/drivers/net/wireless/intersil/orinoco/orinoco_tmd.c b/drivers/net/wireless/intersil/orinoco/orinoco_tmd.c
+index 20ce569b8a43..9a9d335611ac 100644
+--- a/drivers/net/wireless/intersil/orinoco/orinoco_tmd.c
++++ b/drivers/net/wireless/intersil/orinoco/orinoco_tmd.c
+@@ -213,8 +213,7 @@ static struct pci_driver orinoco_tmd_driver = {
+ 	.id_table	= orinoco_tmd_id_table,
+ 	.probe		= orinoco_tmd_init_one,
+ 	.remove		= orinoco_tmd_remove_one,
+-	.suspend	= orinoco_pci_suspend,
+-	.resume		= orinoco_pci_resume,
++	.driver.pm	= &orinoco_pci_pm_ops,
+ };
+ 
+ static char version[] __initdata = DRIVER_NAME " " DRIVER_VERSION
+-- 
+2.27.0
 
-The patch could go through the QCOM tree, but to my knowledge there is no
-reason for it.
-
-Btw, the patch "[V8,7/8] spi: spi-qcom-qspi: Add interconnect support"
-(https://patchwork.kernel.org/patch/11620285/) is in a similar situation.
-Another patch of the series for the 'spi-geni-qcom' driver has to go
-through the QCOM change due to changes in geni, but the QSPI driver
-doesn't use geni and could therefore go through your tree.
-
-Ultimately I don't really care too much through which tree the patches
-land as long as you and Bjorn agree on it :)
