@@ -2,103 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7C520971D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 01:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2CC209724
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 01:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388817AbgFXXWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 19:22:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48590 "EHLO
+        id S2389109AbgFXXXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 19:23:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388735AbgFXXWY (ORCPT
+        with ESMTP id S2388985AbgFXXXR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 19:22:24 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4700CC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 16:22:24 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id 5so1583220oty.11
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 16:22:24 -0700 (PDT)
+        Wed, 24 Jun 2020 19:23:17 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDCFBC061795
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 16:23:17 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id s21so3334714oic.9
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 16:23:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ixR4kIucjZXiRtwMzxKSRPAHfL+FLubXnd+GvW1h77s=;
-        b=Z7YPQvc6norraPne8OACkSUlKBVmLzg0FP9LZ7gduh3U4fiXJckSxRV8Rw/M6ozRWJ
-         CjO2/AkaXd9R+o9hVzdrRw1hQuKb2mCZ1GENwhRmQMvXPb4YogDL9Anl/z4vNHibhS7O
-         NK3IrFNQK8cYxuy21niT7Scw64KVhXT99fgZQNoQLHaS4zd3qSpDwRBNF69Va9CI3Su1
-         XOZeXBH0cz4qgxb4LruxmpvoG9P53uUpxNMeGz+7XTSEjo/48iNu+ULMKQcpWyfIRnzG
-         WGAjrfnyEm3aD+QzMcQW7ICI5L5cy+GzJeuU+I+SuwLYvFoAuMEzV69tL1xuT3vPCjHY
-         qcNw==
+        bh=dGipXZ9X17I+u12oD4DZ2rzNuQVhucODHVNdBawnSmI=;
+        b=M1wwfU36UoerE5HtEt7AEffn18uiUdtoM8XXl0AWGojXJGk3IpAdJ2M0usNyP93xIJ
+         C4K+tOo4fi/6g4LDkLfnGygf2naXQEjHsl+hfIdob42HpSMDH+RoiClBIpgTZBx++Gwz
+         F071ruwPJDr/lHuDqNMAs+amwuavPxIJt1JaWWxFc3xFISohL1QELXY5uKA9Dywb7DaN
+         A20RNPw7+ZloQGbS1jfx4jB/8WXiwu33UjOTyKHHu0VlWpJLIrtQtLaEzmdXeT9EE5GB
+         owoWOoO1ON0J7TmZDzZtNI5C/NRXNrd0BXcvAjC8iei4HAH1VMd+PspPMOJfibAazSDi
+         2QXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ixR4kIucjZXiRtwMzxKSRPAHfL+FLubXnd+GvW1h77s=;
-        b=gN2l+J4g1qeDN8TtYBjNG7Tmj3C+R4fCbLiOnsHUOOgFwW8i8tv8c/19MGUKJYji+D
-         ODaD62HhmxqoFEsooB77otmjH7T2ns0/3WdwTJktasEUhybv3gyM2r4deaDKRzXZPpP8
-         sL4aUfpSwQBCZpCgegQpi5iY0HFsnDCgKfEtHPb6BW0mDpRMjD5G75atJksOUmB0pEuw
-         5uLBziPLzJBzxTKFSsPolDqFU1fKExe1XPGu9OlU/j4HYDe5BuEhaK1xO/atqHQKAoCq
-         +1r9DQ/asmfUh7kj6eUvrcbAsnGJL0NTXlMg1tX2sDfBeUiZLJKob0Vrf+MBrMzHKnYc
-         mEkA==
-X-Gm-Message-State: AOAM531mtnI3n7rfImlUckEwlt7TteHd+oSabmOvRGlWIG4r7sJWOZc8
-        aML/PuIakpiZOIyI1G9y7V0fRAFC7m26FabtvRDRyA==
-X-Google-Smtp-Source: ABdhPJyDeT0KDPGBY+XrtAn4IpWyHShWZgknfbRvrpyv5ICBQ0JbfIvQE3n6cpvnMFZ4tsBYi4nHf3OPeZeTeb/2RbY=
-X-Received: by 2002:a05:6830:1e13:: with SMTP id s19mr9494408otr.102.1593040943632;
- Wed, 24 Jun 2020 16:22:23 -0700 (PDT)
+        bh=dGipXZ9X17I+u12oD4DZ2rzNuQVhucODHVNdBawnSmI=;
+        b=gib9GuP+1RJvO4/pjaS2JbnaiFtGVU2pjfGclXlqPt+0gluNXCWstiCJl9knVEwyDp
+         v6Wdz7yQrsxeWc3NUdnUJYWVBjnUkYXKeYzGwKR1pxqo1c/Q3JDYAophOF1EI7/qYIX4
+         sgNdkQ/R6qL0K9TAiNCDrTMm4rus+/0EGO1utaf81AInsn+0mzWy5uGSERt7tZfiUSor
+         y2I2uxsibPoWTLocfhGXW1sO/3fG1S0Rdd/+NLvlYNIkLOm05xpCCyBOpSfvHAxGAeXv
+         p4YTHW6Whgszt+yMVNGND/kFb1c98nY13UMe+ZXhsMUl7/3rfP/brSO/YC7k34t8et3m
+         ojrw==
+X-Gm-Message-State: AOAM530vtkxZx43ccGiigNZGpPZygzW5zk1f6VMCjcveZ+p1OQVp0jPD
+        dnqb3tk0dhXgLbzlA0S7xMFMkMgbD+1SGQzLpd4vgA==
+X-Google-Smtp-Source: ABdhPJx5V5Rup3zninLm3/4nlfZ5WpzvvNUIwQf1nRP1tGt6s55UEoBgS6WnEaNkB6yHnFN0OU4E08/nB8eF6a04daw=
+X-Received: by 2002:aca:6208:: with SMTP id w8mr126619oib.69.1593040996906;
+ Wed, 24 Jun 2020 16:23:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200616061338.109499-1-john.stultz@linaro.org>
- <20200616061338.109499-5-john.stultz@linaro.org> <20200621060055.GA2421@builder.lan>
-In-Reply-To: <20200621060055.GA2421@builder.lan>
-From:   John Stultz <john.stultz@linaro.org>
-Date:   Wed, 24 Jun 2020 16:22:12 -0700
-Message-ID: <CALAqxLUhi4qQpz5b+6hc8T5mA2E6ugg6UD44WA+Dc2+=Hjm=DQ@mail.gmail.com>
-Subject: Re: [RFC][PATCH 4/5] pinctrl: qcom: Allow pinctrl-msm code to be
- loadable as a module
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        Andy Gross <agross@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        iommu@lists.linux-foundation.org, linux-gpio@vger.kernel.org
+References: <20200515053500.215929-1-saravanak@google.com> <20200515053500.215929-5-saravanak@google.com>
+ <CAMuHMdUnbDvn6GdK51MN-+5iRp6zYRf-yzKY+OwcQOGrYqOZPA@mail.gmail.com>
+ <CAGETcx9JKbNQWQwNah7pO5ppVSAe86R-OmMujZPYNkuTCLwKnQ@mail.gmail.com>
+ <CAMuHMdU2gF=aTeVxRvtzAMLGY=GyBDfBwrYZxoRkL1tV7dL56g@mail.gmail.com>
+ <CAGETcx-rHFthf-aLb_S-ST6Evozvgis5XX5u0LNxyvfMoJOLKQ@mail.gmail.com>
+ <CAMuHMdXW0jM-A5cvYtFVcgc1Gm3tKkvr0+kWpeJqpJDzNOuYeA@mail.gmail.com>
+ <CAGETcx8W96KAw-d_siTX4qHB_-7ddk0miYRDQeHE6E0_8qx-6Q@mail.gmail.com>
+ <CAGETcx87JNfKEu4brQ3S-9wObv=OwXkAoDBSREQH5dAD68TPsA@mail.gmail.com> <CAMuHMdUsWAQ3XUGh1Jg_Y3LWz4G5aaZfHqL8JjNZv3DrW3TjvQ@mail.gmail.com>
+In-Reply-To: <CAMuHMdUsWAQ3XUGh1Jg_Y3LWz4G5aaZfHqL8JjNZv3DrW3TjvQ@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 24 Jun 2020 16:22:40 -0700
+Message-ID: <CAGETcx_gOQWbxUAS6joxEgLDx_wuXwn3AFqDuio_42XeeG++PQ@mail.gmail.com>
+Subject: Re: [PATCH v1 4/4] of: platform: Batch fwnode parsing when adding all
+ top level devices
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Len Brown <lenb@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Ji Luo <ji.luo@nxp.com>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jun 20, 2020 at 11:03 PM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
+On Mon, Jun 22, 2020 at 8:49 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> On Mon 15 Jun 23:13 PDT 2020, John Stultz wrote:
+> Hi Saravana,
 >
-> > Tweaks to allow pinctrl-msm code to be loadable as a module.
-> > This is needed in order to support having the qcom-scm driver,
-> > which pinctrl-msm calls into, configured as a module.
+> On Sat, Jun 20, 2020 at 4:33 AM Saravana Kannan <saravanak@google.com> wrote:
+> > On Fri, Jun 19, 2020 at 1:07 PM Saravana Kannan <saravanak@google.com> wrote:
+> > > I think instead of deferred_probe_work_func() moving the device to the
+> > > end of the dpm_list, I think the device probing successfully is what
+> > > should move it to the end of the dpm_list. That way, the dpm_list is
+> > > actually ordered by when the devices become functional and not the
+> > > random order in DT or random probe order which can get pretty
+> > > convoluted with multiple deferred probes. This feels right and will
+> > > make suspend/resume more robust against DT ordering -- but I'm not
+> > > sure what other wide ranging impact this has for other platforms.
 > >
->
-> This means that we need a "depends on QCOM_SCM || QCOM_SCM=n" on all
-> entries in the Kconfig that selects PINCTRL_MSM, or switch PINCTRL_MSM
-> to be user selectable and make all the others depend on it.
-
-Oh, good point! I already had to fix that in a different tree, but
-forgot to move the fix over to my upstreaming tree.
-
-
+> > If you want to play around with a potential fix to test my hypothesis,
+> > I think it's just adding this one line to driver_bound():
+> > ============
+> > klist_add_tail(&dev->p->knode_driver, &dev->driver->p->klist_devices);
+> > device_links_driver_bound(dev);
+> > +device_pm_move_to_tail(dev);
 > >
-> > +MODULE_DESCRIPTION("Qualcomm Technologies, Inc. pinctrl-msm driver");
+> > device_pm_check_callbacks(dev);
+> > ============
 >
-> It's the "Qualcomm Technologies, Inc. TLMM driver"
+> Thanks, that seems to fix the issue for me, on both affected systems!
+> Note that this has quite some impact on the order devices are suspended,
+> but this seems harmless.
 >
-> > +MODULE_LICENSE("GPL v2");
-> > +
->
-> Please don't retain my empty line at the end of this file :)
+> Will try on more systems later...
 
-Done and done. Thanks so much for the review!
--john
+Thanks for testing. Maybe I should just send that change as a patch
+and see what Greg/Rafael have to say to that.
+
+It's a general fix anyway. So, might as well send it out.
+
+-Saravana
