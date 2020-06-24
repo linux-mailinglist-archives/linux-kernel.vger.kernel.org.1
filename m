@@ -2,100 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F562076D7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:10:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 724B02076E1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404465AbgFXPJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:09:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
+        id S2404485AbgFXPJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:09:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404444AbgFXPJC (ORCPT
+        with ESMTP id S2404289AbgFXPJz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:09:02 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE10C0613ED;
-        Wed, 24 Jun 2020 08:09:01 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id g2so1480525lfb.0;
-        Wed, 24 Jun 2020 08:09:01 -0700 (PDT)
+        Wed, 24 Jun 2020 11:09:55 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C4AC061573;
+        Wed, 24 Jun 2020 08:09:55 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id ga4so2779010ejb.11;
+        Wed, 24 Jun 2020 08:09:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=MbEwAEDY+UIz4Bw5+QFZkmbm4gisWV5nZMVAP0V+gWg=;
-        b=ulp/uL9mvSJ7SU6iy5vKC57v2/nHWbwvSeoz2IatRstoQAKNz9khO51LYV0etv/+Pt
-         nOjON8gH8HePftUtiH/m1lbv6Ge7KCktGswiYuoR6BzRE/4aPtpbZ+G8AtBcnzezenRv
-         E19kA4MYhMukJaDqwCySvCQtSIREF728qLuajUixXbhb8xBkfGnACnug5MRDiEDpkLvu
-         ruAE3QYb7Hcp6hPuFK+NFirykJcmSZF1auuJnTTpeLMPyTnoHiQ5KbzSKM9ITmJi4eak
-         ErFjnAFcranSp2YH9+o44LTTuGjTuoI7MB4F0YV1MiN25IhJqTh7fcK9HT7i497ahTcZ
-         7aSQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xqA0JkwflkTobMLTCr0ZvM2/SSPlycQMaw9fn8Bg9K4=;
+        b=IZWCTTbvlGPqVMTEvL+RCNLvtkr9ymy95LhJvsvrwruvDDDqo5l0my86UnhHTO7gVt
+         6OEg0WbvFoNuzHtr6gEqwafjZjinhukdU+JqzI4ImfvTa7Gps/iP/e2iws9tbIi3OOtE
+         4mqR0BKXcSEDy/lhdwjZe8KzJVQSf0dbyeiG7eMCJ03oGo1APEmJSLM2S3gtoGxqMI//
+         im5+0Abzi5O0tB4sApp5nb1fWpXXNhNplFggfPfoIK75ZaRH6Bm7VxstsH8X+rM2Ia1y
+         M4xTfNbtNL/6fLaoyf5l6/N5XC5BHgrqnbJ3HT6X5JGg8OrvQTB/bdVWIJRvvPN7zWjj
+         dlTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=MbEwAEDY+UIz4Bw5+QFZkmbm4gisWV5nZMVAP0V+gWg=;
-        b=B6mhMdGyuvOK51zunSh4HqLbrTEJUnlX6LJgyN7YEFj7xRskEXvSoZ+xTiERHw1NZr
-         x1nb0SNjmEoMIZH911zPIkV1f9TPtwhfFx9b2qRwEWA9DPWGT66zkT0wuHBeLOoIs/EF
-         VkfSRbH8HM2SDqfNlvD7g/fu9a2ySRxlhTvtE8fOkXJ601RkR5Wnn0fRQA8R0KmlcTQc
-         nzRiCOBG2yfu7VpwqIOUvEGScNpBrpBBhv/zlbn2b2Ne+ChrYnwDztY/NDIquXKzjYSV
-         oWTTf3HQ8845dM76JsXETDrGMu+HgK8wCTvBBEEo6V39v0fO3bgG9+dz5tbzGYzlPFHi
-         uiXA==
-X-Gm-Message-State: AOAM532nF3bu9WmUdnb42DIwQcxGJtKY1Vs+dCfTZHds7gcuI5jjPzf/
-        kYdGmQxHOmOU/3sbE/ydV2I=
-X-Google-Smtp-Source: ABdhPJwBscUlFJUFnBG6HoRwUDBMUXuDryV4RkhTsFyJYaFEtrtjM23lOEY1nMU1CiXDl9wNs+qRrA==
-X-Received: by 2002:ac2:5295:: with SMTP id q21mr15591045lfm.185.1593011340318;
-        Wed, 24 Jun 2020 08:09:00 -0700 (PDT)
-Received: from localhost.localdomain (79-139-237-54.dynamic.spd-mgts.ru. [79.139.237.54])
-        by smtp.gmail.com with ESMTPSA id z1sm4182049lja.47.2020.06.24.08.08.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 08:08:59 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] media: staging: tegra-vde: Power-cycle hardware on probe
-Date:   Wed, 24 Jun 2020 18:08:47 +0300
-Message-Id: <20200624150847.22672-5-digetx@gmail.com>
-X-Mailer: git-send-email 2.26.0
-In-Reply-To: <20200624150847.22672-1-digetx@gmail.com>
-References: <20200624150847.22672-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xqA0JkwflkTobMLTCr0ZvM2/SSPlycQMaw9fn8Bg9K4=;
+        b=N7xDPRnwwrbZwgHgzOIh8On7Q5kTK1DtsFuyzRHVSZfqlDAw6J7LzTC7vc5fY2Ievi
+         xWW8jvYAdSo5YkaDrCGrDh1+3OH/pglTZAxbbDMz9vVz5WP4yNy5Cf3KABav46ZT1mYo
+         8OSxHcGkHaDZphYGqDkyZoLVcwS8A0Gf/XTkMpsDYUf5gMtIFtAvqeRxflyMVsmwg6K8
+         8sUP1YOu7HPeYaJvilpQoQn843++CFvdwTs8ksEJoiDNVeymtd7aD0PZZ0pK9nOlyzG4
+         NVKsTz8+WGAGkgafXFt3LCNqVdYVhZKdUo48a3/rV+02eNsob6WFFQ+Vt/KFt4yNiasN
+         Bv5A==
+X-Gm-Message-State: AOAM5321Efv9wlELZ4ok9QNnjLWNS/D/6XOxcQnxG7OezMOwFr6+bjNs
+        tY0z7XgdHagYFSNbh1xG/k4D+gSBJlOgKRPwAc0=
+X-Google-Smtp-Source: ABdhPJwqURAScm61PUoBnTTiAvio3Dy0kQw/f3E/f1hDwhw+981uq2BMzaiXIVf+D/uy7kNOieVVEHrsxWb61i75Flw=
+X-Received: by 2002:a17:906:7002:: with SMTP id n2mr7502548ejj.340.1593011394401;
+ Wed, 24 Jun 2020 08:09:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200623230018.303776-1-konradybcio@gmail.com>
+In-Reply-To: <20200623230018.303776-1-konradybcio@gmail.com>
+From:   Konrad Dybcio <konradybcio@gmail.com>
+Date:   Wed, 24 Jun 2020 17:09:18 +0200
+Message-ID: <CAMS8qEVHxnAwC9fK69Pb4MEMWVEa9N7ZdkQCkXwvqC-JfQEfRA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] clk: qcom: smd: Add support for MSM8992/4 rpm clocks
+To:     skrzynka@konradybcio.pl
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        linux-clk@vger.kernel.org, DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VDE partition is left turned ON after bootloader on most devices, hence
-let's ensure that it's turned OFF in order to lower power leakage while
-hardware is idling by turning it ON and OFF during of the driver's probe.
+I should also note that for quite some time a hack [1]
+has been needed on some platforms for the RPMCC to register.
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/staging/media/tegra-vde/vde.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+This includes 8992/94, 8956/76 and possibly many more.
 
-diff --git a/drivers/staging/media/tegra-vde/vde.c b/drivers/staging/media/tegra-vde/vde.c
-index b64e35b86fb4..3be96c36bf43 100644
---- a/drivers/staging/media/tegra-vde/vde.c
-+++ b/drivers/staging/media/tegra-vde/vde.c
-@@ -1068,6 +1068,14 @@ static int tegra_vde_probe(struct platform_device *pdev)
- 	pm_runtime_use_autosuspend(dev);
- 	pm_runtime_set_autosuspend_delay(dev, 300);
- 
-+	/*
-+	 * VDE partition may be left ON after bootloader, hence let's
-+	 * power-cycle it in order to put hardware into a predictable lower
-+	 * power state.
-+	 */
-+	pm_runtime_get_sync(dev);
-+	pm_runtime_put(dev);
-+
- 	return 0;
- 
- err_deinit_iommu:
--- 
-2.26.0
+With that commit, RPMCC registers fine.
 
+[1] https://github.com/kholk/kernel-upstream/commit/5df7bb6e337c0a41b2cc6477cddc718d622d7545
+
+Regards
+Konrad
