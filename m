@@ -2,50 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B75420767A
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B19A20765A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404320AbgFXPDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55470 "EHLO
+        id S2404157AbgFXPBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:01:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404131AbgFXPBn (ORCPT
+        with ESMTP id S2404142AbgFXPBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:01:43 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 105E7C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:01:43 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id j4so1164376plk.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:01:43 -0700 (PDT)
+        Wed, 24 Jun 2020 11:01:46 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A1EC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:01:45 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id s14so1157298plq.6
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:01:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=6s3VpyoFsgSZ3B6oAIdOh3RdCzhKLfaICUHf9hDLF48=;
-        b=LNH0aJZTIpw3O3toEvTwUb5sMIlFp6cAUGwKSbwkjKkQ/jzXvNQWLmAnScro//yCPY
-         O1WdRzwSYzOgItXdBWAqxJg9VeNSOSvyey1jqUY0fQtWjs4EM2mFeom7U5+5jjlmNcYH
-         JystW330pb4PhzoD8EpVBvVgLkYu8/3OtYawwVE3flpaPEWDmIBnVTaP1EULUbV/FfJD
-         iPW2EBMWOQvH8ZoqbreMFGKnl3CI+Fmp0XhNlRMv1QORa41VG3HkF1ocPo+SRvjK4guS
-         oeNbXdD/kMtG70lRpL7QQ/WWoiBof0jT3tBpjPlyjgcmhy/qu2SHCPt5CzkDIpw6VM0Q
-         sfaQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=lCfhSpDjLg0oQm41kWMqoMza5V2vl2PVe0Cy2zdpUs4=;
+        b=UwaotPoi71Q37vlpe0idrCVUeedFZnNJi7hm4BN/zg+fqUR/nfv8+x/cMKGbRswW6K
+         nDRh8yun2BNbgOmjhg2BmgGXGsFf5M2ZAr4Kl9dTIAVodNCsqmTIEXtEURu/4SURPh14
+         vqVq7YW5Ctj0JIxt6FtaNcx5DQp9AmkIHpEXWmAX7iZZ9fxUbVkfo9ptpLZS1+zqe5z0
+         FUvFEpMYMtvuni7uuKF2E7BLXluQ8BAoYlp02MLUDRykv138y8b9a+Q234TNYXVq20NG
+         n7utb0dCNuvTssYtKNY2gC5CCPvqqsCksE3B0/Lj80ocPbu+XsGOH/sWKJ7rrlim8cFS
+         62Kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=6s3VpyoFsgSZ3B6oAIdOh3RdCzhKLfaICUHf9hDLF48=;
-        b=BCFPvZnrTDweCmwE2F37vqM69PecrprcHYOVpUcKYqT7emN8wIv2B5PLy/V0hDk2DW
-         5uqDt473AtLqXBba0VCR45rEXevMWtD7a/U6jzRI/mzCPtN3qeudri/Kb4DJ9Nu3Xdkd
-         ZfCNRhyazjN/IZaQKDF2nzT6dgCdKKnByPiBCNuYczFztihS2DlfbKQkvbQV/ReMRHdj
-         DKPSP1gcAbZmdb3CaC5uW+xwed/0BAQFgE9hdc3hpkQN+Z/kFE32YUEX/yFf7+Oleomn
-         V1pJf7GNT26TCHy4j5AetL4IuF2lmggmUV7xcJSg1UrRquEd/fFM90kJ7h7j4losZZeS
-         sAFA==
-X-Gm-Message-State: AOAM532kzrXNoG3pc0xcjoDcAXdQfRVEKC/pCdDzebQz6DECnF5NWV2u
-        QqEaaTJVa2mYBNrJH92L8w==
-X-Google-Smtp-Source: ABdhPJy0MIbYK35VfmoGi9P4OYaen8i194NRhzg25e9pkT997Hdx1akqVNawblxcg8nBy/kJHn6hkg==
-X-Received: by 2002:a17:90a:ad87:: with SMTP id s7mr30269606pjq.225.1593010902533;
-        Wed, 24 Jun 2020 08:01:42 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=lCfhSpDjLg0oQm41kWMqoMza5V2vl2PVe0Cy2zdpUs4=;
+        b=Gu2Lky/D3iHA2PvryO8lQgaPhJwizm80cSTK6FFlYK4DKyLPJ79WbZvhr9/NdF2ST3
+         NEa2T0xXLMSG0mM/L4NmcKTZy+y+jQCvGpAStm5QjpekXxrz88YHlj1RHfqz0o29tNUV
+         5jeIg16w5LU+ctfKBjYCLYmtpDvO3dnwM20PLhEiuZ+RyBKUy67wi5YByL92WQw6KlqX
+         beJqyTwKII0KjtnqrGhmirNAX8Vfl5irM97zLsfaHzVRIJPu/70NqvRILINc728O0QI4
+         CRyIjsbSR174gEBfhh8srR5i3a0qS729MDB7HlRq9yDjk1biktl5TE0N+oKycxwRjG0r
+         yFyg==
+X-Gm-Message-State: AOAM532yhOiA4VtZtqQG1wUDCTtanydkbCDrPuDhZ/vV4rVRpEstH1my
+        wI0tCoUPb01ha5j9vWhNxw==
+X-Google-Smtp-Source: ABdhPJw1QP92/ouJDzFZIrN4onjqHXS1nPeUFAid6e2y7e70YPrRcwv0Aq6U4DIjcbRurGP8vn/3eA==
+X-Received: by 2002:a17:902:d207:: with SMTP id t7mr12891961ply.251.1593010905510;
+        Wed, 24 Jun 2020 08:01:45 -0700 (PDT)
 Received: from ip-172-31-41-194.ap-northeast-1.compute.internal (ec2-52-199-21-241.ap-northeast-1.compute.amazonaws.com. [52.199.21.241])
-        by smtp.gmail.com with ESMTPSA id i125sm17013705pgd.21.2020.06.24.08.01.39
+        by smtp.gmail.com with ESMTPSA id i125sm17013705pgd.21.2020.06.24.08.01.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 08:01:42 -0700 (PDT)
+        Wed, 24 Jun 2020 08:01:45 -0700 (PDT)
 From:   nao.horiguchi@gmail.com
 To:     linux-mm@kvack.org
 Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
@@ -53,67 +54,51 @@ Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
         david@redhat.com, aneesh.kumar@linux.vnet.ibm.com,
         zeil@yandex-team.ru, naoya.horiguchi@nec.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 00/15] HWPOISON: soft offline rework
-Date:   Wed, 24 Jun 2020 15:01:22 +0000
-Message-Id: <20200624150137.7052-1-nao.horiguchi@gmail.com>
+Subject: [PATCH v3 01/15] mm,hwpoison: cleanup unused PageHuge() check
+Date:   Wed, 24 Jun 2020 15:01:23 +0000
+Message-Id: <20200624150137.7052-2-nao.horiguchi@gmail.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200624150137.7052-1-nao.horiguchi@gmail.com>
+References: <20200624150137.7052-1-nao.horiguchi@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I rebased soft-offline rework patchset [1][2] onto the latest mmotm.  The
-rebasing required some non-trivial changes to adjust, but mainly that was
-straightforward.  I confirmed that the reported problem doesn't reproduce on
-compaction after soft offline.  For more precise description of the problem
-and the motivation of this patchset, please see [2].
+From: Naoya Horiguchi <naoya.horiguchi@nec.com>
 
-I think that the following two patches in v2 are better to be done with
-separate work of hard-offline rework, so it's not included in this series.
+Drop the PageHuge check, which is dead code since memory_failure() forks
+into memory_failure_hugetlb() for hugetlb pages.
 
-  - mm,hwpoison: Take pages off the buddy when hard-offlining
-  - mm/hwpoison-inject: Rip off duplicated checks
+memory_failure() and memory_failure_hugetlb() shares some functions like
+hwpoison_user_mappings() and identify_page_state(), so they should properly
+handle 4kB page, thp, and hugetlb.
 
-These two are not directly related to the reported problem, so they seems
-not urgent.  And the first one breaks num_poisoned_pages counting in some
-testcases, and The second patch needs more consideration about commented point.
-
-Any comment/suggestion/help would be appreciated.
-
-[1] v1: https://lore.kernel.org/linux-mm/1541746035-13408-1-git-send-email-n-horiguchi@ah.jp.nec.com/
-[2] v2: https://lore.kernel.org/linux-mm/20191017142123.24245-1-osalvador@suse.de/
-
-Thanks,
-Naoya Horiguchi
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
 ---
-Summary:
+changelog v2 -> v3:
+- add description about shared logic b/w hugetlb and non-hugetlb path.
+---
+ mm/memory-failure.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Naoya Horiguchi (7):
-      mm,hwpoison: cleanup unused PageHuge() check
-      mm, hwpoison: remove recalculating hpage
-      mm,madvise: call soft_offline_page() without MF_COUNT_INCREASED
-      mm,hwpoison-inject: don't pin for hwpoison_filter
-      mm,hwpoison: remove MF_COUNT_INCREASED
-      mm,hwpoison: remove flag argument from soft offline functions
-      mm,hwpoison: introduce MF_MSG_UNSPLIT_THP
+diff --git v5.8-rc1-mmots-2020-06-20-21-44/mm/memory-failure.c v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/memory-failure.c
+index 47b8ccb1fb9b..e5d0c14c2332 100644
+--- v5.8-rc1-mmots-2020-06-20-21-44/mm/memory-failure.c
++++ v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/memory-failure.c
+@@ -1382,10 +1382,7 @@ int memory_failure(unsigned long pfn, int flags)
+ 	 * page_remove_rmap() in try_to_unmap_one(). So to determine page status
+ 	 * correctly, we save a copy of the page flags at this time.
+ 	 */
+-	if (PageHuge(p))
+-		page_flags = hpage->flags;
+-	else
+-		page_flags = p->flags;
++	page_flags = p->flags;
+ 
+ 	/*
+ 	 * unpoison always clear PG_hwpoison inside page lock
+-- 
+2.17.1
 
-Oscar Salvador (8):
-      mm,madvise: Refactor madvise_inject_error
-      mm,hwpoison: Un-export get_hwpoison_page and make it static
-      mm,hwpoison: Kill put_hwpoison_page
-      mm,hwpoison: Unify THP handling for hard and soft offline
-      mm,hwpoison: Rework soft offline for free pages
-      mm,hwpoison: Rework soft offline for in-use pages
-      mm,hwpoison: Refactor soft_offline_huge_page and __soft_offline_page
-      mm,hwpoison: Return 0 if the page is already poisoned in soft-offline
-
- drivers/base/memory.c      |   2 +-
- include/linux/mm.h         |  12 +-
- include/linux/page-flags.h |   6 +-
- include/ras/ras_event.h    |   3 +
- mm/hwpoison-inject.c       |  18 +--
- mm/madvise.c               |  39 +++---
- mm/memory-failure.c        | 331 ++++++++++++++++++++-------------------------
- mm/migrate.c               |  11 +-
- mm/page_alloc.c            |  63 +++++++--
- 9 files changed, 233 insertions(+), 252 deletions(-)
