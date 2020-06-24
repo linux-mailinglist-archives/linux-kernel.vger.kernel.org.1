@@ -2,94 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94910207A81
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:44:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394B0207A8C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405649AbgFXRoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 13:44:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49202 "EHLO mail.kernel.org"
+        id S2405674AbgFXRpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 13:45:50 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:22814 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405639AbgFXRoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:44:20 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2405661AbgFXRpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 13:45:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1593020747; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=4TQpm94FFnC9T8iU8dgGUImT9296mkfIJH93h01Kalo=; b=g2PIsYHrcmSC53vU25uXFYkgm9s7zJtuRsNS8fO0uKRMincDGOc8aLPHWPpiCkpYzTh0a8Ks
+ oT7lm0ADkNiu4UXLQPKRNT6t1bhwStEoWSGy3nsrVHVGiAjN21eyVUcalDdH/HqMBQeQ6sfq
+ bWjA0B8fRIshVajUTmR9+iKGDd8=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n13.prod.us-east-1.postgun.com with SMTP id
+ 5ef39136c76a4e7a2a739db1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 24 Jun 2020 17:45:26
+ GMT
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 74D12C433CB; Wed, 24 Jun 2020 17:45:25 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.0 required=2.0 tests=ALL_TRUSTED,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from deesin-linux.qualcomm.com (blr-c-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.19.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6DC0320738;
-        Wed, 24 Jun 2020 17:44:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593020659;
-        bh=bvusmCWIESHEAj0e+z3a1cGAYmpjANA+c6koHZdoHoE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AyXen/QaFox7J1zFBnpVX4/PK81hmX8JLHCM155tV/YRT6FXQSmg57opeqx8XsYvd
-         kErfA2rh5Kyyz5kFbezKJwIbmVPB06thKUmi5X6rkoBf4s4yIJmWeeS26kZiKU8LfY
-         KQPY6dLasmXWkgkkGWjVMbv8EmjyZGlxfXeg4qac=
-Date:   Wed, 24 Jun 2020 18:44:17 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Rajendra Nayak <rnayak@codeaurora.org>, bjorn.andersson@linaro.org,
-        agross@kernel.org, robdclark@gmail.com, robdclark@chromium.org,
-        stanimir.varbanov@linaro.org, viresh.kumar@linaro.org,
-        sboyd@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Alok Chauhan <alokc@codeaurora.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH v6 6/6] spi: spi-qcom-qspi: Use OPP API to set clk/perf
- state
-Message-ID: <20200624174417.GM5472@sirena.org.uk>
-References: <1592222564-13556-1-git-send-email-rnayak@codeaurora.org>
- <1592222564-13556-7-git-send-email-rnayak@codeaurora.org>
- <20200624170933.GB39073@google.com>
- <20200624171537.GL5472@sirena.org.uk>
- <20200624173948.GC39073@google.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="I4g3zIzscEHdx6fd"
-Content-Disposition: inline
-In-Reply-To: <20200624173948.GC39073@google.com>
-X-Cookie: So this is it.  We're going to die.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 255E8C433C8;
+        Wed, 24 Jun 2020 17:45:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 255E8C433C8
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=none smtp.mailfrom=deesin@codeaurora.org
+From:   Deepak Kumar Singh <deesin@codeaurora.org>
+To:     bjorn.andersson@linaro.org, clew@codeaurora.org,
+        mathieu.poirier@linaro.org
+Cc:     rampraka@codeaurora.org,
+        Deepak Kumar Singh <deesin@codeaurora.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org (open list:REMOTE PROCESSOR MESSAGING
+        (RPMSG) SUBSYSTEM), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH V5 1/4] rpmsg: core: Add signal API support
+Date:   Wed, 24 Jun 2020 23:14:58 +0530
+Message-Id: <1593020701-23778-2-git-send-email-deesin@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1593020701-23778-1-git-send-email-deesin@codeaurora.org>
+References: <1593020701-23778-1-git-send-email-deesin@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some transports like Glink support the state notifications between
+clients using signals similar to serial protocol signals.
+Local glink client drivers can send and receive signals to glink
+clients running on remote processors.
 
---I4g3zIzscEHdx6fd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Add apis to support sending and receiving of signals by rpmsg clients.
 
-On Wed, Jun 24, 2020 at 10:39:48AM -0700, Matthias Kaehlcke wrote:
-> On Wed, Jun 24, 2020 at 06:15:37PM +0100, Mark Brown wrote:
+Signed-off-by: Chris Lew <clew@codeaurora.org>
+Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+Signed-off-by: Arun Kumar Neelakantam <aneela@codeaurora.org>
+---
+ drivers/rpmsg/rpmsg_core.c     | 40 ++++++++++++++++++++++++++++++++++++++++
+ drivers/rpmsg/rpmsg_internal.h |  5 +++++
+ include/linux/rpmsg.h          | 27 +++++++++++++++++++++++++++
+ 3 files changed, 72 insertions(+)
 
-> > Aren't there dependencies on earlier patches in the series?
+diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+index 91de940..e6eb5a1 100644
+--- a/drivers/rpmsg/rpmsg_core.c
++++ b/drivers/rpmsg/rpmsg_core.c
+@@ -283,6 +283,42 @@ int rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src, u32 dst,
+ }
+ EXPORT_SYMBOL(rpmsg_trysend_offchannel);
+ 
++/**
++ * rpmsg_get_signals() - get the signals for this endpoint
++ * @ept:	the rpmsg endpoint
++ *
++ * Returns signal bits on success and an appropriate error value on failure.
++ */
++int rpmsg_get_signals(struct rpmsg_endpoint *ept)
++{
++	if (WARN_ON(!ept))
++		return -EINVAL;
++	if (!ept->ops->get_signals)
++		return -ENXIO;
++
++	return ept->ops->get_signals(ept);
++}
++EXPORT_SYMBOL(rpmsg_get_signals);
++
++/**
++ * rpmsg_set_signals() - set the remote signals for this endpoint
++ * @ept:	the rpmsg endpoint
++ * @set:	set mask for signals
++ * @clear:	clear mask for signals
++ *
++ * Returns 0 on success and an appropriate error value on failure.
++ */
++int rpmsg_set_signals(struct rpmsg_endpoint *ept, u32 set, u32 clear)
++{
++	if (WARN_ON(!ept))
++		return -EINVAL;
++	if (!ept->ops->set_signals)
++		return -ENXIO;
++
++	return ept->ops->set_signals(ept, set, clear);
++}
++EXPORT_SYMBOL(rpmsg_set_signals);
++
+ /*
+  * match a rpmsg channel with a channel info struct.
+  * this is used to make sure we're not creating rpmsg devices for channels
+@@ -468,6 +504,10 @@ static int rpmsg_dev_probe(struct device *dev)
+ 
+ 		rpdev->ept = ept;
+ 		rpdev->src = ept->addr;
++
++		if (rpdrv->signals)
++			ept->sig_cb = rpdrv->signals;
++
+ 	}
+ 
+ 	err = rpdrv->probe(rpdev);
+diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
+index 3fc83cd..8958d6c 100644
+--- a/drivers/rpmsg/rpmsg_internal.h
++++ b/drivers/rpmsg/rpmsg_internal.h
+@@ -2,6 +2,7 @@
+ /*
+  * remote processor messaging bus internals
+  *
++ * Copyright (c) 2018, The Linux Foundation.
+  * Copyright (C) 2011 Texas Instruments, Inc.
+  * Copyright (C) 2011 Google, Inc.
+  *
+@@ -47,6 +48,8 @@ struct rpmsg_device_ops {
+  * @trysendto:		see @rpmsg_trysendto(), optional
+  * @trysend_offchannel:	see @rpmsg_trysend_offchannel(), optional
+  * @poll:		see @rpmsg_poll(), optional
++ * @get_signals:	see @rpmsg_get_signals(), optional
++ * @set_signals:	see @rpmsg_set_signals(), optional
+  *
+  * Indirection table for the operations that a rpmsg backend should implement.
+  * In addition to @destroy_ept, the backend must at least implement @send and
+@@ -66,6 +69,8 @@ struct rpmsg_endpoint_ops {
+ 			     void *data, int len);
+ 	__poll_t (*poll)(struct rpmsg_endpoint *ept, struct file *filp,
+ 			     poll_table *wait);
++	int (*get_signals)(struct rpmsg_endpoint *ept);
++	int (*set_signals)(struct rpmsg_endpoint *ept, u32 set, u32 clear);
+ };
+ 
+ int rpmsg_register_device(struct rpmsg_device *rpdev);
+diff --git a/include/linux/rpmsg.h b/include/linux/rpmsg.h
+index 9fe156d..c4dbb47 100644
+--- a/include/linux/rpmsg.h
++++ b/include/linux/rpmsg.h
+@@ -2,6 +2,7 @@
+ /*
+  * Remote processor messaging
+  *
++ * Copyright (c) 2018 The Linux Foundation.
+  * Copyright (C) 2011 Texas Instruments, Inc.
+  * Copyright (C) 2011 Google, Inc.
+  * All rights reserved.
+@@ -60,6 +61,7 @@ struct rpmsg_device {
+ };
+ 
+ typedef int (*rpmsg_rx_cb_t)(struct rpmsg_device *, void *, int, void *, u32);
++typedef int (*rpmsg_rx_sig_t)(struct rpmsg_device *, void *, u32, u32);
+ 
+ /**
+  * struct rpmsg_endpoint - binds a local rpmsg address to its user
+@@ -67,6 +69,7 @@ typedef int (*rpmsg_rx_cb_t)(struct rpmsg_device *, void *, int, void *, u32);
+  * @refcount: when this drops to zero, the ept is deallocated
+  * @cb: rx callback handler
+  * @cb_lock: must be taken before accessing/changing @cb
++ * @sig_cb: rx serial signal handler
+  * @addr: local rpmsg address
+  * @priv: private data for the driver's use
+  *
+@@ -89,6 +92,7 @@ struct rpmsg_endpoint {
+ 	struct kref refcount;
+ 	rpmsg_rx_cb_t cb;
+ 	struct mutex cb_lock;
++	rpmsg_rx_sig_t sig_cb;
+ 	u32 addr;
+ 	void *priv;
+ 
+@@ -102,6 +106,7 @@ struct rpmsg_endpoint {
+  * @probe: invoked when a matching rpmsg channel (i.e. device) is found
+  * @remove: invoked when the rpmsg channel is removed
+  * @callback: invoked when an inbound message is received on the channel
++ * @signals: invoked when a serial signal change is received on the channel
+  */
+ struct rpmsg_driver {
+ 	struct device_driver drv;
+@@ -109,6 +114,8 @@ struct rpmsg_driver {
+ 	int (*probe)(struct rpmsg_device *dev);
+ 	void (*remove)(struct rpmsg_device *dev);
+ 	int (*callback)(struct rpmsg_device *, void *, int, void *, u32);
++	int (*signals)(struct rpmsg_device *rpdev,
++		       void *priv, u32 old, u32 new);
+ };
+ 
+ #if IS_ENABLED(CONFIG_RPMSG)
+@@ -135,6 +142,9 @@ int rpmsg_trysend_offchannel(struct rpmsg_endpoint *ept, u32 src, u32 dst,
+ __poll_t rpmsg_poll(struct rpmsg_endpoint *ept, struct file *filp,
+ 			poll_table *wait);
+ 
++int rpmsg_get_signals(struct rpmsg_endpoint *ept);
++int rpmsg_set_signals(struct rpmsg_endpoint *ept, u32 set, u32 clear);
++
+ #else
+ 
+ static inline int register_rpmsg_device(struct rpmsg_device *dev)
+@@ -242,6 +252,23 @@ static inline __poll_t rpmsg_poll(struct rpmsg_endpoint *ept,
+ 	return 0;
+ }
+ 
++static inline int rpmsg_get_signals(struct rpmsg_endpoint *ept)
++{
++	/* This shouldn't be possible */
++	WARN_ON(1);
++
++	return -ENXIO;
++}
++
++static inline int rpmsg_set_signals(struct rpmsg_endpoint *ept,
++				    u32 set, u32 clear)
++{
++	/* This shouldn't be possible */
++	WARN_ON(1);
++
++	return -ENXIO;
++}
++
+ #endif /* IS_ENABLED(CONFIG_RPMSG) */
+ 
+ /* use a macro to avoid include chaining to get THIS_MODULE */
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-> Not to my knowledge. Patch "[2/6] spi: spi-geni-qcom: Use OPP API to set
-> clk/perf state" depends on a change in 'include/linux/qcom-geni-se.h' made
-> by "1/6] tty: serial: qcom_geni_serial: Use OPP API to set clk/perf state",
-> however that's not true for this patch.
-
-Wait, so *some* of the series should go together but not other bits?
-But you want them split up for some reason?
-
-> I wonder if it would have been better to split this series into individual
-> patches/mini-series, to avoid this kind of confusion.
-
-Yes, if there's no dependencies then bundling things up into a series
-just causes confusion.
-
---I4g3zIzscEHdx6fd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7zkPEACgkQJNaLcl1U
-h9C5Ygf/eV7zcb0/VTGIuud8txsdBua20mrq0v0NJgg3eJsuQ6dIRslZTDgvayp7
-gusdaqd6gG5MVof8R2japp1a5S2XU7GNEBKnkSQIJK2ytFdcr+9Jbm+6AIisDg47
-UsRnOxCxuMvpC/P7J8+n9tnENxfQ8eN0vlrw3j+YH0DiQqrqFfxxR9qLlA4ccAAH
-dbpKrCr7Y/dz4W9JL8j1l0xiXvoDjgdH4JW9y/BfdU3F71N7SfQkQhWHe6Zc+EMZ
-TCMhZUE1b08cL+joxAxkE1Jn6V8i667Cy/VzKYDY63+18FKBGi/MzzvPwvxxuxUM
-jQLWU2TmIsu1hxy6fDy4xvidDxmxUw==
-=eBq2
------END PGP SIGNATURE-----
-
---I4g3zIzscEHdx6fd--
