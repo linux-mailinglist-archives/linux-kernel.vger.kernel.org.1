@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0F5B207801
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:53:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8952077FE
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404741AbgFXPwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:52:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35166 "EHLO
+        id S2404716AbgFXPwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404588AbgFXPvu (ORCPT
+        with ESMTP id S2404615AbgFXPv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:51:50 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A19DC061799
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:51:50 -0700 (PDT)
+        Wed, 24 Jun 2020 11:51:56 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A32C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:51:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=xSbGtqnRGiHlkcIJG5v0hW1O+1ouVTfix9ZZ1irALzs=; b=k3w2Rpqvfcc2p+YnEAuEdJrDVq
-        7bGiBHiye/xm4uMZ59q95i5eB0ZnGeVuYIATsaICLQ9tvfOQvxsrz7gtxMgjBksqwsRJzglt1tQIM
-        RslMAu8YX49dh3TCHIS/oTi8l3X2AKzYMmSS3wnmebOsznUzgmItzjrw5O/c6f86ZjhTgI4wlTp3J
-        nW8JM2nS49Z96x0XKByowN7ImtsPhVAiPRlS1vfaTMEV3M/xH316/Z2i1MvAVbj6itHeeLa797Y2m
-        U4KvwTRQQ3K4lPHv3sqcy3IafX9e86jaSdkdNgeCewKC/tWbk4mm5GJRhr7Ezh1xXmhZVo8GME+Sm
-        FLD1UDSA==;
+        bh=qVfJ5Cecq14qaobE/mU0IgIbYQtddfbHafELKasEpk8=; b=F+q8u+DCyUUWA3eJOG4wZ8wq8t
+        iIAHxGzaXidtXP9SG/Mc5Xh5K2HbagiEpCPWnyld3zJTVChOcWfe5wSEGZv9lsgkFoqYyV1zkgPwj
+        o3WCPGFgnyH4gwNzctErYJ5YuDnAXgf3xG1Tk5vOOameJZfl2yQc6cy0EJ9Qe39bGzX3v7qV60JzC
+        WIas9vjqZTpJ1naOWvr6MCPt2L3nlftJZ5KSy4JKngmqvfVJGjZ4Cnv+j9tPl36gWUXryJt+FHmOL
+        5xn0rSsuDKSRY/wgbW8Fvt/XK0KGN6eoLxZBSIezckPffjQYJb1MNrdhkktP/ZUim/5a5eAj/fnOO
+        U+RdEqFw==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jo7gD-0004rb-5V; Wed, 24 Jun 2020 15:51:18 +0000
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jo7gD-0001e6-QJ; Wed, 24 Jun 2020 15:51:18 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C57B63079EF;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C76453079F2;
         Wed, 24 Jun 2020 17:51:14 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 0CFB1236E7766; Wed, 24 Jun 2020 17:51:14 +0200 (CEST)
-Message-ID: <20200624154157.719134212@infradead.org>
+        id 10A06236E7767; Wed, 24 Jun 2020 17:51:14 +0200 (CEST)
+Message-ID: <20200624154157.778920463@infradead.org>
 User-Agent: quilt/0.66
-Date:   Wed, 24 Jun 2020 17:30:40 +0200
+Date:   Wed, 24 Jun 2020 17:30:41 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org
 Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
@@ -47,7 +47,7 @@ Cc:     peterz@infradead.org, linux-kernel@vger.kernel.org,
         hpa@zytor.com, luto@kernel.org, ard.biesheuvel@linaro.org,
         jpoimboe@redhat.com, pbonzini@redhat.com,
         mathieu.desnoyers@efficios.com, linux@rasmusvillemoes.dk
-Subject: [PATCH v5 16/17] tracepoint: Optimize using static_call()
+Subject: [PATCH v5 17/17] x86/perf, static_call: Optimize x86_pmu methods
 References: <20200624153024.794671356@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -56,311 +56,301 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+Replace many of the indirect calls with static_call().
 
-Currently the tracepoint site will iterate a vector and issue indirect
-calls to however many handlers are registered (ie. the vector is
-long).
+XXX run performance numbers
 
-Using static_call() it is possible to optimize this for the common
-case of only having a single handler registered. In this case the
-static_call() can directly call this handler. Otherwise, if the vector
-is longer than 1, call a function that iterates the whole vector like
-the current code.
-
-[peterz: updated to new interface]
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/linux/tracepoint-defs.h |    5 ++
- include/linux/tracepoint.h      |   86 ++++++++++++++++++++++++++++------------
- include/trace/define_trace.h    |   14 +++---
- kernel/tracepoint.c             |   21 +++++++--
- 4 files changed, 90 insertions(+), 36 deletions(-)
+ arch/x86/events/core.c |  140 +++++++++++++++++++++++++++++++++++--------------
+ 1 file changed, 100 insertions(+), 40 deletions(-)
 
---- a/include/linux/tracepoint-defs.h
-+++ b/include/linux/tracepoint-defs.h
-@@ -11,6 +11,8 @@
- #include <linux/atomic.h>
- #include <linux/static_key.h>
- 
-+struct static_call_key;
-+
- struct trace_print_flags {
- 	unsigned long		mask;
- 	const char		*name;
-@@ -30,6 +32,9 @@ struct tracepoint_func {
- struct tracepoint {
- 	const char *name;		/* Tracepoint name */
- 	struct static_key key;
-+	struct static_call_key *static_call_key;
-+	void *static_call_tramp;
-+	void *iterator;
- 	int (*regfunc)(void);
- 	void (*unregfunc)(void);
- 	struct tracepoint_func __rcu *funcs;
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -19,6 +19,7 @@
- #include <linux/cpumask.h>
- #include <linux/rcupdate.h>
- #include <linux/tracepoint-defs.h>
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -28,6 +28,7 @@
+ #include <linux/bitops.h>
+ #include <linux/device.h>
+ #include <linux/nospec.h>
 +#include <linux/static_call.h>
  
- struct module;
- struct tracepoint;
-@@ -92,7 +93,9 @@ extern int syscall_regfunc(void);
- extern void syscall_unregfunc(void);
- #endif /* CONFIG_HAVE_SYSCALL_TRACEPOINTS */
+ #include <asm/apic.h>
+ #include <asm/stacktrace.h>
+@@ -52,6 +53,34 @@ DEFINE_PER_CPU(struct cpu_hw_events, cpu
+ DEFINE_STATIC_KEY_FALSE(rdpmc_never_available_key);
+ DEFINE_STATIC_KEY_FALSE(rdpmc_always_available_key);
  
-+#ifndef PARAMS
- #define PARAMS(args...) args
-+#endif
- 
- #define TRACE_DEFINE_ENUM(x)
- #define TRACE_DEFINE_SIZEOF(x)
-@@ -149,6 +152,12 @@ static inline struct tracepoint *tracepo
- 
- #ifdef TRACEPOINTS_ENABLED
- 
-+#ifdef CONFIG_HAVE_STATIC_CALL
-+#define __DO_TRACE_CALL(name)	static_call(tp_func_##name)
-+#else
-+#define __DO_TRACE_CALL(name)	__tracepoint_iter_##name
-+#endif /* CONFIG_HAVE_STATIC_CALL */
++/*
++ * This here uses DEFINE_STATIC_CALL_NULL() to get a static_call defined
++ * from just a typename, as opposed to an actual function.
++ */
++DEFINE_STATIC_CALL_NULL(x86_pmu_handle_irq,  *x86_pmu.handle_irq);
++DEFINE_STATIC_CALL_NULL(x86_pmu_disable_all, *x86_pmu.disable_all);
++DEFINE_STATIC_CALL_NULL(x86_pmu_enable_all,  *x86_pmu.enable_all);
++DEFINE_STATIC_CALL_NULL(x86_pmu_enable,	     *x86_pmu.enable);
++DEFINE_STATIC_CALL_NULL(x86_pmu_disable,     *x86_pmu.disable);
 +
- /*
-  * it_func[0] is never NULL because there is at least one element in the array
-  * when the array itself is non NULL.
-@@ -158,12 +167,11 @@ static inline struct tracepoint *tracepo
-  * has a "void" prototype, then it is invalid to declare a function
-  * as "(void *, void)".
-  */
--#define __DO_TRACE(tp, proto, args, cond, rcuidle)			\
-+#define __DO_TRACE(name, proto, args, cond, rcuidle)			\
- 	do {								\
- 		struct tracepoint_func *it_func_ptr;			\
--		void *it_func;						\
--		void *__data;						\
- 		int __maybe_unused __idx = 0;				\
-+		void *__data;						\
- 									\
- 		if (!(cond))						\
- 			return;						\
-@@ -183,14 +191,11 @@ static inline struct tracepoint *tracepo
- 			rcu_irq_enter_irqson();				\
- 		}							\
- 									\
--		it_func_ptr = rcu_dereference_raw((tp)->funcs);		\
--									\
-+		it_func_ptr =						\
-+			rcu_dereference_raw((&__tracepoint_##name)->funcs); \
- 		if (it_func_ptr) {					\
--			do {						\
--				it_func = (it_func_ptr)->func;		\
--				__data = (it_func_ptr)->data;		\
--				((void(*)(proto))(it_func))(args);	\
--			} while ((++it_func_ptr)->func);		\
-+			__data = (it_func_ptr)->data;			\
-+			__DO_TRACE_CALL(name)(args);			\
- 		}							\
- 									\
- 		if (rcuidle) {						\
-@@ -206,7 +211,7 @@ static inline struct tracepoint *tracepo
- 	static inline void trace_##name##_rcuidle(proto)		\
- 	{								\
- 		if (static_key_false(&__tracepoint_##name.key))		\
--			__DO_TRACE(&__tracepoint_##name,		\
-+			__DO_TRACE(name,				\
- 				TP_PROTO(data_proto),			\
- 				TP_ARGS(data_args),			\
- 				TP_CONDITION(cond), 1);			\
-@@ -228,11 +233,13 @@ static inline struct tracepoint *tracepo
-  * poking RCU a bit.
-  */
- #define __DECLARE_TRACE(name, proto, args, cond, data_proto, data_args) \
-+	extern int __tracepoint_iter_##name(data_proto);		\
-+	DECLARE_STATIC_CALL(tp_func_##name, __tracepoint_iter_##name); \
- 	extern struct tracepoint __tracepoint_##name;			\
- 	static inline void trace_##name(proto)				\
- 	{								\
- 		if (static_key_false(&__tracepoint_##name.key))		\
--			__DO_TRACE(&__tracepoint_##name,		\
-+			__DO_TRACE(name,				\
- 				TP_PROTO(data_proto),			\
- 				TP_ARGS(data_args),			\
- 				TP_CONDITION(cond), 0);			\
-@@ -278,21 +285,50 @@ static inline struct tracepoint *tracepo
-  * structures, so we create an array of pointers that will be used for iteration
-  * on the tracepoints.
-  */
--#define DEFINE_TRACE_FN(name, reg, unreg)				 \
--	static const char __tpstrtab_##name[]				 \
--	__attribute__((section("__tracepoints_strings"))) = #name;	 \
--	struct tracepoint __tracepoint_##name				 \
--	__attribute__((section("__tracepoints"), used)) =		 \
--		{ __tpstrtab_##name, STATIC_KEY_INIT_FALSE, reg, unreg, NULL };\
--	__TRACEPOINT_ENTRY(name);
-+#define DEFINE_TRACE_FN(_name, _reg, _unreg, proto, args)		\
-+	static const char __tpstrtab_##_name[]				\
-+	__attribute__((section("__tracepoints_strings"))) = #_name;	\
-+	extern struct static_call_key STATIC_CALL_KEY(tp_func_##_name);\
-+	int __tracepoint_iter_##_name(void *__data, proto);		\
-+	struct tracepoint __tracepoint_##_name				\
-+	  __attribute__((section("__tracepoints"), used)) = {		\
-+		.name = __tpstrtab_##_name,				\
-+		.key = STATIC_KEY_INIT_FALSE,				\
-+		.static_call_key = &STATIC_CALL_KEY(tp_func_##_name),	\
-+		.static_call_tramp = STATIC_CALL_TRAMP_ADDR(tp_func_##_name), \
-+		.iterator = &__tracepoint_iter_##_name,			\
-+		.regfunc = _reg,					\
-+		.unregfunc = _unreg,					\
-+		.funcs = NULL };					\
-+	__TRACEPOINT_ENTRY(_name);					\
-+	int __tracepoint_iter_##_name(void *__data, proto)		\
-+	{								\
-+		struct tracepoint_func *it_func_ptr;			\
-+		void *it_func;						\
-+									\
-+		it_func_ptr =						\
-+			rcu_dereference_raw((&__tracepoint_##_name)->funcs); \
-+		do {							\
-+			it_func = (it_func_ptr)->func;			\
-+			__data = (it_func_ptr)->data;			\
-+			((void(*)(void *, proto))(it_func))(__data, args); \
-+		} while ((++it_func_ptr)->func);			\
-+		return 0;						\
-+	}								\
-+	DEFINE_STATIC_CALL(tp_func_##_name, __tracepoint_iter_##_name);
- 
--#define DEFINE_TRACE(name)						\
--	DEFINE_TRACE_FN(name, NULL, NULL);
-+#define DEFINE_TRACE(name, proto, args)		\
-+	DEFINE_TRACE_FN(name, NULL, NULL, PARAMS(proto), PARAMS(args));
- 
- #define EXPORT_TRACEPOINT_SYMBOL_GPL(name)				\
--	EXPORT_SYMBOL_GPL(__tracepoint_##name)
-+	EXPORT_SYMBOL_GPL(__tracepoint_##name);				\
-+	EXPORT_SYMBOL_GPL(__tracepoint_iter_##name);			\
-+	EXPORT_STATIC_CALL_GPL(tp_func_##name)
- #define EXPORT_TRACEPOINT_SYMBOL(name)					\
--	EXPORT_SYMBOL(__tracepoint_##name)
-+	EXPORT_SYMBOL(__tracepoint_##name);				\
-+	EXPORT_SYMBOL(__tracepoint_iter_##name);			\
-+	EXPORT_STATIC_CALL(tp_func_##name)
++DEFINE_STATIC_CALL_NULL(x86_pmu_add,  *x86_pmu.add);
++DEFINE_STATIC_CALL_NULL(x86_pmu_del,  *x86_pmu.del);
++DEFINE_STATIC_CALL_NULL(x86_pmu_read, *x86_pmu.read);
 +
++DEFINE_STATIC_CALL_NULL(x86_pmu_schedule_events,       *x86_pmu.schedule_events);
++DEFINE_STATIC_CALL_NULL(x86_pmu_get_event_constraints, *x86_pmu.get_event_constraints);
++DEFINE_STATIC_CALL_NULL(x86_pmu_put_event_constraints, *x86_pmu.put_event_constraints);
++
++DEFINE_STATIC_CALL_NULL(x86_pmu_start_scheduling,  *x86_pmu.start_scheduling);
++DEFINE_STATIC_CALL_NULL(x86_pmu_commit_scheduling, *x86_pmu.commit_scheduling);
++DEFINE_STATIC_CALL_NULL(x86_pmu_stop_scheduling,   *x86_pmu.stop_scheduling);
++
++DEFINE_STATIC_CALL_NULL(x86_pmu_sched_task,    *x86_pmu.sched_task);
++DEFINE_STATIC_CALL_NULL(x86_pmu_swap_task_ctx, *x86_pmu.swap_task_ctx);
++
++DEFINE_STATIC_CALL_NULL(x86_pmu_drain_pebs,   *x86_pmu.drain_pebs);
++DEFINE_STATIC_CALL_NULL(x86_pmu_pebs_aliases, *x86_pmu.pebs_aliases);
++
+ u64 __read_mostly hw_cache_event_ids
+ 				[PERF_COUNT_HW_CACHE_MAX]
+ 				[PERF_COUNT_HW_CACHE_OP_MAX]
+@@ -660,7 +695,7 @@ static void x86_pmu_disable(struct pmu *
+ 	cpuc->enabled = 0;
+ 	barrier();
  
- #else /* !TRACEPOINTS_ENABLED */
- #define __DECLARE_TRACE(name, proto, args, cond, data_proto, data_args) \
-@@ -321,8 +357,8 @@ static inline struct tracepoint *tracepo
- 		return false;						\
- 	}
- 
--#define DEFINE_TRACE_FN(name, reg, unreg)
--#define DEFINE_TRACE(name)
-+#define DEFINE_TRACE_FN(name, reg, unreg, proto, args)
-+#define DEFINE_TRACE(name, proto, args)
- #define EXPORT_TRACEPOINT_SYMBOL_GPL(name)
- #define EXPORT_TRACEPOINT_SYMBOL(name)
- 
---- a/include/trace/define_trace.h
-+++ b/include/trace/define_trace.h
-@@ -25,7 +25,7 @@
- 
- #undef TRACE_EVENT
- #define TRACE_EVENT(name, proto, args, tstruct, assign, print)	\
--	DEFINE_TRACE(name)
-+	DEFINE_TRACE(name, PARAMS(proto), PARAMS(args))
- 
- #undef TRACE_EVENT_CONDITION
- #define TRACE_EVENT_CONDITION(name, proto, args, cond, tstruct, assign, print) \
-@@ -39,12 +39,12 @@
- #undef TRACE_EVENT_FN
- #define TRACE_EVENT_FN(name, proto, args, tstruct,		\
- 		assign, print, reg, unreg)			\
--	DEFINE_TRACE_FN(name, reg, unreg)
-+	DEFINE_TRACE_FN(name, reg, unreg, PARAMS(proto), PARAMS(args))
- 
- #undef TRACE_EVENT_FN_COND
- #define TRACE_EVENT_FN_COND(name, proto, args, cond, tstruct,		\
- 		assign, print, reg, unreg)			\
--	DEFINE_TRACE_FN(name, reg, unreg)
-+	DEFINE_TRACE_FN(name, reg, unreg, PARAMS(proto), PARAMS(args))
- 
- #undef TRACE_EVENT_NOP
- #define TRACE_EVENT_NOP(name, proto, args, struct, assign, print)
-@@ -54,15 +54,15 @@
- 
- #undef DEFINE_EVENT
- #define DEFINE_EVENT(template, name, proto, args) \
--	DEFINE_TRACE(name)
-+	DEFINE_TRACE(name, PARAMS(proto), PARAMS(args))
- 
- #undef DEFINE_EVENT_FN
- #define DEFINE_EVENT_FN(template, name, proto, args, reg, unreg) \
--	DEFINE_TRACE_FN(name, reg, unreg)
-+	DEFINE_TRACE_FN(name, reg, unreg, PARAMS(proto), PARAMS(args))
- 
- #undef DEFINE_EVENT_PRINT
- #define DEFINE_EVENT_PRINT(template, name, proto, args, print)	\
--	DEFINE_TRACE(name)
-+	DEFINE_TRACE(name, PARAMS(proto), PARAMS(args))
- 
- #undef DEFINE_EVENT_CONDITION
- #define DEFINE_EVENT_CONDITION(template, name, proto, args, cond) \
-@@ -70,7 +70,7 @@
- 
- #undef DECLARE_TRACE
- #define DECLARE_TRACE(name, proto, args)	\
--	DEFINE_TRACE(name)
-+	DEFINE_TRACE(name, PARAMS(proto), PARAMS(args))
- 
- #undef TRACE_INCLUDE
- #undef __TRACE_INCLUDE
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -221,6 +221,16 @@ static void *func_remove(struct tracepoi
- 	return old;
+-	x86_pmu.disable_all();
++	static_call(x86_pmu_disable_all)();
  }
  
-+static void tracepoint_update_call(struct tracepoint *tp, struct tracepoint_func *tp_funcs)
+ void x86_pmu_enable_all(int added)
+@@ -907,8 +942,7 @@ int x86_schedule_events(struct cpu_hw_ev
+ 	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
+ 		n0 -= cpuc->n_txn;
+ 
+-	if (x86_pmu.start_scheduling)
+-		x86_pmu.start_scheduling(cpuc);
++	static_call_cond(x86_pmu_start_scheduling)(cpuc);
+ 
+ 	for (i = 0, wmin = X86_PMC_IDX_MAX, wmax = 0; i < n; i++) {
+ 		c = cpuc->event_constraint[i];
+@@ -925,7 +959,7 @@ int x86_schedule_events(struct cpu_hw_ev
+ 		 * change due to external factors (sibling state, allow_tfa).
+ 		 */
+ 		if (!c || (c->flags & PERF_X86_EVENT_DYNAMIC)) {
+-			c = x86_pmu.get_event_constraints(cpuc, i, cpuc->event_list[i]);
++			c = static_call(x86_pmu_get_event_constraints)(cpuc, i, cpuc->event_list[i]);
+ 			cpuc->event_constraint[i] = c;
+ 		}
+ 
+@@ -1008,8 +1042,7 @@ int x86_schedule_events(struct cpu_hw_ev
+ 	if (!unsched && assign) {
+ 		for (i = 0; i < n; i++) {
+ 			e = cpuc->event_list[i];
+-			if (x86_pmu.commit_scheduling)
+-				x86_pmu.commit_scheduling(cpuc, i, assign[i]);
++			static_call_cond(x86_pmu_commit_scheduling)(cpuc, i, assign[i]);
+ 		}
+ 	} else {
+ 		for (i = n0; i < n; i++) {
+@@ -1018,15 +1051,13 @@ int x86_schedule_events(struct cpu_hw_ev
+ 			/*
+ 			 * release events that failed scheduling
+ 			 */
+-			if (x86_pmu.put_event_constraints)
+-				x86_pmu.put_event_constraints(cpuc, e);
++			static_call_cond(x86_pmu_put_event_constraints)(cpuc, e);
+ 
+ 			cpuc->event_constraint[i] = NULL;
+ 		}
+ 	}
+ 
+-	if (x86_pmu.stop_scheduling)
+-		x86_pmu.stop_scheduling(cpuc);
++	static_call_cond(x86_pmu_stop_scheduling)(cpuc);
+ 
+ 	return unsched ? -EINVAL : 0;
+ }
+@@ -1217,7 +1248,7 @@ static void x86_pmu_enable(struct pmu *p
+ 	cpuc->enabled = 1;
+ 	barrier();
+ 
+-	x86_pmu.enable_all(added);
++	static_call(x86_pmu_enable_all)(added);
+ }
+ 
+ static DEFINE_PER_CPU(u64 [X86_PMC_IDX_MAX], pmc_prev_left);
+@@ -1338,7 +1369,7 @@ static int x86_pmu_add(struct perf_event
+ 	if (cpuc->txn_flags & PERF_PMU_TXN_ADD)
+ 		goto done_collect;
+ 
+-	ret = x86_pmu.schedule_events(cpuc, n, assign);
++	ret = static_call(x86_pmu_schedule_events)(cpuc, n, assign);
+ 	if (ret)
+ 		goto out;
+ 	/*
+@@ -1356,13 +1387,11 @@ static int x86_pmu_add(struct perf_event
+ 	cpuc->n_added += n - n0;
+ 	cpuc->n_txn += n - n0;
+ 
+-	if (x86_pmu.add) {
+-		/*
+-		 * This is before x86_pmu_enable() will call x86_pmu_start(),
+-		 * so we enable LBRs before an event needs them etc..
+-		 */
+-		x86_pmu.add(event);
+-	}
++	/*
++	 * This is before x86_pmu_enable() will call x86_pmu_start(),
++	 * so we enable LBRs before an event needs them etc..
++	 */
++	static_call_cond(x86_pmu_add)(event);
+ 
+ 	ret = 0;
+ out:
+@@ -1390,7 +1419,7 @@ static void x86_pmu_start(struct perf_ev
+ 	cpuc->events[idx] = event;
+ 	__set_bit(idx, cpuc->active_mask);
+ 	__set_bit(idx, cpuc->running);
+-	x86_pmu.enable(event);
++	static_call(x86_pmu_enable)(event);
+ 	perf_event_update_userpage(event);
+ }
+ 
+@@ -1460,7 +1489,7 @@ void x86_pmu_stop(struct perf_event *eve
+ 	struct hw_perf_event *hwc = &event->hw;
+ 
+ 	if (test_bit(hwc->idx, cpuc->active_mask)) {
+-		x86_pmu.disable(event);
++		static_call(x86_pmu_disable)(event);
+ 		__clear_bit(hwc->idx, cpuc->active_mask);
+ 		cpuc->events[hwc->idx] = NULL;
+ 		WARN_ON_ONCE(hwc->state & PERF_HES_STOPPED);
+@@ -1510,8 +1539,7 @@ static void x86_pmu_del(struct perf_even
+ 	if (i >= cpuc->n_events - cpuc->n_added)
+ 		--cpuc->n_added;
+ 
+-	if (x86_pmu.put_event_constraints)
+-		x86_pmu.put_event_constraints(cpuc, event);
++	static_call_cond(x86_pmu_put_event_constraints)(cpuc, event);
+ 
+ 	/* Delete the array entry. */
+ 	while (++i < cpuc->n_events) {
+@@ -1524,13 +1552,12 @@ static void x86_pmu_del(struct perf_even
+ 	perf_event_update_userpage(event);
+ 
+ do_del:
+-	if (x86_pmu.del) {
+-		/*
+-		 * This is after x86_pmu_stop(); so we disable LBRs after any
+-		 * event can need them etc..
+-		 */
+-		x86_pmu.del(event);
+-	}
++
++	/*
++	 * This is after x86_pmu_stop(); so we disable LBRs after any
++	 * event can need them etc..
++	 */
++	static_call_cond(x86_pmu_del)(event);
+ }
+ 
+ int x86_pmu_handle_irq(struct pt_regs *regs)
+@@ -1608,7 +1635,7 @@ perf_event_nmi_handler(unsigned int cmd,
+ 		return NMI_DONE;
+ 
+ 	start_clock = sched_clock();
+-	ret = x86_pmu.handle_irq(regs);
++	ret = static_call(x86_pmu_handle_irq)(regs);
+ 	finish_clock = sched_clock();
+ 
+ 	perf_sample_event_took(finish_clock - start_clock);
+@@ -1821,6 +1848,38 @@ ssize_t x86_event_sysfs_show(char *page,
+ static struct attribute_group x86_pmu_attr_group;
+ static struct attribute_group x86_pmu_caps_group;
+ 
++static void x86_pmu_static_call_update(void)
 +{
-+	void *func = tp->iterator;
++	static_call_update(x86_pmu_handle_irq, x86_pmu.handle_irq);
++	static_call_update(x86_pmu_disable_all, x86_pmu.disable_all);
++	static_call_update(x86_pmu_enable_all, x86_pmu.enable_all);
++	static_call_update(x86_pmu_enable, x86_pmu.enable);
++	static_call_update(x86_pmu_disable, x86_pmu.disable);
 +
-+	if (!tp_funcs[1].func)
-+		func = tp_funcs[0].func;
++	static_call_update(x86_pmu_add, x86_pmu.add);
++	static_call_update(x86_pmu_del, x86_pmu.del);
++	static_call_update(x86_pmu_read, x86_pmu.read);
 +
-+	__static_call_update(tp->static_call_key, tp->static_call_tramp, func);
++	static_call_update(x86_pmu_schedule_events, x86_pmu.schedule_events);
++	static_call_update(x86_pmu_get_event_constraints, x86_pmu.get_event_constraints);
++	static_call_update(x86_pmu_put_event_constraints, x86_pmu.put_event_constraints);
++
++	static_call_update(x86_pmu_start_scheduling, x86_pmu.start_scheduling);
++	static_call_update(x86_pmu_commit_scheduling, x86_pmu.commit_scheduling);
++	static_call_update(x86_pmu_stop_scheduling, x86_pmu.stop_scheduling);
++
++	static_call_update(x86_pmu_sched_task, x86_pmu.sched_task);
++	static_call_update(x86_pmu_swap_task_ctx, x86_pmu.swap_task_ctx);
++
++	static_call_update(x86_pmu_drain_pebs, x86_pmu.drain_pebs);
++	static_call_update(x86_pmu_pebs_aliases, x86_pmu.pebs_aliases);
 +}
 +
- /*
-  * Add the probe function to a tracepoint.
-  */
-@@ -251,8 +261,9 @@ static int tracepoint_add_func(struct tr
- 	 * include/linux/tracepoint.h using rcu_dereference_sched().
- 	 */
- 	rcu_assign_pointer(tp->funcs, tp_funcs);
--	if (!static_key_enabled(&tp->key))
--		static_key_slow_inc(&tp->key);
-+	tracepoint_update_call(tp, tp_funcs);
-+	static_key_enable(&tp->key);
++static void _x86_pmu_read(struct perf_event *event)
++{
++	x86_perf_event_update(event);
++}
 +
- 	release_probes(old);
- 	return 0;
- }
-@@ -281,9 +292,11 @@ static int tracepoint_remove_func(struct
- 		if (tp->unregfunc && static_key_enabled(&tp->key))
- 			tp->unregfunc();
+ static int __init init_hw_perf_events(void)
+ {
+ 	struct x86_pmu_quirk *quirk;
+@@ -1889,6 +1948,11 @@ static int __init init_hw_perf_events(vo
+ 	pr_info("... fixed-purpose events:   %d\n",     x86_pmu.num_counters_fixed);
+ 	pr_info("... event mask:             %016Lx\n", x86_pmu.intel_ctrl);
  
--		if (static_key_enabled(&tp->key))
--			static_key_slow_dec(&tp->key);
-+		static_key_disable(&tp->key);
-+	} else {
-+		tracepoint_update_call(tp, tp_funcs);
- 	}
++	if (!x86_pmu.read)
++		x86_pmu.read = _x86_pmu_read;
 +
- 	rcu_assign_pointer(tp->funcs, tp_funcs);
- 	release_probes(old);
- 	return 0;
++	x86_pmu_static_call_update();
++
+ 	/*
+ 	 * Install callbacks. Core will call them for each online
+ 	 * cpu.
+@@ -1925,11 +1989,9 @@ static int __init init_hw_perf_events(vo
+ }
+ early_initcall(init_hw_perf_events);
+ 
+-static inline void x86_pmu_read(struct perf_event *event)
++static void x86_pmu_read(struct perf_event *event)
+ {
+-	if (x86_pmu.read)
+-		return x86_pmu.read(event);
+-	x86_perf_event_update(event);
++	static_call(x86_pmu_read)(event);
+ }
+ 
+ /*
+@@ -2006,7 +2068,7 @@ static int x86_pmu_commit_txn(struct pmu
+ 	if (!x86_pmu_initialized())
+ 		return -EAGAIN;
+ 
+-	ret = x86_pmu.schedule_events(cpuc, n, assign);
++	ret = static_call(x86_pmu_schedule_events)(cpuc, n, assign);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -2299,15 +2361,13 @@ static const struct attribute_group *x86
+ 
+ static void x86_pmu_sched_task(struct perf_event_context *ctx, bool sched_in)
+ {
+-	if (x86_pmu.sched_task)
+-		x86_pmu.sched_task(ctx, sched_in);
++	static_call_cond(x86_pmu_sched_task)(ctx, sched_in);
+ }
+ 
+ static void x86_pmu_swap_task_ctx(struct perf_event_context *prev,
+ 				  struct perf_event_context *next)
+ {
+-	if (x86_pmu.swap_task_ctx)
+-		x86_pmu.swap_task_ctx(prev, next);
++	static_call_cond(x86_pmu_swap_task_ctx)(prev, next);
+ }
+ 
+ void perf_check_microcode(void)
 
 
