@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66E98207829
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB0420781D
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404778AbgFXP5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35982 "EHLO
+        id S2404742AbgFXP5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:57:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404672AbgFXP44 (ORCPT
+        with ESMTP id S2404670AbgFXP44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Jun 2020 11:56:56 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB36C061795;
-        Wed, 24 Jun 2020 08:56:56 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id u26so4808244wmn.1;
-        Wed, 24 Jun 2020 08:56:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=qUKa07WIX4FJ9UC2RNCE+udUH0IZVYqwllIgAs/5xTU=;
-        b=K43RLRxVJUYUEKifmRwwtb9VtFl2vRTd0bBYdDk2fRq0txh81+9QrhqhA4MxNOlFvK
-         IDi4b59GeJK4FsTrZDYjqBiH+ByGb0EBp37DWAhXAnbA3wrytiNtZR3bsfAekM2LvAWB
-         tdghQVGPDYXDSOtX6GBrUSz3I0wazLvnJZ1RsIlLn6ea8LUt+OtQTrFjlnMoZhoazmjp
-         kSzpCRnExbta7cbHu72zd8CcrbGS/kxe29snIB2PvTE6uoYpt4AjbsbJ8HS+j2zHgQ4d
-         ZeUnTANXgMbpjJ5tNHzrlPYaUeAWF7URyAT/bf2VXfAvfiXfyjEi+EDXUP6ig64aKnDG
-         5WoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=qUKa07WIX4FJ9UC2RNCE+udUH0IZVYqwllIgAs/5xTU=;
-        b=elIGyUzWjeDQwj9SRJGn8ryiH4yom86d8KKIHXKK6BCM7faM3xthfQssddI/KYE7mx
-         Ln/qgfdL7o9LgVKvxLiHd9FxWjAu3ZBk+1siODX51bngsRQayj7PlaMzqSD71KrbZSEb
-         duZGu/4N+utOdvkXchV3TlDEhiNmsYKuue3iXY71Kr9KbMokh3GVmnaUAreoVCGKjNXS
-         rwmAGB4Dj39zf9wipDAed76ZBAEZEh7XhLJS831T/itXC1osnP3crUnCDvHoFmtBuwlk
-         s2qT+WgmHdrkYiPb9ZE8h8MyS3og/56IyW4dk4uhoazQ9OcQ/1q1Hv/5oVJeXD98nLRu
-         QBOw==
-X-Gm-Message-State: AOAM532pyx+wAMdfKvoSoJS5821bcrFBDB6O/XW7seylHbi+ZKCUChEg
-        DQonF1nXyT4OnzP8dNHPXO8=
-X-Google-Smtp-Source: ABdhPJzcxM2i1Qf9RVr14XaBQbQldzvyj7eR6MN6J7NfyO8CWTG4/WFBLRccMAeEC8hRiUOAtbXarA==
-X-Received: by 2002:a1c:4408:: with SMTP id r8mr10837709wma.100.1593014215292;
-        Wed, 24 Jun 2020 08:56:55 -0700 (PDT)
-Received: from localhost ([213.191.183.145])
-        by smtp.gmail.com with ESMTPSA id q188sm5074344wma.46.2020.06.24.08.56.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jun 2020 08:56:54 -0700 (PDT)
-From:   Iskren Chernev <iskren.chernev@gmail.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        Vladimir Barinov <vladimir.barinov@cogentembedded.com>,
-        Iskren Chernev <iskren.chernev@gmail.com>
-Subject: [PATCH v3 4/6] dt-bindings: power: supply: max17040: Add maxim,rcomp
-Date:   Wed, 24 Jun 2020 18:56:31 +0300
-Message-Id: <20200624155633.3557401-5-iskren.chernev@gmail.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200624155633.3557401-1-iskren.chernev@gmail.com>
-References: <20200624155633.3557401-1-iskren.chernev@gmail.com>
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27389C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:56:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=HaGz/HVQE50ILeg2IOwzYzlt5KjI+sgPEtrzC6WZDAg=; b=X4otQ9hfkB1OnBKvE40Rtopx6N
+        ts+uo6KeCkj9SrrVrNvNwNBUkGXCt4FehbA87W07luGo/J4biUaJTk3nozW7C3wMfHtpmp0BV2UJZ
+        Gqk0fmcPCbjL77zXJ9u/t7ZfbmbEmXq1w2IRDrXMInkLYq+1qseMw3w0RnWseBg1BzGSGkFM1mWLK
+        PBPfPkFx8UJfNnYdLdVVw0eSl9OpdNy4iycy15Ry1PLrd0nBcjgAp5oOE3MMmfNg/b2643dj/csFA
+        YdEe084dTMrwx8oQNCjy5oW1In1aTN1PbShA+51ahxNsZsfZI2dTuIM041qYHnLf/7xj+vZ1eGnU1
+        Thm/ZDQQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jo7lJ-0004EU-N1; Wed, 24 Jun 2020 15:56:33 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 504F93003E5;
+        Wed, 24 Jun 2020 17:56:32 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1A927203CDC50; Wed, 24 Jun 2020 17:56:32 +0200 (CEST)
+Date:   Wed, 24 Jun 2020 17:56:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Qais Yousef <qais.yousef@arm.com>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        hsinyi@chromium.org, Joel Fernandes <joelaf@google.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
+        Quentin Perret <qperret@google.com>, ctheegal@codeaurora.org,
+        Guenter Roeck <groeck@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cros_ec_spi: Even though we're RT priority, don't bump
+ cpu freq
+Message-ID: <20200624155632.GJ4781@hirez.programming.kicks-ass.net>
+References: <20200610151818.1.I666ecd9c6f3c6405bd75831a21001b8109b6438c@changeid>
+ <20200612125250.7bwjfnxhurdf5bwj@e107158-lin.cambridge.arm.com>
+ <CAD=FV=WuYZRO=sv4ODr0SFk0gTtvCW0dNQXbFGrBDqRgjYv-jA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=WuYZRO=sv4ODr0SFk0gTtvCW0dNQXbFGrBDqRgjYv-jA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To compensate for the battery chemistry and operating conditions the
-chips support a compensation value. Specify one or two byte compensation
-via the maxim,rcomp byte array.
+On Thu, Jun 18, 2020 at 02:18:23PM -0700, Doug Anderson wrote:
+> Hi,
+> 
+> On Fri, Jun 12, 2020 at 5:52 AM Qais Yousef <qais.yousef@arm.com> wrote:
+> >
+> > On 06/10/20 15:18, Douglas Anderson wrote:
 
-Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
----
- .../devicetree/bindings/power/supply/max17040_battery.txt   | 6 ++++++
- 1 file changed, 6 insertions(+)
+> > > +     struct sched_attr sched_attr = {
+> > > +             .sched_policy   = SCHED_FIFO,
+> > > +             .sched_priority = MAX_RT_PRIO / 2,
+> > > +             .sched_flags    = SCHED_FLAG_UTIL_CLAMP_MIN,
+> > > +             .sched_util_min = 0,
+> >
+> > Hmm I thought Peter already removed all users that change RT priority directly.
+> >
+> > https://lore.kernel.org/lkml/20200422112719.826676174@infradead.org/
+> 
+> Yeah, I mentioned that patch series "after the cut" in my patch and
+> also made sure to CC Peter on my patch.  I'm not sure what happened to
+> that series since I don't see it in linuxnext...
 
-diff --git a/Documentation/devicetree/bindings/power/supply/max17040_battery.txt b/Documentation/devicetree/bindings/power/supply/max17040_battery.txt
-index 554bce82a08e6..2cf046d12d922 100644
---- a/Documentation/devicetree/bindings/power/supply/max17040_battery.txt
-+++ b/Documentation/devicetree/bindings/power/supply/max17040_battery.txt
-@@ -17,6 +17,11 @@ Optional properties :
- 				Specify this boolean property to divide the
- 				reported value in 2 and thus normalize it.
- 				SOC == State of Charge == Capacity.
-+- maxim,rcomp :			A value to compensate readings for various
-+				battery chemistries and operating temperatures.
-+				max17040,41 have 2 byte rcomp, default to
-+				0x97 0x00. All other devices have one byte
-+				rcomp, default to 0x97.
- - interrupts : 			Interrupt line see Documentation/devicetree/
- 				bindings/interrupt-controller/interrupts.txt
- - wakeup-source :		This device has wakeup capabilities. Use this
-@@ -41,6 +46,7 @@ Example:
- 	battery-fuel-gauge@36 {
- 		compatible = "maxim,max17048";
- 		reg = <0x36>;
-+		maxim,rcomp = /bits/ 8 <0x56>;
- 		maxim,alert-low-soc-level = <10>;
- 		maxim,double-soc;
- 	};
--- 
-2.27.0
+Right, I got busy with other stuff and it languished a bit.
 
+I tried to merge it recently (it's actually in tip/sched/fifo atm), but
+then 0day robot found a problem with it and I've not yet had the time to
+deal with that.
+
+Specifically these patches unEXPORT the schet_setscheduler() family, but
+kernel/trace/ring_buffer_benchmark.c can still be a module :-(
