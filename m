@@ -2,122 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F275207B0C
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8306A207B15
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405862AbgFXR6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 13:58:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405377AbgFXR6T (ORCPT
+        id S2405938AbgFXR7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 13:59:10 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10308 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405788AbgFXR7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:58:19 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A606C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 10:58:18 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id e8so1766174pgc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 10:58:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Bg+1P63VLxUYsu4ENntJNQHEjiQ6uihm5Nk7mXeioVo=;
-        b=A3AqzG26sCA4f+KdGaF7CKySAhqu82wsSL/pEiTqkD1fIRlRR6OmLuU+QKP3lA3oQE
-         cqLdnKzTw/C/vRvSge7D8Q1ju5lSbrqVgU99U2YlNsdFodq/iULU0ONGuwHZagMUm5q4
-         IFUK+OfCrUmNNFofOr4SHNti9rr67bs1xxUbs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Bg+1P63VLxUYsu4ENntJNQHEjiQ6uihm5Nk7mXeioVo=;
-        b=a5nv8UsNPFVAzFLCuouUMpCVU3D9o9BD78Qf67dYIGiJiLoD46qCZZnzk+ogyRqx7I
-         HhewG3vhrp0AxL3bt82GC9s8LrigGf7c5PcKJZQND4Taa9WcXSmty1vpWfkRiikcLnDu
-         VjoVvwsY12KjtH2Vvol6lTOCmFv2U/KUkqpjgf6psyjkx22DTZeftJxpkAE0augpdqWk
-         td2aESXsomDGHRwI9jXkzLCUIshrEFK9A5oGyFdZaoB2TLm5c9yN5c22kl/Vq05n3JrS
-         /ZPoR4Hdj7eeNJbqNWkIlEhl6t569mi7GEAjhVLgKYwpvW87H8h6OojpXVjSd2cS3neZ
-         2oZA==
-X-Gm-Message-State: AOAM5300mYO0uNfjekswdVj+4lDZ88UUiT+zQgifrFfScV5DnIYuXlUm
-        x/xDo24aUV2WVNtmuVUDDZP85g==
-X-Google-Smtp-Source: ABdhPJxMjymh7nD+4h+MHOeIHifL3w9DH3b6q0GpFMzkPSla1mcQvMmiGmbtJm6MO3cAvuqQMjJtlQ==
-X-Received: by 2002:a63:a843:: with SMTP id i3mr23295731pgp.190.1593021497767;
-        Wed, 24 Jun 2020 10:58:17 -0700 (PDT)
-Received: from apsdesk.mtv.corp.google.com ([2620:15c:202:1:e09a:8d06:a338:aafb])
-        by smtp.gmail.com with ESMTPSA id r8sm20958635pfq.16.2020.06.24.10.58.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 10:58:17 -0700 (PDT)
-From:   Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
-To:     rjliao@codeaurora.org, marcel@holtmann.org,
-        linux-bluetooth@vger.kernel.org
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        linux-usb@vger.kernel.org, linux-pm@vger.kernel.org,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] Bluetooth: btusb: Reset port on cmd timeout
-Date:   Wed, 24 Jun 2020 10:58:09 -0700
-Message-Id: <20200624105737.1.Ibae403db54245c458d14297f1892c77c5055da41@changeid>
-X-Mailer: git-send-email 2.27.0.111.gc72c7da667-goog
+        Wed, 24 Jun 2020 13:59:09 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05OHYUYL037358;
+        Wed, 24 Jun 2020 13:58:45 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31uwysahmx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 13:58:45 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05OHZ2RA039769;
+        Wed, 24 Jun 2020 13:58:45 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31uwysahk9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 13:58:44 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05OHibFb031155;
+        Wed, 24 Jun 2020 17:58:41 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 31uus70wu3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 17:58:41 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05OHwd2W27590710
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Jun 2020 17:58:39 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 79AC4A4055;
+        Wed, 24 Jun 2020 17:58:39 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 11C24A4053;
+        Wed, 24 Jun 2020 17:58:38 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.145.22.164])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 24 Jun 2020 17:58:37 +0000 (GMT)
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Subject: Re: linux-next: umh: fix processed error when UMH_WAIT_PROC is used
+ seems to break linux bridge on s390x (bisected)
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Christoph Hellwig <hch@infradead.org>, ast@kernel.org,
+        axboe@kernel.dk, bfields@fieldses.org,
+        bridge@lists.linux-foundation.org, chainsaw@gentoo.org,
+        christian.brauner@ubuntu.com, chuck.lever@oracle.com,
+        davem@davemloft.net, dhowells@redhat.com,
+        gregkh@linuxfoundation.org, jarkko.sakkinen@linux.intel.com,
+        jmorris@namei.org, josh@joshtriplett.org, keescook@chromium.org,
+        keyrings@vger.kernel.org, kuba@kernel.org,
+        lars.ellenberg@linbit.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-security-module@vger.kernel.org, nikolay@cumulusnetworks.com,
+        philipp.reisner@linbit.com, ravenexp@gmail.com,
+        roopa@cumulusnetworks.com, serge@hallyn.com, slyfox@gentoo.org,
+        viro@zeniv.linux.org.uk, yangtiezhu@loongson.cn,
+        netdev@vger.kernel.org, markward@linux.ibm.com,
+        linux-s390 <linux-s390@vger.kernel.org>
+References: <20200610154923.27510-5-mcgrof@kernel.org>
+ <20200623141157.5409-1-borntraeger@de.ibm.com>
+ <b7d658b9-606a-feb1-61f9-b58e3420d711@de.ibm.com>
+ <3118dc0d-a3af-9337-c897-2380062a8644@de.ibm.com>
+ <20200624144311.GA5839@infradead.org>
+ <9e767819-9bbe-2181-521e-4d8ca28ca4f7@de.ibm.com>
+ <20200624160953.GH4332@42.do-not-panic.com>
+Autocrypt: addr=borntraeger@de.ibm.com; prefer-encrypt=mutual; keydata=
+ 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
+ nS4h0HDFPrrp1C2EMVYIQrMokWvlFZbCpsdYbBI=
+Message-ID: <ea41e2a9-61f7-aec1-79e5-7b08b6dd5119@de.ibm.com>
+Date:   Wed, 24 Jun 2020 19:58:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <20200624160953.GH4332@42.do-not-panic.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-24_11:2020-06-24,2020-06-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ cotscore=-2147483648 mlxscore=0 phishscore=0 clxscore=1015
+ lowpriorityscore=0 adultscore=0 impostorscore=0 bulkscore=0
+ mlxlogscore=748 priorityscore=1501 malwarescore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006240117
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QCA_ROME doesn't have support for the reset gpio but sometimes gets into
-a state where it is unresponsive to commands. When this happens, reset
-the port to attempt to revive the chip.
 
-Signed-off-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
----
-On Chromebooks with this chipset, we encountered cmd_timeout after
-running suspend stress test for hundreds of iterations. Without
-a recovery mechanism, continued cmd_timeout failures eventually caused
-the suspend stress test to fail.
 
-This change will just reset the port that the Bluetooth chip is on when
-cmd_timeout is encountered. At the very least, the driver will unload
-and stop affecting suspend. It doesn't seem to restore the BT controller
-to a good state however (this still requires a power cycle).
+On 24.06.20 18:09, Luis Chamberlain wrote:
+> On Wed, Jun 24, 2020 at 05:54:46PM +0200, Christian Borntraeger wrote:
+>>
+>>
+>> On 24.06.20 16:43, Christoph Hellwig wrote:
+>>> On Wed, Jun 24, 2020 at 01:11:54PM +0200, Christian Borntraeger wrote:
+>>>> Does anyone have an idea why "umh: fix processed error when UMH_WAIT_PROC is used" breaks the
+>>>> linux-bridge on s390?
+>>>
+>>> Are we even sure this is s390 specific and doesn't happen on other
+>>> architectures with the same bridge setup?
+>>
+>> Fair point. AFAIK nobody has tested this yet on x86.
+> 
+> Regardless, can you enable dynamic debug prints, to see if the kernel
+> reveals anything on the bridge code which may be relevant:
+> 
+> echo "file net/bridge/* +p" > /sys/kernel/debug/dynamic_debug/control
+> 
+>   Luis
 
- drivers/bluetooth/btusb.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+When I start a guest the following happens with the patch:
 
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index e42fdd625eb023..b806a88702328b 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -573,6 +573,22 @@ static void btusb_rtl_cmd_timeout(struct hci_dev *hdev)
- 	gpiod_set_value_cansleep(reset_gpio, 0);
- }
- 
-+static void btusb_generic_usb_cmd_timeout(struct hci_dev *hdev)
-+{
-+	struct btusb_data *data = hci_get_drvdata(hdev);
-+	int err;
-+
-+	if (++data->cmd_timeout_cnt < 5)
-+		return;
-+
-+	bt_dev_err(hdev, "Multiple cmd timeouts seen. Resetting usb device.");
-+	err = usb_autopm_get_interface(data->intf);
-+	if (!err)
-+		usb_queue_reset_device(data->intf);
-+	else
-+		bt_dev_err(hdev, "Failed usb_autopm_get_interface with %d", err);
-+}
-+
- static inline void btusb_free_frags(struct btusb_data *data)
- {
- 	unsigned long flags;
-@@ -3964,6 +3980,7 @@ static int btusb_probe(struct usb_interface *intf,
- 	if (id->driver_info & BTUSB_QCA_ROME) {
- 		data->setup_on_usb = btusb_setup_qca;
- 		hdev->set_bdaddr = btusb_set_bdaddr_ath3012;
-+		hdev->cmd_timeout = btusb_generic_usb_cmd_timeout;
- 		set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &hdev->quirks);
- 		btusb_check_needs_reset_resume(intf);
- 	}
--- 
-2.27.0.111.gc72c7da667-goog
+[   47.420237] virbr0: port 2(vnet0) entered blocking state
+[   47.420242] virbr0: port 2(vnet0) entered disabled state
+[   47.420315] device vnet0 entered promiscuous mode
+[   47.420365] virbr0: port 2(vnet0) event 16
+[   47.420366] virbr0: br_fill_info event 16 port vnet0 master virbr0
+[   47.420373] virbr0: toggle option: 12 state: 0 -> 0
+[   47.420536] virbr0: port 2(vnet0) entered blocking state
+[   47.420538] virbr0: port 2(vnet0) event 16
+[   47.420539] virbr0: br_fill_info event 16 port vnet0 master virbr0
+
+and the nothing happens.
+
+
+without the patch
+[   33.805410] virbr0: hello timer expired
+[   35.805413] virbr0: hello timer expired
+[   36.184349] virbr0: port 2(vnet0) entered blocking state
+[   36.184353] virbr0: port 2(vnet0) entered disabled state
+[   36.184427] device vnet0 entered promiscuous mode
+[   36.184479] virbr0: port 2(vnet0) event 16
+[   36.184480] virbr0: br_fill_info event 16 port vnet0 master virbr0
+[   36.184487] virbr0: toggle option: 12 state: 0 -> 0
+[   36.184636] virbr0: port 2(vnet0) entered blocking state
+[   36.184638] virbr0: port 2(vnet0) entered listening state
+[   36.184639] virbr0: port 2(vnet0) event 16
+[   36.184640] virbr0: br_fill_info event 16 port vnet0 master virbr0
+[   36.184645] virbr0: port 2(vnet0) event 16
+[   36.184646] virbr0: br_fill_info event 16 port vnet0 master virbr0
+[   37.805478] virbr0: hello timer expired
+[   38.205413] virbr0: port 2(vnet0) forward delay timer
+[   38.205414] virbr0: port 2(vnet0) entered learning state
+[   38.205427] virbr0: port 2(vnet0) event 16
+[   38.205430] virbr0: br_fill_info event 16 port vnet0 master virbr0
+[   38.765414] virbr0: port 2(vnet0) hold timer expired
+[   39.805415] virbr0: hello timer expired
+[   40.285410] virbr0: port 2(vnet0) forward delay timer
+[   40.285411] virbr0: port 2(vnet0) entered forwarding state
+[   40.285418] virbr0: topology change detected, propagating
+[   40.285420] virbr0: decreasing ageing time to 400
+[   40.285427] virbr0: port 2(vnet0) event 16
+[   40.285432] virbr0: br_fill_info event 16 port vnet0 master virbr0
+[   40.765408] virbr0: port 2(vnet0) hold timer expired
+[   41.805415] virbr0: hello timer expired
+[   42.765426] virbr0: port 2(vnet0) hold timer expired
+[   43.805425] virbr0: hello timer expired
+[   44.765426] virbr0: port 2(vnet0) hold timer expired
+[   45.805418] virbr0: hello timer expired
+
+and continuing....
+
+
+
 
