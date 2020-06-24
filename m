@@ -2,133 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA36207461
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 15:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2E8207467
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 15:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389561AbgFXNYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 09:24:13 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:58380 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387687AbgFXNYM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 09:24:12 -0400
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id D9F6A2A8;
-        Wed, 24 Jun 2020 15:24:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1593005050;
-        bh=9FvYZAeIEFhM+JzFaVDBCgpx8ST/p2ndCMOZJSUhqVc=;
+        id S2390144AbgFXN0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 09:26:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53986 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387687AbgFXNZf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 09:25:35 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B2EA720738;
+        Wed, 24 Jun 2020 13:25:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593005135;
+        bh=JmFbJS0PXLoFzco2T3g6Do+UUnsYW2aYLUOdaY8lj+Y=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=t0QNK4Y0HvQGnv/OPruCmqjPCrEapbS9oYQvfpmeNJKLmUnRSr7nbq+HKuDFtb4rc
-         vGnPLdD994z4HiGZAlXcmpMPpRdy1p8MlrhPL3H8tptS8AbK2v/6nR8otECzwezL50
-         4kp1MaPvbgyIso516Pa7RAssnvKI6w1y5+Mjs9z0=
-Date:   Wed, 24 Jun 2020 16:23:44 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        b=I0ghPOxMhm6dri4CB1uByEKsnodv/HbTXGlazQSBuzPHznhC5brjUCLVLAYURDLXq
+         mRTxA2V01ONTgnjLhHWgAZqqulK4hB0upnbtXvRAMWEVVQngyoaecajufaz5tdIN9I
+         YJrOr8x6CBw5QxolcEvBjTCMrqhBA8ziYD7lXAKU=
+Date:   Wed, 24 Jun 2020 14:25:32 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andrzej Hajda <a.hajda@samsung.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
         Marek Szyprowski <m.szyprowski@samsung.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        andy.shevchenko@gmail.com, Mark Brown <broonie@kernel.org>,
+        andy.shevchenko@gmail.com,
         Russell King - ARM Linux <linux@armlinux.org.uk>,
         Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
         Jonas Karlman <jonas@kwiboo.se>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
         Daniel Vetter <daniel@ffwll.ch>,
         "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>
-Subject: Re: [RESEND PATCH v5 1/5] driver core: add probe_err log helper
-Message-ID: <20200624132344.GA5980@pendragon.ideasonboard.com>
+Subject: Re: [RESEND PATCH v5 4/5] drm/bridge/sii8620: fix resource
+ acquisition error handling
+Message-ID: <20200624132532.GC5472@sirena.org.uk>
 References: <20200624114127.3016-1-a.hajda@samsung.com>
- <CGME20200624114135eucas1p26e2e4683d60cebdce7acd55177013992@eucas1p2.samsung.com>
- <20200624114127.3016-2-a.hajda@samsung.com>
- <20200624123140.GB1773782@kroah.com>
+ <CGME20200624114137eucas1p13599d33a0c4a9abf7708bf8c8e77264b@eucas1p1.samsung.com>
+ <20200624114127.3016-5-a.hajda@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kVXhAStRUZ/+rrGn"
 Content-Disposition: inline
-In-Reply-To: <20200624123140.GB1773782@kroah.com>
+In-Reply-To: <20200624114127.3016-5-a.hajda@samsung.com>
+X-Cookie: So this is it.  We're going to die.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 02:31:40PM +0200, Greg Kroah-Hartman wrote:
-> On Wed, Jun 24, 2020 at 01:41:23PM +0200, Andrzej Hajda wrote:
-> > During probe every time driver gets resource it should usually check for error
-> > printk some message if it is not -EPROBE_DEFER and return the error. This
-> > pattern is simple but requires adding few lines after any resource acquisition
-> > code, as a result it is often omited or implemented only partially.
-> > probe_err helps to replace such code sequences with simple call, so code:
-> > 	if (err != -EPROBE_DEFER)
-> > 		dev_err(dev, ...);
-> > 	return err;
-> > becomes:
-> > 	return probe_err(dev, err, ...);
-> > 
-> > Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
-> > Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-> > Reviewed-by: Mark Brown <broonie@kernel.org>
-> > Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> > ---
-> >  drivers/base/core.c    | 39 +++++++++++++++++++++++++++++++++++++++
-> >  include/linux/device.h |  3 +++
-> >  2 files changed, 42 insertions(+)
-> > 
-> > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > index 67d39a90b45c..ee9da66bff1b 100644
-> > --- a/drivers/base/core.c
-> > +++ b/drivers/base/core.c
-> > @@ -3953,6 +3953,45 @@ define_dev_printk_level(_dev_info, KERN_INFO);
-> >  
-> >  #endif
-> >  
-> > +/**
-> > + * probe_err - probe error check and log helper
-> > + * @dev: the pointer to the struct device
-> > + * @err: error value to test
-> > + * @fmt: printf-style format string
-> > + * @...: arguments as specified in the format string
-> > + *
-> > + * This helper implements common pattern present in probe functions for error
-> > + * checking: print message if the error is not -EPROBE_DEFER and propagate it.
-> > + * It replaces code sequence:
-> > + * 	if (err != -EPROBE_DEFER)
-> > + * 		dev_err(dev, ...);
-> > + * 	return err;
-> > + * with
-> > + * 	return probe_err(dev, err, ...);
-> > + *
-> > + * Returns @err.
-> > + *
-> > + */
-> > +int probe_err(const struct device *dev, int err, const char *fmt, ...)
-> > +{
-> > +	struct va_format vaf;
-> > +	va_list args;
-> > +
-> > +	if (err == -EPROBE_DEFER)
-> > +		return err;
-> > +
-> > +	va_start(args, fmt);
-> > +	vaf.fmt = fmt;
-> > +	vaf.va = &args;
-> > +
-> > +	dev_err(dev, "error %d: %pV", err, &vaf);
-> > +
-> > +	va_end(args);
-> > +
-> > +	return err;
-> > +}
-> > +EXPORT_SYMBOL_GPL(probe_err);
-> 
-> Please be specific in global symbols, how about "driver_probe_error()"?
 
-Or dev_err_probe() to match the existing dev_* functions ?
+--kVXhAStRUZ/+rrGn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> And merge the other patch into this one, as Raphael said, otherwise this
-> just looks odd to add something and then fix it up later.
+On Wed, Jun 24, 2020 at 01:41:26PM +0200, Andrzej Hajda wrote:
+> In case of error during resource acquisition driver should print error
+> message only in case it is not deferred probe, using probe_err helper
+> solves the issue. Moreover it records defer probe reason for debugging.
 
--- 
-Regards,
+If we silently ignore all deferred probe errors we make it hard for
+anyone who is experiencing issues with deferred probe to figure out what
+they're missing.  We should at least be logging problems at debug level
+so there's something for people to go on without having to hack the
+kernel source.
 
-Laurent Pinchart
+--kVXhAStRUZ/+rrGn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl7zVEwACgkQJNaLcl1U
+h9Adowf/bt19xA4Q3/G5xTijEYnOc63YWxQGFynpEFvnpuQuTYuDRwL2ybQHpXkD
+7dZqUsmE//n9XDWNSi6IHolSzWRtBVqD+LpF/gmGHcqGsPCstcSLeQMVM5b4l5KV
+x59+x9cTfoYkQ2XoBNZmmWZwGBYqVJvhW+4TysUX+9JCZgxKOG1LXLuMlL7r9qP2
+5nI549k1sjQdiC8pevFkysGucfiOGoKIQfcpMqqlIzCFkBCt5pRTYNQ0e4jUh3gT
+8qVPKlbm99aJ5+TGjPWtUzndU9VM08psKQNnguznxAbaHhF+ZA11l1AiIPv2qHkn
+YtM+Bz+sHfeDkTCKefTLds0G3+8Mmg==
+=oY2K
+-----END PGP SIGNATURE-----
+
+--kVXhAStRUZ/+rrGn--
