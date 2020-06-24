@@ -2,61 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6A292072F6
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 544C52072FC
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390402AbgFXMLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 08:11:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47700 "EHLO mail.kernel.org"
+        id S2390395AbgFXMN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 08:13:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389662AbgFXMLz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 08:11:55 -0400
+        id S2388811AbgFXMN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 08:13:28 -0400
 Received: from localhost (unknown [171.61.66.58])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BBE552088E;
-        Wed, 24 Jun 2020 12:11:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9BA62088E;
+        Wed, 24 Jun 2020 12:13:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593000714;
-        bh=CQ/YeKAURQSn20ZnWuAL465EuGhpy6ENS1WftOqmBRA=;
+        s=default; t=1593000807;
+        bh=k5aJPIUQtuGKmsQnsAtOLsmnYCwAV+fYGVXQ7sK6b88=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HFhhECB2bBcWWbaA/blSHYyHT2xWdn6egPYPPzlls+ZvlC+cVid/Xz/rwhvxwe0vH
-         /fajBgaTX2hyBmLTS83OZexUHKF9QAi+Mw6/QKn+N2nbZoRBZNcS3ymxHG8HVxr2Kj
-         +6cSNpa7EI23afwb/hfV9/qis8RB9nRo8PHnMm0A=
-Date:   Wed, 24 Jun 2020 17:41:50 +0530
+        b=AkHPlmFsIMH0YQj9EeTwKg1qiipF1q8RUudWPZmSXczMMRIssKC4jBnGgX5o9Sk1A
+         gqlSgqT+qZ0uwxJfYfKEzaJNgGDjhOq8/CeZepiledKAYqZMlg0vY8TyORDZ77MbTD
+         TcMqBbbV2Rj+J2tdMxFtDOvXOay7yZdGklLZogTQ=
+Date:   Wed, 24 Jun 2020 17:43:23 +0530
 From:   Vinod Koul <vkoul@kernel.org>
-To:     Arnd Bergmann <arnd@arndb.de>
+To:     Nathan Chancellor <natechancellor@gmail.com>
 Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Dilip Kota <eswara.kota@linux.intel.com>,
         linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] phy: intel: fix enum type mismatch warning
-Message-ID: <20200624121150.GA2324254@vkoul-mobl>
-References: <20200527134518.908624-1-arnd@arndb.de>
+Subject: Re: [PATCH] phy: intel: Eliminate unnecessary assignment in
+ intel_cbphy_set_mode
+Message-ID: <20200624121323.GB2324254@vkoul-mobl>
+References: <20200523035043.3305846-1-natechancellor@gmail.com>
+ <20200616003004.GB1307277@ubuntu-n2-xlarge-x86>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200527134518.908624-1-arnd@arndb.de>
+In-Reply-To: <20200616003004.GB1307277@ubuntu-n2-xlarge-x86>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 27-05-20, 15:45, Arnd Bergmann wrote:
-> clang points out that a local variable is initialized with
-> an enum value of the wrong type:
+On 15-06-20, 17:30, Nathan Chancellor wrote:
+> On Fri, May 22, 2020 at 08:50:43PM -0700, Nathan Chancellor wrote:
+> > Clang warns:
+> > 
+> > drivers/phy/intel/phy-intel-combo.c:202:34: warning: implicit conversion
+> > from enumeration type 'enum intel_phy_mode' to different enumeration
+> > type 'enum intel_combo_mode' [-Wenum-conversion]
+> >         enum intel_combo_mode cb_mode = PHY_PCIE_MODE;
+> >                               ~~~~~~~   ^~~~~~~~~~~~~
+> > 1 warning generated.
+> > 
+> > The correct enum to use would be PCIE0_PCIE1_MODE. However, eliminating
+> > this assignment is a little better because the switch statement always
+> > assigns a new value to cb_mode, which also takes care of the warning.
+> > 
+> > Fixes: ac0a95a3ea78 ("phy: intel: Add driver support for ComboPhy")
+> > Link: https://github.com/ClangBuiltLinux/linux/issues/1034
+> > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
+> > ---
+> >  drivers/phy/intel/phy-intel-combo.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/phy/intel/phy-intel-combo.c b/drivers/phy/intel/phy-intel-combo.c
+> > index c2a35be4cdfb..4bc1276ecf23 100644
+> > --- a/drivers/phy/intel/phy-intel-combo.c
+> > +++ b/drivers/phy/intel/phy-intel-combo.c
+> > @@ -199,9 +199,9 @@ static int intel_cbphy_pcie_dis_pad_refclk(struct intel_cbphy_iphy *iphy)
+> >  
+> >  static int intel_cbphy_set_mode(struct intel_combo_phy *cbphy)
+> >  {
+> > -	enum intel_combo_mode cb_mode = PHY_PCIE_MODE;
+> >  	enum aggregated_mode aggr = cbphy->aggr_mode;
+> >  	struct device *dev = cbphy->dev;
+> > +	enum intel_combo_mode cb_mode;
+> >  	enum intel_phy_mode mode;
+> >  	int ret;
+> >  
+> > 
+> > base-commit: c11d28ab4a691736e30b49813fb801847bd44e83
+> > -- 
+> > 2.27.0.rc0
+> > 
 > 
-> drivers/phy/intel/phy-intel-combo.c:202:34: error: implicit conversion from enumeration type 'enum intel_phy_mode' to different enumeration type 'enum intel_combo_mode' [-Werror,-Wenum-conversion]
->         enum intel_combo_mode cb_mode = PHY_PCIE_MODE;
->                               ~~~~~~~   ^~~~~~~~~~~~~
-> 
-> >From reading the code, it seems that this was not only the
-> wrong type, but not even supposed to be a code path that can
-> happen in practice.
-> 
-> Change the code to have no default phy mode but instead return an
-> error for invalid input.
+> Gentle ping for review. Nick did comment that maybe keeping the
+> assignment and tidying up one of the switch cases would be better but
+> every maintainer has their preference. This warning has slipped into
+> mainline so it would be nice to get it cleaned up.
 
-Applied, thanks
+Sorry for the delay, I have applied Anrd patch for this already and
+should be in linux-next tomorrow
 
 -- 
 ~Vinod
