@@ -2,93 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5293F206E42
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 09:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2120F206E31
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 09:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390127AbgFXHxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 03:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387725AbgFXHxS (ORCPT
+        id S2390076AbgFXHtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 03:49:49 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:34891 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390013AbgFXHtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 03:53:18 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A6C6C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 00:53:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5T5TvBb+88tPNfoiiFDEVsZ66I1kFN8shpVe/RD6M+M=; b=uN0lL8PQ+8GTG0+fLRPlb8Pqgg
-        e+5Yd861oZju3F8AdbboObnWMl4RWl8xhrYhHSZ6nXTJ0EQ8pnKWHrV3gu9O03EJKnSwNxgB4jycW
-        Q3Vs0pJXT6jLlRTG7xEKfB1xQOCwUqCP7GOzfumjkkRUQzHaLctJjag6bJpJiLlJAvR6EXGVSnOPm
-        nJUEG7CR0qrGjmAFe0vOhNdvwgCdIisgPtxzoQwdG8V3k3ApajpD9IBubDAeh47pVrFvz5eg5e4fM
-        d/+uxlRfUeLK1WjRjqJytdJmcQL1jZpWTT5wN2KWKbSAzTwMFCD7spg6PhdziiJKu7LPNT9Oq+NaH
-        OQlej4bg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jo0DE-0006vW-Cv; Wed, 24 Jun 2020 07:52:52 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CFA25300261;
-        Wed, 24 Jun 2020 09:52:49 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BDCD129E7F8A0; Wed, 24 Jun 2020 09:52:49 +0200 (CEST)
-Date:   Wed, 24 Jun 2020 09:52:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     tglx@linutronix.de, x86@kernel.org, elver@google.com,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        will@kernel.org, dvyukov@google.com, glider@google.com,
-        andreyknvl@google.com
-Subject: Re: [PATCH 2/9] rcu: Fixup noinstr warnings
-Message-ID: <20200624075249.GC4800@hirez.programming.kicks-ass.net>
-References: <20200603114014.152292216@infradead.org>
- <20200603114051.896465666@infradead.org>
- <20200615154905.GZ2531@hirez.programming.kicks-ass.net>
- <20200615155513.GG2554@hirez.programming.kicks-ass.net>
- <20200615162427.GI2554@hirez.programming.kicks-ass.net>
- <20200615171404.GI2723@paulmck-ThinkPad-P72>
- <20200619221555.GA12280@paulmck-ThinkPad-P72>
- <20200623204646.GF2483@worktop.programming.kicks-ass.net>
- <20200623214433.GX9247@paulmck-ThinkPad-P72>
+        Wed, 24 Jun 2020 03:49:46 -0400
+X-Originating-IP: 93.34.118.233
+Received: from uno.localdomain (93-34-118-233.ip49.fastwebnet.it [93.34.118.233])
+        (Authenticated sender: jacopo@jmondi.org)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 3E14E1BF210;
+        Wed, 24 Jun 2020 07:49:39 +0000 (UTC)
+Date:   Wed, 24 Jun 2020 09:53:07 +0200
+From:   Jacopo Mondi <jacopo@jmondi.org>
+To:     Ramzi BEN MEFTAH <rbmeftah@de.adit-jv.com>,
+        niklas soderlund <niklas.soderlund@ragnatech.se>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        Steve Longerbeam <steve_longerbeam@mentor.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Michael Rodin <mrodin@de.adit-jv.com>,
+        efriedrich@de.adit-jv.com, erosca@de.adit-jv.com
+Subject: Re: [PATCH 1/3] v4l2-subdev: Add subdev ioctl support for
+ ENUM/GET/SET INPUT
+Message-ID: <20200624075307.hl6wew7vr5ue225t@uno.localdomain>
+References: <1592301619-17631-1-git-send-email-rbmeftah@de.adit-jv.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200623214433.GX9247@paulmck-ThinkPad-P72>
+In-Reply-To: <1592301619-17631-1-git-send-email-rbmeftah@de.adit-jv.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 02:44:33PM -0700, Paul E. McKenney wrote:
-> On Tue, Jun 23, 2020 at 10:46:46PM +0200, Peter Zijlstra wrote:
-> > On Fri, Jun 19, 2020 at 03:15:55PM -0700, Paul E. McKenney wrote:
-> > 
-> > > Just following up because I don't see this anywhere.  If I am supposed
-> > > to take this (which is more plausible now that v5.8-rc1 is out), please
-> > > let me know.
-> > 
-> > Sorry, I got distracted by that NULL ptr thing, but that seems sorted
-> > now. If you don't mind taking it through your rcu/urgent tree for -rc3
-> > or so that would be awesome.
-> 
-> Will do!
-> 
-> Just to double-check, this is the patch from you with Message-ID
-> 20200603114051.896465666@infradead.org, correct?
-> 
-> Or, if you prefer, this commit now on -rcu?
-> 
-> 	5fe289eccfe5 ("rcu: Fixup noinstr warnings")
-> 
-> If this is the correct commit, I will rebase it on top of v5.8-rc2,
-> and if it passes tests, send it along via rcu/urgent.
+Hello
 
-Ah, I was thinking about:
+On Tue, Jun 16, 2020 at 12:00:15PM +0200, Ramzi BEN MEFTAH wrote:
+> From: Steve Longerbeam <steve_longerbeam@mentor.com>
+>
 
-  https://lore.kernel.org/lkml/20200615162427.GI2554@hirez.programming.kicks-ass.net/
+ +Niklas, +Laurent
 
-seeing how I added that instrumentation you wanted :-), but either
-version should work for now. KCSAN is sad without this.
+Niklas, Laurent, how does this play with CAP_IO_MC ?
+
+Thanks
+  j
+
+> This commit enables VIDIOC_ENUMINPUT, VIDIOC_G_INPUT, and VIDIOC_S_INPUT
+> ioctls for use via v4l2 subdevice node.
+>
+> This commit should probably not be pushed upstream, because the (old)
+> idea of video inputs conflicts with the newer concept of establishing
+> media links between src->sink pads.
+>
+> However it might make sense for some subdevices to support enum/get/set
+> inputs. One example would be the analog front end subdevice for the
+> ADV748x. By providing these ioctls, selecting the ADV748x analog inputs
+> can be done without requiring the implementation of media entities that
+> would define the analog source for which to establish a media link.
+>
+> Signed-off-by: Steve Longerbeam <steve_longerbeam@mentor.com>
+> ---
+>  drivers/media/v4l2-core/v4l2-subdev.c |  9 +++++++++
+>  include/media/v4l2-subdev.h           | 11 +++++++++++
+>  2 files changed, 20 insertions(+)
+>
+> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+> index 6b989fe..73fbfe9 100644
+> --- a/drivers/media/v4l2-core/v4l2-subdev.c
+> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
+> @@ -378,6 +378,15 @@ static long subdev_do_ioctl(struct file *file, unsigned int cmd, void *arg)
+>  			return -ENOTTY;
+>  		return v4l2_querymenu(vfh->ctrl_handler, arg);
+>
+> +	case VIDIOC_ENUMINPUT:
+> +		return v4l2_subdev_call(sd, video, enuminput, arg);
+> +
+> +	case VIDIOC_G_INPUT:
+> +		return v4l2_subdev_call(sd, video, g_input, arg);
+> +
+> +	case VIDIOC_S_INPUT:
+> +		return v4l2_subdev_call(sd, video, s_input, *(u32 *)arg);
+> +
+>  	case VIDIOC_G_CTRL:
+>  		if (!vfh->ctrl_handler)
+>  			return -ENOTTY;
+> diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
+> index f7fe78a..6e1a9cd 100644
+> --- a/include/media/v4l2-subdev.h
+> +++ b/include/media/v4l2-subdev.h
+> @@ -383,6 +383,14 @@ struct v4l2_mbus_frame_desc {
+>   * @g_input_status: get input status. Same as the status field in the
+>   *	&struct &v4l2_input
+>   *
+> + * @enuminput: enumerate inputs. Should return the same input status as
+> + *      @g_input_status if the passed input index is the currently active
+> + *      input.
+> + *
+> + * @g_input: returns the currently active input index.
+> + *
+> + * @s_input: set the active input.
+> + *
+>   * @s_stream: used to notify the driver that a video stream will start or has
+>   *	stopped.
+>   *
+> @@ -423,6 +431,9 @@ struct v4l2_subdev_video_ops {
+>  	int (*g_tvnorms)(struct v4l2_subdev *sd, v4l2_std_id *std);
+>  	int (*g_tvnorms_output)(struct v4l2_subdev *sd, v4l2_std_id *std);
+>  	int (*g_input_status)(struct v4l2_subdev *sd, u32 *status);
+> +	int (*enuminput)(struct v4l2_subdev *sd, struct v4l2_input *input);
+> +	int (*g_input)(struct v4l2_subdev *sd, u32 *index);
+> +	int (*s_input)(struct v4l2_subdev *sd, u32 index);
+>  	int (*s_stream)(struct v4l2_subdev *sd, int enable);
+>  	int (*g_pixelaspect)(struct v4l2_subdev *sd, struct v4l2_fract *aspect);
+>  	int (*g_frame_interval)(struct v4l2_subdev *sd,
+> --
+> 2.7.4
+>
