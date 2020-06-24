@@ -2,102 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39B82207931
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A0A20793E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405160AbgFXQan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 12:30:43 -0400
-Received: from foss.arm.com ([217.140.110.172]:40744 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404976AbgFXQ30 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 12:29:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5209A1FB;
-        Wed, 24 Jun 2020 09:29:24 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8FA1B3F73C;
-        Wed, 24 Jun 2020 09:29:21 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 17:29:19 +0100
-From:   Dave Martin <Dave.Martin@arm.com>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Fangrui Song <maskray@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Ingo Molnar <mingo@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@suse.de>, Will Deacon <will@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v3 3/9] efi/libstub: Remove .note.gnu.property
-Message-ID: <20200624162919.GH25945@arm.com>
-References: <20200624014940.1204448-1-keescook@chromium.org>
- <20200624014940.1204448-4-keescook@chromium.org>
- <20200624033142.cinvg6rbg252j46d@google.com>
- <202006232143.66828CD3@keescook>
- <20200624104356.GA6134@willie-the-truck>
- <CAMj1kXHBT4ei0xhyL4jD7=CNRsn1rh7w6jeYDLjVOv4na0Z38Q@mail.gmail.com>
- <202006240820.A3468F4@keescook>
- <CAMj1kXHck12juGi=E=P4hWP_8vQhQ+-x3vBMc3TGeRWdQ-XkxQ@mail.gmail.com>
- <202006240844.7BE48D2B5@keescook>
- <CAMj1kXHqBs44uukRSdFwA_hcmX_yKVfjqdv9RoPbbu-6Wz+RaA@mail.gmail.com>
+        id S2405189AbgFXQcn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 12:32:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405088AbgFXQcl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 12:32:41 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BE2C061573;
+        Wed, 24 Jun 2020 09:32:41 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id t8so2642069ilm.7;
+        Wed, 24 Jun 2020 09:32:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pUIZQhqDp4lzMh1CnS2pEovhw0eG8uBYHqVBDBe2+2A=;
+        b=BTHZP8c7EWgHrJF0/6w1zOJdvOS+S0FTXntU472Hy58QRKcqMUTCvjAtw1dT0WOWVn
+         vVd53nd8ZLAPUC2e7wWcprGNNlzzxswaEfNR5ZVYFjN4i73A8HWgpeUJ/kBOfyMF5azF
+         EvoO8Ig9sR2ugXlan5QPb11NFgivc/vgaNISZ5j8mrH6x5zEs4VEpisgER5cCv19WoJY
+         yrqVbVdW/0wZQrqjYQEIa/J6lhfvq0er9dIOHFnJms/RuNXO4eM6VB5A31IJuxLZ5BFc
+         gf1sQSBkkDaXm8myp9Tm9rrelCkHEvqoyevE8z04DHMYO3V1aZeBZFZ46lklqWJDHWXR
+         Ni5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=pUIZQhqDp4lzMh1CnS2pEovhw0eG8uBYHqVBDBe2+2A=;
+        b=MwawYDdigu+85ThvNewfPCdRv+WQuqynSihUs/yV1dMQLGlzVu8IZG40ZtNcGGeOsh
+         oOuEdGb+gRIjBftv2Gw8vELeJgxa4nmuMmkyzq6jFKI5o9GEsTRbG1T4XquU9v5PLc8K
+         qUev/YnKTzWUnS3yuBQZxDdf1TYh7yn1hk64HcboFoJ+fR0jP6vHAQUZxUlPz1AVkiQu
+         S3jHUbGnXo1ufK4Gd5PGWyIlVQr+QPNzOHMFTcz7BAmH1jFqRTeRQjd40pGUckaSRKZ2
+         zeAhDhtvATrbbzTR9C3nBqxks5lxpj9EulPEnK4tP+j5u9LwuKirvrmd0m/Mkin2t/9U
+         d7Cg==
+X-Gm-Message-State: AOAM532nJyQuS40GsGDvcgW7LgAuyBV+1y+EKRn7n5IXiepw/hG9RcXD
+        C+vOYUIH2vH79ll2g7+FV8rDP1ipuMsWQLqzbyo=
+X-Google-Smtp-Source: ABdhPJwEwuCaeT0KQT8T6bGY+TLDIqijMwDykgVQEODBnMvMPlvN+4M2jDSUIKwguCt1ADHbR3aP4faN01hP5+mg4XE=
+X-Received: by 2002:a05:6e02:48e:: with SMTP id b14mr9395963ils.143.1593016360414;
+ Wed, 24 Jun 2020 09:32:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMj1kXHqBs44uukRSdFwA_hcmX_yKVfjqdv9RoPbbu-6Wz+RaA@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <20200518150214.100491-1-vaibhavgupta40@gmail.com> <20200519.153239.1577517664546707472.davem@davemloft.net>
+In-Reply-To: <20200519.153239.1577517664546707472.davem@davemloft.net>
+From:   Vaibhav Gupta <vaibhav.varodek@gmail.com>
+Date:   Wed, 24 Jun 2020 22:01:06 +0530
+Message-ID: <CAPBsFfBhWAYCuxWxP=DnD1Ja5cQ44i5guRC+49gAHsTxJV25qw@mail.gmail.com>
+Subject: Re: [PATCH net-next v3 0/2] realtek ethernet : use generic power management.
+To:     David Miller <davem@davemloft.net>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org, linux-pm@vger.kernel.org,
+        skhan@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 05:48:41PM +0200, Ard Biesheuvel wrote:
-> On Wed, 24 Jun 2020 at 17:45, Kees Cook <keescook@chromium.org> wrote:
+On Wed, 20 May 2020 at 04:02, David Miller <davem@davemloft.net> wrote:
+>
+> From: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+> Date: Mon, 18 May 2020 20:32:12 +0530
+>
+> > The purpose of this patch series is to remove legacy power management callbacks
+> > from realtek ethernet drivers.
 > >
-> > On Wed, Jun 24, 2020 at 05:31:06PM +0200, Ard Biesheuvel wrote:
-> > > On Wed, 24 Jun 2020 at 17:21, Kees Cook <keescook@chromium.org> wrote:
-> > > >
-> > > > On Wed, Jun 24, 2020 at 12:46:32PM +0200, Ard Biesheuvel wrote:
-> > > > > I'm not sure if there is a point to having PAC and/or BTI in the EFI
-> > > > > stub, given that it runs under the control of the firmware, with its
-> > > > > memory mappings and PAC configuration etc.
-> > > >
-> > > > Is BTI being ignored when the firmware runs?
-> > >
-> > > Given that it requires the 'guarded' attribute to be set in the page
-> > > tables, and the fact that the UEFI spec does not require it for
-> > > executables that it invokes, nor describes any means of annotating
-> > > such executables as having been built with BTI annotations, I think we
-> > > can safely assume that the EFI stub will execute with BTI disabled in
-> > > the foreseeable future.
+> > The callbacks performing suspend() and resume() operations are still calling
+> > pci_save_state(), pci_set_power_state(), etc. and handling the powermanagement
+> > themselves, which is not recommended.
 > >
-> > yaaaaaay. *sigh* How long until EFI catches up?
+> > The conversion requires the removal of the those function calls and change the
+> > callback definition accordingly.
 > >
-> > That said, BTI shouldn't _hurt_, right? If EFI ever decides to enable
-> > it, we'll be ready?
-> >
-> 
-> Sure. Although I anticipate that we'll need to set some flag in the
-> PE/COFF header to enable it, and so any BTI opcodes we emit without
-> that will never take effect in practice.
-
-In the meantime, it is possible to build all the in-tree parts of EFI
-for BTI, and just turn it off for out-of-tree EFI binaries?
-
-If there's no easy way to do this though, I guess we should wait for /
-push for a PE/COFF flag to describe this properly.
-
-Cheers
----Dave
+> > All Changes are compile-tested only.
+>
+> Series applied
+Thanks !
+-- Vaibhav Gupta
+> , thanks.
