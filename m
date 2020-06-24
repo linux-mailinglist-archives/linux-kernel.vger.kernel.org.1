@@ -2,187 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A5D206D70
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 09:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7BD206D79
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 09:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389668AbgFXHVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 03:21:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41024 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728360AbgFXHVA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 03:21:00 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DEEAC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 00:20:59 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id d6so784733pjs.3
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 00:20:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=pjnQ7WBzCOByclYff5fag1J6k77rRFjTJeOwwIhXIsI=;
-        b=LM+9Emsg/Bnt9ZPqcCtr1BIO53wrwaXkstgGZO8mwi6wqv0h60blnansku5od/fTJN
-         owpxS2UsG0aNQ+ZThFnv5sjD8qtDr2g6ICUJoExlIp4x+ifOT9hyUOwAARo7C4YxFk1b
-         ruSfG+DQPOplV5fZHpAsmSK1cGDsDRMt9v2fw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=pjnQ7WBzCOByclYff5fag1J6k77rRFjTJeOwwIhXIsI=;
-        b=cVycf/9A7CT+Pwa9UuHK8B9jlLtkG28zWKCBmaEds2hy10pp+bOIJ1+PyMcIGS5q8c
-         M0J/ylDZe+GUAzHEXWI8sA4LQ0+vTrNgfGuHFNvCIUgGPwCXfMGwJYeIvn9sFc5jS9hR
-         q1+AE5hqcModHylhlcvaVExylUh91+16e/SMvdXOrdSwcZ2Tzd1vknb5YDeYHz046HgV
-         pZ08CEHveDblcG1o3NGjy2mYObZ3pzGc4dM3UUTHDzeiA4hYqObMKYaeOQ3TntXEgA51
-         DA6NAYpiGQjR2R5+dUrtnukaRl/1ZBuUqXKlRUGtUlvjXeq7Sct7MdLe5VEAOby8GbwX
-         8zCQ==
-X-Gm-Message-State: AOAM530ldXOUOUiVwplvR5XmhYk/PPcpMsr9zhUbWDdcyof4rxIw5gSB
-        g2odCCxkNhj5Uc+pRCvVNeLfvQ==
-X-Google-Smtp-Source: ABdhPJx0mccfQsquGoFKjKPiTC10fC3qOuSqvdb6OgKAmDilcLtaiwiVyjw/1caXio4aFtntnNK1MQ==
-X-Received: by 2002:a17:902:bd0b:: with SMTP id p11mr26994367pls.91.1592983258898;
-        Wed, 24 Jun 2020 00:20:58 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id u20sm1917349pfm.152.2020.06.24.00.20.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 00:20:58 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 00:20:57 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Kristen Carlson Accardi <kristen@linux.intel.com>
-Cc:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        arjan@linux.intel.com, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kernel-hardening@lists.openwall.com,
-        rick.p.edgecombe@intel.com, Tony Luck <tony.luck@intel.com>
-Subject: Re: [PATCH v3 09/10] kallsyms: Hide layout
-Message-ID: <202006240013.7806A28435@keescook>
-References: <20200623172327.5701-1-kristen@linux.intel.com>
- <20200623172327.5701-10-kristen@linux.intel.com>
+        id S2389712AbgFXHWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 03:22:51 -0400
+Received: from ms-10.1blu.de ([178.254.4.101]:60686 "EHLO ms-10.1blu.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728360AbgFXHWr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 03:22:47 -0400
+Received: from [78.43.71.214] (helo=marius.fritz.box)
+        by ms-10.1blu.de with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <mail@mariuszachmann.de>)
+        id 1jnzjw-0000VK-Jk; Wed, 24 Jun 2020 09:22:36 +0200
+From:   Marius Zachmann <mail@mariuszachmann.de>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc:     Marius Zachmann <mail@mariuszachmann.de>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: [PATCH v4 0/3] hwmon: Add Corsair Commander Pro driver
+Date:   Wed, 24 Jun 2020 09:21:51 +0200
+Message-Id: <20200624072154.22486-1-mail@mariuszachmann.de>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200623172327.5701-10-kristen@linux.intel.com>
+X-Con-Id: 241080
+X-Con-U: 0-mail
+X-Originating-IP: 78.43.71.214
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 10:23:26AM -0700, Kristen Carlson Accardi wrote:
-> This patch makes /proc/kallsyms display alphabetically by symbol
-> name rather than sorted by address in order to hide the newly
-> randomized address layout.
-> 
-> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> Reviewed-by: Tony Luck <tony.luck@intel.com>
-> Tested-by: Tony Luck <tony.luck@intel.com>
-> ---
->  kernel/kallsyms.c | 128 ++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 128 insertions(+)
-> 
-> diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
-> index 16c8c605f4b0..df2b20e1b7f2 100644
-> --- a/kernel/kallsyms.c
-> +++ b/kernel/kallsyms.c
-> @@ -25,6 +25,7 @@
->  #include <linux/filter.h>
->  #include <linux/ftrace.h>
->  #include <linux/compiler.h>
-> +#include <linux/list_sort.h>
->  
->  /*
->   * These will be re-linked against their real values
-> @@ -446,6 +447,11 @@ struct kallsym_iter {
->  	int show_value;
->  };
->  
-> +struct kallsyms_iter_list {
-> +	struct kallsym_iter iter;
-> +	struct list_head next;
-> +};
-> +
->  int __weak arch_get_kallsym(unsigned int symnum, unsigned long *value,
->  			    char *type, char *name)
->  {
-> @@ -660,6 +666,127 @@ int kallsyms_show_value(void)
->  	}
->  }
+This is v4 of a driver for the Corsair Commander Pro.
+It provides sysfs attributes for:
+- Reading fan speed
+- Reading temp sensors
+- Reading voltage values
+- Writing pwm and reading last written pwm
+- Reading fan and temp connection status
 
-The #ifdef can be moved up to here:
+It is an usb driver, so it needs to be ignored by usbhid. (patch 3/3)
+This is based on the staging/hwmon tree.
 
-#ifdef CONFIG_FG_KASLR
+Signed-off-by: Marius Zachmann <mail@mariuszachmann.de>
+---
 
-Otherwise without CONFIG_FG_KASLR, I get:
+Changes from v3
+- add device ids to hid_ignore_list in hid-quirks.h
+- removed unused update_interval
+- ccp_disconnect is static
 
-kernel/kallsyms.c:714:12: warning: ‘kallsyms_list_cmp’ defined but not used [-Wunused-function]
-  714 | static int kallsyms_list_cmp(void *priv, struct list_head *a,
-      |            ^~~~~~~~~~~~~~~~~
+Changes from v2
+- add corsair-cpro to Documentation/hwmon/index.rst
+- add SPDX license identifier to corsair-cpro.rst
+- remove fanX_enable from Documentation and driver
+- changed comment style
+- clarified protocol in comments
+- add get_temp_cnct for reading temperature sensor
+  connection status
+- added temp_cnct and temp_label in ccp_device
+- added tempX_label, showing connection status
+- renamed get_fan_mode_label to get_fan_cnct
+- get_temp_cnct and get_fan_cnct only called in probe
+- send_usb_cmd checks errors in the device response
+- send_usb_cmd clears the buffer and sets the
+  command
+- inlined get_fan_rpm and get_voltage and removed
+  functions
+- more reverse christmas tree
 
 
->  
-> +static int sorted_show(struct seq_file *m, void *p)
-> +{
-> +	struct list_head *list = m->private;
-> +	struct kallsyms_iter_list *iter;
-> +	int rc;
-> +
-> +	if (list_empty(list))
-> +		return 0;
-> +
-> +	iter = list_first_entry(list, struct kallsyms_iter_list, next);
-> +
-> +	m->private = iter;
-> +	rc = s_show(m, p);
-> +	m->private = list;
-> +
-> +	list_del(&iter->next);
-> +	kfree(iter);
-> +
-> +	return rc;
-> +}
-> +
-> +static void *sorted_start(struct seq_file *m, loff_t *pos)
-> +{
-> +	return m->private;
-> +}
-> +
-> +static void *sorted_next(struct seq_file *m, void *p, loff_t *pos)
-> +{
-> +	struct list_head *list = m->private;
-> +
-> +	(*pos)++;
-> +
-> +	if (list_empty(list))
-> +		return NULL;
-> +
-> +	return p;
-> +}
-> +
-> +static const struct seq_operations kallsyms_sorted_op = {
-> +	.start = sorted_start,
-> +	.next = sorted_next,
-> +	.stop = s_stop,
-> +	.show = sorted_show
-> +};
-> +
-> +static int kallsyms_list_cmp(void *priv, struct list_head *a,
-> +			     struct list_head *b)
-> +{
-> +	struct kallsyms_iter_list *iter_a, *iter_b;
-> +
-> +	iter_a = list_entry(a, struct kallsyms_iter_list, next);
-> +	iter_b = list_entry(b, struct kallsyms_iter_list, next);
-> +
-> +	return strcmp(iter_a->iter.name, iter_b->iter.name);
-> +}
-> +
-> +int get_all_symbol_name(void *data, const char *name, struct module *mod,
-> +			unsigned long addr)
+Marius Zachmann (3):
+  input: add to hid_ignore_list
+  add Documentation
+  add driver
 
-This can be static too.
+ Documentation/hwmon/corsair-cpro.rst |  40 +++
+ Documentation/hwmon/index.rst        |   1 +
+ MAINTAINERS                          |   6 +
+ drivers/hid/hid-quirks.c             |   2 +
+ drivers/hwmon/Kconfig                |  10 +
+ drivers/hwmon/Makefile               |   1 +
+ drivers/hwmon/corsair-cpro.c         | 489 +++++++++++++++++++++++++++
+ 7 files changed, 549 insertions(+)
+ create mode 100644 Documentation/hwmon/corsair-cpro.rst
+ create mode 100644 drivers/hwmon/corsair-cpro.c
 
-Otherwise, looks good!
-
-Reviewed-by: Kees Cook <keescook@chromium.org>
-
--- 
-Kees Cook
+--
+2.27.0
