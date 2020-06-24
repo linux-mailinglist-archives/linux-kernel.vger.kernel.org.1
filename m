@@ -2,158 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23C05207C9B
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D7A207C88
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:01:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391444AbgFXUDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 16:03:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391422AbgFXUDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 16:03:30 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3EE0F20857;
-        Wed, 24 Jun 2020 20:03:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593029009;
-        bh=fMM+bm0Izr+wccr/mXr7yh9lx5bzumOPa215v+v5Gdw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qGEzbBozqPjMnxFZHSgjlhvk3t/mJQvW9scdxCO6Do256ze+cVDb8UH4In5HYgLWB
-         392/P24RAPuQB5GRHb4w1SwFH/FDhhAHUl2pzPT39hh1mITbmNpQGFTE0IWuj8AyEM
-         aitj/Efed0+2sfZknpJfKdIMZaW4IeDOENnGTNfo=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1joBXQ-006ABu-Hc; Wed, 24 Jun 2020 20:58:28 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Russell King <linux@arm.linux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Valentin Schneider <Valentin.Schneider@arm.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>, kernel-team@android.com
-Subject: [PATCH v2 17/17] ARM: Remove custom IRQ stat accounting
-Date:   Wed, 24 Jun 2020 20:58:11 +0100
-Message-Id: <20200624195811.435857-18-maz@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20200624195811.435857-1-maz@kernel.org>
-References: <20200624195811.435857-1-maz@kernel.org>
+        id S2391405AbgFXUAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 16:00:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45390 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391221AbgFXUAI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 16:00:08 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C423BC0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:00:06 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id q17so1676841pfu.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:00:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=IeM1pbX3Y/QRt8rMyrroNyrQ/gTGnkJwEnogm0dQ3GE=;
+        b=uhBYvvKCWelTf4JenS6hYiSwgyGKBjl7XAHO+DuYLiRrdYNH1hh8a647W7MkpRc4W3
+         grtXLTOUfUT9eg5QiRa1Fb/bpa4JxRgaR1568VZ3Rp4Tzrkb68F99ewBKwLJE2svnato
+         wIDa9TNmSIMZXHndufHSFI3KeZwRR31Pat1P9Ww2YAe/Blsh7+N+pV1a1TQjce7oLPl+
+         L9IhY2vdG5I9KUW4iS96MKRWm8TQzhkjib3ioZR2aREcTFKbAucF0gsWUdHcOivUMgTR
+         hZV33HumrWYCIH4FW+6RBsVHhBxSKuITT9/LtRDQYcJXRJ3TafqePblA72wzwovefbeN
+         YUow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=IeM1pbX3Y/QRt8rMyrroNyrQ/gTGnkJwEnogm0dQ3GE=;
+        b=msXBUmx21kWY8CbQAxXovxGuzg/IjLN0ka0mnGBkrO64roADLC4/DzrOyVoeS8RHEj
+         jLpgCAg+QCHWSQ9NC4cOsAFXuaVpy/pzwv2NrRBG1vFp5XU9rA+0k6Vtm5o0pp/6sFmX
+         WulwVC1+AAe5nkjluncBZLpMyOT+qc2NucPl3k9XaduUpun1Kz7K2hcg3Xi0V88UdW8n
+         s9QxEuvJeToxVrMN0pBhnuzulF8vxNptZxow519VL+MmQBWrqBs5FHSXKD3gOqii+TRu
+         ZEU2qpXUpqcj/gM1DP0e3kDMk1fAEGhd/LY2s46C6TzMYd3/eRLPwlqOvH/qinlpSBi0
+         qR+g==
+X-Gm-Message-State: AOAM533XqbqkSmSqLx4k715G41Z/BgcGxE8WeJt4nB722120GIbV/tKa
+        n91BuqVxhhW2aQcF8tol2piq1w==
+X-Google-Smtp-Source: ABdhPJwi+ep/yhnadV35mqvrBbBtsDSgiibwsNhPmy0Eh7KnXNpc3Qxvv8zxkmDoRNCdHSdO5Af54A==
+X-Received: by 2002:aa7:924c:: with SMTP id 12mr30224767pfp.225.1593028805959;
+        Wed, 24 Jun 2020 13:00:05 -0700 (PDT)
+Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
+        by smtp.gmail.com with ESMTPSA id h30sm3090949pfr.89.2020.06.24.13.00.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 13:00:05 -0700 (PDT)
+Date:   Wed, 24 Jun 2020 13:00:04 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Minchan Kim <minchan@kernel.org>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        linux-mm <linux-mm@kvack.org>, linux-api@vger.kernel.org,
+        oleksandr@redhat.com, Suren Baghdasaryan <surenb@google.com>,
+        Tim Murray <timmurray@google.com>,
+        Sandeep Patil <sspatil@google.com>,
+        Sonny Rao <sonnyrao@google.com>,
+        Brian Geffon <bgeffon@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        John Dias <joaodias@google.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jann Horn <jannh@google.com>,
+        alexander.h.duyck@linux.intel.com, sj38.park@gmail.com,
+        Arjun Roy <arjunroy@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Colascione <dancol@google.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        SeongJae Park <sjpark@amazon.de>, linux-man@vger.kernel.org
+Subject: Re: [PATCH v8 4/4] mm/madvise: check fatal signal pending of target
+ process
+In-Reply-To: <20200622192900.22757-5-minchan@kernel.org>
+Message-ID: <alpine.DEB.2.22.394.2006241259530.35388@chino.kir.corp.google.com>
+References: <20200622192900.22757-1-minchan@kernel.org> <20200622192900.22757-5-minchan@kernel.org>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, will@kernel.org, catalin.marinas@arm.com, linux@arm.linux.org.uk, tglx@linutronix.de, jason@lakedaemon.net, sumit.garg@linaro.org, Valentin.Schneider@arm.com, f.fainelli@gmail.com, gregory.clement@bootlin.com, andrew@lunn.ch, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's switch the arm code to the core accounting, which already
-does everything we need.
+On Mon, 22 Jun 2020, Minchan Kim wrote:
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- arch/arm/include/asm/hardirq.h | 17 -----------------
- arch/arm/kernel/smp.c          | 20 ++++----------------
- 2 files changed, 4 insertions(+), 33 deletions(-)
+> Bail out to prevent unnecessary CPU overhead if target process has pending
+> fatal signal during (MADV_COLD|MADV_PAGEOUT) operation.
+> 
+> Link: http://lkml.kernel.org/r/20200302193630.68771-4-minchan@kernel.org
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
+> Reviewed-by: Suren Baghdasaryan <surenb@google.com>
+> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> Cc: Brian Geffon <bgeffon@google.com>
+> Cc: Christian Brauner <christian@brauner.io>
+> Cc: Daniel Colascione <dancol@google.com>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Jens Axboe <axboe@kernel.dk>
+> Cc: Joel Fernandes <joel@joelfernandes.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: John Dias <joaodias@google.com>
+> Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Oleksandr Natalenko <oleksandr@redhat.com>
+> Cc: Sandeep Patil <sspatil@google.com>
+> Cc: SeongJae Park <sj38.park@gmail.com>
+> Cc: SeongJae Park <sjpark@amazon.de>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: Sonny Rao <sonnyrao@google.com>
+> Cc: Tim Murray <timmurray@google.com>
+> Cc: Christian Brauner <christian.brauner@ubuntu.com>
+> Cc: <linux-man@vger.kernel.org>
 
-diff --git a/arch/arm/include/asm/hardirq.h b/arch/arm/include/asm/hardirq.h
-index 7a88f160b1fb..b95848ed2bc7 100644
---- a/arch/arm/include/asm/hardirq.h
-+++ b/arch/arm/include/asm/hardirq.h
-@@ -6,29 +6,12 @@
- #include <linux/threads.h>
- #include <asm/irq.h>
- 
--/* number of IPIS _not_ including IPI_CPU_BACKTRACE */
--#define NR_IPI	7
--
- typedef struct {
- 	unsigned int __softirq_pending;
--#ifdef CONFIG_SMP
--	unsigned int ipi_irqs[NR_IPI];
--#endif
- } ____cacheline_aligned irq_cpustat_t;
- 
- #include <linux/irq_cpustat.h>	/* Standard mappings for irq_cpustat_t above */
- 
--#define __inc_irq_stat(cpu, member)	__IRQ_STAT(cpu, member)++
--#define __get_irq_stat(cpu, member)	__IRQ_STAT(cpu, member)
--
--#ifdef CONFIG_SMP
--u64 smp_irq_stat_cpu(unsigned int cpu);
--#else
--#define smp_irq_stat_cpu(cpu)	0
--#endif
--
--#define arch_irq_stat_cpu	smp_irq_stat_cpu
--
- #define __ARCH_IRQ_EXIT_IRQS_DISABLED	1
- 
- #endif /* __ASM_HARDIRQ_H */
-diff --git a/arch/arm/kernel/smp.c b/arch/arm/kernel/smp.c
-index 285980c2a437..249fac8b0a8e 100644
---- a/arch/arm/kernel/smp.c
-+++ b/arch/arm/kernel/smp.c
-@@ -66,6 +66,7 @@ enum ipi_msg_type {
- 	IPI_CPU_STOP,
- 	IPI_IRQ_WORK,
- 	IPI_COMPLETION,
-+	NR_IPI,
- 	/*
- 	 * CPU_BACKTRACE is special and not included in NR_IPI
- 	 * or tracable with trace_ipi_*
-@@ -532,27 +533,16 @@ void show_ipi_list(struct seq_file *p, int prec)
- 	unsigned int cpu, i;
- 
- 	for (i = 0; i < NR_IPI; i++) {
-+		unsigned int irq = irq_desc_get_irq(ipi_desc[i]);
- 		seq_printf(p, "%*s%u: ", prec - 1, "IPI", i);
- 
- 		for_each_online_cpu(cpu)
--			seq_printf(p, "%10u ",
--				   __get_irq_stat(cpu, ipi_irqs[i]));
-+			seq_printf(p, "%10u ", kstat_irqs_cpu(irq, cpu));
- 
- 		seq_printf(p, " %s\n", ipi_types[i]);
- 	}
- }
- 
--u64 smp_irq_stat_cpu(unsigned int cpu)
--{
--	u64 sum = 0;
--	int i;
--
--	for (i = 0; i < NR_IPI; i++)
--		sum += __get_irq_stat(cpu, ipi_irqs[i]);
--
--	return sum;
--}
--
- void arch_send_call_function_ipi_mask(const struct cpumask *mask)
- {
- 	smp_cross_call(mask, IPI_CALL_FUNC);
-@@ -633,10 +623,8 @@ static void do_handle_IPI(int ipinr)
- {
- 	unsigned int cpu = smp_processor_id();
- 
--	if ((unsigned)ipinr < NR_IPI) {
-+	if ((unsigned)ipinr < NR_IPI)
- 		trace_ipi_entry_rcuidle(ipi_types[ipinr]);
--		__inc_irq_stat(cpu, ipi_irqs[ipinr]);
--	}
- 
- 	switch (ipinr) {
- 	case IPI_WAKEUP:
--- 
-2.27.0
-
+Acked-by: David Rientjes <rientjes@google.com>
