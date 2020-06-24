@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEFA3207DC4
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CFB207DF5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389038AbgFXU50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 16:57:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54318 "EHLO
+        id S2391446AbgFXU7O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 16:59:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728798AbgFXU5Z (ORCPT
+        with ESMTP id S2391610AbgFXU7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 16:57:25 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4743AC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:57:25 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id r18so2021015pgk.11
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:57:25 -0700 (PDT)
+        Wed, 24 Jun 2020 16:59:11 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8675C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:59:10 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id u8so1710607pje.4
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:59:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=2UVd4Vpuu4Hnm6XlHGR5cRrZnqXWEFfAzghKkxqA5PE=;
-        b=BPMaWjSiHqVF8vi4hiTlzAVhVpOBnqRB11zTq0lEeedJqVV+du+PNZ4KmaMlIsirPC
-         R928oKYPPNEK406mCXXrFo5ILeh9cKok03PTJz6JfAnRQKQCv1Rh1SMBWeCtT9nOL0oJ
-         lryLagao4wnwA1qFmJ4sPzSNGD7lPYGa8eVmfocCRrLBf+dhWLYjqG85ZdT9LeohIlOb
-         2EmJnnhlOHrRKj1PGL5sVH9SaXtWzsmYftW61LHVwvnNA7wui7tFGXqcFXutnYBMCItr
-         GdL2Vo1Q7hX8hrKDrgkMAaZk/eo83KbXysC70mpN3P9EzjPp00OuZYiGpwRBnkB00cCL
-         l6nQ==
+        bh=zWM/30Wl1IsQgoPaDiN0rPEEBtrHBKt/BJnnp0eLWds=;
+        b=pd1+e0uXRIvGNNQgZ7G0+2YkwsDFhSclmocO1GbaT5UM3c6xBTX7UYJjCsai0aiyT7
+         fIoijSJoU+eUl8voyiO0IOyBsavQt6eREqkk3whDlDlHejxDQRKECAFiVGUe/CKDHaTc
+         EpZ2md8ULTkAVVBJ6O72PRwIcg/GiVClV1rha8JNSiYzT4/v2ecYsi++FLxwW19Hw/Gd
+         Fr/Z+ikfp69sRAivcJnbajJT1/5/Qn2W6vWHskjofe5p2ZJr6Cthm+UKTVG2rZslsDkG
+         xO7mHbrOSScz4BsI8HgHuMYhqH42CQPx5Ip80xrwiQdph3TwAg+m578XBSL3rfWRIGQZ
+         ATEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=2UVd4Vpuu4Hnm6XlHGR5cRrZnqXWEFfAzghKkxqA5PE=;
-        b=opivK6abG8NYeH1B6KWZbJD7OQ4REbVGOO+6kc0Loz93MMZzROyupvNzuoyHmga5Ho
-         XXi0owFJXzgdUXNt/ZE1F+VeWoVf1LCiFGI/q0de/zADMmnTE3qat+zhUqdO1X+HNVIc
-         16FxsOD9Ev+6FoVg0q3NJAlSs3BV5NUcIeOnyCZRHzUQl8ziNU5D2KPOE/ew6L4XrbxK
-         I40+XkgqxJV2+Q9/NPOrbQUIzQajFSXEah9bq5Y94j9S4geWtJC9kJyjAZoHAY/Ri9g5
-         2bJV0DAi8KRSeySrNjfkRrYlFZG22tfW/I59pwZGChWqCyB8AEZrh4VHTPF7VZilI/tJ
-         KYIQ==
-X-Gm-Message-State: AOAM532og74/YAV/dV3t7L/cBwi0bmOSKRlyQEokds+YWi/eWzjoZnjO
-        /NHWerrqnfNVlzHME1TL4DzL54jTOI9ZjC99SAiQAA==
-X-Google-Smtp-Source: ABdhPJwqdv1zjA72U6Y+yinTpL4jIF0WvT5OjmcvgBRWy2HcW+N17omaHs7u2Al3ueQuo5czHPS48NLDnn5YbwyPtt8=
-X-Received: by 2002:a63:a119:: with SMTP id b25mr22841048pgf.10.1593032243514;
- Wed, 24 Jun 2020 13:57:23 -0700 (PDT)
+        bh=zWM/30Wl1IsQgoPaDiN0rPEEBtrHBKt/BJnnp0eLWds=;
+        b=uNySgrnGviazDIi3IS0SuhNLHG4hoaKy2tTKRufxFkIzLo0EiM2SrP8Cke2fK8w40J
+         N8BjY8YWcNkqgHF6QvfujMZ+4Dl9qMS/2KFjScWODf1nJRvedPt2u6czsRouwSMh7IkJ
+         y/GKhjlokESwWeCE7kOSvH7rQPKwJoh27zLoUJ1axr8gQ7Na36zTflvpgrRO/+9cF6wJ
+         v1yspvAi56YZaOHFaWEgbuFkgtnPnDG4cPB1vcnoTs6zokwjCB1QAHY+SfsKABu8dugY
+         Qt7PBMiEir0N5zFdtPpChhav8TQwpX0O0K3M3/NEW10W/tlc7rk5RmjoAnSH4BXdr/hE
+         M3Sg==
+X-Gm-Message-State: AOAM533sVlr28Dexe3Lbj3uGIpsq5m3xDAxAy+Vdbx19MRIkTDDuiGLP
+        HMA1NQg9OXhVkjz3YVWT8yewWWeNfufnZbEydTVSzw==
+X-Google-Smtp-Source: ABdhPJxCHHL5VXpLPing5E72KwPslmx5t7evOEk09T9ji09mKT6bSRCDPTi/AxhdrzEhszh9gGm6vbYGZSEoMtti7/U=
+X-Received: by 2002:a17:90a:21ef:: with SMTP id q102mr5252324pjc.101.1593032350091;
+ Wed, 24 Jun 2020 13:59:10 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200624203200.78870-1-samitolvanen@google.com> <20200624203200.78870-14-samitolvanen@google.com>
-In-Reply-To: <20200624203200.78870-14-samitolvanen@google.com>
+References: <20200624203200.78870-1-samitolvanen@google.com> <20200624203200.78870-18-samitolvanen@google.com>
+In-Reply-To: <20200624203200.78870-18-samitolvanen@google.com>
 From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Wed, 24 Jun 2020 13:57:11 -0700
-Message-ID: <CAKwvOd=XxsGowjitcqDrw6g-cxB=kqAsvRS+PyaMrYWnPgjqbg@mail.gmail.com>
-Subject: Re: [PATCH 13/22] scripts/mod: disable LTO for empty.c
+Date:   Wed, 24 Jun 2020 13:58:57 -0700
+Message-ID: <CAKwvOdnEbCfYZ9o=OF51oswyqDvN4iP-9syWUDhxfueq4q0xcw@mail.gmail.com>
+Subject: Re: [PATCH 17/22] arm64: vdso: disable LTO
 To:     Sami Tolvanen <samitolvanen@google.com>
 Cc:     Masahiro Yamada <masahiroy@kernel.org>,
         Will Deacon <will@kernel.org>,
@@ -72,29 +72,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, Jun 24, 2020 at 1:33 PM Sami Tolvanen <samitolvanen@google.com> wrote:
 >
-> With CONFIG_LTO_CLANG, clang generates LLVM IR instead of ELF object
-> files. As empty.o is used for probing target properties, disable LTO
-> for it to produce an object file instead.
+> Filter out CC_FLAGS_LTO for the vDSO.
+
+Just curious about this patch (and the following one for x86's vdso),
+do you happen to recall specifically what the issues with the vdso's
+are?
+
 >
 > Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
-
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-
 > ---
->  scripts/mod/Makefile | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/arm64/kernel/vdso/Makefile | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/scripts/mod/Makefile b/scripts/mod/Makefile
-> index 296b6a3878b2..b6e3b40c6eeb 100644
-> --- a/scripts/mod/Makefile
-> +++ b/scripts/mod/Makefile
-> @@ -1,5 +1,6 @@
->  # SPDX-License-Identifier: GPL-2.0
->  OBJECT_FILES_NON_STANDARD := y
-> +CFLAGS_REMOVE_empty.o += $(CC_FLAGS_LTO)
+> diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
+> index 556d424c6f52..cfad4c296ca1 100644
+> --- a/arch/arm64/kernel/vdso/Makefile
+> +++ b/arch/arm64/kernel/vdso/Makefile
+> @@ -29,8 +29,8 @@ ldflags-y := -shared -nostdlib -soname=linux-vdso.so.1 --hash-style=sysv \
+>  ccflags-y := -fno-common -fno-builtin -fno-stack-protector -ffixed-x18
+>  ccflags-y += -DDISABLE_BRANCH_PROFILING
 >
->  hostprogs      := modpost mk_elfconfig
->  always-y       := $(hostprogs) empty.o
+> -CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os $(CC_FLAGS_SCS)
+> -KBUILD_CFLAGS                  += $(DISABLE_LTO)
+> +CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os $(CC_FLAGS_SCS) \
+> +                               $(CC_FLAGS_LTO)
+>  KASAN_SANITIZE                 := n
+>  UBSAN_SANITIZE                 := n
+>  OBJECT_FILES_NON_STANDARD      := y
 > --
 > 2.27.0.212.ge8ba1cc988-goog
 >
