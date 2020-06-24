@@ -2,119 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542A2206BB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 07:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C50A206B79
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 07:03:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388993AbgFXFa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 01:30:29 -0400
-Received: from mga06.intel.com ([134.134.136.31]:46151 "EHLO mga06.intel.com"
+        id S2388664AbgFXFDE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 01:03:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44318 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727957AbgFXFa2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 01:30:28 -0400
-IronPort-SDR: qai4v/7qzrk08LdnHvhK7owsNZey9d0TYB9y+T301wmmcVukRBR8CpNaIbIVt+3aZQgLO2vN6c
- PQkwOxXbWs3Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="205847687"
-X-IronPort-AV: E=Sophos;i="5.75,274,1589266800"; 
-   d="scan'208";a="205847687"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2020 22:30:28 -0700
-IronPort-SDR: PM9E4C+XGCHuONMvxAOSM7ZRXVMN3bQ3IiLdf9ub+67hMyVWHZrUYmuHk5bafKix2WaFFO+/Zv
- Cx5FI8BWBZ/g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,274,1589266800"; 
-   d="scan'208";a="452513519"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga005.jf.intel.com with ESMTP; 23 Jun 2020 22:30:21 -0700
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     alsa-devel@alsa-project.org, vkoul@kernel.org
-Cc:     vinod.koul@linaro.org, linux-kernel@vger.kernel.org, tiwai@suse.de,
-        broonie@kernel.org, gregkh@linuxfoundation.org, jank@cadence.com,
-        srinivas.kandagatla@linaro.org, rander.wang@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, hui.wang@canonical.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        slawomir.blauciak@intel.com, mengdong.lin@intel.com,
-        bard.liao@intel.com
-Subject: [PATCH 6/9] soundwire: intel_init: use EXPORT_SYMBOL_NS
-Date:   Wed, 24 Jun 2020 01:35:43 +0800
-Message-Id: <20200623173546.21870-7-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200623173546.21870-1-yung-chuan.liao@linux.intel.com>
-References: <20200623173546.21870-1-yung-chuan.liao@linux.intel.com>
+        id S1728766AbgFXFDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 01:03:03 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D27CB206E2;
+        Wed, 24 Jun 2020 05:03:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592974983;
+        bh=1uBhtl4quVofHKkIZZ7aUlBQYKZTxT/j8V3UTHtDKmc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KJ9vYrgpfGenjfuLOYWqdi+tiI+8wYvlI1Xpqt1tzuiSMGOX9yajy2taBrOwF2bdN
+         5zka5yqNIB5nphbVydRROjEMHQxDCtl8gxLXkYIFv7VcjrkL34FYkJqnmjexpzzQeK
+         AxVbUbOu2Oh6Dzsa7RjHO6OCB9QH8Cwd6xNprF4M=
+Date:   Wed, 24 Jun 2020 07:03:00 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Phu Luu <Phu.Luu@silabs.com>
+Cc:     "johan@kernel.org" <johan@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Brant Merryman <Brant.Merryman@silabs.com>,
+        Richard Hendricks <Richard.Hendricks@silabs.com>
+Subject: Re: Subject: [PATCH v3 1/2] USB: serial: cp210x: Enable usb generic
+ throttle/unthrottle
+Message-ID: <20200624050300.GA646978@kroah.com>
+References: <DM6PR11MB285755DFFFCFB60E2BE09B369C950@DM6PR11MB2857.namprd11.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR11MB285755DFFFCFB60E2BE09B369C950@DM6PR11MB2857.namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On Wed, Jun 24, 2020 at 04:11:21AM +0000, Phu Luu wrote:
+> Assign the .throttle and .unthrottle functions to be generic function
+> in the driver structure to prevent data loss that can otherwise occur
+> if the host does not enable USB throttling.
+> 
+> Signed-off-by: Phu Luu An <phu.luu@silabs.com>
+> Signed-off-by: Brant Merryman <brant.merryman@silabs.com>
 
-Make sure all symbols in this soundwire-intel-init module are exported
-with a namespace.
+Why does your Subject: line have "Subject:" in it again?
 
-The MODULE_IMPORT_NS will be used in Intel/SOF HDaudio modules to be
-posted in a separate series.
+Can you please fix up and resend these patches?
 
-Namespaces are only introduced for the Intel parts of the SoundWire
-code at this time, in future patches we should also add namespaces for
-Cadence parts and the SoundWire core.
+thanks,
 
-Suggested-by: Greg KH <gregkh@linuxfoundation.org>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/soundwire/intel_init.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/soundwire/intel_init.c b/drivers/soundwire/intel_init.c
-index d8f0c1472f1f..ad3175272e88 100644
---- a/drivers/soundwire/intel_init.c
-+++ b/drivers/soundwire/intel_init.c
-@@ -164,7 +164,7 @@ void sdw_intel_enable_irq(void __iomem *mmio_base, bool enable)
- 
- 	writel(val, mmio_base + HDA_DSP_REG_ADSPIC2);
- }
--EXPORT_SYMBOL(sdw_intel_enable_irq);
-+EXPORT_SYMBOL_NS(sdw_intel_enable_irq, SOUNDWIRE_INTEL_INIT);
- 
- static struct sdw_intel_ctx
- *sdw_intel_probe_controller(struct sdw_intel_res *res)
-@@ -353,7 +353,7 @@ int sdw_intel_acpi_scan(acpi_handle *parent_handle,
- 
- 	return sdw_intel_scan_controller(info);
- }
--EXPORT_SYMBOL(sdw_intel_acpi_scan);
-+EXPORT_SYMBOL_NS(sdw_intel_acpi_scan, SOUNDWIRE_INTEL_INIT);
- 
- /**
-  * sdw_intel_probe() - SoundWire Intel probe routine
-@@ -370,7 +370,7 @@ struct sdw_intel_ctx
- {
- 	return sdw_intel_probe_controller(res);
- }
--EXPORT_SYMBOL(sdw_intel_probe);
-+EXPORT_SYMBOL_NS(sdw_intel_probe, SOUNDWIRE_INTEL_INIT);
- 
- /**
-  * sdw_intel_startup() - SoundWire Intel startup
-@@ -383,7 +383,7 @@ int sdw_intel_startup(struct sdw_intel_ctx *ctx)
- {
- 	return sdw_intel_startup_controller(ctx);
- }
--EXPORT_SYMBOL(sdw_intel_startup);
-+EXPORT_SYMBOL_NS(sdw_intel_startup, SOUNDWIRE_INTEL_INIT);
- /**
-  * sdw_intel_exit() - SoundWire Intel exit
-  * @ctx: SoundWire context allocated in the probe
-@@ -394,7 +394,7 @@ void sdw_intel_exit(struct sdw_intel_ctx *ctx)
- {
- 	sdw_intel_cleanup(ctx);
- }
--EXPORT_SYMBOL(sdw_intel_exit);
-+EXPORT_SYMBOL_NS(sdw_intel_exit, SOUNDWIRE_INTEL_INIT);
- 
- MODULE_LICENSE("Dual BSD/GPL");
- MODULE_DESCRIPTION("Intel Soundwire Init Library");
--- 
-2.17.1
-
+greg k-h
