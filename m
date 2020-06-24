@@ -2,90 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C340A2075CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19672075D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:39:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391216AbgFXOhl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Jun 2020 10:37:41 -0400
-Received: from mail.fireflyinternet.com ([109.228.58.192]:59592 "EHLO
-        fireflyinternet.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388652AbgFXOhl (ORCPT
+        id S2391234AbgFXOiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 10:38:54 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:56268 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388652AbgFXOiy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 10:37:41 -0400
-X-Default-Received-SPF: pass (skip=forwardok (res=PASS)) x-ip-name=78.156.65.138;
-Received: from localhost (unverified [78.156.65.138]) 
-        by fireflyinternet.com (Firefly Internet (M1)) with ESMTP (TLS) id 21603863-1500050 
-        for multiple; Wed, 24 Jun 2020 15:37:36 +0100
-Content-Type: text/plain; charset="utf-8"
+        Wed, 24 Jun 2020 10:38:54 -0400
+Received: from 89-64-84-125.dynamic.chello.pl (89.64.84.125) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.415)
+ id 45514ec22c03a9c3; Wed, 24 Jun 2020 16:38:52 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Linux PM <linux-pm@vger.kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH] intel_idle: Eliminate redundant static variable
+Date:   Wed, 24 Jun 2020 16:38:51 +0200
+Message-ID: <1731670.qoJTzjjlrN@kreacher>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20200624142544.GI6578@ziepe.ca>
-References: <20200624080248.3701-1-chris@chris-wilson.co.uk> <20200624121053.GD6578@ziepe.ca> <159300126338.4527.3968787379471939056@build.alporthouse.com> <20200624123910.GA3178169@ziepe.ca> <159300796224.4527.2014771396582759689@build.alporthouse.com> <20200624141604.GH6578@ziepe.ca> <159300850942.4527.8335506003268197914@build.alporthouse.com> <20200624142544.GI6578@ziepe.ca>
-From:   Chris Wilson <chris@chris-wilson.co.uk>
-Subject: Re: [PATCH 1/2] mm/mmu_notifier: Mark up direct reclaim paths with MAYFAIL
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Message-ID: <159300945202.4527.4366416413140642633@build.alporthouse.com>
-User-Agent: alot/0.8.1
-Date:   Wed, 24 Jun 2020 15:37:32 +0100
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Jason Gunthorpe (2020-06-24 15:25:44)
-> On Wed, Jun 24, 2020 at 03:21:49PM +0100, Chris Wilson wrote:
-> > Quoting Jason Gunthorpe (2020-06-24 15:16:04)
-> > > On Wed, Jun 24, 2020 at 03:12:42PM +0100, Chris Wilson wrote:
-> > > > Quoting Jason Gunthorpe (2020-06-24 13:39:10)
-> > > > > On Wed, Jun 24, 2020 at 01:21:03PM +0100, Chris Wilson wrote:
-> > > > > > Quoting Jason Gunthorpe (2020-06-24 13:10:53)
-> > > > > > > On Wed, Jun 24, 2020 at 09:02:47AM +0100, Chris Wilson wrote:
-> > > > > > > > When direct reclaim enters the shrinker and tries to reclaim pages, it
-> > > > > > > > has to opportunitically unmap them [try_to_unmap_one]. For direct
-> > > > > > > > reclaim, the calling context is unknown and may include attempts to
-> > > > > > > > unmap one page of a dma object while attempting to allocate more pages
-> > > > > > > > for that object. Pass the information along that we are inside an
-> > > > > > > > opportunistic unmap that can allow that page to remain referenced and
-> > > > > > > > mapped, and let the callback opt in to avoiding a recursive wait.
-> > > > > > > 
-> > > > > > > i915 should already not be holding locks shared with the notifiers
-> > > > > > > across allocations that can trigger reclaim. This is already required
-> > > > > > > to use notifiers correctly anyhow - why do we need something in the
-> > > > > > > notifiers?
-> > > > > > 
-> > > > > > for (n = 0; n < num_pages; n++)
-> > > > > >       pin_user_page()
-> > > > > > 
-> > > > > > may call try_to_unmap_page from the lru shrinker for [0, n-1].
-> > > > > 
-> > > > > Yes, of course you can't hold any locks that intersect with notifiers
-> > > > > across pin_user_page()/get_user_page()
-> > > > 
-> > > > What lock though? It's just the page refcount, shrinker asks us to drop
-> > > > it [via mmu], we reply we would like to keep using that page as freeing
-> > > > it for the current allocation is "robbing Peter to pay Paul".
-> > > 
-> > > Maybe I'm unclear what this series is actually trying to fix? 
-> > > 
-> > > You said "avoiding a recursive wait" which sounds like some locking
-> > > deadlock to me.
-> > 
-> > It's the shrinker being called while we are allocating for/on behalf of
-> > the object. As we are actively using the object, we don't want to free
-> > it -- the partial object allocation being the clearest, if the object
-> > consists of 2 pages, trying to free page 0 in order to allocate page 1
-> > has to fail (and the shrinker should find another candidate to reclaim,
-> > or fail the allocation).
-> 
-> mmu notifiers are not for influencing policy of the mm.
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-It's policy is "this may fail" regardless of the mmu notifier at this
-point. That is not changed.
+The value of the lapic_timer_always_reliable static variable in
+the intel_idle driver reflects the boot_cpu_has(X86_FEATURE_ARAT)
+value and so it also reflects the static_cpu_has(X86_FEATURE_ARAT)
+value.
 
-Your suggestion is that we move the pages to the unevictable mapping so
-that the shrinker LRU is never invoked on pages we have grabbed with
-pin_user_page. Does that work with the rest of the mmu notifiers?
--Chris
+Hence, the lapic_timer_always_reliable check in intel_idle() is
+redundant and apart from this lapic_timer_always_reliable is only
+used in two places in which boot_cpu_has(X86_FEATURE_ARAT) can be
+used directly.
+
+Eliminate the lapic_timer_always_reliable variable in accordance
+with the above observations.
+
+No intentional functional impact.
+
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/idle/intel_idle.c |   11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
+
+Index: linux-pm/drivers/idle/intel_idle.c
+===================================================================
+--- linux-pm.orig/drivers/idle/intel_idle.c
++++ linux-pm/drivers/idle/intel_idle.c
+@@ -66,8 +66,6 @@ static struct cpuidle_device __percpu *i
+ static unsigned long auto_demotion_disable_flags;
+ static bool disable_promotion_to_c1e;
+ 
+-static bool lapic_timer_always_reliable;
+-
+ struct idle_cpu {
+ 	struct cpuidle_state *state_table;
+ 
+@@ -142,7 +140,7 @@ static __cpuidle int intel_idle(struct c
+ 	if (state->flags & CPUIDLE_FLAG_TLB_FLUSHED)
+ 		leave_mm(cpu);
+ 
+-	if (!static_cpu_has(X86_FEATURE_ARAT) && !lapic_timer_always_reliable) {
++	if (!static_cpu_has(X86_FEATURE_ARAT)) {
+ 		/*
+ 		 * Switch over to one-shot tick broadcast if the target C-state
+ 		 * is deeper than C1.
+@@ -1562,7 +1560,7 @@ static int intel_idle_cpu_online(unsigne
+ {
+ 	struct cpuidle_device *dev;
+ 
+-	if (!lapic_timer_always_reliable)
++	if (!boot_cpu_has(X86_FEATURE_ARAT))
+ 		tick_broadcast_enable();
+ 
+ 	/*
+@@ -1655,16 +1653,13 @@ static int __init intel_idle_init(void)
+ 		goto init_driver_fail;
+ 	}
+ 
+-	if (boot_cpu_has(X86_FEATURE_ARAT))	/* Always Reliable APIC Timer */
+-		lapic_timer_always_reliable = true;
+-
+ 	retval = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "idle/intel:online",
+ 				   intel_idle_cpu_online, NULL);
+ 	if (retval < 0)
+ 		goto hp_setup_fail;
+ 
+ 	pr_debug("Local APIC timer is reliable in %s\n",
+-		 lapic_timer_always_reliable ? "all C-states" : "C1");
++		 boot_cpu_has(X86_FEATURE_ARAT) ? "all C-states" : "C1");
+ 
+ 	return 0;
+ 
+
+
+
