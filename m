@@ -2,115 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8E062073EB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 15:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5CB2073F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 15:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390916AbgFXNDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 09:03:09 -0400
-Received: from correo.us.es ([193.147.175.20]:42552 "EHLO mail.us.es"
+        id S2403898AbgFXNDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 09:03:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46070 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390317AbgFXNDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 09:03:08 -0400
-Received: from antivirus1-rhel7.int (unknown [192.168.2.11])
-        by mail.us.es (Postfix) with ESMTP id 9CC7E1C442D
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 15:03:07 +0200 (CEST)
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 8EA14DA73D
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 15:03:07 +0200 (CEST)
-Received: by antivirus1-rhel7.int (Postfix, from userid 99)
-        id 76E94DA722; Wed, 24 Jun 2020 15:03:07 +0200 (CEST)
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on antivirus1-rhel7.int
-X-Spam-Level: 
-X-Spam-Status: No, score=-108.2 required=7.5 tests=ALL_TRUSTED,BAYES_50,
-        SMTPAUTH_US2,USER_IN_WHITELIST autolearn=disabled version=3.4.1
-Received: from antivirus1-rhel7.int (localhost [127.0.0.1])
-        by antivirus1-rhel7.int (Postfix) with ESMTP id 483A8DA73D;
-        Wed, 24 Jun 2020 15:03:05 +0200 (CEST)
-Received: from 192.168.1.97 (192.168.1.97)
- by antivirus1-rhel7.int (F-Secure/fsigk_smtp/550/antivirus1-rhel7.int);
- Wed, 24 Jun 2020 15:03:05 +0200 (CEST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/antivirus1-rhel7.int)
-Received: from us.es (unknown [90.77.255.23])
+        id S2390586AbgFXNDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 09:03:39 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: 1984lsi)
-        by entrada.int (Postfix) with ESMTPSA id 10BDD42EF42B;
-        Wed, 24 Jun 2020 15:03:05 +0200 (CEST)
-Date:   Wed, 24 Jun 2020 15:03:04 +0200
-X-SMTPAUTHUS: auth mail.us.es
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        sgrubb@redhat.com, omosnace@redhat.com, fw@strlen.de,
-        twoerner@redhat.com, eparis@parisplace.org, tgraf@infradead.org
-Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change
- events
-Message-ID: <20200624130304.GA549@salvia>
-References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
- <20200624100346.GA11986@salvia>
- <20200624123423.r2gypsdii6xgiywy@madcap2.tricolour.ca>
+        by mail.kernel.org (Postfix) with ESMTPSA id C23C22082F;
+        Wed, 24 Jun 2020 13:03:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593003818;
+        bh=0qG4FzuUMsbomqk+xttMakSicquRd3Y77xHixAAXZFE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=eUtzm10VWIy9qeD2lgs6qftL20dV65oXtRI7OgMkTiaTnbgNxGwMXYwBk1Xfyx4sE
+         WMBEbkfDn8OJnJ5mvptg4MKEeRmkBw2SxkUQAqfH7wx/I91cGm1Oqy3pfv5qcqkCk2
+         ceXHzvWEywom7NT6HJh4gBQxY0vAESvzYNHgcn/I=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id AA3743523267; Wed, 24 Jun 2020 06:03:38 -0700 (PDT)
+Date:   Wed, 24 Jun 2020 06:03:38 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, x86@kernel.org, elver@google.com,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        will@kernel.org, dvyukov@google.com, glider@google.com,
+        andreyknvl@google.com
+Subject: Re: [PATCH 2/9] rcu: Fixup noinstr warnings
+Message-ID: <20200624130338.GF9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20200603114014.152292216@infradead.org>
+ <20200603114051.896465666@infradead.org>
+ <20200615154905.GZ2531@hirez.programming.kicks-ass.net>
+ <20200615155513.GG2554@hirez.programming.kicks-ass.net>
+ <20200615162427.GI2554@hirez.programming.kicks-ass.net>
+ <20200615171404.GI2723@paulmck-ThinkPad-P72>
+ <20200619221555.GA12280@paulmck-ThinkPad-P72>
+ <20200623204646.GF2483@worktop.programming.kicks-ass.net>
+ <20200623214433.GX9247@paulmck-ThinkPad-P72>
+ <20200624075249.GC4800@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200624123423.r2gypsdii6xgiywy@madcap2.tricolour.ca>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Virus-Scanned: ClamAV using ClamSMTP
+In-Reply-To: <20200624075249.GC4800@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 08:34:23AM -0400, Richard Guy Briggs wrote:
-> On 2020-06-24 12:03, Pablo Neira Ayuso wrote:
-> > On Thu, Jun 04, 2020 at 09:20:49AM -0400, Richard Guy Briggs wrote:
-[...]
-> > > diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-> > > index 3558e76e2733..b9e7440cc87d 100644
-> > > --- a/net/netfilter/nf_tables_api.c
-> > > +++ b/net/netfilter/nf_tables_api.c
-> > > @@ -12,6 +12,7 @@
-> > >  #include <linux/netlink.h>
-> > >  #include <linux/vmalloc.h>
-> > >  #include <linux/rhashtable.h>
-> > > +#include <linux/audit.h>
-> > >  #include <linux/netfilter.h>
-> > >  #include <linux/netfilter/nfnetlink.h>
-> > >  #include <linux/netfilter/nf_tables.h>
-> > > @@ -693,6 +694,16 @@ static void nf_tables_table_notify(const struct nft_ctx *ctx, int event)
-> > >  {
-> > >  	struct sk_buff *skb;
-> > >  	int err;
-> > > +	char *buf = kasprintf(GFP_KERNEL, "%s:%llu;?:0",
-> > > +			      ctx->table->name, ctx->table->handle);
-> > > +
-> > > +	audit_log_nfcfg(buf,
-> > > +			ctx->family,
-> > > +			ctx->table->use,
-> > > +			event == NFT_MSG_NEWTABLE ?
-> > > +				AUDIT_NFT_OP_TABLE_REGISTER :
-> > > +				AUDIT_NFT_OP_TABLE_UNREGISTER);
-> > > +	kfree(buf);
+On Wed, Jun 24, 2020 at 09:52:49AM +0200, Peter Zijlstra wrote:
+> On Tue, Jun 23, 2020 at 02:44:33PM -0700, Paul E. McKenney wrote:
+> > On Tue, Jun 23, 2020 at 10:46:46PM +0200, Peter Zijlstra wrote:
+> > > On Fri, Jun 19, 2020 at 03:15:55PM -0700, Paul E. McKenney wrote:
+> > > 
+> > > > Just following up because I don't see this anywhere.  If I am supposed
+> > > > to take this (which is more plausible now that v5.8-rc1 is out), please
+> > > > let me know.
+> > > 
+> > > Sorry, I got distracted by that NULL ptr thing, but that seems sorted
+> > > now. If you don't mind taking it through your rcu/urgent tree for -rc3
+> > > or so that would be awesome.
 > > 
-> > As a follow up: Would you wrap this code into a function?
+> > Will do!
 > > 
-> >         nft_table_audit()
+> > Just to double-check, this is the patch from you with Message-ID
+> > 20200603114051.896465666@infradead.org, correct?
 > > 
-> > Same thing for other pieces of code below.
+> > Or, if you prefer, this commit now on -rcu?
+> > 
+> > 	5fe289eccfe5 ("rcu: Fixup noinstr warnings")
+> > 
+> > If this is the correct commit, I will rebase it on top of v5.8-rc2,
+> > and if it passes tests, send it along via rcu/urgent.
 > 
-> If I'm guessing right, you are asking for a supplementary follow-up
-> cleanup patch to this one (or are you nacking this patch)?
+> Ah, I was thinking about:
+> 
+>   https://lore.kernel.org/lkml/20200615162427.GI2554@hirez.programming.kicks-ass.net/
+> 
+> seeing how I added that instrumentation you wanted :-), but either
+> version should work for now. KCSAN is sad without this.
 
-No nack, it's just that I'd prefer to see this wrapped in a function.
-I think your patch is already in the audit tree.
+Glad I asked!  I will substitute the one you pointed out above.
 
-> Also, I gather you would like to see the kasprintf and kfree hidden in
-> nft_table_audit(), handing this function at least 8 parameters?  This
-> sounds pretty messy given the format of the table field.
-
-I think you can pass ctx and the specific object, e.g. table, in most
-cases? There is also event and the gfp_flags. That counts 4 here, but
-maybe I'm overlooking something.
-
-Thanks.
+							Thanx, Paul
