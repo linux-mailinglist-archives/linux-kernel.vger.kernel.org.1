@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE503207BC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 20:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C447E207BCB
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 20:53:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406165AbgFXSxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 14:53:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35172 "EHLO
+        id S2406182AbgFXSxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 14:53:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406100AbgFXSxQ (ORCPT
+        with ESMTP id S2406133AbgFXSxR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 14:53:16 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0B5CC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 11:53:15 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id u128so1818057pgu.13
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 11:53:15 -0700 (PDT)
+        Wed, 24 Jun 2020 14:53:17 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FAE9C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 11:53:17 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id x8so514728plm.10
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 11:53:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=posk.io; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=BSBHRDFdCQBaKLYhdcxFUXJwGlQwy6/ypVUCgPoA93I=;
-        b=IVC+YmN+SpA850yWceAg+Sfvabr8BLl2GroqtH/bHvP6VcOth5oTHm6xPQx2+yWYBx
-         3fOTNpinvG1rqtJk89Xx7gwUXOBLhVpF2avlpr/TuuiebHLA1vvXROg4DY/2TuDhCCuN
-         eDYa4q1B/ddZcUwqqAjAQiPWz/G/XAxn3NRCvD+oBUSalBE7qsiNy0oMLicRj4IbLfJO
-         ayhT4gLPkcEss+bDBs619rnvPmWU5UlXm5Iu5QIDpy1vxBVRIROLypKFRLaaQWuWJnnC
-         kcdatfwib5jHYopQeujAGqiW6d0imUXxznyp2bXSfglKuK6ZOjOZfg7CquI6/9Cwo+Me
-         yPAQ==
+        bh=uYqVZJBHTf88KT57Y1RFK0U5MEy7rji47z/yWhBE4x8=;
+        b=QYlpPesPnFxYnyNaFLfKnfiIlkqU78d5bVK1dxA34I40KpR2UXQ+GokI424ea9Me88
+         0ibRtsvzjve1SKFevhuWL+cxgpZbyVQuaHkQD5OC5ew29A+bEphY72kF+dABpfLOcQL2
+         75fmHmVkvcPqsx54gyXa9X5Cs3sWRt7XzZ2hL0AZL2GZF4dx9QJeK2RMVmyxHTlcchfr
+         UW75Nwd8zy0y6rVO9qtFfYKuQRObIKHET6k79AypfJNqoKc5zSKEbJq6law5KeYt2E/7
+         XF5lZqL/z704g4Bh0tgeYkxEgHuahmqRySUAOJkiwmGZwe09174Y5qXRkoskQNnSasMa
+         P3bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=BSBHRDFdCQBaKLYhdcxFUXJwGlQwy6/ypVUCgPoA93I=;
-        b=Y+wbOtUY0AlnM4W1zykVUZylam1PAE+e9Ojr1LbgIriz035STZts6cBPWcuAK3qItw
-         bhkBJ3ac2dpSgeJZY+pD2OTEWR+IXsYdxvf0wJy2mi3nsnOJl7XSSPRqMsyjWdVust7l
-         7P6TMDeCcYHdZ2RNS6bJwzngzOR+LT5vugrIFmiY3f9QhasxsNpDE9HddKQiT7PF8HMB
-         bKDSpiwU++qbRa0/l+iQXdgZhKNdCTuhAk0CVOa6Edy/c9v1vBXKzp0C4O8spLkSv1D+
-         fUopXHqAzMn1pwJfBIbFebP0GLuteTgxYvn4inKKeFbgP1BOmmvmAO+6MwaQtx8uNc/k
-         DwnQ==
-X-Gm-Message-State: AOAM532wwohh7lg9sBz6r9Eik3MpWerArPyNnmBWSji7s8ZYXY2j8eL5
-        wcyfNLVwysmqQsqzot5dlyIGQ6iXDTO7V/hD
-X-Google-Smtp-Source: ABdhPJzfKoCrN+jL+Goct6s/P7P9w0aSahxklTwnjyAN5ZcuR5lZB27CvC4yIjCpjAwNZ83DyRiu6A==
-X-Received: by 2002:a63:ec05:: with SMTP id j5mr23545205pgh.109.1593024795172;
-        Wed, 24 Jun 2020 11:53:15 -0700 (PDT)
+        bh=uYqVZJBHTf88KT57Y1RFK0U5MEy7rji47z/yWhBE4x8=;
+        b=nV+BlBCTfoP6m4xQV63K/LSLWmrbtDdgYkxrWO7v3Np1Sd4qdjDuFCBbdkQsgXdxAN
+         v8ZcqXgWKlGlspgS1uGFqQMhO7Tq5N7VD0FEU3E6bVo5Y0IF0thAqXce9wO0bYD6AUWA
+         lSXake22YPT4RHgxm0zaTYCUTrFwv36jTSpAuzBZeEddcmHMgLMRCf+l32jVQQ2EgEtp
+         nNbosErgaHrIU8rLC/8N7qnc3ijqT/dTaqFpv3lzjAEjayXEfn6ykeUCpLxqKbwXSmsg
+         z/hpkwdQ06PuUVrnJKrCwTCSApk94Ahmsr0GmAhwETMOavgD21K54Oimkahc+YiWfzLP
+         9uMQ==
+X-Gm-Message-State: AOAM530Y9h/bHf5vHnyI6EPvTMASpvRXys3XUKNudUa88IrBHFj22DGR
+        uZLkF3IA5Y/37YgN7fxS2o808hfzWTlr4hlV
+X-Google-Smtp-Source: ABdhPJztNThteTpietWAcl+7/lGSU5BopkBSOrnxJdBG752/xcMwHPBRCVLYEnOOEpFqxHjh7lO2IQ==
+X-Received: by 2002:a17:902:8d89:: with SMTP id v9mr16089689plo.191.1593024796355;
+        Wed, 24 Jun 2020 11:53:16 -0700 (PDT)
 Received: from posk-x1c.lan (c-73-202-129-89.hsd1.ca.comcast.net. [73.202.129.89])
-        by smtp.gmail.com with ESMTPSA id q10sm22295815pfk.86.2020.06.24.11.53.13
+        by smtp.gmail.com with ESMTPSA id q10sm22295815pfk.86.2020.06.24.11.53.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 11:53:14 -0700 (PDT)
+        Wed, 24 Jun 2020 11:53:15 -0700 (PDT)
 From:   Peter Oskolkov <posk@posk.io>
 To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -57,11 +57,10 @@ To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Vincent Guittot <vincent.guittot@linaro.org>
 Cc:     Peter Oskolkov <posk@google.com>, Andrei Vagin <avagin@google.com>,
         Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [RFC PATCH 2/3 v3] futex/sched: add wake_up_process_prefer_current_cpu, use in FUTEX_SWAP
-Date:   Wed, 24 Jun 2020 11:52:46 -0700
-Message-Id: <20200624185247.13269-3-posk@posk.io>
+        Aaron Lu <aaron.lwe@gmail.com>
+Subject: [RFC PATCH 3/3] selftests/futex: add futex_swap selftest
+Date:   Wed, 24 Jun 2020 11:52:47 -0700
+Message-Id: <20200624185247.13269-4-posk@posk.io>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200624185247.13269-1-posk@posk.io>
 References: <20200624185247.13269-1-posk@posk.io>
@@ -74,152 +73,305 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Oskolkov <posk@google.com>
 
-This is an RFC!
+This is the final RFC patch in FUTEX_SWAP patchset. It
+adds a test/benchmark to validate behavior and
+compare performance of a new FUTEX_SWAP futex operation.
 
-v2: fix undefined symbol error ifndef CONFIG_SMP, as
-Reported-by: kernel test robot <lkp@intel.com>
-
-As described in the previous patch in this patchset
-("futex: introduce FUTEX_SWAP operation"), it is often
-beneficial to wake a task and run it on the same CPU
-where the current going to sleep task it running.
-
-Internally at Google, switchto_switch sycall not only
-migrates the wakee to the current CPU, but also moves
-the waker's load stats to the wakee, thus ensuring
-that the migration to the current CPU does not interfere
-with load balancing. switchto_switch also does the
-context switch into the wakee, bypassing schedule().
-
-This patchset does not go that far yet, it simply
-migrates the wakee to the current CPU and calls schedule().
-This can potentially interfere with load balancing but,
-on the other hand, the code is concise and simple
-and is easy to understand to start the discussion.
-
-If this approach is OK, then in follow-up patches
-I will try to fune-tune the behavior by adjusting
-load stats and schedule(): our internal switchto_switch
-is still about 2x faster than FUTEX_SWAP (see numbers below).
-
-And now about performance: futex_swap benchmark
-from the last patch in this patchset produces this typical
-output:
-
-$ ./futex_swap -i 100000
-
-------- running SWAP_WAKE_WAIT -----------
-
-completed 100000 swap and back iterations in 820683263 ns: 4103 ns per swap
-PASS
-
-------- running SWAP_SWAP -----------
-
-completed 100000 swap and back iterations in 124034476 ns: 620 ns per swap
-PASS
-
-In the above, the first benchmark (SWAP_WAKE_WAIT) calls FUTEX_WAKE,
-then FUTEX_WAIT; the second benchmark (SWAP_SWAP) calls FUTEX_SWAP.
-
-If the benchmark is restricted to a single cpu:
-
-$ taskset -c 1 ./futex_swap -i 1000000
-
-The numbers are very similar, as expected (with wake+wait being
-a bit slower than swap due to two vs one syscalls).
-
-Please also note that switchto_switch is about 2x faster than
-FUTEX_SWAP because it does a contex switch to the wakee immediately,
-bypassing schedule(), so this is one of the options I'll
-explore in further patches (if/when this initial patchset is
-accepted).
-
-Tested: see the last patch is this patchset.
+Detailed API design and behavior considerations are provided
+in the commit messages of the previous two patches.
 
 Signed-off-by: Peter Oskolkov <posk@google.com>
 ---
- include/linux/sched.h | 1 +
- kernel/futex.c        | 9 ++++-----
- kernel/sched/core.c   | 5 +++++
- kernel/sched/fair.c   | 3 +++
- kernel/sched/sched.h  | 1 +
- 5 files changed, 14 insertions(+), 5 deletions(-)
+ .../selftests/futex/functional/.gitignore     |   1 +
+ .../selftests/futex/functional/Makefile       |   1 +
+ .../selftests/futex/functional/futex_swap.c   | 209 ++++++++++++++++++
+ .../selftests/futex/include/futextest.h       |  19 ++
+ 4 files changed, 230 insertions(+)
+ create mode 100644 tools/testing/selftests/futex/functional/futex_swap.c
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index b62e6aaf28f0..edda0ace89a3 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -1719,6 +1719,7 @@ extern struct task_struct *find_get_task_by_vpid(pid_t nr);
-
- extern int wake_up_state(struct task_struct *tsk, unsigned int state);
- extern int wake_up_process(struct task_struct *tsk);
-+extern int wake_up_process_prefer_current_cpu(struct task_struct *tsk);
- extern void wake_up_new_task(struct task_struct *tsk);
-
- #ifdef CONFIG_SMP
-diff --git a/kernel/futex.c b/kernel/futex.c
-index 670d6d113561..95852d7e6036 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -2649,12 +2649,11 @@ static void futex_wait_queue_me(struct futex_hash_bucket *hb, struct futex_q *q,
- 		 */
- 		if (!timeout || timeout->task) {
- 			if (next) {
--				/*
--				 * wake_up_process() below will be replaced
--				 * in the next patch with
--				 * wake_up_process_prefer_current_cpu().
--				 */
-+#ifdef CONFIG_SMP
-+				wake_up_process_prefer_current_cpu(next);
-+#else
- 				wake_up_process(next);
-+#endif
- 				put_task_struct(next);
- 				next = NULL;
- 			}
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 8f360326861e..3dcb02f79328 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -6253,6 +6253,11 @@ void sched_setnuma(struct task_struct *p, int nid)
- }
- #endif /* CONFIG_NUMA_BALANCING */
-
-+int wake_up_process_prefer_current_cpu(struct task_struct *next)
+diff --git a/tools/testing/selftests/futex/functional/.gitignore b/tools/testing/selftests/futex/functional/.gitignore
+index 0efcd494daab..d661ef0946cc 100644
+--- a/tools/testing/selftests/futex/functional/.gitignore
++++ b/tools/testing/selftests/futex/functional/.gitignore
+@@ -2,6 +2,7 @@
+ futex_requeue_pi
+ futex_requeue_pi_mismatched_ops
+ futex_requeue_pi_signal_restart
++futex_swap
+ futex_wait_private_mapped_file
+ futex_wait_timeout
+ futex_wait_uninitialized_heap
+diff --git a/tools/testing/selftests/futex/functional/Makefile b/tools/testing/selftests/futex/functional/Makefile
+index 23207829ec75..6992fac38b15 100644
+--- a/tools/testing/selftests/futex/functional/Makefile
++++ b/tools/testing/selftests/futex/functional/Makefile
+@@ -13,6 +13,7 @@ TEST_GEN_FILES := \
+ 	futex_requeue_pi \
+ 	futex_requeue_pi_signal_restart \
+ 	futex_requeue_pi_mismatched_ops \
++	futex_swap \
+ 	futex_wait_uninitialized_heap \
+ 	futex_wait_private_mapped_file
+ 
+diff --git a/tools/testing/selftests/futex/functional/futex_swap.c b/tools/testing/selftests/futex/functional/futex_swap.c
+new file mode 100644
+index 000000000000..9034d04372d3
+--- /dev/null
++++ b/tools/testing/selftests/futex/functional/futex_swap.c
+@@ -0,0 +1,209 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include <errno.h>
++#include <getopt.h>
++#include <pthread.h>
++#include <stdint.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <time.h>
++#include "atomic.h"
++#include "futextest.h"
++
++/* The futex the main thread waits on. */
++futex_t futex_main = FUTEX_INITIALIZER;
++/* The futex the other thread wats on. */
++futex_t futex_other = FUTEX_INITIALIZER;
++
++/* The number of iterations to run (>1 => run benchmarks. */
++static int cfg_iterations = 1;
++
++/* If != 0, print diagnostic messages. */
++static int cfg_verbose;
++
++/* If == 0, do not use validation_counter. Useful for benchmarking. */
++static int cfg_validate = 1;
++
++/* How to swap threads. */
++#define SWAP_WAKE_WAIT 1
++#define SWAP_SWAP 2
++
++/* Futex values. */
++#define FUTEX_WAITING 0
++#define FUTEX_WAKEUP 1
++
++/* An atomic counter used to validate proper swapping. */
++static atomic_t validation_counter;
++
++void futex_swap_op(int mode, futex_t *futex_this, futex_t *futex_that)
 +{
-+	return try_to_wake_up(next, TASK_NORMAL, WF_CURRENT_CPU);
++	int ret;
++
++	switch (mode) {
++	case SWAP_WAKE_WAIT:
++		futex_set(futex_this, FUTEX_WAITING);
++		futex_set(futex_that, FUTEX_WAKEUP);
++		futex_wake(futex_that, 1, FUTEX_PRIVATE_FLAG);
++		futex_wait(futex_this, FUTEX_WAITING, NULL, FUTEX_PRIVATE_FLAG);
++		if (*futex_this != FUTEX_WAKEUP) {
++			fprintf(stderr, "unexpected futex_this value on wakeup\n");
++			exit(1);
++		}
++		break;
++
++	case SWAP_SWAP:
++		futex_set(futex_this, FUTEX_WAITING);
++		futex_set(futex_that, FUTEX_WAKEUP);
++		ret = futex_swap(futex_this, FUTEX_WAITING, NULL,
++				 futex_that, FUTEX_PRIVATE_FLAG);
++		if (ret < 0 && errno == ENOSYS) {
++			/* futex_swap not implemented */
++			perror("futex_swap");
++			exit(1);
++		}
++		if (*futex_this != FUTEX_WAKEUP) {
++			fprintf(stderr, "unexpected futex_this value on wakeup\n");
++			exit(1);
++		}
++		break;
++
++	default:
++		fprintf(stderr, "unknown mode in %s\n", __func__);
++		exit(1);
++	}
 +}
 +
- #ifdef CONFIG_HOTPLUG_CPU
- /*
-  * Ensure that the idle task is using init_mm right before its CPU goes
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index cbcb2f71599b..8c958f430af7 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6664,6 +6664,9 @@ select_task_rq_fair(struct task_struct *p, int prev_cpu, int sd_flag, int wake_f
- 	int want_affine = 0;
- 	int sync = (wake_flags & WF_SYNC) && !(current->flags & PF_EXITING);
-
-+	if ((wake_flags & WF_CURRENT_CPU) && cpumask_test_cpu(cpu, p->cpus_ptr))
-+		return cpu;
++void *other_thread(void *arg)
++{
++	int mode = *((int *)arg);
++	int counter;
 +
- 	if (sd_flag & SD_BALANCE_WAKE) {
- 		record_wakee(p);
-
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 1d4e94c1e5fe..d90e7d2c388f 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1683,6 +1683,7 @@ static inline int task_on_rq_migrating(struct task_struct *p)
- #define WF_FORK			0x02		/* Child wakeup after fork */
- #define WF_MIGRATED		0x04		/* Internal use, task got migrated */
- #define WF_ON_RQ		0x08		/* Wakee is on_rq */
-+#define WF_CURRENT_CPU		0x10		/* Prefer to move wakee to the current CPU */
-
- /*
-  * To aid in avoiding the subversion of "niceness" due to uneven distribution
---
++	if (cfg_verbose)
++		printf("%s started\n", __func__);
++
++	futex_wait(&futex_other, 0, NULL, FUTEX_PRIVATE_FLAG);
++
++	for (counter = 0; counter < cfg_iterations; ++counter) {
++		if (cfg_validate) {
++			int prev = 2 * counter + 1;
++
++			if (prev != atomic_cmpxchg(&validation_counter, prev,
++						   prev + 1)) {
++				fprintf(stderr, "swap validation failed\n");
++				exit(1);
++			}
++		}
++		futex_swap_op(mode, &futex_other, &futex_main);
++	}
++
++	if (cfg_verbose)
++		printf("%s finished: %d iteration(s)\n", __func__, counter);
++
++	return NULL;
++}
++
++void run_test(int mode)
++{
++	struct timespec start, stop;
++	int ret, counter;
++	pthread_t thread;
++	uint64_t duration;
++
++	futex_set(&futex_other, FUTEX_WAITING);
++	atomic_set(&validation_counter, 0);
++	ret = pthread_create(&thread, NULL, &other_thread, &mode);
++	if (ret) {
++		perror("pthread_create");
++		exit(1);
++	}
++
++	ret = clock_gettime(CLOCK_MONOTONIC, &start);
++	if (ret) {
++		perror("clock_gettime");
++		exit(1);
++	}
++
++	for (counter = 0; counter < cfg_iterations; ++counter) {
++		if (cfg_validate) {
++			int prev = 2 * counter;
++
++			if (prev != atomic_cmpxchg(&validation_counter, prev,
++						   prev + 1)) {
++				fprintf(stderr, "swap validation failed\n");
++				exit(1);
++			}
++		}
++		futex_swap_op(mode, &futex_main, &futex_other);
++	}
++	if (cfg_validate && validation_counter.val != 2 * cfg_iterations) {
++		fprintf(stderr, "final swap validation failed\n");
++		exit(1);
++	}
++
++	ret = clock_gettime(CLOCK_MONOTONIC, &stop);
++	if (ret) {
++		perror("clock_gettime");
++		exit(1);
++	}
++
++	duration = (stop.tv_sec - start.tv_sec) * 1000000000LL +
++	stop.tv_nsec - start.tv_nsec;
++	if (cfg_verbose || cfg_iterations > 1) {
++		printf("completed %d swap and back iterations in %lu ns: %lu ns per swap\n",
++			cfg_iterations, duration,
++			duration / (cfg_iterations * 2));
++	}
++
++	/* The remote thread is blocked; send it the final wake. */
++	futex_set(&futex_other, FUTEX_WAKEUP);
++	futex_wake(&futex_other, 1, FUTEX_PRIVATE_FLAG);
++	if (pthread_join(thread, NULL)) {
++		perror("pthread_join");
++		exit(1);
++	}
++}
++
++void usage(char *prog)
++{
++	printf("Usage: %s\n", prog);
++	printf("  -h    Display this help message\n");
++	printf("  -i N  Use N iterations to benchmark\n");
++	printf("  -n    Do not validate swapping correctness\n");
++	printf("  -v    Print diagnostic messages\n");
++}
++
++int main(int argc, char *argv[])
++{
++	int c;
++
++	while ((c = getopt(argc, argv, "hi:nv")) != -1) {
++		switch (c) {
++		case 'h':
++			usage(basename(argv[0]));
++			exit(0);
++		case 'i':
++			cfg_iterations = atoi(optarg);
++			break;
++		case 'n':
++			cfg_validate = 0;
++			break;
++		case 'v':
++			cfg_verbose = 1;
++			break;
++		default:
++			usage(basename(argv[0]));
++			exit(1);
++		}
++	}
++
++	printf("\n\n------- running SWAP_WAKE_WAIT -----------\n\n");
++	run_test(SWAP_WAKE_WAIT);
++	printf("PASS\n");
++
++	printf("\n\n------- running SWAP_SWAP -----------\n\n");
++	run_test(SWAP_SWAP);
++	printf("PASS\n");
++
++	return 0;
++}
+diff --git a/tools/testing/selftests/futex/include/futextest.h b/tools/testing/selftests/futex/include/futextest.h
+index ddbcfc9b7bac..4d6a0a18445a 100644
+--- a/tools/testing/selftests/futex/include/futextest.h
++++ b/tools/testing/selftests/futex/include/futextest.h
+@@ -38,6 +38,9 @@ typedef volatile u_int32_t futex_t;
+ #ifndef FUTEX_CMP_REQUEUE_PI
+ #define FUTEX_CMP_REQUEUE_PI		12
+ #endif
++#ifndef FUTEX_SWAP
++#define FUTEX_SWAP			13
++#endif
+ #ifndef FUTEX_WAIT_REQUEUE_PI_PRIVATE
+ #define FUTEX_WAIT_REQUEUE_PI_PRIVATE	(FUTEX_WAIT_REQUEUE_PI | \
+ 					 FUTEX_PRIVATE_FLAG)
+@@ -46,6 +49,9 @@ typedef volatile u_int32_t futex_t;
+ #define FUTEX_CMP_REQUEUE_PI_PRIVATE	(FUTEX_CMP_REQUEUE_PI | \
+ 					 FUTEX_PRIVATE_FLAG)
+ #endif
++#ifndef FUTEX_SWAP_PRIVATE
++#define FUTEX_SWAP_PRIVATE		(FUTEX_WAIT_WAKE | FUTEX_PRIVATE_FLAG)
++#endif
+ 
+ /**
+  * futex() - SYS_futex syscall wrapper
+@@ -204,6 +210,19 @@ futex_cmp_requeue_pi(futex_t *uaddr, futex_t val, futex_t *uaddr2, int nr_wake,
+ 		     val, opflags);
+ }
+ 
++/**
++ * futex_swap() - block on uaddr and wake one task blocked on uaddr2.
++ * @uaddr:	futex to block the current task on
++ * @timeout:	relative timeout for the current task block
++ * @uaddr2:	futex to wake tasks at (can be the same as uaddr)
++ */
++static inline int
++futex_swap(futex_t *uaddr, futex_t val, struct timespec *timeout,
++	   futex_t *uaddr2, int opflags)
++{
++	return futex(uaddr, FUTEX_SWAP, val, timeout, uaddr2, 0, opflags);
++}
++
+ /**
+  * futex_cmpxchg() - atomic compare and exchange
+  * @uaddr:	The address of the futex to be modified
+-- 
 2.25.1
 
