@@ -2,109 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166BC207826
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:57:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0828B207831
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404768AbgFXP51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404751AbgFXP5V (ORCPT
+        id S2404714AbgFXQAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 12:00:33 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:33887 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404647AbgFXQAc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:57:21 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BB92C061573;
-        Wed, 24 Jun 2020 08:57:21 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id g17so1203184plq.12;
-        Wed, 24 Jun 2020 08:57:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Ptn2w5e6anRr1NlNku10i3q3CyuFAMfWr3pdlWZGFp4=;
-        b=IbAR3hxGsMrhz5UYf7u/9VpJa12J4CTZ1s9fwmcXSWa0Q6L6+pu22ca03mkDFu49/g
-         AZ2/Xe114B9qUmNQDYqo4yo/4LSBw/u/cY0nap9cgwy3p5NTBRUzPg6k2HKoUfGJ44o7
-         ScnG5V6Gm1l5wDr8Hx9R/YAvlmszfqo7yHBhMJDKQhouMPIH8ZciRX5RJkKEs5RtbOYY
-         8rHA+ejnuGXfMqZKCChz83nPmQCidGEXC04y4EOzxG6O2S0ctult5PC0GuZvHv0o51HW
-         z+tVpIZcdSUq0J95eYVYbn+DL+ZXViXu38qV5FxtSoUgO4L3QIfRKii8qPOlC3B0s+LW
-         Jp1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Ptn2w5e6anRr1NlNku10i3q3CyuFAMfWr3pdlWZGFp4=;
-        b=IgqxkHC3Hqxw42pi2g+vBMVlmNJvWiCaWKiThRQRwob0q9ll5UUHykaF7C6jQ5judA
-         NHpfAioX5RyAmkIOgPoB5KthyIsLT7AGg+KmGcRMqFbtw5d8Nu9cDH9tsIfdl4JAwq2e
-         eVHoEbcNjS4QhV6Su887A+DchTB2nHOXO/RqngtfuZzRKjGc8ZrVN4AAbPvH/ItBm9Cv
-         D88ZECMb2UXOMVoowCVss9K3ZI0AfJTPhi2bBWk8ikoACIQkUDqSWQCeVVXUy25wCuM9
-         vPJ66nAAdvJfkiDm8aggC1E5m+Zp2D1IWnOdQ8o7ZAg2y2/EL7cOxSGd+XlqsL31XtmV
-         6pFA==
-X-Gm-Message-State: AOAM532eUXlNBR2gX5i6wXsoTOmiKG2KqQOJnrCrWa1QDLJG0XTsaQMR
-        A7V3ykYD+w6WTOy4Tv/sJNrZ+J6XYEBc6Q==
-X-Google-Smtp-Source: ABdhPJyC+UOBAzTeiwiePlhrYtQ9wecg7FvR4wH0+t6Tb7uk0Hisqzgm9WozyaDsa2zMh466xF65Vw==
-X-Received: by 2002:a17:90a:d709:: with SMTP id y9mr6546265pju.30.1593014240728;
-        Wed, 24 Jun 2020 08:57:20 -0700 (PDT)
-Received: from sol (220-235-99-174.dyn.iinet.net.au. [220.235.99.174])
-        by smtp.gmail.com with ESMTPSA id h8sm17082362pgm.16.2020.06.24.08.57.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 24 Jun 2020 08:57:19 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 23:57:14 +0800
-From:   Kent Gibson <warthog618@gmail.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 10/22] gpiolib: cdev: fix minor race in GET_LINEINFO_WATCH
-Message-ID: <20200624155714.GB8622@sol>
-References: <20200623040107.22270-1-warthog618@gmail.com>
- <20200623040107.22270-11-warthog618@gmail.com>
- <CAHp75VdG4r95ZU8G9TfL+jkT63+Gppb8w5TRvAtCR_pAk0o=NA@mail.gmail.com>
+        Wed, 24 Jun 2020 12:00:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593014431;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=kdnyTnxVnkPT//BmZpUifF3vPn430L7/1dAjHHZhWZg=;
+        b=ENUMnGW9dZyI1QX3w0P/DD1wlaHCU6x3/y0kjZTY4jiyzwO526aI4m1D6QvTZVoOcC/Pp3
+        wVbrVnt9uuxnUMsbKnfBiyj7+5WQLteYCFer0lTOVWE6eDrYhpemlF2oosElc0d4dz6Sv2
+        ADxQqVtRadFFKIi5NpsJ2nSOUlTnNqU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-1OUjAlkjN5-ADDM06uXK2Q-1; Wed, 24 Jun 2020 12:00:28 -0400
+X-MC-Unique: 1OUjAlkjN5-ADDM06uXK2Q-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CD7F618585A0;
+        Wed, 24 Jun 2020 16:00:26 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-114-66.rdu2.redhat.com [10.10.114.66])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9CF902B471;
+        Wed, 24 Jun 2020 16:00:25 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] afs: Fix storage of cell names
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     Colin Ian King <colin.king@canonical.com>, dhowells@redhat.com,
+        linux-afs@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Date:   Wed, 24 Jun 2020 17:00:24 +0100
+Message-ID: <159301442487.3143734.7373031577179431362.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.22
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdG4r95ZU8G9TfL+jkT63+Gppb8w5TRvAtCR_pAk0o=NA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 05:46:33PM +0300, Andy Shevchenko wrote:
-> On Tue, Jun 23, 2020 at 7:03 AM Kent Gibson <warthog618@gmail.com> wrote:
-> >
-> > Merge separate usage of test_bit/set_bit into test_and_set_bit to remove
-> > the possibility of a race between the test and set.
-> >
-> > Similarly test_bit and clear_bit.
-> >
-> > In the existing code it is possible for two threads to race past the
-> > test_bit and then set or clear the watch bit, and neither return EBUSY.
-> 
-> I stumbled over this myself, but...
-> 
-> > -               if (test_bit(hwgpio, gcdev->watched_lines))
-> > +               if (test_and_set_bit(hwgpio, gcdev->watched_lines))
-> >                         return -EBUSY;
-> >
-> >                 gpio_desc_to_lineinfo(desc, &lineinfo);
-> > @@ -897,7 +897,6 @@ static long gpio_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
-> >                 if (copy_to_user(ip, &lineinfo, sizeof(lineinfo)))
-> >                         return -EFAULT;
-> >
-> > -               set_bit(hwgpio, gcdev->watched_lines);
-> >                 return 0;
-> 
-> ...I think it's not an equivalent despite races involved. If you set
-> bit and return error code, you will have the wrong state.
-> 
+The cell name stored in the afs_cell struct is a 64-char + NUL buffer -
+when it needs to be able to handle up to AFS_MAXCELLNAME (256 chars) + NUL.
 
-Not quite sure what you mean.  There is only an error if the bit is
-already set, so you've changed nothing.
+Fix this by changing the array to a pointer and allocating the string.
 
-And the watched state is not part of the lineinfo, so the state returned is
-the same either way.
+Found using Coverity.
 
-Cheers,
-Kent.
+Fixes: 989782dcdc91 ("afs: Overhaul cell database management")
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+
+ fs/afs/cell.c     |    9 +++++++++
+ fs/afs/internal.h |    2 +-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/fs/afs/cell.c b/fs/afs/cell.c
+index 0d25565a2e37..1cdabbdeeb2c 100644
+--- a/fs/afs/cell.c
++++ b/fs/afs/cell.c
+@@ -154,10 +154,17 @@ static struct afs_cell *afs_alloc_cell(struct afs_net *net,
+ 		return ERR_PTR(-ENOMEM);
+ 	}
+ 
++	cell->name = kmalloc(namelen + 1, GFP_KERNEL);
++	if (!cell->name) {
++		kfree(cell);
++		return ERR_PTR(-ENOMEM);
++	}
++
+ 	cell->net = net;
+ 	cell->name_len = namelen;
+ 	for (i = 0; i < namelen; i++)
+ 		cell->name[i] = tolower(name[i]);
++	cell->name[i] = 0;
+ 
+ 	atomic_set(&cell->usage, 2);
+ 	INIT_WORK(&cell->manager, afs_manage_cell);
+@@ -207,6 +214,7 @@ static struct afs_cell *afs_alloc_cell(struct afs_net *net,
+ 	if (ret == -EINVAL)
+ 		printk(KERN_ERR "kAFS: bad VL server IP address\n");
+ error:
++	kfree(cell->name);
+ 	kfree(cell);
+ 	_leave(" = %d", ret);
+ 	return ERR_PTR(ret);
+@@ -489,6 +497,7 @@ static void afs_cell_destroy(struct rcu_head *rcu)
+ 	afs_put_vlserverlist(cell->net, rcu_access_pointer(cell->vl_servers));
+ 	afs_put_cell(cell->net, cell->alias_of);
+ 	key_put(cell->anonymous_key);
++	kfree(cell->name);
+ 	kfree(cell);
+ 
+ 	_leave(" [destroyed]");
+diff --git a/fs/afs/internal.h b/fs/afs/internal.h
+index 5892605b1a44..bf26fd28ccbd 100644
+--- a/fs/afs/internal.h
++++ b/fs/afs/internal.h
+@@ -390,7 +390,7 @@ struct afs_cell {
+ 	struct afs_vlserver_list __rcu *vl_servers;
+ 
+ 	u8			name_len;	/* Length of name */
+-	char			name[64 + 1];	/* Cell name, case-flattened and NUL-padded */
++	char			*name;		/* Cell name, case-flattened and NUL-padded */
+ };
+ 
+ /*
+
 
