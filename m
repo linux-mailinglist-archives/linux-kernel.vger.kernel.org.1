@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E08A2207CBD
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:14:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7433207CB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406527AbgFXUN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 16:13:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52540 "EHLO mail.kernel.org"
+        id S2406422AbgFXUMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 16:12:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52436 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406251AbgFXUMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2406382AbgFXUMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 24 Jun 2020 16:12:30 -0400
 Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B75920E65;
+        by mail.kernel.org (Postfix) with ESMTPSA id 704BF214D8;
         Wed, 24 Jun 2020 20:12:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1593029549;
-        bh=7PRSmwXRt+CrreGfiCD0MNS6UfD6diKqGp83Myw2DTY=;
+        bh=A/PWzn/Vgn/G2nP7MVtJX0MzzVuuQ12qSrEPDu13suE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=soWj4b8Jd8MKtBdEOjiLFpFG9PU01G4pCAne4kTj4wVfL5THRO/9aknm8EBFudoOQ
-         tg8ylG8P67zmP8mRkEtpuwzk04dh6KTHqgcLgCcS0IhacPRQa4J6OpU6fs3SFyx2zN
-         zLIFJlwytGRQ4GiwLzb5gdeZriRa8uAqILLgGqTc=
+        b=yMu3jdXVtsGu3nvHhWaUww+aMfcmHsqc71ASFlP4Pm/sjjnKm5633fVR4G0bjMGg0
+         IMY8ZxAqMQI1BX1fpMq3yRkHhx7y/wmAGgOaI3dByMhauWbu0ra9kVpGvGjT4TZFch
+         Jr20O73U4hEtHcV6m2iuUDbBI+oGUmkO+cdxmyso=
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -33,9 +33,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         fweisbec@gmail.com, oleg@redhat.com, joel@joelfernandes.org,
         "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 06/17] rcu/tree: Simplify KFREE_BULK_MAX_ENTR macro
-Date:   Wed, 24 Jun 2020 13:12:15 -0700
-Message-Id: <20200624201226.21197-6-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 07/17] rcu/tree: Move kfree_rcu_cpu locking/unlocking to separate functions
+Date:   Wed, 24 Jun 2020 13:12:16 -0700
+Message-Id: <20200624201226.21197-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20200624201200.GA28901@paulmck-ThinkPad-P72>
 References: <20200624201200.GA28901@paulmck-ThinkPad-P72>
@@ -46,57 +46,73 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 
-We can simplify KFREE_BULK_MAX_ENTR macro and get rid of
-magic numbers which were used to make the structure to be
-exactly one page.
+Introduce helpers to lock and unlock per-cpu "kfree_rcu_cpu"
+structures. That will make kfree_call_rcu() more readable
+and prevent programming errors.
 
-Suggested-by: Boqun Feng <boqun.feng@gmail.com>
 Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ kernel/rcu/tree.c | 31 +++++++++++++++++++++++--------
+ 1 file changed, 23 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index dc5369a..519a3f5 100644
+index 519a3f5..edc512e 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2940,13 +2940,6 @@ EXPORT_SYMBOL_GPL(call_rcu);
- #define KFREE_DRAIN_JIFFIES (HZ / 50)
- #define KFREE_N_BATCHES 2
+@@ -3017,6 +3017,27 @@ debug_rcu_bhead_unqueue(struct kfree_rcu_bulk_data *bhead)
+ #endif
+ }
  
--/*
-- * This macro defines how many entries the "records" array
-- * will contain. It is based on the fact that the size of
-- * kfree_rcu_bulk_data structure becomes exactly one page.
-- */
--#define KFREE_BULK_MAX_ENTR ((PAGE_SIZE / sizeof(void *)) - 3)
--
- /**
-  * struct kfree_rcu_bulk_data - single block to store kfree_rcu() pointers
-  * @nr_records: Number of active pointers in the array
-@@ -2955,10 +2948,18 @@ EXPORT_SYMBOL_GPL(call_rcu);
-  */
- struct kfree_rcu_bulk_data {
- 	unsigned long nr_records;
--	void *records[KFREE_BULK_MAX_ENTR];
- 	struct kfree_rcu_bulk_data *next;
-+	void *records[];
- };
- 
-+/*
-+ * This macro defines how many entries the "records" array
-+ * will contain. It is based on the fact that the size of
-+ * kfree_rcu_bulk_data structure becomes exactly one page.
-+ */
-+#define KFREE_BULK_MAX_ENTR \
-+	((PAGE_SIZE - sizeof(struct kfree_rcu_bulk_data)) / sizeof(void *))
++static inline struct kfree_rcu_cpu *
++krc_this_cpu_lock(unsigned long *flags)
++{
++	struct kfree_rcu_cpu *krcp;
 +
- /**
-  * struct kfree_rcu_cpu_work - single batch of kfree_rcu() requests
-  * @rcu_work: Let queue_rcu_work() invoke workqueue handler after grace period
++	local_irq_save(*flags);	// For safely calling this_cpu_ptr().
++	krcp = this_cpu_ptr(&krc);
++	if (likely(krcp->initialized))
++		raw_spin_lock(&krcp->lock);
++
++	return krcp;
++}
++
++static inline void
++krc_this_cpu_unlock(struct kfree_rcu_cpu *krcp, unsigned long flags)
++{
++	if (likely(krcp->initialized))
++		raw_spin_unlock(&krcp->lock);
++	local_irq_restore(flags);
++}
++
+ /*
+  * This function is invoked in workqueue context after a grace period.
+  * It frees all the objects queued on ->bhead_free or ->head_free.
+@@ -3242,11 +3263,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	struct kfree_rcu_cpu *krcp;
+ 	void *ptr;
+ 
+-	local_irq_save(flags);	// For safely calling this_cpu_ptr().
+-	krcp = this_cpu_ptr(&krc);
+-	if (krcp->initialized)
+-		raw_spin_lock(&krcp->lock);
+-
++	krcp = krc_this_cpu_lock(&flags);
+ 	ptr = (void *)head - (unsigned long)func;
+ 
+ 	// Queue the object but don't yet schedule the batch.
+@@ -3277,9 +3294,7 @@ void kfree_call_rcu(struct rcu_head *head, rcu_callback_t func)
+ 	}
+ 
+ unlock_return:
+-	if (krcp->initialized)
+-		raw_spin_unlock(&krcp->lock);
+-	local_irq_restore(flags);
++	krc_this_cpu_unlock(krcp, flags);
+ }
+ EXPORT_SYMBOL_GPL(kfree_call_rcu);
+ 
 -- 
 2.9.5
 
