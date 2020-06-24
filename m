@@ -2,113 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F14B20769F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:05:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62D03207641
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404380AbgFXPFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404367AbgFXPEw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:04:52 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5142AC061795
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:04:52 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id 17so2865544wmo.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:04:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=kCGt1BLBXUDbnvT6cymu5MVAxH+kTuMsl5c+6aP/lLY=;
-        b=jMGyaf2YOvnwdGALr7/G0emGXXMlzRVlYnFPWVRjaQMIqVwugRAnJc3hlq5hiW8h5c
-         UlNYM5fXvpEjkCbgvKcR0hRU6Z7v6cS74QrqdBYQQwaf72KYCZRj32ckrnmu0aG5wzCh
-         oQv/67iegU98VlySub1xjGVNx32ddSLk55uKDXkUIrvbzXltQVC60J2oVznaWMR03k3X
-         c88NZ/cwdn2lcyWwoIaMvjTZKlgnZ3OueIPy8vYEViLHA8IFnXW05jOkLP4xaKWjAreX
-         6dOPEbwj+fmCGzpLHvYH0loVrVQGULW0wojhwots1TLiid7Psoh58sITpdd5KWwWa8ll
-         /faw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=kCGt1BLBXUDbnvT6cymu5MVAxH+kTuMsl5c+6aP/lLY=;
-        b=Ab23LcRAcrk/I1ghsL5Nkv54ke6OTO6xkTPr6fRvKHqm4qbDyMzXkoMGw3+cWayKl7
-         L3919TtJ2ci6yjg9/zJNdQ0YD45VE258krky1sfoUkeBbJ3ygcWcAT8V9rsaofQLGMMo
-         9AAT+hDUMPc4j3GQcNuyX7gLIrql/UsHbfVxgRQRf1ojBza5dyuzdoq5HMurL8gNBZFL
-         fx0zBPhrqsVOT9KyAmpQKQ4Td/ef3oFHgw9AfjhiKH0x6uH3sgxFCek8KnbHmxT87xbB
-         IfoTdMfzNDDPenloJRXQycE2KOpu2oMTjgvVyTO3FiCLa99lbf/OHkjz5s+rtfpBFKro
-         kH2Q==
-X-Gm-Message-State: AOAM5318b1RNtvh0s8F1RBnZbgT9uZEz7K+IyXaJXLOKmZApFBs96hvV
-        hbwvnFm/3rAaUAQZW27CWrkf0w==
-X-Google-Smtp-Source: ABdhPJwGu9kMwIGOcSohIfYJ+NIxZfevAbg2JhUjdK0aeG9zHaTGKntdmr01NhaUWdU13TxN2I2yTw==
-X-Received: by 2002:a1c:a5d6:: with SMTP id o205mr20552487wme.125.1593011091041;
-        Wed, 24 Jun 2020 08:04:51 -0700 (PDT)
-Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id f186sm8200319wmf.29.2020.06.24.08.04.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 08:04:50 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     daniel.thompson@linaro.org, jingoohan1@gmail.com,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>, stable@vger.kernel.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        id S2404029AbgFXPAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:00:38 -0400
+Received: from foss.arm.com ([217.140.110.172]:59092 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404006AbgFXPAh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 11:00:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1ED351FB;
+        Wed, 24 Jun 2020 08:00:37 -0700 (PDT)
+Received: from [10.57.9.128] (unknown [10.57.9.128])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B28F73F73C;
+        Wed, 24 Jun 2020 08:00:34 -0700 (PDT)
+Subject: Re: [RESEND PATCH v5 1/5] driver core: add probe_err log helper
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
         Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-arm-msm@vger.kernel.org
-Subject: [PATCH 8/8] backlight: qcom-wled: Remove unused configs for LED3 and LED4
-Date:   Wed, 24 Jun 2020 15:57:21 +0100
-Message-Id: <20200624145721.2590327-9-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200624145721.2590327-1-lee.jones@linaro.org>
-References: <20200624145721.2590327-1-lee.jones@linaro.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20200624114127.3016-1-a.hajda@samsung.com>
+ <CGME20200624114135eucas1p26e2e4683d60cebdce7acd55177013992@eucas1p2.samsung.com>
+ <20200624114127.3016-2-a.hajda@samsung.com>
+ <20200624132714.GD5472@sirena.org.uk>
+ <CAHp75Ve9V1Vyxe3bEeHJ9H2J900wUXHMmXFJt-dn9sO5OMejHA@mail.gmail.com>
+ <20200624140207.GE5472@sirena.org.uk>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <6373a4eb-2f1b-b56f-48a8-ae97b4e4476a@arm.com>
+Date:   Wed, 24 Jun 2020 16:00:34 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200624140207.GE5472@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes W=1 warnings:
+On 2020-06-24 15:02, Mark Brown wrote:
+> On Wed, Jun 24, 2020 at 04:45:28PM +0300, Andy Shevchenko wrote:
+>> On Wed, Jun 24, 2020 at 4:27 PM Mark Brown <broonie@kernel.org> wrote:
+> 
+>>> As I said down the thread that's not a great pattern since it means that
+>>> probe deferral errors never get displayed and users have a hard time
+>>> figuring out why their driver isn't instantiating.
+> 
+>> Don't we have a file in the debugfs to list deferred drivers?
+> 
+> Part of what this patch series aims to solve is that that list is not
+> very useful since it doesn't provide any information on how things got
+> deferred which means it's of no use in trying to figure out any
+> problems.
+> 
+>> In the case of deferred probes the errors out of it makes users more
+>> miserable in order to look through tons of spam and lose really useful
+>> data in the logs.
+> 
+> I seem to never manage to end up using any of the systems which generate
+> excessive deferrals.
 
- drivers/video/backlight/qcom-wled.c:1294:34: warning: ‘wled4_string_cfg’ defined but not used [-Wunused-const-variable=]
- 1294 | static const struct wled_var_cfg wled4_string_cfg = {
- | ^~~~~~~~~~~~~~~~
- drivers/video/backlight/qcom-wled.c:1290:34: warning: ‘wled3_string_cfg’ defined but not used [-Wunused-const-variable=]
- 1290 | static const struct wled_var_cfg wled3_string_cfg = {
- | ^~~~~~~~~~~~~~~~
+Be thankful... And count me in as one of those miserable users; here's one
+of mine being bad enough without even printing any specific messages about
+deferring ;)
 
-Cc: <stable@vger.kernel.org>
-Cc: Andy Gross <agross@kernel.org>
-Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: linux-arm-msm@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/video/backlight/qcom-wled.c | 8 --------
- 1 file changed, 8 deletions(-)
+Robin.
 
-diff --git a/drivers/video/backlight/qcom-wled.c b/drivers/video/backlight/qcom-wled.c
-index 4c8c34b994414..c25c31199952c 100644
---- a/drivers/video/backlight/qcom-wled.c
-+++ b/drivers/video/backlight/qcom-wled.c
-@@ -1287,14 +1287,6 @@ static const struct wled_var_cfg wled4_string_i_limit_cfg = {
- 	.size = ARRAY_SIZE(wled4_string_i_limit_values),
- };
- 
--static const struct wled_var_cfg wled3_string_cfg = {
--	.size = 8,
--};
--
--static const struct wled_var_cfg wled4_string_cfg = {
--	.size = 16,
--};
--
- static const struct wled_var_cfg wled5_mod_sel_cfg = {
- 	.size = 2,
- };
--- 
-2.25.1
+-----
 
+[robin@weasel-cheese ~]$ dmesg | grep dwmmc
+[    3.046297] dwmmc_rockchip ff0c0000.mmc: IDMAC supports 32-bit address mode.
+[    3.054312] dwmmc_rockchip ff0c0000.mmc: Using internal DMA controller.
+[    3.061774] dwmmc_rockchip ff0c0000.mmc: Version ID is 270a
+[    3.068101] dwmmc_rockchip ff0c0000.mmc: DW MMC controller at irq 30,32 bit host data width,256 deep fifo
+[    3.079638] dwmmc_rockchip ff0d0000.mmc: IDMAC supports 32-bit address mode.
+[    3.087678] dwmmc_rockchip ff0d0000.mmc: Using internal DMA controller.
+[    3.095134] dwmmc_rockchip ff0d0000.mmc: Version ID is 270a
+[    3.101480] dwmmc_rockchip ff0d0000.mmc: DW MMC controller at irq 31,32 bit host data width,256 deep fifo
+[    3.113071] dwmmc_rockchip ff0f0000.mmc: IDMAC supports 32-bit address mode.
+[    3.121110] dwmmc_rockchip ff0f0000.mmc: Using internal DMA controller.
+[    3.128565] dwmmc_rockchip ff0f0000.mmc: Version ID is 270a
+[    3.134886] dwmmc_rockchip ff0f0000.mmc: DW MMC controller at irq 32,32 bit host data width,256 deep fifo
+[    3.948510] dwmmc_rockchip ff0c0000.mmc: IDMAC supports 32-bit address mode.
+[    3.956475] dwmmc_rockchip ff0c0000.mmc: Using internal DMA controller.
+[    3.963884] dwmmc_rockchip ff0c0000.mmc: Version ID is 270a
+[    3.970133] dwmmc_rockchip ff0c0000.mmc: DW MMC controller at irq 30,32 bit host data width,256 deep fifo
+[    4.141231] dwmmc_rockchip ff0d0000.mmc: IDMAC supports 32-bit address mode.
+[    4.149178] dwmmc_rockchip ff0d0000.mmc: Using internal DMA controller.
+[    4.156582] dwmmc_rockchip ff0d0000.mmc: Version ID is 270a
+[    4.162823] dwmmc_rockchip ff0d0000.mmc: DW MMC controller at irq 31,32 bit host data width,256 deep fifo
+[    4.175606] dwmmc_rockchip ff0f0000.mmc: IDMAC supports 32-bit address mode.
+[    4.183540] dwmmc_rockchip ff0f0000.mmc: Using internal DMA controller.
+[    4.190946] dwmmc_rockchip ff0f0000.mmc: Version ID is 270a
+[    4.197196] dwmmc_rockchip ff0f0000.mmc: DW MMC controller at irq 32,32 bit host data width,256 deep fifo
+[    4.250758] dwmmc_rockchip ff0d0000.mmc: IDMAC supports 32-bit address mode.
+[    4.258688] dwmmc_rockchip ff0d0000.mmc: Using internal DMA controller.
+[    4.266104] dwmmc_rockchip ff0d0000.mmc: Version ID is 270a
+[    4.272358] dwmmc_rockchip ff0d0000.mmc: DW MMC controller at irq 31,32 bit host data width,256 deep fifo
+[    4.285390] dwmmc_rockchip ff0d0000.mmc: IDMAC supports 32-bit address mode.
+[    4.293333] dwmmc_rockchip ff0d0000.mmc: Using internal DMA controller.
+[    4.300750] dwmmc_rockchip ff0d0000.mmc: Version ID is 270a
+[    4.307005] dwmmc_rockchip ff0d0000.mmc: DW MMC controller at irq 31,32 bit host data width,256 deep fifo
+[    4.971373] dwmmc_rockchip ff0f0000.mmc: Successfully tuned phase to 134
+[    5.027225] dwmmc_rockchip ff0d0000.mmc: IDMAC supports 32-bit address mode.
+[    5.035339] dwmmc_rockchip ff0d0000.mmc: Using internal DMA controller.
+[    5.042769] dwmmc_rockchip ff0d0000.mmc: Version ID is 270a
+[    5.049050] dwmmc_rockchip ff0d0000.mmc: DW MMC controller at irq 31,32 bit host data width,256 deep fifo
+[   24.727583] dwmmc_rockchip ff0d0000.mmc: IDMAC supports 32-bit address mode.
+[   24.745541] dwmmc_rockchip ff0d0000.mmc: Using internal DMA controller.
+[   24.753003] dwmmc_rockchip ff0d0000.mmc: Version ID is 270a
+[   24.763289] dwmmc_rockchip ff0d0000.mmc: DW MMC controller at irq 31,32 bit host data width,256 deep fifo
+[   25.589620] dwmmc_rockchip ff0d0000.mmc: IDMAC supports 32-bit address mode.
+[   25.603066] dwmmc_rockchip ff0d0000.mmc: Using internal DMA controller.
+[   25.615283] dwmmc_rockchip ff0d0000.mmc: Version ID is 270a
+[   25.627911] dwmmc_rockchip ff0d0000.mmc: DW MMC controller at irq 31,32 bit host data width,256 deep fifo
+[   25.643469] dwmmc_rockchip ff0d0000.mmc: IDMAC supports 32-bit address mode.
+[   25.651532] dwmmc_rockchip ff0d0000.mmc: Using internal DMA controller.
+[   25.658960] dwmmc_rockchip ff0d0000.mmc: Version ID is 270a
+[   25.665246] dwmmc_rockchip ff0d0000.mmc: DW MMC controller at irq 31,32 bit host data width,256 deep fifo
+[   25.677154] dwmmc_rockchip ff0d0000.mmc: allocated mmc-pwrseq
