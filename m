@@ -2,71 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD05A206EF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 10:30:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1D6206F04
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 10:34:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390290AbgFXIaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 04:30:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387686AbgFXIaH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 04:30:07 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DD2DF20823;
-        Wed, 24 Jun 2020 08:30:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1592987407;
-        bh=ujlYvGc1lf5tVmC0czUM70uo/f/lTgG6Gy7yAiHHdD4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ws1TEyeGGmgLI3i3DRo+nTQvcgjG8YgfgAafXZ5fHbg83yX/cB5IZ2SZaUa09T7i4
-         g+8msRu7C4wVxLjUwnvs2rZO4NwHLvKWdmVYJWu7+kFy9K+FmjmSCcTUE91pWH2WtV
-         HCvHcSzPz6pzkhRxDcA67tYZLe8QD5Srv4gkOI5A=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1jo0nF-005zwW-Ec; Wed, 24 Jun 2020 09:30:05 +0100
+        id S2389493AbgFXIeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 04:34:22 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:6826 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387811AbgFXIeV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 04:34:21 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 760C32DC9BA1D31F18B1;
+        Wed, 24 Jun 2020 16:34:18 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 24 Jun 2020 16:34:10 +0800
+From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
+To:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Yuqi Jin <jinyuqi@huawei.com>
+Subject: [PATCH RESEND] fs: Move @f_count to different cacheline with @f_mode
+Date:   Wed, 24 Jun 2020 16:32:28 +0800
+Message-ID: <1592987548-8653-1-git-send-email-zhangshaokun@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 24 Jun 2020 09:30:05 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v3 00/14 RESEND] irqchip: Fix potential resource leaks
-In-Reply-To: <1592984711-3130-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1592984711-3130-1-git-send-email-yangtiezhu@loongson.cn>
-User-Agent: Roundcube Webmail/1.4.5
-Message-ID: <e419a2acea6c1977eaef5d049d607749@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: yangtiezhu@loongson.cn, tglx@linutronix.de, jason@lakedaemon.net, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, lixuefeng@loongson.cn
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-06-24 08:44, Tiezhu Yang wrote:
-> [git send-email failed due to too many commands,
->  so only cc the major related email and resend it,
->  sorry for that]
+get_file_rcu_many, which is called by __fget_files, has used
+atomic_try_cmpxchg now and it can reduce the access number of the global
+variable to improve the performance of atomic instruction compared with
+atomic_cmpxchg. 
 
-This is becoming majorly annoying. Please fix your git setup
-*before* dumping 57 emails for just 14 patches. You have done
-the same thing yesterday, and I would hope you learned from your
-mistakes.
+__fget_files does check the @f_mode with mask variable and will do some
+atomic operations on @f_count, but both are on the same cacheline.
+Many CPU cores do file access and it will cause much conflicts on @f_count. 
+If we could make the two members into different cachelines, it shall relax
+the siutations.
 
-Also, do not repost a series more than once per week. You have
-already exceeded your quota by quite a margin.
+We have tested this on ARM64 and X86, the result is as follows:
+Syscall of unixbench has been run on Huawei Kunpeng920 with this patch:
+24 x System Call Overhead  1
 
-         M.
+System Call Overhead                    3160841.4 lps   (10.0 s, 1 samples)
+
+System Benchmarks Partial Index              BASELINE       RESULT    INDEX
+System Call Overhead                          15000.0    3160841.4   2107.2
+                                                                   ========
+System Benchmarks Index Score (Partial Only)                         2107.2
+
+Without this patch:
+24 x System Call Overhead  1
+
+System Call Overhead                    2222456.0 lps   (10.0 s, 1 samples)
+
+System Benchmarks Partial Index              BASELINE       RESULT    INDEX
+System Call Overhead                          15000.0    2222456.0   1481.6
+                                                                   ========
+System Benchmarks Index Score (Partial Only)                         1481.6
+
+And on Intel 6248 platform with this patch:
+40 CPUs in system; running 24 parallel copies of tests
+
+System Call Overhead                        4288509.1 lps   (10.0 s, 1 samples)
+
+System Benchmarks Partial Index              BASELINE       RESULT    INDEX
+System Call Overhead                          15000.0    4288509.1   2859.0
+                                                                   ========
+System Benchmarks Index Score (Partial Only)                         2859.0
+
+Without this patch:
+40 CPUs in system; running 24 parallel copies of tests
+
+System Call Overhead                        3666313.0 lps   (10.0 s, 1 samples)
+
+System Benchmarks Partial Index              BASELINE       RESULT    INDEX
+System Call Overhead                          15000.0    3666313.0   2444.2
+                                                                   ========
+System Benchmarks Index Score (Partial Only)                         2444.2
+
+Cc: Will Deacon <will@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Yuqi Jin <jinyuqi@huawei.com>
+Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
+---
+ include/linux/fs.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 3f881a892ea7..0faeab5622fb 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -955,7 +955,6 @@ struct file {
+ 	 */
+ 	spinlock_t		f_lock;
+ 	enum rw_hint		f_write_hint;
+-	atomic_long_t		f_count;
+ 	unsigned int 		f_flags;
+ 	fmode_t			f_mode;
+ 	struct mutex		f_pos_lock;
+@@ -979,6 +978,7 @@ struct file {
+ 	struct address_space	*f_mapping;
+ 	errseq_t		f_wb_err;
+ 	errseq_t		f_sb_err; /* for syncfs */
++	atomic_long_t		f_count;
+ } __randomize_layout
+   __attribute__((aligned(4)));	/* lest something weird decides that 2 is OK */
+ 
 -- 
-Jazz is not dead. It just smells funny...
+2.7.4
+
