@@ -2,65 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0594207321
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:17:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 863AF207334
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403899AbgFXMQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 08:16:57 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:58337 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2403857AbgFXMQm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 08:16:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593001001;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uAPq5aXdaDqbKt5CCySJuAsMKamE8qo/bCDxYVPbA00=;
-        b=VE8OMKtTKf3g4TeN/JnkvMpZT6dw5MwqFLQf7yhqrufIZjEARPoTR9UUEbLHhKDQELWqXr
-        cXPrIQmfIXXrs51v7z819WwTkheOMXdbfRQYowDTfGpuzohe83/TjECoyE32ppAPCnIRdW
-        8VlcORYPg0rt0peoOF9PGQPel9T0q4o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-122-I4DzuOSWNaqmV1w0Z92olA-1; Wed, 24 Jun 2020 08:16:37 -0400
-X-MC-Unique: I4DzuOSWNaqmV1w0Z92olA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2390367AbgFXMVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 08:21:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60460 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388548AbgFXMVI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 08:21:08 -0400
+Received: from localhost (unknown [171.61.66.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 56752805EEE;
-        Wed, 24 Jun 2020 12:16:36 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-114-66.rdu2.redhat.com [10.10.114.66])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9753E7168D;
-        Wed, 24 Jun 2020 12:16:35 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <20200623111528.205681-1-chentao107@huawei.com>
-References: <20200623111528.205681-1-chentao107@huawei.com>
-To:     Chen Tao <chentao107@huawei.com>
-Cc:     dhowells@redhat.com, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] afs: Fix the memory leak in afs_mkdir
+        by mail.kernel.org (Postfix) with ESMTPSA id 660BF2065F;
+        Wed, 24 Jun 2020 12:21:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593001267;
+        bh=ubm037DjoqhWp5F5sJ1u0TjSw4h4hwKqC/VMwTuOQV0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Xmb12H8k4I/htKdxidiwU427lNKY2KKHuxv3zKvwevJ/lPnJQ+Z/AKwIzkmNyUNyX
+         vUYSD3lc8BC0bhWkW2DyKvpmpRk2V3EiVGL2Bzc5mD62zUpCJzkWI8Xap+beE0Hnyv
+         pulOF6Qk6kh+1sWwkx4tO/YG58KRooDU7pH59MOU=
+Date:   Wed, 24 Jun 2020 17:51:03 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Wesley Cheng <wcheng@codeaurora.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, kishon@ti.com,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] phy: qcom-snps: Add runtime suspend and resume
+ handlers
+Message-ID: <20200624122103.GC2324254@vkoul-mobl>
+References: <1590112200-1110-1-git-send-email-wcheng@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3102967.1593000994.1@warthog.procyon.org.uk>
-Date:   Wed, 24 Jun 2020 13:16:34 +0100
-Message-ID: <3102968.1593000994@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1590112200-1110-1-git-send-email-wcheng@codeaurora.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chen,
+Hi Wesley,
 
-> Fix the memory leak in afs_mkdir not freeing scb
-> in error path.
+On 21-05-20, 18:50, Wesley Cheng wrote:
+> Allow for the PHY to be put into a powered down state when possible.
+> Add the required suspend and resume callbacks, which will determine
+> what resources can be turned off depending on the cable status.
+> 
+> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+> 
+> ---
+> Changes in v2:
+>  - Addressed checkpatch alignment/line length warnings.
+>  - Removed superfluous init in qcom_snps_hsphy_resume().
+> 
+>  drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c | 100 ++++++++++++++++++++++++++
+>  1 file changed, 100 insertions(+)
+> 
+> diff --git a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+> index 4d74045..0a4e77af 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-snps-femto-v2.c
+> @@ -76,7 +76,9 @@
+>   * @iface_clk: phy interface clock
+>   * @phy_reset: phy reset control
+>   * @vregs: regulator supplies bulk data
+> + * @suspended: PHY is in the suspended state
+>   * @phy_initialized: if PHY has been initialized correctly
+> + * @mode: contains the current mode the PHY is in
+>   */
+>  struct qcom_snps_hsphy {
+>  	struct phy *phy;
+> @@ -87,7 +89,9 @@ struct qcom_snps_hsphy {
+>  	struct reset_control *phy_reset;
+>  	struct regulator_bulk_data vregs[SNPS_HS_NUM_VREGS];
+>  
+> +	bool suspended;
+>  	bool phy_initialized;
+> +	enum phy_mode mode;
+>  };
+>  
+>  static inline void qcom_snps_hsphy_write_mask(void __iomem *base, u32 offset,
+> @@ -104,6 +108,84 @@ static inline void qcom_snps_hsphy_write_mask(void __iomem *base, u32 offset,
+>  	readl_relaxed(base + offset);
+>  }
+>  
+> +static int qcom_snps_hsphy_suspend(struct qcom_snps_hsphy *hsphy)
+> +{
+> +	if (hsphy->suspended)
+> +		return 0;
 
-This code has changed substantially in linus/master.
+Am still not convinced why this would be called when we are already
+suspended :)
 
-David
+> +
+> +	dev_dbg(&hsphy->phy->dev, "Suspend QCOM SNPS PHY, mode:%d\n",
+> +		hsphy->mode);
 
+Remove debug artifacts here?
+
+> +
+> +	if (hsphy->mode == PHY_MODE_USB_HOST) {
+> +		/* Enable auto-resume to meet remote wakeup timing */
+> +		qcom_snps_hsphy_write_mask(hsphy->base,
+> +						USB2_PHY_USB_PHY_HS_PHY_CTRL2,
+> +						USB2_AUTO_RESUME,
+> +						USB2_AUTO_RESUME);
+
+Lets align the lines above to opening brace please..
+If you run checkpatch with --strict option you would get this CHECK: Alignment should match open parenthesis
+
+> +		usleep_range(500, 1000);
+> +		qcom_snps_hsphy_write_mask(hsphy->base,
+> +						USB2_PHY_USB_PHY_HS_PHY_CTRL2,
+> +						0, USB2_AUTO_RESUME);
+> +	}
+> +
+> +	clk_disable_unprepare(hsphy->cfg_ahb_clk);
+> +	hsphy->suspended = true;
+> +
+> +	return 0;
+> +}
+> +
+> +static int qcom_snps_hsphy_resume(struct qcom_snps_hsphy *hsphy)
+> +{
+> +	int ret;
+> +
+> +	if (!hsphy->suspended)
+> +		return 0;
+> +
+> +	dev_dbg(&hsphy->phy->dev, "Resume QCOM SNPS PHY, mode:%d\n",
+> +		hsphy->mode);
+
+here as well
+
+> +
+> +	ret = clk_prepare_enable(hsphy->cfg_ahb_clk);
+> +	if (ret) {
+> +		dev_err(&hsphy->phy->dev,
+> +			"failed to enable cfg ahb clock, %d\n", ret);
+
+single line should be okay now :)
+
+> +		return ret;
+> +	}
+> +
+> +	hsphy->suspended = false;
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused qcom_snps_hsphy_runtime_suspend(struct device *dev)
+> +{
+> +	struct qcom_snps_hsphy *hsphy = dev_get_drvdata(dev);
+> +
+> +	if (!hsphy->phy_initialized)
+> +		return 0;
+> +
+> +	qcom_snps_hsphy_suspend(hsphy);
+> +	return 0;
+> +}
+> +
+> +static int __maybe_unused qcom_snps_hsphy_runtime_resume(struct device *dev)
+> +{
+> +	struct qcom_snps_hsphy *hsphy = dev_get_drvdata(dev);
+> +
+> +	if (!hsphy->phy_initialized)
+> +		return 0;
+> +
+> +	qcom_snps_hsphy_resume(hsphy);
+> +	return 0;
+> +}
+> +
+> +static int qcom_snps_hsphy_set_mode(struct phy *phy, enum phy_mode mode,
+> +					int submode)
+> +{
+> +	struct qcom_snps_hsphy *hsphy = phy_get_drvdata(phy);
+> +
+> +	hsphy->mode = mode;
+> +	return 0;
+> +}
+> +
+>  static int qcom_snps_hsphy_init(struct phy *phy)
+>  {
+>  	struct qcom_snps_hsphy *hsphy = phy_get_drvdata(phy);
+> @@ -175,6 +257,7 @@ static int qcom_snps_hsphy_init(struct phy *phy)
+>  					UTMI_PHY_CMN_CTRL_OVERRIDE_EN, 0);
+>  
+>  	hsphy->phy_initialized = true;
+> +	hsphy->suspended = false;
+>  
+>  	return 0;
+>  
+> @@ -201,6 +284,7 @@ static int qcom_snps_hsphy_exit(struct phy *phy)
+>  static const struct phy_ops qcom_snps_hsphy_gen_ops = {
+>  	.init		= qcom_snps_hsphy_init,
+>  	.exit		= qcom_snps_hsphy_exit,
+> +	.set_mode	= qcom_snps_hsphy_set_mode,
+
+This should be a separate patch, whats set_mode got to do with suspend
+support :)
+
+>  	.owner		= THIS_MODULE,
+>  };
+>  
+> @@ -212,6 +296,11 @@ static int qcom_snps_hsphy_exit(struct phy *phy)
+>  };
+>  MODULE_DEVICE_TABLE(of, qcom_snps_hsphy_of_match_table);
+>  
+> +static const struct dev_pm_ops qcom_snps_hsphy_pm_ops = {
+> +	SET_RUNTIME_PM_OPS(qcom_snps_hsphy_runtime_suspend,
+> +			   qcom_snps_hsphy_runtime_resume, NULL)
+> +};
+> +
+>  static int qcom_snps_hsphy_probe(struct platform_device *pdev)
+>  {
+>  	struct device *dev = &pdev->dev;
+> @@ -255,6 +344,14 @@ static int qcom_snps_hsphy_probe(struct platform_device *pdev)
+>  		return ret;
+>  	}
+>  
+> +	pm_runtime_set_active(dev);
+> +	pm_runtime_enable(dev);
+> +	/*
+> +	 * Prevent runtime pm from being ON by default. Users can enable
+> +	 * it using power/control in sysfs.
+> +	 */
+> +	pm_runtime_forbid(dev);
+> +
+>  	generic_phy = devm_phy_create(dev, NULL, &qcom_snps_hsphy_gen_ops);
+>  	if (IS_ERR(generic_phy)) {
+>  		ret = PTR_ERR(generic_phy);
+> @@ -269,6 +366,8 @@ static int qcom_snps_hsphy_probe(struct platform_device *pdev)
+>  	phy_provider = devm_of_phy_provider_register(dev, of_phy_simple_xlate);
+>  	if (!IS_ERR(phy_provider))
+>  		dev_dbg(dev, "Registered Qcom-SNPS HS phy\n");
+> +	else
+> +		pm_runtime_disable(dev);
+>  
+>  	return PTR_ERR_OR_ZERO(phy_provider);
+>  }
+> @@ -277,6 +376,7 @@ static int qcom_snps_hsphy_probe(struct platform_device *pdev)
+>  	.probe		= qcom_snps_hsphy_probe,
+>  	.driver = {
+>  		.name	= "qcom-snps-hs-femto-v2-phy",
+> +		.pm = &qcom_snps_hsphy_pm_ops,
+>  		.of_match_table = qcom_snps_hsphy_of_match_table,
+>  	},
+>  };
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+
+-- 
+~Vinod
