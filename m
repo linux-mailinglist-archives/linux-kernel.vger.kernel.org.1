@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F3D206FF8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 11:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19575206FFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 11:27:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389390AbgFXJ0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 05:26:50 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:34790 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728637AbgFXJ0t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 05:26:49 -0400
-Received: from kvm-dev1.localdomain (unknown [10.2.5.134])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxNupIHPNe6zFJAA--.493S4;
-        Wed, 24 Jun 2020 17:26:33 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Daniel Silsby <dansilsby@gmail.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH 3/3] MIPS: Do not call flush_tlb_all when setting pmd entry
-Date:   Wed, 24 Jun 2020 17:26:32 +0800
-Message-Id: <1592990792-1923-3-git-send-email-maobibo@loongson.cn>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1592990792-1923-1-git-send-email-maobibo@loongson.cn>
-References: <1592990792-1923-1-git-send-email-maobibo@loongson.cn>
-X-CM-TRANSID: AQAAf9AxNupIHPNe6zFJAA--.493S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFykXr17tF1fAw4xWFyxGrg_yoW8Gw1fpr
-        srC3Wvqr45Z348t34rZr9Ygr1ayFs5tFW5KF1UAa45X3W5WF1kKF93J348JFy8WrWSk395
-        Wr4YqFy5J3yxA37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBjb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF
-        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcV
-        CY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280
-        aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzV
-        Aqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S
-        6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVCm-wCF04k20xvY0x0EwI
-        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
-        IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
-        6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jca9-UUUUU=
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+        id S2389524AbgFXJ1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 05:27:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38804 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387495AbgFXJ1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 05:27:09 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C5C9D20874;
+        Wed, 24 Jun 2020 09:27:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592990829;
+        bh=sz9dFsvgElJPSubu1rXAM7K6qMOH0Op/lpJbVq77JSY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iSZxGLXrqkpIi+HrdkKJOWxRMXfCXaz/q9N/4epJGnp9QBX0eNuRQTw9EWBMTtGr7
+         37xiwGQb7ER9IhHHmMACOqJ9hDzajgcbJOXRhCh5iGSC0DUl+bXiRw66t/iEf1n/H7
+         S1sT0a5gURcQYYYWSWcbcbDVIbgm+jF2idYiwRqE=
+Date:   Wed, 24 Jun 2020 11:27:08 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Rick Lindsley <ricklind@linux.vnet.ibm.com>
+Cc:     Tejun Heo <tj@kernel.org>, Ian Kent <raven@themaw.net>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        David Howells <dhowells@redhat.com>,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/6] kernfs: proposed locking and concurrency
+ improvement
+Message-ID: <20200624092708.GA1749737@kroah.com>
+References: <159237905950.89469.6559073274338175600.stgit@mickey.themaw.net>
+ <20200619153833.GA5749@mtj.thefacebook.com>
+ <16d9d5aa-a996-d41d-cbff-9a5937863893@linux.vnet.ibm.com>
+ <20200619222356.GA13061@mtj.duckdns.org>
+ <fa22c563-73b7-5e45-2120-71108ca8d1a0@linux.vnet.ibm.com>
+ <20200622175343.GC13061@mtj.duckdns.org>
+ <82b2379e-36d0-22c2-41eb-71571e992b37@linux.vnet.ibm.com>
+ <20200623231348.GD13061@mtj.duckdns.org>
+ <a3e9414e-4740-3013-947d-e1839a20227c@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a3e9414e-4740-3013-947d-e1839a20227c@linux.vnet.ibm.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function set_pmd_at is to set pmd entry, if tlb entry need to
-be flushed, there exists pmdp_huge_clear_flush alike function
-before set_pmd_at is called. So it is not necessary to call
-flush_tlb_all in this function.
+On Wed, Jun 24, 2020 at 02:04:15AM -0700, Rick Lindsley wrote:
+> In contrast, the provided patch fixes the observed problem with no ripple
+> effect to other subsystems or utilities.
 
-In these scenarios, tlb for the pmd range needs to be flushed:
-1. privilege degrade such as wrprotect is set on the pmd entry
-2. pmd entry is cleared
-3. there is exception if set_pmd_at is issued by dup_mmap, since
-flush_tlb_mm is called for parent process, it is not necessary
-to flush tlb in function copy_huge_pmd.
+Your patch, as-is, is fine, but to somehow think that this is going to
+solve your real problem here is the issue we keep raising.
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- arch/mips/mm/pgtable-32.c | 1 -
- arch/mips/mm/pgtable-64.c | 1 -
- 2 files changed, 2 deletions(-)
+The real problem is you have way too many devices that somehow need to
+all get probed at boot time before you can do anything else.
 
-diff --git a/arch/mips/mm/pgtable-32.c b/arch/mips/mm/pgtable-32.c
-index bd4b065..61891af 100644
---- a/arch/mips/mm/pgtable-32.c
-+++ b/arch/mips/mm/pgtable-32.c
-@@ -45,7 +45,6 @@ void set_pmd_at(struct mm_struct *mm, unsigned long addr,
- 		pmd_t *pmdp, pmd_t pmd)
- {
- 	*pmdp = pmd;
--	flush_tlb_all();
- }
- #endif /* defined(CONFIG_TRANSPARENT_HUGEPAGE) */
- 
-diff --git a/arch/mips/mm/pgtable-64.c b/arch/mips/mm/pgtable-64.c
-index 183ff9f..7536f78 100644
---- a/arch/mips/mm/pgtable-64.c
-+++ b/arch/mips/mm/pgtable-64.c
-@@ -100,7 +100,6 @@ void set_pmd_at(struct mm_struct *mm, unsigned long addr,
- 		pmd_t *pmdp, pmd_t pmd)
- {
- 	*pmdp = pmd;
--	flush_tlb_all();
- }
- 
- void __init pagetable_init(void)
--- 
-1.8.3.1
+> Greg had suggested
+>     Treat the system as a whole please, don't go for a short-term
+>     fix that we all know is not solving the real problem here.
+> 
+> Your solution affects multiple subsystems; this one affects one.  Which is
+> the whole system approach in terms of risk?  You mentioned you support 30k
+> scsi disks but only because they are slow so the inefficiencies of kernfs
+> don't show.  That doesn't bother you?
 
+Systems with 30k of devices do not have any problems that I know of
+because they do not do foolish things like stall booting before they are
+all discovered :)
+
+What's the odds that if we take this patch, you all have to come back in
+a few years with some other change to the api due to even larger memory
+sizes happening?  What happens if you boot on a system with this change
+and with 10x the memory you currently have?  Try simulating that by
+creating 10x the number of devices and see what happens.  Does the
+bottleneck still remain in kernfs or is it somewhere else?
+
+thanks,
+
+greg k-h
