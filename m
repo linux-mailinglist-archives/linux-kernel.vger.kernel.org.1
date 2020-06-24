@@ -2,150 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7EE02069B0
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 03:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDC62069D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 03:50:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388429AbgFXBtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 21:49:32 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23652 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387778AbgFXBtb (ORCPT
+        id S2388709AbgFXBud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 21:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388447AbgFXBts (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 21:49:31 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 05O1h3gC021876;
-        Tue, 23 Jun 2020 18:49:24 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=9kf1jldxltmyvFbkdO6poS8DbTclJH6IOkFTiSNEbYg=;
- b=AFt3xVtbeKenYZlrCl9nIP+47tWhdIuUujB+qxzeSs0fFU5HZqI/FOIZtoX1Uv3urGJ0
- 3fMhrjAhc4KJewe07g78iNAkSogS91lGmKhTc5yX9EgadC0L8Ivb1K9g6oZr1apbh781
- USoKb2bihUVMFW2vYX1FJHRmdk7pWYSl/64= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 31uurb8cjs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 23 Jun 2020 18:49:24 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Jun 2020 18:49:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kHZeYteMJS7FUEMfdW8qouCgvaOpM3S6sSEDLTKkuS3hDsObPQYOktr4FADEXjOVWMT5QXkyFWQJp9fLPyqLVsKN+VCm/q+jQam+NiLKkSxtV6qu1zcJjOeBkUeSpYZ6LtJf3QuS3h1pQR5jiLQVVRWZmnTkl/TjGq17MjmzgE9+zqwfznw3jx5kAgFsMnIp8PKMgmGMyYZ5Sd0dUlp1kwxGksrydV8waQ3lYGRw4TH52iRt6Jc82yV6urN0pJ8Lzj2b4d66Qb4lCXDsw97QBEF0MTGZZ8aiSIUAH6aRBxsuhyIEWLM5xPWvhYCJdFF/JNn7fJ4kRmJD2JjDpDKEqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9kf1jldxltmyvFbkdO6poS8DbTclJH6IOkFTiSNEbYg=;
- b=e8oVA7RYdXY+KPkvv997hx0JB5X2pH4SaUJdC37aOXpBy1s27QKau09KQ9L0Q2Q8l94Gq69qsa8fO4/IBkNrDWlu79rU1XPQi7wKdHTPI3QulnastReDuydXuUk8OFPUzVnY3rR57q8Dgcj3OBQw2dKHUAKGSfx3yMtGSHOiYa2mn3xQ5iwB/Qc/X8a5S1Mi4kkjemcZd+9gdLNINIrvNnC342v7auT40a5P7JfR24+3b+icRNktnLWtRFjiuwJ00+eGefKYHSc/bBk6Zth2M7s6bgaoymirxk2tMe2Ginhdf8u3oZO2hYABfMUZ9xdMSmcUYf5ESEhc/yFSsEjhWg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9kf1jldxltmyvFbkdO6poS8DbTclJH6IOkFTiSNEbYg=;
- b=hcFBk8ydQcEZJBsjnk/7p5I/qNqaJ9bi7sSRR5iPLVHPUgU+7TBoq+/dUed/LWjaI0Jt7ieEOaqOAvLWshDVY3evu8PU4hxmTFeMSoFa79o3rzBCDBgf0Kd2pK6azi3RrKLYTObxWk3r3z+/hU+GH/Tl39HGlFBVQPR0mfbbWEo=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2759.namprd15.prod.outlook.com (2603:10b6:a03:151::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.20; Wed, 24 Jun
- 2020 01:49:21 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::48e3:c159:703d:a2f1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::48e3:c159:703d:a2f1%5]) with mapi id 15.20.3131.020; Wed, 24 Jun 2020
- 01:49:21 +0000
-Date:   Tue, 23 Jun 2020 18:49:13 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Kernel Team <kernel-team@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 4/5] mm: memcg: charge memcg percpu memory to the
- parent cgroup
-Message-ID: <20200624014913.GB358561@carbon.lan>
-References: <20200623184515.4132564-1-guro@fb.com>
- <20200623184515.4132564-5-guro@fb.com>
- <CALvZod5m+iK-UsTmrTuhpGyDg=nT3+f=DZUho02AsLGbP4AGsA@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod5m+iK-UsTmrTuhpGyDg=nT3+f=DZUho02AsLGbP4AGsA@mail.gmail.com>
-X-ClientProxiedBy: BYAPR06CA0013.namprd06.prod.outlook.com
- (2603:10b6:a03:d4::26) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Tue, 23 Jun 2020 21:49:48 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A712C061796
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 18:49:48 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id f2so328637plr.8
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 18:49:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XRX+a9QElrykJZmLdxem4I40g6I/9leCnrUb/OjtOMI=;
+        b=CIDABal4Q+UfzI6TBZvIf3fo33EAYBlTM+i4WnVSQcoUlRTxWm02Cj9OOEXCd4yS6L
+         307zhAh97TXGXcj5JjcKAZqxQURhTxfozAhzuBm60rS3Yo9aZZgowAfuLuMjWedb3dF6
+         EuQg6eb5KlOItUtb9njXU8b0lPFOb9RM4akWw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XRX+a9QElrykJZmLdxem4I40g6I/9leCnrUb/OjtOMI=;
+        b=jSCTo8fNSK0yaGjy1PdlDoF2QgJrsS/0PwrAIz6E5Oqd5cPSSyRCymmYzVcVBwDjfm
+         1eCgyeAOXa8RHPDlCeZ39HSRnTWNsMcDqGeenLNV/a0CH84+f1bMqT99a6NQe3JDhD+t
+         QVAQWrwCb/dkgK2k/zgOi7SgbeEiDND5N+/tDhHbZ+u7ALOTCDLOB5rrGc3ZNC1ohwB6
+         qPK7C8m29igGfumunwXFO8nPPSezgpT2GiPlRiFi9sE/fZBeGF5My5XXuCzZY/HA3qbo
+         HSHyiqt7Ug0of7mu0V1hmMqd1pWleUa2K9J1y29crAXxxALjQDIVzzv6lY5d4LLG4O81
+         9cng==
+X-Gm-Message-State: AOAM533gazKd9AxOEx3q0qcKPOA0Tg6/0Wq3bVfIaCV14AOwlgjTrN1v
+        xdAefIhYKJd03qMuo+1p2Wir1Q==
+X-Google-Smtp-Source: ABdhPJwl6JTcw+g/B90wVgoZK0xqnoCWxZXqyZZiqvL8XYPvPf3KqeE6RxoFL30elVgP9TzunKDaOQ==
+X-Received: by 2002:a17:90a:d186:: with SMTP id fu6mr4433095pjb.185.1592963388068;
+        Tue, 23 Jun 2020 18:49:48 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id nl11sm3230884pjb.0.2020.06.23.18.49.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 18:49:46 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/9] Warn on orphan section placement
+Date:   Tue, 23 Jun 2020 18:49:31 -0700
+Message-Id: <20200624014940.1204448-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.lan (2620:10d:c090:400::5:72a3) by BYAPR06CA0013.namprd06.prod.outlook.com (2603:10b6:a03:d4::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.22 via Frontend Transport; Wed, 24 Jun 2020 01:49:20 +0000
-X-Originating-IP: [2620:10d:c090:400::5:72a3]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: c169052d-46ad-44b8-c132-08d817e0d084
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2759:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2759F8511E3FA6F5FB88BA1CBE950@BYAPR15MB2759.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-Forefront-PRVS: 0444EB1997
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: q3TwiJLiWFp6LohoY6oi/8EiXR2NaGKETwF3I0vXy+H0I1wW8wTSCD8HFTtiwM4J8vO3eIVAYUEfR56844voOdd81iGRHV5sSBn/Qdl3tSg31oKRdy8LwfrbOlU7u8SBmSR3zgCE4sPUjNr+yt5VivayANJP1HvpSFYKlw8MfmcXTZBQCo2G2HL/rHl9HnFSoLItdgFI3Ab04VHun+3q05qudNQYeXYv6nI7U+5I2lIjZ9kzK/ZALuf4J6aC7TJ23DUSlhm0rbe7MxY2MQ8mHBqkGpl9nBnOnKtpcyqU/319t6VRwREL8RgbVX/0fZe0KHD3+9Amnwu8zpyrQxU/NXcnqxeoHOMmi09EUlZDhGPr03iuvn4TJU14lMNVAN/U
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(39860400002)(346002)(366004)(376002)(396003)(4326008)(6666004)(52116002)(66476007)(5660300002)(478600001)(9686003)(53546011)(8676002)(1076003)(8936002)(6506007)(66946007)(83380400001)(86362001)(6916009)(66556008)(7696005)(2906002)(33656002)(186003)(8886007)(316002)(55016002)(16526019)(54906003)(36756003)(27376004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: vGzkHYhKjB6BWkVt1K101mIqpYbJM5t7JvRfv7xBGkr0Hzta2Auuk49T7jZVHaCz6HVn/ejGTvTPIa9FumX7e6WJiYAfs/iE7FozFKgJP31WSh2vCwVCIWX8BVHJCRUJHvt7NEEadbtNH7GlPiSiahgYt1IMRTtl/mlzMyIhBgtkXfsc9d1jnwXnY/yZO7k0KbCYu9aIbjBJ1PC8CrjJGv/XL0aSLoUFwioQpTpDRQFQVjFZ8AeCmj5hQmXmLfd25YDe3sVmxJBPS3wO8yE3XDuC5i0lG2gdsLviOMVEV/uKvJrTqPgAPuwY88GN1+cRrCtHif2MJkqA2hKUFiucGwsBUrwlNcoDM+SKnwlCc6d3BIWyLj9LmqOae1Y5a3C14YgR7/HSrukAkHxgXll4NX+wJyPI6tjD1N/M5lN5l4YkPzZ1udT+T0YGoSzzMJZiXUDAbjV/XEj2KxlENpeflbRIfkSxXGlHl+HWBNFNeJC+TmXn7MZn1yq+HwJR9g55EuuLlfDdJ5PyjYkxTBCOsQ==
-X-MS-Exchange-CrossTenant-Network-Message-Id: c169052d-46ad-44b8-c132-08d817e0d084
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Jun 2020 01:49:21.4007
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iY5ReHSt8gTIUxVmeDBsYVcwhpFV3k7GeYmrTBEhYivA7WIgSYS/1DilsyXJELK3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2759
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-23_17:2020-06-23,2020-06-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=1
- phishscore=0 mlxscore=0 mlxlogscore=739 clxscore=1015 impostorscore=0
- bulkscore=0 malwarescore=0 priorityscore=1501 lowpriorityscore=0
- cotscore=-2147483648 spamscore=0 adultscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006240010
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jun 23, 2020 at 06:40:41PM -0700, Shakeel Butt wrote:
-> On Tue, Jun 23, 2020 at 11:47 AM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > Memory cgroups are using large chunks of percpu memory to store vmstat
-> > data.  Yet this memory is not accounted at all, so in the case when there
-> > are many (dying) cgroups, it's not exactly clear where all the memory is.
-> >
-> > Because the size of memory cgroup internal structures can dramatically
-> > exceed the size of object or page which is pinning it in the memory, it's
-> > not a good idea to simple ignore it.  It actually breaks the isolation
-> 
-> *simply
-> 
-> > between cgroups.
-> >
-> > Let's account the consumed percpu memory to the parent cgroup.
-> >
-> > Signed-off-by: Roman Gushchin <guro@fb.com>
-> > Acked-by: Dennis Zhou <dennis@kernel.org>
-> 
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+v3:
+- merge series back together (I tried to make it separable, but no luck)
+- remove unwanted sections in libstub
+- remove unwanted .eh_frame sections for both .c and .S
+- handle sections seen during allnoconfig builds
+- handle synthetic and double-quoted sections reported by Clang
+- add reviewed-bys
+v2: https://lore.kernel.org/lkml/20200622205815.2988115-1-keescook@chromium.org/
+v1: https://lore.kernel.org/lkml/20200228002244.15240-1-keescook@chromium.org/
 
-Hello, Shakeel!
+A recent bug[1] was solved for builds linked with ld.lld, and tracking
+it down took way longer than it needed to (a year). Ultimately, it
+boiled down to differences between ld.bfd and ld.lld's handling of
+orphan sections. Similarly, the recent FGKASLR series brough up orphan
+section handling too[2]. In both cases, it would have been nice if the
+linker was running with --orphan-handling=warn so that surprise sections
+wouldn't silently get mapped into the kernel image at locations up to the
+whim of the linker's orphan handling logic. Instead, all desired sections
+should be explicitly identified in the linker script (to be either kept or
+discarded) with any orphans throwing a warning. The powerpc architecture
+actually already does this, so this series extends coverage to x86, arm,
+and arm64.
 
-Thank you for the review of this and the previous patchsets!
+All three architectures depend on the first two commits (to
+vmlinux.lds.h), and x86 and arm64 depend on the third patch (to
+libstub). As such, I'd like to land this series as a whole. Given that
+two thirds of it is in the arm universe, perhaps this can land via the
+arm64 tree? If x86 -tip is preferred, that works too. Or I could just
+carry this myself in -next. In all cases, I would really appreciate
+reviews/acks/etc. :)
 
-Btw, I'll be completely offline till the end of the week,
-so if any questions will arise around these patchsets,
-I'll answer all them on Monday, Jun 29th. Thanks!
+Thanks!
+
+-Kees
+
+This series is here:
+https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=linker/orphans/warn/v3
+
+[1] https://github.com/ClangBuiltLinux/linux/issues/282
+[2] https://lore.kernel.org/lkml/202002242122.AA4D1B8@keescook/
+
+Kees Cook (9):
+  vmlinux.lds.h: Add .gnu.version* to DISCARDS
+  vmlinux.lds.h: Add .symtab, .strtab, and .shstrtab to STABS_DEBUG
+  efi/libstub: Remove .note.gnu.property
+  x86/build: Warn on orphan section placement
+  x86/boot: Warn on orphan section placement
+  arm/build: Warn on orphan section placement
+  arm/boot: Warn on orphan section placement
+  arm64/build: Use common DISCARDS in linker script
+  arm64/build: Warn on orphan section placement
+
+ arch/arm/Makefile                             |  4 ++++
+ arch/arm/boot/compressed/Makefile             |  2 ++
+ arch/arm/boot/compressed/vmlinux.lds.S        | 17 ++++++--------
+ .../arm/{kernel => include/asm}/vmlinux.lds.h | 22 ++++++++++++++-----
+ arch/arm/kernel/vmlinux-xip.lds.S             |  5 ++---
+ arch/arm/kernel/vmlinux.lds.S                 |  5 ++---
+ arch/arm64/Makefile                           |  9 +++++++-
+ arch/arm64/kernel/smccc-call.S                |  2 --
+ arch/arm64/kernel/vmlinux.lds.S               | 16 ++++++++++----
+ arch/arm64/mm/mmu.c                           |  2 +-
+ arch/x86/Makefile                             |  4 ++++
+ arch/x86/boot/compressed/Makefile             |  3 ++-
+ arch/x86/boot/compressed/vmlinux.lds.S        | 11 ++++++++++
+ arch/x86/include/asm/asm.h                    |  6 ++++-
+ arch/x86/kernel/vmlinux.lds.S                 |  6 +++++
+ drivers/firmware/efi/libstub/Makefile         |  3 +++
+ include/asm-generic/vmlinux.lds.h             |  7 +++++-
+ 17 files changed, 92 insertions(+), 32 deletions(-)
+ rename arch/arm/{kernel => include/asm}/vmlinux.lds.h (92%)
+
+-- 
+2.25.1
+
