@@ -2,146 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2468D2079BE
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 203BC2079AD
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 18:57:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405309AbgFXQ6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 12:58:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45634 "EHLO
+        id S2405253AbgFXQ5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 12:57:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404796AbgFXQ6e (ORCPT
+        with ESMTP id S2404124AbgFXQ5Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 12:58:34 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 075B4C061573;
-        Wed, 24 Jun 2020 09:58:34 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id f18so3210967wml.3;
-        Wed, 24 Jun 2020 09:58:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:references:from:autocrypt:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2UyvtHsqWot1NDK5U0I1dkujPWgBcNc0l066O4UC3WU=;
-        b=QzQGKKjB2zrV1FB2V51Yt3V22mpPXhweNha+MvQDlcRbOsJNRG2Wk5JGhuUSwoFMPf
-         DMmfAgxK2J0WXI7xlIxNxBY4S3yc44P2r9rWd/qJfYQn8LUqKC2UhetZzphiN+wSTq/z
-         6ren5y5oTJDNaeFLuuHF8KofYYRiGpYMbhH4YHU9dce90/+rJpiBd1AGApLJ8ooRS79O
-         SPTZpgWUZrOWoQcdo/arhUnhNh4z0yJyLzcOD7XQVdzyBITgkefeIs9X/h/Om0MgCwbS
-         yvG4FAgEZ5qX1y30outPkQRsI5foQm1NeRsPgD73ku64d6GmGzzMFO+a63/btb/U/C2Q
-         9wDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:references:from:autocrypt:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2UyvtHsqWot1NDK5U0I1dkujPWgBcNc0l066O4UC3WU=;
-        b=eHnO7lEASsN2tjjZ3gpCi/A81tMn25EjCKeS6uSFvDioKAGhQGwvftHGcoQxe99A3R
-         4NKoW5y1zpSoMUj7XOjiuKCjCAWFm7lA/QqQGTEvORS1jd8sK4L9pFgQZd9PAiXP67Z8
-         usaDC3pfJcH0BKytx5izFzPeu7TfF0bezzJmEH4ECP/1dl30eWcKMoBDSyHFKdd6mRAm
-         mdb78C35OgvwsVtc4w1AgAyX5ySK2pCisK0/gGxyRQJIvBZpg3k5CUTe39Y5g4qE3KNC
-         0l3xXWDcPCvdha41EbV7BmnVglDXGIORRrEQFKGYLLGYUHnCBEZyqJtDQki1SAl/RzX1
-         dEkg==
-X-Gm-Message-State: AOAM532QGoP3RLvDXnS8VRKdRqaNVMITLwq8JBVGyyCcW+J0JrrICRAk
-        wSfCUHy8OA1AaO1K4WUxQWPjT8y8
-X-Google-Smtp-Source: ABdhPJzSwdqI/juqSfmw/8tO7p/3CHHnLcGUqCMfYg6R08O0A5vsCG9H3wPtUmsNQncTgAzC1zhEHQ==
-X-Received: by 2002:a05:600c:204d:: with SMTP id p13mr30334237wmg.88.1593017912508;
-        Wed, 24 Jun 2020 09:58:32 -0700 (PDT)
-Received: from [192.168.43.31] ([5.100.193.85])
-        by smtp.gmail.com with ESMTPSA id f186sm8569839wmf.29.2020.06.24.09.58.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jun 2020 09:58:32 -0700 (PDT)
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1592863245.git.asml.silence@gmail.com>
- <0301f35644823a01cbae87e440df7d58ebcf2279.1592863245.git.asml.silence@gmail.com>
- <95b720a6-926c-a208-e929-1d0203fa8701@kernel.dk>
- <e05fc48b-684d-2980-3986-47a77af403e0@kernel.dk>
- <6714cb8f-894c-9ff1-7b3a-4f86d7dbe52a@gmail.com>
- <d33e9006-b7ef-4925-ff3f-332ab655f2ae@kernel.dk>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Subject: Re: [PATCH 1/4] io_uring: fix hanging iopoll in case of -EAGAIN
-Message-ID: <9488620d-3dec-700d-b211-cd192b4060b0@gmail.com>
-Date:   Wed, 24 Jun 2020 19:56:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        Wed, 24 Jun 2020 12:57:24 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4C6C061573;
+        Wed, 24 Jun 2020 09:57:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=L0BSl9Rz5P8GUkSvL7sI0fAZe5Hrhoqy7/0x3FiFW2Y=; b=ZgOTBUbPjta9cXrzFnnIAnab4
+        Dcm9pDc0Ejlq5vVTWRjyevo27fV7XGPaj06Z05BDeZRcenj/FWeWJut7lz1cg2jUDgZnf8MvLUdYM
+        P+biZdJlriNMVb3RtYtqgt1B8ql+d+lgDKGM3OOj3i9TDJ3SIgG6/R4Rg8amZWPYlQq6fIY/e5RIH
+        39Hwa7ZromkrO1urRg88NKb0eQZfm104fYt7Wvq+tEViZGuPwfd3FP5JIhp40PZgkNtwizse0M5zD
+        FpIcwGpyg+93AxBkRp7ezqMw7JKjDwcBW5nSjVKmWjVeWpHEex9JZNfJ7NiOhJ6zOdVKpd7uk/VBN
+        B1UNRAHEg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:59222)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1jo8i8-0003ML-Ug; Wed, 24 Jun 2020 17:57:20 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1jo8i7-00027d-Ep; Wed, 24 Jun 2020 17:57:19 +0100
+Date:   Wed, 24 Jun 2020 17:57:19 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Fabien Parent <fparent@baylibre.com>,
+        Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+        Quan Nguyen <quan@os.amperecomputing.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Andrew Perepech <andrew.perepech@mediatek.com>,
+        Stephane Le Provost <stephane.leprovost@mediatek.com>,
+        Keyur Chudgar <keyur@os.amperecomputing.com>,
+        Jassi Brar <jaswinder.singh@linaro.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        netdev <netdev@vger.kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Pedro Tsai <pedro.tsai@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Subject: Re: [PATCH 14/15] net: phy: add PHY regulator support
+Message-ID: <20200624165719.GB1551@shell.armlinux.org.uk>
+References: <20200622093744.13685-1-brgl@bgdev.pl>
+ <20200622093744.13685-15-brgl@bgdev.pl>
+ <20200622132921.GI1551@shell.armlinux.org.uk>
+ <CAMRc=Me1r3Mzfg3-gTsGk4rEtvB=P9ESkn9q=c7z0Q=YQDsw2A@mail.gmail.com>
+ <20200623094252.GS1551@shell.armlinux.org.uk>
+ <CAMpxmJVP9db-4-AA4e1JkEfrajvJ4s0T6zo5+oFzpJHRBcuSsg@mail.gmail.com>
+ <20200623095646.GT1551@shell.armlinux.org.uk>
+ <CAMRc=MeKE12sXZycyGA7vmjNai0JfDhRX+XDTp3r3YtrmLQj3A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <d33e9006-b7ef-4925-ff3f-332ab655f2ae@kernel.dk>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=MeKE12sXZycyGA7vmjNai0JfDhRX+XDTp3r3YtrmLQj3A@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/06/2020 22:01, Jens Axboe wrote:
-> On 6/23/20 5:57 AM, Pavel Begunkov wrote:
->> On 23/06/2020 05:18, Jens Axboe wrote:
->>> On 6/22/20 8:07 PM, Jens Axboe wrote:
->>>> On 6/22/20 4:16 PM, Pavel Begunkov wrote:
->>>>> io_do_iopoll() won't do anything with a request unless
->>>>> req->iopoll_completed is set. So io_complete_rw_iopoll() has to set
->>>>> it, otherwise io_do_iopoll() will poll a file again and again even
->>>>> though the request of interest was completed long ago.
->>>>
->>>> I need to look at this again, because with this change, I previously
->>>> got various use-after-free. I haven't seen any issues with it, but
->>>> I agree, from a quick look that I'm not quite sure how it's currently
->>>> not causing hangs. Yet I haven't seen any, with targeted -EAGAIN
->>>> testing.
->>
->> Can io_complete_rw_iopoll() get -EAGAIN after being successfully enqueued
->> (i.e. EIOCBQUEUED)? It's reliably fails for me, because my hacked nullblk
->> _can_ (i.e. probabilistically returns BLK_STS_AGAIN from ->iopoll()).
+On Tue, Jun 23, 2020 at 06:27:06PM +0200, Bartosz Golaszewski wrote:
+> wt., 23 cze 2020 o 11:56 Russell King - ARM Linux admin
+> <linux@armlinux.org.uk> napisał(a):
+> >
+> > On Tue, Jun 23, 2020 at 11:46:15AM +0200, Bartosz Golaszewski wrote:
+> > > wt., 23 cze 2020 o 11:43 Russell King - ARM Linux admin
+> > > <linux@armlinux.org.uk> napisał(a):
+> > > >
+> > > > On Tue, Jun 23, 2020 at 11:41:11AM +0200, Bartosz Golaszewski wrote:
+> > > > > pon., 22 cze 2020 o 15:29 Russell King - ARM Linux admin
+> > > > > <linux@armlinux.org.uk> napisał(a):
+> > > > > >
+> > > > >
+> > > > > [snip!]
+> > > > >
+> > > > > >
+> > > > > > This is likely to cause issues for some PHY drivers.  Note that we have
+> > > > > > some PHY drivers which register a temperature sensor in the probe
+> > > > > > function, which means they can be accessed independently of the lifetime
+> > > > > > of the PHY bound to the network driver (which may only be while the
+> > > > > > network device is "up".)  We certainly do not want hwmon failing just
+> > > > > > because the network device is down.
+> > > > > >
+> > > > > > That's kind of worked around for the reset stuff, because there are two
+> > > > > > layers to that: the mdio device layer reset support which knows nothing
+> > > > > > of the PHY binding state to the network driver, and the phylib reset
+> > > > > > support, but it is not nice.
+> > > > > >
+> > > > >
+> > > > > Regulators are reference counted so if the hwmon driver enables it
+> > > > > using mdio_device_power_on() it will stay on even after the PHY driver
+> > > > > calls phy_device_power_off(), right? Am I missing something?
+> > > >
+> > > > If that is true, you will need to audit the PHY drivers to add that.
+> > > >
+> > >
+> > > This change doesn't have any effect on devices which don't have a
+> > > regulator assigned in DT though. The one I'm adding in the last patch
+> > > is the first to use this.
+> >
+> > It's quality of implementation.
+> >
+> > Should we wait for someone else to make use of the new regulator
+> > support that has been added with a PHY that uses hwmon, and they
+> > don't realise that it breaks hwmon on it, and several kernel versions
+> > go by without it being noticed.  It will only be a noticable issue
+> > when the associated network device is down, and that network device
+> > driver detaches from the PHY, so _is_ likely not to be noticed.
+> >
+> > Or should we do a small amount of work now to properly implement
+> > regulator support, which includes a trivial grep for "hwmon" amongst
+> > the PHY drivers, and add the necessary call to avoid the regulator
+> > being shut off.
+> >
 > 
-> Yes it can. The primary example would be a polled bio that gets split, into
-> let's say 4 bio's. First one queues fine, but one of the subsequent ones
-> run into request allocation failures and it gets marked as -EAGAIN.
+> I'm not sure what the correct approach is here. Provide some helper
+> that, when called, would increase the regulator's reference count even
+> more to keep it enabled from the moment hwmon is registered to when
+> the driver is detached?
 
-Right, thanks for the explanation. And that's the case where io_uring fails.
-Now I tested all kinds of -EAGAIN to be sure.
+I think a PHY driver needs the utility to control this.  We need to be
+careful here with naming, because phylib is not the only code in the
+kernel that uses the phy_ prefix.
+
+If we had runtime PM support for PHYs, with regulator support hooked
+into runtime PM, then we already have standard interfaces that drivers
+can use to control whether the device gets powered down.
 
 -- 
-Pavel Begunkov
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
