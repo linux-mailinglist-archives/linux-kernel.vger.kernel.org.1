@@ -2,91 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5CE206D48
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 09:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68FBA206D4C
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 09:09:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389575AbgFXHHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 03:07:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38992 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388525AbgFXHHq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 03:07:46 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8B81C061573;
-        Wed, 24 Jun 2020 00:07:46 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S2389606AbgFXHJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 03:09:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34406 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387849AbgFXHJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 03:09:13 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 49sDk75Sxgz9sQt;
-        Wed, 24 Jun 2020 17:07:43 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1592982464;
-        bh=cL0oMWJYXSDVQxiQID8bINxCxFjC+uhhFeI3e29bY0k=;
-        h=Date:From:To:Cc:Subject:From;
-        b=tqqTQmobpJ1nddIl6G1GyDqGl+2gVtpeVt/ks387AFEzJC68zHYwwg4ljWbTxtBzn
-         gLrJRinlKDjMNcjnIPL9fjMf3O0j88U7I5IMr5wVksllW0JjyGdS6vGztbWYxcORee
-         197ED6wwvt66JSrxuWC6zlMkrDQPepNzdfbfYm2y4qtNc0/GKuBBfqkJKy2aKS6Eed
-         GdIYXieix0UgSF+MMWDju5Hh4Kq77yE1oq1Si4rjpqr/a5msJiOJKhs4LLHULB8Z9Q
-         lvFQW8yPsB4iit6V6LEsIXM7aDPGSVuQ7Cf0BRXQH9AUahpQSQgbGui01nuY2EeLep
-         OZK+Z2VqHkh6g==
-Date:   Wed, 24 Jun 2020 17:07:42 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        SeongJae Park <sjpark@amazon.de>
-Subject: linux-next: Fixes tag needs some work in the scsi-fixes tree
-Message-ID: <20200624170742.4e9e9c96@canb.auug.org.au>
+        by mail.kernel.org (Postfix) with ESMTPSA id 1148B207DD;
+        Wed, 24 Jun 2020 07:09:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1592982551;
+        bh=xbNqFn/9ByJOYnzc/xSSD/TofOt0SnTeW8Q4g5Pnaso=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=sgHtXjB0lEQ3whfnQCzMBjGSp2vdCYAJ2njn+Sdc/gMz0S+zjSQ5yIp7Lvm+vfvZ7
+         eF8NmiFaUFlxeuq9cGKFlkzKMR2PRgnCiO4LS4UQDlSqSFrLG+iW1YaJxRgFc4SVX5
+         k2fRhWGQcl7/m9hKGWTA3/bdCGQV+P9yNTMhjcvg=
+Date:   Wed, 24 Jun 2020 09:09:10 +0200
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     Phu Luu <Phu.Luu@silabs.com>
+Cc:     "johan@kernel.org" <johan@kernel.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Brant Merryman <Brant.Merryman@silabs.com>,
+        Richard Hendricks <Richard.Hendricks@silabs.com>
+Subject: Re: [PATCH v3 2/2] USB: serial: cp210x: Proper RTS control when
+ buffers fill
+Message-ID: <20200624070910.GA1557212@kroah.com>
+References: <DM6PR11MB2857CC4B06D64F290FC42E739C950@DM6PR11MB2857.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/bo+DGo6BUaVlD_O19V+svB9";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DM6PR11MB2857CC4B06D64F290FC42E739C950@DM6PR11MB2857.namprd11.prod.outlook.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/bo+DGo6BUaVlD_O19V+svB9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jun 24, 2020 at 07:03:04AM +0000, Phu Luu wrote:
+> CP210x hardware disables auto-RTS but leaves auto-CTS when
+> in hardware flow control mode and UART on cp210x hardware
+> is disabled. This allows data to flow out, but new data
+> will not come into the port. When re-opening the port, if
+> auto-CTS is enabled on the cp210x, then auto-RTS must be
+> re-enabled in the driver.
+> 
+> Signed-off-by: Phu Luu <phu.luu@silabs.com>
+> Signed-off-by: Brant Merryman <brant.merryman@silabs.com>
+> ---
+> 06/09/2020: Patch v3 2/2 Modified based on feedback from Johan Hovold <johan@kernel.org>
+> 12/18/2019: Patch v2 Broken into two patches and modified based on feedback from Johan Hovold <johan@kernel.org>
+> 12/09/2019: Initial submission of patch "Proper RTS control when buffers fill"
+> 
+> drivers/usb/serial/cp210x.c | 18 ++++++++++++++++++
+> 1 file changed, 18 insertions(+)
+> 
+> diff --git a/drivers/usb/serial/cp210x.c b/drivers/usb/serial/cp210x.c
+> index bcceb4ad8be0..091441b1c5b9 100644
+> --- a/drivers/usb/serial/cp210x.c
+> +++ b/drivers/usb/serial/cp210x.c
+> @@ -917,6 +917,7 @@ static void cp210x_get_termios_port(struct usb_serial_port *port,
+>                u32 baud;
+>                u16 bits;
+>                u32 ctl_hs;
+> +             u32 flow_repl;
+>                 cp210x_read_u32_reg(port, CP210X_GET_BAUDRATE, &baud);
+> @@ -1017,6 +1018,23 @@ static void cp210x_get_termios_port(struct usb_serial_port *port,
+>                ctl_hs = le32_to_cpu(flow_ctl.ulControlHandshake);
+>                if (ctl_hs & CP210X_SERIAL_CTS_HANDSHAKE) {
+>                                dev_dbg(dev, "%s - flow control = CRTSCTS\n", __func__);
+> +                             /*
+> +                             * When the port is closed, the CP210x hardware disables
+> +                             * auto-RTS and RTS is deasserted but it leaves auto-CTS when
+> +                             * in hardware flow control mode. This prevents new data from
+> +                             * being received by the port. When re-opening the port, if
+> +                             * auto-CTS is enabled on the cp210x, then auto-RTS must be
+> +                             * re-enabled in the driver.
+> +                             */
+> +                             flow_repl = le32_to_cpu(flow_ctl.ulFlowReplace);
+> +                             flow_repl &= ~CP210X_SERIAL_RTS_MASK;
+> +                             flow_repl |= CP210X_SERIAL_RTS_SHIFT(CP210X_SERIAL_RTS_FLOW_CTL);
+> +                             flow_ctl.ulFlowReplace = cpu_to_le32(flow_repl);
+> +                             cp210x_write_reg_block(port,
+> +                                                             CP210X_SET_FLOW,
+> +                                                             &flow_ctl,
+> +                                                             sizeof(flow_ctl));
+> +
+>                                cflag |= CRTSCTS;
+>                } else {
+>                                dev_dbg(dev, "%s - flow control = NONE\n", __func__);
+> --
+> 2.17.0
+> 
 
-Hi all,
+Hi,
 
-In commit
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-  46da547e21d6 ("scsi: lpfc: Avoid another null dereference in lpfc_sli4_hb=
-a_unset()")
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-Fixes tag
+- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
+  and can not be applied.  Please read the file,
+  Documentation/email-clients.txt in order to fix this.
 
-  Fixes: 1ffdd2c0440d ("scsi: lpfc: resolve static checker warning inlpfc_s=
-li4_hba_unset")
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
-has these problem(s):
+thanks,
 
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/bo+DGo6BUaVlD_O19V+svB9
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl7y+74ACgkQAVBC80lX
-0Gyp1Qf+OEQmbJDNjHDxdfnb4AYsrlb3V8qC9sn80GT7l6QrTn/VaSZYTrylV1q4
-EsVzCCSZ4ey44V6IB+iBtSY6nc4wRaw/jQAAzeHSuOQzkGF8y3OMQgpvhc7lXqqB
-7juYYWFbPdv2AyZAVp3Wo82KdwAtn2LCmL1XMQ2AyHVTRmVdZMuYFA3Un/w/18ZE
-hoHVtQFW493M+YpMNxMlxP79INTgv/pVjVqjWuse9ZzafdkysfKF7NLuJNNMBAWQ
-3fIr1rbcYt+3wUOwrdpOUvqzbJEi+oASQDxGu0S6r0da2Vjn495D1mUzscAMIrel
-gVwAvxgRMBEmYXEFqnsISVgxymstJQ==
-=Hz0Y
------END PGP SIGNATURE-----
-
---Sig_/bo+DGo6BUaVlD_O19V+svB9--
+greg k-h's patch email bot
