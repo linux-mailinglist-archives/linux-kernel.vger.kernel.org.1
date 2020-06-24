@@ -2,116 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 467FE206917
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 02:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4903920690E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 02:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388168AbgFXAfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 20:35:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387757AbgFXAfI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 20:35:08 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C7E3C061573
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 17:35:08 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id w7so182782edt.1
-        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 17:35:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+/TMyKbqoSzMGZ/AAiVOjNfJfvqMvVU1A+eHQRRA5RQ=;
-        b=Il6fK4QN3tYHRegbTX3T3xxgdNRK5bhnoaFX2nMUJ+Y1ejGKz2mICnpBctazU0eFYI
-         +6WYLhCDE5IutdeL6ipgrxuodVn0WCfWMCh+6ZjduvztoIRvdYwvs+tLmVdloyVBKiKd
-         Xd+vTYw8xNdYoCfPjbV2eezQeBcRSM44RaXGj8NkQxehNrlsHYyXRmkwpyHmy1siSgO6
-         ZFYlVPr2FiXxrnQJ36LJoAm40RFBS9bsdAG8NX38Q6o9LJ9GpiteFIUbzRViVzxjz2QG
-         dtjlJa9eIfNen/2eoSRu75VwCM/b6Rv/nw0czAWfLNCBBqW2ylJSvPSws70uAz6eaETU
-         GddA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+/TMyKbqoSzMGZ/AAiVOjNfJfvqMvVU1A+eHQRRA5RQ=;
-        b=ZODDk4ompdzQTFDIYgj+JXGaa9nfAVbvG0ZUcCDv+9Ylkm6mEIP5WGV6kb+0Z2WC2q
-         9I0NRYoI4U0PCx47LmD/SYI/dIphGVPTTYzdZ3lGhM3bwqRULS8L5pXMGWuYY+Oxs5Ho
-         gtMP29BOujD2lYzdjVQE9fpBnhKin9l8sxy5V7ypamBv8FLvIS1or0K+iwY/9S/Ecziy
-         iIPcDTkvfRi0hN670ZEWqNo2AGd2KvPrS6zfE9VUQOiR8pzD8mUTZ+z0KttWl2d/24wh
-         kbSj8x68RB5GhScNUX20ACLaO62CpBaHwhoQy44h+3p2DtbnMZYn+hOQZxPFo2T8KTYG
-         ctlg==
-X-Gm-Message-State: AOAM530/Vzui8Ajbci5oOst8DuEGtID5z9oefIJKnJS9i3PhJuMEc5NV
-        mpKT9hQb70uKmSvtz05uiug5Op76T63mEfAfcAlM
-X-Google-Smtp-Source: ABdhPJzCoP7TVvW+uzKj9SzidO2EBCvvtbfilZfpp8veq16/F/lTMvRYgUtkcV+HaRYoxjS+CxUYyH2LxC0Ele3/EA8=
-X-Received: by 2002:aa7:da46:: with SMTP id w6mr23979297eds.31.1592958906753;
- Tue, 23 Jun 2020 17:35:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
-In-Reply-To: <f9da8b5dbf2396b621c77c17b5b1123be5aa484e.1591275439.git.rgb@redhat.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 23 Jun 2020 20:34:55 -0400
-Message-ID: <CAHC9VhT_dzkoOuoQF5-D9KFDiAUUjX2UJJbKPWAeXkf7fddKsA@mail.gmail.com>
-Subject: Re: [PATCH ghak124 v3] audit: log nftables configuration change events
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
+        id S2388058AbgFXAbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 20:31:43 -0400
+Received: from mga06.intel.com ([134.134.136.31]:23661 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387693AbgFXAbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 23 Jun 2020 20:31:43 -0400
+IronPort-SDR: XCxDo3OpbkRxL9sQFYSxMfHHAVo7OA0C0bHBbPa+A42UzA5z7nmOoli5T0kEZsi7CBzQ8IEMwR
+ OGq/2prcDH6w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9661"; a="205780739"
+X-IronPort-AV: E=Sophos;i="5.75,273,1589266800"; 
+   d="scan'208";a="205780739"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jun 2020 17:31:42 -0700
+IronPort-SDR: JuRKAVOTj0bzM5gYHe59Qpoho2OXHhXh0++ajff75JbolNyznLJ4KWTbW+rIlS5pQwJ5oGfU8t
+ Lb3ul8PRwrsg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,273,1589266800"; 
+   d="scan'208";a="452444240"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga005.jf.intel.com with ESMTP; 23 Jun 2020 17:31:42 -0700
+Date:   Tue, 23 Jun 2020 17:38:13 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     iommu@lists.linux-foundation.org,
         LKML <linux-kernel@vger.kernel.org>,
-        netfilter-devel@vger.kernel.org, sgrubb@redhat.com,
-        Ondrej Mosnacek <omosnace@redhat.com>, fw@strlen.de,
-        twoerner@redhat.com, Eric Paris <eparis@parisplace.org>,
-        tgraf@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        "Lu Baolu" <baolu.lu@linux.intel.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Cc:     Yi Liu <yi.l.liu@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 5/7] iommu/vt-d: Fix devTLB flush for vSVA
+Message-ID: <20200623173813.6a02353c@jacob-builder>
+In-Reply-To: <1592926996-47914-6-git-send-email-jacob.jun.pan@linux.intel.com>
+References: <1592926996-47914-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1592926996-47914-6-git-send-email-jacob.jun.pan@linux.intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 4, 2020 at 9:21 AM Richard Guy Briggs <rgb@redhat.com> wrote:
->
-> iptables, ip6tables, arptables and ebtables table registration,
-> replacement and unregistration configuration events are logged for the
-> native (legacy) iptables setsockopt api, but not for the
-> nftables netlink api which is used by the nft-variant of iptables in
-> addition to nftables itself.
->
-> Add calls to log the configuration actions in the nftables netlink api.
->
-> This uses the same NETFILTER_CFG record format but overloads the table
-> field.
->
->   type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.878:162) : table=?:0;?:0 family=unspecified entries=2 op=nft_register_gen pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
->   ...
->   type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.878:162) : table=firewalld:1;?:0 family=inet entries=0 op=nft_register_table pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
->   ...
->   type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;filter_FORWARD:85 family=inet entries=8 op=nft_register_chain pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
->   ...
->   type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;filter_FORWARD:85 family=inet entries=101 op=nft_register_rule pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
->   ...
->   type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;__set0:87 family=inet entries=87 op=nft_register_setelem pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
->   ...
->   type=NETFILTER_CFG msg=audit(2020-05-28 17:46:41.911:163) : table=firewalld:1;__set0:87 family=inet entries=0 op=nft_register_set pid=396 subj=system_u:system_r:firewalld_t:s0 comm=firewalld
->
-> For further information please see issue
-> https://github.com/linux-audit/audit-kernel/issues/124
->
-> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+On Tue, 23 Jun 2020 08:43:14 -0700
+Jacob Pan <jacob.jun.pan@linux.intel.com> wrote:
+
+> From: Liu Yi L <yi.l.liu@intel.com>
+> 
+> For guest SVA usage, in order to optimize for less VMEXIT, guest
+> request of IOTLB flush also includes device TLB.
+> 
+> On the host side, IOMMU driver performs IOTLB and implicit devTLB
+> invalidation. When PASID-selective granularity is requested by the
+> guest we need to derive the equivalent address range for devTLB
+> instead of using the address information in the UAPI data. The reason
+> for that is, unlike IOTLB flush, devTLB flush does not support
+> PASID-selective granularity. This is to say, we need to set the
+> following in the PASID based devTLB invalidation descriptor:
+> - entire 64 bit range in address ~(0x1 << 63)
+> - S bit = 1 (VT-d CH 6.5.2.6).
+> 
+> Without this fix, device TLB flush range is not set properly for PASID
+> selective granularity. This patch also merged devTLB flush code for
+> both implicit and explicit cases.
+> 
+> Fixes: 6ee1b77ba3ac ("iommu/vt-d: Add svm/sva invalidate function")
+> Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 > ---
-> Changelog:
-> v3:
-> - inline message type rather than table
->
-> v2:
-> - differentiate between xtables and nftables
-> - add set, setelem, obj, flowtable, gen
-> - use nentries field as appropriate per type
-> - overload the "tables" field with table handle and chain/set/flowtable
->
->  include/linux/audit.h         |  18 ++++++++
->  kernel/auditsc.c              |  24 ++++++++--
->  net/netfilter/nf_tables_api.c | 103 ++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 142 insertions(+), 3 deletions(-)
+>  drivers/iommu/intel/iommu.c | 25 +++++++++++++++++--------
+>  1 file changed, 17 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
+> index 96340da57075..5ea5732d5ec4 100644
+> --- a/drivers/iommu/intel/iommu.c
+> +++ b/drivers/iommu/intel/iommu.c
+> @@ -5408,7 +5408,7 @@ intel_iommu_sva_invalidate(struct iommu_domain
+> *domain, struct device *dev, sid = PCI_DEVID(bus, devfn);
+>  
+>  	/* Size is only valid in address selective invalidation */
+> -	if (inv_info->granularity != IOMMU_INV_GRANU_PASID)
+> +	if (inv_info->granularity == IOMMU_INV_GRANU_ADDR)
+>  		size = to_vtd_size(inv_info->addr_info.granule_size,
+>  				   inv_info->addr_info.nb_granules);
+>  
+> @@ -5417,6 +5417,7 @@ intel_iommu_sva_invalidate(struct iommu_domain
+> *domain, struct device *dev, IOMMU_CACHE_INV_TYPE_NR) {
+>  		int granu = 0;
+>  		u64 pasid = 0;
+> +		u64 addr = 0;
+>  
+>  		granu = to_vtd_granularity(cache_type,
+> inv_info->granularity); if (granu == -EINVAL) {
+> @@ -5456,19 +5457,27 @@ intel_iommu_sva_invalidate(struct
+> iommu_domain *domain, struct device *dev, (granu ==
+> QI_GRAN_NONG_PASID) ? -1 : 1 << size, inv_info->addr_info.flags &
+> IOMMU_INV_ADDR_FLAGS_LEAF); 
+> +			if (!info->ats_enabled)
+> +				break;
+>  			/*
+>  			 * Always flush device IOTLB if ATS is
+> enabled. vIOMMU
+>  			 * in the guest may assume IOTLB flush is
+> inclusive,
+>  			 * which is more efficient.
+>  			 */
+> -			if (info->ats_enabled)
+> -				qi_flush_dev_iotlb_pasid(iommu, sid,
+> -						info->pfsid, pasid,
+> -						info->ats_qdep,
+> -
+> inv_info->addr_info.addr,
+> -						size);
+> -			break;
+> +			fallthrough;
+>  		case IOMMU_CACHE_INV_TYPE_DEV_IOTLB:
+> +			/*
+> +			 * There is no PASID selective flush for
+> device TLB, so
+> +			 * the equivalent of that is we set the size
+> to be the
+> +			 * entire range of 64 bit. User only
+> provides PASID info
+> +			 * without address info. So we set addr to 0.
+> +			 */
+> +			if (inv_info->granularity ==
+> IOMMU_INV_GRANU_PASID) {
+> +				size = 64 - VTD_PAGE_SHIFT;
+> +				addr = 0;
+> +			} else if (inv_info->granularity ==
+> IOMMU_INV_GRANU_ADDR)
+> +				addr = inv_info->addr_info.addr;
+> +
+>  			if (info->ats_enabled)
+>  				qi_flush_dev_iotlb_pasid(iommu, sid,
+>  						info->pfsid, pasid,
+addr should be used here. will fix in the next version. Baolu has
+pointed out this before but missed it here.
 
-I'm not seeing any additional comments from the netfilter folks so
-I've gone ahead and merged this into audit/next.  Thanks Richard.
-
--- 
-paul moore
-www.paul-moore.com
+Jacob
