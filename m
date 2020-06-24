@@ -2,131 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E89C206CCF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 08:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895A6206CE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 08:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389326AbgFXGp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 02:45:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389064AbgFXGp2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 02:45:28 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5CA9C061573;
-        Tue, 23 Jun 2020 23:45:27 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id y18so677854lfh.11;
-        Tue, 23 Jun 2020 23:45:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=Fjxf+qb/ItzZQx4UrXWnTnAOQAUVXNTVGaqzPkrb5BM=;
-        b=msnIdUqZEAbCO7jGLREZ88fClfVszcU6jAksn4YZ/GPkqEzWJEB15kdqjfrO/dNQ6U
-         uyZgMfn9uoM929hL56CNJp3xY26AYayRH28vt9BiQCXjYet7sddjmCUUUv0tfgniGdo5
-         f8TeCU7jO6LGJGNwiM/rJ2S3evzAnSbr0t10z/osTeW/s/Uc1ytNcdlB24oWJMsqA8nk
-         e+EwRAx3vNzJabOxkId2vM0XMBqn+MVAcrJuxn9tBbb49x7Nh3vI5sqLy1+OXxC7JzY5
-         HV5XEMpL/zQqwihLoAinN4dbqvnjfxkJqEwInCakl8tgEJTkTxuPErlQjHKBw6OJ9InV
-         Ey+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:in-reply-to:references
-         :date:message-id:mime-version;
-        bh=Fjxf+qb/ItzZQx4UrXWnTnAOQAUVXNTVGaqzPkrb5BM=;
-        b=eyTE1ZJQu2VAU7svDu0RY/C4OqnvQKMLUonbnE7usP8nx8Nk8nlwDjsLMPupdg3vgf
-         AcDN5oUN2cGMWKc/T2MjaOUCSsEuvuvweb3BRNPiAzzAy8034eTHTPHxBzvG8cnGaKoT
-         saJDkqAkIYQeNLfDRaxw77K8TODYfrVPASlomJ/Ku4P4PhXzbqp/NHPf4NCcW7CrFyaL
-         yBY7iKfSHD6xzmVGgQA+uKqjHe/VTCzy3+JjeeVQJ5jpaUR0RyyptmQp/3jF9Izdj6Vi
-         coP2UGOemii4cru5+VFY4ACkrgJOqlzJxUK8+7YMGGAE1h34aDRUeXQ/qVeTXh8AgCR4
-         v/jA==
-X-Gm-Message-State: AOAM533tPKES7y4DrOPAJVpqwmBjiGGCixdNhXlyWctrVXNWGkUxt7UL
-        tLahPSj7afdgz6RDpfYOuCw=
-X-Google-Smtp-Source: ABdhPJznq4+gIqQpwokKLThoiq214WyJzojbNV5jZnBkHxJeZA6MpkpEK5uoGCsu/7vyy7Kk65Letw==
-X-Received: by 2002:a19:ccd0:: with SMTP id c199mr12060659lfg.194.1592981126108;
-        Tue, 23 Jun 2020 23:45:26 -0700 (PDT)
-Received: from saruman (91-155-214-58.elisa-laajakaista.fi. [91.155.214.58])
-        by smtp.gmail.com with ESMTPSA id f21sm1879109ljg.85.2020.06.23.23.45.24
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 23 Jun 2020 23:45:25 -0700 (PDT)
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Tang Bin <tangbin@cmss.chinamobile.com>,
-        gregkh@linuxfoundation.org, thierry.reding@gmail.com,
-        jonathanh@nvidia.com
-Cc:     linux-usb@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>
-Subject: Re: [PATCH] usb: phy: tegra: Remove unnecessary spaces and tables
-In-Reply-To: <20200528112859.6160-1-tangbin@cmss.chinamobile.com>
-References: <20200528112859.6160-1-tangbin@cmss.chinamobile.com>
-Date:   Wed, 24 Jun 2020 09:45:20 +0300
-Message-ID: <87zh8tvu67.fsf@kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+        id S2389456AbgFXGp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 02:45:58 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48436 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389380AbgFXGpu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 02:45:50 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxXeuQ9vJebSBJAA--.397S2;
+        Wed, 24 Jun 2020 14:45:37 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     Huacai Chen <chenhc@lemote.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v2 0/7 RESEND] irqchip: Fix some issues and do some code cleanups about Loongson
+Date:   Wed, 24 Jun 2020 14:45:29 +0800
+Message-Id: <1592981136-3572-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9DxXeuQ9vJebSBJAA--.397S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7JF13GF1xurykJr43JFW8Zwb_yoW8JF1fpF
+        43C3yagr4UCrW7ZrWfAry8AryayryrKa9rtay7twnxXF98J34DuF15JFykurZ7ArWxWF1j
+        9rWFgFW8u3WDCF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26r
+        xl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+        8cxan2IY04v7MxkIecxEwVAFwVW8AwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+        WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+        67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW5JVW7JwCI42
+        IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1l
+        IxAIcVC2z280aVAFwI0_Gr1j6F4UJwCI42IY6I8E87Iv6xkF7I0E14v26F4UJVW0obIYCT
+        nIWIevJa73UjIFyTuYvjfU82NtDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+[git send-email failed, so resend, sorry for that]
 
+Check the return value of irq_domain_translate_onecell() and
+irq_domain_translate_twocell(), do some code cleanups about
+Loongson to make it more clean and readable.
 
-Hi,
+v2:
+  - In order to avoid git send-email failed, make the related patches
+    about Loongson into a new patch series and add "Fixes" tag
 
-Tang Bin <tangbin@cmss.chinamobile.com> writes:
-> The macros in phy-tegra-usb.c have inconsistent sapces between
-> the macro name and the value. Thus sets all the macros to have
-> a signal space between the name and value.
->
-> Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
-> ---
->  drivers/usb/phy/phy-tegra-usb.c | 214 ++++++++++++++++----------------
->  1 file changed, 107 insertions(+), 107 deletions(-)
->
-> diff --git a/drivers/usb/phy/phy-tegra-usb.c b/drivers/usb/phy/phy-tegra-=
-usb.c
-> index 6153cc35a..c294dc617 100644
-> --- a/drivers/usb/phy/phy-tegra-usb.c
-> +++ b/drivers/usb/phy/phy-tegra-usb.c
-> @@ -30,124 +30,124 @@
->  #include <linux/usb/tegra_usb_phy.h>
->  #include <linux/usb/ulpi.h>
->=20=20
-> -#define ULPI_VIEWPORT				0x170
-> +#define ULPI_VIEWPORT	0x170
->=20=20
->  /* PORTSC PTS/PHCD bits, Tegra20 only */
-> -#define TEGRA_USB_PORTSC1			0x184
-> -#define TEGRA_USB_PORTSC1_PTS(x)		(((x) & 0x3) << 30)
-> -#define TEGRA_USB_PORTSC1_PHCD			BIT(23)
-> +#define TEGRA_USB_PORTSC1	0x184
-> +#define TEGRA_USB_PORTSC1_PTS(x)	(((x) & 0x3) << 30)
-> +#define TEGRA_USB_PORTSC1_PHCD	BIT(23)
+Tiezhu Yang (7):
+  irqchip/loongson-htpic: Remove redundant kfree operation
+  irqchip/loongson-htpic: Remove unneeded select of I8259
+  irqchip/loongson-htvec: Fix potential resource leak
+  irqchip/loongson-htvec: Check return value of
+    irq_domain_translate_onecell()
+  irqchip/loongson-pch-pic: Check return value of
+    irq_domain_translate_twocell()
+  irqchip/loongson-pch-msi: Remove unneeded variable
+  dt-bindings: interrupt-controller: Fix typos in loongson,liointc.yaml
 
-the idea was the line up the definitions. I'm not taking this, sorry.
+ .../bindings/interrupt-controller/loongson,liointc.yaml   |  4 ++--
+ drivers/irqchip/Kconfig                                   |  1 -
+ drivers/irqchip/irq-loongson-htpic.c                      |  6 ++----
+ drivers/irqchip/irq-loongson-htvec.c                      | 10 ++++++++--
+ drivers/irqchip/irq-loongson-pch-msi.c                    |  7 +------
+ drivers/irqchip/irq-loongson-pch-pic.c                    | 15 +++++++++------
+ 6 files changed, 22 insertions(+), 21 deletions(-)
 
-=2D-=20
-balbi
+-- 
+2.1.0
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEElLzh7wn96CXwjh2IzL64meEamQYFAl7y9oEACgkQzL64meEa
-mQbi1w/+MTIv4tIMgZim0yPtzrtJUSjxtFHBZzzmIj9J2W6LiwfvtfkDiX7Sww9o
-KXfigdY2/GQRFZHLTOtlnK/VBmXBoM/W3OF6lZv6/QtJ4DbYmAY/LwXdOAA4VRg6
-vtwzYUJ0rnCv6jFU2CBKCyL5gNmWreFUXF4elbrFLHhjggGxmz3wBgXeGGSPTmF6
-qmL8qo95kjyP1DuPsWWLtsEzZb4mCm/c4xps5u+Ig8g3eKTYAMn2TPqTj/0LZrZH
-ZR1Blcinzv42j6jK8R30HlrRZUxKhsf85G2uzGoUQsRoipZwPtBqka0bVyudpBUZ
-ZpvWKLmx9DuCysKTIpd7PXhwgQhTQwigauEQIzg5rlkaZ6TWH5iQsCij1v9piSA8
-swtgqN6sEvnCtQ6/mtrlSGzzRilxIIf2rEm3cCHIdVyHx2b9x49jTAS0RrFibJHI
-Qfp0e1MscQRW3cCmrtBHZ9BLGPTXxyTZBIyACduW3/TB3jTQTbCipOxeBmnO34km
-ggzzI/e41b8BfI6Aeo35ktZjiOCJiJ6ZWLAdi9pXpD8mohwk/wuP+rGM0OnHXKqZ
-yRLJTs7tPfCR7x3N9Pkbu49DW31AAPhL0Hw7CNIQ7yV6NsYTysQgtK+E9e/HsMkv
-LWh7rOVFaEnWNLTLNpgituZalVT1p1V5zVrMpsxhRJYlU/QXD1Y=
-=SZhD
------END PGP SIGNATURE-----
---=-=-=--
