@@ -2,124 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEBF4207278
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 13:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E1B20726F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 13:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390774AbgFXLrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 07:47:37 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:42410 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388491AbgFXLrh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 07:47:37 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05OBjqYb027297;
-        Wed, 24 Jun 2020 06:45:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1592999152;
-        bh=6X9zZUsoFQTdU0DIGFIuVsDvl3k1u78biIHYBoola70=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=IRwG4JIzY464dSINOVUTDq2mdgfxdkE4PwrWioubCV4tnlJexcL6eNMPqR1xX41Pm
-         cUl2QXkTnqrylpa8f5IvLG2PwQGo1THbA/hk6dm5a44vndGFTrA8XFEzDzYiCvjOZv
-         L11csoT38o/KQ62gTYyecv/MKpcii4aoS0yRicSQ=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OBjpl1076329;
-        Wed, 24 Jun 2020 06:45:52 -0500
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 24
- Jun 2020 06:45:51 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 24 Jun 2020 06:45:51 -0500
-Received: from sokoban.bb.dnainternet.fi (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OBjkCN118804;
-        Wed, 24 Jun 2020 06:45:50 -0500
-From:   Tero Kristo <t-kristo@ti.com>
-To:     <wim@linux-watchdog.org>, <linux@roeck-us.net>,
-        <linux-watchdog@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <jan.kiszka@siemens.com>
-Subject: [PATCH 2/2] watchdog: rti: tweak min_hw_heartbeat_ms to match initial allowed window
-Date:   Wed, 24 Jun 2020 14:45:34 +0300
-Message-ID: <20200624114534.1362-3-t-kristo@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200624114534.1362-1-t-kristo@ti.com>
-References: <20200624114534.1362-1-t-kristo@ti.com>
+        id S2389528AbgFXLq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 07:46:57 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:45094 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388491AbgFXLq5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 07:46:57 -0400
+Received: from zn.tnic (p200300ec2f0a930055750ecb74485dbb.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:9300:5575:ecb:7448:5dbb])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id F299F1EC03C5;
+        Wed, 24 Jun 2020 13:46:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1592999216;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=Zv+i4nBbejEnpL9aLrtKKx1Oi4NNtt4nn4BUaSR2qOU=;
+        b=WOpXhTbyr2qhacesgTZGqBiCtlXiFG3FkSOpiJeseR8Hm5omiyx0Y4UcTOFO9h673oEfXh
+        2sMh/wV1TC9zlBm6uhlBWffK+rYj7q+0RgD1vEALX26e8w8+yCjqiK2PFytv6uiHR/Ilfq
+        4hYiV7m8lnsdkEDKN14Png/EuejoU88=
+From:   Borislav Petkov <bp@alien8.de>
+To:     X86 ML <x86@kernel.org>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Petteri Aimonen <jpa@kernelbug.mail.kapsi.fi>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 0/2] x86/FPU: FPU sanitization for in-kernel use
+Date:   Wed, 24 Jun 2020 13:46:44 +0200
+Message-Id: <20200624114646.28953-1-bp@alien8.de>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If the RTI watchdog has been started by someone (like bootloader) when
-the driver probes, we must adjust the initial ping timeout to match the
-currently running watchdog window to avoid generating watchdog reset.
+From: Borislav Petkov <bp@suse.de>
 
-Signed-off-by: Tero Kristo <t-kristo@ti.com>
----
- drivers/watchdog/rti_wdt.c | 25 +++++++++++++++++++++++++
- 1 file changed, 25 insertions(+)
+Ok,
 
-diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
-index d456dd72d99a..02ea2b2435f5 100644
---- a/drivers/watchdog/rti_wdt.c
-+++ b/drivers/watchdog/rti_wdt.c
-@@ -55,11 +55,13 @@ static int heartbeat;
-  * @base - base io address of WD device
-  * @freq - source clock frequency of WDT
-  * @wdd  - hold watchdog device as is in WDT core
-+ * @min_hw_heartbeat_save - save of the min hw heartbeat value
-  */
- struct rti_wdt_device {
- 	void __iomem		*base;
- 	unsigned long		freq;
- 	struct watchdog_device	wdd;
-+	unsigned int		min_hw_heartbeat_save;
- };
- 
- static int rti_wdt_start(struct watchdog_device *wdd)
-@@ -107,6 +109,11 @@ static int rti_wdt_ping(struct watchdog_device *wdd)
- 	/* put watchdog in active state */
- 	writel_relaxed(WDKEY_SEQ1, wdt->base + RTIWDKEY);
- 
-+	if (wdt->min_hw_heartbeat_save) {
-+		wdd->min_hw_heartbeat_ms = wdt->min_hw_heartbeat_save;
-+		wdt->min_hw_heartbeat_save = 0;
-+	}
-+
- 	return 0;
- }
- 
-@@ -201,6 +208,24 @@ static int rti_wdt_probe(struct platform_device *pdev)
- 		goto err_iomap;
- 	}
- 
-+	if (readl(wdt->base + RTIDWDCTRL) == WDENABLE_KEY) {
-+		u32 time_left;
-+		u32 heartbeat;
-+
-+		set_bit(WDOG_HW_RUNNING, &wdd->status);
-+		time_left = rti_wdt_get_timeleft(wdd);
-+		heartbeat = readl(wdt->base + RTIDWDPRLD);
-+		heartbeat <<= WDT_PRELOAD_SHIFT;
-+		heartbeat /= wdt->freq;
-+		if (time_left < heartbeat / 2)
-+			wdd->min_hw_heartbeat_ms = 0;
-+		else
-+			wdd->min_hw_heartbeat_ms =
-+				(time_left - heartbeat / 2 + 1) * 1000;
-+
-+		wdt->min_hw_heartbeat_save = 11 * heartbeat * 1000 / 20;
-+	}
-+
- 	ret = watchdog_register_device(wdd);
- 	if (ret) {
- 		dev_err(dev, "cannot register watchdog device\n");
+here's v2 with build fixes and other review comments addressed.
+
+Thx.
+
+Changelog:
+----------
+
+v1:
+==
+
+Hi all,
+
+here's a proper submission of the work started by Petteri. I think I've
+addressed all the feedback so far. I've added the preparation work for
+the test to run, to a script run_test_fpu.sh which does some basic
+checks, loads the module and runs the test for 1000 times on all CPUs,
+by default. Thought this is a sane default, feel free to prove me wrong
+and I'll change it.
+
+Thx.
+
+Petteri Aimonen (2):
+  x86/fpu: Reset MXCSR to default in kernel_fpu_begin()
+  selftests/fpu: Add an FPU selftest
+
+ arch/x86/include/asm/fpu/internal.h         |  5 ++
+ arch/x86/kernel/fpu/core.c                  |  6 ++
+ lib/Kconfig.debug                           | 11 +++
+ lib/Makefile                                | 24 ++++++
+ lib/test_fpu.c                              | 89 +++++++++++++++++++++
+ tools/testing/selftests/Makefile            |  1 +
+ tools/testing/selftests/fpu/.gitignore      |  2 +
+ tools/testing/selftests/fpu/Makefile        |  9 +++
+ tools/testing/selftests/fpu/run_test_fpu.sh | 46 +++++++++++
+ tools/testing/selftests/fpu/test_fpu.c      | 61 ++++++++++++++
+ 10 files changed, 254 insertions(+)
+ create mode 100644 lib/test_fpu.c
+ create mode 100644 tools/testing/selftests/fpu/.gitignore
+ create mode 100644 tools/testing/selftests/fpu/Makefile
+ create mode 100755 tools/testing/selftests/fpu/run_test_fpu.sh
+ create mode 100644 tools/testing/selftests/fpu/test_fpu.c
+
 -- 
-2.17.1
+2.21.0
 
---
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
