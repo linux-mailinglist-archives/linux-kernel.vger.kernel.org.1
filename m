@@ -2,152 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 417E92075D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 742712075E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:41:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391169AbgFXOj5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 10:39:57 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:55808 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388652AbgFXOj5 (ORCPT
+        id S2391218AbgFXOl2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 10:41:28 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:2384 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389836AbgFXOlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 10:39:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1593009597; x=1624545597;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=5CptIMYGtLRJUOaEOQnppqBMq8qhYumr4bsnmrqP5lg=;
-  b=oNn5R7Qju6A+Ltwehv0z8SBGUFDAZO76khwSMFqK/0L32n2s/iT5kv21
-   KlZX6WubHmxCzPClZCa9w5gdarx+rzJMnKEcgobuWeFlcVbP05W4pUtxy
-   sCPZ5c/HqPKeG7Lgm8TOa3LGWBxq0aZug6sqVsLjWeFvO2GXvbuseWNBS
-   8=;
-IronPort-SDR: A3ZScZaN5pcVEarGidONVw36S6jhSY5hGDEmMARNsoO6mC2ciUVky/UU1Ven2APoflA8+in+9f
- ViJxg/aeeqIA==
-X-IronPort-AV: E=Sophos;i="5.75,275,1589241600"; 
-   d="scan'208";a="38170872"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-2b-55156cd4.us-west-2.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 24 Jun 2020 14:39:55 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-55156cd4.us-west-2.amazon.com (Postfix) with ESMTPS id 4481CA2177;
-        Wed, 24 Jun 2020 14:39:53 +0000 (UTC)
-Received: from EX13D16EUB003.ant.amazon.com (10.43.166.99) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 24 Jun 2020 14:39:52 +0000
-Received: from 38f9d34ed3b1.ant.amazon.com (10.43.162.109) by
- EX13D16EUB003.ant.amazon.com (10.43.166.99) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 24 Jun 2020 14:39:44 +0000
-Subject: Re: [PATCH v4 17/18] nitro_enclaves: Add overview documentation
-To:     Stefan Hajnoczi <stefanha@redhat.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Anthony Liguori <aliguori@amazon.com>,
+        Wed, 24 Jun 2020 10:41:25 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05OEXFqX135508;
+        Wed, 24 Jun 2020 10:40:26 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31uwyym7wv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 10:40:26 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05OEXTZ2137306;
+        Wed, 24 Jun 2020 10:40:26 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31uwyym7ut-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 10:40:25 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05OEbebC005715;
+        Wed, 24 Jun 2020 14:40:22 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma06ams.nl.ibm.com with ESMTP id 31uusjgqb6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 14:40:22 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05OEeJGu19136648
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Jun 2020 14:40:20 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C6EA85205A;
+        Wed, 24 Jun 2020 14:40:19 +0000 (GMT)
+Received: from oc3871087118.ibm.com (unknown [9.145.59.63])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTPS id 16FBF52051;
+        Wed, 24 Jun 2020 14:40:18 +0000 (GMT)
+Date:   Wed, 24 Jun 2020 16:40:16 +0200
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Gerald Schaefer <gerald.schaefer@de.ibm.com>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>, linux-mm@kvack.org,
+        christophe.leroy@c-s.fr, ziy@nvidia.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Colm MacCarthaigh <colmmacc@amazon.com>,
-        Bjoern Doebel <doebel@amazon.de>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Frank van der Linden <fllinden@amazon.com>,
-        "Alexander Graf" <graf@amazon.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Martin Pohlack <mpohlack@amazon.de>,
-        Matt Wilson <msw@amazon.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Balbir Singh <sblbir@amazon.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Stewart Smith <trawets@amazon.com>,
-        Uwe Dannowski <uwed@amazon.de>, <kvm@vger.kernel.org>,
-        <ne-devel-upstream@amazon.com>
-References: <20200622200329.52996-1-andraprs@amazon.com>
- <20200622200329.52996-18-andraprs@amazon.com>
- <20200623085915.GF32718@stefanha-x1.localdomain>
-From:   "Paraschiv, Andra-Irina" <andraprs@amazon.com>
-Message-ID: <746fcd7d-5946-35ec-6471-8bf8dccdf400@amazon.com>
-Date:   Wed, 24 Jun 2020 17:39:39 +0300
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.9.0
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Heiko Carstens <heiko.carstens@de.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Kirill A . Shutemov" <kirill@shutemov.name>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        linux-riscv@lists.infradead.org, x86@kernel.org,
+        linux-doc@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH V3 0/4] mm/debug_vm_pgtable: Add some more tests
+Message-ID: <20200624144015.GD24934@oc3871087118.ibm.com>
+References: <1592192277-8421-1-git-send-email-anshuman.khandual@arm.com>
+ <70ddc7dd-b688-b73e-642a-6363178c8cdd@arm.com>
+ <20200624110539.GC24934@oc3871087118.ibm.com>
+ <20200624134808.0c460862@thinkpad>
 MIME-Version: 1.0
-In-Reply-To: <20200623085915.GF32718@stefanha-x1.localdomain>
-Content-Language: en-US
-X-Originating-IP: [10.43.162.109]
-X-ClientProxiedBy: EX13D36UWA003.ant.amazon.com (10.43.160.237) To
- EX13D16EUB003.ant.amazon.com (10.43.166.99)
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200624134808.0c460862@thinkpad>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-24_08:2020-06-24,2020-06-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
+ clxscore=1015 bulkscore=0 priorityscore=1501 cotscore=-2147483648
+ mlxscore=0 lowpriorityscore=0 suspectscore=0 adultscore=0 mlxlogscore=870
+ phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006240106
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jun 24, 2020 at 01:48:08PM +0200, Gerald Schaefer wrote:
+> On Wed, 24 Jun 2020 13:05:39 +0200
+> Alexander Gordeev <agordeev@linux.ibm.com> wrote:
+> 
+> > On Wed, Jun 24, 2020 at 08:43:10AM +0530, Anshuman Khandual wrote:
+> > 
+> > [...]
+> > 
+> > > Hello Gerald/Christophe/Vineet,
+> > > 
+> > > It would be really great if you could give this series a quick test
+> > > on s390/ppc/arc platforms respectively. Thank you.
+> > 
+> > That worked for me with the default and debug s390 configurations.
+> > Would you like to try with some particular options or combinations
+> > of the options?
+> 
+> It will be enabled automatically on all archs that set
+> ARCH_HAS_DEBUG_VM_PGTABLE, which we do for s390 unconditionally.
+> Also, DEBUG_VM has to be set, which we have only in the debug config.
+> So only the s390 debug config will have it enabled, you can check
+> dmesg for "debug_vm_pgtable" to see when / where it was run, and if it
+> triggered any warnings.
 
+Yes, that is what I did ;)
 
-On 23/06/2020 11:59, Stefan Hajnoczi wrote:
-> On Mon, Jun 22, 2020 at 11:03:28PM +0300, Andra Paraschiv wrote:
->> +The kernel bzImage, the kernel command line, the ramdisk(s) are part of=
- the
->> +Enclave Image Format (EIF); plus an EIF header including metadata such =
-as magic
->> +number, eif version, image size and CRC.
->> +
->> +Hash values are computed for the entire enclave image (EIF), the kernel=
- and
->> +ramdisk(s). That's used, for example, to check that the enclave image t=
-hat is
->> +loaded in the enclave VM is the one that was intended to be run.
->> +
->> +These crypto measurements are included in a signed attestation document
->> +generated by the Nitro Hypervisor and further used to prove the identit=
-y of the
->> +enclave; KMS is an example of service that NE is integrated with and th=
-at checks
->> +the attestation doc.
->> +
->> +The enclave image (EIF) is loaded in the enclave memory at offset 8 MiB=
-. The
->> +init process in the enclave connects to the vsock CID of the primary VM=
- and a
->> +predefined port - 9000 - to send a heartbeat value - 0xb7. This mechani=
-sm is
->> +used to check in the primary VM that the enclave has booted.
->> +
->> +If the enclave VM crashes or gracefully exits, an interrupt event is re=
-ceived by
->> +the NE driver. This event is sent further to the user space enclave pro=
-cess
->> +running in the primary VM via a poll notification mechanism. Then the u=
-ser space
->> +enclave process can exit.
->> +
->> +[1] https://aws.amazon.com/ec2/nitro/nitro-enclaves/
->> +[2] https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt
->> +[3] https://lwn.net/Articles/807108/
->> +[4] https://www.kernel.org/doc/html/latest/admin-guide/kernel-parameter=
-s.html
->> +[5] https://man7.org/linux/man-pages/man7/vsock.7.html
-> Is the EIF specification and the attestation protocol available?
+I should have been more clear. I wonder whether Anshuman has in
+mind other options which possibly makes sense to set or unset
+and check how it goes with non-standard configurations.
 
-For now, they are not publicly available. Once the refs are available =
-
-(e.g. AWS documentation, GitHub documentation), I'll include them in the =
-
-kernel documentation as well.
-
-As a note here, the NE project is currently in preview =
-
-(https://aws.amazon.com/ec2/nitro/nitro-enclaves/) and part of the =
-
-documentation / codebase will be publicly available when NE is generally =
-
-available (GA). This will be in addition to the ones already publicly =
-
-available, like the NE kernel driver.
-
-Let me know if I can help with any particular questions / clarifications.
-
-Thanks,
-Andra
-
-
-
-Amazon Development Center (Romania) S.R.L. registered office: 27A Sf. Lazar=
- Street, UBC5, floor 2, Iasi, Iasi County, 700045, Romania. Registered in R=
-omania. Registration number J22/2621/2005.
-
+> I also checked with the v3 series, and it works fine for s390.
