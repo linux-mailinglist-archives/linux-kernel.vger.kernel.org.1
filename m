@@ -2,124 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBAD6207E59
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 23:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A4B6207E5F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 23:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390498AbgFXVSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 17:18:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
+        id S2390586AbgFXVTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 17:19:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389773AbgFXVSx (ORCPT
+        with ESMTP id S2389773AbgFXVTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 17:18:53 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB05CC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 14:18:52 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (81-175-216-236.bb.dnainternet.fi [81.175.216.236])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F38FA2A8;
-        Wed, 24 Jun 2020 23:18:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1593033530;
-        bh=NcYC22Tgplzt+QFJCY6b3NweU1WExHNM69P0i8o2K2k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dvKEpplsS2GMLBRJLS2cmP2KIV7Hea2BG8YeIbL7Xe7e9dAZQ5I+eSHbvBoGet6Ge
-         AF6UWrpcT3C4BGI7k6OLnQ5vYXQXI/6BFwkF5UfnVXq2UKRnJG6dPsTADF75Sa2NkZ
-         UmlobDvVCP4bnOlRzEVLj0BrouPHycCvF0ukgpyQ=
-Date:   Thu, 25 Jun 2020 00:18:49 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Andrzej Hajda <a.hajda@samsung.com>
-Cc:     Jernej Skrabec <jernej.skrabec@siol.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Wed, 24 Jun 2020 17:19:35 -0400
+Received: from merlin.infradead.org (unknown [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD80C061573;
+        Wed, 24 Jun 2020 14:19:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hjSR6mlsTCk7g8v7G12vqP6vdQOVg8YnQ0fK9Qe8YIs=; b=UTizqW0atOD47Jl6UUMex02N0S
+        mc85gMkTkCOA9d9n1Mk7rnTM4frQa1iMgHTfA2VfdlpZ8Yx44nPgiXtA/RwZ2QVyVzEdRBB9mgkXe
+        nq/SL1dcQZxaszgTqCwr/DLmQom+lmq1gxRtmOa84xHN64AYxblPDuloQXacicpSjzW4ceWpsFD1/
+        cpMKSkTRHxL1ERgtwdB3+/RFsvdp3+WEuULy5oM/0VZnaMXNROhnOT/trbg7viBg2ffRju9Lab/TO
+        DPac7DU6KB0NcpbJmhEDP16v+CcRwigXYVjOpMNYbmguUsuC/Jb5ut6v/WO8WBWrf7OFbZQZlOG/+
+        MezE87Kw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1joCnY-00044a-JS; Wed, 24 Jun 2020 21:19:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 16F79304B6D;
+        Wed, 24 Jun 2020 23:19:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 0438524C09497; Wed, 24 Jun 2020 23:19:08 +0200 (CEST)
+Date:   Wed, 24 Jun 2020 23:19:08 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        linux-kernel@vger.kernel.org,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Jonas Karlman <jonas@kwiboo.se>, andy.shevchenko@gmail.com,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [RESEND PATCH v5 5/5] drm/bridge: lvds-codec: simplify error
- handling code
-Message-ID: <20200624211849.GB29023@pendragon.ideasonboard.com>
-References: <20200624114127.3016-1-a.hajda@samsung.com>
- <CGME20200624114138eucas1p262505da3ad1067720080d20209ff32de@eucas1p2.samsung.com>
- <20200624114127.3016-6-a.hajda@samsung.com>
- <20200624133312.GC5980@pendragon.ideasonboard.com>
- <e5f9ecbb-a372-5007-f1df-ba7bfd37ded1@samsung.com>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH 05/22] kbuild: lto: postpone objtool
+Message-ID: <20200624211908.GT4817@hirez.programming.kicks-ass.net>
+References: <20200624203200.78870-1-samitolvanen@google.com>
+ <20200624203200.78870-6-samitolvanen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e5f9ecbb-a372-5007-f1df-ba7bfd37ded1@samsung.com>
+In-Reply-To: <20200624203200.78870-6-samitolvanen@google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrzej,
+On Wed, Jun 24, 2020 at 01:31:43PM -0700, Sami Tolvanen wrote:
+> diff --git a/include/linux/compiler.h b/include/linux/compiler.h
+> index 30827f82ad62..12b115152532 100644
+> --- a/include/linux/compiler.h
+> +++ b/include/linux/compiler.h
+> @@ -120,7 +120,7 @@ void ftrace_likely_update(struct ftrace_likely_data *f, int val,
+>  /* Annotate a C jump table to allow objtool to follow the code flow */
+>  #define __annotate_jump_table __section(.rodata..c_jump_table)
+>  
+> -#ifdef CONFIG_DEBUG_ENTRY
+> +#if defined(CONFIG_DEBUG_ENTRY) || defined(CONFIG_LTO_CLANG)
+>  /* Begin/end of an instrumentation safe region */
+>  #define instrumentation_begin() ({					\
+>  	asm volatile("%c0:\n\t"						\
 
-On Wed, Jun 24, 2020 at 04:03:30PM +0200, Andrzej Hajda wrote:
-> On 24.06.2020 15:33, Laurent Pinchart wrote:
-> > On Wed, Jun 24, 2020 at 01:41:27PM +0200, Andrzej Hajda wrote:
-> >> Using probe_err code has following advantages:
-> >> - shorter code,
-> >> - recorded defer probe reason for debugging,
-> >> - uniform error code logging.
-> >>
-> >> Signed-off-by: Andrzej Hajda <a.hajda@samsung.com>
-> >> ---
-> >>   drivers/gpu/drm/bridge/lvds-codec.c | 9 ++-------
-> >>   1 file changed, 2 insertions(+), 7 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/bridge/lvds-codec.c b/drivers/gpu/drm/bridge/lvds-codec.c
-> >> index 24fb1befdfa2..c76fa0239e39 100644
-> >> --- a/drivers/gpu/drm/bridge/lvds-codec.c
-> >> +++ b/drivers/gpu/drm/bridge/lvds-codec.c
-> >> @@ -71,13 +71,8 @@ static int lvds_codec_probe(struct platform_device *pdev)
-> >>   	lvds_codec->connector_type = (uintptr_t)of_device_get_match_data(dev);
-> >>   	lvds_codec->powerdown_gpio = devm_gpiod_get_optional(dev, "powerdown",
-> >>   							     GPIOD_OUT_HIGH);
-> >> -	if (IS_ERR(lvds_codec->powerdown_gpio)) {
-> >> -		int err = PTR_ERR(lvds_codec->powerdown_gpio);
-> >> -
-> >> -		if (err != -EPROBE_DEFER)
-> >> -			dev_err(dev, "powerdown GPIO failure: %d\n", err);
-> >> -		return err;
-> >> -	}
-> >> +	if (IS_ERR(lvds_codec->powerdown_gpio))
-> >> +		return probe_err(dev, lvds_codec->powerdown_gpio, "powerdown GPIO failure\n");
-> >
-> > Line wrap please.
-> 
-> I hoped that with latest checkpatch line length limit increase from 80 
-> to 100 it is acceptable :) but apparently not [1].
+Why would you be doing noinstr validation for lto builds? That doesn't
+make sense.
 
-I'm all for using longer lines when that improves readability, but in
-this case I think it's easy enough to split the line. A longer line
-limit doesn't mean we're forced to generate longer lines :-)
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 9ad9210d70a1..9fdba71c135a 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -399,7 +399,7 @@ config STACK_VALIDATION
+>  
+>  config VMLINUX_VALIDATION
+>  	bool
+> -	depends on STACK_VALIDATION && DEBUG_ENTRY && !PARAVIRT
+> +	depends on STACK_VALIDATION && (DEBUG_ENTRY || LTO_CLANG) && !PARAVIRT
+>  	default y
+>  
 
-On a side note, I've been working on a C++ userspace project where we
-had to decide on a coding style. Line length was one parameter, and we
-went for a soft limit of 80 columns, and a hard limit of 120 columns.
-This works quite well so far. The only pain point is that clang-format
-(we use it, wrapped in a python script, to detect coding style
-violations) doesn't understand soft and hard limits for line lengths.
+For that very same reason you shouldn't be excluding paravirt either.
 
-> [1]: 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=bdc48fa11e46f867ea4d75fa59ee87a7f48be144
->
-> > It bothers me that the common pattern of writing the error code at the
-> > end of the message isn't possible anymore. Maybe I'll get used to it,
-> > but it removes some flexibility.
-> 
-> Yes, but it gives uniformity :) and now with %pe printk format it 
-> changes anyway.
-> 
-> >>   	/* Locate the panel DT node. */
-> >>   	panel_node = of_graph_get_remote_node(dev->of_node, 1, 0);
+> diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+> index d168f0cfe67c..9f1df2f1fab5 100644
+> --- a/scripts/Makefile.modfinal
+> +++ b/scripts/Makefile.modfinal
+> @@ -48,6 +48,21 @@ endif # CC_USING_PATCHABLE_FUNCTION_ENTRY
+>  endif # CC_USING_RECORD_MCOUNT
+>  endif # CONFIG_FTRACE_MCOUNT_RECORD
+>  
+> +ifdef CONFIG_STACK_VALIDATION
+> +ifneq ($(SKIP_STACK_VALIDATION),1)
+> +cmd_ld_ko_o +=								\
+> +	$(objtree)/tools/objtool/objtool				\
+> +		$(if $(CONFIG_UNWINDER_ORC),orc generate,check)		\
+> +		--module						\
+> +		$(if $(CONFIG_FRAME_POINTER),,--no-fp)			\
+> +		$(if $(CONFIG_GCOV_KERNEL),--no-unreachable,)		\
+> +		$(if $(CONFIG_RETPOLINE),--retpoline,)			\
+> +		$(if $(CONFIG_X86_SMAP),--uaccess,)			\
+> +		$(@:.ko=$(prelink-ext).o);
+> +
+> +endif # SKIP_STACK_VALIDATION
+> +endif # CONFIG_STACK_VALIDATION
 
--- 
-Regards,
-
-Laurent Pinchart
+What about the objtool invocation from link-vmlinux.sh ?
