@@ -2,94 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663D4207ACB
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:51:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17BF2207AD0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405832AbgFXRvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 13:51:54 -0400
-Received: from mga14.intel.com ([192.55.52.115]:13102 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405615AbgFXRvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:51:54 -0400
-IronPort-SDR: MmgDRT96SNo8OF812dgKMJUE4HyGNjEItvKlCnar78OlyLzEt+YRac6DrHKtH2RthRYcrrs0Bv
- Yis6E8KJ86FA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="143681609"
-X-IronPort-AV: E=Sophos;i="5.75,276,1589266800"; 
-   d="scan'208";a="143681609"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2020 10:51:53 -0700
-IronPort-SDR: vVhEFjpJemP1joTx2o7ekm1G0f0OcUxqJ41KgJIu1L0UZ2lfLrVkMbTMPcQFv/wffoHbMHCWMx
- iU8LzwaSdw7w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.75,276,1589266800"; 
-   d="scan'208";a="292693089"
-Received: from spandruv-desk.jf.intel.com ([10.54.75.21])
-  by orsmga007.jf.intel.com with ESMTP; 24 Jun 2020 10:51:53 -0700
-From:   Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-To:     andy@infradead.org, dvhart@infradead.org
-Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Subject: [PATCH] platform/x86: ISST: Add new PCI device ids
-Date:   Wed, 24 Jun 2020 10:51:38 -0700
-Message-Id: <20200624175138.3835436-1-srinivas.pandruvada@linux.intel.com>
-X-Mailer: git-send-email 2.25.4
+        id S2405835AbgFXRwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 13:52:41 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:37238 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2405615AbgFXRwk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 13:52:40 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05OHpwY8130169;
+        Wed, 24 Jun 2020 12:51:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593021118;
+        bh=NAp9DR/7JXVAXVwsq4PWt4yrvcZTuC0RDz0tyTPF19I=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=i0fzv4O/eJCWYYYZVR0/9l1A8UJbIdRAfxtDUBD/pr2XbgrlwMXRcHbuyKeep1bPt
+         QCEi11KYPwB0NNTHC/CX+YTgZCOUFu4ZyepHEIUA68ai/5Gga+adm5HtJMMaxl2C7l
+         H5lo/8sYvV1qD/COe/K3pfPZ7z7S+eo8YTAvKeQ4=
+Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05OHpwut073572
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 24 Jun 2020 12:51:58 -0500
+Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE115.ent.ti.com
+ (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 24
+ Jun 2020 12:51:58 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 24 Jun 2020 12:51:58 -0500
+Received: from [10.250.52.63] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05OHpvwh039637;
+        Wed, 24 Jun 2020 12:51:57 -0500
+Subject: Re: [PATCH v5 3/7] ASoC: tas2562: Fix format issue for extra space
+ before a comma
+To:     Mark Brown <broonie@kernel.org>
+CC:     <lgirdwood@gmail.com>, <perex@perex.cz>, <tiwai@suse.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <robh@kernel.org>, <devicetree@vger.kernel.org>
+References: <20200624161459.19248-1-dmurphy@ti.com>
+ <20200624161459.19248-4-dmurphy@ti.com> <20200624162917.GK5472@sirena.org.uk>
+ <c4a26be8-88cc-1dfa-61e0-844b9c19eb52@ti.com>
+ <370c71e3-731b-3549-adb0-597abb217cfc@ti.com>
+ <20200624174813.GN5472@sirena.org.uk>
+From:   Dan Murphy <dmurphy@ti.com>
+Message-ID: <d2227f18-7585-d5a2-8438-57ee8717318a@ti.com>
+Date:   Wed, 24 Jun 2020 12:51:57 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200624174813.GN5472@sirena.org.uk>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Added new PCI device ids for supporting mailbox and MMIO interface for
-Sapphire Rapids.
+Mark
 
-Signed-off-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
----
- drivers/platform/x86/intel_speed_select_if/isst_if_common.h   | 3 +++
- drivers/platform/x86/intel_speed_select_if/isst_if_mbox_pci.c | 1 +
- drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c     | 1 +
- 3 files changed, 5 insertions(+)
+On 6/24/20 12:48 PM, Mark Brown wrote:
+> On Wed, Jun 24, 2020 at 12:36:02PM -0500, Dan Murphy wrote:
+>
+>> Can this patchset get a review as well so I can fix before I post v6?
+>> Not sure what the current work load is for review or merge.
+> Well, it's less work to review if it's been fixed...
 
-diff --git a/drivers/platform/x86/intel_speed_select_if/isst_if_common.h b/drivers/platform/x86/intel_speed_select_if/isst_if_common.h
-index 1409a5bb5582..4f6f7f0761fc 100644
---- a/drivers/platform/x86/intel_speed_select_if/isst_if_common.h
-+++ b/drivers/platform/x86/intel_speed_select_if/isst_if_common.h
-@@ -13,6 +13,9 @@
- #define INTEL_RAPL_PRIO_DEVID_0	0x3451
- #define INTEL_CFG_MBOX_DEVID_0	0x3459
- 
-+#define INTEL_RAPL_PRIO_DEVID_1 0x3251
-+#define INTEL_CFG_MBOX_DEVID_1  0x3259
-+
- /*
-  * Validate maximum commands in a single request.
-  * This is enough to handle command to every core in one ioctl, or all
-diff --git a/drivers/platform/x86/intel_speed_select_if/isst_if_mbox_pci.c b/drivers/platform/x86/intel_speed_select_if/isst_if_mbox_pci.c
-index d84e2174cbde..95f01e7a87d5 100644
---- a/drivers/platform/x86/intel_speed_select_if/isst_if_mbox_pci.c
-+++ b/drivers/platform/x86/intel_speed_select_if/isst_if_mbox_pci.c
-@@ -147,6 +147,7 @@ static long isst_if_mbox_proc_cmd(u8 *cmd_ptr, int *write_only, int resume)
- 
- static const struct pci_device_id isst_if_mbox_ids[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, INTEL_CFG_MBOX_DEVID_0)},
-+	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, INTEL_CFG_MBOX_DEVID_1)},
- 	{ 0 },
- };
- MODULE_DEVICE_TABLE(pci, isst_if_mbox_ids);
-diff --git a/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c b/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
-index 3584859fcc42..aa17fd7817f8 100644
---- a/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
-+++ b/drivers/platform/x86/intel_speed_select_if/isst_if_mmio.c
-@@ -72,6 +72,7 @@ static long isst_if_mmio_rd_wr(u8 *cmd_ptr, int *write_only, int resume)
- 
- static const struct pci_device_id isst_if_ids[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, INTEL_RAPL_PRIO_DEVID_0)},
-+	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, INTEL_RAPL_PRIO_DEVID_1)},
- 	{ 0 },
- };
- MODULE_DEVICE_TABLE(pci, isst_if_ids);
--- 
-2.25.4
+Ok fixed and sent v6
 
