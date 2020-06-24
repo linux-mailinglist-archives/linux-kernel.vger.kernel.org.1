@@ -2,205 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC7D207178
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 12:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53BA20717E
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 12:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390550AbgFXKrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 06:47:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388743AbgFXKr3 (ORCPT
+        id S2390515AbgFXKuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 06:50:46 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:37119 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388197AbgFXKuq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 06:47:29 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BFAC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 03:47:29 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id i27so1976765ljb.12
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 03:47:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YyTXXlvMUy40CYC5v7Z+Q/X5JA59REcubb6BNXoR+UQ=;
-        b=huUJ3BiU3tuUASS9pTZvMRr7NtR7fyU6ufd6mFmDhk+We49iclpDaz+6XuZIaaS61g
-         3PbhOg5c8MDBdjNgXIhKM1Wst9e3rNYqGZ4cGa54y4ag8GHZHvFKwdaM6z/aHBNal5TR
-         63HpNxhw1Mp0e+6mgLvlia0cko1mMH4bTMe+zLk3DyK8CuoL+WmMCbSEZuCPFlfjgyt4
-         LXyxEBsrLXnQJStwdA0WbyMVIcwXWuI4H/NDvKsd2FPGIO0/D4sPP+qOTttIQSJ++yuq
-         LJ5XqLAhq2r3spv9uwr4NzwaLsbLIFeGiJppIJNNf4LixUOihowmmFqXVHEqleBGFzxf
-         ONwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YyTXXlvMUy40CYC5v7Z+Q/X5JA59REcubb6BNXoR+UQ=;
-        b=SEdesAGAjILIyyE+mjc2A4etOdCXaSnT1irt+ct5DexReq08oC4dxdQwH/GA+Xi3Z9
-         oxkfbd/M+cdFZnO2roSitV82/caeUF6d2ikYSEM5g/33sH89YKp4MVPvLdYVKTw4scVx
-         Zp3oT+MSZA6bYKvYBA0v37+QNY6CTe5nypjIloJLHTV34E793L4+jdLL7HjbtlHuvOJo
-         s46ExBj6qxYK9tdqZnR4lqAaXRjRZa/BjzcB4FUCneHdfjEqnek2SvJqrqwKZ2q1f4U2
-         WLlMYc0/fZm4+J5xyemEZJn76Laa9AaqqTA7dDlBK6U645WTSQtfb6iCRB5/KUv2ppgB
-         nUJQ==
-X-Gm-Message-State: AOAM531aZ/RVz2TRFPPi1JzyoQlt4cpkSmNXv9TMREDeSOlGhxojOPmw
-        JMf9JyxG6Tb0dwq+RFS+PozpQHE75AX643aMzR7Fqg==
-X-Google-Smtp-Source: ABdhPJxf9FrzVIQOZki7R3VE9LFaHkJdw0tt03trhX3GDRu1Be7sq7Pd7Qb75Wtg2pEP40e2JhI0FKqkQYX/9OfIXZY=
-X-Received: by 2002:a05:651c:1103:: with SMTP id d3mr14252516ljo.110.1592995646769;
- Wed, 24 Jun 2020 03:47:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200604175851.758-1-maxim.uvarov@linaro.org> <20200604175851.758-2-maxim.uvarov@linaro.org>
- <CAFA6WYNVk1RcaqnL0FGyYkB+hGkgyqeOMsSKyySL=zfCdNUZXA@mail.gmail.com>
- <b9960a51-7e00-4992-eed5-bd43e7f27b43@forissier.org> <CAFA6WYM6XBduokYOdnWD6m+To=6k2SMbXU=HzK_Enk9h-s7VBQ@mail.gmail.com>
- <CAFA6WYNpVvkzgbBfXc1C10mKC6C6q_G1+c-ypg4s1pb0KDPCvg@mail.gmail.com>
- <1592507935.15159.5.camel@HansenPartnership.com> <CAFA6WYMqOS+P-c4FznQ5vOKvonnKN4Z6BqTipOkrY3gMENLfeA@mail.gmail.com>
- <1592578844.4369.5.camel@HansenPartnership.com>
-In-Reply-To: <1592578844.4369.5.camel@HansenPartnership.com>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Wed, 24 Jun 2020 16:17:15 +0530
-Message-ID: <CAFA6WYPCmZZ1HK-w8fQ2xaNywAZz9W21_fBOnbc35dT30sn7oQ@mail.gmail.com>
-Subject: Re: [Tee-dev] [PATCHv8 1/3] optee: use uuid for sysfs driver entry
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Jerome Forissier <jerome@forissier.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
+        Wed, 24 Jun 2020 06:50:46 -0400
+X-IronPort-AV: E=Sophos;i="5.75,275,1589234400"; 
+   d="scan'208";a="456429434"
+Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 Jun 2020 12:50:42 +0200
+Date:   Wed, 24 Jun 2020 12:50:42 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Rodolfo C Villordo <rodolfovillordo@gmail.com>
+cc:     Forest Bond <forest@alittletooquiet.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Arnd Bergmann <arnd@linaro.org>,
-        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, peterhuewe@gmx.de
-Content-Type: text/plain; charset="UTF-8"
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drivers: staging: vt6655: replace CamelCase names on
+ function s_uGetRTSCTSRsvTime
+In-Reply-To: <20200624104331.GA17280@ip-172-31-24-31.ec2.internal>
+Message-ID: <alpine.DEB.2.22.394.2006241250280.2433@hadrien>
+References: <20200624100256.GA17118@ip-172-31-24-31.ec2.internal> <alpine.DEB.2.22.394.2006241205210.2433@hadrien> <20200624104331.GA17280@ip-172-31-24-31.ec2.internal>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Apologies for delay in my reply as I was busy with some other stuff.
 
-On Fri, 19 Jun 2020 at 20:30, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
+
+On Wed, 24 Jun 2020, Rodolfo C Villordo wrote:
+
+> On Wed, Jun 24, 2020 at 12:05:49PM +0200, Julia Lawall wrote:
+> >
+> >
+> > On Wed, 24 Jun 2020, Rodolfo C. Villordo wrote:
+> >
+> > > Replace function and variables name from CamelCase style to snake_case style.
+> > > Remove Hungarian notation.
+> > >
+> > > Signed-off-by: Rodolfo C. Villordo <rodolfovillordo@gmail.com>
+> > > ---
+> > >  drivers/staging/vt6655/rxtx.c | 80 +++++++++++++++++------------------
+> > >  1 file changed, 38 insertions(+), 42 deletions(-)
+> > >
+> > > diff --git a/drivers/staging/vt6655/rxtx.c b/drivers/staging/vt6655/rxtx.c
+> > > index cfab64d2b312..4778439e8757 100644
+> > > --- a/drivers/staging/vt6655/rxtx.c
+> > > +++ b/drivers/staging/vt6655/rxtx.c
+> > > @@ -21,7 +21,7 @@
+> > >   *      s_uGetDataDuration - get tx data required duration
+> > >   *      s_uFillDataHead- fulfill tx data duration header
+> > >   *      s_uGetRTSCTSDuration- get rtx/cts required duration
+> > > - *      s_uGetRTSCTSRsvTime- get rts/cts reserved time
+> > > + *      get_rtscts_time- get rts/cts reserved time
+> > >   *      s_uGetTxRsvTime- get frame reserved time
+> > >   *      s_vFillCTSHead- fulfill CTS ctl header
+> > >   *      s_vFillFragParameter- Set fragment ctl parameter.
+> >
+> > Why is only one of these done?
+> >
+> Hi Julia,
 >
-> On Fri, 2020-06-19 at 13:42 +0530, Sumit Garg wrote:
-> > On Fri, 19 Jun 2020 at 00:49, James Bottomley
-> > <James.Bottomley@hansenpartnership.com> wrote:
-> > >
-> > > On Thu, 2020-06-18 at 10:42 +0530, Sumit Garg wrote:
-> > > > On Thu, 18 Jun 2020 at 10:29, Sumit Garg <sumit.garg@linaro.org>
-> > > > wrote:
-> > >
-> > > [...]
-> > > > > > typedef struct
-> > > > > > {
-> > > > > >         uint32_t timeLow;
-> > > > > >         uint16_t timeMid;
-> > > > > >         uint16_t timeHiAndVersion;
-> > > > > >         uint8_t clockSeqAndNode[8];
-> > > > > > } TEE_UUID;
-> > > > > >
-> > > > > > (GlobalPlatform TEE Internal Core API spec v1.2.1 section
-> > > > > > 3.2.4)
-> > > > > >
-> > > > > > - The spec does not mandate any particular endianness and
-> > > > > > simply
-> > > > > > warnsabout possible issues if secure and non-secure worlds
-> > > > > > differ
-> > > > > > in endianness.
-> > > > > > - OP-TEE uses %pUl assuming that host order is little endian
-> > > > > > (that is true for the Arm platforms that run OP-TEE
-> > > > > > currently).
-> > > > > > By the same logic %pUl should be fine in the kernel.
-> > > >
-> > > > I think Linux adheres to this RFC [1] for UUID byte order. See
-> > > > below
-> > > > snippet from section: "Layout and Byte Order":
-> > > >
-> > > >    The fields are encoded as 16 octets, with the sizes and order
-> > > > of
-> > > > the
-> > > >    fields defined above, and with each field encoded with the
-> > > > Most
-> > > >    Significant Byte first (known as network byte order).  Note
-> > > > that
-> > > > the
-> > > >    field names, particularly for multiplexed fields, follow
-> > > > historical
-> > > >    practice.
-> > >
-> > > Actually, that's not quite true.  We used to support both little
-> > > and
-> > > big endian uuids until we realised it was basically microsoft vs
-> > > everyone else (as codified by RFC 4122).  Now we support UUIDs
-> > > which
-> > > are big endian and GUIDs which are little endian.  This was the
-> > > commit
-> > > that sorted out the confusion:
-> > >
-> > > commit f9727a17db9bab71ddae91f74f11a8a2f9a0ece6
-> > > Author: Christoph Hellwig <hch@lst.de>
-> > > Date:   Wed May 17 10:02:48 2017 +0200
-> > >
-> > >     uuid: rename uuid types
-> > >
-> >
-> > Thanks for providing the background here.
-> >
-> > > so if you're using a little endian uuid, you should probably be
-> > > using GUID for TEE_UUID.
-> >
-> > IMO, using GUID in kernel for TEE_UUID in OP-TEE OS will lead to
-> > deviation from GlobalPlatform TEE client spec [1] as the spec only
-> > references it as UUID and we would like to keep kernel TEE client
-> > interface to be compatible with GP specs.
-> >
-> > [1] https://globalplatform.org/specs-library/tee-client-api-specifica
-> > tion/
->
-> So having read the above, you know uuid_t is for big endian and guid_t
-> for little endian.  However in your patch:
->
-> > -static int optee_register_device(const uuid_t *device_uuid, u32
-> > device_id)
-> > +static int optee_register_device(const uuid_t *device_uuid)
-> >
->
-> You're using uuid_t for little endian, you should be using guid_t.
+> I intend to do it on all of those functions. However, I'm avoiding big
+> patch sets for now. To fix all then it will require at least 18 patches
+> in a set:
 
-It's not just about implementation differences but about terminology
-as well. AFAIK about GUID, it's been typically used in Microsoft
-centric softwares as compared to UUID which is generically defined by
-RFC 4122.
+OK, seems reasonable.
 
-AFAIU about the differences [1] among UUID and GUID, it seems like
-UUID is a subset of GUID. IOW, we can't say that every GUID can be
-represented as UUID as per RFC 4122.
-
-So by using different terminology in the kernel with respect to a TEE
-implementation is meant to cause more confusion among users than
-difference in implementation details (like endianness).
-
-[1] https://stackoverflow.com/questions/246930/is-there-any-difference-between-a-guid-and-a-uuid
-
-> It's not about consistency with the OP-TEE docs (although I'm pretty
-> sure they don't mandate what kernel type to use),
-
-The document which I shared wasn't OP-TEE specific but a generic TEE
-specification defined by GlobalPlatform. And that spec doesn't put any
-restrictions on UUID endianness. So it is very much possible that
-another TEE implementation could implement UUID in big endian format
-as the kernel does.
-
-> it's about
-> consistency with what the kernel types mean.  When some checker detects
-> your using little endian operations on a big endian structure (like in
-> the prink for instance) they're going to keep emailing you about it.
-
-As mentioned above, using different terminology is meant to cause more
-confusion than just difference in endianness which is manageable
-inside TEE.
-
-And I think it's safe to say that the kernel implements UUID in big
-endian format and thus uses %pUb whereas OP-TEE implements UUID in
-little endian format and thus uses %pUl.
-
--Sumit
+julia
 
 >
-> James
+> * Functions:
+>   0  *      s_vGenerateTxParameter - Generate tx dma required parameter.
+>   1  *      vGenerateMACHeader - Translate 802.3 to 802.11 header
+>   2  *      cbGetFragCount - Calculate fragment number count
+>   3  *      csBeacon_xmit - beacon tx function
+>   4  *      csMgmt_xmit - management tx function
+>   5  *      s_cbFillTxBufHead - fulfill tx dma buffer header
+>   6  *      s_uGetDataDuration - get tx data required duration
+>   7  *      s_uFillDataHead- fulfill tx data duration header
+>   8  *      s_uGetRTSCTSDuration- get rtx/cts required duration
+>   9  *      get_rtscts_time- get rts/cts reserved time
+>  10  *      s_uGetTxRsvTime- get frame reserved time
+>  11  *      s_vFillCTSHead- fulfill CTS ctl header
+>  12  *      s_vFillFragParameter- Set fragment ctl parameter.
+>  13  *      s_vFillRTSHead- fulfill RTS ctl header
+>  14  *      s_vFillTxKey- fulfill tx encrypt key
+>  15  *      s_vSWencryption- Software encrypt header
+>  16  *      vDMA0_tx_80211- tx 802.11 frame via dma0
+>  17  *      vGenerateFIFOHeader- Generate tx FIFO ctl header
+>  18  *
+>  19  * Revision History:
+>
+>  Thanks.
+>
+> > julia
+> >
+> > > @@ -190,45 +190,41 @@ static __le16 vnt_rxtx_rsvtime_le16(struct vnt_private *priv, u8 pkt_type,
+> > >  }
+> > >
+> > >  /* byFreqType: 0=>5GHZ 1=>2.4GHZ */
+> > > -static
+> > > -__le16
+> > > -s_uGetRTSCTSRsvTime(
+> > > -	struct vnt_private *pDevice,
+> > > -	unsigned char byRTSRsvType,
+> > > -	unsigned char byPktType,
+> > > -	unsigned int cbFrameLength,
+> > > -	unsigned short wCurrentRate
+> > > -)
+> > > +static __le16 get_rtscts_time(struct vnt_private *priv,
+> > > +			      unsigned char rts_rsvtype,
+> > > +			      unsigned char pkt_type,
+> > > +			      unsigned int frame_length,
+> > > +			      unsigned short current_rate)
+> > >  {
+> > > -	unsigned int uRrvTime = 0;
+> > > -	unsigned int uRTSTime = 0;
+> > > -	unsigned int uCTSTime = 0;
+> > > -	unsigned int uAckTime = 0;
+> > > -	unsigned int uDataTime = 0;
+> > > -
+> > > -	uDataTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, cbFrameLength, wCurrentRate);
+> > > -	if (byRTSRsvType == 0) { /* RTSTxRrvTime_bb */
+> > > -		uRTSTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 20, pDevice->byTopCCKBasicRate);
+> > > -		uAckTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14, pDevice->byTopCCKBasicRate);
+> > > -		uCTSTime = uAckTime;
+> > > -	} else if (byRTSRsvType == 1) { /* RTSTxRrvTime_ba, only in 2.4GHZ */
+> > > -		uRTSTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 20, pDevice->byTopCCKBasicRate);
+> > > -		uCTSTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14, pDevice->byTopCCKBasicRate);
+> > > -		uAckTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14, pDevice->byTopOFDMBasicRate);
+> > > -	} else if (byRTSRsvType == 2) { /* RTSTxRrvTime_aa */
+> > > -		uRTSTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 20, pDevice->byTopOFDMBasicRate);
+> > > -		uAckTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14, pDevice->byTopOFDMBasicRate);
+> > > -		uCTSTime = uAckTime;
+> > > -	} else if (byRTSRsvType == 3) { /* CTSTxRrvTime_ba, only in 2.4GHZ */
+> > > -		uCTSTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14, pDevice->byTopCCKBasicRate);
+> > > -		uAckTime = bb_get_frame_time(pDevice->byPreambleType, byPktType, 14, pDevice->byTopOFDMBasicRate);
+> > > -		uRrvTime = uCTSTime + uAckTime + uDataTime + 2 * pDevice->uSIFS;
+> > > -		return cpu_to_le16((u16)uRrvTime);
+> > > +	unsigned int rrv_time = 0;
+> > > +	unsigned int rts_time = 0;
+> > > +	unsigned int cts_time = 0;
+> > > +	unsigned int ack_time = 0;
+> > > +	unsigned int data_time = 0;
+> > > +
+> > > +	data_time = bb_get_frame_time(priv->byPreambleType, pkt_type, frame_length, current_rate);
+> > > +	if (rts_rsvtype == 0) { /* RTSTxRrvTime_bb */
+> > > +		rts_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 20, priv->byTopCCKBasicRate);
+> > > +		ack_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 14, priv->byTopCCKBasicRate);
+> > > +		cts_time = ack_time;
+> > > +	} else if (rts_rsvtype == 1) { /* RTSTxRrvTime_ba, only in 2.4GHZ */
+> > > +		rts_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 20, priv->byTopCCKBasicRate);
+> > > +		cts_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 14, priv->byTopCCKBasicRate);
+> > > +		ack_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 14, priv->byTopOFDMBasicRate);
+> > > +	} else if (rts_rsvtype == 2) { /* RTSTxRrvTime_aa */
+> > > +		rts_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 20, priv->byTopOFDMBasicRate);
+> > > +		ack_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 14, priv->byTopOFDMBasicRate);
+> > > +		cts_time = ack_time;
+> > > +	} else if (rts_rsvtype == 3) { /* CTSTxRrvTime_ba, only in 2.4GHZ */
+> > > +		cts_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 14, priv->byTopCCKBasicRate);
+> > > +		ack_time = bb_get_frame_time(priv->byPreambleType, pkt_type, 14, priv->byTopOFDMBasicRate);
+> > > +		rrv_time = cts_time + ack_time + data_time + 2 * priv->uSIFS;
+> > > +		return cpu_to_le16((u16)rrv_time);
+> > >  	}
+> > >
+> > >  	/* RTSRrvTime */
+> > > -	uRrvTime = uRTSTime + uCTSTime + uAckTime + uDataTime + 3 * pDevice->uSIFS;
+> > > -	return cpu_to_le16((u16)uRrvTime);
+> > > +	rrv_time = rts_time + cts_time + ack_time + data_time + 3 * priv->uSIFS;
+> > > +	return cpu_to_le16((u16)rrv_time);
+> > >  }
+> > >
+> > >  /* byFreqType 0: 5GHz, 1:2.4Ghz */
+> > > @@ -921,9 +917,9 @@ s_vGenerateTxParameter(
+> > >  			/* Fill RsvTime */
+> > >  			struct vnt_rrv_time_rts *buf = pvRrvTime;
+> > >
+> > > -			buf->rts_rrv_time_aa = s_uGetRTSCTSRsvTime(pDevice, 2, byPktType, cbFrameSize, wCurrentRate);
+> > > -			buf->rts_rrv_time_ba = s_uGetRTSCTSRsvTime(pDevice, 1, byPktType, cbFrameSize, wCurrentRate);
+> > > -			buf->rts_rrv_time_bb = s_uGetRTSCTSRsvTime(pDevice, 0, byPktType, cbFrameSize, wCurrentRate);
+> > > +			buf->rts_rrv_time_aa = get_rtscts_time(pDevice, 2, byPktType, cbFrameSize, wCurrentRate);
+> > > +			buf->rts_rrv_time_ba = get_rtscts_time(pDevice, 1, byPktType, cbFrameSize, wCurrentRate);
+> > > +			buf->rts_rrv_time_bb = get_rtscts_time(pDevice, 0, byPktType, cbFrameSize, wCurrentRate);
+> > >  			buf->rrv_time_a = vnt_rxtx_rsvtime_le16(pDevice, byPktType, cbFrameSize, wCurrentRate, bNeedACK);
+> > >  			buf->rrv_time_b = vnt_rxtx_rsvtime_le16(pDevice, PK_TYPE_11B, cbFrameSize, pDevice->byTopCCKBasicRate, bNeedACK);
+> > >
+> > > @@ -933,7 +929,7 @@ s_vGenerateTxParameter(
+> > >
+> > >  			buf->rrv_time_a = vnt_rxtx_rsvtime_le16(pDevice, byPktType, cbFrameSize, wCurrentRate, bNeedACK);
+> > >  			buf->rrv_time_b = vnt_rxtx_rsvtime_le16(pDevice, PK_TYPE_11B, cbFrameSize, pDevice->byTopCCKBasicRate, bNeedACK);
+> > > -			buf->cts_rrv_time_ba = s_uGetRTSCTSRsvTime(pDevice, 3, byPktType, cbFrameSize, wCurrentRate);
+> > > +			buf->cts_rrv_time_ba = get_rtscts_time(pDevice, 3, byPktType, cbFrameSize, wCurrentRate);
+> > >
+> > >  			/* Fill CTS */
+> > >  			s_vFillCTSHead(pDevice, uDMAIdx, byPktType, pvCTS, cbFrameSize, bNeedACK, bDisCRC, wCurrentRate, byFBOption);
+> > > @@ -942,7 +938,7 @@ s_vGenerateTxParameter(
+> > >  		if (pvRTS) {/* RTS_need, non PCF mode */
+> > >  			struct vnt_rrv_time_ab *buf = pvRrvTime;
+> > >
+> > > -			buf->rts_rrv_time = s_uGetRTSCTSRsvTime(pDevice, 2, byPktType, cbFrameSize, wCurrentRate);
+> > > +			buf->rts_rrv_time = get_rtscts_time(pDevice, 2, byPktType, cbFrameSize, wCurrentRate);
+> > >  			buf->rrv_time = vnt_rxtx_rsvtime_le16(pDevice, byPktType, cbFrameSize, wCurrentRate, bNeedACK);
+> > >
+> > >  			/* Fill RTS */
+> > > @@ -956,7 +952,7 @@ s_vGenerateTxParameter(
+> > >  		if (pvRTS) {/* RTS_need, non PCF mode */
+> > >  			struct vnt_rrv_time_ab *buf = pvRrvTime;
+> > >
+> > > -			buf->rts_rrv_time = s_uGetRTSCTSRsvTime(pDevice, 0, byPktType, cbFrameSize, wCurrentRate);
+> > > +			buf->rts_rrv_time = get_rtscts_time(pDevice, 0, byPktType, cbFrameSize, wCurrentRate);
+> > >  			buf->rrv_time = vnt_rxtx_rsvtime_le16(pDevice, PK_TYPE_11B, cbFrameSize, wCurrentRate, bNeedACK);
+> > >
+> > >  			/* Fill RTS */
+> > > --
+> > > 2.17.1
+> > >
+> > >
 >
