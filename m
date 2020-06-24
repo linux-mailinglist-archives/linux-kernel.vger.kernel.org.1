@@ -2,133 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38FDD207F28
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 00:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E10F207F19
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 00:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390242AbgFXWJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 18:09:35 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:33229 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387853AbgFXWJe (ORCPT
+        id S2389016AbgFXWF5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 18:05:57 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:59471 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388778AbgFXWF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 18:09:34 -0400
-Received: by mail-qt1-f193.google.com with SMTP id h23so3115369qtr.0;
-        Wed, 24 Jun 2020 15:09:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version;
-        bh=H/RysOR6N0zpE6c3ebPBn7+IKDXpPNRcb77mnWUMTFM=;
-        b=Ny5odRbKAi5LzNa43J7hHBhF3MbPRmVRjrmvnz+U/Xkv7pV53PZdPxZik4xpgllf7s
-         FC5izVUC/R3feViW1nLbeywuguz5V+rWlgU4558Z44CSgYkI/2UTFXL+qkUnTS7ydzCx
-         S96ktNXHp9PnsvgaG6+XqhVbaOs+al+DvsimulCoTDpMwGoedqGOgfnK6jq9YoCGzUeH
-         6a4FWCvgJr+yOZWIaWHelGodQemu8JVAjPMC20PK7o6T4ccNXyD2BgY9wtuVlnlvEc+o
-         E8PHgVha5ayseyYLn38dl413xKgKdr4yMAp31YnjJvY7qHod8byMIYyDELD335ZTLFNr
-         4KZA==
-X-Gm-Message-State: AOAM533aRnfjifDmXiT4fDcwbNvbjXjHcnltk8kPa3D/0uoQ3tKIo0/X
-        6FXnkgaKo37/xCOL54voaiU=
-X-Google-Smtp-Source: ABdhPJys6wWsK6KiL7nbAlGhSwPps/gASOoCedqRYHgNRnuTH+wOUARmK+jnpjYf0Tr5DAogt1xdjQ==
-X-Received: by 2002:aed:3386:: with SMTP id v6mr29626444qtd.187.1593036572579;
-        Wed, 24 Jun 2020 15:09:32 -0700 (PDT)
-Received: from dek-x230.localnet (pool-108-24-134-99.cmdnnj.fios.verizon.net. [108.24.134.99])
-        by smtp.gmail.com with ESMTPSA id p128sm2705938qka.47.2020.06.24.15.09.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 15:09:31 -0700 (PDT)
-From:   David Korth <gerbilsoft@gerbilsoft.com>
-To:     David Rheinsberg <david.rheinsberg@gmail.com>
-Cc:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] HID: wiimote: Initialize the controller LEDs with a device ID value
-Date:   Wed, 24 Jun 2020 18:05:38 -0400
-Message-ID: <2498150.lGaqSPkdTl@dek-x230>
-In-Reply-To: <CANq1E4T_SNUrewDQ59bonr7tTKFa=wRYwXLWHMCiNA0KN0H9Aw@mail.gmail.com>
-References: <20200622225728.330-1-gerbilsoft@gerbilsoft.com> <CANq1E4T_SNUrewDQ59bonr7tTKFa=wRYwXLWHMCiNA0KN0H9Aw@mail.gmail.com>
+        Wed, 24 Jun 2020 18:05:56 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0U0d59pt_1593036352;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U0d59pt_1593036352)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 25 Jun 2020 06:05:52 +0800
+Date:   Thu, 25 Jun 2020 06:05:52 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Linux MM <linux-mm@kvack.org>, Baoquan He <bhe@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Hildenbrand <david@redhat.com>
+Subject: Re: [PATCH] mm/spase: never partially remove memmap for early section
+Message-ID: <20200624220552.GA15016@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <20200623094258.6705-1-richard.weiyang@linux.alibaba.com>
+ <20200623151828.GA31426@dhcp22.suse.cz>
+ <20200624061340.GA11552@L-31X9LVDL-1304.local>
+ <CAPcyv4gEUq0yyz00AbQQSyo_acj1wUCZPse5vEff_Bq7GmeksQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2327861.XAFRqVoOGU"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4gEUq0yyz00AbQQSyo_acj1wUCZPse5vEff_Bq7GmeksQ@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---nextPart2327861.XAFRqVoOGU
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+On Wed, Jun 24, 2020 at 09:10:09AM -0700, Dan Williams wrote:
+>On Tue, Jun 23, 2020 at 11:14 PM Wei Yang
+><richard.weiyang@linux.alibaba.com> wrote:
+>>
+>> On Tue, Jun 23, 2020 at 05:18:28PM +0200, Michal Hocko wrote:
+>> >On Tue 23-06-20 17:42:58, Wei Yang wrote:
+>> >> For early sections, we assumes its memmap will never be partially
+>> >> removed. But current behavior breaks this.
+>> >>
+>> >> Let's correct it.
+>> >>
+>> >> Fixes: ba72b4c8cf60 ("mm/sparsemem: support sub-section hotplug")
+>> >> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+>> >
+>> >Can a user trigger this or is this a theoretical bug?
+>>
+>> Let me rewrite the changelog a little. Look forward any comments.
+>>
+>>    For early sections, its memmap is handled specially even sub-section is
+>>    enabled. The memmap could only be populated as a whole.
+>>
+>>    Quoted from the comment of section_activate():
+>>
+>>        * The early init code does not consider partially populated
+>>        * initial sections, it simply assumes that memory will never be
+>>        * referenced.  If we hot-add memory into such a section then we
+>>        * do not need to populate the memmap and can simply reuse what
+>>        * is already there.
+>>
+>>    While current section_deactivate() breaks this rule. When hot-remove a
+>>    sub-section, section_deactivate() would depopulate its memmap. The
+>>    consequence is if we hot-add this subsection again, its memmap never get
+>>    proper populated.
+>
+>Ok, forgive the latency as re-fetched this logic into my mental cache.
+>So what I was remembering was the initial state of the code that
+>special cased early sections, and that still seems to be the case in
+>pfn_valid(). IIRC early_sections / bootmem are blocked from being
+>removed entirely. Partial / subsection removals are ok.
 
-On Wednesday, June 24, 2020 6:04:55 AM EDT David Rheinsberg wrote:
-> Hi
-> 
-> On Tue, Jun 23, 2020 at 12:57 AM David Korth <gerbilsoft@gerbilsoft.com> 
-wrote:
-> > Based on a similar commit for Sony Sixaxis and DualShock 4 controllers:
-> > HID: sony: Initialize the controller LEDs with a device ID value
-> > 
-> > Wii remotes have the same player LED layout as Sixaxis controllers,
-> > so the wiimote setup is based on the Sixaxis code.
-> 
-> Please include a description of the patch in the commit-message. It
-> took me quite a while to understand what the intention of this patch
-> is.
+Would you mind giving more words? Partial subsection removal is ok, so no need
+to fix this?
 
-Will do.
-
-> So what you are trying is to allocate a unique ID to each connected
-> wiimote, so they automatically display unique IDs, right?
-> 
-> Can you explain why this has to be done in the kernel driver? Why
-> isn't user-space assigning the right ID? User-space needs to attach
-> controllers to their respective engine anyway, in which case the IDs
-> the kernel assigns would be wrong, right? How does user-space display
-> the matching ID in their UI (e.g., for configuration use-cases)? The
-> way you set them does not allow user-space to query the ID, does it?
-> Lastly, wouldn't a device-reconnect want the same ID to be assigned
-> again? With the logic you apply, user-space would have to override
-> every ID for that to work.
-> 
-> Is there an actual use-case for this? Or is this just to align the
-> driver with the other gamepads?
-
-Most userspace programs aren't aware of controller LEDs. The only one I know 
-of that is, Steam, has its own input layer and bypasses the HID drivers 
-entirely.
-
-As far as I know, there's no simple "set player ID" API that could be used to 
-set a device-independent player number, so every program would need to support 
-each type of controller in order to set the LEDs.
-
-I've been manually setting the player IDs on Wii controllers when running 
-multiplayer games by writing to the /sys/class/leds/ directory. Having the 
-hid-wiimote driver do this itself significantly reduces setup time.
-
-> 
-> Thanks
-> David
-> 
-
---nextPart2327861.XAFRqVoOGU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEEBKTd2QxoniMIp2ejTC/4LR6byCgFAl7zzjIACgkQTC/4LR6b
-yChVzg//X26Y6hKZxQy4cDA1rgOX4e105gYsE80z9Qwwsm4anXZNgXsZXYfhLaW0
-hfgKIvM08EXszBIkVDXrKW7gO+irRmZfbZGVqMP4QTC6vr6FO3eFnGyH/NGX6QCI
-/SzB0Wl23BlIujOXGNCj2I/Gs7gJ1lJ2XpMcOQQpdJwWas1DWOGhSQ36hMw0D3iF
-9swjyU0HR++xg7H0B26wFgJ1ZGjC1dOvYNh8uPKPKB/Un/lN9kuSOSIowcFK17En
-Wl5TN41gIKr8IoG2EZ0EKaDLM5tdrmcdrcmQV7Qg+U/fLRZPdrrHslO8tHZhy9pc
-ldnIYbCEJ5mFBdkCDl9zaUTKXhx4dwSTqpLcFNVjnYEk8roxgk+Ur6tVwbiZs8Xd
-TOUfzuvzyIE7yaRiUXVDQo+zgtKVj7wcLHMhPkhngMYmYWSq3Jrpw3zePxDtitdd
-kE6mWZmNgnrnJFjjAVp5gnTxdSQeT3bz5PH8PTEwXW6jSE+6dbuIoPQu6ONW2PRi
-LlntfKBuqaDOU0Jbqrw/HxQsdupLNNHSi1l9SoGt3C8ET5sW9cd1SuBzDM8uaLK1
-AxhObrHrSWa0iIj64bB1QCEvghVYAg+Xqe6V1hMfdoDdg8EF3QmQFM7j0VEbXkdx
-/Cn53xTl4GkSWxnJPD3essXj4VnBSLRJKYouZkG15l5MsSZPMDQ=
-=F17s
------END PGP SIGNATURE-----
-
---nextPart2327861.XAFRqVoOGU--
-
-
-
+-- 
+Wei Yang
+Help you, Help me
