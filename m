@@ -2,135 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8272079D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:04:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5EA52079CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405280AbgFXREe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 13:04:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404908AbgFXREe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:04:34 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96383C061573;
-        Wed, 24 Jun 2020 10:04:33 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id f7so22882wrw.1;
-        Wed, 24 Jun 2020 10:04:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:references:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=RwQl92dq8Q9PdXKQM0Squzw8U4DZsEGcLEOTgyWV0yM=;
-        b=QqW2qRagG14mtxoyCiK1aL2CIBpbkW1rX21dL0LqqUAKRliRbnClsfPcYzrsmuNir9
-         XCNynsSPFLNrYc0MN7y1ZGxb3gItAxG72j+QDcOKdw9XcEf3uzXHcxEP1gsGjUXjRtdP
-         R6U9BM4oAyBxoqvS2nW766urKjhMQC5X1NvqKJPTn8AqoEQOpX6CQ4Tb5f7JCdyu38tm
-         QZEA4qfmAr13NjpgiFw+mNh2bcGnMH8Yh9YB8O7pUIAKmQzAhzjV54Nm7sPV5kErIFjG
-         3n+XdY/eDyc89WZCABqSqDeDzmYzNGBlpC2aO2NMoT2Iq3DPlF4Kg7J5CdhkfjNTsjg2
-         ktCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=RwQl92dq8Q9PdXKQM0Squzw8U4DZsEGcLEOTgyWV0yM=;
-        b=cABwqRWuEYbUc2alQe8O7FCfbUOc9vGwXYPrZSaQyVDbLHQ21gWh8+rVNR685r5Q13
-         3VVonUCrZiq+q1yrf7LsDbAnigYsOSoT0Jv61rlJIyGq+uU6gbNiATSiEUdBzimIfv8Z
-         f8qVeNj9KeLajVrQZf08Vz/olB2YjDhzrsEVQHgXljbyJfT8el1KpF5FzuDbddi29fXu
-         y7w560ZKraDfNr+h1biMQZmxLervSgK58zsC51gF0opyC0ARgBQ3hhDJ6XXFMpRMy+lY
-         7JNvioXOZrSdDGS7uw/ScMuPvYUQr0FI6xXTaXo9UPp3JXehfdvNbRp1LVjEFllhx6qs
-         TGXQ==
-X-Gm-Message-State: AOAM531GSbHHQgdRd/Crld42cLlLjE8VRtsAy/l9q4q68xkgLA7Sg4sa
-        OOzH/rNHMSlHIqzpg6sLyNa2MLni
-X-Google-Smtp-Source: ABdhPJyaNws8W+EP1e5mFuR5i2J3BtzJU5l4khHOQzkOqtp+eNNyAtzTnsDFc9WxeQw+HZ4m4K1VDw==
-X-Received: by 2002:adf:aad8:: with SMTP id i24mr31308635wrc.102.1593018272007;
-        Wed, 24 Jun 2020 10:04:32 -0700 (PDT)
-Received: from [192.168.43.199] ([5.100.193.85])
-        by smtp.gmail.com with ESMTPSA id i17sm22152820wrc.34.2020.06.24.10.04.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jun 2020 10:04:31 -0700 (PDT)
-Subject: Re: [PATCH 0/3] iopoll fixes
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1593016907.git.asml.silence@gmail.com>
-Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
- 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 bA==
-Message-ID: <32dc23ae-bc73-b4e2-f9aa-cab59280cae4@gmail.com>
-Date:   Wed, 24 Jun 2020 20:03:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.0
+        id S2405261AbgFXRAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 13:00:39 -0400
+Received: from mga06.intel.com ([134.134.136.31]:38811 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404601AbgFXRAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 13:00:39 -0400
+IronPort-SDR: jau7bMI0x9LmRfeuAVGGpp4lgR2FkU0s16cD5HT4qwOkRzNcB/nYd9T1war9h4JhMU+SXggE3r
+ HWDjYQbWdXGg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="206067297"
+X-IronPort-AV: E=Sophos;i="5.75,276,1589266800"; 
+   d="scan'208";a="206067297"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2020 10:00:38 -0700
+IronPort-SDR: hfE7beMiuYc0R2y52pQnswrkmJjhAUSyrYdNZ+HuxEQJBoHHhQrC+wd/AXCvNsHlMLT3zzUxs0
+ t2xV5srLbPUg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,276,1589266800"; 
+   d="scan'208";a="279535216"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga006.jf.intel.com with ESMTP; 24 Jun 2020 10:00:37 -0700
+Date:   Wed, 24 Jun 2020 10:07:09 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH v3 4/5] iommu/uapi: Handle data and argsz filled by
+ users
+Message-ID: <20200624100709.1277f912@jacob-builder>
+In-Reply-To: <84491857-4a7e-e669-3cf5-615b010930e4@linux.intel.com>
+References: <1592931837-58223-1-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1592931837-58223-5-git-send-email-jacob.jun.pan@linux.intel.com>
+        <84491857-4a7e-e669-3cf5-615b010930e4@linux.intel.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.13.2 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <cover.1593016907.git.asml.silence@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/06/2020 19:50, Pavel Begunkov wrote:
-> Did more comprehensive iopoll testing and found some more problems.
-> 
-> [1] is from the previous series. Actually, v2 for this one, addressing
-> the double-reissue bug found by Jens. It maybe not as efficient, but
-> simple and easy to backport.
-> 
-> [2,3] current->mm NULL deref
+On Wed, 24 Jun 2020 14:54:49 +0800
+Lu Baolu <baolu.lu@linux.intel.com> wrote:
 
-And yet there are issues left... I'll resend
+> Hi Jacob,
+> 
+> On 2020/6/24 1:03, Jacob Pan wrote:
+> > IOMMU UAPI data has a user filled argsz field which indicates the
+> > data length comes with the API call. User data is not trusted,
+> > argsz must be validated based on the current kernel data size,
+> > mandatory data size, and feature flags.
+> > 
+> > User data may also be extended, results in possible argsz increase.
+> > Backward compatibility is ensured based on size and flags checking.
+> > Details are documented in Documentation/userspace-api/iommu.rst
+> > 
+> > This patch adds sanity checks in both IOMMU layer and vendor code,
+> > where VT-d is the only user for now.
+> > 
+> > Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
+> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > ---
+> >   drivers/iommu/intel/svm.c |  3 ++
+> >   drivers/iommu/iommu.c     | 96
+> > ++++++++++++++++++++++++++++++++++++++++++++---
+> > include/linux/iommu.h     |  7 ++-- 3 files changed, 98
+> > insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+> > index 713b3a218483..237db56878c0 100644
+> > --- a/drivers/iommu/intel/svm.c
+> > +++ b/drivers/iommu/intel/svm.c
+> > @@ -244,6 +244,9 @@ int intel_svm_bind_gpasid(struct iommu_domain
+> > *domain, struct device *dev, data->format !=
+> > IOMMU_PASID_FORMAT_INTEL_VTD) return -EINVAL;
+> >   
+> > +	if (data->argsz != offsetofend(struct
+> > iommu_gpasid_bind_data, vendor.vtd))
+> > +		return -EINVAL;  
+> 
+> Need to do size check in intel_iommu_sva_invalidate() as well?
+> 
+No need. The difference is that there is no
+vendor specific union for intel_iommu_sva_invalidate().
 
+Generic flags are used to process invalidation data inside
+intel_iommu_sva_invalidate().
+> > +
+> >   	if (!dev_is_pci(dev))
+> >   		return -ENOTSUPP;
+> >   
+> > diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+> > index d43120eb1dc5..4a025c429b41 100644
+> > --- a/drivers/iommu/iommu.c
+> > +++ b/drivers/iommu/iommu.c
+> > @@ -1951,22 +1951,108 @@ int iommu_attach_device(struct
+> > iommu_domain *domain, struct device *dev)
+> > EXPORT_SYMBOL_GPL(iommu_attach_device); 
+> >   int iommu_cache_invalidate(struct iommu_domain *domain, struct
+> > device *dev,
+> > -			   struct iommu_cache_invalidate_info
+> > *inv_info)
+> > +			void __user *uinfo)  
 > 
-> Pavel Begunkov (3):
->   io_uring: fix hanging iopoll in case of -EAGAIN
->   io_uring: fix current->mm NULL dereference on exit
->   io_uring: fix NULL-mm for linked reqs
+> Nit: keep it aligned.
 > 
->  fs/io_uring.c | 33 ++++++++++++++++++++++-----------
->  1 file changed, 22 insertions(+), 11 deletions(-)
+> >   {
+> > +	struct iommu_cache_invalidate_info inv_info;
+> > +	unsigned long minsz, maxsz;
+> > +
+> >   	if (unlikely(!domain->ops->cache_invalidate))
+> >   		return -ENODEV;
+> >   
+> > -	return domain->ops->cache_invalidate(domain, dev,
+> > inv_info);
+> > +	/* Current kernel data size is the max to be copied from
+> > user */
+> > +	maxsz = sizeof(struct iommu_cache_invalidate_info);
+> > +	memset((void *)&inv_info, 0, maxsz);
+> > +
+> > +	/*
+> > +	 * No new spaces can be added before the variable sized
+> > union, the
+> > +	 * minimum size is the offset to the union.
+> > +	 */
+> > +	minsz = offsetof(struct iommu_cache_invalidate_info,
+> > granu); +
+> > +	/* Copy minsz from user to get flags and argsz */
+> > +	if (copy_from_user(&inv_info, uinfo, minsz))
+> > +		return -EFAULT;
+> > +
+> > +	/* Fields before variable size union is mandatory */
+> > +	if (inv_info.argsz < minsz)
+> > +		return -EINVAL;
+> > +	/*
+> > +	 * User might be using a newer UAPI header, we shall let
+> > IOMMU vendor
+> > +	 * driver decide on what size it needs. Since the UAPI
+> > data extension
+> > +	 * can be vendor specific, larger argsz could be the
+> > result of extension
+> > +	 * for one vendor but it should not affect another vendor.
+> > +	 */
+> > +	/*
+> > +	 * User might be using a newer UAPI header which has a
+> > larger data
+> > +	 * size, we shall support the existing flags within the
+> > current
+> > +	 * size.
+> > +	 */
+> > +	if (inv_info.argsz > maxsz)
+> > +		inv_info.argsz = maxsz;
+> > +
+> > +	/* Checking the exact argsz based on generic flags */
+> > +	if (inv_info.granularity == IOMMU_INV_GRANU_ADDR &&
+> > +		inv_info.argsz != offsetofend(struct
+> > iommu_cache_invalidate_info,
+> > +					granu.addr_info))
+> > +		return -EINVAL;
+> > +
+> > +	if (inv_info.granularity == IOMMU_INV_GRANU_PASID &&
+> > +		inv_info.argsz != offsetofend(struct
+> > iommu_cache_invalidate_info,
+> > +					granu.pasid_info))
+> > +		return -EINVAL;
+> > +
+> > +	/* Copy the remaining user data _after_ minsz */
+> > +	if (copy_from_user((void *)&inv_info + minsz, uinfo +
+> > minsz,
+> > +				inv_info.argsz - minsz))
+> > +		return -EFAULT;
+> > +
+> > +	return domain->ops->cache_invalidate(domain, dev,
+> > &inv_info); }
+> >   EXPORT_SYMBOL_GPL(iommu_cache_invalidate);
+> >   
+> > -int iommu_sva_bind_gpasid(struct iommu_domain *domain,
+> > -			   struct device *dev, struct
+> > iommu_gpasid_bind_data *data) +int iommu_sva_bind_gpasid(struct
+> > iommu_domain *domain, struct device *dev,
+> > +						void __user *udata)
+> >   {
+> > +
+> > +	struct iommu_gpasid_bind_data data;
+> > +	unsigned long minsz, maxsz;
+> > +
+> >   	if (unlikely(!domain->ops->sva_bind_gpasid))
+> >   		return -ENODEV;
+> >   
+> > -	return domain->ops->sva_bind_gpasid(domain, dev, data);
+> > +	/* Current kernel data size is the max to be copied from
+> > user */
+> > +	maxsz = sizeof(struct iommu_gpasid_bind_data);
+> > +	memset((void *)&data, 0, maxsz);
+> > +
+> > +	/*
+> > +	 * No new spaces can be added before the variable sized
+> > union, the
+> > +	 * minimum size is the offset to the union.
+> > +	 */
+> > +	minsz = offsetof(struct iommu_gpasid_bind_data, vendor);
+> > +
+> > +	/* Copy minsz from user to get flags and argsz */
+> > +	if (copy_from_user(&data, udata, minsz))
+> > +		return -EFAULT;
+> > +
+> > +	/* Fields before variable size union is mandatory */
+> > +	if (data.argsz < minsz)
+> > +		return -EINVAL;
+> > +	/*
+> > +	 * User might be using a newer UAPI header, we shall let
+> > IOMMU vendor
+> > +	 * driver decide on what size it needs. Since the guest
+> > PASID bind data
+> > +	 * can be vendor specific, larger argsz could be the
+> > result of extension
+> > +	 * for one vendor but it should not affect another vendor.
+> > +	 */
+> > +	if (data.argsz > maxsz)
+> > +		data.argsz = maxsz;
+> > +
+> > +	/* Copy the remaining user data _after_ minsz */
+> > +	if (copy_from_user((void *)&data + minsz, udata + minsz,
+> > +				data.argsz - minsz))
+> > +		return -EFAULT;
+> > +
+> > +
+> > +	return domain->ops->sva_bind_gpasid(domain, dev, &data);
+> >   }
+> >   EXPORT_SYMBOL_GPL(iommu_sva_bind_gpasid);
+> >   
+> > diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+> > index 5f0b7859d2eb..a688fea42ae5 100644
+> > --- a/include/linux/iommu.h
+> > +++ b/include/linux/iommu.h
+> > @@ -432,9 +432,10 @@ extern void iommu_detach_device(struct
+> > iommu_domain *domain, struct device *dev);
+> >   extern int iommu_cache_invalidate(struct iommu_domain *domain,
+> >   				  struct device *dev,
+> > -				  struct
+> > iommu_cache_invalidate_info *inv_info);
+> > +				  void __user *uinfo);
+> > +
+> >   extern int iommu_sva_bind_gpasid(struct iommu_domain *domain,
+> > -		struct device *dev, struct iommu_gpasid_bind_data
+> > *data);
+> > +				struct device *dev, void __user
+> > *udata); extern int iommu_sva_unbind_gpasid(struct iommu_domain
+> > *domain, struct device *dev, ioasid_t pasid);
+> >   extern struct iommu_domain *iommu_get_domain_for_dev(struct
+> > device *dev); @@ -1062,7 +1063,7 @@ iommu_cache_invalidate(struct
+> > iommu_domain *domain, return -ENODEV;
+> >   }
+> >   static inline int iommu_sva_bind_gpasid(struct iommu_domain
+> > *domain,
+> > -				struct device *dev, struct
+> > iommu_gpasid_bind_data *data)
+> > +				struct device *dev, void __user
+> > *udata) {
+> >   	return -ENODEV;
+> >   }
+> >   
 > 
+> Best regards,
+> baolu
 
--- 
-Pavel Begunkov
+[Jacob Pan]
