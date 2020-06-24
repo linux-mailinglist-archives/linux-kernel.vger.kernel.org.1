@@ -2,90 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971FC207385
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:39:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59AC220738A
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389772AbgFXMjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 08:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
+        id S2390702AbgFXMkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 08:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388132AbgFXMjj (ORCPT
+        with ESMTP id S2389336AbgFXMkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 08:39:39 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B6DC061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 05:39:38 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id n23so2361572ljh.7
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 05:39:38 -0700 (PDT)
+        Wed, 24 Jun 2020 08:40:24 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 921CEC061573;
+        Wed, 24 Jun 2020 05:40:23 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id w6so2291792ejq.6;
+        Wed, 24 Jun 2020 05:40:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=t6dHoa2SQqWS2UVn2iygD6BVJh+DwvTd7prD5cDECPg=;
-        b=gcHcQCPl+lkOrioTn9Q/LQU6Edl+FdOosES4h6JFW5+2dk6+HHFU+yUaT0TX03yfTO
-         N4tvexjL0SK4N7TAH6w9gRuFhRZGHuFAPZUBPyHL52s5AAMCecvJ+R1ouHKAUKLA/G5Z
-         KprxZUu8iBE8QBx4TXtLZs95yqmrbQuP785vWVuK6aef9kBbtKsYTwCSjI1jzoPH27ZF
-         RmDctUJFy7IcB3R98or4l1yrU6Vgvp18Z4KitHi/h+UyHNmErwCGvBhYOFTtD4aAEN6H
-         hIpSd38qrin3Ix8hxwIgIIh8GbGfsOlsPnfzZixoyGzcRFTBfxaf176jCJCqdK4s0XmE
-         cDug==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bn5TVU/nW/bgfATcG9+z6zl/KPajXa2DYKDGrKOJLu8=;
+        b=oxyHXCiGH+fToizrLcsX+wtcUo3wwAnL1rg0ZciTerqCviZfbzxBAjL3PIiyUGBvz8
+         +B0Ii0iMnmnQC8sRG7haR8F93KgvZffcJy5db8ofmvf8fb7qnIersn7yMgnATcy2kJhg
+         vjnpdwPik0GYsGC3lvymomApMmyXXA4QobMzNLV79MvRkdhRIOSBEzKvBEWVvF6kUPOg
+         8atkSUsUmX9NEBeoxfOg+zr3nFeyNjT24bWFcC9rp4KkJVeaam0GC0mdUecrSHwtF+MB
+         RIELcW4j3TaJqzbpZMbOkdlyGrhDdWdLT2NDTQ4zY9ANvRu+N7AEH5WxIujJFTAdpdaq
+         mscw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=t6dHoa2SQqWS2UVn2iygD6BVJh+DwvTd7prD5cDECPg=;
-        b=C/k5zcmcgChvTCT3AFUM0nttU2w4MxxzIwQw3Q89G9HMYvP7z984VpJauhBlD6Bjlw
-         QQ+r1Y2ok27/3aipkFyATdYgBR5Jw6xtGsEdyejWW6aZKFY7Ycnav/SLPEu1Nn5yky6F
-         CiEXlsDRhnY3FAnUya6NPADG/1q2ABRZQakIQW+2jiaiN4QcdDwF3sQZ3JYegTJZWEhQ
-         vuAUdESg+2lxWUpiMWN0We+SSdIM3dXiThgCI1xb/tDrZ01aaMX+81Vpmk8yb6Qf9brp
-         DZpy3Fu2B+lWWHSAF8iAyndIk1xlUmhW6y5bDOjCpMN8VCwRWGG4abPTIza3QRNAAnPT
-         ACeA==
-X-Gm-Message-State: AOAM531ZtlO47Bka1ImK/R24KHX8T47ZYzNwuBTZiU2yX/Y+4Lhgps7a
-        ajE5eIS2LZ758HlTYhs5HAJ3p6O31e145p5OkWIb1g==
-X-Google-Smtp-Source: ABdhPJwTvHyB27Rcb5g25rtHdVlN2YTkt0oU8J4Sx2+2NIpC3Qprb6xh32YCy6zG6h+iJjbN4aTsIiEywQG61YMjNmE=
-X-Received: by 2002:a2e:541e:: with SMTP id i30mr12930521ljb.156.1593002377467;
- Wed, 24 Jun 2020 05:39:37 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bn5TVU/nW/bgfATcG9+z6zl/KPajXa2DYKDGrKOJLu8=;
+        b=Hjv3UtGxwPdB5E+NoGIYCzkFLh0J+rsaJaXDNsvE+sS5KyGEwKkthlfMVVHDHZ3Igv
+         BqJRiqrhnJFCzr+/56wqgLqBKoNYZh3tGU3uUcngWYE94wMmqWtiDyX5Rt2F3CQCwequ
+         i0Gec/oHXsVqrvd1zmRBmzQhpXRRxhqrs1GlED10C6h9H5heVUlFrqECTSKrexA8+L1E
+         SwrvDUU9f+iq8wSsWnWvw6gwDv52trsBtPLaczkHk+fMuD5hXrI6XbCY63NFPWE2XAQL
+         PZk+hQLemv4UACIptgfclHGKNqJtxSgQMCIFF6kXThW1XkbBn+cFooFbh8AoKdL0c9kU
+         rd0g==
+X-Gm-Message-State: AOAM530WbZZ1xaLWdS2fFeYnUG2UJdGJvIZU49JCCbXAdXESmGmt1Wne
+        tSi6hb/TqXs8MnQZirtPbYb0z3CU
+X-Google-Smtp-Source: ABdhPJwFbEj5+vtIVk799zais4HB5rvWpOC3PBuRy84HW5qcliF+P2+NrOLo/TVF2E4vpTgREF9EDA==
+X-Received: by 2002:a17:906:4b16:: with SMTP id y22mr3654476eju.4.1593002422079;
+        Wed, 24 Jun 2020 05:40:22 -0700 (PDT)
+Received: from localhost.localdomain ([188.26.56.128])
+        by smtp.gmail.com with ESMTPSA id gv24sm10605997ejb.72.2020.06.24.05.40.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 05:40:21 -0700 (PDT)
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     stable@vger.kernel.org, gregkh@linuxfoundation.org,
+        netdev@vger.kernel.org
+Cc:     madalin.bucur@oss.nxp.com, camelia.groza@nxp.com,
+        joakim.tjernlund@infinera.com, fido_max@inbox.ru,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH stable-5.4.y] Revert "dpaa_eth: fix usage as DSA master, try 3"
+Date:   Wed, 24 Jun 2020 15:40:13 +0300
+Message-Id: <20200624124013.3210537-1-olteanv@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAEU1=PkNtyznCms3jjp-oZHW=UAinnNKqG144VuzO5M7MLkO3Q@mail.gmail.com>
-In-Reply-To: <CAEU1=PkNtyznCms3jjp-oZHW=UAinnNKqG144VuzO5M7MLkO3Q@mail.gmail.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 24 Jun 2020 14:39:25 +0200
-Message-ID: <CAKfTPtCVF-pw0cjuivuirNpBHRXZNJLihhJtGgkuTi7VdFpWbQ@mail.gmail.com>
-Subject: Re: Looping more in detach_tasks() when RT and CFS tasks are present
-To:     Pavan Kondeti <pkondeti@codeaurora.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, Lei Wen <leiwen@marvell.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavan,
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-On Wed, 24 Jun 2020 at 13:42, Pavan Kondeti <pkondeti@codeaurora.org> wrote:
->
-> Hi Vincent/Peter,
->
-> in load_balance(), we derive env->loop_max based on rq->nr_running.
-> When the busiest rq has both RT and CFS tasks, we do more loops in
-> detach_tasks(). Is there any reason for not using
-> rq->cfs.h_nr_running?
+This reverts commit b145710b69388aa4034d32b4a937f18f66b5538e.
 
-Using cfs.h_nr_running seems fine for loop_max
+The patch is not wrong, but the Fixes: tag is. It should have been:
 
->
-> Lei Wen attempted to fix this before.
-> https://lore.kernel.org/lkml/1376814322-7320-2-git-send-email-leiwen@marvell.com/
+	Fixes: 060ad66f9795 ("dpaa_eth: change DMA device")
 
-The 1st part of the patch is wrong because even if h_nr_running == 1
-but nr_running > 1, we can pull the cfs thread without using active
-balance
+which means that it's fixing a commit which was introduced in:
 
->
-> Thanks,
-> Pavan
->
-> --
-> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.
-> Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a
-> Linux Foundation Collaborative Project
+git tag --contains 060ad66f97954
+v5.5
+
+which then means it should have not been backported to linux-5.4.y,
+where things _were_ working and now they're not.
+
+Reported-by: Joakim Tjernlund <joakim.tjernlund@infinera.com>
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+---
+ drivers/net/ethernet/freescale/dpaa/dpaa_eth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+index 6683409fbd4a..4b21ae27a9fd 100644
+--- a/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
++++ b/drivers/net/ethernet/freescale/dpaa/dpaa_eth.c
+@@ -2796,7 +2796,7 @@ static int dpaa_eth_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	/* Do this here, so we can be verbose early */
+-	SET_NETDEV_DEV(net_dev, dev->parent);
++	SET_NETDEV_DEV(net_dev, dev);
+ 	dev_set_drvdata(dev, net_dev);
+ 
+ 	priv = netdev_priv(net_dev);
+-- 
+2.25.1
+
