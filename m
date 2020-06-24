@@ -2,408 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82DB62079E9
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:08:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F882079E7
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405348AbgFXRIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 13:08:32 -0400
-Received: from out28-4.mail.aliyun.com ([115.124.28.4]:45739 "EHLO
-        out28-4.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405168AbgFXRIb (ORCPT
+        id S2405292AbgFXRIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 13:08:15 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:41319 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404209AbgFXRIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:08:31 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436282|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0188707-0.0125881-0.968541;FP=0|0|0|0|0|-1|-1|-1;HT=e02c03302;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.HrwUtgU_1593018493;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.HrwUtgU_1593018493)
-          by smtp.aliyun-inc.com(10.147.40.7);
-          Thu, 25 Jun 2020 01:08:21 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     daniel.lezcano@linaro.org, tglx@linutronix.de,
-        paul@crapouillou.net, dongsheng.qiu@ingenic.com,
-        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
-        yanfei.li@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com
-Subject: [PATCH RESEND 1/1] clocksource: Ingenic: Add high resolution timer support for SMP/SMT.
-Date:   Thu, 25 Jun 2020 01:07:49 +0800
-Message-Id: <20200624170749.31762-2-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20200624170749.31762-1-zhouyanjie@wanyeetech.com>
-References: <20200624170749.31762-1-zhouyanjie@wanyeetech.com>
+        Wed, 24 Jun 2020 13:08:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1593018494; x=1624554494;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=ZdoE6HWHyiZS5pwDcu5Bc17Yeu68tY/gmcwI90LrXqc=;
+  b=W/ox/Zojy75j7mkeq+hpI/lWSPsxK7NG9fQM3MAotxoHkP6Za2lhZ/Q2
+   mhyFiYeqxrxxAfdEcVQBbeDlCqYIUmA8LBToj19PY0krTZcYrbP1KVmxi
+   XXtXkIqs/PtxoeGySixwB7WmWeDxnQNPhh9ARidNaa4lWymraWPcxWdRU
+   3KNZ7j1i0T8KUIArH3Cs9Y6sTsSLO8TEmSpvGJD1d0rFIMRVE6tua5bkL
+   MFm0g9mfBweG1F+e7/xp1X0gKPl2VZKHque2HSWf5pBhk1qNsLYgySAAV
+   wDOxO64maazpAgwhzLsOJ8KNlCOOPDhlaL5i4xuHXA1gfc6H1QcRp7ILZ
+   w==;
+IronPort-SDR: Oak6ppXbc/Do1BcjmbaM4QK62RB2d7OPfb//1eyyECHXeHoQC5s3zNN/vmlTY2NOLlS1jif4lW
+ fnrwmdOaCrfOZ4rZ+7h/WRxPF5qEICQZ9/wyo4XsIOBcK2lMdh+6nM4CS8jGJ/R2TDL4ABpmIJ
+ JcrabA4ri9Qa3Ws8g9e5PMc2pJ0hGW+SEqsJvWv/uHui39R0XVODOZn3ks4eEnCKcS8bhQ1GkZ
+ cnSJCRAw4Qg0TEXL8gqZWc5eigh80zLMMN3B8gxgrgDyNBlMA/Cdj+umzBV2eYa7TfffuIwiSD
+ 4GE=
+X-IronPort-AV: E=Sophos;i="5.75,276,1589212800"; 
+   d="scan'208";a="250032999"
+Received: from mail-co1nam04lp2050.outbound.protection.outlook.com (HELO NAM04-CO1-obe.outbound.protection.outlook.com) ([104.47.45.50])
+  by ob1.hgst.iphmx.com with ESMTP; 25 Jun 2020 01:08:13 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cxreHGdIoR6Uyv5h7BrULZz9hsGktQ8loID7qxNBWl2vwlK7T8S+IjayFujmHXR6XH4dw3xl/SCkESQ1ALklp/MuFQZ0EA74JO3NNXWWpBKwZYbhDnv6agMCZs/2Uxn9+a3C1nHX6FsaRhLXlDjSWRfCnvcVj1j9wmChAoHOrnL+YFRUOMLd/EdwwOimuDlG2y+wGvf0VpcWiiNIWSOqAmMNJ2dW2XYzz2kItOJph0cYgOsdqPQ2kX7BxfXvIfI+GU8RSNm3XKdDfM722RnaOHL11g35w0yS2KXsNmS4nobRr/PqPotpqJNKVeO6Lm6IuKH5naPAVCi10U9SBb0YHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ac6lA1l6PPjvTZ5uUAjRXbh32bqh22we/OQArxrb7oo=;
+ b=T7aedc0CwQPz2539jHHI1ch5ViyH0jMXDIDsC21mTBgiRNOCWP4Oo0N2zsmzPimOm+6qlIH9e4oqIZmZIFWAfobay6ry/+dyHHndQBFF3YEtARvo7PNz+buu/trf+RAOnjHoqA8ihe54rqf2JvGwtYo5oYiiXi4EJJxUtEuyQGwc019H68cC9b5e4pIMH3fMBi3CZEU+OUximHN/gnH7LMhrnq94IzuefXOBHGG/epKQmaa0ha2AFm79yvCjrhwA//rQnhZEq7mxrG0/0/qUKLTm7VT6pi38eX4gTIrZ16Uu88ZxVmbMkoFk6lMnzVgBcuZG6gFLnWneuw3+G/b5yA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ac6lA1l6PPjvTZ5uUAjRXbh32bqh22we/OQArxrb7oo=;
+ b=dK2l0s418eb1wXGzZ1UZ+UnzwpQp81IS0PICm4VuEBuIai4gJlX+jvhyHsXRa+VUuUIV++frIiMUC0KtJ7HbLniigSvJ+CUVHVKgDrYHKH/2yegQo12RHlJ+vOnZk6ljEAgTpw1PP0EDNZ8z6MPjR6J9Vh8wPMTvlcYIavq0/GQ=
+Received: from BYAPR04MB5112.namprd04.prod.outlook.com (2603:10b6:a03:45::10)
+ by BYAPR04MB3976.namprd04.prod.outlook.com (2603:10b6:a02:b0::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3109.23; Wed, 24 Jun
+ 2020 17:08:13 +0000
+Received: from BYAPR04MB5112.namprd04.prod.outlook.com
+ ([fe80::a442:4836:baba:c84b]) by BYAPR04MB5112.namprd04.prod.outlook.com
+ ([fe80::a442:4836:baba:c84b%6]) with mapi id 15.20.3131.020; Wed, 24 Jun 2020
+ 17:08:12 +0000
+From:   Niklas Cassel <Niklas.Cassel@wdc.com>
+To:     Christoph Hellwig <hch@lst.de>
+CC:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/2] remove workarounds for gcc bug wrt unnamed fields
+ in initializers
+Thread-Topic: [PATCH v2 0/2] remove workarounds for gcc bug wrt unnamed fields
+ in initializers
+Thread-Index: AQHWRatsK9pqpN/HlEmT0NtnEgioaqjoAiyAgAADqACAAAE8gIAAAa2A
+Date:   Wed, 24 Jun 2020 17:08:12 +0000
+Message-ID: <20200624170811.GA396203@localhost.localdomain>
+References: <20200618200235.1104587-1-niklas.cassel@wdc.com>
+ <20200624164441.GA24816@lst.de>
+ <20200624165746.GA394355@localhost.localdomain>
+ <20200624170211.GA25230@lst.de>
+In-Reply-To: <20200624170211.GA25230@lst.de>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: lst.de; dkim=none (message not signed)
+ header.d=none;lst.de; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [85.224.200.150]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: b4d48fc2-081f-4b4e-87d8-08d818612da4
+x-ms-traffictypediagnostic: BYAPR04MB3976:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BYAPR04MB3976A974C8AB2A801EB62B0FF2950@BYAPR04MB3976.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0444EB1997
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XV/vTjMx0J06/LRMlkXCQCAD3jtY3ufsUjD8AfsPykMejXwv+x7iEk+j9p9fy8WEDbhM6+9nBTanCXgJrg3AWv5jIiuSN40s+1UF2karz/YjYDGL2lS3SqIERa+saqMJRExf8/ffbaiZzJhNrh4cOaDSzkfRhRtrLdVx6+5uvo8wSEbTaVLjaRc/mH4AP6pP7KnqetvJ72c7Lh9ZB729XsmUHmF74BLLRqsd6/u7KqBY2NtTVRB9JvlahXW0Vwe5pKN6ugDvse0gPGxWPgjW98t1JtImNGF+ZqA6txX/GjGoGJOVAFSN5SDa46DzSZSGu1JtvF2BPyVp0vv+qpALkg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB5112.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(376002)(366004)(136003)(39860400002)(346002)(396003)(316002)(26005)(4326008)(54906003)(1076003)(186003)(6486002)(2906002)(478600001)(66946007)(66556008)(76116006)(91956017)(64756008)(66476007)(9686003)(66446008)(6506007)(6916009)(6512007)(71200400001)(86362001)(33656002)(8936002)(5660300002)(8676002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: M1/fkUo3TCjronDEg9z4dWqpRb7lgIMsszBHeSgR3+/94XtBoZAESO7sdJiK2Zo6HL2S1yd9YoNHSJyFQEck4w2qssoVscfkOnX2Ef4x73WuYv/g9FJIaMg7vlaerXENCug6SvLU0u1y+tlmftSPUXDsTovU6S0/uBOGXWhwTf8jHclvrbOXz/FH3Ehkj0JdJdne2NJri4NII+JCzhuh6XLirVcX9GdtZb6soOAiSBSZS8hgcvujXQPs3Rr9githAQIGICm5dmm4ID79RT6Rw1vPiqdsZnoxbLMVbQGBMY3idpsHxFjFgGCB7ubIPhxRzr+Ww3EnpEiAFMTXBKpVceGlIIen/sMoJbnHENpOAaCY6mQYncH2lff/kE60cGIwPTKSuOuYKHPcYFCaUbpKwadCNdhl8edsIBng7O0dvV3MGw9pcv6q3ijIBuWQI+0ff+b3vE9bHuKG9Sr4PAUsbUd0HCh12MndE1GrYu8A8aXQfMXawDsB1TOrR91/uK7L
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <C2A3B0F50ADC18448F8995778D7268AE@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b4d48fc2-081f-4b4e-87d8-08d818612da4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Jun 2020 17:08:12.7897
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: vExUhjQGYgqJcisu60sEuBgkmjNzGnSnH+P2IpClEs9Qbwy7WNbD4Y9QemQfprnCZ5e4Coqplg1cgVWSszLB2A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB3976
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable clock event handling on per CPU core basis. Make sure that
-interrupts raised on the first core execute event handlers on the
-correct CPU core. This driver is required by Ingenic processors
-that support SMP/SMT, such as JZ4780 and X2000.
+On Wed, Jun 24, 2020 at 07:02:11PM +0200, Christoph Hellwig wrote:
+> On Wed, Jun 24, 2020 at 04:57:48PM +0000, Niklas Cassel wrote:
+> > On Wed, Jun 24, 2020 at 06:44:41PM +0200, Christoph Hellwig wrote:
+> > > This looks good to me, but I'd rather wait a few releases to
+> > > avoid too mush backporting pain.
+> >=20
+> > Chaitanya made me realize that about half of the nvme functions
+> > are using "struct nvme_command c" on the stack, and then memsets
+> > it, and half of the nvme functions are using an initializer.
+> >=20
+> > IMHO, using an initializer is more clear.
+> >=20
+> > memset has to be used if the function needs to reset an
+> > existing struct, but in none of the functions that I've seen,
+> > are we given an existing nvme_command that we need to reset.
+> > All the functions that I've seen declares a new nvme_command
+> > on the stack (so an initializer makes more sense).
+> >=20
+> > What do you think about me unifying this later on?
+>=20
+> I like the initializers a lot.  But as I said I'd rather wait a
+> bit for now.
 
-Tested-by: H. Nikolaus Schaller <hns@goldelico.com>
-Tested-by: Paul Boddie <paul@boddie.org.uk>
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
- drivers/clocksource/ingenic-timer.c | 182 ++++++++++++++++++++++++------------
- 1 file changed, 124 insertions(+), 58 deletions(-)
+Just to be clear:
+Even with these patches, about half of the nvme functions are using
+memset rather than initializers.
 
-diff --git a/drivers/clocksource/ingenic-timer.c b/drivers/clocksource/ingenic-timer.c
-index 496333650de2..58fd9189fab7 100644
---- a/drivers/clocksource/ingenic-timer.c
-+++ b/drivers/clocksource/ingenic-timer.c
-@@ -1,7 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * JZ47xx SoCs TCU IRQ driver
-+ * Ingenic SoCs TCU IRQ driver
-  * Copyright (C) 2019 Paul Cercueil <paul@crapouillou.net>
-+ * Copyright (C) 2020 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-  */
- 
- #include <linux/bitops.h>
-@@ -15,24 +16,35 @@
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
- #include <linux/of_platform.h>
-+#include <linux/overflow.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- #include <linux/sched_clock.h>
- 
- #include <dt-bindings/clock/ingenic,tcu.h>
- 
-+static DEFINE_PER_CPU(call_single_data_t, ingenic_cevt_csd);
-+
- struct ingenic_soc_info {
- 	unsigned int num_channels;
- };
- 
-+struct ingenic_tcu_timer {
-+	unsigned int cpu;
-+	unsigned int channel;
-+	struct clock_event_device cevt;
-+	struct clk *clk;
-+	char name[8];
-+};
-+
- struct ingenic_tcu {
- 	struct regmap *map;
--	struct clk *timer_clk, *cs_clk;
--	unsigned int timer_channel, cs_channel;
--	struct clock_event_device cevt;
-+	struct device_node *np;
-+	struct clk *cs_clk;
-+	unsigned int cs_channel;
- 	struct clocksource cs;
--	char name[4];
- 	unsigned long pwm_channels_mask;
-+	struct ingenic_tcu_timer timers[];
- };
- 
- static struct ingenic_tcu *ingenic_tcu;
-@@ -52,16 +64,24 @@ static u64 notrace ingenic_tcu_timer_cs_read(struct clocksource *cs)
- 	return ingenic_tcu_timer_read();
- }
- 
--static inline struct ingenic_tcu *to_ingenic_tcu(struct clock_event_device *evt)
-+static inline struct ingenic_tcu *
-+to_ingenic_tcu(struct ingenic_tcu_timer *timer)
-+{
-+	return container_of(timer, struct ingenic_tcu, timers[timer->cpu]);
-+}
-+
-+static inline struct ingenic_tcu_timer *
-+to_ingenic_tcu_timer(struct clock_event_device *evt)
- {
--	return container_of(evt, struct ingenic_tcu, cevt);
-+	return container_of(evt, struct ingenic_tcu_timer, cevt);
- }
- 
- static int ingenic_tcu_cevt_set_state_shutdown(struct clock_event_device *evt)
- {
--	struct ingenic_tcu *tcu = to_ingenic_tcu(evt);
-+	struct ingenic_tcu_timer *timer = to_ingenic_tcu_timer(evt);
-+	struct ingenic_tcu *tcu = to_ingenic_tcu(timer);
- 
--	regmap_write(tcu->map, TCU_REG_TECR, BIT(tcu->timer_channel));
-+	regmap_write(tcu->map, TCU_REG_TECR, BIT(timer->channel));
- 
- 	return 0;
- }
-@@ -69,27 +89,40 @@ static int ingenic_tcu_cevt_set_state_shutdown(struct clock_event_device *evt)
- static int ingenic_tcu_cevt_set_next(unsigned long next,
- 				     struct clock_event_device *evt)
- {
--	struct ingenic_tcu *tcu = to_ingenic_tcu(evt);
-+	struct ingenic_tcu_timer *timer = to_ingenic_tcu_timer(evt);
-+	struct ingenic_tcu *tcu = to_ingenic_tcu(timer);
- 
- 	if (next > 0xffff)
- 		return -EINVAL;
- 
--	regmap_write(tcu->map, TCU_REG_TDFRc(tcu->timer_channel), next);
--	regmap_write(tcu->map, TCU_REG_TCNTc(tcu->timer_channel), 0);
--	regmap_write(tcu->map, TCU_REG_TESR, BIT(tcu->timer_channel));
-+	regmap_write(tcu->map, TCU_REG_TDFRc(timer->channel), next);
-+	regmap_write(tcu->map, TCU_REG_TCNTc(timer->channel), 0);
-+	regmap_write(tcu->map, TCU_REG_TESR, BIT(timer->channel));
- 
- 	return 0;
- }
- 
-+static void ingenic_per_cpu_event_handler(void *info)
-+{
-+	struct clock_event_device *cevt = (struct clock_event_device *) info;
-+
-+	cevt->event_handler(cevt);
-+}
-+
- static irqreturn_t ingenic_tcu_cevt_cb(int irq, void *dev_id)
- {
--	struct clock_event_device *evt = dev_id;
--	struct ingenic_tcu *tcu = to_ingenic_tcu(evt);
-+	struct ingenic_tcu_timer *timer = dev_id;
-+	struct ingenic_tcu *tcu = to_ingenic_tcu(timer);
-+	call_single_data_t *csd;
- 
--	regmap_write(tcu->map, TCU_REG_TECR, BIT(tcu->timer_channel));
-+	regmap_write(tcu->map, TCU_REG_TECR, BIT(timer->channel));
- 
--	if (evt->event_handler)
--		evt->event_handler(evt);
-+	if (timer->cevt.event_handler) {
-+		csd = &per_cpu(ingenic_cevt_csd, timer->cpu);
-+		csd->info = (void *) &timer->cevt;
-+		csd->func = ingenic_per_cpu_event_handler;
-+		smp_call_function_single_async(timer->cpu, csd);
-+	}
- 
- 	return IRQ_HANDLED;
- }
-@@ -105,64 +138,66 @@ static struct clk * __init ingenic_tcu_get_clock(struct device_node *np, int id)
- 	return of_clk_get_from_provider(&args);
- }
- 
--static int __init ingenic_tcu_timer_init(struct device_node *np,
--					 struct ingenic_tcu *tcu)
-+static int ingenic_tcu_setup_cevt(unsigned int cpu)
- {
--	unsigned int timer_virq, channel = tcu->timer_channel;
-+	struct ingenic_tcu *tcu = ingenic_tcu;
-+	struct ingenic_tcu_timer *timer = &tcu->timers[cpu];
-+	unsigned int timer_virq;
- 	struct irq_domain *domain;
- 	unsigned long rate;
- 	int err;
- 
--	tcu->timer_clk = ingenic_tcu_get_clock(np, channel);
--	if (IS_ERR(tcu->timer_clk))
--		return PTR_ERR(tcu->timer_clk);
-+	timer->clk = ingenic_tcu_get_clock(tcu->np, timer->channel);
-+	if (IS_ERR(timer->clk))
-+		return PTR_ERR(timer->clk);
- 
--	err = clk_prepare_enable(tcu->timer_clk);
-+	err = clk_prepare_enable(timer->clk);
- 	if (err)
- 		goto err_clk_put;
- 
--	rate = clk_get_rate(tcu->timer_clk);
-+	rate = clk_get_rate(timer->clk);
- 	if (!rate) {
- 		err = -EINVAL;
- 		goto err_clk_disable;
- 	}
- 
--	domain = irq_find_host(np);
-+	domain = irq_find_host(tcu->np);
- 	if (!domain) {
- 		err = -ENODEV;
- 		goto err_clk_disable;
- 	}
- 
--	timer_virq = irq_create_mapping(domain, channel);
-+	timer_virq = irq_create_mapping(domain, timer->channel);
- 	if (!timer_virq) {
- 		err = -EINVAL;
- 		goto err_clk_disable;
- 	}
- 
--	snprintf(tcu->name, sizeof(tcu->name), "TCU");
-+	snprintf(timer->name, sizeof(timer->name), "TCU%u", timer->channel);
- 
- 	err = request_irq(timer_virq, ingenic_tcu_cevt_cb, IRQF_TIMER,
--			  tcu->name, &tcu->cevt);
-+			  timer->name, timer);
- 	if (err)
- 		goto err_irq_dispose_mapping;
- 
--	tcu->cevt.cpumask = cpumask_of(smp_processor_id());
--	tcu->cevt.features = CLOCK_EVT_FEAT_ONESHOT;
--	tcu->cevt.name = tcu->name;
--	tcu->cevt.rating = 200;
--	tcu->cevt.set_state_shutdown = ingenic_tcu_cevt_set_state_shutdown;
--	tcu->cevt.set_next_event = ingenic_tcu_cevt_set_next;
-+	timer->cpu = smp_processor_id();
-+	timer->cevt.cpumask = cpumask_of(smp_processor_id());
-+	timer->cevt.features = CLOCK_EVT_FEAT_ONESHOT;
-+	timer->cevt.name = timer->name;
-+	timer->cevt.rating = 200;
-+	timer->cevt.set_state_shutdown = ingenic_tcu_cevt_set_state_shutdown;
-+	timer->cevt.set_next_event = ingenic_tcu_cevt_set_next;
- 
--	clockevents_config_and_register(&tcu->cevt, rate, 10, 0xffff);
-+	clockevents_config_and_register(&timer->cevt, rate, 10, 0xffff);
- 
- 	return 0;
- 
- err_irq_dispose_mapping:
- 	irq_dispose_mapping(timer_virq);
- err_clk_disable:
--	clk_disable_unprepare(tcu->timer_clk);
-+	clk_disable_unprepare(timer->clk);
- err_clk_put:
--	clk_put(tcu->timer_clk);
-+	clk_put(timer->clk);
- 	return err;
- }
- 
-@@ -238,10 +273,12 @@ static int __init ingenic_tcu_init(struct device_node *np)
- {
- 	const struct of_device_id *id = of_match_node(ingenic_tcu_of_match, np);
- 	const struct ingenic_soc_info *soc_info = id->data;
-+	struct ingenic_tcu_timer *timer;
- 	struct ingenic_tcu *tcu;
- 	struct regmap *map;
-+	unsigned int cpu;
-+	int ret, last_bit = -1;
- 	long rate;
--	int ret;
- 
- 	of_node_clear_flag(np, OF_POPULATED);
- 
-@@ -249,17 +286,23 @@ static int __init ingenic_tcu_init(struct device_node *np)
- 	if (IS_ERR(map))
- 		return PTR_ERR(map);
- 
--	tcu = kzalloc(sizeof(*tcu), GFP_KERNEL);
-+	tcu = kzalloc(struct_size(tcu, timers, num_possible_cpus()),
-+		      GFP_KERNEL);
- 	if (!tcu)
- 		return -ENOMEM;
- 
--	/* Enable all TCU channels for PWM use by default except channels 0/1 */
--	tcu->pwm_channels_mask = GENMASK(soc_info->num_channels - 1, 2);
-+	/*
-+	 * Enable all TCU channels for PWM use by default except channels 0/1,
-+	 * and channel 2 if target CPU is JZ4780/X2000 and SMP is selected.
-+	 */
-+	tcu->pwm_channels_mask = GENMASK(soc_info->num_channels - 1,
-+					 num_possible_cpus() + 1);
- 	of_property_read_u32(np, "ingenic,pwm-channels-mask",
- 			     (u32 *)&tcu->pwm_channels_mask);
- 
--	/* Verify that we have at least two free channels */
--	if (hweight8(tcu->pwm_channels_mask) > soc_info->num_channels - 2) {
-+	/* Verify that we have at least num_possible_cpus() + 1 free channels */
-+	if (hweight8(tcu->pwm_channels_mask) >
-+			soc_info->num_channels - num_possible_cpus() + 1) {
- 		pr_crit("%s: Invalid PWM channel mask: 0x%02lx\n", __func__,
- 			tcu->pwm_channels_mask);
- 		ret = -EINVAL;
-@@ -267,13 +310,22 @@ static int __init ingenic_tcu_init(struct device_node *np)
- 	}
- 
- 	tcu->map = map;
-+	tcu->np = np;
- 	ingenic_tcu = tcu;
- 
--	tcu->timer_channel = find_first_zero_bit(&tcu->pwm_channels_mask,
--						 soc_info->num_channels);
-+	for (cpu = 0; cpu < num_possible_cpus(); cpu++) {
-+		timer = &tcu->timers[cpu];
-+
-+		timer->cpu = cpu;
-+		timer->channel = find_next_zero_bit(&tcu->pwm_channels_mask,
-+						  soc_info->num_channels,
-+						  last_bit + 1);
-+		last_bit = timer->channel;
-+	}
-+
- 	tcu->cs_channel = find_next_zero_bit(&tcu->pwm_channels_mask,
- 					     soc_info->num_channels,
--					     tcu->timer_channel + 1);
-+					     last_bit + 1);
- 
- 	ret = ingenic_tcu_clocksource_init(np, tcu);
- 	if (ret) {
-@@ -281,9 +333,13 @@ static int __init ingenic_tcu_init(struct device_node *np)
- 		goto err_free_ingenic_tcu;
- 	}
- 
--	ret = ingenic_tcu_timer_init(np, tcu);
--	if (ret)
-+	/* Setup clock events on each CPU core */
-+	ret = cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "Ingenic XBurst: online",
-+				ingenic_tcu_setup_cevt, NULL);
-+	if (ret < 0) {
-+		pr_crit("%s: Unable to start CPU timers: %d\n", __func__, ret);
- 		goto err_tcu_clocksource_cleanup;
-+	}
- 
- 	/* Register the sched_clock at the end as there's no way to undo it */
- 	rate = clk_get_rate(tcu->cs_clk);
-@@ -315,28 +371,38 @@ static int __init ingenic_tcu_probe(struct platform_device *pdev)
- static int __maybe_unused ingenic_tcu_suspend(struct device *dev)
- {
- 	struct ingenic_tcu *tcu = dev_get_drvdata(dev);
-+	unsigned int cpu;
- 
- 	clk_disable(tcu->cs_clk);
--	clk_disable(tcu->timer_clk);
-+
-+	for (cpu = 0; cpu < num_online_cpus(); cpu++)
-+		clk_disable(tcu->timers[cpu].clk);
-+
- 	return 0;
- }
- 
- static int __maybe_unused ingenic_tcu_resume(struct device *dev)
- {
- 	struct ingenic_tcu *tcu = dev_get_drvdata(dev);
-+	unsigned int cpu;
- 	int ret;
- 
--	ret = clk_enable(tcu->timer_clk);
--	if (ret)
--		return ret;
-+	for (cpu = 0; cpu < num_online_cpus(); cpu++) {
-+		ret = clk_enable(tcu->timers[cpu].clk);
-+		if (ret)
-+			goto err_timer_clk_disable;
-+	}
- 
- 	ret = clk_enable(tcu->cs_clk);
--	if (ret) {
--		clk_disable(tcu->timer_clk);
--		return ret;
--	}
-+	if (ret)
-+		goto err_timer_clk_disable;
- 
- 	return 0;
-+
-+err_timer_clk_disable:
-+	for (; cpu > 0; cpu--)
-+		clk_disable(tcu->timers[cpu - 1].clk);
-+	return ret;
- }
- 
- static const struct dev_pm_ops __maybe_unused ingenic_tcu_pm_ops = {
--- 
-2.11.0
+But sure, I'll wait a couple of releases, and then rebase this,
+and additionally convert the "struct nvme_command c" memset users
+to use initializers.
 
+
+Kind regards,
+Niklas=
