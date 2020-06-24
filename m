@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB51E207DDF
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFA3207DC4
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406361AbgFXU6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 16:58:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
+        id S2389038AbgFXU50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 16:57:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391550AbgFXU6a (ORCPT
+        with ESMTP id S1728798AbgFXU5Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 16:58:30 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E60C061798
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:58:29 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id n11so3575640ybg.15
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:58:29 -0700 (PDT)
+        Wed, 24 Jun 2020 16:57:25 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4743AC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:57:25 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id r18so2021015pgk.11
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 13:57:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/YfJhHqk1scz1aBXF0mupkQea8lbBQgP2jeC+IACUDE=;
-        b=eBb2r/O+3xD/ft1cWQIYq+lLT5MaZcDKCI7F68NCZy5mtkJDNhWzHGgMGNZjbp5vY2
-         NeciIBXPHqDHAr515OD+KEI2SwbSQA3wPry4syrluMYmbIYDoGubxlmgh9jyRlLOoHz5
-         p4aoDDsXGCW7wnWAlLUMV8zs3lliqsQjwHQ3f/IRxPoalCwAHzoMzbTu3F1aBupYM8jY
-         RJXyTQ3a1l5kZUWbyWsbEikRBkGpV5M+0D3Trh1EaZC6LuABuarRYjnjmK+YSshwXwQu
-         +pk7yF5eODqLsJrD/Gc4h/AznuIk8Jq2hwInTWrfIN5TI1VZdP1CxKJc8TVkKATdArhv
-         rkVA==
+        bh=2UVd4Vpuu4Hnm6XlHGR5cRrZnqXWEFfAzghKkxqA5PE=;
+        b=BPMaWjSiHqVF8vi4hiTlzAVhVpOBnqRB11zTq0lEeedJqVV+du+PNZ4KmaMlIsirPC
+         R928oKYPPNEK406mCXXrFo5ILeh9cKok03PTJz6JfAnRQKQCv1Rh1SMBWeCtT9nOL0oJ
+         lryLagao4wnwA1qFmJ4sPzSNGD7lPYGa8eVmfocCRrLBf+dhWLYjqG85ZdT9LeohIlOb
+         2EmJnnhlOHrRKj1PGL5sVH9SaXtWzsmYftW61LHVwvnNA7wui7tFGXqcFXutnYBMCItr
+         GdL2Vo1Q7hX8hrKDrgkMAaZk/eo83KbXysC70mpN3P9EzjPp00OuZYiGpwRBnkB00cCL
+         l6nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=/YfJhHqk1scz1aBXF0mupkQea8lbBQgP2jeC+IACUDE=;
-        b=eRCMTsTwN8vz/XUZ2TVFCJqHqItUIXesocg8xWcKxUKDLN7RAU5QZipzj8ubb9G1/y
-         VrcmzzmF+iEWgjdaQ1qccmGBL2rT3r85yGtx6Lb6DZTO1a/ZzJipFCc0YxN4O15x41DM
-         c3lC8agajkXJZqwr0oB/o12puVQnPIKmHGNrmQ1ShooxiM5VqwVjSeoE2UYfIx/Krb9j
-         cpG6beDRFXdKzuc0JpbOzA1iFbkIRe6k5c+KBHAZphXnuKg98vYWQy118Obozt1qKUva
-         dTYFF9acy8+ancFiV2TkNE/SPGCmaEyKczSNcaMfTiG4SBMTR3WFI56bswLvuGhchgMz
-         Ywzw==
-X-Gm-Message-State: AOAM531H5gritX8Ev80sYAp2Azhgh4/X0GHuFp9RmKBnLzbesqXPPFzJ
-        GoU9PsFEKLdQaZ54234Xdnfe/Nvz7CAXY2JftGUcPQ==
-X-Google-Smtp-Source: ABdhPJyzMN1O9F20c44aUZ3Rj+xXWGPWk9fw0REl0xzDcZiFgklg99lb7/rTyyzMpJHoIh8oBhPbhqyjNv0vmkzqL5BxQQ==
-X-Received: by 2002:a25:2d63:: with SMTP id s35mr27292035ybe.367.1593032308955;
- Wed, 24 Jun 2020 13:58:28 -0700 (PDT)
-Date:   Wed, 24 Jun 2020 13:55:50 -0700
-In-Reply-To: <20200624205550.215599-1-brendanhiggins@google.com>
-Message-Id: <20200624205550.215599-12-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20200624205550.215599-1-brendanhiggins@google.com>
-X-Mailer: git-send-email 2.27.0.212.ge8ba1cc988-goog
-Subject: [PATCH v4 11/11] Documentation: kunit: add a brief blurb about kunit_test_suite
-From:   Brendan Higgins <brendanhiggins@google.com>
-To:     jdike@addtoit.com, richard@nod.at, anton.ivanov@cambridgegreys.com,
-        arnd@arndb.de, keescook@chromium.org, skhan@linuxfoundation.org,
-        alan.maguire@oracle.com, yzaikin@google.com, davidgow@google.com,
-        akpm@linux-foundation.org, rppt@linux.ibm.com,
-        frowand.list@gmail.com, catalin.marinas@arm.com, will@kernel.org,
-        monstr@monstr.eu, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, chris@zankel.net, jcmvbkbc@gmail.com
-Cc:     gregkh@linuxfoundation.org, sboyd@kernel.org, logang@deltatee.com,
-        mcgrof@kernel.org, linux-um@lists.infradead.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
-        Brendan Higgins <brendanhiggins@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2UVd4Vpuu4Hnm6XlHGR5cRrZnqXWEFfAzghKkxqA5PE=;
+        b=opivK6abG8NYeH1B6KWZbJD7OQ4REbVGOO+6kc0Loz93MMZzROyupvNzuoyHmga5Ho
+         XXi0owFJXzgdUXNt/ZE1F+VeWoVf1LCiFGI/q0de/zADMmnTE3qat+zhUqdO1X+HNVIc
+         16FxsOD9Ev+6FoVg0q3NJAlSs3BV5NUcIeOnyCZRHzUQl8ziNU5D2KPOE/ew6L4XrbxK
+         I40+XkgqxJV2+Q9/NPOrbQUIzQajFSXEah9bq5Y94j9S4geWtJC9kJyjAZoHAY/Ri9g5
+         2bJV0DAi8KRSeySrNjfkRrYlFZG22tfW/I59pwZGChWqCyB8AEZrh4VHTPF7VZilI/tJ
+         KYIQ==
+X-Gm-Message-State: AOAM532og74/YAV/dV3t7L/cBwi0bmOSKRlyQEokds+YWi/eWzjoZnjO
+        /NHWerrqnfNVlzHME1TL4DzL54jTOI9ZjC99SAiQAA==
+X-Google-Smtp-Source: ABdhPJwqdv1zjA72U6Y+yinTpL4jIF0WvT5OjmcvgBRWy2HcW+N17omaHs7u2Al3ueQuo5czHPS48NLDnn5YbwyPtt8=
+X-Received: by 2002:a63:a119:: with SMTP id b25mr22841048pgf.10.1593032243514;
+ Wed, 24 Jun 2020 13:57:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200624203200.78870-1-samitolvanen@google.com> <20200624203200.78870-14-samitolvanen@google.com>
+In-Reply-To: <20200624203200.78870-14-samitolvanen@google.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 24 Jun 2020 13:57:11 -0700
+Message-ID: <CAKwvOd=XxsGowjitcqDrw6g-cxB=kqAsvRS+PyaMrYWnPgjqbg@mail.gmail.com>
+Subject: Re: [PATCH 13/22] scripts/mod: disable LTO for empty.c
+To:     Sami Tolvanen <samitolvanen@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a brief blurb saying how and when the kunit_test_suite() macro
-works to the usage documentation.
+On Wed, Jun 24, 2020 at 1:33 PM Sami Tolvanen <samitolvanen@google.com> wrote:
+>
+> With CONFIG_LTO_CLANG, clang generates LLVM IR instead of ELF object
+> files. As empty.o is used for probing target properties, disable LTO
+> for it to produce an object file instead.
+>
+> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- Documentation/dev-tools/kunit/usage.rst | 5 +++++
- 1 file changed, 5 insertions(+)
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 
-diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-index 3c3fe8b5feccf..961d3ea3ca19a 100644
---- a/Documentation/dev-tools/kunit/usage.rst
-+++ b/Documentation/dev-tools/kunit/usage.rst
-@@ -211,6 +211,11 @@ KUnit test framework.
- .. note::
-    A test case will only be run if it is associated with a test suite.
- 
-+``kunit_test_suite(...)`` is a macro which tells the linker to put the specified
-+test suite in a special linker section so that it can be run by KUnit either
-+after late_init, or when the test module is loaded (depending on whether the
-+test was built in or not).
-+
- For more information on these types of things see the :doc:`api/test`.
- 
- Isolating Behavior
+> ---
+>  scripts/mod/Makefile | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/scripts/mod/Makefile b/scripts/mod/Makefile
+> index 296b6a3878b2..b6e3b40c6eeb 100644
+> --- a/scripts/mod/Makefile
+> +++ b/scripts/mod/Makefile
+> @@ -1,5 +1,6 @@
+>  # SPDX-License-Identifier: GPL-2.0
+>  OBJECT_FILES_NON_STANDARD := y
+> +CFLAGS_REMOVE_empty.o += $(CC_FLAGS_LTO)
+>
+>  hostprogs      := modpost mk_elfconfig
+>  always-y       := $(hostprogs) empty.o
+> --
+> 2.27.0.212.ge8ba1cc988-goog
+>
+
+
 -- 
-2.27.0.212.ge8ba1cc988-goog
-
+Thanks,
+~Nick Desaulniers
