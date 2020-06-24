@@ -2,54 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00D8D207518
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FBE20751F
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 16:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404034AbgFXOAe convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 24 Jun 2020 10:00:34 -0400
-Received: from mailpd.shecc.com ([180.168.117.213]:39773 "EHLO srvq7.shecc.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389484AbgFXOAe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 10:00:34 -0400
-X-Greylist: delayed 359 seconds by postgrey-1.27 at vger.kernel.org; Wed, 24 Jun 2020 10:00:32 EDT
-Received: from SRVQ1.shecc.com (10.1.1.21) by srvq7.shecc.com (10.1.1.27) with
- Microsoft SMTP Server (TLS) id 14.3.123.3; Wed, 24 Jun 2020 21:54:31 +0800
-Received: from [192.168.0.13] (10.1.2.21) by srvq1.shecc.com (10.1.1.21) with
- Microsoft SMTP Server (TLS) id 15.0.1076.9; Wed, 24 Jun 2020 21:54:25 +0800
-Content-Type: text/plain; charset="iso-8859-1"
+        id S2404040AbgFXOA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 10:00:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46032 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389668AbgFXOA4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 10:00:56 -0400
+Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A96C0613ED
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 07:00:54 -0700 (PDT)
+Received: by mail-qv1-xf2a.google.com with SMTP id t7so1051833qvl.8
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 07:00:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=IHUFmFa+PERILwSWl+mXNut/vkPHclyZKqXAUx/99u4=;
+        b=vUXMPXXq8Zw5TkXeHV4MZ7HPDHkvugAyM9PvNdF5sQ0X9X/y5xDdWI0eOuPqS9MLRn
+         CLyTd3RTJJNfD4ec/t+xppt3SM7P8qheiP/tZ+l+UuSAT84i4lRyFqJfXzMHRxi9yLZx
+         TL+WEvKnvzFFvzHsiJ3ttZaNdkHPMx6wwlC9ZmOT+DExbI4IKVdGCBvgNw0CE7Df9Urb
+         fsKb4LetTAWs0d6WH6QufVofUMmr61BnGKBY3PbwlSdEEMY8OuMN7bEWxCd0INJH3zs3
+         8kXkqXAjOZEoggqsXGkYBXFf/TFyobF1d76m++X/tO2QWZogFrKqMq1S8uI1P3/XZOpc
+         ymcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=IHUFmFa+PERILwSWl+mXNut/vkPHclyZKqXAUx/99u4=;
+        b=HLJpbcS0OBRJPqCLvvCTo/zjlhLidpMZfzb+WH0pG4/IGXWSpE1fM+tVGN4IW9qCGI
+         4tq9+5MrPIWNWIMK924/k+vjRVycM1M36noqehfSf1u/n+7kDv2cswdOTcvvtoFFlR56
+         vCwGb7Q3bProNkyQI7PCQQl682x/bJLln++2bma+EUEmiCyHtyqDoyyf4rzXxNOv/dny
+         t5MMf08jqLZE8Bg8OSDD2Ljpoo/SzeCXs43i1U7hmJWkzP2eqylCD7WcWLmhaZQJGB9f
+         jqU5FfsTnAIJMLwFuxm3XH/AwdONryOhppUpTPLQ/hTMfQgQkkpUwpbcPUpcK2jNPmvi
+         0PaA==
+X-Gm-Message-State: AOAM533qdnB5WHOgqT6DvzfEYwILdvaXO7cLVoxvzR21WfVe3ZIE++/Q
+        mlQGsne32sUXo5KSyf0xVsl7mjTVcw/LLbvByoznapHi
+X-Google-Smtp-Source: ABdhPJwc+N7OLcgF2n6s7AYzvFq1sI6X0oMw7s/cuElNqvpPqyRyd7bBZnFfZ22kg8kVyDwekNyPWQtA2v0Bw1QGcu8=
+X-Received: by 2002:ad4:55b4:: with SMTP id f20mr30749529qvx.148.1593007253628;
+ Wed, 24 Jun 2020 07:00:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Re;
-To:     Recipients <test02@shecc.com>
-From:   <test02@shecc.com>
-Date:   Wed, 24 Jun 2020 06:54:16 -0700
-Reply-To: <charles_jackson001@yahoo.com>
-X-Antivirus: Avast (VPS 200624-2, 06/24/2020), Outbound message
-X-Antivirus-Status: Clean
-Message-ID: <6ea53e68d76c42dab31c3e44e0fa36d0@SRVQ1.shecc.com>
-X-Originating-IP: [10.1.2.21]
-X-ClientProxiedBy: SRVQ3.shecc.com (10.1.1.23) To srvq1.shecc.com (10.1.1.21)
+References: <20200623040107.22270-1-warthog618@gmail.com> <20200623040107.22270-9-warthog618@gmail.com>
+In-Reply-To: <20200623040107.22270-9-warthog618@gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 24 Jun 2020 16:00:42 +0200
+Message-ID: <CAMpxmJVbiH9mh2c8aAS+GG9a76w9c0Nrrv-VDVhpo+wSyQ2NeQ@mail.gmail.com>
+Subject: Re: [PATCH 08/22] gpiolib: cdev: complete the irq/thread timestamp handshake
+To:     Kent Gibson <warthog618@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Congratulations!!!
+wt., 23 cze 2020 o 06:02 Kent Gibson <warthog618@gmail.com> napisa=C5=82(a)=
+:
+>
+> Reset the timestamp field to 0 after using it in lineevent_irq_thread.
+>
+> The timestamp is set by lineevent_irq_handler and is tested by
+> lineevent_irq_thread to determine if it is called from a nested theaded
+> interrupt.
+> lineevent_irq_thread is assuming that the nested, or otherwise, status
+> of the IRQ is static, i.e. it is either always nested or never nested.
+> This change removes that assumption, resetting the timestamp so it can
+> be re-used to determine the nested state of subsequent interrupts.
+>
+> Signed-off-by: Kent Gibson <warthog618@gmail.com>
+>
 
+This change makes sense to me but I'm having a hard time processing
+the explanation. If we're requesting the interrupt and allocating the
+lineevent state in the same function - how can we run into a situation
+here the status of the irq would change like what you describe?
 
-As part of my humanitarian individual support during this hard times of fighting the Corona Virus (Convid-19); your email account was selected for a Donation of $1,000,000.00 USD for charity and community medical support in your area. 
-Please contact us for more information on charles_jackson001@yahoo.com.com
-
-
-Send Your Response To: charles_jackson001@yahoo.com
-
-
-Best Regards,
-
-Charles .W. Jackson Jr
-
--- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
-
+Bart
