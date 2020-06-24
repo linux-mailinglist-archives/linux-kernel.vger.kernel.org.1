@@ -2,85 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 314A320739F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BFA2073A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 14:44:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390869AbgFXMoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 08:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
+        id S2390877AbgFXMoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 08:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388942AbgFXMoR (ORCPT
+        with ESMTP id S2388942AbgFXMoi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 08:44:17 -0400
-Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE81C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 05:44:17 -0700 (PDT)
-Received: by mail-vs1-xe42.google.com with SMTP id r11so1294956vsj.5
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 05:44:17 -0700 (PDT)
+        Wed, 24 Jun 2020 08:44:38 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BABC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 05:44:38 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id u12so1482280qth.12
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 05:44:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=TT/P4h185Eprg8jnQSnbGTLq+ro+h5oRl2nw2j/nK/U=;
-        b=paIr6AYvopdoWVF8trBcNQcK7FnEvAmc7ntGKiYzjH1qASJAkRjX/0zp8eWQIr9+sN
-         +jGosloA74LvHizlPRMymH0V38OOqZyQcvbEad9uDFOcEN8Dno/FpUHfkHygWyhoHHwQ
-         8QaTZ+BT5a1fnd7PerjPzm5KGM4fs5lUANkhXIIOL8xUL/3Ivir5HCPbTCis7+GtXtaG
-         ikY2IhIGm2nVupPnWTqKRtWXbrccIpATIcF+dyuc8Q+/qBDsCHoNJfAI/pFEjmLKnmZR
-         yQsknSXg4B3pY0OgCbYC1AhASQO52/EsafYfRQTMgIl8/2zZonDKrw79eqCvBxUKmHGz
-         qf5Q==
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=K+GGZXKgpzdCsUctXsT0qtaMFmUhAglO46kKwDBE35k=;
+        b=ADAC9Nm+AjdV8L4TTS7PIGLMY15VNal3PX2tkETlMZKLDRFTA5Zq7fyeasnJFbp8aQ
+         u35RXtvdaqiOl2B34/rDKVfk/KU5yGbvLGjLj5uBbsgbgxlieYKMYe61G7Aa3nJSqNsJ
+         aSS1D/M+o9/ClQ8ZDo9o+Cm+Ywc+anYTuJfGUyz91nsTQAtPlOnm+eEintzNQG/V67me
+         duDxwZV4JBFW67bkT02/tyvtt63LcTnGQu03PsWedd0d7bGH4vD2mrADYMwcQpgn8Tw9
+         CBSjxkARtflMFT8a0pxLNB3Ihb+pE571AonOVTeiVD9S+18zwm1RX5bPUeYKjJEuo3Om
+         USUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=TT/P4h185Eprg8jnQSnbGTLq+ro+h5oRl2nw2j/nK/U=;
-        b=Sibf5nZi/SkFpBayekLqy71KLC7TWN6s3pUd91HXpusI/fsBavllI1pz6QMMmNQViC
-         qlxbQgoneCMyiARWJLWfwvxGfrm9SKW3NEvFWxs7Yx4Ll865/Y7O1inw5ScvHDE1GXjv
-         3EPketHvVx3wsQ3sv4sa/4YvFSCoVcOpMF3QGn7vvJz48SXFElqkMsqbfPL84h3LrVzz
-         nE5HAOj4Q3ufInRLsIW7qdtq/Epgo5vKR1sinvZLblToLPS9EYbUxQ0Sdsb9ZPLubnRm
-         0IoVC+osPVhFXhA+SjXJIn0dZk4xbC95N6gJuEz7kVzcCYKssDW8VKO1YbxFWQsoI2/w
-         anAw==
-X-Gm-Message-State: AOAM5320HtTd/xDC64jROhXItgtVD8v6kkwjfvYyOGz0D3TzZSevnXyW
-        ER7u1ulr8znSeLRfM9PZV2uJkPIqxWq0bMhgFdw=
-X-Google-Smtp-Source: ABdhPJy7I5qrXQhutrx+MuiF9w9xYgt9jtJmeTtYIFLREUOlRBVb5tYMwHWqb1OHY14tumbrfUStb1fHLYCp1IQNCuQ=
-X-Received: by 2002:a67:7f16:: with SMTP id a22mr24001475vsd.33.1593002655873;
- Wed, 24 Jun 2020 05:44:15 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=K+GGZXKgpzdCsUctXsT0qtaMFmUhAglO46kKwDBE35k=;
+        b=kxEqoRjTeYk3kklM0sKBxw+sTOTPHPAdpOsJlqXyKC/06azT+4KEHEx67Q0FZyQ88+
+         dI2/CGUGEGZvavxokWNg9WNlK+W3xHcGwMi1b9pnnLeaUwF++TIprJ0IBsNW9uQ63y92
+         9Xx0N7Zr0aKHFyFq+mD3kncgoXT0u/9HIUMiUoRY0MHMQNrJaU8iJ4IuU2fjytsP3NKM
+         4OmRU4i+2CEVNJQUP+3wtU1wj7i6G99Q4n5ba5mlz0jM+LuDL7rhfBo2ukxybu+1LjGF
+         l492LG7himWxEM0/3uJZje1vPKeqHm+otc34nD+rHtekpb38MLlyKF2mcuWdWLZIDZn6
+         F2hA==
+X-Gm-Message-State: AOAM530+k0lOiO11ZxXB0YL9fYui86Xzsn6X8zLTBaQUiSZtjXwkVEb7
+        z1VoYze35+cV6ElQq24YAkr8/w==
+X-Google-Smtp-Source: ABdhPJyQIqA1QaiDwKbaPsVfBf/aqoPaaAgynomS8v8sVwttSlNATi+gb0yJ2j0k/hkgTxeCYTLIeQ==
+X-Received: by 2002:ac8:794c:: with SMTP id r12mr26584071qtt.201.1593002677309;
+        Wed, 24 Jun 2020 05:44:37 -0700 (PDT)
+Received: from [192.168.1.117] (23-233-27-60.cpe.pppoe.ca. [23.233.27.60])
+        by smtp.googlemail.com with ESMTPSA id f65sm1914390qtd.61.2020.06.24.05.44.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Jun 2020 05:44:36 -0700 (PDT)
+Subject: Re: [v1,net-next 3/4] net: qos: police action add index for tc flower
+ offloading
+To:     Po Liu <po.liu@nxp.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "idosch@idosch.org" <idosch@idosch.org>
+Cc:     "jiri@resnulli.us" <jiri@resnulli.us>,
+        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>,
+        "vlad@buslov.dev" <vlad@buslov.dev>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Alexandru Marginean <alexandru.marginean@nxp.com>,
+        "michael.chan@broadcom.com" <michael.chan@broadcom.com>,
+        "vishal@chelsio.com" <vishal@chelsio.com>,
+        "saeedm@mellanox.com" <saeedm@mellanox.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "idosch@mellanox.com" <idosch@mellanox.com>,
+        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "xiyou.wangcong@gmail.com" <xiyou.wangcong@gmail.com>,
+        "simon.horman@netronome.com" <simon.horman@netronome.com>,
+        "pablo@netfilter.org" <pablo@netfilter.org>,
+        "moshe@mellanox.com" <moshe@mellanox.com>,
+        "m-karicheri2@ti.com" <m-karicheri2@ti.com>,
+        "andre.guedes@linux.intel.com" <andre.guedes@linux.intel.com>,
+        "stephen@networkplumber.org" <stephen@networkplumber.org>,
+        Edward Cree <ecree@solarflare.com>
+References: <VE1PR04MB6496AD2BE9868D72A475935492940@VE1PR04MB6496.eurprd04.prod.outlook.com>
+From:   Jamal Hadi Salim <jhs@mojatatu.com>
+Message-ID: <18e0ceb0-7cc7-12cc-624d-286cfbd70b94@mojatatu.com>
+Date:   Wed, 24 Jun 2020 08:44:34 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Received: by 2002:ab0:4e2b:0:0:0:0:0 with HTTP; Wed, 24 Jun 2020 05:44:14
- -0700 (PDT)
-Reply-To: bbmorga@hotmail.com
-From:   =?UTF-8?B?Qk9OTknCoE1vcmdh?= <oobb128477@gmail.com>
-Date:   Wed, 24 Jun 2020 12:44:14 +0000
-Message-ID: <CABH2X+w3yKx9x23mwht5UBmu2tuVGddEi4uGELgJnyoTFf7=AQ@mail.gmail.com>
-Subject: Dear Friend, Date:24/06/2020!
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+In-Reply-To: <VE1PR04MB6496AD2BE9868D72A475935492940@VE1PR04MB6496.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RGVhcsKgRnJpZW5kLA0KRGF0ZToyNC8wNi8yMDIwIQ0KDQpJwqBhbcKgc2VuZGluZ8KgdGhpc8Kg
-RS1tYWlswqB0b8KgeW91wqBiYXNlwqBvbsKgeW91csKgSW5mb3JtYXRpb27CoEnCoGdvdMKgZnJv
-bQ0KdGhlwqBGb3JlaWduwqBBZmZhaXJzwqBmb3LCoEZpbmFuY2lhbMKgQnVzaW5lc3PCoFRyYW5z
-YWN0aW9uwqB0aGF0wqBtYXkNCkJlbmVmaXRzwqBib3RowqBvZsKgdXMsdGhlwqBmdW5kc8Kgd29y
-dGjCoHRoZcKgc3VtwqBvZsKgJDkuN8KgTWlsbGlvbsKgVVNELsKgSQ0KYmVsaWV2ZcKgdGhhdMKg
-eW91wqB3aWxswqBiZcKgaW7CoGHCoGdvb2TCoHBvc2l0aW9uwqB0b8KgYXNzaXN0wqBtZcKgdG/C
-oHRyYW5zZmVyDQp0aGXCoEFiYW5kb25lZMKgRmxvYXRpbmfCoGZ1bmRzwqBpbnRvwqB5b3VywqBS
-ZWxpYWJsZcKgYmFua8KgYWNjb3VudMKgaW7CoHlvdXINCmNvdW50cnkuwqBUaGXCoEZ1bmRzwqBX
-b3J0aMKgJDkuN8KgTWlsbGlvbsKgVVNEwqBIYXPCoEJlZW7CoGluwqBEb3JtYW50wqBhY2NvdW50
-DQpmb3LCoHNvwqBtYW55wqBZZWFyc8KgSW7CoHRoaXPCoEJhbmvCoHRoYXTCoGnCoGFtwqB3b3Jr
-aW5nwqB3aXRob3V0wqBhbnlib2R5DQpjb21pbmfCoHRvwqBwdXTCoGNsYWltwqBvZsKgdGhlwqBG
-dW5kcy4NCg0KTW9yZW92ZXIswqB0aGXCoEJhbmvCoEV4ZWN1dGl2ZXPCoERpcmVjdG9yc8KgaG9s
-ZMKgYcKgbWVldGluZ8KgYW5kwqBDb25jbHVkZWQNCnRoYXTCoGFmdGVywqBPbmXCoFllYXLCoHdp
-dGhvdXTCoGFuecKgb2bCoHRoZcKgUmVsYXRpdmVzwqBBcHBsecKgZm9ywqB0aGUNCmNsYWltaW5n
-wqBvZsKgdGhlwqBmdW5kc8KgdmFsdWVzwqB0aGXCoHN1bcKgb2bCoCQ5LjfCoE1pbGxpb27CoFVT
-RMKgYW5kwqBpdMKgd2lsbA0KYmXCoFJlbWl0c8KgYXPCoGHCoEJhbmvCoFRyZWFzdXJlLsKgSGVu
-Y2XCoHRoaXPCoEVtYWlswqB0b8KgeW91LMKgScKgbmVlZMKgeW91cg0KTWF4aW11bcKgQ29vcGVy
-YXRpb27CoGFuZMKgVHJ1c3R3b3J0aGluZXNzLsKgVXBvbsKgWW91csKgUmVwbHksScKgc2hhbGzC
-oEdpdmUNCllvdcKgRGV0YWlsc8Kgb27CoEhvd8KgdGhlwqBCdXNpbmVzc8KgV2lsbMKgQmXCoEV4
-ZWN1dGVkLMKgYW5kwqBJwqBob3BlwqB0aGF0wqB5b3UNCndpbGzCoG5vdMKgZXhwb3NlwqBvcsKg
-QmV0cmF5wqB0aGlzwqB0cnVzdMKgYW5kwqBjb25maWRlbnTCoHRoYXTCoEnCoGFtwqBhYm91dMKg
-dG8NCnJlcG9zZcKgb27CoHlvdcKgZm9ywqBtdXR1YWzCoGJlbmVmaXRzwqBvZsKgb3VywqBmYW1p
-bGllcy4NCg0KSGF2ZcKgYcKgZ3JlYXTCoGRhecKgJsKgScKgYW3CoHdhaXRpbmfCoHRvwqBoZWFy
-wqBmcm9twqB5b3UhIQ0KTXIuQk9OTknCoE1vcmdhLg0K
+On 2020-06-23 7:52 p.m., Po Liu wrote:
+> Hi Jamal,
+> 
+> 
+
+>>>> My question: Is this any different from how stats are structured?
+>>>
+
+[..]
+>> My question: Why cant you apply the same semantics for the counters?
+>> Does your hardware have an indexed counter/stats table? If yes then you
+> 
+> Yes, 
+
+That is the point i was trying to get to. Basically:
+You have a counter table which is referenced by "index"
+You also have a meter/policer table which is referenced by "index".
+
+For policers, they maintain their own stats. So when i say:
+tc ... flower ... action police ... index 5
+The index referred to is in the policer table
+
+But for other actions, example when i say:
+tc ... flower ... action drop index 10
+The index is in the counter/stats table.
+It is not exactly "10" in hardware, the driver magically hides
+it from the user - so it could be hw counter index 1234
+
+The old approach is to assume the classifier (flower in this
+case) has a counter. The reason for this assumption is older
+hardware was designed to deal with a single action per match.
+So a counter to the filter is also the counter to the
+(single) action. I get the feeling your hardware fits in that
+space.
+
+Modern use cases have evolved from the ACL single match and action
+approach. Maintaining the old thought/architecture breaks in two
+use cases:
+1) when you have multiple actions per policy filter. You need
+counter-per-action for various reasons
+2) Sharing of counters across filters and action. This can
+be achieve
+
+tc supports the above and is sufficient to cover the old use
+cases.
+I am just worried, architecturally, we are restricting ourselves
+to the old scheme.
+
+Another reason this is important is for the sake of analytics.
+A user space app can poll just for the stats table in hardware
+(or the cached version in the kernel) and reduce the amount of
+data crossing to user space..
+
+cheers,
+jamal
+
+
+
+
+
