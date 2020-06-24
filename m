@@ -2,288 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2FB0207C52
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 21:42:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 005A0207C55
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 21:43:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406182AbgFXTmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 15:42:39 -0400
-Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:28390
-        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404915AbgFXTmi (ORCPT
+        id S2391308AbgFXTnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 15:43:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391221AbgFXTnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 15:42:38 -0400
-X-IronPort-AV: E=Sophos;i="5.75,276,1589234400"; 
-   d="scan'208";a="352641912"
-Received: from abo-173-121-68.mrs.modulonet.fr (HELO hadrien) ([85.68.121.173])
-  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 24 Jun 2020 21:42:34 +0200
-Date:   Wed, 24 Jun 2020 21:42:34 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Denis Efremov <efremov@linux.com>
-cc:     cocci@systeme.lip6.fr, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] coccinelle: misc: add array_size_dup script to detect
- missed overflow checks
-In-Reply-To: <20200622221056.34241-1-efremov@linux.com>
-Message-ID: <alpine.DEB.2.22.394.2006242142240.2433@hadrien>
-References: <20200615102045.4558-1-efremov@linux.com> <20200622221056.34241-1-efremov@linux.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Wed, 24 Jun 2020 15:43:45 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84C3C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 12:43:43 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id 207so1468972pfu.3
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 12:43:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WCT8Mp1fiF4Iw+yjIn+C6cOd3D8sms76UQBr6znEpWk=;
+        b=Ity7y8rGEc4oXEiXH3BGiprKBtYxV9crm+SUp0bxSrD2vqsQpgiAGySgg9bKC7LzJV
+         MvzzUHrbKRWE0ccNr7TR1xFfDhtPE+sOVldl9vLooehH6TKNQKk4H23pnw3+Yywmxc3X
+         Gf1bDrSN+lJP7Y5X+I+PBa3FqpnMes7qV+nio=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WCT8Mp1fiF4Iw+yjIn+C6cOd3D8sms76UQBr6znEpWk=;
+        b=p5YS1eJnEYdY2/ZydQLXMKl4VQAesfJwg87kcaz+dSlEyuGCm6wrdEMmiu1w5KXVVr
+         d597g3InBlTq4438r/swdk3esxKJ4dnpVLSv1by7WYzt4K0tkxw8x8jlHWkA+NCd2SHj
+         o6T3GvRygc23q6Nyr09WPL7AwanRl0N8mtrCSglTlJeoiYTggPSLqQcKK0Z1mDF4981C
+         etsUTnmw08+TWycCXsSQylhN/k3IUFbp00PY18jGeQIZqbVBomeh37isdnORqlE8ey0L
+         R0X+wYAAP2LO59Fqj4ECGKu/0g1L9DAqNzMGC2TsCucWqCNdm82z7etX7KzxoZAefEjO
+         +l2Q==
+X-Gm-Message-State: AOAM533p5R8U6F8hcPNWnSmGyPJr4nvLtXVzT9dTqIfYXJnP77zrWUoZ
+        zUqFzQrYkBAea19Xb41XY1UcJA==
+X-Google-Smtp-Source: ABdhPJwP/uUgjETkk5aFs5K2MQeLa9UJBGY/bZTj/5fR8QMrKjmZ3xMU7b9faBxVf+JpeANaqXIF+g==
+X-Received: by 2002:a63:c004:: with SMTP id h4mr23300961pgg.385.1593027823302;
+        Wed, 24 Jun 2020 12:43:43 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id j126sm20542728pfg.95.2020.06.24.12.43.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 12:43:42 -0700 (PDT)
+Date:   Wed, 24 Jun 2020 12:43:41 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Eli Friedman <efriedma@quicinc.com>
+Subject: Re: [PATCH v2 1/2] arm/build: Warn on orphan section placement
+Message-ID: <202006241242.9A6E0E2387@keescook>
+References: <20200622204915.2987555-1-keescook@chromium.org>
+ <20200622204915.2987555-2-keescook@chromium.org>
+ <CAKwvOdmYa6V=W2eupEmHcuF8+479F8XHxm1NAo0s2N=sawbKAw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKwvOdmYa6V=W2eupEmHcuF8+479F8XHxm1NAo0s2N=sawbKAw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jun 23, 2020 at 05:03:46PM -0700, Nick Desaulniers wrote:
+> On Mon, Jun 22, 2020 at 1:49 PM Kees Cook <keescook@chromium.org> wrote:
+> > [...]
+> > @@ -37,6 +38,13 @@
+> >                 *(.idmap.text)                                          \
+> >                 __idmap_text_end = .;                                   \
+> >
+> > +#define ARM_COMMON_DISCARD                                             \
+> > +               *(.ARM.attributes)                                      \
+> 
+> I could have sworn that someone (Eli?) once told me that this section
+> (.ARM.attributes) is used for disambiguating which ARM version or
+> which optional extensions were used when compiling, and that without
+> this section, one would not be able to disassemble 32b ARM precisely.
+> If that's the case, we might not want to discard it?
 
+Perhaps we want to treat it like .comment and include it in the ELF?
 
-On Tue, 23 Jun 2020, Denis Efremov wrote:
+> > +#define ARM_STUBS_TEXT                                                 \
+> > +               *(.gnu.warning)                                         \
+> > +               *(.glue_7t)                                             \
+> > +               *(.glue_7)                                              \
+> 
+> This changes the order of .glue_7t relative to .glue_7.  Maybe that
+> doesn't matter.
 
-> Detect an opencoded expression that is used before or after
-> array_size()/array3_size()/struct_size() to compute the same size.
->
-> Signed-off-by: Denis Efremov <efremov@linux.com>
+Good point. I'll swap it just for consistency.
 
-Applied, thanks.
+Thanks!
 
-julia
-
-> ---
-> Changes in v2:
->  - python rules moved next to SmPL patterns
->  - assignment operator used
->  - struct_size patterns fixed to check only E3, since
->    E1, E2 are sizeofs of a structure and a member
->    of a structure
-> Changes in v3:
->  - s/overlow/overflow/ typo fixed (thanks, Markus)
->  - \(&E1\|&E2\) changed to &\(E1\|E2\)
->  - print strings breaks removed
-> Changes in v4:
->  - duplicates warning removed
->  - python2 compatability in report&&org modes added
->  - s/down the code/later/ warning changed
->  - \(E1\|E2\|subE1\|subE2\) patterns simplified to \(subE1\|subE2\)
->
->  scripts/coccinelle/misc/array_size_dup.cocci | 209 +++++++++++++++++++
->  1 file changed, 209 insertions(+)
->  create mode 100644 scripts/coccinelle/misc/array_size_dup.cocci
->
-> diff --git a/scripts/coccinelle/misc/array_size_dup.cocci b/scripts/coccinelle/misc/array_size_dup.cocci
-> new file mode 100644
-> index 000000000000..d3d635b2d4fc
-> --- /dev/null
-> +++ b/scripts/coccinelle/misc/array_size_dup.cocci
-> @@ -0,0 +1,209 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +///
-> +/// Check for array_size(), array3_size(), struct_size() duplicates.
-> +/// Three types of patterns for these functions:
-> +///  1. An opencoded expression is used before array_size() to compute the same size
-> +///  2. An opencoded expression is used after array_size() to compute the same size
-> +/// From security point of view only first case is relevant. These functions
-> +/// perform arithmetic overflow check. Thus, if we use an opencoded expression
-> +/// before a call to the *_size() function we can miss an overflow.
-> +///
-> +// Confidence: High
-> +// Copyright: (C) 2020 Denis Efremov ISPRAS
-> +// Options: --no-includes --include-headers --no-loops
-> +
-> +virtual context
-> +virtual report
-> +virtual org
-> +
-> +@as@
-> +expression E1, E2;
-> +@@
-> +
-> +array_size(E1, E2)
-> +
-> +@as_next@
-> +expression subE1 <= as.E1;
-> +expression subE2 <= as.E2;
-> +expression as.E1, as.E2, E3;
-> +assignment operator aop;
-> +position p1, p2;
-> +@@
-> +
-> +* E1 * E2@p1
-> +  ... when != \(subE1\|subE2\) aop E3
-> +      when != &\(subE1\|subE2\)
-> +* array_size(E1, E2)@p2
-> +
-> +@script:python depends on report@
-> +p1 << as_next.p1;
-> +p2 << as_next.p2;
-> +@@
-> +
-> +msg = "WARNING: array_size is used later (line %s) to compute the same size" % (p2[0].line)
-> +coccilib.report.print_report(p1[0], msg)
-> +
-> +@script:python depends on org@
-> +p1 << as_next.p1;
-> +p2 << as_next.p2;
-> +@@
-> +
-> +msg = "WARNING: array_size is used later (line %s) to compute the same size" % (p2[0].line)
-> +coccilib.org.print_todo(p1[0], msg)
-> +
-> +@as_prev@
-> +expression subE1 <= as.E1;
-> +expression subE2 <= as.E2;
-> +expression as.E1, as.E2, E3;
-> +assignment operator aop;
-> +position p1, p2;
-> +@@
-> +
-> +* array_size(E1, E2)@p1
-> +  ... when != \(subE1\|subE2\) aop E3
-> +      when != &\(subE1\|subE2\)
-> +* E1 * E2@p2
-> +
-> +@script:python depends on report@
-> +p1 << as_prev.p1;
-> +p2 << as_prev.p2;
-> +@@
-> +
-> +msg = "WARNING: array_size is already used (line %s) to compute the same size" % (p1[0].line)
-> +coccilib.report.print_report(p2[0], msg)
-> +
-> +@script:python depends on org@
-> +p1 << as_prev.p1;
-> +p2 << as_prev.p2;
-> +@@
-> +
-> +msg = "WARNING: array_size is already used (line %s) to compute the same size" % (p1[0].line)
-> +coccilib.org.print_todo(p2[0], msg)
-> +
-> +@as3@
-> +expression E1, E2, E3;
-> +@@
-> +
-> +array3_size(E1, E2, E3)
-> +
-> +@as3_next@
-> +expression subE1 <= as3.E1;
-> +expression subE2 <= as3.E2;
-> +expression subE3 <= as3.E3;
-> +expression as3.E1, as3.E2, as3.E3, E4;
-> +assignment operator aop;
-> +position p1, p2;
-> +@@
-> +
-> +* E1 * E2 * E3@p1
-> +  ... when != \(subE1\|subE2\|subE3\) aop E4
-> +      when != &\(subE1\|subE2\|subE3\)
-> +* array3_size(E1, E2, E3)@p2
-> +
-> +@script:python depends on report@
-> +p1 << as3_next.p1;
-> +p2 << as3_next.p2;
-> +@@
-> +
-> +msg = "WARNING: array3_size is used later (line %s) to compute the same size" % (p2[0].line)
-> +coccilib.report.print_report(p1[0], msg)
-> +
-> +@script:python depends on org@
-> +p1 << as3_next.p1;
-> +p2 << as3_next.p2;
-> +@@
-> +
-> +msg = "WARNING: array3_size is used later (line %s) to compute the same size" % (p2[0].line)
-> +coccilib.org.print_todo(p1[0], msg)
-> +
-> +@as3_prev@
-> +expression subE1 <= as3.E1;
-> +expression subE2 <= as3.E2;
-> +expression subE3 <= as3.E3;
-> +expression as3.E1, as3.E2, as3.E3, E4;
-> +assignment operator aop;
-> +position p1, p2;
-> +@@
-> +
-> +* array3_size(E1, E2, E3)@p1
-> +  ... when != \(subE1\|subE2\|subE3\) aop E4
-> +      when != &\(subE1\|subE2\|subE3\)
-> +* E1 * E2 * E3@p2
-> +
-> +@script:python depends on report@
-> +p1 << as3_prev.p1;
-> +p2 << as3_prev.p2;
-> +@@
-> +
-> +msg = "WARNING: array3_size is already used (line %s) to compute the same size" % (p1[0].line)
-> +coccilib.report.print_report(p2[0], msg)
-> +
-> +@script:python depends on org@
-> +p1 << as3_prev.p1;
-> +p2 << as3_prev.p2;
-> +@@
-> +
-> +msg = "WARNING: array3_size is already used (line %s) to compute the same size" % (p1[0].line)
-> +coccilib.org.print_todo(p2[0], msg)
-> +
-> +@ss@
-> +expression E1, E2, E3;
-> +@@
-> +
-> +struct_size(E1, E2, E3)
-> +
-> +@ss_next@
-> +expression subE3 <= ss.E3;
-> +expression ss.E1, ss.E2, ss.E3, E4;
-> +assignment operator aop;
-> +position p1, p2;
-> +@@
-> +
-> +* E1 * E2 + E3@p1
-> +  ... when != subE3 aop E4
-> +      when != &subE3
-> +* struct_size(E1, E2, E3)@p2
-> +
-> +@script:python depends on report@
-> +p1 << ss_next.p1;
-> +p2 << ss_next.p2;
-> +@@
-> +
-> +msg = "WARNING: struct_size is used later (line %s) to compute the same size" % (p2[0].line)
-> +coccilib.report.print_report(p1[0], msg)
-> +
-> +@script:python depends on org@
-> +p1 << ss_next.p1;
-> +p2 << ss_next.p2;
-> +@@
-> +
-> +msg = "WARNING: struct_size is used later (line %s) to compute the same size" % (p2[0].line)
-> +coccilib.org.print_todo(p1[0], msg)
-> +
-> +@ss_prev@
-> +expression subE3 <= ss.E3;
-> +expression ss.E1, ss.E2, ss.E3, E4;
-> +assignment operator aop;
-> +position p1, p2;
-> +@@
-> +
-> +* struct_size(E1, E2, E3)@p1
-> +  ... when != subE3 aop E4
-> +      when != &subE3
-> +* E1 * E2 + E3@p2
-> +
-> +@script:python depends on report@
-> +p1 << ss_prev.p1;
-> +p2 << ss_prev.p2;
-> +@@
-> +
-> +msg = "WARNING: struct_size is already used (line %s) to compute the same size" % (p1[0].line)
-> +coccilib.report.print_report(p2[0], msg)
-> +
-> +@script:python depends on org@
-> +p1 << ss_prev.p1;
-> +p2 << ss_prev.p2;
-> +@@
-> +
-> +msg = "WARNING: struct_size is already used (line %s) to compute the same size" % (p1[0].line)
-> +coccilib.org.print_todo(p2[0], msg)
-> --
-> 2.26.2
->
->
+-- 
+Kees Cook
