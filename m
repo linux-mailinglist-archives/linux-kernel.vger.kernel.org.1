@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7155D20766F
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BAC207660
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404219AbgFXPCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:02:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
+        id S2404226AbgFXPCR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:02:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404207AbgFXPCK (ORCPT
+        with ESMTP id S2404215AbgFXPCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:02:10 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADAA0C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:02:10 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id z5so1543809pgb.6
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:02:10 -0700 (PDT)
+        Wed, 24 Jun 2020 11:02:13 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE53AC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:02:13 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id b16so1255171pfi.13
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:02:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=jEC53F5SPXIDcc5jWStknbQ9117ExLc2PS78CholLvg=;
-        b=G7MoKVKx1VUGb9vnXguZhgBeFJkuKF9NEW8T8jp0k/P1z3BFRRySMLN0qoKTHSBe60
-         A2AnZ0JeffOGNpnbnDtlTVMezWm50xKTcBXrIbK4jiiLXXsqkCK9Dica8fq+dc8e9VQ3
-         wKsmIOoBbb73v6dLhUP+Y85Gj9AK/vXIReG/iPPBCaFu2vTHHtq4F+9YIZbkoU8HOCd3
-         D5k2dMQw0lVRJvH6tfznXyD7/yc2cLpB1AX2fN87E7AjzSaPJbIuod6bz5S/pvC7TKMV
-         EDAN48Cv3KLAMFhvQG16KcjQSS5SdHErK7gvNnFFP/Vfhyrvn7ogxDyyZGyD+UE3Ic4B
-         ePvQ==
+        bh=joeQ3SaeYT7GDsb9cUatgWWRJkFAFZeG8Ak2AOs52Qk=;
+        b=W+u5EdOVfTsbqirIRrlaAE605oWdqSInb8/ROWc9uVHpy8/ZacyCg8Cvx1/hmSHNe1
+         3t51LQ0cHlHri3xOg02J38+lDjmHh3wBw+foyeO/wqb7929YCVjbddys+s8+dI/LS4PF
+         Sxzxf7Hvc2UfpdsS/ehNrjqX3Ph4Hd7h7xsGsSHcfMvWKYD4GpjEA7zaZ9nlGM5Akg3O
+         6AoX+kE0TccktjuQ7LhdFewIo+XHlINyZtQLSBwnBBCsiqP2M/uf5J+HSW4MHyciDwnx
+         wYGY1PXBe/Snv92WcoAbx1wMStUJ9ssnqFHSnEd6DMBPvYVhD1BoaWW6rUThQAGdqPXA
+         0bvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=jEC53F5SPXIDcc5jWStknbQ9117ExLc2PS78CholLvg=;
-        b=ULRYFBbO6PqLInNEcLKqKNcjCxTehKUjyqRReq/UaMasgaTBEhN1w8DYkz19LS0oHJ
-         oVn6cw1MEndNVXBVkk7j/ptls7Iq9i8YLEe/1dE5lrFOG2YKwn0ctEyRfJAsfdCW8UfA
-         oA5u1Q6ALTOJWwyqexIHEhHBdOcy8VSNIFSgb/gNuhIeoUbKkHu/mY3sEYlGphPKsfMW
-         4ZhgrYkOlnTDPySl3FxiVtvJly7SPwW63tgZcAqlfWuvib7NvboP2vwi99wT77y1CgJA
-         Lmm+43LwkGigaiSdb9vSf+MeqHWObbGT+E7PbNClpBV0hVi+9AAsP4lAZrYsBPtDCJpc
-         tFNA==
-X-Gm-Message-State: AOAM532y56DJXRK1JZGboRG2EPYDYrM9QuzBcq5u7VY+23Hqqdr3d+h3
-        72tjE/X73LEDUYakiZBtSg==
-X-Google-Smtp-Source: ABdhPJxm+JnjvpU80AoxHh+Had8XftzaYnZAP7GzsXlzh51MZfQygKr75m3W9vBMzEYpKNHFs9KV4Q==
-X-Received: by 2002:a62:834c:: with SMTP id h73mr31147208pfe.221.1593010930240;
-        Wed, 24 Jun 2020 08:02:10 -0700 (PDT)
+        bh=joeQ3SaeYT7GDsb9cUatgWWRJkFAFZeG8Ak2AOs52Qk=;
+        b=Pn4/Ymvlw2R/U9glvjKXHW/S1fUNEPcxyiSWTUDbNWtYtVTj3Cg1zBvB94/dlq+7tN
+         zX7f8Xr5kS/6iAZyNWPBSBMcd5BIh2srr7hrnazYARuQ8rIc9IdPind94zc3NyvEvCGZ
+         n3mhlAqGlUR016Dh73rRdoxyPod6Wd9lrzmMrQBR4pmyvjEz1Z23EmbRr5UoFbE1DdgS
+         4R21cilQ4iVW05DBzmePWDw5vD/js6pI0uAHg95YNnT/azbKhjHcOQQRTar2p+/fiPB6
+         eNolj3XSJojh1FWuqaAocJPI11vgtSJkuF/2mYXF7CUHyY3C/hQ5c8ermV3bKd6DHsh6
+         5R0g==
+X-Gm-Message-State: AOAM5339E3AhSd7a8h59/oQxT69bPsX5Fs1N2p64ERQGm4MHICFZU5jW
+        43suBZushSQuG7HiHGsFbeZ/hrW+LQ==
+X-Google-Smtp-Source: ABdhPJztXHW2r62m+tAG4OOCPW60g7TBHFl5rgmkuHiE/2l+QSOogErW+UJQ+iv40PhXFbMvLae0OA==
+X-Received: by 2002:a62:1716:: with SMTP id 22mr2825390pfx.99.1593010933234;
+        Wed, 24 Jun 2020 08:02:13 -0700 (PDT)
 Received: from ip-172-31-41-194.ap-northeast-1.compute.internal (ec2-52-199-21-241.ap-northeast-1.compute.amazonaws.com. [52.199.21.241])
-        by smtp.gmail.com with ESMTPSA id i125sm17013705pgd.21.2020.06.24.08.02.07
+        by smtp.gmail.com with ESMTPSA id i125sm17013705pgd.21.2020.06.24.08.02.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 08:02:09 -0700 (PDT)
+        Wed, 24 Jun 2020 08:02:12 -0700 (PDT)
 From:   nao.horiguchi@gmail.com
 To:     linux-mm@kvack.org
 Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
@@ -54,9 +54,9 @@ Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
         david@redhat.com, aneesh.kumar@linux.vnet.ibm.com,
         zeil@yandex-team.ru, naoya.horiguchi@nec.com,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 09/15] mm,hwpoison: remove flag argument from soft offline functions
-Date:   Wed, 24 Jun 2020 15:01:31 +0000
-Message-Id: <20200624150137.7052-10-nao.horiguchi@gmail.com>
+Subject: [PATCH v3 10/15] mm,hwpoison: Unify THP handling for hard and soft offline
+Date:   Wed, 24 Jun 2020 15:01:32 +0000
+Message-Id: <20200624150137.7052-11-nao.horiguchi@gmail.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200624150137.7052-1-nao.horiguchi@gmail.com>
 References: <20200624150137.7052-1-nao.horiguchi@gmail.com>
@@ -65,172 +65,93 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Naoya Horiguchi <naoya.horiguchi@nec.com>
+From: Oscar Salvador <osalvador@suse.de>
 
-The argument @flag no longer affects the behavior of soft_offline_page()
-and its variants, so let's remove them.
+Place the THP's page handling in a helper and use it
+from both hard and soft-offline machinery, so we get rid
+of some duplicated code.
 
-Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
 ---
- drivers/base/memory.c |  2 +-
- include/linux/mm.h    |  2 +-
- mm/madvise.c          |  2 +-
- mm/memory-failure.c   | 27 +++++++++++++--------------
- 4 files changed, 16 insertions(+), 17 deletions(-)
+ mm/memory-failure.c | 48 +++++++++++++++++++++------------------------
+ 1 file changed, 22 insertions(+), 26 deletions(-)
 
-diff --git v5.8-rc1-mmots-2020-06-20-21-44/drivers/base/memory.c v5.8-rc1-mmots-2020-06-20-21-44_patched/drivers/base/memory.c
-index 2b09b68b9f78..20664f279c99 100644
---- v5.8-rc1-mmots-2020-06-20-21-44/drivers/base/memory.c
-+++ v5.8-rc1-mmots-2020-06-20-21-44_patched/drivers/base/memory.c
-@@ -463,7 +463,7 @@ static ssize_t soft_offline_page_store(struct device *dev,
- 	if (kstrtoull(buf, 0, &pfn) < 0)
- 		return -EINVAL;
- 	pfn >>= PAGE_SHIFT;
--	ret = soft_offline_page(pfn, 0);
-+	ret = soft_offline_page(pfn);
- 	return ret == 0 ? count : ret;
- }
- 
-diff --git v5.8-rc1-mmots-2020-06-20-21-44/include/linux/mm.h v5.8-rc1-mmots-2020-06-20-21-44_patched/include/linux/mm.h
-index 229efb3479b1..d708033c50c0 100644
---- v5.8-rc1-mmots-2020-06-20-21-44/include/linux/mm.h
-+++ v5.8-rc1-mmots-2020-06-20-21-44_patched/include/linux/mm.h
-@@ -2998,7 +2998,7 @@ extern int sysctl_memory_failure_early_kill;
- extern int sysctl_memory_failure_recovery;
- extern void shake_page(struct page *p, int access);
- extern atomic_long_t num_poisoned_pages __read_mostly;
--extern int soft_offline_page(unsigned long pfn, int flags);
-+extern int soft_offline_page(unsigned long pfn);
- 
- 
- /*
-diff --git v5.8-rc1-mmots-2020-06-20-21-44/mm/madvise.c v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/madvise.c
-index bee1f4ac70d6..2b5080253406 100644
---- v5.8-rc1-mmots-2020-06-20-21-44/mm/madvise.c
-+++ v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/madvise.c
-@@ -908,7 +908,7 @@ static int madvise_inject_error(int behavior,
- 		if (behavior == MADV_SOFT_OFFLINE) {
- 			pr_info("Soft offlining pfn %#lx at process virtual address %#lx\n",
- 				pfn, start);
--			ret = soft_offline_page(pfn, 0);
-+			ret = soft_offline_page(pfn);
- 		} else {
- 			pr_info("Injecting memory failure for pfn %#lx at process virtual address %#lx\n",
- 				pfn, start);
 diff --git v5.8-rc1-mmots-2020-06-20-21-44/mm/memory-failure.c v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/memory-failure.c
-index 15b8e7fd94ed..03d3aae77f89 100644
+index 03d3aae77f89..2e244d5b83e0 100644
 --- v5.8-rc1-mmots-2020-06-20-21-44/mm/memory-failure.c
 +++ v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/memory-failure.c
-@@ -1502,7 +1502,7 @@ static void memory_failure_work_func(struct work_struct *work)
- 		if (!gotten)
- 			break;
- 		if (entry.flags & MF_SOFT_OFFLINE)
--			soft_offline_page(entry.pfn, entry.flags);
-+			soft_offline_page(entry.pfn);
- 		else
- 			memory_failure(entry.pfn, entry.flags);
+@@ -1103,6 +1103,25 @@ static int identify_page_state(unsigned long pfn, struct page *p,
+ 	return page_action(ps, p, pfn);
+ }
+ 
++static int try_to_split_thp_page(struct page *page, const char *msg)
++{
++	lock_page(page);
++	if (!PageAnon(page) || unlikely(split_huge_page(page))) {
++		unsigned long pfn = page_to_pfn(page);
++
++		unlock_page(page);
++		if (!PageAnon(page))
++			pr_info("%s: %#lx: non anonymous thp\n", msg, pfn);
++		else
++			pr_info("%s: %#lx: thp split failed\n", msg, pfn);
++		put_page(page);
++		return -EBUSY;
++	}
++	unlock_page(page);
++
++	return 0;
++}
++
+ static int memory_failure_hugetlb(unsigned long pfn, int flags)
+ {
+ 	struct page *p = pfn_to_page(pfn);
+@@ -1325,21 +1344,8 @@ int memory_failure(unsigned long pfn, int flags)
  	}
-@@ -1648,7 +1648,7 @@ static struct page *new_page(struct page *p, unsigned long private)
-  * that is not free, and 1 for any other page type.
-  * For 1 the page is returned with increased page count, otherwise not.
-  */
--static int __get_any_page(struct page *p, unsigned long pfn, int flags)
-+static int __get_any_page(struct page *p, unsigned long pfn)
- {
- 	int ret;
  
-@@ -1675,9 +1675,9 @@ static int __get_any_page(struct page *p, unsigned long pfn, int flags)
- 	return ret;
- }
+ 	if (PageTransHuge(hpage)) {
+-		lock_page(p);
+-		if (!PageAnon(p) || unlikely(split_huge_page(p))) {
+-			unlock_page(p);
+-			if (!PageAnon(p))
+-				pr_err("Memory failure: %#lx: non anonymous thp\n",
+-					pfn);
+-			else
+-				pr_err("Memory failure: %#lx: thp split failed\n",
+-					pfn);
+-			if (TestClearPageHWPoison(p))
+-				num_poisoned_pages_dec();
+-			put_page(p);
++		if (try_to_split_thp_page(p, "Memory Failure") < 0)
+ 			return -EBUSY;
+-		}
+-		unlock_page(p);
+ 		VM_BUG_ON_PAGE(!page_count(p), p);
+ 	}
  
--static int get_any_page(struct page *page, unsigned long pfn, int flags)
-+static int get_any_page(struct page *page, unsigned long pfn)
- {
--	int ret = __get_any_page(page, pfn, flags);
-+	int ret = __get_any_page(page, pfn);
- 
- 	if (ret == 1 && !PageHuge(page) &&
- 	    !PageLRU(page) && !__PageMovable(page)) {
-@@ -1690,7 +1690,7 @@ static int get_any_page(struct page *page, unsigned long pfn, int flags)
- 		/*
- 		 * Did it turn free?
- 		 */
--		ret = __get_any_page(page, pfn, 0);
-+		ret = __get_any_page(page, pfn);
- 		if (ret == 1 && !PageLRU(page)) {
- 			/* Drop page reference which is from __get_any_page() */
- 			put_page(page);
-@@ -1702,7 +1702,7 @@ static int get_any_page(struct page *page, unsigned long pfn, int flags)
- 	return ret;
- }
- 
--static int soft_offline_huge_page(struct page *page, int flags)
-+static int soft_offline_huge_page(struct page *page)
- {
- 	int ret;
- 	unsigned long pfn = page_to_pfn(page);
-@@ -1761,7 +1761,7 @@ static int soft_offline_huge_page(struct page *page, int flags)
- 	return ret;
- }
- 
--static int __soft_offline_page(struct page *page, int flags)
-+static int __soft_offline_page(struct page *page)
- {
- 	int ret;
- 	unsigned long pfn = page_to_pfn(page);
-@@ -1841,7 +1841,7 @@ static int __soft_offline_page(struct page *page, int flags)
- 	return ret;
- }
- 
--static int soft_offline_in_use_page(struct page *page, int flags)
-+static int soft_offline_in_use_page(struct page *page)
- {
- 	int ret;
+@@ -1847,19 +1853,9 @@ static int soft_offline_in_use_page(struct page *page)
  	int mt;
-@@ -1871,9 +1871,9 @@ static int soft_offline_in_use_page(struct page *page, int flags)
- 	mt = get_pageblock_migratetype(page);
- 	set_pageblock_migratetype(page, MIGRATE_ISOLATE);
- 	if (PageHuge(page))
--		ret = soft_offline_huge_page(page, flags);
-+		ret = soft_offline_huge_page(page);
- 	else
--		ret = __soft_offline_page(page, flags);
-+		ret = __soft_offline_page(page);
- 	set_pageblock_migratetype(page, mt);
- 	return ret;
- }
-@@ -1894,7 +1894,6 @@ static int soft_offline_free_page(struct page *page)
- /**
-  * soft_offline_page - Soft offline a page.
-  * @pfn: pfn to soft-offline
-- * @flags: flags. Same as memory_failure().
-  *
-  * Returns 0 on success, otherwise negated errno.
-  *
-@@ -1913,7 +1912,7 @@ static int soft_offline_free_page(struct page *page)
-  * This is not a 100% solution for all memory, but tries to be
-  * ``good enough'' for the majority of memory.
-  */
--int soft_offline_page(unsigned long pfn, int flags)
-+int soft_offline_page(unsigned long pfn)
- {
- 	int ret;
- 	struct page *page;
-@@ -1931,11 +1930,11 @@ int soft_offline_page(unsigned long pfn, int flags)
- 	}
+ 	struct page *hpage = compound_head(page);
  
- 	get_online_mems();
--	ret = get_any_page(page, pfn, flags);
-+	ret = get_any_page(page, pfn);
- 	put_online_mems();
+-	if (!PageHuge(page) && PageTransHuge(hpage)) {
+-		lock_page(page);
+-		if (!PageAnon(page) || unlikely(split_huge_page(page))) {
+-			unlock_page(page);
+-			if (!PageAnon(page))
+-				pr_info("soft offline: %#lx: non anonymous thp\n", page_to_pfn(page));
+-			else
+-				pr_info("soft offline: %#lx: thp split failed\n", page_to_pfn(page));
+-			put_page(page);
++	if (!PageHuge(page) && PageTransHuge(hpage))
++		if (try_to_split_thp_page(page, "soft offline") < 0)
+ 			return -EBUSY;
+-		}
+-		unlock_page(page);
+-	}
  
- 	if (ret > 0)
--		ret = soft_offline_in_use_page(page, flags);
-+		ret = soft_offline_in_use_page(page);
- 	else if (ret == 0)
- 		ret = soft_offline_free_page(page);
- 
+ 	/*
+ 	 * Setting MIGRATE_ISOLATE here ensures that the page will be linked
 -- 
 2.17.1
 
