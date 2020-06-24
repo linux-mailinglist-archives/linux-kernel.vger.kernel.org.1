@@ -2,63 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF7C206A9D
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 05:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2188D206AA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 05:32:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388628AbgFXDbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 23 Jun 2020 23:31:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34042 "EHLO
+        id S2388697AbgFXDbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 23 Jun 2020 23:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388292AbgFXDbd (ORCPT
+        with ESMTP id S2388408AbgFXDbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 23 Jun 2020 23:31:33 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A991C061573;
-        Tue, 23 Jun 2020 20:31:33 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id 4F58D1298632C;
-        Tue, 23 Jun 2020 20:31:32 -0700 (PDT)
-Date:   Tue, 23 Jun 2020 20:31:31 -0700 (PDT)
-Message-Id: <20200623.203131.1093463627031337018.davem@davemloft.net>
-To:     vaibhavgupta40@gmail.com
-Cc:     helgaas@kernel.org, bhelgaas@google.com, bjorn@helgaas.com,
-        vaibhav.varodek@gmail.com, kuba@kernel.org, pcnet32@frontier.com,
-        thomas.lendacky@amd.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v2 0/3] ethernet: amd: Convert to generic power
- management
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200622111400.55956-1-vaibhavgupta40@gmail.com>
-References: <20200622111400.55956-1-vaibhavgupta40@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 23 Jun 2020 20:31:32 -0700 (PDT)
+        Tue, 23 Jun 2020 23:31:46 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C3C5C061755
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 20:31:46 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id b7so1801301pju.0
+        for <linux-kernel@vger.kernel.org>; Tue, 23 Jun 2020 20:31:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IahJt8/KJJjCX5znAGwjVoLhoLAi5KgGttIopC9m27U=;
+        b=MvLV62bGP7HuCujPeBIHKz13XUI8YQmFtRra1vib+8tF+xHHQRVE/n3L2rgdukvz0W
+         tXgg5gRG56BP2uOmEc+oEMf47b4I2KLwUM3lCVukC+NRxgYxHqsxLKDUjSfA6R0sfqEo
+         TgggLZp03MNbl6iiR1g9B+Tdp9CA3YajVJsQpkFoRyIFXvFULZrBVh7rUaJHmg4R6nNH
+         1qsvb5gRGuCH3ZPUtMEqqFW/A+OofiC/qMD5DJlvOz7Ilyyt2ZStv6KM1sJPos9n372w
+         0UbUY406dJ7GN3qOL01soPCDMdymvlW2KSQp3fukKyBl3YvdOFBaJIjT8ZDn4ePN1mFb
+         xD6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IahJt8/KJJjCX5znAGwjVoLhoLAi5KgGttIopC9m27U=;
+        b=SAlfJthZsgnIpgNSz3UlCjEAS+FKSEKDp8lYyxgUL05cfe0HvHH9IpJat6CpmcvD+E
+         KDfphZCzsanqKpOu0Q28WzxMTy3PKNcI09VlZJAliJ13W3asuA3lhm8SAhOgnqRgHQN9
+         dOGf7oMu5QyzEA8XMoNumrNEuHkVrtEOJVEFRrCv0m3MNr86MmD6RvEbIss3Dqjcb5ZE
+         WswQMQx+VlWjRIofBveq6hjD7S+seIKKPXjznWNcLxJSDCXTHL6ih+IKD6bC7y7sAISB
+         oj6emTjnaRub5cty/gCqug4SaZTs0j+q8quqcg1l/iLf+eEmHJmv0LdUohlzuFaMnaeP
+         V2xA==
+X-Gm-Message-State: AOAM533M5/KX9WCmiaOyMnNNPJDE79ZsMJQ95fnruHNLdAAG9oM98niA
+        i7LeCCYc415ZmRLyxpWbKL6Ncg==
+X-Google-Smtp-Source: ABdhPJwO/hYz95xUwT1OWmJI4vtUw4+LYaBqYL3FPsRivwPfG7ygEmvTnhPAC6hvl2WpJppN7B6bFQ==
+X-Received: by 2002:a17:90a:1ac3:: with SMTP id p61mr27689014pjp.23.1592969505744;
+        Tue, 23 Jun 2020 20:31:45 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:0:9efe:9f1:9267:2b27])
+        by smtp.gmail.com with ESMTPSA id c2sm14702791pgk.77.2020.06.23.20.31.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Jun 2020 20:31:45 -0700 (PDT)
+Date:   Tue, 23 Jun 2020 20:31:42 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Peter Collingbourne <pcc@google.com>,
+        James Morse <james.morse@arm.com>,
+        Borislav Petkov <bp@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/9] efi/libstub: Remove .note.gnu.property
+Message-ID: <20200624033142.cinvg6rbg252j46d@google.com>
+References: <20200624014940.1204448-1-keescook@chromium.org>
+ <20200624014940.1204448-4-keescook@chromium.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200624014940.1204448-4-keescook@chromium.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Date: Mon, 22 Jun 2020 16:43:57 +0530
+On 2020-06-23, Kees Cook wrote:
+>In preparation for adding --orphan-handling=warn to more architectures,
+>make sure unwanted sections don't end up appearing under the .init
+>section prefix that libstub adds to itself during objcopy.
+>
+>Signed-off-by: Kees Cook <keescook@chromium.org>
+>---
+> drivers/firmware/efi/libstub/Makefile | 3 +++
+> 1 file changed, 3 insertions(+)
+>
+>diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
+>index 75daaf20374e..9d2d2e784bca 100644
+>--- a/drivers/firmware/efi/libstub/Makefile
+>+++ b/drivers/firmware/efi/libstub/Makefile
+>@@ -66,6 +66,9 @@ lib-$(CONFIG_X86)		+= x86-stub.o
+> CFLAGS_arm32-stub.o		:= -DTEXT_OFFSET=$(TEXT_OFFSET)
+> CFLAGS_arm64-stub.o		:= -DTEXT_OFFSET=$(TEXT_OFFSET)
+>
+>+# Remove unwanted sections first.
+>+STUBCOPY_FLAGS-y		+= --remove-section=.note.gnu.property
+>+
+> #
+> # For x86, bootloaders like systemd-boot or grub-efi do not zero-initialize the
+> # .bss section, so the .bss section of the EFI stub needs to be included in the
 
-> Linux Kernel Mentee: Remove Legacy Power Management.
-> 
-> The purpose of this patch series is to remove legacy power management callbacks
-> from amd ethernet drivers.
-> 
-> The callbacks performing suspend() and resume() operations are still calling
-> pci_save_state(), pci_set_power_state(), etc. and handling the power management
-> themselves, which is not recommended.
-> 
-> The conversion requires the removal of the those function calls and change the
-> callback definition accordingly and make use of dev_pm_ops structure.
-> 
-> All patches are compile-tested only.
+arch/arm64/Kconfig enables ARM64_PTR_AUTH by default. When the config is on
 
-Series applied, thanks.
+ifeq ($(CONFIG_ARM64_BTI_KERNEL),y)
+branch-prot-flags-$(CONFIG_CC_HAS_BRANCH_PROT_PAC_RET_BTI) := -mbranch-protection=pac-ret+leaf+bti
+else
+branch-prot-flags-$(CONFIG_CC_HAS_BRANCH_PROT_PAC_RET) := -mbranch-protection=pac-ret+leaf
+endif
+
+This option creates .note.gnu.property:
+
+% readelf -n drivers/firmware/efi/libstub/efi-stub.o
+
+Displaying notes found in: .note.gnu.property
+   Owner                Data size        Description
+   GNU                  0x00000010       NT_GNU_PROPERTY_TYPE_0
+       Properties: AArch64 feature: PAC
+
+If .note.gnu.property is not desired in drivers/firmware/efi/libstub, specifying
+-mbranch-protection=none can override -mbranch-protection=pac-ret+leaf
