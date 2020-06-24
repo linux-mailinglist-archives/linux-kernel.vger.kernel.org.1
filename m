@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81FC5207AB1
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:49:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1780B207AA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 19:49:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405757AbgFXRsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 13:48:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53292 "EHLO
+        id S2405718AbgFXRsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 13:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405696AbgFXRsE (ORCPT
+        with ESMTP id S2405622AbgFXRsH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 13:48:04 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA10C0613ED;
-        Wed, 24 Jun 2020 10:48:04 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id a8so927286edy.1;
-        Wed, 24 Jun 2020 10:48:04 -0700 (PDT)
+        Wed, 24 Jun 2020 13:48:07 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BA1DC0613ED;
+        Wed, 24 Jun 2020 10:48:07 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id t21so2117751edr.12;
+        Wed, 24 Jun 2020 10:48:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=3xz8Ly05gyeb5KBCpOokF5fCnIvNh3e8To5d/tCGw6s=;
-        b=Fe/bjDutnwOqo93w+Xjty82lq2fDYEmrAOKpCMovNUMLb+3FAiXqih2FNgfZ6vthki
-         ytYRp7jxYrfwADDdUI5gTBRZ++n0JILPb/zBlQm42x4iZLWu0uaI3z96bAgR58DNIsV/
-         3Kx6u3c342922rGTT49qVEz14r4hQNXqHE6QgIBckrhwfx+SWVLvLLeoanWEF6DVDcwt
-         KGuVWxFGOyTmBZHKwah0d39EX8RHP+n2rcjYu1nHsvQGdSZCQ+EU4HAq6k3yvZxOHG0B
-         wUHYP5LysSO4rSutWx7BplzlPRDSlPhl35lx9cf6jnwowNFVapXY9it5JiTwsT3yqWjc
-         qvGw==
+        bh=QrtlUREQq2lhgOt3whoJddN27v5YME2qlHZx5rQeOQQ=;
+        b=mTNlK59SgtgH3xgd7hSS4TlXWhJQfTLzCQ7KDPqXwIiiX4DNtPjVfk/IIPfpk3FK7t
+         ZJH8z2wotpsqXXz0A+nwxAXR2KZjHP3E97n8v4r3CLjEKtN7/xpG+DvS1OQDEKkGB9D0
+         5/bl5uqkdqxUBuX+pfL8r8Pn0Dm2qQI6Y72Nx+xiPBs063dkbVrhaJSYnhEdUZbSSVUo
+         piQ+C9q+YJsDU2bw+8yLCKZHyJ6J/PBTzFD4Rc1invD38GMXTgL14E+FKunNenA3Evcl
+         ei1S//3sqdbAlVKc2ok/JH/sEYhMrhaFKRftAVE475w+1g8X4KABtf2pI+Q3IkSzF9AT
+         MynQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=3xz8Ly05gyeb5KBCpOokF5fCnIvNh3e8To5d/tCGw6s=;
-        b=Bg/+E2PtzQ9datJ0TnDWQojRumzlhJALQXImecT56fs3jRPpH81mWtYO5CrnvuIQEH
-         gyaDXBOZ+ge6Wsv47LDQsX7Eoz4MCFF5O3AYs3Isaav2e7Wm34nxjsj20hvK7TTn56sK
-         fSFRt/nwjIuCNC9JZqZbp3/xvpHFZPvV5Q+e+rhMEg6J/bv4kPw2a2qHlEr4KVECWe8q
-         CRfDzGt4U0Nc5fatYJYG0fnvYtVLpjHVih4ej4k2529Bua+Qe9TvvwyQGNH2V6nPdt31
-         eHP+sSHnK5Na3/K4n4xJS1+ilpNhsZMhYBIP6kw6DYNbY2/l8rQPStOPF4Qb0WCM6v91
-         a3Qg==
-X-Gm-Message-State: AOAM532Hc1XuWjUfXs2qII3go9RZhOjb+feTzeknQ1WzPclWKZLIoO7L
-        ty6UbFTPtQu9+5+mBX5g5uo=
-X-Google-Smtp-Source: ABdhPJy4nlS4R3fh8GjfZyWRxLUjKET745KFBVTLw5Odhwtl34mGdwqJOCwC7dldEzPaGZ9uwkVJPg==
-X-Received: by 2002:a50:b964:: with SMTP id m91mr29300403ede.37.1593020882972;
-        Wed, 24 Jun 2020 10:48:02 -0700 (PDT)
+        bh=QrtlUREQq2lhgOt3whoJddN27v5YME2qlHZx5rQeOQQ=;
+        b=QBoKMy4rSaD9Iq4DkD0ga1FIK5+001xWZZC3BrSBpiBPfzKxpQdIJ3p2OT56cxMVBw
+         AnZspKfIXc4HFDgtgSsodsFCiVMFOLFPYzDdjTFAsCnNLjw/3tOuBfnJkKzl5bRUxtmH
+         q5ktFhEokkun+hp03wqW4ntI1Vds1wychARpyOomqMFk8Rx1VHv6sucCnTkjZo9E7fmQ
+         w5XogSu4Cygd1uQqajjDY5fyhAbHOEkIhYrlTOwc0ImKxzhgqFzw9xLm7f7IkPF8rB2K
+         yRgDrUSMIHxRvfCHnPtXIDTKh0ogleozFT4ueB7t6Qz10DXcc+fxBNm2nT1DCBZomkc4
+         GeHw==
+X-Gm-Message-State: AOAM531gsczE+4+73/y0Dyc/9BV1jMi1JeHBkp2fDNlyUdjgYccJaTJv
+        +GYcs2KbkteH6lI2ooncElU=
+X-Google-Smtp-Source: ABdhPJwcHJuThPgeqtWDTFBFLi15quHbrXpJ8gAAL5yjdhw7yYY01eVW5g/aGXwqodMR8N6IOYOkIg==
+X-Received: by 2002:a50:d302:: with SMTP id g2mr28172690edh.312.1593020884180;
+        Wed, 24 Jun 2020 10:48:04 -0700 (PDT)
 Received: from localhost.localdomain ([188.24.137.55])
-        by smtp.gmail.com with ESMTPSA id s14sm8044146edq.36.2020.06.24.10.48.01
+        by smtp.gmail.com with ESMTPSA id s14sm8044146edq.36.2020.06.24.10.48.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 10:48:02 -0700 (PDT)
+        Wed, 24 Jun 2020 10:48:03 -0700 (PDT)
 From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 To:     Stephen Boyd <sboyd@kernel.org>,
         =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
@@ -58,9 +58,9 @@ To:     Stephen Boyd <sboyd@kernel.org>,
 Cc:     linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-actions@lists.infradead.org
-Subject: [PATCH v2 2/6] dt-bindings: clock: Add APB, DMAC, GPIO bindings for Actions S500 SoC
-Date:   Wed, 24 Jun 2020 20:47:53 +0300
-Message-Id: <1998440a1debe07f838899ccbb15c72518b6b94f.1592941257.git.cristian.ciocaltea@gmail.com>
+Subject: [PATCH v2 3/6] clk: actions: Add APB, DMAC, GPIO clock support for Actions S500 SoC
+Date:   Wed, 24 Jun 2020 20:47:54 +0300
+Message-Id: <c19a690f6c296dc17fe98d86c90ab8cdce4be3d4.1592941257.git.cristian.ciocaltea@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1592941257.git.cristian.ciocaltea@gmail.com>
 References: <cover.1592941257.git.cristian.ciocaltea@gmail.com>
@@ -71,104 +71,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the missing APB, DMAC and GPIO clock bindings constants for
-Actions Semi S500 SoC.
+Add support for the missing APB, DMAC and GPIO clocks in the Actions
+Semi S500 SoC clock driver.
 
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 ---
- include/dt-bindings/clock/actions,s500-cmu.h | 77 ++++++++++----------
- 1 file changed, 40 insertions(+), 37 deletions(-)
+ drivers/clk/actions/owl-s500.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/include/dt-bindings/clock/actions,s500-cmu.h b/include/dt-bindings/clock/actions,s500-cmu.h
-index 030981cd2d56..a391d1651257 100644
---- a/include/dt-bindings/clock/actions,s500-cmu.h
-+++ b/include/dt-bindings/clock/actions,s500-cmu.h
-@@ -33,45 +33,48 @@
- #define CLK_BISP		15
- #define CLK_VCE			16
- #define CLK_VDE			17
-+#define CLK_APB			18
-+#define CLK_DMAC		19
+diff --git a/drivers/clk/actions/owl-s500.c b/drivers/clk/actions/owl-s500.c
+index 0eb83a0b70bc..025a8f6d6482 100644
+--- a/drivers/clk/actions/owl-s500.c
++++ b/drivers/clk/actions/owl-s500.c
+@@ -175,6 +175,8 @@ static OWL_MUX(dev_clk, "dev_clk", dev_clk_mux_p, CMU_DEVPLL, 12, 1, CLK_SET_RAT
+ static OWL_MUX(ahbprediv_clk, "ahbprediv_clk", ahbprediv_clk_mux_p, CMU_BUSCLK1, 8, 3, CLK_SET_RATE_PARENT);
  
- /* peripheral device clock */
--#define CLK_TIMER		18
--#define CLK_I2C0		19
--#define CLK_I2C1		20
--#define CLK_I2C2		21
--#define CLK_I2C3		22
--#define CLK_PWM0		23
--#define CLK_PWM1		24
--#define CLK_PWM2		25
--#define CLK_PWM3		26
--#define CLK_PWM4		27
--#define CLK_PWM5		28
--#define CLK_SD0			29
--#define CLK_SD1			30
--#define CLK_SD2			31
--#define CLK_SENSOR0		32
--#define CLK_SENSOR1		33
--#define CLK_SPI0		34
--#define CLK_SPI1		35
--#define CLK_SPI2		36
--#define CLK_SPI3		37
--#define CLK_UART0		38
--#define CLK_UART1		39
--#define CLK_UART2		40
--#define CLK_UART3		41
--#define CLK_UART4		42
--#define CLK_UART5		43
--#define CLK_UART6		44
--#define CLK_DE1			45
--#define CLK_DE2			46
--#define CLK_I2SRX		47
--#define CLK_I2STX		48
--#define CLK_HDMI_AUDIO		49
--#define CLK_HDMI		50
--#define CLK_SPDIF		51
--#define CLK_NAND		52
--#define CLK_ECC			53
--#define CLK_RMII_REF		54
-+#define CLK_GPIO		20
-+#define CLK_TIMER		21
-+#define CLK_I2C0		22
-+#define CLK_I2C1		23
-+#define CLK_I2C2		24
-+#define CLK_I2C3		25
-+#define CLK_PWM0		26
-+#define CLK_PWM1		27
-+#define CLK_PWM2		28
-+#define CLK_PWM3		29
-+#define CLK_PWM4		30
-+#define CLK_PWM5		31
-+#define CLK_SD0			32
-+#define CLK_SD1			33
-+#define CLK_SD2			34
-+#define CLK_SENSOR0		35
-+#define CLK_SENSOR1		36
-+#define CLK_SPI0		37
-+#define CLK_SPI1		38
-+#define CLK_SPI2		39
-+#define CLK_SPI3		40
-+#define CLK_UART0		41
-+#define CLK_UART1		42
-+#define CLK_UART2		43
-+#define CLK_UART3		44
-+#define CLK_UART4		45
-+#define CLK_UART5		46
-+#define CLK_UART6		47
-+#define CLK_DE1			48
-+#define CLK_DE2			49
-+#define CLK_I2SRX		50
-+#define CLK_I2STX		51
-+#define CLK_HDMI_AUDIO		52
-+#define CLK_HDMI		53
-+#define CLK_SPDIF		54
-+#define CLK_NAND		55
-+#define CLK_ECC			56
-+#define CLK_RMII_REF		57
+ /* gate clocks */
++static OWL_GATE(gpio_clk, "gpio_clk", "apb_clk", CMU_DEVCLKEN0, 18, 0, 0);
++static OWL_GATE(dmac_clk, "dmac_clk", "h_clk", CMU_DEVCLKEN0, 1, 0, 0);
+ static OWL_GATE(spi0_clk, "spi0_clk", "ahb_clk", CMU_DEVCLKEN1, 10, 0, CLK_IGNORE_UNUSED);
+ static OWL_GATE(spi1_clk, "spi1_clk", "ahb_clk", CMU_DEVCLKEN1, 11, 0, CLK_IGNORE_UNUSED);
+ static OWL_GATE(spi2_clk, "spi2_clk", "ahb_clk", CMU_DEVCLKEN1, 12, 0, CLK_IGNORE_UNUSED);
+@@ -184,6 +186,7 @@ static OWL_GATE(hdmi_clk, "hdmi_clk", "hosc", CMU_DEVCLKEN1, 3, 0, 0);
  
- #define CLK_NR_CLKS	       (CLK_RMII_REF + 1)
+ /* divider clocks */
+ static OWL_DIVIDER(h_clk, "h_clk", "ahbprediv_clk", CMU_BUSCLK1, 12, 2, NULL, 0, 0);
++static OWL_DIVIDER(apb_clk, "apb_clk", "ahb_clk", CMU_BUSCLK1, 14, 2, NULL, 0, 0);
+ static OWL_DIVIDER(rmii_ref_clk, "rmii_ref_clk", "ethernet_pll_clk", CMU_ETHERNETPLL, 1, 1, rmii_ref_div_table, 0, 0);
  
+ /* factor clocks */
+@@ -428,6 +431,9 @@ static struct owl_clk_common *s500_clks[] = {
+ 	&spdif_clk.common,
+ 	&nand_clk.common,
+ 	&ecc_clk.common,
++	&apb_clk.common,
++	&dmac_clk.common,
++	&gpio_clk.common,
+ };
+ 
+ static struct clk_hw_onecell_data s500_hw_clks = {
+@@ -484,6 +490,9 @@ static struct clk_hw_onecell_data s500_hw_clks = {
+ 		[CLK_SPDIF]		= &spdif_clk.common.hw,
+ 		[CLK_NAND]		= &nand_clk.common.hw,
+ 		[CLK_ECC]		= &ecc_clk.common.hw,
++		[CLK_APB]		= &apb_clk.common.hw,
++		[CLK_DMAC]		= &dmac_clk.common.hw,
++		[CLK_GPIO]		= &gpio_clk.common.hw,
+ 	},
+ 	.num = CLK_NR_CLKS,
+ };
 -- 
 2.27.0
 
