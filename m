@@ -2,324 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78A2B207CE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:25:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42AFC207CF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 22:30:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406424AbgFXUZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 16:25:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406285AbgFXUZP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 16:25:15 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 776EDC061573;
-        Wed, 24 Jun 2020 13:25:15 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id q19so3737963eja.7;
-        Wed, 24 Jun 2020 13:25:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AIOfbi7IvAHWTFwhOSciS+mbpizJqu08bqyXcucoS5M=;
-        b=nUhGLW3eDrlXs1vQzcd3HopBFOlouYaMr9vDYVY6nynmwc6MmZ0kaiqmpZ79ejDyD3
-         9Rh7hT7jp4Uu02HiccxvXZuxWCJQY+ghf8qzIGgnyeXGrk7x8aRf604LcK4o6iQ7FME1
-         WjONCe6aOoRfvLAqI6laKANxYC4lMbs5tmzAhvLvPWRWvArkggso1KymMtn5H0kmXfqO
-         1eKKXnUGkQvS9nPTi6EfFvkC0N388p4zmbjR6YIPXRZRWu+ltLW+c6x01IztBjL+vM5H
-         8QLg7iTON4Oix62ng62fZ2bFeuNNXIV8rRs+QNSoKGngXaiVvK797CDPbDCSQaom0gOi
-         EKaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AIOfbi7IvAHWTFwhOSciS+mbpizJqu08bqyXcucoS5M=;
-        b=DLNkxGPR1NugMKYH0KimazkKOk9UgeYH4XQN3Vwr0do9zZucRNsUugXRzDwwvznBkV
-         XO8zga+xxHViC+6rzfN7JFOXBB4a+8IX9tR4OoeO9qVu7t5HVgxLNDePB74gODWRoRBr
-         9HRSr4uX8W5A2FodlmyZ/L9OZF+ZizvebaxkxVCZZYMJZPhBsOq+JGPZWLZyRPov3ais
-         SyXFO4P2QLzp5aUlsqloQCWc90BhSWD0Jzfzz0mE3C6X8PWz3pDhcz/FjBuMifYEC8kR
-         gVGUt5SYgt0zG5Hy2OdC4qW47Bw/M0/bD0C7ymXAvAXYuQtowo+fXSDeXvQzQ8xeSLML
-         CCVQ==
-X-Gm-Message-State: AOAM533W4HI8ylT0iI5PukKPBpx6JFadpN8C71o3fLrOa4jaDF60U0Ak
-        lMZ9hF8+ITOr2y3yblQSjcM5D0U67E5mUDtLVnI=
-X-Google-Smtp-Source: ABdhPJw/iDHgooLID2Ky+/3ZRdFuED7kHW7EMlqnbsWxPn5Wdf67DTKrgCJkW7NZvUPX0bi8xOT9Fri0vmHg/4aMFZs=
-X-Received: by 2002:a17:906:7c54:: with SMTP id g20mr10689573ejp.460.1593030313919;
- Wed, 24 Jun 2020 13:25:13 -0700 (PDT)
+        id S2391438AbgFXUa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 16:30:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2391042AbgFXUa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 16:30:26 -0400
+Received: from paulmck-ThinkPad-P72.home (50-39-105-78.bvtn.or.frontiernet.net [50.39.105.78])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3B4442065F;
+        Wed, 24 Jun 2020 20:30:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593030625;
+        bh=NhWQFESKuqFhh+KTduGAkopqp5zKjlwSv1YGzDYv/Mg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=XUp1Z/K237eWbw+f/BU00/yhT2EstnLvoEn9m7foDNpEH66+0vZesqUo0bWWnzuzp
+         TxuHuBP4QirCsIkW3noPmEG8fc8SZXdy2qBCPGjnQHCuBGqoxJ3f9hUg6djoApptcf
+         mrbwXPlRuzahmU6ChlhlhLYwDWcRMafHGfEqX0b0=
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 26AA835228BC; Wed, 24 Jun 2020 13:30:25 -0700 (PDT)
+Date:   Wed, 24 Jun 2020 13:30:25 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, elver@google.com
+Subject: Re: [rcu:rcu/next 35/35] kernel/rcu/tree.c:251:8: error: implicit
+ declaration of function 'arch_atomic_add_return'; did you mean
+Message-ID: <20200624203025.GJ9247@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <202006250300.ic32FsdY%lkp@intel.com>
 MIME-Version: 1.0
-References: <1592999796-30501-1-git-send-email-kalyan_t@codeaurora.org>
-In-Reply-To: <1592999796-30501-1-git-send-email-kalyan_t@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Wed, 24 Jun 2020 13:25:43 -0700
-Message-ID: <CAF6AEGs_E+8p=-o1BHkAbAa8qY1ZaU8rPJsfzqV5L4wBBhvcAg@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm/dpu: add support for dither block in display
-To:     Kalyan Thota <kalyan_t@codeaurora.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Paul <seanpaul@chromium.org>,
-        "Kristian H. Kristensen" <hoegsberg@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Raviteja Tamatam <travitej@codeaurora.org>,
-        nganji@codeaurora.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202006250300.ic32FsdY%lkp@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jun 24, 2020 at 4:57 AM Kalyan Thota <kalyan_t@codeaurora.org> wrote:
->
-> This change enables dither block for primary interface
-> in display.
->
-> Enabled for 6bpc in the current version.
->
-> Signed-off-by: Kalyan Thota <kalyan_t@codeaurora.org>
+On Thu, Jun 25, 2020 at 03:38:03AM +0800, kernel test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
+> head:   347acb93a34a6e4f312f8b9ec1afdb86d27858d2
+> commit: 347acb93a34a6e4f312f8b9ec1afdb86d27858d2 [35/35] rcu: Fixup noinstr warnings
+> config: mips-allyesconfig (attached as .config)
+> compiler: mips-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         git checkout 347acb93a34a6e4f312f8b9ec1afdb86d27858d2
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=mips 
+> 
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All errors (new ones prefixed by >>):
+> 
+>    kernel/rcu/tree.c: In function 'rcu_dynticks_eqs_enter':
+> >> kernel/rcu/tree.c:251:8: error: implicit declaration of function 'arch_atomic_add_return'; did you mean 'atomic_add_return'? [-Werror=implicit-function-declaration]
+>      251 |  seq = arch_atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
+>          |        ^~~~~~~~~~~~~~~~~~~~~~
+>          |        atomic_add_return
+>    kernel/rcu/tree.c: In function 'rcu_dynticks_eqs_exit':
+> >> kernel/rcu/tree.c:281:3: error: implicit declaration of function 'arch_atomic_andnot'; did you mean 'atomic_andnot'? [-Werror=implicit-function-declaration]
+>      281 |   arch_atomic_andnot(RCU_DYNTICK_CTRL_MASK, &rdp->dynticks);
+>          |   ^~~~~~~~~~~~~~~~~~
+>          |   atomic_andnot
+>    kernel/rcu/tree.c: In function 'rcu_dynticks_curr_cpu_in_eqs':
+> >> kernel/rcu/tree.c:314:11: error: implicit declaration of function 'arch_atomic_read'; did you mean 'atomic_read'? [-Werror=implicit-function-declaration]
+>      314 |  return !(arch_atomic_read(&rdp->dynticks) & RCU_DYNTICK_CTRL_CTR);
+>          |           ^~~~~~~~~~~~~~~~
+>          |           atomic_read
+>    cc1: some warnings being treated as errors
+
+And architectures using the definitions in include/linux/atomic-fallback.h
+don't like this patch much.  MIPS defines everything in terms of
+atomic_add_return_relaxed(), for which it provides inline assembly for
+SMP-capable builds and a C-language code sequence otherwise.
+
+One way of handling this is as follows:
+
+------------------------------------------------------------------------
+
+diff --git a/include/linux/atomic-fallback.h b/include/linux/atomic-fallback.h
+index 2c4927b..b7935857 100644
+--- a/include/linux/atomic-fallback.h
++++ b/include/linux/atomic-fallback.h
+@@ -133,6 +133,7 @@ atomic_add_return(int i, atomic_t *v)
+ 	return ret;
+ }
+ #define atomic_add_return atomic_add_return
++#define arch_atomic_add_return atomic_add_return
+ #endif
+ 
+ #endif /* atomic_add_return_relaxed */
+
+------------------------------------------------------------------------
+
+And of course similar for arch_atomic_andnot() and arch_atomic_read().
+
+Another way would be to define a noinstr_atomic_add_return() that
+was defined something like this:
+
+------------------------------------------------------------------------
+
+#ifdef CONFIG_HAVE_ARCH_KCSAN
+# define noinstr_atomic_add_return arch_atomic_add_return
+#else
+# define noinstr_atomic_add_return atomic_add_return
+#endif
+
+------------------------------------------------------------------------
+
+And again similarly for the others.
+
+Left to myself, I would take the second option just because it provably
+leaves unaltered anything that isn't using the new API.  That said,
+there has to be a better Kconfig option to key this off of.
+
+Thoughts?
+
+							Thanx, Paul
+
+> vim +251 kernel/rcu/tree.c
+> 
+>    233	
+>    234	/*
+>    235	 * Record entry into an extended quiescent state.  This is only to be
+>    236	 * called when not already in an extended quiescent state, that is,
+>    237	 * RCU is watching prior to the call to this function and is no longer
+>    238	 * watching upon return.
+>    239	 */
+>    240	static noinstr void rcu_dynticks_eqs_enter(void)
+>    241	{
+>    242		struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>    243		int seq;
+>    244	
+>    245		/*
+>    246		 * CPUs seeing atomic_add_return() must see prior RCU read-side
+>    247		 * critical sections, and we also must force ordering with the
+>    248		 * next idle sojourn.
+>    249		 */
+>    250		rcu_dynticks_task_trace_enter();  // Before ->dynticks update!
+>  > 251		seq = arch_atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
+>    252		// RCU is no longer watching.  Better be in extended quiescent state!
+>    253		WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
+>    254			     (seq & RCU_DYNTICK_CTRL_CTR));
+>    255		/* Better not have special action (TLB flush) pending! */
+>    256		WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
+>    257			     (seq & RCU_DYNTICK_CTRL_MASK));
+>    258	}
+>    259	
+>    260	/*
+>    261	 * Record exit from an extended quiescent state.  This is only to be
+>    262	 * called from an extended quiescent state, that is, RCU is not watching
+>    263	 * prior to the call to this function and is watching upon return.
+>    264	 */
+>    265	static noinstr void rcu_dynticks_eqs_exit(void)
+>    266	{
+>    267		struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>    268		int seq;
+>    269	
+>    270		/*
+>    271		 * CPUs seeing atomic_add_return() must see prior idle sojourns,
+>    272		 * and we also must force ordering with the next RCU read-side
+>    273		 * critical section.
+>    274		 */
+>    275		seq = arch_atomic_add_return(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
+>    276		// RCU is now watching.  Better not be in an extended quiescent state!
+>    277		rcu_dynticks_task_trace_exit();  // After ->dynticks update!
+>    278		WARN_ON_ONCE(IS_ENABLED(CONFIG_RCU_EQS_DEBUG) &&
+>    279			     !(seq & RCU_DYNTICK_CTRL_CTR));
+>    280		if (seq & RCU_DYNTICK_CTRL_MASK) {
+>  > 281			arch_atomic_andnot(RCU_DYNTICK_CTRL_MASK, &rdp->dynticks);
+>    282			smp_mb__after_atomic(); /* _exit after clearing mask. */
+>    283		}
+>    284	}
+>    285	
+>    286	/*
+>    287	 * Reset the current CPU's ->dynticks counter to indicate that the
+>    288	 * newly onlined CPU is no longer in an extended quiescent state.
+>    289	 * This will either leave the counter unchanged, or increment it
+>    290	 * to the next non-quiescent value.
+>    291	 *
+>    292	 * The non-atomic test/increment sequence works because the upper bits
+>    293	 * of the ->dynticks counter are manipulated only by the corresponding CPU,
+>    294	 * or when the corresponding CPU is offline.
+>    295	 */
+>    296	static void rcu_dynticks_eqs_online(void)
+>    297	{
+>    298		struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>    299	
+>    300		if (atomic_read(&rdp->dynticks) & RCU_DYNTICK_CTRL_CTR)
+>    301			return;
+>    302		atomic_add(RCU_DYNTICK_CTRL_CTR, &rdp->dynticks);
+>    303	}
+>    304	
+>    305	/*
+>    306	 * Is the current CPU in an extended quiescent state?
+>    307	 *
+>    308	 * No ordering, as we are sampling CPU-local information.
+>    309	 */
+>    310	static __always_inline bool rcu_dynticks_curr_cpu_in_eqs(void)
+>    311	{
+>    312		struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
+>    313	
+>  > 314		return !(arch_atomic_read(&rdp->dynticks) & RCU_DYNTICK_CTRL_CTR);
+>    315	}
+>    316	
+> 
 > ---
->  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c     | 45 +++++++++++++++++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c | 66 +++++++++++++++++++++----
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h | 28 +++++++++++
->  3 files changed, 130 insertions(+), 9 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> index 63976dc..26e870a 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
-> @@ -208,6 +208,42 @@ struct dpu_encoder_virt {
->
->  #define to_dpu_encoder_virt(x) container_of(x, struct dpu_encoder_virt, base)
->
-> +static u32 dither_matrix[DITHER_MATRIX_SZ] = {
-> +       15, 7, 13, 5, 3, 11, 1, 9, 12, 4, 14, 6, 0, 8, 2, 10
-> +};
-> +
-> +static void _dpu_encoder_setup_dither(struct dpu_encoder_phys *phys)
-> +{
-> +       struct dpu_hw_dither_cfg dither_cfg = { 0 };
-> +       struct drm_display_info *info;
-> +
-> +       if (!phys || !phys->connector || !phys->hw_pp ||
-> +               !phys->hw_pp->ops.setup_dither)
-> +               return;
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-it looks like other than phys->hw_pp->ops.setup_dither, you shouldn't
-need to check most of these conditions.
 
-> +
-> +       info = &phys->connector->display_info;
-> +       if (!info)
-
-and definitely not this one
-
-> +               return;
-> +
-> +       switch (phys->connector->display_info.bpc) {
-> +       case 6:
-> +               dither_cfg.c0_bitdepth = 6;
-> +               dither_cfg.c1_bitdepth = 6;
-> +               dither_cfg.c2_bitdepth = 6;
-> +               dither_cfg.c3_bitdepth = 6;
-> +               dither_cfg.temporal_en = 0;
-> +               break;
-> +       default:
-> +               phys->hw_pp->ops.setup_dither(phys->hw_pp, NULL);
-> +               return;
-> +       }
-> +
-> +       memcpy(&dither_cfg.matrix, dither_matrix,
-> +                       sizeof(u32) * DITHER_MATRIX_SZ);
-> +
-> +       phys->hw_pp->ops.setup_dither(phys->hw_pp, &dither_cfg);
-> +}
-> +
->  void dpu_encoder_helper_report_irq_timeout(struct dpu_encoder_phys *phys_enc,
->                 enum dpu_intr_idx intr_idx)
->  {
-> @@ -1082,6 +1118,7 @@ static void _dpu_encoder_virt_enable_helper(struct drm_encoder *drm_enc)
->         struct dpu_encoder_virt *dpu_enc = NULL;
->         struct msm_drm_private *priv;
->         struct dpu_kms *dpu_kms;
-> +       int i;
->
->         if (!drm_enc || !drm_enc->dev) {
->                 DPU_ERROR("invalid parameters\n");
-> @@ -1104,6 +1141,14 @@ static void _dpu_encoder_virt_enable_helper(struct drm_encoder *drm_enc)
->                                 dpu_kms->catalog);
->
->         _dpu_encoder_update_vsync_source(dpu_enc, &dpu_enc->disp_info);
-> +
-> +       if (dpu_enc->disp_info.intf_type == DRM_MODE_ENCODER_DSI) {
-> +               for (i = 0; i < dpu_enc->num_phys_encs; i++) {
-> +                       struct dpu_encoder_phys *phys = dpu_enc->phys_encs[i];
-> +
-> +                       _dpu_encoder_setup_dither(phys);
-> +               }
-> +       }
->  }
->
->  void dpu_encoder_virt_runtime_resume(struct drm_encoder *drm_enc)
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
-> index d110a40..cf7603d 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c
-> @@ -28,6 +28,16 @@
->  #define PP_FBC_BUDGET_CTL               0x038
->  #define PP_FBC_LOSSY_MODE               0x03C
->
-> +#define PP_DITHER_EN                   0x000
-> +#define PP_DITHER_BITDEPTH             0x004
-> +#define PP_DITHER_MATRIX               0x008
-> +
-> +#define DITHER_DEPTH_MAP_INDEX 9
-> +
-> +static u32 dither_depth_map[DITHER_DEPTH_MAP_INDEX] = {
-> +       0, 0, 0, 0, 0, 0, 0, 1, 2
-> +};
-> +
->  static const struct dpu_pingpong_cfg *_pingpong_offset(enum dpu_pingpong pp,
->                 const struct dpu_mdss_cfg *m,
->                 void __iomem *addr,
-> @@ -49,6 +59,40 @@ static const struct dpu_pingpong_cfg *_pingpong_offset(enum dpu_pingpong pp,
->         return ERR_PTR(-EINVAL);
->  }
->
-> +static void dpu_hw_pp_setup_dither(struct dpu_hw_pingpong *pp,
-> +                                   struct dpu_hw_dither_cfg *cfg)
-> +{
-> +       struct dpu_hw_blk_reg_map *c;
-> +       u32 i, base, data = 0;
-> +
-> +       if (!pp)
-> +               return;
-
-can this ever be NULL..  at least currently you are checking this both
-here and in _dpu_encoder_setup_dither()
-
-BR,
--R
-
-> +
-> +       c = &pp->hw;
-> +       base = pp->caps->sblk->dither.base;
-> +       if (!cfg) {
-> +               DPU_REG_WRITE(c, base + PP_DITHER_EN, 0);
-> +               return;
-> +       }
-> +
-> +       data = dither_depth_map[cfg->c0_bitdepth] & REG_MASK(2);
-> +       data |= (dither_depth_map[cfg->c1_bitdepth] & REG_MASK(2)) << 2;
-> +       data |= (dither_depth_map[cfg->c2_bitdepth] & REG_MASK(2)) << 4;
-> +       data |= (dither_depth_map[cfg->c3_bitdepth] & REG_MASK(2)) << 6;
-> +       data |= (cfg->temporal_en) ? (1 << 8) : 0;
-> +
-> +       DPU_REG_WRITE(c, base + PP_DITHER_BITDEPTH, data);
-> +
-> +       for (i = 0; i < DITHER_MATRIX_SZ - 3; i += 4) {
-> +               data = (cfg->matrix[i] & REG_MASK(4)) |
-> +                       ((cfg->matrix[i + 1] & REG_MASK(4)) << 4) |
-> +                       ((cfg->matrix[i + 2] & REG_MASK(4)) << 8) |
-> +                       ((cfg->matrix[i + 3] & REG_MASK(4)) << 12);
-> +               DPU_REG_WRITE(c, base + PP_DITHER_MATRIX + i, data);
-> +       }
-> +       DPU_REG_WRITE(c, base + PP_DITHER_EN, 1);
-> +}
-> +
->  static int dpu_hw_pp_setup_te_config(struct dpu_hw_pingpong *pp,
->                 struct dpu_hw_tear_check *te)
->  {
-> @@ -180,15 +224,19 @@ static u32 dpu_hw_pp_get_line_count(struct dpu_hw_pingpong *pp)
->         return line;
->  }
->
-> -static void _setup_pingpong_ops(struct dpu_hw_pingpong_ops *ops,
-> -       const struct dpu_pingpong_cfg *hw_cap)
-> +static void _setup_pingpong_ops(struct dpu_hw_pingpong *c,
-> +                               unsigned long features)
->  {
-> -       ops->setup_tearcheck = dpu_hw_pp_setup_te_config;
-> -       ops->enable_tearcheck = dpu_hw_pp_enable_te;
-> -       ops->connect_external_te = dpu_hw_pp_connect_external_te;
-> -       ops->get_vsync_info = dpu_hw_pp_get_vsync_info;
-> -       ops->poll_timeout_wr_ptr = dpu_hw_pp_poll_timeout_wr_ptr;
-> -       ops->get_line_count = dpu_hw_pp_get_line_count;
-> +       c->ops.setup_tearcheck = dpu_hw_pp_setup_te_config;
-> +       c->ops.enable_tearcheck = dpu_hw_pp_enable_te;
-> +       c->ops.connect_external_te = dpu_hw_pp_connect_external_te;
-> +       c->ops.get_vsync_info = dpu_hw_pp_get_vsync_info;
-> +       c->ops.poll_timeout_wr_ptr = dpu_hw_pp_poll_timeout_wr_ptr;
-> +       c->ops.get_line_count = dpu_hw_pp_get_line_count;
-> +
-> +       if (test_bit(DPU_PINGPONG_DITHER, &features) &&
-> +               IS_SC7180_TARGET(c->hw.hwversion))
-> +               c->ops.setup_dither = dpu_hw_pp_setup_dither;
->  };
->
->  static struct dpu_hw_blk_ops dpu_hw_ops;
-> @@ -212,7 +260,7 @@ struct dpu_hw_pingpong *dpu_hw_pingpong_init(enum dpu_pingpong idx,
->
->         c->idx = idx;
->         c->caps = cfg;
-> -       _setup_pingpong_ops(&c->ops, c->caps);
-> +       _setup_pingpong_ops(c, c->caps->features);
->
->         dpu_hw_blk_init(&c->base, DPU_HW_BLK_PINGPONG, idx, &dpu_hw_ops);
->
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h
-> index d73cb73..065996b 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h
-> @@ -10,6 +10,8 @@
->  #include "dpu_hw_util.h"
->  #include "dpu_hw_blk.h"
->
-> +#define DITHER_MATRIX_SZ 16
-> +
->  struct dpu_hw_pingpong;
->
->  struct dpu_hw_tear_check {
-> @@ -35,6 +37,26 @@ struct dpu_hw_pp_vsync_info {
->  };
->
->  /**
-> + * struct dpu_hw_dither_cfg - dither feature structure
-> + * @flags: for customizing operations
-> + * @temporal_en: temperal dither enable
-> + * @c0_bitdepth: c0 component bit depth
-> + * @c1_bitdepth: c1 component bit depth
-> + * @c2_bitdepth: c2 component bit depth
-> + * @c3_bitdepth: c2 component bit depth
-> + * @matrix: dither strength matrix
-> + */
-> +struct dpu_hw_dither_cfg {
-> +       u64 flags;
-> +       u32 temporal_en;
-> +       u32 c0_bitdepth;
-> +       u32 c1_bitdepth;
-> +       u32 c2_bitdepth;
-> +       u32 c3_bitdepth;
-> +       u32 matrix[DITHER_MATRIX_SZ];
-> +};
-> +
-> +/**
->   *
->   * struct dpu_hw_pingpong_ops : Interface to the pingpong Hw driver functions
->   *  Assumption is these functions will be called after clocks are enabled
-> @@ -82,6 +104,12 @@ struct dpu_hw_pingpong_ops {
->          * Obtain current vertical line counter
->          */
->         u32 (*get_line_count)(struct dpu_hw_pingpong *pp);
-> +
-> +       /**
-> +        * Setup dither matix for pingpong block
-> +        */
-> +       void (*setup_dither)(struct dpu_hw_pingpong *pp,
-> +                       struct dpu_hw_dither_cfg *cfg);
->  };
->
->  struct dpu_hw_pingpong {
-> --
-> 1.9.1
->
