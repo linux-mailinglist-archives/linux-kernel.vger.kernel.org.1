@@ -2,95 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA0A207657
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EEA7207661
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 17:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404128AbgFXPBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 11:01:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55444 "EHLO
+        id S2404236AbgFXPCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 11:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404107AbgFXPBf (ORCPT
+        with ESMTP id S2404225AbgFXPCQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 11:01:35 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17872C061796
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:01:35 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id a45so2371544pje.1
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:01:35 -0700 (PDT)
+        Wed, 24 Jun 2020 11:02:16 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C893EC061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:02:16 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id e8so1548237pgc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 08:02:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=I2Wt5QedxvLGXCfHxOenkohT0DiZJGHo6D4kFEJ4uE8=;
-        b=IROJTaKwsSOIpl0WW4Gu8mPbIi0eaibrEp+f3DVWW4zt3amjINeZfRPvIwLOalIy8e
-         7/XPatvV30fEzPY0uKnRbynudIVhi6EssJ1mMT8B0TpQ+xVtlNJaRmhqmbE5EsBsogHQ
-         GLEFs2DhZ7YwDKffHihrNoQ1dDx5eYIzFeiuTHCZj3zodndYdrl1fLKXzPBNaUzA7o91
-         53gctfr2I7K6XZakW8edfoI4f2Jrfi5hIjR+g+50Do4ywZoOQSBko7nkRRaC/tKXERdn
-         ep6h0uze29S8PrWVjY8q8UiafF0Ba0EyrQW9/ORpTST41Pj5CDvvpAGBdLbMdY/8gWpg
-         584A==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=wemqwQ1fREh2JQiEeDLgUYZf8kZ33feb3ynoN9bhMsM=;
+        b=RirjVn7v29G812b9rUw+VgI8Ua6kOb8Jr6ZOXICjDbQZeonzIS2UoWkCEQAI5yDd+F
+         NyopQadvFl9mqn+qPcaFHJcUACIyDlmJb+MQBRNihqMlvpztvaZXMI1vUpyC7Y5DO8OS
+         1rTpDL34JTHvbBlGDgGaN9dvj+6y0oD3LXSCRW5HDn2jOT5L67PitxwDKfoctqNJsnSF
+         Wt7q+fPbNGciparr7btfdoaQI59tMQFA1zHLSoPRZZB4IRJTpuKcEgKMiCwBNLl6sldU
+         LTSM1+Fj/phtoyX8laylAC7CAp6qW503gHNfvt8O0o2DUwK+D0Fyz6CLVwIwk2Vv8puW
+         jGbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=I2Wt5QedxvLGXCfHxOenkohT0DiZJGHo6D4kFEJ4uE8=;
-        b=QrFBNEtQuRyL0DIALoiVHpCVTZAy7oE66Cl7GbhdhjFSQ0HWsY3aLfLYE9CJkt4rkL
-         ty6KY4Xh5+TMoohOoW6km+6H4v9Rf78D/xneez2Ne00eYrW5vTLCcDFL01JbHq1gg2D9
-         0FU/RA8aOGEUIiW4pDIK1QD2emqmmpA0VojuFxUMRech3hn3jVqLOwyV4jUurMbtwen5
-         rDw3tk6RFaffQEf9eI1VVoK17ypJoLSEx7WFi/UA0mv2lSRmW4A4ThfglLEi7iYTJUR1
-         hR7/DMDUqiCN60thBcugeNAgQ5hWBVHT3xM7GKsUg8ZSIe4e4APjHUYDpJtV8m+l4HS8
-         Hy6Q==
-X-Gm-Message-State: AOAM532DUus5sRZzurcIhKXpfRo7KaGi8nt5LgzRsIdGqgMt7ChbElo9
-        Yz8Yx6KJ6tZBjRpv3wMrLvF3Ug==
-X-Google-Smtp-Source: ABdhPJwdFv++0X60Vw2UpSgX2H9PZx08FyjXGhCZ+1Q4IXV3Ir3kUVavKO4Ae3tjd6c7WpUnLLyOGw==
-X-Received: by 2002:a17:90a:d485:: with SMTP id s5mr27344721pju.61.1593010894581;
-        Wed, 24 Jun 2020 08:01:34 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id p30sm21012287pfq.59.2020.06.24.08.01.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 24 Jun 2020 08:01:33 -0700 (PDT)
-Subject: Re: [PATCH 05/15] mm: allow read-ahead with IOCB_NOWAIT set
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        akpm@linux-foundation.org, Johannes Weiner <hannes@cmpxchg.org>
-References: <20200618144355.17324-1-axboe@kernel.dk>
- <20200618144355.17324-6-axboe@kernel.dk>
- <20200624043814.GC5369@dread.disaster.area>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <8248e187-1b4a-83c8-0ba8-afc253ed69da@kernel.dk>
-Date:   Wed, 24 Jun 2020 09:01:32 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
-MIME-Version: 1.0
-In-Reply-To: <20200624043814.GC5369@dread.disaster.area>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=wemqwQ1fREh2JQiEeDLgUYZf8kZ33feb3ynoN9bhMsM=;
+        b=K+6sEUrF//Ti88cRvJMtHwenGcIxaXQI06muHwGqPOk7i5Q77CToZDDoPEr9sG44Wv
+         /jP77T+Cgk0MCmClTn3u0EiV4WrSnHvezv32pCEgFVU9BNSUCqegh2FXFM01bvLN7bOs
+         PE5Hg7cYSIuUUmHD+kzWO3m9DlkzOOADq/DhkWcZl0JF5UW0H4Q2VHETPMO5nPC6H2TX
+         3dnNMxtEHTRO+8SsibzIAH4kWRnnZYq7chVQU1zFOnRaLCBRf3hd6PZAuI7wkkF0JFHF
+         3Q+iviN3gpIZ/ZJf5WV5/H5VplzTCBTb15jwzYvDwpjsLqCfwEhNlRkFWtC/iQSvLBpP
+         AKGA==
+X-Gm-Message-State: AOAM533SAYyv2jk+6i6x0DjLfmHGmFt/eVy/1oPT9s6vSkWywc8O5weR
+        tIhcR/f7uQ/Xze5brquGqw==
+X-Google-Smtp-Source: ABdhPJySf0N9YCkY0AXDYfVlBg+AcGHmUzuKDEj3LCHQGl686X2BH03jtPIyL7vSty+G9GsBNxEYyA==
+X-Received: by 2002:aa7:972d:: with SMTP id k13mr30001279pfg.113.1593010936217;
+        Wed, 24 Jun 2020 08:02:16 -0700 (PDT)
+Received: from ip-172-31-41-194.ap-northeast-1.compute.internal (ec2-52-199-21-241.ap-northeast-1.compute.amazonaws.com. [52.199.21.241])
+        by smtp.gmail.com with ESMTPSA id i125sm17013705pgd.21.2020.06.24.08.02.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 24 Jun 2020 08:02:15 -0700 (PDT)
+From:   nao.horiguchi@gmail.com
+To:     linux-mm@kvack.org
+Cc:     mhocko@kernel.org, akpm@linux-foundation.org,
+        mike.kravetz@oracle.com, osalvador@suse.de, tony.luck@intel.com,
+        david@redhat.com, aneesh.kumar@linux.vnet.ibm.com,
+        zeil@yandex-team.ru, naoya.horiguchi@nec.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 11/15] mm,hwpoison: Rework soft offline for free pages
+Date:   Wed, 24 Jun 2020 15:01:33 +0000
+Message-Id: <20200624150137.7052-12-nao.horiguchi@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200624150137.7052-1-nao.horiguchi@gmail.com>
+References: <20200624150137.7052-1-nao.horiguchi@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6/23/20 10:38 PM, Dave Chinner wrote:
-> On Thu, Jun 18, 2020 at 08:43:45AM -0600, Jens Axboe wrote:
->> The read-ahead shouldn't block, so allow it to be done even if
->> IOCB_NOWAIT is set in the kiocb.
->>
->> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
->> Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> 
-> BTW, Jens, in case nobody had mentioned it, the Reply-To field for
-> the patches in this patchset is screwed up:
-> 
-> | Reply-To: Add@vger.kernel.org, support@vger.kernel.org, for@vger.kernel.org,
-> |         async@vger.kernel.org, buffered@vger.kernel.org,
-> | 	        reads@vger.kernel.org
+From: Oscar Salvador <osalvador@suse.de>
 
-Yeah, I pasted the subject line into the wrong spot for git send-email,
-hence the reply-to is boogered, and the subject line was empty for the
-cover letter...
+When trying to soft-offline a free page, we need to first take it off
+the buddy allocator.
+Once we know is out of reach, we can safely flag it as poisoned.
 
+take_page_off_buddy will be used to take a page meant to be poisoned
+off the buddy allocator.
+take_page_off_buddy calls break_down_buddy_pages, which splits a
+higher-order page in case our page belongs to one.
+
+Once the page is under our control, we call page_handle_poison to set it
+as poisoned and grab a refcount on it.
+
+Signed-off-by: Oscar Salvador <osalvador@suse.de>
+Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+---
+ChangeLog v2 -> v3:
+- use add_to_free_list() instead of add_to_free_area()
+- use del_page_from_free_list() instead of del_page_from_free_area()
+- add fast return
+- move extern definition to header file as warned by checkpatch.pl
+---
+ include/linux/page-flags.h |  1 +
+ mm/memory-failure.c        | 18 ++++++----
+ mm/page_alloc.c            | 68 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 81 insertions(+), 6 deletions(-)
+
+diff --git v5.8-rc1-mmots-2020-06-20-21-44/include/linux/page-flags.h v5.8-rc1-mmots-2020-06-20-21-44_patched/include/linux/page-flags.h
+index 6be1aa559b1e..9fa5d4e2d69a 100644
+--- v5.8-rc1-mmots-2020-06-20-21-44/include/linux/page-flags.h
++++ v5.8-rc1-mmots-2020-06-20-21-44_patched/include/linux/page-flags.h
+@@ -423,6 +423,7 @@ PAGEFLAG(HWPoison, hwpoison, PF_ANY)
+ TESTSCFLAG(HWPoison, hwpoison, PF_ANY)
+ #define __PG_HWPOISON (1UL << PG_hwpoison)
+ extern bool set_hwpoison_free_buddy_page(struct page *page);
++extern bool take_page_off_buddy(struct page *page);
+ #else
+ PAGEFLAG_FALSE(HWPoison)
+ static inline bool set_hwpoison_free_buddy_page(struct page *page)
+diff --git v5.8-rc1-mmots-2020-06-20-21-44/mm/memory-failure.c v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/memory-failure.c
+index 2e244d5b83e0..d79e756a97be 100644
+--- v5.8-rc1-mmots-2020-06-20-21-44/mm/memory-failure.c
++++ v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/memory-failure.c
+@@ -78,6 +78,13 @@ EXPORT_SYMBOL_GPL(hwpoison_filter_dev_minor);
+ EXPORT_SYMBOL_GPL(hwpoison_filter_flags_mask);
+ EXPORT_SYMBOL_GPL(hwpoison_filter_flags_value);
+ 
++static void page_handle_poison(struct page *page)
++{
++	SetPageHWPoison(page);
++	page_ref_inc(page);
++	num_poisoned_pages_inc();
++}
++
+ static int hwpoison_filter_dev(struct page *p)
+ {
+ 	struct address_space *mapping;
+@@ -1876,14 +1883,13 @@ static int soft_offline_in_use_page(struct page *page)
+ 
+ static int soft_offline_free_page(struct page *page)
+ {
+-	int rc = dissolve_free_huge_page(page);
++	int rc = -EBUSY;
+ 
+-	if (!rc) {
+-		if (set_hwpoison_free_buddy_page(page))
+-			num_poisoned_pages_inc();
+-		else
+-			rc = -EBUSY;
++	if (!dissolve_free_huge_page(page) && take_page_off_buddy(page)) {
++		page_handle_poison(page);
++		rc = 0;
+ 	}
++
+ 	return rc;
+ }
+ 
+diff --git v5.8-rc1-mmots-2020-06-20-21-44/mm/page_alloc.c v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/page_alloc.c
+index 31c32fe0ecfb..3b145bceb477 100644
+--- v5.8-rc1-mmots-2020-06-20-21-44/mm/page_alloc.c
++++ v5.8-rc1-mmots-2020-06-20-21-44_patched/mm/page_alloc.c
+@@ -8781,6 +8781,74 @@ bool is_free_buddy_page(struct page *page)
+ }
+ 
+ #ifdef CONFIG_MEMORY_FAILURE
++/*
++ * Break down a higher-order page in sub-pages, and keep our target out of
++ * buddy allocator.
++ */
++static void break_down_buddy_pages(struct zone *zone, struct page *page,
++				   struct page *target, int low, int high,
++				   int migratetype)
++{
++	unsigned long size = 1 << high;
++	struct page *current_buddy, *next_page;
++
++	while (high > low) {
++		high--;
++		size >>= 1;
++
++		if (target >= &page[size]) {
++			next_page = page + size;
++			current_buddy = page;
++		} else {
++			next_page = page;
++			current_buddy = page + size;
++		}
++
++		if (set_page_guard(zone, current_buddy, high, migratetype))
++			continue;
++
++		if (current_buddy != target) {
++			add_to_free_list(current_buddy, zone, high, migratetype);
++			set_page_order(current_buddy, high);
++			page = next_page;
++		}
++	}
++}
++
++/*
++ * Take a page that will be marked as poisoned off the buddy allocator.
++ */
++bool take_page_off_buddy(struct page *page)
++{
++	struct zone *zone = page_zone(page);
++	unsigned long pfn = page_to_pfn(page);
++	unsigned long flags;
++	unsigned int order;
++	bool ret = false;
++
++	spin_lock_irqsave(&zone->lock, flags);
++	for (order = 0; order < MAX_ORDER; order++) {
++		struct page *page_head = page - (pfn & ((1 << order) - 1));
++		int buddy_order = page_order(page_head);
++
++		if (PageBuddy(page_head) && buddy_order >= order) {
++			unsigned long pfn_head = page_to_pfn(page_head);
++			int migratetype = get_pfnblock_migratetype(page_head,
++								   pfn_head);
++
++			del_page_from_free_list(page_head, zone, buddy_order);
++			break_down_buddy_pages(zone, page_head, page, 0,
++						buddy_order, migratetype);
++			ret = true;
++			break;
++		}
++		if (page_count(page_head) > 0)
++			break;
++	}
++	spin_unlock_irqrestore(&zone->lock, flags);
++	return ret;
++}
++
+ /*
+  * Set PG_hwpoison flag if a given page is confirmed to be a free page.  This
+  * test is performed under the zone lock to prevent a race against page
 -- 
-Jens Axboe
+2.17.1
 
