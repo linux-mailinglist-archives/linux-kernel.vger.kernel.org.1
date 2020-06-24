@@ -2,195 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C93FC207E47
-	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 23:15:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82CB6207E53
+	for <lists+linux-kernel@lfdr.de>; Wed, 24 Jun 2020 23:18:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390306AbgFXVPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 17:15:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54924 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389905AbgFXVPw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 17:15:52 -0400
-Received: from localhost (mobile-166-170-222-206.mycingular.net [166.170.222.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0953820768;
-        Wed, 24 Jun 2020 21:15:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593033351;
-        bh=NCiSl6UjdDz+uEErbk+g5RFhE1kVn04xQudcrBUevWg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=jDbFC7LPnPZ/V8LUrPNVYE/lDbbFYbfcUooOECi1zMVznB3/9wllOOEoYZPunS1e1
-         QefKGq75ygQpW4L8ujqjkbbrphA/1dpbl734T72n7UJPOHFH4asxRqhEHD5YN4boFd
-         BIjN/ZHnyI0ATv040gg7+Pc89ser1aeTs4LHbgdE=
-Date:   Wed, 24 Jun 2020 16:15:49 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "David E. Box" <david.e.box@linux.intel.com>
-Cc:     shyjumon.n@intel.com, rjw@rjwysocki.net, lenb@kernel.org,
-        bhelgaas@google.com, dan.j.williams@intel.com, kbusch@kernel.org,
-        axboe@fb.com, hch@lst.de, sagi@grimberg.me,
-        linux-acpi@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH V2 1/2] PCI: Add ACPI StorageD3Enable _DSD support
-Message-ID: <20200624211549.GA2586552@bjorn-Precision-5520>
+        id S2390437AbgFXVSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 17:18:03 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40420 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389773AbgFXVSC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 17:18:02 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05OL2eA1069618;
+        Wed, 24 Jun 2020 17:17:55 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31uwymyggj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 17:17:55 -0400
+Received: from m0098394.ppops.net (m0098394.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05OLHsef143482;
+        Wed, 24 Jun 2020 17:17:54 -0400
+Received: from ppma04wdc.us.ibm.com (1a.90.2fa9.ip4.static.sl-reverse.com [169.47.144.26])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31uwymygg0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 17:17:54 -0400
+Received: from pps.filterd (ppma04wdc.us.ibm.com [127.0.0.1])
+        by ppma04wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05OLG6IB020242;
+        Wed, 24 Jun 2020 21:17:53 GMT
+Received: from b01cxnp23032.gho.pok.ibm.com (b01cxnp23032.gho.pok.ibm.com [9.57.198.27])
+        by ppma04wdc.us.ibm.com with ESMTP id 31uury6ufj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 24 Jun 2020 21:17:53 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp23032.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05OLHqs544433764
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Jun 2020 21:17:52 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AD99D112061;
+        Wed, 24 Jun 2020 21:17:52 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 95B4E112064;
+        Wed, 24 Jun 2020 21:17:52 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 24 Jun 2020 21:17:52 +0000 (GMT)
+Subject: Re: [PATCH v2] ima_evm_utils: extended calc_bootaggr to PCRs 8 - 9
+To:     Bruno Meneguele <bmeneg@redhat.com>,
+        Maurizio Drocco <maurizio.drocco@ibm.com>
+Cc:     zohar@linux.ibm.com, Silviu.Vlasceanu@huawei.com,
+        dmitry.kasatkin@gmail.com, jejb@linux.ibm.com, jmorris@namei.org,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, mdrocco@linux.vnet.ibm.com,
+        roberto.sassu@huawei.com, serge@hallyn.com
+References: <1592856871.4987.21.camel@linux.ibm.com>
+ <20200623180122.209-1-maurizio.drocco@ibm.com> <20200623181357.GC4983@glitch>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <92a0d170-8157-476b-8083-ae567b11f364@linux.ibm.com>
+Date:   Wed, 24 Jun 2020 17:17:52 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200612204820.20111-2-david.e.box@linux.intel.com>
+In-Reply-To: <20200623181357.GC4983@glitch>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-24_16:2020-06-24,2020-06-24 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ cotscore=-2147483648 spamscore=0 malwarescore=0 adultscore=0
+ impostorscore=0 mlxlogscore=999 clxscore=1011 phishscore=0
+ lowpriorityscore=0 suspectscore=0 bulkscore=0 mlxscore=0 classifier=spam
+ adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2006240133
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 01:48:19PM -0700, David E. Box wrote:
-> StorageD3Enable is a boolean property that indicates that the platform
-> wants to use D3 for PCIe storage drives during suspend-to-idle. It is a
-> BIOS work around that is currently in use on shipping systems like some
-> Intel Comet Lake platforms. It is meant to change default driver policy for
-> suspend that may cause higher power consumption.
-> 
-> Add the DSD property for recognition by fwnode calls and provide an
-> exported symbol for device drivers to use to read the property as needed.
-> 
-> Link: https://docs.microsoft.com/en-us/windows-hardware/design/component-guidelines/power-management-for-storage-hardware-devices-intro
-> Signed-off-by: David E. Box <david.e.box@linux.intel.com>
-> ---
->  drivers/acpi/property.c |  3 +++
->  drivers/pci/pci-acpi.c  | 59 +++++++++++++++++++++++++++++++++++++++++
->  include/linux/pci.h     |  2 ++
->  3 files changed, 64 insertions(+)
-> 
-> diff --git a/drivers/acpi/property.c b/drivers/acpi/property.c
-> index e601c4511a8b..c2e2ae774a19 100644
-> --- a/drivers/acpi/property.c
-> +++ b/drivers/acpi/property.c
-> @@ -45,6 +45,9 @@ static const guid_t prp_guids[] = {
->  	/* Thunderbolt GUID for WAKE_SUPPORTED: 6c501103-c189-4296-ba72-9bf5a26ebe5d */
->  	GUID_INIT(0x6c501103, 0xc189, 0x4296,
->  		  0xba, 0x72, 0x9b, 0xf5, 0xa2, 0x6e, 0xbe, 0x5d),
-> +	/* Storage device needs D3 GUID: 5025030f-842f-4ab4-a561-99a5189762d0 */
-> +	GUID_INIT(0x5025030f, 0x842f, 0x4ab4,
-> +		  0xa5, 0x61, 0x99, 0xa5, 0x18, 0x97, 0x62, 0xd0),
->  };
->  
->  /* ACPI _DSD data subnodes GUID: dbb8e3e6-5886-4ba6-8795-1319f52a966b */
-> diff --git a/drivers/pci/pci-acpi.c b/drivers/pci/pci-acpi.c
-> index d21969fba6ab..732df524e09c 100644
-> --- a/drivers/pci/pci-acpi.c
-> +++ b/drivers/pci/pci-acpi.c
-> @@ -972,6 +972,65 @@ static bool acpi_pci_bridge_d3(struct pci_dev *dev)
->  	return val == 1;
->  }
->  
-> +/**
-> + * pci_acpi_storage_d3 - whether root port requests D3 for idle suspend
-> + * @pdev: PCI device to check
-> + *
-> + * Returns true if the ACPI companion device contains the "StorageD3Enable"
-> + * _DSD property and the value is 1. This indicates that the root port is
-> + * used by a storage device and the platform is requesting D3 for the
-> + * device during suspend to idle in order to support platform pm.
-> + */
-> +bool pci_acpi_storage_d3(struct pci_dev *dev)
-> +{
-> +	const struct fwnode_handle *fwnode;
-> +	struct acpi_device *adev;
-> +	struct pci_dev *root;
-> +	acpi_handle handle;
-> +	acpi_status status;
-> +	bool ret = false;
-> +	u8 val;
-> +
-> +	/*
-> +	 * Look for _DSD property specifying that the storage device on
-> +	 * the port must use D3 to support deep platform power savings during
-> +	 * suspend-to-idle
-> +	 */
-> +	root = pci_find_pcie_root_port(dev);
+On 6/23/20 2:13 PM, Bruno Meneguele wrote:
+> On Tue, Jun 23, 2020 at 02:01:22PM -0400, Maurizio Drocco wrote:
+>> From: Maurizio <maurizio.drocco@ibm.com>
+>>
+>> If PCRs 8 - 9 are set (i.e. not all-zeros), cal_bootaggr should include
+>> them into the digest.
 
-I think this would need to be updated to apply to v5.8-rc1 after
-6ae72bfa656e ("PCI: Unify pcie_find_root_port() and
-pci_find_pcie_root_port()").
 
-https://git.kernel.org/linus/6ae72bfa656e
+Wouldn't you have to check for not all-zeros in your code?
 
-> +	if (!root)
-> +		return false;
-> +
-> +	adev = ACPI_COMPANION(&root->dev);
-> +	if (!adev) {
-> +		/*
-> +		 * It is possible that the ACPI companion is not yet bound
-> +		 * for the root port so look it up manually here.
-> +		 */
-> +		if (!adev && !pci_dev_is_added(root))
-> +			adev = acpi_pci_find_companion(&root->dev);
 
-I see that you copied this "ACPI companion not yet bound" thing from
-acpi_pci_bridge_d3().  But it's ugly.
+    Stefan
 
-Isn't there a way we can bind the ACPI companion during normal PCI
-enumeration so we don't need this exception case?
 
-I really do not like the idea of putting this code in the PCI core
-because AFAICT the PCI core can do nothing with this information.
+>>
+>> Signed-off-by: Maurizio Drocco <maurizio.drocco@ibm.com>
+>> ---
+>> Changelog:
+>> v2:
+>> - Always include PCRs 8 & 9 to non-sha1 hashes
+>> v1:
+>> - Include non-zero PCRs 8 & 9 to boot aggregates
+>>
+>>   src/evmctl.c | 15 +++++++++++++--
+>>   1 file changed, 13 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/src/evmctl.c b/src/evmctl.c
+>> index 1d065ce..46b7092 100644
+>> --- a/src/evmctl.c
+>> +++ b/src/evmctl.c
+>> @@ -1930,6 +1930,16 @@ static void calc_bootaggr(struct tpm_bank_info *bank)
+>>   		}
+>>   	}
+>>   
+>> +	if (strcmp(bank->algo_name, "sha1") != 0) {
+>> +		for (i = 8; i < 10; i++) {
+>> +			err = EVP_DigestUpdate(pctx, bank->pcr[i], bank->digest_size);
+>> +			if (!err) {
+>> +				log_err("EVP_DigestUpdate() failed\n");
+>> +				return;
+>> +			}
+>> +		}
+>> +	}
+>> +
+>>   	err = EVP_DigestFinal(pctx, bank->digest, &mdlen);
+>>   	if (!err) {
+>>   		log_err("EVP_DigestFinal() failed\n");
+>> @@ -1972,8 +1982,9 @@ static int append_bootaggr(char *bootaggr, struct tpm_bank_info *tpm_banks)
+>>   /*
+>>    * The IMA measurement list boot_aggregate is the link between the preboot
+>>    * event log and the IMA measurement list.  Read and calculate all the
+>> - * possible per TPM bank boot_aggregate digests based on the existing
+>> - * PCRs 0 - 7 to validate against the IMA boot_aggregate record.
+>> + * possible per TPM bank boot_aggregate digests based on the existing PCRs
+>> + * 0 - 9 to validate against the IMA boot_aggregate record. If the digest
+>> + * algorithm is SHA1, only PCRs 0 - 7 are considered to avoid ambiguity.
+>>    */
+>>   static int cmd_ima_bootaggr(struct command *cmd)
+>>   {
+>> -- 
+>> 2.17.1
+>>
+> Reviewed-by: Bruno Meneguele <bmeneg@redhat.com>
+>
 
-If we could make sure during enumeration that the root port always has
-an ACPI companion, this code could go to the nvme driver itself.  And
-we could also clean up the ugliness in acpi_pci_bridge_d3().
-
-Rafael, is that possible?  I don't really know how the companion
-device gets set.  Maybe this is could be done somewhere around
-pci_device_add()?
-
-> +	}
-> +
-> +	if (!adev)
-> +		return false;
-> +
-> +	status = acpi_get_handle(adev->handle, "PXSX", &handle);
-> +	if (ACPI_FAILURE(status))
-> +		return false;
-> +
-> +	adev = acpi_bus_get_acpi_device(handle);
-> +	if (!adev)
-> +		return false;
-> +
-> +	fwnode = acpi_fwnode_handle(adev);
-> +	if (!fwnode_property_read_u8(fwnode, "StorageD3Enable", &val))
-> +		ret = (val == 1);
-> +
-> +	acpi_bus_put_acpi_device(adev);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL_GPL(pci_acpi_storage_d3);
-> +
->  static bool acpi_pci_power_manageable(struct pci_dev *dev)
->  {
->  	struct acpi_device *adev = ACPI_COMPANION(&dev->dev);
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 83ce1cdf5676..396fcb269a60 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -2318,10 +2318,12 @@ struct irq_domain *pci_host_bridge_acpi_msi_domain(struct pci_bus *bus);
->  void
->  pci_msi_register_fwnode_provider(struct fwnode_handle *(*fn)(struct device *));
->  bool pci_pr3_present(struct pci_dev *pdev);
-> +bool pci_acpi_storage_d3(struct pci_dev *dev);
->  #else
->  static inline struct irq_domain *
->  pci_host_bridge_acpi_msi_domain(struct pci_bus *bus) { return NULL; }
->  static inline bool pci_pr3_present(struct pci_dev *pdev) { return false; }
-> +static inline bool pci_acpi_storage_d3(struct pci_dev *dev) { return false; }
->  #endif
->  
->  #ifdef CONFIG_EEH
-> -- 
-> 2.20.1
-> 
-> 
-> _______________________________________________
-> linux-nvme mailing list
-> linux-nvme@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-nvme
