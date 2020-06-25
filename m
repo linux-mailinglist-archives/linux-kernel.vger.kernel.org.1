@@ -2,92 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F61209AF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:03:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BDE209B01
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390542AbgFYIDf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 04:03:35 -0400
-Received: from 8bytes.org ([81.169.241.247]:48846 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390491AbgFYIDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 04:03:33 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 3895C412; Thu, 25 Jun 2020 10:03:31 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 4/4] KVM: SVM: Rename svm_nested_virtualize_tpr() to nested_svm_virtualize_tpr()
-Date:   Thu, 25 Jun 2020 10:03:25 +0200
-Message-Id: <20200625080325.28439-5-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200625080325.28439-1-joro@8bytes.org>
-References: <20200625080325.28439-1-joro@8bytes.org>
+        id S2390637AbgFYIDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 04:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390587AbgFYIDl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 04:03:41 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8853EC0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 01:03:41 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id u26so6130802wmn.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 01:03:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=0M8Y/ZNSXHt2pcvJaMnq9jm7EeSpBp7mRNluLRRdmdk=;
+        b=KETKesxFm86ICb2fFOUJiGjNCAEbBZjL92c4QkfD/GqbqjQl7b8TszNs+54WN/0KRt
+         5P2rS7jWeQWH7wsUV5Br8VFbTyYYVNU6dQTCB3WVg4LBOKKyPu0bSE82xwFjFvLyJVXS
+         6KcpoeNo1FEyuzpFiFppZXiPNqJ9AOdR9Oom9whl7CwfHHRbdVxTx0nqm6A5cRm5LZd4
+         PxNoqqBnARQTFofGB+80GKqi+RRVHdJdgrWZQdjpw+lHKX3xoNInpuHUMXBXiUjoIJU5
+         ER92rajMEoZICS8y4YCEt2/PIAkxL3t7vRLPMkZjZdsi4PZmbEr/jdvbH3OE44Cd+lX7
+         NzQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=0M8Y/ZNSXHt2pcvJaMnq9jm7EeSpBp7mRNluLRRdmdk=;
+        b=idHuAKtM2uMC1CSAEakLWB8eIc0mx3SIRVobfwtXzQSCUKzzBW4ONv6smM9np2iogD
+         2tHDIlQd7jkf4TCsTkqbEUSdyCbmi/I1m0jS5+P+R3O8VP0AKQS9840QVJpizWWkMflJ
+         SL2biV2fmnI2p8+Jk5uoqVqQnERcUJFUBTWf/F4X8aFo+y2aXh+3x/LFx4T4V65tvyIa
+         W0XESD5Pu8iyc39Q/38fFgar8l4jGbTb3q0qDJ5wKzOWzWCTnavAaq67UsZO8oG0QQN+
+         ugAEwlNCqNmv/eekCOEchti21pdMTSjzVkKr7rqa/gIb7WMo8X2LxBdo2xunz5/oDJVI
+         VUJw==
+X-Gm-Message-State: AOAM531Od3kMWTzvWuiT2GJnVcDCJ33LLa/JTE4XHrCnsV4SR6nGuOiG
+        68HKu2EVgFs/Zxnqu2fSt7n4Mw==
+X-Google-Smtp-Source: ABdhPJzyKaUaIlRz/U+g6QVFvU1vbbyn/692EhhXT5aH0828ZYHfpZbkeM3vTyPCoD2vvAXE9IHqFw==
+X-Received: by 2002:a1c:9e13:: with SMTP id h19mr2031841wme.107.1593072220241;
+        Thu, 25 Jun 2020 01:03:40 -0700 (PDT)
+Received: from dell ([2.27.35.144])
+        by smtp.gmail.com with ESMTPSA id g144sm13671180wme.2.2020.06.25.01.03.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jun 2020 01:03:38 -0700 (PDT)
+Date:   Thu, 25 Jun 2020 09:03:37 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Sam Ravnborg <sam@ravnborg.org>
+Cc:     daniel.thompson@linaro.org, jingoohan1@gmail.com,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 0/8] Fix a bunch of W=1 warnings in Backlight
+Message-ID: <20200625080337.GN954398@dell>
+References: <20200624145721.2590327-1-lee.jones@linaro.org>
+ <20200624153216.GA1814806@ravnborg.org>
+ <20200624154321.GH954398@dell>
+ <20200624162446.GA1815586@ravnborg.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200624162446.GA1815586@ravnborg.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+On Wed, 24 Jun 2020, Sam Ravnborg wrote:
 
-Match the naming with other nested svm functions.
+> Hi Lee.
+> 
+> On Wed, Jun 24, 2020 at 04:43:21PM +0100, Lee Jones wrote:
+> > On Wed, 24 Jun 2020, Sam Ravnborg wrote:
+> > 
+> > > Hi Lee.
+> > > 
+> > > On Wed, Jun 24, 2020 at 03:57:13PM +0100, Lee Jones wrote:
+> > > > Attempting to clean-up W=1 kernel builds, which are currently
+> > > > overwhelmingly riddled with niggly little warnings.
+> > > > 
+> > > > Lee Jones (8):
+> > > >   backlight: lms501kf03: Remove unused const variables
+> > > >   backlight: lcd: Add missing kerneldoc entry for 'struct device parent'
+> > > 
+> > > 
+> > > >   backlight: ili922x: Add missing kerneldoc descriptions for
+> > > >     CHECK_FREQ_REG() args
+> > > >   backlight: ili922x: Remove invalid use of kerneldoc syntax
+> > > >   backlight: ili922x: Add missing kerneldoc description for
+> > > >     ili922x_reg_dump()'s arg
+> > > I wonder why these warnings show up as nothing pulls in this .c file.
+> > > Anyway I would suggest to drop using kerneldoc syntax for single drivers
+> > > like this - and the benefit here is low.
+> > > Now they are typed, otherwise this ahd been fine in a single patch.
+> > 
+> > What do you mean by 'nothing pulls it in'?
+> There are no .rst files that includes any:
+> .. kernel-doc:: drivers/video/backlight/ili922x.c
+> 
+> so I do not see how the kernel-doc comments will be used by any
+> of the generated kernel-docs.
 
-No functional changes.
+Looks like a common problem (if it is actually a problem):
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/kvm/svm/svm.c | 6 +++---
- arch/x86/kvm/svm/svm.h | 2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ $ ./scripts/find-unused-docs.sh . | wc -l
+ 1476
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index e0b0321d95d4..b0d551bcf2a0 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3040,7 +3040,7 @@ static void update_cr8_intercept(struct kvm_vcpu *vcpu, int tpr, int irr)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 
--	if (svm_nested_virtualize_tpr(vcpu))
-+	if (nested_svm_virtualize_tpr(vcpu))
- 		return;
- 
- 	clr_cr_intercept(svm, INTERCEPT_CR8_WRITE);
-@@ -3234,7 +3234,7 @@ static inline void sync_cr8_to_lapic(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 
--	if (svm_nested_virtualize_tpr(vcpu))
-+	if (nested_svm_virtualize_tpr(vcpu))
- 		return;
- 
- 	if (!is_cr_intercept(svm, INTERCEPT_CR8_WRITE)) {
-@@ -3248,7 +3248,7 @@ static inline void sync_lapic_to_cr8(struct kvm_vcpu *vcpu)
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	u64 cr8;
- 
--	if (svm_nested_virtualize_tpr(vcpu) ||
-+	if (nested_svm_virtualize_tpr(vcpu) ||
- 	    kvm_vcpu_apicv_active(vcpu))
- 		return;
- 
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 003e89008331..8907efda0b0a 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -365,7 +365,7 @@ void svm_set_gif(struct vcpu_svm *svm, bool value);
- #define NESTED_EXIT_DONE	1	/* Exit caused nested vmexit  */
- #define NESTED_EXIT_CONTINUE	2	/* Further checks needed      */
- 
--static inline bool svm_nested_virtualize_tpr(struct kvm_vcpu *vcpu)
-+static inline bool nested_svm_virtualize_tpr(struct kvm_vcpu *vcpu)
- {
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 
+The role of this patch-set is not to eradicate unused kerneldoc
+headers, but to ensure they are formatted correctly.  W=1 builds
+currently complain of ill formatted kerneldocs, which is currently
+littering the build-log and masking some more important issues (which
+I'm also trying to fix en route).
+
+> > > >   backlight: backlight: Supply description for function args in existing
+> > > >     Kerneldocs
+> > > >   backlight: lm3630a_bl: Remove invalid checks for unsigned int < 0
+> > > >   backlight: qcom-wled: Remove unused configs for LED3 and LED4
+> > > 
+> > > The other fixes looks good.
+> > > They are all:
+> > > Acked-by: Sam Ravnborg <sam@ravnborg.org>
+> > 
+> > Thanks (although this should be Reviewed-by).
+> > 
+> > > >  drivers/video/backlight/backlight.c  | 2 ++
+> > > >  drivers/video/backlight/ili922x.c    | 8 ++++++--
+> > > >  drivers/video/backlight/lcd.c        | 1 +
+> > > >  drivers/video/backlight/lm3630a_bl.c | 4 ++--
+> > > >  drivers/video/backlight/lms501kf03.c | 8 --------
+> > > >  drivers/video/backlight/qcom-wled.c  | 8 --------
+> > > >  6 files changed, 11 insertions(+), 20 deletions(-)
+> > > > 
+> > 
+
 -- 
-2.27.0
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
