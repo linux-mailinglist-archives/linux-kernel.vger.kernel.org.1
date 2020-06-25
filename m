@@ -2,101 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF34209A78
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 09:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D60A3209A94
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 09:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390341AbgFYH3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 03:29:18 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:48037 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390279AbgFYH3P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 03:29:15 -0400
-Received: by mail-io1-f72.google.com with SMTP id s15so425952iow.14
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 00:29:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Rr3qq/rO0TMWfLKXr+bYIqo0FipXkeSM+Sri80qu96I=;
-        b=ccCxVQXrFn+BhtOmSgJDaX0wsEFf+A36ij92B31Dw2tsSUWKkqET96ocUukzpKKIOS
-         cSvgx/FMBY62y9N9Sk06WzfUIEreHHXXi/lTR2WMqsvtREpepLnah7oS1H2nLoIWZ3p1
-         4wDHY1nlyyDEfu19fNXpLR7FRWHc4O2WfZvtLHCBuDNewIUWdQv5avu/3ZEEKX+mSANy
-         HqM7v0t4tEdnD7bwo5BJNPpoe/0iS8VR2a9gTHFlkPzIH3Jm0bb24KQCbz2ClJNy6B0T
-         konI+iFM3KCFlm6ZkQKlmVoMojSCpRAbRFOXDhBr7Iui5lfAxKK1TWa0HApNW9hwkM2X
-         8jzQ==
-X-Gm-Message-State: AOAM533nEfWc6SHtAS3WuV9Y7xDGxnp8dWKvSJ7G+75cJLC/teqMs4TC
-        MLtwvAlmojBt2Eqhx8W6pEGPsZ0NDJaCZAnbRLJCUY7c7C7j
-X-Google-Smtp-Source: ABdhPJxlPXdHE4Cg6jElTtV4bVa5rRYy9My+f6o3c0k50rdP6vsMi41IDfOKnwBpkduhyLwxmHXD2fPllxUaHjgq8+1a17btPZo5
+        id S2390224AbgFYHbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 03:31:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49584 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727829AbgFYHbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 03:31:51 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EBCEB2076E;
+        Thu, 25 Jun 2020 07:31:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593070311;
+        bh=s5YiudHcf15Ba+FMBJAD7g36E/5kHkePxrq4qUiroxI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zS+JQNgGbxh0EBYvwZZ5MtYVDwiSnTQxXKOpFOpKYt78GDWI8H1SqX44UpNjQaztT
+         3yMB6Jes9gx71Wc7uKMZTtKw+APn5gGs6CH5ZZTCIq48+CKLpl7nMyZK+PfJg3z8NA
+         M4IV34lzbiJBna0zrKQNOFiIQl58+J+g4d+M+ZK0=
+Date:   Thu, 25 Jun 2020 08:31:45 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@kernel.org, tglx@linutronix.de, x86@kernel.org,
+        linux-kernel@vger.kernel.org, a.darwish@linutronix.de,
+        rostedt@goodmis.org, bigeasy@linutronix.de, davem@davemloft.net,
+        sparclinux@vger.kernel.org, mpe@ellerman.id.au,
+        linuxppc-dev@lists.ozlabs.org, heiko.carstens@de.ibm.com,
+        linux-s390@vger.kernel.org, linux@armlinux.org.uk
+Subject: Re: [PATCH v4 6/8] arm: Break cyclic percpu include
+Message-ID: <20200625073145.GA7444@willie-the-truck>
+References: <20200623083645.277342609@infradead.org>
+ <20200623083721.454517573@infradead.org>
+ <20200623090257.GA3743@willie-the-truck>
+ <20200624175320.GN4781@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cd10:: with SMTP id z16mr4594576iln.77.1593070155207;
- Thu, 25 Jun 2020 00:29:15 -0700 (PDT)
-Date:   Thu, 25 Jun 2020 00:29:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b41c6405a8e38c6d@google.com>
-Subject: WARNING: suspicious RCU usage in qrtr_ns_worker
-From:   syzbot <syzbot+0f84f6eed90503da72fc@syzkaller.appspotmail.com>
-To:     bjorn.andersson@linaro.org, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, manivannan.sadhasivam@linaro.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200624175320.GN4781@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Jun 24, 2020 at 07:53:20PM +0200, Peter Zijlstra wrote:
+> On Tue, Jun 23, 2020 at 10:02:57AM +0100, Will Deacon wrote:
+> > On Tue, Jun 23, 2020 at 10:36:51AM +0200, Peter Zijlstra wrote:
+> > > In order to use <asm/percpu.h> in irqflags.h, we need to make sure
+> > > asm/percpu.h does not itself depend on irqflags.h.
+> > > 
+> > > Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> > > ---
+> > >  arch/arm/include/asm/percpu.h |    2 ++
+> > >  1 file changed, 2 insertions(+)
+> > > 
+> > > --- a/arch/arm/include/asm/percpu.h
+> > > +++ b/arch/arm/include/asm/percpu.h
+> > > @@ -10,6 +10,8 @@
+> > >   * in the TPIDRPRW. TPIDRPRW only exists on V6K and V7
+> > >   */
+> > >  #if defined(CONFIG_SMP) && !defined(CONFIG_CPU_V6)
+> > > +register unsigned long current_stack_pointer asm ("sp");
+> > 
+> > If you define this unconditionally, then we can probably get rid of the
+> > copy in asm/thread_info.h, rather than duplicate the same #define.
+> 
+> The below delta seems to build arm-allnoconfig, arm-defconfig and
+> arm-allmodconfig.
+> 
+> Although please don't ask me how asm/thread_info.h includes asm/percpu.h
+> 
+> Does that work for you?
 
-syzbot found the following crash on:
+Yes, thanks! I can't believe you removed the helpful comment.
 
-HEAD commit:    7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=123db429100000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=be4578b3f1083656
-dashboard link: https://syzkaller.appspot.com/bug?extid=0f84f6eed90503da72fc
-compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1521944d100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1298d245100000
+> -/*
+> - * how to get the current stack pointer in C
+> - */
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+0f84f6eed90503da72fc@syzkaller.appspotmail.com
-
-=============================
-WARNING: suspicious RCU usage
-5.7.0-syzkaller #0 Not tainted
------------------------------
-include/linux/radix-tree.h:176 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 1
-2 locks held by kworker/u4:1/21:
- #0: ffff88821b097938 ((wq_completion)qrtr_ns_handler){+.+.}-{0:0}, at: spin_unlock_irq include/linux/spinlock.h:403 [inline]
- #0: ffff88821b097938 ((wq_completion)qrtr_ns_handler){+.+.}-{0:0}, at: process_one_work+0x6df/0xfd0 kernel/workqueue.c:2241
- #1: ffffc90000dd7d80 ((work_completion)(&qrtr_ns.work)){+.+.}-{0:0}, at: process_one_work+0x71e/0xfd0 kernel/workqueue.c:2243
-
-stack backtrace:
-CPU: 0 PID: 21 Comm: kworker/u4:1 Not tainted 5.7.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: qrtr_ns_handler qrtr_ns_worker
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x1e9/0x30e lib/dump_stack.c:118
- radix_tree_deref_slot include/linux/radix-tree.h:176 [inline]
- ctrl_cmd_new_lookup net/qrtr/ns.c:558 [inline]
- qrtr_ns_worker+0x2aff/0x4500 net/qrtr/ns.c:674
- process_one_work+0x76e/0xfd0 kernel/workqueue.c:2268
- worker_thread+0xa7f/0x1450 kernel/workqueue.c:2414
- kthread+0x353/0x380 kernel/kthread.c:268
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+Will
