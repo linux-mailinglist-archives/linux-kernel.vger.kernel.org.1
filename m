@@ -2,182 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C07120A975
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 01:57:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 629D820A987
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 02:06:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgFYX5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 19:57:13 -0400
-Received: from mga01.intel.com ([192.55.52.88]:32905 "EHLO mga01.intel.com"
+        id S1725959AbgFZAGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 20:06:36 -0400
+Received: from mga14.intel.com ([192.55.52.115]:52828 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726082AbgFYX5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 19:57:13 -0400
-IronPort-SDR: M/FFNP/58ajsH/6+e+L0MIxKwIDQpNfH/sB9Re6yc4Pys1KRCCXc1qpxHE0+WRA5TBj/gVq4bA
- TgOnu6uXMQKQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="163203531"
+        id S1725601AbgFZAGg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 20:06:36 -0400
+IronPort-SDR: z4VGufpsHOg/6ZzWUZP9j5a+uHohL6XRpOsI8ftKQWZMuW+tgy32rna3A+sk/lb2DfwQD1D7Ls
+ RsmuDrD3aDCA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="144216399"
 X-IronPort-AV: E=Sophos;i="5.75,281,1589266800"; 
-   d="scan'208";a="163203531"
+   d="scan'208";a="144216399"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2020 16:57:12 -0700
-IronPort-SDR: 2PprpwLU6vt+8rd54I08UFoRXKAIkHFQRlj2eDmYU9pnSrf7ifu6FbO/5MU0+1tlURkSYc+8gN
- tU3lSVwrfh/g==
-X-ExtLoop1: 1
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2020 17:06:35 -0700
+IronPort-SDR: 3wEKX7poML61AVWa+R+QN3AbCCN3ihex4zKTmDuNHj5B3vsCoTAED3TxENjIyDNEatnBfPBoi3
+ bJ/6VkAgtipw==
 X-IronPort-AV: E=Sophos;i="5.75,281,1589266800"; 
-   d="scan'208";a="302169039"
-Received: from lkp-server01.sh.intel.com (HELO 538b5e3c8319) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 25 Jun 2020 16:57:11 -0700
-Received: from kbuild by 538b5e3c8319 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jobjy-0001su-Px; Thu, 25 Jun 2020 23:57:10 +0000
-Date:   Fri, 26 Jun 2020 07:56:53 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/core] BUILD SUCCESS
- 01e377c539ca52a6c753d0fdbe93b3b8fcd66a1c
-Message-ID: <5ef539c5.yHuGp88WDdmFhgWW%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="453192731"
+Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.16])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2020 17:06:35 -0700
+Subject: [PATCH 00/12] ACPI/NVDIMM: Runtime Firmware Activation
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     linux-nvdimm@lists.01.org
+Cc:     Ira Weiny <ira.weiny@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@intel.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Len Brown <len.brown@intel.com>, Len Brown <lenb@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, stable@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 25 Jun 2020 16:50:20 -0700
+Message-ID: <159312902033.1850128.1712559453279208264.stgit@dwillia2-desk3.amr.corp.intel.com>
+User-Agent: StGit/0.18-3-g996c
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  sched/core
-branch HEAD: 01e377c539ca52a6c753d0fdbe93b3b8fcd66a1c  sched/core: Remove mmdrop() definition
+Quoting the documentation:
 
-elapsed time: 727m
+    Some persistent memory devices run a firmware locally on the device /
+    "DIMM" to perform tasks like media management, capacity provisioning,
+    and health monitoring. The process of updating that firmware typically
+    involves a reboot because it has implications for in-flight memory
+    transactions. However, reboots are disruptive and at least the Intel
+    persistent memory platform implementation, described by the Intel ACPI
+    DSM specification [1], has added support for activating firmware at
+    runtime.
 
-configs tested: 120
-configs skipped: 5
+    [1]: https://docs.pmem.io/persistent-memory/
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+The approach taken is to abstract the Intel platform specific mechanism
+behind a libnvdimm-generic sysfs interface. The interface could support
+runtime-firmware-activation on another architecture without need to
+change userspace tooling.
 
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arc                     haps_hs_smp_defconfig
-s390                             allyesconfig
-powerpc                          g5_defconfig
-mips                        jmr3927_defconfig
-sh                           se7751_defconfig
-arm                       imx_v6_v7_defconfig
-arm                            xcep_defconfig
-arm                      pxa255-idp_defconfig
-arm                          tango4_defconfig
-arm                       mainstone_defconfig
-arm                          moxart_defconfig
-m68k                            q40_defconfig
-sh                          sdk7786_defconfig
-s390                              allnoconfig
-arm                            mps2_defconfig
-arm                             pxa_defconfig
-arm                         lpc18xx_defconfig
-mips                           ip27_defconfig
-arm                     eseries_pxa_defconfig
-mips                      loongson3_defconfig
-i386                             alldefconfig
-nds32                             allnoconfig
-sh                           se7724_defconfig
-mips                     loongson1b_defconfig
-parisc                            allnoconfig
-arm                            lart_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20200624
-x86_64               randconfig-a002-20200624
-x86_64               randconfig-a003-20200624
-x86_64               randconfig-a005-20200624
-x86_64               randconfig-a001-20200624
-x86_64               randconfig-a006-20200624
-i386                 randconfig-a002-20200624
-i386                 randconfig-a006-20200624
-i386                 randconfig-a003-20200624
-i386                 randconfig-a001-20200624
-i386                 randconfig-a005-20200624
-i386                 randconfig-a004-20200624
-i386                 randconfig-a013-20200624
-i386                 randconfig-a016-20200624
-i386                 randconfig-a012-20200624
-i386                 randconfig-a014-20200624
-i386                 randconfig-a011-20200624
-i386                 randconfig-a015-20200624
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                          allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                                  kexec
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
+The ACPI NFIT implementation involves a set of device-specific-methods
+(DSMs) to 'arm' individual devices for activation and bus-level
+'trigger' method to execute the activation. Informational / enumeration
+methods are also provided at the bus and device level.
+
+One complicating aspect of the memory device firmware activation is that
+the memory controller may need to be quiesced, no memory cycles, during
+the activation. While the platform has mechanisms to support holding off
+in-flight DMA during the activation, the device response to that delay
+is potentially undefined. The platform may reject a runtime firmware
+update if, for example a PCI-E device does not support its completion
+timeout value being increased to meet the activation time. Outside of
+device timeouts the quiesce period may also violate application
+timeouts.
+
+Given the above device and application timeout considerations the
+implementation defaults to hooking into the suspend path to trigger the
+activation, i.e. that a suspend-resume cycle (at least up to the syscore
+suspend point) is required. That default policy ensures that the system
+is in a quiescent state before ceasing memory controller responses for
+the activate. However, if desired, runtime activation without suspend
+can be forced as an override.
+
+The ndctl utility grows the following extensions / commands to drive
+this mechanism:
+
+1/ The existing update-firmware command will 'arm' devices where the
+   firmware image is staged by default.
+
+    ndctl update-firmware all -f firmware_image.bin
+
+2/ The existing ability to enumerate firmware-update capabilities now
+   includes firmware activate capabilities at the 'bus' and 'dimm/device'
+   level:
+
+    ndctl list -BDF -b nfit_test.0
+    [
+      {
+        "provider":"nfit_test.0",
+        "dev":"ndbus2",
+        "scrub_state":"idle",
+        "firmware":{
+          "activate_method":"suspend",
+          "activate_state":"idle"
+        },
+        "dimms":[
+          {
+            "dev":"nmem1",
+            "id":"cdab-0a-07e0-ffffffff",
+            "handle":0,
+            "phys_id":0,
+            "security":"disabled",
+            "firmware":{
+              "current_version":0,
+              "can_update":true
+            }
+          },
+    ...
+
+3/ When the system can support activation without quiesce, or when the
+   suspend-resume requirement is going to be suppressed, the new
+   activate-firmware command wraps that functionality:
+
+    ndctl activate-firmware nfit_test.0 --force
+
+One major open question for review is how users can trigger
+firmware-activation via suspend without doing a full trip through the
+BIOS. The activation currently requires CONFIG_PM_DEBUG to enable that
+flow. This seems an awkward dependency for something that is expected to
+be a production capability.
 
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+
+Dan Williams (12):
+      libnvdimm: Validate command family indices
+      ACPI: NFIT: Move bus_dsm_mask out of generic nvdimm_bus_descriptor
+      ACPI: NFIT: Define runtime firmware activation commands
+      tools/testing/nvdimm: Cleanup dimm index passing
+      tools/testing/nvdimm: Add command debug messages
+      tools/testing/nvdimm: Prepare nfit_ctl_test() for ND_CMD_CALL emulation
+      tools/testing/nvdimm: Emulate firmware activation commands
+      driver-core: Introduce DEVICE_ATTR_ADMIN_{RO,RW}
+      libnvdimm: Convert to DEVICE_ATTR_ADMIN_RO()
+      libnvdimm: Add runtime firmware activation sysfs interface
+      PM, libnvdimm: Add syscore_quiesced() callback for firmware activation
+      ACPI: NFIT: Add runtime firmware activate support
+
+
+ Documentation/ABI/testing/sysfs-bus-nfit           |   35 ++
+ Documentation/ABI/testing/sysfs-bus-nvdimm         |    2 
+ .../driver-api/nvdimm/firmware-activate.rst        |   74 +++
+ drivers/acpi/nfit/core.c                           |  146 +++++--
+ drivers/acpi/nfit/intel.c                          |  426 ++++++++++++++++++++
+ drivers/acpi/nfit/intel.h                          |   61 +++
+ drivers/acpi/nfit/nfit.h                           |   39 ++
+ drivers/base/syscore.c                             |   18 +
+ drivers/nvdimm/bus.c                               |   46 ++
+ drivers/nvdimm/core.c                              |  103 +++++
+ drivers/nvdimm/dimm_devs.c                         |   99 +++++
+ drivers/nvdimm/namespace_devs.c                    |    2 
+ drivers/nvdimm/nd-core.h                           |    1 
+ drivers/nvdimm/pfn_devs.c                          |    2 
+ drivers/nvdimm/region_devs.c                       |    2 
+ include/linux/device.h                             |    4 
+ include/linux/libnvdimm.h                          |   53 ++
+ include/linux/syscore_ops.h                        |    2 
+ include/linux/sysfs.h                              |    7 
+ include/uapi/linux/ndctl.h                         |    5 
+ kernel/power/suspend.c                             |    2 
+ tools/testing/nvdimm/test/nfit.c                   |  367 ++++++++++++++---
+ 22 files changed, 1382 insertions(+), 114 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-nvdimm
+ create mode 100644 Documentation/driver-api/nvdimm/firmware-activate.rst
+
+base-commit: 48778464bb7d346b47157d21ffde2af6b2d39110
