@@ -2,75 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87737209F38
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 15:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2A7209F5A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 15:10:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404966AbgFYNI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 09:08:59 -0400
-Received: from 8bytes.org ([81.169.241.247]:49352 "EHLO theia.8bytes.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404740AbgFYNIu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 09:08:50 -0400
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 5861E60E; Thu, 25 Jun 2020 15:08:40 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     iommu@lists.linux-foundation.org
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        id S2405041AbgFYNKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 09:10:33 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:44159 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2404696AbgFYNKd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 09:10:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593090631;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LN1Esb/7Hi/Z/DHHBSlOzerqkyDCNAofXS9512fRksY=;
+        b=XFUKQALOBC2xZJu/Ett5Lq9hpoB2rOfb3CcbBYRjxAT4RbzGWQwr6dhP3MlfFdkeiGYwx/
+        8U/a79PSRrBXOQGCoqGktsjehtqDGY/0RXEI9tA9aBtheX9R+Ud/Tj+Jm99mbq43BqZlkU
+        8aWfMj1vqMBtUGbd8N/rFDhGtNRNj/Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-241-kOw_BvQeM5GFVWO-Gh_oew-1; Thu, 25 Jun 2020 09:10:25 -0400
+X-MC-Unique: kOw_BvQeM5GFVWO-Gh_oew-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2452107ACF2;
+        Thu, 25 Jun 2020 13:10:22 +0000 (UTC)
+Received: from localhost (ovpn-115-49.ams2.redhat.com [10.36.115.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 588BE79315;
+        Thu, 25 Jun 2020 13:10:21 +0000 (UTC)
+Date:   Thu, 25 Jun 2020 14:10:20 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     "Paraschiv, Andra-Irina" <andraprs@amazon.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Anthony Liguori <aliguori@amazon.com>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, x86@kernel.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        intel-gfx@lists.freedesktop.org, Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 13/13] powerpc/dma: Remove dev->archdata.iommu_domain
-Date:   Thu, 25 Jun 2020 15:08:36 +0200
-Message-Id: <20200625130836.1916-14-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200625130836.1916-1-joro@8bytes.org>
-References: <20200625130836.1916-1-joro@8bytes.org>
+        Colm MacCarthaigh <colmmacc@amazon.com>,
+        Bjoern Doebel <doebel@amazon.de>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Frank van der Linden <fllinden@amazon.com>,
+        Alexander Graf <graf@amazon.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Martin Pohlack <mpohlack@amazon.de>,
+        Matt Wilson <msw@amazon.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Balbir Singh <sblbir@amazon.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Stewart Smith <trawets@amazon.com>,
+        Uwe Dannowski <uwed@amazon.de>, kvm@vger.kernel.org,
+        ne-devel-upstream@amazon.com
+Subject: Re: [PATCH v4 17/18] nitro_enclaves: Add overview documentation
+Message-ID: <20200625131020.GD221479@stefanha-x1.localdomain>
+References: <20200622200329.52996-1-andraprs@amazon.com>
+ <20200622200329.52996-18-andraprs@amazon.com>
+ <20200623085915.GF32718@stefanha-x1.localdomain>
+ <746fcd7d-5946-35ec-6471-8bf8dccdf400@amazon.com>
+MIME-Version: 1.0
+In-Reply-To: <746fcd7d-5946-35ec-6471-8bf8dccdf400@amazon.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: redhat.com
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="hoZxPH4CaxYzWscb"
+Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+--hoZxPH4CaxYzWscb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-There are no users left, so remove the pointer and save some memory.
+On Wed, Jun 24, 2020 at 05:39:39PM +0300, Paraschiv, Andra-Irina wrote:
+>=20
+>=20
+> On 23/06/2020 11:59, Stefan Hajnoczi wrote:
+> > On Mon, Jun 22, 2020 at 11:03:28PM +0300, Andra Paraschiv wrote:
+> > > +The kernel bzImage, the kernel command line, the ramdisk(s) are part=
+ of the
+> > > +Enclave Image Format (EIF); plus an EIF header including metadata su=
+ch as magic
+> > > +number, eif version, image size and CRC.
+> > > +
+> > > +Hash values are computed for the entire enclave image (EIF), the ker=
+nel and
+> > > +ramdisk(s). That's used, for example, to check that the enclave imag=
+e that is
+> > > +loaded in the enclave VM is the one that was intended to be run.
+> > > +
+> > > +These crypto measurements are included in a signed attestation docum=
+ent
+> > > +generated by the Nitro Hypervisor and further used to prove the iden=
+tity of the
+> > > +enclave; KMS is an example of service that NE is integrated with and=
+ that checks
+> > > +the attestation doc.
+> > > +
+> > > +The enclave image (EIF) is loaded in the enclave memory at offset 8 =
+MiB. The
+> > > +init process in the enclave connects to the vsock CID of the primary=
+ VM and a
+> > > +predefined port - 9000 - to send a heartbeat value - 0xb7. This mech=
+anism is
+> > > +used to check in the primary VM that the enclave has booted.
+> > > +
+> > > +If the enclave VM crashes or gracefully exits, an interrupt event is=
+ received by
+> > > +the NE driver. This event is sent further to the user space enclave =
+process
+> > > +running in the primary VM via a poll notification mechanism. Then th=
+e user space
+> > > +enclave process can exit.
+> > > +
+> > > +[1] https://aws.amazon.com/ec2/nitro/nitro-enclaves/
+> > > +[2] https://www.kernel.org/doc/Documentation/vm/hugetlbpage.txt
+> > > +[3] https://lwn.net/Articles/807108/
+> > > +[4] https://www.kernel.org/doc/html/latest/admin-guide/kernel-parame=
+ters.html
+> > > +[5] https://man7.org/linux/man-pages/man7/vsock.7.html
+> > Is the EIF specification and the attestation protocol available?
+>=20
+> For now, they are not publicly available. Once the refs are available (e.=
+g.
+> AWS documentation, GitHub documentation), I'll include them in the kernel
+> documentation as well.
+>=20
+> As a note here, the NE project is currently in preview
+> (https://aws.amazon.com/ec2/nitro/nitro-enclaves/) and part of the
+> documentation / codebase will be publicly available when NE is generally
+> available (GA). This will be in addition to the ones already publicly
+> available, like the NE kernel driver.
+>=20
+> Let me know if I can help with any particular questions / clarifications.
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/powerpc/include/asm/device.h | 3 ---
- 1 file changed, 3 deletions(-)
+Thanks!
 
-diff --git a/arch/powerpc/include/asm/device.h b/arch/powerpc/include/asm/device.h
-index 266542769e4b..1bc595213338 100644
---- a/arch/powerpc/include/asm/device.h
-+++ b/arch/powerpc/include/asm/device.h
-@@ -34,9 +34,6 @@ struct dev_archdata {
- 	struct iommu_table	*iommu_table_base;
- #endif
- 
--#ifdef CONFIG_IOMMU_API
--	void			*iommu_domain;
--#endif
- #ifdef CONFIG_PPC64
- 	struct pci_dn		*pci_data;
- #endif
--- 
-2.27.0
+Stefan
+
+--hoZxPH4CaxYzWscb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAl70ojwACgkQnKSrs4Gr
+c8hY1Af49KQr66earh3/QlA88cMkax3Hj7qRR9/hKpBS8qDRjwSHzSDhvemS0Qrf
+jH84GXs6j8Kjj2VdXFpyEaH183Ktz+27ydyMETDYpAvakhvOkBW5bSE6qqpK/EE1
+CuI2kIDVBDSCxul81JSB4ATnAfa6plUgUntTUjF4mhvLBWp3HgYW6S07o5LvzaD9
+6XcoDarRxGWErRs/3tVPHQrTtpMztrIxkp3eu+AiPdQuID4JUiKSzgMSne1lThRP
+9OZjF1nyAkx+UxBDFYpf5MmyKB4aEUz6UmFdLKoIGYExnAfuS+9rMtgWW+Rcnwpc
+uwLL0sfOGSkX8jJwQJWTV+ItlRhy
+=dz1i
+-----END PGP SIGNATURE-----
+
+--hoZxPH4CaxYzWscb--
 
