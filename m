@@ -2,164 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 154A420A842
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 00:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920A220A852
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 00:40:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406727AbgFYWft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 18:35:49 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:28325 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728374AbgFYWft (ORCPT
+        id S2407554AbgFYWjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 18:39:55 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:41028 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2407537AbgFYWjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 18:35:49 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U0iFBoh_1593124536;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U0iFBoh_1593124536)
+        Thu, 25 Jun 2020 18:39:55 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R371e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0U0i1MZd_1593124792;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U0i1MZd_1593124792)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 26 Jun 2020 06:35:36 +0800
+          Fri, 26 Jun 2020 06:39:52 +0800
+Date:   Fri, 26 Jun 2020 06:39:52 +0800
 From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     akpm@linux-foundation.org, osalvador@suse.de,
-        dan.j.williams@intel.com
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, david@redhat.com,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [Patch v2] mm/sparse: never partially remove memmap for early section
-Date:   Fri, 26 Jun 2020 06:35:34 +0800
-Message-Id: <20200625223534.18024-1-richard.weiyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Dan Williams <dan.j.williams@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Linux MM <linux-mm@kvack.org>, Baoquan He <bhe@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm/spase: never partially remove memmap for early section
+Message-ID: <20200625223952.GA17926@L-31X9LVDL-1304.local>
+Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+References: <CAPcyv4gMQsBSQ-kXM6H_zz96ZTJ5F0XnDfq6_mZTn4t9JwmEpA@mail.gmail.com>
+ <4D73CD59-BFD5-401A-A001-41F7BF5641BA@redhat.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <4D73CD59-BFD5-401A-A001-41F7BF5641BA@redhat.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For early sections, its memmap is handled specially even sub-section is
-enabled. The memmap could only be populated as a whole.
+On Thu, Jun 25, 2020 at 07:53:37AM +0200, David Hildenbrand wrote:
+>
+>
+>> Am 25.06.2020 um 01:47 schrieb Dan Williams <dan.j.williams@intel.com>:
+>> 
+>> ﻿On Wed, Jun 24, 2020 at 3:44 PM Wei Yang
+>> <richard.weiyang@linux.alibaba.com> wrote:
+>> [..]
+>>>> So, you are right that there is a mismatch here, but I think the
+>>>> comprehensive fix is to allow early sections to be partially
+>>>> depopulated/repopulated rather than have section_activate() and
+>>>> section_deacticate() special case early sections. The special casing
+>>>> is problematic in retrospect as section_deactivate() can't be
+>>>> maintained without understand special rules in section_activate().
+>>> 
+>>> Hmm... This means we need to adjust pfn_valid() too, which always return true
+>>> for early sections.
+>> 
+>> Right, rather than carry workarounds in 3 locations, and the bug that
+>> has resulted from then getting out of sync, just teach early section
+>> mapping to allow for the subsection populate/depopulate.
+>> 
+>
+>I prefer the easy fix first - IOW what we Here here. Especially, pfn_to_online_page() will need changes as well.
+>
 
-Quoted from the comment of section_activate():
+Hi, David,
 
-    * The early init code does not consider partially populated
-    * initial sections, it simply assumes that memory will never be
-    * referenced.  If we hot-add memory into such a section then we
-    * do not need to populate the memmap and can simply reuse what
-    * is already there.
+Which part of pfn_to_online_page() needs to be changed? pfn_valid_within()
+would call pfn_valid() to check the pfn first. This looks enough for me.
 
-While current section_deactivate() breaks this rule. When hot-remove a
-sub-section, section_deactivate() would depopulate its memmap. The
-consequence is if we hot-add this subsection again, its memmap never get
-proper populated.
+I may not follow you at this part.
 
-We can reproduce the case by following steps:
+>At least my ack stands.
 
-1. Hacking qemu to allow sub-section early section
-
-   diff --git a/hw/i386/pc.c b/hw/i386/pc.c
-   index 51b3050d01..c6a78d83c0 100644
-   --- a/hw/i386/pc.c
-   +++ b/hw/i386/pc.c
-   @@ -1010,7 +1010,7 @@ void pc_memory_init(PCMachineState *pcms,
-            }
-
-            machine->device_memory->base =
-   -            ROUND_UP(0x100000000ULL + x86ms->above_4g_mem_size, 1 * GiB);
-   +            0x100000000ULL + x86ms->above_4g_mem_size;
-
-            if (pcmc->enforce_aligned_dimm) {
-                /* size device region assuming 1G page max alignment per slot */
-
-2. Bootup qemu with PSE disabled and a sub-section aligned memory size
-
-   Part of the qemu command would look like this:
-
-   sudo x86_64-softmmu/qemu-system-x86_64 \
-       --enable-kvm -cpu host,pse=off \
-       -m 4160M,maxmem=20G,slots=1 \
-       -smp sockets=2,cores=16 \
-       -numa node,nodeid=0,cpus=0-1 -numa node,nodeid=1,cpus=2-3 \
-       -machine pc,nvdimm \
-       -nographic \
-       -object memory-backend-ram,id=mem0,size=8G \
-       -device nvdimm,id=vm0,memdev=mem0,node=0,addr=0x144000000,label-size=128k
-
-3. Re-config a pmem device with sub-section size in guest
-
-   ndctl create-namespace --force --reconfig=namespace0.0 --mode=devdax --size=16M
-
-Then you would see the following call trace:
-
-   pmem0: detected capacity change from 0 to 16777216
-   BUG: unable to handle page fault for address: ffffec73c51000b4
-   #PF: supervisor write access in kernel mode
-   #PF: error_code(0x0002) - not-present page
-   PGD 81ff8067 P4D 81ff8067 PUD 81ff7067 PMD 1437cb067 PTE 0
-   Oops: 0002 [#1] SMP NOPTI
-   CPU: 16 PID: 1348 Comm: ndctl Kdump: loaded Tainted: G        W         5.8.0-rc2+ #24
-   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.4
-   RIP: 0010:memmap_init_zone+0x154/0x1c2
-   Code: 77 16 f6 40 10 02 74 10 48 03 48 08 48 89 cb 48 c1 eb 0c e9 3a ff ff ff 48 89 df 48 c1 e7 06 48f
-   RSP: 0018:ffffbdc7011a39b0 EFLAGS: 00010282
-   RAX: ffffec73c5100088 RBX: 0000000000144002 RCX: 0000000000144000
-   RDX: 0000000000000004 RSI: 007ffe0000000000 RDI: ffffec73c5100080
-   RBP: 027ffe0000000000 R08: 0000000000000001 R09: ffff9f8d38f6d708
-   R10: ffffec73c0000000 R11: 0000000000000000 R12: 0000000000000004
-   R13: 0000000000000001 R14: 0000000000144200 R15: 0000000000000000
-   FS:  00007efe6b65d780(0000) GS:ffff9f8d3f780000(0000) knlGS:0000000000000000
-   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-   CR2: ffffec73c51000b4 CR3: 000000007d718000 CR4: 0000000000340ee0
-   Call Trace:
-    move_pfn_range_to_zone+0x128/0x150
-    memremap_pages+0x4e4/0x5a0
-    devm_memremap_pages+0x1e/0x60
-    dev_dax_probe+0x69/0x160 [device_dax]
-    really_probe+0x298/0x3c0
-    driver_probe_device+0xe1/0x150
-    ? driver_allows_async_probing+0x50/0x50
-    bus_for_each_drv+0x7e/0xc0
-    __device_attach+0xdf/0x160
-    bus_probe_device+0x8e/0xa0
-    device_add+0x3b9/0x740
-    __devm_create_dev_dax+0x127/0x1c0
-    __dax_pmem_probe+0x1f2/0x219 [dax_pmem_core]
-    dax_pmem_probe+0xc/0x1b [dax_pmem]
-    nvdimm_bus_probe+0x69/0x1c0 [libnvdimm]
-    really_probe+0x147/0x3c0
-    driver_probe_device+0xe1/0x150
-    device_driver_attach+0x53/0x60
-    bind_store+0xd1/0x110
-    kernfs_fop_write+0xce/0x1b0
-    vfs_write+0xb6/0x1a0
-    ksys_write+0x5f/0xe0
-    do_syscall_64+0x4d/0x90
-    entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Fixes: ba72b4c8cf60 ("mm/sparsemem: support sub-section hotplug")
-Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
-Acked-by: David Hildenbrand <david@redhat.com>
----
- mm/sparse.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/mm/sparse.c b/mm/sparse.c
-index b2b9a3e34696..a06085738295 100644
---- a/mm/sparse.c
-+++ b/mm/sparse.c
-@@ -825,10 +825,14 @@ static void section_deactivate(unsigned long pfn, unsigned long nr_pages,
- 		ms->section_mem_map &= ~SECTION_HAS_MEM_MAP;
- 	}
- 
--	if (section_is_early && memmap)
--		free_map_bootmem(memmap);
--	else
-+	/*
-+	 * The memmap of early sections is always fully populated. See
-+	 * section_activate() and pfn_valid() .
-+	 */
-+	if (!section_is_early)
- 		depopulate_section_memmap(pfn, nr_pages, altmap);
-+	else if (memmap)
-+		free_map_bootmem(memmap);
- 
- 	if (empty)
- 		ms->section_mem_map = (unsigned long)NULL;
 -- 
-2.20.1 (Apple Git-117)
-
+Wei Yang
+Help you, Help me
