@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 208C62097E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 02:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ACBC2097E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 02:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389478AbgFYApa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 20:45:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59280 "EHLO mail.kernel.org"
+        id S2389500AbgFYApf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 20:45:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388776AbgFYAp2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 20:45:28 -0400
+        id S2388776AbgFYApe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 20:45:34 -0400
 Received: from kernel.org (unknown [104.132.0.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 813502078D;
-        Thu, 25 Jun 2020 00:45:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9835B207DD;
+        Thu, 25 Jun 2020 00:45:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593045928;
-        bh=4EJKTeGmxhXd21FJI2zpa9B+gOQKhi/iMp10zYWR5u8=;
+        s=default; t=1593045933;
+        bh=UVIHxB2kQq7VMv5F7DuS8QacS9agH5AxTK6Agza3Z1A=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=ZIsf8S3+7yEHCF0spHfihQXBwdMJi8U29W9I7ZSPM6fIWrQDXMAa1fHxCTlIxDhpZ
-         NQnYvkwuvU8B4bQYAhPvP9xj20d0FB6Q+I5FHRENepkg7PaVPQtCj4O+ja/M6F0yZZ
-         HMxkW800c6Wa9ns3dzEMjVAbalLDaTLaOarQTcBY=
+        b=KbtTG9iXsGOPyFT+eHyxvsu9m3OnOefknwSvGbj/i/5d9z4zVyQZEmNOAMTaXkhzJ
+         08VxavAixsuUlQtwV8FggoGFeFzWueqD0XFb1OwBX55ypGJSWqF51axoNh6ZKewI44
+         84/ngU53yB/Lks+LY9CG3oK2gli/g4yVM9hu3wSE=
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <97218559db643e62fdd2b5e3046a2a05b8c2e769.1592210452.git-series.maxime@cerno.tech>
-References: <cover.98f979c2af2337c57217016d21d7c68e1ac2ce8a.1592210452.git-series.maxime@cerno.tech> <97218559db643e62fdd2b5e3046a2a05b8c2e769.1592210452.git-series.maxime@cerno.tech>
-Subject: Re: [PATCH v5 18/27] clk: bcm: rpi: Make the PLLB registration function return a clk_hw
+In-Reply-To: <4d8dbe4aaae98b3d3812ad7c3dba53d645cadbaf.1592210452.git-series.maxime@cerno.tech>
+References: <cover.98f979c2af2337c57217016d21d7c68e1ac2ce8a.1592210452.git-series.maxime@cerno.tech> <4d8dbe4aaae98b3d3812ad7c3dba53d645cadbaf.1592210452.git-series.maxime@cerno.tech>
+Subject: Re: [PATCH v5 19/27] clk: bcm: rpi: Add DT provider for the clocks
 From:   Stephen Boyd <sboyd@kernel.org>
 Cc:     linux-rpi-kernel@lists.infradead.org,
         bcm-kernel-feedback-list@broadcom.com,
@@ -41,25 +41,17 @@ Cc:     linux-rpi-kernel@lists.infradead.org,
         Maxime Ripard <maxime@cerno.tech>
 To:     Maxime Ripard <maxime@cerno.tech>,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Date:   Wed, 24 Jun 2020 17:45:27 -0700
-Message-ID: <159304592785.62212.2642388326297780385@swboyd.mtv.corp.google.com>
+Date:   Wed, 24 Jun 2020 17:45:32 -0700
+Message-ID: <159304593293.62212.12371883147156783922@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Maxime Ripard (2020-06-15 01:40:58)
-> The raspberrypi_register_pllb has been returning an integer so far to
-> notify whether the functions has exited successfully or not.
->=20
-> However, the OF provider functions in the clock framework require access =
-to
-> the clk_hw structure so that we can expose those clocks to device tree
-> consumers.
->=20
-> Since we'll want that for the future clocks, let's return a clk_hw pointer
-> instead of the return code.
+Quoting Maxime Ripard (2020-06-15 01:40:59)
+> For the upcoming registration of the clocks provided by the firmware, make
+> sure it's exposed to the device tree providers.
 >=20
 > Cc: Michael Turquette <mturquette@baylibre.com>
 > Cc: linux-clk@vger.kernel.org
