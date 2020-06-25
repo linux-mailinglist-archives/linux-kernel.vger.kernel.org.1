@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C222097CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 02:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E4F2097D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 02:44:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389279AbgFYAnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 20:43:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57324 "EHLO mail.kernel.org"
+        id S2388942AbgFYAoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 20:44:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58194 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388862AbgFYAm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 20:42:58 -0400
+        id S2388624AbgFYAoc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 20:44:32 -0400
 Received: from kernel.org (unknown [104.132.0.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AACA7207DD;
-        Thu, 25 Jun 2020 00:42:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 089BC20781;
+        Thu, 25 Jun 2020 00:44:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593045777;
+        s=default; t=1593045872;
         bh=eVp9tWQlzgqoCNiY2YM/qYEqSjzcQEgmoD76TAskP7M=;
         h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=QA7b31j/EYAvO3CyUqsr6OkAYnwgNp4jN5tCtpYEOowHwHMgbwlbkzpD6Gn8+SZVD
-         l0PAbT28+LpOJ5pEtPP8U0BuqtgGJTLOdm/W0mju/U9Wg7jGe2vJS7mwtygZUNWuTt
-         ylHlalK9H8r0hYuuLgZP2/shHFmRSM+07erPpLlk=
+        b=aBKeXan4vTgSVF5NHBYg+bkaxjAgAf5xdOp2V4GciGmKBOXJ+FnJkqa5oFXgVRnYS
+         fiL0TR3zLiYyKuVuTffkUdWY+fDyFvQBFE8C6iaVxBAtUEqPNtaILtimO6I45b+yz4
+         VxP4jQPGbkowu53ARkarQlaUiDhxbIIMGllklK24=
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
@@ -41,8 +41,8 @@ Cc:     linux-rpi-kernel@lists.infradead.org,
         Maxime Ripard <maxime@cerno.tech>
 To:     Maxime Ripard <maxime@cerno.tech>,
         Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Date:   Wed, 24 Jun 2020 17:42:57 -0700
-Message-ID: <159304577703.62212.14971859361316987880@swboyd.mtv.corp.google.com>
+Date:   Wed, 24 Jun 2020 17:44:31 -0700
+Message-ID: <159304587118.62212.15548134071653686347@swboyd.mtv.corp.google.com>
 User-Agent: alot/0.9
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
