@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE1620981C
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 03:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A4120982F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 03:19:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389310AbgFYBPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 21:15:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40664 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389183AbgFYBPd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 21:15:33 -0400
-Received: from kernel.org (unknown [104.132.0.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 50ECC20578;
-        Thu, 25 Jun 2020 01:15:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593047733;
-        bh=slMjPRa67K16YFPswiAcJrSACF0ga1IiQ1WSlFEumHI=;
-        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-        b=ORIO8EoynDIzF4ep5xBiRUWrGI7/V+pgBWZbrlds84dQKm6M3vZj0f4EOlqqGlH0L
-         2ujQ8VsK5WcOcMUV78XQJmb9MN1tWxUiMywbWmNuKJI/sEOPGCyKAGKXVBZEMsvTZS
-         syXLvmJpugcCfTidoJ4ym2XEkVcwxR64pLP5TMnE=
-Content-Type: text/plain; charset="utf-8"
+        id S2389143AbgFYBTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 21:19:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388928AbgFYBTc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 21:19:32 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9537C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 18:19:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:Subject:From:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=neCjOc11qing147Knuno5Zs0TZ7UJ5WPV8cnPuKXZ2w=; b=X0Kcl4JBpdGaR57L7a7o8m2MVK
+        9CPsfhd4l47obbP5kxoUqUzw0qhHOMnMrXFgG/vrYcyLnfTiGUgQ4vBztg+LhsFwU1mRMjmFCcRdU
+        /k27HIRXI9nxUk1q6tPYuY1Wxr3cKhC47UYWDpqxAsoVQ48BMT1H++wcf0o2LxIkOXco7MQsRhX1/
+        EDKlPewtAhbsHzGZeTSgrNjrRrUmNs+2ZyUYiotfST5X11j0q8Xl0SdXjOiImVqWzAlvNCDmey62d
+        4SlzdAh2PF+Ti5Y+Jbe5NqJ6z5miCgGLFypocEd1X1HodXffQ0+cgwvs8pm/G7owZUnPlf7i3rXim
+        IMcSU+Mg==;
+Received: from [2602:306:37b0:7840:f887:89b1:c866:efda]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1joGXo-0007QV-Kg; Thu, 25 Jun 2020 01:19:13 +0000
+From:   Geoff Levand <geoff@infradead.org>
+Subject: Re: [PATCH] powerpc/boot: Use address-of operator on section symbols
+To:     Nathan Chancellor <natechancellor@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com, Joel Stanley <joel@jms.id.au>
+References: <20200624035920.835571-1-natechancellor@gmail.com>
+Message-ID: <1bbb6956-d9de-e0c8-5b45-20b6fecc2189@infradead.org>
+Date:   Wed, 24 Jun 2020 18:18:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <cover.98f979c2af2337c57217016d21d7c68e1ac2ce8a.1592210452.git-series.maxime@cerno.tech>
-References: <cover.98f979c2af2337c57217016d21d7c68e1ac2ce8a.1592210452.git-series.maxime@cerno.tech>
-Subject: Re: [PATCH v5 00/27] clk: bcm: rpi: Add support for BCM2711 firmware clocks
-From:   Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-rpi-kernel@lists.infradead.org,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Mike Turquette <mturquette@baylibre.com>,
-        linux-clk@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        Maxime Ripard <maxime@cerno.tech>, devicetree@vger.kernel.org,
-        Kamal Dasu <kdasu.kdev@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-To:     Maxime Ripard <maxime@cerno.tech>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Date:   Wed, 24 Jun 2020 18:15:32 -0700
-Message-ID: <159304773261.62212.983376627029743900@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9
+In-Reply-To: <20200624035920.835571-1-natechancellor@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Maxime Ripard (2020-06-15 01:40:40)
-> Hi,
->=20
-> Since the whole DRM/HDMI support began to grow fairly big, I've chosen
-> to split away the two discussions between the firmware clocks and the
-> HDMI support.
->=20
+Hi Nathan,
 
-I see one problem.
+On 6/23/20 8:59 PM, Nathan Chancellor wrote:
+> These are not true arrays, they are linker defined symbols, which are
+> just addresses.  Using the address of operator silences the warning
+> and does not change the resulting assembly with either clang/ld.lld
+> or gcc/ld (tested with diff + objdump -Dr).
 
-WARNING: modpost: missing MODULE_LICENSE() in drivers/clk/bcm/clk-bcm2711-d=
-vp.o
+Thanks for your patch.  I tested this patch applied to v5.8-rc2 on a
+PS3 and it seems OK.
 
-Can you send a followup patch to fix this?
+Tested-by: Geoff Levand <geoff@infradead.org>
+
+
