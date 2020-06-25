@@ -2,85 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AF6F20A5CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7561520A5DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406397AbgFYT31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 15:29:27 -0400
-Received: from smtprelay0227.hostedemail.com ([216.40.44.227]:42782 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2405229AbgFYT3Z (ORCPT
+        id S2406555AbgFYTc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 15:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37442 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406116AbgFYTcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 15:29:25 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id A7FD918029150;
-        Thu, 25 Jun 2020 19:29:23 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2198:2199:2393:2525:2553:2560:2563:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3351:3622:3865:3868:3870:3871:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6117:6742:7510:7901:7903:8985:9010:9025:10004:10400:10429:10430:10431:10848:11232:11658:11914:12043:12297:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:19903:19997:21080:21627:30029:30054:30060:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:9,LUA_SUMMARY:none
-X-HE-Tag: birth58_380ea7a26e4f
-X-Filterd-Recvd-Size: 2403
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 25 Jun 2020 19:29:20 +0000 (UTC)
-Message-ID: <026b38ff947e338a468567dfd20fbde1419bb094.camel@perches.com>
-Subject: Re: [PATCH] platform/chrome: Clarify SPDX license with GPL-2.0-only
-From:   Joe Perches <joe@perches.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Collabora Kernel ML <kernel@collabora.com>,
-        groeck@chromium.org, Benson Leung <bleung@chromium.org>,
-        Dmitry Torokhov <dtor@chromium.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Bernardo Perez Priego <bernardo.perez.priego@intel.com>,
-        Daniel Campello <campello@chromium.org>,
-        Enrico Granata <egranata@chromium.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Nick Crews <ncrews@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Wen Yang <wenyang@linux.alibaba.com>,
-        Yicheng Li <yichengli@chromium.org>
-Date:   Thu, 25 Jun 2020 12:29:19 -0700
-In-Reply-To: <CAHp75VdY4TEKfZXDb-f-KC4G2XRJOdB-w4vegSWG9vULLqcUKw@mail.gmail.com>
-References: <20200625170356.225136-1-enric.balletbo@collabora.com>
-         <CAHp75VdY4TEKfZXDb-f-KC4G2XRJOdB-w4vegSWG9vULLqcUKw@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+        Thu, 25 Jun 2020 15:32:25 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDAD8C08C5DB
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:32:24 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id ev7so3050589pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:32:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=aiCyaSfPElHdBJ1rU4jQnvBfG3hDID3mTTJS9XuQz+Q=;
+        b=mDZm0gGa4yZbKDGF9rgasIeYxWV9KiHwNiMw4ndiNsCn3uE7R//SGEQLJE3mdDSI9/
+         HpYkrdPyVuwor8peEnUfcbBGXiofFnd9veTD7NWibiAP8Ve8E8gCOzG31rjOvREFV1Bf
+         JgsOujSu3baR0YmlQhh5NEYw2pxgOkuVQSleeQxner2eUY5rh1bZK2fJ9oTRt0snh+M+
+         w5fHbf1pXC29S4Vdgqgal1yygHmQF+xISjlsoEB9iBq9A7j/gBZC02UXmgSOGcV/V0l2
+         EEwNoJRyrtCrwRdjdM5UwbSh/doG0vV/wAS2jKyrjWA8airu6HPV73/rpljmn2VIho8e
+         Lz0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aiCyaSfPElHdBJ1rU4jQnvBfG3hDID3mTTJS9XuQz+Q=;
+        b=nxdIh8rX1PR9Jm0Vp0yqiM6iHssriBlJYuQJkvyVTsKHgP1EkykReDCWaHWrWCNzqh
+         BujMLILa2WoY4X7TQk+5afKS0+p5lTIOUtOhBel7QIT60gNXw3DcpTvwG0JsLY1nkns6
+         X2SXC8MTbxnvqxt3uaOrSzgY3ysEei4/Et7j/dqBw6eTALwUD2PKMJh0ucEcFxiaHOLi
+         GpPMJfs5A/WSZHkr5E7rGl4Twv6dSmtJ6Lwba3e934jJOoGIzUsSyOtXcbA97JbvPdgi
+         CRA38gFDlxL0Ws9ysuzeugiaz93WEXms9Ix2104xAiyoldo2jEhgOXRv1WR8VyynfpaO
+         5Srg==
+X-Gm-Message-State: AOAM533VqTEZjY610Gwc61ejDHvo1zAkwrWsZXFBtZYApKJr4n/vrQMO
+        SnHV1I2MQdzXEt49Ba5bVIoolA==
+X-Google-Smtp-Source: ABdhPJzHjBuSoIFTZJ1sk5l9LqVn8mN4nFIUCyUrTGu3HSZs8Ut1ULHUwpBV+FgkM8L4HnNscu3bNQ==
+X-Received: by 2002:a17:90b:88b:: with SMTP id bj11mr5103958pjb.51.1593113544026;
+        Thu, 25 Jun 2020 12:32:24 -0700 (PDT)
+Received: from google.com ([2620:15c:201:2:ce90:ab18:83b0:619])
+        by smtp.gmail.com with ESMTPSA id c141sm9061908pfc.167.2020.06.25.12.32.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jun 2020 12:32:23 -0700 (PDT)
+Date:   Thu, 25 Jun 2020 12:32:17 -0700
+From:   Sami Tolvanen <samitolvanen@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        x86@kernel.org
+Subject: Re: [PATCH 05/22] kbuild: lto: postpone objtool
+Message-ID: <20200625193217.GA59566@google.com>
+References: <20200624203200.78870-1-samitolvanen@google.com>
+ <20200624203200.78870-6-samitolvanen@google.com>
+ <20200624211908.GT4817@hirez.programming.kicks-ass.net>
+ <20200624214925.GB120457@google.com>
+ <20200625074716.GX4817@hirez.programming.kicks-ass.net>
+ <20200625162226.GC173089@google.com>
+ <20200625183351.GH4800@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200625183351.GH4800@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-06-25 at 22:06 +0300, Andy Shevchenko wrote:
-> On Thu, Jun 25, 2020 at 9:25 PM Enric Balletbo i Serra
-> <enric.balletbo@collabora.com> wrote:
-> > Remove the ambiguity with GPL-2.0 and use an explicit GPL-2.0-only
-> > tag.
+On Thu, Jun 25, 2020 at 08:33:51PM +0200, Peter Zijlstra wrote:
+> On Thu, Jun 25, 2020 at 09:22:26AM -0700, Sami Tolvanen wrote:
+> > On Thu, Jun 25, 2020 at 09:47:16AM +0200, Peter Zijlstra wrote:
 > 
-> Is there any? Last time IIRC Greg told me that in the kernel the old
-> and new variants are okay.
+> > > Right, then we need to make --no-vmlinux work properly when
+> > > !DEBUG_ENTRY, which I think might be buggered due to us overriding the
+> > > argument when the objname ends with "vmlinux.o".
+> > 
+> > Right. Can we just remove that and  pass --vmlinux to objtool in
+> > link-vmlinux.sh, or is the override necessary somewhere else?
+> 
+> Think we can remove it; it was just convenient when running manually.
 
-If there wasn't any ambiguity, the older license
-style wouldn't be deprecated by SPDX.org.
+Great, I'll change this in v2.
 
-https://spdx.org/licenses/GPL-2.0.html
+> > > > > > +ifdef CONFIG_STACK_VALIDATION
+> > > > > > +ifneq ($(SKIP_STACK_VALIDATION),1)
+> > > > > > +cmd_ld_ko_o +=								\
+> > > > > > +	$(objtree)/tools/objtool/objtool				\
+> > > > > > +		$(if $(CONFIG_UNWINDER_ORC),orc generate,check)		\
+> > > > > > +		--module						\
+> > > > > > +		$(if $(CONFIG_FRAME_POINTER),,--no-fp)			\
+> > > > > > +		$(if $(CONFIG_GCOV_KERNEL),--no-unreachable,)		\
+> > > > > > +		$(if $(CONFIG_RETPOLINE),--retpoline,)			\
+> > > > > > +		$(if $(CONFIG_X86_SMAP),--uaccess,)			\
+> > > > > > +		$(@:.ko=$(prelink-ext).o);
+> > > > > > +
+> > > > > > +endif # SKIP_STACK_VALIDATION
+> > > > > > +endif # CONFIG_STACK_VALIDATION
+> > > > > 
+> > > > > What about the objtool invocation from link-vmlinux.sh ?
+> > > > 
+> > > > What about it? The existing objtool_link invocation in link-vmlinux.sh
+> > > > works fine for our purposes as well.
+> > > 
+> > > Well, I was wondering why you're adding yet another objtool invocation
+> > > while we already have one.
+> > 
+> > Because we can't run objtool until we have compiled bitcode to native
+> > code, so for modules, we're need another invocation after everything has
+> > been compiled.
+> 
+> Well, that I understand, my question was why we need one in
+> scripts/link-vmlinux.sh and an additional one. I think we're just
+> talking past one another and agree we only need one.
 
-Deprecated
-This license has been deprecated since license list version 3.0.
-Full name
+We need just one for vmlinux.o, but this rule adds an objtool invocation
+for kernel modules, which we also couldn't check earlier. We link all
+the bitcode for modules into <module>.lto.o and run modpost and objtool
+on that before building the final .ko.
 
-GNU General Public License v2.0 only
-Short identifier
-
-GPL-2.0
-
-
+Sami
