@@ -2,128 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7DC209B95
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6908209B9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:59:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390785AbgFYI6G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 04:58:06 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:37192 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390330AbgFYI6F (ORCPT
+        id S2403821AbgFYI7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 04:59:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403809AbgFYI7Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 04:58:05 -0400
-Received: by mail-ot1-f66.google.com with SMTP id v13so4576756otp.4;
-        Thu, 25 Jun 2020 01:58:03 -0700 (PDT)
+        Thu, 25 Jun 2020 04:59:24 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63DBFC061573;
+        Thu, 25 Jun 2020 01:59:24 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id w2so2206213pgg.10;
+        Thu, 25 Jun 2020 01:59:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UbkWKILV8DbeaX+ajZbJrzumA5rN03uAMmnvew5Vefw=;
+        b=G99d9dBQY3u9qOyOOtpu6EJVdCv3J6zsXCyTCpWnDRnwv9CrruXbivhinNSP6EbubQ
+         13dVaF31bzYAHhaduXgGsrSJG4e7SiJMC0s9F0RwH45gUfjP46nQTHuEB6jS4Sjh7UOG
+         L5v7X8oo9MhRs+dWGEraSsMWgW1mlyPJ6OYNZ8uWWmN8CVW8lIjND6L5LzA6ldfhnqj5
+         kQt3EzGt6LHo+fKd5laWwtybEDiItx5szOmOhTAIfXicNIGWrmdv9dnFKf8k5IXYu6w5
+         PNkOU+bJxO4fMUPz2dbfQnjghp1T4d+hwCw7vDdQFlGIlnzKKBRkphiIkNQLJoP/iAgJ
+         gofQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qLPZD7PFE1Gd0rOLnIGy3Ohui9fGoP3OOJI6weOrvCc=;
-        b=GlgKsX1EvGkXIGaSR7PKaPyxJPWvYATJ/wF/js5HVj1f87/5u+a1dTEYxDY4Di6sWV
-         P6Lz8uZ3FxBAlyEbYnHPi49IVuueTxMlq4Qcc1Id6xfiXg7Lt/jAD3Jtjxl5NYAVJgpN
-         qC5juJ3YtbSrJ2KcHUFUJcqOy1UVPIrTxFxAP3UyA7cqX1Wu8M4TWNjhZU309oCTvbyu
-         Vb6bKnIYZP1So6lZ5lWgEoYjrZOkxcRj/gmhk9aXDyPxGKI+MpQVS0tLRyonJdHqzTKS
-         lL7bNI1Q+iUheJ5Gax7kqdfM8KiXRPpuA5TCsB6FLqD2vY2zuBnHbLnHIs/KENBIzB+X
-         uR7w==
-X-Gm-Message-State: AOAM533YdzmxTHT5aZQnG4IYDQaeZ2wtArHwpa38fLBIr0ilEOthYOBv
-        bkfJSg411pzpNhPyVI/NPkUfkpsqapDjIK+UeZo=
-X-Google-Smtp-Source: ABdhPJykpfn0DLcmVLEthmAqqqmjCHMhTsy0UwLlx+zOOQgay++hZ1cGg1mJxWDV9LviySSWeN+kBuSsGmUWVMQOlpQ=
-X-Received: by 2002:a9d:6254:: with SMTP id i20mr1590023otk.145.1593075483314;
- Thu, 25 Jun 2020 01:58:03 -0700 (PDT)
+        bh=UbkWKILV8DbeaX+ajZbJrzumA5rN03uAMmnvew5Vefw=;
+        b=V9ODufQPorFRBfjKLYzEDxhZgSuFGedhkBIxVW/4hHyJJ1GvGxvjby9s/httE7wS+P
+         jdFCMABn2QGp892vSW8e96W/TDAAFK79InGaBg7VbNa0NqhDSFb8EQvrU1LuyxWjo0u8
+         Ed6/Kiift2FIN4Y0P/BsYK2R8EPgBIGBJzhbjc6yycUlR0fCWNsa5KLIwYBN/XnRw/rU
+         jRBBkHiHlQZxt82LZl0N1TEK0+hW6DoVRApHoFNXUGnCTqjHJKpzYXkU9SOouQDty4Fi
+         493kRHKOTC3aeMVj+1gI+EXWs27uiys4lsDDNCxPhAYS8w8dZPWl8CaGdXPz2hg+wySB
+         c3BQ==
+X-Gm-Message-State: AOAM531L6UvzwwV+FdEUyXQW/EU5C+lPfru3qxll1TH7RvWQX+xHxwKl
+        GG57xqkVQ8JXinduTFnv2+o9FnlTSBjSUdF2Klw=
+X-Google-Smtp-Source: ABdhPJzzyGaA8R8B7RZRko8g2lrtdG3+8e2ZATvPqLOxZ6CDTunPL4flb9RrlqdkzeoVRFcy2d6p4cNTeEWNvIWEKoc=
+X-Received: by 2002:a63:924b:: with SMTP id s11mr24600380pgn.74.1593075563878;
+ Thu, 25 Jun 2020 01:59:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200625032430.152447-1-saravanak@google.com>
-In-Reply-To: <20200625032430.152447-1-saravanak@google.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 25 Jun 2020 10:57:52 +0200
-Message-ID: <CAMuHMdWiAPOGPh+LCwxebfwZTxQvwEi7G3R1btdEz6xWkbFPUQ@mail.gmail.com>
-Subject: Re: [PATCH v1] driver core: Fix suspend/resume order issue with
- deferred probe
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, Toan Le <toanle@apm.com>,
-        Feng Kan <fkan@apm.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+References: <20200625075805.363918-1-mans0n@gorani.run>
+In-Reply-To: <20200625075805.363918-1-mans0n@gorani.run>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 25 Jun 2020 11:59:11 +0300
+Message-ID: <CAHp75VeeqvR=0caAmYW5fhMP0p25Xn2hmhhDLU9dZopwQ69HXQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] gpio: add GPO driver for PCA9570
+To:     Sungbo Eo <mans0n@gorani.run>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Saravana,
-
-Thanks for your patch!
-
-On Thu, Jun 25, 2020 at 5:24 AM Saravana Kannan <saravanak@google.com> wrote:
-> Under the following conditions:
-> - driver A is built in and can probe device-A
-> - driver B is a module and can probe device-B
-
-I think this is not correct: in my case driver B is builtin, too.
-
-> - device-A is supplier of device-B
+On Thu, Jun 25, 2020 at 10:59 AM Sungbo Eo <mans0n@gorani.run> wrote:
 >
-> Without this patch:
-> 1. device-A is added.
-> 2. device-B is added.
-> 3. dpm_list is now [device-A, device-B].
-> 4. driver-A defers probe of device-A.
-> 5. deferred probe of device-A is reattempted
-
-I think this is misleading: in my case driver-A did not defer the probe
-of device-A, and driver-A never returned -EPROBE_DEFER.
-Probing was merely paused, due to fw_devlink_pause();
-
-> 6. device-A is moved to end of dpm_list.
-> 6. dpm_list is now [device-B, device-A].
-> 7. driver-B is loaded and probes device-B.
-> 8. dpm_list stays as [device-B, device-A].
+> NXP PCA9570 is 4-bit I2C GPO expander without interrupt functionality.
+> Its ports are controlled only by a data byte without register address.
 >
-> Suspend (which goes in the reverse order of dpm_list) fails because
-> device-A (supplier) is suspended before device-B (consumer).
->
-> With this patch:
-> 1. device-A is added.
-> 2. device-B is added.
-> 3. dpm_list is now [device-A, device-B].
-> 4. driver-A defers probe of device-A.
-> 5. deferred probe of device-A is reattempted later.
-> 6. dpm_list is now [device-B, device-A].
-> 7. driver-B is loaded and probes device-B.
-> 8. dpm_list is now [device-A, device-B].
->
-> Suspend works because device-B (consumer) is suspended before device-A
-> (supplier).
->
-> Fixes: 494fd7b7ad10 ("PM / core: fix deferred probe breaking suspend resume order")
-> Fixes: 716a7a259690 ("driver core: fw_devlink: Add support for batching fwnode parsing")
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> As there is no other driver similar enough to be adapted for it, a new
+> driver is introduced here.
 
-This fixes wake-up by GPIO key on r8a7740/armadillo and sh73a0/kzm9g.
-Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Thanks for an update. I'll look at them later, so please defer the
+next version a bit (perhaps for one week).
+My comments below.
 
-> --- a/drivers/base/dd.c
-> +++ b/drivers/base/dd.c
-> @@ -109,6 +109,8 @@ static void deferred_probe_work_func(struct work_struct *work)
->                  * probe makes that very unsafe.
->                  */
->                 device_pm_move_to_tail(dev);
-> +               /* Greg/Rafael: SHOULD I DELETE THIS? ^^ I think I should, but
-> +                * I'm worried if it'll have some unintended consequeneces. */
+...
 
-Works fine for me with the call to device_pm_move_to_tail() removed, too
-(at least on the two boards that showed the issue before).
+> +static void pca9570_set_mask_bits(struct gpio_chip *chip, u8 mask, u8 bits)
+> +{
+> +       struct pca9570 *gpio = gpiochip_get_data(chip);
+> +       u8 buffer;
+> +       int err;
+> +
+> +       mutex_lock(&gpio->lock);
 
-Gr{oetje,eeting}s,
+> +       buffer = gpio->buffer & ~mask;
+> +       buffer |= (mask & bits);
 
-                        Geert
+Usual pattern is to put this on one line
+
+       buffer = (gpio->buffer & ~mask) | (bits & mask);
+
+> +       err = i2c_smbus_write_byte(gpio->client, buffer);
+
+> +       if (!err)
+> +               gpio->buffer = buffer;
+
+I'm not sure I understand why this is under lock.
+
+> +
+> +       mutex_unlock(&gpio->lock);
+
+Can't you simple do it here like
+
+if (err)
+  return;
+
+... = buffer;
+
+?
+
+> +}
+
+...
+
+> +static int pca9570_probe(struct i2c_client *client,
+> +                        const struct i2c_device_id *id)
+
+Can't you use ->probe_new() instead?
+
+> +{
+> +       struct pca9570 *gpio;
+> +       int ret;
+> +
+> +       gpio = devm_kzalloc(&client->dev, sizeof(*gpio), GFP_KERNEL);
+> +       if (!gpio)
+> +               return -ENOMEM;
+> +
+
+> +       i2c_set_clientdata(client, gpio);
+
+Either move this before return 0; or...
+
+> +       gpio->chip = template_chip;
+> +       gpio->chip.parent = &client->dev;
+> +
+> +       gpio->client = client;
+> +
+> +       mutex_init(&gpio->lock);
+> +
+> +       ret = devm_gpiochip_add_data(&client->dev, &gpio->chip, gpio);
+
+> +       if (ret < 0) {
+
+(What is the meaning of ' < 0' ?
+
+> +               dev_err(&client->dev, "Unable to register gpiochip\n");
+> +               return ret;
+> +       }
+> +
+> +       return 0;
+
+...simple return devm_...(...);
+
+> +}
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+With Best Regards,
+Andy Shevchenko
