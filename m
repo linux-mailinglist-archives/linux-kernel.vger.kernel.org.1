@@ -2,107 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F023720A2F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6991A20A2F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406201AbgFYQbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 12:31:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
+        id S2406211AbgFYQbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 12:31:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406190AbgFYQbk (ORCPT
+        with ESMTP id S2406191AbgFYQbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 12:31:40 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C4FBC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:31:40 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id r12so6451807wrj.13
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:31:40 -0700 (PDT)
+        Thu, 25 Jun 2020 12:31:41 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A16C08C5DB
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:31:41 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id g75so6177664wme.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:31:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XxI9BhAfrJpW+cNsrQPMJfGCyd0KQMsn+2Q7Z4q8M9M=;
-        b=Vy09unAzWzBm7p/Z8sXAwDBEEE541im9XUsCyfot+2sgPnWxZ2Gk5OrQMMvieY77Os
-         n/epknFjcJIi8dhWDYCm48+cKrTSOhhFZFRTka1gidFJj/xEKmZ376Hg68SNO7cxFWwq
-         qN1OA9DfITpdWYPfEJzJZkw0NfW0chYPuKe3LzdaFOAXPXshL564Cs/+OjnXg0NrM6jD
-         kecVxgzOY6jeUG18XeAXUkQg/YvYL5Qr+YJVNIizm52jJSF3PDN29Xo6olSalcDKCQrB
-         3hV8f/H3fYJ5QGtr1oU4rBXp3CTZsyppJIKcLX0Ja6oJ/BLNlTwztfq3p48PSogBaHrm
-         Fa1g==
+        bh=rS9j2rQNFBNuRqF+LXK8DlVraMrXmRrORbc3erknD/A=;
+        b=Rsf1N6yX7IxQGRLHSgXSpJP/QPbCuo2R1yR5hRp/jiWLAjlOONAIfPujcEjKgSdHQq
+         HCdTJkdvd5BFjh1Bf4cFe8BzerfwN1dBFhQUFxF2l/p1UxJkuvzb87JUP9Toy1Dy2axP
+         a0LXFQn4VuxV6m0LMVFRM7zV0Uc8Z7kDndCgJbFlhEyRA0LwFTWA5a6HeDrPOr1yYDD0
+         zLqv5Mi39CHmn58FiUh2XnxGJdysqcpFfOV7VH5Ll6rpkZHvKIPTXw3GtnCZ+KGLOvMG
+         hjQBHX76GS7NR1yBcE561TiGBTocOaLGrfvZnmZqg7tfQe775ibW+ZCGKNSY7nrv4GFD
+         KOIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XxI9BhAfrJpW+cNsrQPMJfGCyd0KQMsn+2Q7Z4q8M9M=;
-        b=CHVnAvkndJKEZfXFhIyl4jhrQ4CLb7n3amIfujr8d6D8MOTNtcdyplfQvGD4Mo3oMy
-         sdjloQqSfYx56UYmh4ogq4wgoVLcHoBvfsPfDZhCMSQ09rTpkX9sPLjov0MHYld20YBN
-         NPCUfazV93IVr+0G+s4zjjOUtp18U8nOiHmhfU+0yUmaoJL77LP7ZyQdJNTQEouwkRcx
-         W7xdCQlV0suYvoXSKS1BTNJ/zrQjsyF5Lgtz+gkrMoup1iaNWf+7ROpwLsEwnrtJG8U8
-         EEDRwBjFpH1/3Q7iLHY1jPCpKTYBaguBTYBGuOqsyWsYPtL9qGiEnt+UTaxps/Rbu9cV
-         pHsQ==
-X-Gm-Message-State: AOAM530YUJ3XkDsGTGZRlplQXLje0M7u/imkQyBdXX8aXskZJi6WINcu
-        A/0so+xcdaX6nnTFE+q5Ph0jiQ==
-X-Google-Smtp-Source: ABdhPJxQcDZfTw8ATt3Q/S58X6QJDPiWu01vMmoV+iJw+tDAjnCJEPQ+9Ztl2EgWWXsNZTzZ1KeYEg==
-X-Received: by 2002:adf:8b5a:: with SMTP id v26mr37295310wra.165.1593102699140;
-        Thu, 25 Jun 2020 09:31:39 -0700 (PDT)
+        bh=rS9j2rQNFBNuRqF+LXK8DlVraMrXmRrORbc3erknD/A=;
+        b=gwMi/vTF45BOZikXtG25LdWzDvk56UwJ6DeDMKNV9M/xYEjRAifSyUhzqko5VWuCE/
+         CMK7h1yG0uM5tztxalpz0INpa5b+L4xKOMxzVpoSIveMSHTh/6DT4JFs2Ea82heLYm/6
+         Wzas90tXOe4E20ZwJYdZg/xDKtkVgrxmhdEiQui0Aa23ai1KmC2v82pyAu5Q5lO7lDjl
+         vQvLmHwMNECxLQcGH6t9oTXl/ajmMkRxSucxry/tc2ltznqeMk1M3cSDy0/s7UK1Q4S9
+         huml8NYGeDl+Rf3g4jFT8pCHGccuQXyPGvrKL07apooBlklKKHxZdABLnolPF0BOwnhc
+         qvdA==
+X-Gm-Message-State: AOAM532ow01sbJkMkmcEy3l6sg/RYgAQvIB+0QYlGlSaA4+dSCqZOY7T
+        euPXdUFb21jKxo32208iQltpTw==
+X-Google-Smtp-Source: ABdhPJzhQiFSSOZa69VFgcR0DY0GlXvIC6q9WGt36h5eMePZdVb++c5OYhmvra/vUdFSxkb68YaCJQ==
+X-Received: by 2002:a7b:c76a:: with SMTP id x10mr4312440wmk.16.1593102700156;
+        Thu, 25 Jun 2020 09:31:40 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id l8sm32090847wrq.15.2020.06.25.09.31.38
+        by smtp.gmail.com with ESMTPSA id l8sm32090847wrq.15.2020.06.25.09.31.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 09:31:38 -0700 (PDT)
+        Thu, 25 Jun 2020 09:31:39 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 05/10] mfd: tps65010: Remove delcared and set, but never used variable 'status'
-Date:   Thu, 25 Jun 2020 17:31:22 +0100
-Message-Id: <20200625163127.4000462-6-lee.jones@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Andrey Smirnov <andrew.smirnov@gmail.com>
+Subject: [PATCH 06/10] mfd: si476x-cmd: Repair wrongly described function argument 's/response/resp'
+Date:   Thu, 25 Jun 2020 17:31:23 +0100
+Message-Id: <20200625163127.4000462-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200625163127.4000462-1-lee.jones@linaro.org>
 References: <20200625163127.4000462-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'status' hasn't been checked since 2008.
+si476x_core_send_command()'s 5th argument has never been called response.
 
-It's probably safe to remove it.
+This change must have occurred prior to the driver being Mainlined.
 
-Fixes W=1 warning:
+We're also taking the opportunity to bring the first description back
+into line, making my OCD happy!
 
- drivers/mfd/tps65010.c:407:7: warning: variable ‘status’ set but not used [-Wunused-but-set-variable]
- 407 | int status;
- | ^~~~~~
+This fixes the following W=1 warning(s):
 
+ drivers/mfd/si476x-cmd.c:264: warning: Function parameter or member 'resp' not described in 'si476x_core_send_command
+ drivers/mfd/si476x-cmd.c:264: warning: Excess function parameter 'response' description in 'si476x_core_send_command'
+
+Cc: Andrey Smirnov <andrew.smirnov@gmail.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mfd/tps65010.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/mfd/si476x-cmd.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mfd/tps65010.c b/drivers/mfd/tps65010.c
-index 65fcc58c02da8..7e7dbee58ca90 100644
---- a/drivers/mfd/tps65010.c
-+++ b/drivers/mfd/tps65010.c
-@@ -404,7 +404,6 @@ static void tps65010_work(struct work_struct *work)
- 	tps65010_interrupt(tps);
- 
- 	if (test_and_clear_bit(FLAG_VBUS_CHANGED, &tps->flags)) {
--		int	status;
- 		u8	chgconfig, tmp;
- 
- 		chgconfig = i2c_smbus_read_byte_data(tps->client,
-@@ -415,8 +414,8 @@ static void tps65010_work(struct work_struct *work)
- 		else if (tps->vbus >= 100)
- 			chgconfig |= TPS_VBUS_CHARGING;
- 
--		status = i2c_smbus_write_byte_data(tps->client,
--				TPS_CHGCONFIG, chgconfig);
-+		i2c_smbus_write_byte_data(tps->client,
-+					  TPS_CHGCONFIG, chgconfig);
- 
- 		/* vbus update fails unless VBUS is connected! */
- 		tmp = i2c_smbus_read_byte_data(tps->client, TPS_CHGCONFIG);
+diff --git a/drivers/mfd/si476x-cmd.c b/drivers/mfd/si476x-cmd.c
+index 4a09ce9609c90..316d44c2edcd4 100644
+--- a/drivers/mfd/si476x-cmd.c
++++ b/drivers/mfd/si476x-cmd.c
+@@ -241,13 +241,13 @@ static int si476x_core_parse_and_nag_about_error(struct si476x_core *core)
+ /**
+  * si476x_core_send_command() - sends a command to si476x and waits its
+  * response
+- * @core:    si476x_device structure for the device we are
++ * @core:     si476x_device structure for the device we are
+  *            communicating with
+  * @command:  command id
+  * @args:     command arguments we are sending
+  * @argn:     actual size of @args
+- * @response: buffer to place the expected response from the device
+- * @respn:    actual size of @response
++ * @resp:     buffer to place the expected response from the device
++ * @respn:    actual size of @resp
+  * @usecs:    amount of time to wait before reading the response (in
+  *            usecs)
+  *
 -- 
 2.25.1
 
