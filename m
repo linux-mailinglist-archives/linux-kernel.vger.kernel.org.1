@@ -2,86 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1846420A4D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 20:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC75220A4DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 20:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406147AbgFYSWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 14:22:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405815AbgFYSWe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 14:22:34 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF1F7C08C5C1;
-        Thu, 25 Jun 2020 11:22:33 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id y10so6909726eje.1;
-        Thu, 25 Jun 2020 11:22:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=v8geYdYVNbF2rBwzEMDOXkFAFkAYNm3uyIolEhmynSQ=;
-        b=oEi9td/3wSG1TfTzeZOqQLFC8Rylwdn1Ss0asHlgWIDEr2soxzQ+Q+ppWngvOk6QBj
-         uplo7+7UTdsXYTPdi8xOk5s+qbUPaXTmNG51iKLyGKVvNEV9XNtEg7oQjqFAW6HO6P8J
-         o5JBCvvo5VcoxhsdiWvWqwLDcq49JMPe+JLIYruYt/fodDhauPBz+DDr8UyXVtUzViiY
-         FY7NZckqA10YV2rvfWJ1QHJBPdO0X039l1sqmufVs2JKcSzulo4MUOggJebgrxOQbDgu
-         xpjMwZB7EfXMyuUrCFXLLsxN0MVVY6J5jhcADKKNjIZHpPlnQJhF75aAWcTLUMQw4V6p
-         URMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=v8geYdYVNbF2rBwzEMDOXkFAFkAYNm3uyIolEhmynSQ=;
-        b=h7eVARcohrumS6VsThxbroop2NQ3LEF+IhoC2Zrt/7MX+R6uKU9RpaoznlL6/qKz+G
-         vBkU3jk/jgAl+VzLqTQRqtKy9ZvmmPqOSwMKUkoQ8/9ALfd3kog8OBLGhclPo5muObhU
-         IOE7wfDCeWy8asp6aVyPTXzSdFtkmKP8K+GIhqzaJ886FJe0S4wKbZ1Sc/4/SxMzyjTp
-         EGb3NVw1DTHOB9CJMIyeUJts3h9Xd0TmAOGf/FVIZQTdkWbM8chfZKjOLvFdDOZTP0Nk
-         ZANAfMqFxv/joM5/VCWAFDk2W6OCJPXmiOsu4wHGGm46om+W4miUlI6cz8sZwh+jxAcl
-         9LrA==
-X-Gm-Message-State: AOAM53302myCh9kQL1B+1wq50Xm5SM2SRIZs9mDQE+j8ny2gOoxt2rfZ
-        ny96wtfuxcTAmTC6/5xC4xo=
-X-Google-Smtp-Source: ABdhPJwYuKHKu8ML78wL+jaQLqXrQCzIvC0LSKLl8JU//05HxvBuQruSWlLJAM3qfISlZB1rhyLmBg==
-X-Received: by 2002:a17:906:da19:: with SMTP id fi25mr9261887ejb.369.1593109352334;
-        Thu, 25 Jun 2020 11:22:32 -0700 (PDT)
-Received: from andrea (ip-213-220-210-175.net.upcbroadband.cz. [213.220.210.175])
-        by smtp.gmail.com with ESMTPSA id lm22sm1524867ejb.109.2020.06.25.11.22.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 11:22:31 -0700 (PDT)
-Date:   Thu, 25 Jun 2020 20:22:23 +0200
-From:   Andrea Parri <parri.andrea@gmail.com>
-To:     Andres Beltran <lkmlabelt@gmail.com>
-Cc:     kys@microsoft.com, haiyangz@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, linux-hyperv@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
-        linux-scsi@vger.kernel.org, netdev@vger.kernel.org,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH 0/3] Drivers: hv: vmbus: vmbus_requestor data structure
-Message-ID: <20200625182223.GA318674@andrea>
-References: <20200625153723.8428-1-lkmlabelt@gmail.com>
+        id S2390770AbgFYSZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 14:25:07 -0400
+Received: from foss.arm.com ([217.140.110.172]:43018 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390025AbgFYSZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 14:25:07 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 59F2CD6E;
+        Thu, 25 Jun 2020 11:25:06 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A3BAE3F71E;
+        Thu, 25 Jun 2020 11:25:04 -0700 (PDT)
+References: <20200624195811.435857-1-maz@kernel.org>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Russell King <linux@arm.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>, kernel-team@android.com
+Subject: Re: [PATCH v2 00/17] arm/arm64: Turning IPIs into normal interrupts
+In-reply-to: <20200624195811.435857-1-maz@kernel.org>
+Date:   Thu, 25 Jun 2020 19:24:59 +0100
+Message-ID: <jhjmu4rgg04.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200625153723.8428-1-lkmlabelt@gmail.com>
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Andres Beltran (3):
->   Drivers: hv: vmbus: Add vmbus_requestor data structure for VMBus
->     hardening
->   scsi: storvsc: Use vmbus_requestor to generate transaction ids for
->     VMBus hardening
->   hv_netvsc: Use vmbus_requestor to generate transaction ids for VMBus
->     hardening
+Hi Marc,
 
-For the series,
+On 24/06/20 20:57, Marc Zyngier wrote:
+> For as long as SMP ARM has existed, IPIs have been handled as
+> something special. The arch code and the interrupt controller exchange
+> a couple of hooks (one to generate an IPI, another to handle it).
+>
+> Although this is perfectly manageable, it prevents the use of features
+> that we could use if IPIs were Linux IRQs (such as pseudo-NMIs). It
+> also means that each interrupt controller driver has to follow an
+> architecture-specific interface instead of just implementing the base
+> irqchip functionalities. The arch code also duplicates a number of
+> things that the core irq code already does (such as calling
+> set_irq_regs(), irq_enter()...).
+>
+> This series tries to remedy this on arm/arm64 by offering a new
+> registration interface where the irqchip gives the arch code a range
+> of interrupts to use for IPIs. The arch code requests these as normal
+> per-cpu interrupts.
+>
+> The bulk of the work is at the interrupt controller level, where all 5
+> irqchips used on arm+SMP/arm64 get converted.
+>
+> Finally, we drop the legacy registration interface as well as the
+> custom statistics accounting.
+>
+> Note that I have had a look at providing a "generic" interface by
+> expanding the kernel/irq/ipi.c bag of helpers, but so far all
+> irqchips have very different requirements, so there is hardly anything
+> to consolidate for now. Maybe some as hip04 and the Marvell horror get
+> cleaned up (the latter certainly could do with a good dusting).
+>
+> This has been tested on a bunch of 32 and 64bit guests (GICv2, GICv3),
+> as well as 64bit bare metal (GICv3). The RPi part has only been tested
+> in QEMU as a 64bit guest, while the HiSi and Marvell parts have only
+> been compile-tested.
+>
 
-Tested-by: Andrea Parri <parri.andrea@gmail.com>
+I gave that a spin on Juno r0 and HiKey960 (both GICv2), all good! I also
+wanted to try it out on my eMAG (to get some GICv3 airtime) but ran into
+"technical difficulties". I think I'll need to get someone to go poke
+it (most likely next week). I'm pretty sure I'm the one who should be
+asking you for hardware, but if there's anything specific you need me to
+test, please shout.
 
-Thanks,
-  Andrea
+I have a few extra nits/comments in some patches, but it's all fairly minor
+so FWIW you can also add, for patches [01-10, 14-15]:
+
+Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+
+I haven't really looked at those other irqchips, but I can give it a shot
+if no one else shows up. Also I'll most likely look at the arm side, but
+I'm afraid I'm too well-done right now to pay much more attention to
+details.
