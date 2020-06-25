@@ -2,105 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DB6020A31B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:37:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4CB20A31E
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406343AbgFYQgm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 12:36:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38464 "EHLO
+        id S2406360AbgFYQgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 12:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406313AbgFYQgd (ORCPT
+        with ESMTP id S2406316AbgFYQge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 12:36:33 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B94AC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:36:33 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id z13so6519161wrw.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:36:33 -0700 (PDT)
+        Thu, 25 Jun 2020 12:36:34 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A1CC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:36:34 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id h15so6504936wrq.8
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:36:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TC6ovm1MTdrPXtJ7RPNgE+kqgQ9elvNJFPlbxofiJ9w=;
-        b=GSc/LxSAVa29kXTlsfWMyCLX/Yr2la9yDbQV029tu6huJwXsEThpfpX67gY5snQPRs
-         9w17UHzz9qEJtm2vVVgSXslhm76xPE8MSFfy3n6T+YXK8Wf7rtUU39Dq8tnZE8JXoi8I
-         ZilOALyMsEAlXNrlilnNNNP3SDexRspuU5i4duvqMaJ2+wfM+9u/eyWF+kj9glvP2Yca
-         iqTVg6u+h4bB8yklv3g3unbra6xnMH1T6TdkVtXtvUs8LIQ7Ey/z0B3pcPSKlIjWwBEo
-         AvNA5dWzG/iviUkBsJd3ERZh81VGimZna9c+DnXZXZIcPXc4fr7dHPNUEEGgk7AjiZwz
-         tVZw==
+        bh=p8b+PVloZKecBIPRr/OI23SwGO/e4hTRF+SmOkygulE=;
+        b=Clvr0gA4nLJBZGW6W/+HM9VWedZywRI9gj5x8nbcChWuKDVxsOPcRqm7opsvillYev
+         VnVcVawCHAs8atU6mQP1AWBBYIqUyZ4pcdT06OcEnaS3BK+Yd043lFERn83GnlFAq+RJ
+         Hwp75B6pHUL1Jm7ON5CEN+o+kne7pIVGhQ7rZlXaRVc0Wmwlfe71YmqKo9tV3gdB+mq4
+         get8f7O5pMdch0xN3a8XCzwfJcHqdNnuyMGX24kEXxzEb33aLnQFyOlBI/RJBCKMjCPN
+         m/yWapgMU5DHtKSQwOYafBEfjASBncKU/oB1ppJqV37Zf+eSN24EdsC22njJm+696N0y
+         7BHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TC6ovm1MTdrPXtJ7RPNgE+kqgQ9elvNJFPlbxofiJ9w=;
-        b=WK6lbYpEqnWAA/+GAIChfdExhgAZAwe11TmpFvmD+/nhBOOBEnctbNsnfLXX3cah1N
-         kDvpj8sKILQpz3vf5jtQbQypgwFp6snbKTv9nAGaj+oFw0ZZjjdlfrEBOSbEuPYWc/XS
-         zKlYmnd3GHsC9kkXF4+zCaC6cXh4nor0JTjFR8JU4GMi/FSAbz2TybSny+kHXQmkW3NX
-         ZhyJS2SPgvfcXfCEGA22aAH/4/khkJvfEsg8MMMB8g1RpL+PI13r6IbfaScTWwTfhfYJ
-         J2gWgGtilMyulC8r2EmaKOkwq/q9AlcbEjMrbXb1+gDMnUjwsm51ef3C8XUesJoq8U1F
-         04hw==
-X-Gm-Message-State: AOAM532elXcVO/PpPxMzGzmasCASKMxouvQbv3/+2z1ThSKRPGgVabOG
-        zfV6baPiSTC/FJdK+10UPMLF5g==
-X-Google-Smtp-Source: ABdhPJzhEYgPmTR4l1oHQcmaoYP7rMe39jztBc3C01yTdPLg527ej6688QjPkiAxzMTPtlCnn7Oe1A==
-X-Received: by 2002:a5d:688c:: with SMTP id h12mr26136963wru.212.1593102992114;
-        Thu, 25 Jun 2020 09:36:32 -0700 (PDT)
+        bh=p8b+PVloZKecBIPRr/OI23SwGO/e4hTRF+SmOkygulE=;
+        b=MAaPk4YW+EHjrCoTbjpdQJ3M+xpGBEU6bjOtE4hnYmlLqZW2HVecu+An0UQh9uBKu8
+         wFUJ3Eyu4lpxTgDz1c0KfMnxFfq4zPawYhS9o9Vlj8fzi99Z6PuFLvARFkdbUwkvDDoL
+         u5G+4KTmI237sfdL90bSRF07R6Jp+4XwMpHCmX9jaa1hWBd4pEzHVD/8Vzwb4Kn963SC
+         +MZ87VxiDxu+Pw/83pleQqAHACTYeBzR/IrQgAtN9lpxuuU6JiyZ0gII/V7NHNbTUsF3
+         n8c+TD9N/w64tRjYxGhsktBVfeHo7DLz3jIXaj0X0Jy6yubsVwgP2nsMb2jVII4Itsem
+         ZHKw==
+X-Gm-Message-State: AOAM5311v1mm+1FnvKICHE8uLg9fCW7gveEqqDabYM3nk6AhAeKjNzzk
+        h/bIcwc7zjoMOIN/gLU2EiuNA+TWxj8=
+X-Google-Smtp-Source: ABdhPJyr1ofOi7hZPmKskeIrOB05REDu3cC6GxuHEK6qzVDcUnQbMElvkDMUwm1aSNxpOCPQ6f7Jig==
+X-Received: by 2002:adf:8067:: with SMTP id 94mr35980537wrk.427.1593102993280;
+        Thu, 25 Jun 2020 09:36:33 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id a15sm36729089wrh.54.2020.06.25.09.36.31
+        by smtp.gmail.com with ESMTPSA id a15sm36729089wrh.54.2020.06.25.09.36.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 09:36:31 -0700 (PDT)
+        Thu, 25 Jun 2020 09:36:32 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lgirdwood@gmail.com, broonie@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 08/10] regulator: cpcap-regulator: Demote kerneldoc header to standard comment
-Date:   Thu, 25 Jun 2020 17:36:12 +0100
-Message-Id: <20200625163614.4001403-9-lee.jones@linaro.org>
+Subject: [PATCH 09/10] regulator: da9063-regulator: Fix .suspend 'initialized field overwritten' warnings
+Date:   Thu, 25 Jun 2020 17:36:13 +0100
+Message-Id: <20200625163614.4001403-10-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200625163614.4001403-1-lee.jones@linaro.org>
 References: <20200625163614.4001403-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nothing about this comment identifies it as a kerneldoc header.
-They're missing all of their struct's property descriptions and
-the correct 'struct *' header.
+Looks as though 9f75ce666199 ("regulator: da9063: fix suspend") failed
+to clean-up all of the existing .suspend variable initialisations.
+This has led to some 'initilized field overwritten' issues now present
+in W=1 builds.
 
-Fixes the following W=1 warning(s):
+This patch squashes the following build warnings:
 
- drivers/regulator/cpcap-regulator.c:99: warning: cannot understand function prototype: 'struct cpcap_regulator '
- drivers/regulator/cpcap-regulator.c:337: warning: cannot understand function prototype: 'const struct cpcap_regulator omap4_regulators[] = '
+ In file included from drivers/regulator/da9063-regulator.c:17:
+ include/linux/regmap.h:1124:37: warning: initialized field overwritten [-Woverride-init]
+ 1124 | #define REG_FIELD(_reg, _lsb, _msb) { | ^
+ drivers/regulator/da9063-regulator.c:27:2: note: in expansion of macro ‘REG_FIELD’
+ 27 | REG_FIELD(_reg, __builtin_ffs((int)_mask) - 1, | ^~~~~~~~~
+ drivers/regulator/da9063-regulator.c:515:14: note: in expansion of macro ‘BFIELD’
+ 515 | .suspend = BFIELD(DA9063_REG_LDO9_CONT, DA9063_VLDO9_SEL),
+ | ^~~~~~
+ include/linux/regmap.h:1124:37: note: (near initialization for ‘da9063_regulator_info[11].suspend’)
+ 1124 | #define REG_FIELD(_reg, _lsb, _msb) { | ^
+ drivers/regulator/da9063-regulator.c:27:2: note: in expansion of macro ‘REG_FIELD’
+ 27 | REG_FIELD(_reg, __builtin_ffs((int)_mask) - 1, | ^~~~~~~~~
+ drivers/regulator/da9063-regulator.c:515:14: note: in expansion of macro ‘BFIELD’
+ 515 | .suspend = BFIELD(DA9063_REG_LDO9_CONT, DA9063_VLDO9_SEL),
+ | ^~~~~~
 
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/regulator/cpcap-regulator.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/regulator/da9063-regulator.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/regulator/cpcap-regulator.c b/drivers/regulator/cpcap-regulator.c
-index fbf823b830308..221e8db358c9e 100644
---- a/drivers/regulator/cpcap-regulator.c
-+++ b/drivers/regulator/cpcap-regulator.c
-@@ -89,7 +89,7 @@
-  */
- #define CPCAP_REG_OFF_MODE_SEC		BIT(15)
- 
--/**
-+/*
-  * SoC specific configuration for CPCAP regulator. There are at least three
-  * different SoCs each with their own parameters: omap3, omap4 and tegra2.
-  *
-@@ -325,7 +325,7 @@ static const unsigned int vvib_val_tbl[] = { 1300000, 1800000, 2000000,
- static const unsigned int vusb_val_tbl[] = { 0, 3300000, };
- static const unsigned int vaudio_val_tbl[] = { 0, 2775000, };
- 
--/**
-+/*
-  * SoC specific configuration for omap4. The data below is comes from Motorola
-  * Linux kernel tree. It's basically the values of cpcap_regltr_data,
-  * cpcap_regulator_mode_values and cpcap_regulator_off_mode_values, see
+diff --git a/drivers/regulator/da9063-regulator.c b/drivers/regulator/da9063-regulator.c
+index e1d6c8f6d40bb..fe65b5acaf280 100644
+--- a/drivers/regulator/da9063-regulator.c
++++ b/drivers/regulator/da9063-regulator.c
+@@ -512,7 +512,6 @@ static const struct da9063_regulator_info da9063_regulator_info[] = {
+ 	},
+ 	{
+ 		DA9063_LDO(DA9063, LDO9, 950, 50, 3600),
+-		.suspend = BFIELD(DA9063_REG_LDO9_CONT, DA9063_VLDO9_SEL),
+ 	},
+ 	{
+ 		DA9063_LDO(DA9063, LDO11, 900, 50, 3600),
 -- 
 2.25.1
 
