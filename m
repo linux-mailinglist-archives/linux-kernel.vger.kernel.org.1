@@ -2,107 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD21D20A84C
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 00:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 154A420A842
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 00:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407535AbgFYWjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 18:39:37 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:31634 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407512AbgFYWje (ORCPT
+        id S2406727AbgFYWft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 18:35:49 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:28325 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728374AbgFYWft (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 18:39:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593124772;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:in-reply-to:in-reply-to:references:references;
-        bh=tVsDsAmElVtmSpleihdn/aqK002mWcZ5/rdoWS26sdI=;
-        b=jKUbfS79BJDu/4PQKji6rLuzOzbUpCLqG9dxLUPx8qMhno7KdKn7y0RQO30ZjqF30jkDVO
-        807yZm6mbkLBusPLEmMDmjNcFrCmqVp2A7NVaN4HdDdlJm08PRSbADk1ZW3Rny2besHelg
-        zDInG5rHNBNTzzgjA1mZ5jU0mKj6+mk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-3-TVC9-u2dNW-QApCcICj-kw-1; Thu, 25 Jun 2020 18:39:29 -0400
-X-MC-Unique: TVC9-u2dNW-QApCcICj-kw-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 30743804001;
-        Thu, 25 Jun 2020 22:39:27 +0000 (UTC)
-Received: from virtlab423.virt.lab.eng.bos.redhat.com (virtlab423.virt.lab.eng.bos.redhat.com [10.19.152.154])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 870E67FEA6;
-        Thu, 25 Jun 2020 22:39:25 +0000 (UTC)
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        frederic@kernel.org, mtosatti@redhat.com, juri.lelli@redhat.com,
-        abelits@marvell.com, bhelgaas@google.com,
-        linux-pci@vger.kernel.org, rostedt@goodmis.org, mingo@kernel.org,
-        peterz@infradead.org, tglx@linutronix.de, davem@davemloft.net,
-        akpm@linux-foundation.org, sfr@canb.auug.org.au,
-        stephen@networkplumber.org, rppt@linux.vnet.ibm.com,
-        jinyuqi@huawei.com, zhangshaokun@hisilicon.com
-Subject: [Patch v4 3/3] net: Restrict receive packets queuing to housekeeping CPUs
-Date:   Thu, 25 Jun 2020 18:34:43 -0400
-Message-Id: <20200625223443.2684-4-nitesh@redhat.com>
-In-Reply-To: <20200625223443.2684-1-nitesh@redhat.com>
-References: <20200625223443.2684-1-nitesh@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Thu, 25 Jun 2020 18:35:49 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U0iFBoh_1593124536;
+Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U0iFBoh_1593124536)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 26 Jun 2020 06:35:36 +0800
+From:   Wei Yang <richard.weiyang@linux.alibaba.com>
+To:     akpm@linux-foundation.org, osalvador@suse.de,
+        dan.j.williams@intel.com
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org, david@redhat.com,
+        Wei Yang <richard.weiyang@linux.alibaba.com>
+Subject: [Patch v2] mm/sparse: never partially remove memmap for early section
+Date:   Fri, 26 Jun 2020 06:35:34 +0800
+Message-Id: <20200625223534.18024-1-richard.weiyang@linux.alibaba.com>
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alex Belits <abelits@marvell.com>
+For early sections, its memmap is handled specially even sub-section is
+enabled. The memmap could only be populated as a whole.
 
-With the existing implementation of store_rps_map(), packets are queued
-in the receive path on the backlog queues of other CPUs irrespective of
-whether they are isolated or not. This could add a latency overhead to
-any RT workload that is running on the same CPU.
+Quoted from the comment of section_activate():
 
-Ensure that store_rps_map() only uses available housekeeping CPUs for
-storing the rps_map.
+    * The early init code does not consider partially populated
+    * initial sections, it simply assumes that memory will never be
+    * referenced.  If we hot-add memory into such a section then we
+    * do not need to populate the memmap and can simply reuse what
+    * is already there.
 
-Signed-off-by: Alex Belits <abelits@marvell.com>
-Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
+While current section_deactivate() breaks this rule. When hot-remove a
+sub-section, section_deactivate() would depopulate its memmap. The
+consequence is if we hot-add this subsection again, its memmap never get
+proper populated.
+
+We can reproduce the case by following steps:
+
+1. Hacking qemu to allow sub-section early section
+
+   diff --git a/hw/i386/pc.c b/hw/i386/pc.c
+   index 51b3050d01..c6a78d83c0 100644
+   --- a/hw/i386/pc.c
+   +++ b/hw/i386/pc.c
+   @@ -1010,7 +1010,7 @@ void pc_memory_init(PCMachineState *pcms,
+            }
+
+            machine->device_memory->base =
+   -            ROUND_UP(0x100000000ULL + x86ms->above_4g_mem_size, 1 * GiB);
+   +            0x100000000ULL + x86ms->above_4g_mem_size;
+
+            if (pcmc->enforce_aligned_dimm) {
+                /* size device region assuming 1G page max alignment per slot */
+
+2. Bootup qemu with PSE disabled and a sub-section aligned memory size
+
+   Part of the qemu command would look like this:
+
+   sudo x86_64-softmmu/qemu-system-x86_64 \
+       --enable-kvm -cpu host,pse=off \
+       -m 4160M,maxmem=20G,slots=1 \
+       -smp sockets=2,cores=16 \
+       -numa node,nodeid=0,cpus=0-1 -numa node,nodeid=1,cpus=2-3 \
+       -machine pc,nvdimm \
+       -nographic \
+       -object memory-backend-ram,id=mem0,size=8G \
+       -device nvdimm,id=vm0,memdev=mem0,node=0,addr=0x144000000,label-size=128k
+
+3. Re-config a pmem device with sub-section size in guest
+
+   ndctl create-namespace --force --reconfig=namespace0.0 --mode=devdax --size=16M
+
+Then you would see the following call trace:
+
+   pmem0: detected capacity change from 0 to 16777216
+   BUG: unable to handle page fault for address: ffffec73c51000b4
+   #PF: supervisor write access in kernel mode
+   #PF: error_code(0x0002) - not-present page
+   PGD 81ff8067 P4D 81ff8067 PUD 81ff7067 PMD 1437cb067 PTE 0
+   Oops: 0002 [#1] SMP NOPTI
+   CPU: 16 PID: 1348 Comm: ndctl Kdump: loaded Tainted: G        W         5.8.0-rc2+ #24
+   Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.4
+   RIP: 0010:memmap_init_zone+0x154/0x1c2
+   Code: 77 16 f6 40 10 02 74 10 48 03 48 08 48 89 cb 48 c1 eb 0c e9 3a ff ff ff 48 89 df 48 c1 e7 06 48f
+   RSP: 0018:ffffbdc7011a39b0 EFLAGS: 00010282
+   RAX: ffffec73c5100088 RBX: 0000000000144002 RCX: 0000000000144000
+   RDX: 0000000000000004 RSI: 007ffe0000000000 RDI: ffffec73c5100080
+   RBP: 027ffe0000000000 R08: 0000000000000001 R09: ffff9f8d38f6d708
+   R10: ffffec73c0000000 R11: 0000000000000000 R12: 0000000000000004
+   R13: 0000000000000001 R14: 0000000000144200 R15: 0000000000000000
+   FS:  00007efe6b65d780(0000) GS:ffff9f8d3f780000(0000) knlGS:0000000000000000
+   CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+   CR2: ffffec73c51000b4 CR3: 000000007d718000 CR4: 0000000000340ee0
+   Call Trace:
+    move_pfn_range_to_zone+0x128/0x150
+    memremap_pages+0x4e4/0x5a0
+    devm_memremap_pages+0x1e/0x60
+    dev_dax_probe+0x69/0x160 [device_dax]
+    really_probe+0x298/0x3c0
+    driver_probe_device+0xe1/0x150
+    ? driver_allows_async_probing+0x50/0x50
+    bus_for_each_drv+0x7e/0xc0
+    __device_attach+0xdf/0x160
+    bus_probe_device+0x8e/0xa0
+    device_add+0x3b9/0x740
+    __devm_create_dev_dax+0x127/0x1c0
+    __dax_pmem_probe+0x1f2/0x219 [dax_pmem_core]
+    dax_pmem_probe+0xc/0x1b [dax_pmem]
+    nvdimm_bus_probe+0x69/0x1c0 [libnvdimm]
+    really_probe+0x147/0x3c0
+    driver_probe_device+0xe1/0x150
+    device_driver_attach+0x53/0x60
+    bind_store+0xd1/0x110
+    kernfs_fop_write+0xce/0x1b0
+    vfs_write+0xb6/0x1a0
+    ksys_write+0x5f/0xe0
+    do_syscall_64+0x4d/0x90
+    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fixes: ba72b4c8cf60 ("mm/sparsemem: support sub-section hotplug")
+Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+Acked-by: David Hildenbrand <david@redhat.com>
 ---
- net/core/net-sysfs.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+ mm/sparse.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
-index e353b822bb15..677868fea316 100644
---- a/net/core/net-sysfs.c
-+++ b/net/core/net-sysfs.c
-@@ -11,6 +11,7 @@
- #include <linux/if_arp.h>
- #include <linux/slab.h>
- #include <linux/sched/signal.h>
-+#include <linux/sched/isolation.h>
- #include <linux/nsproxy.h>
- #include <net/sock.h>
- #include <net/net_namespace.h>
-@@ -741,7 +742,7 @@ static ssize_t store_rps_map(struct netdev_rx_queue *queue,
- {
- 	struct rps_map *old_map, *map;
- 	cpumask_var_t mask;
--	int err, cpu, i;
-+	int err, cpu, i, hk_flags;
- 	static DEFINE_MUTEX(rps_map_mutex);
- 
- 	if (!capable(CAP_NET_ADMIN))
-@@ -756,6 +757,13 @@ static ssize_t store_rps_map(struct netdev_rx_queue *queue,
- 		return err;
+diff --git a/mm/sparse.c b/mm/sparse.c
+index b2b9a3e34696..a06085738295 100644
+--- a/mm/sparse.c
++++ b/mm/sparse.c
+@@ -825,10 +825,14 @@ static void section_deactivate(unsigned long pfn, unsigned long nr_pages,
+ 		ms->section_mem_map &= ~SECTION_HAS_MEM_MAP;
  	}
  
-+	hk_flags = HK_FLAG_DOMAIN | HK_FLAG_WQ;
-+	cpumask_and(mask, mask, housekeeping_cpumask(hk_flags));
-+	if (cpumask_empty(mask)) {
-+		free_cpumask_var(mask);
-+		return -EINVAL;
-+	}
-+
- 	map = kzalloc(max_t(unsigned int,
- 			    RPS_MAP_SIZE(cpumask_weight(mask)), L1_CACHE_BYTES),
- 		      GFP_KERNEL);
+-	if (section_is_early && memmap)
+-		free_map_bootmem(memmap);
+-	else
++	/*
++	 * The memmap of early sections is always fully populated. See
++	 * section_activate() and pfn_valid() .
++	 */
++	if (!section_is_early)
+ 		depopulate_section_memmap(pfn, nr_pages, altmap);
++	else if (memmap)
++		free_map_bootmem(memmap);
+ 
+ 	if (empty)
+ 		ms->section_mem_map = (unsigned long)NULL;
 -- 
-2.18.4
+2.20.1 (Apple Git-117)
 
