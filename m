@@ -2,59 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6AF5209EF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 14:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0A1209F04
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 14:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404840AbgFYM5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 08:57:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51076 "EHLO mail.kernel.org"
+        id S2404839AbgFYM7U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 08:59:20 -0400
+Received: from mga02.intel.com ([134.134.136.20]:34134 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404723AbgFYM47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 08:56:59 -0400
-Received: from localhost (unknown [171.61.66.58])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 057D12063A;
-        Thu, 25 Jun 2020 12:56:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593089819;
-        bh=kzaLKrREKLzRea6TUdWAoSQVtDNNj/8G/ZUDOabAD2I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QJTtzwmwzWA2xKg8Z9TmfLY1vrj+do4O1oqiphD8lH5tUaCRftHhIB1DW5uZkgTVW
-         QSGQMj+jJ2qKJZmBRB/L5QenTsKIDOLBGM7zFyLcL7ShSxbGIn673QHc04vZYebROp
-         W6vxWtumIHBBRMLmNiKzQviCgSYoHz47THh8HGrk=
-Date:   Thu, 25 Jun 2020 18:26:55 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Colin King <colin.king@canonical.com>
-Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        linux-arm-kernel@lists.infradead.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] phy: sun4i-usb: fix dereference of pointer phy0 before
- it is null checked
-Message-ID: <20200625125655.GC6228@vkoul-mobl>
-References: <20200625124428.83564-1-colin.king@canonical.com>
+        id S2404650AbgFYM7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 08:59:20 -0400
+IronPort-SDR: AekiDvxjfUtbCvMiFbe4dDr+C0zd6zMCSnJZVCmhCI8t9o/RrNhdKmT++zuMuWrrFMOfIUbgat
+ DYD4Av13j/Dg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="133302075"
+X-IronPort-AV: E=Sophos;i="5.75,279,1589266800"; 
+   d="scan'208";a="133302075"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2020 05:59:10 -0700
+IronPort-SDR: i6Ys0T4ZOGQuhdpYBW4th9+MHEGWasefrCfEyP583mQ83surcbs8r/lE9QXtG4LHsDnzCDnO2D
+ g00PWCTwU2WQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,279,1589266800"; 
+   d="scan'208";a="263915035"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.255.28.52]) ([10.255.28.52])
+  by fmsmga007.fm.intel.com with ESMTP; 25 Jun 2020 05:59:07 -0700
+Cc:     baolu.lu@linux.intel.com, David Woodhouse <dwmw2@infradead.org>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v3 5/5] iommu/uapi: Support both kernel and user unbind
+ guest PASID
+To:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>
+References: <1592931837-58223-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1592931837-58223-6-git-send-email-jacob.jun.pan@linux.intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <8d9d5692-b603-19eb-3f69-c18cfef7b450@linux.intel.com>
+Date:   Thu, 25 Jun 2020 20:59:06 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200625124428.83564-1-colin.king@canonical.com>
+In-Reply-To: <1592931837-58223-6-git-send-email-jacob.jun.pan@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 25-06-20, 13:44, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently pointer phy0 is being dereferenced via the assignment of
-> phy on the call to phy_get_drvdata before phy0 is null checked, this
-> can lead to a null pointer dereference. Fix this by performing the
-> null check on phy0 before the call to phy_get_drvdata. Also replace
-> the phy0 == NULL check with the more usual !phy0 idiom.
+Hi Jacob,
 
-Applied, thanks
--- 
-~Vinod
+On 2020/6/24 1:03, Jacob Pan wrote:
+> +int __iommu_sva_unbind_gpasid(struct iommu_domain *domain, struct device *dev,
+> +			struct iommu_gpasid_bind_data *data)
+>   {
+>   	if (unlikely(!domain->ops->sva_unbind_gpasid))
+>   		return -ENODEV;
+>   
+> -	return domain->ops->sva_unbind_gpasid(dev, pasid);
+> +	return domain->ops->sva_unbind_gpasid(dev, data->hpasid);
+> +}
+> +EXPORT_SYMBOL_GPL(__iommu_sva_unbind_gpasid);
+
+__iommu_sva_unbind_gpasid() looks more like an internal only helper. How
+about something like iommu_sva_kunbind_gpasid()?
+
+Best regards,
+baolu
