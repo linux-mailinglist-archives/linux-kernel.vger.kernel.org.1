@@ -2,90 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D03A520A311
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD1820A315
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404043AbgFYQfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 12:35:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38348 "EHLO
+        id S2404369AbgFYQg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 12:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390396AbgFYQfz (ORCPT
+        with ESMTP id S2404064AbgFYQgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 12:35:55 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E41D8C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:35:54 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 539C12A572E
-Subject: Re: [PATCH 01/10] mfd: cros_ec_dev: Fix cros_feature_to_{name,cells}
- struct descriptions
-To:     Lee Jones <lee.jones@linaro.org>
+        Thu, 25 Jun 2020 12:36:25 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDB3C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:36:25 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id 17so6612558wmo.1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:36:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DKhxAYLcK1OWpezH2GZRnraYb/4zrSVc4ykfScpn8zk=;
+        b=wd0rykDoFDRN1TLDacv6YMzXLXXW7nrqzLS8OOr4ai+twsPATbkAx4DIRrdYcOXCHp
+         WP5V5bzsw5eVEgEuUIom6wCwViYl8tglzyaN2e4CGPR4ggcFscyeekW+7iDg2AG5zhZG
+         Ea/R8fbkThp8/tpcqD4o1u3xTyjFIY+UFybgLALILRrkcfsTvvc5p4NSADfYA2PZdsb8
+         OIbrjy0gAUecXTH9IbohzKwOHZXcjHhqRYGTUmGutS3fLwY4oGY3QJZVvxanpZbEyV6t
+         GGL4QNEoBkDZ8HR3npk9lpDu187nVloUDCw3hjYGGfRjY2PtCAiybaaYukvOmig9cwRs
+         hq5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DKhxAYLcK1OWpezH2GZRnraYb/4zrSVc4ykfScpn8zk=;
+        b=Jm0hTY6lR3htTSyHYlVgQjBLwH8r9SSIhUQWTZDd7Ken5AkPuFWeVK1USliFYoGOYW
+         pIpYyXw8wsk2CIxpdiRNj5hk5ZJ0mdTr9CAkBAduUK/R78+CYVMYUPvzuh1FxmwkxZzw
+         Hk/GZEmz4b51AZ4MGhotyOca7WB5Ok7taPbShnWZcEJlUgZQEYKytyaf/8c5z6t6AM+/
+         OsukMzkjRbMYwhCKHoTYOWymzjda6adq0iRXISDYQrAwUBqPXt+vSf816wI3Jh5rPCKg
+         8rx3TRLspqEl2NqQdDlD69P7R0PR+OYRPid33EFOZ6xZIs3GtcpjtXbAN4XP8qjGgue8
+         TshA==
+X-Gm-Message-State: AOAM5339lxsM8Wnqm7VKa1xxNsPs5ac4jMuQhUFBSxNifWZytp8wdK+x
+        R3c6aAuQ7OyhQouOwYR7MB4Xiw==
+X-Google-Smtp-Source: ABdhPJxuLncPUEMpBum2kdsCfeKYpgkk8gkVwLCetbj7Az5tRzWNJPfoJ1UenyrKzEFmcyJBa5j5yw==
+X-Received: by 2002:a7b:c381:: with SMTP id s1mr4530291wmj.25.1593102983825;
+        Thu, 25 Jun 2020 09:36:23 -0700 (PDT)
+Received: from localhost.localdomain ([2.27.35.144])
+        by smtp.gmail.com with ESMTPSA id a15sm36729089wrh.54.2020.06.25.09.36.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jun 2020 09:36:23 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lgirdwood@gmail.com, broonie@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Benson Leung <bleung@chromium.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Bill Richardson <wfrichar@chromium.org>
-References: <20200625163127.4000462-1-lee.jones@linaro.org>
- <20200625163127.4000462-2-lee.jones@linaro.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <023445fb-370f-441f-7f3c-dad0c0695208@collabora.com>
-Date:   Thu, 25 Jun 2020 18:35:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        Lee Jones <lee.jones@linaro.org>
+Subject: [PATCH 00/10] Fix a bunch of W=1 warnings in Regulator
+Date:   Thu, 25 Jun 2020 17:36:04 +0100
+Message-Id: <20200625163614.4001403-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20200625163127.4000462-2-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee,
+Attempting to clean-up W=1 kernel builds, which are currently
+overwhelmingly riddled with niggly little warnings.
 
-Thank you for fixing this.
+Lee Jones (10):
+  regulator: consumer: Supply missing prototypes for 3 core functions
+  regulator: devres: Fix issues with kerneldoc headers
+  regulator: of_regulator: Add missing colon for rdev kerneldoc argument
+  regulator: dbx500-prcmu: Remove unused function
+    dbx500_regulator_testcase()
+  regulator: ab8500: Remove unused embedded struct expand_register
+  regulator: wm8350-regulator: Repair odd formatting in documentation
+  regulator: cpcap-regulator: Remove declared and set, but never used
+    variable 'ignore'
+  regulator: cpcap-regulator: Demote kerneldoc header to standard
+    comment
+  regulator: da9063-regulator: Fix .suspend 'initialized field
+    overwritten' warnings
+  regulator: max14577-regulator: Demote kerneldoc header to standard
+    comment
 
-On 25/6/20 18:31, Lee Jones wrote:
-> Kerneldoc expects kernel structures to be prefixed with 'struct'.
-> 
-> Fixes the following W=1 level warnings:
-> 
->  drivers/mfd/cros_ec_dev.c:32: warning: cannot understand function prototype: 'struct cros_feature_to_name '
->  drivers/mfd/cros_ec_dev.c:44: warning: cannot understand function prototype: 'struct cros_feature_to_cells '
-> 
-> Cc: Benson Leung <bleung@chromium.org>
-> Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-> Cc: Guenter Roeck <groeck@chromium.org>
-> Cc: Bill Richardson <wfrichar@chromium.org>
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+ drivers/regulator/ab8500.c             |  7 +------
+ drivers/regulator/cpcap-regulator.c    | 16 ++++++++--------
+ drivers/regulator/da9063-regulator.c   |  1 -
+ drivers/regulator/dbx500-prcmu.c       |  8 --------
+ drivers/regulator/devres.c             |  4 +++-
+ drivers/regulator/max14577-regulator.c |  2 +-
+ drivers/regulator/of_regulator.c       |  2 +-
+ drivers/regulator/wm8350-regulator.c   | 10 +++++-----
+ include/linux/regulator/consumer.h     | 10 ++++++++++
+ 9 files changed, 29 insertions(+), 31 deletions(-)
 
-Acked-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+-- 
+2.25.1
 
-> ---
->  drivers/mfd/cros_ec_dev.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mfd/cros_ec_dev.c b/drivers/mfd/cros_ec_dev.c
-> index 32c2b912b58b2..d07b43d7c761a 100644
-> --- a/drivers/mfd/cros_ec_dev.c
-> +++ b/drivers/mfd/cros_ec_dev.c
-> @@ -24,7 +24,7 @@ static struct class cros_class = {
->  };
->  
->  /**
-> - * cros_feature_to_name - CrOS feature id to name/short description.
-> + * struct cros_feature_to_name - CrOS feature id to name/short description.
->   * @id: The feature identifier.
->   * @name: Device name associated with the feature id.
->   * @desc: Short name that will be displayed.
-> @@ -36,7 +36,7 @@ struct cros_feature_to_name {
->  };
->  
->  /**
-> - * cros_feature_to_cells - CrOS feature id to mfd cells association.
-> + * struct cros_feature_to_cells - CrOS feature id to mfd cells association.
->   * @id: The feature identifier.
->   * @mfd_cells: Pointer to the array of mfd cells that needs to be added.
->   * @num_cells: Number of mfd cells into the array.
-> 
