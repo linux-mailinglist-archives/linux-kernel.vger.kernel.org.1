@@ -2,66 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A4120982F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 03:19:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A25209838
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 03:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389143AbgFYBTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 24 Jun 2020 21:19:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38376 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388928AbgFYBTc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 24 Jun 2020 21:19:32 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9537C061573
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 18:19:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:Subject:From:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=neCjOc11qing147Knuno5Zs0TZ7UJ5WPV8cnPuKXZ2w=; b=X0Kcl4JBpdGaR57L7a7o8m2MVK
-        9CPsfhd4l47obbP5kxoUqUzw0qhHOMnMrXFgG/vrYcyLnfTiGUgQ4vBztg+LhsFwU1mRMjmFCcRdU
-        /k27HIRXI9nxUk1q6tPYuY1Wxr3cKhC47UYWDpqxAsoVQ48BMT1H++wcf0o2LxIkOXco7MQsRhX1/
-        EDKlPewtAhbsHzGZeTSgrNjrRrUmNs+2ZyUYiotfST5X11j0q8Xl0SdXjOiImVqWzAlvNCDmey62d
-        4SlzdAh2PF+Ti5Y+Jbe5NqJ6z5miCgGLFypocEd1X1HodXffQ0+cgwvs8pm/G7owZUnPlf7i3rXim
-        IMcSU+Mg==;
-Received: from [2602:306:37b0:7840:f887:89b1:c866:efda]
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1joGXo-0007QV-Kg; Thu, 25 Jun 2020 01:19:13 +0000
-From:   Geoff Levand <geoff@infradead.org>
-Subject: Re: [PATCH] powerpc/boot: Use address-of operator on section symbols
-To:     Nathan Chancellor <natechancellor@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, Joel Stanley <joel@jms.id.au>
-References: <20200624035920.835571-1-natechancellor@gmail.com>
-Message-ID: <1bbb6956-d9de-e0c8-5b45-20b6fecc2189@infradead.org>
-Date:   Wed, 24 Jun 2020 18:18:48 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.8.0
+        id S2389146AbgFYBZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 24 Jun 2020 21:25:18 -0400
+Received: from mga18.intel.com ([134.134.136.126]:52359 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388928AbgFYBZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 24 Jun 2020 21:25:17 -0400
+IronPort-SDR: BVnQ631daeQ3xZ7uZU0MOw6VuaoKCfxKBXblbGodSYpvH7gy4hBuHaEBwndBBqNfntTg1W47n+
+ yCYA92RsY4vw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="132143138"
+X-IronPort-AV: E=Sophos;i="5.75,277,1589266800"; 
+   d="scan'208";a="132143138"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2020 18:25:16 -0700
+IronPort-SDR: lHG9pRk5VM34/0o+zgZoBgZgr+FGKS/ovMZTi3xdPANRvKhwRkhGBYsanWNzUR682mClBXbuhL
+ h7UqOmyreLVA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,277,1589266800"; 
+   d="scan'208";a="479314625"
+Received: from hluxenbu-mobl.ger.corp.intel.com (HELO localhost) ([10.252.36.218])
+  by fmsmga006.fm.intel.com with ESMTP; 24 Jun 2020 18:25:05 -0700
+Date:   Thu, 25 Jun 2020 04:25:03 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, npmccallum@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v33 01/21] x86/cpufeatures: x86/msr: Add Intel SGX
+ hardware bits
+Message-ID: <20200625012503.GD21758@linux.intel.com>
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-2-jarkko.sakkinen@linux.intel.com>
+ <20200622173711.GJ32200@zn.tnic>
 MIME-Version: 1.0
-In-Reply-To: <20200624035920.835571-1-natechancellor@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200622173711.GJ32200@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nathan,
+On Mon, Jun 22, 2020 at 07:37:11PM +0200, Borislav Petkov wrote:
+> On Thu, Jun 18, 2020 at 01:08:23AM +0300, Jarkko Sakkinen wrote:
+> > From: Sean Christopherson <sean.j.christopherson@intel.com>
+> > 
+> > Add X86_FEATURE_SGX from CPUID.(EAX=7, ECX=1), which informs whether the
+> > CPU has SGX.
+> > 
+> > Add X86_FEATURE_SGX1 and X86_FEATURE_SGX2 from CPUID.(EAX=12H, ECX=0),
+> > which describe the level of SGX support available [1].
+> > 
+> > Add IA32_FEATURE_CONTROL_SGX_ENABLE. BIOS can use this bit to opt-in SGX
+> 
+> I'm guessing that wants to be
+> 
+> IA32_FEATURE_CONTROL.SGX_ENABLE
+> 
+> judging by the diff and the SDM chapter.
 
-On 6/23/20 8:59 PM, Nathan Chancellor wrote:
-> These are not true arrays, they are linker defined symbols, which are
-> just addresses.  Using the address of operator silences the warning
-> and does not change the resulting assembly with either clang/ld.lld
-> or gcc/ld (tested with diff + objdump -Dr).
+Underscore must be just a typo.
 
-Thanks for your patch.  I tested this patch applied to v5.8-rc2 on a
-PS3 and it seems OK.
+> 
+> > before locking the feature control MSR [2].
+> > 
+> > [1] Intel SDM: 36.7.2 Intel® SGX Resource Enumeration Leaves
+> > [2] Intel SDM: 36.7.1 Intel® SGX Opt-In Configuration
+> > 
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Acked-by: Jethro Beekman <jethro@fortanix.com>
+> > Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> > Co-developed-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+> > ---
+> >  arch/x86/include/asm/cpufeature.h        |  5 +++--
+> >  arch/x86/include/asm/cpufeatures.h       |  7 ++++++-
+> >  arch/x86/include/asm/disabled-features.h | 18 +++++++++++++++---
+> >  arch/x86/include/asm/msr-index.h         |  1 +
+> >  arch/x86/include/asm/required-features.h |  2 +-
+> >  arch/x86/kernel/cpu/common.c             |  4 ++++
+> >  tools/arch/x86/include/asm/cpufeatures.h |  7 ++++++-
+> 
+> Also, please drop this change to tools/, see
+> 
+> https://lkml.kernel.org/r/20200622141737.GA30611@kernel.org
+> 
+> from today.
 
-Tested-by: Geoff Levand <geoff@infradead.org>
+OK I reverted it [*].
 
+> With those addressed:
+> 
+> Reviewed-by: Borislav Petkov <bp@suse.de>
 
+Thank you, I'll update this to the commit.
+
+> 
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+[*] By "git diff -R HEAD~1 -- tools/arch/x86/include/asm/cpufeatures.h | patch -p1".
+
+/Jarkko
