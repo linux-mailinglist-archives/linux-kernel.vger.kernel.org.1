@@ -2,119 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD80209AF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AD75209B0C
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390485AbgFYIAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 04:00:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43244 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726930AbgFYIAl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 04:00:41 -0400
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [IPv6:2001:67c:2050::465:102])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FB6C061573;
-        Thu, 25 Jun 2020 01:00:41 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
-        (No client certificate requested)
-        by mout-p-102.mailbox.org (Postfix) with ESMTPS id 49ssrl45D3zKmhM;
-        Thu, 25 Jun 2020 10:00:39 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gorani.run; s=MBO0001;
-        t=1593072037;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=KsVtsKXWjb9tO8tIRJnY/G5IWD6O3/lf2qooOuvtG7M=;
-        b=kgJJLWN0GF7S7PuFJlCVsbUEp5UJOogFD1jrJnB+i72/fjMBAsDbhrjpYBiCQZubR0wVXN
-        xKIUEdWDdLdryqKCb/6yegwRCIaMXdN+crG4DIW1VcegRBsdx5MQkQAOw2atoWrXqwYb5N
-        VvPWHu2U49YKCmm0aUo2AnQhC8yoA6qL/batu+hb6c/sKakLy6XFXkgg3HJNgh/1TCM5UF
-        te8G4bGrLxSVQH+OxIXy0MghHpIDCZcgVWd0eCCgp7nAxiTJldJi0U1IlJOQ4nyrRm+gva
-        jhExuwlN4xJcm5FpSaFFzrFAVPXJUQj/YqzvMUHwtZo3LlOscjR/JD10vs58rw==
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter05.heinlein-hosting.de (spamfilter05.heinlein-hosting.de [80.241.56.123]) (amavisd-new, port 10030)
-        with ESMTP id kSFI7Ov2nZua; Thu, 25 Jun 2020 10:00:35 +0200 (CEST)
-From:   Sungbo Eo <mans0n@gorani.run>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org
-Cc:     Sungbo Eo <mans0n@gorani.run>
-Subject: [PATCH v2 2/2] dt-bindings: gpio: Add bindings for NXP PCA9570
-Date:   Thu, 25 Jun 2020 16:59:57 +0900
-Message-Id: <20200625075957.364273-1-mans0n@gorani.run>
+        id S2390681AbgFYIEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 04:04:13 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:6317 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390531AbgFYIDg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 04:03:36 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id F3283E3998D28F9F9FAD;
+        Thu, 25 Jun 2020 16:03:31 +0800 (CST)
+Received: from DESKTOP-KKJBAGG.china.huawei.com (10.173.220.25) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 25 Jun 2020 16:03:24 +0800
+From:   Zhenyu Ye <yezhenyu2@huawei.com>
+To:     <catalin.marinas@arm.com>, <peterz@infradead.org>,
+        <mark.rutland@arm.com>, <will@kernel.org>,
+        <aneesh.kumar@linux.ibm.com>, <akpm@linux-foundation.org>,
+        <npiggin@gmail.com>, <arnd@arndb.de>, <rostedt@goodmis.org>,
+        <maz@kernel.org>, <suzuki.poulose@arm.com>, <tglx@linutronix.de>,
+        <yuzhao@google.com>, <Dave.Martin@arm.com>, <steven.price@arm.com>,
+        <broonie@kernel.org>, <guohanjun@huawei.com>
+CC:     <yezhenyu2@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
+        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
+        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
+        <kuhn.chenqun@huawei.com>
+Subject: [RESEND PATCH v5 0/6] arm64: tlb: add support for TTL feature
+Date:   Thu, 25 Jun 2020 16:03:08 +0800
+Message-ID: <20200625080314.230-1-yezhenyu2@huawei.com>
+X-Mailer: git-send-email 2.22.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-MBO-SPAM-Probability: 6
-X-Rspamd-Score: 1.00 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 241F21793
-X-Rspamd-UID: a9cf0b
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.173.220.25]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds device tree bindings for the NXP PCA9570,
-a 4-bit I2C GPO expander.
+In order to reduce the cost of TLB invalidation, ARMv8.4 provides
+the TTL field in TLBI instruction.  The TTL field indicates the
+level of page table walk holding the leaf entry for the address
+being invalidated.  This series provide support for this feature.
 
-Signed-off-by: Sungbo Eo <mans0n@gorani.run>
----
-I don't feel I can really maintain this driver, but it seems all yaml docs
-have a maintainers field so I just added it...
----
- .../bindings/gpio/gpio-pca9570.yaml           | 42 +++++++++++++++++++
- 1 file changed, 42 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/gpio/gpio-pca9570.yaml
+When ARMv8.4-TTL is implemented, the operand for TLBIs looks like
+below:
 
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-pca9570.yaml b/Documentation/devicetree/bindings/gpio/gpio-pca9570.yaml
-new file mode 100644
-index 000000000000..996b0ed2f58f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/gpio/gpio-pca9570.yaml
-@@ -0,0 +1,42 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/gpio/gpio-pca9570.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: PCA9570 I2C GPO expander
-+
-+maintainers:
-+  - Sungbo Eo <mans0n@gorani.run>
-+
-+properties:
-+  compatible:
-+    enum:
-+      - nxp,pca9570
-+
-+  reg:
-+    maxItems: 1
-+
-+  gpio-controller: true
-+
-+  '#gpio-cells':
-+    const: 2
-+
-+required:
-+  - compatible
-+  - reg
-+  - gpio-controller
-+  - "#gpio-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    gpio@24 {
-+        compatible = "nxp,pca9570";
-+        reg = <0x24>;
-+        gpio-controller;
-+        #gpio-cells = <2>;
-+    };
-+
-+...
+* +----------+-------+----------------------+
+* |   ASID   |  TTL  |        BADDR         |
+* +----------+-------+----------------------+
+* |63      48|47   44|43                   0|
+
+See patches for details, Thanks.
+
+--
+ChangeList:
+v5:
+rebase the series on Linux 5.8-rc2.
+
+v4:
+implement flush_*_tlb_range only on arm64.
+
+v3:
+minor changes: reduce the indentation levels of __tlbi_level().
+
+v2:
+rebase series on Linux 5.7-rc1 and simplify the code implementation.
+
+v1:
+add support for TTL feature in arm64.
+
+Marc Zyngier (2):
+  arm64: Detect the ARMv8.4 TTL feature
+  arm64: Add level-hinted TLB invalidation helper
+
+Peter Zijlstra (Intel) (1):
+  tlb: mmu_gather: add tlb_flush_*_range APIs
+
+Zhenyu Ye (3):
+  arm64: Add tlbi_user_level TLB invalidation helper
+  arm64: tlb: Set the TTL field in flush_tlb_range
+  arm64: tlb: Set the TTL field in flush_*_tlb_range
+
+ arch/arm64/include/asm/cpucaps.h  |  3 +-
+ arch/arm64/include/asm/pgtable.h  | 10 ++++++
+ arch/arm64/include/asm/sysreg.h   |  1 +
+ arch/arm64/include/asm/tlb.h      | 29 +++++++++++++++-
+ arch/arm64/include/asm/tlbflush.h | 54 +++++++++++++++++++++++++-----
+ arch/arm64/kernel/cpufeature.c    | 11 +++++++
+ include/asm-generic/tlb.h         | 55 ++++++++++++++++++++++---------
+ 7 files changed, 138 insertions(+), 25 deletions(-)
+
 -- 
-2.27.0
+2.26.2
+
 
