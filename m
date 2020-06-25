@@ -2,193 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A442D20A3D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6A520A3E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406690AbgFYRQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 13:16:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44690 "EHLO
+        id S2404607AbgFYRXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 13:23:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404187AbgFYRQm (ORCPT
+        with ESMTP id S2404378AbgFYRXW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 13:16:42 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209FCC08C5C1;
-        Thu, 25 Jun 2020 10:16:42 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id h15so6647142wrq.8;
-        Thu, 25 Jun 2020 10:16:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yVQ9UuGl9K3XAoQkcU4sk60ru7Jl6/1Dd6NAYAebMXg=;
-        b=lIRxH08oBEtuy5h9XR66KqcOrsxZ0XlddiBu/lKKdWleODwNSaQM/WbnVXHsuvLvUh
-         agkgoxKGXBnSKFm5gB7hSS8yJLE7HDathIX15iveNqp21BTU9vcigalAcCXU8EY3JWUf
-         XXnTC11ape0jhLCHnTImNZr21PRnH2MsmwirJjJLe9LGrwMFt+DcYCgAIvfqU8A8taOh
-         ybrXosKbJnHy75RxSPj8T0YjjU67Se6ZfNLppxcybAorylHPm0I4ykbEs/80gTIaLRNa
-         qcv8Y7zSXGPg0IH2JfejT6U0tKcKzi1YPU3skGHjhTbj09Mc7YDgIz8mnexPVKRvWwyP
-         5enQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yVQ9UuGl9K3XAoQkcU4sk60ru7Jl6/1Dd6NAYAebMXg=;
-        b=bMLP+m4wTk8X1vr5C+3hN9wCaoTD2l/q5KP1IgBvNUXNs+GhVJQyOgjWB2fG8OBGeo
-         3xN7PqlclYlnjCjKbMKWgL59Q1QvsAiakZhnIXrbj18WnGGshdlsdGIbn+AJ5wGd+m6x
-         g+f+p/57z3pPTZYEPl+/LOM6XcJyRCP1ZMO+/RJ13nN3Z2+GmojqhP1RjunRo23VSEl8
-         lFXsc7htpHsnuCRpAAG+dsnAIfgDHHiJogPqsDOqGb1EXg69yvLSiTh6c+AiepaM5zLc
-         ywQVrUkDQE2ldPORSdYYlADWp5dsUvXtKT1nbCvnHhzxj1FzkH5Y9EyBswCCXCRYl7BA
-         aXYA==
-X-Gm-Message-State: AOAM530Pi5XC/VUTvThYXZ5IzkbHgPEQParVdO5p0g7jUcsSkfiEye06
-        5ZCc22j1Lh+e/YzOF72WBar31b657aCznneec2c=
-X-Google-Smtp-Source: ABdhPJxZfMZ1K1HQA1XbNumMSVKKi36ZAB/pjLuv0BsyN6lesNEXqVUKOGIt8dkTenZnxe/2Sy9ztW2+SpjOTTCGJSU=
-X-Received: by 2002:adf:ef89:: with SMTP id d9mr24684664wro.124.1593105400767;
- Thu, 25 Jun 2020 10:16:40 -0700 (PDT)
+        Thu, 25 Jun 2020 13:23:22 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB0DC08C5C1;
+        Thu, 25 Jun 2020 10:23:21 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ed10035c3b797f40e07e6.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:d100:35c3:b797:f40e:7e6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 505511EC0105;
+        Thu, 25 Jun 2020 19:23:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1593105800;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=RsPV80ovuBQyjV3JETbCO3+U21IlLqQzHxfyrPrXILg=;
+        b=oceytPbQR4/9ftJEGtyr+12eppSB7joaYfaVUsxYW4O8P3EbqcTyeXqusCXjRGRflpxYba
+        uCphPRqdPgSmUryxhr1A3bfIUv6NcVpsxyDcybOLYwnEoMxHzDWC74Q98UPGQAQmw+W4Z1
+        /NCQ1jPAHd9OWvBo64+sNYKGU2soWNk=
+Date:   Thu, 25 Jun 2020 19:23:19 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
+Message-ID: <20200625172319.GJ20319@zn.tnic>
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
 MIME-Version: 1.0
-References: <20200625165042.13708-1-mironov.ivan@gmail.com>
-In-Reply-To: <20200625165042.13708-1-mironov.ivan@gmail.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 25 Jun 2020 13:16:29 -0400
-Message-ID: <CADnq5_NgvGEW+4t5gzLdaOJo0HC10M5iEaE+j7O6yKB9H6H-5w@mail.gmail.com>
-Subject: Re: [PATCH v1] drm/amd/powerplay: Fix NULL dereference in lock_bus()
- on Vega20 w/o RAS
-To:     Ivan Mironov <mironov.ivan@gmail.com>
-Cc:     amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Bjorn Nostvold <bjorn.nostvold@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        "for 3.8" <stable@vger.kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
-
-Alex
-
-On Thu, Jun 25, 2020 at 1:14 PM Ivan Mironov <mironov.ivan@gmail.com> wrote:
->
-> I updated my system with Radeon VII from kernel 5.6 to kernel 5.7, and
-> following started to happen on each boot:
->
->         ...
->         BUG: kernel NULL pointer dereference, address: 0000000000000128
->         ...
->         CPU: 9 PID: 1940 Comm: modprobe Tainted: G            E     5.7.2-200.im0.fc32.x86_64 #1
->         Hardware name: System manufacturer System Product Name/PRIME X570-P, BIOS 1407 04/02/2020
->         RIP: 0010:lock_bus+0x42/0x60 [amdgpu]
->         ...
->         Call Trace:
->          i2c_smbus_xfer+0x3d/0xf0
->          i2c_default_probe+0xf3/0x130
->          i2c_detect.isra.0+0xfe/0x2b0
->          ? kfree+0xa3/0x200
->          ? kobject_uevent_env+0x11f/0x6a0
->          ? i2c_detect.isra.0+0x2b0/0x2b0
->          __process_new_driver+0x1b/0x20
->          bus_for_each_dev+0x64/0x90
->          ? 0xffffffffc0f34000
->          i2c_register_driver+0x73/0xc0
->          do_one_initcall+0x46/0x200
->          ? _cond_resched+0x16/0x40
->          ? kmem_cache_alloc_trace+0x167/0x220
->          ? do_init_module+0x23/0x260
->          do_init_module+0x5c/0x260
->          __do_sys_init_module+0x14f/0x170
->          do_syscall_64+0x5b/0xf0
->          entry_SYSCALL_64_after_hwframe+0x44/0xa9
->         ...
->
-> Error appears when some i2c device driver tries to probe for devices
-> using adapter registered by `smu_v11_0_i2c_eeprom_control_init()`.
-> Code supporting this adapter requires `adev->psp.ras.ras` to be not
-> NULL, which is true only when `amdgpu_ras_init()` detects HW support by
-> calling `amdgpu_ras_check_supported()`.
->
-> Before 9015d60c9ee1, adapter was registered by
->
->         -> amdgpu_device_ip_init()
->           -> amdgpu_ras_recovery_init()
->             -> amdgpu_ras_eeprom_init()
->               -> smu_v11_0_i2c_eeprom_control_init()
->
-> after verifying that `adev->psp.ras.ras` is not NULL in
-> `amdgpu_ras_recovery_init()`. Currently it is registered
-> unconditionally by
->
->         -> amdgpu_device_ip_init()
->           -> pp_sw_init()
->             -> hwmgr_sw_init()
->               -> vega20_smu_init()
->                 -> smu_v11_0_i2c_eeprom_control_init()
->
-> Fix simply adds HW support check (ras == NULL => no support) before
-> calling `smu_v11_0_i2c_eeprom_control_{init,fini}()`.
->
-> Please note that there is a chance that similar fix is also required for
-> CHIP_ARCTURUS. I do not know whether any actual Arcturus hardware without
-> RAS exist, and whether calling `smu_i2c_eeprom_init()` makes any sense
-> when there is no HW support.
->
-> Cc: stable@vger.kernel.org
-> Fixes: 9015d60c9ee1 ("drm/amdgpu: Move EEPROM I2C adapter to amdgpu_device")
-> Signed-off-by: Ivan Mironov <mironov.ivan@gmail.com>
-> Tested-by: Bjorn Nostvold <bjorn.nostvold@gmail.com>
+On Thu, Jun 18, 2020 at 01:08:33AM +0300, Jarkko Sakkinen wrote:
+> Intel Software Guard eXtensions (SGX) is a set of CPU instructions that
+> can be used by applications to set aside private regions of code and
+> data. The code outside the SGX hosted software entity is disallowed to
+> access the memory inside the enclave enforced by the CPU. We call these
+> entities as enclaves.
+> 
+> This commit implements a driver that provides an ioctl API to construct
+> and run enclaves. Enclaves are constructed from pages residing in
+> reserved physical memory areas. The contents of these pages can only be
+> accessed when they are mapped as part of an enclave, by a hardware
+> thread running inside the enclave.
+> 
+> The starting state of an enclave consists of a fixed measured set of
+> pages that are copied to the EPC during the construction process by
+> using ENCLS leaf functions and Software Enclave Control Structure (SECS)
+> that defines the enclave properties.
+> 
+> Enclave are constructed by using ENCLS leaf functions ECREATE, EADD and
+> EINIT. ECREATE initializes SECS, EADD copies pages from system memory to
+> the EPC and EINIT check a given signed measurement and moves the enclave
+> into a state ready for execution.
+> 
+> An initialized enclave can only be accessed through special Thread Control
+> Structure (TCS) pages by using ENCLU (ring-3 only) leaf EENTER.  This leaf
+> function converts a thread into enclave mode and continues the execution in
+> the offset defined by the TCS provided to EENTER. An enclave is exited
+> through syscall, exception, interrupts or by explicitly calling another
+> ENCLU leaf EEXIT.
+> 
+> The permissions, which enclave page is added will set the limit for maximum
+> permissions that can be set for mmap() and mprotect(). This will
+> effectively allow to build different security schemes between producers and
+> consumers of enclaves. Later on we can increase granularity with LSM hooks
+> for page addition (i.e. for producers) and mapping of the enclave (i.e. for
+> consumers)
+> 
+> Cc: linux-security-module@vger.kernel.org
+> Acked-by: Jethro Beekman <jethro@fortanix.com>
+> Tested-by: Jethro Beekman <jethro@fortanix.com>
+> Tested-by: Haitao Huang <haitao.huang@linux.intel.com>
+> Tested-by: Chunyang Hui <sanqian.hcy@antfin.com>
+> Tested-by: Jordan Hand <jorhand@linux.microsoft.com>
+> Tested-by: Nathaniel McCallum <npmccallum@redhat.com>
+> Tested-by: Seth Moore <sethmo@google.com>
+> Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Co-developed-by: Suresh Siddha <suresh.b.siddha@intel.com>
+> Signed-off-by: Suresh Siddha <suresh.b.siddha@intel.com>
+> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
 > ---
-> Changelog:
->
-> v1:
->   - Added "Tested-by" for another user who used this patch to fix the
->     same issue.
->
-> v0:
->   - Patch introduced.
-> ---
->  drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c b/drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c
-> index 2fb97554134f..c2e0fbbccf56 100644
-> --- a/drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c
-> +++ b/drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c
-> @@ -522,9 +522,11 @@ static int vega20_smu_init(struct pp_hwmgr *hwmgr)
->         priv->smu_tables.entry[TABLE_ACTIVITY_MONITOR_COEFF].version = 0x01;
->         priv->smu_tables.entry[TABLE_ACTIVITY_MONITOR_COEFF].size = sizeof(DpmActivityMonitorCoeffInt_t);
->
-> -       ret = smu_v11_0_i2c_eeprom_control_init(&adev->pm.smu_i2c);
-> -       if (ret)
-> -               goto err4;
-> +       if (adev->psp.ras.ras) {
-> +               ret = smu_v11_0_i2c_eeprom_control_init(&adev->pm.smu_i2c);
-> +               if (ret)
-> +                       goto err4;
-> +       }
->
->         return 0;
->
-> @@ -560,7 +562,8 @@ static int vega20_smu_fini(struct pp_hwmgr *hwmgr)
->                         (struct vega20_smumgr *)(hwmgr->smu_backend);
->         struct amdgpu_device *adev = hwmgr->adev;
->
-> -       smu_v11_0_i2c_eeprom_control_fini(&adev->pm.smu_i2c);
-> +       if (adev->psp.ras.ras)
-> +               smu_v11_0_i2c_eeprom_control_fini(&adev->pm.smu_i2c);
->
->         if (priv) {
->                 amdgpu_bo_free_kernel(&priv->smu_tables.entry[TABLE_PPTABLE].handle,
-> --
-> 2.26.2
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+>  .../userspace-api/ioctl/ioctl-number.rst      |   1 +
+>  arch/x86/include/uapi/asm/sgx.h               |  66 ++
+>  arch/x86/kernel/cpu/sgx/Makefile              |   3 +
+>  arch/x86/kernel/cpu/sgx/driver.c              | 194 +++++
+>  arch/x86/kernel/cpu/sgx/driver.h              |  30 +
+>  arch/x86/kernel/cpu/sgx/encl.c                | 335 +++++++++
+>  arch/x86/kernel/cpu/sgx/encl.h                |  87 +++
+>  arch/x86/kernel/cpu/sgx/ioctl.c               | 706 ++++++++++++++++++
+>  arch/x86/kernel/cpu/sgx/main.c                |  11 +
+>  9 files changed, 1433 insertions(+)
+>  create mode 100644 arch/x86/include/uapi/asm/sgx.h
+>  create mode 100644 arch/x86/kernel/cpu/sgx/driver.c
+>  create mode 100644 arch/x86/kernel/cpu/sgx/driver.h
+>  create mode 100644 arch/x86/kernel/cpu/sgx/encl.c
+>  create mode 100644 arch/x86/kernel/cpu/sgx/encl.h
+>  create mode 100644 arch/x86/kernel/cpu/sgx/ioctl.c
+> 
+> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> index 59472cd6a11d..35f713e3a267 100644
+> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> @@ -323,6 +323,7 @@ Code  Seq#    Include File                                           Comments
+>                                                                       <mailto:tlewis@mindspring.com>
+>  0xA3  90-9F  linux/dtlk.h
+>  0xA4  00-1F  uapi/linux/tee.h                                        Generic TEE subsystem
+> +0xA4  00-1F  uapi/asm/sgx.h                                          Intel SGX subsystem (a legit conflict as TEE and SGX do not co-exist)
+>  0xAA  00-3F  linux/uapi/linux/userfaultfd.h
+>  0xAB  00-1F  linux/nbd.h
+>  0xAC  00-1F  linux/raw.h
+> diff --git a/arch/x86/include/uapi/asm/sgx.h b/arch/x86/include/uapi/asm/sgx.h
+> new file mode 100644
+> index 000000000000..5edb08ab8fd0
+> --- /dev/null
+> +++ b/arch/x86/include/uapi/asm/sgx.h
+> @@ -0,0 +1,66 @@
+> +/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) WITH Linux-syscall-note */
+
+Checkpatch complains here:
+
+WARNING: 'SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) WITH Linux-syscall-note */' is not supported in LICENSES/...
+#114: FILE: arch/x86/include/uapi/asm/sgx.h:1:
++/* SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause) WITH Linux-syscall-note */
+
+Also, you had all patches until now split nice and logically doing one
+thing only.
+
+But this one is huge. Why?
+
+Why can't you split out the facilities which the driver uses: encl.[ch]
+into a patch, then ioctl.c into a separate one and then the driver into
+a third one? Or do they all belong together inseparably?
+
+I guess I'll find out eventually but it would've been nice if they were
+split out...
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
