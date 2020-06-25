@@ -2,230 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEFB8209B85
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34CB4209B9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403804AbgFYIu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 04:50:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50942 "EHLO
+        id S2403810AbgFYI6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 04:58:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390453AbgFYIu4 (ORCPT
+        with ESMTP id S2390330AbgFYI6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 04:50:56 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA44C061573
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 01:50:55 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id cv18so356378pjb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 01:50:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=JEMoZdpFmrFhFcFBcdt9FFDGd+0A8OhsnWsQtV3mDFY=;
-        b=zwcL9Y65FiPLi2vjuyj40QyTUjgv3aeO4hIU2vSpY+ujIZWGaNlfkCfdnIbFsNxo0H
-         s2bxZH7BVoYdiRgMEO/Vg6ESWbMhb3nv/KAEMF1vtI/9xGSuo+SXo03llv+PmHWmUC8n
-         2Fuh04JomaNSCobeuTTpqT4sCG7KY1xn0mKHLmWhjxI/XPEc/dehP6bUzCl0o7UY9Xxk
-         gP27jOnkzXmkF6VH+uuxfwPM1NkKvSVA28LRw3MgNoRtiU2Pfr7WPki43eagX+zgnSVT
-         PqOmYzAJqDo2V2tahpUFRzZbvkj5DnYF48KOvH3PCv7nYdSDRdi4B74G+fWo74pp9cMm
-         mZQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=JEMoZdpFmrFhFcFBcdt9FFDGd+0A8OhsnWsQtV3mDFY=;
-        b=OPCoXfpilX4/zobiy7esPHvocSLzoez5b6d0KqloySdkROBHql/qG/3umSVG+KCxdU
-         vfLOnTiKJq4eIH5flf4+g14axMMITkyFmeLVDxRP3ltDKztfXz8p8Y8676MurpDnAGpf
-         etETUMPVqLFMoJ6eexJ4kBYeSXPO4RgZmZs0l2KPwDN0V7BaHu4e6ANFHBldyNQHWLhH
-         08+rIN5Tz/dK//59/exQw2o16uJEpZG/sb+hwqbgw+ESm1xkymQgko2byJ5RFb9Wrpvx
-         5gJr2EhtTgQibzWOspnfgIgQkMwHekcxNvqFlvMji+lx34NYdZJDu7hT9QrjfSQZAuuT
-         3RYQ==
-X-Gm-Message-State: AOAM531S7zA7vDT+4ofXlt9aVYdKX6/ZwPqaRQAKWCKySqwkLD8qciBm
-        IGGC0rZHMfe8BCIoVQhz1vmDMA==
-X-Google-Smtp-Source: ABdhPJzHllegdQIG8KbY6WzYzQnZ64LxOSyUGGS4GTbuRzkA6CihktIRU3UyCCXiZkNESNztdGrrfg==
-X-Received: by 2002:a17:90a:74cb:: with SMTP id p11mr2162481pjl.89.1593075055236;
-        Thu, 25 Jun 2020 01:50:55 -0700 (PDT)
-Received: from localhost ([122.172.111.76])
-        by smtp.gmail.com with ESMTPSA id s9sm19347192pgo.22.2020.06.25.01.50.54
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 25 Jun 2020 01:50:54 -0700 (PDT)
-Date:   Thu, 25 Jun 2020 14:20:52 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Quentin Perret <qperret@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Todd Kjos <tkjos@google.com>, adharmap@codeaurora.org
-Subject: Re: [PATCH v2 2/2] cpufreq: Specify default governor on command line
-Message-ID: <20200625085052.4ah4wbog3guj74v4@vireshk-i7>
-References: <20200623142138.209513-1-qperret@google.com>
- <20200623142138.209513-3-qperret@google.com>
- <20200624055023.xofefhohf7wifme5@vireshk-i7>
- <CAJZ5v0ja_rM7i=psW1HRyzEpW=8QwP2u9p+ihN3FS8_53bbxTQ@mail.gmail.com>
- <20200624153259.GA2844@google.com>
+        Thu, 25 Jun 2020 04:58:19 -0400
+Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A76FAC061573;
+        Thu, 25 Jun 2020 01:58:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oaHjYuJa/3zuClzIH+/g+fhPoe4mw4jvJXlUfLpBRwo=; b=dhVJmH7iCebSecH6ztLVh/a9AX
+        q/FRl+8k3rSxsroM7W9JVbb4ruGWGY7b3ylToiN3VKMgxN8q00TRkiBpCp8haU8MShPGRK/s8jkgg
+        w3YBszL7uKIGNLBTLhESs/x80y6d0palNb62gZGEGSMiegKRbb9GXJ9f1wHqqmzeO1jX7JiN9/HsX
+        aTa1JqeZNh93t14b58sd/SSqgpOlSZ8pEHH5Qo6ELxJU7Vf2AGwoPRrjAW1izwzD6GTzOsKkAJ0LL
+        Ve/bAcUlLidRSKJGMMkj+0+VwBHrbE7cgi6LsUKtOByycYPJrSQmUl57IXr4MTgW/JLH3ka/h2HLc
+        xcYWPkgA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1joNhc-0003bQ-FK; Thu, 25 Jun 2020 08:57:48 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BE9DA3003E5;
+        Thu, 25 Jun 2020 10:57:45 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AA33E2010773D; Thu, 25 Jun 2020 10:57:45 +0200 (CEST)
+Date:   Thu, 25 Jun 2020 10:57:45 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-pci@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>
+Subject: Re: [PATCH 00/22] add support for Clang LTO
+Message-ID: <20200625085745.GD117543@hirez.programming.kicks-ass.net>
+References: <20200624203200.78870-1-samitolvanen@google.com>
+ <20200624211540.GS4817@hirez.programming.kicks-ass.net>
+ <CAKwvOdmxz91c-M8egR9GdR1uOjeZv7-qoTP=pQ55nU8TCpkK6g@mail.gmail.com>
+ <20200625080313.GY4817@hirez.programming.kicks-ass.net>
+ <20200625082433.GC117543@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200624153259.GA2844@google.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20200625082433.GC117543@hirez.programming.kicks-ass.net>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24-06-20, 16:32, Quentin Perret wrote:
-> Right, but I must admit that, looking at this more, I'm getting a bit
-> confused with the overall locking for governors :/
+On Thu, Jun 25, 2020 at 10:24:33AM +0200, Peter Zijlstra wrote:
+> On Thu, Jun 25, 2020 at 10:03:13AM +0200, Peter Zijlstra wrote:
+
+> > I'm sure Will will respond, but the basic issue is the trainwreck C11
+> > made of dependent loads.
+> > 
+> > Anyway, here's a link to the last time this came up:
+> > 
+> >   https://lore.kernel.org/linux-arm-kernel/20171116174830.GX3624@linux.vnet.ibm.com/
 > 
-> When in cpufreq_init_policy() we find a governor using
-> find_governor(policy->last_governor), what guarantees this governor is
-> not concurrently unregistered? That is, what guarantees this governor
-> doesn't go away between that find_governor() call, and the subsequent
-> call to try_module_get() in cpufreq_set_policy() down the line?
+> Another good read:
 > 
-> Can we somewhat assume that whatever governor is referred to by
-> policy->last_governor will have a non-null refcount? Or are the
-> cpufreq_online() and cpufreq_unregister_governor() path mutually
-> exclusive? Or is there something else?
+>   https://lore.kernel.org/lkml/20150520005510.GA23559@linux.vnet.ibm.com/
+> 
+> and having (partially) re-read that, I now worry intensily about things
+> like latch_tree_find(), cyc2ns_read_begin, __ktime_get_fast_ns().
+> 
+> It looks like kernel/time/sched_clock.c uses raw_read_seqcount() which
+> deviates from the above patterns by, for some reason, using a primitive
+> that includes an extra smp_rmb().
+> 
+> And this is just the few things I could remember off the top of my head,
+> who knows what else is out there.
 
-This should be sufficient to fix pending issues I believe. Based over your
-patches.
+As an example, let us consider __ktime_get_fast_ns(), the critical bit
+is:
 
--- 
-viresh
+		seq = raw_read_seqcount_latch(&tkf->seq);
+		tkr = tkf->base + (seq & 0x01);
+		now = tkr->base;
 
--------------------------8<-------------------------
-From: Viresh Kumar <viresh.kumar@linaro.org>
-Date: Thu, 25 Jun 2020 13:15:23 +0530
-Subject: [PATCH] cpufreq: Fix locking issues with governors
+And we hard rely on that being a dependent load, so:
 
-The locking around governors handling isn't adequate currently. The list
-of governors should never be traversed without locking in place. Also we
-must make sure the governor isn't removed while it is still referenced
-by code.
+  LOAD	seq, (tkf->seq)
+  LOAD  tkr, tkf->base
+  AND   seq, 1
+  MUL   seq, sizeof(tk_read_base)
+  ADD	tkr, seq
+  LOAD  now, (tkr->base)
 
-Reported-by: Quentin Perret <qperret@google.com>
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
- drivers/cpufreq/cpufreq.c | 59 ++++++++++++++++++++++++---------------
- 1 file changed, 36 insertions(+), 23 deletions(-)
+Such that we obtain 'now' as a direct dependency on 'seq'. This ensures
+the loads are ordered.
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 4b1a5c0173cf..dad6b85f4c89 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -624,6 +624,24 @@ static struct cpufreq_governor *find_governor(const char *str_governor)
- 	return NULL;
- }
- 
-+static struct cpufreq_governor *get_governor(const char *str_governor)
-+{
-+	struct cpufreq_governor *t;
-+
-+	mutex_lock(&cpufreq_governor_mutex);
-+	t = find_governor(str_governor);
-+	if (!t)
-+		goto unlock;
-+
-+	if (!try_module_get(t->owner))
-+		t = NULL;
-+
-+unlock:
-+	mutex_unlock(&cpufreq_governor_mutex);
-+
-+	return t;
-+}
-+
- static unsigned int cpufreq_parse_policy(char *str_governor)
- {
- 	if (!strncasecmp(str_governor, "performance", CPUFREQ_NAME_LEN))
-@@ -643,28 +661,14 @@ static struct cpufreq_governor *cpufreq_parse_governor(char *str_governor)
- {
- 	struct cpufreq_governor *t;
- 
--	mutex_lock(&cpufreq_governor_mutex);
--
--	t = find_governor(str_governor);
--	if (!t) {
--		int ret;
--
--		mutex_unlock(&cpufreq_governor_mutex);
--
--		ret = request_module("cpufreq_%s", str_governor);
--		if (ret)
--			return NULL;
--
--		mutex_lock(&cpufreq_governor_mutex);
-+	t = get_governor(str_governor);
-+	if (t)
-+		return t;
- 
--		t = find_governor(str_governor);
--	}
--	if (t && !try_module_get(t->owner))
--		t = NULL;
--
--	mutex_unlock(&cpufreq_governor_mutex);
-+	if (request_module("cpufreq_%s", str_governor))
-+		return NULL;
- 
--	return t;
-+	return get_governor(str_governor);
- }
- 
- /**
-@@ -818,12 +822,14 @@ static ssize_t show_scaling_available_governors(struct cpufreq_policy *policy,
- 		goto out;
- 	}
- 
-+	mutex_lock(&cpufreq_governor_mutex);
- 	for_each_governor(t) {
- 		if (i >= (ssize_t) ((PAGE_SIZE / sizeof(char))
- 		    - (CPUFREQ_NAME_LEN + 2)))
--			goto out;
-+			break;
- 		i += scnprintf(&buf[i], CPUFREQ_NAME_PLEN, "%s ", t->name);
- 	}
-+	mutex_unlock(&cpufreq_governor_mutex);
- out:
- 	i += sprintf(&buf[i], "\n");
- 	return i;
-@@ -1060,11 +1066,14 @@ static int cpufreq_init_policy(struct cpufreq_policy *policy)
- {
- 	struct cpufreq_governor *gov = NULL;
- 	unsigned int pol = CPUFREQ_POLICY_UNKNOWN;
-+	bool put_governor = false;
-+	int ret;
- 
- 	if (has_target()) {
- 		/* Update policy governor to the one used before hotplug. */
--		gov = find_governor(policy->last_governor);
-+		gov = get_governor(policy->last_governor);
- 		if (gov) {
-+			put_governor = true;
- 			pr_debug("Restoring governor %s for cpu %d\n",
- 				 policy->governor->name, policy->cpu);
- 		} else if (default_governor) {
-@@ -1091,7 +1100,11 @@ static int cpufreq_init_policy(struct cpufreq_policy *policy)
- 			return -ENODATA;
- 	}
- 
--	return cpufreq_set_policy(policy, gov, pol);
-+	ret = cpufreq_set_policy(policy, gov, pol);
-+	if (put_governor)
-+		module_put(gov->owner);
-+
-+	return ret;
- }
- 
- static int cpufreq_add_policy_cpu(struct cpufreq_policy *policy, unsigned int cpu)
+A compiler can wreck this by translating it into something like:
+
+  LOAD	seq, (tkf->seq)
+  LOAD  tkr, tkf->base
+  AND   seq, 1
+  CMP	seq, 0
+  JE	1f
+  ADD	tkr, sizeof(tk_read_base)
+1:
+  LOAD  now, (tkr->base)
+
+Because now the machine can speculate and load now before seq, breaking
+the ordering.
