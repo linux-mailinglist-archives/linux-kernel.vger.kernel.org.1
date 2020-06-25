@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D80FA20A2F7
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6A420A2F6
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406242AbgFYQb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 12:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
+        id S2406226AbgFYQby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 12:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406203AbgFYQbo (ORCPT
+        with ESMTP id S2406208AbgFYQbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 12:31:44 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7268DC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:31:44 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id z13so6503943wrw.5
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:31:44 -0700 (PDT)
+        Thu, 25 Jun 2020 12:31:45 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB73C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:31:45 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id t194so6588816wmt.4
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:31:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ZRm78CKEaQ1OsF7LZfHXu0AnYDnquV1Y/Grx78hG0MU=;
-        b=WpCqNjvZboyLwL4LAn6mI62gQryMJLzOSWZ984JZ9DxikGCM6ZwG/VrO/mL2cwkj5q
-         sAqNL2+ZthviB5F4ZsFMD37DlbspqcJYPyLqlmWVJmU2DOxg7flC92SMyLY2bkOfaefj
-         Vi6bqbTgrkIDd8B4rLiRKkht2kkwTdzoMCIxXAFUYK4wjBbzyZ0Bhli2pME/aLJ2zDly
-         EPrGdNGRbIvpgl6SwxbcAtR9VZsd34wuE0obZ+qv57tTKD0olDztMe8GdX9cZFD+uUhI
-         zTUZe+rfS3eGSLFaOz4KnYn3kkankdGHblzCQAVTL64GgHqcvYo+qmTDW8xbPdHU8v0H
-         O6Ng==
+        bh=y53vRxEwQ50K5Q0PMsRsFAgyQQXwXSqIk0yKzOk+/Yg=;
+        b=ygOQGNldRss3ZrXxaWpr3Kq52jwGWchTxUrLqhRwme27ejGnxmqjUyEo8F+4nxWkCA
+         XKcxpasME/p10DALC6HMosS9zfa9xWOqQzHgCgayfs5qgPqbmoo4H01qdumnqvME1Kno
+         J5C3fSWJhbBTMTSHHHUbxQmBWc/Uq1/gg6d+CHx+q7thEAzAc7+grbNmBIpNTjFvEmvs
+         VxUcBbTnxq6X9/pVcBgtJ6XlbabnIAeujJwvhFSpuqJEYAR6xvthwEubPhjrNf+FEHjZ
+         274vL/H0EhN37cbYCSfRwaHgSdxGzonJaBwwwB/6x4LXpzjloDtEN2QEXILZ3znXZjNI
+         b/lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ZRm78CKEaQ1OsF7LZfHXu0AnYDnquV1Y/Grx78hG0MU=;
-        b=ZgNj+1rKJ3q/IXYkNFCnN6a+PnFPtf9B+TYoEf1YP/E9tCyASSbQa8B294gFjQ92Jf
-         2DTPUui67n/EE7x84HYMCgiaj8t50NwOb79BzqQxHhvx3Ej2iiYJd/RkYDTyGFd7gLXq
-         mXcnyLskwzq59QC/qECOY3uW4acdM07PyYWL7fkWgS+k+1Ue/Q6oAk3/mJtvgcVfQTvA
-         YB1SnFtR1axLg3TesIeAisDmcB/fBCNIxt2cI0exz5lNsXiWJraFCw8V9u666BAj1QKd
-         +mOA2c1jXuQcs9ErPH0X2NbAT1JArf8a0JQ+MPW41o+cdUKhigrU3Gltp3GmVtvRz4tk
-         +LEA==
-X-Gm-Message-State: AOAM530FP1iWCVamDgTk4GWnn/laZaGo0lhqJkNpBm6cH0d0jFU79Z7G
-        oIDE1EUxW+pxVlyRbD995ka9MQ==
-X-Google-Smtp-Source: ABdhPJwOJGuhySHwz3S5co+7hBssBWVGR6ohtDtbKagEqOEZwvh6/BWn16l+PV4RAtyKx+7qYqduSg==
-X-Received: by 2002:adf:f388:: with SMTP id m8mr6513876wro.338.1593102703228;
-        Thu, 25 Jun 2020 09:31:43 -0700 (PDT)
+        bh=y53vRxEwQ50K5Q0PMsRsFAgyQQXwXSqIk0yKzOk+/Yg=;
+        b=UvNBDJfj0Nw3U5/Jr7kz3CBOYJZrHO4VkhTICFrVTUMpDkIk32XYuX7f6DKv1Jn0rk
+         DBpVmiX/5pw2Bm4Bx6ngLvH9fv41hWslOTX7TSOeASyE/YGo644H76rI+P3TDdWu+GXm
+         aNM9HcuBL6fJYAHc7reCLkvKGwfKFYyg7EPJbYzjpt0yzSFBW4maQduZJ25EW1Vq5muC
+         8zKrB/cGDg0/ZTLVpiiM5AZbEURPb+qBnapOuTbxWzR3FYkbNxTAki8cUdKdwEYJE3TG
+         REGf3Yh3Y1QmSqQq0fxdaoCk/n1/tMFI/+H1BiJjQnw07GFlN34Du95DzvrIXB4XDVLq
+         DyeQ==
+X-Gm-Message-State: AOAM532/EaQDRboDXeHsUsFr9s5T8WKAEg0uywUrxBS1wlrPyQWup+1e
+        TrmPIe9yASXuHRDMecooBEBS3w==
+X-Google-Smtp-Source: ABdhPJxVlcey9CUUrRsBfa+vrJu/ehTYMV9CuIPvXnAb/B4gjmZE8r9aXK80SK7xubjTyX0cSXma/g==
+X-Received: by 2002:a7b:cf2c:: with SMTP id m12mr4286288wmg.70.1593102704141;
+        Thu, 25 Jun 2020 09:31:44 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id l8sm32090847wrq.15.2020.06.25.09.31.42
+        by smtp.gmail.com with ESMTPSA id l8sm32090847wrq.15.2020.06.25.09.31.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 09:31:42 -0700 (PDT)
+        Thu, 25 Jun 2020 09:31:43 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Andrey Smirnov <andrew.smirnov@gmail.com>
-Subject: [PATCH 09/10] mfd: si476x-i2c: Fix spelling mistake in case() statement's FALLTHROUGH comment
-Date:   Thu, 25 Jun 2020 17:31:26 +0100
-Message-Id: <20200625163127.4000462-10-lee.jones@linaro.org>
+Subject: [PATCH 10/10] mfd: si476x-cmd: Update si476x_cmd_am_rsq_status()'s kerneldoc
+Date:   Thu, 25 Jun 2020 17:31:27 +0100
+Message-Id: <20200625163127.4000462-11-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200625163127.4000462-1-lee.jones@linaro.org>
 References: <20200625163127.4000462-1-lee.jones@linaro.org>
@@ -65,27 +65,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'s/FALLTHROUG/FALLTHROUGH'
+4 of the old arguments were grouped and moved into a struct which
+is now passed as a pointer instead of the arguments themselves.
+However, whoever carried out this work forgot to update the
+function's kerneldoc header.
+
+Fixes the following W=1 warnings:
+
+ drivers/mfd/si476x-cmd.c:746: warning: Function parameter or member 'rsqargs' not described in 'si476x_core_cmd_am_rsq_s
+ drivers/mfd/si476x-cmd.c:746: warning: Excess function parameter 'rsqack' description in 'si476x_core_cmd_am_rsq_status'
+ drivers/mfd/si476x-cmd.c:746: warning: Excess function parameter 'attune' description in 'si476x_core_cmd_am_rsq_status'
+ drivers/mfd/si476x-cmd.c:746: warning: Excess function parameter 'cancel' description in 'si476x_core_cmd_am_rsq_status'
+ drivers/mfd/si476x-cmd.c:746: warning: Excess function parameter 'stcack' description in 'si476x_core_cmd_am_rsq_status'
 
 Cc: Andrey Smirnov <andrew.smirnov@gmail.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mfd/si476x-i2c.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mfd/si476x-cmd.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/mfd/si476x-i2c.c b/drivers/mfd/si476x-i2c.c
-index 517d49bcd667b..c1d7b845244ed 100644
---- a/drivers/mfd/si476x-i2c.c
-+++ b/drivers/mfd/si476x-i2c.c
-@@ -588,7 +588,7 @@ static int si476x_core_fwver_to_revision(struct si476x_core *core,
- 			goto unknown_revision;
- 		}
- 	case SI476X_FUNC_BOOTLOADER:
--	default:		/* FALLTHROUG */
-+	default:		/* FALLTHROUGH */
- 		BUG();
- 		return -1;
- 	}
+diff --git a/drivers/mfd/si476x-cmd.c b/drivers/mfd/si476x-cmd.c
+index 5b42dfab431a3..0a40c5cb751db 100644
+--- a/drivers/mfd/si476x-cmd.c
++++ b/drivers/mfd/si476x-cmd.c
+@@ -729,12 +729,8 @@ static int si476x_core_cmd_intb_pin_cfg_a20(struct si476x_core *core,
+  * si476x_cmd_am_rsq_status - send 'AM_RSQ_STATUS' command to the
+  * device
+  * @core:  - device to send the command to
+- * @rsqack: - if set command clears RSQINT, SNRINT, SNRLINT, RSSIHINT,
+- *           RSSSILINT, BLENDINT, MULTHINT and MULTLINT
+- * @attune: - when set the values in the status report are the values
+- *           that were calculated at tune
+- * @cancel: - abort ongoing seek/tune opertation
+- * @stcack: - clear the STCINT bin in status register
++ * @rsqargs: - pointer to a structure containing a group of sub-args
++ *             relevant to sending the RSQ status command
+  * @report: - all signal quality information retured by the command
+  *           (if NULL then the output of the command is ignored)
+  *
 -- 
 2.25.1
 
