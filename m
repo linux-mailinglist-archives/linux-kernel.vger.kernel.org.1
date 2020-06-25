@@ -2,126 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C02A720A915
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 01:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ABE920A926
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 01:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725806AbgFYXbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 19:31:46 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:43730 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725554AbgFYXbq (ORCPT
+        id S1725881AbgFYXe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 19:34:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgFYXe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 19:31:46 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id E43448EE2F6;
-        Thu, 25 Jun 2020 16:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1593127904;
-        bh=3t2rEmrXunzbuoRIHJIfGmnQexOBzUIBYGc01ozpYJQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=uHylQH0yQbxU0l7k9WCjEDc9QURr3VnCrOBLZ3jdZf96C4DzQ1Q3djOdmatw+EU4C
-         VeSmPX7KP1V/FxEMUwDEEvmTAOiD0urCQdMX1IuZdo6pVBWA3fXEJFmF+YJ6x+Kwif
-         hVPS7qHrQJyfk4K69CbssfaIBbGiQjjEMOCwfG28=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id C9twK_fggstL; Thu, 25 Jun 2020 16:31:44 -0700 (PDT)
-Received: from [153.66.254.194] (unknown [50.35.76.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 7FAAB8EE079;
-        Thu, 25 Jun 2020 16:31:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1593127904;
-        bh=3t2rEmrXunzbuoRIHJIfGmnQexOBzUIBYGc01ozpYJQ=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=uHylQH0yQbxU0l7k9WCjEDc9QURr3VnCrOBLZ3jdZf96C4DzQ1Q3djOdmatw+EU4C
-         VeSmPX7KP1V/FxEMUwDEEvmTAOiD0urCQdMX1IuZdo6pVBWA3fXEJFmF+YJ6x+Kwif
-         hVPS7qHrQJyfk4K69CbssfaIBbGiQjjEMOCwfG28=
-Message-ID: <1593127902.13253.11.camel@HansenPartnership.com>
-Subject: Re: [Tee-dev] [PATCHv8 1/3] optee: use uuid for sysfs driver entry
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     Jerome Forissier <jerome@forissier.org>,
-        Maxim Uvarov <maxim.uvarov@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        Arnd Bergmann <arnd@linaro.org>,
-        "tee-dev @ lists . linaro . org" <tee-dev@lists.linaro.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        linux-integrity@vger.kernel.org, peterhuewe@gmx.de
-Date:   Thu, 25 Jun 2020 16:31:42 -0700
-In-Reply-To: <CAFA6WYMF+JjrB9Cx9TdgDzMeQSvPZfMNapzD-MH4ALVoUoo1sQ@mail.gmail.com>
-References: <20200604175851.758-1-maxim.uvarov@linaro.org>
-         <20200604175851.758-2-maxim.uvarov@linaro.org>
-         <CAFA6WYNVk1RcaqnL0FGyYkB+hGkgyqeOMsSKyySL=zfCdNUZXA@mail.gmail.com>
-         <b9960a51-7e00-4992-eed5-bd43e7f27b43@forissier.org>
-         <CAFA6WYM6XBduokYOdnWD6m+To=6k2SMbXU=HzK_Enk9h-s7VBQ@mail.gmail.com>
-         <CAFA6WYNpVvkzgbBfXc1C10mKC6C6q_G1+c-ypg4s1pb0KDPCvg@mail.gmail.com>
-         <1592507935.15159.5.camel@HansenPartnership.com>
-         <CAFA6WYMqOS+P-c4FznQ5vOKvonnKN4Z6BqTipOkrY3gMENLfeA@mail.gmail.com>
-         <1592578844.4369.5.camel@HansenPartnership.com>
-         <CAFA6WYPCmZZ1HK-w8fQ2xaNywAZz9W21_fBOnbc35dT30sn7oQ@mail.gmail.com>
-         <1593012069.28403.11.camel@HansenPartnership.com>
-         <CAFA6WYMF+JjrB9Cx9TdgDzMeQSvPZfMNapzD-MH4ALVoUoo1sQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        Thu, 25 Jun 2020 19:34:26 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04D61C08C5C1;
+        Thu, 25 Jun 2020 16:34:25 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id dp18so7605639ejc.8;
+        Thu, 25 Jun 2020 16:34:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fuIjcnCSzV2GGU37BswH0h5xAjSoK1v2PkU8p66tEjc=;
+        b=gSo74f0weOkI0waVjSvTiaUs1MCKDyrsP2JShWPwG3FZ9jd4KLNeASFpPO8fXRH6RL
+         re7cblW3uNjQowDX/DY7y2eugWJoDTDCpqYCkWiJZa5Birmwd24Yb4wSbB1a3/Ay7mKS
+         a6hrpTKSJPJFjsfo/FxAZAKK+FV0q6xmoPeyOA/PZejPpHsr3QMjGbL9DCoAHNe8GZl/
+         R4nD3INrLzguvDpWYhVZ1tT2MdqqwXlWmMbzOQsD5G3UmogyOxg63lOheteyLJA5fZJF
+         vdY7PQJkmHEXXcROYz2W6linzuv7IqDANipL8Rlsdksl8SRTJPYOAJCOqzh3/CAEe2VT
+         mI0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fuIjcnCSzV2GGU37BswH0h5xAjSoK1v2PkU8p66tEjc=;
+        b=MPsFULfDkhRjVHUzNu5F32S6oC3H1Fpjb0sKhQJMbt8dgE8foDTeFal32Y1TpG0eKR
+         X4BHHcLh7ZQSHWcGwqplTW7oWM8WiTwfkXvV0Qqs59vqMgzVloNeAX+sekxCYbm7jFLy
+         /0xEIKol8NsdivYrMRP9qyhSY2uLs13CCCNImly5liqOhDjmaan4Uik5vbQFmguv2M+R
+         vBCTG4dYzH4X9ghmvJm7j7B5oLeWp3kISoO3UYvZd6xoz7slkQxZ2ZgUGE4AwX8fU4wK
+         2sMu0lsgBDycr+7pBqIOLZ5r0MJlN1qF/bJ/dZm/cV2u/DHQGYy3v1zwvntQp2SjTyrw
+         +C2w==
+X-Gm-Message-State: AOAM530Y9JpJEPCcc7LV3VfNKpTGK88dC6QthEhgmMnsVLJau5rNDrEh
+        l6UCO/hD8xcRJAxUX8AJBQP6/+vw2h0=
+X-Google-Smtp-Source: ABdhPJzyS7JVPrAl/Rmmi/CF9YEEthIkkjJM0Vq0cnUVYPHSRXgq58NeTYUQXNXM4nMBtH3KLxxlFw==
+X-Received: by 2002:a17:906:bb0c:: with SMTP id jz12mr174776ejb.27.1593128064664;
+        Thu, 25 Jun 2020 16:34:24 -0700 (PDT)
+Received: from localhost.localdomain ([188.24.137.55])
+        by smtp.gmail.com with ESMTPSA id u2sm13699184edq.29.2020.06.25.16.34.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jun 2020 16:34:24 -0700 (PDT)
+From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
+Subject: [PATCH 00/10] Add CMU/RMU/DMA/MMC/I2C support for Actions Semi S500 SoCs
+Date:   Fri, 26 Jun 2020 02:34:12 +0300
+Message-Id: <cover.1593124368.git.cristian.ciocaltea@gmail.com>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-06-25 at 19:54 +0530, Sumit Garg wrote:
-> On Wed, 24 Jun 2020 at 20:51, James Bottomley
-> <James.Bottomley@hansenpartnership.com> wrote:
-> > 
-> > On Wed, 2020-06-24 at 16:17 +0530, Sumit Garg wrote:
-> > > Apologies for delay in my reply as I was busy with some other
-> > > stuff.
-> > > 
-> > > On Fri, 19 Jun 2020 at 20:30, James Bottomley
-> > > <James.Bottomley@hansenpartnership.com> wrote:
-> > 
-> > [...]
-> > > > it's about consistency with what the kernel types mean.  When
-> > > > some checker detects your using little endian operations on a
-> > > > big endian structure (like in the prink for instance) they're
-> > > > going to keep emailing you about it.
-> > > 
-> > > As mentioned above, using different terminology is meant to cause
-> > > more confusion than just difference in endianness which is
-> > > manageable inside TEE.
-> > > 
-> > > And I think it's safe to say that the kernel implements UUID in
-> > > big endian format and thus uses %pUb whereas OP-TEE implements
-> > > UUID in little endian format and thus uses %pUl.
-> > 
-> > So what I think you're saying is that if we still had uuid_be and
-> > uuid_le you'd use uuid_le, because that's exactly the structure
-> > described in the docs.  But because we renamed
-> > 
-> > uuid_be -> uuid_t
-> > uuid_le -> guid_t
-> > 
-> > You can't use guid_t as a kernel type because it has the wrong
-> > name?
-> 
-> Isn't the rename commit description [1] pretty clear about which is
-> the true UUID type from Linux point of view?
+This patchset brings a series of improvements for the Actions Semi S500
+SoCs family, by adding support for Clock & Reset Management Units, DMA,
+MMC & I2C controllers.
 
-I don't think the kernel code takes a position on eternal verity, just
-on logical or arithmetic truth.  We just have to deal with both LE and
-BE UUIDs so we have appropriate types for them and the LE type is now
-named guid_t.  They're both equally correct to use provided the use
-case matches the designed one. So does the name really matter?  If we
-did
+Please note the patches contain only DTS changes, but most of them
+depend on previous work which is currently under review:
 
-#define uuid_le_t guid_t
+ - Add RMU and DMAC/GPIO clock support for Actions Semi S500 SoCs
+https://lore.kernel.org/lkml/cover.1592941257.git.cristian.ciocaltea@gmail.com/
 
-would you be happy? (not that the kernel cares about karmic emotional
-states either ...)
+ - Add Actions Semi S500 pinctrl support
+https://lore.kernel.org/lkml/cover.1593112402.git.cristian.ciocaltea@gmail.com/
 
-James
+For the moment, I have only enabled the features tested on RoseapplePi,
+the SBC for which an initial support has been already submitted via:
+https://lore.kernel.org/lkml/cover.1592123160.git.cristian.ciocaltea@gmail.com/
+
+Thanks,
+Cristi
+
+Cristian Ciocaltea (10):
+  arm: dts: owl-s500: Add Clock Management Unit
+  arm: dts: owl-s500: Set UART clock refs from CMU
+  arm: dts: owl-s500: Add DMA controller
+  arm: dts: owl-s500: Add Reset Controller support
+  arm: dts: owl-s500: Add pinctrl node
+  arm: dts: owl-s500: Add MMC nodes
+  arm: dts: owl-s500: Add I2C nodes
+  arm: dts: owl-s500-roseapplepi: Use UART clock from CMU
+  arm: dts: owl-s500-roseapplepi: Add uSD support
+  arm: dts: owl-s500-roseapplepi: Enable I2C0
+
+ arch/arm/boot/dts/owl-s500-roseapplepi.dts |  96 ++++++++++++++-
+ arch/arm/boot/dts/owl-s500.dtsi            | 130 +++++++++++++++++++++
+ 2 files changed, 221 insertions(+), 5 deletions(-)
+
+-- 
+2.27.0
 
