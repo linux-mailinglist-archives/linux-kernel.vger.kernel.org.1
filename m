@@ -2,63 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0E1620A5F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:36:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0909620A5FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:38:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406747AbgFYTgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 15:36:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38016 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406679AbgFYTgF (ORCPT
+        id S2406629AbgFYTis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 15:38:48 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35500 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2406069AbgFYTis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 15:36:05 -0400
-Received: from shards.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E003C08C5C1;
-        Thu, 25 Jun 2020 12:36:05 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id B317813B3AC0B;
-        Thu, 25 Jun 2020 12:36:04 -0700 (PDT)
-Date:   Thu, 25 Jun 2020 12:36:04 -0700 (PDT)
-Message-Id: <20200625.123604.1422188753260617907.davem@davemloft.net>
-To:     vaibhavgupta40@gmail.com
-Cc:     helgaas@kernel.org, bhelgaas@google.com, bjorn@helgaas.com,
-        vaibhav.varodek@gmail.com, richardcochran@gmail.com,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        skhan@linuxfoundation.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v1] ptp_pch: use generic power management
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200625121042.99369-1-vaibhavgupta40@gmail.com>
-References: <20200625121042.99369-1-vaibhavgupta40@gmail.com>
-X-Mailer: Mew version 6.8 on Emacs 26.3
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Thu, 25 Jun 2020 12:36:05 -0700 (PDT)
+        Thu, 25 Jun 2020 15:38:48 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05PJWkxr043707;
+        Thu, 25 Jun 2020 15:38:45 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ux03v69j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Jun 2020 15:38:45 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05PJX8sV044689;
+        Thu, 25 Jun 2020 15:38:44 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ux03v687-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Jun 2020 15:38:44 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05PJLTAb030530;
+        Thu, 25 Jun 2020 19:38:42 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 31uusjj3dw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Jun 2020 19:38:42 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05PJcdvl65470898
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Jun 2020 19:38:39 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 42EC4A4054;
+        Thu, 25 Jun 2020 19:38:39 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E44ABA405C;
+        Thu, 25 Jun 2020 19:38:38 +0000 (GMT)
+Received: from osiris (unknown [9.171.67.222])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu, 25 Jun 2020 19:38:38 +0000 (GMT)
+Date:   Thu, 25 Jun 2020 21:38:37 +0200
+From:   Heiko Carstens <heiko.carstens@de.ibm.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-mm@kvack.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Gerald Schaefer <gerald.schaefer@de.ibm.com>
+Subject: Re: [PATCH RFC] s390x/vmem: get rid of memory segment list
+Message-ID: <20200625193837.GA5050@osiris>
+References: <20200625150029.45019-1-david@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200625150029.45019-1-david@redhat.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-25_15:2020-06-25,2020-06-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 clxscore=1015
+ lowpriorityscore=0 phishscore=0 impostorscore=0 cotscore=-2147483648
+ bulkscore=0 adultscore=0 mlxlogscore=911 mlxscore=0 priorityscore=1501
+ spamscore=0 suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2004280000 definitions=main-2006250115
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-Date: Thu, 25 Jun 2020 17:40:43 +0530
+On Thu, Jun 25, 2020 at 05:00:29PM +0200, David Hildenbrand wrote:
+> This smells like a leftover from ancient times, let's get rid of it. We
+> can now convert vmem_remove_mapping() into a void function - everybody
+> ignored the return value already.
 
-> With legacy PM, drivers themselves were responsible for managing the
-> device's power states and takes care of register states.
-> 
-> After upgrading to the generic structure, PCI core will take care of
-> required tasks and drivers should do only device-specific operations.
-> 
-> In the case of ptp_pch, after removing PCI helper functions, .suspend()
-> and .resume() became empty-body functions. Hence, define them NULL and
-> use dev_pm_ops.
-> 
-> Compile-tested only.
-> 
-> Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
-
-A straight-forward transformation, looks good, applied to net-next
-thanks.
+This buys us what? Except that we get rid of a bit of code?
