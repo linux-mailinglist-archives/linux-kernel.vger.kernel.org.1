@@ -2,40 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AF3209DC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 13:53:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1392F209DCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 13:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404343AbgFYLxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 07:53:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
+        id S2404465AbgFYLxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 07:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404265AbgFYLxe (ORCPT
+        with ESMTP id S2404420AbgFYLxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 07:53:34 -0400
+        Thu, 25 Jun 2020 07:53:41 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84511C061573;
-        Thu, 25 Jun 2020 04:53:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A1CC061573;
+        Thu, 25 Jun 2020 04:53:41 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1joQRY-0005pt-0H; Thu, 25 Jun 2020 13:53:24 +0200
+        id 1joQRY-0005py-K5; Thu, 25 Jun 2020 13:53:24 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 8F35D1C0092;
-        Thu, 25 Jun 2020 13:53:23 +0200 (CEST)
-Date:   Thu, 25 Jun 2020 11:53:23 -0000
-From:   "tip-bot2 for Vincent Guittot" <tip-bot2@linutronix.de>
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 3B2A91C0092;
+        Thu, 25 Jun 2020 13:53:24 +0200 (CEST)
+Date:   Thu, 25 Jun 2020 11:53:24 -0000
+From:   "tip-bot2 for Peng Wang" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/urgent] sched/cfs: change initial value of runnable_avg
-Cc:     kernel test robot <rong.a.chen@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+Subject: [tip: sched/core] sched/fair: Optimize dequeue_task_fair()
+Cc:     Peng Wang <rocking@linux.alibaba.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
         x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200624154422.29166-1-vincent.guittot@linaro.org>
-References: <20200624154422.29166-1-vincent.guittot@linaro.org>
+In-Reply-To: =?utf-8?q?=3C701eef9a40de93dcf5fe7063fd607bca5db38e05=2E15922?=
+ =?utf-8?q?87263=2Egit=2Erocking=40linux=2Ealibaba=2Ecom=3E?=
+References: =?utf-8?q?=3C701eef9a40de93dcf5fe7063fd607bca5db38e05=2E159228?=
+ =?utf-8?q?7263=2Egit=2Erocking=40linux=2Ealibaba=2Ecom=3E?=
 MIME-Version: 1.0
-Message-ID: <159308600329.16989.15117119529654032761.tip-bot2@tip-bot2>
+Message-ID: <159308600404.16989.11999538573248060370.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -49,47 +51,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the sched/urgent branch of tip:
+The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     68f7b5cc835de7d5b6c7696533c126018171e793
-Gitweb:        https://git.kernel.org/tip/68f7b5cc835de7d5b6c7696533c126018171e793
-Author:        Vincent Guittot <vincent.guittot@linaro.org>
-AuthorDate:    Wed, 24 Jun 2020 17:44:22 +02:00
+Commit-ID:     423d02e1463b21109106f52d94f7396b63731f3b
+Gitweb:        https://git.kernel.org/tip/423d02e1463b21109106f52d94f7396b63731f3b
+Author:        Peng Wang <rocking@linux.alibaba.com>
+AuthorDate:    Tue, 16 Jun 2020 14:04:07 +08:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 25 Jun 2020 13:45:38 +02:00
+CommitterDate: Thu, 25 Jun 2020 13:45:44 +02:00
 
-sched/cfs: change initial value of runnable_avg
+sched/fair: Optimize dequeue_task_fair()
 
-Some performance regression on reaim benchmark have been raised with
-  commit 070f5e860ee2 ("sched/fair: Take into account runnable_avg to classify group")
+While looking at enqueue_task_fair and dequeue_task_fair, it occurred
+to me that dequeue_task_fair can also be optimized as Vincent described
+in commit 7d148be69e3a ("sched/fair: Optimize enqueue_task_fair()").
 
-The problem comes from the init value of runnable_avg which is initialized
-with max value. This can be a problem if the newly forked task is finally
-a short task because the group of CPUs is wrongly set to overloaded and
-tasks are pulled less agressively.
+When encountering throttled cfs_rq, dequeue_throttle label can ensure
+se not to be NULL, and rq->nr_running remains unchanged, so we can also
+skip the early balance check.
 
-Set initial value of runnable_avg equals to util_avg to reflect that there
-is no waiting time so far.
-
-Fixes: 070f5e860ee2 ("sched/fair: Take into account runnable_avg to classify group")
-Reported-by: kernel test robot <rong.a.chen@intel.com>
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+Signed-off-by: Peng Wang <rocking@linux.alibaba.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20200624154422.29166-1-vincent.guittot@linaro.org
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+Link: https://lkml.kernel.org/r/701eef9a40de93dcf5fe7063fd607bca5db38e05.1592287263.git.rocking@linux.alibaba.com
 ---
- kernel/sched/fair.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/sched/fair.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index cbcb2f7..658aa7a 100644
+index a63f400..b9b9f19 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -806,7 +806,7 @@ void post_init_entity_util_avg(struct task_struct *p)
- 		}
+@@ -5624,14 +5624,14 @@ static void dequeue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+ 
  	}
  
--	sa->runnable_avg = cpu_scale;
-+	sa->runnable_avg = sa->util_avg;
+-dequeue_throttle:
+-	if (!se)
+-		sub_nr_running(rq, 1);
++	/* At this point se is NULL and we are at root level*/
++	sub_nr_running(rq, 1);
  
- 	if (p->sched_class != &fair_sched_class) {
- 		/*
+ 	/* balance early to pull high priority tasks */
+ 	if (unlikely(!was_sched_idle && sched_idle_rq(rq)))
+ 		rq->next_balance = jiffies;
+ 
++dequeue_throttle:
+ 	util_est_dequeue(&rq->cfs, p, task_sleep);
+ 	hrtick_update(rq);
+ }
