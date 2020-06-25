@@ -2,94 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D53A420999F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 07:51:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9432099A1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 07:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389886AbgFYFvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 01:51:00 -0400
-Received: from smtprelay0236.hostedemail.com ([216.40.44.236]:55878 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725998AbgFYFvA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 01:51:00 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 2E12618029120;
-        Thu, 25 Jun 2020 05:50:59 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:560:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:2895:3138:3139:3140:3141:3142:3353:3622:3867:3868:3871:3872:4321:5007:6742:7875:10004:10400:10848:11026:11232:11658:11914:12296:12297:12740:12760:12895:13069:13311:13357:13439:14659:14721:21080:21627:21740:21990:30012:30034:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: head29_411519126e4a
-X-Filterd-Recvd-Size: 2280
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 25 Jun 2020 05:50:57 +0000 (UTC)
-Message-ID: <51ca818443648cb25a604448dea022d6ac2ea09f.camel@perches.com>
-Subject: Re: [RFC] Reed-Solomon Code: Update no_eras to the actual number of
- errors
-From:   Joe Perches <joe@perches.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Aiden Leong <aiden.leong@aibsd.com>
-Cc:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ferdinand Blomqvist <ferdinand.blomqvist@gmail.com>,
-        YueHaibing <yuehaibing@huawei.com>, dm-devel@redhat.com,
-        linux-kernel@vger.kernel.org, Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
+        id S2389906AbgFYFvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 01:51:42 -0400
+Received: from mga02.intel.com ([134.134.136.20]:64281 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389446AbgFYFvm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 01:51:42 -0400
+IronPort-SDR: tOS59YQIKHu1ZXf7kZmh0DaskICZfGa+ztH6iJ6CDn/hrg/aHfiv+YA54jmlnci01mSufC80C6
+ ogCMcnaxoeUQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9662"; a="133193217"
+X-IronPort-AV: E=Sophos;i="5.75,278,1589266800"; 
+   d="scan'208";a="133193217"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jun 2020 22:51:41 -0700
+IronPort-SDR: QzPu4addwR0m89RYgPZYOfjXsxqL6Eg0hXaKoAPNKxE6SpIkx8opFaflwYi9NZk9pWrIVzAFNJ
+ kERFhtj3LALg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,278,1589266800"; 
+   d="scan'208";a="293776524"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by orsmga002.jf.intel.com with ESMTP; 24 Jun 2020 22:51:41 -0700
+Date:   Wed, 24 Jun 2020 22:51:40 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86-ml <x86@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        lkml <linux-kernel@vger.kernel.org>,
         Tony Luck <tony.luck@intel.com>
-Date:   Wed, 24 Jun 2020 22:50:56 -0700
-In-Reply-To: <202006242231.E17DAB2@keescook>
-References: <20200625041141.8053-1-aiden.leong@aibsd.com>
-         <202006242231.E17DAB2@keescook>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.2-0ubuntu1 
+Subject: Re: [PATCH -v2.1] x86/msr: Filter MSR writes
+Message-ID: <20200625055140.GA2141@linux.intel.com>
+References: <20200612105026.GA22660@zn.tnic>
+ <20200613154844.GB584@zn.tnic>
+ <20200615063837.GA14668@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200615063837.GA14668@zn.tnic>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-06-24 at 22:35 -0700, Kees Cook wrote:
-> On Wed, Jun 24, 2020 at 09:10:53PM -0700, Aiden Leong wrote:
-> > Corr and eras_pos are updated to actual correction pattern and erasure
-> > positions, but no_eras is not.
-[]
-> > @@ -312,14 +313,21 @@
-> >  				eras_pos[j++] = loc[i] - pad;
-> >  			}
-> >  		}
-> > +		if (no_eras > 0)
-> > +			*no_eras = j;
+On Mon, Jun 15, 2020 at 08:38:37AM +0200, Borislav Petkov wrote:
+> Here's an improved v2 with sparse warnings fixed:
 > 
-> Is this meant to be "if (j > 0)" or "if (no_eras != NULL)" ? It's
-> uncommon to use > 0 for a pointer value.
+> ---
+> Disable writing to MSRs from userspace by default. Writes can still be
+> allowed by supplying the allow_writes=1 module parameter and the kernel
+> will be tainted so that it shows in oopses.
 > 
-> >  	} else if (data && par) {
-> >  		/* Apply error to data and parity */
-> > +		j = 0;
-> >  		for (i = 0; i < count; i++) {
-> >  			if (loc[i] < (nn - nroots))
-> >  				data[loc[i] - pad] ^= b[i];
-> >  			else
-> >  				par[loc[i] - pad - len] ^= b[i];
-> > +			if (b[i])
-> > +				j++;
-> >  		}
-> > +		if (no_eras > 0)
-> > +			*no_eras = j;
+> Having unfettered access to all MSRs on a system is and has always been
+> a disaster waiting to happen. Think performance counter MSRs, MSRs with
+> sticky or locked bits, MSRs making major system changes like loading
+> microcode, MTRRs, PAT configuration, TSC counter, security mitigations
+> MSRs, you name it.
 > 
-> I assume it's a pointer test, so both would be:
+> This also destroys all the kernel's caching of MSR values for
+> performance, as the recent case with MSR_AMD64_LS_CFG showed.
 > 
-> 		if (no_eras_ptr != NULL)
-> 			*no_eras_ptr = j;
+> Another example is writing MSRs by mistake by simply typing the wrong
+> MSR address. System freezes have been experienced that way.
+> 
+> In general, poking at MSRs under the kernel's feet is a bad bad idea.
+> 
+> So disable poking directly at the MSRs by default. If userspace still
+> wants to do that, then proper interfaces should be defined which
+> are under the kernel's control and accesses to those MSRs can be
+> synchronized and sanitized properly.
+> 
+> Changelog:
+> - taint before WRMSR, all
+> - make param 0600, Sean.
+> - do not deny but log writes by default, Linus.
+> 
+> [ Fix sparse warnings ]
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Borislav Petkov <bp@suse.de>
 
-More common still would be
+A few non-functional nits below.
 
-		if (no_eras_ptr)
-			*no_eras_ptr = j;
+Tested-by: Sean Christopherson <sean.j.christopherson@intel.com>
 
-though I think using _ptr is too Hungarian.
+> ---
+>  arch/x86/kernel/msr.c | 69 +++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 69 insertions(+)
+> 
+> diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
+> index 1547be359d7f..576c43e39247 100644
+> --- a/arch/x86/kernel/msr.c
+> +++ b/arch/x86/kernel/msr.c
+> @@ -42,6 +42,14 @@
+>  static struct class *msr_class;
+>  static enum cpuhp_state cpuhp_msr_state;
+>  
+> +enum allow_write_msrs {
+> +	MSR_WRITES_ON,
+> +	MSR_WRITES_OFF,
+> +	MSR_WRITES_DEFAULT,
+> +};
+> +
+> +static enum allow_write_msrs allow_writes = MSR_WRITES_DEFAULT;
+> +
+>  static ssize_t msr_read(struct file *file, char __user *buf,
+>  			size_t count, loff_t *ppos)
+>  {
+> @@ -70,6 +78,24 @@ static ssize_t msr_read(struct file *file, char __user *buf,
+>  	return bytes ? bytes : err;
+>  }
+>  
+> +static int filter_write(u32 reg)
+> +{
+> +     switch (allow_writes) {
+> +     case MSR_WRITES_ON:  return 0;          break;
+> +     case MSR_WRITES_OFF: return -EPERM;     break;
+
+The breaks after the returns are unnecessary.
+
+> +     default: break;
+> +     }
+> +
+> +     if (reg == MSR_IA32_ENERGY_PERF_BIAS)
+> +             return 0;
+> +
+> +     pr_err_ratelimited("Write to unrecognized MSR 0x%x by %s\n"
+> +                        "Please report to x86@kernel.org\n",
+> +                        reg, current->comm);
 
 
+Maybe s/unrecognized/unauthorized?  Unrecognized implies the kernel doesn't
+know anything about the MSR being written, which may not hold true.
+
+> +     return 0;
+> +}
+> +
+>  static ssize_t msr_write(struct file *file, const char __user *buf,
+>                        size_t count, loff_t *ppos)
+>  {
+> @@ -84,6 +110,10 @@ static ssize_t msr_write(struct file *file, const char __user *buf,
+>       if (err)
+>               return err;
+>
+> +     err = filter_write(reg);
+> +     if (err)
+> +             return err;
+> +
+>       if (count % 8)
+>               return -EINVAL; /* Invalid chunk size */
+>
+> @@ -92,9 +122,13 @@ static ssize_t msr_write(struct file *file, const char __user *buf,
+>                       err = -EFAULT;
+>                       break;
+>               }
+> +
+> +             add_taint(TAINT_CPU_OUT_OF_SPEC, LOCKDEP_STILL_OK);
+> +
+>               err = wrmsr_safe_on_cpu(cpu, reg, data[0], data[1]);
+>               if (err)
+>                       break;
+> +
+
+Random leftover whitespace change.
+
+>  		tmp += 2;
+>  		bytes += 8;
+>  	}
