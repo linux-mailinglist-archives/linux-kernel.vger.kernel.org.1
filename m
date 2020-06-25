@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B3120A2F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 166DC20A300
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406189AbgFYQbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 12:31:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37660 "EHLO
+        id S2406285AbgFYQcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 12:32:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406106AbgFYQbg (ORCPT
+        with ESMTP id S2406180AbgFYQbh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 12:31:36 -0400
+        Thu, 25 Jun 2020 12:31:37 -0400
 Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04979C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:31:36 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id o11so6488482wrv.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:31:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E633C08C5DB
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:31:37 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id g18so6532680wrm.2
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:31:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Bq/btLCNVpDq7WQbqNzbqWHRqAbD1Rvrp24T5PkKMvQ=;
-        b=jcythmom0hvII4A/DrE6Hw1TYrCtaWr2Amn8NRqD8zdJGovBnTWIOHoKr5nGTkR//D
-         yIgFHe9mEKMvghz25c8EaBymoqXspHL2jfwB25I/P+6rsvpNhL11WuzprjBFm2qzRe15
-         x4v4AvpxQHxSYrMjJ3Gz67k4zD3LuuGQGakGZyAvmqPXYzPEN7NVzq4HjxzICD98RPKN
-         m2jklcV5OwvPSj4aPw2U4TYpPy4eGg06Tb+Zz3eeHic1lxRkBska2yn6hmTdMYt/goSm
-         Yvk7V3gfIUX0/n0TCEP6H/g254ynuP/uqqJqdCtlnDryKn+HEKPQb/2z2zMjWcNC+stk
-         m44g==
+        bh=SPm1NIoii4wp9HC9Gj5qfuMICtlvrSHRycc3QSZfRtM=;
+        b=Oc6Gltle84A86QA8gNtOqEV/3yAOQ2so8xkE1d2LdYXT4/k3U5+r2QEFnPWiDUAccm
+         Uar3DxQDE6xpe12o0ztoVfC2w4xJlXQy7OjCKQS1nQc3oWmmIcUQ47SqdWmiSz1Ljif7
+         34wb61IwWDSmV4datUbi2+aSRTQOQIur0agRCRZVkF/UfvLN02otdpR+TPEyceLkmtHk
+         KXHe4u9ly4IXJZAxe7yi2jK7szMHLCFvfVFcOJnV5lQgE0I2bF1TQpsNfEL4zFqNrH/x
+         fr+jLI6l5RfgtVC7SIsW6zeZMON74CmOvWC2kLyD4PSsoJG7VjMpUehREXD5+rs/X6UR
+         PZoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Bq/btLCNVpDq7WQbqNzbqWHRqAbD1Rvrp24T5PkKMvQ=;
-        b=acjfAB1kt20+fgHzonx6yWVaAor2HvmEMUymd3x7nX4JV0G1ydw5yYI1uc5Vq3UMp7
-         BHBQLbWJCabXNjMqZVVgMSlbMdA+kHgg7WggQGqlevfE0AiP5HgVuhNVYfZGwEOOV6Wp
-         QWwSxCUlhcf51TEiNGcaP1k82O5Eog1PiKGg5M0StvxbQOqFZQNgBTzEulbqz+CnGkGR
-         Q3EOty66AWCdI2fcWB0C8+ENLjR2AjlDLfnQcexlZqVHHya3Cvk31ApEY/uHgUfJep4K
-         FRAEf/GA7//3cBIUZmfi/IRpDBYMN2iKnHgxhEdnClo5oJNsJA7wvzleRh57RZCyVWDc
-         z5Yg==
-X-Gm-Message-State: AOAM531IgVDdKMKdskhyPEpaTMgyZmY4WD3Lir6dO1UyoSLttcapPF1Q
-        GKHnVYXP9pQ6GwOy8H3pSQVCGQ==
-X-Google-Smtp-Source: ABdhPJyK5azuDtfQu+j+mtbkTuNEoVInNEMuX+9qoIDVs73VZrHnCclPv1nUkDUC3iM2iD6b6Pe1kw==
-X-Received: by 2002:adf:bc41:: with SMTP id a1mr35910174wrh.186.1593102694696;
-        Thu, 25 Jun 2020 09:31:34 -0700 (PDT)
+        bh=SPm1NIoii4wp9HC9Gj5qfuMICtlvrSHRycc3QSZfRtM=;
+        b=eXZdC1UWdAo0x44cYhxzEUsLyuYvq+ETvDsOaprmjvzPo1YSBB2Ps+hsOGTf8Kd0mV
+         wYo7x8qNMEI6c94eQEYbbQqPQQbMB0HbKYu896uG6xqTMOF3rHzgkjsNe+q11n9+YZeW
+         bRnTgQ9Q/J+o/GrTHsZxcH2trsMdHfwcxE8e/qaNCWLtNBcnCJ9DtvrtoKBdAMEivpzd
+         PaYFFKBjXE76yW9Hgfp58SzfmQLaQoUFMiKDB/OQaVHBgzX49V+rWArQuuyLunEgYoe2
+         +DGXGAyqicNykD3+bcq467ZNK6aeMt/ihX9OjU2gHv5xQZGKA3HBQoL1FmKtPBf6xQxA
+         fURg==
+X-Gm-Message-State: AOAM532FPzztfBZDvVO+KJ+cN5ywnyZ86dRbNiDYb21Dr/UwZpS9RhWE
+        xYQHlHNTzrhwPQzd2ezuJXULSg8+kD8=
+X-Google-Smtp-Source: ABdhPJwES1XecqH4cBXo1fQeYPsxoZ0MTBumS6wvW98Pi31ZCdSAaVU/3Nqdi5GIDI6t+uULaWzFkg==
+X-Received: by 2002:adf:8168:: with SMTP id 95mr37262827wrm.104.1593102696010;
+        Thu, 25 Jun 2020 09:31:36 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id l8sm32090847wrq.15.2020.06.25.09.31.33
+        by smtp.gmail.com with ESMTPSA id l8sm32090847wrq.15.2020.06.25.09.31.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 09:31:34 -0700 (PDT)
+        Thu, 25 Jun 2020 09:31:35 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Bill Richardson <wfrichar@chromium.org>
-Subject: [PATCH 01/10] mfd: cros_ec_dev: Fix cros_feature_to_{name,cells} struct descriptions
-Date:   Thu, 25 Jun 2020 17:31:18 +0100
-Message-Id: <20200625163127.4000462-2-lee.jones@linaro.org>
+        Tony Lindgren <tony@atomide.com>, J Keerthy <j-keerthy@ti.com>,
+        linux-omap@vger.kernel.org
+Subject: [PATCH 02/10] mfd: tps65218: Repair incorrect function argument name 's/tps65218/tps/'
+Date:   Thu, 25 Jun 2020 17:31:19 +0100
+Message-Id: <20200625163127.4000462-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200625163127.4000462-1-lee.jones@linaro.org>
 References: <20200625163127.4000462-1-lee.jones@linaro.org>
@@ -68,44 +66,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kerneldoc expects kernel structures to be prefixed with 'struct'.
+The kerneldocs for both tps65218_reg_write() and tps65218_update_bits()
+describe their first arguments as 'tps65218', when in reality these are
+simply called 'tps'.
 
-Fixes the following W=1 level warnings:
+Fixes the following W=1 warnings:
 
- drivers/mfd/cros_ec_dev.c:32: warning: cannot understand function prototype: 'struct cros_feature_to_name '
- drivers/mfd/cros_ec_dev.c:44: warning: cannot understand function prototype: 'struct cros_feature_to_cells '
+ drivers/mfd/tps65218.c:58: warning: Function parameter or member 'tps' not described in 'tps65218_reg_write'
+ drivers/mfd/tps65218.c:58: warning: Excess function parameter 'tps65218' description in 'tps65218_reg_write'
+ drivers/mfd/tps65218.c:90: warning: Function parameter or member 'tps' not described in 'tps65218_update_bits'
+ drivers/mfd/tps65218.c:90: warning: Excess function parameter 'tps65218' description in 'tps65218_update_bits'
 
-Cc: Benson Leung <bleung@chromium.org>
-Cc: Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Cc: Guenter Roeck <groeck@chromium.org>
-Cc: Bill Richardson <wfrichar@chromium.org>
+Cc: Tony Lindgren <tony@atomide.com>
+Cc: J Keerthy <j-keerthy@ti.com>
+Cc: linux-omap@vger.kernel.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mfd/cros_ec_dev.c | 4 ++--
+ drivers/mfd/tps65218.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mfd/cros_ec_dev.c b/drivers/mfd/cros_ec_dev.c
-index 32c2b912b58b2..d07b43d7c761a 100644
---- a/drivers/mfd/cros_ec_dev.c
-+++ b/drivers/mfd/cros_ec_dev.c
-@@ -24,7 +24,7 @@ static struct class cros_class = {
- };
- 
+diff --git a/drivers/mfd/tps65218.c b/drivers/mfd/tps65218.c
+index a62ea4cb8be7e..d41dd864b472b 100644
+--- a/drivers/mfd/tps65218.c
++++ b/drivers/mfd/tps65218.c
+@@ -48,7 +48,7 @@ static const struct mfd_cell tps65218_cells[] = {
  /**
-- * cros_feature_to_name - CrOS feature id to name/short description.
-+ * struct cros_feature_to_name - CrOS feature id to name/short description.
-  * @id: The feature identifier.
-  * @name: Device name associated with the feature id.
-  * @desc: Short name that will be displayed.
-@@ -36,7 +36,7 @@ struct cros_feature_to_name {
- };
- 
+  * tps65218_reg_write: Write a single tps65218 register.
+  *
+- * @tps65218: Device to write to.
++ * @tps: Device to write to.
+  * @reg: Register to write to.
+  * @val: Value to write.
+  * @level: Password protected level
+@@ -79,7 +79,7 @@ EXPORT_SYMBOL_GPL(tps65218_reg_write);
  /**
-- * cros_feature_to_cells - CrOS feature id to mfd cells association.
-+ * struct cros_feature_to_cells - CrOS feature id to mfd cells association.
-  * @id: The feature identifier.
-  * @mfd_cells: Pointer to the array of mfd cells that needs to be added.
-  * @num_cells: Number of mfd cells into the array.
+  * tps65218_update_bits: Modify bits w.r.t mask, val and level.
+  *
+- * @tps65218: Device to write to.
++ * @tps: Device to write to.
+  * @reg: Register to read-write to.
+  * @mask: Mask.
+  * @val: Value to write.
 -- 
 2.25.1
 
