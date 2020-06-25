@@ -2,70 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673D820A019
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 15:36:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0DFF20A02F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 15:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405184AbgFYNgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 09:36:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60598 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404910AbgFYNgJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 09:36:09 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2FF7720672;
-        Thu, 25 Jun 2020 13:36:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593092168;
-        bh=mtp7nug8DXnlg3klSnF/L9TcVC11/sBPd5QOTqGfuB4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cEcBD9CMFPVpvmqk5ePBRmi/v2EI0o5geZyyKhMEJey2WC6W6IARCSJ53mDT3LA5C
-         v+ykaRF8klL9RAS1wPEqAoXCaV5kYZMyak7nG9hzQ3USCnPPe5Cj/c9NMOFdMXAWE0
-         D3EOW5mgD77G3q/jn2HHvlgMXBlPFBxNuchSiD0M=
-Date:   Thu, 25 Jun 2020 15:36:04 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Brooke Basile <brookebasile@gmail.com>
-Cc:     rspringer@google.com, toddpoynor@google.com, benchan@chromium.org,
-        rcy@google.com, devel@driverdev.osuosl.org, trivial@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: gasket: Convert symbolic permission to octal
-Message-ID: <20200625133604.GA3533051@kroah.com>
-References: <20200625132513.10805-1-brookebasile@gmail.com>
+        id S2405213AbgFYNnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 09:43:53 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:60012 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2404890AbgFYNnx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 09:43:53 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 429DA41853EE28F8554D;
+        Thu, 25 Jun 2020 21:43:50 +0800 (CST)
+Received: from A190218597.china.huawei.com (10.47.76.118) by
+ DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 25 Jun 2020 21:43:41 +0800
+From:   Salil Mehta <salil.mehta@huawei.com>
+To:     <linux-arm-kernel@lists.infradead.org>
+CC:     <maz@kernel.org>, <will@kernel.org>, <catalin.marinas@arm.com>,
+        <christoffer.dall@arm.com>, <andre.przywara@arm.com>,
+        <james.morse@arm.com>, <mark.rutland@arm.com>,
+        <lorenzo.pieralisi@arm.com>, <sudeep.holla@arm.com>,
+        <qemu-arm@nongnu.org>, <peter.maydell@linaro.org>,
+        <richard.henderson@linaro.org>, <imammedo@redhat.com>,
+        <mst@redhat.com>, <drjones@redhat.com>, <pbonzini@redhat.com>,
+        <eric.auger@redhat.com>, <gshan@redhat.com>, <david@redhat.com>,
+        <kvm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <mehta.salil.lnk@gmail.com>,
+        Salil Mehta <salil.mehta@huawei.com>
+Subject: [PATCH RFC 0/4] Changes to Support *Virtual* CPU Hotplug for ARM64
+Date:   Thu, 25 Jun 2020 14:37:53 +0100
+Message-ID: <20200625133757.22332-1-salil.mehta@huawei.com>
+X-Mailer: git-send-email 2.8.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200625132513.10805-1-brookebasile@gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.47.76.118]
+X-CFilter-Loop: Reflected
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 09:25:13AM -0400, Brooke Basile wrote:
-> Fixing checkpatch WARNING: Symbolic permissions 'S_IRUGO' are not preferred. Consider using octal permissions '0444'.
-> 
-> Signed-off-by: Brooke Basile <brookebasile@gmail.com>
-> ---
->  drivers/staging/gasket/gasket_sysfs.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/gasket/gasket_sysfs.h b/drivers/staging/gasket/gasket_sysfs.h
-> index ab5aa351d555..eb0fd3b0490f 100644
-> --- a/drivers/staging/gasket/gasket_sysfs.h
-> +++ b/drivers/staging/gasket/gasket_sysfs.h
-> @@ -71,7 +71,7 @@ struct gasket_sysfs_attribute {
->  
->  #define GASKET_SYSFS_RO(_name, _show_function, _attr_type)                     \
->  	{                                                                      \
-> -		.attr = __ATTR(_name, S_IRUGO, _show_function, NULL),          \
-> +		.attr = __ATTR(_name, 0444, _show_function, NULL),	       \
->  		.data.attr_type = _attr_type                                   \
->  	}
+Changes to support virtual cpu hotplug in QEMU[1] have been introduced to the
+community as RFC. These are under review.
 
-Someone else sent this a few days before you did:
-	 https://lore.kernel.org/r/20200622073612.12282-1-rodolfovillordo@gmail.com
+To support virtual cpu hotplug guest kernel must:
+1. Identify disabled/present vcpus and set/unset the present mask of the vcpu
+   during initialization and hotplug event. It must also set the possible mask
+   (which includes disabled vcpus) during init of guest kernel.
+2. Provide architecture specific ACPI hooks, for example to map/unmap the
+   logical cpuid to hwids/MPIDR. Linux kernel already has generic ACPI cpu
+   hotplug framework support.
 
-sorry,
+Changes introduced in this patch-set also ensures that initialization of the
+cpus when virtual cpu hotplug is not supported remains un-affected.
 
-greg k-h
+Repository:
+(*) Kernel changes are at,
+     https://github.com/salil-mehta/linux.git virt-cpuhp-arm64/rfc-v1
+(*) QEMU changes for vcpu hotplug could be cloned from below site,
+     https://github.com/salil-mehta/qemu.git virt-cpuhp-armv8/rfc-v1
+
+
+THINGS TO DO:
+1. Handling of per-cpu variables especially the first-chunk allocations
+   (which are NUMA aware) when the vcpu is hotplugged needs further attention
+   and review.
+2. NUMA related stuff has not been fully tested both in QEMU and kernel.
+3. Comprehensive Testing including when cpu hotplug is not supported.
+4. Docs
+
+DISCLAIMER:
+This is not a complete work but an effort to present the arm vcpu hotplug
+implementation to the community. This RFC is being used as a way to verify
+the idea mentioned above and to support changes presented for QEMU[1] to
+support vcpu hotplug. As of now this is *not* a production level code and might
+have bugs. Only a basic testing has been done on HiSilicon Kunpeng920 ARM64
+based SoC for Servers to verify the proof-of-concept that has been found working!
+
+Best regards
+Salil.
+
+REFERENCES:
+[1] https://www.mail-archive.com/qemu-devel@nongnu.org/msg712010.html
+[2] https://lkml.org/lkml/2019/6/28/1157
+[3] https://lists.cs.columbia.edu/pipermail/kvmarm/2018-July/032316.html
+
+Organization of Patches:
+[Patch 1-3]
+(*) Changes required during guest boot time to support vcpu hotplug 
+(*) Max cpu overflow checks
+(*) Changes required to pre-setup cpu-operations even for disabled cpus
+[Patch 4]
+(*) Arch changes required by guest kernel ACPI CPU Hotplug framework.
+
+
+Salil Mehta (4):
+  arm64: kernel: Handle disabled[(+)present] cpus in MADT/GICC during
+    init
+  arm64: kernel: Bound the total(present+disabled) cpus with nr_cpu_ids
+  arm64: kernel: Init cpu operations for all possible vcpus
+  arm64: kernel: Arch specific ACPI hooks(like logical cpuid<->hwid
+    etc.)
+
+ arch/arm64/kernel/smp.c | 153 ++++++++++++++++++++++++++++++++--------
+ 1 file changed, 123 insertions(+), 30 deletions(-)
+
+-- 
+2.17.1
+
+
