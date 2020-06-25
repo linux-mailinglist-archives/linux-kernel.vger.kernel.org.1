@@ -2,99 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD1820A315
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 338E020A320
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 18:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404369AbgFYQg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 12:36:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38426 "EHLO
+        id S2406378AbgFYQhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 12:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404064AbgFYQgZ (ORCPT
+        with ESMTP id S2404328AbgFYQg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 12:36:25 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FDB3C08C5C1
+        Thu, 25 Jun 2020 12:36:26 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09077C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:36:26 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id j18so6200725wmi.3
         for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:36:25 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 17so6612558wmo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 09:36:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DKhxAYLcK1OWpezH2GZRnraYb/4zrSVc4ykfScpn8zk=;
-        b=wd0rykDoFDRN1TLDacv6YMzXLXXW7nrqzLS8OOr4ai+twsPATbkAx4DIRrdYcOXCHp
-         WP5V5bzsw5eVEgEuUIom6wCwViYl8tglzyaN2e4CGPR4ggcFscyeekW+7iDg2AG5zhZG
-         Ea/R8fbkThp8/tpcqD4o1u3xTyjFIY+UFybgLALILRrkcfsTvvc5p4NSADfYA2PZdsb8
-         OIbrjy0gAUecXTH9IbohzKwOHZXcjHhqRYGTUmGutS3fLwY4oGY3QJZVvxanpZbEyV6t
-         GGL4QNEoBkDZ8HR3npk9lpDu187nVloUDCw3hjYGGfRjY2PtCAiybaaYukvOmig9cwRs
-         hq5Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=mHyTnFgFhenMvt82ZPvmID/k33g654vFpjxfq56glsw=;
+        b=FzK8AnU0x8SaPN9hkqDc4OZY4o+OqxxYwOVuP5tgHwZy56E0V7VKPPd1SUF+EQ8QVq
+         mVglrjvkMeNBBXl4+XwQaqKiwd+O+7lzdJVEU1GOSsY1J5BrJKz0QX2holhriq6vaYRV
+         HoWTnJf+JS2towXY3YhxVhGHVonJy0o4fxau2JaDJiULGHxaRf+9lftb1jMv/c58RNNz
+         r6mJu4Jpw088ypgdxZuWBZTWC9Ic1GN4zPVZKg9NLkXRi6xhfc6/asVLYjCa/hCQKpnc
+         9WtyAyhezLrDl8mVmKUOXMBZWTkOdXnwK7bA0IKzfN7TMz1RzhOBSPq36Xn+JwncLwQN
+         IShQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DKhxAYLcK1OWpezH2GZRnraYb/4zrSVc4ykfScpn8zk=;
-        b=Jm0hTY6lR3htTSyHYlVgQjBLwH8r9SSIhUQWTZDd7Ken5AkPuFWeVK1USliFYoGOYW
-         pIpYyXw8wsk2CIxpdiRNj5hk5ZJ0mdTr9CAkBAduUK/R78+CYVMYUPvzuh1FxmwkxZzw
-         Hk/GZEmz4b51AZ4MGhotyOca7WB5Ok7taPbShnWZcEJlUgZQEYKytyaf/8c5z6t6AM+/
-         OsukMzkjRbMYwhCKHoTYOWymzjda6adq0iRXISDYQrAwUBqPXt+vSf816wI3Jh5rPCKg
-         8rx3TRLspqEl2NqQdDlD69P7R0PR+OYRPid33EFOZ6xZIs3GtcpjtXbAN4XP8qjGgue8
-         TshA==
-X-Gm-Message-State: AOAM5339lxsM8Wnqm7VKa1xxNsPs5ac4jMuQhUFBSxNifWZytp8wdK+x
-        R3c6aAuQ7OyhQouOwYR7MB4Xiw==
-X-Google-Smtp-Source: ABdhPJxuLncPUEMpBum2kdsCfeKYpgkk8gkVwLCetbj7Az5tRzWNJPfoJ1UenyrKzEFmcyJBa5j5yw==
-X-Received: by 2002:a7b:c381:: with SMTP id s1mr4530291wmj.25.1593102983825;
-        Thu, 25 Jun 2020 09:36:23 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=mHyTnFgFhenMvt82ZPvmID/k33g654vFpjxfq56glsw=;
+        b=X5jxmbjueQz1h1FOc3ndToTIBn5cr9/xn+/wlxeF19zSfEAfM9TNYQ6R5D6z/Qssep
+         6323XMlFMfLTf3k6ubz5fcQ3fyvoHeXr1atYmRcHK97H63/IWYx3aVz9+XibzI2FZG7W
+         z56TKt2i+YqYOnVRihHQBUrqazRTsHPtN8hWWD4WxrKfLkXykTTOaBWFBMM6WoU2Xnup
+         VekPCplXjPCMvL/kLqQX+N4utq1FpKLQNFdnyUBFYkFUp5NHuS++vvjYPxSk1Siiqx8v
+         ZCwogvhVgDYUibc3XJ0RCvDkbre3RicOPJyevFEAlN2BuzCOz8nWlbxY/eTrZmEeZ/zL
+         Z9Tw==
+X-Gm-Message-State: AOAM532TrXpv/FWsHzs7J4UYA1GCmVsFE7ReYnOBYIi0Ox9zTTJP5PsY
+        2c5sg98f27W5ql/7NOjakehIFA==
+X-Google-Smtp-Source: ABdhPJyVaKgIFOh4fci2JoxsGrqpAosiXDp3roJ2/u2guPJCC0MBxFkIz4vGYBqu4hPheEIXpNi6aQ==
+X-Received: by 2002:a1c:a557:: with SMTP id o84mr4353457wme.42.1593102984711;
+        Thu, 25 Jun 2020 09:36:24 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id a15sm36729089wrh.54.2020.06.25.09.36.22
+        by smtp.gmail.com with ESMTPSA id a15sm36729089wrh.54.2020.06.25.09.36.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 09:36:23 -0700 (PDT)
+        Thu, 25 Jun 2020 09:36:24 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lgirdwood@gmail.com, broonie@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>
-Subject: [PATCH 00/10] Fix a bunch of W=1 warnings in Regulator
-Date:   Thu, 25 Jun 2020 17:36:04 +0100
-Message-Id: <20200625163614.4001403-1-lee.jones@linaro.org>
+Subject: [PATCH 01/10] regulator: consumer: Supply missing prototypes for 3 core functions
+Date:   Thu, 25 Jun 2020 17:36:05 +0100
+Message-Id: <20200625163614.4001403-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200625163614.4001403-1-lee.jones@linaro.org>
+References: <20200625163614.4001403-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attempting to clean-up W=1 kernel builds, which are currently
-overwhelmingly riddled with niggly little warnings.
+regulator_suspend_enable(), regulator_suspend_disable() and
+regulator_set_suspend_voltage() are all exported members of the
+API, but are all missing prototypes.
 
-Lee Jones (10):
-  regulator: consumer: Supply missing prototypes for 3 core functions
-  regulator: devres: Fix issues with kerneldoc headers
-  regulator: of_regulator: Add missing colon for rdev kerneldoc argument
-  regulator: dbx500-prcmu: Remove unused function
-    dbx500_regulator_testcase()
-  regulator: ab8500: Remove unused embedded struct expand_register
-  regulator: wm8350-regulator: Repair odd formatting in documentation
-  regulator: cpcap-regulator: Remove declared and set, but never used
-    variable 'ignore'
-  regulator: cpcap-regulator: Demote kerneldoc header to standard
-    comment
-  regulator: da9063-regulator: Fix .suspend 'initialized field
-    overwritten' warnings
-  regulator: max14577-regulator: Demote kerneldoc header to standard
-    comment
+Fixes the following W=1 warning(s):
 
- drivers/regulator/ab8500.c             |  7 +------
- drivers/regulator/cpcap-regulator.c    | 16 ++++++++--------
- drivers/regulator/da9063-regulator.c   |  1 -
- drivers/regulator/dbx500-prcmu.c       |  8 --------
- drivers/regulator/devres.c             |  4 +++-
- drivers/regulator/max14577-regulator.c |  2 +-
- drivers/regulator/of_regulator.c       |  2 +-
- drivers/regulator/wm8350-regulator.c   | 10 +++++-----
- include/linux/regulator/consumer.h     | 10 ++++++++++
- 9 files changed, 29 insertions(+), 31 deletions(-)
+ drivers/regulator/core.c:3805:5: warning: no previous prototype for ‘regulator_suspend_enable’ [-Wmissing-prototypes]
+ 3805 | int regulator_suspend_enable(struct regulator_dev *rdev,
+ | ^~~~~~~~~~~~~~~~~~~~~~~~
+ drivers/regulator/core.c:3812:5: warning: no previous prototype for ‘regulator_suspend_disable’ [-Wmissing-prototypes]
+ 3812 | int regulator_suspend_disable(struct regulator_dev *rdev,
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~
+ drivers/regulator/core.c:3851:5: warning: no previous prototype for ‘regulator_set_suspend_voltage’ [-Wmissing-prototypes]
+ 3851 | int regulator_set_suspend_voltage(struct regulator *regulator, int min_uV,
+ | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ include/linux/regulator/consumer.h | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/include/linux/regulator/consumer.h b/include/linux/regulator/consumer.h
+index 6a92fd3105a31..2024944fd2f78 100644
+--- a/include/linux/regulator/consumer.h
++++ b/include/linux/regulator/consumer.h
+@@ -32,10 +32,12 @@
+ #define __LINUX_REGULATOR_CONSUMER_H_
+ 
+ #include <linux/err.h>
++#include <linux/suspend.h>
+ 
+ struct device;
+ struct notifier_block;
+ struct regmap;
++struct regulator_dev;
+ 
+ /*
+  * Regulator operating modes.
+@@ -277,6 +279,14 @@ int regulator_unregister_notifier(struct regulator *regulator,
+ void devm_regulator_unregister_notifier(struct regulator *regulator,
+ 					struct notifier_block *nb);
+ 
++/* regulator suspend */
++int regulator_suspend_enable(struct regulator_dev *rdev,
++			     suspend_state_t state);
++int regulator_suspend_disable(struct regulator_dev *rdev,
++			      suspend_state_t state);
++int regulator_set_suspend_voltage(struct regulator *regulator, int min_uV,
++				  int max_uV, suspend_state_t state);
++
+ /* driver data - core doesn't touch */
+ void *regulator_get_drvdata(struct regulator *regulator);
+ void regulator_set_drvdata(struct regulator *regulator, void *data);
 -- 
 2.25.1
 
