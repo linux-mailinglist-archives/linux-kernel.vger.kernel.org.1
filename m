@@ -2,127 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0AA209E28
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 14:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CEA209E3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 14:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404529AbgFYMKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 08:10:44 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:40661 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404309AbgFYMKo (ORCPT
+        id S2404529AbgFYMN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 08:13:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404343AbgFYMNz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 08:10:44 -0400
-Received: by mail-wr1-f68.google.com with SMTP id h5so5586695wrc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 05:10:42 -0700 (PDT)
+        Thu, 25 Jun 2020 08:13:55 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E573EC061573;
+        Thu, 25 Jun 2020 05:13:53 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id k6so2708384pll.9;
+        Thu, 25 Jun 2020 05:13:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ubc4Gg+BEfiNxapUGxVhJAuDv/Rff5i5QsFdcnV45cs=;
+        b=TnOrs5yokCv1Mc4KvBgTT6zgaNBKX3gdB4s2nX0/yNuhDZRpmJWdHRPVUoUwLcTbfO
+         waqfAg1cU9PXSRoBZlzN84wZXGxi3znXMcwhT/a8mqfIcWp/4VMgF7Vpb+Pv8oFMMf+n
+         qiqux1Tz+01goQOUmLbApkagGzBYnjOE3EdmbIXguCUUKaci4EG58HkBmwI0r134xcPk
+         OeVNMeytPDRSWlXCMA/ex8k6/iEMt79lfHo81z5pk9M2xkvKmvqfG57F9uD817Qp84EJ
+         Hvv22EAPPc/6nH5+dKELkdJgdfnwYhp5dWcQjANH8Emoi3TlV7IdnlTntxyaRvxG+qo4
+         61Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0jbXkZNbg4noEr6B97w1ewenuEm0dXI4GSPALq5mbo8=;
-        b=iE96msYmeVSLIirTJzDORaR44og3dy/l7nHsnIxZ1q8EMY6GLMxHKihOPuO/07P7Lo
-         e5u+hE2QhFH2cpo1zvWwrtRZm8RrFUmPXyHvBAzv51tXFLTyWBrQnQjniy2qjE4X/f+n
-         yA/blOBy/3kOTnBCVfgAXAJ+FWx4Dd4NuwvUQqBghGE03gJcyjMFTtS602O3S460230Q
-         aXE2trMoe1wifZTywU+yoahK/e1Pb9V9mfraSRaOmvH0WtR6YL1mxtJwZf8Z3qmNegZS
-         MX876xATiQ3a+c02zNNkXLM3qmlLfB2+h/lYBrbkgaHoJAT19w4q0iOUdOUW4o86aCdb
-         qdWA==
-X-Gm-Message-State: AOAM530HbX+X9qOLd+O0wIY7cgTePwYrhwFh3pqM2MeVKpFe9e3WcEFy
-        aIize0rYu2UFKWOUWzJic08=
-X-Google-Smtp-Source: ABdhPJyyKGsttvq6Tk4qNTIvMe64IroJ2hLsykUfDz6vfqJVkJt7XYpLXOaMoOPg4ewfqSbthEa6nw==
-X-Received: by 2002:adf:8168:: with SMTP id 95mr36045331wrm.104.1593087042114;
-        Thu, 25 Jun 2020 05:10:42 -0700 (PDT)
-Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
-        by smtp.gmail.com with ESMTPSA id o29sm23743756wra.5.2020.06.25.05.10.41
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ubc4Gg+BEfiNxapUGxVhJAuDv/Rff5i5QsFdcnV45cs=;
+        b=HY2GTrTJEhPf/InfJH5fQRje270RV16TH4eD+bZb4IPEWKBvftSeGkOzwrOXUTt5ZW
+         Tul1sJXlTkSrLz9OXTJtdN3exvLkUc8nPLDGsgNzj5UvP1yheH0c6lPdk7cE1gSIuNIh
+         DZafycOz2zOCsKu2bxb1j91/+qdYKrXrqUYRP9tfslvT1SnIzH9JSkS54/CfOvkw+25E
+         WaF2HNCv8BFFgcaSAJOyngK2rY42N4/se57uiljWIo6W52jhWx1DBGUMbOOVJvEFkjH1
+         Lu2yhHFOo/PipdOGLxhcsNYjo6MEFfxAXeYB5gYf0d/w0vWBiqhUvkazEnHhnJBIAVhj
+         oWzQ==
+X-Gm-Message-State: AOAM532dNAOpFmtxmxIIyuaL7iLz0LzvYRzU97DROtM3MSTFLE6tcBTD
+        FlXSqcSOPFSjyGukdmRvDeo=
+X-Google-Smtp-Source: ABdhPJxj1q2eRTDQxKkLSf9KIinlmLNMYuJUY3hAQ+CRhpY8fDA0gfOleRlpFuaXyoSKRsmUDYTmtg==
+X-Received: by 2002:a17:902:8681:: with SMTP id g1mr31738394plo.161.1593087231896;
+        Thu, 25 Jun 2020 05:13:51 -0700 (PDT)
+Received: from varodek.iballbatonwifi.com ([103.105.153.57])
+        by smtp.gmail.com with ESMTPSA id i125sm19507361pgd.21.2020.06.25.05.13.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 05:10:41 -0700 (PDT)
-Date:   Thu, 25 Jun 2020 14:10:40 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     js1304@gmail.com
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@lge.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christoph Hellwig <hch@infradead.org>,
-        Roman Gushchin <guro@fb.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH v3 8/8] mm/page_alloc: remove a wrapper for
- alloc_migration_target()
-Message-ID: <20200625121040.GI1320@dhcp22.suse.cz>
-References: <1592892828-1934-1-git-send-email-iamjoonsoo.kim@lge.com>
- <1592892828-1934-9-git-send-email-iamjoonsoo.kim@lge.com>
+        Thu, 25 Jun 2020 05:13:51 -0700 (PDT)
+From:   Vaibhav Gupta <vaibhavgupta40@gmail.com>
+To:     Bjorn Helgaas <helgaas@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>, bjorn@helgaas.com,
+        Vaibhav Gupta <vaibhav.varodek@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>
+Cc:     Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        skhan@linuxfoundation.org, netdev@vger.kernel.org
+Subject: [PATCH v1] ptp_pch: use generic power management
+Date:   Thu, 25 Jun 2020 17:40:43 +0530
+Message-Id: <20200625121042.99369-1-vaibhavgupta40@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1592892828-1934-9-git-send-email-iamjoonsoo.kim@lge.com>
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 23-06-20 15:13:48, Joonsoo Kim wrote:
-> From: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-> 
-> There is a well-defined standard migration target callback.
-> Use it directly.
-> 
-> Signed-off-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+With legacy PM, drivers themselves were responsible for managing the
+device's power states and takes care of register states.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+After upgrading to the generic structure, PCI core will take care of
+required tasks and drivers should do only device-specific operations.
 
-> ---
->  mm/page_alloc.c     |  9 +++++++--
->  mm/page_isolation.c | 11 -----------
->  2 files changed, 7 insertions(+), 13 deletions(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 9808339..884dfb5 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8359,6 +8359,11 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
->  	unsigned long pfn = start;
->  	unsigned int tries = 0;
->  	int ret = 0;
-> +	struct migration_target_control mtc = {
-> +		.nid = zone_to_nid(cc->zone),
-> +		.nmask = &node_states[N_MEMORY],
-> +		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
-> +	};
->  
->  	migrate_prep();
->  
-> @@ -8385,8 +8390,8 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
->  							&cc->migratepages);
->  		cc->nr_migratepages -= nr_reclaimed;
->  
-> -		ret = migrate_pages(&cc->migratepages, alloc_migrate_target,
-> -				    NULL, 0, cc->mode, MR_CONTIG_RANGE);
-> +		ret = migrate_pages(&cc->migratepages, alloc_migration_target,
-> +				NULL, (unsigned long)&mtc, cc->mode, MR_CONTIG_RANGE);
->  	}
->  	if (ret < 0) {
->  		putback_movable_pages(&cc->migratepages);
-> diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-> index adba031..242c031 100644
-> --- a/mm/page_isolation.c
-> +++ b/mm/page_isolation.c
-> @@ -306,14 +306,3 @@ int test_pages_isolated(unsigned long start_pfn, unsigned long end_pfn,
->  
->  	return pfn < end_pfn ? -EBUSY : 0;
->  }
-> -
-> -struct page *alloc_migrate_target(struct page *page, unsigned long private)
-> -{
-> -	struct migration_target_control mtc = {
-> -		.nid = page_to_nid(page),
-> -		.nmask = &node_states[N_MEMORY],
-> -		.gfp_mask = GFP_USER | __GFP_MOVABLE | __GFP_RETRY_MAYFAIL,
-> -	};
-> -
-> -	return alloc_migration_target(page, (unsigned long)&mtc);
-> -}
-> -- 
-> 2.7.4
+In the case of ptp_pch, after removing PCI helper functions, .suspend()
+and .resume() became empty-body functions. Hence, define them NULL and
+use dev_pm_ops.
 
+Compile-tested only.
+
+Signed-off-by: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+---
+ drivers/ptp/ptp_pch.c | 37 +++----------------------------------
+ 1 file changed, 3 insertions(+), 34 deletions(-)
+
+diff --git a/drivers/ptp/ptp_pch.c b/drivers/ptp/ptp_pch.c
+index dcd6e00c8046..ce10ecd41ba0 100644
+--- a/drivers/ptp/ptp_pch.c
++++ b/drivers/ptp/ptp_pch.c
+@@ -508,40 +508,8 @@ static const struct ptp_clock_info ptp_pch_caps = {
+ 	.enable		= ptp_pch_enable,
+ };
+ 
+-
+-#ifdef CONFIG_PM
+-static s32 pch_suspend(struct pci_dev *pdev, pm_message_t state)
+-{
+-	pci_disable_device(pdev);
+-	pci_enable_wake(pdev, PCI_D3hot, 0);
+-
+-	if (pci_save_state(pdev) != 0) {
+-		dev_err(&pdev->dev, "could not save PCI config state\n");
+-		return -ENOMEM;
+-	}
+-	pci_set_power_state(pdev, pci_choose_state(pdev, state));
+-
+-	return 0;
+-}
+-
+-static s32 pch_resume(struct pci_dev *pdev)
+-{
+-	s32 ret;
+-
+-	pci_set_power_state(pdev, PCI_D0);
+-	pci_restore_state(pdev);
+-	ret = pci_enable_device(pdev);
+-	if (ret) {
+-		dev_err(&pdev->dev, "pci_enable_device failed\n");
+-		return ret;
+-	}
+-	pci_enable_wake(pdev, PCI_D3hot, 0);
+-	return 0;
+-}
+-#else
+ #define pch_suspend NULL
+ #define pch_resume NULL
+-#endif
+ 
+ static void pch_remove(struct pci_dev *pdev)
+ {
+@@ -684,13 +652,14 @@ static const struct pci_device_id pch_ieee1588_pcidev_id[] = {
+ 	{0}
+ };
+ 
++static SIMPLE_DEV_PM_OPS(pch_pm_ops, pch_suspend, pch_resume);
++
+ static struct pci_driver pch_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = pch_ieee1588_pcidev_id,
+ 	.probe = pch_probe,
+ 	.remove = pch_remove,
+-	.suspend = pch_suspend,
+-	.resume = pch_resume,
++	.driver.pm = &pch_pm_ops,
+ };
+ 
+ static void __exit ptp_pch_exit(void)
 -- 
-Michal Hocko
-SUSE Labs
+2.27.0
+
