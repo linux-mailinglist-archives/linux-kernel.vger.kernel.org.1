@@ -2,114 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EFB920A592
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F8720A590
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:17:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391050AbgFYTRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 15:17:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
+        id S2390996AbgFYTRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 15:17:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406523AbgFYTRU (ORCPT
+        with ESMTP id S2390701AbgFYTRV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 15:17:20 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BADFC08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:17:19 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id q15so6637139wmj.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:17:19 -0700 (PDT)
+        Thu, 25 Jun 2020 15:17:21 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3814AC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:17:21 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id j4so4566808wrp.10
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:17:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+r7WAzJKscpz2A7LfanwlEQFW/6BOounTqgY0FCqgHk=;
-        b=ChFks/XEc7bzV0CTcMWfhB7IgCRQxU/ix22NfRn6vDTUiSMVowVLaUl6yu7QMlcVVZ
-         HIpJw4xTHVybS62gdWM1VHFFBSK0dTQm5ovklGSePPlvX4kAkJhIkf4FubT+ZkZ9yhij
-         CTVZrQko7ww3J9imShFnpURQHqUoLNB/YAfvXak+Efsy+I07bcLsAD++oVv9gQA5rUe/
-         1Nm5+BIUSvod+52HYDbqpSQKJogjRpztt5k8ZN6oHSxjr2MOUuZLeddwge1f5DpitMgp
-         toasWrca/RulM3TnAxEnjBxB38zyKS1zf5HDbx2hn5aZZWbfKiCM/W50ed83S/NIjsYg
-         8+2A==
+        bh=j4djQhcgSgTg/9mtm4BHCd5MDCRCq+1jmLB+caUyB0M=;
+        b=tmCpEbSO5A63g/ncvKbOwmY8ndQGqysFj9YM7YJH9vcFA1KQbqIHeegdH4VZq2Sfzg
+         1nO++r+wXM140SabSVtpFxRLswNTuUsjqQtyAN006BO9tYL+i2dFGpOaF+8aGSmddfwN
+         oDVjX1ZE6aX+Alb9sEJo5Br2x47SYFxxIqHxUVWywWMbDeVeEZbU8szbVjRRUqW+Piyo
+         TbvuDf+7UoMFVYcfhqOpPVKDCg2cVqsPjxvEBI+zrgTresjCjMBgoXwiH8pv0s6yok1v
+         qflrl21jKsf3H2N+5P7wTPXGDnUxTh/TDx75VTRMwjzJsmrxr3Hh3+XnITkjaGmBg4v1
+         RoBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=+r7WAzJKscpz2A7LfanwlEQFW/6BOounTqgY0FCqgHk=;
-        b=cfcx5urKHm7d+cWPme6ehwnEDpgBwS8x5LN8ofC6Wj2B6R1Utx8Lx0A/a7y0jfTb3x
-         gcdRHDAuwO0ZYv1bI4RY1AKF9Jb2o9jO+Kh9LTWHr+R+B0HzOtlWwSkJCo1YITn6wQr1
-         N4+bLkMmlPk7kQT8AB4xgDolZN2CM7Qm6McNFDskgZRLSqBWV8Gjk/n+hI6Oepqsz573
-         DZRBNjhQBoKX3BarrvkVB2yB1DyyHQvtIHizXAaeeUJqwu8MxQMiTZ5ibS7yBKcsS0rz
-         AD4XkQUUSWhU3mJHp8Eb0D6ZjOnS/4mAP7g9WD1cE/LeKma4DkfyN7Ua1Hvg19TVg54C
-         Lusw==
-X-Gm-Message-State: AOAM531E3uO2dMB4JwObQT/RuZLj34B9S99MaTzSuqg+QRuhua2DQ0u2
-        cNimHuIjLE1+GFhWXSiyPPc9EeOVDu8XvQ==
-X-Google-Smtp-Source: ABdhPJxocm800/ZlJ2PBjWP1tsP9WN64x1zPnFXiyjxHxw49nomSN71rB9+UScUF2TFK7UoUqEPKzw==
-X-Received: by 2002:a7b:c348:: with SMTP id l8mr5484694wmj.54.1593112638103;
-        Thu, 25 Jun 2020 12:17:18 -0700 (PDT)
+        bh=j4djQhcgSgTg/9mtm4BHCd5MDCRCq+1jmLB+caUyB0M=;
+        b=ndqxaPnCVXvGab/n9Eg0y1FhkGAUEeOtduyQkRMmbJF4LoBoZ56U7AIeYnd/q4STAe
+         9ed+rZBrLyrf/9MU4bdoDR1CKE1SKmUOy9irkMTfwTpPGkYD2QUnb3rjVSw5oKyuC9HK
+         bsf0oyUof/ReBENqAhWZ10pkX0TZ3aqWggwEMw0RQyt2TzwhcZVK+8r2d/O+584jd/eD
+         ANnZht0zm0lerDM1hFyz6FPRjVDpHZp2hgRi7RNuiGx9CfzYJAwiadqsU99GG0pRpQuQ
+         /iuL4+lxiWGoqw+5GGuqbWfyFYa1xbWppmGftUAKrzDuQHlzwD2xRayHcn3EhwLaefn9
+         43Ug==
+X-Gm-Message-State: AOAM533NCWjBdlfcIp5Lc1nmfznRYqehRnMl8GP6muSsBv8Vap1/WHYy
+        gtp8qWydiG7IicveHSVbaNovFA==
+X-Google-Smtp-Source: ABdhPJxfrQVQDk1A0hJljlXTR/40r15qonzvIABkQ+QNdsonSUnyTjpbtsbUomDnBDW4ZUxRsTCUBg==
+X-Received: by 2002:a05:6000:ca:: with SMTP id q10mr19640747wrx.135.1593112639977;
+        Thu, 25 Jun 2020 12:17:19 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id p13sm22693983wrn.0.2020.06.25.12.17.17
+        by smtp.gmail.com with ESMTPSA id p13sm22693983wrn.0.2020.06.25.12.17.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 12:17:17 -0700 (PDT)
+        Thu, 25 Jun 2020 12:17:19 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lgirdwood@gmail.com, broonie@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Lee Jones <lee.jones@linaro.org>,
         Linus Walleij <linus.walleij@linaro.org>
-Subject: [RESEND 04/10] regulator: dbx500-prcmu: Remove unused function dbx500_regulator_testcase()
-Date:   Thu, 25 Jun 2020 20:17:02 +0100
-Message-Id: <20200625191708.4014533-5-lee.jones@linaro.org>
+Subject: [RESEND 05/10] regulator: ab8500: Remove unused embedded struct expand_register
+Date:   Thu, 25 Jun 2020 20:17:03 +0100
+Message-Id: <20200625191708.4014533-6-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200625191708.4014533-1-lee.jones@linaro.org>
 References: <20200625191708.4014533-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There isn't any code present within the current kernel to
-override this 'weak' function.  Besides returning '0', which
-is never checked anyway, the whole function appears to be
-superfluous.
+Used primarily for the AB8540 which lost support in early 2018.
+It is now deemed safe to remove this legacy data structure.
 
-Consequently fixes W=1 warning:
+Also fixes W=1 issue:
 
- drivers/regulator/dbx500-prcmu.c:113:27: warning: no previous prototype for ‘dbx500_regulator_testcase’ [-Wmissing-prototypes]
- 113 | int __attribute__((weak)) dbx500_regulator_testcase(
- | ^~~~~~~~~~~~~~~~~~~~~~~~~
+  drivers/regulator/ab8500.c:88: warning: Function parameter or member 'expand_register' not described in 'ab8500_regulator_info'
 
 Cc: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/regulator/dbx500-prcmu.c | 8 --------
- 1 file changed, 8 deletions(-)
+ drivers/regulator/ab8500.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/regulator/dbx500-prcmu.c b/drivers/regulator/dbx500-prcmu.c
-index f604c8db6d0e9..c3ad6aa6b5d37 100644
---- a/drivers/regulator/dbx500-prcmu.c
-+++ b/drivers/regulator/dbx500-prcmu.c
-@@ -110,13 +110,6 @@ static int ux500_regulator_status_show(struct seq_file *s, void *p)
- }
- DEFINE_SHOW_ATTRIBUTE(ux500_regulator_status);
+diff --git a/drivers/regulator/ab8500.c b/drivers/regulator/ab8500.c
+index 716ca5bb178e7..47b8b6f7b5715 100644
+--- a/drivers/regulator/ab8500.c
++++ b/drivers/regulator/ab8500.c
+@@ -59,6 +59,7 @@ struct ab8500_shared_mode {
+  * @voltage_bank: bank to control regulator voltage
+  * @voltage_reg: register to control regulator voltage
+  * @voltage_mask: mask to control regulator voltage
++ * @expand_register: 
+  */
+ struct ab8500_regulator_info {
+ 	struct device		*dev;
+@@ -79,12 +80,6 @@ struct ab8500_regulator_info {
+ 	u8 voltage_bank;
+ 	u8 voltage_reg;
+ 	u8 voltage_mask;
+-	struct {
+-		u8 voltage_limit;
+-		u8 voltage_bank;
+-		u8 voltage_reg;
+-		u8 voltage_mask;
+-	} expand_register;
+ };
  
--int __attribute__((weak)) dbx500_regulator_testcase(
--	struct dbx500_regulator_info *regulator_info,
--	int num_regulators)
--{
--	return 0;
--}
--
- int
- ux500_regulator_debug_init(struct platform_device *pdev,
- 	struct dbx500_regulator_info *regulator_info,
-@@ -152,7 +145,6 @@ ux500_regulator_debug_init(struct platform_device *pdev,
- 	if (!rdebug.state_after_suspend)
- 		goto exit_free;
- 
--	dbx500_regulator_testcase(regulator_info, num_regulators);
- 	return 0;
- 
- exit_free:
+ /* voltage tables for the vauxn/vintcore supplies */
 -- 
 2.25.1
 
