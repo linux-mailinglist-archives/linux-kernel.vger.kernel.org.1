@@ -2,131 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C035209CD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 12:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB55209C65
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 12:00:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404011AbgFYK2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 06:28:37 -0400
-Received: from mail-vi1eur05on2059.outbound.protection.outlook.com ([40.107.21.59]:35150
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2403810AbgFYK2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 06:28:33 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Lb45cpSMTzRp48zrRgdIygHTLkbxKvFLvO9W4cMA8d8rPoDIqHeeeigYWBTqPQhKjuHV25fv8bv4XXOgEhYN1o7BQtluGtw4HMuKGlNjxXx2gjp0vAM6Db7MpqSI/Ok22Y6MNbjtVAjr7NQD1RHj+fIvEdPZrCc3xDWTefF1iBl6kK2ol/4Hz+nmLcCifQ4S2v+LlmKQB6mwZx/+8blDrrGLzoRrHIl5NoSc50/QlG+wmUMR2bmITRX+IY2Q2L+cP2RgxSzDGSpz+qn0CsKdXsiSUa8CPxT1DbdxbZUfJR4qKD/L527FkfvFpqD/UHAMUMgQfxsgsMuhO6oLnaLdOQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8uZqx/J6gcNz90L8lNaJWmiAZJFzUjGU3aKVjrhu2I0=;
- b=mRbyrDvfRROLco4FRvEq6wEDil+ipOV6Z/Qqcb1827i4dBwuG1MLqe4eddRLfJVo6KLkCPkAoTAA9NEfCoF5vsKbZR8FBbekZkL1JynuM24p4+0vfxvT30byXvzXiJqL18Oy5zPIcQwlNpF7J6Y4KUErEZ0Kbw0JmVd0zQWSPq3e0GxZ7EvJBVrXYIxfiWyvZERhFl2dtLVwxvaEMhJ+tb4AIHVcvzYZ9Ifu5DHupRkx6YTs1SPZwO6J1EwgEWJzLyXCwy4o20wm+XzuZvQW9mDVeRgbAWWaXWueDbHPyP92SeJlBFXWcm7VFki8U0xMlqiH336uy9nsafthcPHGkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=softfail (sender ip
- is 193.240.239.45) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=diasemi.com; dmarc=fail (p=none sp=none pct=100) action=none
- header.from=diasemi.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=dialogsemiconductor.onmicrosoft.com;
- s=selector1-dialogsemiconductor-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8uZqx/J6gcNz90L8lNaJWmiAZJFzUjGU3aKVjrhu2I0=;
- b=gP/8uj2lnIe/eZRVBnseXkiF3l+R/g+c//lBeP0W4zHuFZAs7FxZ8KXWsD/Pof1pXpkHAfkE//lz+aEWv2divY2i2HwWbsodWm0VmFVWLcbxJwgXrvlrHZ06uPqImxxTK4dg1AlbClTye00R5NTF/EOHoZFaxbmqG2saVYcLcVk=
-Received: from AM6PR01CA0072.eurprd01.prod.exchangelabs.com
- (2603:10a6:20b:e0::49) by DB8PR10MB3193.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:10:114::13) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.23; Thu, 25 Jun
- 2020 10:28:28 +0000
-Received: from HE1EUR02FT031.eop-EUR02.prod.protection.outlook.com
- (2603:10a6:20b:e0:cafe::8f) by AM6PR01CA0072.outlook.office365.com
- (2603:10a6:20b:e0::49) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3131.21 via Frontend
- Transport; Thu, 25 Jun 2020 10:28:28 +0000
-X-MS-Exchange-Authentication-Results: spf=softfail (sender IP is
- 193.240.239.45) smtp.mailfrom=diasemi.com; linuxfoundation.org; dkim=none
- (message not signed) header.d=none;linuxfoundation.org; dmarc=fail
- action=none header.from=diasemi.com;
-Received-SPF: SoftFail (protection.outlook.com: domain of transitioning
- diasemi.com discourages use of 193.240.239.45 as permitted sender)
-Received: from mailrelay1.diasemi.com (193.240.239.45) by
- HE1EUR02FT031.mail.protection.outlook.com (10.152.10.141) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.3131.20 via Frontend Transport; Thu, 25 Jun 2020 10:28:28 +0000
-Received: from krsrvapps-03.diasemi.com (10.95.17.51) by
- NB-EX-CASHUB01.diasemi.com (10.1.16.140) with Microsoft SMTP Server id
- 14.3.468.0; Thu, 25 Jun 2020 12:28:27 +0200
-Received: by krsrvapps-03.diasemi.com (Postfix, from userid 22266)      id
- A5E2913F671; Thu, 25 Jun 2020 19:28:25 +0900 (KST)
-Message-ID: <cover.1593017969.git.Roy.Im@diasemi.com>
-From:   Roy Im <roy.im.opensource@diasemi.com>
-Date:   Thu, 25 Jun 2020 01:59:29 +0900
-Subject: [PATCH v14 0/3]  da7280: haptic driver submission
-To:     "David S. Miller" <davem@davemloft.net>,
-        Uwe Kleine-Koenig <u.kleine-koenig@pengutronix.de>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-CC:     Support Opensource <support.opensource@diasemi.com>,
-        <devicetree@vger.kernel.org>, <linux-input@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
+        id S2403795AbgFYKAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 06:00:43 -0400
+Received: from goliath.siemens.de ([192.35.17.28]:35223 "EHLO
+        goliath.siemens.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390356AbgFYKAn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 06:00:43 -0400
+Received: from mail2.sbs.de (mail2.sbs.de [192.129.41.66])
+        by goliath.siemens.de (8.15.2/8.15.2) with ESMTPS id 05PA0Jeu009001
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Jun 2020 12:00:20 +0200
+Received: from [167.87.244.238] ([167.87.244.238])
+        by mail2.sbs.de (8.15.2/8.15.2) with ESMTP id 05PA0IvT000636;
+        Thu, 25 Jun 2020 12:00:18 +0200
+Subject: Re: [PATCH 2/2] watchdog: rti: tweak min_hw_heartbeat_ms to match
+ initial allowed window
+To:     Tero Kristo <t-kristo@ti.com>, wim@linux-watchdog.org,
+        linux@roeck-us.net, linux-watchdog@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20200624114534.1362-1-t-kristo@ti.com>
+ <20200624114534.1362-3-t-kristo@ti.com>
+ <289c6104-a885-d3c1-c670-a081ebaaf782@siemens.com>
+ <b3849bea-2a4d-079e-e9df-8a1d6c13c0c7@ti.com>
+From:   Jan Kiszka <jan.kiszka@siemens.com>
+Message-ID: <2cf3df87-5f0b-f8ff-a977-21625badb2c5@siemens.com>
+Date:   Thu, 25 Jun 2020 12:00:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-Forefront-Antispam-Report: CIP:193.240.239.45;CTRY:GB;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mailrelay1.diasemi.com;PTR:InfoDomainNonexistent;CAT:NONE;SFTY:;SFS:(4636009)(136003)(39850400004)(346002)(396003)(376002)(46966005)(316002)(82740400003)(81166007)(110136005)(4744005)(36756003)(83380400001)(7416002)(33310700002)(36906005)(86362001)(356005)(82310400002)(2906002)(5660300002)(70206006)(26005)(186003)(70586007)(8676002)(426003)(478600001)(8936002)(42186006)(6266002)(54906003)(336012)(47076004)(2616005)(4326008)(921003);DIR:OUT;SFP:1101;
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7c82ce1d-bfde-464c-3938-08d818f28042
-X-MS-TrafficTypeDiagnostic: DB8PR10MB3193:
-X-Microsoft-Antispam-PRVS: <DB8PR10MB3193BDBE40FEE9C00E954207A2920@DB8PR10MB3193.EURPRD10.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-Forefront-PRVS: 0445A82F82
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Gbe8+Tj2Cl3bYCNYXbHnIa5XHiTNGVz0PfjlXpGOz1KaHZjzM9SPR2asouzDIVK/NPh0Olt/+J2ZaFVtdpxSe5BuwqArURFHJcC2Uu6DWWylDz9AYTw1iU/8+fPWqGflIW5BxL1kyIb+89c0rp1fgXCrvroPoTPDEiWDD465NOIllYECVg7NIFyLGUFMnbS25jaeRorwwtHf9pC0XvCmqQoPL6QSujB7PMhqtBPc+kz5ODYSDdjqJFKVlKd1YfY+jC3bl7rJlpnQD0x4XWgpmA33X7sOc8+BwHvdZhN+oIFjLnX+r2DU/lzuagRpUIEmM72Le7udS6D2s3YYObDSUpgsY82H5GiLCs0Ho+2aDi2exPAdAb5gLhnbtH93A0V9kHg505G1VMTPuVdalnu3k3+jpjNx/u8OFARxKLuy8weuNXLjm0rcmyGn25ifdQ6V
-X-OriginatorOrg: diasemi.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Jun 2020 10:28:28.3172
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7c82ce1d-bfde-464c-3938-08d818f28042
-X-MS-Exchange-CrossTenant-Id: 511e3c0e-ee96-486e-a2ec-e272ffa37b7c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=511e3c0e-ee96-486e-a2ec-e272ffa37b7c;Ip=[193.240.239.45];Helo=[mailrelay1.diasemi.com]
-X-MS-Exchange-CrossTenant-AuthSource: HE1EUR02FT031.eop-EUR02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR10MB3193
+In-Reply-To: <b3849bea-2a4d-079e-e9df-8a1d6c13c0c7@ti.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for the Dialog DA7280 Haptic driver IC.
+On 25.06.20 10:32, Tero Kristo wrote:
+> On 24/06/2020 18:24, Jan Kiszka wrote:
+>> On 24.06.20 13:45, Tero Kristo wrote:
+>>> If the RTI watchdog has been started by someone (like bootloader) when
+>>> the driver probes, we must adjust the initial ping timeout to match the
+>>> currently running watchdog window to avoid generating watchdog reset.
+>>>
+>>> Signed-off-by: Tero Kristo <t-kristo@ti.com>
+>>> ---
+>>>   drivers/watchdog/rti_wdt.c | 25 +++++++++++++++++++++++++
+>>>   1 file changed, 25 insertions(+)
+>>>
+>>> diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
+>>> index d456dd72d99a..02ea2b2435f5 100644
+>>> --- a/drivers/watchdog/rti_wdt.c
+>>> +++ b/drivers/watchdog/rti_wdt.c
+>>> @@ -55,11 +55,13 @@ static int heartbeat;
+>>>    * @base - base io address of WD device
+>>>    * @freq - source clock frequency of WDT
+>>>    * @wdd  - hold watchdog device as is in WDT core
+>>> + * @min_hw_heartbeat_save - save of the min hw heartbeat value
+>>>    */
+>>>   struct rti_wdt_device {
+>>>       void __iomem        *base;
+>>>       unsigned long        freq;
+>>>       struct watchdog_device    wdd;
+>>> +    unsigned int        min_hw_heartbeat_save;
+>>>   };
+>>>   static int rti_wdt_start(struct watchdog_device *wdd)
+>>> @@ -107,6 +109,11 @@ static int rti_wdt_ping(struct watchdog_device 
+>>> *wdd)
+>>>       /* put watchdog in active state */
+>>>       writel_relaxed(WDKEY_SEQ1, wdt->base + RTIWDKEY);
+>>> +    if (wdt->min_hw_heartbeat_save) {
+>>> +        wdd->min_hw_heartbeat_ms = wdt->min_hw_heartbeat_save;
+>>> +        wdt->min_hw_heartbeat_save = 0;
+>>> +    }
+>>> +
+>>>       return 0;
+>>>   }
+>>> @@ -201,6 +208,24 @@ static int rti_wdt_probe(struct platform_device 
+>>> *pdev)
+>>>           goto err_iomap;
+>>>       }
+>>> +    if (readl(wdt->base + RTIDWDCTRL) == WDENABLE_KEY) {
+>>> +        u32 time_left;
+>>> +        u32 heartbeat;
+>>> +
+>>> +        set_bit(WDOG_HW_RUNNING, &wdd->status);
+>>> +        time_left = rti_wdt_get_timeleft(wdd);
+>>> +        heartbeat = readl(wdt->base + RTIDWDPRLD);
+>>> +        heartbeat <<= WDT_PRELOAD_SHIFT;
+>>> +        heartbeat /= wdt->freq;
+>>> +        if (time_left < heartbeat / 2)
+>>> +            wdd->min_hw_heartbeat_ms = 0;
+>>> +        else
+>>> +            wdd->min_hw_heartbeat_ms =
+>>> +                (time_left - heartbeat / 2 + 1) * 1000;
+>>> +
+>>> +        wdt->min_hw_heartbeat_save = 11 * heartbeat * 1000 / 20;
+>>> +    }
+>>> +
+>>>       ret = watchdog_register_device(wdd);
+>>>       if (ret) {
+>>>           dev_err(dev, "cannot register watchdog device\n");
+>>>
+>>
+>> This assumes that the bootloader also programmed a 50% window, right? 
+>> The pending U-Boot patch will do that, but what if that may chance or 
+>> someone uses a different setup?
+> 
+> Yes, we assume 50%. I think based on the hw design, 50% is the only sane 
+> value to be used, otherwise you just shrink the open window too much and 
+> for no apparent reason.
 
-In this patch set the following is provided:
+Fine with me, but should we check that assumption when adopting the 
+watchdog?
 
-[PATCH v14 1/3] MAINTAINERS file update for DA7280
-[PATCH v14 2/3] DA7280 DT Binding
-[PATCH v14 3/3] DA7280 Driver
-
-This patch applies against linux-next and v5.8-rc2
-
-Thank you,
-Roy Im, Dialog Semiconductor Ltd.
-
-Roy Im (3):
-  MAINTAINERS: da7280 updates to the Dialog Semiconductor search terms
-  dt-bindings: input: Add document bindings for DA7280
-  Input: new da7280 haptic driver
-
- .../devicetree/bindings/input/dlg,da7280.txt       |  109 ++
- MAINTAINERS                                        |    2 +
- drivers/input/misc/Kconfig                         |   13 +
- drivers/input/misc/Makefile                        |    1 +
- drivers/input/misc/da7280.c                        | 1880 ++++++++++++++++++++
- 5 files changed, 2005 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/input/dlg,da7280.txt
- create mode 100644 drivers/input/misc/da7280.c
+Jan
 
 -- 
-end-of-patch for PATCH v14
-
+Siemens AG, Corporate Technology, CT RDA IOT SES-DE
+Corporate Competence Center Embedded Linux
