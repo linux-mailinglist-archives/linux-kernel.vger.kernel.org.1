@@ -2,161 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192C720A40B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EC0E20A412
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405062AbgFYRa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 13:30:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50710 "EHLO mail.kernel.org"
+        id S2406820AbgFYRba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 13:31:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51044 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404698AbgFYRa4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 13:30:56 -0400
-Received: from localhost (mobile-166-170-222-206.mycingular.net [166.170.222.206])
+        id S2404698AbgFYRb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 13:31:29 -0400
+Received: from localhost (c-67-164-102-47.hsd1.ca.comcast.net [67.164.102.47])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D2D0320789;
-        Thu, 25 Jun 2020 17:30:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0FEDB20789;
+        Thu, 25 Jun 2020 17:31:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1593106255;
-        bh=FwCQ696O7Br9AROnL6MUzsJIYGTIRPIdruuU47avOfY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=VcR6UPQLooXvts5AMZD1x7Qy6i3ZI74p0iNvVpd12tmDSmSQ7d1+khqitauC42+as
-         fL/B9TaT3Ea4Mzg8BtsqeXk86xor0VZGaXUdnT1M/6KjNXZ5e/c1PRIPWmqMbLR+VY
-         Ls07poO3E+Yr065NFY9vxfsjXA1nyn/pwH3UN8Xg=
-Date:   Thu, 25 Jun 2020 12:30:53 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        "David E. Box" <david.e.box@linux.intel.com>, shyjumon.n@intel.com,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@fb.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        linux-nvme <linux-nvme@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH V2 1/2] PCI: Add ACPI StorageD3Enable _DSD support
-Message-ID: <20200625173053.GA2694537@bjorn-Precision-5520>
+        s=default; t=1593106288;
+        bh=WhqBDPdOBNk4Nn0nlm/U/FBDprV3efhSWtdS+mTEZhI=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=KNaQ/3jj9TpuSnPt+fOmTGLlW7zN97Hc5nMeEhGWFn3RY4Vu5yOi/rL1784qarDyK
+         p9hWwTE8sLerEFX9rM+jYpsgztP56cS6phku8LqLBrkd8JcN8KNPpoVQD+Ru6HllCU
+         KTeOrcYXJqrOnQ00srcPg/hv/0Q/e8ghv8knwqvk=
+Date:   Thu, 25 Jun 2020 10:31:27 -0700 (PDT)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@sstabellini-ThinkPad-T480s
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>, boris.ostrovsky@oracle.com,
+        jgross@suse.com, konrad.wilk@oracle.com, jasowang@redhat.com,
+        x86@kernel.org, xen-devel@lists.xenproject.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        iommu@lists.linux-foundation.org,
+        virtualization@lists.linux-foundation.org, linux-imx@nxp.com
+Subject: Re: [PATCH] xen: introduce xen_vring_use_dma
+In-Reply-To: <20200624181026-mutt-send-email-mst@kernel.org>
+Message-ID: <alpine.DEB.2.21.2006251014230.8121@sstabellini-ThinkPad-T480s>
+References: <20200624091732.23944-1-peng.fan@nxp.com> <20200624050355-mutt-send-email-mst@kernel.org> <alpine.DEB.2.21.2006241047010.8121@sstabellini-ThinkPad-T480s> <20200624163940-mutt-send-email-mst@kernel.org> <alpine.DEB.2.21.2006241351430.8121@sstabellini-ThinkPad-T480s>
+ <20200624181026-mutt-send-email-mst@kernel.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0i8dCN=HMFk_+ZX-Wr73P6kdQBtV0i3FtrZrO9cegXsvQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 01:30:53PM +0200, Rafael J. Wysocki wrote:
-> On Wed, Jun 24, 2020 at 11:15 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
-> > On Fri, Jun 12, 2020 at 01:48:19PM -0700, David E. Box wrote:
-> > > StorageD3Enable is a boolean property that indicates that the
-> > > platform wants to use D3 for PCIe storage drives during
-> > > suspend-to-idle. It is a BIOS work around that is currently in
-> > > use on shipping systems like some Intel Comet Lake platforms. It
-> > > is meant to change default driver policy for suspend that may
-> > > cause higher power consumption.
+On Wed, 24 Jun 2020, Michael S. Tsirkin wrote:
+> On Wed, Jun 24, 2020 at 02:53:54PM -0700, Stefano Stabellini wrote:
+> > On Wed, 24 Jun 2020, Michael S. Tsirkin wrote:
+> > > On Wed, Jun 24, 2020 at 10:59:47AM -0700, Stefano Stabellini wrote:
+> > > > On Wed, 24 Jun 2020, Michael S. Tsirkin wrote:
+> > > > > On Wed, Jun 24, 2020 at 05:17:32PM +0800, Peng Fan wrote:
+> > > > > > Export xen_swiotlb for all platforms using xen swiotlb
+> > > > > > 
+> > > > > > Use xen_swiotlb to determine when vring should use dma APIs to map the
+> > > > > > ring: when xen_swiotlb is enabled the dma API is required. When it is
+> > > > > > disabled, it is not required.
+> > > > > > 
+> > > > > > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > > > > 
+> > > > > Isn't there some way to use VIRTIO_F_IOMMU_PLATFORM for this?
+> > > > > Xen was there first, but everyone else is using that now.
+> > > > 
+> > > > Unfortunately it is complicated and it is not related to
+> > > > VIRTIO_F_IOMMU_PLATFORM :-(
+> > > > 
+> > > > 
+> > > > The Xen subsystem in Linux uses dma_ops via swiotlb_xen to translate
+> > > > foreign mappings (memory coming from other VMs) to physical addresses.
+> > > > On x86, it also uses dma_ops to translate Linux's idea of a physical
+> > > > address into a real physical address (this is unneeded on ARM.)
+> > > > 
+> > > > 
+> > > > So regardless of VIRTIO_F_IOMMU_PLATFORM, dma_ops should be used on Xen/x86
+> > > > always and on Xen/ARM if Linux is Dom0 (because it has foreign
+> > > > mappings.) That is why we have the if (xen_domain) return true; in
+> > > > vring_use_dma_api.
+> > > 
+> > > VIRTIO_F_IOMMU_PLATFORM makes guest always use DMA ops.
+> > > 
+> > > Xen hack predates VIRTIO_F_IOMMU_PLATFORM so it *also*
+> > > forces DMA ops even if VIRTIO_F_IOMMU_PLATFORM is clear.
+> > >
+> > > Unfortunately as a result Xen never got around to
+> > > properly setting VIRTIO_F_IOMMU_PLATFORM.
+> > 
+> > I don't think VIRTIO_F_IOMMU_PLATFORM would be correct for this because
+> > the usage of swiotlb_xen is not a property of virtio,
+> 
+> 
+> Basically any device without VIRTIO_F_ACCESS_PLATFORM
+> (that is it's name in latest virtio spec, VIRTIO_F_IOMMU_PLATFORM is
+> what linux calls it) is declared as "special, don't follow normal rules
+> for access".
+> 
+> So yes swiotlb_xen is not a property of virtio, but what *is* a property
+> of virtio is that it's not special, just a regular device from DMA POV.
 
-> > > +/**
-> > > + * pci_acpi_storage_d3 - whether root port requests D3 for idle suspend
-> > > + * @pdev: PCI device to check
-> > > + *
-> > > + * Returns true if the ACPI companion device contains the "StorageD3Enable"
-> > > + * _DSD property and the value is 1. This indicates that the root port is
-> > > + * used by a storage device and the platform is requesting D3 for the
-> > > + * device during suspend to idle in order to support platform pm.
-> > > + */
-> > > +bool pci_acpi_storage_d3(struct pci_dev *dev)
-> > > +{
-> > > +     const struct fwnode_handle *fwnode;
-> > > +     struct acpi_device *adev;
-> > > +     struct pci_dev *root;
-> > > +     acpi_handle handle;
-> > > +     acpi_status status;
-> > > +     bool ret = false;
-> > > +     u8 val;
-> > > +
-> > > +     /*
-> > > +      * Look for _DSD property specifying that the storage device on
-> > > +      * the port must use D3 to support deep platform power savings during
-> > > +      * suspend-to-idle
-> > > +      */
-> > > +     root = pci_find_pcie_root_port(dev);
-> >
-> > I think this would need to be updated to apply to v5.8-rc1 after
-> > 6ae72bfa656e ("PCI: Unify pcie_find_root_port() and
-> > pci_find_pcie_root_port()").
-> >
-> > https://git.kernel.org/linus/6ae72bfa656e
-> >
-> > > +     if (!root)
-> > > +             return false;
-> > > +
-> > > +     adev = ACPI_COMPANION(&root->dev);
-> > > +     if (!adev) {
-> > > +             /*
-> > > +              * It is possible that the ACPI companion is not yet bound
-> > > +              * for the root port so look it up manually here.
-> > > +              */
-> > > +             if (!adev && !pci_dev_is_added(root))
-> > > +                     adev = acpi_pci_find_companion(&root->dev);
-> >
-> > I see that you copied this "ACPI companion not yet bound" thing from
-> > acpi_pci_bridge_d3().  But it's ugly.
-> >
-> > Isn't there a way we can bind the ACPI companion during normal PCI
-> > enumeration so we don't need this exception case?
-> >
-> > I really do not like the idea of putting this code in the PCI core
-> > because AFAICT the PCI core can do nothing with this information.
-> >
-> > If we could make sure during enumeration that the root port always has
-> > an ACPI companion, this code could go to the nvme driver itself.  And
-> > we could also clean up the ugliness in acpi_pci_bridge_d3().
-> >
-> > Rafael, is that possible?  I don't really know how the companion
-> > device gets set.
-> 
-> That's a bit convoluted.
-> 
-> device_add() calls device_platform_notify(), before calling bus_add_device().
-> 
-> device_platform_notify() calls acpi_platform_notify() which invokes
-> acpi_device_notify() that looks for the companion via
-> type->find_companion() which for PCI points to
-> acpi_pci_find_companion().  If found, the companion is attached to the
-> dev structure as a physical_node, via acpi_bind_one().
-> 
-> So by the time bus_probe_device() runs, the companion should be there
-> already - if it is there at all.
-> 
-> The parent ACPI companion should be present when the child is probing
-> too, as per the above.
-> 
-> > Maybe this is could be done somewhere around pci_device_add()?
-> 
-> It is done in there.
-> 
-> It is not necessary to call acpi_pci_find_companion() from
-> pci_acpi_storage_d3() as long as that function is required to be
-> called by the target device's driver probe or later.
+I am trying to understand what you meant but I think I am missing
+something.
 
-OK, great.  IIUC, that means this function doesn't need to be in
-drivers/pci and it could be moved to the NVMe code.
+Are you saying that modern virtio should always have
+VIRTIO_F_ACCESS_PLATFORM, hence use normal dma_ops as any other devices?
 
-> Ths acpi_pci_bridge_d3() case is different, though, AFAICS, because it
-> is invoked in the pci_pm_init() path, via pci_bridge_d3_possible(),
-> and that gets called from pci_device_add() *before* calling
-> device_add().
+If that is the case, how is it possible that virtio breaks on ARM using
+the default dma_ops? The breakage is not Xen related (except that Xen
+turns dma_ops on). The original message from Peng was:
+
+  vring_map_one_sg -> vring_use_dma_api
+                   -> dma_map_page
+  		       -> __swiotlb_map_page
+  		                ->swiotlb_map_page
+  				->__dma_map_area(phys_to_virt(dma_to_phys(dev, dev_addr)), size, dir);
+  However we are using per device dma area for rpmsg, phys_to_virt
+  could not return a correct virtual address for virtual address in
+  vmalloc area. Then kernel panic.
+
+I must be missing something. Maybe it is because it has to do with RPMesg?
+ 
+
+> > > > You might have noticed that I missed one possible case above: Xen/ARM
+> > > > DomU :-)
+> > > > 
+> > > > Xen/ARM domUs don't need swiotlb_xen, it is not even initialized. So if
+> > > > (xen_domain) return true; would give the wrong answer in that case.
+> > > > Linux would end up calling the "normal" dma_ops, not swiotlb-xen, and
+> > > > the "normal" dma_ops fail.
+> > > > 
+> > > > 
+> > > > The solution I suggested was to make the check in vring_use_dma_api more
+> > > > flexible by returning true if the swiotlb_xen is supposed to be used,
+> > > > not in general for all Xen domains, because that is what the check was
+> > > > really meant to do.
+> > > 
+> > > Why not fix DMA ops so they DTRT (nop) on Xen/ARM DomU? What is wrong with that?
+> > 
+> > swiotlb-xen is not used on Xen/ARM DomU, the default dma_ops are the
+> > ones that are used. So you are saying, why don't we fix the default
+> > dma_ops to work with virtio?
+> > 
+> > It is bad that the default dma_ops crash with virtio, so yes I think it
+> > would be good to fix that. However, even if we fixed that, the if
+> > (xen_domain()) check in vring_use_dma_api is still a problem.
 > 
-> Mika, is that why acpi_pci_find_companion() gets called from
-> acpi_pci_bridge_d3()?
+> Why is it a problem? It just makes virtio use DMA API.
+> If that in turn works, problem solved.
 
-Is pdev->bridge_d3 really needed before pci_device_add()?  It would be
-really nice if there were a way to get rid of that manual lookup of
-the companion device in acpi_pci_bridge_d3().
+You are correct in the sense that it would work. However I do think it
+is wrong for vring_use_dma_api to enable dma_ops/swiotlb-xen for Xen/ARM
+DomUs that don't need it. There are many different types of Xen guests,
+Xen x86 is drastically different from Xen ARM, it seems wrong to treat
+them the same way.
 
-Bjorn
+
+
+Anyway, re-reading the last messages of the original thread [1], it
+looks like Peng had a clear idea on how to fix the general issue. Peng,
+what happened with that?
+
+
+[1] https://lore.kernel.org/patchwork/patch/1033801/#1222404
