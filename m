@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45FAC20A937
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 01:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C65420A92F
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 01:34:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726086AbgFYXfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 19:35:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
+        id S1726008AbgFYXeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 19:34:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725920AbgFYXee (ORCPT
+        with ESMTP id S1725921AbgFYXeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 19:34:34 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59493C08C5DE;
-        Thu, 25 Jun 2020 16:34:34 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id z17so5550828edr.9;
-        Thu, 25 Jun 2020 16:34:34 -0700 (PDT)
+        Thu, 25 Jun 2020 19:34:36 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F22C08C5C1;
+        Thu, 25 Jun 2020 16:34:35 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id i14so7600808ejr.9;
+        Thu, 25 Jun 2020 16:34:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vKHBQB3/jo26y5/T/I0yc88OTlZYCgKjy3NBHl/V9tw=;
-        b=LsEcp4lhXTEnzdETIobnSRMHsm24mDS3VIMOZMC/8uJnxwIMITbOE2XdyblGvp8+gE
-         +HovlwNh1FCKi1Oanzk4/WwJsbI3FjLTTkSIE5+y5KDA0MmG8xh8aoHMdb52VO5bCnUy
-         nC9XcuxSq85AbHpzx9rYtcRqhnsKCHwLrKgyH5bnGjhZcR753Xi9KyoJZtmp0WOQ6YkB
-         /LMvg3ZsnPCqHuEPUINJdpZuqSTyirXGbfX9rH0vMB8HgpWVXnVXxMnuhyLyVNBats1U
-         aoLUX6Y9vmlflNwYFooN+CfxcYcFVOpubrCDPdBkpHj9uMO36rVaeN8HC28Jb7brwkOS
-         6axw==
+        bh=FxVJdBkD56m2b+9x5uGOay3SmZuWA0sM3yEAtSY5QyU=;
+        b=RljKU9urE8CLGCoVsFedilwcAgV1lqJa0aRSIlcc6sEm22hZyczA/k28i2X6NKba+1
+         ZwsZ1cZkHa/hoiZx0sMfyv7GXAXy0wq8iRBXsT294xjM7gptTYSJFSjxZgtBZ6VmQuca
+         C4b7lI+hYkNXmgfs126ohMzIZONgS016MKwgMCWazeLoYLXzFVv1te7C4bqlPV9ckaPS
+         SMnFwbZpPQnk/7sBEBZ22bHQJtkEtagW/5I64Ur7jj1v8jJDyRCQwk97eQ50Hw5m+Ypq
+         GMwb92Kz4uTcEPUe8cXQAKtGsDMxmf9o3K9fnvFHltLSk10osRrgD/cEVIOyoYVc/C+I
+         imbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vKHBQB3/jo26y5/T/I0yc88OTlZYCgKjy3NBHl/V9tw=;
-        b=FXS4Rwzv/7LWN/YMyZU2ZUVAOmsfKwE8fqZomrxg1brwFIlo/VueZdXySmWjDA6Glc
-         G3kpB9R7B/S8Vp7OdBTuOP3jvVhCCZqDAp67LoUa+1M6fnsBpzVkxpdO1nQnf3iIoRfj
-         L2VI/iVwNGzPBNnZYlb8c+nTHLTwuWumwJrD6pX8BT+3NgVssVnwxEsrzTmIbdKyggBB
-         mFUe3YE11YhxYkaYwHmfiU4AucsCjFw6NeSZ5qTxjBAeyQBSXikcmM0uNvH6oyOHMODs
-         wbYu0lNS7VFdFUshTm98vzWzUPvHCY+qpZVTFVn+fSBOsSHhNUfnXlpUADmUywCB2LQ1
-         DgDA==
-X-Gm-Message-State: AOAM5328KQcWjrhdpjDBHV+1YB+XqtudIngOEXl6OFTrZQO+FiSmfZtx
-        pumJ4/7kfa22/quWZmHP3Qv/EAvzO6o=
-X-Google-Smtp-Source: ABdhPJzQ4NhltLSCtwQR4pKlfKRWu2vGwjE43Utf+zo4JjW7Zi5dPste6QsnY5EWhVYnwe3OyTbCBQ==
-X-Received: by 2002:a05:6402:1c8b:: with SMTP id cy11mr664932edb.122.1593128073102;
-        Thu, 25 Jun 2020 16:34:33 -0700 (PDT)
+        bh=FxVJdBkD56m2b+9x5uGOay3SmZuWA0sM3yEAtSY5QyU=;
+        b=r3yS3MUHg92hvUwu11DH/ZitlxcMu/Mece4W/KFVtcZ9wdBrziK8J8spdMrHpm11/3
+         S6JuKPAsy+wnLZUy1U5ctTTRcLuuSbPsRaLAHk0MJwqbQGgc68fLZK5tQ2+N3bz5sXwR
+         gOXmiKxzgPrwdlY5xRCp0A1q+a0ClN2Wq5mEVqkFyP05Z5Bwjy4eUbD8EaBTCwKe+qO1
+         ga7U3P1Q+itpEhylgjNR32lzVCVpuCi44V2YW8YSyN/vUpw7NK/sykkqK0+HNYqiNXdl
+         qEifdk9/ElVs9JheaEbikzIcL3/GaN3xJDsjaztEXuAzcibcoPAZ2TQ5vzW0Ee/Y6TWV
+         ARKg==
+X-Gm-Message-State: AOAM533F+/LLVTOh6VNS2mCoILTWxrysdLuf+ct3GsWEzXFpoK/4caPM
+        7K8QHCxMGrb3zXTSjaiQ+iA=
+X-Google-Smtp-Source: ABdhPJw6hjRSiGRjHiiQSf58ntxNJpG22CA6Gy9Xjp3vuHUCeXGKZvspStJb8KYnDNMijQwjPlQroA==
+X-Received: by 2002:a17:906:e299:: with SMTP id gg25mr195642ejb.160.1593128074386;
+        Thu, 25 Jun 2020 16:34:34 -0700 (PDT)
 Received: from localhost.localdomain ([188.24.137.55])
-        by smtp.gmail.com with ESMTPSA id u2sm13699184edq.29.2020.06.25.16.34.32
+        by smtp.gmail.com with ESMTPSA id u2sm13699184edq.29.2020.06.25.16.34.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 16:34:32 -0700 (PDT)
+        Thu, 25 Jun 2020 16:34:33 -0700 (PDT)
 From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
-Subject: [PATCH 07/10] arm: dts: owl-s500: Add I2C nodes
-Date:   Fri, 26 Jun 2020 02:34:19 +0300
-Message-Id: <50b4780dfcef8d5e2bf0f4f32f6ccf36c9acc782.1593124368.git.cristian.ciocaltea@gmail.com>
+Subject: [PATCH 08/10] arm: dts: owl-s500-roseapplepi: Use UART clock from CMU
+Date:   Fri, 26 Jun 2020 02:34:20 +0300
+Message-Id: <1a98f4f2a8cc5d0277b93dab00b2249cad22f507.1593124368.git.cristian.ciocaltea@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1593124368.git.cristian.ciocaltea@gmail.com>
 References: <cover.1593124368.git.cristian.ciocaltea@gmail.com>
@@ -67,69 +67,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add I2C controller nodes for Actions Semi S500 SoC.
-
-Note the Actions Semi Owl SoC's I2C driver seems to be fully compatible
-with the Actions Semi S500 SoC, even though this is not explicitly
-mentioned in the source code. Hence, for the moment, enable the I2C
-controller node via the "actions,s900-i2c" compatible string.
+Remove the UART fixed clock for RoseapplePi SBC and switch to using
+the clock provided by CMU.
 
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 ---
- arch/arm/boot/dts/owl-s500.dtsi | 40 +++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ arch/arm/boot/dts/owl-s500-roseapplepi.dts | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/arch/arm/boot/dts/owl-s500.dtsi b/arch/arm/boot/dts/owl-s500.dtsi
-index 778775ac42f7..15c11af530ea 100644
---- a/arch/arm/boot/dts/owl-s500.dtsi
-+++ b/arch/arm/boot/dts/owl-s500.dtsi
-@@ -193,6 +193,46 @@ cmu: clock-controller@b0160000 {
- 			#reset-cells = <1>;
- 		};
+diff --git a/arch/arm/boot/dts/owl-s500-roseapplepi.dts b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+index a2087e617cb2..800edf5d2d12 100644
+--- a/arch/arm/boot/dts/owl-s500-roseapplepi.dts
++++ b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
+@@ -25,12 +25,6 @@ memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x80000000>; /* 2GB */
+ 	};
+-
+-	uart2_clk: uart2-clk {
+-		compatible = "fixed-clock";
+-		clock-frequency = <921600>;
+-		#clock-cells = <0>;
+-	};
+ };
  
-+		i2c0: i2c@b0170000 {
-+			compatible = "actions,s900-i2c";
-+			reg = <0xb0170000 0x4000>;
-+			clocks = <&cmu CLK_I2C0>;
-+			interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		i2c1: i2c@b0174000 {
-+			compatible = "actions,s900-i2c";
-+			reg = <0xb0174000 0x4000>;
-+			clocks = <&cmu CLK_I2C1>;
-+			interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		i2c2: i2c@b0178000 {
-+			compatible = "actions,s900-i2c";
-+			reg = <0xb0178000 0x4000>;
-+			clocks = <&cmu CLK_I2C2>;
-+			interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
-+		i2c3: i2c@b017c000 {
-+			compatible = "actions,s900-i2c";
-+			reg = <0xb017c000 0x4000>;
-+			clocks = <&cmu CLK_I2C3>;
-+			interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			status = "disabled";
-+		};
-+
- 		timer: timer@b0168000 {
- 			compatible = "actions,s500-timer";
- 			reg = <0xb0168000 0x8000>;
+ &twd_timer {
+@@ -43,5 +37,4 @@ &timer {
+ 
+ &uart2 {
+ 	status = "okay";
+-	clocks = <&uart2_clk>;
+ };
 -- 
 2.27.0
 
