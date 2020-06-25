@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33234209B6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBFA3209B71
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:40:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390762AbgFYIjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 04:39:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49142 "EHLO
+        id S2390781AbgFYIkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 04:40:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389830AbgFYIjT (ORCPT
+        with ESMTP id S1728725AbgFYIkp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 04:39:19 -0400
+        Thu, 25 Jun 2020 04:40:45 -0400
 Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA07C061573;
-        Thu, 25 Jun 2020 01:39:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D44C2C061573;
+        Thu, 25 Jun 2020 01:40:44 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: eballetbo)
-        with ESMTPSA id 3846A2A087F
-Subject: Re: [PATCH 4/7] arm64: dts: mt8183: Fix unit name warnings
+        with ESMTPSA id E8EE32A0267
+Subject: Re: [PATCH 7/7] arm64: dts: mt8183: Add krane-sku176 board
 To:     Matthias Brugger <matthias.bgg@gmail.com>,
         linux-kernel@vger.kernel.org
 Cc:     Collabora Kernel ML <kernel@collabora.com>, erwanaliasr1@gmail.com,
         drinkcat@chromium.org, hsinyi@chromium.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
+        Ben Ho <Ben.Ho@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org
 References: <20200619102757.1358675-1-enric.balletbo@collabora.com>
- <20200619102757.1358675-5-enric.balletbo@collabora.com>
- <ec4fb6c1-37a3-08b2-ae57-3e35868383ef@gmail.com>
+ <20200619102757.1358675-8-enric.balletbo@collabora.com>
+ <fe814ab3-c237-da9c-d391-cbd0cdbe29bf@gmail.com>
 From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <c519de37-1377-9860-d831-0781c259cc0c@collabora.com>
-Date:   Thu, 25 Jun 2020 10:39:13 +0200
+Message-ID: <3700a9b7-195b-f8d6-de03-fc5a77beffee@collabora.com>
+Date:   Thu, 25 Jun 2020 10:40:40 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.9.0
 MIME-Version: 1.0
-In-Reply-To: <ec4fb6c1-37a3-08b2-ae57-3e35868383ef@gmail.com>
+In-Reply-To: <fe814ab3-c237-da9c-d391-cbd0cdbe29bf@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -46,60 +46,90 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Matthias,
 
-Thank you for you review.
+Thank you for your review.
 
-On 22/6/20 12:14, Matthias Brugger wrote:
+On 22/6/20 12:33, Matthias Brugger wrote:
 > 
 > 
 > On 19/06/2020 12:27, Enric Balletbo i Serra wrote:
->> Remove the unit address from the DT nodes that doesn't have a reg
->> property. This fixes the following unit name warnings:
+>> Also known as the Lenovo IdeaPad Duet Chromebook.
 >>
->>   Warning (unit_address_vs_reg): /cpus/idle-states/cluster-sleep@0: node has a unit name, but no reg or ranges property
->>   Warning (unit_address_vs_reg): /cpus/idle-states/cluster-sleep@1: node has a unit name, but no reg or ranges property
+>> There are different krane boards with shared resources, hence a
+>> mt8183-kukui-krane.dtsi was created for easily introduce future new
+>> boards. The same happens with the baseboard codenamed kukui where
+>> different variants, apart from kukui variant can take advantage of the
+>> shared resources.
 >>
+>> Signed-off-by: Ben Ho <Ben.Ho@mediatek.com>
+>> [originally created by Ben Ho but adapted and ported to mainline]
 >> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
 >> ---
 >>
->>  arch/arm64/boot/dts/mediatek/mt8183.dtsi | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>  arch/arm64/boot/dts/mediatek/Makefile         |   1 +
+>>  .../mediatek/mt8183-kukui-krane-sku176.dts    |  18 +
+>>  .../boot/dts/mediatek/mt8183-kukui-krane.dtsi | 343 ++++++++
+>>  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 788 ++++++++++++++++++
+>>  arch/arm64/boot/dts/mediatek/mt8183.dtsi      |   1 +
+>>  5 files changed, 1151 insertions(+)
+>>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
+>>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
+>>  create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
 >>
->> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
->> index 00137ec61164d..e356076749148 100644
+> [...]
+>> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+>> new file mode 100644
+>> index 0000000000000..f0a070535b340
+>> --- /dev/null
+>> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> [...]
+>> +
+>> +	max98357a: codec0 {
+>> +		compatible = "maxim,max98357a";
+>> +		sdmode-gpios = <&pio 175 0>;
+>> +	};
+>> +
+>> +	btsco: codec1 {
+> 
+> bt_sco_codec:
+> is more clear, I think.
+> 
+
+Ok. I'll change that in next version.
+
+>> +		compatible = "linux,bt-sco";
+>> +	};
+>> +
+>> +	wifi_pwrseq: wifi-pwrseq {
+>> +		compatible = "mmc-pwrseq-simple";
+>> +		pinctrl-names = "default";
+>> +		pinctrl-0 = <&wifi_pins_pwrseq>;
+>> +
+>> +		/* Toggle WIFI_ENABLE to reset the chip. */
+>> +		reset-gpios = <&pio 119 1>;
+>> +	};
+>> +
+> [...]> diff --git a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+> b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
+>> index a1576f1b5a447..689bce13e0165 100644
 >> --- a/arch/arm64/boot/dts/mediatek/mt8183.dtsi
 >> +++ b/arch/arm64/boot/dts/mediatek/mt8183.dtsi
->> @@ -168,7 +168,7 @@ CPU_SLEEP: cpu-sleep {
->>  				min-residency-us = <800>;
->>  			};
->>  
->> -			CLUSTER_SLEEP0: cluster-sleep@0 {
->> +			CLUSTER_SLEEP0: cluster-sleep0 {
+>> @@ -719,6 +719,7 @@ u3phy: usb-phy@11f40000 {
+>>  			compatible = "mediatek,mt8183-tphy",
+>>  				     "mediatek,generic-tphy-v2";
+>>  			#address-cells = <1>;
+>> +			#phy-cells = <1>;
 > 
-> Should be:
-> cluster-sleep-0
+> Wrong patch?
 > 
 
-Ack, I'll change in next version
+Oh yes, this should go with the USB one. Thank you to catch this, I'll fix in
+next version.
 
->>  				compatible = "arm,idle-state";
->>  				local-timer-stop;
->>  				arm,psci-suspend-param = <0x01010001>;
->> @@ -176,7 +176,7 @@ CLUSTER_SLEEP0: cluster-sleep@0 {
->>  				exit-latency-us = <400>;
->>  				min-residency-us = <1000>;
->>  			};
->> -			CLUSTER_SLEEP1: cluster-sleep@1 {
->> +			CLUSTER_SLEEP1: cluster-sleep1 {
-> 
-> Same here.
-> 
-
-Ack.
-
-> Regards,
-> Matthias1
-> 
->>  				compatible = "arm,idle-state";
->>  				local-timer-stop;
->>  				arm,psci-suspend-param = <0x01010001>;
+>>  			#size-cells = <1>;
+>>  			ranges = <0 0 0x11f40000 0x1000>;
+>>  			status = "okay";
 >>
+> 
+> Regards,
+> Matthias
+> 
