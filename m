@@ -2,74 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70090209CF6
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 12:37:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 985E3209CF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 12:39:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404063AbgFYKhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 06:37:31 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:45810 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403816AbgFYKha (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 06:37:30 -0400
-Received: by mail-oi1-f194.google.com with SMTP id j11so1856859oiw.12;
-        Thu, 25 Jun 2020 03:37:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8P2ZtpVWAu+nAxfSwQK0wizQDnDAGxulBEcw16WR1X8=;
-        b=gz8pPk0+GiaN7j/BiZvU7cOf8dM8fxZzIp2G1UuZjTLaX3Wa2MFOZKwJSl6Ck64qkF
-         z8ifTXVQkOfhaRpT9UDcswQhy8fO5x6W+sIWBICnYx/BQMwkhMn7juSHmhP1/lPiu1OV
-         eAlMtHTZJWXjkfU1228kKhurn3JqlciExIvlgwIkAlYgWyKyls0BePSE5vDDrXgWvyb+
-         Qa0e8cBNEfEluBRCUhY0Nnjl/AyYGDRoqSRjYhlTVbLxwyJAHsqC8ZQhcx83uFm4eb8z
-         mIm+0Lz4bMcfOFrDFEVFRwtIZacmLFPgyXonUtj3RYz07/1/4raGYob+4XimvYX/0n28
-         HPfA==
-X-Gm-Message-State: AOAM530rqiLBgfVxj81tmvEMFjfKpQKhaKPZX51Fkpyb3NV4tG6TV3Zz
-        zNaCfcb2VsPY7TIlEaviQUWSBtlaLHbNWS1N/TZ+FYgT1ho=
-X-Google-Smtp-Source: ABdhPJxq9pfiahjneXji68p49YEXHsuatRRWYppp3D1TSooYy+hww3yQk1hM1qgA3lStonFHOV2SlGvu4OIJ7cMDzWw=
-X-Received: by 2002:a05:6808:99b:: with SMTP id a27mr1561206oic.68.1593081449629;
- Thu, 25 Jun 2020 03:37:29 -0700 (PDT)
+        id S2404021AbgFYKjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 06:39:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55892 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2403816AbgFYKjh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 06:39:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 161D6AD39;
+        Thu, 25 Jun 2020 10:39:35 +0000 (UTC)
+Date:   Thu, 25 Jun 2020 12:39:34 +0200 (CEST)
+From:   Miroslav Benes <mbenes@suse.cz>
+To:     Matt Helsley <mhelsley@vmware.com>
+cc:     linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Julien Thierry <jthierry@redhat.com>,
+        Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
+Subject: Re: [RFC][PATCH v5 03/51] objtool: Make recordmcount into mcount
+ subcmd
+In-Reply-To: <a76e7cd72dfd77ea8124771c4c6cdbddae3cdb65.1592510545.git.mhelsley@vmware.com>
+Message-ID: <alpine.LSU.2.21.2006251230280.20731@pobox.suse.cz>
+References: <cover.1592510545.git.mhelsley@vmware.com> <a76e7cd72dfd77ea8124771c4c6cdbddae3cdb65.1592510545.git.mhelsley@vmware.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <20200624131921.GB9972@mwanda> <CAJZ5v0hG2FL0VSeE+ind9MSMc_c7nA4KjKxFPdMhVOPrMdYJKQ@mail.gmail.com>
- <20200625090449.GA2549@kadam>
-In-Reply-To: <20200625090449.GA2549@kadam>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 25 Jun 2020 12:37:18 +0200
-Message-ID: <CAJZ5v0h0RNt5+SCeXg7pGgGmu1T0Hyk9kYrgia+kWHsQeE8cPg@mail.gmail.com>
-Subject: Re: [PATCH] intel_idle: Fix uninitialized variable bug
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 11:05 AM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Wed, Jun 24, 2020 at 03:41:05PM +0200, Rafael J. Wysocki wrote:
-> > On Wed, Jun 24, 2020 at 3:19 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > >
-> > > The "tick" variable isn't initialized if "lapic_timer_always_reliable"
-> > > is true.
-> >
-> > If lapic_timer_always_reliable is true, then
-> > static_cpu_has(X86_FEATURE_ARAT) must also be true AFAICS.
-> >
-> > So the lapic_timer_always_reliable check in there looks redundant.
->
-> Can the lapic_timer_always_reliable variable just be removed entirely
-> and replaced with an static_cpu_has(X86_FEATURE_ARAT) check?
+On Thu, 18 Jun 2020, Matt Helsley wrote:
 
-Yes, it can.
+> Rather than a standalone executable merge recordmcount as a sub command
+> of objtool. This is a small step towards cleaning up recordmcount and
+> eventually sharing  ELF code with objtool.
+> 
+> For the initial step all that's required is a bit of Makefile changes
+> and invoking the former main() function from recordmcount.c because the
+> subcommand code uses similar function arguments as main when dispatching.
+> 
+> objtool ignores some object files that tracing does not, specifically
+> those with OBJECT_FILES_NON_STANDARD Makefile variables. For this reason
+> we keep the recordmcount_dep separate from the objtool_dep. When using
+> objtool mcount we can also, like the other objtool invocations, just
+> depend on the binary rather than the source the binary is built from.
+> 
+> Subsequent patches will gradually convert recordmcount to use
+> more and more of libelf/objtool's ELF accessor code. This will both
+> clean up recordmcount to be more easily readable and remove
+> recordmcount's crude accessor wrapping code.
 
-See https://patchwork.kernel.org/patch/11623309/
+I'll try to leave only relevant parts for a question below...
 
-Thanks!
+>  sub_cmd_record_mcount =					\
+>  	if [ $(@) != "scripts/mod/empty.o" ]; then	\
+> -		$(objtree)/tools/objtool/recordmcount $(RECORDMCOUNT_FLAGS) "$(@)";	\
+> +		$(objtree)/tools/objtool/objtool mcount record $(RECORDMCOUNT_FLAGS) "$(@)";	\
+>  	fi;
+
+> +int cmd_mcount(int argc, const char **argv)
+> +{
+> +	argc--; argv++;
+> +	if (argc <= 0)
+> +		usage_with_options(mcount_usage, mcount_options);
+> +
+> +	if (!strncmp(argv[0], "record", 6)) {
+> +		argc = parse_options(argc, argv,
+> +				     mcount_options, mcount_usage, 0);
+> +		if (argc < 1)
+> +			usage_with_options(mcount_usage, mcount_options);
+> +
+> +		return record_mcount(argc, argv);
+> +	}
+> +
+> +	usage_with_options(mcount_usage, mcount_options);
+> +
+> +	return 0;
+> +}
+
+> -int main(int argc, char *argv[])
+> +int record_mcount(int argc, const char **argv)
+>  {
+>  	const char ftrace[] = "/ftrace.o";
+>  	int ftrace_size = sizeof(ftrace) - 1;
+>  	int n_error = 0;  /* gcc-4.3.0 false positive complaint */
+> -	int c;
+>  	int i;
+>  
+> -	while ((c = getopt(argc, argv, "w")) >= 0) {
+> -		switch (c) {
+> -		case 'w':
+> -			warn_on_notrace_sect = 1;
+> -			break;
+> -		default:
+> -			fprintf(stderr, "usage: recordmcount [-w] file.o...\n");
+> -			return 0;
+> -		}
+> -	}
+> -
+> -	if ((argc - optind) < 1) {
+> -		fprintf(stderr, "usage: recordmcount [-w] file.o...\n");
+> -		return 0;
+> -	}
+> -
+>  	/* Process each file in turn, allowing deep failure. */
+> -	for (i = optind; i < argc; i++) {
+> -		char *file = argv[i];
+> +	for (i = 0; i < argc; i++) {
+> +		const char *file = argv[i];
+>  		int len;
+
+Do you expect that mcount subcmd would be called on more than one object 
+file at a time? I don't see a reason for that with all the Makefile 
+changes, but I may be missing something (Kbuild is a maze for me).
+
+Because if not, I think it would be nice to make record_mcount() more 
+similar to what we have for check(). After Julien's changes 
+(20200608071203.4055-1-jthierry@redhat.com) at least. So that 
+record_mcount() could accept struct objtool_file and work directly on 
+that.
+
+It would also impact several other patches in the series. For example, 
+is there a need for a private 'struct elf *lf' in mcount.c?
+
+Thanks
+Miroslav
