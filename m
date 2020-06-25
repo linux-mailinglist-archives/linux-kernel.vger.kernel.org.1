@@ -2,104 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4595A20A7CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 23:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD57E20A7D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 23:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406124AbgFYVyL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 17:54:11 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63262 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728381AbgFYVyK (ORCPT
+        id S2407332AbgFYV4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 17:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407008AbgFYVz7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 17:54:10 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05PLVbDG150977;
-        Thu, 25 Jun 2020 17:54:06 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31vtt3kwmj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Jun 2020 17:54:05 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05PLjgrA194423;
-        Thu, 25 Jun 2020 17:54:05 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 31vtt3kwm2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Jun 2020 17:54:05 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05PLjbBt029478;
-        Thu, 25 Jun 2020 21:54:03 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma05fra.de.ibm.com with ESMTP id 31uusg13c1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Jun 2020 21:54:03 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05PLs13n3342610
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Jun 2020 21:54:01 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 17ECEA405D;
-        Thu, 25 Jun 2020 21:54:01 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8C50EA4051;
-        Thu, 25 Jun 2020 21:53:59 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.142.225])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 25 Jun 2020 21:53:59 +0000 (GMT)
-Message-ID: <1593122039.27152.412.camel@linux.ibm.com>
-Subject: Re: [PATCH 06/12] ima: Fail rule parsing when the KEXEC_CMDLINE
- hook is combined with an invalid cond
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Prakhar Srivastava <prsriva02@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Date:   Thu, 25 Jun 2020 17:53:59 -0400
-In-Reply-To: <20200623003236.830149-7-tyhicks@linux.microsoft.com>
-References: <20200623003236.830149-1-tyhicks@linux.microsoft.com>
-         <20200623003236.830149-7-tyhicks@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-25_16:2020-06-25,2020-06-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- adultscore=0 phishscore=0 suspectscore=0 mlxscore=0 mlxlogscore=999
- lowpriorityscore=0 impostorscore=0 spamscore=0 cotscore=-2147483648
- clxscore=1015 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006250124
+        Thu, 25 Jun 2020 17:55:59 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DD2AC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 14:55:59 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id g17so3390320plq.12
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 14:55:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0m/FjnJjhgS6jJ3qtD918zPfVsmhOjKw+gYA5VHiyF8=;
+        b=ijpRbZi5KWXy1QJfiK+kH/xmCCdXzkyMtiBcMDE8+0t2IRtgthrC21C5qS4cttL01A
+         3i3MliAcoduo97dXTSQx5vWXZNi1PhQSuiBkD60JAuRJKcwo7gEy/CA5qzWuyzfgF8zs
+         F4tyjhy6HZ2ru1OcRfl7lifzHGEtksolhc5EA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0m/FjnJjhgS6jJ3qtD918zPfVsmhOjKw+gYA5VHiyF8=;
+        b=KEpvS71Hpngyg6PSAdO9VWEb78f8LF1xtd9itcEJWVowC9DJK6B4sxpddYj7HiBvHy
+         AOiHP5K8Gm4wnXgSUwwmdKjutoir/Ldr9nM80h7/SiZVXVwOfU219h9xJgTvq9t9GymU
+         vKRhLeGj51qOe0vQtcQl/MJOvwidj+IqNnk/XuF0VuTZ815qKoONBuax2etLL9Wdayj+
+         tg8dPUMsNqgZd7hEnNG719T8N7V/haGYQp5GvbPGgtfKxh4xYaTD49GyJ3kP/07XppVo
+         RzjSZggdMg1sPE852fXip3dqsD9JcpDqVJbjNrcqLtHAiMZpkgQ800XO1CiFnoaUjkw6
+         Vjiw==
+X-Gm-Message-State: AOAM53309DGUQmpK77YPdHAknAD7NcSN49+CKSRf0xDUxho+1KNN8rfb
+        3PmsV8JWqFMoQ2AP7KVeeKVQqg==
+X-Google-Smtp-Source: ABdhPJxi/2Ma6HSILRYA7Y1E/CT0c1EJHDOltwfRrPCpupY/Zo7Fl065ULNhVeZT5wFT7tzA2VCQvA==
+X-Received: by 2002:a17:90a:898a:: with SMTP id v10mr32887pjn.95.1593122159009;
+        Thu, 25 Jun 2020 14:55:59 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id m136sm9584245pfd.218.2020.06.25.14.55.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jun 2020 14:55:56 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     akpm@linux-foundation.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        Christoph Lameter <cl@linux.com>,
+        Alexander Popov <alex.popov@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, vinmenon@codeaurora.org,
+        Matthew Garrett <mjg59@google.com>,
+        Jann Horn <jannh@google.com>,
+        Vijayanand Jitta <vjitta@codeaurora.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] mm: Expand CONFIG_SLAB_FREELIST_HARDENED to include SLAB
+Date:   Thu, 25 Jun 2020 14:55:46 -0700
+Message-Id: <20200625215548.389774-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-06-22 at 19:32 -0500, Tyler Hicks wrote:
-> The KEXEC_CMDLINE hook function only supports the pcr conditional. Make
-> this clear at policy load so that IMA policy authors don't assume that
-> other conditionals are supported.
-> 
-> Since KEXEC_CMDLINE's inception, ima_match_rules() has always returned
-> true on any loaded KEXEC_CMDLINE rule without any consideration for
-> other conditionals present in the rule. Make it clear that pcr is the
-> only supported KEXEC_CMDLINE conditional by returning an error during
-> policy load.
-> 
-> An example of why this is a problem can be explained with the following
-> rule:
-> 
->  dont_measure func=KEXEC_CMDLINE obj_type=foo_t
-> 
-> An IMA policy author would have assumed that rule is valid because the
-> parser accepted it but the result was that measurements for all
-> KEXEC_CMDLINE operations would be disabled.
-> 
-> Fixes: b0935123a183 ("IMA: Define a new hook to measure the kexec boot command line arguments")
-> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Hi,
 
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+In reviewing Vlastimil Babka's latest slub debug series, I realized[1]
+that several checks under CONFIG_SLAB_FREELIST_HARDENED weren't being
+applied to SLAB. Fix this by expanding the Kconfig coverage, and
+adding a simple double-free test for SLAB.
+
+v2:
+- rebase to -mmots
+- drop SLOB support (willy)
+v1: https://lore.kernel.org/lkml/20200617195349.3471794-1-keescook@chromium.org/
+
+Thanks!
+
+-Kees
+
+[1] https://lore.kernel.org/lkml/202006171039.FBDF2D7F4A@keescook/
+
+Kees Cook (2):
+  mm: Expand CONFIG_SLAB_FREELIST_HARDENED to include SLAB
+  slab: Add naive detection of double free
+
+ init/Kconfig |  9 +++++----
+ mm/slab.c    | 14 ++++++++++++--
+ 2 files changed, 17 insertions(+), 6 deletions(-)
+
+-- 
+2.25.1
