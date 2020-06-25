@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F88720A141
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 16:52:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DFC20A14B
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 16:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405518AbgFYOwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 10:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405451AbgFYOwb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 10:52:31 -0400
-Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CBB4C08C5DB
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 07:52:31 -0700 (PDT)
-Received: by theia.8bytes.org (Postfix, from userid 1000)
-        id 8FFB550C; Thu, 25 Jun 2020 16:52:28 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Qian Cai <cai@lca.pw>, Joerg Roedel <jroedel@suse.de>
-Subject: [PATCH 2/2] iommu/amd: Use 'unsigned long' for domain->pt_root
-Date:   Thu, 25 Jun 2020 16:52:27 +0200
-Message-Id: <20200625145227.4159-3-joro@8bytes.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20200625145227.4159-1-joro@8bytes.org>
-References: <20200625145227.4159-1-joro@8bytes.org>
+        id S2405615AbgFYOxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 10:53:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48900 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2405604AbgFYOxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 10:53:04 -0400
+Received: from mail.kernel.org (ip5f5ad5c5.dynamic.kabel-deutschland.de [95.90.213.197])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7B06920775;
+        Thu, 25 Jun 2020 14:53:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1593096783;
+        bh=eaDjc9XDnzcYv1o13R7slCS+uNfd015+MUC7D5f1QOo=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Y1Kfdf2LQ19taDhC1+x6HKaABLQAQNscrO8uYDA6BxzFhhLxKBckiI75NRGWnWQz7
+         kcTyRdj92kLDbMBnpJSufvmxVRvN2loInUXJ9Y9C/B3XB4AMRenDQ5IMp1Ab5HOrt5
+         PwisR1a3WK8mh7E6Vcec8qn5uDwYIDsXKnkwK+Dc=
+Received: from mchehab by mail.kernel.org with local (Exim 4.93)
+        (envelope-from <mchehab@kernel.org>)
+        id 1joTFN-00DakR-6p; Thu, 25 Jun 2020 16:53:01 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH] kconfig: qconf: Fix find on split mode
+Date:   Thu, 25 Jun 2020 16:52:56 +0200
+Message-Id: <371f4815f6daac50e90057520d5f2b40a6ca3a74.1593096720.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20200625154226.25692cd1@coco.lan>
+References: <20200625154226.25692cd1@coco.lan>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+The logic handling find on split mode is currently broken.
+Fix it, making it work again as expected.
 
-Using atomic64_t can be quite expensive, so use unsigned long instead.
-This is safe because the write becomes visible atomically.
-
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/iommu/amd/amd_iommu_types.h |  2 +-
- drivers/iommu/amd/iommu.c           | 10 ++++++++--
- 2 files changed, 9 insertions(+), 3 deletions(-)
+ scripts/kconfig/qconf.cc | 19 +++++++++----------
+ 1 file changed, 9 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/iommu/amd/amd_iommu_types.h b/drivers/iommu/amd/amd_iommu_types.h
-index 30a5d412255a..f6f102282dda 100644
---- a/drivers/iommu/amd/amd_iommu_types.h
-+++ b/drivers/iommu/amd/amd_iommu_types.h
-@@ -468,7 +468,7 @@ struct protection_domain {
- 				       iommu core code */
- 	spinlock_t lock;	/* mostly used to lock the page table*/
- 	u16 id;			/* the domain id written to the device table */
--	atomic64_t pt_root;	/* pgtable root and pgtable mode */
-+	unsigned long pt_root;	/* pgtable root and pgtable mode */
- 	int glx;		/* Number of levels for GCR3 table */
- 	u64 *gcr3_tbl;		/* Guest CR3 table */
- 	unsigned long flags;	/* flags to find out type of domain */
-diff --git a/drivers/iommu/amd/iommu.c b/drivers/iommu/amd/iommu.c
-index 5286ddcfc2f9..b0e1dc58244e 100644
---- a/drivers/iommu/amd/iommu.c
-+++ b/drivers/iommu/amd/iommu.c
-@@ -156,7 +156,7 @@ static struct protection_domain *to_pdomain(struct iommu_domain *dom)
- static void amd_iommu_domain_get_pgtable(struct protection_domain *domain,
- 					 struct domain_pgtable *pgtable)
- {
--	u64 pt_root = atomic64_read(&domain->pt_root);
-+	unsigned long pt_root = domain->pt_root;
- 
- 	pgtable->root = (u64 *)(pt_root & PAGE_MASK);
- 	pgtable->mode = pt_root & 7; /* lowest 3 bits encode pgtable mode */
-@@ -164,7 +164,13 @@ static void amd_iommu_domain_get_pgtable(struct protection_domain *domain,
- 
- static void amd_iommu_domain_set_pt_root(struct protection_domain *domain, u64 root)
- {
--	atomic64_set(&domain->pt_root, root);
-+	domain->pt_root = root;
+diff --git a/scripts/kconfig/qconf.cc b/scripts/kconfig/qconf.cc
+index c0ac8f7b5f1a..b8f577c6e8aa 100644
+--- a/scripts/kconfig/qconf.cc
++++ b/scripts/kconfig/qconf.cc
+@@ -1645,22 +1645,21 @@ void ConfigMainWindow::setMenuLink(struct menu *menu)
+ 			return;
+ 		list->setRootMenu(parent);
+ 		break;
+-	case symbolMode:
++	case menuMode:
+ 		if (menu->flags & MENU_ROOT) {
+-			configList->setRootMenu(menu);
++			menuList->setRootMenu(menu);
+ 			configList->clearSelection();
+-			list = menuList;
+-		} else {
+ 			list = configList;
++		} else {
++			configList->setRootMenu(menu);
++			configList->clearSelection();
 +
-+	/*
-+	 * The new value needs to be gobally visible in case pt_root gets
-+	 * cleared, so that the page-table can be safely freed.
-+	 */
-+	smp_wmb();
- }
- 
- static void amd_iommu_domain_clr_pt_root(struct protection_domain *domain)
+ 			parent = menu_get_parent_menu(menu->parent);
+ 			if (!parent)
+ 				return;
+-			item = menuList->findConfigItem(parent);
+-			if (item) {
+-				item->setSelected(true);
+-				menuList->scrollToItem(item);
+-			}
+-			list->setRootMenu(parent);
++			menuList->setRootMenu(parent);
++
++			list = menuList;
+ 		}
+ 		break;
+ 	case fullMode:
 -- 
-2.27.0
+2.26.2
+
 
