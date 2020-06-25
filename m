@@ -2,107 +2,302 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671DA20A775
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 23:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C2720A778
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 23:28:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407166AbgFYV1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 17:27:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55368 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403774AbgFYV1w (ORCPT
+        id S2407215AbgFYV2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 17:28:25 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:27732 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2403774AbgFYV2Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 17:27:52 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E249C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 14:27:52 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id f3so3940949pgr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 14:27:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YwxJgs2ekm2F5i2bbq3bvR99tjvhSs3RBO886udVeFE=;
-        b=AaW0I7wf4VZi0tWYgsg0VXtU1/5OGKDM1/Sk65n9jmsn2IHKE0FgxNJRUXhp2LNS5O
-         VxEWngolyhwIiqJPDqTRL+0wV2tp8Lk2ANlwhpXuC6ha7JwE2aCr7+7ojqIx++AnnoBL
-         0lp82ylALuEFpFZLkRpDZsRyFetD4967ioBXlIWWukROBYsxAjquAShJp8VX+91+6uTD
-         fL9zHCiRxJ5DJME5M77E3XFFnvdAPsV3FoyiFSkA0NDnONfIWKiB+tL2+MOQNanqjWQx
-         FnKzlMURYcU9CGrPQy6PW9nZyRMvNZjdDF7uxzbDMqcSd4L94Vr2KH+717jxAE9Q4b+k
-         mqmQ==
+        Thu, 25 Jun 2020 17:28:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593120502;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:in-reply-to:in-reply-to:  references:references;
+        bh=XdRozyo/0svGEFcBnlTxJ8HbbQTxqID+/mdnfnAHXus=;
+        b=ZHPCAtaXYu6ixz2jzyAj57PkDw89RkNgkd2eMPUIDdPcHOi5i7OOx1XZ2yJ8pH7Ks5KZKR
+        8oYPkG4B2A4K6os5Cl+kpu+J72WPULOwQ85ygOIM3j1Bf17iiseHdy0KNLEUxGpgMZbc86
+        Sxbcjp4vzj/WlO9Pg+hXv1jqawtCiCo=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-252-n34t6FGfOwedNsdgDpWGoA-1; Thu, 25 Jun 2020 17:28:20 -0400
+X-MC-Unique: n34t6FGfOwedNsdgDpWGoA-1
+Received: by mail-qk1-f200.google.com with SMTP id o26so5103176qko.7
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 14:28:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=YwxJgs2ekm2F5i2bbq3bvR99tjvhSs3RBO886udVeFE=;
-        b=U+F+9PJy9fNixJ6jCPaCALlsbj20H0UlpLOh0QzijgCmYOW1iKKq9t+dNItHcPX2ln
-         sVME97c7GC1jrnLwFKNKmLUrKKyWnQpCj1c1QtpEy1bNn2NBG6fm9pmWo84cvEjstgb7
-         UT1vvkxhLXxBLKeyXTOVq9GvsuWQYvuB3+XUqMEjGEkEyUBn7nAZCRDOWNK7cUq9hlRz
-         YHbBnkwAPfcPkK8xqYENQNnqdfsGYkjamzYjL/73WRXx0eU1gFUkUVD9s+KSs58qVN5u
-         3I5e93INdUss/0kp3LHL/oN+w4jfJplNJKW/fSgAEEjrqDoRZkU0TQUetZDIYvka1Tu2
-         9+mQ==
-X-Gm-Message-State: AOAM530Jy0efnx32fvibkCS47c7KzE6hJ6jUYrhbmZ2alCfYT/VeZGEI
-        Jl+eFhEKdazycDCrbdB/+yIQVdUWFiDGPg==
-X-Google-Smtp-Source: ABdhPJyogFv4o4zWEa+ucdAZImpfWIBrztId39Ahncn0ua4AkeSeZAubIKQiOim3F6/RucN0oZ3bQQ==
-X-Received: by 2002:a62:8782:: with SMTP id i124mr35615630pfe.267.1593120471660;
-        Thu, 25 Jun 2020 14:27:51 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id h2sm24673386pfb.175.2020.06.25.14.27.50
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:reply-to
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=XdRozyo/0svGEFcBnlTxJ8HbbQTxqID+/mdnfnAHXus=;
+        b=QhksayGmlhMNu8B/+Pkk7hjwAKwDb3iR2j7+7QKSc/u0OC/FN9FVHA6Mn7XHo1u7OJ
+         8QXGoiCJRWx3Njfqie1wJVE5f9ZER0bW3mcnIxjrgfZklH7ZUJM694EYWD3B4xoGHs1R
+         xWIMYr6sSMGg5V2K7EKyF3pT2gxTP9ZQfHQJKlWAM6+sKVAvS2JcXhxGv3vg1P8Ly9Bh
+         ZZ6bKVclVbnuHxIRku7vc+CXNbMKTZEDifxT/Jx4xSmL3X2/h0Ni+tC7ELYMAf2S73WS
+         pTPKSVG5rnN1MvvYRLlUSyz8utcYAmyGP01acEQXhfkhBO85VC7B1h72+QO7Q/Wcva5P
+         tuSw==
+X-Gm-Message-State: AOAM530RqIGd3oisF/qyErQ5dM+nyEzvr/EyFd6scjDKgSo6po+gPzJf
+        qGypL0FbnvUZeoYCBV3KtNRGTzcs1MvWpZFHJgg/7KCs0seFhA6iQP0SgoVpUne+EmfKYJcL2jy
+        vnNPi9I+95ncp14IwmM1hI+02
+X-Received: by 2002:ac8:4509:: with SMTP id q9mr12451252qtn.119.1593120499416;
+        Thu, 25 Jun 2020 14:28:19 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy4UH4iHak3pyUlph9dkPMRkxwYVcLk1fEm0mpzM6sv5K553h1VYnt4HMzAQ4YWX6c3qV0qLg==
+X-Received: by 2002:ac8:4509:: with SMTP id q9mr12451234qtn.119.1593120499153;
+        Thu, 25 Jun 2020 14:28:19 -0700 (PDT)
+Received: from localhost (ip70-163-223-149.ph.ph.cox.net. [70.163.223.149])
+        by smtp.gmail.com with ESMTPSA id n1sm7574274qtk.10.2020.06.25.14.28.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 14:27:50 -0700 (PDT)
-Date:   Thu, 25 Jun 2020 14:27:50 -0700 (PDT)
-X-Google-Original-Date: Thu, 25 Jun 2020 14:23:09 PDT (-0700)
-Subject:     Re: [PATCH] RISC-V: Use a local variable instead of smp_processor_id()
-In-Reply-To: <20200622234725.92511-1-atish.patra@wdc.com>
-CC:     linux-kernel@vger.kernel.org, greentime.hu@sifive.com,
-        Atish Patra <Atish.Patra@wdc.com>, aou@eecs.berkeley.edu,
-        anup@brainfault.org, linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Atish Patra <Atish.Patra@wdc.com>
-Message-ID: <mhng-99e5afcf-d8c7-4660-a9e7-eb515e9aa55b@palmerdabbelt-glaptop1>
-Mime-Version: 1.0 (MHng)
+        Thu, 25 Jun 2020 14:28:18 -0700 (PDT)
+Date:   Thu, 25 Jun 2020 14:28:17 -0700
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-integrity@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Alexey Klimov <aklimov@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] tpm: tpm2-space: Resize session and context buffers
+ dynamically
+Message-ID: <20200625212817.rxzjsgecrfpcb6ph@cantor>
+Reply-To: Jerry Snitselaar <jsnitsel@redhat.com>
+Mail-Followup-To: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        linux-integrity@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Stefan Berger <stefanb@linux.ibm.com>,
+        Peter Huewe <peterhuewe@gmx.de>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Alexey Klimov <aklimov@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200625043819.376693-1-jarkko.sakkinen@linux.intel.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <20200625043819.376693-1-jarkko.sakkinen@linux.intel.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 22 Jun 2020 16:47:25 PDT (-0700), Atish Patra wrote:
-> From: Greentime Hu <greentime.hu@sifive.com>
+On Thu Jun 25 20, Jarkko Sakkinen wrote:
+>Re-allocate context and session buffers when needed. Scale them in page
+>increments so that the reallocation is only seldomly required, and thus
+>causes minimal stress to the system. Add a static maximum limit of four
+>pages for buffer sizes.
 >
-> Store the smp_processor_id() in a local variable to save some
-> pointer chasing.
+>Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+>Suggested-by: Stefan Berger <stefanb@linux.ibm.com>
+>Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+>---
+>Tested only for compilation.
+>v2: TPM2_SPACE_DEFAULT_BUFFER_SIZE
+> drivers/char/tpm/tpm2-space.c | 87 ++++++++++++++++++++++++-----------
+> include/linux/tpm.h           |  6 ++-
+> 2 files changed, 64 insertions(+), 29 deletions(-)
 >
-> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> ---
->  arch/riscv/kernel/smpboot.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
+>diff --git a/drivers/char/tpm/tpm2-space.c b/drivers/char/tpm/tpm2-space.c
+>index 982d341d8837..b8ece01d6afb 100644
+>--- a/drivers/char/tpm/tpm2-space.c
+>+++ b/drivers/char/tpm/tpm2-space.c
+>@@ -15,6 +15,9 @@
+> #include <asm/unaligned.h>
+> #include "tpm.h"
 >
-> diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
-> index 4e9922790f6e..3e033e97dd08 100644
-> --- a/arch/riscv/kernel/smpboot.c
-> +++ b/arch/riscv/kernel/smpboot.c
-> @@ -146,6 +146,7 @@ void __init smp_cpus_done(unsigned int max_cpus)
->  asmlinkage __visible void smp_callin(void)
->  {
->  	struct mm_struct *mm = &init_mm;
-> +	unsigned int curr_cpuid = smp_processor_id();
+>+#define TPM2_SPACE_DEFAULT_BUFFER_SIZE	PAGE_SIZE
+>+#define TPM2_SPACE_MAX_BUFFER_SIZE	(4 * PAGE_SIZE)
+>+
+> enum tpm2_handle_types {
+> 	TPM2_HT_HMAC_SESSION	= 0x02000000,
+> 	TPM2_HT_POLICY_SESSION	= 0x03000000,
+>@@ -40,16 +43,21 @@ static void tpm2_flush_sessions(struct tpm_chip *chip, struct tpm_space *space)
 >
->  	if (!IS_ENABLED(CONFIG_RISCV_SBI))
->  		clint_clear_ipi(cpuid_to_hartid_map(smp_processor_id()));
-> @@ -155,9 +156,9 @@ asmlinkage __visible void smp_callin(void)
->  	current->active_mm = mm;
+> int tpm2_init_space(struct tpm_space *space)
+> {
+>-	space->context_buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
+>+	space->context_buf = kzalloc(TPM2_SPACE_DEFAULT_BUFFER_SIZE,
+>+				     GFP_KERNEL);
+> 	if (!space->context_buf)
+> 		return -ENOMEM;
 >
->  	trap_init();
-> -	notify_cpu_starting(smp_processor_id());
-> -	update_siblings_masks(smp_processor_id());
-> -	set_cpu_online(smp_processor_id(), 1);
-> +	notify_cpu_starting(curr_cpuid);
-> +	update_siblings_masks(curr_cpuid);
-> +	set_cpu_online(curr_cpuid, 1);
->  	/*
->  	 * Remote TLB flushes are ignored while the CPU is offline, so emit
->  	 * a local TLB flush right now just in case.
+>-	space->session_buf = kzalloc(PAGE_SIZE, GFP_KERNEL);
+>+	space->session_buf = kzalloc(TPM2_SPACE_DEFAULT_BUFFER_SIZE,
+>+				     GFP_KERNEL);
+> 	if (space->session_buf == NULL) {
+> 		kfree(space->context_buf);
+>+		space->context_buf = NULL;
+> 		return -ENOMEM;
+> 	}
+>
+>+	space->context_size = TPM2_SPACE_DEFAULT_BUFFER_SIZE;
+>+	space->session_size = TPM2_SPACE_DEFAULT_BUFFER_SIZE;
+> 	return 0;
+> }
+>
+>@@ -116,11 +124,13 @@ static int tpm2_load_context(struct tpm_chip *chip, u8 *buf,
+> 	return 0;
+> }
+>
+>-static int tpm2_save_context(struct tpm_chip *chip, u32 handle, u8 *buf,
+>-			     unsigned int buf_size, unsigned int *offset)
+>+static int tpm2_save_context(struct tpm_chip *chip, u32 handle, u8 **buf,
+>+			     unsigned int *buf_size, unsigned int *offset)
+> {
+>-	struct tpm_buf tbuf;
+>+	unsigned int new_buf_size;
+> 	unsigned int body_size;
+>+	struct tpm_buf tbuf;
+>+	void *new_buf;
+> 	int rc;
+>
+> 	rc = tpm_buf_init(&tbuf, TPM2_ST_NO_SESSIONS, TPM2_CC_CONTEXT_SAVE);
+>@@ -131,31 +141,48 @@ static int tpm2_save_context(struct tpm_chip *chip, u32 handle, u8 *buf,
+>
+> 	rc = tpm_transmit_cmd(chip, &tbuf, 0, NULL);
+> 	if (rc < 0) {
+>-		dev_warn(&chip->dev, "%s: failed with a system error %d\n",
+>-			 __func__, rc);
+>-		tpm_buf_destroy(&tbuf);
+>-		return -EFAULT;
+>+		rc = -EFAULT;
+>+		goto err;
+> 	} else if (tpm2_rc_value(rc) == TPM2_RC_REFERENCE_H0) {
+>-		tpm_buf_destroy(&tbuf);
+>-		return -ENOENT;
+>+		rc = -ENOENT;
+>+		goto out;
+> 	} else if (rc) {
+>-		dev_warn(&chip->dev, "%s: failed with a TPM error 0x%04X\n",
+>-			 __func__, rc);
+>-		tpm_buf_destroy(&tbuf);
+>-		return -EFAULT;
+>+		rc = -EFAULT;
+>+		goto err;
+> 	}
+>
 
-Thanks.  This is on for-next.
+Would it be worthwhile to still output something here since it is changing
+the value of rc returned from tpm_transmit_cmd()? Wondering if it would
+be useful for debugging to know what the returned error was. Other than
+that question looks good to me pending what is decided on using PAGE_SIZE.
+
+Regards,
+Jerry
+
+> 	body_size = tpm_buf_length(&tbuf) - TPM_HEADER_SIZE;
+>-	if ((*offset + body_size) > buf_size) {
+>-		dev_warn(&chip->dev, "%s: out of backing storage\n", __func__);
+>-		tpm_buf_destroy(&tbuf);
+>-		return -ENOMEM;
+>+	/* We grow the buffer in page increments. */
+>+	new_buf_size = PFN_UP(*offset + body_size);
+>+
+>+	if (new_buf_size > TPM2_SPACE_MAX_BUFFER_SIZE) {
+>+		rc = -ENOMEM;
+>+		goto err;
+> 	}
+>
+>-	memcpy(&buf[*offset], &tbuf.data[TPM_HEADER_SIZE], body_size);
+>+	if (new_buf_size > *buf_size) {
+>+		new_buf = krealloc(*buf, new_buf_size, GFP_KERNEL);
+>+		if (!new_buf) {
+>+			rc = -ENOMEM;
+>+			goto err;
+>+		}
+>+
+>+		*buf = new_buf;
+>+		*buf_size = new_buf_size;
+>+	}
+>+
+>+	memcpy(*buf + *offset, &tbuf.data[TPM_HEADER_SIZE], body_size);
+> 	*offset += body_size;
+>+
+>+out:
+> 	tpm_buf_destroy(&tbuf);
+>-	return 0;
+>+	return rc;
+>+
+>+err:
+>+	dev_warn(&chip->dev, "%s: ret=%d\n", __func__, rc);
+>+
+>+	tpm_buf_destroy(&tbuf);
+>+	return rc;
+> }
+>
+> void tpm2_flush_space(struct tpm_chip *chip)
+>@@ -311,8 +338,10 @@ int tpm2_prepare_space(struct tpm_chip *chip, struct tpm_space *space, u8 *cmd,
+> 	       sizeof(space->context_tbl));
+> 	memcpy(&chip->work_space.session_tbl, &space->session_tbl,
+> 	       sizeof(space->session_tbl));
+>-	memcpy(chip->work_space.context_buf, space->context_buf, PAGE_SIZE);
+>-	memcpy(chip->work_space.session_buf, space->session_buf, PAGE_SIZE);
+>+	memcpy(chip->work_space.context_buf, space->context_buf,
+>+	       space->context_size);
+>+	memcpy(chip->work_space.session_buf, space->session_buf,
+>+	       space->session_size);
+>
+> 	rc = tpm2_load_space(chip);
+> 	if (rc) {
+>@@ -492,7 +521,8 @@ static int tpm2_save_space(struct tpm_chip *chip)
+> 			continue;
+>
+> 		rc = tpm2_save_context(chip, space->context_tbl[i],
+>-				       space->context_buf, PAGE_SIZE,
+>+				       &space->context_buf,
+>+				       &space->context_size,
+> 				       &offset);
+> 		if (rc == -ENOENT) {
+> 			space->context_tbl[i] = 0;
+>@@ -509,7 +539,8 @@ static int tpm2_save_space(struct tpm_chip *chip)
+> 			continue;
+>
+> 		rc = tpm2_save_context(chip, space->session_tbl[i],
+>-				       space->session_buf, PAGE_SIZE,
+>+				       &space->session_buf,
+>+				       &space->session_size,
+> 				       &offset);
+>
+> 		if (rc == -ENOENT) {
+>@@ -557,8 +588,10 @@ int tpm2_commit_space(struct tpm_chip *chip, struct tpm_space *space,
+> 	       sizeof(space->context_tbl));
+> 	memcpy(&space->session_tbl, &chip->work_space.session_tbl,
+> 	       sizeof(space->session_tbl));
+>-	memcpy(space->context_buf, chip->work_space.context_buf, PAGE_SIZE);
+>-	memcpy(space->session_buf, chip->work_space.session_buf, PAGE_SIZE);
+>+	memcpy(space->context_buf, chip->work_space.context_buf,
+>+	       space->context_size);
+>+	memcpy(space->session_buf, chip->work_space.session_buf,
+>+	       space->session_size);
+>
+> 	return 0;
+> out:
+>diff --git a/include/linux/tpm.h b/include/linux/tpm.h
+>index 03e9b184411b..9ea39e8f7162 100644
+>--- a/include/linux/tpm.h
+>+++ b/include/linux/tpm.h
+>@@ -92,10 +92,12 @@ enum tpm_duration {
+> #define TPM_PPI_VERSION_LEN		3
+>
+> struct tpm_space {
+>+	u8  *context_buf;
+>+	u8  *session_buf;
+>+	u32 context_size;
+>+	u32 session_size;
+> 	u32 context_tbl[3];
+>-	u8 *context_buf;
+> 	u32 session_tbl[3];
+>-	u8 *session_buf;
+> };
+>
+> struct tpm_bios_log {
+>-- 
+>2.25.1
+>
+
