@@ -2,161 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F21B4209D80
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 13:32:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB21209D8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 13:34:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404342AbgFYLcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 07:32:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47452 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404274AbgFYLb6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 07:31:58 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5CEAC061795;
-        Thu, 25 Jun 2020 04:31:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=25KfWqTg5VgYg3/Dyq0fuOQ2ndu57hg32uRL8rzgLQM=; b=hMZIKCkEzhGgbe7QeG+ypRFK/O
-        qk5gq28BAHhlWFdwae7+1BKIcUcsn8Gsec4d1/FOm89F3owYZdYRN+Z7dxR8EwX1ryuxs5Qdlzztm
-        GiiMOPMto2/02VlUcETaNqI3K8ggTBChPeDZ7L7ah8hdi2N/TzJBsI8zpUByP5HI4vKWa/VKCuYiY
-        m1HDAbN2U7h85AjVikVhadfIROzsOemw2XieblpHZyhvlfB/UFzUsULjKMFgJszZkEcF2glew+P2i
-        3PI+EVE6gCanw/RAdqMvGgcCC0tI8oc3d3pvvIqXMHnfPozLveID5hj+mCWbbNp19qETJT6EwIJz/
-        K24Fe3Ig==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1joQ6X-0001zi-Ea; Thu, 25 Jun 2020 11:31:41 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-xfs@vger.kernel.org, dm-devel@redhat.com,
-        Mikulas Patocka <mpatocka@redhat.com>,
-        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>
-Subject: [PATCH 6/6] mm: Add memalloc_nowait
-Date:   Thu, 25 Jun 2020 12:31:22 +0100
-Message-Id: <20200625113122.7540-7-willy@infradead.org>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20200625113122.7540-1-willy@infradead.org>
-References: <20200625113122.7540-1-willy@infradead.org>
+        id S2404286AbgFYLeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 07:34:13 -0400
+Received: from foss.arm.com ([217.140.110.172]:35978 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404239AbgFYLeM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 07:34:12 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E11791042;
+        Thu, 25 Jun 2020 04:34:11 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3E30D3F73C;
+        Thu, 25 Jun 2020 04:34:10 -0700 (PDT)
+Date:   Thu, 25 Jun 2020 12:34:07 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Patrick Bellasi <patrick.bellasi@matbug.net>,
+        Chris Redpath <chris.redpath@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] sched/uclamp: Protect uclamp fast path code with
+ static key
+Message-ID: <20200625113407.awok7pd64fgt7cii@e107158-lin.cambridge.arm.com>
+References: <20200624172605.26715-1-qais.yousef@arm.com>
+ <20200624172605.26715-3-qais.yousef@arm.com>
+ <jhj5zbgroct.mognet@arm.com>
+ <20200625110006.q3iepcrh2uh4oizv@e107158-lin.cambridge.arm.com>
+ <jhjpn9ngzlx.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <jhjpn9ngzlx.mognet@arm.com>
+User-Agent: NeoMutt/20171215
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to memalloc_noio() and memalloc_nofs(), memalloc_nowait()
-guarantees we will not sleep to reclaim memory.  Use it to simplify
-dm-bufio's allocations.
+On 06/25/20 12:26, Valentin Schneider wrote:
+> 
+> On 25/06/20 12:00, Qais Yousef wrote:
+> > Hi Valentin
+> >
+> > On 06/25/20 01:16, Valentin Schneider wrote:
+> >> In schedutil_cpu_util(), when uclamp isn't compiled it, we have an explicit
+> >> 'goto max'. When uclamp *is* compiled in, that's taken care of by the
+> >> "natural" RT uclamp aggregation... Which doesn't happen until we flip the
+> >> static key.
+> >>
+> >> It's yucky, but if you declare the key in the internal sched header, you
+> >> could reuse it in the existing 'goto max' (or sysctl value, when we make
+> >> that tweakable) path.
+> >
+> > Not sure if this is the best way forward. I need to think about it.
+> > While I am not keen on enabling in kernel users of util clamp, but there was
+> > already an attempt to do so. This approach will not allow us to implement
+> > something in the future for that. Which maybe is what we want..
+> >
+> 
+> Just to be clear, I'm not suggesting to add any in-kernel toggling of
+> uclamp outside of the scheduler: by keeping that to the internal sched
+> header & schedutil, we're keeping it contained to internal scheduler land.
+> 
+> Since a diff is worth a thousand words, here's what I was thinking of (not
+> even compiled):
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- drivers/md/dm-bufio.c    | 30 ++++++++----------------------
- include/linux/sched.h    |  1 +
- include/linux/sched/mm.h | 12 ++++++++----
- 3 files changed, 17 insertions(+), 26 deletions(-)
+Yeah I understood and already thought about this. But this approach could
+prevent potential in kernel-users. Whether we care or not about this now,
+I don't know. But it seems the simplest thing to do.
 
-diff --git a/drivers/md/dm-bufio.c b/drivers/md/dm-bufio.c
-index 6d1565021d74..140ada9a2c8f 100644
---- a/drivers/md/dm-bufio.c
-+++ b/drivers/md/dm-bufio.c
-@@ -412,23 +412,6 @@ static void *alloc_buffer_data(struct dm_bufio_client *c, gfp_t gfp_mask,
- 
- 	*data_mode = DATA_MODE_VMALLOC;
- 
--	/*
--	 * __vmalloc allocates the data pages and auxiliary structures with
--	 * gfp_flags that were specified, but pagetables are always allocated
--	 * with GFP_KERNEL, no matter what was specified as gfp_mask.
--	 *
--	 * Consequently, we must set per-process flag PF_MEMALLOC_NOIO so that
--	 * all allocations done by this process (including pagetables) are done
--	 * as if GFP_NOIO was specified.
--	 */
--	if (gfp_mask & __GFP_NORETRY) {
--		unsigned noio_flag = memalloc_noio_save();
--		void *ptr = __vmalloc(c->block_size, gfp_mask);
--
--		memalloc_noio_restore(noio_flag);
--		return ptr;
--	}
--
- 	return __vmalloc(c->block_size, gfp_mask);
- }
- 
-@@ -866,9 +849,6 @@ static struct dm_buffer *__alloc_buffer_wait_no_callback(struct dm_bufio_client
- 	 * dm-bufio is resistant to allocation failures (it just keeps
- 	 * one buffer reserved in cases all the allocations fail).
- 	 * So set flags to not try too hard:
--	 *	GFP_NOWAIT: don't wait; if we need to sleep we'll release our
--	 *		    mutex and wait ourselves.
--	 *	__GFP_NORETRY: don't retry and rather return failure
- 	 *	__GFP_NOMEMALLOC: don't use emergency reserves
- 	 *	__GFP_NOWARN: don't print a warning in case of failure
- 	 *
-@@ -877,7 +857,9 @@ static struct dm_buffer *__alloc_buffer_wait_no_callback(struct dm_bufio_client
- 	 */
- 	while (1) {
- 		if (dm_bufio_cache_size_latch != 1) {
--			b = alloc_buffer(c, GFP_NOWAIT | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
-+			unsigned nowait_flag = memalloc_nowait_save();
-+			b = alloc_buffer(c, GFP_KERNEL | __GFP_NOMEMALLOC | __GFP_NOWARN);
-+			memalloc_nowait_restore(nowait_flag);
- 			if (b)
- 				return b;
- 		}
-@@ -886,8 +868,12 @@ static struct dm_buffer *__alloc_buffer_wait_no_callback(struct dm_bufio_client
- 			return NULL;
- 
- 		if (dm_bufio_cache_size_latch != 1 && !tried_noio_alloc) {
-+			unsigned noio_flag;
-+
- 			dm_bufio_unlock(c);
--			b = alloc_buffer(c, GFP_NOIO | __GFP_NORETRY | __GFP_NOMEMALLOC | __GFP_NOWARN);
-+			noio_flag = memalloc_noio_save();
-+			b = alloc_buffer(c, GFP_KERNEL | __GFP_NOMEMALLOC | __GFP_NOWARN);
-+			memalloc_noio_restore(noio_flag);
- 			dm_bufio_lock(c);
- 			if (b)
- 				return b;
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 90336850e940..b1c2cddd366c 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -803,6 +803,7 @@ struct task_struct {
- #endif
- 	unsigned			memalloc_noio:1;
- 	unsigned			memalloc_nofs:1;
-+	unsigned			memalloc_nowait:1;
- 	unsigned			memalloc_nocma:1;
- 
- 	unsigned long			atomic_flags; /* Flags requiring atomic access. */
-diff --git a/include/linux/sched/mm.h b/include/linux/sched/mm.h
-index 6f7b59a848a6..6484569f50df 100644
---- a/include/linux/sched/mm.h
-+++ b/include/linux/sched/mm.h
-@@ -179,12 +179,16 @@ static inline bool in_vfork(struct task_struct *tsk)
- static inline gfp_t current_gfp_context(gfp_t flags)
- {
- 	if (unlikely(current->memalloc_noio || current->memalloc_nofs ||
--		     current->memalloc_nocma)) {
-+		     current->memalloc_nocma) || current->memalloc_nowait) {
- 		/*
--		 * NOIO implies both NOIO and NOFS and it is a weaker context
--		 * so always make sure it makes precedence
-+		 * Clearing DIRECT_RECLAIM means we won't get to the point
-+		 * of testing IO or FS, so we don't need to bother clearing
-+		 * them.  noio implies neither IO nor FS and it is a weaker
-+		 * context so always make sure it takes precedence.
- 		 */
--		if (current->memalloc_noio)
-+		if (current->memalloc_nowait)
-+			flags &= ~__GFP_DIRECT_RECLAIM;
-+		else if (current->memalloc_noio)
- 			flags &= ~(__GFP_IO | __GFP_FS);
- 		else if (current->memalloc_nofs)
- 			flags &= ~__GFP_FS;
--- 
-2.27.0
+> 
+> >> > -	if (update_root_tg)
+> >> > +	if (update_root_tg) {
+> >> >            uclamp_update_root_tg();
+> >> > +		static_branch_enable(&sched_uclamp_used);
+> >>
+> >> I don't think it matters ATM, but shouldn't we flip that *before* updating
+> >> the TG's to avoid any future surprises?
+> >
+> > What sort of surprises are you thinking of?
+> >
+> 
+> Say if we end up adding static key checks in some other uclamp functions
+> (which are called in the TG update) and don't change this here, someone
+> will have to scratch their heads to figure out the key enablement needs to
+> be moved one line higher. It's harmless future-proofing, I think.
 
+Hehe okay, I'll change that.
+
+Thanks
+
+--
+Qais Yousef
