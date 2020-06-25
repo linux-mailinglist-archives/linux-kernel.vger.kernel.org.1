@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C65420A92F
-	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 01:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F45A20A935
+	for <lists+linux-kernel@lfdr.de>; Fri, 26 Jun 2020 01:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726008AbgFYXeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 19:34:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46730 "EHLO
+        id S1726062AbgFYXe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 19:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgFYXeg (ORCPT
+        with ESMTP id S1725930AbgFYXeh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 19:34:36 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97F22C08C5C1;
-        Thu, 25 Jun 2020 16:34:35 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id i14so7600808ejr.9;
-        Thu, 25 Jun 2020 16:34:35 -0700 (PDT)
+        Thu, 25 Jun 2020 19:34:37 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B88C08C5DB;
+        Thu, 25 Jun 2020 16:34:36 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id rk21so7633146ejb.2;
+        Thu, 25 Jun 2020 16:34:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=FxVJdBkD56m2b+9x5uGOay3SmZuWA0sM3yEAtSY5QyU=;
-        b=RljKU9urE8CLGCoVsFedilwcAgV1lqJa0aRSIlcc6sEm22hZyczA/k28i2X6NKba+1
-         ZwsZ1cZkHa/hoiZx0sMfyv7GXAXy0wq8iRBXsT294xjM7gptTYSJFSjxZgtBZ6VmQuca
-         C4b7lI+hYkNXmgfs126ohMzIZONgS016MKwgMCWazeLoYLXzFVv1te7C4bqlPV9ckaPS
-         SMnFwbZpPQnk/7sBEBZ22bHQJtkEtagW/5I64Ur7jj1v8jJDyRCQwk97eQ50Hw5m+Ypq
-         GMwb92Kz4uTcEPUe8cXQAKtGsDMxmf9o3K9fnvFHltLSk10osRrgD/cEVIOyoYVc/C+I
-         imbA==
+        bh=fWdpO4GnBs7BEt8G3PHlb+jDJVr2O1LVzT1H9YOtCB0=;
+        b=l/N1voluvfY5KulvQYX4NBS5Fnr1UcFA79PNCheJwzmUcMrzwT26S1XhVzKXRUi3EC
+         EHKNzGeVAjmY2YVIZkHrOmk+nJNLKWfor/ZHgNIR946wbXmmx2fJqry8UpVhO9qPTb3h
+         qRcDdYLrm6vJQDprbd7wwWa7pIGTju7JSxcYykjMPGA+eDN9PJI5wa2DvgaiGzlIB89e
+         a7icQ64ksBpUPoZd4WzT5rS7zcaFu6O97cEafVU/2sR1/PPzuvKnBNGfLUgdennMAI30
+         NbnE809GtF8GD4qtnPyDBfFr60ky0Q+Q5fQrE8OrK8H2e5G782iIzfrpV35/zz6QI761
+         Nsjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=FxVJdBkD56m2b+9x5uGOay3SmZuWA0sM3yEAtSY5QyU=;
-        b=r3yS3MUHg92hvUwu11DH/ZitlxcMu/Mece4W/KFVtcZ9wdBrziK8J8spdMrHpm11/3
-         S6JuKPAsy+wnLZUy1U5ctTTRcLuuSbPsRaLAHk0MJwqbQGgc68fLZK5tQ2+N3bz5sXwR
-         gOXmiKxzgPrwdlY5xRCp0A1q+a0ClN2Wq5mEVqkFyP05Z5Bwjy4eUbD8EaBTCwKe+qO1
-         ga7U3P1Q+itpEhylgjNR32lzVCVpuCi44V2YW8YSyN/vUpw7NK/sykkqK0+HNYqiNXdl
-         qEifdk9/ElVs9JheaEbikzIcL3/GaN3xJDsjaztEXuAzcibcoPAZ2TQ5vzW0Ee/Y6TWV
-         ARKg==
-X-Gm-Message-State: AOAM533F+/LLVTOh6VNS2mCoILTWxrysdLuf+ct3GsWEzXFpoK/4caPM
-        7K8QHCxMGrb3zXTSjaiQ+iA=
-X-Google-Smtp-Source: ABdhPJw6hjRSiGRjHiiQSf58ntxNJpG22CA6Gy9Xjp3vuHUCeXGKZvspStJb8KYnDNMijQwjPlQroA==
-X-Received: by 2002:a17:906:e299:: with SMTP id gg25mr195642ejb.160.1593128074386;
-        Thu, 25 Jun 2020 16:34:34 -0700 (PDT)
+        bh=fWdpO4GnBs7BEt8G3PHlb+jDJVr2O1LVzT1H9YOtCB0=;
+        b=aF7aXUGQw999on1tcSi3J/DdL6KABwDrhM8OALTwd1W5drHDKzMlQ6mPUl2d7ZqkWv
+         xRLGHLMSROotSsr1NcWMwitrS0sso94f5Ozz8BJNEjF5+qoPwYwyjwbj0NINCGRx7Evi
+         VckS4p94l99MnLHP+C9SzvX5jA/zYAOW+Acq+gBj99GTyUy0R7vPKL3TkFNz/UL5znsI
+         qFVxaE3ckDV8PB8jC9sY18HPhkLvm2r6OuID3jVJVFlGj3fuUk7Urp35fr7c1ZRBs09/
+         77FvDJVegBnZl9rb0oC41Ya07f2VtAoB/vJmfLApFgh9rsDeasg8L1UDg6opnzsdpmsM
+         TlHg==
+X-Gm-Message-State: AOAM532aOCdV7engQgUEOL4cpxFJ59JSjVmeerJq3WTyK3b/NCVI8801
+        tLEwJ6xgNPCrGSyO7u2DWec=
+X-Google-Smtp-Source: ABdhPJwjKmxIjrokXff6nUkVfnswmEOAIDkK+2CuPK482Wjo/DRn6nylKDQMf++BY0EuGJ68xEeGpg==
+X-Received: by 2002:a17:906:c259:: with SMTP id bl25mr163087ejb.303.1593128075498;
+        Thu, 25 Jun 2020 16:34:35 -0700 (PDT)
 Received: from localhost.localdomain ([188.24.137.55])
-        by smtp.gmail.com with ESMTPSA id u2sm13699184edq.29.2020.06.25.16.34.33
+        by smtp.gmail.com with ESMTPSA id u2sm13699184edq.29.2020.06.25.16.34.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 16:34:33 -0700 (PDT)
+        Thu, 25 Jun 2020 16:34:35 -0700 (PDT)
 From:   Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 To:     Rob Herring <robh+dt@kernel.org>,
         =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
         Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, linux-actions@lists.infradead.org
-Subject: [PATCH 08/10] arm: dts: owl-s500-roseapplepi: Use UART clock from CMU
-Date:   Fri, 26 Jun 2020 02:34:20 +0300
-Message-Id: <1a98f4f2a8cc5d0277b93dab00b2249cad22f507.1593124368.git.cristian.ciocaltea@gmail.com>
+Subject: [PATCH 09/10] arm: dts: owl-s500-roseapplepi: Add uSD support
+Date:   Fri, 26 Jun 2020 02:34:21 +0300
+Message-Id: <521e5024f355c006d7abc8fe30d5cae63a9601f1.1593124368.git.cristian.ciocaltea@gmail.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <cover.1593124368.git.cristian.ciocaltea@gmail.com>
 References: <cover.1593124368.git.cristian.ciocaltea@gmail.com>
@@ -67,37 +67,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove the UART fixed clock for RoseapplePi SBC and switch to using
-the clock provided by CMU.
+Add uSD support for RoseapplePi SBC using a fixed regulator as a
+temporary solution until PMIC support becomes available.
 
 Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@gmail.com>
 ---
- arch/arm/boot/dts/owl-s500-roseapplepi.dts | 7 -------
- 1 file changed, 7 deletions(-)
+ arch/arm/boot/dts/owl-s500-roseapplepi.dts | 50 ++++++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
 diff --git a/arch/arm/boot/dts/owl-s500-roseapplepi.dts b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-index a2087e617cb2..800edf5d2d12 100644
+index 800edf5d2d12..0a916b6c83a8 100644
 --- a/arch/arm/boot/dts/owl-s500-roseapplepi.dts
 +++ b/arch/arm/boot/dts/owl-s500-roseapplepi.dts
-@@ -25,12 +25,6 @@ memory@0 {
+@@ -14,6 +14,7 @@ / {
+ 	model = "Roseapple Pi";
+ 
+ 	aliases {
++		mmc0 = &mmc0;
+ 		serial2 = &uart2;
+ 	};
+ 
+@@ -25,6 +26,55 @@ memory@0 {
  		device_type = "memory";
  		reg = <0x0 0x80000000>; /* 2GB */
  	};
--
--	uart2_clk: uart2-clk {
--		compatible = "fixed-clock";
--		clock-frequency = <921600>;
--		#clock-cells = <0>;
--	};
++
++	/* Fixed regulator used in the absence of PMIC */
++	sd_vcc: sd-vcc {
++		compatible = "regulator-fixed";
++		regulator-name = "fixed-3.1V";
++		regulator-min-microvolt = <3100000>;
++		regulator-max-microvolt = <3100000>;
++		regulator-always-on;
++	};
++};
++
++&pinctrl {
++	mmc0_default: mmc0_default {
++		pinmux {
++			groups = "sd0_d0_mfp", "sd0_d1_mfp", "sd0_d2_d3_mfp",
++				 "sd0_cmd_mfp", "sd0_clk_mfp";
++			function = "sd0";
++		};
++
++		drv_pinconf {
++			groups = "sd0_d0_d3_drv", "sd0_cmd_drv", "sd0_clk_drv";
++			drive-strength = <8>;
++		};
++
++		bias0_pinconf {
++			pins = "sd0_d0", "sd0_d1", "sd0_d2",
++			       "sd0_d3", "sd0_cmd";
++			bias-pull-up;
++		};
++
++		bias1_pinconf {
++			pins = "sd0_clk";
++			bias-pull-down;
++		};
++	};
++};
++
++/* uSD */
++&mmc0 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&mmc0_default>;
++	no-sdio;
++	no-mmc;
++	no-1-8-v;
++	cd-gpios = <&pinctrl 117 GPIO_ACTIVE_LOW>;
++	bus-width = <4>;
++	vmmc-supply = <&sd_vcc>;
++	vqmmc-supply = <&sd_vcc>;
  };
  
  &twd_timer {
-@@ -43,5 +37,4 @@ &timer {
- 
- &uart2 {
- 	status = "okay";
--	clocks = <&uart2_clk>;
- };
 -- 
 2.27.0
 
