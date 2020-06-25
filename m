@@ -2,101 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F98520A51A
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 20:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A584620A522
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 20:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405876AbgFYSiu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 14:38:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57404 "EHLO
+        id S2405984AbgFYSmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 14:42:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728406AbgFYSit (ORCPT
+        with ESMTP id S2405871AbgFYSmW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 14:38:49 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D3C4C08C5C1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 11:38:49 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id t6so6197899otk.9
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 11:38:49 -0700 (PDT)
+        Thu, 25 Jun 2020 14:42:22 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F1FEC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 11:42:22 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id f139so6981979wmf.5
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 11:42:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=CWH44whcqmf9jfNGPsq0f16xjoI7yhIhSHdxKgVmLkc=;
-        b=cyL3pu95gesRduSxMrqdNcvXHXt+CDzu19iUr/NA4OWVTUlfCsfm7B9wBbaHyTm4Xy
-         BU9fW07lLiBW0qmVqJvy29VQpol65KQGGydFYxyH793Z9LZuBzW7EHpiDYJOQPR7POcT
-         mK4WrBaxSMnj3y2SgQ8ihvDTcZbYiAQljvX9OSoxUChAIed1O/FQcgfwOb2jiPbGtRIP
-         rewVcsn3aPt4kzqZa+H9221OhVeUms74WGK9RAanYgLJyLpaiVp3DmCLH60mwzUF84W+
-         kYLLUWGv5JcCys6+Wt71G3haD9e+377sHdLMt6Jq8Go/g2xCySFobJBvKzfj/GuPqmrO
-         L0Yg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=Q8nBgI5fYdLkf44M/rpFf59ow7O6nvw1cbXU0tP/3dc=;
+        b=MBCAuD92q8/NSqoJOljKJyZjrpJEyknYxVeADT3gugZwyf/U9nprDMBfig3oIZaDab
+         7wWPaP7zDS4eAgIoMo1OdZye1noJWO+HYAJjclFMGWBb1a0LSjY9oSdCengKJTAnxGLf
+         9FtKQ5JqWRFqzvZcrcF/GBZ0QhhMtDykuMeav/fSHU7u+AAIJEcCGc4HRa0uk4IhC4R7
+         DIHlJmgM7vw192vdHVz9AD888/WMsITdk5ccwWf4fhEQc0E/CE0bRx5mdenm5W8uGRKY
+         g/sAuTsX/XGzbZ0W9CCMtCVl8HJEKNZuhpyyTWXfWkkzvEr/RNNA8hNqqEbom/FLUPVw
+         8+LA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=CWH44whcqmf9jfNGPsq0f16xjoI7yhIhSHdxKgVmLkc=;
-        b=Rz4ldpt90S5Ts3xaDyDMHrcCYPk0EO3fFZ3ZXYSF50/c/lZZhyqiS1F7bR+aLH7I3/
-         dCl1zxf1n9IVRT6P96NV0htouX1P/rv+R53oaWjbfbzsmyJH6xpwRxnPW0AusA0VGrnL
-         wBpnAZZiEQ99+49O5I4+N6kjDTgRKW7GVZFq78ux2miIHU7VXr2+Djx7M6roKanf+p7c
-         YcG7IVDOwxDwB+S7DbYQbW7/PtK1MqsZOJRgq8YYYUWrVmy5dZ3Y1XY3yVGRJonuUjZ6
-         NLiaDsVIGD56oDLhyh9bnjK8NO23Eczwqfaj+aaaY+8y7HP2t4HHwP2zeqlEg85SrXU4
-         +40Q==
-X-Gm-Message-State: AOAM5309rxPiTayQQzY0Ff0AokbICPyORlhFlWuLcCcBc7S24QcjSaoI
-        mzhYM7p2r6p43cExPQzF/WTwJjf9IDbiAjGeGG0=
-X-Google-Smtp-Source: ABdhPJxRzrBojnfl2WQ+ksxnQIsd4V0seS5IzwoiMV68PUMAKEzUQHw4iu45XBfTlrJnJBgb78bGt7RwTEGfQXlS22Y=
-X-Received: by 2002:a4a:948d:: with SMTP id k13mr3458945ooi.9.1593110328971;
- Thu, 25 Jun 2020 11:38:48 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=Q8nBgI5fYdLkf44M/rpFf59ow7O6nvw1cbXU0tP/3dc=;
+        b=W0VC5nPy07Mc0lr+f4T86wAgW8vKE94VDf9sSWpgx0Oppwb3P636+Jeg87dPw0IAgC
+         CZp2YGX19j38KJ0FJxYhXgQeqtCE8FWEIKBrD72NX+XOC33/RO6Vcuc/5tzl+uoxvZR3
+         bYNQvwNQf92ijoKfSufDf5PeSR3nrmPuYCi/17/29ir2ArcneDeF1Pm/GTF0gPVKyh+Z
+         Kt1RXjp6d9BMOnCELjrdQf27jLMG1tyVQHxza8M+VtoVYOC/iBRuq6G5OPJ/Ypp7lVpR
+         NxnYDN4iOMdtRRpo5FoEw/v15j9kopaa2avV/iPhaVaxNW9Qf5D2jw/YQhJRKB83EapA
+         KHAg==
+X-Gm-Message-State: AOAM532e25zZNPLixzQqIOIXkkEhqp7Nr2+IZG07xgarJ1IotpmskjVS
+        jAyQcP1fq1ZQAZZn7tnreaEvZw==
+X-Google-Smtp-Source: ABdhPJxFJ2dLH4VgwSt9IoYG6C6YRW6P6gUXk1Vov0TqEtIw8ihaymjRs5AQmHY8lsWK9lBM9ugvFA==
+X-Received: by 2002:a1c:7c15:: with SMTP id x21mr4602726wmc.146.1593110540992;
+        Thu, 25 Jun 2020 11:42:20 -0700 (PDT)
+Received: from dell ([2.27.35.144])
+        by smtp.gmail.com with ESMTPSA id 92sm25829134wrr.96.2020.06.25.11.42.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jun 2020 11:42:20 -0700 (PDT)
+Date:   Thu, 25 Jun 2020 19:42:18 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/10] regulator: devres: Fix issues with kerneldoc
+ headers
+Message-ID: <20200625184218.GU954398@dell>
+References: <20200625163614.4001403-1-lee.jones@linaro.org>
+ <20200625163614.4001403-3-lee.jones@linaro.org>
+ <20200625172813.GD5686@sirena.org.uk>
 MIME-Version: 1.0
-Received: by 2002:a4a:3149:0:0:0:0:0 with HTTP; Thu, 25 Jun 2020 11:38:48
- -0700 (PDT)
-Reply-To: inforproject013@gmail.com
-From:   INFOR PROJECT <infrprese@gmail.com>
-Date:   Thu, 25 Jun 2020 18:38:48 +0000
-Message-ID: <CAKS7o9eyF4V=rXJMT2YGr4JBptGdkT9XanH_PtwnSbbirzMREQ@mail.gmail.com>
-Subject: WITH DUE RESPECT PLEASE
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200625172813.GD5686@sirena.org.uk>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Friend
+On Thu, 25 Jun 2020, Mark Brown wrote:
 
- I sourced your email from a human resource profile database in the
- chamber, my name is Mr.Ibrahim Zufar. Account officer to late Mr. Hussein
- Mubarak from Kuwait who is a gold merchant Agent here in Ouagadougou
- Burkina Faso, a well known Philanthropist before he died.
+> On Thu, Jun 25, 2020 at 05:36:06PM +0100, Lee Jones wrote:
+> 
+> >  /**
+> >   * devm_regulator_register - Resource managed regulator_register()
+> > + * @dev: device for regulator "consumer"
+> >   * @regulator_desc: regulator to register
+> >   * @config: runtime configuration for regulator
+> >   *
+> 
+> That's an odd style you're using in your "change" here - why the quotes?
 
- He made a Will stating that $5.4Million dollars (Five million four
- hundred thousand USD) should be given to a citizen of our choice  overseas. I
- have made a random draw and your e-mail address was picked as the beneficiary
- to this Will.
+It's taken from other instances in the same file.
 
- I am particularly interested in securing this money from the Bank because
- they have issued a notice instructing me been the account officer to
- produce the beneficiary of this else the money will be credited to the
- Government treasury as per law here. It is my utmost desire to execute
- the Will of my late client Mr. Hussein Mubarak since he is no more alive,
- both wife Nera Mubarak, and daughter Fatimata Mubarak.
-
- You are required to contact me immediately to enable me update you in
- detail's about the process of this very golden opportunity. I urge you to
- call or mail me immediately for further details bearing in mind that the
- Bank has given us a date limit, please act fast. I await your urgent
- response.
-
- Meanwhile I request on your return mail, kindly re-send me your data's
- information's:
-
- 1. Your Name in Full:
- 2. Your Address:
- 3. You're Occupation:
- 4. Your Nationality;
- 5. Your City;
- 6. You're Telephone with :
- 7. Mobile number:
- 8. Your Age:
- 9. Your Gender:
-
- However, feel free to ask me any question and I promise to clarify you on
- any doubts.
-
- Mr.Ibrahim Zufar
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
