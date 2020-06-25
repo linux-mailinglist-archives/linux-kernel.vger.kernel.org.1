@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28FD720A603
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 500ED20A60A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406758AbgFYTl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 15:41:56 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40002 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406069AbgFYTlz (ORCPT
+        id S2406831AbgFYTmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 15:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406573AbgFYTmT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 15:41:55 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05PJUuEr101700;
-        Thu, 25 Jun 2020 15:41:51 -0400
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31vvkxmgcx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Jun 2020 15:41:51 -0400
-Received: from m0098421.ppops.net (m0098421.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05PJUwjO101945;
-        Thu, 25 Jun 2020 15:41:50 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 31vvkxmgcd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Jun 2020 15:41:50 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05PJel7w002109;
-        Thu, 25 Jun 2020 19:41:48 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03ams.nl.ibm.com with ESMTP id 31uus526bp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 25 Jun 2020 19:41:48 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05PJeR4Z52822498
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Jun 2020 19:40:27 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 7837A11C04C;
-        Thu, 25 Jun 2020 19:41:46 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5BB5711C054;
-        Thu, 25 Jun 2020 19:41:44 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.85.142.225])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 25 Jun 2020 19:41:44 +0000 (GMT)
-Message-ID: <1593114103.27152.346.camel@linux.ibm.com>
-Subject: Re: [PATCH 01/12] ima: Have the LSM free its audit rule
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-Cc:     James Morris <jmorris@namei.org>,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        Lakshmi Ramasubramanian <nramas@linux.microsoft.com>,
-        Prakhar Srivastava <prsriva02@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Janne Karhunen <janne.karhunen@gmail.com>
-Date:   Thu, 25 Jun 2020 15:41:43 -0400
-In-Reply-To: <20200623003236.830149-2-tyhicks@linux.microsoft.com>
-References: <20200623003236.830149-1-tyhicks@linux.microsoft.com>
-         <20200623003236.830149-2-tyhicks@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.20.5 (3.20.5-1.fc24) 
-Mime-Version: 1.0
+        Thu, 25 Jun 2020 15:42:19 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4C4C08C5DB
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:42:19 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id m26so3846863lfo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:42:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RBqVnpfnVrl3Eo0TwToDu8x11M7fxl+21M8g4ZFsyRc=;
+        b=qCKjj3/AaQfadF2MqDeWIU2rCcH6pnvafyTZrHJtL9EnOyUO3uVvExihLmMI9XvETl
+         o7hubNXY7Zhim8aCPWrVw5MkAgbkyCDE3B6w/9wAIp0lMLwZhlhK/RhhAR/Ju8VJdWtx
+         TM6RddLYSB4pRAfrcDWnLmwXs1xMZLJg/x3ULIJCJ/XtdTnaXdDC0d5rQSdUt08L0LzM
+         y+qgJprN39qmuZl1tZHgLlQOaWmfvf1wsI3xC+bG32IGROcwhJPnOl9l9/zFq2toGQWX
+         bCgXFUBOH8OyWzKt6PYjPwNSj3mDr5iVg7sffwtl1c6UQhmG13J5OXdTzACip7VWLX+r
+         Mxdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RBqVnpfnVrl3Eo0TwToDu8x11M7fxl+21M8g4ZFsyRc=;
+        b=rYAIROH5Ri4PMRxJsPI4wlaEtNDP6UuK22IQ4DyFcSalKqPPI8U8SENJVnKXxwJUl6
+         6G+Foghob1VlNUYJ7rpM3qYrqXJtAt+r6QwQob5AO8aM+a54zj+GIIXve+JhHD+Ss1XA
+         yxnIr6URXJdv6CW2UhUn8vUewtlxBEx+pvjRDjap4OGp8WJX/qiyCfNej1Z/FxDUTBDy
+         khEs7cr3hLJdlEqhg+IAcX3P25WOAoyzFtGqRKdn4lFCraaseJG84uaen6k+QUcKilP8
+         UvJek4qn0jvDZxJ8AuKAbTXX6ttFUFhxsLuSIe0oOC0xOfidzcKy/7LiXJyodkXIsX9R
+         G5ig==
+X-Gm-Message-State: AOAM531O3b4wJsatwa2O6wvHSo5BNgI4//RnYJALp1YtH4uacxdCBfZ3
+        gYL0JvBR7qDirbo/MXNS3U42+eP/TE8=
+X-Google-Smtp-Source: ABdhPJzSOUisrMhM5vq2c+dSBqiSjCjDeE1j1fmo/G3ck5o2Q2Gso9ahJsOwn6621Vmx9QJsY2YGAg==
+X-Received: by 2002:a19:c797:: with SMTP id x145mr19437302lff.143.1593114137429;
+        Thu, 25 Jun 2020 12:42:17 -0700 (PDT)
+Received: from [192.168.1.211] ([188.162.64.162])
+        by smtp.gmail.com with ESMTPSA id y16sm4985018ljm.19.2020.06.25.12.42.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jun 2020 12:42:16 -0700 (PDT)
+Subject: Re: [PATCH 2/3] phy: qcom-qmp: Add QMP V4 USB3 UNIPHY
+To:     Jonathan Marek <jonathan@marek.ca>, linux-arm-msm@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        "open list:GENERIC PHY FRAMEWORK" <linux-kernel@vger.kernel.org>
+References: <20200524021416.17049-1-jonathan@marek.ca>
+ <20200524021416.17049-3-jonathan@marek.ca>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Message-ID: <4df0c6c4-985f-de43-8ecd-697e3062b44c@linaro.org>
+Date:   Thu, 25 Jun 2020 22:42:15 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
+MIME-Version: 1.0
+In-Reply-To: <20200524021416.17049-3-jonathan@marek.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
- definitions=2020-06-25_15:2020-06-25,2020-06-25 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 malwarescore=0 adultscore=0 impostorscore=0
- priorityscore=1501 mlxscore=0 phishscore=0 cotscore=-2147483648
- spamscore=0 mlxlogscore=999 suspectscore=2 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006250113
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-06-22 at 19:32 -0500, Tyler Hicks wrote:
-> Ask the LSM to free its audit rule rather than directly calling kfree().
-> Both AppArmor and SELinux do additional work in their audit_rule_free()
-> hooks. Fix memory leaks by allowing the LSMs to perform necessary work.
+On 24/05/2020 05:14, Jonathan Marek wrote:
+> Add support for the USB3 PHY used by the secondary usb controller on sm8150
 > 
-> Fixes: b16942455193 ("ima: use the lsm policy update notifier")
-> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> Cc: Janne Karhunen <janne.karhunen@gmail.com>
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
 
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+
+-- 
+With best wishes
+Dmitry
