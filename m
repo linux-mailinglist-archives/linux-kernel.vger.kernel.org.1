@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D6B20A4DF
+	by mail.lfdr.de (Postfix) with ESMTP id B15F120A4E0
 	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 20:26:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404482AbgFYSZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 14:25:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:43148 "EHLO foss.arm.com"
+        id S2405842AbgFYS0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 14:26:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:43192 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404019AbgFYSZv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 14:25:51 -0400
+        id S2404019AbgFYS0B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 14:26:01 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8B13FD6E;
-        Thu, 25 Jun 2020 11:25:50 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BE4E9D6E;
+        Thu, 25 Jun 2020 11:26:00 -0700 (PDT)
 Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE7C93F71E;
-        Thu, 25 Jun 2020 11:25:48 -0700 (PDT)
-References: <20200624195811.435857-1-maz@kernel.org> <20200624195811.435857-7-maz@kernel.org>
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 16FF03F71E;
+        Thu, 25 Jun 2020 11:25:58 -0700 (PDT)
+References: <20200624195811.435857-1-maz@kernel.org> <20200624195811.435857-15-maz@kernel.org>
 User-agent: mu4e 0.9.17; emacs 26.3
 From:   Valentin Schneider <valentin.schneider@arm.com>
 To:     Marc Zyngier <maz@kernel.org>
@@ -31,10 +31,10 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Florian Fainelli <f.fainelli@gmail.com>,
         Gregory Clement <gregory.clement@bootlin.com>,
         Andrew Lunn <andrew@lunn.ch>, kernel-team@android.com
-Subject: Re: [PATCH v2 06/17] irqchip/gic-v3: Configure SGIs as standard interrupts
-In-reply-to: <20200624195811.435857-7-maz@kernel.org>
-Date:   Thu, 25 Jun 2020 19:25:46 +0100
-Message-ID: <jhjimffgfyt.mognet@arm.com>
+Subject: Re: [PATCH v2 14/17] arm64: Kill __smp_cross_call and co
+In-reply-to: <20200624195811.435857-15-maz@kernel.org>
+Date:   Thu, 25 Jun 2020 19:25:56 +0100
+Message-ID: <jhjh7uzgfyj.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
@@ -44,84 +44,24 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 24/06/20 20:58, Marc Zyngier wrote:
-> Change the way we deal with GICv3 SGIs by turning them into proper
-> IRQs, and calling into the arch code to register the interrupt range
-> instead of a callback.
->
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
-> ---
->  drivers/irqchip/irq-gic-v3.c | 81 +++++++++++++++++++-----------------
->  1 file changed, 43 insertions(+), 38 deletions(-)
->
-> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> index 19b294ed48ba..d275e9b9533d 100644
-> --- a/drivers/irqchip/irq-gic-v3.c
-> +++ b/drivers/irqchip/irq-gic-v3.c
-> @@ -36,6 +36,8 @@
->  #define FLAGS_WORKAROUND_GICR_WAKER_MSM8996	(1ULL << 0)
->  #define FLAGS_WORKAROUND_CAVIUM_ERRATUM_38539	(1ULL << 1)
->
-> +#define GIC_IRQ_TYPE_PARTITION	(GIC_IRQ_TYPE_LPI + 1)
-> +
+> @@ -852,8 +841,7 @@ void arch_send_wakeup_ipi_mask(const struct cpumask *mask)
+>  #ifdef CONFIG_IRQ_WORK
+>  void arch_irq_work_raise(void)
+>  {
+> -	if (__smp_cross_call)
+> -		smp_cross_call(cpumask_of(smp_processor_id()), IPI_IRQ_WORK);
+> +	smp_cross_call(cpumask_of(smp_processor_id()), IPI_IRQ_WORK);
 
-Nit: this piqued my interest but ended up being just a define shuffle; As a
-member of the git speleologists' guild, I'd be overjoyed with having a
-small notion of that in the changelog.
+AIU the following commit:
 
->  struct redist_region {
->       void __iomem		*redist_base;
->       phys_addr_t		phys_base;
-> @@ -657,38 +659,14 @@ static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs
->       if ((irqnr >= 1020 && irqnr <= 1023))
->               return;
->
-> -	/* Treat anything but SGIs in a uniform way */
-> -	if (likely(irqnr > 15)) {
-> -		int err;
-> -
-> -		if (static_branch_likely(&supports_deactivate_key))
-> -			gic_write_eoir(irqnr);
-> -		else
-> -			isb();
-> -
-> -		err = handle_domain_irq(gic_data.domain, irqnr, regs);
-> -		if (err) {
-> -			WARN_ONCE(true, "Unexpected interrupt received!\n");
-> -			gic_deactivate_unhandled(irqnr);
-> -		}
-> -		return;
-> -	}
-> -	if (irqnr < 16) {
-> +	if (static_branch_likely(&supports_deactivate_key))
->               gic_write_eoir(irqnr);
-> -		if (static_branch_likely(&supports_deactivate_key))
-> -			gic_write_dir(irqnr);
-> -#ifdef CONFIG_SMP
-> -		/*
-> -		 * Unlike GICv2, we don't need an smp_rmb() here.
-> -		 * The control dependency from gic_read_iar to
-> -		 * the ISB in gic_write_eoir is enough to ensure
-> -		 * that any shared data read by handle_IPI will
-> -		 * be read after the ACK.
-> -		 */
+  eb631bb5bf5b ("arm64: Support arch_irq_work_raise() via self IPIs")
 
-Isn't that still relevant?
+It seems arm64 hasn't needed that check since
 
-Also, while staring at this it dawned on me that IPI's don't need the
-eoimode=0 isb(): due to how the IPI flow-handler is structured, we'll get a
-gic_eoi_irq() just before calling into the irqaction. Dunno how much we
-care about it.
+  4b3dc9679cf7 ("arm64: force CONFIG_SMP=y and remove redundant #ifdefs")
 
-> -		handle_IPI(irqnr, regs);
-> -#else
-> -		WARN_ONCE(true, "Unexpected SGI received!\n");
-> -#endif
-> +	else
-> +		isb();
-> +
-> +	if (handle_domain_irq(gic_data.domain, irqnr, regs)) {
-> +		WARN_ONCE(true, "Unexpected interrupt received!\n");
-> +		gic_deactivate_unhandled(irqnr);
->       }
+Did I get that right?
+
 >  }
+>  #endif
 >
