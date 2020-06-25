@@ -2,728 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F3020A0A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 16:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06EBD20A0A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 16:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405308AbgFYON0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 10:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44462 "EHLO
+        id S2405356AbgFYOOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 10:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405244AbgFYONZ (ORCPT
+        with ESMTP id S2405286AbgFYON7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 10:13:25 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E3DC08C5C1;
-        Thu, 25 Jun 2020 07:13:25 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id i4so3283521pjd.0;
-        Thu, 25 Jun 2020 07:13:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ZzrtX9LHIA4DHVg/vZjZoKEzmWi+AFLSfg2C2N0Rxxw=;
-        b=hK0/hc5r0oyCvb63IbhlHa0mddVARfDyAhkb6LfBjJM9aRm+t1ZaaErwDW2qjGy4aS
-         jQgVcZDB6RgTsdxO1nFZBXBtqpEIQzF8gNJjQZIR5Oit/EU5f3j1qAmcpOyVz8o+NBYq
-         uNAME7dRu8SPelvMFUSzK48bq9DkNGTbT7e61gFVRALAISSOoNvbrSVbTZcxtGxIyFS1
-         HlZFsmkBL1393lO/UXLoSXxA2aIq8FBMmmM6pYE0r2FxGejhpg9xDmgjLnZzAJi8dnmY
-         7JFruBXEzghmHosMIrp7pTkgE1H+QOKKAl8vZMSCr+360h11kYCGyQgqj0HVAx3DqyH/
-         xlgQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ZzrtX9LHIA4DHVg/vZjZoKEzmWi+AFLSfg2C2N0Rxxw=;
-        b=prPvKyA8pE8md52LeFZ8vb+a5WsRjLPr5N0zAS+ejRZHcqKg8QlzNQupgKRtQMmuRg
-         zA8P2RKcu1wlbCa/GdnTsOAaxQ76Yy6oV+kiANlz/2l3+Wz6ErG9IiVEdgPiWC9/YClF
-         KelEIZkPXcW6Cvy9ubV32CQ3EV2i5J6xFKRckISica+CO5KfTZX/dXpNtoPOdOWfltia
-         N/qM9jNhUZJxwtsRi6oJvXbggMZk684C1BWah2yLf20zwAnz1m0iSgoOOthqnfYdc4yh
-         2RMZqzDWogpjd07XohACe2d6r6SrZ+Z5vXc1xoyKCir3O75Y3Vg95Ufz/ztB3xygcc4e
-         64Wg==
-X-Gm-Message-State: AOAM533Vq0Xj/qpKOoImyegr0u4Q0kSMVULyCvQQq1lEb92L39pl9Ru0
-        nbRxUwGqEQXkrm2GpaEdYyo=
-X-Google-Smtp-Source: ABdhPJwZVTmEvXTEDP/mLjUjVQS6jXwYJWj4IhF7lUUfSbSzS8YUR3pTwUhTI4KDAl/3lkXPPbJ+4w==
-X-Received: by 2002:a17:90b:b16:: with SMTP id bf22mr3362261pjb.151.1593094404919;
-        Thu, 25 Jun 2020 07:13:24 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id ck11sm8647912pjb.51.2020.06.25.07.13.23
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 25 Jun 2020 07:13:24 -0700 (PDT)
-Date:   Thu, 25 Jun 2020 07:13:23 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Marius Zachmann <mail@mariuszachmann.de>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: Re: [PATCH v6] hwmon: add Corsair Commander Pro driver
-Message-ID: <20200625141323.GA141292@roeck-us.net>
-References: <20200625134531.5977-1-mail@mariuszachmann.de>
+        Thu, 25 Jun 2020 10:13:59 -0400
+Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913CAC08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 07:13:59 -0700 (PDT)
+Received: from localhost ([127.0.0.1] helo=vostro)
+        by Galois.linutronix.de with esmtps (TLS1.2:RSA_AES_256_CBC_SHA1:256)
+        (Exim 4.80)
+        (envelope-from <john.ogness@linutronix.de>)
+        id 1joSdW-0000GD-HJ; Thu, 25 Jun 2020 16:13:54 +0200
+From:   John Ogness <john.ogness@linutronix.de>
+To:     Dave Young <dyoung@redhat.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PATCH v3 0/3] printk: replace ringbuffer
+References: <20200618144919.9806-1-john.ogness@linutronix.de>
+        <20200625071959.GA18744@dhcp-128-65.nay.redhat.com>
+Date:   Thu, 25 Jun 2020 16:13:52 +0200
+In-Reply-To: <20200625071959.GA18744@dhcp-128-65.nay.redhat.com> (Dave Young's
+        message of "Thu, 25 Jun 2020 15:19:59 +0800")
+Message-ID: <87wo3vi673.fsf@jogness.linutronix.de>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200625134531.5977-1-mail@mariuszachmann.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 03:45:31PM +0200, Marius Zachmann wrote:
-> This is v6 of a driver for the Corsair Commander Pro.
-> It provides sysfs attributes for:
-> - Reading fan speed
-> - Reading temp sensors
-> - Reading voltage values
-> - Writing pwm and reading last written pwm
-> - Reading fan and temp connection status
-> 
-> It is an usb driver, so it needs to be on the hid_ignore_list
-> in hid-quirks.h. The Corsair Commander Pro is a fan controller
-> and provides no means for user interaction.
-> The two device numbers are there, because there is a slightly
-> different version of the same device. (Only difference
-> seem to be in some presets.)
-> 
-> This is based on the staging/hwmon tree.
-> 
-> Signed-off-by: Marius Zachmann <mail@mariuszachmann.de>
-> ---
-> 
-> Changes from v5
-> - added bitmaps for temp_cnct and fan_cnct
-> - ccp_visible returns 0 when there is no connection
->   and removed tests for connection in other functions
-> - removed temp labels
-> - add define for fan and temp sensor count
-> - removed unneccesary mutex from get_temp_cnct and get_fan_cnct
->   and moved these functions directly above ccp_probe
-> - no more setting return values in ccp_read, ccp_read_string, ccp_write
->   just return directly instead of break
-> - get_data returns values (always >= 0) directly
-> - inlined get_temp
-> - removed first two error messages in send_usb_cmd and
->   changed last one to dev_dbg
-> - comment alignments and clarifications
-> - renamed goto label to "out_unlock"
-> - sizeof(*ccp) instead of sizeof(struct ccp_device)
-> 
-> Changes from v4
-> - squashed 3 commits into one.
-> 
-> Changes from v3
-> - add device ids to hid_ignore_list in hid-quirks.h
-> - removed unused update_interval
-> - ccp_disconnect is static
-> ---
->  Documentation/hwmon/corsair-cpro.rst |  39 +++
->  Documentation/hwmon/index.rst        |   1 +
->  MAINTAINERS                          |   6 +
->  drivers/hid/hid-quirks.c             |   2 +
->  drivers/hwmon/Kconfig                |  10 +
->  drivers/hwmon/Makefile               |   1 +
->  drivers/hwmon/corsair-cpro.c         | 454 +++++++++++++++++++++++++++
->  7 files changed, 513 insertions(+)
->  create mode 100644 Documentation/hwmon/corsair-cpro.rst
->  create mode 100644 drivers/hwmon/corsair-cpro.c
-> 
-> --
-> 2.27.0
-> 
-> diff --git a/Documentation/hwmon/corsair-cpro.rst b/Documentation/hwmon/corsair-cpro.rst
-> new file mode 100644
-> index 000000000000..5913e23d764c
-> --- /dev/null
-> +++ b/Documentation/hwmon/corsair-cpro.rst
-> @@ -0,0 +1,39 @@
-> +.. SPDX-License-Identifier: GPL-2.0-or-later
-> +
-> +Kernel driver corsair-cpro
-> +==========================
-> +
-> +Supported devices:
-> +
-> +  * Corsair Commander Pro
-> +  * Corsair Commander Pro (1000D)
-> +
-> +Author: Marius Zachmann
-> +
-> +Description
-> +-----------
-> +
-> +This driver implements the sysfs interface for the Corsair Commander Pro.
-> +The Corsair Commander Pro is a USB device with 6 fan connectors,
-> +4 temperature sensor connectors and 2 Corsair LED connectors.
-> +It can read the voltage levels on the SATA power connector.
-> +
-> +Usage Notes
-> +-----------
-> +
-> +Since it is a USB device, hotswapping is possible. The device is autodetected.
-> +
-> +Sysfs entries
-> +-------------
-> +
-> +======================= =====================================================================
-> +in0_input		Voltage on SATA 12v
-> +in1_input		Voltage on SATA 5v
-> +in2_input		Voltage on SATA 3.3v
-> +temp[1-4]_input		Temperature on connected temperature sensors
-> +fan[1-6]_input		Connected fan rpm.
-> +fan[1-6]_label		Shows fan type as detected by the device.
-> +pwm[1-6]		Sets the fan speed. Values from 0-255.
-> +			When reading, it reports the last value if it was set by the driver.
-> +			Otherwise returns 0.
-> +======================= =====================================================================
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index 55ff4b7c5349..750d3a975d82 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -47,6 +47,7 @@ Hardware Monitoring Kernel Drivers
->     bel-pfe
->     bt1-pvt
->     coretemp
-> +   corsair-cpro
->     da9052
->     da9055
->     dell-smm-hwmon
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 68f21d46614c..47b0361718f4 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -4400,6 +4400,12 @@ S:	Maintained
->  F:	Documentation/hwmon/coretemp.rst
->  F:	drivers/hwmon/coretemp.c
-> 
-> +CORSAIR-CPRO HARDWARE MONITOR DRIVER
-> +M:	Marius  <mail@mariuszachmann.de>
-> +L:	linux-hwmon@vger.kernel.org
-> +S:	Maintained
-> +F:	drivers/hwmon/corsair-cpro.c
-> +
->  COSA/SRP SYNC SERIAL DRIVER
->  M:	Jan "Yenya" Kasprzak <kas@fi.muni.cz>
->  S:	Maintained
-> diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-> index ca8b5c261c7c..7b7bc7737c53 100644
-> --- a/drivers/hid/hid-quirks.c
-> +++ b/drivers/hid/hid-quirks.c
-> @@ -699,6 +699,8 @@ static const struct hid_device_id hid_ignore_list[] = {
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_AXENTIA, USB_DEVICE_ID_AXENTIA_FM_RADIO) },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_BERKSHIRE, USB_DEVICE_ID_BERKSHIRE_PCWD) },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_CIDC, 0x0103) },
-> +	{ HID_USB_DEVICE(USB_VENDOR_ID_CORSAIR, 0x0c10) },
-> +	{ HID_USB_DEVICE(USB_VENDOR_ID_CORSAIR, 0x1d00) },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_CYGNAL, USB_DEVICE_ID_CYGNAL_RADIO_SI470X) },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_CYGNAL, USB_DEVICE_ID_CYGNAL_RADIO_SI4713) },
->  	{ HID_USB_DEVICE(USB_VENDOR_ID_CMEDIA, USB_DEVICE_ID_CM109) },
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index 288ae9f63588..8b046a5dfa40 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -439,6 +439,16 @@ config SENSORS_BT1_PVT_ALARMS
->  	  the data conversion will be periodically performed and the data will be
->  	  saved in the internal driver cache.
-> 
-> +config SENSORS_CORSAIR_CPRO
-> +	tristate "Corsair Commander Pro controller"
-> +	depends on USB
-> +	help
-> +	  If you say yes here you get support for the Corsair Commander Pro
-> +	  controller.
-> +
-> +	  This driver can also be built as a module. If so, the module
-> +	  will be called corsair-cpro.
-> +
->  config SENSORS_DRIVETEMP
->  	tristate "Hard disk drives with temperature sensors"
->  	depends on SCSI && ATA
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index 3e32c21f5efe..18e1ef74ade7 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -56,6 +56,7 @@ obj-$(CONFIG_SENSORS_ATXP1)	+= atxp1.o
->  obj-$(CONFIG_SENSORS_AXI_FAN_CONTROL) += axi-fan-control.o
->  obj-$(CONFIG_SENSORS_BT1_PVT)	+= bt1-pvt.o
->  obj-$(CONFIG_SENSORS_CORETEMP)	+= coretemp.o
-> +obj-$(CONFIG_SENSORS_CORSAIR_CPRO) += corsair-cpro.o
->  obj-$(CONFIG_SENSORS_DA9052_ADC)+= da9052-hwmon.o
->  obj-$(CONFIG_SENSORS_DA9055)+= da9055-hwmon.o
->  obj-$(CONFIG_SENSORS_DELL_SMM)	+= dell-smm-hwmon.o
-> diff --git a/drivers/hwmon/corsair-cpro.c b/drivers/hwmon/corsair-cpro.c
-> new file mode 100644
-> index 000000000000..6c534b064a02
-> --- /dev/null
-> +++ b/drivers/hwmon/corsair-cpro.c
-> @@ -0,0 +1,454 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * corsair-cpro.c - Linux driver for Corsair Commander Pro
-> + * Copyright (C) 2020 Marius Zachmann <mail@mariuszachmann.de>
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/module.h>
-> +#include <linux/mutex.h>
-> +#include <linux/slab.h>
-> +#include <linux/usb.h>
+Hi Dave,
 
-Since you use bit operations, you'll have to include <linux/types.h>
-for DECLARE_BITMAP and <linux/bitops.h> for their use.
+On 2020-06-25, Dave Young <dyoung@redhat.com> wrote:
+> On 06/18/20 at 04:55pm, John Ogness wrote:
+>> Here is a v3 for the first series to rework the printk
+>> subsystem. The v2 and history are here [0]. This first series
+>> only replaces the existing ringbuffer implementation. No locking
+>> is removed. No semantics/behavior of printk are changed.
+>> 
+>> Reviews on the ringbuffer are still ongoing, but I was asked to
+>> post this new version since several changes from v2 have been
+>> already agreed upon.
+>> 
+>> The series is based on v5.8-rc1.
+>
+> Do you have the kdump userspace part link so that people can try
+> and do some testing?
+>
+> Eg. some makedumpfile/crash tool git branch etc.
 
-However, for simplicity I'd suggest to use unsigned long for variable
-declarations and BIT() to set and check it (and include <linux/bits.h>).
-Bitmap only adds value if an array is needed to fit all the bits.
-That is just a suggestion, though - if you prefer to use bitmap,
-I have no problems with it.
+I have set up github forks, each with the RFC patch on top in their
+respective "printk" branch:
 
-Otherwise looks good; just a minor nitpick below.
+    https://github.com/Linutronix/crash.git
 
-Thanks,
-Guenter
+    https://github.com/Linutronix/makedumpfile.git
 
-> +
-> +#define USB_VENDOR_ID_CORSAIR			0x1b1c
-> +#define USB_PRODUCT_ID_CORSAIR_COMMANDERPRO	0x0c10
-> +#define USB_PRODUCT_ID_CORSAIR_1000D		0x1d00
-> +
-> +#define OUT_BUFFER_SIZE		63
-> +#define IN_BUFFER_SIZE		16
-> +#define LABEL_LENGTH		11
-> +
-> +#define CTL_GET_TMP_CNCT	0x10	/*
-> +					 * returns in bytes 1-4 for each temp sensor:
-> +					 * 0 not connected
-> +					 * 1 connected
-> +					 */
-> +#define CTL_GET_TMP		0x11	/*
-> +					 * send: byte 1 is channel, rest zero
-> +					 * rcv:  returns temp for channel in centi-degree celsius
-> +					 * in bytes 1 and 2
-> +					 * returns 17 in byte 0 if no sensor is connected
-> +					 */
-> +#define CTL_GET_VOLT		0x12	/*
-> +					 * send: byte 1 is rail number: 0 = 12v, 1 = 5v, 2 = 3.3v
-> +					 * rcv:  returns millivolt in bytes 1,2
-> +					 */
-> +#define CTL_GET_FAN_CNCT	0x20	/*
-> +					 * returns in bytes 1-6 for each fan:
-> +					 * 0 not connected
-> +					 * 1 3pin
-> +					 * 2 4pin
-> +					 */
-> +#define CTL_GET_FAN_RPM		0x21	/*
-> +					 * send: byte 1 is channel, rest zero
-> +					 * rcv:  returns rpm in bytes 1,2
-> +					 */
-> +#define CTL_SET_FAN_FPWM	0x23	/*
-> +					 * set fixed pwm
-> +					 * send: byte 1 is fan number
-> +					 * send: byte 2 is percentage from 0 - 100
-> +					 */
-> +
-> +#define NUM_FANS		6
-> +#define NUM_TEMP_SENSORS	4
-> +
-> +struct ccp_device {
-> +	struct usb_device *udev;
-> +	struct mutex mutex; /* whenever buffer is used, lock before send_usb_cmd */
-> +	u8 *buffer;
-> +	int pwm[6];
-> +	DECLARE_BITMAP(temp_cnct, NUM_TEMP_SENSORS);
-> +	DECLARE_BITMAP(fan_cnct, NUM_FANS);
-> +	char fan_label[6][LABEL_LENGTH];
-> +};
-> +
-> +/* send command, check for error in response, response in ccp->buffer */
-> +static int send_usb_cmd(struct ccp_device *ccp, u8 command, u8 byte1, u8 byte2)
-> +{
-> +	int actual_length;
-> +	int ret;
-> +
-> +	memset(ccp->buffer, 0x00, OUT_BUFFER_SIZE);
-> +	ccp->buffer[0] = command;
-> +	ccp->buffer[1] = byte1;
-> +	ccp->buffer[2] = byte2;
-> +
-> +	ret = usb_bulk_msg(ccp->udev, usb_sndintpipe(ccp->udev, 2), ccp->buffer, OUT_BUFFER_SIZE,
-> +			   &actual_length, 1000);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* response needs to be received every time */
-> +	ret = usb_bulk_msg(ccp->udev, usb_rcvintpipe(ccp->udev, 1), ccp->buffer, IN_BUFFER_SIZE,
-> +			   &actual_length, 1000);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* first byte of response is error code */
-> +	if (ccp->buffer[0] != 0x00) {
-> +		dev_dbg(&ccp->udev->dev, "device response error: %d", ccp->buffer[0]);
-> +		return -EIO;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/* requests and returns single data values depending on channel */
-> +static int get_data(struct ccp_device *ccp, int command, int channel)
-> +{
-> +	int ret;
-> +
-> +	mutex_lock(&ccp->mutex);
-> +
-> +	ret = send_usb_cmd(ccp, command, channel, 0);
-> +	if (ret)
-> +		goto out_unlock;
-> +
-> +	ret = (ccp->buffer[1] << 8) + ccp->buffer[2];
-> +
-> +out_unlock:
-> +	mutex_unlock(&ccp->mutex);
-> +	return ret;
-> +}
-> +
-> +static int set_pwm(struct ccp_device *ccp, int channel, long val)
-> +{
-> +	int ret;
-> +
-> +	if (val < 0 || val > 255)
-> +		return -EINVAL;
-> +
-> +	ccp->pwm[channel] = val;
-> +
-> +	/* The Corsair Commander Pro uses values from 0-100 */
-> +	val = DIV_ROUND_CLOSEST(val * 100, 255);
-> +
-> +	mutex_lock(&ccp->mutex);
-> +
-> +	ret = send_usb_cmd(ccp, CTL_SET_FAN_FPWM, channel, val);
-> +
-> +	mutex_unlock(&ccp->mutex);
-> +	return ret;
-> +}
-> +
-> +static int ccp_read_string(struct device *dev, enum hwmon_sensor_types type,
-> +			   u32 attr, int channel, const char **str)
-> +{
-> +	struct ccp_device *ccp = dev_get_drvdata(dev);
-> +
-> +	switch (type) {
-> +	case hwmon_fan:
-> +		switch (attr) {
-> +		case hwmon_fan_label:
-> +			*str = ccp->fan_label[channel];
-> +			return 0;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return -EOPNOTSUPP;
-> +}
-> +
-> +static int ccp_read(struct device *dev, enum hwmon_sensor_types type,
-> +		    u32 attr, int channel, long *val)
-> +{
-> +	struct ccp_device *ccp = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		switch (attr) {
-> +		case hwmon_temp_input:
-> +			ret = get_data(ccp, CTL_GET_TMP, channel);
-> +			if (ret < 0)
-> +				return ret;
-> +			*val = ret * 10;
-> +			return 0;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +	case hwmon_fan:
-> +		switch (attr) {
-> +		case hwmon_fan_input:
-> +			ret = get_data(ccp, CTL_GET_FAN_RPM, channel);
-> +			if (ret < 0)
-> +				return ret;
-> +			*val = ret;
-> +			return 0;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +	case hwmon_pwm:
-> +		switch (attr) {
-> +		case hwmon_pwm_input:
-> +			/* how to read pwm values from the device is currently unknown */
-> +			/* driver returns last set value or 0		               */
-> +			*val = ccp->pwm[channel];
-> +			return 0;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +	case hwmon_in:
-> +		switch (attr) {
-> +		case hwmon_in_input:
-> +			ret = get_data(ccp, CTL_GET_VOLT, channel);
-> +			if (ret < 0)
-> +				return ret;
-> +			*val = ret;
-> +			return 0;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return -EOPNOTSUPP;
-> +};
-> +
-> +static int ccp_write(struct device *dev, enum hwmon_sensor_types type,
-> +		     u32 attr, int channel, long val)
-> +{
-> +	struct ccp_device *ccp = dev_get_drvdata(dev);
-> +
-> +	switch (type) {
-> +	case hwmon_pwm:
-> +		switch (attr) {
-> +		case hwmon_pwm_input:
-> +			return set_pwm(ccp, channel, val);
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return -EOPNOTSUPP;
-> +};
-> +
-> +static umode_t ccp_is_visible(const void *data, enum hwmon_sensor_types type,
-> +			      u32 attr, int channel)
-> +{
-> +	const struct ccp_device *ccp = data;
-> +
-> +	switch (type) {
-> +	case hwmon_temp:
-> +		if (!test_bit(channel, ccp->temp_cnct))
-> +			return 0;
+Note that for crash, only the "log" command (using debug symbols) is
+implemented. The --log argument (using VMCOREINFO) is not implemented.
 
-or break; for consistency.
+For makedumpfile both symbol and VMCOREINFO variants are implemented.
 
-> +
-> +		switch (attr) {
-> +		case hwmon_temp_input:
-> +			return 0444;
-> +		case hwmon_temp_label:
-> +			return 0444;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +	case hwmon_fan:
-> +		if (!test_bit(channel, ccp->fan_cnct))
-> +			return 0;
-> +
-> +		switch (attr) {
-> +		case hwmon_fan_input:
-> +			return 0444;
-> +		case hwmon_fan_label:
-> +			return 0444;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +	case hwmon_pwm:
-> +		if (!test_bit(channel, ccp->fan_cnct))
-> +			return 0;
-> +
-> +		switch (attr) {
-> +		case hwmon_pwm_input:
-> +			return 0644;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +	case hwmon_in:
-> +		switch (attr) {
-> +		case hwmon_in_input:
-> +			return 0444;
-> +		default:
-> +			break;
-> +		}
-> +		break;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	return 0;
-> +};
-> +
-> +static const struct hwmon_ops ccp_hwmon_ops = {
-> +	.is_visible = ccp_is_visible,
-> +	.read = ccp_read,
-> +	.read_string = ccp_read_string,
-> +	.write = ccp_write,
-> +};
-> +
-> +static const struct hwmon_channel_info *ccp_info[] = {
-> +	HWMON_CHANNEL_INFO(chip,
-> +			   HWMON_C_REGISTER_TZ),
-> +	HWMON_CHANNEL_INFO(temp,
-> +			   HWMON_T_INPUT,
-> +			   HWMON_T_INPUT,
-> +			   HWMON_T_INPUT,
-> +			   HWMON_T_INPUT
-> +			   ),
-> +	HWMON_CHANNEL_INFO(fan,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL,
-> +			   HWMON_F_INPUT | HWMON_F_LABEL
-> +			   ),
-> +	HWMON_CHANNEL_INFO(pwm,
-> +			   HWMON_PWM_INPUT,
-> +			   HWMON_PWM_INPUT,
-> +			   HWMON_PWM_INPUT,
-> +			   HWMON_PWM_INPUT,
-> +			   HWMON_PWM_INPUT,
-> +			   HWMON_PWM_INPUT
-> +			   ),
-> +	HWMON_CHANNEL_INFO(in,
-> +			   HWMON_I_INPUT,
-> +			   HWMON_I_INPUT,
-> +			   HWMON_I_INPUT
-> +			   ),
-> +	NULL
-> +};
-> +
-> +static const struct hwmon_chip_info ccp_chip_info = {
-> +	.ops = &ccp_hwmon_ops,
-> +	.info = ccp_info,
-> +};
-> +
-> +/* read fan connection status and set labels */
-> +static int get_fan_cnct(struct ccp_device *ccp)
-> +{
-> +	int channel;
-> +	int mode;
-> +	int ret;
-> +
-> +	ret = send_usb_cmd(ccp, CTL_GET_FAN_CNCT, 0, 0);
-> +	if (ret)
-> +		return ret;
-> +
-> +	for (channel = 0; channel < NUM_FANS; channel++) {
-> +		mode = ccp->buffer[channel + 1];
-> +		if (mode == 0)
-> +			continue;
-> +
-> +		set_bit(channel, ccp->fan_cnct);
-> +
-> +		switch (mode) {
-> +		case 1:
-> +			scnprintf(ccp->fan_label[channel], LABEL_LENGTH,
-> +				  "fan%d 3pin", channel + 1);
-> +			break;
-> +		case 2:
-> +			scnprintf(ccp->fan_label[channel], LABEL_LENGTH,
-> +				  "fan%d 4pin", channel + 1);
-> +			break;
-> +		default:
-> +			scnprintf(ccp->fan_label[channel], LABEL_LENGTH,
-> +				  "fan%d other", channel + 1);
-> +			break;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +/* read temp sensor connection status */
-> +static int get_temp_cnct(struct ccp_device *ccp)
-> +{
-> +	int channel;
-> +	int mode;
-> +	int ret;
-> +
-> +	ret = send_usb_cmd(ccp, CTL_GET_TMP_CNCT, 0, 0);
-> +	if (ret)
-> +		return ret;
-> +
-> +	for (channel = 0; channel < NUM_TEMP_SENSORS; channel++) {
-> +		mode = ccp->buffer[channel + 1];
-> +		if (mode == 0)
-> +			continue;
-> +
-> +		set_bit(channel, ccp->temp_cnct);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int ccp_probe(struct usb_interface *intf, const struct usb_device_id *id)
-> +{
-> +	struct device *hwmon_dev;
-> +	struct ccp_device *ccp;
-> +	int ret;
-> +
-> +	ccp = devm_kzalloc(&intf->dev, sizeof(*ccp), GFP_KERNEL);
-> +	if (!ccp)
-> +		return -ENOMEM;
-> +
-> +	ccp->buffer = devm_kmalloc(&intf->dev, OUT_BUFFER_SIZE, GFP_KERNEL);
-> +	if (!ccp->buffer)
-> +		return -ENOMEM;
-> +
-> +	mutex_init(&ccp->mutex);
-> +
-> +	ccp->udev = interface_to_usbdev(intf);
-> +
-> +	/* temp and fan connection status only updates when device is powered on */
-> +	ret = get_temp_cnct(ccp);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = get_fan_cnct(ccp);
-> +	if (ret)
-> +		return ret;
-> +
-> +	hwmon_dev = devm_hwmon_device_register_with_info(&intf->dev, "corsaircpro", ccp,
-> +							 &ccp_chip_info, 0);
-> +
-> +	return PTR_ERR_OR_ZERO(hwmon_dev);
-> +}
-> +
-> +static void ccp_disconnect(struct usb_interface *intf)
-> +{
-> +}
-> +
-> +static const struct usb_device_id ccp_devices[] = {
-> +	{ USB_DEVICE(USB_VENDOR_ID_CORSAIR, USB_PRODUCT_ID_CORSAIR_COMMANDERPRO) },
-> +	{ USB_DEVICE(USB_VENDOR_ID_CORSAIR, USB_PRODUCT_ID_CORSAIR_1000D) },
-> +	{ }
-> +};
-> +
-> +static struct usb_driver ccp_driver = {
-> +	.name = "corsair-cpro",
-> +	.probe = ccp_probe,
-> +	.disconnect = ccp_disconnect,
-> +	.id_table = ccp_devices
-> +};
-> +
-> +MODULE_DEVICE_TABLE(usb, ccp_devices);
-> +MODULE_LICENSE("GPL");
-> +
-> +module_usb_driver(ccp_driver);
+The VMCOREINFO implementation in makedumpfile shows that there is enough
+VMCOREINFO exported. So it will not be a problem to implement that for
+crash as well.
+
+John Ogness
