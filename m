@@ -2,81 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0620209AFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B7EF209AF6
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:03:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390614AbgFYIDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 04:03:45 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:53550 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390556AbgFYIDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 04:03:39 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 0DDC312E9D91E7029AFE;
-        Thu, 25 Jun 2020 16:03:37 +0800 (CST)
-Received: from DESKTOP-KKJBAGG.china.huawei.com (10.173.220.25) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 25 Jun 2020 16:03:31 +0800
-From:   Zhenyu Ye <yezhenyu2@huawei.com>
-To:     <catalin.marinas@arm.com>, <peterz@infradead.org>,
-        <mark.rutland@arm.com>, <will@kernel.org>,
-        <aneesh.kumar@linux.ibm.com>, <akpm@linux-foundation.org>,
-        <npiggin@gmail.com>, <arnd@arndb.de>, <rostedt@goodmis.org>,
-        <maz@kernel.org>, <suzuki.poulose@arm.com>, <tglx@linutronix.de>,
-        <yuzhao@google.com>, <Dave.Martin@arm.com>, <steven.price@arm.com>,
-        <broonie@kernel.org>, <guohanjun@huawei.com>
-CC:     <yezhenyu2@huawei.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arch@vger.kernel.org>,
-        <linux-mm@kvack.org>, <arm@kernel.org>, <xiexiangyou@huawei.com>,
-        <prime.zeng@hisilicon.com>, <zhangshaokun@hisilicon.com>,
-        <kuhn.chenqun@huawei.com>
-Subject: [RESEND PATCH v5 6/6] arm64: tlb: Set the TTL field in flush_*_tlb_range
-Date:   Thu, 25 Jun 2020 16:03:14 +0800
-Message-ID: <20200625080314.230-7-yezhenyu2@huawei.com>
-X-Mailer: git-send-email 2.22.0.windows.1
-In-Reply-To: <20200625080314.230-1-yezhenyu2@huawei.com>
-References: <20200625080314.230-1-yezhenyu2@huawei.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.173.220.25]
-X-CFilter-Loop: Reflected
+        id S2390510AbgFYIDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 04:03:34 -0400
+Received: from 8bytes.org ([81.169.241.247]:48804 "EHLO theia.8bytes.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726930AbgFYIDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 04:03:32 -0400
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 8E7BF36D; Thu, 25 Jun 2020 10:03:30 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Joerg Roedel <jroedel@suse.de>
+Subject: [PATCH 0/4] KVM: SVM: Code move follow-up
+Date:   Thu, 25 Jun 2020 10:03:21 +0200
+Message-Id: <20200625080325.28439-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch implement flush_{pmd|pud}_tlb_range() in arm64 by
-calling __flush_tlb_range() with the corresponding stride and
-tlb_level values.
+From: Joerg Roedel <jroedel@suse.de>
 
-Signed-off-by: Zhenyu Ye <yezhenyu2@huawei.com>
----
- arch/arm64/include/asm/pgtable.h | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+Hi,
 
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 758e2d1577d0..d5d3fbe73953 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -40,6 +40,16 @@ extern void __pmd_error(const char *file, int line, unsigned long val);
- extern void __pud_error(const char *file, int line, unsigned long val);
- extern void __pgd_error(const char *file, int line, unsigned long val);
- 
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+#define __HAVE_ARCH_FLUSH_PMD_TLB_RANGE
-+
-+/* Set stride and tlb_level in flush_*_tlb_range */
-+#define flush_pmd_tlb_range(vma, addr, end)	\
-+	__flush_tlb_range(vma, addr, end, PMD_SIZE, false, 2)
-+#define flush_pud_tlb_range(vma, addr, end)	\
-+	__flush_tlb_range(vma, addr, end, PUD_SIZE, false, 1)
-+#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-+
- /*
-  * ZERO_PAGE is a global shared page that is always zero: used
-  * for zero-mapped memory areas etc..
+here is small series to follow-up on the review comments for moving
+the kvm-amd module code to its own sub-directory. The comments were
+only about renaming structs and symbols, so there are no functional
+changes in these patches.
+
+The comments addressed here are all from [1].
+
+Regards,
+
+	Joerg
+
+[1] https://lore.kernel.org/lkml/87d0917ezq.fsf@vitty.brq.redhat.com/
+
+Joerg Roedel (4):
+  KVM: SVM: Rename struct nested_state to svm_nested_state
+  KVM: SVM: Add vmcb_ prefix to mark_*() functions
+  KVM: SVM: Add svm_ prefix to set/clr/is_intercept()
+  KVM: SVM: Rename svm_nested_virtualize_tpr() to
+    nested_svm_virtualize_tpr()
+
+ arch/x86/kvm/svm/avic.c   |   2 +-
+ arch/x86/kvm/svm/nested.c |   8 +--
+ arch/x86/kvm/svm/sev.c    |   2 +-
+ arch/x86/kvm/svm/svm.c    | 138 +++++++++++++++++++-------------------
+ arch/x86/kvm/svm/svm.h    |  20 +++---
+ 5 files changed, 85 insertions(+), 85 deletions(-)
+
 -- 
-2.26.2
-
+2.27.0
 
