@@ -2,238 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C40820A3E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A442D20A3D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406734AbgFYRSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 13:18:48 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:37684 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406723AbgFYRSp (ORCPT
+        id S2406690AbgFYRQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 13:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404187AbgFYRQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 13:18:45 -0400
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20200625171841epoutp04c86d145fd6bcc23e50b58514b59a3ca8~b2QgB8Y2n2768227682epoutp04c
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 17:18:41 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20200625171841epoutp04c86d145fd6bcc23e50b58514b59a3ca8~b2QgB8Y2n2768227682epoutp04c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1593105521;
-        bh=HQ3oW5/y/qIsAd2fPg9vdYDB3D3VLLAhMflX2Yb0t+E=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TUEHGmmPNroX/tjbmiAffrwjXaIasd4rGN6XqzhCYPKIr55/zZN7IbQ8D8CATi3QW
-         MvToDZ2/zoYn82ru0B8RgVDUdliHs0MXpAid+1wp+GpOHSCkenU/H7yaAzhQYZN4p4
-         9vInzb1gJV4gKAicxeG8NfM5OO5LKJbHE0eCeWVo=
-Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20200625171840epcas5p3174975f291cba500e7a66006fa08b72d~b2QevPGXa2161421614epcas5p3W;
-        Thu, 25 Jun 2020 17:18:40 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B4.AA.09703.07CD4FE5; Fri, 26 Jun 2020 02:18:40 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20200625171838epcas5p449183e12770187142d8d55a9bf422a8d~b2QdfKmNw2789327893epcas5p4F;
-        Thu, 25 Jun 2020 17:18:38 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20200625171838epsmtrp1931ab9d87e36f85f6419629057796c65~b2QdeXyeQ1577615776epsmtrp1J;
-        Thu, 25 Jun 2020 17:18:38 +0000 (GMT)
-X-AuditID: b6c32a4a-4cbff700000025e7-ec-5ef4dc70d9f4
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        AC.1A.08303.E6CD4FE5; Fri, 26 Jun 2020 02:18:38 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.110.206.5]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20200625171836epsmtip24aad812c1b8b4d3aaf07072aa0407e22~b2Qa-iYUC1929119291epsmtip2d;
-        Thu, 25 Jun 2020 17:18:36 +0000 (GMT)
-From:   Kanchan Joshi <joshi.k@samsung.com>
-To:     axboe@kernel.dk, viro@zeniv.linux.org.uk, bcrl@kvack.org
-Cc:     asml.silence@gmail.com, Damien.LeMoal@wdc.com, hch@infradead.org,
-        linux-fsdevel@vger.kernel.org, mb@lightnvm.io,
-        linux-kernel@vger.kernel.org, linux-aio@kvack.org,
-        io-uring@vger.kernel.org, linux-block@vger.kernel.org,
-        selvakuma.s1@samsung.com, nj.shetty@samsung.com,
-        javier.gonz@samsung.com, Kanchan Joshi <joshi.k@samsung.com>
-Subject: [PATCH v2 2/2] io_uring: add support for zone-append
-Date:   Thu, 25 Jun 2020 22:45:49 +0530
-Message-Id: <1593105349-19270-3-git-send-email-joshi.k@samsung.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1593105349-19270-1-git-send-email-joshi.k@samsung.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAA0WSe1BMYRjGfeecPXtqZs1xLPvJ1ExLTBkht89MyBTOMGZcSjKKxZlldFl7
-        5LJFCau2SUkIIWnIZmpkFbuVLiqXSCRqWqORbZSKrViadTl2jf9+7/s+z/O+881H4cwlkRu1
-        M3oPp45WRMpJV6K01nvqdFXHUMTMnEoKjZzNEqEcfSlAheZ0Eul+Ggh07PhXDD3JyMNQ/7Fn
-        BHrfMShGdb/6SJR1JgmgivZpqLziEYFeGnNIVFD2gEClI5dx1JKVh6Ne2yMSNdkbRAEMe++8
-        WczeLvBhXz6NZUusmWI29ZUNsCcMesAOlniwx6tSMbakqw9b7bLR1X87F7lzL6eesWiL646L
-        aZ6qW5776z61kokgZaIOuFCQngPfHL1E6IArxdAmAKvOGJ2FFcDs4geYoGLoQQCvvJ/3z2HN
-        GSEdIiOAFnMS7ij+iJ5oa0U6QFEk7Q2fn4oVUEr7w3v5kwUJTrdgsDv7gkgIGksvhNcz8wiB
-        CdoLfn/ciwssoQNhVVmGyLHMA7Y9S8GFHBc6CJZ2iIUcSBso2HO9nnBogmB96mHcwWNhT4NB
-        7GA3+DFd62Qe/uiowx3mZABfJ55zmhfD5nI7JizA/9xcbJwhtHF6NEwb6frbhrQEJmsZh9oT
-        vs384DxNBjuz853Mwl9FZuebnAWwdyBbnAHcz/9PzQVADyZwKj5KyfFzVX7R3D5fXhHFx0Yr
-        fbfFRJWAv1/IZ8Vd0Pnus28NwChQAyCFy6WS4GXWCEayXXFAw6ljNqtjIzm+BkykCLlMIrc1
-        RjC0UrGH28VxKk79b4pRLm6JmNQrjBkOsV8L+BY4DxUlPwwPtUji7perQhf8CN9in+Z98LRS
-        pukTb9Xq4m+Gdd3ptqTMxxpPtI83bkhrdQ+mK9zHfCisjLnhW7auyJw7petImEYfNdv7wLpv
-        NWsyErhdH1u7l+rzr20LGbbvHb87Ic6zKUy6KeDk0MBq05LGpY8Lq5OG/CaZXo0z9LYvM7NT
-        Xt9cqRmj+mIi408GrtJPCr+qic8dVT1gObe85UVe8aGY9U3rgxZNXzv/YP/3Av2EBVNNjFI6
-        PPN02xoPc2B9XJDMr9bWw4dQzZG5A4YW/5AL6ar+TGsoUXtrVXdwX3Pllc6s4c0ig42W9Vja
-        qhMatMVWOcHvUMzywdW84jfS0QhMsQMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDLMWRmVeSWpSXmKPExsWy7bCSvG7enS9xBlOfalv8nj6F1WLOqm2M
-        Fqvv9rNZdP3bwmLR2v6NyeL0hEVMFu9az7FYPL7zmd3i6P+3bBZTpjUxWuy9pW2xZ+9JFovL
-        u+awWazYfoTFYtvv+cwWV6YsYrZ4/eMkm8X5v8dZHYQ8ds66y+6xeYWWx+WzpR6bPk1i9+i+
-        +oPRo2/LKkaPz5vkPNoPdDN5bHrylimAM4rLJiU1J7MstUjfLoErY26vYsFGxYqjb66xNTB2
-        SncxcnJICJhIfJrzm62LkYtDSGAHo8TU9oUsEAlxieZrP9ghbGGJlf+es0MUfWSU+HJtJpDD
-        wcEmoClxYXIpSI2IgINE1/HHTCA1zAJPmCQ6v21kBEkIC9hKLJ+0CGwoi4CqxM9Tr5lBbF4B
-        Z4kD2yewQiyQk7h5rpMZZCangIvEtjtg44WASk4/VZjAyLeAkWEVo2RqQXFuem6xYYFRXmq5
-        XnFibnFpXrpecn7uJkZwBGhp7WDcs+qD3iFGJg7GQ4wSHMxKIrwhbp/ihHhTEiurUovy44tK
-        c1KLDzFKc7AoifN+nbUwTkggPbEkNTs1tSC1CCbLxMEp1cA0rZN33/M4I74NEkfOqT00zLju
-        8is0c/+VoDNBS30nBkRU9FodZS21Wte06v405QWbyy9terpFcUJYYBG7Q81DpQWTre92xn/L
-        n7DN8e7qY3e8nJtUDAPOMn6+wHKysHPyDkMG5em2bLdPRf5k+3O7OebFqc+RVbenMBsncLdU
-        KJ3qfJ2c07b0+rPiCtXzW9iyjO4lbGntuvHcaM3pq+W8JyJmO9btcpPV29Sxpu21bf2tmT/i
-        eH8YRRh78vxP5FENFTj9IGo738UdL+NESwzkN9/nM7p8d+vbk8uXC+xYOF3uU5uVEte/PSfl
-        rueyv1yraMxkrLDkxYneKtbDWy6/eNAyL0/WgS/n/PU372eaKrEUZyQaajEXFScCAA0hLezv
-        AgAA
-X-CMS-MailID: 20200625171838epcas5p449183e12770187142d8d55a9bf422a8d
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20200625171838epcas5p449183e12770187142d8d55a9bf422a8d
-References: <1593105349-19270-1-git-send-email-joshi.k@samsung.com>
-        <CGME20200625171838epcas5p449183e12770187142d8d55a9bf422a8d@epcas5p4.samsung.com>
+        Thu, 25 Jun 2020 13:16:42 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209FCC08C5C1;
+        Thu, 25 Jun 2020 10:16:42 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id h15so6647142wrq.8;
+        Thu, 25 Jun 2020 10:16:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yVQ9UuGl9K3XAoQkcU4sk60ru7Jl6/1Dd6NAYAebMXg=;
+        b=lIRxH08oBEtuy5h9XR66KqcOrsxZ0XlddiBu/lKKdWleODwNSaQM/WbnVXHsuvLvUh
+         agkgoxKGXBnSKFm5gB7hSS8yJLE7HDathIX15iveNqp21BTU9vcigalAcCXU8EY3JWUf
+         XXnTC11ape0jhLCHnTImNZr21PRnH2MsmwirJjJLe9LGrwMFt+DcYCgAIvfqU8A8taOh
+         ybrXosKbJnHy75RxSPj8T0YjjU67Se6ZfNLppxcybAorylHPm0I4ykbEs/80gTIaLRNa
+         qcv8Y7zSXGPg0IH2JfejT6U0tKcKzi1YPU3skGHjhTbj09Mc7YDgIz8mnexPVKRvWwyP
+         5enQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yVQ9UuGl9K3XAoQkcU4sk60ru7Jl6/1Dd6NAYAebMXg=;
+        b=bMLP+m4wTk8X1vr5C+3hN9wCaoTD2l/q5KP1IgBvNUXNs+GhVJQyOgjWB2fG8OBGeo
+         3xN7PqlclYlnjCjKbMKWgL59Q1QvsAiakZhnIXrbj18WnGGshdlsdGIbn+AJ5wGd+m6x
+         g+f+p/57z3pPTZYEPl+/LOM6XcJyRCP1ZMO+/RJ13nN3Z2+GmojqhP1RjunRo23VSEl8
+         lFXsc7htpHsnuCRpAAG+dsnAIfgDHHiJogPqsDOqGb1EXg69yvLSiTh6c+AiepaM5zLc
+         ywQVrUkDQE2ldPORSdYYlADWp5dsUvXtKT1nbCvnHhzxj1FzkH5Y9EyBswCCXCRYl7BA
+         aXYA==
+X-Gm-Message-State: AOAM530Pi5XC/VUTvThYXZ5IzkbHgPEQParVdO5p0g7jUcsSkfiEye06
+        5ZCc22j1Lh+e/YzOF72WBar31b657aCznneec2c=
+X-Google-Smtp-Source: ABdhPJxZfMZ1K1HQA1XbNumMSVKKi36ZAB/pjLuv0BsyN6lesNEXqVUKOGIt8dkTenZnxe/2Sy9ztW2+SpjOTTCGJSU=
+X-Received: by 2002:adf:ef89:: with SMTP id d9mr24684664wro.124.1593105400767;
+ Thu, 25 Jun 2020 10:16:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200625165042.13708-1-mironov.ivan@gmail.com>
+In-Reply-To: <20200625165042.13708-1-mironov.ivan@gmail.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 25 Jun 2020 13:16:29 -0400
+Message-ID: <CADnq5_NgvGEW+4t5gzLdaOJo0HC10M5iEaE+j7O6yKB9H6H-5w@mail.gmail.com>
+Subject: Re: [PATCH v1] drm/amd/powerplay: Fix NULL dereference in lock_bus()
+ on Vega20 w/o RAS
+To:     Ivan Mironov <mironov.ivan@gmail.com>
+Cc:     amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Bjorn Nostvold <bjorn.nostvold@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        "for 3.8" <stable@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Selvakumar S <selvakuma.s1@samsung.com>
+Applied.  Thanks!
 
-For zone-append, block-layer will return zone-relative offset via ret2
-of ki_complete interface. Make changes to collect it, and send to
-user-space using ceq->flags.
-Detect and report early error if zone-append is requested with
-fixed-buffers.
+Alex
 
-Signed-off-by: Selvakumar S <selvakuma.s1@samsung.com>
-Signed-off-by: Kanchan Joshi <joshi.k@samsung.com>
-Signed-off-by: Nitesh Shetty <nj.shetty@samsung.com>
-Signed-off-by: Javier Gonzalez <javier.gonz@samsung.com>
----
- fs/io_uring.c | 32 ++++++++++++++++++++++++++++++--
- 1 file changed, 30 insertions(+), 2 deletions(-)
-
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index 155f3d8..31a9da58 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -402,6 +402,8 @@ struct io_rw {
- 	struct kiocb			kiocb;
- 	u64				addr;
- 	u64				len;
-+	/* zone-relative offset for append, in sectors */
-+	u32			append_offset;
- };
- 
- struct io_connect {
-@@ -541,6 +543,7 @@ enum {
- 	REQ_F_NO_FILE_TABLE_BIT,
- 	REQ_F_QUEUE_TIMEOUT_BIT,
- 	REQ_F_WORK_INITIALIZED_BIT,
-+	REQ_F_ZONE_APPEND_BIT,
- 
- 	/* not a real bit, just to check we're not overflowing the space */
- 	__REQ_F_LAST_BIT,
-@@ -598,6 +601,8 @@ enum {
- 	REQ_F_QUEUE_TIMEOUT	= BIT(REQ_F_QUEUE_TIMEOUT_BIT),
- 	/* io_wq_work is initialized */
- 	REQ_F_WORK_INITIALIZED	= BIT(REQ_F_WORK_INITIALIZED_BIT),
-+	/* to return zone relative offset for zone append*/
-+	REQ_F_ZONE_APPEND	= BIT(REQ_F_ZONE_APPEND_BIT),
- };
- 
- struct async_poll {
-@@ -1745,6 +1750,8 @@ static void io_iopoll_complete(struct io_ring_ctx *ctx, unsigned int *nr_events,
- 
- 		if (req->flags & REQ_F_BUFFER_SELECTED)
- 			cflags = io_put_kbuf(req);
-+		if (req->flags & REQ_F_ZONE_APPEND)
-+			cflags = req->rw.append_offset;
- 
- 		__io_cqring_fill_event(req, req->result, cflags);
- 		(*nr_events)++;
-@@ -1943,7 +1950,7 @@ static inline void req_set_fail_links(struct io_kiocb *req)
- 		req->flags |= REQ_F_FAIL_LINK;
- }
- 
--static void io_complete_rw_common(struct kiocb *kiocb, long res)
-+static void io_complete_rw_common(struct kiocb *kiocb, long res, long res2)
- {
- 	struct io_kiocb *req = container_of(kiocb, struct io_kiocb, rw.kiocb);
- 	int cflags = 0;
-@@ -1953,8 +1960,14 @@ static void io_complete_rw_common(struct kiocb *kiocb, long res)
- 
- 	if (res != req->result)
- 		req_set_fail_links(req);
-+
- 	if (req->flags & REQ_F_BUFFER_SELECTED)
- 		cflags = io_put_kbuf(req);
-+
-+	/* use cflags to return zone append completion result */
-+	if (req->flags & REQ_F_ZONE_APPEND)
-+		cflags = res2;
-+
- 	__io_cqring_add_event(req, res, cflags);
- }
- 
-@@ -1962,7 +1975,7 @@ static void io_complete_rw(struct kiocb *kiocb, long res, long res2)
- {
- 	struct io_kiocb *req = container_of(kiocb, struct io_kiocb, rw.kiocb);
- 
--	io_complete_rw_common(kiocb, res);
-+	io_complete_rw_common(kiocb, res, res2);
- 	io_put_req(req);
- }
- 
-@@ -1975,6 +1988,9 @@ static void io_complete_rw_iopoll(struct kiocb *kiocb, long res, long res2)
- 
- 	if (res != req->result)
- 		req_set_fail_links(req);
-+	if (req->flags & REQ_F_ZONE_APPEND)
-+		req->rw.append_offset = res2;
-+
- 	req->result = res;
- 	if (res != -EAGAIN)
- 		WRITE_ONCE(req->iopoll_completed, 1);
-@@ -2127,6 +2143,9 @@ static int io_prep_rw(struct io_kiocb *req, const struct io_uring_sqe *sqe,
- 	if (kiocb->ki_flags & IOCB_NOWAIT)
- 		req->flags |= REQ_F_NOWAIT;
- 
-+	if (kiocb->ki_flags & IOCB_ZONE_APPEND)
-+		req->flags |= REQ_F_ZONE_APPEND;
-+
- 	if (force_nonblock)
- 		kiocb->ki_flags |= IOCB_NOWAIT;
- 
-@@ -2409,6 +2428,14 @@ static ssize_t io_import_iovec(int rw, struct io_kiocb *req,
- 
- 	opcode = req->opcode;
- 	if (opcode == IORING_OP_READ_FIXED || opcode == IORING_OP_WRITE_FIXED) {
-+		/*
-+		 * fixed-buffers not supported for zone-append.
-+		 * This check can be removed when block-layer starts
-+		 * supporting append with iov_iter of bvec type
-+		 */
-+		if (req->flags == REQ_F_ZONE_APPEND)
-+			return -EINVAL;
-+
- 		*iovec = NULL;
- 		return io_import_fixed(req, rw, iter);
- 	}
-@@ -2704,6 +2731,7 @@ static int io_write(struct io_kiocb *req, bool force_nonblock)
- 		req->rw.kiocb.ki_flags &= ~IOCB_NOWAIT;
- 
- 	req->result = 0;
-+
- 	io_size = ret;
- 	if (req->flags & REQ_F_LINK_HEAD)
- 		req->result = io_size;
--- 
-2.7.4
-
+On Thu, Jun 25, 2020 at 1:14 PM Ivan Mironov <mironov.ivan@gmail.com> wrote:
+>
+> I updated my system with Radeon VII from kernel 5.6 to kernel 5.7, and
+> following started to happen on each boot:
+>
+>         ...
+>         BUG: kernel NULL pointer dereference, address: 0000000000000128
+>         ...
+>         CPU: 9 PID: 1940 Comm: modprobe Tainted: G            E     5.7.2-200.im0.fc32.x86_64 #1
+>         Hardware name: System manufacturer System Product Name/PRIME X570-P, BIOS 1407 04/02/2020
+>         RIP: 0010:lock_bus+0x42/0x60 [amdgpu]
+>         ...
+>         Call Trace:
+>          i2c_smbus_xfer+0x3d/0xf0
+>          i2c_default_probe+0xf3/0x130
+>          i2c_detect.isra.0+0xfe/0x2b0
+>          ? kfree+0xa3/0x200
+>          ? kobject_uevent_env+0x11f/0x6a0
+>          ? i2c_detect.isra.0+0x2b0/0x2b0
+>          __process_new_driver+0x1b/0x20
+>          bus_for_each_dev+0x64/0x90
+>          ? 0xffffffffc0f34000
+>          i2c_register_driver+0x73/0xc0
+>          do_one_initcall+0x46/0x200
+>          ? _cond_resched+0x16/0x40
+>          ? kmem_cache_alloc_trace+0x167/0x220
+>          ? do_init_module+0x23/0x260
+>          do_init_module+0x5c/0x260
+>          __do_sys_init_module+0x14f/0x170
+>          do_syscall_64+0x5b/0xf0
+>          entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>         ...
+>
+> Error appears when some i2c device driver tries to probe for devices
+> using adapter registered by `smu_v11_0_i2c_eeprom_control_init()`.
+> Code supporting this adapter requires `adev->psp.ras.ras` to be not
+> NULL, which is true only when `amdgpu_ras_init()` detects HW support by
+> calling `amdgpu_ras_check_supported()`.
+>
+> Before 9015d60c9ee1, adapter was registered by
+>
+>         -> amdgpu_device_ip_init()
+>           -> amdgpu_ras_recovery_init()
+>             -> amdgpu_ras_eeprom_init()
+>               -> smu_v11_0_i2c_eeprom_control_init()
+>
+> after verifying that `adev->psp.ras.ras` is not NULL in
+> `amdgpu_ras_recovery_init()`. Currently it is registered
+> unconditionally by
+>
+>         -> amdgpu_device_ip_init()
+>           -> pp_sw_init()
+>             -> hwmgr_sw_init()
+>               -> vega20_smu_init()
+>                 -> smu_v11_0_i2c_eeprom_control_init()
+>
+> Fix simply adds HW support check (ras == NULL => no support) before
+> calling `smu_v11_0_i2c_eeprom_control_{init,fini}()`.
+>
+> Please note that there is a chance that similar fix is also required for
+> CHIP_ARCTURUS. I do not know whether any actual Arcturus hardware without
+> RAS exist, and whether calling `smu_i2c_eeprom_init()` makes any sense
+> when there is no HW support.
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 9015d60c9ee1 ("drm/amdgpu: Move EEPROM I2C adapter to amdgpu_device")
+> Signed-off-by: Ivan Mironov <mironov.ivan@gmail.com>
+> Tested-by: Bjorn Nostvold <bjorn.nostvold@gmail.com>
+> ---
+> Changelog:
+>
+> v1:
+>   - Added "Tested-by" for another user who used this patch to fix the
+>     same issue.
+>
+> v0:
+>   - Patch introduced.
+> ---
+>  drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c b/drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c
+> index 2fb97554134f..c2e0fbbccf56 100644
+> --- a/drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c
+> +++ b/drivers/gpu/drm/amd/powerplay/smumgr/vega20_smumgr.c
+> @@ -522,9 +522,11 @@ static int vega20_smu_init(struct pp_hwmgr *hwmgr)
+>         priv->smu_tables.entry[TABLE_ACTIVITY_MONITOR_COEFF].version = 0x01;
+>         priv->smu_tables.entry[TABLE_ACTIVITY_MONITOR_COEFF].size = sizeof(DpmActivityMonitorCoeffInt_t);
+>
+> -       ret = smu_v11_0_i2c_eeprom_control_init(&adev->pm.smu_i2c);
+> -       if (ret)
+> -               goto err4;
+> +       if (adev->psp.ras.ras) {
+> +               ret = smu_v11_0_i2c_eeprom_control_init(&adev->pm.smu_i2c);
+> +               if (ret)
+> +                       goto err4;
+> +       }
+>
+>         return 0;
+>
+> @@ -560,7 +562,8 @@ static int vega20_smu_fini(struct pp_hwmgr *hwmgr)
+>                         (struct vega20_smumgr *)(hwmgr->smu_backend);
+>         struct amdgpu_device *adev = hwmgr->adev;
+>
+> -       smu_v11_0_i2c_eeprom_control_fini(&adev->pm.smu_i2c);
+> +       if (adev->psp.ras.ras)
+> +               smu_v11_0_i2c_eeprom_control_fini(&adev->pm.smu_i2c);
+>
+>         if (priv) {
+>                 amdgpu_bo_free_kernel(&priv->smu_tables.entry[TABLE_PPTABLE].handle,
+> --
+> 2.26.2
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
