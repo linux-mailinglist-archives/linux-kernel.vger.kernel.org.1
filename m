@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7DC420A3C2
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D8E20A3C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:14:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404191AbgFYRNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 13:13:10 -0400
-Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:35257 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2404083AbgFYRNJ (ORCPT
+        id S2406700AbgFYROP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 13:14:15 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:31045 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2406692AbgFYROO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 13:13:09 -0400
+        Thu, 25 Jun 2020 13:14:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1593105188;
+        s=mimecast20190719; t=1593105253;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=m2oVqTZOMAgLQ+rHg3irgZQTKVNYsSFJIr0KW24bVfI=;
-        b=KWcTws98jgRqYQ8QlemgiC6VA3x7OcQkjGj1/EMldkWxh7bIGhpDHrog1VDa+BUVLOtz7S
-        2D2ff4uB00i3oybO3Zzt7ygKfMZeM6PIEEe+sOmR4pQhfgxQUg2PNmhf0noZtRO39vPF+j
-        SeT7iuE2qrKgR8rLHFwpRS8LgqT3xmE=
+        bh=l1emsNKKRVQODfeJuv9joSCPbwXeNurKbQv14gCACCM=;
+        b=B64WNWJqCLjX9tFTv6kXMuBKND+Wt4fHjQBcqxvrlxbtYYXK00zCrYy49DQu+Dmlxy42eI
+        Kp9gfLQtAtu5sfubl43w9HWN+uNcGbbKdhOSI/3SnGpr16irM4We77OHagIC6+8raUSNmi
+        IHp1THv+BA42otYbSkpMeDVDeDOhZ2k=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-267-ZRLiX5l5OHuQM2vE6-Du3w-1; Thu, 25 Jun 2020 13:13:04 -0400
-X-MC-Unique: ZRLiX5l5OHuQM2vE6-Du3w-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+ us-mta-260-UBiyFTg6OpK_UbWbNz2lAA-1; Thu, 25 Jun 2020 13:14:09 -0400
+X-MC-Unique: UBiyFTg6OpK_UbWbNz2lAA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F0700800597;
-        Thu, 25 Jun 2020 17:13:02 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DD0BB800D5C;
+        Thu, 25 Jun 2020 17:14:07 +0000 (UTC)
 Received: from krava (unknown [10.40.192.78])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 380C760C1D;
-        Thu, 25 Jun 2020 17:13:01 +0000 (UTC)
-Date:   Thu, 25 Jun 2020 19:13:00 +0200
+        by smtp.corp.redhat.com (Postfix) with SMTP id 28A5B5D9D3;
+        Thu, 25 Jun 2020 17:14:05 +0000 (UTC)
+Date:   Thu, 25 Jun 2020 19:14:05 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Alexey Budankov <alexey.budankov@linux.intel.com>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -43,66 +43,74 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Ingo Molnar <mingo@redhat.com>,
         Andi Kleen <ak@linux.intel.com>,
         linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 04/13] perf stat: factor out body of event handling
- loop for system wide
-Message-ID: <20200625171300.GK2719003@krava>
+Subject: Re: [PATCH v8 01/13] tools/libperf: avoid moving of fds at
+ fdarray__filter() call
+Message-ID: <20200625171405.GL2719003@krava>
 References: <0781a077-aa82-5b4a-273e-c17372a72b93@linux.intel.com>
- <eeeff629-925a-530b-9803-f274337ae473@linux.intel.com>
- <20200623145630.GK2619137@krava>
- <51d5511a-e9a7-2865-c81b-57488e820f8d@linux.intel.com>
- <20200625121719.GI2719003@krava>
- <fdaba173-a046-beae-f8f2-07840c879475@linux.intel.com>
+ <3d36dc7a-4249-096c-7554-80e6d290eac5@linux.intel.com>
+ <fada6325-2e6a-0de4-918f-0bc7d1410c52@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fdaba173-a046-beae-f8f2-07840c879475@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <fada6325-2e6a-0de4-918f-0bc7d1410c52@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 07:01:08PM +0300, Alexey Budankov wrote:
-
-SNIP
-
-> >>
-> >> Well, ok.
-> >>
-> >> I will rename process_interval() to __process_interval() and
-> >> then print_interval() to process_interval().
-> >>
-> >> Regarding timeout let's have it like this:
-> >>
-> >> static bool process_timeout(int timeout)
-> >> {
-> >> 	return timeout ? true : false;
-> >> }
-> > 
-> > can't this just stay as value check after finished poll?
-> > 
-> > 	if (timeout)
-> > 		break;
-> > 
-> > and then separate call to process_interval(interval, times)?
+On Wed, Jun 24, 2020 at 08:19:32PM +0300, Alexey Budankov wrote:
 > 
-> Like this? Still makes sense to have it in a single function.
+> On 17.06.2020 11:35, Alexey Budankov wrote:
+> > 
+> > Skip fds with zeroed revents field from count and avoid fds moving
+> > at fdarray__filter() call so fds indices returned by fdarray__add()
+> > call stay the same and can be used for direct access and processing
+> > of fd revents status field at entries array of struct fdarray object.
+> > 
+> > Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> > ---
+> >  tools/lib/api/fd/array.c   | 11 +++++------
+> >  tools/perf/tests/fdarray.c | 20 ++------------------
+> >  2 files changed, 7 insertions(+), 24 deletions(-)
+> > 
+> > diff --git a/tools/lib/api/fd/array.c b/tools/lib/api/fd/array.c
+> > index 58d44d5eee31..97843a837370 100644
+> > --- a/tools/lib/api/fd/array.c
+> > +++ b/tools/lib/api/fd/array.c
+> > @@ -93,22 +93,21 @@ int fdarray__filter(struct fdarray *fda, short revents,
+> >  		return 0;
+> >  
+> >  	for (fd = 0; fd < fda->nr; ++fd) {
+> > +		if (!fda->entries[fd].revents)
+> > +			continue;
+> > +
 > 
-> static bool process_timing_settings(int timeout, unsigned int interval, int *times)
-> {
-> 	bool res = timeout ? true : false;
->         if (!res)
->  		res = process_interval(interval, times);
->  	return res;
-> }
+> So it looks like this condition also filters out non signaling events fds, not only
+> control and others fds, and this should be somehow avoided so such event related fds
+> would be counted. Several options have been proposed so far:
+> 
+> 1) Explicit typing of fds via API extension and filtering based on the types:
+>    a) with separate fdarray__add_stat() call
+>    b) with type arg of existing fdarray__add() call
+>    c) various memory management design is possible
+> 
+> 2) Playing tricks with fd positions inside entries and assumptions on fdarray API calls ordering
+>    - looks more like a hack than a designed solution
+> 
+> 3) Rewrite of fdarray class to allocate separate object for every added fds
+>    - can be replaced with nonscrewing of fds by __filter()
+> 
+> 4) Distinct between fds types at fdarray__filter() using .revents == 0 condition
+>    - seems to have corner cases and thus not applicable
+> 
+> 5) Extension of fdarray__poll(, *arg_ptr, arg_size) with arg of fds array to atomically poll
+>    on fdarray_add()-ed fds and external arg fds and then external arg fds processing
+> 
+> 6) Rewrite of fdarray class on epoll() call basis
+>    - introduces new scalability restrictions for Perf tool
 
-I don't see the connection between timeout and interval
-IMO this just complicates things, is there a problem to
-keep it separated as it is now?
+hum, how many fds for polling do you expect in your workloads?
 
 jirka
-
-> 
-> ~Alexey
-> 
 
