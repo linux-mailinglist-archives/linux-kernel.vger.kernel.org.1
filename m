@@ -2,24 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12CB20A46F
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 20:12:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 294D420A470
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 20:12:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406954AbgFYSJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 14:09:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40216 "EHLO mail.kernel.org"
+        id S2406965AbgFYSMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 14:12:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405552AbgFYSJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 14:09:07 -0400
+        id S2405949AbgFYSMo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 14:12:44 -0400
 Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CFD8220789;
-        Thu, 25 Jun 2020 18:09:04 +0000 (UTC)
-Date:   Thu, 25 Jun 2020 14:09:03 -0400
+        by mail.kernel.org (Postfix) with ESMTPSA id 3803420789;
+        Thu, 25 Jun 2020 18:12:42 +0000 (UTC)
+Date:   Thu, 25 Jun 2020 14:12:40 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
+To:     Korben Rusek <korben@google.com>
+Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Masami Hiramatsu <mhiramat@kernel.org>,
@@ -28,21 +30,22 @@ Cc:     Ingo Molnar <mingo@kernel.org>,
         Namhyung Kim <namhyung@kernel.org>,
         Yordan Karadzhov <y.karadz@gmail.com>,
         Tzvetomir Stoyanov <tz.stoyanov@gmail.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
         Tom Zanussi <zanussi@kernel.org>,
         Jason Behmer <jbehmer@google.com>,
         Julia Lawall <julia.lawall@inria.fr>,
         Clark Williams <williams@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Daniel Wagner <wagi@monom.org>,
+        bristot <bristot@redhat.com>, Daniel Wagner <wagi@monom.org>,
         Darren Hart <dvhart@vmware.com>,
         Jonathan Corbet <corbet@lwn.net>,
         "Suresh E. Warrier" <warrier@linux.vnet.ibm.com>
 Subject: Re: [RFC][PATCH] ring-buffer: Have nested events still record
  running time stamp
-Message-ID: <20200625140903.2a1d3e6e@oasis.local.home>
-In-Reply-To: <20200625094454.732790f7@oasis.local.home>
+Message-ID: <20200625141240.53a4094b@oasis.local.home>
+In-Reply-To: <CAPo_bq3Bd4gRTeZHqD0p3KR+-339C=cmqgjgYMz1hvu1f+QAAQ@mail.gmail.com>
 References: <20200625094454.732790f7@oasis.local.home>
+        <126813531.12266.1593093195147.JavaMail.zimbra@efficios.com>
+        <20200625103753.4ac4a9a2@oasis.local.home>
+        <CAPo_bq3Bd4gRTeZHqD0p3KR+-339C=cmqgjgYMz1hvu1f+QAAQ@mail.gmail.com>
 X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -52,94 +55,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After running my ring buffer benchmark on this update, it went from
-55ns to 85ns per event. A 30ns increase! At first I freaked out, but
-then noticed that I unnecessarily take the time stamp counter twice,
-which is the most expensive operation.
+On Thu, 25 Jun 2020 09:42:34 -0700
+Korben Rusek <korben@google.com> wrote:
 
-Here's a diff to my patch (I'll send a v2 later) that removes the
-double taking of the time stamp.
+> Great work! I'm not exactly qualified to review the code, but the
+> logic seems correct. I'm curious how unlikely a zero delta is now and
+> how you quantify it. Also does it negate the patch that I emailed out
 
-It also removes the double testing of the absolute value. Which I have
-another patch that consolidates that with the info add_timestamp field.
-But that patch wont be folded into this.
+Actually, in all my stress testing (where I also add nested
+trace_printk()s to read what is happening), I was never once able to
+trigger the zero delta path! I only tested it by adding code to inject
+the event to force the given race condition.
+
+Note, zero deltas are still there between absolute time stamps and
+start of page, but that's still different than a zero delta from the
+previous event.
+
+> last week that adds a `force_abs_timestamp` trace/option in an attempt
+> to get around this particular issue?
+> 
+> In reading through, I did notice a couple simple typos in the comments
+> that are probably worth pointing out:
+
+Thanks.
 
 -- Steve
 
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index a5c3f1608de8..7370c483c6cd 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -2908,6 +2908,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 	struct buffer_page *tail_page;
- 	unsigned long tail, write, w, next;
- 	u64 delta, before, after;
-+	bool abs = false;
- 
- 	/* Don't let the compiler play games with cpu_buffer->tail_page */
- 	tail_page = info->tail_page = READ_ONCE(cpu_buffer->tail_page);
-@@ -2916,6 +2917,19 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 	barrier();
- 	before = READ_ONCE(cpu_buffer->before_stamp);
- 	after = local64_read(&cpu_buffer->write_stamp);
-+	barrier();
-+	info->ts = rb_time_stamp(cpu_buffer->buffer);
-+
-+	if (ring_buffer_time_stamp_abs(cpu_buffer->buffer)) {
-+		info->delta = info->ts;
-+		abs = true;
-+	} else {
-+		info->delta = info->ts - after;
-+	}
-+
-+	if (unlikely(test_time_stamp(info->delta)))
-+		rb_handle_timestamp(cpu_buffer, info);
-+
- 	/*
- 	 * If preempting an event time update, we may need absolute timestamp.
- 	 * Don't bother if this is the start of a new page (w == 0).
-@@ -2933,7 +2947,6 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 	next = READ_ONCE(cpu_buffer->next_write);
- 	WRITE_ONCE(cpu_buffer->next_write, w + info->length);
- 
--	info->ts = rb_time_stamp(cpu_buffer->buffer);
-  /*B*/	WRITE_ONCE(cpu_buffer->before_stamp, info->ts);
- 
-  /*C*/	write = local_add_return(info->length, &tail_page->write);
-@@ -3021,8 +3034,7 @@ __rb_reserve_next(struct ring_buffer_per_cpu *cpu_buffer,
- 	 * If this is the first commit on the page, then it has the same
- 	 * timestamp as the page itself.
- 	 */
--	if (unlikely(!tail && info->add_timestamp != RB_ADD_STAMP_FORCE &&
--		     !ring_buffer_time_stamp_abs(cpu_buffer->buffer)))
-+	if (unlikely(!tail && info->add_timestamp != RB_ADD_STAMP_FORCE && !abs))
- 		info->delta = 0;
- 
- 	/* We reserved something on the buffer */
-@@ -3056,7 +3068,6 @@ rb_reserve_next_event(struct trace_buffer *buffer,
- 	struct ring_buffer_event *event;
- 	struct rb_event_info info;
- 	int nr_loops = 0;
--	u64 write_stamp;
- 
- 	rb_start_commit(cpu_buffer);
- 	/* The commit page can not change after this */
-@@ -3093,18 +3104,6 @@ rb_reserve_next_event(struct trace_buffer *buffer,
- 	if (RB_WARN_ON(cpu_buffer, ++nr_loops > 1000))
- 		goto out_fail;
- 
--	write_stamp = local64_read(&cpu_buffer->write_stamp);
--	info.ts = rb_time_stamp(cpu_buffer->buffer);
--
--	if (ring_buffer_time_stamp_abs(buffer)) {
--		info.delta = info.ts;
--		rb_handle_timestamp(cpu_buffer, &info);
--	} else {
--		info.delta = info.ts - write_stamp ;
--		if (unlikely(test_time_stamp(info.delta)))
--			rb_handle_timestamp(cpu_buffer, &info);
--	}
--
- 	event = __rb_reserve_next(cpu_buffer, &info);
- 
- 	if (unlikely(PTR_ERR(event) == -EAGAIN)) {
+
+> 
+> > If preempting an event time update, we may need absolute timestamp.  
+> 
+> Not a big deal, but it should be "may need *an* absolute timestamp"
+> 
+> > * Preempted beween C and E:
+> > * Lost the previous events time stamp. Just set the
+> > * delta to zero, and this will be the same time as
+> > * the veent this event preempted. And the events that
+> > * came after this will still be correct (as they would
+> > * have built their delta on the previous event.  
+> 
+> Should be "the *event* this event preempted." It also needs a
+> parenthesis at the end of the comment to close the parenthetical
+> statement.
+> 
+> Thanks, Korben
+
