@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5E7209DE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 13:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CA76209DDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 13:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404598AbgFYLyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 07:54:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50770 "EHLO
+        id S2404418AbgFYLxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 07:53:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728063AbgFYLxg (ORCPT
+        with ESMTP id S2404374AbgFYLxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 07:53:36 -0400
+        Thu, 25 Jun 2020 07:53:37 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CA04C061573;
-        Thu, 25 Jun 2020 04:53:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323C3C061573;
+        Thu, 25 Jun 2020 04:53:37 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1joQRg-0005sB-UR; Thu, 25 Jun 2020 13:53:33 +0200
+        id 1joQRh-0005sf-Qz; Thu, 25 Jun 2020 13:53:33 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 7C5551C0092;
-        Thu, 25 Jun 2020 13:53:32 +0200 (CEST)
-Date:   Thu, 25 Jun 2020 11:53:32 -0000
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 69F5D1C0092;
+        Thu, 25 Jun 2020 13:53:33 +0200 (CEST)
+Date:   Thu, 25 Jun 2020 11:53:33 -0000
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry: Fix #UD vs WARN more
+Subject: [tip: x86/entry] objtool: Don't consider vmlinux a C-file
 Cc:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200622114713.GE577403@hirez.programming.kicks-ass.net>
-References: <20200622114713.GE577403@hirez.programming.kicks-ass.net>
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200618144801.701257527@infradead.org>
+References: <20200618144801.701257527@infradead.org>
 MIME-Version: 1.0
-Message-ID: <159308601215.16989.11684885436197238827.tip-bot2@tip-bot2>
+Message-ID: <159308601322.16989.8335361589316062237.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -50,126 +49,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     145a773aef83181d47ebab21bb33c89233aadb1e
-Gitweb:        https://git.kernel.org/tip/145a773aef83181d47ebab21bb33c89233aadb1e
+Commit-ID:     734d099ba644f5a92c70efa3d54d0ba2500ce162
+Gitweb:        https://git.kernel.org/tip/734d099ba644f5a92c70efa3d54d0ba2500ce162
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Tue, 16 Jun 2020 13:28:36 +02:00
+AuthorDate:    Wed, 17 Jun 2020 18:22:31 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 25 Jun 2020 13:45:40 +02:00
+CommitterDate: Thu, 25 Jun 2020 13:45:39 +02:00
 
-x86/entry: Fix #UD vs WARN more
+objtool: Don't consider vmlinux a C-file
 
-vmlinux.o: warning: objtool: exc_invalid_op()+0x47: call to probe_kernel_read() leaves .noinstr.text section
+Avoids issuing C-file warnings for vmlinux.
 
-Since we use UD2 as a short-cut for 'CALL __WARN', treat it as such.
-Have the bare exception handler do the report_bug() thing.
-
-Fixes: 15a416e8aaa7 ("x86/entry: Treat BUG/WARN as NMI-like entries")
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lkml.kernel.org/r/20200622114713.GE577403@hirez.programming.kicks-ass.net
+Link: https://lkml.kernel.org/r/20200618144801.701257527@infradead.org
 ---
- arch/x86/kernel/traps.c | 72 +++++++++++++++++++++-------------------
- 1 file changed, 38 insertions(+), 34 deletions(-)
+ tools/objtool/check.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index a7d1570..1d9ea21 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -84,17 +84,16 @@ static inline void cond_local_irq_disable(struct pt_regs *regs)
- 		local_irq_disable();
- }
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 3e214f8..d8eaa7d 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -2772,7 +2772,7 @@ int check(const char *_objname, bool orc)
  
--int is_valid_bugaddr(unsigned long addr)
-+__always_inline int is_valid_bugaddr(unsigned long addr)
- {
--	unsigned short ud;
--
- 	if (addr < TASK_SIZE_MAX)
- 		return 0;
+ 	INIT_LIST_HEAD(&file.insn_list);
+ 	hash_init(file.insn_hash);
+-	file.c_file = find_section_by_name(file.elf, ".comment");
++	file.c_file = !vmlinux && find_section_by_name(file.elf, ".comment");
+ 	file.ignore_unreachables = no_unreachable;
+ 	file.hints = false;
  
--	if (probe_kernel_address((unsigned short *)addr, ud))
--		return 0;
--
--	return ud == INSN_UD0 || ud == INSN_UD2;
-+	/*
-+	 * We got #UD, if the text isn't readable we'd have gotten
-+	 * a different exception.
-+	 */
-+	return *(unsigned short *)addr == INSN_UD2;
- }
- 
- static nokprobe_inline int
-@@ -216,40 +215,45 @@ static inline void handle_invalid_op(struct pt_regs *regs)
- 		      ILL_ILLOPN, error_get_trap_addr(regs));
- }
- 
--DEFINE_IDTENTRY_RAW(exc_invalid_op)
-+static noinstr bool handle_bug(struct pt_regs *regs)
- {
--	bool rcu_exit;
-+	bool handled = false;
-+
-+	if (!is_valid_bugaddr(regs->ip))
-+		return handled;
- 
- 	/*
--	 * Handle BUG/WARN like NMIs instead of like normal idtentries:
--	 * if we bugged/warned in a bad RCU context, for example, the last
--	 * thing we want is to BUG/WARN again in the idtentry code, ad
--	 * infinitum.
-+	 * All lies, just get the WARN/BUG out.
- 	 */
--	if (!user_mode(regs) && is_valid_bugaddr(regs->ip)) {
--		enum bug_trap_type type;
-+	instrumentation_begin();
-+	/*
-+	 * Since we're emulating a CALL with exceptions, restore the interrupt
-+	 * state to what it was at the exception site.
-+	 */
-+	if (regs->flags & X86_EFLAGS_IF)
-+		raw_local_irq_enable();
-+	if (report_bug(regs->ip, regs) == BUG_TRAP_TYPE_WARN) {
-+		regs->ip += LEN_UD2;
-+		handled = true;
-+	}
-+	if (regs->flags & X86_EFLAGS_IF)
-+		raw_local_irq_disable();
-+	instrumentation_end();
- 
--		nmi_enter();
--		instrumentation_begin();
--		trace_hardirqs_off_finish();
--		type = report_bug(regs->ip, regs);
--		if (regs->flags & X86_EFLAGS_IF)
--			trace_hardirqs_on_prepare();
--		instrumentation_end();
--		nmi_exit();
-+	return handled;
-+}
- 
--		if (type == BUG_TRAP_TYPE_WARN) {
--			/* Skip the ud2. */
--			regs->ip += LEN_UD2;
--			return;
--		}
-+DEFINE_IDTENTRY_RAW(exc_invalid_op)
-+{
-+	bool rcu_exit;
- 
--		/*
--		 * Else, if this was a BUG and report_bug returns or if this
--		 * was just a normal #UD, we want to continue onward and
--		 * crash.
--		 */
--	}
-+	/*
-+	 * We use UD2 as a short encoding for 'CALL __WARN', as such
-+	 * handle it before exception entry to avoid recursive WARN
-+	 * in case exception entry is the one triggering WARNs.
-+	 */
-+	if (!user_mode(regs) && handle_bug(regs))
-+		return;
- 
- 	rcu_exit = idtentry_enter_cond_rcu(regs);
- 	instrumentation_begin();
