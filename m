@@ -2,108 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A2F20A591
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0BA420A593
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 21:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406560AbgFYTR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 15:17:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35142 "EHLO
+        id S2406579AbgFYTRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 15:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390775AbgFYTRW (ORCPT
+        with ESMTP id S2390959AbgFYTRY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 15:17:22 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 346D6C08C5DB
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:17:22 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id b6so7010901wrs.11
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:17:22 -0700 (PDT)
+        Thu, 25 Jun 2020 15:17:24 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4B2C08C5C1
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:17:23 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id r12so6983182wrj.13
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 12:17:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dtxyN/1kKIF9/7TTE8iRG6sUFtmO+Fu1upUgVSih01U=;
-        b=dCAo2lhMHJ6NdZfByQXxyz/SilOR/HaQ4pU6fAkuElnZt1kyUUuWW2txb7RP5Sx71d
-         vPyJ+232KysYhAHj/oXvRQFfipE38M//axfZd6N7wNBzZdRFiaw9PpV3gjYTBOGqQdp6
-         SSsdT9motcSOSYnmISrrkVk0qXEmHXBKgrfMwAVaqtoY9k8PFSuHp8pto4xyc/j7leAY
-         g9vwZCZYX59BKX4NPsZnzEx59VQoikmfepvWXsMfBFzu23yrwxoKS1CtX2yupeJ5l2Ve
-         ejZGLPZr2e0cQAavi37yJcRawSGCUMqTMugvD+tmKqh99xDzcLd7njI7mCs1IcuzRREO
-         TgFA==
+        bh=VJTFtlmSJJssMoK2NzaWqKKHmjNJh935ngd0RHoSQ4I=;
+        b=zves/PjMXG5dsDUU3LkKSqvd8Bb0cLVC4eNdrmRTaXPn3sjcy9wIXCjmp4oOjJ298l
+         YwImrnxAene93jXTIWVWM7v1FnFrZ2XY/VT3blGeG+jT79aoHFGu1p5/clb2w+cMbLX3
+         b093iveq45CviyVp7oOKIxrnO/t3MVXzq44W/IWi77iSIsZ482hjzQKzReXHdOVjv3XL
+         kD+qjvbQVJPQsSEtil8n/WCGrxnO/6kdotX1ZWjp2HJbChf8oPE4thsI9msSAs/bKVER
+         gz8oecwLYYbbG+Li7kB9lUjOPlCnykyn00TgD9mURb3uGkJm+yPXNknQkKxyS1j6Ijdl
+         u1mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dtxyN/1kKIF9/7TTE8iRG6sUFtmO+Fu1upUgVSih01U=;
-        b=BCZq9kdnCNvC60GAQued61HEJeVxPSIOCltiTYYf+r1ipsZj7C63slmHd/XP5hiBlt
-         LFzA1JAdzXZ1dTWTKlCRy7HGuNqH5PYVAg3cgb9nAVUpnZZDh6YHaJo2sCktmoCAAEU5
-         acGtPUIufKxUsehP6HSN8OTMIx8eWxWV5854dLFqmKjMBRKst/VkNCgpp63+Odr7O+j1
-         eYo8IE9R5LX7l8gpHB5DoI0PUMPSpx6xADFvMNLFSdyeqIoXMmTj8Gla23NeczbVRttD
-         MrJldU+7qmX13YfJmCloMduR+uIXw38yYBWXnGpOkouRfOYDoxAc0hY+E7zjAYoe7xVw
-         /UZQ==
-X-Gm-Message-State: AOAM531erHg0CeutE4WgTFfw5DfRIlRi5spz+Hkw+6CIQMm/jl8rNJGp
-        QbbBdCnZyHkgf25N4bBz49Z1Kw==
-X-Google-Smtp-Source: ABdhPJzCK3QqVbhCKU/8mHFqhgDbsJuNWAuV/wA5EVreGSMHRhwhU/xzif2uG9N7vr5wfQE6elguEw==
-X-Received: by 2002:a5d:630c:: with SMTP id i12mr17386670wru.158.1593112640968;
-        Thu, 25 Jun 2020 12:17:20 -0700 (PDT)
+        bh=VJTFtlmSJJssMoK2NzaWqKKHmjNJh935ngd0RHoSQ4I=;
+        b=VX3gUIWGUQdlFdSr7LcdWPa9AsU6W5xBrWGRxQd1YVFeq1G2sUZ7BFCrk1vrtLKtzX
+         6XlTCj3AblHLhBafw3NVxlHiKiaprzBCsN30D+ZhqHLfAdPuq7qgbJYCRgAR+u9KLWaH
+         YSX3BCNs5dNmNVSPXubqdNc1GTVwVVDOe4obFugQMU8Z/t0lHOWtGvhREmS/0oXbTmJV
+         u10zAGPTXpi9Z4qQ2+6QB3VJI/XQ/ZTZaFx1KpW4RGq/F9iyexqZnAHwyvBAEDYprF9O
+         1aOOVPe4MJNOJjHGVOJ3C6EOKFmeU2PWR4O2eRFLqjORdxcWq6OlEo9H2mwMLxn8IRh5
+         EX3Q==
+X-Gm-Message-State: AOAM531FES8khhlr3UK4C13ZygfzJOwOU3C757L87ROR0Fu2fmnCsKsS
+        2+nafwZBCOv5/dBtkz8bhANWgA==
+X-Google-Smtp-Source: ABdhPJymLg8gydmo/J1S/z2FvMDOD/E0XTWBEtx2MX9NS1hIZsEuZGaoD+dfeVXI2wMZrmEbLwn25g==
+X-Received: by 2002:a5d:46d0:: with SMTP id g16mr41499262wrs.229.1593112642402;
+        Thu, 25 Jun 2020 12:17:22 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id p13sm22693983wrn.0.2020.06.25.12.17.20
+        by smtp.gmail.com with ESMTPSA id p13sm22693983wrn.0.2020.06.25.12.17.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 12:17:20 -0700 (PDT)
+        Thu, 25 Jun 2020 12:17:21 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lgirdwood@gmail.com, broonie@kernel.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>, patches@opensource.cirrus.com
-Subject: [RESEND 06/10] regulator: wm8350-regulator: Repair odd formatting in documentation
-Date:   Thu, 25 Jun 2020 20:17:04 +0100
-Message-Id: <20200625191708.4014533-7-lee.jones@linaro.org>
+        Lee Jones <lee.jones@linaro.org>,
+        Tony Lindgren <tony@atomide.com>
+Subject: [RESEND 07/10] regulator: cpcap-regulator: Remove declared and set, but never used variable 'ignore'
+Date:   Thu, 25 Jun 2020 20:17:05 +0100
+Message-Id: <20200625191708.4014533-8-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200625191708.4014533-1-lee.jones@linaro.org>
 References: <20200625191708.4014533-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kerneldoc expects function arguments to be in the format '@.*:'.  If
-this format is not followed the kerneldoc tooling/parsers/validators
-get confused.
+It's okay to not check the return value that you're not conserned
+about, however it is not okay to assign a variable and not check or
+use the result.
 
-Fixes the following W=1 warning(s):
+Fixes W=1 warnings(s):
 
- drivers/regulator/wm8350-regulator.c:1234: warning: Function parameter or member 'wm8350' not described in 'wm8350_register_led'
- drivers/regulator/wm8350-regulator.c:1234: warning: Function parameter or member 'lednum' not described in 'wm8350_register_led'
- drivers/regulator/wm8350-regulator.c:1234: warning: Function parameter or member 'dcdc' not described in 'wm8350_register_led'
- drivers/regulator/wm8350-regulator.c:1234: warning: Function parameter or member 'isink' not described in 'wm8350_register_led'
- drivers/regulator/wm8350-regulator.c:1234: warning: Function parameter or member 'pdata' not described in 'wm8350_register_led'
+ drivers/regulator/cpcap-regulator.c:172:13: warning: variable ‘ignore’ set but not used [-Wunused-but-set-variable]
+ 172 | int error, ignore;
+ | ^~~~~~
+ drivers/regulator/cpcap-regulator.c: In function ‘cpcap_regulator_disable’:
+ drivers/regulator/cpcap-regulator.c:196:13: warning: variable ‘ignore’ set but not used [-Wunused-but-set-variable]
+ 196 | int error, ignore;
+ | ^~~~~~
 
-Cc: patches@opensource.cirrus.com
+Cc: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/regulator/wm8350-regulator.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/regulator/cpcap-regulator.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/regulator/wm8350-regulator.c b/drivers/regulator/wm8350-regulator.c
-index ae5f0e7fce8bb..2e7bfdf7c87bb 100644
---- a/drivers/regulator/wm8350-regulator.c
-+++ b/drivers/regulator/wm8350-regulator.c
-@@ -1216,11 +1216,11 @@ EXPORT_SYMBOL_GPL(wm8350_register_regulator);
- /**
-  * wm8350_register_led - Register a WM8350 LED output
-  *
-- * @param wm8350 The WM8350 device to configure.
-- * @param lednum LED device index to create.
-- * @param dcdc The DCDC to use for the LED.
-- * @param isink The ISINK to use for the LED.
-- * @param pdata Configuration for the LED.
-+ * @wm8350: The WM8350 device to configure.
-+ * @lednum: LED device index to create.
-+ * @dcdc: The DCDC to use for the LED.
-+ * @isink: The ISINK to use for the LED.
-+ * @pdata: Configuration for the LED.
-  *
-  * The WM8350 supports the use of an ISINK together with a DCDC to
-  * provide a power-efficient LED driver.  This function registers the
+diff --git a/drivers/regulator/cpcap-regulator.c b/drivers/regulator/cpcap-regulator.c
+index f80781d58a282..fbf823b830308 100644
+--- a/drivers/regulator/cpcap-regulator.c
++++ b/drivers/regulator/cpcap-regulator.c
+@@ -169,7 +169,7 @@ enum cpcap_regulator_id {
+ static int cpcap_regulator_enable(struct regulator_dev *rdev)
+ {
+ 	struct cpcap_regulator *regulator = rdev_get_drvdata(rdev);
+-	int error, ignore;
++	int error;
+ 
+ 	error = regulator_enable_regmap(rdev);
+ 	if (error)
+@@ -180,7 +180,7 @@ static int cpcap_regulator_enable(struct regulator_dev *rdev)
+ 					   regulator->assign_mask,
+ 					   regulator->assign_mask);
+ 		if (error)
+-			ignore = regulator_disable_regmap(rdev);
++			regulator_disable_regmap(rdev);
+ 	}
+ 
+ 	return error;
+@@ -193,7 +193,7 @@ static int cpcap_regulator_enable(struct regulator_dev *rdev)
+ static int cpcap_regulator_disable(struct regulator_dev *rdev)
+ {
+ 	struct cpcap_regulator *regulator = rdev_get_drvdata(rdev);
+-	int error, ignore;
++	int error;
+ 
+ 	if (rdev->desc->enable_val & CPCAP_REG_OFF_MODE_SEC) {
+ 		error = regmap_update_bits(rdev->regmap, regulator->assign_reg,
+@@ -204,9 +204,9 @@ static int cpcap_regulator_disable(struct regulator_dev *rdev)
+ 
+ 	error = regulator_disable_regmap(rdev);
+ 	if (error && (rdev->desc->enable_val & CPCAP_REG_OFF_MODE_SEC)) {
+-		ignore = regmap_update_bits(rdev->regmap, regulator->assign_reg,
+-					    regulator->assign_mask,
+-					    regulator->assign_mask);
++		regmap_update_bits(rdev->regmap, regulator->assign_reg,
++				   regulator->assign_mask,
++				   regulator->assign_mask);
+ 	}
+ 
+ 	return error;
 -- 
 2.25.1
 
