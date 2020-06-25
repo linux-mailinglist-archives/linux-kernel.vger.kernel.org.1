@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BB320A50B
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 20:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE2E20A510
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 20:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404819AbgFYSe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 14:34:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403908AbgFYSe0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 14:34:26 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998CFC08C5C1;
-        Thu, 25 Jun 2020 11:34:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y2Ojs6irYhJzJUoW2yptAyQ6Kl6zMJCInJSngjbNQ4k=; b=wPU1z5k3Ml8/8VR2O2qUXsjcNX
-        mwQyLG6nIg2KWHEaauq336GU71DYcaC9fvteoGwgeztFDz+Qr+r6qYGmD/h1awSbcjBNTa20+pV6y
-        wYcQ+rBbyT/ESBejKPeACzRUe0tyI8DcJ0dIdxGgfa433lwF9MVVPvBuCkOeqsrHvE3S3cA1Nz/Ca
-        FSlJ8vacxd5Qd9Wf7xj4ooDjY4ZrKPiqnlnnECSxhDYxqkmaq8sTmK5uPCsLm/Pzg+Q828mmI0YcN
-        Qzx9rXsE0ZNx9BqNpDrRqgox7b3W7tCQDeiBGKY3wQj+ESadCWScGah7We+H4zNleZYjJk6D6gMss
-        cNde5s6g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1joWh8-00056n-8i; Thu, 25 Jun 2020 18:33:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5378D3007CD;
-        Thu, 25 Jun 2020 20:33:51 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 35C32284DE63B; Thu, 25 Jun 2020 20:33:51 +0200 (CEST)
-Date:   Thu, 25 Jun 2020 20:33:51 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux@googlegroups.com,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH 05/22] kbuild: lto: postpone objtool
-Message-ID: <20200625183351.GH4800@hirez.programming.kicks-ass.net>
-References: <20200624203200.78870-1-samitolvanen@google.com>
- <20200624203200.78870-6-samitolvanen@google.com>
- <20200624211908.GT4817@hirez.programming.kicks-ass.net>
- <20200624214925.GB120457@google.com>
- <20200625074716.GX4817@hirez.programming.kicks-ass.net>
- <20200625162226.GC173089@google.com>
+        id S2405158AbgFYSfL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 14:35:11 -0400
+Received: from mga04.intel.com ([192.55.52.120]:46256 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390025AbgFYSfK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 14:35:10 -0400
+IronPort-SDR: 0fQ228rc3r+oWij782i+k//EP0WeBT593xXC90inrqZejb0hmLHVz2CGiU/3OEp+4WanzEf6gt
+ EoEV3T+gtG7w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9663"; a="142530546"
+X-IronPort-AV: E=Sophos;i="5.75,280,1589266800"; 
+   d="scan'208";a="142530546"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Jun 2020 11:35:10 -0700
+IronPort-SDR: aL4PASQml7wgyj7szJXhpPrZsa4zbVfKDGQzun7rjRPc6UUnaOODbuZ/RKRusjXTdmgFJsRUHg
+ +NFjZpLp2YgQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.75,280,1589266800"; 
+   d="scan'208";a="265427085"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.152])
+  by fmsmga008.fm.intel.com with ESMTP; 25 Jun 2020 11:35:09 -0700
+Date:   Thu, 25 Jun 2020 11:34:48 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com,
+        josh@joshtriplett.org, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, luto@kernel.org,
+        nhorman@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        tglx@linutronix.de, yaozhangx@google.com
+Subject: Re: [PATCH v33 11/21] x86/sgx: Linux Enclave Driver
+Message-ID: <20200625183448.GG3437@linux.intel.com>
+References: <20200617220844.57423-1-jarkko.sakkinen@linux.intel.com>
+ <20200617220844.57423-12-jarkko.sakkinen@linux.intel.com>
+ <20200625172319.GJ20319@zn.tnic>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200625162226.GC173089@google.com>
+In-Reply-To: <20200625172319.GJ20319@zn.tnic>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 09:22:26AM -0700, Sami Tolvanen wrote:
-> On Thu, Jun 25, 2020 at 09:47:16AM +0200, Peter Zijlstra wrote:
-
-> > Right, then we need to make --no-vmlinux work properly when
-> > !DEBUG_ENTRY, which I think might be buggered due to us overriding the
-> > argument when the objname ends with "vmlinux.o".
+On Thu, Jun 25, 2020 at 07:23:19PM +0200, Borislav Petkov wrote:
+> Also, you had all patches until now split nice and logically doing one
+> thing only.
 > 
-> Right. Can we just remove that and  pass --vmlinux to objtool in
-> link-vmlinux.sh, or is the override necessary somewhere else?
-
-Think we can remove it; it was just convenient when running manually.
-
-> > > > > +ifdef CONFIG_STACK_VALIDATION
-> > > > > +ifneq ($(SKIP_STACK_VALIDATION),1)
-> > > > > +cmd_ld_ko_o +=								\
-> > > > > +	$(objtree)/tools/objtool/objtool				\
-> > > > > +		$(if $(CONFIG_UNWINDER_ORC),orc generate,check)		\
-> > > > > +		--module						\
-> > > > > +		$(if $(CONFIG_FRAME_POINTER),,--no-fp)			\
-> > > > > +		$(if $(CONFIG_GCOV_KERNEL),--no-unreachable,)		\
-> > > > > +		$(if $(CONFIG_RETPOLINE),--retpoline,)			\
-> > > > > +		$(if $(CONFIG_X86_SMAP),--uaccess,)			\
-> > > > > +		$(@:.ko=$(prelink-ext).o);
-> > > > > +
-> > > > > +endif # SKIP_STACK_VALIDATION
-> > > > > +endif # CONFIG_STACK_VALIDATION
-> > > > 
-> > > > What about the objtool invocation from link-vmlinux.sh ?
-> > > 
-> > > What about it? The existing objtool_link invocation in link-vmlinux.sh
-> > > works fine for our purposes as well.
-> > 
-> > Well, I was wondering why you're adding yet another objtool invocation
-> > while we already have one.
+> But this one is huge. Why?
 > 
-> Because we can't run objtool until we have compiled bitcode to native
-> code, so for modules, we're need another invocation after everything has
-> been compiled.
+> Why can't you split out the facilities which the driver uses: encl.[ch]
+> into a patch, then ioctl.c into a separate one and then the driver into
+> a third one? Or do they all belong together inseparably?
+> 
+> I guess I'll find out eventually but it would've been nice if they were
+> split out...
 
-Well, that I understand, my question was why we need one in
-scripts/link-vmlinux.sh and an additional one. I think we're just
-talking past one another and agree we only need one.
+Hmm, I think the most reasonable way to break up this beast would be to
+incrementally introduce functionality.  E.g. four or so patches, one for
+each ioctl() of ENCLAVE_CREATE, ENCLAVE_ADD_PAGES, ENCLAVE_INIT and
+ENCLAVE_SET_ATTRIBUTE, in that order.
+
+Splitting up by file probably wouldn't work very well.  The split is
+pretty arbitrary, e.g. encl.[ch] isn't simply a pure representation of an
+enclave, there is a lot of the driver details/dependencies in there, i.e.
+the functionality between encl/ioctl/driver is all pretty intertwined.
+
+But I think serially introducing each ioctl() would be fairly clean, and
+would help readers/reviewers better understand SGX as the patches would
+naturally document the process of building an enclave, e.g. CREATE the
+enclave, then ADD_PAGES, then INIT the enclave.  SET_ATTRIBUTE is a bit
+of an outlier in that it would be chronologically out of order with
+respect to building the enclave, but I think that's ok. 
+
+Jarkko, thoughts?
