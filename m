@@ -2,186 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8945520A39D
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6B520A3A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406602AbgFYRFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 13:05:15 -0400
-Received: from conuserg-11.nifty.com ([210.131.2.78]:51073 "EHLO
-        conuserg-11.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404524AbgFYRFN (ORCPT
+        id S2406641AbgFYRGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 13:06:31 -0400
+Received: from lelv0142.ext.ti.com ([198.47.23.249]:41856 "EHLO
+        lelv0142.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404376AbgFYRGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 13:05:13 -0400
-Received: from oscar.flets-west.jp (softbank126090202047.bbtec.net [126.90.202.47]) (authenticated)
-        by conuserg-11.nifty.com with ESMTP id 05PH4apJ005239;
-        Fri, 26 Jun 2020 02:04:40 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-11.nifty.com 05PH4apJ005239
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1593104680;
-        bh=hsy2jEcguFBbAwWPOzrHlA0rVfoIakAEVTOhQL5WWjE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WbHigNnte5CSbikVGUFPeliUyTPT3GRCm5FsAIbbeR39Z9izKsKAEnEGdE5iBevgc
-         IBemTKdtJf1dC1X8WYluHt26gBZHzP1Y8t+QNr6v6RTsKcISkOLy6h8ThC5IdyinIX
-         fdO6ylOehgLhyHBswZo3ni7WuqVoAo1iXNmPzH+X7LUF05P2nvHJHU6yokUfen4UHB
-         lNJj5F9+g5gHgDvtAUgZeQMxsZ5Xsa9BYF5+aN1YTlttvO9ZBZ52Tmr3d4J+6RhUBx
-         PRH43Ng1ZY9f6gJj5VGW1OTs9i+g3Pa1pg6bStdefJKIG3NZt7WSTb3248vI/MRSvq
-         bwiRu7iGWU4uQ==
-X-Nifty-SrcIP: [126.90.202.47]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Cc:     Frank Rowand <frowand.list@gmail.com>,
-        linux-kbuild@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] dt-bindings: split DT schema check rules
-Date:   Fri, 26 Jun 2020 02:04:34 +0900
-Message-Id: <20200625170434.635114-5-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200625170434.635114-1-masahiroy@kernel.org>
-References: <20200625170434.635114-1-masahiroy@kernel.org>
+        Thu, 25 Jun 2020 13:06:30 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 05PH4s1j015335;
+        Thu, 25 Jun 2020 12:04:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1593104694;
+        bh=ONVcVn3bey9yl+Y9AA3TJVO17GyEvycrQ6oGUr5xABk=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=VeX/+nmR89jbqhMaGIjQZcXyTRkVf8XN2TGdHgOPTjeN+6tIIcJUj2UJZ2qNOwjzN
+         k2wDLNwWtVI5hmoI0mW8Rn/Z9fB47/08j5fiB+xrAUcD2YZgUZLH4gU2dGvq9IA3Zv
+         rSoDjm1EjYdkCj77mB9ShAKbSWmADriglQu3FODw=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 05PH4sqM075398
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 25 Jun 2020 12:04:54 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 25
+ Jun 2020 12:04:53 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 25 Jun 2020 12:04:53 -0500
+Received: from [127.0.0.1] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 05PH4pWG025571;
+        Thu, 25 Jun 2020 12:04:52 -0500
+Subject: Re: [PATCH 2/2] watchdog: rti: tweak min_hw_heartbeat_ms to match
+ initial allowed window
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Jan Kiszka <jan.kiszka@siemens.com>, <wim@linux-watchdog.org>,
+        <linux-watchdog@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>
+References: <20200624114534.1362-1-t-kristo@ti.com>
+ <20200624114534.1362-3-t-kristo@ti.com>
+ <289c6104-a885-d3c1-c670-a081ebaaf782@siemens.com>
+ <b3849bea-2a4d-079e-e9df-8a1d6c13c0c7@ti.com>
+ <25bf3ed1-5434-9b45-20ae-e1b2cfc5e5c0@roeck-us.net>
+From:   Tero Kristo <t-kristo@ti.com>
+Message-ID: <1d84e633-b808-d6ac-a34c-9cc4709e43f6@ti.com>
+Date:   Thu, 25 Jun 2020 20:04:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
+In-Reply-To: <25bf3ed1-5434-9b45-20ae-e1b2cfc5e5c0@roeck-us.net>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When building %.dt.yaml from %.dts, two things happen in a row:
+On 25/06/2020 16:35, Guenter Roeck wrote:
+> On 6/25/20 1:32 AM, Tero Kristo wrote:
+>> On 24/06/2020 18:24, Jan Kiszka wrote:
+>>> On 24.06.20 13:45, Tero Kristo wrote:
+>>>> If the RTI watchdog has been started by someone (like bootloader) when
+>>>> the driver probes, we must adjust the initial ping timeout to match the
+>>>> currently running watchdog window to avoid generating watchdog reset.
+>>>>
+>>>> Signed-off-by: Tero Kristo <t-kristo@ti.com>
+>>>> ---
+>>>>    drivers/watchdog/rti_wdt.c | 25 +++++++++++++++++++++++++
+>>>>    1 file changed, 25 insertions(+)
+>>>>
+>>>> diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
+>>>> index d456dd72d99a..02ea2b2435f5 100644
+>>>> --- a/drivers/watchdog/rti_wdt.c
+>>>> +++ b/drivers/watchdog/rti_wdt.c
+>>>> @@ -55,11 +55,13 @@ static int heartbeat;
+>>>>     * @base - base io address of WD device
+>>>>     * @freq - source clock frequency of WDT
+>>>>     * @wdd  - hold watchdog device as is in WDT core
+>>>> + * @min_hw_heartbeat_save - save of the min hw heartbeat value
+>>>>     */
+>>>>    struct rti_wdt_device {
+>>>>        void __iomem        *base;
+>>>>        unsigned long        freq;
+>>>>        struct watchdog_device    wdd;
+>>>> +    unsigned int        min_hw_heartbeat_save;
+>>>>    };
+>>>>    static int rti_wdt_start(struct watchdog_device *wdd)
+>>>> @@ -107,6 +109,11 @@ static int rti_wdt_ping(struct watchdog_device *wdd)
+>>>>        /* put watchdog in active state */
+>>>>        writel_relaxed(WDKEY_SEQ1, wdt->base + RTIWDKEY);
+>>>> +    if (wdt->min_hw_heartbeat_save) {
+>>>> +        wdd->min_hw_heartbeat_ms = wdt->min_hw_heartbeat_save;
+>>>> +        wdt->min_hw_heartbeat_save = 0;
+>>>> +    }
+>>>> +
+>>>>        return 0;
+>>>>    }
+>>>> @@ -201,6 +208,24 @@ static int rti_wdt_probe(struct platform_device *pdev)
+>>>>            goto err_iomap;
+>>>>        }
+>>>> +    if (readl(wdt->base + RTIDWDCTRL) == WDENABLE_KEY) {
+>>>> +        u32 time_left;
+>>>> +        u32 heartbeat;
+>>>> +
+>>>> +        set_bit(WDOG_HW_RUNNING, &wdd->status);
+>>>> +        time_left = rti_wdt_get_timeleft(wdd);
+>>>> +        heartbeat = readl(wdt->base + RTIDWDPRLD);
+>>>> +        heartbeat <<= WDT_PRELOAD_SHIFT;
+>>>> +        heartbeat /= wdt->freq;
+>>>> +        if (time_left < heartbeat / 2)
+>>>> +            wdd->min_hw_heartbeat_ms = 0;
+>>>> +        else
+>>>> +            wdd->min_hw_heartbeat_ms =
+>>>> +                (time_left - heartbeat / 2 + 1) * 1000;
+>>>> +
+>>>> +        wdt->min_hw_heartbeat_save = 11 * heartbeat * 1000 / 20;
+>>>> +    }
+>>>> +
+>>>>        ret = watchdog_register_device(wdd);
+>>>>        if (ret) {
+>>>>            dev_err(dev, "cannot register watchdog device\n");
+>>>>
+>>>
+>>> This assumes that the bootloader also programmed a 50% window, right? The pending U-Boot patch will do that, but what if that may chance or someone uses a different setup?
+>>
+>> Yes, we assume 50%. I think based on the hw design, 50% is the only sane value to be used, otherwise you just shrink the open window too much and for no apparent reason.
+>>
+> 
+> Not sure if that is a valid assumption. Someone who designs a watchdog
+> with such a narrow ping window might as well also use it. The question
+> is if you want to rely on that assumption, or check and change it if needed.
 
- [1] Run DTC to convert %.dts into %.dt.yaml
+Right, if that is a blocker, I can modify the code. Should be maybe 
+couple of lines addition.
 
- [2] Run dt-validate against %.dt.yaml
+> Also, I wonder if we should add an API function such as
+> "set_last_hw_keepalive()" to avoid all that complexity.
 
-Currently, when any .yaml schema file is updated, processed-schema.yaml
-is regenerated, then both [1] and [2] are rerun for all .dts files.
+I can try adding that also if it is desirable.
 
-Actually, we do not need to rerun [1] since the original .dts is not
-updated.
-
-Split the rule to avoid unneeded .dts/.dt.yaml conversion.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
----
-
- .gitignore                                 |  1 +
- Documentation/devicetree/bindings/Makefile |  4 ++--
- Makefile                                   |  2 +-
- scripts/Makefile.build                     |  2 ++
- scripts/Makefile.lib                       | 24 ++++++++++------------
- 5 files changed, 17 insertions(+), 16 deletions(-)
-
-diff --git a/.gitignore b/.gitignore
-index 87b9dd8a163b..a1941faf7233 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -16,6 +16,7 @@
- *.bin
- *.bz2
- *.c.[012]*.*
-+*.dt.checked
- *.dt.yaml
- *.dtb
- *.dtb.S
-diff --git a/Documentation/devicetree/bindings/Makefile b/Documentation/devicetree/bindings/Makefile
-index 6aac57588e66..b46910eb7cf4 100644
---- a/Documentation/devicetree/bindings/Makefile
-+++ b/Documentation/devicetree/bindings/Makefile
-@@ -62,11 +62,11 @@ $(obj)/processed-schema.yaml: $(DT_SCHEMA_FILES) check_dtschema_version FORCE
- endif
- 
- extra-$(CHECK_DT_BINDING) += $(patsubst $(src)/%.yaml,%.example.dts, $(DT_SCHEMA_FILES))
--extra-$(CHECK_DT_BINDING) += $(patsubst $(src)/%.yaml,%.example.dt.yaml, $(DT_SCHEMA_FILES))
-+extra-$(CHECK_DT_BINDING) += $(patsubst $(src)/%.yaml,%.example.dt.checked, $(DT_SCHEMA_FILES))
- extra-$(CHECK_DT_BINDING) += processed-schema-examples.yaml
- extra-$(CHECK_DTBS) += processed-schema.yaml
- 
- # Hack: avoid 'Argument list too long' error for 'make clean'. Remove most of
- # build artifacts here before they are processed by scripts/Makefile.clean
- clean-files = $(shell find $(obj) \( -name '*.example.dts' -o \
--			-name '*.example.dt.yaml' \) -delete 2>/dev/null)
-+			-name '*.example.dt.checked' \) -delete 2>/dev/null)
-diff --git a/Makefile b/Makefile
-index ac2c61c37a73..0fc778b656d1 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1774,7 +1774,7 @@ clean: $(clean-dirs)
- 		-o -name '*.lex.c' -o -name '*.tab.[ch]' \
- 		-o -name '*.asn1.[ch]' \
- 		-o -name '*.symtypes' -o -name 'modules.order' \
--		-o -name '.tmp_*.o.*' \
-+		-o -name '.tmp_*.o.*' -o -name '*.dt.checked' \
- 		-o -name '*.c.[012]*.*' \
- 		-o -name '*.ll' \
- 		-o -name '*.gcno' \) -type f -print | xargs rm -f
-diff --git a/scripts/Makefile.build b/scripts/Makefile.build
-index 2e8810b7e5ed..ca24c3077fef 100644
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -442,10 +442,12 @@ intermediate_targets = $(foreach sfx, $(2), \
- 					$(filter %$(strip $(1)), $(targets))))
- # %.asn1.o <- %.asn1.[ch] <- %.asn1
- # %.dtb.o <- %.dtb.S <- %.dtb <- %.dts
-+# %.dt.checked <- %.dt.yaml <- %.dts
- # %.lex.o <- %.lex.c <- %.l
- # %.tab.o <- %.tab.[ch] <- %.y
- targets += $(call intermediate_targets, .asn1.o, .asn1.c .asn1.h) \
- 	   $(call intermediate_targets, .dtb.o, .dtb.S .dtb) \
-+	   $(call intermediate_targets, .dt.checked, .dt.yaml) \
- 	   $(call intermediate_targets, .lex.o, .lex.c) \
- 	   $(call intermediate_targets, .tab.o, .tab.c .tab.h)
- 
-diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-index fa5022133a25..d72a7cf79f63 100644
---- a/scripts/Makefile.lib
-+++ b/scripts/Makefile.lib
-@@ -74,8 +74,8 @@ extra-y				+= $(dtb-y)
- extra-$(CONFIG_OF_ALL_DTBS)	+= $(dtb-)
- 
- ifneq ($(CHECK_DTBS),)
--extra-y += $(patsubst %.dtb,%.dt.yaml, $(dtb-y))
--extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtb,%.dt.yaml, $(dtb-))
-+extra-y += $(patsubst %.dtb,%.dt.checked, $(dtb-y))
-+extra-$(CONFIG_OF_ALL_DTBS) += $(patsubst %.dtb,%.dt.checked, $(dtb-))
- endif
- 
- # Add subdir path
-@@ -308,26 +308,24 @@ cmd_dtc = mkdir -p $(dir ${dtc-tmp}) ; \
- 		-d $(depfile).dtc.tmp $(dtc-tmp) ; \
- 	cat $(depfile).pre.tmp $(depfile).dtc.tmp > $(depfile)
- 
-+dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
-+
- $(obj)/%.dtb: $(src)/%.dts $(DTC) FORCE
- 	$(call if_changed_dep,dtc)
- 
-+$(obj)/%.dt.yaml: $(src)/%.dts $(DTC) FORCE
-+	$(call if_changed_dep,dtc)
-+
- DT_CHECKER ?= dt-validate
- DT_BINDING_DIR := Documentation/devicetree/bindings
- # DT_TMP_SCHEMA may be overridden from Documentation/devicetree/bindings/Makefile
- DT_TMP_SCHEMA ?= $(objtree)/$(DT_BINDING_DIR)/processed-schema.yaml
- 
--quiet_cmd_dtb_check =	CHECK   $@
--      cmd_dtb_check =	$(DT_CHECKER) -u $(srctree)/$(DT_BINDING_DIR) -p $(DT_TMP_SCHEMA) $@
-+quiet_cmd_dt_check = CHECK   $<
-+      cmd_dt_check = $(DT_CHECKER) -u $(srctree)/$(DT_BINDING_DIR) -p $(DT_TMP_SCHEMA) $<; touch $@
- 
--define rule_dtc
--	$(call cmd_and_fixdep,dtc)
--	$(call cmd,dtb_check)
--endef
--
--$(obj)/%.dt.yaml: $(src)/%.dts $(DTC) $(DT_TMP_SCHEMA) FORCE
--	$(call if_changed_rule,dtc,yaml)
--
--dtc-tmp = $(subst $(comma),_,$(dot-target).dts.tmp)
-+$(obj)/%.dt.checked: $(obj)/%.dt.yaml $(DT_TMP_SCHEMA) FORCE
-+	$(call if_changed,dt_check)
- 
- # Bzip2
- # ---------------------------------------------------------------------------
--- 
-2.25.1
-
+-Tero
+--
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki. Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
