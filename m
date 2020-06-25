@@ -2,80 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07FD20A774
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 23:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBDE20A777
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 23:28:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406470AbgFYV1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 17:27:43 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:56876 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2403774AbgFYV1m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 17:27:42 -0400
-Received: from zn.tnic (p200300ec2f0ed1000d60c73cccfe0752.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:d100:d60:c73c:ccfe:752])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 82CE91EC0422;
-        Thu, 25 Jun 2020 23:27:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1593120461;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=OEQ8LAKMJpX2G9JI7xBon4UAPZWXmQZyvBikkcSaurk=;
-        b=UjFVtjOm+Znu+lPGCj4HPfd58w3f9KBlsDVg4mSKdSjoReBtoMDNSVhXlNM6WTnpujRS6F
-        DnIDDAocPMC0Pn9Sp5NB6DzFSUFdlT0MrdU67IGDYdmqYn4pZei5qRC2pxdmqlX1YjLxDT
-        VYjwcjHDy1nDW2pEBla9DQmPLOeZ/XM=
-Date:   Thu, 25 Jun 2020 23:27:36 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Daniel Gutson <daniel@eclypsium.com>
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
+        id S2407206AbgFYV2A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 17:28:00 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60248 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2403774AbgFYV17 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 25 Jun 2020 17:27:59 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 05PL22R2177561;
+        Thu, 25 Jun 2020 17:27:55 -0400
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ux08bntc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Jun 2020 17:27:54 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 05PL2Fb8178635;
+        Thu, 25 Jun 2020 17:27:54 -0400
+Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 31ux08bnt1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Jun 2020 17:27:54 -0400
+Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
+        by ppma01dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 05PLQ34W023831;
+        Thu, 25 Jun 2020 21:27:53 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma01dal.us.ibm.com with ESMTP id 31uurutyvc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 25 Jun 2020 21:27:53 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 05PLRqXh42467612
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 25 Jun 2020 21:27:52 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7CFBF112062;
+        Thu, 25 Jun 2020 21:27:52 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5E902112061;
+        Thu, 25 Jun 2020 21:27:50 +0000 (GMT)
+Received: from sbct-3.pok.ibm.com (unknown [9.47.158.153])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTP;
+        Thu, 25 Jun 2020 21:27:50 +0000 (GMT)
+Subject: Re: [PATCH v2] tpm: tpm2-space: Resize session and context buffers
+ dynamically
+To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+Cc:     linux-integrity@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rob Herring <robh@kernel.org>, Tony Luck <tony.luck@intel.com>,
-        Rahul Tanwar <rahul.tanwar@linux.intel.com>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kernel@vger.kernel.org, Richard Hughes <hughsient@gmail.com>
-Subject: Re: [PATCH] Ability to read the MKTME status from userspace (patch
- v2)
-Message-ID: <20200625212736.GT20319@zn.tnic>
-References: <20200625211029.34733-1-daniel.gutson@eclypsium.com>
- <20200625211453.GS20319@zn.tnic>
- <CAFmMkTGy5vOiPUpWw6HfQv-JM90JqLBcsKwMpbWdsjaLBw730Q@mail.gmail.com>
+        Jerry Snitselaar <jsnitsel@redhat.com>,
+        Sumit Garg <sumit.garg@linaro.org>,
+        Alexey Klimov <aklimov@redhat.com>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20200625043819.376693-1-jarkko.sakkinen@linux.intel.com>
+ <8d19d5e2-91bc-09ad-6b94-d51a7aad6376@linux.ibm.com>
+ <20200625212556.GC20341@linux.intel.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+Message-ID: <031020b9-dc0a-3c2f-32e4-4bb2db4b5a2b@linux.ibm.com>
+Date:   Thu, 25 Jun 2020 17:27:50 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAFmMkTGy5vOiPUpWw6HfQv-JM90JqLBcsKwMpbWdsjaLBw730Q@mail.gmail.com>
+In-Reply-To: <20200625212556.GC20341@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-06-25_16:2020-06-25,2020-06-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ impostorscore=0 cotscore=-2147483648 mlxlogscore=999 bulkscore=0
+ lowpriorityscore=0 adultscore=0 malwarescore=0 phishscore=0 clxscore=1015
+ priorityscore=1501 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2004280000 definitions=main-2006250120
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 25, 2020 at 06:16:12PM -0300, Daniel Gutson wrote:
-> What didn't become clear from the thread last time is the direction to
-> proceed. Concrete suggestion?
+On 6/25/20 5:25 PM, Jarkko Sakkinen wrote:
+> On Thu, Jun 25, 2020 at 08:41:18AM -0400, Stefan Berger wrote:
+>> On 6/25/20 12:38 AM, Jarkko Sakkinen wrote:
+>>> Re-allocate context and session buffers when needed. Scale them in page
+>>> increments so that the reallocation is only seldomly required, and thus
+>>> causes minimal stress to the system. Add a static maximum limit of four
+>>> pages for buffer sizes.
+>>>
+>>> Cc: James Bottomley <James.Bottomley@HansenPartnership.com>
+>>> Suggested-by: Stefan Berger <stefanb@linux.ibm.com>
+>>> Signed-off-by: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+>>
+>> You don't want to try a fixes tag? None of the previous versions of this
+>> code will work with newer versions of the TPM 2 then...
+> It's not a regression.
 
-Here are two:
+Ok, so distros will have to backport it.
 
-https://lkml.kernel.org/r/20200619161752.GG32683@zn.tnic
-https://lkml.kernel.org/r/20200619161026.GF32683@zn.tnic
 
-but before that happens, I'd like to hear Dave confirm that when we
-expose all that information to userspace, it will actually be true and
-show the necessary bits which *actually* tell you that encryption is
-enabled.
+     Stefan
 
-If you're still unclear, go over the thread again pls.
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
