@@ -2,99 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FD6D209EFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 14:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E914209E79
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 14:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404806AbgFYM6i convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 25 Jun 2020 08:58:38 -0400
-Received: from smtprelay08.ispgateway.de ([134.119.228.98]:28265 "EHLO
-        smtprelay08.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404650AbgFYM6i (ORCPT
+        id S2404671AbgFYMbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 08:31:47 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:45098 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404343AbgFYMbr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 08:58:38 -0400
-X-Greylist: delayed 2034 seconds by postgrey-1.27 at vger.kernel.org; Thu, 25 Jun 2020 08:58:36 EDT
-Received: from [89.1.81.74] (helo=ipc1.ka-ro)
-        by smtprelay08.ispgateway.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <LW@KARO-electronics.de>)
-        id 1joQvk-0003Qs-9b; Thu, 25 Jun 2020 14:24:36 +0200
-Date:   Thu, 25 Jun 2020 14:24:35 +0200
-From:   Lothar =?UTF-8?B?V2HDn21hbm4=?= <LW@KARO-electronics.de>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     Sriram Dash <sriram.dash@samsung.com>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH BUGFIX] can: m_can: make m_can driver work with sleep state
- pinconfig
-Message-ID: <20200625142435.50371e2f@ipc1.ka-ro>
-Organization: Ka-Ro electronics GmbH
+        Thu, 25 Jun 2020 08:31:47 -0400
+Received: by mail-ej1-f66.google.com with SMTP id a1so5724405ejg.12;
+        Thu, 25 Jun 2020 05:31:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LfL/J6kcjTPEsDskt6aLX8PefsDeHP4anavcHPUMTKA=;
+        b=K8tP2qbXQI2hBSalRv4SKfazP6iRV3H2GezAc8E8Uh9rrhiWuQ8Uqg34LY7Fb6evnI
+         l0B30MTdDB8NfVH+KqkGnEjAhchh7qqCHacKA4oePCjNf6TrHlbE0h6RdihWtzcD6spO
+         IE8vZBokrOoqo6uM3O/nZUnpG3CboXOzspyfNggmh3UZuWqH9stnfsm8dKW0rUYkyuq6
+         laFq5z4Bb37H2lDLFaKcdL6RTThXEoBdGPecY/sJJA1qLPPP8FRrX51vy/UNLpxHukgN
+         TzJQMEzsGodiU98ggnmLqKKHWgzO/aMakaLVJ7b+s9Sl9MnE0UqIB2SnSEaU/RL4mTx4
+         J3XA==
+X-Gm-Message-State: AOAM530w5IK5YXKYgtRq/pvNRb0vyX7+bEIhjkMbTaP28RkyOk1Dd0gq
+        MTQHz5NVGHmYaldpcgU8ebY=
+X-Google-Smtp-Source: ABdhPJyiXDwgXlrcNxDquN/m7X009TUFeb5rEVdNCJL2oLKPwCGm2N5mD6JL7UM8/mFBSoWnOD0BJw==
+X-Received: by 2002:a17:906:3d41:: with SMTP id q1mr30164872ejf.12.1593088305149;
+        Thu, 25 Jun 2020 05:31:45 -0700 (PDT)
+Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
+        by smtp.gmail.com with ESMTPSA id u13sm11449983ejx.3.2020.06.25.05.31.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Jun 2020 05:31:44 -0700 (PDT)
+Date:   Thu, 25 Jun 2020 14:31:43 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-xfs@vger.kernel.org, dm-devel@redhat.com,
+        Mikulas Patocka <mpatocka@redhat.com>,
+        Jens Axboe <axboe@kernel.dk>, NeilBrown <neilb@suse.de>
+Subject: Re: [PATCH 2/6] mm: Add become_kswapd and restore_kswapd
+Message-ID: <20200625123143.GK1320@dhcp22.suse.cz>
+References: <20200625113122.7540-1-willy@infradead.org>
+ <20200625113122.7540-3-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Df-Sender: bHdAa2Fyby1lbGVjdHJvbmljcy5kb21haW5mYWN0b3J5LWt1bmRlLmRl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200625113122.7540-3-willy@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu 25-06-20 12:31:18, Matthew Wilcox wrote:
+> Since XFS needs to pretend to be kswapd in some of its worker threads,
+> create methods to save & restore kswapd state.  Don't bother restoring
+> kswapd state in kswapd -- the only time we reach this code is when we're
+> exiting and the task_struct is about to be destroyed anyway.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-When trying to use the m_can driver on an stm32mp15 based system, I
-found that I could not send or receive any data.
-Analyzing the pinctrl registers revealed, that the pins were
-configured for sleep state even when the can interfaces were in use.
+Certainly better than an opencoded PF_$FOO manipulation
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Looking at the m_can_platform.c driver I found that:
+I would just ask for a clarification because this is rellying to have a
+good MM knowledge to follow
 
-commit f524f829b75a ("can: m_can: Create a m_can platform framework")
+> +/*
+> + * Tell the memory management that we're a "memory allocator",
 
-introduced a call to m_can_class_suspend() in the m_can_runtime_suspend()
-function which wasn't there in the original code and which causes the
-pins used by the controller to be configured for sleep state.
+I would go with.
+Tell the memory management that the caller is working on behalf of the
+background memory reclaim (aka kswapd) and help it to make a forward
+progress. That means that it will get an access to memory reserves
+should there be a need to allocate memory in order to make a forward
+progress. Note that the caller has to be extremely careful when doing
+that.
 
-commit 0704c5743694 ("can: m_can_platform: remove unnecessary m_can_class_resume() call")
-already removed a bogus call to m_can_class_resume() from the
-m_can_runtime_resume() function, but failed to remove the matching
-call to m_can_class_suspend() from the m_can_runtime_suspend() function.
+Or something like that.
 
-Removing the bogus call to m_can_class_suspend() in the
-m_can_runtime_suspend() function fixes this.
+> + * and that if we need more memory we should get access to it
+> + * regardless (see "__alloc_pages()"). "kswapd" should
+> + * never get caught in the normal page freeing logic.
+> + *
+> + * (Kswapd normally doesn't need memory anyway, but sometimes
+> + * you need a small amount of memory in order to be able to
+> + * page out something else, and this flag essentially protects
+> + * us from recursively trying to free more memory as we're
+> + * trying to free the first piece of memory in the first place).
+> + */
+> +#define KSWAPD_PF_FLAGS		(PF_MEMALLOC | PF_SWAPWRITE | PF_KSWAPD)
+> +
+> +static inline unsigned long become_kswapd(void)
+> +{
+> +	unsigned long flags = current->flags & KSWAPD_PF_FLAGS;
+> +	current->flags |= KSWAPD_PF_FLAGS;
+> +	return flags;
+> +}
+> +
+> +static inline void restore_kswapd(unsigned long flags)
+> +{
+> +	current->flags &= ~(flags ^ KSWAPD_PF_FLAGS);
+> +}
+> +
+>  static inline void set_current_io_flusher(void)
+>  {
+>  	current->flags |= PF_LOCAL_THROTTLE;
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index b6d84326bdf2..27ae76699899 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -3870,19 +3870,7 @@ static int kswapd(void *p)
+>  	if (!cpumask_empty(cpumask))
+>  		set_cpus_allowed_ptr(tsk, cpumask);
+>  
+> -	/*
+> -	 * Tell the memory management that we're a "memory allocator",
+> -	 * and that if we need more memory we should get access to it
+> -	 * regardless (see "__alloc_pages()"). "kswapd" should
+> -	 * never get caught in the normal page freeing logic.
+> -	 *
+> -	 * (Kswapd normally doesn't need memory anyway, but sometimes
+> -	 * you need a small amount of memory in order to be able to
+> -	 * page out something else, and this flag essentially protects
+> -	 * us from recursively trying to free more memory as we're
+> -	 * trying to free the first piece of memory in the first place).
+> -	 */
+> -	tsk->flags |= PF_MEMALLOC | PF_SWAPWRITE | PF_KSWAPD;
+> +	become_kswapd();
+>  	set_freezable();
+>  
+>  	WRITE_ONCE(pgdat->kswapd_order, 0);
+> @@ -3932,8 +3920,6 @@ static int kswapd(void *p)
+>  			goto kswapd_try_sleep;
+>  	}
+>  
+> -	tsk->flags &= ~(PF_MEMALLOC | PF_SWAPWRITE | PF_KSWAPD);
+> -
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.27.0
+> 
 
-Fixes: f524f829b75a ("can: m_can: Create a m_can platform framework")
-Fixes: 0704c5743694 ("can: m_can_platform: remove unnecessary m_can_class_resume() call")
-Signed-off-by: Lothar Waßmann <LW@KARO-electronics.de>
----
- drivers/net/can/m_can/m_can_platform.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_can/m_can_platform.c
-index 38ea5e600fb8..e6d0cb9ee02f 100644
---- a/drivers/net/can/m_can/m_can_platform.c
-+++ b/drivers/net/can/m_can/m_can_platform.c
-@@ -144,8 +144,6 @@ static int __maybe_unused m_can_runtime_suspend(struct device *dev)
- 	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct m_can_classdev *mcan_class = netdev_priv(ndev);
- 
--	m_can_class_suspend(dev);
--
- 	clk_disable_unprepare(mcan_class->cclk);
- 	clk_disable_unprepare(mcan_class->hclk);
- 
 -- 
-2.11.0
-
-
-
--- 
-___________________________________________________________
-
-Ka-Ro electronics GmbH | Pascalstraße 22 | D - 52076 Aachen
-Phone: +49 2408 1402-0 | Fax: +49 2408 1402-10
-Geschäftsführer: Matthias Kaussen
-Handelsregistereintrag: Amtsgericht Aachen, HRB 4996
-
-www.karo-electronics.de | info@karo-electronics.de
-___________________________________________________________
+Michal Hocko
+SUSE Labs
