@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09517209DDF
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 13:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B4A209DC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 13:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404579AbgFYLyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 07:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50774 "EHLO
+        id S2404437AbgFYLxo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 07:53:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404364AbgFYLxh (ORCPT
+        with ESMTP id S2404378AbgFYLxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 07:53:37 -0400
+        Thu, 25 Jun 2020 07:53:38 -0400
 Received: from Galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9773C0613ED;
-        Thu, 25 Jun 2020 04:53:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE4E8C061795;
+        Thu, 25 Jun 2020 04:53:37 -0700 (PDT)
 Received: from [5.158.153.53] (helo=tip-bot2.lab.linutronix.de)
         by Galois.linutronix.de with esmtpsa (TLS1.2:DHE_RSA_AES_256_CBC_SHA256:256)
         (Exim 4.80)
         (envelope-from <tip-bot2@linutronix.de>)
-        id 1joQRh-0005sR-FK; Thu, 25 Jun 2020 13:53:33 +0200
+        id 1joQRh-0005sI-8O; Thu, 25 Jun 2020 13:53:33 +0200
 Received: from [127.0.1.1] (localhost [IPv6:::1])
-        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id 268D71C047D;
-        Thu, 25 Jun 2020 13:53:33 +0200 (CEST)
+        by tip-bot2.lab.linutronix.de (Postfix) with ESMTP id D39AB1C0470;
+        Thu, 25 Jun 2020 13:53:32 +0200 (CEST)
 Date:   Thu, 25 Jun 2020 11:53:32 -0000
 From:   "tip-bot2 for Peter Zijlstra" <tip-bot2@linutronix.de>
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry: Fixup bad_iret vs noinstr
-Cc:     Marco Elver <elver@google.com>,
+Subject: [tip: x86/entry] x86/entry: Increase entry_stack size to a full page
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Marco Elver <elver@google.com>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20200618144801.760070502@infradead.org>
-References: <20200618144801.760070502@infradead.org>
+        Lai Jiangshan <jiangshanlai@gmail.com>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20200618144801.819246178@infradead.org>
+References: <20200618144801.819246178@infradead.org>
 MIME-Version: 1.0
-Message-ID: <159308601294.16989.6717371293673263499.tip-bot2@tip-bot2>
+Message-ID: <159308601261.16989.8417394079734931145.tip-bot2@tip-bot2>
 X-Mailer: tip-git-log-daemon
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
@@ -50,70 +52,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/entry branch of tip:
 
-Commit-ID:     e3a9e681adb779b39565a28b3252c3be1033f994
-Gitweb:        https://git.kernel.org/tip/e3a9e681adb779b39565a28b3252c3be1033f994
+Commit-ID:     c7aadc09321d8f9a1d3bd1e6d8a47222ecddf6c5
+Gitweb:        https://git.kernel.org/tip/c7aadc09321d8f9a1d3bd1e6d8a47222ecddf6c5
 Author:        Peter Zijlstra <peterz@infradead.org>
-AuthorDate:    Wed, 17 Jun 2020 18:21:16 +02:00
+AuthorDate:    Wed, 17 Jun 2020 18:25:57 +02:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 25 Jun 2020 13:45:39 +02:00
+CommitterDate: Thu, 25 Jun 2020 13:45:40 +02:00
 
-x86/entry: Fixup bad_iret vs noinstr
+x86/entry: Increase entry_stack size to a full page
 
-vmlinux.o: warning: objtool: fixup_bad_iret()+0x8e: call to memcpy() leaves .noinstr.text section
+Marco crashed in bad_iret with a Clang11/KCSAN build due to
+overflowing the stack. Now that we run C code on it, expand it to a
+full page.
 
-Worse, when KASAN there is no telling what memcpy() actually is. Force
-the use of __memcpy() which is our assmebly implementation.
-
+Suggested-by: Andy Lutomirski <luto@amacapital.net>
 Reported-by: Marco Elver <elver@google.com>
-Suggested-by: Marco Elver <elver@google.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
 Tested-by: Marco Elver <elver@google.com>
-Link: https://lkml.kernel.org/r/20200618144801.760070502@infradead.org
+Link: https://lkml.kernel.org/r/20200618144801.819246178@infradead.org
 ---
- arch/x86/kernel/traps.c  | 6 +++---
- arch/x86/lib/memcpy_64.S | 4 ++++
- 2 files changed, 7 insertions(+), 3 deletions(-)
+ arch/x86/include/asm/processor.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index af75109..a7d1570 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -690,13 +690,13 @@ struct bad_iret_stack *fixup_bad_iret(struct bad_iret_stack *s)
- 		(struct bad_iret_stack *)__this_cpu_read(cpu_tss_rw.x86_tss.sp0) - 1;
+diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
+index 42cd333..03b7c4c 100644
+--- a/arch/x86/include/asm/processor.h
++++ b/arch/x86/include/asm/processor.h
+@@ -370,7 +370,7 @@ struct x86_hw_tss {
+ #define IO_BITMAP_OFFSET_INVALID	(__KERNEL_TSS_LIMIT + 1)
  
- 	/* Copy the IRET target to the temporary storage. */
--	memcpy(&tmp.regs.ip, (void *)s->regs.sp, 5*8);
-+	__memcpy(&tmp.regs.ip, (void *)s->regs.sp, 5*8);
+ struct entry_stack {
+-	unsigned long		words[64];
++	char	stack[PAGE_SIZE];
+ };
  
- 	/* Copy the remainder of the stack from the current stack. */
--	memcpy(&tmp, s, offsetof(struct bad_iret_stack, regs.ip));
-+	__memcpy(&tmp, s, offsetof(struct bad_iret_stack, regs.ip));
- 
- 	/* Update the entry stack */
--	memcpy(new_stack, &tmp, sizeof(tmp));
-+	__memcpy(new_stack, &tmp, sizeof(tmp));
- 
- 	BUG_ON(!user_mode(&new_stack->regs));
- 	return new_stack;
-diff --git a/arch/x86/lib/memcpy_64.S b/arch/x86/lib/memcpy_64.S
-index 56b243b..bbcc05b 100644
---- a/arch/x86/lib/memcpy_64.S
-+++ b/arch/x86/lib/memcpy_64.S
-@@ -8,6 +8,8 @@
- #include <asm/alternative-asm.h>
- #include <asm/export.h>
- 
-+.pushsection .noinstr.text, "ax"
-+
- /*
-  * We build a jump to memcpy_orig by default which gets NOPped out on
-  * the majority of x86 CPUs which set REP_GOOD. In addition, CPUs which
-@@ -184,6 +186,8 @@ SYM_FUNC_START_LOCAL(memcpy_orig)
- 	retq
- SYM_FUNC_END(memcpy_orig)
- 
-+.popsection
-+
- #ifndef CONFIG_UML
- 
- MCSAFE_TEST_CTL
+ struct entry_stack_page {
