@@ -2,144 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8BDE209B01
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C84A8209B1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 10:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390637AbgFYIDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 04:03:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390587AbgFYIDl (ORCPT
+        id S2390485AbgFYIJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 04:09:21 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:24844 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2390396AbgFYIJU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 04:03:41 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8853EC0613ED
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 01:03:41 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id u26so6130802wmn.1
-        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 01:03:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=0M8Y/ZNSXHt2pcvJaMnq9jm7EeSpBp7mRNluLRRdmdk=;
-        b=KETKesxFm86ICb2fFOUJiGjNCAEbBZjL92c4QkfD/GqbqjQl7b8TszNs+54WN/0KRt
-         5P2rS7jWeQWH7wsUV5Br8VFbTyYYVNU6dQTCB3WVg4LBOKKyPu0bSE82xwFjFvLyJVXS
-         6KcpoeNo1FEyuzpFiFppZXiPNqJ9AOdR9Oom9whl7CwfHHRbdVxTx0nqm6A5cRm5LZd4
-         PxNoqqBnARQTFofGB+80GKqi+RRVHdJdgrWZQdjpw+lHKX3xoNInpuHUMXBXiUjoIJU5
-         ER92rajMEoZICS8y4YCEt2/PIAkxL3t7vRLPMkZjZdsi4PZmbEr/jdvbH3OE44Cd+lX7
-         NzQw==
+        Thu, 25 Jun 2020 04:09:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593072558;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kSGQ/c5ShJ+Wy+Y09jXsrJyUMElWj+v+/BP4E6A1ROc=;
+        b=Xb62JDvcO6JH75Tf8GdtNFShvqCYACDkEHN0zP7Cb085w+SD8bocuAS4Ok8z/IOx/f7B4p
+        Is6jBS/DaBUYUwHZhZiwdqoFU2d3cTt3bPtNPNJBMaLXd9q/bwSSKsgLIIgfTti16V6vds
+        FeJyR05jKNyt52i2RxnJ6aN7l+1x5Og=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-292-hoaWqXptNyCO_x6Ycx9cFg-1; Thu, 25 Jun 2020 04:09:16 -0400
+X-MC-Unique: hoaWqXptNyCO_x6Ycx9cFg-1
+Received: by mail-wr1-f72.google.com with SMTP id i5so5041661wra.9
+        for <linux-kernel@vger.kernel.org>; Thu, 25 Jun 2020 01:09:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0M8Y/ZNSXHt2pcvJaMnq9jm7EeSpBp7mRNluLRRdmdk=;
-        b=idHuAKtM2uMC1CSAEakLWB8eIc0mx3SIRVobfwtXzQSCUKzzBW4ONv6smM9np2iogD
-         2tHDIlQd7jkf4TCsTkqbEUSdyCbmi/I1m0jS5+P+R3O8VP0AKQS9840QVJpizWWkMflJ
-         SL2biV2fmnI2p8+Jk5uoqVqQnERcUJFUBTWf/F4X8aFo+y2aXh+3x/LFx4T4V65tvyIa
-         W0XESD5Pu8iyc39Q/38fFgar8l4jGbTb3q0qDJ5wKzOWzWCTnavAaq67UsZO8oG0QQN+
-         ugAEwlNCqNmv/eekCOEchti21pdMTSjzVkKr7rqa/gIb7WMo8X2LxBdo2xunz5/oDJVI
-         VUJw==
-X-Gm-Message-State: AOAM531Od3kMWTzvWuiT2GJnVcDCJ33LLa/JTE4XHrCnsV4SR6nGuOiG
-        68HKu2EVgFs/Zxnqu2fSt7n4Mw==
-X-Google-Smtp-Source: ABdhPJzyKaUaIlRz/U+g6QVFvU1vbbyn/692EhhXT5aH0828ZYHfpZbkeM3vTyPCoD2vvAXE9IHqFw==
-X-Received: by 2002:a1c:9e13:: with SMTP id h19mr2031841wme.107.1593072220241;
-        Thu, 25 Jun 2020 01:03:40 -0700 (PDT)
-Received: from dell ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id g144sm13671180wme.2.2020.06.25.01.03.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Jun 2020 01:03:38 -0700 (PDT)
-Date:   Thu, 25 Jun 2020 09:03:37 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Sam Ravnborg <sam@ravnborg.org>
-Cc:     daniel.thompson@linaro.org, jingoohan1@gmail.com,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/8] Fix a bunch of W=1 warnings in Backlight
-Message-ID: <20200625080337.GN954398@dell>
-References: <20200624145721.2590327-1-lee.jones@linaro.org>
- <20200624153216.GA1814806@ravnborg.org>
- <20200624154321.GH954398@dell>
- <20200624162446.GA1815586@ravnborg.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kSGQ/c5ShJ+Wy+Y09jXsrJyUMElWj+v+/BP4E6A1ROc=;
+        b=h11375cHkD7NvgTKDJelVP1yIrXZWKH6JFD9GtSVod7GiupDq0T+qyHqDC7YzOC8Rq
+         gzLT8+AiDyXhRXctSrRNGyiUgtqTuXxD0R2jrhmSiBm+tTbnMxqFg6i8B5n3nGyl+COz
+         4q968QrM76vBNhruYcZbVp+f6GeW+QjYSdR0iW9PTH0nfuDwRG9jA378YV6tlvMvN3nY
+         rrX3sZHDqdXEMPwm1rP4B8x8JtLfIdX4M1zMd/afcnGvecqjeeZ9J21ZiusTxZK2ePoN
+         Y1A9tKjDvzTp1f4+SihwbhiXk5N5SF1ev1WEq8+D6nITqmPZVtKz0zlK01H3rc5NN52h
+         06Hw==
+X-Gm-Message-State: AOAM530ZOwhTtiP/xCGc24xglBqOuFnoWTZtSqdNqppGDdpw2CTZdnii
+        O6MQF9VYrosFsDVZK/ja6wCWU0K5Cehqr7UYnakureI0GI30jiJrIWjQB9NR1uq/YXFoeuDYKde
+        g/1zMj0GxDEWhiYcTMxXFw/kz
+X-Received: by 2002:a5d:5270:: with SMTP id l16mr27931641wrc.122.1593072555469;
+        Thu, 25 Jun 2020 01:09:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyu3WRKqxf9t0ItCr5MiLTW4CShMAwLhiKgnLtu7bDrz9rzBO8clwwCNiY44t+zaDTL7zOcpQ==
+X-Received: by 2002:a5d:5270:: with SMTP id l16mr27931621wrc.122.1593072555252;
+        Thu, 25 Jun 2020 01:09:15 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:91d0:a5f0:9f34:4d80? ([2001:b07:6468:f312:91d0:a5f0:9f34:4d80])
+        by smtp.gmail.com with ESMTPSA id u23sm16912259wru.94.2020.06.25.01.09.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Jun 2020 01:09:14 -0700 (PDT)
+Subject: Re: [PATCH 1/2] KVM: X86: Move ignore_msrs handling upper the stack
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>
+References: <20200622220442.21998-1-peterx@redhat.com>
+ <20200622220442.21998-2-peterx@redhat.com>
+ <20200625061544.GC2141@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <1cebc562-89e9-3806-bb3c-771946fc64f3@redhat.com>
+Date:   Thu, 25 Jun 2020 10:09:13 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
+In-Reply-To: <20200625061544.GC2141@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200624162446.GA1815586@ravnborg.org>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 24 Jun 2020, Sam Ravnborg wrote:
-
-> Hi Lee.
+On 25/06/20 08:15, Sean Christopherson wrote:
+> IMO, kvm_cpuid() is simply buggy.  If KVM attempts to access a non-existent
+> MSR then it darn well should warn.
 > 
-> On Wed, Jun 24, 2020 at 04:43:21PM +0100, Lee Jones wrote:
-> > On Wed, 24 Jun 2020, Sam Ravnborg wrote:
-> > 
-> > > Hi Lee.
-> > > 
-> > > On Wed, Jun 24, 2020 at 03:57:13PM +0100, Lee Jones wrote:
-> > > > Attempting to clean-up W=1 kernel builds, which are currently
-> > > > overwhelmingly riddled with niggly little warnings.
-> > > > 
-> > > > Lee Jones (8):
-> > > >   backlight: lms501kf03: Remove unused const variables
-> > > >   backlight: lcd: Add missing kerneldoc entry for 'struct device parent'
-> > > 
-> > > 
-> > > >   backlight: ili922x: Add missing kerneldoc descriptions for
-> > > >     CHECK_FREQ_REG() args
-> > > >   backlight: ili922x: Remove invalid use of kerneldoc syntax
-> > > >   backlight: ili922x: Add missing kerneldoc description for
-> > > >     ili922x_reg_dump()'s arg
-> > > I wonder why these warnings show up as nothing pulls in this .c file.
-> > > Anyway I would suggest to drop using kerneldoc syntax for single drivers
-> > > like this - and the benefit here is low.
-> > > Now they are typed, otherwise this ahd been fine in a single patch.
-> > 
-> > What do you mean by 'nothing pulls it in'?
-> There are no .rst files that includes any:
-> .. kernel-doc:: drivers/video/backlight/ili922x.c
+> diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+> index 8a294f9747aa..7ef7283011d6 100644
+> --- a/arch/x86/kvm/cpuid.c
+> +++ b/arch/x86/kvm/cpuid.c
+> @@ -1013,7 +1013,8 @@ bool kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx,
+>                 *ebx = entry->ebx;
+>                 *ecx = entry->ecx;
+>                 *edx = entry->edx;
+> -               if (function == 7 && index == 0) {
+> +               if (function == 7 && index == 0 && (*ebx | (F(RTM) | F(HLE))) &&
+> +                   (vcpu->arch.arch_capabilities & ARCH_CAP_TSX_CTRL_MSR)) {
+>                         u64 data;
+>                         if (!__kvm_get_msr(vcpu, MSR_IA32_TSX_CTRL, &data, true) &&
+>                             (data & TSX_CTRL_CPUID_CLEAR))
 > 
-> so I do not see how the kernel-doc comments will be used by any
-> of the generated kernel-docs.
 
-Looks like a common problem (if it is actually a problem):
+That works too, but I disagree that warning is the correct behavior
+here.  It certainly should warn as long as kvm_get_msr blindly returns
+zero.  However, for a guest it's fine to access a potentially
+non-existent MSR if you're ready to trap the #GP, and the point of this
+series is to let cpuid.c or any other KVM code do the same.
 
- $ ./scripts/find-unused-docs.sh . | wc -l
- 1476
+Paolo
 
-The role of this patch-set is not to eradicate unused kerneldoc
-headers, but to ensure they are formatted correctly.  W=1 builds
-currently complain of ill formatted kerneldocs, which is currently
-littering the build-log and masking some more important issues (which
-I'm also trying to fix en route).
-
-> > > >   backlight: backlight: Supply description for function args in existing
-> > > >     Kerneldocs
-> > > >   backlight: lm3630a_bl: Remove invalid checks for unsigned int < 0
-> > > >   backlight: qcom-wled: Remove unused configs for LED3 and LED4
-> > > 
-> > > The other fixes looks good.
-> > > They are all:
-> > > Acked-by: Sam Ravnborg <sam@ravnborg.org>
-> > 
-> > Thanks (although this should be Reviewed-by).
-> > 
-> > > >  drivers/video/backlight/backlight.c  | 2 ++
-> > > >  drivers/video/backlight/ili922x.c    | 8 ++++++--
-> > > >  drivers/video/backlight/lcd.c        | 1 +
-> > > >  drivers/video/backlight/lm3630a_bl.c | 4 ++--
-> > > >  drivers/video/backlight/lms501kf03.c | 8 --------
-> > > >  drivers/video/backlight/qcom-wled.c  | 8 --------
-> > > >  6 files changed, 11 insertions(+), 20 deletions(-)
-> > > > 
-> > 
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
