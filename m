@@ -2,83 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4C4320A3F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:27:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D1F20A3EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 19:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406765AbgFYR1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 13:27:32 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:42998 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404701AbgFYR13 (ORCPT
+        id S2404680AbgFYRZu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 13:25:50 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9156 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404342AbgFYRZu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 25 Jun 2020 13:27:29 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05PHCDZh099646;
-        Thu, 25 Jun 2020 17:27:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=+pvB/A8LWwdNByzI7FsKbhm1/eHEC5HuhI3A2agb8qs=;
- b=rFqrCb5gOv7q5OJvCCXmCzWMafM4bXqiFGBMS0Xz+DHnlOFOxj4fwipdBrcnBl5A3zCd
- yexlparAYDXT4ROTAma7KWCCTTMYWbOzmz1pa2z+HSL33j3jM51wkdNf3KWonAIybGfX
- ZJvvA9JoELLphNhMDuvaH7Y5QorDK47CsEL3WVilmXxv+Jzsqa/WCS+78CH35jH7Nvrb
- 0P60KYV9U9Q9qOfpMTRYcxUBdsxt6Rb9ZIwGNFRr3SKocyO+EdsKUa9cIpnNC0TkVg52
- BatkBb+QhNs5oj667P8tzPS6cg20Xidhf76+CIG4YOIhW3YDrksgsae5VeTznOyxWG7x 0Q== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 31uuststvr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 25 Jun 2020 17:27:18 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 05PHDRuc033781;
-        Thu, 25 Jun 2020 17:25:18 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 31uursv9bt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 25 Jun 2020 17:25:18 +0000
-Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 05PHPHAu004095;
-        Thu, 25 Jun 2020 17:25:17 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 25 Jun 2020 17:25:17 +0000
-Date:   Thu, 25 Jun 2020 20:25:10 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     devel@driverdev.osuosl.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "supporter:QLOGIC QLGE 10Gb ETHERNET DRIVER" 
-        <GR-Linux-NIC-Dev@marvell.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Manish Chopra <manishc@marvell.com>,
-        "open list:QLOGIC QLGE 10Gb ETHERNET DRIVER" <netdev@vger.kernel.org>
-Subject: Re: [PATCH 1/2] fix trailing */ in block comment
-Message-ID: <20200625172510.GF2549@kadam>
-References: <20200625153614.63912-1-coiby.xu@gmail.com>
- <20200625153614.63912-2-coiby.xu@gmail.com>
+        Thu, 25 Jun 2020 13:25:50 -0400
+Received: from hqpgpgate101.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, DES-CBC3-SHA)
+        id <B5ef4ddbf0000>; Thu, 25 Jun 2020 10:24:15 -0700
+Received: from hqmail.nvidia.com ([172.20.161.6])
+  by hqpgpgate101.nvidia.com (PGP Universal service);
+  Thu, 25 Jun 2020 10:25:49 -0700
+X-PGP-Universal: processed;
+        by hqpgpgate101.nvidia.com on Thu, 25 Jun 2020 10:25:49 -0700
+Received: from rcampbell-dev.nvidia.com (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 25 Jun
+ 2020 17:25:39 +0000
+Subject: Re: [RESEND PATCH 2/3] nouveau: fix mixed normal and device private
+ page migration
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     Christoph Hellwig <hch@lst.de>
+CC:     <nouveau@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        "Jerome Glisse" <jglisse@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        "Jason Gunthorpe" <jgg@mellanox.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, Bharata B Rao <bharata@linux.ibm.com>
+References: <20200622233854.10889-1-rcampbell@nvidia.com>
+ <20200622233854.10889-3-rcampbell@nvidia.com> <20200624072355.GB18609@lst.de>
+ <330f6a82-d01d-db97-1dec-69346f41e707@nvidia.com>
+X-Nvconfidentiality: public
+Message-ID: <a9aba057-3786-8204-f782-6e8f3c290b35@nvidia.com>
+Date:   Thu, 25 Jun 2020 10:25:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200625153614.63912-2-coiby.xu@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9663 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 mlxscore=0
- spamscore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2006250108
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9663 signatures=668680
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- cotscore=-2147483648 adultscore=0 bulkscore=0 spamscore=0 phishscore=0
- suspectscore=0 priorityscore=1501 lowpriorityscore=0 clxscore=1011
- impostorscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2004280000 definitions=main-2006250108
+In-Reply-To: <330f6a82-d01d-db97-1dec-69346f41e707@nvidia.com>
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1593105855; bh=uYfK6rsz5+ealU9/4gfA5Q+t0zfXrSyYkvAq9Mm4eGo=;
+        h=X-PGP-Universal:Subject:From:To:CC:References:X-Nvconfidentiality:
+         Message-ID:Date:User-Agent:MIME-Version:In-Reply-To:
+         X-Originating-IP:X-ClientProxiedBy:Content-Type:Content-Language:
+         Content-Transfer-Encoding;
+        b=XRF2xro5q/8nFW0qjYwB2C4HyBRCQPyCPqDcMZofasBrICeXUutwqnsZyPduCtLpq
+         /ggcpTLFzaRb8MUCEsmqC8yYPn/2pY+ZgjZwdi3UDopmO98V/URpD7d9BSuxWKPA+G
+         2nWK0ffA0twlTJi0w2nlPSyqlw9LesqC01C2zXdacZOl5IX+OEzPnbN5JxKfO+3mNq
+         oLvpus8nOYzAdTC4mzG5HtY6eVcuvTk4GK+8EAbum/RRJFnP5wOzkH//3bk+0krJvj
+         HKpTZHcZhZjtaWE+Kb3QksgDgj0vokNgKMFr+K5B2UagSY1t9LsD44MzthqGXgXuBU
+         T0TO8BMY5JjBg==
 Sender: linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The subject isn't right (no subsystem prefix) and we need a commit
-message.
+Making sure to include linux-mm and Bharata B Rao for IBM's
+use of migrate_vma*().
 
-regards,
-dan carpenter
+On 6/24/20 11:10 AM, Ralph Campbell wrote:
+>=20
+> On 6/24/20 12:23 AM, Christoph Hellwig wrote:
+>> On Mon, Jun 22, 2020 at 04:38:53PM -0700, Ralph Campbell wrote:
+>>> The OpenCL function clEnqueueSVMMigrateMem(), without any flags, will
+>>> migrate memory in the given address range to device private memory. The
+>>> source pages might already have been migrated to device private memory.
+>>> In that case, the source struct page is not checked to see if it is
+>>> a device private page and incorrectly computes the GPU's physical
+>>> address of local memory leading to data corruption.
+>>> Fix this by checking the source struct page and computing the correct
+>>> physical address.
+>>
+>> I'm really worried about all this delicate code to fix the mixed
+>> ranges.=C2=A0 Can't we make it clear at the migrate_vma_* level if we wa=
+nt
+>> to migrate from or two device private memory, and then skip all the work
+>> for regions of memory that already are in the right place?=C2=A0 This mi=
+ght be
+>> a little more work initially, but I think it leads to a much better
+>> API.
+>>
+>=20
+> The current code does encode the direction with src_owner !=3D NULL meani=
+ng
+> device private to system memory and src_owner =3D=3D NULL meaning system
+> memory to device private memory. This patch would obviously defeat that
+> so perhaps a flag could be added to the struct migrate_vma to indicate th=
+e
+> direction but I'm unclear how that makes things less delicate.
+> Can you expand on what you are worried about?
+>=20
+> The issue with invalidations might be better addressed by letting the dev=
+ice
+> driver handle device private page TLB invalidations when migrating to
+> system memory and changing migrate_vma_setup() to only invalidate CPU
+> TLB entries for normal pages being migrated to device private memory.
+> If a page isn't migrating, it seems inefficient to invalidate those TLB
+> entries.
+>=20
+> Any other suggestions?
 
+After a night's sleep, I think this might work. What do others think?
+
+1) Add a new MMU_NOTIFY_MIGRATE enum to mmu_notifier_event.
+
+2) Change migrate_vma_collect() to use the new MMU_NOTIFY_MIGRATE event typ=
+e.
+
+3) Modify nouveau_svmm_invalidate_range_start() to simply return (no invali=
+dations)
+for MMU_NOTIFY_MIGRATE mmu notifier callbacks.
+
+4) Leave the src_owner check in migrate_vma_collect_pmd() for normal pages =
+so if the
+device driver is migrating normal pages to device private memory, the drive=
+r would
+set src_owner =3D NULL and already migrated device private pages would be s=
+kipped.
+Since the mmu notifier callback did nothing, the device private entries rem=
+ain valid
+in the device's MMU. migrate_vma_collect_pmd() would still invalidate the C=
+PU page
+tables for migrated normal pages.
+If the driver is migrating device private pages to system memory, it would =
+set
+src_owner !=3D NULL, normal pages would be skipped, but now the device driv=
+er has to
+invalidate device MMU mappings in the "alloc and copy" before doing the cop=
+y.
+This would be after migrate_vma_setup() returns so the list of migrating de=
+vice
+pages is known to the driver.
+
+The rest of the migrate_vma_pages() and migrate_vma_finalize() remain the s=
+ame.
