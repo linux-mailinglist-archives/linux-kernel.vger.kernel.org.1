@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7C472099FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 08:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75864209A0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 25 Jun 2020 08:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390146AbgFYGqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 25 Jun 2020 02:46:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
+        id S2390341AbgFYGrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 25 Jun 2020 02:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390110AbgFYGq0 (ORCPT
+        with ESMTP id S2390111AbgFYGq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 25 Jun 2020 02:46:26 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 259EBC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 23:46:25 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j4so2129727wrp.10
-        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 23:46:25 -0700 (PDT)
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DD6C061573
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 23:46:26 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id g18so4626491wrm.2
+        for <linux-kernel@vger.kernel.org>; Wed, 24 Jun 2020 23:46:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=L7/cDxvGdffp0R1d8Bbrv1z7a+JwOkzEK0KwjgT2NxE=;
-        b=BCmUEtT5UTfVuC8CblpswRBGT7MKphCIGdncmeha98yeFZF1RxkE4l+xGv/tGqHYum
-         OA7y8Haiw+RQimK4Bda7ht6soHr43nbRuSKpQJKow84aunLep803VCuEqWLD4Pw5JD0X
-         96eXzyQsx45dx26MXUnpGnDy3jpxvAk/wDI/hOHxeUYKXagFUmKRFRU2OagSbsHl0qGt
-         3hqH62/Q/B/G57ZQng+i5vaGJeaL08Uf6dM6WYvSIGm4WjFfLQhGVxxCjI7i1u91A4xL
-         YpMRNTBntLVloYGvv2ibyEIZ80NwV+J19HiToZeKVO4vSmFhN16plNct104f+WeRmk81
-         jkJQ==
+        bh=gpZUopdNGKoMuokzA38cWTWHt4qMbyx0+mhPHuM+Znc=;
+        b=L3gPi0V6eWwUbjc0a7NWVYNxvmyjxoCjIHRVwhhbx3/PgBUBX1nYVYjjVo442aXOq1
+         6X+Rxq4jGsIwLTCBZApP2Rl/SureSgHXIaYxg9LovDj+bhfSXt3hSv90MX1xjfcHLEbP
+         pizWIa2VTBVMWI6eNMnPoO4qath3LnLnEPgrrJ4dAIBvozmxRyuEBNn35Sv9RQVY/0Lg
+         hVqcXYlSA2h6mWAEMsGoEiG/cyjNbXgHy0dMkxXGJQjFqwHHP6PZSwCZU5izFBVnfokC
+         WU1eXhZiZYr6t2/pu9Ce3tAAE6tpfZME71ChHW0a72v/TfEzY4id8vKP2OrKnEGANJQQ
+         3D8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=L7/cDxvGdffp0R1d8Bbrv1z7a+JwOkzEK0KwjgT2NxE=;
-        b=LwrRonLoCv18xLhGchvrSmXWwaszgJqvUvXkt7Zi9e8Rk7RpxbtwEUASrBA0Vqfrkl
-         5rTWg8V6Gj2E7r5SdK4mOv54vSYPeCHOskzOwqATbSBIAkv/9ON+XFF/JN4TQS+RBSQv
-         TU2wUf9mlee63Xhl+nhbUJ86S4QgF26H1A8jjnIvXzarw3LIM+/1ZCxOvh/NUwsKz63E
-         wG/hyDBJaXLLknHyKmJMeAeB262NLbP4VKN2SVU/VmzR7sdbLjgjrZOrvj0/44Pqm93O
-         a9H6pmQHRyvLqybDvVWcFDCMgjNwkLozGXaBS/ih9BpbPmLU6Gf9/YEuC4yNbCnWgWm1
-         F/7A==
-X-Gm-Message-State: AOAM5329puyTVBjqjwBBWxU/wwopvvaC6yD/CF6CZUlvRnuCg+qhlslm
-        nbeRoqF+hEQKHQMrRjqN4ObdjGcCvUQ=
-X-Google-Smtp-Source: ABdhPJwYRYFfBlmw34OzXGBG+xQkUxeApPE1s2gVR8CHohOClUiwjOu3so0VAMYdMW4pAEGmwpbrDQ==
-X-Received: by 2002:adf:8b18:: with SMTP id n24mr37002049wra.372.1593067583753;
-        Wed, 24 Jun 2020 23:46:23 -0700 (PDT)
+        bh=gpZUopdNGKoMuokzA38cWTWHt4qMbyx0+mhPHuM+Znc=;
+        b=o5yv8Nouy9xCUdsGk+cLvEo8Xz/mJYDcsy2ZYk4acJiXkB7eHwW4e5yYYM4IO8TtLb
+         fjbQoJVxHcpccTaShFr7aTNPekFFOI3v2gn1jMu8NKs9pPwdDGB7ORdOJcQCTwxDlYI0
+         sXZpTBBhztB2McGBDjmwcN375aNA0Ul9FjCtz1GpFoZ3P3bNQTNllFgBDheJ8AE2iReX
+         RGHsSR5RX3lH1AkVIZoQ301AQJBa/y3jbA5uD8jrpDMw+0CBV4NXTBmlQE1N4I50UU2Z
+         b0xn3NDikAUcoMauX42LAKRQonB1L8BOV+a7zjTvtxVOwUdQGLLNhkZpguMm2SyX2TWC
+         A2vQ==
+X-Gm-Message-State: AOAM5313rJaUxUaFCCIMx9uRF3RZw4ObDbeRC4QqxEvdUOLW7rt2F3L8
+        qMbcu84qkIrbuXFNFaZOjSLvCQ==
+X-Google-Smtp-Source: ABdhPJzMnG23PTfD5iHcY4F5ksyIND4PVZ3+d2rvuDhBikSUcprsL4BwlP+KBch0OuudWQn4B9nZfA==
+X-Received: by 2002:a5d:62cd:: with SMTP id o13mr23631593wrv.272.1593067584905;
+        Wed, 24 Jun 2020 23:46:24 -0700 (PDT)
 Received: from localhost.localdomain ([2.27.35.144])
-        by smtp.gmail.com with ESMTPSA id c20sm27235363wrb.65.2020.06.24.23.46.22
+        by smtp.gmail.com with ESMTPSA id c20sm27235363wrb.65.2020.06.24.23.46.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Jun 2020 23:46:23 -0700 (PDT)
+        Wed, 24 Jun 2020 23:46:24 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org, patches@opensource.cirrus.com
-Subject: [PATCH 01/10] mfd: wm8350-core: Supply description wm8350_reg_{un}lock args
-Date:   Thu, 25 Jun 2020 07:46:10 +0100
-Message-Id: <20200625064619.2775707-2-lee.jones@linaro.org>
+        stable@vger.kernel.org
+Subject: [PATCH 02/10] mfd: mfd-core: Complete kerneldoc header for devm_mfd_add_devices()
+Date:   Thu, 25 Jun 2020 07:46:11 +0100
+Message-Id: <20200625064619.2775707-3-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20200625064619.2775707-1-lee.jones@linaro.org>
 References: <20200625064619.2775707-1-lee.jones@linaro.org>
@@ -65,42 +65,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kerneldoc syntax is used, but not complete.  Descriptions required.
+Each function parameter should be documented in kerneldoc format.
 
-Prevents warnings like:
+Squashes the following W=1 warnings:
 
- drivers/mfd/wm8350-core.c:136: warning: Function parameter or member 'wm8350' not described in 'wm8350_reg_lock'
- drivers/mfd/wm8350-core.c:165: warning: Function parameter or member 'wm8350' not described in 'wm8350_reg_unlock'
+ drivers/mfd/mfd-core.c:326: warning: Function parameter or member 'dev' not described in 'devm_mfd_add_devices'
+ drivers/mfd/mfd-core.c:326: warning: Function parameter or member 'id' not described in 'devm_mfd_add_devices'
+ drivers/mfd/mfd-core.c:326: warning: Function parameter or member 'cells' not described in 'devm_mfd_add_devices'
+ drivers/mfd/mfd-core.c:326: warning: Function parameter or member 'n_devs' not described in 'devm_mfd_add_devices'
+ drivers/mfd/mfd-core.c:326: warning: Function parameter or member 'mem_base' not described in 'devm_mfd_add_devices'
+ drivers/mfd/mfd-core.c:326: warning: Function parameter or member 'irq_base' not described in 'devm_mfd_add_devices'
+ drivers/mfd/mfd-core.c:326: warning: Function parameter or member 'domain' not described in 'devm_mfd_add_devices'
 
 Cc: <stable@vger.kernel.org>
-Cc: patches@opensource.cirrus.com
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/mfd/wm8350-core.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/mfd/mfd-core.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/drivers/mfd/wm8350-core.c b/drivers/mfd/wm8350-core.c
-index 42b16503e6cd1..fbc77b218215c 100644
---- a/drivers/mfd/wm8350-core.c
-+++ b/drivers/mfd/wm8350-core.c
-@@ -131,6 +131,8 @@ EXPORT_SYMBOL_GPL(wm8350_block_write);
-  * The WM8350 has a hardware lock which can be used to prevent writes to
-  * some registers (generally those which can cause particularly serious
-  * problems if misused).  This function enables that lock.
+diff --git a/drivers/mfd/mfd-core.c b/drivers/mfd/mfd-core.c
+index f5a73af60dd40..720e5c8b1588c 100644
+--- a/drivers/mfd/mfd-core.c
++++ b/drivers/mfd/mfd-core.c
+@@ -318,6 +318,16 @@ static void devm_mfd_dev_release(struct device *dev, void *res)
+  * Returns 0 on success or an appropriate negative error number on failure.
+  * All child-devices of the MFD will automatically be removed when it gets
+  * unbinded.
 + *
-+ * @wm8350: pointer to local driver data structure
++ * @dev:	Pointer to parent device.
++ * @id:		Can be PLATFORM_DEVID_AUTO to let the Platform API take care
++ *		of device numbering, or will be added to a device's cell_id.
++ * @cells:	Array of (struct mfd_cell)s describing child devices.
++ * @n_devs:	Number of child devices to register.
++ * @mem_base:	Parent register range resource for child devices.
++ * @irq_base:	Base of the range of virtual interrupt numbers allocated for
++ *		this MFD device. Unused if @domain is specified.
++ * @domain:	Interrupt domain to create mappings for hardware interrupts.
   */
- int wm8350_reg_lock(struct wm8350 *wm8350)
- {
-@@ -160,6 +162,8 @@ EXPORT_SYMBOL_GPL(wm8350_reg_lock);
-  * problems if misused).  This function disables that lock so updates
-  * can be performed.  For maximum safety this should be done only when
-  * required.
-+ *
-+ * @wm8350: pointer to local driver data structure
-  */
- int wm8350_reg_unlock(struct wm8350 *wm8350)
- {
+ int devm_mfd_add_devices(struct device *dev, int id,
+ 			 const struct mfd_cell *cells, int n_devs,
 -- 
 2.25.1
 
